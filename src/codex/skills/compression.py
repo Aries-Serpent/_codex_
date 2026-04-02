@@ -225,6 +225,13 @@ def install_skill(
             )
         elif suffix == ".zip":
             with zipfile.ZipFile(archive_path) as zf:
+                # Guard against Zip Slip: verify every member resolves inside tmp
+                for member in zf.infolist():
+                    member_path = (tmp / member.filename).resolve()
+                    if not str(member_path).startswith(str(tmp.resolve())):
+                        raise ValueError(
+                            f"Zip Slip detected: '{member.filename}' would extract outside target dir"
+                        )
                 zf.extractall(tmp)
         else:
             raise ValueError(f"Unsupported archive format: {suffix}")

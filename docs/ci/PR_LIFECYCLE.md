@@ -1,9 +1,9 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.4.0  
-> **Date:** 2026-04-02 (S282 — §16 `@copilot` comment budget & rate-limit controls, full trigger→comment map, 35-workflow audit)  
+> **Version:** 1.5.0  
+> **Date:** 2026-04-02 (S283 — §17 PDA Loop failure pattern logging, §16.6 rate-limit hardening applied, issue #3853 triage complete)  
 > **Branch:** `0D_base_`  
-> **Sources:** `.github/workflows/` inspection, CI log history, issue #3853 triage report (71 failures / 13 workflows, 2026-04-02)
+> **Sources:** `.github/workflows/` inspection, CI log history, issue #3853 triage report (59 failures / 14 workflows, 2026-04-02)
 
 This document describes the full expected lifecycle of a pull request on the `0D_base_` branch:
 which workflows run, when Copilot sessions are triggered, what failures are expected vs unexpected,
@@ -29,6 +29,7 @@ and how the self-healing / rescue system responds.
 14. [Copilot Session Automation Improvement Roadmap](#14-copilot-session-automation-improvement-roadmap)
 15. [RAG Module Tests — Chronic Failure Pattern](#15-rag-module-tests--chronic-failure-pattern)
 16. [`@copilot` Comment Budget & Rate-Limit Controls](#16-copilot-comment-budget--rate-limit-controls)
+17. [PDA Loop + AfterMath — Failure Pattern Logging](#17-pda-loop--aftermath--failure-pattern-logging)
 
 ---
 
@@ -1036,11 +1037,149 @@ flowchart TD
 
 ---
 
-### 16.6 Recommended Hardening (future sessions)
+### 16.6 Hardening Applied (S283) + Remaining Recommendations
 
-1. **Add upsert to `copilot-agent-session-done.yml`**: Replace all `createComment` calls with upsert-by-marker to prevent per-watcher duplicates.  
-2. **Global per-PR hourly comment cap**: Add a workflow-level check: if `PR comment count > 50 in last hour`, suppress non-critical posts (info/status only).  
-3. **Bot-actor filter on `issue_comment`-triggered workflows**: `chatops_copilot_trigger.yml`, `copilot-review-responder.yml`, `session-watchdog.yml` must check `github.actor` does not end with `[bot]` before posting.  
-4. **Proactive CI monitor throttle**: The 30-min schedule could generate 2+ `@copilot` comments per hour on a long-failing PR; add a per-PR-per-day cap of 5 proactive posts.  
-5. **`workflow_run` fan-out budget**: When ≥5 `workflow_run` failures fire for the same SHA within 2 minutes, collapse into a single merged RCA comment instead of individual posts.
+**✅ Applied in S283:**
+
+1. **30-min cooldown added to `copilot-iterative-self-healing.yml`**: The `Upsert @copilot prompt as PR comment` step now checks the timestamp of the last `<!-- copilot-healing:... -->` comment. If posted < 1800s ago, the step exits early and logs a skip notice. Mirrors the same guard already present in `iterative-self-healing-ci.yml` `copilot-escalation` job.
+
+**⬜ Remaining (future sessions):**
+
+2. **Add upsert to `copilot-agent-session-done.yml`**: Replace all `createComment` calls with upsert-by-marker to prevent per-watcher duplicates.  
+3. **Global per-PR hourly comment cap**: Add a workflow-level check: if `PR comment count > 50 in last hour`, suppress non-critical posts (info/status only).  
+4. **Bot-actor filter on `issue_comment`-triggered workflows**: `chatops_copilot_trigger.yml`, `copilot-review-responder.yml`, `session-watchdog.yml` must check `github.actor` does not end with `[bot]` before posting.  
+5. **Proactive CI monitor throttle**: The 30-min schedule could generate 2+ `@copilot` comments per hour on a long-failing PR; add a per-PR-per-day cap of 5 proactive posts.  
+6. **`workflow_run` fan-out budget**: When ≥5 `workflow_run` failures fire for the same SHA within 2 minutes, collapse into a single merged RCA comment instead of individual posts.
+
+---
+
+## 17. PDA Loop + AfterMath — Failure Pattern Logging
+
+> **Added S283 — 2026-04-02**  
+> **Purpose:** Close the feedback loop between CI failures and grounded agent solutions.
+> Every CI failure is logged with root cause and fix template; every fix attempt is logged
+> with verification outcome. Future sessions query the log to get proven solutions instead
+> of re-diagnosing from scratch.
+
+---
+
+### 17.1 Architecture
+
+```
+CI fails
+   │
+   ▼
+iterative-self-healing-ci.yml
+   │  "Log pattern to PDA Loop + AfterMath" step
+   │  (runs always — success, failure, or no-change)
+   ▼
+scripts/ci/pda_failure_logger.py log-failure / log-fix
+   │
+   ├─→ .codex/aftermath/pda_iterations.jsonl   (NDJSON append log)
+   └─→ ~/.codex/cli_history.db                 (SQLite patterns table via pattern_recorder.py)
+
+Copilot session starts
+   │
+   └─→ python scripts/ci/pda_failure_logger.py summarize
+           ↓
+       Grounded solution with: root_cause, fix_template, verification_cmd,
+       occurrences, fix_success_rate, last_session
+```
+
+---
+
+### 17.2 Log File Locations
+
+| File | Format | Purpose |
+|------|--------|---------|
+| `.codex/aftermath/pda_iterations.jsonl` | NDJSON (one JSON obj per line) | Primary append-only log of all failure + fix events |
+| `.codex/aftermath/failure_pattern_solutions.yaml` | YAML | Static grounded-solution library, curated from triage reports; updated by `export-solutions` |
+| `~/.codex/cli_history.db` | SQLite | Cross-session pattern frequency DB, queried by `pattern_recorder.py summary` |
+| `.codex/healing_attempts/*.json` | JSON | Per-iteration detail from `iterative-self-healing-ci.yml` (pre-dates PDA logger) |
+| `.codex/sessions/S*_aftermath.md` | Markdown/YAML | Rich human-readable session aftermath (manually maintained) |
+
+---
+
+### 17.3 PDA Entry Types
+
+Each line in `pda_iterations.jsonl` has a `type` field:
+
+| type | When logged | Key fields |
+|------|-------------|------------|
+| `failure` | When a CI failure is observed (before fix) | `pattern_id`, `workflow`, `error_text`, `root_cause`, `fix_template`, `verification_cmd` |
+| `fix` | After a fix is applied | `pattern_id`, `fix_applied`, `verification_cmd`, `verification_passed` |
+| `session` | At end of a Copilot agent session | `session`, `plan`, `patterns_fixed`, `patterns_open`, `lessons` |
+
+---
+
+### 17.4 Grounded Solutions CLI
+
+```bash
+# See all patterns with proven fixes, sorted by frequency:
+python scripts/ci/pda_failure_logger.py summarize
+
+# Deep-dive on one pattern:
+python scripts/ci/pda_failure_logger.py summarize --pattern-id RP-SC2089
+
+# Dump all entries for the current session:
+python scripts/ci/pda_failure_logger.py dump --session S283
+
+# Export YAML solution library (for agent injection):
+python scripts/ci/pda_failure_logger.py export-solutions \
+  --output .codex/aftermath/failure_pattern_solutions.yaml
+
+# Log a new failure manually:
+python scripts/ci/pda_failure_logger.py log-failure \
+  --session S283 --pr 3854 --branch 0D_base_ \
+  --pattern-id RP-MY-PATTERN \
+  --workflow "Workflow Name" \
+  --root-cause "What went wrong" \
+  --fix-template 'command to fix it' \
+  --verification-cmd "command to verify"
+```
+
+---
+
+### 17.5 Pattern ID Conventions
+
+| Prefix | Category | Examples |
+|--------|----------|---------|
+| `RP-SC*` | Shell script (actionlint) | `RP-SC2089`, `RP-SC2090` |
+| `RP-MYPY-*` | mypy type errors | `RP-MYPY-LITERAL`, `RP-MYPY-UNUSED-IGNORE` |
+| `RP-RAG-*` | RAG module failures | `RP-RAG-MOCK-CHAIN`, `RP-RAG-COVERAGE` |
+| `RP-ZIP-*` | Security (archive) | `RP-ZIP-SLIP` |
+| `RP-PREFLIGHT-*` | CI gate failures | `RP-PREFLIGHT-REQ4` |
+| `RP-COPILOT-*` | Copilot session issues | `RP-COPILOT-500-CONCURRENT` |
+| `RP-AUTO-*` | Auto-logged from self-healing CI | `RP-AUTO-COVERAGE-TIMEOUT` |
+| `RP-019`, `RP-009`, etc. | Numeric patterns from test.failure.matcher (current format) | emitted by `test_failure_matcher/handler.py` |
+
+> 📝 **Pattern ID history:** Early docstrings used `P19`, `P009` format — those were the **legacy** IDs.
+> All pattern IDs now use `RP-...` format (e.g. `RP-019`, `RP-009`, `RP-XDIST-WORKER`).
+> Numeric `RP-NNN` IDs come from `test_failure_matcher/handler.py`; named `RP-<WORD>` IDs are used for
+> workflow infrastructure patterns logged via `pda_failure_logger.py`.
+
+---
+
+### 17.6 Integration with Issue #3853
+
+Issue #3853 contains 59 CI failures across 14 workflows logged on 2026-04-02.
+All identified patterns from that triage are now captured in `.codex/aftermath/failure_pattern_solutions.yaml`
+with root causes, fix templates, and verification commands. The resolution status per workflow:
+
+| Workflow (from #3853) | Failures | Root Cause | Status |
+|-----------------------|----------|-----------|--------|
+| Validation Pipeline | 5 | Unused imports, ruff F401 | ✅ Fixed S282/S283 |
+| Auto-Fix Common CI Issues | 5 | Same unused-import pattern detected | ✅ Fixed S282 |
+| PR Auto-Fix Check | 5 | Same | ✅ Fixed S282 |
+| Pre-Merge Validation | 5 | Coverage timeout + unused imports | ✅ Fixed S282/S283 |
+| mypy Baseline | 4 | `unused-ignore`, `arg-type` Literal | ✅ Fixed S281 |
+| Workflow Compliance Audit (actionlint) | 4 | SC2089/SC2090 string-as-array | ✅ Fixed S281/S283 |
+| RAG Module Tests | 5 | MagicMock chain, coverage threshold | ✅ Fixed S276 |
+| Resilient Validation Suite | 2 | Transient / older commit | ⚠️ Monitor |
+| Agent Token Delegation | 5 | REQ-4 accountability report not updated | ⚠️ Ongoing (auto-fix handles) |
+| PR Comment Review Gate | 5 | Unaddressed mbaetiong comments | 🔄 Addressed in S283 |
+| Workflow Execution Gate | 5 | SC2089/SC2090 in FF job + duplicate env: | ✅ Fixed S281/S283 |
+| Copilot Issue Triage | 1 | Infrastructure (Copilot session on main) | ℹ️ Not code-fixable |
+| Automatic Dependency Submission | 4 | submit-pypi infrastructure | ℹ️ Not code-fixable |
+| Copilot coding agent | 4 | Session failures on dependabot branches | ℹ️ Not code-fixable |
 

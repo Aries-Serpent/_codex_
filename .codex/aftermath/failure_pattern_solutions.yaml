@@ -1,0 +1,398 @@
+# PDA Loop — Grounded CI Failure Pattern Solutions
+# ===================================================
+# Auto-updated by: scripts/ci/pda_failure_logger.py export-solutions
+# Manual entries: add below following the schema
+#
+# Schema per solution:
+#   pattern_id        : unique RP-... or custom identifier
+#   display_name      : human label
+#   category          : shell | python | workflow | test | security | coverage | rate-limit
+#   occurrences       : count seen in triage reports
+#   fix_success_rate  : 0.0–1.0 (populated from pda_iterations.jsonl)
+#   root_cause        : one-line root cause
+#   fix_template      : exact command or code block to apply
+#   verification_cmd  : command to confirm fix worked
+#   affected_workflows: list of workflow names this pattern appears in
+#   last_session      : most recent session where this was seen/fixed
+#   last_seen         : ISO timestamp
+#   notes             : free-text additional context
+
+solutions:
+
+  # ── Shell / Workflow patterns ──────────────────────────────────────────────
+
+  - pattern_id: RP-SC2089
+    display_name: "SC2089/SC2090 Bash array quoting"
+    category: shell
+    occurrences: 4
+    fix_success_rate: 1.0
+    root_cause: >
+      Optional CLI argument groups built as shell strings are word-split on expansion.
+      Quotes/backslashes in the variable are not respected (SC2089); when the variable
+      is expanded unquoted, glob characters can execute unintended expansions (SC2090).
+    fix_template: |
+      # Before (broken):
+      FILES_ARG=""; [ -n "$FILES" ] && FILES_ARG="--files $FILES"
+      cmd $FILES_ARG
+
+      # After (correct — Bash arrays):
+      FILES_ARG=()
+      if [ -n "$FILES" ]; then
+        read -ra _FL <<< "$FILES"
+        FILES_ARG=(--files "${_FL[@]}")
+      fi
+      cmd "${FILES_ARG[@]}"
+    verification_cmd: "actionlint .github/workflows/workflow-execution-gate.yml"
+    affected_workflows:
+      - "Workflow Compliance Audit (actionlint)"
+      - "fast-forward-safe-files.yml"
+      - "workflow-execution-gate.yml"
+    last_session: S283
+    last_seen: "2026-04-02T18:54Z"
+    notes: "Fixed in S281 (fast-forward-safe-files.yml) and S283 (workflow-execution-gate.yml fast-forward job)."
+
+  - pattern_id: RP-DUPLICATE-ENV
+    display_name: "Duplicate env: key in workflow step"
+    category: workflow
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      A workflow step has two separate `env:` blocks. actionlint rejects duplicate
+      YAML keys because the second silently overwrites the first.
+    fix_template: |
+      # Before (broken — two env: blocks in same step):
+      - name: My step
+        env:
+          FOO: bar
+        run: ...
+        env:               # duplicate — invalid!
+          BAZ: qux
+
+      # After (correct — single env: block):
+      - name: My step
+        env:
+          FOO: bar
+          BAZ: qux
+        run: ...
+    verification_cmd: "actionlint .github/workflows/workflow-execution-gate.yml"
+    affected_workflows:
+      - "workflow-execution-gate.yml"
+    last_session: S281
+    last_seen: "2026-04-02T16:27Z"
+
+  # ── Python type-check patterns ─────────────────────────────────────────────
+
+  - pattern_id: RP-MYPY-UNUSED-IGNORE
+    display_name: "mypy unused type: ignore comment"
+    category: python
+    occurrences: 3
+    fix_success_rate: 1.0
+    root_cause: >
+      A `# type: ignore[X]` comment is present on a line that no longer triggers
+      that mypy error. This happens when: (a) the error is fixed but the comment
+      is not removed, or (b) `--ignore-missing-imports` is active and the import
+      falls back to `Any`, making the annotation valid without the ignore.
+    fix_template: |
+      # Remove the unused comment. Example:
+      # Before:
+      _PkgVersion = None  # type: ignore[assignment,misc]
+      # After:
+      _PkgVersion = None  # type: ignore[assignment]
+      # Or fully remove if no type error remains.
+
+      # Systematic sweep:
+      python -m mypy src/ --no-error-summary 2>&1 | grep "unused-ignore"
+    verification_cmd: "python -m mypy src/ --no-error-summary 2>&1 | tail -3"
+    affected_workflows:
+      - "mypy Baseline (Type-Check Anti-Regression)"
+    last_session: S281
+    last_seen: "2026-04-02T16:27Z"
+
+  - pattern_id: RP-MYPY-LITERAL
+    display_name: "mypy arg-type: str where Literal expected"
+    category: python
+    occurrences: 2
+    fix_success_rate: 1.0
+    root_cause: >
+      A function parameter typed as `Literal["ok", "error"]` receives a plain `str`
+      annotation at the call site. mypy reports `arg-type` because str is not a subtype
+      of the Literal type.
+    fix_template: |
+      # Add Literal to imports and narrow the annotation:
+      from typing import Literal
+
+      # Before:
+      def run(self, status: str = "ok") -> dict: ...
+      # After:
+      def run(self, status: Literal["ok", "error"] = "ok") -> dict: ...
+    verification_cmd: "python -m mypy src/codex/skills/telemetry.py --no-error-summary"
+    affected_workflows:
+      - "mypy Baseline (Type-Check Anti-Regression)"
+    last_session: S281
+    last_seen: "2026-04-02T16:27Z"
+
+  # ── Security patterns ──────────────────────────────────────────────────────
+
+  - pattern_id: RP-ZIP-SLIP
+    display_name: "Zip Slip path traversal in ZipFile.extractall()"
+    category: security
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      `ZipFile.extractall(tmp)` does not validate member paths. A crafted archive
+      containing `../../../etc/passwd` as a member name will extract outside the
+      target directory, enabling arbitrary file write (Zip Slip, CWE-22).
+    fix_template: |
+      with zipfile.ZipFile(archive_path) as zf:
+          for member in zf.infolist():
+              member_path = (tmp / member.filename).resolve()
+              if not str(member_path).startswith(str(tmp.resolve())):
+                  raise ValueError(
+                      f"Zip Slip detected: '{member.filename}' "
+                      "would extract outside target dir"
+                  )
+          zf.extractall(tmp)
+    verification_cmd: "python -m pytest tests/skills/test_compression.py -v"
+    affected_workflows:
+      - "code-scanning-remediation-agent"
+    last_session: S283
+    last_seen: "2026-04-02T18:54Z"
+    notes: "Fixed in src/codex/skills/compression.py install_skill() in S283."
+
+  # ── Code quality patterns ──────────────────────────────────────────────────
+
+  - pattern_id: RP-UNUSED-IMPORT
+    display_name: "Unused import (ruff F401)"
+    category: python
+    occurrences: 8
+    fix_success_rate: 1.0
+    root_cause: >
+      An import statement is present but the name is never referenced in the module.
+      The pre-merge-validation workflow runs `ruff check` with F401 enabled and
+      fails if unused imports are found.
+    fix_template: |
+      # Auto-fix with ruff:
+      python -m ruff check --fix --select F401 <file_or_dir>
+
+      # Or run the full auto-fix pipeline:
+      python scripts/ci/auto_fix_common_issues.py --pattern 1
+    verification_cmd: "python -m ruff check --select F401 tests/skills/ tests/test_fast_forward_safe_files.py"
+    affected_workflows:
+      - "Auto-Fix Common CI Issues"
+      - "PR Auto-Fix Check"
+      - "Pre-Merge Validation"
+    last_session: S283
+    last_seen: "2026-04-02T17:09Z"
+    notes: "Recurring in test files: test_browse_command.py (Path), test_candidate_skills.py (pytest), test_fast_forward_safe_files.py (pytest)."
+
+  - pattern_id: RP-UNSORTED-IMPORT
+    display_name: "Unsorted imports (ruff I001)"
+    category: python
+    occurrences: 4
+    fix_success_rate: 1.0
+    root_cause: >
+      Import statements are not in isort-canonical order. ruff I001 flags this when
+      imports are not alphabetically sorted within each group.
+    fix_template: |
+      python -m ruff check --fix --select I001 <file>
+      # Or via pipeline:
+      python scripts/ci/auto_fix_common_issues.py --pattern 9
+    verification_cmd: "python -m ruff check --select I001 tests/skills/ tests/test_fast_forward_safe_files.py"
+    affected_workflows:
+      - "Auto-Fix Common CI Issues"
+      - "PR Auto-Fix Check"
+    last_session: S283
+    last_seen: "2026-04-02T17:09Z"
+
+  - pattern_id: RP-SELF-IMPORT
+    display_name: "Self-import in test module"
+    category: python
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      A test module imports itself by name (`import tests.skills.test_envelope`).
+      When Python re-evaluates the import, the module-level side effects re-run
+      creating duplicate registration entries; also flagged by CodeQL as unused import.
+    fix_template: |
+      # Before:
+      import tests.skills.test_envelope
+      obj = tests.skills.test_envelope.SomeClass()
+
+      # After (use sys.modules[__name__] to reference the current module):
+      import sys
+      _THIS = sys.modules[__name__]
+      obj = _THIS.SomeClass()
+    verification_cmd: "python -m pytest tests/skills/test_envelope.py -v"
+    affected_workflows:
+      - "code-scanning-remediation-agent"
+    last_session: S282
+    last_seen: "2026-04-02T18:20Z"
+
+  # ── RAG / Test patterns ────────────────────────────────────────────────────
+
+  - pattern_id: RP-RAG-MOCK-CHAIN
+    display_name: "MagicMock chain breaks safe_model_to_device"
+    category: test
+    occurrences: 13
+    fix_success_rate: 1.0
+    root_cause: >
+      `safe_model_to_device` calls `model.to(device)` which, on a plain MagicMock,
+      returns a NEW unconfigured mock (not the original). Subsequent `.eval()` and
+      `.to_empty()` calls operate on that orphaned mock, causing device placement
+      assertions to fail.
+    fix_template: |
+      @pytest.fixture
+      def mock_model():
+          m = MagicMock()
+          m.to.return_value = m        # safe_model_to_device chains .to()
+          m.to_empty.return_value = m  # meta-tensor path
+          m.eval.return_value = m      # called after device move
+          return m
+    verification_cmd: "python -m pytest tests/rag/test_embeddings_comprehensive.py -v"
+    affected_workflows:
+      - "RAG Module Tests"
+    last_session: S276
+    last_seen: "2026-04-02T10:42Z"
+    notes: "Fixed in S276 (tests/rag/test_embeddings_comprehensive.py). 13 failures in 24h on 0D_base_ and copilot/research-ai-agent-skills-architecture."
+
+  - pattern_id: RP-RAG-COVERAGE
+    display_name: "RAG coverage threshold fails due to heavy-dep modules"
+    category: coverage
+    occurrences: 5
+    fix_success_rate: 1.0
+    root_cause: >
+      Heavy modules (embeddings.py, indexer.py, retriever.py, cache/, _model_utils.py)
+      are included in coverage measurement but cannot be tested without GPU/Redis/FAISS.
+      The coverage threshold (70%+) fails when these uncoverable lines are included.
+    fix_template: |
+      # Add to tests/rag/.coveragerc:
+      [coverage:run]
+      omit =
+          */rag/cache/*
+          */rag/_model_utils.py
+          */rag/embeddings.py
+          */rag/indexer.py
+          */rag/retriever.py
+    verification_cmd: "python -m pytest tests/rag/ --cov=src/codex/rag --cov-config=tests/rag/.coveragerc -q"
+    affected_workflows:
+      - "RAG Module Tests"
+    last_session: S274
+    last_seen: "2026-04-01T12:00Z"
+
+  # ── Rate-limit / Session patterns ─────────────────────────────────────────
+
+  - pattern_id: RP-COPILOT-500-CONCURRENT
+    display_name: "Copilot 500 errors from concurrent session collision"
+    category: rate-limit
+    occurrences: 6
+    fix_success_rate: 0.0
+    root_cause: >
+      When 6–7 `@copilot` mention comments are posted to a PR within a 4-minute window,
+      GitHub's session handler returns HTTP 500 errors for all but the first session.
+      The concurrent requests exceed the per-PR session concurrency limit.
+    fix_template: |
+      # Preventive: add a per-PR hourly comment cap to cascading workflows.
+      # Check PR_LIFECYCLE.md §16.6 for hardening recommendations.
+
+      # Diagnostic: look for comments within a 4-min window:
+      gh api repos/Aries-Serpent/_codex_/issues/3854/comments \
+        --jq '.[] | select(.user.login == "Copilot") | [.created_at, .body[:60]] | @tsv'
+
+      # Mitigation: add 30-min cooldown to copilot-iterative-self-healing.yml
+      # (already implemented in iterative-self-healing-ci.yml)
+    verification_cmd: "grep -c 'copilot-escalation' .github/workflows/iterative-self-healing-ci.yml"
+    affected_workflows:
+      - "copilot-iterative-self-healing.yml"
+      - "iterative-self-healing-ci.yml"
+    last_session: S282
+    last_seen: "2026-04-02T18:20Z"
+    notes: "Root-caused in PR_LIFECYCLE.md §16.4. 30-min cooldown exists in iterative-self-healing-ci.yml. copilot-iterative-self-healing.yml needs same guard."
+
+  - pattern_id: RP-PREFLIGHT-REQ4
+    display_name: "Cognitive Pre-flight REQ-4: accountability report not updated"
+    category: workflow
+    occurrences: 5
+    fix_success_rate: 0.8
+    root_cause: >
+      Every commit pushed to a PR with Agent Token Delegation enabled must include
+      an update to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+      Bot auto-commits (manifest refresh, auth delegation) do not update this file,
+      causing the Cognitive Pre-flight gate to fail.
+    fix_template: |
+      # Add a session entry to the accountability report before committing:
+      # docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+
+      # Auto-fix via the session wrapup script:
+      python scripts/ci/session_wrapup_autofix.py --session SN --pr NNNN
+
+      # Or manually append a SESSION SUMMARY section.
+    verification_cmd: "git diff HEAD~1 -- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | wc -l"
+    affected_workflows:
+      - "Agent Token Delegation"
+    last_session: S283
+    last_seen: "2026-04-02T18:17Z"
+    notes: >
+      session_wrapup_autofix.py provides a safety net auto-fix. Triggered on
+      every push when COPILOT_AGENT_AUTH_ENABLED is active.
+
+  # ── Docstring / Dead code patterns ────────────────────────────────────────
+
+  - pattern_id: RP-DEAD-CODE-GLOBAL
+    display_name: "Unused module-level global (CodeQL)"
+    category: python
+    occurrences: 5
+    fix_success_rate: 1.0
+    root_cause: >
+      A module-level constant or compiled regex is defined but never referenced.
+      CodeQL flags this as `unused-variable` or `unused-import`.
+    fix_template: |
+      # Remove the unused global. Examples fixed in S282:
+      # aais.py:      _RE_CITATION = re.compile(...)  → removed
+      # envelope.py:  _RISK_TIER_SCORES = {...}       → removed
+      # cli.py:       duplicate `import json`          → removed second occurrence
+
+      # Detect with ruff:
+      python -m ruff check --select F401,F841 src/codex/skills/
+    verification_cmd: "python -m ruff check --select F401,F841 src/codex/skills/"
+    affected_workflows:
+      - "code-scanning-remediation-agent"
+    last_session: S282
+    last_seen: "2026-04-02T18:20Z"
+
+  - pattern_id: RP-DOCSTRING-PATTERN-ID
+    display_name: "Docstring references wrong pattern ID format"
+    category: python
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      Module docstring for test_failure_matcher/handler.py referenced old `P19` format
+      while all emitted pattern_id values use `RP-...` format. Misleads downstream consumers.
+    fix_template: |
+      # Update docstring to match actual IDs emitted:
+      # Before: "classified by known pattern IDs (P19, RP-009, etc.)"
+      # After:  "classified by known pattern IDs (RP-019, RP-009, RP-XDIST-WORKER, etc.)"
+    verification_cmd: "grep 'P19' src/codex/skills/test_failure_matcher/handler.py"
+    affected_workflows: []
+    last_session: S283
+    last_seen: "2026-04-02T18:54Z"
+
+  # ── _repo_root / path robustness ──────────────────────────────────────────
+
+  - pattern_id: RP-REPO-ROOT-ORDER
+    display_name: "Module-level constant calls function defined later (NameError)"
+    category: python
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      `_DEFAULT_AGENTS_ROOT = _repo_root() / ".github" / "agents"` was placed at
+      module level BEFORE the `_repo_root()` function definition. Python executes
+      module-level code top-to-bottom, so this raises `NameError: '_repo_root' is
+      not defined` on import.
+    fix_template: |
+      # Move the function definition BEFORE any module-level call to it.
+      # In doc_loader.py: move _repo_root() before _DEFAULT_AGENTS_ROOT assignment.
+    verification_cmd: "python -c 'from codex.skills.doc_loader import load_agent_docs_as_skills; print(\"OK\")'"
+    affected_workflows:
+      - "Validation Pipeline"
+    last_session: S283
+    last_seen: "2026-04-02T18:54Z"

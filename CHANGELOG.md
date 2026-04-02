@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S283 — PR #3854 — CI Health Alert #3860)
+- Fix: CI self-healing cascade (issue #3860, 31% failure rate / 266 self-healing failures in 7 days) — 3-layer mitigation:
+  1. **Expanded exclusion list** in `iterative-self-healing-ci.yml` triage job: added 12 CI meta-workflows that should not trigger self-healing (`Copilot Iterative Self-Healing Auto-Poster`, `CI Rescue`, `PR Comment Review Gate`, `Agent Token Delegation`, `Auto-Post @copilot`, `Agent Check-In`, `CI Failure Issue Creator`, `PR Cost Check`, `Copilot PR Session Injector`, `Session Watchdog`, `Chat-Ops Trigger`, `Copilot Review Responder`)
+  2. **Per-branch hourly cap**: new `rate_cap` guard in triage job — skips run if ≥10 healer runs on the same branch in the past hour (SELF_HEALING_001 sub-scenario C brake)
+  3. **Escalation comment dedup**: `escalate` job now checks for `<!-- self-healing-escalation -->` marker; skips if posted < 30 min ago (prevents comment cascade triggering more `workflow_run` completions)
+- Fix: Rate-limit cooldown added to `copilot-iterative-self-healing.yml` `Upsert @copilot prompt` step — checks last `<!-- copilot-healing:... -->` timestamp; skips if < 1800s ago (mirrors existing guard in `iterative-self-healing-ci.yml`)
+- Security: Zip Slip (CWE-22) fixed in `src/codex/skills/compression.py` `install_skill()` — validates every `ZipInfo` member path resolves inside the extraction target before calling `extractall()`
+- Fix: `src/codex/skills/doc_loader.py` — moved `_repo_root()` function definition before `_DEFAULT_AGENTS_ROOT` module-level call (was causing `NameError` on import); constant now derived robustly from `_repo_root()`
+- Fix: `src/codex/skills/test_failure_matcher/handler.py` — updated docstring: replaced stale `P19` pattern ID reference with `RP-019` / `RP-XDIST-WORKER` (all pattern IDs use `RP-...` format)
+- Fix: `.github/workflows/workflow-execution-gate.yml` — `FILES_ARG`/`DRY_FLAG` in fast-forward job converted from strings to Bash arrays (`read -ra` + `"${FILES_ARG[@]}"`) — resolves SC2089/SC2090 actionlint violations
+- Feat: `scripts/ci/pda_failure_logger.py` — new PDA Loop + AfterMath failure pattern logger with `log-failure`, `log-fix`, `log-session`, `summarize`, `dump`, `export-solutions` commands; appends NDJSON to `.codex/aftermath/pda_iterations.jsonl`; integrates with SQLite pattern DB
+- Feat: `.codex/aftermath/failure_pattern_solutions.yaml` — grounded solution library with 14 CI failure patterns (root causes, fix templates, verification commands) from issue #3853 triage
+- Feat: `iterative-self-healing-ci.yml` — new "Log pattern to PDA Loop + AfterMath" step after each heal iteration; every attempt logged automatically for cross-session grounding
+- Docs: `docs/ci/PR_LIFECYCLE.md` → v1.5.0 — §16.6 updated (rate-limit cooldowns applied in S283 marked ✅); §17 added (PDA Loop architecture, log file schema, solution CLI, issue #3853 resolution table per workflow)
+
 ### Fixed (auto-update — PR #3858)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3858 (SHA `660c25c9`) at 2026-04-02T18:20Z [auto-generated]
 

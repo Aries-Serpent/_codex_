@@ -33,12 +33,6 @@ try:
 except Exception:  # pragma: no cover
     yaml = None  # type: ignore[assignment]
 
-# Default agent docs location (relative to repo root)
-_DEFAULT_AGENTS_ROOT = Path(__file__).parents[4] / ".github" / "agents"
-
-# Regex to extract YAML frontmatter block between --- delimiters
-_RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---", re.DOTALL)
-
 
 def _repo_root() -> Path:
     """Walk up from this file to find the repo root (containing pyproject.toml)."""
@@ -48,6 +42,13 @@ def _repo_root() -> Path:
             return candidate
         candidate = candidate.parent
     return Path.cwd()
+
+
+# Default agent docs location derived robustly from repo root
+_DEFAULT_AGENTS_ROOT = _repo_root() / ".github" / "agents"
+
+# Regex to extract YAML frontmatter block between --- delimiters
+_RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---", re.DOTALL)
 
 
 def _extract_frontmatter(text: str) -> dict:

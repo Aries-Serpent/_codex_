@@ -1,7 +1,8 @@
 """Handler for the test.failure.matcher built-in skill.
 
 Parses pytest / CI test failure output and returns structured failure records
-classified by known pattern IDs (P19, RP-009, etc.).  Pure text heuristics —
+classified by known pattern IDs (RP-019, RP-009, RP-XDIST-WORKER, etc.).
+All pattern_id values use the ``RP-...`` format.  Pure text heuristics —
 no model inference, fully deterministic.
 """
 

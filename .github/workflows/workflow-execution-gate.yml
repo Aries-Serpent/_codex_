@@ -269,16 +269,16 @@ jobs:
           DRY_RUN="${{ needs.parse-checklist.outputs.ff_dry_run }}"
           FF_FILES="${{ needs.parse-checklist.outputs.ff_files }}"
 
-          # Build optional --files arg
-          FILES_ARG=""
+          # Build optional --files arg as a Bash array (avoids SC2089/SC2090)
+          FILES_ARG=()
           if [ -n "$FF_FILES" ]; then
-            # Convert comma/space list to --files a b c
-            FILES=$(echo "$FF_FILES" | tr ',' ' ')
-            FILES_ARG="--files $FILES"
+            # Convert comma/space list to individual --files arguments
+            read -ra _FILE_LIST <<< "$(echo "$FF_FILES" | tr ',' ' ')"
+            FILES_ARG=(--files "${_FILE_LIST[@]}")
           fi
 
-          DRY_FLAG=""
-          [ "$DRY_RUN" = "true" ] && DRY_FLAG="--dry-run"
+          DRY_FLAG=()
+          [ "$DRY_RUN" = "true" ] && DRY_FLAG=(--dry-run)
 
           python scripts/ci/fast_forward_safe_files.py \
             --repo  "$GITHUB_REPOSITORY" \
@@ -287,7 +287,7 @@ jobs:
             --target main \
             --merge-mode "$MERGE_MODE" \
             --output /tmp/ff_result.json \
-            $DRY_FLAG $FILES_ARG
+            "${DRY_FLAG[@]}" "${FILES_ARG[@]}"
 
       - name: Upload fast-forward result artifact
         if: always()
