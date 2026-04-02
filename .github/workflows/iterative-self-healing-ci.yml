@@ -67,11 +67,13 @@ jobs:
       )
 
     outputs:
-      pattern:    ${{ steps.classify.outputs.pattern }}
-      fixable:    ${{ steps.classify.outputs.fixable }}
-      run_id:     ${{ steps.classify.outputs.run_id }}
-      head_sha:   ${{ steps.classify.outputs.head_sha }}
-      head_branch: ${{ steps.classify.outputs.head_branch }}
+      pattern:      ${{ steps.classify.outputs.pattern }}
+      fixable:      ${{ steps.classify.outputs.fixable }}
+      run_id:       ${{ steps.classify.outputs.run_id }}
+      head_sha:     ${{ steps.classify.outputs.head_sha }}
+      head_branch:  ${{ steps.classify.outputs.head_branch }}
+      workflow_name: ${{ steps.classify.outputs.workflow_name }}
+      pr_number:    ${{ steps.classify.outputs.pr_number }}
 
     steps:
       - name: Checkout
@@ -145,6 +147,10 @@ jobs:
           echo "run_id=${TRIGGERING_RUN_ID}"       >> "$GITHUB_OUTPUT"
           echo "head_sha=${HEAD_SHA}"               >> "$GITHUB_OUTPUT"
           echo "head_branch=${HEAD_BRANCH}"         >> "$GITHUB_OUTPUT"
+          echo "workflow_name=${TRIGGERING_RUN_NAME}" >> "$GITHUB_OUTPUT"
+          # Extract PR number from workflow_run event; fall back to empty string
+          PR_NUM=$(echo "${GITHUB_EVENT_PATH:+$(python3 -c "import json,os; d=json.load(open(os.environ['GITHUB_EVENT_PATH'])); print(d.get('workflow_run',{}).get('pull_requests',[{}])[0].get('number','') if d.get('workflow_run',{}).get('pull_requests') else '')" 2>/dev/null)}" || echo "")
+          echo "pr_number=${PR_NUM}"                >> "$GITHUB_OUTPUT"
 
           # D-00: Use collect_telemetry --classify-run to categorise the failure.
           # The --classify-run flag (added S150) fetches run+jobs via the GitHub API
