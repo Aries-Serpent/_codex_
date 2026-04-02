@@ -69,10 +69,12 @@ def _append_jsonl(record: dict[str, Any]) -> None:
 # OTel helpers
 # ---------------------------------------------------------------------------
 
-_OTLP_PROVIDER_CONFIGURED = False
+# Single-element list sentinel; mutation avoids a `global` statement and the
+# associated CodeQL "unused global variable" (py/unused-global-variable) alert.
+_OTLP_PROVIDER_CONFIGURED: list[bool] = [False]
 
 
-def _configure_otlp_if_needed(trace_mod: object) -> None:
+def _configure_otlp_if_needed(trace_mod: Any) -> None:
     """Configure an OTLP span exporter when OTEL_EXPORTER_OTLP_ENDPOINT is set.
 
     Called lazily from :func:`_skill_span` on first use.  Idempotent — the
@@ -80,28 +82,27 @@ def _configure_otlp_if_needed(trace_mod: object) -> None:
     ``opentelemetry-sdk`` or ``opentelemetry-exporter-otlp`` packages are not
     installed.
     """
-    global _OTLP_PROVIDER_CONFIGURED
-    if _OTLP_PROVIDER_CONFIGURED:
+    if _OTLP_PROVIDER_CONFIGURED[0]:
         return
-    _OTLP_PROVIDER_CONFIGURED = True  # set early so we never retry on ImportError
+    _OTLP_PROVIDER_CONFIGURED[0] = True  # set early so we never retry on ImportError
 
     endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "").strip()
     if not endpoint:
         return
 
     try:
-        from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (  # type: ignore[import-untyped]
+        from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
             OTLPSpanExporter,
         )
-        from opentelemetry.sdk.trace import TracerProvider  # type: ignore[import-untyped]
+        from opentelemetry.sdk.trace import TracerProvider
         from opentelemetry.sdk.trace.export import (
-            BatchSpanProcessor,  # type: ignore[import-untyped]
+            BatchSpanProcessor,
         )
 
         provider = TracerProvider()
         provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint)))
         # Register as the global provider so get_tracer() picks it up
-        trace_mod.set_tracer_provider(provider)  # type: ignore[union-attr]
+        trace_mod.set_tracer_provider(provider)
         logger.debug("OTel OTLP exporter configured: %s", endpoint)
     except ImportError:
         logger.debug(

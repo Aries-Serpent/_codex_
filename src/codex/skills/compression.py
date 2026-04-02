@@ -230,7 +230,8 @@ def install_skill(
                     member_path = (tmp / member.filename).resolve()
                     if not str(member_path).startswith(str(tmp.resolve())):
                         raise ValueError(
-                            f"Zip Slip detected: '{member.filename}' would extract outside target dir"
+                            f"Zip Slip detected: '{member.filename}' "
+                            "would extract outside target dir"
                         )
                 zf.extractall(tmp)
         else:

@@ -101,7 +101,7 @@ def _read_log() -> list[dict[str, Any]]:
         try:
             entries.append(json.loads(line))
         except json.JSONDecodeError:
-            pass
+            pass  # malformed JSONL line – skip silently
     return entries
 
 
