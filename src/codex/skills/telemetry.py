@@ -280,7 +280,8 @@ def skill_invocation_span(
             )
 
 
-def push_to_app(events: list[TelemetryEvent], endpoint: str) -> bool:    """POST telemetry events to a Cognitive Brain app HTTP endpoint.
+def push_to_app(events: list[TelemetryEvent], endpoint: str) -> bool:
+    """POST telemetry events to a Cognitive Brain app HTTP endpoint.
 
     Parameters
     ----------

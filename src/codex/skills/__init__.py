@@ -53,7 +53,6 @@ from .telemetry import emit_event, read_events, skill_invocation_span, summarise
 
 # Research-branch integration: lightweight dataclass manifest + doc loader
 from .loader import SkillDocLoader
-from .manifest import SkillDefinition as SkillDefinitionDC
 from .manifest import SkillExecutionEnvelope, SkillManifest as SkillManifestDC
 
 __all__ = [
@@ -98,7 +97,6 @@ __all__ = [
     "load_agent_docs_as_skills",
     # Research-branch: lightweight dataclass-based skill primitives
     "SkillDocLoader",
-    "SkillDefinitionDC",
     "SkillExecutionEnvelope",
     "SkillManifestDC",
     "skill_invocation_span",
