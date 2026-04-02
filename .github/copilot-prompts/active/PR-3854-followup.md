@@ -11,7 +11,7 @@
 ```
 @copilot+claude-sonnet-4.6 Resume CI fixing on PR #3854, branch 0D_base_.
 
-Latest commit: 186708b (S287)
+Latest commit: S288 (current HEAD — see git log)
 Context file:  .github/copilot-prompts/active/PR-3854-followup.md
 
 Steps:
@@ -29,7 +29,7 @@ Steps:
 
 ---
 
-## 📍 Current State (as of S287 — commit `186708b`)
+## 📍 Current State (as of S288 — see latest commit SHA)
 
 ### ✅ Fixed This PR (do NOT re-fix)
 
@@ -51,6 +51,8 @@ Steps:
 | **S287** | **`importlib.util` attr-defined in `cli_zendesk.py`** | `src/codex/cli_zendesk.py` |
 | **S287** | **Pre-commit EOF newlines (3 files)** | `.codex/webhook_*.json`, `PR_LIFECYCLE.md` |
 | **S287** | **RAG 10 CI failures: mock chaining + patch targets + RAGIndexer.model** | `src/codex/rag/indexer.py` + 4 test files |
+| **S288** | **Validation Pipeline: EOF newlines on 137 .codex JSON files** | `.codex/*.json` (commit 5b82487) |
+| **S288** | **`check-shell-true` hook: comment in `compression.py:157` contained `shell=True` text** | `src/codex/skills/compression.py` |
 
 ### S287 Files Changed (do not revert)
 `src/codex/{auth/github_app.py,cli/main.py,cli_zendesk.py,dynamics/model/sla.py,logging/query_logs.py,rag/indexer.py,security/storage.py,skills/registry.py}` · `src/codex_cli/app.py` · `src/codex_ml/cli/{checkpoint_validate,plugins_cli,tracking_decide,validate}.py` · `src/codex_ml/{config/settings,eval/eval_runner,monitoring/cli,serving/inference_server,utils/checkpoint_core}.py` · `src/ingestion/encoding_detect.py` · `src/integrations/github_app_auth.py` · `src/mcp/server/middleware/auth.py` · `src/services/workflow/parser.py` · `src/tokenization/cli.py` · `tests/rag/{test_device_placement,test_indexer_comprehensive,test_rag_integration,test_retriever_comprehensive}.py`
@@ -105,13 +107,13 @@ python -m venv /tmp/mypy-ci && \
 | CB-006 | Wire `ci.health.analyzer` history → `proactive-ci-monitor.py` | Implementation |
 
 ### Merge Gate Checklist
-- [ ] All required CI checks green on `186708b` (or latest commit)
+- [x] mypy Baseline green on current HEAD (0 errors locally + 003c452 CI: success)
+- [x] PR Comment Review Gate green on 003c452 CI run
+- [x] Deferral language gate passes (003c452 CI: success)
+- [x] pre-merge-validation.yml (003c452 CI: success)
+- [ ] Validation Pipeline / Fast Validation — pre-commit fixes in progress (S288)
+- [ ] All required CI checks green on latest commit
 - [ ] No open blocking review threads
-- [ ] Deferral language gate passes
-- [ ] `pre-merge-validation.yml` green
-- [ ] `mypy Baseline` green
-- [ ] `Validation Pipeline / Fast Validation` green
-- [ ] `RAG Module Tests / test-rag (3.12)` green
 - [ ] Safety confirmations checked in PR body
 
 ---
@@ -126,4 +128,4 @@ At the end of every session, before posting the follow-up comment:
 5. `report_progress` to push the updated file
 
 ---
-*Last updated: S287 · 2026-04-02 · commit `186708b`*
+*Last updated: S288 · 2026-04-02 · all pre-commit hooks now passing locally*

@@ -154,7 +154,7 @@ def compress_skill(
         archive_path = out_path / f"{archive_name}.7z"
         level_flag = "-mx=9" if level == "max" else "-mx=5"
         cmd = [_7Z_BIN, "a", level_flag, str(archive_path), str(skill_dir)]
-        result = subprocess.run(  # nosec B603 - controlled path list, no shell=True
+        result = subprocess.run(  # nosec B603 - controlled path list, shell disabled
             cmd, capture_output=True, text=True
         )
         if result.returncode != 0:
