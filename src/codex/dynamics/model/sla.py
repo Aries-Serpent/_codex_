@@ -116,7 +116,7 @@ class D365CalendarClient:
         if not self._available:
             return None
         try:
-            import requests as _requests  # type: ignore[import-untyped]
+            import requests as _requests
 
             # Validate businesshoursid to prevent OData injection
             if businesshoursid is not None and not re.fullmatch(r"[\w\-]{1,128}", businesshoursid):
@@ -520,7 +520,7 @@ class SLAPolicyRegistry(BaseModel):
         import csv
         from pathlib import Path
 
-        registry = cls(  # type: ignore[call-arg]
+        registry = cls(
             policies=[],
             last_updated=datetime.now(UTC).isoformat(),
         )
@@ -547,7 +547,7 @@ class SLAPolicyRegistry(BaseModel):
                                 )
                             )
 
-                policy = SLAPolicy(  # type: ignore[call-arg]
+                policy = SLAPolicy(
                     name=row.get("name", ""),
                     metric=SLAMetric(row.get("metric", "first_response")),
                     target_minutes=int(row.get("target_minutes", "60")),

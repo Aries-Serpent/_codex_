@@ -65,17 +65,17 @@ try:  # pragma: no cover - optional dependency
     from torch.utils.data import DataLoader, Dataset
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
-    AdamW = None  # type: ignore
+    AdamW = None
     DataLoader = None  # type: ignore
     Dataset = object  # type: ignore
 
 try:  # pragma: no cover - optional dependency
     import pandas as pd
 except Exception:  # pragma: no cover
-    pd = None  # type: ignore
+    pd = None
 
 
-class ToyTextDataset(Dataset):  # type: ignore[misc]
+class ToyTextDataset(Dataset):
     def __init__(self, texts: list[str], tokenizer, max_length: int = 64):
         encodings, labels = tokenize_for_causal_lm(tokenizer, texts, max_length=max_length)
         self.encodings = encodings

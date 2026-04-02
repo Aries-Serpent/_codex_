@@ -119,7 +119,7 @@ def run_clean_checkpoint(
         logger.debug(f"AttributeError: {e}")
         logger.warning(f"AttributeError: {e}", exc_info=True)
         try:
-            success_flag = results["success"]  # type: ignore[index]
+            success_flag = results["success"]
         except (TypeError, KeyError) as exc:  # pragma: no cover - defensive guard
             raise RuntimeError(
                 "Great Expectations checkpoint did not expose a success flag."

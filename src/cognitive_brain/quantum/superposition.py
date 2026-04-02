@@ -660,7 +660,7 @@ def quantum_superposition(
                     _captured.clear()
                     _captured.append(result)
                     try:
-                        return float(result)  # type: ignore[arg-type]
+                        return float(result)
                     except (TypeError, ValueError):
                         return 1.0  # non-numeric result → treated as full-quality
 

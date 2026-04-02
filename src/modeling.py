@@ -32,8 +32,8 @@ except Exception:  # pragma: no cover - transformers unavailable; defer failure 
 try:  # pragma: no cover - PEFT is optional for non-LoRA runs
     from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover - allow graceful degradation when PEFT is absent
-    LoraConfig = None  # type: ignore[assignment]
-    get_peft_model = None  # type: ignore[assignment]
+    LoraConfig = None
+    get_peft_model = None
 
 
 LOGGER = logging.getLogger(__name__)
@@ -109,9 +109,9 @@ def _normalise_mapping(config: Mapping[str, Any]) -> MutableMapping[str, Any]:
 
     if hasattr(config, "to_container"):
         try:
-            return config.to_container(resolve=True)  # type: ignore[attr-defined]
+            return config.to_container(resolve=True)
         except Exception:  # pragma: no cover - fallback to stringification
-            return dict(config)  # type: ignore[arg-type]
+            return dict(config)
     return dict(config)
 
 
@@ -235,7 +235,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
 
 def load_tokenizer(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
+) -> PreTrainedTokenizerBase:
     """Load a tokenizer matching the model configuration."""
 
     if AutoTokenizer is None:  # pragma: no cover - transformers missing at runtime
@@ -429,7 +429,7 @@ def load_model(
 
 def load_model_and_tokenizer(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> tuple[PreTrainedModel, PreTrainedTokenizerBase]:  # type: ignore[valid-type]
+) -> tuple[PreTrainedModel, PreTrainedTokenizerBase]:
     """Convenience wrapper that returns both the model and tokenizer."""
 
     coerced = config if isinstance(config, ModelInitConfig) else _coerce_config(config)

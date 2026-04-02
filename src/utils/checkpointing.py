@@ -23,26 +23,26 @@ _warnings.warn(
 try:  # pragma: no cover - mirror class
     from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore
 except Exception:  # pragma: no cover - defensive
-    CheckpointManager = object  # type: ignore[misc,assignment]
+    CheckpointManager = object
 
 
 try:  # pragma: no cover - prefer canonical RNG helpers
     from codex_ml.utils.checkpoint_core import (
-        dump_rng_state as _canonical_dump_rng_state,  # type: ignore
+        dump_rng_state as _canonical_dump_rng_state,
     )
     from codex_ml.utils.checkpoint_core import (
         load_rng_state as _canonical_load_rng_state,
     )
     from codex_ml.utils.checkpoint_core import set_seed as _canonical_set_seed
 except Exception:  # pragma: no cover - canonical RNG helpers unavailable
-    _canonical_dump_rng_state = None  # type: ignore[assignment]
-    _canonical_load_rng_state = None  # type: ignore[assignment]
-    _canonical_set_seed = None  # type: ignore[assignment]
+    _canonical_dump_rng_state = None
+    _canonical_load_rng_state = None
+    _canonical_set_seed = None
 
 try:  # pragma: no cover - optional numpy
     import numpy as _np
 except Exception:  # pragma: no cover - numpy optional
-    _np = None  # type: ignore[assignment]
+    _np = None
 
 try:  # pragma: no cover - optional torch
     import torch as _torch
@@ -52,14 +52,14 @@ except Exception:  # pragma: no cover - torch optional
 
 # Optional helper aliases to ease migration of call-sites
 def save_ckpt(*args, **kwargs):  # pragma: no cover - passthrough
-    from codex_ml.utils.checkpoint_core import save_checkpoint as _save  # type: ignore
+    from codex_ml.utils.checkpoint_core import save_checkpoint as _save
 
     return _save(*args, **kwargs)
 
 
 def verify_ckpt_integrity(*args, **kwargs):  # pragma: no cover - passthrough
     from codex_ml.utils.checkpoint_core import (
-        verify_checkpoint as _verify,  # type: ignore
+        verify_checkpoint as _verify,
     )
 
     return _verify(*args, **kwargs)

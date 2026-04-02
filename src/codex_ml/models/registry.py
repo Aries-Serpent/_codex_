@@ -19,7 +19,7 @@ else:
     torch = None
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from transformers import PreTrainedModel as HF_PreTrainedModel  # type: ignore
+    from transformers import PreTrainedModel as HF_PreTrainedModel
 else:  # pragma: no cover - runtime fallback when transformers missing
     HF_PreTrainedModel = Any  # type: ignore
 

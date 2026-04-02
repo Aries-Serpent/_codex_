@@ -198,7 +198,7 @@ def _extract_defaults_from_text(text: str) -> list[str]:
 
 def _load_defaults_from_yaml(text: str) -> Optional[list[str]]:
     try:
-        import yaml  # type: ignore
+        import yaml
     except Exception:  # pragma: no cover - optional dependency
         return None
 

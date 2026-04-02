@@ -30,8 +30,8 @@ from codex_ml.utils.optional import optional_import
 try:
     from codex_ml.safety import SafetyConfig, sanitize_prompt
 except Exception:  # pragma: no cover - optional dependency
-    SafetyConfig = None  # type: ignore[assignment,misc]
-    sanitize_prompt = None  # type: ignore[assignment]
+    SafetyConfig = None
+    sanitize_prompt = None
 
 LOGGER = logging.getLogger(__name__)
 

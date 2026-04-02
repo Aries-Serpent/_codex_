@@ -22,7 +22,7 @@ on:
       - "Pre-Merge Validation"
       - "Iterative Self-Healing CI"
       - "mypy Baseline (Type-Check Anti-Regression)"
-      - "Test — RAG Pipeline"
+      - "RAG Module Tests"
       - "Security Scan"
       - "Nightly CodeQL Alert Triage"
       - "Deferral Language Gate"

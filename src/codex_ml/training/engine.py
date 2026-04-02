@@ -56,7 +56,7 @@ class TrainingEngine:
     mlflow_run_name: str | None = None
     mlflow_tags: Mapping[str, Any] | None = None
     auto_log_datasets: bool = True
-    _mlflow_module: Any | None = field(default=_MLFLOW_UNSET, repr=False)  # type: ignore[assignment]
+    _mlflow_module: Any | None = field(default=_MLFLOW_UNSET, repr=False)
     _active_run: Any | None = field(default=None, init=False, repr=False)
     _mlflow_configured: bool = field(default=False, init=False, repr=False)
     _mlflow_error: str | None = field(default=None, init=False, repr=False)

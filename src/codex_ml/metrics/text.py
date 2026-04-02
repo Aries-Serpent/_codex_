@@ -43,7 +43,7 @@ def token_accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:
     if not _HAS_TORCH or _torch is None:
         raise ImportError("PyTorch is required for token_accuracy")
     preds = logits.argmax(dim=-1)
-    correct = (preds == targets).float().sum().item()  # type: ignore[attr-defined]
+    correct = (preds == targets).float().sum().item()
     total = targets.numel()
     return float(correct / total) if total else 0.0
 

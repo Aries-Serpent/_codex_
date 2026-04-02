@@ -955,19 +955,31 @@ def find_pr_for_run(run_id: int, repo: str, token: str) -> Optional[int]:
     return None
 
 
-def _make_rca_marker(pr_number: Optional[int] = None, commit_sha: Optional[str] = None) -> str:
+def _make_rca_marker(
+    pr_number: Optional[int] = None,
+    commit_sha: Optional[str] = None,
+    run_id: Optional[int] = None,
+) -> str:
     """Return the HTML comment marker used to identify rescue comments.
 
-    Uses a PR-scoped marker (``<!-- ci-rescue-rca:{pr_number} -->``) so that
-    all RCA failures for a PR are consolidated into ONE comment thread, updated
-    in-place.  The commit SHA is surfaced in each appended failure-update section
-    for traceability.  Falls back to the legacy SHA-scoped or bare marker when
-    neither pr_number nor commit_sha is available.
+    Uses a commit-SHA-scoped marker (``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``)
+    so that ALL failing workflows for the SAME push share ONE comment thread.
+    A new push (different commit SHA) always creates a new comment, enabling
+    per-push comparison by agents.  Appending multiple failures from different
+    workflow runs into the same comment is intentional — this is the PDA Loop
+    AfterMath requirement (S267).
+
+    Falls back to PR-scoped or bare markers when commit_sha is unavailable.
+    The ``run_id`` parameter is accepted for backward compatibility but is no
+    longer used to scope the marker.
     """
+    sha12 = commit_sha.strip()[:12] if commit_sha and commit_sha.strip() else None
+    if pr_number and sha12:
+        return f"<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->"
     if pr_number:
         return f"<!-- ci-rescue-rca:{pr_number} -->"
-    if commit_sha and commit_sha.strip():
-        return f"<!-- ci-rescue-rca:{commit_sha.strip()[:12]} -->"
+    if sha12:
+        return f"<!-- ci-rescue-rca:{sha12} -->"
     return "<!-- ci-rescue-rca -->"
 
 
@@ -978,21 +990,24 @@ def post_pr_comment(
     body: str,
     dry_run: bool = False,
     commit_sha: Optional[str] = None,
+    run_id: Optional[int] = None,
 ) -> bool:
     """Post or append-update a @copilot RCA comment on the PR.
 
-    Deduplication strategy:
-    - All RCA failures for a PR share a single PR-scoped marker
-      ``<!-- ci-rescue-rca:{pr_number} -->``.
-    - If a comment with that marker already exists it is updated in-place by
-      appending a ``### 🔄 Failure Update (SHA: ...)`` section.
-    - If no matching comment exists, a fresh comment is created.
-    - Also checks for legacy SHA-scoped and bare markers to absorb old comments.
+    Deduplication strategy (S267 — SHA-scoped):
+    - All failing workflows for the SAME commit share ONE comment thread,
+      using marker ``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``.
+    - Multiple failing workflows on the same push ALL append to this thread,
+      giving agents a single consolidated view of every failure for that commit.
+    - A NEW push (different commit SHA) always creates a NEW comment so agents
+      can compare failures between pushes and track resolution progress.
+    - Falls back to legacy PR-scoped and bare markers to absorb old comments
+      when commit_sha is unavailable.
 
-    This keeps the PR thread clean: one RCA thread per PR with a full
-    chronological record of every failure event.
+    This keeps the PR thread clean: one RCA thread per push, with a full
+    chronological record of every failing workflow for that commit.
     """
-    marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha)
+    marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha, run_id=run_id)
     full_body = f"{marker}\n{body}"
 
     if dry_run:
@@ -1000,9 +1015,7 @@ def post_pr_comment(
         return True
 
     # Paginate through all PR comments in a SINGLE pass, checking for both the
-    # SHA-scoped marker and the legacy marker simultaneously.  The original two-pass
-    # approach doubled GitHub API calls on large PRs and increased rate-limit risk
-    # (code-review suggestion, PR #3770 commit 4ec9b6d).
+    # SHA-scoped marker and the legacy PR-scoped / bare markers simultaneously.
     existing_id: Optional[int] = None
     existing_body: str = ""
     legacy_id: Optional[int] = None
@@ -1025,8 +1038,13 @@ def post_pr_comment(
         if len(page_comments) < 100:
             break
         page += 1
-    # Prefer the SHA-scoped marker; fall back to legacy marker only if not found.
-    if not existing_id and legacy_id:
+    # Only fall back to the legacy bare marker when the caller is NOT using
+    # SHA-scoped markers (i.e. commit_sha was not provided).  When commit_sha IS
+    # provided the marker is already SHA-specific and can never collide with
+    # an old bare <!-- ci-rescue-rca --> comment, so the fallback must be
+    # suppressed — otherwise a rescue comment from a completely different push
+    # could be incorrectly updated in-place.
+    if not existing_id and not commit_sha and legacy_id:
         existing_id = legacy_id
         existing_body = legacy_body
 
@@ -1185,6 +1203,7 @@ def _format_rca_comment(
     commit_sha: Optional[str] = None,
     workflow_name: str = "",
     branch: str = "",
+    triage_issue_url: Optional[str] = None,
 ) -> str:
     """Build the @copilot RCA comment body with tailored env setup."""
     run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
@@ -1282,6 +1301,12 @@ def _format_rca_comment(
         )
         body = body + "\n\n" + env_section
 
+    # Append CI Failure Report cross-link when the triage issue URL is available.
+    # This gives @copilot immediate context on ALL recent failures across workflows,
+    # not just the one that triggered this rescue run.
+    if triage_issue_url:
+        body = body.rstrip() + _format_triage_report_footer(triage_issue_url)
+
     if len(body) > MAX_COMMENT_CHARS:
         body = (
             body[:MAX_COMMENT_CHARS]
@@ -1293,6 +1318,23 @@ def _format_rca_comment(
 # ---------------------------------------------------------------------------
 # Tailored Copilot environment setup + AfterMath tracking section
 # ---------------------------------------------------------------------------
+
+
+def _format_triage_report_footer(triage_issue_url: str) -> str:
+    """Return a markdown section linking to the live CI Failure Triage Report.
+
+    Appended to both standard and deep-rescue RCA comments so @copilot has
+    immediate cross-workflow failure context in every rescue thread.
+    """
+    return (
+        "\n\n---\n\n"
+        "### 📊 CI Failure Report — cross-workflow context\n\n"
+        f"The live **[CI Failure Triage Report]({triage_issue_url})** "
+        "shows all recent workflow failures across this repository. "
+        "Review it to identify recurring patterns or co-occurring failures "
+        "before applying fixes.\n\n"
+        f"> **Report:** {triage_issue_url}\n"
+    )
 
 
 def _format_env_setup_section(
@@ -1432,6 +1474,7 @@ def _format_deep_rca_comment(
     new_failures: set[str],
     matched_patterns: list[RescuePattern],
     commit_sha: Optional[str],
+    triage_issue_url: Optional[str] = None,
 ) -> str:
     """Build the comprehensive deep-rescue @copilot escalation comment body."""
     run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
@@ -1551,6 +1594,11 @@ def _format_deep_rca_comment(
     lines_with_env = "\n".join(lines) + "\n\n" + env_section
 
     body = lines_with_env
+
+    # Append CI Failure Report cross-link when triage issue URL is available.
+    if triage_issue_url:
+        body = body.rstrip() + _format_triage_report_footer(triage_issue_url)
+
     if len(body) > MAX_COMMENT_CHARS:
         body = body[:MAX_COMMENT_CHARS] + "\n\n_(truncated — see Actions logs for full output)_"
     return body
@@ -1565,6 +1613,7 @@ def run_deep_rescue(
     branch: str,
     dry_run: bool,
     commit_sha: Optional[str],
+    triage_issue_url: Optional[str] = None,
 ) -> int:
     """Historical analysis mode: analyse last N runs and build pattern frequency map.
 
@@ -1628,12 +1677,13 @@ def run_deep_rescue(
             current_failures, historical_runs,
             recurring, sporadic, new_failures,
             matched_patterns, commit_sha,
+            triage_issue_url=triage_issue_url,
         )
-        # Append deep analysis into the same SHA-scoped RCA comment so the PR
-        # thread has ONE rescue thread per commit, not two separate comments.
-        # post_pr_comment() implements PR-scoped upsert: it finds the
-        # existing <!-- ci-rescue-rca:{pr_number} --> comment and appends there, or
-        # creates a fresh one if this is the first RCA failure for this PR.
+        # Append deep analysis into the SHA-scoped RCA comment so the PR
+        # thread has ONE rescue thread per push, not one per workflow run.
+        # post_pr_comment() implements SHA-scoped upsert: it finds the
+        # existing <!-- ci-rescue-rca:{pr_number}:sha-{sha12} --> comment and appends there, or
+        # creates a fresh one if this is the first failure for this commit.
         print(f"\n📝 Appending deep analysis to rescue comment on PR #{pr_number}…")
         success = post_pr_comment(
             pr_number=pr_number,
@@ -1642,6 +1692,7 @@ def run_deep_rescue(
             body=comment,
             dry_run=dry_run,
             commit_sha=commit_sha,
+            run_id=current_run_id,
         )
         if success:
             print("  ✅ Deep analysis appended to rescue comment")
@@ -1696,6 +1747,15 @@ def main() -> int:
         default=None,
         help="Branch name (required for --deep mode historical lookup).",
     )
+    parser.add_argument(
+        "--triage-issue-url",
+        default=None,
+        help=(
+            "URL of the live CI Failure Triage Report issue (batch-ci-triage.yml). "
+            "When provided, a cross-workflow context link is appended to the RCA "
+            "comment so @copilot can see all recent failures in one click."
+        ),
+    )
     args = parser.parse_args()
 
     if not args.token:
@@ -1722,6 +1782,7 @@ def main() -> int:
             args.run_id, args.repo, args.token,
             pr_number, wf_name, branch,
             args.dry_run, args.commit_sha,
+            triage_issue_url=args.triage_issue_url,
         )
 
     # ── Standard rescue cycle ───────────────────────────────────────────────
@@ -1743,6 +1804,7 @@ def main() -> int:
             args.run_id, args.repo, result, timestamp, args.commit_sha,
             workflow_name=args.workflow_name or "",
             branch=args.branch or "",
+            triage_issue_url=args.triage_issue_url,
         )
         print(f"\n📝 Posting RCA comment to PR #{pr_number}…")
         ok = post_pr_comment(
@@ -1752,6 +1814,7 @@ def main() -> int:
             comment_body,
             args.dry_run,
             args.commit_sha,
+            args.run_id,
         )
         if ok:
             print("  ✅ RCA comment posted")

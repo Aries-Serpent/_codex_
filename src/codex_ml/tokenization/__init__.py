@@ -13,7 +13,7 @@ from .api import load_tokenizer, pad_sequences
 try:
     from codex_ml.interfaces.tokenizer import HFTokenizer
 except Exception:  # pragma: no cover - optional dependency guard
-    HFTokenizer = None  # type: ignore[assignment]
+    HFTokenizer = None
 
 # HFTokenizerAdapter and SPTokenizer are optional-dependency attributes.  They must
 # NOT be bound at module level to None — doing so would prevent __getattr__ from

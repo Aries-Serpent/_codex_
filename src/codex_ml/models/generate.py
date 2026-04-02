@@ -9,7 +9,7 @@ import torch
 
 def _sample(logits: torch.Tensor, temperature: float, top_k: int, top_p: float) -> torch.Tensor:
     if temperature != 1.0:
-        logits = logits / temperature  # type: ignore[assignment]
+        logits = logits / temperature
     if top_k > 0:
         v, _ = torch.topk(logits, top_k)
         thresh = v[:, [-1]]

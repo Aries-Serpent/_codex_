@@ -412,7 +412,7 @@ def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
         list of TrainingPhases
     """
     try:
-        import yaml  # type: ignore[import-untyped]
+        import yaml
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)

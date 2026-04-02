@@ -39,8 +39,8 @@ def _install_accelerate_compat() -> None:
     is chosen for CI visibility.
     """
     try:
-        import accelerate  # type: ignore
-        from accelerate import Accelerator as _BaseAccelerator  # type: ignore
+        import accelerate
+        from accelerate import Accelerator as _BaseAccelerator
 
         # presence of DataLoaderConfiguration indicates new-style API (v0.30+)
         DataLoaderConfiguration = getattr(
@@ -50,7 +50,7 @@ def _install_accelerate_compat() -> None:
         print(f"[codex][accelerate] failed to inspect accelerate: {e}")
         return
 
-    class _CompatAccelerator(_BaseAccelerator):  # type: ignore[misc, override]
+    class _CompatAccelerator(_BaseAccelerator):
         def __init__(self, *args, **kwargs):
             # Normalize project_dir
             if "logging_dir" in kwargs and "project_dir" not in kwargs:
@@ -102,7 +102,7 @@ def _install_accelerate_compat() -> None:
 
     # Monkey-patch the module attribute so any downstream `from accelerate import Accelerator`
     # after this point will see the compat subclass.
-    accelerate.Accelerator = _CompatAccelerator  # type: ignore[attr-defined]
+    accelerate.Accelerator = _CompatAccelerator
     print("[codex][accelerate] installed compat Accelerator shim")
 
 
@@ -130,7 +130,7 @@ from typing import Any, Iterable, Mapping, Optional, cast
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
 except Exception:  # pragma: no cover - numpy missing
-    np = None  # type: ignore[assignment]
+    np = None
 
 try:  # pragma: no cover - optional datasets dependency
     from datasets import Dataset  # type: ignore[attr-defined]
@@ -217,7 +217,7 @@ except Exception:  # pragma: no cover - transformers missing
         def create_scheduler(self, *args: Any, **kwargs: Any) -> None:  # pragma: no cover
             raise ImportError("transformers.Trainer unavailable in offline mode")
 
-    def get_scheduler(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover - optional helper
+    def get_scheduler(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover
         raise ImportError("transformers.optimization.get_scheduler unavailable in offline mode")
 
 
@@ -278,19 +278,19 @@ from omegaconf import OmegaConf
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
 except Exception as exc:  # pragma: no cover - missing in some envs
-    CheckpointManager = None  # type: ignore[assignment]
+    CheckpointManager = None
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
-    from tools.monitoring_integrate import SummaryWriter  # type: ignore
+    from tools.monitoring_integrate import SummaryWriter
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
 try:  # Optional accelerate integration
-    from accelerate import Accelerator as _Accelerator  # type: ignore
+    from accelerate import Accelerator as _Accelerator
 except Exception:  # pragma: no cover - optional dep
-    _Accelerator = None  # type: ignore[assignment]
+    _Accelerator = None
 
 
 def _make_accelerator(**accelerate_kwargs: Any):
@@ -505,6 +505,7 @@ __all__ = [
     "_seed_everything",
     "_worker_init_fn",
     "_compute_metrics",
+    "CSVMetricsWriter",
     "NDJSONMetricsWriter",
     "build_parser",
 ]
@@ -652,7 +653,7 @@ class NDJSONMetricsWriter:
 
                 valid_keys = {f.name for f in _dc.fields(LogRecord)}
                 filtered = {k: v for k, v in obj.items() if k in valid_keys}
-                data = LogRecord(**filtered).redacted().dict()  # type: ignore[arg-type]
+                data = LogRecord(**filtered).redacted().dict()
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj
@@ -1174,7 +1175,7 @@ def run_hf_trainer(
                 mode=best_mode,
             )
 
-            class _CheckpointCallback(TrainerCallback):  # type: ignore[misc]
+            class _CheckpointCallback(TrainerCallback):
                 def __init__(self) -> None:
                     self.model = None
                     self.optimizer = None

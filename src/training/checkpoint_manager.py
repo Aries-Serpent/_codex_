@@ -22,9 +22,9 @@ _warnings.warn(
 )
 try:
     from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
-        CheckpointManager,  # type: ignore
-        build_payload_bytes,  # type: ignore
-        dump_rng_state,  # type: ignore
+        CheckpointManager,
+        build_payload_bytes,
+        dump_rng_state,
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
@@ -46,14 +46,14 @@ if "CheckpointManager" not in globals():
         )
     except Exception:  # pragma: no cover - legacy fallback path
         try:  # numpy is optional for RNG capture
-            import numpy as _np  # type: ignore
+            import numpy as _np
         except Exception:  # pragma: no cover - optional dependency
-            _np = None  # type: ignore
+            _np = None
 
         try:  # torch may be absent in lightweight environments
-            import torch as _torch  # type: ignore
+            import torch as _torch
         except Exception:  # pragma: no cover - optional dependency
-            _torch = None  # type: ignore
+            _torch = None  # type: ignore[assignment]
 
         def _python_state_payload(raw_state: Any) -> list[Any]:
             return [raw_state[0], list(raw_state[1]), raw_state[2]]
@@ -69,7 +69,7 @@ if "CheckpointManager" not in globals():
                 raw_state[4],
             ]
 
-        def dump_rng_state() -> dict[str, Any]:  # type: ignore[override]
+        def dump_rng_state() -> dict[str, Any]:
             state: dict[str, Any] = {}
             try:
                 state["python"] = _python_state_payload(random.getstate())
@@ -78,7 +78,7 @@ if "CheckpointManager" not in globals():
 
             if _np is not None:  # pragma: no branch - optional dependency
                 try:
-                    state["numpy"] = _numpy_state_payload(_np.random.get_state())  # type: ignore[attr-defined]
+                    state["numpy"] = _numpy_state_payload(_np.random.get_state())
                 except Exception as exc:  # pragma: no cover - defensive
                     logger.debug("Failed to capture numpy random state: %s", exc)
 
@@ -104,7 +104,7 @@ if "CheckpointManager" not in globals():
                     ):
                         torch_state["cuda"] = [
                             tensor.tolist()
-                            for tensor in _torch.cuda.get_rng_state_all()  # type: ignore[call-arg]
+                            for tensor in _torch.cuda.get_rng_state_all()
                         ]
                 except Exception as exc:  # pragma: no cover - cuda optional
                     logger.debug("Failed to capture CUDA random state: %s", exc)
@@ -119,7 +119,7 @@ if "CheckpointManager" not in globals():
             scaler: Any | None = None,
             *,
             rng_state: bool = False,
-        ) -> bytes:  # type: ignore[override]
+        ) -> bytes:
             if _torch is None:
                 raise RuntimeError("torch is required to build checkpoint payloads")
 
@@ -313,7 +313,7 @@ class CheckpointManager:  # type: ignore[no-redef]
         manager = self
         save_every = self.save_steps
 
-        class _Callback(TrainerCallback):  # type: ignore[misc]
+        class _Callback(TrainerCallback):
             def __init__(self) -> None:
                 self.model = None
                 self.optimizer = None

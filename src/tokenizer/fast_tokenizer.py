@@ -26,10 +26,10 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer
 except Exception:  # pragma: no cover - degrade gracefully
-    Tokenizer = None  # type: ignore[assignment]
+    Tokenizer = None
 
 try:  # pragma: no cover - optional dependency
-    from transformers import AutoTokenizer  # type: ignore
+    from transformers import AutoTokenizer
 except Exception:  # pragma: no cover - transformers missing is acceptable
     AutoTokenizer = None  # type: ignore[assignment, misc]
 
@@ -139,7 +139,7 @@ def build_tokenizer(path: str | Path) -> object:
                 errors.append(f"transformers@{target}: {exc}")
                 continue
             else:
-                return tokenizer  # type: ignore[return-value]
+                return tokenizer
 
     candidate = location
     if location.is_dir():

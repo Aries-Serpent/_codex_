@@ -55,50 +55,39 @@ jobs:
   pr-body-checkpoint-guardian:
     name: "🛡️ Restore required PR checkboxes"
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     permissions:
       pull-requests: write
       contents: read
     steps:
-      - name: "Restore Cost Governance + Agent Token Delegation checkboxes if missing"
+      - name: "Checkout (needed for session_wrapup_autofix.py)"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: "Hardened WEC preservation — re-apply all maintainer selections"
+        # HARDENED (S259 mandate): replaces the old fragile shell grep-and-append.
+        # session_wrapup_autofix.py --fix-pr-body ALWAYS:
+        #   1. Reads the live PR body
+        #   2. Extracts every maintainer-checked [x] item
+        #   3. Rebuilds the canonical WEC block with those selections preserved
+        #   4. Compares to what's currently in the body — only updates if drifted
+        # This fires on EVERY PR push/open/sync so that no report_progress update
+        # can permanently lose a maintainer's WEC selection.
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           PR_NUM: ${{ github.event.pull_request.number }}
-          PR_BODY: ${{ github.event.pull_request.body || '' }}
         run: |
-          MISSING_SECTIONS=0
-          APPENDED=""
-
-          # Check for Cost Governance checkbox
-          if ! printf '%s' "${PR_BODY}" | grep -qiF '💰 Cost Proposal Approved'; then
-            MISSING_SECTIONS=$((MISSING_SECTIONS + 1))
-            APPENDED="${APPENDED}$(printf '\n### 💰 Cost Governance\n\n- [ ] **💰 Cost Proposal Approved**\n')"
-            echo "⚠️  Cost Governance checkbox missing from PR #${PR_NUM} body"
-          fi
-
-          # Check for Agent Token Delegation checkbox
-          if ! printf '%s' "${PR_BODY}" | grep -qiF 'COPILOT_AGENT_AUTH_ENABLED'; then
-            MISSING_SECTIONS=$((MISSING_SECTIONS + 1))
-            APPENDED="${APPENDED}$(printf '\n### 🔐 Agent Token Delegation\n\n- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)\n- [ ] 🔄 Auto-Post @copilot review After Agent Session\n')"
-            echo "⚠️  Agent Token Delegation checkbox missing from PR #${PR_NUM} body"
-          fi
-
-          if [ "${MISSING_SECTIONS}" -eq 0 ]; then
-            echo "✅ All required checkboxes present — no repair needed"
-            exit 0
-          fi
-
-          # Append missing sections to the PR body
-          NEW_BODY=$(printf '%s\n\n%s\n%s\n%s' \
-            "${PR_BODY}" \
-            "---" \
-            "<!-- checkpoint-guardian: restored ${MISSING_SECTIONS} missing section(s) -->" \
-            "${APPENDED}")
-
-          gh pr edit "${PR_NUM}" --body "${NEW_BODY}" \
-            && echo "✅ Restored ${MISSING_SECTIONS} missing checkbox section(s) to PR #${PR_NUM}" \
-            || echo "⚠️  Could not repair PR body (non-fatal — workflow continues)"
+          python3 scripts/ci/session_wrapup_autofix.py \
+            --fix-pr-body \
+            --pr-number "${PR_NUM}" \
+            || echo "⚠️  WEC preservation script exited non-zero (non-fatal — workflow continues)"
 
   # ── Job 1: detect whether the checkbox is checked ───────────────────────────
   detect-checkbox:

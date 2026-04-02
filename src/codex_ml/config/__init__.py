@@ -887,7 +887,7 @@ def load_yaml(path: str | Path) -> dict[str, Any]:
     if not path_obj.exists():
         raise FileNotFoundError(f"Config file not found: {path}")
 
-    return OmegaConf.to_container(OmegaConf.load(str(path)))  # type: ignore
+    return OmegaConf.to_container(OmegaConf.load(str(path)))
 
 
 __all__ = sorted(

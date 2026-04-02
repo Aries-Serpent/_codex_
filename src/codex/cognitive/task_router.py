@@ -178,7 +178,7 @@ class TaskRouter:
             logger.warning("AGENT_REGISTRY not found at %s; routing degraded.", path)
             return []
         try:
-            import yaml  # type: ignore[import-untyped]
+            import yaml
 
             data = yaml.safe_load(path.read_text())
             return data.get("agents", []) if isinstance(data, dict) else []

@@ -31,7 +31,7 @@ try:  # pragma: no cover - optional import path when codex_ml unavailable
         TokenAccuracy,
     )
 except Exception:  # pragma: no cover - allow registry to exist without metrics module
-    BLEUScore = F1Score = RecallScore = TokenAccuracy = None  # type: ignore[assignment]
+    BLEUScore = F1Score = RecallScore = TokenAccuracy = None
 
 
 class Registry:

@@ -263,7 +263,7 @@ class ModelLoader:
             Dictionary with model, tokenizer, and metadata
         """
         try:
-            from transformers import (  # type: ignore[attr-defined]  # noqa: F401 - Testing optional dependency availability
+            from transformers import (  # noqa: F401 - Testing optional dependency availability
                 AutoConfig,
                 AutoModel,
                 AutoTokenizer,

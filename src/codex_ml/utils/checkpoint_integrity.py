@@ -163,7 +163,7 @@ def snapshot_config(config: Any, *, exclude_keys: Sequence[str] | None = None) -
     exclusions = SNAPSHOT_EXCLUDE_KEYS | set(exclude_keys or ())
 
     try:  # pragma: no cover - optional dependency
-        from omegaconf import DictConfig, ListConfig, OmegaConf  # type: ignore
+        from omegaconf import DictConfig, ListConfig, OmegaConf
     except Exception:  # pragma: no cover - optional dependency absent
         omega_conf = None
         omega_conf_types: tuple[type[Any], ...] = ()

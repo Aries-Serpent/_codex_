@@ -39,5 +39,5 @@ class DictSerializable:
                 elif isinstance(value, list) and value and isinstance(value[0], DictSerializable):
                     result[key] = [v.to_dict() for v in value]  # type: ignore[assignment]
                 else:
-                    result[key] = value  # type: ignore[assignment]
+                    result[key] = value
         return result

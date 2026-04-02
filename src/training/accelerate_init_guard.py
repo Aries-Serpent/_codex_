@@ -24,7 +24,7 @@ try:
 
     _ACCELERATOR_AVAILABLE = True
 except ImportError:
-    Accelerator = None  # type: ignore[misc,assignment]
+    Accelerator = None
     _ACCELERATOR_AVAILABLE = False
 
 

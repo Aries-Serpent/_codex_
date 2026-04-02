@@ -1,7 +1,7 @@
 # Pull Request Template
 
-> **Version:** 1.4.0  
-> **Generated:** 2025-12-29  
+> **Version:** 1.5.0
+> **Generated:** 2026-04-01
 > **Purpose:** Standardized PR workflow with Copilot continuation support, safety checks, and optional capability controls
 
 ---
@@ -44,7 +44,7 @@
 
 ### Session Metrics
 
-**Progress**: Auto-tracked across sessions  
+**Progress**: Auto-tracked across sessions
 **Latest Session**: Will be updated automatically
 
 ---
@@ -112,24 +112,28 @@
 ### ✅ Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [ ] security-scanning-suite.yml — Full security audit
-- [ ] deferral-language-gate.yml — Deferral language guard
+- [x] deferral-language-gate.yml — Deferral language guard
 
 ### 📄 Documentation
 - [ ] docs-build.yml — Documentation build
+- [ ] documentation-link-checker.yml — Documentation link checker
 
 ### 🤖 Automation
 - [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [ ] copilot-agent-checkin.yml — Agent check-in (always required)
-- [ ] cost-gate.yml — Cost governance gate
-- [ ] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
-- [ ] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
-- [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
+- [x] copilot-agent-checkin.yml — Agent check-in (always required)
+- [x] cost-gate.yml — Cost governance gate
+- [x] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
+- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
+- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
 
 ### ⚡ Auto-Approve
-- [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+- [x] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
 
-> Instructions for Copilot Agent: During wrap-up, check ONLY the workflows needed for
-> this session. Unchecked workflows will be SKIPPED by the gate.
+> **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
+> appended verbatim to **every** PR body update — including every `report_progress` call.
+> Copy the WEC block from the current PR body into the `prDescription` parameter, keeping
+> **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.
+> Only 'always required' items may be auto-checked. All other items preserve their current state.
 
 **Required if any files are deleted or moved:**
 
@@ -261,17 +265,17 @@ If this PR is only docs, bug fixes, or features, the section below does not appl
 ---
 
 ### 1. Rollout ring and branch context
-- Target rollout_ring from training artifacts (run_metadata.json):  
+- Target rollout_ring from training artifacts (run_metadata.json):
   `rollout_ring = ____________________`
 
-- Source branch / ring being promoted (e.g. `0D_base_`):  
+- Source branch / ring being promoted (e.g. `0D_base_`):
   `branch = ____________________`
 
-- Target branch (e.g. `main`):  
+- Target branch (e.g. `main`):
   `target = ____________________`
 
 ### 2. Survey snapshot
-- Path to the committed survey snapshot under docs/status_updates/:  
+- Path to the committed survey snapshot under docs/status_updates/:
   `docs/status_updates/____________________.md`
 
 Confirm this file:
@@ -353,7 +357,7 @@ Reviewer notes / escalation contact:
 # Schema validation
 pytest -q tests/status/test_example_report_schema.py
 
-# Config validation  
+# Config validation
 python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
 
 # Audit chain

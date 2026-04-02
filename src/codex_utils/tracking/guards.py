@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from codex_utils.tracking.guards import (  # type: ignore[import-untyped]  # noqa: F401,F403
+from codex_utils.tracking.guards import (  # noqa: F401,F403
     _is_allowlisted,
     _is_remote_uri,
     ensure_mlflow_offline,

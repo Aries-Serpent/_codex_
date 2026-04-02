@@ -27,7 +27,7 @@ from mcp.packager.config import PackageConfig
 logger = logging.getLogger(__name__)
 
 try:
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 except Exception:  # pragma: no cover - optional dependency
     yaml = None  # type: ignore[assignment]
 

@@ -34,7 +34,7 @@ from typing import Annotated  # noqa: E402
 try:  # pragma: no cover - optional
     import typer
 except Exception:  # pragma: no cover
-    typer = None  # type: ignore
+    typer = None
 
 from codex_ml.eval.datasets import DatasetBundle, load_dataset  # noqa: E402
 from codex_ml.logging.run_logger import (  # noqa: E402

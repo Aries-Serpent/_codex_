@@ -25,7 +25,7 @@ from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
 if TYPE_CHECKING:  # pragma: no cover - import for typing only
-    from transformers import AutoModel as HF_AutoModel  # type: ignore
+    from transformers import AutoModel as HF_AutoModel
     from transformers import AutoModelForCausalLM as HF_AutoModelForCausalLM
     from transformers import AutoTokenizer as HF_AutoTokenizer
     from transformers import PreTrainedModel as HF_PreTrainedModel
@@ -50,20 +50,20 @@ if (
         ]
     )
 ):
-    AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)
-    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)  # type: ignore[valid-type]
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[valid-type]
-    PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)
+    AutoModel = cast(type[HF_AutoModel], transformers.AutoModel)
+    AutoModelForCausalLM = cast(type[HF_AutoModelForCausalLM], transformers.AutoModelForCausalLM)
+    AutoTokenizer = cast(type[HF_AutoTokenizer], transformers.AutoTokenizer)
+    PreTrainedModel = cast(type[HF_PreTrainedModel], transformers.PreTrainedModel)
     PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]",
-        transformers.PreTrainedTokenizerBase,  # type: ignore[valid-type]
+        type[HF_PreTrainedTokenizerBase],
+        transformers.PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - optional dependency missing
     AutoModel = None  # type: ignore[assignment]
     AutoModelForCausalLM = None  # type: ignore[assignment]
     AutoTokenizer = None  # type: ignore[assignment]
     PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
-    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)  # type: ignore[valid-type]
+    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 

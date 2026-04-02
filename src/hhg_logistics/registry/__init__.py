@@ -32,7 +32,7 @@ __all__ = ["register_tiny_model", "register_features_csv", "register_mean_value"
 try:  # pragma: no cover - optional dependency
     import pandas as pd
 except Exception:  # pragma: no cover
-    pd = None  # type: ignore
+    pd = None
 
 
 @MODELS.register("hf_tiny_gpt2")

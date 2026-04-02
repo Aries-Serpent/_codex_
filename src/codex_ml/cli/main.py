@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Annotated, Any, Optional
 
 try:  # Optional dependency used for loading curriculum presets
-    import yaml  # type: ignore
+    import yaml
 except Exception:  # pragma: no cover - PyYAML is optional
     yaml = None  # type: ignore[assignment]
 
@@ -38,7 +38,7 @@ try:  # pragma: no cover - evaluation is optional
     from codex_ml.eval.eval_runner import evaluate_datasets
 except Exception:  # pragma: no cover
 
-    def evaluate_datasets(*args, **kwargs):  # type: ignore[misc]
+    def evaluate_datasets(*args, **kwargs):
         return None
 
 

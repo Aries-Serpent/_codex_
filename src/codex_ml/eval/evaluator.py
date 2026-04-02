@@ -24,12 +24,12 @@ datasets, _HAS_DATASETS = optional_import("datasets")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 
 _HAS_DATASETS = bool(_HAS_DATASETS and datasets is not None and hasattr(datasets, "Dataset"))
-Dataset = datasets.Dataset if _HAS_DATASETS else None  # type: ignore[attr-defined,assignment]
+Dataset = datasets.Dataset if _HAS_DATASETS else None
 AutoModelForCausalLM = (
-    transformers.AutoModelForCausalLM if _HAS_TRANSFORMERS else None  # type: ignore[attr-defined,assignment]
+    transformers.AutoModelForCausalLM if _HAS_TRANSFORMERS else None
 )
 AutoTokenizer = (
-    transformers.AutoTokenizer if _HAS_TRANSFORMERS else None  # type: ignore[attr-defined,assignment]
+    transformers.AutoTokenizer if _HAS_TRANSFORMERS else None
 )
 
 

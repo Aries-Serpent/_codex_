@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Any, Iterable, Optional, Sequence
 
 try:  # pragma: no cover - handled in tests via importorskip
-    import yaml  # type: ignore
+    import yaml
 except Exception:  # pragma: no cover - reported via exit code
     yaml = None  # type: ignore[assignment]
 

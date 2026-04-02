@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     from peft import PeftModel
 except Exception:  # pragma: no cover
-    PeftModel = None  # type: ignore
+    PeftModel = None
 
 
 def load_adapters_into(base_model, adapter_dir: Path):
