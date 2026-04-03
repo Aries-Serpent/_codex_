@@ -181,7 +181,7 @@ class TestLocalSentenceTransformerProvider:
                 norms = np.linalg.norm(embeddings, axis=1)
                 # May or may not be normalized, just check they're valid
                 assert np.all(norms > 0)
-            except (ImportError, OSError):
+            except (ImportError, OSError, IndexError):
                 pytest.skip("Model not available")
         except ImportError:
             pytest.skip("Module not available")

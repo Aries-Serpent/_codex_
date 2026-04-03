@@ -115,7 +115,7 @@ class TestBuildPlanDryRun:
         from fast_forward_safe_files import build_plan
 
         mock_pr = {
-            "head": {"ref": "my-feature-branch", "sha": "abc123def456"},
+            "head": {"ref": "my-feature-branch", "sha": "abc123def456"},  # pragma: allowlist secret
         }
         mock_files = [
             ".github/workflows/proactive-ci-monitor.yml",
