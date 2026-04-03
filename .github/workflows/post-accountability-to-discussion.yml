@@ -167,14 +167,14 @@ jobs:
             // RC-4 (S300): Find or create a per-PR scoped discussion instead of
             // posting to the shared global discussion #3673. This allows each PR to
             // have its own isolated accountability thread without hardcoded numbers.
-            const prRef   = prNumber ? parseInt(prNumber, 10) : 0;
+            const prNum   = prNumber ? parseInt(prNumber, 10) : 0;
             let discussionId;
             let resolvedDiscussionNumber = 3673; // fallback to global discussion
 
-            if (prRef > 0) {
+            if (prNum > 0) {
               // Search for an existing per-PR discussion titled
               // "📋 Agent Accountability — PR #<N>"
-              const targetTitle = `📋 Agent Accountability — PR #${prRef}`;
+              const targetTitle = `📋 Agent Accountability — PR #${prNum}`;
               try {
                 const searchResult = await github.graphql(`
                   query($owner: String!, $name: String!, $first: Int!) {
@@ -190,7 +190,7 @@ jobs:
                 if (found) {
                   discussionId = found.id;
                   resolvedDiscussionNumber = found.number;
-                  core.info(`RC-4: Found per-PR discussion #${found.number} for PR #${prRef}`);
+                  core.info(`RC-4: Found per-PR discussion #${found.number} for PR #${prNum}`);
                 }
               } catch (e) {
                 core.warning(`RC-4: Could not search discussions: ${e.message}`);

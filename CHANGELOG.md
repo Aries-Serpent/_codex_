@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S302 — PR #3854 — post-accountability-to-discussion.yml duplicate prRef SyntaxError)
+- **`post-accountability-to-discussion.yml` SyntaxError**: Fixed `Identifier 'prRef' has already been declared` — RC-4 (S300) introduced a second `const prRef` (numeric) that collided with the existing `const prRef` (string, used for the comment header). Renamed the numeric variable to `prNum` throughout the RC-4 lookup block. This was causing `📋 Post Accountability Report to Discussion` job to fail on every push.
+
 ### Fixed (S301 — PR #3854 — PDA logging, manifest refresh, discussion-cleanup UI, validation)
 - **PDA Loop + AfterMath**: Logged `RP-DISCUSSION-DELETE-PERM` failure pattern — `deleteDiscussionComment` GraphQL mutation blocked for all 5 token methods tried (GITHUB_TOKEN, gh-auth-token ghu_, CB API proxy, CB CLI env, CB CLI file). Root cause: `CODEX_BACKUP_KEY`/`CODEX_MASTER_KEY` declared in CB server env but values empty (secrets not injected at CB server startup). Fix path documented: restart CB server with secrets injected OR trigger `discussion-cleanup.yml` via GitHub Actions UI where repo secrets are properly injected.
 - **Discussion cleanup manifest**: Refreshed `.codex/cleanup/discussion_cleanup_manifest.json` — 538 duplicates identified (525 in #3756 + 13 in #3673, up from 526 due to new duplicates accumulated since S297).
