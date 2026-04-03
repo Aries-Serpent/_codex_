@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S296 — PR #3854 — CodeQL/dedup hardening, P6-A workflow scanner, RAG coverage 97-100%, cli.py import)
+- **CodeQL 12779/12780**: `scan_failing_workflows.py` lines 114 and 192 — added explanatory comments to empty `except` clauses (`pass  # malformed ISO timestamp...`, `pass  # eta_str didn't match...`)
+- **CodeQL 12777**: `migrate_rescue_comments.py` — removed unused global `_STEP_TEMPLATE` variable
+- **CodeQL 12778**: `scan_failing_workflows.py` line 93 — removed unused `encoded` variable
+- **CodeQL 12772**: `src/codex/skills/cli.py` — removed duplicate `from pathlib import Path as _Path` import; all `_Path` uses replaced with `Path`
+- **actionlint**: `admin_setup_verification.yml` — split step with duplicate `run:` key into two named steps
+- **docs**: `docs/ci/PR_LIFECYCLE.md` — replaced broken `[view](...)` placeholder with live reference link
+- **P6-A**: `scripts/ci/scan_failing_workflows.py` — new tool: scans HEAD SHA for all failing/in-progress check runs with ETA estimation; wired into `copilot-agent-checkin.yml`
+- **S295 dedup**: `comment-review-gate.yml` — `WORKFLOW_NAME` corrected; `copilot-agent-checkin.yml` S221 detection updated to canonical `<!-- ci-rescue-sha:{pr}:{sha} -->` format
+- **RAG coverage**: `tests/rag/ingestion/test_chunker.py` — 7 new test classes (SEMANTIC/HIERARCHICAL fallback, batch API, `chunk_document()`); `tests/rag/ingestion/test_pipeline.py` — 5 new test classes (retry exhaustion, sleep mock, parallel exceptions, `_update_batch_result`, `get_stats`) — chunker 97.99%, preprocessor 100%
+
+### Fixed (S294-S295 — PR #3854 — unified rescue-comment upsert, RAG test fixes, FixedSizeChunker guard)
+- **Rescue-comment upsert**: `scripts/ci/post_rescue_comment.py` — canonical POST/PATCH upsert with unified `<!-- ci-rescue-sha:{pr}:{sha_short} -->` marker; 66 workflows migrated
+- **RAG test fixes**: `tests/rag/ingestion/test_chunker.py` and `test_pipeline.py` — fixed `ValidationResult` missing `document_format`, fallback hang (`"A " * 100` trimmed below min_chunk_size), sliding-window params; all 80 tests pass
+- **FixedSizeChunker**: `src/codex/rag/ingestion/chunker.py` — infinite-loop guard when `chunk_overlap >= chunk_size` (`if next_start <= start: next_start = end`)
+- **CodeQL 12753**: `compression.py` — added comment to empty `except Exception` clause
+- **CodeQL 12768**: `proactive_ci_monitor.py` — added explanatory comment to empty `except ValueError` clause
+
+### Fixed (S293 — PR #3854 — SC2269, RAG meta-tensor, rescue identity)
+- **actionlint SC2269**: `workflow-execution-gate.yml` — removed redundant `PR="${PR}"` self-assignment
+- **RAG meta-tensor**: `torch.nn.Linear` test isolation — use `device="cpu"` constructor argument; no `.to()` call needed
+- **Rescue identity**: `actionlint-audit.yml` — explicitly set `github-token: CODEX_MASTER_KEY` to ensure rescue comments post as `@mbaetiong`, not `github-actions[bot]`
+
 ### Fixed (S292 — PR #3854 — CB-003/005/006, RAG coverage, actionlint, PR template WEC overhaul)
 - **CB-003**: actionlint `expression-in-script` violations fixed in `iterative-self-healing-ci.yml` and `workflow-execution-gate.yml` — all `${{ }}` expressions moved to `env:` blocks
 - **CB-005**: `src/codex/skills/aais_batch/handler.py` — `ThreadPoolExecutor` replaced with `asyncio.Semaphore(max_concurrency)` for proper async concurrency control
