@@ -112,6 +112,27 @@ jobs:
       !(github.event_name == 'push' && github.triggering_actor == 'copilot-swe-agent[bot]')
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: "Scan failing workflows for HEAD SHA (P6-A)"
+        id: scan_failing
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          SCAN_SHA: ${{ github.sha }}
+        run: |
+          SCAN_OUTPUT=$(python3 scripts/ci/scan_failing_workflows.py \
+            --sha "${SCAN_SHA}" 2>&1) \
+            || SCAN_OUTPUT="_Workflow scan unavailable (script exited non-zero — check GH_TOKEN scope or network)._"
+          {
+            echo "SCAN_TABLE<<SCAN_TABLE_EOF"
+            printf '%s\n' "${SCAN_OUTPUT}"
+            echo "SCAN_TABLE_EOF"
+          } >> "$GITHUB_ENV"
+
       - name: "Post research topics and open check-in to Discussion #3756"
         uses: actions/github-script@v8
         env:
@@ -381,6 +402,7 @@ jobs:
           GH_DISCUSSION_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          SCAN_TABLE: ${{ env.SCAN_TABLE }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -624,9 +646,25 @@ jobs:
             const quotedPreview = rescuePreview.split('\n').map(l => `> ${l}`).join('\n');
 
             // Age of rescue comment (createdAt now populated by GraphQL query)
+            // Display as "Xd Yh ago" for ages >= 24h, "Xh Ym ago" for >= 60 min, "X min ago" for shorter.
+            function formatAge(ms) {
+              const totalMin = Math.round(ms / 60000);
+              if (totalMin < 60) return `${totalMin} min ago`;
+              const h = Math.floor(totalMin / 60);
+              if (h < 24) {
+                const m = totalMin % 60;
+                return m > 0 ? `${h}h ${m}m ago` : `${h}h ago`;
+              }
+              const d = Math.floor(h / 24);
+              const rem = h % 24;
+              return rem > 0 ? `${d}d ${rem}h ago` : `${d}d ago`;
+            }
             const rescueAge = latestRescue.createdAt
-              ? `~${Math.round((Date.now() - new Date(latestRescue.createdAt).getTime()) / 60000)} min ago`
+              ? formatAge(Date.now() - new Date(latestRescue.createdAt).getTime())
               : 'unknown age';
+
+            // Scan table from the preceding scan-failing step (may be empty if scan unavailable)
+            const scanTable = (process.env.SCAN_TABLE || '').trim();
 
             const retriggerBody = [
               `<!-- session-done-retrigger -->`,
@@ -639,6 +677,14 @@ jobs:
               ``,
               `@copilot+claude-sonnet-4.6 The rescue comment linked above has not been addressed. Please load \`.codex/CODEBASE_AGENCY_POLICY.md\` and fix the failing check(s).`,
               ``,
+              ...(scanTable ? [
+                `<details><summary>🔍 Current workflow status (HEAD SHA scan)</summary>`,
+                ``,
+                scanTable,
+                ``,
+                `</details>`,
+                ``,
+              ] : []),
               `<details><summary>📋 Rescue comment preview</summary>`,
               ``,
               quotedPreview,

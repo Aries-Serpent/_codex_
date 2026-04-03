@@ -2,27 +2,38 @@
 
 > **Purpose:** Paste this entire block as a comment on PR #3854 to resume the
 > next Copilot session. Updated after every session until merge.
-> **Latest session:** S293 — 2026-04-03
+> **Latest session:** S296 — 2026-04-03
 
 ---
 
 ## 🔁 Resumption Command
 
 ```
-@copilot+claude-sonnet-4.6 Resume PR #3854, branch 0D_base_ — S293 follow-up.
+@copilot+claude-sonnet-4.6 Resume PR #3854, branch 0D_base_ — S296 follow-up.
 
-Latest commit: S293 (HEAD)
+Latest commit: S296 (HEAD)
 Context files to load FIRST:
 1. .codex/CODEBASE_AGENCY_POLICY.md
 2. docs/ci/PR_LIFECYCLE.md
-3. .codex/plans/pr_lifecycle_improvements.md   ← improvement plan (P1–P5)
+3. .codex/plans/pr_lifecycle_improvements.md   ← improvement plan (P1–P6)
 4. .codex/plans/COGNITIVE_BRAIN_LIVE_STATUS.md ← CB live status
 5. python scripts/ci/pda_failure_logger.py summarize
 ```
 
 ---
 
-## ✅ S293 Completed
+## ✅ S296 Completed
+
+| Item | Fix | Files |
+|------|-----|-------|
+| P6-A wire | `scan_failing_workflows.py` called from `checkin-post-on-push` job; scan table embedded in S221 re-trigger body | `copilot-agent-checkin.yml` |
+| P5-C | `COPILOT_ACTIVE_SESSION` TTL 4h→1h (14400→3600) | `agent-auth-delegation.yml` |
+| P5-D | SC2086/SC2129 fixed in `admin_setup_verification.yml` — all `# shellcheck disable` removed, echo redirects grouped | `admin_setup_verification.yml` |
+| P5-A | `D_ACTIVATION_CHECKLIST.md` created with pre-activation, GitHub Actions steps, post-verification, rollback | `docs/admin/D_ACTIVATION_CHECKLIST.md` |
+| Code review | Age display in re-trigger: now shows `Xh Ym ago` for ≥ 60 min instead of `~X min ago` | `copilot-agent-checkin.yml` |
+| Code review | Regex precision in quality section: `[^>]+` → `[a-f0-9]{12}:\d+` (exact marker format) | `copilot-agent-session-done.yml` |
+
+## ✅ S293 Completed (previous session)
 
 | Item | Fix | Files |
 |------|-----|-------|
@@ -30,14 +41,7 @@ Context files to load FIRST:
 | P1-B | `test-rag.yml` rescue → SHA-scoped POST-only (no 403 PATCH risk) | `test-rag.yml` |
 | P1-C | `actionlint-audit.yml` rescue posts as @mbaetiong (`github-token` added) | `actionlint-audit.yml` |
 | P1-D | SC2269 self-assignment removed from `workflow-execution-gate.yml` | `workflow-execution-gate.yml` |
-| P3-D | §21.9 marker table: `test-rag.yml` row updated to `ci-rescue-sha` format | `PR_LIFECYCLE.md` |
 | CB skill audit | 9 skills fully installable; `pda.loop.logger` + `ci.monitor.proactive` created | `src/codex/skills/` |
-| `PDALoopConfig` | Formal `pda_loop` field added to `SkillManifest` model | `models.py` |
-| `codex.skills` EP | Entry-point group added to `pyproject.toml` | `pyproject.toml` |
-| 27 new tests | `tests/skills/test_new_cb_skills.py` — registry, PDA logger, monitor | tests |
-| CB alignment | All 25 plan items (P1–P5) cross-referenced to CB layer in improvement plan | `.codex/plans/` |
-| COGNITIVE_BRAIN_LIVE_STATUS | S293 W-090–W-094 logged; KPI table updated; P5-A–H back-linked | `.codex/plans/` |
-| RFC stub | `.codex/plans/RFC-001-skill-agent-binding.md` created with proposal outline | `.codex/plans/` |
 
 ---
 
@@ -61,10 +65,7 @@ Context files to load FIRST:
 Use marker `<!-- session-done-dedup:{sha12} -->`.
 Each push → exactly ONE session-done comment.
 
-### P5-C: Reduce `COPILOT_ACTIVE_SESSION` TTL 4h → 1h
-**Files:** `copilot-agent-checkin.yml`, `copilot-agent-session-done.yml`
-**Task:** `grep -n "14400\|COPILOT_ACTIVE_SESSION\|TTL" .github/workflows/copilot-agent-checkin.yml`
-Change TTL constant from 14400 → 3600.
+### ~~P5-C: COPILOT_ACTIVE_SESSION TTL~~ ✅ DONE (S296)
 
 ---
 
@@ -74,11 +75,9 @@ Change TTL constant from 14400 → 3600.
 Add `detect-phase` step outputting `pre-approval | wec-approved | agent-active | ready-to-review`.
 Include phase label in gate summary comment.
 
-### P5-A: Create `docs/admin/D_ACTIVATION_CHECKLIST.md`
-Pre-activation checklist, GitHub Actions steps, post-activation verification, rollback.
+### ~~P5-A~~ ✅ DONE (S296)
 
-### P5-D: Fix SC2086/SC2129 in `admin_setup_verification.yml` (lines 57, 107)
-`/tmp/actionlint .github/workflows/admin_setup_verification.yml` to verify clean.
+### ~~P5-D~~ ✅ DONE (S296)
 
 ### P5-E: Add `pre-commit-failure` pattern to `.codex/patterns/ci_failure_patterns.yaml`
 Pattern: `"pre-commit.*failed|detect-secrets.*exit.*3|end-of-file-fixer.*fixed"`

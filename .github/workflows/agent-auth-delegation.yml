@@ -1500,7 +1500,7 @@ jobs:
             core.setOutput('updated_actors', updatedActors);
 
       # ── 3b: Write session token file for provenance-chain bypass (A-001) ──────
-      # Writes .codex/agent_auth_session.json with a 4-hour expiry (TTL=14400s).
+      # Writes .codex/agent_auth_session.json with a 1-hour expiry (TTL=3600s).
       # owner_approval_guard.sh reads this file so ALL agent sessions within the TTL
       # bypass the cost-gate without requiring a new environment gate approval.
       # The agent (copilot-swe-agent[bot]) CAN write this file since it has full
@@ -1508,7 +1508,7 @@ jobs:
       - name: "Write provenance session token (.codex/agent_auth_session.json)"
         run: |
           mkdir -p .codex
-          EXPIRY=$(( $(date +%s) + 14400 ))
+          EXPIRY=$(( $(date +%s) + 3600 ))
           cat > .codex/agent_auth_session.json <<EOF
           {
             "issued_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
@@ -1656,7 +1656,7 @@ jobs:
       # @copilot continue. When the active session completes, the session-release
       # job will trigger the next queued PR.
       # Variable format: "PR#|epoch_timestamp|run_id" (e.g. "3724|1774576800|12345")
-      # TTL: 4 hours (14400 seconds) — stale locks are auto-cleared.
+      # TTL: 1 hour (3600 seconds) — stale locks are auto-cleared.
       - name: "Session Concurrency Gate"
         id: session_gate
         uses: actions/github-script@v8
@@ -1671,7 +1671,7 @@ jobs:
               return;
             }
             const multiSession = '${{ needs.detect-checkbox.outputs.multi_session }}' === 'true';
-            const TTL_SECONDS = 14400; // 4 hours
+            const TTL_SECONDS = 3600; // 1 hour
             const now = Math.floor(Date.now() / 1000);
 
             // Helper: get repo variable (returns null if not found)

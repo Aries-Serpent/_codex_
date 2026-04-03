@@ -829,9 +829,11 @@ jobs:
                 console.log(`Quality section for SHA ${headShort} already up-to-date — skipping.`);
                 return;
               }
-              // Remove any previous quality section (different alert count) and re-append
+              // Remove any previous quality section (different alert count) and re-append.
+              // Regex matches the exact marker format: <!-- ci-code-quality:{sha12}:{N} -->
+              // {12} is intentional: headShort is always sha.slice(0,12) — exactly 12 hex chars.
               const withoutOldQuality = existingComment.body.replace(
-                /\n\n---\n\n<!-- ci-code-quality:[^>]+-->[^]*$/,
+                /\n\n---\n\n<!-- ci-code-quality:[a-f0-9]{12}:\d+ -->[^]*$/,
                 ''
               );
               const updated = (withoutOldQuality.trimEnd() + qualitySection).slice(0, 65536);
