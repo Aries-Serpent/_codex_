@@ -3,7 +3,79 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-03T08:00Z S294
+**Last updated:** 2026-04-03T09:30Z S295
+
+---
+
+## SESSION SUMMARY — 2026-04-03T09:30Z S295 (PR #3854 — RAG test fixes, dedup guard, code-quality pipeline, scan-failing-workflows task)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** New comments 4182347291, 4182476612, 4182486129, 4182505080, 4182601838 addressed ✅
+- [x] **0d.** CI Failure Triage Report #3853 fetched and all actionable failures diagnosed ✅
+- [x] **0e.** Agency Policy §0: all issues fixed — no deferrals ✅
+
+### Work Completed
+
+1. **S294 RAG test fixes** — 3 broken tests introduced in S294 fixed:
+   - `test_ingest_with_retry_no_retry_on_validation_failure`: `ValidationResult(...)` missing
+     `document_format=DocumentFormat.UNKNOWN` positional arg → `TypeError` at runtime. Fixed.
+   - `test_semantic_strategy_falls_back_to_fixed` / `test_hierarchical_strategy_falls_back_to_fixed`:
+     Text `"A " * 100` produces 99-char stripped chunks (trailing space) → below `min_chunk_size=100`
+     → 0 chunks. **Root cause**: also exposed a **`FixedSizeChunker` infinite-loop bug**:
+     with `chunk_overlap >= chunk_size`, `start = end - overlap` goes backwards, and the old guard
+     `if start >= end: start = end` never fires → infinite loop. Fixed guard to
+     `if next_start <= start: next_start = end`. Test text changed to `"A" * 200` (no spaces).
+   - `test_chunk_document_sliding_window`: `chunk_size=50 < min_chunk_size=100` → all 0;
+     `window_step=500 > text_len=400` → only 1 window. Fixed by using `"x " * 600` (1200 chars)
+     + `chunk_size=600` to produce ≥2 windows above the min threshold.
+   - **All 80 tests in `test_chunker.py` + `test_pipeline.py` now pass.**
+
+2. **`FixedSizeChunker` infinite-loop guard** (`src/codex/rag/ingestion/chunker.py`):
+   - **Root cause**: `start = end - chunk_overlap` when `chunk_overlap >= chunk_size` produces a
+     start position ≤ previous start → loop never advances → hangs forever.
+   - **Fix**: `if next_start <= start: next_start = end` forces the loop to always advance.
+
+3. **CodeQL alert: `_STEP_TEMPLATE` unused global** (`scripts/ci/migrate_rescue_comments.py:90`):
+   - Removed unused `_STEP_TEMPLATE` constant flagged by GitHub Advanced Security / CodeQL.
+
+4. **`compile-bot-feedback` dedup fix** (`copilot-agent-session-done.yml`):
+   - **Root cause**: `per_page:5` (REST listComments) returns the OLDEST 5 comments. On a PR with
+     60+ comments the SHA-scoped dedup marker `<!-- compiled-bot-feedback:{sha12} -->` is never in
+     the oldest 5 → guard always misses → both Copilot-coding-agent AND CodeQL triggers post.
+   - **Fix**: GraphQL `last:50` (same approach as S226 fix in `copilot-agent-checkin.yml`) to fetch
+     the 50 MOST RECENT comments before checking for the marker.
+
+5. **Missed-trigger re-trigger body uses dynamic link+quote** (`copilot-agent-checkin.yml`):
+   - **Root cause**: S221 guard always posted static boilerplate text even when the rescue comment
+     it was re-triggering was right there in the PR — making it hard for Copilot to correlate.
+   - **Fix**: Re-trigger body now includes a direct `> [!NOTE] > See: {link_to_rescue_comment}`
+     blockquote of the last unanswered rescue comment so the agent gets direct context.
+
+6. **`append-code-quality-to-rescue` job** (`copilot-agent-session-done.yml`):
+   - New job that watches for `github-code-quality[bot]` findings (CodeQL alerts) and upserts
+     them as a `<details><summary>🔵 github-code-quality</summary>` collapsed section into the
+     SHA-scoped rescue thread (`<!-- ci-code-quality:{sha12}:{N} -->` marker).
+   - Satisfies requirement: "code-quality bot found potential problems → appended to HEAD_SHA comment".
+
+7. **Collapsed `<details>`/`<summary>` rescue comment sections** (`scripts/ci/post_rescue_comment.py`):
+   - Each per-failure `### 🔴 {workflow}` section is now wrapped in
+     `<details><summary>🔴 {workflow} — {time}</summary>` so the PR comment thread stays clean and
+     scannable with only headlines visible by default.
+
+8. **PR_LIFECYCLE.md updated** (§7.1.2, §14.1, §14.2, §21.9):
+   - §7.1.2 (NEW): Documents the `<details>` collapsed comment format with example.
+   - §14.1 Gap Analysis: 4 new resolved rows (dedup, code-quality, missed-trigger, FixedSizeChunker).
+   - §14.2 Automation Cascade: Added Step 1b (code-quality upsert) and S295 callout.
+   - §21.9 Marker Reference: Added `compiled-bot-feedback:{sha12}` and `ci-code-quality:{sha12}:{N}`.
+
+9. **P6-A task documented** (`.codex/plans/pr_lifecycle_improvements.md`):
+   - Full specification for `scan-failing-workflows` grounded method — see §P6 in the plan.
+   - Covers: `scripts/ci/scan_failing_workflows.py`, skill handler, grounded-session-startup
+     prompt, `copilot-agent-checkin.yml` S221 re-trigger pre-population, and acceptance criteria.
+
+---
 
 ---
 

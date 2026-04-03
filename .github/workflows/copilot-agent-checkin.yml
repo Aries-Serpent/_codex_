@@ -443,6 +443,8 @@ jobs:
                       comments(last: 100) {
                         nodes {
                           databaseId
+                          createdAt
+                          url
                           body
                           author { login }
                         }
@@ -502,7 +504,7 @@ jobs:
                 const markerMatch = body.match(/<!--\s*ci-rescue(?:-sha)?:(\d+(?::[0-9a-f]+)?)\s*-->/);
                 const rescueId = markerMatch ? markerMatch[1] : String(c.databaseId);
                 // Always update latestRescue — we want the LAST rescue comment in the list.
-                latestRescue = { id: rescueId, commentId: c.databaseId, body };
+                latestRescue = { id: rescueId, commentId: c.databaseId, url: c.url || '', createdAt: c.createdAt || null, body };
               }
             }
 
@@ -518,9 +520,9 @@ jobs:
             // no Copilot response (session was permanently dropped by GitHub).
             const rcaHasCopilotCall = /@copilot(?:\+[a-z0-9.\-]+)?/i.test(latestRescue.body);
             if (rcaHasCopilotCall) {
-              // Find the comment's created_at timestamp from the raw list.
-              const rcaComment = comments.find(c => c.databaseId === latestRescue.commentId);
-              const createdAt = rcaComment?.createdAt ? new Date(rcaComment.createdAt) : null;
+              // createdAt is now populated by the GraphQL query (was missing before this fix,
+              // so ageMs was always Infinity and the grace period never triggered).
+              const createdAt = latestRescue.createdAt ? new Date(latestRescue.createdAt) : null;
               const ageMs = createdAt ? Date.now() - createdAt.getTime() : Infinity;
               const GRACE_MS = 45 * 60 * 1000; // 45 minutes
               if (ageMs < GRACE_MS) {
@@ -598,31 +600,53 @@ jobs:
               core.info(`Previous retrigger for rescue ${latestRescue.id} had no Copilot action — re-firing (session was dropped).`);
             }
 
-            // Post re-trigger comment
+            // Post re-trigger comment — dynamic format: link + quote, not static boilerplate.
+            // Rationale: the rescue comment already contains all the relevant details (which
+            // workflow failed, run ID, steps to resolve). Repeating them statically here
+            // causes information drift if the rescue comment is later updated (upsert model).
+            // Instead: extract a compact preview of the rescue body, build the URL from the
+            // databaseId, and bump Copilot with a direct link rather than a duplication.
+
+            // Build a URL for the rescue comment (GitHub format: /pull/{pr}#issuecomment-{id})
+            const rescueUrl = latestRescue.url ||
+              `https://github.com/${context.repo.owner}/${context.repo.repo}/pull/${prNumber}#issuecomment-${latestRescue.commentId}`;
+
+            // Build a short preview of the rescue body (skip HTML comment markers, take first
+            // non-empty lines, limit to ~600 chars so the bump stays concise).
+            const rescuePreviewLines = (latestRescue.body || '')
+              .split('\n')
+              .filter(l => !l.trim().startsWith('<!--') && l.trim().length > 0)
+              .slice(0, 8)
+              .join('\n');
+            const rescuePreview = rescuePreviewLines.length > 600
+              ? rescuePreviewLines.slice(0, 597) + '…'
+              : rescuePreviewLines;
+            const quotedPreview = rescuePreview.split('\n').map(l => `> ${l}`).join('\n');
+
+            // Age of rescue comment (createdAt now populated by GraphQL query)
+            const rescueAge = latestRescue.createdAt
+              ? `~${Math.round((Date.now() - new Date(latestRescue.createdAt).getTime()) / 60000)} min ago`
+              : 'unknown age';
+
             const retriggerBody = [
               `<!-- session-done-retrigger -->`,
               `## 🔄 Missed-Trigger Recovery (S221 guard)`,
               ``,
-              `**Trigger:** Push to \`${context.ref_name || 'branch'}\` detected an unanswered rescue`,
-              `comment (rescue ID \`${latestRescue.id}\`) with no subsequent Copilot session response.`,
+              `**Rescue ID:** \`${latestRescue.id}\` · **Unanswered:** ${rescueAge}`,
+              `**Branch:** \`${context.ref_name || 'branch'}\` · **[↗ View rescue comment](${rescueUrl})**`,
               ``,
-              `**Root cause pattern:** A Copilot session may have been queued (👀 reaction) but`,
-              `silently dropped when a new commit was pushed before the session could start.`,
-              `The \`copilot-agent-session-done.yml\` PATH A cannot recover this case because`,
-              `it requires a prior session completion. This guard fires on every push as a fallback.`,
+              `> ✅ **Pre-authorized.** \`COPILOT_AGENT_AUTH_ENABLED=true\` · \`💰 Cost Proposal Approved\` — start immediately.`,
               ``,
-              `**Action:** Re-triggering the rescue task now.`,
+              `@copilot+claude-sonnet-4.6 The rescue comment linked above has not been addressed. Please load \`.codex/CODEBASE_AGENCY_POLICY.md\` and fix the failing check(s).`,
               ``,
-              `> ✅ **Pre-authorized — no human approval needed.** \`COPILOT_AGENT_AUTH_ENABLED=true\` · \`💰 Cost Proposal Approved\` are both active on this PR. Session must start immediately without any additional approval gate.`,
+              `<details><summary>📋 Rescue comment preview</summary>`,
               ``,
-              `@copilot+claude-sonnet-4.6 Please address the rescue issue identified in the comment`,
-              `above (rescue ID \`${latestRescue.id}\`). This is an automated re-trigger posted by`,
-              `the missed-trigger guard (S221).`,
+              quotedPreview,
+              ``,
+              `</details>`,
               ``,
               `---`,
-              `*Auto-posted by \`copilot-agent-checkin.yml\` missed-trigger-guard · for rescue \`${latestRescue.id}\`*`,
-              '',
-              '---',
+              `*Auto-posted by \`copilot-agent-checkin.yml\` missed-trigger-guard · rescue \`${latestRescue.id}\`*`,
               `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
             ].join('\n');
 

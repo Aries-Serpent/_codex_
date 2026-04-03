@@ -559,3 +559,108 @@ add classifier patches to `collect_telemetry.py`, verify unknown bucket drops.
 6. P2-C — Phase detection output (P2, Decision Engine improvement)
 7. P5-B — FAISS index rebuild trigger (🔴 High but needs merge first)
 ```
+
+---
+
+## S295 Fixes Applied
+
+| ID | Item | Priority | OODA | Status | Session |
+|----|-------|----------|------|--------|---------|
+| S295-A | compiled-bot-feedback dedup via GraphQL last:50 | P2 | AfterMath | ✅ Done | S295 |
+| S295-B | append-code-quality-to-rescue new job | P2 | Perception | ✅ Done | S295 |
+| S295-C | Missed-trigger body uses dynamic link+quote | P3 | Perception | ✅ Done | S295 |
+| S295-D | `<details>`/`<summary>` collapsed rescue sections | P3 | Perception | ✅ Done | S295 |
+| S295-E | FixedSizeChunker infinite-loop guard | Bug | Action | ✅ Done | S295 |
+| S295-F | S294 RAG test fixes (ValidationResult, fallback, sliding) | Bug | Action | ✅ Done | S295 |
+| S295-G | `_STEP_TEMPLATE` CodeQL alert removed | Security | Action | ✅ Done | S295 |
+| S295-H | PR_LIFECYCLE.md §14.1 Gap Analysis + §14.2 cascade updated | Doc | Perception | ✅ Done | S295 |
+
+---
+
+## P6 — Grounded Failing-Workflow Scanner
+
+### P6-A — Copilot-native `scan-failing-workflows` grounded method (**NEW — S295**)
+
+**Priority:** P1 (blocks automated rescue chain from being fully grounded)  
+**OODA Phase:** Observe  
+**Estimated effort:** 2–3 hours  
+**Tracked by:** PR #3854 comment, issue #3853
+
+**Problem:**
+When a Copilot Coding Agent session starts (whether triggered by a rescue comment,
+a missed-trigger re-trigger, or a direct `@copilot` mention), it has **no reliable way
+to know which CI checks are currently failing on the HEAD commit** without being told
+explicitly. Sessions frequently address the single failure mentioned in the trigger comment
+but miss other simultaneously failing checks that were not yet commented on.
+
+**Target behaviour:**
+At the start of every session, the agent SHALL:
+
+1. Call a grounded `scan_failing_workflows(pr, sha)` method that:
+   - Fetches all check runs for `HEAD` SHA via GitHub Checks API (`GET /repos/{owner}/{repo}/commits/{sha}/check-runs`)
+   - Filters `conclusion != 'success'` AND `status == 'completed'`
+   - Groups by workflow name
+   - Returns a structured dict: `{workflow_name: {run_id, conclusion, url, started_at}}`
+
+2. For each failing workflow in the result:
+   - Classify against the PDA pattern library (22 patterns as of S292)
+   - If pattern known: prepare fix steps
+   - If pattern unknown: log to `RP-UNKNOWN` and escalate via PDA loop
+
+3. Summarise in the session-startup output:
+
+```
+🔍 Failing checks on {sha12} ({N} failing, {M} pending):
+  ❌ Auto-Fix Common Issues  — run #XXXXX  →  RP-TRACKED-DRIFT (auto-fixable)
+  ❌ RAG Module Tests        — run #XXXXX  →  RP-RAG-CHRONIC   (test fix needed)
+  ⏳ Workflow Compliance     — pending
+```
+
+**Implementation Plan:**
+
+```
+FILE: scripts/ci/scan_failing_workflows.py
+  ├── scan_failing_checks(owner, repo, sha) → list[CheckRun]
+  ├── classify_check(run, pattern_library) → PatternMatch | None
+  └── format_summary(runs, matches) → str  (markdown table)
+
+FILE: src/codex/skills/scan_failing_workflows/handler.py
+  └── run(inputs) → {failing: [...], summary: str, auto_fixable: [...]}
+
+FILE: .github/copilot-prompts/grounded-session-startup.md
+  └── Instructs agent to call scan_failing_workflows skill at session start
+      before reading any rescue comment
+
+WIRING: .codex/skills_manifest.yml
+  └── Add scan_failing_workflows skill entry
+
+WIRING: .github/workflows/copilot-agent-checkin.yml
+  └── session-startup step calls scan_failing_workflows before posting re-trigger
+      (so the re-trigger comment is pre-populated with ALL current failures,
+       not just the one that triggered the S221 guard)
+```
+
+**Acceptance criteria:**
+- `python scripts/ci/scan_failing_workflows.py --pr 3854 --sha HEAD` exits 0 and prints table
+- `pytest tests/ci/test_scan_failing_workflows.py` all pass
+- `copilot-agent-checkin.yml` S221 re-trigger comment body includes the full failures table
+- Skill callable from `src/codex/skills/scan_failing_workflows/handler.py`
+
+**Why grounded:** The method calls the live GitHub Checks API against the actual HEAD SHA.
+It never embeds static failure lists or assumptions. Every scan is idempotent and
+re-runnable. Failures that resolve between the scan and the session start are correctly
+shown as passing in a re-scan.
+
+---
+
+## Updated Next Session Priority Order (recommended)
+
+```
+1. P6-A — scan-failing-workflows grounded method (🔴 P1, ~3h, unblocks full rescue awareness)
+2. P5-A — D_ACTIVATION_CHECKLIST.md (🔴 High, 1-2h, unblocks D model activation)
+3. P5-C — COPILOT_ACTIVE_SESSION TTL (🔴 High, 30min, reduces queue wait)
+4. P5-D — admin_setup_verification SC2086 (clears last persistent actionlint failure)
+5. P5-E — pre-commit-failure pattern (🟡 Medium, improves CB-006 perception)
+6. P2-C — Phase detection output (P2, Decision Engine improvement)
+7. P5-B — FAISS index rebuild trigger (🔴 High but needs merge first)
+```

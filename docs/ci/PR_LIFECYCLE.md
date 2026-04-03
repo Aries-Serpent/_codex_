@@ -1,9 +1,9 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.7.0  
-> **Date:** 2026-04-03 (S293 — §7 rescue comment identity requirement + `github-token` fix documented; §20 Workflow Compliance Fixes)  
+> **Version:** 1.8.0  
+> **Date:** 2026-04-03 (S295 — §7 collapsed rescue-comment sections; code-quality feedback loop; duplicate-comment dedup fix; FixedSizeChunker infinite-loop guard; S294 RAG test fixes)  
 > **Branch:** `0D_base_`  
-> **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (59 failures / 14 workflows, 2026-04-02)
+> **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (55 failures / 14 workflows, 2026-04-03)
 
 This document describes the full expected lifecycle of a pull request on the `0D_base_` branch:
 which workflows run, when Copilot sessions are triggered, what failures are expected vs unexpected,
@@ -325,6 +325,48 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 **When `CODEX_MASTER_KEY` expires:** All rescue comments fall back to `github-actions[bot]` and
 Copilot sessions stop auto-triggering. Admin action required: rotate the `CODEX_MASTER_KEY` secret
 with a fresh `@mbaetiong` PAT with `repo` + `write:discussion` scope.
+
+### 7.1.2 Rescue Comment Format — Collapsed Sections (S295)
+
+All rescue and quality-findings comments use `<details>`/`<summary>` HTML to collapse
+every per-failure section below the H2 headline. This keeps the PR clean and scannable:
+
+```markdown
+## 🚨 CI Rescue — @copilot Fix Required
+
+**Branch:** `0D_base_` | **Commit:** `abc123def456`
+
+@copilot One or more checks are failing...
+
+<details><summary>📋 Steps to resolve</summary>
+
+1. Load `.codex/CODEBASE_AGENCY_POLICY.md` ...
+...
+</details>
+
+---
+
+<details><summary>🔴 `Auto-Fix Common Issues` — 2026-04-03T08:20Z · Run #23939535263</summary>
+
+@copilot **Auto-Fix Common Issues** failed on commit `abc123def456`...
+
+</details>
+
+---
+
+<!-- ci-code-quality:abc123def456:3 -->
+<details><summary>🔵 `github-code-quality` — 3 alert(s) · 2026-04-03T08:37Z</summary>
+
+- **unused-global-variable** · `scripts/ci/migrate_rescue_comments.py:90` — ... ([view](...))
+...
+</details>
+```
+
+**Rules:**
+- `## 🚨` H2 headline — always visible (never collapsed)
+- Each `### 🔴` workflow failure — wrapped in `<details open=false>`  
+- Code-quality alerts — appended by `append-code-quality-to-rescue` job (see §14.4)
+- Steps-to-resolve — collapsed with `📋 Steps to resolve` summary
 
 ### 7.2 Rescue Cascade (when all tiers are active)
 
@@ -987,7 +1029,7 @@ for malformed dependency entries.  See §11.6 for full classification table.
 This section documents gaps in the current automation pipeline identified from the triage data
 in §13, and the planned improvements to close each gap.
 
-### 14.1 Gap Analysis (updated S293)
+### 14.1 Gap Analysis (updated S295)
 
 | Gap | Current Behaviour | Target Behaviour | Status |
 |-----|------------------|-----------------|--------|
@@ -1002,8 +1044,13 @@ in §13, and the planned improvements to close each gap.
 | **Task branch changes not merged** | Orphan root commit in Copilot tasks can't be cherry-picked normally | Explicit file-by-file diff + apply approach | ✅ Fixed S292 |
 | **Copilot comment replies not verified post-session** | Session may end without replying to all addressed comments | `copilot-agent-session-done.yml` should verify replies | 🔄 Ongoing |
 | **submit-pypi 503 triggers rescue unnecessarily** | Healer posts escalation comment even for known-transient 503 | Classify RP-TRANSIENT-API503; suppress `@copilot` | 🔄 Ongoing |
+| **Duplicate `@copilot continue` comments** | `compile-bot-feedback` used `per_page:5` (oldest 5) — dedup marker never found → both Copilot-coding + CodeQL triggers post | GraphQL `last:50` (newest) — SHA-scoped `<!-- compiled-bot-feedback:{sha12} -->` prevents double-post | ✅ Fixed S295 |
+| **Code-quality findings not surfaced in rescue thread** | `github-code-quality[bot]` findings appear only in Check run — easy to miss | `append-code-quality-to-rescue` job upserts findings into SHA-scoped rescue thread | ✅ Fixed S295 |
+| **Missed-Trigger Recovery posts static text** | S221 guard posts fixed boilerplate re-trigger even when relevant rescue comment is on the PR | S221 re-trigger includes link and quote of the last unanswered rescue comment (rescue ID `{pr}:{sha12}`) | ✅ Fixed S295 |
+| **FixedSizeChunker infinite loop when chunk_overlap >= chunk_size** | `chunk_overlap=100` with `chunk_size=100` → `start = end - overlap = 0` → loop restarts from 0 forever | Guard `if next_start <= start: next_start = end` forces forward | ✅ Fixed S295 |
+| **S294 RAG tests broken (ValidationResult, fallback hang, sliding-window)** | 3 new tests fail: missing `document_format`, fallback tests hang/return 0, window test 0 chunks | Fixed: add `document_format=DocumentFormat.UNKNOWN`; use char-only text; correct window params | ✅ Fixed S295 |
 
-### 14.2 Automation Cascade (Improved — S293)
+### 14.2 Automation Cascade (Improved — S295)
 
 > **Key change S292:** Added explicit Tier 1 / Tier 2 model (see §7.1). The rescue cascade
 > clearly documents which workflows are reliably approval-free.  
@@ -1011,7 +1058,11 @@ in §13, and the planned improvements to close each gap.
 > `actionlint-audit.yml`, and `comment-review-gate.yml` are also Tier 1 (no approval needed).
 > All Tier 1 rescue steps MUST post comments using
 > `github-token: ${{ secrets.CODEX_MASTER_KEY || ... }}` (see §7.1.1).  
-> Tier 2 workflows require human approval of `workflow_run` runs in the Actions tab.
+> Tier 2 workflows require human approval of `workflow_run` runs in the Actions tab.  
+> **Key change S295:** `compile-bot-feedback` job now uses GraphQL `last:50` (instead of
+> REST `per_page:5`) to find the most recent dedup marker reliably. New
+> `append-code-quality-to-rescue` job appends code-quality findings into the SHA-scoped
+> rescue thread.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1030,6 +1081,13 @@ in §13, and the planned improvements to close each gap.
 │ - posted as @mbaetiong          │         │    CODEX_MASTER_KEY         │
 │   (CODEX_MASTER_KEY required)   │         │    for @copilot to see it   │
 └─────────────────────────────────┘         └─────────────────────────────┘
+       │
+       ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 1b. code-quality[bot] produces findings (check run + annotation)│
+│     append-code-quality-to-rescue job upserts into rescue thread│
+│     <!-- ci-code-quality:{sha12}:{N} --> marker prevents dups   │
+└─────────────────────────────────────────────────────────────────┘
        │
        ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -2106,7 +2164,13 @@ Every rescue comment uses an HTML comment marker for deduplication. Knowing thes
 | `copilot-iterative-self-healing.yml` | `<!-- copilot-healing:{sha12}:{category} -->` | 2 |
 | `comment-review-gate.yml` | `<!-- comment-review-gate:{pr} -->` | 1 |
 | `copilot-agent-checkin.yml` | `<!-- session-done-retrigger -->` | 1 |
-| `copilot-agent-session-done.yml` | `<!-- session-done-retrigger -->` | 2 |
+| `copilot-agent-session-done.yml` (compiled-bot-feedback) | `<!-- compiled-bot-feedback:{sha12} -->` | 2 |
+| `copilot-agent-session-done.yml` (code-quality upsert) | `<!-- ci-code-quality:{sha12}:{N} -->` | 2 |
+
+> **S295 Note:** `copilot-agent-session-done.yml`'s `compile-bot-feedback` job now uses a
+> SHA-scoped marker `<!-- compiled-bot-feedback:{sha12} -->` and checks for it via GraphQL
+> `last:50` (most-recent 50 comments) to prevent duplicate `@copilot continue` posts when
+> both the Copilot coding agent and CodeQL triggers fire for the same commit.
 
 **To satisfy the S221 guard and stop re-triggers:** reply to any rescue comment with
 `"Fixed at <SHA>"`, `"Addressed at <SHA>"`, or `"Resolved at <SHA>"`.

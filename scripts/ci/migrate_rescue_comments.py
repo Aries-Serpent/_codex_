@@ -86,9 +86,6 @@ _STEP_TEMPLATE_PUSH = """\
         run: python scripts/ci/post_rescue_comment.py
 """
 
-# Backward-compat alias kept for callers that imported the old name.
-_STEP_TEMPLATE = _STEP_TEMPLATE_PR
-
 # Fallback workflow name when we can't extract one.
 _DEFAULT_NAME = '"CI Workflow"'
 

@@ -363,9 +363,11 @@ class TestChunkerFallbackStrategies:
         config = ChunkingConfig(
             strategy=ChunkingStrategy.SEMANTIC,
             chunk_size=100,
+            chunk_overlap=0,
         )
         chunker = Chunker(config)
-        chunks = chunker.chunk("A " * 100)
+        # Use text without trailing spaces so each 100-char slice meets min_chunk_size.
+        chunks = chunker.chunk("A" * 200)
         assert len(chunks) >= 1
 
     def test_hierarchical_strategy_falls_back_to_fixed(self):
@@ -373,9 +375,11 @@ class TestChunkerFallbackStrategies:
         config = ChunkingConfig(
             strategy=ChunkingStrategy.HIERARCHICAL,
             chunk_size=100,
+            chunk_overlap=0,
         )
         chunker = Chunker(config)
-        chunks = chunker.chunk("B " * 100)
+        # Use text without trailing spaces so each 100-char slice meets min_chunk_size.
+        chunks = chunker.chunk("B" * 200)
         assert len(chunks) >= 1
 
     def test_empty_text_returns_empty_list(self):
@@ -434,8 +438,12 @@ class TestChunkDocumentFunction:
 
     def test_chunk_document_sliding_window(self):
         from codex.rag.ingestion.chunker import chunk_document
-        text = "x " * 200
-        chunks = chunk_document(text, strategy=ChunkingStrategy.SLIDING_WINDOW, chunk_size=50)
+        # text must exceed default window_step (500) to produce ≥2 windows.
+        # chunk_size must exceed default min_chunk_size (100) so chunks aren't filtered.
+        text = "x " * 600  # 1200 chars
+        chunks = chunk_document(
+            text, strategy=ChunkingStrategy.SLIDING_WINDOW, chunk_size=600
+        )
         assert len(chunks) >= 2
 
     def test_chunk_document_empty(self):

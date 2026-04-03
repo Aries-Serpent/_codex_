@@ -163,13 +163,14 @@ def main() -> None:
     existing_id, existing_body = _find_rescue_comment(token, repo, pr_number, marker)
 
     if existing_id:
-        # Append this workflow's failure to the existing comment.
+        # Append this workflow's failure to the existing comment (collapsed).
         append_section = (
             f"\n\n---\n\n"
-            f"### 🔴 `{workflow}` — {now}\n\n"
-            f"**Run:** [{run_id}]({run_url})\n\n"
-            f"@copilot `{workflow}` failed on commit `{sha_short}`. "
-            f"Check [run #{run_id}]({run_url}) for details."
+            f"<details><summary>🔴 <code>{workflow}</code> — {now} · "
+            f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+            f"@copilot **{workflow}** failed on commit `{sha_short}`. "
+            f"Check [run #{run_id}]({run_url}) for details.\n\n"
+            f"</details>"
         )
         updated_body = (existing_body.rstrip() + append_section)[:MAX_COMMENT_LEN]
         status, _ = _gh(
@@ -196,19 +197,21 @@ def main() -> None:
         f"@copilot One or more checks are failing on commit `{sha_short}`. "
         f"This comment is automatically updated as additional failures are "
         f"detected **on the same commit**. A new push creates a new comment.\n\n"
-        f"**Steps to resolve:**\n"
+        f"<details><summary>📋 Steps to resolve</summary>\n\n"
         f"1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n"
         f"2. Check each failing workflow run linked below\n"
         f"3. Apply the minimal fix and push\n"
         f"4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n"
         f"5. Verify all CI checks are green before concluding\n\n"
+        f"</details>\n\n"
         f"---\n\n"
-        f"### 🔴 `{workflow}` — {now}\n\n"
-        f"**Run:** [{run_id}]({run_url})\n\n"
+        f"<details><summary>🔴 <code>{workflow}</code> — {now} · "
+        f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
         f"@copilot The **{workflow}** check is failing on commit `{sha_short}`. "
         f"Check the failure logs: [{run_id}]({run_url})\n\n"
         f"_Auto-posted by rescue-comment system (S294) · "
-        f"[🔗 Workflow run]({run_url})_"
+        f"[🔗 Workflow run]({run_url})_\n\n"
+        f"</details>"
     )
 
     status, resp = _gh(

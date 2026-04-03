@@ -385,9 +385,13 @@ class TestIngestionPipelineRetry:
             status=IngestionStatus.FAILED,
         )
         # Give it a validation_result so retry guard fires
-        from codex.rag.ingestion.validator import ValidationResult
+        from codex.rag.ingestion.validator import DocumentFormat, ValidationResult
 
-        failed.validation_result = ValidationResult(is_valid=False, errors=["too short"])
+        failed.validation_result = ValidationResult(
+            is_valid=False,
+            document_format=DocumentFormat.UNKNOWN,
+            errors=["too short"],
+        )
 
         config = IngestionConfig(max_retries=3, retry_delay_seconds=0.0)
         pipeline = IngestionPipeline(config)
