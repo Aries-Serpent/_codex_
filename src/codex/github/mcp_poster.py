@@ -408,30 +408,349 @@ class GitHubMCPPoster:
     def _find_discussion_comment(
         self, owner: str, repo: str, discussion_number: int, marker: str
     ) -> str:
-        """Return the node ID of the first comment containing *marker*, or ``""``."""
+        """Return the node ID of the most-recent comment containing *marker*, or ``""``.
+
+        Searches newest-first using ``last: 100`` with backward cursor pagination
+        so that recent upsert markers are found quickly even in high-volume threads
+        (e.g. Discussion #3756 with 700+ comments).  Continues paginating backward
+        through older pages until the marker is found or all comments are exhausted.
+        """
         query = """
-        query FindDiscussionComment($owner: String!, $repo: String!, $number: Int!) {
+        query FindDiscussionComment(
+          $owner: String!, $repo: String!, $number: Int!, $cursor: String
+        ) {
           repository(owner: $owner, name: $repo) {
             discussion(number: $number) {
-              comments(first: 50) {
+              comments(last: 100, before: $cursor) {
                 nodes { id body }
+                pageInfo { hasPreviousPage startCursor }
               }
             }
           }
         }
         """
-        result = self._graphql(query, {"owner": owner, "repo": repo, "number": discussion_number})
-        comments = (
-            result.get("data", {})
-            .get("repository", {})
-            .get("discussion", {})
-            .get("comments", {})
-            .get("nodes", [])
-        )
-        for c in comments:
-            if marker in (c.get("body") or ""):
-                return c["id"]
+        cursor: str | None = None
+        while True:
+            result = self._graphql(
+                query,
+                {"owner": owner, "repo": repo, "number": discussion_number, "cursor": cursor},
+            )
+            disc = (
+                result.get("data", {})
+                .get("repository", {})
+                .get("discussion", {})
+                .get("comments", {})
+            )
+            nodes = disc.get("nodes", [])
+            page_info = disc.get("pageInfo", {})
+            # Iterate newest→oldest within this page
+            for c in reversed(nodes):
+                if marker in (c.get("body") or ""):
+                    return c["id"]
+            if not page_info.get("hasPreviousPage"):
+                break
+            cursor = page_info.get("startCursor")
         return ""
+
+    # ------------------------------------------------------------------
+    # Per-PR discussion auto-create / find-or-create
+    # ------------------------------------------------------------------
+
+    def find_or_create_pr_discussion(
+        self,
+        repo: str,
+        pr_number: int,
+        purpose: str,
+        category_slug: str = "show-and-tell",
+    ) -> tuple[int, str]:
+        """Find an existing discussion for a PR + purpose, or create one.
+
+        This is the canonical entry-point for all per-PR discussion posting.
+        It removes the need to hard-code discussion numbers (e.g. #3673, #3756)
+        in workflows and scripts — every PR gets its own isolated thread.
+
+        Title format
+        ~~~~~~~~~~~~
+        ``"🤖 {purpose_title} — PR #{pr_number}"``
+
+        Supported *purpose* values and their titles
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ``"accountability"``   → ``"📋 Agent Accountability — PR #{pr_number}"``
+        ``"pre-session"``      → ``"🧠 Pre-Session Context — PR #{pr_number}"``
+        ``"qa"``               → ``"❓ Q&A — PR #{pr_number}"``
+
+        Any other string is used as-is for the title prefix.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        pr_number:
+            The PR number to scope this discussion to.
+        purpose:
+            Short identifier for the discussion's purpose (see above).
+        category_slug:
+            Slug of the Discussion category to create in if needed.
+            Defaults to ``"show-and-tell"`` (always available).
+
+        Returns
+        -------
+        tuple[int, str]
+            ``(discussion_number, discussion_node_id)``
+
+        Raises
+        ------
+        RuntimeError
+            If neither an existing discussion is found nor a new one can be created.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+
+        _PURPOSE_TITLES = {
+            "accountability": f"📋 Agent Accountability — PR #{pr_number}",
+            "pre-session":    f"🧠 Pre-Session Context — PR #{pr_number}",
+            "qa":             f"❓ Q&A — PR #{pr_number}",
+        }
+        title = _PURPOSE_TITLES.get(purpose, f"🤖 {purpose} — PR #{pr_number}")
+        # Dedup marker embedded in the discussion *body* (not a comment)
+        registry_marker = f"<!-- pr-discussion-registry:{pr_number}:{purpose} -->"
+
+        # Search existing discussions for matching title OR body marker
+        # (search newest-first; discussions are ordered by UPDATED_AT DESC)
+        page_cursor: str | None = None
+        while True:
+            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
+            list_query = """
+            query ListDiscussions(
+              $owner: String!, $repo: String!, $first: Int!, $after: String
+            ) {
+              repository(owner: $owner, name: $repo) {
+                discussions(
+                  first: $first, after: $after,
+                  orderBy: {field: UPDATED_AT, direction: DESC}
+                ) {
+                  pageInfo { hasNextPage endCursor }
+                  nodes { number id title body }
+                }
+              }
+            }
+            """
+            result = self._graphql(
+                list_query,
+                {"owner": owner, "repo": repo_name, "first": 50, "after": page_cursor},
+            )
+            page = (
+                result.get("data", {})
+                .get("repository", {})
+                .get("discussions", {})
+            )
+            for d in page.get("nodes", []):
+                if d.get("title") == title or registry_marker in (d.get("body") or ""):
+                    return d["number"], d["id"]
+            page_info = page.get("pageInfo", {})
+            if not page_info.get("hasNextPage"):
+                break
+            page_cursor = page_info.get("endCursor")
+
+        # Not found — create a new discussion
+        _PURPOSE_DESCRIPTIONS = {
+            "accountability": (
+                "Automatically maintained by `post-accountability-to-discussion.yml`.\n\n"
+                "Each comment in this discussion is one session's accountability entry for "
+                f"PR #{pr_number}. Copilot Coding Agent posts here at the end of every session "
+                "and checks this thread for maintainer feedback at the start of the next session."
+            ),
+            "pre-session": (
+                "Automatically maintained by `scripts/ci/discussion_context_store.py` (P6-C).\n\n"
+                "Each comment contains a structured pre-session briefing (§A workflow status, "
+                f"§B blocking comments, §D action queue) for PR #{pr_number}. "
+                "Copilot reads the latest comment here at session start."
+            ),
+            "qa": (
+                "Automatically maintained by `copilot-agent-checkin.yml`.\n\n"
+                f"Q&A thread for PR #{pr_number}. Copilot posts questions derived from the "
+                "current PDA pattern library and CI failure state. "
+                "Maintainer responses are detected at session close and acted on."
+            ),
+        }
+        description = _PURPOSE_DESCRIPTIONS.get(
+            purpose,
+            f"Automatically maintained discussion for PR #{pr_number} — purpose: {purpose}.",
+        )
+        body = (
+            f"{registry_marker}\n\n"
+            f"**PR:** #{pr_number} · **Repo:** [{repo}](https://github.com/{repo})\n\n"
+            f"{description}\n\n"
+            f"**⚠️ Do not delete this discussion** — it is the canonical record for its purpose."
+        )
+        discussion = self.create_discussion(
+            repo=repo, title=title, body=body, category_slug=category_slug
+        )
+        number = discussion.get("number")
+        node_id = discussion.get("id") or discussion.get("url", "")
+        if not number:
+            raise RuntimeError(
+                f"find_or_create_pr_discussion: createDiscussion returned no number. "
+                f"Response: {discussion}"
+            )
+        logger.info(
+            "Created new %r discussion #%s for PR #%s in %s",
+            purpose, number, pr_number, repo,
+        )
+        return int(number), str(node_id)
+
+    # ------------------------------------------------------------------
+    # Response-checking: detect unread maintainer replies
+    # ------------------------------------------------------------------
+
+    _BOT_LOGINS: frozenset[str] = frozenset({
+        "github-actions[bot]",
+        "copilot-swe-agent[bot]",
+        "github-copilot[bot]",
+        "copilot[bot]",
+        "dependabot[bot]",
+    })
+
+    def check_discussion_replies(
+        self,
+        repo: str,
+        discussion_number: int,
+        since_marker: str = "",
+        max_comments: int = 200,
+    ) -> list[dict[str, Any]]:
+        """Return a list of unread human replies in a discussion thread.
+
+        "Unread" means: posted by a non-bot author AND appearing *after* the
+        most recent Copilot-agent comment in the same thread (or after the
+        comment identified by *since_marker*).
+
+        This lets Copilot Coding Agent check at session start whether the
+        maintainer has responded to any accountability entry or Q&A post
+        without needing to be explicitly prompted.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        discussion_number:
+            The discussion to check (e.g. the per-PR accountability discussion).
+        since_marker:
+            Optional HTML-comment marker string.  If supplied, only replies
+            posted *after* the comment containing this marker are returned.
+            If empty, replies after the latest Copilot comment are returned.
+        max_comments:
+            Maximum number of recent comments to fetch (newest first).
+
+        Returns
+        -------
+        list[dict]
+            Each entry has keys: ``author``, ``body`` (first 300 chars),
+            ``url``, ``created_at``, ``in_reply_to_marker``.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+
+        # Fetch newest max_comments comments (last: N paginated)
+        query = """
+        query CheckReplies(
+          $owner: String!, $repo: String!, $number: Int!, $cursor: String
+        ) {
+          repository(owner: $owner, name: $repo) {
+            discussion(number: $number) {
+              comments(last: 100, before: $cursor) {
+                nodes {
+                  id body createdAt url
+                  author { login }
+                  replies(first: 20) {
+                    nodes { id body createdAt url author { login } }
+                  }
+                }
+                pageInfo { hasPreviousPage startCursor }
+              }
+            }
+          }
+        }
+        """
+        all_comments: list[dict] = []
+        cursor: str | None = None
+        fetched = 0
+        while fetched < max_comments:
+            result = self._graphql(
+                query,
+                {"owner": owner, "repo": repo_name, "number": discussion_number, "cursor": cursor},
+            )
+            disc = (
+                result.get("data", {})
+                .get("repository", {})
+                .get("discussion", {})
+                .get("comments", {})
+            )
+            nodes = disc.get("nodes", [])
+            all_comments = nodes + all_comments  # prepend so list is oldest→newest
+            fetched += len(nodes)
+            page_info = disc.get("pageInfo", {})
+            if not page_info.get("hasPreviousPage") or not nodes:
+                break
+            cursor = page_info.get("startCursor")
+
+        if not all_comments:
+            return []
+
+        # Find the anchor point: the latest Copilot comment OR the since_marker comment
+        anchor_idx = -1
+        for i, c in enumerate(all_comments):
+            login = (c.get("author") or {}).get("login", "")
+            body = c.get("body") or ""
+            if since_marker and since_marker in body:
+                anchor_idx = i
+                break
+            if not since_marker and login in (
+                "copilot-swe-agent[bot]", "github-copilot[bot]", "copilot[bot]"
+            ):
+                anchor_idx = i  # keep updating — want the LAST one
+
+        unread: list[dict[str, Any]] = []
+
+        # Collect top-level non-bot comments posted after anchor
+        for i, c in enumerate(all_comments):
+            if i <= anchor_idx:
+                continue
+            login = (c.get("author") or {}).get("login", "")
+            if login in self._BOT_LOGINS:
+                continue
+            unread.append({
+                "author": login,
+                "body": (c.get("body") or "")[:300],
+                "url": c.get("url", ""),
+                "created_at": c.get("createdAt", ""),
+                "in_reply_to_marker": "",
+                "type": "comment",
+            })
+
+        # Collect reply-thread entries anywhere in the discussion
+        for c in all_comments:
+            for r in (c.get("replies") or {}).get("nodes", []):
+                login = (r.get("author") or {}).get("login", "")
+                if login in self._BOT_LOGINS:
+                    continue
+                # Only count replies posted after the anchor comment's timestamp
+                anchor_ts = (
+                    all_comments[anchor_idx].get("createdAt", "")
+                    if anchor_idx >= 0
+                    else ""
+                )
+                if anchor_ts and r.get("createdAt", "") <= anchor_ts:
+                    continue
+                unread.append({
+                    "author": login,
+                    "body": (r.get("body") or "")[:300],
+                    "url": r.get("url", ""),
+                    "created_at": r.get("createdAt", ""),
+                    "in_reply_to_marker": since_marker,
+                    "type": "reply",
+                })
+
+        return unread
 
     def _update_discussion_comment(self, comment_id: str, body: str) -> dict[str, Any]:
         """Update an existing Discussion comment by its GraphQL node ID."""
