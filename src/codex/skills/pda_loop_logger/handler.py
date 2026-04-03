@@ -45,6 +45,7 @@ Output schema
   "message": "..."
 }
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -76,6 +77,7 @@ def _load_logger_module():
 # ---------------------------------------------------------------------------
 # Handler
 # ---------------------------------------------------------------------------
+
 
 def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Invoke the PDA Loop AfterMath logger.
@@ -118,6 +120,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
 # Action implementations
 # ---------------------------------------------------------------------------
 
+
 def _log_failure(mod: Any, p: dict) -> dict:
     """Append a failure entry to the PDA JSONL store."""
     required = ["session", "pattern_id"]
@@ -139,8 +142,12 @@ def _log_failure(mod: Any, p: dict) -> dict:
         "ts": mod._now(),
     }
     mod._append_entry(entry)
-    return {"status": "ok", "action": "log_failure", "entry": entry,
-            "message": f"Logged failure pattern {entry['pattern_id']}"}
+    return {
+        "status": "ok",
+        "action": "log_failure",
+        "entry": entry,
+        "message": f"Logged failure pattern {entry['pattern_id']}",
+    }
 
 
 def _log_fix(mod: Any, p: dict) -> dict:
@@ -161,8 +168,12 @@ def _log_fix(mod: Any, p: dict) -> dict:
         "ts": mod._now(),
     }
     mod._append_entry(entry)
-    return {"status": "ok", "action": "log_fix", "entry": entry,
-            "message": f"Logged fix for {entry['pattern_id']} (passed={entry['verification_passed']})"}
+    return {
+        "status": "ok",
+        "action": "log_fix",
+        "entry": entry,
+        "message": f"Logged fix for {entry['pattern_id']} (passed={entry['verification_passed']})",
+    }
 
 
 def _log_session(mod: Any, p: dict) -> dict:
@@ -176,8 +187,12 @@ def _log_session(mod: Any, p: dict) -> dict:
         "ts": mod._now(),
     }
     mod._append_entry(entry)
-    return {"status": "ok", "action": "log_session", "entry": entry,
-            "message": "Session summary logged"}
+    return {
+        "status": "ok",
+        "action": "log_session",
+        "entry": entry,
+        "message": "Session summary logged",
+    }
 
 
 def _summarize(mod: Any, p: dict) -> dict:
@@ -188,8 +203,16 @@ def _summarize(mod: Any, p: dict) -> dict:
 
     # Count successes per pattern
     from collections import defaultdict
-    stats: dict[str, dict] = defaultdict(lambda: {"failures": 0, "fixes": 0, "success_rate": 0.0,
-                                                    "last_fix": "", "fix_templates": []})
+
+    stats: dict[str, dict] = defaultdict(
+        lambda: {
+            "failures": 0,
+            "fixes": 0,
+            "success_rate": 0.0,
+            "last_fix": "",
+            "fix_templates": [],
+        }
+    )
     for e in entries:
         pid = e.get("pattern_id", "")
         if pattern_id_filter and pid != pattern_id_filter:
@@ -211,8 +234,12 @@ def _summarize(mod: Any, p: dict) -> dict:
         results.append(s)
 
     results.sort(key=lambda x: (-x["fixes"], -x["success_rate"]))
-    return {"status": "ok", "action": "summarize", "entries": results[:limit],
-            "total_patterns": len(results)}
+    return {
+        "status": "ok",
+        "action": "summarize",
+        "entries": results[:limit],
+        "total_patterns": len(results),
+    }
 
 
 def _query(mod: Any, p: dict) -> dict:
@@ -227,5 +254,4 @@ def _query(mod: Any, p: dict) -> dict:
     if session_filter:
         entries = [e for e in entries if e.get("session") == session_filter]
 
-    return {"status": "ok", "action": "query", "entries": entries[-limit:],
-            "total": len(entries)}
+    return {"status": "ok", "action": "query", "entries": entries[-limit:], "total": len(entries)}

@@ -30,6 +30,7 @@ Output schema
   "config": {...}
 }
 """
+
 from __future__ import annotations
 
 import importlib.util

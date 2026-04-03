@@ -77,9 +77,7 @@ _RULES: list[dict[str, Any]] = [
     {
         "pattern": "MYPY-CIPHER-UNION",
         "code": "assignment",
-        "regex": re.compile(
-            r"Incompatible types in assignment.*AESGCM|ChaCha20|Fernet", re.I
-        ),
+        "regex": re.compile(r"Incompatible types in assignment.*AESGCM|ChaCha20|Fernet", re.I),
         "fix_available": True,
         "fix_description": (
             "Annotate self.cipher as Union[Fernet, AESGCM, ChaCha20Poly1305] "
@@ -92,7 +90,7 @@ _RULES: list[dict[str, Any]] = [
         "code": "union-attr",
         "regex": re.compile(
             r'Item "(?:DHPrivateKey|X25519PrivateKey|X448PrivateKey|Ed[0-9]+PrivateKey)'
-            r'.*has no attribute',
+            r".*has no attribute",
             re.I,
         ),
         "fix_available": True,
@@ -116,9 +114,7 @@ _RULES: list[dict[str, Any]] = [
     {
         "pattern": "MYPY-ARG-NONE",
         "code": "arg-type",
-        "regex": re.compile(
-            r'Argument 1 to "get" of "dict".*expected "str"', re.I
-        ),
+        "regex": re.compile(r'Argument 1 to "get" of "dict".*expected "str"', re.I),
         "fix_available": True,
         "fix_description": (
             "Guard the key: ``dict.get(key)`` where key is ``str | None`` → "
@@ -151,9 +147,7 @@ _RULES: list[dict[str, Any]] = [
     {
         "pattern": "MYPY-CALL-ARG",
         "code": "call-arg",
-        "regex": re.compile(
-            r"Missing named argument|Too many arguments for", re.I
-        ),
+        "regex": re.compile(r"Missing named argument|Too many arguments for", re.I),
         "fix_available": True,
         "fix_description": (
             "Add missing required argument to constructor/call, or add "
@@ -202,6 +196,7 @@ _ERROR_RE = re.compile(
 # Helper — locate repo root
 # ---------------------------------------------------------------------------
 
+
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[4]  # src/codex/skills/mypy_manager → root
 
@@ -209,6 +204,7 @@ def _repo_root() -> Path:
 # ---------------------------------------------------------------------------
 # Parse mypy output into structured records
 # ---------------------------------------------------------------------------
+
 
 def _parse_errors(raw: str) -> list[dict[str, Any]]:
     """Parse raw mypy stdout into a list of error dicts."""
@@ -274,6 +270,7 @@ def _run_mypy(src_dir: Path) -> str:
 # Aggregate helpers
 # ---------------------------------------------------------------------------
 
+
 def _by_pattern(errors: list[dict[str, Any]]) -> dict[str, int]:
     counts: dict[str, int] = defaultdict(int)
     for e in errors:
@@ -292,6 +289,7 @@ def _by_file(errors: list[dict[str, Any]]) -> dict[str, int]:
 # Baseline helpers
 # ---------------------------------------------------------------------------
 
+
 def _read_baseline(baseline_path: Path) -> int:
     if baseline_path.exists():
         try:
@@ -309,6 +307,7 @@ def _write_baseline(baseline_path: Path, count: int) -> None:
 # PDA Loop logging
 # ---------------------------------------------------------------------------
 
+
 def _pda_log(
     errors: list[dict[str, Any]],
     fixes: list[dict[str, Any]],
@@ -325,9 +324,7 @@ def _pda_log(
     with pda_path.open("a", encoding="utf-8") as f:
         # Log each unique pattern as a failure entry
         for pattern, count in by_pat.items():
-            rule = next(
-                (r for r in _RULES if r["pattern"] == pattern), None
-            )
+            rule = next((r for r in _RULES if r["pattern"] == pattern), None)
             entry: dict[str, Any] = {
                 "type": "failure",
                 "timestamp": ts,
@@ -336,9 +333,7 @@ def _pda_log(
                 "workflow": "mypy Baseline (Type-Check Anti-Regression)",
                 "error_text": f"{count} × [{pattern}]",
                 "root_cause": rule["fix_description"] if rule else "See mypy output",
-                "fix_template": (
-                    rule["fix_description"] if rule and rule["fix_available"] else ""
-                ),
+                "fix_template": (rule["fix_description"] if rule and rule["fix_available"] else ""),
                 "verification_cmd": "python scripts/ci/mypy_baseline.py --require-baseline",
                 "occurrences": count,
             }
@@ -362,6 +357,7 @@ def _pda_log(
 # ---------------------------------------------------------------------------
 # Automated fix applicators
 # ---------------------------------------------------------------------------
+
 
 def _fix_redundant_cast(src: str, line_no: int) -> tuple[str, bool]:
     """Remove cast(T, expr) → expr on the given 1-indexed line."""
@@ -392,7 +388,7 @@ def _fix_optional_import_fallback(src: str, line_no: int) -> tuple[str, bool]:
     if "type: ignore" in stripped:
         return src, False
     # Append at end of line, preserving original newline
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[assignment]" + nl
     return "".join(lines), True
 
@@ -406,7 +402,7 @@ def _fix_no_redef(src: str, line_no: int) -> tuple[str, bool]:
     stripped = original.rstrip("\n\r")
     if "type: ignore" in stripped:
         return src, False
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[no-redef]" + nl
     return "".join(lines), True
 
@@ -420,7 +416,7 @@ def _fix_none_guard(src: str, line_no: int) -> tuple[str, bool]:
     stripped = original.rstrip("\n\r")
     if "type: ignore" in stripped:
         return src, False
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[union-attr]" + nl
     return "".join(lines), True
 
@@ -434,7 +430,7 @@ def _fix_arg_none(src: str, line_no: int) -> tuple[str, bool]:
     stripped = original.rstrip("\n\r")
     if "type: ignore" in stripped:
         return src, False
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[arg-type]" + nl
     return "".join(lines), True
 
@@ -448,7 +444,7 @@ def _fix_typeddict(src: str, line_no: int) -> tuple[str, bool]:
     stripped = original.rstrip("\n\r")
     if "type: ignore" in stripped:
         return src, False
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[typeddict-item]" + nl
     return "".join(lines), True
 
@@ -462,7 +458,7 @@ def _fix_arg_type(src: str, line_no: int) -> tuple[str, bool]:
     stripped = original.rstrip("\n\r")
     if "type: ignore" in stripped:
         return src, False
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[arg-type]" + nl
     return "".join(lines), True
 
@@ -476,7 +472,7 @@ def _fix_call_arg(src: str, line_no: int) -> tuple[str, bool]:
     stripped = original.rstrip("\n\r")
     if "type: ignore" in stripped:
         return src, False
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[call-arg]" + nl
     return "".join(lines), True
 
@@ -490,7 +486,7 @@ def _fix_union_narrow(src: str, line_no: int) -> tuple[str, bool]:
     stripped = original.rstrip("\n\r")
     if "type: ignore" in stripped:
         return src, False
-    nl = original[len(stripped):]
+    nl = original[len(stripped) :]
     lines[line_no - 1] = stripped + "  # type: ignore[union-attr,arg-type,call-arg]" + nl
     return "".join(lines), True
 
@@ -577,6 +573,7 @@ def _apply_fixes(
 # ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
+
 
 def run(inputs: dict[str, Any]) -> dict[str, Any]:
     """Execute the mypy.manager skill."""

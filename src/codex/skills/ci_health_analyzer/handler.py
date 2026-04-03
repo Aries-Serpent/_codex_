@@ -232,9 +232,7 @@ def _trend_summary(history: list[dict]) -> dict:
     flap_rate = round(flaps / max(total - 1, 1), 3) if total > 1 else 0.0
 
     dominant_category = max(category_counts, key=lambda k: category_counts[k])
-    recurring_pattern_ids = [
-        pid for pid, cnt in pattern_counts.items() if cnt > 1
-    ]
+    recurring_pattern_ids = [pid for pid, cnt in pattern_counts.items() if cnt > 1]
 
     dominant_frac = category_counts[dominant_category] / total
     if dominant_frac >= 0.8:

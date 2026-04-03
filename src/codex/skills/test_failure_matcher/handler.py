@@ -101,7 +101,7 @@ _PATTERNS: list[dict[str, Any]] = [
             re.I | re.M,
         ),
         "fix": "xdist worker crash — check for forking issues, add --forked or reduce -n; "
-               "inspect worker stderr with -v -s",
+        "inspect worker stderr with -v -s",
     },
     {
         "id": "RP-XDIST-COLLECT",
@@ -112,7 +112,7 @@ _PATTERNS: list[dict[str, Any]] = [
             re.I | re.M,
         ),
         "fix": "xdist collection error — ensure conftest.py is importable in all workers; "
-               "use --import-mode=importlib if needed",
+        "use --import-mode=importlib if needed",
     },
     # Flaky test markers
     {
@@ -124,7 +124,7 @@ _PATTERNS: list[dict[str, Any]] = [
             re.I | re.M,
         ),
         "fix": "Flaky test detected — investigate root cause (timing, ordering, external I/O). "
-               "Add @pytest.mark.flaky(reruns=3) as a temporary measure; file a stability bug.",
+        "Add @pytest.mark.flaky(reruns=3) as a temporary measure; file a stability bug.",
     },
 ]
 

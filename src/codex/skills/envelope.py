@@ -45,6 +45,7 @@ from .telemetry import emit_event
 
 logger = logging.getLogger(__name__)
 
+
 class PolicyViolation(Exception):
     """Raised when a policy gate rejects an invocation."""
 

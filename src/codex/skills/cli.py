@@ -155,9 +155,7 @@ def cmd_browse(
             raise typer.Exit(1)
 
         archives = sorted(
-            p
-            for p in dist_path.iterdir()
-            if p.suffix in {".7z", ".zip"} and p.is_file()
+            p for p in dist_path.iterdir() if p.suffix in {".7z", ".zip"} and p.is_file()
         )
         if not archives:
             typer.echo(f"No .7z or .zip archives found in '{dist_path}'.")
@@ -568,8 +566,7 @@ def cmd_ff(
     """
     if not _FF_SCRIPT.exists():
         typer.echo(
-            "fast_forward_safe_files.py not found at expected path. "
-            "Run from the repository root.",
+            "fast_forward_safe_files.py not found at expected path. Run from the repository root.",
             err=True,
         )
         raise typer.Exit(1)
@@ -593,16 +590,16 @@ def cmd_ff(
     plan = ff_mod.build_plan(repo, token, pr, target, merge_mode, force_files)
 
     # Always show the plan
-    typer.echo(f"\n{'─'*60}")
+    typer.echo(f"\n{'─' * 60}")
     typer.echo(f"  Fast-Forward Plan — PR #{pr}  ({plan.pr_branch}@{plan.source_sha[:8]})")
     typer.echo(f"  Target: {target}   Mode: {merge_mode}   Dry-run: {dry_run}")
-    typer.echo(f"{'─'*60}")
+    typer.echo(f"{'─' * 60}")
     typer.echo(f"  ✅ Allowed  ({len(plan.allowed):>3}): " + (", ".join(plan.allowed[:5]) or "—"))
     if len(plan.allowed) > 5:
-        typer.echo(f"               … and {len(plan.allowed)-5} more")
+        typer.echo(f"               … and {len(plan.allowed) - 5} more")
     typer.echo(f"  ⏭️  Excluded ({len(plan.excluded):>3}): " + (", ".join(plan.excluded[:3]) or "—"))
     typer.echo(f"  🚫 Denied   ({len(plan.denied):>3}): " + (", ".join(plan.denied) or "—"))
-    typer.echo(f"{'─'*60}\n")
+    typer.echo(f"{'─' * 60}\n")
 
     if dry_run:
         typer.echo("🔕 DRY-RUN: no changes made. Pass --no-dry-run to apply.")
@@ -638,7 +635,7 @@ def cmd_ff(
         elif status == "direct-pushed":
             typer.echo(
                 f"🚀 Direct-pushed to {result['target_branch']}  "
-                f"(new SHA: {result.get('new_sha','?')[:8]})"
+                f"(new SHA: {result.get('new_sha', '?')[:8]})"
             )
         else:
             typer.echo(f"Status: {status}")
