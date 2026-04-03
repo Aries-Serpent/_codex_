@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S299 — PR #3854 — RFC-001, P2-A session-done dedup, RC-5 build_comment_context)
+### Fixed (S300 — PR #3854 — RC-3/RC-4 discussion bridge, P5-C TTL fix, S221 blocking-count, CB-001 Typer)
+- **RC-3 — `discussion-response-bridge.yml`**: New workflow triggered on `discussion_comment` events; extracts PR number from discussion title (`PR #<N>` pattern) or body tag (`<!-- pr-number:<N> -->`), then posts a compact bridge notification to the PR thread so Copilot sees maintainer discussion replies; deduped by `<!-- discussion-bridge:{disc}:{comment_id} -->` marker
+- **RC-4 — `post-accountability-to-discussion.yml`**: Replaced hardcoded `DISCUSSION_NUMBER = 3673` with dynamic per-PR discussion lookup; searches for an existing discussion titled `📋 Agent Accountability — PR #<N>` using GraphQL; falls back to global #3673 if not found; uses `last: 50` for dedup check (backward pagination)
+- **P5-C — `agent-auth-delegation.yml`**: Fixed incorrect echo message `expires in 4h` → `expires in 1h` (the actual TTL was already correctly set to `3600s`)
+- **S221 blocking-count — `copilot-agent-checkin.yml`**: Added `check_pr_comments.py` step that counts unaddressed blocking+warning comments and passes `BLOCKING_COUNT` env var into S221 missed-trigger retrigger body; retrigger now includes `⚠️ N blocking comment(s) still unaddressed` note
+- **Dynamic Q1/Q2/Q3 — `copilot-agent-checkin.yml`**: Added Python step that reads `.codex/aftermath/failure_pattern_solutions.yaml` and generates Q1/Q2/Q3 from top-3 patterns by occurrence count; static fallbacks preserved for when PDA YAML is unavailable; check-in body now reflects current CI patterns rather than stale session-epoch questions
+- **CB-001 — `src/codex_cli/app.py`**: Fixed E402 import ordering (`import os`, `Iterable`, `Sequence`, `Path`, `Optional` moved above `logger = ...`); removed `hasattr(_typer, "Typer")` guard (always True, was a dead check); `noqa: E402` annotations removed
+
+
 - **RFC-001 skill-agent binding**: Created `.codex/plans/RFC-001-skill-agent-binding.md` — full RFC body with problem statement, priority scoring algorithm `Priority = (Impact × CB_Alignment × Recurrence) / Effort`, 4-stage graduation pipeline (script → skill wrapper → registry binding → Copilot-accessible), and `orchestrator_routing.py` `select_skill()` design
 - **P2-A — `copilot-agent-session-done.yml`**: Replaced bare `createComment` for `@copilot review` with SHA-scoped upsert-by-marker: `<!-- session-done-dedup:{sha12} -->` embedded in each post; guard checks `allNodes` for marker before posting — prevents duplicate review triggers when same SHA triggers multiple `workflow_run` completions
 - **RC-5 — `build_comment_context()`**: Added public function to `scripts/ci/discussion_context_store.py` that returns a compact §A+§B+§D inline context block (≤1 000 chars) without requiring a GitHub Discussion; wired into `scripts/ci/post_rescue_comment.py` initial POST so rescue comments include live action queue inline

@@ -2,16 +2,16 @@
 
 > **Purpose:** Paste this entire block as a comment on PR #3854 to resume the
 > next Copilot session. Updated after every session until merge.
-> **Latest session:** S299 — 2026-04-03
+> **Latest session:** S300 — 2026-04-03
 
 ---
 
 ## 🔁 Resumption Command
 
 ```
-@copilot+claude-sonnet-4.6 Resume PR #3854, branch 0D_base_ — S298 follow-up.
+@copilot+claude-sonnet-4.6 Resume PR #3854, branch 0D_base_ — S301.
 
-Latest commit: S298 (HEAD)
+Latest commit: S300 (HEAD)
 Context files to load FIRST (mandatory pre-session protocol — §14.5 PR_LIFECYCLE):
 0. python scripts/ci/pre_session_context.py --repo Aries-Serpent/_codex_ --pr 3854
 1. .codex/CODEBASE_AGENCY_POLICY.md
@@ -22,6 +22,17 @@ Context files to load FIRST (mandatory pre-session protocol — §14.5 PR_LIFECY
 ```
 
 ---
+
+## ✅ S300 Completed
+
+| Item | Fix | Files |
+|------|-----|-------|
+| RC-3 `discussion-response-bridge.yml` | New workflow: `discussion_comment` → PR notification bridge with dedup marker | `.github/workflows/discussion-response-bridge.yml` |
+| RC-4 `post-accountability-to-discussion.yml` | Dynamic per-PR discussion lookup; falls back to #3673; uses `last:50` dedup | `.github/workflows/post-accountability-to-discussion.yml` |
+| P5-C TTL fix | Echo message "4h" → "1h" (TTL was already 3600s) | `.github/workflows/agent-auth-delegation.yml` |
+| S221 blocking-count | `check_pr_comments.py` count wired into retrigger body | `.github/workflows/copilot-agent-checkin.yml` |
+| Dynamic Q1/Q2/Q3 | Python step reads PDA YAML, generates Q1–Q3 from top patterns | `.github/workflows/copilot-agent-checkin.yml` |
+| CB-001 Typer API | Fixed E402 import ordering; removed dead `hasattr(_typer, "Typer")` guard | `src/codex_cli/app.py` |
 
 ## ✅ S299 Completed
 
@@ -68,10 +79,15 @@ gh workflow run discussion-cleanup.yml \
 ```
 526 duplicate comments in #3756/#3673 — manifest ready. Must be triggered by a human or external runner.
 
-### RFC-001 Phase 1: Schema + Registry (S300)
+### RFC-001 Phase 1: Schema + Registry (S301)
 - Add `skills` optional key to `.codex/schemas/AgentRegistrySchema.json`
 - Add `skills:` entries to 5 pilot agents in `AGENT_REGISTRY.yaml`
 - Skill wrappers: `pre_session_context`, `scan_failing_workflows`, `discussion_context`
+
+### Wire pre_session_context.py into copilot-agent-checkin.yml S221 body
+The pre_session_context.py §A/§B briefing should be appended to the retrigger body
+so the receiving agent session has immediate context. Add a step that runs
+`pre_session_context.py --brief` and pipes to `PRECESSION_BRIEFING` env var.
 
 ---
 
@@ -84,9 +100,10 @@ Add `detect-phase` step outputting `pre-approval | wec-approved | agent-active |
 Pattern: `"pre-commit.*failed|detect-secrets.*exit.*3|end-of-file-fixer.*fixed"`
 PDA ID: `RP-PRECOMMIT-FAILURE`
 
-### `agent_checkin.py` dynamic Q1/Q2/Q3
-Replace hardcoded static questions with dynamic questions from PDA pattern library.
-**File:** `scripts/ci/agent_checkin.py`
+### Wire `pre_session_context.py` into `copilot-agent-checkin.yml` body (§A+§B)
+Add full §A workflows+ETAs + §B blocking comments to the check-in body, not just
+the SCAN_TABLE. The retrigger body (S221 guard) already gets BLOCKING_COUNT (S300);
+add §B full list as a collapsible `<details>` block.
 
 ---
 

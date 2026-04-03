@@ -18,13 +18,12 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
+import os
+from collections.abc import Iterable, Sequence
+from pathlib import Path
+from typing import Optional
 
 logger = logging.getLogger(__name__)
-
-import os  # noqa: E402
-from collections.abc import Iterable, Sequence  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Optional  # noqa: E402
 
 REASONING_TEMPLATE_ROOT = Path(__file__).resolve().parents[2] / "configs" / "training" / "reasoning"
 REASONING_CURRICULA_ROOT = REASONING_TEMPLATE_ROOT / "curricula"
@@ -33,8 +32,7 @@ _USE_TYPER = False
 try:  # pragma: no cover - prefer Typer when available
     import typer as _typer
 
-    if hasattr(_typer, "Typer"):
-        _USE_TYPER = True
+    _USE_TYPER = True
 except Exception:  # pragma: no cover - Typer shadowed/unavailable
     _USE_TYPER = False
 

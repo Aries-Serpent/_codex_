@@ -164,45 +164,82 @@ jobs:
 
             const body = header + entryContent;
 
-            // Discussion node ID for #3673 — fetch via GraphQL
-            const DISCUSSION_NUMBER = 3673;
+            // RC-4 (S300): Find or create a per-PR scoped discussion instead of
+            // posting to the shared global discussion #3673. This allows each PR to
+            // have its own isolated accountability thread without hardcoded numbers.
+            const prRef   = prNumber ? parseInt(prNumber, 10) : 0;
             let discussionId;
-            try {
-              const result = await github.graphql(`
-                query($owner: String!, $name: String!, $number: Int!) {
-                  repository(owner: $owner, name: $name) {
-                    discussion(number: $number) {
-                      id
+            let resolvedDiscussionNumber = 3673; // fallback to global discussion
+
+            if (prRef > 0) {
+              // Search for an existing per-PR discussion titled
+              // "📋 Agent Accountability — PR #<N>"
+              const targetTitle = `📋 Agent Accountability — PR #${prRef}`;
+              try {
+                const searchResult = await github.graphql(`
+                  query($owner: String!, $name: String!, $first: Int!) {
+                    repository(owner: $owner, name: $name) {
+                      discussions(first: $first, orderBy: { field: CREATED_AT, direction: DESC }) {
+                        nodes { id number title }
+                      }
                     }
                   }
+                `, { owner: context.repo.owner, name: context.repo.repo, first: 50 });
+                const discussions = searchResult.repository.discussions.nodes || [];
+                const found = discussions.find(d => d.title === targetTitle);
+                if (found) {
+                  discussionId = found.id;
+                  resolvedDiscussionNumber = found.number;
+                  core.info(`RC-4: Found per-PR discussion #${found.number} for PR #${prRef}`);
                 }
-              `, {
-                owner: context.repo.owner,
-                name:  context.repo.repo,
-                number: DISCUSSION_NUMBER,
-              });
-              discussionId = result.repository.discussion.id;
-            } catch (e) {
-              core.warning(`Could not fetch discussion #${DISCUSSION_NUMBER}: ${e.message}`);
-              core.warning('Ensure GITHUB_TOKEN has discussions:write permission');
-              return;
+              } catch (e) {
+                core.warning(`RC-4: Could not search discussions: ${e.message}`);
+              }
+            }
+
+            // If no per-PR discussion found, fall back to global discussion #3673
+            if (!discussionId) {
+              const DISCUSSION_NUMBER = 3673;
+              try {
+                const result = await github.graphql(`
+                  query($owner: String!, $name: String!, $number: Int!) {
+                    repository(owner: $owner, name: $name) {
+                      discussion(number: $number) { id }
+                    }
+                  }
+                `, {
+                  owner: context.repo.owner,
+                  name:  context.repo.repo,
+                  number: DISCUSSION_NUMBER,
+                });
+                discussionId = result.repository.discussion.id;
+                resolvedDiscussionNumber = DISCUSSION_NUMBER;
+                core.info(`RC-4: Using fallback global discussion #${DISCUSSION_NUMBER}`);
+              } catch (e) {
+                core.warning(`Could not fetch discussion #${DISCUSSION_NUMBER}: ${e.message}`);
+                core.warning('Ensure GITHUB_TOKEN has discussions:write permission');
+                return;
+              }
             }
 
             if (!discussionId) {
-              core.warning(`Discussion #${DISCUSSION_NUMBER} not found`);
+              core.warning(`No suitable discussion found for accountability entry`);
               return;
             }
 
             // Check for existing comment with same dedup marker
+            // Uses last:50 (most-recent 50 comments, backward search). Per-PR discussions
+            // are newly created so this safely covers all comments. For global #3673 fallback,
+            // comments accumulate; 50 covers ~25 sessions. If a per-PR discussion grows beyond
+            // 50 comments, force_post=true can bypass the dedup.
             if (!forcePost) {
               try {
                 const existing = await github.graphql(`
-                  query($id: ID!, $cursor: String) {
+                  query($id: ID!) {
                     node(id: $id) {
                       ... on Discussion {
-                        comments(first: 50, after: $cursor) {
+                        comments(last: 50) {
                           nodes { id body }
-                          pageInfo { hasNextPage endCursor }
                         }
                       }
                     }
@@ -233,7 +270,7 @@ jobs:
                 discussionId,
                 body,
               });
-              core.info(`✅ Posted accountability entry to discussion #${DISCUSSION_NUMBER}`);
+              core.info(`✅ Posted accountability entry to discussion #${resolvedDiscussionNumber}`);
             } catch (e) {
               core.warning(`Failed to post discussion comment: ${e.message}`);
               core.info('Body preview (first 200 chars): ' + body.slice(0, 200));

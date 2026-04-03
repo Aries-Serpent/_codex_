@@ -1521,7 +1521,7 @@ jobs:
             "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL. Renew by re-triggering agent-auth-delegation."
           }
           EOF
-          echo "✅ Session token written (expires in 4h at epoch ${EXPIRY})"
+          echo "✅ Session token written (expires in 1h at epoch ${EXPIRY})"
           cat .codex/agent_auth_session.json
         shell: bash
 
