@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S296 — PR #3854 — CodeQL/dedup hardening, P6-A workflow scanner, RAG coverage 97-100%, cli.py import)
+### Fixed (S298 — PR #3854 — CodeQL implicit-concat/unused-globals, escalate job upsert, PR_LIFECYCLE §14.1/§14.5/§7.2 updates, Pattern 8 auto-fix upgrade)
+- **CodeQL 12784/12785**: `scripts/ci/pre_session_context.py` — fixed implicit string concatenation at lines 537–539 and 642–643 (joined into explicit parenthesised strings)
+- **CodeQL 12781**: `scripts/ci/discussion_cleanup.py` — removed unused `_GQL_ID_RE` regex constant
+- **CodeQL 12782/12783**: `scripts/ci/discussion_context_store.py` — removed unused `_DISCUSSION_ACCOUNTABILITY` and `_CAT_QA` constants
+- **F541 (ruff)**: `scripts/ci/discussion_cleanup.py` and `discussion_context_store.py` — removed extraneous `f` prefix from plain strings
+- **F401 (ruff)**: `scripts/ci/scan_failing_workflows.py` — removed unused `import urllib.parse`
+- **`iterative-self-healing-ci.yml` escalate job**: Replaced standalone `gh pr comment` with `post_rescue_comment.py` — escalation appends to canonical `<!-- ci-rescue-sha:{pr}:{sha} -->` thread; checkout uses `refs/heads/main` (trusted) to prevent untrusted-checkout CodeQL alert
+- **`auto_fix_common_issues.py` Pattern 8 (CodeQL Alerts)**: Upgraded from informational-only to auto-fixable for F401; `ruff --fix --select F401` applied to `src/`, `tests/`, `scripts/`; F841 informational only; `"CodeQL Alerts"` moved to `auto_fixable_patterns`
+- **`docs/ci/PR_LIFECYCLE.md` v1.9.0**: §7.2 rescue cascade, §14.1 gap analysis (S297/S298 gaps), §14.5 P6-B/C pre-session tools, §16.1 trigger map
+
+### Fixed (S297 — PR #3854 — Discussion infrastructure, mcp_poster dedup, pre-session context)
 - **CodeQL 12779/12780**: `scan_failing_workflows.py` lines 114 and 192 — added explanatory comments to empty `except` clauses (`pass  # malformed ISO timestamp...`, `pass  # eta_str didn't match...`)
 - **CodeQL 12777**: `migrate_rescue_comments.py` — removed unused global `_STEP_TEMPLATE` variable
 - **CodeQL 12778**: `scan_failing_workflows.py` line 93 — removed unused `encoded` variable

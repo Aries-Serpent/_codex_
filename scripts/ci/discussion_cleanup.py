@@ -84,9 +84,6 @@ from typing import Any
 _OWNER = "Aries-Serpent"
 _REPO  = "_codex_"
 
-# GraphQL node-ID regex — used to recognise IDs returned by the API
-_GQL_ID_RE = re.compile(r"^[A-Za-z0-9+/=_-]{10,}$")
-
 # Marker extraction: capture the FIRST <!-- ... --> HTML comment in a body
 _MARKER_RE = re.compile(r"<!--\s*([\w][^>]{2,80}?)\s*-->")
 
@@ -401,7 +398,7 @@ def cmd_dedup(
         print(f"\n{'─'*60}")
         print(f"🔎 Would delete : {overall_deleted}")
         print(f"⏭️  Would skip   : {overall_skipped}")
-        print(f"\nRe-run with --execute to apply these deletions.")
+        print("\nRe-run with --execute to apply these deletions.")
         return 1 if overall_deleted > 0 else 0
 
     return 0
@@ -571,16 +568,16 @@ def cmd_generate_manifest(
     print(f"   Skipped   : {ts}  (have replies or protected)")
     print()
     print("Next steps:")
-    print(f"  # Review the manifest:")
+    print("  # Review the manifest:")
     print(f"  cat {output_path}")
     print()
-    print(f"  # Execute directly:")
+    print("  # Execute directly:")
     print(f"  python scripts/ci/discussion_cleanup.py execute-manifest --manifest {output_path}")
     print()
-    print(f"  # OR trigger the cleanup workflow:")
-    print(f"  gh workflow run discussion-cleanup.yml \\")
+    print("  # OR trigger the cleanup workflow:")
+    print("  gh workflow run discussion-cleanup.yml \\")
     print(f"      -f manifest_path={output_path} \\")
-    print(f"      -f execute=true")
+    print("      -f execute=true")
 
     return 1 if td > 0 else 0
 

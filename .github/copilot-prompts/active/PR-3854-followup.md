@@ -2,17 +2,18 @@
 
 > **Purpose:** Paste this entire block as a comment on PR #3854 to resume the
 > next Copilot session. Updated after every session until merge.
-> **Latest session:** S296 — 2026-04-03
+> **Latest session:** S298 — 2026-04-03
 
 ---
 
 ## 🔁 Resumption Command
 
 ```
-@copilot+claude-sonnet-4.6 Resume PR #3854, branch 0D_base_ — S296 follow-up.
+@copilot+claude-sonnet-4.6 Resume PR #3854, branch 0D_base_ — S298 follow-up.
 
-Latest commit: S296 (HEAD)
-Context files to load FIRST:
+Latest commit: S298 (HEAD)
+Context files to load FIRST (mandatory pre-session protocol — §14.5 PR_LIFECYCLE):
+0. python scripts/ci/pre_session_context.py --repo Aries-Serpent/_codex_ --pr 3854
 1. .codex/CODEBASE_AGENCY_POLICY.md
 2. docs/ci/PR_LIFECYCLE.md
 3. .codex/plans/pr_lifecycle_improvements.md   ← improvement plan (P1–P6)
@@ -22,30 +23,33 @@ Context files to load FIRST:
 
 ---
 
-## ✅ S296 Completed
+## ✅ S298 Completed
 
 | Item | Fix | Files |
 |------|-----|-------|
-| P6-A wire | `scan_failing_workflows.py` called from `checkin-post-on-push` job; scan table embedded in S221 re-trigger body | `copilot-agent-checkin.yml` |
-| P5-C | `COPILOT_ACTIVE_SESSION` TTL 4h→1h (14400→3600) | `agent-auth-delegation.yml` |
-| P5-D | SC2086/SC2129 fixed in `admin_setup_verification.yml` — all `# shellcheck disable` removed, echo redirects grouped | `admin_setup_verification.yml` |
-| P5-A | `D_ACTIVATION_CHECKLIST.md` created with pre-activation, GitHub Actions steps, post-verification, rollback | `docs/admin/D_ACTIVATION_CHECKLIST.md` |
-| Code review | Age display in re-trigger: now shows `Xh Ym ago` for ≥ 60 min instead of `~X min ago` | `copilot-agent-checkin.yml` |
-| Code review | Regex precision in quality section: `[^>]+` → `[a-f0-9]{12}:\d+` (exact marker format) | `copilot-agent-session-done.yml` |
+| CodeQL 12784/12785 | `pre_session_context.py` implicit string concatenation fixed | `scripts/ci/pre_session_context.py` |
+| CodeQL 12781 | `discussion_cleanup.py` unused `_GQL_ID_RE` removed | `scripts/ci/discussion_cleanup.py` |
+| CodeQL 12782/12783 | `discussion_context_store.py` unused `_DISCUSSION_ACCOUNTABILITY`, `_CAT_QA` removed | `scripts/ci/discussion_context_store.py` |
+| F541/F401 | 7 bare f-strings fixed; `urllib.parse` unused import removed | discussion scripts, `scan_failing_workflows.py` |
+| escalate job | Standalone `gh pr comment` → `post_rescue_comment.py`; checkout from `refs/heads/main` (trusted) | `iterative-self-healing-ci.yml` |
+| Pattern 8 | F401 now auto-fixable in CodeQL scan; `"CodeQL Alerts"` → `auto_fixable_patterns` | `auto_fix_common_issues.py` |
+| PR_LIFECYCLE v1.9.0 | §7.2 cascade, §14.1 gaps, §14.5 P6-B/C tools, §16.1 map | `docs/ci/PR_LIFECYCLE.md` |
+| Self-healing escalation RCA | comment #4183926920 explained (fired because escalate job pre-dated S294 upsert system); fixed by S298 | accountability report |
 
-## ✅ S293 Completed (previous session)
+## ✅ S297 Completed (previous session)
 
 | Item | Fix | Files |
 |------|-----|-------|
-| P1-A | S221 guard regex — now matches `ci-rescue-sha` marker | `copilot-agent-checkin.yml` |
-| P1-B | `test-rag.yml` rescue → SHA-scoped POST-only (no 403 PATCH risk) | `test-rag.yml` |
-| P1-C | `actionlint-audit.yml` rescue posts as @mbaetiong (`github-token` added) | `actionlint-audit.yml` |
-| P1-D | SC2269 self-assignment removed from `workflow-execution-gate.yml` | `workflow-execution-gate.yml` |
-| CB skill audit | 9 skills fully installable; `pda.loop.logger` + `ci.monitor.proactive` created | `src/codex/skills/` |
+| mcp_poster dedup | `_find_discussion_comment` → `last:100` backward pagination | `src/codex/github/mcp_poster.py` |
+| RC-3 | `check_discussion_replies` — detect unread maintainer replies | `src/codex/github/mcp_poster.py` |
+| RC-4 | `find_or_create_pr_discussion` — auto-create per-PR discussions | `src/codex/github/mcp_poster.py` |
+| P6-B | `scripts/ci/pre_session_context.py` — hardened pre-session briefing | `scripts/ci/pre_session_context.py` |
+| P6-C | `scripts/ci/discussion_context_store.py` — push-model context store | `scripts/ci/discussion_context_store.py` |
+| Discussion cleanup | `discussion_cleanup.py` CLI + `discussion-cleanup.yml` workflow | `scripts/ci/discussion_cleanup.py` |
 
 ---
 
-## �� Priority 1 — Next Session Start Here
+## 🔴 Priority 1 — Next Session Start Here
 
 ### RFC-001: Skill-Agent Binding (incomplete — needs full body)
 **File:** `.codex/plans/RFC-001-skill-agent-binding.md`
@@ -54,9 +58,7 @@ Context files to load FIRST:
 - Problem statement (agents declare no skills → orchestrator can't route)
 - Proposed solution: add `skills:` array to `AGENT_REGISTRY.yaml` entries
 - Priority scoring algorithm: `Priority = (Impact × CB_Alignment × Recurrence) / Effort`
-- Continual Improvement Loop (CIL) specification
 - Skill Graduation Pipeline: `script → skill wrapper → AGENT_REGISTRY binding → Copilot-accessible`
-- Implementation roadmap with acceptance criteria
 - Wire into `orchestrator_routing.py` so skill capability_tags drive agent selection
 
 ### P2-A: `copilot-agent-session-done.yml` duplicate comment dedup
@@ -65,7 +67,17 @@ Context files to load FIRST:
 Use marker `<!-- session-done-dedup:{sha12} -->`.
 Each push → exactly ONE session-done comment.
 
-### ~~P5-C: COPILOT_ACTIVE_SESSION TTL~~ ✅ DONE (S296)
+### Execute discussion cleanup manifest
+```bash
+gh workflow run discussion-cleanup.yml \
+  -f manifest_path=.codex/cleanup/discussion_cleanup_manifest.json \
+  -f execute=true
+```
+526 duplicate comments in #3756/#3673 — manifest ready, just needs execution.
+
+### Wire `post_rescue_comment.py` context-embedding (RC-5)
+Call `build_comment_context()` on initial POST so rescue comments include §A+§B+§D inline.
+**File:** `scripts/ci/post_rescue_comment.py`
 
 ---
 
@@ -73,62 +85,52 @@ Each push → exactly ONE session-done comment.
 
 ### P2-C: Phase detection output in `workflow-execution-gate.yml`
 Add `detect-phase` step outputting `pre-approval | wec-approved | agent-active | ready-to-review`.
-Include phase label in gate summary comment.
-
-### ~~P5-A~~ ✅ DONE (S296)
-
-### ~~P5-D~~ ✅ DONE (S296)
 
 ### P5-E: Add `pre-commit-failure` pattern to `.codex/patterns/ci_failure_patterns.yaml`
 Pattern: `"pre-commit.*failed|detect-secrets.*exit.*3|end-of-file-fixer.*fixed"`
 PDA ID: `RP-PRECOMMIT-FAILURE`
+
+### `agent_checkin.py` dynamic Q1/Q2/Q3
+Replace hardcoded static questions with dynamic questions from PDA pattern library.
+**File:** `scripts/ci/agent_checkin.py`
 
 ---
 
 ## 🟢 Priority 3 — Enhancement
 
 ### P2-B: comment-gate cascade guard
-Add `!endsWith(github.event.comment.user.login, '[bot]')` to `comment-review-gate.yml` `if:` condition.
-
-### P3-A: ci-rescue.yml 90-second dedup delay
-Add `sleep 90` + marker pre-check to collapse concurrent same-SHA failures.
+Add `!endsWith(github.event.comment.user.login, '[bot]')` to `comment-review-gate.yml` `if:`.
 
 ### P3-C: Proactive monitor per-PR daily cap
 State file `.codex/ci_monitor_state.json` — cap 5 posts per PR per calendar day.
 
 ---
 
-## 🔵 Priority 4 — CB Infrastructure (P5-B, F, G, H)
+## 🔵 Cognitive Brain Status
 
-See full specs in `.codex/plans/pr_lifecycle_improvements.md` §Priority 5.
-
----
-
-## Pre-Session Checklist
-
-```bash
-# 1. Verify actionlint still clean
-/tmp/actionlint .github/workflows/*.yml 2>&1 | grep -v "^$" | head -5
-
-# 2. Verify skills registry
-python3 -c "
-from codex.skills.registry import reset_registry, get_registry
-reset_registry(); reg = get_registry(); reg.discover()
-print(f'{len(reg)} skills registered')
-for s in reg.list(capability_tag='cognitive-brain'):
-    print(f'  🧠 {s.skill_id}')
-"
-
-# 3. CI status
-# Use GitHub MCP: list_workflow_runs owner=Aries-Serpent repo=_codex_ resource_id=0D_base_
-
-# 4. PDA summary
-python scripts/ci/pda_failure_logger.py summarize
+```
+Operating Model: E (advisory) — D_CAPABLE gates pass, human activation pending
+AGENT_REGISTRY: v1.9.0 (152 agents)
+Pattern 8: ✅ F401 now auto-fixable in CodeQL scan
+Pattern 1 + Pattern 8: dual coverage of unused imports
+Session: S298 complete
+Next: S299 — P1 priorities above
 ```
 
 ---
 
-## ⚠️ Known Pre-existing Issue (do NOT fix in this PR)
-`tests/skills/test_browse_command.py` — `ModuleNotFoundError: No module named 'typer'`
-This collection error is pre-existing (pre-S293). Run skills tests with:
-`python3 -m pytest tests/skills/ --ignore=tests/skills/test_browse_command.py`
+## Pre-Session Checklist (§14.5 PR_LIFECYCLE.md — MANDATORY)
+
+```bash
+# ALWAYS-FIRST — run before any code changes:
+python scripts/ci/pre_session_context.py --repo Aries-Serpent/_codex_ --pr 3854
+
+# Verify Pattern 8 CodeQL scan is clean:
+python scripts/ci/auto_fix_common_issues.py --check-only --pattern 8
+
+# Verify full F401 scan clean:
+python -m ruff check . --select F401 --output-format=concise
+
+# Verify actionlint clean:
+/tmp/actionlint .github/workflows/*.yml 2>&1 | grep -v "^$" | head -5 || echo "✅ clean"
+```

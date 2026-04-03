@@ -155,8 +155,6 @@ def scan(
       sha       — the scanned SHA
       summary   — human-readable markdown table
     """
-    import urllib.parse  # noqa: PLC0415 (local import OK here)
-
     check_runs = _paginate_check_runs(owner, repo, sha, token)
     if check_runs is None:
         return {"error": "API failure", "failing": [], "in_progress": [], "monitor": []}

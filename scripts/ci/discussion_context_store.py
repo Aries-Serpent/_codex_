@@ -80,11 +80,9 @@ _REPO = "_codex_"
 
 # Discussion numbers for each target
 _DISCUSSION_QA = 3756           # fallback — Q&A check-in thread (always exists)
-_DISCUSSION_ACCOUNTABILITY = 3673
 
 # Category node IDs (resolved from the repo at time of implementation — S297)
 _CAT_SHOW_AND_TELL = "DIC_kwDOPf23ns4C0Ue3"   # 🙌 Show and tell (fallback if PSC unavailable)
-_CAT_QA            = "DIC_kwDOPf23ns4C0Ue1"   # ❓ Q&A
 
 # Marker prefix used in all discussion comments from this script
 _MARKER_PREFIX = "psc-meta"
@@ -588,7 +586,7 @@ def cmd_query(args: argparse.Namespace, token: str) -> int:
         # No exact SHA match — return the most recent entry as best-effort context
         entry = comments[-1] if comments else None
         if entry:
-            print(f"[discussion_context_store] No exact SHA match — returning latest entry",
+            print("[discussion_context_store] No exact SHA match — returning latest entry",
                   file=sys.stderr)
 
     if not entry:

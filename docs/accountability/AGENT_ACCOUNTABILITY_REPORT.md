@@ -3,7 +3,36 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-03T14:27Z S296
+**Last updated:** 2026-04-03T15:50Z S298
+
+---
+
+## SESSION SUMMARY — 2026-04-03T15:50Z S298 (PR #3854 — CodeQL fixes, escalate job upsert, PR_LIFECYCLE v1.9.0)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** New CI rescue comments #4183806320, #4183860532, #4183866866, #4183903417, #4183926920 reviewed ✅
+- [x] **0d.** CI failures investigated: Comment Review Gate (11 blocking on SHA 57d92af), CodeQL alerts on S297 new files ✅
+- [x] **0e.** Agency Policy §0: all issues fixed — no deferrals ✅
+- [x] **0f.** `docs/ci/PR_LIFECYCLE.md` fetched, reviewed, and updated to v1.9.0 ✅
+
+### Work Completed
+1. **CodeQL fixes (S297 new files):** `pre_session_context.py` — fixed implicit string concatenation (CodeQL 12784/12785); `discussion_cleanup.py` — removed unused `_GQL_ID_RE` (CodeQL 12781); `discussion_context_store.py` — removed unused `_DISCUSSION_ACCOUNTABILITY` and `_CAT_QA` (CodeQL 12782/12783).
+2. **ruff F401/F541 fixes:** `scan_failing_workflows.py` — removed unused `import urllib.parse`; `discussion_cleanup.py` and `discussion_context_store.py` — removed 7 F541 bare f-strings.
+3. **`iterative-self-healing-ci.yml` escalate job (S298):** Replaced standalone `gh pr comment` with `post_rescue_comment.py` (appends to canonical rescue thread); checkout changed from head_branch to `refs/heads/main` to prevent CodeQL untrusted-checkout alert.
+4. **`auto_fix_common_issues.py` Pattern 8 upgrade:** F401 (unused imports) promoted from informational to auto-fixable — `ruff --fix --select F401` applied to `src/tests/scripts/`; F841 stays informational; `"CodeQL Alerts"` moved to `auto_fixable_patterns` set; module docstring updated.
+5. **`docs/ci/PR_LIFECYCLE.md` v1.9.0:** §7.2 rescue cascade (P6-B step 0; escalate job updated); §14.1 gap analysis (S297/S298 items); §14.5 P6-B/C pre-session tools; §16.1 trigger map.
+6. **CHANGELOG.md:** S298 entry updated with Pattern 8 and F401 items.
+
+### Root Cause Analysis — Self-Healing Escalation Separate Comment (comment #4183926920)
+- **What caused it:** `iterative-self-healing-ci.yml` escalate job fires when `pattern=unknown` and calls `gh pr comment` unconditionally — always creates a new standalone comment with `<!-- self-healing-escalation -->` marker rather than appending to the existing CI rescue thread.
+- **Why it was separate:** The escalate job pre-dated the unified `post_rescue_comment.py` system (S294). It had its own 30-min dedup guard but not the SHA-scoped marker logic.
+- **Should it be appended to #4183903417?** Yes — both are for SHA `57d92af614f0` on the same PR. The escalation info belongs in the canonical CI rescue thread.
+- **Fix:** Migrated escalate job to call `post_rescue_comment.py` → escalation now appends to `<!-- ci-rescue-sha:{pr}:{sha} -->` thread. Existing `<!-- self-healing-escalation -->` in `SKIP_BODY_MARKERS` retained for historical comments.
+
+### WHY Analysis (§0d)
+- The 11 blocking comments on `57d92af` are accumulated `@mbaetiong` task prompts and unanswered CodeQL review threads. Replies needed for all `<comment_new>` items; fixed code pushed.
 
 ---
 

@@ -1,7 +1,7 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.8.0  
-> **Date:** 2026-04-03 (S295 — §7 collapsed rescue-comment sections; code-quality feedback loop; duplicate-comment dedup fix; FixedSizeChunker infinite-loop guard; S294 RAG test fixes)  
+> **Version:** 1.9.0  
+> **Date:** 2026-04-03 (S298 — §7.2 rescue cascade updated; §14.1 S297 gaps marked fixed; §14.5 P6-B/C pre-session tool documented; escalate job migrated to post_rescue_comment.py)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (55 failures / 14 workflows, 2026-04-03)
 
@@ -371,6 +371,15 @@ every per-failure section below the H2 headline. This keeps the PR clean and sca
 ### 7.2 Rescue Cascade (when all tiers are active)
 
 ```
+0. [ALWAYS-FIRST] Run pre-session briefing (P6-B — S297)
+   - python scripts/ci/pre_session_context.py --repo Aries-Serpent/_codex_ --pr <N>
+   - §A: workflow status + ETAs on HEAD SHA (failing checks flagged 🔴, near-done 🔔)
+   - §B: blocking PR comments (unaddressed, from mbaetiong / CI bots)
+   - §C: log snippets from first failed job
+   - §D: action queue (ordered list of what to fix now)
+   - §E: end-of-session skills checklist
+         │
+         ▼
 1. CHECK FAILS (e.g., validate.yml, test-rag.yml)
          │
          ▼
@@ -394,9 +403,11 @@ every per-failure section below the H2 headline. This keeps the PR clean and sca
    - PDA Loop: logs pattern + fix outcome
          │
          ▼
-5. [If Tier 2 unfixable] copilot-iterative-self-healing.yml
-   - 30-min dedup cooldown on <!-- self-healing-escalation --> marker
-   - Posts @copilot escalation comment
+5. [If Tier 2 unfixable] iterative-self-healing-ci.yml `escalate` job (S298)
+   - Pattern = 'unknown' / 'self-healing' / ''
+   - Calls post_rescue_comment.py → APPENDS to the existing
+     <!-- ci-rescue-sha:{pr}:{sha} --> thread on the PR (no new comment)
+   - Dedup is handled by the shared SHA marker (no 30-min standalone guard)
          │
          ▼
 6. Copilot session triggered
@@ -1029,7 +1040,7 @@ for malformed dependency entries.  See §11.6 for full classification table.
 This section documents gaps in the current automation pipeline identified from the triage data
 in §13, and the planned improvements to close each gap.
 
-### 14.1 Gap Analysis (updated S295)
+### 14.1 Gap Analysis (updated S298)
 
 | Gap | Current Behaviour | Target Behaviour | Status |
 |-----|------------------|-----------------|--------|
@@ -1049,6 +1060,10 @@ in §13, and the planned improvements to close each gap.
 | **Missed-Trigger Recovery posts static text** | S221 guard posts fixed boilerplate re-trigger even when relevant rescue comment is on the PR | S221 re-trigger includes link and quote of the last unanswered rescue comment (rescue ID `{pr}:{sha12}`) | ✅ Fixed S295 |
 | **FixedSizeChunker infinite loop when chunk_overlap >= chunk_size** | `chunk_overlap=100` with `chunk_size=100` → `start = end - overlap = 0` → loop restarts from 0 forever | Guard `if next_start <= start: next_start = end` forces forward | ✅ Fixed S295 |
 | **S294 RAG tests broken (ValidationResult, fallback hang, sliding-window)** | 3 new tests fail: missing `document_format`, fallback tests hang/return 0, window test 0 chunks | Fixed: add `document_format=DocumentFormat.UNKNOWN`; use char-only text; correct window params | ✅ Fixed S295 |
+| **No pre-session context tool** | Agent starts blind — must re-query failing checks, comments, logs manually each session | `scripts/ci/pre_session_context.py` (P6-B): §A workflow status+ETAs, §B blocking comments, §C log snippets, §D action queue, §E checklist | ✅ Fixed S297 |
+| **Discussion context lost between sessions** | Agent must rebuild context from scratch each session | `scripts/ci/discussion_context_store.py` (P6-C): push-model context store writes structured JSON briefing to GitHub Discussion; persists across sessions | ✅ Fixed S297 |
+| **Discussion #3756 accumulated 526 duplicate comments** | `_find_discussion_comment` searched `first:50` only — with 722 comments dedup marker never found → new comment on every push | Fixed to `last:100` backward pagination; `discussion_cleanup.py` CLI removes backlog; manifest at `.codex/cleanup/discussion_cleanup_manifest.json` | ✅ Fixed S297 |
+| **`escalate` job posts standalone comment (separate from rescue thread)** | `iterative-self-healing-ci.yml escalate` job posted `<!-- self-healing-escalation -->` as a new PR comment separate from the canonical rescue thread | Use `post_rescue_comment.py` to append to existing `<!-- ci-rescue-sha:{pr}:{sha} -->` thread | ✅ Fixed S298 |
 
 ### 14.2 Automation Cascade (Improved — S295)
 
@@ -1142,10 +1157,31 @@ in §13, and the planned improvements to close each gap.
 
 **⚠️ MANDATORY — Must complete ALL items before calling `report_progress` on the final commit.**
 
-#### Pre-Session: Load Required Context
+#### Pre-Session: Load Required Context (P6-B — S297)
+
+**Always run `pre_session_context.py` first** — it surfaces all failing checks, blocking comments,
+log snippets, and the ordered action queue before touching any code:
 
 ```bash
-# Always load these before starting any code changes:
+# ALWAYS-FIRST — run before any code changes:
+python scripts/ci/pre_session_context.py \
+  --repo Aries-Serpent/_codex_ \
+  --pr 3854
+
+# §A: Failing workflow checks + ETAs on HEAD SHA
+# §B: Blocking PR comments (unaddressed, need @copilot reply)
+# §C: Log snippet from first failed job
+# §D: Action queue — ordered list of what to fix
+# §E: End-of-session skills checklist
+
+# Optional: push the briefing into a GitHub Discussion for persistence (P6-C)
+python scripts/ci/discussion_context_store.py \
+  --repo Aries-Serpent/_codex_ \
+  --pr 3854
+```
+
+```bash
+# Also load these before starting any code changes:
 # 1. docs/ci/PR_LIFECYCLE.md          — this document (full workflow model)
 # 2. .codex/CODEBASE_AGENCY_POLICY.md  — §0 fix ALL issues found
 # 3. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — recent WHY analysis
@@ -1310,7 +1346,7 @@ ordered by impact. Columns: **T** = create, **U** = upsert, **🤖** = posts `@c
 | `reference-integrity.yml` | `pull_request`, `push`, `workflow_dispatch` | 2 | 1 | ✅ | SHA upsert |
 | `ci-failure-issue-creator.yml` | `workflow_run` (on failure) | 2 | 0 | ✅ | Issue label dedup |
 | `copilot-agent-checkin.yml` | **`push`**, `workflow_dispatch`, `issue_comment`, `workflow_run` | 2 | 0 | ✅ | `<!-- session-done-retrigger -->`, safety cap ≥3 |
-| `iterative-self-healing-ci.yml` | `workflow_run`, `workflow_dispatch` | 2 | 0 | ✅ | `<!-- copilot-healing:<sha12>:<category> -->` |
+| `iterative-self-healing-ci.yml` | `workflow_run`, `workflow_dispatch` | 2 | 0 | ✅ | `<!-- copilot-healing:<sha12>:<category> -->`; escalate job appends to `<!-- ci-rescue-sha:{pr}:{sha} -->` (S298) |
 | `copilot-session-chain.yml` | `workflow_dispatch`, `pull_request` | 2 | 0 | ✅ | `<!-- copilot-healing -->` |
 | `session-watchdog.yml` | `issue_comment` | 3 | 0 | ✅ | `issue_comment` filter |
 | `actionlint-audit.yml` | `pull_request`, **`push`** | 1 | 1 | ✅ | `<!-- ci-rescue:<pr>:sha-<sha12> -->` |

@@ -659,59 +659,37 @@ jobs:
        needs.triage.outputs.pattern == '')
 
     steps:
-      - name: Post escalation comment with documented RCA
+      - name: Checkout main (trusted) to get post_rescue_comment.py
+        # SECURITY: checkout from main (always trusted) — NOT the head branch.
+        # This workflow runs in workflow_run context with CODEX_MASTER_KEY; checking out
+        # a contributor's head branch would allow execution of untrusted code on a
+        # privileged runner. We only need post_rescue_comment.py from a known-good ref.
+        uses: actions/checkout@v4
+        with:
+          ref: refs/heads/main
+
+      - name: Append escalation to canonical CI rescue thread (S298)
+        # S298: Replaced standalone gh pr comment (<!-- self-healing-escalation -->)
+        # with post_rescue_comment.py so the escalation appends to the same
+        # <!-- ci-rescue-sha:{pr}:{sha} --> thread already on the PR.
+        # Dedup is now handled by post_rescue_comment.py's SHA-based marker logic:
+        # same SHA → append to existing comment; new SHA → create fresh comment.
+        # This prevents a separate blocking comment and removes the need for the
+        # standalone 30-min dedup guard (previously checked <!-- self-healing-escalation -->).
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PATTERN:      ${{ needs.triage.outputs.pattern }}
-          RUN_ID:       ${{ needs.triage.outputs.run_id }}
-          HEAD_BRANCH:  ${{ needs.triage.outputs.head_branch }}
+          REPO: Aries-Serpent/_codex_
+          COMMIT_SHA: ${{ needs.triage.outputs.head_sha }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
+          RUN_URL: ${{ github.server_url }}/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
+          WORKFLOW_NAME: "Self-Healing Escalation (pattern: ${{ needs.triage.outputs.pattern || 'unknown' }})"
+          BRANCH: ${{ needs.triage.outputs.head_branch }}
+          PR_NUMBER: ${{ needs.triage.outputs.pr_number }}
         run: |
-          PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
-            --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
-          if [ -n "$PR_NUMBER" ]; then
-            # ── Dedup guard: skip if an escalation comment was posted < 30 min ago ──
-            # Prevents cascade: each healer failure would otherwise post a new escalation
-            # comment, which triggers comment-review-gate, which triggers more healer runs.
-            LAST_POST=$(gh api \
-              "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
-              --jq '[.[] | select(.body | contains("<!-- self-healing-escalation -->"))] | last | .created_at // empty' \
-              2>/dev/null || echo "")
-            if [ -n "$LAST_POST" ]; then
-              NOW_TS=$(date +%s)
-              LAST_TS=$(date -d "${LAST_POST}" +%s 2>/dev/null || echo "0")
-              ELAPSED=$(( NOW_TS - LAST_TS ))
-              if [ "$ELAPSED" -lt 1800 ]; then
-                echo "::notice::Skipping escalation — last post was ${ELAPSED}s ago (< 30 min cooldown)"
-                echo "### ⏭️ Escalation Skipped (cooldown ${ELAPSED}s / 1800s)" >> "$GITHUB_STEP_SUMMARY"
-                exit 0
-              fi
-            fi
-            RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
-            printf '%s\n' \
-              "<!-- self-healing-escalation -->" \
-              "## Self-Healing Escalation" "" \
-              "**Pattern:** \`${PATTERN}\`" \
-              "**Run:** ${RUN_URL}" \
-              "**Branch:** \`${HEAD_BRANCH}\`" \
-              "**Auto-fixable:** No (pattern not in fixable set)" "" \
-              "### Why This Cannot Be Auto-Fixed" "" \
-              "Pattern \`${PATTERN}\` is not yet in the autonomous self-healing fix library." \
-              "Review \`.codex/healing_attempts/\` for previous fix attempts on this pattern." "" \
-              "### Recommended Actions" "" \
-              "1. Check the workflow run logs: ${RUN_URL}" \
-              "2. Add pattern to the \`case\` statement in \`iterative-self-healing-ci.yml\`" \
-              "3. Add a fix handler in \`scripts/ci/auto_fix_common_issues.py\`" "" \
-              "*Posted by: iterative-self-healing-ci.yml (Phase 5 — S154)*" \
-              "" \
-              "---" \
-              "_[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_" \
-              > /tmp/escalation_body.txt
-            gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
-              --body-file /tmp/escalation_body.txt
-          fi
+          python scripts/ci/post_rescue_comment.py
           echo "### Escalated to human review" >> "$GITHUB_STEP_SUMMARY"
-          echo "Pattern \`${PATTERN}\` is not auto-fixable." >> "$GITHUB_STEP_SUMMARY"
-          echo "See PR #${PR_NUMBER:-N/A} for escalation comment." >> "$GITHUB_STEP_SUMMARY"
+          echo "Pattern \`${{ needs.triage.outputs.pattern }}\` is not auto-fixable." >> "$GITHUB_STEP_SUMMARY"
+          echo "Appended to CI rescue thread for commit \`${{ needs.triage.outputs.head_sha }}\`." >> "$GITHUB_STEP_SUMMARY"
 
   # ── Job: Copilot Escalation — @copilot trigger for complex fixes (S182) ───
   # When auto-fix patterns cannot resolve the failure (fixable=false), this job
