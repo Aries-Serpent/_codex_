@@ -396,3 +396,158 @@ solutions:
       - "Validation Pipeline"
     last_session: S283
     last_seen: "2026-04-02T18:54Z"
+
+  # ── mypy patterns from JSONL telemetry (S286–S287) ───────────────────────
+
+  - pattern_id: RP-MYPY-UNUSED-IGNORE
+    display_name: "Stale # type: ignore comment"
+    category: python
+    occurrences: 15
+    fix_success_rate: 1.0
+    root_cause: >
+      A `# type: ignore` suppression was left in place after the underlying error
+      was fixed (e.g. stubs installed, code refactored). mypy 1.20 reports
+      'Unused "type: ignore[X]"'.
+    fix_template: |
+      # Detect:
+      python -m ruff check --select PGH003,PGH004 src/ tests/
+      # Fix: remove the # type: ignore comment on the reported line.
+      # If mypy.manager skill is available:
+      codex-skill mypy.manager fix --pattern MYPY-UNUSED-IGNORE
+    verification_cmd: "python scripts/ci/mypy_baseline.py --require-baseline"
+    affected_workflows:
+      - "mypy Baseline (Type-Check Anti-Regression)"
+    last_session: S287
+    last_seen: "2026-04-02T22:08Z"
+
+  - pattern_id: RP-MYPY-OPT-IMPORT
+    display_name: "Optional import fallback = None needs type: ignore[assignment]"
+    category: python
+    occurrences: 14
+    fix_success_rate: 0.9
+    root_cause: >
+      Pattern: `try: from pkg import Foo; except ImportError: Foo = None`.
+      When `--ignore-missing-imports` is NOT set, mypy sees `Foo` as `type[Foo]`
+      in the try-branch but `None` in the except-branch → assignment error.
+      S286 clarification: with `--ignore-missing-imports` + stubs absent the
+      ignore is UNUSED; only add when mypy actually fires [assignment].
+    fix_template: |
+      # Only add when mypy reports [assignment] on the except-branch line:
+      except ImportError:
+          Foo = None  # type: ignore[assignment]
+      # Verify the ignore is not unused:
+      python scripts/ci/mypy_baseline.py --require-baseline
+    verification_cmd: "python scripts/ci/mypy_baseline.py --require-baseline"
+    affected_workflows:
+      - "mypy Baseline (Type-Check Anti-Regression)"
+    last_session: S286
+    last_seen: "2026-04-02T22:08Z"
+
+  - pattern_id: RP-MYPY-NO-REDEF
+    display_name: "Function/variable redefinition in fallback branch"
+    category: python
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      A fallback stub function or variable is defined unconditionally after an
+      `if TYPE_CHECKING` or `try/except` block that already defines the same
+      name, causing mypy `[no-redef]`.
+    fix_template: |
+      # Add # type: ignore[no-redef] to the fallback definition line, OR
+      # restructure so the fallback is only defined in the except/else branch.
+      def foo(...) -> ...:  # type: ignore[no-redef]
+          ...
+    verification_cmd: "python scripts/ci/mypy_baseline.py --require-baseline"
+    affected_workflows:
+      - "mypy Baseline (Type-Check Anti-Regression)"
+    last_session: S287
+    last_seen: "2026-04-02T23:00Z"
+
+  - pattern_id: RP-MYPY-NONE-GUARD
+    display_name: "Attribute access on potentially-None value"
+    category: python
+    occurrences: 2
+    fix_success_rate: 1.0
+    root_cause: >
+      mypy sees that an object might be `None` at the point of attribute access
+      (e.g. `obj.attr` where `obj: Foo | None`). This is a `[union-attr]` error.
+    fix_template: |
+      # Guard with explicit None check:
+      if obj is not None:
+          obj.attr  # safe
+      # Or use assert:
+      assert obj is not None
+      obj.attr
+    verification_cmd: "python scripts/ci/mypy_baseline.py --require-baseline"
+    affected_workflows:
+      - "mypy Baseline (Type-Check Anti-Regression)"
+    last_session: S287
+    last_seen: "2026-04-02T23:00Z"
+
+  - pattern_id: RP-MYPY-ARG-TYPE
+    display_name: "Argument has incompatible type for parameter"
+    category: python
+    occurrences: 2
+    fix_success_rate: 1.0
+    root_cause: >
+      A function is called with an argument whose type does not match the
+      parameter annotation (e.g. `list[Any | None]` passed where `list[str]`
+      expected). Typical in places where `.get()` returns `Any | None`.
+    fix_template: |
+      # Filter/cast the value:
+      values: list[str] = [x for x in raw_list if x is not None]
+      # Or use cast():
+      from typing import cast
+      values = cast(list[str], raw_list)
+    verification_cmd: "python scripts/ci/mypy_baseline.py --require-baseline"
+    affected_workflows:
+      - "mypy Baseline (Type-Check Anti-Regression)"
+    last_session: S287
+    last_seen: "2026-04-02T23:00Z"
+
+  - pattern_id: RP-ACTIONLINT-WORKFLOW-OUTPUT
+    display_name: "Undefined workflow output used in actionlint"
+    category: workflow
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      A workflow job references `steps.<id>.outputs.<name>` or
+      `needs.<job>.outputs.<name>` that was never declared in the `outputs:`
+      section of the referenced job. actionlint reports SC-undefined-output.
+    fix_template: |
+      # Add the missing output declaration to the source job:
+      jobs:
+        triage:
+          outputs:
+            workflow_name: ${{ steps.set-outputs.outputs.workflow_name }}
+            pr_number:     ${{ steps.set-outputs.outputs.pr_number }}
+      # Verify:
+      actionlint .github/workflows/<affected>.yml
+    verification_cmd: "actionlint .github/workflows/iterative-self-healing-ci.yml"
+    affected_workflows:
+      - "Workflow Compliance Audit (actionlint)"
+      - "iterative-self-healing-ci.yml"
+    last_session: S285
+    last_seen: "2026-04-02T21:31Z"
+
+  - pattern_id: RP-SELF-HEALING-CASCADE
+    display_name: "Self-healing CI cascade (runaway retry loop)"
+    category: rate-limit
+    occurrences: 1
+    fix_success_rate: 1.0
+    root_cause: >
+      iterative-self-healing-ci.yml triggered itself recursively when its own
+      meta-workflows were not excluded from the triage scope, combined with
+      missing per-branch hourly rate-cap and comment dedup cooldown.
+    fix_template: |
+      # Three-layer fix in iterative-self-healing-ci.yml:
+      # 1. Expand workflow exclusion list (triage job `if:` block) to include
+      #    all meta/governance workflows (+12 entries in S283).
+      # 2. Add per-branch hourly rate-cap guard (>=10 runs/hr → skip).
+      # 3. Add 30-min dedup cooldown on <!-- self-healing-escalation --> marker
+      #    in the escalate job.
+    verification_cmd: "grep -c 'self-healing' .github/workflows/iterative-self-healing-ci.yml"
+    affected_workflows:
+      - "copilot-iterative-self-healing.yml"
+    last_session: S283
+    last_seen: "2026-04-02T19:07Z"

@@ -579,6 +579,11 @@ jobs:
           PATTERN:  ${{ needs.triage.outputs.pattern }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           CHANGED_FILES: ${{ steps.apply_fix.outputs.changed_files }}
+          # CB-003: expressions moved from run: body to env: to satisfy actionlint
+          MATRIX_ITERATION: ${{ matrix.iteration }}
+          TRIAGE_RUN_ID: ${{ needs.triage.outputs.run_id }}
+          RESOLVE_TARGET_BRANCH: ${{ steps.resolve-target.outputs.branch }}
+          RESOLVE_TARGET_REASON: ${{ steps.resolve-target.outputs.reason }}
           # Verify delegation is active before attempting autonomous push.
           # If COPILOT_AGENT_AUTH_ENABLED != 'true', the push will be attempted
           # anyway (CODEX_MASTER_KEY covers it), but a warning is emitted.
@@ -593,8 +598,8 @@ jobs:
           if [ -n "${HEAD_BRANCH}" ] && [ "${HEAD_BRANCH}" != "main" ]; then
             TARGET_BRANCH="${HEAD_BRANCH}"
           else
-            TARGET_BRANCH="${{ steps.resolve-target.outputs.branch || 'main' }}"
-            echo "🔀 Push target resolved: ${TARGET_BRANCH} (reason: ${{ steps.resolve-target.outputs.reason }})"
+            TARGET_BRANCH="${RESOLVE_TARGET_BRANCH:-main}"
+            echo "🔀 Push target resolved: ${TARGET_BRANCH} (reason: ${RESOLVE_TARGET_REASON})"
           fi
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
@@ -612,10 +617,10 @@ jobs:
             fi
           done
           git add ".codex/healing_attempts/" 2>/dev/null || true
-          git commit -m "self-heal(iter-${{ matrix.iteration }}): auto-fix ${PATTERN} [skip ci-if-no-change]
+          git commit -m "self-heal(iter-${MATRIX_ITERATION}): auto-fix ${PATTERN} [skip ci-if-no-change]
 
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
-          Iteration: ${{ matrix.iteration }} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
+          Iteration: ${MATRIX_ITERATION} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${TRIAGE_RUN_ID}
           COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
           # Fast-forward push to the triggering branch. Because the working tree
           # was already checked out at origin/${TARGET_BRANCH}, the fix commit is
@@ -624,12 +629,18 @@ jobs:
 
       - name: Report iteration
         if: always()
+        env:
+          MATRIX_ITERATION: ${{ matrix.iteration }}
+          TRIAGE_PATTERN: ${{ needs.triage.outputs.pattern }}
+          FIX_CHANGED: ${{ steps.apply_fix.outputs.changed }}
+          FIX_VALID: ${{ steps.validate.outputs.valid }}
+          FIX_CHANGED_FILES: ${{ steps.apply_fix.outputs.changed_files }}
         run: |
-          echo "### Self-Heal Iteration ${{ matrix.iteration }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Pattern: \`${{ needs.triage.outputs.pattern }}\`"      >> "$GITHUB_STEP_SUMMARY"
-          echo "- Changed: \`${{ steps.apply_fix.outputs.changed }}\`"   >> "$GITHUB_STEP_SUMMARY"
-          echo "- Valid:   \`${{ steps.validate.outputs.valid }}\`"      >> "$GITHUB_STEP_SUMMARY"
-          echo "- Files:   \`${{ steps.apply_fix.outputs.changed_files }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Self-Heal Iteration ${MATRIX_ITERATION}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Pattern: \`${TRIAGE_PATTERN}\`"      >> "$GITHUB_STEP_SUMMARY"
+          echo "- Changed: \`${FIX_CHANGED}\`"   >> "$GITHUB_STEP_SUMMARY"
+          echo "- Valid:   \`${FIX_VALID}\`"      >> "$GITHUB_STEP_SUMMARY"
+          echo "- Files:   \`${FIX_CHANGED_FILES}\`" >> "$GITHUB_STEP_SUMMARY"
 
   escalate:
     name: "Escalate to human"

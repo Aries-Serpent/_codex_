@@ -6,13 +6,13 @@ plus an aggregated summary.  All processing is in-process (no model calls).
 Supports both synchronous and async batching:
 - ``run(payload)``      — synchronous, processes items sequentially.
 - ``run_async(payload)``— async, processes items concurrently via
-  ``asyncio.gather`` (useful for large batches in async contexts).
+  ``asyncio.gather`` with a Semaphore-based ``max_concurrency`` gate
+  (useful for large batches in async contexts).
 """
 
 from __future__ import annotations
 
 import asyncio
-from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from codex.skills.aais import AAISScorer
@@ -101,17 +101,21 @@ def run(payload: dict) -> dict:
 async def run_async(payload: dict) -> dict:
     """Score a list of items with the AAIS rubric (async / concurrent).
 
-    Uses a ``ThreadPoolExecutor`` so the CPU-bound scoring does not block
-    the event loop.  Useful when calling from an async context with large
-    batches (e.g. 100+ items).
+    Dispatches each item to the default thread executor so CPU-bound scoring
+    does not block the event loop.  A ``max_concurrency`` semaphore caps the
+    number of items in flight simultaneously, preventing runaway memory use on
+    very large batches.
 
     Parameters
     ----------
     payload : dict
-        Same keys as :func:`run`.  Additional optional key:
+        Same keys as :func:`run`.  Additional optional keys:
 
-        - ``max_workers`` (int, optional): thread pool size (default: min(32,
-          len(items) + 4)).  Set to 1 to force sequential execution.
+        - ``max_concurrency`` (int, optional): maximum number of items scored
+          concurrently (default: min(32, len(items) + 4)).  Set to 1 to force
+          sequential execution.
+        - ``max_workers`` (int, optional): alias for ``max_concurrency``;
+          accepted for backwards compatibility.
 
     Returns
     -------
@@ -127,17 +131,21 @@ async def run_async(payload: dict) -> dict:
 
     threshold: float = float(payload.get("threshold", _DEFAULT_THRESHOLD))
     include_dims: bool = bool(payload.get("include_dimensions", False))
-    max_workers: int = int(
-        payload.get("max_workers", min(32, len(items) + 4))
+    _default_concurrency = min(32, len(items) + 4)
+    max_concurrency: int = int(
+        payload.get("max_concurrency", payload.get("max_workers", _default_concurrency))
     )
 
-    loop = asyncio.get_event_loop()
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [
-            loop.run_in_executor(executor, _score_item, item, threshold, include_dims)
-            for item in items
-        ]
-        scores: list[dict] = list(await asyncio.gather(*futures))
+    loop = asyncio.get_running_loop()
+    sem = asyncio.Semaphore(max_concurrency)
+
+    async def _guarded(item: dict) -> dict:
+        async with sem:
+            return await loop.run_in_executor(
+                None, _score_item, item, threshold, include_dims
+            )
+
+    scores: list[dict] = list(await asyncio.gather(*[_guarded(item) for item in items]))
 
     return {
         "scores": scores,

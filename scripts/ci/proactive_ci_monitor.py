@@ -48,6 +48,18 @@ logger = logging.getLogger("proactive_ci_monitor")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
 # ---------------------------------------------------------------------------
+# ci.health.analyzer skill — primary classification engine
+# ---------------------------------------------------------------------------
+
+try:
+    from codex.skills.ci_health_analyzer.handler import run as _ci_health_run
+
+    _CI_HEALTH_AVAILABLE = True
+except ImportError:
+    _CI_HEALTH_AVAILABLE = False
+    logger.debug("ci.health.analyzer skill unavailable; falling back to built-in patterns")
+
+# ---------------------------------------------------------------------------
 # Failure categories we actively escalate vs. silently skip
 # ---------------------------------------------------------------------------
 
@@ -133,8 +145,48 @@ _PATTERNS: list[dict] = [
 ]
 
 
-def _classify(log_text: str) -> dict:
-    """Return the first matching pattern dict."""
+def _classify(log_text: str, history: list[dict] | None = None) -> dict:
+    """Return a classification dict for *log_text*.
+
+    When the ``ci.health.analyzer`` skill is importable it is used as the
+    primary engine (which also computes a ``trend`` from *history* when
+    provided).  Falls back to the local ``_PATTERNS`` list when the skill
+    is not available (e.g. running in a minimal environment).
+
+    Parameters
+    ----------
+    log_text:
+        Raw CI log text to classify.
+    history:
+        Optional list of previous :func:`_classify` results for the same PR,
+        most-recent-last.  Passed to ``ci.health.analyzer`` so it can compute
+        recurrence and flap trends.
+    """
+    if _CI_HEALTH_AVAILABLE:
+        payload: dict[str, Any] = {"run_logs": log_text}
+        if history:
+            # Translate our result dicts to the shape ci_health_analyzer expects
+            payload["history"] = [
+                {
+                    "pattern_id": h.get("pattern_id", ""),
+                    "category": h.get("category", "unknown"),
+                    "confidence": h.get("confidence", 0.0),
+                }
+                for h in history
+            ]
+        try:
+            skill_result = _ci_health_run(payload)
+            return {
+                "id": skill_result.get("pattern_id", "RP-UNKNOWN"),
+                "category": skill_result.get("category", "unknown"),
+                "confidence": skill_result.get("confidence", 0.0),
+                "fix": " ".join(skill_result.get("fix_commands", [])),
+                "trend": skill_result.get("trend"),
+            }
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("ci.health.analyzer raised %s; falling back to built-in", exc, exc_info=True)
+
+    # ── Built-in fallback ────────────────────────────────────────────────────
     for pat in _PATTERNS:
         if pat["id"] == "RP-UNKNOWN":
             continue
@@ -360,6 +412,10 @@ def scan(
     logger.info("Scanning %d open PR(s).", len(prs))
     report["scanned_prs"] = len(prs)
 
+    # Per-PR classification history: maps pr_number → list of prior result dicts.
+    # Passed to ci.health.analyzer so it can detect recurrence / flap trends.
+    _pr_history: dict[int, list[dict]] = {}
+
     for pr in prs:
         pr_number: int = pr["number"]
         pr_sha: str = pr["head"]["sha"]
@@ -385,10 +441,12 @@ def scan(
             run_id: int = run["id"]
             workflow_name: str = run.get("name", "")
 
-            # Classify
+            # Classify — pass accumulated history for this PR so ci.health.analyzer
+            # can compute recurrence / flap trends across runs in this scan.
             log_text = _get_run_logs_text(repo, run_id, token)
             log_text = f"{workflow_name}\n{log_text}"
-            pattern = _classify(log_text)
+            prior_history = _pr_history.get(pr_number, [])
+            pattern = _classify(log_text, history=prior_history)
 
             detail: dict = {
                 "pr": pr_number,
@@ -398,8 +456,18 @@ def scan(
                 "pattern_id": pattern["id"],
                 "category": pattern["category"],
                 "confidence": pattern["confidence"],
+                "trend": pattern.get("trend"),
                 "action": None,
             }
+
+            # Accumulate this result into per-PR history for subsequent runs
+            _pr_history.setdefault(pr_number, []).append(
+                {
+                    "pattern_id": pattern["id"],
+                    "category": pattern["category"],
+                    "confidence": pattern["confidence"],
+                }
+            )
 
             # Skip transient
             if pattern["category"] in _SKIP_CATEGORIES:

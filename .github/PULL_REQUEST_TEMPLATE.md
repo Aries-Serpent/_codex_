@@ -298,50 +298,58 @@ For Copilot/AI-assisted PRs:
 
 > **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for
 > this session. Unchecked workflows will be SKIPPED by the gate. **Use EXACT filenames**
-> (see `docs/ci/PR_LIFECYCLE.md §18` for the authoritative list — filenames with underscores
-> like `resilient_validation.yml` must NOT be hyphenated). `always required` items are
-> pre-checked and must never be unchecked.
+> (see `docs/ci/PR_LIFECYCLE.md §7` for the Tier 1/Tier 2 rescue model).
+> `always required` items are pre-checked and must never be unchecked.
+> `always active` items fire via push/workflow_run — Tier 2 needs manual approval in Actions tab.
 
-### ✅ Validation & Testing
+### ✅ Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [ ] resilient_validation.yml — Resilient validation (full pytest suite, 4 shards)
-- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
-- [ ] validate.yml — Validation pipeline (fast: detect-secrets, ruff, sync-tracked)
-- [ ] mypy-baseline.yml — Type-check anti-regression gate
-- [ ] progressive-validation.yml — Progressive validation suite
-- [ ] coverage-with-timeout.yml — Coverage with timeout guards
-- [ ] test-rag.yml — RAG module tests
-- [ ] pre-flight-validation.yml — Pre-flight CI validation
-- [ ] data-quality-suite.yml — Data quality & determinism suite
-
-### ✅ Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [x] deferral-language-gate.yml — Deferral language guard (always required)
+- [x] agent-auth-delegation.yml — Agent token delegation (always required)
+- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)
+
+### 🔄 Always Active — fire via push/workflow_run (Tier 2: need manual approval in Actions tab)
+- [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (fires on push)
+- [x] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run)
+- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)
+- [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
+
+### 🧪 Opt-In: Testing & Validation
+- [ ] validate.yml — Validation pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
+- [ ] resilient_validation.yml — Resilient validation (full pytest suite, 4 shards)
+- [ ] mypy-baseline.yml — Type-check anti-regression gate
+- [ ] test-rag.yml — RAG module tests (coverage ≥95%)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+- [ ] coverage-with-timeout.yml — Coverage with timeout guards
+- [ ] progressive-validation.yml — Progressive validation suite
+- [ ] pre-flight-validation.yml — Pre-flight CI validation
+- [ ] ci-checkpoint-validation.yml — CI checkpoint validation
+- [ ] data-quality-suite.yml — Data quality & determinism suite
+- [ ] auth-tests.yml — Authentication tests
+
+### 🔒 Opt-In: Security & Quality
 - [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
 - [ ] codeql-analysis.yml — CodeQL SAST analysis
+- [ ] actionlint-audit.yml — Workflow compliance audit (actionlint)
 - [ ] semgrep_sarif.yml — Semgrep SAST (SARIF upload)
-- [ ] actionlint-audit.yml — Workflow compliance audit
 - [ ] auto-fix-common-issues.yml — Auto-fix common CI issues
 - [ ] auto-fix-pr-check.yml — PR auto-fix check
 - [ ] code-quality-coverage-suite.yml — Code quality & coverage suite
+- [ ] audit-qa-suite.yml — Audit & QA Suite (Unified)
 
-### 📄 Documentation
+### 📄 Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker
-- [ ] pages-mkdocs.yml — MkDocs documentation build
 - [ ] pages-pre-merge-validation.yml — Pages pre-merge validation
 
-### 🤖 Automation
-- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (always required)
-- [x] cost-gate.yml — Cost governance gate (always required)
-- [x] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session (always required)
-- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)
-- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (always required)
-- [ ] qa-walkthrough.yml — QA walkthrough agent
-- [ ] dependency-submission.yml — Resilient dependency submission
+### ⚙️ Opt-In: Infrastructure & Deployment
 - [ ] reference-integrity.yml — Reference integrity + agent size gate
-- [ ] root-org-validation.yml — Root organization validation
+- [ ] dependency-submission.yml — Resilient dependency submission
+- [ ] docker-build-push.yml — Build & push Docker image (GHCR)
 - [ ] rust_swarm_ci.yml — Rust-Python hybrid swarm CI/CD
+- [ ] root-org-validation.yml — Root organization validation
+- [ ] agent-registry-validation.yml — Agent registry validation
+- [ ] qa-walkthrough.yml — QA walkthrough agent
 
 ### ⚡ Fast-Forward Safe Files to `main`
 
@@ -386,14 +394,12 @@ FF_BLOCK_END -->
 
 - [ ] ⚡ **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files above to `main` immediately
 
-### ⚡ Auto-Approve
-- [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
-
-> **HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
+> **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
 > appended verbatim to **every** PR body update — including every `report_progress` call.
 > Copy the WEC block from the current PR body into the `prDescription` parameter, keeping
 > **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.
-> Only `always required` items may be auto-checked. All other items preserve their current state.
+> Only `always required` and `always active` items may be auto-checked. All other items
+> preserve their current maintainer-selected state.
 > **Use EXACT filenames** — do NOT substitute hyphens for underscores or vice versa.
 
 _Add screenshots for UI changes_

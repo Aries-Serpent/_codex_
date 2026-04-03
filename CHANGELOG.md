@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S292 — PR #3854 — CB-003/005/006, RAG coverage, actionlint, PR template WEC overhaul)
+- **CB-003**: actionlint `expression-in-script` violations fixed in `iterative-self-healing-ci.yml` and `workflow-execution-gate.yml` — all `${{ }}` expressions moved to `env:` blocks
+- **CB-005**: `src/codex/skills/aais_batch/handler.py` — `ThreadPoolExecutor` replaced with `asyncio.Semaphore(max_concurrency)` for proper async concurrency control
+- **CB-006**: `scripts/ci/proactive_ci_monitor.py` — now uses `ci.health.analyzer` skill as primary classification engine with per-PR `history` trend accumulation
+- **CB-004**: `.codex/aftermath/failure_pattern_solutions.yaml` — PDA pattern library expanded 14→22 entries (+8: RP-MYPY-UNUSED-IGNORE, RP-MYPY-OPT-IMPORT, RP-MYPY-NO-REDEF, RP-MYPY-NONE-GUARD, RP-MYPY-ARG-TYPE, RP-ACTIONLINT-WORKFLOW-OUTPUT, RP-SELF-HEALING-CASCADE, RP-VALIDATION-PIPELINE)
+- **RAG coverage**: `tests/rag/test_ingestion_preprocessor.py` (32 tests) and `tests/rag/test_ingestion_validator.py` (38 tests) created — fixes 85.02%→≥95% coverage regression caused by 0% coverage on `ingestion/preprocessor.py` + `ingestion/validator.py`
+- **PR templates**: Both `.github/pull_request_template.md` and `.github/PULL_REQUEST_TEMPLATE.md` WEC sections overhauled — corrected 3 wrong filenames (`resilient-validation-suite.yml`→`resilient_validation.yml`, `nox-gates.yml`→`nox_gates.yml`, removed non-existent `docs-build.yml`/`auto-approve-workflows`), added 30+ missing opt-in workflows, introduced Tier 1/Tier 2 rescue model categories
+- **PR_LIFECYCLE.md**: §7 rewritten with Tier 1/Tier 2 rescue approval model; §13 updated with S292 fix status; §14 updated with CB-003/005/006 wiring; §15 updated with coverage gap root cause and fix
+- **Accountability report**: S292 entry with full root-cause analysis for all 4 regressions (coverage gap, task branch drift, automation gating, actionlint)
+
 ### Fixed (S285 — PR #3854 — WEC catalog, PR_LIFECYCLE v1.6.0, PR template overhaul)
 - Docs: `docs/ci/PR_LIFECYCLE.md` → v1.6.0 — comprehensive overhaul:
   - §2 Workflow Trigger Map expanded from 10 entries to 60 PR-triggered workflows across 6 category tables (always-required, validation, security, docs, automation, auto-triggered)

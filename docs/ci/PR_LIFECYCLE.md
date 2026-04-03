@@ -269,49 +269,82 @@ The **S221 guard** (`copilot-agent-checkin.yml`) fires on every push to `0D_base
 
 ## 7. Rescue & Self-Healing Chain
 
-When a check fails, the following cascade fires:
+### 7.1 Approval Tier Model (CRITICAL — Read First)
+
+There are **two tiers** of rescue workflows. Understanding this distinction is essential:
+
+| Tier | Trigger Type | Approval Required? | Reliability |
+|------|--------------|--------------------|-------------|
+| **Tier 1 — Approval-Free** | `pull_request` event | ❌ None | ✅ Always fires |
+| **Tier 2 — Approval-Gated** | `workflow_run` event with `contents: write` | ✅ Human must approve | ⚠️ May queue in `action_required` |
+
+**Tier 1 workflows (reliably fire on every push/PR):**
+- `validate.yml` → `rescue-comment` job: posts SHA-scoped `<!-- ci-rescue-sha:{pr}:{sha} -->` comment with `@copilot` instructions + PDA Loop log
+- `actionlint-audit.yml` → `rescue-comment` job: posts actionlint-specific fix guidance
+- `comment-review-gate.yml` → inline scan and block
+
+**Tier 2 workflows (fire ONLY after human approves the `workflow_run` run):**
+- `ci-rescue.yml`: deep root-cause analysis, RP-pattern matching
+- `iterative-self-healing-ci.yml`: autonomous fix + push loop
+- `copilot-iterative-self-healing.yml`: `@copilot` escalation
+
+> **S292 Root Cause Finding:** Automation appeared to "stop working" because 14+ `workflow_run`-triggered runs were queued in `action_required` state. The `validate.yml` rescue-comment job (Tier 1) was always firing — it just posted to a per-PR thread (pre-S290) that was easy to miss. After S290, SHA-scoped comments make each failure visible. To restore Tier 2 automation, approve the queued `workflow_run` runs in the Actions tab.
+
+### 7.2 Rescue Cascade (when all tiers are active)
 
 ```
-1. CHECK FAILS (e.g., mypy-baseline.yml)
+1. CHECK FAILS (e.g., validate.yml, test-rag.yml)
          │
          ▼
-2. ci-rescue.yml fires (triggered by workflow_run)
-   - Performs root-cause analysis (matches RP-XXX patterns)
-   - Posts 🚨 CI Rescue comment to PR with:
-       • rescue ID (commit SHA)
-       • failure pattern (RP-009, etc.)
-       • fix instructions
+2. [TIER 1] validate.yml → rescue-comment job fires immediately
+   - SHA-scoped marker: <!-- ci-rescue-sha:{pr}:{sha_short} -->
+   - One fresh comment per commit SHA (never buries in old thread)
+   - PDA Loop: logs failure to .codex/aftermath/pda_iterations.jsonl
+   - Posts @copilot instructions with specific fix steps
          │
          ▼
-3. mypy-baseline.yml → rescue-comment job fires
-   - Posts secondary "fix required" comment
+3. [TIER 2 — needs approval] ci-rescue.yml fires
+   - Deep RCA using ci_health_analyzer skill
+   - Matches against RP-XXX pattern library (22 patterns as of S292)
+   - Posts <!-- ci-rescue:{pr}:sha-{sha} --> comment
          │
          ▼
-4. Copilot session triggered (by @copilot in rescue comment)
-   - Agent investigates logs (GitHub MCP tools)
-   - Agent applies fix
-   - Agent pushes commit
+4. [TIER 2 — needs approval] iterative-self-healing-ci.yml fires
+   - Up to 3 auto-fix iterations (ruff, EOF, detect-secrets, mypy)
+   - Commits and pushes fixes back to branch
+   - Per-branch hourly cap ≥10 runs/hr (cascade brake from S283)
+   - PDA Loop: logs pattern + fix outcome
          │
          ▼
-5. copilot-agent-session-done.yml fires
-   - Checks if rescue was answered
-   - If YES: marks rescue as resolved
-   - If NO: S221 guard fires on next push
+5. [If Tier 2 unfixable] copilot-iterative-self-healing.yml
+   - 30-min dedup cooldown on <!-- self-healing-escalation --> marker
+   - Posts @copilot escalation comment
          │
          ▼
-6. S221 Guard (copilot-agent-checkin.yml)
-   - Fires on every push to 0D_base_
-   - Scans for unanswered rescue comments
-   - Posts re-trigger if rescue ID has no @copilot response containing
-     "fixed at / resolved at / addressed at <SHA>"
+6. Copilot session triggered
+   - Agent reads rescue comment, investigates CI logs
+   - Agent applies fix, pushes commit
+         │
+         ▼
+7. copilot-agent-session-done.yml + S221 guard
+   - Marks rescue resolved if @copilot response contains "fixed at <SHA>"
+   - S221 guard (copilot-agent-checkin.yml) re-triggers on next push if unresolved
 ```
 
-### Rescue Patterns (RP-XXX)
+### 7.3 Rescue Patterns (RP-XXX) — 22 patterns as of S292
+
+See `.codex/aftermath/failure_pattern_solutions.yaml` for full library.
 
 | Pattern | Failure Type | Fix |
 |---------|-------------|-----|
-| `RP-009` | mypy anti-regression gate exceeded baseline | Fix type errors or update baseline |
-| `RP-019` | `from src.` import regression | Run P19-BATCH-001; verify P19-BATCH-WATCH-001 |
+| `RP-006` | Missing EOF newline in `.codex/` JSON files | `find .codex -name '*.json' | xargs -I{} sh -c 'tail -c1 "$1" \| grep -q . && echo >> "$1"' _ {}` |
+| `RP-007` | detect-secrets baseline stale | `python3 -m detect_secrets scan --no-verify --baseline .secrets.baseline` |
+| `RP-009` | mypy anti-regression gate exceeded baseline | Fix type errors; run `python scripts/ci/mypy_baseline.py --require-baseline` |
+| `RP-019` | `from src.` import regression | Run P19-BATCH-001 |
+| `RP-MYPY-UNUSED-IGNORE` | Stale `# type: ignore` comment | Remove the suppression comment |
+| `RP-MYPY-OPT-IMPORT` | Optional-import `[assignment]` | Fix stub assignment pattern |
+| `RP-SELF-HEALING-CASCADE` | Self-healing loop triggered >10×/hr | 30-min cooldown; check cascade brake |
+| `RP-VALIDATION-PIPELINE` | Fast validation pre-commit hook failure | `python tools/validate.py --mode fast` |
 | (transient) | Runner shutdown | Retry — no code fix |
 
 ---
@@ -788,28 +821,29 @@ stateDiagram-v2
 
 ## 13. High-Frequency Failure Catalogue
 
-> **Source:** Issue [#3853](https://github.com/Aries-Serpent/_codex_/issues/3853) — CI Failure Triage Report, generated 2026-04-02T15:14:56Z  
-> **Total failures captured:** 71 across 13 workflows  
+> **Source:** Issue [#3853](https://github.com/Aries-Serpent/_codex_/issues/3853) — CI Failure Triage Report, updated 2026-04-03  
+> **Total failures captured:** 71 across 14 workflows  
+> **Last updated:** S292 (2026-04-03)  
 > **Purpose:** Every entry below is a recurring pattern that Copilot sessions and self-healing
 > workflows should recognise and handle **without human intervention**.
 
 ### 13.1 Summary Table (descending by frequency)
 
-| Rank | Workflow | Count | Pattern ID | Category | Auto-fix? |
-|------|----------|-------|------------|----------|-----------|
-| 1 | PR Comment Review Gate | 20 | RP-COMMENT-GATE | pre-flight-gate | No — reply to comments, then push |
-| 2 | RAG Module Tests | 13 | RP-RAG-CHRONIC | code-fix-required | Partial — see §15 |
-| 3 | Validation Pipeline | 11 | RP-P22 / RP-P23 / RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` |
-| 4 | Agent Token Delegation | 5 | RP-CHANGELOG-GATE | pre-flight-gate | ✅ Update CHANGELOG + accountability |
-| 5 | Resilient Validation Suite | 5 | RP-COLLECT / RP-019 | code-fix-required | Partial |
-| 6 | Automatic Dependency Submission | 3 | RP-TRANSIENT-API503 | transient-infra | ✅ Re-run only |
-| 7 | Auto-Fix Common CI Issues | 3 | RP-RUFF / F401 / E501 | code-fix-required | ✅ `auto_fix_common_issues.py` |
-| 8 | PR Auto-Fix Check | 3 | RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` |
-| 9 | Workflow Compliance Audit | 2 | RP-ACTIONLINT | workflow-config | Manual — fix workflow YAML |
-| 10 | mypy Baseline Gate | 2 | RP-009 | code-fix-required | ✅ `mypy_baseline.py` |
-| 11 | Pre-Merge Validation | 1 | RP-P22 / RP-P23 | code-fix-required | ✅ `auto_fix_common_issues.py` |
-| 12 | Copilot Issue Triage | 1 | RP-TRANSIENT | transient-infra | ✅ Re-run only |
-| 13 | Copilot coding agent | 2 | RP-TRANSIENT | transient-infra | ✅ Re-run only |
+| Rank | Workflow | Count | Pattern ID | Category | Auto-fix? | S292 Status |
+|------|----------|-------|------------|----------|-----------|-------------|
+| 1 | PR Comment Review Gate | 20 | RP-COMMENT-GATE | pre-flight-gate | No — reply to comments, then push | 🔄 Ongoing |
+| 2 | RAG Module Tests | 13 | RP-RAG-CHRONIC | code-fix-required | ✅ **Fixed S292** — tests for preprocessor/validator added | ✅ Fixed |
+| 3 | Validation Pipeline | 11 | RP-P22 / RP-P23 / RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
+| 4 | Agent Token Delegation | 5 | RP-CHANGELOG-GATE | pre-flight-gate | ✅ Update CHANGELOG + accountability | 🔄 Ongoing |
+| 5 | Resilient Validation Suite | 5 | RP-COLLECT / RP-019 | code-fix-required | Partial | 🔄 Ongoing |
+| 6 | Automatic Dependency Submission | 3 | RP-TRANSIENT-API503 | transient-infra | ✅ Re-run only | N/A |
+| 7 | Auto-Fix Common CI Issues | 3 | RP-RUFF / F401 / E501 | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
+| 8 | PR Auto-Fix Check | 3 | RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
+| 9 | Workflow Compliance Audit | 2 | RP-ACTIONLINT | workflow-config | ✅ **Fixed S292** — CB-003 applied | ✅ Fixed |
+| 10 | mypy Baseline Gate | 2 | RP-009 | code-fix-required | ✅ `mypy_baseline.py` | ✅ Fixed |
+| 11 | Pre-Merge Validation | 1 | RP-P22 / RP-P23 | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
+| 12 | Copilot Issue Triage | 1 | RP-TRANSIENT | transient-infra | ✅ Re-run only | N/A |
+| 13 | Copilot coding agent | 2 | RP-TRANSIENT | transient-infra | ✅ Re-run only | N/A |
 
 ### 13.2 Detailed Patterns
 
@@ -866,13 +900,41 @@ git add -A && git commit -m "fix(ci): auto-fix ruff/P22/P23 issues"
 
 ---
 
-#### RP-ACTIONLINT (2 Workflow Compliance Audit failures)
+#### RP-ACTIONLINT (Workflow Compliance Audit failures) — ✅ Fixed S292
 
-**Trigger:** `actionlint-audit.yml` — `Run actionlint on all workflows` fails due to
-backtick/SC2288 or multi-line YAML string issues.
+**Trigger:** `actionlint-audit.yml` — `Run actionlint on all workflows` fails.
 
-**Fix:** Replace `BODY="..."` multi-line bash assignments with `printf '%s\n' ... > /tmp/body.txt`
-pipeline.  See `.codex/ci_failure_patterns/CI_FAILURE_PATTERN_ANALYSIS_2026-03-25.md §P-C`.
+**Root cause (S292 finding):** `${{ }}` expressions embedded directly inside `run: |` multiline
+shell blocks. actionlint flags this as `expression-in-script` because expressions are evaluated
+_before_ the shell runs, making them injection vectors.
+
+**Fix (applied S292):** Move all `${{ }}` expressions to `env:` blocks above the `run:` block.
+Shell scripts reference `${ENV_VAR}` only. Fixed in:
+- `iterative-self-healing-ci.yml`: commit+push step (CB-003), report-iteration step
+- `workflow-execution-gate.yml`: resolve-PR, parse-checklist, parse-ff, post-gate-summary, execute-ff, post-ff-comment steps
+
+**Rule:** Never put `${{ expression }}` inside a `run: |` body. Always use:
+```yaml
+env:
+  MY_VAR: ${{ some.expression }}
+run: |
+  echo "${MY_VAR}"
+```
+
+---
+
+#### RP-RAG-CHRONIC (RAG Module Tests failures) — ✅ Fixed S292
+
+**Root cause (S292 finding):** `src/codex/rag/ingestion/preprocessor.py` and
+`src/codex/rag/ingestion/validator.py` had 0% test coverage (740 uncovered lines out of ~4,000
+in scope), dragging coverage from ≥95% to 85.02%.
+
+**Fix (applied S292):**
+- `tests/rag/test_ingestion_preprocessor.py` — 32 test cases covering all public APIs
+- `tests/rag/test_ingestion_validator.py` — 38 test cases covering all public APIs
+
+**Prevention:** Before adding any new source file to `src/codex/rag/`, create a corresponding
+test file. Use `grep -l "$(basename $f .py)" tests/rag/*.py` to verify coverage exists.
 
 ---
 
@@ -882,96 +944,103 @@ pipeline.  See `.codex/ci_failure_patterns/CI_FAILURE_PATTERN_ANALYSIS_2026-03-2
 **Action:** Re-run the workflow.  If it fails 3+ times consecutively, check `pyproject.toml`
 for malformed dependency entries.  See §11.6 for full classification table.
 
----
-
 ## 14. Copilot Session Automation Improvement Roadmap
 
 This section documents gaps in the current automation pipeline identified from the triage data
 in §13, and the planned improvements to close each gap.
 
-### 14.1 Gap Analysis (from triage #3853)
+### 14.1 Gap Analysis (updated S292)
 
-| Gap | Current Behaviour | Target Behaviour |
-|-----|------------------|-----------------|
-| **First failure does not always trigger self-healer** | `cancel-in-progress: true` caused race: B's run cancelled A's healer (fixed S279 — now `false`) | Every failure gets its own non-cancellable healer run |
-| **Comment-gate failures not auto-diagnosed** | Healer posts generic `@copilot Fix ...` comment | Healer extracts blocking comment IDs + authors, generates structured reply template |
-| **CHANGELOG/accountability gate not in auto-fix** | Agent must remember to update both files every push | `auto_fix_common_issues.py` checks staleness; `agent-auth-delegation` pre-flight re-stated in every session prompt |
-| **RAG tests fail chronically on `0D_base_`** | 13 failures over 2 days — not escalated to Copilot | Dedicated RAG test health tracker; see §15 |
-| **Copilot comment replies not verified post-session** | Session may end without replying to all addressed comments | `copilot-agent-session-done.yml` should verify all BLOCKING comments have a `@copilot` reply before marking session done |
-| **submit-pypi 503 triggers rescue unnecessarily** | Healer posts escalation comment even for known-transient 503 | Classify RP-TRANSIENT-API503 before escalating; suppress `@copilot` post; post "transient — re-running" instead |
+| Gap | Current Behaviour | Target Behaviour | S292 Status |
+|-----|------------------|-----------------|-------------|
+| **First failure does not always trigger self-healer** | Tier 2 (`workflow_run`) runs queue in `action_required` state | Tier 1 `validate.yml` rescue always fires; Tier 2 needs human to approve queued runs | ✅ Documented §7.1 |
+| **Comment-gate failures not auto-diagnosed** | Healer posts generic `@copilot Fix ...` comment | Healer extracts blocking comment IDs + authors, generates structured reply template | 🔄 Ongoing |
+| **CHANGELOG/accountability gate not in auto-fix** | Agent must remember to update both files every push | `auto_fix_common_issues.py` checks staleness | 🔄 Ongoing |
+| **RAG tests fail chronically on `0D_base_`** | 13 failures over 2 days | ✅ **Fixed S292** — preprocessor + validator test coverage | ✅ Fixed |
+| **actionlint expression-in-script violations** | `${{ }}` in `run: |` blocks | All expressions moved to `env:` per CB-003 | ✅ Fixed S292 |
+| **Task branch changes not merged** | Orphan root commit in Copilot tasks can't be cherry-picked normally | Explicit file-by-file diff + apply approach | ✅ Fixed S292 |
+| **Copilot comment replies not verified post-session** | Session may end without replying to all addressed comments | `copilot-agent-session-done.yml` should verify replies | 🔄 Ongoing |
+| **submit-pypi 503 triggers rescue unnecessarily** | Healer posts escalation comment even for known-transient 503 | Classify RP-TRANSIENT-API503; suppress `@copilot` | 🔄 Ongoing |
 
-### 14.2 Automation Cascade (Improved — S280)
+### 14.2 Automation Cascade (Improved — S292)
+
+> **Key change S292:** Added explicit Tier 1 / Tier 2 model (see §7.1). The rescue cascade now
+> clearly documents that `validate.yml` is the ONLY reliably approval-free rescue mechanism.
+> Tier 2 workflows require human approval of `workflow_run` runs in the Actions tab.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ 1. FIRST FAILURE (any workflow, any name including GitHub-managed)│
-└────────────────────────┬────────────────────────────────────────┘
-                         │ workflow_run: completed, conclusion: failure
-                         ▼
+│ 1. FIRST FAILURE (any workflow)                                  │
+└──────┬────────────────────────────────────────────────────────┬─┘
+       │ pull_request event (no approval)                       │ workflow_run event
+       ▼                                                        ▼
+┌──────────────────────────┐                     ┌─────────────────────────────┐
+│ TIER 1 (always fires)    │                     │ TIER 2 (needs human approval)│
+│ validate.yml rescue job  │                     │ ci-rescue.yml               │
+│ - SHA-scoped comment     │                     │ iterative-self-healing.yml  │
+│ - PDA loop log           │                     │ copilot-iterative-self.yml  │
+│ - @copilot instructions  │                     │ (queued in action_required) │
+└──────────────────────────┘                     └─────────────────────────────┘
+       │
+       ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│ 2. iterative-self-healing-ci.yml                                 │
-│    concurrency: run-ID-unique (cancel-in-progress: FALSE — S279) │
-│    classify(logs) → RP-XXX category                              │
-│    if RP-TRANSIENT-*: post "transient — re-running" (no @copilot)│
-│    if auto-fixable: apply fix, commit, verify (max 3 iterations) │
-│    else: forward to step 3                                       │
-└────────────────────────┬────────────────────────────────────────┘
-                         │ auto-fix failed or not applicable
-                         ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 3. ci-rescue.yml (watched-workflow list: all names + GitHub-mgd) │
-│    post structured RCA comment with:                             │
-│      - pattern ID, category, fix commands                        │
-│      - triage issue cross-link (issue #3853)                     │
-│      - @copilot tag for session trigger                          │
-└────────────────────────┬────────────────────────────────────────┘
-                         │ same SHA, more failures
-                         ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 4. UPSERT additional failures into existing SHA comment          │
-│    marker: <!-- copilot-healing:<sha12>:<category> -->           │
-│    one comment per (SHA, category) pair — no flooding            │
-└────────────────────────┬────────────────────────────────────────┘
-                         │ @copilot mentioned in rescue comment
-                         ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 5. Copilot coding agent session starts                           │
+│ 2. Copilot session triggered by @copilot in Tier 1 comment       │
 │    - reads ALL unaddressed BLOCKING comments (comment-gate)      │
-│    - classifies each failure (ci.health.analyzer skill)          │
-│    - parses test output (test.failure.matcher skill)             │
+│    - classifies each failure (ci.health.analyzer skill — CB-006) │
 │    - applies fix, pushes commit                                  │
 │    - replies to every addressed comment before session ends      │
 └────────────────────────┬────────────────────────────────────────┘
-                         │ push triggers re-scan
                          ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│ 6. copilot-agent-session-done.yml                                │
+│ 3. copilot-agent-session-done.yml                                │
 │    - verify all BLOCKING comments have @copilot reply            │
-│    - verify comment-review-gate would pass                       │
 │    - if unresolved: S221 guard fires on next push                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 14.3 New Skills for Automation
+### 14.3 Workflow Changes Made S292 (actionlint CB-003)
 
-The following skills (implemented in `src/codex/skills/`) directly support this cascade:
+**`iterative-self-healing-ci.yml` — commit+push step:**
+- Added `MATRIX_ITERATION`, `TRIAGE_RUN_ID`, `RESOLVE_TARGET_BRANCH`, `RESOLVE_TARGET_REASON` to `env:`
+- Shell script now uses `${MATRIX_ITERATION}`, `${TRIAGE_RUN_ID}`, `${RESOLVE_TARGET_BRANCH:-main}` only
 
-| Skill | Purpose | Used in step |
-|-------|---------|--------------|
-| `ci.health.analyzer` | Classify CI log → RP-XXX + fix commands | Step 2 & 3 |
-| `test.failure.matcher` | Parse pytest/CI output → structured failures | Step 5 |
-| `agent.aais.batch` | Batch-score agent docs for freshness | Post-merge doc gate |
+**`iterative-self-healing-ci.yml` — report-iteration step:**
+- Added `MATRIX_ITERATION`, `TRIAGE_PATTERN`, `FIX_CHANGED`, `FIX_VALID`, `FIX_CHANGED_FILES` to `env:`
 
-### 14.4 Session Protocol Checklist (for every Copilot session)
+**`workflow-execution-gate.yml` — resolve-PR step:**
+- Added `PR_EVENT_NUMBER`, `PR_INPUT_NUMBER` to `env:`; removed inline `${{ github.event.pull_request.number || github.event.inputs.pr_number }}`
+
+**`workflow-execution-gate.yml` — parse-checklist step:**
+- Added `RESOLVED_PR`, `GH_REPO` to `env:`
+
+**`workflow-execution-gate.yml` — parse-ff step:**
+- Added `RESOLVED_PR`, `GH_REPO` to `env:`
+
+**`workflow-execution-gate.yml` — post-gate-summary step:**
+- Added `GH_REPO`, `GH_SERVER_URL`, `GH_RUN_ID`, `GATE_PR`, `GATE_TO_RUN`, `GATE_TO_SKIP`, `GATE_HAS_CHECKLIST`, `GATE_TRIGGER` to `env:`
+
+**`workflow-execution-gate.yml` — execute-ff step:**
+- Renamed step from `"⚡ Execute fast-forward (PR #${{ ... }})"` to `"⚡ Execute fast-forward"` (expressions in step names also flagged)
+- Added `FF_PR`, `FF_MERGE_MODE`, `FF_DRY_RUN`, `FF_FILES` to `env:`
+
+### 14.4 Skills Wired for Automation (updated S292)
+
+| Skill | Purpose | Status |
+|-------|---------|--------|
+| `ci.health.analyzer` | Classify CI log → RP-XXX + fix commands; now primary engine in `proactive_ci_monitor.py` (CB-006) | ✅ Wired S292 |
+| `agent.aais.batch` | Batch-score agent docs via `asyncio.Semaphore(max_concurrency)` — no ThreadPoolExecutor (CB-005) | ✅ Wired S292 |
+| `test.failure.matcher` | Parse pytest/CI output → structured failures | 🔄 Ongoing |
+
+### 14.5 Session Protocol Checklist (for every Copilot session)
 
 Before ending a session, the agent MUST verify:
 
 - [ ] All BLOCKING comments from `mbaetiong` have been replied to with resolution SHA
 - [ ] `CHANGELOG.md` has an entry under `## [Unreleased]` for this session
-- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated with WHY regressions occurred
 - [ ] `python scripts/ci/auto_fix_common_issues.py --check-only` reports 0 auto-fixable issues
 - [ ] `python scripts/ci/mypy_baseline.py` passes (0 new errors)
-- [ ] All new skills/tests added to this session are registered in `src/codex/skills/`
+- [ ] No `${{ }}` expressions inside `run: |` blocks in any workflow YAML
 
 ---
 
@@ -979,17 +1048,19 @@ Before ending a session, the agent MUST verify:
 
 > **Evidence:** 13 failures of `RAG Module Tests` (`test-rag.yml`) between 2026-04-01 and 2026-04-02
 > across both `0D_base_` and `copilot/research-ai-agent-skills-architecture` branches.
+> **Status: ✅ Root cause fixed in S292** — see §15.4 for S292 resolution.
 
 ### 15.1 Why RAG tests fail chronically
 
 The RAG test suite (`tests/rag/`) requires mocking of heavy dependencies:
-`sentence_transformers`, `faiss`, `redis`, GPU device moves.  Three known failure modes:
+`sentence_transformers`, `faiss`, `redis`, GPU device moves.  Four known failure modes:
 
-| Failure Mode | Root Cause | Fix |
-|-------------|-----------|-----|
-| `MagicMock` chaining — `model.to()` returns wrong mock | `model.to.return_value` not set | Add `mock_model.to.return_value = mock_model` (also `to_empty`, `eval`) in fixture |
-| Coverage threshold fail | `cache/`, `_model_utils.py`, `embeddings.py` etc. included in coverage | Add to `tests/rag/.coveragerc` `[coverage:run] omit =` list |
-| `ModuleNotFoundError: sentence_transformers` | Package not installed in CI venv | Tests that import it must use `pytest.importorskip` or mock at module level |
+| Failure Mode | Root Cause | Fix | S292 Status |
+|-------------|-----------|-----|-------------|
+| `MagicMock` chaining — `model.to()` returns wrong mock | `model.to.return_value` not set | Add `mock_model.to.return_value = mock_model` (also `to_empty`, `eval`) in fixture | ✅ Fixed S287 |
+| Coverage threshold fail — cache/benchmarks included | `cache/`, `benchmarks/`, `analytics/` dirs in coverage scope | Add to `tests/rag/.coveragerc` `[coverage:run] omit =` list | ✅ Fixed S290 |
+| Coverage threshold fail — untested source files | `ingestion/preprocessor.py` + `ingestion/validator.py` had 0% coverage | **Created `test_ingestion_preprocessor.py` + `test_ingestion_validator.py`** | ✅ **Fixed S292** |
+| `ModuleNotFoundError: sentence_transformers` | Package not installed in CI venv | Tests that import it must use `pytest.importorskip` or mock at module level | ✅ Fixed S287 |
 
 ### 15.2 Standard RAG test fixture template
 
@@ -1004,20 +1075,45 @@ def mock_model():
     return m
 ```
 
-### 15.3 Coverage exclusion list
+### 15.3 Coverage exclusion list (`.coveragerc` as of S292)
 
 `tests/rag/.coveragerc`:
 ```ini
 [coverage:run]
+source = src/codex/rag
 omit =
     */rag/cache/*
-    */rag/_model_utils.py
-    */rag/embeddings.py
-    */rag/indexer.py
-    */rag/retriever.py
+    */rag/benchmarks/*
+    */rag/analytics/*
 ```
 
-### 15.4 Escalation trigger
+> **S292 finding:** DO NOT omit `ingestion/` subdirectory modules. If they have 0% coverage they
+> will drag the total down. Create tests for them instead.
+
+### 15.4 S292 Resolution — Coverage Gap Fix
+
+**Root cause identified:** `src/codex/rag/ingestion/preprocessor.py` (334 lines) and
+`src/codex/rag/ingestion/validator.py` (406 lines) were added in a prior session with no
+corresponding test files. 740 uncovered lines = ~18% of total in-scope lines → 85.02% coverage.
+
+**Fix applied:**
+- `tests/rag/test_ingestion_preprocessor.py` — 32 test cases:
+  - `NormalizationLevel` enum, `PreprocessingConfig`, `PreprocessingResult.compression_ratio`
+  - `DocumentPreprocessor` with all normalization levels, URL/email removal, HTML stripping, unicode, control chars, fingerprinting, title/header extraction
+  - `preprocess_text()` and `normalize_text()` convenience functions
+- `tests/rag/test_ingestion_validator.py` — 38 test cases:
+  - `DocumentFormat.from_extension()` (all 10 extensions), `from_mime_type()` (all 10 types)
+  - `ValidationResult.add_error()` / `add_warning()` semantics
+  - `DocumentValidator.validate_text()`, `validate_bytes()`, `validate_file()` with temp files
+  - `validate_document()` convenience function with all source types
+
+**Prevention rule:** Before adding any source file to `src/codex/rag/`, run:
+```bash
+grep -l "$(basename $src_file .py)" tests/rag/*.py
+```
+If output is empty, the file has 0% coverage. Create a test file before the PR is ready.
+
+### 15.5 Escalation trigger
 
 If `RAG Module Tests` fails on `0D_base_` **3 or more times in a 24-hour window**, the
 self-healing cascade MUST automatically post a `ci-health-alert` GitHub issue tagged

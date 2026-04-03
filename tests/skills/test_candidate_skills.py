@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
+
 from codex.skills.aais_batch.handler import run as aais_batch_run
+from codex.skills.aais_batch.handler import run_async as aais_batch_run_async
 from codex.skills.ci_health_analyzer.handler import run as ci_health_run
 from codex.skills.test_failure_matcher.handler import run as tfm_run
 
@@ -179,3 +182,44 @@ class TestAAISBatch:
         avg = result["summary"]["avg_score"]
         assert avg is not None
         assert 0.0 <= avg <= 1.0
+
+
+class TestAAISBatchAsync:
+    """Tests for the async run_async() path, including max_concurrency throttle."""
+
+    def test_empty_items_async(self):
+        result = asyncio.run(aais_batch_run_async({"items": []}))
+        assert result["scores"] == []
+        assert result["summary"]["total"] == 0
+
+    def test_basic_async(self):
+        items = [{"id": f"doc-{i}", "text": f"Document {i}"} for i in range(4)]
+        result = asyncio.run(aais_batch_run_async({"items": items}))
+        assert len(result["scores"]) == 4
+        assert result["summary"]["total"] == 4
+
+    def test_max_concurrency_throttle(self):
+        """max_concurrency=1 forces sequential execution — result must still be complete."""
+        items = [{"id": f"doc-{i}", "text": f"text {i}"} for i in range(6)]
+        result = asyncio.run(
+            aais_batch_run_async({"items": items, "max_concurrency": 1})
+        )
+        assert len(result["scores"]) == 6
+        assert result["summary"]["total"] == 6
+
+    def test_max_workers_alias(self):
+        """max_workers is accepted as a backwards-compat alias for max_concurrency."""
+        items = [{"id": "x", "text": "text"}]
+        result = asyncio.run(
+            aais_batch_run_async({"items": items, "max_workers": 1})
+        )
+        assert len(result["scores"]) == 1
+
+    def test_async_matches_sync(self):
+        """Async and sync paths must produce identical scores for the same input."""
+        items = [{"id": f"i{n}", "text": f"sample text {n}"} for n in range(5)]
+        sync_result = aais_batch_run({"items": items})
+        async_result = asyncio.run(aais_batch_run_async({"items": items}))
+        for s, a in zip(sync_result["scores"], async_result["scores"]):
+            assert s["total"] == a["total"]
+            assert s["pass"] == a["pass"]
