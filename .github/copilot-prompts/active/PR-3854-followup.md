@@ -2,7 +2,7 @@
 
 > **Purpose:** Paste this entire block as a comment on PR #3854 to resume the
 > next Copilot session. Updated after every session until merge.
-> **Latest session:** S298 — 2026-04-03
+> **Latest session:** S299 — 2026-04-03
 
 ---
 
@@ -22,6 +22,15 @@ Context files to load FIRST (mandatory pre-session protocol — §14.5 PR_LIFECY
 ```
 
 ---
+
+## ✅ S299 Completed
+
+| Item | Fix | Files |
+|------|-----|-------|
+| RFC-001 skill-agent binding | Full RFC written (problem stmt, priority scoring, graduation pipeline, orchestrator design) | `.codex/plans/RFC-001-skill-agent-binding.md` |
+| RC-5 `build_comment_context()` | New public function + wired into initial POST of rescue comments | `scripts/ci/discussion_context_store.py`, `post_rescue_comment.py` |
+| PR_LIFECYCLE v2.0.0 | §16.4 ✅ FIXED; §16.5 mermaid green; trigger map updated | `docs/ci/PR_LIFECYCLE.md` |
+| comment #4183926920 replied | Root cause + S298 fix explained | PR comment |
 
 ## ✅ S298 Completed
 
@@ -51,33 +60,18 @@ Context files to load FIRST (mandatory pre-session protocol — §14.5 PR_LIFECY
 
 ## 🔴 Priority 1 — Next Session Start Here
 
-### RFC-001: Skill-Agent Binding (incomplete — needs full body)
-**File:** `.codex/plans/RFC-001-skill-agent-binding.md`
-**Status:** Stub created — needs full RFC body written
-**Task:** Complete the RFC with:
-- Problem statement (agents declare no skills → orchestrator can't route)
-- Proposed solution: add `skills:` array to `AGENT_REGISTRY.yaml` entries
-- Priority scoring algorithm: `Priority = (Impact × CB_Alignment × Recurrence) / Effort`
-- Skill Graduation Pipeline: `script → skill wrapper → AGENT_REGISTRY binding → Copilot-accessible`
-- Wire into `orchestrator_routing.py` so skill capability_tags drive agent selection
-
-### P2-A: `copilot-agent-session-done.yml` duplicate comment dedup
-**File:** `.github/workflows/copilot-agent-session-done.yml`
-**Task:** Replace `createComment` with upsert-by-marker pattern.
-Use marker `<!-- session-done-dedup:{sha12} -->`.
-Each push → exactly ONE session-done comment.
-
-### Execute discussion cleanup manifest
+### Execute discussion cleanup manifest (BLOCKING — requires external trigger)
 ```bash
 gh workflow run discussion-cleanup.yml \
   -f manifest_path=.codex/cleanup/discussion_cleanup_manifest.json \
   -f execute=true
 ```
-526 duplicate comments in #3756/#3673 — manifest ready, just needs execution.
+526 duplicate comments in #3756/#3673 — manifest ready. Must be triggered by a human or external runner.
 
-### Wire `post_rescue_comment.py` context-embedding (RC-5)
-Call `build_comment_context()` on initial POST so rescue comments include §A+§B+§D inline.
-**File:** `scripts/ci/post_rescue_comment.py`
+### RFC-001 Phase 1: Schema + Registry (S300)
+- Add `skills` optional key to `.codex/schemas/AgentRegistrySchema.json`
+- Add `skills:` entries to 5 pilot agents in `AGENT_REGISTRY.yaml`
+- Skill wrappers: `pre_session_context`, `scan_failing_workflows`, `discussion_context`
 
 ---
 

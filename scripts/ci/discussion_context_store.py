@@ -495,6 +495,96 @@ def build_discussion_body(
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Public helper: compact inline context for embedding in rescue comments (RC-5)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Budget allocation: ≤600 chars for §D action queue + ~400 for header/status line.
+# The total hard cap ensures GitHub comment body limits are never approached.
+_MAX_INLINE_CONTEXT_LENGTH = 1000  # hard cap for full output block
+_MAX_SECTION_D_LENGTH = 600       # budget for §D within the block
+
+
+def build_comment_context(
+    pr: int,
+    sha: str,
+    repo: str,
+    token: str | None = None,
+) -> str:
+    """
+    Return a compact §A + §B + §D inline context block suitable for embedding
+    directly inside a rescue comment initial POST (RC-5, S299).
+
+    Unlike `build_discussion_body()` this function:
+      - Does NOT require a Discussion to exist.
+      - Omits §E skills (verbose) and the machine-readable token block.
+      - Returns a plain-text Markdown block of ≤ _MAX_INLINE_CONTEXT_LENGTH chars.
+      - Falls back to an empty string on any error (caller must handle gracefully).
+
+    Marker: ``<!-- rc-inline-context:{sha12}:{pr} -->`` (machine-parseable HTML comment;
+    ``rc-inline`` = "rescue-comment inline context"). Not rendered; used by search/dedup.
+
+    Usage in post_rescue_comment.py::
+
+        from discussion_context_store import build_comment_context
+        ctx = build_comment_context(pr_number, commit_sha, repo, gh_token)
+        if ctx:
+            first_body = ctx + "\\n\\n---\\n\\n" + rescue_body
+    """
+    if token is None:
+        try:
+            token = _token()
+        except Exception as exc:
+            print(
+                f"[build_comment_context] GH_TOKEN unavailable — skipping inline context: {exc}",
+                file=sys.stderr,
+            )
+            return ""
+    sha_short = sha[:12]
+    try:
+        ctx = _gather_context(pr, sha, repo, token)
+    except Exception:
+        return ""
+
+    failing = ctx.get("failing", [])
+    blocking = ctx.get("blocking", [])
+    in_prog = ctx.get("in_prog", [])
+
+    # ── Brief status header ────────────────────────────────────────────────
+    status_parts: list[str] = []
+    if failing:
+        status_parts.append(f"❌ {len(failing)} failing")
+    if blocking:
+        status_parts.append(f"🚨 {len(blocking)} blocking")
+    if in_prog:
+        status_parts.append(f"⏳ {len(in_prog)} in-progress")
+    if not status_parts:
+        return ""  # nothing noteworthy — omit the block to keep comment clean
+
+    # rc-inline = rescue-comment inline context; sha12+pr uniquely identify this block.
+    header = (
+        f"<!-- rc-inline-context:{sha_short}:{pr} -->\n"
+        f"**Session context** · `{sha_short}` · {' · '.join(status_parts)}"
+    )
+
+    # ── §D Action Queue (most actionable first) ───────────────────────────
+    sec_d = ctx.get("sec_d", "")
+    # Trim §D to its budget so the total stays within _MAX_INLINE_CONTEXT_LENGTH
+    if len(sec_d) > _MAX_SECTION_D_LENGTH:
+        sec_d = sec_d[: _MAX_SECTION_D_LENGTH - len("…")] + "…"
+
+    lines = [header]
+    if sec_d and sec_d.strip():
+        lines.append("")
+        lines.append(sec_d.strip())
+
+    result = "\n".join(lines)
+    # Hard cap — trim to _MAX_INLINE_CONTEXT_LENGTH characters
+    if len(result) > _MAX_INLINE_CONTEXT_LENGTH:
+        result = result[: _MAX_INLINE_CONTEXT_LENGTH - len("…")] + "…"
+    return result
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Subcommands
 # ─────────────────────────────────────────────────────────────────────────────
 

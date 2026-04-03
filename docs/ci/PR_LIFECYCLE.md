@@ -1,7 +1,7 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.9.0  
-> **Date:** 2026-04-03 (S298 — §7.2 rescue cascade updated; §14.1 S297 gaps marked fixed; §14.5 P6-B/C pre-session tool documented; escalate job migrated to post_rescue_comment.py)  
+> **Version:** 2.0.0  
+> **Date:** 2026-04-03 (S299 — P2-A session-done upsert dedup; RC-5 build_comment_context; RFC-001 skill-agent binding)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (55 failures / 14 workflows, 2026-04-03)
 
@@ -1341,7 +1341,7 @@ ordered by impact. Columns: **T** = create, **U** = upsert, **🤖** = posts `@c
 | Workflow | Trigger(s) | T | U | 🤖 | Guard / Dedup marker |
 |----------|-----------|---|---|-----|----------------------|
 | `agent-auth-delegation.yml` | `pull_request`, `pull_request_review`, `workflow_dispatch` | 7 | 6 | ✅ | SHA+step markers |
-| `copilot-agent-session-done.yml` | `workflow_run` (on any job completion) | 4 | 0 | ✅ | `<!-- session-done-retrigger -->` |
+| `copilot-agent-session-done.yml` | `workflow_run` (on any job completion) | 4 | 0 | ✅ | `<!-- session-done-retrigger -->`, `<!-- session-done-dedup:{sha12} -->` (P2-A S299) |
 | `resilient_validation.yml` | `pull_request` | 2 | 2 | ✅ | SHA upsert |
 | `reference-integrity.yml` | `pull_request`, `push`, `workflow_dispatch` | 2 | 1 | ✅ | SHA upsert |
 | `ci-failure-issue-creator.yml` | `workflow_run` (on failure) | 2 | 0 | ✅ | Issue label dedup |
@@ -1416,7 +1416,7 @@ Single push to 0D_base_ (CI fully failing):
 
 | Risk | Severity | Current Status | Mitigation |
 |------|----------|----------------|------------|
-| `copilot-agent-session-done.yml` fires on EVERY `workflow_run` completion | 🔴 High | fires 4× per push (1 per watcher job) | Add `<!-- session-done-deduplicated:<sha12> -->` upsert marker |
+| `copilot-agent-session-done.yml` fires on EVERY `workflow_run` completion | 🔴 High | ✅ **FIXED S299** — `<!-- session-done-dedup:{sha12} -->` upsert marker added (P2-A) | SHA-scoped dedup prevents duplicate review posts for same commit |
 | `comment-review-gate.yml` fires on `issue_comment` → new gate comment → triggers itself | 🟡 Medium | `is:bot` filter partially guards | Strengthen actor filter: skip if `github.actor` contains `[bot]` |
 | Parallel `workflow_run` triggers for same SHA fire 10–15 workflows simultaneously | 🟡 Medium | Each has its own upsert marker | No global budget cap — acceptable at current cadence |
 | `copilot-review-responder.yml` fires on every PR review regardless of author | 🟡 Medium | Review event filter limits to `pull_request_review` | Add bot-actor skip guard |
@@ -1438,7 +1438,7 @@ flowchart TD
     WRUN --> CIRESCUE["ci-rescue.yml\nUPSERT <!-- ci-rescue:PR:sha -->\n@copilot RCA comment"]
     WRUN --> HEALER["iterative-self-healing-ci.yml\nUPSERT <!-- copilot-healing:sha:cat -->\nmax 3 auto-fix iterations"]
     WRUN --> COPHEALER["copilot-iterative-self-healing.yml\nUPSERT <!-- copilot-healing:sha:cat -->\n@copilot escalation if unfixable"]
-    WRUN --> SESSDONE["copilot-agent-session-done.yml\nCREATE <!-- session-done-retrigger -->\n⚠️ no upsert — fires per watcher"]
+    WRUN --> SESSDONE["copilot-agent-session-done.yml\nUPSERT <!-- session-done-dedup:{sha12} -->\n✅ P2-A S299 — one trigger per SHA"]
 
     CIRESCUE -->|@copilot comment posted| SESSION["Copilot coding session starts"]
     S221POST -->|@copilot mention| SESSION
@@ -1452,12 +1452,12 @@ flowchart TD
     SESSION -->|bot comment| COMGATE["comment-review-gate.yml\n(issue_comment trigger)\nUPSERT gate checklist"]
     COMGATE -->|new comment| WATCHDOG["session-watchdog.yml\n(issue_comment trigger)\ncreates ≤1 watchdog comment"]
 
-    style SESSDONE fill:#ffcccc,stroke:#cc0000
+    style SESSDONE fill:#ccffcc,stroke:#006600
     style COMGATE fill:#fff3cd,stroke:#856404
     style WATCHDOG fill:#fff3cd,stroke:#856404
 ```
 
-> 🔴 **Red node:** `copilot-agent-session-done.yml` — creates (not upserts) per watcher; risk of duplicate posts on multi-job pushes.  
+> 🟢 **Green node:** `copilot-agent-session-done.yml` — P2-A (S299) upsert marker `<!-- session-done-dedup:{sha12} -->` now prevents duplicate posts for same commit.  
 > 🟡 **Yellow nodes:** cascade risk on `issue_comment` triggers; guarded by actor filters.
 
 ---
@@ -1470,7 +1470,7 @@ flowchart TD
 
 **⬜ Remaining (future sessions):**
 
-2. **Add upsert to `copilot-agent-session-done.yml`**: Replace all `createComment` calls with upsert-by-marker to prevent per-watcher duplicates.  
+2. ✅ **DONE S299: `copilot-agent-session-done.yml`** — P2-A upsert-by-marker added: `<!-- session-done-dedup:{sha12} -->` ensures one review trigger per commit SHA.  
 3. **Global per-PR hourly comment cap**: Add a workflow-level check: if `PR comment count > 50 in last hour`, suppress non-critical posts (info/status only).  
 4. **Bot-actor filter on `issue_comment`-triggered workflows**: `chatops_copilot_trigger.yml`, `copilot-review-responder.yml`, `session-watchdog.yml` must check `github.actor` does not end with `[bot]` before posting.  
 5. **Proactive CI monitor throttle**: The 30-min schedule could generate 2+ `@copilot` comments per hour on a long-failing PR; add a per-PR-per-day cap of 5 proactive posts.  

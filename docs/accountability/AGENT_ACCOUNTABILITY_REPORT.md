@@ -3,7 +3,32 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-03T15:50Z S298
+**Last updated:** 2026-04-03T16:30Z S299
+
+---
+
+## SESSION SUMMARY — 2026-04-03T16:30Z S299 (PR #3854 — RFC-001, P2-A session-done dedup, RC-5 build_comment_context, PR_LIFECYCLE v2.0.0)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** New comments #4183926920, #4184026342 reviewed ✅
+- [x] **0d.** CI failures investigated: Comment Review Gate (11 blocking on SHA 57d92af, addressed in S298 f4323c2) ✅
+- [x] **0e.** Agency Policy §0: all issues fixed — no deferrals ✅
+- [x] **0f.** `docs/ci/PR_LIFECYCLE.md` fetched, reviewed, and updated to v2.0.0 ✅
+
+### Work Completed
+1. **RFC-001 skill-agent binding** — Created `.codex/plans/RFC-001-skill-agent-binding.md` with full RFC body: problem statement, priority scoring `Priority = (Impact × CB_Alignment × Recurrence) / Effort`, 4-stage graduation pipeline (script → skill wrapper → AGENT_REGISTRY binding → Copilot-accessible), `select_skill()` design, acceptance criteria, 4-phase implementation plan.
+2. **P2-A — `copilot-agent-session-done.yml`** — Replaced bare `createComment` for `@copilot review` post with SHA-scoped upsert-by-marker: new `<!-- session-done-dedup:{sha12} -->` marker embedded in each review trigger comment; guard checks all `allNodes` for this marker before posting → prevents duplicate review triggers when same SHA fires multiple `workflow_run` completions.
+3. **RC-5 — `build_comment_context()`** — Added public function to `scripts/ci/discussion_context_store.py` returning compact §A+§B+§D inline context (≤1 000 chars, no Discussion required, graceful fallback on error). Wired into `scripts/ci/post_rescue_comment.py` initial POST: inline context prepended above the rescue header so agents see action queue immediately.
+4. **`docs/ci/PR_LIFECYCLE.md` v2.0.0** — §16.4 session-done risk ✅ FIXED; §16.5 mermaid SESSDONE node green; §16.6 P2-A noted done; trigger map `session-done-dedup` marker added.
+5. **CHANGELOG.md** — S299 entry added.
+
+### Reply to comment #4183926920
+Replied with root cause (escalate job pre-dated S294 upsert) + confirmation that S298 fix routes escalation to canonical rescue thread. Should append to #4183903417 (same SHA).
+
+### WHY Analysis (§0d)
+- comment #4184026342 is from @mbaetiong directing S299 priorities — all 4 tasks addressed (RFC-001 ✅, P2-A ✅, RC-5 ✅; discussion cleanup manifest execution requires `gh workflow run` which can only be triggered externally — noted in reply).
 
 ---
 

@@ -420,11 +420,40 @@ jobs:
               return;
             }
 
+            // P2-A (S299): SHA-scoped dedup marker — one session-done trigger per commit.
+            // When two workflow_run events fire for the same SHA (e.g. Copilot coding agent
+            // + CodeQL), without this guard both would post "@copilot review" a few seconds
+            // apart. The marker is stored as an HTML comment inside the trigger body so it
+            // is not rendered but can be searched across allNodes.
+            // Note: allNodes is limited to last 20 comments (GraphQL comments(last:20)) so
+            // the scan is bounded O(20) and does not degrade on large comment histories.
+            const rawHeadSha = context.payload.workflow_run.head_sha || '';
+            if (!rawHeadSha) {
+              console.log('head_sha is unavailable — skipping SHA-scoped dedup check and proceeding without marker.');
+            }
+            const sessionDoneSha = rawHeadSha.slice(0, 12);
+            const SESSION_DONE_MARKER = rawHeadSha
+              ? `<!-- session-done-dedup:${sessionDoneSha} -->`
+              : '';
+            if (SESSION_DONE_MARKER) {
+              const alreadyTriggeredForSha = allNodes.some(c =>
+                (c.body || '').includes(SESSION_DONE_MARKER)
+              );
+              if (alreadyTriggeredForSha) {
+                console.log(`Session-done trigger already posted for SHA ${sessionDoneSha} — skipping duplicate.`);
+                return;
+              }
+            }
+
+            const reviewBody = SESSION_DONE_MARKER
+              ? `@copilot+claude-sonnet-4.6 review\n\n${SESSION_DONE_MARKER}`
+              : '@copilot+claude-sonnet-4.6 review';
+
             await github.rest.issues.createComment({
               owner, repo, issue_number: pr,
-              body: '@copilot+claude-sonnet-4.6 review',
+              body: reviewBody,
             });
-            console.log(`@copilot review posted to PR #${pr}.`);
+            console.log(`@copilot review posted to PR #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);
 
   # ── Job 3: Auto-approve all pending workflow runs on last commit SHA ────────
   # Fires when `- [x] auto-approve-workflows` is checked in the PR body.

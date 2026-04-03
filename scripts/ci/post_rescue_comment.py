@@ -190,6 +190,22 @@ def main() -> None:
         )
 
     # Either no existing comment or PATCH failed — create the initial comment.
+    # RC-5 (S299): embed a compact inline context block (§A+§B+§D) so the agent
+    # immediately sees the action queue without needing a separate API call.
+    inline_ctx = ""
+    try:
+        import pathlib as _pathlib
+        import sys as _sys
+        _scripts_ci = str(_pathlib.Path(__file__).parent)
+        if _scripts_ci not in _sys.path:
+            _sys.path.insert(0, _scripts_ci)
+        from discussion_context_store import build_comment_context  # noqa: PLC0415
+        inline_ctx = build_comment_context(pr_number, commit_sha, repo, token)
+    except Exception:
+        # Graceful degradation — inline context is optional; rescue comment still posts.
+        pass  # context unavailable (first run, missing deps, etc.)
+
+    ctx_section = (f"{inline_ctx}\n\n---\n\n") if inline_ctx else ""
     first_body = (
         f"{marker}\n"
         f"## 🚨 CI Rescue — @copilot Fix Required\n\n"
@@ -204,7 +220,7 @@ def main() -> None:
         f"4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n"
         f"5. Verify all CI checks are green before concluding\n\n"
         f"</details>\n\n"
-        f"---\n\n"
+        f"{ctx_section}"
         f"<details><summary>🔴 <code>{workflow}</code> — {now} · "
         f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
         f"@copilot The **{workflow}** check is failing on commit `{sha_short}`. "

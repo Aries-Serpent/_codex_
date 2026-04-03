@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S298 — PR #3854 — CodeQL implicit-concat/unused-globals, escalate job upsert, PR_LIFECYCLE §14.1/§14.5/§7.2 updates, Pattern 8 auto-fix upgrade)
+### Fixed (S299 — PR #3854 — RFC-001, P2-A session-done dedup, RC-5 build_comment_context)
+- **RFC-001 skill-agent binding**: Created `.codex/plans/RFC-001-skill-agent-binding.md` — full RFC body with problem statement, priority scoring algorithm `Priority = (Impact × CB_Alignment × Recurrence) / Effort`, 4-stage graduation pipeline (script → skill wrapper → registry binding → Copilot-accessible), and `orchestrator_routing.py` `select_skill()` design
+- **P2-A — `copilot-agent-session-done.yml`**: Replaced bare `createComment` for `@copilot review` with SHA-scoped upsert-by-marker: `<!-- session-done-dedup:{sha12} -->` embedded in each post; guard checks `allNodes` for marker before posting — prevents duplicate review triggers when same SHA triggers multiple `workflow_run` completions
+- **RC-5 — `build_comment_context()`**: Added public function to `scripts/ci/discussion_context_store.py` that returns a compact §A+§B+§D inline context block (≤1 000 chars) without requiring a GitHub Discussion; wired into `scripts/ci/post_rescue_comment.py` initial POST so rescue comments include live action queue inline
+- **`docs/ci/PR_LIFECYCLE.md` v2.0.0**: §16.4 session-done risk marked ✅ FIXED; §16.5 mermaid diagram updated (SESSDONE node green); §16.6 P2-A noted as done; trigger map table updated with `<!-- session-done-dedup:{sha12} -->` marker
 - **CodeQL 12784/12785**: `scripts/ci/pre_session_context.py` — fixed implicit string concatenation at lines 537–539 and 642–643 (joined into explicit parenthesised strings)
 - **CodeQL 12781**: `scripts/ci/discussion_cleanup.py` — removed unused `_GQL_ID_RE` regex constant
 - **CodeQL 12782/12783**: `scripts/ci/discussion_context_store.py` — removed unused `_DISCUSSION_ACCOUNTABILITY` and `_CAT_QA` constants
