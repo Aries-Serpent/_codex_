@@ -92,6 +92,26 @@ class DocMeta(BaseModel):
     embed_index_ref: str = Field(default="", description="Path or name of the embedding index")
 
 
+class PDALoopConfig(BaseModel):
+    """PDA Loop (Plan-Do-Assess) integration metadata for a skill.
+
+    When present, the skill participates in the AfterMath feedback loop:
+    each invocation appends a structured entry to the PDA iterations log,
+    allowing the cognitive brain to track fix success rates over time.
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+    enabled: bool = Field(default=True, description="Whether PDA loop recording is active")
+    plan: str = Field(default="", description="What the skill plans to do (P phase)")
+    do: str = Field(default="", description="What the skill executes (D phase)")
+    assess: str = Field(default="", description="How the skill verifies the outcome (A phase)")
+    aftermath_store: str = Field(
+        default=".codex/aftermath/pda_iterations.jsonl",
+        description="Path to the JSONL store for AfterMath entries",
+    )
+
+
 class IORef(BaseModel):
     """References to JSON Schema files for input/output validation."""
 
@@ -128,6 +148,10 @@ class SkillManifest(BaseModel):
     telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
     compression: CompressionMeta = Field(default_factory=CompressionMeta)
     doc: DocMeta | None = Field(default=None)
+    pda_loop: PDALoopConfig | None = Field(
+        default=None,
+        description="PDA Loop + AfterMath integration config (optional)",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -312,6 +336,7 @@ __all__ = [
     "ExecutionMetrics",
     "ExecutionResult",
     "IORef",
+    "PDALoopConfig",
     "PolicyConfig",
     "RegisteredSkill",
     "RoutingDecision",

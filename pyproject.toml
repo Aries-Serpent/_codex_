@@ -405,6 +405,18 @@ codex_ml = ["**/tests/*", "torch_stub/*", ".stubs/*"]
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
 
+# ---------------------------------------------------------------------------
+# codex.skills — skill self-registration entry-point group.
+# Third-party packages that ship skills register here.  Each entry point
+# must point at a SkillManifest instance or a zero-arg factory returning one.
+# Built-in skills (under src/codex/skills/) are discovered via filesystem scan
+# and intentionally absent here.
+# ---------------------------------------------------------------------------
+[project.entry-points."codex.skills"]
+# (built-in skills discovered via filesystem — no entries needed here)
+# Example for a third-party skill package:
+#   my_skill = "my_package.skills.my_skill:manifest"
+
 [project.entry-points."codex_ml.reward_models"]
 heuristic = "codex_ml.plugins.registries:_reward_model_heuristic"
 

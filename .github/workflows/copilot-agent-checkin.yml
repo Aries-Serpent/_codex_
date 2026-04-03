@@ -475,7 +475,11 @@ jobs:
             // An "answered" rescue comment already has:
             //   (a) a <!-- session-done-retrigger --> dedup marker for its rescue ID, OR
             //   (b) a Copilot agent reply containing resolution language after it.
-            const rescueMarkerRe   = /<!--\s*ci-rescue:\d+(?::[0-9a-f]+)?\s*-->/;
+            // Matches all three marker formats in use:
+            //   <!-- ci-rescue:3854 -->              (test-rag.yml — PR-scoped)
+            //   <!-- ci-rescue:3854:abc123def456 --> (ci-rescue.yml — SHA-scoped)
+            //   <!-- ci-rescue-sha:3854:abc123def456 --> (validate.yml — SHA-scoped with -sha suffix)
+            const rescueMarkerRe   = /<!--\s*ci-rescue(?:-sha)?:\d+(?::[0-9a-f]+)?\s*-->/;
             const retriggerMarkerRe = /<!--\s*session-done-retrigger\s*-->/;
             // Only match actual Copilot agent logins — NOT github-actions[bot], which
             // posts the rescue comments themselves (matching it gave false-positive hasResponse).
@@ -492,8 +496,8 @@ jobs:
             for (const c of comments) {
               const body = c.body || '';
               if (rescueMarkerRe.test(body)) {
-                // Extract rescue ID from either PR-scoped or SHA-scoped marker.
-                const markerMatch = body.match(/<!--\s*ci-rescue:(\d+(?::[0-9a-f]+)?)\s*-->/);
+                // Extract rescue ID from PR-scoped, SHA-scoped, or -sha-suffixed marker.
+                const markerMatch = body.match(/<!--\s*ci-rescue(?:-sha)?:(\d+(?::[0-9a-f]+)?)\s*-->/);
                 const rescueId = markerMatch ? markerMatch[1] : String(c.databaseId);
                 // Always update latestRescue — we want the LAST rescue comment in the list.
                 latestRescue = { id: rescueId, commentId: c.databaseId, body };

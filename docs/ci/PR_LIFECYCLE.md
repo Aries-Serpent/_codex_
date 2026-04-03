@@ -32,6 +32,10 @@ and how the self-healing / rescue system responds.
 17. [PDA Loop + AfterMath — Failure Pattern Logging](#17-pda-loop--aftermath--failure-pattern-logging)
 18. [WEC Workflow Catalog — Complete Reference](#18-wec-workflow-catalog--complete-reference)
 19. [Fast-Forward Workflow Promotion](#19-fast-forward-workflow-promotion)
+20. [Workflow Compliance Fixes (S293)](#20-workflow-compliance-fixes-s293)
+21. [Session Automation Quick Reference](#21-session-automation-quick-reference)
+- [Appendix: Key Patterns](#appendix-key-patterns)
+- [Appendix: Known Recurring CI Failure Patterns](#appendix-known-recurring-ci-failure-patterns)
 
 ---
 
@@ -289,7 +293,7 @@ There are **two tiers** of rescue workflows. Understanding this distinction is e
 - `iterative-self-healing-ci.yml`: autonomous fix + push loop
 - `copilot-iterative-self-healing.yml`: `@copilot` escalation
 
-> **S292 Root Cause Finding:** Automation appeared to "stop working" because 14+ `workflow_run`-triggered runs were queued in `action_required` state. The `validate.yml` rescue-comment job (Tier 1) was always firing — it just posted to a per-PR thread (pre-S290) that was easy to miss. After S290, SHA-scoped comments make each failure visible. To restore Tier 2 automation, approve the queued `workflow_run` runs in the Actions tab.
+> **S292 Root Cause Finding:** Automation appeared to "stop working" because 14+ `workflow_run`-triggered runs were queued in `action_required` state. The Tier 1 rescue-comment jobs (`validate.yml`, `test-rag.yml`, `actionlint-audit.yml`) were always firing — they just posted comments that were easy to miss (pre-S290 per-PR thread, or posted as `github-actions[bot]` when `CODEX_MASTER_KEY` expired). After S290, SHA-scoped comments make each failure visible. After S293, `actionlint-audit.yml` inline step explicitly sets `github-token: CODEX_MASTER_KEY`. To restore Tier 2 automation, approve the queued `workflow_run` runs in the Actions tab.
 
 ### 7.1.1 Rescue Comment Identity Requirement (S293)
 
@@ -861,8 +865,8 @@ stateDiagram-v2
 
 ### 13.1 Summary Table (descending by frequency)
 
-| Rank | Workflow | Count | Pattern ID | Category | Auto-fix? | S292 Status |
-|------|----------|-------|------------|----------|-----------|-------------|
+| Rank | Workflow | Count | Pattern ID | Category | Auto-fix? | Latest Status |
+|------|----------|-------|------------|----------|-----------|---------------|
 | 1 | PR Comment Review Gate | 20 | RP-COMMENT-GATE | pre-flight-gate | No — reply to comments, then push | 🔄 Ongoing |
 | 2 | RAG Module Tests | 13 | RP-RAG-CHRONIC | code-fix-required | ✅ **Fixed S292** — tests for preprocessor/validator added | ✅ Fixed |
 | 3 | Validation Pipeline | 11 | RP-P22 / RP-P23 / RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
@@ -871,7 +875,9 @@ stateDiagram-v2
 | 6 | Automatic Dependency Submission | 3 | RP-TRANSIENT-API503 | transient-infra | ✅ Re-run only | N/A |
 | 7 | Auto-Fix Common CI Issues | 3 | RP-RUFF / F401 / E501 | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
 | 8 | PR Auto-Fix Check | 3 | RP-RUFF | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
-| 9 | Workflow Compliance Audit | 2 | RP-ACTIONLINT | workflow-config | ✅ **Fixed S292** — CB-003 applied | ✅ Fixed |
+| 9 | Workflow Compliance Audit (SC2269) | 1 | RP-ACTIONLINT-SC2269 | workflow-config | ✅ **Fixed S293** — `PR="${PR}"` self-assign removed | ✅ Fixed |
+| 9 | Workflow Compliance Audit (CB-003) | 2 | RP-ACTIONLINT | workflow-config | ✅ **Fixed S292** — CB-003 expression-in-script fix | ✅ Fixed |
+| 9 | Actionlint rescue posted as bot | 1 | RP-RESCUE-IDENTITY | automation | ✅ **Fixed S293** — `github-token` added to inline step | ✅ Fixed |
 | 10 | mypy Baseline Gate | 2 | RP-009 | code-fix-required | ✅ `mypy_baseline.py` | ✅ Fixed |
 | 11 | Pre-Merge Validation | 1 | RP-P22 / RP-P23 | code-fix-required | ✅ `auto_fix_common_issues.py` | ✅ Fixed |
 | 12 | Copilot Issue Triage | 1 | RP-TRANSIENT | transient-infra | ✅ Re-run only | N/A |
@@ -981,11 +987,14 @@ for malformed dependency entries.  See §11.6 for full classification table.
 This section documents gaps in the current automation pipeline identified from the triage data
 in §13, and the planned improvements to close each gap.
 
-### 14.1 Gap Analysis (updated S292)
+### 14.1 Gap Analysis (updated S293)
 
-| Gap | Current Behaviour | Target Behaviour | S292 Status |
-|-----|------------------|-----------------|-------------|
-| **First failure does not always trigger self-healer** | Tier 2 (`workflow_run`) runs queue in `action_required` state | Tier 1 `validate.yml` rescue always fires; Tier 2 needs human to approve queued runs | ✅ Documented §7.1 |
+| Gap | Current Behaviour | Target Behaviour | Status |
+|-----|------------------|-----------------|--------|
+| **First failure does not always trigger self-healer** | Tier 2 (`workflow_run`) runs queue in `action_required` state | Tier 1 `validate.yml` + `test-rag.yml` rescue always fire; Tier 2 needs human to approve queued runs | ✅ Documented §7.1 |
+| **Rescue comments posted as `github-actions[bot]`** | `actionlint-audit.yml` inline step used default `github.token` → Copilot ignores the `@copilot` mention | All `actions/github-script@v8` rescue steps explicitly pass `github-token: CODEX_MASTER_KEY` | ✅ Fixed S293 |
+| **actionlint SC2269 self-assignment** | `PR="${PR}"` in `workflow-execution-gate.yml` → actionlint compliance fails | Remove redundant self-assignment | ✅ Fixed S293 |
+| **RAG meta-tensor test isolation** | `torch.nn.Linear(10, 5).to("cpu")` fails on meta tensor after global device pollution | Use `device="cpu"` constructor argument; no `.to()` call | ✅ Fixed S293 |
 | **Comment-gate failures not auto-diagnosed** | Healer posts generic `@copilot Fix ...` comment | Healer extracts blocking comment IDs + authors, generates structured reply template | 🔄 Ongoing |
 | **CHANGELOG/accountability gate not in auto-fix** | Agent must remember to update both files every push | `auto_fix_common_issues.py` checks staleness | 🔄 Ongoing |
 | **RAG tests fail chronically on `0D_base_`** | 13 failures over 2 days | ✅ **Fixed S292** — preprocessor + validator test coverage | ✅ Fixed |
@@ -994,10 +1003,14 @@ in §13, and the planned improvements to close each gap.
 | **Copilot comment replies not verified post-session** | Session may end without replying to all addressed comments | `copilot-agent-session-done.yml` should verify replies | 🔄 Ongoing |
 | **submit-pypi 503 triggers rescue unnecessarily** | Healer posts escalation comment even for known-transient 503 | Classify RP-TRANSIENT-API503; suppress `@copilot` | 🔄 Ongoing |
 
-### 14.2 Automation Cascade (Improved — S292)
+### 14.2 Automation Cascade (Improved — S293)
 
-> **Key change S292:** Added explicit Tier 1 / Tier 2 model (see §7.1). The rescue cascade now
-> clearly documents that `validate.yml` is the ONLY reliably approval-free rescue mechanism.
+> **Key change S292:** Added explicit Tier 1 / Tier 2 model (see §7.1). The rescue cascade
+> clearly documents which workflows are reliably approval-free.  
+> **Key change S293:** `validate.yml` is NOT the only Tier 1 path — `test-rag.yml`,
+> `actionlint-audit.yml`, and `comment-review-gate.yml` are also Tier 1 (no approval needed).
+> All Tier 1 rescue steps MUST post comments using
+> `github-token: ${{ secrets.CODEX_MASTER_KEY || ... }}` (see §7.1.1).  
 > Tier 2 workflows require human approval of `workflow_run` runs in the Actions tab.
 
 ```
@@ -1006,13 +1019,17 @@ in §13, and the planned improvements to close each gap.
 └──────┬────────────────────────────────────────────────────────┬─┘
        │ pull_request event (no approval)                       │ workflow_run event
        ▼                                                        ▼
-┌──────────────────────────┐                     ┌─────────────────────────────┐
-│ TIER 1 (always fires)    │                     │ TIER 2 (needs human approval)│
-│ validate.yml rescue job  │                     │ ci-rescue.yml               │
-│ - SHA-scoped comment     │                     │ iterative-self-healing.yml  │
-│ - PDA loop log           │                     │ copilot-iterative-self.yml  │
-│ - @copilot instructions  │                     │ (queued in action_required) │
-└──────────────────────────┘                     └─────────────────────────────┘
+┌─────────────────────────────────┐         ┌─────────────────────────────┐
+│ TIER 1 (always fires, no gate)  │         │ TIER 2 (needs human approval)│
+│ validate.yml    → rescue job    │         │ ci-rescue.yml               │
+│ test-rag.yml    → rescue job    │         │ iterative-self-healing.yml  │
+│ actionlint-audit.yml → inline   │         │ copilot-iterative-self.yml  │
+│ - SHA-scoped comment            │         │ (queued in action_required) │
+│ - PDA loop log                  │         │                             │
+│ - @copilot instructions         │         │ ⚠️ Token MUST be            │
+│ - posted as @mbaetiong          │         │    CODEX_MASTER_KEY         │
+│   (CODEX_MASTER_KEY required)   │         │    for @copilot to see it   │
+└─────────────────────────────────┘         └─────────────────────────────┘
        │
        ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1065,14 +1082,63 @@ in §13, and the planned improvements to close each gap.
 
 ### 14.5 Session Protocol Checklist (for every Copilot session)
 
-Before ending a session, the agent MUST verify:
+**⚠️ MANDATORY — Must complete ALL items before calling `report_progress` on the final commit.**
 
-- [ ] All BLOCKING comments from `mbaetiong` have been replied to with resolution SHA
-- [ ] `CHANGELOG.md` has an entry under `## [Unreleased]` for this session
-- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated with WHY regressions occurred
-- [ ] `python scripts/ci/auto_fix_common_issues.py --check-only` reports 0 auto-fixable issues
-- [ ] `python scripts/ci/mypy_baseline.py` passes (0 new errors)
-- [ ] No `${{ }}` expressions inside `run: |` blocks in any workflow YAML
+#### Pre-Session: Load Required Context
+
+```bash
+# Always load these before starting any code changes:
+# 1. docs/ci/PR_LIFECYCLE.md          — this document (full workflow model)
+# 2. .codex/CODEBASE_AGENCY_POLICY.md  — §0 fix ALL issues found
+# 3. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — recent WHY analysis
+# 4. python scripts/ci/pda_failure_logger.py summarize   — grounded solutions
+```
+
+#### During Session: Fix Verification
+
+```bash
+# After each code change, run the relevant check:
+python -m ruff check src/ tests/ --fix            # style/import fixes
+python scripts/ci/mypy_baseline.py                 # type-check gate
+python scripts/ci/auto_fix_common_issues.py        # P1/P22/P23 auto-fixes
+/tmp/actionlint .github/workflows/*.yml            # workflow compliance
+pre-commit run detect-secrets --all-files          # secrets baseline
+```
+
+#### End-of-Session Verification (in this order)
+
+- [ ] **Reply to ALL BLOCKING comments** — use exact format:
+  `"Fixed at <7-char SHA>" / "Addressed at <SHA>" / "Resolved at <SHA>"`  
+  Verify: `# no outstanding rescue comments with marker <!-- ci-rescue:3854 -->`
+- [ ] **CHANGELOG.md updated** — verify:  
+  `grep -A3 "## \[Unreleased\]" CHANGELOG.md | grep "###"`  
+  Must show a `### Fixed (SN)` entry for the current session number.
+- [ ] **Accountability Report updated** — verify:  
+  `grep -c "$(date +%Y-%m-%d)" docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+  Must return ≥ 1 (today's date present).
+- [ ] **0 auto-fixable issues**:  
+  `python scripts/ci/auto_fix_common_issues.py --check-only`
+- [ ] **mypy baseline passes**:  
+  `python scripts/ci/mypy_baseline.py --require-baseline`
+- [ ] **No `${{ }}` inside `run: |` blocks**:  
+  `grep -rn '\${{' .github/workflows/*.yml | grep -v '^\s*#' | grep -v 'env:\|with:\|if:\|uses:\|name:' || echo "✅ clean"`
+- [ ] **0 actionlint violations**:  
+  `/tmp/actionlint .github/workflows/*.yml 2>&1 | head -5 || echo "✅ clean"`
+- [ ] **Rescue comment identity health** (verify `CODEX_MASTER_KEY` is set):  
+  If recent rescue comments appear as `github-actions[bot]` instead of `mbaetiong`,  
+  the `CODEX_MASTER_KEY` secret has expired — escalate to admin for rotation.
+
+#### Session-End Reply Format Reference
+
+```
+# To satisfy the S221 guard, use ANY of these exact phrases in a @copilot reply:
+"Fixed at <SHA>"
+"Addressed at <SHA>"
+"Resolved at <SHA>"
+
+# Example:
+Fixed at b478842. Root cause: SC2269 self-assignment in workflow-execution-gate.yml.
+```
 
 ---
 
@@ -1482,7 +1548,6 @@ with root causes, fix templates, and verification commands. The resolution statu
 | `progressive-validation.yml` | Progressive Validation Suite | 🔴 High | Full progressive suite + coverage |
 | `coverage-with-timeout.yml` | Coverage with Timeout Guards | 🟡 Medium | Coverage run with timeout |
 | `test-rag.yml` | RAG Module Tests | 🟡 Medium | RAG-specific tests; see §15 for chronic patterns |
-| `validate.yml` | Validation Pipeline | 🟢 Low | Fast pre-commit suite |
 | `pre-flight-validation.yml` | Pre-Flight CI Validation | 🟢 Low | Pre-flight checks |
 | `ci-checkpoint-validation.yml` | CI Checkpoint Validation | 🟢 Low | CI checkpoint |
 | `data-quality-suite.yml` | Data Quality & Determinism Suite | 🟡 Medium | Determinism checks |
@@ -1849,3 +1914,199 @@ on the global default device entirely. Applied consistently to all models create
 > **Admin Note:** If rescue comments appear as `github-actions[bot]` instead of `@mbaetiong`,
 > the `CODEX_MASTER_KEY` secret has expired. Rotate it with a fresh `@mbaetiong` PAT
 > (scopes: `repo`, `write:discussion`). The `CODEX_BACKUP_KEY` provides one level of redundancy.
+
+---
+
+## 21. Session Automation Quick Reference
+
+> **Purpose:** Single-page agent-readable guide. Load this section at the START of every session.  
+> **Audience:** Copilot Coding Agent (`copilot-swe-agent[bot]`, `github-copilot[bot]`)  
+> **Source of truth:** When this section conflicts with another, follow this section — it is the most recently reconciled version.
+
+---
+
+### 21.1 Session Start — Mandatory Loads
+
+Before touching any code, load these documents in order:
+
+```
+1. docs/ci/PR_LIFECYCLE.md              ← this document
+2. .codex/CODEBASE_AGENCY_POLICY.md     ← §0: fix ALL issues, no deferral
+3. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  ← recent WHY analysis
+4. python scripts/ci/pda_failure_logger.py summarize   ← proven fix templates
+```
+
+Check rescue comment health:
+```bash
+# Are recent rescue comments posted as @mbaetiong or as github-actions[bot]?
+# If github-actions[bot]: CODEX_MASTER_KEY expired — escalate to admin before proceeding.
+# The self-healing chain ONLY works when rescue comments are posted as @mbaetiong.
+```
+
+---
+
+### 21.2 CI Failure Response Protocol (on first failure)
+
+When ANY CI check fails, follow this exact sequence — do NOT skip steps:
+
+```
+STEP 1 — Classify the failure
+   Use: python scripts/ci/pda_failure_logger.py summarize
+   Or:  read the rescue comment marker <!-- ci-rescue:... --> on the PR
+   Map to RP-XXX in .codex/aftermath/failure_pattern_solutions.yaml
+
+STEP 2 — Check auto-fix availability
+   Run: python scripts/ci/auto_fix_common_issues.py --check-only
+   If auto-fixable: run without --check-only, then commit
+
+STEP 3 — Apply targeted fix
+   See §13.2 for per-pattern fix commands
+   See §17.4 for PDA CLI grounded solutions
+
+STEP 4 — Verify fix
+   Run: python scripts/ci/mypy_baseline.py --require-baseline
+   Run: /tmp/actionlint .github/workflows/*.yml
+   Run: python -m ruff check src/ tests/
+
+STEP 5 — Commit and reply
+   Commit with: "fix(<pattern>): <short description>"
+   Reply to EVERY rescue comment: "Fixed at <SHA>"
+```
+
+---
+
+### 21.3 Rescue Comment Identity — Non-Negotiable Rules
+
+| Rule | Reason |
+|------|--------|
+| Rescue comments MUST be posted as `@mbaetiong` | Copilot ignores `@copilot` mentions from `github-actions[bot]` |
+| All `actions/github-script@v8` rescue steps MUST set `github-token: ${{ secrets.CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY \|\| secrets.GITHUB_TOKEN }}` | Without explicit override, `github-script` uses the default `GITHUB_TOKEN` (= bot) |
+| All Python/shell rescue steps MUST use `GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY \|\| ... }}` | Same reason — token identity determines comment author |
+| If `CODEX_MASTER_KEY` expires, ALL rescue automation breaks | Admin must rotate the secret; fallback `CODEX_BACKUP_KEY` provides one level of redundancy |
+
+**Token expiry symptoms:** rescue comments suddenly appear as `github-actions[bot]`, `@copilot` stops auto-triggering from rescue comments.
+
+---
+
+### 21.4 Tier 1 vs Tier 2 — At a Glance
+
+| | Tier 1 (fires immediately) | Tier 2 (needs approval) |
+|---|---|---|
+| **Trigger** | `pull_request` event | `workflow_run` event |
+| **Approval** | None | Human must click "Approve" in Actions UI |
+| **Workflows** | `validate.yml`, `test-rag.yml`, `actionlint-audit.yml`, `comment-review-gate.yml` | `ci-rescue.yml`, `iterative-self-healing-ci.yml`, `copilot-iterative-self-healing.yml` |
+| **Reliability** | ✅ Always fires on push | ⚠️ May queue in `action_required` |
+| **What it posts** | SHA-scoped `@copilot` rescue comment | Deep RCA, auto-fix attempts, escalation |
+
+> **Key insight:** If you see many `workflow_run` runs in `action_required` state, Tier 2 is
+> blocked. Tier 1 is still firing and posting `@copilot` comments. The self-healing chain is
+> NOT completely broken — Tier 1 is your entry point.
+
+---
+
+### 21.5 WEC Quick Reference — What to Check for a Typical PR
+
+```
+Minimum viable WEC for a feature PR:
+- [x] pre-merge-validation.yml   ← always required
+- [x] comment-review-gate.yml    ← always required
+- [x] deferral-language-gate.yml ← always required
+- [x] agent-auth-delegation.yml  ← always required
+- [x] copilot-agent-checkin.yml  ← always required
+- [x] cost-gate.yml              ← always required
+- [x] copilot-agent-session-done.yml  ← always required
+- [x] workflow-execution-gate.yml     ← always required
+- [x] copilot-iterative-self-healing.yml ← always required
+- [x] validate.yml               ← cheap: detect-secrets + ruff
+- [x] mypy-baseline.yml          ← cheap: type-check gate
+- [x] actionlint-audit.yml       ← cheap: workflow compliance
+- [x] test-rag.yml               ← if RAG files changed
+- [ ] resilient_validation.yml   ← check when above pass (costly)
+- [ ] security-scanning-suite.yml ← check before merge
+```
+
+> ⚠️ **Filename accuracy is MANDATORY.** Wrong filenames silently fail to match.  
+> Use underscores where the file uses underscores: `resilient_validation.yml` NOT `resilient-validation-suite.yml`.  
+> Full authoritative list: [§18 WEC Workflow Catalog](#18-wec-workflow-catalog--complete-reference).
+
+---
+
+### 21.6 Common CI Fix Commands — Copy-Paste Ready
+
+```bash
+# Fix ruff/import/style issues:
+python -m ruff check src/ tests/ --fix && git add -A
+
+# Fix EOF + trailing whitespace in .codex/ JSON:
+find .codex -name '*.json' -print0 | xargs -0 python3 -c \
+  "import sys; [open(f,'a').write('') or None for f in sys.argv[1:] if open(f).read() and not open(f).read().endswith('\n')]"
+
+# Refresh detect-secrets baseline:
+python3 -m detect_secrets scan --no-verify --baseline .secrets.baseline \
+  .codex/agent_context.json CODEX_MANIFEST.json \
+  .codex/aftermath/pda_iterations.jsonl \
+  tests/test_fast_forward_safe_files.py
+
+# Update mypy baseline (CI isolated-venv count):
+python scripts/ci/mypy_baseline.py --update
+
+# Run all auto-fixable patterns:
+python scripts/ci/auto_fix_common_issues.py
+
+# Remove SC2269 self-assignment (check for):
+grep -rn '^[[:space:]]*\([A-Z_]*\)="\$\1"' .github/workflows/
+
+# Check for expression-in-script violations (actionlint rule):
+grep -rn '\${{' .github/workflows/*.yml | grep -v '^\s*#' | \
+  grep -v 'env:\|with:\|if:\|uses:\|name:\|needs:\|outputs:'
+```
+
+---
+
+### 21.7 Workflow Compliance Quick Rules (actionlint)
+
+| Rule | Bad | Good |
+|------|-----|------|
+| Never embed `${{ }}` in `run:` body | `run: \| echo "${{ github.sha }}"` | `env:\n  SHA: ${{ github.sha }}\nrun: \| echo "${SHA}"` |
+| Never self-assign in `run:` | `PR="${PR}"` | *(remove the line entirely)* |
+| Step names must not contain `${{ }}` | `name: Fix PR #${{ ... }}` | `name: Fix PR` |
+| `github-token` must be explicit in `github-script@v8` | *(no `github-token:` key)* | `github-token: ${{ secrets.CODEX_MASTER_KEY \|\| ... }}` |
+
+---
+
+### 21.8 Session End — Automated Health Gate
+
+Run this final check before the last `report_progress` call:
+
+```bash
+# One-liner health gate:
+python scripts/ci/auto_fix_common_issues.py --check-only && \
+python scripts/ci/mypy_baseline.py --require-baseline && \
+/tmp/actionlint .github/workflows/*.yml 2>&1 | grep -c "error" | \
+  awk '{if ($1 > 0) {print "❌ actionlint: "$1" violations"; exit 1} else print "✅ actionlint: clean"}' && \
+echo "✅ All pre-push checks passed"
+```
+
+If anything fails, fix it before pushing. The session is NOT complete until this gate passes.
+
+---
+
+### 21.9 Rescue Comment Marker Reference
+
+Every rescue comment uses an HTML comment marker for deduplication. Knowing these lets you check if a rescue is already posted:
+
+| Workflow | Marker Format | Tier |
+|----------|--------------|------|
+| `validate.yml` rescue-comment job | `<!-- ci-rescue-sha:{pr}:{sha12} -->` | 1 |
+| `test-rag.yml` rescue-comment job | `<!-- ci-rescue-sha:{pr}:{sha12} -->` | 1 |
+| `actionlint-audit.yml` inline step | `<!-- ci-rescue:{pr}:sha-{sha12} -->` | 1 |
+| `actionlint-audit.yml` rescue-comment job | `<!-- ci-rescue:{pr}:sha-{sha12} -->` | 1 |
+| `ci-rescue.yml` | `<!-- ci-rescue:{pr}:sha-{sha12} -->` | 2 |
+| `iterative-self-healing-ci.yml` | `<!-- copilot-healing:{sha12}:{category} -->` | 2 |
+| `copilot-iterative-self-healing.yml` | `<!-- copilot-healing:{sha12}:{category} -->` | 2 |
+| `comment-review-gate.yml` | `<!-- comment-review-gate:{pr} -->` | 1 |
+| `copilot-agent-checkin.yml` | `<!-- session-done-retrigger -->` | 1 |
+| `copilot-agent-session-done.yml` | `<!-- session-done-retrigger -->` | 2 |
+
+**To satisfy the S221 guard and stop re-triggers:** reply to any rescue comment with
+`"Fixed at <SHA>"`, `"Addressed at <SHA>"`, or `"Resolved at <SHA>"`.
