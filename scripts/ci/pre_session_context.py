@@ -39,6 +39,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -418,7 +419,7 @@ def _get_job_log_tail(owner: str, repo: str, job_id: int | str, token: str, line
     else:
         raw = str(data)
     # Strip ANSI escape sequences for readability
-    import re  # noqa: PLC0415
+    # re is imported at module level
     raw = re.sub(r"\x1b\[[0-9;]*[a-zA-Z]", "", raw)
     tail = raw.strip().splitlines()[-lines:]
     return "\n".join(tail)
@@ -563,7 +564,7 @@ def section_e_skills(owner: str, repo: str) -> str:
         try:
             raw = pattern_file.read_text(encoding="utf-8")
             # Extract pattern IDs and one-line descriptions without a full YAML parse
-            import re  # noqa: PLC0415
+            # re is imported at module level
             entries = re.findall(r"pattern_id:\s*(\S+).*?description:\s*(.+)", raw, re.DOTALL)
             if entries:
                 lines += [

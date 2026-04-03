@@ -69,6 +69,8 @@ import json
 import os
 import re
 import sys
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -102,7 +104,7 @@ def _token() -> str:
 
 def _gql(query: str, variables: dict, token: str) -> dict:
     payload = json.dumps({"query": query, "variables": variables}).encode()
-    import urllib.request, urllib.error  # noqa: PLC0415
+    # urllib imported at module level
     req = urllib.request.Request(
         "https://api.github.com/graphql",
         data=payload,
@@ -124,7 +126,7 @@ def _gql(query: str, variables: dict, token: str) -> dict:
 
 
 def _rest(method: str, path: str, token: str, body: dict | None = None) -> tuple[int, Any]:
-    import urllib.request, urllib.error  # noqa: PLC0415
+    # urllib imported at module level
     data = json.dumps(body).encode() if body else None
     req = urllib.request.Request(
         f"https://api.github.com{path}",
