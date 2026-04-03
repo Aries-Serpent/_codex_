@@ -17043,3 +17043,32 @@ Excluded task branch versions of `.pre-commit-config.yaml` (v1.4.0 vs HEAD v1.5.
 - PDA patterns: 14 → 22 (+8 new patterns)
 - aais_batch: ThreadPoolExecutor → asyncio.Semaphore (CB-005)
 - proactive_ci_monitor: now uses ci.health.analyzer as primary engine (CB-006)
+
+## Session S303 — 2026-04-03
+
+### Session Summary
+- **PR:** #3854 | **Branch:** 0D_base_ | **Commit:** (pending push)
+- **Trigger:** CI rescue on `07f62b8` (6 failing checks) + CB App permissions ingestion + new requirements (webhook policy, firewall allowlist update)
+
+### Tasks Completed
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| 1 | CB App permissions ingested | ✅ Done | Full repo/org/account perms documented |
+| 2 | Webhook context ingested | ✅ Done | 1 push-only webhook, all other events via GA triggers |
+| 3 | `api.github.com/installation/token` firewall | ✅ Confirmed | S302 App token minting path now active |
+| 4 | `post-accountability-to-discussion.yml` App token | ✅ Fixed | Added `🔑 Resolve auth token` step; uses `resolved_token` instead of bare `GITHUB_TOKEN` for discussion writes |
+| 5 | CHANGELOG.md S303 entry | ✅ Done | — |
+| 6 | Webhook guidance policy noted | ✅ Done | New webhooks require explicit click-by-click UI guidance |
+
+### CI Status (commit `07f62b8`)
+- `Post rescue comment on failure` — infrastructure gate, not fixable via code
+- `Activate token delegation` — requires owner approval
+- `⏳ Awaiting owner approval` — requires human action
+- `🛡️ Restore required PR checkboxes` — WEC block preserved in this push
+- `🧠 Cognitive Pre-flight Check` — auth infrastructure gate
+
+### Infra Notes
+- CB GitHub App: full `Discussions R/W`, `Issues R/W`, `Contents R/W`, `Checks R/W`, `Code scanning R/W`, `Secrets R/W`, `Workflows R/W`
+- Only 1 active webhook: push-only → `api.github.com/repos/Aries-Serpent/_codex_`
+- All event routing (discussion_comment, pull_request, etc.) via GitHub Actions native triggers
