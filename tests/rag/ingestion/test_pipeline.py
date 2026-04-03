@@ -347,6 +347,80 @@ class TestIngestionPipelineRetry:
         assert config.max_retries == 5
         assert config.retry_delay_seconds == 0.5
 
+    def test_ingest_with_retry_succeeds_on_first_attempt(self, tmp_path):
+        """_ingest_with_retry returns success on first attempt."""
+        f = tmp_path / "ok.txt"
+        f.write_text("Hello world content that passes validation")
+        pipeline = IngestionPipeline()
+        result = pipeline._ingest_with_retry(f)
+        assert result.is_success
+
+    def test_ingest_with_retry_exhausts_retries(self, tmp_path):
+        """_ingest_with_retry returns FAILED after all retries are exhausted."""
+        from unittest.mock import patch
+
+        f = tmp_path / "bad.txt"
+        f.write_text("data")
+
+        config = IngestionConfig(max_retries=2, retry_delay_seconds=0.0)
+        pipeline = IngestionPipeline(config)
+
+        with patch.object(pipeline, "ingest_file", side_effect=RuntimeError("boom")):
+            with patch("codex.rag.ingestion.pipeline.time.sleep"):
+                result = pipeline._ingest_with_retry(f)
+
+        assert result.status == IngestionStatus.FAILED
+        assert result.retries == 2
+
+    def test_ingest_with_retry_no_retry_on_validation_failure(self, tmp_path):
+        """Validation failures are not retried."""
+        from unittest.mock import patch
+
+        f = tmp_path / "short.txt"
+        f.write_text("x")  # too short to pass default validation
+
+        # Make ingest_file return a validation-failed result (not raise)
+        failed = IngestionResult(
+            document_id=str(f),
+            status=IngestionStatus.FAILED,
+        )
+        # Give it a validation_result so retry guard fires
+        from codex.rag.ingestion.validator import ValidationResult
+
+        failed.validation_result = ValidationResult(is_valid=False, errors=["too short"])
+
+        config = IngestionConfig(max_retries=3, retry_delay_seconds=0.0)
+        pipeline = IngestionPipeline(config)
+
+        with patch.object(pipeline, "ingest_file", return_value=failed) as mock_ingest:
+            result = pipeline._ingest_with_retry(f)
+
+        # Should only be called once — validation failure exits immediately
+        assert mock_ingest.call_count == 1
+        assert result.status == IngestionStatus.FAILED
+
+    def test_retry_with_sleep_called(self, tmp_path):
+        """time.sleep is called between retries with escalating delays."""
+        from unittest.mock import call, patch
+
+        f = tmp_path / "err.txt"
+        f.write_text("data")
+
+        config = IngestionConfig(max_retries=2, retry_delay_seconds=0.1)
+        pipeline = IngestionPipeline(config)
+
+        with patch.object(pipeline, "ingest_file", side_effect=ValueError("fail")):
+            with patch("codex.rag.ingestion.pipeline.time.sleep") as mock_sleep:
+                pipeline._ingest_with_retry(f)
+
+        # max_retries=2 → attempts 0 and 1 sleep; attempt 2 (final) does NOT sleep
+        assert mock_sleep.call_count == 2
+        # Delays are retry_delay_seconds × (attempt + 1): 0.1×1=0.1 and 0.1×2=0.2
+        mock_sleep.assert_has_calls([
+            call(pytest.approx(0.1, rel=0.05)),
+            call(pytest.approx(0.2, rel=0.05)),
+        ])
+
 
 class TestIngestionPipelineCallback:
     """Tests for callback functionality."""
@@ -366,3 +440,146 @@ class TestIngestionPipelineCallback:
         assert len(callback_data) == 1
         assert callback_data[0][0] == "test-doc"
         assert callback_data[0][1] is True
+
+    def test_callback_fires_for_each_document_in_batch(self, tmp_path):
+        """on_document_complete fires once per document in a batch."""
+        completed = []
+
+        def on_complete(doc_id, result):
+            completed.append(doc_id)
+
+        for i in range(3):
+            (tmp_path / f"doc{i}.txt").write_text(f"Document number {i} with enough text")
+
+        config = IngestionConfig(on_document_complete=on_complete, max_workers=1)
+        pipeline = IngestionPipeline(config)
+        files = list(tmp_path.glob("*.txt"))
+        pipeline.ingest_files(files, parallel=False)
+
+        assert len(completed) == 3
+
+    def test_callback_fires_in_parallel_batch(self, tmp_path):
+        """on_document_complete fires for each document even in parallel mode."""
+        completed = []
+
+        import threading
+        lock = threading.Lock()
+
+        def on_complete(doc_id, result):
+            with lock:
+                completed.append(doc_id)
+
+        for i in range(4):
+            (tmp_path / f"par{i}.txt").write_text(f"Parallel document {i} with enough text")
+
+        config = IngestionConfig(on_document_complete=on_complete, max_workers=2)
+        pipeline = IngestionPipeline(config)
+        files = list(tmp_path.glob("*.txt"))
+        pipeline.ingest_files(files, parallel=True)
+
+        assert len(completed) == 4
+
+
+class TestIngestFilesParallelExceptions:
+    """Test parallel ingest_files when futures raise."""
+
+    def test_parallel_future_exception_counted_as_failure(self, tmp_path):
+        """An exception from a ThreadPoolExecutor future increments failed count."""
+        from unittest.mock import patch
+
+        for i in range(2):
+            (tmp_path / f"f{i}.txt").write_text("content")
+
+        pipeline = IngestionPipeline()
+        files = list(tmp_path.glob("*.txt"))
+
+        # Make _ingest_with_retry raise for the first future
+        def side_effect(path):
+            raise RuntimeError("parallel boom")
+
+        with patch.object(pipeline, "_ingest_with_retry", side_effect=side_effect):
+            batch = pipeline.ingest_files(files, parallel=True)
+
+        assert batch.failed == 2
+        assert len(batch.errors) == 2
+
+    def test_sequential_ingest_files(self, tmp_path):
+        """Sequential ingest_files processes all files in order."""
+        for i in range(3):
+            (tmp_path / f"s{i}.txt").write_text(f"Sequential document {i} content here")
+
+        pipeline = IngestionPipeline()
+        files = sorted(tmp_path.glob("*.txt"))
+        batch = pipeline.ingest_files(files, parallel=False)
+
+        assert batch.total_documents == 3
+        assert batch.successful + batch.failed + batch.skipped == 3
+
+
+class TestBatchResultUpdateHelper:
+    """Tests for _update_batch_result helper."""
+
+    def test_update_skipped(self):
+        """Skipped result increments skipped counter."""
+        pipeline = IngestionPipeline()
+        batch = BatchIngestionResult(total_documents=1)
+        result = IngestionResult(
+            document_id="dup",
+            status=IngestionStatus.SKIPPED,
+            error_message="Duplicate document",
+        )
+        pipeline._update_batch_result(batch, result)
+        assert batch.skipped == 1
+        assert batch.successful == 0
+        assert batch.failed == 0
+
+    def test_update_failed_appends_error(self):
+        """Failed result appends to batch.errors."""
+        pipeline = IngestionPipeline()
+        batch = BatchIngestionResult(total_documents=1)
+        result = IngestionResult(
+            document_id="bad",
+            status=IngestionStatus.FAILED,
+            error_message="Something went wrong",
+        )
+        pipeline._update_batch_result(batch, result)
+        assert batch.failed == 1
+        assert any("Something went wrong" in e for e in batch.errors)
+
+    def test_update_success_increments_chunks(self):
+        """Successful result adds chunk count to batch total."""
+        from codex.rag.ingestion.chunker import Chunk
+
+        pipeline = IngestionPipeline()
+        batch = BatchIngestionResult(total_documents=1)
+        chunk = Chunk(text="hello", index=0, start_pos=0, end_pos=5)
+        result = IngestionResult(
+            document_id="ok",
+            status=IngestionStatus.COMPLETED,
+            chunks=[chunk],
+        )
+        pipeline._update_batch_result(batch, result)
+        assert batch.successful == 1
+        assert batch.total_chunks == 1
+
+
+class TestGetStatsAndClearCache:
+    """Tests for get_stats() and clear_deduplication_cache()."""
+
+    def test_get_stats_returns_expected_keys(self):
+        pipeline = IngestionPipeline()
+        stats = pipeline.get_stats()
+        assert "dedup_cache_size" in stats
+        assert "config" in stats
+        assert "batch_size" in stats["config"]
+        assert "max_workers" in stats["config"]
+
+    def test_clear_dedup_cache(self):
+        pipeline = IngestionPipeline()
+        # Ingest twice to populate dedup cache
+        pipeline.ingest_text("Unique text content here for dedup", document_id="d1")
+        pipeline.ingest_text("Unique text content here for dedup", document_id="d1")
+        # Cache should have 1 hash
+        assert pipeline.get_stats()["dedup_cache_size"] >= 1
+        pipeline.clear_deduplication_cache()
+        assert pipeline.get_stats()["dedup_cache_size"] == 0

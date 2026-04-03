@@ -701,123 +701,19 @@ jobs:
       issues: write
 
     steps:
-      - name: Post or append @copilot rescue comment on latest 0D_base_ PR
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          REPO:     ${{ github.repository }}
-          RUN_ID:   ${{ github.run_id }}
-          RUN_URL:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          SHA:      ${{ github.sha }}
-        run: |
-          python3 - <<'PYEOF'
-          import json, os, sys, urllib.request, urllib.error, datetime
-
-          token     = os.environ["GH_TOKEN"]
-          repo      = os.environ["REPO"]
-          run_id    = os.environ["RUN_ID"]
-          run_url   = os.environ["RUN_URL"]
-          sha       = os.environ["SHA"]
-          now       = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-          sha_short = sha[:12]
-          workflow  = "Branch Divergence Monitor"
-
-          API  = "https://api.github.com"
-          HDRS = {
-              "Authorization": f"Bearer {token}",
-              "Accept": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
-              "Content-Type": "application/json",
-          }
-
-          def gh(method, path, body=None):
-              url  = f"{API}{path}"
-              data = json.dumps(body).encode() if body else None
-              req  = urllib.request.Request(url, data=data, headers=HDRS, method=method)
-              try:
-                  with urllib.request.urlopen(req, timeout=20) as r:
-                      return r.status, json.loads(r.read())
-              except urllib.error.HTTPError as e:
-                  return e.code, {}
-
-          # -- Find the most recent open PR on 0D_base_ ----------------------
-          owner = repo.split("/")[0]
-          _, prs = gh("GET", f"/repos/{repo}/pulls?state=open&head={owner}:0D_base_&per_page=1")
-          if not isinstance(prs, list) or not prs:
-              print("No open PRs on 0D_base_ — skipping rescue comment")
-              sys.exit(0)
-          pr_number = prs[0]["number"]
-
-          MARKER = f"<!-- ci-rescue:{pr_number} -->"
-
-          # Build rescue body without leading ** at column-0 (avoids YAML alias parse error)
-          lines = [
-              "## \U0001f6a8 CI Rescue \u2014 @copilot Fix Required",
-              "",
-              f"**Workflow:** `{workflow}`",
-              f"**Run:** [{run_id}]({run_url})",
-              "**Branch:** `0D_base_` (scheduled)",
-              f"**Commit:** `{sha}`",
-              f"**Time:** {now}",
-              "",
-              f"@copilot The **{workflow}** workflow failed on commit `{sha_short}`.",
-              "",
-              "**Steps to resolve:**",
-              "1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (\u00a70 \u2014 fix ALL issues found)",
-              f"2. Check the failure logs: [{run_id}]({run_url})",
-              "3. Apply the minimal fix and push",
-              "4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`",
-              "5. Verify all CI checks are green before concluding",
-              "",
-              "> **Note:** This comment is updated (not duplicated) for each subsequent failure.",
-              "",
-              "_Posted by: branch-divergence-monitor.yml \u2192 rescue-comment-push job (OBJ-002-I, S242)_",
-          ]
-          rescue_body = "\n".join(lines)
-
-          # -- Single-pass pagination: find existing rescue or legacy comment --
-          existing_id   = None
-          existing_body = ""
-          legacy_id     = None
-          legacy_body   = ""
-          page = 1
-          while True:
-              _, page_comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
-              if not isinstance(page_comments, list) or not page_comments:
-                  break
-              for c in page_comments:
-                  c_body = c.get("body") or ""
-                  if MARKER in c_body and not existing_id:
-                      existing_id   = c["id"]
-                      existing_body = c_body
-                  if "<!-- ci-rescue-rca -->" in c_body and not legacy_id:
-                      legacy_id   = c["id"]
-                      legacy_body = c_body
-              if len(page_comments) < 100:
-                  break
-              page += 1
-          if not existing_id and legacy_id:
-              existing_id   = legacy_id
-              existing_body = legacy_body
-
-          if existing_id:
-              append_section = (
-                  f"\n\n---\n\n### \U0001f504 Failure Update \u2014 {now}\n\n"
-                  f"**Run:** [{run_id}]({run_url})\n\n"
-                  f"@copilot `{workflow}` failed again. "
-                  f"Please investigate [run #{run_id}]({run_url}) and apply the fix."
-              )
-              updated = (existing_body.rstrip() + append_section)[:65536]
-              status, _ = gh("PATCH", f"/repos/{repo}/issues/comments/{existing_id}", {"body": updated})
-              if status in (200, 201):
-                  print(f"Appended failure update to rescue comment #{existing_id}")
-              else:
-                  existing_id = None
-          if not existing_id:
-              full_body = f"{MARKER}\n{rescue_body}"
-              status, resp = gh("POST", f"/repos/{repo}/issues/{pr_number}/comments", {"body": full_body})
-              if status in (200, 201):
-                  print(f"Posted rescue comment: {resp.get('html_url', '(no url)')}")
-              else:
-                  print(f"Failed to post rescue comment: HTTP {status}")
-                  sys.exit(1)
-          PYEOF
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: "Branch Divergence Monitor"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.ref_name }}
+        run: python scripts/ci/post_rescue_comment.py

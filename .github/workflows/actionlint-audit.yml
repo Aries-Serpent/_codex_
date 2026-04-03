@@ -76,83 +76,6 @@ jobs:
           fi
           echo "✅ actionlint: 0 errors across $(find .github/workflows -maxdepth 1 -name '*.yml' | wc -l) workflow files"
 
-      - name: Post rescue comment on actionlint failure
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        env:
-          BRANCH_REF: ${{ github.head_ref }}
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const MAX_COMMENT_LENGTH = 65536;
-            const sha = context.payload.pull_request.head.sha;
-            const shaShort = sha.substring(0, 12);
-            const runId = '${{ github.run_id }}';
-            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
-            const branch = process.env.BRANCH_REF || '';
-            const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            const marker = `<!-- ci-rescue:${context.issue.number}:sha-${shaShort} -->`;
-            const workflowName = 'Workflow Compliance Audit (actionlint)';
-
-            const rescueBody = [
-              '## 🚨 CI Rescue — @copilot Fix Required',
-              '',
-              `**Workflow:** \`${workflowName}\``,
-              `**Run:** [${runId}](${runUrl})`,
-              `**Branch:** \`${branch}\``,
-              `**Commit:** \`${sha}\``,
-              `**Time:** ${now}`,
-              '',
-              `@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.`,
-              '',
-              '**Steps to resolve:**',
-              '1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)',
-              `2. Check the failure logs: [${runId}](${runUrl})`,
-              '3. Fix any `actionlint` errors in `.github/workflows/` — common fixes:',
-              '   - Untrusted context values (e.g. `github.head_ref`) must be passed via env vars, not directly in `run:` scripts',
-              '   - Use `env: MY_VAR: <context-value>` and reference `$MY_VAR` in the script',
-              '4. Apply the minimal fix and push',
-              '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
-              '5. Verify all CI checks are green before concluding',
-              '',
-              '> **Note:** This comment is updated (not duplicated) for each subsequent',
-              `> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.`,
-              '',
-              '_Posted by: actionlint-audit.yml → rescue comment (S213-cont2)_',
-              '',
-              '---',
-              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-            ].join('\n');
-
-            const fullBody = `${marker}\n${rescueBody}`;
-            const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
-
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const existing = comments.find(c => (c.body || '').includes(marker));
-
-            if (existing) {
-              const updated = (existing.body.trimEnd() + appendSection).substring(0, MAX_COMMENT_LENGTH);
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body: updated,
-              });
-              console.log(`Appended failure update to existing rescue comment #${existing.id}`);
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: fullBody,
-              });
-              console.log('Posted new rescue comment');
-            }
-
       - name: Post summary
         if: always()
         run: |
@@ -183,7 +106,13 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Post or append @copilot rescue comment
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -193,41 +122,4 @@ jobs:
           WORKFLOW_NAME: "Actionlint Workflow Audit"
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
-        run: |
-          python3 - <<'PYEOF'
-          import json, os, sys, urllib.request, urllib.error, datetime
-          token=os.environ["GH_TOKEN"]; pr_number=int(os.environ["PR_NUMBER"])
-          repo=os.environ["REPO"]; commit_sha=os.environ["COMMIT_SHA"]
-          run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
-          workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
-          now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
-          MARKER=f"<!-- ci-rescue:{pr_number}:sha-{sha_short} -->"
-          API="https://api.github.com"
-          HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
-          def gh(method,path,body=None):
-            url=f"{API}{path}"; data=json.dumps(body).encode() if body else None
-            req=urllib.request.Request(url,data=data,headers=HDRS,method=method)
-            try:
-              with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
-            except urllib.error.HTTPError as e: return e.code,{}
-          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: actionlint-audit.yml → rescue-comment job (S227)_\n\n_[🔗 Workflow run]({run_url})_"""
-          existing_id=None; existing_body=""
-          page=1
-          while not existing_id:
-            _,page_comments=gh("GET",f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
-            if not isinstance(page_comments,list) or not page_comments: break
-            for c in page_comments:
-              if MARKER in (c.get("body") or ""): existing_id=c["id"]; existing_body=c.get("body",""); break
-            if existing_id or len(page_comments) < 100: break
-            page+=1
-          if existing_id:
-            append_section=f"\n\n---\n\n### 🔄 Failure Update — {now}\n\n**Run:** [{run_id}]({run_url})\n\n@copilot `{workflow}` failed again on `{sha_short}`. Please investigate [run #{run_id}]({run_url})."
-            updated=(existing_body.rstrip()+append_section)[:65536]
-            status,_=gh("PATCH",f"/repos/{repo}/issues/comments/{existing_id}",{"body":updated})
-            if status in (200,201): print(f"✅ Appended to rescue comment #{existing_id}")
-            else: existing_id=None
-          if not existing_id:
-            status,resp=gh("POST",f"/repos/{repo}/issues/{pr_number}/comments",{"body":f"{MARKER}\n{rescue_body}"})
-            if status in (200,201): print(f"✅ Posted rescue comment: {resp.get('html_url','(no url)')}")
-            else: print(f"❌ Failed: HTTP {status}"); sys.exit(1)
-          PYEOF
+        run: python scripts/ci/post_rescue_comment.py

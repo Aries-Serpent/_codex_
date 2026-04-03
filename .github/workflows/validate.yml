@@ -135,13 +135,13 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Checkout (for PDA logging)
+      - name: Checkout repository
         uses: actions/checkout@v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
 
-      - name: Post SHA-scoped @copilot rescue comment + PDA log
+      - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -151,154 +151,7 @@ jobs:
           WORKFLOW_NAME: "Validation Pipeline / Fast Validation"
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
-        run: |
-          python3 - <<'PYEOF'
-          import json, os, sys, subprocess, urllib.request, urllib.error, datetime
-
-          token      = os.environ["GH_TOKEN"]
-          pr_number  = int(os.environ["PR_NUMBER"])
-          repo       = os.environ["REPO"]
-          commit_sha = os.environ["COMMIT_SHA"]
-          run_id     = os.environ["RUN_ID"]
-          run_url    = os.environ["RUN_URL"]
-          workflow   = os.environ["WORKFLOW_NAME"]
-          branch     = os.environ["BRANCH"]
-          now        = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-          sha_short  = commit_sha[:12]
-
-          # SHA-scoped marker: each commit gets its own rescue comment thread.
-          # Subsequent failures on the SAME commit are appended. A new push
-          # (different SHA) always creates a fresh visible comment.
-          MARKER = f"<!-- ci-rescue-sha:{pr_number}:{sha_short} -->"
-          API    = "https://api.github.com"
-          HDRS   = {
-              "Authorization": f"Bearer {token}",
-              "Accept": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
-              "Content-Type": "application/json",
-          }
-
-          def gh(method, path, body=None):
-              url  = f"{API}{path}"
-              data = json.dumps(body).encode() if body else None
-              req  = urllib.request.Request(url, data=data, headers=HDRS, method=method)
-              try:
-                  with urllib.request.urlopen(req, timeout=20) as r:
-                      return r.status, json.loads(r.read())
-              except urllib.error.HTTPError as e:
-                  return e.code, {}
-
-          # -- Read hook_failures.json if available (produced by fast-validation) --
-          hook_failures_md = ""
-          try:
-              with open("hook_failures.json") as f:
-                  hf = json.load(f)
-                  failing_hooks = [h.get("hook", h.get("id", "?")) for h in hf if isinstance(hf, list)]
-                  if failing_hooks:
-                      hook_failures_md = "\n\n**Failing pre-commit hooks:**\n" + "".join(
-                          f"- `{h}`\n" for h in failing_hooks
-                      )
-          except (FileNotFoundError, json.JSONDecodeError):
-              pass
-
-          # -- PDA Loop: log failure to aftermath system ---------------------
-          try:
-              subprocess.run(
-                  [
-                      "python3", "scripts/ci/pda_failure_logger.py", "log-failure",
-                      "--session", "auto-rescue",
-                      "--pattern-id", "RP-VALIDATION-PIPELINE",
-                      "--workflow", workflow,
-                      "--error-text", f"Fast Validation failed on {sha_short}",
-                      "--root-cause", "pre-commit hook failure (detect-secrets, EOF, trailing-whitespace, or shell-true)",
-                      "--fix-template", "Run `python tools/validate.py --mode fast` locally; commit any baseline/file changes made by hooks",
-                      "--verification-cmd", "python tools/validate.py --mode fast",
-                  ],
-                  timeout=15,
-                  capture_output=True,
-              )
-              print("✅ PDA Loop: failure logged to aftermath system")
-          except Exception as e:
-              print(f"⚠️  PDA Loop log skipped: {e}")
-
-          # -- Build the rescue comment body ---------------------------------
-          rescue_body = (
-              f"## 🚨 CI Rescue — Root Cause Analysis\n\n"
-              f"**Workflow:** `{workflow}`\n"
-              f"**Run:** [{run_id}]({run_url})\n"
-              f"**Branch:** `{branch}`\n"
-              f"**Commit:** `{commit_sha}`\n"
-              f"**Time:** {now}\n"
-              f"{hook_failures_md}\n"
-              f"> ✅ **Pre-authorized — no human approval needed.** "
-              f"`COPILOT_AGENT_AUTH_ENABLED=true` · `💰 Cost Proposal Approved` are both "
-              f"active on this PR. Session must start immediately without any additional "
-              f"approval gate.\n\n"
-              f"@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n"
-              f"**Steps to resolve:**\n"
-              f"1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n"
-              f"2. Check the failure logs: [{run_id}]({run_url})\n"
-              f"3. Run locally: `python tools/validate.py --mode fast`\n"
-              f"4. If detect-secrets fails: run `python3 -m detect_secrets scan --no-verify "
-              f"--baseline .secrets.baseline <changed-file>` and commit the updated baseline\n"
-              f"5. If EOF/trailing-whitespace fails: run `pre-commit run end-of-file-fixer "
-              f"trailing-whitespace --all-files` and commit\n"
-              f"6. Apply the minimal fix and push\n"
-              f"7. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n"
-              f"8. Verify all CI checks are green before concluding\n\n"
-              f"> **Note:** This comment captures ALL failures for commit `{sha_short}`. "
-              f"Each new push (different SHA) creates a fresh comment. "
-              f"Additional failures on the same commit are appended below.\n\n"
-              f"_Posted by: validate.yml → rescue-comment job (S290-hardened)_\n\n---\n"
-              f"_[🔗 Workflow run]({run_url})_"
-          )
-
-          # -- Find existing rescue comment for this SHA ---------------------
-          existing_id   = None
-          existing_body = ""
-          page = 1
-          while not existing_id:
-              _, page_comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
-              if not isinstance(page_comments, list) or not page_comments: break
-              for c in page_comments:
-                  if MARKER in (c.get("body") or ""):
-                      existing_id   = c["id"]
-                      existing_body = c.get("body", "")
-                      break
-              if existing_id or len(page_comments) < 100: break
-              page += 1
-
-          if existing_id:
-              append_section = (
-                  f"\n\n---\n\n"
-                  f"### 🔄 Failure Update — {now}\n\n"
-                  f"**Run:** [{run_id}]({run_url})\n\n"
-                  f"@copilot `{workflow}` failed again on the same commit `{sha_short}`. "
-                  f"Please investigate [run #{run_id}]({run_url}) and apply the fix."
-              )
-              updated = (existing_body.rstrip() + append_section)[:65536]
-              status, _ = gh("PATCH",
-                             f"/repos/{repo}/issues/comments/{existing_id}",
-                             {"body": updated})
-              if status in (200, 201):
-                  print(f"✅ Appended failure update to existing rescue comment #{existing_id}")
-              else:
-                  print(f"⚠️  PATCH returned {status}; falling back to new comment")
-                  existing_id = None   # force new comment
-
-          if not existing_id:
-              full_body = f"{MARKER}\n{rescue_body}"
-              status, resp = gh("POST",
-                                f"/repos/{repo}/issues/{pr_number}/comments",
-                                {"body": full_body})
-              if status in (200, 201):
-                  print(f"✅ Posted new rescue comment: {resp.get('html_url', '(no url)')}")
-              else:
-                  print(f"❌ Failed to post rescue comment: HTTP {status}")
-                  sys.exit(1)
-          PYEOF
-
-  # ── full validation ──────────────────────────────────────────────────────────
+        run: python scripts/ci/post_rescue_comment.py
   full-validation:
     name: Full Validation (Daily)
     runs-on: ubuntu-latest

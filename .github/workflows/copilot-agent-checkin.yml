@@ -463,22 +463,24 @@ jobs:
             }
 
             // Find unanswered rescue comments.
-            // Two marker formats exist:
-            //   PR-scoped  (Channel A): <!-- ci-rescue:NNN -->
-            //     Posted by auto-fix-pr-check.yml / pre-merge-validation.yml rescue jobs.
-            //   SHA-scoped (Channel B): <!-- ci-rescue:NNN:sha12chars -->
-            //     Posted by ci-rescue.yml → ci_rescue.py (the RCA "golden-path" comment).
-            // Both channels target the SAME PR-thread and must be recognised here so the
-            // missed-trigger guard does not re-fire when an RCA comment already invoked
-            // @copilot directly (Channel B RCA IS the trigger — no retrigger needed).
+            // Unified marker format (S294): <!-- ci-rescue-sha:{pr_number}:{sha12} -->
+            //   All workflows now use this single canonical format.
+            //   Posted by scripts/ci/post_rescue_comment.py — called by every
+            //   rescue-comment job via actions/checkout@v5 + python step.
+            //   SHA-scoped: multiple workflows failing on the same commit APPEND
+            //   to the same comment rather than posting new threads.
+            //
+            // Legacy formats (still recognised for backward compat with older comments):
+            //   <!-- ci-rescue:NNN -->              (pre-S294 PR-scoped)
+            //   <!-- ci-rescue:NNN:sha12chars -->    (pre-S294 SHA-scoped)
             //
             // An "answered" rescue comment already has:
             //   (a) a <!-- session-done-retrigger --> dedup marker for its rescue ID, OR
             //   (b) a Copilot agent reply containing resolution language after it.
-            // Matches all three marker formats in use:
-            //   <!-- ci-rescue:3854 -->              (test-rag.yml — PR-scoped)
-            //   <!-- ci-rescue:3854:abc123def456 --> (ci-rescue.yml — SHA-scoped)
-            //   <!-- ci-rescue-sha:3854:abc123def456 --> (validate.yml — SHA-scoped with -sha suffix)
+            // Matches unified and all legacy formats:
+            //   <!-- ci-rescue-sha:3854:abc123def456 --> (S294 canonical — validate.yml et al)
+            //   <!-- ci-rescue:3854 -->                  (legacy PR-scoped)
+            //   <!-- ci-rescue:3854:abc123def456 -->      (legacy SHA-scoped)
             const rescueMarkerRe   = /<!--\s*ci-rescue(?:-sha)?:\d+(?::[0-9a-f]+)?\s*-->/;
             const retriggerMarkerRe = /<!--\s*session-done-retrigger\s*-->/;
             // Only match actual Copilot agent logins — NOT github-actions[bot], which

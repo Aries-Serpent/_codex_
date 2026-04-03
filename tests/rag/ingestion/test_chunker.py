@@ -353,3 +353,134 @@ class TestChunkHash:
         chunks2 = chunker.chunk("Content B")
 
         assert chunks1[0].chunk_hash != chunks2[0].chunk_hash
+
+
+class TestChunkerFallbackStrategies:
+    """Tests for semantic/hierarchical fallback to FixedSizeChunker."""
+
+    def test_semantic_strategy_falls_back_to_fixed(self):
+        """SEMANTIC is not in STRATEGY_MAP → falls back to FixedSizeChunker."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SEMANTIC,
+            chunk_size=100,
+        )
+        chunker = Chunker(config)
+        chunks = chunker.chunk("A " * 100)
+        assert len(chunks) >= 1
+
+    def test_hierarchical_strategy_falls_back_to_fixed(self):
+        """HIERARCHICAL is not in STRATEGY_MAP → falls back to FixedSizeChunker."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.HIERARCHICAL,
+            chunk_size=100,
+        )
+        chunker = Chunker(config)
+        chunks = chunker.chunk("B " * 100)
+        assert len(chunks) >= 1
+
+    def test_empty_text_returns_empty_list(self):
+        """Empty text returns empty list regardless of strategy."""
+        for strategy in ChunkingStrategy:
+            config = ChunkingConfig(strategy=strategy)
+            chunker = Chunker(config)
+            assert chunker.chunk("") == []
+            assert chunker.chunk("   ") == []
+
+
+class TestChunkBatch:
+    """Tests for Chunker.chunk_batch."""
+
+    def test_batch_empty_list(self):
+        chunker = Chunker()
+        assert chunker.chunk_batch([]) == []
+
+    def test_batch_single_text(self):
+        chunker = Chunker()
+        results = chunker.chunk_batch(["Hello world"])
+        assert len(results) == 1
+        assert len(results[0]) >= 1
+
+    def test_batch_multiple_texts(self):
+        chunker = Chunker()
+        texts = ["First document.", "Second document.", "Third document."]
+        results = chunker.chunk_batch(texts)
+        assert len(results) == 3
+        assert all(len(r) >= 1 for r in results)
+
+    def test_batch_with_empty_text(self):
+        chunker = Chunker()
+        results = chunker.chunk_batch(["non-empty", "", "also non-empty"])
+        assert len(results) == 3
+        assert len(results[0]) >= 1
+        assert results[1] == []
+
+
+class TestChunkDocumentFunction:
+    """Tests for the chunk_document() convenience function."""
+
+    def test_basic_chunk_document(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        chunks = chunk_document("Hello world " * 50)
+        assert len(chunks) >= 1
+
+    def test_chunk_document_with_strategy(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        chunks = chunk_document(
+            "Sentence one. Sentence two. Sentence three.",
+            strategy=ChunkingStrategy.SENTENCE,
+            chunk_size=30,
+        )
+        assert len(chunks) >= 1
+
+    def test_chunk_document_sliding_window(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        text = "x " * 200
+        chunks = chunk_document(text, strategy=ChunkingStrategy.SLIDING_WINDOW, chunk_size=50)
+        assert len(chunks) >= 2
+
+    def test_chunk_document_empty(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        assert chunk_document("") == []
+
+
+class TestParagraphChunkerEdgeCases:
+    """Additional edge-case coverage for ParagraphChunker."""
+
+    def test_paragraph_large_single_paragraph(self):
+        """Single paragraph exceeding max_chunk_size triggers split."""
+        from codex.rag.ingestion.chunker import ParagraphChunker
+        config = ChunkingConfig(max_chunk_size=50, paragraph_separator="\n\n")
+        chunker = ParagraphChunker(config)
+        long_para = "word " * 30
+        chunks = chunker.chunk(long_para)
+        assert len(chunks) >= 1
+
+    def test_paragraph_empty_paragraphs_skipped(self):
+        """Empty paragraphs between real ones are skipped."""
+        from codex.rag.ingestion.chunker import ParagraphChunker
+        config = ChunkingConfig(paragraph_separator="\n\n")
+        chunker = ParagraphChunker(config)
+        text = "First para.\n\n\n\nSecond para."
+        chunks = chunker.chunk(text)
+        assert len(chunks) >= 1
+
+
+class TestSlidingWindowEdgeCases:
+    """Additional edge-case coverage for SlidingWindowChunker."""
+
+    def test_small_step_fills_gaps(self):
+        """window_step < chunk_size creates overlapping windows."""
+        from codex.rag.ingestion.chunker import SlidingWindowChunker
+        config = ChunkingConfig(chunk_size=20, window_step=10, min_chunk_size=5)
+        chunker = SlidingWindowChunker(config)
+        text = "abcdefghij" * 5
+        chunks = chunker.chunk(text)
+        assert len(chunks) >= 3
+
+    def test_window_step_larger_than_text(self):
+        """window_step ≥ text length → single chunk."""
+        from codex.rag.ingestion.chunker import SlidingWindowChunker
+        config = ChunkingConfig(chunk_size=100, window_step=200, min_chunk_size=1)
+        chunker = SlidingWindowChunker(config)
+        chunks = chunker.chunk("Short text")
+        assert len(chunks) == 1

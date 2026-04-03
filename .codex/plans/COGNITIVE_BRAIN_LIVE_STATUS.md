@@ -3,7 +3,7 @@
 > **Purpose**: Single canonical source of truth for ongoing cognitive system development.
 > Update this document after every PR that touches the agentic infrastructure.
 >
-> **Last Updated**: 2026-04-03 (PR #3854, S293 — rescue identity fix, S221 guard, PR lifecycle plan)
+> **Last Updated**: 2026-04-03 (PR #3854, S294 — unified rescue-comment upsert, RAG coverage boost, CB status updated)
 > **Maintainer**: auto-updated by agent sessions per REQ-4
 
 ---
@@ -144,6 +144,7 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 | W-084–W-086 | PR #3790 (S227–S228) | CI rescue attribution, race-condition hardening, comment-review gate (REQ-13), session concurrency gate, workflow execution checklist | ✅ |
 | W-087–W-089 | PR #3790 (S230) | Cross-PR contamination fix (ci_rescue.py `find_pr_for_run`), session-gate stale-TTL queue release, latency metric + pending gauge in check_pr_comments.py | ✅ |
 | W-090–W-094 | PR #3854 (S293) | S221 guard `ci-rescue-sha` regex fix (P1-A), test-rag SHA-scoped marker (P1-B), actionlint-audit github-token (P1-C), SC2269 removal (P1-D), PR lifecycle improvement plan created with CB cross-reference (25 items, P1–P5) | ✅ |
+| W-095–W-099 | PR #3854 (S294) | Unified rescue-comment upsert system: `scripts/ci/post_rescue_comment.py` canonical script; `migrate_rescue_comments.py` batch migrator; all 66 PR-triggered + 5 push-triggered workflows standardised to single SHA-scoped marker `<!-- ci-rescue-sha:{pr}:{sha} -->`; RAG coverage boost (chunker + pipeline tests: 28→44 test methods each); accountability + CB status updated | ✅ |
 
 *For W-001–W-070 see `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.*
 
