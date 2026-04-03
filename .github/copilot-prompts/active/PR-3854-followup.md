@@ -55,7 +55,7 @@ Steps:
 | **S288** | **`check-shell-true` hook: comment in `compression.py:157` contained `shell=True` text** | `src/codex/skills/compression.py` |
 | **S289** | **RAG 10 CI failures (regression): 22 patch targets `"codex.rag.retriever.SentenceTransformer"` → `"sentence_transformers.SentenceTransformer"` in `test_retriever_comprehensive.py`** | `tests/rag/test_retriever_comprehensive.py` |
 | **S289** | **`test_local_provider_encoding`: add `IndexError` to except clause (FAISS C++ error in sentence-transformers 5.x)** | `tests/rag/test_rag_providers_advanced.py` |
-| **S289** | **detect-secrets: `pda_iterations.jsonl:25` + `test_fast_forward_safe_files.py:134` added to baseline; pragma on line 118** | `.secrets.baseline`, `tests/test_fast_forward_safe_files.py` |
+| **S289** | **detect-secrets: `pda_iterations.jsonl:25` + `test_fast_forward_safe_files.py:134` added to baseline; pragma on line 118** | `.secrets.baseline`, `tests/test_fast_forward_safe_files.py` | <!-- pragma: allowlist secret -->
 
 ### S287 Files Changed (do not revert)
 `src/codex/{auth/github_app.py,cli/main.py,cli_zendesk.py,dynamics/model/sla.py,logging/query_logs.py,rag/indexer.py,security/storage.py,skills/registry.py}` · `src/codex_cli/app.py` · `src/codex_ml/cli/{checkpoint_validate,plugins_cli,tracking_decide,validate}.py` · `src/codex_ml/{config/settings,eval/eval_runner,monitoring/cli,serving/inference_server,utils/checkpoint_core}.py` · `src/ingestion/encoding_detect.py` · `src/integrations/github_app_auth.py` · `src/mcp/server/middleware/auth.py` · `src/services/workflow/parser.py` · `src/tokenization/cli.py` · `tests/rag/{test_device_placement,test_indexer_comprehensive,test_rag_integration,test_retriever_comprehensive}.py`

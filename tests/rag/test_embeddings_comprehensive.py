@@ -143,7 +143,7 @@ class TestOpenAIEmbeddingProvider:
     def test_initialization_with_env_var(self):
         """Test initialization with environment variable."""
         mock_client = MagicMock()
-        with patch.dict(os.environ, {'OPENAI_API_KEY': 'env-key-456'}):
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'env-key-456'}):  # pragma: allowlist secret
             with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
                 provider = OpenAIEmbeddingProvider()
                 assert provider.client is not None
@@ -160,7 +160,7 @@ class TestOpenAIEmbeddingProvider:
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
                 model_name="text-embedding-3-large",
-                api_key="test-key"
+                api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.model_name == "text-embedding-3-large"
 
@@ -176,7 +176,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client.embeddings.create.return_value = mock_response
 
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
-            provider = OpenAIEmbeddingProvider(api_key="test-key")
+            provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
             texts = ["Hello world", "Test text"]
             embeddings = provider.encode(texts)
 
@@ -193,7 +193,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client.embeddings.create.return_value = mock_response
 
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
-            provider = OpenAIEmbeddingProvider(api_key="test-key")
+            provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
             texts = ["Text " + str(i) for i in range(5)]
             provider.encode(texts, batch_size=3)
 
@@ -206,7 +206,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client.embeddings.create.side_effect = Exception("API Error")
 
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
-            provider = OpenAIEmbeddingProvider(api_key="test-key")
+            provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
 
             with pytest.raises(Exception, match="API Error"):
                 provider.encode(["test"])
@@ -217,7 +217,7 @@ class TestOpenAIEmbeddingProvider:
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
                 model_name="text-embedding-3-small",
-                api_key="test-key"
+                api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 1536
 
@@ -227,7 +227,7 @@ class TestOpenAIEmbeddingProvider:
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
                 model_name="text-embedding-3-large",
-                api_key="test-key"
+                api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 3072
 
@@ -237,7 +237,7 @@ class TestOpenAIEmbeddingProvider:
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
                 model_name="text-embedding-ada-002",
-                api_key="test-key"
+                api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 1536
 
@@ -247,7 +247,7 @@ class TestOpenAIEmbeddingProvider:
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
                 model_name="unknown-model",
-                api_key="test-key"
+                api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 1536
 
@@ -255,7 +255,7 @@ class TestOpenAIEmbeddingProvider:
         """Test encoding without initialized client raises error."""
         mock_client = MagicMock()
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
-            provider = OpenAIEmbeddingProvider(api_key="test-key")
+            provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
             provider.client = None
 
             with pytest.raises(RuntimeError, match="OpenAI client not initialized"):

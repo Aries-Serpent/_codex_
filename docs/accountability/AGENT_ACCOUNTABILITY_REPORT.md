@@ -36,7 +36,7 @@
      raised by sentence-transformers 5.x encode pipeline; not caught by prior `(ImportError, OSError)`).
 
 2. **detect-secrets baseline refresh** (Fast Validation / detect-secrets hook exit code 3):
-   - `tests/test_fast_forward_safe_files.py:118` — `"abc123def456"` fake SHA → added
+   - `tests/test_fast_forward_safe_files.py:118` — `"abc123def456"` fake SHA → added <!-- pragma: allowlist secret -->
      `# pragma: allowlist secret` inline; also scanned and added hash for line 134
      (second occurrence in assert) to `.secrets.baseline`.
    - `.codex/aftermath/pda_iterations.jsonl:25` — git SHA hash in PDA log → added to
