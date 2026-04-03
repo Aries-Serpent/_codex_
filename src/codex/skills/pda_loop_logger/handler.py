@@ -69,7 +69,7 @@ def _load_logger_module():
         raise ImportError(f"Cannot locate pda_failure_logger at {_SCRIPT}")
     mod = importlib.util.module_from_spec(spec)
     sys.modules["pda_failure_logger"] = mod
-    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    spec.loader.exec_module(mod)
     return mod
 
 

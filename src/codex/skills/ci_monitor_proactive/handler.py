@@ -49,7 +49,7 @@ def _load_monitor_module():
         raise ImportError(f"Cannot locate proactive_ci_monitor at {_SCRIPT}")
     mod = importlib.util.module_from_spec(spec)
     sys.modules["proactive_ci_monitor"] = mod
-    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    spec.loader.exec_module(mod)
     return mod
 
 
