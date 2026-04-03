@@ -122,6 +122,9 @@
 - [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
 
+### ⚡ Auto-Approve
+- [ ] auto-approve-workflows.yml — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+
 ### 🧪 Opt-In: Testing & Validation
 - [ ] validate.yml — Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
 - [ ] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)

@@ -1,0 +1,270 @@
+name: "⚡ Auto-Approve Pending Workflow Runs"
+
+# Automatically approves all `action_required` (awaiting-approval) workflow runs
+# for the HEAD SHA of the active PR, whenever:
+#
+#   1. A Copilot coding agent session completes  (workflow_run trigger, fires from main)
+#   2. A new commit is pushed to a PR branch     (pull_request synchronize/opened)
+#   3. Manually dispatched                        (workflow_dispatch)
+#
+# Gate: Only runs when the PR body contains `- [x] auto-approve-workflows`.
+# This is the codebase equivalent of clicking "Approve workflows to run" in the UI.
+#
+# Required secrets: CODEX_MASTER_KEY (or CODEX_BACKUP_KEY)
+#   The GITHUB_TOKEN does NOT have `actions: write` scope needed to approve runs.
+#   CODEX_MASTER_KEY (PAT with repo + workflow scopes) is used instead.
+#
+# S305 — created 2026-04-03
+
+on:
+  # Primary trigger: fires from main after a Copilot coding agent session ends.
+  # This is the most important path — it approves queued workflows immediately
+  # after the agent commits, without human intervention.
+  workflow_run:
+    workflows: ["Copilot coding agent", "🔄 Auto-Post @copilot review After Agent Session"]
+    types: [completed]
+
+  # Secondary trigger: fires when a new commit is pushed to a PR branch.
+  # Catches the case where a developer pushes directly (not through the agent).
+  pull_request:
+    types: [synchronize, opened, reopened, ready_for_review]
+
+  # Manual escape hatch
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to approve pending workflows for (optional — auto-detected if omitted)"
+        required: false
+        type: string
+      dry_run:
+        description: "Dry run — list pending runs without approving them"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+
+concurrency:
+  # One approver run per PR at a time.  Do NOT cancel in-progress so a second
+  # push doesn't kill an ongoing approval sweep.
+  group: auto-approve-workflows-${{ github.event.workflow_run.pull_requests[0].number || github.event.pull_request.number || github.event.inputs.pr_number || github.run_id }}
+  cancel-in-progress: false
+
+permissions:
+  actions: write        # required: approve workflow runs
+  pull-requests: read   # required: read PR body to check checkbox
+  contents: read
+
+jobs:
+  auto-approve:
+    name: "⚡ Approve pending workflow runs"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # ── Step 1: Resolve PR number and HEAD SHA ─────────────────────────────
+      - name: "Resolve PR number and HEAD SHA"
+        id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          # workflow_run path
+          WR_PR_NUMBER:  ${{ github.event.workflow_run.pull_requests[0].number }}
+          WR_HEAD_SHA:   ${{ github.event.workflow_run.head_sha }}
+          WR_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          # pull_request path
+          PR_NUMBER:     ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA:   ${{ github.event.pull_request.head.sha }}
+          # workflow_dispatch path
+          INPUT_PR:      ${{ github.event.inputs.pr_number }}
+          DRY_RUN:       ${{ github.event.inputs.dry_run || 'false' }}
+          REPO:          ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          DRY="${DRY_RUN:-false}"
+          echo "dry_run=${DRY}" >> "$GITHUB_OUTPUT"
+
+          # ── Resolve PR number ──────────────────────────────────────────────
+          PR_NUM=""
+          if [ -n "${WR_PR_NUMBER}" ]; then
+            PR_NUM="${WR_PR_NUMBER}"
+            echo "Source: workflow_run event (PR #${PR_NUM})"
+          elif [ -n "${PR_NUMBER}" ]; then
+            PR_NUM="${PR_NUMBER}"
+            echo "Source: pull_request event (PR #${PR_NUM})"
+          elif [ -n "${INPUT_PR}" ]; then
+            PR_NUM="${INPUT_PR}"
+            echo "Source: workflow_dispatch input (PR #${PR_NUM})"
+          fi
+
+          if [ -z "${PR_NUM}" ]; then
+            echo "::warning::Could not determine PR number — skipping auto-approve."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # ── Resolve HEAD SHA ───────────────────────────────────────────────
+          HEAD_SHA=""
+          if [ -n "${WR_HEAD_SHA}" ]; then
+            HEAD_SHA="${WR_HEAD_SHA}"
+          elif [ -n "${PR_HEAD_SHA}" ]; then
+            HEAD_SHA="${PR_HEAD_SHA}"
+          else
+            # Fetch from API
+            HEAD_SHA=$(gh pr view "${PR_NUM}" --repo "${REPO}" --json headRefOid -q '.headRefOid' 2>/dev/null || echo "")
+          fi
+
+          if [ -z "${HEAD_SHA}" ]; then
+            echo "::warning::Could not determine HEAD SHA — skipping auto-approve."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "pr_number=${PR_NUM}"   >> "$GITHUB_OUTPUT"
+          echo "head_sha=${HEAD_SHA}"  >> "$GITHUB_OUTPUT"
+          echo "skip=false"            >> "$GITHUB_OUTPUT"
+          echo "Resolved: PR #${PR_NUM}, SHA=${HEAD_SHA}"
+
+      # ── Step 2: Check whether the `auto-approve-workflows` checkbox is ticked ─
+      - name: "Check auto-approve-workflows checkbox in PR body"
+        id: checkbox
+        if: steps.resolve.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          PR_BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json body -q '.body // ""' 2>/dev/null || echo "")
+
+          # Match: - [x] auto-approve-workflows  (case-insensitive, optional spaces)
+          if printf '%s' "${PR_BODY}" | grep -qiE '^\s*-\s*\[x\]\s+auto-approve-workflows'; then
+            echo "enabled=true"  >> "$GITHUB_OUTPUT"
+            echo "✅ auto-approve-workflows checkbox is CHECKED — will approve pending runs."
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "⏭️  auto-approve-workflows checkbox is NOT checked — skipping."
+          fi
+
+      # ── Step 3: Approve all action_required runs for this SHA ─────────────
+      - name: "Approve pending (action_required) workflow runs"
+        id: approve
+        if: |
+          steps.resolve.outputs.skip != 'true' &&
+          steps.checkbox.outputs.enabled == 'true'
+        uses: actions/github-script@v7
+        env:
+          HEAD_SHA: ${{ steps.resolve.outputs.head_sha }}
+          PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+          DRY_RUN: ${{ steps.resolve.outputs.dry_run }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const owner   = context.repo.owner;
+            const repo    = context.repo.repo;
+            const headSha = process.env.HEAD_SHA;
+            const prNum   = process.env.PR_NUMBER;
+            const dryRun  = process.env.DRY_RUN === 'true';
+
+            core.info(`⚡ Auto-Approve pending runs for PR #${prNum} @ ${headSha.slice(0,12)}`);
+            core.info(`   Mode: ${dryRun ? '🔍 DRY RUN' : '🚀 LIVE'}`);
+
+            // List runs with status=action_required for the specific commit SHA.
+            // GitHub's API supports head_sha filter on this endpoint.
+            let allRuns = [];
+            let page = 1;
+            while (true) {
+              const { data } = await github.rest.actions.listWorkflowRunsForRepo({
+                owner, repo,
+                status: 'action_required',
+                head_sha: headSha,
+                per_page: 100,
+                page,
+              });
+              allRuns = allRuns.concat(data.workflow_runs);
+              if (data.workflow_runs.length < 100) break;
+              page++;
+            }
+
+            core.info(`   Found ${allRuns.length} run(s) with status=action_required`);
+
+            if (allRuns.length === 0) {
+              core.info('   Nothing to approve — all workflows are already running or completed.');
+              core.summary.addRaw(`## ⚡ Auto-Approve\n\n✅ No pending approvals found for \`${headSha.slice(0,12)}\`\n`);
+              await core.summary.write();
+              return;
+            }
+
+            const results = [];
+            let approved = 0;
+            let skipped  = 0;
+            let errors   = 0;
+
+            for (const run of allRuns) {
+              const label = `${run.name || run.workflow_id} (run #${run.id})`;
+
+              if (dryRun) {
+                core.info(`[DRY] Would approve: ${label}`);
+                results.push({ label, status: '🔍 dry-run' });
+                approved++;
+                continue;
+              }
+
+              try {
+                await github.rest.actions.approveWorkflowRun({
+                  owner, repo,
+                  run_id: run.id,
+                });
+                core.info(`✅ Approved: ${label}`);
+                results.push({ label, status: '✅ approved' });
+                approved++;
+              } catch (e) {
+                if (e.status === 422 || e.status === 409) {
+                  // Already approved or no longer pending
+                  core.info(`⏭️  Already processed: ${label} (${e.status})`);
+                  results.push({ label, status: '⏭️ already processed' });
+                  skipped++;
+                } else {
+                  core.warning(`❌ Failed to approve ${label}: ${e.message}`);
+                  results.push({ label, status: `❌ error: ${e.message}` });
+                  errors++;
+                }
+              }
+            }
+
+            // ── Build job summary ──────────────────────────────────────────
+            const lines = [
+              `## ⚡ Auto-Approve — PR #${prNum}`,
+              '',
+              `| Metric | Value |`,
+              `|--------|-------|`,
+              `| HEAD SHA | \`${headSha.slice(0,12)}\` |`,
+              `| Mode | ${dryRun ? '🔍 DRY RUN' : '🚀 LIVE'} |`,
+              `| Runs found | ${allRuns.length} |`,
+              `| Approved | **${approved}** |`,
+              `| Skipped (already processed) | ${skipped} |`,
+              `| Errors | ${errors} |`,
+              '',
+              `### Details`,
+              '',
+              `| Workflow | Status |`,
+              `|----------|--------|`,
+            ];
+
+            for (const r of results) {
+              lines.push(`| ${r.label} | ${r.status} |`);
+            }
+
+            lines.push('');
+            lines.push(`_auto-approve-workflows.yml | ${new Date().toISOString()}_`);
+
+            const body = lines.join('\n');
+            core.summary.addRaw(`\n${body}\n`);
+            await core.summary.write();
+
+            core.info('');
+            core.info(`Summary: approved=${approved}, skipped=${skipped}, errors=${errors}`);
+
+            if (errors > 0) {
+              core.setFailed(`${errors} run(s) failed to be approved — check the logs above`);
+            }
