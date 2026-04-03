@@ -3,7 +3,7 @@
 > **Purpose**: Single canonical source of truth for ongoing cognitive system development.
 > Update this document after every PR that touches the agentic infrastructure.
 >
-> **Last Updated**: 2026-04-03 (PR #3854, S294 — unified rescue-comment upsert, RAG coverage boost, CB status updated)
+> **Last Updated**: 2026-04-03 (PR #3854, S301 — PDA loop documented, discussion cleanup token investigation, manifest refresh 538 dupes)
 > **Maintainer**: auto-updated by agent sessions per REQ-4
 
 ---

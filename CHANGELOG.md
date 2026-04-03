@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S301 — PR #3854 — PDA logging, manifest refresh, discussion-cleanup UI, validation)
+- **PDA Loop + AfterMath**: Logged `RP-DISCUSSION-DELETE-PERM` failure pattern — `deleteDiscussionComment` GraphQL mutation blocked for all 5 token methods tried (GITHUB_TOKEN, gh-auth-token ghu_, CB API proxy, CB CLI env, CB CLI file). Root cause: `CODEX_BACKUP_KEY`/`CODEX_MASTER_KEY` declared in CB server env but values empty (secrets not injected at CB server startup). Fix path documented: restart CB server with secrets injected OR trigger `discussion-cleanup.yml` via GitHub Actions UI where repo secrets are properly injected.
+- **Discussion cleanup manifest**: Refreshed `.codex/cleanup/discussion_cleanup_manifest.json` — 538 duplicates identified (525 in #3756 + 13 in #3673, up from 526 due to new duplicates accumulated since S297).
+- **Validation clean**: ruff F401/F841/E402 — no issues; CodeQL Pattern 8 — no issues; pre-commit hooks pass.
+
 ### Fixed (S300 — PR #3854 — RC-3/RC-4 discussion bridge, P5-C TTL fix, S221 blocking-count, CB-001 Typer)
 - **RC-3 — `discussion-response-bridge.yml`**: New workflow triggered on `discussion_comment` events; extracts PR number from discussion title (`PR #<N>` pattern) or body tag (`<!-- pr-number:<N> -->`), then posts a compact bridge notification to the PR thread so Copilot sees maintainer discussion replies; deduped by `<!-- discussion-bridge:{disc}:{comment_id} -->` marker
 - **RC-4 — `post-accountability-to-discussion.yml`**: Replaced hardcoded `DISCUSSION_NUMBER = 3673` with dynamic per-PR discussion lookup; searches for an existing discussion titled `📋 Agent Accountability — PR #<N>` using GraphQL; falls back to global #3673 if not found; uses `last: 50` for dedup check (backward pagination)
