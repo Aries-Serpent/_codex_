@@ -18,6 +18,7 @@
 
 ### Issues Found & Fixed
 1. **`post-accountability-to-discussion.yml` SyntaxError** (BLOCKING): `Identifier 'prRef' has already been declared`. RC-4 (S300) introduced a second `const prRef` (line 170, integer) that collided with the pre-existing `const prRef` (line 155, string). Fixed by renaming the integer variable to `prNum`. This was causing the `📋 Post Accountability Report to Discussion` workflow to fail on every push with commit `07f62b8369f8`.
+2. **`discussion-cleanup.yml` GitHub App token support**: Added `🔑 Resolve auth token` step that tries GitHub App installation token first (`_GITHUB_APP_*` secrets) then falls back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. The `api.github.com/installation/token` endpoint is now in the network allowlist. All execute-step `GH_TOKEN` env vars updated to use `steps.auth.outputs.resolved_token`.
 
 ### Infrastructure Gates (not code issues)
 - `Activate token delegation` — requires owner checkbox

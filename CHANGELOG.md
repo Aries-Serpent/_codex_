@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S302 — PR #3854 — post-accountability-to-discussion.yml duplicate prRef SyntaxError)
+### Fixed (S302 — PR #3854 — post-accountability-to-discussion.yml duplicate prRef SyntaxError + discussion-cleanup App token)
 - **`post-accountability-to-discussion.yml` SyntaxError**: Fixed `Identifier 'prRef' has already been declared` — RC-4 (S300) introduced a second `const prRef` (numeric) that collided with the existing `const prRef` (string, used for the comment header). Renamed the numeric variable to `prNum` throughout the RC-4 lookup block. This was causing `📋 Post Accountability Report to Discussion` job to fail on every push.
+- **`discussion-cleanup.yml` GitHub App token support**: Added `🔑 Resolve auth token` step that mints a GitHub App installation token using `_GITHUB_APP_*` secrets (has `discussions:write`) before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. Now that `api.github.com/installation/token` is in the network allowlist, the App token will be used when `_GITHUB_APP_PRIVATE_KEY` is injected, resolving the `deleteDiscussionComment` permission error (RP-DISCUSSION-DELETE-PERM). All execute steps updated to use `${{ steps.auth.outputs.resolved_token }}`.
 
 ### Fixed (S301 — PR #3854 — PDA logging, manifest refresh, discussion-cleanup UI, validation)
 - **PDA Loop + AfterMath**: Logged `RP-DISCUSSION-DELETE-PERM` failure pattern — `deleteDiscussionComment` GraphQL mutation blocked for all 5 token methods tried (GITHUB_TOKEN, gh-auth-token ghu_, CB API proxy, CB CLI env, CB CLI file). Root cause: `CODEX_BACKUP_KEY`/`CODEX_MASTER_KEY` declared in CB server env but values empty (secrets not injected at CB server startup). Fix path documented: restart CB server with secrets injected OR trigger `discussion-cleanup.yml` via GitHub Actions UI where repo secrets are properly injected.
