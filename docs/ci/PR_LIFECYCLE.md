@@ -1,7 +1,8 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 2.0.0  
-> **Date:** 2026-04-03 (S299 — P2-A session-done upsert dedup; RC-5 build_comment_context; RFC-001 skill-agent binding)  
+> **Version:** 2.1.0  
+> **Date:** 2026-04-07 (S303/S304 — discussion-cleanup CB App token; post-accountability CB App token; discussion-response-bridge RC-3)  
+> **Previous:** 2.0.0 (S299 — P2-A session-done upsert dedup; RC-5 build_comment_context; RFC-001 skill-agent binding)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (55 failures / 14 workflows, 2026-04-03)
 
@@ -152,6 +153,16 @@ These workflows run automatically on PR events and are not individually controll
 | `pr-size-analyzer.yml` | `pull_request` | PR diff size analysis |
 | `labeler.yml` | `pull_request` | Label assignment |
 | `comment-review-gate.yml` | `issue_comment` (self-retrigger guard) | Gate re-scan on new comments |
+
+### 2.7 Discussion & Accountability Workflows (S297–S303)
+
+These workflows manage GitHub Discussion context, accountability entries, and PR↔Discussion bridging:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `discussion-cleanup.yml` | `workflow_dispatch`, `schedule` | Manifest-mode + direct-mode discussion dupe cleanup; uses CB App token for `discussions:write` (S302) |
+| `discussion-response-bridge.yml` | `discussion_comment` | Bridges maintainer discussion replies back to the originating PR comment (RC-3, S300) |
+| `post-accountability-to-discussion.yml` | `push` to `0D_base_`/`copilot/**`, `workflow_dispatch` | Posts accountability entries to Discussion #3673; uses CB App token (S303) |
 
 ---
 
@@ -325,6 +336,13 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 **When `CODEX_MASTER_KEY` expires:** All rescue comments fall back to `github-actions[bot]` and
 Copilot sessions stop auto-triggering. Admin action required: rotate the `CODEX_MASTER_KEY` secret
 with a fresh `@mbaetiong` PAT with `repo` + `write:discussion` scope.
+
+> **S302–S303 (CB GitHub App Token):** `discussion-cleanup.yml` and
+> `post-accountability-to-discussion.yml` now use the **Cognitive Brain GitHub App token**
+> (`secrets.CODEX_CB_APP_TOKEN` + `secrets.CODEX_CB_APP_INSTALLATION_ID`) rather than
+> `CODEX_MASTER_KEY` for `discussions:write` operations. This provides a durable,
+> installation-scoped token that does not expire with the PAT rotation cycle.  
+> Affected workflows: `discussion-cleanup.yml` (S302), `post-accountability-to-discussion.yml` (S303).
 
 ### 7.1.2 Rescue Comment Format — Collapsed Sections (S295)
 
@@ -1064,6 +1082,8 @@ in §13, and the planned improvements to close each gap.
 | **Discussion context lost between sessions** | Agent must rebuild context from scratch each session | `scripts/ci/discussion_context_store.py` (P6-C): push-model context store writes structured JSON briefing to GitHub Discussion; persists across sessions | ✅ Fixed S297 |
 | **Discussion #3756 accumulated 526 duplicate comments** | `_find_discussion_comment` searched `first:50` only — with 722 comments dedup marker never found → new comment on every push | Fixed to `last:100` backward pagination; `discussion_cleanup.py` CLI removes backlog; manifest at `.codex/cleanup/discussion_cleanup_manifest.json` | ✅ Fixed S297 |
 | **`escalate` job posts standalone comment (separate from rescue thread)** | `iterative-self-healing-ci.yml escalate` job posted `<!-- self-healing-escalation -->` as a new PR comment separate from the canonical rescue thread | Use `post_rescue_comment.py` to append to existing `<!-- ci-rescue-sha:{pr}:{sha} -->` thread | ✅ Fixed S298 |
+| **`copilot-agent-session-done.yml` duplicate comments (P2-A)** | `createComment` (not upsert-by-marker) → each parallel watcher job completion created a new comment; 3–4 duplicates per push | Replaced with upsert-by-marker pattern using `<!-- session-done-dedup:{sha12} -->` | ✅ Fixed S299 |
+| **`COPILOT_ACTIVE_SESSION` TTL 4h → 1h (P5-C)** | 4h TTL meant a queued session waited up to 4 hours for the active-session lock to clear | TTL reduced to 3600 s (1 h) — the practical maximum session length | ✅ Fixed S300 |
 
 ### 14.2 Automation Cascade (Improved — S295)
 
@@ -1689,6 +1709,9 @@ with root causes, fix templates, and verification commands. The resolution statu
 | `rust_swarm_ci.yml` | Rust-Python Hybrid Swarm CI/CD | 🔴 High | Rust cargo build + tests |
 | `e-to-d-transition-gate.yml` | E→D Transition Readiness Gate | 🟢 Low | Autonomy phase transition |
 | `d-capable-promotion-gate.yml` | D_CAPABLE Agent Promotion Gate | 🟢 Low | Agent authority gate |
+| `discussion-cleanup.yml` | Discussion Duplicate Cleanup | 🟢 Low | Manifest-mode + direct-mode dupe cleanup; uses CB App token for `discussions:write` (S302) |
+| `discussion-response-bridge.yml` | Discussion → PR Reply Bridge | 🟢 Low | Bridges maintainer discussion replies to originating PR comment; triggers on `discussion_comment` (RC-3, S300) |
+| `post-accountability-to-discussion.yml` | Post Accountability to Discussion | 🟢 Low | Posts accountability entries to Discussion #3673 on push to `0D_base_`/`copilot/**`; uses CB App token (S303) |
 
 ### 18.6 Fast-Forward (separate WEC section — not a checkbox item)
 

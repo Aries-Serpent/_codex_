@@ -82,7 +82,7 @@ Caused `actionlint-audit.yml` to fail on every push.
 
 ## Priority 2 — High Impact (automation reliability)
 
-### P2-A 📋 `copilot-agent-session-done.yml` creates duplicate comments
+### P2-A ✅ `copilot-agent-session-done.yml` creates duplicate comments
 **File:** `.github/workflows/copilot-agent-session-done.yml`  
 **Problem (§16.4 🔴 High):** Fires on `workflow_run` completion for every watcher job.
 Uses `createComment` (not upsert-by-marker) → each job completion creates a new comment.
@@ -316,7 +316,7 @@ careful actor + pattern validation.
 | P1-B | test-rag.yml SHA-scoped marker | P1 | ✅ Done | S293 |
 | P1-C | actionlint-audit.yml github-token | P1 | ✅ Done | S293 |
 | P1-D | SC2269 self-assignment | P1 | ✅ Done | S293 |
-| P2-A | session-done upsert dedup | P2 | 📋 Planned | — |
+| P2-A | session-done upsert dedup | P2 | ✅ Done | S299 |
 | P2-B | comment-gate cascade guard | P2 | 📋 Planned | — |
 | P2-C | Phase detection output | P2 | 📋 Planned | — |
 | P2-D | Mermaid diagram Tier accuracy | P2 | 📋 Planned | — |
@@ -430,7 +430,7 @@ on:
 
 ---
 
-### P5-C 📋 Reduce `COPILOT_ACTIVE_SESSION` TTL from 4h → 1h
+### P5-C ✅ Reduce `COPILOT_ACTIVE_SESSION` TTL from 4h → 1h
 **Source:** COGNITIVE_BRAIN_LIVE_STATUS.md 🔴 High  
 **CB Layer:** Action (session management)  
 **Problem:** When a Copilot session is queued and another session finishes, the 4h TTL means
@@ -524,7 +524,7 @@ add classifier patches to `collect_telemetry.py`, verify unknown bucket drops.
 | P1-B | test-rag SHA-scoped marker | P1 | Action | ✅ Done | S293 |
 | P1-C | actionlint-audit github-token | P1 | Action | ✅ Done | S293 |
 | P1-D | SC2269 self-assignment | P1 | Action | ✅ Done | S293 |
-| P2-A | session-done upsert dedup | P2 | AfterMath | 📋 Planned | — |
+| P2-A | session-done upsert dedup | P2 | AfterMath | ✅ Done | S299 |
 | P2-B | comment-gate cascade guard | P2 | Perception | 📋 Planned | — |
 | P2-C | Phase detection output | P2 | Decision | 📋 Planned | — |
 | P2-D | Mermaid diagram Tier accuracy | P2 | Perception | 📋 Planned | — |
@@ -539,7 +539,7 @@ add classifier patches to `collect_telemetry.py`, verify unknown bucket drops.
 | P4-E | Tier 2 auto-approval safe patterns | P4 | Decision | 💡 Future | — |
 | P5-A | D_ACTIVATION_CHECKLIST.md | P5/🔴High | Decision | 📋 Planned | — |
 | P5-B | FAISS index rebuild post-merge | P5/🔴High | Perception | 📋 Planned | — |
-| P5-C | COPILOT_ACTIVE_SESSION TTL 4h→1h | P5/🔴High | Action | 📋 Planned | — |
+| P5-C | COPILOT_ACTIVE_SESSION TTL 4h→1h | P5/🔴High | Action | ✅ Done | S300 |
 | P5-D | SC2086 admin_setup_verification | P5/🟡Med | Action | 📋 Planned | — |
 | P5-E | pre-commit-failure CI pattern | P5/🟡Med | Perception | 📋 Planned | — |
 | P5-F | auto_promote_tier chatops wiring | P5/🟡Med | Decision | 📋 Planned | — |
