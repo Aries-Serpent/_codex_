@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-02T18:20:55Z",
+  "generated_at": "2026-04-03T21:12:44Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1264,6 +1264,16 @@
       "has_concurrency": true
     },
     {
+      "name": "discussion-cleanup",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "discussion-response-bridge",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "doc-freshness-check",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1505,7 +1515,7 @@
     },
     {
       "name": "resilient_validation",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1993,5 +2003,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "f6768b54d73a701d8a63e1a6261f2030b42f44d1b72f56c3b99868bc390af11b"
+  "integrity_sha256": "66ec8987f3e91517e6e82dbd4d375843efd7485c638d1f948705c7e85e23ee96"
 }
