@@ -34,7 +34,6 @@ import logging
 
 # Fast-forward helper (optional — only wired when scripts/ci is reachable)
 from pathlib import Path
-from pathlib import Path as _Path
 from typing import Optional
 
 import typer
@@ -45,7 +44,7 @@ from .envelope import ExecutionEnvelope
 from .registry import SkillRegistry, get_registry
 from .telemetry import push_to_app, read_events, summarise_events
 
-_FF_SCRIPT = _Path(__file__).parents[3] / "scripts" / "ci" / "fast_forward_safe_files.py"
+_FF_SCRIPT = Path(__file__).parents[3] / "scripts" / "ci" / "fast_forward_safe_files.py"
 
 logger = logging.getLogger(__name__)
 
@@ -641,7 +640,7 @@ def cmd_ff(
             typer.echo(f"Status: {status}")
 
     if emit:
-        _Path(emit).write_text(json.dumps(result, indent=2), encoding="utf-8")
+        Path(emit).write_text(json.dumps(result, indent=2), encoding="utf-8")
         typer.echo(f"Result written to: {emit}")
 
 
