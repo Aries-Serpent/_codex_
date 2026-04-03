@@ -391,8 +391,8 @@ jobs:
             echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: "Post @copilot continue to PR (if key functional)"
         env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
           PR_NUMBER_INPUT: ${{ inputs.pr_number }}
           GITHUB_REPO: ${{ github.repository }}

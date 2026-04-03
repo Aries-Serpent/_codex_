@@ -90,7 +90,6 @@ def _workflow_runs_history(
     owner: str, repo: str, workflow_name: str, token: str, limit: int = _HISTORY_RUNS
 ) -> list[dict]:
     """Fetch recent completed workflow runs matching a name (for ETA estimation)."""
-    encoded = urllib.parse.quote(workflow_name) if hasattr(urllib, "parse") else workflow_name
     url = (
         f"https://api.github.com/repos/{owner}/{repo}/actions/runs"
         f"?status=completed&per_page={limit}"
@@ -113,8 +112,7 @@ def _median_duration_seconds(runs: list[dict]) -> float | None:
                 t1 = datetime.fromisoformat(updated.replace("Z", "+00:00"))
                 durations.append((t1 - t0).total_seconds())
             except ValueError:
-                pass
-    if not durations:
+                pass  # malformed ISO timestamp — skip this run's duration
         return None
     durations.sort()
     mid = len(durations) // 2
@@ -192,7 +190,7 @@ def scan(
                 try:
                     eta_minutes = int(eta_str.replace("~", "").replace(" min", ""))
                 except ValueError:
-                    pass
+                    pass  # eta_str didn't match "~N min" pattern — leave eta_minutes as None
 
             entry = {
                 "name": name,

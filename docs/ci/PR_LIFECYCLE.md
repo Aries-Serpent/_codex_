@@ -357,7 +357,7 @@ every per-failure section below the H2 headline. This keeps the PR clean and sca
 <!-- ci-code-quality:abc123def456:3 -->
 <details><summary>🔵 `github-code-quality` — 3 alert(s) · 2026-04-03T08:37Z</summary>
 
-- **unused-global-variable** · `scripts/ci/migrate_rescue_comments.py:90` — ... ([view](...))
+- **unused-global-variable** · `scripts/ci/migrate_rescue_comments.py:90` — ... ([view](#))
 ...
 </details>
 ```

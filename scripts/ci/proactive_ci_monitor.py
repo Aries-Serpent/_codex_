@@ -265,7 +265,7 @@ def _get_run_logs_text(repo: str, run_id: int, token: str) -> str:
                         f"{job['name']} › {step['name']}"
                     )
         return "\n".join(snippets)
-    except Exception:
+    except Exception:  # noqa: BLE001 — any API or parse failure; return empty string so caller proceeds
         return ""
 
 
