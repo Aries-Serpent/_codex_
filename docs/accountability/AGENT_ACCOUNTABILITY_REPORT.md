@@ -17072,3 +17072,24 @@ Excluded task branch versions of `.pre-commit-config.yaml` (v1.4.0 vs HEAD v1.5.
 - CB GitHub App: full `Discussions R/W`, `Issues R/W`, `Contents R/W`, `Checks R/W`, `Code scanning R/W`, `Secrets R/W`, `Workflows R/W`
 - Only 1 active webhook: push-only → `api.github.com/repos/Aries-Serpent/_codex_`
 - All event routing (discussion_comment, pull_request, etc.) via GitHub Actions native triggers
+
+## Session S304 — 2026-04-03
+
+### Session Summary
+- **PR:** #3854 | **Branch:** 0D_base_ | **Commit:** (pending push)
+- **Trigger:** New requirement — ensure PR template correctly wires all workflows to WEC checkboxes
+
+### Tasks Completed
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| 1 | PR template full audit — all 36 existing filenames verified | ✅ Done | 100% ✅ against actual .yml files |
+| 2 | Identified 7 missing opt-in PR-triggered workflows | ✅ Done | pr-checks, html_visual_regression, template_lint, e-to-d-transition-gate, d-capable-promotion-gate, qa-walkthrough, mcp-health |
+| 3 | Added 7 workflows to PR template WEC | ✅ Done | Template now has 43 verifiable opt-in entries |
+| 4 | PR body WEC format fixed via report_progress | ✅ Done | resilient_validation.yml, nox_gates.yml, removed docs-build.yml, canonical section headers |
+| 5 | CHANGELOG S304 entry | ✅ Done | — |
+| 6 | PR_LIFECYCLE.md v2.1.0 updates + improvement plan P2-A/P5-C | ✅ Done | S303 agent work |
+
+### Lessons Learned
+- The PR body WEC block had drifted from the template format for many sessions (using `resilient-validation-suite.yml` with hyphens). The hardened instruction says to copy from PR body, perpetuating drift. Fix: when PR body WEC diverges from template, update to canonical template format on the next report_progress call.
+- Always run `grep -oP '(?<=\- \[.\] )\S+\.yml' .github/pull_request_template.md | while read f; do [ -f ".github/workflows/$f" ] && echo "✅ $f" || echo "❌ MISSING: $f"; done` as a pre-session gate.

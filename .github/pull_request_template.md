@@ -134,6 +134,8 @@
 - [ ] ci-checkpoint-validation.yml — CI Checkpoint Validation
 - [ ] data-quality-suite.yml — Data Quality & Determinism Suite
 - [ ] auth-tests.yml — Authentication Tests
+- [ ] pr-checks.yml — PR Checks (isolated cache, src/ scope)
+- [ ] html_visual_regression.yml — HTML Visual Regression Screenshots
 
 ### 🔒 Opt-In: Security & Quality
 - [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
@@ -144,6 +146,7 @@
 - [ ] auto-fix-pr-check.yml — PR auto-fix check
 - [ ] code-quality-coverage-suite.yml — Code quality & coverage suite
 - [ ] audit-qa-suite.yml — Audit & QA Suite (Unified)
+- [ ] template_lint.yml — Template / HTML Include Lint
 
 ### 📄 Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker
@@ -156,6 +159,10 @@
 - [ ] rust_swarm_ci.yml — Rust-Python hybrid swarm CI/CD
 - [ ] root-org-validation.yml — Root organization validation
 - [ ] agent-registry-validation.yml — Agent registry validation
+- [ ] e-to-d-transition-gate.yml — E→D Transition Readiness Gate
+- [ ] d-capable-promotion-gate.yml — D_CAPABLE Agent Promotion Gate
+- [ ] qa-walkthrough.yml — QA Walkthrough Agent
+- [ ] mcp-health.yml — MCP Health & Metrics Gate (src/mcp/ scope)
 
 > **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
 > appended verbatim to **every** PR body update — including every `report_progress` call.

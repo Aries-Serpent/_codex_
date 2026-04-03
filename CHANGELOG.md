@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S304 — PR #3854 — PR template WEC audit + 7 missing opt-in workflows + PR body WEC fix)
+- **PR template WEC audit**: Verified all 36 existing opt-in checkbox entries against actual `.github/workflows/` files — all ✅ present. No stale/wrong filenames in template.
+- **7 missing opt-in workflows added** to `pull_request_template.md` WEC block (now 43 total opt-in entries):
+  - `🧪 Testing`: `pr-checks.yml` (PR Checks, isolated cache, src/ scope), `html_visual_regression.yml` (HTML Visual Regression Screenshots)
+  - `🔒 Security/Quality`: `template_lint.yml` (Template / HTML Include Lint)
+  - `⚙️ Infrastructure`: `e-to-d-transition-gate.yml` (E→D Transition Readiness Gate), `d-capable-promotion-gate.yml` (D_CAPABLE Agent Promotion Gate), `qa-walkthrough.yml` (QA Walkthrough Agent), `mcp-health.yml` (MCP Health & Metrics Gate)
+- **PR body WEC format fixed**: Previous `report_progress` calls used stale WEC block (`resilient-validation-suite.yml` → `resilient_validation.yml`, `nox-gates.yml` → `nox_gates.yml`, `docs-build.yml` → removed, mismatched section headings). PR body now uses canonical template format matching `pull_request_template.md` exactly.
+- **PR_LIFECYCLE.md v2.1.0**: §2.7 discussion workflows table, §7 CB App token note, §14.1 P2-A/P5-C marked ✅ Done, §18.5 3 new discussion workflow entries.
+- **pr_lifecycle_improvements.md**: P2-A (session-done dedup) → ✅ Done S299; P5-C (TTL 4h→1h) → ✅ Done S300.
+
 ### Fixed (S303 — PR #3854 — CB App token for post-accountability-to-discussion.yml + webhook/infra context)
 - **`post-accountability-to-discussion.yml` CB App token**: Added `🔑 Resolve auth token for discussions:write` step (same pattern as S302 `discussion-cleanup.yml`) — mints GitHub App installation token using `_GITHUB_APP_*` secrets before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. The "Post to GitHub Discussion" step now uses `${{ steps.auth.outputs.resolved_token }}` instead of bare `${{ secrets.GITHUB_TOKEN }}`, resolving `discussions:write` failures when the standard workflow token is used. `api.github.com/installation/token` confirmed in network allowlist.
 - **Infra context ingested**: CB GitHub App has full repository + org permissions (Discussions R/W, Issues R/W, Contents R/W, Checks R/W, Code scanning R/W, Secrets R/W, Workflows R/W, etc.) with event subscriptions covering all relevant webhook events. Only 1 active webhook (push-only → `api.github.com/repos/Aries-Serpent/_codex_`). All other event routing handled natively via GitHub Actions triggers. New webhooks, if needed, will be configured via explicit UI guidance.
