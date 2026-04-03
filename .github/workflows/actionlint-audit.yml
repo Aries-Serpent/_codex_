@@ -82,6 +82,7 @@ jobs:
         env:
           BRANCH_REF: ${{ github.head_ref }}
         with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
             const MAX_COMMENT_LENGTH = 65536;
             const sha = context.payload.pull_request.head.sha;

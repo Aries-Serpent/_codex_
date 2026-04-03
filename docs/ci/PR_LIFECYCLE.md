@@ -1,7 +1,7 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.6.0  
-> **Date:** 2026-04-02 (S285 — §18 WEC Workflow Catalog, §19 Fast-Forward Promotion added; all WEC filename mismatches resolved; mermaid diagrams expanded)  
+> **Version:** 1.7.0  
+> **Date:** 2026-04-03 (S293 — §7 rescue comment identity requirement + `github-token` fix documented; §20 Workflow Compliance Fixes)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (59 failures / 14 workflows, 2026-04-02)
 
@@ -280,8 +280,9 @@ There are **two tiers** of rescue workflows. Understanding this distinction is e
 
 **Tier 1 workflows (reliably fire on every push/PR):**
 - `validate.yml` → `rescue-comment` job: posts SHA-scoped `<!-- ci-rescue-sha:{pr}:{sha} -->` comment with `@copilot` instructions + PDA Loop log
-- `actionlint-audit.yml` → `rescue-comment` job: posts actionlint-specific fix guidance
+- `actionlint-audit.yml` → inline rescue step + `rescue-comment` job: posts actionlint-specific fix guidance  
 - `comment-review-gate.yml` → inline scan and block
+- `test-rag.yml` → `rescue-comment` job: posts RAG-specific fix guidance
 
 **Tier 2 workflows (fire ONLY after human approves the `workflow_run` run):**
 - `ci-rescue.yml`: deep root-cause analysis, RP-pattern matching
@@ -289,6 +290,37 @@ There are **two tiers** of rescue workflows. Understanding this distinction is e
 - `copilot-iterative-self-healing.yml`: `@copilot` escalation
 
 > **S292 Root Cause Finding:** Automation appeared to "stop working" because 14+ `workflow_run`-triggered runs were queued in `action_required` state. The `validate.yml` rescue-comment job (Tier 1) was always firing — it just posted to a per-PR thread (pre-S290) that was easy to miss. After S290, SHA-scoped comments make each failure visible. To restore Tier 2 automation, approve the queued `workflow_run` runs in the Actions tab.
+
+### 7.1.1 Rescue Comment Identity Requirement (S293)
+
+**Rescue comments MUST be posted as `@mbaetiong`** (not `github-actions[bot]`) for the
+Copilot Coding Agent to pick them up. GitHub Copilot only responds to `@copilot` mentions
+made by human users — comments from `github-actions[bot]` are silently ignored.
+
+**Token chain (all rescue-comment jobs must use this priority order):**
+
+```yaml
+# For actions/github-script@v8 steps:
+github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+
+# For shell/Python steps using GH_TOKEN:
+GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+```
+
+| Secret | Owner | Purpose |
+|--------|-------|---------|
+| `CODEX_MASTER_KEY` | `@mbaetiong` PAT | Primary — comments post as `mbaetiong` |
+| `CODEX_BACKUP_KEY` | `@mbaetiong` PAT | Fallback if primary expires |
+| `GITHUB_TOKEN` / `github.token` | `github-actions[bot]` | Last resort — Copilot will NOT see this |
+
+> **S293 Bug Fix:** `actionlint-audit.yml`'s inline `actions/github-script@v8` rescue step was
+> not passing `github-token`, causing it to use the default `github.token` (= `github-actions[bot]`).
+> Fixed by explicitly setting `github-token: ${{ secrets.CODEX_MASTER_KEY || ... }}`.
+> **All rescue-comment steps using `actions/github-script@v8` MUST pass `github-token` explicitly.**
+
+**When `CODEX_MASTER_KEY` expires:** All rescue comments fall back to `github-actions[bot]` and
+Copilot sessions stop auto-triggering. Admin action required: rotate the `CODEX_MASTER_KEY` secret
+with a fresh `@mbaetiong` PAT with `repo` + `write:discussion` scope.
 
 ### 7.2 Rescue Cascade (when all tiers are active)
 
@@ -1768,3 +1800,52 @@ immediately, the agent MUST:
 7. Verify the `⚡ Fast-Forward Result` comment shows `pr-created` or `dry-run`
 
 The agent must **NOT** use `direct-push` mode without explicit human approval in a PR comment.
+
+
+---
+
+## 20. Workflow Compliance Fixes (S293)
+
+This section documents workflow compliance issues found and fixed in S293.
+
+### 20.1 SC2269 — Self-Assignment in `workflow-execution-gate.yml`
+
+**File:** `.github/workflows/workflow-execution-gate.yml`  
+**Issue:** `shellcheck SC2269 — This variable is assigned to itself, so the assignment does nothing`  
+**Line (pre-fix):** `PR="${PR}"` in the "Post fast-forward result comment to PR" step  
+**Fix:** Remove the redundant self-assignment. The `PR` env var is already set in the `env:` block and available directly.
+
+### 20.2 Missing `github-token` in `actionlint-audit.yml` Rescue Step
+
+**File:** `.github/workflows/actionlint-audit.yml`  
+**Issue:** The inline `actions/github-script@v8` rescue comment step did not pass `github-token`, causing it to use the default `github.token` (= `github-actions[bot]`). Copilot does not respond to `@copilot` mentions from `github-actions[bot]`.  
+**Fix:** Added `github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}` to the step.  
+**Effect:** When `CODEX_MASTER_KEY` is a valid `@mbaetiong` PAT, the rescue comment posts as `mbaetiong` and Copilot will respond.
+
+### 20.3 RAG Meta-Tensor Test Isolation (`tests/test_rag_utils.py`)
+
+**Issue:** `TestCheckForMetaTensors::test_model_without_meta_tensors` failed with
+`NotImplementedError: Cannot copy out of meta tensor` when run after a test that used
+`with torch.device('meta'):`. The `setup_method` resets the global default device to CPU,
+but `torch.nn.Linear(10, 5)` (without explicit `device=`) can still create a meta tensor if
+the reset doesn't propagate in time, and the subsequent `.to("cpu")` raises.  
+**Fix:** Changed to `torch.nn.Linear(10, 5, device="cpu")` — explicit device prevents dependence
+on the global default device entirely. Applied consistently to all models created on CPU in
+`TestCheckForMetaTensors`, `TestSafeModelLoad`, and `TestSafeModelLoadV2`.
+
+### 20.4 Full Rescue Comment Identity Chain (Summary)
+
+| Workflow | Step Type | `github-token` | Status |
+|----------|-----------|----------------|--------|
+| `actionlint-audit.yml` inline | `actions/github-script@v8` | ✅ `CODEX_MASTER_KEY` (fixed S293) | Fixed |
+| `actionlint-audit.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
+| `validate.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
+| `test-rag.yml` rescue-comment job | Python urllib + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
+| `ci-rescue.yml` | Python urllib + `GITHUB_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
+| `iterative-self-healing-ci.yml` escalate | `gh pr comment` + `GH_TOKEN` | ✅ `CODEX_MASTER_KEY` | OK |
+| `comment-review-gate.yml` | `actions/github-script@v8` | ✅ `CODEX_MASTER_KEY` | OK |
+| `copilot-agent-session-done.yml` | `actions/github-script@v8` | ✅ `CODEX_MASTER_KEY` | OK |
+
+> **Admin Note:** If rescue comments appear as `github-actions[bot]` instead of `@mbaetiong`,
+> the `CODEX_MASTER_KEY` secret has expired. Rotate it with a fresh `@mbaetiong` PAT
+> (scopes: `repo`, `write:discussion`). The `CODEX_BACKUP_KEY` provides one level of redundancy.
