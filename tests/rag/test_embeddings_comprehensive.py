@@ -661,15 +661,14 @@ class TestCreateEmbeddingProvider:
 
     def test_explicit_openai_provider_without_key_raises(self):
         """Test 'openai' without API key raises ValueError."""
-        with patch.dict(os.environ, {}, clear=True):
-            # Remove any existing OpenAI keys
-            env = {k: v for k, v in os.environ.items()
-                   if k not in ("RAG_OPENAI_KEY", "OPENAI_API_KEY")}
-            with patch.dict(os.environ, env, clear=True):
-                with pytest.raises(ValueError, match="API key"):
-                    create_embedding_provider(
-                        provider_type="openai", use_cache=False
-                    )
+        # Clear both OpenAI key env vars so the provider sees no key
+        env_override = {k: v for k, v in os.environ.items()
+                        if k not in ("RAG_OPENAI_KEY", "OPENAI_API_KEY")}
+        with patch.dict(os.environ, env_override, clear=True):
+            with pytest.raises(ValueError, match="API key"):
+                create_embedding_provider(
+                    provider_type="openai", use_cache=False
+                )
 
     def test_unknown_provider_type_raises(self):
         """Test unknown provider type raises ValueError."""
