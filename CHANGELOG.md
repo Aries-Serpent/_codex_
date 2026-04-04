@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CodeQL 12778**: `scan_failing_workflows.py` line 93 — removed unused `encoded` variable
 - **CodeQL 12772**: `src/codex/skills/cli.py` — removed duplicate `from pathlib import Path as _Path` import; all `_Path` uses replaced with `Path`
 - **actionlint**: `admin_setup_verification.yml` — split step with duplicate `run:` key into two named steps
-- **docs**: `docs/ci/PR_LIFECYCLE.md` — replaced broken `[view](...)` placeholder with live reference link
+- **docs**: `docs/ci/PR_LIFECYCLE.md` — replaced broken `[view]( ... )` placeholder with live reference link
 - **P6-A**: `scripts/ci/scan_failing_workflows.py` — new tool: scans HEAD SHA for all failing/in-progress check runs with ETA estimation; wired into `copilot-agent-checkin.yml`
 - **S295 dedup**: `comment-review-gate.yml` — `WORKFLOW_NAME` corrected; `copilot-agent-checkin.yml` S221 detection updated to canonical `<!-- ci-rescue-sha:{pr}:{sha} -->` format
 - **RAG coverage**: `tests/rag/ingestion/test_chunker.py` — 7 new test classes (SEMANTIC/HIERARCHICAL fallback, batch API, `chunk_document()`); `tests/rag/ingestion/test_pipeline.py` — 5 new test classes (retry exhaustion, sleep mock, parallel exceptions, `_update_batch_result`, `get_stats`) — chunker 97.99%, preprocessor 100%
