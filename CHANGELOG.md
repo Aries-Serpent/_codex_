@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S304 — PR #3854 — PR template WEC audit + 7 missing opt-in workflows + PR body WEC fix)
+### Fixed (S307 — PR #3854 — TF-IDF small-corpus guard, OpenAI mock patch, import-migration assertions, transform error patch)
+- **`src/codex/rag/embeddings.py` TF-IDF small-corpus guard**: `TfidfEmbeddingProvider.encode()` now clamps `max_df` to `1.0` before fitting when the corpus has fewer than 3 documents. With `max_df=0.95` and `n_docs=1`, sklearn computed `floor(0.95 × 1) = 0` for max-document threshold which is less than `min_df=1`, raising `ValueError: max_df corresponds to < documents than min_df`. Fixed without changing default `max_df` for larger corpora.
+- **`tests/rag/test_rag_providers_advanced.py` OpenAI mock**: Corrected `@patch` decorator path from `src.codex.rag.embeddings.OpenAI` → `codex.rag.embeddings.OpenAI`. The old path didn't resolve to the live module so the mock never replaced the real client, causing a real API call with `test_key` that returned `401 AuthenticationError`.
+- **`tests/agents/test_import_migration_orchestrator.py` migration assertions**: `ImportMigrationOrchestrator` migrates `from training.` → `from src.training.` (adds `src.` prefix). Three test assertions were checking for the OLD pattern after migration: fixed `test_execute_migrations_actual` (line 304), `test_end_to_end_migration_workflow` (line 396), and `test_multiple_migrations_same_file` (lines 486-487) to assert the new `src.`-prefixed imports are present.
+- **`tests/codex/test_transform_phase9_1.py` transform error patch**: `test_transform_reports_errors` used `@patch("src.codex.transform.transformer._apply_pathlib_migration", ...)` — the `src.` prefix in the patch path does not match the installed module path `codex.transform.transformer`, so the mock silently had no effect and `result.errors` was always empty. Fixed to `codex.transform.transformer._apply_pathlib_migration`.
+
+### Fixed (S306 — PR #3854 — ollama type-ignore removal, compression Zip-Slip, doc_loader, secrets baseline, CHANGELOG cross-ref, RAG coverage 95%)
+
 - **PR template WEC audit**: Verified all 36 existing opt-in checkbox entries against actual `.github/workflows/` files — all ✅ present. No stale/wrong filenames in template.
 - **7 missing opt-in workflows added** to `pull_request_template.md` WEC block (now 43 total opt-in entries):
   - `🧪 Testing`: `pr-checks.yml` (PR Checks, isolated cache, src/ scope), `html_visual_regression.yml` (HTML Visual Regression Screenshots)

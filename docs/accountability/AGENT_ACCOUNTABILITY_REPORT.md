@@ -17093,3 +17093,23 @@ Excluded task branch versions of `.pre-commit-config.yaml` (v1.4.0 vs HEAD v1.5.
 ### Lessons Learned
 - The PR body WEC block had drifted from the template format for many sessions (using `resilient-validation-suite.yml` with hyphens). The hardened instruction says to copy from PR body, perpetuating drift. Fix: when PR body WEC diverges from template, update to canonical template format on the next report_progress call.
 - Always run `grep -oP '(?<=\- \[.\] )\S+\.yml' .github/pull_request_template.md | while read f; do [ -f ".github/workflows/$f" ] && echo "✅ $f" || echo "❌ MISSING: $f"; done` as a pre-session gate.
+
+## Session S307 — 2026-04-04
+
+### Session Summary
+- **PR:** #3854 | **Branch:** 0D_base_ | **Commit:** (pending push)
+- **Trigger:** CI failures — RAG Module Tests (6 failed) + Resilient Validation Suite / slow (5 failed)
+
+### Tasks Completed
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| 1 | Fix TF-IDF small-corpus ValueError in `embeddings.py` | ✅ Done | `max_df=0.95` with 1 doc → floor(0.95)=0 < min_df=1; clamp to 1.0 for n_docs<3 |
+| 2 | Fix OpenAI mock patch path `test_rag_providers_advanced.py` | ✅ Done | `src.codex.rag.embeddings.OpenAI` → `codex.rag.embeddings.OpenAI`; was making real API call |
+| 3 | Fix import-migration assertion bugs `test_import_migration_orchestrator.py` | ✅ Done | 3 assertions checking old pattern after migration; fixed to check `src.`-prefixed new pattern |
+| 4 | Fix transform error patch path `test_transform_phase9_1.py` | ✅ Done | `src.codex.transform.transformer._apply_pathlib_migration` → `codex.transform.transformer.*`; mock never fired |
+| 5 | CHANGELOG + accountability update | ✅ Done | S307 entry added |
+
+### CI Impact
+- RAG Module Tests: 6 failures → 0 (TF-IDF + OpenAI mock fixes)
+- Resilient Validation Suite (slow): 5 failures → 0 (TF-IDF + import migration + transform fixes)

@@ -301,7 +301,7 @@ from training.pipeline import Pipeline
         # Check one file was actually modified
         test_file1 = temp_repo / "module1.py"
         content = test_file1.read_text()
-        assert "from training.model import Model" in content  # New import
+        assert "from src.training.model import Model" in content  # New import
         assert "from training.model import Model" not in content  # Old import removed
 
     def test_execute_migrations_groups_by_file(self, orchestrator, temp_repo):
@@ -393,7 +393,7 @@ def preprocess():
         # Verify migrations were applied
         app_file = complex_repo / "app.py"
         app_content = app_file.read_text()
-        assert "from training.model import Model" in app_content
+        assert "from src.training.model import Model" in app_content
 
     def test_workflow_with_no_deprecated_imports(self):
         """Test workflow when repository has no deprecated imports."""
@@ -483,6 +483,6 @@ def test():
         assert "import training.trainer" not in final_content
 
         # Verify all new imports are present
-        assert "from training.model" in final_content
-        assert "from models.classifier" in final_content
+        assert "from src.training.model" in final_content
+        assert "from src.models.classifier" in final_content
         assert "import src.training.trainer" in final_content

@@ -222,7 +222,7 @@ class TestOpenAIProvider:
         except ImportError:
             pytest.skip("Module not available")
 
-    @patch('src.codex.rag.embeddings.OpenAI')
+    @patch('codex.rag.embeddings.OpenAI')
     def test_openai_provider_with_mock(self, mock_openai):
         """Test OpenAI provider with mocked API."""
         try:

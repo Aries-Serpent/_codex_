@@ -592,8 +592,14 @@ class TfidfEmbeddingProvider:
 
         # Fit on first call
         if not self.is_fitted:
-            logger.info(f"Fitting TF-IDF vectorizer on {len(texts)} texts")
+            n_docs = len(texts)
+            logger.info(f"Fitting TF-IDF vectorizer on {n_docs} texts")
             try:
+                # Guard: when max_df is a fraction, max_df * n_docs can be < min_df for
+                # very small corpora (e.g. max_df=0.95, n_docs=1 → floor(0.95)=0 < min_df=1).
+                # Clamp max_df to 1.0 for tiny corpora to avoid ValueError.
+                if isinstance(self.vectorizer.max_df, float) and n_docs < 3:
+                    self.vectorizer.set_params(max_df=1.0)
                 self.vectorizer.fit(texts)
                 self.is_fitted = True
                 logger.info(
