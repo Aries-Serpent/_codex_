@@ -104,36 +104,75 @@
 
 ## 🔄 Workflow Execution Checklist
 
-### ✅ Validation & Testing
+> **How the WEC gate works:** `workflow-execution-gate.yml` parses this section on every
+> `pull_request_review` event. Filenames must match exactly (including underscores vs hyphens).
+> **Always required** items fire automatically and cannot be skipped. **Opt-in** items are
+> enabled by ticking `[x]`; unchecked items are reported as SKIPPED in the gate summary.
+
+### ✅ Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [ ] resilient-validation-suite.yml — Resilient validation
-- [ ] nox-gates.yml — Nox test gates
-
-### ✅ Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
-- [ ] security-scanning-suite.yml — Full security audit
-- [x] deferral-language-gate.yml — Deferral language guard
+- [x] deferral-language-gate.yml — Deferral language guard (always required)
+- [x] agent-auth-delegation.yml — Agent token delegation (always required)
+- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)
 
-### 📄 Documentation
-- [ ] docs-build.yml — Documentation build
-- [ ] documentation-link-checker.yml — Documentation link checker
-
-### 🤖 Automation
-- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [x] copilot-agent-checkin.yml — Agent check-in (always required)
-- [x] cost-gate.yml — Cost governance gate
-- [x] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
-- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
-- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
+### 🔄 Always Active — fire via push/workflow_run (Tier 2: need manual approval in Actions tab)
+- [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (fires on push)
+- [x] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run)
+- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)
+- [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
 
 ### ⚡ Auto-Approve
-- [x] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+- [ ] auto-approve-workflows.yml — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+
+### 🧪 Opt-In: Testing & Validation
+- [ ] validate.yml — Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
+- [ ] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] mypy-baseline.yml — mypy type-check anti-regression gate
+- [ ] test-rag.yml — RAG Module Tests (coverage ≥95%)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+- [ ] coverage-with-timeout.yml — Coverage with timeout guards
+- [ ] progressive-validation.yml — Progressive Validation Suite
+- [ ] pre-flight-validation.yml — Pre-flight CI validation
+- [ ] ci-checkpoint-validation.yml — CI Checkpoint Validation
+- [ ] data-quality-suite.yml — Data Quality & Determinism Suite
+- [ ] auth-tests.yml — Authentication Tests
+- [ ] pr-checks.yml — PR Checks (isolated cache, src/ scope)
+- [ ] html_visual_regression.yml — HTML Visual Regression Screenshots
+
+### 🔒 Opt-In: Security & Quality
+- [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
+- [ ] codeql-analysis.yml — CodeQL SAST analysis
+- [ ] actionlint-audit.yml — Workflow compliance audit (actionlint)
+- [ ] semgrep_sarif.yml — Semgrep SAST (SARIF upload)
+- [ ] auto-fix-common-issues.yml — Auto-fix common CI issues
+- [ ] auto-fix-pr-check.yml — PR auto-fix check
+- [ ] code-quality-coverage-suite.yml — Code quality & coverage suite
+- [ ] audit-qa-suite.yml — Audit & QA Suite (Unified)
+- [ ] template_lint.yml — Template / HTML Include Lint
+
+### 📄 Opt-In: Documentation
+- [ ] documentation-link-checker.yml — Documentation link checker
+- [ ] pages-pre-merge-validation.yml — Pages pre-merge validation
+
+### ⚙️ Opt-In: Infrastructure & Deployment
+- [ ] reference-integrity.yml — Reference integrity + agent size gate
+- [ ] dependency-submission.yml — Resilient dependency submission
+- [ ] docker-build-push.yml — Build & push Docker image (GHCR)
+- [ ] rust_swarm_ci.yml — Rust-Python hybrid swarm CI/CD
+- [ ] root-org-validation.yml — Root organization validation
+- [ ] agent-registry-validation.yml — Agent registry validation
+- [ ] e-to-d-transition-gate.yml — E→D Transition Readiness Gate
+- [ ] d-capable-promotion-gate.yml — D_CAPABLE Agent Promotion Gate
+- [ ] qa-walkthrough.yml — QA Walkthrough Agent
+- [ ] mcp-health.yml — MCP Health & Metrics Gate (src/mcp/ scope)
 
 > **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
 > appended verbatim to **every** PR body update — including every `report_progress` call.
 > Copy the WEC block from the current PR body into the `prDescription` parameter, keeping
 > **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.
-> Only 'always required' items may be auto-checked. All other items preserve their current state.
+> Only `always required` and `always active` items may be auto-checked. All other items
+> preserve their current maintainer-selected state.
 
 **Required if any files are deleted or moved:**
 

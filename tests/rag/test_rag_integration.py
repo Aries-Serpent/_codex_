@@ -311,6 +311,9 @@ class TestRAGPerformance:
 
         mock_model = MagicMock()
         mock_model.encode.return_value = np.random.randn(100, 384).astype(np.float32)
+        mock_model.to.return_value = mock_model
+        mock_model.to_empty.return_value = mock_model
+        mock_model.eval.return_value = mock_model
 
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
             embed_chunks(chunks)
@@ -362,6 +365,9 @@ class TestRAGDataConsistency:
         mock_model = MagicMock()
         embeddings = np.random.randn(5, 384).astype(np.float32)
         mock_model.encode.return_value = embeddings
+        mock_model.to.return_value = mock_model
+        mock_model.to_empty.return_value = mock_model
+        mock_model.eval.return_value = mock_model
 
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
             result = embed_chunks(chunks)

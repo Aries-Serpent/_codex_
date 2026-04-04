@@ -25,8 +25,8 @@ on:
         type: string
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.head_ref || github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.head_ref || github.ref }}-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -45,21 +45,35 @@ jobs:
       (
         github.event.workflow_run.conclusion == 'failure' &&
         github.event.workflow_run.name != 'Iterative Self-Healing CI' &&
+        github.event.workflow_run.name != 'Copilot Iterative Self-Healing Auto-Poster' &&
+        github.event.workflow_run.name != 'CI Rescue — Auto-Fix & @copilot RCA' &&
         github.event.workflow_run.name != 'Cognitive Brain CI Feedback' &&
         github.event.workflow_run.name != 'Cognitive Action & Decision (Unified)' &&
         github.event.workflow_run.name != 'Cognitive Analysis & Learning (Unified)' &&
         github.event.workflow_run.name != 'Agent Variable Writer (Provenance-Chain)' &&
         github.event.workflow_run.name != 'Token Probe' &&
         github.event.workflow_run.name != 'Agent Vars Bootstrap' &&
-        github.event.workflow_run.name != 'CODEX Manifest Auto-Refresh'
+        github.event.workflow_run.name != 'CODEX Manifest Auto-Refresh' &&
+        github.event.workflow_run.name != 'PR Comment Review Gate' &&
+        github.event.workflow_run.name != 'Agent Token Delegation' &&
+        github.event.workflow_run.name != '🔄 Auto-Post @copilot review After Agent Session' &&
+        github.event.workflow_run.name != '🤖 Agent Check-In — Q&A Bridge (Discussion #3756)' &&
+        github.event.workflow_run.name != '🚨 CI Failure Issue Creator' &&
+        github.event.workflow_run.name != '💰 PR Cost Check' &&
+        github.event.workflow_run.name != 'Copilot PR Session Injector' &&
+        github.event.workflow_run.name != 'Session Watchdog — Timebox & Continuity Enforcement' &&
+        github.event.workflow_run.name != 'Chat-Ops — @copilot Webhook Trigger' &&
+        github.event.workflow_run.name != '🤖 Copilot Review Responder'
       )
 
     outputs:
-      pattern:    ${{ steps.classify.outputs.pattern }}
-      fixable:    ${{ steps.classify.outputs.fixable }}
-      run_id:     ${{ steps.classify.outputs.run_id }}
-      head_sha:   ${{ steps.classify.outputs.head_sha }}
-      head_branch: ${{ steps.classify.outputs.head_branch }}
+      pattern:      ${{ steps.classify.outputs.pattern }}
+      fixable:      ${{ steps.classify.outputs.fixable }}
+      run_id:       ${{ steps.classify.outputs.run_id }}
+      head_sha:     ${{ steps.classify.outputs.head_sha }}
+      head_branch:  ${{ steps.classify.outputs.head_branch }}
+      workflow_name: ${{ steps.classify.outputs.workflow_name }}
+      pr_number:    ${{ steps.classify.outputs.pr_number }}
 
     steps:
       - name: Checkout
@@ -70,7 +84,38 @@ jobs:
           # Falls back to GITHUB_TOKEN for environments without delegation.
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
+      - name: Per-branch hourly run-cap guard (cascade brake)
+        id: rate_cap
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.head_ref || github.ref_name }}
+        run: |
+          # Hard brake: if >= 10 Iterative Self-Healing CI runs have been triggered
+          # for this branch in the past hour, skip this run. This prevents the
+          # self-healing cascade (issue #3860) where healer failures re-trigger the
+          # healer indefinitely (SELF_HEALING_001 sub-scenario C).
+          MAX_PER_HOUR=10
+          ONE_HOUR_AGO=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
+            || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
+            || echo "")
+          if [ -n "$ONE_HOUR_AGO" ] && [ -n "$HEAD_BRANCH" ]; then
+            RECENT=$(gh api \
+              "/repos/${GITHUB_REPOSITORY}/actions/workflows/iterative-self-healing-ci.yml/runs?branch=${HEAD_BRANCH}&per_page=50&created=>=${ONE_HOUR_AGO}" \
+              --jq '.total_count' 2>/dev/null || echo "0")
+            if [ "$RECENT" -ge "$MAX_PER_HOUR" ]; then
+              echo "::warning::Self-healing run cap reached: ${RECENT} runs in the last hour on ${HEAD_BRANCH} (max ${MAX_PER_HOUR}). Skipping to break cascade (issue #3860 SELF_HEALING_001)."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "### 🛑 Cascade Brake Activated" >> "$GITHUB_STEP_SUMMARY"
+              echo "Run cap: **${RECENT}** healer runs in the past hour on \`${HEAD_BRANCH}\` (max ${MAX_PER_HOUR})." >> "$GITHUB_STEP_SUMMARY"
+              echo "Skipping this run to break self-healing cascade (SELF_HEALING_001)." >> "$GITHUB_STEP_SUMMARY"
+              echo "See: [issue #3860](https://github.com/${GITHUB_REPOSITORY}/issues/3860)" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
       - name: Set up Python (cached)
+        if: steps.rate_cap.outputs.skip != 'true'
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
@@ -79,6 +124,7 @@ jobs:
 
       - name: Classify failure (D-00 — collect_telemetry --classify-run)
         id: classify
+        if: steps.rate_cap.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           TRIGGERING_RUN_ID: ${{ github.event.workflow_run.id || inputs.target_run_id }}
@@ -101,6 +147,10 @@ jobs:
           echo "run_id=${TRIGGERING_RUN_ID}"       >> "$GITHUB_OUTPUT"
           echo "head_sha=${HEAD_SHA}"               >> "$GITHUB_OUTPUT"
           echo "head_branch=${HEAD_BRANCH}"         >> "$GITHUB_OUTPUT"
+          echo "workflow_name=${TRIGGERING_RUN_NAME}" >> "$GITHUB_OUTPUT"
+          # Extract PR number from workflow_run event; fall back to empty string
+          PR_NUM=$(echo "${GITHUB_EVENT_PATH:+$(python3 -c "import json,os; d=json.load(open(os.environ['GITHUB_EVENT_PATH'])); print(d.get('workflow_run',{}).get('pull_requests',[{}])[0].get('number','') if d.get('workflow_run',{}).get('pull_requests') else '')" 2>/dev/null)}" || echo "")
+          echo "pr_number=${PR_NUM}"                >> "$GITHUB_OUTPUT"
 
           # D-00: Use collect_telemetry --classify-run to categorise the failure.
           # The --classify-run flag (added S150) fetches run+jobs via the GitHub API
@@ -471,6 +521,57 @@ jobs:
           print(f"Attempt record: {os.environ['ATTEMPT_FILE']}")
           PYEOF
 
+      - name: Log pattern to PDA Loop + AfterMath
+        if: always()
+        env:
+          PATTERN:    ${{ needs.triage.outputs.pattern }}
+          RUN_ID:     ${{ needs.triage.outputs.run_id }}
+          HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          WORKFLOW_NAME: ${{ needs.triage.outputs.workflow_name || github.event.workflow_run.name }}
+          ITERATION:  ${{ matrix.iteration }}
+          CHANGED:    ${{ steps.apply_fix.outputs.changed }}
+          VALID:      ${{ steps.validate.outputs.valid }}
+          HEAD_SHA:   ${{ github.event.workflow_run.head_sha || github.sha }}
+          SESSION:    ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || 'auto' }}
+          PR_NUMBER:  ${{ needs.triage.outputs.pr_number }}
+        run: |
+          # Forward each heal attempt to the PDA Loop failure logger so that
+          # grounded solutions accumulate across sessions and can be queried by
+          # future agents (python scripts/ci/pda_failure_logger.py summarize).
+          if [ ! -f scripts/ci/pda_failure_logger.py ]; then
+            echo "::notice::pda_failure_logger.py not found — skipping PDA log"
+            exit 0
+          fi
+          SESSION_ID="S${SESSION:-auto}-heal"
+          if [ "${CHANGED}" = "true" ]; then
+            # A fix was applied — log it
+            PASSED_FLAG=""
+            [ "${VALID}" = "true" ] && PASSED_FLAG="--verification-passed"
+            FIX_SUMMARY=$(cat /tmp/fix_output.txt 2>/dev/null | grep -E '✅|fixed|patched' | head -3 | tr '\n' '; ' || echo "auto-fix applied")
+            python3 scripts/ci/pda_failure_logger.py log-fix \
+              --session "${SESSION_ID}" \
+              --pr "${PR_NUMBER:-0}" \
+              --branch "${HEAD_BRANCH}" \
+              --pattern-id "RP-AUTO-$(echo "$PATTERN" | tr '[:lower:]' '[:upper:]')" \
+              --fix-applied "${FIX_SUMMARY}" \
+              --verification-cmd "bash scripts/ci/ci_triage_repro.sh" \
+              ${PASSED_FLAG} 2>/dev/null || true
+          else
+            # No fix was applied — log the failure for grounding
+            ERR_TEXT=$(cat /tmp/pre_triage.txt 2>/dev/null | grep -E '❌|ERROR|FAIL' | head -3 | tr '\n' '; ' || echo "")
+            python3 scripts/ci/pda_failure_logger.py log-failure \
+              --session "${SESSION_ID}" \
+              --pr "${PR_NUMBER:-0}" \
+              --branch "${HEAD_BRANCH}" \
+              --pattern-id "RP-AUTO-$(echo "$PATTERN" | tr '[:lower:]' '[:upper:]')" \
+              --workflow "${WORKFLOW_NAME}" \
+              --workflow-run "${RUN_ID}" \
+              --error-text "${ERR_TEXT:0:400}" \
+              --root-cause "Pattern ${PATTERN} not auto-fixable at iteration ${ITERATION}" 2>/dev/null || true
+          fi
+          UPPER_PATTERN=$(echo "$PATTERN" | tr '[:lower:]' '[:upper:]')
+          echo "### 📊 PDA pattern logged: RP-AUTO-${UPPER_PATTERN}" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Commit and push fix (requires COPILOT_AGENT_AUTH_ENABLED=true)
         if: steps.apply_fix.outputs.changed == 'true' && steps.validate.outputs.valid == 'true'
         env:
@@ -478,6 +579,11 @@ jobs:
           PATTERN:  ${{ needs.triage.outputs.pattern }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           CHANGED_FILES: ${{ steps.apply_fix.outputs.changed_files }}
+          # CB-003: expressions moved from run: body to env: to satisfy actionlint
+          MATRIX_ITERATION: ${{ matrix.iteration }}
+          TRIAGE_RUN_ID: ${{ needs.triage.outputs.run_id }}
+          RESOLVE_TARGET_BRANCH: ${{ steps.resolve-target.outputs.branch }}
+          RESOLVE_TARGET_REASON: ${{ steps.resolve-target.outputs.reason }}
           # Verify delegation is active before attempting autonomous push.
           # If COPILOT_AGENT_AUTH_ENABLED != 'true', the push will be attempted
           # anyway (CODEX_MASTER_KEY covers it), but a warning is emitted.
@@ -492,8 +598,8 @@ jobs:
           if [ -n "${HEAD_BRANCH}" ] && [ "${HEAD_BRANCH}" != "main" ]; then
             TARGET_BRANCH="${HEAD_BRANCH}"
           else
-            TARGET_BRANCH="${{ steps.resolve-target.outputs.branch || 'main' }}"
-            echo "🔀 Push target resolved: ${TARGET_BRANCH} (reason: ${{ steps.resolve-target.outputs.reason }})"
+            TARGET_BRANCH="${RESOLVE_TARGET_BRANCH:-main}"
+            echo "🔀 Push target resolved: ${TARGET_BRANCH} (reason: ${RESOLVE_TARGET_REASON})"
           fi
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
@@ -511,10 +617,10 @@ jobs:
             fi
           done
           git add ".codex/healing_attempts/" 2>/dev/null || true
-          git commit -m "self-heal(iter-${{ matrix.iteration }}): auto-fix ${PATTERN} [skip ci-if-no-change]
+          git commit -m "self-heal(iter-${MATRIX_ITERATION}): auto-fix ${PATTERN} [skip ci-if-no-change]
 
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
-          Iteration: ${{ matrix.iteration }} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
+          Iteration: ${MATRIX_ITERATION} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${TRIAGE_RUN_ID}
           COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
           # Fast-forward push to the triggering branch. Because the working tree
           # was already checked out at origin/${TARGET_BRANCH}, the fix commit is
@@ -523,12 +629,18 @@ jobs:
 
       - name: Report iteration
         if: always()
+        env:
+          MATRIX_ITERATION: ${{ matrix.iteration }}
+          TRIAGE_PATTERN: ${{ needs.triage.outputs.pattern }}
+          FIX_CHANGED: ${{ steps.apply_fix.outputs.changed }}
+          FIX_VALID: ${{ steps.validate.outputs.valid }}
+          FIX_CHANGED_FILES: ${{ steps.apply_fix.outputs.changed_files }}
         run: |
-          echo "### Self-Heal Iteration ${{ matrix.iteration }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Pattern: \`${{ needs.triage.outputs.pattern }}\`"      >> "$GITHUB_STEP_SUMMARY"
-          echo "- Changed: \`${{ steps.apply_fix.outputs.changed }}\`"   >> "$GITHUB_STEP_SUMMARY"
-          echo "- Valid:   \`${{ steps.validate.outputs.valid }}\`"      >> "$GITHUB_STEP_SUMMARY"
-          echo "- Files:   \`${{ steps.apply_fix.outputs.changed_files }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Self-Heal Iteration ${MATRIX_ITERATION}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Pattern: \`${TRIAGE_PATTERN}\`"      >> "$GITHUB_STEP_SUMMARY"
+          echo "- Changed: \`${FIX_CHANGED}\`"   >> "$GITHUB_STEP_SUMMARY"
+          echo "- Valid:   \`${FIX_VALID}\`"      >> "$GITHUB_STEP_SUMMARY"
+          echo "- Files:   \`${FIX_CHANGED_FILES}\`" >> "$GITHUB_STEP_SUMMARY"
 
   escalate:
     name: "Escalate to human"
@@ -547,42 +659,37 @@ jobs:
        needs.triage.outputs.pattern == '')
 
     steps:
-      - name: Post escalation comment with documented RCA
+      - name: Checkout main (trusted) to get post_rescue_comment.py
+        # SECURITY: checkout from main (always trusted) — NOT the head branch.
+        # This workflow runs in workflow_run context with CODEX_MASTER_KEY; checking out
+        # a contributor's head branch would allow execution of untrusted code on a
+        # privileged runner. We only need post_rescue_comment.py from a known-good ref.
+        uses: actions/checkout@v4
+        with:
+          ref: refs/heads/main
+
+      - name: Append escalation to canonical CI rescue thread (S298)
+        # S298: Replaced standalone gh pr comment (<!-- self-healing-escalation -->)
+        # with post_rescue_comment.py so the escalation appends to the same
+        # <!-- ci-rescue-sha:{pr}:{sha} --> thread already on the PR.
+        # Dedup is now handled by post_rescue_comment.py's SHA-based marker logic:
+        # same SHA → append to existing comment; new SHA → create fresh comment.
+        # This prevents a separate blocking comment and removes the need for the
+        # standalone 30-min dedup guard (previously checked <!-- self-healing-escalation -->).
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PATTERN:      ${{ needs.triage.outputs.pattern }}
-          RUN_ID:       ${{ needs.triage.outputs.run_id }}
-          HEAD_BRANCH:  ${{ needs.triage.outputs.head_branch }}
+          REPO: Aries-Serpent/_codex_
+          COMMIT_SHA: ${{ needs.triage.outputs.head_sha }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
+          RUN_URL: ${{ github.server_url }}/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
+          WORKFLOW_NAME: "Self-Healing Escalation (pattern: ${{ needs.triage.outputs.pattern || 'unknown' }})"
+          BRANCH: ${{ needs.triage.outputs.head_branch }}
+          PR_NUMBER: ${{ needs.triage.outputs.pr_number }}
         run: |
-          PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
-            --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
-          if [ -n "$PR_NUMBER" ]; then
-            RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
-            printf '%s\n' \
-              "<!-- self-healing-escalation -->" \
-              "## Self-Healing Escalation" "" \
-              "**Pattern:** \`${PATTERN}\`" \
-              "**Run:** ${RUN_URL}" \
-              "**Branch:** \`${HEAD_BRANCH}\`" \
-              "**Auto-fixable:** No (pattern not in fixable set)" "" \
-              "### Why This Cannot Be Auto-Fixed" "" \
-              "Pattern \`${PATTERN}\` is not yet in the autonomous self-healing fix library." \
-              "Review \`.codex/healing_attempts/\` for previous fix attempts on this pattern." "" \
-              "### Recommended Actions" "" \
-              "1. Check the workflow run logs: ${RUN_URL}" \
-              "2. Add pattern to the \`case\` statement in \`iterative-self-healing-ci.yml\`" \
-              "3. Add a fix handler in \`scripts/ci/auto_fix_common_issues.py\`" "" \
-              "*Posted by: iterative-self-healing-ci.yml (Phase 5 — S154)*" \
-              "" \
-              "---" \
-              "_[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_" \
-              > /tmp/escalation_body.txt
-            gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
-              --body-file /tmp/escalation_body.txt
-          fi
+          python scripts/ci/post_rescue_comment.py
           echo "### Escalated to human review" >> "$GITHUB_STEP_SUMMARY"
-          echo "Pattern \`${PATTERN}\` is not auto-fixable." >> "$GITHUB_STEP_SUMMARY"
-          echo "See PR #${PR_NUMBER:-N/A} for escalation comment." >> "$GITHUB_STEP_SUMMARY"
+          echo "Pattern \`${{ needs.triage.outputs.pattern }}\` is not auto-fixable." >> "$GITHUB_STEP_SUMMARY"
+          echo "Appended to CI rescue thread for commit \`${{ needs.triage.outputs.head_sha }}\`." >> "$GITHUB_STEP_SUMMARY"
 
   # ── Job: Copilot Escalation — @copilot trigger for complex fixes (S182) ───
   # When auto-fix patterns cannot resolve the failure (fixable=false), this job

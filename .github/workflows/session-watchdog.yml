@@ -193,7 +193,7 @@ jobs:
                       '_session-watchdog | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_',
                 '',
                 '---',
-                `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,    
+                `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
                     ].join('\n'),
                   });
                   core.warning(`Timebox expired: ${m[1]}`, {

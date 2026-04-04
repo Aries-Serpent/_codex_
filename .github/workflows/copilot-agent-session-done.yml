@@ -55,6 +55,7 @@ permissions:
   pull-requests: write
   issues: write
   contents: write
+  security-events: read    # needed by append-code-quality-to-rescue job
 
 jobs:
   # ── Job 1: Auto-fix pre-flight requirements when 🔄 checkbox is checked ─────
@@ -419,11 +420,40 @@ jobs:
               return;
             }
 
+            // P2-A (S299): SHA-scoped dedup marker — one session-done trigger per commit.
+            // When two workflow_run events fire for the same SHA (e.g. Copilot coding agent
+            // + CodeQL), without this guard both would post "@copilot review" a few seconds
+            // apart. The marker is stored as an HTML comment inside the trigger body so it
+            // is not rendered but can be searched across allNodes.
+            // Note: allNodes is limited to last 20 comments (GraphQL comments(last:20)) so
+            // the scan is bounded O(20) and does not degrade on large comment histories.
+            const rawHeadSha = context.payload.workflow_run.head_sha || '';
+            if (!rawHeadSha) {
+              console.log('head_sha is unavailable — skipping SHA-scoped dedup check and proceeding without marker.');
+            }
+            const sessionDoneSha = rawHeadSha.slice(0, 12);
+            const SESSION_DONE_MARKER = rawHeadSha
+              ? `<!-- session-done-dedup:${sessionDoneSha} -->`
+              : '';
+            if (SESSION_DONE_MARKER) {
+              const alreadyTriggeredForSha = allNodes.some(c =>
+                (c.body || '').includes(SESSION_DONE_MARKER)
+              );
+              if (alreadyTriggeredForSha) {
+                console.log(`Session-done trigger already posted for SHA ${sessionDoneSha} — skipping duplicate.`);
+                return;
+              }
+            }
+
+            const reviewBody = SESSION_DONE_MARKER
+              ? `@copilot+claude-sonnet-4.6 review\n\n${SESSION_DONE_MARKER}`
+              : '@copilot+claude-sonnet-4.6 review';
+
             await github.rest.issues.createComment({
               owner, repo, issue_number: pr,
-              body: '@copilot+claude-sonnet-4.6 review',
+              body: reviewBody,
             });
-            console.log(`@copilot review posted to PR #${pr}.`);
+            console.log(`@copilot review posted to PR #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);
 
   # ── Job 3: Auto-approve all pending workflow runs on last commit SHA ────────
   # Fires when `- [x] auto-approve-workflows` is checked in the PR body.
@@ -557,6 +587,9 @@ jobs:
             const prs   = context.payload.workflow_run.pull_requests;
             if (!prs || prs.length === 0) return;
             const prNumber = prs[0].number;
+            // SHA used for a SHA-scoped dedup marker (prevents duplicate posts when
+            // both "Copilot coding agent" and "CodeQL" completions trigger this job).
+            const headSha = (context.payload.workflow_run.head_sha || '').slice(0, 12);
 
             // Gate: only run when copilot-agent-session-done.yml WEC checkbox is checked
             let wecChecked = false;
@@ -582,11 +615,14 @@ jobs:
               'github-actions[bot]',
               'copilot-pull-request-reviewer[bot]',
               'github-copilot[bot]',
+              'github-code-quality[bot]',
+              'github-advanced-security[bot]',
             ]);
             // Quality/security markers commonly emitted by CI bots
             const BOT_CONTENT_MARKERS = [
               '<!-- code-quality-report -->',
               '<!-- security-findings -->',
+              '<!-- ci-code-quality',     // upserted code-quality section marker
               'semgrep',
               'codeql',
               '🔒 security',
@@ -594,6 +630,8 @@ jobs:
               'code scanning',
               'code quality',
               'security scan',
+              'potential problem',
+              'github-code-quality',
             ];
 
             let findings = [];
@@ -629,17 +667,19 @@ jobs:
             // 2. Issue comments from quality/security bots
             try {
               const { data: issueComments } = await github.rest.issues.listComments({
-                owner, repo, issue_number: prNumber, per_page: 50,
+                owner, repo, issue_number: prNumber,
+                per_page: 50, sort: 'created', direction: 'desc',
               });
-              // Only look at the last 30 comments
-              const recent = issueComments.slice(-30);
+              // direction:'desc' gives newest-first; take the first 30 (most recent)
+              const recent = issueComments.slice(0, 30);
               for (const c of recent) {
                 const login = c.user?.login || '';
                 const body  = c.body || '';
                 const isBotAuthor = BOT_COMMENT_AUTHORS.has(login);
                 const hasBotMarker = BOT_CONTENT_MARKERS.some(m => body.toLowerCase().includes(m.toLowerCase()));
                 // Skip the compile-thread itself to avoid re-including old compilations
-                if (body.includes('<!-- compiled-bot-feedback -->')) continue;
+                // (matches both legacy `<!-- compiled-bot-feedback -->` and new SHA-scoped variant)
+                if (body.includes('<!-- compiled-bot-feedback')) continue;
                 if ((isBotAuthor || hasBotMarker) && body.trim().length > 40) {
                   // Truncate very long bot comments to first 500 chars
                   const excerpt = body.length > 500 ? body.slice(0, 497) + '…' : body;
@@ -661,7 +701,7 @@ jobs:
               .join('\n\n---\n\n');
 
             const compiledBody = [
-              `<!-- compiled-bot-feedback -->`,
+              `<!-- compiled-bot-feedback:${headSha} -->`,
               `@copilot continue with all current priority 1, 2, 3, and 4 tasks as well as addressing all code quality and security concerns listed below.`,
               ``,
               `**📋 Bot-reported findings (${findings.length} item${findings.length > 1 ? 's' : ''}):**`,
@@ -673,23 +713,195 @@ jobs:
               `> _[🔗 Workflow run](https://github.com/${owner}/${repo}/actions/runs/${context.runId})_`,
             ].join('\n');
 
-            // Guard: don't re-post the same finding set within the last 5 comments
+            // Upsert guard: uses GraphQL `last:50` (newest comments) instead of
+            // REST listComments which returns OLDEST comments first — per_page:N gives
+            // OLDEST N, not newest.  On an active PR with 60+ comments the old
+            // `per_page:5` guard NEVER detected recent markers, causing duplicates
+            // when "Copilot coding agent" AND "CodeQL" both triggered this job for the
+            // same commit (they both queued via the concurrency group and posted
+            // identical comments one minute apart).
+            //
+            // SHA-scoped marker `<!-- compiled-bot-feedback:{sha12} -->` means:
+            //  • The same commit's second trigger finds the existing marker → skips.
+            //  • A new commit's first trigger finds no matching SHA → posts fresh.
+            const SHA_MARKER = `<!-- compiled-bot-feedback:${headSha} -->`;
+            let existingCommentId = null;
             try {
-              const { data: recentComments } = await github.rest.issues.listComments({
-                owner, repo, issue_number: prNumber, per_page: 5,
-              });
-              const alreadyPosted = (recentComments || []).some(c =>
-                (c.body || '').includes('<!-- compiled-bot-feedback -->')
+              const gql = await github.graphql(
+                `query($owner: String!, $repo: String!, $pr: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $pr) {
+                      comments(last: 50) {
+                        nodes { databaseId body }
+                      }
+                    }
+                  }
+                }`,
+                { owner, repo, pr: prNumber }
               );
-              if (alreadyPosted) {
-                console.log(`compile-bot-feedback already posted recently for PR #${prNumber} — skipping.`);
-                return;
-              }
+              const nodes = gql?.repository?.pullRequest?.comments?.nodes || [];
+              // Scan from newest to oldest (reverse of GraphQL `last:` order)
+              const found = nodes.slice().reverse().find(c => (c.body || '').includes(SHA_MARKER));
+              if (found) existingCommentId = found.databaseId;
             } catch (e) {
-              console.log(`Guard check failed (non-fatal): ${e.message}`);
+              console.log(`Upsert lookup failed (non-fatal): ${e.message}`);
+            }
+
+            if (existingCommentId) {
+              console.log(`compile-bot-feedback already posted for SHA ${headSha} on PR #${prNumber} — skipping duplicate.`);
+              return;
             }
 
             await github.rest.issues.createComment({
               owner, repo, issue_number: prNumber, body: compiledBody,
             });
             console.log(`Compiled ${findings.length} bot finding(s) into @copilot continue comment on PR #${prNumber}.`);
+
+  # ── Job 5: Append code-quality / CodeQL alerts to the rescue comment ────────
+  # Fires only when the "CodeQL" workflow completes.  Queries the code scanning
+  # API for open alerts on the current HEAD SHA and appends a structured section
+  # to the existing <!-- ci-rescue-sha:{pr}:{sha} --> comment so that ALL
+  # failures and code-quality findings for the same commit live in ONE thread.
+  # If no rescue comment exists yet (all CI passed, only quality issues) the job
+  # creates a dedicated quality-findings comment rather than staying silent.
+  append-code-quality-to-rescue:
+    name: "Append code-quality findings to rescue comment"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: |
+      github.event.workflow_run.pull_requests != null &&
+      github.event.workflow_run.pull_requests[0] != null &&
+      contains(github.event.workflow_run.name, 'CodeQL')
+    steps:
+      - name: "Fetch alerts and upsert into rescue comment"
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const owner    = context.repo.owner;
+            const repo     = context.repo.repo;
+            const prs      = context.payload.workflow_run.pull_requests;
+            const prNumber = prs[0].number;
+            const headSha  = context.payload.workflow_run.head_sha || '';
+            const headShort = headSha.slice(0, 12);
+            const now      = new Date().toISOString();
+
+            // ── 1. Fetch open code scanning alerts for this SHA ──────────────
+            let alerts = [];
+            try {
+              // Use REST API — requires security-events:read permission (set on workflow).
+              const { data } = await github.rest.codeScanning.listAlertsForRepo({
+                owner, repo, ref: headSha, state: 'open', per_page: 20,
+              });
+              alerts = data || [];
+            } catch (e) {
+              // 403 means Advanced Security is not enabled or token lacks permission.
+              // 404 means no alerts endpoint for this repo.  Both are non-fatal.
+              console.log(`Code scanning alerts unavailable (${e.status || e.message}) — skipping.`);
+              return;
+            }
+
+            if (alerts.length === 0) {
+              console.log(`No open code scanning alerts for SHA ${headShort} — nothing to append.`);
+              return;
+            }
+
+            // ── 2. Build the quality section ────────────────────────────────
+            // Dedup marker — one section per SHA (keyed by sha12 + alert count to
+            // refresh if new alerts appear on the same commit after a re-scan).
+            const QUALITY_MARKER = `<!-- ci-code-quality:${headShort}:${alerts.length} -->`;
+
+            const alertLines = alerts.slice(0, 15).map(a => {
+              const rule = a.rule?.id || 'unknown';
+              const desc = a.rule?.description || a.most_recent_instance?.message?.text || 'See alert';
+              const file = a.most_recent_instance?.location?.path || '';
+              const line = a.most_recent_instance?.location?.start_line || '';
+              const loc  = file ? ` · \`${file}${line ? ':' + line : ''}\`` : '';
+              return `- **${rule}**${loc} — ${desc} ([view](${a.html_url}))`;
+            });
+            if (alerts.length > 15) alertLines.push(`- _…and ${alerts.length - 15} more — [view all](https://github.com/${owner}/${repo}/security/code-scanning)_`);
+
+            const qualitySection = [
+              ``,
+              `---`,
+              ``,
+              QUALITY_MARKER,
+              `<details><summary>🔵 <code>github-code-quality</code> — ${alerts.length} alert(s) · ${now}</summary>`,
+              ``,
+              `**${alerts.length} open alert(s) on commit \`${headShort}\`** — fix before merging:`,
+              ``,
+              ...alertLines,
+              ``,
+              `> Run \`python -m ruff check .\` + \`python -m mypy src\` locally, or view the`,
+              `> [Security → Code scanning](https://github.com/${owner}/${repo}/security/code-scanning) tab.`,
+              ``,
+              `</details>`,
+            ].join('\n');
+
+            // ── 3. Find existing rescue comment for this SHA ─────────────────
+            const rescueMarker = `<!-- ci-rescue-sha:${prNumber}:${headShort} -->`;
+            let page = 1, existingComment = null;
+            while (!existingComment) {
+              const { data: batch } = await github.rest.issues.listComments({
+                owner, repo, issue_number: prNumber, per_page: 100, page,
+              });
+              if (!batch || batch.length === 0) break;
+              existingComment = batch.find(c => (c.body || '').includes(rescueMarker));
+              if (batch.length < 100) break;
+              page++;
+            }
+
+            // ── 4. Upsert ────────────────────────────────────────────────────
+            if (existingComment) {
+              // Idempotent: skip if same marker already present (same alert count)
+              if (existingComment.body.includes(QUALITY_MARKER)) {
+                console.log(`Quality section for SHA ${headShort} already up-to-date — skipping.`);
+                return;
+              }
+              // Remove any previous quality section (different alert count) and re-append.
+              // Regex matches the exact marker format: <!-- ci-code-quality:{sha12}:{N} -->
+              // {12} is intentional: headShort is always sha.slice(0,12) — exactly 12 hex chars.
+              const withoutOldQuality = existingComment.body.replace(
+                /\n\n---\n\n<!-- ci-code-quality:[a-f0-9]{12}:\d+ -->[^]*$/,
+                ''
+              );
+              const updated = (withoutOldQuality.trimEnd() + qualitySection).slice(0, 65536);
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existingComment.id, body: updated,
+              });
+              console.log(`✅ Appended/updated ${alerts.length} code scanning alert(s) in rescue comment for SHA ${headShort}.`);
+            } else {
+              // No rescue comment yet (CI passed but quality issues found) — create standalone
+              const standaloneBody = [
+                rescueMarker,
+                `## 🔵 Code Quality Findings — @copilot Fix Required`,
+                ``,
+                `**Branch:** \`${context.payload.workflow_run.head_branch}\` | **Commit:** \`${headSha}\``,
+                ``,
+                `@copilot Code scanning found **${alerts.length} alert(s)** on commit \`${headShort}\` that must be resolved before this PR can merge.`,
+                ``,
+                `<details><summary>📋 Steps to resolve</summary>`,
+                ``,
+                `1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` (§0 — fix ALL issues found)`,
+                `2. Review each alert linked below and apply the minimal fix`,
+                `3. Push the fix and confirm the Security tab shows 0 open alerts`,
+                `4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\``,
+                ``,
+                `</details>`,
+                ``,
+                `---`,
+                ``,
+                QUALITY_MARKER,
+                `<details><summary>🔵 <code>github-code-quality</code> — ${alerts.length} alert(s) · ${now}</summary>`,
+                ``,
+                `**${alerts.length} open alert(s) on commit \`${headShort}\`:**`,
+                ``,
+                ...alertLines,
+                ``,
+                `</details>`,
+              ].join('\n');
+              const { data: created } = await github.rest.issues.createComment({
+                owner, repo, issue_number: prNumber, body: standaloneBody.slice(0, 65536),
+              });
+              console.log(`✅ Created quality-findings comment: ${created.html_url}`);
+            }

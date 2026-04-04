@@ -112,6 +112,97 @@ jobs:
       !(github.event_name == 'push' && github.triggering_actor == 'copilot-swe-agent[bot]')
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: "Scan failing workflows for HEAD SHA (P6-A)"
+        id: scan_failing
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          SCAN_SHA: ${{ github.sha }}
+        run: |
+          SCAN_OUTPUT=$(python3 scripts/ci/scan_failing_workflows.py \
+            --sha "${SCAN_SHA}" 2>&1) \
+            || SCAN_OUTPUT="_Workflow scan unavailable (script exited non-zero — check GH_TOKEN scope or network)._"
+          {
+            echo "SCAN_TABLE<<SCAN_TABLE_EOF"
+            printf '%s\n' "${SCAN_OUTPUT}"
+            echo "SCAN_TABLE_EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: "Count blocking PR comments (S300 — for S221 context)"
+        id: blocking_comments
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          PR_NUM=""
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            PR_NUM="${{ github.event.pull_request.number }}"
+          else
+            PR_NUM=$(gh pr list --repo "${REPO}" --head "${REF_NAME}" --state open \
+              --json number --jq '.[0].number // ""' 2>/dev/null || echo "")
+          fi
+          BLOCKING_COUNT=0
+          if [ -n "${PR_NUM}" ]; then
+            TMP_JSON=$(mktemp)
+            python3 scripts/ci/check_pr_comments.py \
+              --pr "${PR_NUM}" --repo "${REPO}" \
+              --output-json "${TMP_JSON}" 2>/dev/null || true
+            if [ -f "${TMP_JSON}" ]; then
+              BLOCKING_COUNT=$(python3 -c \
+                "import json,sys; d=json.load(open(sys.argv[1])); \
+                print(len(d.get('unaddressed_blocking',[])) + len(d.get('unaddressed_warning',[])))" \
+                "${TMP_JSON}" 2>/dev/null || echo "0")
+            fi
+          fi
+          echo "BLOCKING_COUNT=${BLOCKING_COUNT}" >> "$GITHUB_ENV"
+
+      - name: "Generate dynamic Q1/Q2/Q3 from PDA pattern library (S300)"
+        id: gen_questions
+        continue-on-error: true
+        run: |
+          python3 - <<'PYEOF'
+          import os, sys
+          from pathlib import Path
+          try:
+              import yaml
+          except ImportError:
+              print("Warning: PyYAML not available — using static fallback questions", file=sys.stderr)
+              sys.exit(0)
+          pda = Path(".codex/aftermath/failure_pattern_solutions.yaml")
+          if not pda.exists():
+              print("Warning: PDA file not found — using static fallback questions", file=sys.stderr)
+              sys.exit(0)
+          with open(pda) as f:
+              data = yaml.safe_load(f) or {}
+          solutions = sorted(
+              data.get("solutions", []),
+              key=lambda s: (s.get("occurrences", 0), s.get("fix_success_rate", 0)),
+              reverse=True,
+          )
+          env_file = os.environ.get("GITHUB_ENV", "/dev/null")
+          with open(env_file, "a") as ef:
+              for i, sol in enumerate(solutions[:3], 1):
+                  pid   = sol.get("pattern_id", f"P{i}")
+                  name  = sol.get("display_name", f"Pattern {i}")
+                  cat   = sol.get("category", "unknown").upper()
+                  occ   = sol.get("occurrences", 0)
+                  note  = sol.get("notes", "").strip()[:100]
+                  q = (
+                      f"**Q{i} ({cat} · {pid}):** `{name}` has recurred {occ} time(s). "
+                      + (f"Context: {note} " if note else "")
+                      + "Should we add or improve an automated fix for this pattern?"
+                  )
+                  ef.write(f"DYNAMIC_Q{i}={q}\n")
+          print(f"Generated Q1–{min(3, len(solutions))} from PDA pattern library ({len(solutions)} patterns).")
+          PYEOF
+
       - name: "Post research topics and open check-in to Discussion #3756"
         uses: actions/github-script@v8
         env:
@@ -123,6 +214,10 @@ jobs:
           GH_DISCUSSION_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           SESSION_INPUT: ${{ github.event.inputs.session_id || '' }}
+          DYNAMIC_Q1: ${{ env.DYNAMIC_Q1 || '' }}
+          DYNAMIC_Q2: ${{ env.DYNAMIC_Q2 || '' }}
+          DYNAMIC_Q3: ${{ env.DYNAMIC_Q3 || '' }}
+          BLOCKING_COUNT: ${{ env.BLOCKING_COUNT || '0' }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -134,6 +229,19 @@ jobs:
             const sessionId = sessionInput || `push-${sha}`;
             const DISCUSSION_NUMBER = 3756;
             const REPO_URL = `https://github.com/${context.repo.owner}/${context.repo.repo}`;
+
+            // S300: dynamic Q1/Q2/Q3 from PDA pattern library (fallback to static)
+            const dynamicQ1 = (process.env.DYNAMIC_Q1 || '').trim();
+            const dynamicQ2 = (process.env.DYNAMIC_Q2 || '').trim();
+            const dynamicQ3 = (process.env.DYNAMIC_Q3 || '').trim();
+            const blockingCount = parseInt(process.env.BLOCKING_COUNT || '0', 10);
+
+            const FALLBACK_Q1 = '**Q1 (CI/CD · detect-secrets):** The `detect-secrets` false-positive on `.codex/agent_context.json` recurs every sync commit. Should we add a permanent allowlist entry or omit hex SHA values from `agent_context.json`?';
+            const FALLBACK_Q2 = '**Q2 (RAG coverage):** RAG ingestion coverage is at 92.22%. Should we add a pre-merge delta-coverage gate to prevent regressions as new modules land?';
+            const FALLBACK_Q3 = '**Q3 (Token rotation — GAP-033):** `CODEX_MASTER_KEY` has no automated rotation. Should GAP-033 (token rotation hook in `mcp_poster.py`) be prioritised for S300?';
+            const q1 = dynamicQ1 || FALLBACK_Q1;
+            const q2 = dynamicQ2 || FALLBACK_Q2;
+            const q3 = dynamicQ3 || FALLBACK_Q3;
 
             // ── Resolve Discussion node ID ──────────────────────────────────
             let discussionId;
@@ -307,22 +415,12 @@ jobs:
               `maintainers/admins with 🔐 Agent Token Delegation and 💰 Cost Governance approval.`,
               `Please respond in this thread or react with ✅ to indicate resolution.`,
               ``,
-              `**Q1 (CI/CD):** The \`detect-secrets\` false-positive on \`.codex/agent_context.json\``,
-              `recurs every automated sync commit. Should we:`,
-              `- **(a)** Add \`.codex/agent_context.json\` to \`detect-secrets\` exclude patterns permanently`,
-              `- **(b)** Change sync commit to omit hex SHA values from \`agent_context.json\``,
-              `- **(c)** Continue updating \`.secrets.baseline\` each time (current approach)?`,
+              // S300: Use dynamic Q1/Q2/Q3 from PDA pattern library (set by gen_questions step)
+              q1,
               ``,
-              `**Q2 (RAG Maintenance):** RAG coverage reached 95% (FINAL TARGET, S212).`,
-              `New source files added without tests will silently drop coverage below 95%. Should we:`,
-              `- **(a)** Add a pre-merge delta-coverage gate (fails if new files have < 80% coverage)`,
-              `- **(b)** Run the unified-coverage-agent automatically on each PR`,
-              `- **(c)** Keep the single threshold gate and rely on the agent to add tests reactively?`,
+              q2,
               ``,
-              `**Q3 (Agent Token Delegation):** The S214 fix confirmed retrigger comments must use`,
-              `a PAT (\`CODEX_MASTER_KEY\`) to appear as \`@mbaetiong\` for Copilot to respond.`,
-              `Is there a preference for rotating \`CODEX_MASTER_KEY\` on a schedule, or should`,
-              `GAP-033 (token rotation hook in \`mcp_poster.py\`) be the accepted solution?`,
+              q3,
               ``,
               `---`,
               ``,
@@ -381,6 +479,8 @@ jobs:
           GH_DISCUSSION_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          SCAN_TABLE: ${{ env.SCAN_TABLE }}
+          BLOCKING_COUNT: ${{ env.BLOCKING_COUNT || '0' }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -443,6 +543,8 @@ jobs:
                       comments(last: 100) {
                         nodes {
                           databaseId
+                          createdAt
+                          url
                           body
                           author { login }
                         }
@@ -463,19 +565,25 @@ jobs:
             }
 
             // Find unanswered rescue comments.
-            // Two marker formats exist:
-            //   PR-scoped  (Channel A): <!-- ci-rescue:NNN -->
-            //     Posted by auto-fix-pr-check.yml / pre-merge-validation.yml rescue jobs.
-            //   SHA-scoped (Channel B): <!-- ci-rescue:NNN:sha12chars -->
-            //     Posted by ci-rescue.yml → ci_rescue.py (the RCA "golden-path" comment).
-            // Both channels target the SAME PR-thread and must be recognised here so the
-            // missed-trigger guard does not re-fire when an RCA comment already invoked
-            // @copilot directly (Channel B RCA IS the trigger — no retrigger needed).
+            // Unified marker format (S294): <!-- ci-rescue-sha:{pr_number}:{sha12} -->
+            //   All workflows now use this single canonical format.
+            //   Posted by scripts/ci/post_rescue_comment.py — called by every
+            //   rescue-comment job via actions/checkout@v5 + python step.
+            //   SHA-scoped: multiple workflows failing on the same commit APPEND
+            //   to the same comment rather than posting new threads.
+            //
+            // Legacy formats (still recognised for backward compat with older comments):
+            //   <!-- ci-rescue:NNN -->              (pre-S294 PR-scoped)
+            //   <!-- ci-rescue:NNN:sha12chars -->    (pre-S294 SHA-scoped)
             //
             // An "answered" rescue comment already has:
             //   (a) a <!-- session-done-retrigger --> dedup marker for its rescue ID, OR
             //   (b) a Copilot agent reply containing resolution language after it.
-            const rescueMarkerRe   = /<!--\s*ci-rescue:\d+(?::[0-9a-f]+)?\s*-->/;
+            // Matches unified and all legacy formats:
+            //   <!-- ci-rescue-sha:3854:abc123def456 --> (S294 canonical — validate.yml et al)
+            //   <!-- ci-rescue:3854 -->                  (legacy PR-scoped)
+            //   <!-- ci-rescue:3854:abc123def456 -->      (legacy SHA-scoped)
+            const rescueMarkerRe   = /<!--\s*ci-rescue(?:-sha)?:\d+(?::[0-9a-f]+)?\s*-->/;
             const retriggerMarkerRe = /<!--\s*session-done-retrigger\s*-->/;
             // Only match actual Copilot agent logins — NOT github-actions[bot], which
             // posts the rescue comments themselves (matching it gave false-positive hasResponse).
@@ -492,11 +600,11 @@ jobs:
             for (const c of comments) {
               const body = c.body || '';
               if (rescueMarkerRe.test(body)) {
-                // Extract rescue ID from either PR-scoped or SHA-scoped marker.
-                const markerMatch = body.match(/<!--\s*ci-rescue:(\d+(?::[0-9a-f]+)?)\s*-->/);
+                // Extract rescue ID from PR-scoped, SHA-scoped, or -sha-suffixed marker.
+                const markerMatch = body.match(/<!--\s*ci-rescue(?:-sha)?:(\d+(?::[0-9a-f]+)?)\s*-->/);
                 const rescueId = markerMatch ? markerMatch[1] : String(c.databaseId);
                 // Always update latestRescue — we want the LAST rescue comment in the list.
-                latestRescue = { id: rescueId, commentId: c.databaseId, body };
+                latestRescue = { id: rescueId, commentId: c.databaseId, url: c.url || '', createdAt: c.createdAt || null, body };
               }
             }
 
@@ -512,9 +620,9 @@ jobs:
             // no Copilot response (session was permanently dropped by GitHub).
             const rcaHasCopilotCall = /@copilot(?:\+[a-z0-9.\-]+)?/i.test(latestRescue.body);
             if (rcaHasCopilotCall) {
-              // Find the comment's created_at timestamp from the raw list.
-              const rcaComment = comments.find(c => c.databaseId === latestRescue.commentId);
-              const createdAt = rcaComment?.createdAt ? new Date(rcaComment.createdAt) : null;
+              // createdAt is now populated by the GraphQL query (was missing before this fix,
+              // so ageMs was always Infinity and the grace period never triggered).
+              const createdAt = latestRescue.createdAt ? new Date(latestRescue.createdAt) : null;
               const ageMs = createdAt ? Date.now() - createdAt.getTime() : Infinity;
               const GRACE_MS = 45 * 60 * 1000; // 45 minutes
               if (ageMs < GRACE_MS) {
@@ -592,31 +700,83 @@ jobs:
               core.info(`Previous retrigger for rescue ${latestRescue.id} had no Copilot action — re-firing (session was dropped).`);
             }
 
-            // Post re-trigger comment
+            // Post re-trigger comment — dynamic format: link + quote, not static boilerplate.
+            // Rationale: the rescue comment already contains all the relevant details (which
+            // workflow failed, run ID, steps to resolve). Repeating them statically here
+            // causes information drift if the rescue comment is later updated (upsert model).
+            // Instead: extract a compact preview of the rescue body, build the URL from the
+            // databaseId, and bump Copilot with a direct link rather than a duplication.
+
+            // Build a URL for the rescue comment (GitHub format: /pull/{pr}#issuecomment-{id})
+            const rescueUrl = latestRescue.url ||
+              `https://github.com/${context.repo.owner}/${context.repo.repo}/pull/${prNumber}#issuecomment-${latestRescue.commentId}`;
+
+            // Build a short preview of the rescue body (skip HTML comment markers, take first
+            // non-empty lines, limit to ~600 chars so the bump stays concise).
+            const rescuePreviewLines = (latestRescue.body || '')
+              .split('\n')
+              .filter(l => !l.trim().startsWith('<!--') && l.trim().length > 0)
+              .slice(0, 8)
+              .join('\n');
+            const rescuePreview = rescuePreviewLines.length > 600
+              ? rescuePreviewLines.slice(0, 597) + '…'
+              : rescuePreviewLines;
+            const quotedPreview = rescuePreview.split('\n').map(l => `> ${l}`).join('\n');
+
+            // Age of rescue comment (createdAt now populated by GraphQL query)
+            // Display as "Xd Yh ago" for ages >= 24h, "Xh Ym ago" for >= 60 min, "X min ago" for shorter.
+            function formatAge(ms) {
+              const totalMin = Math.round(ms / 60000);
+              if (totalMin < 60) return `${totalMin} min ago`;
+              const h = Math.floor(totalMin / 60);
+              if (h < 24) {
+                const m = totalMin % 60;
+                return m > 0 ? `${h}h ${m}m ago` : `${h}h ago`;
+              }
+              const d = Math.floor(h / 24);
+              const rem = h % 24;
+              return rem > 0 ? `${d}d ${rem}h ago` : `${d}d ago`;
+            }
+            const rescueAge = latestRescue.createdAt
+              ? formatAge(Date.now() - new Date(latestRescue.createdAt).getTime())
+              : 'unknown age';
+
+            // Scan table from the preceding scan-failing step (may be empty if scan unavailable)
+            const scanTable = (process.env.SCAN_TABLE || '').trim();
+            // S300: include blocking-comments count in retrigger for agent context
+            const blockingCountS221 = parseInt(process.env.BLOCKING_COUNT || '0', 10);
+            const blockingNote = blockingCountS221 > 0
+              ? `⚠️ **${blockingCountS221} blocking/warning comment(s)** still unaddressed on this PR.`
+              : `✅ No blocking comments detected on this PR.`;
+
             const retriggerBody = [
               `<!-- session-done-retrigger -->`,
               `## 🔄 Missed-Trigger Recovery (S221 guard)`,
               ``,
-              `**Trigger:** Push to \`${context.ref_name || 'branch'}\` detected an unanswered rescue`,
-              `comment (rescue ID \`${latestRescue.id}\`) with no subsequent Copilot session response.`,
+              `**Rescue ID:** \`${latestRescue.id}\` · **Unanswered:** ${rescueAge}`,
+              `**Branch:** \`${context.ref_name || 'branch'}\` · **[↗ View rescue comment](${rescueUrl})**`,
               ``,
-              `**Root cause pattern:** A Copilot session may have been queued (👀 reaction) but`,
-              `silently dropped when a new commit was pushed before the session could start.`,
-              `The \`copilot-agent-session-done.yml\` PATH A cannot recover this case because`,
-              `it requires a prior session completion. This guard fires on every push as a fallback.`,
+              `> ✅ **Pre-authorized.** \`COPILOT_AGENT_AUTH_ENABLED=true\` · \`💰 Cost Proposal Approved\` — start immediately.`,
+              `> ${blockingNote}`,
               ``,
-              `**Action:** Re-triggering the rescue task now.`,
+              `@copilot+claude-sonnet-4.6 The rescue comment linked above has not been addressed. Please load \`.codex/CODEBASE_AGENCY_POLICY.md\` and fix the failing check(s).`,
               ``,
-              `> ✅ **Pre-authorized — no human approval needed.** \`COPILOT_AGENT_AUTH_ENABLED=true\` · \`💰 Cost Proposal Approved\` are both active on this PR. Session must start immediately without any additional approval gate.`,
+              ...(scanTable ? [
+                `<details><summary>🔍 Current workflow status (HEAD SHA scan)</summary>`,
+                ``,
+                scanTable,
+                ``,
+                `</details>`,
+                ``,
+              ] : []),
+              `<details><summary>📋 Rescue comment preview</summary>`,
               ``,
-              `@copilot+claude-sonnet-4.6 Please address the rescue issue identified in the comment`,
-              `above (rescue ID \`${latestRescue.id}\`). This is an automated re-trigger posted by`,
-              `the missed-trigger guard (S221).`,
+              quotedPreview,
+              ``,
+              `</details>`,
               ``,
               `---`,
-              `*Auto-posted by \`copilot-agent-checkin.yml\` missed-trigger-guard · for rescue \`${latestRescue.id}\`*`,
-              '',
-              '---',
+              `*Auto-posted by \`copilot-agent-checkin.yml\` missed-trigger-guard · rescue \`${latestRescue.id}\`*`,
               `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
             ].join('\n');
 

@@ -83,10 +83,11 @@ class TestCheckForMetaTensors:
 
     def test_model_without_meta_tensors(self):
         """Test detection on model without meta tensors"""
-        # Create directly on CPU without `with torch.device(...)` to avoid
-        # mutating the global default device (the very state this class guards).
-        model = torch.nn.Linear(10, 5)
-        model = model.to("cpu")
+        # Explicitly specify device="cpu" so the test is immune to any
+        # global default device set by a previous test (e.g. via
+        # `with torch.device('meta'):`). Using .to("cpu") on a meta tensor
+        # raises NotImplementedError, so we avoid it entirely.
+        model = torch.nn.Linear(10, 5, device="cpu")
         has_meta = check_for_meta_tensors(model)
         param_devices = [(n, p.device) for n, p in model.named_parameters()]
         assert has_meta is False, (
@@ -125,7 +126,7 @@ class TestSafeModelLoad:
 
     def test_deprecation_warning(self):
         """Test that safe_model_load raises deprecation warning"""
-        model = torch.nn.Linear(10, 5)
+        model = torch.nn.Linear(10, 5, device="cpu")
 
         with pytest.warns(DeprecationWarning, match="safe_model_load.*is deprecated"):
             result = safe_model_load(model, device="cpu")
@@ -139,7 +140,7 @@ class TestSafeModelLoadV2:
 
     def test_model_without_meta_tensors(self):
         """Test loading model that doesn't have meta tensors"""
-        model = torch.nn.Linear(10, 5)
+        model = torch.nn.Linear(10, 5, device="cpu")
 
         result = safe_model_load_v2(model, device="cpu")
 
@@ -190,7 +191,7 @@ class TestSafeModelLoadV2:
 
     def test_model_without_model_name(self):
         """Test loading model without model_name (skips reinit strategy)"""
-        model = torch.nn.Linear(10, 5)
+        model = torch.nn.Linear(10, 5, device="cpu")
 
         result = safe_model_load_v2(model, device="cpu")
 

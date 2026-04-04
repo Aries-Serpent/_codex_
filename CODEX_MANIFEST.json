@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-01T21:14:52Z",
+  "generated_at": "2026-04-03T21:12:44Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1264,7 +1264,22 @@
       "has_concurrency": true
     },
     {
+      "name": "discussion-cleanup",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "discussion-response-bridge",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "doc-freshness-check",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "doc-refresh-gate",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1291,6 +1306,11 @@
     {
       "name": "embedding-index-rebuild",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "fast-forward-safe-files",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1429,6 +1449,11 @@
       "has_concurrency": true
     },
     {
+      "name": "proactive-ci-monitor",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "process-variable-intents",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1490,7 +1515,7 @@
     },
     {
       "name": "resilient_validation",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1978,5 +2003,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "5a4815664f794abdfed260c1f1405f0cdd070125f2da18f5e26273012aaae156"
+  "integrity_sha256": "66ec8987f3e91517e6e82dbd4d375843efd7485c638d1f948705c7e85e23ee96"
 }

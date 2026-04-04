@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["plan", "aais_score"],
+  "properties": {
+    "plan": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "aais_score": {"type": "number"},
+    "patches": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "files_scanned": {"type": "integer"}
+  }
+}

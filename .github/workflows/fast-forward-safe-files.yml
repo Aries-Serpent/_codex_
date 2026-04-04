@@ -1,0 +1,294 @@
+name: "⚡ Fast-Forward Safe Files to Main"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PURPOSE
+#   Promotes pre-approved files from an active PR directly to main so they
+#   take effect IMMEDIATELY — without waiting for the full PR merge cycle.
+#
+#   Critical use cases (files that ONLY work from main):
+#     • .github/workflows/*.yml  →  schedules, workflow_run triggers,
+#                                   workflow_dispatch UI buttons
+#     • scripts/ci/*.py          →  CI scripts called by workflows
+#     • .github/agents/*.md      →  Copilot agent prompts
+#     • docs/ci/*.md             →  CI documentation
+#
+# HOW TO TRIGGER (maintainer)
+#   METHOD A — GitHub Actions UI:
+#     1. https://github.com/Aries-Serpent/_codex_/actions/workflows/fast-forward-safe-files.yml
+#     2. Click "Run workflow"
+#     3. Fill in the form (PR number is the only required field)
+#     4. Click the green "Run workflow" button
+#
+#   METHOD B — GitHub CLI (works immediately on any branch):
+#     gh workflow run fast-forward-safe-files.yml \
+#       --repo Aries-Serpent/_codex_ \
+#       --ref copilot/research-ai-agent-skills-architecture \
+#       -f pr_number=3856 \
+#       -f dry_run=true        ← preview first
+#
+#     gh workflow run fast-forward-safe-files.yml \
+#       --repo Aries-Serpent/_codex_ \
+#       --ref copilot/research-ai-agent-skills-architecture \
+#       -f pr_number=3856 \
+#       -f merge_mode=create-pr \
+#       -f dry_run=false       ← apply for real
+#
+# ALLOWLIST
+#   Pre-approved file patterns: .codex/fast_forward_allowlist.yaml
+#   Edit that file to add/remove safe patterns.
+#
+# SAFETY
+#   • Default mode creates a NEW PR (never pushes directly to main)
+#   • direct-push mode is opt-in and clearly labelled
+#   • Denied files (deploy/release/publish workflows) are NEVER promoted
+#   • Every run is logged to .codex/fast_forward_log.ndjson
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  # ── MANUAL: "Run workflow" button — primary entry point ───────────────────
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to promote safe files FROM (required, e.g. 3856)"
+        type: number
+        required: true
+
+      target_branch:
+        description: "Branch to promote files INTO (default: main)"
+        type: string
+        default: main
+        required: false
+
+      merge_mode:
+        description: >
+          How to apply the promotion:
+          'create-pr' opens a new PR for review (safe default),
+          'direct-push' commits straight to the target branch (maintainer only)
+        type: choice
+        options:
+          - create-pr
+          - direct-push
+        default: create-pr
+        required: false
+
+      files:
+        description: >
+          Comma-separated list of specific files to promote.
+          Leave blank to use the full allowlist from
+          .codex/fast_forward_allowlist.yaml
+        type: string
+        default: ""
+        required: false
+
+      dry_run:
+        description: "Dry run — show what WOULD be promoted, make NO changes"
+        type: boolean
+        default: true
+        required: false
+
+      commit_message:
+        description: "Optional custom commit message (leave blank for auto-generated)"
+        type: string
+        default: ""
+        required: false
+
+permissions:
+  contents: write        # needed to create branches and push commits
+  pull-requests: write   # needed to open the fast-forward PR
+  actions: read
+
+concurrency:
+  # One fast-forward at a time per target branch
+  group: fast-forward-${{ inputs.target_branch || 'main' }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: "🔍 Preflight — classify PR #${{ inputs.pr_number }} files"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      allowed_count: ${{ steps.classify.outputs.allowed_count }}
+      denied_count: ${{ steps.classify.outputs.denied_count }}
+      plan_json: ${{ steps.classify.outputs.plan_json }}
+
+    steps:
+      - name: Checkout (scripts + allowlist only)
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            scripts/ci/fast_forward_safe_files.py
+            .codex/fast_forward_allowlist.yaml
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml --quiet
+
+      - name: Classify files (dry run)
+        id: classify
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          FF_DRY_RUN: "1"
+        run: |
+          # Parse optional files list
+          FILES_ARG=""
+          if [ -n "${{ inputs.files }}" ]; then
+            # Convert comma-separated list to --files a b c
+            FILES=$(echo "${{ inputs.files }}" | tr ',' ' ')
+            FILES_ARG="--files $FILES"
+          fi
+
+          python scripts/ci/fast_forward_safe_files.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --token "$GITHUB_TOKEN" \
+            --pr "${{ inputs.pr_number }}" \
+            --target "${{ inputs.target_branch || 'main' }}" \
+            --dry-run \
+            --output /tmp/ff_plan.json \
+            $FILES_ARG
+
+          # Extract counts for preflight gate
+          ALLOWED=$(python3 -c "import json; d=json.load(open('/tmp/ff_plan.json')); print(len(d.get('would_promote',[])))")
+          DENIED=$(python3 -c "import json; d=json.load(open('/tmp/ff_plan.json')); print(len(d.get('would_deny',[])))")
+          PLAN=$(cat /tmp/ff_plan.json)
+
+          echo "allowed_count=$ALLOWED" >> "$GITHUB_OUTPUT"
+          echo "denied_count=$DENIED"   >> "$GITHUB_OUTPUT"
+          # Store compact JSON for downstream job
+          echo "plan_json=$(echo $PLAN | python3 -c 'import sys,json; print(json.dumps(json.load(sys.stdin)))')" >> "$GITHUB_OUTPUT"
+
+      - name: Write preflight summary
+        run: |
+          python3 - <<'PYEOF'
+          import json, os
+          data = json.load(open('/tmp/ff_plan.json'))
+          promote  = data.get('would_promote', [])
+          exclude  = data.get('would_exclude', [])
+          deny     = data.get('would_deny', [])
+          lines = [
+              "## ⚡ Fast-Forward Preflight\n",
+              f"**PR:** #{data.get('pr_number', '?')}  "
+              f"**Source:** `{data.get('pr_branch','?')}@{data.get('source_sha','?')[:8]}`  "
+              f"**Target:** `{data.get('target_branch','?')}`\n",
+              "---",
+              f"### ✅ Would promote ({len(promote)} files)",
+          ]
+          lines += [f"- `{f}`" for f in promote] or ["_none_"]
+          lines += [f"\n### ⏭️ Excluded — not in allowlist ({len(exclude)} files)"]
+          lines += [f"- `{f}`" for f in exclude] or ["_none_"]
+          lines += [f"\n### 🚫 Denied — blocked by denylist ({len(deny)} files)"]
+          lines += [f"- `{f}`" for f in deny] or ["_none_"]
+          if deny:
+              lines += ["\n> ⚠️ **Denied files will NOT be promoted.** Edit `.codex/fast_forward_allowlist.yaml` to change this."]
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('\n'.join(lines) + '\n')
+          PYEOF
+
+  promote:
+    name: "⚡ Promote (${{ inputs.merge_mode || 'create-pr' }}, dry=${{ inputs.dry_run }})"
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Skip if nothing to promote or all files are denied
+    if: needs.preflight.outputs.allowed_count != '0'
+
+    steps:
+      - name: Checkout (scripts + allowlist only)
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            scripts/ci/fast_forward_safe_files.py
+            .codex/fast_forward_allowlist.yaml
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml --quiet
+
+      - name: Execute promotion
+        id: promote
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          # Parse optional files list
+          FILES_ARG=()
+          if [ -n "${{ inputs.files }}" ]; then
+            IFS=',' read -ra _FILES <<< "${{ inputs.files }}"
+            FILES_ARG=(--files "${_FILES[@]}")
+          fi
+
+          # Build dry-run flag
+          DRY_FLAG=()
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            DRY_FLAG=(--dry-run)
+          fi
+
+          # Build commit message flag
+          MSG_FLAG=()
+          if [ -n "${{ inputs.commit_message }}" ]; then
+            MSG_FLAG=(--commit-message "${{ inputs.commit_message }}")
+          fi
+
+          python scripts/ci/fast_forward_safe_files.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --token "$GITHUB_TOKEN" \
+            --pr "${{ inputs.pr_number }}" \
+            --target "${{ inputs.target_branch || 'main' }}" \
+            --merge-mode "${{ inputs.merge_mode || 'create-pr' }}" \
+            --output /tmp/ff_result.json \
+            "${DRY_FLAG[@]}" "${FILES_ARG[@]}" "${MSG_FLAG[@]}"
+
+      - name: Upload result artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fast-forward-result-pr${{ inputs.pr_number }}-${{ github.run_id }}
+          path: /tmp/ff_result.json
+          retention-days: 30
+
+      - name: Write result summary
+        if: always()
+        run: |
+          [ -f /tmp/ff_result.json ] || { echo "No result file." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          python3 - <<'PYEOF'
+          import json, os
+          data = json.load(open('/tmp/ff_result.json'))
+          status = data.get('status', 'unknown')
+          icons = {
+              'dry-run': '🔕 DRY RUN',
+              'pr-created': '✅ PR Created',
+              'direct-pushed': '🚀 Direct-Pushed',
+              'nothing-to-promote': '⏭️ Nothing to Promote',
+          }
+          label = icons.get(status, f'❓ {status}')
+          lines = [f"## ⚡ Fast-Forward Result — {label}\n"]
+          if status == 'pr-created':
+              lines += [
+                  f"**Fast-Forward PR:** [#{data['fast_forward_pr']}]({data['fast_forward_pr_url']})",
+                  f"**Staging branch:** `{data['staging_branch']}`",
+                  "",
+              ]
+          elif status == 'direct-pushed':
+              lines += [
+                  f"**Pushed to:** `{data['target_branch']}`",
+                  f"**New SHA:** `{data.get('new_sha','?')[:8]}`",
+                  "",
+              ]
+          promoted = data.get('files_promoted') or data.get('would_promote', [])
+          if promoted:
+              lines += [f"### Files promoted ({len(promoted)})"]
+              lines += [f"- `{f}`" for f in promoted]
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('\n'.join(lines) + '\n')
+          PYEOF

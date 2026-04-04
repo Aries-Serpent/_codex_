@@ -1,0 +1,5137 @@
+{
+  "schema_version": "1",
+  "generated_at": "2026-04-03T17:15:29Z",
+  "generated_by": "discussion_cleanup.py generate-manifest",
+  "repo": "Aries-Serpent/_codex_",
+  "summary": {
+    "total_to_delete": 538,
+    "total_to_keep": 62,
+    "total_skipped": 0,
+    "discussions_scanned": [
+      3756,
+      3673
+    ]
+  },
+  "discussions": {
+    "3756": {
+      "total_comments": 744,
+      "groups": [
+        {
+          "marker": "agent-checkin-research:auto-open-pr3790-20260330",
+          "count": 44,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-eTW",
+            "database_id": 16377046,
+            "created_at": "2026-03-30T06:59:26Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcN",
+              "database_id": 16373517,
+              "created_at": "2026-03-30T00:12:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcT",
+              "database_id": 16373523,
+              "created_at": "2026-03-30T00:12:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcn",
+              "database_id": 16373543,
+              "created_at": "2026-03-30T00:15:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcq",
+              "database_id": 16373546,
+              "created_at": "2026-03-30T00:15:38Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dc1",
+              "database_id": 16373557,
+              "created_at": "2026-03-30T00:17:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dc4",
+              "database_id": 16373560,
+              "created_at": "2026-03-30T00:18:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dc7",
+              "database_id": 16373563,
+              "created_at": "2026-03-30T00:18:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-doX",
+              "database_id": 16374295,
+              "created_at": "2026-03-30T01:43:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dod",
+              "database_id": 16374301,
+              "created_at": "2026-03-30T01:43:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drK",
+              "database_id": 16374474,
+              "created_at": "2026-03-30T02:00:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drP",
+              "database_id": 16374479,
+              "created_at": "2026-03-30T02:00:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drh",
+              "database_id": 16374497,
+              "created_at": "2026-03-30T02:02:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drl",
+              "database_id": 16374501,
+              "created_at": "2026-03-30T02:02:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dry",
+              "database_id": 16374514,
+              "created_at": "2026-03-30T02:04:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dr5",
+              "database_id": 16374521,
+              "created_at": "2026-03-30T02:05:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dr8",
+              "database_id": 16374524,
+              "created_at": "2026-03-30T02:05:50Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eEv",
+              "database_id": 16376111,
+              "created_at": "2026-03-30T05:21:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eEy",
+              "database_id": 16376114,
+              "created_at": "2026-03-30T05:21:27Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eFH",
+              "database_id": 16376135,
+              "created_at": "2026-03-30T05:23:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eFL",
+              "database_id": 16376139,
+              "created_at": "2026-03-30T05:24:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eFd",
+              "database_id": 16376157,
+              "created_at": "2026-03-30T05:25:25Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGB",
+              "database_id": 16376193,
+              "created_at": "2026-03-30T05:31:13Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGG",
+              "database_id": 16376198,
+              "created_at": "2026-03-30T05:31:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGJ",
+              "database_id": 16376201,
+              "created_at": "2026-03-30T05:32:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGt",
+              "database_id": 16376237,
+              "created_at": "2026-03-30T05:36:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGy",
+              "database_id": 16376242,
+              "created_at": "2026-03-30T05:37:01Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHH",
+              "database_id": 16376263,
+              "created_at": "2026-03-30T05:39:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHN",
+              "database_id": 16376269,
+              "created_at": "2026-03-30T05:39:58Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHQ",
+              "database_id": 16376272,
+              "created_at": "2026-03-30T05:40:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHX",
+              "database_id": 16376279,
+              "created_at": "2026-03-30T05:41:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHa",
+              "database_id": 16376282,
+              "created_at": "2026-03-30T05:41:22Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIG",
+              "database_id": 16376326,
+              "created_at": "2026-03-30T05:47:50Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIJ",
+              "database_id": 16376329,
+              "created_at": "2026-03-30T05:48:07Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIW",
+              "database_id": 16376342,
+              "created_at": "2026-03-30T05:49:58Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIZ",
+              "database_id": 16376345,
+              "created_at": "2026-03-30T05:50:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIg",
+              "database_id": 16376352,
+              "created_at": "2026-03-30T05:51:29Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIk",
+              "database_id": 16376356,
+              "created_at": "2026-03-30T05:52:01Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIm",
+              "database_id": 16376358,
+              "created_at": "2026-03-30T05:52:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ePz",
+              "database_id": 16376819,
+              "created_at": "2026-03-30T06:43:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eP5",
+              "database_id": 16376825,
+              "created_at": "2026-03-30T06:44:08Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eQk",
+              "database_id": 16376868,
+              "created_at": "2026-03-30T06:47:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eQq",
+              "database_id": 16376874,
+              "created_at": "2026-03-30T06:47:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eQ0",
+              "database_id": 16376884,
+              "created_at": "2026-03-30T06:47:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3790-20260330",
+          "count": 44,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-eTX",
+            "database_id": 16377047,
+            "created_at": "2026-03-30T06:59:27Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcQ",
+              "database_id": 16373520,
+              "created_at": "2026-03-30T00:12:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcU",
+              "database_id": 16373524,
+              "created_at": "2026-03-30T00:13:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcp",
+              "database_id": 16373545,
+              "created_at": "2026-03-30T00:15:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcr",
+              "database_id": 16373547,
+              "created_at": "2026-03-30T00:15:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dc2",
+              "database_id": 16373558,
+              "created_at": "2026-03-30T00:17:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dc5",
+              "database_id": 16373561,
+              "created_at": "2026-03-30T00:18:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dc8",
+              "database_id": 16373564,
+              "created_at": "2026-03-30T00:18:54Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-doY",
+              "database_id": 16374296,
+              "created_at": "2026-03-30T01:43:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-doe",
+              "database_id": 16374302,
+              "created_at": "2026-03-30T01:43:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drM",
+              "database_id": 16374476,
+              "created_at": "2026-03-30T02:00:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drQ",
+              "database_id": 16374480,
+              "created_at": "2026-03-30T02:00:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dri",
+              "database_id": 16374498,
+              "created_at": "2026-03-30T02:02:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drm",
+              "database_id": 16374502,
+              "created_at": "2026-03-30T02:02:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drz",
+              "database_id": 16374515,
+              "created_at": "2026-03-30T02:04:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dr6",
+              "database_id": 16374522,
+              "created_at": "2026-03-30T02:05:35Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dr9",
+              "database_id": 16374525,
+              "created_at": "2026-03-30T02:05:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eEw",
+              "database_id": 16376112,
+              "created_at": "2026-03-30T05:21:15Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eEz",
+              "database_id": 16376115,
+              "created_at": "2026-03-30T05:21:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eFI",
+              "database_id": 16376136,
+              "created_at": "2026-03-30T05:23:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eFM",
+              "database_id": 16376140,
+              "created_at": "2026-03-30T05:24:22Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eFe",
+              "database_id": 16376158,
+              "created_at": "2026-03-30T05:25:26Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGD",
+              "database_id": 16376195,
+              "created_at": "2026-03-30T05:31:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGH",
+              "database_id": 16376199,
+              "created_at": "2026-03-30T05:31:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGL",
+              "database_id": 16376203,
+              "created_at": "2026-03-30T05:32:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGu",
+              "database_id": 16376238,
+              "created_at": "2026-03-30T05:36:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eGz",
+              "database_id": 16376243,
+              "created_at": "2026-03-30T05:37:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHI",
+              "database_id": 16376264,
+              "created_at": "2026-03-30T05:39:05Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHO",
+              "database_id": 16376270,
+              "created_at": "2026-03-30T05:39:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHR",
+              "database_id": 16376273,
+              "created_at": "2026-03-30T05:40:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHY",
+              "database_id": 16376280,
+              "created_at": "2026-03-30T05:41:10Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eHb",
+              "database_id": 16376283,
+              "created_at": "2026-03-30T05:41:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIH",
+              "database_id": 16376327,
+              "created_at": "2026-03-30T05:47:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIK",
+              "database_id": 16376330,
+              "created_at": "2026-03-30T05:48:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIX",
+              "database_id": 16376343,
+              "created_at": "2026-03-30T05:49:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIb",
+              "database_id": 16376347,
+              "created_at": "2026-03-30T05:50:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIh",
+              "database_id": 16376353,
+              "created_at": "2026-03-30T05:51:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIl",
+              "database_id": 16376357,
+              "created_at": "2026-03-30T05:52:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eIn",
+              "database_id": 16376359,
+              "created_at": "2026-03-30T05:52:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eP0",
+              "database_id": 16376820,
+              "created_at": "2026-03-30T06:43:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eP6",
+              "database_id": 16376826,
+              "created_at": "2026-03-30T06:44:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eQm",
+              "database_id": 16376870,
+              "created_at": "2026-03-30T06:47:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eQr",
+              "database_id": 16376875,
+              "created_at": "2026-03-30T06:47:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eQ2",
+              "database_id": 16376886,
+              "created_at": "2026-03-30T06:48:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3854-20260403",
+          "count": 34,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-tyK",
+            "database_id": 16440458,
+            "created_at": "2026-04-03T17:06:23Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-rd-",
+              "database_id": 16430974,
+              "created_at": "2026-04-03T00:21:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rwK",
+              "database_id": 16432138,
+              "created_at": "2026-04-03T02:07:15Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r3p",
+              "database_id": 16432617,
+              "created_at": "2026-04-03T03:10:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r3t",
+              "database_id": 16432621,
+              "created_at": "2026-04-03T03:10:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r3x",
+              "database_id": 16432625,
+              "created_at": "2026-04-03T03:10:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r30",
+              "database_id": 16432628,
+              "created_at": "2026-04-03T03:11:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r4V",
+              "database_id": 16432661,
+              "created_at": "2026-04-03T03:13:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sJY",
+              "database_id": 16433752,
+              "created_at": "2026-04-03T05:29:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sPF",
+              "database_id": 16434117,
+              "created_at": "2026-04-03T06:18:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sX-",
+              "database_id": 16434686,
+              "created_at": "2026-04-03T07:19:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sZW",
+              "database_id": 16434774,
+              "created_at": "2026-04-03T07:25:07Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-saM",
+              "database_id": 16434828,
+              "created_at": "2026-04-03T07:29:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-saU",
+              "database_id": 16434836,
+              "created_at": "2026-04-03T07:29:24Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sbd",
+              "database_id": 16434909,
+              "created_at": "2026-04-03T07:35:05Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-scW",
+              "database_id": 16434966,
+              "created_at": "2026-04-03T07:39:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-siB",
+              "database_id": 16435329,
+              "created_at": "2026-04-03T08:17:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-si5",
+              "database_id": 16435385,
+              "created_at": "2026-04-03T08:20:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-soB",
+              "database_id": 16435713,
+              "created_at": "2026-04-03T08:52:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sos",
+              "database_id": 16435756,
+              "created_at": "2026-04-03T08:58:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-so4",
+              "database_id": 16435768,
+              "created_at": "2026-04-03T08:59:10Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sqj",
+              "database_id": 16435875,
+              "created_at": "2026-04-03T09:12:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sqn",
+              "database_id": 16435879,
+              "created_at": "2026-04-03T09:12:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sqr",
+              "database_id": 16435883,
+              "created_at": "2026-04-03T09:12:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-srp",
+              "database_id": 16435945,
+              "created_at": "2026-04-03T09:16:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sx-",
+              "database_id": 16436350,
+              "created_at": "2026-04-03T09:52:10Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-s53",
+              "database_id": 16436855,
+              "created_at": "2026-04-03T10:54:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-tZd",
+              "database_id": 16438877,
+              "created_at": "2026-04-03T14:21:07Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-teE",
+              "database_id": 16439172,
+              "created_at": "2026-04-03T14:54:07Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-tfs",
+              "database_id": 16439276,
+              "created_at": "2026-04-03T15:04:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-th9",
+              "database_id": 16439421,
+              "created_at": "2026-04-03T15:16:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-tm9",
+              "database_id": 16439741,
+              "created_at": "2026-04-03T15:51:13Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-toA",
+              "database_id": 16439808,
+              "created_at": "2026-04-03T15:56:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-trb",
+              "database_id": 16440027,
+              "created_at": "2026-04-03T16:19:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3854-20260403",
+          "count": 34,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-tyM",
+            "database_id": 16440460,
+            "created_at": "2026-04-03T17:06:24Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-rd_",
+              "database_id": 16430975,
+              "created_at": "2026-04-03T00:21:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rwL",
+              "database_id": 16432139,
+              "created_at": "2026-04-03T02:07:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r3q",
+              "database_id": 16432618,
+              "created_at": "2026-04-03T03:10:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r3v",
+              "database_id": 16432623,
+              "created_at": "2026-04-03T03:10:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r3y",
+              "database_id": 16432626,
+              "created_at": "2026-04-03T03:10:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r4H",
+              "database_id": 16432647,
+              "created_at": "2026-04-03T03:11:08Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-r4W",
+              "database_id": 16432662,
+              "created_at": "2026-04-03T03:13:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sJZ",
+              "database_id": 16433753,
+              "created_at": "2026-04-03T05:29:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sPG",
+              "database_id": 16434118,
+              "created_at": "2026-04-03T06:18:33Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sX_",
+              "database_id": 16434687,
+              "created_at": "2026-04-03T07:19:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sZX",
+              "database_id": 16434775,
+              "created_at": "2026-04-03T07:25:08Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-saN",
+              "database_id": 16434829,
+              "created_at": "2026-04-03T07:29:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-saV",
+              "database_id": 16434837,
+              "created_at": "2026-04-03T07:29:26Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sbf",
+              "database_id": 16434911,
+              "created_at": "2026-04-03T07:35:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-scX",
+              "database_id": 16434967,
+              "created_at": "2026-04-03T07:39:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-siC",
+              "database_id": 16435330,
+              "created_at": "2026-04-03T08:17:58Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-si6",
+              "database_id": 16435386,
+              "created_at": "2026-04-03T08:20:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-soD",
+              "database_id": 16435715,
+              "created_at": "2026-04-03T08:52:33Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sot",
+              "database_id": 16435757,
+              "created_at": "2026-04-03T08:58:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-so5",
+              "database_id": 16435769,
+              "created_at": "2026-04-03T08:59:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sqk",
+              "database_id": 16435876,
+              "created_at": "2026-04-03T09:12:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sqo",
+              "database_id": 16435880,
+              "created_at": "2026-04-03T09:12:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sqs",
+              "database_id": 16435884,
+              "created_at": "2026-04-03T09:12:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-srq",
+              "database_id": 16435946,
+              "created_at": "2026-04-03T09:16:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sx_",
+              "database_id": 16436351,
+              "created_at": "2026-04-03T09:52:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-s56",
+              "database_id": 16436858,
+              "created_at": "2026-04-03T10:54:50Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-tZe",
+              "database_id": 16438878,
+              "created_at": "2026-04-03T14:21:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-teF",
+              "database_id": 16439173,
+              "created_at": "2026-04-03T14:54:08Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-tfu",
+              "database_id": 16439278,
+              "created_at": "2026-04-03T15:04:54Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-th-",
+              "database_id": 16439422,
+              "created_at": "2026-04-03T15:16:50Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-tm_",
+              "database_id": 16439743,
+              "created_at": "2026-04-03T15:51:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-toB",
+              "database_id": 16439809,
+              "created_at": "2026-04-03T15:56:33Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-trc",
+              "database_id": 16440028,
+              "created_at": "2026-04-03T16:19:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3782-20260329",
+          "count": 32,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-bTs",
+            "database_id": 16364780,
+            "created_at": "2026-03-29T08:51:10Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-aqw",
+              "database_id": 16362160,
+              "created_at": "2026-03-29T02:01:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-asX",
+              "database_id": 16362263,
+              "created_at": "2026-03-29T02:15:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-asb",
+              "database_id": 16362267,
+              "created_at": "2026-03-29T02:16:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-asx",
+              "database_id": 16362289,
+              "created_at": "2026-03-29T02:19:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-as0",
+              "database_id": 16362292,
+              "created_at": "2026-03-29T02:19:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-as2",
+              "database_id": 16362294,
+              "created_at": "2026-03-29T02:19:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-as7",
+              "database_id": 16362299,
+              "created_at": "2026-03-29T02:20:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayT",
+              "database_id": 16362643,
+              "created_at": "2026-03-29T03:05:15Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayX",
+              "database_id": 16362647,
+              "created_at": "2026-03-29T03:08:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayb",
+              "database_id": 16362651,
+              "created_at": "2026-03-29T03:09:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayd",
+              "database_id": 16362653,
+              "created_at": "2026-03-29T03:09:27Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayf",
+              "database_id": 16362655,
+              "created_at": "2026-03-29T03:09:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-a5L",
+              "database_id": 16363083,
+              "created_at": "2026-03-29T04:41:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-a5R",
+              "database_id": 16363089,
+              "created_at": "2026-03-29T04:42:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-a91",
+              "database_id": 16363381,
+              "created_at": "2026-03-29T05:21:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bCE",
+              "database_id": 16363652,
+              "created_at": "2026-03-29T06:20:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bGp",
+              "database_id": 16363945,
+              "created_at": "2026-03-29T06:55:27Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bGs",
+              "database_id": 16363948,
+              "created_at": "2026-03-29T06:55:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bGy",
+              "database_id": 16363954,
+              "created_at": "2026-03-29T06:56:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bI-",
+              "database_id": 16364094,
+              "created_at": "2026-03-29T07:20:24Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bJJ",
+              "database_id": 16364105,
+              "created_at": "2026-03-29T07:23:35Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bN0",
+              "database_id": 16364404,
+              "created_at": "2026-03-29T07:49:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bOL",
+              "database_id": 16364427,
+              "created_at": "2026-03-29T07:52:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bO8",
+              "database_id": 16364476,
+              "created_at": "2026-03-29T08:03:26Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bPN",
+              "database_id": 16364493,
+              "created_at": "2026-03-29T08:06:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bRH",
+              "database_id": 16364615,
+              "created_at": "2026-03-29T08:31:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bRJ",
+              "database_id": 16364617,
+              "created_at": "2026-03-29T08:32:01Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bRO",
+              "database_id": 16364622,
+              "created_at": "2026-03-29T08:32:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bTX",
+              "database_id": 16364759,
+              "created_at": "2026-03-29T08:49:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bTd",
+              "database_id": 16364765,
+              "created_at": "2026-03-29T08:50:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bTk",
+              "database_id": 16364772,
+              "created_at": "2026-03-29T08:50:25Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3782-20260329",
+          "count": 32,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-bTt",
+            "database_id": 16364781,
+            "created_at": "2026-03-29T08:51:11Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-aqx",
+              "database_id": 16362161,
+              "created_at": "2026-03-29T02:01:35Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-asY",
+              "database_id": 16362264,
+              "created_at": "2026-03-29T02:15:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-asc",
+              "database_id": 16362268,
+              "created_at": "2026-03-29T02:16:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-asy",
+              "database_id": 16362290,
+              "created_at": "2026-03-29T02:19:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-as1",
+              "database_id": 16362293,
+              "created_at": "2026-03-29T02:19:33Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-as3",
+              "database_id": 16362295,
+              "created_at": "2026-03-29T02:19:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-as8",
+              "database_id": 16362300,
+              "created_at": "2026-03-29T02:20:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayU",
+              "database_id": 16362644,
+              "created_at": "2026-03-29T03:05:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayY",
+              "database_id": 16362648,
+              "created_at": "2026-03-29T03:08:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayc",
+              "database_id": 16362652,
+              "created_at": "2026-03-29T03:09:07Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aye",
+              "database_id": 16362654,
+              "created_at": "2026-03-29T03:09:29Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ayg",
+              "database_id": 16362656,
+              "created_at": "2026-03-29T03:09:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-a5M",
+              "database_id": 16363084,
+              "created_at": "2026-03-29T04:41:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-a5S",
+              "database_id": 16363090,
+              "created_at": "2026-03-29T04:42:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-a92",
+              "database_id": 16363382,
+              "created_at": "2026-03-29T05:21:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bCF",
+              "database_id": 16363653,
+              "created_at": "2026-03-29T06:20:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bGq",
+              "database_id": 16363946,
+              "created_at": "2026-03-29T06:55:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bGt",
+              "database_id": 16363949,
+              "created_at": "2026-03-29T06:55:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bGz",
+              "database_id": 16363955,
+              "created_at": "2026-03-29T06:56:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bI_",
+              "database_id": 16364095,
+              "created_at": "2026-03-29T07:20:25Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bJL",
+              "database_id": 16364107,
+              "created_at": "2026-03-29T07:23:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bN2",
+              "database_id": 16364406,
+              "created_at": "2026-03-29T07:49:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bOO",
+              "database_id": 16364430,
+              "created_at": "2026-03-29T07:52:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bO9",
+              "database_id": 16364477,
+              "created_at": "2026-03-29T08:03:27Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bPO",
+              "database_id": 16364494,
+              "created_at": "2026-03-29T08:06:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bRI",
+              "database_id": 16364616,
+              "created_at": "2026-03-29T08:31:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bRK",
+              "database_id": 16364618,
+              "created_at": "2026-03-29T08:32:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bRP",
+              "database_id": 16364623,
+              "created_at": "2026-03-29T08:32:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bTY",
+              "database_id": 16364760,
+              "created_at": "2026-03-29T08:49:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bTe",
+              "database_id": 16364766,
+              "created_at": "2026-03-29T08:50:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bTm",
+              "database_id": 16364774,
+              "created_at": "2026-03-29T08:50:26Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3854-20260402",
+          "count": 29,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-rST",
+            "database_id": 16430227,
+            "created_at": "2026-04-02T22:29:31Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-pV5",
+              "database_id": 16422265,
+              "created_at": "2026-04-02T11:40:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-paL",
+              "database_id": 16422539,
+              "created_at": "2026-04-02T12:10:27Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qKr",
+              "database_id": 16425643,
+              "created_at": "2026-04-02T16:11:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qKx",
+              "database_id": 16425649,
+              "created_at": "2026-04-02T16:12:22Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qK3",
+              "database_id": 16425655,
+              "created_at": "2026-04-02T16:12:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLY",
+              "database_id": 16425688,
+              "created_at": "2026-04-02T16:15:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLo",
+              "database_id": 16425704,
+              "created_at": "2026-04-02T16:17:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLr",
+              "database_id": 16425707,
+              "created_at": "2026-04-02T16:17:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLw",
+              "database_id": 16425712,
+              "created_at": "2026-04-02T16:18:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLz",
+              "database_id": 16425715,
+              "created_at": "2026-04-02T16:18:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qMP",
+              "database_id": 16425743,
+              "created_at": "2026-04-02T16:22:07Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qMb",
+              "database_id": 16425755,
+              "created_at": "2026-04-02T16:23:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qUU",
+              "database_id": 16426260,
+              "created_at": "2026-04-02T16:59:08Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qW8",
+              "database_id": 16426428,
+              "created_at": "2026-04-02T17:09:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qXF",
+              "database_id": 16426437,
+              "created_at": "2026-04-02T17:09:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qXU",
+              "database_id": 16426452,
+              "created_at": "2026-04-02T17:10:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qc_",
+              "database_id": 16426815,
+              "created_at": "2026-04-02T17:44:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qeg",
+              "database_id": 16426912,
+              "created_at": "2026-04-02T17:54:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qnu",
+              "database_id": 16427502,
+              "created_at": "2026-04-02T18:48:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qvf",
+              "database_id": 16427999,
+              "created_at": "2026-04-02T19:32:05Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qvh",
+              "database_id": 16428001,
+              "created_at": "2026-04-02T19:32:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qxj",
+              "database_id": 16428131,
+              "created_at": "2026-04-02T19:44:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qzB",
+              "database_id": 16428225,
+              "created_at": "2026-04-02T19:46:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-q0C",
+              "database_id": 16428290,
+              "created_at": "2026-04-02T19:50:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-q_i",
+              "database_id": 16429026,
+              "created_at": "2026-04-02T20:41:15Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-q_m",
+              "database_id": 16429030,
+              "created_at": "2026-04-02T20:41:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rOD",
+              "database_id": 16429955,
+              "created_at": "2026-04-02T21:47:01Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rOK",
+              "database_id": 16429962,
+              "created_at": "2026-04-02T21:47:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3854-20260402",
+          "count": 29,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-rSU",
+            "database_id": 16430228,
+            "created_at": "2026-04-02T22:29:32Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-pV6",
+              "database_id": 16422266,
+              "created_at": "2026-04-02T11:40:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-paO",
+              "database_id": 16422542,
+              "created_at": "2026-04-02T12:10:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qKs",
+              "database_id": 16425644,
+              "created_at": "2026-04-02T16:11:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qK0",
+              "database_id": 16425652,
+              "created_at": "2026-04-02T16:12:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qK4",
+              "database_id": 16425656,
+              "created_at": "2026-04-02T16:12:38Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLZ",
+              "database_id": 16425689,
+              "created_at": "2026-04-02T16:15:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLp",
+              "database_id": 16425705,
+              "created_at": "2026-04-02T16:17:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLu",
+              "database_id": 16425710,
+              "created_at": "2026-04-02T16:17:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qLx",
+              "database_id": 16425713,
+              "created_at": "2026-04-02T16:18:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qL0",
+              "database_id": 16425716,
+              "created_at": "2026-04-02T16:18:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qMR",
+              "database_id": 16425745,
+              "created_at": "2026-04-02T16:22:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qMc",
+              "database_id": 16425756,
+              "created_at": "2026-04-02T16:23:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qUV",
+              "database_id": 16426261,
+              "created_at": "2026-04-02T16:59:10Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qW_",
+              "database_id": 16426431,
+              "created_at": "2026-04-02T17:09:38Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qXG",
+              "database_id": 16426438,
+              "created_at": "2026-04-02T17:09:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qXV",
+              "database_id": 16426453,
+              "created_at": "2026-04-02T17:10:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qdA",
+              "database_id": 16426816,
+              "created_at": "2026-04-02T17:44:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qeh",
+              "database_id": 16426913,
+              "created_at": "2026-04-02T17:54:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qnw",
+              "database_id": 16427504,
+              "created_at": "2026-04-02T18:48:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qvg",
+              "database_id": 16428000,
+              "created_at": "2026-04-02T19:32:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qvj",
+              "database_id": 16428003,
+              "created_at": "2026-04-02T19:32:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qxk",
+              "database_id": 16428132,
+              "created_at": "2026-04-02T19:45:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qzC",
+              "database_id": 16428226,
+              "created_at": "2026-04-02T19:46:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-q0D",
+              "database_id": 16428291,
+              "created_at": "2026-04-02T19:50:13Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-q_k",
+              "database_id": 16429028,
+              "created_at": "2026-04-02T20:41:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-q_n",
+              "database_id": 16429031,
+              "created_at": "2026-04-02T20:41:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rOE",
+              "database_id": 16429956,
+              "created_at": "2026-04-02T21:47:02Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rOL",
+              "database_id": 16429963,
+              "created_at": "2026-04-02T21:47:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3777-20260328",
+          "count": 25,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-aQr",
+            "database_id": 16360491,
+            "created_at": "2026-03-28T21:55:00Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zou",
+              "database_id": 16357934,
+              "created_at": "2026-03-28T16:41:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zoy",
+              "database_id": 16357938,
+              "created_at": "2026-03-28T16:41:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zo7",
+              "database_id": 16357947,
+              "created_at": "2026-03-28T16:41:38Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ZpC",
+              "database_id": 16357954,
+              "created_at": "2026-03-28T16:41:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zpc",
+              "database_id": 16357980,
+              "created_at": "2026-03-28T16:43:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zpy",
+              "database_id": 16358002,
+              "created_at": "2026-03-28T16:45:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ZqM",
+              "database_id": 16358028,
+              "created_at": "2026-03-28T16:47:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5V",
+              "database_id": 16358997,
+              "created_at": "2026-03-28T18:50:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5Y",
+              "database_id": 16359000,
+              "created_at": "2026-03-28T18:51:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5b",
+              "database_id": 16359003,
+              "created_at": "2026-03-28T18:51:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5e",
+              "database_id": 16359006,
+              "created_at": "2026-03-28T18:51:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z54",
+              "database_id": 16359032,
+              "created_at": "2026-03-28T18:55:27Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z6K",
+              "database_id": 16359050,
+              "created_at": "2026-03-28T18:57:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z86",
+              "database_id": 16359226,
+              "created_at": "2026-03-28T19:10:33Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z9B",
+              "database_id": 16359233,
+              "created_at": "2026-03-28T19:11:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aCA",
+              "database_id": 16359552,
+              "created_at": "2026-03-28T20:00:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aHc",
+              "database_id": 16359900,
+              "created_at": "2026-03-28T20:34:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aH5",
+              "database_id": 16359929,
+              "created_at": "2026-03-28T20:38:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aJa",
+              "database_id": 16360026,
+              "created_at": "2026-03-28T20:51:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aKi",
+              "database_id": 16360098,
+              "created_at": "2026-03-28T20:56:58Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aNZ",
+              "database_id": 16360281,
+              "created_at": "2026-03-28T21:15:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aNe",
+              "database_id": 16360286,
+              "created_at": "2026-03-28T21:16:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aQH",
+              "database_id": 16360455,
+              "created_at": "2026-03-28T21:48:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aQP",
+              "database_id": 16360463,
+              "created_at": "2026-03-28T21:49:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3777-20260328",
+          "count": 25,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-aQs",
+            "database_id": 16360492,
+            "created_at": "2026-03-28T21:55:02Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zov",
+              "database_id": 16357935,
+              "created_at": "2026-03-28T16:41:01Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zo0",
+              "database_id": 16357940,
+              "created_at": "2026-03-28T16:41:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zo8",
+              "database_id": 16357948,
+              "created_at": "2026-03-28T16:41:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ZpD",
+              "database_id": 16357955,
+              "created_at": "2026-03-28T16:41:58Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zpd",
+              "database_id": 16357981,
+              "created_at": "2026-03-28T16:43:29Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Zpz",
+              "database_id": 16358003,
+              "created_at": "2026-03-28T16:45:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ZqN",
+              "database_id": 16358029,
+              "created_at": "2026-03-28T16:47:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5W",
+              "database_id": 16358998,
+              "created_at": "2026-03-28T18:50:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5Z",
+              "database_id": 16359001,
+              "created_at": "2026-03-28T18:51:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5c",
+              "database_id": 16359004,
+              "created_at": "2026-03-28T18:51:38Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z5f",
+              "database_id": 16359007,
+              "created_at": "2026-03-28T18:51:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z55",
+              "database_id": 16359033,
+              "created_at": "2026-03-28T18:55:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z6L",
+              "database_id": 16359051,
+              "created_at": "2026-03-28T18:57:13Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z87",
+              "database_id": 16359227,
+              "created_at": "2026-03-28T19:10:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-Z9C",
+              "database_id": 16359234,
+              "created_at": "2026-03-28T19:11:10Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aCB",
+              "database_id": 16359553,
+              "created_at": "2026-03-28T20:00:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aHe",
+              "database_id": 16359902,
+              "created_at": "2026-03-28T20:34:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aH7",
+              "database_id": 16359931,
+              "created_at": "2026-03-28T20:38:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aJb",
+              "database_id": 16360027,
+              "created_at": "2026-03-28T20:51:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aKj",
+              "database_id": 16360099,
+              "created_at": "2026-03-28T20:56:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aNb",
+              "database_id": 16360283,
+              "created_at": "2026-03-28T21:16:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aNf",
+              "database_id": 16360287,
+              "created_at": "2026-03-28T21:16:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aQJ",
+              "database_id": 16360457,
+              "created_at": "2026-03-28T21:48:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aQQ",
+              "database_id": 16360464,
+              "created_at": "2026-03-28T21:49:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3790-20260329",
+          "count": 21,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-dOS",
+            "database_id": 16372626,
+            "created_at": "2026-03-29T22:12:52Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-bu5",
+              "database_id": 16366521,
+              "created_at": "2026-03-29T12:37:13Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bvY",
+              "database_id": 16366552,
+              "created_at": "2026-03-29T12:38:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bxF",
+              "database_id": 16366661,
+              "created_at": "2026-03-29T12:44:29Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bxO",
+              "database_id": 16366670,
+              "created_at": "2026-03-29T12:44:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bxY",
+              "database_id": 16366680,
+              "created_at": "2026-03-29T12:45:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-b0Y",
+              "database_id": 16366872,
+              "created_at": "2026-03-29T13:13:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-b0e",
+              "database_id": 16366878,
+              "created_at": "2026-03-29T13:13:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-b03",
+              "database_id": 16366903,
+              "created_at": "2026-03-29T13:17:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cF4",
+              "database_id": 16367992,
+              "created_at": "2026-03-29T15:09:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cIb",
+              "database_id": 16368155,
+              "created_at": "2026-03-29T15:35:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cIe",
+              "database_id": 16368158,
+              "created_at": "2026-03-29T15:35:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cIi",
+              "database_id": 16368162,
+              "created_at": "2026-03-29T15:37:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cmf",
+              "database_id": 16370079,
+              "created_at": "2026-03-29T18:18:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cou",
+              "database_id": 16370222,
+              "created_at": "2026-03-29T18:29:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-c49",
+              "database_id": 16371261,
+              "created_at": "2026-03-29T19:47:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dIC",
+              "database_id": 16372226,
+              "created_at": "2026-03-29T21:33:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dMR",
+              "database_id": 16372497,
+              "created_at": "2026-03-29T21:58:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dMX",
+              "database_id": 16372503,
+              "created_at": "2026-03-29T21:58:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dMj",
+              "database_id": 16372515,
+              "created_at": "2026-03-29T21:59:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dN6",
+              "database_id": 16372602,
+              "created_at": "2026-03-29T22:07:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3790-20260329",
+          "count": 21,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-dOT",
+            "database_id": 16372627,
+            "created_at": "2026-03-29T22:12:54Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-bu6",
+              "database_id": 16366522,
+              "created_at": "2026-03-29T12:37:15Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bva",
+              "database_id": 16366554,
+              "created_at": "2026-03-29T12:38:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bxI",
+              "database_id": 16366664,
+              "created_at": "2026-03-29T12:44:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bxP",
+              "database_id": 16366671,
+              "created_at": "2026-03-29T12:44:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-bxZ",
+              "database_id": 16366681,
+              "created_at": "2026-03-29T12:45:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-b0Z",
+              "database_id": 16366873,
+              "created_at": "2026-03-29T13:13:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-b0f",
+              "database_id": 16366879,
+              "created_at": "2026-03-29T13:13:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-b04",
+              "database_id": 16366904,
+              "created_at": "2026-03-29T13:17:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cF5",
+              "database_id": 16367993,
+              "created_at": "2026-03-29T15:09:24Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cIc",
+              "database_id": 16368156,
+              "created_at": "2026-03-29T15:35:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cIf",
+              "database_id": 16368159,
+              "created_at": "2026-03-29T15:36:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cIj",
+              "database_id": 16368163,
+              "created_at": "2026-03-29T15:37:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cmh",
+              "database_id": 16370081,
+              "created_at": "2026-03-29T18:18:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-cow",
+              "database_id": 16370224,
+              "created_at": "2026-03-29T18:29:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-c4_",
+              "database_id": 16371263,
+              "created_at": "2026-03-29T19:47:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dIE",
+              "database_id": 16372228,
+              "created_at": "2026-03-29T21:33:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dMS",
+              "database_id": 16372498,
+              "created_at": "2026-03-29T21:58:24Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dMZ",
+              "database_id": 16372505,
+              "created_at": "2026-03-29T21:58:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dMl",
+              "database_id": 16372517,
+              "created_at": "2026-03-29T21:59:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dN7",
+              "database_id": 16372603,
+              "created_at": "2026-03-29T22:07:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3798-20260330",
+          "count": 17,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-eCo",
+            "database_id": 16375976,
+            "created_at": "2026-03-30T05:00:38Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-drG",
+              "database_id": 16374470,
+              "created_at": "2026-03-30T02:00:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drR",
+              "database_id": 16374481,
+              "created_at": "2026-03-30T02:00:52Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dxv",
+              "database_id": 16374895,
+              "created_at": "2026-03-30T02:43:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dx0",
+              "database_id": 16374900,
+              "created_at": "2026-03-30T02:43:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dyH",
+              "database_id": 16374919,
+              "created_at": "2026-03-30T02:44:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d0j",
+              "database_id": 16375075,
+              "created_at": "2026-03-30T03:05:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d0l",
+              "database_id": 16375077,
+              "created_at": "2026-03-30T03:06:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d00",
+              "database_id": 16375092,
+              "created_at": "2026-03-30T03:08:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d04",
+              "database_id": 16375096,
+              "created_at": "2026-03-30T03:08:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d1A",
+              "database_id": 16375104,
+              "created_at": "2026-03-30T03:10:16Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eBw",
+              "database_id": 16375920,
+              "created_at": "2026-03-30T04:51:09Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCD",
+              "database_id": 16375939,
+              "created_at": "2026-03-30T04:54:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCG",
+              "database_id": 16375942,
+              "created_at": "2026-03-30T04:54:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCM",
+              "database_id": 16375948,
+              "created_at": "2026-03-30T04:55:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCb",
+              "database_id": 16375963,
+              "created_at": "2026-03-30T04:59:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCf",
+              "database_id": 16375967,
+              "created_at": "2026-03-30T04:59:35Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3798-20260330",
+          "count": 17,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-eCp",
+            "database_id": 16375977,
+            "created_at": "2026-03-30T05:00:39Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-drH",
+              "database_id": 16374471,
+              "created_at": "2026-03-30T02:00:05Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-drS",
+              "database_id": 16374482,
+              "created_at": "2026-03-30T02:00:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dxw",
+              "database_id": 16374896,
+              "created_at": "2026-03-30T02:43:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dx2",
+              "database_id": 16374902,
+              "created_at": "2026-03-30T02:43:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dyI",
+              "database_id": 16374920,
+              "created_at": "2026-03-30T02:44:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d0k",
+              "database_id": 16375076,
+              "created_at": "2026-03-30T03:05:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d0m",
+              "database_id": 16375078,
+              "created_at": "2026-03-30T03:06:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d01",
+              "database_id": 16375093,
+              "created_at": "2026-03-30T03:08:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d05",
+              "database_id": 16375097,
+              "created_at": "2026-03-30T03:08:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-d1C",
+              "database_id": 16375106,
+              "created_at": "2026-03-30T03:10:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eBx",
+              "database_id": 16375921,
+              "created_at": "2026-03-30T04:51:10Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCE",
+              "database_id": 16375940,
+              "created_at": "2026-03-30T04:54:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCH",
+              "database_id": 16375943,
+              "created_at": "2026-03-30T04:54:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCN",
+              "database_id": 16375949,
+              "created_at": "2026-03-30T04:55:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCc",
+              "database_id": 16375964,
+              "created_at": "2026-03-30T04:59:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-eCg",
+              "database_id": 16375968,
+              "created_at": "2026-03-30T04:59:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3814-20260330",
+          "count": 13,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-gmA",
+            "database_id": 16386432,
+            "created_at": "2026-03-30T21:20:24Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-fou",
+              "database_id": 16382510,
+              "created_at": "2026-03-30T15:14:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foy",
+              "database_id": 16382514,
+              "created_at": "2026-03-30T15:14:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-fo-",
+              "database_id": 16382526,
+              "created_at": "2026-03-30T15:15:54Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-fyZ",
+              "database_id": 16383129,
+              "created_at": "2026-03-30T16:02:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f3b",
+              "database_id": 16383451,
+              "created_at": "2026-03-30T16:29:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f3e",
+              "database_id": 16383454,
+              "created_at": "2026-03-30T16:30:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f3z",
+              "database_id": 16383475,
+              "created_at": "2026-03-30T16:31:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9G",
+              "database_id": 16383814,
+              "created_at": "2026-03-30T16:50:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9K",
+              "database_id": 16383818,
+              "created_at": "2026-03-30T16:50:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9X",
+              "database_id": 16383831,
+              "created_at": "2026-03-30T16:51:33Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9e",
+              "database_id": 16383838,
+              "created_at": "2026-03-30T16:51:47Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-gNr",
+              "database_id": 16384875,
+              "created_at": "2026-03-30T18:30:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3814-20260330",
+          "count": 13,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-gmB",
+            "database_id": 16386433,
+            "created_at": "2026-03-30T21:20:26Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-fov",
+              "database_id": 16382511,
+              "created_at": "2026-03-30T15:14:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foz",
+              "database_id": 16382515,
+              "created_at": "2026-03-30T15:14:50Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-fo_",
+              "database_id": 16382527,
+              "created_at": "2026-03-30T15:15:56Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-fya",
+              "database_id": 16383130,
+              "created_at": "2026-03-30T16:02:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f3c",
+              "database_id": 16383452,
+              "created_at": "2026-03-30T16:29:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f3f",
+              "database_id": 16383455,
+              "created_at": "2026-03-30T16:30:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f30",
+              "database_id": 16383476,
+              "created_at": "2026-03-30T16:31:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9H",
+              "database_id": 16383815,
+              "created_at": "2026-03-30T16:50:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9L",
+              "database_id": 16383819,
+              "created_at": "2026-03-30T16:50:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9Y",
+              "database_id": 16383832,
+              "created_at": "2026-03-30T16:51:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-f9g",
+              "database_id": 16383840,
+              "created_at": "2026-03-30T16:51:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-gNt",
+              "database_id": 16384877,
+              "created_at": "2026-03-30T18:30:22Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3856-20260402",
+          "count": 13,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-qKQ",
+            "database_id": 16425616,
+            "created_at": "2026-04-02T16:09:53Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-pcA",
+              "database_id": 16422656,
+              "created_at": "2026-04-02T12:22:22Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-pcq",
+              "database_id": 16422698,
+              "created_at": "2026-04-02T12:26:58Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-per",
+              "database_id": 16422827,
+              "created_at": "2026-04-02T12:40:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-pgo",
+              "database_id": 16422952,
+              "created_at": "2026-04-02T12:54:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p0a",
+              "database_id": 16424218,
+              "created_at": "2026-04-02T14:29:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p7j",
+              "database_id": 16424675,
+              "created_at": "2026-04-02T15:05:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p94",
+              "database_id": 16424824,
+              "created_at": "2026-04-02T15:16:22Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p99",
+              "database_id": 16424829,
+              "created_at": "2026-04-02T15:16:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p_l",
+              "database_id": 16424933,
+              "created_at": "2026-04-02T15:23:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qJk",
+              "database_id": 16425572,
+              "created_at": "2026-04-02T16:06:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qKD",
+              "database_id": 16425603,
+              "created_at": "2026-04-02T16:08:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qKH",
+              "database_id": 16425607,
+              "created_at": "2026-04-02T16:09:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3856-20260402",
+          "count": 13,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-qKR",
+            "database_id": 16425617,
+            "created_at": "2026-04-02T16:09:55Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-pcC",
+              "database_id": 16422658,
+              "created_at": "2026-04-02T12:22:24Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-pcr",
+              "database_id": 16422699,
+              "created_at": "2026-04-02T12:26:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-pes",
+              "database_id": 16422828,
+              "created_at": "2026-04-02T12:40:54Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-pgp",
+              "database_id": 16422953,
+              "created_at": "2026-04-02T12:54:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p0c",
+              "database_id": 16424220,
+              "created_at": "2026-04-02T14:29:05Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p7k",
+              "database_id": 16424676,
+              "created_at": "2026-04-02T15:05:06Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p95",
+              "database_id": 16424825,
+              "created_at": "2026-04-02T15:16:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p9_",
+              "database_id": 16424831,
+              "created_at": "2026-04-02T15:16:39Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-p_n",
+              "database_id": 16424935,
+              "created_at": "2026-04-02T15:23:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qJl",
+              "database_id": 16425573,
+              "created_at": "2026-04-02T16:06:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qKE",
+              "database_id": 16425604,
+              "created_at": "2026-04-02T16:08:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qKI",
+              "database_id": 16425608,
+              "created_at": "2026-04-02T16:09:08Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3795-20260330",
+          "count": 8,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-dnR",
+            "database_id": 16374225,
+            "created_at": "2026-03-30T01:29:04Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcI",
+              "database_id": 16373512,
+              "created_at": "2026-03-30T00:12:24Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcZ",
+              "database_id": 16373529,
+              "created_at": "2026-03-30T00:13:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ddE",
+              "database_id": 16373572,
+              "created_at": "2026-03-30T00:21:14Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ddb",
+              "database_id": 16373595,
+              "created_at": "2026-03-30T00:25:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dl4",
+              "database_id": 16374136,
+              "created_at": "2026-03-30T01:17:41Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dms",
+              "database_id": 16374188,
+              "created_at": "2026-03-30T01:22:22Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dnO",
+              "database_id": 16374222,
+              "created_at": "2026-03-30T01:28:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3795-20260330",
+          "count": 8,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-dnS",
+            "database_id": 16374226,
+            "created_at": "2026-03-30T01:29:06Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-dcJ",
+              "database_id": 16373513,
+              "created_at": "2026-03-30T00:12:25Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dca",
+              "database_id": 16373530,
+              "created_at": "2026-03-30T00:13:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ddF",
+              "database_id": 16373573,
+              "created_at": "2026-03-30T00:21:15Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ddc",
+              "database_id": 16373596,
+              "created_at": "2026-03-30T00:25:12Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dl6",
+              "database_id": 16374138,
+              "created_at": "2026-03-30T01:17:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dmt",
+              "database_id": 16374189,
+              "created_at": "2026-03-30T01:22:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dnP",
+              "database_id": 16374223,
+              "created_at": "2026-03-30T01:28:51Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3818-20260330",
+          "count": 6,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-gwo",
+            "database_id": 16387112,
+            "created_at": "2026-03-30T22:39:58Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-gqM",
+              "database_id": 16386700,
+              "created_at": "2026-03-30T21:49:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-gqe",
+              "database_id": 16386718,
+              "created_at": "2026-03-30T21:51:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-gq_",
+              "database_id": 16386751,
+              "created_at": "2026-03-30T21:56:11Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-guv",
+              "database_id": 16386991,
+              "created_at": "2026-03-30T22:21:18Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-guz",
+              "database_id": 16386995,
+              "created_at": "2026-03-30T22:21:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3818-20260330",
+          "count": 6,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-gwp",
+            "database_id": 16387113,
+            "created_at": "2026-03-30T22:40:00Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-gqN",
+              "database_id": 16386701,
+              "created_at": "2026-03-30T21:49:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-gqf",
+              "database_id": 16386719,
+              "created_at": "2026-03-30T21:51:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-grA",
+              "database_id": 16386752,
+              "created_at": "2026-03-30T21:56:13Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-guw",
+              "database_id": 16386992,
+              "created_at": "2026-03-30T22:21:20Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-gu2",
+              "database_id": 16386998,
+              "created_at": "2026-03-30T22:21:35Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3813-20260330",
+          "count": 5,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-fpa",
+            "database_id": 16382554,
+            "created_at": "2026-03-30T15:18:05Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-foG",
+              "database_id": 16382470,
+              "created_at": "2026-03-30T15:12:07Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foM",
+              "database_id": 16382476,
+              "created_at": "2026-03-30T15:12:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foS",
+              "database_id": 16382482,
+              "created_at": "2026-03-30T15:12:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foU",
+              "database_id": 16382484,
+              "created_at": "2026-03-30T15:12:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3813-20260330",
+          "count": 5,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-fpd",
+            "database_id": 16382557,
+            "created_at": "2026-03-30T15:18:07Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-foH",
+              "database_id": 16382471,
+              "created_at": "2026-03-30T15:12:08Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foN",
+              "database_id": 16382477,
+              "created_at": "2026-03-30T15:12:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foT",
+              "database_id": 16382483,
+              "created_at": "2026-03-30T15:12:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-foX",
+              "database_id": 16382487,
+              "created_at": "2026-03-30T15:12:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3793-20260329",
+          "count": 4,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-dYE",
+            "database_id": 16373252,
+            "created_at": "2026-03-29T23:34:57Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-dXg",
+              "database_id": 16373216,
+              "created_at": "2026-03-29T23:29:03Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dX3",
+              "database_id": 16373239,
+              "created_at": "2026-03-29T23:33:35Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dX7",
+              "database_id": 16373243,
+              "created_at": "2026-03-29T23:33:49Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3793-20260329",
+          "count": 4,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-dYF",
+            "database_id": 16373253,
+            "created_at": "2026-03-29T23:34:58Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-dXh",
+              "database_id": 16373217,
+              "created_at": "2026-03-29T23:29:04Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dX4",
+              "database_id": 16373240,
+              "created_at": "2026-03-29T23:33:37Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-dX8",
+              "database_id": 16373244,
+              "created_at": "2026-03-29T23:33:50Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3401-20260328",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-adx",
+            "database_id": 16361329,
+            "created_at": "2026-03-28T23:43:08Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ZoF",
+              "database_id": 16357893,
+              "created_at": "2026-03-28T16:38:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aNa",
+              "database_id": 16360282,
+              "created_at": "2026-03-28T21:15:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3401-20260328",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ady",
+            "database_id": 16361330,
+            "created_at": "2026-03-28T23:43:09Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ZoG",
+              "database_id": 16357894,
+              "created_at": "2026-03-28T16:38:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-aNc",
+              "database_id": 16360284,
+              "created_at": "2026-03-28T21:16:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3802-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewt",
+            "database_id": 16378925,
+            "created_at": "2026-03-30T09:48:53Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-evz",
+              "database_id": 16378867,
+              "created_at": "2026-03-30T09:46:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewM",
+              "database_id": 16378892,
+              "created_at": "2026-03-30T09:48:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3802-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewv",
+            "database_id": 16378927,
+            "created_at": "2026-03-30T09:48:55Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ev1",
+              "database_id": 16378869,
+              "created_at": "2026-03-30T09:46:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewN",
+              "database_id": 16378893,
+              "created_at": "2026-03-30T09:48:19Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3805-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewy",
+            "database_id": 16378930,
+            "created_at": "2026-03-30T09:48:57Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ev5",
+              "database_id": 16378873,
+              "created_at": "2026-03-30T09:47:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewo",
+              "database_id": 16378920,
+              "created_at": "2026-03-30T09:48:46Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3804-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewh",
+            "database_id": 16378913,
+            "created_at": "2026-03-30T09:48:43Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ev6",
+              "database_id": 16378874,
+              "created_at": "2026-03-30T09:47:29Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewO",
+              "database_id": 16378894,
+              "created_at": "2026-03-30T09:48:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3805-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew5",
+            "database_id": 16378937,
+            "created_at": "2026-03-30T09:48:59Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ev7",
+              "database_id": 16378875,
+              "created_at": "2026-03-30T09:47:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewp",
+              "database_id": 16378921,
+              "created_at": "2026-03-30T09:48:48Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3804-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewl",
+            "database_id": 16378917,
+            "created_at": "2026-03-30T09:48:44Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ev8",
+              "database_id": 16378876,
+              "created_at": "2026-03-30T09:47:30Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewQ",
+              "database_id": 16378896,
+              "created_at": "2026-03-30T09:48:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3806-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew1",
+            "database_id": 16378933,
+            "created_at": "2026-03-30T09:48:58Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ev9",
+              "database_id": 16378877,
+              "created_at": "2026-03-30T09:47:31Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewX",
+              "database_id": 16378903,
+              "created_at": "2026-03-30T09:48:38Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3806-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew9",
+            "database_id": 16378941,
+            "created_at": "2026-03-30T09:49:00Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ev_",
+              "database_id": 16378879,
+              "created_at": "2026-03-30T09:47:33Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewY",
+              "database_id": 16378904,
+              "created_at": "2026-03-30T09:48:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3803-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewz",
+            "database_id": 16378931,
+            "created_at": "2026-03-30T09:48:58Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewK",
+              "database_id": 16378890,
+              "created_at": "2026-03-30T09:48:15Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewb",
+              "database_id": 16378907,
+              "created_at": "2026-03-30T09:48:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3803-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew6",
+            "database_id": 16378938,
+            "created_at": "2026-03-30T09:48:59Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewL",
+              "database_id": 16378891,
+              "created_at": "2026-03-30T09:48:17Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewk",
+              "database_id": 16378916,
+              "created_at": "2026-03-30T09:48:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3809-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewx",
+            "database_id": 16378929,
+            "created_at": "2026-03-30T09:48:57Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewP",
+              "database_id": 16378895,
+              "created_at": "2026-03-30T09:48:21Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewe",
+              "database_id": 16378910,
+              "created_at": "2026-03-30T09:48:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3809-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew0",
+            "database_id": 16378932,
+            "created_at": "2026-03-30T09:48:58Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewR",
+              "database_id": 16378897,
+              "created_at": "2026-03-30T09:48:23Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewi",
+              "database_id": 16378914,
+              "created_at": "2026-03-30T09:48:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3812-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-exW",
+            "database_id": 16378966,
+            "created_at": "2026-03-30T09:50:52Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewd",
+              "database_id": 16378909,
+              "created_at": "2026-03-30T09:48:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ew2",
+              "database_id": 16378934,
+              "created_at": "2026-03-30T09:48:59Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3812-20260330",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-exX",
+            "database_id": 16378967,
+            "created_at": "2026-03-30T09:50:53Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewj",
+              "database_id": 16378915,
+              "created_at": "2026-03-30T09:48:44Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ew8",
+              "database_id": 16378940,
+              "created_at": "2026-03-30T09:49:00Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3858-20260402",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-qjb",
+            "database_id": 16427227,
+            "created_at": "2026-04-02T18:22:10Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-qjW",
+              "database_id": 16427222,
+              "created_at": "2026-04-02T18:21:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qjZ",
+              "database_id": 16427225,
+              "created_at": "2026-04-02T18:21:53Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3858-20260402",
+          "count": 3,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-qjc",
+            "database_id": 16427228,
+            "created_at": "2026-04-02T18:22:12Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-qjX",
+              "database_id": 16427223,
+              "created_at": "2026-04-02T18:21:36Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-qja",
+              "database_id": 16427226,
+              "created_at": "2026-04-02T18:21:54Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3781-20260329",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-aqr",
+            "database_id": 16362155,
+            "created_at": "2026-03-29T01:59:34Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-amM",
+              "database_id": 16361868,
+              "created_at": "2026-03-29T01:18:55Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3781-20260329",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-aqs",
+            "database_id": 16362156,
+            "created_at": "2026-03-29T01:59:35Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-amN",
+              "database_id": 16361869,
+              "created_at": "2026-03-29T01:18:57Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3808-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewq",
+            "database_id": 16378922,
+            "created_at": "2026-03-30T09:48:51Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewS",
+              "database_id": 16378898,
+              "created_at": "2026-03-30T09:48:28Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3808-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ews",
+            "database_id": 16378924,
+            "created_at": "2026-03-30T09:48:52Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewT",
+              "database_id": 16378899,
+              "created_at": "2026-03-30T09:48:29Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3810-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ewu",
+            "database_id": 16378926,
+            "created_at": "2026-03-30T09:48:53Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewV",
+              "database_id": 16378901,
+              "created_at": "2026-03-30T09:48:32Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3810-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-eww",
+            "database_id": 16378928,
+            "created_at": "2026-03-30T09:48:55Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewW",
+              "database_id": 16378902,
+              "created_at": "2026-03-30T09:48:34Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3811-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew-",
+            "database_id": 16378942,
+            "created_at": "2026-03-30T09:49:00Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewZ",
+              "database_id": 16378905,
+              "created_at": "2026-03-30T09:48:40Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3811-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew_",
+            "database_id": 16378943,
+            "created_at": "2026-03-30T09:49:02Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewc",
+              "database_id": 16378908,
+              "created_at": "2026-03-30T09:48:42Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3807-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew3",
+            "database_id": 16378935,
+            "created_at": "2026-03-30T09:48:59Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewf",
+              "database_id": 16378911,
+              "created_at": "2026-03-30T09:48:43Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3807-20260330",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-ew7",
+            "database_id": 16378939,
+            "created_at": "2026-03-30T09:49:00Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-ewm",
+              "database_id": 16378918,
+              "created_at": "2026-03-30T09:48:45Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-research:auto-open-pr3857-20260402",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-qC6",
+            "database_id": 16425146,
+            "created_at": "2026-04-02T15:41:46Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-qCl",
+              "database_id": 16425125,
+              "created_at": "2026-04-02T15:40:24Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-open:auto-open-pr3857-20260402",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-qC7",
+            "database_id": 16425147,
+            "created_at": "2026-04-02T15:41:47Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-qCm",
+              "database_id": 16425126,
+              "created_at": "2026-04-02T15:40:26Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "agent-checkin-close:auto-close-pr3854-20260402",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-rRi",
+            "database_id": 16430178,
+            "created_at": "2026-04-02T22:22:43Z",
+            "author": "mbaetiong",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-q_X",
+              "database_id": 16429015,
+              "created_at": "2026-04-02T20:39:54Z",
+              "author": "mbaetiong",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        }
+      ]
+    },
+    "3673": {
+      "total_comments": 284,
+      "groups": [
+        {
+          "marker": "accountability-session: 2026-04-02",
+          "count": 8,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-tqk",
+            "database_id": 16439972,
+            "created_at": "2026-04-03T16:14:17Z",
+            "author": "github-actions",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-rSI",
+              "database_id": 16430216,
+              "created_at": "2026-04-02T22:28:11Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rUS",
+              "database_id": 16430354,
+              "created_at": "2026-04-02T22:54:45Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-rZI",
+              "database_id": 16430664,
+              "created_at": "2026-04-02T23:42:43Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-ri_",
+              "database_id": 16431295,
+              "created_at": "2026-04-03T01:02:39Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sOM",
+              "database_id": 16434060,
+              "created_at": "2026-04-03T06:11:37Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-sh1",
+              "database_id": 16435317,
+              "created_at": "2026-04-03T08:17:36Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-tm8",
+              "database_id": 16439740,
+              "created_at": "2026-04-03T15:51:10Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "ci-rescue-rca:{sha_short}",
+          "count": 4,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-Wsc",
+            "database_id": 16345884,
+            "created_at": "2026-03-27T15:13:59Z",
+            "author": "github-actions",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-SZO",
+              "database_id": 16328270,
+              "created_at": "2026-03-26T14:41:00Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-SqI",
+              "database_id": 16329352,
+              "created_at": "2026-03-26T15:51:17Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            },
+            {
+              "node_id": "DC_kwDOPf23ns4A-TlK",
+              "database_id": 16333130,
+              "created_at": "2026-03-26T21:19:31Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "pragma: allowlist secret",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-T5l",
+            "database_id": 16334437,
+            "created_at": "2026-03-26T23:50:02Z",
+            "author": "github-actions",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-Typ",
+              "database_id": 16333993,
+              "created_at": "2026-03-26T22:50:48Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "accountability-session: 2026-03-30T01:23Z SESSION S229-CONT-1 (PR #3795)",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-drA",
+            "database_id": 16374464,
+            "created_at": "2026-03-30T01:59:20Z",
+            "author": "github-actions",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-dnk",
+              "database_id": 16374244,
+              "created_at": "2026-03-30T01:31:31Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        },
+        {
+          "marker": "ci-rescue:PR:SHA",
+          "count": 2,
+          "keep": {
+            "node_id": "DC_kwDOPf23ns4A-kKs",
+            "database_id": 16401068,
+            "created_at": "2026-03-31T22:37:53Z",
+            "author": "github-actions",
+            "url": ""
+          },
+          "delete": [
+            {
+              "node_id": "DC_kwDOPf23ns4A-kKJ",
+              "database_id": 16401033,
+              "created_at": "2026-03-31T22:29:46Z",
+              "author": "github-actions",
+              "has_replies": false,
+              "skip_reason": null
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

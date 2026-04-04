@@ -25,12 +25,8 @@ transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 
 _HAS_DATASETS = bool(_HAS_DATASETS and datasets is not None and hasattr(datasets, "Dataset"))
 Dataset = datasets.Dataset if _HAS_DATASETS else None
-AutoModelForCausalLM = (
-    transformers.AutoModelForCausalLM if _HAS_TRANSFORMERS else None
-)
-AutoTokenizer = (
-    transformers.AutoTokenizer if _HAS_TRANSFORMERS else None
-)
+AutoModelForCausalLM = transformers.AutoModelForCausalLM if _HAS_TRANSFORMERS else None
+AutoTokenizer = transformers.AutoTokenizer if _HAS_TRANSFORMERS else None
 
 
 class EvaluationDependencyError(ImportError):

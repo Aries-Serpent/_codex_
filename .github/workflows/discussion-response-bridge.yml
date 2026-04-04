@@ -1,0 +1,174 @@
+name: "🌉 Discussion → PR Response Bridge (RC-3)"
+
+# RC-3 (S300): Detects new discussion_comment events and checks if the
+# discussion is linked to an open PR (by title pattern or body tag).
+# If found, posts a compact notification to the PR so the agent sees it.
+#
+# Motivation: Without this bridge, maintainer replies in Discussion #3756
+# (#3673, or any per-PR discussion) are invisible to Copilot between sessions.
+# The agent can only see PR comments, not Discussion comments. This workflow
+# closes the loop by mirroring a one-line summary into the PR thread.
+#
+# Dedup: Uses marker <!-- discussion-bridge:{discussion_number}:{comment_id} -->
+#        so the same discussion comment never triggers more than one PR notification.
+#
+# Token: CODEX_MASTER_KEY preferred (ensures bot appears as @mbaetiong-recognised
+#        actor for Comment Review Gate pass-through). Falls back to GITHUB_TOKEN.
+
+on:
+  discussion_comment:
+    types: [created]
+
+concurrency:
+  group: discussion-bridge-${{ github.event.comment.id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  discussions: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  bridge:
+    name: "Bridge discussion comment → PR notification"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: "Extract PR number from discussion"
+        id: extract_pr
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const discussionNumber = context.payload.discussion?.number;
+            const discussionTitle  = context.payload.discussion?.title || '';
+            const commentId        = context.payload.comment?.id;
+            const commentBody      = (context.payload.comment?.body || '').slice(0, 500);
+            const commentAuthor    = context.payload.comment?.user?.login || 'unknown';
+
+            core.info(`Discussion #${discussionNumber}: new comment ${commentId} from @${commentAuthor}`);
+
+            // Skip Copilot-bot comments — they don't need to be bridged back to themselves
+            const COPILOT_LOGINS = new Set([
+              'copilot-swe-agent[bot]', 'github-copilot[bot]', 'copilot[bot]',
+            ]);
+            if (COPILOT_LOGINS.has(commentAuthor)) {
+              core.info(`Skipping bridge for Copilot bot comment from @${commentAuthor}`);
+              core.setOutput('skip', 'true');
+              return;
+            }
+
+            // Try to find a PR number from:
+            //   1. Title pattern: "📋 Agent Accountability — PR #<N>" or "... PR #<N>"
+            //   2. Body tag: <!-- pr-number:<N> -->
+            let prNumber = 0;
+            const titleMatch = discussionTitle.match(/PR\s*#(\d+)/i);
+            if (titleMatch) {
+              prNumber = parseInt(titleMatch[1], 10);
+              core.info(`Extracted PR #${prNumber} from discussion title`);
+            }
+            if (!prNumber) {
+              const bodyTag = (context.payload.discussion?.body || '').match(/<!--\s*pr-number:(\d+)\s*-->/);
+              if (bodyTag) {
+                prNumber = parseInt(bodyTag[1], 10);
+                core.info(`Extracted PR #${prNumber} from discussion body tag`);
+              }
+            }
+
+            if (!prNumber) {
+              core.info('No PR number found in discussion title or body — skipping bridge');
+              core.setOutput('skip', 'true');
+              return;
+            }
+
+            // Verify the PR is still open
+            try {
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                pull_number: prNumber,
+              });
+              if (pr.state !== 'open') {
+                core.info(`PR #${prNumber} is ${pr.state} — skipping bridge`);
+                core.setOutput('skip', 'true');
+                return;
+              }
+            } catch (e) {
+              core.warning(`Could not verify PR #${prNumber}: ${e.message}`);
+              core.setOutput('skip', 'true');
+              return;
+            }
+
+            core.setOutput('skip',              'false');
+            core.setOutput('pr_number',          String(prNumber));
+            core.setOutput('discussion_number',  String(discussionNumber));
+            core.setOutput('comment_id',         String(commentId));
+            core.setOutput('comment_author',     commentAuthor);
+            core.setOutput('comment_preview',    commentBody.slice(0, 200).replace(/\n/g, ' '));
+
+      - name: "Post bridge notification to PR"
+        if: steps.extract_pr.outputs.skip != 'true'
+        uses: actions/github-script@v8
+        env:
+          PR_NUMBER:         ${{ steps.extract_pr.outputs.pr_number }}
+          DISCUSSION_NUMBER: ${{ steps.extract_pr.outputs.discussion_number }}
+          COMMENT_ID:        ${{ steps.extract_pr.outputs.comment_id }}
+          COMMENT_AUTHOR:    ${{ steps.extract_pr.outputs.comment_author }}
+          COMMENT_PREVIEW:   ${{ steps.extract_pr.outputs.comment_preview }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber         = parseInt(process.env.PR_NUMBER, 10);
+            const discussionNumber = process.env.DISCUSSION_NUMBER;
+            const commentId        = process.env.COMMENT_ID;
+            const author           = process.env.COMMENT_AUTHOR;
+            const preview          = process.env.COMMENT_PREVIEW || '(no preview)';
+
+            const BRIDGE_MARKER = `<!-- discussion-bridge:${discussionNumber}:${commentId} -->`;
+            const DISCUSSION_URL = `https://github.com/${context.repo.owner}/${context.repo.repo}/discussions/${discussionNumber}`;
+
+            // Dedup: check last 50 PR comments for marker
+            try {
+              const { data: existing } = await github.rest.issues.listComments({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: prNumber,
+                per_page:     50,
+              });
+              if (existing.some(c => (c.body || '').includes(BRIDGE_MARKER))) {
+                core.info(`Bridge notification already posted for comment ${commentId} — skipping`);
+                return;
+              }
+            } catch (e) {
+              core.warning(`Could not check existing PR comments: ${e.message}`);
+            }
+
+            const body = [
+              BRIDGE_MARKER,
+              `## 💬 Discussion Reply — @${author} (Discussion #${discussionNumber})`,
+              ``,
+              `> @${author} replied in [Discussion #${discussionNumber}](${DISCUSSION_URL}):`,
+              `>`,
+              `> ${preview.slice(0, 300)}${preview.length > 300 ? '…' : ''}`,
+              ``,
+              `@copilot+claude-sonnet-4.6 A maintainer replied in the linked discussion. ` +
+              `Please review the response and act on it in your next session.`,
+              ``,
+              `---`,
+              `*Auto-bridged by \`discussion-response-bridge.yml\` (RC-3, S300) · ` +
+              `[↗ View in Discussion](${DISCUSSION_URL})*`,
+            ].join('\n');
+
+            try {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+              core.info(`✅ Bridge notification posted to PR #${prNumber} for discussion comment ${commentId}`);
+            } catch (e) {
+              core.warning(`Failed to post bridge notification: ${e.message}`);
+            }

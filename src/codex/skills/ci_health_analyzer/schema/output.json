@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["category", "pattern_id", "confidence", "fix_commands"],
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "transient-infra",
+        "code-fix-required",
+        "pre-flight-gate",
+        "workflow-config",
+        "supply-chain",
+        "flaky",
+        "unknown"
+      ]
+    },
+    "pattern_id": {"type": "string"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "fix_commands": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "triage_note": {"type": "string"},
+    "all_matches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pattern_id": {"type": "string"},
+          "category": {"type": "string"},
+          "confidence": {"type": "number"},
+          "fix_commands": {"type": "array", "items": {"type": "string"}},
+          "triage_note": {"type": "string"}
+        }
+      }
+    },
+    "workflow_name": {"type": "string"},
+    "commit_sha": {"type": "string"}
+  }
+}

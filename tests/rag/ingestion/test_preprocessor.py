@@ -279,3 +279,95 @@ class TestUnicodeNormalization:
 
         assert result.is_valid if hasattr(result, 'is_valid') else True
         assert "日本語" in result.text
+
+
+# ---------------------------------------------------------------------------
+# Targeted gap-fill tests
+# ---------------------------------------------------------------------------
+
+
+class TestPreprocessorAllFlagsFalse:
+    """Covers False branches for each per-flag if-check in preprocess() (many arcs)."""
+
+    def test_all_optional_flags_disabled(self):
+        """With all optional flags False, every if-guard False branch is hit."""
+        config = PreprocessingConfig(
+            normalization_level=NormalizationLevel.STANDARD,
+            normalize_unicode=False,       # 145->149
+            remove_control_chars=False,    # 149->153
+            remove_html_tags=False,        # 153->157
+            remove_urls=False,
+            remove_emails=False,
+            normalize_whitespace=False,    # 165->169
+            remove_extra_newlines=False,   # 169->173
+            strip_leading_trailing=False,  # 173->177
+            lowercase=False,
+            extract_title=False,           # 182->185
+            extract_headers=False,         # 185->189
+            compute_fingerprint=False,     # 189->192
+        )
+        preprocessor = DocumentPreprocessor(config)
+        text = "<p>Hello   world\n\n\nLine2</p>"
+        result = preprocessor.preprocess(text)
+        # Nothing changed because all transforms disabled
+        assert result.text == text
+        assert result.changes == []
+        assert result.fingerprint == ""
+        assert "title" not in result.metadata
+        assert "headers" not in result.metadata
+
+
+class TestPreprocessorPreserveNewlinesFalse:
+    """Covers else branch in _remove_control_chars (line 215)."""
+
+    def test_preserve_newlines_false_uses_pattern(self):
+        """preserve_newlines=False → CONTROL_CHAR_PATTERN removes all control chars (line 215)."""
+        config = PreprocessingConfig(
+            preserve_newlines=False,
+            remove_control_chars=True,
+        )
+        preprocessor = DocumentPreprocessor(config)
+        # \x0b (vertical tab) is a control char not caught by the newline-preserving regex
+        text = "Hello\x0bworld"
+        result = preprocessor.preprocess(text)
+        assert "\x0b" not in result.text
+        assert "control_chars_removed" in result.changes
+
+
+class TestPreprocessorRemoveWithNoMatch:
+    """Covers False branches when remove_urls/remove_emails find nothing (lines 231->233, 238->240)."""
+
+    def test_remove_urls_no_urls_present(self):
+        """remove_urls=True but no URLs → cleaned == text → no change logged (line 231->233)."""
+        config = PreprocessingConfig(remove_urls=True)
+        preprocessor = DocumentPreprocessor(config)
+        result = preprocessor.preprocess("No URLs in this text at all.")
+        assert "urls_removed" not in result.changes
+
+    def test_remove_emails_no_emails_present(self):
+        """remove_emails=True but no emails → no change logged (line 238->240)."""
+        config = PreprocessingConfig(remove_emails=True)
+        preprocessor = DocumentPreprocessor(config)
+        result = preprocessor.preprocess("No email addresses here.")
+        assert "emails_removed" not in result.changes
+
+
+class TestExtractTitleEdgeCases:
+    """Covers edge cases in _extract_title (lines 275->exit, 277->275)."""
+
+    def test_extract_title_empty_lines_before_content(self):
+        """Empty lines before non-empty line → loop skips empties (line 277->275)."""
+        preprocessor = DocumentPreprocessor()
+        # No HTML title, no markdown header, first non-empty line after blank lines
+        text = "\n\nActual content line here"
+        result = preprocessor.preprocess(text)
+        assert result.metadata.get("title") == "Actual content line here"
+
+    def test_extract_title_all_empty_lines(self):
+        """All lines empty → for loop exits without setting title (line 275->exit)."""
+        preprocessor = DocumentPreprocessor()
+        # "\n\n\n" has no non-empty lines, no HTML title, no markdown header
+        text = "\n\n\n"
+        result = preprocessor.preprocess(text)
+        # title should NOT be set (loop completes without finding content)
+        assert "title" not in result.metadata

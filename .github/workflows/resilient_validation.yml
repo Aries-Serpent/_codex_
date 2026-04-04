@@ -83,8 +83,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Full suite: all 4 groups. Simplified suite: quick + documentation only.
-        test-group: ${{ (github.base_ref == 'main' && github.head_ref == '0D_base_') && fromJSON('["quick","documentation","integration","slow"]') || fromJSON('["quick","documentation"]') }}
+        # Full suite: all 5 groups. Simplified suite: quick + documentation + skills.
+        test-group: ${{ (github.base_ref == 'main' && github.head_ref == '0D_base_') && fromJSON('["quick","documentation","skills","integration","slow"]') || fromJSON('["quick","documentation","skills"]') }}
 
     steps:
       - uses: actions/checkout@v5
@@ -143,6 +143,13 @@ jobs:
               npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true
               python scripts/validate_docs.py --fix || echo "Doc validation warnings (non-blocking)"
               ;;
+            skills)
+              # Skills registry tests: isolated nox session with coverage
+              pip install nox --quiet
+              nox -s skills --no-venv 2>/dev/null || \
+                python -m pytest tests/skills/ -v --timeout=60 --tb=short --maxfail=10 \
+                  --cov=src/codex/skills --cov-report=xml --cov-report=json -q
+              ;;
             integration)
               # Integration tests: 300s timeout, SEQUENTIAL execution (PR #3248 Attempt 15)
               # Removed -n 2 flag to avoid xdist worker subprocess plugin discovery issues
@@ -190,83 +197,16 @@ jobs:
 
       - name: Post rescue comment on validation failure
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
         env:
-          BRANCH_REF: ${{ github.head_ref }}
-        with:
-          script: |
-            const MAX_COMMENT_LENGTH = 65536; // GitHub comment size limit
-            const group = '${{ matrix.test-group }}';
-            const sha = context.payload.pull_request.head.sha;
-            const shaShort = sha.substring(0, 12);
-            const runId = '${{ github.run_id }}';
-            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
-            const branch = process.env.BRANCH_REF || '';
-            const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            // Run-ID-scoped marker: each Run ID gets its own dedicated comment thread.
-            // Multiple failures in the same run append to the same comment.
-            // A new run always creates a new comment for clean per-run traceability.
-            const marker = `<!-- ci-rescue:${context.issue.number}:run-${runId} -->`;
-            const workflowName = `Resilient Validation Suite / validation (${group})`;
-
-            const rescueBody = [
-              '## 🚨 CI Rescue — Root Cause Analysis',
-              '',
-              `**Workflow:** \`${workflowName}\``,
-              `**Run:** [${runId}](${runUrl})`,
-              `**Branch:** \`${branch}\``,
-              `**Commit:** \`${sha}\``,
-              `**Time:** ${now}`,
-              '',
-              `@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.`,
-              '',
-              '**Steps to resolve:**',
-              '1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)',
-              `2. Check the failure logs: [${runId}](${runUrl})`,
-              '3. Apply the minimal fix and push',
-              '4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
-              '5. Verify all CI checks are green before concluding',
-              '',
-              '> **Note:** This comment is dedicated to Run ID `' + runId + '`.',
-              '> Additional failures within the same run are appended below.',
-              '> A new push will create a new comment for the new run.',
-              '',
-              '_Posted by: resilient_validation.yml → rescue comment (S266)_',
-              '',
-              '---',
-              `_[🔗 Workflow run](${runUrl})_`,
-            ].join('\n');
-
-            const fullBody = `${marker}\n${rescueBody}`;
-            const appendSection = `\n\n---\n\n### 🔄 Additional Failure — ${now}\n\n**Group:** \`${group}\`  **Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` also failed in the same run. See [run #${runId}](${runUrl}) for details.`;
-
-            // Find existing rescue comment for THIS specific run ID only.
-            // Comments from other runs use different markers and will NOT be upserted.
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const existing = comments.find(c => (c.body || '').includes(marker));
-
-            if (existing) {
-              const updated = (existing.body.trimEnd() + appendSection).substring(0, MAX_COMMENT_LENGTH);
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body: updated,
-              });
-              console.log(`Appended failure update to existing rescue comment #${existing.id} (run ${runId})`);
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: fullBody,
-              });
-              console.log(`Posted new rescue comment for run ${runId}`);
-            }
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: "Resilient Validation Suite (${{ matrix.test-group }})"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.head_ref }}
+        run: python scripts/ci/post_rescue_comment.py
 
   # P11-04: Parallel test sharding (S100)
   # Splits the "quick" test group into 4 shards using pytest-split, reducing
@@ -362,79 +302,13 @@ jobs:
 
       - name: Post rescue comment on shard failure
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
         env:
-          BRANCH_REF: ${{ github.head_ref }}
-        with:
-          script: |
-            const MAX_COMMENT_LENGTH = 65536; // GitHub comment size limit
-            const shard = '${{ matrix.shard }}';
-            const total = '${{ matrix.total }}';
-            const sha = context.payload.pull_request.head.sha;
-            const shaShort = sha.substring(0, 12);
-            const runId = '${{ github.run_id }}';
-            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
-            const branch = process.env.BRANCH_REF || '';
-            const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            // Run-ID-scoped marker: all shards in the same run share ONE comment.
-            // A new run (new push) always creates a new comment for clean per-run traceability.
-            const marker = `<!-- ci-rescue:${context.issue.number}:run-${runId} -->`;
-            const workflowName = `Resilient Validation Suite / Sharded quick tests (shard ${shard}/${total})`;
-
-            const rescueBody = [
-              '## 🚨 CI Rescue — Root Cause Analysis',
-              '',
-              `**Workflow:** \`${workflowName}\``,
-              `**Run:** [${runId}](${runUrl})`,
-              `**Branch:** \`${branch}\``,
-              `**Commit:** \`${sha}\``,
-              `**Time:** ${now}`,
-              '',
-              `@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.`,
-              '',
-              '**Steps to resolve:**',
-              '1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)',
-              `2. Check the failure logs: [${runId}](${runUrl})`,
-              '3. Apply the minimal fix and push',
-              '4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
-              '5. Verify all CI checks are green before concluding',
-              '',
-              '> **Note:** This comment is dedicated to Run ID `' + runId + '`.',
-              '> Additional shard failures within the same run are appended below.',
-              '> A new push will create a new comment for the new run.',
-              '',
-              '_Posted by: resilient_validation.yml → rescue comment (S266)_',
-              '',
-              '---',
-              `_[🔗 Workflow run](${runUrl})_`,
-            ].join('\n');
-
-            const fullBody = `${marker}\n${rescueBody}`;
-            const appendSection = `\n\n---\n\n### 🔄 Additional Failure — ${now}\n\n**Shard:** \`${shard}/${total}\`  **Run:** [${runId}](${runUrl})\n\n@copilot Shard \`${shard}/${total}\` also failed in the same run. See [run #${runId}](${runUrl}) for details.`;
-
-            // Find existing rescue comment for THIS specific run ID only.
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const existing = comments.find(c => (c.body || '').includes(marker));
-
-            if (existing) {
-              const updated = (existing.body.trimEnd() + appendSection).substring(0, MAX_COMMENT_LENGTH);
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body: updated,
-              });
-              console.log(`Appended shard failure to existing rescue comment #${existing.id} (run ${runId})`);
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: fullBody,
-              });
-              console.log(`Posted new rescue comment for run ${runId} (shard ${shard}/${total})`);
-            }
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: "Resilient Validation Suite / Shard ${{ matrix.shard }}/${{ matrix.total }}"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.head_ref }}
+        run: python scripts/ci/post_rescue_comment.py

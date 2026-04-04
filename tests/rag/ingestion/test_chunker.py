@@ -353,3 +353,326 @@ class TestChunkHash:
         chunks2 = chunker.chunk("Content B")
 
         assert chunks1[0].chunk_hash != chunks2[0].chunk_hash
+
+
+class TestChunkerFallbackStrategies:
+    """Tests for semantic/hierarchical fallback to FixedSizeChunker."""
+
+    def test_semantic_strategy_falls_back_to_fixed(self):
+        """SEMANTIC is not in STRATEGY_MAP → falls back to FixedSizeChunker."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SEMANTIC,
+            chunk_size=100,
+            chunk_overlap=0,
+        )
+        chunker = Chunker(config)
+        # Use text without trailing spaces so each 100-char slice meets min_chunk_size.
+        chunks = chunker.chunk("A" * 200)
+        assert len(chunks) >= 1
+
+    def test_hierarchical_strategy_falls_back_to_fixed(self):
+        """HIERARCHICAL is not in STRATEGY_MAP → falls back to FixedSizeChunker."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.HIERARCHICAL,
+            chunk_size=100,
+            chunk_overlap=0,
+        )
+        chunker = Chunker(config)
+        # Use text without trailing spaces so each 100-char slice meets min_chunk_size.
+        chunks = chunker.chunk("B" * 200)
+        assert len(chunks) >= 1
+
+    def test_empty_text_returns_empty_list(self):
+        """Empty text returns empty list regardless of strategy."""
+        for strategy in ChunkingStrategy:
+            config = ChunkingConfig(strategy=strategy)
+            chunker = Chunker(config)
+            assert chunker.chunk("") == []
+            assert chunker.chunk("   ") == []
+
+
+class TestChunkBatch:
+    """Tests for Chunker.chunk_batch."""
+
+    def test_batch_empty_list(self):
+        chunker = Chunker()
+        assert chunker.chunk_batch([]) == []
+
+    def test_batch_single_text(self):
+        chunker = Chunker()
+        results = chunker.chunk_batch(["Hello world"])
+        assert len(results) == 1
+        assert len(results[0]) >= 1
+
+    def test_batch_multiple_texts(self):
+        chunker = Chunker()
+        texts = ["First document.", "Second document.", "Third document."]
+        results = chunker.chunk_batch(texts)
+        assert len(results) == 3
+        assert all(len(r) >= 1 for r in results)
+
+    def test_batch_with_empty_text(self):
+        chunker = Chunker()
+        results = chunker.chunk_batch(["non-empty", "", "also non-empty"])
+        assert len(results) == 3
+        assert len(results[0]) >= 1
+        assert results[1] == []
+
+
+class TestChunkDocumentFunction:
+    """Tests for the chunk_document() convenience function."""
+
+    def test_basic_chunk_document(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        chunks = chunk_document("Hello world " * 50)
+        assert len(chunks) >= 1
+
+    def test_chunk_document_with_strategy(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        chunks = chunk_document(
+            "Sentence one. Sentence two. Sentence three.",
+            strategy=ChunkingStrategy.SENTENCE,
+            chunk_size=30,
+        )
+        assert len(chunks) >= 1
+
+    def test_chunk_document_sliding_window(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        # text must exceed default window_step (500) to produce ≥2 windows.
+        # chunk_size must exceed default min_chunk_size (100) so chunks aren't filtered.
+        text = "x " * 600  # 1200 chars
+        chunks = chunk_document(
+            text, strategy=ChunkingStrategy.SLIDING_WINDOW, chunk_size=600
+        )
+        assert len(chunks) >= 2
+
+    def test_chunk_document_empty(self):
+        from codex.rag.ingestion.chunker import chunk_document
+        assert chunk_document("") == []
+
+
+class TestParagraphChunkerEdgeCases:
+    """Additional edge-case coverage for ParagraphChunker."""
+
+    def test_paragraph_large_single_paragraph(self):
+        """Single paragraph exceeding max_chunk_size triggers split."""
+        from codex.rag.ingestion.chunker import ParagraphChunker
+        config = ChunkingConfig(max_chunk_size=50, paragraph_separator="\n\n")
+        chunker = ParagraphChunker(config)
+        long_para = "word " * 30
+        chunks = chunker.chunk(long_para)
+        assert len(chunks) >= 1
+
+    def test_paragraph_empty_paragraphs_skipped(self):
+        """Empty paragraphs between real ones are skipped."""
+        from codex.rag.ingestion.chunker import ParagraphChunker
+        config = ChunkingConfig(paragraph_separator="\n\n")
+        chunker = ParagraphChunker(config)
+        text = "First para.\n\n\n\nSecond para."
+        chunks = chunker.chunk(text)
+        assert len(chunks) >= 1
+
+
+class TestSlidingWindowEdgeCases:
+    """Additional edge-case coverage for SlidingWindowChunker."""
+
+    def test_small_step_fills_gaps(self):
+        """window_step < chunk_size creates overlapping windows."""
+        from codex.rag.ingestion.chunker import SlidingWindowChunker
+        config = ChunkingConfig(chunk_size=20, window_step=10, min_chunk_size=5)
+        chunker = SlidingWindowChunker(config)
+        text = "abcdefghij" * 5
+        chunks = chunker.chunk(text)
+        assert len(chunks) >= 3
+
+    def test_window_step_larger_than_text(self):
+        """window_step ≥ text length → single chunk."""
+        from codex.rag.ingestion.chunker import SlidingWindowChunker
+        config = ChunkingConfig(chunk_size=100, window_step=200, min_chunk_size=1)
+        chunker = SlidingWindowChunker(config)
+        chunks = chunker.chunk("Short text")
+        assert len(chunks) == 1
+
+
+# ---------------------------------------------------------------------------
+# Targeted gap-fill tests to raise overall coverage to ≥95%
+# ---------------------------------------------------------------------------
+
+
+class TestFixedSizeChunkerCoverage:
+    """Cover missed branches in FixedSizeChunker."""
+
+    def test_no_hash_when_compute_chunk_hash_false(self):
+        """_create_chunk: compute_chunk_hash=False → chunk_hash is empty (line 119->122)."""
+        config = ChunkingConfig(
+            chunk_size=500,
+            compute_chunk_hash=False,
+            min_chunk_size=1,
+        )
+        chunker = FixedSizeChunker(config)
+        chunks = chunker.chunk("Hello world content here for testing")
+        assert all(c.chunk_hash == "" for c in chunks)
+
+    def test_whitespace_only_text_returns_empty(self):
+        """FixedSizeChunker.chunk: whitespace-only text → [] (line 146)."""
+        config = ChunkingConfig(chunk_size=100, min_chunk_size=10)
+        chunker = FixedSizeChunker(config)
+        assert chunker.chunk("   \t\t  ") == []
+
+    def test_negative_overlap_exits_while_via_condition(self):
+        """Negative chunk_overlap causes while condition to go False naturally (line 165->198)."""
+        config = ChunkingConfig(
+            chunk_size=50,
+            chunk_overlap=-60,  # next_start jumps past text_len
+            min_chunk_size=5,
+            respect_sentence_boundaries=False,
+        )
+        chunker = FixedSizeChunker(config)
+        text = "A" * 100
+        chunks = chunker.chunk(text)
+        # At least one chunk is produced; while exits by condition, not break
+        assert len(chunks) >= 1
+
+    def test_chunk_below_min_size_is_skipped(self):
+        """Chunk stripped to empty is skipped (line 177->189 False branch)."""
+        config = ChunkingConfig(
+            chunk_size=10,
+            chunk_overlap=0,
+            min_chunk_size=5,
+            respect_sentence_boundaries=False,
+        )
+        chunker = FixedSizeChunker(config)
+        # First 10 chars are spaces → stripped to "" → skipped
+        text = " " * 10 + "B" * 20
+        chunks = chunker.chunk(text)
+        # Only the non-whitespace part should produce chunks
+        assert all(c.text.strip() != "" for c in chunks)
+
+    def test_overlap_ge_chunk_size_forces_advance(self):
+        """overlap >= chunk_size triggers next_start = end guard (line 195)."""
+        config = ChunkingConfig(
+            chunk_size=50,
+            chunk_overlap=100,  # overlap > chunk_size
+            min_chunk_size=5,
+            respect_sentence_boundaries=False,
+        )
+        chunker = FixedSizeChunker(config)
+        text = "X" * 200
+        # Should not infinite-loop; produces some chunks
+        chunks = chunker.chunk(text)
+        assert len(chunks) >= 1
+
+
+class TestSentenceChunkerCoverage:
+    """Cover missed branches in SentenceChunker."""
+
+    def test_empty_text_returns_empty(self):
+        """SentenceChunker.chunk('') → [] (line 232)."""
+        config = ChunkingConfig(strategy=ChunkingStrategy.SENTENCE, min_chunk_size=1)
+        chunker = SentenceChunker(config)
+        assert chunker.chunk("") == []
+
+    def test_all_empty_sentences_skipped(self):
+        """Sentences that strip to empty are skipped (lines 246-247)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SENTENCE,
+            max_chunk_size=200,
+            min_chunk_size=1,
+        )
+        chunker = SentenceChunker(config)
+        # After split the 'sentences' may include whitespace-only strings
+        result = chunker.chunk("   \n   ")
+        # No valid sentences → empty list (or empty final chunk path)
+        assert isinstance(result, list)
+
+    def test_max_chunk_size_triggers_save(self):
+        """Adding a sentence exceeds max_chunk_size → save current chunk (lines 254-267)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SENTENCE,
+            max_chunk_size=30,
+            min_chunk_size=1,
+        )
+        chunker = SentenceChunker(config)
+        text = "Short one. This is a much longer second sentence here for testing purposes."
+        chunks = chunker.chunk(text)
+        assert len(chunks) >= 2
+
+    def test_empty_final_chunk_text_skipped(self):
+        """If current_chunk_text is empty after loop, no final chunk added (line 274->284)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SENTENCE,
+            max_chunk_size=200,
+            min_chunk_size=1,
+        )
+        chunker = SentenceChunker(config)
+        # Whitespace-only text: all sentences stripped to "", all skipped
+        # → current_chunk_text stays "" → final if is False → 274->284
+        chunks = chunker.chunk("   \n   \n   ")
+        assert chunks == []
+
+
+class TestParagraphChunkerCoverage:
+    """Cover missed branches in ParagraphChunker."""
+
+    def test_empty_text_returns_empty(self):
+        """ParagraphChunker.chunk('') → [] (line 303)."""
+        config = ChunkingConfig(strategy=ChunkingStrategy.PARAGRAPH, min_chunk_size=1)
+        chunker = ParagraphChunker(config)
+        assert chunker.chunk("") == []
+
+    def test_max_chunk_size_triggers_save(self):
+        """Paragraph exceeds max_chunk_size → save current chunk (lines 325-337)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.PARAGRAPH,
+            max_chunk_size=30,
+            min_chunk_size=1,
+            paragraph_separator="\n\n",
+        )
+        chunker = ParagraphChunker(config)
+        text = "Short para.\n\nThis is a much longer second paragraph with lots of content here."
+        chunks = chunker.chunk(text)
+        assert len(chunks) >= 2
+
+    def test_all_empty_paragraphs_no_final_chunk(self):
+        """All-empty paragraphs → current_chunk_text stays '' → final if False (line 344->354)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.PARAGRAPH,
+            max_chunk_size=200,
+            min_chunk_size=1,
+            paragraph_separator="\n\n",
+        )
+        chunker = ParagraphChunker(config)
+        # Only separators → all paragraphs are empty → nothing saved
+        chunks = chunker.chunk("\n\n\n\n")
+        assert chunks == []
+
+
+class TestSlidingWindowChunkerCoverage:
+    """Cover missed branches in SlidingWindowChunker."""
+
+    def test_chunk_below_min_size_skipped(self):
+        """Chunk stripped below min_chunk_size is skipped (line 378->389 False branch)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SLIDING_WINDOW,
+            chunk_size=10,
+            window_step=10,
+            min_chunk_size=20,  # min > chunk_size so chunks always fail
+        )
+        chunker = SlidingWindowChunker(config)
+        # chunk_text will never be >= min_chunk_size=20 since chunk_size=10
+        chunks = chunker.chunk("A" * 50)
+        assert chunks == []
+
+    def test_gap_prevention_fires(self):
+        """window_step > chunk_size triggers gap-prevention (line 391)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SLIDING_WINDOW,
+            chunk_size=20,
+            window_step=30,  # step > chunk_size → gap possible
+            min_chunk_size=1,
+        )
+        chunker = SlidingWindowChunker(config)
+        text = "A" * 100
+        chunks = chunker.chunk(text)
+        # Should produce chunks without gaps
+        assert len(chunks) >= 1

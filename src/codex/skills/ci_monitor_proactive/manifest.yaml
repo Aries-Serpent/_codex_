@@ -1,0 +1,51 @@
+id: ci.monitor.proactive
+version: 1.0.0
+name: Proactive CI Monitor
+description: >
+  Scan open PRs for unhandled CI failures and post @copilot rescue comments
+  via the ci.health.analyzer skill for root-cause classification.  Designed
+  to run on a schedule (every 30 minutes) or on-demand from the cognitive
+  brain orchestrator.  Uses per-PR history accumulation for trend detection
+  and CODEX_MASTER_KEY to post rescue comments as @mbaetiong.
+
+  The skill wraps scripts/ci/proactive_ci_monitor.py so the cognitive brain
+  can trigger scans programmatically without shelling out.
+capability_tags:
+  - ci
+  - monitoring
+  - self-healing
+  - cognitive-brain
+  - rescue
+  - proactive
+entrypoint: codex.skills.ci_monitor_proactive.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: medium
+  budgets:
+    calls: 100
+    tokens: 200000
+    wallclock_ms: 120000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: skills_ci_monitor_proactive_v1
+  hash: "<sha256>"
+  aais_score: 0.90
+  token_count: 4000
+  embed_index_ref: indexes/skills_v1
+pda_loop:
+  enabled: true
+  plan: "Scan open PRs for unhandled CI failures"
+  do: "Classify via ci.health.analyzer; post rescue comment if escalation needed"
+  assess: "Verify rescue comment posted; check PR for @copilot response"
+  aftermath_store: ".codex/aftermath/pda_iterations.jsonl"

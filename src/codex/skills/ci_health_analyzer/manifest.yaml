@@ -1,0 +1,40 @@
+id: ci.health.analyzer
+version: 1.0.0
+name: CI Health Analyzer
+description: >
+  Analyse CI run log text and classify the failure into a root-cause category
+  (transient-infra, code-fix-required, pre-flight-gate, workflow-config,
+  supply-chain, flaky, unknown) with a confidence score and suggested fix
+  commands.  Pattern catalogue is seeded from issue #3853 triage data
+  (2026-04-02: 71 failures across 13 workflows).
+capability_tags:
+  - ci
+  - diagnosis
+  - self-healing
+  - cognitive-brain
+entrypoint: codex.skills.ci_health_analyzer.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: low
+  budgets:
+    calls: 2000
+    tokens: 200000
+    wallclock_ms: 15000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: skills_ci_health_analyzer_v1
+  hash: "<sha256>"
+  aais_score: 0.91
+  token_count: 6000
+  embed_index_ref: indexes/skills_v1

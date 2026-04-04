@@ -49,11 +49,18 @@ jobs:
       workflows_to_skip: ${{ steps.parse.outputs.workflows_to_skip }}
       pr_number: ${{ steps.resolve-pr.outputs.pr_number }}
       has_checklist: ${{ steps.parse.outputs.has_checklist }}
+      ff_approved: ${{ steps.parse-ff.outputs.ff_approved }}
+      ff_files: ${{ steps.parse-ff.outputs.ff_files }}
+      ff_merge_mode: ${{ steps.parse-ff.outputs.ff_merge_mode }}
+      ff_dry_run: ${{ steps.parse-ff.outputs.ff_dry_run }}
     steps:
       - name: Resolve PR number
         id: resolve-pr
+        env:
+          PR_EVENT_NUMBER: ${{ github.event.pull_request.number }}
+          PR_INPUT_NUMBER: ${{ github.event.inputs.pr_number }}
         run: |
-          PR="${{ github.event.pull_request.number || github.event.inputs.pr_number }}"
+          PR="${PR_EVENT_NUMBER:-$PR_INPUT_NUMBER}"
           if [ -z "$PR" ]; then
             echo "::error::Could not determine PR number"
             exit 1
@@ -65,9 +72,11 @@ jobs:
         id: parse
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESOLVED_PR: ${{ steps.resolve-pr.outputs.pr_number }}
+          GH_REPO: ${{ github.repository }}
         run: |
-          PR="${{ steps.resolve-pr.outputs.pr_number }}"
-          BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
+          PR="${RESOLVED_PR}"
+          BODY=$(gh pr view "$PR" --repo "${GH_REPO}" --json body --jq '.body // ""')
 
           # Locate the Workflow Execution Checklist section
           SECTION=$(echo "$BODY" | awk '
@@ -100,6 +109,50 @@ jobs:
           echo "✅ Workflows to run:  ${CHECKED:-<none>}"
           echo "⏭️ Workflows to skip: ${UNCHECKED:-<none>}"
 
+      - name: Parse fast-forward section from PR body
+        id: parse-ff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESOLVED_PR: ${{ steps.resolve-pr.outputs.pr_number }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          PR="${RESOLVED_PR}"
+          BODY=$(gh pr view "$PR" --repo "${GH_REPO}" --json body --jq '.body // ""')
+
+          # Check if the FF checkbox is ticked:  - [x] ⚡ **Fast-Forward Approved**
+          FF_APPROVED="false"
+          if echo "$BODY" | grep -qP '^\s*-\s*\[x\].*Fast-Forward Approved'; then
+            FF_APPROVED="true"
+            echo "⚡ Fast-Forward Approved checkbox is CHECKED"
+          else
+            echo "⚡ Fast-Forward Approved checkbox is unchecked — skipping FF"
+          fi
+          echo "ff_approved=${FF_APPROVED}" >> "$GITHUB_OUTPUT"
+
+          # Extract inline config comments:
+          #   <!-- FF_MERGE_MODE: create-pr -->
+          #   <!-- FF_FILES: .github/workflows/foo.yml, scripts/ci/bar.py -->
+          #   <!-- FF_DRY_RUN: false -->
+          FF_MERGE_MODE=$(echo "$BODY" | grep -oP '(?<=<!-- FF_MERGE_MODE: )\S+(?= -->)' | head -1)
+          FF_FILES=$(echo "$BODY" | grep -oP '(?<=<!-- FF_FILES: ).*(?= -->)' | head -1 | xargs)
+          FF_DRY_RUN=$(echo "$BODY" | grep -oP '(?<=<!-- FF_DRY_RUN: )\S+(?= -->)' | head -1)
+
+          # Parse explicit file list from FF_BLOCK_START … FF_BLOCK_END
+          FF_BLOCK=$(echo "$BODY" | awk '/FF_BLOCK_START/{found=1;next} /FF_BLOCK_END/{found=0} found{print}' | grep -v '^$' | grep -v '^Files to' | tr '\n' ',')
+          FF_BLOCK="${FF_BLOCK%,}"
+          # Prefer explicit block over inline comment files
+          if [ -n "$FF_BLOCK" ]; then
+            FF_FILES="$FF_BLOCK"
+          fi
+
+          echo "ff_merge_mode=${FF_MERGE_MODE:-create-pr}" >> "$GITHUB_OUTPUT"
+          echo "ff_files=${FF_FILES}"                       >> "$GITHUB_OUTPUT"
+          echo "ff_dry_run=${FF_DRY_RUN:-false}"            >> "$GITHUB_OUTPUT"
+
+          echo "   merge_mode=${FF_MERGE_MODE:-create-pr}"
+          echo "   files=${FF_FILES:-<full allowlist>}"
+          echo "   dry_run=${FF_DRY_RUN:-false}"
+
   post-gate-summary:
     name: "Post Execution Plan"
     needs: parse-checklist
@@ -110,13 +163,22 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Build and post execution plan comment
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_SERVER_URL: ${{ github.server_url }}
+          GH_RUN_ID: ${{ github.run_id }}
+          GATE_PR: ${{ needs.parse-checklist.outputs.pr_number }}
+          GATE_TO_RUN: ${{ needs.parse-checklist.outputs.workflows_to_run }}
+          GATE_TO_SKIP: ${{ needs.parse-checklist.outputs.workflows_to_skip }}
+          GATE_HAS_CHECKLIST: ${{ needs.parse-checklist.outputs.has_checklist }}
+          GATE_TRIGGER: ${{ github.event.inputs.triggered_by || github.event_name }}
         run: |
-          PR="${{ needs.parse-checklist.outputs.pr_number }}"
-          TO_RUN="${{ needs.parse-checklist.outputs.workflows_to_run }}"
-          TO_SKIP="${{ needs.parse-checklist.outputs.workflows_to_skip }}"
-          HAS_CHECKLIST="${{ needs.parse-checklist.outputs.has_checklist }}"
-          TRIGGER="${{ github.event.inputs.triggered_by || github.event_name }}"
-          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          PR="${GATE_PR}"
+          TO_RUN="${GATE_TO_RUN}"
+          TO_SKIP="${GATE_TO_SKIP}"
+          HAS_CHECKLIST="${GATE_HAS_CHECKLIST}"
+          TRIGGER="${GATE_TRIGGER}"
+          RUN_URL="https://github.com/${GH_REPO}/actions/runs/${GH_RUN_ID}"
           MARKER="<!-- workflow-execution-gate:${PR} -->"
 
           if [ "$HAS_CHECKLIST" != "true" ]; then
@@ -127,7 +189,7 @@ jobs:
               "No '## 🔄 Workflow Execution Checklist' section was found in the PR body." \
               "All workflows will follow their default triggers." \
               "" \
-              "_See: [Workflow Checklist Wiring Plan](${{ github.server_url }}/${{ github.repository }}/blob/0D_base_/docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md)_" \
+              "_See: [Workflow Checklist Wiring Plan](${GH_SERVER_URL}/${GH_REPO}/blob/0D_base_/docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md)_" \
               "_[🔗 Gate run](${RUN_URL}) — triggered by: ${TRIGGER}_" \
               > "${RUNNER_TEMP}/gate_body.txt"
             BODY=$(cat "${RUNNER_TEMP}/gate_body.txt")
@@ -164,16 +226,163 @@ jobs:
           fi
 
           # Upsert: update existing gate comment or create new one
-          EXISTING_ID=$(gh pr view "$PR" --repo "${{ github.repository }}" \
+          EXISTING_ID=$(gh pr view "$PR" --repo "${GH_REPO}" \
             --json comments \
             --jq "[.comments[] | select(.body | startswith(\"${MARKER}\"))] | last | .databaseId // empty" \
             2>/dev/null || echo "")
 
           if [ -n "$EXISTING_ID" ] && [ "$EXISTING_ID" != "null" ]; then
-            gh api "repos/${{ github.repository }}/issues/comments/${EXISTING_ID}" \
+            gh api "repos/${GH_REPO}/issues/comments/${EXISTING_ID}" \
               -X PATCH --field body="$BODY"
             echo "✅ Updated existing gate comment (ID: ${EXISTING_ID})"
           else
-            gh pr comment "$PR" --repo "${{ github.repository }}" --body "$BODY"
+            gh pr comment "$PR" --repo "${GH_REPO}" --body "$BODY"
             echo "✅ Created new gate comment on PR #${PR}"
           fi
+
+  # ── Fast-Forward Safe Files ───────────────────────────────────────────────
+  # Fires only when the maintainer has ticked the ⚡ Fast-Forward Approved
+  # checkbox in the PR body WEC section.
+  fast-forward:
+    name: "⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})"
+    needs: parse-checklist
+    # Gate: FF checkbox ticked AND parse job succeeded
+    if: |
+      needs.parse-checklist.result == 'success' &&
+      needs.parse-checklist.outputs.ff_approved == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+
+    steps:
+      - name: Checkout fast-forward script
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            scripts/ci/fast_forward_safe_files.py
+            .codex/fast_forward_allowlist.yaml
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml --quiet
+
+      - name: "⚡ Execute fast-forward"
+        id: ff
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          FF_PR: ${{ needs.parse-checklist.outputs.pr_number }}
+          FF_MERGE_MODE: ${{ needs.parse-checklist.outputs.ff_merge_mode }}
+          FF_DRY_RUN: ${{ needs.parse-checklist.outputs.ff_dry_run }}
+          FF_FILES: ${{ needs.parse-checklist.outputs.ff_files }}
+        run: |
+          PR="${FF_PR}"
+          MERGE_MODE="${FF_MERGE_MODE}"
+          DRY_RUN="${FF_DRY_RUN}"
+          FF_FILES_LIST="${FF_FILES}"
+
+          # Build optional --files arg as a Bash array (avoids SC2089/SC2090)
+          FILES_ARG=()
+          if [ -n "$FF_FILES_LIST" ]; then
+            # Convert comma/space list to individual --files arguments
+            read -ra _FILE_LIST <<< "$(echo "$FF_FILES_LIST" | tr ',' ' ')"
+            FILES_ARG=(--files "${_FILE_LIST[@]}")
+          fi
+
+          DRY_FLAG=()
+          [ "$DRY_RUN" = "true" ] && DRY_FLAG=(--dry-run)
+
+          python scripts/ci/fast_forward_safe_files.py \
+            --repo  "$GITHUB_REPOSITORY" \
+            --token "$GITHUB_TOKEN" \
+            --pr    "$PR" \
+            --target main \
+            --merge-mode "$MERGE_MODE" \
+            --output /tmp/ff_result.json \
+            "${DRY_FLAG[@]}" "${FILES_ARG[@]}"
+
+      - name: Upload fast-forward result artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wec-fast-forward-pr${{ needs.parse-checklist.outputs.pr_number }}-${{ github.run_id }}
+          path: /tmp/ff_result.json
+          retention-days: 30
+
+      - name: Post fast-forward result comment to PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ needs.parse-checklist.outputs.pr_number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          [ -f /tmp/ff_result.json ] || exit 0
+
+          python3 - <<'PYEOF'
+          import json, os, subprocess
+
+          data     = json.load(open('/tmp/ff_result.json'))
+          pr       = os.environ.get('PR', '?')
+          repo     = os.environ.get('GITHUB_REPOSITORY', '')
+          run_url  = f"https://github.com/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')}"
+          status   = data.get('status', 'unknown')
+          icons    = {'dry-run':'🔕','pr-created':'✅','direct-pushed':'🚀','nothing-to-promote':'⏭️'}
+          label    = icons.get(status, f'❓ {status}')
+          marker   = f"<!-- wec-ff-result:{pr} -->"
+
+          lines = [
+              marker,
+              f"## ⚡ Fast-Forward Result — {label}",
+              "",
+          ]
+          if status == 'pr-created':
+              lines += [
+                  f"**Fast-forward PR:** [#{data['fast_forward_pr']}]({data['fast_forward_pr_url']})",
+                  f"**Staging branch:** `{data['staging_branch']}`",
+                  "",
+              ]
+          elif status == 'direct-pushed':
+              lines += [
+                  f"**Pushed to:** `{data['target_branch']}`",
+                  f"**New SHA:** `{data.get('new_sha','?')[:8]}`",
+                  "",
+              ]
+
+          promoted = data.get('files_promoted') or data.get('would_promote', [])
+          if promoted:
+              lines += [f"### Files promoted ({len(promoted)})", ""]
+              lines += [f"- `{f}`" for f in promoted]
+          excluded = data.get('files_excluded') or data.get('would_exclude', [])
+          if excluded:
+              lines += [f"\n### Excluded — not in allowlist ({len(excluded)})", ""]
+              lines += [f"- `{f}`" for f in excluded]
+          denied = data.get('files_denied') or data.get('would_deny', [])
+          if denied:
+              lines += [f"\n### 🚫 Denied ({len(denied)})", ""]
+              lines += [f"- `{f}`" for f in denied]
+
+          lines += ["", f"_[🔗 WEC gate run]({run_url})_"]
+          body = '\n'.join(lines)
+
+          # Upsert comment
+          result = subprocess.run(
+              ['gh', 'pr', 'view', pr, '--repo', repo, '--json', 'comments',
+               '--jq', f'[.comments[] | select(.body | startswith("{marker}"))] | last | .databaseId // empty'],
+              capture_output=True, text=True
+          )
+          existing_id = result.stdout.strip()
+          if existing_id and existing_id != 'null':
+              subprocess.run(['gh', 'api', f'repos/{repo}/issues/comments/{existing_id}',
+                              '-X', 'PATCH', '--field', f'body={body}'], check=False)
+          else:
+              subprocess.run(['gh', 'pr', 'comment', pr, '--repo', repo, '--body', body], check=False)
+          PYEOF

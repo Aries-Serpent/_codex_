@@ -27,6 +27,14 @@ on:
       - "Nightly CodeQL Alert Triage"
       - "Deferral Language Gate"
       - "CI Pattern Pipeline"
+      # Dependency submission / supply-chain (GitHub-managed + custom)
+      - "Automatic Dependency Submission (Python)"
+      - "Resilient Dependency Submission"
+      # Validation suites
+      - "Resilient Validation Suite"
+      - "Validation Pipeline"
+      - "Auto-Fix Common CI Issues"
+      - "PR Auto-Fix Check"
     types: [completed]
   schedule:
     - cron: "0 2 * * *"   # nightly 02:00 UTC health sweep
@@ -300,10 +308,25 @@ jobs:
           CATEGORY: ${{ steps.build_prompt.outputs.category }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
-          # Build SHA-scoped upsert marker so each commit gets ONE prompt comment
-          # per category, updated in-place rather than creating new duplicates.
+          # ── Rate-limit dedup guard: skip if a copilot-healing prompt was posted < 30 min ago ──
+          # Mirrors the guard in iterative-self-healing-ci.yml copilot-escalation job.
           SHA_SHORT="${HEAD_SHA:0:12}"
           MARKER="<!-- copilot-healing:${SHA_SHORT}:${CATEGORY} -->"
+          JQ_EXPR='[.[] | select(.body | contains("<!-- copilot-healing:"))] | last | .created_at // empty'
+          LAST_POST=$(gh api \
+            "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
+            --jq "$JQ_EXPR" 2>/dev/null || echo "")
+          if [ -n "$LAST_POST" ]; then
+            NOW_TS=$(date +%s)
+            LAST_TS=$(date -d "${LAST_POST}" +%s 2>/dev/null || echo "0")
+            ELAPSED=$(( NOW_TS - LAST_TS ))
+            if [ "$ELAPSED" -lt 1800 ]; then
+              echo "::notice::Skipping copilot-healing prompt — last post was ${ELAPSED}s ago (< 30 min cooldown)"
+              echo "### ⏭️ @copilot Prompt Skipped (cooldown)" >> "$GITHUB_STEP_SUMMARY"
+              echo "Last healing comment was ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
 
           # Build body via run-ID-unique temp file (TEMPORARY_FILES_POLICY.md) to
           # avoid collisions when parallel jobs run on the same runner.

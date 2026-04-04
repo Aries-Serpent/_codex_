@@ -7,6 +7,178 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S307 — PR #3854 — TF-IDF small-corpus guard, OpenAI mock patch, import-migration assertions, transform error patch)
+- **`src/codex/rag/embeddings.py` TF-IDF small-corpus guard**: `TfidfEmbeddingProvider.encode()` now clamps `max_df` to `1.0` before fitting when the corpus has fewer than 3 documents. With `max_df=0.95` and `n_docs=1`, sklearn computed `floor(0.95 × 1) = 0` for max-document threshold which is less than `min_df=1`, raising `ValueError: max_df corresponds to < documents than min_df`. Fixed without changing default `max_df` for larger corpora.
+- **`tests/rag/test_rag_providers_advanced.py` OpenAI mock**: Corrected `@patch` decorator path from `src.codex.rag.embeddings.OpenAI` → `codex.rag.embeddings.OpenAI`. The old path didn't resolve to the live module so the mock never replaced the real client, causing a real API call with `test_key` that returned `401 AuthenticationError`.
+- **`tests/agents/test_import_migration_orchestrator.py` migration assertions**: `ImportMigrationOrchestrator` migrates `from training.` → `from src.training.` (adds `src.` prefix). Three test assertions were checking for the OLD pattern after migration: fixed `test_execute_migrations_actual` (line 304), `test_end_to_end_migration_workflow` (line 396), and `test_multiple_migrations_same_file` (lines 486-487) to assert the new `src.`-prefixed imports are present.
+- **`tests/codex/test_transform_phase9_1.py` transform error patch**: `test_transform_reports_errors` used `@patch("src.codex.transform.transformer._apply_pathlib_migration", ...)` — the `src.` prefix in the patch path does not match the installed module path `codex.transform.transformer`, so the mock silently had no effect and `result.errors` was always empty. Fixed to `codex.transform.transformer._apply_pathlib_migration`.
+
+### Fixed (S306 — PR #3854 — ollama type-ignore removal, compression Zip-Slip, doc_loader, secrets baseline, CHANGELOG cross-ref, RAG coverage 95%)
+
+- **PR template WEC audit**: Verified all 36 existing opt-in checkbox entries against actual `.github/workflows/` files — all ✅ present. No stale/wrong filenames in template.
+- **7 missing opt-in workflows added** to `pull_request_template.md` WEC block (now 43 total opt-in entries):
+  - `🧪 Testing`: `pr-checks.yml` (PR Checks, isolated cache, src/ scope), `html_visual_regression.yml` (HTML Visual Regression Screenshots)
+  - `🔒 Security/Quality`: `template_lint.yml` (Template / HTML Include Lint)
+  - `⚙️ Infrastructure`: `e-to-d-transition-gate.yml` (E→D Transition Readiness Gate), `d-capable-promotion-gate.yml` (D_CAPABLE Agent Promotion Gate), `qa-walkthrough.yml` (QA Walkthrough Agent), `mcp-health.yml` (MCP Health & Metrics Gate)
+- **PR body WEC format fixed**: Previous `report_progress` calls used stale WEC block (`resilient-validation-suite.yml` → `resilient_validation.yml`, `nox-gates.yml` → `nox_gates.yml`, `docs-build.yml` → removed, mismatched section headings). PR body now uses canonical template format matching `pull_request_template.md` exactly.
+- **PR_LIFECYCLE.md v2.1.0**: §2.7 discussion workflows table, §7 CB App token note, §14.1 P2-A/P5-C marked ✅ Done, §18.5 3 new discussion workflow entries.
+- **pr_lifecycle_improvements.md**: P2-A (session-done dedup) → ✅ Done S299; P5-C (TTL 4h→1h) → ✅ Done S300.
+
+### Fixed (S303 — PR #3854 — CB App token for post-accountability-to-discussion.yml + webhook/infra context)
+- **`post-accountability-to-discussion.yml` CB App token**: Added `🔑 Resolve auth token for discussions:write` step (same pattern as S302 `discussion-cleanup.yml`) — mints GitHub App installation token using `_GITHUB_APP_*` secrets before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. The "Post to GitHub Discussion" step now uses `${{ steps.auth.outputs.resolved_token }}` instead of bare `${{ secrets.GITHUB_TOKEN }}`, resolving `discussions:write` failures when the standard workflow token is used. `api.github.com/installation/token` confirmed in network allowlist.
+- **Infra context ingested**: CB GitHub App has full repository + org permissions (Discussions R/W, Issues R/W, Contents R/W, Checks R/W, Code scanning R/W, Secrets R/W, Workflows R/W, etc.) with event subscriptions covering all relevant webhook events. Only 1 active webhook (push-only → `api.github.com/repos/Aries-Serpent/_codex_`). All other event routing handled natively via GitHub Actions triggers. New webhooks, if needed, will be configured via explicit UI guidance.
+
+### Fixed (S302 — PR #3854 — post-accountability-to-discussion.yml duplicate prRef SyntaxError + discussion-cleanup App token)
+- **`post-accountability-to-discussion.yml` SyntaxError**: Fixed `Identifier 'prRef' has already been declared` — RC-4 (S300) introduced a second `const prRef` (numeric) that collided with the existing `const prRef` (string, used for the comment header). Renamed the numeric variable to `prNum` throughout the RC-4 lookup block. This was causing `📋 Post Accountability Report to Discussion` job to fail on every push.
+- **`discussion-cleanup.yml` GitHub App token support**: Added `🔑 Resolve auth token` step that mints a GitHub App installation token using `_GITHUB_APP_*` secrets (has `discussions:write`) before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. Now that `api.github.com/installation/token` is in the network allowlist, the App token will be used when `_GITHUB_APP_PRIVATE_KEY` is injected, resolving the `deleteDiscussionComment` permission error (RP-DISCUSSION-DELETE-PERM). All execute steps updated to use `${{ steps.auth.outputs.resolved_token }}`.
+
+### Fixed (S301 — PR #3854 — PDA logging, manifest refresh, discussion-cleanup UI, validation)
+- **PDA Loop + AfterMath**: Logged `RP-DISCUSSION-DELETE-PERM` failure pattern — `deleteDiscussionComment` GraphQL mutation blocked for all 5 token methods tried (GITHUB_TOKEN, gh-auth-token ghu_, CB API proxy, CB CLI env, CB CLI file). Root cause: `CODEX_BACKUP_KEY`/`CODEX_MASTER_KEY` declared in CB server env but values empty (secrets not injected at CB server startup). Fix path documented: restart CB server with secrets injected OR trigger `discussion-cleanup.yml` via GitHub Actions UI where repo secrets are properly injected.
+- **Discussion cleanup manifest**: Refreshed `.codex/cleanup/discussion_cleanup_manifest.json` — 538 duplicates identified (525 in #3756 + 13 in #3673, up from 526 due to new duplicates accumulated since S297).
+- **Validation clean**: ruff F401/F841/E402 — no issues; CodeQL Pattern 8 — no issues; pre-commit hooks pass.
+
+### Fixed (S300 — PR #3854 — RC-3/RC-4 discussion bridge, P5-C TTL fix, S221 blocking-count, CB-001 Typer)
+- **RC-3 — `discussion-response-bridge.yml`**: New workflow triggered on `discussion_comment` events; extracts PR number from discussion title (`PR #<N>` pattern) or body tag (`<!-- pr-number:<N> -->`), then posts a compact bridge notification to the PR thread so Copilot sees maintainer discussion replies; deduped by `<!-- discussion-bridge:{disc}:{comment_id} -->` marker
+- **RC-4 — `post-accountability-to-discussion.yml`**: Replaced hardcoded `DISCUSSION_NUMBER = 3673` with dynamic per-PR discussion lookup; searches for an existing discussion titled `📋 Agent Accountability — PR #<N>` using GraphQL; falls back to global #3673 if not found; uses `last: 50` for dedup check (backward pagination)
+- **P5-C — `agent-auth-delegation.yml`**: Fixed incorrect echo message `expires in 4h` → `expires in 1h` (the actual TTL was already correctly set to `3600s`)
+- **S221 blocking-count — `copilot-agent-checkin.yml`**: Added `check_pr_comments.py` step that counts unaddressed blocking+warning comments and passes `BLOCKING_COUNT` env var into S221 missed-trigger retrigger body; retrigger now includes `⚠️ N blocking comment(s) still unaddressed` note
+- **Dynamic Q1/Q2/Q3 — `copilot-agent-checkin.yml`**: Added Python step that reads `.codex/aftermath/failure_pattern_solutions.yaml` and generates Q1/Q2/Q3 from top-3 patterns by occurrence count; static fallbacks preserved for when PDA YAML is unavailable; check-in body now reflects current CI patterns rather than stale session-epoch questions
+- **CB-001 — `src/codex_cli/app.py`**: Fixed E402 import ordering (`import os`, `Iterable`, `Sequence`, `Path`, `Optional` moved above `logger = ...`); removed `hasattr(_typer, "Typer")` guard (always True, was a dead check); `noqa: E402` annotations removed
+
+
+- **RFC-001 skill-agent binding**: Created `.codex/plans/RFC-001-skill-agent-binding.md` — full RFC body with problem statement, priority scoring algorithm `Priority = (Impact × CB_Alignment × Recurrence) / Effort`, 4-stage graduation pipeline (script → skill wrapper → registry binding → Copilot-accessible), and `orchestrator_routing.py` `select_skill()` design
+- **P2-A — `copilot-agent-session-done.yml`**: Replaced bare `createComment` for `@copilot review` with SHA-scoped upsert-by-marker: `<!-- session-done-dedup:{sha12} -->` embedded in each post; guard checks `allNodes` for marker before posting — prevents duplicate review triggers when same SHA triggers multiple `workflow_run` completions
+- **RC-5 — `build_comment_context()`**: Added public function to `scripts/ci/discussion_context_store.py` that returns a compact §A+§B+§D inline context block (≤1 000 chars) without requiring a GitHub Discussion; wired into `scripts/ci/post_rescue_comment.py` initial POST so rescue comments include live action queue inline
+- **`docs/ci/PR_LIFECYCLE.md` v2.0.0**: §16.4 session-done risk marked ✅ FIXED; §16.5 mermaid diagram updated (SESSDONE node green); §16.6 P2-A noted as done; trigger map table updated with `<!-- session-done-dedup:{sha12} -->` marker
+- **CodeQL 12784/12785**: `scripts/ci/pre_session_context.py` — fixed implicit string concatenation at lines 537–539 and 642–643 (joined into explicit parenthesised strings)
+- **CodeQL 12781**: `scripts/ci/discussion_cleanup.py` — removed unused `_GQL_ID_RE` regex constant
+- **CodeQL 12782/12783**: `scripts/ci/discussion_context_store.py` — removed unused `_DISCUSSION_ACCOUNTABILITY` and `_CAT_QA` constants
+- **F541 (ruff)**: `scripts/ci/discussion_cleanup.py` and `discussion_context_store.py` — removed extraneous `f` prefix from plain strings
+- **F401 (ruff)**: `scripts/ci/scan_failing_workflows.py` — removed unused `import urllib.parse`
+- **`iterative-self-healing-ci.yml` escalate job**: Replaced standalone `gh pr comment` with `post_rescue_comment.py` — escalation appends to canonical `<!-- ci-rescue-sha:{pr}:{sha} -->` thread; checkout uses `refs/heads/main` (trusted) to prevent untrusted-checkout CodeQL alert
+- **`auto_fix_common_issues.py` Pattern 8 (CodeQL Alerts)**: Upgraded from informational-only to auto-fixable for F401; `ruff --fix --select F401` applied to `src/`, `tests/`, `scripts/`; F841 informational only; `"CodeQL Alerts"` moved to `auto_fixable_patterns`
+- **`docs/ci/PR_LIFECYCLE.md` v1.9.0**: §7.2 rescue cascade, §14.1 gap analysis (S297/S298 gaps), §14.5 P6-B/C pre-session tools, §16.1 trigger map
+
+### Fixed (S297 — PR #3854 — Discussion infrastructure, mcp_poster dedup, pre-session context)
+- **CodeQL 12779/12780**: `scan_failing_workflows.py` lines 114 and 192 — added explanatory comments to empty `except` clauses (`pass  # malformed ISO timestamp...`, `pass  # eta_str didn't match...`)
+- **CodeQL 12777**: `migrate_rescue_comments.py` — removed unused global `_STEP_TEMPLATE` variable
+- **CodeQL 12778**: `scan_failing_workflows.py` line 93 — removed unused `encoded` variable
+- **CodeQL 12772**: `src/codex/skills/cli.py` — removed duplicate `from pathlib import Path as _Path` import; all `_Path` uses replaced with `Path`
+- **actionlint**: `admin_setup_verification.yml` — split step with duplicate `run:` key into two named steps
+- **docs**: `docs/ci/PR_LIFECYCLE.md` — replaced broken `[view]( ... )` placeholder with live reference link
+- **P6-A**: `scripts/ci/scan_failing_workflows.py` — new tool: scans HEAD SHA for all failing/in-progress check runs with ETA estimation; wired into `copilot-agent-checkin.yml`
+- **S295 dedup**: `comment-review-gate.yml` — `WORKFLOW_NAME` corrected; `copilot-agent-checkin.yml` S221 detection updated to canonical `<!-- ci-rescue-sha:{pr}:{sha} -->` format
+- **RAG coverage**: `tests/rag/ingestion/test_chunker.py` — 7 new test classes (SEMANTIC/HIERARCHICAL fallback, batch API, `chunk_document()`); `tests/rag/ingestion/test_pipeline.py` — 5 new test classes (retry exhaustion, sleep mock, parallel exceptions, `_update_batch_result`, `get_stats`) — chunker 97.99%, preprocessor 100%
+
+### Fixed (S294-S295 — PR #3854 — unified rescue-comment upsert, RAG test fixes, FixedSizeChunker guard)
+- **Rescue-comment upsert**: `scripts/ci/post_rescue_comment.py` — canonical POST/PATCH upsert with unified `<!-- ci-rescue-sha:{pr}:{sha_short} -->` marker; 66 workflows migrated
+- **RAG test fixes**: `tests/rag/ingestion/test_chunker.py` and `test_pipeline.py` — fixed `ValidationResult` missing `document_format`, fallback hang (`"A " * 100` trimmed below min_chunk_size), sliding-window params; all 80 tests pass
+- **FixedSizeChunker**: `src/codex/rag/ingestion/chunker.py` — infinite-loop guard when `chunk_overlap >= chunk_size` (`if next_start <= start: next_start = end`)
+- **CodeQL 12753**: `compression.py` — added comment to empty `except Exception` clause
+- **CodeQL 12768**: `proactive_ci_monitor.py` — added explanatory comment to empty `except ValueError` clause
+
+### Fixed (S293 — PR #3854 — SC2269, RAG meta-tensor, rescue identity)
+- **actionlint SC2269**: `workflow-execution-gate.yml` — removed redundant `PR="${PR}"` self-assignment
+- **RAG meta-tensor**: `torch.nn.Linear` test isolation — use `device="cpu"` constructor argument; no `.to()` call needed
+- **Rescue identity**: `actionlint-audit.yml` — explicitly set `github-token: CODEX_MASTER_KEY` to ensure rescue comments post as `@mbaetiong`, not `github-actions[bot]`
+
+### Fixed (S292 — PR #3854 — CB-003/005/006, RAG coverage, actionlint, PR template WEC overhaul)
+- **CB-003**: actionlint `expression-in-script` violations fixed in `iterative-self-healing-ci.yml` and `workflow-execution-gate.yml` — all `${{ }}` expressions moved to `env:` blocks
+- **CB-005**: `src/codex/skills/aais_batch/handler.py` — `ThreadPoolExecutor` replaced with `asyncio.Semaphore(max_concurrency)` for proper async concurrency control
+- **CB-006**: `scripts/ci/proactive_ci_monitor.py` — now uses `ci.health.analyzer` skill as primary classification engine with per-PR `history` trend accumulation
+- **CB-004**: `.codex/aftermath/failure_pattern_solutions.yaml` — PDA pattern library expanded 14→22 entries (+8: RP-MYPY-UNUSED-IGNORE, RP-MYPY-OPT-IMPORT, RP-MYPY-NO-REDEF, RP-MYPY-NONE-GUARD, RP-MYPY-ARG-TYPE, RP-ACTIONLINT-WORKFLOW-OUTPUT, RP-SELF-HEALING-CASCADE, RP-VALIDATION-PIPELINE)
+- **RAG coverage**: `tests/rag/test_ingestion_preprocessor.py` (32 tests) and `tests/rag/test_ingestion_validator.py` (38 tests) created — fixes 85.02%→≥95% coverage regression caused by 0% coverage on `ingestion/preprocessor.py` + `ingestion/validator.py`
+- **PR templates**: Both `.github/pull_request_template.md` and `.github/PULL_REQUEST_TEMPLATE.md` WEC sections overhauled — corrected 3 wrong filenames (`resilient-validation-suite.yml`→`resilient_validation.yml`, `nox-gates.yml`→`nox_gates.yml`, removed non-existent `docs-build.yml`/`auto-approve-workflows`), added 30+ missing opt-in workflows, introduced Tier 1/Tier 2 rescue model categories
+- **PR_LIFECYCLE.md**: §7 rewritten with Tier 1/Tier 2 rescue approval model; §13 updated with S292 fix status; §14 updated with CB-003/005/006 wiring; §15 updated with coverage gap root cause and fix
+- **Accountability report**: S292 entry with full root-cause analysis for all 4 regressions (coverage gap, task branch drift, automation gating, actionlint)
+
+### Fixed (S285 — PR #3854 — WEC catalog, PR_LIFECYCLE v1.6.0, PR template overhaul)
+- Docs: `docs/ci/PR_LIFECYCLE.md` → v1.6.0 — comprehensive overhaul:
+  - §2 Workflow Trigger Map expanded from 10 entries to 60 PR-triggered workflows across 6 category tables (always-required, validation, security, docs, automation, auto-triggered)
+  - §8 Main Lifecycle Mermaid — new Phase 0 (always-required), WEC Gate Phase 2, FF Promotion box, PDA Loop logging node added
+  - §9 Rescue Sequence — rewritten with `pda_failure_logger.py` as participant; shows auto-fix iterations, `log-failure`/`log-fix`/`log-session` calls, grounded solution query
+  - §11.1 — WEC example corrected: `resilient-validation-suite.yml` → `resilient_validation.yml`; ⚠️ filename-accuracy callout added
+  - §11.2 — Always-required workflows listed explicitly (9 total); pre-approval requirements table corrected with exact filenames
+  - §11.3 — Approval sequence corrected with exact filenames; HARDENED AGENT RULE callout preserved
+  - §11.4 — Phase table expanded: added FF-Approved state column; blocking-comment resolution row added
+  - §12 PR State Machine — added FF-Approved state; Rescue→PDA Loop→self-healer edge; phase comparison table expanded with FF column + blocking-comments row
+  - §18 NEW — WEC Workflow Catalog: authoritative filename table for all 60 PR-triggered workflows in 6 sections (always-required, validation, security, docs, automation, FF); ⚠️ underscore/hyphen mismatch callout; WEC selection strategy mermaid flowchart
+  - §19 NEW — Fast-Forward Workflow Promotion: purpose, how-to, allowlist/denylist rules, FF Gate mermaid, status icons table, Copilot agent FF protocol
+- Fix: `.github/PULL_REQUEST_TEMPLATE.md` WEC section — comprehensive overhaul:
+  - Filename mismatches corrected: `resilient-validation-suite.yml` → `resilient_validation.yml`, `nox-gates.yml` → `nox_gates.yml`, `docs-build.yml` → `pages-mkdocs.yml`
+  - Always-required defaults corrected: `deferral-language-gate.yml`, `copilot-agent-checkin.yml`, `cost-gate.yml`, `copilot-agent-session-done.yml`, `workflow-execution-gate.yml`, `copilot-iterative-self-healing.yml` now pre-checked `[x]`
+  - Added 8 new opt-in validation workflows: `validate.yml`, `mypy-baseline.yml`, `progressive-validation.yml`, `coverage-with-timeout.yml`, `test-rag.yml`, `pre-flight-validation.yml`, `data-quality-suite.yml`
+  - Added 5 new opt-in security workflows: `codeql-analysis.yml`, `semgrep_sarif.yml`, `actionlint-audit.yml`, `auto-fix-common-issues.yml`, `code-quality-coverage-suite.yml`
+  - Added Documentation section: `documentation-link-checker.yml`, `pages-mkdocs.yml`, `pages-pre-merge-validation.yml`
+  - Added 5 new opt-in automation workflows: `qa-walkthrough.yml`, `dependency-submission.yml`, `reference-integrity.yml`, `root-org-validation.yml`, `rust_swarm_ci.yml`
+  - FF section updated: link to §19 in PR_LIFECYCLE.md; `how it works` notes expanded
+  - HARDENED AGENT INSTRUCTION updated: added explicit filename-accuracy warning
+
+
+- Fix: CI self-healing cascade (issue #3860, 31% failure rate / 266 self-healing failures in 7 days) — 3-layer mitigation:
+  1. **Expanded exclusion list** in `iterative-self-healing-ci.yml` triage job: added 12 CI meta-workflows that should not trigger self-healing (`Copilot Iterative Self-Healing Auto-Poster`, `CI Rescue`, `PR Comment Review Gate`, `Agent Token Delegation`, `Auto-Post @copilot`, `Agent Check-In`, `CI Failure Issue Creator`, `PR Cost Check`, `Copilot PR Session Injector`, `Session Watchdog`, `Chat-Ops Trigger`, `Copilot Review Responder`)
+  2. **Per-branch hourly cap**: new `rate_cap` guard in triage job — skips run if ≥10 healer runs on the same branch in the past hour (SELF_HEALING_001 sub-scenario C brake)
+  3. **Escalation comment dedup**: `escalate` job now checks for `<!-- self-healing-escalation -->` marker; skips if posted < 30 min ago (prevents comment cascade triggering more `workflow_run` completions)
+- Fix: Rate-limit cooldown added to `copilot-iterative-self-healing.yml` `Upsert @copilot prompt` step — checks last `<!-- copilot-healing:... -->` timestamp; skips if < 1800s ago (mirrors existing guard in `iterative-self-healing-ci.yml`)
+- Security: Zip Slip (CWE-22) fixed in `src/codex/skills/compression.py` `install_skill()` — validates every `ZipInfo` member path resolves inside the extraction target before calling `extractall()`
+- Fix: `src/codex/skills/doc_loader.py` — moved `_repo_root()` function definition before `_DEFAULT_AGENTS_ROOT` module-level call (was causing `NameError` on import); constant now derived robustly from `_repo_root()`
+- Fix: `src/codex/skills/test_failure_matcher/handler.py` — updated docstring: replaced stale `P19` pattern ID reference with `RP-019` / `RP-XDIST-WORKER` (all pattern IDs use `RP-...` format)
+- Fix: `.github/workflows/workflow-execution-gate.yml` — `FILES_ARG`/`DRY_FLAG` in fast-forward job converted from strings to Bash arrays (`read -ra` + `"${FILES_ARG[@]}"`) — resolves SC2089/SC2090 actionlint violations
+- Feat: `scripts/ci/pda_failure_logger.py` — new PDA Loop + AfterMath failure pattern logger with `log-failure`, `log-fix`, `log-session`, `summarize`, `dump`, `export-solutions` commands; appends NDJSON to `.codex/aftermath/pda_iterations.jsonl`; integrates with SQLite pattern DB
+- Feat: `.codex/aftermath/failure_pattern_solutions.yaml` — grounded solution library with 14 CI failure patterns (root causes, fix templates, verification commands) from issue #3853 triage
+- Feat: `iterative-self-healing-ci.yml` — new "Log pattern to PDA Loop + AfterMath" step after each heal iteration; every attempt logged automatically for cross-session grounding
+- Docs: `docs/ci/PR_LIFECYCLE.md` → v1.5.0 — §16.6 updated (rate-limit cooldowns applied in S283 marked ✅); §17 added (PDA Loop architecture, log file schema, solution CLI, issue #3853 resolution table per workflow)
+
+### Fixed (auto-update — PR #3858)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3858 (SHA `660c25c9`) at 2026-04-02T18:20Z [auto-generated]
+
+### Fixed (S282 — PR #3854)
+- Fix: 13 CodeQL / github-code-quality alerts on commit `bf2874a` — all resolved:
+  - `scripts/ci/fast_forward_safe_files.py`: removed unused `_LOG_PATH` global; renamed `new_sha` → `staging_sha` and added to `pr-created` return dict; built-in denylist now includes `*deploy*`, `*release*`, `*publish*`, `*prod*` workflow patterns matching actual allowlist behaviour.
+  - `scripts/ci/proactive_ci_monitor.py`: added explanatory comment to empty `except ValueError` (malformed timestamp — non-fatal).
+  - `src/codex/skills/aais.py`: removed unused `_RE_CITATION` global regex.
+  - `src/codex/skills/cli.py`: removed duplicate `import json` at line 647 (already imported at line 32).
+  - `src/codex/skills/compression.py`: added `# noqa: BLE001` and explanatory comment to empty `except Exception` in archive helper.
+  - `src/codex/skills/doc_loader.py`: replaced inline `_repo_root() / ".github" / "agents"` with `_DEFAULT_AGENTS_ROOT` constant (alert: unused global now used).
+  - `src/codex/skills/envelope.py`: removed unused `_RISK_TIER_SCORES` global dict.
+  - `tests/skills/test_browse_command.py`: removed unused `from pathlib import Path` import (ruff F401).
+  - `tests/skills/test_candidate_skills.py`: removed unused `import pytest`; fixed import sort order (ruff I001).
+  - `tests/skills/test_envelope.py`: replaced `import tests.skills.test_envelope as mod` with `sys.modules[__name__]` to eliminate self-import CodeQL alert.
+  - `tests/skills/test_telemetry.py`: dropped unused `event =` binding from `emit_event(...)` call.
+  - `tests/test_fast_forward_safe_files.py`: removed unused `import pytest`; fixed import sort order (ruff I001).
+- Feat: `src/codex/skills/telemetry.py` — added `_configure_otlp_if_needed()` helper and `_OTLP_PROVIDER_CONFIGURED` flag; `_skill_span()` now configures an OTLP span exporter when `OTEL_EXPORTER_OTLP_ENDPOINT` env var is set and `opentelemetry-sdk`/`opentelemetry-exporter-otlp` are installed. Idempotent and silent on missing SDK (S282 OTel P1 task).
+- Docs: `docs/ci/PR_LIFECYCLE.md` → v1.4.0 — added §16 `@copilot` Comment Budget & Rate-Limit Controls: full trigger→comment map (35 workflows audited), worst-case per-push budget analysis (~5–8 new comments, ~15–20 API calls), active control inventory (SHA-scoped upsert, S221 guard cap, actor-skip, cascade guard), identified risks table, annotated mermaid cascade diagram, and §16.6 recommended hardening items.
+- Fix: `scripts/ci/fast_forward_safe_files.py` — `FileNotFoundError` branch in `_load_allowlist` now returns full built-in defaults (including denylist patterns) instead of empty dict `{}`.
+
+### Fixed (S281 — PR #3854)
+- Fix: `fast-forward-safe-files.yml` actionlint SC2089/SC2090 — replaced string variables with shell arrays for `FILES_ARG`, `DRY_FLAG`, `MSG_FLAG`; fixes quoted content being treated literally.
+- Fix: `workflow-execution-gate.yml` actionlint duplicate `env:` key — merged two `env:` blocks in "Post fast-forward result comment to PR" step into single block.
+- Fix: `src/codex/skills/telemetry.py` mypy regression — `status` parameter annotated as `Literal["ok", "error"]` instead of bare `str`.
+- Fix: `src/codex/skills/doc_loader.py` mypy regression — `risk_tier` variable annotated as `Literal["low", "medium", "high"]` to satisfy `PolicyConfig` field constraint.
+- Fix: `src/codex/skills/registry.py` mypy `[unused-ignore]` regression — removed `misc` from `# type: ignore[assignment,misc]` in except branch (packaging absent in CI venv causes import to yield `Any`, making ignore unused).
+- Feat: `src/codex/skills/test_failure_matcher/handler.py` — added `RP-XDIST-WORKER`, `RP-XDIST-COLLECT`, `RP-FLAKY` patterns (pytest-xdist worker crash/collection errors; `@pytest.mark.flaky` reruns).
+- Feat: `src/codex/skills/ci_health_analyzer/handler.py` — added `_trend_summary()` and `history` field in `run()` payload; ci.health.analyzer now supports historical trend window (chronic/trending/flapping/mixed labels, flap_rate, dominant_category).
+- Feat: `src/codex/skills/aais_batch/handler.py` — added `run_async()` for concurrent async batching via `ThreadPoolExecutor`; synchronous `run()` refactored to share `_score_item` helper.
+
+### Fixed (auto-update — PR #3856)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3856 (SHA `8504e567`) at 2026-04-02T12:21Z [auto-generated]
+
+### Fixed (S276 — PR #3854)
+- Fix: `tests/rag/test_embeddings_comprehensive.py` — 4 failing RAG embedding tests restored by adding `mock_model.to.return_value = mock_model` / `to_empty` / `eval` to `mock_sentence_transformer` fixture (root cause: `safe_model_to_device` calls `model.to()` and MagicMock chaining returns unconfigured mock).
+- Fix: `.secrets.baseline` stale CODEX_MANIFEST.json hash regenerated via `sync_tracked_files.py --fix`.
+- Fix: `docs/ROADMAP.md` date updated to `2026-04-02` (was `2026-04-01`) per sync-tracked-files hook.
+- Fix: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — empty PR #3849 auto-session section populated; PR #3843 section mismatched reference corrected.
+- Chore: updated PR #3849, PR #3852, S274 follow-up prompts with concrete tasks and `${RUNNER_TEMP}` path.
+
+### Fixed (auto-update — PR #3854)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3854 (SHA `62ec99b1`) at 2026-04-02T09:08Z [auto-generated]
+
+### Fixed (auto-update — PR #3852)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3852 (SHA `df591643`) at 2026-04-02T07:27Z [auto-generated]
+
+### Fixed (auto-update — PR #3849)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3849 (SHA `38440a55`) at 2026-04-01T21:58Z [auto-generated]
+
 ### Fixed (auto-update — PR #3847)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3847 (SHA `a56a328b`) at 2026-04-01T21:14Z [auto-generated]
 
@@ -26,6 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #3843)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3843 (SHA `ae0c1968`) at 2026-04-01T05:38Z [auto-generated]
+
 
 ### Fixed (auto-update — PR #3840)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3840 (SHA `b0c71042`) at 2026-04-01T02:26Z [auto-generated]

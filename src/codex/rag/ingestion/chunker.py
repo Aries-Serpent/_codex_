@@ -188,9 +188,12 @@ class FixedSizeChunker(BaseChunker):
             # Move to next chunk with overlap
             if end >= text_len:
                 break
-            start = end - self.config.chunk_overlap
-            if start >= end:  # Prevent infinite loop
-                start = end
+            next_start = end - self.config.chunk_overlap
+            # Guard: if overlap >= chunk_size the next_start would not advance
+            # (or go backwards) — force forward to avoid an infinite loop.
+            if next_start <= start:
+                next_start = end
+            start = next_start
 
         logger.debug(f"Created {len(chunks)} fixed-size chunks")
         return chunks

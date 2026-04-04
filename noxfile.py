@@ -26,6 +26,7 @@ Markers (pytest.ini expected):
 
 Sessions Overview:
   tests           -> Baseline (no ML heavy deps).
+  skills          -> Cognitive Brain Skills Registry tests (tests/skills/).
   config_validation -> Validate Hydra configs against schemas.
   ml_tests        -> ML dependencies (requirements-ml-cpu.txt).
   eval_tests      -> Evaluation metrics stack (requirements-eval.txt).
@@ -284,6 +285,7 @@ def list_sessions(session: nox.Session) -> None:
     _choose_python(session)
     sessions = [
         "tests",
+        "skills",
         "config_validation",
         "ml_tests",
         "eval_tests",
@@ -327,6 +329,33 @@ def tests(session: nox.Session) -> None:
         "--cov-fail-under=0",  # Temporarily disabled - see pyproject.toml for roadmap
         "-m",
         "not requires_torch",
+        *session.posargs,
+        external=True,
+    )
+
+
+@nox.session(name="skills", python=PY_VERSIONS)
+def skills(session: nox.Session) -> None:
+    """
+    Cognitive Brain Skills Registry test session.
+
+    Runs the full skills test suite (registry, envelope, routing, AAIS,
+    telemetry, compression) with coverage scoped to src/codex/skills/.
+
+    Usage:
+      nox -s skills                      # run all skills tests
+      nox -s skills -- -k test_routing   # run only routing tests
+    """
+    _choose_python(session)
+    _install_requirements(session, REQ_DEV)
+    session.run("pip", "install", "-e", ".", "--no-deps", external=True)
+    session.run(
+        "pytest",
+        "tests/skills/",
+        "--cov=src/codex/skills",
+        "--cov-report=term-missing",
+        "--cov-fail-under=0",
+        "-q",
         *session.posargs,
         external=True,
     )

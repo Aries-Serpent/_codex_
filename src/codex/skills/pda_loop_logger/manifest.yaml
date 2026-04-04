@@ -1,0 +1,55 @@
+id: pda.loop.logger
+version: 1.0.0
+name: PDA Loop Logger
+description: >
+  Log CI failure patterns, applied fixes, and session summaries into the
+  PDA (Plan-Do-Assess) AfterMath store at .codex/aftermath/pda_iterations.jsonl.
+  Supports log_failure, log_fix, log_session, summarize, and query actions.
+  Each invocation feeds the cognitive brain's AfterMath layer so fix success
+  rates accumulate over sessions, enabling grounded solution recommendations.
+
+  Actions:
+    log_failure  — record a new failure pattern before fix attempt
+    log_fix      — record a fix verification result (passed/failed)
+    log_session  — append a session-completion summary entry
+    summarize    — return patterns ranked by fix success rate
+    query        — return raw log entries filtered by pattern_id / session
+capability_tags:
+  - pda-loop
+  - aftermath
+  - ci
+  - self-healing
+  - cognitive-brain
+  - grounding
+entrypoint: codex.skills.pda_loop_logger.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: low
+  budgets:
+    calls: 10000
+    tokens: 100000
+    wallclock_ms: 10000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: skills_pda_loop_logger_v1
+  hash: "<sha256>"
+  aais_score: 0.91
+  token_count: 2000
+  embed_index_ref: indexes/skills_v1
+pda_loop:
+  enabled: true
+  plan: "Accept log_failure / log_fix / summarize / query action"
+  do: "Append structured entry to .codex/aftermath/pda_iterations.jsonl"
+  assess: "Return entry or summary; caller verifies content"
+  aftermath_store: ".codex/aftermath/pda_iterations.jsonl"

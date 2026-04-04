@@ -1,8 +1,9 @@
 # CI Rescue Pipeline — Golden Path Documentation
 
-> **Status:** Canonical reference (S244, 2026-03-30)
-> **Scope:** End-to-end lifecycle from workflow failure to Copilot fix
+> **Status:** Canonical reference (S280, 2026-04-02)
+> **Scope:** End-to-end lifecycle from workflow failure to Copilot fix — including Proactive CI Monitor and Fast-Forward Safe-File Promotion
 > **Golden-path example:** PR [#3818](https://github.com/Aries-Serpent/_codex_/pull/3818) comment [#4158728043](https://github.com/Aries-Serpent/_codex_/pull/3818#issuecomment-4158728043)
+> **S280 additions:** `proactive-ci-monitor.yml` (scheduled safety net), `fast-forward-safe-files.yml` (immediate main promotion), WEC FF checkbox gate
 
 ---
 
@@ -23,13 +24,27 @@
 
 ## 1. Overview
 
-The CI Rescue pipeline converts any monitored workflow failure into a structured `@copilot` session automatically — no human intervention required. The pipeline consists of three cooperating systems:
+The CI Rescue pipeline converts any monitored workflow failure into a structured `@copilot` session automatically — no human intervention required. The pipeline consists of **five cooperating layers** (S280):
 
-| System | Role |
-|--------|------|
-| **`ci-rescue.yml` + `ci_rescue.py`** | Pattern analysis engine — identifies root cause, posts structured RCA comment with `@copilot` mention |
-| **Inline rescue jobs** in monitored workflows | Channel A fallback — generic fix-instructions comment appended on every failure |
-| **`copilot-agent-checkin.yml`** missed-trigger guard | Safety net — re-triggers Copilot if the session was silently dropped after a new push |
+| Layer | System | Role |
+|-------|--------|------|
+| 1 | **`ci-rescue.yml` + `ci_rescue.py`** | Push-triggered: pattern analysis, structured RCA comment with `@copilot` mention |
+| 2 | **Inline rescue jobs** in monitored workflows | Channel A fallback: generic fix-instructions comment on every failure |
+| 3 | **`copilot-iterative-self-healing.yml`** | Push-triggered: escalation when patterns are exhausted; `cancel-in-progress: false` ensures no run is lost |
+| 4 | **`proactive-ci-monitor.yml`** (S280 🆕) | **Scheduled safety net (every 30 min):** polls ALL open PRs for failures that slipped past layers 1–3; posts `@copilot` rescue for any gap. Also manually triggerable by maintainer from the GitHub Actions UI or via `gh workflow run` |
+| 5 | **`copilot-agent-checkin.yml`** missed-trigger guard | Final guard: re-triggers Copilot if the session was silently dropped after a new push |
+
+### Fast-Forward Safe-File Promotion (S280 🆕)
+
+For files that **only take effect from `main`** (workflow schedules, `workflow_run` triggers, `workflow_dispatch` UI buttons), the pipeline now includes a promotion path that bypasses the full PR merge cycle:
+
+| Trigger | System | Description |
+|---------|--------|-------------|
+| WEC checkbox `⚡ Fast-Forward Approved` | **`workflow-execution-gate.yml`** → `fast-forward-safe-files.yml` | Maintainer ticks checkbox in PR body → WEC gate parses it → FF workflow auto-fires |
+| Manual | **`fast-forward-safe-files.yml`** | Direct trigger from GitHub Actions UI or `gh workflow run` |
+| CLI | **`codex-skill ff --pr <N>`** | Copilot Agent or maintainer previews/applies from terminal |
+
+Allowed file patterns are governed by `.codex/fast_forward_allowlist.yaml`.
 
 ---
 
@@ -37,7 +52,7 @@ The CI Rescue pipeline converts any monitored workflow failure into a structured
 
 ```mermaid
 flowchart TD
-    A([Push to 0D_base_ branch]) --> B[GitHub Actions triggers\nmonitored workflow]
+    A([Push to PR branch]) --> B[GitHub Actions triggers\nmonitored workflow]
     B --> C{Workflow\nresult?}
     C -->|success| Z([CI green — no rescue needed])
     C -->|failure| D
@@ -48,7 +63,7 @@ flowchart TD
 
     F --> G[ci-rescue.yml\nRescue — analyse and post RCA]
     G --> H[Download ci_rescue.py\nfrom PR head SHA]
-    H --> I[Fetch failed job logs\nvia GitHub API\nno code checkout]
+    H --> I[Fetch failed job logs\nvia GitHub API]
     I --> J[Match against\nci_failure_patterns.yaml]
     J --> K{Pattern\nmatched?}
     K -->|known pattern| L[Build structured RCA comment\nwith fix command + log snippet]
@@ -56,12 +71,26 @@ flowchart TD
     L --> N[Upsert SHA-scoped comment\nChannel B RCA\nat-copilot+claude-sonnet-4.6]
     M --> N
 
+    D --> SH[copilot-iterative-self-healing.yml\ncancel-in-progress=false\nevery failure gets own run]
+    SH --> SH2{Auto-fix\npatterns\nexhausted?}
+    SH2 -->|no| SH3[Apply auto-fix pattern\npush fix commit]
+    SH2 -->|yes| SH4[Escalation comment\nto @copilot]
+
+    SCHED([⏱️ Scheduled every 30 min\nproactive-ci-monitor.yml\nS280 NEW]) --> PM[Poll ALL open PRs\nfor unaddressed failures]
+    PM --> PM2{Failure found\nwith no rescue\ncomment yet?}
+    PM2 -->|no| PM3([Nothing to do])
+    PM2 -->|transient infra| PM4([Skip — auto-retry])
+    PM2 -->|real failure| PM5[Classify with\npattern catalogue\nconfidence score]
+    PM5 --> PM6{confidence ≥\nthreshold?}
+    PM6 -->|no| PM7([Below threshold\nskip])
+    PM6 -->|yes| PM8[POST @copilot rescue\ncomment to PR]
+
     N --> O{Copilot session\nstarted within\n45 min?}
+    PM8 --> O
+    SH4 --> O
     O -->|yes| P[Copilot Coding Agent\nreads RCA and applies fix]
-    O -->|no / dropped| Q[copilot-agent-checkin.yml\nmissed-trigger guard fires\non next push]
-    Q --> R{RCA has\nat-copilot + age\nunder 45 min?}
-    R -->|still live| S[Skip retrigger\nRCA is the trigger\nwait for session]
-    R -->|stale or\nno at-copilot| T[POST retrigger comment\nsession-done-retrigger\nat-copilot re-invoked]
+    O -->|no / dropped| Q[copilot-agent-checkin.yml\nmissed-trigger guard fires]
+    Q --> T[POST retrigger comment\nsession-done-retrigger]
     T --> P
 
     P --> U[Apply fix locally\nrun ruff + pytest]
@@ -69,6 +98,16 @@ flowchart TD
     V --> W[Reply to RCA comment:\nFixed in commit SHA]
     W --> X[New CI run\non fixed commit]
     X --> C
+
+    subgraph FF ["⚡ Fast-Forward Safe Files (S280 NEW)"]
+        FF1([WEC checkbox ticked\nOR manual trigger\nOR codex-skill ff]) --> FF2[workflow-execution-gate.yml\nparses FF section]
+        FF2 --> FF3[fast-forward-safe-files.py\nclassifies files vs allowlist]
+        FF3 --> FF4{Merge\nmode?}
+        FF4 -->|create-pr| FF5[Open fast-forward PR\nstaging → main]
+        FF4 -->|direct-push| FF6[Push files directly\nto main]
+        FF5 --> FF7([Files take effect on main\nimmediately])
+        FF6 --> FF7
+    end
 ```
 
 ---

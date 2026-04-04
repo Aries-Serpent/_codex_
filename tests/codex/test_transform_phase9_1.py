@@ -548,7 +548,7 @@ def func(x):
         test_file.write_text("import os")
 
         # Mock an error during processing
-        with patch("src.codex.transform.transformer._apply_pathlib_migration", side_effect=Exception("Test error")):
+        with patch("codex.transform.transformer._apply_pathlib_migration", side_effect=Exception("Test error")):
             result = transform(tmp_path, "test", tier=Tier.A, dry_run=True)
 
             assert len(result.errors) > 0

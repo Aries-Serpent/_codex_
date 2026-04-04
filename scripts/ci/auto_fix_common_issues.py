@@ -10,7 +10,7 @@ This script automatically fixes the 11 most common patterns that cause workflow 
 5.  Missing tokenizer fallbacks
 6.  Vague test assertions
 7.  Redundant imports
-8.  CodeQL scanning alerts
+8.  CodeQL scanning alerts — F401 unused imports auto-fixed; F841 informational
 9.  Unsorted imports (ruff I001) — auto-fixable
 10. Bandit medium/high security issues — detects missing # nosec annotations
 11. F-string missing placeholders (ruff F541) — auto-fixable
@@ -76,6 +76,7 @@ class CommonIssueFixer:
             "Stub Duplicate Defs",      # Pattern 16 - detect F811 duplicate method defs in stubs
             "Duplicate Kwargs",         # Pattern 18 - auto-fixable: duplicate keyword arguments
             "Secrets Baseline Plugins", # Pattern 23 - auto-fix: strip incompatible plugins from .secrets.baseline
+            "CodeQL Alerts",            # Pattern 8  - F401 unused imports auto-fixed; F841 informational
         }
         # Soft-warning patterns: auto-fixable (the --fix command works) but do NOT block
         # CI with an exit-code 1.  These are reported as informational "warning" in the
@@ -95,9 +96,7 @@ class CommonIssueFixer:
             "Tokenizer Fallbacks",      # Pattern 5  - code-flow dependent
             "Test Assertions",          # Pattern 6  - logic-dependent
             "Redundant Imports",        # Pattern 7  - manual review
-            # Pattern 8 - informational only: F401 handled by Pattern 1,
-            # F841 cannot be auto-fixed.
-            "CodeQL Alerts",
+            # Pattern 8 - F401 is now auto-fixed; F841 (unused variables) remains informational.
             # Pattern 15: mypy Baseline Freshness is informational only.
             # The .mypy_baseline is set for the isolated-venv used by
             # mypy-baseline.yml (328 errors).  Running mypy in the full
@@ -563,31 +562,61 @@ class CommonIssueFixer:
         return issues
 
     def fix_codeql_alerts(self) -> List[str]:
-        """Pattern 8: Check for open CodeQL alerts (unused imports primarily)."""
+        """Pattern 8: Fix CodeQL-equivalent alerts — auto-removes unused imports (F401),
+        reports unused variables (F841) as informational only.
+
+        F401 (unused imports) is fully auto-fixable via ``ruff --fix --select F401``.
+        F841 (unused variables — local, assigned but never read) requires manual review
+        and is reported only.
+        """
         issues = []
 
-        # This would ideally query GitHub API, but we'll use local detection
-        # Same as Pattern 1 - unused imports
         try:
-            result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "F401,F841",
-                 "tests/", "src/", "--output-format=concise"],
+            # ── Step 1: auto-fix F401 unused imports ──────────────────────────
+            f401_result = subprocess.run(
+                ["python", "-m", "ruff", "check", "--select", "F401",
+                 "tests/", "src/", "scripts/", "--output-format=concise"],
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root
+                cwd=self.repo_root,
             )
 
-            # Only treat as issues if ruff found actual violations (exit code != 0)
-            # Exit code 0 means no violations, so we skip processing stdout
-            if result.returncode != 0 and result.stdout:
-                for line in result.stdout.strip().split('\n'):
-                    # Only add non-empty lines that look like ruff violations
-                    # Ruff violations have format: "path/file.py:line:col: CODE message"
+            f401_issues = []
+            if f401_result.returncode != 0 and f401_result.stdout:
+                for line in f401_result.stdout.strip().split("\n"):
                     if line and ":" in line:
-                        issues.append(line)
+                        f401_issues.append(line)
+
+            if f401_issues:
+                if not self.check_only and not self.dry_run:
+                    subprocess.run(
+                        ["python", "-m", "ruff", "check", "--select", "F401",
+                         "--fix", "tests/", "src/", "scripts/"],
+                        capture_output=True,
+                        cwd=self.repo_root,
+                    )
+                    self.fixes_applied["CodeQL Alerts"] = len(f401_issues)
+                elif self.dry_run:
+                    print(f"  [DRY RUN] Would auto-fix {len(f401_issues)} unused import(s) (F401)")
+                issues.extend(f401_issues)
+
+            # ── Step 2: detect F841 unused variables (informational only) ─────
+            f841_result = subprocess.run(
+                ["python", "-m", "ruff", "check", "--select", "F841",
+                 "tests/", "src/", "scripts/", "--output-format=concise"],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+            )
+
+            if f841_result.returncode != 0 and f841_result.stdout:
+                for line in f841_result.stdout.strip().split("\n"):
+                    if line and ":" in line:
+                        issues.append(f"{line} [manual-review: F841 unused variable]")
+                print("  ℹ️ F841 unused variables require manual review")
 
         except FileNotFoundError:
-            pass
+            print("  ⚠️ ruff not installed, skipping CodeQL alert detection")
 
         return issues
 
