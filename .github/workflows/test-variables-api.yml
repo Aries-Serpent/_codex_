@@ -1,0 +1,221 @@
+name: Test Variables API
+
+# Live end-to-end test for GitHub Actions Variables REST API.
+# Tests CREATE → GET → UPDATE → DELETE at:
+#   - Repository scope  (Aries-Serpent/_codex_)
+#   - Organization scope (Aries-Serpent)
+#
+# Requires CODEX_MASTER_KEY (repo scope) and CODEX_BACKUP_KEY (fallback).
+# GITHUB_TOKEN alone will produce 403 — this is tested and documented.
+#
+# Reference: docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md
+# Script:    scripts/ci/test_variables_api.py
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_org_tests:
+        description: 'Also test org-level variable CRUD (requires admin:org scope)'
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Print token info only — do not create/delete variables'
+        type: boolean
+        default: false
+
+concurrency:
+  group: test-variables-api-${{ github.run_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  # ── Token scope validation ────────────────────────────────────────────────
+  validate-token:
+    name: "Validate Token Scopes"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      has_repo_scope: ${{ steps.check.outputs.has_repo_scope }}
+      has_admin_org: ${{ steps.check.outputs.has_admin_org }}
+      token_source: ${{ steps.check.outputs.token_source }}
+    steps:
+      - name: Identify available token and scopes
+        id: check
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        run: |
+          # Determine best available token
+          if [ -n "$CODEX_MASTER_KEY" ]; then
+            TOKEN="$CODEX_MASTER_KEY"
+            SOURCE="CODEX_MASTER_KEY"
+          elif [ -n "$CODEX_BACKUP_KEY" ]; then
+            TOKEN="$CODEX_BACKUP_KEY"
+            SOURCE="CODEX_BACKUP_KEY"
+          else
+            TOKEN="${{ github.token }}"
+            SOURCE="GITHUB_TOKEN (installation — limited)"
+          fi
+
+          echo "token_source=${SOURCE}" >> "$GITHUB_OUTPUT"
+
+          # Fetch scopes from rate_limit header
+          SCOPES=$(curl -s -I \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            https://api.github.com/rate_limit \
+            | grep -i "x-oauth-scopes" | cut -d' ' -f2- | tr -d '\r')
+
+          echo "X-OAuth-Scopes: ${SCOPES:-'(none)'}"
+          echo "Token source:   ${SOURCE}"
+
+          HAS_REPO="false"
+          HAS_ADMIN="false"
+          if echo "$SCOPES" | grep -q "repo"; then
+            HAS_REPO="true"
+          fi
+          if echo "$SCOPES" | grep -q "admin:org"; then
+            HAS_ADMIN="true"
+          fi
+
+          echo "has_repo_scope=${HAS_REPO}" >> "$GITHUB_OUTPUT"
+          echo "has_admin_org=${HAS_ADMIN}" >> "$GITHUB_OUTPUT"
+
+          echo ""
+          echo "Summary:"
+          echo "  has repo scope:  ${HAS_REPO}"
+          echo "  has admin:org:   ${HAS_ADMIN}"
+
+          if [ "$HAS_REPO" = "false" ]; then
+            echo "::warning::Token lacks 'repo' scope — repo variable CRUD will fail (HTTP 403)"
+            echo "::warning::Add CODEX_MASTER_KEY or CODEX_BACKUP_KEY to repository secrets"
+          fi
+
+  # ── Repository variable CRUD test ────────────────────────────────────────
+  test-repo-variables:
+    name: "Test Repo Variables (CREATE/GET/UPDATE/DELETE)"
+    needs: validate-token
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      REPO: ${{ github.repository }}
+      ORG: ${{ github.repository_owner }}
+    steps:
+      - name: Checkout scripts
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/test_variables_api.py
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run repo variable tests
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          ORG: ${{ github.repository_owner }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          echo "Token source: ${{ needs.validate-token.outputs.token_source }}"
+          echo "Has repo scope: ${{ needs.validate-token.outputs.has_repo_scope }}"
+          echo ""
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "DRY RUN — skipping variable CRUD tests"
+            python scripts/ci/test_variables_api.py 2>&1 | head -30
+            exit 0
+          fi
+
+          python scripts/ci/test_variables_api.py
+
+      - name: Post result to PR Status Dashboard
+        if: always() && github.event.pull_request.number != ''
+        uses: ./.github/actions/post-pr-summary
+        with:
+          workflow-name: "Test Variables API — Repo Scope"
+          status: ${{ job.status }}
+          summary: "Repo variable CRUD test (CREATE/GET/UPDATE/DELETE)"
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+
+  # ── Organization variable CRUD test ──────────────────────────────────────
+  test-org-variables:
+    name: "Test Org Variables (CREATE/GET/UPDATE/DELETE)"
+    needs: validate-token
+    if: inputs.run_org_tests == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout scripts
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/test_variables_api.py
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run org variable tests
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          ORG: ${{ github.repository_owner }}
+        run: |
+          echo "Token source: ${{ needs.validate-token.outputs.token_source }}"
+          echo "Has admin:org scope: ${{ needs.validate-token.outputs.has_admin_org }}"
+          echo ""
+
+          if [ "${{ needs.validate-token.outputs.has_admin_org }}" = "false" ]; then
+            echo "::warning::Skipping org tests — token lacks admin:org scope"
+            echo "Required: classic PAT with admin:org OR fine-grained PAT with 'Variables: write' org permission"
+            exit 0
+          fi
+
+          python scripts/ci/test_variables_api.py
+
+      - name: Post result to PR Status Dashboard
+        if: always() && github.event.pull_request.number != ''
+        uses: ./.github/actions/post-pr-summary
+        with:
+          workflow-name: "Test Variables API — Org Scope"
+          status: ${{ job.status }}
+          summary: "Org variable CRUD test (CREATE/GET/UPDATE/DELETE)"
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+
+  # ── Summary ───────────────────────────────────────────────────────────────
+  summary:
+    name: "Test Summary"
+    needs: [validate-token, test-repo-variables]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Print summary
+        env:
+          TOKEN_SOURCE: ${{ needs.validate-token.outputs.token_source }}
+          HAS_REPO: ${{ needs.validate-token.outputs.has_repo_scope }}
+          HAS_ADMIN: ${{ needs.validate-token.outputs.has_admin_org }}
+          REPO_RESULT: ${{ needs.test-repo-variables.result }}
+        run: |
+          echo "## GitHub Variables API Test Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Test Suite | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Token validation | ✅ completed |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Repo variable CRUD | $([[ '${{ needs.test-repo-variables.result }}' == 'success' ]] && echo '✅ passed' || echo '❌ failed') |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Token source:** \`${TOKEN_SOURCE}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Has \`repo\` scope:** ${HAS_REPO}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Has \`admin:org\` scope:** ${HAS_ADMIN}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Reference:** [GITHUB_VARIABLES_SECRETS_REFERENCE.md](docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)" >> "$GITHUB_STEP_SUMMARY"
