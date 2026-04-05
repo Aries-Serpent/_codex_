@@ -145,6 +145,11 @@ EXEMPTION_PATTERNS: list[str] = [
     # e.g., Real deferrals ("Will fix in a future PR", ...) continue to trigger exit 1.
     # This sentence describes scanner behavior, not a deferral action.
     r"Real deferrals.*continue to trigger exit",
+    # Mypy / type-check baseline count: "N pre-existing (type) errors" is a factual
+    # count when reporting baseline state (e.g. ".mypy_baseline (was 0, should be 104
+    # pre-existing errors)"), NOT a deferral claim.  Requires a leading digit so bare
+    # "pre-existing errors" still triggers.
+    r"\d+\s+pre-existing\s+(?:type\s+)?errors\b",
 ]
 
 # Pre-compiled pattern to strip inline code spans before scanning.

@@ -5,6 +5,7 @@ Tests for Document Validator Module.
 import os
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -241,3 +242,204 @@ class TestValidationConfig:
 
         assert config.max_file_size_mb == 50.0
         assert config.check_malicious is False
+
+
+# ---------------------------------------------------------------------------
+# Coverage-gap tests for file-validation edge cases and branch handling
+# ---------------------------------------------------------------------------
+
+class TestValidateFileDirectoryPath:
+    """Lines 176-177: path exists but is a directory, not a file."""
+
+    def test_validate_file_path_is_directory(self, tmp_path):
+        validator = DocumentValidator()
+        result = validator.validate_file(tmp_path)
+        assert not result.is_valid
+        assert any("not a file" in e.lower() for e in result.errors)
+
+
+class TestValidateFileMimeTypeDetection:
+    """Lines 192-194: MIME type detection when extension gives UNKNOWN format."""
+
+    def test_mime_type_used_for_unknown_extension(self, tmp_path):
+        f = tmp_path / "data.xyz"
+        f.write_text("text content here for mime type detection test")
+        validator = DocumentValidator()
+        with patch("codex.rag.ingestion.validator.mimetypes.guess_type",
+                   return_value=("text/plain", None)):
+            result = validator.validate_file(f)
+        assert result.document_format == DocumentFormat.TEXT
+
+    def test_mime_type_none_for_unknown_extension(self, tmp_path):
+        """Line 192-193: mime_type is None — format stays UNKNOWN."""
+        f = tmp_path / "data.xyz"
+        f.write_text("text content with no mime type")
+        validator = DocumentValidator()
+        with patch("codex.rag.ingestion.validator.mimetypes.guess_type",
+                   return_value=(None, None)):
+            result = validator.validate_file(f)
+        # UNKNOWN is not in default allowed_formats → validation fails
+        assert not result.is_valid
+
+
+class TestValidateFileFormatNotAllowed:
+    """Lines 198-202: format not in allowed_formats."""
+
+    def test_json_not_allowed_when_only_text_allowed(self, tmp_path):
+        f = tmp_path / "data.json"
+        f.write_text('{"key": "value"}')
+        config = ValidationConfig(allowed_formats=[DocumentFormat.TEXT])
+        validator = DocumentValidator(config)
+        result = validator.validate_file(f)
+        assert not result.is_valid
+        assert any("not allowed" in e.lower() for e in result.errors)
+
+
+class TestValidateFileHashAndFormatBranches:
+    """Lines 210->214, 214->223: compute_hash and text-format branches."""
+
+    def test_compute_hash_false_skips_hash(self, tmp_path):
+        """Lines 210->214: compute_hash=False leaves content_hash empty."""
+        f = tmp_path / "nohash.txt"
+        f.write_text("Content for hash skip test")
+        config = ValidationConfig(compute_hash=False)
+        validator = DocumentValidator(config)
+        result = validator.validate_file(f)
+        assert result.is_valid
+        assert result.content_hash == ""
+
+    def test_non_text_format_skips_decoding(self, tmp_path):
+        """Lines 214->223: non-text format (PDF) skips text decoding."""
+        f = tmp_path / "doc.pdf"
+        f.write_bytes(b"%PDF-1.4 binary content here for pdf test")
+        validator = DocumentValidator()
+        result = validator.validate_file(f)
+        assert result.document_format == DocumentFormat.PDF
+        assert result.is_valid
+
+    def test_decode_failure_skips_text_validation(self, tmp_path):
+        """Lines 216->223: _decode_content returns None → text validation skipped."""
+        f = tmp_path / "fail.txt"
+        f.write_bytes(b"some bytes content here")
+        validator = DocumentValidator()
+        with patch.object(validator, "_decode_content",
+                          side_effect=lambda c, r: r.add_error("Decode failed") or None):
+            result = validator.validate_file(f)
+        assert not result.is_valid
+        assert any("decode" in e.lower() for e in result.errors)
+
+
+class TestValidateFileIOError:
+    """Lines 219-220: IOError during binary file read."""
+
+    def test_ioerror_on_open(self, tmp_path):
+        f = tmp_path / "test.txt"
+        f.write_text("Content")
+        validator = DocumentValidator()
+        original_open = open
+
+        def patched_open(path, *args, **kwargs):
+            mode = args[0] if args else kwargs.get("mode", "r")
+            if mode == "rb":
+                raise IOError("read error")
+            return original_open(path, *args, **kwargs)
+
+        with patch("builtins.open", side_effect=patched_open):
+            result = validator.validate_file(f)
+        assert not result.is_valid
+        assert any("failed to read" in e.lower() for e in result.errors)
+
+
+class TestValidateBytesExtraBranches:
+    """Covers missing branches in validate_bytes."""
+
+    def test_no_filename_stays_unknown(self):
+        """Lines 258->262: filename=None — format stays UNKNOWN."""
+        content = b"Some bytes content here for no filename test"
+        validator = DocumentValidator()
+        result = validator.validate_bytes(content)
+        assert result.document_format == DocumentFormat.UNKNOWN
+
+    def test_mime_type_used_when_format_unknown(self):
+        """Line 263: mime_type provided and format is still UNKNOWN."""
+        content = b"text content for mime test"
+        validator = DocumentValidator()
+        result = validator.validate_bytes(content, mime_type="text/plain")
+        assert result.document_format == DocumentFormat.TEXT
+
+    def test_compute_hash_false(self):
+        """Lines 266->270: compute_hash=False leaves content_hash empty in validate_bytes."""
+        content = b"Content for bytes no-hash test"
+        config = ValidationConfig(compute_hash=False)
+        validator = DocumentValidator(config)
+        result = validator.validate_bytes(content, filename="test.txt")
+        assert result.is_valid
+        assert result.content_hash == ""
+
+    def test_non_text_format_skips_decoding(self):
+        """Lines 270->276: non-text format skips text decoding in validate_bytes."""
+        content = b"%PDF binary content here"
+        validator = DocumentValidator()
+        result = validator.validate_bytes(content, filename="doc.pdf")
+        assert result.document_format == DocumentFormat.PDF
+        assert result.is_valid
+
+    def test_empty_content_falsy_text_skips_text_validation(self):
+        """Lines 272->276: empty bytes decode to '' → if condition False."""
+        config = ValidationConfig(min_file_size_bytes=0)
+        validator = DocumentValidator(config)
+        result = validator.validate_bytes(b"", filename="empty.txt")
+        # is_valid stays True but text_content is "" (falsy) so _validate_text_content skipped
+        assert result.is_valid
+
+    def test_no_filename_metadata_not_stored(self):
+        """Lines 276->279: no filename → metadata 'filename' key not added."""
+        content = b"bytes content for metadata test"
+        validator = DocumentValidator()
+        result = validator.validate_bytes(content)
+        assert "filename" not in result.metadata
+
+
+class TestValidateTextComputeHashFalse:
+    """Lines 300->304: compute_hash=False in validate_text."""
+
+    def test_no_hash_in_validate_text(self):
+        config = ValidationConfig(compute_hash=False)
+        validator = DocumentValidator(config)
+        result = validator.validate_text("Some text content here for hash test")
+        assert result.is_valid
+        assert result.content_hash == ""
+
+
+class TestDecodeContentAllFail:
+    """Lines 348-352: all encodings fail → add_error and return None."""
+
+    def test_all_encodings_fail(self):
+        validator = DocumentValidator()
+        result = ValidationResult(is_valid=True, document_format=DocumentFormat.TEXT)
+        mock_content = MagicMock(spec=bytes)
+        mock_content.decode.side_effect = UnicodeDecodeError("ascii", b"", 0, 1, "always fails")
+        text = validator._decode_content(mock_content, result)
+        assert text is None
+        assert not result.is_valid
+        assert any("encoding" in e.lower() or "decode" in e.lower() for e in result.errors)
+
+
+class TestValidateTextContentNoMaliciousCheck:
+    """Lines 368->374: check_malicious=False skips malicious-pattern scan."""
+
+    def test_script_tag_no_warning_when_check_disabled(self):
+        config = ValidationConfig(check_malicious=False)
+        validator = DocumentValidator(config)
+        result = validator.validate_text('<script>alert("xss")</script>')
+        assert result.is_valid
+        assert len(result.warnings) == 0
+
+
+class TestValidateDocumentUnsupportedType:
+    """Lines 404-406: unsupported source type falls through to else branch."""
+
+    def test_integer_source_is_invalid(self):
+        result = validate_document(12345)  # type: ignore[arg-type]
+        assert not result.is_valid
+        assert any("unsupported" in e.lower() for e in result.errors)

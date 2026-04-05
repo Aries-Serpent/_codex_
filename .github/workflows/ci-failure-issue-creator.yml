@@ -251,6 +251,8 @@ jobs:
       - name: Create GitHub Issue
         id: issue
         uses: actions/github-script@v8
+        env:
+          FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -264,7 +266,7 @@ jobs:
             const activePR     = '${{ needs.triage.outputs.active_fix_pr }}';
             const shortSha     = run.head_sha.substring(0, 7);
             const ts           = new Date().toISOString();
-            const failedMd     = `${{ needs.triage.outputs.failed_jobs_md }}`;
+            const failedMd     = process.env.FAILED_JOBS_MD || '';
             const jobCount     = '${{ needs.triage.outputs.failed_job_count }}';
             const firstJobUrl  = '${{ needs.triage.outputs.first_job_url }}';
             const firstJobName = '${{ needs.triage.outputs.first_job_name }}';
@@ -394,6 +396,8 @@ jobs:
       - name: Open fix PR with @copilot command
         id: pr
         uses: actions/github-script@v8
+        env:
+          FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -405,7 +409,7 @@ jobs:
             const issueUrl    = '${{ needs.create-issue.outputs.issue_url }}';
             const shortSha    = run.head_sha.substring(0, 7);
             const ts          = new Date().toISOString();
-            const failedMd    = `${{ needs.triage.outputs.failed_jobs_md }}`;
+            const failedMd    = process.env.FAILED_JOBS_MD || '';
             const firstJobUrl = '${{ needs.triage.outputs.first_job_url }}';
 
             const body = [
