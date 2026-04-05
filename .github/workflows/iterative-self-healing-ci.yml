@@ -67,13 +67,13 @@ jobs:
       )
 
     outputs:
-      pattern:      ${{ steps.classify.outputs.pattern }}
-      fixable:      ${{ steps.classify.outputs.fixable }}
-      run_id:       ${{ steps.classify.outputs.run_id }}
-      head_sha:     ${{ steps.classify.outputs.head_sha }}
-      head_branch:  ${{ steps.classify.outputs.head_branch }}
+      pattern: ${{ steps.classify.outputs.pattern }}
+      fixable: ${{ steps.classify.outputs.fixable }}
+      run_id: ${{ steps.classify.outputs.run_id }}
+      head_sha: ${{ steps.classify.outputs.head_sha }}
+      head_branch: ${{ steps.classify.outputs.head_branch }}
       workflow_name: ${{ steps.classify.outputs.workflow_name }}
-      pr_number:    ${{ steps.classify.outputs.pr_number }}
+      pr_number: ${{ steps.classify.outputs.pr_number }}
 
     steps:
       - name: Checkout
@@ -483,12 +483,12 @@ jobs:
       - name: Record attempt (success or failure)
         if: always()
         env:
-          PATTERN:    ${{ needs.triage.outputs.pattern }}
-          RUN_ID:     ${{ needs.triage.outputs.run_id }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
-          ITERATION:  ${{ matrix.iteration }}
-          CHANGED:    ${{ steps.apply_fix.outputs.changed }}
-          VALID:      ${{ steps.validate.outputs.valid }}
+          ITERATION: ${{ matrix.iteration }}
+          CHANGED: ${{ steps.apply_fix.outputs.changed }}
+          VALID: ${{ steps.validate.outputs.valid }}
         run: |
           # Write attempt record to .codex/healing_attempts/ so future sessions
           # can review what was tried, what worked, and what failed.
@@ -524,16 +524,16 @@ jobs:
       - name: Log pattern to PDA Loop + AfterMath
         if: always()
         env:
-          PATTERN:    ${{ needs.triage.outputs.pattern }}
-          RUN_ID:     ${{ needs.triage.outputs.run_id }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           WORKFLOW_NAME: ${{ needs.triage.outputs.workflow_name || github.event.workflow_run.name }}
-          ITERATION:  ${{ matrix.iteration }}
-          CHANGED:    ${{ steps.apply_fix.outputs.changed }}
-          VALID:      ${{ steps.validate.outputs.valid }}
-          HEAD_SHA:   ${{ github.event.workflow_run.head_sha || github.sha }}
-          SESSION:    ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || 'auto' }}
-          PR_NUMBER:  ${{ needs.triage.outputs.pr_number }}
+          ITERATION: ${{ matrix.iteration }}
+          CHANGED: ${{ steps.apply_fix.outputs.changed }}
+          VALID: ${{ steps.validate.outputs.valid }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          SESSION: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || 'auto' }}
+          PR_NUMBER: ${{ needs.triage.outputs.pr_number }}
         run: |
           # Forward each heal attempt to the PDA Loop failure logger so that
           # grounded solutions accumulate across sessions and can be queried by
@@ -576,7 +576,7 @@ jobs:
         if: steps.apply_fix.outputs.changed == 'true' && steps.validate.outputs.valid == 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PATTERN:  ${{ needs.triage.outputs.pattern }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           CHANGED_FILES: ${{ steps.apply_fix.outputs.changed_files }}
           # CB-003: expressions moved from run: body to env: to satisfy actionlint
@@ -818,10 +818,10 @@ jobs:
       - name: "Post @copilot fix prompt on failing PR"
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PATTERN:      ${{ needs.triage.outputs.pattern }}
-          RUN_ID:       ${{ needs.triage.outputs.run_id }}
-          HEAD_BRANCH:  ${{ needs.triage.outputs.head_branch }}
-          HEAD_SHA:     ${{ needs.triage.outputs.head_sha }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
+          HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          HEAD_SHA: ${{ needs.triage.outputs.head_sha }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name || 'manual-dispatch' }}
           HIGH_REC_TABLE: ${{ steps.high_rec.outputs.table }}
           CROSS_PR_TABLE: ${{ steps.high_rec.outputs.cross_table }}

@@ -2,7 +2,7 @@ name: Rust-Python Hybrid Swarm CI/CD
 
 on:
   push:
-    branches: [ main, develop, 'copilot/**' ]
+    branches: [main, develop, 'copilot/**']
     paths-ignore:
       - 'docs/**'
       - '**.md'
@@ -10,7 +10,7 @@ on:
       - '.codex/sessions/**'
       - '.github/copilot-prompts/**'
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - 'docs/**'
       - '**.md'
@@ -35,13 +35,13 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Rust Swarm CI"
-      runner:          "ubuntu-latest"
+      workflow_name: "Rust Swarm CI"
+      runner: "ubuntu-latest"
       timeout_minutes: 60
-      matrix_count:    3
-      pushes_to_ghcr:  false
+      matrix_count: 3
+      pushes_to_ghcr: false
     permissions:
-      contents:      read
+      contents: read
       pull-requests: write
 
   rust_tests:

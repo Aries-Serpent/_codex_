@@ -184,11 +184,11 @@ jobs:
       - name: Write job summary
         if: always()
         env:
-          ELAPSED:       ${{ steps.check.outputs.elapsed }}
-          REMAINING:     ${{ steps.check.outputs.remaining }}
-          VIOLATIONS:    ${{ steps.check.outputs.violations }}
+          ELAPSED: ${{ steps.check.outputs.elapsed }}
+          REMAINING: ${{ steps.check.outputs.remaining }}
+          VIOLATIONS: ${{ steps.check.outputs.violations }}
           WINDOW_CLOSED: ${{ steps.check.outputs.window_closed }}
-          VERDICT:       ${{ steps.check.outputs.verdict }}
+          VERDICT: ${{ steps.check.outputs.verdict }}
         run: |
           echo "## 🔍 rust-error-validator — D_CAPABLE Observation" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"

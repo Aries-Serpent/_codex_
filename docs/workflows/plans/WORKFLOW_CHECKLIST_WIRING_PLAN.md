@@ -66,23 +66,28 @@ the Copilot wrap-up phase.
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
-### ✅ Validation & Testing
+### ✅ Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [x] resilient-validation-suite.yml — Resilient validation (required for 0D_base_ PRs)
-- [ ] nox-gates.yml — Nox test gates (opt-in: heavy ML tests)
-
-### ✅ Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
-- [ ] security-scanning-suite.yml — Full security audit (opt-in: security changes)
 - [x] deferral-language-gate.yml — Deferral language guard (always required)
+- [x] agent-auth-delegation.yml — Agent token delegation (always required)
+- [x] workflow-execution-gate.yml — WEC gate (always required)
 
-### 📄 Documentation
-- [ ] docs-build.yml — Documentation build (opt-in: docs changes)
+### 🔄 Always Active — fire via push/workflow_run
+- [x] copilot-agent-checkin.yml — Agent check-in (fires on push)
+- [x] copilot-agent-session-done.yml — Session done (fires on workflow_run)
+- [x] copilot-iterative-self-healing.yml — Self-healing loop (fires on workflow_run)
+- [x] cost-gate.yml — Cost governance gate
 
-### 🤖 Automation (Copilot Agent)
-- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [ ] cost-gate.yml — Cost governance gate (opt-in: expensive ops)
-- [x] copilot-agent-checkin.yml — Agent check-in (always required)
+### ⚡ Auto-Approve
+- [ ] auto-approve-workflows — Auto-Approve pending workflow runs
+
+### 🧪 Opt-In: Testing & Validation
+- [x] resilient_validation.yml — Resilient validation (required for 0D_base_ PRs)
+- [ ] nox_gates.yml — Nox test gates (opt-in: heavy ML tests)
+
+### 📄 Opt-In: Documentation
+- [ ] documentation-link-checker.yml — Documentation link checker (opt-in: docs changes)
 
 ### ⚙️ Infrastructure (Admin Only)
 - [ ] genesis-bootstrap.yml — Genesis protocol (ADMIN ONLY — never check)
@@ -248,23 +253,23 @@ the final session wrap-up step:
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
-### ✅ Validation & Testing
+### ✅ Always Required / Always Active
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [x] resilient-validation-suite.yml — Resilient validation
-- [ ] nox-gates.yml — Nox test gates
+- [x] resilient_validation.yml — Resilient validation
+- [ ] nox_gates.yml — Nox test gates
 
-### ✅ Security & Quality
+### 🔒 Opt-In: Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [ ] security-scanning-suite.yml — Full security audit
 - [x] deferral-language-gate.yml — Deferral language guard
 
-### 📄 Documentation
-- [ ] docs-build.yml — Documentation build
+### 📄 Opt-In: Documentation
+- [ ] documentation-link-checker.yml — Documentation link checker
 
-### 🤖 Automation
+### 🤖 Always Active Automation
 - [x] agent-auth-delegation.yml — Agent auth delegation (always required)
 - [x] copilot-agent-checkin.yml — Agent check-in (always required)
-- [ ] cost-gate.yml — Cost governance gate
+- [x] cost-gate.yml — Cost governance gate
 
 > **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for
 > this session. Unchecked workflows will be SKIPPED by the gate."
@@ -439,8 +444,8 @@ escalation comments to prevent cascade flooding:
 | M1 | Create `workflow-execution-gate.yml` | Copilot | ✅ Done (S228) |
 | M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot | ✅ Done (S228) |
 | M3 | Add opt-in gate check to `security-scanning-suite.yml` | Copilot | ⬜ Pending |
-| M4 | Add opt-in gate check to `docs-build.yml` | Copilot | ⬜ Pending |
-| M5 | Add opt-in gate check to `nox-gates.yml` | Copilot | ⬜ Pending |
+| M4 | Add opt-in gate check to `documentation-link-checker.yml` | Copilot | ⬜ Pending |
+| M5 | Add opt-in gate check to `nox_gates.yml` | Copilot | ⬜ Pending |
 | M6 | Add opt-in gate check to `cost-gate.yml` | Copilot | ⬜ Pending |
 | M7 | Test end-to-end with PR #3790 | Copilot+Owner | ⬜ Pending |
 
@@ -483,7 +488,7 @@ Each PDA iteration is recorded as a JSONL entry in `.codex/aftermath/pda_iterati
   "timestamp": "2026-03-29T22:19Z",
   "plan": {
     "workflows_checked": ["pre-merge-validation.yml", "comment-review-gate.yml", "agent-auth-delegation.yml", "copilot-agent-checkin.yml"],
-    "workflows_unchecked": ["security-scanning-suite.yml", "docs-build.yml", "nox-gates.yml", "cost-gate.yml"]
+    "workflows_unchecked": ["security-scanning-suite.yml", "documentation-link-checker.yml", "nox_gates.yml", "cost-gate.yml"]
   },
   "do": {
     "gate_run_id": null,

@@ -35,13 +35,13 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Scheduled Archival"
-      runner:          "ubuntu-latest"
+      workflow_name: "Scheduled Archival"
+      runner: "ubuntu-latest"
       timeout_minutes: 60
-      matrix_count:    3
-      pushes_to_ghcr:  false
+      matrix_count: 3
+      pushes_to_ghcr: false
     permissions:
-      contents:      read
+      contents: read
       pull-requests: write
 
   identify-candidates:

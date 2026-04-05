@@ -83,23 +83,26 @@ _WEC_MARKER_LEGACY = "**🔄 Workflow Execution Checklist**:"
 
 # Full ordered list of WEC workflow items: (filename, label, always_required)
 _WEC_ITEMS: list[tuple[str, str, bool]] = [
-    # --- Validation & Testing ---
-    ("pre-merge-validation.yml",      "Pre-merge checks (always required)",  True),
-    ("resilient-validation-suite.yml", "Resilient validation",               False),
-    ("nox-gates.yml",                 "Nox test gates",                      False),
-    # --- Security & Quality ---
-    ("comment-review-gate.yml",       "Comment review gate (always required)", True),
-    ("security-scanning-suite.yml",   "Full security audit",                 False),
-    ("deferral-language-gate.yml",    "Deferral language guard",             False),
-    # --- Documentation ---
-    ("docs-build.yml",                "Documentation build",                 False),
-    # --- Automation ---
-    ("agent-auth-delegation.yml",     "Agent auth delegation (always required)", True),
-    ("copilot-agent-checkin.yml",     "Agent check-in (always required)",    False),
-    ("cost-gate.yml",                 "Cost governance gate",                False),
-    ("copilot-agent-session-done.yml", "Auto-Post @copilot review After Agent Session", False),
-    ("workflow-execution-gate.yml",   "WEC gate — parse checklist & arm allowed workflows", False),
-    ("copilot-iterative-self-healing.yml", "Iterative self-healing CI loop", False),
+    # --- Always Required (fire automatically on every push, cannot be skipped) ---
+    ("pre-merge-validation.yml",      "Pre-merge checks (always required)",                         True),
+    ("comment-review-gate.yml",       "Comment review gate (always required)",                      True),
+    ("deferral-language-gate.yml",    "Deferral language guard (always required)",                  True),
+    ("agent-auth-delegation.yml",     "Agent token delegation (always required)",                   True),
+    ("workflow-execution-gate.yml",   "WEC gate — parse checklist & arm allowed workflows (always required)", True),
+    # --- Always Active (fire via push/workflow_run — need approval in Actions tab) ---
+    ("copilot-agent-checkin.yml",     "Agent check-in / S221 guard (fires on push)",                True),
+    ("copilot-agent-session-done.yml", "Auto-post @copilot review after agent session (fires on workflow_run)", True),
+    ("copilot-iterative-self-healing.yml", "Iterative self-healing CI loop (fires on workflow_run — needs approval)", True),
+    ("cost-gate.yml",                 "Cost governance gate (called by agent-auth-delegation)",      True),
+    # --- Opt-In: Testing & Validation ---
+    ("validate.yml",                  "Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)", False),
+    ("resilient_validation.yml",      "Resilient Validation Suite (full pytest, 4 shards)",         False),
+    ("test-rag.yml",                  "RAG Module Tests (coverage ≥95%)",                           False),
+    ("nox_gates.yml",                 "Nox quality gates (ruff, mypy, coverage)",                   False),
+    # --- Opt-In: Security & Quality ---
+    ("security-scanning-suite.yml",   "Full security audit (bandit, pip-audit)",                    False),
+    # --- Opt-In: Documentation ---
+    ("documentation-link-checker.yml", "Documentation link checker",                                False),
     # --- Auto-Approve ---
     ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", False),
 ]
@@ -151,32 +154,37 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
         "",
         "## 🔄 Workflow Execution Checklist",
         "",
-        "### ✅ Validation & Testing",
+        "### ✅ Always Required — fire automatically on every push (cannot be skipped)",
     ]
-    # Group items by section (indices match _WEC_ITEMS order)
-    validation_items   = _WEC_ITEMS[:3]
-    security_items     = _WEC_ITEMS[3:6]
-    docs_items         = _WEC_ITEMS[6:7]
-    automation_items   = _WEC_ITEMS[7:13]   # agent-auth → copilot-iterative-self-healing
-    auto_approve_items = _WEC_ITEMS[13:]    # auto-approve-workflows
+    # Group items by section — indices must match _WEC_ITEMS order exactly.
+    always_required_items  = _WEC_ITEMS[:5]    # pre-merge → workflow-execution-gate
+    always_active_items    = _WEC_ITEMS[5:9]   # copilot-agent-checkin → cost-gate
+    opt_in_testing_items   = _WEC_ITEMS[9:13]  # validate → nox_gates
+    opt_in_security_items  = _WEC_ITEMS[13:14] # security-scanning-suite
+    opt_in_docs_items      = _WEC_ITEMS[14:15] # documentation-link-checker
+    auto_approve_items     = _WEC_ITEMS[15:]   # auto-approve-workflows
 
-    for fname, label, _ in validation_items:
+    for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
-    lines += ["", "### ✅ Security & Quality"]
-    for fname, label, _ in security_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 📄 Documentation"]
-    for fname, label, _ in docs_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 🤖 Automation"]
-    for fname, label, _ in automation_items:
+    lines += ["", "### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)"]
+    for fname, label, _ in always_active_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += ["", "### ⚡ Auto-Approve"]
     for fname, label, _ in auto_approve_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
+
+    lines += ["", "### 🧪 Opt-In: Testing & Validation"]
+    for fname, label, _ in opt_in_testing_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
+
+    lines += ["", "### 🔒 Opt-In: Security & Quality"]
+    for fname, label, _ in opt_in_security_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
+
+    lines += ["", "### 📄 Opt-In: Documentation"]
+    for fname, label, _ in opt_in_docs_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += [

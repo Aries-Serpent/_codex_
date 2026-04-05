@@ -51,13 +51,13 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Build & Push Docker (GHCR)"
-      runner:          "self-hosted"
+      workflow_name: "Build & Push Docker (GHCR)"
+      runner: "self-hosted"
       timeout_minutes: 45
-      matrix_count:    1
-      pushes_to_ghcr:  true
+      matrix_count: 1
+      pushes_to_ghcr: true
     permissions:
-      contents:      read
+      contents: read
       pull-requests: write
 
   approval-check:

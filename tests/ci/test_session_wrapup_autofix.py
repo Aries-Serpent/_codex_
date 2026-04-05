@@ -42,15 +42,15 @@ class TestExtractWecState:
         body = textwrap.dedent("""\
             ## 🔄 Workflow Execution Checklist
 
-            ### ✅ Validation & Testing
+            ### ✅ Always Required — fire automatically on every push (cannot be skipped)
             - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-            - [ ] resilient-validation-suite.yml — Resilient validation
-            - [x] nox-gates.yml — Nox test gates
+            - [ ] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+            - [x] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
         """)
         state = swa._extract_wec_state(body)
         assert state["pre-merge-validation.yml"] is True
-        assert state["resilient-validation-suite.yml"] is False
-        assert state["nox-gates.yml"] is True
+        assert state["resilient_validation.yml"] is False
+        assert state["nox_gates.yml"] is True
 
     def test_legacy_format_checked(self):
         body = textwrap.dedent("""\
@@ -82,13 +82,13 @@ class TestExtractWecState:
             ## 🔄 Workflow Execution Checklist
 
             - [x] comment-review-gate.yml — Comment review gate (always required)
-            - [ ] docs-build.yml — Documentation build
+            - [ ] documentation-link-checker.yml — Documentation link checker
             - [x] cost-gate.yml — Cost governance gate
             - [ ] auto-approve-workflows — Auto-Approve workflow to run
         """)
         state = swa._extract_wec_state(body)
         assert state["comment-review-gate.yml"] is True
-        assert state["docs-build.yml"] is False
+        assert state["documentation-link-checker.yml"] is False
         assert state["cost-gate.yml"] is True
         assert state["auto-approve-workflows"] is False
 
@@ -106,16 +106,12 @@ class TestBuildWecBlock:
     def test_optional_items_unchecked_by_default(self):
         block = swa._build_wec_block(existing_state={})
         optional = [
-            "resilient-validation-suite.yml",
-            "nox-gates.yml",
+            "resilient_validation.yml",
+            "nox_gates.yml",
+            "validate.yml",
+            "test-rag.yml",
             "security-scanning-suite.yml",
-            "deferral-language-gate.yml",
-            "docs-build.yml",
-            "copilot-agent-checkin.yml",
-            "cost-gate.yml",
-            "copilot-agent-session-done.yml",
-            "workflow-execution-gate.yml",
-            "copilot-iterative-self-healing.yml",
+            "documentation-link-checker.yml",
             "auto-approve-workflows",
         ]
         for fname in optional:
@@ -123,12 +119,13 @@ class TestBuildWecBlock:
 
     def test_existing_state_preserves_maintainer_selections(self):
         existing = {
-            "resilient-validation-suite.yml": True,
+            "resilient_validation.yml": True,
             "cost-gate.yml": True,
             "auto-approve-workflows": True,
         }
         block = swa._build_wec_block(existing_state=existing)
-        assert "- [x] resilient-validation-suite.yml" in block
+        assert "- [x] resilient_validation.yml" in block
+        # cost-gate.yml is always_required=True so always [x] regardless
         assert "- [x] cost-gate.yml" in block
         assert "- [x] auto-approve-workflows" in block
 
@@ -141,11 +138,12 @@ class TestBuildWecBlock:
 
     def test_sections_present(self):
         block = swa._build_wec_block()
-        assert "### ✅ Validation & Testing" in block
-        assert "### ✅ Security & Quality" in block
-        assert "### 📄 Documentation" in block
-        assert "### 🤖 Automation" in block
+        assert "### ✅ Always Required" in block
+        assert "### 🔄 Always Active" in block
         assert "### ⚡ Auto-Approve" in block
+        assert "### 🧪 Opt-In: Testing & Validation" in block
+        assert "### 🔒 Opt-In: Security & Quality" in block
+        assert "### 📄 Opt-In: Documentation" in block
 
     def test_instructions_footer_present(self):
         block = swa._build_wec_block()
@@ -241,10 +239,10 @@ class TestFixPrBodyCheckboxes:
 
             ## 🔄 Workflow Execution Checklist
 
-            ### ✅ Validation & Testing
+            ### 🧪 Opt-In: Testing & Validation
             - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-            - [x] resilient-validation-suite.yml — Resilient validation
-            - [ ] nox-gates.yml — Nox test gates
+            - [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+            - [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
 
             ### ⚡ Auto-Approve
             - [x] auto-approve-workflows — Auto-Approve workflow to run
@@ -252,14 +250,14 @@ class TestFixPrBodyCheckboxes:
         # Simulate: the WEC is present but one optional item was checked by maintainer
         # verify _extract_wec_state picks it up
         state = swa._extract_wec_state(body)
-        assert state["resilient-validation-suite.yml"] is True
+        assert state["resilient_validation.yml"] is True
         assert state["auto-approve-workflows"] is True
-        assert state["nox-gates.yml"] is False
+        assert state["nox_gates.yml"] is False
 
         rebuilt = swa._build_wec_block(existing_state=state)
-        assert "- [x] resilient-validation-suite.yml" in rebuilt
+        assert "- [x] resilient_validation.yml" in rebuilt
         assert "- [x] auto-approve-workflows" in rebuilt
-        assert "- [ ] nox-gates.yml" in rebuilt
+        assert "- [ ] nox_gates.yml" in rebuilt
 
     def test_gh_cli_failure_returns_false(self):
         with patch("subprocess.run", side_effect=FileNotFoundError("gh not found")):
@@ -494,9 +492,10 @@ class TestMain:
 
 class TestWecConstants:
     def test_wec_items_count_matches_sections(self):
-        """Ensure _WEC_ITEMS has entries for all 4 sections + auto-approve."""
-        assert len(swa._WEC_ITEMS) == 14, (
-            f"Expected 14 WEC items (3+3+1+6+1), got {len(swa._WEC_ITEMS)}"
+        """Ensure _WEC_ITEMS covers all 6 sections (Always Required + Always Active +
+        Auto-Approve + Opt-In Testing + Opt-In Security + Opt-In Docs)."""
+        assert len(swa._WEC_ITEMS) == 16, (
+            f"Expected 16 WEC items (5 Always-Required + 4 Always-Active + 4 Opt-In Testing + 1 Opt-In Security + 1 Opt-In Docs + 1 Auto-Approve), got {len(swa._WEC_ITEMS)}"
         )
 
     def test_always_required_items_in_wec_items(self):
@@ -513,11 +512,12 @@ class TestWecConstants:
 
     def test_required_pr_checkboxes_contains_all_sections(self):
         block = swa._REQUIRED_PR_CHECKBOXES
-        assert "### ✅ Validation & Testing" in block
-        assert "### ✅ Security & Quality" in block
-        assert "### 📄 Documentation" in block
-        assert "### 🤖 Automation" in block
+        assert "### ✅ Always Required" in block
+        assert "### 🔄 Always Active" in block
         assert "### ⚡ Auto-Approve" in block
+        assert "### 🧪 Opt-In: Testing & Validation" in block
+        assert "### 🔒 Opt-In: Security & Quality" in block
+        assert "### 📄 Opt-In: Documentation" in block
 
     def test_wec_marker_is_heading_format(self):
         assert swa._WEC_MARKER.startswith("## ")

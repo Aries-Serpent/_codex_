@@ -32,13 +32,13 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Embedding Index Rebuild"
-      runner:          "ubuntu-latest"
+      workflow_name: "Embedding Index Rebuild"
+      runner: "ubuntu-latest"
       timeout_minutes: 15
-      matrix_count:    1
-      pushes_to_ghcr:  false
+      matrix_count: 1
+      pushes_to_ghcr: false
     permissions:
-      contents:      read
+      contents: read
       pull-requests: write
 
   rebuild:
@@ -141,7 +141,7 @@ jobs:
       - name: Commit updated index metadata
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUSH_TARGET:  ${{ steps.resolve-target.outputs.branch }}
+          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
         run: |
           # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
           _TARGET="${PUSH_TARGET}"
