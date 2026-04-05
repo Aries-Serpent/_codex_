@@ -3,9 +3,54 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-05T19:45Z S-3876
+**Last updated:** 2026-04-05T20:10Z S-3876-final
 
-## SESSION SUMMARY — 2026-04-05T19:45Z S-3876 (PR #3876 — CodeQL alerts, review comments, pragma audit, PR lifecycle plan)
+## SESSION SUMMARY — 2026-04-05T20:10Z S-3876-final (PR #3876 — SHA-digest, WEC enforcer, trigger/cancel)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All PR comments reviewed — blocking: `#4189411743` (ci-rescue-sha:3876:7a2069950366) ✅
+- [x] **0d.** CI failures: Comment Review Gate (1/13 unaddressed), CodeQL #12788/#12789 ✅
+- [x] **0e.** Agency Policy §0: all issues fixed immediately, no deferrals ✅
+- [x] **0f.** Cognitive Brain connector/CLI/API/Playwright/MCP identified as API layer ✅
+
+### Issues Found & Fixed
+1. **CodeQL #12788/#12789** — `tests/codex/test_cli_roles.py`: Added `return` after `pytest.skip()` in both test functions. Commit `315ef35`.
+2. **Double space** (34 occurrences) — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: `sed -i 's/this file\.  The/this file. The/g'`.
+3. **CHANGELOG filenames** — lines 17 & 20: updated to use full backtick filenames per review comment.
+4. **Comment Review Gate** — replied to blocking comment `#4189411743`. Gate will clear on next push.
+5. **SHA-digest consolidation** (SYSTEM 1): Extended `post_rescue_comment.py` with `SECTION_TITLE`/`SECTION_CONTENT`/`APPEND_ONLY`; updated `ci_rescue.py` to append RCA to rescue-sha anchor instead of creating separate `<!-- ci-rescue-rca -->` comment. Reduces per-SHA comment count from 4-5 → 1.
+6. **WEC enforcer** (SYSTEM 2): Created `scripts/ci/wec_enforcer.py` (436 lines, 5 modes): validate-body, check-workflow, detect-changes, cancel-unchecked, dispatch-checked.
+7. **WEC trigger/cancel** (SYSTEM 3): Updated `workflow-execution-gate.yml` — added `pull_request: [edited]` trigger + 4 new jobs (detect-wec-changes, cancel-unchecked, dispatch-checked, validate-wec-integrity). Checking `[x]` now dispatches the workflow; unchecking `[ ]` cancels in-progress runs.
+8. **WEC template sync** (SYSTEM 5): Added 12 missing items to `_WEC_ITEMS` in `session_wrapup_autofix.py`. WEC template now fully matches `pull_request_template.md`.
+9. **Implementation plan** (SYSTEM 4): Created `docs/ci/PR_WORKFLOW_COMMENT_PLAN.md` — SHA-collision analysis, 15-workflow inventory table, WEC trigger/cancel model table, two Custom Copilot Agent definitions (`sha-digest-guardian`, `wec-lifecycle-agent`).
+10. **PR_LIFECYCLE.md** — reviewed v2.1.0: document is current and accurate.
+
+### SHA-Collision Analysis (from live PR #3876)
+| SHA | Comment count before fix | Comments consolidated → |
+|-----|--------------------------|------------------------|
+| `1448b343b896` | 5 (rescue-sha + rca + healing + compiled-bot + escalation) | 1 (rescue-sha anchor + appended sections) |
+| `dd0ca326203d` | 4 (rescue-sha + rca + copilot reply + session-done) | 1 anchor |
+| `7a2069950366` | 3 (comment-gate + rescue-sha + rca) | 1 anchor |
+| `f157256786c2` | 2 (rescue-sha + rca) | 1 anchor |
+
+### WEC Trigger/Cancel Model
+- **Check `[x]`**: `wec_enforcer.py --dispatch-checked` → `POST /repos/{repo}/actions/workflows/{file}/dispatches` with `{ref: branch}` via CB GitHub connector / MCP Server
+- **Uncheck `[ ]`**: `wec_enforcer.py --cancel-unchecked` → find in-progress runs for that workflow on HEAD_SHA → `POST /repos/{repo}/actions/runs/{run_id}/cancel` via CB GitHub connector / MCP Server
+- Always-Required items: never cancelled regardless of checkbox state
+
+### Infrastructure Gates (not code issues)
+- `Post rescue comment on failure`, `Activate token delegation` — require `CODEX_MASTER_KEY`/`CODEX_BACKUP_KEY`.
+- Cognitive Brain GitHub App token (`CODEX_CB_APP_TOKEN`) available for discussion operations.
+
+### Validation
+- `python -m ruff check scripts/ci/wec_enforcer.py scripts/ci/post_rescue_comment.py scripts/ci/session_wrapup_autofix.py scripts/ci/ci_rescue.py` → ✅ All checks passed
+- `python -c "import ast; ast.parse(...)"` → ✅ All 4 scripts parse cleanly
+- `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/workflow-execution-gate.yml').read())"` → ✅ YAML valid
+
+---
+
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
