@@ -5,7 +5,7 @@ Tests for Document Validator Module.
 import os
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -414,7 +414,6 @@ class TestDecodeContentAllFail:
     """Lines 348-352: all encodings fail → add_error and return None."""
 
     def test_all_encodings_fail(self):
-        from unittest.mock import MagicMock
         validator = DocumentValidator()
         result = ValidationResult(is_valid=True, document_format=DocumentFormat.TEXT)
         mock_content = MagicMock(spec=bytes)
