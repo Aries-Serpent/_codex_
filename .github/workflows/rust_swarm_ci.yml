@@ -130,7 +130,7 @@ jobs:
             || echo "⚠️ Benchmarks timed out or failed - not blocking CI"
 
           # Verify Criterion results exist
-          if [-d "target/criterion"]; then
+          if [ -d "target/criterion" ]; then
             echo "✅ Criterion results generated"
             find target/criterion -name "*.json" | head -5
           else
@@ -145,7 +145,7 @@ jobs:
           echo "Commit: ${GITHUB_SHA:0:8}" >> benchmark_results.txt
           echo "" >> benchmark_results.txt
 
-          if [-d "target/criterion"] && ["$(find target/criterion -name '*.json' -print0 | grep -zc .)" -gt 0]; then
+          if [ -d "target/criterion" ] && [ "$(find target/criterion -name '*.json' -print0 | grep -zc .)" -gt 0 ]; then
             echo "## Benchmark Summary" >> benchmark_results.txt
             echo "" >> benchmark_results.txt
             find target/criterion -name "*.json" -print0 | while IFS= read -r -d '' file; do
@@ -194,14 +194,14 @@ jobs:
           cargo tarpaulin --out Lcov --out Xml --output-dir coverage --release --timeout 600
 
           # Verify coverage files were created
-          if [-f coverage/lcov.info]; then
+          if [ -f coverage/lcov.info ]; then
             echo "✅ Coverage generated: lcov.info"
             ls -lh coverage/lcov.info
           else
             echo "⚠️ Warning: lcov.info not generated"
           fi
 
-          if [-f coverage/cobertura.xml]; then
+          if [ -f coverage/cobertura.xml ]; then
             echo "✅ Coverage generated: cobertura.xml"
             ls -lh coverage/cobertura.xml
           else
@@ -283,7 +283,7 @@ jobs:
         continue-on-error: true
         run: |
           # Check if integration tests exist
-          if [-d "tests/integration"]; then
+          if [ -d "tests/integration" ]; then
             python -m pytest tests/integration/ -v --cov-report=html --cov-report=term || echo "Integration tests completed with issues"
           else
             echo "⚠️ No integration tests found in tests/integration/"
@@ -292,7 +292,7 @@ jobs:
           fi
 
           # Ensure htmlcov directory exists for artifact upload
-          if [! -d "htmlcov"]; then
+          if [ ! -d "htmlcov" ]; then
             mkdir -p htmlcov
             cat > htmlcov/index.html <<'EOF'
           <!DOCTYPE html>
@@ -338,7 +338,7 @@ jobs:
           echo "=== Downloaded benchmark artifacts ==="
           ls -lah
 
-          if [-f "benchmark_results.txt"]; then
+          if [ -f "benchmark_results.txt" ]; then
             echo "✅ Found benchmark_results.txt"
             head -10 benchmark_results.txt
           else
@@ -354,7 +354,7 @@ jobs:
           mkdir -p coverage
 
           # Check if comparison script exists
-          if [-f "scripts/validate_benchmarks.py"]; then
+          if [ -f "scripts/validate_benchmarks.py" ]; then
             echo "Running benchmark validation..."
             python scripts/validate_benchmarks.py || {
               echo "⚠️ Benchmark validation failed or no baseline exists"
@@ -536,13 +536,13 @@ jobs:
           # Treat "skipped" as neutral — jobs are skipped when the cost gate
           # blocks execution on non-approved RED-tier PRs.  Only "failure"
           # indicates an actual test regression.
-          if [["${{ needs.rust_tests.result }}" == "failure"]]; then
+          if [[ "${{ needs.rust_tests.result }}" == "failure" ]]; then
             echo "❌ Rust tests failed"
             exit 1
-          elif [["${{ needs.rust_tests.result }}" == "skipped"]]; then
+          elif [[ "${{ needs.rust_tests.result }}" == "skipped" ]]; then
             echo "⚠️  Rust tests skipped (cost gate blocked execution)"
           fi
-          if [["${{ needs.code_coverage.result }}" == "failure"]]; then
+          if [[ "${{ needs.code_coverage.result }}" == "failure" ]]; then
             echo "⚠️  Coverage check failed"
           fi
           echo "✅ All checks passed"

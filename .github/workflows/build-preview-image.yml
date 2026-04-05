@@ -107,16 +107,16 @@ jobs:
           TAG="${INPUT_TAG:-$SHORT_SHA}"
           TARGET="${{ matrix.target }}"
 
-          if [["${{ github.ref }}" == "refs/heads/main"]]; then
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
             echo "should_push=true" >> "$GITHUB_OUTPUT"
             # Multi-arch on main: build both amd64 and arm64
             echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
-          elif [["${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" == "true"]]; then
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" == "true" ]]; then
             echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
             echo "should_push=true" >> "$GITHUB_OUTPUT"
             echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
-          elif [["${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" != "true"]]; then
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" != "true" ]]; then
             # workflow_dispatch with push_image=false (or unset): local smoke-test only.
             # github.event.number is EMPTY for workflow_dispatch — use run_id instead to
             # guarantee a unique, non-empty tag (fixes Copilot review r2920097250).

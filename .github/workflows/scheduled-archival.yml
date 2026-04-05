@@ -85,10 +85,10 @@ jobs:
           echo "Found $COUNT potential archival candidates"
           echo ""
 
-          if [-n "$CANDIDATES"]; then
+          if [ -n "$CANDIDATES" ]; then
             echo "### Candidates (older than 90 days):"
             echo "$CANDIDATES" | while read -r file; do
-              if [-n "$file"]; then
+              if [ -n "$file" ]; then
                 LAST_MOD=$(git log -1 --format="%ar" -- "$file" 2>/dev/null || echo "unknown")
                 echo "- \`$file\` (last modified: $LAST_MOD)"
               fi
@@ -137,9 +137,9 @@ jobs:
 
             ### Approval Required
 
-            - [] Review each candidate file
-            - [] Confirm no active references exist
-            - [] Approve archival by commenting \`/approve-archival\`
+            - [ ] Review each candidate file
+            - [ ] Confirm no active references exist
+            - [ ] Approve archival by commenting \`/approve-archival\`
 
             ### Archival Process
 
@@ -189,10 +189,10 @@ jobs:
           # Find files larger than 100KB in archive directories
           LARGE_FILES=$(find ./misc/repo-owner-review -type f -size +100k 2>/dev/null || echo "")
 
-          if [-n "$LARGE_FILES"]; then
+          if [ -n "$LARGE_FILES" ]; then
             echo "Found large files for potential compression:"
             echo "$LARGE_FILES" | while read -r file; do
-              if [-n "$file"] && [-f "$file"]; then
+              if [ -n "$file" ] && [ -f "$file" ]; then
                 SIZE=$(du -h "$file" | cut -f1)
                 echo "- $file ($SIZE)"
               fi

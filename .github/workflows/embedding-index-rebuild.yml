@@ -131,7 +131,7 @@ jobs:
         run: |
           CHUNK_COUNT="${{ steps.rebuild.outputs.chunk_count }}"
           BUILD_TIME="${{ steps.rebuild.outputs.build_time }}"
-          if [-z "$CHUNK_COUNT"] || ["$CHUNK_COUNT" -lt 100]; then
+          if [ -z "$CHUNK_COUNT" ] || [ "$CHUNK_COUNT" -lt 100 ]; then
             echo "::error::REQ-10 corpus health: chunk count ${CHUNK_COUNT} below threshold (expected ≥100)"
             exit 1
           else
@@ -163,7 +163,7 @@ jobs:
         run: |
           echo "## 🧠 Embedding Index Rebuild" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [-f ".codex/embeddings/codex_index_meta.json"]; then
+          if [ -f ".codex/embeddings/codex_index_meta.json" ]; then
             python3 -c "
           import json
           meta = json.load(open('.codex/embeddings/codex_index_meta.json'))

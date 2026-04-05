@@ -60,7 +60,7 @@ jobs:
           CUSTOM_BRANCH="${{ github.event.inputs.custom_branch }}"
           SELECTED_BRANCH="${{ github.event.inputs.branch }}"
 
-          if [-n "$CUSTOM_BRANCH"]; then
+          if [ -n "$CUSTOM_BRANCH" ]; then
             BRANCH="$CUSTOM_BRANCH"
             echo "Using custom branch: $BRANCH"
           else
@@ -78,7 +78,7 @@ jobs:
 
       - name: Verify apps directory exists
         run: |
-          if [! -d "apps"]; then
+          if [ ! -d "apps" ]; then
             echo "❌ Error: apps directory not found in branch ${{ steps.branch.outputs.branch }}"
             exit 1
           fi
@@ -91,7 +91,7 @@ jobs:
           echo "## 📦 Available Applications" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [-d "apps/dev"]; then
+          if [ -d "apps/dev" ]; then
             echo "### apps/dev/" >> $GITHUB_STEP_SUMMARY
             ls -1 apps/dev/*.py 2>/dev/null | while read -r file; do
               basename "$file"
@@ -126,16 +126,16 @@ jobs:
           echo "📦 Packaging application: $APP_NAME"
           echo "📍 From branch: $BRANCH"
 
-          if ["$APP_NAME" = "all"]; then
+          if [ "$APP_NAME" = "all" ]; then
             # Package all applications
             PACKAGE_NAME="codex_apps_all_${BRANCH//\//_}_${TIMESTAMP}"
             cp -r apps/* package_staging/
             echo "Packaged all applications"
-          elif ["$APP_NAME" = "zd_voice_lines"]; then
+          elif [ "$APP_NAME" = "zd_voice_lines" ]; then
             # Package Zendesk Voice Lines app
             PACKAGE_NAME="zendesk_voice_lines_${BRANCH//\//_}_${TIMESTAMP}"
 
-            if [! -d "apps/dev"]; then
+            if [ ! -d "apps/dev" ]; then
               echo "❌ Error: apps/dev directory not found"
               exit 1
             fi
@@ -144,25 +144,25 @@ jobs:
             cp apps/dev/zd_voice_lines.py package_staging/
 
             # Copy documentation if exists
-            if [-d "apps/dev/docs"]; then
+            if [ -d "apps/dev/docs" ]; then
               mkdir -p package_staging/docs
               cp -r apps/dev/docs/* package_staging/docs/
             fi
 
             # Copy additional markdown files
             for file in apps/dev/*.md; do
-              if [-f "$file"]; then
+              if [ -f "$file" ]; then
                 cp "$file" package_staging/
               fi
             done
 
             # Copy test file if exists
-            if [-f "apps/dev/test_api_client.py"]; then
+            if [ -f "apps/dev/test_api_client.py" ]; then
               cp apps/dev/test_api_client.py package_staging/
             fi
 
             # Copy __init__.py if exists
-            if [-f "apps/dev/__init__.py"]; then
+            if [ -f "apps/dev/__init__.py" ]; then
               cp apps/dev/__init__.py package_staging/
             fi
 

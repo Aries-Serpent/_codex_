@@ -81,7 +81,7 @@ jobs:
       - name: Run validation
         id: validation
         run: |
-          if ["${{ inputs.skip_tests }}" != "true"]; then
+          if [ "${{ inputs.skip_tests }}" != "true" ]; then
             pytest tests/ -v --tb=short --timeout=300 || exit 1
           fi
           echo "passed=true" >> $GITHUB_OUTPUT
@@ -227,6 +227,6 @@ jobs:
           echo "- Pre-Release Build: ${{ needs.pre_release_build.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Pre-Release Publish: ${{ needs.pre_release_publish.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if ["${{ inputs.version }}" != ""]; then
+          if [ "${{ inputs.version }}" != "" ]; then
             echo "✅ Pre-release version: ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
           fi

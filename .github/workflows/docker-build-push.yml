@@ -75,7 +75,7 @@ jobs:
         run: |
           echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
           echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
-          if [-f .github/OWNER_APPROVAL.yml]; then
+          if [ -f .github/OWNER_APPROVAL.yml ]; then
             echo ".github/OWNER_APPROVAL.yml present"
           else
             echo ".github/OWNER_APPROVAL.yml missing"
@@ -109,7 +109,7 @@ jobs:
         run: |
           echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
           echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
-          if [-f .github/OWNER_APPROVAL.yml]; then
+          if [ -f .github/OWNER_APPROVAL.yml ]; then
             echo ".github/OWNER_APPROVAL.yml present"
           else
             echo ".github/OWNER_APPROVAL.yml missing"
@@ -206,7 +206,7 @@ jobs:
           REPO_IMAGE_LC="$(echo "${REPO_IMAGE}" | tr '[:upper:]' '[:lower:]')"
           SHA_TAG="${REPO_IMAGE_LC}:sha-${GITHUB_SHA::12}"
           BRANCH="${GITHUB_REF_NAME}"
-          if ["${BRANCH}" = "main"]; then
+          if [ "${BRANCH}" = "main" ]; then
             BRANCH_TAG="${REPO_IMAGE_LC}:latest"
           else
             SAFE_BRANCH="${BRANCH//\//-}"

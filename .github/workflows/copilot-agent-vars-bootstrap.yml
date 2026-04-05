@@ -112,7 +112,7 @@ jobs:
         run: |
           echo "## 🔑 Agent Variable Context Bootstrap" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [-f .codex/agent_context.json]; then
+          if [ -f .codex/agent_context.json ]; then
             COUNT=$(python3 -c "import json; d=json.load(open('.codex/agent_context.json')); print(len(d)-1)")
             echo "✅ **${COUNT}** repo variables injected into \`.codex/agent_context.json\`" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
@@ -127,7 +127,7 @@ jobs:
           echo '```yaml' >> "$GITHUB_STEP_SUMMARY"
           echo '- name: Inject agent context' >> "$GITHUB_STEP_SUMMARY"
           echo "  run: |" >> "$GITHUB_STEP_SUMMARY"
-          echo '    if [-f .codex/agent_context.json]; then' >> "$GITHUB_STEP_SUMMARY"
+          echo '    if [ -f .codex/agent_context.json ]; then' >> "$GITHUB_STEP_SUMMARY"
           echo '      python3 -c "import json,os; [print(f'"'"'export {k}={v}'"'"') for k,v in json.load(open('"'"'.codex/agent_context.json'"'"')).items() if not k.startswith('"'"'_'"'"')]" >> "$GITHUB_ENV"' >> "$GITHUB_STEP_SUMMARY"
           echo '    fi' >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"

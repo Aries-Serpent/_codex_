@@ -69,7 +69,7 @@ jobs:
       - name: Generate coverage HTML report
         run: |
           # Generate HTML report only if coverage data exists
-          if [-f .coverage.json] && [-s .coverage.json]; then
+          if [ -f .coverage.json ] && [ -s .coverage.json ]; then
             coverage html -d htmlcov || mkdir -p htmlcov
           else
             mkdir -p htmlcov
@@ -79,7 +79,7 @@ jobs:
       - name: Generate function index PDF (72 DPI, black & white)
         run: |
           # Generate PDF only if HTML report exists
-          if [-d htmlcov] && [-f htmlcov/index.html]; then
+          if [ -d htmlcov ] && [ -f htmlcov/index.html ]; then
             python tools/coverage_html_to_pdf.py --input-dir htmlcov --output coverage_functions.pdf --dpi 72 || touch coverage_functions.pdf
           else
             touch coverage_functions.pdf
@@ -88,7 +88,7 @@ jobs:
       - name: Extract per-module coverage
         run: |
           # Extract module coverage only if coverage JSON exists
-          if [-f .coverage.json] && [-s .coverage.json]; then
+          if [ -f .coverage.json ] && [ -s .coverage.json ]; then
             python tools/coverage_extract.py --coverage-json .coverage.json --out coverage_modules.json || echo '{}' > coverage_modules.json
           else
             echo '{}' > coverage_modules.json

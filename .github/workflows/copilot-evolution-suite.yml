@@ -107,7 +107,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
-          if [-f "scripts/copilot/cascade_review.py"]; then
+          if [ -f "scripts/copilot/cascade_review.py" ]; then
             python scripts/copilot/cascade_review.py \
               --pr-number "${{ steps.pr.outputs.pr_number || github.event.issue.number }}"
           else
@@ -166,7 +166,7 @@ jobs:
       - name: Test integrated system
         id: test
         run: |
-          if [-f "tests/copilot/test_evolution_system.py"]; then
+          if [ -f "tests/copilot/test_evolution_system.py" ]; then
             pytest tests/copilot/test_evolution_system.py -v --tb=short --timeout=300
             echo "results=passed" >> $GITHUB_OUTPUT
           else
@@ -180,7 +180,7 @@ jobs:
         env:
           EVOLUTION_MODE: ${{ inputs.evolution_mode || 'adaptive' }}
         run: |
-          if [-f "scripts/copilot/evolution_pipeline.py"]; then
+          if [ -f "scripts/copilot/evolution_pipeline.py" ]; then
             python scripts/copilot/evolution_pipeline.py \
               --mode "$EVOLUTION_MODE" \
               --test-first
@@ -193,7 +193,7 @@ jobs:
       - name: Collect evolution metrics
         if: steps.evolve.outputs.performed == 'true'
         run: |
-          if [-f ".github/copilot-evolution/data/metrics.json"]; then
+          if [ -f ".github/copilot-evolution/data/metrics.json" ]; then
             echo "## 📊 Evolution Metrics" >> $GITHUB_STEP_SUMMARY
             cat .github/copilot-evolution/data/metrics.json >> $GITHUB_STEP_SUMMARY
           fi
@@ -216,7 +216,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          if [[-n $(git status --porcelain .github/copilot-evolution/)]]; then
+          if [[ -n $(git status --porcelain .github/copilot-evolution/) ]]; then
             git add .github/copilot-evolution/
             git commit -m "🧬 Copilot self-evolution update [automated]
 
@@ -225,7 +225,7 @@ jobs:
             - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
             # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
-            if ["${{ github.event_name }}" = "schedule"] || ["${{ github.ref_name }}" = "main"]; then
+            if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.ref_name }}" = "main" ]; then
               TARGET_REF="${{ steps.resolve-target.outputs.branch }}"
               echo "🔀 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason }})"
             else
@@ -258,10 +258,10 @@ jobs:
           echo "- Cascade Review: ${{ needs.cascade_review.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Self-Evolution: ${{ needs.self_evolution.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if ["${{ needs.self_evolution.outputs.evolution_performed }}" == "true"]; then
+          if [ "${{ needs.self_evolution.outputs.evolution_performed }}" == "true" ]; then
             echo "✅ Evolution pipeline executed successfully" >> $GITHUB_STEP_SUMMARY
           fi
-          if ["${{ github.event_name }}" == "pull_request"]; then
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "📝 Cascade review completed for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
           fi
 
