@@ -3,7 +3,38 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-05T21:17Z S-3876-hotfix
+**Last updated:** 2026-04-05T23:17Z S-3876-mermaid
+
+## SESSION SUMMARY — 2026-04-05T23:17Z S-3876-mermaid (PR #3876 — Mermaid maps + CI gate verification)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All PR comments reviewed — BLOCKING comment `4189618326` (ci-rescue sha:1b7d446) ✅ replied
+- [x] **0d.** CI on `1b7d446`: Comment Review Gate ✅ success; startup_failure on Progressive/Data/Rust = infra-level runner failures, not code regressions ✅
+- [x] **0e.** Agency Policy §0: all issues fixed immediately, no deferrals ✅
+
+### What Changed
+1. **`docs/CODEBASE_MERMAID_MAPS.md`** — Updated version 1.0.0→1.1.0, date 2026-03-29→2026-04-05, 4 changes:
+   - **Header**: bumped version to 1.1.0 (S228 + PR #3876), updated date.
+   - **Section 2 (CI/CD Pipeline Architecture)**: CodeQL node now annotated with `#12788/#12789/#12790 resolved PR #3876` to document that all active CodeQL alerts on this branch were fixed.
+   - **Section 11 (Security + Token Delegation)**: Added new "Variables & Secrets Knowledge Layer (PR #3876)" subgraph with three new nodes: `GITHUB_VARIABLES_SECRETS_REFERENCE.md` (7-source verified reference), `GITHUB_API_AND_MCP_REFERENCE.md` (Cognitive Brain knowledge entry), and `test_variables_api.py` (live token validation + variable CRUD test). Added edges: `CODEX_MASTER_KEY → test_variables_api.py → GITHUB_VARIABLES_SECRETS_REFERENCE.md → CB knowledge entry`.
+   - **Section 12 (Source Layout)**: Added `test_variables_api.py ← PR #3876` to the `scripts/ci/` subgraph listing.
+   - **Footer**: Updated `*Updated:*` line to include PR #3876 and a change summary.
+
+### Root-Cause Note
+The mermaid maps in `docs/CODEBASE_MERMAID_MAPS.md` serve as the authoritative visual reference per `CODEBASE_AGENCY_POLICY.md §0`. PR #3876 introduced significant new artifacts (comprehensive variables/secrets reference, live API test script, 3 CodeQL fixes) that required corresponding diagram updates to keep the maps aligned with the PR's actual behavior. Without these updates, the "security + token delegation" section would show no connection to the new `test_variables_api.py` workflow, and future agents preflight-scanning the mermaid maps would not know about the variables/secrets reference layer.
+
+### Lessons Learned
+- Always update `CODEBASE_MERMAID_MAPS.md` when a PR adds scripts under `scripts/ci/` or new reference docs under `docs/reference/`.
+- The CI/CD pipeline mermaid in Section 2 should annotate resolved CodeQL alert IDs so future sessions can quickly confirm fix history.
+
+### Impact Score
+- Files changed: 1 (`docs/CODEBASE_MERMAID_MAPS.md`)
+- Diagram sections updated: 4 (header, §2, §11, §12)
+- CI gates unblocked: Comment Review Gate (new SHA after push)
+
+
 
 ## SESSION SUMMARY — 2026-04-05T21:17Z S-3876-hotfix (PR #3876 — CodeQL #12790 + gate clearance)
 

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs (PR #3876 — Mermaid maps aligned with PR behavior, 2026-04-05)
+- **`docs/CODEBASE_MERMAID_MAPS.md`**: Updated version 1.0.0→1.1.0. Four targeted changes: (1) Header date 2026-03-29→2026-04-05; (2) Section 2 CI/CD pipeline: CodeQL node now annotates resolved alerts `#12788/#12789/#12790 PR #3876`; (3) Section 11 Security+Token: added new "Variables & Secrets Knowledge Layer (PR #3876)" subgraph documenting `GITHUB_VARIABLES_SECRETS_REFERENCE.md`, `GITHUB_API_AND_MCP_REFERENCE.md`, and `test_variables_api.py` with correct edges from `CODEX_MASTER_KEY`; (4) Section 12 Source Layout: added `test_variables_api.py ← PR #3876` to the `scripts/ci/` listing.
+
 ### Fixed (PR #3876 — CodeQL hotfix + double-space cleanup, 2026-04-05)
 - **`tests/codex/test_cli_roles.py`**: CodeQL #12788/#12789 (definitive fix) — restructured `test_cli_roles_help` and `test_cli_roles_list` to merge the `from codex import cli_roles` import and the `cli_runner.invoke()` call into a single `try` block. The imported name `_cli_roles` is now only ever referenced within the `try` block where it is guaranteed to be assigned; `ImportError` and `RuntimeError/Exception` are handled in separate `except` clauses each ending with `return`. This eliminates the CodeQL "potentially uninitialized local variable" path that persisted even after the prior `return`-after-`pytest.skip()` fix, because CodeQL does not model `pytest.skip()` as a no-return function.
 - **`scripts/ci/test_variables_api.py`**: CodeQL #12790 — removed `print(f"X-OAuth-Scopes={scopes_header...}")` which logged the raw `X-OAuth-Scopes` HTTP response header from an authenticated GitHub API endpoint. CodeQL taint-tracks this value as potentially sensitive. Replaced with a whitelist-filtered `active_scopes` display derived from a hardcoded set of known-safe scope names, so raw header data never reaches `print()`.

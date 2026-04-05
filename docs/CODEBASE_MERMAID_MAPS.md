@@ -1,7 +1,7 @@
 # 🗺️ Codebase-Wide Mermaid Architecture Maps
 
-> **Version:** 1.0.0 (S228)  
-> **Updated:** 2026-03-29  
+> **Version:** 1.1.0 (S228 + PR #3876)  
+> **Updated:** 2026-04-05  
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`  
 > **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight
 
@@ -84,7 +84,7 @@ flowchart TD
 
     subgraph "Tier 4 — Security + Quality"
         SECURITY[security-scanning-suite.yml\nCycloneDX SBOM]
-        CODEQL[CodeQL]
+        CODEQL[CodeQL\n#12788/#12789/#12790 resolved PR #3876]
         SEMGREP[Semgrep SAST]
     end
 
@@ -397,12 +397,25 @@ flowchart TD
         REPORT[AGENT_ACCOUNTABILITY_REPORT.md]
     end
 
+    subgraph "Variables & Secrets Knowledge Layer (PR #3876)"
+        VARS_REF[docs/reference/\nGITHUB_VARIABLES_SECRETS_REFERENCE.md\n7 upstream sources · all scopes]
+        CB_REF[.codex/docs/\nGITHUB_API_AND_MCP_REFERENCE.md\nCognitive Brain knowledge entry]
+        VAR_TEST[scripts/ci/test_variables_api.py\nlive token validation + variable CRUD\ndispatch via test-variables-api.yml]
+    end
+
     MK & BK --> AAD
     GT --> AAD
     AAD --> AUTH_CHECK
     AUTH_CHECK -->|yes| ALLOWED
     ALLOWED --> MB & GA & CS & GH
     MB & CS -->|can write| MANIFEST & BASELINE & REPORT
+    MK -->|CODEX_MASTER_KEY required| VAR_TEST
+    VAR_TEST -->|reads scopes allowlist| VARS_REF
+    VARS_REF --> CB_REF
+
+    style VARS_REF fill:#e1f5fe,color:#000
+    style CB_REF fill:#e1f5fe,color:#000
+    style VAR_TEST fill:#e8f5e9,color:#000
 ```
 
 ---
@@ -429,7 +442,7 @@ graph TD
     end
 
     subgraph "scripts/"
-        CI_SCRIPTS[ci/\nauto_fix_common_issues.py\ncheck_pr_comments.py\nsync_tracked_files.py]
+        CI_SCRIPTS[ci/\nauto_fix_common_issues.py\ncheck_pr_comments.py\nsync_tracked_files.py\ntest_variables_api.py ← PR #3876]
         COG_SCRIPTS[cognitive/\ntopology_manager.py\ncache_manager.py]
     end
 
@@ -447,4 +460,4 @@ graph TD
 
 *All diagrams render on GitHub markdown. Use [Mermaid Live Editor](https://mermaid.live) for offline preview.*
 
-*Updated: S228 · 2026-03-29*
+*Updated: S228 + PR #3876 · 2026-04-05 — Section 11 expanded with Variables & Secrets Knowledge Layer; Section 12 updated with test_variables_api.py*
