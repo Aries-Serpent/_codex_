@@ -124,7 +124,9 @@
 - [x] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run)
 - [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
-- [x] auto-approve-workflows.yml — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+
+### ⚡ Auto-Approve
+- [ ] auto-approve-workflows.yml — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
 
 ### 🧪 Opt-In: Testing & Validation
 - [ ] validate.yml — Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
@@ -170,15 +172,12 @@
 
 > **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
 > appended verbatim to **every** PR body update — including every `report_progress` call.
-> Copy the WEC block from the **live PR body** (not from this template) into the `prDescription`
-> parameter, preserving the **exact checked state** of every item.
-> **Never reset any `[x]` item to `[ ]`.** Always Active items
-> (`copilot-agent-checkin.yml`, `copilot-agent-session-done.yml`,
-> `copilot-iterative-self-healing.yml`, `cost-gate.yml`, `auto-approve-workflows.yml`)
-> are permanently `[x]` — unchecking any of them disables critical automation.
-> `auto-approve-workflows.yml` specifically enables the automated CI approval loop
-> that allows the agent to resolve ALL CI failures without manual intervention.
-> Only items that are `[ ]` in the live PR body may remain `[ ]`.
+> **BEFORE writing any `prDescription`:** fetch the live PR body via the GitHub API and
+> copy the WEC block exactly as it appears there — do NOT reconstruct it from this template.
+> Preserve the **exact `[x]`/`[ ]` state** of every item as found in the live PR body.
+> `auto-approve-workflows.yml` is **sticky**: if the maintainer checked `[x]` it stays `[x]`
+> for the entire session; if the maintainer unchecks it `[ ]` that `[ ]` is preserved.
+> Never flip any checkbox in either direction — only the maintainer may change checkbox state.
 
 **Required if any files are deleted or moved:**
 
