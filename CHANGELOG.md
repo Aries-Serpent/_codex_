@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3874)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3874 (SHA `97e9e414`) at 2026-04-05T16:56Z [auto-generated]
+
 ### Fixed (S240 — PR #3873 — RP-020 test_safe_write_text_warns caplog isolation fix)
 - **`tests/test_session_hooks_warnings.py`**: Replaced `caplog`-based WARNING assertions with `unittest.mock.patch.object(session_hooks.logger, "warning")` so both `test_safe_write_text_warns` and `test_safe_append_json_line_warns` are immune to logging-propagation state polluted by other tests in CI (RP-020 pattern fix).
 - **`.mypy_baseline`**: Updated from 274 → 386 to reflect current `src/` type-error count after dev-dependency changes.
