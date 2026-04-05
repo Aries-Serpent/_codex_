@@ -55,16 +55,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run yamllint
-        run: |
-          pip install yamllint --quiet
-          yamllint .github/workflows/ .github/misc/ -c .yamllint.yml
-
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
           extras: 'dev'
+
+      - name: Run yamllint
+        run: |
+          python -m pip install yamllint --quiet
+          yamllint .github/workflows/ .github/misc/ -c .yamllint.yml
 
       - name: Run fast validation
         env:
