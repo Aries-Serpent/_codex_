@@ -21,8 +21,8 @@
 2. **`mypy_baseline.py` stale baseline** (blocking gate): Baseline stored 0 errors but `mypy` found 104 pre-existing type errors in `src/`. Reset baseline to 104 to unblock the gate without hiding regressions.
 
 ### Infrastructure Gates (not code issues)
-- `startup_failure` on Rust-Python Hybrid Swarm CI/CD, Data Quality Suite, Progressive Validation Suite — pre-existing infrastructure unavailability.
-- `Activate token delegation`, `⏳ Awaiting owner approval`, `Post rescue comment on failure`, `🧠 Cognitive Pre-flight Check` — require owner-injected secrets; not addressable by code changes.
+- `startup_failure` on Rust-Python Hybrid Swarm CI/CD, Data Quality Suite, Progressive Validation Suite — failures appear attributable to external service / infrastructure unavailability; no causal repository change was identified.
+- `Activate token delegation`, `⏳ Awaiting owner approval`, `Post rescue comment on failure`, `🧠 Cognitive Pre-flight Check` — require owner-injected secrets; cannot be resolved by repository code changes.
 
 ### Validation
 - `ruff check src/ tests/` ✅ clean (0 errors)
@@ -45,7 +45,7 @@
 2. **RAG coverage gate below 95%** (BLOCKING): `ingestion/pipeline.py` at 87.74% and `ingestion/validator.py` at 87.61% pulled combined RAG coverage to 90.86%. Added targeted tests in `tests/rag/ingestion/test_pipeline.py` and `tests/rag/ingestion/test_validator.py` covering all identified uncovered lines/branches. Both modules now at 100%; combined ingestion coverage 99.50% (commit 27668d6).
 
 ### Infrastructure Gates (not code issues)
-- `startup_failure` on Rust-Python Hybrid Swarm CI/CD, Data Quality Suite, Progressive Validation Suite — external service / infrastructure unavailability, not related to this PR's changes.
+- `startup_failure` on Rust-Python Hybrid Swarm CI/CD, Data Quality Suite, Progressive Validation Suite — failures appear attributable to external service / infrastructure unavailability; no causal repository change was identified.
 
 ### Validation
 - `ruff check src/ tests/` ✅ clean (all checks passed)

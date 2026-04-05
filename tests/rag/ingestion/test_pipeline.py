@@ -591,7 +591,7 @@ class TestGetStatsAndClearCache:
 
 
 # ---------------------------------------------------------------------------
-# Coverage-gap tests — targets identified in CI run 23986840244
+# Coverage-focused tests for edge cases and exception-handling branches
 # ---------------------------------------------------------------------------
 
 class TestBatchIngestionResultThroughputZeroTime:
@@ -754,7 +754,7 @@ class TestIngestDirectoryCoveragePaths:
 
 
 class TestIngestWithRetryNonValidationFailure:
-    """Lines 486->477: FAILED result without validation_result causes retry."""
+    """FAILED result without validation_result causes retry."""
 
     def test_retries_non_validation_failure(self, tmp_path):
         f = tmp_path / "retry.txt"

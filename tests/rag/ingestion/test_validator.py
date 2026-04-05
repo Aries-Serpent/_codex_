@@ -245,7 +245,7 @@ class TestValidationConfig:
 
 
 # ---------------------------------------------------------------------------
-# Coverage-gap tests — targets identified in CI run 23986840244
+# Coverage-gap tests for file-validation edge cases and branch handling
 # ---------------------------------------------------------------------------
 
 class TestValidateFileDirectoryPath:
@@ -338,10 +338,11 @@ class TestValidateFileIOError:
         validator = DocumentValidator()
         original_open = open
 
-        def patched_open(path, mode="r", **kwargs):
+        def patched_open(path, *args, **kwargs):
+            mode = args[0] if args else kwargs.get("mode", "r")
             if mode == "rb":
                 raise IOError("read error")
-            return original_open(path, mode, **kwargs)
+            return original_open(path, *args, **kwargs)
 
         with patch("builtins.open", side_effect=patched_open):
             result = validator.validate_file(f)
