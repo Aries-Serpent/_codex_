@@ -96,7 +96,7 @@ class TestCoverageQuality:
         if file_count > 0:
             avg_pragmas = pragma_count / file_count
             # Allow some pragmas (3.1 per file average) - reflects legitimate usage of
-            # # pragma: no cover on optional-dependency guards and defensive exception
+            # pragma: no cover on optional-dependency guards and defensive exception
             # handlers throughout src/ (e.g. tensorboard, MLflow, psutil, PEFT stubs).
             assert avg_pragmas <= 3.1, f"Too many pragma: no cover ({avg_pragmas:.1f}/file)"
 
