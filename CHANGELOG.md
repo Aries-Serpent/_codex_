@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #3876 — review comments + CodeQL alerts + session S-3876, 2026-04-05)
+- **`tests/codex/test_cli_roles.py`**: Added explicit `return` after both `pytest.skip()` calls in `test_cli_roles_help` and `test_cli_roles_list`. This resolves two CodeQL `Potentially uninitialized local variable` alerts (alerts #12788 and #12789) — CodeQL static analysis does not model `pytest.skip()` as always-raising; the `return` makes the unreachable path explicit so no path through the function uses `cli_roles` before it is initialized.
+- **`CHANGELOG.md`** (this file): Updated auto-update entries (lines 17 & 20) to reference full filenames `` `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` `` and `` `CHANGELOG.md` `` instead of generic prose, per `copilot-pull-request-reviewer[bot]` review suggestion.
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: Fixed 34 occurrences of double space `".  The"` → `". The"` in the recurring "Root-Cause Note" boilerplate that appears in every session entry, per `copilot-pull-request-reviewer[bot]` review suggestion (line 17429).
+
 ### Fixed (CI triage #3875 — PR comment patterns, 2026-04-05)
 - **`tests/coverage_tests/test_coverage_analysis.py`**: Updated `test_no_pragma_no_cover_abuse` threshold from 2.2 → 3.1 per-file. The existing `# pragma: no cover` annotations in `src/` are all legitimate (optional-dependency guards, defensive exception handlers for tensorboard/MLflow/psutil/PEFT stubs). The prior threshold was set too low and did not reflect the actual codebase state.
 - **`src/codex/cli_roles.py`**: Changed `export-matrix` command argument declarations from `Annotated[Path, typer.Argument()]` style (requires typer ≥ 0.9) to the compatible default-value style (`param: Path = typer.Argument(...)`). Removes `RuntimeError: Type not yet supported: <class 'pathlib.Path'>` that caused test failures in CI when an older typer version was installed.
@@ -14,10 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`tests/rag/test_coverage_gaps.py`**: Added module-level `numpy` import guard with `pytest.skip(allow_module_level=True)` so the test file is gracefully skipped in minimal environments that do not have the full RAG extras installed (resolves collection-time `ModuleNotFoundError: No module named 'numpy'`).
 
 ### Fixed (auto-update — PR #3876)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3876 (SHA `6512a859`) at 2026-04-05T17:14Z [auto-generated]
+- Auto-fix: `session_wrapup_autofix.py` updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for PR #3876 (SHA `6512a859`) at 2026-04-05T17:14Z [auto-generated]
 
 ### Fixed (auto-update — PR #3874)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3874 (SHA `97e9e414`) at 2026-04-05T16:56Z [auto-generated]
+- Auto-fix: `session_wrapup_autofix.py` updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for PR #3874 (SHA `97e9e414`) at 2026-04-05T16:56Z [auto-generated]
 
 ### Fixed (S240 — PR #3873 — RP-020 test_safe_write_text_warns caplog isolation fix)
 - **`tests/test_session_hooks_warnings.py`**: Replaced `caplog`-based WARNING assertions with `unittest.mock.patch.object(session_hooks.logger, "warning")` so both `test_safe_write_text_warns` and `test_safe_append_json_line_warns` are immune to logging-propagation state polluted by other tests in CI (RP-020 pattern fix).
