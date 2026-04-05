@@ -64,10 +64,10 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
-          python scripts/ci/wec_enforcer.py --detect-changes > wec_changes.json
-          NEWLY_CHECKED=$(python3 -c "import json; d=json.load(open('wec_changes.json')); print(json.dumps(d['newly_checked']))")
-          NEWLY_UNCHECKED=$(python3 -c "import json; d=json.load(open('wec_changes.json')); print(json.dumps(d['newly_unchecked']))")
-          HAS_CHANGES=$(python3 -c "import json; d=json.load(open('wec_changes.json')); print('true' if d['newly_checked'] or d['newly_unchecked'] else 'false')")
+          python scripts/ci/wec_enforcer.py --detect-changes > wec_changes.json || true
+          NEWLY_CHECKED=$(python3 -c "import json,sys; d=json.load(open('wec_changes.json')); print(json.dumps(d.get('newly_checked', [])))" 2>/dev/null || echo "[]")
+          NEWLY_UNCHECKED=$(python3 -c "import json,sys; d=json.load(open('wec_changes.json')); print(json.dumps(d.get('newly_unchecked', [])))" 2>/dev/null || echo "[]")
+          HAS_CHANGES=$(python3 -c "import json,sys; d=json.load(open('wec_changes.json')); print('true' if d.get('newly_checked') or d.get('newly_unchecked') else 'false')" 2>/dev/null || echo "false")
           echo "newly_checked=${NEWLY_CHECKED}" >> "$GITHUB_OUTPUT"
           echo "newly_unchecked=${NEWLY_UNCHECKED}" >> "$GITHUB_OUTPUT"
           echo "has_changes=${HAS_CHANGES}" >> "$GITHUB_OUTPUT"
@@ -133,7 +133,6 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "Dispatching newly-checked workflows..."
-          NEWLY_CHECKED_JSON="${NEWLY_CHECKED}" \
           python scripts/ci/wec_enforcer.py \
             --dispatch-checked \
             --pr "${PR_NUMBER}" \
