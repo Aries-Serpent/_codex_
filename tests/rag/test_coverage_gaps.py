@@ -29,13 +29,10 @@ if str(_SRC) not in sys.path:
 # Skip entire module if numpy (a transitive RAG dependency) is missing so
 # tests can be collected without error in minimal environments.
 # ---------------------------------------------------------------------------
-try:
-    import numpy  # noqa: F401
-except ImportError:
-    pytest.skip(
-        "numpy not installed — RAG coverage tests require the full RAG extras",
-        allow_module_level=True,
-    )
+pytest.importorskip(
+    "numpy",
+    reason="numpy not installed — RAG coverage tests require the full RAG extras",
+)
 
 
 # ===========================================================================
