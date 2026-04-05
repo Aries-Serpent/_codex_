@@ -5,6 +5,7 @@ Tests for Ingestion Pipeline Module.
 import os
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -587,3 +588,203 @@ class TestGetStatsAndClearCache:
         assert pipeline.get_stats()["dedup_cache_size"] >= 1
         pipeline.clear_deduplication_cache()
         assert pipeline.get_stats()["dedup_cache_size"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Coverage-gap tests — targets identified in CI run 23986840244
+# ---------------------------------------------------------------------------
+
+class TestBatchIngestionResultThroughputZeroTime:
+    """Line 147: throughput_docs_per_hour returns 0.0 when total_time_seconds == 0."""
+
+    def test_throughput_zero_time(self):
+        result = BatchIngestionResult(total_documents=5, total_time_seconds=0.0)
+        assert result.throughput_docs_per_hour == 0.0
+
+
+class TestIngestTextExceptionPath:
+    """Lines 270-273: exception inside ingest_text sets FAILED status."""
+
+    def test_exception_during_chunking(self):
+        pipeline = IngestionPipeline()
+        with patch.object(pipeline.chunker, "chunk", side_effect=RuntimeError("chunk boom")):
+            result = pipeline.ingest_text("some valid text content here")
+        assert result.status == IngestionStatus.FAILED
+        assert "chunk boom" in result.error_message
+
+    def test_exception_during_preprocessing(self):
+        pipeline = IngestionPipeline()
+        with patch.object(pipeline.preprocessor, "preprocess", side_effect=ValueError("pre boom")):
+            result = pipeline.ingest_text("some valid text content here")
+        assert result.status == IngestionStatus.FAILED
+        assert "pre boom" in result.error_message
+
+
+class TestIngestFileCoveragePaths:
+    """Covers missing branches in ingest_file (lines 304->307, 319->329,
+    332-334, 337->346, 340-342, 348->354, 359, 370-373)."""
+
+    def test_ingest_file_with_explicit_document_id(self, tmp_path):
+        """Lines 304->307: document_id provided — skip auto-generation from stem."""
+        f = tmp_path / "myfile.txt"
+        f.write_text("Content for file ingestion with explicit ID")
+        pipeline = IngestionPipeline()
+        result = pipeline.ingest_file(f, document_id="explicit-id")
+        assert result.document_id == "explicit-id"
+
+    def test_ingest_file_skip_validation(self, tmp_path):
+        """Lines 319->329: skip_validation=True in ingest_file."""
+        f = tmp_path / "skipval.txt"
+        f.write_text("Content for skip validation test")
+        config = IngestionConfig(skip_validation=True)
+        pipeline = IngestionPipeline(config)
+        result = pipeline.ingest_file(f)
+        assert result.is_success
+        assert result.validation_result is None
+
+    def test_ingest_file_latin1_fallback(self, tmp_path):
+        """Lines 332-334: UTF-8 decode fails → falls back to latin-1."""
+        f = tmp_path / "latin1.txt"
+        # 0xE9 is 'é' in latin-1 but is not valid standalone UTF-8
+        f.write_bytes(b"Caf\xe9 content for latin1 fallback test here")
+        # skip_validation so the validator's separate decode doesn't block us
+        config = IngestionConfig(skip_validation=True)
+        pipeline = IngestionPipeline(config)
+        result = pipeline.ingest_file(f)
+        assert result.is_success
+
+    def test_ingest_file_deduplication_disabled(self, tmp_path):
+        """Lines 337->346: enable_deduplication=False skips dedup in ingest_file."""
+        f = tmp_path / "dupfile.txt"
+        f.write_text("Duplicate file content for dedup disabled test")
+        config = IngestionConfig(enable_deduplication=False)
+        pipeline = IngestionPipeline(config)
+        result1 = pipeline.ingest_file(f)
+        result2 = pipeline.ingest_file(f)
+        assert result1.is_success
+        assert result2.is_success  # Not skipped since dedup is off
+
+    def test_ingest_file_duplicate_detected(self, tmp_path):
+        """Lines 340-342: duplicate file detected in ingest_file."""
+        f = tmp_path / "dup.txt"
+        f.write_text("Unique content for duplicate detection file test here")
+        pipeline = IngestionPipeline()
+        result1 = pipeline.ingest_file(f)
+        result2 = pipeline.ingest_file(f)
+        assert result1.is_success
+        assert result2.status == IngestionStatus.SKIPPED
+        assert "duplicate" in result2.error_message.lower()
+
+    def test_ingest_file_skip_preprocessing(self, tmp_path):
+        """Lines 348->354: skip_preprocessing=True in ingest_file."""
+        f = tmp_path / "noprep.txt"
+        f.write_text("Content without preprocessing step here")
+        config = IngestionConfig(skip_preprocessing=True)
+        pipeline = IngestionPipeline(config)
+        result = pipeline.ingest_file(f)
+        assert result.is_success
+        assert result.preprocessing_result is None
+
+    def test_ingest_file_skip_chunking(self, tmp_path):
+        """Line 359: skip_chunking=True produces single-chunk result in ingest_file."""
+        f = tmp_path / "nochunk.txt"
+        f.write_text("Content without chunking step here")
+        config = IngestionConfig(skip_chunking=True)
+        pipeline = IngestionPipeline(config)
+        result = pipeline.ingest_file(f)
+        assert result.is_success
+        assert result.chunk_count == 1
+
+    def test_ingest_file_exception_during_chunking(self, tmp_path):
+        """Lines 370-373: exception during ingest_file sets FAILED status."""
+        f = tmp_path / "chunkfail.txt"
+        f.write_text("Content that causes chunking to raise an error here")
+        pipeline = IngestionPipeline()
+        with patch.object(pipeline.chunker, "chunk", side_effect=RuntimeError("file chunk boom")):
+            result = pipeline.ingest_file(f)
+        assert result.status == IngestionStatus.FAILED
+        assert "file chunk boom" in result.error_message
+
+
+class TestIngestFilesSequentialExceptionPaths:
+    """Lines 424-430: sequential ingest_files exception handling."""
+
+    def test_continue_on_error_true(self, tmp_path):
+        """Lines 427-430: exception with continue_on_error=True increments failed count."""
+        for i in range(2):
+            (tmp_path / f"f{i}.txt").write_text("content")
+        config = IngestionConfig(continue_on_error=True)
+        pipeline = IngestionPipeline(config)
+        files = list(tmp_path.glob("*.txt"))
+        with patch.object(pipeline, "_ingest_with_retry", side_effect=RuntimeError("seq boom")):
+            batch = pipeline.ingest_files(files, parallel=False)
+        assert batch.failed == 2
+        assert len(batch.errors) == 2
+
+    def test_continue_on_error_false_raises(self, tmp_path):
+        """Lines 425-426: exception with continue_on_error=False re-raises immediately."""
+        (tmp_path / "f0.txt").write_text("content")
+        config = IngestionConfig(continue_on_error=False)
+        pipeline = IngestionPipeline(config)
+        with patch.object(pipeline, "_ingest_with_retry", side_effect=RuntimeError("stop boom")):
+            with pytest.raises(RuntimeError, match="stop boom"):
+                pipeline.ingest_files([tmp_path / "f0.txt"], parallel=False)
+
+
+class TestIngestDirectoryCoveragePaths:
+    """Lines 458, 464: ingest_directory edge cases."""
+
+    def test_not_a_directory_raises(self, tmp_path):
+        """Line 458: ValueError when path is not a directory."""
+        f = tmp_path / "notadir.txt"
+        f.write_text("content")
+        pipeline = IngestionPipeline()
+        with pytest.raises(ValueError, match="Not a directory"):
+            pipeline.ingest_directory(f)
+
+    def test_non_recursive(self, tmp_path):
+        """Line 464: recursive=False uses glob instead of rglob."""
+        (tmp_path / "top.txt").write_text("top level content for non-recursive test here")
+        subdir = tmp_path / "subdir"
+        subdir.mkdir()
+        (subdir / "nested.txt").write_text("nested content here")
+        pipeline = IngestionPipeline()
+        result = pipeline.ingest_directory(tmp_path, pattern="*.txt", recursive=False)
+        assert result.total_documents == 1  # Only top-level file
+
+
+class TestIngestWithRetryNonValidationFailure:
+    """Lines 486->477: FAILED result without validation_result causes retry."""
+
+    def test_retries_non_validation_failure(self, tmp_path):
+        f = tmp_path / "retry.txt"
+        f.write_text("content")
+        failed_no_validation = IngestionResult(
+            document_id=str(f),
+            status=IngestionStatus.FAILED,
+            error_message="transient error",
+            # validation_result intentionally left as None
+        )
+        config = IngestionConfig(max_retries=1, retry_delay_seconds=0.0)
+        pipeline = IngestionPipeline(config)
+        with patch.object(pipeline, "ingest_file", return_value=failed_no_validation) as mock_ingest:
+            result = pipeline._ingest_with_retry(f)
+        # Called max_retries+1 times since result was FAILED with no validation_result
+        assert mock_ingest.call_count == 2
+        assert result.status == IngestionStatus.FAILED
+
+
+class TestUpdateBatchResultEmptyErrorMessage:
+    """Lines 518->522: FAILED result with empty error_message is not appended."""
+
+    def test_failed_empty_error_message_not_appended(self):
+        pipeline = IngestionPipeline()
+        batch = BatchIngestionResult(total_documents=1)
+        result = IngestionResult(
+            document_id="silent-fail",
+            status=IngestionStatus.FAILED,
+            error_message="",
+        )
+        pipeline._update_batch_result(batch, result)
+        assert batch.failed == 1
+        assert len(batch.errors) == 0
