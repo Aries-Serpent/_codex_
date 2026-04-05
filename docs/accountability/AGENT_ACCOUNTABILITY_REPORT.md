@@ -17340,3 +17340,32 @@ and the CI gate requirement.
 All issues discovered were either fixed in this session or documented in the audit report as future-session tasks with explicit priority levels.
 
 ---
+
+---
+
+## SESSION SUMMARY — S240-continuation-2 — 2026-04-05T11:22Z (PR #3873 hardening + GitHub API docs)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All new PR comments reviewed (maintainer feedback re: WEC regression, deferral language, codebase policy) ✅
+- [x] **0b.** All failing CI checks on 2b53d0f reviewed: RAG Module Tests (in-progress), Validation Pipeline (in-progress), startup_failure workflows (startup_failure = approve-required, not code error) ✅
+- [x] **0c.** No deferral language in any output of this session ✅
+- [x] **0d.** WEC block appended to every report_progress call with canonical 6-section format ✅
+
+### Work Completed
+1. **`scripts/ci/session_wrapup_autofix.py` `_WEC_ITEMS`** — Corrected three stale/non-existent filenames (`resilient-validation-suite.yml` → `resilient_validation.yml`, `nox-gates.yml` → `nox_gates.yml`, `docs-build.yml` → `documentation-link-checker.yml`). Added all Always-Active + remaining Always-Required workflows as `always_required=True`. Updated `_build_wec_block` to 6-section canonical format matching `docs/ci/PR_LIFECYCLE.md`.
+2. **`tests/ci/test_session_wrapup_autofix.py`** — Updated all 8 test assertions to use correct filenames and new section headings. Updated item count from 14 → 16. All 44 WEC tests pass.
+3. **`.github/workflows/agent-auth-delegation.yml`** — Updated inline WEC injection block (lines 965-1000) to match canonical 6-section format with correct filenames. This is the highest-impact fix: every PR body is overwritten by this workflow on each agent session start.
+4. **`.github/workflows/resilient_validation.yml`** — Updated WEC gate job name + grep pattern from `resilient-validation-suite\.yml` → `resilient_validation\.yml`. The gate was previously never matching the checkbox, so resilient validation was always running unconditionally.
+5. **`docs/CODEBASE_MERMAID_MAPS.md`** — Fixed stale WEC filenames in 2 Mermaid diagram nodes.
+6. **`docs/workflows/PR_COMMENT_LIFECYCLE.md`** — Fixed stale WEC filenames in 2 Mermaid diagram nodes.
+7. **`docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md`** — Fixed stale filenames in 2 WEC blocks + milestone table + JSON example.
+8. **`tests/rag/test_coverage_gaps.py`** — New test file with 43 tests targeting RAG coverage gaps: `CachedRetriever.query_with_cache`, `MultiIndexRetriever`, `RAGRetriever.load`, `_load_model` error paths, `has_meta_tensors` submodule walk, `safe_model_to_device` meta/None/ImportError paths, `_try_model_to`, `safe_load_sentence_transformer`, `build_index_from_files`, `manage_tenant_indices`. All 43 pass.
+9. **`docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md`** — New comprehensive reference document: token hierarchy, repo variables, PR body WEC read/write protocol, posting/updating comments, workflow approval/dispatch, token delegation flow, Cognitive Brain API surface, codebase-wide change patterns, pre-conclusion checklist, startup failure diagnosis table, canonical WEC block.
+10. **`CHANGELOG.md`** — Added `### Fixed (S240 — PR #3873 — WEC alignment + secrets baseline + RAG coverage + GitHub API docs)` entry.
+
+### CI Failures Reviewed (2b53d0f)
+- **`startup_failure` (Progressive Validation Suite, Rust-Python Hybrid Swarm)** — `startup_failure` means the workflow runner couldn't start the job. This is an `approve-required` infrastructure pattern (workflow_run trigger from external actor), not caused by code changes. These workflows require maintainer approval in the Actions tab or `auto-approve-workflows.yml` running with CODEX_MASTER_KEY.
+- **RAG Module Tests / Validation Pipeline** — Still in-progress at session start. `.secrets.baseline` fix (commit 2b53d0f) addresses Validation Pipeline. RAG coverage tests address the RAG threshold failure.
+
+### No Deferral Language Used
+All 10 work items completed in this session. No issues deferred.

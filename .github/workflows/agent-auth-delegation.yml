@@ -966,29 +966,33 @@ jobs:
             '' \
             '## 🔄 Workflow Execution Checklist' \
             '' \
-            '### ✅ Validation & Testing' \
+            '### ✅ Always Required — fire automatically on every push (cannot be skipped)' \
             "- [x] pre-merge-validation.yml — Pre-merge checks (always required)" \
-            "- [$(_checked resilient-validation-suite.yml false)] resilient-validation-suite.yml — Resilient validation" \
-            "- [$(_checked nox-gates.yml false)] nox-gates.yml — Nox test gates" \
-            '' \
-            '### ✅ Security & Quality' \
             "- [x] comment-review-gate.yml — Comment review gate (always required)" \
-            "- [$(_checked security-scanning-suite.yml false)] security-scanning-suite.yml — Full security audit" \
-            "- [$(_checked deferral-language-gate.yml false)] deferral-language-gate.yml — Deferral language guard" \
+            "- [x] deferral-language-gate.yml — Deferral language guard (always required)" \
+            "- [x] agent-auth-delegation.yml — Agent token delegation (always required)" \
+            "- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)" \
             '' \
-            '### 📄 Documentation' \
-            "- [$(_checked docs-build.yml false)] docs-build.yml — Documentation build" \
-            '' \
-            '### 🤖 Automation' \
-            "- [x] agent-auth-delegation.yml — Agent auth delegation (always required)" \
-            "- [$(_checked copilot-agent-checkin.yml false)] copilot-agent-checkin.yml — Agent check-in (always required)" \
-            "- [$(_checked cost-gate.yml false)] cost-gate.yml — Cost governance gate" \
-            "- [$(_checked copilot-agent-session-done.yml false)] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session" \
-            "- [$(_checked workflow-execution-gate.yml false)] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows" \
-            "- [$(_checked copilot-iterative-self-healing.yml false)] copilot-iterative-self-healing.yml — Iterative self-healing CI loop" \
+            '### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)' \
+            "- [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (fires on push)" \
+            "- [x] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run)" \
+            "- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)" \
+            "- [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)" \
             '' \
             '### ⚡ Auto-Approve' \
             "- [$(_checked auto-approve-workflows false)] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)" \
+            '' \
+            '### 🧪 Opt-In: Testing & Validation' \
+            "- [$(_checked validate.yml false)] validate.yml — Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)" \
+            "- [$(_checked resilient_validation.yml false)] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)" \
+            "- [$(_checked test-rag.yml false)] test-rag.yml — RAG Module Tests (coverage ≥95%)" \
+            "- [$(_checked nox_gates.yml false)] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)" \
+            '' \
+            '### 🔒 Opt-In: Security & Quality' \
+            "- [$(_checked security-scanning-suite.yml false)] security-scanning-suite.yml — Full security audit (bandit, pip-audit)" \
+            '' \
+            '### 📄 Opt-In: Documentation' \
+            "- [$(_checked documentation-link-checker.yml false)] documentation-link-checker.yml — Documentation link checker" \
             '' \
             '> Instructions for Copilot Agent: During wrap-up, check ONLY the workflows needed for' \
             '> this session. Unchecked workflows will be SKIPPED by the gate.')

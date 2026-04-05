@@ -290,9 +290,9 @@ flowchart TD
 ```mermaid
 flowchart TD
     subgraph CURRENT_WEC["Current WEC Block (S259)"]
-        V["✅ Validation & Testing\npre-merge-validation.yml\nresilient-validation-suite.yml\nnox-gates.yml"]
+        V["✅ Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"]
         SQ["✅ Security & Quality\ncomment-review-gate.yml\nsecurity-scanning-suite.yml\ndeferral-language-gate.yml"]
-        D["📄 Documentation\ndocs-build.yml"]
+        D["📄 Opt-In: Documentation\ndocumentation-link-checker.yml"]
         A["🤖 Automation\nagent-auth-delegation.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\ncopilot-agent-session-done.yml"]
         AP["⚡ Auto-Approve\nauto-approve-workflows"]
     end

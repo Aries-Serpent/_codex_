@@ -25,7 +25,7 @@ concurrency:
 jobs:
   # ── WEC gate — skip when checkbox is unchecked OR PR is in DRAFT mode ───────
   wec-gate:
-    name: "WEC gate — check resilient-validation-suite.yml checkbox"
+    name: "WEC gate — check resilient_validation.yml checkbox"
     runs-on: ubuntu-latest
     timeout-minutes: 3
     permissions:
@@ -45,7 +45,7 @@ jobs:
           IS_DRAFT="${{ github.event.pull_request.draft }}"
           if [ "$IS_DRAFT" = "true" ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "📋 DRAFT PR — resilient-validation-suite.yml is optional (skip=true)."
+            echo "📋 DRAFT PR — resilient_validation.yml is optional (skip=true)."
             exit 0
           fi
 
@@ -58,11 +58,11 @@ jobs:
             found { print }
           ')
 
-          # If WEC section is present AND resilient-validation-suite.yml is explicitly unchecked, skip.
+          # If WEC section is present AND resilient_validation.yml is explicitly unchecked, skip.
           if [ -n "$WEC_SECTION" ]; then
-            if echo "$WEC_SECTION" | grep -qiE '^\s*-\s*\[\s*\]\s*resilient-validation-suite\.yml'; then
+            if echo "$WEC_SECTION" | grep -qiE '^\s*-\s*\[\s*\]\s*resilient_validation\.yml'; then
               echo "skip=true" >> "$GITHUB_OUTPUT"
-              echo "📋 WEC: resilient-validation-suite.yml is UNCHECKED — skipping resilient validation."
+              echo "📋 WEC: resilient_validation.yml is UNCHECKED — skipping resilient validation."
               exit 0
             fi
           fi
