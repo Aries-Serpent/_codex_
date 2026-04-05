@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3867)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3867 (SHA `f859624c`) at 2026-04-05T03:10Z [auto-generated]
+
 ### Fixed (S307 — PR #3854 — TF-IDF small-corpus guard, OpenAI mock patch, import-migration assertions, transform error patch)
 - **`src/codex/rag/embeddings.py` TF-IDF small-corpus guard**: `TfidfEmbeddingProvider.encode()` now clamps `max_df` to `1.0` before fitting when the corpus has fewer than 3 documents. With `max_df=0.95` and `n_docs=1`, sklearn computed `floor(0.95 × 1) = 0` for max-document threshold which is less than `min_df=1`, raising `ValueError: max_df corresponds to < documents than min_df`. Fixed without changing default `max_df` for larger corpora.
 - **`tests/rag/test_rag_providers_advanced.py` OpenAI mock**: Corrected `@patch` decorator path from `src.codex.rag.embeddings.OpenAI` → `codex.rag.embeddings.OpenAI`. The old path didn't resolve to the live module so the mock never replaced the real client, causing a real API call with `test_key` that returned `401 AuthenticationError`.
