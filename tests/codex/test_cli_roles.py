@@ -50,6 +50,7 @@ def test_cli_roles_help(cli_runner: CliRunner, mock_deps):
         from codex import cli_roles
     except ImportError:
         pytest.skip("cli_roles not importable")
+        return  # unreachable; silences static-analysis "used before assigned" warning
 
     try:
         result = cli_runner.invoke(cli_roles.app, ["--help"])
@@ -65,6 +66,7 @@ def test_cli_roles_list(cli_runner: CliRunner, mock_deps):
         from codex import cli_roles
     except ImportError:
         pytest.skip("cli_roles not importable")
+        return  # unreachable; silences static-analysis "used before assigned" warning
 
     try:
         result = cli_runner.invoke(cli_roles.app, ["export-matrix", "--help"])
