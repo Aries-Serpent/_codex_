@@ -62,16 +62,16 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
           # Expose ALL vars.* as env vars using GitHub's native syntax
-          COPILOT_AGENT_AUTH_ENABLED:    ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}
+          COPILOT_AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}
           COPILOT_AGENT_SESSION_EXPIRES: ${{ vars.COPILOT_AGENT_SESSION_EXPIRES }}
           COPILOT_AGENT_LAST_SESSION_ID: ${{ vars.COPILOT_AGENT_LAST_SESSION_ID }}
-          COPILOT_AGENT_STATE:           ${{ vars.COPILOT_AGENT_STATE }}
-          CODEX_CI_FAILURE_RATE:         ${{ vars.CODEX_CI_FAILURE_RATE }}
-          CODEX_COVERAGE_THRESHOLD:      ${{ vars.CODEX_COVERAGE_THRESHOLD }}
-          CODEX_GROUNDED_TIER1_COUNT:    ${{ vars.CODEX_GROUNDED_TIER1_COUNT }}
-          CODEX_GROUNDED_TIER2_COUNT:    ${{ vars.CODEX_GROUNDED_TIER2_COUNT }}
-          CODEX_LAST_TELEMETRY_DATE:     ${{ vars.CODEX_LAST_TELEMETRY_DATE }}
-          DEPLOY_ENV:                    ${{ vars.DEPLOY_ENV }}
+          COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
+          CODEX_CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
+          CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD }}
+          CODEX_GROUNDED_TIER1_COUNT: ${{ vars.CODEX_GROUNDED_TIER1_COUNT }}
+          CODEX_GROUNDED_TIER2_COUNT: ${{ vars.CODEX_GROUNDED_TIER2_COUNT }}
+          CODEX_LAST_TELEMETRY_DATE: ${{ vars.CODEX_LAST_TELEMETRY_DATE }}
+          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
         run: |
           python3 - << 'PYEOF'
           import json, os, pathlib, datetime
@@ -112,7 +112,7 @@ jobs:
         run: |
           echo "## 🔑 Agent Variable Context Bootstrap" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [ -f .codex/agent_context.json ]; then
+          if [-f .codex/agent_context.json]; then
             COUNT=$(python3 -c "import json; d=json.load(open('.codex/agent_context.json')); print(len(d)-1)")
             echo "✅ **${COUNT}** repo variables injected into \`.codex/agent_context.json\`" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
@@ -127,7 +127,7 @@ jobs:
           echo '```yaml' >> "$GITHUB_STEP_SUMMARY"
           echo '- name: Inject agent context' >> "$GITHUB_STEP_SUMMARY"
           echo "  run: |" >> "$GITHUB_STEP_SUMMARY"
-          echo '    if [ -f .codex/agent_context.json ]; then' >> "$GITHUB_STEP_SUMMARY"
+          echo '    if [-f .codex/agent_context.json]; then' >> "$GITHUB_STEP_SUMMARY"
           echo '      python3 -c "import json,os; [print(f'"'"'export {k}={v}'"'"') for k,v in json.load(open('"'"'.codex/agent_context.json'"'"')).items() if not k.startswith('"'"'_'"'"')]" >> "$GITHUB_ENV"' >> "$GITHUB_STEP_SUMMARY"
           echo '    fi' >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"

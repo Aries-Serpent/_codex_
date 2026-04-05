@@ -55,6 +55,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Run yamllint
+        run: |
+          pip install yamllint --quiet
+          yamllint .github/workflows/ .github/misc/ -c .yamllint.yml
+
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
         with:

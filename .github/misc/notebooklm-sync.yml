@@ -81,7 +81,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - name:  Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1  # Shallow clone for speed
@@ -92,12 +92,12 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name:  Cache Repomix Installation
+      - name: Cache Repomix Installation
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner. os }}-repomix-${{ env.REPOMIX_VERSION }}-${{ hashFiles('repomix.config. json') }}
-          restore-keys:  |
+          key: ${{ runner.os }}-repomix-${{ env.REPOMIX_VERSION }}-${{ hashFiles('repomix.config.json') }}
+          restore-keys: |
             ${{ runner.os }}-repomix-${{ env.REPOMIX_VERSION }}-
             ${{ runner.os }}-repomix-
 
@@ -107,7 +107,7 @@ jobs:
           repomix --version
 
       - name: Generate Repository Consolidation
-        id:  consolidate
+        id: consolidate
         run: |
           echo "::group::Running Repomix Consolidation"
 
@@ -213,7 +213,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Security Scan - detect-secrets
-        id:  detect_secrets
+        id: detect_secrets
         run: |
           echo "::group::Scanning with detect-secrets"
 
@@ -271,16 +271,16 @@ jobs:
         uses: satackey/action-google-drive@v1
         with:
           skicka-tokencache-json: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
-          upload-from:  ${{ env.OUTPUT_FILE }}
+          upload-from: ${{ env.OUTPUT_FILE }}
           upload-to: /codex-sync/${{ env.OUTPUT_FILE }}
-          google-client-id: ${{ secrets. GOOGLE_CLIENT_ID }}
+          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
           google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          remove-outdated:  true
+          remove-outdated: true
 
-      - name:  Notify Sync Complete
+      - name: Notify Sync Complete
         if: ${{ success() }}
         env:
-          WEBHOOK_URL:  ${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}
+          WEBHOOK_URL: ${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}
         run: |
           if [ -n "$WEBHOOK_URL" ]; then
             # Get commit info

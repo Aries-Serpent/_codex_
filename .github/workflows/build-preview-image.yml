@@ -44,13 +44,13 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Build & Push Preview Image"
-      runner:          "ubuntu-latest-m"
+      workflow_name: "Build & Push Preview Image"
+      runner: "ubuntu-latest-m"
       timeout_minutes: 30
-      matrix_count:    2
-      pushes_to_ghcr:  true
+      matrix_count: 2
+      pushes_to_ghcr: true
     permissions:
-      contents:      read
+      contents: read
       pull-requests: write
 
   # ── Lint Dockerfile ──────────────────────────────────────────────────────────
@@ -107,16 +107,16 @@ jobs:
           TAG="${INPUT_TAG:-$SHORT_SHA}"
           TARGET="${{ matrix.target }}"
 
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [["${{ github.ref }}" == "refs/heads/main"]]; then
             echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
             echo "should_push=true" >> "$GITHUB_OUTPUT"
             # Multi-arch on main: build both amd64 and arm64
             echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" == "true" ]]; then
+          elif [["${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" == "true"]]; then
             echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
             echo "should_push=true" >> "$GITHUB_OUTPUT"
             echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" != "true" ]]; then
+          elif [["${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" != "true"]]; then
             # workflow_dispatch with push_image=false (or unset): local smoke-test only.
             # github.event.number is EMPTY for workflow_dispatch — use run_id instead to
             # guarantee a unique, non-empty tag (fixes Copilot review r2920097250).
@@ -160,7 +160,7 @@ jobs:
           # GHA layer cache — Docker build layers (including pip install) are cached
           # across runs keyed on Dockerfile.preview + pyproject.toml hash.
           cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
-          cache-to:   type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
+          cache-to: type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}

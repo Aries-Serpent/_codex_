@@ -46,7 +46,6 @@ jobs:
           pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
 
 
-
           pip install pytest pytest-cov pytest-timeout pytest-xdist
           pip install -e .
 
@@ -154,7 +153,7 @@ jobs:
           COVERAGE_FILES=$(find coverage-shards -name "coverage_shard_*.xml" | wc -l)
           echo "Found $COVERAGE_FILES coverage files"
 
-          if [ "$COVERAGE_FILES" -eq 0 ]; then
+          if ["$COVERAGE_FILES" -eq 0]; then
             echo "::error::No coverage files found to merge"
             echo "merge_failed=true" >> $GITHUB_OUTPUT
             exit 0
@@ -169,7 +168,7 @@ jobs:
 
           cd ..
 
-          if [ -f coverage_combined.xml ]; then
+          if [-f coverage_combined.xml]; then
             echo "merge_succeeded=true" >> $GITHUB_OUTPUT
             echo "✓ Coverage merge succeeded"
           else
@@ -195,7 +194,7 @@ jobs:
           echo "Coverage data collected from ${{ strategy.job-total }} shards" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f coverage_combined.xml ]; then
+          if [-f coverage_combined.xml]; then
             # Extract coverage percentage from XML
             COVERAGE=$(python -c "
           import xml.etree.ElementTree as ET

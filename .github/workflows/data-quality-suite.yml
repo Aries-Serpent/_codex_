@@ -50,13 +50,13 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Data Quality & Determinism Suite"
-      runner:          "ubuntu-latest"
+      workflow_name: "Data Quality & Determinism Suite"
+      runner: "ubuntu-latest"
       timeout_minutes: 60
-      matrix_count:    3
-      pushes_to_ghcr:  false
+      matrix_count: 3
+      pushes_to_ghcr: false
     permissions:
-      contents:      read
+      contents: read
       pull-requests: write
 
   data_validation:
@@ -87,19 +87,18 @@ jobs:
           pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
 
 
-
           pip install -e ".[test]"
 
       - name: Validate data manifests
         run: |
           # Use validate_dataset.py which exists in the repository
-          if [ ! -f "scripts/validate_dataset.py" ]; then
+          if [! -f "scripts/validate_dataset.py"]; then
             echo "❌ Error: Dataset validation script not found at scripts/validate_dataset.py"
             exit 1
           fi
           # Find and validate all dataset manifest files
           manifests=$(find data/ -name '*manifest*.json' -type f 2>/dev/null || true)
-          if [ -z "$manifests" ]; then
+          if [-z "$manifests"]; then
             echo "⚠️  No dataset manifest files found in data/ — skipping validation"
             exit 0
           fi
@@ -112,7 +111,7 @@ jobs:
 
       - name: Check for data drift
         run: |
-          if [ -f "scripts/check_data_drift.py" ]; then
+          if [-f "scripts/check_data_drift.py"]; then
             python scripts/check_data_drift.py
           else
             echo "⚠️  Warning: Data drift check script not found - skipping drift analysis"
@@ -215,7 +214,7 @@ jobs:
           EXIT2=$(cat determinism_pass2_exit.txt)
 
           # Check if logs exist
-          if [ ! -f "determinism_pass1.log" ] || [ ! -f "determinism_pass2.log" ]; then
+          if [! -f "determinism_pass1.log"] || [! -f "determinism_pass2.log"]; then
             echo "❌ Missing log files - determinism check failed"
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "❌ **Determinism check failed** - Missing log files" >> $GITHUB_STEP_SUMMARY
@@ -223,7 +222,7 @@ jobs:
           fi
 
           # Compare exit codes
-          if [ "$EXIT1" != "$EXIT2" ]; then
+          if ["$EXIT1" != "$EXIT2"]; then
             echo "❌ Exit codes differ - non-deterministic behavior"
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "❌ **Non-deterministic behavior** - Exit codes differ (pass1: $EXIT1, pass2: $EXIT2)" >> $GITHUB_STEP_SUMMARY
@@ -231,7 +230,7 @@ jobs:
           fi
 
           # Handle exit code 5 (no tests collected) as success
-          if [ "$EXIT1" = "5" ] && [ "$EXIT2" = "5" ]; then
+          if ["$EXIT1" = "5"] && ["$EXIT2" = "5"]; then
             echo "⚠️  No determinism tests found (exit code 5) - skipping validation"
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "⚠️  **No determinism tests found** - Tests are not yet implemented" >> $GITHUB_STEP_SUMMARY
@@ -245,13 +244,13 @@ jobs:
           # Handle exit code 2 (collection errors) when no tests with marker exist
           # Exit code 2 typically means internal error or collection failures
           # Check if the logs indicate "no tests collected" despite collection errors
-          if [ "$EXIT1" = "2" ] && [ "$EXIT2" = "2" ]; then
+          if ["$EXIT1" = "2"] && ["$EXIT2" = "2"]; then
             # Check if both logs show "0 selected" (no tests matched the marker)
             SELECTED1=$(grep -E "0 selected" determinism_pass1.log || echo "")
             SELECTED2=$(grep -E "0 selected" determinism_pass2.log || echo "")
 
             # If both runs had collection errors but 0 tests selected, treat as "no tests"
-            if [ -n "$SELECTED1" ] && [ -n "$SELECTED2" ]; then
+            if [-n "$SELECTED1"] && [-n "$SELECTED2"]; then
               echo "⚠️  Collection errors but no determinism tests selected (exit code 2)"
               echo "" >> $GITHUB_STEP_SUMMARY
               echo "⚠️  **No determinism tests found** - Collection errors present but no tests selected" >> $GITHUB_STEP_SUMMARY
@@ -276,7 +275,7 @@ jobs:
           fi
 
           # If both runs failed with a non-zero exit code (excluding 2 and 5), treat as error
-          if [ "$EXIT1" != "0" ]; then
+          if ["$EXIT1" != "0"]; then
             echo "❌ Both test runs failed with exit code $EXIT1"
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "❌ **Test failures detected** - Both runs failed with exit code $EXIT1" >> $GITHUB_STEP_SUMMARY

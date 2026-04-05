@@ -67,13 +67,13 @@ jobs:
       )
 
     outputs:
-      pattern:      ${{ steps.classify.outputs.pattern }}
-      fixable:      ${{ steps.classify.outputs.fixable }}
-      run_id:       ${{ steps.classify.outputs.run_id }}
-      head_sha:     ${{ steps.classify.outputs.head_sha }}
-      head_branch:  ${{ steps.classify.outputs.head_branch }}
+      pattern: ${{ steps.classify.outputs.pattern }}
+      fixable: ${{ steps.classify.outputs.fixable }}
+      run_id: ${{ steps.classify.outputs.run_id }}
+      head_sha: ${{ steps.classify.outputs.head_sha }}
+      head_branch: ${{ steps.classify.outputs.head_branch }}
       workflow_name: ${{ steps.classify.outputs.workflow_name }}
-      pr_number:    ${{ steps.classify.outputs.pr_number }}
+      pr_number: ${{ steps.classify.outputs.pr_number }}
 
     steps:
       - name: Checkout
@@ -98,11 +98,11 @@ jobs:
           ONE_HOUR_AGO=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || echo "")
-          if [ -n "$ONE_HOUR_AGO" ] && [ -n "$HEAD_BRANCH" ]; then
+          if [-n "$ONE_HOUR_AGO"] && [-n "$HEAD_BRANCH"]; then
             RECENT=$(gh api \
               "/repos/${GITHUB_REPOSITORY}/actions/workflows/iterative-self-healing-ci.yml/runs?branch=${HEAD_BRANCH}&per_page=50&created=>=${ONE_HOUR_AGO}" \
               --jq '.total_count' 2>/dev/null || echo "0")
-            if [ "$RECENT" -ge "$MAX_PER_HOUR" ]; then
+            if ["$RECENT" -ge "$MAX_PER_HOUR"]; then
               echo "::warning::Self-healing run cap reached: ${RECENT} runs in the last hour on ${HEAD_BRANCH} (max ${MAX_PER_HOUR}). Skipping to break cascade (issue #3860 SELF_HEALING_001)."
               echo "skip=true" >> "$GITHUB_OUTPUT"
               echo "### 🛑 Cascade Brake Activated" >> "$GITHUB_STEP_SUMMARY"
@@ -312,12 +312,12 @@ jobs:
               --json headRefName,updatedAt \
               --jq 'sort_by(.updatedAt) | reverse | .[0].headRefName // empty' \
               2>/dev/null || true)
-            [ "$SUB_PR" = "null" ] && SUB_PR=""
+            ["$SUB_PR" = "null"] && SUB_PR=""
           fi
-          if [ -n "${SUB_PR:-}" ]; then
+          if [-n "${SUB_PR:-}"]; then
             echo "branch=$SUB_PR" >> "$GITHUB_OUTPUT"
             echo "reason=sub_pr"  >> "$GITHUB_OUTPUT"
-          elif [ "$_0D_EXISTS" = "true" ]; then
+          elif ["$_0D_EXISTS" = "true"]; then
             echo "branch=0D_base_"          >> "$GITHUB_OUTPUT"
             echo "reason=integration_branch" >> "$GITHUB_OUTPUT"
           else
@@ -394,10 +394,10 @@ jobs:
           # GitHub Merges API without any git checkout, then posts the rich helper
           # comment with conflict analysis + Copilot agent prompt to the PR and
           # updates the PR Status Dashboard section.
-          if [[ "$PATTERN" == "auth-delegation" || "$PATTERN" == "branch-diverged" || "$PATTERN" == "rebase-gate"* ]]; then
+          if [["$PATTERN" == "auth-delegation" || "$PATTERN" == "branch-diverged" || "$PATTERN" == "rebase-gate"*]]; then
             PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
               --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
-            if [ -n "$PR_NUMBER" ]; then
+            if [-n "$PR_NUMBER"]; then
               echo "  Running branch_rebase_check.py --auto-merge-skip-ci for PR #${PR_NUMBER}…"
               python scripts/ci/branch_rebase_check.py \
                 --repo Aries-Serpent/_codex_ \
@@ -421,7 +421,7 @@ jobs:
             # making each iteration faster and the diff more targeted.
             python scripts/ci/auto_fix_common_issues.py --pattern-name "${PATTERN}" \
               2>&1 | tee /tmp/fix_output.txt
-            if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+            if ["${PIPESTATUS[0]}" -ne 0]; then
               # --pattern-name found no match; fall back to running all patterns
               python scripts/ci/auto_fix_common_issues.py \
                 2>&1 | tee /tmp/fix_output.txt
@@ -429,7 +429,7 @@ jobs:
           fi
 
           # Restore overlaid trusted scripts — only actual fix outputs should be staged
-          if [ -f /tmp/overlaid_scripts.txt ]; then
+          if [-f /tmp/overlaid_scripts.txt]; then
             # shellcheck disable=SC2046
             git restore -- $(cat /tmp/overlaid_scripts.txt) 2>/dev/null || true
           fi
@@ -472,7 +472,7 @@ jobs:
           bash scripts/ci/ci_triage_repro.sh 2>&1 | tee /tmp/post_triage.txt
           TRIAGE_EXIT=${PIPESTATUS[0]}
           echo "triage_exit=${TRIAGE_EXIT}" >> "$GITHUB_OUTPUT"
-          if [ "${TRIAGE_EXIT}" -eq 0 ]; then
+          if ["${TRIAGE_EXIT}" -eq 0]; then
             echo "valid=true"  >> "$GITHUB_OUTPUT"
           else
             echo "valid=false" >> "$GITHUB_OUTPUT"
@@ -483,12 +483,12 @@ jobs:
       - name: Record attempt (success or failure)
         if: always()
         env:
-          PATTERN:    ${{ needs.triage.outputs.pattern }}
-          RUN_ID:     ${{ needs.triage.outputs.run_id }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
-          ITERATION:  ${{ matrix.iteration }}
-          CHANGED:    ${{ steps.apply_fix.outputs.changed }}
-          VALID:      ${{ steps.validate.outputs.valid }}
+          ITERATION: ${{ matrix.iteration }}
+          CHANGED: ${{ steps.apply_fix.outputs.changed }}
+          VALID: ${{ steps.validate.outputs.valid }}
         run: |
           # Write attempt record to .codex/healing_attempts/ so future sessions
           # can review what was tried, what worked, and what failed.
@@ -524,29 +524,29 @@ jobs:
       - name: Log pattern to PDA Loop + AfterMath
         if: always()
         env:
-          PATTERN:    ${{ needs.triage.outputs.pattern }}
-          RUN_ID:     ${{ needs.triage.outputs.run_id }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           WORKFLOW_NAME: ${{ needs.triage.outputs.workflow_name || github.event.workflow_run.name }}
-          ITERATION:  ${{ matrix.iteration }}
-          CHANGED:    ${{ steps.apply_fix.outputs.changed }}
-          VALID:      ${{ steps.validate.outputs.valid }}
-          HEAD_SHA:   ${{ github.event.workflow_run.head_sha || github.sha }}
-          SESSION:    ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || 'auto' }}
-          PR_NUMBER:  ${{ needs.triage.outputs.pr_number }}
+          ITERATION: ${{ matrix.iteration }}
+          CHANGED: ${{ steps.apply_fix.outputs.changed }}
+          VALID: ${{ steps.validate.outputs.valid }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          SESSION: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || 'auto' }}
+          PR_NUMBER: ${{ needs.triage.outputs.pr_number }}
         run: |
           # Forward each heal attempt to the PDA Loop failure logger so that
           # grounded solutions accumulate across sessions and can be queried by
           # future agents (python scripts/ci/pda_failure_logger.py summarize).
-          if [ ! -f scripts/ci/pda_failure_logger.py ]; then
+          if [! -f scripts/ci/pda_failure_logger.py]; then
             echo "::notice::pda_failure_logger.py not found — skipping PDA log"
             exit 0
           fi
           SESSION_ID="S${SESSION:-auto}-heal"
-          if [ "${CHANGED}" = "true" ]; then
+          if ["${CHANGED}" = "true"]; then
             # A fix was applied — log it
             PASSED_FLAG=""
-            [ "${VALID}" = "true" ] && PASSED_FLAG="--verification-passed"
+            ["${VALID}" = "true"] && PASSED_FLAG="--verification-passed"
             FIX_SUMMARY=$(cat /tmp/fix_output.txt 2>/dev/null | grep -E '✅|fixed|patched' | head -3 | tr '\n' '; ' || echo "auto-fix applied")
             python3 scripts/ci/pda_failure_logger.py log-fix \
               --session "${SESSION_ID}" \
@@ -576,7 +576,7 @@ jobs:
         if: steps.apply_fix.outputs.changed == 'true' && steps.validate.outputs.valid == 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PATTERN:  ${{ needs.triage.outputs.pattern }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           CHANGED_FILES: ${{ steps.apply_fix.outputs.changed_files }}
           # CB-003: expressions moved from run: body to env: to satisfy actionlint
@@ -589,13 +589,13 @@ jobs:
           # anyway (CODEX_MASTER_KEY covers it), but a warning is emitted.
           AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'false' }}
         run: |
-          if [ "${AGENT_AUTH_ENABLED}" != "true" ]; then
+          if ["${AGENT_AUTH_ENABLED}" != "true"]; then
             echo "⚠️ COPILOT_AGENT_AUTH_ENABLED is not 'true' — autonomous push may fail."
             echo "   Set COPILOT_AGENT_AUTH_ENABLED=true via Agent Token Delegation workflow."
           fi
           # For PR branches push fixes back to the same branch.
           # For main / empty head_branch walk the staging chain instead.
-          if [ -n "${HEAD_BRANCH}" ] && [ "${HEAD_BRANCH}" != "main" ]; then
+          if [-n "${HEAD_BRANCH}"] && ["${HEAD_BRANCH}" != "main"]; then
             TARGET_BRANCH="${HEAD_BRANCH}"
           else
             TARGET_BRANCH="${RESOLVE_TARGET_BRANCH:-main}"
@@ -612,7 +612,7 @@ jobs:
           IFS=',' read -ra FILES <<< "${CHANGED_FILES}"
           for f in "${FILES[@]}"; do
             f="${f// /}"
-            if [ -n "$f" ]; then
+            if [-n "$f"]; then
               git add -- "$f" 2>/dev/null || true
             fi
           done
@@ -818,10 +818,10 @@ jobs:
       - name: "Post @copilot fix prompt on failing PR"
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PATTERN:      ${{ needs.triage.outputs.pattern }}
-          RUN_ID:       ${{ needs.triage.outputs.run_id }}
-          HEAD_BRANCH:  ${{ needs.triage.outputs.head_branch }}
-          HEAD_SHA:     ${{ needs.triage.outputs.head_sha }}
+          PATTERN: ${{ needs.triage.outputs.pattern }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
+          HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          HEAD_SHA: ${{ needs.triage.outputs.head_sha }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name || 'manual-dispatch' }}
           HIGH_REC_TABLE: ${{ steps.high_rec.outputs.table }}
           CROSS_PR_TABLE: ${{ steps.high_rec.outputs.cross_table }}
@@ -829,7 +829,7 @@ jobs:
           PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
             --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
 
-          if [ -z "$PR_NUMBER" ]; then
+          if [-z "$PR_NUMBER"]; then
             echo "::warning::No open PR found for branch '${HEAD_BRANCH}' — creating GitHub Issue for Copilot escalation"
             echo "### ⚠️ Copilot Escalation via Issue (no PR found)" >> "$GITHUB_STEP_SUMMARY"
             # GAP-043: Fall back to creating a GitHub Issue so the failure is never silently dropped
@@ -850,7 +850,7 @@ jobs:
               --title "CI Failure: ${WORKFLOW_NAME} (run #${RUN_ID})" \
               --body-file "${RUNNER_TEMP}/issue_body.md" \
               --label "ci-failure" 2>/dev/null || echo "")
-            if [ -n "$ISSUE_URL" ]; then
+            if [-n "$ISSUE_URL"]; then
               echo "✅ Created escalation issue: ${ISSUE_URL}" >> "$GITHUB_STEP_SUMMARY"
             else
               echo "⚠️ Could not create escalation issue (gh CLI unavailable or labels missing)" >> "$GITHUB_STEP_SUMMARY"
@@ -869,11 +869,11 @@ jobs:
           LAST_ESC=$(gh pr view "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
             --json comments --jq "$JQ_EXPR" \
             2>/dev/null || echo "")
-          if [ -n "$LAST_ESC" ]; then
+          if [-n "$LAST_ESC"]; then
             NOW_TS=$(date +%s)
             LAST_TS=$(date -d "${LAST_ESC}" +%s 2>/dev/null || echo "0")
             ELAPSED=$(( NOW_TS - LAST_TS ))
-            if [ "$ELAPSED" -lt 1800 ]; then
+            if ["$ELAPSED" -lt 1800]; then
               echo "::notice::Skipping copilot-escalation — posted ${ELAPSED}s ago (< 30 min cooldown)"
               echo "### ⏭️ Copilot Escalation Skipped (cooldown)" >> "$GITHUB_STEP_SUMMARY"
               echo "Last escalation was ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"

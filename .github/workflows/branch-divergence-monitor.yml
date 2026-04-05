@@ -68,17 +68,17 @@ jobs:
     timeout-minutes: 10
 
     outputs:
-      base_exists:         ${{ steps.measure.outputs.base_exists }}
-      behind_count:        ${{ steps.measure.outputs.behind_count }}
-      ahead_count:         ${{ steps.measure.outputs.ahead_count }}
-      autogen_count:       ${{ steps.measure.outputs.autogen_count }}
+      base_exists: ${{ steps.measure.outputs.base_exists }}
+      behind_count: ${{ steps.measure.outputs.behind_count }}
+      ahead_count: ${{ steps.measure.outputs.ahead_count }}
+      autogen_count: ${{ steps.measure.outputs.autogen_count }}
       pipeline_merge_count: ${{ steps.measure.outputs.pipeline_merge_count }}
-      agent_commit_count:  ${{ steps.measure.outputs.agent_commit_count }}
-      codeleak_count:      ${{ steps.measure.outputs.codeleak_count }}
-      merge_base_sha:      ${{ steps.measure.outputs.merge_base_sha }}
-      needs_correction:    ${{ steps.measure.outputs.needs_correction }}
-      severity:            ${{ steps.measure.outputs.severity }}
-      summary_json:        ${{ steps.measure.outputs.summary_json }}
+      agent_commit_count: ${{ steps.measure.outputs.agent_commit_count }}
+      codeleak_count: ${{ steps.measure.outputs.codeleak_count }}
+      merge_base_sha: ${{ steps.measure.outputs.merge_base_sha }}
+      needs_correction: ${{ steps.measure.outputs.needs_correction }}
+      severity: ${{ steps.measure.outputs.severity }}
+      summary_json: ${{ steps.measure.outputs.summary_json }}
 
     steps:
       - name: Check out repository (shallow)
@@ -508,16 +508,16 @@ jobs:
               try {
                 await github.rest.issues.getLabel({
                   owner: context.repo.owner,
-                  repo:  context.repo.repo,
-                  name:  label.name,
+                  repo: context.repo.repo,
+                  name: label.name,
                 });
               } catch (err) {
                 if (err.status === 404) {
                   await github.rest.issues.createLabel({
-                    owner:       context.repo.owner,
-                    repo:        context.repo.repo,
-                    name:        label.name,
-                    color:       label.color,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label.name,
+                    color: label.color,
                     description: label.description,
                   });
                   console.log(`Created label: ${label.name}`);
@@ -530,17 +530,17 @@ jobs:
       - name: Build and upsert divergence tracking issue
         uses: actions/github-script@v8
         env:
-          SUMMARY_JSON:          ${{ needs.detect.outputs.summary_json }}
-          BEHIND_COUNT:          ${{ needs.detect.outputs.behind_count }}
-          AHEAD_COUNT:           ${{ needs.detect.outputs.ahead_count }}
-          AUTOGEN_COUNT:         ${{ needs.detect.outputs.autogen_count }}
-          PIPELINE_MERGE_COUNT:  ${{ needs.detect.outputs.pipeline_merge_count }}
-          AGENT_COMMIT_COUNT:    ${{ needs.detect.outputs.agent_commit_count }}
-          CODELEAK_COUNT:        ${{ needs.detect.outputs.codeleak_count }}
-          SEVERITY:              ${{ needs.detect.outputs.severity }}
-          MERGE_BASE:            ${{ needs.detect.outputs.merge_base_sha }}
-          AUTO_CORRECT_RESULT:   ${{ needs.auto-correct.result }}
-          DRY_RUN:               ${{ inputs.dry_run || 'false' }}
+          SUMMARY_JSON: ${{ needs.detect.outputs.summary_json }}
+          BEHIND_COUNT: ${{ needs.detect.outputs.behind_count }}
+          AHEAD_COUNT: ${{ needs.detect.outputs.ahead_count }}
+          AUTOGEN_COUNT: ${{ needs.detect.outputs.autogen_count }}
+          PIPELINE_MERGE_COUNT: ${{ needs.detect.outputs.pipeline_merge_count }}
+          AGENT_COMMIT_COUNT: ${{ needs.detect.outputs.agent_commit_count }}
+          CODELEAK_COUNT: ${{ needs.detect.outputs.codeleak_count }}
+          SEVERITY: ${{ needs.detect.outputs.severity }}
+          MERGE_BASE: ${{ needs.detect.outputs.merge_base_sha }}
+          AUTO_CORRECT_RESULT: ${{ needs.auto-correct.result }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -560,7 +560,7 @@ jobs:
             const MARKER = '<!-- branch-divergence-monitor -->';
 
             const severityEmoji = {
-              healthy:  '✅', low: '🟡', high: '🔴', critical: '🚨'
+              healthy: '✅', low: '🟡', high: '🔴', critical: '🚨'
             }[severity] || '⚠️';
 
             // Status of auto-correction
@@ -657,7 +657,7 @@ jobs:
             // Upsert: find open issue with our marker, update it, or create new
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
-              repo:  context.repo.repo,
+              repo: context.repo.repo,
               state: 'open',
               labels: 'branch-divergence',
             });
@@ -668,8 +668,8 @@ jobs:
 
             if (existing) {
               await github.rest.issues.update({
-                owner:    context.repo.owner,
-                repo:     context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: existing.number,
                 title,
                 body,
@@ -677,8 +677,8 @@ jobs:
               console.log(`Updated divergence issue #${existing.number}`);
             } else {
               const created = await github.rest.issues.create({
-                owner:  context.repo.owner,
-                repo:   context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 title,
                 body,
                 labels: ['branch-divergence', 'automated', 'ci-triage'],
