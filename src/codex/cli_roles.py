@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated
 
 import typer
 
@@ -22,15 +21,11 @@ def _load_jsonl_or_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-InputArg = Annotated[Path, typer.Argument(..., exists=True, readable=True)]
-OutputArg = Annotated[Path, typer.Argument(...)]
-
-
 @app.command("export-matrix")
 def export_matrix(
-    zendesk_roles_file: InputArg,
-    dynamics_roles_file: InputArg,
-    output_json: OutputArg,
+    zendesk_roles_file: Path = typer.Argument(..., exists=True, readable=True),
+    dynamics_roles_file: Path = typer.Argument(..., exists=True, readable=True),
+    output_json: Path = typer.Argument(...),
 ) -> None:
     zendesk_raw = _load_jsonl_or_json(zendesk_roles_file)
     dynamics_raw = _load_jsonl_or_json(dynamics_roles_file)
