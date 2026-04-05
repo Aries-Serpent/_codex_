@@ -3,9 +3,53 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-05T20:10Z S-3876-final
+**Last updated:** 2026-04-05T21:17Z S-3876-hotfix
 
-## SESSION SUMMARY — 2026-04-05T20:10Z S-3876-final (PR #3876 — SHA-digest, WEC enforcer, trigger/cancel)
+## SESSION SUMMARY — 2026-04-05T21:17Z S-3876-hotfix (PR #3876 — CodeQL #12790 + gate clearance)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All PR comments reviewed — BLOCKING=1: ci-rescue #4189504479 (sha:02249fc) ✅
+- [x] **0d.** CI failures: CodeQL "6 configurations not found" + #12790 clear-text logging ✅
+- [x] **0e.** Agency Policy §0: all issues fixed immediately, no deferrals ✅
+
+### What Changed
+1. **`tests/codex/test_cli_roles.py`** — CodeQL #12788/#12789 (definitive fix): restructured
+   both `test_cli_roles_help` and `test_cli_roles_list` so the imported `cli_roles` module is
+   only ever used INSIDE the single `try` block where it is assigned. Import and invocation are
+   now in one combined `try`, with `ImportError` and `RuntimeError/Exception` caught separately.
+   This eliminates the "potentially uninitialized local variable" path that CodeQL was tracking
+   even with the `return` after `pytest.skip()`.
+2. **`scripts/ci/test_variables_api.py`** — CodeQL #12790: removed the line that printed the
+   raw `X-OAuth-Scopes` HTTP response header (`scopes_header`). CodeQL taint-tracks data from
+   authenticated API endpoints as potentially sensitive. Replaced with a whitelist-filtered
+   `active_scopes` display that only emits hardcoded known-safe scope names; raw header value
+   never reaches `print()`.
+3. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** — Fixed 4 remaining prose double-
+   space-after-period occurrences at lines 2786, 2787, 2806, 9476, 9480, 9482, 12665 that were
+   missed in the previous bulk `sed` pass (different surrounding text).
+
+### Root-Cause Note
+The CodeQL #12790 alert was introduced by `scripts/ci/test_variables_api.py` added in the
+previous session (b4c1886). The `print(f"X-OAuth-Scopes={scopes_header...}")` line logs data
+from an HTTP response header fetched via an authenticated GitHub API call — CodeQL's taint
+analysis classifies this as sensitive. The fix breaks the taint chain by only printing values
+from a predefined safe scope whitelist, never the raw header.
+
+### Lessons Learned
+- When printing HTTP response headers from authenticated endpoints, always derive display
+  values from a hardcoded whitelist, not from the raw header string.
+- CodeQL does NOT model `pytest.skip()` as a no-return function; `return` after `pytest.skip()`
+  is necessary but insufficient for CodeQL to see `cli_roles` as always initialized. The only
+  reliable fix is to keep all usages of a try-imported name WITHIN the same try block.
+
+### Impact Score
+- Files changed: 3
+- CodeQL alerts resolved: 3 (#12788, #12789, #12790)
+- Prose double-spaces fixed: 7 additional occurrences
+- CI gates unblocked: CodeQL scan, Comment Review Gate (new SHA)
+
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
@@ -2783,8 +2827,8 @@ All items complete. See readiness matrix below.
 
 ### Work Completed
 1. **Deferral scanner — inline code span stripping** — Added `_INLINE_CODE_SPAN` pre-compiled
-   pattern and inline stripping in `scan()`.  Documentation lines that describe deferral phrases
-   using backtick code spans (e.g. `` `future task` ``) no longer trigger false positives.  This
+   pattern and inline stripping in `scan()`. Documentation lines that describe deferral phrases
+   using backtick code spans (e.g. `` `future task` ``) no longer trigger false positives. This
    resolves the root cause of 5 consecutive Deferral Language Gate failures on this branch.
 2. **Deferral scanner — HTML comment suppression** — Added `<!--\s*noqa:\s*deferral\s*-->` to
    `EXEMPTION_PATTERNS` so PR bodies and markdown docs can explicitly suppress scanning on a
@@ -2803,7 +2847,7 @@ All items complete. See readiness matrix below.
    - Fully offline (no network calls).
    - Supports `--check`, `--dry-run`, `--fix-accountability`, `--fix-changelog`, `--fix-all`.
 6. **`agent-auth-delegation.yml` — Auto-Fix Step** — Added `Auto-fix: self-heal accountability
-   report and CHANGELOG (REQ-4/5)` step in the `cognitive-preflight` job.  When REQ-4 or REQ-5
+   report and CHANGELOG (REQ-4/5)` step in the `cognitive-preflight` job. When REQ-4 or REQ-5
    fails AND Agent Token Delegation is enabled, this step automatically:
    - Runs `session_wrapup_autofix.py` with appropriate flags.
    - Commits and pushes the fixed files back to the PR branch using `CODEX_MASTER_KEY`.
@@ -9473,13 +9517,13 @@ Streaming tests already exist in `.github/copilot-cascade/tests/test_cascade.py`
 
 **Root cause:** `do_POST` read `owner` and `repo` from the user-supplied JSON request body
 (`body.get("owner", OWNER)`) and passed them to `create_branch()` / `open_pull_request()` /
-`merge_branches()`, which embedded them in the GitHub API URL path.  Although
+`merge_branches()`, which embedded them in the GitHub API URL path. Although
 `_validate_repo_component()` checked the values against a safe regex, CodeQL still flagged the
 taint flow from HTTP request body → URL as a "Partial server-side request forgery" (CWE-918).
 
-**Fix:** Removed `owner` and `repo` from the request body schema entirely.  The handler now
+**Fix:** Removed `owner` and `repo` from the request body schema entirely. The handler now
 unconditionally uses the module-level `OWNER` / `REPO` constants (set from environment variables
-at server start-up).  No user-controlled data ever reaches the URL path.
+at server start-up). No user-controlled data ever reaches the URL path.
 
 ### CI Status After This Session
 - ✅ CodeQL — critical SSRF alert resolved
@@ -12662,7 +12706,7 @@ Both `copilot-agent-session-done.yml` and `copilot-agent-checkin.yml` declared:
 workflow_run:
   workflows: ["Copilot Setup Steps"]
 ```
-There is no workflow named `"Copilot Setup Steps"` in this repository.  The actual
+There is no workflow named `"Copilot Setup Steps"` in this repository. The actual
 setup-steps workflow (`copilot-setup-steps.yml`) is named **`"Copilot Agent Environment
 Setup"`**, and the actual Copilot coding-agent session workflow
 (`dynamic/copilot-swe-agent/copilot`) is named **`"Copilot coding agent"`**.

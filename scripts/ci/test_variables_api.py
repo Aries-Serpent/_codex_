@@ -319,9 +319,14 @@ def test_token_info() -> None:
                 else "GITHUB_TOKEN"
             )
             print(f"     token_source={token_source}")
-            print(f"     X-OAuth-Scopes={scopes_header or '(none — installation token)'}")
+            # Do not log the raw X-OAuth-Scopes header value — CodeQL #12790
+            # (clear-text logging of sensitive data from auth endpoint).
+            # Parse into known-safe boolean flags for display instead.
             has_repo_scope = "repo" in scopes_header.split(", ")
             has_admin_org = "admin:org" in scopes_header.split(", ")
+            _DISPLAY_SCOPES = ("repo", "workflow", "admin:org", "read:org", "codespace")
+            active = [s for s in _DISPLAY_SCOPES if s in scopes_header.split(", ")]
+            print(f"     active_scopes=[{', '.join(active) or 'none — installation token'}]")
             _assert(
                 "token: has repo scope",
                 has_repo_scope,
