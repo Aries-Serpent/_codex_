@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3873)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3873 (SHA `29eb6e4f`) at 2026-04-05T08:24Z [auto-generated]
+
 ### Fixed (S240 — nightly health sweep — 2026-04-05T06:39Z)
 - **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` S240 entry**: Nightly health sweep completed — ruff clean (0 violations), `auto_fix_common_issues.py` 0 auto-fixable, no CI failures on main (last 100 runs), accountability report current. No code changes required.
 
