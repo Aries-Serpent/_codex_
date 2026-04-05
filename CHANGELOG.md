@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S240 — PR #3873 — review-4059355483 — yamllint pinning + validation fixes)
+- **`pyproject.toml` dev extras**: Added `yamllint>=1.35.1,<2.0.0` to `[project.optional-dependencies] dev` — yamllint is now installed as part of the cached dev environment, eliminating the repeated `pip install yamllint` on every CI run and providing a pinned version so the lint gate cannot change behaviour unexpectedly on new yamllint releases.
+- **`.github/workflows/validate.yml` yamllint step**: Removed the extra `python -m pip install yamllint --quiet` install line; the step now runs `yamllint` directly since it is provided by the `dev` extras installed by `setup-python-cached`. This makes the step deterministic and fully cache-coherent.
+- **`.github/copilot-prompts/active/PR-3873-followup.md` validation script**: Fixed two issues flagged by reviewer: (1) replaced `yamllint ... 2>&1 | grep "::error"` (which masked the exit status and used a format yamllint never emits) with a bare `yamllint` invocation that relies on its exit code; (2) replaced hard-coded `153` file count with `len(files)` computed from the glob so the count is always accurate.
+- **`.codex/docs/AUDIT_REPORT_S240_PR3873.md`**: Created authoritative cognitive-brain reference document capturing all audit findings (WEC integrity, workflow cache improvements, approval-required workflows, agent consolidation plan) so future sessions can load context without re-deriving it.
+
 ### Fixed (auto-update — PR #3873)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3873 (SHA `29eb6e4f`) at 2026-04-05T08:24Z [auto-generated]
 

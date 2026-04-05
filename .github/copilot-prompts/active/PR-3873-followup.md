@@ -31,19 +31,20 @@ All S240 health-sweep issues addressed. No outstanding tasks.
 
 ### Validation
 ```bash
-# Verify zero yamllint errors
-yamllint .github/workflows/ .github/misc/ -c .yamllint.yml 2>&1 | grep "::error"
+# Verify zero yamllint errors (warnings for line-length/truthy are expected)
+yamllint .github/workflows/ .github/misc/ -c .yamllint.yml
 
 # Verify all YAML parses cleanly
 python3 -c "
 import yaml, glob, sys
+files = sorted(glob.glob('.github/workflows/*.yml') + glob.glob('.github/misc/*.yml'))
 errors = []
-for f in sorted(glob.glob('.github/workflows/*.yml') + glob.glob('.github/misc/*.yml')):
+for f in files:
     try:
         with open(f) as fh: yaml.safe_load(fh)
     except yaml.YAMLError as e:
         errors.append(f'{f}: {e}')
-print(f'Checked {len(errors)+153} files')
+print(f'Checked {len(files)} files')
 if errors:
     for e in errors: print('ERROR:', e)
     sys.exit(1)
