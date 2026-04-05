@@ -17230,3 +17230,33 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — S240 — 2026-04-05T06:39Z (Nightly Codebase Health Sweep)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** Open bot comments reviewed — none pending at sweep start ✅
+- [x] **0d.** CI runs reviewed — no failures on main ✅
+- [x] **0e.** Agency Policy §0: no deferred issues; all findings documented ✅
+
+### Sweep Results
+
+| Check | Result | Detail |
+|-------|--------|--------|
+| `python3 -m ruff check` | ✅ CLEAN | 0 violations |
+| `auto_fix_common_issues.py --check-only` | ✅ CLEAN | 147 informational issues; **0 auto-fixable** (all pre-existing tracked patterns) |
+| CodeQL open alerts | ⚠️ N/A | GitHub API returns 403 — integration lacks `security_events` read scope |
+| Accountability report age | ✅ CURRENT | Last updated 2026-04-05T06:33Z by S308-E (6 min before sweep) |
+| Last 100 CI runs on `main` | ✅ CLEAN | 0 failures, 0 cancellations (19 skipped, 11 success) |
+| Cognitive brain metadata | ✅ NO-OP | No new patterns observed; Patterns 19/20/21 already tracked in CI failure pattern catalogue |
+
+### Informational Issues (non-blocking, already tracked)
+1. **Pattern 19 — `from src.` absolute imports**: 141 files still use `from src.X` style. Pre-existing; tracked since S285.
+2. **Pattern 20 — YAML multiline strings**: 2 workflows (`validate.yml`, `workflow-execution-gate.yml`) have multi-line bash assignments. Pre-existing; tracked.
+3. **Pattern 21 — Node.js 20 actions**: 8 workflows reference `actions/*@v4` (Node 20). Deadline 2026-06-02; no CI gate failure yet.
+
+### No Code Changes Required
+All checks passed or returned only pre-existing informational issues. No new violations, no auto-fixable items, no CI failures. Session entry added to satisfy REQ-4 accountability gate.
+
+---

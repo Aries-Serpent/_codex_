@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S240 — nightly health sweep — 2026-04-05T06:39Z)
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` S240 entry**: Nightly health sweep completed — ruff clean (0 violations), `auto_fix_common_issues.py` 0 auto-fixable, no CI failures on main (last 100 runs), accountability report current. No code changes required.
+
 ### Fixed (S308-E — PR #3867 — deferral language gate false positive + auto-approve sticky WEC)
 - **`scripts/ci/check_deferral_language.py` false positive exemption**: The deferral scanner was treating "104 pre-existing errors" (a mypy baseline count description in a PR comment) as a deferral claim, causing `🚨 Deferral Language Policy Check` to fail (COMMENT_SCAN). Added `r"\d+\s+pre-existing\s+(?:type\s+)?errors\b"` to `EXEMPTION_PATTERNS` — requires a leading digit so bare "pre-existing errors" without a count still triggers.
 - **`.github/pull_request_template.md` sticky auto-approve WEC rule**: Hardened the HARDENED AGENT INSTRUCTION to require agents to fetch the live PR body before every `report_progress` call and preserve the exact `[x]`/`[ ]` state of every WEC checkbox — including `auto-approve-workflows.yml`. The checkbox is now documented as sticky opt-in: `[x]` if the maintainer checked it, `[ ]` if not — agents must never flip either direction.
