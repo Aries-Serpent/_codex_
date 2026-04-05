@@ -499,7 +499,6 @@ class TestModelUtilsSafeLoad:
 
         exc = RuntimeError("meta tensor")
         fake_cls = MagicMock(side_effect=exc)
-        bad_model = SimpleNamespace()  # no to_empty
 
         with patch.object(_mu, "SentenceTransformer", fake_cls, create=True):
             with pytest.raises((RuntimeError, AttributeError, Exception)):
@@ -512,7 +511,6 @@ class TestModelUtilsSafeLoad:
 
 class TestIndexerEmbedChunksImportError:
     def test_embed_chunks_raises_on_missing_sentence_transformers(self):
-        import importlib
         from codex.rag import indexer as _mod
 
         with patch.dict("sys.modules", {"sentence_transformers": None}):
