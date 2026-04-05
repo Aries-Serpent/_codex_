@@ -172,10 +172,12 @@
 
 > **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
 > appended verbatim to **every** PR body update — including every `report_progress` call.
-> Copy the WEC block from the current PR body into the `prDescription` parameter, keeping
-> **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.
-> Only `always required` and `always active` items may be auto-checked. All other items
-> preserve their current maintainer-selected state.
+> Copy the WEC block from the **live PR body** (not from this template) into the `prDescription`
+> parameter, preserving the **exact checked state** of every item.
+> **Never reset any `[x]` item to `[ ]`.** This applies unconditionally to ALL items:
+> `auto-approve-workflows.yml` MUST remain `[x]` for the entire session once a maintainer
+> checks it — unchecking it disables the automated approval loop and blocks CI resolution.
+> Only items that are `[ ]` in the live PR body may remain `[ ]`.
 
 **Required if any files are deleted or moved:**
 
