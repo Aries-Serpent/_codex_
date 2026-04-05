@@ -27,6 +27,9 @@ on:
   pull_request_review:
     types: [submitted]
 
+  pull_request:
+    types: [edited]
+
 concurrency:
   group: workflow-execution-gate-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.run_id }}
   cancel-in-progress: true
@@ -36,6 +39,127 @@ permissions:
   pull-requests: write
 
 jobs:
+  detect-wec-changes:
+    name: "Detect WEC Checkbox Changes"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name == 'pull_request' && github.event.action == 'edited'
+    outputs:
+      newly_checked: ${{ steps.detect.outputs.newly_checked }}
+      newly_unchecked: ${{ steps.detect.outputs.newly_unchecked }}
+      has_changes: ${{ steps.detect.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Detect WEC changes
+        id: detect
+        env:
+          BODY_BEFORE: ${{ github.event.changes.body.from }}
+          BODY_AFTER: ${{ github.event.pull_request.body }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          python scripts/ci/wec_enforcer.py --detect-changes > wec_changes.json || true
+          NEWLY_CHECKED=$(python3 -c "import json,sys; d=json.load(open('wec_changes.json')); print(json.dumps(d.get('newly_checked', [])))" 2>/dev/null || echo "[]")
+          NEWLY_UNCHECKED=$(python3 -c "import json,sys; d=json.load(open('wec_changes.json')); print(json.dumps(d.get('newly_unchecked', [])))" 2>/dev/null || echo "[]")
+          HAS_CHANGES=$(python3 -c "import json,sys; d=json.load(open('wec_changes.json')); print('true' if d.get('newly_checked') or d.get('newly_unchecked') else 'false')" 2>/dev/null || echo "false")
+          echo "newly_checked=${NEWLY_CHECKED}" >> "$GITHUB_OUTPUT"
+          echo "newly_unchecked=${NEWLY_UNCHECKED}" >> "$GITHUB_OUTPUT"
+          echo "has_changes=${HAS_CHANGES}" >> "$GITHUB_OUTPUT"
+          echo "✅ Newly checked: ${NEWLY_CHECKED}"
+          echo "⏭️ Newly unchecked: ${NEWLY_UNCHECKED}"
+
+  cancel-unchecked:
+    name: "Cancel Runs for Unchecked Workflows"
+    needs: detect-wec-changes
+    if: needs.detect-wec-changes.outputs.has_changes == 'true' && needs.detect-wec-changes.outputs.newly_unchecked != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cancel in-progress runs for unchecked workflows
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+          NEWLY_UNCHECKED: ${{ needs.detect-wec-changes.outputs.newly_unchecked }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Cancelling in-progress runs for unchecked workflows..."
+          python scripts/ci/wec_enforcer.py \
+            --cancel-unchecked \
+            --pr "${PR_NUMBER}" \
+            --head-sha "${HEAD_SHA}" \
+            --repo "${REPO}"
+
+  dispatch-checked:
+    name: "Dispatch Newly-Checked Workflows"
+    needs: detect-wec-changes
+    if: needs.detect-wec-changes.outputs.has_changes == 'true' && needs.detect-wec-changes.outputs.newly_checked != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Dispatch newly-checked workflows
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+          NEWLY_CHECKED: ${{ needs.detect-wec-changes.outputs.newly_checked }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Dispatching newly-checked workflows..."
+          python scripts/ci/wec_enforcer.py \
+            --dispatch-checked \
+            --pr "${PR_NUMBER}" \
+            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --repo "${REPO}"
+
+  validate-wec-integrity:
+    name: "Validate WEC Template Integrity"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate WEC template integrity
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
+        run: |
+          python scripts/ci/wec_enforcer.py --validate-body --pr "${PR_NUMBER}"
+
   parse-checklist:
     name: "Parse Workflow Checklist"
     runs-on: ubuntu-latest
@@ -43,7 +167,8 @@ jobs:
     # Only run on approval reviews or explicit dispatch
     if: |
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request_review' && github.event.review.state == 'approved')
+      (github.event_name == 'pull_request_review' && github.event.review.state == 'approved') ||
+      (github.event_name == 'pull_request' && github.event.action == 'edited')
     outputs:
       workflows_to_run: ${{ steps.parse.outputs.workflows_to_run }}
       workflows_to_skip: ${{ steps.parse.outputs.workflows_to_skip }}

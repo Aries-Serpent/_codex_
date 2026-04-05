@@ -3,7 +3,9 @@
 > **Scope:** Aries-Serpent/_codex_ repository  
 > **Audience:** GitHub Copilot Coding Agent (Web UI)  
 > **Authority:** Acting on behalf of maintainer `@mbaetiong`  
-> **Last Updated:** 2026-04-05 — S240 PR #3873  
+> **Last Updated:** 2026-04-05 — S-3876  
+> **Full Secrets/Variables Reference:** [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)  
+> **CB Knowledge Entry:** [`.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md`](../../.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md)  
 > **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` §0–§4
 
 ---
@@ -642,4 +644,58 @@ Before ending any session the agent MUST verify:
 
 ---
 
-*Document maintained by: Copilot Coding Agent (S240) | Source of truth: `.github/workflows/` + `scripts/ci/session_wrapup_autofix.py` + `docs/ci/PR_LIFECYCLE.md`*
+---
+
+## 📦 SECRETS & VARIABLES — ALL SCOPES (S-3876)
+
+> **Full reference with all REST API endpoints, CLI patterns, MCP gaps:**  
+> [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)  
+> **Live test script:** `scripts/ci/test_variables_api.py`  
+> **Test workflow:** `.github/workflows/test-variables-api.yml`
+
+### Scope Coverage Quick-Reference
+
+| Scope | Variables | Actions Secrets | Dependabot Secrets | Codespaces Secrets |
+|---|---|---|---|---|
+| Repository | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT |
+| Organization | ✅ `admin:org` | ✅ `admin:org` | ✅ `admin:org` | ✅ `admin:org` |
+| Environment | ✅ `repo` PAT | ✅ `repo` PAT | ✗ | ✗ |
+| User (Codespaces) | ✗ | ✗ | ✗ | ✅ `codespace` |
+
+### ⚠️ Why `GITHUB_TOKEN` Returns 403 on Variables API
+
+```
+GITHUB_TOKEN = GitHub Actions installation token
+  X-OAuth-Scopes: (none)
+  → 403 on /repos/{owner}/{repo}/actions/variables
+  → 403 on /orgs/{org}/actions/variables
+
+Fix: use CODEX_MASTER_KEY (repo-scoped PAT) for variable CRUD.
+```
+
+### Environment Variable Endpoints (uses numeric `repository_id`, not `owner/repo`)
+
+```bash
+# Get numeric repository ID
+REPO_ID=$(gh api /repos/Aries-Serpent/_codex_ --jq '.id')
+
+# Create environment variable
+gh api POST /repositories/$REPO_ID/environments/production/variables \
+  -f name='MY_VAR' -f value='my_value'
+```
+
+### MCP Server Gap — Secrets/Variables
+
+The GitHub MCP Server (`/mcp/readonly` in this repo's agent sessions) does **not**  
+support secret or variable CRUD. All write operations must use REST API or `gh` CLI  
+with `CODEX_MASTER_KEY || CODEX_BACKUP_KEY`.
+
+```
+MCP server toolsets available: context, issues, pull_requests, repos, users (default)
+Optional (not in default): actions, secret_protection, dependabot, code_security
+NOT available via MCP: variable/secret create/update/delete
+```
+
+---
+
+*Document maintained by: Copilot Coding Agent (S-3876) | Source of truth: `.github/workflows/` + `scripts/ci/session_wrapup_autofix.py` + `docs/ci/PR_LIFECYCLE.md` + `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`*

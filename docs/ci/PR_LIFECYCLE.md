@@ -35,6 +35,8 @@ and how the self-healing / rescue system responds.
 19. [Fast-Forward Workflow Promotion](#19-fast-forward-workflow-promotion)
 20. [Workflow Compliance Fixes (S293)](#20-workflow-compliance-fixes-s293)
 21. [Session Automation Quick Reference](#21-session-automation-quick-reference)
+22. [SHA-Digest Comment Architecture (S-3876)](#22-sha-digest-comment-architecture)
+23. [WEC Trigger / Cancel Model (S-3876)](#23-wec-trigger--cancel-model)
 - [Appendix: Key Patterns](#appendix-key-patterns)
 - [Appendix: Known Recurring CI Failure Patterns](#appendix-known-recurring-ci-failure-patterns)
 
@@ -2233,3 +2235,157 @@ Every rescue comment uses an HTML comment marker for deduplication. Knowing thes
 
 **To satisfy the S221 guard and stop re-triggers:** reply to any rescue comment with
 `"Fixed at <SHA>"`, `"Addressed at <SHA>"`, or `"Resolved at <SHA>"`.
+
+---
+
+## 22. SHA-Digest Comment Architecture
+
+> **Added:** S-3876 (2026-04-05)  
+> **Scripts:** `scripts/ci/post_rescue_comment.py`, `scripts/ci/ci_rescue.py`  
+> **Problem solved:** Multiple workflows running on the same HEAD_SHA were posting separate comments, creating 4-5 comments per commit. Live PR #3876 showed SHA `1448b343b896` had 5 separate automated comments.
+
+### 22.1 One Comment Per HEAD_SHA
+
+All automated failure notifications for a given HEAD_SHA must post to a single **rescue-sha anchor** comment:
+
+```
+Marker: <!-- ci-rescue-sha:{pr_number}:{sha12} -->
+```
+
+Every workflow that fails on the same commit **appends** its section to this anchor using `post_rescue_comment.py`. No new comments are created for subsequent failures on the same SHA.
+
+### 22.2 Anchor Creation vs Append
+
+| Condition | Behaviour |
+|-----------|-----------|
+| First failure on SHA — no anchor exists | `post_rescue_comment.py` creates the anchor comment with `## 🚨 CI Rescue` header |
+| Subsequent failure on same SHA | Script finds existing anchor → appends `<details>` section |
+| RCA from `ci_rescue.py` | `_find_rescue_sha_comment()` finds anchor → appends `📋 Root Cause Analysis` section |
+| Self-healing escalation | `copilot-iterative-self-healing.yml` uses `APPEND_ONLY=true` → appends or silently skips |
+| Workflow wants custom section | Set `SECTION_TITLE` + `SECTION_CONTENT` env vars → appended as named `<details>` |
+
+### 22.3 CB / MCP API Layer
+
+All comment operations route through:
+- **Cognitive Brain GitHub Connector** — primary GitHub API client
+- **GitHub MCP Server** (`github-mcp-server-*` tools) — for Copilot agent sessions
+- **`GH_TOKEN` chain**: `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`
+
+```mermaid
+flowchart LR
+    subgraph Workflows
+        V[validate.yml]
+        CR[ci-rescue.yml]
+        SH[iterative-self-healing-ci.yml]
+        IH[copilot-iterative-self-healing.yml]
+    end
+    subgraph SHA_Anchor["Single SHA Comment\n<!-- ci-rescue-sha:{pr}:{sha} -->"]
+        A1["🔴 validate.yml failure"]
+        A2["📋 Root Cause Analysis"]
+        A3["🔄 Self-healing iteration"]
+        A4["�� Escalation context"]
+    end
+    V -->|post_rescue_comment.py| SHA_Anchor
+    CR -->|_find_rescue_sha_comment() + append| SHA_Anchor
+    SH -->|post_rescue_comment.py APPEND_ONLY=true| SHA_Anchor
+    IH -->|SECTION_TITLE + SECTION_CONTENT| SHA_Anchor
+    subgraph CB["Cognitive Brain / MCP Layer"]
+        MCP[GitHub MCP Server]
+        CBC[CB GitHub Connector]
+        CLI[CB CLI]
+    end
+    SHA_Anchor -->|GH API via| CB
+```
+
+---
+
+## 23. WEC Trigger / Cancel Model
+
+> **Added:** S-3876 (2026-04-05)  
+> **Script:** `scripts/ci/wec_enforcer.py`  
+> **Workflow:** `.github/workflows/workflow-execution-gate.yml`  
+> **Problem solved:** WEC checkboxes were read-only signals — checking `[x]` did not actually start the workflow; unchecking `[ ]` did not cancel any in-progress run.
+
+### 23.1 How It Works
+
+`workflow-execution-gate.yml` now triggers on `pull_request: [edited]` in addition to `pull_request_review` and `workflow_dispatch`. When the PR body is edited (e.g., a WEC checkbox is toggled), the gate:
+
+1. **Detects changes** via `wec_enforcer.py --detect-changes` (compares `github.event.changes.body.from` vs `github.event.pull_request.body`)
+2. **Cancels unchecked** via `wec_enforcer.py --cancel-unchecked` — finds in-progress/queued runs for the unchecked workflow on `HEAD_SHA` and cancels them via GitHub API
+3. **Dispatches checked** via `wec_enforcer.py --dispatch-checked` — fires `workflow_dispatch` for each newly-checked opt-in workflow
+
+### 23.2 WEC Trigger/Cancel Table
+
+| WEC Section | Workflow | Check `[x]` → | Uncheck `[ ]` → | Cancel target |
+|-------------|----------|---------------|-----------------|---------------|
+| Always Required | `pre-merge-validation.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Required | `comment-review-gate.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Required | `deferral-language-gate.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Required | `agent-auth-delegation.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Required | `workflow-execution-gate.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Active | `copilot-agent-checkin.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Active | `copilot-agent-session-done.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Active | `copilot-iterative-self-healing.yml` | Already running | 🔒 Never cancelled | N/A |
+| Always Active | `cost-gate.yml` | Already running | 🔒 Never cancelled | N/A |
+| Opt-In Testing | `validate.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Testing | `resilient_validation.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Testing | `mypy-baseline.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Testing | `test-rag.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Testing | `nox_gates.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Testing | `coverage-with-timeout.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Testing | `progressive-validation.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Testing | `pre-flight-validation.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Security | `security-scanning-suite.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Security | `codeql-analysis.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Security | `actionlint-audit.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Opt-In Docs | `documentation-link-checker.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
+| Auto-Approve | `auto-approve-workflows` | `workflow_dispatch` → branch | No-op (approval not reversible) | N/A |
+
+### 23.3 Per-Workflow Gate-Check Step
+
+Individual opt-in workflows call the gate at startup to check if they should run:
+
+```yaml
+# Add to any opt-in workflow at the top of its first job:
+- name: Check WEC gate
+  id: wec-gate
+  env:
+    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    REPO: ${{ github.repository }}
+  run: |
+    python scripts/ci/wec_enforcer.py \
+      --check-workflow "${{ github.workflow_ref }}" \
+      --pr "${{ github.event.pull_request.number }}"
+    # Exit 0 = run; Exit 2 = skip (unchecked); Exit 1 = error (default run)
+    if [ $? -eq 2 ]; then
+      echo "⏭️ Workflow is unchecked in WEC — skipping"
+      echo "skip=true" >> "$GITHUB_OUTPUT"
+    fi
+```
+
+### 23.4 CB / MCP API Routing for Cancel / Dispatch
+
+All cancel and dispatch operations use the Cognitive Brain GitHub Connector as the primary token source:
+
+```
+Token priority: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token
+API: POST /repos/{repo}/actions/runs/{run_id}/cancel       (cancel)
+API: POST /repos/{repo}/actions/workflows/{file}/dispatches (dispatch)
+CB connector: wec_enforcer.py _gh_api() → urllib.request with Authorization header
+MCP fallback: github-mcp-server-actions_get / github-mcp-server-actions_list
+```
+
+### 23.5 WEC Integrity Validation
+
+`validate-wec-integrity` job runs on every `pull_request` event and calls:
+```bash
+python scripts/ci/wec_enforcer.py --validate-body --pr N
+```
+
+This checks:
+- `## 🔄 Workflow Execution Checklist` section is present
+- All `_WEC_ALWAYS_REQUIRED` items are `[x]`
+- No always-required items have been accidentally unchecked
+- No WEC items have been removed vs canonical template
+
+Agents MUST ensure the WEC block is preserved on every `report_progress` call. The `session_wrapup_autofix.py` `fix_pr_body_checkboxes()` function handles automatic repair.

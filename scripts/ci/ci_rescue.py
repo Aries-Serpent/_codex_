@@ -955,6 +955,34 @@ def find_pr_for_run(run_id: int, repo: str, token: str) -> Optional[int]:
     return None
 
 
+def _find_rescue_sha_comment(
+    pr_number: int,
+    repo: str,
+    token: str,
+    sha12: str,
+) -> tuple[int | None, str]:
+    """Return (comment_id, comment_body) for ``<!-- ci-rescue-sha:{pr_number}:{sha12} -->``.
+
+    Returns ``(None, "")`` if no such comment exists.
+    """
+    rescue_sha_marker = f"<!-- ci-rescue-sha:{pr_number}:{sha12} -->"
+    page = 1
+    while True:
+        status, comments = _gh_api(
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}", token
+        )
+        if status != 200 or not isinstance(comments, list) or not comments:
+            break
+        for c in comments:
+            c_body = c.get("body") or ""
+            if rescue_sha_marker in c_body:
+                return c["id"], c_body
+        if len(comments) < 100:
+            break
+        page += 1
+    return None, ""
+
+
 def _make_rca_marker(
     pr_number: Optional[int] = None,
     commit_sha: Optional[str] = None,
@@ -994,25 +1022,75 @@ def post_pr_comment(
 ) -> bool:
     """Post or append-update a @copilot RCA comment on the PR.
 
-    Deduplication strategy (S267 — SHA-scoped):
-    - All failing workflows for the SAME commit share ONE comment thread,
-      using marker ``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``.
-    - Multiple failing workflows on the same push ALL append to this thread,
-      giving agents a single consolidated view of every failure for that commit.
+    Deduplication strategy (S267 + S294 — SHA-digest anchor preferred):
+    - When ``commit_sha`` is provided, first checks for an existing
+      ``<!-- ci-rescue-sha:{pr_number}:{sha12} -->`` comment (posted by
+      ``post_rescue_comment.py``).  If found, the RCA content is appended
+      there as a ``<details>`` section so all SHA-matching comments share
+      ONE thread instead of spawning a separate ``ci-rescue-rca`` comment.
+    - Falls back to the ``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``
+      thread when no rescue-sha anchor exists (first failure, push-only mode).
     - A NEW push (different commit SHA) always creates a NEW comment so agents
       can compare failures between pushes and track resolution progress.
     - Falls back to legacy PR-scoped and bare markers to absorb old comments
       when commit_sha is unavailable.
 
-    This keeps the PR thread clean: one RCA thread per push, with a full
+    This keeps the PR thread clean: one thread per push, with a full
     chronological record of every failing workflow for that commit.
     """
-    marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha, run_id=run_id)
-    full_body = f"{marker}\n{body}"
+    import datetime as _datetime
+
+    sha12 = commit_sha.strip()[:12] if commit_sha and commit_sha.strip() else None
 
     if dry_run:
+        marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha, run_id=run_id)
+        full_body = f"{marker}\n{body}"
         print(f"\n[DRY RUN] Would post/update RCA on PR #{pr_number}:\n{full_body[:500]}…")
         return True
+
+    # --- Preferred path: append RCA to existing rescue-sha anchor ---
+    if sha12:
+        rescue_sha_id, rescue_sha_body = _find_rescue_sha_comment(
+            pr_number, repo, token, sha12
+        )
+        if rescue_sha_id:
+            now = _datetime.datetime.now(
+                tz=_datetime.timezone.utc
+            ).strftime("%Y-%m-%dT%H:%M:%SZ")
+            run_url = ""
+            if run_id:
+                run_url = (
+                    f"https://github.com/{repo}/actions/runs/{run_id}"
+                )
+            run_link = (
+                f" · <a href=\"{run_url}\">Run #{run_id}</a>"
+                if run_id and run_url
+                else ""
+            )
+            rca_section = (
+                f"\n\n---\n\n"
+                f"<details><summary>📋 <code>Root Cause Analysis</code>"
+                f" — {now}{run_link}</summary>\n\n"
+                f"{body}\n\n"
+                f"</details>"
+            )
+            updated = (rescue_sha_body.rstrip() + rca_section)[:MAX_COMMENT_CHARS]
+            status, _ = _gh_api(
+                f"/repos/{repo}/issues/comments/{rescue_sha_id}",
+                token,
+                method="PATCH",
+                body={"body": updated},
+            )
+            if status in (200, 201):
+                print(
+                    f"✅ Appended RCA to rescue-sha comment #{rescue_sha_id} "
+                    f"(commit {sha12})"
+                )
+                return True
+            # Fall through to legacy rca path on PATCH failure.
+
+    marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha, run_id=run_id)
+    full_body = f"{marker}\n{body}"
 
     # Paginate through all PR comments in a SINGLE pass, checking for both the
     # SHA-scoped marker and the legacy PR-scoped / bare markers simultaneously.

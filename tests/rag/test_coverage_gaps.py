@@ -25,6 +25,15 @@ _SRC = Path(__file__).resolve().parents[2] / "src"
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
+# ---------------------------------------------------------------------------
+# Skip entire module if numpy (a transitive RAG dependency) is missing so
+# tests can be collected without error in minimal environments.
+# ---------------------------------------------------------------------------
+pytest.importorskip(
+    "numpy",
+    reason="numpy not installed — RAG coverage tests require the full RAG extras",
+)
+
 
 # ===========================================================================
 # retriever.py — _load_model error paths (lines 78-103)

@@ -103,6 +103,18 @@ are available for testing and development purposes.
 6. **[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)** - 🆕 Cognitive Brain System (20 min)
 7. **[.codex/docs/CI_AUTO_FIX_SYSTEM.md](.codex/docs/CI_AUTO_FIX_SYSTEM.md)** - 🆕 CI/CD Automation (10 min)
 
+### 🔑 GitHub API & MCP Knowledge — MUST LOAD before any API call
+
+> **Agents:** Read these before making any GitHub API, secret, variable, or workflow dispatch call.
+
+8. **[docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)** - 🆕 Complete REST API endpoint tables for all scopes (repo/org/env/user) × all types (variables/secrets/Dependabot/Codespaces), CLI patterns, MCP gap analysis (5 min)
+9. **[docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md)** - 🆕 Token hierarchy, repo variables read/write, PR body WEC protocol, workflow approve/cancel/dispatch (10 min)
+10. **[.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md)** - Live MCP tool inventory: 21 Playwright + 28 GitHub MCP tools (5 min)
+11. **[.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md](.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md)** - 🆕 CB knowledge entry: quick-access token chain + scope matrix + full doc wiring map (2 min)
+
+> **Critical token fact:** `GITHUB_TOKEN` (installation token) returns **HTTP 403** on the variables/secrets API.
+> Always use `CODEX_MASTER_KEY || CODEX_BACKUP_KEY` for variable/secret CRUD.
+
 ### Reference Documents
 
 - [scripts/AUTONOMOUS_AGENT_README.md](scripts/AUTONOMOUS_AGENT_README.md) - Agent setup

@@ -72,6 +72,39 @@ nox -s tests
 - `python -m codex.logging.viewer` – view session logs.
 - `python -m codex.logging.query_logs` – search conversation transcripts.
 
+## GitHub API & MCP Knowledge — MUST LOAD
+
+> Every agent session MUST be aware of these references before making any GitHub API call.
+
+| Document | Path | When to Use |
+|----------|------|-------------|
+| **Variables & Secrets Reference** | `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` | Any operation on variables, secrets, Dependabot, Codespaces secrets |
+| **Copilot Agent API Reference** | `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` | Token hierarchy, repo variables, PR body WEC protocol, workflow ops |
+| **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Tool inventory: 21 Playwright + 28 GitHub MCP tools |
+| **CB API Knowledge Entry** | `.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md` | Quick-access summary + wiring map |
+| **MCP Server Config Guide** | Upstream: `github.com/github/github-mcp-server/docs/server-configuration.md` | Toolsets, read-only mode, lockdown, insiders |
+
+### Critical: Token Usage for GitHub API Calls
+
+```yaml
+# ALWAYS use this token chain — never bare github.token for write operations
+GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+```
+
+- `GITHUB_TOKEN` / `github.token` → installation token, **no OAuth scopes** → **403** on variables/secrets API
+- `CODEX_MASTER_KEY` → `repo` + `workflow` + `actions:write` → full variable/secret CRUD
+- MCP Server → **does NOT support** variable/secret CRUD — use REST API or `gh` CLI
+
+### Test Variables API
+
+```bash
+# Run live end-to-end test (requires CODEX_MASTER_KEY in env)
+GH_TOKEN=$CODEX_MASTER_KEY python scripts/ci/test_variables_api.py
+
+# Run via GitHub Actions (dispatches test-variables-api.yml)
+gh workflow run test-variables-api.yml --repo Aries-Serpent/_codex_ --ref 0D_base_
+```
+
 ## Prohibited Actions
 
 - Do **not** create or activate any GitHub Actions workflow files.

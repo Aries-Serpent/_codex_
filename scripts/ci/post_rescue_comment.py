@@ -29,6 +29,16 @@ RUN_URL         Full URL to the workflow run
 WORKFLOW_NAME   Human-readable name shown in the comment
 BRANCH          PR head branch name (required in push mode for PR lookup)
 
+Optional environment variables
+--------------------------------
+SECTION_TITLE   Title for a custom appended section (e.g., "Root Cause Analysis")
+SECTION_CONTENT Markdown content to append as a named ``<details>`` section.
+                When set together with SECTION_TITLE, replaces the default
+                failure message format with the custom title/content.
+APPEND_ONLY     Set to "true" to skip creating a new comment when no existing
+                rescue comment is found.  Useful for RCA appends that should
+                only update an already-existing rescue thread.
+
 Usage — PR-triggered workflow step
 ------------------------------------
     - name: Post or update rescue comment
@@ -144,6 +154,11 @@ def main() -> None:
     workflow = os.environ["WORKFLOW_NAME"]
     branch = os.environ["BRANCH"]
 
+    # Optional: custom section title / content / append-only mode
+    section_title = os.environ.get("SECTION_TITLE", "").strip()
+    section_content = os.environ.get("SECTION_CONTENT", "").strip()
+    append_only = os.environ.get("APPEND_ONLY", "false").strip().lower() == "true"
+
     now = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     sha_short = commit_sha[:12]
 
@@ -162,16 +177,33 @@ def main() -> None:
 
     existing_id, existing_body = _find_rescue_comment(token, repo, pr_number, marker)
 
-    if existing_id:
-        # Append this workflow's failure to the existing comment (collapsed).
-        append_section = (
-            f"\n\n---\n\n"
-            f"<details><summary>🔴 <code>{workflow}</code> — {now} · "
-            f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
-            f"@copilot **{workflow}** failed on commit `{sha_short}`. "
-            f"Check [run #{run_id}]({run_url}) for details.\n\n"
-            f"</details>"
+    # APPEND_ONLY mode: skip if no existing rescue comment found.
+    if append_only and not existing_id:
+        print(
+            f"ℹ️  APPEND_ONLY=true but no existing rescue comment found for "
+            f"commit {sha_short} — skipping."
         )
+        return
+
+    if existing_id:
+        # Append this workflow's section to the existing comment (collapsed).
+        if section_title and section_content:
+            append_section = (
+                f"\n\n---\n\n"
+                f"<details><summary>📋 <code>{section_title}</code> — {now} · "
+                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+                f"{section_content}\n\n"
+                f"</details>"
+            )
+        else:
+            append_section = (
+                f"\n\n---\n\n"
+                f"<details><summary>🔴 <code>{workflow}</code> — {now} · "
+                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+                f"@copilot **{workflow}** failed on commit `{sha_short}`. "
+                f"Check [run #{run_id}]({run_url}) for details.\n\n"
+                f"</details>"
+            )
         updated_body = (existing_body.rstrip() + append_section)[:MAX_COMMENT_LEN]
         status, _ = _gh(
             "PATCH",
