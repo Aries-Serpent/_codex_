@@ -87,7 +87,7 @@ jobs:
             try {
               const { data: pr } = await github.rest.pulls.get({
                 owner: context.repo.owner,
-                repo:  context.repo.repo,
+                repo: context.repo.repo,
                 pull_number: prNumber,
               });
               if (pr.state !== 'open') {
@@ -112,11 +112,11 @@ jobs:
         if: steps.extract_pr.outputs.skip != 'true'
         uses: actions/github-script@v8
         env:
-          PR_NUMBER:         ${{ steps.extract_pr.outputs.pr_number }}
+          PR_NUMBER: ${{ steps.extract_pr.outputs.pr_number }}
           DISCUSSION_NUMBER: ${{ steps.extract_pr.outputs.discussion_number }}
-          COMMENT_ID:        ${{ steps.extract_pr.outputs.comment_id }}
-          COMMENT_AUTHOR:    ${{ steps.extract_pr.outputs.comment_author }}
-          COMMENT_PREVIEW:   ${{ steps.extract_pr.outputs.comment_preview }}
+          COMMENT_ID: ${{ steps.extract_pr.outputs.comment_id }}
+          COMMENT_AUTHOR: ${{ steps.extract_pr.outputs.comment_author }}
+          COMMENT_PREVIEW: ${{ steps.extract_pr.outputs.comment_preview }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -132,10 +132,10 @@ jobs:
             // Dedup: check last 50 PR comments for marker
             try {
               const { data: existing } = await github.rest.issues.listComments({
-                owner:        context.repo.owner,
-                repo:         context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: prNumber,
-                per_page:     50,
+                per_page: 50,
               });
               if (existing.some(c => (c.body || '').includes(BRIDGE_MARKER))) {
                 core.info(`Bridge notification already posted for comment ${commentId} — skipping`);
@@ -163,8 +163,8 @@ jobs:
 
             try {
               await github.rest.issues.createComment({
-                owner:        context.repo.owner,
-                repo:         context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: prNumber,
                 body,
               });

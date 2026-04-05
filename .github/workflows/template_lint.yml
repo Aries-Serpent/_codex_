@@ -2,7 +2,7 @@ name: Template Lint (HTML includes)
 
 on:
   pull_request:
-    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+    branches: ["0D_base_", "copilot/integrate-codex-status-template", "main", "master"]
   workflow_dispatch:
 
 

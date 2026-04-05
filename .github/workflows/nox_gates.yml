@@ -2,9 +2,9 @@ name: Nox Quality Gates
 
 on:
   push:
-    branches: [ "0D_base_", "main", "master" ]
+    branches: ["0D_base_", "main", "master"]
   pull_request:
-    branches: [ "0D_base_", "main", "master" ]
+    branches: ["0D_base_", "main", "master"]
   workflow_dispatch:
 
 

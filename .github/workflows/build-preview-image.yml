@@ -44,13 +44,13 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Build & Push Preview Image"
-      runner:          "ubuntu-latest-m"
+      workflow_name: "Build & Push Preview Image"
+      runner: "ubuntu-latest-m"
       timeout_minutes: 30
-      matrix_count:    2
-      pushes_to_ghcr:  true
+      matrix_count: 2
+      pushes_to_ghcr: true
     permissions:
-      contents:      read
+      contents: read
       pull-requests: write
 
   # ── Lint Dockerfile ──────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ jobs:
           # GHA layer cache — Docker build layers (including pip install) are cached
           # across runs keyed on Dockerfile.preview + pyproject.toml hash.
           cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
-          cache-to:   type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
+          cache-to: type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}

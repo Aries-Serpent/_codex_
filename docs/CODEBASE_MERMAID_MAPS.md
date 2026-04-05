@@ -72,7 +72,7 @@ flowchart TD
 
     subgraph "Tier 2 — Validation (owner-approved)"
         PREMERGE[pre-merge-validation.yml]
-        RESILIENT[resilient-validation-suite.yml]
+        RESILIENT[resilient_validation.yml]
         VALIDATE[validate.yml]
     end
 
@@ -208,7 +208,7 @@ flowchart TD
     end
 
     subgraph "PR Body Checklist"
-        CB["## 🔄 Workflow Execution Checklist\n- [x] pre-merge-validation.yml\n- [x] comment-review-gate.yml\n- [ ] security-scanning-suite.yml\n- [ ] docs-build.yml"]
+        CB["## 🔄 Workflow Execution Checklist\n- [x] pre-merge-validation.yml\n- [x] comment-review-gate.yml\n- [ ] security-scanning-suite.yml\n- [ ] documentation-link-checker.yml"]
     end
 
     subgraph "workflow-execution-gate.yml"

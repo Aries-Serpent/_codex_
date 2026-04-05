@@ -65,10 +65,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      tier:              ${{ steps.estimate.outputs.tier }}
+      tier: ${{ steps.estimate.outputs.tier }}
       effective_minutes: ${{ steps.estimate.outputs.effective_minutes }}
-      reason:            ${{ steps.estimate.outputs.reason }}
-      proposal_md:       ${{ steps.proposal.outputs.proposal_md }}
+      reason: ${{ steps.estimate.outputs.reason }}
+      proposal_md: ${{ steps.proposal.outputs.proposal_md }}
 
     steps:
       - uses: actions/checkout@v5
@@ -197,10 +197,10 @@ jobs:
             for (let attempt = 0; attempt <= 3; attempt++) {
               try {
                 const { data: allComments } = await github.rest.issues.listComments({
-                  owner:        context.repo.owner,
-                  repo:         context.repo.repo,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
                   issue_number: context.issue.number,
-                  per_page:     100,
+                  per_page: 100,
                 });
 
                 const master = allComments.find(c => c.body && c.body.includes(MASTER));
@@ -244,15 +244,15 @@ jobs:
 
                 if (master) {
                   await github.rest.issues.updateComment({
-                    owner:      context.repo.owner,
-                    repo:       context.repo.repo,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
                     comment_id: master.id,
                     body,
                   });
                 } else {
                   await github.rest.issues.createComment({
-                    owner:        context.repo.owner,
-                    repo:         context.repo.repo,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
                     issue_number: context.issue.number,
                     body,
                   });
@@ -348,8 +348,8 @@ jobs:
 
             for (let attempt = 1; attempt <= maxAttempts; attempt++) {
               const pr = await github.rest.pulls.get({
-                owner:       context.repo.owner,
-                repo:        context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 pull_number: prNumber,
               });
 
@@ -365,10 +365,10 @@ jobs:
               // the PR body with a session checklist, erasing the approval marker.
               // Accepting a comment avoids re-approval after every body rewrite.
               const { data: comments } = await github.rest.issues.listComments({
-                owner:        context.repo.owner,
-                repo:         context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: prNumber,
-                per_page:     100,
+                per_page: 100,
               });
               const approvalComment = comments.find(c => hasApproval(c.body));
               if (approvalComment) {

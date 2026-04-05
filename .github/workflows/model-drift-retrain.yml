@@ -51,8 +51,8 @@ jobs:
     timeout-minutes: 15
     outputs:
       should_retrain: ${{ steps.drift.outputs.should_retrain }}
-      drift_score:    ${{ steps.drift.outputs.drift_score }}
-      samples_count:  ${{ steps.drift.outputs.samples_count }}
+      drift_score: ${{ steps.drift.outputs.drift_score }}
+      samples_count: ${{ steps.drift.outputs.samples_count }}
 
     steps:
       - uses: actions/checkout@v5
@@ -75,9 +75,9 @@ jobs:
         id: drift
         env:
           DRIFT_SCORE_OVERRIDE: ${{ github.event.inputs.drift_score || github.event.client_payload.drift_score || '' }}
-          SAMPLES_OVERRIDE:     ${{ github.event.inputs.samples_count || github.event.client_payload.samples_count || '0' }}
-          FORCE_RETRAIN:        ${{ github.event.inputs.force_retrain || 'false' }}
-          DRIFT_THRESHOLD:      ${{ vars.MODEL_DRIFT_THRESHOLD || '0.15' }}
+          SAMPLES_OVERRIDE: ${{ github.event.inputs.samples_count || github.event.client_payload.samples_count || '0' }}
+          FORCE_RETRAIN: ${{ github.event.inputs.force_retrain || 'false' }}
+          DRIFT_THRESHOLD: ${{ vars.MODEL_DRIFT_THRESHOLD || '0.15' }}
         run: |
           set -euo pipefail
 
@@ -174,7 +174,7 @@ jobs:
         id: retrain
         env:
           DRIFT_SCORE: ${{ needs.detect-drift.outputs.drift_score }}
-          SAMPLES:     ${{ needs.detect-drift.outputs.samples_count }}
+          SAMPLES: ${{ needs.detect-drift.outputs.samples_count }}
         run: |
           set -euo pipefail
 
@@ -250,9 +250,9 @@ jobs:
             const drift   = '${{ needs.detect-drift.outputs.drift_score }}';
             await github.rest.issues.create({
               owner: context.repo.owner,
-              repo:  context.repo.repo,
+              repo: context.repo.repo,
               title: `🤖 Auto-retrain complete — ${version} (drift=${drift})`,
-              body:  `## Auto-Retrain Summary\n\n| Field | Value |\n|-------|-------|\n| New version | \`${version}\` |\n| Drift score | \`${drift}\` |\n| Run | ${context.runId} |\n\nThis issue was opened automatically by \`model-drift-retrain.yml\`.\nClose once the new model has been validated.`,
+              body: `## Auto-Retrain Summary\n\n| Field | Value |\n|-------|-------|\n| New version | \`${version}\` |\n| Drift score | \`${drift}\` |\n| Run | ${context.runId} |\n\nThis issue was opened automatically by \`model-drift-retrain.yml\`.\nClose once the new model has been validated.`,
               labels: ['ml-retrain', 'automated'],
             });
 

@@ -43,10 +43,10 @@ on:
     branches: [main]
 
 permissions:
-  issues:        write
+  issues: write
   pull-requests: write
-  contents:      write   # create fix branch
-  actions:       read
+  contents: write   # create fix branch
+  actions: read
 
 # ── Global serialisation lock ─────────────────────────────────────────────────
 # One instance at a time across ALL workflow names — enforces the single-branch
@@ -72,18 +72,18 @@ jobs:
       github.event.workflow_run.head_branch == 'main'
 
     outputs:
-      conclusion:        ${{ github.event.workflow_run.conclusion }}
-      action:            ${{ steps.dedup.outputs.action }}
-      severity:          ${{ steps.classify.outputs.severity }}
-      labels_json:       ${{ steps.classify.outputs.labels_json }}
-      wf_slug:           ${{ steps.classify.outputs.wf_slug }}
+      conclusion: ${{ github.event.workflow_run.conclusion }}
+      action: ${{ steps.dedup.outputs.action }}
+      severity: ${{ steps.classify.outputs.severity }}
+      labels_json: ${{ steps.classify.outputs.labels_json }}
+      wf_slug: ${{ steps.classify.outputs.wf_slug }}
       active_fix_branch: ${{ steps.dedup.outputs.active_fix_branch }}
-      active_fix_pr:     ${{ steps.dedup.outputs.active_fix_pr }}
-      existing_issue:    ${{ steps.dedup.outputs.existing_issue }}
-      failed_jobs_md:    ${{ steps.jobs.outputs.failed_jobs_md }}
-      first_job_url:     ${{ steps.jobs.outputs.first_job_url }}
-      first_job_name:    ${{ steps.jobs.outputs.first_job_name }}
-      failed_job_count:  ${{ steps.jobs.outputs.failed_job_count }}
+      active_fix_pr: ${{ steps.dedup.outputs.active_fix_pr }}
+      existing_issue: ${{ steps.dedup.outputs.existing_issue }}
+      failed_jobs_md: ${{ steps.jobs.outputs.failed_jobs_md }}
+      first_job_url: ${{ steps.jobs.outputs.first_job_url }}
+      first_job_name: ${{ steps.jobs.outputs.first_job_name }}
+      failed_job_count: ${{ steps.jobs.outputs.failed_job_count }}
 
     steps:
       - name: Checkout (consolidator + OTel)
@@ -144,8 +144,8 @@ jobs:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
             const { data } = await github.rest.actions.listJobsForWorkflowRun({
-              owner:  context.repo.owner,
-              repo:   context.repo.repo,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               run_id: context.payload.workflow_run.id,
               filter: 'latest',
             });
@@ -245,7 +245,7 @@ jobs:
 
     outputs:
       issue_number: ${{ steps.issue.outputs.issue_number }}
-      issue_url:    ${{ steps.issue.outputs.issue_url }}
+      issue_url: ${{ steps.issue.outputs.issue_url }}
 
     steps:
       - name: Create GitHub Issue
@@ -321,9 +321,9 @@ jobs:
             ].join('\n');
 
             const { data: issue } = await github.rest.issues.create({
-              owner:  context.repo.owner,
-              repo:   context.repo.repo,
-              title:  `🚨 CI Failure on main: ${wfName} [${shortSha}]`,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 CI Failure on main: ${wfName} [${shortSha}]`,
               body,
               labels,
             });
@@ -350,14 +350,14 @@ jobs:
 
     outputs:
       fix_branch: ${{ steps.branch.outputs.fix_branch }}
-      pr_url:     ${{ steps.pr.outputs.pr_url }}
-      pr_number:  ${{ steps.pr.outputs.pr_number }}
+      pr_url: ${{ steps.pr.outputs.pr_url }}
+      pr_number: ${{ steps.pr.outputs.pr_number }}
 
     steps:
       - name: Checkout main
         uses: actions/checkout@v5
         with:
-          ref:         main
+          ref: main
           fetch-depth: 1
 
       - name: Create fix branch + tracking stub
@@ -454,19 +454,19 @@ jobs:
 
             const { data: pr } = await github.rest.pulls.create({
               owner: context.repo.owner,
-              repo:  context.repo.repo,
+              repo: context.repo.repo,
               title: `fix(ci): 🔧 Critical — ${wfName} [${shortSha}]`,
-              head:  fixBranch,
-              base:  'main',
+              head: fixBranch,
+              base: 'main',
               body,
               draft: false,
             });
 
             await github.rest.issues.addLabels({
-              owner:        context.repo.owner,
-              repo:         context.repo.repo,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               issue_number: pr.number,
-              labels:       JSON.parse('${{ needs.triage.outputs.labels_json }}'),
+              labels: JSON.parse('${{ needs.triage.outputs.labels_json }}'),
             });
 
             // Cross-link issue → PR
@@ -531,17 +531,17 @@ jobs:
       - name: Build dashboard section
         id: section
         env:
-          CONCLUSION:    ${{ github.event.workflow_run.conclusion }}
-          WF_NAME:       ${{ github.event.workflow_run.name }}
-          WF_RUN_URL:    ${{ github.event.workflow_run.html_url }}
-          ACTION:        ${{ needs.triage.outputs.action }}
-          SEVERITY:      ${{ needs.triage.outputs.severity }}
-          ISSUE_URL:     ${{ needs.create-issue.outputs.issue_url }}
-          ISSUE_NUM:     ${{ needs.create-issue.outputs.issue_number }}
-          FIX_BRANCH:    ${{ needs.create-fix-pr.outputs.fix_branch }}
-          FIX_PR_URL:    ${{ needs.create-fix-pr.outputs.pr_url }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          WF_NAME: ${{ github.event.workflow_run.name }}
+          WF_RUN_URL: ${{ github.event.workflow_run.html_url }}
+          ACTION: ${{ needs.triage.outputs.action }}
+          SEVERITY: ${{ needs.triage.outputs.severity }}
+          ISSUE_URL: ${{ needs.create-issue.outputs.issue_url }}
+          ISSUE_NUM: ${{ needs.create-issue.outputs.issue_number }}
+          FIX_BRANCH: ${{ needs.create-fix-pr.outputs.fix_branch }}
+          FIX_PR_URL: ${{ needs.create-fix-pr.outputs.pr_url }}
           ACTIVE_BRANCH: ${{ needs.triage.outputs.active_fix_branch }}
-          ACTIVE_PR:     ${{ needs.triage.outputs.active_fix_pr }}
+          ACTIVE_PR: ${{ needs.triage.outputs.active_fix_pr }}
         run: |
           python3 - <<'PYEOF'
           import os
@@ -620,7 +620,7 @@ jobs:
       - name: Post to PR Status Dashboard
         if: steps.find-pr.outputs.pr_number != ''
         env:
-          GITHUB_TOKEN:      ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python scripts/ci/pr_comment_consolidator.py \

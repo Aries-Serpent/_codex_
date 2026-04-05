@@ -46,10 +46,10 @@ jobs:
 
     outputs:
       rebase_required: ${{ steps.check.outputs.rebase_required }}
-      rebase_status:   ${{ steps.check.outputs.rebase_status }}
-      behind_by:       ${{ steps.check.outputs.behind_by }}
-      base_branch:     ${{ steps.check.outputs.base_branch }}
-      head_branch:     ${{ steps.check.outputs.head_branch }}
+      rebase_status: ${{ steps.check.outputs.rebase_status }}
+      behind_by: ${{ steps.check.outputs.behind_by }}
+      base_branch: ${{ steps.check.outputs.base_branch }}
+      head_branch: ${{ steps.check.outputs.head_branch }}
 
     steps:
       - name: "📥 Checkout (sparse — script only)"
