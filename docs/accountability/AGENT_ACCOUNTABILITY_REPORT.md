@@ -17809,3 +17809,82 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-04-06T02:16Z SESSION S294-PR3879 (Bot Comment Audit + WEC Capability)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** ALL bot-posted comments reviewed — 9 bot comments audited in full ✅
+- [x] **0b.** ALL mbaetiong comments replied to — 9 of 9 addressed (4189779909, 4189780278, 4189782510, 4189784468, 4189786468, 4189792943, 4189794902, 4189795458, 4190002054) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `docs/ci/PR_LIFECYCLE.md` and `.codex/CODEBASE_AGENCY_POLICY.md` loaded ✅
+- [x] **3.** Validation Pipeline confirmed passing on HEAD `011f8d3` (run #24015562250) ✅
+- [x] **4.** `ruff check src/ tests/` = 0 issues ✅
+- [x] **5.** WEC selections applied based on PR diff analysis ✅
+
+### Work Completed
+
+1. **Full PR comment audit** — All 19 comments (10 mbaetiong, 9 github-actions[bot]) reviewed
+   and categorised. 9 mbaetiong comments replied to using `reply_to_comment` tool.
+
+2. **Bot comment quality audit** — 9 automated comments examined for correctness:
+   - 4 WEC Execution Plan comments (4189781127, 4189782348, 4190002178, 4190019970):
+     correctly report 9 WILL RUN / rest SKIPPED; fire each push due to lack of dedup logic
+   - 1 Cost Check comment (4189781269): flags 5 RED-tier workflows all marked SKIPPED in WEC;
+     root cause — `pr-cost-check.yml` scans all candidate workflows, not only WEC-enabled ones
+   - 1 WEC "No Checklist Found" (4190001654): false negative — run 24015536506 was attempt 2
+     (queued at 01:52:09Z, ran at 02:11:59Z) using an event payload from before the current
+     PR body was in place; 18 seconds later run 24015940395 correctly parsed the WEC
+   - 1 Cognitive Pre-Flight (4189787080): correctly fired; SHA e7e18ec is a transient commit
+   - 1 Root Org Validation (4189801523): correctly fired, ✅ passed
+   - 1 Branch Rebase Resolved (4190001652): correctly fired after branch caught up with main
+
+3. **Capability audit** — Verified Copilot CAN select WEC workflows (see below).
+
+4. **WEC selections applied** — Based on PR diff (`validate.yml`, `workflow-execution-gate.yml`,
+   `.secrets.baseline`, `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` changed):
+   checked `validate.yml`, `actionlint-audit.yml`, `documentation-link-checker.yml`.
+
+### Bot Comment Issues Found (3 actionable)
+
+| ID | Severity | Issue | Recommended Fix |
+|----|----------|-------|-----------------|
+| 4189781269 | 🟡 Medium | Cost gate flags SKIPPED workflows as RED "Action Required" | `pr-cost-check.yml`: cross-reference WEC and suppress unapproved-but-unchecked workflows |
+| 4190001654 | 🟡 Medium | WEC "No Checklist Found" false negative (stale event payload on attempt-2 rerun) | `workflow-execution-gate.yml`: always fetch live PR body via `gh pr view` at run time, not from event payload |
+| 4189781127–4190019970 | 🟢 Low | 4 duplicate WEC execution plan comments per PR push cycle | `workflow-execution-gate.yml`: upsert existing comment instead of posting new one |
+
+### WEC Selection Capability Assessment
+
+Copilot CAN select workflows by editing the PR body before pushing. The mechanism:
+- `session_wrapup_autofix._extract_wec_state(body)` reads current checkbox state
+- `session_wrapup_autofix._build_wec_block(existing_state=...)` rebuilds WEC preserving selections
+- `gh pr edit --body` or `report_progress(prDescription=...)` writes back to PR
+
+No automated diff→workflow recommendation logic exists. The agent applies judgment:
+| Changed file pattern | Recommended workflow(s) |
+|---------------------|------------------------|
+| `.github/workflows/*.yml` | `actionlint-audit.yml` |
+| `.secrets.baseline`, `CODEX_MANIFEST.json` | `validate.yml` |
+| `src/**/*.py` | `resilient_validation.yml`, `mypy-baseline.yml` |
+| `docs/**/*.md` (links changed) | `documentation-link-checker.yml` |
+| `src/codex/skills/**` | `test-rag.yml`, `nox_gates.yml` |
+| Security-sensitive code | `security-scanning-suite.yml`, `codeql-analysis.yml` |
+
+### Capability Surface Summary
+
+| Surface | Status | Key Constraint |
+|---------|--------|---------------|
+| **CLI (`gh`, `git`, `python`, `ruff`)** | ✅ Fully available | CODEX_MASTER_KEY needed for write ops; sandbox has HTTP 403 without it |
+| **GitHub MCP Server (28 tools)** | ✅ Read-only | No variable CRUD, no workflow approval, no PR body write |
+| **Playwright MCP (21 tools)** | ✅ Available | Restricted to localhost/127.0.0.1 origins; cannot browse github.com |
+| **Cognitive Brain GitHub App** | ⚠️ CI-only | `_GITHUB_APP_PRIVATE_KEY` is a CI secret; not accessible in agent sandbox |
+
+### Lessons Learned
+- Bot dedup logic in `workflow-execution-gate.yml` (upsert via MARKER) only triggers on
+  `pull_request_review` and `workflow_dispatch`, not plain `pull_request`; plain pushes
+  always post a new comment, causing the 4-comment accumulation pattern.
+- `pr-cost-check.yml` should filter to WEC-enabled workflows before triggering the
+  "Action Required" gate to avoid false-positive cost alerts.
+- The WEC "No Checklist Found" false negative is reproducible whenever a job is re-run
+  from a stale check suite: the event payload is frozen at queue time, not updated at run time.
