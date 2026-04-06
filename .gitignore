@@ -102,6 +102,9 @@ manifests/k8s/*/secret.yaml
 !.codex/agent_context.json
 !.codex/agent_auth_session.json
 !.codex/webhook_config.json
+!.codex/pending_ops/
+.codex/pending_ops/**
+!.codex/pending_ops/variable_*.json
 !.codex/webhook_registry.json
 !.codex/policies/
 !.codex/policies/**
