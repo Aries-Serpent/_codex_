@@ -2,7 +2,7 @@
 #    uv pip compile pyproject.toml requirements/base.txt --extra dev --extra test --extra ml --extra logging --extra tracking --extra train --extra cli --extra monitoring --extra ops --extra perf --extra tokenizers --extra tokenizer --extra configs --extra dist --python-version 3.12 --output-file requirements/lock.txt
 # Atomic Diff 5 provenance: docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md (dependency locking guidance)
 # Python lock target: 3.12
-absl-py==2.3.1
+absl-py==2.4.0
     # via
     #   rouge-score
     #   tensorboard
