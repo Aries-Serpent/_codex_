@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S301 — PR #3897 — 2026-04-06)
+- **`CHANGELOG.md`** — Added `<!-- pragma: allowlist secret -->` inline comment to line containing `CODEX_MASTER_KEY` reference. The S300 CHANGELOG entry shifted this pre-existing false-positive from line 29 to line 37, causing `detect-secrets` to fail Fast Validation (the `.secrets.baseline` had no entry for CHANGELOG.md as that line was previously outside the scanned window). Fix: inline pragma suppresses the false positive.
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** — Stripped trailing whitespace from line 17990 (`   ` → empty line), which `sync-tracked-files` hook would have mutated in CI, causing a second Fast Validation failure.
+
 ### Fixed (S300 — PR #3897 — 2026-04-06)
 - **`scripts/ci/wec_enforcer.py`** — `_gh_api()` now handles empty-body HTTP responses (e.g. 204 No Content returned by `workflow_dispatch` POST). Previously `json.loads(resp.read())` raised `JSONDecodeError` on empty body, crashing `cmd_dispatch_checked` and failing the `Dispatch Newly-Checked Workflows` job in `workflow-execution-gate.yml`. Fix: read raw bytes first, only parse JSON if `raw.strip()` is non-empty; otherwise return `{}`.
 
@@ -34,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3878 (SHA `c5bde7c3`) at 2026-04-06T00:11Z [auto-generated]
 
 ### Docs (PR #3876 — Mermaid maps aligned with PR behavior, 2026-04-05)
-- **`docs/CODEBASE_MERMAID_MAPS.md`**: Updated version 1.0.0→1.1.0. Four targeted changes: (1) Header date 2026-03-29→2026-04-05; (2) Section 2 CI/CD pipeline: CodeQL node now annotates resolved alerts `#12788/#12789/#12790 PR #3876`; (3) Section 11 Security+Token: added new "Variables & Secrets Knowledge Layer (PR #3876)" subgraph documenting `GITHUB_VARIABLES_SECRETS_REFERENCE.md`, `GITHUB_API_AND_MCP_REFERENCE.md`, and `test_variables_api.py` with correct edges from `CODEX_MASTER_KEY`; (4) Section 12 Source Layout: added `test_variables_api.py ← PR #3876` to the `scripts/ci/` listing.
+- **`docs/CODEBASE_MERMAID_MAPS.md`**: Updated version 1.0.0→1.1.0. Four targeted changes: (1) Header date 2026-03-29→2026-04-05; (2) Section 2 CI/CD pipeline: CodeQL node now annotates resolved alerts `#12788/#12789/#12790 PR #3876`; (3) Section 11 Security+Token: added new "Variables & Secrets Knowledge Layer (PR #3876)" subgraph documenting `GITHUB_VARIABLES_SECRETS_REFERENCE.md`, `GITHUB_API_AND_MCP_REFERENCE.md`, and `test_variables_api.py` with correct edges from `CODEX_MASTER_KEY`; (4) Section 12 Source Layout: added `test_variables_api.py ← PR #3876` to the `scripts/ci/` listing.  <!-- pragma: allowlist secret -->
 
 ### Fixed (PR #3876 — CodeQL hotfix + double-space cleanup, 2026-04-05)
 - **`tests/codex/test_cli_roles.py`**: CodeQL #12788/#12789 (definitive fix) — restructured `test_cli_roles_help` and `test_cli_roles_list` to merge the `from codex import cli_roles` import and the `cli_runner.invoke()` call into a single `try` block. The imported name `_cli_roles` is now only ever referenced within the `try` block where it is guaranteed to be assigned; `ImportError` and `RuntimeError/Exception` are handled in separate `except` clauses each ending with `return`. This eliminates the CodeQL "potentially uninitialized local variable" path that persisted even after the prior `return`-after-`pytest.skip()` fix, because CodeQL does not model `pytest.skip()` as a no-return function.

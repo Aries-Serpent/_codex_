@@ -17987,7 +17987,7 @@ The Actions Variables API requires `repo` scope (classic PAT) or `actions variab
    | #3889 | sqlalchemy | 2.0.43 | 2.0.49 | lock.txt |
    | #3887 | pandas | 3.0.1 | 3.0.2 | lock.txt, lock-eval.txt, requirements-eval.txt |
    | #3886 | transformers | 5.4.0 | 5.5.0 | lock.txt, lock-ml.txt, requirements-ml-cpu.txt, base.txt |
-   
+
    (PRs #3895/cachetools, #3892/absl-py, #3890/google-auth, #3888/dulwich were already in HEAD from prior cherry-picks.)
 
 4. **End-of-session verification (all pass)**:
@@ -18347,5 +18347,38 @@ No `report_progress` call is permitted without completing all 6 steps above.
 - actionlint: 0 violations ✅
 - YAML: valid ✅
 - sync-tracked-files: Passed ✅
+
+---
+
+## SESSION SUMMARY — 2026-04-06T18:08Z S301 (PR #3897 — Fast Validation detect-secrets + sync-tracked-files fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** New comment_new `4194047888` reviewed — CI Rescue on commit `ab55bbd3af30`, 21 failing ✅
+- [x] **0b.** 30 runs on ab55bbd triaged — 1 actionable failure, 3 transient startup_failure, rest success/cancelled ✅
+- [x] **0c.** `Validation Pipeline / Fast Validation` — 2 root causes identified from CI logs ✅
+- [x] **0d.** Both fixes applied before push ✅
+
+### What Changed
+1. **`CHANGELOG.md`** — `<!-- pragma: allowlist secret -->` added to line containing `CODEX_MASTER_KEY` reference (originally line 29 from PR #3876 Mermaid maps entry). S300 inserted 8 lines above it, shifting it to line 37. The `.secrets.baseline` had 0 entries for CHANGELOG.md — the scan had previously passed because this line was outside the detection window. After shift, detect-secrets flagged it as a "Secret Keyword" false positive. Inline pragma suppresses it.
+2. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** — Trailing whitespace (`   `) stripped from line 17990 (within S300 session table). The `sync-tracked-files` hook would have mutated this in CI (converting `   ` → empty line), causing validation to fail with "2 failing hook(s)".
+3. **`CHANGELOG.md`** — S301 Fixed entry added under `[Unreleased]`.
+
+### Impact
+- Fast Validation will pass: `detect-secrets` no longer flags CHANGELOG.md:37; `sync-tracked-files` no longer mutates AGENT_ACCOUNTABILITY_REPORT.md trailing whitespace.
+
+### Failures Triage (21 reported, 1 actionable)
+- `Validation Pipeline #1530`: ❌ ACTIONABLE — detect-secrets CHANGELOG.md:37 + sync-tracked-files mutation (FIXED)
+- `Rust-Python Hybrid Swarm CI/CD #5437`: startup_failure — transient (infrastructure)
+- `Progressive Validation Suite #2082`: startup_failure — transient
+- `Data Quality & Determinism Suite #1437`: startup_failure — transient
+- `WEC #199/#200`: cancelled — superseded by #201 which succeeded
+- Remaining: success or cancelled
+
+### Validators
+- ruff: 0 violations ✅
+- actionlint: 0 violations ✅
+- YAML: valid ✅
+- sync-tracked-files: Passed ✅
+- detect-secrets: Passed (exit 0) ✅
 
 ---
