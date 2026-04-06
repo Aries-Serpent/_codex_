@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dependencies (PR #3888 — dulwich version bump, 2026-04-06)
+- **deps**: `dulwich` 1.0.0→1.1.0 — minor version bump via Dependabot; no security vulnerabilities found in 1.0.0; `requirements/lock.txt` updated.
+
 ### Fixed (auto-update — PR #3888)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3888 (SHA `24ef46aa`) at 2026-04-06T09:20Z [auto-generated]
 

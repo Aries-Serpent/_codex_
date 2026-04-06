@@ -63,7 +63,7 @@ dnspython==2.7.0  # requirements/lock.txt
 docker==7.1.0  # requirements/lock.txt
 dpath==2.2.0  # requirements/lock.txt
 duckdb==1.3.2  # requirements/lock.txt
-dulwich==0.24.6  # requirements/lock.txt
+dulwich==1.1.0  # requirements/lock.txt
 dvc==3.0.0  # requirements/lock.txt
 dvc-data==1.11.0  # requirements/lock.txt
 dvc-http==2.32.0  # requirements/lock.txt

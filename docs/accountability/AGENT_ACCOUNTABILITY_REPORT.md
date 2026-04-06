@@ -17715,3 +17715,32 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-04-06T09:43Z SESSION S_PR3888 (PR #3888 — dulwich bump follow-up)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — comment-review-gate shows 0/0 unaddressed; @mbaetiong comment 4191437584 reviewed ✅
+- [x] **0b.** Failing CI checks reviewed — PR at 100/100 merge-readiness; cost-gate informational only ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed — no blocking failures ✅
+- [x] **3.** `.gitignore` — no changes to .gitignore needed ✅
+- [x] **4.** Priority tasks reviewed — follow-up prompt had no P1/P2/P3/P4 tasks specified ✅
+- [x] **5.** Security check — `gh-advisory-database` confirms no CVEs in dulwich 1.0.0 ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **CHANGELOG entry** — Added `### Dependencies (PR #3888)` section documenting dulwich 1.0.0→1.1.0 bump with security-check confirmation.
+2. **SBOM packages.txt** — Updated `dulwich==0.24.6` stale entry to `dulwich==1.1.0` to match `requirements/lock.txt`.
+3. **Accountability report** — This session summary added per REQ-4 gate.
+4. **Comment reply** — Replied to @mbaetiong comment 4191437584.
+
+### Root-Cause Note
+The Dependabot PR bumped dulwich from 1.0.0→1.1.0 (semver-minor). The SBOM snapshot in `configs/development/artifacts/sbom/packages.txt` retained the pre-1.0.0 version tag (0.24.6) from before the lock.txt pin was elevated. This session corrected the stale entry. No code changes were required — the bump is a transitive dependency via `dvc-studio-client` and `scmrepo`.
+
+### Impact Score
+- Files modified: 3 (`CHANGELOG.md`, `configs/development/artifacts/sbom/packages.txt`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Security vulnerabilities: 0 (confirmed via advisory DB)
+- Deferral Language Gate: 0 violations
+
+---
