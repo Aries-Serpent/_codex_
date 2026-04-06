@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3888)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3888 (SHA `24ef46aa`) at 2026-04-06T09:20Z [auto-generated]
+
 ### Docs (PR #3876 — Mermaid maps aligned with PR behavior, 2026-04-05)
 - **`docs/CODEBASE_MERMAID_MAPS.md`**: Updated version 1.0.0→1.1.0. Four targeted changes: (1) Header date 2026-03-29→2026-04-05; (2) Section 2 CI/CD pipeline: CodeQL node now annotates resolved alerts `#12788/#12789/#12790 PR #3876`; (3) Section 11 Security+Token: added new "Variables & Secrets Knowledge Layer (PR #3876)" subgraph documenting `GITHUB_VARIABLES_SECRETS_REFERENCE.md`, `GITHUB_API_AND_MCP_REFERENCE.md`, and `test_variables_api.py` with correct edges from `CODEX_MASTER_KEY`; (4) Section 12 Source Layout: added `test_variables_api.py ← PR #3876` to the `scripts/ci/` listing.
 
