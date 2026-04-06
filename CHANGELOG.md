@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3905)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3905 (SHA `97fe6a48`) at 2026-04-06T23:24Z [auto-generated]
+
 ### Fixed (S305 — PR #3901 — 2026-04-06 · Review comments + vite bump + yamllint + GitHub Pages status)
 - **cognitive_app/package.json**: vite bumped `^7.2.6` → `^7.3.2` (absorbs PR #3902 — closes #3902)
 - **cognitive_app/package-lock.json**: esbuild `0.25.12` → `0.27.7` (27 packages) + vite `7.2.6` → `7.3.2`; esbuild pin in vite deps `^0.25.0` → `^0.27.0`
