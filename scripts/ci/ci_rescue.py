@@ -1116,10 +1116,12 @@ def post_pr_comment(
     legacy_body: str = ""
     legacy_rca_sha_id: Optional[int] = None
     legacy_rca_sha_body: str = ""
-    # Build legacy rca-sha marker for backward-compat search
+    # Build legacy rca-sha marker for backward-compat search.
+    # The `if pr_number and sha12` guard ensures sha12 is a non-empty string
+    # (never None) before embedding it in the f-string.
     legacy_rca_sha_marker = (
         f"<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->"
-        if pr_number and sha12
+        if pr_number and sha12 and isinstance(sha12, str)
         else ""
     )
     page = 1
@@ -1148,16 +1150,19 @@ def post_pr_comment(
             break
         page += 1
 
-    # Resolve: prefer canonical sha-anchor; fall back to legacy rca-sha; then bare legacy.
+    # Three-tier resolution — highest priority wins:
+    #   Tier 1 (canonical): ci-rescue-sha:{pr}:{sha12}  — shared namespace with
+    #           post_rescue_comment.py; this is `existing_id` when found above.
+    #   Tier 2 (legacy-sha): ci-rescue-rca:{pr}:sha-{sha12}  — old ci_rescue.py
+    #           format; absorbed for backward compat with pre-S298 comment threads.
+    #   Tier 3 (legacy-bare): ci-rescue-rca  — oldest fallback; only used when
+    #           commit_sha is not provided (no SHA scope).
     if not existing_id and legacy_rca_sha_id:
         existing_id = legacy_rca_sha_id
         existing_body = legacy_rca_sha_body
-    # Only fall back to the legacy bare marker when the caller is NOT using
-    # SHA-scoped markers (i.e. commit_sha was not provided).  When commit_sha IS
-    # provided the marker is already SHA-specific and can never collide with
-    # an old bare <!-- ci-rescue-rca --> comment, so the fallback must be
-    # suppressed — otherwise a rescue comment from a completely different push
-    # could be incorrectly updated in-place.
+    # Tier 3: only fall back to the bare marker when commit_sha was NOT provided.
+    # When commit_sha IS provided the marker is already SHA-specific and must never
+    # match an old bare <!-- ci-rescue-rca --> comment from a different push.
     if not existing_id and not commit_sha and legacy_id:
         existing_id = legacy_id
         existing_body = legacy_body
