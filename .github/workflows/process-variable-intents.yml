@@ -99,10 +99,9 @@ jobs:
           echo "✅ Write token resolved from: $(cat $GITHUB_OUTPUT | grep source= | cut -d= -f2)"
 
       - name: Process intents
-        env:
-          GH_TOKEN: ${{ steps.token.outputs.token }}
         id: process
         env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           set -euo pipefail
