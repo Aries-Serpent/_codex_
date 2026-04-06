@@ -354,7 +354,7 @@ jobs:
           # >100 comments, causing duplicate posts.  The paginated REST API is used
           # instead to reliably search ALL comments regardless of thread length.
           EXISTING_ID=$(python3 - << 'PYEOF'
-          import json, os, urllib.request, urllib.error
+          import json, os, sys, urllib.request, urllib.error
           token  = os.environ.get("GH_TOKEN", "")
           repo   = os.environ.get("GH_REPO", "")
           pr     = os.environ.get("GATE_PR", "")
@@ -370,9 +370,13 @@ jobs:
               try:
                   with urllib.request.urlopen(req, timeout=20) as resp:
                       comments = json.loads(resp.read())
-              except Exception:
+              except urllib.error.HTTPError as exc:
+                  print(f"::warning::WEC upsert lookup HTTP {exc.code}: {exc.reason}", file=sys.stderr)
                   break
-              if not isinstance(comments, list) or not comments:
+              except Exception as exc:
+                  print(f"::warning::WEC upsert lookup error: {exc}", file=sys.stderr)
+                  break
+              if not isinstance(comments, list):
                   break
               for c in comments:
                   if (c.get("body") or "").startswith(marker):
@@ -528,7 +532,7 @@ jobs:
 
           # Upsert comment — paginated REST API (S299 fix: gh pr view --json comments
           # only returns first 100 via GraphQL; REST pagination covers all comments).
-          import urllib.request, urllib.error
+          import sys, urllib.request, urllib.error
           token = os.environ.get("GH_TOKEN", "")
           hdrs  = {"Authorization": f"Bearer {token}",
                    "Accept": "application/vnd.github+json",
@@ -541,9 +545,13 @@ jobs:
               try:
                   with urllib.request.urlopen(req, timeout=20) as resp:
                       page_comments = json.loads(resp.read())
-              except Exception:
+              except urllib.error.HTTPError as exc:
+                  print(f"::warning::WEC FF upsert lookup HTTP {exc.code}: {exc.reason}", file=sys.stderr)
                   break
-              if not isinstance(page_comments, list) or not page_comments:
+              except Exception as exc:
+                  print(f"::warning::WEC FF upsert lookup error: {exc}", file=sys.stderr)
+                  break
+              if not isinstance(page_comments, list):
                   break
               for c in page_comments:
                   if (c.get("body") or "").startswith(marker):
