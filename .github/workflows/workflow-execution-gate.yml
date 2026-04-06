@@ -324,15 +324,13 @@ jobs:
             IFS=',' read -ra RUN_LIST <<< "$TO_RUN"
             for wf in "${RUN_LIST[@]}"; do
               [ -z "$wf" ] && continue
-              TABLE_ROWS="${TABLE_ROWS}
-          | ✅ WILL RUN | \`${wf}\` |"
+              TABLE_ROWS="${TABLE_ROWS}"$'\n'"| ✅ WILL RUN | \`${wf}\` |"
             done
 
             IFS=',' read -ra SKIP_LIST <<< "$TO_SKIP"
             for wf in "${SKIP_LIST[@]}"; do
               [ -z "$wf" ] && continue
-              TABLE_ROWS="${TABLE_ROWS}
-          | ⏭️ SKIPPED | \`${wf}\` |"
+              TABLE_ROWS="${TABLE_ROWS}"$'\n'"| ⏭️ SKIPPED | \`${wf}\` |"
             done
 
             BODY_FILE="${RUNNER_TEMP}/wf_gate_body_${GITHUB_RUN_ID}.txt"
