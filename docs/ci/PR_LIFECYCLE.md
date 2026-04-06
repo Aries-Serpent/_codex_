@@ -1,8 +1,8 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 2.2.0  
-> **Date:** 2026-04-06 (S299 — WEC gate comment pagination fix; §14.1/§16.1/§23 aligned)  
-> **Previous:** 2.1.0 (S303/S304 — discussion-cleanup CB App token; post-accountability CB App token; discussion-response-bridge RC-3)  
+> **Version:** 2.3.0  
+> **Date:** 2026-04-06 (S302 — auto-approve-workflows schedule+dispatch overhaul; owner-flag protection; §24 added; §8/§14.1/§16.1/§23 updated)  
+> **Previous:** 2.2.0 (S299 — WEC gate comment pagination fix; §14.1/§16.1/§23 aligned)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (55 failures / 14 workflows, 2026-04-03)
 
@@ -37,6 +37,7 @@ and how the self-healing / rescue system responds.
 21. [Session Automation Quick Reference](#21-session-automation-quick-reference)
 22. [SHA-Digest Comment Architecture (S-3876)](#22-sha-digest-comment-architecture)
 23. [WEC Trigger / Cancel Model (S-3876)](#23-wec-trigger--cancel-model)
+24. [Auto-Approve Overhaul — Schedule, Labels & Owner Protection (S302)](#24-auto-approve-overhaul--schedule-labels--owner-protection-s302)
 - [Appendix: Key Patterns](#appendix-key-patterns)
 - [Appendix: Known Recurring CI Failure Patterns](#appendix-known-recurring-ci-failure-patterns)
 
@@ -155,6 +156,7 @@ These workflows run automatically on PR events and are not individually controll
 | `pr-size-analyzer.yml` | `pull_request` | PR diff size analysis |
 | `labeler.yml` | `pull_request` | Label assignment |
 | `comment-review-gate.yml` | `issue_comment` (self-retrigger guard) | Gate re-scan on new comments |
+| `auto-approve-workflows.yml` | `workflow_run`, `pull_request`, **`schedule`** (`*/20 * * * *`), `workflow_dispatch` | Approves all `action_required` runs. Persistent via `wec:auto-approve` label; one-session via `wec:auto-approve-once`. Schedule sweeps ALL labeled PRs every 20 min. See §24. |
 
 ### 2.7 Discussion & Accountability Workflows (S297–S303)
 
@@ -503,6 +505,9 @@ flowchart TD
         WEC2 --> WEC3{FF checkbox\nticked?}
         WEC3 -->|Yes| FF["⚡ fast-forward-safe-files.yml\nPromotes safe files to main"]
         WEC3 -->|No| SKIP_FF[FF job skipped]
+        WEC2 --> WECPROT{Bot reset\nowner flag?}
+        WECPROT -->|Yes — restores| RESTORE["🛡️ WEC gate rewrites PR body\n[x] auto-approve-workflows\nrestored + wec:auto-approve\nlabel added"]
+        WECPROT -->|No change| WECOK[Flags preserved]
     end
 
     WEC2 --> O
@@ -520,13 +525,28 @@ flowchart TD
         U --> V[copilot-agent-session-done.yml\n• verify rescues answered\n• S221 guard on next push]
     end
 
-    V --> W{Rescue\nanswered?}
+    V --> AAWRUN["⚡ auto-approve-workflows.yml\nfires on workflow_run\n• Approves all action_required\n• One-session: removes\n  wec:auto-approve-once label"]
+
+    subgraph SCHED ["⏰ Schedule Sweep (every 20 min — independent of pushes)"]
+        SCHED1["auto-approve-workflows.yml\nschedule: */20 * * * *"]
+        SCHED2["Finds ALL open PRs with\nwec:auto-approve OR\nwec:auto-approve-once label"]
+        SCHED3["For each PR: approve all\naction_required runs\nfor HEAD SHA"]
+        SCHED1 --> SCHED2 --> SCHED3
+    end
+
+    AAWRUN --> W{Rescue\nanswered?}
     W -->|No| X[S221 guard fires\non next push]
     X --> L
     W -->|Yes| Y[Ready for Review\n🟢 all checks green]
     Y --> Z[Owner approves + Merge]
 
     style FF fill:#d4edda,stroke:#28a745
+    style RESTORE fill:#cce5ff,stroke:#004085
+    style AAWRUN fill:#d4edda,stroke:#28a745
+    style SCHED fill:#e2d9f3,stroke:#6f42c1
+    style SCHED1 fill:#e2d9f3,stroke:#6f42c1
+    style SCHED2 fill:#e2d9f3,stroke:#6f42c1
+    style SCHED3 fill:#e2d9f3,stroke:#6f42c1
     style Q fill:#fff3cd,stroke:#856404
     style K fill:#f8d7da,stroke:#721c24
 ```
@@ -1087,6 +1107,9 @@ in §13, and the planned improvements to close each gap.
 | **`copilot-agent-session-done.yml` duplicate comments (P2-A)** | `createComment` (not upsert-by-marker) → each parallel watcher job completion created a new comment; 3–4 duplicates per push | Replaced with upsert-by-marker pattern using `<!-- session-done-dedup:{sha12} -->` | ✅ Fixed S299 |
 | **`COPILOT_ACTIVE_SESSION` TTL 4h → 1h (P5-C)** | 4h TTL meant a queued session waited up to 4 hours for the active-session lock to clear | TTL reduced to 3600 s (1 h) — the practical maximum session length | ✅ Fixed S300 |
 | **`workflow-execution-gate.yml` duplicate gate comments** | `post-gate-summary` and `fast-forward` jobs used `gh pr view --json comments` (GraphQL `comments(first:100)`) to find existing `<!-- workflow-execution-gate:{pr} -->` anchor — when PR has >100 comments the anchor is beyond position 100, dedup check returns empty, a second comment is created | Both upsert lookups replaced with paginated REST API Python loop (`/issues/{pr}/comments?per_page=100&page=N`) that scans ALL pages; anchor always found regardless of thread depth | ✅ Fixed S299 |
+| **`auto-approve-workflows.yml` no periodic sweep** | Workflow only fired on `pull_request` and `workflow_run` — if a run became `action_required` between pushes it would wait until next push | Added `schedule: */20 * * * *` sweep. On schedule, queries all open PRs with `wec:auto-approve` OR `wec:auto-approve-once` labels via Issues API and approves all `action_required` runs for their HEAD SHA | ✅ Fixed S302 |
+| **Owner checkbox reset by Copilot `report_progress`** | Every `report_progress` call rewrites PR body — if agent omits `[x] auto-approve-workflows` the checkbox silently reverts to `[ ]`; subsequent auto-approve runs skip | `workflow-execution-gate.yml` `cancel-unchecked` job now detects bot sender (`[bot]` login suffix) and calls `gh pr edit` to restore `[x]`; separately adds persistent `wec:auto-approve` label when owner first checks | ✅ Fixed S302 |
+| **No single-session auto-approve mode** | Owner had to manually re-enable auto-approve for every session | Added `enable_one_session` dispatch input + `wec:auto-approve-once` label. After the next Copilot session's `workflow_run`, the `one-session cleanup` step removes the label and unchecks the PR body | ✅ Fixed S302 |
 
 ### 14.2 Automation Cascade (Improved — S295)
 
@@ -1388,6 +1411,7 @@ ordered by impact. Columns: **T** = create, **U** = upsert, **🤖** = posts `@c
 | `copilot-review-responder.yml` | `pull_request_review`, `issue_comment` | 1 | 0 | ✅ | Review event filter |
 | `validate.yml` | `pull_request`, `schedule`, `workflow_dispatch` | 1 | 0 | ✅ | `<!-- root-org-validation-v1 -->` |
 | `workflow-execution-gate.yml` | `workflow_dispatch`, `pull_request_review`, `pull_request: [edited]` | 1 | 1 | — | `<!-- workflow-execution-gate:{pr} -->` (paginated REST upsert — S299) |
+| `auto-approve-workflows.yml` | `workflow_run`, `pull_request`, `schedule` (`*/20 * * * *`), `workflow_dispatch` | 0 | 0 | — | No PR comments posted; writes GitHub Actions job summary only. Label ops: `wec:auto-approve`, `wec:auto-approve-once`. |
 
 ---
 
@@ -2303,7 +2327,7 @@ flowchart LR
 
 ## 23. WEC Trigger / Cancel Model
 
-> **Added:** S-3876 (2026-04-05) | **Updated:** S299 (2026-04-06 — pagination fix)  
+> **Added:** S-3876 (2026-04-05) | **Updated:** S299 (2026-04-06 — pagination fix) | **Updated:** S302 (2026-04-06 — owner flag protection + auto-approve overhaul)  
 > **Script:** `scripts/ci/wec_enforcer.py`  
 > **Workflow:** `.github/workflows/workflow-execution-gate.yml`  
 > **Problem solved:** WEC checkboxes were read-only signals — checking `[x]` did not actually start the workflow; unchecking `[ ]` did not cancel any in-progress run.
@@ -2351,7 +2375,7 @@ The loop advances pages until `len(page) < 100`, scanning every comment for the 
 | Opt-In Security | `codeql-analysis.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
 | Opt-In Security | `actionlint-audit.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
 | Opt-In Docs | `documentation-link-checker.yml` | `workflow_dispatch` → branch | ❌ Cancel in-progress | HEAD_SHA + branch |
-| Auto-Approve | `auto-approve-workflows` | `workflow_dispatch` → branch | No-op (approval not reversible) | N/A |
+| Auto-Approve | `auto-approve-workflows` | `pull_request`/`workflow_run`/`schedule` → approves; `workflow_dispatch enable_persistent` → adds `wec:auto-approve` label + sets `[x]`; `workflow_dispatch enable_one_session` → adds `wec:auto-approve-once` | Owner unchecks + human sender → WEC gate removes `wec:auto-approve` label | N/A (approval not reversible; `wec:auto-approve-once` removed after next Copilot session) |
 
 ### 23.3 Per-Workflow Gate-Check Step
 
@@ -2401,3 +2425,148 @@ This checks:
 - No WEC items have been removed vs canonical template
 
 Agents MUST ensure the WEC block is preserved on every `report_progress` call. The `session_wrapup_autofix.py` `fix_pr_body_checkboxes()` function handles automatic repair.
+
+### 23.6 Owner-Flag Protection — Bot-Reset Guard (S302)
+
+**Problem:** Every `report_progress` call rewrites the entire PR body. If the agent omits `[x] auto-approve-workflows`, the WEC gate fires on `pull_request: [edited]`, detects `newly_unchecked: ["auto-approve-workflows"]`, and the flag is silently lost. All subsequent auto-approve sweeps then skip because the PR body shows `[ ]`.
+
+**Fix (S302):** Two complementary mechanisms:
+
+#### Mechanism 1 — WEC Gate Body-Restore
+
+`cancel-unchecked` job now runs a `Protect owner-selected flags from bot resets` step immediately after cancellation:
+
+```mermaid
+flowchart LR
+    A["PR body edited\n(pull_request: edited)"] --> B["detect-changes:\nnewly_unchecked = ['auto-approve-workflows']"]
+    B --> C{Sender login\nends with '[bot]'?}
+    C -->|"Yes — bot reset"| D["🛡️ Restore [x] auto-approve-workflows\nvia gh pr edit"]
+    C -->|"No — human owner"| E["✅ Intentional uncheck\n→ Remove wec:auto-approve label"]
+```
+
+- **Bot sender** (login ends in `[bot]`): PR body is fetched, regex replaces `- [ ] auto-approve-workflows` → `- [x] auto-approve-workflows`, and `gh pr edit` pushes the corrected body.
+- **Human sender**: The uncheck is intentional; the `wec:auto-approve` label is removed so future auto-approve sweeps also respect the owner's intent.
+
+#### Mechanism 2 — Persistent Label `wec:auto-approve`
+
+When `dispatch-checked` detects `auto-approve-workflows` as `newly_checked`:
+- Creates label `wec:auto-approve` (color `0075ca`) in the repo if absent
+- Adds it to the PR
+
+`auto-approve-workflows.yml` now checks **both** the label AND the PR body checkbox:
+```
+enabled = (label 'wec:auto-approve' present) OR (label 'wec:auto-approve-once' present) OR (checkbox [x])
+```
+
+The label survives all PR body rewrites. Even if the body-restore step hasn't fired yet (race window between push and WEC gate run), the label ensures the next schedule sweep or `workflow_run` trigger still approves pending runs.
+
+#### Owner Disable Path
+
+To fully disable auto-approve:
+1. Uncheck `[ ] auto-approve-workflows` in the PR body (as human — not via agent)  
+2. WEC gate detects human sender → removes `wec:auto-approve` label  
+3. Next schedule sweep finds no label → skips the PR
+
+---
+
+## 24. Auto-Approve Overhaul — Schedule, Labels & Owner Protection (S302)
+
+> **Added:** S302 (2026-04-06)  
+> **Workflow:** `.github/workflows/auto-approve-workflows.yml`  
+> **Supporting:** `.github/workflows/workflow-execution-gate.yml` (`cancel-unchecked` + `dispatch-checked` jobs)
+
+### 24.1 Four Activation Modes
+
+| Mode | How to Enable | Persists Across PR Body Rewrites? | Auto-Disables? |
+|------|--------------|----------------------------------|----------------|
+| **Persistent** | Check `[x] auto-approve-workflows` in PR body OR run `workflow_dispatch` with `enable_persistent=true` | ✅ Yes — `wec:auto-approve` label | ❌ Never (until owner disables) |
+| **One-session** | Run `workflow_dispatch` with `enable_one_session=true` | ✅ Yes — `wec:auto-approve-once` label | ✅ Yes — removed after next Copilot session |
+| **Per-push** | Push a commit while `[x]` or label is set | ✅ Yes (label) | ❌ Never |
+| **Schedule sweep** | Automatic — every 20 min | N/A — scans by label | N/A |
+
+### 24.2 Workflow Trigger Map
+
+```mermaid
+flowchart TD
+    subgraph TRIGGERS ["Triggers"]
+        T1["workflow_run\n(Copilot session completed)"]
+        T2["pull_request\n(synchronize / opened / reopened)"]
+        T3["schedule\n*/20 * * * *"]
+        T4["workflow_dispatch\n• pr_number (required)\n• enable_persistent (bool)\n• enable_one_session (bool)\n• dry_run (bool)"]
+    end
+
+    T1 --> RESOLVE
+    T2 --> RESOLVE
+    T3 --> SCHED_FIND
+    T4 --> CONFIGURE
+
+    CONFIGURE["Step 0: Configure Mode\nworkflow_dispatch only\nenable_persistent: add wec:auto-approve label\nupdate PR body x\nenable_one_session: add wec:auto-approve-once label"]
+    CONFIGURE --> RESOLVE
+
+    SCHED_FIND["Find ALL open PRs with\nwec:auto-approve OR\nwec:auto-approve-once label\nvia Issues API"]
+    SCHED_FIND -->|PR list found| MULTI_APPROVE
+    SCHED_FIND -->|No labeled PRs| DONE_SKIP
+
+    RESOLVE["Step 1: Resolve PR and HEAD SHA\nworkflow_run: WR_PR_NUMBER / WR_HEAD_SHA\npull_request: PR event fields\nworkflow_dispatch: INPUT_PR + API fetch"]
+    RESOLVE --> CHECK
+
+    CHECK["Step 2+3 via github-script\nisEnabled check\nwec:auto-approve label? yes\nwec:auto-approve-once label? yes\nx checkbox in PR body? yes\nNone: skip"]
+    CHECK -->|Enabled| APPROVE
+    CHECK -->|Not enabled| DONE_SKIP
+
+    MULTI_APPROVE["Step 2+3 loop over PR list\nFor each PR: getHeadSha then approvePR"]
+    MULTI_APPROVE --> APPROVE
+
+    APPROVE["Paginate action_required runs\nfor HEAD SHA\napproveWorkflowRun for each"]
+    APPROVE --> CLEANUP
+
+    CLEANUP["Step 4: One-session cleanup\nworkflow_run trigger only\nIf wec:auto-approve-once label:\nRemove label\nUncheck PR body auto-approve-workflows"]
+    CLEANUP --> DONE
+
+    DONE["Job summary written"]
+    DONE_SKIP["Nothing to do"]
+
+    style CONFIGURE fill:#cce5ff,stroke:#004085
+    style SCHED_FIND fill:#e2d9f3,stroke:#6f42c1
+    style MULTI_APPROVE fill:#e2d9f3,stroke:#6f42c1
+    style CLEANUP fill:#fff3cd,stroke:#856404
+    style DONE fill:#d4edda,stroke:#28a745
+```
+
+### 24.3 Labels Reference
+
+| Label | Color | Created by | Removed by | Meaning |
+|-------|-------|-----------|-----------|---------|
+| `wec:auto-approve` | `0075ca` | WEC `dispatch-checked` job OR `workflow_dispatch enable_persistent` | WEC `cancel-unchecked` job (human sender only) OR manual | Persistent opt-in: approve on every trigger |
+| `wec:auto-approve-once` | `0075ca` | `workflow_dispatch enable_one_session` | `auto-approve-workflows.yml` Step 4 (after next Copilot session) OR manual | Single-session opt-in: approve once, then self-disable |
+
+### 24.4 `workflow_dispatch` Inputs Reference
+
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `pr_number` | string | *(required)* | PR number to target |
+| `enable_persistent` | boolean | `false` | Add `wec:auto-approve` label + tick `[x]` in PR body |
+| `enable_one_session` | boolean | `false` | Add `wec:auto-approve-once` label (auto-disables after next session) |
+| `dry_run` | boolean | `false` | List `action_required` runs without approving them |
+
+### 24.5 Owner-Flag Protection Flow (S302)
+
+When Copilot's `report_progress` updates the PR body and accidentally unchecks `auto-approve-workflows`, the `workflow-execution-gate.yml` `cancel-unchecked` job fires and:
+
+1. Checks `github.event.sender.login` — if it ends with `[bot]` → **bot reset detected**
+2. Fetches current PR body, regex-restores `- [x] auto-approve-workflows`, calls `gh pr edit`
+3. Logs: `🛡️ Bot (copilot-swe-agent[bot]) reset protected flag 'auto-approve-workflows' — restoring...`
+
+If sender does NOT end with `[bot]` (owner intentionally unchecked):
+1. Removes `wec:auto-approve` label from the PR
+2. Next schedule sweep and `workflow_run` will see no label → skip
+
+### 24.6 Concurrency Strategy
+
+```
+group: auto-approve-workflows-<schedule|pr_number|run_id>
+cancel-in-progress: false  # never kill an in-progress approval sweep
+```
+
+- Schedule runs share group `auto-approve-workflows-schedule` → at most one schedule sweep active at a time
+- Per-PR runs are grouped by PR number → no parallel approval sweeps for the same PR

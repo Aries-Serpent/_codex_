@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S302 — PR #3897 — 2026-04-06)
+- `auto-approve-workflows.yml`: Added `schedule: */20 * * * *` trigger — scans ALL open PRs with `wec:auto-approve` OR `wec:auto-approve-once` labels every 20 minutes and approves pending runs
+- `auto-approve-workflows.yml`: Added `enable_persistent` / `enable_one_session` / `dry_run` boolean inputs to `workflow_dispatch`; `pr_number` is now required
+- `auto-approve-workflows.yml`: Persistent `wec:auto-approve` label + one-session `wec:auto-approve-once` label mechanism — auto-approve survives PR body rewrites
+- `auto-approve-workflows.yml`: Step 4 one-session cleanup — removes `wec:auto-approve-once` label and unchecks PR body after Copilot session completes
+- `workflow-execution-gate.yml`: `cancel-unchecked` job — bot-reset guard restores `[x] auto-approve-workflows` when a bot (sender login ends in `[bot]`) accidentally unchecks it via PR body update
+- `workflow-execution-gate.yml`: `dispatch-checked` job — adds `wec:auto-approve` label when owner checks the flag for the first time
+- `docs/ci/PR_LIFECYCLE.md`: Bumped to v2.3.0; added §24 Auto-Approve Overhaul; updated §8 Mermaid diagram, §14.1 gap analysis, §16.1 trigger map, §23.2 WEC table, §23.6 owner protection
 ### Fixed (S301 — PR #3897 — 2026-04-06)
 - **`CHANGELOG.md`** — Added `<!-- pragma: allowlist secret -->` inline comment to line containing `CODEX_MASTER_KEY` reference. The S300 CHANGELOG entry shifted this pre-existing false-positive from line 29 to line 37, causing `detect-secrets` to fail Fast Validation (the `.secrets.baseline` had no entry for CHANGELOG.md as that line was previously outside the scanned window). Fix: inline pragma suppresses the false positive.
 - **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** — Stripped trailing whitespace from line 17990 (`   ` → empty line), which `sync-tracked-files` hook would have mutated in CI, causing a second Fast Validation failure.

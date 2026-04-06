@@ -18382,3 +18382,53 @@ No `report_progress` call is permitted without completing all 6 steps above.
 - detect-secrets: Passed (exit 0) ✅
 
 ---
+
+## SESSION SUMMARY — 2026-04-06T18:33Z S302 (PR #3897 — auto-approve-workflows schedule+dispatch overhaul + owner-flag protection + PR_LIFECYCLE v2.3.0)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** New comment_new `4194192340` (CI Rescue on `178d54be92ae`) reviewed ✅
+- [x] **0b.** New requirement loaded: persistent `auto-approve-workflows` selection that MUST NOT reset ✅
+- [x] **0c.** CODEBASE_AGENCY_POLICY.md §0, AGENT_ACCOUNTABILITY_REPORT.md (S299–S301), all memories loaded ✅
+- [x] **0d.** Root cause traced: `report_progress` PR body rewrite clears `[x]` → WEC gate detects `newly_unchecked` → auto-approve skips on all future pushes ✅
+- [x] **0e.** Two-layer fix designed: (1) bot-reset guard in WEC gate, (2) persistent `wec:auto-approve` label ✅
+- [x] **0f.** All three new requirements addressed: persistent protection, manual dispatch with enable/disable, schedule sweep every 20 min ✅
+
+### What Changed
+
+1. **`auto-approve-workflows.yml`** — Complete overhaul (S302):
+   - Added `schedule: */20 * * * *` trigger — every 20 min, finds ALL open PRs with `wec:auto-approve` OR `wec:auto-approve-once` labels via Issues API and approves pending runs
+   - Updated `workflow_dispatch` inputs: `pr_number` (required), `enable_persistent` (boolean), `enable_one_session` (boolean), `dry_run` (boolean)
+   - Step 0 (new): configure persistent/one-session mode — creates labels, adds to PR, updates PR body
+   - Step 1 (enhanced): handles both single-PR path (all non-schedule events) and multi-PR path (schedule)
+   - Step 2+3 (refactored): single `github-script@v7` handles enable check (label OR checkbox) + approval loop for all target PRs
+   - Step 4 (new): one-session cleanup — on `workflow_run` trigger, if `wec:auto-approve-once` label present → remove label + uncheck PR body
+   - `permissions`: added `pull-requests: write` for label management
+
+2. **`workflow-execution-gate.yml`** — Two new steps:
+   - `cancel-unchecked` job: `Protect owner-selected flags from bot resets` — detects `github.event.sender.login` ending in `[bot]`; restores `[x] auto-approve-workflows` via `gh pr edit`; if human sender → removes `wec:auto-approve` label
+   - `dispatch-checked` job: `Persist owner-selected flags as labels` — when `auto-approve-workflows` is newly checked, creates `wec:auto-approve` label in repo and adds to PR
+   - `permissions`: both jobs updated to `pull-requests: write`
+
+3. **`docs/ci/PR_LIFECYCLE.md`** — v2.2.0 → v2.3.0:
+   - §2.6 auto-triggered table: added `auto-approve-workflows.yml` with all 4 triggers
+   - §8 Mermaid Lifecycle Diagram: added WEC gate owner-flag protection node, schedule sweep subgraph, `auto-approve-workflows` node in post-session flow
+   - §14.1 Gap Analysis: 3 new S302 rows (schedule, owner protection, one-session)
+   - §16.1 trigger→comment map: added `auto-approve-workflows.yml` row
+   - §23.1/§23.2: updated header + auto-approve row in WEC table
+   - §23.6 (new): Owner-Flag Protection — bot-reset guard + label persistence Mermaid diagram + owner disable path
+   - §24 (new): Auto-Approve Overhaul — 6 subsections covering modes, trigger map, labels, dispatch inputs, protection flow, concurrency
+
+4. **`CHANGELOG.md`** — S302 entry: 7 bullet points
+
+### Impact
+- `auto-approve-workflows` selection in the PR body is now **permanently protected** against bot resets. Once the owner checks `[x]`, the WEC gate adds `wec:auto-approve` label; even if the PR body is rewritten by an agent, the restore step fires within seconds and the label ensures the next schedule sweep approves regardless.
+- Schedule sweep runs every 20 min — no missed approval windows between pushes.
+- One-session mode enables owners to approve a single Copilot session without leaving auto-approve permanently on.
+- Manual `workflow_dispatch` provides full control: persistent, one-session, or dry-run inspection.
+
+### Validators
+- ruff: 0 violations ✅
+- YAML (both workflows): valid ✅
+- CHANGELOG.md detect-secrets: no new secrets ✅
+
+---

@@ -82,7 +82,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       actions: write
-      pull-requests: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -107,6 +107,58 @@ jobs:
             --head-sha "${HEAD_SHA}" \
             --repo "${REPO}"
 
+      # ── Owner-protection: restore flags reset by bots / remove label if owner unchecked ──
+      - name: Protect owner-selected flags from bot resets
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          NEWLY_UNCHECKED: ${{ needs.detect-wec-changes.outputs.newly_unchecked }}
+          SENDER_LOGIN: ${{ github.event.sender.login }}
+        run: |
+          # Determine whether the edit came from an automated bot or a human owner.
+          # Bot logins end in "[bot]" (e.g. "copilot-swe-agent[bot]", "github-actions[bot]").
+          IS_BOT=false
+          if printf '%s' "${SENDER_LOGIN}" | grep -qE '\[bot\]$'; then
+            IS_BOT=true
+          fi
+
+          # Flags that must NEVER be silently reset by bots once the owner has set them.
+          PROTECTED="auto-approve-workflows"
+
+          for FLAG in ${PROTECTED}; do
+            # Check whether this flag was in the unchecked list (single-line Python avoids YAML indent issues)
+            WAS_RESET=$(python3 -c "import json,sys; items=json.loads(sys.argv[1]); print('true' if sys.argv[2] in items else 'false')" "${NEWLY_UNCHECKED}" "${FLAG}" 2>/dev/null || echo "false")
+
+            if [ "${WAS_RESET}" != "true" ]; then
+              continue
+            fi
+
+            if [ "${IS_BOT}" = "true" ]; then
+              # Bot accidentally reset a protected flag — restore [x] in PR body.
+              echo "🛡️  Bot (${SENDER_LOGIN}) reset protected flag '${FLAG}' — restoring..."
+              BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json body -q '.body // ""' 2>/dev/null || echo "")
+              if [ -z "${BODY}" ]; then
+                echo "::warning::Could not fetch PR body; cannot restore '${FLAG}'."
+                continue
+              fi
+              printf '%s' "${BODY}" > /tmp/_wec_restore_body.txt
+              # Replace '- [ ] <flag>' with '- [x] <flag>' (single-line Python, no YAML indent issue)
+              python3 -c "import re,sys,os; f=sys.argv[1]; b=open('/tmp/_wec_restore_body.txt').read(); b=re.sub(r'(?m)(^[ \t]*-[ \t]*\[) \]([ \t]+'+re.escape(f)+r')',r'\1x]\2',b); open('/tmp/_wec_restored_body.txt','w').write(b)" "${FLAG}"
+              gh pr edit "${PR_NUMBER}" --repo "${REPO}" \
+                --body "$(cat /tmp/_wec_restored_body.txt)" \
+                && echo "✅ Restored [x] ${FLAG} in PR body (bot reset blocked)." \
+                || echo "::warning::PR body restore failed — please manually re-check [x] ${FLAG}."
+            else
+              # Human owner intentionally unchecked — remove the persistent label too.
+              echo "ℹ️  Owner (${SENDER_LOGIN}) unchecked '${FLAG}' — removing persistent label if present."
+              gh api --method DELETE \
+                "repos/${REPO}/issues/${PR_NUMBER}/labels/wec:auto-approve" \
+                2>/dev/null && echo "✅ Label 'wec:auto-approve' removed." \
+                || echo "ℹ️  Label 'wec:auto-approve' was not present (no-op)."
+            fi
+          done
+
   dispatch-checked:
     name: "Dispatch Newly-Checked Workflows"
     needs: detect-wec-changes
@@ -115,7 +167,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       actions: write
-      pull-requests: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -138,6 +190,37 @@ jobs:
             --pr "${PR_NUMBER}" \
             --head-sha "${{ github.event.pull_request.head.sha }}" \
             --repo "${REPO}"
+
+      # ── Persist owner opt-ins as labels so they survive PR body rewrites ──────
+      - name: Persist owner-selected flags as labels
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          NEWLY_CHECKED: ${{ needs.detect-wec-changes.outputs.newly_checked }}
+        run: |
+          HAS_AUTO=$(python3 -c "import json,sys; items=json.loads(sys.argv[1]); print('true' if 'auto-approve-workflows' in items else 'false')" "${NEWLY_CHECKED}" 2>/dev/null || echo "false")
+
+          if [ "${HAS_AUTO}" != "true" ]; then
+            exit 0
+          fi
+
+          echo "🏷️  Owner checked 'auto-approve-workflows' — adding persistent label 'wec:auto-approve'..."
+
+          # Create label in repo if it doesn't exist yet
+          gh api "repos/${REPO}/labels/wec%3Aauto-approve" &>/dev/null || \
+            gh api --method POST "repos/${REPO}/labels" \
+              -f name="wec:auto-approve" \
+              -f color="0075ca" \
+              -f description="Owner opt-in: auto-approve all pending workflow runs for this PR" \
+              2>/dev/null || true
+
+          # Add label to this PR (idempotent — safe to call even if already present)
+          gh api --method POST "repos/${REPO}/issues/${PR_NUMBER}/labels" \
+            -f 'labels[]=wec:auto-approve' \
+            2>/dev/null \
+            && echo "✅ Label 'wec:auto-approve' added to PR #${PR_NUMBER}." \
+            || echo "ℹ️  Label already present or could not be added (non-fatal)."
 
   validate-wec-integrity:
     name: "Validate WEC Template Integrity"
