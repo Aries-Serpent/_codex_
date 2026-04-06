@@ -3,7 +3,70 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-06T16:16Z S298-rescue-consolidation
+**Last updated:** 2026-04-06T20:30Z S305-review-vite-yamllint-pages
+
+## SESSION SUMMARY — 2026-04-06T20:30Z S305 (PR #3901 — Review comments, vite bump, yamllint fix, GitHub Pages status)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** `docs/ci/PR_LIFECYCLE.md` v2.3.0 loaded ✅
+- [x] **0d.** All `comment_new` items reviewed — 6 blocking items identified ✅
+- [x] **0e.** CI triage issue #3875 sourced — yamllint + sync-tracked-files root cause identified ✅
+- [x] **0f.** PR review threads addressed — Impact Score correction + PR-3901-followup.md Files Modified fix ✅
+- [x] **0g.** `ruff check src/ tests/ --fix` → 0 violations ✅
+- [x] **0h.** `mypy_baseline.py --require-baseline` → 104 errors (= baseline 104) ✅
+- [x] **0i.** Agency Policy §0: all issues fixed immediately, no deferrals ✅
+
+### Objectives Completed
+- [x] `AGENT_ACCOUNTABILITY_REPORT.md` S304 Impact Score corrected (3 → 7 files) ✅
+- [x] `PR-3901-followup.md` "Files Modified" updated to reflect actual files changed ✅
+- [x] `cognitive_app/package.json` — vite `^7.2.6` → `^7.3.2` (cherry-pick from PR #3902) ✅
+- [x] `cognitive_app/package-lock.json` — esbuild 0.25.12 → 0.27.7 (27 packages) + vite 7.2.6 → 7.3.2 ✅
+- [x] `auto-approve-workflows.yml` — `[colons]` yamllint error-level violations fixed (env alignment spaces removed) ✅
+- [x] `sync_tracked_files.py --fix` — `.secrets.baseline` CODEX_MANIFEST hash re-synced (P22 drift resolved) ✅
+- [x] `docs/status/GITHUB_PAGES_STATUS.md` — full refresh from 2026-03-14 → 2026-04-06 ✅
+- [x] `CHANGELOG.md` updated with S305 entry ✅
+- [x] `PR_LIFECYCLE.md` Appendix updated — yamllint `[colons]` error pattern documented ✅
+- [x] All validators green: `yamllint .github/workflows/ .github/misc/` → exit 0 ✅
+
+### Root Cause: yamllint CI Failure
+The `[colons] too many spaces after colon` violations in `.github/workflows/auto-approve-workflows.yml` lines 233–238 were error-level (from `extends: default`) and caused yamllint to exit non-zero, failing Fast Validation. The alignment spaces (`MODE:       ...`, `PR_LIST:    ...`) were cosmetic formatting that violated the `colons: max-spaces-after: 1` rule. Fix: collapse to single-space alignment per YAML convention.
+
+### Impact Score
+- Files modified: 8 (`cognitive_app/package.json`, `cognitive_app/package-lock.json`, `.github/workflows/auto-approve-workflows.yml`, `CODEX_MANIFEST.json`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `.github/copilot-prompts/active/PR-3901-followup.md`, `docs/status/GITHUB_PAGES_STATUS.md`, `CHANGELOG.md`)
+- CI gates fixed: Fast Validation (yamllint exit 0), sync-tracked-files (P22 hash drift)
+- Security: vite 7.2.6 → 7.3.2 (no known CVEs; absorbs PR #3902)
+- Deferral Language Gate: 0 violations
+
+---
+
+## SESSION SUMMARY — 2026-04-06T19:30Z S304 (PR #3901 — Post-Merge Hotfix Sweep after PR #3897)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** Bot-posted comments reviewed — Comment Review Gate: 1 blocking item (BRANCH_REBASE_REQUIRED auto-fixed by rebase) ✅
+- [x] **0d.** CI validators run before commit: `ruff check src/ tests/ --fix` → 0 violations; `mypy_baseline.py --require-baseline` → 104 errors (= baseline) ✅
+- [x] **0e.** Agency Policy §0: all issues fixed immediately, no deferrals ✅
+
+### Objectives Completed
+- [x] `ruff check src/ tests/ --fix` — 0 violations post-merge ✅
+- [x] `mypy_baseline.py --require-baseline` — 104 errors = baseline 104 ✅
+- [x] `.secrets.baseline` verified — 6 pre-existing entries, no new flags ✅
+- [x] `docs/ROADMAP.md` — "Last Updated" bumped to 2026-04-06 (sync-tracked-files gate) ✅
+- [x] `wec_enforcer.py` HTTP-204 fix confirmed present (line 87: `raw.strip() else {}`) ✅
+- [x] `session_logger.log_event()` called for PR #3897 merge event ✅
+- [x] `AGENT_ACCOUNTABILITY_REPORT.md` updated with S304 entry ✅
+- [x] `CHANGELOG.md` updated with S304 W entry ✅
+- [x] Branch rebase completed (rebased onto origin/0D_base_) ✅
+
+### Impact Score
+- Files modified: 7 (`docs/ROADMAP.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`, `CODEX_MANIFEST.json`, `.secrets.baseline`, `.github/copilot-prompts/active/PR-3901-followup.md`, `.github/copilot-prompts/active/PR-3902-followup.md`)
+- CI gates addressed: REQ-4, REQ-5, comment-review-gate, sync-tracked-files
+- Deferral Language Gate: 0 violations
+
+---
 
 ## SESSION SUMMARY — 2026-04-06T15:58Z S-fix-compiled-bot-feedback-marker (PR #3897 — Fix SKIP_BODY_MARKERS for SHA-suffixed compiled-bot-feedback)
 
@@ -18474,5 +18537,52 @@ The CI rescue system reported 35 "failing" checks on commit `1e738ea8bb11`. Inve
 
 ### Impact
 PR #3897 is **merge-ready**. All S298–S303 objectives delivered. Post-merge follow-up prompt embedded for codebase-wide and Cognitive Brain objectives.
+
+---
+
+## SESSION SUMMARY — 2026-04-06T19:25Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3901)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #3901 (SHA: `db4400a6`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/24047142099
+4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---

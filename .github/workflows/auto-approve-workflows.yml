@@ -230,12 +230,12 @@ jobs:
         if: steps.resolve.outputs.skip != 'true'
         uses: actions/github-script@v7
         env:
-          MODE:       ${{ steps.resolve.outputs.mode }}
-          PR_LIST:    ${{ steps.resolve.outputs.pr_list || '' }}
-          PR_NUMBER:  ${{ steps.resolve.outputs.pr_number || '' }}
-          HEAD_SHA:   ${{ steps.resolve.outputs.head_sha || '' }}
-          DRY_RUN:    ${{ steps.resolve.outputs.dry_run }}
-          REPO:       ${{ github.repository }}
+          MODE: ${{ steps.resolve.outputs.mode }}
+          PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}
+          PR_NUMBER: ${{ steps.resolve.outputs.pr_number || '' }}
+          HEAD_SHA: ${{ steps.resolve.outputs.head_sha || '' }}
+          DRY_RUN: ${{ steps.resolve.outputs.dry_run }}
+          REPO: ${{ github.repository }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |

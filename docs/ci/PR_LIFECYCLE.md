@@ -681,6 +681,7 @@ These patterns appear repeatedly in CI triage reports. Each has a documented fix
 |----------|-------------|---------|-----|
 | Validation Pipeline / Fast Validation | `detect-secrets` hook `TypeError: No such GitLabTokenDetector` | P23 (plugin mismatch) | `python scripts/ci/auto_fix_common_issues.py --pattern 23` |
 | Validation Pipeline / Fast Validation | `sync-tracked-files: files were modified by hook` | P22 (tracked file drift) | `python scripts/ci/sync_tracked_files.py --fix && git add -A && git commit` |
+| Validation Pipeline / Fast Validation | `Run yamllint` exit 1 — `[colons] too many spaces after colon` | Yamllint `[colons]` error in workflow env block | Remove alignment spaces from `env:` blocks in `.github/workflows/*.yml` — `key: value` not `key:   value` (S305) |
 | agent-auth-delegation / Cognitive Pre-flight | `Verify CHANGELOG.md updated in last commit` | CHANGELOG gate | Add `### Fixed (SN)` entry to `## [Unreleased]` in `CHANGELOG.md` before committing |
 | mypy Baseline Gate | `Fail if regression detected` | `.mypy_baseline` stale | Update with CI isolated-venv per P19-ENV-001 |
 | Resilient Validation Suite / Sharded tests | `startup_failure` (no error log) | Pre-existing infra | Runner never starts for Data Quality/Progressive Validation/Rust-Python — not a code failure |
