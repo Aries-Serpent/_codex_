@@ -17715,3 +17715,20 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session Entry — 2026-04-06 (Iterative Self-Healing: dependabot/pip/cachetools-7.0.5)
+
+### Actions Taken
+1. Investigated failing Validation Pipeline run 24026365362.
+2. Root cause: `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` had two broken
+   internal links using repo-root-relative paths (`docs/ci/...` and `.codex/docs/...`)
+   instead of file-relative paths from `docs/reference/`.
+3. Fixed both links to use correct relative paths:
+   - `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` → `../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md`
+   - `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` → `../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md`
+4. Verified `python .github/scripts/validate-links.py --fail-on-errors` reports 0 errors.
+
+### Policy Compliance
+- §0: Reviewed all failing CI checks before making changes.
+- §2/§3a: Fixed issue regardless of origin (pre-existing broken links in bumped PR).
+- No deferral language used.
