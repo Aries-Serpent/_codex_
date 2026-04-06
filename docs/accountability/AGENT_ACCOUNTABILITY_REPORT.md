@@ -18143,3 +18143,35 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## SESSION SUMMARY — 2026-04-06T17:18Z S299 (PR #3897 — WEC gate pagination fix + PR_LIFECYCLE alignment)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** `docs/ci/PR_LIFECYCLE.md` loaded ✅
+- [x] **0d.** `docs/workflows/PR_COMMENT_LIFECYCLE.md` loaded ✅
+- [x] **0e.** CI Failure Triage Report #3875 loaded and analysed ✅
+- [x] **0f.** All comment_new items reviewed: 4193389018, 4193390191, 4193395361, 4193753325 ✅
+- [x] **0g.** Root cause of WEC duplicate comment confirmed: GraphQL `comments(first:100)` pagination limit ✅
+
+### What Changed
+1. **`.github/workflows/workflow-execution-gate.yml`** — Both upsert paths (`post-gate-summary` bash step + `fast-forward` Python step) replaced `gh pr view --json comments` (GraphQL first-100 limit) with paginated Python REST API loop. Scans all comment pages; anchor `<!-- workflow-execution-gate:{pr} -->` always found. Eliminates duplicate gate comments on PRs with >100 total comments. actionlint: 0 violations. YAML: valid.
+2. **`docs/ci/PR_LIFECYCLE.md`** — v2.1.0→v2.2.0: §14.1 new row for WEC duplicate fix; §16.1 added `workflow-execution-gate.yml` to trigger→comment map (T=1, U=1, marker documented); §23 added §23.0 pagination fix documentation.
+3. **`CHANGELOG.md`** — S299 Fixed entry added under `[Unreleased]`.
+
+### Root-Cause Notes
+- `gh pr view --json comments` uses GraphQL `pullRequest.comments(first:100)` — oldest-first, hard limit 100. PR #3897 accumulated >100 comments. The WEC anchor (a recent post) was at position >100, invisible to the dedup check, causing a second identical comment to be created 20 seconds after the first.
+- Fix uses paginated REST `GET /repos/{owner}/{repo}/issues/{pr}/comments?per_page=100&page=N` which returns ALL pages. Same pattern already used in `post_rescue_comment.py`.
+
+### Lessons Learned
+- Every upsert that searches PR comments must use paginated REST, not `gh pr view --json comments`. Active PRs routinely exceed 100 comments.
+- `report_progress` `prDescription` MUST always include the full WEC block copied verbatim from the current PR body. Stored as memory for all future sessions.
+- WEC block must be reconstructed from original PR body if it has been wiped by a previous bad `report_progress` call.
+
+### Impact Score
+- Files changed: 3 (`workflow-execution-gate.yml`, `docs/ci/PR_LIFECYCLE.md`, `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI gates unblocked: WEC gate duplicate eliminated; actionlint clean
+- Deferral Language Gate: 0 violations
+
+---

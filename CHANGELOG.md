@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S299 — PR #3897 — 2026-04-06)
+- **`workflow-execution-gate.yml`** — `post-gate-summary` and `fast-forward` upsert lookups replaced: `gh pr view --json comments` (GraphQL `comments(first:100)`, misses anchors beyond position 100 on PRs with >100 comments) → paginated Python REST API loop (`/issues/{pr}/comments?per_page=100&page=N`). Eliminates duplicate `<!-- workflow-execution-gate:{pr} -->` comments (observed: IDs 4193719542 + 4193722845 on PR #3897). Both upsert paths fixed.
+- **`docs/ci/PR_LIFECYCLE.md`** — v2.1.0→v2.2.0: §14.1 gap analysis table updated with WEC duplicate comment fix entry; §16.1 trigger→comment map now includes `workflow-execution-gate.yml` row with correct T=1/U=1 and marker; §23 updated with §23.0 pagination fix documentation.
+- **`scripts/ci/ci_rescue.py`** — explicit `isinstance` guard on rescue comment payload + 3-tier priority docstring (S298 code review items from PR #3897).
+
 ### Fixed (auto-update — PR #3897)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3897 (SHA `9d638dc2`) at 2026-04-06T17:11Z [auto-generated]
 

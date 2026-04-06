@@ -1,8 +1,8 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 2.1.0  
-> **Date:** 2026-04-07 (S303/S304 — discussion-cleanup CB App token; post-accountability CB App token; discussion-response-bridge RC-3)  
-> **Previous:** 2.0.0 (S299 — P2-A session-done upsert dedup; RC-5 build_comment_context; RFC-001 skill-agent binding)  
+> **Version:** 2.2.0  
+> **Date:** 2026-04-06 (S299 — WEC gate comment pagination fix; §14.1/§16.1/§23 aligned)  
+> **Previous:** 2.1.0 (S303/S304 — discussion-cleanup CB App token; post-accountability CB App token; discussion-response-bridge RC-3)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (55 failures / 14 workflows, 2026-04-03)
 
@@ -1086,6 +1086,7 @@ in §13, and the planned improvements to close each gap.
 | **`escalate` job posts standalone comment (separate from rescue thread)** | `iterative-self-healing-ci.yml escalate` job posted `<!-- self-healing-escalation -->` as a new PR comment separate from the canonical rescue thread | Use `post_rescue_comment.py` to append to existing `<!-- ci-rescue-sha:{pr}:{sha} -->` thread | ✅ Fixed S298 |
 | **`copilot-agent-session-done.yml` duplicate comments (P2-A)** | `createComment` (not upsert-by-marker) → each parallel watcher job completion created a new comment; 3–4 duplicates per push | Replaced with upsert-by-marker pattern using `<!-- session-done-dedup:{sha12} -->` | ✅ Fixed S299 |
 | **`COPILOT_ACTIVE_SESSION` TTL 4h → 1h (P5-C)** | 4h TTL meant a queued session waited up to 4 hours for the active-session lock to clear | TTL reduced to 3600 s (1 h) — the practical maximum session length | ✅ Fixed S300 |
+| **`workflow-execution-gate.yml` duplicate gate comments** | `post-gate-summary` and `fast-forward` jobs used `gh pr view --json comments` (GraphQL `comments(first:100)`) to find existing `<!-- workflow-execution-gate:{pr} -->` anchor — when PR has >100 comments the anchor is beyond position 100, dedup check returns empty, a second comment is created | Both upsert lookups replaced with paginated REST API Python loop (`/issues/{pr}/comments?per_page=100&page=N`) that scans ALL pages; anchor always found regardless of thread depth | ✅ Fixed S299 |
 
 ### 14.2 Automation Cascade (Improved — S295)
 
@@ -1386,6 +1387,7 @@ ordered by impact. Columns: **T** = create, **U** = upsert, **🤖** = posts `@c
 | `chatops_copilot_trigger.yml` | `issue_comment` | 1 | 0 | ✅ | `issue_comment` event filter |
 | `copilot-review-responder.yml` | `pull_request_review`, `issue_comment` | 1 | 0 | ✅ | Review event filter |
 | `validate.yml` | `pull_request`, `schedule`, `workflow_dispatch` | 1 | 0 | ✅ | `<!-- root-org-validation-v1 -->` |
+| `workflow-execution-gate.yml` | `workflow_dispatch`, `pull_request_review`, `pull_request: [edited]` | 1 | 1 | — | `<!-- workflow-execution-gate:{pr} -->` (paginated REST upsert — S299) |
 
 ---
 
@@ -2301,10 +2303,20 @@ flowchart LR
 
 ## 23. WEC Trigger / Cancel Model
 
-> **Added:** S-3876 (2026-04-05)  
+> **Added:** S-3876 (2026-04-05) | **Updated:** S299 (2026-04-06 — pagination fix)  
 > **Script:** `scripts/ci/wec_enforcer.py`  
 > **Workflow:** `.github/workflows/workflow-execution-gate.yml`  
 > **Problem solved:** WEC checkboxes were read-only signals — checking `[x]` did not actually start the workflow; unchecking `[ ]` did not cancel any in-progress run.
+
+### 23.0 Upsert Comment Deduplication (S299 fix)
+
+`post-gate-summary` and `fast-forward` jobs post/update the `<!-- workflow-execution-gate:{pr} -->` anchor comment. Previously both used `gh pr view --json comments` which calls GraphQL `comments(first:100)` — returning only the **oldest 100** comments. On PRs with >100 comments the anchor (a recent comment) falls beyond position 100, the dedup check returns empty, and a **duplicate comment is created**.
+
+**Fix (S299):** Both upsert lookups now use a paginated Python REST API loop:
+```
+GET /repos/{owner}/{repo}/issues/{pr}/comments?per_page=100&page=N
+```
+The loop advances pages until `len(page) < 100`, scanning every comment for the marker. The anchor is always found regardless of how many comments the PR has accumulated.
 
 ### 23.1 How It Works
 
