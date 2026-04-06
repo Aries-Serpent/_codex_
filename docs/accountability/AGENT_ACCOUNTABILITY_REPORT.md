@@ -3,7 +3,31 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-05T23:17Z S-3876-mermaid
+**Last updated:** 2026-04-06T15:58Z S-fix-compiled-bot-feedback-marker
+
+## SESSION SUMMARY — 2026-04-06T15:58Z S-fix-compiled-bot-feedback-marker (PR #3897 — Fix SKIP_BODY_MARKERS for SHA-suffixed compiled-bot-feedback)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** Root cause identified: `<!-- compiled-bot-feedback:ae1930d09d3c -->` not matched by `SKIP_BODY_MARKERS` because entry had trailing ` -->` preventing `startswith()` from matching SHA-suffixed form ✅
+- [x] **0d.** CI failure: job 70103036277, run 24038210913, `comment-review-gate.yml` reported BLOCKING=2 due to false positive on `@mbaetiong` compiled-bot-feedback relay comment ✅
+- [x] **0e.** Agency Policy §0: all issues fixed immediately, no deferrals ✅
+
+### What Changed
+1. **`scripts/ci/check_pr_comments.py`** — Changed `SKIP_BODY_MARKERS` entry at line 90 from `"<!-- compiled-bot-feedback -->"` to `"<!-- compiled-bot-feedback"` so the `startswith()` check matches both bare form (`<!-- compiled-bot-feedback -->`) and SHA-suffixed form (`<!-- compiled-bot-feedback:SHA -->`).
+2. **`scripts/ci/pre_session_context.py`** — Made the identical change in `_SKIP_BODY_MARKERS` to keep both files in sync.
+
+### Root-Cause Note
+`copilot-agent-session-done.yml` posts compiled bot-feedback relay comments with a SHA suffix: `<!-- compiled-bot-feedback:ae1930d09d3c -->`. The `SKIP_BODY_MARKERS` tuple in `check_pr_comments.py` had the entry `"<!-- compiled-bot-feedback -->"` which does NOT match the SHA-suffixed form via `startswith()` because the trailing ` -->` prevents prefix matching. This caused the gate to treat the relay comment from `@mbaetiong` as an unaddressed blocking comment, triggering a false gate failure (BLOCKING=2) on PR #3897. The fix is to use the bare prefix `"<!-- compiled-bot-feedback"` which matches all variants.
+
+### Lessons Learned
+- `SKIP_BODY_MARKERS` entries matched via `startswith()` must NOT include a closing ` -->` unless the marker is guaranteed to never have content after the prefix.
+- `pre_session_context.py` mirrors `check_pr_comments.py`'s skip markers — both files must be updated together.
+
+### Impact Score
+- Files changed: 2 (`scripts/ci/check_pr_comments.py`, `scripts/ci/pre_session_context.py`)
+- CI gates unblocked: Comment Review Gate on PR #3897 (BLOCKING=2 → BLOCKING=0 on next scan)
 
 ## SESSION SUMMARY — 2026-04-05T23:17Z S-3876-mermaid (PR #3876 — Mermaid maps + CI gate verification)
 

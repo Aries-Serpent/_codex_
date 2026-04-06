@@ -286,7 +286,7 @@ _SKIP_BODY_MARKERS = (
     "<!-- workflow-execution-gate:",
     "<!-- session-requirements-pending -->",
     "<!-- pr-followup-prompt-generated -->",
-    "<!-- compiled-bot-feedback -->",
+    "<!-- compiled-bot-feedback",
     "<!-- session-done-retrigger -->",
     "<!-- session-done-loop-break -->",
     "<!-- root-org-validation-v1 -->",
