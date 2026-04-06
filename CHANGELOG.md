@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (PR #3886 — transformers 5.4.0→5.5.0 dependency review, 2026-04-06)
+- **`requirements/base.txt`, `requirements/lock.txt`, `requirements-ml-cpu.txt`, `requirements/lock-ml.txt`**: Bumped `transformers` from 5.4.0 to 5.5.0 (Dependabot minor-version update). Security review confirmed no CVEs in transformers 5.5.0 per GitHub Advisory Database.
+
 ### Fixed (auto-update — PR #3886)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3886 (SHA `f3756f3b`) at 2026-04-06T09:19Z [auto-generated]
 
