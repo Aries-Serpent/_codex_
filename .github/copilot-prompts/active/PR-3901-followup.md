@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #3901
 
-**PR**: #3901 - PR #3901  
+**PR**: #3901  
 **Branch**: `0D_base_`  
 **Author**: @mbaetiong  
 **Date**: 2026-04-06  

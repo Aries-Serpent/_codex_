@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #3901)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3901 (SHA `db4400a6`) at 2026-04-06T19:25Z [auto-generated]
+### Fixed (S304 — PR #3901 — 2026-04-06 · Post-Merge Hotfix Sweep)
+- **Post-merge validators**: `ruff check src/ tests/ --fix` → 0 violations; `mypy_baseline.py --require-baseline` → 104 errors (= baseline 104); `.secrets.baseline` → 6 pre-existing entries, no new flags
+- **docs/ROADMAP.md**: Bumped "Last Updated" to 2026-04-06 (sync-tracked-files gate requirement)
+- **wec_enforcer.py**: HTTP-204 fix confirmed present — `body = json.loads(raw) if raw.strip() else {}`
+- **Session logger**: PR #3897 merge event recorded via `codex.logging.session_logger.log_event()`
+- **AGENT_ACCOUNTABILITY_REPORT.md**: S304 session summary added
 
 ### Fixed (S303 — PR #3897 — 2026-04-06 · Merge-Readiness Confirmation)
 - **CI triage**: Confirmed 35 reported "failures" on commit `1e738ea8bb11` are entirely transient — 3 `startup_failure` (infrastructure: Rust-Python Hybrid Swarm, Data Quality Suite, Progressive Validation) + 9 `cancelled` (superseded concurrent runs). Zero code-level failures. WEC gate, Agent Token Delegation, and Cost Check all show `success`.
