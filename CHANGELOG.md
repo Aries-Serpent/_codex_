@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S305 — PR #3901 — 2026-04-06 · Review comments + vite bump + yamllint + GitHub Pages status)
+- **cognitive_app/package.json**: vite bumped `^7.2.6` → `^7.3.2` (absorbs PR #3902 — closes #3902)
+- **cognitive_app/package-lock.json**: esbuild `0.25.12` → `0.27.7` (27 packages) + vite `7.2.6` → `7.3.2`; esbuild pin in vite deps `^0.25.0` → `^0.27.0`
+- **`.github/workflows/auto-approve-workflows.yml`**: Removed alignment spaces from `env:` block (lines 233–238) — fixes `[colons] too many spaces after colon` yamllint error-level violations; `yamllint .github/workflows/ .github/misc/` now exits 0
+- **`CODEX_MANIFEST.json`**: `.secrets.baseline` CODEX_MANIFEST entry hash re-synced via `sync_tracked_files.py --fix` (P22 drift)
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** S304 Impact Score corrected: 3 files → 7 files (adds `CODEX_MANIFEST.json`, `.secrets.baseline`, `PR-3901-followup.md`, `PR-3902-followup.md`)
+- **`.github/copilot-prompts/active/PR-3901-followup.md`**: "Previous Session Summary › Files Modified" updated from "No files modified" to actual file list (`tmp.md` deleted; other files per commits `628ee6b0` + `1e738ea8`)
+- **`docs/status/GITHUB_PAGES_STATUS.md`**: Full refresh — updated from 2026-03-14 to 2026-04-06; added S304 changes, yamllint fix, vite bump, sync-tracked-files status, CI gate health checklist, known issues table, and corrected cognitive_app row
+
 ### Fixed (S304 — PR #3901 — 2026-04-06 · Post-Merge Hotfix Sweep)
 - **Post-merge validators**: `ruff check src/ tests/ --fix` → 0 violations; `mypy_baseline.py --require-baseline` → 104 errors (= baseline 104); `.secrets.baseline` → 6 pre-existing entries, no new flags
 - **docs/ROADMAP.md**: Bumped "Last Updated" to 2026-04-06 (sync-tracked-files gate requirement)
