@@ -1074,7 +1074,7 @@ sortedcontainers==2.4.0
     # via hypothesis
 soupsieve==2.8
     # via beautifulsoup4
-sqlalchemy==2.0.43
+sqlalchemy==2.0.49
     # via
     #   alembic
     #   mlflow
