@@ -17715,3 +17715,32 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## Session Entry — 2026-04-06T09:46:14Z | PR #3887 Iterative Self-Healing
+
+### Summary
+Fixed broken internal links in `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`
+that caused the Validation Pipeline (run 24026324295) "Validate Internal Doc Links" hook to fail.
+
+### Changes Made
+- **`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`**: Corrected two broken relative links:
+  - `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` → `../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md`
+  - `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` → `../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md`
+
+### Root-Cause Note
+Links were written as if relative to the repository root, but the validator resolves them
+relative to the source file's directory (`docs/reference/`). Correcting to proper relative
+paths fixes the "File not found" errors.
+
+### Compliance
+- Per CODEBASE_AGENCY_POLICY.md §0: reviewed all failing CI checks before applying changes.
+- Validate Internal Doc Links: 0 errors after fix (verified locally).
+- No deferral language used.
+
+### Impact Score
+- Files changed: 2 (`GITHUB_VARIABLES_SECRETS_REFERENCE.md`, `AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI gates unblocked: Validation Pipeline / Validate Internal Doc Links hook
+
+---

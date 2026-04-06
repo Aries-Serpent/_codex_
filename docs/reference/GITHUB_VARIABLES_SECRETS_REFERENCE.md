@@ -460,5 +460,5 @@ def encrypt_secret(public_key_b64: str, secret_value: str) -> str:
 - [GitHub CLI Manual](https://cli.github.com/manual/)
 - [GitHub MCP Server README](https://github.com/github/github-mcp-server/blob/main/README.md)
 - [MCP Server Configuration](https://github.com/github/github-mcp-server/blob/main/docs/server-configuration.md)
-- [This repo: GITHUB_API_COPILOT_AGENT_REFERENCE.md](docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md)
-- [This repo: COPILOT_MCP_TOOL_REFERENCE.md](.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md)
+- [This repo: GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md)
+- [This repo: COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md)
