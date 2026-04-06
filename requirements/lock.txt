@@ -2,7 +2,7 @@
 #    uv pip compile pyproject.toml requirements/base.txt --extra dev --extra test --extra ml --extra logging --extra tracking --extra train --extra cli --extra monitoring --extra ops --extra perf --extra tokenizers --extra tokenizer --extra configs --extra dist --python-version 3.12 --output-file requirements/lock.txt
 # Atomic Diff 5 provenance: docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md (dependency locking guidance)
 # Python lock target: 3.12
-absl-py==2.3.1
+absl-py==2.4.0
     # via
     #   rouge-score
     #   tensorboard
@@ -87,7 +87,7 @@ bleach==6.3.0
     # via nbconvert
 blinker==1.9.0
     # via flask
-cachetools==5.5.2
+cachetools==7.0.5
     # via
 faiss-cpu==1.7.4
     # via
@@ -221,7 +221,7 @@ duckdb==1.5.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-dulwich==1.0.0
+dulwich==1.1.0
     # via
     #   dvc-studio-client
     #   scmrepo
@@ -258,7 +258,7 @@ fastapi==0.111.0
     #   codex-ml (pyproject.toml)
     #   mlflow-skinny
     #   ray
-fastapi-cli==0.0.8
+fastapi-cli==0.0.24
     # via fastapi
 fastjsonschema==2.21.2
     # via nbformat
@@ -311,7 +311,7 @@ gitpython==3.1.45
     #   wandb
 google-api-core==2.28.1
     # via opencensus
-google-auth==2.40.3
+google-auth==2.49.1
     # via
     #   databricks-sdk
     #   google-api-core
@@ -353,7 +353,7 @@ httpx==0.28.1
     #   fastapi
     #   jupyterlab
     #   litestar
-huggingface-hub==0.34.4
+huggingface-hub==1.9.0
     # via
     #   accelerate
     #   datasets
@@ -722,7 +722,7 @@ packaging==25.0
     #   transformers
     #   typepy
     #   wandb
-pandas==3.0.1
+pandas==3.0.2
     # via
     #   codex-ml (pyproject.toml)
     #   altair
@@ -873,7 +873,7 @@ pyjwt==2.12.1
     # via codex-ml (pyproject.toml)
 pynvml==13.0.1
     # via codex-ml (pyproject.toml)
-pyparsing==3.2.5
+pyparsing==3.3.2
     # via
     #   dvc
     #   grandalf
@@ -1074,7 +1074,7 @@ sortedcontainers==2.4.0
     # via hypothesis
 soupsieve==2.8
     # via beautifulsoup4
-sqlalchemy==2.0.43
+sqlalchemy==2.0.49
     # via
     #   alembic
     #   mlflow
@@ -1167,7 +1167,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.4.0
+transformers==5.5.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)

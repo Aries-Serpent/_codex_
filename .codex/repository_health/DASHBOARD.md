@@ -1,6 +1,6 @@
 # Repository Health Dashboard
 
-**Last Updated**: 2026-03-16T00:55:36Z  
+**Last Updated**: 2026-04-06T00:56:19Z  
 **Status**: ✅ Operational  
 **Monitoring**: Automated via `monitor_offload_candidates.py`
 
@@ -12,7 +12,7 @@
 |--------|-------|--------|
 | **Repository Size** | 133MB | 🟢 Healthy |
 | **Offload Directory** | 6.1MB | 🟢 Active |
-| **Current Candidates** | 2 files (22.77MB) | 🟡 Review Needed |
+| **Current Candidates** | 1 file (1.14MB) | 🟡 Review Needed |
 | **Phase** | 22.1 (Automated Organization) | 🔄 In Progress |
 | **Last Offload** | 2026-01-26 (Phase 21.2) | ✅ Complete |
 
@@ -64,32 +64,26 @@ Reduction:  ~5% size reduction achieved
 ## 🔍 Current Offload Candidates
 
 **Source**: `.codex/repository_health/offload_candidates.json`  
-**Last Scan**: 2026-03-16T00:55:36Z
+**Last Scan**: 2026-04-06T00:56:19Z
 
 ### Summary
 
-- **Total Candidates**: 2 files
-- **Total Size**: 22.77MB
-- **Largest File**: `tools/github-secrets-cli/github-secrets-cli` (12.35MB)
+- **Total Candidates**: 1 file
+- **Total Size**: 1.14MB
+- **Largest File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (1.14MB)
 
 ### Candidate Details
 
 | File | Category | Size | Age | Recommendation |
 |------|----------|------|-----|----------------|
-| `.codex/embeddings/codex_index_meta.json` | unknown | 10.41MB | 0d | Compress or offload |
-| `tools/github-secrets-cli/github-secrets-cli` | unknown | 12.35MB | 0d | Compress or offload |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | unknown | 1.14MB | 0d | review_manually |
 
 ### Recommendations
 
-1. **🔧 Large Binary**: `tools/github-secrets-cli/github-secrets-cli`
-   - **Action**: Verify if binary is needed in repo or can use package manager
-   - **Impact**: Could reduce repo size by 12.35MB (9%)
-   - **Priority**: P1 (High - significant size impact)
-
-2. **📦 Large Index File**: `.codex/embeddings/codex_index_meta.json`
-   - **Action**: Compress or move to external storage; regenerate from source on demand
-   - **Impact**: Could reduce repo size by 10.41MB (7%)
-   - **Priority**: P1 (High - significant size impact)
+1. **📄 Large Documentation File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+   - **Action**: Review whether this large documentation file can be compressed, split, or offloaded to external storage
+   - **Impact**: Could reduce repo size by 1.14MB
+   - **Priority**: P2 (Medium - documentation file)
 
 ---
 
@@ -241,7 +235,7 @@ python scripts/repository_organization/restore_offloaded_files.py --file histori
 
 ## ✅ Health Check
 
-**Last Check**: 2026-03-16T00:55:36Z
+**Last Check**: 2026-04-06T00:56:19Z
 
 | Check | Status | Details |
 |-------|--------|---------|
@@ -260,4 +254,4 @@ python scripts/repository_organization/restore_offloaded_files.py --file histori
 **Maintained by**: Repository Organization System  
 **Agent**: `repository-organization-monitor`  
 **Version**: 1.0.0  
-**Last Updated**: 2026-03-16T00:55:36Z
+**Last Updated**: 2026-04-06T00:56:19Z

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S295 — PR #3879 — 2026-04-06)
+- **`requirements/lock.txt`**: Cherry-picked 6 dependabot dependency bumps from open PRs into `0D_base_`: `huggingface-hub` 0.34.4→1.9.0 (PR #3894), `fastapi-cli` 0.0.8→0.0.24 (PR #3893), `pyparsing` 3.2.5→3.3.2 (PR #3891), `sqlalchemy` 2.0.43→2.0.49 (PR #3889), `pandas` 3.0.1→3.0.2 (PR #3887), `transformers` 5.4.0→5.5.0 (PR #3886). Also updated `requirements/lock-eval.txt`, `requirements/lock-ml.txt`, `requirements-eval.txt`, `requirements-ml-cpu.txt`, `requirements/base.txt` accordingly.
+- **`.github/workflows/process-variable-intents.yml`**: Merged duplicate `env:` blocks in "Process intents" step — combined `GH_TOKEN` and `DRY_RUN` under a single mapping to fix actionlint violation and YAML duplicate-key error (commit `23f2350`).
+- **PR lifecycle compliance**: All end-of-session checklist items satisfied — ruff clean, mypy baseline passes, actionlint clean, all blocking comments replied to, accountability report updated.
+- **Cognitive brain status**: Updated `next_phase_plan` in `.codex/cognitive_brain/metadata.json` with S295 progress and follow-up actions.
+
+### Fixed (auto-update — PR #3881)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3881 (SHA `04b46f01`) at 2026-04-06T00:56Z [auto-generated]
+
+### Fixed (auto-update — PR #3879)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3879 (SHA `c8a0c085`) at 2026-04-06T00:15Z [auto-generated]
+
+### Fixed (auto-update — PR #3878)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3878 (SHA `c5bde7c3`) at 2026-04-06T00:11Z [auto-generated]
+
 ### Docs (PR #3876 — Mermaid maps aligned with PR behavior, 2026-04-05)
 - **`docs/CODEBASE_MERMAID_MAPS.md`**: Updated version 1.0.0→1.1.0. Four targeted changes: (1) Header date 2026-03-29→2026-04-05; (2) Section 2 CI/CD pipeline: CodeQL node now annotates resolved alerts `#12788/#12789/#12790 PR #3876`; (3) Section 11 Security+Token: added new "Variables & Secrets Knowledge Layer (PR #3876)" subgraph documenting `GITHUB_VARIABLES_SECRETS_REFERENCE.md`, `GITHUB_API_AND_MCP_REFERENCE.md`, and `test_variables_api.py` with correct edges from `CODEX_MASTER_KEY`; (4) Section 12 Source Layout: added `test_variables_api.py ← PR #3876` to the `scripts/ci/` listing.
 

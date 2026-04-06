@@ -38,6 +38,7 @@ on:
       - 'main'
       - 'copilot/**'
       - 'feature/**'
+      - '0D_base_'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -59,8 +60,6 @@ jobs:
     name: "Process queued variable intents"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
     steps:
       - name: Checkout
@@ -69,9 +68,40 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
 
+      # ── Generate Cognitive Brain App installation token ───────────────────
+      # The App has explicit read+write on 'actions variables' — preferred over
+      # CODEX_MASTER_KEY for variable operations.
+      - name: Generate Cognitive Brain App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        continue-on-error: true          # fall through to PAT if App creds absent
+        with:
+          app-id: ${{ secrets._GITHUB_APP_ID }}
+          private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+
+      # Token priority: CB App → CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token
+      - name: Resolve write token
+        id: token
+        run: |
+          if [ -n "${{ steps.app-token.outputs.token }}" ]; then
+            echo "source=cognitive-brain-app" >> "$GITHUB_OUTPUT"
+            echo "token=${{ steps.app-token.outputs.token }}" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ secrets.CODEX_MASTER_KEY }}" ]; then
+            echo "source=CODEX_MASTER_KEY" >> "$GITHUB_OUTPUT"
+            echo "token=${{ secrets.CODEX_MASTER_KEY }}" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ secrets.CODEX_BACKUP_KEY }}" ]; then
+            echo "source=CODEX_BACKUP_KEY" >> "$GITHUB_OUTPUT"
+            echo "token=${{ secrets.CODEX_BACKUP_KEY }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "source=github.token" >> "$GITHUB_OUTPUT"
+            echo "token=${{ github.token }}" >> "$GITHUB_OUTPUT"
+          fi
+          echo "✅ Write token resolved from: $(cat $GITHUB_OUTPUT | grep source= | cut -d= -f2)"
+
       - name: Process intents
         id: process
         env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           set -euo pipefail
@@ -161,6 +191,8 @@ jobs:
 
       - name: Commit cleanup
         if: steps.process.outputs.processed != '0'
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
