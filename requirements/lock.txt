@@ -258,7 +258,7 @@ fastapi==0.111.0
     #   codex-ml (pyproject.toml)
     #   mlflow-skinny
     #   ray
-fastapi-cli==0.0.8
+fastapi-cli==0.0.24
     # via fastapi
 fastjsonschema==2.21.2
     # via nbformat
@@ -353,7 +353,7 @@ httpx==0.28.1
     #   fastapi
     #   jupyterlab
     #   litestar
-huggingface-hub==0.34.4
+huggingface-hub==1.9.0
     # via
     #   accelerate
     #   datasets
@@ -722,7 +722,7 @@ packaging==25.0
     #   transformers
     #   typepy
     #   wandb
-pandas==3.0.1
+pandas==3.0.2
     # via
     #   codex-ml (pyproject.toml)
     #   altair
@@ -873,7 +873,7 @@ pyjwt==2.12.1
     # via codex-ml (pyproject.toml)
 pynvml==13.0.1
     # via codex-ml (pyproject.toml)
-pyparsing==3.2.5
+pyparsing==3.3.2
     # via
     #   dvc
     #   grandalf
@@ -1074,7 +1074,7 @@ sortedcontainers==2.4.0
     # via hypothesis
 soupsieve==2.8
     # via beautifulsoup4
-sqlalchemy==2.0.43
+sqlalchemy==2.0.49
     # via
     #   alembic
     #   mlflow
@@ -1167,7 +1167,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.4.0
+transformers==5.5.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)

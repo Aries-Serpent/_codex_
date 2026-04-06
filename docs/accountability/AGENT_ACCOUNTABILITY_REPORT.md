@@ -17927,3 +17927,64 @@ The Actions Variables API requires `repo` scope (classic PAT) or `actions variab
 | `COPILOT_BOT_COMMENT_KNOWN_ISSUES` | 3 bot comment quality issues from S294 audit |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | §0 rules + pre-commit commands in one variable |
 | `CODEX_PR_LIFECYCLE_VERSION` | PR lifecycle doc version + WEC item counts |
+
+---
+
+## SESSION SUMMARY — 2026-04-06T14:40Z SESSION S295-PR3879 (Full PR Lifecycle Audit + Open-PR Cherry-Pick)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** ALL bot-posted and mbaetiong `comment_new` items reviewed — 4190121885, 4190122473, 4190129471, 4192824707 addressed ✅
+- [x] **0b.** ALL failing CI checks reviewed — actionlint (commit `23f2350`) fixed; current HEAD `ddf13472` CI green ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `docs/ci/PR_LIFECYCLE.md`, `.codex/CODEBASE_AGENCY_POLICY.md`, accountability report loaded ✅
+- [x] **3.** `ruff check src/ tests/` — 0 issues ✅
+- [x] **4.** `python scripts/ci/mypy_baseline.py --require-baseline` — PASS (104 errors, baseline 386) ✅
+- [x] **5.** `actionlint process-variable-intents.yml` — exit 0 ✅
+- [x] **6.** CHANGELOG.md updated with `### Fixed (S295)` entry ✅
+
+### Work Completed
+
+1. **Loaded full policy context** — `.codex/CODEBASE_AGENCY_POLICY.md`, `docs/ci/PR_LIFECYCLE.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (all required §0 docs).
+
+2. **PR lifecycle audit** — Compared active PR #3879 against `docs/ci/PR_LIFECYCLE.md §14.5 Session Protocol Checklist`. Identified 6 gaps:
+   - Missing CHANGELOG `### Fixed (SN)` entry for S295 → FIXED
+   - Missing accountability report S295 session entry → FIXED (this entry)
+   - Duplicate `env:` key in `process-variable-intents.yml` (actionlint failure) → FIXED at `23f2350`
+   - 4 new `comment_new` items unanswered → FIXED (all replied to)
+   - 6 dependabot open PRs not cherry-picked into `0D_base_` → FIXED
+   - `requirements/base.txt` transformers version behind → FIXED
+
+3. **Cherry-picked 6 open dependabot PRs** into `0D_base_`:
+   | PR | Package | Old | New | Files Updated |
+   |----|---------|-----|-----|---------------|
+   | #3894 | huggingface-hub | 0.34.4 | 1.9.0 | lock.txt |
+   | #3893 | fastapi-cli | 0.0.8 | 0.0.24 | lock.txt |
+   | #3891 | pyparsing | 3.2.5 | 3.3.2 | lock.txt |
+   | #3889 | sqlalchemy | 2.0.43 | 2.0.49 | lock.txt |
+   | #3887 | pandas | 3.0.1 | 3.0.2 | lock.txt, lock-eval.txt, requirements-eval.txt |
+   | #3886 | transformers | 5.4.0 | 5.5.0 | lock.txt, lock-ml.txt, requirements-ml-cpu.txt, base.txt |
+   
+   (PRs #3895/cachetools, #3892/absl-py, #3890/google-auth, #3888/dulwich were already in HEAD from prior cherry-picks.)
+
+4. **End-of-session verification (all pass)**:
+   - `ruff check src/ tests/` → 0 issues ✅
+   - `mypy_baseline.py --require-baseline` → PASS (104 ≤ 386) ✅
+   - `actionlint process-variable-intents.yml` → exit 0 ✅
+   - `auto_fix_common_issues.py --check-only` → 147 issues, 0 auto-fixable ✅
+   - CHANGELOG updated ✅
+   - All `comment_new` items replied to ✅
+
+### Root-Cause Note
+The recurring pattern of open dependabot PRs accumulating without being merged into the staging integration branch `0D_base_` occurs because Dependabot targets `main` while all active work is on `0D_base_`. The correct process is to cherry-pick the lock file changes from each dependabot branch into `0D_base_` at the start of each session.
+
+### Lessons Learned
+- Always cherry-pick open dependabot PRs into `0D_base_` at session start — use `git diff origin/main..origin/<branch> -- <lockfiles>` to extract only the version bump lines.
+- `docs/ci/PR_LIFECYCLE.md §14.5` is the authoritative end-of-session checklist — must complete ALL items before final `report_progress`.
+- Actionlint binary is available at `/home/runner/work/_codex_/_codex_/.venv_agent/bin/actionlint` in the sandbox.
+- YAML duplicate key (`env:` appearing twice in one workflow step) is invisible to YAML parsers that silently drop the first occurrence — only actionlint catches it.
+
+### Impact Score
+- Files fixed: 7 (`requirements/lock.txt`, `lock-eval.txt`, `lock-ml.txt`, `requirements-eval.txt`, `requirements-ml-cpu.txt`, `base.txt`, `process-variable-intents.yml`)
+- Dependabot PRs consolidated: 6 (PRs #3886–#3894)
+- CI gates unblocked: actionlint, comment-review-gate
+- Deferral Language Gate: 0 violations
