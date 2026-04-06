@@ -3,7 +3,39 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-06T20:30Z S305-review-vite-yamllint-pages
+**Last updated:** 2026-04-06T23:31Z S306-ci-triage-autofix-workflow-fixes
+
+## SESSION SUMMARY — 2026-04-06T23:31Z S306 (PR #3905 — CI Triage Report #3903 → auto-fix patterns + workflow fixes)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All `comment_new` items reviewed — 3 blocking items (4195546773, 4195549128, 4195560521) ✅
+- [x] **0d.** CI Triage Report issue #3903 analyzed — 13 workflows, 41 failures ✅
+- [x] **0e.** `ruff check src/ tests/` → 0 violations ✅
+- [x] **0f.** `mypy_baseline.py --require-baseline` → 104 errors (= baseline 104) ✅
+- [x] **0g.** `actionlint .github/workflows/*.yml` → 0 errors ✅
+- [x] **0h.** Agency Policy §0: all identified issues fixed immediately ✅
+
+### Work Completed
+- **`.github/workflows/copilot-agent-session-done.yml`**: Fixed `git pull --rebase` failure (unstaged `.secrets.baseline` from `session_wrapup_autofix.py`):
+  - Added `.secrets.baseline` to `git add` command so baseline sync changes are committed
+  - Added `--autostash` to `git pull --rebase` command for robustness
+- **`.github/workflows/auto-approve-workflows.yml`**: Fixed false failures when approving same-repo (non-fork) workflow runs — added `else if` branch to handle "not from a fork pull request" API error as `skipped` rather than `errors`, preventing `core.setFailed` for expected non-fork approval attempts
+- **CI Triage Pattern Analysis** (issue #3903):
+  - Validation Pipeline (yamllint): already fixed in S305; only warnings remain (truthy/line-length in rust-error-validator-observation.yml)
+  - Workflow Compliance Audit (actionlint): passes 0 errors on current HEAD
+  - Process Variable Intents: transient failures (no failed jobs in most recent run)
+  - Workflow Execution Gate: JSONDecodeError fix already applied in S300 (`wec_enforcer.py` HTTP-204 handling)
+  - Auto-Approve Pending Runs: root-caused to non-fork PR approval API limitation → fixed with graceful skip
+  - Auto-Post @copilot review: root-caused to unstaged `.secrets.baseline` during rebase → fixed with `--autostash` + add `.secrets.baseline` to staged set
+
+### Impact Score
+- Workflows fixed: 2 (`copilot-agent-session-done.yml`, `auto-approve-workflows.yml`)
+- CI failures addressed: Auto-Post session-done (recurring), Auto-Approve non-fork runs (recurring)
+- Code quality: ruff 0, mypy 104=104, actionlint 0
+
+---
 
 ## SESSION SUMMARY — 2026-04-06T20:30Z S305 (PR #3901 — Review comments, vite bump, yamllint fix, GitHub Pages status)
 

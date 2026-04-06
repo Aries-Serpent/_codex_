@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S306 — PR #3905 — 2026-04-06 · CI Triage Report #3903 → workflow fixes + auto-fix patterns)
+- **`.github/workflows/copilot-agent-session-done.yml`**: Fixed recurring `git pull --rebase` failure caused by unstaged `.secrets.baseline` modified by `session_wrapup_autofix.py`; added `--autostash` flag and added `.secrets.baseline` to `git add` command
+- **`.github/workflows/auto-approve-workflows.yml`**: Fixed recurring false-positive failures when `approveWorkflowRun` API returns "not from a fork pull request" for same-repo PRs; now gracefully skips non-fork runs instead of counting as errors
+- **CI Triage analysis** (issue #3903, 41 failures, 13 workflows): yamllint ✅ (fixed in S305), actionlint ✅ (0 errors), wec_enforcer HTTP-204 ✅ (fixed in S300), process-variable-intents transient
+- **docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md**: S306 session summary added
+
 ### Fixed (auto-update — PR #3905)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3905 (SHA `97fe6a48`) at 2026-04-06T23:24Z [auto-generated]
 
