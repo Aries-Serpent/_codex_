@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-03-23T00:52:49.976763+00:00",
+    "scan_time": "2026-04-06T00:56:19.220160+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -17,18 +17,18 @@
     "by_category": {
       "unknown": 1
     },
-    "total_size_mb": 12.35
+    "total_size_mb": 1.14
   },
   "candidates": [
     {
-      "path": "tools/github-secrets-cli/github-secrets-cli",
+      "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 12.35,
+      "size_mb": 1.14,
       "reasons": [
-        "large_file_12.35mb"
+        "large_file_1.1mb"
       ],
-      "recommendation": "compress_or_offload"
+      "recommendation": "review_manually"
     }
   ]
 }
