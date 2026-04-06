@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3897)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3897 (SHA `9d638dc2`) at 2026-04-06T17:11Z [auto-generated]
+
 ### Fixed (S295 — PR #3879 — 2026-04-06)
 - **`requirements/lock.txt`**: Cherry-picked 6 dependabot dependency bumps from open PRs into `0D_base_`: `huggingface-hub` 0.34.4→1.9.0 (PR #3894), `fastapi-cli` 0.0.8→0.0.24 (PR #3893), `pyparsing` 3.2.5→3.3.2 (PR #3891), `sqlalchemy` 2.0.43→2.0.49 (PR #3889), `pandas` 3.0.1→3.0.2 (PR #3887), `transformers` 5.4.0→5.5.0 (PR #3886). Also updated `requirements/lock-eval.txt`, `requirements/lock-ml.txt`, `requirements-eval.txt`, `requirements-ml-cpu.txt`, `requirements/base.txt` accordingly.
 - **`.github/workflows/process-variable-intents.yml`**: Merged duplicate `env:` blocks in "Process intents" step — combined `GH_TOKEN` and `DRY_RUN` under a single mapping to fix actionlint violation and YAML duplicate-key error (commit `23f2350`).
