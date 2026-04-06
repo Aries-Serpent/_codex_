@@ -990,20 +990,27 @@ def _make_rca_marker(
 ) -> str:
     """Return the HTML comment marker used to identify rescue comments.
 
-    Uses a commit-SHA-scoped marker (``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``)
-    so that ALL failing workflows for the SAME push share ONE comment thread.
+    Uses the canonical ``<!-- ci-rescue-sha:{pr_number}:{sha12} -->`` marker
+    so that ALL failing workflows for the SAME push share ONE comment thread —
+    matching the namespace used by ``post_rescue_comment.py``.  This prevents
+    ``ci_rescue.py`` and ``post_rescue_comment.py`` from creating duplicate
+    comment threads for the same commit SHA.
+
     A new push (different commit SHA) always creates a new comment, enabling
     per-push comparison by agents.  Appending multiple failures from different
     workflow runs into the same comment is intentional — this is the PDA Loop
     AfterMath requirement (S267).
 
-    Falls back to PR-scoped or bare markers when commit_sha is unavailable.
+    Falls back to legacy ``ci-rescue-rca`` PR-scoped or bare markers when
+    commit_sha is unavailable, for backward compatibility.
     The ``run_id`` parameter is accepted for backward compatibility but is no
     longer used to scope the marker.
     """
     sha12 = commit_sha.strip()[:12] if commit_sha and commit_sha.strip() else None
+    # Primary: canonical ci-rescue-sha namespace (shared with post_rescue_comment.py)
     if pr_number and sha12:
-        return f"<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->"
+        return f"<!-- ci-rescue-sha:{pr_number}:{sha12} -->"
+    # Legacy fallbacks when SHA is unavailable
     if pr_number:
         return f"<!-- ci-rescue-rca:{pr_number} -->"
     if sha12:
@@ -1022,18 +1029,23 @@ def post_pr_comment(
 ) -> bool:
     """Post or append-update a @copilot RCA comment on the PR.
 
-    Deduplication strategy (S267 + S294 — SHA-digest anchor preferred):
-    - When ``commit_sha`` is provided, first checks for an existing
-      ``<!-- ci-rescue-sha:{pr_number}:{sha12} -->`` comment (posted by
-      ``post_rescue_comment.py``).  If found, the RCA content is appended
-      there as a ``<details>`` section so all SHA-matching comments share
-      ONE thread instead of spawning a separate ``ci-rescue-rca`` comment.
-    - Falls back to the ``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``
-      thread when no rescue-sha anchor exists (first failure, push-only mode).
-    - A NEW push (different commit SHA) always creates a NEW comment so agents
-      can compare failures between pushes and track resolution progress.
-    - Falls back to legacy PR-scoped and bare markers to absorb old comments
-      when commit_sha is unavailable.
+    Deduplication strategy (S267 + S294 + S298 — single-thread per SHA):
+    ALL failing workflows for the same commit SHA are consolidated into ONE
+    comment, shared between ``ci_rescue.py`` and ``post_rescue_comment.py``.
+
+    Priority order (highest first):
+    1. Existing ``<!-- ci-rescue-sha:{pr_number}:{sha12} -->`` anchor comment
+       (posted first by ``post_rescue_comment.py`` or a prior ``ci_rescue.py``
+       run) — the RCA content is appended as a ``<details>`` section.
+    2. Existing ``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->`` comment
+       (legacy format from older ci_rescue.py versions) — absorbed and updated.
+    3. New comment created using the canonical ``ci-rescue-sha`` marker format
+       so that subsequent calls from either script share the same thread.
+    4. Legacy bare ``ci-rescue-rca`` marker — only used when commit_sha is
+       unavailable (backward compat for callers that don't pass a SHA).
+
+    A NEW push (different commit SHA) always creates a NEW comment so agents
+    can compare failures between pushes and track resolution progress.
 
     This keeps the PR thread clean: one thread per push, with a full
     chronological record of every failing workflow for that commit.
@@ -1092,12 +1104,24 @@ def post_pr_comment(
     marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha, run_id=run_id)
     full_body = f"{marker}\n{body}"
 
-    # Paginate through all PR comments in a SINGLE pass, checking for both the
-    # SHA-scoped marker and the legacy PR-scoped / bare markers simultaneously.
+    # Scan all PR comments in a single paginated pass, checking for:
+    #   1. The canonical ci-rescue-sha marker (shared with post_rescue_comment.py)
+    #   2. The legacy ci-rescue-rca SHA-scoped marker (older ci_rescue.py format)
+    #   3. The bare legacy ci-rescue-rca marker (oldest fallback, no SHA scope)
+    # Priority order: sha-anchor > rca-sha > rca-bare
+    # This ensures ci_rescue.py and post_rescue_comment.py always share ONE thread.
     existing_id: Optional[int] = None
     existing_body: str = ""
     legacy_id: Optional[int] = None
     legacy_body: str = ""
+    legacy_rca_sha_id: Optional[int] = None
+    legacy_rca_sha_body: str = ""
+    # Build legacy rca-sha marker for backward-compat search
+    legacy_rca_sha_marker = (
+        f"<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->"
+        if pr_number and sha12
+        else ""
+    )
     page = 1
     while True:
         _, page_comments = _gh_api(
@@ -1110,12 +1134,24 @@ def post_pr_comment(
             if marker in c_body and not existing_id:
                 existing_id = c["id"]
                 existing_body = c_body
+            elif (
+                legacy_rca_sha_marker
+                and legacy_rca_sha_marker in c_body
+                and not legacy_rca_sha_id
+            ):
+                legacy_rca_sha_id = c["id"]
+                legacy_rca_sha_body = c_body
             if "<!-- ci-rescue-rca -->" in c_body and not legacy_id:
                 legacy_id = c["id"]
                 legacy_body = c_body
         if len(page_comments) < 100:
             break
         page += 1
+
+    # Resolve: prefer canonical sha-anchor; fall back to legacy rca-sha; then bare legacy.
+    if not existing_id and legacy_rca_sha_id:
+        existing_id = legacy_rca_sha_id
+        existing_body = legacy_rca_sha_body
     # Only fall back to the legacy bare marker when the caller is NOT using
     # SHA-scoped markers (i.e. commit_sha was not provided).  When commit_sha IS
     # provided the marker is already SHA-specific and can never collide with

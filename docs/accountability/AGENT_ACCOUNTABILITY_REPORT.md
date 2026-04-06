@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-06T15:58Z S-fix-compiled-bot-feedback-marker
+**Last updated:** 2026-04-06T16:16Z S298-rescue-consolidation
 
 ## SESSION SUMMARY — 2026-04-06T15:58Z S-fix-compiled-bot-feedback-marker (PR #3897 — Fix SKIP_BODY_MARKERS for SHA-suffixed compiled-bot-feedback)
 
@@ -18106,5 +18106,40 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-04-06T16:16Z S298-rescue-consolidation (PR 0D_base_ — Rescue comment SHA consolidation + Fast Validation fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All comment_new items reviewed: 4193209285, 4193227268, 4193387272 ✅
+- [x] **0d.** Fast Validation failure identified: `sync-tracked-files` hook — stale `.secrets.baseline` hash + `docs/ROADMAP.md` date ✅
+- [x] **0e.** New requirement loaded: ALL auto-posted comments for same HEAD_SHA must be consolidated into ONE comment ✅
+- [x] **0f.** PR lifecycle review completed: all changes align with codebase intent ✅
+
+### What Changed
+1. **`.secrets.baseline`** — Updated `hashed_secret` for `.codex/agent_context.json` from `92c6423903d7…` to `b20ab65e6bb9…` (content changed; detect-secrets re-scan required per sync-tracked-files hook).
+2. **`docs/ROADMAP.md`** — Updated date stamp from `2026-04-05` to `2026-04-06` (sync-tracked-files hook auto-fix).
+3. **`scripts/ci/ci_rescue.py`** — Implemented rescue comment SHA consolidation (S298):
+   - `_make_rca_marker()` now emits `<!-- ci-rescue-sha:{pr}:{sha12} -->` (canonical namespace, shared with `post_rescue_comment.py`) instead of `<!-- ci-rescue-rca:{pr}:sha-{sha12} -->`.
+   - Fallback scan now checks for both the canonical `ci-rescue-sha` marker AND the legacy `ci-rescue-rca:sha` marker before creating a new comment, absorbing existing threads.
+   - `post_pr_comment()` docstring updated to document the 4-tier priority order.
+   - All failing workflows for the same HEAD_SHA now consolidate into ONE comment thread regardless of which script posts first.
+
+### Root-Cause Notes
+- **Fast Validation**: The `sync-tracked-files` pre-commit hook ran in CI and auto-modified `.secrets.baseline` + `docs/ROADMAP.md`, then reported "files were modified by this hook" (standard pre-commit behavior). Fix: apply those same modifications in the working tree and commit.
+- **Rescue comment duplication**: `ci_rescue.py` (triggered via `workflow_run` by `ci-rescue.yml`) was using `ci-rescue-rca:sha` marker while `post_rescue_comment.py` (called inline from each workflow's `rescue-comment` job) was using `ci-rescue-sha`. When `ci_rescue.py` ran before `post_rescue_comment.py`, it found no existing `ci-rescue-sha` anchor and fell through to create a NEW `ci-rescue-rca` comment — a duplicate for the same SHA. Fix: unify both scripts under the `ci-rescue-sha` namespace.
+
+### Lessons Learned
+- `ci_rescue.py` and `post_rescue_comment.py` use different marker formats. Changes to one must be coordinated with the other or they create duplicate PR comment threads for the same HEAD_SHA.
+- The `sync-tracked-files` hook both fixes files AND fails (pre-commit "files were modified" pattern). Run the hook locally or apply its mutations manually before committing.
+- EVERY commit on a PR with Agent Token Delegation enabled MUST touch `AGENT_ACCOUNTABILITY_REPORT.md`.
+
+### Impact Score
+- Files changed: 4 (`.secrets.baseline`, `docs/ROADMAP.md`, `scripts/ci/ci_rescue.py`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI gates unblocked: Fast Validation (validate.yml), Comment Review Gate
+- Deferral Language Gate: 0 violations
 
 ---
