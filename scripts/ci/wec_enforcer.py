@@ -83,7 +83,9 @@ def _gh_api(
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
-            return resp.status, json.loads(resp.read())
+            raw = resp.read()
+            body = json.loads(raw) if raw.strip() else {}
+            return resp.status, body
     except urllib.error.HTTPError as exc:
         try:
             err_body = json.loads(exc.read())
