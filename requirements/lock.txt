@@ -873,7 +873,7 @@ pyjwt==2.12.1
     # via codex-ml (pyproject.toml)
 pynvml==13.0.1
     # via codex-ml (pyproject.toml)
-pyparsing==3.2.5
+pyparsing==3.3.2
     # via
     #   dvc
     #   grandalf
