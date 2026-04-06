@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-05T17:14:14Z",
+  "generated_at": "2026-04-06T09:23:32Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1624,6 +1624,11 @@
       "has_concurrency": true
     },
     {
+      "name": "test-variables-api",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "token-probe",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1871,6 +1876,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/GITHUB_API_AND_MCP_REFERENCE.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md",
       "type": "enforcement"
     },
@@ -2012,5 +2021,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "4c90cb7ccfd84f8e9dac9e1db4877306cdc8312a09478f6645cac686d8211686"
+  "integrity_sha256": "8d61e6f92a88e879ca2f62330ec39580ed27a1076b5ef414a8ecab7282bd18be"
 }
