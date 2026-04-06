@@ -258,7 +258,7 @@ fastapi==0.111.0
     #   codex-ml (pyproject.toml)
     #   mlflow-skinny
     #   ray
-fastapi-cli==0.0.8
+fastapi-cli==0.0.24
     # via fastapi
 fastjsonschema==2.21.2
     # via nbformat
