@@ -523,15 +523,10 @@ class TestModelUtilsSafeLoad:
 
         # First call (device="cpu") → NotImplementedError triggers meta-tensor fallback.
         # Second call (device="meta") → returns a model without to_empty.
-        call_count = {"n": 0}
-
-        def _side_effect(*args, **kwargs):
-            call_count["n"] += 1
-            if call_count["n"] == 1:
-                raise NotImplementedError("meta tensor")
-            return no_to_empty_model
-
-        with patch("sentence_transformers.SentenceTransformer", side_effect=_side_effect):
+        with patch(
+            "sentence_transformers.SentenceTransformer",
+            side_effect=[NotImplementedError("meta tensor"), no_to_empty_model],
+        ):
             with pytest.raises(RuntimeError, match="to_empty"):
                 _mu.safe_load_sentence_transformer("test-model", None)
 
