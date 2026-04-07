@@ -476,6 +476,7 @@ class CognitiveBrainFeeder:
         metadata_file = self.brain_dir / "metadata.json"
         with open(metadata_file, "w") as f:
             json.dump(metadata, f, indent=2)
+            f.write("\n")
 
     def _count_pattern_types(self, patterns: List[WorkflowPattern]) -> Dict[str, int]:
         """Count patterns by type"""

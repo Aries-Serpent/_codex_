@@ -308,6 +308,10 @@ jobs:
                     core.info(`⏭️  Already processed: ${label}`);
                     results.push({ label, status: '⏭️ already processed' });
                     skipped++;
+                  } else if (e.message && e.message.includes('not from a fork pull request')) {
+                    core.info(`⏭️  Skipping non-fork PR run (expected for same-repo PRs): ${label}`);
+                    results.push({ label, status: '⏭️ not a fork PR run' });
+                    skipped++;
                   } else {
                     core.warning(`❌ Failed to approve ${label}: ${e.message}`);
                     results.push({ label, status: `❌ error: ${e.message}` });
