@@ -18881,3 +18881,19 @@ Iterative Self-Healing CI issues #3912–3921 reported three recurring failures:
 - `wec_enforcer.py`: validates against `_WEC_ITEMS` via import — passes ✅
 
 ---
+
+## Session S309c — 2026-04-07T12:26Z — Code Review Fixes
+
+### Session Summary
+**PR:** #3915 `0D_base_` · **Trigger:** Code review feedback from copilot-pull-request-reviewer
+
+### Changes
+
+| File | Fix | Review Thread |
+|------|-----|---------------|
+| `scripts/ci/auto_fix_common_issues.py` | Docstring updated to list all 26 patterns (12-23 were missing) | `:13-19` |
+| `scripts/ci/auto_fix_common_issues.py` | Pattern 26 fix-loop: count per occurrence not per file — group by file, count actual replacements | `:2088-2106` |
+| `tests/rag/test_coverage_gaps.py` | `test_raises_on_load_failure`: patch `sentence_transformers.SentenceTransformer` with `side_effect=RuntimeError` (local import, module-level patch had no effect) | `:513-516` |
+| `tests/rag/test_coverage_gaps.py` | `test_raises_attributeerror_on_missing_to_empty`: patch `sentence_transformers.SentenceTransformer` to raise `NotImplementedError` on first call (triggers meta-tensor path) then return model without `to_empty` | `:522-527` |
+
+---

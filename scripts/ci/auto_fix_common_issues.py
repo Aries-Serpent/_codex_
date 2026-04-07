@@ -14,6 +14,18 @@ This script automatically fixes the 26 most common patterns that cause workflow 
 9.  Unsorted imports (ruff I001) — auto-fixable
 10. Bandit medium/high security issues — detects missing # nosec annotations
 11. F-string missing placeholders (ruff F541) — auto-fixable
+12. Line length violations — auto-fixable
+13. W-series warnings — auto-fixable
+14. Link checker config issues — auto-fixable
+15. mypy baseline freshness — detects stale .mypy_baseline
+16. Stub duplicate definitions — auto-fixable
+17. CI SHA drift — detects stale pinned action SHAs
+18. Duplicate keyword arguments — auto-fixable
+19. Src absolute imports — detect src/ imports using absolute paths
+20. YAML multiline strings — detect missing block scalars
+21. Node.js 20 actions — detect deprecated actions/setup-node@v1/v2
+22. Tracked file sync — detects .secrets.baseline / CODEX_MANIFEST drift
+23. Secrets baseline plugins — detects missing detect-secrets plugins
 24. Codecov token missing — detect codecov-action without token: or continue-on-error
 25. Last-commit accountability — AGENT_ACCOUNTABILITY_REPORT.md not in last commit
 26. Auto-post rebase race — git pull --rebase without --autostash (auto-fixable)
@@ -2087,19 +2099,21 @@ class CommonIssueFixer:
             if not self.check_only:
                 if not self.dry_run:
                     fixed = 0
-                    for wf, idx, old_line in affected:
+                    # Group by file so each file is read/written only once.
+                    # Using dict.fromkeys() preserves insertion order while deduplicating.
+                    seen_files: dict[Path, None] = dict.fromkeys(wf for wf, _, _ in affected)
+                    for wf in seen_files:
                         raw = wf.read_text(encoding="utf-8", errors="replace")
+                        # Count actual occurrences for this file so the reported
+                        # total matches the number of lines changed (not files).
+                        occurrence_count = sum(1 for fw, _, _ln in affected if fw == wf)
                         new_raw = raw.replace(
-                            old_line,
-                            old_line.replace(
-                                "git pull --rebase",
-                                "git pull --rebase --autostash",
-                                1,
-                            ),
+                            "git pull --rebase",
+                            "git pull --rebase --autostash",
                         )
                         if new_raw != raw:
                             wf.write_text(new_raw, encoding="utf-8")
-                            fixed += 1
+                            fixed += occurrence_count
                     if fixed:
                         self.fixes_applied["Auto-Post Rebase Race"] = fixed
                         print(f"   ✅ Auto-fixed {fixed} occurrence(s)")

@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S309 — PR #3915)
+- **S309c/CODE-REVIEW-1**: `auto_fix_common_issues.py` docstring — all 26 patterns now listed (12-23 were missing)
+- **S309c/CODE-REVIEW-2**: `auto_fix_common_issues.py` Pattern 26 fix-loop — group by file, count actual occurrences replaced (fixes inaccurate "Auto-fixed N occurrence(s)" message when file has multiple rebase lines)
+- **S309c/CODE-REVIEW-3**: `test_coverage_gaps.py` `test_raises_on_load_failure` — patch `sentence_transformers.SentenceTransformer` (local import; module-level patch was ineffective)
+- **S309c/CODE-REVIEW-4**: `test_coverage_gaps.py` `test_raises_attributeerror_on_missing_to_empty` — patch `sentence_transformers.SentenceTransformer` with two-call side_effect: NotImplementedError (triggers meta-tensor path) then model without `to_empty`
 - **S309/RC-1**: `iterative-self-healing-ci.yml` escalation job `Checkout for pattern_recorder access` now has `continue-on-error: true` — stops crash-loop when triggering branch is deleted (fixes issues #3917–#3921)
 - **S309/RC-2**: Updated `.secrets.baseline` hashed_secrets for `CODEX_MANIFEST.json` and `.codex/agent_context.json` — fixes Fast Validation sync-tracked-files failure (fixes issue #3912)
 - **S309/RC-3**: Added `--autostash` flag to 10 bare `git pull --rebase` calls across 7 workflow files — fixes Auto-Fix Pattern 26 (fixes issues #3913, #3914, #3916)

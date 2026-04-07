@@ -510,20 +510,29 @@ class TestModelUtilsSafeLoad:
     def test_raises_on_load_failure(self):
         from codex.rag._model_utils import safe_load_sentence_transformer
 
-        with patch("codex.rag._model_utils.SentenceTransformer",
-                   None, create=True):
-            with pytest.raises((RuntimeError, AttributeError)):
+        with patch("sentence_transformers.SentenceTransformer",
+                   side_effect=RuntimeError("simulated load failure")):
+            with pytest.raises(RuntimeError, match="simulated load failure"):
                 safe_load_sentence_transformer("nonexistent-model-xyz", None)
 
     def test_raises_attributeerror_on_missing_to_empty(self):
-        """When ST raises RuntimeError and model has no to_empty, raise RuntimeError."""
+        """When ST raises NotImplementedError (meta tensor) and model has no to_empty, raise RuntimeError."""
         from codex.rag import _model_utils as _mu
 
-        exc = RuntimeError("meta tensor")
-        fake_cls = MagicMock(side_effect=exc)
+        no_to_empty_model = MagicMock(spec=[])  # no to_empty attribute
 
-        with patch.object(_mu, "SentenceTransformer", fake_cls, create=True):
-            with pytest.raises((RuntimeError, AttributeError)):
+        # First call (device="cpu") → NotImplementedError triggers meta-tensor fallback.
+        # Second call (device="meta") → returns a model without to_empty.
+        call_count = {"n": 0}
+
+        def _side_effect(*args, **kwargs):
+            call_count["n"] += 1
+            if call_count["n"] == 1:
+                raise NotImplementedError("meta tensor")
+            return no_to_empty_model
+
+        with patch("sentence_transformers.SentenceTransformer", side_effect=_side_effect):
+            with pytest.raises(RuntimeError, match="to_empty"):
                 _mu.safe_load_sentence_transformer("test-model", None)
 
 
