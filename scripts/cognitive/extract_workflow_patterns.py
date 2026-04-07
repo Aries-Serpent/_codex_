@@ -190,7 +190,7 @@ class WorkflowPatternExtractor:
         url = f"{self.base_url}/actions/runs"
         params = {
             "per_page": 100,
-            "created": f">={since.replace(tzinfo=timezone.utc).isoformat()}",
+            "created": f">={since.isoformat()}",
         }
 
         all_runs = []
