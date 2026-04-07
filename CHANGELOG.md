@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3910)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3910 (SHA `477c6480`) at 2026-04-07T07:18Z [auto-generated]
+
 ### Fixed (S307b — PR #3905 — 2026-04-07 · Durable fix for cognitive-brain metadata.json EOF newline regression)
 - **`scripts/cognitive/extract_workflow_patterns.py`** (`_save_metadata`): Added `f.write("\n")` after `json.dump()` so every scheduled `cognitive-brain-feed.yml` run writes `metadata.json` with a trailing newline, permanently fixing the `end-of-file-fixer` pre-commit gate regression (root cause of commit `9eea647` Fast Validation failure)
 
