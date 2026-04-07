@@ -18852,3 +18852,32 @@ Iterative Self-Healing CI issues #3912–3921 reported three recurring failures:
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 ---
+
+## Session S309b — 2026-04-07T08:35Z — WEC Full Sync + Mermaid Issue Map
+
+### Session Summary
+**PR:** #3915 `0D_base_` · **Trigger:** Issues #3911–#3921 (batch CI failure triage)
+
+### Root Causes Fixed
+
+| ID | Root Cause | Issues Resolved |
+|----|-----------|----------------|
+| RC-1 | `iterative-self-healing-ci.yml` escalation checkout hard-fails when triggering branch deleted | #3917–#3921 |
+| RC-2 | `.secrets.baseline` hashed_secrets stale (CODEX_MANIFEST + agent_context.json) | #3912 |
+| RC-3 | `git pull --rebase` missing `--autostash` (Pattern 26, 10 occurrences / 7 files) | #3913, #3914, #3916 |
+| RC-4 | `PULL_REQUEST_TEMPLATE.md` missing `⚡ Auto-Approve` + `pr-checks.yml` + `html_visual_regression.yml` | WEG integrity |
+| RC-5 | `session_wrapup_autofix.py` `_WEC_ITEMS` out-of-sync with template (12 items missing) | WEG integrity |
+
+### Files Changed
+- `.github/workflows/iterative-self-healing-ci.yml` — `continue-on-error: true` on escalation checkout
+- `.github/PULL_REQUEST_TEMPLATE.md` — added `⚡ Auto-Approve` section + 2 missing opt-in testing items
+- `scripts/ci/session_wrapup_autofix.py` — `_WEC_ITEMS` expanded to 40 items + new `⚙️ Infra` section
+- `docs/ci/PR_LIFECYCLE.md` — added §25 CI Failure Issue Connection mermaid diagram + WEC Sync diagram
+- `CHANGELOG.md` — S309b entry
+
+### WEC Sync Status After S309b
+- `_WEC_ITEMS`: **40 items** (was 28) — 9 always-required, 31 opt-in
+- Template: **40 items** — fully in sync ✅
+- `wec_enforcer.py`: validates against `_WEC_ITEMS` via import — passes ✅
+
+---

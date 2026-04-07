@@ -113,8 +113,21 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("codeql-analysis.yml",           "CodeQL SAST analysis",                                       False),
     ("actionlint-audit.yml",          "Workflow compliance audit (actionlint)",                     False),
     ("semgrep_sarif.yml",             "Semgrep SAST (SARIF upload)",                                False),
+    ("auto-fix-common-issues.yml",    "Auto-Fix Common CI Issues",                                  False),
+    ("auto-fix-pr-check.yml",         "PR Auto-Fix Check",                                          False),
+    ("code-quality-coverage-suite.yml", "Code Quality & Coverage Suite",                            False),
+    ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",                                 False),
     # --- Opt-In: Documentation ---
     ("documentation-link-checker.yml", "Documentation link checker",                                False),
+    ("pages-pre-merge-validation.yml", "Pages pre-merge validation",                                False),
+    # --- Opt-In: Infrastructure & Deployment ---
+    ("reference-integrity.yml",       "Reference integrity + agent size gate",                      False),
+    ("dependency-submission.yml",     "Resilient dependency submission",                            False),
+    ("docker-build-push.yml",         "Build & push Docker image (GHCR)",                          False),
+    ("rust_swarm_ci.yml",             "Rust-Python hybrid swarm CI/CD",                             False),
+    ("root-org-validation.yml",       "Root organization validation",                               False),
+    ("agent-registry-validation.yml", "Agent registry validation",                                  False),
+    ("qa-walkthrough.yml",            "QA walkthrough agent",                                       False),
     # --- Auto-Approve ---
     ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", False),
 ]
@@ -172,9 +185,10 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
     always_required_items  = _WEC_ITEMS[:5]    # pre-merge → workflow-execution-gate
     always_active_items    = _WEC_ITEMS[5:9]   # copilot-agent-checkin → cost-gate
     opt_in_testing_items   = _WEC_ITEMS[9:22]  # validate → html_visual_regression
-    opt_in_security_items  = _WEC_ITEMS[22:26] # security-scanning-suite → semgrep_sarif
-    opt_in_docs_items      = _WEC_ITEMS[26:27] # documentation-link-checker
-    auto_approve_items     = _WEC_ITEMS[27:]   # auto-approve-workflows
+    opt_in_security_items  = _WEC_ITEMS[22:30] # security-scanning-suite → audit-qa-suite
+    opt_in_docs_items      = _WEC_ITEMS[30:32] # documentation-link-checker → pages-pre-merge
+    opt_in_infra_items     = _WEC_ITEMS[32:39] # reference-integrity → qa-walkthrough
+    auto_approve_items     = _WEC_ITEMS[39:]   # auto-approve-workflows
 
     for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
@@ -197,6 +211,10 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
 
     lines += ["", "### 📄 Opt-In: Documentation"]
     for fname, label, _ in opt_in_docs_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
+
+    lines += ["", "### ⚙️ Opt-In: Infrastructure & Deployment"]
+    for fname, label, _ in opt_in_infra_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += [

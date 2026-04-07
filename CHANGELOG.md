@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S309 — PR #3915)
+- **S309/RC-1**: `iterative-self-healing-ci.yml` escalation job `Checkout for pattern_recorder access` now has `continue-on-error: true` — stops crash-loop when triggering branch is deleted (fixes issues #3917–#3921)
+- **S309/RC-2**: Updated `.secrets.baseline` hashed_secrets for `CODEX_MANIFEST.json` and `.codex/agent_context.json` — fixes Fast Validation sync-tracked-files failure (fixes issue #3912)
+- **S309/RC-3**: Added `--autostash` flag to 10 bare `git pull --rebase` calls across 7 workflow files — fixes Auto-Fix Pattern 26 (fixes issues #3913, #3914, #3916)
+- **S309/RC-4**: `PULL_REQUEST_TEMPLATE.md` — added missing `⚡ Auto-Approve` section + `pr-checks.yml` + `html_visual_regression.yml` to WEC block
+- **S309/RC-5**: `session_wrapup_autofix.py` `_WEC_ITEMS` — added 12 new items + `⚙️ Opt-In: Infrastructure & Deployment` section; WEC now has 40 items (was 28) — fully in sync with template
+- **S309/DOCS**: Added §25 CI Failure Issue Connection Map mermaid diagram + WEC Sync diagram to `docs/ci/PR_LIFECYCLE.md`
+
 ### Fixed (auto-update — PR #3915)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3915 (SHA `70989bc9`) at 2026-04-07T08:26Z [auto-generated]
 
