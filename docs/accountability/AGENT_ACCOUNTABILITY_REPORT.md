@@ -16,7 +16,7 @@
 - [x] **0f.** `mypy_baseline.py --require-baseline` → 104 errors (= baseline 104) ✅
 - [x] **0g.** `actionlint .github/workflows/*.yml` → 0 errors ✅
 - [x] **0h.** Agency Policy §0: all identified issues fixed immediately ✅
-- [x] **0i.** S306b: `sync-tracked-files` drift — `.secrets.baseline` CODEX_MANIFEST hash + `docs/ROADMAP.md` date updated ✅
+- [x] **0i.** `sync-tracked-files` drift fix: `.secrets.baseline` CODEX_MANIFEST hash + `docs/ROADMAP.md` banner date updated ✅
 
 ### Work Completed
 - **`.github/workflows/copilot-agent-session-done.yml`**: Fixed `git pull --rebase` failure (unstaged `.secrets.baseline` from `session_wrapup_autofix.py`):
