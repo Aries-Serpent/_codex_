@@ -3,9 +3,30 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-07T05:29Z S307b-cognitive-brain-metadata-eof-fix
+**Last updated:** 2026-04-07T08:10Z S308b-auto-fix-triage-patterns-24-26
 
-## SESSION SUMMARY — 2026-04-07T05:29Z S307b (PR #3905 — Durable fix: cognitive_brain/metadata.json EOF newline)
+## SESSION SUMMARY — 2026-04-07T08:10Z S308b (PR #3910 — CI Triage #3911 patterns 24–26)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All `comment_new` items reviewed — 3 items (4197180038, 4197180882, 4197184057) ✅
+- [x] **0d.** CI Triage #3911 analyzed: 94 recent failures across 13 workflows ✅
+- [x] **0e.** `ruff check scripts/ci/auto_fix_common_issues.py scripts/ci/collect_telemetry.py` → 0 violations ✅
+- [x] **0f.** `py_compile` → 0 errors on both changed files ✅
+
+### Work Completed
+- **`scripts/ci/auto_fix_common_issues.py`**: Added Pattern 24 (Codecov Token Missing — manual detection of `codecov-action` without `token:` or `continue-on-error: true`), Pattern 25 (Last-Commit Accountability — soft-warning when `AGENT_ACCOUNTABILITY_REPORT.md` absent from last commit), Pattern 26 (Auto-Post Rebase Race — auto-fix `git pull --rebase` without `--autostash`). Updated `argparse` choices 1–26, `pattern_map`, `_aliases`, module docstring, `manual_review_patterns`, `auto_fixable_patterns`.
+- **`scripts/ci/collect_telemetry.py`**: Added `codecov-token`, `accountability-report`, `autostash-race` classifier groups to reduce unknown-bucket ratio.
+- Root cause addressed: CI Triage #3911 — Validation Pipeline 20 failures (codecov), Agent Token Delegation 17 failures (accountability report), Auto-Post session-done 16 failures (missing `--autostash`).
+
+### Impact Score
+- Files changed: 3 (`auto_fix_common_issues.py`, `collect_telemetry.py`, `CHANGELOG.md`)
+- New auto-fixable patterns added: 1 (Pattern 26 — Auto-Post Rebase Race)
+- New manual-review patterns added: 2 (Pattern 24, Pattern 25)
+- New classifier groups in collect_telemetry.py: 3
+
+
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅

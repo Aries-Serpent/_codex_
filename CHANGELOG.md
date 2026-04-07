@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`scripts/cognitive/extract_workflow_patterns.py`**: Replaced deprecated `datetime.utcnow()` with `datetime.now(timezone.utc)`; fixed naive datetime isoformat with bare `Z` append; extracted `parse_github_timestamp()` helper to reduce duplication
 - **`tests/codex/test_cli_roles.py`**: Removed dead `TYPER_AVAILABLE` flag (module skipped immediately on import failure)
 - **`tests/rag/test_coverage_gaps.py`**: Added `_import_retriever()` helper for clearer error messages; narrowed `pytest.raises(Exception)` to specific exception types
+- **`scripts/ci/auto_fix_common_issues.py`**: Added Pattern 24 (Codecov Token Missing — detect `codecov-action` without `token:` or `continue-on-error`), Pattern 25 (Last-Commit Accountability — detect `AGENT_ACCOUNTABILITY_REPORT.md` absent from last commit), Pattern 26 (Auto-Post Rebase Race — auto-fix `git pull --rebase` without `--autostash`); updated argparse choices to 1–26, pattern_map, aliases, and docstring. Root cause: CI Triage #3911 (Validation Pipeline 20 failures, Agent Token Delegation 17 failures, Auto-Post 16 failures)
+- **`scripts/ci/collect_telemetry.py`**: Added `codecov-token`, `accountability-report`, `autostash-race` classifier groups to `PATTERN_KEYWORDS`
 
 ### Fixed (auto-update — PR #3910)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3910 (SHA `477c6480`) at 2026-04-07T07:18Z [auto-generated]
