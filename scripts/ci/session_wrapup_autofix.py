@@ -577,6 +577,9 @@ def fix_pr_body_checkboxes(
 def _compute_sha1(path: Path) -> str:
     """Return the SHA-1 hex digest of *path* contents (matches detect-secrets format)."""
     import hashlib
+    # NOTE: detect-secrets stores SHA-1 digests in `.secrets.baseline`, so we must
+    # compute the same algorithm here for compatibility. This hash is only used
+    # for tooling/consistency checks and not for any security-sensitive purpose.
     return hashlib.sha1(path.read_bytes()).hexdigest()  # noqa: S324 — SHA1 required by detect-secrets
 
 

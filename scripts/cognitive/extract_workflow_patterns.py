@@ -17,7 +17,7 @@ import math
 import os
 import sys
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List
 
@@ -163,7 +163,7 @@ class WorkflowPatternExtractor:
         print(f"\n🔍 Extracting patterns from last {days_back} days...")
 
         # Fetch workflow runs
-        since = datetime.utcnow() - timedelta(days=days_back)
+        since = datetime.now(timezone.utc) - timedelta(days=days_back)
         workflows = self._fetch_workflows_since(since)
 
         print(f"📊 Analyzing {len(workflows)} workflow runs...")
@@ -188,7 +188,10 @@ class WorkflowPatternExtractor:
     def _fetch_workflows_since(self, since: datetime) -> List[Dict]:
         """Fetch all workflow runs since given date"""
         url = f"{self.base_url}/actions/runs"
-        params = {"per_page": 100, "created": f">={since.isoformat()}Z"}
+        params = {
+            "per_page": 100,
+            "created": f">={since.isoformat()}",
+        }
 
         all_runs = []
         page = 1
@@ -241,15 +244,16 @@ class WorkflowPatternExtractor:
 
         # Calculate average duration
         durations = []
+
+        def parse_github_timestamp(timestamp_str: str) -> datetime:
+            """Parse a GitHub API timestamp (e.g., '2023-01-01T00:00:00Z') into a datetime."""
+            return datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+
         for run in runs:
             if run.get("updated_at") and run.get("created_at"):
                 try:
-                    start = datetime.fromisoformat(
-                        run["created_at"].replace("Z", "+00:00")
-                    )
-                    end = datetime.fromisoformat(
-                        run["updated_at"].replace("Z", "+00:00")
-                    )
+                    start = parse_github_timestamp(run["created_at"])
+                    end = parse_github_timestamp(run["updated_at"])
                     duration = (end - start).total_seconds()
                     durations.append(duration)
                 except (ValueError, TypeError):
@@ -425,7 +429,7 @@ class CognitiveBrainFeeder:
 
         # Update cognitive brain metadata
         metadata = {
-            "last_update": datetime.utcnow().isoformat(),
+            "last_update": datetime.now(timezone.utc).isoformat(),
             "total_patterns": len(pattern_dict),
             "new_patterns": new_count,
             "updated_patterns": updated_count,
