@@ -3,7 +3,25 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-06T23:31Z S306-ci-triage-autofix-workflow-fixes
+**Last updated:** 2026-04-07T05:29Z S307b-cognitive-brain-metadata-eof-fix
+
+## SESSION SUMMARY — 2026-04-07T05:29Z S307b (PR #3905 — Durable fix: cognitive_brain/metadata.json EOF newline)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All `comment_new` items reviewed — 4 items (4196226103, 4196227097, 4196228527, 4196727941) ✅
+- [x] **0d.** Root cause confirmed: `CognitiveBrainFeeder._save_metadata()` missing `f.write("\n")` after `json.dump()` ✅
+- [x] **0e.** `ruff check src/ tests/` → 0 violations ✅
+- [x] **0f.** `sync_tracked_files.py --fix` → all 5 invariants ✅
+
+### Work Completed
+- **`scripts/cognitive/extract_workflow_patterns.py`** (`_save_metadata`): Added `f.write("\n")` after `json.dump()` to ensure every scheduled `cognitive-brain-feed.yml` execution writes `metadata.json` with a trailing newline. This is the durable source-level fix; the previous `992db51` patch only corrected the file directly.
+- **Root cause**: Every execution of `cognitive-brain-feed.yml` regenerated `.codex/cognitive_brain/metadata.json` without a terminal newline, causing `end-of-file-fixer` to fail Fast Validation on every automated push.
+
+### Impact Score
+- Files fixed: 1 (`scripts/cognitive/extract_workflow_patterns.py`)
+- Regression class eliminated: `end-of-file-fixer` hook failure on automated cognitive-brain pattern update commits
 
 ## SESSION SUMMARY — 2026-04-06T23:31Z S306 (PR #3905 — CI Triage Report #3903 → auto-fix patterns + workflow fixes)
 

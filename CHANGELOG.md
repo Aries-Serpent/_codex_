@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S307b — PR #3905 — 2026-04-07 · Durable fix for cognitive-brain metadata.json EOF newline regression)
+- **`scripts/cognitive/extract_workflow_patterns.py`** (`_save_metadata`): Added `f.write("\n")` after `json.dump()` so every scheduled `cognitive-brain-feed.yml` run writes `metadata.json` with a trailing newline, permanently fixing the `end-of-file-fixer` pre-commit gate regression (root cause of commit `9eea647` Fast Validation failure)
+
 ### Fixed (S306 — PR #3905 — 2026-04-06 · CI Triage Report #3903 → workflow fixes + auto-fix patterns)
 - **`.github/workflows/copilot-agent-session-done.yml`**: Fixed recurring `git pull --rebase` failure caused by unstaged `.secrets.baseline` modified by `session_wrapup_autofix.py`; added `--autostash` flag and added `.secrets.baseline` to `git add` command
 - **`.github/workflows/auto-approve-workflows.yml`**: Fixed recurring false-positive failures when `approveWorkflowRun` API returns "not from a fork pull request" for same-repo PRs; now gracefully skips non-fork runs instead of counting as errors
