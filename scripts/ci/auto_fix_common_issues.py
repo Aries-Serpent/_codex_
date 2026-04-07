@@ -1901,7 +1901,7 @@ class CommonIssueFixer:
                         continue
                     next_indent = len(next_line) - len(next_line.lstrip())
                     # If we encounter another step at the same/lower indent, stop.
-                    if next_indent <= step_indent and next_line.strip().startswith("-"):
+                    if next_indent < step_indent or (next_indent == step_indent and next_line.strip().startswith("-")):
                         break
                     stripped = next_line.strip()
                     if stripped.startswith("token:"):
