@@ -2090,8 +2090,8 @@ class CommonIssueFixer:
                     for wf, idx, old_line in affected:
                         raw = wf.read_text(encoding="utf-8", errors="replace")
                         new_raw = raw.replace(
-                            old_line.rstrip("\r\n"),
-                            old_line.rstrip("\r\n").replace(
+                            old_line,
+                            old_line.replace(
                                 "git pull --rebase",
                                 "git pull --rebase --autostash",
                                 1,
