@@ -115,7 +115,10 @@ def _get_repo() -> str:
 # ---------------------------------------------------------------------------
 
 _WEC_HEADING = "## 🔄 Workflow Execution Checklist"
-_CHECKBOX_RE = re.compile(r"^- \[([ xX])\]\s+([\w\-]+(?:\.[\w\-]+)*\.yml)", re.MULTILINE)
+_CHECKBOX_RE = re.compile(
+    r"^- \[([ xX])\]\s+((?:[\w\-]+(?:\.[\w\-]+)*\.yml)|auto-approve-workflows)",
+    re.MULTILINE,
+)
 
 
 def _extract_wec_section(body: str) -> str:
