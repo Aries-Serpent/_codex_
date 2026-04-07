@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S308 — PR #3910 — 2026-04-07 · Code quality: SHA1 comment, WEC regex, datetime deprecation, test precision)
+- **`scripts/ci/session_wrapup_autofix.py`**: Added inline comment explaining SHA-1 usage in `_compute_sha1()` is for detect-secrets format compatibility, not security-sensitive
+- **`scripts/ci/wec_enforcer.py`**: Fixed `_CHECKBOX_RE` regex to require `.yml` suffix and handle internal dots in filenames (e.g., `pre-merge-validation.yml`); eliminated redundant `head_sha.strip()` calls
+- **`scripts/cognitive/extract_workflow_patterns.py`**: Replaced deprecated `datetime.utcnow()` with `datetime.now(timezone.utc)`; fixed naive datetime isoformat with bare `Z` append; extracted `parse_github_timestamp()` helper to reduce duplication
+- **`tests/codex/test_cli_roles.py`**: Removed dead `TYPER_AVAILABLE` flag (module skipped immediately on import failure)
+- **`tests/rag/test_coverage_gaps.py`**: Added `_import_retriever()` helper for clearer error messages; narrowed `pytest.raises(Exception)` to specific exception types
+
 ### Fixed (auto-update — PR #3910)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3910 (SHA `477c6480`) at 2026-04-07T07:18Z [auto-generated]
 
