@@ -115,7 +115,7 @@ def _get_repo() -> str:
 # ---------------------------------------------------------------------------
 
 _WEC_HEADING = "## 🔄 Workflow Execution Checklist"
-_CHECKBOX_RE = re.compile(r"^- \[([ xX])\]\s+([\w\-][\w\-]*(?:\.yml)?)", re.MULTILINE)
+_CHECKBOX_RE = re.compile(r"^- \[([ xX])\]\s+([\w\-]+(?:\.[\w\-]+)*\.yml)", re.MULTILINE)
 
 
 def _extract_wec_section(body: str) -> str:
@@ -270,7 +270,8 @@ def _list_runs_for_workflow(
 ) -> list[dict]:
     """Return in-progress or queued runs for a workflow matching head_sha."""
     # Require at least 7 chars for a meaningful SHA prefix comparison.
-    sha_prefix = head_sha.strip()[:12] if len(head_sha.strip()) >= 7 else head_sha.strip()
+    sha_stripped = head_sha.strip()
+    sha_prefix = sha_stripped[:12] if len(sha_stripped) >= 7 else sha_stripped
     runs: list[dict] = []
     for status in ("in_progress", "queued"):
         path = (
