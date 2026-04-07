@@ -35,7 +35,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 # ---------------------------------------------------------------------------
 # Shared utility: triple-quoted string tracker
@@ -1846,8 +1846,8 @@ class CommonIssueFixer:
     # Pattern 24 — Codecov Token Missing (informational)
     # ------------------------------------------------------------------
     def check_codecov_token_missing(self) -> List[str]:
-        """Pattern 24: Detect ``codecov/codecov-action`` steps missing ``token:`` and
-        ``continue-on-error``.
+        """Pattern 24: Detect ``codecov/codecov-action`` steps missing **both** ``token:``
+        and ``continue-on-error: true``.
 
         Root cause (CI Triage #3911 — Validation Pipeline: 20 failures, first seen
         on protected branch ``main``):
@@ -2052,7 +2052,7 @@ class CommonIssueFixer:
             print("✅ Pattern 26 (Auto-Post Rebase Race): no .github/workflows directory")
             return issues
 
-        affected: List[tuple] = []  # (Path, line_idx_0based, original_line_with_newline)
+        affected: List[Tuple[Path, int, str]] = []  # (workflow, line_idx_0based, original_line_with_newline)
 
         for wf in sorted(workflow_dir.glob("*.yml")):
             try:
