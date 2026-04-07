@@ -17,7 +17,7 @@
 - [`d2567036`] fix(S305): correct package-lock integrity hashes (double sha512- prefix, riscv64 hash) + remove duplicate sections in GITHUB_PAGES_STATUS.md (copilot-swe-agent[bot], 2026-04-06)
 
 ### Files Modified
-No files modified
+Files changed by the referenced commits are not enumerated in this summary.
 
 ---
 
