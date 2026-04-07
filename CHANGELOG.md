@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3915)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3915 (SHA `70989bc9`) at 2026-04-07T08:26Z [auto-generated]
+
 ### Fixed (S308 — PR #3910 — 2026-04-07 · Code quality: SHA1 comment, WEC regex, datetime deprecation, test precision)
 - **`scripts/ci/session_wrapup_autofix.py`**: Added inline comment explaining SHA-1 usage in `_compute_sha1()` is for detect-secrets format compatibility, not security-sensitive
 - **`scripts/ci/wec_enforcer.py`**: Fixed `_CHECKBOX_RE` regex to require `.yml` suffix and handle internal dots in filenames (e.g., `pre-merge-validation.yml`); eliminated redundant `head_sha.strip()` calls
