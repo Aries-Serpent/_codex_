@@ -240,7 +240,7 @@ jobs:
             echo "Manifest already up-to-date"
           else
             git commit -m "chore(manifest): auto-heal C2 — refresh CODEX_MANIFEST.json [skip ci]"
-            git pull --rebase origin "${HEAD_REF}" 2>/dev/null || true
+            git pull --rebase --autostash origin "${HEAD_REF}" 2>/dev/null || true
             git push origin "HEAD:${HEAD_REF}"
             echo "✅ CODEX_MANIFEST.json refreshed — C2 will pass on re-run"
           fi

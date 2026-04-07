@@ -132,7 +132,7 @@ jobs:
             else
               TARGET_REF="${HEAD_REF}"
             fi
-            git pull --rebase origin "${TARGET_REF}" 2>/dev/null || true
+            git pull --rebase --autostash origin "${TARGET_REF}" 2>/dev/null || true
             git push origin "HEAD:${TARGET_REF}"
             echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed to ${TARGET_REF}"
 

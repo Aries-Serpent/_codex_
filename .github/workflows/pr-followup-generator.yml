@@ -84,7 +84,7 @@ jobs:
             # concurrently) without silently suppressing the error.
             PUSHED=false
             for attempt in 1 2 3; do
-              git pull --rebase origin "$TARGET_REF" || true
+              git pull --rebase --autostash origin "$TARGET_REF" || true
               if git push; then
                 echo "✅ Follow-up prompt committed and pushed (attempt ${attempt})"
                 PUSHED=true

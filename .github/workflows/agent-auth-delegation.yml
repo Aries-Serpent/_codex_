@@ -907,7 +907,7 @@ jobs:
             echo "- No file changes to commit (files may already have been correct)." >> "$GITHUB_STEP_SUMMARY"
           else
             git commit -m "fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][skip ci]"
-            git pull --rebase origin "${TARGET_BRANCH}" || true
+            git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
             git push origin HEAD:refs/heads/"${TARGET_BRANCH}"
             echo "- ✅ Auto-fix commit pushed to \`${TARGET_BRANCH}\`." >> "$GITHUB_STEP_SUMMARY"
             echo "- Next cognitive-preflight run will pass REQ-4/REQ-5." >> "$GITHUB_STEP_SUMMARY"
@@ -1550,7 +1550,7 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "chore(auth): write provenance session token [skip ci]"
-            git pull --rebase origin "${TARGET_BRANCH}" || true
+            git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
             git push origin HEAD:refs/heads/${TARGET_BRANCH}
           fi
 

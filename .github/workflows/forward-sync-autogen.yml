@@ -123,7 +123,7 @@ jobs:
 
           # Rebase guard: pull any commits that landed on the target since checkout
           # to prevent non-fast-forward rejection on push.
-          git pull --rebase origin "${TARGET}" || {
+          git pull --rebase --autostash origin "${TARGET}" || {
             echo "⚠️  Rebase failed — re-applying files on top of latest ${TARGET}"
             git rebase --abort 2>/dev/null || true
             git fetch origin "${TARGET}" --depth=5

@@ -4842,3 +4842,32 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - **deps**: dvc 3.66.1→3.67.0 (PR #3811)
 - **deps**: hypothesis 6.142.1→6.151.10 (PR #3812)
 - Conflict resolution in requirements/base.txt: datasets==4.8.4, numpy==2.4.4 (max of #3803+#3804)
+
+## [S309] 2026-04-07 — CI Failures #3912-3921: secrets baseline + autostash workflow fixes
+
+### Fixed
+- **Fast Validation / sync-tracked-files**: Update `.secrets.baseline` hashed_secrets for
+  `.codex/agent_context.json` and `CODEX_MANIFEST.json` to match current CI state.
+- **Pattern 26 / Auto-Post Rebase Race** (10 occurrences): Added `--autostash` flag to all
+  `git pull --rebase` calls across 7 workflow files to prevent 'unstaged changes' abort:
+  - `.github/workflows/agent-auth-delegation.yml` (lines 910, 1553)
+  - `.github/workflows/branch-divergence-monitor.yml` (lines 398, 440)
+  - `.github/workflows/codex-manifest-refresh.yml` (line 135)
+  - `.github/workflows/cognitive-analysis-feed.yml` (lines 128, 217)
+  - `.github/workflows/pr-followup-generator.yml` (line 87)
+  - `.github/workflows/forward-sync-autogen.yml` (line 126)
+  - `.github/workflows/e-to-d-transition-gate.yml` (line 243)
+
+### Root Cause
+- `.secrets.baseline` hashed_secrets drift when `CODEX_MANIFEST.json` or
+  `.codex/agent_context.json` change — sync-tracked-files hook detects the mismatch.
+- `session_wrapup_autofix.py` introduces unstaged changes during CI; bare
+  `git pull --rebase` aborts if unstaged files exist; `--autostash` stashes first,
+  rebases, then re-applies, eliminating the abort.
+
+### Issues Resolved
+- #3912 Validation Pipeline (Fast Validation)
+- #3913 Auto-Fix Common CI Issues
+- #3914 PR Auto-Fix Check
+- #3916 Pre-Merge Validation
+- #3917-3921 Iterative Self-Healing CI (S262-S266)

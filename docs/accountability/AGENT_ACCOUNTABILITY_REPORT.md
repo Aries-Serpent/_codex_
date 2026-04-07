@@ -18799,3 +18799,56 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## [S309] 2026-04-07 — CI Failures #3912-3921 Fix (PR #3915)
+
+**Session:** S309
+**Date:** 2026-04-07
+**Branch:** 0D_base_
+**PR:** #3915
+**Policy Compliance:** §0 — reviewed all bot comments and failing CI before changes
+
+### Trigger
+Iterative Self-Healing CI issues #3912–3921 reported three recurring failures:
+1. Fast Validation (`sync-tracked-files` hook) — stale `.secrets.baseline` hashed_secrets
+2. Auto-Fix Check (Pattern 26) — 10x `git pull --rebase` without `--autostash`
+3. Iterative Self-Healing CI — checkout of deleted branch `copilot/add-comment-for-sha1-acceptance`
+
+### Actions Taken
+- Updated `.secrets.baseline` hashed_secrets for `.codex/agent_context.json` and
+  `CODEX_MANIFEST.json` to match current CI-computed values.
+- Added `--autostash` to all 10 bare `git pull --rebase` calls across 7 workflow files:
+  `agent-auth-delegation.yml`, `branch-divergence-monitor.yml`,
+  `codex-manifest-refresh.yml`, `cognitive-analysis-feed.yml`,
+  `pr-followup-generator.yml`, `forward-sync-autogen.yml`,
+  `e-to-d-transition-gate.yml`.
+
+### Patterns Registered
+- **RP-NEW-007** — `.secrets.baseline` hashed_secrets must be refreshed whenever
+  `CODEX_MANIFEST.json` or `.codex/agent_context.json` are updated; the
+  sync-tracked-files pre-commit hook detects drift and fails Fast Validation.
+- **RP-NEW-008** — Every `git pull --rebase` in a CI workflow that may run alongside
+  `session_wrapup_autofix.py` MUST include `--autostash` to prevent unstaged-changes
+  abort (Pattern 26 in `auto_fix_common_issues.py`).
+
+### CI Gates Unblocked
+- Fast Validation / sync-tracked-files
+- Auto-Fix Check (Pattern 26 — now 0 issues)
+- Pre-Merge Validation
+- Iterative Self-Healing CI (S262–S266)
+
+### Files Changed
+- `.secrets.baseline` — hashed_secrets updated (2 entries)
+- `.github/workflows/agent-auth-delegation.yml` — `--autostash` added (×2)
+- `.github/workflows/branch-divergence-monitor.yml` — `--autostash` added (×2)
+- `.github/workflows/codex-manifest-refresh.yml` — `--autostash` added (×1)
+- `.github/workflows/cognitive-analysis-feed.yml` — `--autostash` added (×2)
+- `.github/workflows/pr-followup-generator.yml` — `--autostash` added (×1)
+- `.github/workflows/forward-sync-autogen.yml` — `--autostash` added (×1)
+- `.github/workflows/e-to-d-transition-gate.yml` — `--autostash` added (×1)
+- `CHANGELOG.md` — S309 entry added
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+
+---
