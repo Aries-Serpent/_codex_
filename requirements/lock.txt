@@ -160,7 +160,7 @@ contourpy==1.3.3
     # via matplotlib
 coverage==7.13.1
     # via pytest-cov
-cryptography==46.0.6
+cryptography==46.0.7
     # via
     #   asyncssh
     #   evidently
@@ -529,7 +529,7 @@ mistune==3.2.0
     # via
     #   great-expectations
     #   nbconvert
-mlflow==3.9.0
+mlflow==3.11.0rc1
     # via codex-ml (pyproject.toml)
 mlflow-skinny==3.5.0rc0
     # via mlflow
