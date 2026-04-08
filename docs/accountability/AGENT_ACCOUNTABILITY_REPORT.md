@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-07T08:10Z S308b-auto-fix-triage-patterns-24-26
+**Last updated:** 2026-04-08T22:36Z S310-iterative-self-healing-cryptography-46.0.7
 
 ## SESSION SUMMARY — 2026-04-07T08:10Z S308b (PR #3910 — CI Triage #3911 patterns 24–26)
 
@@ -18942,5 +18942,27 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## Session S310 — 2026-04-08T22:36Z — Iterative Self-Healing: cryptography-46.0.7 (PR #3931)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **0c.** Comment #4210115140 reviewed — iterative self-healing for `dependabot/pip/cryptography-46.0.7` ✅
+- [x] **0d.** Workflow run 24161881049 (validate.yml) analyzed — `sync-tracked-files` hook failed ✅
+- [x] **0e.** Root cause identified: stale `.secrets.baseline` hashes + stale `docs/ROADMAP.md` date ✅
+
+### Work Completed
+1. **Root cause** — `sync-tracked-files` pre-commit hook failed because `.secrets.baseline` had stale `hashed_secret` values for `.codex/agent_context.json` and `CODEX_MANIFEST.json`, and `docs/ROADMAP.md` had date `2026-04-07` (should be `2026-04-08`).
+2. **Fix** — Ran `python3 scripts/ci/sync_tracked_files.py --fix` to update `.secrets.baseline` with current hashes, and manually updated `docs/ROADMAP.md` date to `2026-04-08`.
+3. **Verification** — `sync_tracked_files.py --fix` confirmed all tracked files consistent; `ruff check` passed.
+4. **Branch** — `dependabot/pip/cryptography-46.0.7` (PR #3931)
+
+### Impact Score
+- Files fixed: 3 (`.secrets.baseline`, `docs/ROADMAP.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI gates unblocked: `sync-tracked-files` hook
+- Deferral Language Gate: 0 violations
 
 ---
