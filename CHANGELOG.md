@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3930)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3930 (SHA `4ae9e022`) at 2026-04-08T21:03Z [auto-generated]
+
 ### Fixed (S309 — PR #3915)
 - **S309c/CODE-REVIEW-1**: `auto_fix_common_issues.py` docstring — all 26 patterns now listed (12-23 were missing)
 - **S309c/CODE-REVIEW-2**: `auto_fix_common_issues.py` Pattern 26 fix-loop — group by file, count actual occurrences replaced (fixes inaccurate "Auto-fixed N occurrence(s)" message when file has multiple rebase lines)
