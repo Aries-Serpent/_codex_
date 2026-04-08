@@ -18944,3 +18944,39 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session S310 — 2026-04-08T22:49Z — CI Self-Healing: Sync-Tracked-Files Fix (PR #3932)
+
+**Date:** 2026-04-08
+**PR:** #3932 (branch: `dependabot/uv/requirements/uv-2587ff4aa0`)
+**Trigger:** `@mbaetiong` comment requesting iterative self-healing for run 24162343722
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — `@mbaetiong` comment requesting CI fix ✅
+- [x] **0b.** Failing CI checks reviewed — workflow run 24162343722 analyzed via GitHub MCP ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this session ✅
+- [x] **2.** Root cause identified — `sync-tracked-files` pre-commit hook failure ✅
+- [x] **3.** Fix applied and verified locally ✅
+- [x] **4.** `ruff check` — exit 0 ✅
+- [x] **5.** `sync_tracked_files.py --check` — all files consistent ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Root Cause
+Workflow run 24162343722 (Validation Pipeline / Fast Validation job) failed because the `sync-tracked-files` pre-commit hook detected stale state:
+1. `.secrets.baseline` — `hashed_secret` for `.codex/agent_context.json` and `CODEX_MANIFEST.json` were out-of-date after the `chore(manifest): auto-refresh CODEX_MANIFEST.json` commit updated CODEX_MANIFEST.json
+2. `docs/ROADMAP.md` — date stamp was `2026-04-07` but needed `2026-04-08`
+
+### Fix Applied
+- Ran `python3 scripts/ci/sync_tracked_files.py --fix --quiet` → updated `.secrets.baseline` hashed_secrets
+- Updated `docs/ROADMAP.md` date from `2026-04-07` to `2026-04-08`
+- Commit: `547e53d` — "fix: update .secrets.baseline hashes and ROADMAP.md date for sync-tracked-files hook"
+
+### Verification
+- `ruff check` — exit 0 (no linting errors)
+- `sync_tracked_files.py --check` — "All tracked files are consistent" (exit 0)
+
+### Lessons Learned
+- After any automated manifest refresh commit, `.secrets.baseline` hashed_secret for `CODEX_MANIFEST.json` must be re-synced before pushing
+- `sync_tracked_files.py --fix` handles this automatically when run before committing
+
+---
