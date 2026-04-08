@@ -3,7 +3,26 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-07T08:10Z S308b-auto-fix-triage-patterns-24-26
+**Last updated:** 2026-04-08T16:54Z S-dependabot-mlflow-3.11.0rc1
+
+## SESSION SUMMARY — 2026-04-08T16:54Z (PR #3927 — dependabot/pip/mlflow-3.11.0rc1 — sync-tracked-files fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** All `comment_new` items reviewed — 1 item (4207915658) ✅
+- [x] **0d.** Root cause confirmed: `sync-tracked-files` hook stale hashes in `.secrets.baseline` and stale date in `docs/ROADMAP.md` ✅
+- [x] **0e.** `python3 scripts/ci/sync_tracked_files.py --fix --quiet` → exit 0 ✅
+- [x] **0f.** `docs/ROADMAP.md` date updated from `2026-04-07` to `2026-04-08` ✅
+
+### Work Completed
+- **`.secrets.baseline`**: Updated `hashed_secret` for `.codex/agent_context.json` and `CODEX_MANIFEST.json` to match current file content via `sync_tracked_files.py --fix`.
+- **`docs/ROADMAP.md`**: Updated banner date from `2026-04-07` to `2026-04-08` to match CI date.
+- **Root cause**: `dependabot/pip/mlflow-3.11.0rc1` bump + subsequent CODEX_MANIFEST auto-refresh caused hash drift in `.secrets.baseline`. Pre-commit `sync-tracked-files` hook detected and failed until fixed.
+
+### Impact Score
+- Files fixed: 2 (`.secrets.baseline`, `docs/ROADMAP.md`)
+- Regression class eliminated: `sync-tracked-files` hook failure on Fast Validation
 
 ## SESSION SUMMARY — 2026-04-07T08:10Z S308b (PR #3910 — CI Triage #3911 patterns 24–26)
 
