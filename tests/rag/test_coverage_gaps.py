@@ -35,6 +35,19 @@ pytest.importorskip(
 )
 
 
+def _import_retriever():
+    """Import codex.rag.retriever with a clearer error message on failure."""
+    try:
+        from codex.rag import retriever as _mod
+    except ImportError as exc:
+        raise ImportError(
+            "Failed to import codex.rag.retriever; ensure codex.rag and its "
+            "dependencies are installed. Original error: "
+            f"{exc.__class__.__name__}: {exc}"
+        ) from exc
+    return _mod
+
+
 # ===========================================================================
 # retriever.py — _load_model error paths (lines 78-103)
 # ===========================================================================
@@ -43,7 +56,7 @@ class TestRetrieverLoadModelErrors:
     """Cover _load_model() branches that are not exercised by the main test suite."""
 
     def test_load_model_raises_when_sentence_transformers_none(self):
-        from codex.rag import retriever as _mod
+        _mod = _import_retriever()
 
         with patch.object(_mod, "SentenceTransformer", None):
             r = _mod.Retriever.__new__(_mod.Retriever)
@@ -66,7 +79,7 @@ class TestRetrieverLoadModelErrors:
                     r._load_model()
 
     def test_load_model_propagates_value_error(self):
-        from codex.rag import retriever as _mod
+        _mod = _import_retriever()
 
         sentinel = MagicMock()
         with patch.object(_mod, "SentenceTransformer", sentinel):
@@ -85,7 +98,7 @@ class TestRetrieverLoadModelErrors:
 
 class TestRetrieverLoadIndexErrors:
     def test_load_index_reraises_generic_exception(self, tmp_path):
-        from codex.rag import retriever as _mod
+        _mod = _import_retriever()
 
         with patch("codex.rag.indexer.load_index",
                    side_effect=RuntimeError("corrupt index")):
@@ -99,7 +112,7 @@ class TestRetrieverLoadIndexErrors:
 
 class TestRetrieverReload:
     def test_reload_calls_load_index(self, tmp_path):
-        from codex.rag import retriever as _mod
+        _mod = _import_retriever()
 
         r = _mod.Retriever.__new__(_mod.Retriever)
         r.index_dir = str(tmp_path)
@@ -497,20 +510,24 @@ class TestModelUtilsSafeLoad:
     def test_raises_on_load_failure(self):
         from codex.rag._model_utils import safe_load_sentence_transformer
 
-        with patch("codex.rag._model_utils.SentenceTransformer",
-                   None, create=True):
-            with pytest.raises(Exception):
+        with patch("sentence_transformers.SentenceTransformer",
+                   side_effect=RuntimeError("simulated load failure")):
+            with pytest.raises(RuntimeError, match="simulated load failure"):
                 safe_load_sentence_transformer("nonexistent-model-xyz", None)
 
     def test_raises_attributeerror_on_missing_to_empty(self):
-        """When ST raises RuntimeError and model has no to_empty, raise RuntimeError."""
+        """When ST raises NotImplementedError (meta tensor) and model has no to_empty, raise RuntimeError."""
         from codex.rag import _model_utils as _mu
 
-        exc = RuntimeError("meta tensor")
-        fake_cls = MagicMock(side_effect=exc)
+        no_to_empty_model = MagicMock(spec=[])  # no to_empty attribute
 
-        with patch.object(_mu, "SentenceTransformer", fake_cls, create=True):
-            with pytest.raises((RuntimeError, AttributeError, Exception)):
+        # First call (device="cpu") → NotImplementedError triggers meta-tensor fallback.
+        # Second call (device="meta") → returns a model without to_empty.
+        with patch(
+            "sentence_transformers.SentenceTransformer",
+            side_effect=[NotImplementedError("meta tensor"), no_to_empty_model],
+        ):
+            with pytest.raises(RuntimeError, match="to_empty"):
                 _mu.safe_load_sentence_transformer("test-model", None)
 
 
@@ -523,7 +540,7 @@ class TestIndexerEmbedChunksImportError:
         from codex.rag import indexer as _mod
 
         with patch.dict("sys.modules", {"sentence_transformers": None}):
-            with pytest.raises((ImportError, Exception)):
+            with pytest.raises(ImportError):
                 _mod.embed_chunks(
                     chunks=[("src", "id", "some text")],
                     model_profile=None,

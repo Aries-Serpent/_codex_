@@ -725,6 +725,7 @@ jobs:
     steps:
       - name: "Checkout for pattern_recorder access"
         uses: actions/checkout@v5
+        continue-on-error: true
         with:
           ref: ${{ needs.triage.outputs.head_branch }}
           fetch-depth: 1

@@ -315,6 +315,9 @@ For Copilot/AI-assisted PRs:
 - [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
 
+### ⚡ Auto-Approve
+- [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+
 ### 🧪 Opt-In: Testing & Validation
 - [ ] validate.yml — Validation pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
 - [ ] resilient_validation.yml — Resilient validation (full pytest suite, 4 shards)
@@ -327,6 +330,8 @@ For Copilot/AI-assisted PRs:
 - [ ] ci-checkpoint-validation.yml — CI checkpoint validation
 - [ ] data-quality-suite.yml — Data quality & determinism suite
 - [ ] auth-tests.yml — Authentication tests
+- [ ] pr-checks.yml — PR Checks (isolated cache, src/ scope)
+- [ ] html_visual_regression.yml — HTML Visual Regression Screenshots
 
 ### 🔒 Opt-In: Security & Quality
 - [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)

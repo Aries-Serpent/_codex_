@@ -2,7 +2,7 @@
 """
 Automated fix script for common CI issues detected by workflows.
 
-This script automatically fixes the 11 most common patterns that cause workflow failures:
+This script automatically fixes the 26 most common patterns that cause workflow failures:
 1.  Unused imports
 2.  Unused variables
 3.  YAML indentation
@@ -14,13 +14,28 @@ This script automatically fixes the 11 most common patterns that cause workflow 
 9.  Unsorted imports (ruff I001) — auto-fixable
 10. Bandit medium/high security issues — detects missing # nosec annotations
 11. F-string missing placeholders (ruff F541) — auto-fixable
+12. Line length violations — auto-fixable
+13. W-series warnings — auto-fixable
+14. Link checker config issues — auto-fixable
+15. mypy baseline freshness — detects stale .mypy_baseline
+16. Stub duplicate definitions — auto-fixable
+17. CI SHA drift — detects stale pinned action SHAs
+18. Duplicate keyword arguments — auto-fixable
+19. Src absolute imports — detect src/ imports using absolute paths
+20. YAML multiline strings — detect missing block scalars
+21. Node.js 20 actions — detect deprecated actions/setup-node@v1/v2
+22. Tracked file sync — detects .secrets.baseline / CODEX_MANIFEST drift
+23. Secrets baseline plugins — detects missing detect-secrets plugins
+24. Codecov token missing — detect codecov-action without token: or continue-on-error
+25. Last-commit accountability — AGENT_ACCOUNTABILITY_REPORT.md not in last commit
+26. Auto-post rebase race — git pull --rebase without --autostash (auto-fixable)
 
 Usage:
     python scripts/ci/auto_fix_common_issues.py [--check-only] [--pattern PATTERN]
 
 Options:
     --check-only    Only detect issues, don't fix them
-    --pattern N     Only apply pattern N (1-23)
+    --pattern N     Only apply pattern N (1-26)
     --dry-run       Show what would be changed without making changes
 """
 
@@ -32,7 +47,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 # ---------------------------------------------------------------------------
 # Shared utility: triple-quoted string tracker
@@ -77,6 +92,7 @@ class CommonIssueFixer:
             "Duplicate Kwargs",         # Pattern 18 - auto-fixable: duplicate keyword arguments
             "Secrets Baseline Plugins", # Pattern 23 - auto-fix: strip incompatible plugins from .secrets.baseline
             "CodeQL Alerts",            # Pattern 8  - F401 unused imports auto-fixed; F841 informational
+            "Auto-Post Rebase Race",    # Pattern 26 - auto-fix: add --autostash to git pull --rebase
         }
         # Soft-warning patterns: auto-fixable (the --fix command works) but do NOT block
         # CI with an exit-code 1.  These are reported as informational "warning" in the
@@ -123,6 +139,11 @@ class CommonIssueFixer:
             # detect-secrets version (e.g. GitLabTokenDetector added in newer versions).
             # Causes the pre-commit hook to abort with TypeError on every run regardless of
             # actual secrets in the diff.  Auto-fix: remove unknown plugins from .secrets.baseline.
+            # Pattern 25: Last-Commit Accountability is a soft-warning (informational only)
+            # because the accountability report update must be included by the human/Copilot
+            # agent in the next commit — the script cannot auto-commit.
+            "Codecov Token Missing",            # Pattern 24 - manual: add token: or continue-on-error
+            "Last-Commit Accountability",       # Pattern 25 - manual: include report in next commit
         }
 
     def run_all_patterns(self, pattern_num: int = 0, pattern_name: str = "") -> bool:
@@ -166,13 +187,16 @@ class CommonIssueFixer:
             (21, "Node.js 20 Actions",       self.check_nodejs20_actions),
             (22, "Tracked File Sync",        self.check_tracked_file_sync),
             (23, "Secrets Baseline Plugins", self.check_secrets_baseline_plugins),
+            (24, "Codecov Token Missing",    self.check_codecov_token_missing),
+            (25, "Last-Commit Accountability", self.check_last_commit_accountability),
+            (26, "Auto-Post Rebase Race",    self.check_autopost_rebase_race),
         ]
         patterns = all_patterns
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
-                print(f"❌ Pattern {pattern_num} not found (valid range: 1-22)")
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1-26)")
                 return False
             print(f"🔍 Running pattern {pattern_num} only…\n")
         elif pattern_name:
@@ -232,6 +256,12 @@ class CommonIssueFixer:
                 "filesystem-deadlock":          [],
                 "test-infrastructure":          [],
                 "integration-branch-direct-session": [],
+                # ── New classifiers from CI Triage #3911 ─────────────────────
+                "codecov-token":        ["Codecov Token Missing"],
+                "accountability-report": ["Last-Commit Accountability"],
+                "autostash-race":       ["Auto-Post Rebase Race"],
+                "rebase-autostash":     ["Auto-Post Rebase Race"],
+                "session-done-push":    ["Auto-Post Rebase Race"],
                 # ── Unknown / unclassified (informational — escalate to human) ─
                 "unknown":                      [],
             }
@@ -1361,6 +1391,9 @@ class CommonIssueFixer:
             "Node.js 20 Actions": 21,
             "Tracked File Sync": 22,
             "Secrets Baseline Plugins": 23,
+            "Codecov Token Missing": 24,
+            "Last-Commit Accountability": 25,
+            "Auto-Post Rebase Race": 26,
         }
 
         for pattern_name, issues in self.issues_found.items():
@@ -1821,6 +1854,276 @@ class CommonIssueFixer:
             print("✅ Pattern 23 (Secrets Baseline Plugins): all baseline plugins available")
         return issues
 
+    # ------------------------------------------------------------------
+    # Pattern 24 — Codecov Token Missing (informational)
+    # ------------------------------------------------------------------
+    def check_codecov_token_missing(self) -> List[str]:
+        """Pattern 24: Detect ``codecov/codecov-action`` steps missing **both** ``token:``
+        and ``continue-on-error: true``.
+
+        Root cause (CI Triage #3911 — Validation Pipeline: 20 failures, first seen
+        on protected branch ``main``):
+        When ``codecov/codecov-action`` runs on a protected branch without a
+        ``token:`` parameter, the upload fails with::
+
+            Upload queued for processing failed: {"message":"Token required because branch is protected"}
+
+        If the step also lacks ``continue-on-error: true``, this error blocks the CI
+        job entirely.
+
+        **Detection:** scan workflow files for ``codecov/codecov-action`` steps that
+        lack **both** ``token:`` in the ``with:`` block **and** ``continue-on-error: true``
+        on the step.  Steps that already have either guard are correctly excluded.
+
+        **Auto-fix:** ❌ (manual) — two options:
+
+        - Option A: add ``token: ${{ secrets.CODECOV_TOKEN }}`` to the ``with:`` block.
+        - Option B: add ``continue-on-error: true`` to the step if the upload is
+          non-critical (allows the codecov error without blocking CI).
+        """
+        issues: List[str] = []
+        workflow_dir = self.repo_root / ".github" / "workflows"
+        if not workflow_dir.exists():
+            return issues
+
+        for wf in sorted(workflow_dir.glob("*.yml")):
+            try:
+                content = wf.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+
+            if "codecov/codecov-action" not in content:
+                continue
+
+            lines = content.splitlines()
+            for i, line in enumerate(lines):
+                if "uses:" not in line or "codecov/codecov-action" not in line:
+                    continue
+
+                # Determine the indentation level of this step (`uses:` line).
+                step_indent = len(line) - len(line.lstrip())
+
+                has_token = False
+                has_continue_on_error = False
+
+                # Scan the next 30 lines of this step block.
+                for j in range(i + 1, min(i + 30, len(lines))):
+                    next_line = lines[j]
+                    if not next_line.strip():
+                        continue
+                    next_indent = len(next_line) - len(next_line.lstrip())
+                    # If we encounter another step at the same/lower indent, stop.
+                    if next_indent < step_indent or (next_indent == step_indent and next_line.strip().startswith("-")):
+                        break
+                    stripped = next_line.strip()
+                    if stripped.startswith("token:"):
+                        has_token = True
+                    if stripped.startswith("continue-on-error:"):
+                        has_continue_on_error = True
+
+                if not has_token and not has_continue_on_error:
+                    rel = str(wf.relative_to(self.repo_root))
+                    issues.append(
+                        f"{rel}:{i + 1} — codecov/codecov-action missing `token:` and "
+                        "`continue-on-error: true` (fails on protected branches)"
+                    )
+
+        if issues:
+            print(f"⚠  Pattern 24 (Codecov Token Missing): {len(issues)} step(s) affected")
+            for issue in issues[:5]:
+                print(f"   {issue}")
+            if len(issues) > 5:
+                print(f"   … and {len(issues) - 5} more")
+            print(
+                "   ℹ️  Fix option A: add `token: ${{ secrets.CODECOV_TOKEN }}` in step with: block.\n"
+                "   ℹ️  Fix option B: add `continue-on-error: true` to the step (non-critical uploads).\n"
+                "   ℹ️  Root cause: CI Triage #3911 — Validation Pipeline 20 failures on protected branch"
+            )
+        else:
+            print(
+                "✅ Pattern 24 (Codecov Token Missing): "
+                "all codecov-action steps have token: or continue-on-error: true"
+            )
+        return issues
+
+    # ------------------------------------------------------------------
+    # Pattern 25 — Last-Commit Accountability (soft-warning)
+    # ------------------------------------------------------------------
+    def check_last_commit_accountability(self) -> List[str]:
+        """Pattern 25: Detect when the last git commit omits
+        ``docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md``.
+
+        Root cause (CI Triage #3911 — Agent Token Delegation: 17 failures):
+        ``agent-auth-delegation.yml`` REQ-4 executes::
+
+            git diff --name-only HEAD~1 HEAD | grep -qF "$REPORT"
+
+        and exits with code 1 when ``AGENT_ACCOUNTABILITY_REPORT.md`` is absent
+        from the last commit's changed-file list.  This is a hard CI block on
+        every Copilot PR push where the accountability report was skipped.
+
+        **Detection:** run ``git diff --name-only HEAD~1 HEAD`` and check whether
+        the accountability report path is listed.  Only active inside a git
+        repository (requires ``.git/`` directory and at least two commits).
+
+        **Auto-fix:** ❌ (manual) — the accountability report must be updated and
+        re-committed by the agent/developer.  Pattern 22 (Tracked File Sync) can
+        refresh the *content* via ``python scripts/ci/sync_tracked_files.py --fix``;
+        that file should then be staged and included in the next commit alongside
+        other PR changes.
+        """
+        issues: List[str] = []
+        report_path = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+
+        # Skip when not inside a git repository (e.g. in a bare export).
+        if not (self.repo_root / ".git").exists():
+            return issues
+
+        try:
+            result = subprocess.run(
+                ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=15,
+            )
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return issues
+
+        if result.returncode != 0:
+            # Shallow clone or initial commit — cannot compute diff; skip.
+            return issues
+
+        changed_files = result.stdout.strip().splitlines()
+        if report_path in changed_files:
+            print(
+                "✅ Pattern 25 (Last-Commit Accountability): "
+                "accountability report updated in last commit"
+            )
+            return issues
+
+        # Report was NOT in the last commit — find how stale it is.
+        try:
+            last_touch_result = subprocess.run(
+                ["git", "log", "-1", "--format=%ar", "--", report_path],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=10,
+            )
+            last_touch = last_touch_result.stdout.strip() or "unknown"
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            last_touch = "unknown"
+
+        issues.append(
+            f"{report_path} — not updated in last commit "
+            f"(last touched: {last_touch}). "
+            "agent-auth-delegation.yml REQ-4 will block CI. "
+            "Fix: update and include this file in the next commit."
+        )
+
+        print(f"⚠  Pattern 25 (Last-Commit Accountability): {len(issues)} issue(s)")
+        for issue in issues:
+            print(f"   {issue[:140]}")
+        print(
+            "   ℹ️  Fix: run `python scripts/ci/sync_tracked_files.py --fix` to refresh content,\n"
+            "         then stage and commit `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.\n"
+            "   ℹ️  Root cause: CI Triage #3911 — Agent Token Delegation REQ-4 (17 failures)"
+        )
+        return issues
+
+    # ------------------------------------------------------------------
+    # Pattern 26 — Auto-Post Rebase Race (auto-fixable)
+    # ------------------------------------------------------------------
+    def check_autopost_rebase_race(self) -> List[str]:
+        """Pattern 26: Detect ``git pull --rebase`` without ``--autostash`` in workflow files.
+
+        Root cause (CI Triage #3911 — 🔄 Auto-Post After Agent Session: 16 failures;
+        fix introduced in S306 / PR #3905 commit 58be635):
+        ``copilot-agent-session-done.yml`` invokes ``session_wrapup_autofix.py``
+        which writes unstaged changes to the workspace *before* the ``git pull
+        --rebase`` step executes.  Without ``--autostash``, git rebase refuses to
+        run and prints::
+
+            error: cannot pull with rebase: You have unstaged changes.
+            error: Please commit or stash them.
+
+        The subsequent push then fails with ``[rejected] … (fetch first)`` because
+        the local HEAD diverged from remote while the aborted rebase left the
+        working tree in a modified-but-uncommitted state.
+
+        **Detection:** scan all ``.yml`` workflow files for ``git pull --rebase``
+        occurrences that do **not** already include ``--autostash`` on the same line.
+
+        **Auto-fix:** ✅ — insert ``--autostash`` immediately after
+        ``git pull --rebase`` in-place, preserving all other flags and arguments.
+        """
+        issues: List[str] = []
+        workflow_dir = self.repo_root / ".github" / "workflows"
+        if not workflow_dir.exists():
+            print("✅ Pattern 26 (Auto-Post Rebase Race): no .github/workflows directory")
+            return issues
+
+        affected: List[Tuple[Path, int, str]] = []  # (workflow, line_idx_0based, original_line_with_newline)
+
+        for wf in sorted(workflow_dir.glob("*.yml")):
+            try:
+                raw = wf.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+
+            if "git pull --rebase" not in raw:
+                continue
+
+            lines = raw.splitlines(keepends=True)
+            for idx, line in enumerate(lines):
+                if "git pull --rebase" in line and "--autostash" not in line:
+                    rel = str(wf.relative_to(self.repo_root))
+                    issues.append(
+                        f"{rel}:{idx + 1} — `git pull --rebase` without `--autostash` "
+                        "(causes 'unstaged changes' abort when session_wrapup_autofix.py runs)"
+                    )
+                    affected.append((wf, idx, line))
+
+        if issues:
+            print(f"⚠  Pattern 26 (Auto-Post Rebase Race): {len(issues)} occurrence(s)")
+            for issue in issues[:5]:
+                print(f"   {issue}")
+            if len(issues) > 5:
+                print(f"   … and {len(issues) - 5} more")
+            print(
+                "   ℹ️  Fix: replace `git pull --rebase` with `git pull --rebase --autostash`.\n"
+                "   ℹ️  Root cause: CI Triage #3911 — Auto-Post session-done 16 failures (S306/PR #3905)"
+            )
+
+            if not self.check_only:
+                if not self.dry_run:
+                    fixed = 0
+                    # Group by file so each file is read/written only once.
+                    # Using dict.fromkeys() preserves insertion order while deduplicating.
+                    seen_files: dict[Path, None] = dict.fromkeys(wf for wf, _, _ in affected)
+                    for wf in seen_files:
+                        raw = wf.read_text(encoding="utf-8", errors="replace")
+                        # Count actual occurrences for this file so the reported
+                        # total matches the number of lines changed (not files).
+                        occurrence_count = sum(1 for fw, _, _ln in affected if fw == wf)
+                        new_raw = raw.replace(
+                            "git pull --rebase",
+                            "git pull --rebase --autostash",
+                        )
+                        if new_raw != raw:
+                            wf.write_text(new_raw, encoding="utf-8")
+                            fixed += occurrence_count
+                    if fixed:
+                        self.fixes_applied["Auto-Post Rebase Race"] = fixed
+                        print(f"   ✅ Auto-fixed {fixed} occurrence(s)")
+                        issues.clear()
+                else:
+                    print(f"   [dry-run] would add `--autostash` to {len(issues)} occurrence(s)")
+        else:
+            print("✅ Pattern 26 (Auto-Post Rebase Race): no `git pull --rebase` without --autostash found")
+        return issues
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1841,9 +2144,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 24),
+        choices=range(1, 27),
         metavar="N",
-        help="Run only pattern N (1–23); see pattern list above"
+        help="Run only pattern N (1–26); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",

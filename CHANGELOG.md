@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S309 — PR #3915)
+- **S309c/CODE-REVIEW-1**: `auto_fix_common_issues.py` docstring — all 26 patterns now listed (12-23 were missing)
+- **S309c/CODE-REVIEW-2**: `auto_fix_common_issues.py` Pattern 26 fix-loop — group by file, count actual occurrences replaced (fixes inaccurate "Auto-fixed N occurrence(s)" message when file has multiple rebase lines)
+- **S309c/CODE-REVIEW-3**: `test_coverage_gaps.py` `test_raises_on_load_failure` — patch `sentence_transformers.SentenceTransformer` (local import; module-level patch was ineffective)
+- **S309c/CODE-REVIEW-4**: `test_coverage_gaps.py` `test_raises_attributeerror_on_missing_to_empty` — patch `sentence_transformers.SentenceTransformer` with two-call side_effect: NotImplementedError (triggers meta-tensor path) then model without `to_empty`
+- **S309/RC-1**: `iterative-self-healing-ci.yml` escalation job `Checkout for pattern_recorder access` now has `continue-on-error: true` — stops crash-loop when triggering branch is deleted (fixes issues #3917–#3921)
+- **S309/RC-2**: Updated `.secrets.baseline` hashed_secrets for `CODEX_MANIFEST.json` and `.codex/agent_context.json` — fixes Fast Validation sync-tracked-files failure (fixes issue #3912)
+- **S309/RC-3**: Added `--autostash` flag to 10 bare `git pull --rebase` calls across 7 workflow files — fixes Auto-Fix Pattern 26 (fixes issues #3913, #3914, #3916)
+- **S309/RC-4**: `PULL_REQUEST_TEMPLATE.md` — added missing `⚡ Auto-Approve` section + `pr-checks.yml` + `html_visual_regression.yml` to WEC block
+- **S309/RC-5**: `session_wrapup_autofix.py` `_WEC_ITEMS` — added 12 new items + `⚙️ Opt-In: Infrastructure & Deployment` section; WEC now has 40 items (was 28) — fully in sync with template
+- **S309/DOCS**: Added §25 CI Failure Issue Connection Map mermaid diagram + WEC Sync diagram to `docs/ci/PR_LIFECYCLE.md`
+
+### Fixed (auto-update — PR #3915)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3915 (SHA `70989bc9`) at 2026-04-07T08:26Z [auto-generated]
+
+### Fixed (S308 — PR #3910 — 2026-04-07 · Code quality: SHA1 comment, WEC regex, datetime deprecation, test precision)
+- **`scripts/ci/session_wrapup_autofix.py`**: Added inline comment explaining SHA-1 usage in `_compute_sha1()` is for detect-secrets format compatibility, not security-sensitive
+- **`scripts/ci/wec_enforcer.py`**: Fixed `_CHECKBOX_RE` regex to require `.yml` suffix and handle internal dots in filenames (e.g., `pre-merge-validation.yml`); eliminated redundant `head_sha.strip()` calls
+- **`scripts/cognitive/extract_workflow_patterns.py`**: Replaced deprecated `datetime.utcnow()` with `datetime.now(timezone.utc)`; fixed naive datetime isoformat with bare `Z` append; extracted `parse_github_timestamp()` helper to reduce duplication
+- **`tests/codex/test_cli_roles.py`**: Removed dead `TYPER_AVAILABLE` flag (module skipped immediately on import failure)
+- **`tests/rag/test_coverage_gaps.py`**: Added `_import_retriever()` helper for clearer error messages; narrowed `pytest.raises(Exception)` to specific exception types
+- **`scripts/ci/auto_fix_common_issues.py`**: Added Pattern 24 (Codecov Token Missing — detect `codecov-action` without `token:` or `continue-on-error`), Pattern 25 (Last-Commit Accountability — detect `AGENT_ACCOUNTABILITY_REPORT.md` absent from last commit), Pattern 26 (Auto-Post Rebase Race — auto-fix `git pull --rebase` without `--autostash`); updated argparse choices to 1–26, pattern_map, aliases, and docstring. Root cause: CI Triage #3911 (Validation Pipeline 20 failures, Agent Token Delegation 17 failures, Auto-Post 16 failures)
+- **`scripts/ci/collect_telemetry.py`**: Added `codecov-token`, `accountability-report`, `autostash-race` classifier groups to `PATTERN_KEYWORDS`
+
+### Fixed (auto-update — PR #3910)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3910 (SHA `477c6480`) at 2026-04-07T07:18Z [auto-generated]
+
 ### Fixed (S307b — PR #3905 — 2026-04-07 · Durable fix for cognitive-brain metadata.json EOF newline regression)
 - **`scripts/cognitive/extract_workflow_patterns.py`** (`_save_metadata`): Added `f.write("\n")` after `json.dump()` so every scheduled `cognitive-brain-feed.yml` run writes `metadata.json` with a trailing newline, permanently fixing the `end-of-file-fixer` pre-commit gate regression (root cause of commit `9eea647` Fast Validation failure)
 
@@ -4827,3 +4854,32 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - **deps**: dvc 3.66.1→3.67.0 (PR #3811)
 - **deps**: hypothesis 6.142.1→6.151.10 (PR #3812)
 - Conflict resolution in requirements/base.txt: datasets==4.8.4, numpy==2.4.4 (max of #3803+#3804)
+
+## [S309] 2026-04-07 — CI Failures #3912-3921: secrets baseline + autostash workflow fixes
+
+### Fixed
+- **Fast Validation / sync-tracked-files**: Update `.secrets.baseline` hashed_secrets for
+  `.codex/agent_context.json` and `CODEX_MANIFEST.json` to match current CI state.
+- **Pattern 26 / Auto-Post Rebase Race** (10 occurrences): Added `--autostash` flag to all
+  `git pull --rebase` calls across 7 workflow files to prevent 'unstaged changes' abort:
+  - `.github/workflows/agent-auth-delegation.yml` (lines 910, 1553)
+  - `.github/workflows/branch-divergence-monitor.yml` (lines 398, 440)
+  - `.github/workflows/codex-manifest-refresh.yml` (line 135)
+  - `.github/workflows/cognitive-analysis-feed.yml` (lines 128, 217)
+  - `.github/workflows/pr-followup-generator.yml` (line 87)
+  - `.github/workflows/forward-sync-autogen.yml` (line 126)
+  - `.github/workflows/e-to-d-transition-gate.yml` (line 243)
+
+### Root Cause
+- `.secrets.baseline` hashed_secrets drift when `CODEX_MANIFEST.json` or
+  `.codex/agent_context.json` change — sync-tracked-files hook detects the mismatch.
+- `session_wrapup_autofix.py` introduces unstaged changes during CI; bare
+  `git pull --rebase` aborts if unstaged files exist; `--autostash` stashes first,
+  rebases, then re-applies, eliminating the abort.
+
+### Issues Resolved
+- #3912 Validation Pipeline (Fast Validation)
+- #3913 Auto-Fix Common CI Issues
+- #3914 PR Auto-Fix Check
+- #3916 Pre-Merge Validation
+- #3917-3921 Iterative Self-Healing CI (S262-S266)

@@ -395,7 +395,7 @@ jobs:
           Merge base:   ${{ needs.detect.outputs.merge_base_sha }}"
 
           # Rebase guard: pull any commits that landed after our checkout
-          git pull --rebase origin 0D_base_ || {
+          git pull --rebase --autostash origin 0D_base_ || {
             echo "⚠️  Rebase conflict — re-applying on top of latest 0D_base_"
             git rebase --abort 2>/dev/null || true
             git fetch origin 0D_base_ --depth=5
@@ -437,7 +437,7 @@ jobs:
 
           # Bring local 0D_base_ up to date
           git checkout 0D_base_
-          git pull --rebase origin 0D_base_ || { echo "::warning::rebase pull failed; continuing with local state"; }
+          git pull --rebase --autostash origin 0D_base_ || { echo "::warning::rebase pull failed; continuing with local state"; }
 
           # `git merge-base --is-ancestor A B` returns 0 (true) if A is an ancestor of B.
           # Here: `is origin/main an ancestor of HEAD (0D_base_)?`

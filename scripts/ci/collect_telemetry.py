@@ -180,6 +180,22 @@ class TelemetryCollector:
             "embedding", "index rebuild", "rag-index", "rag index",
             "vector store", "faiss", "embedding-rebuild",
         ],
+        # CODECOV_001: Codecov upload fails with "Token required because branch is protected"
+        "codecov-token": [
+            "codecov", "codecov-action", "token required", "protected branch",
+            "upload queued", "coverage upload", "codecov upload",
+        ],
+        # ACCOUNTABILITY_001: AGENT_ACCOUNTABILITY_REPORT.md not updated in last commit
+        "accountability-report": [
+            "accountability report", "agent_accountability", "req-4", "req4",
+            "accountability", "report updated in last commit",
+        ],
+        # AUTOSTASH_001: git pull --rebase without --autostash causes "unstaged changes" abort
+        "autostash-race": [
+            "autostash", "unstaged changes", "cannot pull with rebase",
+            "rebase race", "session_wrapup", "session-done push",
+            "fetch first", "rebase abort",
+        ],
     }
 
     def __init__(self, owner: str, repo: str, token: str):
