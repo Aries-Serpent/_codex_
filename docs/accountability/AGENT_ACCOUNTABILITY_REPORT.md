@@ -18944,3 +18944,25 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session S310 — 2026-04-08T17:00Z — CI Rescue: Validation Pipeline + Auto-Approve Fix (PR #3928)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — 3 blocking comments identified and addressed ✅
+- [x] **0b.** Failing CI checks reviewed — Validation Pipeline (sync-tracked-files) + Auto-Approve (missing github-token) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **Validation Pipeline fix** — Updated `.secrets.baseline` (hashes for `CODEX_MANIFEST.json` + `.codex/agent_context.json`) and `docs/ROADMAP.md` date (`2026-04-07` → `2026-04-08`) to satisfy the `sync-tracked-files` pre-commit hook.
+2. **Auto-Approve fix** — Added `|| github.token` fallback to the `github-token` input in `.github/workflows/auto-approve-workflows.yml` to prevent "Input required and not supplied: github-token" failure when `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` are unavailable (e.g., Dependabot PRs).
+3. **Comment Review Gate** — Replied to all 3 blocking comments (IDs: 4207920523, 4207925335, 4207946568).
+
+### Root-Cause Analysis
+- `sync-tracked-files` hook failed because the previous manifest refresh commit updated `CODEX_MANIFEST.json` without updating `.secrets.baseline` and `docs/ROADMAP.md` to match.
+- Auto-Approve workflow failed because `secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY` evaluated to empty string on Dependabot PRs, and `actions/github-script@v7` requires a non-empty `github-token` input.
+
+### Impact Score
+- Files fixed: 4 (`.secrets.baseline`, `docs/ROADMAP.md`, `.github/workflows/auto-approve-workflows.yml`, this file)
+- CI gates unblocked: Validation Pipeline, Auto-Approve, Comment Review Gate
+- Deferral Language Gate: 0 violations
