@@ -19005,3 +19005,27 @@ Every automated `chore(vars): sync .codex/agent_context.json` commit changes the
 - Deferral Language Gate: 0 violations
 
 ---
+
+## Session S313 — 2026-04-09T22:43Z — Missed-Trigger Recovery + .secrets.baseline re-sync (PR #3934)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** Comment #4218141856 (missed-trigger S221 guard) reviewed and addressed ✅
+- [x] **0c.** Comment Review Gate re-scan confirmed 7/7 comments addressed ✅
+- [x] **0d.** `.secrets.baseline` re-synced after `chore(manifest): auto-heal C2` commit `8f8e40c` ✅
+- [x] **0e.** `ruff check src/ --select F401,F841` → exit 0 ✅
+- [x] **0f.** `sync_tracked_files.py --fix` → ✅ All tracked files consistent ✅
+
+### Work Completed
+1. **Missed-trigger S221 guard** — Comment #4218141856 referenced rescue `3934:671db430cdc0` (old commit). The rescue had already been addressed in session S312. Replying to confirm all CI issues resolved.
+2. **`.secrets.baseline` re-sync** — Automated `chore(manifest): auto-heal C2` commit `8f8e40c` updated `CODEX_MANIFEST.json`, making the `hashed_secret` entry stale again. Fixed via `sync_tracked_files.py --fix`.
+
+### Root-Cause (recurring pattern)
+Every automated manifest refresh commit invalidates the `CODEX_MANIFEST.json` `hashed_secret` in `.secrets.baseline`. Must re-run `sync_tracked_files.py --fix` before any subsequent push.
+
+### Impact Score
+- Files fixed: 2 (`.secrets.baseline`, this file)
+- CI gates unblocked: sync-tracked-files pre-commit hook
+- Deferral Language Gate: 0 violations
+
+---
