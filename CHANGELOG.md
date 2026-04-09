@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #3934)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3934 (SHA `671db430`) at 2026-04-09T03:09Z [auto-generated]
 
+### Fixed (cherry-pick PR #3932 — sync .secrets.baseline + ROADMAP date)
+- **PR #3932**: Bump cryptography 46.0.6→46.0.7 and mlflow 3.9.0→3.11.0rc1 in requirements/lock.txt (uv group); sync `.secrets.baseline` hashes and `docs/ROADMAP.md` date after manifest refresh (S310 fix)
+
 ### Fixed (cherry-pick PRs #3926–#3931 — dependency bumps + CI fixes)
 - **PR #3926**: Bump mlflow 3.9.0 → 3.11.0rc1 in requirements/lock.txt (pip group); fix sync-tracked-files Fast Validation failure
 - **PR #3927**: Bump mlflow 3.9.0 → 3.11.0rc1 in requirements-test.txt and requirements/lock.txt; fix sync-tracked-files Fast Validation failure

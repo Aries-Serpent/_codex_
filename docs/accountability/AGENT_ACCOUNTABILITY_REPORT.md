@@ -18975,3 +18975,33 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## Session S312 — 2026-04-09T08:20Z — Cherry-pick PR #3932 + CI fixes (codebase-wide issues)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **0c.** Comment #4212654752 reviewed — cherry-pick PR #3932 + review codebase-wide issues ✅
+- [x] **0d.** Comments #4211160129, #4211161771, #4211164796, #4211179345, #4211184199, #4211211084 reviewed — CI rescue / Comment Review Gate / Validation Pipeline failures ✅
+- [x] **0e.** Validation Pipeline run 24170196148 analyzed — `sync-tracked-files` hook failed on old commit (671db43); already fixed by cherry-pick commit 7a6ba1e ✅
+- [x] **0f.** `.secrets.baseline` re-synced via `sync_tracked_files.py --fix` (agent_context.json hash refreshed after auto-commit 4b48b48) ✅
+- [x] **0g.** PR #3932 analyzed and cherry-picked ✅
+
+### Work Completed
+1. **PR #3932 cherry-pick** — Applied the following from PR #3932:
+   - Copilot followup prompt `.github/copilot-prompts/active/PR-3932-followup.md` added
+   - CHANGELOG entry for PR #3932 cherry-pick added
+   - `.secrets.baseline` re-synced (agent_context.json hash updated: `057d9405` → `e61c21821586` after `chore(vars)` auto-commit)
+2. **CI failure analysis** — Validation Pipeline run 24170196148 failed on commit `671db43` (pre-cherry-pick). Root cause: `sync-tracked-files` hook found stale `.secrets.baseline`. Already resolved by previous session's cherry-pick commit `7a6ba1e` and subsequent `sync_tracked_files.py --fix`.
+3. **Comment Review Gate** — Addressed all blocking comments by replying to each `<comment_new>` comment.
+
+### Root-Cause (recurring pattern)
+Every automated `chore(vars): sync .codex/agent_context.json` commit changes the `agent_context.json` file, which invalidates the `hashed_secret` entry in `.secrets.baseline`. Must re-run `sync_tracked_files.py --fix` after each such auto-commit before the next push.
+
+### Impact Score
+- Files fixed: 4 (`.secrets.baseline`, `CHANGELOG.md`, followup prompt file, this file)
+- CI gates unblocked: Comment Review Gate, sync-tracked-files
+- PRs closed out: #3932 (cherry-picked)
+- Deferral Language Gate: 0 violations
+
+---
