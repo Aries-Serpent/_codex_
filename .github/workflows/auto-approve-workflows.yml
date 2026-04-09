@@ -237,7 +237,7 @@ jobs:
           DRY_RUN: ${{ steps.resolve.outputs.dry_run }}
           REPO: ${{ github.repository }}
         with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const [owner, repo] = process.env.REPO.split('/');
             const dryRun        = process.env.DRY_RUN === 'true';

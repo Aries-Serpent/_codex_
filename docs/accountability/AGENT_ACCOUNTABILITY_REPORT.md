@@ -18944,3 +18944,34 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session S311 — 2026-04-09T03:10Z — Cherry-pick PRs #3926–#3931 (dependency bumps + CI fixes)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **0c.** Comment #4211159497 reviewed — cherry-pick all changes from PRs #3926, #3927, #3928, #3930, #3931 ✅
+- [x] **0d.** All 5 PRs analyzed — dependency bumps + CI fixes identified ✅
+- [x] **0e.** Changes applied and validated ✅
+
+### Work Completed
+1. **Dependency bumps applied** (from PRs #3926–#3931):
+   - `cryptography` 46.0.6 → 46.0.7 in `requirements.txt` and `requirements/lock.txt` (PR #3931)
+   - `cryptography` 46.0.5 → 46.0.7 in `misc/repo-owner-review/temp-outputs/.../pyproject.toml` (PR #3930)
+   - `mlflow` 3.9.0 → 3.11.0rc1 in `requirements-test.txt`, `requirements/lock.txt` (PRs #3926, #3927, #3928, #3930)
+2. **Workflow fix applied** (from PR #3928): Added `|| github.token` fallback in `.github/workflows/auto-approve-workflows.yml` to prevent "Input required and not supplied: github-token" failure on Dependabot PRs.
+3. **Copilot prompt files added**: `.github/copilot-prompts/active/PR-3926/3927/3928/3930/3931-followup.md` ✅
+4. **CHANGELOG updated** with cherry-pick summary entry ✅
+5. **docs/ROADMAP.md** date updated `2026-04-07` → `2026-04-08` ✅
+
+### Root-Cause (PRs being consolidated)
+- Multiple Dependabot PRs opened for the same dependency bumps across different lock files.
+- Each PR included additional `sync-tracked-files` CI fixes that are now consolidated here.
+- Auto-approve workflow needed `|| github.token` fallback since Dependabot PRs don't expose CODEX_MASTER_KEY/CODEX_BACKUP_KEY.
+
+### Impact Score
+- Files changed: 8 (requirements.txt, requirements-test.txt, requirements/lock.txt, misc pyproject.toml, auto-approve-workflows.yml, CHANGELOG.md, docs/ROADMAP.md, this file + 5 copilot prompt files)
+- PRs closed out: 5 (#3926, #3927, #3928, #3930, #3931)
+- Deferral Language Gate: 0 violations
+
+---

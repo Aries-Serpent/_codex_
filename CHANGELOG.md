@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #3934)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3934 (SHA `671db430`) at 2026-04-09T03:09Z [auto-generated]
 
+### Fixed (cherry-pick PRs #3926–#3931 — dependency bumps + CI fixes)
+- **PR #3926**: Bump mlflow 3.9.0 → 3.11.0rc1 in requirements/lock.txt (pip group); fix sync-tracked-files Fast Validation failure
+- **PR #3927**: Bump mlflow 3.9.0 → 3.11.0rc1 in requirements-test.txt and requirements/lock.txt; fix sync-tracked-files Fast Validation failure
+- **PR #3928**: Bump mlflow 3.9.0 → 3.11.0rc1 in requirements/lock.txt (uv group); fix auto-approve-workflows.yml `github-token` input (`|| github.token` fallback); fix sync-tracked-files
+- **PR #3930**: Bump cryptography 46.0.5 → 46.0.7 in misc pyproject.toml; bump mlflow 3.9.0 → 3.11.0rc1 in lock.txt; fix sync-tracked-files
+- **PR #3931**: Bump cryptography 46.0.6 → 46.0.7 in requirements.txt and requirements/lock.txt; fix sync-tracked-files
+
 ### Fixed (S309 — PR #3915)
 - **S309c/CODE-REVIEW-1**: `auto_fix_common_issues.py` docstring — all 26 patterns now listed (12-23 were missing)
 - **S309c/CODE-REVIEW-2**: `auto_fix_common_issues.py` Pattern 26 fix-loop — group by file, count actual occurrences replaced (fixes inaccurate "Auto-fixed N occurrence(s)" message when file has multiple rebase lines)
