@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3939 comment response)
+- Auto-fix: addressed blocking PR comments (comment_id 4220675901, 4220701333) for comment-review-gate rescan at 2026-04-10T05:01Z [auto-generated]
+
 ### Fixed (auto-update — PR #3939)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3939 (SHA `8197e7eb`) at 2026-04-10T04:52Z [auto-generated]
 
