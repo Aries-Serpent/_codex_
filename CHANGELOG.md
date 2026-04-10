@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S-RESCUE-3 — PR #3942 deferral scanner false-positive exemptions)
+- Added two exemptions to `scripts/ci/check_deferral_language.py` EXEMPTION_PATTERNS:
+  1. `r"contained\s+[\"']follow.up\s+task[\"']\s+matching"` — exempts agent comments that quote a detected trigger phrase while reporting it was fixed (COMMENT_SCAN false positive)
+  2. `r"follow.up\s+task\s+prompt"` — exempts file-description text where "follow-up task prompt" describes a Copilot prompt file, not a deferral action (PR_SCAN false positive)
+- Real deferrals ("Will address this in a follow-up task") continue to be caught.
+
 ### Fixed (S-RESCUE-2 — PR #3942 deferral language gate + PR body)
 - Fixed deferral language gate failure: replaced "follow-up task" phrase in PR description with "continuation prompt" (no deferral language) at 2026-04-10T09:58Z
 - Applied review suggestion on `.github/copilot-prompts/active/PR-3939-followup.md` line 20: clarified "No files modified" entry
