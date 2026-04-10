@@ -662,6 +662,47 @@ jobs:
               return;
             }
 
+            // S221-R1: Commit-resolution check.
+            // If a Copilot-agent commit was pushed to this PR branch AFTER the rescue
+            // comment was created, a session ran and addressed the issue.  Skip the
+            // retrigger to avoid waking a new session for an already-resolved problem.
+            // This closes the gap where Copilot pushes a fix commit but the closing
+            // comment uses language not covered by the "fixed in/at" regex above.
+            if (latestRescue.createdAt) {
+              let prCommits = [];
+              try {
+                const commitsResp = await github.rest.pulls.listCommits({
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  pull_number: prNumber,
+                  per_page: 30,
+                });
+                prCommits = commitsResp.data || [];
+              } catch(e) {
+                core.info(`Could not fetch PR commits for commit-resolution check: ${e.message}`);
+              }
+              const rescueCreatedAt = new Date(latestRescue.createdAt);
+              const resolvedByCommit = prCommits.some(c => {
+                // Check both the GitHub author login and the git committer date.
+                const authorLogin    = c.author?.login    || '';
+                const committerLogin = c.committer?.login || '';
+                const committedAt    = c.commit?.committer?.date
+                  ? new Date(c.commit.committer.date) : null;
+                return (
+                  (COPILOT_AGENT_LOGINS.has(authorLogin) || COPILOT_AGENT_LOGINS.has(committerLogin)) &&
+                  committedAt !== null &&
+                  committedAt > rescueCreatedAt
+                );
+              });
+              if (resolvedByCommit) {
+                core.info(
+                  `Rescue ${latestRescue.id}: a Copilot-agent commit was pushed after ` +
+                  `${latestRescue.createdAt} — treating as resolved, skipping retrigger.`
+                );
+                return;
+              }
+            }
+
             // Dedup: if a retrigger was already posted for this rescue, only skip posting
             // ANOTHER retrigger if Copilot has taken some action (posted any comment) after
             // that retrigger. If Copilot has NOT acted after the retrigger, the queued
