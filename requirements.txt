@@ -1,5 +1,5 @@
 typer>=0.12
-cryptography==46.0.6
+cryptography==46.0.7
 jsonschema>=4.23
 psutil>=5.9; platform_system != "Windows"  # optional sys-metrics
 tomli>=2.0; python_version < "3.11"

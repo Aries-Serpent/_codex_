@@ -33,8 +33,10 @@ name: "⚡ Auto-Approve Pending Workflow Runs"
 #   wec:auto-approve       Persistent opt-in.  Survives all PR body rewrites.
 #   wec:auto-approve-once  Single-session opt-in.  Removed after next Copilot session.
 #
-# Required secret: CODEX_MASTER_KEY (or CODEX_BACKUP_KEY)
-#   github.token does NOT have `actions: write` scope to approve runs.
+# Token used: CODEX_MASTER_KEY (or CODEX_BACKUP_KEY) when available, falling back to github.token.
+#   CODEX_* keys have `actions: write` scope required to approve workflow runs.
+#   github.token fallback works for same-repo PRs (not forks); approval may be skipped/no-op
+#   in contexts where the installation token lacks `actions: write`.
 #
 # S305 — created 2026-04-03 | S302 — schedule + dispatch overhaul 2026-04-06
 
@@ -237,7 +239,7 @@ jobs:
           DRY_RUN: ${{ steps.resolve.outputs.dry_run }}
           REPO: ${{ github.repository }}
         with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const [owner, repo] = process.env.REPO.split('/');
             const dryRun        = process.env.DRY_RUN === 'true';
