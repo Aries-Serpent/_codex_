@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S-RESCUE-4 — PR #3942 Fast Validation sync-tracked-files)
+- Updated `.secrets.baseline` hashed_secret for `.codex/agent_context.json` (e61c21 → 09596c) and `CODEX_MANIFEST.json` (ca548d → 3aa328) to match current file state
+- Updated `docs/ROADMAP.md` date stamp from 2026-04-08 to 2026-04-10 as required by sync-tracked-files hook
+
 ### Fixed (S-RESCUE-3 — PR #3942 deferral scanner false-positive exemptions)
 - Added two exemptions to `scripts/ci/check_deferral_language.py` EXEMPTION_PATTERNS:
   1. `r"contained\s+[\"']follow.up\s+task[\"']\s+matching"` — exempts agent comments that quote a detected trigger phrase while reporting it was fixed (COMMENT_SCAN false positive)

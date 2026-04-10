@@ -3,7 +3,30 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-10T15:37Z S-RESCUE-3-deferral-scanner-exemptions
+**Last updated:** 2026-04-10T22:40Z S-RESCUE-4-sync-tracked-files-baseline-fix
+
+## SESSION SUMMARY — 2026-04-10T22:40Z S-RESCUE-4 (PR #3942 — Fast Validation sync-tracked-files fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** New comments 4224841269, 4227159103, 4227173672 reviewed ✅
+- [x] **0d.** Fast Validation failure run #24251025183 analyzed: sync-tracked-files hook mutated `.secrets.baseline` and `docs/ROADMAP.md` ✅
+
+### Root Cause Analysis
+The `sync-tracked-files` pre-commit hook in Fast Validation (run #24251025183) recomputed hashes for tracked secrets and a date stamp:
+1. `.secrets.baseline` entry for `.codex/agent_context.json`: hash `e61c21...` → `09596c...`
+2. `.secrets.baseline` entry for `CODEX_MANIFEST.json`: hash `ca548d...` → `3aa328...`
+3. `docs/ROADMAP.md` date stamp: `2026-04-08` → `2026-04-10`
+
+These are stale values from the prior commit on the branch. The hook auto-corrects them but `files were modified by this hook` causes the pre-commit run to fail.
+
+### Work Completed
+- **`.secrets.baseline`**: Applied both hashed_secret updates matching CI hook output ✅
+- **`docs/ROADMAP.md`**: Updated date stamp to `2026-04-10` matching CI hook output ✅
+- **`CHANGELOG.md`**: Updated with S-RESCUE-4 Fixed entry ✅
+- Verified: `ruff check` → 0 violations ✅
+
 
 ## SESSION SUMMARY — 2026-04-10T15:37Z S-RESCUE-3 (PR #3942 — Deferral Scanner Exemptions)
 
