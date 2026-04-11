@@ -223,6 +223,18 @@ class TestCachedRetriever:
         cr = self._make_cached_retriever()
         assert cr._is_cache_valid("nonexistent_key") is False
 
+    def test_is_cache_valid_becomes_false_after_explicit_invalidation(self):
+        import time
+        cr = self._make_cached_retriever()
+        key = "k1"
+        cr.query_cache.put(key, [{"text": "cached"}])
+        cr.cache_timestamps[key] = time.time()
+        assert cr._is_cache_valid(key) is True
+
+        cr.cache_timestamps.pop(key, None)
+        cr.query_cache.clear()
+        assert cr._is_cache_valid(key) is False
+
     def test_is_cache_valid_false_for_expired_entry(self):
         import time
         cr = self._make_cached_retriever()

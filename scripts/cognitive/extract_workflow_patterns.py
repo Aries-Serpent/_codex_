@@ -25,6 +25,11 @@ import numpy as np
 import requests
 
 
+def parse_github_timestamp(timestamp_str: str) -> datetime:
+    """Parse a GitHub API timestamp (e.g., '2023-01-01T00:00:00Z') into a datetime."""
+    return datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+
+
 @dataclass
 class WorkflowPattern:
     """Represents an extracted workflow pattern"""
@@ -244,10 +249,6 @@ class WorkflowPatternExtractor:
 
         # Calculate average duration
         durations = []
-
-        def parse_github_timestamp(timestamp_str: str) -> datetime:
-            """Parse a GitHub API timestamp (e.g., '2023-01-01T00:00:00Z') into a datetime."""
-            return datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
 
         for run in runs:
             if run.get("updated_at") and run.get("created_at"):

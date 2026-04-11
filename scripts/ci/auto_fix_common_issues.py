@@ -42,6 +42,7 @@ Options:
 import argparse
 import ast
 import json
+import os
 import re
 import subprocess
 import sys
@@ -1788,8 +1789,12 @@ class CommonIssueFixer:
             try:
                 _m = _im.import_module(f"detect_secrets.plugins.{_mod_info.name}")
                 _available_plugins.update(dir(_m))
-            except Exception:  # noqa: BLE001 — skip unimportable plugin modules during discovery scan
-                pass
+            except Exception as exc:  # noqa: BLE001 — skip unimportable plugin modules during discovery scan
+                if "AUTO_FIX_DEBUG" in os.environ:
+                    print(
+                        f"DEBUG: skipping detect-secrets plugin module "
+                        f"{_mod_info.name!r} due to import error: {exc}"
+                    )
 
         for plugin_entry in plugins_used:
             name = plugin_entry.get("name", "")

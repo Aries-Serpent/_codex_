@@ -202,9 +202,13 @@ dill==0.4.0
     #   multiprocess
 diskcache==5.6.3
     # via dvc-data
-    # Security: CVE-2025-69872 (moderate) - pickle deserialization RCE requires
-    # attacker write-access to the cache directory. No patched version available
-    # (5.6.3 is latest). Indirect dep via dvc-data; not used directly in app code.
+    # Security: CVE-2025-69872 (moderate) - known vulnerability in diskcache
+    # 5.6.3 (pickle deserialization RCE). No patched release is currently available
+    # and 5.6.3 is the latest upstream version at lock time.
+    # Risk treatment: accepted temporarily as a transitive dependency via dvc-data.
+    # Required mitigations: restrict write access to cache directories; do not allow
+    # untrusted users/processes to control cached pickle content or cache paths.
+    # Action: monitor upstream advisories and upgrade/replace immediately when fixed.
 distlib==0.4.0
     # via virtualenv
 distro==1.9.0
@@ -529,11 +533,11 @@ mistune==3.2.0
     # via
     #   great-expectations
     #   nbconvert
-mlflow==3.11.0rc1
+mlflow==3.11.0
     # via codex-ml (pyproject.toml)
-mlflow-skinny==3.5.0rc0
+mlflow-skinny==3.5.0
     # via mlflow
-mlflow-tracing==3.5.0rc0
+mlflow-tracing==3.5.0
     # via mlflow
 more-itertools==10.8.0
     # via lm-eval
@@ -1292,8 +1296,6 @@ websockets==15.0.1
 # See: https://github.com/pallets/werkzeug/releases/tag/3.1.6
 werkzeug==3.1.6
     # via
-    #   flask
-    #   tensorboard
     #   flask
     #   tensorboard
 widgetsnbextension==4.0.15
