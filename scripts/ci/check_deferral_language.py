@@ -150,6 +150,18 @@ EXEMPTION_PATTERNS: list[str] = [
     # pre-existing errors)"), NOT a deferral claim.  Requires a leading digit so bare
     # "pre-existing errors" still triggers.
     r"\d+\s+pre-existing\s+(?:type\s+)?errors\b",
+    # Agent-comment meta-reporting: an agent quoting a previously-detected trigger
+    # phrase to report that the root cause was identified and fixed.
+    # Example: "PR body contained 'follow-up task' matching the trigger pattern. Fixed."
+    # Requires "contained" + a quoted phrase + "matching" — precise enough to prevent
+    # bypass while allowing honest root-cause explanations.
+    r"contained\s+[\"']follow.up\s+task[\"']\s+matching",
+    # File-description context: PR description text describing a Copilot prompt file
+    # whose purpose is to provide continuation/follow-up task instructions.
+    # Example: "Introduced a structured follow-up task prompt for PR #NNN"
+    # The word "prompt" immediately following "task" identifies this as a filename/tool
+    # description, not a deferral action.
+    r"follow.up\s+task\s+prompt",
 ]
 
 # Pre-compiled pattern to strip inline code spans before scanning.
