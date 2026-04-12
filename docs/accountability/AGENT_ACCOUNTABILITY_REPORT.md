@@ -1,9 +1,31 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** 0D_base_
+**Branch:** copilot/fix-security-vulnerability-diskcache
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-10T22:40Z S-RESCUE-4-sync-tracked-files-baseline-fix
+**Last updated:** 2026-04-12T07:41Z CI-workflow-fix-branch-cleanup-stale-branches
+
+## SESSION SUMMARY — 2026-04-12T07:41Z (Issues #3945–#3950 CI workflow fixes)
+
+### Issues Addressed
+- **#3950** (Validation Pipeline on `main`, run #24298278475) — Investigated; codecov upload fails with "Token required because branch is protected" (infrastructure), not a code defect. Actual test step logs not retrievable from log tail; workflow itself ran to completion.
+- **#3949** (Nightly health sweep S285) — `ruff check src/ tests/` passes clean; no auto-fix issues detected; no new CodeQL CRITICAL/HIGH alerts.
+- **#3948** (CI Health Alert 4.5%) — Informational alert; root causes addressed by workflow fixes below.
+- **#3947** (Branch divergence 0D_base_↔main LOW) — Auto-corrected by `branch-divergence-monitor.yml`; no code action required.
+- **#3945** (CI Triage Report) — Root-cause analysis of two recurring workflow failures:
+  1. **`branch-cleanup.yml`**: `actions/setup-python@v6` with `cache: 'pip'` requires `requirements.txt` or `pyproject.toml`; sparse checkout only includes `scripts/ci/branch_cleanup.py` → neither file present → setup-python fails. Fix: removed `cache: 'pip'`.
+  2. **`cleanup-stale-branches.yml`**: `.github/actions/setup-python-cached` composite action runs `pip install -e ".[dev]"` requiring `pyproject.toml`; sparse checkout omits it → install fails. The script `cleanup_stale_branches.py` uses only Python stdlib (no external deps). Fix: replaced composite action with plain `actions/setup-python@v5`.
+
+### Changes Made
+- `.github/workflows/branch-cleanup.yml`: Removed `cache: 'pip'` from `actions/setup-python@v6`; sparse checkout is incompatible with pip caching
+- `.github/workflows/cleanup-stale-branches.yml`: Replaced `.github/actions/setup-python-cached` with `actions/setup-python@v5`; removed composite action from sparse checkout list
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: Updated (this entry)
+
+### Validation
+- `python3 -m ruff check src/ tests/` → All checks passed ✅
+- Workflow-only changes; no Python test regressions possible ✅
+
+---
 
 ## SESSION SUMMARY — 2026-04-10T22:40Z S-RESCUE-4 (PR #3942 — Fast Validation sync-tracked-files fix)
 

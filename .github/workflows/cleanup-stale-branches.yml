@@ -42,15 +42,13 @@ jobs:
         with:
           sparse-checkout: |
             scripts/ci/cleanup_stale_branches.py
-            .github/actions/setup-python-cached
           sparse-checkout-cone-mode: false
 
       - name: Setup Python
-        uses: ./.github/actions/setup-python-cached
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          # No pip cache — script uses stdlib only, no external deps required
 
       - name: Run cleanup
         env:
