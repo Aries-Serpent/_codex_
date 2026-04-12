@@ -3,7 +3,31 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/fix-security-vulnerability-diskcache
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-12T10:30Z S_PR3946 — CI failure pattern analysis + PDA aftermath
+**Last updated:** 2026-04-12T12:15Z S_PR3946_RESCUE — Fast Validation sync-tracked-files, CODEX_MANIFEST hash stabilization
+
+## SESSION SUMMARY — 2026-04-12T12:15Z (PR #3946 — CI rescue: CODEX_MANIFEST hash stabilization)
+
+### Objective
+Address comment `#issuecomment-4231469474` (commit `225e506c`): 25 checks failing on HEAD, key issue being Fast Validation `sync-tracked-files` hook.
+
+### Diagnosis
+- Fast Validation for `225e506c` showed **success** in run `24306084137` ✅
+- `b2eaaaa` commit fixed CODEX_MANIFEST hash after bot auto-heal commit `44705a8`
+- `scripts/ci/sync_tracked_files.py --check` passes locally ✅
+- 25 "failing" checks were WEC-gated (`action_required`) — infrastructure-level, not code failures
+
+### Patterns Resolved
+
+| Pattern | Root Cause | Fix | Status |
+|---|---|---|---|
+| RP-CODEX-MANIFEST-HASH-STALE | Bot auto-heal `44705a8` refreshed `CODEX_MANIFEST.json`, invalidating `.secrets.baseline` hash | `b2eaaaa`: updated `.secrets.baseline` CODEX_MANIFEST hash to `6437112670e3...` | ✅ Fixed |
+| RP-PDA-ITERATIONS-FP | `.codex/aftermath/pda_iterations.jsonl` hex strings flagged as High Entropy by detect-secrets | `225e506`: added false-positive entries to `.secrets.baseline` | ✅ Fixed |
+
+### Validation
+- `python3 scripts/ci/sync_tracked_files.py --check` → ✅ all tracked files consistent
+- `detect-secrets` baseline consistent with current file state ✅
+
+---
 
 ## SESSION SUMMARY — 2026-04-12T10:30Z (PR #3946 / Issue #3951 — CI failure patterns + PDA loop)
 
