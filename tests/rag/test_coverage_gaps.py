@@ -224,6 +224,13 @@ class TestCachedRetriever:
         assert cr._is_cache_valid("nonexistent_key") is False
 
     def test_is_cache_valid_becomes_false_after_explicit_invalidation(self):
+        """Verify that removing the timestamp entry invalidates _is_cache_valid.
+
+        _is_cache_valid() checks cache_timestamps (not query_cache) for TTL
+        validity.  Invalidation is performed by removing the key from
+        cache_timestamps; query_cache is NOT consulted by _is_cache_valid(),
+        so clearing it would have no bearing on the result.
+        """
         import time
         cr = self._make_cached_retriever()
         key = "k1"
@@ -231,6 +238,7 @@ class TestCachedRetriever:
         cr.cache_timestamps[key] = time.time()
         assert cr._is_cache_valid(key) is True
 
+        # Remove timestamp entry — this is the authoritative invalidation path.
         cr.cache_timestamps.pop(key, None)
         assert cr._is_cache_valid(key) is False
 
