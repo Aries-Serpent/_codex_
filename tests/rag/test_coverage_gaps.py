@@ -527,6 +527,10 @@ class TestTryModelTo:
 
 class TestModelUtilsSafeLoad:
     def test_raises_on_load_failure(self):
+        pytest.importorskip(
+            "sentence_transformers",
+            reason="sentence_transformers not installed — skipping meta-tensor load tests",
+        )
         from codex.rag._model_utils import safe_load_sentence_transformer
 
         with patch("sentence_transformers.SentenceTransformer",
@@ -536,6 +540,10 @@ class TestModelUtilsSafeLoad:
 
     def test_raises_attributeerror_on_missing_to_empty(self):
         """When ST raises NotImplementedError (meta tensor) and model has no to_empty, raise RuntimeError."""
+        pytest.importorskip(
+            "sentence_transformers",
+            reason="sentence_transformers not installed — skipping meta-tensor load tests",
+        )
         from codex.rag import _model_utils as _mu
 
         no_to_empty_model = MagicMock(spec=[])  # no to_empty attribute
