@@ -2,7 +2,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Last Updated**: 2026-04-06 | **Version**: 2.0.0 | **Owner**: DevOps + Agent Team
+**Last Updated**: 2026-04-12 | **Version**: 2.0.0 | **Owner**: DevOps + Agent Team
 
 ---
 
