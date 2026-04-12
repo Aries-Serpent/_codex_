@@ -346,12 +346,12 @@ def find_unaddressed_comments(
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue
-        # Skip review threads where the commented code no longer exists in the
-        # current diff.  GitHub marks these as `outdated` (REST) or `is_outdated`
-        # (GraphQL).  An outdated thread cannot be acted on — the line it
-        # referenced has been deleted or substantially changed — so treating it
-        # as "addressed by definition" is correct.
-        if c.get("outdated") or c.get("is_outdated"):
+        # Skip review comments whose referenced diff location is no longer part
+        # of the current patch. For REST `/pulls/{pr}/comments` payloads this is
+        # represented by `position` becoming null while `original_position`
+        # remains populated. Such comments are outdated and cannot be acted on
+        # in the current diff, so they should not be treated as blocking.
+        if c.get("position") is None and c.get("original_position") is not None:
             continue
         rec = classify_comment(c)
         rec["comment_type"] = "review_comment"

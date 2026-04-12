@@ -988,10 +988,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.pr_number == "unknown":
             print("❌ --activate-workflows requires --pr-number", file=sys.stderr)
             return 1
-        select_merge_required_workflows(
+        ok = select_merge_required_workflows(
             pr_number=args.pr_number, dry_run=args.dry_run,
         )
-        return 0
+        return 0 if ok else 1
 
     if args.check:
         acct_ok = _last_commit_changed(ACCOUNTABILITY_REPORT)
