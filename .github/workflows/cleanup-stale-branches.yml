@@ -42,6 +42,8 @@ jobs:
         with:
           sparse-checkout: |
             scripts/ci/cleanup_stale_branches.py
+          # Only the script is needed — it uses stdlib only (urllib, json, os, sys)
+          # No composite action or pyproject.toml required
           sparse-checkout-cone-mode: false
 
       - name: Setup Python
