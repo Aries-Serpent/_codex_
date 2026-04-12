@@ -1,8 +1,8 @@
 {
-  "last_update": "2026-04-11T03:04:12.517129+00:00",
+  "last_update": "2026-04-12T03:05:21.541555+00:00",
   "total_patterns": 316,
   "new_patterns": 0,
-  "updated_patterns": 59,
+  "updated_patterns": 20,
   "pattern_types": {
     "duration_variance": 139,
     "high_failure_rate": 94,

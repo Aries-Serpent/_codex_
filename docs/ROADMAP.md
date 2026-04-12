@@ -2,7 +2,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Last Updated**: 2026-04-06 | **Version**: 2.0.0 | **Owner**: DevOps + Agent Team
+**Last Updated**: 2026-04-12 | **Version**: 2.0.0 | **Owner**: DevOps + Agent Team
 
 ---
 
@@ -386,7 +386,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-04-10 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
+> ✅ Updated 2026-04-12 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|

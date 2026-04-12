@@ -223,6 +223,25 @@ class TestCachedRetriever:
         cr = self._make_cached_retriever()
         assert cr._is_cache_valid("nonexistent_key") is False
 
+    def test_is_cache_valid_becomes_false_after_explicit_invalidation(self):
+        """Verify that removing the timestamp entry invalidates _is_cache_valid.
+
+        _is_cache_valid() checks cache_timestamps (not query_cache) for TTL
+        validity.  Invalidation is performed by removing the key from
+        cache_timestamps; query_cache is NOT consulted by _is_cache_valid(),
+        so clearing it would have no bearing on the result.
+        """
+        import time
+        cr = self._make_cached_retriever()
+        key = "k1"
+        cr.query_cache.put(key, [{"text": "cached"}])
+        cr.cache_timestamps[key] = time.time()
+        assert cr._is_cache_valid(key) is True
+
+        # Remove timestamp entry — this is the authoritative invalidation path.
+        cr.cache_timestamps.pop(key, None)
+        assert cr._is_cache_valid(key) is False
+
     def test_is_cache_valid_false_for_expired_entry(self):
         import time
         cr = self._make_cached_retriever()
@@ -508,6 +527,10 @@ class TestTryModelTo:
 
 class TestModelUtilsSafeLoad:
     def test_raises_on_load_failure(self):
+        pytest.importorskip(
+            "sentence_transformers",
+            reason="sentence_transformers not installed — skipping meta-tensor load tests",
+        )
         from codex.rag._model_utils import safe_load_sentence_transformer
 
         with patch("sentence_transformers.SentenceTransformer",
@@ -517,6 +540,10 @@ class TestModelUtilsSafeLoad:
 
     def test_raises_attributeerror_on_missing_to_empty(self):
         """When ST raises NotImplementedError (meta tensor) and model has no to_empty, raise RuntimeError."""
+        pytest.importorskip(
+            "sentence_transformers",
+            reason="sentence_transformers not installed — skipping meta-tensor load tests",
+        )
         from codex.rag import _model_utils as _mu
 
         no_to_empty_model = MagicMock(spec=[])  # no to_empty attribute

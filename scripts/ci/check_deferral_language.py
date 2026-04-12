@@ -38,6 +38,7 @@ import logging
 import os
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -50,7 +51,7 @@ logger = logging.getLogger(__name__)
 # Extracted as a module constant so scan() can apply a word-boundary-aware
 # negation check (e.g. "no future work") without variable-width lookbehinds,
 # which Python's re module does not support.
-_FUTURE_WORK_PATTERN = r"future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)"
+_FUTURE_WORK_PATTERN = r"future (?:pr|task|session|iteration|sprint|phase|work|fix|improvement)\b"
 
 DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     # Attribution-based deferrals
@@ -441,7 +442,7 @@ def scan(
                     close_count += 1
                 else:
                     break
-            if close_count >= fence_len and stripped_for_fence == fence_char * close_count:
+            if close_count >= fence_len and not stripped_for_fence[close_count:]:
                 # Properly closed: discard buffered lines (real code fence).
                 fence_char = ""
                 fence_len = 0
@@ -583,7 +584,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    # Initialise ML classifier (no-op if DEFERRAL_SCANNER_ML != "1")
+    # Initialize ML classifier (no-op if DEFERRAL_SCANNER_ML != "1")
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
     ml_classifier = _get_ml_classifier()
     if ml_classifier is not None:
@@ -656,7 +657,6 @@ def main(argv: list[str] | None = None) -> int:
         # from permanently blocking CI on long-lived integration PRs).
         since_dt = None
         if args.since:
-            from datetime import datetime, timezone
             try:
                 since_str = args.since.rstrip("Z")
                 since_dt = datetime.fromisoformat(since_str).replace(tzinfo=timezone.utc)

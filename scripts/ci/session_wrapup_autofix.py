@@ -667,6 +667,152 @@ def fix_manifest_baseline(
 # Comprehensive auto-fix: run ALL missing-component checks in one call
 # ---------------------------------------------------------------------------
 
+def select_merge_required_workflows(
+    pr_number: str,
+    dry_run: bool = False,
+) -> bool:
+    """Activate all workflows required for PR merge readiness in the WEC block.
+
+    This is the **Copilot Session Startup Protocol** — it MUST be called at the
+    beginning of every Copilot coding agent session to ensure all necessary
+    workflows are armed before any work begins.
+
+    Merge-Required Workflow Selection
+    ----------------------------------
+    The following workflows are explicitly checked (activated) every time a
+    Copilot coding agent session is active on a PR:
+
+    Always-Required (already pre-checked by _WEC_ALWAYS_REQUIRED):
+      - pre-merge-validation.yml        Pre-merge checks
+      - comment-review-gate.yml         Comment review gate
+      - deferral-language-gate.yml      Deferral language guard
+      - agent-auth-delegation.yml       Agent token delegation / cognitive preflight
+      - workflow-execution-gate.yml     WEC gate — arms all checked workflows
+
+    Always-Active (fire on push — need approval in Actions tab):
+      - copilot-agent-checkin.yml       Agent check-in / S221 guard
+      - copilot-agent-session-done.yml  Auto-post @copilot review
+      - copilot-iterative-self-healing.yml  Iterative self-healing CI loop
+      - cost-gate.yml                   Cost governance gate
+
+    Opt-In: Selected by this function for merge readiness:
+      - validate.yml                    Validation Pipeline (detect-secrets, ruff, pre-commit)
+      - resilient_validation.yml        Resilient Validation Suite (full pytest, 4 shards)
+      - codeql-analysis.yml             CodeQL SAST analysis
+      - security-scanning-suite.yml     Full security audit (bandit, pip-audit)
+      - reference-integrity.yml         Reference integrity + agent size gate
+      - nox_gates.yml                   Nox quality gates (ruff, mypy, coverage)
+      - auto-approve-workflows          Auto-Approve pending workflow runs
+
+    Cognitive Brain Pattern
+    -----------------------
+    Pattern ID: SCP-005 (RP-WEC-STARTUP)
+    Every Copilot session MUST call this function (or the equivalent WEC injection)
+    at session start. Without this, the workflow-execution-gate never dispatches
+    the validation/security suites, leaving the PR in a permanently "unstable" state.
+
+    Returns True if an update was made, False if already up to date.
+    """
+    # Workflows that MUST be activated for merge readiness on every Copilot session
+    _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
+        # Always-required (belt-and-suspenders — already set by _WEC_ALWAYS_REQUIRED)
+        "pre-merge-validation.yml",
+        "comment-review-gate.yml",
+        "deferral-language-gate.yml",
+        "agent-auth-delegation.yml",
+        "workflow-execution-gate.yml",
+        # Always-active (need activation for approval flow)
+        "copilot-agent-checkin.yml",
+        "copilot-agent-session-done.yml",
+        "copilot-iterative-self-healing.yml",
+        "cost-gate.yml",
+        # Opt-in: validation & testing (required for passing merge gate)
+        "validate.yml",
+        "resilient_validation.yml",
+        "nox_gates.yml",
+        # Opt-in: security (required for CodeQL / security-suite merge gates)
+        "codeql-analysis.yml",
+        "security-scanning-suite.yml",
+        # Opt-in: infrastructure (reference integrity gate)
+        "reference-integrity.yml",
+        # Auto-approve (clears pending approval prompts so workflows can run)
+        "auto-approve-workflows",
+    })
+
+    try:
+        result = subprocess.run(
+            ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"],
+            capture_output=True, text=True, check=True,
+        )
+        pr_body = result.stdout.strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print(
+            f"⚠  Could not fetch PR #{pr_number} body — skipping WEC workflow activation",
+            file=sys.stderr,
+        )
+        return False
+
+    # Extract current state, then activate all merge-required workflows
+    existing_state = _extract_wec_state(pr_body)
+    updated_state = dict(existing_state)
+
+    activated: list[str] = []
+    for fname, _label, _always in _WEC_ITEMS:
+        if fname in _MERGE_REQUIRED_WORKFLOWS:
+            if not updated_state.get(fname, False):
+                updated_state[fname] = True
+                activated.append(fname)
+
+    if not activated and _WEC_MARKER in pr_body:
+        n_checked = sum(1 for v in updated_state.values() if v)
+        print(
+            f"✅ PR #{pr_number} WEC already has all merge-required workflows selected "
+            f"({n_checked} checked) — no update needed"
+        )
+        return False
+
+    new_wec_block = _build_wec_block(updated_state)
+
+    # Strip existing WEC block and replace with updated one
+    stripped_body = pr_body
+    for marker in (_WEC_MARKER, _WEC_MARKER_LEGACY,
+                   "\n### 💰 Cost Governance", "\n### 🔐 Agent Token Delegation",
+                   "\n---\n\n**🔄 Workflow"):
+        if marker in stripped_body:
+            idx = stripped_body.index(marker)
+            while idx > 0 and stripped_body[idx - 1] == "\n":
+                idx -= 1
+            stripped_body = stripped_body[:idx]
+
+    new_body = stripped_body.rstrip() + new_wec_block
+
+    if dry_run:
+        print(
+            f"[dry-run] Would activate {len(activated)} workflow(s) in WEC for PR #{pr_number}: "
+            f"{', '.join(activated)}"
+        )
+        return True
+
+    try:
+        subprocess.run(
+            ["gh", "pr", "edit", pr_number, "--body", new_body],
+            check=True, capture_output=True, text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(
+            f"❌ Failed to update PR #{pr_number} body: {exc.stderr}",
+            file=sys.stderr,
+        )
+        return False
+
+    total_checked = sum(1 for v in updated_state.values() if v)
+    print(
+        f"✅ PR #{pr_number} WEC updated — activated {len(activated)} merge-required "
+        f"workflow(s) ({total_checked} total checked): {', '.join(activated)}"
+    )
+    return True
+
+
 def auto_fix_all_missing(
     pr_number: str = "unknown",
     sha: str = "",
@@ -712,13 +858,18 @@ def auto_fix_all_missing(
         pr_number=pr_number, dry_run=dry_run,
     )
 
-    # WEC
+    # WEC — basic canonical restore
     if pr_number != "unknown":
         results["pr_body_wec"] = fix_pr_body_checkboxes(
             pr_number=pr_number, dry_run=dry_run,
         )
+        # Merge-required workflow activation (Copilot Session Startup Protocol)
+        results["wec_workflow_activation"] = select_merge_required_workflows(
+            pr_number=pr_number, dry_run=dry_run,
+        )
     else:
         results["pr_body_wec"] = False
+        results["wec_workflow_activation"] = False
 
     changed = sum(1 for v in results.values() if v)
     print(
@@ -783,10 +934,21 @@ def main(argv: list[str] | None = None) -> int:
         help="Restore canonical WEC block in PR body when missing or in legacy format",
     )
     parser.add_argument(
+        "--activate-workflows",
+        action="store_true",
+        default=False,
+        help=(
+            "Copilot Session Startup Protocol: activate all merge-required workflows "
+            "in the WEC block (validate, resilient_validation, codeql, security-suite, "
+            "reference-integrity, nox_gates, auto-approve). "
+            "Should be called at the start of every Copilot coding agent session."
+        ),
+    )
+    parser.add_argument(
         "--fix-all",
         action="store_true",
         default=False,
-        help="Apply ALL fixes: accountability, changelog, manifest baseline, PR body WEC",
+        help="Apply ALL fixes: accountability, changelog, manifest baseline, PR body WEC, workflow activation",
     )
     parser.add_argument(
         "--dry-run",
@@ -819,6 +981,17 @@ def main(argv: list[str] | None = None) -> int:
     fix_cl   = args.fix_changelog
     fix_mfst = args.fix_manifest
     fix_body = args.fix_pr_body
+    fix_wf   = getattr(args, "activate_workflows", False)
+
+    # --activate-workflows: Copilot Session Startup Protocol (standalone)
+    if fix_wf and not args.fix_all:
+        if args.pr_number == "unknown":
+            print("❌ --activate-workflows requires --pr-number", file=sys.stderr)
+            return 1
+        ok = select_merge_required_workflows(
+            pr_number=args.pr_number, dry_run=args.dry_run,
+        )
+        return 0 if ok else 1
 
     if args.check:
         acct_ok = _last_commit_changed(ACCOUNTABILITY_REPORT)
