@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #3946 — lock hygiene, CI tooling, RAG test, sync-tracked-files)
+- `requirements/lock.txt`: expanded diskcache==5.6.3 CVE-2025-69872 comment with full risk treatment; promoted mlflow rc pins to stable (3.11.0, 3.5.0); removed duplicate werkzeug dependency comments
+- `scripts/ci/auto_fix_common_issues.py`: added `import os`; replaced silent `except` with `AUTO_FIX_DEBUG`-gated logging
+- `scripts/ci/check_deferral_language.py`: collapsed redundant `\b` anchors in `_FUTURE_WORK_PATTERN`; optimised fence check; moved datetime imports to module top; fixed "Initialise" → "Initialize"
+- `scripts/cognitive/extract_workflow_patterns.py`: extracted `parse_github_timestamp` to module level for testability
+- `tests/rag/test_coverage_gaps.py`: added `test_is_cache_valid_becomes_false_after_explicit_invalidation`
+- Updated `.secrets.baseline` hashed_secrets and `docs/ROADMAP.md` date to fix sync-tracked-files Fast Validation hook failure
+
 ### Fixed (S-RESCUE-4 — PR #3942 Fast Validation sync-tracked-files)
 - Updated `.secrets.baseline` hashed_secret for `.codex/agent_context.json` (e61c21 → 09596c) and `CODEX_MANIFEST.json` (ca548d → 3aa328) to match current file state
 - Updated `docs/ROADMAP.md` date stamp from 2026-04-08 to 2026-04-10 as required by sync-tracked-files hook

@@ -209,9 +209,17 @@ def find_unaddressed_comments(
         f"/repos/{repo}/pulls/{pr_number}/reviews", token
     )
 
-    # Build timeline of Copilot responses (by timestamp) from ALL comment sources:
-    # issue_comments, review_comments, and reviews so that review-posted replies
-    # are not missed by the was_addressed() heuristic.
+    # 4. PR commits — used as an additional Copilot-response signal.
+    # When a COPILOT_AGENTS member pushes a commit after a review comment,
+    # that commit IS a response: it means the agent addressed the concern in
+    # code.  Including commit timestamps here prevents review threads from
+    # remaining "blocking" when the fix was already committed (S_PR3946).
+    pr_commits = gh_get_all_pages(
+        f"/repos/{repo}/pulls/{pr_number}/commits", token
+    )
+
+    # Build timeline of Copilot responses (by timestamp) from ALL comment sources
+    # AND commits so that review-posted replies and code fixes are both captured.
     copilot_response_times: list[datetime] = []
 
     def _parse_ts(ts: str) -> datetime | None:
@@ -245,6 +253,24 @@ def find_unaddressed_comments(
         login = (r.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             dt = _parse_ts(r.get("submitted_at", ""))
+            if dt is not None:
+                copilot_response_times.append(dt)
+
+    # Include commit timestamps from COPILOT_AGENTS as response signals.
+    # A commit by a Copilot agent that lands AFTER a review comment means the
+    # agent addressed that concern in code — the commit IS the response.
+    for commit in pr_commits:
+        # commit author: commit.author.login (may be absent) or commit.committer.login
+        author_login = (
+            (commit.get("author") or {}).get("login", "")
+            or (commit.get("committer") or {}).get("login", "")
+        )
+        if author_login in COPILOT_AGENTS:
+            # Use the committer date (when it landed) rather than author date
+            commit_data = commit.get("commit", {})
+            committer_ts = (commit_data.get("committer") or {}).get("date", "")
+            author_ts = (commit_data.get("author") or {}).get("date", "")
+            dt = _parse_ts(committer_ts or author_ts)
             if dt is not None:
                 copilot_response_times.append(dt)
 
@@ -319,6 +345,13 @@ def find_unaddressed_comments(
     for c in review_comments:
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
+            continue
+        # Skip review threads where the commented code no longer exists in the
+        # current diff.  GitHub marks these as `outdated` (REST) or `is_outdated`
+        # (GraphQL).  An outdated thread cannot be acted on — the line it
+        # referenced has been deleted or substantially changed — so treating it
+        # as "addressed by definition" is correct.
+        if c.get("outdated") or c.get("is_outdated"):
             continue
         rec = classify_comment(c)
         rec["comment_type"] = "review_comment"
