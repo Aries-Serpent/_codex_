@@ -232,7 +232,6 @@ class TestCachedRetriever:
         assert cr._is_cache_valid(key) is True
 
         cr.cache_timestamps.pop(key, None)
-        cr.query_cache.clear()
         assert cr._is_cache_valid(key) is False
 
     def test_is_cache_valid_false_for_expired_entry(self):
