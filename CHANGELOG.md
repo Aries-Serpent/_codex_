@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3952)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3952 (SHA `f0b429fb`) at 2026-04-12T13:38Z [auto-generated]
+
 ### Fixed (PR #3946 — lock hygiene, CI tooling, RAG test, sync-tracked-files)
 - `requirements/lock.txt`: expanded diskcache==5.6.3 CVE-2025-69872 comment with full risk treatment; promoted mlflow rc pins to stable (3.11.0, 3.5.0); removed duplicate werkzeug dependency comments
 - `scripts/ci/auto_fix_common_issues.py`: added `import os`; replaced silent `except` with `AUTO_FIX_DEBUG`-gated logging
