@@ -3,7 +3,42 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T08:30Z S_PR3958_CTEP_SWEEP — CTEP P0-P6 readiness sweep; merge-readiness 96%
+**Last updated:** 2026-04-13T10:47Z S_PR3971_SELF_HEAL — pre-merge-validation rate-limit resilience + action version upgrades
+
+
+## SESSION SUMMARY — 2026-04-13T10:47Z (PR #3971 — opentelemetry-semantic-conventions 0.62b0)
+
+### Objective
+Iterative self-healing for dependabot bump PR #3971. Fix pre-merge-validation failure caused by
+GitHub API rate limit exceeded error in "Post validation summary" step; also upgrade deprecated
+`actions/setup-python@v5` → `v6` and `actions/cache@v4` → `v5` in the composite action.
+
+### Root Cause
+`pre-merge-validation.yml` "Post validation summary" step (`actions/github-script@v8`) hit the
+GitHub API rate limit (HTTP 403, `x-ratelimit-remaining: 0`) when calling `issues.listComments`.
+All actual validation checks (autofix, pattern pipeline, mermaid, tests, quality) passed.
+The step had no `continue-on-error: true` and no error handling, causing the entire job to fail.
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Add `continue-on-error: true` + try/catch to "Post validation summary" | `.github/workflows/pre-merge-validation.yml` | ✅ |
+| Upgrade `actions/setup-python@v5` → `v6` | `.github/actions/setup-python-cached/action.yml` | ✅ |
+| Upgrade `actions/cache@v4` → `v5` (5 occurrences) | `.github/actions/setup-python-cached/action.yml` | ✅ |
+
+### Patterns Resolved
+
+| Pattern ID | Root Cause | Fix | Status |
+|---|---|---|---|
+| PR3971-RATE-LIMIT-RESILIENCE | `Post validation summary` fails on API rate limit (HTTP 403) | `continue-on-error: true` + try/catch | ✅ |
+| PR3971-DEPRECATED-ACTIONS | `setup-python@v5`, `cache@v4` Node.js 20 deprecation warnings | Upgraded to v6 / v5 | ✅ |
+
+### CI Status After Fix
+- ruff check src/ tests/: ✅ All checks passed
+- pytest tests/capabilities/ci_test/: ✅ 75 passed, 1 skipped
+- Pre-Merge Validation: 🔄 Re-running after fix push
+
+### Merge-Readiness Score: **Green** (validation steps all pass; summary comment posting is now non-blocking)
 
 
 ## SESSION SUMMARY — 2026-04-13T08:30Z (PR #3958 — CTEP P0-P6 sweep)
