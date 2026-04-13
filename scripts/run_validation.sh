@@ -142,6 +142,13 @@ run_hook_dir "pre"
 python scripts/tools/doc_metrics_sync.py --fix >> "$LOG" 2>&1 || \
   echo "⚠️  doc_metrics_sync --fix returned non-zero — check ${LOG} for details (non-blocking)" | tee -a "$LOG"
 
+# Synchronise .secrets.baseline BEFORE running pre-commit so that
+# detect-secrets never sees it as unstaged (SCP-RESCUE-5 prevention).
+echo "Syncing .secrets.baseline with sync_tracked_files" | tee -a "$LOG"
+python scripts/ci/sync_tracked_files.py --fix --manifest-only >> "$LOG" 2>&1 || \
+  echo "⚠️  sync_tracked_files --fix returned non-zero (non-blocking)" | tee -a "$LOG"
+git add .secrets.baseline 2>/dev/null || true
+
 # Run pre-commit hooks against modified files only.
 echo "Running pre-commit hooks" | tee -a "$LOG"
 declare -a PRECOMMIT_FILES=()

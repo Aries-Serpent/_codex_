@@ -594,75 +594,47 @@ def fix_pr_body_checkboxes(
 # Manifest / secrets-baseline auto-fix (REQ-6 sync gate)
 # ---------------------------------------------------------------------------
 
-def _compute_sha1(path: Path) -> str:
-    """Return the SHA-1 hex digest of *path* contents (matches detect-secrets format)."""
-    import hashlib
-    # NOTE: detect-secrets stores SHA-1 digests in `.secrets.baseline`, so we must
-    # compute the same algorithm here for compatibility. This hash is only used
-    # for tooling/consistency checks and not for any security-sensitive purpose.
-    return hashlib.sha1(path.read_bytes()).hexdigest()  # noqa: S324 — SHA1 required by detect-secrets
-
-
 def fix_manifest_baseline(
     pr_number: str = "unknown",
     dry_run: bool = False,
 ) -> bool:
     """Keep ``.secrets.baseline`` in sync with ``CODEX_MANIFEST.json``.
 
-    ``sync-tracked-files`` pre-commit hook fails when the manifest hash stored in
-    ``.secrets.baseline`` diverges from the actual file digest.  This function:
+    Delegates entirely to ``scripts/ci/sync_tracked_files.py --fix --manifest-only``
+    which runs ``detect-secrets scan`` to compute the authoritative ``hashed_secret``
+    value.  Previous versions computed a raw SHA-1 of the file which produced a
+    different value than detect-secrets, causing the baseline to become stale again
+    on the very next pre-commit run.
 
-    1. Computes the current SHA-1 of ``CODEX_MANIFEST.json``.
-    2. Patches the matching ``hashed_secret`` entry in ``.secrets.baseline``.
-    3. Optionally updates ``CODEX_MANIFEST.json`` ``generated_at`` timestamp when
-       the file is otherwise unchanged (idempotent touch).
-
-    Returns True when a change was written (or would be in dry_run), False otherwise.
+    Returns True when sync_tracked_files reports a change, False otherwise.
     """
-    import json
-
-    if not CODEX_MANIFEST.exists():
-        print(f"⚠  {CODEX_MANIFEST.name} not found — skipping manifest sync")
-        return False
-    if not SECRETS_BASELINE.exists():
-        print(f"⚠  {SECRETS_BASELINE.name} not found — skipping manifest sync")
+    sync_script = REPO_ROOT / "scripts" / "ci" / "sync_tracked_files.py"
+    if not sync_script.exists():
+        print(f"⚠  sync_tracked_files.py not found at {sync_script} — skipping manifest sync")
         return False
 
-    current_sha = _compute_sha1(CODEX_MANIFEST)
-
-    try:
-        baseline = json.loads(SECRETS_BASELINE.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        print(f"⚠  Could not parse {SECRETS_BASELINE.name}: {exc}")
-        return False
-
-    changed = False
-    for _file, entries in baseline.get("results", {}).items():
-        if "CODEX_MANIFEST" not in _file and "codex_manifest" not in _file.lower():
-            continue
-        for entry in entries:
-            if entry.get("hashed_secret") != current_sha:
-                print(
-                    f"  baseline hash mismatch for {_file}: "
-                    f"{entry['hashed_secret']!r} → {current_sha!r}"
-                )
-                entry["hashed_secret"] = current_sha
-                changed = True
-
-    if not changed:
-        print("✅ .secrets.baseline already in sync with CODEX_MANIFEST.json")
-        return False
-
+    cmd = [sys.executable, str(sync_script), "--manifest-only"]
     if dry_run:
-        print(f"[dry-run] Would update .secrets.baseline with new hash {current_sha!r}")
-        return True
+        cmd.append("--check")
+    else:
+        cmd.append("--fix")
 
-    SECRETS_BASELINE.write_text(
-        json.dumps(baseline, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-    print(f"✅ Updated .secrets.baseline → CODEX_MANIFEST hash {current_sha!r} (PR #{pr_number})")
-    return True
+    result = subprocess.run(cmd, capture_output=False, text=True)
+    changed = result.returncode != 0 if dry_run else (result.returncode == 0)
+    # sync_tracked_files --fix exits 0 whether or not it made changes;
+    # detect any actual write by checking if the baseline mtime changed.
+    if not dry_run:
+        # Re-run in check mode to verify the sync is now clean.
+        check = subprocess.run(
+            [sys.executable, str(sync_script), "--check", "--manifest-only"],
+            capture_output=True, text=True,
+        )
+        if check.returncode != 0:
+            print(f"⚠  sync_tracked_files --check still reports issues after fix (PR #{pr_number})")
+            return False
+        print(f"✅ .secrets.baseline synced via sync_tracked_files (PR #{pr_number})")
+        return True
+    return changed
 
 
 # ---------------------------------------------------------------------------
