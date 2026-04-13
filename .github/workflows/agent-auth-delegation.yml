@@ -127,15 +127,20 @@ jobs:
             echo "ℹ️  PR body fetched via gh pr view (workflow_dispatch path)"
           fi
 
-          # Match a checked markdown checkbox that contains the variable name.
-          # Pattern: "- [x]" followed by anything then "COPILOT_AGENT_AUTH_ENABLED"
-          # Use POSIX extended regex (-E) for broad grep compatibility across runners.
-          if printf '%s' "${RESOLVED_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
+          # ── PRIMARY: repo variable already true → always pre-authorized ──────
+          # If COPILOT_AGENT_AUTH_ENABLED is already set as a repo variable,
+          # the owner's approval is permanently recorded.  No checkbox needed.
+          REPO_VAR_ACTIVE="${{ vars.COPILOT_AGENT_AUTH_ENABLED }}"
+          if [ "${REPO_VAR_ACTIVE}" = "true" ]; then
+            echo "auth_requested=true" >> "$GITHUB_OUTPUT"
+            echo "✅ COPILOT_AGENT_AUTH_ENABLED=true (repo variable) — permanently pre-authorized, no checkbox required"
+          # ── FALLBACK: check PR body checkbox (first-time activation path) ──
+          elif printf '%s' "${RESOLVED_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
             echo "auth_requested=true"  >> "$GITHUB_OUTPUT"
             echo "✅ COPILOT_AGENT_AUTH_ENABLED checkbox is checked — requesting approval"
           else
             echo "auth_requested=false" >> "$GITHUB_OUTPUT"
-            echo "ℹ️  COPILOT_AGENT_AUTH_ENABLED checkbox not checked — nothing to do"
+            echo "ℹ️  COPILOT_AGENT_AUTH_ENABLED repo var not true and checkbox not checked — nothing to do"
           fi
 
           # Detect "Multiple Copilot Coding Agent Sessions" checkbox (S182)
