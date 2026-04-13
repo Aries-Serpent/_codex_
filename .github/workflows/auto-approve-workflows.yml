@@ -234,6 +234,7 @@ jobs:
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
+            const exec          = require('@actions/exec');
             const [owner, repo] = process.env.REPO.split('/');
             const dryRun        = process.env.DRY_RUN === 'true';
             const mode          = process.env.MODE;
@@ -294,9 +295,22 @@ jobs:
                     results.push({ label, status: '⏭️ already processed' });
                     skipped++;
                   } else if (e.message && e.message.includes('not from a fork pull request')) {
-                    core.info(`⏭️  Skipping non-fork PR run (expected for same-repo PRs): ${label}`);
-                    results.push({ label, status: '⏭️ not a fork PR run' });
-                    skipped++;
+                    // Same-repo PRs: approveWorkflowRun API only works for fork PRs.
+                    // Use gh run rerun to clear action_required state for same-repo PRs.
+                    core.info(`🔄 Same-repo PR — using gh run rerun for: ${label}`);
+                    try {
+                      await exec.exec('gh', ['run', 'rerun', String(run.id), '--repo', `${owner}/${repo}`], {
+                        env: { ...process.env, GH_TOKEN: process.env.GITHUB_TOKEN },
+                        ignoreReturnCode: true,
+                      });
+                      core.info(`✅ gh run rerun succeeded: ${label}`);
+                      results.push({ label, status: '✅ rerun (same-repo)' });
+                      approved++;
+                    } catch (rerunErr) {
+                      core.info(`⏭️  gh run rerun skipped (may already be approved): ${label}`);
+                      results.push({ label, status: '⏭️ rerun skipped' });
+                      skipped++;
+                    }
                   } else {
                     core.warning(`❌ Failed to approve ${label}: ${e.message}`);
                     results.push({ label, status: `❌ error: ${e.message}` });

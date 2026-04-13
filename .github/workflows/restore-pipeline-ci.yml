@@ -55,8 +55,14 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest src/restore_pipeline/tests/ -q --tb=short -W error \
-            --override-ini="asyncio_default_fixture_loop_scope="
+          # -W ignore::pytest.PytestConfigWarning suppresses "Unknown config option:
+          # asyncio_default_fixture_loop_scope" INTERNALERROR when pytest-asyncio is
+          # not installed in this CPU-only environment (pytest validates ini options
+          # before --override-ini can take effect, so the override alone is not enough).
+          pytest src/restore_pipeline/tests/ -q --tb=short \
+            -W error \
+            -W ignore::pytest.PytestConfigWarning \
+            -p no:asyncio
 
       - name: Demo script smoke test
         run: |
