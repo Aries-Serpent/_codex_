@@ -3,8 +3,34 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T08:30Z S_PR3958_CTEP_SWEEP — CTEP P0-P6 readiness sweep; merge-readiness 96%
+**Last updated:** 2026-04-13T10:17Z S_PR3974_ITERATIVE_HEAL — iterative self-healing for dependabot/pip/fastapi-0.135.3
 
+
+## SESSION SUMMARY — 2026-04-13T10:17Z (PR #3974 — fastapi bump iterative self-healing)
+
+### Objective
+Iterative self-healing for `dependabot/pip/fastapi-0.135.3` branch: fix tracked file sync drift
+detected by Pattern 22 (stale .secrets.baseline CODEX_MANIFEST hash), address Pattern 25
+accountability drift.
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Fix stale .secrets.baseline CODEX_MANIFEST hash (Pattern 22) | `.secrets.baseline` | ✅ |
+| Update accountability report (Pattern 25) | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
+
+### Patterns Resolved
+
+| Pattern ID | Root Cause | Fix | Status |
+|---|---|---|---|
+| Pattern 22 | .secrets.baseline CODEX_MANIFEST entry stale after manifest refresh commit | sync_tracked_files --fix | ✅ |
+| Pattern 25 | Accountability report not updated in last commit | Updated this session | ✅ |
+
+### Open Items
+- Pattern 19 (141 src. absolute imports) — pre-existing, requires broader refactor
+- Pattern 17 (CI SHA Drift) — 1 pre-existing issue
+
+---
 
 ## SESSION SUMMARY — 2026-04-13T08:30Z (PR #3958 — CTEP P0-P6 sweep)
 
