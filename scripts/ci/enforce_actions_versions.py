@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -237,7 +238,6 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     # ── Summary ────────────────────────────────────────────────────────────────
-    import os
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if (args.summary or summary_path) and summary_path:
         with open(summary_path, "a") as sf:
