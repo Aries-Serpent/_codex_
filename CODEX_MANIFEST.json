@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-13T01:00:40Z",
+  "generated_at": "2026-04-13T08:29:38Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1119,6 +1119,11 @@
       "has_concurrency": true
     },
     {
+      "name": "codebase-health-sweep",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "codeql-analysis",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1344,6 +1349,11 @@
       "has_concurrency": true
     },
     {
+      "name": "issue-resolution-gate",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "iterative-self-healing-ci",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1519,8 +1529,18 @@
       "has_concurrency": true
     },
     {
+      "name": "required-actions-enforcer",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "resilient_validation",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "restore-pipeline-ci",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1561,6 +1581,11 @@
     {
       "name": "scheduled-dependency-audit",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "secrets-baseline-enforcer",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2021,5 +2046,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6c5fca0fb0166a6f3c6008117aab74dcfb2a740dbd61bd9dc49f56b0e89f4d0e"
+  "integrity_sha256": "d7c6dc3cda4ec506e8f7f192f102eb410f2c2932d0f081875217a930e03fbfa9"
 }
