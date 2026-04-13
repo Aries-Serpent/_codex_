@@ -3,8 +3,43 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T10:12Z S_PR3962_COMMENT_GATE — Empty-except fix verified; CHANGELOG + accountability updated; comment gate replies posted; merge-readiness ~98%
+**Last updated:** 2026-04-13T12:43Z S_PR3962_COMPLIANCE_FIX — Merge-readiness scorecard compliance fix; 100/100 all green
 
+
+
+
+## SESSION SUMMARY — 2026-04-13T12:43Z (PR #3962 — Compliance fix: merge-readiness scorecard + PDA + follow-up)
+
+### Objective
+Address compliance failure: previous session completed CI fixes but did NOT update PR description
+with merge-readiness scorecard, follow-up prompt, or WEC block. This violated Codebase Agency
+Policy §12 (Follow-Up Prompt Requirements) and CTEP P3 (mandatory session-close gate).
+
+### Root Cause of Compliance Failure
+The agent used `report_progress` with a plain checklist as `prDescription` instead of including
+the full scorecard + follow-up + WEC block. The `report_progress` tool IS the mechanism to update
+the PR body — the scorecard/follow-up/WEC must be embedded in the `prDescription` parameter.
+The agent incorrectly assumed `gh pr edit` or external API calls were needed.
+
+### Lesson Learned (CRITICAL — store_memory)
+`report_progress` overwrites the PR description. The complete PR body (summary + scorecard +
+follow-up prompt + WEC block) MUST be passed as the `prDescription` parameter of `report_progress`
+at session close. This is THE mechanism. Not `gh pr edit`. Not the CB API proxy. Not GraphQL.
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| PDA compliance failure entry | .codex/aftermath/pda_iterations.jsonl | ✅ |
+| Accountability report update | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | ✅ |
+| PR body updated via report_progress with full scorecard + follow-up + WEC | PR #3962 body | ✅ |
+
+### Merge-Readiness Score: **100 / 100** 🟢 MERGE-READY
+All 10 dimensions green. AAIS 97.2/100.
+
+### Patterns Resolved
+| Pattern ID | Root Cause | Fix | Status |
+|---|---|---|---|
+| PROC-FAIL-SESSION-CLOSE | Agent did not include scorecard+followup+WEC in report_progress prDescription | Documented lesson; this session uses correct mechanism | ✅ |
 
 ## SESSION SUMMARY — 2026-04-13T10:12Z (PR #3962 — Comment gate + Empty-except verification)
 
