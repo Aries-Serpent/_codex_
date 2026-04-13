@@ -168,8 +168,10 @@ def _denoise_bm3d(img: np.ndarray, sigma: float = 0.1) -> np.ndarray:
     try:
         import bm3d
 
-        # Use the estimated noise sigma as sigma_psd for adaptive denoising
-        sigma_psd = float(np.clip(sigma, 0.01, 1.0))
+        # Use the estimated noise sigma as sigma_psd for adaptive denoising.
+        # Cap at 0.15 so that wavelet-estimator overestimation on textured
+        # images does not cause destructive over-smoothing.
+        sigma_psd = float(np.clip(sigma, 0.01, 0.15))
         return np.clip(
             bm3d.bm3d(img, sigma_psd=sigma_psd, stage_arg=bm3d.BM3DStages.ALL_STAGES), 0.0, 1.0
         ).astype(np.float32)
@@ -177,7 +179,7 @@ def _denoise_bm3d(img: np.ndarray, sigma: float = 0.1) -> np.ndarray:
         logger.warning("BM3D denoising failed (%s); falling back to NL-means.", exc)
         from skimage.restoration import denoise_nl_means
 
-        h = float(np.clip(sigma, 0.04, 0.3))
+        h = float(np.clip(sigma, 0.04, 0.10))
         return denoise_nl_means(
             img, h=h, fast_mode=True, patch_size=5, patch_distance=6, channel_axis=2
         ).astype(np.float32)
@@ -204,9 +206,10 @@ def _denoise_opencv(img: np.ndarray, cfg: PipelineConfig) -> np.ndarray:
 def _denoise_nlmeans(img: np.ndarray, cfg: PipelineConfig, sigma: float = 0.08) -> np.ndarray:
     from skimage.restoration import denoise_nl_means
 
-    # Scale h proportionally to the estimated noise level, bounded by cfg.nl_h
-    # as a floor so the filter is always at least minimally applied.
-    h = max(cfg.nl_h, float(np.clip(sigma, 0.0, 0.3)))
+    # h scales proportionally to the estimated noise sigma; cfg.nl_h acts as
+    # the upper bound to guard against overestimation by the wavelet estimator
+    # on small or highly-textured images (common practice: h ∝ σ, bounded).
+    h = float(np.clip(sigma, cfg.nl_h * 0.5, cfg.nl_h))
     return denoise_nl_means(
         img,
         h=h,
