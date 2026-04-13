@@ -357,7 +357,7 @@ httpx==0.28.1
     #   fastapi
     #   jupyterlab
     #   litestar
-huggingface-hub==1.9.0
+huggingface-hub==1.10.1
     # via
     #   accelerate
     #   datasets
