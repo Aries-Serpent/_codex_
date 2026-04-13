@@ -1292,7 +1292,7 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print("  ✅ sync_tracked_files: baseline hashes up-to-date")
         else:
-            print(f"⚠  sync_tracked_files.py not found — skipping")
+            print("⚠  sync_tracked_files.py not found — skipping")
 
         # 2. Enforce expected action versions across all workflow files
         enforce_script = REPO_ROOT / "scripts" / "ci" / "enforce_actions_versions.py"
@@ -1307,7 +1307,7 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print("  ✅ enforce_actions_versions: action pins verified/fixed")
         else:
-            print(f"⚠  enforce_actions_versions.py not found — skipping")
+            print("⚠  enforce_actions_versions.py not found — skipping")
 
         # 3. Final verification pass
         if sync_script.exists():
