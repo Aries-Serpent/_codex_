@@ -360,8 +360,9 @@ def _compute_merge_readiness_score() -> dict:
                        timeout=60)
     try:
         aais_score = _json.loads(out10)["composite"]
-    except Exception:
-        pass
+    except Exception as exc:
+        # Keep default fallback (0.0) if scorer output is unavailable/malformed.
+        print(f"[session_wrapup_autofix] warning: failed to parse AAIS scorer output: {exc}", file=sys.stderr)
     ok10 = aais_score >= 80.0
     dims.append((f"AAIS composite {aais_score:.1f}/100", 13,
                  f"✅ {aais_score:.1f}/100" if ok10 else f"❌ {aais_score:.1f}/100", ok10))
