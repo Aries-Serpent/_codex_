@@ -140,7 +140,7 @@ jobs:
             || echo "⚠️  PR description update failed (non-fatal — continuing)"
 
           if [ -z "$FIX_ARGS" ]; then
-            echo "✅ All pre-flight requirements already satisfied — no file auto-fix needed."
+            echo "✅ REQ-4/5 already satisfied — no requirement files need fixing."
           else
             # Run the session_wrapup_autofix.py script with --fix-all
             # This covers ALL missing components in one call:
