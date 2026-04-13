@@ -56,6 +56,8 @@ ACCOUNTABILITY_REPORT = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTAB
 CHANGELOG = REPO_ROOT / "CHANGELOG.md"
 CODEX_MANIFEST = REPO_ROOT / "CODEX_MANIFEST.json"
 SECRETS_BASELINE = REPO_ROOT / ".secrets.baseline"
+_OWNER = "Aries-Serpent"
+_REPO  = "_codex_"
 
 # Sentinel that marks auto-generated entries so we can detect duplicates.
 _AUTO_ENTRY_SENTINEL = "[auto-generated]"
@@ -880,6 +882,74 @@ def auto_fix_all_missing(
 
 
 # ---------------------------------------------------------------------------
+# Issue resolution verification helper
+# ---------------------------------------------------------------------------
+
+def _run_verify_issues(
+    items: list[str],
+    repo: str,
+    dry_run: bool = False,
+) -> int:
+    """Delegate to verify_issue_resolution.py logic for --verify-issues."""
+    import importlib.util
+    import os
+
+    script = Path(__file__).parent / "verify_issue_resolution.py"
+    if not script.exists():
+        print(
+            f"❌ verify_issue_resolution.py not found at {script}",
+            file=sys.stderr,
+        )
+        return 2
+
+    spec = importlib.util.spec_from_file_location("verify_issue_resolution", script)
+    if spec is None or spec.loader is None:
+        print("❌ Could not load verify_issue_resolution module", file=sys.stderr)
+        return 2
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+
+    # Build full GitHub URLs from bare numbers or pass through URLs unchanged
+    try:
+        owner, repo_name = repo.split("/", 1)
+    except ValueError:
+        owner, repo_name = _OWNER, _REPO
+
+    urls: list[str] = []
+    for item in items:
+        item = item.strip()
+        if item.startswith("https://"):
+            urls.append(item)
+        elif item.isdigit():
+            # Guess: issues are most common; PR numbers can be passed as
+            # https://... URLs for disambiguation.
+            urls.append(mod.build_url(owner, repo_name, "issue", item))
+        else:
+            print(f"⚠  Cannot interpret '{item}' as issue number or URL — skipping", file=sys.stderr)
+
+    if not urls:
+        print("❌ No valid issue/PR references to verify", file=sys.stderr)
+        return 3
+
+    if dry_run:
+        print("DRY-RUN: would verify:", *urls, sep="\n  ")
+        return 0
+
+    results = mod.verify_all(urls)
+    print(mod.format_text(results))
+
+    # Write step summary when running inside GitHub Actions
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        md = mod.format_markdown(results)
+        with open(summary_path, "a", encoding="utf-8") as f:
+            f.write(md + "\n")
+
+    all_resolved = all(r.resolved for r in results)
+    return 0 if all_resolved else 1
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -962,6 +1032,23 @@ def main(argv: list[str] | None = None) -> int:
         default=False,
         help="Exit 1 if either file is missing its required update (diagnostic mode)",
     )
+    parser.add_argument(
+        "--verify-issues",
+        nargs="+",
+        metavar="NUMBER_OR_URL",
+        dest="verify_issues",
+        help=(
+            "Verify that specified GitHub issues/PRs are resolved before ending the "
+            "session.  Accepts issue numbers (relative to this repo), PR numbers, "
+            "or full GitHub URLs.  Exits 1 if any item is unresolved."
+        ),
+    )
+    parser.add_argument(
+        "--verify-repo",
+        default=f"{_OWNER}/{_REPO}",
+        metavar="OWNER/REPO",
+        help="owner/repo for --verify-issues bare numbers (default: Aries-Serpent/_codex_).",
+    )
 
     args = parser.parse_args(argv)
 
@@ -992,6 +1079,10 @@ def main(argv: list[str] | None = None) -> int:
             pr_number=args.pr_number, dry_run=args.dry_run,
         )
         return 0 if ok else 1
+
+    # --verify-issues: in-session issue/PR resolution gate
+    if getattr(args, "verify_issues", None):
+        return _run_verify_issues(args.verify_issues, args.verify_repo, args.dry_run)
 
     if args.check:
         acct_ok = _last_commit_changed(ACCOUNTABILITY_REPORT)

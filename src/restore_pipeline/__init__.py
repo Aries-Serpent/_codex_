@@ -8,8 +8,8 @@ Public API::
     restored, metrics = process(image, mask=None, reference=None, config=None)
 """
 
-from restore_pipeline.pipeline import process
 from restore_pipeline.config import PipelineConfig
+from restore_pipeline.pipeline import process
 
 __all__ = ["process", "PipelineConfig"]
 __version__ = "0.1.0"

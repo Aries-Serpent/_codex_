@@ -8,12 +8,10 @@ from __future__ import annotations
 
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import numpy as np
 import pytest
-
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -175,7 +173,7 @@ def test_pipeline_psnr_improves_over_degraded(
         algorithm="nl_means",
         saturation_scale=1.0,  # no saturation boost
         clahe_clip_limit=0.0,  # disable CLAHE
-        sharpen_amount=0.0,    # no sharpening
+        sharpen_amount=0.0,  # no sharpening
     )
     _restored_u8, metrics = process(noisy_image, reference=clean_image, config=cfg)
 
@@ -253,8 +251,8 @@ def test_pipeline_opencv_algorithm(noisy_image: np.ndarray) -> None:
 
 
 def test_pipeline_file_integration(clean_image: np.ndarray, tmp_dir: Path) -> None:
-    from restore_pipeline.io import load_image, save_image
     from restore_pipeline import PipelineConfig, process
+    from restore_pipeline.io import load_image, save_image
 
     # Build a noisy degraded image
     rng = np.random.default_rng(99)

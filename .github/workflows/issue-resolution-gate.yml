@@ -1,0 +1,170 @@
+name: "🔍 Issue Resolution Gate"
+
+# Verifies that all GitHub issues/PRs referenced in the PR body are resolved
+# before a Copilot agent session ends or a PR is merged.
+#
+# How it works:
+#   1. Parses the PR body for issue/PR references (closes #N, fixes #N, resolves #N,
+#      or bare "#N" / GitHub issue/PR URLs).
+#   2. Calls scripts/ci/verify_issue_resolution.py for each referenced item.
+#   3. Writes a resolution table to the GitHub Step Summary.
+#   4. Exits 0 only when ALL referenced items are resolved (or the PR itself is
+#      the fix — which counts as resolved).
+#
+# Manual trigger:
+#   gh workflow run issue-resolution-gate.yml \
+#     --ref <branch> \
+#     -f pr_number=3951 \
+#     -f issue_numbers="3951 3953"
+#
+# Copilot agent in-session invocation:
+#   python scripts/ci/verify_issue_resolution.py --issues 3951 3953 --step-summary
+#
+# OR via session_wrapup_autofix.py:
+#   python scripts/ci/session_wrapup_autofix.py --verify-issues 3951 3953
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number whose body should be scanned for issue references"
+        required: false
+        default: ""
+      issue_numbers:
+        description: "Space-separated issue/PR numbers to verify directly (overrides auto-scan)"
+        required: false
+        default: ""
+      allow_in_progress:
+        description: "Treat IN_PROGRESS as resolved (do not block on pending checks)"
+        type: boolean
+        default: false
+
+permissions:
+  contents:      read
+  pull-requests: read
+  issues:        read
+  checks:        read
+  statuses:      read
+
+concurrency:
+  group: issue-resolution-gate-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: "Verify referenced issues are resolved"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ── Determine which issues/PRs to check ────────────────────────────────
+      - name: Extract issue references from PR body
+        id: extract
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          ISSUE_OVERRIDE: ${{ inputs.issue_numbers }}
+        run: |
+          set -euo pipefail
+
+          # If explicit list provided, use it directly
+          if [[ -n "${ISSUE_OVERRIDE:-}" ]]; then
+            echo "issues=${ISSUE_OVERRIDE}" >> "$GITHUB_OUTPUT"
+            echo "source=manual-override" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  Using manual issue override: ${ISSUE_OVERRIDE}"
+            exit 0
+          fi
+
+          if [[ -z "${PR_NUMBER:-}" ]]; then
+            echo "issues=" >> "$GITHUB_OUTPUT"
+            echo "source=none" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  No PR number — skipping issue extraction"
+            exit 0
+          fi
+
+          # Fetch PR body and extract issue references
+          PR_BODY=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}" \
+            --jq '.body // ""')
+
+          # Patterns: "closes/fixes/resolves #N", bare "#N", or full URLs
+          ISSUE_NUMBERS=$(echo "${PR_BODY}" | \
+            grep -oP '(?i)(?:closes?|fixes?|resolves?)\s+#\K\d+|(?<![/\d])#\K\d{4,5}(?!\d)' | \
+            tr '\n' ' ' | xargs || true)
+
+          echo "issues=${ISSUE_NUMBERS}" >> "$GITHUB_OUTPUT"
+          echo "source=pr-body" >> "$GITHUB_OUTPUT"
+          if [[ -n "${ISSUE_NUMBERS}" ]]; then
+            echo "ℹ️  Found issue references in PR #${PR_NUMBER}: ${ISSUE_NUMBERS}"
+          else
+            echo "ℹ️  No issue references found in PR body"
+          fi
+
+      # ── Run the verifier ───────────────────────────────────────────────────
+      - name: Run issue resolution verifier
+        id: verify
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          ISSUES: ${{ steps.extract.outputs.issues }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${ISSUES:-}" ]]; then
+            echo "✅ No issue references found — nothing to verify"
+            echo '## 🔍 Issue Resolution Gate' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '> ℹ️ No issue/PR references found in PR body — gate skipped.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          ALLOW_FLAG=""
+          if [[ "${{ inputs.allow_in_progress }}" == "true" ]]; then
+            ALLOW_FLAG="--allow-in-progress"
+          fi
+
+          # Convert space-separated numbers to --issues args
+          # shellcheck disable=SC2086
+          python scripts/ci/verify_issue_resolution.py \
+            --issues ${ISSUES} \
+            --repo "${{ github.repository }}" \
+            --step-summary \
+            ${ALLOW_FLAG}
+
+      # ── Upload JSON report as artifact ─────────────────────────────────────
+      - name: Generate JSON report artifact
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          ISSUES: ${{ steps.extract.outputs.issues }}
+        run: |
+          mkdir -p /tmp/issue-resolution-reports
+          if [[ -n "${ISSUES:-}" ]]; then
+            # shellcheck disable=SC2086
+            python scripts/ci/verify_issue_resolution.py \
+              --issues ${ISSUES} \
+              --repo "${{ github.repository }}" \
+              --output-json /tmp/issue-resolution-reports/report.json \
+              --allow-in-progress || true   # don't fail artifact generation
+          else
+            echo '[]' > /tmp/issue-resolution-reports/report.json
+          fi
+
+      - name: Upload resolution report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue-resolution-report
+          path: /tmp/issue-resolution-reports/
+          retention-days: 30

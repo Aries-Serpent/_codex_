@@ -72,7 +72,9 @@ def process(
         img = _denoise(img, cfg)
         logger.info("Denoise stage  %.3fs", time.perf_counter() - t0)
     else:
-        logger.info("Noise below threshold (%.4f < %.4f) — denoising skipped", sigma, cfg.noise_threshold)
+        logger.info(
+            "Noise below threshold (%.4f < %.4f) — denoising skipped", sigma, cfg.noise_threshold
+        )
 
     # ── Stage 4: deblur ───────────────────────────────────────────────────────
     if cfg.deblur:
@@ -162,7 +164,9 @@ def _denoise_bm3d(img: np.ndarray) -> np.ndarray:
     try:
         import bm3d
 
-        return np.clip(bm3d.bm3d(img, sigma_psd=0.1, stage_arg=bm3d.BM3DStages.ALL_STAGES), 0.0, 1.0).astype(np.float32)
+        return np.clip(
+            bm3d.bm3d(img, sigma_psd=0.1, stage_arg=bm3d.BM3DStages.ALL_STAGES), 0.0, 1.0
+        ).astype(np.float32)
     except Exception as exc:
         logger.warning("BM3D denoising failed (%s); falling back to NL-means.", exc)
         from skimage.restoration import denoise_nl_means
@@ -211,8 +215,7 @@ def _deblur(img: np.ndarray, cfg: PipelineConfig) -> np.ndarray:
     psf = _gaussian_psf(cfg.psf_size, cfg.psf_sigma)
     # Process each channel independently
     channels = [
-        richardson_lucy(img[..., c], psf, num_iter=cfg.rl_iterations, clip=True)
-        for c in range(3)
+        richardson_lucy(img[..., c], psf, num_iter=cfg.rl_iterations, clip=True) for c in range(3)
     ]
     return np.stack(channels, axis=-1).astype(np.float32)
 
