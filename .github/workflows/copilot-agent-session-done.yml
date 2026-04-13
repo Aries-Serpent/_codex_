@@ -129,22 +129,31 @@ jobs:
             echo "  REQ-5: CHANGELOG.md already updated — OK"
           fi
 
-          if [ -z "$FIX_ARGS" ]; then
-            echo "✅ All pre-flight requirements already satisfied — no auto-fix needed."
-            exit 0
-          fi
-
-          # Run the session_wrapup_autofix.py script with --fix-all
-          # This covers ALL missing components in one call:
-          #   REQ-4  — AGENT_ACCOUNTABILITY_REPORT.md
-          #   REQ-5  — CHANGELOG.md
-          #   REQ-6  — .secrets.baseline ↔ CODEX_MANIFEST.json sync
-          #   WEC    — PR body Workflow Execution Checklist block
+          # MANDATORY session-close gate (S177): ALWAYS refresh PR description with
+          # scorecard + follow-up + WEC — regardless of whether REQ-4/5 need fixing.
+          # This was the root cause of stale PR bodies: when REQ-4/5 were already
+          # satisfied, the early-exit skipped --fix-all which includes update_pr_description().
+          echo "📊 Refreshing PR description (scorecard + follow-up + WEC)..."
           python3 scripts/ci/session_wrapup_autofix.py \
+            --update-pr-description \
             --pr-number "${PR_NUMBER}" \
-            --sha "${GIT_SHA:0:8}" \
-            --run-url "${RUN_URL}" \
-            --fix-all
+            || echo "⚠️  PR description update failed (non-fatal — continuing)"
+
+          if [ -z "$FIX_ARGS" ]; then
+            echo "✅ All pre-flight requirements already satisfied — no file auto-fix needed."
+          else
+            # Run the session_wrapup_autofix.py script with --fix-all
+            # This covers ALL missing components in one call:
+            #   REQ-4  — AGENT_ACCOUNTABILITY_REPORT.md
+            #   REQ-5  — CHANGELOG.md
+            #   REQ-6  — .secrets.baseline ↔ CODEX_MANIFEST.json sync
+            #   WEC    — PR body Workflow Execution Checklist block
+            python3 scripts/ci/session_wrapup_autofix.py \
+              --pr-number "${PR_NUMBER}" \
+              --sha "${GIT_SHA:0:8}" \
+              --run-url "${RUN_URL}" \
+              --fix-all
+          fi
 
           # SCP-RESCUE-5: sync_tracked_files is the authoritative tool for
           # computing the correct detect-secrets hashed_secret for CODEX_MANIFEST.

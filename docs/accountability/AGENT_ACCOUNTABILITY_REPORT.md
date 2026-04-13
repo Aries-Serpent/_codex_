@@ -3,9 +3,41 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T12:43Z S_PR3962_COMPLIANCE_FIX — Merge-readiness scorecard compliance fix; 100/100 all green
+**Last updated:** 2026-04-13T16:58Z S177_SESSION_CLOSE_FIX — Fix mandatory scorecard refresh on every agent session close
 
 
+## SESSION SUMMARY — 2026-04-13T16:58Z (PR #3978 — S177: Fix session-close scorecard refresh)
+
+### Objective
+Address regression where PR body never gets updated with merge-readiness scorecard + follow-up
+prompt after Copilot agent sessions. Root cause: `copilot-agent-session-done.yml` preflight-autofix
+had an early-exit at line 134 that skipped `--fix-all` (and therefore `update_pr_description()`)
+when REQ-4/5 were already satisfied. Similarly, `agent-auth-delegation.yml` only called
+`--fix-pr-body` (WEC-only), never scorecard.
+
+### Root Cause Analysis
+1. `copilot-agent-session-done.yml` preflight-autofix early-exits when `FIX_ARGS` is empty
+   (REQ-4 and REQ-5 already satisfied), skipping `--fix-all` entirely
+2. `--fix-all` calls `auto_fix_all_missing()` which calls `update_pr_description()` — so
+   when `--fix-all` is skipped, the scorecard is never refreshed
+3. `agent-auth-delegation.yml` pr-body-checkpoint-guardian only calls `--fix-pr-body` which
+   maps to `fix_pr_body_checkboxes()` (WEC-only), not scorecard
+4. No standalone mechanism existed to call `update_pr_description()` independently
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Add `--update-pr-description` CLI flag | `scripts/ci/session_wrapup_autofix.py` | ✅ |
+| Always call scorecard refresh regardless of REQ-4/5 status | `.github/workflows/copilot-agent-session-done.yml` | ✅ |
+| Add scorecard refresh step to pr-body-checkpoint-guardian | `.github/workflows/agent-auth-delegation.yml` | ✅ |
+| Update PDA entry | `.codex/aftermath/pda_iterations.jsonl` | ✅ |
+| Update accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
+
+### Patterns Resolved
+| Pattern ID | Root Cause | Fix | Status |
+|---|---|---|---|
+| S177-SCORECARD-REFRESH | `update_pr_description()` never called when REQ-4/5 satisfied | Added `--update-pr-description` flag; always called unconditionally | ✅ |
+| S177-DUAL-PATH | Both `copilot-agent-session-done.yml` and `agent-auth-delegation.yml` missed scorecard | Both workflows now call `--update-pr-description` | ✅ |
 
 
 ## SESSION SUMMARY — 2026-04-13T12:43Z (PR #3962 — Compliance fix: merge-readiness scorecard + PDA + follow-up)

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S177 — mandatory scorecard refresh on session close)
+- `scripts/ci/session_wrapup_autofix.py`: added `--update-pr-description` CLI flag for unconditional scorecard + follow-up prompt refresh, independent of REQ-4/5 status
+- `.github/workflows/copilot-agent-session-done.yml`: removed early-exit that skipped `--fix-all` (and `update_pr_description()`) when REQ-4/5 were already satisfied; now always calls `--update-pr-description`
+- `.github/workflows/agent-auth-delegation.yml`: added mandatory scorecard refresh step to `pr-body-checkpoint-guardian` job alongside existing WEC preservation
+
 ### Fixed (auto-update — PR #3978)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3978 (SHA `43a20771`) at 2026-04-13T13:31Z [auto-generated]
 
