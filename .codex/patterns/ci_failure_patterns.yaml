@@ -1260,8 +1260,8 @@ fix:
     - "Every commit must touch CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md"
     - "Run doc_metrics_sync --fix after any fail_under or metric change in pyproject.toml"
     - "Add new patterns immediately when a new 'unknown' failure is resolved"
-    - "Use venv recreation pattern for any .venv_ci/bin/ binary calls in workflow steps:"
-    - "  if ! .venv_ci/bin/<cmd> ... 2>/dev/null; then python3 -m venv .venv_ci && .venv_ci/bin/<cmd> ...; fi"
+    - "Use hardened venv recreation pattern for any .venv_ci/bin/ binary calls in workflow steps:"
+    - "  if ! .venv_ci/bin/<cmd> ... 2>/dev/null; then rm -rf .venv_ci && python3 -m venv --clear .venv_ci && .venv_ci/bin/pip install --upgrade pip setuptools --quiet && .venv_ci/bin/<cmd> ...; fi"
 
 examples:
   - issue_number: 3534
@@ -1284,6 +1284,16 @@ examples:
       coverage_timeout: 1
       security_scan: 1
     resolution: "Recreated .venv_ci virtualenv on cache miss (`python3 -m venv .venv_ci` then `.venv_ci/bin/pip`); added self-healing case to triage (S172)"
+  - issue_type: "ci-health-alert"
+    issue_number: 3977
+    date: "2026-04-13"
+    failure_rate: "34.8%"
+    pattern_distribution:
+      self_healing: 189
+      auto_fix: 119
+      unknown: 38
+      workflow_cascade: 2
+    resolution: "S177: rm stale venv + --clear + pip upgrade in all 3 resilient pip blocks; cascade brake 10→5; cache-version v2→v3"
 
 cognitive_notes: |
   The 'self-healing' count in CI health alerts measures the cascade rate.
@@ -1292,16 +1302,22 @@ cognitive_notes: |
   The 'unknown' count dropped from 52 (S3534) to 2 (S172) — pattern library coverage is working.
   Key threshold insight: CODEX_CI_FAILURE_THRESHOLD=10.0 means the 'healthy' cascade rate of
   ~120/week will still trigger alerts if the underlying run count is low. Monitor after S172 fix.
+  S177 update (issue #3977): cascade persisted at 54.3% (189/348). Root cause: corrupted partial-cache
+  venvs survived the S172 fallback because `python3 -m venv` without `--clear` does not remove stale
+  files from a previous venv. Fix: added `rm -rf .venv_ci` + `--clear` flag + `pip upgrade` to all
+  three resilient pip install blocks. Also lowered cascade brake from 10→5 per hour per branch and
+  bumped default cache-version fallback to v3 to bust stale L3 caches.
 
 metadata:
-  reuse_count: 2
-  effectiveness: "S172 fix expected to eliminate ~94% of self-healing cascade failures"
+  reuse_count: 3
+  effectiveness: "S177 fix hardens venv recreation with rm + --clear + pip upgrade + cache bust"
   confidence: 0.95
   auto_fixable: true
-  last_updated: "2026-03-21"
+  last_updated: "2026-04-13"
   issue_refs:
     - "#3534"
     - "ci-health-alert (2026-03-21)"
+    - "#3977 ci-health-alert (2026-04-13)"
 
 ---
 ```
