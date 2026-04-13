@@ -687,7 +687,7 @@ opentelemetry-sdk==1.39.1
     #   mlflow-tracing
     #   opentelemetry-exporter-prometheus
     #   ray
-opentelemetry-semantic-conventions==0.60b1
+opentelemetry-semantic-conventions==0.62b0
     # via opentelemetry-sdk
 orjson==3.11.7
     # via
