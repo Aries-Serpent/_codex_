@@ -924,6 +924,12 @@ def consolidate(
             return  # success — exit retry loop
 
         except urllib.error.HTTPError as exc:
+            if exc.code == 403:
+                # 403 Forbidden is not transient — retrying won't help.
+                # This happens on Dependabot PRs where the GITHUB_TOKEN is
+                # read-only and cannot write comments.  Re-raise immediately
+                # so the caller can decide whether to treat it as an error.
+                raise
             if attempt == max_retries:
                 raise
             delay = backoff_s[min(attempt, len(backoff_s) - 1)]
@@ -960,6 +966,17 @@ def main() -> int:
             run_url=args.run_url,
             token=args.token,
         )
+    except urllib.error.HTTPError as exc:
+        if exc.code == 403:
+            # Read-only token (e.g. Dependabot PR) — skip comment, don't fail.
+            print(
+                f"⚠️  HTTP 403: token lacks write permission to post PR comment "
+                f"(PR #{args.pr_number}). Skipping dashboard update.",
+                file=sys.stderr,
+            )
+            return 0
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
     except Exception as exc:  # noqa: BLE001
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
