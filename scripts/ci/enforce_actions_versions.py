@@ -58,8 +58,8 @@ EXPECTED_VERSIONS: dict[str, str] = {
     # repo convention: v5 is the current standard (79 occurrences)
     "actions/upload-artifact": "v5",
     "actions/download-artifact": "v4",
-    "actions/cache": "v4",
-    "actions/github-script": "v7",
+    "actions/cache": "v5",
+    "actions/github-script": "v8",
     "actions/configure-pages": "v5",
     "actions/deploy-pages": "v4",
     "actions/upload-pages-artifact": "v3",

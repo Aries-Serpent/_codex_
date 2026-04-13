@@ -3,31 +3,48 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T07:30Z S_PR3958 — CI triage #3959 fixes: secrets-baseline-enforcer.yml syntax error
+**Last updated:** 2026-04-13T08:30Z S_PR3958_CTEP_SWEEP — CTEP P0-P6 readiness sweep; merge-readiness 96%
 
 
-## SESSION SUMMARY — 2026-04-13T07:30Z (PR #3958 — CI triage #3959)
+## SESSION SUMMARY — 2026-04-13T08:30Z (PR #3958 — CTEP P0-P6 sweep)
 
 ### Objective
-Fix all CI failures documented in triage report issue #3959 on branch `0D_base_` post-merge of PR #3954.
+Execute CTEP priority queue P0–P6: confirm CI green, fix actionlint, fix Node.js 20 actions,
+add Pattern 27 auto-fix, run codebase sweep, capture PDA entries, reach ~96% merge-readiness.
 
 ### Changes This Session
 | Fix | File | Status |
 |-----|------|--------|
-| Remove duplicated bash block (SC1089 syntax error) | `.github/workflows/secrets-baseline-enforcer.yml` | ✅ |
-| Add Fixed entry for PR #3958 | `CHANGELOG.md` | ✅ |
+| Upgrade github-script@v7 → v8 | `.github/workflows/auto-approve-workflows.yml` | ✅ |
+| Upgrade github-script@v7 → v8 | `.github/workflows/required-actions-enforcer.yml` | ✅ |
+| Upgrade github-script@v7 → v8 | `.github/workflows/secrets-baseline-enforcer.yml` | ✅ |
+| Update cache min v4→v5, github-script min v7→v8 | `scripts/ci/enforce_actions_versions.py` | ✅ |
+| Add Pattern 27 (targeted false-positive baseline scan) | `scripts/ci/auto_fix_common_issues.py` | ✅ |
+| Add Group D cache@v4 detection to Pattern 21 | `scripts/ci/auto_fix_common_issues.py` | ✅ |
+| 5 PDA AfterMath entries | `.codex/aftermath/pda_iterations.jsonl` | ✅ |
 | Update accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
 
 ### Patterns Resolved
 
-| Pattern | Root Cause | Fix | Status |
+| Pattern ID | Root Cause | Fix | Status |
 |---|---|---|---|
-| SC1089 / bash syntax error | Duplicated `while` loop tail (lines 125-135) pasted twice in `secrets-baseline-enforcer.yml` | Removed duplicate block | ✅ |
-| actionlint `could not parse as YAML` | actionlint's shellcheck integration flagged the syntax error in `secrets-baseline-enforcer.yml` | Fixed by removing duplicate block | ✅ |
-| Secrets Baseline Enforcer run failure | Same syntax error caused `syntax error near unexpected token 'else'` at CI runtime | Fixed by removing duplicate block | ✅ |
-| PR Comment Review Gate | 2 blocking comments (mbaetiong session-startup + bot gate) unaddressed | Replied to comment #4234435574; pushed commit to clear gate | ✅ |
+| PR3958-P0-CI-ALL-GREEN | 6 CI failures (NL-means h, secrets baseline FP) | Fixed in prev commits | ✅ |
+| PR3958-P4-GITHUB-SCRIPT-V8 | github-script@v7 = Node.js 20 (EOL June 2026) | Upgraded to v8 in 3 workflows | ✅ |
+| PR3958-P4-NODEJS20-DETECTOR-GROUP-D | Pattern 21 missing cache@v4 Group D | Added Group D regex | ✅ |
+| AUTOFIX-P27-TARGETED-SCAN | Full-repo detect-secrets scan times out | Added Pattern 27 targeted scan | ✅ |
 
 ### CI Status After Fix
+- restore-pipeline CI: ✅ success (commit 1b86e01)
+- Validation Pipeline / Fast Validation: ✅ success
+- Auto-Fix Common CI Issues: ✅ success
+- Pre-Merge Validation: ✅ success
+- actionlint: ✅ 0 errors
+- auto_fix_common_issues --check-only: 0 auto-fixable issues
+
+### Merge-Readiness Score: **96 / 100**
+Gap to 98%: Pattern 19 src imports reduction (141 test files, informational) + misc/ yaml download-artifact v4
+
+
 - `.github/workflows/secrets-baseline-enforcer.yml`: actionlint 0 errors ✅
 - yamllint `.github/workflows/*.yml`: 0 errors on `0D_base_` ✅
 - restore-pipeline-ci.yml: fix already present (`-W ignore::pytest.PytestConfigWarning -p no:asyncio`) ✅
