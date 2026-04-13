@@ -642,11 +642,111 @@ jobs:
           echo "- Valid:   \`${FIX_VALID}\`"      >> "$GITHUB_STEP_SUMMARY"
           echo "- Files:   \`${FIX_CHANGED_FILES}\`" >> "$GITHUB_STEP_SUMMARY"
 
+  # ── PLANSET-001: Universal baseline sweep ─────────────────────────────────
+  # Runs for EVERY workflow failure — including patterns where fixable==false.
+  # First step in every self-healing cycle: always sync .secrets.baseline and
+  # run the full auto_fix_common_issues.py sweep before pattern-specific fixes
+  # or Copilot escalation. This resolves the most common root cause (stale
+  # CODEX_MANIFEST hash) independently of the classified failure pattern.
+  #
+  # Cascade-safe: commits with [skip ci] to prevent re-triggering push workflows.
+  # Hourly per-branch cap: inherits from triage rate_cap (10 runs/hr).
+  baseline-sweep:
+    name: "🔄 Universal baseline sweep"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: triage
+    # Run whenever triage ran (regardless of fixable flag), unless it was skipped
+    # by the cascade brake.  skip==true means rate_cap fired — nothing to do.
+    if: >
+      always() &&
+      needs.triage.result != 'skipped' &&
+      needs.triage.outputs.head_branch != ''
+
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 5
+          ref: ${{ needs.triage.outputs.head_branch || 'main' }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Overlay trusted scripts from main (security)
+        # SECURITY: always overlay CI scripts from main so untrusted PR branches
+        # cannot inject code into the privileged sweep job.
+        run: |
+          git fetch origin main --depth=3 --no-tags 2>/dev/null || true
+          git restore --source=origin/main -- \
+            scripts/ci/auto_fix_common_issues.py \
+            scripts/ci/sync_tracked_files.py \
+            scripts/ci/session_wrapup_autofix.py \
+            2>/dev/null || true
+          echo "scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py scripts/ci/session_wrapup_autofix.py" > /tmp/overlaid_sweep.txt
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
+      - name: Install detect-secrets
+        run: |
+          if ! .venv_ci/bin/pip install detect-secrets --quiet 2>/dev/null; then
+            python3 -m venv .venv_ci
+            .venv_ci/bin/pip install detect-secrets ruff --quiet
+          fi
+
+      - name: Run universal sweep
+        id: sweep
+        run: |
+          echo "### 🔄 Universal Baseline Sweep" >> "$GITHUB_STEP_SUMMARY"
+
+          # Step 1: Sync .secrets.baseline (most common root cause — SCP-RESCUE-5)
+          python scripts/ci/sync_tracked_files.py --fix --manifest-only 2>&1 | tee /tmp/sweep_sync.txt
+          SYNC_STATUS=${PIPESTATUS[0]}
+          cat /tmp/sweep_sync.txt >> "$GITHUB_STEP_SUMMARY"
+
+          # Step 2: Run all auto-fixable patterns (ruff, coverage, isort, etc.)
+          python scripts/ci/auto_fix_common_issues.py 2>&1 | tee /tmp/sweep_fix.txt
+          cat /tmp/sweep_fix.txt >> "$GITHUB_STEP_SUMMARY"
+
+          # Restore trusted scripts so they're not staged as branch changes
+          if [ -f /tmp/overlaid_sweep.txt ]; then
+            # shellcheck disable=SC2046
+            git restore -- $(cat /tmp/overlaid_sweep.txt) 2>/dev/null || true
+          fi
+
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "✅ No changes required — baseline already clean" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            CHANGED_FILES=$(git diff --name-only | tr '\n' ' ')
+            echo "changed_files=${CHANGED_FILES}" >> "$GITHUB_OUTPUT"
+            echo "📝 Files changed by sweep: ${CHANGED_FILES}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit and push sweep fixes
+        if: steps.sweep.outputs.changed == 'true'
+        env:
+          HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --stat
+          # [skip ci] prevents push-triggered workflows from re-triggering the healer
+          git commit -m "fix(ci): universal baseline sweep — sync+auto_fix [skip ci]"
+          git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>/dev/null || true
+          git push origin "HEAD:refs/heads/${HEAD_BRANCH}"
+          echo "✅ Sweep commit pushed to ${HEAD_BRANCH}" >> "$GITHUB_STEP_SUMMARY"
+
   escalate:
     name: "Escalate to human"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: triage
+    needs: [triage, baseline-sweep]
     # Only escalate to human for patterns excluded from copilot-escalation
     # (self-healing cascades, unknown root-cause, or empty pattern).
     # All other fixable==false cases are handled by copilot-escalation first.
@@ -715,7 +815,7 @@ jobs:
       cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: triage
+    needs: [triage, baseline-sweep]
     if: >
       needs.triage.outputs.fixable == 'false' &&
       needs.triage.outputs.pattern != 'self-healing' &&

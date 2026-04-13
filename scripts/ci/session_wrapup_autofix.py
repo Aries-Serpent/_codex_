@@ -638,6 +638,63 @@ def fix_manifest_baseline(
 
 
 # ---------------------------------------------------------------------------
+# PLANSET-003: Pre-session health sweep
+# ---------------------------------------------------------------------------
+
+def _run_pre_session_health_sweep(dry_run: bool = False) -> bool:
+    """Run a full codebase health sweep at the start of every Copilot session.
+
+    Executes two steps:
+    1. ``sync_tracked_files.py --fix --manifest-only`` — resync ``.secrets.baseline``
+       using the authoritative detect-secrets hash (SCP-RESCUE-5 prevention).
+    2. ``auto_fix_common_issues.py`` — apply all auto-fixable patterns
+       (ruff F401/I001/F541/W-series, coverage thresholds, line length, etc.).
+
+    Both steps are idempotent — safe to run even when the codebase is already clean.
+    This eliminates the most common root cause of recurring Fast Validation failures
+    (stale CODEX_MANIFEST hash) before any session work begins.
+
+    Returns True if any changes were made, False if the codebase was already clean.
+    """
+    sync_script = REPO_ROOT / "scripts" / "ci" / "sync_tracked_files.py"
+    fix_script  = REPO_ROOT / "scripts" / "ci" / "auto_fix_common_issues.py"
+
+    changed = False
+
+    # Step 1: Baseline sync
+    if sync_script.exists():
+        cmd = [sys.executable, str(sync_script), "--fix", "--manifest-only"]
+        if dry_run:
+            cmd[-1] = "--check"
+        result = subprocess.run(cmd, capture_output=False, text=True)
+        print(f"  sync_tracked_files exit={result.returncode}")
+    else:
+        print(f"⚠  sync_tracked_files.py not found at {sync_script}")
+
+    # Step 2: Auto-fix all patterns
+    if fix_script.exists():
+        cmd2 = [sys.executable, str(fix_script)]
+        if dry_run:
+            cmd2.append("--check-only")
+        result2 = subprocess.run(cmd2, capture_output=False, text=True)
+        changed = result2.returncode == 0
+        print(f"  auto_fix_common_issues exit={result2.returncode}")
+    else:
+        print(f"⚠  auto_fix_common_issues.py not found at {fix_script}")
+
+    # Step 3: doc metrics date sync
+    doc_sync = REPO_ROOT / "scripts" / "tools" / "doc_metrics_sync.py"
+    if doc_sync.exists():
+        subprocess.run(
+            [sys.executable, str(doc_sync), "--fix"],
+            capture_output=True, text=True,
+        )
+
+    print("✅ Pre-session health sweep complete")
+    return changed
+
+
+# ---------------------------------------------------------------------------
 # Comprehensive auto-fix: run ALL missing-component checks in one call
 # ---------------------------------------------------------------------------
 
@@ -1047,6 +1104,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.pr_number == "unknown":
             print("❌ --activate-workflows requires --pr-number", file=sys.stderr)
             return 1
+        # PLANSET-003: Run a full pre-session health sweep before arming workflows.
+        # This ensures every coding agent session starts on a clean baseline —
+        # eliminates the most common root cause of recurring Fast Validation failures.
+        print("🔄 PLANSET-003: Running pre-session health sweep...")
+        _run_pre_session_health_sweep(dry_run=args.dry_run)
         ok = select_merge_required_workflows(
             pr_number=args.pr_number, dry_run=args.dry_run,
         )
