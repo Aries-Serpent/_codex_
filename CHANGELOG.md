@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3960)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3960 (SHA `910adc92`) at 2026-04-13T08:29Z [auto-generated]
+
 ### Fixed (auto-update — PR #3958 — CI failure triage #3959)
 - `.github/workflows/secrets-baseline-enforcer.yml`: removed duplicated bash block (lines 125-135 were repeated after `done`, causing SC1089 shell syntax error, actionlint failure, and runtime `syntax error near unexpected token 'else'`)
 - Fixes: Secrets Baseline Enforcer run #9, actionlint Workflow Compliance run #909, and cascading CI failures documented in triage issue #3959
