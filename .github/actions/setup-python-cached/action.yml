@@ -83,7 +83,7 @@ runs:
     # 1. Python interpreter
     # ─────────────────────────────────────────────────────────────────
     - name: Set up Python ${{ inputs.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -93,7 +93,7 @@ runs:
     #    A restore-key without the hash means any prior run can seed it.
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L1: pip downloads (~/.cache/pip)'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -109,7 +109,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L2: PyTorch CPU wheels (~/.cache/torch-whl)'
       if: inputs.install-torch == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/torch-whl
         key: ${{ runner.os }}-torch-cpu-py${{ inputs.python-version }}-slot2x
@@ -129,7 +129,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L3: installed venv (.venv_ci)'
       id: cache-venv
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .venv_ci
         key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -311,7 +311,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L4: npm tools (~/.npm)'
       if: inputs.install-npm-tools == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.npm
         key: ${{ runner.os }}-npm-mlc-v1
@@ -341,7 +341,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: L5 Cognitive Brain cache — restore
       if: inputs.enable-l5-brain-cache == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .codex/cognitive_brain
         key: ${{ runner.os }}-l5-brain-${{ inputs.cache-version || 'v2' }}-${{ hashFiles('.codex/cognitive_brain/**') }}

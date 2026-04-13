@@ -34,13 +34,13 @@ dependencies = [
   "pandas>=2.1",
   "marshmallow>=4.0.0,<5",  # Upgraded to 4.x; great-expectations (requires <4) moved to [ge] extras
   "mlflow>=2.22.4,<4",  # Security: Updated from 2.4 to fix 43+ vulnerabilities (RCE, auth bypass, path traversal)
-  "transformers>=4.48.0,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
+  "transformers>=5.5.3,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
   "peft>=0.11,<1",
   "accelerate>=0.31,<2",
   "datasets>=2.19,<5",
   "lm-eval>=0.4.2,<1",
   "ray[serve]>=2.9,<3",
-  "fastapi>=0.110,<1",
+  "fastapi>=0.135.3,<1",
   "slowapi>=0.1.9",
   "starlette>=0.37.2,<0.51",
   "httpx>=0.26,<1",
@@ -107,12 +107,12 @@ dev = [
   "pytest-mock>=3.12.0,<4.0.0",
   "pytest-randomly>=3.15",
   "pytest-rerunfailures>=12.0",
-  "pytest-split>=0.8",  # For test sharding in CI
+  "pytest-split>=0.11.0",  # For test sharding in CI
   "hypothesis>=6.98.0,<7.0.0",
   "ruff>=0.1.15,<1.0.0",
   "jsonschema>=4.0",
   "black>=24.0.0,<27.0.0",
-  "isort>=5.13",
+  "isort>=8.0.1",
   "mypy>=1.8.0,<2.0.0",
   "dvc==3.67.0",
   "pre-commit>=3.6.0,<5.0.0",
@@ -142,7 +142,7 @@ ml = [
   "peft>=0.11,<1",
   "sentencepiece>=0.1.99",
   "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=4.48.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
   "accelerate>=0.31,<2",
 ]
 monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
@@ -152,12 +152,12 @@ perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.22.4,<4"]  # Security: 
 sharding = ["xxhash>=3.0.0"]  # Optional: 10-100x faster hashing for index sharding (PS-06)
 plugins = ["importlib-metadata; python_version < '3.10'"]
 rag = [
-  # sentence-transformers 3.x supports PyTorch 2.6+ and transformers 4.48+
+  # sentence-transformers>=5.2.0 supports transformers<6.0.0 (i.e., transformers 5.x)
   # torch and transformers inherited from main dependencies (lines 37, 52)
   # Meta tensor handling via code-level device initialization (indexer.py:100)
-  "sentence-transformers>=3.0.0,<4.0.0",
+  "sentence-transformers>=5.2.0,<6.0.0",
   "chromadb>=0.4.22,<1.0.0",
-  "faiss-cpu>=1.7.4,<2.0.0",
+  "faiss-cpu>=1.13.2,<2.0.0",
   "openai>=1.0; python_version >= '3.8'",
 ]
 symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
@@ -186,7 +186,7 @@ test = [
   "pytest-randomly>=3.10",
   "hypothesis>=6.98.0,<7.0.0",
   "packaging>=24.0,<26.0",  # Pin to <26 for mlflow-tracing/mlflow-skinny compatibility
-  "transformers>=4.48.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
   "datasets>=2.19,<5",
   "accelerate>=0.31,<2",
@@ -203,7 +203,7 @@ tracking = [
 ]
 train = [
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=4.48.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
   "accelerate>=0.31,<2",
   "peft>=0.11,<1",
   "mlflow>=2.22.4,<4",  # Security: updated from 2.11 to fix 43+ vulnerabilities
@@ -240,15 +240,15 @@ all = [
   "pytest-randomly>=3.10",
   "pynvml>=11.5",
   "ruff>=0.1.15,<1.0.0",
-  "sentence-transformers>=2.3.0,<4.0.0",
+  "sentence-transformers>=5.2.0,<6.0.0",
   "chromadb>=0.4.22,<1.0.0",
-  "faiss-cpu>=1.7.4,<2.0.0",
+  "faiss-cpu>=1.13.2,<2.0.0",
   "sentencepiece>=0.1.99",
   "tensorboard>=2.14",
   "tokenizers>=0.15",
   "tomli>=2.0; python_version < '3.11'",
   "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=4.48.0,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
   "wandb>=0.16",
 ]
 

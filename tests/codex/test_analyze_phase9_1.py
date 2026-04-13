@@ -593,7 +593,7 @@ class TestLintIntegration:
             )
         )
 
-        with patch("src.codex.analyze.static.analyzer._resolve_tool", return_value="/usr/bin/ruff"):
+        with patch("codex.analyze.static.analyzer._resolve_tool", return_value="/usr/bin/ruff"):
             issues = _run_ruff(tmp_path)
 
         assert len(issues) == 1
@@ -602,7 +602,7 @@ class TestLintIntegration:
     @patch("subprocess.run")
     def test_run_ruff_not_found(self, mock_run: Mock, tmp_path: Path) -> None:
         """Test ruff not found returns empty list."""
-        with patch("src.codex.analyze.static.analyzer._resolve_tool", return_value=None):
+        with patch("codex.analyze.static.analyzer._resolve_tool", return_value=None):
             issues = _run_ruff(tmp_path)
 
         assert issues == []
@@ -626,7 +626,7 @@ class TestLintIntegration:
             )
         )
 
-        with patch("src.codex.analyze.static.analyzer._resolve_tool", return_value="/usr/bin/bandit"):
+        with patch("codex.analyze.static.analyzer._resolve_tool", return_value="/usr/bin/bandit"):
             issues = _run_bandit(tmp_path)
 
         assert len(issues) == 1

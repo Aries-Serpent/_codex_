@@ -66,7 +66,7 @@ runs:
 
     # ── 2. L6a — seed from shared L1 pip download cache ─────────────────────
     - name: 'L6a: pip download cache (~/.cache/pip)'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-live-pip-${{ inputs.cache-version }}-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -77,7 +77,7 @@ runs:
     # ── 3. L6b — agent venv (.venv_agent) ───────────────────────────────────
     - name: 'L6b: agent venv (.venv_agent)'
       id: cache-agent-venv
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .venv_agent
         key: ${{ runner.os }}-agent-venv-${{ inputs.cache-version }}-py${{ inputs.python-version }}-${{ hashFiles('requirements/agent.txt', 'pyproject.toml') }}
@@ -88,7 +88,7 @@ runs:
     # ── 4. L6c — Cognitive Brain SQLite DB (optional) ───────────────────────
     - name: 'L6c: Cognitive Brain DB (.codex/cognitive_brain/)'
       if: inputs.enable-brain-cache == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .codex/cognitive_brain
         key: ${{ runner.os }}-brain-db-${{ inputs.cache-version }}-${{ github.ref_name }}

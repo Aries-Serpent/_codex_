@@ -33,7 +33,7 @@ jobs:
       # Cache sentence-transformers models (small, ~400MB, high value)
       # This significantly reduces test time by avoiding model re-downloads
       - name: Cache sentence-transformers models
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/torch/sentence_transformers
           key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}

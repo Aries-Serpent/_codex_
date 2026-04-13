@@ -73,7 +73,7 @@ jobs:
 
       - name: "🔍 Verify single-file change"
         id: check
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             let prNumber;

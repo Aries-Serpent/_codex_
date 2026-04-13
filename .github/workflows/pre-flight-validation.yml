@@ -45,7 +45,7 @@ jobs:
 
       - name: Comment on PR with results (on failure)
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const MARKER = '<!-- pre-flight-validation-result -->';

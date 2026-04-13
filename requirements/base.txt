@@ -1,6 +1,6 @@
 duckdb==1.5.1
 torch==2.10.0
-transformers==5.5.0
+transformers==5.5.3
 peft==0.18.1
 accelerate>=0.27.0
 datasets==4.8.4
@@ -13,7 +13,7 @@ pydantic>=2.11.7
 pydantic-settings>=2.2
 typer>=0.12
 # Retrieval stack dependencies
-sentence-transformers>=3.0.0
+sentence-transformers>=5.2.0,<6.0.0
 faiss-cpu>=1.7.4
 # Optional extras are documented in docs/guides/tokenization.md.
 # Install `sentencepiece>=0.1.99` to enable the SentencePieceTokenizer adapter.

@@ -495,7 +495,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Ensure required labels exist
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -528,7 +528,7 @@ jobs:
             }
 
       - name: Build and upsert divergence tracking issue
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           SUMMARY_JSON: ${{ needs.detect.outputs.summary_json }}
           BEHIND_COUNT: ${{ needs.detect.outputs.behind_count }}

@@ -235,7 +235,7 @@ jobs:
 
       - name: Generate summary
         id: gen-summary
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const prSize = '${{ needs.analyze.outputs.pr_size }}';

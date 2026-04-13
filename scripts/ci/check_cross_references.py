@@ -50,7 +50,7 @@ SCAN_EXTENSIONS = {".md", ".yml", ".yaml"}
 
 SKIP_DIRS = {
     ".git", "node_modules", "__pycache__", ".venv", ".venv_ci",
-    "dist", "build", ".eggs", "archive",
+    "dist", "build", ".eggs", "archive", "backups",
 }
 
 # Files that contain inline scripts which *generate* Markdown content (e.g.
@@ -63,6 +63,7 @@ SKIP_DIRS = {
 # include the Markdown link syntax as documentation examples, not real links.
 SKIP_FILES: frozenset[str] = frozenset({
     ".github/workflows/pages-mkdocs.yml",
+    ".github/workflows.backup.20260214_131353/pages-mkdocs.yml",
     "scripts/ci/check_cross_references.py",  # self-referential: documents the syntax it detects
 })
 

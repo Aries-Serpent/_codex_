@@ -95,7 +95,7 @@ jobs:
       - name: "Apply variable updates from .codex/pending_var_updates.json"
         id: apply_vars
         if: steps.validate_token.outputs.valid == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -192,7 +192,7 @@ jobs:
       # ── Post confirmation comment ─────────────────────────────────────────
       - name: "Post result comment"
         if: always()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |

@@ -56,14 +56,15 @@ class TestCheckForMetaTensors:
         ``with torch.device('meta')`` sets the global default device via
         ``torch.set_default_device``.  When tests run in random order
         (pytest-randomly) a meta-device test could leak state into a
-        subsequent test that expects CPU parameters.  This hook explicitly
-        resets to CPU (rather than ``None``) so the reset is valid on every
-        supported PyTorch version.
+        subsequent test that expects CPU parameters.  This hook resets to
+        ``None`` (no default device) which fully clears any leaked 'meta'
+        context without the side-effects that ``set_default_device("cpu")``
+        causes in PyTorch >=2.0 (see conftest.py for details).
         """
         try:
             import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
             if hasattr(_torch, "set_default_device"):
-                _torch.set_default_device("cpu")
+                _torch.set_default_device(None)
         except Exception:  # noqa: BLE001
             pass
 
@@ -72,12 +73,14 @@ class TestCheckForMetaTensors:
 
         Mirrors ``setup_method`` to ensure any test that sets a global device
         (e.g. via ``with torch.device('meta')``) always cleans up, regardless
-        of whether the test passes, fails, or errors.
+        of whether the test passes, fails, or errors.  Uses ``None`` to fully
+        clear the device context rather than setting it to "cpu", which
+        interferes with meta tensor handling in PyTorch >=2.0.
         """
         try:
             import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
             if hasattr(_torch, "set_default_device"):
-                _torch.set_default_device("cpu")
+                _torch.set_default_device(None)
         except Exception:  # noqa: BLE001
             pass
 
@@ -137,6 +140,24 @@ class TestSafeModelLoad:
 
 class TestSafeModelLoadV2:
     """Tests for safe_model_load_v2 function"""
+
+    def setup_method(self, method: object) -> None:
+        """Clear default device before each test to prevent meta-device leakage."""
+        try:
+            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            if hasattr(_torch, "set_default_device"):
+                _torch.set_default_device(None)
+        except Exception:  # noqa: BLE001
+            pass
+
+    def teardown_method(self, method: object) -> None:
+        """Clear default device after each test to prevent meta-device leakage."""
+        try:
+            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            if hasattr(_torch, "set_default_device"):
+                _torch.set_default_device(None)
+        except Exception:  # noqa: BLE001
+            pass
 
     def test_model_without_meta_tensors(self):
         """Test loading model that doesn't have meta tensors"""

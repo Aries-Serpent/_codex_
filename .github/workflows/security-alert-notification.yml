@@ -36,7 +36,7 @@ jobs:
       - name: Get Dependabot alerts
         id: get-alerts
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -100,7 +100,7 @@ jobs:
       - name: Create security summary
         id: create-summary
         if: steps.get-alerts.outputs.has-alerts == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
         with:
@@ -171,7 +171,7 @@ jobs:
 
       - name: Create GitHub Issue for new alerts
         if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0)
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           # Pass outputs via env vars to avoid backtick/apostrophe injection in JS
           # template literals. DRQ-S105: review comment — security-alert-notification.yml:51-59

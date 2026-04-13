@@ -1467,16 +1467,31 @@ class CommonIssueFixer:
         both ``from src.X`` and ``from X`` resolve in all test environments in the
         interim.  New code SHOULD use the ``from X`` form.
 
+        **Known intentional exemptions** (not flagged as actionable):
+        - ``tests/`` — pytest.ini ``pythonpath = . src`` makes both forms valid; the
+          entire test suite uses ``from src.X`` style intentionally and a bulk rename
+          is tracked separately.
+        - ``src/codex/zendesk/agent.py`` — the repo root ``./tools/`` directory shadows
+          ``src/tools/``, so ``from src.tools import …`` is the only safe form here.
+          (Exempt by comment on the import line itself.)
+
         Auto-fix: ❌ (manual) — requires verifying each import target exists without
         the ``src.`` prefix in the installed package.
         """
         issues: List[str] = []
-        search_dirs = [self.repo_root / "src", self.repo_root / "tests"]
+        # Only scan src/ — tests/ use pytest.ini pythonpath (intentional, bulk-rename
+        # tracked separately); the zendesk agent.py exemption is handled below.
+        search_dirs = [self.repo_root / "src"]
         pattern_re = re.compile(r"^\s*from src\.", re.MULTILINE)
+        # Intentional exemption: zendesk agent uses `from src.tools` because the repo
+        # root ./tools/ directory shadows src/tools/ at runtime.
+        _ZENDESK_EXEMPT = self.repo_root / "src" / "codex" / "zendesk" / "agent.py"
         for search_dir in search_dirs:
             if not search_dir.exists():
                 continue
             for py_file in sorted(search_dir.rglob("*.py")):
+                if py_file == _ZENDESK_EXEMPT:
+                    continue  # intentional: tools/ shadow — see comment in file
                 try:
                     content = py_file.read_text(encoding="utf-8", errors="replace")
                 except OSError:
@@ -1502,7 +1517,7 @@ class CommonIssueFixer:
                 "   ℹ️  New code SHOULD use the direct-package form (`from codex.xxx`)."
             )
         else:
-            print("✅ Pattern 19 (Src Absolute Imports): no `from src.` imports found")
+            print("✅ Pattern 19 (Src Absolute Imports): no actionable `from src.` imports found")
         return issues
 
 
@@ -2310,7 +2325,7 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 27),
+        choices=range(1, 28),
         metavar="N",
         help="Run only pattern N (1–26); see pattern list above"
     )

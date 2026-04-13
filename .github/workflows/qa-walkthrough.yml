@@ -51,7 +51,7 @@ jobs:
           python3 -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed" || echo "pip-audit: MISSING"
 
       - name: Download recent CI artifacts
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         id: artifacts
         with:
           script: |
@@ -132,7 +132,7 @@ jobs:
 
       - name: Generate QA summary
         id: summary
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

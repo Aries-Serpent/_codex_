@@ -111,7 +111,7 @@ jobs:
 
       - name: Comment on failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -159,7 +159,7 @@ jobs:
 
       - name: Post summary
         if: success()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

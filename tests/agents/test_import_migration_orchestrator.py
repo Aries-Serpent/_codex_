@@ -155,8 +155,8 @@ from training.pipeline import Pipeline
 
     def test_migration_map_content(self, orchestrator):
         """Test migration map has expected mappings."""
-        assert orchestrator.migration_map["from training."] == "from training."
-        assert orchestrator.migration_map["from models."] == "from models."
+        assert orchestrator.migration_map["from training."] == "from src.training."
+        assert orchestrator.migration_map["from models."] == "from src.models."
         assert orchestrator.migration_map["import training."] == "import src.training."
         assert orchestrator.migration_map["import models."] == "import src.models."
 
