@@ -42,9 +42,11 @@ Design principles
 from __future__ import annotations
 
 import argparse
+import json as _json_mod
 import os
 import subprocess
 import sys
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -761,12 +763,19 @@ def update_pr_description(
     is_generic      = _GENERIC_TEMPLATE_MARKER in pr_body
     missing_scorecard = _SCORECARD_MARKER not in pr_body
 
+    # ALWAYS refresh the scorecard on every session close (S295 compliance fix).
+    # Previous behaviour skipped the update when an old scorecard was present,
+    # causing stale scores to persist across sessions.  The scorecard is cheap
+    # to compute (<5 s) and must reflect the CURRENT state of the branch.
     if not is_generic and not missing_scorecard:
-        print(f"✅ PR #{pr_number} description already has meaningful content + scorecard")
-        return False
+        print(f"ℹ️  PR #{pr_number} already has scorecard — refreshing with current score...")
 
-    reason = "generic template" if is_generic else "scorecard section missing"
-    print(f"⚠  PR #{pr_number} description needs rebuild ({reason}) — generating...")
+    reason = (
+        "generic template" if is_generic
+        else "scorecard section missing" if missing_scorecard
+        else "scorecard refresh (session close)"
+    )
+    print(f"⚠  PR #{pr_number} description rebuild ({reason}) — generating...")
 
     if dry_run:
         print(f"[dry-run] Would rebuild PR #{pr_number} description with scorecard + follow-up")
