@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: refs/heads/main
           fetch-depth: 10
@@ -214,7 +214,7 @@ jobs:
 
       - name: Checkout 0D_base_
         if: steps.branch_check.outputs.exists == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: refs/heads/0D_base_
           fetch-depth: 10
@@ -277,7 +277,7 @@ jobs:
     if: always() && github.event_name == 'schedule'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: refs/heads/main
           fetch-depth: 1

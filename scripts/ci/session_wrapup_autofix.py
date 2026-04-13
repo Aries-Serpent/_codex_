@@ -812,6 +812,14 @@ def _run_pre_session_health_sweep(dry_run: bool = False) -> bool:
             capture_output=True, text=True,
         )
 
+    # Step 4: enforce expected action versions (auto-fix silently)
+    enforce_script = REPO_ROOT / "scripts" / "ci" / "enforce_actions_versions.py"
+    if enforce_script.exists() and not dry_run:
+        subprocess.run(
+            [sys.executable, str(enforce_script), "--fix"],
+            capture_output=True, text=True,
+        )
+
     print("✅ Pre-session health sweep complete")
     return changed
 
@@ -1209,6 +1217,17 @@ def main(argv: list[str] | None = None) -> int:
         metavar="OWNER/REPO",
         help="owner/repo for --verify-issues bare numbers (default: Aries-Serpent/_codex_).",
     )
+    parser.add_argument(
+        "--update-baseline",
+        action="store_true",
+        default=False,
+        help=(
+            "Re-sync .secrets.baseline for ALL tracked files (not just CODEX_MANIFEST). "
+            "Runs sync_tracked_files.py --fix, then enforce_actions_versions.py --fix, "
+            "then verifies the baseline is clean.  Safe to run after any commit that "
+            "adds new test/fixture files with hash-like strings."
+        ),
+    )
 
     args = parser.parse_args(argv)
 
@@ -1254,6 +1273,56 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         approve_pending_workflow_runs(pr_number=args.pr_number)
         return 0
+
+    # --update-baseline: full baseline re-sync + action-version enforcement
+    if getattr(args, "update_baseline", False):
+        print("🔄 --update-baseline: running full baseline + action-versions sync...")
+        errors = 0
+
+        # 1. Sync tracked-file hashes in .secrets.baseline
+        sync_script = REPO_ROOT / "scripts" / "ci" / "sync_tracked_files.py"
+        if sync_script.exists():
+            r = subprocess.run(
+                [sys.executable, str(sync_script), "--fix"],
+                capture_output=False, text=True,
+            )
+            if r.returncode != 0:
+                print(f"⚠  sync_tracked_files returned {r.returncode}")
+                errors += 1
+            else:
+                print("  ✅ sync_tracked_files: baseline hashes up-to-date")
+        else:
+            print(f"⚠  sync_tracked_files.py not found — skipping")
+
+        # 2. Enforce expected action versions across all workflow files
+        enforce_script = REPO_ROOT / "scripts" / "ci" / "enforce_actions_versions.py"
+        if enforce_script.exists():
+            r2 = subprocess.run(
+                [sys.executable, str(enforce_script), "--fix"],
+                capture_output=False, text=True,
+            )
+            if r2.returncode not in (0, 1):
+                print(f"⚠  enforce_actions_versions returned {r2.returncode}")
+                errors += 1
+            else:
+                print("  ✅ enforce_actions_versions: action pins verified/fixed")
+        else:
+            print(f"⚠  enforce_actions_versions.py not found — skipping")
+
+        # 3. Final verification pass
+        if sync_script.exists():
+            verify = subprocess.run(
+                [sys.executable, str(sync_script), "--check"],
+                capture_output=True, text=True,
+            )
+            if verify.returncode != 0:
+                print("❌ Baseline still inconsistent after sync — manual intervention needed")
+                errors += 1
+            else:
+                print("  ✅ Final baseline verification: CLEAN")
+
+        print(f"{'✅' if errors == 0 else '❌'} --update-baseline complete (errors={errors})")
+        return 0 if errors == 0 else 1
 
     # --verify-issues: in-session issue/PR resolution gate
     if getattr(args, "verify_issues", None):

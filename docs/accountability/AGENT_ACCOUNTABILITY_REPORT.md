@@ -3,7 +3,40 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/fix-security-vulnerability-diskcache
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:2026-04-13T06:05:29Z 2026-04-12T12:15Z S_PR3946_RESCUE — Fast Validation sync-tracked-files, CODEX_MANIFEST hash stabilization
+**Last updated:** 2026-04-13T06:22Z S_PR3954_CONT — CI rescue + continuous improvement infrastructure
+
+
+## SESSION SUMMARY — 2026-04-13T06:22Z (PR #3954 — CI fixes + continuous improvement)
+
+### Objective
+Bring PR #3954 to ≥98% merge readiness: resolve all remaining CI failures on HEAD `1f6ac64e2`, action all unaddressed PR review comments, implement continuous improvement infrastructure for baseline/secrets/expected-actions enforcement.
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Remove duplicate `const exec` (SyntaxError) | auto-approve-workflows.yml | ✅ |
+| Add `# pragma: allowlist secret` to test SHA fixture | tests/ci/test_verify_issue_resolution.py:58 | ✅ |
+| Add trailing newline (POSIX) | .codex/repository_health/offload_candidates.json | ✅ |
+| Fix singular/plural impact message (PR thread r3070457450) | monitor_offload_candidates.py | ✅ |
+| Fix reason-string precision 1.3→1.25 (PR thread r3070457452) | monitor_offload_candidates.json + script | ✅ |
+| Back-fill 10 stale action_log entries (singular/plural) | .codex/action_log.ndjson | ✅ |
+| Fix checkout@v4 for startup_failure workflows | data-quality-suite.yml, progressive-validation.yml | ✅ |
+| New: action version enforcer script | scripts/ci/enforce_actions_versions.py | ✅ |
+| New: secrets baseline enforcer workflow | .github/workflows/secrets-baseline-enforcer.yml | ✅ |
+| New: required actions version gate workflow | .github/workflows/required-actions-enforcer.yml | ✅ |
+| Add --update-baseline to session_wrapup_autofix.py | scripts/ci/session_wrapup_autofix.py | ✅ |
+| Integrate enforce_actions_versions into pre-session sweep | scripts/ci/session_wrapup_autofix.py | ✅ |
+| Auto-fix 56 action-version violations across 20+ workflow files | .github/workflows/*.yml | ✅ |
+
+### Patterns Resolved
+
+| Pattern | Root Cause | Fix | Status |
+|---|---|---|---|
+| SyntaxError exec redeclared | `const exec = require('@actions/exec')` redeclares built-in | Removed duplicate line | ✅ |
+| Fast Validation detect-secrets | New test file with SHA hex string not in baseline | Added pragma; no baseline update needed | ✅ |
+| Fast Validation end-of-file-fixer | offload_candidates.json missing `\n` | Added trailing newline | ✅ |
+| PR review thread r3070457450 | Plural "candidates" when count=1 | Fixed impact message singular/plural logic | ✅ |
+| PR review thread r3070457452 | reason "1.3mb" vs actual "1.25mb" | Fixed `:.1f` → `:.2f` precision | ✅ |
 
 
 ## SESSION SUMMARY — 2026-04-13T06:10:52Z (PR #3954 — context preload + Mermaid + CI fixes)

@@ -764,7 +764,7 @@ jobs:
         # This workflow runs in workflow_run context with CODEX_MASTER_KEY; checking out
         # a contributor's head branch would allow execution of untrusted code on a
         # privileged runner. We only need post_rescue_comment.py from a known-good ref.
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: refs/heads/main
 
