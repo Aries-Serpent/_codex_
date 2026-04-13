@@ -19750,3 +19750,39 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-04-13T10:48Z SESSION S297 (RAG Test Fix — PR #3975)
+
+### Session Objective
+Fix the `TestCheckForMetaTensors::test_model_without_meta_tensors` test failure
+detected in RAG Module Tests (workflow run 24336385180).
+
+### Root Cause
+`setup_method` and `teardown_method` in `TestCheckForMetaTensors` called
+`torch.set_default_device("cpu")` to prevent meta-device leakage between tests.
+In PyTorch >=2.0, calling `set_default_device("cpu")` interferes with meta tensor
+handling (explicitly warned against in `tests/conftest.py`), causing `nn.Linear(device="cpu")`
+to create parameters on the meta device rather than CPU.
+
+### Fix Applied
+- Changed `setup_method`/`teardown_method` in `TestCheckForMetaTensors` to call
+  `torch.set_default_device(None)` instead of `"cpu"`. `None` fully clears the
+  default device context without the side-effects that caused the failure.
+- Added equivalent `setup_method`/`teardown_method` to `TestSafeModelLoadV2` which
+  also uses `with torch.device('meta'):` patterns but lacked device cleanup.
+
+### Files Modified
+- `tests/test_rag_utils.py` — `setup_method`/`teardown_method` in
+  `TestCheckForMetaTensors` and `TestSafeModelLoadV2` updated.
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry.
+
+### Compliance
+- §0: Reviewed all failing CI checks and bot comments before making changes.
+- Deferral Language Gate: 0 violations.
+
+### Impact Score
+- Tests fixed: 1 (`TestCheckForMetaTensors::test_model_without_meta_tensors`)
+- Files changed: 2
+- CI gates unblocked: RAG Module Tests
+
+---
