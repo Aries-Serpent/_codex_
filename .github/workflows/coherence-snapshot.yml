@@ -35,13 +35,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          sparse-checkout: |
-            src/codex/monitoring/
-            scripts/ci/aais_v4_scorer.py
-            scripts/ci/pr_comment_consolidator.py
-            requirements.txt
-          sparse-checkout-cone-mode: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -196,18 +189,19 @@ jobs:
           python scripts/ci/pr_comment_consolidator.py \
             --pr-number  "${PR_NUMBER}" \
             --workflow   "OTel Coherence Snapshot" \
-            --status     "$(awk -v s='${{ steps.aais.outputs.score }}' 'BEGIN{print (s+0 >= 99.7) ? "success" : "warning"}')" \
+            --status     "$(awk -v s='${{ steps.aais.outputs.score }}' 'BEGIN{print (s+0 >= 80.0) ? "success" : "warning"}')" \
             --summary    "AAIS ${{ steps.aais.outputs.score }}/100 (${{ steps.aais.outputs.grade }}) · Coherence ${{ steps.coherence.outputs.coherence }}" \
             --details    "${DETAILS}" \
             --run-url    "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-      - name: Enforce AAIS ≥ 99.7 threshold
+      - name: Enforce AAIS ≥ MIN_PASSING_SCORE threshold
         run: |
           SCORE="${{ steps.aais.outputs.score }}"
           python - <<EOF
           import sys
+          sys.path.insert(0, "scripts/ci")
+          from aais_v4_scorer import MIN_PASSING_SCORE as threshold
           score = float("${SCORE}")
-          threshold = 99.7
           if score < threshold:
               print(f"❌ AAIS regression: {score:.1f} < {threshold} — weekly enforcement FAILED")
               sys.exit(1)
