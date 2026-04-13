@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-04-06T00:56:19.220160+00:00",
+    "scan_time": "2026-04-13T01:00:15.089038+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -17,16 +17,16 @@
     "by_category": {
       "unknown": 1
     },
-    "total_size_mb": 1.14
+    "total_size_mb": 1.25
   },
   "candidates": [
     {
       "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 1.14,
+      "size_mb": 1.25,
       "reasons": [
-        "large_file_1.1mb"
+        "large_file_1.3mb"
       ],
       "recommendation": "review_manually"
     }
