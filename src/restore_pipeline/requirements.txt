@@ -4,7 +4,7 @@
 
 # Image I/O
 imageio==2.37.0
-Pillow==11.2.1
+Pillow==12.1.1
 
 # Core image processing
 numpy==1.26.4
