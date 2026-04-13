@@ -152,10 +152,10 @@ perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.22.4,<4"]  # Security: 
 sharding = ["xxhash>=3.0.0"]  # Optional: 10-100x faster hashing for index sharding (PS-06)
 plugins = ["importlib-metadata; python_version < '3.10'"]
 rag = [
-  # sentence-transformers 3.x supports PyTorch 2.6+ and transformers 4.48+
+  # sentence-transformers>=5.2.0 supports transformers<6.0.0 (i.e., transformers 5.x)
   # torch and transformers inherited from main dependencies (lines 37, 52)
   # Meta tensor handling via code-level device initialization (indexer.py:100)
-  "sentence-transformers>=3.0.0,<4.0.0",
+  "sentence-transformers>=5.2.0,<6.0.0",
   "chromadb>=0.4.22,<1.0.0",
   "faiss-cpu>=1.7.4,<2.0.0",
   "openai>=1.0; python_version >= '3.8'",
@@ -240,7 +240,7 @@ all = [
   "pytest-randomly>=3.10",
   "pynvml>=11.5",
   "ruff>=0.1.15,<1.0.0",
-  "sentence-transformers>=2.3.0,<4.0.0",
+  "sentence-transformers>=5.2.0,<6.0.0",
   "chromadb>=0.4.22,<1.0.0",
   "faiss-cpu>=1.7.4,<2.0.0",
   "sentencepiece>=0.1.99",
