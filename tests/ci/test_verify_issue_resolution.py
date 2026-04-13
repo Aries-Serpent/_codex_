@@ -55,7 +55,7 @@ def _fake_pr(
     state: str = "open",
     mergeable_state: str = "clean",
     title: str = "Fix: something",
-    sha: str = "abc123def456",
+    sha: str = "abc123def456",  # pragma: allowlist secret
 ) -> dict:
     return {
         "number": 3954,

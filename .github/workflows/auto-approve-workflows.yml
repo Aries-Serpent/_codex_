@@ -234,7 +234,6 @@ jobs:
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
-            const exec          = require('@actions/exec');
             const [owner, repo] = process.env.REPO.split('/');
             const dryRun        = process.env.DRY_RUN === 'true';
             const mode          = process.env.MODE;
