@@ -64,4 +64,7 @@ class PipelineConfig:
     """Path to a colorization ONNX model.  See README for download instructions."""
 
     colorize_model_url: str = "https://github.com/richzhang/colorization/raw/caffe/demo/colorization_release_v2.caffemodel"
-    """Reference URL documented in the README; model is NOT bundled in the repo."""
+    """Reference URL for the original Caffe model (not ONNX).  The pipeline expects
+    an ONNX export at ``colorize_model_path``; this URL is used only in warning
+    messages to point users to the upstream source.  See README for ONNX download
+    instructions."""

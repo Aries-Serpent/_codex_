@@ -101,7 +101,7 @@ jobs:
 
           # Patterns: "closes/fixes/resolves #N", bare "#N", or full URLs
           ISSUE_NUMBERS=$(echo "${PR_BODY}" | \
-            grep -oP '(?i)(?:closes?|fixes?|resolves?)\s+#\K\d+|(?<![/\d])#\K\d{4,5}(?!\d)' | \
+            grep -oP '(?i)(?:closes?|fixes?|resolves?)\s+#\K\d+|(?<![/\d])#\K\d+(?!\d)' | \
             tr '\n' ' ' | xargs || true)
 
           echo "issues=${ISSUE_NUMBERS}" >> "$GITHUB_OUTPUT"

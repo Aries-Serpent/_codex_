@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -25,6 +25,10 @@ if TYPE_CHECKING:
     pass  # Only used for type annotations below
 
 logger = logging.getLogger(__name__)
+
+# Module-level cache for ONNX InferenceSession objects, keyed by model path.
+# Avoids reloading the model on every call to _colorize.
+_ORT_SESSION_CACHE: dict[str, Any] = {}
 
 
 # ── Public entry point ────────────────────────────────────────────────────────
@@ -69,7 +73,7 @@ def process(
 
     # ── Stage 3: denoise ──────────────────────────────────────────────────────
     if sigma >= cfg.noise_threshold:
-        img = _denoise(img, cfg)
+        img = _denoise(img, cfg, sigma)
         logger.info("Denoise stage  %.3fs", time.perf_counter() - t0)
     else:
         logger.info(
@@ -137,16 +141,16 @@ def _estimate_sigma(img: np.ndarray) -> float:
     return float(np.mean(sigmas))
 
 
-def _denoise(img: np.ndarray, cfg: PipelineConfig) -> np.ndarray:
+def _denoise(img: np.ndarray, cfg: PipelineConfig, sigma: float = 0.1) -> np.ndarray:
     algo = cfg.algorithm
     if algo == "auto":
         algo = _pick_algorithm()
 
     if algo == "bm3d":
-        return _denoise_bm3d(img)
+        return _denoise_bm3d(img, sigma)
     if algo == "opencv":
         return _denoise_opencv(img, cfg)
-    return _denoise_nlmeans(img, cfg)
+    return _denoise_nlmeans(img, cfg, sigma)
 
 
 def _pick_algorithm() -> str:
@@ -160,19 +164,22 @@ def _pick_algorithm() -> str:
     return "nl_means"
 
 
-def _denoise_bm3d(img: np.ndarray) -> np.ndarray:
+def _denoise_bm3d(img: np.ndarray, sigma: float = 0.1) -> np.ndarray:
     try:
         import bm3d
 
+        # Use the estimated noise sigma as sigma_psd for adaptive denoising
+        sigma_psd = float(np.clip(sigma, 0.01, 1.0))
         return np.clip(
-            bm3d.bm3d(img, sigma_psd=0.1, stage_arg=bm3d.BM3DStages.ALL_STAGES), 0.0, 1.0
+            bm3d.bm3d(img, sigma_psd=sigma_psd, stage_arg=bm3d.BM3DStages.ALL_STAGES), 0.0, 1.0
         ).astype(np.float32)
     except Exception as exc:
         logger.warning("BM3D denoising failed (%s); falling back to NL-means.", exc)
         from skimage.restoration import denoise_nl_means
 
+        h = float(np.clip(sigma, 0.04, 0.3))
         return denoise_nl_means(
-            img, h=0.08, fast_mode=True, patch_size=5, patch_distance=6, channel_axis=2
+            img, h=h, fast_mode=True, patch_size=5, patch_distance=6, channel_axis=2
         ).astype(np.float32)
 
 
@@ -194,14 +201,15 @@ def _denoise_opencv(img: np.ndarray, cfg: PipelineConfig) -> np.ndarray:
     return rgb.astype(np.float32) / 255.0
 
 
-def _denoise_nlmeans(img: np.ndarray, cfg: PipelineConfig) -> np.ndarray:
+def _denoise_nlmeans(img: np.ndarray, cfg: PipelineConfig, sigma: float = 0.08) -> np.ndarray:
     from skimage.restoration import denoise_nl_means
 
-    # Use the config h value directly (don't scale by estimated sigma — the
-    # wavelet estimator over-estimates on small or synthetic images).
+    # Scale h proportionally to the estimated noise level, bounded by cfg.nl_h
+    # as a floor so the filter is always at least minimally applied.
+    h = max(cfg.nl_h, float(np.clip(sigma, 0.0, 0.3)))
     return denoise_nl_means(
         img,
-        h=cfg.nl_h,
+        h=h,
         fast_mode=True,
         patch_size=cfg.nl_patch_size,
         patch_distance=cfg.nl_patch_distance,
@@ -322,10 +330,14 @@ def _colorize(img: np.ndarray, cfg: PipelineConfig) -> np.ndarray:
         import cv2
         import onnxruntime as ort
 
-        session = ort.InferenceSession(
-            cfg.colorize_model_path,
-            providers=["CPUExecutionProvider"],
-        )
+        # Reuse a cached session to avoid reloading the model for every image.
+        model_path = cfg.colorize_model_path
+        if model_path not in _ORT_SESSION_CACHE:
+            _ORT_SESSION_CACHE[model_path] = ort.InferenceSession(
+                model_path,
+                providers=["CPUExecutionProvider"],
+            )
+        session = _ORT_SESSION_CACHE[model_path]
         # Convert to grayscale L channel (LAB) and resize to model input
         u8 = (img * 255).round().astype(np.uint8)
         bgr = cv2.cvtColor(u8, cv2.COLOR_RGB2BGR)

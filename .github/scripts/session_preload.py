@@ -7,7 +7,6 @@ with full context loaded.
 """
 import json
 import os
-import sys
 
 
 def section(title: str, body: str) -> None:
@@ -18,7 +17,8 @@ def section(title: str, body: str) -> None:
 
 def read(path: str, lines: int = 0) -> str:
     try:
-        txt = open(path).read()
+        with open(path) as f:
+            txt = f.read()
         if lines:
             txt = "\n".join(txt.splitlines()[:lines])
         return txt
@@ -30,7 +30,8 @@ def pda_summary() -> str:
     path = ".codex/aftermath/pda_iterations.jsonl"
     if not os.path.exists(path):
         return "⚠️  pda_iterations.jsonl not found"
-    lines = open(path).readlines()[-5:]
+    with open(path) as f:
+        lines = f.readlines()[-5:]
     out = []
     for line in lines:
         try:
@@ -41,8 +42,8 @@ def pda_summary() -> str:
                 f"{d.get('status', '?')}: "
                 f"{d.get('title', '')}"
             )
-        except Exception:
-            pass
+        except json.JSONDecodeError:
+            out.append("  (malformed entry skipped)")
     return "\n".join(out) if out else "(no entries)"
 
 
@@ -50,7 +51,8 @@ def ctx_summary() -> str:
     path = ".codex/agent_context.json"
     if not os.path.exists(path):
         return "  agent_context.json not found"
-    d = json.load(open(path))
+    with open(path) as f:
+        d = json.load(f)
     keys = [
         "COPILOT_AGENT_AUTH_ENABLED",
         "COPILOT_AGENT_MAX_AUTONOMY_LEVEL",

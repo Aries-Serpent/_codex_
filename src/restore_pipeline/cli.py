@@ -42,7 +42,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--mask", help="Binary mask image (non-zero = inpaint region).")
     p.add_argument(
         "--reference",
-        help="Reference image for Reinhard colour transfer and metric computation.",
+        help="Reference image for metric computation (PSNR/SSIM) and optional Reinhard colour transfer.",
     )
     p.add_argument(
         "--algorithm",

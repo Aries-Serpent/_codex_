@@ -5,13 +5,13 @@ on:
     branches: ["feature/cpu-image-restore", "main", "0D_base_"]
     paths:
       - "src/restore_pipeline/**"
-      - "tests/test_restore_pipeline.py"
+      - "src/restore_pipeline/tests/**"
       - "src/restore_pipeline/requirements.txt"
       - ".github/workflows/restore-pipeline-ci.yml"
   pull_request:
     paths:
       - "src/restore_pipeline/**"
-      - "tests/test_restore_pipeline.py"
+      - "src/restore_pipeline/tests/**"
       - "src/restore_pipeline/requirements.txt"
 
 permissions:

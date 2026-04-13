@@ -20,7 +20,7 @@
 - **`auto-approve-workflows`** is always-required in WEC — always checked `[x]`
 - **`agent-auth-delegation.yml`** is always-required in WEC — always checked `[x]`
 
-## �� What "Agentic Managed Repo" Means
+## ℹ️ What "Agentic Managed Repo" Means
 
 1. Copilot coding agent has **write access** to all branches
 2. Copilot coding agent **self-heals CI** — no human intervention needed

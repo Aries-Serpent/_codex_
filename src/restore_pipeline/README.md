@@ -14,7 +14,7 @@ CPU-only image restoration + vivid colorization pipeline for Python 3.12.
 | Denoising | BM3D → cv2 NL-means → skimage NL-means (fallback chain) | ✅ default |
 | Deblurring | Richardson–Lucy (`skimage.restoration.richardson_lucy`) | opt-in `--deblur` |
 | Inpainting | `cv2.inpaint` INPAINT_TELEA | opt-in `--mask` |
-| Color enhancement | CLAHE on L + saturation boost (LAB space) + Reinhard transfer | ✅ default |
+| Color enhancement | CLAHE on L + saturation boost (LAB space); optional Reinhard transfer when `--reference` given | ✅ default |
 | Colorization | ONNX CPUExecutionProvider | opt-in `--colorize` |
 | Sharpening | Unsharp mask | ✅ default |
 | Metrics | PSNR + SSIM (`skimage.metrics`) | when `--reference` given |
@@ -170,7 +170,7 @@ Colorization is disabled by default. To enable it:
 ## Running tests
 
 ```bash
-pytest tests/test_restore_pipeline.py -q --tb=short -W error
+pytest src/restore_pipeline/tests/ -q --tb=short -W error
 ```
 
 All tests are self-contained (synthetic images generated at runtime — no external files needed).

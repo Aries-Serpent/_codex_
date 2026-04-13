@@ -11,4 +11,4 @@ run-sample:
 	bash examples/run_demo.sh
 
 test:
-	$(PYTHON) -m pytest tests/test_restore_pipeline.py -q --tb=short -W error
+	$(PYTHON) -m pytest src/restore_pipeline/tests/ -q --tb=short -W error

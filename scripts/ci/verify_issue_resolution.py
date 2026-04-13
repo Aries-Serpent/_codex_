@@ -157,6 +157,7 @@ def _api(path: str, token: str | None = None, *, base: str = "https://api.github
     headers: dict[str, str] = {
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "Codex-Issue-Verifier/1.0",
     }
     if tok:
         headers["Authorization"] = f"Bearer {tok}"

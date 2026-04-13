@@ -274,20 +274,23 @@ def main(argv: list[str] | None = None) -> int:
             sf.write("\n")
 
     # ── Exit code ───────────────────────────────────────────────────────────────
-    if all_violations and not args.fix and not args.warn_only:
-        remaining = [v for v in all_violations]
-        if args.fix:
-            # Re-scan to see if any remain (fix may have resolved all)
-            remaining = []
-            for wf_path in collect_workflows():
-                remaining.extend(scan_file(wf_path))
-        if remaining:
-            print(
-                f"\n❌ {len(remaining)} action version violation(s) — "
-                "run with --fix to auto-correct.",
-                file=sys.stderr,
-            )
-            return 1
+    if args.fix:
+        # Re-scan after fixing to see if any violations remain
+        remaining = []
+        for wf_path in collect_workflows():
+            remaining.extend(scan_file(wf_path))
+    elif all_violations and not args.warn_only:
+        remaining = list(all_violations)
+    else:
+        remaining = []
+
+    if remaining and not args.warn_only:
+        print(
+            f"\n❌ {len(remaining)} action version violation(s) — "
+            "run with --fix to auto-correct.",
+            file=sys.stderr,
+        )
+        return 1
 
     if not all_violations:
         total = len(collect_workflows())
