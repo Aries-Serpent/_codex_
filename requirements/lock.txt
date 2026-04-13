@@ -89,7 +89,7 @@ blinker==1.9.0
     # via flask
 cachetools==7.0.5
     # via
-faiss-cpu==1.7.4
+faiss-cpu==1.13.2
     # via
     #   -r requirements/base.txt
     #   google-auth
