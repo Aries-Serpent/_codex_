@@ -310,7 +310,7 @@ The session gate integrates into `agent-auth-delegation.yml` at two points:
 ```mermaid
 flowchart LR
     subgraph "agent-auth-delegation.yml"
-        A[detect-checkbox] --> B[await-approval]
+        A[detect-checkbox] --> B[activate-delegation ✅ always-on]
         B --> C[cognitive-preflight]
         C --> D[activate-delegation]
         D --> E{Session Gate}

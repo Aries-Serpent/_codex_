@@ -3,7 +3,21 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/fix-security-vulnerability-diskcache
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-12T12:15Z S_PR3946_RESCUE — Fast Validation sync-tracked-files, CODEX_MANIFEST hash stabilization
+**Last updated:2026-04-13T06:05:29Z 2026-04-12T12:15Z S_PR3946_RESCUE — Fast Validation sync-tracked-files, CODEX_MANIFEST hash stabilization
+
+
+## SESSION SUMMARY — 2026-04-13T06:10:52Z (PR #3954 — context preload + Mermaid + CI fixes)
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Mandatory session pre-load step | copilot-setup-steps.yml | ✅ |
+| Mandatory pre-load at top of instructions | .github/copilot-instructions.md | ✅ |
+| checkout@v5 → @v4 | copilot-setup-steps.yml, codebase-health-sweep.yml | ✅ |
+| Stale await-approval Mermaid nodes updated | S146, S116g, S182 | ✅ |
+| Mermaid diagrams added (auth flow, auto-approve, WEC, PDA) | COPILOT_AGENT_ADMIN_SETUP.md | ✅ |
+| restore-pipeline PytestConfigWarning INTERNALERROR | restore-pipeline-ci.yml | ✅ |
+| auto-approve gh run rerun for same-repo PRs | auto-approve-workflows.yml | ✅ |
 
 ## SESSION SUMMARY — 2026-04-12T12:15Z (PR #3946 — CI rescue: CODEX_MANIFEST hash stabilization)
 
