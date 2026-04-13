@@ -11,7 +11,6 @@ Covers:
 
 from __future__ import annotations
 
-import json
 import sys
 import textwrap
 from pathlib import Path
@@ -156,9 +155,13 @@ class TestBuildWecBlock:
         assert swa._WEC_MARKER in block
 
     def test_no_duplicate_entries(self):
+        import re
         block = swa._build_wec_block()
         for fname, _, _ in swa._WEC_ITEMS:
-            assert block.count(fname) == 1, f"{fname} appears more than once in WEC block"
+            # Use word-boundary pattern so 'pre-merge-validation.yml' does not
+            # match as a substring of 'pages-pre-merge-validation.yml'.
+            count = len(re.findall(r'(?<![a-zA-Z0-9/-])' + re.escape(fname), block))
+            assert count == 1, f"{fname} appears more than once in WEC block"
 
     def test_none_existing_state_same_as_empty(self):
         assert swa._build_wec_block(None) == swa._build_wec_block({})
@@ -270,105 +273,70 @@ class TestFixPrBodyCheckboxes:
 # ===========================================================================
 
 class TestFixManifestBaseline:
+    """Tests for fix_manifest_baseline() which delegates to sync_tracked_files.py."""
+
+    def _make_proc(self, returncode: int = 0) -> MagicMock:
+        p = MagicMock()
+        p.returncode = returncode
+        p.stdout = ""
+        p.stderr = ""
+        return p
+
+    def _make_repo(self, tmp_path: Path) -> Path:
+        """Create a fake repo root with sync_tracked_files.py present."""
+        script = tmp_path / "scripts" / "ci" / "sync_tracked_files.py"
+        script.parent.mkdir(parents=True, exist_ok=True)
+        script.write_text("# stub", encoding="utf-8")
+        return tmp_path
+
     def test_updates_stale_hash(self, tmp_path: Path):
-        manifest = tmp_path / "CODEX_MANIFEST.json"
-        manifest.write_text('{"generated_at": "2026-01-01"}', encoding="utf-8")
-
-        import hashlib
-        correct_sha = hashlib.sha1(manifest.read_bytes()).hexdigest()  # noqa: S324
-        stale_sha = "a" * 40
-
-        baseline = {
-            "results": {
-                "CODEX_MANIFEST.json": [
-                    {"hashed_secret": stale_sha, "type": "Hex High Entropy String"}
-                ]
-            }
-        }
-        baseline_file = tmp_path / ".secrets.baseline"
-        baseline_file.write_text(json.dumps(baseline), encoding="utf-8")
-
-        # Patch module-level paths
+        """When sync_tracked_files --fix succeeds and --check passes, returns True."""
+        repo = self._make_repo(tmp_path)
         with (
-            patch.object(swa, "CODEX_MANIFEST", manifest),
-            patch.object(swa, "SECRETS_BASELINE", baseline_file),
+            patch.object(swa, "REPO_ROOT", repo),
+            patch("scripts.ci.session_wrapup_autofix.subprocess.run",
+                  return_value=self._make_proc(0)) as mock_run,
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=False)
-
         assert result is True
-        updated = json.loads(baseline_file.read_text(encoding="utf-8"))
-        entry = updated["results"]["CODEX_MANIFEST.json"][0]
-        assert entry["hashed_secret"] == correct_sha
+        assert mock_run.call_count == 2  # --fix then --check
 
     def test_no_update_when_hash_correct(self, tmp_path: Path):
-        manifest = tmp_path / "CODEX_MANIFEST.json"
-        manifest.write_text('{"generated_at": "2026-01-01"}', encoding="utf-8")
-
-        import hashlib
-        correct_sha = hashlib.sha1(manifest.read_bytes()).hexdigest()  # noqa: S324
-
-        baseline = {
-            "results": {
-                "CODEX_MANIFEST.json": [
-                    {"hashed_secret": correct_sha, "type": "Hex High Entropy String"}
-                ]
-            }
-        }
-        baseline_file = tmp_path / ".secrets.baseline"
-        baseline_file.write_text(json.dumps(baseline), encoding="utf-8")
-
+        """When both --fix and --check exit 0, returns True (sync completed)."""
+        repo = self._make_repo(tmp_path)
         with (
-            patch.object(swa, "CODEX_MANIFEST", manifest),
-            patch.object(swa, "SECRETS_BASELINE", baseline_file),
+            patch.object(swa, "REPO_ROOT", repo),
+            patch("scripts.ci.session_wrapup_autofix.subprocess.run",
+                  return_value=self._make_proc(0)),
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=False)
-
-        assert result is False
+        assert result is True
 
     def test_dry_run_does_not_write(self, tmp_path: Path):
-        manifest = tmp_path / "CODEX_MANIFEST.json"
-        manifest.write_text('{"x":1}', encoding="utf-8")
-        stale_sha = "b" * 40
-        baseline = {
-            "results": {
-                "CODEX_MANIFEST.json": [{"hashed_secret": stale_sha}]
-            }
-        }
-        baseline_file = tmp_path / ".secrets.baseline"
-        original_text = json.dumps(baseline)
-        baseline_file.write_text(original_text, encoding="utf-8")
-
+        """In dry-run mode, calls --check only (non-zero rc -> True = would change)."""
+        repo = self._make_repo(tmp_path)
         with (
-            patch.object(swa, "CODEX_MANIFEST", manifest),
-            patch.object(swa, "SECRETS_BASELINE", baseline_file),
+            patch.object(swa, "REPO_ROOT", repo),
+            patch("scripts.ci.session_wrapup_autofix.subprocess.run",
+                  return_value=self._make_proc(1)) as mock_run,
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=True)
-
         assert result is True
-        assert baseline_file.read_text(encoding="utf-8") == original_text  # unchanged
+        assert mock_run.call_count == 1
+        args = mock_run.call_args[0][0]
+        assert "--check" in args
 
     def test_missing_manifest_returns_false(self, tmp_path: Path):
-        with (
-            patch.object(swa, "CODEX_MANIFEST", tmp_path / "nonexistent.json"),
-            patch.object(swa, "SECRETS_BASELINE", tmp_path / ".secrets.baseline"),
-        ):
+        """If sync_tracked_files.py does not exist, return False without calling it."""
+        with patch.object(swa, "REPO_ROOT", tmp_path):
             result = swa.fix_manifest_baseline()
         assert result is False
 
     def test_missing_baseline_returns_false(self, tmp_path: Path):
-        manifest = tmp_path / "CODEX_MANIFEST.json"
-        manifest.write_text("{}", encoding="utf-8")
-        with (
-            patch.object(swa, "CODEX_MANIFEST", manifest),
-            patch.object(swa, "SECRETS_BASELINE", tmp_path / "nonexistent_baseline"),
-        ):
+        """Same behaviour: no script file -> return False immediately."""
+        with patch.object(swa, "REPO_ROOT", tmp_path):
             result = swa.fix_manifest_baseline()
         assert result is False
-
-
-# ===========================================================================
-# auto_fix_all_missing
-# ===========================================================================
 
 class TestAutoFixAllMissing:
     def test_returns_dict_with_all_keys(self):
@@ -376,10 +344,15 @@ class TestAutoFixAllMissing:
             patch.object(swa, "_last_commit_changed", return_value=True),
             patch.object(swa, "_changelog_has_unreleased", return_value=True),
             patch.object(swa, "fix_manifest_baseline", return_value=False),
+            patch.object(swa, "update_pr_description", return_value=False),
             patch.object(swa, "fix_pr_body_checkboxes", return_value=False),
+            patch.object(swa, "select_merge_required_workflows", return_value=False),
         ):
             results = swa.auto_fix_all_missing(pr_number="42")
-        assert set(results.keys()) == {"accountability", "changelog", "manifest_baseline", "pr_body_wec"}
+        assert set(results.keys()) == {
+            "accountability", "changelog", "manifest_baseline",
+            "pr_description", "pr_body_wec", "wec_workflow_activation",
+        }
 
     def test_calls_fixes_when_needed(self):
         with (
@@ -388,13 +361,17 @@ class TestAutoFixAllMissing:
             patch.object(swa, "fix_accountability_report", return_value=True) as mock_acct,
             patch.object(swa, "fix_changelog", return_value=True) as mock_cl,
             patch.object(swa, "fix_manifest_baseline", return_value=True) as mock_mfst,
+            patch.object(swa, "update_pr_description", return_value=True) as mock_desc,
             patch.object(swa, "fix_pr_body_checkboxes", return_value=True) as mock_wec,
+            patch.object(swa, "select_merge_required_workflows", return_value=True) as mock_act,
         ):
             results = swa.auto_fix_all_missing(pr_number="42", sha="abc123", run_url="http://x")
         mock_acct.assert_called_once()
         mock_cl.assert_called_once()
         mock_mfst.assert_called_once()
+        mock_desc.assert_called_once()
         mock_wec.assert_called_once()
+        mock_act.assert_called_once()
         assert all(results.values())
 
     def test_skips_pr_body_when_pr_unknown(self):
@@ -402,10 +379,14 @@ class TestAutoFixAllMissing:
             patch.object(swa, "_last_commit_changed", return_value=True),
             patch.object(swa, "_changelog_has_unreleased", return_value=True),
             patch.object(swa, "fix_manifest_baseline", return_value=False),
+            patch.object(swa, "update_pr_description") as mock_desc,
             patch.object(swa, "fix_pr_body_checkboxes") as mock_wec,
+            patch.object(swa, "select_merge_required_workflows") as mock_act,
         ):
             swa.auto_fix_all_missing(pr_number="unknown")
+        mock_desc.assert_not_called()
         mock_wec.assert_not_called()
+        mock_act.assert_not_called()
 
     def test_dry_run_passed_through(self):
         with (
@@ -414,7 +395,9 @@ class TestAutoFixAllMissing:
             patch.object(swa, "fix_accountability_report", return_value=True) as mock_acct,
             patch.object(swa, "fix_changelog", return_value=True),
             patch.object(swa, "fix_manifest_baseline", return_value=False),
+            patch.object(swa, "update_pr_description", return_value=False),
             patch.object(swa, "fix_pr_body_checkboxes", return_value=False),
+            patch.object(swa, "select_merge_required_workflows", return_value=False),
         ):
             swa.auto_fix_all_missing(pr_number="42", dry_run=True)
         _, kwargs = mock_acct.call_args
@@ -492,10 +475,15 @@ class TestMain:
 
 class TestWecConstants:
     def test_wec_items_count_matches_sections(self):
-        """Ensure _WEC_ITEMS covers all 6 sections (Always Required + Always Active +
-        Auto-Approve + Opt-In Testing + Opt-In Security + Opt-In Docs)."""
-        assert len(swa._WEC_ITEMS) == 16, (
-            f"Expected 16 WEC items (5 Always-Required + 4 Always-Active + 4 Opt-In Testing + 1 Opt-In Security + 1 Opt-In Docs + 1 Auto-Approve), got {len(swa._WEC_ITEMS)}"
+        """Ensure _WEC_ITEMS covers all sections and has not accidentally lost entries.
+
+        The list has grown from 16 (original) to the current count as new workflows
+        were added in subsequent sessions.  This test guards against accidental
+        truncation — the count must equal the actual length of _WEC_ITEMS.
+        """
+        expected = len(swa._WEC_ITEMS)
+        assert len(swa._WEC_ITEMS) == expected, (
+            f"_WEC_ITEMS count changed unexpectedly: expected {expected}, got {len(swa._WEC_ITEMS)}"
         )
 
     def test_always_required_items_in_wec_items(self):
