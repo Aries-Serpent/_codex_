@@ -76,7 +76,7 @@ jobs:
 
     steps:
       - name: "Checkout PR branch"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -145,6 +145,13 @@ jobs:
             --sha "${GIT_SHA:0:8}" \
             --run-url "${RUN_URL}" \
             --fix-all
+
+          # SCP-RESCUE-5: sync_tracked_files is the authoritative tool for
+          # computing the correct detect-secrets hashed_secret for CODEX_MANIFEST.
+          # Run it here (after session_wrapup_autofix) to guarantee .secrets.baseline
+          # is never stale regardless of which other bot workflows ran during the session.
+          python3 scripts/ci/sync_tracked_files.py --fix --manifest-only || \
+            echo "⚠️  sync_tracked_files non-zero (non-blocking)"
 
           # Commit and push the auto-fixed files back to the branch
           git config user.name  "github-actions[bot]"

@@ -1,0 +1,378 @@
+name: "🧹 Codebase Health Sweep"
+
+# PLANSET-002: Nightly full-codebase self-healing sweep.
+#
+# Runs on every branch that matters (main, 0D_base_, open PRs on request)
+# and applies ALL auto-fixable patterns from auto_fix_common_issues.py:
+#   - .secrets.baseline sync (SCP-RESCUE-5)
+#   - Unused imports (ruff F401)
+#   - Unsorted imports (isort/ruff I001)
+#   - F-string placeholders (ruff F541)
+#   - Line length (ruff format)
+#   - Coverage thresholds (auto-align to 70%)
+#   - Secrets baseline plugin cleanup
+#   - Auto-post rebase race fix (--autostash)
+#   - docs/ROADMAP.md date sync
+#
+# PDA Loop AfterMath: every run appends to .codex/aftermath/pda_iterations.jsonl
+# with pattern_id=SWEEP-NIGHTLY, status=resolved/open, and any gaps discovered.
+#
+# Cascade-safe: commits tagged [skip ci] prevent push-triggered re-triggers.
+# Rate gate: skips if last sweep ran within 6 hours on same branch.
+
+on:
+  schedule:
+    # 02:15 UTC nightly — offset from 02:00 to stagger with other nightly jobs
+    - cron: "15 2 * * *"
+
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to sweep (default: main AND 0D_base_)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Dry run — detect but do not commit fixes"
+        required: false
+        type: boolean
+        default: false
+      patterns:
+        description: "Comma-separated pattern names to run (empty = all)"
+        required: false
+        default: ""
+
+  # Also trigger after copilot-agent-session-done completes (post-session cleanup)
+  workflow_run:
+    workflows: ["🔄 Auto-Post @copilot review After Agent Session"]
+    types: [completed]
+
+concurrency:
+  group: codebase-health-sweep-${{ github.event.inputs.branch || 'nightly' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  # ── Job 1: Sweep main ──────────────────────────────────────────────────────
+  sweep-main:
+    name: "🧹 Sweep main"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: >
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success')
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v5
+        with:
+          ref: refs/heads/main
+          fetch-depth: 10
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Rate gate — skip if swept within 6 hours
+        id: rate
+        run: |
+          # Check the last [skip ci] sweep commit on this branch
+          LAST_SWEEP=$(git log --oneline --grep="universal baseline sweep\|codebase health sweep\|nightly sweep" -1 --format="%cd" --date=unix 2>/dev/null || echo "0")
+          NOW=$(date +%s)
+          ELAPSED=$(( NOW - LAST_SWEEP ))
+          if [ "$ELAPSED" -lt 21600 ] && [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "⏭️ Skipping sweep — last ran ${ELAPSED}s ago (< 6h)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        if: steps.rate.outputs.skip != 'true'
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
+      - name: Install tools
+        if: steps.rate.outputs.skip != 'true'
+        run: |
+          if ! .venv_ci/bin/pip install detect-secrets ruff --quiet 2>/dev/null; then
+            python3 -m venv .venv_ci
+            .venv_ci/bin/pip install detect-secrets ruff --quiet
+          fi
+
+      - name: Run sweep — main
+        id: sweep
+        if: steps.rate.outputs.skip != 'true'
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          PATTERNS: ${{ github.event.inputs.patterns || '' }}
+        run: |
+          echo "## 🧹 Codebase Health Sweep — main" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Triggered by:** ${{ github.event_name }}" >> "$GITHUB_STEP_SUMMARY"
+
+          # Step 1: Sync .secrets.baseline (SCP-RESCUE-5 prevention)
+          echo "### Step 1: Baseline sync" >> "$GITHUB_STEP_SUMMARY"
+          python scripts/ci/sync_tracked_files.py --fix --manifest-only 2>&1 | tee /tmp/sweep_sync.txt
+          cat /tmp/sweep_sync.txt >> "$GITHUB_STEP_SUMMARY" || true
+
+          # Step 2: All auto-fixable patterns
+          echo "### Step 2: Auto-fix patterns" >> "$GITHUB_STEP_SUMMARY"
+          FIX_ARGS=""
+          if [ -n "$PATTERNS" ]; then
+            FIX_ARGS="--pattern-name $PATTERNS"
+          fi
+          python scripts/ci/auto_fix_common_issues.py $FIX_ARGS 2>&1 | tee /tmp/sweep_fix.txt
+          cat /tmp/sweep_fix.txt >> "$GITHUB_STEP_SUMMARY" || true
+
+          # Step 3: docs/ROADMAP.md date sync
+          echo "### Step 3: Doc metrics sync" >> "$GITHUB_STEP_SUMMARY"
+          python scripts/tools/doc_metrics_sync.py --fix 2>&1 | tee /tmp/sweep_docs.txt || \
+            echo "⚠️ doc_metrics_sync non-zero (non-blocking)" | tee -a /tmp/sweep_docs.txt
+          cat /tmp/sweep_docs.txt >> "$GITHUB_STEP_SUMMARY" || true
+
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "✅ **main is clean** — no fixes needed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            CHANGED_FILES=$(git diff --name-only | tr '\n' ' ')
+            echo "changed_files=${CHANGED_FILES}" >> "$GITHUB_OUTPUT"
+            echo "📝 **Changed:** \`${CHANGED_FILES}\`" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit sweep fixes — main
+        if: steps.rate.outputs.skip != 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          # [skip ci] prevents re-triggering of push-based workflows
+          git commit -m "fix(ci): nightly codebase health sweep — main [skip ci]
+          Patterns applied: sync_tracked_files + auto_fix_common_issues
+          Generated by: .github/workflows/codebase-health-sweep.yml"
+          git pull --rebase --autostash origin main 2>/dev/null || true
+          git push origin HEAD:refs/heads/main
+          echo "✅ Sweep commit pushed to main" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Append PDA AfterMath entry — main
+        if: steps.rate.outputs.skip != 'true'
+        run: |
+          CHANGED="${{ steps.sweep.outputs.changed }}"
+          CHANGED_FILES="${{ steps.sweep.outputs.changed_files }}"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%MZ")
+          STATUS=$( [ "$CHANGED" = "true" ] && echo "resolved" || echo "clean" )
+          python3 - <<PYEOF
+          import json, pathlib, datetime
+          entry = {
+              "type": "sweep",
+              "timestamp": "$TIMESTAMP",
+              "session": "SWEEP-NIGHTLY",
+              "branch": "main",
+              "pattern_id": "PLANSET-002-NIGHTLY-SWEEP",
+              "workflow": "codebase-health-sweep.yml",
+              "status": "$STATUS",
+              "changed_files": "$CHANGED_FILES".split() if "$CHANGED_FILES" else [],
+              "root_cause": "Scheduled nightly codebase health sweep",
+              "fix_template": "sync_tracked_files --fix + auto_fix_common_issues",
+              "verification_cmd": "python scripts/ci/auto_fix_common_issues.py --check-only",
+              "copilot_ability_improvement": "Run nightly sweep before starting any session on main to ensure clean baseline state."
+          }
+          pda_path = pathlib.Path(".codex/aftermath/pda_iterations.jsonl")
+          pda_path.parent.mkdir(parents=True, exist_ok=True)
+          with open(pda_path, "a") as f:
+              f.write(json.dumps(entry) + "\n")
+          print(f"✅ PDA AfterMath entry appended: {entry['pattern_id']} ({entry['status']})")
+          PYEOF
+
+  # ── Job 2: Sweep 0D_base_ ─────────────────────────────────────────────────
+  sweep-staging:
+    name: "🧹 Sweep 0D_base_"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: >
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Check if 0D_base_ exists
+        id: branch_check
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        run: |
+          if gh api "repos/${{ github.repository }}/branches/0D_base_" --silent 2>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⏭️ 0D_base_ branch not found — skipping" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Checkout 0D_base_
+        if: steps.branch_check.outputs.exists == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: refs/heads/0D_base_
+          fetch-depth: 10
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        if: steps.branch_check.outputs.exists == 'true'
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
+      - name: Install tools
+        if: steps.branch_check.outputs.exists == 'true'
+        run: |
+          if ! .venv_ci/bin/pip install detect-secrets ruff --quiet 2>/dev/null; then
+            python3 -m venv .venv_ci
+            .venv_ci/bin/pip install detect-secrets ruff --quiet
+          fi
+
+      - name: Run sweep — 0D_base_
+        id: sweep
+        if: steps.branch_check.outputs.exists == 'true'
+        run: |
+          echo "## 🧹 Codebase Health Sweep — 0D_base_" >> "$GITHUB_STEP_SUMMARY"
+          python scripts/ci/sync_tracked_files.py --fix --manifest-only 2>&1 | tee /tmp/sweep_staging_sync.txt
+          cat /tmp/sweep_staging_sync.txt >> "$GITHUB_STEP_SUMMARY" || true
+          python scripts/ci/auto_fix_common_issues.py 2>&1 | tee /tmp/sweep_staging_fix.txt
+          cat /tmp/sweep_staging_fix.txt >> "$GITHUB_STEP_SUMMARY" || true
+          python scripts/tools/doc_metrics_sync.py --fix 2>&1 || true
+
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "✅ **0D_base_ is clean**" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "changed_files=$(git diff --name-only | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit sweep fixes — 0D_base_
+        if: steps.branch_check.outputs.exists == 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(ci): nightly codebase health sweep — 0D_base_ [skip ci]
+          Patterns applied: sync_tracked_files + auto_fix_common_issues
+          Generated by: .github/workflows/codebase-health-sweep.yml"
+          git pull --rebase --autostash origin 0D_base_ 2>/dev/null || true
+          git push origin HEAD:refs/heads/0D_base_
+          echo "✅ Sweep commit pushed to 0D_base_" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Job 3: Open issue for manual-only problems found ──────────────────────
+  report-manual-issues:
+    name: "📋 Report manual-only issues"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [sweep-main, sweep-staging]
+    if: always() && github.event_name == 'schedule'
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: refs/heads/main
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
+      - name: Install tools
+        run: |
+          if ! .venv_ci/bin/pip install ruff --quiet 2>/dev/null; then
+            python3 -m venv .venv_ci
+            .venv_ci/bin/pip install ruff --quiet
+          fi
+
+      - name: Check for remaining manual-only issues
+        id: manual_check
+        run: |
+          mkdir -p .codex
+          python scripts/ci/auto_fix_common_issues.py --check-only \
+            --json-output .codex/health-sweep-report.json 2>&1 || true
+          TOTAL=$(python3 -c "import json; d=json.load(open('.codex/health-sweep-report.json')); print(d.get('total_issues', 0))" 2>/dev/null || echo "0")
+          AUTO=$(python3 -c "import json; d=json.load(open('.codex/health-sweep-report.json')); print(d.get('auto_fixable', 0))" 2>/dev/null || echo "0")
+          MANUAL=$(python3 -c "import json; d=json.load(open('.codex/health-sweep-report.json')); print(d.get('manual_review', 0))" 2>/dev/null || echo "0")
+          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
+          echo "auto_fixable=${AUTO}" >> "$GITHUB_OUTPUT"
+          echo "manual_review=${MANUAL}" >> "$GITHUB_OUTPUT"
+          echo "📊 Health report: total=${TOTAL}, auto_fixable=${AUTO}, manual_review=${MANUAL}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open/update tracking issue for manual-only problems
+        if: steps.manual_check.outputs.manual_review != '0'
+        uses: actions/github-script@v8
+        env:
+          TOTAL: ${{ steps.manual_check.outputs.total }}
+          MANUAL: ${{ steps.manual_check.outputs.manual_review }}
+          AUTO: ${{ steps.manual_check.outputs.auto_fixable }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const MARKER = '<!-- codebase-health-sweep-tracking -->';
+            const date = new Date().toISOString().split('T')[0];
+            const body = `${MARKER}
+            ## 🧹 Codebase Health Sweep — Manual Issues Requiring Attention
+
+            **Date:** ${date}
+            **Workflow:** [codebase-health-sweep.yml](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Auto-fixable patterns are applied automatically by the nightly sweep.
+            The following issues require **manual review** by the Copilot coding agent:
+
+            | Metric | Count |
+            |--------|-------|
+            | Total issues found | ${process.env.TOTAL} |
+            | Auto-fixable (swept) | ${process.env.AUTO} |
+            | Manual review needed | ${process.env.MANUAL} |
+
+            ### To resolve:
+            \`\`\`bash
+            # Check what needs manual review
+            python scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/report.json
+            jq '.issues[] | select(.auto_fix_available == false)' /tmp/report.json
+
+            # Run the Copilot agent for codebase-wide healing
+            # @copilot Please run auto_fix_common_issues.py --check-only and fix ALL manual-review issues
+            \`\`\`
+
+            _Auto-generated by \`codebase-health-sweep.yml\`. Updates on each nightly run._`;
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['ci-health', 'automation'],
+              per_page: 50,
+            });
+            const existing = issues.find(i => i.body && i.body.includes(MARKER));
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+              core.info(`Updated tracking issue #${existing.number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🧹 Codebase Health: ${process.env.MANUAL} manual-review issues (${date})`,
+                body,
+                labels: ['ci-health', 'automation', 'priority-high'],
+              });
+              core.info('Created new tracking issue');
+            }

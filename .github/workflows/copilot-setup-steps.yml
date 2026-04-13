@@ -58,7 +58,7 @@ on:
 
 env:
   PYTHON_VERSION: "3.12"
-  NODE_VERSION: "20"
+  NODE_VERSION: "22"
   RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
 
@@ -127,6 +127,16 @@ jobs:
           persist-credentials: true      # Keep token for any subsequent git operations
           clean: true
           show-progress: true
+
+      # ============================================================================
+      # 🧠 MANDATORY SESSION CONTEXT PRE-LOAD — runs before ANY other work
+      # Injects: agentic state, codebase policy, accountability report, PDA loop
+      # aftermath, and stored memories into the agent's environment.
+      # This is the automated equivalent of "load memory, load accountability,
+      # load codebase policies and follow" — it must run unconditionally.
+      # ============================================================================
+      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+        run: python3 .github/scripts/session_preload.py
 
       # Configure git for non-interactive operation in the CI agent environment.
       # core.editor=true: prevents 'git rebase --continue' and similar commands

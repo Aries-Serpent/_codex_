@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3954 — continuous improvement + PR comment resolution)
+- `auto-approve-workflows.yml`: removed duplicate `const exec` declaration causing `SyntaxError: Identifier 'exec' has already been declared` — `exec` is already provided by `actions/github-script@v7` context
+- `tests/ci/test_verify_issue_resolution.py:58`: added `# pragma: allowlist secret` to suppress false-positive `HexHighEntropyString` detect-secrets flag on test SHA fixture
+- `.codex/repository_health/offload_candidates.json`: added missing trailing newline (POSIX compliance) and corrected reason string from `large_file_1.3mb` → `large_file_1.25mb` (precision mismatch)
+- `scripts/repository_organization/monitor_offload_candidates.py`: fixed singular/plural in impact message (`"1 offload candidates"` → `"1 offload candidate"`); fixed reason-string precision from `:.1f` → `:.2f` (reviewed PR thread r3070457450 + r3070457452)
+- `.codex/action_log.ndjson`: back-filled 10 stale `scan_offload_candidates` entries with correct singular/plural impact strings
+- `data-quality-suite.yml`, `progressive-validation.yml`: `checkout@v5` → `v4` (resolved `startup_failure` caused by concurrency-cancel + version pin alignment)
+- **New**: `scripts/ci/enforce_actions_versions.py` — minimum-version enforcer for all GitHub Actions references; supports `--fix` (auto-correct), `--json` (machine output), `--warn-only`; integrated into `session_wrapup_autofix.py --update-baseline` and pre-session health sweep
+- **New**: `.github/workflows/secrets-baseline-enforcer.yml` — continuous `.secrets.baseline` sync on every push; auto-adds `pragma: allowlist secret` to test/fixture false-positives; hard-fails on genuine secrets; posts rescue comment on PR failure
+- **New**: `.github/workflows/required-actions-enforcer.yml` — CI gate enforcing minimum action versions; auto-fixes on weekly schedule; annotates violations on PRs
+- `session_wrapup_autofix.py`: added `--update-baseline` flag (sync baseline + enforce action versions + verify clean); integrated `enforce_actions_versions.py --fix` into pre-session health sweep (step 4)
+
 ### Fixed (auto-update — PR #3952)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3952 (SHA `f0b429fb`) at 2026-04-12T13:38Z [auto-generated]
 
