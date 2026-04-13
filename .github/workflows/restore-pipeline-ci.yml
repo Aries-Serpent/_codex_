@@ -55,8 +55,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest src/restore_pipeline/tests/ -q --tb=short -W error \
-            --override-ini "asyncio_default_fixture_loop_scope="
+          pytest src/restore_pipeline/tests/ -q --tb=short -W error
 
       - name: Demo script smoke test
         run: |
