@@ -1,0 +1,14 @@
+.PHONY: install run-sample test
+
+PYTHON ?= python3
+PYTHONPATH := $(shell pwd)/src
+export PYTHONPATH
+
+install:
+	$(PYTHON) -m pip install -r src/restore_pipeline/requirements.txt
+
+run-sample:
+	bash examples/run_demo.sh
+
+test:
+	$(PYTHON) -m pytest src/restore_pipeline/tests/ -q --tb=short -W error

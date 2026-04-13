@@ -4,11 +4,38 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 
 ---
 
+## 🤖 MANDATORY SESSION PRE-LOAD — First action of EVERY session, no exceptions
+
+**Before reading anything else, before any tool call, before any file change:**
+
+1. **READ** `.codex/AGENTIC_REPO_STATE.md` — confirms auth is permanently active, no approval needed
+2. **READ** `.codex/CODEBASE_AGENCY_POLICY.md` — mandatory rules governing all agent actions
+3. **READ** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — last session state and patterns
+4. **READ** last 5 lines of `.codex/aftermath/pda_iterations.jsonl` — PDA loop state
+5. **READ** `.codex/agent_context.json` — repo variable snapshot (COPILOT_AGENT_AUTH_ENABLED etc.)
+6. **LOAD** all stored session memories (store_memory tool)
+
+This is not optional. This is not only triggered by deferral language.
+**Every session starts here.** The copilot-setup-steps.yml workflow automates this
+at environment boot — the output appears in the "🧠 Session Context Pre-load" step.
+
+### What these files tell you every time
+
+| File | Key fact |
+|------|----------|
+| `AGENTIC_REPO_STATE.md` | `COPILOT_AGENT_AUTH_ENABLED=true` is permanent. No checkbox. No human gate. |
+| `CODEBASE_AGENCY_POLICY.md` | Fix ALL issues found. No deferral. No "pre-existing". |
+| `AGENT_ACCOUNTABILITY_REPORT.md` | What the last session did, patterns resolved, what's open. |
+| `pda_iterations.jsonl` | PDA loop iteration history — what patterns are implemented. |
+| `agent_context.json` | Live repo variable values at last sync. |
+
+---
+
 ## 🚨 HARD STOP — DEFERRAL LANGUAGE TRIGGER PROTOCOL
 
 **This rule fires BEFORE any other instruction.**
 
-If you are about to write — or have just written — ANY of the following, you MUST STOP and:
+If you are about to write — or have just written — ANY of the following, you MUST STOP and re-run the mandatory pre-load above:
 
 1. 🔃 **LOAD** `.codex/CODEBASE_AGENCY_POLICY.md` (read it fully)
 2. 🔃 **LOAD** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (read it fully)

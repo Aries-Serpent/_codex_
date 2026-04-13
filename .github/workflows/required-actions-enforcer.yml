@@ -1,0 +1,143 @@
+name: 🔖 Required Actions Version Enforcer
+
+# Validates that every workflow file uses the approved version of each
+# GitHub Action (e.g., actions/checkout@v4, not v3 or v5-beta).
+#
+# On push / PR:   exits 1 if violations found.
+# On schedule:    auto-fixes and commits.
+# On workflow_dispatch: --fix or check only (input-controlled).
+
+on:
+  push:
+    branches:
+      - "automated/**"
+      - "copilot/**"
+      - "0D_base_"
+      - "main"
+    paths:
+      - ".github/workflows/**"
+      - ".github/misc/**"
+      - "scripts/ci/enforce_actions_versions.py"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - ".github/workflows/**"
+      - ".github/misc/**"
+  schedule:
+    # Weekly Sunday 03:00 UTC sweep — auto-fixes and commits
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+    inputs:
+      fix:
+        description: "Auto-fix violations (true) or report only (false)"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: required-actions-enforcer-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  enforce-versions:
+    name: 🔖 Check Action Versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # ── Check-only on PRs and push ────────────────────────────────────────
+      - name: Check action versions (PR / push)
+        if: github.event_name != 'schedule' && github.event.inputs.fix != 'true'
+        run: |
+          python scripts/ci/enforce_actions_versions.py --summary
+          echo "check_exit=$?" >> "$GITHUB_ENV"
+        continue-on-error: false
+
+      # ── Auto-fix on schedule or manual dispatch with fix=true ─────────────
+      - name: Auto-fix action versions
+        id: autofix
+        if: github.event_name == 'schedule' || github.event.inputs.fix == 'true'
+        run: |
+          python scripts/ci/enforce_actions_versions.py --fix --summary
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit auto-fixed versions
+        if: steps.autofix.outputs.changed == 'true'
+        run: |
+          git config user.name  "copilot-swe-agent[bot]"
+          git config user.email "198982749+Copilot@users.noreply.github.com"
+          git add .github/workflows/ .github/misc/
+          VIOLATIONS=$(python scripts/ci/enforce_actions_versions.py --json 2>/dev/null | \
+            python3 -c "import json,sys; d=json.load(sys.stdin); print(d['total'])" 2>/dev/null || echo "?")
+          git commit -m "fix(ci): auto-update ${VIOLATIONS} action version(s) to approved pins [skip ci]"
+          git push
+          echo "✅ Committed action version fixes"
+
+      # ── Annotate violations on PR ─────────────────────────────────────────
+      - name: Post PR annotation on violations
+        if: |
+          failure() &&
+          github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const { execSync } = require('child_process');
+            let violations = [];
+            try {
+              const out = execSync(
+                'python scripts/ci/enforce_actions_versions.py --json',
+                { encoding: 'utf8' }
+              );
+              violations = JSON.parse(out).violations || [];
+            } catch (_) {}
+
+            if (violations.length === 0) return;
+
+            const rows = violations.map(v =>
+              `| \`${v.file}\` | ${v.line} | \`${v.action}\` | \`@${v.found}\` | \`@${v.expected}\` |`
+            ).join('\n');
+
+            const body = [
+              `## 🔖 Required Actions Version Enforcer`,
+              ``,
+              `**${violations.length} workflow file(s)** use non-approved action versions.`,
+              ``,
+              `| File | Line | Action | Found | Expected |`,
+              `|------|------|--------|-------|----------|`,
+              rows,
+              ``,
+              `### Quick fix`,
+              `\`\`\`bash`,
+              `python scripts/ci/enforce_actions_versions.py --fix`,
+              `git add .github/`,
+              `git commit -m "fix(ci): update action versions to approved pins"`,
+              `\`\`\``,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

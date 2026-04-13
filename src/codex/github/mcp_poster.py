@@ -508,8 +508,8 @@ class GitHubMCPPoster:
 
         _PURPOSE_TITLES = {
             "accountability": f"📋 Agent Accountability — PR #{pr_number}",
-            "pre-session":    f"🧠 Pre-Session Context — PR #{pr_number}",
-            "qa":             f"❓ Q&A — PR #{pr_number}",
+            "pre-session": f"🧠 Pre-Session Context — PR #{pr_number}",
+            "qa": f"❓ Q&A — PR #{pr_number}",
         }
         title = _PURPOSE_TITLES.get(purpose, f"🤖 {purpose} — PR #{pr_number}")
         # Dedup marker embedded in the discussion *body* (not a comment)
@@ -539,11 +539,7 @@ class GitHubMCPPoster:
                 list_query,
                 {"owner": owner, "repo": repo_name, "first": 50, "after": page_cursor},
             )
-            page = (
-                result.get("data", {})
-                .get("repository", {})
-                .get("discussions", {})
-            )
+            page = result.get("data", {}).get("repository", {}).get("discussions", {})
             for d in page.get("nodes", []):
                 if d.get("title") == title or registry_marker in (d.get("body") or ""):
                     return d["number"], d["id"]
@@ -595,7 +591,10 @@ class GitHubMCPPoster:
             )
         logger.info(
             "Created new %r discussion #%s for PR #%s in %s",
-            purpose, number, pr_number, repo,
+            purpose,
+            number,
+            pr_number,
+            repo,
         )
         return int(number), str(node_id)
 
@@ -603,13 +602,15 @@ class GitHubMCPPoster:
     # Response-checking: detect unread maintainer replies
     # ------------------------------------------------------------------
 
-    _BOT_LOGINS: frozenset[str] = frozenset({
-        "github-actions[bot]",
-        "copilot-swe-agent[bot]",
-        "github-copilot[bot]",
-        "copilot[bot]",
-        "dependabot[bot]",
-    })
+    _BOT_LOGINS: frozenset[str] = frozenset(
+        {
+            "github-actions[bot]",
+            "copilot-swe-agent[bot]",
+            "github-copilot[bot]",
+            "copilot[bot]",
+            "dependabot[bot]",
+        }
+    )
 
     def check_discussion_replies(
         self,
@@ -705,7 +706,9 @@ class GitHubMCPPoster:
                 anchor_idx = i
                 break
             if not since_marker and login in (
-                "copilot-swe-agent[bot]", "github-copilot[bot]", "copilot[bot]"
+                "copilot-swe-agent[bot]",
+                "github-copilot[bot]",
+                "copilot[bot]",
             ):
                 anchor_idx = i  # keep updating — want the LAST one
 
@@ -718,14 +721,16 @@ class GitHubMCPPoster:
             login = (c.get("author") or {}).get("login", "")
             if login in self._BOT_LOGINS:
                 continue
-            unread.append({
-                "author": login,
-                "body": (c.get("body") or "")[:300],
-                "url": c.get("url", ""),
-                "created_at": c.get("createdAt", ""),
-                "in_reply_to_marker": "",
-                "type": "comment",
-            })
+            unread.append(
+                {
+                    "author": login,
+                    "body": (c.get("body") or "")[:300],
+                    "url": c.get("url", ""),
+                    "created_at": c.get("createdAt", ""),
+                    "in_reply_to_marker": "",
+                    "type": "comment",
+                }
+            )
 
         # Collect reply-thread entries anywhere in the discussion
         for c in all_comments:
@@ -734,21 +739,19 @@ class GitHubMCPPoster:
                 if login in self._BOT_LOGINS:
                     continue
                 # Only count replies posted after the anchor comment's timestamp
-                anchor_ts = (
-                    all_comments[anchor_idx].get("createdAt", "")
-                    if anchor_idx >= 0
-                    else ""
-                )
+                anchor_ts = all_comments[anchor_idx].get("createdAt", "") if anchor_idx >= 0 else ""
                 if anchor_ts and r.get("createdAt", "") <= anchor_ts:
                     continue
-                unread.append({
-                    "author": login,
-                    "body": (r.get("body") or "")[:300],
-                    "url": r.get("url", ""),
-                    "created_at": r.get("createdAt", ""),
-                    "in_reply_to_marker": since_marker,
-                    "type": "reply",
-                })
+                unread.append(
+                    {
+                        "author": login,
+                        "body": (r.get("body") or "")[:300],
+                        "url": r.get("url", ""),
+                        "created_at": r.get("createdAt", ""),
+                        "in_reply_to_marker": since_marker,
+                        "type": "reply",
+                    }
+                )
 
         return unread
 

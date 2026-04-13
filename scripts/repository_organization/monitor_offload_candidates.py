@@ -175,7 +175,7 @@ def scan_repository(repo_root: Path) -> dict[str, Any]:
                 reasons.append(f"deprecated_report_age_{age_days}d")
 
             if size_mb > CRITERIA["large_file_size_mb"]:
-                reasons.append(f"large_file_{size_mb:.1f}mb")
+                reasons.append(f"large_file_{size_mb:.2f}mb")
 
             if age_days > CRITERIA["unused_file_age_days"] and category:
                 reasons.append(f"unused_{age_days}d")
@@ -253,7 +253,7 @@ def log_to_action_log(
             "by_category": candidates_summary["by_category"],
         },
         "outcome": "success",
-        "impact": f"Identified {candidates_summary['total_candidates']} offload candidates (~{candidates_summary['total_size_mb']}MB)",
+        "impact": f"Identified {candidates_summary['total_candidates']} offload {'candidate' if candidates_summary['total_candidates'] == 1 else 'candidates'} (~{candidates_summary['total_size_mb']}MB)",
     }
 
     try:

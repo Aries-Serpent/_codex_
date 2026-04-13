@@ -24,7 +24,7 @@ gitGraph LR
 ```mermaid
 flowchart TD
     PR[PR Push / PR Review] --> D[detect-checkbox]
-    D -->|auth_requested=true| AW[await-approval\n⏳ environment gate]
+    D -->|auth_requested=true| AW[activate-delegation\n✅ always-on (no gate)]
     AW -->|approved| ACT[activate-delegation\n✅ sets COPILOT_AGENT_AUTH_ENABLED\nposts @copilot continue]
     D -->|auth_requested=false| SKIP[skip — nothing to do]
 
@@ -46,7 +46,7 @@ flowchart TD
     PR[PR Push / PR Review] --> D[detect-checkbox]
     PR --> CP
 
-    D -->|auth_requested=true| AW[await-approval\n⏳ environment gate]
+    D -->|auth_requested=true| AW[activate-delegation\n✅ always-on (no gate)]
 
     subgraph CP ["🧠 cognitive-preflight (NEW — S116h)"]
         direction TB
@@ -64,7 +64,7 @@ flowchart TD
     AW --> ACT
     PASS --> ACT
 
-    ACT{activate-delegation\nneeds: detect-checkbox\n+ await-approval\n+ cognitive-preflight}
+    ACT{activate-delegation\nneeds: cognitive-preflight (await-approval REMOVED)}
     ACT -->|all 3 pass| RUN[✅ sets COPILOT_AGENT_AUTH_ENABLED\nposts @copilot continue\nsurfaces Priority directive]
 
     FAIL1 --> BLOCKED[🚫 activate-delegation\nDOES NOT RUN]
@@ -160,7 +160,7 @@ sequenceDiagram
     participant PR as Pull Request
     participant WD as session-watchdog.yml
     participant CP as cognitive-preflight
-    participant AW as await-approval
+    participant ACT as activate-delegation (always-on)
     participant AD as activate-delegation
 
     H->>PR: pushes commit OR posts comment
@@ -201,7 +201,7 @@ sequenceDiagram
     CP->>PR: job summary — 🟢 ALL CHECKS PASSED
 
     PR->>AW: pull_request trigger (checkbox checked)
-    H->>AW: ✅ approves environment gate
+    H->>ACT: ✅ auto-activates (no gate)
 
     AW->>AD: approval received
     CP->>AD: preflight passed

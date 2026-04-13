@@ -84,7 +84,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -117,7 +117,7 @@ jobs:
 
       - name: Upload scan report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: proactive-ci-monitor-report-${{ github.run_id }}
           path: /tmp/proactive_report.json

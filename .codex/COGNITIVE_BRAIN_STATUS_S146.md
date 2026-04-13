@@ -35,12 +35,11 @@ Phase 6 ⏳  Cognitive Brain API server deployment + webhook receivers
 
 ```mermaid
 flowchart TD
-    subgraph DELEGATION["🔐 agent-auth-delegation.yml"]
-        CHK[detect-checkbox job] --> APPR[await-approval\nowner gate]
-        APPR --> ACT[activate-delegation job]
-        ACT --> VARS["3a: set COPILOT_AGENT_AUTH_ENABLED\n+ COGNITIVE_BRAIN_ALLOWED_ACTORS"]
-        VARS --> D00_CI["3c-bis: D-00 session_bootstrap.py\n--offline --skip-triage\nwrites session_context_latest.md\ncommits to branch [skip ci]"]
-        D00_CI --> CONT["3d: Post @copilot continue\n→ starts agent session"]
+    subgraph DELEGATION["🔐 agent-auth-delegation.yml (always-on — no human gate)"]
+        CP[cognitive-preflight\nchecks] --> ACT[activate-delegation job]
+        ACT --> VARS["set COPILOT_AGENT_AUTH_ENABLED\n+ COGNITIVE_BRAIN_ALLOWED_ACTORS\n(already true via repo variable)"]
+        VARS --> D00_CI["D-00 session_bootstrap.py\n--offline --skip-triage\nwrites session_context_latest.md\ncommits to branch [skip ci]"]
+        D00_CI --> CONT["Post @copilot continue\n→ starts agent session"]
     end
 
     subgraph AGENT_SESSION["⚡ Agent Session (started by @copilot continue)"]
@@ -51,6 +50,9 @@ flowchart TD
         WORK --> COMMIT[Commit + push]
         COMMIT --> AFTERMATH[AfterMath / PDA loop]
     end
+
+    note["✅ await-approval / owner gate REMOVED (S-ALWAYS-ON)\nCOPILOT_AGENT_AUTH_ENABLED=true repo var is permanent"]
+    style note fill:#27ae60,color:#fff
 ```
 
 ---
