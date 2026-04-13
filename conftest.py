@@ -199,17 +199,15 @@ if not _pydantic_available():
     )
 
 
-def pytest_collect_file(path, parent):  # type: ignore[override]
-    p = pathlib.Path(str(path))
-    if not _pydantic_available() and _path_requires_pydantic(p):
+def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[override]
+    if not _pydantic_available() and _path_requires_pydantic(file_path):
         pytest.skip("Optional dependency 'pydantic' not installed", allow_module_level=True)
     return None
 
 
-def pytest_ignore_collect(path, config):  # type: ignore[override]
-    p = pathlib.Path(str(path))
-    return (not _torch_available() and _path_requires_torch(p)) or (
-        not _pydantic_available() and _path_requires_pydantic(p)
+def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignore[override]
+    return (not _torch_available() and _path_requires_torch(collection_path)) or (
+        not _pydantic_available() and _path_requires_pydantic(collection_path)
     )
 
 
