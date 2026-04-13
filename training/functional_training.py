@@ -29,7 +29,15 @@ from src.training.functional_training import *  # noqa: E402, F401, F403
 # exports public names, so private symbols and bare-module imports from the
 # source file must be forwarded explicitly.
 # Example: ``monkeypatch.setattr("training.functional_training.torch.optim.AdamW", ...)``
-for _name in ("torch", "_codex_logging_bootstrap", "_codex_log_all"):
+for _name in (
+    "torch",
+    "_codex_logging_bootstrap",
+    "_codex_log_all",
+    "_normalize_identifier",
+    "_looks_like_local_source",
+    "_maybe_collect_system_metrics",
+    "collect_system_metrics",
+):
     _val = getattr(_src_mod, _name, None)
     if _val is not None:
         globals()[_name] = _val
