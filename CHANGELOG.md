@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3962 — Empty except + comment gate)
+- `scripts/ci/session_wrapup_autofix.py`: replaced empty `except` block (except Exception: pass) with explicit exception capture — adds explanatory comment and logs warning to stderr including the exception. Preserves default fallback score of 0.0. Addresses `@github-code-quality[bot]` review finding `discussion_r3072056361`.
+
 ### Fixed (auto-update — PR #3962 — CTEP session / OTel + CI triage #3959)
 - `.github/workflows/coherence-snapshot.yml`: removed sparse-checkout that caused AAIS scorer to see only 2 files instead of full codebase (composite 71.39 → 97.17); aligned enforcement threshold to `MIN_PASSING_SCORE` (80.0) imported from `aais_v4_scorer.py` instead of hardcoded 99.7 — fixes issue #3963
 - `.github/misc/notebooklm-sync.yml`: upgraded `actions/cache@v4` → `@v5` at lines 96 and 156 — fixes Required Actions Version Enforcer run #17
