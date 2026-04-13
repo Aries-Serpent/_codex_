@@ -257,7 +257,7 @@ executing==2.2.1
     # via stack-data
 faker==40.11.0
     # via polyfactory
-fastapi==0.111.0
+fastapi==0.135.3
     # via
     #   codex-ml (pyproject.toml)
     #   mlflow-skinny
