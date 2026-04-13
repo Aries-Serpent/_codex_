@@ -19904,3 +19904,18 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-04-13T17:14Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3979)
+
+### Objective
+Fix sync_tracked_files stale .secrets.baseline entry and update CHANGELOG.
+
+### Changes Made
+- Fixed .secrets.baseline CODEX_MANIFEST entry (stale hash updated)
+- Updated CHANGELOG.md with auto-fix entry
+
+### Impact Score
+- Files auto-fixed: 2
+- CI gates unblocked: sync_tracked_files, REQ-4, REQ-5
+
+---
