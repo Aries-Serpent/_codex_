@@ -42,11 +42,9 @@ Design principles
 from __future__ import annotations
 
 import argparse
-import json as _json_mod
 import os
 import subprocess
 import sys
-import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
