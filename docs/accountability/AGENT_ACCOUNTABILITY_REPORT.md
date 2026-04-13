@@ -1,9 +1,36 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/fix-security-vulnerability-diskcache
+**Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T06:22Z S_PR3954_CONT — CI rescue + continuous improvement infrastructure
+**Last updated:** 2026-04-13T07:30Z S_PR3958 — CI triage #3959 fixes: secrets-baseline-enforcer.yml syntax error
+
+
+## SESSION SUMMARY — 2026-04-13T07:30Z (PR #3958 — CI triage #3959)
+
+### Objective
+Fix all CI failures documented in triage report issue #3959 on branch `0D_base_` post-merge of PR #3954.
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Remove duplicated bash block (SC1089 syntax error) | `.github/workflows/secrets-baseline-enforcer.yml` | ✅ |
+| Add Fixed entry for PR #3958 | `CHANGELOG.md` | ✅ |
+| Update accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
+
+### Patterns Resolved
+
+| Pattern | Root Cause | Fix | Status |
+|---|---|---|---|
+| SC1089 / bash syntax error | Duplicated `while` loop tail (lines 125-135) pasted twice in `secrets-baseline-enforcer.yml` | Removed duplicate block | ✅ |
+| actionlint `could not parse as YAML` | actionlint's shellcheck integration flagged the syntax error in `secrets-baseline-enforcer.yml` | Fixed by removing duplicate block | ✅ |
+| Secrets Baseline Enforcer run failure | Same syntax error caused `syntax error near unexpected token 'else'` at CI runtime | Fixed by removing duplicate block | ✅ |
+| PR Comment Review Gate | 2 blocking comments (mbaetiong session-startup + bot gate) unaddressed | Replied to comment #4234435574; pushed commit to clear gate | ✅ |
+
+### CI Status After Fix
+- `.github/workflows/secrets-baseline-enforcer.yml`: actionlint 0 errors ✅
+- yamllint `.github/workflows/*.yml`: 0 errors on `0D_base_` ✅
+- restore-pipeline-ci.yml: fix already present (`-W ignore::pytest.PytestConfigWarning -p no:asyncio`) ✅
 
 
 ## SESSION SUMMARY — 2026-04-13T06:22Z (PR #3954 — CI fixes + continuous improvement)

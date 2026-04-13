@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3958 — CI failure triage #3959)
+- `.github/workflows/secrets-baseline-enforcer.yml`: removed duplicated bash block (lines 125-135 were repeated after `done`, causing SC1089 shell syntax error, actionlint failure, and runtime `syntax error near unexpected token 'else'`)
+- Fixes: Secrets Baseline Enforcer run #9, actionlint Workflow Compliance run #909, and cascading CI failures documented in triage issue #3959
+
 ### Fixed (auto-update — PR #3954 — continuous improvement + PR comment resolution)
 - `auto-approve-workflows.yml`: removed duplicate `const exec` declaration causing `SyntaxError: Identifier 'exec' has already been declared` — `exec` is already provided by `actions/github-script@v7` context
 - `tests/ci/test_verify_issue_resolution.py:58`: added `# pragma: allowlist secret` to suppress false-positive `HexHighEntropyString` detect-secrets flag on test SHA fixture
