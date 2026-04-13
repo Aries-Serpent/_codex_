@@ -139,7 +139,7 @@ jobs:
 
       - name: Post cost proposal to PR (grouped)
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
           WORKFLOW_NAME: ${{ inputs.workflow_name }}
@@ -315,7 +315,7 @@ jobs:
       - name: RED — poll PR for stakeholder checkbox approval
         id: red_poll
         if: needs.estimate.outputs.tier == 'RED' && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             // Guard: ensure we have a valid PR number before polling.

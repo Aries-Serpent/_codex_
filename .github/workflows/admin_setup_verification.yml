@@ -238,7 +238,7 @@ jobs:
 
       - name: "Update cognitive brain repo variables (S109)"
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY }}
           script: |

@@ -88,7 +88,7 @@ jobs:
 
       - name: Apply labels and post triage comment
         if: steps.triage.outputs.validation-status == 'valid'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           TRIAGE_JSON: ${{ steps.triage.outputs.response }}
         with:

@@ -42,7 +42,7 @@ jobs:
 
       - name: Check 5 transition conditions
         id: check
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -251,7 +251,7 @@ jobs:
 
       - name: Post healing notice to PR
         if: steps.c2-check.outputs.stale == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

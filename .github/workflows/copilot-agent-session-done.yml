@@ -184,7 +184,7 @@ jobs:
 
     steps:
       - name: "Re-trigger unanswered rescue comments OR post @copilot review"
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           # Must use CODEX_MASTER_KEY (PAT for @mbaetiong) so the comment appears as a
           # human user that GitHub Copilot will respond to.  github-actions[bot] comments
@@ -585,7 +585,7 @@ jobs:
 
     steps:
       - name: "Collect bot findings and post consolidated @copilot continue comment"
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -781,7 +781,7 @@ jobs:
       contains(github.event.workflow_run.name, 'CodeQL')
     steps:
       - name: "Fetch alerts and upsert into rescue comment"
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |

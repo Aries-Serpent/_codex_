@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const owner = context.repo.owner;

@@ -184,7 +184,7 @@ jobs:
       # ── Open issue if blockers found ─────────────────────────────────────
       - name: Open blocker issue if absent required variables
         if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |

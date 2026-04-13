@@ -72,7 +72,7 @@ jobs:
     steps:
       - name: Determine if chaining should proceed
         id: check
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const INTEGRATION_BRANCHES = ['0D_base_'];

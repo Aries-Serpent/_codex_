@@ -244,7 +244,7 @@ jobs:
 
       - name: Post validation summary
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
           MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}

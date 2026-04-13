@@ -242,7 +242,7 @@ jobs:
 
       - name: Open tracking issue
         if: steps.retrain.outputs.new_version != ''
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

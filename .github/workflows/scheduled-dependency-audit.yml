@@ -250,7 +250,7 @@ jobs:
 
       - name: Create drift alert issue
         if: steps.compare.outputs.drift_detected == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.create({

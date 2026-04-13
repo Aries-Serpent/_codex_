@@ -121,7 +121,7 @@ jobs:
       - name: Post cognitive brain briefing on PR
         id: briefing
         if: steps.pr_analysis.outputs.validation-status == 'valid'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           ANALYSIS_JSON: ${{ steps.pr_analysis.outputs.response }}
           BRAIN_TOUCHED: ${{ steps.meta.outputs.brain_touched }}
