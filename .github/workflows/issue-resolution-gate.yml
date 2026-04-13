@@ -43,11 +43,11 @@ on:
         default: false
 
 permissions:
-  contents:      read
+  contents: read
   pull-requests: read
-  issues:        read
-  checks:        read
-  statuses:      read
+  issues: read
+  checks: read
+  statuses: read
 
 concurrency:
   group: issue-resolution-gate-${{ github.event.pull_request.number || github.run_id }}
