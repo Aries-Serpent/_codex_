@@ -161,7 +161,7 @@ jobs:
 
       - name: Post handoff summary comment
         if: steps.validate.outputs.validation_status != 'skipped'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           VALIDATION_STATUS: ${{ steps.validate.outputs.validation_status }}
           DELEGATING_AGENT: ${{ steps.validate.outputs.delegating_agent }}

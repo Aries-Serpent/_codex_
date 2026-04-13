@@ -87,7 +87,7 @@ jobs:
       - name: Generate Copilot Agent comment
         id: gen_comment
         if: steps.diagnostic.outcome == 'failure' && steps.read_report.outputs.report_exists == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           AUTO_FIXABLE: ${{ steps.read_report.outputs.auto_fixable }}
           TOTAL_ISSUES: ${{ steps.read_report.outputs.total_issues }}

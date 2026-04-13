@@ -250,7 +250,7 @@ jobs:
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -377,7 +377,7 @@ jobs:
 
       # ── REQ-1: Post mandatory checklist as PR comment ─────────────────────
       - name: Post Mandatory Agent Checklist to PR
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
@@ -533,7 +533,7 @@ jobs:
       # and injects matching enforcement items into the agent checklist.
       # Policy: .github/docs/SessionContinuityPolicy.md | WF-002
       - name: Surface Session-Type Directives to Checklist
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
@@ -1020,7 +1020,7 @@ jobs:
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -1230,7 +1230,7 @@ jobs:
           github.event_name == 'pull_request_review'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -1446,7 +1446,7 @@ jobs:
       # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
       - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
         id: set_vars
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY }}
           script: |
@@ -1564,7 +1564,7 @@ jobs:
       # GitHub Guru acts as the "codebase maintainer" that audits the variable
       # state and posts a structured PR comment confirming the change is visible.
       - name: "Dispatch GitHub Guru (maintainer verification)"
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -1669,7 +1669,7 @@ jobs:
       # TTL: 1 hour (3600 seconds) — stale locks are auto-cleared.
       - name: "Session Concurrency Gate"
         id: session_gate
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -1871,7 +1871,7 @@ jobs:
       # ── 3e: Post @copilot continue on the PR ─────────────────────────────────
       - name: "Post @copilot continue"
         if: steps.session_gate.outputs.acquired == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
         with:
@@ -2014,7 +2014,7 @@ jobs:
 
     steps:
       - name: "Release COPILOT_ACTIVE_SESSION and trigger next queued PR"
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |

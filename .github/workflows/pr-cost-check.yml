@@ -156,7 +156,7 @@ jobs:
       # Post summary as a PR comment (upsert — update if exists)
       - name: Post cost summary comment
         if: always()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           COST_SUMMARY: ${{ steps.estimate.outputs.summary }}
           COST_STATUS: ${{ steps.estimate.outputs.status }}
@@ -220,7 +220,7 @@ jobs:
       - name: Comment fallback approval scan
         if: steps.estimate.outputs.status == 'blocked'
         id: comment_approval
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

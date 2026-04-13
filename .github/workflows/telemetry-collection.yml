@@ -136,7 +136,7 @@ jobs:
           steps.critical.outputs.critical_failure_rate == 'true' ||
           steps.critical.outputs.high_auto_fix_failures == 'true' ||
           steps.critical.outputs.high_coverage_timeouts == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

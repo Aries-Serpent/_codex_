@@ -223,7 +223,7 @@ jobs:
       - name: "Approve pending (action_required) workflow runs"
         id: approve
         if: steps.resolve.outputs.skip != 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           MODE: ${{ steps.resolve.outputs.mode }}
           PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}

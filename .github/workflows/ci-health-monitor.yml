@@ -159,7 +159,7 @@ jobs:
 
       - name: Create alert issue if failure rate is critical
         if: steps.telemetry.outputs.alert_required == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

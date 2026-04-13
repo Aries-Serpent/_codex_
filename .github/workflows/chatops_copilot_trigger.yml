@@ -119,7 +119,7 @@ jobs:
         if: |
           steps.parse.outputs.AUTHORIZED == 'true' &&
           (steps.parse.outputs.SUBCMD == 'continue' || steps.parse.outputs.SUBCMD == 'run')
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |

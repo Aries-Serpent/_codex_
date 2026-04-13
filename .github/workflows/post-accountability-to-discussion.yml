@@ -187,7 +187,7 @@ jobs:
           echo "resolved_token=${RESOLVED_TOKEN}" >> "$GITHUB_OUTPUT"
 
       - name: Post to GitHub Discussion #3673
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           SESSION_ID: ${{ steps.extract.outputs.session_id }}
           PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number || '' }}

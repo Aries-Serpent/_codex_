@@ -194,7 +194,7 @@ jobs:
           (steps.link_validation.outputs.error_count > 0 ||
            steps.mkdocs_build.outputs.exit_code != '0' ||
            steps.cognitive_app.outputs.error_count > 0)
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const timestamp = '${{ steps.config.outputs.timestamp }}';

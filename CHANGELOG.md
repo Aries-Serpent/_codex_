@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3976)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3976 (SHA `62587005`) at 2026-04-13T11:34Z [auto-generated]
+
 ### Fixed (auto-update — PR #3962 — Empty except + comment gate)
 - `scripts/ci/session_wrapup_autofix.py`: replaced empty `except` block (except Exception: pass) with explicit exception capture — adds explanatory comment and logs warning to stderr including the exception. Preserves default fallback score of 0.0. Addresses `@github-code-quality[bot]` review finding `discussion_r3072056361`.
 

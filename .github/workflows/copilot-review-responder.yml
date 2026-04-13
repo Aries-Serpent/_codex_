@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: "👍 React to bot review and acknowledge bot comments"
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -171,7 +171,7 @@ jobs:
         # (which contains "generated N comments"). The pull_request_review event
         # has an empty review body, so we skip posting for that trigger.
         if: github.event_name == 'issue_comment'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

@@ -313,7 +313,7 @@ jobs:
 
       - name: Open/update tracking issue for manual-only problems
         if: steps.manual_check.outputs.manual_review != '0'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           TOTAL: ${{ steps.manual_check.outputs.total }}
           MANUAL: ${{ steps.manual_check.outputs.manual_review }}
