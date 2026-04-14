@@ -125,6 +125,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install PyYAML
         run: pip install pyyaml --quiet
@@ -211,6 +212,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install PyYAML
         run: pip install pyyaml --quiet

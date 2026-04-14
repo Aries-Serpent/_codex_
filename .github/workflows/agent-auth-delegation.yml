@@ -70,6 +70,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: "Hardened WEC preservation — re-apply all maintainer selections"
         # HARDENED (S259 mandate): replaces the old fragile shell grep-and-append.
