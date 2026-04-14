@@ -100,9 +100,22 @@ jobs:
             --jq '.body // ""')
 
           # Patterns: "closes/fixes/resolves #N", bare "#N", or full URLs
-          ISSUE_NUMBERS=$(echo "${PR_BODY}" | \
+          RAW_NUMBERS=$(echo "${PR_BODY}" | \
             grep -oP '(?i)(?:closes?|fixes?|resolves?)\s+#\K\d+|(?<![/\d])#\K\d+(?!\d)' | \
-            tr '\n' ' ' | xargs || true)
+            sort -u | tr '\n' ' ' | xargs || true)
+
+          # Exclude the current PR number to avoid circular dependency:
+          # the gate checking its own PR → BLOCKED (because this gate is
+          # failing) → exit 1 → gate stays failed forever.
+          ISSUE_NUMBERS=""
+          for n in ${RAW_NUMBERS}; do
+            if [[ "$n" != "${PR_NUMBER}" ]]; then
+              ISSUE_NUMBERS="${ISSUE_NUMBERS} ${n}"
+            else
+              echo "ℹ️  Excluding self-reference #${n} (this PR)"
+            fi
+          done
+          ISSUE_NUMBERS=$(echo "${ISSUE_NUMBERS}" | xargs || true)
 
           echo "issues=${ISSUE_NUMBERS}" >> "$GITHUB_OUTPUT"
           echo "source=pr-body" >> "$GITHUB_OUTPUT"

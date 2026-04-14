@@ -3,7 +3,35 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T16:58Z S177_SESSION_CLOSE_FIX — Fix mandatory scorecard refresh on every agent session close
+**Last updated:** 2026-04-14T03:20Z S177_CI_FIX_ITERATION — Fix issue-resolution-gate self-reference and accountability freshness
+
+
+## SESSION SUMMARY — 2026-04-14T03:20Z (PR #3978 — S177: CI fix iteration)
+
+### Objective
+Fix 2 failing CI checks on commit d2aabc5: Deferral Language Policy Check and Issue Resolution Gate.
+
+### Root Cause Analysis
+1. **Deferral Language Gate**: PR body and a Copilot comment contained phrases matching deferral
+   patterns from a cost-check summary posted in a prior session. The PR body was cleaned by the
+   CI-driven scorecard refresh, so a new push triggers a re-scan with clean text.
+2. **Issue Resolution Gate**: Circular dependency — the gate extracts the current PR number from
+   the PR body and then checks whether the PR has all checks passing. Since the gate itself is
+   failing, the PR is BLOCKED, and the gate reports UNRESOLVED — a permanent loop.
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Exclude self-referencing PR number from issue extraction | `.github/workflows/issue-resolution-gate.yml` | ✅ |
+| Update accountability report freshness | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
+
+### Verification
+- `ruff check src/` — clean (0 violations)
+- `sync_tracked_files.py --check` — all consistent
+- `auto_fix_common_issues.py --check-only` — 0 auto-fixable issues
+- Deferral language: current PR body and comments verified clean locally
+
+---
 
 
 ## SESSION SUMMARY — 2026-04-13T16:58Z (PR #3978 — S177: Fix session-close scorecard refresh)
