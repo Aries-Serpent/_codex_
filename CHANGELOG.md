@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #3979)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3979 (SHA `6ed1a66b`) at 2026-04-13T17:14Z [auto-generated]
+- fix(ci): `test-rag.yml` Pre-download step — add `continue-on-error: true` and use `HF_TOKEN or None` to prevent `httpx.LocalProtocolError: Illegal header value b'Bearer '` when secret is unset
 
 ### Fixed (auto-update — PR #3979)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3979 (SHA `cd4d3490`) at 2026-04-13T16:59Z [auto-generated]

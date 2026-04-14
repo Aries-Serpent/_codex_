@@ -19919,3 +19919,18 @@ Fix sync_tracked_files stale .secrets.baseline entry and update CHANGELOG.
 - CI gates unblocked: sync_tracked_files, REQ-4, REQ-5
 
 ---
+
+## SESSION SUMMARY — 2026-04-14T03:25Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3979)
+
+### Objective
+Fix RAG Module Tests CI failure: empty HF_TOKEN causing httpx.LocalProtocolError.
+
+### Changes Made
+- .github/workflows/test-rag.yml: Add continue-on-error: true to Pre-download step; use `os.getenv('HF_TOKEN') or None` to avoid empty Bearer token error
+- Root cause: HF_TOKEN secret not configured; empty string passed as token to sentence_transformers caused httpx to raise Illegal header value
+
+### Impact Score
+- Files fixed: 1 (test-rag.yml)
+- CI gates unblocked: RAG Module Tests workflow
+
+---
