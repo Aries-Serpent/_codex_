@@ -12,7 +12,7 @@
   "COGNITIVE_BRAIN_ALLOWED_ACTORS": "mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]",
   "CODEX_CLI_API_URL": "http://localhost:8765",
   "CODEX_CI_LAST_GREEN_SHA": "8e37d3b0a986eadc86aedbfe59fe01d8b193798a",
-  "CODEX_CI_FAILURE_RATE": "5.6:ok",
+  "CODEX_CI_FAILURE_RATE": "13.9:degraded",
   "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE": "0.75",
   "COGNITIVE_BRAIN_LTM_RETENTION_DAYS": "90",
   "EMBEDDING_INDEX_AUTO_REBUILD": "true",
@@ -21,16 +21,16 @@
   "COPILOT_AGENT_SESSION_RESTORE_ENABLED": "true",
   "COPILOT_AGENT_AUTH_ENABLED": "true",
   "COPILOT_AGENT_FIREWALL_ENABLED": "true",
-  "COGNITIVE_BRAIN_SESSION_NUMBER": "292",
+  "COGNITIVE_BRAIN_SESSION_NUMBER": "308",
   "AGENT_TOOLSDIRECTORY": "/opt/hostedtoolcache",
   "_meta": {
-    "generated_at": "2026-04-13T06:58:05.253803+00:00",
+    "generated_at": "2026-04-14T06:48:54.416381+00:00",
     "workflow": "repo-var-sync-schedule",
-    "sha": "8e37d3b0",
+    "sha": "6d255599",
     "ref": "refs/heads/main",
     "actor": "mbaetiong",
-    "run_id": "24330026750",
+    "run_id": "24385146186",
     "repo_variables_count": 24,
-    "drift_entries": 3
+    "drift_entries": 2
   }
 }
