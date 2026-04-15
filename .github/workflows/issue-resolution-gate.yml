@@ -99,9 +99,12 @@ jobs:
           PR_BODY=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}" \
             --jq '.body // ""')
 
-          # Patterns: "closes/fixes/resolves #N", bare "#N", or full URLs
+          # Only extract issues explicitly targeted for closure (matches GitHub
+          # auto-close semantics).  Bare "#N" references are informational and
+          # should NOT trigger the resolution gate — they are cross-references,
+          # not closure directives.
           RAW_NUMBERS=$(echo "${PR_BODY}" | \
-            grep -oP '(?i)(?:closes?|fixes?|resolves?)\s+#\K\d+|(?<![/\d])#\K\d+(?!\d)' | \
+            grep -oP '(?i)(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#\K\d+' | \
             sort -u | tr '\n' ' ' | xargs || true)
 
           # Exclude the current PR number to avoid circular dependency:
