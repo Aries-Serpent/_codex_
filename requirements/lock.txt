@@ -757,7 +757,7 @@ peft==0.18.1
     #   lm-eval
 pexpect==4.9.0
     # via ipython
-pillow==12.1.1
+pillow==12.2.0
     # via
     #   matplotlib
     #   tensorboard
@@ -886,7 +886,7 @@ pyparsing==3.3.2
     #   pydot
 pytablewriter==1.2.1
     # via lm-eval
-pytest==8.4.1
+pytest==9.0.3
     # via
     #   codex-ml (pyproject.toml)
     #   pytest-cov
@@ -914,7 +914,7 @@ python-dotenv==1.2.1
     #   uvicorn
 python-json-logger==4.0.0
     # via jupyter-events
-python-multipart==0.0.22
+python-multipart==0.0.26
     # via fastapi
 pytokens==0.4.1
     # via black
