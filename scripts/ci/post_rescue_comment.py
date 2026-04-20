@@ -110,7 +110,7 @@ def _gh(
                 wait = 30 * (attempt + 1)
                 print(
                     f"[post_rescue_comment] Rate limit (HTTP {exc.code}), "
-                    f"retry {attempt + 1}/{max_retries - 1} in {wait}s"
+                    f"retry {attempt + 1}/{max_retries} in {wait}s"
                 )
                 time.sleep(wait)
                 continue

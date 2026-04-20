@@ -125,7 +125,7 @@ def gh_get(path: str, token: str) -> Any:
                 wait = 30 * (attempt + 1)
                 print(
                     f"[check_pr_comments] Rate limit (HTTP {e.code}), "
-                    f"retry {attempt + 1}/{max_retries - 1} in {wait}s",
+                    f"retry {attempt + 1}/{max_retries} in {wait}s",
                     file=sys.stderr,
                 )
                 time.sleep(wait)
