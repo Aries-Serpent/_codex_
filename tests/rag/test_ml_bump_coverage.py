@@ -25,10 +25,8 @@ Modules covered:
 from __future__ import annotations
 
 import sys
-import tempfile
 from pathlib import Path
-from types import SimpleNamespace
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -41,7 +39,6 @@ if str(_SRC) not in sys.path:
 
 pytest.importorskip("numpy")
 import numpy as np  # noqa: E402
-
 
 # ===========================================================================
 # embeddings.py — LocalSentenceTransformerProvider (with mocked ST)
@@ -153,7 +150,6 @@ class TestOpenAIEmbeddingProviderEdgeCases:
 
     def test_initialize_client_when_openai_none_raises(self):
         """When OpenAI import is unavailable, _initialize_client should raise ImportError."""
-        import os
         from codex.rag import embeddings as emb_mod
 
         original_openai = emb_mod.OpenAI
@@ -167,6 +163,7 @@ class TestOpenAIEmbeddingProviderEdgeCases:
     def test_encode_raises_when_client_none(self):
         """encode() raises RuntimeError when client is not initialized."""
         import os
+
         from codex.rag.embeddings import OpenAIEmbeddingProvider
 
         with patch("codex.rag.embeddings.OpenAI") as MockOpenAI:
@@ -181,6 +178,7 @@ class TestOpenAIEmbeddingProviderEdgeCases:
     def test_encode_propagates_exception(self):
         """encode() should re-raise exceptions from client.embeddings.create."""
         import os
+
         from codex.rag.embeddings import OpenAIEmbeddingProvider
 
         with patch("codex.rag.embeddings.OpenAI") as MockOpenAI:
@@ -197,6 +195,7 @@ class TestOpenAIEmbeddingProviderEdgeCases:
     def test_get_dimension_unknown_model_returns_default(self):
         """get_dimension() returns 1536 for unknown model names."""
         import os
+
         from codex.rag.embeddings import OpenAIEmbeddingProvider
 
         with patch("codex.rag.embeddings.OpenAI") as MockOpenAI:
@@ -487,7 +486,7 @@ class TestCreateEmbeddingProviderFactory:
     """Cover lines 361-521: create_embedding_provider factory paths."""
 
     def test_tfidf_provider_type(self, tmp_path):
-        from codex.rag.embeddings import create_embedding_provider, TfidfEmbeddingProvider
+        from codex.rag.embeddings import TfidfEmbeddingProvider, create_embedding_provider
 
         p = create_embedding_provider(
             provider_type="tfidf", use_cache=False, cache_dir=str(tmp_path)
@@ -495,9 +494,7 @@ class TestCreateEmbeddingProviderFactory:
         assert isinstance(p, TfidfEmbeddingProvider)
 
     def test_tfidf_with_cache(self, tmp_path):
-        from codex.rag.embeddings import (
-            create_embedding_provider, CachedEmbeddingProvider
-        )
+        from codex.rag.embeddings import CachedEmbeddingProvider, create_embedding_provider
 
         p = create_embedding_provider(
             provider_type="tfidf", use_cache=True, cache_dir=str(tmp_path)
@@ -512,6 +509,7 @@ class TestCreateEmbeddingProviderFactory:
 
     def test_openai_missing_key_raises(self, tmp_path):
         import os
+
         from codex.rag.embeddings import create_embedding_provider
 
         env = {k: v for k, v in os.environ.items()
@@ -523,9 +521,7 @@ class TestCreateEmbeddingProviderFactory:
                 )
 
     def test_local_provider_without_cache(self, tmp_path):
-        from codex.rag.embeddings import (
-            create_embedding_provider, LocalSentenceTransformerProvider
-        )
+        from codex.rag.embeddings import LocalSentenceTransformerProvider, create_embedding_provider
 
         mock_model = MagicMock()
         mock_model.get_sentence_embedding_dimension.return_value = 8
@@ -538,9 +534,7 @@ class TestCreateEmbeddingProviderFactory:
         assert isinstance(p, LocalSentenceTransformerProvider)
 
     def test_local_provider_with_cache(self, tmp_path):
-        from codex.rag.embeddings import (
-            create_embedding_provider, CachedEmbeddingProvider
-        )
+        from codex.rag.embeddings import CachedEmbeddingProvider, create_embedding_provider
 
         mock_model = MagicMock()
         mock_model.get_sentence_embedding_dimension.return_value = 8
@@ -554,9 +548,7 @@ class TestCreateEmbeddingProviderFactory:
 
     def test_auto_falls_back_to_tfidf(self, tmp_path):
         """When sentence-transformers is unavailable, auto should fall back to TF-IDF."""
-        from codex.rag.embeddings import (
-            create_embedding_provider, TfidfEmbeddingProvider, CachedEmbeddingProvider
-        )
+        from codex.rag.embeddings import CachedEmbeddingProvider, create_embedding_provider
 
         with patch("codex.rag.embeddings.LocalSentenceTransformerProvider",
                    side_effect=ImportError("no st")):
@@ -574,9 +566,7 @@ class TestCreateEmbeddingProviderFactory:
 
     def test_auto_uses_local_when_available(self, tmp_path):
         """When sentence-transformers is available, auto uses local provider."""
-        from codex.rag.embeddings import (
-            create_embedding_provider, CachedEmbeddingProvider
-        )
+        from codex.rag.embeddings import CachedEmbeddingProvider, create_embedding_provider
 
         mock_model = MagicMock()
         mock_model.get_sentence_embedding_dimension.return_value = 8
@@ -856,7 +846,6 @@ class TestCachedRetrieverCoverage:
         assert r1 == r2  # same cached result
 
     def test_query_with_cache_expired(self, tmp_path):
-        from time import time
         cr, mock_model = self._make_cached(tmp_path)
         cr.faiss_index = MagicMock()
         cr.chunks_metadata = []
@@ -1242,8 +1231,9 @@ class TestManageTenantIndices:
         assert result.index_names == []
 
     def test_list_with_indices(self, tmp_path):
-        from codex.rag.indexer import manage_tenant_indices
         import json
+
+        from codex.rag.indexer import manage_tenant_indices
 
         idx_path = tmp_path / "t1" / "myidx"
         idx_path.mkdir(parents=True)
@@ -1565,9 +1555,8 @@ class TestSafeModelToDeviceEdgeCases:
 
     def test_non_meta_standard_transfer(self):
         """Standard (non-meta) path calls model.to()."""
-        from codex.rag.utils import safe_model_to_device
-
         import torch
+        from codex.rag.utils import safe_model_to_device
         model = torch.nn.Linear(4, 4)
 
         result = safe_model_to_device(model, "cpu")
@@ -1582,8 +1571,9 @@ class TestSafeModelLoadDeprecated:
     """Cover lines 322-342: deprecated safe_model_load() wrapper."""
 
     def test_deprecated_wrapper_warns(self):
-        from codex.rag.utils import safe_model_load
         import warnings
+
+        from codex.rag.utils import safe_model_load
 
         model = MagicMock()
         model.parameters.return_value = []
