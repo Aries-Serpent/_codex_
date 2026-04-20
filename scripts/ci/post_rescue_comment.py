@@ -73,6 +73,7 @@ import datetime
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -93,16 +94,28 @@ def _gh(
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
     }
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
-    try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            return resp.status, json.loads(resp.read())
-    except urllib.error.HTTPError as exc:
+    max_retries = 3
+    for attempt in range(max_retries):
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
         try:
-            err_body = json.loads(exc.read())
-        except Exception:
-            err_body = {}
-        return exc.code, err_body
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                return resp.status, json.loads(resp.read())
+        except urllib.error.HTTPError as exc:
+            try:
+                err_body = json.loads(exc.read())
+            except Exception:
+                err_body = {}
+            msg = err_body.get("message", "") if isinstance(err_body, dict) else ""
+            if exc.code in (403, 429) and "rate limit" in msg.lower() and attempt < max_retries - 1:
+                wait = 30 * (attempt + 1)
+                print(
+                    f"[post_rescue_comment] Rate limit (HTTP {exc.code}), "
+                    f"retry {attempt + 1}/{max_retries - 1} in {wait}s"
+                )
+                time.sleep(wait)
+                continue
+            return exc.code, err_body
+    return 403, {"message": f"Rate limit exceeded after {max_retries} retries"}
 
 
 def _find_rescue_comment(
@@ -271,6 +284,14 @@ def main() -> None:
     if status in (200, 201):
         url = resp.get("html_url", "(no url)") if isinstance(resp, dict) else "(no url)"
         print(f"✅ Posted rescue comment: {url}")
+    elif status in (403, 429):
+        msg = resp.get("message", "") if isinstance(resp, dict) else ""
+        if "rate limit" in msg.lower():
+            print(f"⚠️  Rate limit exceeded — rescue comment skipped (HTTP {status}). Will retry on next run.")
+            # Exit 0: rescue comment is informational; don't fail CI over a rate limit
+        else:
+            print(f"❌ POST failed: HTTP {status} — {resp}")
+            sys.exit(1)
     else:
         print(f"❌ POST failed: HTTP {status} — {resp}")
         sys.exit(1)

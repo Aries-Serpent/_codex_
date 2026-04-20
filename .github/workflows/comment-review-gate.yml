@@ -79,13 +79,15 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           GITHUB_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
+          # Capture exit code explicitly — prevents bash set -e from failing the
+          # step when the script returns exit code 3 (API/rate-limit error).
           python3 scripts/ci/check_pr_comments.py \
             --pr "${{ steps.pr_info.outputs.pr_number }}" \
             --repo "${{ steps.pr_info.outputs.repo }}" \
             --post-checklist \
             --output-json /tmp/comment_review_report.json \
-            --write-session-requirements /tmp/session_requirements.md
-          EXIT_CODE=$?
+            --write-session-requirements /tmp/session_requirements.md || EXIT_CODE=$?
+          EXIT_CODE=${EXIT_CODE:-0}
 
           # Parse counts from report
           BLOCKING=$(python3 -c "
@@ -108,7 +110,9 @@ jobs:
           # blocking comments exist.
           echo "## 🔍 PR Comment Review Gate" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [ "${BLOCKING:-0}" -gt 0 ]; then
+          if [ "${EXIT_CODE}" = "3" ]; then
+            echo "### ⏭️ Scan skipped — GitHub API rate limit (exit code 3)" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${BLOCKING:-0}" -gt 0 ]; then
             echo "### 🚨 ${BLOCKING} blocking comment(s) unaddressed" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "Requirements written to session_requirements.md — injected into next Copilot session prompt." >> "$GITHUB_STEP_SUMMARY"
@@ -201,6 +205,7 @@ jobs:
           fetch-depth: 1
 
       - name: Post or update rescue comment
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

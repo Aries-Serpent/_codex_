@@ -31,6 +31,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from typing import Any
 from urllib import error, request
@@ -112,13 +113,27 @@ def gh_get(path: str, token: str) -> Any:
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
     }
-    req = request.Request(url, headers=headers)
-    try:
-        with request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read())
-    except error.HTTPError as e:
-        body = e.read().decode("utf-8", errors="replace")[:200]
-        raise RuntimeError(f"HTTP {e.code} GET {path}: {body}") from e
+    max_retries = 3
+    for attempt in range(max_retries):
+        req = request.Request(url, headers=headers)
+        try:
+            with request.urlopen(req, timeout=30) as resp:
+                return json.loads(resp.read())
+        except error.HTTPError as e:
+            body = e.read().decode("utf-8", errors="replace")[:200]
+            if e.code in (403, 429) and "rate limit" in body.lower() and attempt < max_retries - 1:
+                wait = 30 * (attempt + 1)
+                print(
+                    f"[check_pr_comments] Rate limit (HTTP {e.code}), "
+                    f"retry {attempt + 1}/{max_retries - 1} in {wait}s",
+                    file=sys.stderr,
+                )
+                time.sleep(wait)
+                continue
+            raise RuntimeError(f"HTTP {e.code} GET {path}: {body}") from e
+    raise RuntimeError(  # pragma: no cover
+        f"HTTP 403 GET {path}: rate limit exceeded after {max_retries} attempts"
+    )
 
 
 def gh_get_all_pages(path: str, token: str) -> list[Any]:
