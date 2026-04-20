@@ -260,7 +260,7 @@ def main() -> None:
         f"_Auto-posted by rescue-comment system (S294) · "
         f"[🔗 Workflow run]({run_url})_\n\n"
         f"</details>"
-    )
+    )[:MAX_COMMENT_LEN]
 
     status, resp = _gh(
         "POST",

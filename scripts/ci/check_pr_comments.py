@@ -827,14 +827,20 @@ def main() -> int:
         print("\n--- CHECKLIST BODY (dry-run) ---")
         print(checklist_body)
     elif args.post_checklist:
-        post_checklist(report, args.pr, args.repo, token)
+        try:
+            post_checklist(report, args.pr, args.repo, token)
+        except RuntimeError as exc:
+            # Non-critical: checklist post failure should not fail the scan step.
+            # The gate job enforces blocking-comment failures via the JSON report.
+            print(f"WARNING: Failed to post checklist: {exc}", file=sys.stderr)
 
-    # When --write-session-requirements is set, blocking comments are captured as
-    # session directives injected into the next Copilot prompt.  The gate itself
-    # exits 0 so CI stays green and the session can proceed.
-    if args.write_session_requirements and report["exit_code"] == 1:
+    # When --write-session-requirements is set, unaddressed comments (blocking or
+    # warning-level) are captured as session directives injected into the next
+    # Copilot prompt.  The gate itself exits 0 so CI stays green and the session
+    # can proceed.  Only API/usage errors (exit_code 3) remain hard failures.
+    if args.write_session_requirements and report["exit_code"] in (1, 2):
         print(
-            "\nNOTE: Blocking comments exist but --write-session-requirements is set. "
+            "\nNOTE: Unaddressed comments exist but --write-session-requirements is set. "
             "Requirements written to file. Gate exits 0 (non-blocking mode)."
         )
         return 0
