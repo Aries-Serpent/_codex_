@@ -3,10 +3,31 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-13T12:43Z S_PR3962_COMPLIANCE_FIX — Merge-readiness scorecard compliance fix; 100/100 all green
+**Last updated:** 2026-04-20T11:50Z S324_ML_BUMP_COVERAGE — RAG coverage regression fix; peft/transformers bump; 128 mock-based tests added
 
+## SESSION SUMMARY — 2026-04-20T11:50Z (PR #4007 — RAG coverage regression after peft/transformers bump)
 
+### Objective
+Fix coverage regression detected by RAG Module Tests (run #24660565815) after bumping
+peft 0.18.1→0.19.1 and transformers 5.5.3→5.5.4. Coverage dropped below 95% threshold.
 
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| 128 mock-based coverage tests | tests/rag/test_ml_bump_coverage.py | ✅ |
+| Ruff lint fixes (unused import, isort) | tests/rag/test_ml_bump_coverage.py | ✅ |
+
+### Coverage Improvements
+| Module | Before | After |
+|--------|--------|-------|
+| `_model_utils.py` | 41% | 97% |
+| `embeddings.py` | 30% | 82% |
+| `retriever.py` | 79% | 93% |
+
+### Patterns Resolved
+| Pattern ID | Root Cause | Fix | Status |
+|---|---|---|---|
+| coverage-timeout | peft/transformers bump exposed uncovered lines | 128 targeted mock-based tests | ✅ |
 
 ## SESSION SUMMARY — 2026-04-13T12:43Z (PR #3962 — Compliance fix: merge-readiness scorecard + PDA + follow-up)
 

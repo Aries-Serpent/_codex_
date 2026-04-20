@@ -285,7 +285,7 @@ class TestCachedEmbeddingProviderMocked:
         cp = CachedEmbeddingProvider(mock_provider, cache_dir=str(tmp_path))
         cp.encode(["a"], cache_key="kv", metadata={"file_mtime": 42})
         # Same mtime → cache hit
-        result = cp.encode(["a"], cache_key="kv", metadata={"file_mtime": 42})
+        cp.encode(["a"], cache_key="kv", metadata={"file_mtime": 42})
         assert cp.cache_hits == 1
 
     def test_is_cache_valid_corrupt_metadata(self, mock_provider, tmp_path):
@@ -548,7 +548,10 @@ class TestCreateEmbeddingProviderFactory:
 
     def test_auto_falls_back_to_tfidf(self, tmp_path):
         """When sentence-transformers is unavailable, auto should fall back to TF-IDF."""
-        from codex.rag.embeddings import CachedEmbeddingProvider, create_embedding_provider
+        from codex.rag.embeddings import (
+            CachedEmbeddingProvider,
+            create_embedding_provider,
+        )
 
         with patch("codex.rag.embeddings.LocalSentenceTransformerProvider",
                    side_effect=ImportError("no st")):
@@ -616,9 +619,12 @@ class TestModelUtilsMetaTensorPath:
             mock.named_parameters.return_value = []
             return mock
 
-        with patch("codex.rag.utils.safe_model_to_device", side_effect=lambda m, d: m):
-            with patch("sentence_transformers.SentenceTransformer", fake_st):
-                result = mu.safe_load_sentence_transformer("test-model")
+        import sys as _sys
+        st_stub = MagicMock()
+        with patch.dict(_sys.modules, {"sentence_transformers": st_stub}):
+            with patch("codex.rag.utils.safe_model_to_device", side_effect=lambda m, d: m):
+                with patch("sentence_transformers.SentenceTransformer", fake_st):
+                    mu.safe_load_sentence_transformer("test-model")
 
         assert "cpu" in call_log and "meta" in call_log
 
@@ -632,9 +638,12 @@ class TestModelUtilsMetaTensorPath:
             mock = MagicMock(spec=[])  # no to_empty attribute
             return mock
 
-        with patch("sentence_transformers.SentenceTransformer", fake_st):
-            with pytest.raises(RuntimeError, match="to_empty"):
-                mu.safe_load_sentence_transformer("test-model")
+        import sys as _sys
+        st_stub = MagicMock()
+        with patch.dict(_sys.modules, {"sentence_transformers": st_stub}):
+            with patch("sentence_transformers.SentenceTransformer", fake_st):
+                with pytest.raises(RuntimeError, match="to_empty"):
+                    mu.safe_load_sentence_transformer("test-model")
 
     def test_meta_tensor_path_remaining_meta_raises(self):
         """After to_empty(), if meta tensors remain, RuntimeError is raised."""
@@ -653,9 +662,12 @@ class TestModelUtilsMetaTensorPath:
             mock.to_empty.return_value = materialized
             return mock
 
-        with patch("sentence_transformers.SentenceTransformer", fake_st):
-            with pytest.raises(RuntimeError, match="Meta tensors still present"):
-                mu.safe_load_sentence_transformer("test-model")
+        import sys as _sys
+        st_stub = MagicMock()
+        with patch.dict(_sys.modules, {"sentence_transformers": st_stub}):
+            with patch("sentence_transformers.SentenceTransformer", fake_st):
+                with pytest.raises(RuntimeError, match="Meta tensors still present"):
+                    mu.safe_load_sentence_transformer("test-model")
 
     def test_successful_load_cpu(self):
         """Normal path: model loads on CPU directly."""
@@ -664,9 +676,12 @@ class TestModelUtilsMetaTensorPath:
         mock_model = MagicMock()
         mock_model.eval.return_value = mock_model
 
-        with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
-            with patch("codex.rag.utils.safe_model_to_device", return_value=mock_model):
-                result = mu.safe_load_sentence_transformer("test-model")
+        import sys as _sys
+        st_stub = MagicMock()
+        with patch.dict(_sys.modules, {"sentence_transformers": st_stub}):
+            with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
+                with patch("codex.rag.utils.safe_model_to_device", return_value=mock_model):
+                    result = mu.safe_load_sentence_transformer("test-model")
 
         assert result is mock_model
 
@@ -685,15 +700,16 @@ class TestRetrieverEdgeCases:
         mock_model = MagicMock()
         mock_model.encode.return_value = np.zeros((1, 8), dtype=np.float32)
 
-        with patch("codex.rag.indexer.load_index",
-                   side_effect=FileNotFoundError("no index")):
-            with patch("codex.rag._model_utils.safe_load_sentence_transformer",
-                       return_value=mock_model):
-                r = ret_mod.Retriever(
-                    index_dir=str(tmp_path),
-                    index_name="test",
-                    tenant_id="t1",
-                )
+        with patch("codex.rag.retriever.SentenceTransformer", MagicMock()):
+            with patch("codex.rag.indexer.load_index",
+                       side_effect=FileNotFoundError("no index")):
+                with patch("codex.rag._model_utils.safe_load_sentence_transformer",
+                           return_value=mock_model):
+                    r = ret_mod.Retriever(
+                        index_dir=str(tmp_path),
+                        index_name="test",
+                        tenant_id="t1",
+                    )
         return r, mock_model
 
     def test_query_returns_empty_when_no_index(self, tmp_path):
@@ -790,18 +806,19 @@ class TestCachedRetrieverCoverage:
         mock_model = MagicMock()
         mock_model.encode.return_value = np.zeros((1, 8), dtype=np.float32)
 
-        with patch("codex.rag.indexer.load_index",
-                   side_effect=FileNotFoundError("no index")):
-            with patch("codex.rag._model_utils.safe_load_sentence_transformer",
-                       return_value=mock_model):
-                cr = ret_mod.CachedRetriever(
-                    index_dir=str(tmp_path),
-                    index_name="test",
-                    tenant_id="t1",
-                    cache_ttl=3600,
-                    cache_maxsize=100,
-                    normalize_queries=True,
-                )
+        with patch("codex.rag.retriever.SentenceTransformer", MagicMock()):
+            with patch("codex.rag.indexer.load_index",
+                       side_effect=FileNotFoundError("no index")):
+                with patch("codex.rag._model_utils.safe_load_sentence_transformer",
+                           return_value=mock_model):
+                    cr = ret_mod.CachedRetriever(
+                        index_dir=str(tmp_path),
+                        index_name="test",
+                        tenant_id="t1",
+                        cache_ttl=3600,
+                        cache_maxsize=100,
+                        normalize_queries=True,
+                    )
         return cr, mock_model
 
     def test_normalize_query(self, tmp_path):
@@ -1026,19 +1043,21 @@ class TestEmbedChunksEdgeCases:
     def test_model_load_error_reraises(self):
         from codex.rag.indexer import embed_chunks
 
-        with patch("codex.rag._model_utils.safe_load_sentence_transformer",
-                   side_effect=RuntimeError("model fail")):
-            with pytest.raises(RuntimeError, match="model fail"):
-                embed_chunks([(0, 5, "hello")])
+        with patch.dict(sys.modules, {"sentence_transformers": MagicMock()}):
+            with patch("codex.rag._model_utils.safe_load_sentence_transformer",
+                       side_effect=RuntimeError("model fail")):
+                with pytest.raises(RuntimeError, match="model fail"):
+                    embed_chunks([(0, 5, "hello")])
 
     def test_all_empty_texts_raises(self):
         from codex.rag.indexer import embed_chunks
 
         mock_model = MagicMock()
-        with patch("codex.rag._model_utils.safe_load_sentence_transformer",
-                   return_value=mock_model):
-            with pytest.raises(ValueError, match="No valid text chunks"):
-                embed_chunks([(0, 1, "   "), (2, 3, "")])
+        with patch.dict(sys.modules, {"sentence_transformers": MagicMock()}):
+            with patch("codex.rag._model_utils.safe_load_sentence_transformer",
+                       return_value=mock_model):
+                with pytest.raises(ValueError, match="No valid text chunks"):
+                    embed_chunks([(0, 1, "   "), (2, 3, "")])
 
     def test_index_error_during_encode_raises_runtime(self):
         from codex.rag.indexer import embed_chunks
@@ -1046,10 +1065,11 @@ class TestEmbedChunksEdgeCases:
         mock_model = MagicMock()
         mock_model.encode.side_effect = IndexError("oob")
 
-        with patch("codex.rag._model_utils.safe_load_sentence_transformer",
-                   return_value=mock_model):
-            with pytest.raises(RuntimeError, match="IndexError"):
-                embed_chunks([(0, 5, "hello world")])
+        with patch.dict(sys.modules, {"sentence_transformers": MagicMock()}):
+            with patch("codex.rag._model_utils.safe_load_sentence_transformer",
+                       return_value=mock_model):
+                with pytest.raises(RuntimeError, match="IndexError"):
+                    embed_chunks([(0, 5, "hello world")])
 
 
 # ===========================================================================
@@ -1113,6 +1133,8 @@ class TestIndexerPersistLoadErrors:
             import faiss
         except ImportError:
             pytest.skip("faiss not installed")
+
+        from codex.rag.indexer import load_index  # noqa: PLC0415
 
         idx_path = tmp_path / "default" / "test_idx"
         idx_path.mkdir(parents=True)
@@ -1582,6 +1604,6 @@ class TestSafeModelLoadDeprecated:
 
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter("always")
-            result = safe_model_load(model, "cpu")
+            safe_model_load(model, "cpu")
 
         assert any("deprecated" in str(w.message).lower() for w in caught)
