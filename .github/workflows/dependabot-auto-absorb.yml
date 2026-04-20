@@ -75,6 +75,7 @@ jobs:
         id: check
         uses: actions/github-script@v9
         with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             let prNumber;
             if (context.eventName === 'workflow_dispatch') {
@@ -199,6 +200,7 @@ jobs:
           fetch-depth: 1
 
       - name: Post or update rescue comment
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
