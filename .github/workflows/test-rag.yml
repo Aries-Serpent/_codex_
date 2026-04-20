@@ -89,6 +89,7 @@ jobs:
           python -m pytest --version
 
       - name: Pre-download embedding models
+        continue-on-error: true
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -98,10 +99,10 @@ jobs:
           cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
           os.makedirs(cache_dir, exist_ok=True)
           print('Pre-downloading sentence-transformers model...')
-          # Use token for authentication
+          # Use token for authentication; empty string causes illegal Bearer header
           model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2',
                                       cache_folder=cache_dir,
-                                      token=os.getenv('HF_TOKEN'))
+                                      token=os.getenv('HF_TOKEN') or None)
           print(f'Model cached successfully to {cache_dir}')
           "
 
