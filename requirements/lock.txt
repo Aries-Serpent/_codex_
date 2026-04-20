@@ -693,7 +693,7 @@ orjson==3.11.7
     # via
     #   fastapi
     #   sqltrie
-packaging==25.0
+packaging==26.1
     # via
     #   accelerate
     #   black
