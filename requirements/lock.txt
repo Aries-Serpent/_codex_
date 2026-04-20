@@ -858,7 +858,7 @@ pydantic-settings==2.13.1
     #   codex-ml (pyproject.toml)
 pydot==4.0.1
     # via dvc
-pygit2==1.19.1
+pygit2==1.19.2
     # via scmrepo
 pygments==2.20.0
     # via
