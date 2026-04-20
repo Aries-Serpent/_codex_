@@ -182,7 +182,7 @@ datasets==4.8.4
     #   codex-ml (pyproject.toml)
     #   evaluate
     #   lm-eval
-debugpy==1.8.19
+debugpy==1.8.20
     # via ipykernel
 decorator==5.2.1
     # via ipython
