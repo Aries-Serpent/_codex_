@@ -19904,3 +19904,37 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session S324 — 2026-04-20T11:01Z — PR #4008 CI Fixes (test-rag pre-download + rescue comment)
+
+### Session Summary
+
+Addressed CI failures in workflow run 24660584346 on branch `dependabot/pip/data-dependencies-94e40dfdfe`.
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — comments 4279912145, 4279918045, 4279971911, 4280005085 analysed
+- [x] **0b.** Failing CI checks reviewed — run 24660584346: pre-download step failed + rescue comment rate-limited
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated with this session entry
+- [x] **2.** `.codex/CODEBASE_AGENCY_POLICY.md` followed — all issues fixed, no deferral language used
+
+### Work Completed
+
+1. **Fix `test-rag (3.12)` pre-download step** (`commit 9c67059`):
+   - Added `continue-on-error: true` to `Pre-download embedding models` step so a model download failure does not skip the actual test run.
+   - Changed `token=os.getenv('HF_TOKEN')` → `token=os.getenv('HF_TOKEN') or None` to prevent `Illegal header value b'Bearer '` when `HF_TOKEN` is empty (dependabot PRs).
+
+2. **Fix `Post rescue comment on failure`** (`commit 9c67059`):
+   - Added `continue-on-error: true` to the rescue comment step so a transient GitHub API rate-limit (HTTP 403) does not mark the job failed.
+
+3. **Verified current state** (this session):
+   - `ruff check src/` → clean (0 violations)
+   - `sync_tracked_files --check` → all consistent
+   - `auto_fix_common_issues.py --check-only` → 0 auto-fixable issues
+
+### Root-Cause Analysis
+- The "coverage regression" reported in comment 4279912145 was not a real regression. The test step was **skipped** because the pre-download step failed without `continue-on-error: true`. No coverage data was generated. The fix ensures tests run even when model pre-download fails.
+
+### Impact
+- CI gate unblocked: `test-rag (3.12)` will now run tests regardless of HF_TOKEN availability
+- CI gate unblocked: `Post rescue comment on failure` no longer fails on API rate limits
+- Deferral Language Gate: 0 violations
