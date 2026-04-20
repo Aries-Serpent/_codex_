@@ -1,34 +1,44 @@
 {
-    "metadata": {
-        "scan_time": "2026-04-13T01:00:15.089038+00:00",
-        "repo_root": "/home/runner/work/_codex_/_codex_",
-        "criteria": {
-            "temp_files_age_days": 90,
-            "deprecated_reports_age_days": 180,
-            "large_file_size_mb": 1.0,
-            "unused_file_age_days": 180
-        }
+  "metadata": {
+    "scan_time": "2026-04-20T01:00:18.556558+00:00",
+    "repo_root": "/home/runner/work/_codex_/_codex_",
+    "criteria": {
+      "temp_files_age_days": 90,
+      "deprecated_reports_age_days": 180,
+      "large_file_size_mb": 1.0,
+      "unused_file_age_days": 180
+    }
+  },
+  "summary": {
+    "total_candidates": 2,
+    "by_reason": {
+      "large": 2
     },
-    "summary": {
-        "total_candidates": 1,
-        "by_reason": {
-            "large": 1
-        },
-        "by_category": {
-            "unknown": 1
-        },
-        "total_size_mb": 1.25
+    "by_category": {
+      "unknown": 2
     },
-    "candidates": [
-        {
-            "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
-            "category": "unknown",
-            "age_days": 0,
-            "size_mb": 1.25,
-            "reasons": [
-                "large_file_1.25mb"
-            ],
-            "recommendation": "review_manually"
-        }
-    ]
+    "total_size_mb": 4.39
+  },
+  "candidates": [
+    {
+      "path": ".secrets.baseline",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.12,
+      "reasons": [
+        "large_file_3.12mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.27,
+      "reasons": [
+        "large_file_1.27mb"
+      ],
+      "recommendation": "review_manually"
+    }
+  ]
 }
