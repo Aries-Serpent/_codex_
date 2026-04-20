@@ -837,7 +837,9 @@ def main() -> int:
     # When --write-session-requirements is set, unaddressed comments (blocking or
     # warning-level) are captured as session directives injected into the next
     # Copilot prompt.  The gate itself exits 0 so CI stays green and the session
-    # can proceed.  Only API/usage errors (exit_code 3) remain hard failures.
+    # can proceed.  Exit code 0 (all addressed) naturally returns 0 via the
+    # fallthrough below; exit codes 1 (blocking) and 2 (warning) are suppressed
+    # here; exit code 3 (API/usage error) falls through and remains a hard failure.
     if args.write_session_requirements and report["exit_code"] in (1, 2):
         print(
             "\nNOTE: Unaddressed comments exist but --write-session-requirements is set. "
