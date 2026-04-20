@@ -750,7 +750,7 @@ pathvalidate==3.3.1
     # via pytablewriter
 patsy==1.0.1
     # via statsmodels
-peft==0.18.1
+peft==0.19.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1171,7 +1171,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.5.3
+transformers==5.5.4
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
