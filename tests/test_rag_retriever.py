@@ -5,6 +5,7 @@ Tests for RAG Retriever Module
 import importlib.util
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -349,7 +350,8 @@ class TestMultiIndexRetriever:
 class TestRetrieverEdgeCases:
     """Edge case tests for retriever"""
 
-    def test_estimate_line_number(self):
+    @patch('codex.rag._model_utils.safe_load_sentence_transformer', return_value=MagicMock())
+    def test_estimate_line_number(self, _mock_load):
         """Test line number estimation"""
         with tempfile.TemporaryDirectory() as tmpdir:
             retriever = Retriever(
@@ -364,7 +366,8 @@ class TestRetrieverEdgeCases:
             assert retriever._estimate_line_number(80) == 2
             assert retriever._estimate_line_number(160) == 3
 
-    def test_extract_file_from_metadata(self):
+    @patch('codex.rag._model_utils.safe_load_sentence_transformer', return_value=MagicMock())
+    def test_extract_file_from_metadata(self, _mock_load):
         """Test file extraction from metadata"""
         with tempfile.TemporaryDirectory() as tmpdir:
             retriever = Retriever(

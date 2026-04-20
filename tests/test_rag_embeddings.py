@@ -412,14 +412,16 @@ class TestCachedEmbeddingProvider:
 class TestCreateEmbeddingProvider:
     """Tests for create_embedding_provider factory function"""
 
-    def test_create_local_provider(self):
+    @patch('codex.rag._model_utils.safe_load_sentence_transformer', return_value=MagicMock())
+    def test_create_local_provider(self, _mock_load):
         """Test creating local provider"""
         provider = create_embedding_provider(provider_type="local")
 
         assert isinstance(provider, CachedEmbeddingProvider)
         assert hasattr(provider, "provider")
 
-    def test_create_local_without_cache(self):
+    @patch('codex.rag._model_utils.safe_load_sentence_transformer', return_value=MagicMock())
+    def test_create_local_without_cache(self, _mock_load):
         """Test creating local provider without cache"""
         provider = create_embedding_provider(
             provider_type="local",
@@ -428,7 +430,8 @@ class TestCreateEmbeddingProvider:
 
         assert isinstance(provider, LocalSentenceTransformerProvider)
 
-    def test_create_local_with_custom_model(self):
+    @patch('codex.rag._model_utils.safe_load_sentence_transformer', return_value=MagicMock())
+    def test_create_local_with_custom_model(self, _mock_load):
         """Test creating local provider with custom model"""
         provider = create_embedding_provider(
             provider_type="local",
@@ -471,7 +474,8 @@ class TestCreateEmbeddingProvider:
         with pytest.raises(ValueError, match="Unknown provider type"):
             create_embedding_provider(provider_type="unknown")
 
-    def test_create_with_custom_cache_dir(self):
+    @patch('codex.rag._model_utils.safe_load_sentence_transformer', return_value=MagicMock())
+    def test_create_with_custom_cache_dir(self, _mock_load):
         """Test creating provider with custom cache directory"""
         with tempfile.TemporaryDirectory() as tmpdir:
             provider = create_embedding_provider(
