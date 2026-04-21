@@ -3,7 +3,7 @@ black
 isort
 flake8
 mypy
-pytest>=8.0
+pytest>=9.0.3
 pytest-randomly>=4.0
 pytest-cov==7.0.0
 tensorboard>=2.14

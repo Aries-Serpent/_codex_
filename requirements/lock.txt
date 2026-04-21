@@ -497,7 +497,7 @@ litestar-htmx==0.5.0
     # via litestar
 lm-eval==0.4.9.2
     # via codex-ml (pyproject.toml)
-lxml==6.0.2
+lxml==6.1.0
     # via sacrebleu
 makefun==1.16.0
     # via great-expectations
@@ -569,7 +569,7 @@ nanotime==0.5.2
     # via dvc-data
 nbclient==0.10.2
     # via nbconvert
-nbconvert==7.17.0
+nbconvert==7.17.1
     # via jupyter-server
 nbformat==5.10.4
     # via
@@ -757,7 +757,7 @@ peft==0.18.1
     #   lm-eval
 pexpect==4.9.0
     # via ipython
-pillow==12.1.1
+pillow==12.2.0
     # via
     #   matplotlib
     #   tensorboard
@@ -886,7 +886,7 @@ pyparsing==3.3.2
     #   pydot
 pytablewriter==1.2.1
     # via lm-eval
-pytest==8.4.1
+pytest==9.0.3
     # via
     #   codex-ml (pyproject.toml)
     #   pytest-cov
@@ -908,13 +908,13 @@ python-dateutil==2.9.0.post0
     #   matplotlib
     #   pandas
     #   typepy
-python-dotenv==1.2.1
+python-dotenv==1.2.2
     # via
     #   pydantic-settings
     #   uvicorn
 python-json-logger==4.0.0
     # via jupyter-events
-python-multipart==0.0.22
+python-multipart==0.0.26
     # via fastapi
 pytokens==0.4.1
     # via black
