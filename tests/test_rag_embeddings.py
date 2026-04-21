@@ -412,6 +412,15 @@ class TestCachedEmbeddingProvider:
 class TestCreateEmbeddingProvider:
     """Tests for create_embedding_provider factory function"""
 
+    @pytest.fixture(autouse=True)
+    def mock_sentence_transformer(self):
+        """Patch safe_load_sentence_transformer so local providers don't download models."""
+        with patch(
+            "codex.rag._model_utils.safe_load_sentence_transformer",
+            return_value=MagicMock(),
+        ):
+            yield
+
     def test_create_local_provider(self):
         """Test creating local provider"""
         provider = create_embedding_provider(provider_type="local")

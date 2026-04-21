@@ -185,6 +185,15 @@ class TestIndexerErrorHandling:
 class TestRetrieverErrorHandling:
     """Test error handling in retriever module"""
 
+    @pytest.fixture(autouse=True)
+    def mock_sentence_transformer(self):
+        """Patch safe_load_sentence_transformer so Retriever.__init__ doesn't download models."""
+        with patch(
+            "codex.rag._model_utils.safe_load_sentence_transformer",
+            return_value=MagicMock(),
+        ):
+            yield
+
     def test_retriever_nonexistent_index(self):
         """Test retriever with non-existent index"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -362,6 +371,15 @@ class TestEmbeddingsErrorHandling:
 class TestConcurrentAccess:
     """Test concurrent access patterns"""
 
+    @pytest.fixture(autouse=True)
+    def mock_sentence_transformer(self):
+        """Patch safe_load_sentence_transformer so index building doesn't download models."""
+        with patch(
+            "codex.rag._model_utils.safe_load_sentence_transformer",
+            return_value=MagicMock(),
+        ):
+            yield
+
     def test_concurrent_index_building(self):
         """Test building multiple indices concurrently"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -443,6 +461,15 @@ class TestConcurrentAccess:
 
 class TestResourceExhaustion:
     """Test behavior under resource constraints"""
+
+    @pytest.fixture(autouse=True)
+    def mock_sentence_transformer(self):
+        """Patch safe_load_sentence_transformer so Retriever.__init__ doesn't download models."""
+        with patch(
+            "codex.rag._model_utils.safe_load_sentence_transformer",
+            return_value=MagicMock(),
+        ):
+            yield
 
     def test_large_batch_processing(self):
         """Test processing very large batches"""
