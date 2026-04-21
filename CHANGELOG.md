@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4028 — Comment Review Gate rescue — 2026-04-21T18:26Z)
+- Addressed rescue comment (comment_id 4290839131) on pip dependency bump PR (#4028); Comment Review Gate detected 2 blocking unaddressed comments. Reply posted and accountability files updated at 2026-04-21T18:26Z.
+
 ### Fixed (auto-update — PR #4028)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4028 (SHA `1cde8171`) at 2026-04-21T18:17Z [auto-generated]
 
