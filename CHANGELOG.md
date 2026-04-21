@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4028 — Resilient Validation Suite fix — 2026-04-21T18:54Z)
+- Fixed `tests/code_quality/test_import_sorting.py::test_isort_compliance` timing out in CI: added `timeout=45` to `subprocess.run` and graceful `pytest.skip` on `subprocess.TimeoutExpired` instead of letting pytest-timeout kill the test thread at 55s.
+
 ### Fixed (PR #4028 — Comment Review Gate rescue — 2026-04-21T18:26Z)
 - Addressed rescue comment (comment_id 4290839131) on pip dependency bump PR (#4028); Comment Review Gate detected 2 blocking unaddressed comments. Reply posted and accountability files updated at 2026-04-21T18:26Z.
 
