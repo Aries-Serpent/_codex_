@@ -19904,3 +19904,35 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-04-23T03:47Z — S325 — PR #4011 CI Fix (rescue-comment rate-limit guard)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — comments 4280023753 and 4301580325 reviewed ✅
+- [x] **0b.** Failing CI checks reviewed — `Post rescue comment on failure` failed on rate-limiting (HTTP 403) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** CI failure patterns reviewed via workflow logs (run #24660596745) ✅
+- [x] **3.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **`continue-on-error: true` on rescue-comment step** — The "Post rescue comment on failure"
+   job in `test-rag.yml` was failing with HTTP 403 (API rate limit exceeded) on Dependabot PRs.
+   Added `continue-on-error: true` to the step so a rate-limited rescue-comment post does not
+   block the overall workflow conclusion. This matches the pattern applied in PR #4013
+   (psutil-7.2.2, commit 0b5eda4).
+2. **Accountability report updated** — This entry satisfies the REQ-4 gate requirement that
+   `AGENT_ACCOUNTABILITY_REPORT.md` must be touched in every agent commit.
+
+### Root-Cause Note
+Dependabot PRs do not have access to `CODEX_MASTER_KEY`, so they fall back to `github.token`
+(installation token). When many concurrent workflows run, the installation token exhausts
+its 5000 requests/hour quota, causing HTTP 403 on any subsequent API call. The rescue-comment
+step posting to the PR hits this limit and fails. Adding `continue-on-error: true` prevents
+a transient infrastructure issue from cascading into a workflow-level failure.
+
+### Impact Score
+- Files changed: 2 (`test-rag.yml`, `AGENT_ACCOUNTABILITY_REPORT.md`)
+- CI gates unblocked: rescue-comment cascade failure
+- Deferral Language Gate: 0 violations
+
+---
