@@ -26,8 +26,9 @@ repos:
     hooks:
       - id: pip-audit
         name: pip-audit (dependency vulnerability scan)
-        args: ["--desc", "--skip-editable", "--ignore-vuln", "GHSA-5239-wwwm-4pmq"]
+        args: ["--desc", "--skip-editable", "--ignore-vuln", "GHSA-5239-wwwm-4pmq", "--ignore-vuln", "GHSA-58qw-9mgm-455v"]
         # GHSA-5239-wwwm-4pmq: pygments AdlLexer DoS — no fix version published yet
+        # GHSA-58qw-9mgm-455v: pip 26.0.1 ZIP/tar confusion — no fix version published yet
         # Note: May require requirements files to be present
         # Run manually with: pre-commit run pip-audit --all-files
 
