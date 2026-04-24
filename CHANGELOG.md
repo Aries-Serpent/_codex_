@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4039)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4039 (SHA `2f9ca793`) at 2026-04-24T11:50Z [auto-generated]
+
 ### Changed (2026-04-24 — weekly Dependabot fold-in · cherry-picked into PR #3978)
 
 Cherry-picked dep bumps from the following Dependabot PRs so that their closures
