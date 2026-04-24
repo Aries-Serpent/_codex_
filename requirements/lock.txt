@@ -182,7 +182,7 @@ datasets==4.8.4
     #   codex-ml (pyproject.toml)
     #   evaluate
     #   lm-eval
-debugpy==1.8.19
+debugpy==1.8.20
     # via ipykernel
 decorator==5.2.1
     # via ipython
@@ -221,7 +221,7 @@ docker==7.1.0
     # via mlflow
 dpath==2.2.0
     # via dvc
-duckdb==1.5.1
+duckdb==1.5.2
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -251,7 +251,7 @@ entrypoints==0.4
     # via altair
 evaluate==0.4.6
     # via lm-eval
-evidently==0.7.20
+evidently==0.7.21
     # via codex-ml (pyproject.toml)
 executing==2.2.1
     # via stack-data
@@ -569,7 +569,7 @@ nanotime==0.5.2
     # via dvc-data
 nbclient==0.10.2
     # via nbconvert
-nbconvert==7.17.0
+nbconvert==7.17.1
     # via jupyter-server
 nbformat==5.10.4
     # via
@@ -693,7 +693,7 @@ orjson==3.11.7
     # via
     #   fastapi
     #   sqltrie
-packaging==25.0
+packaging==26.1
     # via
     #   accelerate
     #   black
@@ -750,14 +750,14 @@ pathvalidate==3.3.1
     # via pytablewriter
 patsy==1.0.1
     # via statsmodels
-peft==0.18.1
+peft==0.19.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
     #   lm-eval
 pexpect==4.9.0
     # via ipython
-pillow==12.1.1
+pillow==12.2.0
     # via
     #   matplotlib
     #   tensorboard
@@ -807,7 +807,7 @@ protobuf==6.33.5
     #   ray
     #   tensorboard
     #   wandb
-psutil==7.1.3
+psutil==7.2.2
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -858,7 +858,7 @@ pydantic-settings==2.13.1
     #   codex-ml (pyproject.toml)
 pydot==4.0.1
     # via dvc
-pygit2==1.19.1
+pygit2==1.19.2
     # via scmrepo
 pygments==2.20.0
     # via
@@ -886,7 +886,7 @@ pyparsing==3.3.2
     #   pydot
 pytablewriter==1.2.1
     # via lm-eval
-pytest==8.4.1
+pytest==9.0.3
     # via
     #   codex-ml (pyproject.toml)
     #   pytest-cov
@@ -914,7 +914,7 @@ python-dotenv==1.2.1
     #   uvicorn
 python-json-logger==4.0.0
     # via jupyter-events
-python-multipart==0.0.22
+python-multipart==0.0.26
     # via fastapi
 pytokens==0.4.1
     # via black
@@ -1171,7 +1171,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.5.3
+transformers==5.5.4
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1264,7 +1264,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-virtualenv==20.36.1
+virtualenv==21.2.4
     # via
     #   pre-commit
     #   ray

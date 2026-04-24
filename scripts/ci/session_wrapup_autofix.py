@@ -1456,6 +1456,17 @@ def main(argv: list[str] | None = None) -> int:
         help="Restore canonical WEC block in PR body when missing or in legacy format",
     )
     parser.add_argument(
+        "--update-pr-description",
+        action="store_true",
+        default=False,
+        help=(
+            "MANDATORY session-close gate: refresh the PR description with the "
+            "current merge-readiness scorecard + follow-up prompt + WEC block. "
+            "This MUST be called at the end of every Copilot agent session, "
+            "unconditionally — regardless of whether REQ-4/5 need fixing."
+        ),
+    )
+    parser.add_argument(
         "--activate-workflows",
         action="store_true",
         default=False,
@@ -1525,6 +1536,22 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     sha = args.sha or _short_sha()
+
+    # --update-pr-description: MANDATORY session-close gate (S177 compliance)
+    # Unconditionally refresh PR description with scorecard + follow-up + WEC.
+    # This must be called EVERY session, independent of REQ-4/5 status.
+    if getattr(args, "update_pr_description", False):
+        if args.pr_number == "unknown":
+            print("❌ --update-pr-description requires --pr-number", file=sys.stderr)
+            return 1
+        ok = update_pr_description(
+            pr_number=args.pr_number, dry_run=args.dry_run,
+        )
+        if ok:
+            print(f"✅ PR #{args.pr_number}: scorecard + follow-up + WEC refreshed")
+        else:
+            print(f"⚠️  PR #{args.pr_number}: description update failed (non-fatal)")
+        return 0
 
     # --fix-all delegates to auto_fix_all_missing() which covers every requirement
     if args.fix_all:
