@@ -24,11 +24,28 @@ _warnings.warn(
 import src.training.engine_hf_trainer as _src_mod  # noqa: E402
 from src.training.engine_hf_trainer import *  # noqa: E402, F401, F403
 
-# Re-expose private helpers needed by tests that monkeypatch via
-# "training.engine_hf_trainer.<name>".  ``import *`` does not export
-# underscore-prefixed names, so they must be forwarded explicitly.
-# Example: ``monkeypatch.setattr("training.engine_hf_trainer._make_accelerator", ...)``
-for _name in ("_make_accelerator",):
+# Re-expose helpers and re-imported third-party symbols needed by tests that
+# monkeypatch via "training.engine_hf_trainer.<name>".  ``import *`` only
+# exports names listed in ``__all__`` (and never underscore-prefixed ones), so
+# any symbol patched through this shim must be forwarded explicitly.
+# Example: ``monkeypatch.setattr("training.engine_hf_trainer.AutoTokenizer", ...)``
+_FORWARDED_NAMES = (
+    # Private helpers
+    "_make_accelerator",
+    # Transformers symbols re-imported in src.training.engine_hf_trainer
+    "AutoModelForCausalLM",
+    "AutoTokenizer",
+    "DataCollatorForLanguageModeling",
+    "Trainer",
+    "TrainingArguments",
+    "TrainerCallback",
+    "EarlyStoppingCallback",
+    # Codex-internal helpers re-imported in src.training.engine_hf_trainer
+    "apply_lora",
+    "set_reproducible",
+    "set_seed",
+)
+for _name in _FORWARDED_NAMES:
     _val = getattr(_src_mod, _name, None)
     if _val is not None:
         globals()[_name] = _val
