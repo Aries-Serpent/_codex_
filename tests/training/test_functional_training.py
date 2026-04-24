@@ -15,13 +15,7 @@ def test_normalize_and_local_detection(tmp_path):
 
 
 def test_system_metrics_collection(monkeypatch):
-    # Patch the source module because _maybe_collect_system_metrics is defined
-    # in src.training.functional_training and looks up ``collect_system_metrics``
-    # in its own module globals, not in the legacy ``training.functional_training``
-    # shim namespace.
-    import src.training.functional_training as _src_ft
-
-    monkeypatch.setattr(_src_ft, "collect_system_metrics", lambda: {"cpu": 1.0, "mem": 2})
+    monkeypatch.setattr(ft, "collect_system_metrics", lambda: {"cpu": 1.0, "mem": 2})
     metrics = ft._maybe_collect_system_metrics(True)
     assert metrics == {"cpu": 1.0, "mem": 2.0}
 
