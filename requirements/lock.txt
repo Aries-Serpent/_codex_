@@ -497,7 +497,7 @@ litestar-htmx==0.5.0
     # via litestar
 lm-eval==0.4.9.2
     # via codex-ml (pyproject.toml)
-lxml==6.0.2
+lxml==6.1.0
     # via sacrebleu
 makefun==1.16.0
     # via great-expectations
