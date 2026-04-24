@@ -34,8 +34,8 @@ dependencies = [
   "pandas>=2.1",
   "marshmallow>=4.0.0,<5",  # Upgraded to 4.x; great-expectations (requires <4) moved to [ge] extras
   "mlflow>=2.22.4,<4",  # Security: Updated from 2.4 to fix 43+ vulnerabilities (RCE, auth bypass, path traversal)
-  "transformers>=5.5.3,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
-  "peft>=0.11,<1",
+  "transformers>=5.5.4,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
+  "peft>=0.19.1,<1",
   "accelerate>=0.31,<2",
   "datasets>=2.19,<5",
   "lm-eval>=0.4.2,<1",
@@ -44,10 +44,10 @@ dependencies = [
   "slowapi>=0.1.9",
   "starlette>=0.37.2,<0.51",
   "httpx>=0.26,<1",
-  "evidently>=0.4.28,<1",
+  "evidently>=0.7.21,<1",
   "numpy>=1.26,<3",
   "scikit-learn>=1.4,<2",
-  "duckdb>=0.10",
+  "duckdb>=1.5.2",
   "sentencepiece>=0.1.99",
   "torch>=2.6.0,<3.0.0",  # Security: Updated from 2.2.2 to fix RCE in torch.load with weights_only=True
   "typer>=0.12",
@@ -99,7 +99,7 @@ hydra = [
   "PyYAML>=6.0",
 ]
 dev = [
-  "pytest>=8.2.0,<9.0.0",
+  "pytest>=8.2.0,<10.0.0",
   "pytest-cov>=4.1.0,<6.0.0",
   "pytest-xdist>=3.5.0,<4.0.0",
   "pytest-timeout>=2.2.0,<3.0.0",
@@ -123,11 +123,11 @@ dev = [
 ]
 dist = ["torch>=2.6.0,<3.0.0; platform_system != 'Windows'"]  # Security: match main dependencies
 github = [
-  "PyGithub>=2.1.1,<3.0.0",  # GitHub API client for workflow monitoring
+  "PyGithub>=2.9.1,<3.0.0",  # GitHub API client for workflow monitoring
 ]
 gpu = ["nvidia-ml-py3>=7.352.0"]
 logging = [
-  "duckdb>=0.10",
+  "duckdb>=1.5.2",
   "jsonschema>=4.18",
   "pandas>=2.0",
   "tensorboard>=2.14",
@@ -139,10 +139,10 @@ metrics = [
 ]
 ml = [
   "datasets>=2.19,<5",
-  "peft>=0.11,<1",
+  "peft>=0.19.1,<1",
   "sentencepiece>=0.1.99",
   "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.5.4,<6",  # Security: updated from 4.41 to fix deserialization
   "accelerate>=0.31,<2",
 ]
 monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
@@ -165,18 +165,18 @@ symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
   "hydra-core[hydra_plugins]>=1.3",
   "omegaconf>=2.3",
   "PyYAML>=6.0",
-  "pytest>=7.0",
+  "pytest>=9.0.3",
   "pytest-cov>=4.0",
   "pytest-randomly>=3.10",
   "hypothesis>=6.100",
-  "packaging>=24.0,<26.0",  # Pin to <26 for mlflow-tracing/mlflow-skinny compatibility
+  "packaging>=26.1,<27.0",  # Pin to >=26.1,<27.0 for mlflow-tracing/mlflow-skinny compatibility
   "tomli>=2.0; python_version < '3.11'",
 ]
 test = [
   "hydra-core[hydra_plugins]>=1.3",
   "omegaconf>=2.3",
   "PyYAML>=6.0",
-  "pytest>=8.2.0,<9.0.0",
+  "pytest>=8.2.0,<10.0.0",
   "pytest-cov>=4.1.0,<6.0.0",
   "pytest-xdist>=3.5.0,<4.0.0",
   "pytest-timeout>=2.2.0,<3.0.0",
@@ -185,8 +185,8 @@ test = [
   "pytest-rerunfailures>=12.0",
   "pytest-randomly>=3.10",
   "hypothesis>=6.98.0,<7.0.0",
-  "packaging>=24.0,<26.0",  # Pin to <26 for mlflow-tracing/mlflow-skinny compatibility
-  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
+  "packaging>=26.1,<27.0",  # Pin to >=26.1,<27.0 for mlflow-tracing/mlflow-skinny compatibility
+  "transformers>=5.5.4,<6",  # Security: updated from 4.41 to fix deserialization
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
   "datasets>=2.19,<5",
   "accelerate>=0.31,<2",
@@ -203,16 +203,16 @@ tracking = [
 ]
 train = [
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.5.4,<6",  # Security: updated from 4.41 to fix deserialization
   "accelerate>=0.31,<2",
-  "peft>=0.11,<1",
+  "peft>=0.19.1,<1",
   "mlflow>=2.22.4,<4",  # Security: updated from 2.11 to fix 43+ vulnerabilities
 ]
 
 all = [
   "accelerate>=0.31,<2",
   "datasets>=2.19,<5",
-  "duckdb>=0.10",
+  "duckdb>=1.5.2",
   "hydra-core[hydra_plugins]>=1.3",
   "hypothesis>=6.98.0,<7.0.0",
   "importlib-metadata; python_version < '3.10'",
@@ -223,7 +223,7 @@ all = [
   "numpy>=1.24; python_version<'3.13'",
   "omegaconf>=2.3",
   "pandas>=2.0",
-  "peft>=0.11,<1",
+  "peft>=0.19.1,<1",
   "pre-commit>=3.7",
   "prometheus-client>=0.14",
   "psutil>=5.9",
@@ -231,7 +231,7 @@ all = [
   "cryptography>=42.0.0,<47.0.0",
   "PyNaCl>=1.5.0,<2.0.0",
   "PyYAML>=6.0",
-  "pytest>=8.2.0,<9.0.0",
+  "pytest>=8.2.0,<10.0.0",
   "pytest-cov>=4.1.0,<6.0.0",
   "pytest-xdist>=3.5.0,<4.0.0",
   "pytest-timeout>=2.2.0,<3.0.0",
@@ -248,7 +248,7 @@ all = [
   "tokenizers>=0.15",
   "tomli>=2.0; python_version < '3.11'",
   "torch>=2.6.0,<3.0.0",  # Security: updated from 2.2.2 to fix RCE
-  "transformers>=5.5.3,<6",  # Security: updated from 4.41 to fix deserialization
+  "transformers>=5.5.4,<6",  # Security: updated from 4.41 to fix deserialization
   "wandb>=0.16",
 ]
 

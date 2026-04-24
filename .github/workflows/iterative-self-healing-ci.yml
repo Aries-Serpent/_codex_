@@ -90,11 +90,12 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.head_ref || github.ref_name }}
         run: |
-          # Hard brake: if >= 10 Iterative Self-Healing CI runs have been triggered
+          # Hard brake: if >= 5 Iterative Self-Healing CI runs have been triggered
           # for this branch in the past hour, skip this run. This prevents the
           # self-healing cascade (issue #3860) where healer failures re-trigger the
           # healer indefinitely (SELF_HEALING_001 sub-scenario C).
-          MAX_PER_HOUR=10
+          # Lowered from 10→5 in S177 (issue #3977) to reduce cascade blast radius.
+          MAX_PER_HOUR=5
           ONE_HOUR_AGO=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || echo "")
@@ -120,7 +121,7 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Classify failure (D-00 — collect_telemetry --classify-run)
         id: classify
@@ -140,8 +141,12 @@ jobs:
           # Root cause of 126 self-healing failures (CI health alert 2026-03-21):
           # .venv_ci/bin/pip was absent on cache misses, causing triage to exit 1
           # before classify-run could run, which marked the whole workflow as failed.
+          # S177 hardening (issue #3977): rm stale venv + --clear + pip upgrade to
+          # prevent corrupted partial-cache-restore venvs from causing silent failures.
           if ! .venv_ci/bin/pip install requests --quiet 2>/dev/null; then
-            python3 -m venv .venv_ci
+            rm -rf .venv_ci
+            python3 -m venv --clear .venv_ci
+            .venv_ci/bin/pip install --upgrade pip setuptools --quiet
             .venv_ci/bin/pip install requests --quiet
           fi
           echo "run_id=${TRIGGERING_RUN_ID}"       >> "$GITHUB_OUTPUT"
@@ -351,14 +356,17 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Install tools
         run: |
           # Resilient pip install: prefer venv binary but recreate the venv on cache miss
           # instead of installing to system/user site-packages (same fix as triage — S172).
+          # S177 hardening (issue #3977): rm stale venv + --clear + pip upgrade.
           if ! .venv_ci/bin/pip install ruff black isort --quiet 2>/dev/null; then
-            python3 -m venv .venv_ci
+            rm -rf .venv_ci
+            python3 -m venv --clear .venv_ci
+            .venv_ci/bin/pip install --upgrade pip setuptools --quiet
             .venv_ci/bin/pip install ruff black isort --quiet
           fi
 
@@ -688,12 +696,14 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Install detect-secrets
         run: |
           if ! .venv_ci/bin/pip install detect-secrets --quiet 2>/dev/null; then
-            python3 -m venv .venv_ci
+            rm -rf .venv_ci
+            python3 -m venv --clear .venv_ci
+            .venv_ci/bin/pip install --upgrade pip setuptools --quiet
             .venv_ci/bin/pip install detect-secrets ruff --quiet
           fi
 

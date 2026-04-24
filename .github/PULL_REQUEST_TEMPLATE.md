@@ -321,40 +321,40 @@ For Copilot/AI-assisted PRs:
 ### 🧪 Opt-In: Testing & Validation
 - [ ] validate.yml — Validation pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
 - [ ] resilient_validation.yml — Resilient validation (full pytest suite, 4 shards)
-- [ ] mypy-baseline.yml — Type-check anti-regression gate
+- [x] mypy-baseline.yml — Type-check anti-regression gate
 - [ ] test-rag.yml — RAG module tests (coverage ≥95%)
 - [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
-- [ ] coverage-with-timeout.yml — Coverage with timeout guards
+- [x] coverage-with-timeout.yml — Coverage with timeout guards
 - [ ] progressive-validation.yml — Progressive validation suite
-- [ ] pre-flight-validation.yml — Pre-flight CI validation
-- [ ] ci-checkpoint-validation.yml — CI checkpoint validation
+- [x] pre-flight-validation.yml — Pre-flight CI validation
+- [x] ci-checkpoint-validation.yml — CI checkpoint validation
 - [ ] data-quality-suite.yml — Data quality & determinism suite
-- [ ] auth-tests.yml — Authentication tests
-- [ ] pr-checks.yml — PR Checks (isolated cache, src/ scope)
+- [x] auth-tests.yml — Authentication tests
+- [x] pr-checks.yml — PR Checks (isolated cache, src/ scope)
 - [ ] html_visual_regression.yml — HTML Visual Regression Screenshots
 
 ### 🔒 Opt-In: Security & Quality
 - [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
-- [ ] codeql-analysis.yml — CodeQL SAST analysis
-- [ ] actionlint-audit.yml — Workflow compliance audit (actionlint)
-- [ ] semgrep_sarif.yml — Semgrep SAST (SARIF upload)
-- [ ] auto-fix-common-issues.yml — Auto-fix common CI issues
-- [ ] auto-fix-pr-check.yml — PR auto-fix check
-- [ ] code-quality-coverage-suite.yml — Code quality & coverage suite
-- [ ] audit-qa-suite.yml — Audit & QA Suite (Unified)
+- [x] codeql-analysis.yml — CodeQL SAST analysis
+- [x] actionlint-audit.yml — Workflow compliance audit (actionlint)
+- [x] semgrep_sarif.yml — Semgrep SAST (SARIF upload)
+- [x] auto-fix-common-issues.yml — Auto-fix common CI issues
+- [x] auto-fix-pr-check.yml — PR auto-fix check
+- [x] code-quality-coverage-suite.yml — Code quality & coverage suite
+- [x] audit-qa-suite.yml — Audit & QA Suite (Unified)
 
 ### 📄 Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker
-- [ ] pages-pre-merge-validation.yml — Pages pre-merge validation
+- [x] pages-pre-merge-validation.yml — Pages pre-merge validation
 
 ### ⚙️ Opt-In: Infrastructure & Deployment
-- [ ] reference-integrity.yml — Reference integrity + agent size gate
-- [ ] dependency-submission.yml — Resilient dependency submission
+- [x] reference-integrity.yml — Reference integrity + agent size gate
+- [x] dependency-submission.yml — Resilient dependency submission
 - [ ] docker-build-push.yml — Build & push Docker image (GHCR)
 - [ ] rust_swarm_ci.yml — Rust-Python hybrid swarm CI/CD
-- [ ] root-org-validation.yml — Root organization validation
-- [ ] agent-registry-validation.yml — Agent registry validation
-- [ ] qa-walkthrough.yml — QA walkthrough agent
+- [x] root-org-validation.yml — Root organization validation
+- [x] agent-registry-validation.yml — Agent registry validation
+- [x] qa-walkthrough.yml — QA walkthrough agent
 
 ### ⚡ Fast-Forward Safe Files to `main`
 

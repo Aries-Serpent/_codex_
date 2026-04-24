@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-24 — PR #4039 WEC template alignment · session 2)
+- `.github/PULL_REQUEST_TEMPLATE.md`: aligned the `## 🔄 Workflow Execution Checklist` block with the canonical `_WEC_ITEMS` list in `scripts/ci/session_wrapup_autofix.py`. All 19 workflows that are declared `always_required=True` in the canonical list (mypy-baseline, coverage-with-timeout, pre-flight-validation, ci-checkpoint-validation, auth-tests, pr-checks, codeql-analysis, actionlint-audit, semgrep_sarif, auto-fix-common-issues, auto-fix-pr-check, code-quality-coverage-suite, audit-qa-suite, pages-pre-merge-validation, reference-integrity, dependency-submission, root-org-validation, agent-registry-validation, qa-walkthrough) are now pre-checked `[x]` in the template. This eliminates the drift that made the WEC gate treat force-checked items as "newly checked" on every session wrap-up, and guarantees checkbox triggers fire deterministically across every Copilot session.
+- Verification: `scripts/ci/wec_enforcer._parse_wec_checkboxes()` parses all 40 entries and `always_required` flags match canonical `_WEC_ITEMS` with zero drift (diagnostic script in commit body). All 44 `tests/ci/test_session_wrapup_autofix.py` tests still pass; `ruff check src/ tests/` clean; `sync_tracked_files.py --check` consistent.
+
+### Fixed (2026-04-24 — PR #4039 review-comment remediation)
+- `pyproject.toml`: corrected stale inline comment on `packaging>=26.1,<27.0` (both `dev` and `test` dependency sections) — comment previously read `Pin to <26` which contradicted the actual constraint
+- `.github/workflows/agent-auth-delegation.yml`: standardised all `GH_TOKEN` fallback chains from `CODEX_MASTER_KEY || secrets.GITHUB_TOKEN` to the repo-standard three-part chain `CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token` (4 steps: lines 84, 98, 127, 2202)
+
+### Fixed (auto-update — PR #4039)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4039 (SHA `2f9ca793`) at 2026-04-24T11:50Z [auto-generated]
+
+### Changed (2026-04-24 — weekly Dependabot fold-in · cherry-picked into PR #3978)
+
+Cherry-picked dep bumps from the following Dependabot PRs so that their closures
+can happen on merge of this consolidated PR (weekly routine — all open Dependabot
+PRs fold into the active self-healing/CI PR each cycle):
+
+- #4025 — `nvidia/cuda` docker base: `13.2.0-runtime-ubuntu22.04` → `13.2.1-runtime-ubuntu22.04`
+- #4015 — `pygit2` 1.19.1 → 1.19.2
+- #4014 — `virtualenv` 20.36.1 → 21.2.4
+- #4013 — `psutil` 7.1.3 → 7.2.2
+- #4012 — `debugpy` 1.8.19 → 1.8.20
+- #4011 — `PyGithub` constraint `>=2.1.1,<3.0.0` → `>=2.9.1,<3.0.0`
+- #4010 — `evidently` 0.7.20 → 0.7.21 (and pyproject pin `>=0.4.28,<1` → `>=0.7.21,<1`)
+- #4009 — `packaging` 25.0 → 26.1 (and pyproject pin `>=24.0,<26.0` → `>=26.1,<27.0`)
+- #4008 — `duckdb` 1.5.1 → 1.5.2 (and pyproject pins `>=0.10` → `>=1.5.2`)
+- #4007 — ml-dependencies group: `transformers` 5.5.3 → 5.5.4, `peft` 0.18.1 → 0.19.1
+- #4026, #4027, #4028, #4030, #4035 — grouped pip/uv refresh: rolled into the
+  unified `requirements/lock.txt` regeneration (nbconvert 7.17.0 → 7.17.1,
+  python-multipart 0.0.22 → 0.0.26 additions). Subdirectory pinned files listed
+  in those grouped PRs remain tracked in `.github/dependabot.yml`; any remaining
+  single-line bumps in subdir lockfiles surface in the next weekly fold-in.
+
+Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
+`requirements/base.txt`, `requirements/lock-ml.txt`, `requirements-ml-cpu.txt`,
+`requirements-notebook.txt`, `.secrets.baseline` (via `sync_tracked_files.py --fix`).
+
+### Fixed (S177 — mandatory scorecard refresh on session close)
+- `scripts/ci/session_wrapup_autofix.py`: added `--update-pr-description` CLI flag for unconditional scorecard + follow-up prompt refresh, independent of REQ-4/5 status
+- `.github/workflows/copilot-agent-session-done.yml`: removed early-exit that skipped `--fix-all` (and `update_pr_description()`) when REQ-4/5 were already satisfied; now always calls `--update-pr-description`
+- `.github/workflows/agent-auth-delegation.yml`: added mandatory scorecard refresh step to `pr-body-checkpoint-guardian` job alongside existing WEC preservation
+
+### Fixed (auto-update — PR #3978)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3978 (SHA `43a20771`) at 2026-04-13T13:31Z [auto-generated]
+
 ### Fixed (auto-update — PR #3976)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3976 (SHA `62587005`) at 2026-04-13T11:34Z [auto-generated]
 

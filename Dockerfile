@@ -54,7 +54,7 @@ ENTRYPOINT ["python", "-m", "codex_ml"]
 CMD ["--help"]
 
 # ===== Stage 3: GPU Runtime =====
-FROM nvidia/cuda:13.2.0-runtime-ubuntu22.04 AS gpu-runtime
+FROM nvidia/cuda:13.2.1-runtime-ubuntu22.04 AS gpu-runtime
 
 LABEL org.opencontainers.image.description="Codex ML GPU runtime"
 

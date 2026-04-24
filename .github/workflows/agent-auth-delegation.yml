@@ -81,13 +81,27 @@ jobs:
         # This fires on EVERY PR push/open/sync so that no report_progress update
         # can permanently lose a maintainer's WEC selection.
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUM: ${{ github.event.pull_request.number }}
         run: |
           python3 scripts/ci/session_wrapup_autofix.py \
             --fix-pr-body \
             --pr-number "${PR_NUM}" \
             || echo "⚠️  WEC preservation script exited non-zero (non-fatal — workflow continues)"
+
+      - name: "Mandatory scorecard refresh — merge-readiness + follow-up prompt"
+        # S177 compliance: ALWAYS refresh PR description with the current
+        # merge-readiness scorecard + follow-up prompt on every PR push.
+        # This ensures the scorecard is never stale regardless of which
+        # agent session or workflow last touched the PR body.
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUM: ${{ github.event.pull_request.number }}
+        run: |
+          python3 scripts/ci/session_wrapup_autofix.py \
+            --update-pr-description \
+            --pr-number "${PR_NUM}" \
+            || echo "⚠️  Scorecard refresh non-zero (non-fatal — workflow continues)"
 
   # ── Job 1: detect whether the checkbox is checked ───────────────────────────
   detect-checkbox:
@@ -110,7 +124,7 @@ jobs:
       - name: "Parse PR body for delegation checkbox"
         id: check
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         run: |
@@ -2185,7 +2199,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
 
       - name: Post or update rescue comment

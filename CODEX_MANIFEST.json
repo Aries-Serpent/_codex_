@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-13T08:31:59Z",
+  "generated_at": "2026-04-24T11:50:52Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1350,7 +1350,7 @@
     },
     {
       "name": "issue-resolution-gate",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2046,5 +2046,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "ff8be666fbb0f1272013b7a060dafa78df369ff171bb8cb07165de5c0678be90"
+  "integrity_sha256": "5cedb68fa0e8b0327f9bd35d73957fb926a1c845e49b788eced4229141eceebf"
 }
