@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-24 — PR #4039 review-comment remediation)
+- `pyproject.toml`: corrected stale inline comment on `packaging>=26.1,<27.0` (both `dev` and `test` dependency sections) — comment previously read `Pin to <26` which contradicted the actual constraint
+- `.github/workflows/agent-auth-delegation.yml`: standardised all `GH_TOKEN` fallback chains from `CODEX_MASTER_KEY || secrets.GITHUB_TOKEN` to the repo-standard three-part chain `CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token` (4 steps: lines 84, 98, 127, 2202)
+
 ### Fixed (auto-update — PR #4039)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4039 (SHA `2f9ca793`) at 2026-04-24T11:50Z [auto-generated]
 

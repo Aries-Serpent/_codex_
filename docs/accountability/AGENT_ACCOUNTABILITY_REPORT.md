@@ -20079,3 +20079,32 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-04-24T12:12Z — Review Comment Remediation (PR #4039)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All new PR comments reviewed — 4 new comments (4312932839, 4312952190, 4312954949, 4312957772) ✅
+- [x] **0b.** CI failure: Comment Review Gate failing due to unaddressed blocking comment — resolved by replying ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `CHANGELOG.md` — updated with Fixed entry for review-comment fixes ✅
+- [x] **3.** `ruff check src/ tests/` — clean (0 violations) ✅
+- [x] **4.** `sync_tracked_files.py --check` — all consistent ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **`pyproject.toml` comment fix** (commit `195587a5`) — corrected stale `# Pin to <26` comment on `packaging>=26.1,<27.0` in both `dev` and `test` dependency sections to match the actual constraint bounds.
+2. **`agent-auth-delegation.yml` token chain fix** (commit `195587a5`) — replaced `CODEX_MASTER_KEY || secrets.GITHUB_TOKEN` with the standard three-part fallback `CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token` on all 4 affected steps (lines 84, 98, 127, 2202). Remaining standalone `secrets.GITHUB_TOKEN` usages are intentional.
+3. **CHANGELOG.md** — added `### Fixed` entry under `## [Unreleased]` documenting both fixes.
+4. **Comment Review Gate unblocked** — replied to blocking CI Rescue comment (4312954949).
+
+### Validation
+- `ruff check src/ tests/` — **clean** (0 violations) ✅
+- `python3 scripts/ci/sync_tracked_files.py --check` — **all consistent** ✅
+- No deferral language introduced ✅
+
+### Impact
+- CI gate: Comment Review Gate unblocked by reply to comment 4312954949
+- Code quality: 2 stale/inconsistent patterns corrected in `pyproject.toml` and `agent-auth-delegation.yml`
+- Rate-limit resilience improved: `CODEX_BACKUP_KEY` fallback now present on all `CODEX_MASTER_KEY` chains in the delegation workflow
+
+---
