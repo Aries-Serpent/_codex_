@@ -17,7 +17,9 @@
 - [`5b047c72`] fix(template): align WEC checkboxes with canonical _WEC_ITEMS (19 items) (copilot-swe-agent[bot], 2026-04-24)
 
 ### Files Modified
-No files modified
+- `requirements/base.txt` — torch 2.10.0 → 2.11.0 (uv group bump, `dependabot/uv/uv-269def542a`)
+- `requirements/lock.txt` — torch 2.10.0 → 2.11.0 (uv group bump)
+- `.github/PULL_REQUEST_TEMPLATE.md` — WEC checkboxes aligned with canonical `_WEC_ITEMS` (19 items marked `always_required`)
 
 ---
 
