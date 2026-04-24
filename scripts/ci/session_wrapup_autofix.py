@@ -1545,13 +1545,14 @@ def main(argv: list[str] | None = None) -> int:
             print("❌ --update-pr-description requires --pr-number", file=sys.stderr)
             return 1
         ok = update_pr_description(
-            pr_number=args.pr_number, dry_run=args.dry_run,
+            pr_number=args.pr_number, dry_run=args.dry_run
         )
         if ok:
             print(f"✅ PR #{args.pr_number}: scorecard + follow-up + WEC refreshed")
+            return 0
         else:
-            print(f"⚠️  PR #{args.pr_number}: description update failed (non-fatal)")
-        return 0
+            print(f"❌ PR #{args.pr_number}: mandatory description update failed", file=sys.stderr)
+            return 1
 
     # --fix-all delegates to auto_fix_all_missing() which covers every requirement
     if args.fix_all:
