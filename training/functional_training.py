@@ -8,10 +8,17 @@ scripts that import ``from training.functional_training import ...``.
 Migration guide:
   Replace ``from training.functional_training import X``
   with    ``from src.training.functional_training import X``
+
+Implementation note:
+  The shim aliases ``sys.modules[__name__]`` to the source module so that all
+  symbols (including private helpers and bare-module imports like ``torch``)
+  are transparently visible and so that monkeypatches applied via the legacy
+  name reach the real symbols used by ``_maybe_collect_system_metrics`` etc.
 """
 
 from __future__ import annotations
 
+import sys as _sys
 import warnings as _warnings
 
 _warnings.warn(
@@ -22,23 +29,5 @@ _warnings.warn(
 )
 
 import src.training.functional_training as _src_mod  # noqa: E402
-from src.training.functional_training import *  # noqa: E402, F401, F403
 
-# Re-expose private helpers and module-level names (e.g. ``torch``) that tests
-# monkeypatch via "training.functional_training.<name>".  ``import *`` only
-# exports public names, so private symbols and bare-module imports from the
-# source file must be forwarded explicitly.
-# Example: ``monkeypatch.setattr("training.functional_training.torch.optim.AdamW", ...)``
-for _name in (
-    "torch",
-    "_codex_logging_bootstrap",
-    "_codex_log_all",
-    "_normalize_identifier",
-    "_looks_like_local_source",
-    "_maybe_collect_system_metrics",
-    "collect_system_metrics",
-):
-    _val = getattr(_src_mod, _name, None)
-    if _val is not None:
-        globals()[_name] = _val
-del _name, _val
+_sys.modules[__name__] = _src_mod

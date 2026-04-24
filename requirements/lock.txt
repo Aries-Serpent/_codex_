@@ -497,7 +497,7 @@ litestar-htmx==0.5.0
     # via litestar
 lm-eval==0.4.9.2
     # via codex-ml (pyproject.toml)
-lxml==6.0.2
+lxml==6.1.0
     # via sacrebleu
 makefun==1.16.0
     # via great-expectations
@@ -908,7 +908,7 @@ python-dateutil==2.9.0.post0
     #   matplotlib
     #   pandas
     #   typepy
-python-dotenv==1.2.1
+python-dotenv==1.2.2
     # via
     #   pydantic-settings
     #   uvicorn
@@ -945,7 +945,7 @@ pyzmq==27.1.0
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-ray==2.54.0
+ray==2.55.0
     # via codex-ml (pyproject.toml)
 referencing==0.37.0
     # via
@@ -1129,7 +1129,7 @@ tomlkit==0.13.3
     # via dvc
 toolz==1.1.0
     # via altair
-torch==2.10.0
+torch==2.11.0
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-04-24 — weekly Dependabot fold-in · cherry-picked into PR #4048)
+
+Cherry-picked dep bumps from the following Dependabot PRs:
+
+| PR | Package | Old → New |
+|----|---------|-----------|
+| #4047 | uv group (ray, lxml, python-dotenv, torch) across `/` and `requirements/` | bundled group bump |
+| #4046 | ray | 2.54.0 → 2.55.0 |
+| #4045 | lxml | 6.0.2 → 6.1.0 |
+| #4044 | python-dotenv | 1.2.1 → 1.2.2 |
+
+Files updated: `requirements/lock.txt`, `requirements/agent.txt`, `requirements/base.txt`.
+pip-audit false-positive `GHSA-58qw-9mgm-455v` (pip 26.x ZIP/tar confusion) added to ignore list in `.pre-commit-config.yaml`.
+
+### Fixed (auto-update — PR #4048)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4048 (SHA `3238258e`) at 2026-04-24T16:26Z [auto-generated]
+
+### Fixed (auto-update — PR #4041)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4041 (SHA `205fbb8f`) at 2026-04-24T15:22Z [auto-generated]
+
 ### Fixed (2026-04-24 — PR #4039 WEC template alignment · session 2)
 - `.github/PULL_REQUEST_TEMPLATE.md`: aligned the `## 🔄 Workflow Execution Checklist` block with the canonical `_WEC_ITEMS` list in `scripts/ci/session_wrapup_autofix.py`. All 19 workflows that are declared `always_required=True` in the canonical list (mypy-baseline, coverage-with-timeout, pre-flight-validation, ci-checkpoint-validation, auth-tests, pr-checks, codeql-analysis, actionlint-audit, semgrep_sarif, auto-fix-common-issues, auto-fix-pr-check, code-quality-coverage-suite, audit-qa-suite, pages-pre-merge-validation, reference-integrity, dependency-submission, root-org-validation, agent-registry-validation, qa-walkthrough) are now pre-checked `[x]` in the template. This eliminates the drift that made the WEC gate treat force-checked items as "newly checked" on every session wrap-up, and guarantees checkbox triggers fire deterministically across every Copilot session.
 - Verification: `scripts/ci/wec_enforcer._parse_wec_checkboxes()` parses all 40 entries and `always_required` flags match canonical `_WEC_ITEMS` with zero drift (diagnostic script in commit body). All 44 `tests/ci/test_session_wrapup_autofix.py` tests still pass; `ruff check src/ tests/` clean; `sync_tracked_files.py --check` consistent.

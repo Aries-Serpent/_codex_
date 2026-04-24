@@ -21,7 +21,15 @@ __all__ = [
     "cli",
 ]
 
-_SUBMODULES = {"analyze", "cli", "ingest", "intent", "transform", "verify"}
+_SUBMODULES = {
+    "analyze",
+    "archive",
+    "cli",
+    "ingest",
+    "intent",
+    "transform",
+    "verify",
+}
 
 
 def __getattr__(name: str):
