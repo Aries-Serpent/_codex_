@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-24 — PR #4039 WEC template alignment · session 2)
+- `.github/PULL_REQUEST_TEMPLATE.md`: aligned the `## 🔄 Workflow Execution Checklist` block with the canonical `_WEC_ITEMS` list in `scripts/ci/session_wrapup_autofix.py`. All 19 workflows that are declared `always_required=True` in the canonical list (mypy-baseline, coverage-with-timeout, pre-flight-validation, ci-checkpoint-validation, auth-tests, pr-checks, codeql-analysis, actionlint-audit, semgrep_sarif, auto-fix-common-issues, auto-fix-pr-check, code-quality-coverage-suite, audit-qa-suite, pages-pre-merge-validation, reference-integrity, dependency-submission, root-org-validation, agent-registry-validation, qa-walkthrough) are now pre-checked `[x]` in the template. This eliminates the drift that made the WEC gate treat force-checked items as "newly checked" on every session wrap-up, and guarantees checkbox triggers fire deterministically across every Copilot session.
+- Verification: `scripts/ci/wec_enforcer._parse_wec_checkboxes()` parses all 40 entries and `always_required` flags match canonical `_WEC_ITEMS` with zero drift (diagnostic script in commit body). All 44 `tests/ci/test_session_wrapup_autofix.py` tests still pass; `ruff check src/ tests/` clean; `sync_tracked_files.py --check` consistent.
+
 ### Fixed (2026-04-24 — PR #4039 review-comment remediation)
 - `pyproject.toml`: corrected stale inline comment on `packaging>=26.1,<27.0` (both `dev` and `test` dependency sections) — comment previously read `Pin to <26` which contradicted the actual constraint
 - `.github/workflows/agent-auth-delegation.yml`: standardised all `GH_TOKEN` fallback chains from `CODEX_MASTER_KEY || secrets.GITHUB_TOKEN` to the repo-standard three-part chain `CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token` (4 steps: lines 84, 98, 127, 2202)

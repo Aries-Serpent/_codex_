@@ -3,7 +3,34 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-14T03:20Z S177_CI_FIX_ITERATION — Fix issue-resolution-gate self-reference and accountability freshness
+**Last updated:** 2026-04-24T14:55Z S_PR4039_PR_TEMPLATE_WEC_ALIGNMENT — Eliminate WEC template drift so checkbox triggers fire deterministically
+
+
+## SESSION SUMMARY — 2026-04-24T14:55Z (PR #4039 — S_PR4039_PR_TEMPLATE_WEC_ALIGNMENT)
+
+### Objective
+Harden the Workflow Execution Checklist (WEC) so its checkboxes correctly trigger the WEC gate across every Copilot session. Maintainer directive: "correctly update the checkboxes while verifying they will correctly trigger when you post the finalized reviewed and dynamically changed per session autonomously hardened for all copilot active sessions `PR template`".
+
+### Root Cause Analysis
+`.github/PULL_REQUEST_TEMPLATE.md` declared 19 workflows as unchecked `[ ]` in the "Opt-In" sections even though the canonical `_WEC_ITEMS` list in `scripts/ci/session_wrapup_autofix.py` marks them as `always_required=True`. When `_build_wec_block()` ran during session wrap-up, it force-rewrote those lines to `[x]`, and the WEC gate's `detect-changes` step interpreted the transition `[ ]` → `[x]` as "newly checked" — which polluted the dispatch list, wasted Actions minutes on duplicate runs, and caused noise in the "what did the agent just enable" audit log.
+
+### Changes This Session
+| Fix | File | Status |
+|-----|------|--------|
+| Flip 19 `[ ]` → `[x]` for every workflow declared `always_required=True` in canonical `_WEC_ITEMS` (mypy-baseline, coverage-with-timeout, pre-flight-validation, ci-checkpoint-validation, auth-tests, pr-checks, codeql-analysis, actionlint-audit, semgrep_sarif, auto-fix-common-issues, auto-fix-pr-check, code-quality-coverage-suite, audit-qa-suite, pages-pre-merge-validation, reference-integrity, dependency-submission, root-org-validation, agent-registry-validation, qa-walkthrough) | `.github/PULL_REQUEST_TEMPLATE.md` | ✅ |
+| CHANGELOG `[Unreleased]` entry | `CHANGELOG.md` | ✅ |
+| This accountability entry | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
+
+### Verification
+- `ruff check src/ tests/` — clean (0 violations)
+- `sync_tracked_files.py --check` — all consistent
+- `pytest tests/ci/test_session_wrapup_autofix.py` — 44/44 pass
+- Drift audit: `wec_enforcer._parse_wec_checkboxes(open('.github/PULL_REQUEST_TEMPLATE.md').read())` returns 40 entries; every `always_required=True` item in canonical `_WEC_ITEMS` now starts as `[x]` in the template and every `False` item starts as `[ ]` — zero drift.
+
+### Edge Cases Addressed
+- WEC regex `^- \[([ xX])\]\s+...\.yml` still matches all template lines (character class preserved).
+- `_build_wec_block()` uses `_WEC_ALWAYS_REQUIRED` to force-check items, so maintainer selections on non-required items continue to be preserved via `existing_state` merge logic.
+- Fast-Forward `<!-- FF_* -->` comment parameters remain intact below the WEC block, so `workflow-execution-gate.yml` grep parsers still extract `FF_MERGE_MODE`, `FF_FILES`, `FF_DRY_RUN` values correctly.
 
 
 ## SESSION SUMMARY — 2026-04-14T03:20Z (PR #3978 — S177: CI fix iteration)
