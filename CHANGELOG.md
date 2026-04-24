@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4046)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4046 (SHA `fd1f9a0e`) at 2026-04-24T16:22Z [auto-generated]
+
 ### Fixed (2026-04-24 — PR #4039 WEC template alignment · session 2)
 - `.github/PULL_REQUEST_TEMPLATE.md`: aligned the `## 🔄 Workflow Execution Checklist` block with the canonical `_WEC_ITEMS` list in `scripts/ci/session_wrapup_autofix.py`. All 19 workflows that are declared `always_required=True` in the canonical list (mypy-baseline, coverage-with-timeout, pre-flight-validation, ci-checkpoint-validation, auth-tests, pr-checks, codeql-analysis, actionlint-audit, semgrep_sarif, auto-fix-common-issues, auto-fix-pr-check, code-quality-coverage-suite, audit-qa-suite, pages-pre-merge-validation, reference-integrity, dependency-submission, root-org-validation, agent-registry-validation, qa-walkthrough) are now pre-checked `[x]` in the template. This eliminates the drift that made the WEC gate treat force-checked items as "newly checked" on every session wrap-up, and guarantees checkbox triggers fire deterministically across every Copilot session.
 - Verification: `scripts/ci/wec_enforcer._parse_wec_checkboxes()` parses all 40 entries and `always_required` flags match canonical `_WEC_ITEMS` with zero drift (diagnostic script in commit body). All 44 `tests/ci/test_session_wrapup_autofix.py` tests still pass; `ruff check src/ tests/` clean; `sync_tracked_files.py --check` consistent.
