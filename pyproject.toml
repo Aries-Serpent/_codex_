@@ -169,7 +169,7 @@ symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
   "pytest-cov>=4.0",
   "pytest-randomly>=3.10",
   "hypothesis>=6.100",
-  "packaging>=26.1,<27.0",  # Pin to <26 for mlflow-tracing/mlflow-skinny compatibility
+  "packaging>=26.1,<27.0",  # Pin to >=26.1,<27.0 for mlflow-tracing/mlflow-skinny compatibility
   "tomli>=2.0; python_version < '3.11'",
 ]
 test = [
@@ -185,7 +185,7 @@ test = [
   "pytest-rerunfailures>=12.0",
   "pytest-randomly>=3.10",
   "hypothesis>=6.98.0,<7.0.0",
-  "packaging>=26.1,<27.0",  # Pin to <26 for mlflow-tracing/mlflow-skinny compatibility
+  "packaging>=26.1,<27.0",  # Pin to >=26.1,<27.0 for mlflow-tracing/mlflow-skinny compatibility
   "transformers>=5.5.4,<6",  # Security: updated from 4.41 to fix deserialization
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
   "datasets>=2.19,<5",
