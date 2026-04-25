@@ -3,8 +3,50 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-25T17:37Z S316b_PR4063_COMPLETE — Autonomous system complete: all 6 CI patterns fixed, PDA entry logged, merge readiness 100/100 (AAIS 97.31), comment 4320177251 addressed
+**Last updated:** 2026-04-25T17:54Z S317_PR4063_MYPY_STUBS_HARDENING — types-PyYAML+types-requests stubs installed; mypy baseline 104→57 (-47 improvement); comment 4320208658 addressed; all systematic repairs hardened
 
+
+## SESSION SUMMARY — 2026-04-25T17:54Z (PR #4063 — S317_MYPY_STUBS_HARDENING)
+
+### Objective
+Harden all systematic CI resolution repairs and address comment 4320208658 (CI Rescue on commit `baf69972d3d3`). Root cause of the +11 mypy regression: missing `types-PyYAML` and `types-requests` stubs caused `[import-untyped]` errors across multiple src/ modules (none changed by this PR). Installing stubs drops errors from 115 → 57 — net improvement of 47 below the old baseline of 104.
+
+### Changes This Session (S317)
+| Fix | File | Status |
+|-----|------|--------|
+| Install `types-PyYAML>=6.0.12` + `types-requests>=2.31.0` stubs | env | ✅ |
+| Add stubs to `requirements/dev.txt` for persistence across reinstalls | `requirements/dev.txt` | ✅ |
+| Update `.mypy_baseline` 104 → 57 (lock in -47 improvement) | `.mypy_baseline` | ✅ |
+| CHANGELOG `[Unreleased]` updated with S317 entry | `CHANGELOG.md` | ✅ |
+| PDA today entry logged (pattern: MYPY-STUBS-REGRESSION-HARDENING) | `.codex/aftermath/pda_iterations.jsonl` | ✅ |
+| Accountability report refreshed with S317 session | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ |
+| Replied to comment 4320208658 (CI Rescue gate on `baf69972d3d3`) | PR #4063 | ✅ |
+
+### Pre-Commit Validation (S317)
+| Check | Result |
+|-------|--------|
+| `ruff check src/ tests/` | ✅ All checks passed |
+| `sync_tracked_files --check` | ✅ All tracked files consistent |
+| `mypy_baseline --require-baseline` | ✅ 57 errors (↓47 vs baseline 104→57) |
+| `auto_fix_common_issues --check-only` | ✅ 0 auto-fixable issues |
+| WEC template drift | ✅ Zero (40/40 items match `_WEC_ITEMS`) |
+
+### Merge Readiness Score: 100/100
+| Dimension | Weight | Status |
+|-----------|--------|--------|
+| auto_fix (0 auto-fixable) | 15 | ✅ |
+| sync_tracked_files | 12 | ✅ |
+| action_versions (all approved) | 12 | ✅ |
+| ruff (src/ clean) | 10 | ✅ |
+| github-script ≥ v8 | 8 | ✅ |
+| Pattern 27 registered | 7 | ✅ |
+| download-artifact min v5 | 7 | ✅ |
+| PDA entry today | 8 | ✅ |
+| accountability report today | 8 | ✅ |
+| AAIS composite 97.31/100 | 13 | ✅ |
+| **TOTAL** | **100** | **🟢 MERGE-READY** |
+
+---
 
 ## SESSION SUMMARY — 2026-04-25T17:37Z (PR #4063 — S316b_PR4063_COMPLETE)
 
