@@ -332,7 +332,7 @@ jobs:
                   const headSha = await getHeadSha(prNum);
                   targets.push({ prNum, headSha });
                 } catch (e) {
-                  core.warning(`⚠️ Could not resolve head SHA for PR #${prNum} (${e.message}) — skipping`);
+                  core.warning(`⚠️ Could not resolve head SHA for PR #${prNum} (${e?.message || String(e)}) — skipping`);
                 }
               }
             } else {
