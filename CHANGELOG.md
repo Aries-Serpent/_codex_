@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (2026-04-25 — PR #4063 CI failure triage S316 + S316b + S317)
+### Fixed (2026-04-25 — PR #4063 CI failure triage S316 + S316b + S317 + S318)
 - `requirements/dev.txt`: Added `slowapi>=0.1.9` so the validation venv (`.venv_validation`) includes it in full mode, fixing `ModuleNotFoundError: No module named 'slowapi'` in the Validation Pipeline.
 - `requirements/dev.txt`: Added `types-PyYAML>=6.0.12` and `types-requests>=2.31.0` type stubs so `mypy` no longer emits `[import-untyped]` errors for `yaml`/`requests` imports; mypy error count dropped **104 → 57** (improvement of 47 errors).
 - `tests/api/test_rag_api_validation.py`: Added `pytest.importorskip("slowapi")` guard so the test skips gracefully when `slowapi` is not installed.
