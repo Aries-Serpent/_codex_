@@ -223,6 +223,7 @@ jobs:
       - name: "Approve pending (action_required) workflow runs"
         id: approve
         if: steps.resolve.outputs.skip != 'true'
+        continue-on-error: true  # transient rate-limits must not fail the job
         uses: actions/github-script@v9
         env:
           MODE: ${{ steps.resolve.outputs.mode }}
@@ -327,8 +328,12 @@ jobs:
               core.info(`⏰ Schedule sweep (always-on): ${prNums.length} open PR(s) — ${prNums.join(', ')}`);
               for (const prNum of prNums) {
                 // For schedule, label presence already confirmed — skip re-check
-                const headSha = await getHeadSha(prNum);
-                targets.push({ prNum, headSha });
+                try {
+                  const headSha = await getHeadSha(prNum);
+                  targets.push({ prNum, headSha });
+                } catch (e) {
+                  core.warning(`⚠️ Could not resolve head SHA for PR #${prNum} (${e.message}) — skipping`);
+                }
               }
             } else {
               const prNum  = process.env.PR_NUMBER;
