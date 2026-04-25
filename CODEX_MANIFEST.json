@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-24T16:26:31Z",
+  "generated_at": "2026-04-24T20:54:08Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1837,6 +1837,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S315.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
@@ -2046,5 +2050,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "8b8f767aa727eb099b0393a0dae1af48f0d79d4b32c337bd6ceea419d5cf90cf"
+  "integrity_sha256": "984ec02c320b090b78bfc753843d2e7b3df75d23b47aeea77bb9a072eeeff4a2"
 }
