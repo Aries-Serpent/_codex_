@@ -18,14 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.github/workflows/auto-approve-workflows.yml`: Added `continue-on-error: true` to approve step; wrapped `getHeadSha()` in try/catch with safe error access.
 - `.secrets.baseline`: Updated `hashed_secret` for `CODEX_MANIFEST.json:2053` (`1197ef4d` → `99d7c581`) after `sync_tracked_files.py --fix` rotated the `integrity_sha256` value; resolves Secrets Baseline Enforcer failure (run 24936051325).
 - `.codex/aftermath/pda_iterations.jsonl`: Added S316b and S317 PDA entries; all 10 merge-readiness dimensions green — **100/100** (AAIS 97.31).
-- `requirements/dev.txt`: Added `slowapi>=0.1.9` so the validation venv (`.venv_validation`) includes it in full mode, fixing `ModuleNotFoundError: No module named 'slowapi'` in the Validation Pipeline.
-- `tests/api/test_rag_api_validation.py`: Added `pytest.importorskip("slowapi")` guard so the test skips gracefully when `slowapi` is not installed.
-- `.github/workflows/iterative-self-healing-ci.yml`: Added `continue-on-error: true` to "Append escalation" step and updated token chain to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`.
-- `.github/workflows/agent-auth-delegation.yml`: Added `github.actor != 'dependabot[bot]'` condition to `Activate token delegation` job; added bot-actor skip in accountability report check; added `CODEX_BACKUP_KEY || github.token` fallback to checkout `token:`.
-- `scripts/ci/wec_enforcer.py`: Inline retry with `GITHUB_TOKEN` fallback on 403/401 in `--validate-body` mode; exit 0 (soft fail) on persistent auth errors.
-- `.github/workflows/auto-approve-workflows.yml`: Added `continue-on-error: true` to approve step; wrapped `getHeadSha()` in try/catch with safe error access.
-- `.secrets.baseline`: Updated `hashed_secret` for `CODEX_MANIFEST.json:2053` (`1197ef4d` → `99d7c581`) after `sync_tracked_files.py --fix` rotated the `integrity_sha256` value; resolves Secrets Baseline Enforcer failure (run 24936051325).
-- `.codex/aftermath/pda_iterations.jsonl`: Added S316b PDA entry (CI-FAILURE-TRIAGE-5PATTERNS-SECRETS-BASELINE); all 10 merge-readiness dimensions green — **100/100** (AAIS 97.31).
 
 ### Fixed (auto-update — PR #4063)
 
