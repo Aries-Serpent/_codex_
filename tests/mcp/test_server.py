@@ -357,8 +357,8 @@ def test_mock_stdio_transport_buffers_messages() -> None:
         transport.add_mock_message({"id": 2})
         first = await transport.read_message()
         second = await transport.read_message()
-        third = await transport.read_message()
+        empty_result = await transport.read_message()
         await transport.write_message({"ok": True})
-        return first, second, third, transport.get_written_messages()
+        return first, second, empty_result, transport.get_written_messages()
 
     assert _run(_exercise()) == ({"id": 1}, {"id": 2}, None, [{"ok": True}])

@@ -20,8 +20,8 @@ except ImportError:
 # Respect existing user setting; default to disabling plugin autoload for determinism.
 # Keep autoload enabled when the caller explicitly requests xdist so worker processes
 # can parse `-n/--numprocesses` correctly.
-_PYTEST_CLI_ARGS = tuple(_sys.argv[1:])
-_XDIST_REQUESTED = any(
+_pytest_cli_args = tuple(_sys.argv[1:])
+_xdist_requested = any(
     arg == "-n"
     or (
         arg.startswith("-n")
@@ -30,9 +30,9 @@ _XDIST_REQUESTED = any(
     )
     or arg.startswith("--numprocesses")
     or arg in {"-d", "--dist"}
-    for arg in _PYTEST_CLI_ARGS
+    for arg in _pytest_cli_args
 )
-if not _XDIST_REQUESTED:
+if not _xdist_requested:
     _os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 
 # conftest.py
