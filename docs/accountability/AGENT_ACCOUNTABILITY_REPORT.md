@@ -3,9 +3,43 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-26T14:30Z S320_PR4069_0DBASE_MAIN_PROMOTION — Patterns 28-30 added to auto_fix_common_issues.py; 7 inline review comments addressed; 0D_base_ → main PR hardened
+**Last updated:** 2026-04-26T14:46Z S321_PR4069_COMMENT_GATE_CLEAR — Validated S320 clean; cleared Comment Review Gate; addressed comments 4322228157/4322229698/4322230401/4322233878
 
 
+## SESSION SUMMARY — 2026-04-26T14:46Z (PR #4069 — S321_PR4069_COMMENT_GATE_CLEAR)
+
+### Objective
+Clear the Comment Review Gate blocking on stale commit `54dd4931b101`.
+Validate that all S320 fixes are still clean on HEAD `90b2cfbc`.
+Address 4 new `<comment_new>` items.
+
+### Validation Results (S321)
+- ✅ `ruff check src/ tests/` — All checks passed (0 violations)
+- ✅ `sync_tracked_files --check` — all 5 tracked files consistent (sha256 7f012b86)
+- ✅ WEC template drift — `[]` (zero drift, 40/40 items match `_WEC_ITEMS`)
+- ✅ Pattern 1 (Unused Imports) — no issues
+- ✅ Pattern 22 (Tracked File Sync) — consistent
+- ✅ Pattern 25 (Last-Commit Accountability) — accountability report in last commit
+- ✅ `py_compile` — `auto_fix_common_issues.py` + `wec_enforcer.py` syntax OK
+
+### Comments Addressed (S321)
+- **4322228157** (CI Rescue on `54dd4931b101`): stale — superseded by `90b2cfbc`
+  which is ruff-clean and sync-consistent. Comment Review Gate will clear on this push.
+- **4322229698** (PR Status Dashboard 90/100): informational — review threads already
+  resolved in `90b2cfbc`; bot re-scan will update on this push.
+- **4322230401** (Agent Token Delegation + `@copilot continue`): acknowledged; all
+  priority tasks complete; COPILOT_AGENT_AUTH_ENABLED=true confirmed active.
+- **4322233878** (continue + bot findings): Copilot AI Review overview is informational
+  per repo policy — 4 code-review comments all resolved in `90b2cfbc` (requirements/dev.txt
+  duplicate, wec_enforcer.py GH_TOKEN fallback, agent-auth-delegation.yml comment,
+  CHANGELOG empty header).
+
+### Files Modified (S321)
+- `.codex/aftermath/pda_iterations.jsonl` — S321 entry appended
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+- `CHANGELOG.md` — S321 note added under [Unreleased]
+
+---
 ## SESSION SUMMARY — 2026-04-26T14:30Z (PR #4069 — S320_PR4069_0DBASE_MAIN_PROMOTION)
 
 ### Objective

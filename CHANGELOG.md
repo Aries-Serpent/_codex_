@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-26 — PR #4069 S321 Comment Gate clear + validation)
+- Validated S320 fixes on HEAD `90b2cfbc`: ruff clean, sync_tracked_files consistent,
+  WEC drift zero, Pattern 25 green. CI Rescue on `54dd4931b101` was stale.
+- Bot-reported Copilot AI Review findings (comment 4322233878) confirmed informational —
+  all 4 code-review comments were already resolved in S320 (`90b2cfbc`).
+
 ### Fixed (2026-04-26 — PR #4069 S320 0D_base_→main promotion + pattern hardening)
 - `scripts/ci/auto_fix_common_issues.py`: Added Patterns 28–30 for Copilot cloud agent
   hardening — sandbox guard (28), PR comment auto-triage (29), merge-readiness auto-fix (30).
