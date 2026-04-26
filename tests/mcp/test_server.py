@@ -186,7 +186,7 @@ def test_stdio_transport_rejects_invalid_json() -> None:
     _run(_exercise())
 
 
-def test_stdio_transport_returns_none_on_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_stdio_transport_handles_wait_for_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
     async def _raise_timeout(awaitable: Any, *args: Any, **kwargs: Any) -> Any:
         close = getattr(awaitable, "close", None)
         if callable(close):

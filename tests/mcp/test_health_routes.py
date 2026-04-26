@@ -61,12 +61,20 @@ def test_load_adapter_uses_fallback_when_primary_is_missing(monkeypatch: pytest.
 
 @pytest.mark.asyncio
 async def test_lazy_connect_all_returns_true_without_connect(monkeypatch: pytest.MonkeyPatch) -> None:
+    called = False
+
     class PassiveAdapter:
         pass
 
-    monkeypatch.setattr(adapter_loader, "load_adapter", lambda: (PassiveAdapter(), "passive"))
+    def _load_adapter() -> tuple[PassiveAdapter, str]:
+        nonlocal called
+        called = True
+        return PassiveAdapter(), "passive"
+
+    monkeypatch.setattr(adapter_loader, "load_adapter", _load_adapter)
 
     assert await adapter_loader.lazy_connect_all() is True
+    assert called is True
 
 
 @pytest.mark.asyncio
@@ -118,7 +126,7 @@ def test_health_route_reports_adapter_status() -> None:
     }
 
 
-def test_health_routes_degrade_when_health_check_raises() -> None:
+def test_health_endpoints_degrade_when_health_check_raises() -> None:
     class BrokenAdapter:
         def health_check(self) -> dict[str, str]:
             raise RuntimeError("unhealthy")
