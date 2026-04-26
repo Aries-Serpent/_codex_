@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-26 — PR #4069 S323 test monkeypatch targets)
+- `tests/test_export.py`: Fixed `monkeypatch.setattr` target from `"src.codex.logging.export._fetch_events"`
+  to `"codex.logging.export._fetch_events"` — the `src.*` path is a different module object and
+  the patch had no effect, causing `test_export_session_id_good` and `test_export_session_id_bad` to fail.
+- `tests/test_chat_session_exit.py`: Fixed `monkeypatch.setattr` target from `"src.codex.chat.log_event"`
+  to `"codex.chat.log_event"` — same `src.*` vs `codex.*` mismatch.
+- `tests/github/test_mcp_poster.py::TestUpsertDiscussionComment::test_updates_existing_when_marker_found`:
+  Fixed `fake_urlopen` to check `"comments(last:"` instead of `"comments(first:"` to match the
+  `_find_discussion_comment` implementation (uses `last: 100, before: $cursor` for newest-first pagination).
+
 ### Fixed (2026-04-26 — PR #4069 S322 empty-except comment fix)
 - `scripts/ci/auto_fix_common_issues.py` Pattern 29: added inline comments to two bare
   `except OSError: pass` blocks (best-effort file reads) to satisfy @github-code-quality

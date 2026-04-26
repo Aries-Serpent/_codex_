@@ -3,7 +3,10 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-26T14:56Z S322_PR4069_EMPTY_EXCEPT_FIX — Fixed 2 bare `except OSError: pass` in Pattern 29 (auto_fix_common_issues.py lines 2599+2606) flagged by @github-code-quality[bot] review comments r3143649904/r3143649906; replied to CI Rescue 4322281690
+**Last updated:** 2026-04-26T16:18Z S323_PR4069_TEST_MONKEYPATCH_FIX — Fixed 3 failing test cases:
+`test_export_session_id_good`/`bad` (wrong `src.codex.*` patch target), `test_env_var_removed_when_log_event_raises`
+(wrong patch target), `test_updates_existing_when_marker_found` (`comments(first:` vs `comments(last:`);
+replied to CI Rescue 4322446411.
 
 
 ## SESSION SUMMARY — 2026-04-26T14:46Z (PR #4069 — S321_PR4069_COMMENT_GATE_CLEAR)
