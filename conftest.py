@@ -21,9 +21,14 @@ except ImportError:
 # Keep autoload enabled when the caller explicitly requests xdist so worker processes
 # can parse `-n/--numprocesses` correctly.
 def _is_short_form_numprocesses_arg(arg: str) -> bool:
-    return arg == "-n" or (
-        arg.startswith("-n") and len(arg) > 2 and (arg[2].isdigit() or arg[2] == "=")
-    )
+    if arg == "-n":
+        return True
+    if not arg.startswith("-n") or len(arg) <= 2:
+        return False
+    suffix = arg[2:]
+    if suffix.startswith("="):
+        suffix = suffix[1:]
+    return suffix.isdigit()
 
 
 _pytest_cli_args = tuple(_sys.argv[1:])

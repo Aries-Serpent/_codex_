@@ -210,7 +210,7 @@ def test_stdio_transport_builds_reader_from_event_loop(monkeypatch: pytest.Monke
         async def connect_read_pipe(self, factory, pipe):
             self.connected = (factory(), pipe)
 
-    async def _exercise() -> tuple[bool, bool]:
+    async def _verify_reader_creation() -> tuple[bool, bool]:
         import sys
 
         loop = _FakeLoop()
@@ -219,7 +219,7 @@ def test_stdio_transport_builds_reader_from_event_loop(monkeypatch: pytest.Monke
         reader = await transport._get_reader()
         return isinstance(reader, asyncio.StreamReader), loop.connected[1] is sys.stdin
 
-    assert _run(_exercise()) == (True, True)
+    assert _run(_verify_reader_creation()) == (True, True)
 
 
 def test_stdio_transport_builds_writer_from_event_loop(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -234,14 +234,14 @@ def test_stdio_transport_builds_writer_from_event_loop(monkeypatch: pytest.Monke
             self.reader = reader
             self.loop = loop
 
-    async def _exercise() -> bool:
+    async def _verify_writer_creation() -> bool:
         transport = StdioTransport(reader=None, writer=None)
         monkeypatch.setattr(asyncio, "get_event_loop", lambda: _FakeLoop())
         monkeypatch.setattr(asyncio, "StreamWriter", _FakeWriter)
         writer = await transport._get_writer()
         return isinstance(writer, _FakeWriter)
 
-    assert _run(_exercise()) is True
+    assert _run(_verify_writer_creation()) is True
 
 
 def test_stdio_transport_returns_none_for_eof_and_blank_lines() -> None:
