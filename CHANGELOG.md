@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-26 — PR #4077 validation follow-up)
+- `docs/ROADMAP.md`: Accepted the validation-hook documentation refresh so the working tree stays clean
+  after fast validation runs.
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: Refreshed the session trail after the final
+  validation/doc pass so Pattern 25 no longer blocks the last commit.
+
 ### Fixed (2026-04-26 — PR #4077 fast-validation check-only hardening)
 - `scripts/ci/auto_fix_common_issues.py`: `--check-only` now implies `dry_run`, so repo scans no longer mutate
   the working tree during validation.
