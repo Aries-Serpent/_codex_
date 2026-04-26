@@ -187,7 +187,7 @@ def test_stdio_transport_rejects_invalid_json() -> None:
 
 
 def test_stdio_transport_handles_wait_for_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
-    async def _raise_timeout(awaitable: Any, *args: Any, **kwargs: Any) -> Any:
+    async def _close_and_raise_timeout(awaitable: Any, *args: Any, **kwargs: Any) -> Any:
         close = getattr(awaitable, "close", None)
         if callable(close):
             close()
@@ -196,7 +196,7 @@ def test_stdio_transport_handles_wait_for_timeout(monkeypatch: pytest.MonkeyPatc
     async def _exercise() -> None:
         reader = asyncio.StreamReader()
         transport = StdioTransport(reader=reader, writer=None)
-        monkeypatch.setattr(asyncio, "wait_for", _raise_timeout)
+        monkeypatch.setattr(asyncio, "wait_for", _close_and_raise_timeout)
         assert await transport.read_message() is None
 
     _run(_exercise())

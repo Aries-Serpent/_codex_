@@ -52,7 +52,7 @@ def test_load_adapter_uses_fallback_when_primary_is_missing(monkeypatch: pytest.
     class FallbackAdapter:
         pass
 
-    def _fake_import(path: str):
+    def _fake_import(path: str) -> type | None:
         if path == "pkg.missing.Adapter":
             return None
         if path == adapter_loader.DEFAULT_ADAPTER:

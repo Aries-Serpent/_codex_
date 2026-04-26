@@ -25,6 +25,7 @@ def _is_short_form_numprocesses_arg(arg: str) -> bool:
         return True
     if not arg.startswith("-n") or len(arg) <= 2:
         return False
+    # Support both `-n4` and `-n=4` forms.
     suffix = arg[2:]
     if suffix.startswith("="):
         suffix = suffix[1:]
