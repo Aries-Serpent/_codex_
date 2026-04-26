@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S323 — 2026-04-26 — PR #4074 Q&A + Issue #4072)
+- **test_bash_code_blocks_structure**: Changed `bash` → `dockerfile` block in `docs/docker_optimization_guide.md` — test was matching `rm -rf /var/lib/apt/lists/*` as a dangerous command (false positive)
+- **test_gradient_accumulation_snippet_present**: Updated to read from `src/training/functional_training.py` (the real module) instead of the shim at `training/functional_training.py`
+- **`.secrets.baseline` exclude**: Added `agent_context.json`, `aftermath/`, and `configs/development/artifacts/` to detect-secrets exclude patterns — eliminates recurring false-positive on every sync commit (CI/CD Q1 option a)
+- **Pattern 31 (RP-MYPY-UNUSED-IGNORE)**: Added to `auto_fix_common_issues.py` — auto-removes stale `# type: ignore` via `mypy --warn-unused-ignores` (recurred 15 times)
+- **Pattern 32 (RP-MYPY-OPT-IMPORT)**: Added to `auto_fix_common_issues.py` — auto-adds `[assignment]` to bare `# type: ignore` on optional-import fallbacks (recurred 14 times); 14 instances fixed in `src/`
+- **tests/rag/conftest.py**: New `rag_mock_model` fixture correctly configures `.to/.to_empty/.eval` mock chain for `safe_model_to_device` (RP-RAG-MOCK-CHAIN — recurred 13 times)
+- **GAP-033 (`mcp_poster.py`)**: `GitHubMCPPoster.check_token_health()` added — verifies CODEX_MASTER_KEY scopes (repo+workflow), warns on expiry/rotation, `_token_source` tracking
+- **`scripts/security/bulk_dismiss_all_alerts.py`**: New script to bulk-dismiss 5k+ code-scanning alerts (requires CODEX_MASTER_KEY with `security_events` scope)
+
+
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4074 (SHA `7bdf405a`) at 2026-04-26T18:48Z [auto-generated]
+
+### Fixed (auto-update — PR #4073)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4073 (SHA `7a7473ce`) at 2026-04-26T18:36Z [auto-generated]
+
 ### Fixed (2026-04-26 — PR #4069 S323 test monkeypatch targets)
 - `tests/test_export.py`: Fixed `monkeypatch.setattr` target from `"src.codex.logging.export._fetch_events"`
   to `"codex.logging.export._fetch_events"` — the `src.*` path is a different module object and

@@ -108,6 +108,8 @@ class CommonIssueFixer:
             "Last-Commit Accountability",  # Pattern 25 - auto-fix: append minimal session entry
             "PR Comment Triage",        # Pattern 29 - auto-fix: run remediation for known bot patterns
             "Merge Readiness Dims",     # Pattern 30 - auto-fix: repair failing scorecard dimensions
+            "Stale Type Ignore",        # Pattern 31 - auto-fix: remove stale # type: ignore comments
+            "Bare Type Ignore Assign",  # Pattern 32 - auto-fix: add [assignment] to bare # type: ignore on None/object fallbacks
         }
         # Soft-warning patterns: auto-fixable (the --fix command works) but do NOT block
         # CI with an exit-code 1.  These are reported as informational "warning" in the
@@ -211,13 +213,16 @@ class CommonIssueFixer:
             (28, "Copilot Sandbox Guard",    self.check_copilot_sandbox_env),
             (29, "PR Comment Triage",        self.fix_pr_comment_triage),
             (30, "Merge Readiness Dims",     self.fix_merge_readiness_dims),
+            (31, "Stale Type Ignore",        self.fix_stale_type_ignore),
+            (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
         ]
         patterns = all_patterns
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
-                print(f"❌ Pattern {pattern_num} not found (valid range: 1-30)")
+                max_pattern = max(n for n, _, _ in all_patterns)
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1-{max_pattern})")
                 return False
             print(f"🔍 Running pattern {pattern_num} only…\n")
         elif pattern_name:
@@ -1429,6 +1434,8 @@ class CommonIssueFixer:
             "Copilot Sandbox Guard": 28,
             "PR Comment Triage": 29,
             "Merge Readiness Dims": 30,
+            "Stale Type Ignore": 31,
+            "Bare Type Ignore Assign": 32,
         }
 
         for pattern_name, issues in self.issues_found.items():
@@ -2816,6 +2823,182 @@ class CommonIssueFixer:
             self.fixes_applied["Merge Readiness Dims"] = len(auto_applied)
             print(f"   ✅ Auto-fixed dimensions: {', '.join(auto_applied)}")
             issues = [i for i in issues if not any(dim in i for dim in auto_applied)]
+
+        return issues
+
+    # ------------------------------------------------------------------
+    # Pattern 31 — Stale # type: ignore comments (RP-MYPY-UNUSED-IGNORE)
+    # ------------------------------------------------------------------
+    def fix_stale_type_ignore(self) -> List[str]:
+        """Pattern 31: Remove stale ``# type: ignore`` comments flagged by mypy
+        ``--warn-unused-ignores``.
+
+        **Root cause (RP-MYPY-UNUSED-IGNORE — 15 recurrences):**
+        After a type annotation or stub is added to fix a mypy error the original
+        ``# type: ignore`` comment becomes redundant.  mypy ``--warn-unused-ignores``
+        flags these with ``[unused-ignore]``.  Left in place they create noise that
+        makes it harder to spot real type errors.
+
+        **Detection:** run mypy ``--warn-unused-ignores`` on ``src/`` and collect
+        ``Unused "type: ignore" comment [unused-ignore]`` messages.
+
+        **Auto-fix:** strip the ``# type: ignore`` (or ``# type: ignore[…]``) suffix
+        from each flagged line, preserving any other inline comment.
+        """
+        import re as _re
+        import subprocess as _sub
+
+        issues: List[str] = []
+        src = self.repo_root / "src"
+        if not src.is_dir():
+            return issues
+
+        try:
+            result = _sub.run(
+                [
+                    "python3", "-m", "mypy",
+                    "--warn-unused-ignores",
+                    "--no-error-summary",
+                    "--ignore-missing-imports",
+                    str(src),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                cwd=self.repo_root,
+            )
+            output = result.stdout + result.stderr
+        except Exception as exc:
+            print(f"   ⚠  Pattern 31: mypy not available — {exc}")
+            return issues
+
+        # Pattern: "<file>:<line>: error: Unused "type: ignore" comment  [unused-ignore]"
+        stale_re = _re.compile(
+            r'^(.+?):(\d+): \w+: Unused "type: ignore".*\[unused-ignore\]'
+        )
+        stale: dict[str, list[int]] = {}
+        for line in output.splitlines():
+            m = stale_re.match(line)
+            if m:
+                path_str, lineno = m.group(1), int(m.group(2))
+                stale.setdefault(path_str, []).append(lineno)
+                issues.append(f"{path_str}:{lineno}: stale # type: ignore comment")
+
+        if not issues:
+            print("✅ Pattern 31 (Stale Type Ignore): no stale type: ignore comments found")
+            return issues
+
+        print(f"   ⚠  Pattern 31 (Stale Type Ignore): {len(issues)} stale comment(s) found")
+
+        # Strip the stale ignores
+        _ignore_suffix = _re.compile(
+            r'\s+#\s+type:\s+ignore(?:\[[^\]]*\])?\s*$'
+        )
+        fixed = 0
+        for path_str, line_nums in stale.items():
+            fpath = Path(path_str)
+            if not fpath.is_file():
+                continue
+            try:
+                lines = fpath.read_text(encoding="utf-8").splitlines(keepends=True)
+            except OSError:
+                continue
+            modified = False
+            for lineno in line_nums:
+                idx = lineno - 1
+                if 0 <= idx < len(lines):
+                    new_line = _ignore_suffix.sub("", lines[idx].rstrip("\n")) + "\n"
+                    if new_line != lines[idx]:
+                        if not self.dry_run:
+                            lines[idx] = new_line
+                        modified = True
+                        fixed += 1
+            if modified and not self.dry_run:
+                fpath.write_text("".join(lines), encoding="utf-8")
+
+        if fixed:
+            if self.dry_run:
+                print(f"   [dry-run] would remove {fixed} stale type: ignore comment(s)")
+            else:
+                self.fixes_applied["Stale Type Ignore"] = fixed
+                print(f"   ✅ Removed {fixed} stale type: ignore comment(s)")
+                issues.clear()
+
+        return issues
+
+    # ------------------------------------------------------------------
+    # Pattern 32 — Bare # type: ignore on optional-fallback assignments
+    #               (RP-MYPY-OPT-IMPORT)
+    # ------------------------------------------------------------------
+    def fix_bare_type_ignore_assign(self) -> List[str]:
+        """Pattern 32: Add ``[assignment]`` specifier to bare ``# type: ignore``
+        on optional-import fallback assignments.
+
+        **Root cause (RP-MYPY-OPT-IMPORT — 14 recurrences):**
+        The idiom::
+
+            try:
+                import torch
+            except ImportError:
+                torch = None  # type: ignore
+
+        is mypy-valid but imprecise.  mypy's ``--enable-error-code=unused-ignore``
+        enforcement (and ruff PGH003/PGH004) prefers the specific code::
+
+                torch = None  # type: ignore[assignment]
+
+        **Detection:** scan ``src/`` for lines matching
+        ``<name> = (None|object()|Any)  # type: ignore$`` (bare, no code in brackets).
+
+        **Auto-fix:** append ``[assignment]`` to the bare ignore comment.
+        """
+        import re as _re
+
+        issues: List[str] = []
+        src = self.repo_root / "src"
+        if not src.is_dir():
+            return issues
+
+        # Match: <ident> = None/object()/Any  # type: ignore  (bare — no brackets)
+        bare_re = _re.compile(
+            r'^(\s*\w+(?:\s*=\s*\w+(?:\.\w+)*)*\s*=\s*(?:None|object\(\)|Any))\s+'
+            r'(#\s*type:\s*ignore)\s*$'
+        )
+        fixed = 0
+        for py_file in sorted(src.rglob("*.py")):
+            try:
+                text = py_file.read_text(encoding="utf-8")
+            except OSError:
+                continue
+            lines = text.splitlines(keepends=True)
+            modified = False
+            for i, line in enumerate(lines):
+                m = bare_re.match(line.rstrip("\n"))
+                if m:
+                    new_line = m.group(1) + "  # type: ignore[assignment]\n"
+                    issues.append(f"{py_file}:{i + 1}: bare # type: ignore on assignment")
+                    if not self.dry_run:
+                        lines[i] = new_line
+                        modified = True
+                        fixed += 1
+            if modified and not self.dry_run:
+                py_file.write_text("".join(lines), encoding="utf-8")
+
+        if not issues:
+            print("✅ Pattern 32 (Bare Type Ignore Assign): all assignment ignores are specific")
+            return issues
+
+        print(f"   ⚠  Pattern 32 (Bare Type Ignore Assign): {len(issues)} bare ignore(s) found")
+
+        if fixed:
+            if self.dry_run:
+                print(f"   [dry-run] would add [assignment] to {fixed} line(s)")
+            else:
+                self.fixes_applied["Bare Type Ignore Assign"] = fixed
+                print(f"   ✅ Added [assignment] to {fixed} line(s)")
+                issues.clear()
+        elif self.dry_run and issues:
+            print(f"   [dry-run] would add [assignment] to {len(issues)} line(s)")
 
         return issues
 

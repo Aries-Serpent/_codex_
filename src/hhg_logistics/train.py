@@ -64,10 +64,10 @@ try:  # pragma: no cover - optional dependency
     import torch
     from torch.utils.data import DataLoader, Dataset
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore
+    torch = None  # type: ignore[assignment]
     AdamW = None
-    DataLoader = None  # type: ignore
-    Dataset = object  # type: ignore
+    DataLoader = None  # type: ignore[assignment]
+    Dataset = object  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional dependency
     import pandas as pd

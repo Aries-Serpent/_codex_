@@ -103,11 +103,120 @@ class GitHubMCPPoster:
             or os.environ.get("CODEX_BACKUP_KEY")
             or os.environ.get("GITHUB_TOKEN")
         )
+        # Track which key is active for health-check reporting (GAP-033).
+        if token:
+            self._token_source = "explicit"
+        elif os.environ.get("CODEX_MASTER_KEY"):
+            self._token_source = "CODEX_MASTER_KEY"
+        elif os.environ.get("CODEX_BACKUP_KEY"):
+            self._token_source = "CODEX_BACKUP_KEY"
+        elif os.environ.get("GITHUB_TOKEN"):
+            self._token_source = "GITHUB_TOKEN"
+        else:
+            self._token_source = "none"
+
         if not self._token:
             logger.warning(
                 "No GitHub token found. Set CODEX_MASTER_KEY or CODEX_BACKUP_KEY. "
                 "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3."
             )
+
+    # ------------------------------------------------------------------
+    # GAP-033 — Token health check
+    # ------------------------------------------------------------------
+
+    def check_token_health(self) -> dict[str, object]:
+        """GAP-033: Verify the active GitHub token and report its scopes / expiry.
+
+        This resolves the systemic risk identified in the Cognitive Brain deep
+        reflection (S323): when ``CODEX_MASTER_KEY`` expires or is rotated, the
+        self-healing loop silently degrades because ``@copilot`` only responds to
+        comments that appear to come from ``@mbaetiong`` (which requires the key).
+        The fallback chain (``CODEX_BACKUP_KEY → GITHUB_TOKEN``) keeps basic API
+        calls alive but lacks the ``repo + workflow`` scopes needed for rescue
+        comments and workflow dispatches.
+
+        Returns a dict with keys::
+
+            {
+                "source": "CODEX_MASTER_KEY" | "CODEX_BACKUP_KEY" | "GITHUB_TOKEN" | "none",
+                "login": "<github-username>",
+                "scopes": ["repo", "workflow", ...],
+                "has_master_key_scopes": True | False,
+                "expiry_warning": "<message>" | None,
+                "healthy": True | False,
+            }
+
+        **Integration point:** call this at session start and log the result to the
+        PDA loop.  CI can dispatch a ``CODEX_MASTER_KEY``-rotation alert if
+        ``healthy=False``.
+        """
+        health: dict[str, object] = {
+            "source": self._token_source,
+            "login": None,
+            "scopes": [],
+            "has_master_key_scopes": False,
+            "expiry_warning": None,
+            "healthy": False,
+        }
+        if not self._token:
+            health["expiry_warning"] = "No token configured — loop is broken."
+            return health
+
+        try:
+            req = urllib.request.Request(
+                f"{_GITHUB_API}/user",
+                headers={
+                    "Authorization": f"Bearer {self._token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": _API_VERSION,
+                },
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:  # nosec B310
+                body = json.loads(resp.read().decode())
+                raw_scopes = resp.headers.get("x-oauth-scopes", "")
+                status = resp.status
+        except urllib.error.HTTPError as exc:
+            status = exc.code
+            body = {}
+            raw_scopes = ""
+        except Exception as exc:
+            health["expiry_warning"] = f"Request failed: {exc}"
+            return health
+
+        if status == 401:
+            health["expiry_warning"] = (
+                f"Token ({self._token_source}) is invalid or expired. "
+                "Rotate CODEX_MASTER_KEY immediately to preserve the self-healing loop."
+            )
+            logger.error(health["expiry_warning"])
+            return health
+
+        if status != 200:
+            health["expiry_warning"] = f"Unexpected /user status {status}"
+            return health
+
+        health["login"] = body.get("login")
+
+        # Parse OAuth scopes from response header
+        scopes = [s.strip() for s in raw_scopes.split(",") if s.strip()]
+        health["scopes"] = scopes
+
+        required = {"repo", "workflow"}
+        health["has_master_key_scopes"] = required.issubset(set(scopes))
+
+        if not health["has_master_key_scopes"] and self._token_source in (
+            "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"
+        ):
+            missing = required - set(scopes)
+            health["expiry_warning"] = (
+                f"Token ({self._token_source}) is missing required scopes: "
+                f"{missing}.  Self-healing loop will silently degrade."
+            )
+            logger.warning(health["expiry_warning"])
+
+        health["healthy"] = bool(health["has_master_key_scopes"])
+        return health
 
     # ------------------------------------------------------------------
     # PR comments

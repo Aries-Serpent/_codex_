@@ -379,7 +379,7 @@ DOCKER_BUILDKIT=1 docker build -t codex:new .
 
 ### 4. Minimize Layers
 
-```bash
+```dockerfile
 # ❌ Multiple RUN commands
 RUN apt-get update
 RUN apt-get install -y curl

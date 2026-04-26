@@ -911,9 +911,9 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 
     # Patch parse_args so args.command is None (no subcommand given)
 
-    def patched_parse(self, _args=None, _namespace=None):  # noqa: ARG001
+    def patched_parse(self, args=None, namespace=None):  # noqa: ARG001
         # Simulate a parse result where no recognised subcommand was provided.
-        # _args and _namespace are part of the ArgumentParser.parse_args signature
+        # args and namespace are part of the ArgumentParser.parse_args signature
         # but are intentionally ignored here — we always return a fixed Namespace.
         return argparse.Namespace(command=None)
 
@@ -1307,3 +1307,120 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
     rc = main(["post-continuation", "--repo", "o/r", "--number", "3673", "--body-file", str(f)])
     assert rc == 0
     assert "@copilot continue" in captured["body"]
+
+
+# ---------------------------------------------------------------------------
+# GAP-033 — check_token_health tests
+# ---------------------------------------------------------------------------
+
+class TestCheckTokenHealth:
+    """Tests for GitHubMCPPoster.check_token_health() (GAP-033)."""
+
+    def test_no_token_returns_broken(self, monkeypatch):
+        """No token → healthy=False, expiry_warning set."""
+        for key in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
+            monkeypatch.delenv(key, raising=False)
+        from codex.github.mcp_poster import GitHubMCPPoster
+        poster = GitHubMCPPoster(token=None)
+        result = poster.check_token_health()
+        assert result["healthy"] is False
+        assert result["source"] == "none"
+        assert "No token" in str(result["expiry_warning"])
+
+    def test_expired_token_returns_unhealthy(self, monkeypatch):
+        """HTTP 401 → healthy=False, expiry_warning mentions rotation."""
+        import urllib.error
+        monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_expired")
+        from codex.github.mcp_poster import GitHubMCPPoster
+        poster = GitHubMCPPoster()
+
+        def fake_urlopen(req, timeout=None):  # noqa: ARG001
+            raise urllib.error.HTTPError(
+                url="https://api.github.com/user",
+                code=401,
+                msg="Unauthorized",
+                hdrs=None,  # type: ignore[arg-type]
+                fp=None,
+            )
+
+        monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+        result = poster.check_token_health()
+        assert result["healthy"] is False
+        assert "expired" in str(result["expiry_warning"]).lower() or "invalid" in str(result["expiry_warning"]).lower()
+
+    def test_healthy_token_with_full_scopes(self, monkeypatch):
+        """200 response with repo+workflow scopes → healthy=True."""
+        import json as _json
+        from email.message import Message as _Msg
+
+        monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_valid")
+        from codex.github.mcp_poster import GitHubMCPPoster
+        poster = GitHubMCPPoster()
+
+        hdrs = _Msg()
+        hdrs["x-oauth-scopes"] = "repo, workflow, read:org"
+
+        class _FakeResponse:
+            status = 200
+            headers = hdrs
+
+            def read(self):
+                return _json.dumps({"login": "mbaetiong"}).encode()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                pass
+
+        monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout=None: _FakeResponse())
+        result = poster.check_token_health()
+        assert result["healthy"] is True
+        assert result["login"] == "mbaetiong"
+        assert result["source"] == "CODEX_MASTER_KEY"
+        assert result["expiry_warning"] is None
+
+    def test_missing_scopes_on_master_key_warns(self, monkeypatch):
+        """200 but missing scopes → healthy=False, warning mentions missing scopes."""
+        import json as _json
+        from email.message import Message as _Msg
+
+        monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_limited")
+        from codex.github.mcp_poster import GitHubMCPPoster
+        poster = GitHubMCPPoster()
+
+        hdrs = _Msg()
+        hdrs["x-oauth-scopes"] = "read:user"  # Missing repo + workflow
+
+        class _FakeResponse:
+            status = 200
+            headers = hdrs
+
+            def read(self):
+                return _json.dumps({"login": "mbaetiong"}).encode()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                pass
+
+        monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout=None: _FakeResponse())
+        result = poster.check_token_health()
+        assert result["healthy"] is False
+        assert result["expiry_warning"] is not None
+        assert "missing" in str(result["expiry_warning"]).lower()
+
+    def test_token_source_tracking(self, monkeypatch):
+        """Token source is tracked correctly for each env var."""
+        for key in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
+            monkeypatch.delenv(key, raising=False)
+        from codex.github.mcp_poster import GitHubMCPPoster
+
+        monkeypatch.setenv("CODEX_BACKUP_KEY", "backup_token")
+        poster = GitHubMCPPoster()
+        assert poster._token_source == "CODEX_BACKUP_KEY"
+
+        monkeypatch.setenv("CODEX_MASTER_KEY", "master_token")
+        poster2 = GitHubMCPPoster()
+        assert poster2._token_source == "CODEX_MASTER_KEY"

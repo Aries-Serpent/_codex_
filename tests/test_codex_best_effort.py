@@ -58,7 +58,7 @@ def test_evaluate_batches_runs() -> None:
 
 
 def test_gradient_accumulation_snippet_present() -> None:
-    text = (ROOT / "training" / "functional_training.py").read_text(encoding="utf-8")
+    text = (ROOT / "src" / "training" / "functional_training.py").read_text(encoding="utf-8")
     assert "loss_t = loss_t / cfg.grad_accum" in text
     assert "(step + 1) % cfg.grad_accum" in text
 

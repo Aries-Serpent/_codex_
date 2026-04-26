@@ -37,8 +37,8 @@ try:
     _OMEGACONF_AVAILABLE = True
 except ImportError:
     logger.warning("OmegaConf not available, using dict fallback")
-    DictConfig = dict  # type: ignore
-    OmegaConf = None  # type: ignore
+    DictConfig = dict  # type: ignore[assignment]
+    OmegaConf = None  # type: ignore[assignment]
     _OMEGACONF_AVAILABLE = False
 
 # Hydra imports with robust fallbacks

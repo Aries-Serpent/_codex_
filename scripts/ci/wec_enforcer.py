@@ -295,9 +295,11 @@ def _list_runs_for_workflow(
     branch: str | None = None,
 ) -> list[dict]:
     """Return in-progress or queued runs for a workflow matching head_sha."""
-    # Require at least 7 chars for a meaningful SHA prefix comparison.
+    # Use a stable SHA prefix (up to 12 chars); slicing is safe for shorter values.
     sha_stripped = head_sha.strip()
-    sha_prefix = sha_stripped[:12] if len(sha_stripped) >= 7 else sha_stripped
+    if not sha_stripped:
+        return []
+    sha_prefix = sha_stripped[:12]
     runs: list[dict] = []
     for status in ("in_progress", "queued"):
         path = (
