@@ -2968,6 +2968,7 @@ class CommonIssueFixer:
 
         # Match: <ident> = None/object()/Any  # type: ignore
         # or:   <ident> = None/object()/Any  # type: ignore[assignment]
+        # but ignore lines already normalized to [assignment,misc].
         bare_re = _re.compile(
             r'^(\s*\w+(?:\s*=\s*\w+(?:\.\w+)*)*\s*=\s*(?:None|object\(\)|Any))\s+'
             r'(#\s*type:\s*ignore(?:\[assignment\])?)\s*$'
@@ -2988,7 +2989,7 @@ class CommonIssueFixer:
                         f"{py_file}:{i + 1}: fallback assignment ignore should use "
                         "[assignment,misc]"
                     )
-                    if not self.dry_run and new_line != lines[i]:
+                    if not self.dry_run and new_line.rstrip("\n") != lines[i].rstrip("\n"):
                         lines[i] = new_line
                         modified = True
                         fixed += 1

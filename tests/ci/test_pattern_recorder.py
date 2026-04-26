@@ -377,6 +377,21 @@ class TestAutoFixCheckOnlyBehavior:
         assert issues == []
         assert target.read_text(encoding="utf-8") == "value = None  # type: ignore[assignment,misc]\n"
 
+    def test_pattern_32_leaves_normalized_ignore_untouched(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        target = src_dir / "sample.py"
+        original = "value = None  # type: ignore[assignment,misc]\n"
+        target.write_text(original, encoding="utf-8")
+
+        fixer = mod.CommonIssueFixer(repo_root)
+        issues = fixer.fix_bare_type_ignore_assign()
+
+        assert issues == []
+        assert target.read_text(encoding="utf-8") == original
+
 
 class TestFindKwargRemovalSpan:
     def _make_fixer(self):
