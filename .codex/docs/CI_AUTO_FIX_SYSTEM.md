@@ -2,13 +2,18 @@
 
 **Status:** ✅ Active  
 **Integration:** GitHub Actions + Pre-commit Hooks  
-**Auto-Fix Coverage:** 37.5% (3/8 patterns)
+**Pattern Coverage:** 32 patterns  
+**Current Hardening:** `--check-only` is non-mutating and Patterns 31/32 are non-blocking hygiene warnings in check-only mode
 
 ---
 
 ## Overview
 
-Since common CI issues are **frequently raised by active workflows**, this automated system detects and fixes 8 recurring patterns before they cause workflow failures.
+Since common CI issues are **frequently raised by active workflows**, this automated system detects recurring failure patterns before they cause merge-blocking workflow regressions. The current implementation covers 32 patterns, including:
+
+- direct auto-fixes for common CI breakages
+- non-blocking hygiene warnings for large codebase-wide cleanups
+- PR-triage and merge-readiness helper patterns for Copilot cloud-agent sessions
 
 ### Problem Statement
 
@@ -21,24 +26,43 @@ Since common CI issues are **frequently raised by active workflows**, this autom
 
 **After Automation:**
 - Automatic detection in <30 seconds
-- Auto-fix for 3/8 patterns (unused imports, coverage, CodeQL)
-- Manual review guidance for remaining 5 patterns
+- Auto-fix and remediation guidance across 32 known patterns
+- Non-mutating `--check-only` execution for validation/pre-commit flows
+- Hygiene-only patterns can be reported without failing Fast Validation
 - **Developer time:** ~15-30 minutes for complex cases
 
 ---
 
-## The 8 Patterns
+## Validation / auto-fix flow
 
-| # | Pattern | Auto-Fix | Detection | Manual Review |
-|---|---------|----------|-----------|---------------|
-| 1 | Unused Imports | ✅ Yes (ruff) | F401 | Availability checks |
-| 2 | Unused Variables | ❌ No | F841 | Context-dependent |
-| 3 | YAML Indentation | ❌ No | PyYAML parser | File structure |
-| 4 | Coverage Thresholds | ✅ Yes | Regex | Target: 70% |
-| 5 | Tokenizer Fallbacks | ❌ No | String match | Code flow |
-| 6 | Test Assertions | ❌ No | Regex | Logic-dependent |
-| 7 | Redundant Imports | ❌ No | AST analysis | Scope issues |
-| 8 | CodeQL Alerts | ✅ Yes (ruff) | F401/F841 | False positives |
+```mermaid
+flowchart TD
+    A["Pre-commit / Fast Validation"] --> B["auto_fix_common_issues.py --check-only"]
+    B --> C{"Blocking auto-fixable issue?"}
+    C -- "Yes" --> D["Fail validation\n(e.g. accountability / immediate PR fix)"]
+    C -- "No" --> E["Report warnings only\n(e.g. Pattern 31/32 hygiene findings)"]
+    E --> F["Continue validation / tests"]
+    D --> G["Run auto-fix or commit required doc updates"]
+```
+
+---
+
+## Pattern coverage (current)
+
+The script now covers **32 patterns**. The original 8-pattern system remains the core foundation,
+but the script has since expanded to include tracked-file consistency, PR comment triage,
+merge-readiness automation, and mypy-ignore hygiene handling.
+
+### Examples of current pattern classes
+
+| Class | Examples |
+|---|---|
+| Direct auto-fix | unused imports, coverage thresholds, rebase race, accountability, PR comment triage |
+| Manual review | YAML indentation, tokenizer fallbacks, source import shape |
+| Soft warning in check-only | tracked-file sync, Pattern 31 stale type ignores, Pattern 32 fallback ignore normalization |
+
+> **Check-only hardening:** `--check-only` now implies `--dry-run`. Validation jobs may
+> still report hygiene findings, but they must not mutate the working tree during detection.
 
 ---
 
@@ -77,7 +101,7 @@ Automatically runs on PRs and manual trigger:
 3. Select:
    - Branch: your-branch
    - Check only: false (to apply fixes)
-   - Pattern: (empty for all, or 1-8 for specific)
+   - Pattern: (empty for all, or 1-32 for specific)
 4. Click: Run workflow
 ```
 
@@ -94,8 +118,9 @@ python scripts/ci/auto_fix_common_issues.py
 python scripts/ci/auto_fix_common_issues.py --dry-run
 
 # Specific pattern only
-python scripts/ci/auto_fix_common_issues.py --pattern 1  # Unused imports
-python scripts/ci/auto_fix_common_issues.py --pattern 4  # Coverage thresholds
+python scripts/ci/auto_fix_common_issues.py --pattern 1   # Unused imports
+python scripts/ci/auto_fix_common_issues.py --pattern 25  # Last-commit accountability
+python scripts/ci/auto_fix_common_issues.py --pattern 32  # Fallback ignore normalization
 ```
 
 ---
@@ -117,7 +142,8 @@ python scripts/ci/auto_fix_common_issues.py --pattern 4  # Coverage thresholds
 
 **Behavior:**
 - Runs on every `git commit`
-- Blocks commit if issues found (with clear error message)
+- Uses non-mutating `--check-only` detection
+- Blocks commit only when blocking auto-fixable issues are found
 - Developer can:
   - Fix manually
   - Run auto-fix: `python scripts/ci/auto_fix_common_issues.py`
@@ -133,9 +159,10 @@ python scripts/ci/auto_fix_common_issues.py --pattern 4  # Coverage thresholds
    - Fails if issues detected
 
 2. **Manual Dispatch** (workflow_dispatch)
-   - Can apply fixes automatically
-   - Commits and pushes changes
-   - Supports dry-run mode
+    - Can apply fixes automatically
+    - Commits and pushes changes
+    - Supports dry-run mode
+    - Supports targeted pattern execution up through Pattern 32
 
 ### CI/CD Pipeline Integration
 
