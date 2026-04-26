@@ -6,6 +6,13 @@ from pathlib import Path
 import pytest
 
 
+def _raise(exception: Exception):
+    def _raiser(*_args, **_kwargs):
+        raise exception
+
+    return _raiser
+
+
 class TestWorkflowParser:
     """Tests for WorkflowParser class."""
 
@@ -241,7 +248,7 @@ class TestWorkflowParserMethods:
             from src.services.workflow.parser import WorkflowParser
 
             parser = WorkflowParser()
-            monkeypatch.setattr(parser, "_parse_jobs", lambda _: (_ for _ in ()).throw(ValueError("bad job")))
+            monkeypatch.setattr(parser, "_parse_jobs", _raise(ValueError("bad job")))
             result = parser.parse_content(
                 "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
                 Path("/test.yml"),
@@ -256,7 +263,7 @@ class TestWorkflowParserMethods:
             from src.services.workflow.parser import WorkflowParser
 
             parser = WorkflowParser()
-            monkeypatch.setattr(parser, "_parse_jobs", lambda _: (_ for _ in ()).throw(RuntimeError("boom")))
+            monkeypatch.setattr(parser, "_parse_jobs", _raise(RuntimeError("boom")))
             result = parser.parse_content(
                 "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
                 Path("/test.yml"),

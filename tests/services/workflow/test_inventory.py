@@ -9,6 +9,13 @@ from src.services.workflow.types import (
 )
 
 
+def _raise(exception: Exception):
+    def _raiser(*_args, **_kwargs):
+        raise exception
+
+    return _raiser
+
+
 @pytest.fixture
 def temp_workflows_dir(tmp_path):
     """Create a temporary workflows directory."""
@@ -562,7 +569,7 @@ def test_scan_continues_when_parser_raises(temp_workflows_dir, sample_workflow_c
     workflow_file.write_text(sample_workflow_content)
 
     inventory = WorkflowInventory(temp_workflows_dir)
-    monkeypatch.setattr(inventory.parser, "parse_file", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
+    monkeypatch.setattr(inventory.parser, "parse_file", _raise(RuntimeError("boom")))
 
     assert inventory.scan() == 0
     assert inventory.workflows == {}
@@ -576,7 +583,7 @@ def test_refresh_workflow_handles_parser_exception(
     workflow_file.write_text(sample_workflow_content)
 
     inventory = WorkflowInventory(temp_workflows_dir)
-    monkeypatch.setattr(inventory.parser, "parse_file", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
+    monkeypatch.setattr(inventory.parser, "parse_file", _raise(RuntimeError("boom")))
 
     assert inventory.refresh_workflow("test.yml") is False
 
