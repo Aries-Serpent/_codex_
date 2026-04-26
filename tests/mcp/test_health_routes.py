@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
-
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -27,6 +25,12 @@ def test_import_class_loads_real_symbol() -> None:
     cls = adapter_loader._import_class("mcp.server.adapter_loader.MockAdapter")
 
     assert cls is adapter_loader.MockAdapter
+
+
+def test_import_class_returns_none_for_missing_module() -> None:
+    cls = adapter_loader._import_class("mcp.server.does_not_exist.Missing")
+
+    assert cls is None
 
 
 def test_load_adapter_falls_back_to_mock_adapter_when_all_imports_fail(

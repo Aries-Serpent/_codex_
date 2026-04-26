@@ -18,7 +18,22 @@ except ImportError:
     pass  # Bootstrap may not be available in all test environments
 
 # Respect existing user setting; default to disabling plugin autoload for determinism.
-_os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+# Keep autoload enabled when the caller explicitly requests xdist so worker processes
+# can parse `-n/--numprocesses` correctly.
+_PYTEST_CLI_ARGS = tuple(_sys.argv[1:])
+_XDIST_REQUESTED = any(
+    arg == "-n"
+    or (
+        arg.startswith("-n")
+        and len(arg) > 2
+        and (arg[2].isdigit() or arg[2] == "=")
+    )
+    or arg.startswith("--numprocesses")
+    or arg in {"-d", "--dist"}
+    for arg in _PYTEST_CLI_ARGS
+)
+if not _XDIST_REQUESTED:
+    _os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 
 # conftest.py
 # Make PyTorch 2.6+ behave like pre-2.6 for our test suite:

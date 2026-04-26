@@ -202,6 +202,48 @@ def test_stdio_transport_handles_wait_for_timeout(monkeypatch: pytest.MonkeyPatc
     _run(_exercise())
 
 
+def test_stdio_transport_builds_reader_from_event_loop(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FakeLoop:
+        def __init__(self) -> None:
+            self.connected = None
+
+        async def connect_read_pipe(self, factory, pipe):
+            self.connected = (factory(), pipe)
+
+    async def _exercise() -> tuple[bool, bool]:
+        import sys
+
+        loop = _FakeLoop()
+        transport = StdioTransport(reader=None, writer=None)
+        monkeypatch.setattr(asyncio, "get_event_loop", lambda: loop)
+        reader = await transport._get_reader()
+        return isinstance(reader, asyncio.StreamReader), loop.connected[1] is sys.stdin
+
+    assert _run(_exercise()) == (True, True)
+
+
+def test_stdio_transport_builds_writer_from_event_loop(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FakeLoop:
+        async def connect_write_pipe(self, protocol_factory, pipe):
+            return object(), protocol_factory()
+
+    class _FakeWriter:
+        def __init__(self, transport: Any, protocol: Any, reader: Any, loop: Any) -> None:
+            self.transport = transport
+            self.protocol = protocol
+            self.reader = reader
+            self.loop = loop
+
+    async def _exercise() -> bool:
+        transport = StdioTransport(reader=None, writer=None)
+        monkeypatch.setattr(asyncio, "get_event_loop", lambda: _FakeLoop())
+        monkeypatch.setattr(asyncio, "StreamWriter", _FakeWriter)
+        writer = await transport._get_writer()
+        return isinstance(writer, _FakeWriter)
+
+    assert _run(_exercise()) is True
+
+
 def test_stdio_transport_returns_none_for_eof_and_blank_lines() -> None:
     async def _exercise() -> tuple[Optional[dict[str, Any]], Optional[dict[str, Any]]]:
         blank_reader = asyncio.StreamReader()
@@ -269,7 +311,7 @@ def test_stdio_transport_rejects_oversized_messages() -> None:
 def test_message_stream_skips_transport_errors() -> None:
     class _RecoveringTransport(StdioTransport):
         def __init__(self) -> None:
-            super().__init__()
+            super().__init__(reader=None, writer=None)
             self._calls = 0
 
         async def read_message(self) -> Optional[dict[str, Any]]:
@@ -315,7 +357,8 @@ def test_mock_stdio_transport_buffers_messages() -> None:
         transport.add_mock_message({"id": 2})
         first = await transport.read_message()
         second = await transport.read_message()
+        third = await transport.read_message()
         await transport.write_message({"ok": True})
-        return first, second, transport.get_written_messages()
+        return first, second, third, transport.get_written_messages()
 
-    assert _run(_exercise()) == ({"id": 1}, {"id": 2}, [{"ok": True}])
+    assert _run(_exercise()) == ({"id": 1}, {"id": 2}, None, [{"ok": True}])
