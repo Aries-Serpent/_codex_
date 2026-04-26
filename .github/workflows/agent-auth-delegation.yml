@@ -817,6 +817,13 @@ jobs:
           echo "### 🔍 Accountability Report Check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
+          # Dependabot and other bots don't maintain the accountability report
+          ACTOR="${{ github.actor }}"
+          if [[ "${ACTOR}" == "dependabot[bot]" || "${ACTOR}" == "dependabot-preview[bot]" ]]; then
+            echo "⏭️ **SKIP** — Actor is \`${ACTOR}\` (bot); accountability report not required." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
           if [ ! -f "$REPORT" ]; then
             echo "❌ **FAIL** — \`${REPORT}\` does not exist." >> "$GITHUB_STEP_SUMMARY"
             echo "**Fix:** Create this file and commit it before activating a session." >> "$GITHUB_STEP_SUMMARY"
@@ -1437,6 +1444,8 @@ jobs:
     if: |
       always() &&
       github.event.action != 'closed' &&
+      github.actor != 'dependabot[bot]' &&
+      github.actor != 'dependabot-preview[bot]' &&
       needs.detect-checkbox.result == 'success' &&
       needs.detect-checkbox.outputs.auth_requested == 'true' &&
       (needs.cognitive-preflight.result == 'success' || needs.cognitive-preflight.result == 'failure') &&
@@ -1449,12 +1458,13 @@ jobs:
     #     which does NOT trigger duplicate Copilot sessions because GitHub only fires Copilot on
     #     comment CREATION, not on comment UPDATES.
     # always() is required here because GitHub Actions skips dependents of 'skipped' jobs by default.
+    # Dependabot actors cannot access CODEX_MASTER_KEY so the job must be skipped for them.
 
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 1
-          token: ${{ secrets.CODEX_MASTER_KEY }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
 
       # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──

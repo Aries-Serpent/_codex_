@@ -22,7 +22,10 @@ pandas
 pyarrow
 zstandard
 mlflow>=2.4
+slowapi>=0.1.9
 cyclonedx-bom>=4.0.0
+types-PyYAML>=6.0.12
+types-requests>=2.31.0
 # END: CODEX_DEV_REQUIREMENTS
 # Optional: Playwright for browser-based alert scraping (scripts/security/playwright_scraper.py)
 # Install separately: pip install 'codex[playwright]' or: pip install playwright && playwright install chromium

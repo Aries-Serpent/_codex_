@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("fastapi")
+pytest.importorskip("slowapi")
 from fastapi import HTTPException  # noqa: E402
 from pydantic import ValidationError
 
