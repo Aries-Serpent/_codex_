@@ -221,7 +221,8 @@ class CommonIssueFixer:
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
-                print(f"❌ Pattern {pattern_num} not found (valid range: 1-32)")
+                max_pattern = max(n for n, _, _ in all_patterns)
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1-{max_pattern})")
                 return False
             print(f"🔍 Running pattern {pattern_num} only…\n")
         elif pattern_name:
@@ -2947,7 +2948,7 @@ class CommonIssueFixer:
                 torch = None  # type: ignore[assignment]
 
         **Detection:** scan ``src/`` for lines matching
-        ``<name> = (None|object())  # type: ignore$`` (bare, no code in brackets).
+        ``<name> = (None|object()|Any)  # type: ignore$`` (bare, no code in brackets).
 
         **Auto-fix:** append ``[assignment]`` to the bare ignore comment.
         """

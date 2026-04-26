@@ -31,14 +31,15 @@ Or in test-class fixtures::
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
+
 try:
-    import numpy as np
+    import numpy as _np
     _HAS_NUMPY = True
 except ImportError:  # pragma: no cover
-    np = None  # type: ignore[assignment]
+    _np = None
     _HAS_NUMPY = False
 
 
@@ -54,9 +55,10 @@ def rag_mock_model() -> MagicMock:
     RP-RAG-MOCK-CHAIN fix (S323 — recurred 13 times in 24 h on 0D_base_).
     """
     mock = MagicMock()
-    mock.encode.return_value = (
-        np.zeros((3, 384), dtype=np.float32) if _HAS_NUMPY else [[0.0] * 384] * 3
-    )
+    if _HAS_NUMPY and _np is not None:
+        mock.encode.return_value = _np.zeros((3, 384), dtype=_np.float32)
+    else:
+        mock.encode.return_value = [[0.0] * 384] * 3
     mock.get_sentence_embedding_dimension.return_value = 384
     # Chain: to/to_empty/eval must all return *this* mock, not a new MagicMock.
     mock.to.return_value = mock
