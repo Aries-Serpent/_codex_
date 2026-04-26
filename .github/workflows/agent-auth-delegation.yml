@@ -817,7 +817,7 @@ jobs:
           echo "### 🔍 Accountability Report Check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
-          # Dependabot and other bots don't maintain the accountability report
+          # Dependabot bots don't maintain the accountability report
           ACTOR="${{ github.actor }}"
           if [[ "${ACTOR}" == "dependabot[bot]" || "${ACTOR}" == "dependabot-preview[bot]" ]]; then
             echo "⏭️ **SKIP** — Actor is \`${ACTOR}\` (bot); accountability report not required." >> "$GITHUB_STEP_SUMMARY"

@@ -7,12 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-26 — PR #4069 S320 0D_base_→main promotion + pattern hardening)
+- `scripts/ci/auto_fix_common_issues.py`: Added Patterns 28–30 for Copilot cloud agent
+  hardening — sandbox guard (28), PR comment auto-triage (29), merge-readiness auto-fix (30).
+  Promoted Pattern 25 (Last-Commit Accountability) from manual to auto-fixable.
+- `.codex/aftermath/pda_iterations.jsonl` line 113: Fixed schema — added `type`,
+  `pr_number`, `branch` fields; renamed `session_id` → `session`.
+- `CHANGELOG.md`: Wrapped long lines (>400 chars) to ≤120 chars; removed two empty
+  `### Fixed (auto-update — PR #4063)` section headers.
+- `requirements/dev.txt`: Removed duplicate `cyclonedx-bom>=4.0.0` entry (was on line 20
+  and line 26).
+- `scripts/ci/wec_enforcer.py`: `--validate-body` auth fallback now tries `GH_TOKEN`
+  first (used by workflows) before `GITHUB_TOKEN`, making the retry effective.
+- `.github/workflows/agent-auth-delegation.yml`: Narrowed comment from "Dependabot and
+  other bots" to "Dependabot bots" to match the actual condition precisely.
+
 ### Fixed (auto-update — PR #4069)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4069 (SHA `03c1e2a5`) at 2026-04-26T14:16Z [auto-generated]
 
 ### Fixed (2026-04-26 — PR #4063 S319 file discrepancy resolution)
-- Resolved file discrepancy between `copilot/update-ci-failure-triage-report` and `origin/0D_base_`: merged 3 auto-gen commits from 0D_base_ (`chore(manifest)`, `chore(vars)`, `chore(divergence-fix)`). Conflict in `CODEX_MANIFEST.json` (`generated_at`, `integrity_sha256`) resolved; `sync_tracked_files.py --fix` regenerated correct hash. PR is now conflict-free and ready to merge into `0D_base_`.
-- Bot-reported findings (comment 4321147834): all 4 items confirmed informational (Copilot AI Review can't review workflow YAML, cost check is tier categorization, WEC gate confirms execution plan, PR Status Dashboard merge-conflict was the CODEX_MANIFEST divergence now resolved).
+- Resolved file discrepancy between `copilot/update-ci-failure-triage-report` and
+  `origin/0D_base_`: merged 3 auto-gen commits from 0D_base_ (`chore(manifest)`,
+  `chore(vars)`, `chore(divergence-fix)`). Conflict in `CODEX_MANIFEST.json`
+  (`generated_at`, `integrity_sha256`) resolved; `sync_tracked_files.py --fix`
+  regenerated correct hash. PR is now conflict-free and ready to merge into `0D_base_`.
+- Bot-reported findings (comment 4321147834): all 4 items confirmed informational
+  (Copilot AI Review can't review workflow YAML, cost check is tier categorization,
+  WEC gate confirms execution plan, PR Status Dashboard merge-conflict was the
+  CODEX_MANIFEST divergence now resolved).
 
 ### Fixed (2026-04-25 — PR #4063 CI failure triage S316 + S316b + S317 + S318)
 - `requirements/dev.txt`: Added `slowapi>=0.1.9` so the validation venv (`.venv_validation`) includes it in full mode, fixing `ModuleNotFoundError: No module named 'slowapi'` in the Validation Pipeline.
@@ -25,8 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.github/workflows/auto-approve-workflows.yml`: Added `continue-on-error: true` to approve step; wrapped `getHeadSha()` in try/catch with safe error access.
 - `.secrets.baseline`: Updated `hashed_secret` for `CODEX_MANIFEST.json:2053` (`1197ef4d` → `99d7c581`) after `sync_tracked_files.py --fix` rotated the `integrity_sha256` value; resolves Secrets Baseline Enforcer failure (run 24936051325).
 - `.codex/aftermath/pda_iterations.jsonl`: Added S316b and S317 PDA entries; all 10 merge-readiness dimensions green — **100/100** (AAIS 97.31).
-
-### Fixed (auto-update — PR #4063)
 
 ### Fixed (auto-update — PR #4053)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4053 (SHA `362b7aca`) at 2026-04-24T20:54Z [auto-generated]

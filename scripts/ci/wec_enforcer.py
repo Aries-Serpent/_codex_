@@ -160,11 +160,16 @@ def cmd_validate_body(pr_number: int) -> int:
     token = _get_token()
     repo = _get_repo()
 
-    # Fetch PR body; if the primary token is expired/forbidden, try GITHUB_TOKEN
-    # fallback and treat persistent auth errors as a soft fail (don't block the gate).
+    # Fetch PR body; if the primary token is expired/forbidden, try GH_TOKEN /
+    # GITHUB_TOKEN fallback and treat persistent auth errors as a soft fail
+    # (don't block the gate).
     status, data = _gh_api("GET", f"/repos/{repo}/pulls/{pr_number}", token)
     if status in (401, 403):
-        fallback = os.environ.get("GITHUB_TOKEN", "").strip()
+        # Workflows export GH_TOKEN; older runners may use GITHUB_TOKEN instead.
+        fallback = (
+            os.environ.get("GH_TOKEN", "").strip()
+            or os.environ.get("GITHUB_TOKEN", "").strip()
+        )
         if fallback and fallback != token:
             status, data = _gh_api("GET", f"/repos/{repo}/pulls/{pr_number}", fallback)
     if status in (401, 403):
