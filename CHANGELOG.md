@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4073)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4073 (SHA `7a7473ce`) at 2026-04-26T18:36Z [auto-generated]
+
 ### Fixed (2026-04-26 — PR #4069 S323 test monkeypatch targets)
 - `tests/test_export.py`: Fixed `monkeypatch.setattr` target from `"src.codex.logging.export._fetch_events"`
   to `"codex.logging.export._fetch_events"` — the `src.*` path is a different module object and
