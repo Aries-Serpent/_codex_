@@ -6,6 +6,7 @@ import asyncio
 import importlib.util
 import os as _os
 import pathlib
+import re as _re
 import sys as _sys
 from pathlib import Path as _Path
 
@@ -21,15 +22,7 @@ except ImportError:
 # Keep autoload enabled when the caller explicitly requests xdist so worker processes
 # can parse `-n/--numprocesses` correctly.
 def _is_short_form_numprocesses_arg(arg: str) -> bool:
-    if arg == "-n":
-        return True
-    if not arg.startswith("-n") or len(arg) <= 2:
-        return False
-    # Support both `-n4` and `-n=4` forms.
-    suffix = arg[2:]
-    if suffix.startswith("="):
-        suffix = suffix[1:]
-    return suffix.isdigit()
+    return bool(_re.fullmatch(r"-n(?:=?\d+)?", arg))
 
 
 _pytest_cli_args = tuple(_sys.argv[1:])

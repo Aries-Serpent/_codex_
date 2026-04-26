@@ -68,7 +68,9 @@ def test_load_adapter_uses_fallback_when_primary_is_missing(monkeypatch: pytest.
 
 
 @pytest.mark.asyncio
-async def test_lazy_connect_all_returns_true_without_connect(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_lazy_connect_all_succeeds_when_adapter_lacks_connect_method(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     called = False
 
     class PassiveAdapter:

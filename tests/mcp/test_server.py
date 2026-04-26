@@ -174,7 +174,7 @@ def test_stdio_transport_round_trip() -> None:
     assert b'"ok":true' in output
 
 
-def test_stdio_transport_rejects_invalid_json() -> None:
+def test_stdio_transport_raises_error_on_invalid_json() -> None:
     async def _exercise() -> None:
         reader = asyncio.StreamReader()
         transport = StdioTransport(reader=reader, writer=None)
@@ -244,20 +244,25 @@ def test_stdio_transport_builds_writer_from_event_loop(monkeypatch: pytest.Monke
     assert _run(_verify_writer_creation()) is True
 
 
-def test_stdio_transport_returns_none_for_eof_and_blank_lines() -> None:
-    async def _exercise() -> tuple[Optional[dict[str, Any]], Optional[dict[str, Any]]]:
-        blank_reader = asyncio.StreamReader()
-        blank_transport = StdioTransport(reader=blank_reader, writer=None)
-        blank_reader.feed_data(b"\n")
-        blank_reader.feed_eof()
+def test_stdio_transport_returns_none_for_blank_lines() -> None:
+    async def _exercise() -> Optional[dict[str, Any]]:
+        reader = asyncio.StreamReader()
+        transport = StdioTransport(reader=reader, writer=None)
+        reader.feed_data(b"\n")
+        reader.feed_eof()
+        return await transport.read_message()
 
+    assert _run(_exercise()) is None
+
+
+def test_stdio_transport_returns_none_for_eof() -> None:
+    async def _exercise() -> Optional[dict[str, Any]]:
         eof_reader = asyncio.StreamReader()
         eof_transport = StdioTransport(reader=eof_reader, writer=None)
         eof_reader.feed_eof()
+        return await eof_transport.read_message()
 
-        return await blank_transport.read_message(), await eof_transport.read_message()
-
-    assert _run(_exercise()) == (None, None)
+    assert _run(_exercise()) is None
 
 
 def test_stdio_transport_rejects_invalid_encoding() -> None:
