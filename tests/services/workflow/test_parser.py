@@ -8,6 +8,17 @@ import pytest
 from tests.services.workflow._helpers import raise_exception
 
 
+def _patch_open_error(monkeypatch, workflow: Path, exception: Exception) -> None:
+    original_open = builtins.open
+
+    def _raise_for_target(*args, **kwargs):
+        if args and args[0] == workflow:
+            raise exception
+        return original_open(*args, **kwargs)
+
+    monkeypatch.setattr(builtins, "open", _raise_for_target)
+
+
 class TestWorkflowParser:
     """Tests for WorkflowParser class."""
 
@@ -204,15 +215,7 @@ class TestWorkflowParserMethods:
             # Only the target workflow read should fail; helper parsing imports must continue normally.
             workflow = tmp_path / "workflow.yml"
             workflow.write_text("name: Test\non: push\njobs: {}\n")
-
-            original_open = builtins.open
-
-            def _raise_permission(*args, **kwargs):
-                if args and args[0] == workflow:
-                    raise PermissionError("denied")
-                return original_open(*args, **kwargs)
-
-            monkeypatch.setattr(builtins, "open", _raise_permission)
+            _patch_open_error(monkeypatch, workflow, PermissionError("denied"))
             assert parser.parse_file(workflow) is None
         except ImportError:
             pytest.skip("Module not available")
@@ -225,15 +228,7 @@ class TestWorkflowParserMethods:
             parser = WorkflowParser()
             workflow = tmp_path / "workflow.yml"
             workflow.write_text("name: Test\non: push\njobs: {}\n")
-
-            original_open = builtins.open
-
-            def _raise_runtime_error(*args, **kwargs):
-                if args and args[0] == workflow:
-                    raise RuntimeError("boom")
-                return original_open(*args, **kwargs)
-
-            monkeypatch.setattr(builtins, "open", _raise_runtime_error)
+            _patch_open_error(monkeypatch, workflow, RuntimeError("boom"))
             assert parser.parse_file(workflow) is None
         except ImportError:
             pytest.skip("Module not available")

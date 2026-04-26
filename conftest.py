@@ -22,6 +22,8 @@ except ImportError:
 # Keep autoload enabled when the caller explicitly requests xdist so worker processes
 # can parse `-n/--numprocesses` correctly.
 def _is_short_form_numprocesses_arg(arg: str) -> bool:
+    # Match pytest-xdist worker specifications in forms like `-n`, `-n5`, `-n=5`,
+    # `-nauto`, `-n=auto`, `-nlogical`, and `-n=logical`.
     return bool(_re.fullmatch(r"-n(?:=?(?:\d+|auto|logical))?", arg))
 
 
