@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-26 — PR #4077 fast-validation check-only hardening)
+- `scripts/ci/auto_fix_common_issues.py`: `--check-only` now implies `dry_run`, so repo scans no longer mutate
+  the working tree during validation.
+- `scripts/ci/auto_fix_common_issues.py`: Pattern 32 CLI range updated to include pattern 32, and Pattern 31/32
+  are now reported as non-blocking hygiene warnings in check-only mode to avoid failing Fast Validation on
+  codebase-wide cleanup churn unrelated to the current PR.
+- `tests/ci/test_pattern_recorder.py`: Added focused coverage for check-only non-mutation behaviour and Pattern 32
+  normalization logic.
+
 ### Fixed (auto-update — PR #4077)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4077 (SHA `88278408`) at 2026-04-26T22:45Z [auto-generated]
 

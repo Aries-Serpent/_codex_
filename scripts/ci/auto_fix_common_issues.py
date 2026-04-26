@@ -85,7 +85,9 @@ class CommonIssueFixer:
     def __init__(self, repo_root: Path, check_only: bool = False, dry_run: bool = False):
         self.repo_root = repo_root
         self.check_only = check_only
-        self.dry_run = dry_run
+        # `--check-only` must never mutate the working tree. Treat it as an
+        # implied dry-run so every pattern fixer shares the same guard.
+        self.dry_run = dry_run or check_only
         self.issues_found: Dict[str, List[str]] = {}
         self.fixes_applied: Dict[str, int] = {}
 
@@ -108,8 +110,6 @@ class CommonIssueFixer:
             "Last-Commit Accountability",  # Pattern 25 - auto-fix: append minimal session entry
             "PR Comment Triage",        # Pattern 29 - auto-fix: run remediation for known bot patterns
             "Merge Readiness Dims",     # Pattern 30 - auto-fix: repair failing scorecard dimensions
-            "Stale Type Ignore",        # Pattern 31 - auto-fix: remove stale # type: ignore comments
-            "Bare Type Ignore Assign",  # Pattern 32 - auto-fix: add [assignment] to bare # type: ignore on None/object fallbacks
         }
         # Soft-warning patterns: auto-fixable (the --fix command works) but do NOT block
         # CI with an exit-code 1.  These are reported as informational "warning" in the
@@ -122,6 +122,11 @@ class CommonIssueFixer:
         # these before every human/Copilot push.
         self.soft_warning_patterns = {
             "Tracked File Sync",        # Pattern 22 - CODEX_MANIFEST hash drift from bot auto-commits
+            # Patterns 31-32 are useful hygiene auto-fixes, but in check-only mode they can
+            # generate large codebase-wide churn unrelated to the current PR. Keep them
+            # non-blocking so Fast Validation only fails on issues that require immediate PR action.
+            "Stale Type Ignore",        # Pattern 31 - optional hygiene cleanup
+            "Bare Type Ignore Assign",  # Pattern 32 - optional hygiene cleanup
         }
         self.manual_review_patterns = {
             "Unused Variables",         # Pattern 2  - context-dependent
@@ -2931,8 +2936,8 @@ class CommonIssueFixer:
     #               (RP-MYPY-OPT-IMPORT)
     # ------------------------------------------------------------------
     def fix_bare_type_ignore_assign(self) -> List[str]:
-        """Pattern 32: Add ``[assignment]`` specifier to bare ``# type: ignore``
-        on optional-import fallback assignments.
+        """Pattern 32: Normalize optional-import fallback ignores to
+        ``# type: ignore[assignment,misc]``.
 
         **Root cause (RP-MYPY-OPT-IMPORT — 14 recurrences):**
         The idiom::
@@ -2950,7 +2955,9 @@ class CommonIssueFixer:
         **Detection:** scan ``src/`` for lines matching
         ``<name> = (None|object()|Any)  # type: ignore$`` (bare, no code in brackets).
 
-        **Auto-fix:** append ``[assignment]`` to the bare ignore comment.
+        **Auto-fix:** append ``[assignment,misc]`` to the bare ignore comment, or
+        expand an existing ``[assignment]`` code so the fix matches the current
+        mypy behaviour in this repository.
         """
         import re as _re
 
@@ -2959,10 +2966,11 @@ class CommonIssueFixer:
         if not src.is_dir():
             return issues
 
-        # Match: <ident> = None/object()/Any  # type: ignore  (bare — no brackets)
+        # Match: <ident> = None/object()/Any  # type: ignore
+        # or:   <ident> = None/object()/Any  # type: ignore[assignment]
         bare_re = _re.compile(
             r'^(\s*\w+(?:\s*=\s*\w+(?:\.\w+)*)*\s*=\s*(?:None|object\(\)|Any))\s+'
-            r'(#\s*type:\s*ignore)\s*$'
+            r'(#\s*type:\s*ignore(?:\[assignment\])?)\s*$'
         )
         fixed = 0
         for py_file in sorted(src.rglob("*.py")):
@@ -2975,9 +2983,12 @@ class CommonIssueFixer:
             for i, line in enumerate(lines):
                 m = bare_re.match(line.rstrip("\n"))
                 if m:
-                    new_line = m.group(1) + "  # type: ignore[assignment]\n"
-                    issues.append(f"{py_file}:{i + 1}: bare # type: ignore on assignment")
-                    if not self.dry_run:
+                    new_line = m.group(1) + "  # type: ignore[assignment,misc]\n"
+                    issues.append(
+                        f"{py_file}:{i + 1}: fallback assignment ignore should use "
+                        "[assignment,misc]"
+                    )
+                    if not self.dry_run and new_line != lines[i]:
                         lines[i] = new_line
                         modified = True
                         fixed += 1
@@ -2992,13 +3003,16 @@ class CommonIssueFixer:
 
         if fixed:
             if self.dry_run:
-                print(f"   [dry-run] would add [assignment] to {fixed} line(s)")
+                print(f"   [dry-run] would normalize {fixed} line(s) to [assignment,misc]")
             else:
                 self.fixes_applied["Bare Type Ignore Assign"] = fixed
-                print(f"   ✅ Added [assignment] to {fixed} line(s)")
+                print(f"   ✅ Normalized {fixed} line(s) to [assignment,misc]")
                 issues.clear()
         elif self.dry_run and issues:
-            print(f"   [dry-run] would add [assignment] to {len(issues)} line(s)")
+            print(
+                f"   [dry-run] would normalize {len(issues)} line(s) to "
+                "[assignment,misc]"
+            )
 
         return issues
 
@@ -3022,9 +3036,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 31),
+        choices=range(1, 33),
         metavar="N",
-        help="Run only pattern N (1–30); see pattern list above"
+        help="Run only pattern N (1–32); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",

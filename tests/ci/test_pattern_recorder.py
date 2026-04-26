@@ -341,6 +341,43 @@ class TestPattern18Classification:
         assert not overlap, f"Patterns in both sets: {overlap}"
 
 
+class TestAutoFixCheckOnlyBehavior:
+    def test_check_only_implies_dry_run(self):
+        mod = _load_auto_fix()
+        fixer = mod.CommonIssueFixer(Path("."), check_only=True)
+        assert fixer.check_only is True
+        assert fixer.dry_run is True
+
+    def test_pattern_32_check_only_does_not_modify_file(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        target = src_dir / "sample.py"
+        original = "value = None  # type: ignore\n"
+        target.write_text(original, encoding="utf-8")
+
+        fixer = mod.CommonIssueFixer(repo_root, check_only=True)
+        issues = fixer.fix_bare_type_ignore_assign()
+
+        assert issues == [f"{target}:1: fallback assignment ignore should use [assignment,misc]"]
+        assert target.read_text(encoding="utf-8") == original
+
+    def test_pattern_32_upgrades_assignment_only_ignore(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        target = src_dir / "sample.py"
+        target.write_text("value = None  # type: ignore[assignment]\n", encoding="utf-8")
+
+        fixer = mod.CommonIssueFixer(repo_root)
+        issues = fixer.fix_bare_type_ignore_assign()
+
+        assert issues == []
+        assert target.read_text(encoding="utf-8") == "value = None  # type: ignore[assignment,misc]\n"
+
+
 class TestFindKwargRemovalSpan:
     def _make_fixer(self):
         mod = _load_auto_fix()
