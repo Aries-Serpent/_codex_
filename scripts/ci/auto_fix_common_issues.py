@@ -2597,14 +2597,14 @@ class CommonIssueFixer:
                 try:
                     candidate_texts.append(fpath.read_text(encoding="utf-8", errors="replace"))
                 except OSError:
-                    pass
+                    pass  # Best-effort read; skip unreadable context files
 
         pr_body_path = self.repo_root / ".codex" / "pr_body.txt"
         if pr_body_path.exists():
             try:
                 candidate_texts.append(pr_body_path.read_text(encoding="utf-8", errors="replace"))
             except OSError:
-                pass
+                pass  # Best-effort read; skip unreadable pr_body.txt
 
         if not candidate_texts:
             print(
