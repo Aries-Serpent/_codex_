@@ -13,7 +13,11 @@ def test_load_adapter_uses_explicit_class(monkeypatch: pytest.MonkeyPatch) -> No
     class FakeAdapter:
         pass
 
-    monkeypatch.setattr(adapter_loader, "_import_class", lambda path: FakeAdapter if "valid" in path else None)
+    monkeypatch.setattr(
+        adapter_loader,
+        "_import_class",
+        lambda path: FakeAdapter if path == "pkg.valid.FakeAdapter" else None,
+    )
 
     adapter, cls_path = adapter_loader.load_adapter("pkg.valid.FakeAdapter")
 

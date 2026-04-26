@@ -352,7 +352,12 @@ def test_close_swallows_writer_wait_closed_errors() -> None:
 def test_mock_stdio_transport_buffers_messages() -> None:
     from mcp.server.stdio import MockStdioTransport
 
-    async def _exercise() -> tuple[Optional[dict[str, Any]], Optional[dict[str, Any]], list[dict[str, Any]]]:
+    async def _exercise() -> tuple[
+        Optional[dict[str, Any]],
+        Optional[dict[str, Any]],
+        Optional[dict[str, Any]],
+        list[dict[str, Any]],
+    ]:
         transport = MockStdioTransport(messages=[{"id": 1}])
         transport.add_mock_message({"id": 2})
         first = await transport.read_message()
