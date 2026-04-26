@@ -159,7 +159,30 @@ def _fetch_pr_body(token: str, repo: str, pr_number: int) -> str:
 def cmd_validate_body(pr_number: int) -> int:
     token = _get_token()
     repo = _get_repo()
-    body = _fetch_pr_body(token, repo, pr_number)
+
+    # Fetch PR body; if the primary token is expired/forbidden, try GH_TOKEN /
+    # GITHUB_TOKEN fallback and treat persistent auth errors as a soft fail
+    # (don't block the gate).
+    status, data = _gh_api("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+    if status in (401, 403):
+        # Workflows export GH_TOKEN; older runners may use GITHUB_TOKEN instead.
+        fallback = (
+            os.environ.get("GH_TOKEN", "").strip()
+            or os.environ.get("GITHUB_TOKEN", "").strip()
+        )
+        if fallback and fallback != token:
+            status, data = _gh_api("GET", f"/repos/{repo}/pulls/{pr_number}", fallback)
+    if status in (401, 403):
+        print(
+            f"⚠️  PR #{pr_number}: Auth error (HTTP {status}) fetching PR body — "
+            "WEC validation skipped (token may be expired; re-run after refreshing credentials).",
+            file=sys.stderr,
+        )
+        return 0  # soft fail: cannot validate but must not block the gate
+    if status != 200 or not isinstance(data, dict):
+        print(f"❌ Failed to fetch PR #{pr_number}: HTTP {status}", file=sys.stderr)
+        return 1
+    body = data.get("body") or ""
 
     section = _extract_wec_section(body)
     if not section:

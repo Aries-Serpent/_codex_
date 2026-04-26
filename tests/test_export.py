@@ -39,12 +39,12 @@ def test_export_session(tmp_path, monkeypatch):
 
 @pytest.mark.parametrize("session_id", ["abc", "ABC_123", "a-b_c-9"])
 def test_export_session_id_good(session_id, monkeypatch):
-    monkeypatch.setattr("src.codex.logging.export._fetch_events", lambda db, sid: [])
+    monkeypatch.setattr("codex.logging.export._fetch_events", lambda db, sid: [])
     assert export_session(session_id) == "[]"
 
 
 @pytest.mark.parametrize("session_id", ["..", "a b", "abc!", "../../etc/passwd"])
 def test_export_session_id_bad(session_id, monkeypatch):
-    monkeypatch.setattr("src.codex.logging.export._fetch_events", lambda db, sid: [])
+    monkeypatch.setattr("codex.logging.export._fetch_events", lambda db, sid: [])
     with pytest.raises(ValueError):
         export_session(session_id)

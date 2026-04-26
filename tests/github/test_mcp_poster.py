@@ -1133,7 +1133,7 @@ class TestUpsertDiscussionComment:
             calls["n"] += 1
             data = json.loads(req.data)
             query = data.get("query", "")
-            if "comments(first:" in query:
+            if "comments(last:" in query:
                 return _graphql_response({
                     "repository": {
                         "discussion": {

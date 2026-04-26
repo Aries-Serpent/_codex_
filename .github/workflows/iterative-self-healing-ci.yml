@@ -786,8 +786,9 @@ jobs:
         # same SHA → append to existing comment; new SHA → create fresh comment.
         # This prevents a separate blocking comment and removes the need for the
         # standalone 30-min dedup guard (previously checked <!-- self-healing-escalation -->).
+        continue-on-error: true  # rate-limit on GITHUB_TOKEN is transient; don't fail the job
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: Aries-Serpent/_codex_
           COMMIT_SHA: ${{ needs.triage.outputs.head_sha }}
           RUN_ID: ${{ needs.triage.outputs.run_id }}

@@ -20,7 +20,7 @@ def test_env_var_removed_when_log_event_raises(monkeypatch):
         if message == "session_end":
             raise RuntimeError("boom")
 
-    monkeypatch.setattr("src.codex.chat.log_event", boom)
+    monkeypatch.setattr("codex.chat.log_event", boom)
     cs = ChatSession("boom")
 
     with pytest.raises(RuntimeError):
@@ -39,7 +39,7 @@ def test_env_cleared_when_body_and_log_fail(monkeypatch):
         if message == "session_end":
             raise RuntimeError("boom")
 
-    monkeypatch.setattr("src.codex.chat.log_event", boom)
+    monkeypatch.setattr("codex.chat.log_event", boom)
 
     with pytest.raises(RuntimeError):
         with ChatSession("boom"):
