@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
@@ -13,6 +14,13 @@ from mcp.server import jsonrpc_adapter
 
 def _run_test_async(coro: Any) -> Any:
     return asyncio.run(coro)
+
+
+@pytest.fixture(autouse=True)
+def _clear_adapter_cache() -> None:
+    jsonrpc_adapter.clear_adapter_cache()
+    yield
+    jsonrpc_adapter.clear_adapter_cache()
 
 
 class _FakeAdapter:
@@ -48,7 +56,6 @@ def test_get_adapter_caches_loader_result(monkeypatch) -> None:
         calls += 1
         return adapter, "fake.adapter"
 
-    jsonrpc_adapter.clear_adapter_cache()
     monkeypatch.setattr(jsonrpc_adapter, "_ADAPTER_LOADER", _loader)
 
     first = jsonrpc_adapter._get_adapter()
@@ -56,7 +63,6 @@ def test_get_adapter_caches_loader_result(monkeypatch) -> None:
 
     assert first is second is adapter
     assert calls == 1
-    jsonrpc_adapter.clear_adapter_cache()
 
 
 def test_handle_jsonrpc_request_supports_batch_calls() -> None:
@@ -176,7 +182,6 @@ def test_dispatch_method_handles_unknown_tool_and_method() -> None:
 def test_register_jsonrpc_routes_uses_supplied_loader() -> None:
     adapter = _FakeAdapter()
     app = FastAPI()
-    jsonrpc_adapter.clear_adapter_cache()
     jsonrpc_adapter.register_jsonrpc_routes(app, adapter_loader_fn=lambda: (adapter, "fake.adapter"))
     client = TestClient(app)
 
@@ -193,4 +198,3 @@ def test_register_jsonrpc_routes_uses_supplied_loader() -> None:
     assert response.status_code == 200
     assert response.json()["result"]["hits"] == [{"id": "hit-1", "score": 0.9}]
     assert adapter.query_calls[0]["namespace"] == "default"
-    jsonrpc_adapter.clear_adapter_cache()

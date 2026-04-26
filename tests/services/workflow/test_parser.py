@@ -12,7 +12,7 @@ def _patch_open_error(monkeypatch, workflow: Path, exception: Exception) -> None
     original_open = builtins.open
 
     def _raise_for_target(*args, **kwargs):
-        if args and args[0] == workflow:
+        if args and (args[0] == workflow or args[0] == str(workflow)):
             raise exception
         return original_open(*args, **kwargs)
 
