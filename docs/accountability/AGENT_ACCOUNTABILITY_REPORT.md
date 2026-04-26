@@ -10,10 +10,11 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 **Repository:** Aries-Serpent/_codex_
 **Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-26T18:41Z auto-20260426T1841-run77000 — auto-generated entry by Pattern 25
-`test_export_session_id_good`/`bad` (wrong `src.codex.*` patch target), `test_env_var_removed_when_log_event_raises`
-(wrong patch target), `test_updates_existing_when_marker_found` (`comments(first:` vs `comments(last:`);
-replied to CI Rescue 4322446411.
+**Last updated:** 2026-04-26T18:41Z auto-20260426T1841-run77000 — auto-generated entry by Pattern 25. Fixes applied:
+- `test_export_session_id_good`/`bad` (wrong `src.codex.*` patch target)
+- `test_env_var_removed_when_log_event_raises` (wrong patch target)
+- `test_updates_existing_when_marker_found` (`comments(first:` vs `comments(last:`)
+- Replied to CI Rescue 4322446411
 
 
 ## SESSION SUMMARY — 2026-04-26T14:46Z (PR #4069 — S321_PR4069_COMMENT_GATE_CLEAR)

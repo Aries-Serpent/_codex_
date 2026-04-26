@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps resolved (SAR-G01/G02/G05) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
+| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | SAR-G02/G05 near-complete; SAR-G01 blocked (secrets pending) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |
@@ -186,8 +186,8 @@
 **Documentation**: Update ADVANCED_FEATURES_PLANSET.md with implementation details
 
 #### 2. **Coverage Improvement to 95%+** (Phase 9 extension)
-**Timeline**: 2026-01-06 to 2026-02-15
-**Status**: ⏳ Pending
+**Timeline**: 2026-04-13 to 2026-05-22
+**Status**: 🟡 Planning
 **Effort**: 5-8 sessions (~150K-300K tokens)
 
 **Tasks**:
@@ -436,7 +436,7 @@
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Last Updated**: 2026-03-06 (W-139 — MLOps level corrected 4.0→3.7; SAR blockers added)
+**Last Updated**: 2026-04-12 (W-139 — MLOps level corrected 4.0→3.7; SAR blockers added)
 **Next Review**: 2026-05-06
 **Version**: 2.1.0
 

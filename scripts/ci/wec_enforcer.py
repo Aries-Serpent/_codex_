@@ -297,6 +297,8 @@ def _list_runs_for_workflow(
     """Return in-progress or queued runs for a workflow matching head_sha."""
     # Use a stable SHA prefix (up to 12 chars); slicing is safe for shorter values.
     sha_stripped = head_sha.strip()
+    if not sha_stripped:
+        return []
     sha_prefix = sha_stripped[:12]
     runs: list[dict] = []
     for status in ("in_progress", "queued"):
