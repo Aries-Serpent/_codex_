@@ -27,7 +27,7 @@
 
 ---
 
-## 🚀 Current State (2026-02-11)
+## 🚀 Current State (2026-04-12)
 
 ### Core Capabilities Status
 
@@ -185,7 +185,7 @@
 
 **Documentation**: Update ADVANCED_FEATURES_PLANSET.md with implementation details
 
-#### 2. **Coverage Improvement to 80%+** (Phase 9 extension)
+#### 2. **Coverage Improvement to 95%+** (Phase 9 extension)
 **Timeline**: 2026-01-06 to 2026-02-15
 **Status**: ⏳ Pending
 **Effort**: 5-8 sessions (~150K-300K tokens)
@@ -195,9 +195,9 @@
 - Add missing unit tests
 - Expand integration tests
 - Property-based testing expansion
-- Edge case coverage
+- Raise lower-covered components to at least 90%
 
-**Target**: 80%+ coverage, maintain 100% passing
+**Target**: 95%+ overall coverage, maintain 100% passing, with no critical component below 90%
 
 #### 3. **Agent System Enhancement** (Phase 12)
 **Timeline**: 2026-02-01 to 2026-03-15
@@ -386,7 +386,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-04-26 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
+> ✅ Updated 2026-04-26 (W-142 S116): Level 3.95 — P1 review updated (SAR-G02/G05 near-complete; SAR-G01 still blocked pending secrets).
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
@@ -437,7 +437,7 @@
 
 **Roadmap Status**: 🟢 Active & Current
 **Last Updated**: 2026-03-06 (W-139 — MLOps level corrected 4.0→3.7; SAR blockers added)
-**Next Review**: 2026-01-06
+**Next Review**: 2026-05-06
 **Version**: 2.1.0
 
 **Questions?** Check [Dashboard](./system/CODEBASE_DASHBOARD.md) for current status.

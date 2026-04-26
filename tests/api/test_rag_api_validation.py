@@ -80,7 +80,7 @@ class TestMergeIndicesRequestValidation:
     def test_target_index_required(self) -> None:
         """target_index is required; omitting it raises ValidationError."""
         with pytest.raises(ValidationError):
-            MergeIndicesRequest(source_indices=["a", "b"])  # type: ignore[call-arg]
+            MergeIndicesRequest.model_validate({"source_indices": ["a", "b"]})
 
     def test_tenant_id_defaults_to_default(self) -> None:
         """tenant_id has a default of 'default'."""

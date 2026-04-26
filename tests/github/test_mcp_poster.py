@@ -911,9 +911,9 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 
     # Patch parse_args so args.command is None (no subcommand given)
 
-    def patched_parse(self, _args=None, _namespace=None):  # noqa: ARG001
+    def patched_parse(self, args=None, namespace=None):  # noqa: ARG001
         # Simulate a parse result where no recognised subcommand was provided.
-        # _args and _namespace are part of the ArgumentParser.parse_args signature
+        # args and namespace are part of the ArgumentParser.parse_args signature
         # but are intentionally ignored here — we always return a fixed Namespace.
         return argparse.Namespace(command=None)
 
