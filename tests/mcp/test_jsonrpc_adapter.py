@@ -122,7 +122,13 @@ def test_dispatch_method_handles_query_success_and_failure() -> None:
     ]
 
     class _BrokenAdapter(_FakeAdapter):
-        def query_top_k(self, namespace: str, query_embedding: list[float], top_k: int = 5, filters=None):
+        def query_top_k(
+            self,
+            namespace: str,
+            query_embedding: list[float],
+            top_k: int = 5,
+            filters: dict[str, Any] | None = None,
+        ):
             raise RuntimeError("backend unavailable")
 
     failure = _run(

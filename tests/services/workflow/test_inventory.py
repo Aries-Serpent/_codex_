@@ -7,13 +7,7 @@ from src.services.workflow.parser import WorkflowParser
 from src.services.workflow.types import (
     TriggerType,
 )
-
-
-def _raise(exception: Exception):
-    def _raiser(*_args, **_kwargs):
-        raise exception
-
-    return _raiser
+from tests.services.workflow._helpers import raise_exception
 
 
 @pytest.fixture
@@ -569,7 +563,7 @@ def test_scan_continues_when_parser_raises(temp_workflows_dir, sample_workflow_c
     workflow_file.write_text(sample_workflow_content)
 
     inventory = WorkflowInventory(temp_workflows_dir)
-    monkeypatch.setattr(inventory.parser, "parse_file", _raise(RuntimeError("boom")))
+    monkeypatch.setattr(inventory.parser, "parse_file", raise_exception(RuntimeError("boom")))
 
     assert inventory.scan() == 0
     assert inventory.workflows == {}
@@ -583,7 +577,7 @@ def test_refresh_workflow_handles_parser_exception(
     workflow_file.write_text(sample_workflow_content)
 
     inventory = WorkflowInventory(temp_workflows_dir)
-    monkeypatch.setattr(inventory.parser, "parse_file", _raise(RuntimeError("boom")))
+    monkeypatch.setattr(inventory.parser, "parse_file", raise_exception(RuntimeError("boom")))
 
     assert inventory.refresh_workflow("test.yml") is False
 

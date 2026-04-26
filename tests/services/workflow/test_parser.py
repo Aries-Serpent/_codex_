@@ -5,12 +5,7 @@ from pathlib import Path
 
 import pytest
 
-
-def _raise(exception: Exception):
-    def _raiser(*_args, **_kwargs):
-        raise exception
-
-    return _raiser
+from tests.services.workflow._helpers import raise_exception
 
 
 class TestWorkflowParser:
@@ -206,6 +201,7 @@ class TestWorkflowParserMethods:
             from src.services.workflow.parser import WorkflowParser
 
             parser = WorkflowParser()
+            # Only the target workflow read should fail; helper parsing imports must continue normally.
             workflow = tmp_path / "workflow.yml"
             workflow.write_text("name: Test\non: push\njobs: {}\n")
 
@@ -248,7 +244,7 @@ class TestWorkflowParserMethods:
             from src.services.workflow.parser import WorkflowParser
 
             parser = WorkflowParser()
-            monkeypatch.setattr(parser, "_parse_jobs", _raise(ValueError("bad job")))
+            monkeypatch.setattr(parser, "_parse_jobs", raise_exception(ValueError("bad job")))
             result = parser.parse_content(
                 "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
                 Path("/test.yml"),
@@ -263,7 +259,7 @@ class TestWorkflowParserMethods:
             from src.services.workflow.parser import WorkflowParser
 
             parser = WorkflowParser()
-            monkeypatch.setattr(parser, "_parse_jobs", _raise(RuntimeError("boom")))
+            monkeypatch.setattr(parser, "_parse_jobs", raise_exception(RuntimeError("boom")))
             result = parser.parse_content(
                 "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
                 Path("/test.yml"),
