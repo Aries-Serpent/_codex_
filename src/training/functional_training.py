@@ -57,8 +57,8 @@ LOGGER = logging.getLogger(__name__)
 try:  # pragma: no cover - optional config dependency
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - omegaconf not installed
-    DictConfig = Any  # type: ignore
-    OmegaConf = None  # type: ignore
+    DictConfig = Any  # type: ignore[assignment]
+    OmegaConf = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional logging dependency
     from codex_ml.monitoring.codex_logging import (
@@ -85,7 +85,7 @@ except Exception:  # pragma: no cover - metrics optional
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
 except Exception:  # pragma: no cover - optional dependency missing
-    manifest_for_paths = None  # type: ignore
+    manifest_for_paths = None  # type: ignore[assignment]
 
 
 try:  # pragma: no cover - optional model registry

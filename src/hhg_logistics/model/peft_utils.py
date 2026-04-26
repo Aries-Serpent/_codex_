@@ -27,14 +27,14 @@ try:  # pragma: no cover - optional dependency
     import torch
     from torch import Tensor
 except Exception:  # pragma: no cover - guard for optional deps
-    torch = None  # type: ignore
-    Tensor = None  # type: ignore
+    torch = None  # type: ignore[assignment]
+    Tensor = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional dependency
     from transformers import AutoModelForCausalLM, AutoTokenizer
 except Exception:  # pragma: no cover
-    AutoModelForCausalLM = None  # type: ignore
-    AutoTokenizer = None  # type: ignore
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoTokenizer = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional dependency
     from peft import LoraConfig, get_peft_model
