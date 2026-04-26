@@ -11,7 +11,7 @@ from fastapi.testclient import TestClient
 from mcp.server import jsonrpc_adapter
 
 
-def _run(coro: Any) -> Any:
+def _run_async(coro: Any) -> Any:
     return asyncio.run(coro)
 
 
@@ -70,7 +70,7 @@ def test_handle_jsonrpc_request_supports_batch_calls() -> None:
         },
     ]
 
-    result = _run(jsonrpc_adapter.handle_jsonrpc_request(payload, adapter))
+    result = _run_async(jsonrpc_adapter.handle_jsonrpc_request(payload, adapter))
 
     assert [item["id"] for item in result] == ["list", "echo"]
     assert result[0]["result"][0]["id"] == "mock.tool.echo"
@@ -80,7 +80,7 @@ def test_handle_jsonrpc_request_supports_batch_calls() -> None:
 def test_dispatch_method_returns_invalid_params_error() -> None:
     adapter = _FakeAdapter()
 
-    result = _run(
+    result = _run_async(
         jsonrpc_adapter._dispatch_method(
             {"jsonrpc": "2.0", "id": "bad", "method": "mcp.callTool", "params": {"input": {}}},
             adapter,
@@ -94,7 +94,7 @@ def test_dispatch_method_returns_invalid_params_error() -> None:
 def test_dispatch_method_handles_query_success_and_failure() -> None:
     adapter = _FakeAdapter()
 
-    success = _run(
+    success = _run_async(
         jsonrpc_adapter._dispatch_method(
             {
                 "jsonrpc": "2.0",
@@ -131,7 +131,7 @@ def test_dispatch_method_handles_query_success_and_failure() -> None:
         ):
             raise RuntimeError("backend unavailable")
 
-    failure = _run(
+    failure = _run_async(
         jsonrpc_adapter._dispatch_method(
             {
                 "jsonrpc": "2.0",
@@ -149,7 +149,7 @@ def test_dispatch_method_handles_query_success_and_failure() -> None:
 def test_dispatch_method_handles_unknown_tool_and_method() -> None:
     adapter = _FakeAdapter()
 
-    unknown_tool = _run(
+    unknown_tool = _run_async(
         jsonrpc_adapter._dispatch_method(
             {
                 "jsonrpc": "2.0",
@@ -160,7 +160,7 @@ def test_dispatch_method_handles_unknown_tool_and_method() -> None:
             adapter,
         )
     )
-    unknown_method = _run(
+    unknown_method = _run_async(
         jsonrpc_adapter._dispatch_method(
             {"jsonrpc": "2.0", "id": "method", "method": "mcp.unknown", "params": {}},
             adapter,
