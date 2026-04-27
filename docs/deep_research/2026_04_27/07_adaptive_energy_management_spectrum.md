@@ -90,6 +90,37 @@ E_adapt,d = C_d · I_d · Φ_d · η_d − L_d − R_d + S_d − D_d
 
 This equation is synthetic, but each term corresponds to real engineering patterns.
 
+
+### 4.1 Aligned Variable Mapping
+
+| Packet-Wide Role | Variable in This Note | Maps Back To | Maps Forward To |
+|---|---|---|---|
+| capacity | $C_d$ | $C_p$, $C_a$ | reserve and maturity capacity |
+| intensity | $I_d$ | $T$, $Θ$ | incident power, demand, disturbance amplitude |
+| context | $Φ_d$ | $Φ_context$ | spectral alignment, weather, telemetry trust |
+| efficiency | $η_d$ | control efficiency $η$ | capture, conversion, dispatch, decision efficiency |
+| loss/risk | $L_d$, $R_d$ | $μF$, blast-radius penalty | safety margin, path loss, cyber risk |
+| storage/degradation | $S_d$, $D_d$ | trust cache, entropy | reserve, drift, aging, hidden fragility |
+
+```mermaid
+flowchart LR
+    CpT[CpT baseline] --> Shared[Shared adaptive-energy grammar]
+    Shared --> Capacity[C_d capacity]
+    Shared --> Intensity[I_d intensity]
+    Shared --> Context[Phi_d context]
+    Shared --> Efficiency[eta_d efficiency]
+    Shared --> Loss[L_d and R_d loss/risk]
+    Shared --> Storage[S_d reserve]
+    Shared --> Drift[D_d degradation]
+    Capacity --> E[E_adapt,d]
+    Intensity --> E
+    Context --> E
+    Efficiency --> E
+    Loss --> E
+    Storage --> E
+    Drift --> E
+```
+
 ---
 
 ## 5. Repository Content Bridge

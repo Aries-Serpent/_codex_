@@ -44,6 +44,38 @@ F_cap = (R_reserve · V_response · D_damping · O_observe · G_generalize · B_
 
 Capability is high when reserve, fast response, damping, observability, generalization, and backups dominate amplitude, latency, coupling, and uncertainty.
 
+
+### 2.1 Aligned Variable Mapping
+
+| Fluctuation Variable | Shared Role | Related Variable Family |
+|---|---|---|
+| $R_reserve$ | reserve capacity | $S_d$, $P_storage$, thermal mass, trust margin |
+| $V_response$ | response velocity | control efficiency $η_d$, actuation speed |
+| $D_damping$ | stability control | hysteresis, damping, oscillation suppression |
+| $O_observe$ | observability | $Ω_obs$, telemetry trust, state estimation |
+| $G_generalize$ | maturity transfer | $G_generalization$, scenario coverage |
+| $B_backup$ | fallback supply/path | supply diversity, break-glass, alternate source |
+| $A_amplitude$ | disturbance intensity | $I_d$, $Θ$, load spike, field fading |
+| $L_latency$ | delay loss | sensing, decision, actuation, propagation delay |
+| $C_coupling$ | harmful coupling | resonance, cascade, blast radius |
+| $U_uncertainty$ | ambiguity | forecast error, adversarial uncertainty, sensor noise |
+
+```mermaid
+flowchart LR
+    Reserve[R_reserve] --> Capability[F_cap]
+    Response[V_response] --> Capability
+    Damping[D_damping] --> Capability
+    Observe[O_observe] --> Capability
+    Generalize[G_generalize] --> Capability
+    Backup[B_backup] --> Capability
+    Amplitude[A_amplitude] --> Burden[Fluctuation burden]
+    Latency[L_latency] --> Burden
+    Coupling[C_coupling] --> Burden
+    Uncertainty[U_uncertainty] --> Burden
+    Burden --> Capability
+    Capability --> Outcome[absorb / dampen / shed / isolate]
+```
+
 ---
 
 ## 3. Fluctuation Types

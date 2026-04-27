@@ -55,6 +55,36 @@ E_cont(t) ≥ E_min_margin for all critical time windows
 | $P_degradation(t)$ | aging, drift, entropy, fouling, fatigue, battery degradation, permission sprawl |
 | $E_min_margin$ | minimum reserve margin needed to avoid collapse or unsafe operation |
 
+
+### 2.1 Aligned Variable Mapping
+
+| Continuity Variable | Shared Role | Maps To Other Notes |
+|---|---|---|
+| $P_in(t)$ | input intensity | $I_d$, $P_incident$, $Θ$ |
+| $P_storage(t)$ | reserve capacity | $S_d$, $R_reserve$, trust cache |
+| $P_recovery(t)$ | recoverability | $Γ_r$, regeneration, waste-heat recovery |
+| $P_load(t)$ | demand sink | access request, critical load, useful output target |
+| $P_loss(t)$ | loss/friction | $L_d$, $μF$, path loss |
+| $P_safety(t)$ | safety reserve | $R_d$, blast-radius and exposure margin |
+| $P_degradation(t)$ | drift/degradation | $D_d$, $D_drift$, permission entropy |
+| $E_min_margin$ | continuity threshold | required reserve for mature fluctuation handling |
+
+```mermaid
+flowchart LR
+    In[P_in] --> Positive[Positive side]
+    Storage[P_storage] --> Positive
+    Recovery[P_recovery] --> Positive
+    Load[P_load] --> Negative[Negative side]
+    Loss[P_loss] --> Negative
+    Safety[P_safety] --> Negative
+    Degradation[P_degradation] --> Negative
+    Positive --> Balance[E_cont]
+    Negative --> Balance
+    Balance --> Margin{E_cont >= E_min_margin?}
+    Margin -->|yes| Continue[continuous useful energy]
+    Margin -->|no| Correct[shape demand / switch source / shed load]
+```
+
 ---
 
 ## 3. The Counter-Balance Components

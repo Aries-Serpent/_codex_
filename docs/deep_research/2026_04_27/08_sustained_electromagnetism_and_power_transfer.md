@@ -94,6 +94,30 @@ P_useful(λ,f,t) = P_incident(λ,f,t) · A_eff(λ,f) · η_capture · η_convert
 | $P_loss$ | resistive, path, thermal, mismatch losses |
 | $P_safety_margin$ | power withheld due to safety/regulatory/interference limits |
 
+
+### 5.1 Aligned Variable Mapping
+
+| Packet-Wide Role | Variable in This Note | Interpretation |
+|---|---|---|
+| input intensity | $P_incident(λ,f,t)$ | spectral energy arriving at the receiver over wavelength, frequency, and time |
+| capture capacity | $A_eff(λ,f)$ | effective aperture/coupling area, analogous to domain capacity $C_d$ |
+| context/alignment | $Φ_align$ | spatial, spectral, impedance, and safety alignment context |
+| efficiency | $η_capture$, $η_convert$ | how much incident field becomes usable output |
+| loss/risk | $P_loss$, $P_safety_margin$ | path loss, heat, mismatch, exposure, and interference constraints |
+| usable output | $P_useful$ | electromagnetic-channel equivalent of $E_adapt,d$ |
+
+```mermaid
+flowchart LR
+    Incident[P_incident lambda f t] --> Aperture[A_eff capture capacity]
+    Aperture --> Capture[eta_capture]
+    Capture --> Convert[eta_convert]
+    Align[Phi_align context] --> Convert
+    Convert --> Useful[P_useful]
+    Loss[P_loss] --> Useful
+    Safety[P_safety_margin] --> Useful
+    Useful --> Store[storage or load service]
+```
+
 ---
 
 ## 6. Mermaid — Spectrum-Aware Energy Router

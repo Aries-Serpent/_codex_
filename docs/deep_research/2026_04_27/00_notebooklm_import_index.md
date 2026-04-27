@@ -118,3 +118,24 @@ Core fluctuation rule:
 ```text
 fluctuation-ready continuity = detect + classify + absorb/dampen/route/shed + preserve reserve + learn.
 ```
+
+
+## Unified Variable Mapping and Diagram Alignment
+
+The recent adaptive-energy notes use one shared variable grammar so NotebookLM can connect equations and Mermaid diagrams across files.
+
+| Shared Role | Thermal CpT | Security/Access | Adaptive Energy | Electromagnetic | Continuity | Maturity | Fluctuation |
+|---|---|---|---|---|---|---|---|
+| capacity/reserve | $C_p$ | $C_a$ | $C_d$, $S_d$ | $A_eff$, storage | $P_storage$ | $R_consistency$ | $R_reserve$ |
+| intensity/input | $T$ | $Θ$ | $I_d$ | $P_incident$, $λ$, $f$ | $P_in$ | $W_target$ | $A_amplitude$ |
+| context/alignment | reference state | $Φ_context$ | $Φ_d$ | $Φ_align$ | feedback context | $G_generalization$ | $O_observe$ |
+| efficiency/control | constant-pressure path | $η$, $μ$ | $η_d$ | $η_capture$, $η_convert$ | conversion control | $A_adaptivity$ | $V_response$, $D_damping$ |
+| loss/risk | non-ideal losses | friction/blast radius | $L_d$, $R_d$ | path/thermal/safety loss | $P_loss$, $P_safety$ | $F_fragility$ | latency/coupling/uncertainty |
+| degradation/drift | property variation | entropy/drift | $D_d$ | detuning/heating | $P_degradation$ | $D_drift$, $C_hidden$ | drift/oscillation |
+
+Diagram alignment rule:
+
+```text
+source/input → state/context estimation → balance equation → route/store/convert/shed → feedback/learning
+```
+

@@ -63,6 +63,36 @@ M_system = W_target · R_consistency · G_generalization · O_observability · S
 
 Interpretation: Maturity rises when target success is repeatable, explainable, safe, adaptable, and transferable. Maturity falls when success depends on narrow conditions or hidden support.
 
+
+### 3.1 Aligned Variable Mapping
+
+| Maturity Variable | Shared Role | Meaning in Adaptive Energy |
+|---|---|---|
+| $W_target$ | output quality | target achievement across critical loads/workflows |
+| $R_consistency$ | repeatability reserve | repeated success across time and operators |
+| $G_generalization$ | context transfer | ability to handle adjacent conditions |
+| $O_observability$ | feedback quality | measurement of state, flow, risk, and decision basis |
+| $S_safety$ | safety margin | thermal, exposure, cyber, and blast-radius headroom |
+| $A_adaptivity$ | control efficiency | safe adjustment without oscillation |
+| $Q_quality$ | useful output | quality beyond binary target completion |
+| $F_fragility$, $D_drift$, $C_hidden$ | loss/degradation terms | sensitivity, aging, model drift, and hidden scaffolding |
+
+```mermaid
+flowchart LR
+    Targets[Targets met] --> Maturity[M_system]
+    Consistency[R_consistency] --> Maturity
+    Generalization[G_generalization] --> Maturity
+    Observability[O_observability] --> Maturity
+    Safety[S_safety] --> Maturity
+    Adaptivity[A_adaptivity] --> Maturity
+    Quality[Q_quality] --> Maturity
+    Fragility[F_fragility] --> Penalty[Penalty denominator]
+    Drift[D_drift] --> Penalty
+    Hidden[C_hidden] --> Penalty
+    Penalty --> Maturity
+    Maturity --> Band[Maturity band]
+```
+
 ---
 
 ## 4. Novice-to-Mature Stage Ladder

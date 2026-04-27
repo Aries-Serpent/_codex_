@@ -169,6 +169,35 @@ Unified rule:
 Useful adaptive energy is capacity times context-sensitive intensity, corrected by efficiency, storage, safety, loss, entropy, and reversibility.
 ```
 
+
+### 7.1 Aligned Variable Mapping
+
+| Scenario Variable | Shared Role | Related Equation |
+|---|---|---|
+| $P_load_avg$ | demand/load | continuity balance $P_load$ |
+| $P_solar_day_avg$, $P_rf_avg$ | supply/input | $P_in$, $P_incident$ |
+| $η_storage$ | efficiency | $η_d$ and storage reserve terms |
+| `SOC_battery` | reserve state | $S_d$, $P_storage$ |
+| `grid_frequency` | stability indicator | fluctuation and smart-grid control variable |
+| `cyber_trust_score` | telemetry trust/context | $Φ_d$, $O_observe$ |
+| `Blast radius` | risk penalty | $R_d$, $Ξ_b(1 − Γ_r)$ |
+
+```mermaid
+flowchart TD
+    Scenario[Scenario input] --> Variables[Map observed variables]
+    Variables --> Supply[P_in / P_incident]
+    Variables --> Demand[P_load]
+    Variables --> Reserve[S_d / SOC / storage]
+    Variables --> Context[Phi_d / trust / alignment]
+    Variables --> Risk[R_d / blast radius]
+    Supply --> Decision[Adaptive response]
+    Demand --> Decision
+    Reserve --> Decision
+    Context --> Decision
+    Risk --> Decision
+    Decision --> Actions[harvest / store / shift / scope / shed]
+```
+
 ---
 
 ## 8. NotebookLM Closing Prompt Ideas
