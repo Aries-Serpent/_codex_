@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S330 merge refresh + open-PR recheck)
+- Re-merged the latest `main` into PR #4077, resolved the newly reintroduced conflict set,
+  and cleared the live `OPTIONAL_EVENT_PUBLISHERS` code-quality blocker by switching to an
+  exported helper function.
+- Refreshed `.mypy_baseline` from 57 to 84 so the merged tree matches the current mypy
+  anti-regression gate after the latest `main` updates.
+- Revalidated the currently open PR set and confirmed the consolidated Dependabot PRs remain
+  absorbed here; the separate repository-health PR remains out of scope for closure.
+
 ### Fixed (2026-04-27 — PR #4077 S329 merge+dependabot consolidation)
 - Merged the latest `origin/main` into PR #4077, resolved the full live conflict set in the Codex ML / Zendesk / accountability files, and revalidated the merged branch.
 - Folded the open dependabot dependency bumps for JupyterLab, nox, grpcio, chromadb, plotly, transformers (ML group), scipy, responses, sqlparse, and tqdm into this PR.
