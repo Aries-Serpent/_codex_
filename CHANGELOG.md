@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S325d — 2026-04-27 — PR #4078)
+- Session close: branch clean, cherry-pick guide for PR #4077 in place, continuation workflows unchecked
+
 ### Fixed (S325c — 2026-04-27 — PR #4078)
 - Prepared cherry-pick guide for PR #4077 (`PR-4077-cherrypick-from-4078.md`) with 3 portable commits
 - Unchecked `auto-approve-workflows`, `copilot-iterative-self-healing.yml`, `copilot-agent-session-done.yml` in WEC to prevent session continuation loops
