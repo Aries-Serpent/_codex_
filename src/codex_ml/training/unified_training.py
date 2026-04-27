@@ -60,7 +60,7 @@ logger = logging.getLogger(__name__)
 try:  # optional torch
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore
+    torch = None  # type: ignore[assignment]
 
 
 # ----------------------------- Config & Validation ----------------------------

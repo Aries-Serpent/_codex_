@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 try:
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore
+    torch = None  # type: ignore[assignment]
 
 try:
     import numpy as np

@@ -90,7 +90,7 @@ torch = try_import("torch")
 SummaryWriter = None
 if torch is not None:
     try:
-        from torch.utils.tensorboard import SummaryWriter as _SW  # type: ignore
+        from torch.utils.tensorboard import SummaryWriter as _SW
 
         SummaryWriter = _SW
     except Exception:

@@ -107,7 +107,7 @@ class ZendeskAPIClient:
             >>> client.list_tickets(per_page=50, sort_by="priority")
         """
         params = {"per_page": per_page, "sort_by": sort_by, "sort_order": sort_order}
-        response = self.session.get(f"{self.config.base_url}/tickets.json", params=params)  # type: ignore[arg-type]
+        response = self.session.get(f"{self.config.base_url}/tickets.json", params=params)
         response.raise_for_status()
         return response.json()
 
@@ -433,7 +433,7 @@ class ZendeskAPIClient:
         if search_type:
             params["type"] = search_type
 
-        response = self.session.get(f"{self.config.base_url}/search.json", params=params)  # type: ignore[arg-type]
+        response = self.session.get(f"{self.config.base_url}/search.json", params=params)
         response.raise_for_status()
         return response.json()
 

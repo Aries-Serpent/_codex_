@@ -36,7 +36,7 @@ from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer as _AutoTokenizer
 except Exception:  # pragma: no cover - optional dependency
-    _AutoTokenizer = None  # type: ignore
+    _AutoTokenizer = None  # type: ignore[assignment]
 
 
 def _resolve_auto_tokenizer():
