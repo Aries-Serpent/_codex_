@@ -53,7 +53,12 @@ except ImportError as e:
 
 
 def get_optional_event_publishers() -> dict[str, type[EventPublisher] | None]:
-    """Return the optional cloud event publishers exposed by this module."""
+    """Return a provider-to-publisher map for optional cloud event integrations.
+
+    The returned dictionary maps provider names such as ``"azure"`` and ``"aws"``
+    to their corresponding :class:`EventPublisher` subclasses, or ``None`` when
+    the provider-specific dependency is unavailable in the current environment.
+    """
 
     return {
         "azure": AzureEventPublisher,
