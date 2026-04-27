@@ -2,6 +2,35 @@
 
 
 
+## SESSION SUMMARY — 2026-04-27T19:02Z (S341 — CI rescue triage 4329615627/4329636161 — secrets-baseline + RP-004 stale on ee22d40d)
+
+**Branch:** `copilot/create-implementation-plan-and-test-cases` | **PR:** #4077
+
+### Pre-flight Checklist
+- [x] **0a.** Loaded stored memories (WEC items, WEC defaults, pre-commit hooks, sync drift patterns) ✅
+- [x] **0b.** Investigated CI run #25013128239 (🔐 Secrets Baseline Enforcer on `ee22d40d`) ✅
+- [x] **0c.** Investigated CI run #25013128233 (Pre-Merge Validation on `ee22d40d`) ✅
+- [x] **0d.** Investigated rescue comments 4329615627 and 4329636161 ✅
+
+### Actions Taken
+- Both CI failures on commit `ee22d40d139f` are **stale** — they report on a superseded commit.
+- **Secrets Baseline Enforcer (#25013128239):** failed with `Your baseline file (.secrets.baseline) is unstaged` — this happened because `ee22d40d` modified `.secrets.baseline` but `detect-secrets-hook` treated the in-progress baseline update as unstaged. Root cause: same RP-004 sync drift that `c0b448bf` (S340b) already fixed.
+- **Pre-Merge Validation (#25013128233):** failed with `sync_tracked_files: ❌ stale` (RP-004) — same root cause; the S340 accountability-report update did not run `sync_tracked_files.py --fix` before committing. Fixed in `c0b448bf` (S340b).
+- Current HEAD `c0b448bf` is clean: `sync_tracked_files --check` ✅, `detect-secrets-hook` exit 0 ✅, `auto_fix --check-only` exit 0 ✅.
+- Added S341 session entry to accountability report; ran `sync_tracked_files.py --fix` to update CODEX_MANIFEST.
+
+### Validation Results
+- `python3 scripts/ci/sync_tracked_files.py --check` → All tracked files consistent ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only` → exit 0 (0 auto-fixable) ✅
+- `detect-secrets-hook --baseline .secrets.baseline` → exit 0 ✅
+
+### Files Changed
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this S341 entry
+- `CHANGELOG.md` — S341 entry added
+- `.secrets.baseline` — CODEX_MANIFEST hash updated via `sync_tracked_files.py --fix`
+
+---
+
 ## SESSION SUMMARY — 2026-04-27T18:58Z (S340b — sync_tracked_files .secrets.baseline re-sync after auto-merge)
 
 **Branch:** `copilot/create-implementation-plan-and-test-cases` | **PR:** #4077
