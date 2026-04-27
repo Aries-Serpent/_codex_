@@ -31,7 +31,7 @@ from typing import Iterable, Pattern  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import yaml
 except Exception:  # pragma: no cover - optional dependency
-    yaml = None  # type: ignore[assignment,misc]
+    yaml = None  # type: ignore[assignment]
 
 DEFAULT_SECRET_PATTERNS = [
     re.compile(r"ghp_[A-Za-z0-9]{10,}"),  # GitHub tokens (flexible length for test compatibility)

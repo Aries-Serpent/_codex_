@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 try:
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 try:
     import numpy as np
@@ -49,12 +49,12 @@ except Exception:  # pragma: no cover
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except Exception:  # pragma: no cover - treated as unavailable
-    Version = None  # type: ignore[assignment,misc]
+    Version = None  # type: ignore[assignment]
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
 except Exception:  # pragma: no cover - optional dependency failures tolerated
-    _environment_summary = None  # type: ignore[assignment,misc]
+    _environment_summary = None  # type: ignore[assignment]
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
 from .runmeta import collect_run_meta  # noqa: E402
@@ -62,7 +62,7 @@ from .runmeta import collect_run_meta  # noqa: E402
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
 except Exception:  # pragma: no cover - optional dependency issues tolerated
-    attach_integrity = None  # type: ignore[assignment,misc]
+    attach_integrity = None  # type: ignore[assignment]
 
     def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore[misc]
         return {}

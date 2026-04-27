@@ -33,7 +33,8 @@ Pattern 30 self-recursion and preserving the validated doc state.
 - ✅ `python -m pytest -q tests/ci/test_pattern_recorder.py -k 'pattern_30_uses_noarg_scorecard or run_all_patterns_respects_skip_env'`
 - ✅ `python -m ruff check scripts/ci/auto_fix_common_issues.py scripts/ci/session_wrapup_autofix.py tests/ci/test_pattern_recorder.py`
 - ✅ `python scripts/ci/auto_fix_common_issues.py --check-only` → 0 auto-fixable issues, Pattern 30 = 100/100
-- ✅ `python scripts/ci/mypy_baseline.py --require-baseline` still passes locally after the final sync
+- ✅ `python scripts/ci/mypy_baseline.py --require-baseline` passes locally at **45 errors**
+  (12 below the current baseline of 57) after the final ignore-tightening pass
 
 ---
 

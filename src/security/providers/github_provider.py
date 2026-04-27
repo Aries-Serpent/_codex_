@@ -48,7 +48,7 @@ try:
 
     HAS_REQUESTS = True
 except ImportError:
-    _requests = None  # type: ignore[assignment,misc]
+    _requests = None  # type: ignore[assignment]
     HAS_REQUESTS = False
 
 # Pre-compiled GitHub token format regex — avoids recompiling on every call

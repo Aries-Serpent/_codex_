@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   evaluating the `auto_fix` dimension.
 - Accepted the final validation-generated `docs/ROADMAP.md` refresh and the last round of
   safe optional-import fallback normalization triggered by the fast-validation hook.
+- Final local type-check status for this session: `python scripts/ci/mypy_baseline.py --require-baseline`
+  now passes at 45 errors (12 below the current baseline of 57).
 
 ### Fixed (2026-04-27 — PR #4077 S325 merge-readiness follow-up)
 - `scripts/ci/auto_fix_common_issues.py`: Fixed Pattern 30 to call

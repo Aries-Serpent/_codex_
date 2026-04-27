@@ -47,7 +47,7 @@ from typing import (
 try:  # pragma: no cover - optional dependency
     import yaml
 except ModuleNotFoundError:  # pragma: no cover - optional dependency
-    yaml = None  # type: ignore[assignment,misc]
+    yaml = None  # type: ignore[assignment]
 
 from codex_ml.utils.error_log import log_error
 
