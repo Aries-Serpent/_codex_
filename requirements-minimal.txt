@@ -20,6 +20,7 @@ bandit>=1.7.5
 # Type stubs
 types-jsonschema
 types-PyYAML
+types-requests
 
 # CLI tools
 typer>=0.12.5

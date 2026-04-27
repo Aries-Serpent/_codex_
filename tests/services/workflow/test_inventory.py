@@ -7,6 +7,7 @@ from src.services.workflow.parser import WorkflowParser
 from src.services.workflow.types import (
     TriggerType,
 )
+from tests.services.workflow._helpers import raise_exception
 
 
 @pytest.fixture
@@ -554,6 +555,31 @@ def test_refresh_nonexistent_workflow(temp_workflows_dir):
     inventory = WorkflowInventory(temp_workflows_dir)
     success = inventory.refresh_workflow("nonexistent.yml")
     assert success is False
+
+
+def test_scan_continues_when_parser_raises(temp_workflows_dir, sample_workflow_content, monkeypatch):
+    """Test scan continues gracefully when parser.parse_file raises unexpectedly."""
+    workflow_file = temp_workflows_dir / "test.yml"
+    workflow_file.write_text(sample_workflow_content)
+
+    inventory = WorkflowInventory(temp_workflows_dir)
+    monkeypatch.setattr(inventory.parser, "parse_file", raise_exception(RuntimeError("boom")))
+
+    assert inventory.scan() == 0
+    assert inventory.workflows == {}
+
+
+def test_refresh_workflow_handles_parser_exception(
+    temp_workflows_dir, sample_workflow_content, monkeypatch
+):
+    """Test refresh_workflow returns False when parse_file raises unexpectedly."""
+    workflow_file = temp_workflows_dir / "test.yml"
+    workflow_file.write_text(sample_workflow_content)
+
+    inventory = WorkflowInventory(temp_workflows_dir)
+    monkeypatch.setattr(inventory.parser, "parse_file", raise_exception(RuntimeError("boom")))
+
+    assert inventory.refresh_workflow("test.yml") is False
 
 
 def test_parser_with_list_trigger_format(temp_workflows_dir):

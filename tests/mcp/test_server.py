@@ -3,8 +3,16 @@
 import asyncio
 from typing import Any, Dict, Optional
 
+import pytest
+
 from mcp.server import MCPServer, Tool, ToolRegistry
-from mcp.server.stdio import StdioTransport, TransportConfig
+from mcp.server.stdio import (
+    InvalidMessageError,
+    MessageTooLargeError,
+    StdioTransport,
+    TransportConfig,
+    TransportError,
+)
 
 
 def _run(coro: Any) -> Any:
@@ -164,3 +172,203 @@ def test_stdio_transport_round_trip() -> None:
     output = _run(_stdio_round_trip())
     assert output.endswith(b"\n")
     assert b'"ok":true' in output
+
+
+def test_stdio_transport_raises_error_on_invalid_json() -> None:
+    async def _exercise() -> None:
+        reader = asyncio.StreamReader()
+        transport = StdioTransport(reader=reader, writer=None)
+        reader.feed_data(b"{not-json}\n")
+        reader.feed_eof()
+        with pytest.raises(InvalidMessageError, match="Invalid JSON"):
+            await transport.read_message()
+
+    _run(_exercise())
+
+
+def test_stdio_transport_handles_wait_for_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+    async def _close_and_raise_timeout(awaitable: Any, *args: Any, **kwargs: Any) -> Any:
+        close = getattr(awaitable, "close", None)
+        if callable(close):
+            close()
+        raise asyncio.TimeoutError
+
+    async def _exercise() -> None:
+        reader = asyncio.StreamReader()
+        transport = StdioTransport(reader=reader, writer=None)
+        monkeypatch.setattr(asyncio, "wait_for", _close_and_raise_timeout)
+        assert await transport.read_message() is None
+
+    _run(_exercise())
+
+
+def test_stdio_transport_builds_reader_from_event_loop(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FakeLoop:
+        def __init__(self) -> None:
+            self.connected = None
+
+        async def connect_read_pipe(self, factory, pipe):
+            self.connected = (factory(), pipe)
+
+    async def _verify_reader_creation() -> tuple[bool, bool]:
+        import sys
+
+        loop = _FakeLoop()
+        transport = StdioTransport(reader=None, writer=None)
+        monkeypatch.setattr(asyncio, "get_event_loop", lambda: loop)
+        reader = await transport._get_reader()
+        return isinstance(reader, asyncio.StreamReader), loop.connected[1] is sys.stdin
+
+    assert _run(_verify_reader_creation()) == (True, True)
+
+
+def test_stdio_transport_builds_writer_from_event_loop(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FakeLoop:
+        async def connect_write_pipe(self, protocol_factory, pipe):
+            return object(), protocol_factory()
+
+    class _FakeWriter:
+        def __init__(self, transport: Any, protocol: Any, reader: Any, loop: Any) -> None:
+            self.transport = transport
+            self.protocol = protocol
+            self.reader = reader
+            self.loop = loop
+
+    async def _verify_writer_creation() -> bool:
+        transport = StdioTransport(reader=None, writer=None)
+        monkeypatch.setattr(asyncio, "get_event_loop", lambda: _FakeLoop())
+        monkeypatch.setattr(asyncio, "StreamWriter", _FakeWriter)
+        writer = await transport._get_writer()
+        return isinstance(writer, _FakeWriter)
+
+    assert _run(_verify_writer_creation()) is True
+
+
+def test_stdio_transport_returns_none_for_blank_lines() -> None:
+    async def _exercise() -> Optional[dict[str, Any]]:
+        reader = asyncio.StreamReader()
+        transport = StdioTransport(reader=reader, writer=None)
+        reader.feed_data(b"\n")
+        reader.feed_eof()
+        return await transport.read_message()
+
+    assert _run(_exercise()) is None
+
+
+def test_stdio_transport_returns_none_for_eof() -> None:
+    async def _exercise() -> Optional[dict[str, Any]]:
+        eof_reader = asyncio.StreamReader()
+        eof_transport = StdioTransport(reader=eof_reader, writer=None)
+        eof_reader.feed_eof()
+        return await eof_transport.read_message()
+
+    assert _run(_exercise()) is None
+
+
+def test_stdio_transport_rejects_invalid_encoding() -> None:
+    async def _exercise() -> None:
+        reader = asyncio.StreamReader()
+        transport = StdioTransport(reader=reader, writer=None)
+        reader.feed_data(b"\xff\xfe\n")
+        reader.feed_eof()
+        with pytest.raises(InvalidMessageError, match="Invalid encoding"):
+            await transport.read_message()
+
+    _run(_exercise())
+
+
+def test_stdio_transport_rejects_oversized_writes() -> None:
+    class _MemoryWriter:
+        def write(self, data: bytes) -> None:
+            self.data = data
+
+        async def drain(self) -> None:
+            return None
+
+    async def _exercise() -> None:
+        transport = StdioTransport(
+            config=TransportConfig(max_message_size=4),
+            reader=None,
+            writer=_MemoryWriter(),  # type: ignore[arg-type]
+        )
+        with pytest.raises(MessageTooLargeError, match="exceeds maximum"):
+            await transport.write_message({"id": 1})
+
+    _run(_exercise())
+
+
+def test_stdio_transport_rejects_oversized_messages() -> None:
+    async def _exercise() -> None:
+        reader = asyncio.StreamReader()
+        transport = StdioTransport(
+            config=TransportConfig(max_message_size=4),
+            reader=reader,
+            writer=None,
+        )
+        reader.feed_data(b'{"id":1}\n')
+        reader.feed_eof()
+        with pytest.raises(MessageTooLargeError, match="exceeds maximum"):
+            await transport.read_message()
+
+    _run(_exercise())
+
+
+def test_message_stream_skips_transport_errors() -> None:
+    class _RecoveringTransport(StdioTransport):
+        def __init__(self) -> None:
+            super().__init__(reader=None, writer=None)
+            self._calls = 0
+
+        async def read_message(self) -> Optional[dict[str, Any]]:
+            self._calls += 1
+            if self._calls == 1:
+                raise TransportError("transient")
+            if self._calls == 2:
+                return {"jsonrpc": "2.0", "id": "ok"}
+            return None
+
+    async def _exercise() -> list[dict[str, Any]]:
+        transport = _RecoveringTransport()
+        return [message async for message in transport.message_stream()]
+
+    assert _run(_exercise()) == [{"jsonrpc": "2.0", "id": "ok"}]
+
+
+def test_close_swallows_writer_wait_closed_errors() -> None:
+    class _BrokenWriter:
+        def __init__(self) -> None:
+            self.closed = False
+
+        def close(self) -> None:
+            self.closed = True
+
+        async def wait_closed(self) -> None:
+            raise RuntimeError("already closed")
+
+    async def _exercise() -> bool:
+        writer = _BrokenWriter()
+        transport = StdioTransport(writer=writer)  # type: ignore[arg-type]
+        await transport.close()
+        return writer.closed
+
+    assert _run(_exercise()) is True
+
+
+def test_mock_stdio_transport_buffers_messages() -> None:
+    from mcp.server.stdio import MockStdioTransport
+
+    async def _exercise() -> tuple[
+        Optional[dict[str, Any]],
+        Optional[dict[str, Any]],
+        Optional[dict[str, Any]],
+        list[dict[str, Any]],
+    ]:
+        transport = MockStdioTransport(messages=[{"id": 1}])
+        transport.add_mock_message({"id": 2})
+        first = await transport.read_message()
+        second = await transport.read_message()
+        empty_result = await transport.read_message()
+        await transport.write_message({"ok": True})
+        return first, second, empty_result, transport.get_written_messages()
+
+    assert _run(_exercise()) == ({"id": 1}, {"id": 2}, None, [{"ok": True}])

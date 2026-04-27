@@ -341,6 +341,104 @@ class TestPattern18Classification:
         assert not overlap, f"Patterns in both sets: {overlap}"
 
 
+class TestAutoFixCheckOnlyBehavior:
+    def test_check_only_implies_dry_run(self):
+        mod = _load_auto_fix()
+        fixer = mod.CommonIssueFixer(Path("."), check_only=True)
+        assert fixer.check_only is True
+        assert fixer.dry_run is True
+
+    def test_pattern_32_check_only_does_not_modify_file(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        target = src_dir / "sample.py"
+        original = "value = None  # type: ignore\n"
+        target.write_text(original, encoding="utf-8")
+
+        fixer = mod.CommonIssueFixer(repo_root, check_only=True)
+        issues = fixer.fix_bare_type_ignore_assign()
+
+        assert issues == [f"{target}:1: fallback assignment ignore should use [assignment]"]
+        assert target.read_text(encoding="utf-8") == original
+
+    def test_pattern_32_leaves_assignment_only_ignore_untouched(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        target = src_dir / "sample.py"
+        target.write_text("value = None  # type: ignore[assignment]\n", encoding="utf-8")
+
+        fixer = mod.CommonIssueFixer(repo_root)
+        issues = fixer.fix_bare_type_ignore_assign()
+
+        assert issues == []
+        assert target.read_text(encoding="utf-8") == "value = None  # type: ignore[assignment]\n"
+
+    def test_pattern_32_leaves_normalized_ignore_untouched(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        src_dir = repo_root / "src"
+        src_dir.mkdir(parents=True)
+        target = src_dir / "sample.py"
+        original = "value = None  # type: ignore[assignment,misc]\n"
+        target.write_text(original, encoding="utf-8")
+
+        fixer = mod.CommonIssueFixer(repo_root)
+        issues = fixer.fix_bare_type_ignore_assign()
+
+        assert issues == []
+        assert target.read_text(encoding="utf-8") == original
+
+
+class TestPattern30MergeReadiness:
+    def test_pattern_30_uses_noarg_scorecard(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        scripts_ci = repo_root / "scripts" / "ci"
+        scripts_ci.mkdir(parents=True)
+        (repo_root / "src").mkdir()
+
+        (scripts_ci / "session_wrapup_autofix.py").write_text(
+            """
+def _compute_merge_readiness_score():
+    return {
+        "dimensions": [("auto_fix (0 auto-fixable)", 15, "✅ 0 auto-fixable", True)],
+        "score": 100,
+        "total": 100,
+    }
+""".strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+        fixer = mod.CommonIssueFixer(repo_root)
+        assert fixer.fix_merge_readiness_dims() == []
+
+    def test_run_all_patterns_respects_skip_env(self, monkeypatch):
+        mod = _load_auto_fix()
+        fixer = mod.CommonIssueFixer(Path("."))
+        called: list[int] = []
+
+        def _mark(num: int):
+            def _inner():
+                called.append(num)
+                return []
+
+            return _inner
+
+        fixer.fix_unused_imports = _mark(1)  # type: ignore[method-assign]
+        fixer.fix_merge_readiness_dims = _mark(30)  # type: ignore[method-assign]
+        monkeypatch.setenv("CODEX_SKIP_PATTERN_NUMS", "30")
+
+        fixer.run_all_patterns()
+
+        assert 1 in called
+        assert 30 not in called
+
+
 class TestFindKwargRemovalSpan:
     def _make_fixer(self):
         mod = _load_auto_fix()

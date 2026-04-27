@@ -12,6 +12,7 @@ from datetime import datetime
 
 import pytest
 
+import codex_ml.events as events_module
 from codex_ml.events.base import (
     Event,
     EventBus,
@@ -47,6 +48,44 @@ class TestEventType:
         # Verify all event types can be iterated
         event_types = list(EventType)
         assert len(event_types) == 11
+
+
+class TestOptionalEventPublishers:
+    """Tests for optional cloud event publisher exports."""
+
+    def test_returns_provider_map_with_current_values(self) -> None:
+        publishers = events_module.get_optional_event_publishers()
+
+        assert publishers == {
+            "azure": events_module.AzureEventPublisher,
+            "aws": events_module.AWSEventPublisher,
+        }
+
+    def test_returns_none_for_unavailable_publishers(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(events_module, "AzureEventPublisher", None)
+        monkeypatch.setattr(events_module, "AWSEventPublisher", None)
+
+        assert events_module.get_optional_event_publishers() == {
+            "azure": None,
+            "aws": None,
+        }
+
+    def test_returns_publisher_classes_when_available(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        class AzurePublisher(EventPublisher):
+            pass
+
+        class AWSPublisher(EventPublisher):
+            pass
+
+        monkeypatch.setattr(events_module, "AzureEventPublisher", AzurePublisher)
+        monkeypatch.setattr(events_module, "AWSEventPublisher", AWSPublisher)
+
+        assert events_module.get_optional_event_publishers() == {
+            "azure": AzurePublisher,
+            "aws": AWSPublisher,
+        }
 
 
 class TestEvent:

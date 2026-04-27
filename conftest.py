@@ -6,6 +6,7 @@ import asyncio
 import importlib.util
 import os as _os
 import pathlib
+import re as _re
 import sys as _sys
 from pathlib import Path as _Path
 
@@ -18,7 +19,24 @@ except ImportError:
     pass  # Bootstrap may not be available in all test environments
 
 # Respect existing user setting; default to disabling plugin autoload for determinism.
-_os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+# Keep autoload enabled when the caller explicitly requests xdist so worker processes
+# can parse `-n/--numprocesses` correctly.
+def _is_short_form_numprocesses_arg(arg: str) -> bool:
+    # Match pytest-xdist worker specifications in forms like `-n`, `-n5`, `-n=5`,
+    # `-nauto`, `-n=auto`, `-nlogical`, and `-n=logical`.
+    return bool(_re.fullmatch(r"-n(?:=?(?:\d+|auto|logical))?", arg))
+
+
+_pytest_cli_args = tuple(_sys.argv[1:])
+_xdist_requested = any(
+    _is_short_form_numprocesses_arg(arg)
+    or arg.startswith("--numprocesses")
+    or arg.startswith("--dist")  # matches --dist, --dist=loadscope, --dist=load, etc.
+    or arg == "-d"
+    for arg in _pytest_cli_args
+)
+if not _xdist_requested:
+    _os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 
 # conftest.py
 # Make PyTorch 2.6+ behave like pre-2.6 for our test suite:

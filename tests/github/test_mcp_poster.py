@@ -6,6 +6,7 @@ network calls are made. Zero external dependencies.
 from __future__ import annotations
 
 import json
+import logging
 import unittest.mock as mock
 import urllib.error
 from io import BytesIO
@@ -92,8 +93,6 @@ def test_no_token_warns(monkeypatch, caplog):
     monkeypatch.delenv("CODEX_MASTER_KEY", raising=False)
     monkeypatch.delenv("CODEX_BACKUP_KEY", raising=False)
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
-    import logging
-
     # The "codex" logger may have `propagate=False` configured elsewhere in the
     # codebase. This prevents caplog (which installs a handler on the root
     # logger) from capturing records emitted by child loggers such as
@@ -149,8 +148,6 @@ def test_set_repo_variable_patch_success(poster, monkeypatch):
 
 
 def test_set_repo_variable_falls_back_to_post_on_404(poster, monkeypatch):
-    import urllib.error
-
     call_count = {"n": 0}
 
     def fake_urlopen(req, timeout):
@@ -741,8 +738,6 @@ def test_cli_create_pr_draft_flag(monkeypatch):
 @pytest.fixture
 def codex_logger_propagating():
     """Ensure the 'codex' logger has propagate=True during a test and restore afterwards."""
-    import logging
-
     logger = logging.getLogger("codex")
     original_propagate = logger.propagate
     logger.propagate = True
@@ -754,8 +749,6 @@ def codex_logger_propagating():
 
 def test_record_cb_pattern_logs_always(poster, caplog, codex_logger_propagating):
     """_record_cb_pattern emits an INFO log regardless of cognitive brain availability."""
-    import logging
-
     with caplog.at_level(logging.INFO, logger="codex.github.mcp_poster"):
         poster._record_cb_pattern(
             "CB-branch-create",
@@ -831,7 +824,6 @@ def test_merge_branch_records_cb_pattern_already_exists(poster, monkeypatch):
 
 def test_set_repo_variable_reraises_non_404_http_error(poster, monkeypatch):
     """set_repo_variable re-raises HTTPError whose code is not 404 (line 240)."""
-    import urllib.error
     from io import BytesIO
 
     hdrs = mock.MagicMock()
@@ -885,7 +877,6 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
 
 def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
     """_request raises last_exc when all retries are consumed on rate-limit (line 607)."""
-    import urllib.error
     from io import BytesIO
 
     hdrs = mock.MagicMock()
@@ -1329,7 +1320,6 @@ class TestCheckTokenHealth:
 
     def test_expired_token_returns_unhealthy(self, monkeypatch):
         """HTTP 401 → healthy=False, expiry_warning mentions rotation."""
-        import urllib.error
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_expired")
         from codex.github.mcp_poster import GitHubMCPPoster
         poster = GitHubMCPPoster()
@@ -1350,7 +1340,6 @@ class TestCheckTokenHealth:
 
     def test_healthy_token_with_full_scopes(self, monkeypatch):
         """200 response with repo+workflow scopes → healthy=True."""
-        import json as _json
         from email.message import Message as _Msg
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_valid")
@@ -1365,7 +1354,7 @@ class TestCheckTokenHealth:
             headers = hdrs
 
             def read(self):
-                return _json.dumps({"login": "mbaetiong"}).encode()
+                return json.dumps({"login": "mbaetiong"}).encode()
 
             def __enter__(self):
                 return self
@@ -1382,7 +1371,6 @@ class TestCheckTokenHealth:
 
     def test_missing_scopes_on_master_key_warns(self, monkeypatch):
         """200 but missing scopes → healthy=False, warning mentions missing scopes."""
-        import json as _json
         from email.message import Message as _Msg
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_limited")
@@ -1397,7 +1385,7 @@ class TestCheckTokenHealth:
             headers = hdrs
 
             def read(self):
-                return _json.dumps({"login": "mbaetiong"}).encode()
+                return json.dumps({"login": "mbaetiong"}).encode()
 
             def __enter__(self):
                 return self
