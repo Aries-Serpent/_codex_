@@ -45,7 +45,6 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     AWSEventPublisher = None  # type: ignore[assignment,misc]
-    AWSEventPublisher = None  # type: ignore[assignment,misc]
 
 # Keep optional publisher exports in an explicit registry so the module-level
 # symbols are concretely referenced even when cloud-specific deps are absent.
