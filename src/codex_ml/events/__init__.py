@@ -45,3 +45,8 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     AWSEventPublisher = None  # type: ignore[assignment,misc]
+
+OPTIONAL_EVENT_PUBLISHERS = {
+    "azure": AzureEventPublisher,
+    "aws": AWSEventPublisher,
+}

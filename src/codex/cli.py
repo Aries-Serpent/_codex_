@@ -25,9 +25,9 @@ from pathlib import Path  # noqa: E402
 import click  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    import typer
+    import typer as _typer
 except Exception:  # pragma: no cover - degrade gracefully when Typer missing
-    typer = None  # type: ignore[assignment,misc]
+    _typer = None  # type: ignore[assignment,misc]
 else:  # pragma: no cover - exercised in Typer-enabled environments
     try:
         from codex.cli_knowledge import app as knowledge_typer_app
@@ -35,7 +35,7 @@ else:  # pragma: no cover - exercised in Typer-enabled environments
     except Exception:  # pragma: no cover - Typer sub-app import guard
         pass
     else:
-        app = typer.Typer(help="Codex Typer CLI (release + knowledge)")
+        app = _typer.Typer(help="Codex Typer CLI (release + knowledge)")
         app.add_typer(release_typer_app, name="release")
         app.add_typer(knowledge_typer_app, name="knowledge")
 

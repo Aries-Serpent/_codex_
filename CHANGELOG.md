@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S328 comment audit cleanup)
+- Cleared the current unused-global findings in `src/codex/cli.py` and
+  `src/codex_ml/events/__init__.py` while preserving runtime behavior.
+- Re-documented the hardened session-start PR comment audit flow and reconfirmed the branch
+  is merge-clean against the latest `main`.
+
 ### Fixed (2026-04-27 — PR #4077 S327b accountability sync)
 - Recorded the final post-merge normalization state in the accountability report so the
   latest commit satisfies Pattern 25 and preserves the rolling-comment follow-up trail.
