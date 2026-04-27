@@ -139,3 +139,26 @@ Diagram alignment rule:
 source/input → state/context estimation → balance equation → route/store/convert/shed → feedback/learning
 ```
 
+
+
+## Recent-Date Web Search Grounding — 2026-04-27
+
+This research packet was explicitly grounded with web search on **2026-04-27** for recent adaptive energy-management and electromagnetic-energy sources. The newest source set includes 2024, 2025, and 2026 material.
+
+Recent adaptive energy-management anchors:
+
+- NC Clean Energy Technology Center 2025 grid modernization annual review: `https://nccleantech.ncsu.edu/2026/01/28/the-50-states-of-grid-modernization-states-leverage-distributed-energy-resources-and-advance-storage-procurement-in-2025/`
+- IEA Electricity 2026 grids analysis: `https://www.iea.org/reports/electricity-2026/grids`
+- Scientific Reports 2025 deep-learning and IoT adaptive grid framework: `https://www.nature.com/articles/s41598-025-02649-w`
+- Springer 2025 smart-grid progress survey: `https://link.springer.com/article/10.1186/s43067-025-00195-z`
+- Lawrence Berkeley National Laboratory 2025 distributed energy technology pilots: `https://eta-publications.lbl.gov/publications/packages-distributed-energy`
+
+Recent electromagnetic/WPT/RF-harvesting anchors:
+
+- Sensors 2024 RF Energy Harvesting and Wireless Power Transfer for IoT: `https://www.mdpi.com/1424-8220/24/23/7567`
+- PMC copy of RF Energy Harvesting and WPT for IoT: `https://pmc.ncbi.nlm.nih.gov/articles/PMC11644274/`
+- Springer 2024 RF energy harvesters state-of-the-art review: `https://link.springer.com/article/10.1007/s13246-024-01382-4`
+- IEEE Wireless Power Technologies: `https://wirelesspower.ieee.org/`
+- Wireless Power Consortium: `https://www.wirelesspowerconsortium.com/`
+
+NotebookLM interpretation: treat the equations in this packet as structured synthesis models, while treating the URLs above as current-source anchors for smart-grid modernization, DERMS, demand response, RF harvesting, wireless power transfer, safety standards, and interoperability.

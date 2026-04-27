@@ -9,6 +9,10 @@
 
 ---
 
+## Recent-Date Web Search Note
+
+Recent web searches were performed on **2026-04-27** and added to `00_notebooklm_import_index.md` under "Recent-Date Web Search Grounding — 2026-04-27". Use that section as the packet-level source anchor for 2024–2026 smart-grid, DERMS, RF-harvesting, wireless-power-transfer, and safety-standard references.
+
 ## 1. Core Thesis
 
 Adaptive energy-management is the practice of sensing a system state, forecasting near-future demand or risk, routing energy through the safest and most efficient channel, storing surplus, dissipating harmful excess, and learning from feedback.
