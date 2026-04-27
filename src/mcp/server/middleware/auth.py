@@ -48,7 +48,7 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
         if not api_key:
             api_key = request.headers.get("x-api-key")
 
-        principal = DEV_KEYS.get(api_key or "")
+        principal = DEV_KEYS.get(api_key)
         # If api_key provided but not recognized, deny in dev to avoid accidental calls.
         if api_key and principal is None:
             return Response("Unauthorized", status_code=401)

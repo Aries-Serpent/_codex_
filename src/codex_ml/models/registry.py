@@ -21,7 +21,7 @@ else:
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel
 else:  # pragma: no cover - runtime fallback when transformers missing
-    HF_PreTrainedModel = Any  # type: ignore[assignment,misc]
+    HF_PreTrainedModel = Any  # type: ignore[assignment]
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")

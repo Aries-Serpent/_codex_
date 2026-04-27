@@ -46,8 +46,8 @@ if _HAS_HYDRA:  # pragma: no cover - optional dependency
 
     from omegaconf import DictConfig, OmegaConf
 else:  # pragma: no cover - optional dependency
-    DictConfig = Any  # type: ignore[assignment,misc]
-    OmegaConf = None  # type: ignore[assignment,misc]
+    DictConfig = Any  # type: ignore[assignment]
+    OmegaConf = None  # type: ignore[assignment]
 
 torch, _HAS_TORCH = optional_import("torch")
 

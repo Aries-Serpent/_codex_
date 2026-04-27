@@ -106,11 +106,7 @@ class ZendeskAPIClient:
         Example:
             >>> client.list_tickets(per_page=50, sort_by="priority")
         """
-        params: dict[str, str | int] = {
-            "per_page": per_page,
-            "sort_by": sort_by,
-            "sort_order": sort_order,
-        }
+        params = {"per_page": per_page, "sort_by": sort_by, "sort_order": sort_order}
         response = self.session.get(f"{self.config.base_url}/tickets.json", params=params)
         response.raise_for_status()
         return response.json()
@@ -433,7 +429,7 @@ class ZendeskAPIClient:
             >>> client.search("type:ticket status:open priority:high")
             >>> client.search("type:user email:*@example.com")
         """
-        params: dict[str, str | int] = {"query": query, "per_page": per_page}
+        params = {"query": query, "per_page": per_page}
         if search_type:
             params["type"] = search_type
 

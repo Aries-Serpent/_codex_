@@ -310,161 +310,22 @@ jobs:
               core.setOutput('issue_number', issue.data.number);
             }
 
-      - name: Upsert PR trigger comments for associated failures
-        if: steps.build-report.outputs.has_failures == 'true'
-        uses: actions/github-script@v9
-        env:
-          FAILURES_JSON: ${{ steps.fetch-failures.outputs.failures_json }}
-          TRIAGE_ISSUE_NUMBER: ${{ steps.upsert-issue.outputs.issue_number }}
-        with:
-          script: |
-            const failures = JSON.parse(process.env.FAILURES_JSON || '[]');
-            const triageIssueNumber = process.env.TRIAGE_ISSUE_NUMBER || '';
-            const marker = '<!-- batch-ci-triage-pr-trigger -->';
-            const byPr = new Map();
-
-            for (const failure of failures) {
-              if (!failure.pr_number) continue;
-              const entries = byPr.get(failure.pr_number) || [];
-              entries.push(failure);
-              byPr.set(failure.pr_number, entries);
-            }
-
-            console.log(`Preparing PR trigger comments for ${byPr.size} PR(s)`);
-
-            for (const [prNumber, prFailures] of byPr.entries()) {
-              const latestFailures = [...prFailures].sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
-              );
-              const workflowLines = latestFailures
-                .slice(0, 10)
-                .map(f => `- \`${f.workflow_name}\` · run #${f.run_number} · ${f.run_url}`);
-
-              const promptLines = [
-                marker,
-                '## 🔴 Batch CI triage detected PR-associated failures',
-                '',
-                triageIssueNumber
-                  ? `Live triage issue: #${triageIssueNumber}`
-                  : 'Live triage issue: unavailable',
-                '',
-                '**Immediate Copilot resolution prompt:**',
-                '```text',
-                '@copilot continue',
-                `Resolve the latest PR-associated CI failures detected by batch-ci-triage for PR #${prNumber}.`,
-                ...workflowLines,
-              ];
-
-              const stepFailures = latestFailures
-                .flatMap(f => (f.failing_steps || []).map(step => `- ${step}`))
-                .slice(0, 10);
-              if (stepFailures.length > 0) {
-                promptLines.push('Top failing steps:');
-                promptLines.push(...stepFailures);
-              }
-
-              promptLines.push('```');
-              promptLines.push('');
-              promptLines.push(
-                'This comment is upserted by `batch-ci-triage.yml` so Copilot can be triggered immediately from the latest consolidated failure context.'
-              );
-              const body = promptLines.join('\n');
-
-              const comments = await github.paginate(github.rest.issues.listComments, {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: Number(prNumber),
-                per_page: 100,
-              });
-
-              const existing = comments.find(comment => (comment.body || '').includes(marker));
-              if (existing) {
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: existing.id,
-                  body,
-                });
-                console.log(`Updated PR trigger comment on #${prNumber}`);
-              } else {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: Number(prNumber),
-                  body,
-                });
-                console.log(`Created PR trigger comment on #${prNumber}`);
-              }
-            }
-
       # ── Step 4: Upload report artifact for reference ─────────────────────────
-      - name: Save triage artifacts
+      - name: Save report artifact
         if: always()
         env:
           REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
-          FAILURES_JSON: ${{ steps.fetch-failures.outputs.failures_json }}
-          TRIAGE_ISSUE_NUMBER: ${{ steps.upsert-issue.outputs.issue_number }}
         uses: actions/github-script@v9
         with:
           script: |
-            const fs = require('fs');
-            const failures = JSON.parse(process.env.FAILURES_JSON || '[]');
-            const triageIssueNumber = process.env.TRIAGE_ISSUE_NUMBER || null;
-            const generatedAt = new Date().toISOString();
-            const groupedByPr = {};
-
-            for (const failure of failures) {
-              if (!failure.pr_number) continue;
-              if (!groupedByPr[failure.pr_number]) groupedByPr[failure.pr_number] = [];
-              groupedByPr[failure.pr_number].push(failure);
-            }
-
-            fs.writeFileSync('ci-triage-report.md', process.env.REPORT_BODY || '*(no report)*');
-            fs.writeFileSync(
-              'ci-triage-failures.json',
-              JSON.stringify(
-                {
-                  generated_at: generatedAt,
-                  triage_issue_number: triageIssueNumber,
-                  failure_count: failures.length,
-                  failures,
-                },
-                null,
-                2,
-              ),
-            );
-            fs.writeFileSync(
-              'ci-triage-pr-triggers.json',
-              JSON.stringify(
-                {
-                  generated_at: generatedAt,
-                  triage_issue_number: triageIssueNumber,
-                  pull_requests: Object.entries(groupedByPr).map(([pr_number, pr_failures]) => ({
-                    pr_number: Number(pr_number),
-                    failure_count: pr_failures.length,
-                    workflows: pr_failures.map(failure => ({
-                      workflow_name: failure.workflow_name,
-                      run_number: failure.run_number,
-                      run_url: failure.run_url,
-                      failed_jobs: failure.failed_jobs,
-                      failing_steps: failure.failing_steps,
-                    })),
-                  })),
-                },
-                null,
-                2,
-              ),
-            );
+            require('fs').writeFileSync('ci-triage-report.md', process.env.REPORT_BODY || '*(no report)*');
 
       - name: Upload triage report artifact
         if: always()
         uses: actions/upload-artifact@v5
         with:
           name: ci-triage-report-${{ github.run_id }}
-          path: |
-            ci-triage-report.md
-            ci-triage-failures.json
-            ci-triage-pr-triggers.json
+          path: ci-triage-report.md
           retention-days: 30
 
       - name: Generate job summary
@@ -480,4 +341,3 @@ jobs:
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Issue: #\`${{ steps.upsert-issue.outputs.issue_number || 'N/A' }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "Artifacts: \`ci-triage-report.md\`, \`ci-triage-failures.json\`, \`ci-triage-pr-triggers.json\`" >> $GITHUB_STEP_SUMMARY
