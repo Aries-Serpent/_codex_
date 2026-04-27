@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S345 — 2026-04-27 — CI rescue 4330665768 + Pattern 25 refresh)
+- CI rescue 4330665768 (Validation Pipeline run #25020098958 on commit `ddb7f9e3`): investigated the Fast Validation failure via GitHub MCP logs. The failing pre-commit hook was `Auto-Fix Common CI Issues`, where Pattern 30 reported the `ruff (src/ clean)` dimension. Local revalidation on branch tip shows `ruff check src/ tests/ --fix` clean, `sync_tracked_files.py --check` clean, and the current actionable auto-fix item is Pattern 25 after auth/session `[skip ci]` commits advanced the branch tip.
+- Accountability repair: refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for the latest session so Pattern 25 and the Pattern 30 `auto_fix` dimension can pass once committed.
+- Local verification: `sync_tracked_files.py --check` ✅, `ruff check src/ tests/ --fix` ✅, `mypy_baseline.py --require-baseline` ✅ (117 = baseline).
+
 ### Fixed (S344 — 2026-04-27 — CI rescue 4330423871 + WEC-gated validation)
 - CI rescue 4330423871 (runs #25017705129, #25017705097, #25017705102, #25017705072 on commit `552ee12a`): root cause was Pattern 25 last-commit accountability after the auth/session `[skip ci]` commits advanced the branch tip. `auto_fix_common_issues.py` appended the required accountability entry, clearing the Pattern 30 auto-fix dimension once committed.
 - WEC process: re-read the live PR WEC block and kept the selected validation/security workflows armed while leaving `copilot-agent-session-done.yml`, `copilot-iterative-self-healing.yml`, and `auto-approve-workflows` unchecked.
