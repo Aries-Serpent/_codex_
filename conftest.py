@@ -31,7 +31,8 @@ _pytest_cli_args = tuple(_sys.argv[1:])
 _xdist_requested = any(
     _is_short_form_numprocesses_arg(arg)
     or arg.startswith("--numprocesses")
-    or arg in {"-d", "--dist"}
+    or arg.startswith("--dist")  # matches --dist, --dist=loadscope, --dist=load, etc.
+    or arg == "-d"
     for arg in _pytest_cli_args
 )
 if not _xdist_requested:

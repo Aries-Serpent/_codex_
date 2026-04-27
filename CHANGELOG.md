@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S342 — 2026-04-27 — review comment fixes: conftest.py --dist form + _WEC_NEVER_CHECK maintainer state + CI rescue 4329761709)
+- `conftest.py`: added `arg.startswith("--dist")` to `_xdist_requested` detection — the previous check `arg in {"-d", "--dist"}` missed the `--dist=<mode>` form (e.g. `--dist=loadscope`), which would leave `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` set and cause pytest-xdist's `--dist` option to fail to parse. (Review comment `r3149589657`)
+- `scripts/ci/session_wrapup_autofix.py`: changed `_checked()` to preserve maintainer's explicit `[x]` state for `_WEC_NEVER_CHECK` items instead of forcing them unchecked unconditionally. Agent still never auto-enables these items; but if a maintainer has manually set `[x]`, the rebuild now preserves that selection. Updated docstring to document this behavior. (Review comment `r3149589601`)
+- CI rescue 4329761709 (Fast Validation run #25014232973, commit `36c8a3d6`): root cause was Pattern 30 `ruff (src/ clean)` dimension reporting `❌ lint violations`. `ruff check src/` passes on current HEAD (`exit 0`). Stale transient failure resolved by current HEAD.
+- Local verification: `ruff check conftest.py scripts/ci/session_wrapup_autofix.py` ✅, `ruff check src/` ✅.
+
 ### Fixed (S341 — 2026-04-27 — CI rescue triage 4329615627/4329636161 — secrets-baseline + RP-004 stale on ee22d40d)
 - CI rescue 4329615627 (🔐 Secrets Baseline Enforcer run #25013128239, commit `ee22d40d`): `detect-secrets-hook` reported `.secrets.baseline is unstaged` — the `ee22d40d` S340 commit modified `.secrets.baseline` but the hook treated the in-progress baseline update as unstaged. Root cause is the same RP-004 sync drift already fixed in `c0b448bf` (S340b). Stale failure.
 - CI rescue 4329636161 (Pre-Merge Validation run #25013128233, commit `ee22d40d`, `Detect and Fix Common Issues`): `sync_tracked_files: ❌ stale` — same RP-004 root cause. Stale failure — fixed in `c0b448bf` (S340b).

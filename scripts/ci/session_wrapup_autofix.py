@@ -210,6 +210,11 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
     (per ``_WEC_ALWAYS_REQUIRED``) are unconditionally ``[x]`` regardless of
     existing state.
 
+    Items in ``_WEC_NEVER_CHECK`` are never *auto-enabled* by this function, but
+    any existing maintainer ``[x]`` selection is preserved.  This prevents the
+    agent from triggering unbounded Copilot continuation loops while still
+    respecting an intentional maintainer override.
+
     When ``COPILOT_AGENT_AUTH_ENABLED`` is already ``true`` (repo variable or env),
     the ``agent-auth-delegation.yml`` checkbox is auto-forced to ``[x]`` so the
     workflow fires on every PR without a human needing to check the box manually.
@@ -219,7 +224,8 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
 
     def _checked(filename: str) -> str:
         if filename in _WEC_NEVER_CHECK:
-            return " "  # always unchecked — prevents unbounded continuation loops
+            # Never auto-enable; preserve maintainer's explicit [x] if already set.
+            return "x" if state.get(filename, False) else " "
         if filename in _WEC_ALWAYS_REQUIRED:
             return "x"
         # Auto-check agent-auth-delegation when repo var already says true
