@@ -1350,7 +1350,6 @@ class TestCheckTokenHealth:
 
     def test_healthy_token_with_full_scopes(self, monkeypatch):
         """200 response with repo+workflow scopes → healthy=True."""
-        import json as _json
         from email.message import Message as _Msg
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_valid")
@@ -1365,7 +1364,7 @@ class TestCheckTokenHealth:
             headers = hdrs
 
             def read(self):
-                return _json.dumps({"login": "mbaetiong"}).encode()
+                return json.dumps({"login": "mbaetiong"}).encode()
 
             def __enter__(self):
                 return self
@@ -1382,7 +1381,6 @@ class TestCheckTokenHealth:
 
     def test_missing_scopes_on_master_key_warns(self, monkeypatch):
         """200 but missing scopes → healthy=False, warning mentions missing scopes."""
-        import json as _json
         from email.message import Message as _Msg
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_limited")
@@ -1397,7 +1395,7 @@ class TestCheckTokenHealth:
             headers = hdrs
 
             def read(self):
-                return _json.dumps({"login": "mbaetiong"}).encode()
+                return json.dumps({"login": "mbaetiong"}).encode()
 
             def __enter__(self):
                 return self
