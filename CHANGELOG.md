@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S340 — 2026-04-27 — CI rescue triage 4329508746/4329508990 — RP-004 stale on b7926376)
+- CI rescue 4329508746 (Pre-Merge Validation run #25012310893, commit `b7926376`): root cause was `sync_tracked_files: ❌ stale` — commit `b7926376` (S339 offload_candidates.json newline fix) did not yet include a `sync_tracked_files` sweep. The subsequent commit `bfcf9d89` (universal baseline sweep) resolved this. Stale failure — no code change required on current HEAD.
+- CI rescue 4329508990 (same run #25012310893, `@copilot continue` iterative self-healing request): same root cause as 4329508746. Stale failure — already resolved in `bfcf9d89`.
+- Local verification on current HEAD: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 ✅, `mypy_baseline` 117 ≤ 117 ✅.
+
 ### Fixed (S339 — 2026-04-27 — fix missing trailing newline in offload_candidates.json + CI rescue triage 4329019574)
 - Fixed pre-commit `end-of-file-fixer` failure: `.codex/repository_health/offload_candidates.json` was missing a trailing newline (identified from Fast Validation failure on commit `f8536117`, run #25008903649). Added trailing newline; pre-commit hook passes.
 - CI rescue 4329019574 (Validation Pipeline / Fast Validation run #25008903649 on commit `f8536117`): root cause was the missing end-of-file newline in `offload_candidates.json`. Fixed on current HEAD.

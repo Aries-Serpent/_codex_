@@ -2,6 +2,46 @@
 
 
 
+## SESSION SUMMARY — 2026-04-27T18:38Z (S340 — CI rescue triage 4329508746/4329508990 — RP-004 stale on b7926376)
+
+**Branch:** `copilot/create-implementation-plan-and-test-cases` | **PR:** #4077
+
+### Pre-flight Checklist
+- [x] **0a.** Loaded stored memories (WEC items, WEC defaults, deferral-scanner exemptions) ✅
+- [x] **0b.** Investigated CI run #25012310893 (Pre-Merge Validation on commit `b7926376`) ✅
+- [x] **0c.** Investigated rescue comments 4329508746 and 4329508990 ✅
+- [x] **1.** Local validation: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 ✅
+
+### Actions Taken
+- **Root cause for run #25012310893 (commit `b7926376`):** Pre-Merge Validation failed at `Merge Readiness
+  Dims` with `sync_tracked_files: ❌ stale`. This is a stale failure — the commit `b7926376` (S339 fix for
+  offload_candidates.json newline) did not yet include a `sync_tracked_files` sweep. The subsequent commit
+  `bfcf9d89` ("universal baseline sweep — sync+auto_fix") resolved this — it runs `sync_tracked_files.py --fix`
+  and `auto_fix_common_issues.py --check-only` as part of the session wrap-up.
+- **CI rescue 4329508746:** RP-004 tracked-file sync drift on commit `b7926376` — stale by time of
+  investigation. Current HEAD `bfcf9d89` passes `sync_tracked_files --check` ✅. No code change required.
+- **CI rescue 4329508990:** Same Pre-Merge Validation run #25012310893 on `b7926376`. Root cause and
+  resolution are identical to 4329508746.
+- **CHANGELOG + accountability report updated** with S340 entry.
+
+### Validation Results
+- `python3 -m ruff check src/ tests/` → All checks passed ✅
+- `python3 scripts/ci/sync_tracked_files.py --check` → All tracked files consistent ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only` → 0 auto-fixable issues ✅
+- `python3 scripts/ci/mypy_baseline.py --require-baseline` → 117 ≤ 117 ✅
+
+### Files Changed
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this S340 entry
+- `CHANGELOG.md` — S340 entry
+
+### Lessons Learned
+- RP-004 `sync_tracked_files` drift is a recurring pattern after commits that modify tracked files
+  (e.g., CHANGELOG, accountability report, metadata) without running the sync sweep. The "universal
+  baseline sweep" commit pattern (`sync+auto_fix [skip ci]`) reliably resolves this — once that commit
+  lands, any earlier CI failure for this pattern is stale.
+
+---
+
 ## SESSION SUMMARY — 2026-04-27T18:38Z [auto-generated]
 
 **Session:** auto-20260427T1838-run81146 | **Run:** 25012602021 | **Date:** 2026-04-27
