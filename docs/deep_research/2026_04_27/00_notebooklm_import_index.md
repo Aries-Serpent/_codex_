@@ -19,6 +19,7 @@ Import every Markdown file in this folder as a separate NotebookLM source. The n
 | `08_sustained_electromagnetism_and_power_transfer.md` | Deep research on sustained electromagnetism, wireless power transfer, RF harvesting, photovoltaics, spectrum-aware control, and safety constraints. |
 | `09_adaptive_energy_edge_cases_and_research_synthesis.md` | Edge cases and synthesis for adaptive energy-management scenarios spanning sensors, wireless charging, microgrids, and access governance. |
 | `10_novice_system_maturity_determination.md` | Defines how to determine maturity when novice systems consistently meet targets, including maturity equations, stage ladder, calibration probes, and energy/access examples. |
+| `11_continuous_energy_counterbalance.md` | Defines the counter-balance required to maintain continuous usable energy across supply, storage, demand, losses, safety margins, degradation, feedback, electromagnetism, grids, thermal systems, and security/access. |
 
 ## Core Thesis
 
@@ -80,4 +81,22 @@ Core maturity rule:
 
 ```text
 Maturity = consistent target achievement under variation + explainability + bounded risk + recoverability + transfer.
+```
+
+
+## Continuous-Energy Counter-Balance Extension
+
+Continuous energy is maintained by adaptive reserve management, not by constant generation alone.
+
+Key continuity model:
+
+```text
+E_cont(t) = [P_in(t) + P_storage(t) + P_recovery(t)] − [P_load(t) + P_loss(t) + P_safety(t) + P_degradation(t)]
+E_cont(t) ≥ E_min_margin for all critical time windows
+```
+
+Core counter-balance rule:
+
+```text
+continuous usable energy = variable supply + reserve + recovery − demand − loss − safety margin − degradation, corrected by feedback.
 ```
