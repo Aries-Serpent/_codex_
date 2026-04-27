@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S343 — 2026-04-27 — WEC activation + Pattern 32 precision)
+- `scripts/ci/auto_fix_common_issues.py`: tightened Pattern 32 so it only flags bare optional-fallback `# type: ignore` assignments and treats existing `# type: ignore[assignment]` comments as precise. A full source-wide broadening to `[assignment,misc]` raised the mypy count from 117 to 192, so the detector now matches the repository's current mypy-clean annotation style.
+- `tests/ci/test_pattern_recorder.py`: updated Pattern 32 expectations so assignment-specific ignores remain accepted and bare ignores are still normalized.
+- WEC process: restored the PR body through the hardened Workflow Execution Checklist path and selected the validation/security workflows needed for this session while leaving loop-prone continuation workflows unchecked.
+- Local verification: `auto_fix_common_issues.py --check-only --json-output` ✅ (0 issues), `mypy_baseline.py --require-baseline` ✅ (117 = baseline), `ruff check scripts/ci/auto_fix_common_issues.py tests/ci/test_pattern_recorder.py` ✅.
+
 ### Fixed (S342 — 2026-04-27 — review comment fixes: conftest.py --dist form + _WEC_NEVER_CHECK maintainer state + CI rescue 4329761709)
 - `conftest.py`: added `arg.startswith("--dist")` to `_xdist_requested` detection — the previous check `arg in {"-d", "--dist"}` missed the `--dist=<mode>` form (e.g. `--dist=loadscope`), which would leave `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` set and cause pytest-xdist's `--dist` option to fail to parse. (Review comment `r3149589657`)
 - `scripts/ci/session_wrapup_autofix.py`: changed `_checked()` to preserve maintainer's explicit `[x]` state for `_WEC_NEVER_CHECK` items instead of forcing them unchecked unconditionally. Agent still never auto-enables these items; but if a maintainer has manually set `[x]`, the rebuild now preserves that selection. Updated docstring to document this behavior. (Review comment `r3149589601`)

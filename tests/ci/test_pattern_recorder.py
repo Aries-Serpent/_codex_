@@ -360,10 +360,10 @@ class TestAutoFixCheckOnlyBehavior:
         fixer = mod.CommonIssueFixer(repo_root, check_only=True)
         issues = fixer.fix_bare_type_ignore_assign()
 
-        assert issues == [f"{target}:1: fallback assignment ignore should use [assignment,misc]"]
+        assert issues == [f"{target}:1: fallback assignment ignore should use [assignment]"]
         assert target.read_text(encoding="utf-8") == original
 
-    def test_pattern_32_upgrades_assignment_only_ignore(self, tmp_path):
+    def test_pattern_32_leaves_assignment_only_ignore_untouched(self, tmp_path):
         mod = _load_auto_fix()
         repo_root = tmp_path / "repo"
         src_dir = repo_root / "src"
@@ -375,7 +375,7 @@ class TestAutoFixCheckOnlyBehavior:
         issues = fixer.fix_bare_type_ignore_assign()
 
         assert issues == []
-        assert target.read_text(encoding="utf-8") == "value = None  # type: ignore[assignment,misc]\n"
+        assert target.read_text(encoding="utf-8") == "value = None  # type: ignore[assignment]\n"
 
     def test_pattern_32_leaves_normalized_ignore_untouched(self, tmp_path):
         mod = _load_auto_fix()

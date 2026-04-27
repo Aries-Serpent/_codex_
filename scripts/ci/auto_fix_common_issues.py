@@ -2944,8 +2944,8 @@ class CommonIssueFixer:
     #               (RP-MYPY-OPT-IMPORT)
     # ------------------------------------------------------------------
     def fix_bare_type_ignore_assign(self) -> List[str]:
-        """Pattern 32: Normalize optional-import fallback ignores to
-        ``# type: ignore[assignment,misc]``.
+        """Pattern 32: Normalize bare optional-import fallback ignores to
+        ``# type: ignore[assignment]``.
 
         **Root cause (RP-MYPY-OPT-IMPORT — 14 recurrences):**
         The idiom::
@@ -2963,9 +2963,8 @@ class CommonIssueFixer:
         **Detection:** scan ``src/`` for lines matching
         ``<name> = (None|object()|Any)  # type: ignore$`` (bare, no code in brackets).
 
-        **Auto-fix:** append ``[assignment,misc]`` to the bare ignore comment, or
-        expand an existing ``[assignment]`` code so the fix matches the current
-        mypy behaviour in this repository.
+        **Auto-fix:** append ``[assignment]`` to bare ignore comments.  Existing
+        ``[assignment]`` comments are already precise and must remain unchanged.
         """
         import re as _re
 
@@ -2974,12 +2973,11 @@ class CommonIssueFixer:
         if not src.is_dir():
             return issues
 
-        # Match: <ident> = None/object()/Any  # type: ignore
-        # or:   <ident> = None/object()/Any  # type: ignore[assignment]
-        # but ignore lines already normalized to [assignment,misc].
+        # Match only bare: <ident> = None/object()/Any  # type: ignore
+        # Lines already narrowed to [assignment] are precise and mypy-clean.
         bare_re = _re.compile(
             r'^(\s*\w+(?:\s*=\s*\w+(?:\.\w+)*)*\s*=\s*(?:None|object\(\)|Any))\s+'
-            r'(#\s*type:\s*ignore(?:\[assignment\])?)\s*$'
+            r'(#\s*type:\s*ignore)\s*$'
         )
         fixed = 0
         for py_file in sorted(src.rglob("*.py")):
@@ -2992,10 +2990,10 @@ class CommonIssueFixer:
             for i, line in enumerate(lines):
                 m = bare_re.match(line.rstrip("\n"))
                 if m:
-                    new_line = m.group(1) + "  # type: ignore[assignment,misc]\n"
+                    new_line = m.group(1) + "  # type: ignore[assignment]\n"
                     issues.append(
                         f"{py_file}:{i + 1}: fallback assignment ignore should use "
-                        "[assignment,misc]"
+                        "[assignment]"
                     )
                     if not self.dry_run and new_line.rstrip("\n") != lines[i].rstrip("\n"):
                         lines[i] = new_line
@@ -3012,15 +3010,15 @@ class CommonIssueFixer:
 
         if fixed:
             if self.dry_run:
-                print(f"   [dry-run] would normalize {fixed} line(s) to [assignment,misc]")
+                print(f"   [dry-run] would normalize {fixed} line(s) to [assignment]")
             else:
                 self.fixes_applied["Bare Type Ignore Assign"] = fixed
-                print(f"   ✅ Normalized {fixed} line(s) to [assignment,misc]")
+                print(f"   ✅ Normalized {fixed} line(s) to [assignment]")
                 issues.clear()
         elif self.dry_run and issues:
             print(
                 f"   [dry-run] would normalize {len(issues)} line(s) to "
-                "[assignment,misc]"
+                "[assignment]"
             )
 
         return issues
