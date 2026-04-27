@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency for JWT minting
     import jwt  # pyjwt
 except Exception:  # pragma: no cover - defer error until minting
-    jwt = None  # type: ignore[assignment,misc]
+    jwt = None  # type: ignore[assignment]
 
 
 GITHUB_API_BASE = os.getenv("GITHUB_API_BASE", "https://api.github.com")

@@ -24,8 +24,8 @@ try:
     import torch.nn.functional as F
     from torch.nn.utils import clip_grad_norm_
 except Exception:  # keep imports resilient
-    torch = None  # type: ignore[assignment,misc]
-    F = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
+    F = None  # type: ignore[assignment]
     clip_grad_norm_ = None
 
 from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402

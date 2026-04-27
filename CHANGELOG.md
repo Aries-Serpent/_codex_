@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S326 merge resolution)
+- Merged `origin/main` into `copilot/create-implementation-plan-and-test-cases` and
+  resolved the resulting merge conflicts without regressing the local merge-readiness work.
+- Re-tightened merged optional-import `type: ignore[assignment,misc]` annotations on the
+  mypy-reported lines so `python scripts/ci/mypy_baseline.py --require-baseline` passes
+  again at 38 errors.
+
 ### Fixed (2026-04-27 — PR #4077 S325b final validation sync)
 - `scripts/ci/session_wrapup_autofix.py` + `scripts/ci/auto_fix_common_issues.py`: Added a
   Pattern 30 self-recursion guard so the merge-readiness scorecard skips Pattern 30 when

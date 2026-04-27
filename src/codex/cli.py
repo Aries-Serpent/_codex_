@@ -27,14 +27,14 @@ import click  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import typer
 except Exception:  # pragma: no cover - degrade gracefully when Typer missing
-    typer = None  # type: ignore[assignment]
+    typer = None  # type: ignore[assignment,misc]
 else:  # pragma: no cover - exercised in Typer-enabled environments
     try:
         from codex.cli_knowledge import app as knowledge_app
         from codex.cli_release import app as release_app
     except Exception:  # pragma: no cover - Typer sub-app import guard
-        knowledge_app = None  # type: ignore[assignment]
-        release_app = None  # type: ignore[assignment]
+        knowledge_app = None  # type: ignore[assignment,misc]
+        release_app = None  # type: ignore[assignment,misc]
     else:
         app = typer.Typer(help="Codex Typer CLI (release + knowledge)")
         app.add_typer(release_app, name="release")

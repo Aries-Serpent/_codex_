@@ -49,7 +49,7 @@ except Exception:  # pragma: no cover
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except Exception:  # pragma: no cover - treated as unavailable
-    Version = None  # type: ignore[assignment]
+    Version = None  # type: ignore[assignment,misc]
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary

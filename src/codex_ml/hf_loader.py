@@ -31,8 +31,8 @@ if TYPE_CHECKING:  # pragma: no cover - import for typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel
     from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
 else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runtime
-    HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any  # type: ignore[assignment]
-    HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any  # type: ignore[assignment]
+    HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any  # type: ignore[assignment,misc]
+    HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any  # type: ignore[assignment,misc]
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")

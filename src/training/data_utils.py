@@ -57,7 +57,7 @@ else:  # pragma: no cover - runtime alias
     if torch is not None:
         Tensor = torch.Tensor
     else:
-        Tensor = Any  # type: ignore[assignment]
+        Tensor = Any  # type: ignore[assignment,misc]
 
 T = TypeVar("T")
 
