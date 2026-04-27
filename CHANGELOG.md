@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S328b review note sync)
+- Added a short purpose note for the optional event-publisher registry introduced during the
+  code-quality cleanup so the intent is explicit in the source.
+
 ### Fixed (2026-04-27 — PR #4077 S328 comment audit cleanup)
 - Cleared the current unused-global findings in `src/codex/cli.py` and
   `src/codex_ml/events/__init__.py` while preserving runtime behavior.
