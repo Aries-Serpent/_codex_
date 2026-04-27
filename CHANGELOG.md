@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S334 — 2026-04-27 — CI Triage #4097 follow-up + rescue comments 4328295406/4328366716)
+- Sourced CI Failure Triage Report issue #4097; confirmed all failures affecting PR #4077 were resolved in S333 (`f2e7a565`): Deferral Language Gate, WEC Template Integrity, and tracked-file sync drift.
+- Addressed rescue comments 4328295406 and 4328366716 (stale commit `017abf68`): pre-merge validation failure labelled `coverage-timeout` was actually `sync_tracked_files: ❌ stale`, fixed in S333.
+- Rebased local branch to remote HEAD; all validations (ruff, sync_tracked_files, auto_fix) pass on current HEAD.
+
 ### Fixed (S333 — 2026-04-27 — CI Failure Triage + WEC Hardening)
 - Fixed false-positive Deferral Language Gate (COMMENT_SCAN): added `pre-?existing\s+errors?\s+visible` exemption to `check_deferral_language.py` so factual annotation-narrowing descriptions are no longer flagged as policy violations.
 - Hardened `session_wrapup_autofix.py` WEC generation: changed `copilot-agent-session-done.yml` and `copilot-iterative-self-healing.yml` from `req=True` to `req=False` in `_WEC_ITEMS`; added `_WEC_NEVER_CHECK` frozenset and updated `_checked()` to unconditionally uncheck these and `auto-approve-workflows`; removed all three from `_MERGE_REQUIRED_WORKFLOWS` to prevent unbounded Copilot continuation loops.
