@@ -1,5 +1,31 @@
 # Agent Accountability Report
 
+## SESSION SUMMARY — 2026-04-27T21:14Z (S344 — CI rescue 4330423871 + WEC-gated validation)
+
+**Session:** S344 | **PR:** #4077 | **Run:** 25019382136 | **Date:** 2026-04-27
+
+### Pre-flight Checklist
+- [x] **0a.** Loaded mandatory repo state, Codebase Agency Policy, accountability report, PDA loop, agent context, and stored memories ✅
+- [x] **0b.** Investigated CI rescue comment 4330423871 and the listed failing workflow runs via GitHub MCP logs ✅
+- [x] **0c.** Re-read the live PR WEC block before selecting/validating workflows for this phase ✅
+
+### Actions Taken
+- **CI rescue 4330423871:** Retrieved job metadata and failed logs for Auto-Fix Common CI Issues (#25017705129), PR Auto-Fix Check (#25017705097), Pre-Merge Validation (#25017705102), and Validation Pipeline (#25017705072). All four failures reduce to Pattern 30 reporting `sync_tracked_files`/accountability state on commit `552ee12a`.
+- **Pattern 25 accountability repair:** `auto_fix_common_issues.py` appended this accountability entry after auth/session `[skip ci]` commits advanced the branch tip without touching the report.
+- **WEC process:** Preserved the live WEC selections for validation/security workflows and kept continuation-loop workflows unchecked.
+
+### Validation Results
+- `python3 scripts/ci/sync_tracked_files.py --check` → All tracked files consistent ✅
+- `python3 -m ruff check src/ tests/` → All checks passed ✅
+- `python3 scripts/ci/mypy_baseline.py --require-baseline` → 117 = baseline ✅
+- `python3 scripts/ci/auto_fix_common_issues.py --check-only` → expected to pass after this accountability entry is committed because Pattern 25 evaluates the last commit.
+
+### Files Changed
+- `CHANGELOG.md` — S344 CI rescue + WEC-gated validation entry
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this S344 accountability entry
+
+---
+
 ## SESSION SUMMARY — 2026-04-27T20:07Z (S343 — WEC activation + Pattern 32 precision + CI rescue 4330072666)
 
 **Branch:** `copilot/create-implementation-plan-and-test-cases` | **PR:** #4077
@@ -488,7 +514,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 **Session:** S330b | **PR:** 4077 | **Date:** 2026-04-27
 **Repository:** Aries-Serpent/_codex_ | **Branch:** copilot/create-implementation-plan-and-test-cases
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-27T18:38Z auto-20260427T1838-run81146 — auto-generated entry by Pattern 25
+**Last updated:** 2026-04-27T21:14Z auto-20260427T2114-run3029 — auto-generated entry by Pattern 25
 
 ### Objective
 Close the final review gap on the optional event-publisher helper, then record the session as

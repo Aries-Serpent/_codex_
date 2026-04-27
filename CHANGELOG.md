@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S344 — 2026-04-27 — CI rescue 4330423871 + WEC-gated validation)
+- CI rescue 4330423871 (runs #25017705129, #25017705097, #25017705102, #25017705072 on commit `552ee12a`): root cause was Pattern 25 last-commit accountability after the auth/session `[skip ci]` commits advanced the branch tip. `auto_fix_common_issues.py` appended the required accountability entry, clearing the Pattern 30 auto-fix dimension once committed.
+- WEC process: re-read the live PR WEC block and kept the selected validation/security workflows armed while leaving `copilot-agent-session-done.yml`, `copilot-iterative-self-healing.yml`, and `auto-approve-workflows` unchecked.
+- Local verification on current head: `sync_tracked_files.py --check` ✅, `ruff check src/ tests/` ✅, `mypy_baseline.py --require-baseline` ✅ (117 = baseline). `auto_fix_common_issues.py --check-only` is expected to go green after this accountability entry is committed because Pattern 25 checks the last commit.
+
 ### Fixed (S343 — 2026-04-27 — WEC activation + Pattern 32 precision)
 - `scripts/ci/auto_fix_common_issues.py`: tightened Pattern 32 so it only flags bare optional-fallback `# type: ignore` assignments and treats existing `# type: ignore[assignment]` comments as precise. A full source-wide broadening to `[assignment,misc]` raised the mypy count from 117 to 192, so the detector now matches the repository's current mypy-clean annotation style.
 - `tests/ci/test_pattern_recorder.py`: updated Pattern 32 expectations so assignment-specific ignores remain accepted and bare ignores are still normalized.
