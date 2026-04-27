@@ -787,7 +787,7 @@ def main() -> int:
         # infrastructure issue, not a code defect.  Exit 0 so the gate does not
         # hard-fail CI on a quota exhaustion; the workflow will re-run on the
         # next push or can be re-triggered manually.
-        if "rate limit" in msg.lower() or ("403" in msg and "rate" in msg.lower()):
+        if "rate limit" in msg.lower():
             print(
                 f"WARNING: GitHub API rate limit hit — skipping comment scan. "
                 f"Gate exits 0 (infrastructure transient). Detail: {msg}",

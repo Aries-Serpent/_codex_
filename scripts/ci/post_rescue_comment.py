@@ -275,11 +275,11 @@ def main() -> None:
         # Gracefully handle GitHub API rate-limit (HTTP 403) — this is a transient
         # infrastructure quota issue, not a code defect.  Exit 0 so the rescue-comment
         # job does not add a second false-positive failure on top of the real one.
-        err_msg = str(resp) if isinstance(resp, dict) else repr(resp)
-        if status == 403 and "rate limit" in err_msg.lower():
+        gh_message = resp.get("message", "") if isinstance(resp, dict) else str(resp)
+        if status == 403 and "rate limit" in gh_message.lower():
             print(
                 f"⚠️  POST skipped: GitHub API rate limit hit (HTTP 403). "
-                f"Rescue comment will be posted on the next push. Detail: {err_msg}"
+                f"Rescue comment will be posted on the next push. Detail: {gh_message}"
             )
             return
         print(f"❌ POST failed: HTTP {status} — {resp}")
