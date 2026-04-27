@@ -192,7 +192,7 @@ test = [
   "accelerate>=0.31,<2",
   "sentencepiece>=0.1.99",
   "tokenizers>=0.15",
-  "responses>=0.25.0",  # HTTP mocking for API tests (Zendesk, etc.)
+  "responses>=0.26.0",  # HTTP mocking for API tests (Zendesk, etc.)
 ]
 tokenizer = ["sentencepiece>=0.1.99"]
 tokenizers = ["tokenizers>=0.15"]
