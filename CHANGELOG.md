@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S330b helper-test + PDA wrap-up)
+- Added focused tests for `get_optional_event_publishers()` so the optional cloud publisher
+  helper introduced during merge resolution is covered in the event-module test suite.
+- Logged the merge-refresh / PR-reconciliation session as a successful autonomous
+  decision-making PDA loop outcome.
+
 ### Fixed (2026-04-27 — PR #4077 S330 merge refresh + open-PR recheck)
 - Re-merged the latest `main` into PR #4077, resolved the newly reintroduced conflict set,
   and cleared the live `OPTIONAL_EVENT_PUBLISHERS` code-quality blocker by switching to an
