@@ -30,7 +30,12 @@ __all__ = [
 
 from .base import Event, EventBus, EventPublisher, EventSubscriber, EventType
 
-__all__ += ["AzureEventPublisher", "AWSEventPublisher", "TrainingEventEmitter"]
+__all__ += [
+    "AzureEventPublisher",
+    "AWSEventPublisher",
+    "TrainingEventEmitter",
+    "get_optional_event_publishers",
+]
 
 try:
     from .azure_events import AzureEventPublisher
@@ -46,9 +51,11 @@ except ImportError as e:
     logger.warning(f"ImportError: {e}", exc_info=True)
     AWSEventPublisher = None  # type: ignore[assignment,misc]
 
-# Keep optional publisher exports in an explicit registry so the module-level
-# symbols are concretely referenced even when cloud-specific deps are absent.
-OPTIONAL_EVENT_PUBLISHERS = {
-    "azure": AzureEventPublisher,
-    "aws": AWSEventPublisher,
-}
+
+def get_optional_event_publishers() -> dict[str, type[EventPublisher] | None]:
+    """Return the optional cloud event publishers exposed by this module."""
+
+    return {
+        "azure": AzureEventPublisher,
+        "aws": AWSEventPublisher,
+    }
