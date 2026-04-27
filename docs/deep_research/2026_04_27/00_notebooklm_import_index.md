@@ -18,6 +18,7 @@ Import every Markdown file in this folder as a separate NotebookLM source. The n
 | `07_adaptive_energy_management_spectrum.md` | Extends CpT into adaptive energy-management across thermal, electrical, electromagnetic, chemical, mechanical, informational, and security/access domains. |
 | `08_sustained_electromagnetism_and_power_transfer.md` | Deep research on sustained electromagnetism, wireless power transfer, RF harvesting, photovoltaics, spectrum-aware control, and safety constraints. |
 | `09_adaptive_energy_edge_cases_and_research_synthesis.md` | Edge cases and synthesis for adaptive energy-management scenarios spanning sensors, wireless charging, microgrids, and access governance. |
+| `10_novice_system_maturity_determination.md` | Defines how to determine maturity when novice systems consistently meet targets, including maturity equations, stage ladder, calibration probes, and energy/access examples. |
 
 ## Core Thesis
 
@@ -63,3 +64,20 @@ Current-data source anchors captured during web search:
 - Wireless Power Transfer systems/circuits/standards/use cases: `https://pmc.ncbi.nlm.nih.gov/articles/PMC9371050/`
 - Inductive coupling for WPT/NFC: `https://link.springer.com/article/10.1186/s13638-021-01994-4`
 - NIST WPT and energy harvesting: `https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=927310`
+
+
+## Novice-System Maturity Extension
+
+A novice system consistently meeting targets is not automatically mature. The maturity extension distinguishes target attainment from durable capability.
+
+Key maturity model:
+
+```text
+M_system = W_target · R_consistency · G_generalization · O_observability · S_safety · A_adaptivity · Q_quality / (F_fragility + D_drift + C_hidden)
+```
+
+Core maturity rule:
+
+```text
+Maturity = consistent target achievement under variation + explainability + bounded risk + recoverability + transfer.
+```
