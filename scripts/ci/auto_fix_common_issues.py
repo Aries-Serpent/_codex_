@@ -218,6 +218,18 @@ class CommonIssueFixer:
         ]
         patterns = all_patterns
 
+        # CODEX_SKIP_PATTERN_NUMS: comma-separated list of pattern numbers to skip.
+        # Used by session_wrapup_autofix.py to pass CODEX_SKIP_PATTERN_NUMS=30 when
+        # checking the auto_fix dimension, preventing Pattern 30 self-recursion.
+        _skip_raw = os.environ.get("CODEX_SKIP_PATTERN_NUMS", "")
+        _skip_nums: set[int] = set()
+        for _tok in _skip_raw.split(","):
+            _tok = _tok.strip()
+            if _tok.isdigit():
+                _skip_nums.add(int(_tok))
+        if _skip_nums:
+            patterns = [(n, nm, f) for n, nm, f in patterns if n not in _skip_nums]
+
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
@@ -2727,7 +2739,7 @@ class CommonIssueFixer:
             return issues
 
         try:
-            scorecard = swa._compute_merge_readiness_score(str(self.repo_root))
+            scorecard = swa._compute_merge_readiness_score()
         except Exception as exc:
             print(f"⚠  Pattern 30 (Merge Readiness): scorecard computation failed: {exc}")
             return issues

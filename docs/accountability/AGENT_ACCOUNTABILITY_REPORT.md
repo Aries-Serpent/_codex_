@@ -20903,3 +20903,31 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## Session Entry — 2026-04-27 (S_PR4083_heal2)
+
+**Branch:** dependabot/pip/ml-dependencies-750c1ffc42  
+**PR:** #4083 — bump transformers 5.5.4→5.6.2  
+**Triggered by:** @mbaetiong comment on workflow run 24989492015  
+
+### Actions Taken
+1. Retrieved and analysed logs for failing Validation Pipeline run 24989492015.
+2. Identified root causes: Pattern 7 (redundant `import json as _json` inside test functions in `tests/github/test_mcp_poster.py`) and Pattern 30 bug (`_compute_merge_readiness_score()` called with spurious `str(self.repo_root)` arg).
+3. Fixed `scripts/ci/auto_fix_common_issues.py` line 2730: removed erroneous positional arg from `swa._compute_merge_readiness_score()` call.
+4. Fixed `tests/github/test_mcp_poster.py`: removed redundant `import json as _json` inside `test_healthy_token_with_full_scopes` and `test_missing_scopes_on_master_key_warns`; updated `_json.dumps(...)` references to use the top-level `json` import.
+5. Verified: Pattern 7 → 0 issues, Pattern 30 no longer crashes, all `TestCheckTokenHealth` tests pass (5/5), `ruff` clean.
+
+### Files Changed
+- `scripts/ci/auto_fix_common_issues.py` — Pattern 30 arg fix
+- `tests/github/test_mcp_poster.py` — Pattern 7 redundant import removal
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+
+### Cherry-Pick Target
+All changes on this branch are prepared for cherry-pick into PR #4077.
+Commits to cherry-pick (in order):
+```
+git cherry-pick <SHA_OF_THIS_COMMIT>
+```
+See PR #4083 comment thread for the exact commit SHA after push.
