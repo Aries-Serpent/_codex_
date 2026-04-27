@@ -20918,3 +20918,27 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## SESSION SUMMARY — 2026-04-27T11:35Z SESSION S325c (PR #4078)
+
+### Pre-flight Checklist
+- [x] **0a.** Comment #4326433471 ("stale lock cleared / @copilot continue") reviewed and addressed ✅
+- [x] **0b.** All prior CI failures resolved in earlier commits; scorecard locally green ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** WEC `auto-approve-workflows`, `copilot-iterative-self-healing.yml`, `copilot-agent-session-done.yml` unchecked to prevent unbounded session loops ✅
+- [x] **3.** Cherry-pick guide prepared for PR #4077 agent ✅
+
+### Work Completed
+1. **Cherry-pick guide created** — `.github/copilot-prompts/active/PR-4077-cherrypick-from-4078.md`
+   documents the 3 portable commits (`16bf67f`, `d2402df`, `da3e402`) with exact SHA
+   one-liners and a post-verification checklist for the PR #4077 Copilot cloud agent.
+2. **WEC corrected** — unchecked `auto-approve-workflows`, `copilot-iterative-self-healing.yml`,
+   and `copilot-agent-session-done.yml` to stop continuation loops.
+3. **Memory stored** — WEC defaults fact refreshed in store_memory.
+
+### Impact Score
+- Files updated: 3 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`, cherry-pick guide)
+- CI gates satisfied: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations
+
+---
