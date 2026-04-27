@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S325b — 2026-04-27 — PR #4078)
+- Continued after Agent Token Delegation activated; verified all scorecard dimensions green (ruff, sync_tracked_files, auto_fix, PDA, accountability)
+
 ### Fixed (auto-update — PR #4078)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4078 (SHA `391d0641`) at 2026-04-27T01:03Z [auto-generated]
 
