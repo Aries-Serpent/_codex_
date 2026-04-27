@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S339 — 2026-04-27 — fix missing trailing newline in offload_candidates.json + CI rescue triage 4329019574)
+- Fixed pre-commit `end-of-file-fixer` failure: `.codex/repository_health/offload_candidates.json` was missing a trailing newline (identified from Fast Validation failure on commit `f8536117`, run #25008903649). Added trailing newline; pre-commit hook passes.
+- CI rescue 4329019574 (Validation Pipeline / Fast Validation run #25008903649 on commit `f8536117`): root cause was the missing end-of-file newline in `offload_candidates.json`. Fixed on current HEAD.
+- Local verification on current HEAD: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 ✅.
+
 ### Fixed (S338 — 2026-04-27 — CI rescue triage 4328890200/4328927921 on commit 60d0b2ce)
 - CI rescue 4328890200 (Pre-Merge Validation run #25008086992, commit `60d0b2ce`): root cause was `sync_tracked_files: ❌ stale` under Merge Readiness Dims — the tracked-file state on that commit was not yet refreshed. The stale tracked-file state was resolved in a subsequent commit; current HEAD passes `sync_tracked_files --check` ✅. This is a stale failure report (head has moved past the failure point).
 - CI rescue 4328927921 (iterative self-healing escalation for run #25008086992): same root cause as 4328890200 above. No code change required on current HEAD.
