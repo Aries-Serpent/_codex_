@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S336 — 2026-04-27 — CodeQL #12805 + CI rescue triage 4328590968/4328642845)
+- Fixed CodeQL alert #12805: removed `_typer = None` from the `except` branch in `src/codex/cli.py`; the fallback assignment was dead code (never read after the try/except/else block), triggering "global variable not used" alert. The `else` block already has `_typer` defined as the imported module; the `except` branch no longer needs to set it to `None`.
+- CI rescue 4328590968 (commit `500c5a18`, 27 failing checks): Validation Pipeline failure was stale — root cause (Pattern 30 dim at 90/100) was already fixed in S334/S335. Current HEAD passes all checks.
+- Pre-Merge Validation run #25006466718 (`sync_tracked_files: ❌ stale`): failure was on commit `500c5a18`; current HEAD passes `sync_tracked_files --check` ✅.
+- Local verification on current HEAD: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 ✅, `mypy_baseline` ≤ 119 ✅.
+
 ### Fixed (S335 — 2026-04-27 — CI Rescue 4328437719 + Validation Pipeline root-cause)
 - Investigated Validation Pipeline / Fast Validation failure (run #25004830118, commit `f2e7a565`): root cause was Pattern 30 (Merge Readiness) scoring 90/100 — accountability report dimension failing, causing `auto-fix-ci-issues` pre-commit hook to exit 1, which failed `run_validation.sh --fast`. Fixed in S334 (`500c5a18`) — accountability report updated → Pattern 30 now 100/100 on current HEAD.
 - Verified current HEAD (`500c5a18`) is fully clean: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 (0 auto-fixable) ✅, `mypy_baseline` 117 ≤ 119 ✅.

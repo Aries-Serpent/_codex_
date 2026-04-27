@@ -27,7 +27,7 @@ import click  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import typer as _typer
 except Exception:  # pragma: no cover - degrade gracefully when Typer missing
-    _typer = None  # type: ignore[assignment,misc]
+    pass
 else:  # pragma: no cover - exercised in Typer-enabled environments
     try:
         from codex.cli_knowledge import app as knowledge_typer_app
