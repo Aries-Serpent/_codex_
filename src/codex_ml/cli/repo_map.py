@@ -31,7 +31,7 @@ from typing import Any, Optional
 try:  # pragma: no cover - optional dependency path
     import yaml
 except Exception:  # pragma: no cover - PyYAML not installed in minimal envs
-    yaml = None
+    yaml = None  # type: ignore[assignment]
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 

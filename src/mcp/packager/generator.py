@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 try:
     import yaml
 except Exception:  # pragma: no cover - optional dependency
-    yaml = None
+    yaml = None  # type: ignore[assignment]
 
 
 def load_config(path: str) -> PackageConfig:

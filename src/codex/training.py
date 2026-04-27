@@ -64,7 +64,7 @@ from codex_utils.repro import log_env_info  # noqa: E402
 # Import TrainCfg and run_custom_trainer from training module
 # These are used by tests in tests/space_traversal/test_peft_comprehensive/
 try:
-    from training.functional_training import TrainCfg, run_custom_trainer
+    from training.functional_training import TrainCfg, run_custom_trainer  # type: ignore[attr-defined]
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

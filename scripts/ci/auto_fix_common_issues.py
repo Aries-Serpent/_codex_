@@ -2732,7 +2732,7 @@ class CommonIssueFixer:
             return issues
 
         try:
-            scorecard = swa._compute_merge_readiness_score(str(self.repo_root))
+            scorecard = swa._compute_merge_readiness_score()
         except Exception as exc:
             print(f"⚠  Pattern 30 (Merge Readiness): scorecard computation failed: {exc}")
             return issues

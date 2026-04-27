@@ -393,6 +393,31 @@ class TestAutoFixCheckOnlyBehavior:
         assert target.read_text(encoding="utf-8") == original
 
 
+class TestPattern30MergeReadiness:
+    def test_pattern_30_uses_noarg_scorecard(self, tmp_path):
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        scripts_ci = repo_root / "scripts" / "ci"
+        scripts_ci.mkdir(parents=True)
+        (repo_root / "src").mkdir()
+
+        (scripts_ci / "session_wrapup_autofix.py").write_text(
+            """
+def _compute_merge_readiness_score():
+    return {
+        "dimensions": [("auto_fix (0 auto-fixable)", 15, "✅ 0 auto-fixable", True)],
+        "score": 100,
+        "total": 100,
+    }
+""".strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+        fixer = mod.CommonIssueFixer(repo_root)
+        assert fixer.fix_merge_readiness_dims() == []
+
+
 class TestFindKwargRemovalSpan:
     def _make_fixer(self):
         mod = _load_auto_fix()

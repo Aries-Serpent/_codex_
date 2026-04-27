@@ -14,8 +14,8 @@ from typing import Any
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - optional dependency
-    DictConfig = Any  # type: ignore[assignment]
-    OmegaConf = None  # type: ignore[assignment]
+    DictConfig = Any  # type: ignore[assignment,misc]
+    OmegaConf = None  # type: ignore[assignment,misc]
 
 __all__ = [
     "ConfigError",

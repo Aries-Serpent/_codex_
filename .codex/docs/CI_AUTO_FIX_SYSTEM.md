@@ -14,6 +14,10 @@ Since common CI issues are **frequently raised by active workflows**, this autom
 - direct auto-fixes for common CI breakages
 - non-blocking hygiene warnings for large codebase-wide cleanups
 - PR-triage and merge-readiness helper patterns for Copilot cloud-agent sessions
+- merge-readiness scorecard integration aligned with `session_wrapup_autofix.py`'s
+  current no-argument `_compute_merge_readiness_score()` API
+- local minimal typing environments aligned more closely with CI via stub parity
+  (`types-PyYAML` + `types-requests`)
 
 ### Problem Statement
 

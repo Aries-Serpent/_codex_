@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S325 merge-readiness follow-up)
+- `scripts/ci/auto_fix_common_issues.py`: Fixed Pattern 30 to call
+  `_compute_merge_readiness_score()` with the current no-argument signature.
+- `requirements-minimal.txt`: Added `types-requests` so the minimal local typing environment
+  matches the CI mypy stub set more closely.
+- Reduced local direct `mypy src` output from 89 errors to 38 by tightening a broad set of
+  optional-import fallback annotations and a handful of small type mismatches.
+
 ### Fixed (2026-04-26 — PR #4077 validation follow-up)
 - `docs/ROADMAP.md`: Accepted the validation-hook documentation refresh so the working tree stays clean
   after fast validation runs.
