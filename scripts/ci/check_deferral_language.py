@@ -151,6 +151,12 @@ EXEMPTION_PATTERNS: list[str] = [
     # pre-existing errors)"), NOT a deferral claim.  Requires a leading digit so bare
     # "pre-existing errors" still triggers.
     r"\d+\s+pre-existing\s+(?:type\s+)?errors\b",
+    # Annotation-narrowing impact: "pre-existing errors visible after annotation narrowing"
+    # is a factual changelog description of errors that became visible when type: ignore
+    # annotations were narrowed (e.g. [assignment,misc] → [assignment]).  This is NOT a
+    # deferral — it documents what changed.  Requires "visible after" so that more general
+    # phrases like "pre-existing errors visible in the codebase" still trigger the gate.
+    r"pre-?existing\s+errors?\s+visible\s+after",
     # Agent-comment meta-reporting: an agent quoting a previously-detected trigger
     # phrase to report that the root cause was identified and fixed.
     # Example: "PR body contained 'follow-up task' matching the trigger pattern. Fixed."

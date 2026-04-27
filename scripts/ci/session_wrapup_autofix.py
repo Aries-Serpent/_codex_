@@ -94,8 +94,8 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("workflow-execution-gate.yml",   "WEC gate — parse checklist & arm allowed workflows (always required)", True),
     # --- Always Active (fire via push/workflow_run) ---
     ("copilot-agent-checkin.yml",     "Agent check-in / S221 guard (fires on push)",                True),
-    ("copilot-agent-session-done.yml", "Auto-post @copilot review after agent session (fires on workflow_run)", True),
-    ("copilot-iterative-self-healing.yml", "Iterative self-healing CI loop (fires on workflow_run — needs approval)", True),
+    ("copilot-agent-session-done.yml", "Auto-post @copilot review after agent session (fires on workflow_run)", False),
+    ("copilot-iterative-self-healing.yml", "Iterative self-healing CI loop (fires on workflow_run — needs approval)", False),
     ("cost-gate.yml",                 "Cost governance gate (called by agent-auth-delegation)",      True),
     # --- Testing & Validation (all enabled — agent manages CI autonomously) ---
     ("validate.yml",                  "Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)", False),
@@ -140,6 +140,26 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
 _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(
     fname for fname, _, always_required in _WEC_ITEMS if always_required
 )
+
+# Workflows that must NEVER be auto-checked during WEC generation.
+# Checking these causes the CI rescue system to auto-trigger new Copilot sessions
+# on every push, creating unbounded continuation loops.  Maintainer may check them
+# manually; the agent must never check them automatically.
+#
+# Why each is here:
+#   copilot-agent-session-done.yml  — fires on workflow_run; triggers a new @copilot
+#       review-request comment on every successful run, which the rescue loop then
+#       treats as a new unaddressed comment, firing another Copilot session.
+#   copilot-iterative-self-healing.yml — fires on workflow_run; schedules a new
+#       self-healing CI loop that posts rescue comments and re-triggers Copilot.
+#   auto-approve-workflows — approves ALL pending workflow runs on the latest SHA;
+#       approving copilot-agent-session-done and copilot-iterative-self-healing
+#       immediately re-enters the continuation loop from the previous two items.
+_WEC_NEVER_CHECK: frozenset[str] = frozenset({
+    "copilot-agent-session-done.yml",
+    "copilot-iterative-self-healing.yml",
+    "auto-approve-workflows",
+})
 
 
 def _extract_wec_state(pr_body: str) -> dict[str, bool]:
@@ -198,6 +218,8 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
     auth_already_active = _auth_enabled_in_env()
 
     def _checked(filename: str) -> str:
+        if filename in _WEC_NEVER_CHECK:
+            return " "  # always unchecked — prevents unbounded continuation loops
         if filename in _WEC_ALWAYS_REQUIRED:
             return "x"
         # Auto-check agent-auth-delegation when repo var already says true
@@ -1176,10 +1198,8 @@ def select_merge_required_workflows(
         "deferral-language-gate.yml",
         "agent-auth-delegation.yml",
         "workflow-execution-gate.yml",
-        # Always-active (need activation for approval flow)
+        # Always-active (need activation for approval flow; excludes continuation-loop triggers)
         "copilot-agent-checkin.yml",
-        "copilot-agent-session-done.yml",
-        "copilot-iterative-self-healing.yml",
         "cost-gate.yml",
         # Opt-in: validation & testing (required for passing merge gate)
         "validate.yml",
@@ -1190,8 +1210,9 @@ def select_merge_required_workflows(
         "security-scanning-suite.yml",
         # Opt-in: infrastructure (reference integrity gate)
         "reference-integrity.yml",
-        # Auto-approve (clears pending approval prompts so workflows can run)
-        "auto-approve-workflows",
+        # NOTE: copilot-agent-session-done.yml, copilot-iterative-self-healing.yml,
+        # and auto-approve-workflows are in _WEC_NEVER_CHECK and must never be activated
+        # automatically — they cause unbounded Copilot continuation loops.
     })
 
     try:
