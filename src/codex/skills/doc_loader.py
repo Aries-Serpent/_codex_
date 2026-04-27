@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 try:
     import yaml
 except Exception:  # pragma: no cover
-    yaml = None  # type: ignore[assignment]
+    yaml = None  # type: ignore[assignment,misc]
 
 
 def _repo_root() -> Path:

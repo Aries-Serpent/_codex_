@@ -222,6 +222,14 @@ class CommonIssueFixer:
             (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
         ]
         patterns = all_patterns
+        skip_env = os.getenv("CODEX_SKIP_PATTERN_NUMS", "")
+        skip_patterns = {
+            int(part.strip())
+            for part in skip_env.split(",")
+            if part.strip().isdigit()
+        }
+        if skip_patterns and not pattern_num:
+            patterns = [(n, nm, f) for n, nm, f in patterns if n not in skip_patterns]
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]

@@ -417,6 +417,27 @@ def _compute_merge_readiness_score():
         fixer = mod.CommonIssueFixer(repo_root)
         assert fixer.fix_merge_readiness_dims() == []
 
+    def test_run_all_patterns_respects_skip_env(self, monkeypatch):
+        mod = _load_auto_fix()
+        fixer = mod.CommonIssueFixer(Path("."))
+        called: list[int] = []
+
+        def _mark(num: int):
+            def _inner():
+                called.append(num)
+                return []
+
+            return _inner
+
+        fixer.fix_unused_imports = _mark(1)  # type: ignore[method-assign]
+        fixer.fix_merge_readiness_dims = _mark(30)  # type: ignore[method-assign]
+        monkeypatch.setenv("CODEX_SKIP_PATTERN_NUMS", "30")
+
+        fixer.run_all_patterns()
+
+        assert 1 in called
+        assert 30 not in called
+
 
 class TestFindKwargRemovalSpan:
     def _make_fixer(self):

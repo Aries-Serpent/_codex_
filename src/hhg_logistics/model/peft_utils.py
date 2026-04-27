@@ -27,7 +27,7 @@ try:  # pragma: no cover - optional dependency
     import torch
     from torch import Tensor
 except Exception:  # pragma: no cover - guard for optional deps
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
     Tensor = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - optional dependency

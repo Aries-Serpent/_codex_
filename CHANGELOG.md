@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S325b final validation sync)
+- `scripts/ci/session_wrapup_autofix.py` + `scripts/ci/auto_fix_common_issues.py`: Added a
+  Pattern 30 self-recursion guard so the merge-readiness scorecard skips Pattern 30 when
+  evaluating the `auto_fix` dimension.
+- Accepted the final validation-generated `docs/ROADMAP.md` refresh and the last round of
+  safe optional-import fallback normalization triggered by the fast-validation hook.
+
 ### Fixed (2026-04-27 — PR #4077 S325 merge-readiness follow-up)
 - `scripts/ci/auto_fix_common_issues.py`: Fixed Pattern 30 to call
   `_compute_merge_readiness_score()` with the current no-argument signature.

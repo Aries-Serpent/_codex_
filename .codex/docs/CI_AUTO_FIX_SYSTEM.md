@@ -16,6 +16,8 @@ Since common CI issues are **frequently raised by active workflows**, this autom
 - PR-triage and merge-readiness helper patterns for Copilot cloud-agent sessions
 - merge-readiness scorecard integration aligned with `session_wrapup_autofix.py`'s
   current no-argument `_compute_merge_readiness_score()` API
+- Pattern 30 self-recursion guard for scorecard evaluation (`CODEX_SKIP_PATTERN_NUMS=30`
+  during scorecard auto-fixability checks)
 - local minimal typing environments aligned more closely with CI via stub parity
   (`types-PyYAML` + `types-requests`)
 

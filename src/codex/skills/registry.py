@@ -32,7 +32,7 @@ except ImportError:  # pragma: no cover - optional but present in dev requiremen
 try:
     import yaml
 except Exception:  # pragma: no cover - optional but present in requirements
-    yaml = None  # type: ignore[assignment]
+    yaml = None  # type: ignore[assignment,misc]
 
 from .models import RegisteredSkill, SkillManifest
 
