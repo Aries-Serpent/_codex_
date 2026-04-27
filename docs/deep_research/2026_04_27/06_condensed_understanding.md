@@ -7,7 +7,7 @@
 
 ## 1. One-Sentence Summary
 
-$C_pT$ means heat capacity multiplied by absolute temperature; as a security/access analogy, it describes how much governed access energy a system can carry under a given threat temperature before friction, entropy, or risk overwhelms useful work.
+In thermodynamics, $C_pT$ means heat capacity multiplied by absolute temperature. As a security/access analogy, it describes how much governed access energy a system can carry under a given threat temperature before friction, entropy, or risk overwhelms useful work.
 
 ## 2. Core Thermodynamic Meaning
 

@@ -136,5 +136,5 @@ Usable governed capability H_sa
       |     ██                     ██
  low  |  breach risk          paralysis risk
       +----------------------------------------
-          open        balanced        locked
+       open zone   balanced zone   locked zone
 ```
