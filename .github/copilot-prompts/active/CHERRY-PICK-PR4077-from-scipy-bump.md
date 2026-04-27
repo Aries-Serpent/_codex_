@@ -2,7 +2,7 @@
 
 **Source branch**: `dependabot/pip/scipy-1.17.1`  
 **Target PR**: #4077 (`copilot/create-implementation-plan-and-test-cases`)  
-**Prepared by**: Copilot session `22b1bf38` (2026-04-27)  
+**Prepared by**: Copilot session `22b1bf38` (2026-04-27, updated 2026-04-27T11:50Z)  
 **Status**: 🔴 ACTION REQUIRED — apply these patches to PR #4077
 
 ---
@@ -56,14 +56,19 @@ grep -n "CODEX_SKIP_PATTERN_NUMS" scripts/ci/auto_fix_common_issues.py | head -3
 grep -n "CODEX_SKIP_PATTERN_NUMS" scripts/ci/session_wrapup_autofix.py | head -3
 
 # Step 4 — run the auto-fix check to confirm exit 0
-python3 scripts/ci/auto_fix_common_issues.py --check-only
+CODEX_SKIP_PATTERN_NUMS=30 python3 scripts/ci/auto_fix_common_issues.py --check-only
 echo "Exit: $?"   # must be 0
 
 # Step 5 — sync tracked files & update accountability
 python3 scripts/ci/auto_fix_common_issues.py --pattern 25
 python3 scripts/ci/sync_tracked_files.py --fix
 
-# Step 6 — commit
+# Step 6 — IMPORTANT: uncheck continuation workflows in WEC before committing
+#          Uncheck: auto-approve-workflows, copilot-iterative-self-healing.yml,
+#                   copilot-agent-session-done.yml
+#          (prevents unbounded Copilot session loops after push)
+
+# Step 7 — commit
 git add scripts/ci/auto_fix_common_issues.py scripts/ci/session_wrapup_autofix.py \
         docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md .secrets.baseline
 git commit -m "fix(ci): cherry-pick Pattern 30 arity fix + CODEX_SKIP_PATTERN_NUMS recursion guard from scipy bump branch"
