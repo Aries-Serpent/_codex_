@@ -26,7 +26,7 @@ if _sys.platform != "win32":
 
     _HAS_FCNTL = True
 else:
-    _fcntl = None  # type: ignore[assignment,misc]
+    _fcntl = None  # type: ignore[assignment]
     _HAS_FCNTL = False
     logger.warning(
         "fcntl unavailable on Windows — MemoryBackend file-locking disabled "

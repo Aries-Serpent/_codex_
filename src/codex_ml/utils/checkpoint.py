@@ -26,7 +26,7 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 try:  # pragma: no cover - optional torch dependency in lightweight environments
     import torch
 except Exception:  # pragma: no cover - allow checkpoint utilities without torch
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 
 def _torch_supports_weights_only() -> bool:

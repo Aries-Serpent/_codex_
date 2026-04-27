@@ -64,7 +64,7 @@ try:  # pragma: no cover - optional dependency
     import torch
     from torch.utils.data import DataLoader, Dataset
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
     AdamW = None
     DataLoader = None  # type: ignore[assignment,misc]
     Dataset = object  # type: ignore[assignment,misc]

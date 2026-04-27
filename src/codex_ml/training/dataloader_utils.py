@@ -34,7 +34,7 @@ except Exception:  # pragma: no cover - numpy may be absent
 try:  # pragma: no cover - optional dependency
     import torch
 except Exception:  # pragma: no cover - torch may be absent
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 __all__ = ["seed_worker", "make_generator"]
 

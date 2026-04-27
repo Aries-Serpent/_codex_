@@ -29,8 +29,8 @@ if _HAS_TRANSFORMERS:
     AutoModelForCausalLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForCausalLM)
     AutoModelForMaskedLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForMaskedLM)
 else:  # pragma: no cover - optional dependency unavailable
-    AutoModelForCausalLM = None  # type: ignore[assignment,misc]
-    AutoModelForMaskedLM = None  # type: ignore[assignment,misc]
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoModelForMaskedLM = None  # type: ignore[assignment]
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 

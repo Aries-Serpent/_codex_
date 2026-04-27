@@ -30,10 +30,10 @@ try:  # pragma: no cover - torch is optional
     import torch
     from torch.utils.data import DataLoader, TensorDataset, random_split
 except Exception:  # pragma: no cover - fallback stubs when torch is absent
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
     DataLoader = None  # type: ignore[assignment,misc]
     TensorDataset = None  # type: ignore[assignment,misc]
-    random_split = None  # type: ignore[assignment,misc]
+    random_split = None  # type: ignore[assignment]
 
 _REGISTRY: dict[str, Callable[..., Any]] = {}
 

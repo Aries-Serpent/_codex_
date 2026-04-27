@@ -24,7 +24,7 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
-    detect_encoding = None  # type: ignore[assignment,misc]
+    detect_encoding = None  # type: ignore[assignment]
 
 
 def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:

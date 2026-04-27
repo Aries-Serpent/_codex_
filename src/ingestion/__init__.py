@@ -32,7 +32,7 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
-    _repo_detect_encoding = None  # type: ignore[assignment,misc]
+    _repo_detect_encoding = None  # type: ignore[assignment]
 
 try:
     # io_text.read_text historically provided a number of signatures:
@@ -43,7 +43,7 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
-    _io_text_read_text = None  # type: ignore[assignment,misc]
+    _io_text_read_text = None  # type: ignore[assignment]
 
 try:
     # Some callers expect _detect_encoding from io_text
@@ -53,7 +53,7 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
-    _io_text__detect_encoding = None  # type: ignore[assignment,misc]
+    _io_text__detect_encoding = None  # type: ignore[assignment]
 
 # Deterministic shuffle and legacy read_text_file may live in utils
 try:
@@ -62,8 +62,8 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
-    _deterministic_shuffle = None  # type: ignore[assignment,misc]
-    _utils_read_text_file = None  # type: ignore[assignment,misc]
+    _deterministic_shuffle = None  # type: ignore[assignment]
+    _utils_read_text_file = None  # type: ignore[assignment]
 
 __all__ = [
     "read_text",

@@ -15,7 +15,7 @@ except Exception:  # pragma: no cover
 try:  # pragma: no cover - optional dependency guards
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 __all__ = [
     "set_deterministic",

@@ -78,7 +78,7 @@ except Exception as exc:  # pragma: no cover - pynvml missing
 try:  # pragma: no cover - optional dependency
     import resource
 except Exception:  # pragma: no cover - platform dependent
-    resource = None  # type: ignore[assignment,misc]
+    resource = None  # type: ignore[assignment]
 
 
 HAS_PSUTIL = "psutil" in globals() and psutil is not None

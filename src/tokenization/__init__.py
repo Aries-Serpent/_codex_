@@ -27,7 +27,7 @@ try:
 except (ModuleNotFoundError, ImportError, AttributeError):
     # AttributeError: torch stub (torch/__init__.py) raises this when PyTorch not installed
     # ImportError/ModuleNotFoundError: tokenizers/transformers missing
-    load_tokenizer = None  # type: ignore[assignment,misc]
+    load_tokenizer = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("load_tokenizer")
 
@@ -45,7 +45,7 @@ try:
 except (ModuleNotFoundError, ImportError, AttributeError):
     # ImportError/ModuleNotFoundError: sentencepiece missing
     # AttributeError: potential stub-related issues in dependency chain
-    sentencepiece_adapter = None  # type: ignore[assignment,misc]
+    sentencepiece_adapter = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("sentencepiece_adapter")
 
@@ -54,7 +54,7 @@ try:
 except (ModuleNotFoundError, ImportError, AttributeError):
     # ImportError/ModuleNotFoundError: tokenizers/hydra missing
     # AttributeError: potential stub-related issues in dependency chain
-    train_tokenizer = None  # type: ignore[assignment,misc]
+    train_tokenizer = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("train_tokenizer")
 
@@ -63,6 +63,6 @@ try:
 except (ModuleNotFoundError, ImportError, AttributeError):
     # ImportError/ModuleNotFoundError: optional CLI dependencies missing
     # AttributeError: potential stub-related issues in dependency chain
-    cli = None  # type: ignore[assignment,misc]
+    cli = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("cli")

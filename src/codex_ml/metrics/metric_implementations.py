@@ -35,7 +35,7 @@ from typing import Any  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import torch
 except Exception:  # pragma: no cover - environments without torch
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 
 def _to_flat_list(values: Any) -> list[Any]:

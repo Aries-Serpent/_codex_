@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 
 class BaseHook:

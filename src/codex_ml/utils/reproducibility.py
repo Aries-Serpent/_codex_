@@ -30,7 +30,7 @@ _torch_spec = importlib.util.find_spec("torch")
 if _torch_spec is not None:
     import torch as _torch
 else:  # pragma: no cover
-    _torch = None  # type: ignore[assignment,misc]
+    _torch = None  # type: ignore[assignment]
 
 
 @dataclass

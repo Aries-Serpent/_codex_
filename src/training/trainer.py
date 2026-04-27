@@ -20,8 +20,8 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     from torch import nn
     from torch.utils.data import DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
-    torch = None  # type: ignore[assignment,misc]
-    nn = Any  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
+    nn = Any  # type: ignore[assignment]
     GradScaler = None
     autocast = None
     DataLoader = Any  # type: ignore[assignment, misc]

@@ -33,12 +33,12 @@ except Exception:  # pragma: no cover - optional dependency
 try:
     from charset_normalizer import from_bytes as _cn_from_bytes
 except Exception:  # pragma: no cover - optional dependency
-    _cn_from_bytes = None  # type: ignore[assignment,misc]
+    _cn_from_bytes = None  # type: ignore[assignment]
 
 try:
     from charset_normalizer import from_path as _cn_from_path
 except Exception:  # pragma: no cover - optional dependency
-    _cn_from_path = None  # type: ignore[assignment,misc]
+    _cn_from_path = None  # type: ignore[assignment]
 
 __all__ = ["detect_encoding", "autodetect_encoding"]
 

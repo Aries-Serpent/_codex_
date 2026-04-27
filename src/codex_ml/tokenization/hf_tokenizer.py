@@ -39,7 +39,7 @@ if _HAS_TRANSFORMERS and transformers is not None and hasattr(transformers, "Aut
         transformers.PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - optional dependency unavailable
-    AutoTokenizer = None  # type: ignore[assignment,misc]
+    AutoTokenizer = None  # type: ignore[assignment]
     PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS

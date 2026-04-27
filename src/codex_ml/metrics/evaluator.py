@@ -12,7 +12,7 @@ from typing import Iterable, Mapping  # noqa: E402
 try:  # pragma: no cover - torch optional in tests
     import torch
 except Exception:  # pragma: no cover - torch optional in tests
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 
 def _safe_float(value: object) -> float:

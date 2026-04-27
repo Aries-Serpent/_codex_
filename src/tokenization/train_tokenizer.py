@@ -41,7 +41,7 @@ try:  # pragma: no cover - optional dependency
     from omegaconf import MISSING
 except Exception:  # pragma: no cover - optional dependency
     hydra = None
-    MISSING = object()  # type: ignore[assignment,misc]
+    MISSING = object()  # type: ignore[assignment]
 
 
 if hydra is not None:
@@ -55,10 +55,10 @@ else:
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
 except Exception as exc:  # pragma: no cover
-    spm = None  # type: ignore[assignment,misc]
+    spm = None  # type: ignore[assignment]
     _SPM_ERROR = exc
 else:  # pragma: no cover - import succeeded
-    _SPM_ERROR = None  # type: ignore[assignment,misc]
+    _SPM_ERROR = None  # type: ignore[assignment]
 
 from tokenizers import (  # noqa: E402
     SentencePieceUnigramTokenizer,

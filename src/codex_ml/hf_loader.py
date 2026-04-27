@@ -59,9 +59,9 @@ if (
         transformers.PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - optional dependency missing
-    AutoModel = None  # type: ignore[assignment,misc]
-    AutoModelForCausalLM = None  # type: ignore[assignment,misc]
-    AutoTokenizer = None  # type: ignore[assignment,misc]
+    AutoModel = None  # type: ignore[assignment]
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoTokenizer = None  # type: ignore[assignment]
     PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
     PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
 
@@ -75,7 +75,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch
 except Exception:  # pragma: no cover - torch is optional at import time
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
 
 
 _CAUSAL_LM_REGISTRY: dict[str, Callable[..., Any]] = {}

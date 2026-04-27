@@ -32,7 +32,7 @@ except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
     _yaml_module = None
     _YAML_IMPORT_ERROR = exc
 else:  # pragma: no cover - exercised when PyYAML installed
-    _YAML_IMPORT_ERROR = None  # type: ignore[assignment,misc]
+    _YAML_IMPORT_ERROR = None  # type: ignore[assignment]
 
 
 class MissingPyYAMLError(ModuleNotFoundError):

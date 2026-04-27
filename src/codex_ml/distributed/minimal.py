@@ -30,7 +30,7 @@ try:  # pragma: no cover - torch is optional
 
     import torch
 except Exception:  # pragma: no cover - execution environments without torch
-    torch = None  # type: ignore[assignment,misc]
+    torch = None  # type: ignore[assignment]
     dist = None
 
 _OPT_IN_VALUES = {"1", "true", "TRUE", "True", "YES", "yes", "on", "ON"}

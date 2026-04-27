@@ -43,7 +43,7 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
-    _repo_detect_encoding = None  # type: ignore[assignment,misc]
+    _repo_detect_encoding = None  # type: ignore[assignment]
 
 # Try to import the io_text.read_text helper if available. Some historical
 # variants return (text, encoding) while others return just text; the wrapper
@@ -53,7 +53,7 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
-    _io_read_text = None  # type: ignore[assignment,misc]
+    _io_read_text = None  # type: ignore[assignment]
 
 
 __all__ = [

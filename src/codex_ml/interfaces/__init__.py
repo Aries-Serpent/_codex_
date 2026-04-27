@@ -46,9 +46,9 @@ from .registry import apply_config, get, get_component, load_component, register
 try:
     from .peft_hooks import build_peft_config, enable_peft, load_adapter_for_inference
 except Exception:  # pragma: no cover - optional dependency guard
-    build_peft_config = None  # type: ignore[assignment,misc]
-    enable_peft = None  # type: ignore[assignment,misc]
-    load_adapter_for_inference = None  # type: ignore[assignment,misc]
+    build_peft_config = None  # type: ignore[assignment]
+    enable_peft = None  # type: ignore[assignment]
+    load_adapter_for_inference = None  # type: ignore[assignment]
 
 __all__ = [
     "TokenizerAdapter",
