@@ -111,7 +111,7 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("auth-tests.yml",                "Authentication Tests",                                       False),
     ("pr-checks.yml",                 "PR Checks (isolated cache, src/ scope)",                     False),
     ("html_visual_regression.yml",    "HTML Visual Regression Screenshots",                         False),
-    # --- Security & Quality (opt-in) ---
+    # --- Security & Quality (opt-in — maintainer checks to activate) ---
     ("security-scanning-suite.yml",   "Full security audit (bandit, pip-audit)",                    False),
     ("codeql-analysis.yml",           "CodeQL SAST analysis",                                       False),
     ("actionlint-audit.yml",          "Workflow compliance audit (actionlint)",                     False),
