@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S335 — 2026-04-27 — CI Rescue 4328437719 + Validation Pipeline root-cause)
+- Investigated Validation Pipeline / Fast Validation failure (run #25004830118, commit `f2e7a565`): root cause was Pattern 30 (Merge Readiness) scoring 90/100 — accountability report dimension failing, causing `auto-fix-ci-issues` pre-commit hook to exit 1, which failed `run_validation.sh --fast`. Fixed in S334 (`500c5a18`) — accountability report updated → Pattern 30 now 100/100 on current HEAD.
+- Verified current HEAD (`500c5a18`) is fully clean: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 (0 auto-fixable) ✅, `mypy_baseline` 117 ≤ 119 ✅.
+- Addressed rescue comment 4328437719 (stale commit `f2e7a565`, 27 failing checks); all root causes catalogued above.
+
 ### Fixed (S334 — 2026-04-27 — CI Triage #4097 follow-up + rescue comments 4328295406/4328366716)
 - Sourced CI Failure Triage Report issue #4097; confirmed all failures affecting PR #4077 were resolved in S333 (`f2e7a565`): Deferral Language Gate, WEC Template Integrity, and tracked-file sync drift.
 - Addressed rescue comments 4328295406 and 4328366716 (stale commit `017abf68`): pre-merge validation failure labelled `coverage-timeout` was actually `sync_tracked_files: ❌ stale`, fixed in S333.
