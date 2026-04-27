@@ -218,6 +218,17 @@ class CommonIssueFixer:
         ]
         patterns = all_patterns
 
+        # Honour CODEX_SKIP_PATTERN_NUMS — comma-separated pattern numbers to skip
+        # (used by the merge-readiness scorecard to avoid self-recursion on Pattern 30).
+        _skip_raw = os.environ.get("CODEX_SKIP_PATTERN_NUMS", "")
+        _skip_nums: set[int] = set()
+        for _tok in _skip_raw.split(","):
+            _tok = _tok.strip()
+            if _tok.isdigit():
+                _skip_nums.add(int(_tok))
+        if _skip_nums:
+            patterns = [(n, nm, f) for n, nm, f in patterns if n not in _skip_nums]
+
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:

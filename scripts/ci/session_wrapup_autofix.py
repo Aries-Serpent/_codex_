@@ -288,17 +288,19 @@ def _compute_merge_readiness_score() -> dict:
 
     dims: list[tuple[str, int, str, bool]] = []
 
-    def _run(cmd: list[str], timeout: int = 30) -> tuple[int, str]:
+    def _run(cmd: list[str], timeout: int = 30,
+             extra_env: dict | None = None) -> tuple[int, str]:
         try:
+            env = {**os.environ, **(extra_env or {})}
             r = subprocess.run(cmd, capture_output=True, text=True,
-                               timeout=timeout, check=False)
+                               timeout=timeout, check=False, env=env)
             return r.returncode, r.stdout
         except Exception:
             return 1, ""
 
     # 1 — auto_fix: no auto-fixable issues
     rc, _ = _run(["python3", "scripts/ci/auto_fix_common_issues.py", "--check-only"],
-                 timeout=120)
+                 timeout=120, extra_env={"CODEX_SKIP_PATTERN_NUMS": "30"})
     ok1 = rc == 0
     dims.append(("auto_fix (0 auto-fixable)", 15,
                  "✅ 0 auto-fixable" if ok1 else "❌ issues found", ok1))
