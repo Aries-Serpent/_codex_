@@ -174,7 +174,7 @@ class Trainer:
     def __init__(
         self,
         model: nn.Module,
-        optimizer: OptimizerType,  # type: ignore[valid-type]
+        optimizer: OptimizerType,
         train_loader: DataLoaderType,
         *,
         val_loader: DataLoaderType | None = None,

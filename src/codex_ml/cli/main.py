@@ -19,7 +19,7 @@ from typing import Annotated, Any, Optional
 try:  # Optional dependency used for loading curriculum presets
     import yaml
 except Exception:  # pragma: no cover - PyYAML is optional
-    yaml = None  # type: ignore[assignment]
+    yaml = None
 
 
 def _load_typer():
@@ -512,8 +512,8 @@ else:
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
     except Exception:  # pragma: no cover - optional
-        DictConfig = Any  # type: ignore
-        OmegaConf = None  # type: ignore
+        DictConfig = Any  # type: ignore[assignment]
+        OmegaConf = None  # type: ignore[assignment]
 
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error

@@ -86,7 +86,7 @@ except ImportError as e:
         resume_from: str = ""
         use_lora: bool = False
 
-    def run_custom_trainer(  # type: ignore[misc]
+    def run_custom_trainer(
         model: Any,
         tok: Any,
         train_ds: Any,

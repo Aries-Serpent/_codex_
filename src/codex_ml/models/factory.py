@@ -18,7 +18,7 @@ from .peft_hooks import LoraBuildCfg, build_lora
 try:  # pragma: no cover - optional dependency
     import torch
 except Exception:  # pragma: no cover - torch optional in lightweight envs
-    torch = None  # type: ignore
+    torch = None  # type: ignore[assignment]
 
 logger = logging.getLogger(__name__)
 

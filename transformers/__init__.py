@@ -61,7 +61,7 @@ else:  # pragma: no cover - exercised in minimal test envs
 
     _ERR = "transformers is not installed"
 
-    class PreTrainedModel:  # type: ignore[no-redef]
+    class PreTrainedModel:
         def __init__(self, *args, **kwargs):
             raise ImportError(_ERR)
 
@@ -79,7 +79,7 @@ else:  # pragma: no cover - exercised in minimal test envs
         def from_config(cls, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class PreTrainedTokenizerBase:  # type: ignore[no-redef]
+    class PreTrainedTokenizerBase:
         pad_token: str = ""
         eos_token: str = ""
         unk_token: str = ""
@@ -120,14 +120,14 @@ else:  # pragma: no cover - exercised in minimal test envs
         def from_pretrained(cls, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class PreTrainedTokenizerFast(PreTrainedTokenizerBase):  # type: ignore[no-redef]
+    class PreTrainedTokenizerFast(PreTrainedTokenizerBase):
         pass
 
-    class GPT2Config:  # type: ignore[no-redef]
+    class GPT2Config:
         def __init__(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class AutoModel:  # type: ignore[no-redef]
+    class AutoModel:
         @classmethod
         def from_pretrained(cls, *args, **kwargs):
             raise ImportError(_ERR)
@@ -136,7 +136,7 @@ else:  # pragma: no cover - exercised in minimal test envs
         def from_config(cls, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class AutoConfig:  # type: ignore[no-redef]
+    class AutoConfig:
         @classmethod
         def from_pretrained(cls, *args, **kwargs):
             raise ImportError(_ERR)
@@ -151,55 +151,55 @@ else:  # pragma: no cover - exercised in minimal test envs
         def save_pretrained(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class AutoModelForCausalLM(AutoModel):  # type: ignore[no-redef]
+    class AutoModelForCausalLM(AutoModel):
         def generate(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class AutoModelForMaskedLM(AutoModel):  # type: ignore[no-redef]
+    class AutoModelForMaskedLM(AutoModel):
         pass
 
-    class AutoModelForSequenceClassification(AutoModel):  # type: ignore[no-redef]
+    class AutoModelForSequenceClassification(AutoModel):
         pass
 
-    class AutoModelForSeq2SeqLM(AutoModel):  # type: ignore[no-redef]
+    class AutoModelForSeq2SeqLM(AutoModel):
         pass
 
-    class BertModel(PreTrainedModel):  # type: ignore[no-redef]
+    class BertModel(PreTrainedModel):
         pass
 
-    class GPT2LMHeadModel(PreTrainedModel):  # type: ignore[no-redef]
+    class GPT2LMHeadModel(PreTrainedModel):
         pass
 
-    class T5ForConditionalGeneration(PreTrainedModel):  # type: ignore[no-redef]
+    class T5ForConditionalGeneration(PreTrainedModel):
         pass
 
-    class RobertaModel(PreTrainedModel):  # type: ignore[no-redef]
+    class RobertaModel(PreTrainedModel):
         pass
 
-    class DistilBertModel(PreTrainedModel):  # type: ignore[no-redef]
+    class DistilBertModel(PreTrainedModel):
         pass
 
-    class AutoTokenizer:  # type: ignore[no-redef]
+    class AutoTokenizer:
         @classmethod
         def from_pretrained(cls, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class BitsAndBytesConfig:  # type: ignore[no-redef]
+    class BitsAndBytesConfig:
         def __init__(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class DataCollatorForLanguageModeling:  # type: ignore[no-redef]
+    class DataCollatorForLanguageModeling:
         def __init__(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class EarlyStoppingCallback:  # type: ignore[no-redef]
+    class EarlyStoppingCallback:
         def __init__(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class TrainerCallback:  # type: ignore[no-redef]
+    class TrainerCallback:
         pass
 
-    class TrainingArguments:  # type: ignore[no-redef]
+    class TrainingArguments:
         gradient_accumulation_steps: int = 1
         max_steps: int = -1
         num_train_epochs: float = 3.0
@@ -218,13 +218,13 @@ else:  # pragma: no cover - exercised in minimal test envs
         def __init__(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    class TrainerState:  # type: ignore[no-redef]
+    class TrainerState:
         epoch: float = 0.0
         global_step: int = 0
         best_metric: float | None = None
         log_history: list = []
 
-    class Trainer:  # type: ignore[no-redef]
+    class Trainer:
         model: PreTrainedModel
         optimizer: object
         lr_scheduler: object
@@ -257,7 +257,7 @@ else:  # pragma: no cover - exercised in minimal test envs
         def compute_loss(self, *args, **kwargs):
             raise ImportError(_ERR)
 
-    def get_scheduler(*args, **kwargs):  # type: ignore[no-redef]
+    def get_scheduler(*args, **kwargs):
         raise ImportError(_ERR)
 
     __version__ = "0.0.0-stub"

@@ -41,7 +41,7 @@ try:  # pragma: no cover - optional dependency
     from omegaconf import MISSING
 except Exception:  # pragma: no cover - optional dependency
     hydra = None
-    MISSING = object()  # type: ignore
+    MISSING = object()  # type: ignore[assignment]
 
 
 if hydra is not None:
