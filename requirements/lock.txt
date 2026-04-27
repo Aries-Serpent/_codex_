@@ -1143,7 +1143,7 @@ tornado==6.5.5
     #   jupyterlab
     #   notebook
     #   terminado
-tqdm==4.67.1
+tqdm==4.67.3
     # via
     #   datasets
     #   dvc
