@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S338 — 2026-04-27 — CI rescue triage 4328890200/4328927921 on commit 60d0b2ce)
+- CI rescue 4328890200 (Pre-Merge Validation run #25008086992, commit `60d0b2ce`): root cause was `sync_tracked_files: ❌ stale` under Merge Readiness Dims — the tracked-file state on that commit was not yet refreshed. The stale tracked-file state was resolved in a subsequent commit; current HEAD passes `sync_tracked_files --check` ✅. This is a stale failure report (head has moved past the failure point).
+- CI rescue 4328927921 (iterative self-healing escalation for run #25008086992): same root cause as 4328890200 above. No code change required on current HEAD.
+- Local verification on current HEAD: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 ✅, `mypy_baseline` 117 ≤ 117 ✅.
+
 ### Fixed (S337 — 2026-04-27 — WEC enforcement fix: opt-in items req=True → req=False + CI rescue 4328695990/4328719799)
 - Fixed Workflow Execution Gate (`Validate WEC Template Integrity`) failure on commit `60d0b2ce` (run #25008087094): 19 opt-in WEC items were incorrectly marked `req=True` in `_WEC_ITEMS` in `session_wrapup_autofix.py`, causing the WEC enforcer to require them to be checked `[x]` in the PR body. These items are labeled "Opt-In" in the PR template and are correctly shown as unchecked `[ ]`. Changed all opt-in testing, security, documentation, and infrastructure items from `req=True` → `req=False`; only the 5 always-required gates and `copilot-agent-checkin.yml`/`cost-gate.yml` remain `req=True`.
 - CI rescue 4328695990 (commit `326685eb`, `submit-pypi` failure): `submit-pypi` is a workflow_dispatch/release-triggered workflow; it does not run on push events to PR branches. The check shown as failing is a pre-existing misconfiguration unrelated to PR code changes. Current HEAD is clean.
