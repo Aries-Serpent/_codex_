@@ -681,7 +681,7 @@ opentelemetry-exporter-prometheus==0.58b0
     # via ray
 opentelemetry-proto==1.39.1
     # via ray
-opentelemetry-sdk==1.39.1
+opentelemetry-sdk==1.41.1
     # via
     #   mlflow-skinny
     #   mlflow-tracing
