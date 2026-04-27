@@ -19,7 +19,7 @@ from typing import Annotated, Any, Optional
 try:  # Optional dependency used for loading curriculum presets
     import yaml
 except Exception:  # pragma: no cover - PyYAML is optional
-    yaml = None  # type: ignore[assignment]
+    yaml = None
 
 
 def _load_typer():

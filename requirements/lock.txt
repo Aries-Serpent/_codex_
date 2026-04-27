@@ -681,7 +681,7 @@ opentelemetry-exporter-prometheus==0.58b0
     # via ray
 opentelemetry-proto==1.39.1
     # via ray
-opentelemetry-sdk==1.39.1
+opentelemetry-sdk==1.41.1
     # via
     #   mlflow-skinny
     #   mlflow-tracing
@@ -1032,7 +1032,7 @@ scipy==1.17.0
     #   mlflow
     #   scikit-learn
     #   statsmodels
-scmrepo==1.4.1
+scmrepo==3.6.2
     # via dvc
 send2trash==2.1.0
     # via jupyter-server
