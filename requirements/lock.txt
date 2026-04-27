@@ -1025,7 +1025,7 @@ scikit-learn==1.8.0
     #   evidently
     #   lm-eval
     #   mlflow
-scipy==1.17.0
+scipy==1.17.1
     # via
     #   evidently
     #   great-expectations
