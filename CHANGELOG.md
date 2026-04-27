@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S337 — 2026-04-27 — WEC enforcement fix: opt-in items req=True → req=False + CI rescue 4328695990/4328719799)
+- Fixed Workflow Execution Gate (`Validate WEC Template Integrity`) failure on commit `60d0b2ce` (run #25008087094): 19 opt-in WEC items were incorrectly marked `req=True` in `_WEC_ITEMS` in `session_wrapup_autofix.py`, causing the WEC enforcer to require them to be checked `[x]` in the PR body. These items are labeled "Opt-In" in the PR template and are correctly shown as unchecked `[ ]`. Changed all opt-in testing, security, documentation, and infrastructure items from `req=True` → `req=False`; only the 5 always-required gates and `copilot-agent-checkin.yml`/`cost-gate.yml` remain `req=True`.
+- CI rescue 4328695990 (commit `326685eb`, `submit-pypi` failure): `submit-pypi` is a workflow_dispatch/release-triggered workflow; it does not run on push events to PR branches. The check shown as failing is a pre-existing misconfiguration unrelated to PR code changes. Current HEAD is clean.
+- CI rescue 4328719799 (commit `dec41020`, 37 failing + 1 blocking): the 1 blocking comment was 4328695990 (addressed above); the 37 failures were stale opt-in workflows armed in the WEC block. Current HEAD passes all required checks.
+- Local verification on current HEAD: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 ✅, `mypy_baseline` 117 ≤ 117 ✅, WEC enforcer (simulated) — 0 violations ✅.
+
 ### Fixed (S336 — 2026-04-27 — CodeQL #12805 + CI rescue triage 4328590968/4328642845)
 - Fixed CodeQL alert #12805: removed `_typer = None` from the `except` branch in `src/codex/cli.py`; the fallback assignment was dead code (never read after the try/except/else block), triggering "global variable not used" alert. The `else` block already has `_typer` defined as the imported module; the `except` branch no longer needs to set it to `None`.
 - CI rescue 4328590968 (commit `500c5a18`, 27 failing checks): Validation Pipeline failure was stale — root cause (Pattern 30 dim at 90/100) was already fixed in S334/S335. Current HEAD passes all checks.

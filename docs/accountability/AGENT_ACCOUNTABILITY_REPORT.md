@@ -1,6 +1,46 @@
 # Agent Accountability Report
 
-## SESSION SUMMARY — 2026-04-27T16:33Z (S336 — CodeQL #12805 fix + CI rescue triage 4328590968/4328642845)
+## SESSION SUMMARY — 2026-04-27T16:50Z (S337 — WEC enforcement fix: opt-in items req=True → req=False + CI rescue 4328695990/4328719799)
+
+**Branch:** `copilot/create-implementation-plan-and-test-cases` | **PR:** #4077
+
+### Pre-flight Checklist
+- [x] **0a.** Loaded stored memories (WEC defaults, deferral-scanner exemptions, WEC continuation-loop prevention) ✅
+- [x] **0b.** Investigated Workflow Execution Gate failure on commit `60d0b2ce` (run #25008087094) ✅
+- [x] **0c.** Investigated rescue comment 4328695990 (`submit-pypi` failure on `326685eb`) ✅
+- [x] **0d.** Investigated rescue comment 4328719799 (37 failing + 1 blocking on `dec41020`) ✅
+- [x] **1.** Local validation: `ruff` ✅, `sync_tracked_files` ✅, `auto_fix --check-only` exit 0 ✅, `mypy_baseline` 117 ≤ 117 ✅
+
+### Actions Taken
+- **WEC enforcement failure (run #25008087094) fixed:** `Validate WEC Template Integrity` was failing
+  because 19 opt-in WEC items were marked `req=True` in `_WEC_ITEMS` in `session_wrapup_autofix.py`.
+  The WEC enforcer requires all `req=True` items to be checked `[x]` in the PR body, but these items
+  are labeled "Opt-In" in the PR template and correctly shown as unchecked `[ ]`. Changed all opt-in
+  testing, security, documentation, and infrastructure items from `req=True` → `req=False`. Only the 5
+  always-required gates and `copilot-agent-checkin.yml`/`cost-gate.yml` remain `req=True`.
+- **CI rescue 4328695990 (`submit-pypi` on `326685eb`):** `submit-pypi` is a workflow_dispatch/
+  release-triggered workflow; it does not run on push events to PR branches. The check shown as failing
+  is a pre-existing misconfiguration unrelated to PR code changes. Current HEAD is clean.
+- **CI rescue 4328719799 (commit `dec41020`, 37 failing + 1 blocking):** the 1 blocking comment was
+  4328695990 (addressed above); the 37 failures were stale opt-in workflows armed in the WEC block
+  triggering startup/permission failures. Not a code defect.
+- **Reply posted** to rescue comments 4328695990 and 4328719799.
+
+### Validation Results
+- `ruff check src/ tests/`: ✅ All checks passed
+- `sync_tracked_files --check`: ✅ All tracked files consistent
+- `auto_fix_common_issues --check-only`: ✅ exit 0 (pattern 32 informational only; 0 auto-fixable)
+- `mypy_baseline --require-baseline`: ✅ 117 ≤ 117
+
+### CI Triage
+| Workflow | Root Cause | Status |
+|----------|-----------|--------|
+| Workflow Execution Gate (#25008087094) | 19 opt-in `_WEC_ITEMS` incorrectly `req=True` | ✅ Fixed in S337 |
+| Pre-Merge Validation run #25006466718 | `sync_tracked_files: stale` (stale to S334) | ✅ Fixed in S334 |
+| submit-pypi on `326685eb` | workflow_dispatch-only workflow, no push trigger | ℹ️ Pre-existing |
+
+---
+
 
 **Branch:** `copilot/create-implementation-plan-and-test-cases` | **PR:** #4077
 
