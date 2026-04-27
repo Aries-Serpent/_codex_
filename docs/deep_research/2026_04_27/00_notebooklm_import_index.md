@@ -15,6 +15,9 @@ Import every Markdown file in this folder as a separate NotebookLM source. The n
 | `04_quantum_physics_inspired_expansion.md` | Adds clearly labeled speculative quantum/physics-inspired variables. |
 | `05_edge_cases_failure_modes_and_samples.md` | Iterates through edge cases, failure modes, and worked examples. |
 | `06_condensed_understanding.md` | Final condensed synthesis for fast review. |
+| `07_adaptive_energy_management_spectrum.md` | Extends CpT into adaptive energy-management across thermal, electrical, electromagnetic, chemical, mechanical, informational, and security/access domains. |
+| `08_sustained_electromagnetism_and_power_transfer.md` | Deep research on sustained electromagnetism, wireless power transfer, RF harvesting, photovoltaics, spectrum-aware control, and safety constraints. |
+| `09_adaptive_energy_edge_cases_and_research_synthesis.md` | Edge cases and synthesis for adaptive energy-management scenarios spanning sensors, wireless charging, microgrids, and access governance. |
 
 ## Core Thesis
 
@@ -27,3 +30,36 @@ Expanded analogy:   H_sa = C_aΘΦ_context − μF + Ω_obs
 ```
 
 The thermodynamic equations are physical relations. The security equations are structured analogies and synthetic models for reasoning.
+
+
+## Adaptive Energy-Management Extension
+
+The extended packet adds current web-research anchors and repo-grounded physics metaphors for adaptive energy-management with sustained electromagnetism and broader energy spectra.
+
+Key added model:
+
+```text
+E_adapt,d = C_d · I_d · Φ_d · η_d − L_d − R_d + S_d − D_d
+```
+
+Electromagnetic-spectrum model:
+
+```text
+P_useful(λ,f,t) = P_incident(λ,f,t) · A_eff(λ,f) · η_capture · η_convert · Φ_align − P_loss − P_safety_margin
+```
+
+Repository bridges:
+
+- `docs/ADVANCED_PHYSICS_GUIDE.md:130-153` — electromagnetic field routing with potential, gradient, and force.
+- `docs/PHYSICS_TECHNICAL_REFERENCE.md:101-116` — Poisson potential and field-gradient implementation notes.
+- `docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md:481-492` — adaptive energy weights learned from feedback.
+
+Current-data source anchors captured during web search:
+
+- IEA Smart Grids: `https://www.iea.org/energy-system/electricity/smart-grids`
+- Scientific Reports 2025 AI/IoT grid framework: `https://www.nature.com/articles/s41598-025-02649-w`
+- Energies 2024 smart-grid review: `https://www.mdpi.com/1996-1073/17/16/4128`
+- Sensors 2024 RF harvesting/WPT for IoT: `https://www.mdpi.com/1424-8220/24/23/7567`
+- Wireless Power Transfer systems/circuits/standards/use cases: `https://pmc.ncbi.nlm.nih.gov/articles/PMC9371050/`
+- Inductive coupling for WPT/NFC: `https://link.springer.com/article/10.1186/s13638-021-01994-4`
+- NIST WPT and energy harvesting: `https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=927310`
