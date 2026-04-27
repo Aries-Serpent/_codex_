@@ -768,7 +768,7 @@ platformdirs==4.9.4
     #   jupyter-core
     #   virtualenv
     #   wandb
-plotly==6.5.2
+plotly==6.7.0
     # via evidently
 pluggy==1.6.0
     # via
