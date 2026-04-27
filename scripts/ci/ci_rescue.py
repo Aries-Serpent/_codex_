@@ -765,6 +765,29 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             ".codex/patterns/ci_failure_patterns.yaml COV_002",
         ],
     ),
+    RescuePattern(
+        pattern_id="RP-024",
+        description="GitHub API rate limit exceeded (HTTP 403) — transient installation quota",
+        log_regexes=[
+            r"API rate limit exceeded for installation",
+            r"HTTP 403.*rate limit",
+            r"rate limit exceeded.*installation",
+        ],
+        fix_command=["bash", "-c", "echo 'RP-024: GitHub API rate limit is transient — no code fix needed. Re-run the workflow or wait for the quota to reset.'"],
+        fix_description=(
+            "GitHub installation token hit the per-hour API rate limit (HTTP 403). "
+            "This is a transient infrastructure issue — no code change required. "
+            "Re-run the failed workflow or push a new commit to re-trigger CI once "
+            "the rate-limit window resets. "
+            "The `check_pr_comments.py` and `post_rescue_comment.py` scripts now "
+            "exit 0 on rate-limit 403 so the gate no longer hard-fails."
+        ),
+        references=[
+            "scripts/ci/check_pr_comments.py",
+            "scripts/ci/post_rescue_comment.py",
+            ".github/workflows/comment-review-gate.yml",
+        ],
+    ),
 ]
 
 
