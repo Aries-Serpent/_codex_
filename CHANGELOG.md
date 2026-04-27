@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4087)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4087 (SHA `79dc177f`) at 2026-04-27T10:27Z [auto-generated]
+
 ### Fixed (S323 — 2026-04-26 — PR #4074 Q&A + Issue #4072)
 - **test_bash_code_blocks_structure**: Changed `bash` → `dockerfile` block in `docs/docker_optimization_guide.md` — test was matching `rm -rf /var/lib/apt/lists/*` as a dangerous command (false positive)
 - **test_gradient_accumulation_snippet_present**: Updated to read from `src/training/functional_training.py` (the real module) instead of the shim at `training/functional_training.py`
