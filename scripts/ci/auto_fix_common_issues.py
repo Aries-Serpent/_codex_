@@ -350,8 +350,7 @@ class CommonIssueFixer:
         # Allow callers to skip specific patterns via env var (e.g. Pattern 30
         # passes CODEX_SKIP_PATTERN_NUMS=30 to its sub-invocation of this script
         # to break the self-referential recursion in the merge-readiness scorecard).
-        import os as _os
-        _skip_raw = _os.environ.get("CODEX_SKIP_PATTERN_NUMS", "")
+        _skip_raw = os.environ.get("CODEX_SKIP_PATTERN_NUMS", "")
         _skip_nums: set[int] = set()
         for _tok in _skip_raw.split(","):
             _tok = _tok.strip()

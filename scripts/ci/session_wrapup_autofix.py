@@ -299,16 +299,15 @@ def _compute_merge_readiness_score() -> dict:
     # 1 — auto_fix: no auto-fixable issues
     # Pass CODEX_SKIP_PATTERN_NUMS=30 so the sub-invocation skips Pattern 30
     # itself, breaking the self-referential recursion in the scorecard loop.
-    import os as _os
-    _af_env = {**_os.environ, "CODEX_SKIP_PATTERN_NUMS": "30"}
+    _af_env = {**os.environ, "CODEX_SKIP_PATTERN_NUMS": "30"}
     try:
-        import subprocess as _sp
-        _af_r = _sp.run(
+        _af_r = subprocess.run(
             ["python3", "scripts/ci/auto_fix_common_issues.py", "--check-only"],
             capture_output=True, text=True, timeout=120, check=False, env=_af_env,
         )
         rc = _af_r.returncode
-    except Exception:
+    except Exception as _exc:
+        print(f"[session_wrapup_autofix] warning: auto_fix check failed: {_exc}", file=sys.stderr)
         rc = 1
     ok1 = rc == 0
     dims.append(("auto_fix (0 auto-fixable)", 15,
