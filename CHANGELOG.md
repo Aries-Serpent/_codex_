@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S329 merge+dependabot consolidation)
+- Merged the latest `origin/main` into PR #4077, resolved the full live conflict set in the Codex ML / Zendesk / accountability files, and revalidated the merged branch.
+- Folded the open dependabot dependency bumps for JupyterLab, nox, grpcio, chromadb, plotly, transformers (ML group), scipy, responses, sqlparse, and tqdm into this PR.
+- Cleared the remaining manual Pattern 7 redundant-import findings in `tests/github/test_mcp_poster.py` after the dependency consolidation pass.
+
 ### Fixed (2026-04-27 — PR #4077 S328b review note sync)
 - Added a short purpose note for the optional event-publisher registry introduced during the
   code-quality cleanup so the intent is explicit in the source.
