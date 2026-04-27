@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S325 — 2026-04-27 — PR #4093 CI Rate-Limit Fix)
+- **`scripts/ci/check_pr_comments.py`**: Exit 0 (warning) on GitHub API rate-limit 403 — gate no longer hard-fails CI on transient installation quota exhaustion (`"rate limit" in msg.lower()` check).
+- **`scripts/ci/post_rescue_comment.py`**: Exit 0 gracefully when rescue-comment POST returns HTTP 403 with `"rate limit"` in the GitHub API `message` field, instead of `sys.exit(1)`.
+- **`scripts/ci/ci_rescue.py`**: Added RP-024 rescue pattern matching `"API rate limit exceeded for installation"` — future occurrences classified as known infra-only pattern, not "Unrecognised failure".
+
 ### Fixed (auto-update — PR #4093)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4093 (SHA `bf40ee69`) at 2026-04-27T10:54Z [auto-generated]
 
