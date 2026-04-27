@@ -116,7 +116,7 @@ dev = [
   "mypy>=1.8.0,<2.0.0",
   "dvc==3.67.0",
   "pre-commit>=3.6.0,<5.0.0",
-  "nox>=2024.4.15",
+  "nox>=2026.4.10",
   "nbstripout>=0.6",
   "tomli>=2.0; python_version < '3.11'",
   "yamllint>=1.35.1,<2.0.0",
@@ -219,7 +219,7 @@ all = [
   "jsonschema>=4.18",
   "mlflow>=2.22.4,<4",  # Security: updated from 2.11 to fix 43+ vulnerabilities
   "mypy>=1.8.0,<2.0.0",
-  "nox>=2024.4.15",
+  "nox>=2026.4.10",
   "numpy>=1.24; python_version<'3.13'",
   "omegaconf>=2.3",
   "pandas>=2.0",
