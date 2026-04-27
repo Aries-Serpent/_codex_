@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-04-27 — PR #4077 S327b accountability sync)
+- Recorded the final post-merge normalization state in the accountability report so the
+  latest commit satisfies Pattern 25 and preserves the rolling-comment follow-up trail.
+
 ### Fixed (2026-04-27 — PR #4077 S327 merge refresh)
 - Re-merged the latest `main` health-sweep updates into PR #4077, resolved the reintroduced
   merge conflicts, and preserved the branch's validated optional-import typing state.
