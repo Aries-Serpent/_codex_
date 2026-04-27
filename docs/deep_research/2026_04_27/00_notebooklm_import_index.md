@@ -20,6 +20,7 @@ Import every Markdown file in this folder as a separate NotebookLM source. The n
 | `09_adaptive_energy_edge_cases_and_research_synthesis.md` | Edge cases and synthesis for adaptive energy-management scenarios spanning sensors, wireless charging, microgrids, and access governance. |
 | `10_novice_system_maturity_determination.md` | Defines how to determine maturity when novice systems consistently meet targets, including maturity equations, stage ladder, calibration probes, and energy/access examples. |
 | `11_continuous_energy_counterbalance.md` | Defines the counter-balance required to maintain continuous usable energy across supply, storage, demand, losses, safety margins, degradation, feedback, electromagnetism, grids, thermal systems, and security/access. |
+| `12_fluctuation_handling_edge_cases.md` | Defines fluctuation-handling capability and edge cases across electromagnetic, smart-grid, thermal, storage, and security/access domains. |
 
 ## Core Thesis
 
@@ -99,4 +100,21 @@ Core counter-balance rule:
 
 ```text
 continuous usable energy = variable supply + reserve + recovery − demand − loss − safety margin − degradation, corrected by feedback.
+```
+
+
+## Fluctuation-Handling Extension
+
+A system is capable of handling fluctuation when reserves, response speed, damping, observability, generalization, and backup paths dominate fluctuation amplitude, latency, harmful coupling, and uncertainty.
+
+Key capability model:
+
+```text
+F_cap = (R_reserve · V_response · D_damping · O_observe · G_generalize · B_backup) / (A_amplitude · L_latency · C_coupling · U_uncertainty)
+```
+
+Core fluctuation rule:
+
+```text
+fluctuation-ready continuity = detect + classify + absorb/dampen/route/shed + preserve reserve + learn.
 ```
