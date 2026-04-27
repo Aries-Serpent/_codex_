@@ -20903,3 +20903,31 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session S325 — 2026-04-27T12:32Z — PR #4084 iterative self-healing (plotly bump CI fix)
+
+### Trigger
+Comment from @mbaetiong on PR #4084 requesting iterative self-healing for the
+`dependabot/pip/plotly-6.7.0` branch after Validation Pipeline run 24989515885 failed.
+
+### Root Causes Identified
+1. **Pattern 30 regression** (`auto_fix_common_issues.py:2730`): `fix_merge_readiness_dims`
+   was calling `swa._compute_merge_readiness_score(str(self.repo_root))` but the function
+   signature is `_compute_merge_readiness_score()` (0 positional args). This caused Pattern 30
+   to always emit a warning and masked actual scorecard failures.
+2. **Pattern 25 gap**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not touched
+   in the last commit pushed to the branch.
+
+### Changes Made
+- Fixed `scripts/ci/auto_fix_common_issues.py` line 2730: removed spurious `str(self.repo_root)`
+  argument from `_compute_merge_readiness_score()` call.
+- Updated this accountability report (Pattern 25 compliance).
+- Prepared cherry-pick patch for PR #4077 (`copilot/create-implementation-plan-and-test-cases`).
+
+### Cherry-pick Target
+All fixes committed here are ready to be cherry-picked into PR #4077 per maintainer request.
+
+### Policy Compliance
+- §0 CODEBASE_AGENCY_POLICY: reviewed all bot comments and failing CI checks before changes.
+- No deferral language used.
+- Ruff clean on `src/`: confirmed.
