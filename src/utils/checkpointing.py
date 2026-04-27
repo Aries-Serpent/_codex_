@@ -47,7 +47,7 @@ except Exception:  # pragma: no cover - numpy optional
 try:  # pragma: no cover - optional torch
     import torch as _torch
 except Exception:  # pragma: no cover - torch optional
-    _torch = None  # type: ignore[assignment]
+    _torch = None  # type: ignore[assignment,misc]
 
 
 # Optional helper aliases to ease migration of call-sites

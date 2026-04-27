@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency guard
     import torch
 except Exception:  # pragma: no cover - propagate a friendly error later
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - optional dependency guard
     from transformers import (

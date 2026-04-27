@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - torch is optional in minimal environments
     import torch
 except Exception:  # pragma: no cover - gracefully degrade when torch missing
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
 
 
 LOGGER = logging.getLogger(__name__)

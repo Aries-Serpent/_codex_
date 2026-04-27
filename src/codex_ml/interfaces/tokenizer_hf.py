@@ -33,7 +33,7 @@ from codex_ml.tokenization.hf_adapter import (  # noqa: E402
 try:  # pragma: no cover - optional torch dependency
     import torch
 except Exception:  # pragma: no cover - defensive
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - optional import cycle guard
     from codex_ml.training.device_strategy import DeviceConfig

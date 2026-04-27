@@ -29,7 +29,7 @@ try:  # pragma: no cover - optional dependency
     # Verify torch is functional
     _ = _torch.Tensor
 except Exception:  # pragma: no cover - torch may be unavailable in minimal envs
-    _torch = None  # type: ignore[assignment]
+    _torch = None  # type: ignore[assignment,misc]
     _HAS_TORCH = False
 else:
     _HAS_TORCH = True

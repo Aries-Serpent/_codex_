@@ -11,7 +11,7 @@ from typing import Any, Callable, Iterable, Optional  # noqa: E402
 try:
     from importlib import metadata
 except Exception:  # pragma: no cover - importlib metadata not available
-    metadata = None  # type: ignore[assignment]
+    metadata = None  # type: ignore[assignment,misc]
 
 RegisterFn = Callable[..., Any]
 

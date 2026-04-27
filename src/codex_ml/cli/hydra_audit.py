@@ -40,7 +40,7 @@ from typing import Any, Iterable, Optional, Sequence
 try:  # pragma: no cover - handled in tests via importorskip
     import yaml
 except Exception:  # pragma: no cover - reported via exit code
-    yaml = None  # type: ignore[assignment]
+    yaml = None  # type: ignore[assignment,misc]
 
 
 UNRESOLVED_RE = re.compile(r"\$\{[^}]+}")

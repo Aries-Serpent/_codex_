@@ -85,7 +85,7 @@ except Exception:  # pragma: no cover - metrics optional
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
 except Exception:  # pragma: no cover - optional dependency missing
-    manifest_for_paths = None  # type: ignore[assignment]
+    manifest_for_paths = None  # type: ignore[assignment,misc]
 
 
 try:  # pragma: no cover - optional model registry

@@ -38,7 +38,7 @@ from pathlib import Path
 try:
     import yaml
 except Exception:  # pragma: no cover
-    yaml = None  # type: ignore[assignment]
+    yaml = None  # type: ignore[assignment,misc]
 
 logger = logging.getLogger(__name__)
 

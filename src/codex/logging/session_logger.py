@@ -58,12 +58,12 @@ try:
     from .db import log_event as _shared_log_event
 except Exception:
     logger.debug("codex.logging.db not available; using built-in fallbacks", exc_info=True)
-    _shared_DB_LOCK = None  # type: ignore[assignment]
-    _shared_init_db = None  # type: ignore[assignment]
+    _shared_DB_LOCK = None  # type: ignore[assignment,misc]
+    _shared_init_db = None  # type: ignore[assignment,misc]
     try:  # Fallback: rely on monkeypatch adapters
         from codex.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]  # noqa: I001
     except Exception:  # pragma: no cover - nothing available
-        _shared_log_event = None  # type: ignore[assignment]
+        _shared_log_event = None  # type: ignore[assignment,misc]
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()

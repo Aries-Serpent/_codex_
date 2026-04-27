@@ -63,7 +63,7 @@ else:
 try:  # pragma: no cover - optional
     import torch
 except Exception:  # pragma: no cover - torch not installed
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
 
 
 _ensure_local_mlflow_tracking_uri_default()

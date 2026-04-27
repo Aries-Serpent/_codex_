@@ -91,7 +91,7 @@ except Exception:  # pragma: no cover - dependency not installed
     ReasoningHarness = None  # type: ignore[assignment,misc]
     ReasoningHead = None  # type: ignore[assignment,misc]
     ToolUseAdapter = None  # type: ignore[assignment,misc]
-    attach_reasoning_adapters = None  # type: ignore[assignment]
+    attach_reasoning_adapters = None  # type: ignore[assignment,misc]
 
 if TYPE_CHECKING:  # retain type information for type checkers
     from .decoder_only import DecoderOnlyLM, ModelConfig

@@ -48,7 +48,7 @@ from codex_ml.training.engine import TrainingEngine  # noqa: E402
 try:
     import torch
 except ImportError:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
 
 
 @runtime_checkable

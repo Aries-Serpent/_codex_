@@ -120,7 +120,7 @@ try:
     _ = torch.Tensor
     _HAS_TORCH = True
 except Exception:  # noqa: BLE001
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
     optim = None
     StepLR = None
     DataLoader = None

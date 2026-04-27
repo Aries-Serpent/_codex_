@@ -32,7 +32,7 @@ except Exception:  # pragma: no cover
 try:
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
 
 
 def set_seed(seed: int | None) -> int:

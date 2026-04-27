@@ -53,7 +53,7 @@ if "CheckpointManager" not in globals():
         try:  # torch may be absent in lightweight environments
             import torch as _torch
         except Exception:  # pragma: no cover - optional dependency
-            _torch = None  # type: ignore[assignment]
+            _torch = None  # type: ignore[assignment,misc]
 
         def _python_state_payload(raw_state: Any) -> list[Any]:
             return [raw_state[0], list(raw_state[1]), raw_state[2]]

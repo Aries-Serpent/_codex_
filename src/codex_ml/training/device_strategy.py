@@ -18,7 +18,7 @@ try:  # pragma: no cover - optional dependency
     _ = torch.float32  # Test access to a common attribute
     _HAS_TORCH = True
 except Exception:  # pragma: no cover - defensive import guard
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
     _HAS_TORCH = False
 
 

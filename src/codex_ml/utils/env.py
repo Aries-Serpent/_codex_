@@ -47,7 +47,7 @@ def _git_binary() -> Optional[Path]:
 try:  # pragma: no cover - optional torch dependency
     import torch
 except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None  # type: ignore[assignment,misc]
 
 
 def _git_commit(root: Optional[Path] = None) -> Optional[str]:

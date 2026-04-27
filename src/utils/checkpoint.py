@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch as _torch
 except Exception:  # pragma: no cover - torch unavailable
-    _torch = None  # type: ignore[assignment]
+    _torch = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - optional dependency
     import numpy as _np

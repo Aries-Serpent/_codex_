@@ -165,7 +165,7 @@ def reflect(target: str, depth: int = 1) -> ReflectionReport:
             if candidate.exists():
                 break
         else:
-            candidate = None  # type: ignore[assignment]
+            candidate = None  # type: ignore[assignment,misc]
 
     if candidate is None or not candidate.exists():
         return ReflectionReport(
