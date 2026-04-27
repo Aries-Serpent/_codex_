@@ -347,8 +347,23 @@ class CommonIssueFixer:
         else:
             print("🔍 Scanning for common CI issues…\n")
 
+        # Allow callers to skip specific patterns via env var (e.g. Pattern 30
+        # passes CODEX_SKIP_PATTERN_NUMS=30 to its sub-invocation of this script
+        # to break the self-referential recursion in the merge-readiness scorecard).
+        import os as _os
+        _skip_raw = _os.environ.get("CODEX_SKIP_PATTERN_NUMS", "")
+        _skip_nums: set[int] = set()
+        for _tok in _skip_raw.split(","):
+            _tok = _tok.strip()
+            if _tok.isdigit():
+                _skip_nums.add(int(_tok))
+
         any_issues = False
         for num, name, func in patterns:
+            if num in _skip_nums:
+                print(f"Pattern {num}: {name}")
+                print(f"  ⏭ Skipped (CODEX_SKIP_PATTERN_NUMS={_skip_raw})\n")
+                continue
             print(f"Pattern {num}: {name}")
             issues = func()
             if issues:
