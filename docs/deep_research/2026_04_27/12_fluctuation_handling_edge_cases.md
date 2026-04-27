@@ -227,3 +227,22 @@ If not, the adaptive controller must shed noncritical load, switch sources, redu
 ## 9. Condensed Answer
 
 A system capable of handling fluctuation has enough reserve to absorb disturbance, enough observability to detect it, enough response speed to act before collapse, enough damping to prevent oscillation, enough safety margin to avoid harm, enough backup paths to preserve critical function, and enough learning to improve after each event. Edge cases test whether target success survives misalignment, drift, spikes, spoofing, detuning, intermittency, thermal runaway, and rare correlated failures.
+
+
+## 10. 2027 Fluctuation Stress Horizon
+
+For 2027-oriented planning, fluctuation capability should be tested against stronger scaling pressure:
+
+| 2027 Stressor | Edge Case to Simulate | Required Counter-Balance |
+|---|---|---|
+| higher DER penetration | local generation swings faster than control updates | faster forecasting and reserve dispatch |
+| larger storage fleet | many batteries charge/discharge together | damping, coordination, state-of-health tracking |
+| more IoT/WPT devices | spectrum congestion and safety constraints rise | coexistence monitoring and throttling |
+| deeper demand response | rebound peaks become more likely | randomized restoration and staged load return |
+| more cyber-physical dependency | spoofed telemetry can misroute energy | authenticated telemetry and sensor fusion |
+
+2027 fluctuation-readiness criterion:
+
+```text
+F_cap,2027 must remain above threshold under correlated fluctuations, not only isolated single-domain disturbances.
+```

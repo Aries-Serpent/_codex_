@@ -169,3 +169,26 @@ usable output + resilience + safety + reversibility − loss − harmful couplin
 ```
 
 In the security/access domain, this means using observability, least privilege, and adaptive step-up controls. In the physical-energy domain, it means using storage, demand response, DER coordination, WPT safety limits, spectral matching, and predictive dispatch.
+
+
+## 8. 2027 Outlook and Readiness Interpretation
+
+The 2027 layer is forecast-oriented. It should be read as a stress-test horizon for adaptive energy-management, not as observed data from the future.
+
+2027-facing design pressures:
+
+| Forecast Pressure | Why It Matters | Readiness Variable |
+|---|---|---|
+| larger distributed-energy participation | more local generation, storage, EVs, and flexible loads interact with the grid | $G_generalization$, $O_observability$ |
+| more storage coordination | battery dispatch becomes central to renewable balancing | $S_d$, $P_storage$, $D_d$ |
+| stronger demand response | flexible loads become active grid resources | $V_response$, $D_damping$ |
+| grid interconnection congestion | routing and prioritization become critical | $R_d$, $P_safety$, topology context |
+| more cyber-physical telemetry | control depends on trusted data | $Φ_d$, $O_observe$, $U_uncertainty$ |
+
+2027 readiness equation:
+
+```text
+R_2027 = M_system · F_cap · E_cont_margin · O_observe / (D_drift + U_uncertainty + C_coupling)
+```
+
+Interpretation: readiness rises when maturity, fluctuation capability, continuity margin, and observability dominate drift, uncertainty, and harmful coupling.
