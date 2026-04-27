@@ -1171,7 +1171,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.5.4
+transformers==5.6.2
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
