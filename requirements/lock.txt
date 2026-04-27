@@ -335,7 +335,7 @@ great-expectations==1.15.1
     # via codex-ml (pyproject.toml)
 greenlet==3.2.4
     # via sqlalchemy
-grpcio==1.78.0
+grpcio==1.80.0
     # via
     #   ray
     #   tensorboard
