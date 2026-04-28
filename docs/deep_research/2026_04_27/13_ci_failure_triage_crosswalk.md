@@ -5,7 +5,7 @@
 - **Source type:** Application/cross-walk note
 - **Topic:** Operationalizing the adaptive-energy and CpT deep research packet against the live CI failure triage report (issue #4100, generated 2026-04-27).
 - **Scope:** Repository explanation, failure-pattern mapping into the packet's variable grammar, and a prioritized correction plan.
-- **In-scope correction for this PR:** documentation cross-walk only. Workflow and code edits required by the patterns below MUST land in their own focused PRs on their respective branches.
+- **In-scope correction for this PR:** documentation cross-walk plus WEC default/template hardening for the F2/F5 continuation-loop path. Broader workflow and branch-specific fixes still require focused PRs on the affected branches.
 
 ---
 
@@ -70,8 +70,8 @@ flowchart LR
     F4 --> Plan
     F5 --> Plan
     F6 --> Plan
-    Plan --> ScopeIn[In-scope: docs cross-walk]
-    Plan --> ScopeOut[Out-of-scope: separate focused PRs<br/>per workflow family]
+    Plan --> ScopeIn[In-scope: docs cross-walk<br/>plus WEC default hardening]
+    Plan --> ScopeOut[Out-of-scope: separate focused PRs<br/>for remaining family-specific fixes]
 ```
 
 ## 5. Prioritized Correction Plan
@@ -108,9 +108,9 @@ Priority is assigned using the maturity equation (note 10) and continuity counte
 
 - For `pages-build-deployment` and `Root Organization Validation`, validate that move/comment steps respect repo write scopes and that the Pages source/target branches are configured per `.codex/AGENTIC_REPO_STATE.md`.
 
-### Out-of-Scope for This PR
+### Remaining Follow-On Fixes Beyond This PR
 
-This PR is documentation-only on `copilot/research-security-vs-access`. The corrections in P1–P6 either touch workflow YAML on `main`, dependabot branches, or another `copilot/*` PR, or require CI infra changes beyond docs scope. Each must land in a dedicated, focused PR. The cross-walk in this note is the in-scope artifact that makes the deep-research lexicon immediately usable by the agents and reviewers triaging those PRs.
+This PR now carries the cross-walk and the WEC default/template hardening that directly reduces F2/F5 governance and continuation-loop risk on `copilot/research-security-vs-access` → `main`. The remaining corrections in P1–P6 still span additional workflow YAML, dependabot branches, or branch-specific incidents, so they should continue as focused fixes keyed off this note's family map.
 
 ## 6. Maturity Verdict for the CI System (per Note 10)
 

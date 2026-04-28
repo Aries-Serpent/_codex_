@@ -1,6 +1,42 @@
 # Agent Accountability Report
 
 
+## SESSION SUMMARY — 2026-04-28T01:30Z (S346 — PR #4101 WEC hardening + merge-ready refresh)
+
+**Session:** S346 | **PR:** #4101 | **Branch:** `copilot/research-security-vs-access` | **Date:** 2026-04-28
+
+### Pre-flight Checklist
+- [x] **0a.** Loaded mandatory repo state, Codebase Agency Policy, accountability report, PDA loop, agent context, and stored memories ✅
+- [x] **0b.** Reviewed PR #4101 comments/checks and confirmed it is the active PR targeting `main` ✅
+- [x] **0c.** Synced the branch after both `main` and the remote PR branch advanced during the session ✅
+
+### Actions Taken
+- **Merge-readiness refresh:** checked mergeability against `main`, merged the latest `main` into the branch, then resynced local work onto the newer remote `copilot/research-security-vs-access` head so implementation continued on the current PR tip.
+- **WEC default hardening:** corrected `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`, and the `agent-auth-delegation.yml` canonical-WEC injection path so the continuation-loop items `copilot-agent-session-done.yml` and `copilot-iterative-self-healing.yml` are no longer auto-seeded to `[x]`. This aligns the live PR-body repair path with `_WEC_NEVER_CHECK` and maintainer-controlled opt-in behavior.
+- **Reference/test alignment:** updated `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md`, `docs/ci/PR_LIFECYCLE.md`, `docs/deep_research/2026_04_27/13_ci_failure_triage_crosswalk.md`, `tests/ci/test_session_wrapup_autofix.py`, and `scripts/test_continuation_system.sh` so docs, tests, and continuation validation all match the corrected WEC process.
+- **Tracked-file recovery:** ran `python3 scripts/ci/sync_tracked_files.py --fix` to repair `.secrets.baseline` drift after the branch update changed `CODEX_MANIFEST.json`.
+
+### Validation Results
+- `python3 -m pytest -q tests/ci/test_session_wrapup_autofix.py` → 47 passed ✅
+- `bash scripts/test_continuation_system.sh` → 21/21 checks passed ✅
+- `python3 -m ruff check scripts/ci/session_wrapup_autofix.py tests/ci/test_session_wrapup_autofix.py` → passed ✅
+- `python3 scripts/ci/sync_tracked_files.py --fix` → `.secrets.baseline` refreshed, then clean ✅
+- `env -u GITHUB_SHA python3 scripts/ci/auto_fix_common_issues.py --check-only` → expected green after this accountability/changelog/PDA update is committed; Pattern 17 is informational and only fires when `GITHUB_SHA` is injected from CI ✅
+
+### Files Changed
+- `.github/pull_request_template.md` — unchecked continuation-loop WEC defaults
+- `.github/PULL_REQUEST_TEMPLATE.md` — unchecked continuation-loop WEC defaults
+- `.github/workflows/agent-auth-delegation.yml` — preserve current state for continuation-loop WEC items during canonical-body rebuild
+- `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` — updated WEC example defaults
+- `docs/ci/PR_LIFECYCLE.md` — corrected quick-reference WEC guidance
+- `docs/deep_research/2026_04_27/13_ci_failure_triage_crosswalk.md` — reflects applied F2/F5 WEC mitigation
+- `tests/ci/test_session_wrapup_autofix.py` — asserts `_WEC_NEVER_CHECK` items stay unchecked in generated WEC and both PR templates
+- `scripts/test_continuation_system.sh` — aligned continuation-system validator with template v1.5.0 and safe WEC defaults
+- `.secrets.baseline` — refreshed `CODEX_MANIFEST` hash via tracked-file sync
+- `CHANGELOG.md` — this S346 entry
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this S346 accountability entry
+
+---
 
 
 ## SESSION SUMMARY — 2026-04-28T01:20Z [auto-generated]
@@ -8,6 +44,7 @@
 **Session:** auto-20260428T0120-run81899 | **Run:** 25028498088 | **Date:** 2026-04-28
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+
 ## SESSION SUMMARY — 2026-04-27T22:02Z (S345 — CI rescue 4330665768 + Pattern 25 refresh)
 
 **Session:** S345 | **PR:** #4077 | **Run:** 25021412687 | **Date:** 2026-04-27

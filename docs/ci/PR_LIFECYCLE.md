@@ -2160,9 +2160,9 @@ Minimum viable WEC for a feature PR:
 - [x] agent-auth-delegation.yml  ← always required
 - [x] copilot-agent-checkin.yml  ← always required
 - [x] cost-gate.yml              ← always required
-- [x] copilot-agent-session-done.yml  ← always required
 - [x] workflow-execution-gate.yml     ← always required
-- [x] copilot-iterative-self-healing.yml ← always required
+- [ ] copilot-agent-session-done.yml  ← leave unchecked unless maintainer explicitly wants follow-up auto-post
+- [ ] copilot-iterative-self-healing.yml ← leave unchecked unless maintainer explicitly wants self-healing loop approval
 - [x] validate.yml               ← cheap: detect-secrets + ruff
 - [x] mypy-baseline.yml          ← cheap: type-check gate
 - [x] actionlint-audit.yml       ← cheap: workflow compliance

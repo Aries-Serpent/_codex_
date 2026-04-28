@@ -116,6 +116,11 @@ class TestBuildWecBlock:
         for fname in optional:
             assert f"- [ ] {fname}" in block, f"{fname} should be unchecked by default"
 
+    def test_never_check_items_are_unchecked_by_default(self):
+        block = swa._build_wec_block(existing_state={})
+        for fname in swa._WEC_NEVER_CHECK:
+            assert f"- [ ] {fname}" in block, f"{fname} should default unchecked"
+
     def test_existing_state_preserves_maintainer_selections(self):
         existing = {
             "resilient_validation.yml": True,
@@ -512,3 +517,19 @@ class TestWecConstants:
 
     def test_legacy_marker_different_from_current(self):
         assert swa._WEC_MARKER != swa._WEC_MARKER_LEGACY
+
+
+class TestWecTemplateDefaults:
+    def test_primary_pr_template_keeps_never_check_items_unchecked(self):
+        template = (
+            Path(__file__).resolve().parents[2] / ".github" / "pull_request_template.md"
+        ).read_text(encoding="utf-8")
+        for fname in swa._WEC_NEVER_CHECK:
+            assert f"- [ ] {fname}" in template, f"{fname} should be unchecked in primary template"
+
+    def test_secondary_pr_template_keeps_never_check_items_unchecked(self):
+        template = (
+            Path(__file__).resolve().parents[2] / ".github" / "PULL_REQUEST_TEMPLATE.md"
+        ).read_text(encoding="utf-8")
+        for fname in swa._WEC_NEVER_CHECK:
+            assert f"- [ ] {fname}" in template, f"{fname} should be unchecked in secondary template"

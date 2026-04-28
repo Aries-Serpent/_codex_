@@ -601,8 +601,8 @@ Before ending any session the agent MUST verify:
 
 ### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)
 - [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (fires on push)
-- [x] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run)
-- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)
+- [ ] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run; maintainer opt-in)
+- [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval; maintainer opt-in)
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
 
 ### ⚡ Auto-Approve
