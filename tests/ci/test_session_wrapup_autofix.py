@@ -24,15 +24,18 @@ import pytest
 # ---------------------------------------------------------------------------
 _THIS_FILE = Path(__file__).resolve()
 _SCRIPTS_CI: Path | None = None
+_SEARCHED_ROOTS: list[Path] = []
 for _candidate_root in [_THIS_FILE.parent] + list(_THIS_FILE.parent.parents):
     _candidate = _candidate_root / "scripts" / "ci"
+    _SEARCHED_ROOTS.append(_candidate)
     if (_candidate / "session_wrapup_autofix.py").is_file():
         _SCRIPTS_CI = _candidate
         break
 if _SCRIPTS_CI is None:
+    _searched = "\n  - ".join(str(p) for p in _SEARCHED_ROOTS)
     raise RuntimeError(
         f"Could not locate scripts/ci/session_wrapup_autofix.py from {_THIS_FILE}; "
-        "checked every parent directory."
+        f"checked the following parent paths:\n  - {_searched}"
     )
 
 if str(_SCRIPTS_CI) not in sys.path:
@@ -506,7 +509,7 @@ class TestWecConstants:
         were added in subsequent sessions.  This test guards against accidental
         truncation by enforcing a hard floor (the always-required + always-active
         items must always be present) and by re-asserting that each item is a
-        valid (filename, required) tuple.
+        valid (filename, label, required) tuple.
         """
         # Hard floor: the 5 always-required gates + the 4 always-active items
         # (copilot-agent-checkin, copilot-agent-session-done, copilot-iterative-self-healing,

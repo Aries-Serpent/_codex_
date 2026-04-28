@@ -438,6 +438,136 @@ def _compute_merge_readiness_score():
         assert 1 in called
         assert 30 not in called
 
+    def test_pattern_30_skips_auto_fix_self_reference_dimension(self, tmp_path):
+        """S178: Pattern 30 must NOT report the ``auto_fix`` self-reference
+        dimension as its own issue — that double-counts issues already
+        reported by Patterns 1-29 and 31-32 and surfaces in the summary
+        as ``auto-fixable`` even though the matching DIM_FIX is
+        ``auto_fix_sweep`` (instructions only, never resolves).
+        """
+        mod = _load_auto_fix()
+        repo_root = tmp_path / "repo"
+        scripts_ci = repo_root / "scripts" / "ci"
+        scripts_ci.mkdir(parents=True)
+        (repo_root / "src").mkdir()
+
+        (scripts_ci / "session_wrapup_autofix.py").write_text(
+            """
+def _compute_merge_readiness_score():
+    return {
+        "dimensions": [
+            ("auto_fix (0 auto-fixable)", 15, "❌ issues found", False),
+            ("ruff (src/ clean)", 10, "✅ clean", True),
+        ],
+        "score": 85,
+        "total": 100,
+    }
+""".strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+        fixer = mod.CommonIssueFixer(repo_root, check_only=True)
+        # Even though one dimension is failing, Pattern 30 must not return
+        # an issue for it because it is the auto_fix self-reference.
+        assert fixer.fix_merge_readiness_dims() == []
+
+
+class TestResolveAcctDiffBase:
+    """S178: Validate the helper that walks past infra/[skip ci] commits."""
+
+    def _git(self, cwd: Path, *args: str, env: dict | None = None) -> str:
+        import os
+        import subprocess as sp
+        merged = os.environ.copy()
+        merged.update(env or {})
+        return sp.run(
+            ["git", *args], cwd=cwd, capture_output=True, text=True,
+            check=True, env=merged,
+        ).stdout
+
+    def _mkrepo(self, tmp_path: Path) -> Path:
+        repo = tmp_path / "r"
+        repo.mkdir()
+        env = {
+            "GIT_AUTHOR_EMAIL": "a@b.c",
+            "GIT_COMMITTER_EMAIL": "a@b.c",
+            "GIT_COMMITTER_NAME": "test",
+        }
+        self._git(repo, "init", "-q", "-b", "main", env=env)
+        self._git(repo, "config", "commit.gpgsign", "false", env=env)
+        return repo
+
+    def _commit(self, repo: Path, msg: str, author_name: str, file_content: str) -> None:
+        env = {
+            "GIT_AUTHOR_NAME": author_name,
+            "GIT_AUTHOR_EMAIL": "a@b.c",
+            "GIT_COMMITTER_NAME": author_name,
+            "GIT_COMMITTER_EMAIL": "a@b.c",
+        }
+        f = repo / "README.md"
+        f.write_text(file_content, encoding="utf-8")
+        self._git(repo, "add", "README.md", env=env)
+        self._git(repo, "commit", "-q", "-m", msg, env=env)
+
+    def test_returns_none_when_only_agent_commit(self, tmp_path):
+        mod = _load_auto_fix()
+        repo = self._mkrepo(tmp_path)
+        self._commit(repo, "feat: agent work", "agent", "v1\n")
+        # Single commit — has no parent, so the helper returns None and
+        # the caller falls back to HEAD~1 (which produces a git error,
+        # also OK — Pattern 25 returns no issues in that case).
+        assert mod._resolve_acct_diff_base(repo) is None
+
+    def test_skips_infra_bot_commits(self, tmp_path):
+        mod = _load_auto_fix()
+        repo = self._mkrepo(tmp_path)
+        self._commit(repo, "init: bootstrap", "human", "v0\n")
+        self._commit(repo, "feat: agent work", "copilot-swe-agent[bot]", "v1\n")
+        self._commit(
+            repo, "chore: auto-merge 1 automated commit(s) from main [skip ci]",
+            "github-actions[bot]", "v2\n",
+        )
+        self._commit(
+            repo, "chore: Generate follow-up prompt for PR #99",
+            "github-actions[bot]", "v3\n",
+        )
+        # HEAD     = follow-up prompt (infra)
+        # HEAD~1   = auto-merge (infra)
+        # HEAD~2   = agent work        ← this is the agent commit
+        # HEAD~3   = init              ← parent of agent commit
+        base = mod._resolve_acct_diff_base(repo)
+        assert base is not None
+        # Confirm the SHA returned is the parent of the agent commit.
+        expected_parent = self._git(repo, "rev-parse", "HEAD~3").strip()
+        assert base == expected_parent
+
+    def test_skips_skip_ci_subjects_regardless_of_author(self, tmp_path):
+        mod = _load_auto_fix()
+        repo = self._mkrepo(tmp_path)
+        self._commit(repo, "init: bootstrap", "human", "v0\n")
+        self._commit(repo, "feat: real work", "alice", "v1\n")
+        # Even when authored by a non-bot, [skip ci] subject marks it as infra.
+        self._commit(repo, "chore: bump [skip ci]", "alice", "v2\n")
+        base = mod._resolve_acct_diff_base(repo)
+        assert base is not None
+        expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
+        assert base == expected_parent
+
+    def test_returns_none_when_all_commits_are_infra(self, tmp_path):
+        mod = _load_auto_fix()
+        repo = self._mkrepo(tmp_path)
+        self._commit(
+            repo, "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]",
+            "github-actions[bot]", "v0\n",
+        )
+        self._commit(
+            repo, "chore: auto-merge from main [skip ci]",
+            "github-actions[bot]", "v1\n",
+        )
+        # No agent commit found within the lookback window.
+        assert mod._resolve_acct_diff_base(repo) is None
+
 
 class TestFindKwargRemovalSpan:
     def _make_fixer(self):
