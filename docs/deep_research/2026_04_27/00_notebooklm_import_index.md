@@ -21,6 +21,7 @@ Import every Markdown file in this folder as a separate NotebookLM source. The n
 | `10_novice_system_maturity_determination.md` | Defines how to determine maturity when novice systems consistently meet targets, including maturity equations, stage ladder, calibration probes, and energy/access examples. |
 | `11_continuous_energy_counterbalance.md` | Defines the counter-balance required to maintain continuous usable energy across supply, storage, demand, losses, safety margins, degradation, feedback, electromagnetism, grids, thermal systems, and security/access. |
 | `12_fluctuation_handling_edge_cases.md` | Defines fluctuation-handling capability and edge cases across electromagnetic, smart-grid, thermal, storage, and security/access domains. |
+| `13_ci_failure_triage_crosswalk.md` | Cross-walk that operationalizes the packet against the live CI Failure Triage Report (issue #4100), maps 26 failing workflows to packet variables, and gives a prioritized correction plan with explicit in-scope/out-of-scope split. |
 
 ## Core Thesis
 
