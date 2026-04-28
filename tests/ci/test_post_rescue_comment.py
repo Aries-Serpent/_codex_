@@ -57,8 +57,10 @@ class TestGetBranchHeadSha:
             prc._get_branch_head_sha("t", "o/r", "feature/my branch")
 
         assert len(calls) == 1
-        # The branch name should be URL-encoded in the path
-        assert "feature%2Fmy%20branch" in calls[0] or "feature/my%20branch" in calls[0] or "feature%2F" in calls[0]
+        # Spaces in the branch name must be percent-encoded as %20.
+        assert "%20" in calls[0], (
+            f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
+        )
 
 
 class TestSelfSuppressMainLogic:
@@ -78,13 +80,14 @@ class TestSelfSuppressMainLogic:
         env = {**self._ENV_BASE, **overrides}
         for k, v in env.items():
             monkeypatch.setenv(k, v)
-        # Clear optional env vars *only if not provided in overrides*
-        for k in ("SECTION_TITLE", "SECTION_CONTENT", "APPEND_ONLY"):
+        # Clear all optional env vars that are not explicitly provided.
+        # PR_NUMBER behaves like other optional vars: absent → push mode (API
+        # lookup); present → PR-triggered mode.  Other optional vars default
+        # to empty string when absent, so clearing them avoids leakage between
+        # tests.
+        for k in ("PR_NUMBER", "SECTION_TITLE", "SECTION_CONTENT", "APPEND_ONLY"):
             if k not in overrides:
                 monkeypatch.delenv(k, raising=False)
-        # PR_NUMBER is optional in push mode; only clear if explicitly omitted
-        if "PR_NUMBER" not in overrides:
-            monkeypatch.delenv("PR_NUMBER", raising=False)
 
     def test_suppresses_when_head_differs(self, monkeypatch, capsys):
         """When branch HEAD != COMMIT_SHA, main() must print the suppression
@@ -114,7 +117,9 @@ class TestSelfSuppressMainLogic:
 
         with patch.object(prc, "_get_branch_head_sha", return_value=commit_sha):
             with patch.object(prc, "_find_rescue_comment", return_value=(None, "")):
-                # build_comment_context import will fail gracefully
+                # build_comment_context is an optional import inside main(); it may
+                # fail silently when the discussion_context_store module is absent.
+                # Patching _gh to return a valid 201 lets the POST succeed cleanly.
                 with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})):
                     prc.main()
 
