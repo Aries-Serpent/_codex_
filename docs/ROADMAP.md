@@ -2,7 +2,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Last Updated**: 2026-04-12 | **Version**: 2.0.0 | **Owner**: DevOps + Agent Team
+**Last Updated**: 2026-04-28 | **Version**: 2.0.0 | **Owner**: DevOps + Agent Team
 
 ---
 
@@ -27,7 +27,7 @@
 
 ---
 
-## 🚀 Current State (2026-04-12)
+## 🚀 Current State (2026-04-28)
 
 ### Core Capabilities Status
 
@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps in progress (SAR-G01 blocked; SAR-G02 near-complete; SAR-G03 partial) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
+| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps in progress — see [SAR_METHODOLOGY.md §10](docs/ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |

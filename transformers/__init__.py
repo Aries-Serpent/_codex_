@@ -24,7 +24,7 @@ def _load_real_module() -> ModuleType | None:
     for p in sys.path:
         try:
             resolved = Path(p).resolve()
-        except (OSError, RuntimeError, ValueError):
+        except (OSError, RuntimeError, TypeError, ValueError):
             continue
         if resolved not in excluded_paths:
             search_paths.append(p)
@@ -266,7 +266,7 @@ else:  # pragma: no cover - exercised in minimal test envs
     def get_scheduler(*args, **kwargs):
         raise ImportError(_ERR)
 
-    __version__ = "999.0.0-stub"
+    __version__ = "999.0.0+stub"
     __all__ = [
         "AutoConfig",
         "AutoModel",

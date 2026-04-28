@@ -5,10 +5,14 @@ from pathlib import Path
 
 import pytest
 
+from src.services.workflow.parser import WorkflowParser, logger
+from src.services.workflow.types import (
+    TriggerType,
+    WorkflowInput,
+    WorkflowJob,
+    WorkflowMetadata,
+)
 from tests.services.workflow._helpers import raise_exception
-
-workflow_parser_module = pytest.importorskip("src.services.workflow.parser")
-WorkflowParser = workflow_parser_module.WorkflowParser
 
 
 def _patch_open_error(monkeypatch, workflow: Path, exception: Exception) -> None:
@@ -116,42 +120,23 @@ class TestModuleImports:
 
     def test_types_import(self):
         """Test that types module classes can be imported."""
-        try:
-            from src.services.workflow.types import (
-                TriggerType,
-                WorkflowMetadata,
-            )
-            assert TriggerType is not None
-            assert WorkflowMetadata is not None
-        except ImportError:
-            pytest.skip("Module not available")
+        assert TriggerType is not None
+        assert WorkflowMetadata is not None
 
     def test_logger_configured(self):
         """Test that logger is configured and usable."""
-        try:
-            from src.services.workflow.parser import logger
-            assert logger is not None
-            assert hasattr(logger, 'warning')
-            assert hasattr(logger, 'error')
-            assert hasattr(logger, 'debug')
-        except ImportError:
-            pytest.skip("Module not available")
+        assert logger is not None
+        assert hasattr(logger, 'warning')
+        assert hasattr(logger, 'error')
+        assert hasattr(logger, 'debug')
 
     def test_workflow_input_type(self):
         """Test WorkflowInput type is available."""
-        try:
-            from src.services.workflow.types import WorkflowInput
-            assert WorkflowInput is not None
-        except ImportError:
-            pytest.skip("Module not available")
+        assert WorkflowInput is not None
 
     def test_workflow_job_type(self):
         """Test WorkflowJob type is available."""
-        try:
-            from src.services.workflow.types import WorkflowJob
-            assert WorkflowJob is not None
-        except ImportError:
-            pytest.skip("Module not available")
+        assert WorkflowJob is not None
 
 
 class TestWorkflowParserMethods:
@@ -159,104 +144,66 @@ class TestWorkflowParserMethods:
 
     def test_parse_content_empty_string(self):
         """Test parse_content with empty string."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            result = parser.parse_content("", Path("/test.yml"))
-            assert result is None
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        result = parser.parse_content("", Path("/test.yml"))
+        assert result is None
 
     def test_parse_content_invalid_yaml(self):
         """Test parse_content with invalid YAML."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            invalid_yaml = "{ invalid: yaml: content"
-            result = parser.parse_content(invalid_yaml, Path("/test.yml"))
-            assert result is None
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        invalid_yaml = "{ invalid: yaml: content"
+        result = parser.parse_content(invalid_yaml, Path("/test.yml"))
+        assert result is None
 
     def test_parse_validates_non_mapping_yaml(self):
         """Test parse rejects YAML that does not produce a mapping."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-
-            parser = WorkflowParser()
-            with pytest.raises(ValueError, match="must be a dictionary"):
-                parser.parse("- item", Path("/test.yml"))
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        with pytest.raises(ValueError, match="must be a dictionary"):
+            parser.parse("- item", Path("/test.yml"))
 
     def test_parse_returns_metadata_for_valid_yaml(self):
         """Test parse returns metadata for valid YAML input."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-
-            parser = WorkflowParser()
-            workflow = parser.parse(
-                "name: Valid\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo test",
-                Path("/test.yml"),
-            )
-            assert workflow is not None
-            assert workflow.name == "Valid"
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        workflow = parser.parse(
+            "name: Valid\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo test",
+            Path("/test.yml"),
+        )
+        assert workflow is not None
+        assert workflow.name == "Valid"
 
     def test_parse_file_handles_permission_error(self, monkeypatch, tmp_path):
         """Test parse_file returns None on permission errors."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-
-            parser = WorkflowParser()
-            # Patch open so reads for this workflow path fail, while all other open calls delegate.
-            workflow = tmp_path / "workflow.yml"
-            workflow.write_text("name: Test\non: push\njobs: {}\n")
-            _patch_open_error(monkeypatch, workflow, PermissionError("denied"))
-            assert parser.parse_file(workflow) is None
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        # Patch open so reads for this workflow path fail, while all other open calls delegate.
+        workflow = tmp_path / "workflow.yml"
+        workflow.write_text("name: Test\non: push\njobs: {}\n")
+        _patch_open_error(monkeypatch, workflow, PermissionError("denied"))
+        assert parser.parse_file(workflow) is None
 
     def test_parse_file_handles_unexpected_error(self, monkeypatch, tmp_path):
         """Test parse_file returns None on unexpected read failures."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-
-            parser = WorkflowParser()
-            workflow = tmp_path / "workflow.yml"
-            workflow.write_text("name: Test\non: push\njobs: {}\n")
-            _patch_open_error(monkeypatch, workflow, RuntimeError("boom"))
-            assert parser.parse_file(workflow) is None
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        workflow = tmp_path / "workflow.yml"
+        workflow.write_text("name: Test\non: push\njobs: {}\n")
+        _patch_open_error(monkeypatch, workflow, RuntimeError("boom"))
+        assert parser.parse_file(workflow) is None
 
     def test_parse_content_handles_value_error_from_job_parsing(self, monkeypatch):
         """Test parse_content degrades cleanly when job parsing raises ValueError."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-
-            parser = WorkflowParser()
-            monkeypatch.setattr(parser, "_parse_jobs", raise_exception(ValueError("bad job")))
-            result = parser.parse_content(
-                "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
-                Path("/test.yml"),
-            )
-            assert result is None
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        monkeypatch.setattr(parser, "_parse_jobs", raise_exception(ValueError("bad job")))
+        result = parser.parse_content(
+            "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
+            Path("/test.yml"),
+        )
+        assert result is None
 
     def test_parse_content_handles_unexpected_job_parsing_error(self, monkeypatch):
         """Test parse_content degrades cleanly when job parsing raises an unexpected error."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-
-            parser = WorkflowParser()
-            monkeypatch.setattr(parser, "_parse_jobs", raise_exception(RuntimeError("boom")))
-            result = parser.parse_content(
-                "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
-                Path("/test.yml"),
-            )
-            assert result is None
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        monkeypatch.setattr(parser, "_parse_jobs", raise_exception(RuntimeError("boom")))
+        result = parser.parse_content(
+            "name: Broken\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
+            Path("/test.yml"),
+        )
+        assert result is None
