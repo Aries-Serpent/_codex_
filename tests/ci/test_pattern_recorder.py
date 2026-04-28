@@ -477,11 +477,17 @@ class TestResolveAcctDiffBase:
     """S178: Validate the helper that walks past infra/[skip ci] commits."""
 
     def _git(self, cwd: Path, *args: str, env: dict | None = None) -> str:
+        # NOTE: This intentionally uses stdlib subprocess.run (NOT
+        # codex.utils.subprocess.run) because we need the ``env=`` kwarg to
+        # pass deterministic GIT_AUTHOR_*/GIT_COMMITTER_* values for these
+        # repository fixtures. Importing the stdlib symbol under a distinct
+        # name avoids a github-code-quality false-positive that would
+        # otherwise flag this call against the project wrapper's signature.
         import os
-        import subprocess as sp
+        from subprocess import run as _stdlib_run
         merged = os.environ.copy()
         merged.update(env or {})
-        return sp.run(
+        return _stdlib_run(  # nosec B603 - args are constants under our control
             ["git", *args], cwd=cwd, capture_output=True, text=True,
             check=True, env=merged,
         ).stdout

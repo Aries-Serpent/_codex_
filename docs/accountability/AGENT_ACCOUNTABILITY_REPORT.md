@@ -2,6 +2,28 @@
 
 
 
+## SESSION SUMMARY — 2026-04-28T19:55Z (S178c — github-code-quality false-positive on `tests/ci/test_pattern_recorder.py`)
+
+**Session:** S178c | **PR:** #4109 | **Branch:** `copilot/hotfixpost-4107-followup` | **Date:** 2026-04-28
+
+### What this session resolves
+
+The github-code-quality bot ([review #4191842442](https://github.com/Aries-Serpent/_codex_/pull/4109#pullrequestreview-4191842442)) flagged `tests/ci/test_pattern_recorder.py:487` with `Wrong name for an argument in a call: keyword argument 'env' is not a supported parameter name of function run`, linking to `src/codex/utils/subprocess.py:10-18`. The bot misresolved the call: the test's helper imported stdlib `subprocess as sp` and called `sp.run(..., env=merged)`, which IS valid (stdlib `subprocess.run` supports `env=`). The project wrapper at `codex.utils.subprocess.run` deliberately omits `env=` — the bot's name-based resolver mismatched on `run`.
+
+### Fix shipped
+
+- **`tests/ci/test_pattern_recorder.py::TestResolveAcctDiffBase._git`** — switched the import to `from subprocess import run as _stdlib_run` with an explanatory comment so the bot cannot ambiguously resolve to the project wrapper. The test's behaviour is byte-for-byte identical (still calls stdlib `subprocess.run` with `env=`, `capture_output=True`, `text=True`, `check=True`), so all 7 `TestResolveAcctDiffBase` + `TestPattern30MergeReadiness` tests continue to pass.
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `python -m ruff check tests/ci/test_pattern_recorder.py` | All checks passed |
+| `pytest TestResolveAcctDiffBase TestPattern30MergeReadiness` | 7 passed |
+| `python scripts/ci/sync_tracked_files.py --check` | all consistent |
+
+---
+
 ## SESSION SUMMARY — 2026-04-28T19:30Z (S178b — WEC integrity hardening + shallow-clone-safe REQ-4/REQ-5 lookback)
 
 **Session:** S178b | **PR:** #4109 | **Branch:** `copilot/hotfixpost-4107-followup` | **Date:** 2026-04-28

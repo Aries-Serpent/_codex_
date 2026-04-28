@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S178c — 2026-04-28 — github-code-quality false-positive on `tests/ci/test_pattern_recorder.py`)
+- **`tests/ci/test_pattern_recorder.py::TestResolveAcctDiffBase._git`** — replaced the `import subprocess as sp` + `sp.run(..., env=merged)` pattern with `from subprocess import run as _stdlib_run` + an explicit comment. The github-code-quality bot ([review #4191842442](https://github.com/Aries-Serpent/_codex_/pull/4109#pullrequestreview-4191842442)) was incorrectly resolving the call against `src/codex/utils/subprocess.py::run` (the project wrapper, which intentionally does not expose `env=`) instead of stdlib `subprocess.run` (which does). The fixture genuinely needs `env=` to pass deterministic `GIT_AUTHOR_*` / `GIT_COMMITTER_*` values for repository-bootstrap commits, so the right resolution is to use a name that cannot be confused with the wrapper. All 7 `TestResolveAcctDiffBase` + `TestPattern30MergeReadiness` tests still pass.
+
 ### Fixed (S178b — 2026-04-28 — WEC integrity hardening + shallow-clone-safe REQ-4/REQ-5 lookback)
 - **`scripts/ci/session_wrapup_autofix.py` — `_MERGE_REQUIRED_WORKFLOWS` lifted to module scope** (was local to `update_pr_wec_for_merge_readiness`) and a module-load `AssertionError` now fires if it overlaps with `_WEC_NEVER_CHECK`. This catches accidental edits at import time so a future PR cannot silently re-enable the Copilot continuation-loop trigger workflows (`copilot-agent-session-done.yml`, `copilot-iterative-self-healing.yml`, `auto-approve-workflows`).
 - **`update_pr_wec_for_merge_readiness` runtime guard:** the activation loop now skips any `_WEC_NEVER_CHECK` member it encounters, even if it accidentally appears in `_MERGE_REQUIRED_WORKFLOWS`, and prints a `⚠  WEC activation skipped never-check items` line to stderr. Belt-and-suspenders defence layered on top of the module-load assertion.
