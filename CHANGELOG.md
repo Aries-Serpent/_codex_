@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4105)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4105 (SHA `cc60a302`) at 2026-04-28T15:38Z [auto-generated]
+
 ### Fixed (S347 — 2026-04-28 — PR #4101 reviewer follow-up + accountability refresh)
 - `scripts/test_continuation_system.sh`: switched the PR template version assertion to fixed-string matching so template version `1.5.0` is validated literally instead of through a regex that could accept lookalikes such as `1x5x0`.
 - `.github/workflows/agent-auth-delegation.yml`: changed the canonical WEC rebuild `_checked()` helper to use exact line-prefix matching for `- [x] <workflow>` entries, preventing filename metacharacters (notably `.` in `.yml`) from matching unintended workflow lines when preserving maintainer selections.
