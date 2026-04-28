@@ -24,7 +24,7 @@ import pytest
 # ---------------------------------------------------------------------------
 _THIS_FILE = Path(__file__).resolve()
 _SCRIPTS_CI = None
-for _candidate_root in [_THIS_FILE] + list(_THIS_FILE.parents):
+for _candidate_root in [_THIS_FILE.parent] + list(_THIS_FILE.parent.parents):
     _candidate = _candidate_root / "scripts" / "ci"
     if (_candidate / "session_wrapup_autofix.py").is_file():
         _SCRIPTS_CI = _candidate
