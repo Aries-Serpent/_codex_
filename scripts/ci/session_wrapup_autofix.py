@@ -1281,6 +1281,21 @@ def select_merge_required_workflows(
             f"prevention): {', '.join(skipped_never_check)}",
             file=sys.stderr,
         )
+        # Telemetry: also emit to GITHUB_STEP_SUMMARY so this event is visible
+        # in the GitHub Actions UI (not just buried in stderr).
+        _summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+        if _summary_path:
+            try:
+                with open(_summary_path, "a", encoding="utf-8") as _sf:
+                    _sf.write(
+                        f"\n### ⚠️ WEC Never-Check Guard\n\n"
+                        f"Skipped **{len(skipped_never_check)}** never-check item(s) "
+                        f"during WEC activation (continuation-loop prevention):\n\n"
+                        + "".join(f"- `{item}`\n" for item in skipped_never_check)
+                        + "\n"
+                    )
+            except OSError:
+                pass  # step summary write is best-effort
 
     if not activated and _WEC_MARKER in pr_body:
         n_checked = sum(1 for v in updated_state.values() if v)

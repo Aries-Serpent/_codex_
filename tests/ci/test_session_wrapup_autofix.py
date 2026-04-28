@@ -624,3 +624,62 @@ class TestWecTemplateDefaults:
         template = template_path.read_text(encoding="utf-8")
         for fname in swa._WEC_NEVER_CHECK:
             assert f"- [ ] {fname}" in template, f"{fname} should be unchecked in secondary template"
+
+
+class TestWecNeverCheckTelemetry:
+    """Telemetry counter for ⚠ WEC activation skipped never-check items (S178c)."""
+
+    def _build_pr_body_with_never_check_in_merge_required(self, never_check_fname: str) -> str:
+        """Build a minimal PR body that has the WEC block present."""
+        block = swa._build_wec_block({})
+        return f"## My PR\n\nDescription.\n\n{block}"
+
+    def test_step_summary_written_when_never_check_skipped(self, tmp_path, monkeypatch):
+        """select_merge_required_workflows must write to GITHUB_STEP_SUMMARY when a
+        never-check item is encountered during activation — not just to stderr.
+        """
+        summary_file = tmp_path / "step_summary.md"
+        monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary_file))
+
+        # Inject a never-check item into _MERGE_REQUIRED_WORKFLOWS so the guard fires.
+        never_check_item = next(iter(swa._WEC_NEVER_CHECK))
+        original_merge_required = swa._MERGE_REQUIRED_WORKFLOWS
+        monkeypatch.setattr(
+            swa, "_MERGE_REQUIRED_WORKFLOWS",
+            original_merge_required | {never_check_item},
+        )
+
+        pr_body = swa._build_wec_block({})
+
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(
+                returncode=0,
+                stdout=f"## My PR\n\n{pr_body}",
+            )
+            swa.select_merge_required_workflows("9999", dry_run=True)
+
+        # The step summary file must exist and contain the warning text.
+        assert summary_file.exists(), "GITHUB_STEP_SUMMARY was not written"
+        content = summary_file.read_text(encoding="utf-8")
+        assert "WEC Never-Check Guard" in content, (
+            "Step summary missing 'WEC Never-Check Guard' telemetry heading"
+        )
+        assert never_check_item in content, (
+            f"Step summary missing the skipped item name '{never_check_item}'"
+        )
+
+    def test_no_step_summary_when_no_skipped_items(self, tmp_path, monkeypatch):
+        """When no never-check items are skipped, GITHUB_STEP_SUMMARY must NOT
+        receive the WEC Never-Check Guard section.
+        """
+        summary_file = tmp_path / "step_summary.md"
+        monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary_file))
+
+        pr_body = swa._build_wec_block({})
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0, stdout=pr_body)
+            swa.select_merge_required_workflows("9999", dry_run=True)
+
+        if summary_file.exists():
+            content = summary_file.read_text(encoding="utf-8")
+            assert "WEC Never-Check Guard" not in content
