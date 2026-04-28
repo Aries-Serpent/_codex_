@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4107)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4107 (SHA `048988a2`) at 2026-04-28T16:21Z [auto-generated]
+
 ### Fixed (S349 — 2026-04-28 — ROADMAP SAR gap accuracy + CI tracked-file drift)
 - `docs/ROADMAP.md`: corrected P1 gap annotation from `SAR-G01/G02/G05 COMPLETE` to `SAR-G01 ✅ · SAR-G02 ✅ · SAR-G03 OPEN` — G05 is a P2 gap (not P1); G03 is the remaining open P1 gap per SAR_METHODOLOGY.md §10.
 - `docs/ROADMAP.md` (Current Blockers table): aligned G01/G02/G05 statuses with SAR_METHODOLOGY.md §10 registry (both RESOLVED); G03 correctly shows as OPEN/in-progress.
