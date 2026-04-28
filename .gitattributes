@@ -37,6 +37,11 @@
 *.txt text
 *.adoc text
 
+# Append-only CI accountability files — use union merge to prevent conflicts
+# when the nightly main sweep and feature branches both prepend new entries.
+docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md merge=union
+.codex/aftermath/pda_iterations.jsonl merge=union
+
 # Configuration
 Dockerfile text
 docker-compose*.yml text
