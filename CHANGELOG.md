@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S347 — 2026-04-28 — PR #4101 reviewer follow-up + accountability refresh)
+- `scripts/test_continuation_system.sh`: switched the PR template version assertion to fixed-string matching so template version `1.5.0` is validated literally instead of through a regex that could accept lookalikes such as `1x5x0`.
+- `.github/workflows/agent-auth-delegation.yml`: changed the canonical WEC rebuild `_checked()` helper to use exact line-prefix matching for `- [x] <workflow>` entries, preventing filename metacharacters (notably `.` in `.yml`) from matching unintended workflow lines when preserving maintainer selections.
+- Refreshed accountability metadata for the current branch tip so the next commit clears Pattern 25 / merge-readiness `auto_fix` drift introduced by the follow-up auth/session `[skip ci]` commits.
+
 ### Fixed (S346 — 2026-04-28 — PR #4101 merge-ready WEC hardening + tracked-file refresh)
 - PR #4101 (`copilot/research-security-vs-access` → `main`): merged the latest `main` updates into the branch, then synced back onto the latest remote branch tip before continuing implementation so the PR stays merge-ready against current `main`.
 - WEC hardening: corrected both PR templates so `copilot-agent-session-done.yml` and `copilot-iterative-self-healing.yml` default to unchecked `[ ]`, aligning the templates with `_WEC_NEVER_CHECK` in `scripts/ci/session_wrapup_autofix.py` and the maintainer-safe continuation-loop policy.

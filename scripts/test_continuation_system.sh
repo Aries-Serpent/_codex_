@@ -116,7 +116,7 @@ fi
 
 # Test 8: Check template version
 test_start "Template version updated"
-if grep -q "Version.*${EXPECTED_PR_TEMPLATE_VERSION}" .github/pull_request_template.md; then
+if grep -Fq "> **Version:** ${EXPECTED_PR_TEMPLATE_VERSION}" .github/pull_request_template.md; then
     test_pass
 else
     test_fail "Template version not updated to ${EXPECTED_PR_TEMPLATE_VERSION}"

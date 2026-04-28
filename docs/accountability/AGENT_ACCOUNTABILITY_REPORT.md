@@ -1,6 +1,35 @@
 # Agent Accountability Report
 
 
+## SESSION SUMMARY — 2026-04-28T02:12Z (S347 — PR #4101 review follow-up + Pattern 25 refresh)
+
+**Session:** S347 | **PR:** #4101 | **Branch:** `copilot/research-security-vs-access` | **Date:** 2026-04-28
+
+### Pre-flight Checklist
+- [x] **0a.** Re-loaded mandatory repo state, Codebase Agency Policy, accountability report, PDA loop, agent context, and stored memories ✅
+- [x] **0b.** Reviewed the new maintainer continuation comment plus active PR/reviewer feedback and checked the latest branch-head CI state ✅
+- [x] **0c.** Verified no open `ci-failure` / `ci-health-alert` issues and no merge conflicts against `main` before editing ✅
+
+### Actions Taken
+- **Reviewer follow-up:** changed `scripts/test_continuation_system.sh` to use a fixed-string template-version check so `1.5.0` is matched literally rather than as a regex pattern.
+- **WEC preservation hardening:** changed `.github/workflows/agent-auth-delegation.yml` `_checked()` to use exact line-prefix matching for `- [x] <workflow>` entries, avoiding false positives from unescaped filename metacharacters while preserving maintainer selections.
+- **Pattern 25 refresh:** refreshed this accountability entry and `CHANGELOG.md` so the next commit supersedes the auth/session `[skip ci]` bookkeeping commits that left last-commit accountability stale on the branch tip.
+
+### Validation Results
+- `python3 -m ruff check src/ tests/` → passed ✅
+- `bash scripts/test_continuation_system.sh` → 21/21 checks passed ✅
+- `python3 -m pytest -q tests/ci/test_session_wrapup_autofix.py` → 47 passed ✅
+- `python3 scripts/ci/sync_tracked_files.py --check` → all tracked files consistent ✅
+- `env -u GITHUB_SHA python3 scripts/ci/auto_fix_common_issues.py --check-only` → only Pattern 25 was pending before this accountability/changelog update; expected green once this commit is the branch tip ✅
+
+### Files Changed
+- `scripts/test_continuation_system.sh` — fixed-string PR template version assertion
+- `.github/workflows/agent-auth-delegation.yml` — exact checkbox-state matching for workflow names containing dots
+- `CHANGELOG.md` — S347 entry
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this S347 entry
+
+---
+
 ## SESSION SUMMARY — 2026-04-28T01:30Z (S346 — PR #4101 WEC hardening + merge-ready refresh)
 
 **Session:** S346 | **PR:** #4101 | **Branch:** `copilot/research-security-vs-access` | **Date:** 2026-04-28

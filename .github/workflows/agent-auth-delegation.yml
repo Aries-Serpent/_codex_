@@ -983,7 +983,7 @@ jobs:
           _checked() {
             local fname="$1" always="$2"
             if [ "$always" = "true" ]; then printf 'x'; return; fi
-            if echo "$BODY" | grep -qP "^\- \[x\] ${fname}"; then printf 'x'; return; fi
+            if printf '%s\n' "$BODY" | awk -v fname="$fname" 'index($0, "- [x] " fname) == 1 { found = 1; exit } END { exit !found }'; then printf 'x'; return; fi
             if _wec_is_never_check "$fname"; then printf ' '; return; fi
             printf ' '
           }
