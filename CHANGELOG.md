@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S176 — 2026-04-28 — PR #4107 merged: REDIS_URL credential security + Issue 7 + test hardening)
+- **REDIS_URL credential security guidance** (`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`): rewrote REDIS_URL guidance so credentials are never stored in a repository variable; if auth is required, set `REDIS_URL` from a GitHub Actions Secret or Codespaces Secret. Eliminates the previously self-contradictory "never embed credentials" / "store in a Secret" pairing.
+- **Issue 7 (9 Codespace-level secrets) resolved**: Problem and Resolution rows now both read "Codespace level (org or user)" so the table is internally consistent and aligned with the user-level documentation in §8.
+- **`tests/ci/test_session_wrapup_autofix.py` hardened**:
+  - Path discovery loop starts from `_THIS_FILE.parent` so the first candidate is always a directory (no longer a file path).
+  - Regex-based assertions replace brittle string matching where appropriate.
+  - End-to-end coverage of the wrap-up flow added; total 48 passing tests.
+- **Post-merge verification (HOTFIX `hotfix/post-4107-followup`)**: `sync_tracked_files --check` ✅ · `ruff check src/` ✅ · 48 tests pass ✅ · `auto_fix --check-only` 0 issues (Pattern 25 + Pattern 30 100/100 green) ✅.
+
 ### Fixed (S175b — 2026-04-28 — Merge conflict resolution + CI drift root causes)
 - **Merge conflict resolved** (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`): merged `origin/main` (two nightly health-sweep commits) into `copilot/update-redis-url-documentation`; two auto-generated session-ID conflicts resolved by keeping branch entries and adopting main's newer run ID.
 - **Root cause fixed — Pattern 25 `Last updated` mutation removed** (`scripts/ci/auto_fix_common_issues.py`): Pattern 25's `_append_minimal_accountability_entry` was mutating the first `**Last updated:**` line found in OLD session entries. The nightly main sweep and every feature branch both ran this, updating the same line with different run IDs → guaranteed merge conflict on every PR. The mutation is now removed; Pattern 25 only prepends a new entry at the top of the file.
