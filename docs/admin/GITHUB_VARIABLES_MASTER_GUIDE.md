@@ -468,8 +468,8 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 
 | | Detail |
 |---|---|
-| ~~**Problem**~~ | ~~The 9 Codespace secrets declared in `.devcontainer/devcontainer.json` were not confirmed as set in org Codespace settings.~~ |
-| **Resolution** | All 9 Codespace secrets listed in [§8](#8-codespace-secrets) are confirmed set at the org Codespace level (SAR-G01 complete). |
+| ~~**Problem**~~ | ~~The 9 Codespace secrets declared in `.devcontainer/devcontainer.json` were not confirmed as set at the Codespace level (org or user).~~ |
+| **Resolution** | All 9 Codespace secrets listed in [§8](#8-codespace-secrets) are confirmed set at the Codespace level (org or user) (SAR-G01 complete). |
 | **Verification** | Codespace-based Copilot agent sessions have required authentication tokens, and `post-start.sh` can start the CLI server. |
 | **Instructions** | For audit/revalidation, see [§8 Codespace Secrets](#8-codespace-secrets) for CLI/UI steps. |
 
