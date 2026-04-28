@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S349 — 2026-04-28 — ROADMAP SAR gap accuracy + CI tracked-file drift)
+- `docs/ROADMAP.md`: corrected P1 gap annotation from `SAR-G01/G02/G05 COMPLETE` to `SAR-G01 ✅ · SAR-G02 ✅ · SAR-G03 OPEN` — G05 is a P2 gap (not P1); G03 is the remaining open P1 gap per SAR_METHODOLOGY.md §10.
+- `docs/ROADMAP.md` (Current Blockers table): aligned G01/G02/G05 statuses with SAR_METHODOLOGY.md §10 registry (both RESOLVED); G03 correctly shows as OPEN/in-progress.
+- CI pattern: resolved `sync_tracked_files: ❌ stale` dimension that caused Pre-Merge Validation to fail on runs #3794/#3795/#3802; committed CHANGELOG + accountability + baseline sweep together so Cognitive Pre-flight passes on the next run.
+
+### Fixed (auto-update — PR #4105)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4105 (SHA `cc60a302`) at 2026-04-28T15:38Z [auto-generated]
+
 ### Fixed (S347 — 2026-04-28 — PR #4101 reviewer follow-up + accountability refresh)
 - `scripts/test_continuation_system.sh`: switched the PR template version assertion to fixed-string matching so template version `1.5.0` is validated literally instead of through a regex that could accept lookalikes such as `1x5x0`.
 - `.github/workflows/agent-auth-delegation.yml`: changed the canonical WEC rebuild `_checked()` helper to use exact line-prefix matching for `- [x] <workflow>` entries, preventing filename metacharacters (notably `.` in `.yml`) from matching unintended workflow lines when preserving maintainer selections.
