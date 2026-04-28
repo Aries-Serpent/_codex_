@@ -2,7 +2,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Last Updated**: 2026-04-28 | **Version**: 2.0.0 | **Owner**: DevOps + Agent Team
+**Last Updated**: 2026-04-28 | **Version**: 2.1.0 | **Owner**: DevOps + Agent Team
 
 ---
 
@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps resolved (SAR-G01/G02/G05) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
+| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps resolved (SAR-G01 ✅ · SAR-G02 ✅; SAR-G03 partial) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |
@@ -260,9 +260,9 @@
 
 ### High Priority
 
-#### 0. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🔴 BLOCKER
+#### 0. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS
 **Timeline**: 2026-03-15 to 2026-05-31  
-**Status**: 🔴 Blocked — required for Level 4 certification  
+**Status**: 🟡 In progress — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100)  
 **Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
 
 | Gap | Owner | Playbook | ETA |
@@ -386,7 +386,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-04-28 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
+> ✅ Updated 2026-04-28 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01 ✅ · SAR-G02 ✅; SAR-G03 partial 75/100).
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
@@ -436,7 +436,7 @@
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Last Updated**: 2026-04-28 (W-139 — MLOps level corrected 4.0→3.7; SAR blockers added)
+**Last Updated**: 2026-04-28 (S177 — version + SAR gap label consistency; MLOps level 3.95 confirmed)
 **Next Review**: 2026-05-06
 **Version**: 2.1.0
 

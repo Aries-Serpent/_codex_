@@ -23,14 +23,20 @@ import pytest
 # Ensure scripts/ci is importable regardless of pytest working directory
 # ---------------------------------------------------------------------------
 _THIS_FILE = Path(__file__).resolve()
-_SCRIPTS_CI = None
+_SCRIPTS_CI: Path | None = None
+_SEARCHED_ROOTS: list[Path] = []
 for _candidate_root in [_THIS_FILE.parent] + list(_THIS_FILE.parent.parents):
     _candidate = _candidate_root / "scripts" / "ci"
+    _SEARCHED_ROOTS.append(_candidate)
     if (_candidate / "session_wrapup_autofix.py").is_file():
         _SCRIPTS_CI = _candidate
         break
 if _SCRIPTS_CI is None:
-    _SCRIPTS_CI = _THIS_FILE.parents[2] / "scripts" / "ci"
+    _searched = "\n  - ".join(str(p) for p in _SEARCHED_ROOTS)
+    raise RuntimeError(
+        f"Could not locate scripts/ci/session_wrapup_autofix.py from {_THIS_FILE}; "
+        f"checked the following parent paths:\n  - {_searched}"
+    )
 
 if str(_SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_CI))
@@ -501,12 +507,26 @@ class TestWecConstants:
 
         The list has grown from 16 (original) to the current count as new workflows
         were added in subsequent sessions.  This test guards against accidental
-        truncation — the count must equal the actual length of _WEC_ITEMS.
+        truncation by enforcing a hard floor (the always-required + always-active
+        items must always be present) and by re-asserting that each item is a
+        valid (filename, label, required) tuple.
         """
-        expected = len(swa._WEC_ITEMS)
-        assert len(swa._WEC_ITEMS) == expected, (
-            f"_WEC_ITEMS count changed unexpectedly: expected {expected}, got {len(swa._WEC_ITEMS)}"
+        # Hard floor: the 5 always-required gates + the 4 always-active items
+        # (copilot-agent-checkin, copilot-agent-session-done, copilot-iterative-self-healing,
+        # cost-gate) + auto-approve-workflows = 10.  Anything less means the list
+        # was truncated.
+        MIN_EXPECTED = 10
+        assert len(swa._WEC_ITEMS) >= MIN_EXPECTED, (
+            f"_WEC_ITEMS truncated below required floor: got {len(swa._WEC_ITEMS)}, "
+            f"expected at least {MIN_EXPECTED} (always-required + always-active + auto-approve)."
         )
+        # Structural check: every entry must be a (filename, label, required) tuple.
+        for entry in swa._WEC_ITEMS:
+            assert isinstance(entry, tuple) and len(entry) == 3, f"Bad _WEC_ITEMS entry: {entry!r}"
+            fname, label, required = entry
+            assert isinstance(fname, str) and fname, f"Empty/non-str filename in {entry!r}"
+            assert isinstance(label, str), f"Non-str label in {entry!r}"
+            assert isinstance(required, bool), f"Non-bool required flag in {entry!r}"
 
     def test_always_required_items_in_wec_items(self):
         filenames = {item[0] for item in swa._WEC_ITEMS}
@@ -519,6 +539,55 @@ class TestWecConstants:
 
     def test_never_check_items_are_not_always_required(self):
         assert swa._WEC_NEVER_CHECK.isdisjoint(swa._WEC_ALWAYS_REQUIRED)
+
+    def test_merge_required_disjoint_from_never_check(self):
+        """S178 hardening: a never-check workflow must NEVER appear in the
+        merge-required activation set — the runtime guard in
+        ``update_pr_wec_for_merge_readiness`` and the module-load assertion
+        both depend on this invariant. This test catches accidental edits
+        before they reach runtime.
+        """
+        overlap = swa._MERGE_REQUIRED_WORKFLOWS & swa._WEC_NEVER_CHECK
+        assert not overlap, (
+            f"_MERGE_REQUIRED_WORKFLOWS overlaps with _WEC_NEVER_CHECK on "
+            f"{sorted(overlap)} — these workflows would be auto-activated "
+            "and re-enter the Copilot continuation loop."
+        )
+
+    def test_merge_required_subset_of_wec_items(self):
+        """Every merge-required workflow must be a known _WEC_ITEMS entry —
+        otherwise activation would silently no-op (loop body never matches).
+        """
+        wec_filenames = {item[0] for item in swa._WEC_ITEMS}
+        unknown = swa._MERGE_REQUIRED_WORKFLOWS - wec_filenames
+        assert not unknown, (
+            f"_MERGE_REQUIRED_WORKFLOWS contains workflows not in _WEC_ITEMS: "
+            f"{sorted(unknown)}"
+        )
+
+    def test_build_wec_block_does_not_auto_check_never_check_when_state_empty(self):
+        """``_build_wec_block`` must render every _WEC_NEVER_CHECK item as
+        ``[ ]`` when no maintainer override exists in ``existing_state``.
+        """
+        block = swa._build_wec_block({})
+        for fname in swa._WEC_NEVER_CHECK:
+            # Each never-check item must appear in the block, unchecked.
+            assert f"- [ ] {fname}" in block, (
+                f"never-check item {fname!r} not rendered as `[ ]` in WEC block"
+            )
+            assert f"- [x] {fname}" not in block, (
+                f"never-check item {fname!r} was auto-rendered as `[x]`"
+            )
+
+    def test_build_wec_block_preserves_maintainer_x_for_never_check(self):
+        """When a maintainer has explicitly checked a never-check item in the
+        existing PR body, ``_build_wec_block`` must preserve that ``[x]``.
+        """
+        for fname in swa._WEC_NEVER_CHECK:
+            block = swa._build_wec_block({fname: True})
+            assert f"- [x] {fname}" in block, (
+                f"maintainer [x] for {fname!r} was not preserved"
+            )
 
     def test_required_pr_checkboxes_contains_auto_approve(self):
         assert "auto-approve-workflows" in swa._REQUIRED_PR_CHECKBOXES

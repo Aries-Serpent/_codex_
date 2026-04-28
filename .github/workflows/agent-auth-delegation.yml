@@ -830,8 +830,50 @@ jobs:
             exit 1
           fi
 
-          if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -qF "$REPORT"; then
-            echo "✅ **PASS** — \`${REPORT}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          # Skip past consecutive infrastructure / [skip ci] commits authored
+          # by github-actions[bot] (auto-merge, manifest refresh, follow-up
+          # prompt regeneration) — they should never be expected to touch
+          # the accountability report.  S178: prevents REQ-4 from firing on
+          # branches where branch-rebase-gate auto-merged main on top of an
+          # agent commit that DID update the report.
+          MAX_LOOKBACK=10
+          BASE_REF="HEAD~1"
+          SKIPPED=0
+          while [ "$SKIPPED" -lt "$MAX_LOOKBACK" ]; do
+            CANDIDATE_IDX=$((SKIPPED + 1))
+            CANDIDATE="HEAD~$((CANDIDATE_IDX - 1))"
+            # Resolve the candidate commit metadata. If git rev-parse fails
+            # (shallow clone limit reached), break out and use whatever
+            # BASE_REF we have so far — never fall through silently.
+            if ! git rev-parse --verify --quiet "$CANDIDATE^{commit}" >/dev/null 2>&1; then
+              break
+            fi
+            CAUTHOR=$(git log -1 --format='%an' "$CANDIDATE" 2>/dev/null || echo "")
+            CSUBJECT=$(git log -1 --format='%s' "$CANDIDATE" 2>/dev/null || echo "")
+            case "$CAUTHOR" in
+              "github-actions[bot]"|"github-actions"|"dependabot[bot]"|"dependabot-preview[bot]")
+                IS_INFRA_AUTHOR=1 ;;
+              *) IS_INFRA_AUTHOR=0 ;;
+            esac
+            IS_INFRA_SUBJECT=0
+            case "$CSUBJECT" in
+              *"[skip ci]"*|"chore: auto-merge"*|"chore(manifest):"*|"chore: Generate follow-up"*|"chore: generate follow-up"*)
+                IS_INFRA_SUBJECT=1 ;;
+            esac
+            if [ "$IS_INFRA_AUTHOR" = "1" ] || [ "$IS_INFRA_SUBJECT" = "1" ]; then
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+            BASE_REF="HEAD~$((SKIPPED + 1))"
+            break
+          done
+
+          if git diff --name-only "$BASE_REF" HEAD 2>/dev/null | grep -qF "$REPORT"; then
+            if [ "$SKIPPED" -gt 0 ]; then
+              echo "✅ **PASS** — \`${REPORT}\` was updated in the last agent commit (skipped ${SKIPPED} infra commit(s) on top)." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "✅ **PASS** — \`${REPORT}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+            fi
           else
             LAST_TOUCH=$(git log -1 --format="%ar" -- "$REPORT" 2>/dev/null || echo "unknown")
             echo "❌ **FAIL** — \`${REPORT}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
@@ -858,8 +900,43 @@ jobs:
             exit 0
           fi
 
-          if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -qF "$CHANGELOG"; then
-            echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          # Skip past consecutive infrastructure / [skip ci] commits before
+          # checking REQ-5 — same logic as REQ-4 above.
+          MAX_LOOKBACK=10
+          BASE_REF="HEAD~1"
+          SKIPPED=0
+          while [ "$SKIPPED" -lt "$MAX_LOOKBACK" ]; do
+            CANDIDATE_IDX=$((SKIPPED + 1))
+            CANDIDATE="HEAD~$((CANDIDATE_IDX - 1))"
+            if ! git rev-parse --verify --quiet "$CANDIDATE^{commit}" >/dev/null 2>&1; then
+              break
+            fi
+            CAUTHOR=$(git log -1 --format='%an' "$CANDIDATE" 2>/dev/null || echo "")
+            CSUBJECT=$(git log -1 --format='%s' "$CANDIDATE" 2>/dev/null || echo "")
+            case "$CAUTHOR" in
+              "github-actions[bot]"|"github-actions"|"dependabot[bot]"|"dependabot-preview[bot]")
+                IS_INFRA_AUTHOR=1 ;;
+              *) IS_INFRA_AUTHOR=0 ;;
+            esac
+            IS_INFRA_SUBJECT=0
+            case "$CSUBJECT" in
+              *"[skip ci]"*|"chore: auto-merge"*|"chore(manifest):"*|"chore: Generate follow-up"*|"chore: generate follow-up"*)
+                IS_INFRA_SUBJECT=1 ;;
+            esac
+            if [ "$IS_INFRA_AUTHOR" = "1" ] || [ "$IS_INFRA_SUBJECT" = "1" ]; then
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+            BASE_REF="HEAD~$((SKIPPED + 1))"
+            break
+          done
+
+          if git diff --name-only "$BASE_REF" HEAD 2>/dev/null | grep -qF "$CHANGELOG"; then
+            if [ "$SKIPPED" -gt 0 ]; then
+              echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last agent commit (skipped ${SKIPPED} infra commit(s) on top)." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+            fi
           else
             LAST_TOUCH=$(git log -1 --format="%ar" -- "$CHANGELOG" 2>/dev/null || echo "unknown")
             echo "❌ **FAIL** — \`${CHANGELOG}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"

@@ -79,6 +79,98 @@ def _advance_triple_quote_state(line: str, in_str: bool, delim: str) -> tuple[bo
             return False, ""
     return in_str, delim
 
+
+# ---------------------------------------------------------------------------
+# Shared utility: skip past bot/[skip ci] commits when computing diff base
+# ---------------------------------------------------------------------------
+
+# Authors whose commits are infrastructure-only (auto-merge, manifest refresh,
+# follow-up prompt regeneration) and should NEVER be expected to update the
+# accountability report or CHANGELOG. They mask the actual agent commit
+# underneath when REQ-4/REQ-5 use a strict ``HEAD~1..HEAD`` diff.
+#
+# IMPORTANT: ``copilot-swe-agent[bot]`` is **not** an infra bot — it IS the
+# agent whose commits we are searching for. Only true CI infrastructure bots
+# (which run auto-merge, manifest refresh, etc.) belong here.
+_INFRA_BOT_AUTHORS = frozenset({
+    "github-actions[bot]",
+    "github-actions",
+    "dependabot[bot]",
+    "dependabot-preview[bot]",
+})
+
+# Subject prefixes/markers that identify infrastructure commits to skip.
+_INFRA_COMMIT_MARKERS = (
+    "[skip ci]",
+    "chore: auto-merge",
+    "chore(manifest):",
+    "chore: Generate follow-up",
+    "chore: generate follow-up",
+)
+
+
+def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Optional[str]:
+    """Return a git ref usable as ``git diff <base> HEAD`` for accountability checks.
+
+    Walks back from ``HEAD`` over consecutive infrastructure commits
+    (``[skip ci]``, auto-merge, manifest refresh, or commits authored by a
+    known infra bot in :data:`_INFRA_BOT_AUTHORS`).  The returned ref is the
+    SHA of the **parent of the first agent commit** found, so that
+    ``git diff <ref> HEAD`` includes that agent commit's own file changes.
+
+    Returns ``None`` on git error, in shallow-clone scenarios where no
+    parent of the agent commit is reachable, or when no non-bot commit is
+    found within ``max_lookback``.  Callers should fall back to ``HEAD~1``.
+    """
+    import subprocess as _sp
+    try:
+        result = _sp.run(
+            ["git", "log",
+             f"-{max_lookback + 1}",
+             "--format=%H%x09%an%x09%s"],
+            capture_output=True, text=True, cwd=repo_root, timeout=10,
+        )
+    except (OSError, _sp.TimeoutExpired):
+        return None
+    if result.returncode != 0:
+        return None
+
+    lines = [ln for ln in result.stdout.splitlines() if ln.strip()]
+    skipped = 0
+    agent_sha: Optional[str] = None
+    for ln in lines:
+        parts = ln.split("\t", 2)
+        if len(parts) < 3:
+            break
+        sha, author, subject = parts
+        is_infra_author = author in _INFRA_BOT_AUTHORS
+        is_infra_subject = any(m in subject for m in _INFRA_COMMIT_MARKERS)
+        if is_infra_author or is_infra_subject:
+            skipped += 1
+            if skipped > max_lookback:
+                return None
+            continue
+        agent_sha = sha
+        break
+
+    if agent_sha is None:
+        return None
+
+    # Resolve the parent of the agent commit (so ``git diff <parent> HEAD``
+    # includes that commit's changes). If the parent is unreachable in a
+    # shallow clone, fall back to None and let the caller use HEAD~1.
+    try:
+        parent = _sp.run(
+            ["git", "rev-parse", f"{agent_sha}^"],
+            capture_output=True, text=True, cwd=repo_root, timeout=5,
+        )
+    except (OSError, _sp.TimeoutExpired):
+        return None
+    if parent.returncode != 0:
+        return None
+    return parent.stdout.strip() or None
+
+
 class CommonIssueFixer:
     """Automatically fix common CI issues."""
 
@@ -2031,8 +2123,8 @@ class CommonIssueFixer:
     # Pattern 25 — Last-Commit Accountability (auto-fixable)
     # ------------------------------------------------------------------
     def fix_last_commit_accountability(self) -> List[str]:
-        """Pattern 25: Detect and auto-fix when the last git commit omits
-        ``docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md``.
+        """Pattern 25: Detect and auto-fix when the most recent *agent* git commit
+        omits ``docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md``.
 
         Root cause (CI Triage #3911 — Agent Token Delegation: 17 failures):
         ``agent-auth-delegation.yml`` REQ-4 executes::
@@ -2043,8 +2135,12 @@ class CommonIssueFixer:
         from the last commit's changed-file list.  This is a hard CI block on
         every Copilot PR push where the accountability report was skipped.
 
-        **Detection:** run ``git diff --name-only HEAD~1 HEAD`` and check whether
-        the accountability report path is listed.
+        **Detection (S178):** instead of looking only at ``HEAD~1..HEAD``, walk
+        backward over consecutive ``[skip ci]`` and bot-authored auto-merge
+        commits and use the first non-bot, non-``[skip ci]`` commit as the
+        diff base.  This prevents false alarms after branch-rebase-gate
+        auto-merge follow-ups (which never touch the accountability report)
+        and after Copilot's own ``Generate follow-up prompt`` commits.
 
         **Auto-fix:** ✅ — appends a minimal ``[auto-generated]`` session entry to
         ``AGENT_ACCOUNTABILITY_REPORT.md`` and refreshes CODEX_MANIFEST hashes via
@@ -2059,8 +2155,9 @@ class CommonIssueFixer:
             return issues
 
         try:
+            base_ref = _resolve_acct_diff_base(self.repo_root) or "HEAD~1"
             result = subprocess.run(
-                ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
+                ["git", "diff", "--name-only", base_ref, "HEAD"],
                 capture_output=True,
                 text=True,
                 cwd=self.repo_root,
@@ -2741,6 +2838,13 @@ class CommonIssueFixer:
             (name, weight, status)
             for name, weight, status, ok in scorecard.get("dimensions", [])
             if not ok
+            # Skip the "auto_fix" self-reference dimension — the underlying
+            # issues are already reported and counted by Patterns 1-29 and 31-32.
+            # Including it here causes double-counting (e.g. "1 issue, 1 auto-fixable"
+            # in the summary tally even when no genuinely separate fix exists),
+            # and the matching DIM_FIXES entry is "auto_fix_sweep" — instructions
+            # only — so it can never be resolved by Pattern 30 itself.
+            and not name.lower().startswith("auto_fix")
         ]
         total_score = scorecard.get("score", 0)
         total_weight = scorecard.get("total", 100)
