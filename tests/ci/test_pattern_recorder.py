@@ -574,6 +574,49 @@ class TestResolveAcctDiffBase:
         # No agent commit found within the lookback window.
         assert mod._resolve_acct_diff_base(repo) is None
 
+    def test_skips_dependabot_rebase_commits(self, tmp_path):
+        """Dependabot rebase commit subjects are treated as infra regardless
+        of authorship — the ``Rebase on `` and ``chore(deps): bump`` markers
+        added in S178c ensure these are skipped even when the author is a
+        non-dependabot actor (e.g. github-actions[bot] acting on its behalf).
+        """
+        mod = _load_auto_fix()
+        repo = self._mkrepo(tmp_path)
+        self._commit(repo, "init: bootstrap", "human", "v0\n")
+        self._commit(repo, "feat: agent work", "copilot-swe-agent[bot]", "v1\n")
+        # Dependabot rebase commit — subject matches new _INFRA_COMMIT_MARKERS entry.
+        self._commit(
+            repo, "Rebase on main",
+            "github-actions[bot]", "v2\n",
+        )
+        # HEAD     = dependabot rebase (infra via subject marker)
+        # HEAD~1   = agent work        ← first non-infra commit
+        # HEAD~2   = init              ← parent of agent commit
+        base = mod._resolve_acct_diff_base(repo)
+        assert base is not None
+        expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
+        assert base == expected_parent
+
+    def test_skips_dependabot_deps_bump_commits(self, tmp_path):
+        """``chore(deps): bump`` commit subjects (dependabot PR creation commits)
+        are also recognised as infra via subject matching.
+        """
+        mod = _load_auto_fix()
+        repo = self._mkrepo(tmp_path)
+        self._commit(repo, "init: bootstrap", "human", "v0\n")
+        self._commit(repo, "feat: agent work", "copilot-swe-agent[bot]", "v1\n")
+        self._commit(
+            repo, "chore(deps): bump requests from 2.28.0 to 2.32.3",
+            "dependabot[bot]", "v2\n",
+        )
+        # HEAD     = dependabot deps bump (infra via subject marker)
+        # HEAD~1   = agent work        ← first non-infra commit
+        # HEAD~2   = init              ← parent
+        base = mod._resolve_acct_diff_base(repo)
+        assert base is not None
+        expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
+        assert base == expected_parent
+
 
 class TestFindKwargRemovalSpan:
     def _make_fixer(self):

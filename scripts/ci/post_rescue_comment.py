@@ -131,6 +131,21 @@ def _find_rescue_comment(
     return None, ""
 
 
+def _get_branch_head_sha(token: str, repo: str, branch: str) -> str | None:
+    """Return the current HEAD SHA for *branch*, or None on API error.
+
+    Used by the self-suppress guard: if the branch has advanced past the
+    commit that triggered a rescue comment, subsequent workflow re-runs for
+    the old commit should not append new (false-positive) notifications.
+    """
+    import urllib.parse as _urlparse
+    safe_branch = _urlparse.quote(branch, safe="")
+    status, data = _gh("GET", f"/repos/{repo}/branches/{safe_branch}", token)
+    if status == 200 and isinstance(data, dict):
+        return (data.get("commit") or {}).get("sha")
+    return None
+
+
 def _lookup_pr_number(token: str, repo: str, branch: str) -> int | None:
     """Return the PR number for *branch* via the GitHub API, or None."""
     owner = repo.split("/")[0]
@@ -171,6 +186,21 @@ def main() -> None:
             print(f"ℹ️  No open PR found for branch '{branch}' — skipping rescue comment.")
             return
         pr_number = looked_up
+
+    # Self-suppress: if the branch HEAD has advanced past the commit that
+    # triggered this failure, the escalation targets a superseded commit and
+    # would generate a false positive.  Fetch the current HEAD and skip if it
+    # differs from COMMIT_SHA.  This prevents rescue comments from re-firing
+    # on old SHAs when a new push already supersedes the failing run.
+    if branch:
+        head_sha = _get_branch_head_sha(token, repo, branch)
+        if head_sha and head_sha != commit_sha:
+            print(
+                f"ℹ️  Branch '{branch}' HEAD is now {head_sha[:12]} "
+                f"(failure targeted commit {sha_short}) — "
+                "rescue comment suppressed (superseded commit)."
+            )
+            return
 
     # ONE rescue comment per PR per commit — all workflows share this marker.
     marker = f"<!-- ci-rescue-sha:{pr_number}:{sha_short} -->"

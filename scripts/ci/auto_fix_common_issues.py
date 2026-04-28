@@ -100,12 +100,19 @@ _INFRA_BOT_AUTHORS = frozenset({
 })
 
 # Subject prefixes/markers that identify infrastructure commits to skip.
+# dependabot[bot] is already in _INFRA_BOT_AUTHORS, but its rebase commits
+# can sometimes be attributed to other actors (e.g. github-actions[bot] when
+# an auto-rebase workflow fires on behalf of dependabot).  Adding the subject
+# markers here ensures they are caught regardless of authorship.
 _INFRA_COMMIT_MARKERS = (
     "[skip ci]",
     "chore: auto-merge",
     "chore(manifest):",
     "chore: Generate follow-up",
     "chore: generate follow-up",
+    "chore(deps): bump",        # dependabot dependency-update commits
+    "chore(deps-dev): bump",    # dependabot dev-dependency-update commits
+    "Rebase on ",               # dependabot auto-rebase commit subjects
 )
 
 
@@ -113,9 +120,10 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
     """Return a git ref usable as ``git diff <base> HEAD`` for accountability checks.
 
     Walks back from ``HEAD`` over consecutive infrastructure commits
-    (``[skip ci]``, auto-merge, manifest refresh, or commits authored by a
-    known infra bot in :data:`_INFRA_BOT_AUTHORS`).  The returned ref is the
-    SHA of the **parent of the first agent commit** found, so that
+    (``[skip ci]``, auto-merge, manifest refresh, dependabot rebase/bump
+    commits, or commits authored by a known infra bot in
+    :data:`_INFRA_BOT_AUTHORS`).  The returned ref is the SHA of the
+    **parent of the first agent commit** found, so that
     ``git diff <ref> HEAD`` includes that agent commit's own file changes.
 
     Returns ``None`` on git error, in shallow-clone scenarios where no
