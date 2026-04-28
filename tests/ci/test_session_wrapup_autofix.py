@@ -23,14 +23,17 @@ import pytest
 # Ensure scripts/ci is importable regardless of pytest working directory
 # ---------------------------------------------------------------------------
 _THIS_FILE = Path(__file__).resolve()
-_SCRIPTS_CI = None
+_SCRIPTS_CI: Path | None = None
 for _candidate_root in [_THIS_FILE.parent] + list(_THIS_FILE.parent.parents):
     _candidate = _candidate_root / "scripts" / "ci"
     if (_candidate / "session_wrapup_autofix.py").is_file():
         _SCRIPTS_CI = _candidate
         break
 if _SCRIPTS_CI is None:
-    _SCRIPTS_CI = _THIS_FILE.parents[2] / "scripts" / "ci"
+    raise RuntimeError(
+        f"Could not locate scripts/ci/session_wrapup_autofix.py from {_THIS_FILE}; "
+        "checked every parent directory."
+    )
 
 if str(_SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_CI))
@@ -501,12 +504,26 @@ class TestWecConstants:
 
         The list has grown from 16 (original) to the current count as new workflows
         were added in subsequent sessions.  This test guards against accidental
-        truncation — the count must equal the actual length of _WEC_ITEMS.
+        truncation by enforcing a hard floor (the always-required + always-active
+        items must always be present) and by re-asserting that each item is a
+        valid (filename, required) tuple.
         """
-        expected = len(swa._WEC_ITEMS)
-        assert len(swa._WEC_ITEMS) == expected, (
-            f"_WEC_ITEMS count changed unexpectedly: expected {expected}, got {len(swa._WEC_ITEMS)}"
+        # Hard floor: the 5 always-required gates + the 4 always-active items
+        # (copilot-agent-checkin, copilot-agent-session-done, copilot-iterative-self-healing,
+        # cost-gate) + auto-approve-workflows = 10.  Anything less means the list
+        # was truncated.
+        MIN_EXPECTED = 10
+        assert len(swa._WEC_ITEMS) >= MIN_EXPECTED, (
+            f"_WEC_ITEMS truncated below required floor: got {len(swa._WEC_ITEMS)}, "
+            f"expected at least {MIN_EXPECTED} (always-required + always-active + auto-approve)."
         )
+        # Structural check: every entry must be a (filename, label, required) tuple.
+        for entry in swa._WEC_ITEMS:
+            assert isinstance(entry, tuple) and len(entry) == 3, f"Bad _WEC_ITEMS entry: {entry!r}"
+            fname, label, required = entry
+            assert isinstance(fname, str) and fname, f"Empty/non-str filename in {entry!r}"
+            assert isinstance(label, str), f"Non-str label in {entry!r}"
+            assert isinstance(required, bool), f"Non-bool required flag in {entry!r}"
 
     def test_always_required_items_in_wec_items(self):
         filenames = {item[0] for item in swa._WEC_ITEMS}

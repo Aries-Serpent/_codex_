@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S177 — 2026-04-28 — Copilot Code Review findings + Issue #4108 triage)
+- **`docs/ROADMAP.md` — 4 Copilot review findings resolved:**
+  - Document version mismatch fixed: header `**Version**: 2.0.0` aligned to footer `**Version**: 2.1.0` (S177 — single source of truth).
+  - Stale W-139 footer note removed: replaced "MLOps level corrected 4.0→3.7" with the current S177 attribution; the body already states `Level 3.95 ✅`.
+  - SAR gap labels corrected: P1 gap registry references previously read `SAR-G01/G02/G05`; the actual P1 gap registry table lists G01/G02/G03 (G05 is a P2 gap per `SAR_METHODOLOGY.md §10`). Updated to `SAR-G01 ✅ · SAR-G02 ✅; G03 partial`.
+  - Phase 2 §0 status realigned: from `🔴 BLOCKER` / `🔴 Blocked` to `🟡 IN PROGRESS` / `🟡 In progress — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100)` matching the gap registry table.
+- **`tests/ci/test_session_wrapup_autofix.py` — 2 Copilot review findings resolved:**
+  - `test_wec_items_count_matches_sections` was tautological (`len(x) == len(x)` always passes). Replaced with a hard floor (`MIN_EXPECTED = 10`) plus per-entry structural validation `(filename: str, label: str, required: bool)` so the test now actually guards against accidental truncation and shape regressions.
+  - Removed the redundant `_SCRIPTS_CI = _THIS_FILE.parents[2] / "scripts" / "ci"` fallback (already covered by the parents loop and lacked an `is_file()` validation). The discovery loop now raises `RuntimeError` with the searched paths if `session_wrapup_autofix.py` cannot be found, rather than silently inserting a non-existent path into `sys.path`.
+- **Issue #4108 triage analysis (no code change required for stale failures):** Of 72 reported failures across 11 workflows, 53 are stale (against pre-merge commits of PR #4107 — already resolved by merge `78ef1cd`). Remaining failures are on separate branches (`copilot/research-security-vs-access`, `copilot/fix-mlops-maturity-claims`) or are informational gates (`PR Comment Review Gate` on main reflects unaddressed PR comments, not CI errors). No regressions on `main`'s post-merge tip.
+
 ### Fixed (S176 — 2026-04-28 — PR #4107 merged: REDIS_URL credential security + Issue 7 + test hardening)
 - **REDIS_URL credential security guidance** (`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`): rewrote REDIS_URL guidance so credentials are never stored in a repository variable; if auth is required, set `REDIS_URL` from a GitHub Actions Secret or Codespaces Secret. Eliminates the previously self-contradictory "never embed credentials" / "store in a Secret" pairing.
 - **Issue 7 (9 Codespace-level secrets) resolved**: Problem and Resolution rows now both read "Codespace level (org or user)" so the table is internally consistent and aligned with the user-level documentation in §8.
