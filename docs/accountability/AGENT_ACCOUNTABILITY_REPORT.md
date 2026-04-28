@@ -3,6 +3,39 @@
 
 
 
+## SESSION SUMMARY — 2026-04-28T14:37Z (S349 — Merge `main` → `copilot/research-security-vs-access` + conflict resolution)
+
+**Session:** S349 | **PR:** #4101 | **Branch:** `copilot/research-security-vs-access` | **Date:** 2026-04-28
+
+### Pre-flight Checklist
+- [x] **0a.** Re-loaded mandatory repo state, Codebase Agency Policy, accountability report, PDA loop, agent context, and stored memories ✅
+- [x] **0b.** Reviewed all new PR comments (comment_ids 4336008686–4336071973) and CI runs 25057904799/25057904775 ✅
+- [x] **0c.** Identified single merge conflict in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` between branch HEAD (`d6458a057f`) and `origin/main` (`2d720d9f8`) ✅
+
+### Actions Taken
+- **Merge conflict resolution:** Merged `origin/main` into `copilot/research-security-vs-access`. Single conflicting file was `AGENT_ACCOUNTABILITY_REPORT.md` — two auto-generated Pattern 25 timestamp entries (14:15Z on branch vs 14:19Z on main). Resolved by keeping both entries plus all S347/S346 substantive session entries from HEAD, inserting main's newer auto-entry first.
+- **Secrets baseline:** Ran `sync_tracked_files.py --fix` to refresh `.secrets.baseline` after the merge brought in main's nightly-sweep changes.
+- **Pattern 25 satisfied:** This accountability report entry is included in the merge commit, satisfying `agent-auth-delegation.yml` REQ-4.
+
+### Validation Results
+- `python3 scripts/ci/sync_tracked_files.py --fix` → clean ✅
+- `python3 -m ruff check src/ tests/` → passed ✅
+- No new test failures introduced by merge (nightly sweep commit was metadata-only) ✅
+
+### Files Changed
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this S349 merge-resolution entry + conflict resolution
+- `.secrets.baseline` — refreshed by sync_tracked_files after merge
+
+---
+
+## SESSION SUMMARY — 2026-04-28T14:19Z [auto-generated]
+
+**Session:** auto-20260428T1419-run430 | **Run:** 25058227722 | **Date:** 2026-04-28
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+
+---
+
 ## SESSION SUMMARY — 2026-04-28T14:15Z [auto-generated]
 
 **Session:** auto-20260428T1415-run82316 | **Run:** 25057949377 | **Date:** 2026-04-28
@@ -73,7 +106,6 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this S346 accountability entry
 
 ---
-
 
 ## SESSION SUMMARY — 2026-04-28T01:24Z [auto-generated]
 
@@ -625,7 +657,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 **Session:** S330b | **PR:** 4077 | **Date:** 2026-04-27
 **Repository:** Aries-Serpent/_codex_ | **Branch:** copilot/create-implementation-plan-and-test-cases
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-28T14:15Z auto-20260428T1415-run82316 — auto-generated entry by Pattern 25
+**Last updated:** 2026-04-28T14:37Z S349 — merge main + conflict resolution
 
 ### Objective
 Close the final review gap on the optional event-publisher helper, then record the session as
