@@ -14,11 +14,12 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch guard for import-time failures
-    from torch.cuda.amp import GradScaler, autocast
-
     import torch
-    from torch import nn
-    from torch.utils.data import DataLoader
+
+    nn = torch.nn
+    GradScaler = torch.cuda.amp.GradScaler
+    autocast = torch.cuda.amp.autocast
+    DataLoader = torch.utils.data.DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
     torch = None  # type: ignore[assignment]
     nn = Any  # type: ignore[assignment]

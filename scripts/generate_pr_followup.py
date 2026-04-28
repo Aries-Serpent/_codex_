@@ -31,8 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""PR Follow-Up Prompt Generator - Comprehensive Edition"""
-
 import argparse
 import json
 import logging

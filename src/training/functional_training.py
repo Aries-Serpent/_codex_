@@ -23,7 +23,6 @@ import json
 import logging
 import os
 from dataclasses import asdict, dataclass
-from os import PathLike
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Sequence
 
@@ -31,6 +30,8 @@ import numpy as np
 
 import torch
 import torch.nn.functional as F
+clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+DataLoader = torch.utils.data.DataLoader
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
@@ -43,8 +44,6 @@ from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
 )
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
-from torch.nn.utils import clip_grad_norm_
-from torch.utils.data import DataLoader
 
 logger = logging.getLogger(__name__)
 
@@ -139,8 +138,8 @@ except Exception:  # pragma: no cover - hf trainer not available
     def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:  # type: ignore
         return {}
 
-    def get_hf_revision(identifier: PathLike[str] | str) -> str:  # type: ignore[misc]
-        norm = os.fspath(identifier) if isinstance(identifier, PathLike) else str(identifier)
+    def get_hf_revision(identifier: os.PathLike[str] | str) -> str:  # type: ignore[misc]
+        norm = os.fspath(identifier) if isinstance(identifier, os.PathLike) else str(identifier)
         overrides: dict[str, Any] = {}
         env_revision = os.environ.get("HF_REVISION")
         if env_revision:
@@ -159,15 +158,15 @@ except Exception:  # pragma: no cover - hf trainer not available
 _LOCAL_PATH_PREFIXES = ("./", "../", "/")
 
 
-def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+def _normalize_identifier(identifier: os.PathLike[str] | str | None) -> str | None:
     if identifier is None:
         return None
-    if isinstance(identifier, PathLike):
+    if isinstance(identifier, os.PathLike):
         return os.fspath(identifier)
     return str(identifier)
 
 
-def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
     norm = _normalize_identifier(identifier)
     if norm is None:
         return False

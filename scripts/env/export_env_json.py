@@ -29,7 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Dump environment summary to a JSON file (default: env.json)."""
 
 import json
 import logging

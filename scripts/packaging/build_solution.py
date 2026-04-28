@@ -30,20 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""Solution Packaging for Zendesk Quantum Workflows.
-
-This script packages the src/codex/zendesk/model schemas and src/codex/dynamics
-policies into a deployable artifact (zip or container layer) defined in
-manifests/zendesk_quantum_packages.yaml.
-
-Phase 3: Solution Packaging - Enable "Repro Workflow" packaging
-
-Usage:
-    python scripts/packaging/build_solution.py
-    python scripts/packaging/build_solution.py --manifest configs/packaging/zendesk_quantum_packages.yaml --output build/solutions
-"""
-
-
 import argparse
 import hashlib
 import json

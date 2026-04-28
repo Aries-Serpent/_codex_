@@ -1,44 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""
-Dataset Dedup
-
-Purpose:
-    Command-line utility (see argument parser for details)
-
-Usage:
-    python scripts/dataset_dedup.py [options]
-
-    Examples:
-    $ python scripts/dataset_dedup.py --help
-
-Arguments:
-    [To be documented]
-
-Environment Variables:
-    [To be documented]
-
-Dependencies:
-    [To be documented]
-
-Exit Codes:
-    0: Success
-    1: Error
-
-Author: Codex Team
-Last Updated: 2026-01-16
-"""
-
-
-"""Content deduplication and optimization for datasets.
-
-This tool provides advanced deduplication and space optimization:
-- Content-based deduplication (not just filenames)
-- Similarity detection for near-duplicates
-- Incremental dataset updates
-- Storage optimization recommendations
-"""
 import logging
 
 logger = logging.getLogger(__name__)

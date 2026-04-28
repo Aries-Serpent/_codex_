@@ -31,13 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Run schema validations and emit a consolidated results JSON for merging into status.
-
-Output:
-  schema_validation_results.json with entries: target, schema, tool, status, findings, severity, remediation
-"""
-
 import json
 import subprocess
 import sys

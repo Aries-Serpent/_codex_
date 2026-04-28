@@ -29,16 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""MFA Enrollment Automation
-
-Automates bulk MFA enrollment for GitHub users.
-
-Usage:
-    python scripts/mfa_enrollment_automation.py --detect
-    python scripts/mfa_enrollment_automation.py --users "user1,user2,user3"
-    python scripts/mfa_enrollment_automation.py --auto
-    python scripts/mfa_enrollment_automation.py --report
-"""
 
 import argparse
 import json

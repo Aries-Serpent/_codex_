@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Activate _Codex_ brain mode for Copilot Agent.
-Prepares environment and context for autonomous operation.
-"""
 import sys
 from pathlib import Path
 

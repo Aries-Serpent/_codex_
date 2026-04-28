@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Pattern Detection
-Part of Perception Layer - integrates with Agent 1 for pattern recognition
-"""
 import argparse
 import json
 from pathlib import Path

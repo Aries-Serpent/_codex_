@@ -29,11 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Generate __init__.py files for codex packages.
-
-This script automatically generates __init__.py files with proper exports
-for all codex packages to ensure consistency and prevent manual maintenance drift.
-"""
 import logging
 from pathlib import Path
 

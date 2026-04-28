@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Learning Extractor
-Part of AfterMath - extracts learnings from evaluations
-"""
 import argparse
 import json
 from datetime import datetime

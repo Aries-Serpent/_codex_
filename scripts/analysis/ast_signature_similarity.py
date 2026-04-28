@@ -1,52 +1,6 @@
 #!/usr/bin/env python
 from __future__ import annotations
 
-"""
-Ast Signature Similarity
-
-Purpose:
-    Main execution script
-
-Usage:
-    python scripts/analysis/ast_signature_similarity.py [options]
-
-    Examples:
-    $ python scripts/analysis/ast_signature_similarity.py --help
-
-Arguments:
-    [To be documented]
-
-Environment Variables:
-    [To be documented]
-
-Dependencies:
-    [To be documented]
-
-Exit Codes:
-    0: Success
-    1: Error
-
-Author: Codex Team
-Last Updated: 2026-01-16
-"""
-
-
-"""
-AST Signature Similarity Analysis Tool (P6)
-
-Computes AST-based uniqueness scores for each capability by analyzing
-Python evidence files:
-- Load capabilities_raw.json
-- For each capability: parse Python files and extract AST signatures
-- Compute pairwise structural similarity between files
-- ast_uniqueness = 1 - avg_pairwise_similarity (higher is more unique)
-- Output ast_similarity.json for scoring stage to consume
-
-Environment Knobs (parsed via scripts/config/parse_knobs.py schema):
-  AST_SIMILARITY_ENABLE=1       -> perform computation (required)
-  AST_SIMILARITY_MAX_FILES=30   -> cap evidence set to reduce cost
-  AST_SIMILARITY_MIN_NODES=10   -> skip files with fewer AST nodes
-"""
 import logging
 
 logger = logging.getLogger(__name__)

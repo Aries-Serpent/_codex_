@@ -29,13 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Security audit script to verify all vulnerabilities are patched.
-Run this after applying fixes to confirm remediation.
-
-This script checks that all security-critical dependencies meet their
-minimum required versions to address known CVEs.
-"""
 import logging
 import subprocess
 

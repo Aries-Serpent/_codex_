@@ -40,7 +40,8 @@ else:  # pragma: no cover - exercised in Typer-enabled environments
         app.add_typer(knowledge_typer_app, name="knowledge")
 
 try:  # pragma: no cover - optional dependency
-    from typer.main import get_command as _typer_get_command
+    import typer.main as _typer_main
+    _typer_get_command = _typer_main.get_command
 except Exception:  # pragma: no cover
     _typer_get_command = None
 

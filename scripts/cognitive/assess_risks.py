@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Risk Assessment
-Part of Decision Engine - evaluates decision confidence and risks
-"""
 import argparse
 import json
 from datetime import datetime

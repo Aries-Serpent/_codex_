@@ -34,12 +34,6 @@ from pathlib import Path
 
 import pytest
 
-"""
-Comprehensive test suite for Phase 2 Meta-Learning components.
-
-Tests meta-learning engine, pattern library, knowledge transfer, and external ingestion.
-"""
-
 # Assume meta_learning_engine exists
 try:
     sys.path.insert(0, str(Path(__file__).parent.parent))

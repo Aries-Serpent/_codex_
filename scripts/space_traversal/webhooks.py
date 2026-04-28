@@ -31,32 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Webhook notifications for audit events.
-
-Provides webhook delivery for audit pipeline events.
-
-Features:
-- Generic webhook delivery with HMAC signing
-- Slack-formatted notifications
-- Delivery retry with exponential backoff
-- Event type support (audit_complete, regression_detected, etc.)
-
-Example:
-    from scripts.space_traversal.webhooks import send_webhook, AuditEvent
-
-    event = AuditEvent(
-        event_type="audit_complete",
-        repo_name="my-repo",
-        timestamp=time.time(),
-        avg_score=0.85,
-        capability_count=18,
-        regression_count=0,
-        details={}
-    )
-    success = send_webhook("https://hooks.example.com/audit", event)
-"""
-
 import hashlib
 import hmac
 import json

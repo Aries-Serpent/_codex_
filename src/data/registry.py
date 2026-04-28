@@ -28,7 +28,9 @@ from typing import Any, Callable  # noqa: E402
 
 try:  # pragma: no cover - torch is optional
     import torch
-    from torch.utils.data import DataLoader, TensorDataset, random_split
+    DataLoader = torch.utils.data.DataLoader
+    TensorDataset = torch.utils.data.TensorDataset
+    random_split = torch.utils.data.random_split
 except Exception:  # pragma: no cover - fallback stubs when torch is absent
     torch = None  # type: ignore[assignment]
     DataLoader = None  # type: ignore[assignment,misc]

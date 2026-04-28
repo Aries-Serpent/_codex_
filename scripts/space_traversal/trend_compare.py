@@ -29,24 +29,6 @@ Last Updated: 2026-01-16
 """
 from __future__ import annotations
 
-"""
-Historical comparison utilities for v1.5.1
-
-Provides detailed comparison between audit runs with component-level analysis.
-
-Features:
-- Compare two audit runs with detailed delta analysis
-- Component-level gap detection
-- Regression severity classification
-- Markdown report generation
-
-Example:
-    from scripts.space_traversal.trend_compare import compare_runs
-    results = compare_runs(Path("old_scored.json"), Path("new_scored.json"))
-    for r in results:
-        print(f"{r.capability_id}: {r.delta:+.3f}")
-"""
-
 import json
 from dataclasses import dataclass
 from datetime import datetime

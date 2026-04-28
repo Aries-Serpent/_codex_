@@ -30,22 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-import logging
-logger = logging.getLogger(__name__)
-Trend Aggregator (P5)
-
-Aggregates historical capability_scored.json files into trend_scores.json:
-- Scan audit_artifacts/ for dated snapshots (or user-provided glob DIRS)
-- Build per-capability chronological score list
-- Compute simple deltas & percent change from first to last
-- Optionally produce mini sparkline ASCII for console preview
-
-Knobs:
-  TREND_LIMIT=30 -> max snapshots considered
-  TREND_SPARKLINE=1 -> include sparkline text
-"""
-
 import glob
 import json
 import os

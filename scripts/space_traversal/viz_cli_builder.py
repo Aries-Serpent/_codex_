@@ -31,28 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-CLI Command Builder HTML for v1.5.3
-
-Generates interactive HTML interface for building and previewing
-audit CLI commands with adjustable parameters (knobs).
-
-Features:
-- Interactive command builder with form controls
-- Real-time command preview
-- Parameter validation
-- Copy-to-clipboard functionality
-- Support for all audit_runner.py commands
-
-Example:
-    from scripts.space_traversal.viz_cli_builder import generate_cli_builder
-
-    generate_cli_builder(
-        output_path=Path("audit_artifacts/cli_builder.html"),
-        repo_name="my-repo"
-    )
-"""
-
 from pathlib import Path
 
 __all__ = ["generate_cli_builder", "CLI_BUILDER_TEMPLATE"]

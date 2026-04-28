@@ -30,11 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-HAR Ingestion Script for Cognitive Brain
-Ingested from external source and integrated into cognitive perception layer
-"""
-
 import argparse
 import json
 import os

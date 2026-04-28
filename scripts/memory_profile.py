@@ -29,12 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Memory Profiling Script for Rust-Python Hybrid Swarm
-Phase 3: Memory Profiling (Target: 82% Coverage)
-
-Profiles memory usage and validates < 50MB per 1000 agents.
-"""
 
 import sys
 import time

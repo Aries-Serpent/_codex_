@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Research Integration Pipeline
-Bi-weekly ArXiv monitoring with relevance scoring and feasibility assessment
-"""
 
 import json
 import logging

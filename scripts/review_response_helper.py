@@ -29,19 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Review Response Helper
-
-Automates the process of responding to code review comments by:
-- Parsing review comments from structured input
-- Creating fix checklist
-- Tracking commit resolutions
-- Auto-generating reply text with commit references
-
-Usage:
-    python scripts/review_response_helper.py --comments review_comments.json
-    python scripts/review_response_helper.py --generate-checklist
-"""
 
 import argparse
 import json

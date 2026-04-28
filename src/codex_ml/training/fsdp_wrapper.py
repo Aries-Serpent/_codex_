@@ -21,30 +21,26 @@ from typing import Any, Callable, Optional, Union
 logger = logging.getLogger(__name__)
 
 try:
-    from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
-        CheckpointImpl,
-        apply_activation_checkpointing,
-        checkpoint_wrapper,
-    )
-    from torch.distributed.fsdp import (
-        BackwardPrefetch,
-        CPUOffload,
-        FullStateDictConfig,
-        MixedPrecision,
-        ShardedStateDictConfig,
-        ShardingStrategy,
-        StateDictType,
-    )
-    from torch.distributed.fsdp import (
-        FullyShardedDataParallel as FSDP,
-    )
-    from torch.distributed.fsdp.wrap import (
-        size_based_auto_wrap_policy,
-        transformer_auto_wrap_policy,
-    )
+    import torch.distributed.algorithms._checkpoint.checkpoint_wrapper as _ckpt_wrap
+    import torch.distributed.fsdp as _fsdp
+    import torch.distributed.fsdp.wrap as _fsdp_wrap
 
     import torch
-    import torch.nn as nn
+
+    nn = torch.nn
+    CheckpointImpl = _ckpt_wrap.CheckpointImpl
+    apply_activation_checkpointing = _ckpt_wrap.apply_activation_checkpointing
+    checkpoint_wrapper = _ckpt_wrap.checkpoint_wrapper
+    BackwardPrefetch = _fsdp.BackwardPrefetch
+    CPUOffload = _fsdp.CPUOffload
+    FullStateDictConfig = _fsdp.FullStateDictConfig
+    MixedPrecision = _fsdp.MixedPrecision
+    ShardedStateDictConfig = _fsdp.ShardedStateDictConfig
+    ShardingStrategy = _fsdp.ShardingStrategy
+    StateDictType = _fsdp.StateDictType
+    FSDP = _fsdp.FullyShardedDataParallel
+    size_based_auto_wrap_policy = _fsdp_wrap.size_based_auto_wrap_policy
+    transformer_auto_wrap_policy = _fsdp_wrap.transformer_auto_wrap_policy
 
     # Verify torch is functional
     _ = torch.Tensor

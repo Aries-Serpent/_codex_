@@ -254,7 +254,7 @@ def log_event(
                     meta=adapter_meta_json,  # type: ignore[arg-type]
                     db_path=db_path,
                 )
-                return
+                return None
             except TypeError as e:
                 logger.warning("monkeypatch adapter call failed (trying legacy): %s", e)
                 # Legacy adapters expect positional ``session_id``/``role`` arguments.
@@ -263,7 +263,7 @@ def log_event(
                         _shared_log_event(session_id, role, message, db_path, meta)
                     else:
                         _shared_log_event(session_id, role, message, db_path)
-                    return
+                    return None
                 except TypeError as e:
                     logger.warning("legacy positional call failed (trying minimal): %s", e)
                     try:
@@ -274,13 +274,13 @@ def log_event(
                             e,
                             exc_info=True,
                         )
-            return
+            return None
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
         except TypeError as e:
             logger.warning("shared log_event keyword call failed (retrying without meta): %s", e)
             _shared_log_event(session_id, role, message, db_path=db_path)
-        return
+        return None
     return _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
 
 

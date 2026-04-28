@@ -29,16 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Simulation script for QA Walkthrough Agent functionality.
-
-This script simulates the QA analysis that would be performed by the
-Codebase QA Walkthrough Agent. It runs the same tools and generates
-a sample report.
-
-Usage:
-    python scripts/test_qa_walkthrough_simulation.py [--target-dir path]
-"""
 
 import argparse
 import json

@@ -29,22 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-GitHub Secrets Sync Script
-
-Syncs authentication tokens to GitHub Secrets with encryption, validation,
-and audit logging.
-
-Usage:
-    python scripts/github_secrets_sync.py --backup      # Backup secrets
-    python scripts/github_secrets_sync.py --rotate      # Rotate secrets
-    python scripts/github_secrets_sync.py --validate    # Validate secrets
-    python scripts/github_secrets_sync.py --sync-downstream  # Sync to dependent systems
-
-Environment Variables:
-    GITHUB_TOKEN: GitHub API token
-    CODEX_MASTER_KEY: Master encryption key
-"""
 
 import argparse
 import hashlib

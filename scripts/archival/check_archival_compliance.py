@@ -30,29 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Archival Compliance Checker (P6 Atomic Patchset)
-
-Purpose:
-- CI helper to enforce Archival Inventory Process for deletions between commits.
-- Detects deleted files in the HEAD diff and ensures a tombstone stub and ADR reference exist,
-  and that an evidence append exists in .codex/evidence/archive_ops.jsonl (basic check).
-
-Usage:
-  # Run in CI after PR commits are present
-  python scripts/archival/check_archival_compliance.py --base <base-ref> --head <head-ref>
-
-  # Use custom evidence path (defaults to .codex/evidence/archive_ops.jsonl)
-  ARCHIVAL_EVIDENCE_PATH=/custom/path.jsonl python scripts/archival/check_archival_compliance.py ...
-
-Notes / Limitations:
-- Uses git to compute diff (local repo required).
-- For complex flows (squashed merges, mirrored CI), pass explicit list of removed paths
-  via --removed-file <file>.
-- Evidence path is configurable via ARCHIVAL_EVIDENCE_PATH environment variable.
-- Non-exhaustive: intended as a CI gate to surface missing ADR/tombstone/evidence.
-"""
-
 import argparse
 import json
 import logging

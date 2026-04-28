@@ -29,16 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-IMMEDIATE EXECUTION: Automated Phase 10 Secrets Injection
-Copilot Agent can run this NOW with GITHUB_ACTIONS token
-
-User Authorization: mbaetiong granted FULL ACCESS (comment #3745423798)
-Capabilities: GitHub API, CLI, MCP access enabled
-
-SECURITY WARNING: This script handles sensitive credentials.
-Never log secret values or names in clear text.
-"""
 
 import os
 import subprocess

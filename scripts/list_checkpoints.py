@@ -29,14 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Checkpoint management CLI for listing and cleaning checkpoints.
-
-Provides commands for:
-- Listing all checkpoints
-- Filtering by pattern, age, size
-- Dry-run deletion with retention policies
-- Checkpoint metadata inspection
-"""
 
 import argparse
 import json

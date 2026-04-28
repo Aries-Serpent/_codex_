@@ -30,17 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Merge Conflict Resolution Strategy for PR #2717
-
-This script helps resolve merge conflicts by accepting all incoming changes
-from the current PR branch (copilot/sub-pr-2713).
-
-The PR contains 1,114 files with timestamp and word replacements that were reverted.
-When merging, we want to preserve ALL our changes (incoming) and override any
-conflicting changes in the base branch.
-"""
-
 import subprocess
 import sys
 from pathlib import Path

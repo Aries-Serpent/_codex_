@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch
-    from torch import Tensor
+
+    Tensor = torch.Tensor
 except Exception:  # pragma: no cover - guard for optional deps
     torch = None  # type: ignore[assignment]
     Tensor = None  # type: ignore[assignment]

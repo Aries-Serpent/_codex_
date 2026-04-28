@@ -29,12 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Generate an index.html dashboard for audit artifacts.
-
-This script scans audit_artifacts/, reports/, and audit_run_manifest.json
-to create an interactive web-based dashboard for reviewing audit results.
-"""
 
 import html
 import json

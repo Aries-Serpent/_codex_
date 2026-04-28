@@ -29,20 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Archive Files to misc/repo-owner-review
-
-This script moves non-essential files to the misc/repo-owner-review folder
-for potential deletion by the repository owner. It includes:
-- Compression of archivable components
-- Verification that removal won't break functionality
-- Documentation of archival reasons
-- Metadata tracking
-
-Usage:
-    python scripts/archive_files.py --dry-run  # Preview changes
-    python scripts/archive_files.py            # Execute archival
-"""
 
 import argparse
 import gzip

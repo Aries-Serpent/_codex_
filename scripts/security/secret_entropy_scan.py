@@ -30,16 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Secret Entropy Scan (P4)
-
-Scans text artifacts for high-entropy substrings resembling credentials.
-
-Heuristic:
-- Sliding window (length 16–48) compute Shannon entropy; threshold > 3.5 considered candidate.
-- Optionally exclude known benign tokens (ALLOWLIST_SECRET_PREFIXES env CSV).
-- Writes secret_entropy_report.json with findings; does NOT mutate originals (non-destructive).
-"""
 import logging
 
 logger = logging.getLogger(__name__)

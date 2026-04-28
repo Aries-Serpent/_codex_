@@ -17,18 +17,16 @@ Author: Codex Team
 
 from __future__ import annotations
 
-"""A tiny Transformer language model used for tests."""
-
 # ruff: noqa: E402
-
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Optional, Union
 
 import torch
+
+nn = torch.nn
 from codex_ml.utils.checkpointing import load_checkpoint  # type: ignore[attr-defined]
-from torch import nn
 
 
 @dataclass

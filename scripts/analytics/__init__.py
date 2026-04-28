@@ -2,4 +2,4 @@
 
 from __future__ import annotations
 
-__all__ = ["openai_usage_dashboard"]
+__all__: list[str] = []

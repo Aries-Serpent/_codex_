@@ -29,21 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Redundant Code Detector
-
-AST-based linter to detect and optionally fix redundant code patterns.
-
-Detected patterns:
-- Redundant pass statements after exception handling with logging
-- Empty except blocks that should have pass
-- Redundant return None at end of functions
-- Unnecessary else after return/raise
-
-Usage:
-    python scripts/linters/redundant_code.py --file path/to/file.py
-    python scripts/linters/redundant_code.py --directory scripts/ --fix
-"""
 
 import argparse
 import ast

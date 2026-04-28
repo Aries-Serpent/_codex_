@@ -29,17 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-AfterMath Cognitive Brain Updater
-
-Updates CODEBASE_DASHBOARD.md with lessons learned and metrics
-from AfterMath session artifacts.
-
-Usage:
-    python scripts/aftermath/update_cognitive_brain.py \
-        --lessons=.codex/lessons_learned/ \
-        --dashboard=docs/system/CODEBASE_DASHBOARD.md
-"""
 
 import argparse
 import sys

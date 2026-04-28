@@ -45,10 +45,11 @@ else:
     torch = _torch_mod
 
 try:  # pragma: no cover - guard for environments without torch data utilities
-    from torch.utils.data import DataLoader as TorchDataLoader
-    from torch.utils.data import Dataset as TorchDataset
-    from torch.utils.data import TensorDataset as TorchTensorDataset
-    from torch.utils.data import random_split as torch_random_split
+    import torch.utils.data as _torch_data
+    TorchDataLoader = _torch_data.DataLoader
+    TorchDataset = _torch_data.Dataset
+    TorchTensorDataset = _torch_data.TensorDataset
+    torch_random_split = _torch_data.random_split
 except Exception:  # pragma: no cover - provide graceful degradation
     TorchDataLoader = cast(Any, None)  # type: ignore[misc]
     TorchDataset = cast(Any, None)  # type: ignore[misc]

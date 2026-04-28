@@ -11,27 +11,19 @@ from pathlib import Path
 from typing import Any, Optional, Sequence, Union
 
 try:
-    from hydra.utils import to_absolute_path
+    import hydra
+    to_absolute_path = hydra.utils.to_absolute_path
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     try:
-        from config_legacy.utils import to_absolute_path  # fallback: legacy compat layer
+        import config_legacy as hydra  # type: ignore[no-redef]
+        to_absolute_path = hydra.utils.to_absolute_path  # type: ignore[attr-defined]
     except (ImportError, ModuleNotFoundError):
+        hydra = None  # type: ignore[assignment]
 
         def to_absolute_path(path: str) -> str:
             return str(Path(path).resolve())
-
-
-try:
-    import hydra
-except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
-    try:
-        import config_legacy as hydra  # fallback: config_legacy mirrors hydra API
-    except (ImportError, ModuleNotFoundError):
-        hydra = None
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,

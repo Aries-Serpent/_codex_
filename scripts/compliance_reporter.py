@@ -29,16 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Compliance Reporter
-
-Generates compliance reports for authentication security.
-
-Usage:
-    python scripts/compliance_reporter.py --generate
-    python scripts/compliance_reporter.py --analyze-mfa
-    python scripts/compliance_reporter.py --check-tokens
-    python scripts/compliance_reporter.py --visualize
-"""
 
 import argparse
 import json

@@ -1,43 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""
-Zendesk Docs Fetch
-
-Purpose:
-    Command-line utility (see argument parser for details)
-
-Usage:
-    python scripts/zendesk_docs_fetch.py [options]
-
-    Examples:
-    $ python scripts/zendesk_docs_fetch.py --help
-
-Arguments:
-    [To be documented]
-
-Environment Variables:
-    [To be documented]
-
-Dependencies:
-    [To be documented]
-
-Exit Codes:
-    0: Success
-    1: Error
-
-Author: Codex Team
-Last Updated: 2026-01-16
-"""
-
-
-"""Fetch and snapshot Zendesk developer docs for local/offline training.
-
-Constraints:
-- No CI/GitHub Actions.
-- Writes under docs/vendors/zendesk/YYYY-MM-DD/<section>/<page>.html.
-"""
-
 import logging
 
 logger = logging.getLogger(__name__)

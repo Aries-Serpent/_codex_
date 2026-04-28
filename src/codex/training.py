@@ -22,7 +22,7 @@ from typing import Any, Optional, Sequence, Union  # noqa: E402
 try:
     import torch
     import torch.nn.functional as F
-    from torch.nn.utils import clip_grad_norm_
+    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
 except Exception:  # keep imports resilient
     torch = None  # type: ignore[assignment]
     F = None  # type: ignore[assignment]

@@ -29,23 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Automated GitHub Secrets Manager for Copilot Agents
-Enables programmatic secret injection via GitHub API, CLI, and MCP
-
-This tool allows Copilot Agents with FULL ACCESS to:
-1. Generate secure secrets (keys, tokens, credentials)
-2. Inject secrets into GitHub repository via API
-3. Validate secret configuration
-4. Rotate secrets with audit trail
-
-**Security**: Requires GITHUB_TOKEN or GH_TOKEN with repo and workflow scopes
-**Created**: 2026-01-13 (Phase 10 automation)
-**User Authorization**: mbaetiong granted FULL ACCESS via comment #3745423798
-
-SECURITY WARNING: This script handles sensitive credentials.
-Never log secret values or names in clear text. Use redaction utilities.
-"""
 
 import base64
 import logging

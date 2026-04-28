@@ -24,18 +24,13 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 try:
-    from hydra.utils import to_absolute_path
-except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
-    from config_legacy.utils import to_absolute_path
-
-try:
     import hydra
+    to_absolute_path = hydra.utils.to_absolute_path
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    import config_legacy as hydra
+    import config_legacy as hydra  # type: ignore[no-redef]
+    to_absolute_path = hydra.utils.to_absolute_path  # type: ignore[attr-defined]
 
 from common.hooks import (  # noqa: E402
     CheckpointHook,
@@ -59,10 +54,11 @@ from hhg_logistics.plugins import load_plugins  # noqa: E402
 from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    from torch.optim import AdamW
-
     import torch
-    from torch.utils.data import DataLoader, Dataset
+
+    AdamW = torch.optim.AdamW
+    DataLoader = torch.utils.data.DataLoader
+    Dataset = torch.utils.data.Dataset
 except Exception:  # pragma: no cover
     torch = None  # type: ignore[assignment]
     AdamW = None

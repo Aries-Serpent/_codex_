@@ -31,13 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Render a monthly HTML report from a bundle JSON containing aggregated status reports.
-
-Usage:
-  python scripts/status/render_monthly_html.py --in bundle.json --out bundle.html
-"""
-
 import argparse
 import html
 import json

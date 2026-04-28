@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Anomaly Detection
-Part of Perception Layer - integrates with Agent 5 for anomaly detection
-"""
 import argparse
 import json
 import statistics

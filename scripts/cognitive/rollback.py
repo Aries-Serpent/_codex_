@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Rollback Mechanism
-Handles failures and rolls back to safe state
-"""
 import argparse
 import json
 from datetime import datetime

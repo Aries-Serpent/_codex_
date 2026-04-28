@@ -31,27 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-ASCII visualization for terminal output.
-
-Provides text-based visualizations for audit trend data.
-
-Features:
-- Sparkline trend visualization
-- Horizontal bar charts
-- Score badges with color indicators
-- Full capability dashboards
-
-Example:
-    from scripts.space_traversal.viz_ascii import sparkline, bar_chart
-
-    values = [0.75, 0.78, 0.82, 0.80, 0.85]
-    print(sparkline(values))  # ▃▅▇▆█
-
-    data = {"checkpointing": 0.85, "tokenization": 0.78}
-    print(bar_chart(data))
-"""
-
 from typing import Optional
 
 __all__ = [

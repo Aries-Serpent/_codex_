@@ -29,16 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Feature Store Initialization Script for Phase 6.2
-
-This script initializes the production feature store and registers
-the 10 initial feature groups defined in configs/production/features.yaml.
-
-Usage:
-    python scripts/initialize_feature_store.py
-    python scripts/initialize_feature_store.py --config configs/production/features.yaml
-    python scripts/initialize_feature_store.py --dry-run
-"""
 
 import argparse
 import logging

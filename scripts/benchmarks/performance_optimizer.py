@@ -29,20 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Automated Performance Optimization Benchmarking
-
-Agent-driven performance benchmarking for MLOps features.
-Identifies bottlenecks and generates optimization recommendations.
-
-Usage:
-    python scripts/benchmarks/performance_optimizer.py --all
-    python scripts/benchmarks/performance_optimizer.py --feature mlflow
-
-Agent Integration:
-    from scripts.benchmarks.performance_optimizer import PerformanceOptimizer
-    optimizer = PerformanceOptimizer()
-    results = optimizer.run_all_benchmarks()
-"""
 
 import argparse
 import json

@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Repository Organization and Archival Script
-Organizes root directory markdown files and creates AI-queryable archive
-"""
 import argparse
 import json
 import logging

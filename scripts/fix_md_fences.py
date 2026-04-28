@@ -31,16 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Fix common Markdown fence issues repo-wide:
- - Add a language (default: 'text') to bare ``` fences.
- - Ensure closing fences do NOT include a language.
- - Convert nested fences by upgrading the outer fence when needed.
-Usage:
-    python scripts/fix_md_fences.py [--write] [paths...]
-If --write is omitted, prints a diff-like preview to stdout.
-"""
-
 import argparse
 import pathlib
 import re

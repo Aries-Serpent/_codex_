@@ -29,11 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Self-Healing CI Statistics and Monitoring
-
-Displays metrics and success rates for the self-healing CI system.
-"""
 
 import glob
 from collections import defaultdict

@@ -30,34 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Trend Database for Audit Pipeline v1.5.0
-
-Stores historical audit results for trend analysis and visualization.
-
-Features:
-- SQLite-based trend storage
-- AuditSnapshot dataclass for run metadata
-- Trend queries by capability, branch, and time
-- Regression detection with configurable thresholds
-- CSV export for external analysis
-
-API:
-- TrendDatabase: Main class for database operations
-- AuditSnapshot: Dataclass representing a single audit run
-- create_snapshot_from_artifacts: Factory function to create snapshots
-
-Example:
-    db = TrendDatabase("audit_artifacts/trends.db")
-    snapshot = create_snapshot_from_artifacts(
-        Path("audit_artifacts"),
-        git_commit="abc123",
-        git_branch="main"
-    )
-    run_id = db.store_snapshot(snapshot)
-    trend = db.get_trend("checkpointing", limit=30)
-"""
-
 import json
 import sqlite3
 import uuid

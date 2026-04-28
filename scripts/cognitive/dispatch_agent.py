@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Agent Dispatcher
-Dispatches tasks to V10 agents for execution
-"""
 import argparse
 import json
 from datetime import datetime

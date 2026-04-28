@@ -29,13 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Validate that all paths in SHIM_INVENTORY.yaml actually exist on disk.
-Used as a pre-check in CI to catch missing/stale inventory entries.
-
-Usage:
-  python scripts/remediation/validate_inventory_paths.py
-"""
 import sys
 from pathlib import Path
 

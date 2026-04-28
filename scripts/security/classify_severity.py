@@ -30,32 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Security Severity Classification (P5)
-
-Reads secret_entropy_report.json and classifies each finding into Low / Medium / High
-based on entropy and token length ranges.
-
-Environmental Knobs:
-  SECURITY_SEVERITY_ENABLE=1    -> perform classification
-  SEVERITY_HIGH_WEIGHT=0.05     -> weighting influence (used by audit_runner scoring)
-  SEVERITY_MEDIUM_WEIGHT=0.02
-  SEVERITY_LOW_WEIGHT=0.01
-
-Output:
-  audit_artifacts/security_severity.json
-{
-  "counts":{"high":X,"medium":Y,"low":Z,"total":N},
-  "weights":{"high":0.05,"medium":0.02,"low":0.01},
-  "findings":[{"file":..., "entropy":..., "length":..., "severity":"high"}]
-}
-
-Classification (default thresholds):
-  High: entropy >= 4.0 and length in [20,48]
-  Medium: entropy >= 3.8 and length in [16,48]
-  Low: entropy >= 3.5 and length in [16,48]
-Order: evaluate high first, then medium, then low.
-"""
 import logging
 
 logger = logging.getLogger(__name__)

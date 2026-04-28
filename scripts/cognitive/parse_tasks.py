@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Task Parser
-Parses task allocation JSON for execution
-"""
 import argparse
 import json
 from pathlib import Path

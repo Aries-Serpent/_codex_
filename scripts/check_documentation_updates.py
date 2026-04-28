@@ -29,21 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Systematic Documentation Update Checker
-
-This script ensures all documentation is updated before concluding work.
-It checks for:
-1. README files that need updating based on code changes
-2. AGENTS.md files that reference changed modules
-3. Outdated examples in documentation
-4. Missing documentation for new features
-5. Changelog entries for significant changes
-
-Usage:
-    python scripts/check_documentation_updates.py
-    python scripts/check_documentation_updates.py --fix
-"""
 
 import sys
 from datetime import datetime

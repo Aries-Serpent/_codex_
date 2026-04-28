@@ -31,29 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-HTML visualization dashboard for v1.5.2
-
-Generates interactive HTML dashboards for audit trend visualization.
-
-Features:
-- Responsive HTML dashboard with dark theme
-- Chart.js integration for interactive charts
-- Score distribution visualization
-- Trend history charts
-- Capability breakdown tables
-
-Example:
-    from scripts.space_traversal.viz_html import generate_dashboard
-
-    generate_dashboard(
-        capabilities=capabilities_list,
-        trend_data=trend_list,
-        output_path=Path("reports/dashboard.html"),
-        repo_name="my-repo"
-    )
-"""
-
 import json
 from datetime import datetime
 from pathlib import Path

@@ -31,16 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Validate status artifacts and prepare a publishable bundle.
-
-Actions:
-- Validate example JSON against schema
-- Validate configs (if present)
-- Build audit integrity chain
-- Print concise summary JSON to stdout
-"""
-
 import json
 import subprocess
 import sys

@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Automated Model Retraining System
-Monthly retraining with performance comparison and automatic deployment
-"""
 
 import json
 import logging

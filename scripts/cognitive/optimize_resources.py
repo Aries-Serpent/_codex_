@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Resource Optimization
-Part of Decision Engine - integrates with R12 (Linear Programming)
-"""
 import argparse
 import json
 from datetime import datetime

@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Enhanced exception handler logging - Phase 2.
-Targets remaining exception handlers without logging.
-"""
 import logging
 import re
 import sys

@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Annual Architecture Review
-Comprehensive system health assessment and technology stack evaluation
-"""
 
 import json
 import logging

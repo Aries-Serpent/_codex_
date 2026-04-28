@@ -31,13 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Render an HTML report from a v1.2 status JSON using a simple HTML template.
-
-Usage:
-  python scripts/status/render_html_report.py --json reports/daily/2025-11-02.json --out reports/daily/2025-11-02.html [--template docs/templates/status/report_template.html]
-"""
-
 import argparse
 import html
 import json

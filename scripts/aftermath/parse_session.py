@@ -29,15 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-AfterMath Session Parser
-
-Extracts structured aftermath blocks from GitHub logs and PR comments,
-generating durable lessons learned artifacts.
-
-Usage:
-    python scripts/aftermath/parse_session.py --source=file.md --output=.codex/lessons_learned/
-"""
 
 import argparse
 import re

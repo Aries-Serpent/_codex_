@@ -29,22 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Type Hints Fixer
-
-Automatically detects and fixes missing typing imports in Python files.
-
-Features:
-- AST-based detection of type hint usage
-- Auto-adds missing imports from typing module
-- Supports dry-run mode for safe preview
-- Batch processing of multiple files
-
-Usage:
-    python scripts/fix_type_hints.py --file path/to/file.py
-    python scripts/fix_type_hints.py --directory scripts/ --dry-run
-    python scripts/fix_type_hints.py --file myfile.py --fix
-"""
 
 import argparse
 import ast

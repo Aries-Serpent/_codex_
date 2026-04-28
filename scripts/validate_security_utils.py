@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Simple validation script for security utilities.
-Tests core functionality without pytest dependency.
-"""
 
 import sys
 from pathlib import Path

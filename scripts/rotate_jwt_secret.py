@@ -29,26 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-JWT Secret Rotation Script
-
-Rotates the JWT signing secret used for token generation with backup,
-validation, and GitHub Secrets integration.
-
-Usage:
-    python scripts/rotate_jwt_secret.py              # Rotate secret
-    python scripts/rotate_jwt_secret.py --verify     # Verify rotation
-    python scripts/rotate_jwt_secret.py --rollback   # Rollback to backup
-
-Environment Variables:
-    CODEX_MASTER_KEY: Master encryption key for secure storage
-    GITHUB_TOKEN: GitHub API token for secrets management
-    TOKEN_SECRET_KEY: Current JWT secret key
-    FORCE_ROTATION: Set to 'true' to force rotation
-
-Example:
-    CODEX_MASTER_KEY=xxx GITHUB_TOKEN=yyy python scripts/rotate_jwt_secret.py
-"""
 
 import argparse
 import base64

@@ -29,15 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Documentation Link Checker
-
-Scans all Markdown files for broken internal links and suggests fixes.
-Part of Phase 8: Documentation Consolidation.
-
-Usage:
-    python scripts/maintenance/check_doc_links.py [--fix] [--report]
-"""
 
 import json
 import re

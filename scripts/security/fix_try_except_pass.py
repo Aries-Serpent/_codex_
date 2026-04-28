@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Automated fix for try-except-pass patterns.
-Adds logging to all silent exception handlers.
-"""
 import logging
 import re
 import sys

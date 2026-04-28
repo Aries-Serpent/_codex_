@@ -29,38 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Automated Python Documentation Generator
-
-Purpose:
-    Automatically generates comprehensive docstrings for Python modules,
-    classes, and functions that are currently undocumented.
-
-Usage:
-    python scripts/auto_document_python.py [module_path]
-
-    Examples:
-    $ python scripts/auto_document_python.py src/codex/auth
-    $ python scripts/auto_document_python.py --all
-
-Arguments:
-    module_path: Path to Python module or directory to document
-    --all: Document all Python modules in src/
-
-Environment Variables:
-    None
-
-Dependencies:
-    - ast: Python AST parsing
-    - pathlib: Path handling
-
-Exit Codes:
-    0: Success
-    1: Error during documentation generation
-
-Author: Codex Automation
-Last Updated: 2026-01-16
-"""
 
 import ast
 import sys

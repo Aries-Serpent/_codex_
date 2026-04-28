@@ -30,8 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""Print environment details for reproducibility."""
-
 import logging
 
 logger = logging.getLogger(__name__)

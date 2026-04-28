@@ -30,25 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-import logging
-logger = logging.getLogger(__name__)
-Token Similarity Engine (P4)
-
-Computes token-level similarity across evidence files for each capability
-to refine consistency metric:
-- Load capabilities_raw.json
-- For each capability: tokenize contents of evidence files (simple word split)
-- Build term frequency vectors & compute average pairwise cosine similarity
-- similarity_index = 1 - avg_pairwise_similarity (higher is better uniqueness)
-- Output token_similarity.json for scoring stage to consume
-
-Environment Knobs (optional):
-  TOKEN_SIMILARITY_ENABLE=1    -> perform computation
-  TOKEN_SIMILARITY_MAX_FILES=50 -> cap evidence set to reduce cost
-  TOKEN_SIMILARITY_MIN_LEN=5   -> skip tokens shorter than threshold
-"""
-
 import json
 import math
 import os

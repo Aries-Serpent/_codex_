@@ -29,11 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Generate pytest.ini with discovered markers including chaos markers.
-
-This script scans the repository for pytest markers and updates pytest.ini
-to ensure all markers are registered, preventing test collection failures.
-"""
 import configparser
 import re
 import sys

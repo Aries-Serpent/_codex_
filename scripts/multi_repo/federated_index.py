@@ -30,38 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-import logging
-logger = logging.getLogger(__name__)
-Federated Index Stub (P6)
-
-Local multi-repo capability discovery stub.
-Scans local repository directories for capability indicators.
-
-Environment Knobs:
-  FEDERATION_ENABLE=1           -> perform indexing
-  FEDERATION_REPO_PATHS=csv     -> paths to scan (comma-separated)
-
-Outputs:
-  audit_artifacts/federated_index.json
-
-Limitations:
-- No remote fetch or network operations
-- Skips files > 2MB for performance
-- Does not yet feed scoring (future integration)
-
-Structure:
-{
-  "repositories": [
-    {
-      "path": "/path/to/repo",
-      "capabilities": ["training", "checkpoint"],
-      "evidence_count": 42
-    }
-  ]
-}
-"""
-
 import json
 import os
 import re

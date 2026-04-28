@@ -710,7 +710,5 @@ else:
             log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
             return 0
 
-    cli = cli
-
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(cli())

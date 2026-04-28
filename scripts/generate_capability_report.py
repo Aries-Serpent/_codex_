@@ -31,15 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""Generate capability summary report.
-
-Reads capabilities_scored.json and produces a concise markdown summary
-with actionable recommendations per AGENTS.md guidelines.
-
-Usage:
-    python scripts/generate_capability_report.py
-"""
-
 import json
 import sys
 from pathlib import Path

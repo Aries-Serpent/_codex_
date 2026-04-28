@@ -29,20 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Launch distributed training.
-
-Usage:
-    # Single node, multi-GPU
-    python scripts/launch_distributed.py --num-gpus 4 train.py --config config.yaml
-
-    # Multi-node (run on each node)
-    python scripts/launch_distributed.py \
-        --num-nodes 2 \
-        --node-rank 0 \
-        --master-addr 192.168.1.1 \
-        train.py --config config.yaml
-"""
 import argparse
 import logging
 

@@ -22,8 +22,9 @@ from .node import NodeType, SourceLocation, StandardizedASTNode  # noqa: E402
 # Try to import libcst for enhanced parsing
 try:
     import libcst as cst
-    from libcst.metadata import MetadataWrapper, PositionProvider
 
+    MetadataWrapper = cst.metadata.MetadataWrapper
+    PositionProvider = cst.metadata.PositionProvider
     LIBCST_AVAILABLE = True
 except ImportError as e:
     logger.debug(f"ImportError: {e}")

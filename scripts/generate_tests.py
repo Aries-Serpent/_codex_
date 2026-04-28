@@ -29,14 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Automated test generation script.
-
-Usage:
-    python scripts/generate_tests.py --spec physics_orchestration
-    python scripts/generate_tests.py --spec all
-    python scripts/generate_tests.py --module agents.physics_orchestrator --analyze
-"""
 
 import argparse
 import sys
