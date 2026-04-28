@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S178b — 2026-04-28 — WEC integrity hardening + shallow-clone-safe REQ-4/REQ-5 lookback)
+- **`scripts/ci/session_wrapup_autofix.py` — `_MERGE_REQUIRED_WORKFLOWS` lifted to module scope** (was local to `update_pr_wec_for_merge_readiness`) and a module-load `AssertionError` now fires if it overlaps with `_WEC_NEVER_CHECK`. This catches accidental edits at import time so a future PR cannot silently re-enable the Copilot continuation-loop trigger workflows (`copilot-agent-session-done.yml`, `copilot-iterative-self-healing.yml`, `auto-approve-workflows`).
+- **`update_pr_wec_for_merge_readiness` runtime guard:** the activation loop now skips any `_WEC_NEVER_CHECK` member it encounters, even if it accidentally appears in `_MERGE_REQUIRED_WORKFLOWS`, and prints a `⚠  WEC activation skipped never-check items` line to stderr. Belt-and-suspenders defence layered on top of the module-load assertion.
+- **`.github/workflows/agent-auth-delegation.yml` REQ-4 / REQ-5:** the shell lookback loop now explicitly probes `git rev-parse --verify --quiet <candidate>^{commit}` before reading metadata. When the candidate ref does not resolve (shallow clone limit reached), the loop breaks immediately rather than treating the empty author/subject as a non-infra agent commit. Prevents false-FAIL on shallow-clone CI runners that cannot reach all `MAX_LOOKBACK=10` commits.
+- **Tests added (5 new in `tests/ci/test_session_wrapup_autofix.py::TestWecConstants`):**
+  - `test_merge_required_disjoint_from_never_check` — invariant guard.
+  - `test_merge_required_subset_of_wec_items` — every merge-required workflow must be a known WEC entry, otherwise activation silently no-ops.
+  - `test_build_wec_block_does_not_auto_check_never_check_when_state_empty` — never-check items render as `[ ]` when no maintainer override exists.
+  - `test_build_wec_block_preserves_maintainer_x_for_never_check` — maintainer-set `[x]` on a never-check item is preserved (intentional override).
+  - All 52 `test_session_wrapup_autofix.py` tests pass.
+
 ### Fixed (S178 — 2026-04-28 — auto-fix self-loop + Pattern 25 / REQ-4 false alarms after auto-merge `[skip ci]` commits)
 - **Pattern 30 self-reference filter:** `scripts/ci/auto_fix_common_issues.py::fix_merge_readiness_dims` no longer reports the `auto_fix` scorecard dimension as its own issue. The underlying issues are already counted by Patterns 1-29 and 31-32; including the self-reference dimension caused double-counting in the summary line (`N issue(s) found, N auto-fixable`) and produced a `auto_fix_sweep` "fix" that was instructions-only and could never resolve. With this filter, `--check-only` now reports an accurate `0 auto-fixable` once the genuinely-fixable patterns have been resolved.
 - **Pattern 25 / REQ-4 / REQ-5 — skip past infrastructure commits:** When `branch-rebase-gate.yml` auto-merges `main` into a branch, or when the Copilot follow-up-prompt workflow regenerates the PR body, those `github-actions[bot]`-authored `[skip ci]` / `chore: auto-merge` / `chore(manifest):` / `chore: Generate follow-up prompt` commits land on top of the actual agent commit. Strict `git diff --name-only HEAD~1 HEAD` checks then falsely fail because the most recent commit (an infra commit) doesn't touch `AGENT_ACCOUNTABILITY_REPORT.md` or `CHANGELOG.md` even though the agent commit one or two below it does.

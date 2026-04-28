@@ -842,6 +842,12 @@ jobs:
           while [ "$SKIPPED" -lt "$MAX_LOOKBACK" ]; do
             CANDIDATE_IDX=$((SKIPPED + 1))
             CANDIDATE="HEAD~$((CANDIDATE_IDX - 1))"
+            # Resolve the candidate commit metadata. If git rev-parse fails
+            # (shallow clone limit reached), break out and use whatever
+            # BASE_REF we have so far — never fall through silently.
+            if ! git rev-parse --verify --quiet "$CANDIDATE^{commit}" >/dev/null 2>&1; then
+              break
+            fi
             CAUTHOR=$(git log -1 --format='%an' "$CANDIDATE" 2>/dev/null || echo "")
             CSUBJECT=$(git log -1 --format='%s' "$CANDIDATE" 2>/dev/null || echo "")
             case "$CAUTHOR" in
@@ -902,6 +908,9 @@ jobs:
           while [ "$SKIPPED" -lt "$MAX_LOOKBACK" ]; do
             CANDIDATE_IDX=$((SKIPPED + 1))
             CANDIDATE="HEAD~$((CANDIDATE_IDX - 1))"
+            if ! git rev-parse --verify --quiet "$CANDIDATE^{commit}" >/dev/null 2>&1; then
+              break
+            fi
             CAUTHOR=$(git log -1 --format='%an' "$CANDIDATE" 2>/dev/null || echo "")
             CSUBJECT=$(git log -1 --format='%s' "$CANDIDATE" 2>/dev/null || echo "")
             case "$CAUTHOR" in

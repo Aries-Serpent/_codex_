@@ -2,6 +2,45 @@
 
 
 
+## SESSION SUMMARY — 2026-04-28T19:30Z (S178b — WEC integrity hardening + shallow-clone-safe REQ-4/REQ-5 lookback)
+
+**Session:** S178b | **PR:** #4109 | **Branch:** `copilot/hotfixpost-4107-followup` | **Date:** 2026-04-28
+
+### What this session hardens
+
+After the S178 commit landed, three latent gaps remained that could re-introduce the original failure modes:
+
+1. **No invariant assertion that `_MERGE_REQUIRED_WORKFLOWS` is disjoint from `_WEC_NEVER_CHECK`.** A future maintainer adding `copilot-iterative-self-healing.yml` to the merge-required set would silently re-enable the continuation-loop trigger because `_build_wec_block` preserves any `[x]` it finds in `existing_state`, regardless of who set it.
+2. **Activation loop has no runtime guard either.** Even with the assertion at module load, a hypothetical bypass (e.g. monkey-patched `_WEC_NEVER_CHECK` in tests) could let auto-activation slip through.
+3. **REQ-4/REQ-5 shell lookback degrades silently on shallow clones.** When `git log -1 'HEAD~N'` fails because the ref doesn't exist, both `CAUTHOR` and `CSUBJECT` become empty strings, the case statements fall through with `IS_INFRA_AUTHOR=0` / `IS_INFRA_SUBJECT=0`, and the loop incorrectly settles on a non-existent `BASE_REF=HEAD~$((SKIPPED+1))`, then the subsequent `git diff` quietly returns nothing and triggers a false REQ-4 FAIL.
+
+### Fixes shipped this session
+
+- **`scripts/ci/session_wrapup_autofix.py`:**
+  - `_MERGE_REQUIRED_WORKFLOWS` lifted from local to module scope so tests and the import-time invariant can both reach it.
+  - Module-load `AssertionError` if `_MERGE_REQUIRED_WORKFLOWS & _WEC_NEVER_CHECK` is non-empty. Triggers immediately in CI on any future edit that violates the invariant.
+  - `update_pr_wec_for_merge_readiness` activation loop skips never-check items defensively and logs `⚠  WEC activation skipped never-check items` to stderr — belt-and-suspenders even if the import-time assertion is somehow bypassed.
+- **`.github/workflows/agent-auth-delegation.yml`:**
+  - REQ-4 and REQ-5 lookback now probes `git rev-parse --verify --quiet "$CANDIDATE^{commit}"` before reading metadata. On failure (shallow clone, missing ref) the loop breaks immediately, leaving `BASE_REF` at its last valid value or `HEAD~1` default — never a stale non-existent ref.
+- **`tests/ci/test_session_wrapup_autofix.py::TestWecConstants` — 5 new tests:**
+  - `test_merge_required_disjoint_from_never_check`
+  - `test_merge_required_subset_of_wec_items`
+  - `test_build_wec_block_does_not_auto_check_never_check_when_state_empty`
+  - `test_build_wec_block_preserves_maintainer_x_for_never_check`
+  - All 52 tests in this file pass.
+
+### Verification
+- `python -c "import session_wrapup_autofix"` — module-load invariant evaluates clean (overlap = `[]`).
+- `python -m pytest tests/ci/test_session_wrapup_autofix.py` → **52 passed**.
+- `python -m ruff check scripts/ci/session_wrapup_autofix.py tests/ci/test_session_wrapup_autofix.py` → All checks passed.
+- YAML validity: `agent-auth-delegation.yml` parses clean.
+
+### WEC defaults (non-negotiable)
+`auto-approve-workflows`, `copilot-agent-session-done.yml`, `copilot-iterative-self-healing.yml` remain **unchecked** — and the new module-load assertion makes that *impossible* to silently violate via a `_MERGE_REQUIRED_WORKFLOWS` edit.
+
+---
+
+
 ## SESSION SUMMARY — 2026-04-28T19:07Z [auto-generated]
 
 **Session:** auto-20260428T1907-run83499 | **Run:** 25072122217 | **Date:** 2026-04-28

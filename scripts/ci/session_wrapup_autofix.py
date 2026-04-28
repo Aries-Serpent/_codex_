@@ -161,6 +161,47 @@ _WEC_NEVER_CHECK: frozenset[str] = frozenset({
     "auto-approve-workflows",
 })
 
+# Workflows that MUST be activated for merge readiness on every Copilot session.
+# Lifted to module scope (was local to update_pr_wec_for_merge_readiness in S178)
+# so its disjoint-from-_WEC_NEVER_CHECK invariant can be verified at module-load
+# time and in tests, not only at runtime.
+_MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
+    # Always-required (belt-and-suspenders — already set by _WEC_ALWAYS_REQUIRED)
+    "pre-merge-validation.yml",
+    "comment-review-gate.yml",
+    "deferral-language-gate.yml",
+    "agent-auth-delegation.yml",
+    "workflow-execution-gate.yml",
+    # Always-active (need activation for approval flow; excludes continuation-loop triggers)
+    "copilot-agent-checkin.yml",
+    "cost-gate.yml",
+    # Opt-in: validation & testing (required for passing merge gate)
+    "validate.yml",
+    "resilient_validation.yml",
+    "nox_gates.yml",
+    # Opt-in: security (required for CodeQL / security-suite merge gates)
+    "codeql-analysis.yml",
+    "security-scanning-suite.yml",
+    # Opt-in: infrastructure (reference integrity gate)
+    "reference-integrity.yml",
+    # NOTE: copilot-agent-session-done.yml, copilot-iterative-self-healing.yml,
+    # and auto-approve-workflows are in _WEC_NEVER_CHECK and must never be activated
+    # automatically — they cause unbounded Copilot continuation loops.
+})
+
+# ── Module-load invariant (S178 hardening) ────────────────────────────────
+# A future edit that adds a never-check workflow to the merge-required set
+# would silently re-enable continuation loops. Catch it at import time so the
+# bug surfaces immediately in CI rather than as flaky end-of-session behaviour.
+_overlap = _MERGE_REQUIRED_WORKFLOWS & _WEC_NEVER_CHECK
+if _overlap:  # pragma: no cover — defensive guard, expected unreachable
+    raise AssertionError(
+        "WEC integrity violation: _MERGE_REQUIRED_WORKFLOWS overlaps with "
+        f"_WEC_NEVER_CHECK on {sorted(_overlap)}. Remove these entries from "
+        "_MERGE_REQUIRED_WORKFLOWS — they cause unbounded Copilot continuation loops."
+    )
+del _overlap
+
 
 def _extract_wec_state(pr_body: str) -> dict[str, bool]:
     """Return a mapping of workflow filename → checked state from *pr_body*.
@@ -1196,30 +1237,9 @@ def select_merge_required_workflows(
 
     Returns True if an update was made, False if already up to date.
     """
-    # Workflows that MUST be activated for merge readiness on every Copilot session
-    _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
-        # Always-required (belt-and-suspenders — already set by _WEC_ALWAYS_REQUIRED)
-        "pre-merge-validation.yml",
-        "comment-review-gate.yml",
-        "deferral-language-gate.yml",
-        "agent-auth-delegation.yml",
-        "workflow-execution-gate.yml",
-        # Always-active (need activation for approval flow; excludes continuation-loop triggers)
-        "copilot-agent-checkin.yml",
-        "cost-gate.yml",
-        # Opt-in: validation & testing (required for passing merge gate)
-        "validate.yml",
-        "resilient_validation.yml",
-        "nox_gates.yml",
-        # Opt-in: security (required for CodeQL / security-suite merge gates)
-        "codeql-analysis.yml",
-        "security-scanning-suite.yml",
-        # Opt-in: infrastructure (reference integrity gate)
-        "reference-integrity.yml",
-        # NOTE: copilot-agent-session-done.yml, copilot-iterative-self-healing.yml,
-        # and auto-approve-workflows are in _WEC_NEVER_CHECK and must never be activated
-        # automatically — they cause unbounded Copilot continuation loops.
-    })
+    # _MERGE_REQUIRED_WORKFLOWS is now defined at module scope (see top of file)
+    # so its disjoint-from-_WEC_NEVER_CHECK invariant can be verified by tests
+    # and at module-load time.
 
     try:
         result = subprocess.run(
@@ -1239,11 +1259,28 @@ def select_merge_required_workflows(
     updated_state = dict(existing_state)
 
     activated: list[str] = []
+    skipped_never_check: list[str] = []
     for fname, _label, _always in _WEC_ITEMS:
         if fname in _MERGE_REQUIRED_WORKFLOWS:
+            # S178 hardening: a never-check item must NEVER be auto-activated
+            # by automation, even if it accidentally appears in the merge-required
+            # set. This is a belt-and-suspenders defence against future edits to
+            # _MERGE_REQUIRED_WORKFLOWS.  The module-level invariant assertion
+            # below also prevents this at import time, but we double-check at
+            # the activation site for runtime safety.
+            if fname in _WEC_NEVER_CHECK:
+                skipped_never_check.append(fname)
+                continue
             if not updated_state.get(fname, False):
                 updated_state[fname] = True
                 activated.append(fname)
+
+    if skipped_never_check:
+        print(
+            "⚠  WEC activation skipped never-check items (continuation-loop "
+            f"prevention): {', '.join(skipped_never_check)}",
+            file=sys.stderr,
+        )
 
     if not activated and _WEC_MARKER in pr_body:
         n_checked = sum(1 for v in updated_state.values() if v)

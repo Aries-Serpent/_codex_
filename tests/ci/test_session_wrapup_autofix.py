@@ -540,6 +540,55 @@ class TestWecConstants:
     def test_never_check_items_are_not_always_required(self):
         assert swa._WEC_NEVER_CHECK.isdisjoint(swa._WEC_ALWAYS_REQUIRED)
 
+    def test_merge_required_disjoint_from_never_check(self):
+        """S178 hardening: a never-check workflow must NEVER appear in the
+        merge-required activation set — the runtime guard in
+        ``update_pr_wec_for_merge_readiness`` and the module-load assertion
+        both depend on this invariant. This test catches accidental edits
+        before they reach runtime.
+        """
+        overlap = swa._MERGE_REQUIRED_WORKFLOWS & swa._WEC_NEVER_CHECK
+        assert not overlap, (
+            f"_MERGE_REQUIRED_WORKFLOWS overlaps with _WEC_NEVER_CHECK on "
+            f"{sorted(overlap)} — these workflows would be auto-activated "
+            "and re-enter the Copilot continuation loop."
+        )
+
+    def test_merge_required_subset_of_wec_items(self):
+        """Every merge-required workflow must be a known _WEC_ITEMS entry —
+        otherwise activation would silently no-op (loop body never matches).
+        """
+        wec_filenames = {item[0] for item in swa._WEC_ITEMS}
+        unknown = swa._MERGE_REQUIRED_WORKFLOWS - wec_filenames
+        assert not unknown, (
+            f"_MERGE_REQUIRED_WORKFLOWS contains workflows not in _WEC_ITEMS: "
+            f"{sorted(unknown)}"
+        )
+
+    def test_build_wec_block_does_not_auto_check_never_check_when_state_empty(self):
+        """``_build_wec_block`` must render every _WEC_NEVER_CHECK item as
+        ``[ ]`` when no maintainer override exists in ``existing_state``.
+        """
+        block = swa._build_wec_block({})
+        for fname in swa._WEC_NEVER_CHECK:
+            # Each never-check item must appear in the block, unchecked.
+            assert f"- [ ] {fname}" in block, (
+                f"never-check item {fname!r} not rendered as `[ ]` in WEC block"
+            )
+            assert f"- [x] {fname}" not in block, (
+                f"never-check item {fname!r} was auto-rendered as `[x]`"
+            )
+
+    def test_build_wec_block_preserves_maintainer_x_for_never_check(self):
+        """When a maintainer has explicitly checked a never-check item in the
+        existing PR body, ``_build_wec_block`` must preserve that ``[x]``.
+        """
+        for fname in swa._WEC_NEVER_CHECK:
+            block = swa._build_wec_block({fname: True})
+            assert f"- [x] {fname}" in block, (
+                f"maintainer [x] for {fname!r} was not preserved"
+            )
+
     def test_required_pr_checkboxes_contains_auto_approve(self):
         assert "auto-approve-workflows" in swa._REQUIRED_PR_CHECKBOXES
 
