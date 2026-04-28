@@ -4,7 +4,6 @@ Test Eval Cli
 Test module for eval cli.
 """
 
-import contextlib
 import json
 from pathlib import Path
 
@@ -34,8 +33,7 @@ class DummyLogger:
 
     def __init__(self, path: Path):
         self.path = path
-        self._stack = contextlib.ExitStack()
-        self.fh = self._stack.enter_context(open(self.path, "a", encoding="utf-8"))  # noqa: SIM115
+        self.fh = open(self.path, "a", encoding="utf-8")  # noqa: SIM115
 
     def __enter__(self):
         return self
@@ -50,8 +48,9 @@ class DummyLogger:
             self.fh.flush()
 
     def close(self):
-        self._stack.close()
-        self.fh = None
+        if self.fh is not None:
+            self.fh.close()
+            self.fh = None
 
     def __del__(self):
         """Ensure file is closed on deletion."""
