@@ -500,6 +500,9 @@ class TestWecConstants:
         filenames = [item[0] for item in swa._WEC_ITEMS]
         assert "auto-approve-workflows" in filenames
 
+    def test_never_check_items_are_not_always_required(self):
+        assert swa._WEC_NEVER_CHECK.isdisjoint(swa._WEC_ALWAYS_REQUIRED)
+
     def test_required_pr_checkboxes_contains_auto_approve(self):
         assert "auto-approve-workflows" in swa._REQUIRED_PR_CHECKBOXES
 

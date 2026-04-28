@@ -16,6 +16,7 @@ NC='\033[0m' # No Color
 TESTS_RUN=0
 TESTS_PASSED=0
 TESTS_FAILED=0
+EXPECTED_PR_TEMPLATE_VERSION="1.5.0"
 
 # Test helper functions
 test_start() {
@@ -115,10 +116,10 @@ fi
 
 # Test 8: Check template version
 test_start "Template version updated"
-if grep -q "Version.*1\.5\.0" .github/pull_request_template.md; then
+if grep -q "Version.*${EXPECTED_PR_TEMPLATE_VERSION}" .github/pull_request_template.md; then
     test_pass
 else
-    test_fail "Template version not updated to 1.5.0"
+    test_fail "Template version not updated to ${EXPECTED_PR_TEMPLATE_VERSION}"
 fi
 
 # Test 9: WEC never-check defaults stay unchecked
