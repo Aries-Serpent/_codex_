@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S175b — 2026-04-28 — Merge conflict resolution + CI drift root causes)
+- **Merge conflict resolved** (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`): merged `origin/main` (two nightly health-sweep commits) into `copilot/update-redis-url-documentation`; two auto-generated session-ID conflicts resolved by keeping branch entries and adopting main's newer run ID.
+- **Root cause fixed — Pattern 25 `Last updated` mutation removed** (`scripts/ci/auto_fix_common_issues.py`): Pattern 25's `_append_minimal_accountability_entry` was mutating the first `**Last updated:**` line found in OLD session entries. The nightly main sweep and every feature branch both ran this, updating the same line with different run IDs → guaranteed merge conflict on every PR. The mutation is now removed; Pattern 25 only prepends a new entry at the top of the file.
+- **`.gitattributes` union merge strategy** (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `.codex/aftermath/pda_iterations.jsonl`): belt-and-suspenders guard — git will now automatically union-merge both sides of any conflict in these append-only CI files instead of creating conflict markers.
+
 ### Fixed (auto-update — PR #4107)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4107 (SHA `048988a2`) at 2026-04-28T16:21Z [auto-generated]
 

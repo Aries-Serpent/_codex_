@@ -2146,7 +2146,6 @@ class CommonIssueFixer:
         """
         import datetime as _dt
         import os as _os
-        import re as _re
 
         abs_report = self.repo_root / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
         if not abs_report.exists():
@@ -2184,13 +2183,6 @@ class CommonIssueFixer:
                         insert_idx += 1
                     break
             new_content = "".join(lines[:insert_idx]) + entry + "".join(lines[insert_idx:])
-            # Update the "Last updated:" header line if present.
-            new_content = _re.sub(
-                r"(\*\*Last updated:\*\* )[^\n]+",
-                f"\\g<1>{timestamp} {session_id} — auto-generated entry by Pattern 25",
-                new_content,
-                count=1,
-            )
             abs_report.write_text(new_content, encoding="utf-8")
             return True
         except (OSError, PermissionError):
