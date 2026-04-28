@@ -7,6 +7,9 @@ import pytest
 
 from tests.services.workflow._helpers import raise_exception
 
+workflow_parser_module = pytest.importorskip("src.services.workflow.parser")
+WorkflowParser = workflow_parser_module.WorkflowParser
+
 
 def _patch_open_error(monkeypatch, workflow: Path, exception: Exception) -> None:
     original_open = builtins.open
@@ -24,59 +27,62 @@ class TestWorkflowParser:
 
     def test_parser_import(self):
         """Test that WorkflowParser can be imported."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            assert WorkflowParser is not None
-        except ImportError:
-            pytest.skip("Module not available")
+        assert WorkflowParser is not None
 
     def test_parser_creation(self):
         """Test creating WorkflowParser initializes cache."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            assert parser is not None
-            assert hasattr(parser, '_cache')
-            assert len(parser._cache) == 0
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        assert parser is not None
+        assert hasattr(parser, '_cache')
+        assert len(parser._cache) == 0
 
     def test_parser_has_cache(self):
         """Test that parser cache is a dictionary."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            assert hasattr(parser, '_cache')
-            assert isinstance(parser._cache, dict)
-            # Test we can add items to cache
-            test_path = Path("/test/path.yml")
-            parser._cache[test_path] = None
-            assert test_path in parser._cache
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        assert hasattr(parser, '_cache')
+        assert isinstance(parser._cache, dict)
+        # Test we can add items to cache
+        test_path = Path("/test/path.yml")
+        parser._cache[test_path] = None
+        assert test_path in parser._cache
 
-    def test_parse_file_nonexistent(self):
+    def test_parse_file_nonexistent(self, tmp_path: Path):
         """Test parsing nonexistent file returns None."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            result = parser.parse_file(Path("/nonexistent/path.yml"))
-            assert result is None
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        result = parser.parse_file(tmp_path / "nonexistent_path.yml")
+        assert result is None
 
     def test_parse_file_uses_cache(self):
         """Test that parse_file respects use_cache parameter."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            # Parse nonexistent file (returns None, but should cache)
-            path = Path("/test/cache.yml")
-            parser.parse_file(path, use_cache=False)
-            # Cache should remain empty when use_cache=False
-            assert len(parser._cache) == 0
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        # Parse nonexistent file (returns None, but should cache)
+        path = Path("/test/cache.yml")
+        parser.parse_file(path, use_cache=False)
+        # Cache should remain empty when use_cache=False
+        assert len(parser._cache) == 0
+
+    def test_parse_file_populates_and_reuses_cache_when_enabled(self, tmp_path):
+        """Test parse_file caches results when use_cache=True and reuses cached value."""
+        parser = WorkflowParser()
+        workflow_path = tmp_path / "workflow.yml"
+        workflow_path.write_text(
+            "name: test-workflow\n"
+            "on: push\n"
+            "jobs:\n"
+            "  build:\n"
+            "    runs-on: ubuntu-latest\n"
+            "    steps:\n"
+            "      - run: echo \"hello\"\n",
+            encoding="utf-8",
+        )
+
+        first_result = parser.parse_file(workflow_path, use_cache=True)
+        assert workflow_path in parser._cache
+        assert parser._cache[workflow_path] == first_result
+
+        second_result = parser.parse_file(workflow_path, use_cache=True)
+        assert second_result == first_result
+        assert second_result == parser._cache[workflow_path]
 
 
 class TestWorkflowParserCaching:
@@ -84,33 +90,25 @@ class TestWorkflowParserCaching:
 
     def test_clear_cache_method(self):
         """Test clear_cache method if exists."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            # Add something to cache manually
-            parser._cache[Path("/test.yml")] = None
-            if hasattr(parser, 'clear_cache'):
-                parser.clear_cache()
-                assert len(parser._cache) == 0
-            else:
-                # If no clear_cache method, we can clear manually
-                parser._cache.clear()
-                assert len(parser._cache) == 0
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        # Add something to cache manually
+        parser._cache[Path("/test.yml")] = None
+        if hasattr(parser, 'clear_cache'):
+            parser.clear_cache()
+            assert len(parser._cache) == 0
+        else:
+            # If no clear_cache method, we can clear manually
+            parser._cache.clear()
+            assert len(parser._cache) == 0
 
     def test_cache_persists_across_calls(self):
         """Test that cache persists across multiple parse calls."""
-        try:
-            from src.services.workflow.parser import WorkflowParser
-            parser = WorkflowParser()
-            # Add test entry
-            test_path = Path("/cached.yml")
-            parser._cache[test_path] = None
-            # Verify it persists
-            assert test_path in parser._cache
-        except ImportError:
-            pytest.skip("Module not available")
+        parser = WorkflowParser()
+        # Add test entry
+        test_path = Path("/cached.yml")
+        parser._cache[test_path] = None
+        # Verify it persists
+        assert test_path in parser._cache
 
 
 class TestModuleImports:
@@ -212,7 +210,7 @@ class TestWorkflowParserMethods:
             from src.services.workflow.parser import WorkflowParser
 
             parser = WorkflowParser()
-            # Only the target workflow read should fail; helper parsing imports must continue normally.
+            # Patch open so reads for this workflow path fail, while all other open calls delegate.
             workflow = tmp_path / "workflow.yml"
             workflow.write_text("name: Test\non: push\njobs: {}\n")
             _patch_open_error(monkeypatch, workflow, PermissionError("denied"))

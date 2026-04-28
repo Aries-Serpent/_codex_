@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps resolved (SAR-G01/G02/G05) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
+| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps in progress (SAR-G01 blocked; SAR-G02 near-complete; SAR-G03 partial) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |
@@ -94,7 +94,7 @@
 2. ✅ 9 predefined topics with dropdown menu
 3. ✅ 3 test packages created and validated
 4. ✅ 93+ KB comprehensive documentation (8 guides)
-5. ✅ Advanced features roadmap (Cycle 1-Phase 3 (Current Cycle))
+5. ✅ Advanced features roadmap (Cycle 1-Phase 3)
 6. ✅ All PR review comments resolved
 
 **Commits**: c257a5e, 1fc7a01, f769e52, 66cc35c, 299afa1, 34cc1c2
@@ -291,7 +291,7 @@
 **Timeline**: 2026-04-01 to 2026-05-31
 **Focus**: Real-time metrics, dashboards, alerting, performance tracking
 
-#### 5. **Coverage to 85%+**
+#### 5. **Coverage to 95%+**
 **Timeline**: 2026-04-01 to 2026-06-30
 **Focus**: Comprehensive test coverage, edge cases, integration scenarios
 
@@ -436,7 +436,7 @@
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Last Updated**: 2026-04-12 (W-139 — MLOps level corrected 4.0→3.7; SAR blockers added)
+**Last Updated**: 2026-04-28 (W-139 — MLOps level corrected 4.0→3.7; SAR blockers added)
 **Next Review**: 2026-05-06
 **Version**: 2.1.0
 

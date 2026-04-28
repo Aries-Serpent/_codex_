@@ -19,9 +19,15 @@ from types import ModuleType
 def _load_real_module() -> ModuleType | None:
     current_path = Path(__file__).resolve()
     current_dir = current_path.parent
-    search_paths = [
-        p for p in sys.path if Path(p).resolve() not in {current_dir, current_dir.parent}
-    ]
+    excluded_paths = {current_dir, current_dir.parent}
+    search_paths = []
+    for p in sys.path:
+        try:
+            resolved = Path(p).resolve()
+        except (OSError, RuntimeError, ValueError):
+            continue
+        if resolved not in excluded_paths:
+            search_paths.append(p)
     spec = importlib.machinery.PathFinder().find_spec("transformers", search_paths)
     if spec is None or spec.loader is None:
         return None
@@ -260,7 +266,7 @@ else:  # pragma: no cover - exercised in minimal test envs
     def get_scheduler(*args, **kwargs):
         raise ImportError(_ERR)
 
-    __version__ = "0.0.0-stub"
+    __version__ = "999.0.0-stub"
     __all__ = [
         "AutoConfig",
         "AutoModel",
