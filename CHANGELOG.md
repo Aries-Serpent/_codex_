@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S347 — 2026-04-28 — PR #4101 reviewer follow-up + accountability refresh)
+- `scripts/test_continuation_system.sh`: switched the PR template version assertion to fixed-string matching so template version `1.5.0` is validated literally instead of through a regex that could accept lookalikes such as `1x5x0`.
+- `.github/workflows/agent-auth-delegation.yml`: changed the canonical WEC rebuild `_checked()` helper to use exact line-prefix matching for `- [x] <workflow>` entries, preventing filename metacharacters (notably `.` in `.yml`) from matching unintended workflow lines when preserving maintainer selections.
+- Refreshed accountability metadata for the current branch tip so the next commit clears Pattern 25 / merge-readiness `auto_fix` drift introduced by the follow-up auth/session `[skip ci]` commits.
+
+### Fixed (S346 — 2026-04-28 — PR #4101 merge-ready WEC hardening + tracked-file refresh)
+- PR #4101 (`copilot/research-security-vs-access` → `main`): merged the latest `main` updates into the branch, then synced back onto the latest remote branch tip before continuing implementation so the PR stays merge-ready against current `main`.
+- WEC hardening: corrected both PR templates so `copilot-agent-session-done.yml` and `copilot-iterative-self-healing.yml` default to unchecked `[ ]`, aligning the templates with `_WEC_NEVER_CHECK` in `scripts/ci/session_wrapup_autofix.py` and the maintainer-safe continuation-loop policy.
+- `agent-auth-delegation.yml`: fixed canonical WEC injection so it now preserves existing state for `copilot-agent-session-done.yml` and `copilot-iterative-self-healing.yml` instead of hard-coding them to `[x]` during PR body rewrites.
+- Documentation/reference alignment: updated `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md`, `docs/ci/PR_LIFECYCLE.md`, and the deep-research cross-walk note 13 so they reflect the live WEC defaults and the now-applied F2/F5 mitigation.
+- Validation/test hardening: added template assertions to `tests/ci/test_session_wrapup_autofix.py` and refreshed `scripts/test_continuation_system.sh` so the continuation-system validator matches the current PR template version and WEC defaults.
+- Tracked metadata refresh: ran `python3 scripts/ci/sync_tracked_files.py --fix` after the branch update to refresh `.secrets.baseline` against the current `CODEX_MANIFEST.json`.
+
 ### Fixed (S345 — 2026-04-27 — CI rescue 4330665768 + Pattern 25 refresh)
 - CI rescue 4330665768 (Validation Pipeline run #25020098958 on commit `ddb7f9e3`): investigated the Fast Validation failure via GitHub MCP logs. The failing pre-commit hook was `Auto-Fix Common CI Issues`, where Pattern 30 reported the `ruff (src/ clean)` dimension. Local revalidation on branch tip shows `ruff check src/ tests/ --fix` clean, `sync_tracked_files.py --check` clean, and the current actionable auto-fix item is Pattern 25 after auth/session `[skip ci]` commits advanced the branch tip.
 - Accountability repair: refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for the latest session so Pattern 25 and the Pattern 30 `auto_fix` dimension can pass once committed.

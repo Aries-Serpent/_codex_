@@ -16,6 +16,7 @@ NC='\033[0m' # No Color
 TESTS_RUN=0
 TESTS_PASSED=0
 TESTS_FAILED=0
+EXPECTED_PR_TEMPLATE_VERSION="1.5.0"
 
 # Test helper functions
 test_start() {
@@ -106,26 +107,36 @@ else
 fi
 
 # Test 7: Check for prompt link
-test_start "Prompt link present"
-if grep -q ".github/copilot-prompts/active/PR-" .github/pull_request_template.md; then
+test_start "Prompt reference present"
+if grep -q "View Active Prompt" .github/pull_request_template.md; then
     test_pass
 else
-    test_fail "Prompt link not found"
+    test_fail "Prompt reference not found"
 fi
 
 # Test 8: Check template version
 test_start "Template version updated"
-if grep -q "Version.*1\.4\.0" .github/pull_request_template.md; then
+if grep -Fq "> **Version:** ${EXPECTED_PR_TEMPLATE_VERSION}" .github/pull_request_template.md; then
     test_pass
 else
-    test_fail "Template version not updated to 1.4.0"
+    test_fail "Template version not updated to ${EXPECTED_PR_TEMPLATE_VERSION}"
+fi
+
+# Test 9: WEC never-check defaults stay unchecked
+test_start "WEC continuation-loop defaults unchecked"
+if grep -q -- "- \\[ \\] copilot-agent-session-done.yml" .github/pull_request_template.md && \
+   grep -q -- "- \\[ \\] copilot-iterative-self-healing.yml" .github/pull_request_template.md && \
+   grep -q -- "- \\[ \\] auto-approve-workflows" .github/pull_request_template.md; then
+    test_pass
+else
+    test_fail "Continuation-loop defaults are not safely unchecked"
 fi
 
 echo ""
 echo "PHASE 3: GENERATOR SCRIPT VALIDATION"
 echo "──────────────────────────────────────────────────────────────"
 
-# Test 9: Script syntax check
+# Test 10: Script syntax check
 test_start "Python syntax valid"
 if python3 -m py_compile scripts/generate_pr_followup.py 2>/dev/null; then
     test_pass
@@ -133,7 +144,7 @@ else
     test_fail "Python syntax errors"
 fi
 
-# Test 10: Script help output
+# Test 11: Script help output
 test_start "Script help works"
 if python3 scripts/generate_pr_followup.py --help > /dev/null 2>&1; then
     test_pass
@@ -141,7 +152,7 @@ else
     test_fail "Script help failed"
 fi
 
-# Test 11: Test prompt generation
+# Test 12: Test prompt generation
 test_start "Generate test prompt"
 export GITHUB_PR_NUMBER=9999
 export GITHUB_HEAD_REF=test-branch
@@ -166,7 +177,7 @@ echo ""
 echo "PHASE 4: TEMPLATE CONTENT VALIDATION"
 echo "──────────────────────────────────────────────────────────────"
 
-# Test 12: Check template variables
+# Test 13: Check template variables
 test_start "Template variables present"
 TEMPLATE_FILE=".github/copilot-prompts/templates/pr-continuation.md"
 REQUIRED_VARS=(
@@ -189,7 +200,7 @@ else
     test_fail "$MISSING_VARS variable(s) missing"
 fi
 
-# Test 13: Check self-review protocol
+# Test 14: Check self-review protocol
 test_start "Self-review protocol in template"
 if grep -qi "MANDATORY.*5.*self-review" "$TEMPLATE_FILE" 2>/dev/null || \
    grep -qi "5.*pass.*self-review" "$TEMPLATE_FILE" 2>/dev/null; then
@@ -198,7 +209,7 @@ else
     test_fail "Self-review protocol not found"
 fi
 
-# Test 14: Check execution checklist
+# Test 15: Check execution checklist
 test_start "Execution checklist in template"
 if grep -q "EXECUTION CHECKLIST" "$TEMPLATE_FILE" 2>/dev/null; then
     test_pass
@@ -210,7 +221,7 @@ echo ""
 echo "PHASE 5: WORKFLOW VALIDATION"
 echo "──────────────────────────────────────────────────────────────"
 
-# Test 15: YAML syntax check
+# Test 16: YAML syntax check
 test_start "Workflow YAML syntax valid"
 if python3 -c "import yaml; yaml.safe_load(open('.github/workflows/pr-followup-generator.yml'))" 2>/dev/null; then
     test_pass
@@ -218,7 +229,7 @@ else
     test_fail "YAML syntax errors"
 fi
 
-# Test 16: Check workflow triggers
+# Test 17: Check workflow triggers
 test_start "Workflow triggers configured"
 if grep -q "pull_request:" .github/workflows/pr-followup-generator.yml && \
    grep -q "workflow_dispatch:" .github/workflows/pr-followup-generator.yml; then
@@ -227,7 +238,7 @@ else
     test_fail "Workflow triggers incomplete"
 fi
 
-# Test 17: Check workflow permissions
+# Test 18: Check workflow permissions
 test_start "Workflow permissions set"
 if grep -q "contents:" .github/workflows/pr-followup-generator.yml && \
    grep -q "pull-requests:" .github/workflows/pr-followup-generator.yml; then
@@ -240,7 +251,7 @@ echo ""
 echo "PHASE 6: INTEGRATION VALIDATION"
 echo "──────────────────────────────────────────────────────────────"
 
-# Test 18: Check README exists
+# Test 19: Check README exists
 test_start "System README exists"
 if [ -f ".github/copilot-prompts/README.md" ]; then
     test_pass
