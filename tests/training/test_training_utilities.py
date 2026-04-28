@@ -38,7 +38,7 @@ def stub_torch_module(monkeypatch):
 
     fake_torch = SimpleNamespace(
         Tensor=FakeTensor,
-        tensor=lambda value: FakeTensor(value),
+        tensor=FakeTensor,
         manual_seed=lambda seed: None,
         Generator=type("Generator", (), {"manual_seed": lambda self, seed: None}),
         cuda=fake_cuda,

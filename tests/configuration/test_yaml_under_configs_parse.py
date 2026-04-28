@@ -18,7 +18,7 @@ def _iter_yaml_files(root: pathlib.Path) -> List[pathlib.Path]:
         return []
     files: Iterable[pathlib.Path] = root.rglob("*")
     yaml_files = [p for p in files if p.is_file() and p.suffix.lower() in {".yaml", ".yml"}]
-    yaml_files.sort(key=lambda p: str(p))
+    yaml_files.sort(key=str)
     return yaml_files
 
 

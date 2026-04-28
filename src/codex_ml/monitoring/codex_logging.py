@@ -64,10 +64,15 @@ else:
 
 try:  # pragma: no cover - optional
     import torch
-
-    SummaryWriter = torch.utils.tensorboard.SummaryWriter
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
+
+SummaryWriter = None  # type: ignore[assignment]
+try:  # pragma: no cover - optional
+    if torch is not None:
+        SummaryWriter = torch.utils.tensorboard.SummaryWriter
+except Exception:  # pragma: no cover - tensorboard not installed
+    pass
 
 
 _ensure_local_mlflow_tracking_uri_default()

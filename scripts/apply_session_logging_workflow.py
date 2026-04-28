@@ -560,7 +560,8 @@ def main() -> None:
         log_error("4.x prune analysis", e, context="duplication scan")
 
     # Phase 6: results
-    unresolved = sum(1 for _ in open(ERRORS, "r", encoding="utf-8")) > 0
+    with open(ERRORS, "r", encoding="utf-8") as _err_fh:
+        unresolved = sum(1 for _ in _err_fh) > 0
     results = {
         "implemented": [
             "src/codex/logging/session_logger.py",

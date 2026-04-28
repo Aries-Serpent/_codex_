@@ -196,13 +196,13 @@ class BatchScanRunner:
             temporary file is used and cleaned up after parsing.
         """
         use_tmp = report_path is None
-        tmp = tempfile.NamedTemporaryFile(
-            prefix="rvs_report_", suffix=".json", delete=False
-        ) if use_tmp else None
-
-        actual_report = Path(tmp.name) if tmp else report_path
-        if tmp:
-            tmp.close()
+        if use_tmp:
+            with tempfile.NamedTemporaryFile(
+                prefix="rvs_report_", suffix=".json", delete=False
+            ) as _tmp:
+                actual_report = Path(_tmp.name)
+        else:
+            actual_report = report_path
 
         with _span(
             "batch_scan",

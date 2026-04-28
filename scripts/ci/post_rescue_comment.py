@@ -265,10 +265,19 @@ def main() -> None:
         inline_ctx = build_comment_context(pr_number, commit_sha, repo, token)
     except ModuleNotFoundError as exc:
         # Graceful degradation — inline context is optional; rescue comment still posts.
-        print(
-            f"ℹ️  Inline context unavailable: optional module import failed "
-            f"({exc}). Continuing without context."
-        )
+        # Only treat it as "optional module absent" when the top-level module itself is
+        # missing; transitive import failures (exc.name != "discussion_context_store")
+        # are routed to the generic handler so packaging issues stay visible.
+        if exc.name == "discussion_context_store":
+            print(
+                f"ℹ️  Inline context unavailable: optional module not found "
+                f"({exc.name}). Continuing without context."
+            )
+        else:
+            print(
+                f"⚠️  Inline context import/build failed: {exc}. "
+                f"Continuing without context."
+            )
     except Exception as exc:
         # Graceful degradation — inline context is optional; rescue comment still posts.
         print(

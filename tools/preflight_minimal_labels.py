@@ -98,7 +98,8 @@ def main() -> int:
         print("GH_PAT required", file=sys.stderr)
         return 2
 
-    policy = json.loads(open(POLICY_PATH, "r", encoding="utf-8").read())
+    with open(POLICY_PATH, "r", encoding="utf-8") as _policy_fh:
+        policy = json.loads(_policy_fh.read())
     allowed = set(policy["allowed_labels"])
     required_base = set(policy.get("required_base", []))
     defaults = policy.get("defaults_for_string_runs_on", [])

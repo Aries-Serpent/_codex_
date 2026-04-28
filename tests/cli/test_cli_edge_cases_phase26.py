@@ -590,10 +590,9 @@ class TestCLIEdgeCases:
 
         try:
             # Create temporary resource
-            temp_file = tempfile.NamedTemporaryFile(delete=False)
-            resources_created.append(temp_file.name)
-            temp_file.write(b"test data")
-            temp_file.close()
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                resources_created.append(temp_file.name)
+                temp_file.write(b"test data")
 
             # Simulate error
             raise RuntimeError("Simulated error")
