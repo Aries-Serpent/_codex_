@@ -30,7 +30,7 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    import config_legacy as hydra  # type: ignore[no-redef]
+    import config_legacy as hydra
 
     to_absolute_path = hydra.utils.to_absolute_path
 

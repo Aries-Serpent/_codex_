@@ -67,7 +67,7 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
 
-SummaryWriter = None  # type: ignore[assignment]
+SummaryWriter = None
 try:  # pragma: no cover - optional
     if torch is not None:
         SummaryWriter = torch.utils.tensorboard.SummaryWriter

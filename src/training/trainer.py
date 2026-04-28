@@ -22,7 +22,7 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     DataLoader = torch.utils.data.DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
     torch = None  # type: ignore[assignment]
-    nn = Any  # type: ignore[assignment]
+    nn = Any
     GradScaler = None
     autocast = None
     DataLoader = Any  # type: ignore[assignment, misc]
@@ -34,7 +34,7 @@ if torch is not None:  # pragma: no cover - typing bridge
 else:  # pragma: no cover - fallback types
     TensorType = Any  # type: ignore[misc]
     OptimizerType = Any
-    DataLoaderType = Any  # type: ignore[misc]
+    DataLoaderType = Any
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
 from logging_utils import (  # noqa: E402

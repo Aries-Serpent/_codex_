@@ -18,11 +18,11 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     try:
-        import config_legacy as hydra  # type: ignore[no-redef]
+        import config_legacy as hydra
 
         to_absolute_path = hydra.utils.to_absolute_path
     except (ImportError, ModuleNotFoundError):
-        hydra = None  # type: ignore[assignment]
+        hydra = None
 
         def to_absolute_path(path: str) -> str:
             return str(Path(path).resolve())
