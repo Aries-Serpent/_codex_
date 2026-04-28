@@ -14,6 +14,7 @@ try:
     import sqlparse
     import sqlparse.sql as _sqlparse_sql
     import sqlparse.tokens as _sqlparse_tokens
+
     Identifier = _sqlparse_sql.Identifier
     IdentifierList = _sqlparse_sql.IdentifierList
     Statement = _sqlparse_sql.Statement

@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 # Optional MLflow dependency
 try:
     import mlflow
+
     MlflowClient = mlflow.tracking.MlflowClient
 
     _HAS_MLFLOW = True

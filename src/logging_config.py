@@ -27,7 +27,9 @@ def configure_logging(
     logger = logging.getLogger()
     logger.setLevel(level)
     if to_file:
-        fh = logging.handlers.RotatingFileHandler(to_file, maxBytes=max_bytes, backupCount=backup_count)
+        fh = logging.handlers.RotatingFileHandler(
+            to_file, maxBytes=max_bytes, backupCount=backup_count
+        )
         logger.addHandler(fh)
     ch = logging.StreamHandler()
     logger.addHandler(ch)

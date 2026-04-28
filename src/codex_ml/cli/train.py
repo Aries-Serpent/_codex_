@@ -12,18 +12,22 @@ from typing import Any, Optional, Sequence, Union
 
 try:
     import hydra
+
     to_absolute_path = hydra.utils.to_absolute_path
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     try:
         import config_legacy as hydra  # type: ignore[no-redef]
-        to_absolute_path = hydra.utils.to_absolute_path  # type: ignore[attr-defined]
+
+        to_absolute_path = hydra.utils.to_absolute_path
     except (ImportError, ModuleNotFoundError):
         hydra = None  # type: ignore[assignment]
 
         def to_absolute_path(path: str) -> str:
             return str(Path(path).resolve())
+
+
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,

@@ -25,12 +25,14 @@ logger = logging.getLogger(__name__)
 
 try:
     import hydra
+
     to_absolute_path = hydra.utils.to_absolute_path
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     import config_legacy as hydra  # type: ignore[no-redef]
-    to_absolute_path = hydra.utils.to_absolute_path  # type: ignore[attr-defined]
+
+    to_absolute_path = hydra.utils.to_absolute_path
 
 from common.hooks import (  # noqa: E402
     CheckpointHook,
@@ -62,8 +64,8 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover
     torch = None  # type: ignore[assignment]
     AdamW = None
-    DataLoader = None  # type: ignore[assignment]
-    Dataset = object  # type: ignore[assignment]
+    DataLoader = None
+    Dataset = object
 
 try:  # pragma: no cover - optional dependency
     import pandas as pd

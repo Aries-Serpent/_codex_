@@ -41,6 +41,7 @@ else:  # pragma: no cover - exercised in Typer-enabled environments
 
 try:  # pragma: no cover - optional dependency
     import typer.main as _typer_main
+
     _typer_get_command = _typer_main.get_command
 except Exception:  # pragma: no cover
     _typer_get_command = None
