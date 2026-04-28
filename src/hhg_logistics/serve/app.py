@@ -29,7 +29,6 @@ from pathlib import Path
 from typing import Any
 
 import ray
-
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
 

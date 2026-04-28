@@ -30,8 +30,6 @@ import numpy as np
 
 import torch
 import torch.nn.functional as F
-clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
-DataLoader = torch.utils.data.DataLoader
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
@@ -47,10 +45,10 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 
 logger = logging.getLogger(__name__)
 
+clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+DataLoader = torch.utils.data.DataLoader
+
 # ruff: noqa: I001
-
-
-LOGGER = logging.getLogger(__name__)
 
 # optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional config dependency
@@ -110,7 +108,7 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
         metrics = collect_system_metrics()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        LOGGER.debug(
+        logger.debug(
             "Failed to collect system metrics for training metrics payload",
             exc_info=True,
         )
