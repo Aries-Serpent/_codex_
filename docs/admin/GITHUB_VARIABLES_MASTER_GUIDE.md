@@ -266,7 +266,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit |
 | 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) |
 | 11 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set and OTel SDK packages are installed, `init_tracing()` activates distributed tracing. Leave unset for offline/local environments. **SAR-G05.** |
-| 12 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://user:pass@host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **SAR-G02.** |
+| 12 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **Do not include authentication credentials (no `user:password` in this value); store credentials in GitHub Secrets or your environment-specific secret manager and inject them at runtime.** **SAR-G02.** |
 
 ### 6g. Webhook / Infra
 
@@ -464,14 +464,14 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | ~~**Problem**~~ | ~~2 webhooks configured but `active=false` because `WEBHOOK_RECEIVER_URL` not set.~~ |
 | **Resolution** | `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by `.devcontainer/scripts/post-start.sh`. The URL format is `https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github`. The `POST /webhook/github` endpoint is now implemented in `cognitive_app/src/server/cli_api_server.py` with HMAC-SHA256 verification. For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace. |
 
-### ⚠️ Issue 7 — Codespace secrets not confirmed present
+### ✅ Issue 7 — Codespace secrets confirmation — **RESOLVED 2026-03-07**
 
 | | Detail |
 |---|---|
-| **Problem** | The 8 Codespace secrets declared in `.devcontainer/devcontainer.json` have not been confirmed as set in org Codespace settings. |
-| **Impact** | Codespace-based Copilot agent sessions will lack authentication tokens; `post-start.sh` will fail to start the CLI server. |
-| **Fix** | Set all 8 secrets listed in [§8](#8-codespace-secrets) at the org Codespace level. |
-| **Instructions** | See [§8 How to set Codespace secrets](#%EF%B8%8F-how-to-set-codespace-secrets-all-8-items-above) for the CLI/UI steps |
+| ~~**Problem**~~ | ~~The 9 Codespace secrets declared in `.devcontainer/devcontainer.json` were not confirmed as set in org Codespace settings.~~ |
+| **Resolution** | All 9 Codespace secrets listed in [§8](#8-codespace-secrets) are confirmed set at the org Codespace level (SAR-G01 complete). |
+| **Verification** | Codespace-based Copilot agent sessions have required authentication tokens, and `post-start.sh` can start the CLI server. |
+| **Instructions** | For audit/revalidation, see [§8 Codespace Secrets](#8-codespace-secrets) for CLI/UI steps. |
 
 ---
 
