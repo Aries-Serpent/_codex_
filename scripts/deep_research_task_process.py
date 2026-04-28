@@ -36,65 +36,6 @@ from __future__ import annotations
 # Purpose: Perform repository improvement / bootstrap tasks:
 #          inventory, scaffolding, CI unification, security tooling integration,
 #          CLI refactor, logging adjustments, documentation reinforcement.
-
-"""
-End-to-end repository improvement automation script (enhanced edition).
-
-PHASES (idempotent, best-effort):
-| Phase | Description                                                                 |
-|-------|-----------------------------------------------------------------------------|
-| 1     | Preparation: ensure directories & log files, capture git cleanliness, scan  |
-| 2     | Search & Mapping: locate key files, verify presence                         |
-| 3     | Construction: apply improvements (scaffolds, CI, security, CLI, logging)    |
-| 4     | Results Summary: human-readable status report                               |
-
-ARTIFACTS:
-- .codex/change_log.md   : chronological change entries with embedded diff-ish content (not a true diff)
-- .codex/errors.ndjson   : newline-delimited JSON error diagnostics (append-only)
-- .codex/results.md      : summarized accomplishments & next steps
-- .codex/inventory.json  : snapshot of repository file metadata (path, size, role, sha256)
-
-DESIGN PRINCIPLES:
-- Non-fatal execution: errors are logged and subsequent tasks attempt to proceed.
-- Backward compatibility:
-    * Importing runs tasks only when CODEX_AUTO_RUN=1 (disabled by default).
-    * Avoids destructive edits unless clearly safe (e.g., removing disabled workflow superseded by ci.yml).
-- Extensibility: task registration abstraction enables future pluggable tasks.
-- Observability: stderr prompts preserve earlier "Question for ChatGPT-5" diagnostic style.
-- Idempotency: Re-running should not produce material duplicate changes if no divergence.
-
-ENVIRONMENT VARIABLES:
-| Variable                          | Effect                                                      |
-|----------------------------------|-------------------------------------------------------------|
-| REPO_IMPROVEMENT_DRY_RUN=1       | Do not modify files; only log intended actions where safe.  |
-| REPO_IMPROVEMENT_VERBOSE=1       | Emit progress messages to stdout.                           |
-| REPO_IMPROVEMENT_SKIP_BASELINE=1 | Skip detect-secrets baseline generation.                    |
-| REPO_IMPROVEMENT_TASK_FILTER     | Comma-separated subset of canonical step codes (e.g. 3.1).  |
-| REPO_IMPROVEMENT_ORG             | GitHub organization name (defaults to 'Aries-Serpent')      |
-| REPO_IMPROVEMENT_REPO            | GitHub repository name (defaults to '_codex_')              |
-| CODEX_AUTO_RUN=1                 | Auto-run tasks on import (disabled by default).             |
-
-PUBLIC API (__all__):
-- now_iso()
-- register_task()
-- run_all()
-- main()
-- phase1_preparation()
-- phase2_search_mapping()
-- phase3_construction()
-- phase4_results()
-- list_registered_tasks()
-
-USAGE:
-    python enhanced_repo_improv2.py
-    REPO_IMPROVEMENT_DRY_RUN=1 python enhanced_repo_improv2.py
-    REPO_IMPROVEMENT_TASK_FILTER=3.1,3.4 python enhanced_repo_improv2.py
-
-NOTE:
-The unified CI workflow triggers only via workflow_dispatch (and PR events if configured) to
-avoid unintended activation in forked contexts.
-"""
-
 import hashlib
 import json
 import logging

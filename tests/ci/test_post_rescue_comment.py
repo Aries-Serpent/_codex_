@@ -9,9 +9,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from unittest.mock import (
-    patch,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-)
+from unittest.mock import patch  # pragma: allowlist secret
 
 # ---------------------------------------------------------------------------
 # Ensure scripts/ci is importable regardless of pytest working directory
@@ -79,6 +77,16 @@ class TestSelfSuppressMainLogic:
     }
 
     def _patch_env(self, monkeypatch, **overrides):
+        """Populate test environment variables with optional overrides.
+
+        Starts from ``self._ENV_BASE``, applies ``overrides``, and sets each
+        resulting variable via pytest's ``monkeypatch`` fixture.
+
+        Optional variables that are *not* explicitly provided are deleted to
+        avoid cross-test leakage. In particular, ``PR_NUMBER`` is removed unless
+        overridden so tests can intentionally switch between push mode (absent)
+        and PR-triggered mode (present).
+        """
         env = {**self._ENV_BASE, **overrides}
         for k, v in env.items():
             monkeypatch.setenv(k, v)

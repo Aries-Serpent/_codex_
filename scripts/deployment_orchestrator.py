@@ -29,23 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Autonomous Deployment Orchestration Script for PR #2207
-
-This script implements the 5-phase autonomous deployment workflow:
-1. Pre-Deployment Verification
-2. Merge Execution
-3. Post-Merge Validation
-4. Health Check & Validation
-5. Notification & Documentation
-
-Usage:
-    python scripts/deployment_orchestrator.py --pr-number 2207 --dry-run
-    python scripts/deployment_orchestrator.py --pr-number 2207 --execute
-
-Author: Copilot Agent
-Version: 1.0.0
-"""
 
 import argparse
 import json

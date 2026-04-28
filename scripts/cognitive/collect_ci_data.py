@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - CI/CD Data Collector
-Part of Perception Layer - collects GitHub Actions workflow run data
-"""
 import argparse
 import json
 import subprocess

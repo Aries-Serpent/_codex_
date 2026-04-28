@@ -179,9 +179,8 @@ class TestAgentMemory:
     @pytest.fixture
     def temp_db(self):
         """Create temporary database."""
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        temp_path = Path(temp_file.name)
-        temp_file.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
+            temp_path = Path(temp_file.name)
         yield temp_path
         # Cleanup
         if temp_path.exists():
@@ -455,9 +454,8 @@ class TestAgentMemoryEdgeCases:
     @pytest.fixture
     def temp_db(self):
         """Create temporary database."""
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        temp_path = Path(temp_file.name)
-        temp_file.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
+            temp_path = Path(temp_file.name)
         yield temp_path
         if temp_path.exists():
             temp_path.unlink()

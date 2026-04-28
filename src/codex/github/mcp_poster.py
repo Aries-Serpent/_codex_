@@ -206,7 +206,8 @@ class GitHubMCPPoster:
         health["has_master_key_scopes"] = required.issubset(set(scopes))
 
         if not health["has_master_key_scopes"] and self._token_source in (
-            "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"
+            "CODEX_MASTER_KEY",
+            "CODEX_BACKUP_KEY",
         ):
             missing = required - set(scopes)
             health["expiry_warning"] = (

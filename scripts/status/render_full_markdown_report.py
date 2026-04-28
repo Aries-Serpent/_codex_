@@ -31,13 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Render a full Markdown report from a v1.2 status JSON.
-
-Usage:
-  python scripts/status/render_full_markdown_report.py --json reports/daily/YYYY-MM-DD.json --out reports/daily/YYYY-MM-DD.md
-"""
-
 import argparse
 import json
 from pathlib import Path

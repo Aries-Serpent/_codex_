@@ -123,7 +123,6 @@ import time
 import warnings
 from dataclasses import dataclass
 from functools import lru_cache
-from os import PathLike
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Optional, cast
 
@@ -303,10 +302,10 @@ def _make_accelerator(**accelerate_kwargs: Any):
 _LOCAL_PATH_PREFIXES = ("./", "../", "/")
 
 
-def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+def _normalize_identifier(identifier: os.PathLike[str] | str | None) -> str | None:
     if identifier is None:
         return None
-    if isinstance(identifier, PathLike):
+    if isinstance(identifier, os.PathLike):
         return os.fspath(identifier)
     return str(identifier)
 
@@ -371,7 +370,7 @@ def _log_mlflow_metrics(
         print(f"[codex][mlflow] skipped logging: {exc}")
 
 
-def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
     norm = _normalize_identifier(identifier)
     if norm is None:
         return False
@@ -386,7 +385,7 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
 
 
 @lru_cache(maxsize=None)
-def get_hf_revision(identifier: PathLike[str] | str) -> str:
+def get_hf_revision(identifier: os.PathLike[str] | str) -> str:
     """Resolve a pinned Hugging Face revision for ``identifier``.
 
     When ``HF_REVISION`` is provided it is validated and used, otherwise we fall

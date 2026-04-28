@@ -30,15 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-List shims & canonical module inventory.
-
-Scans specified roots (e.g., training/, src/training/) and emits a merged inventory YAML
-with module ownership, canonical path, and status. Designed to be deterministic.
-
-Usage:
-  python scripts/remediation/list_shims.py --roots training src/training tokenization src/tokenization --output .github/SHIM_INVENTORY.yaml
-"""
 import argparse
 from pathlib import Path
 

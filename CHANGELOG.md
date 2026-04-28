@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4114)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4114 (SHA `30c0be03`) at 2026-04-28T20:55Z [auto-generated]
+
 ### Fixed (S178c — 2026-04-28 — github-code-quality false-positive on `tests/ci/test_pattern_recorder.py`)
 - **`tests/ci/test_pattern_recorder.py::TestResolveAcctDiffBase._git`** — replaced the `import subprocess as sp` + `sp.run(..., env=merged)` pattern with `from subprocess import run as _stdlib_run` + an explicit comment. The github-code-quality bot ([review #4191842442](https://github.com/Aries-Serpent/_codex_/pull/4109#pullrequestreview-4191842442)) was incorrectly resolving the call against `src/codex/utils/subprocess.py::run` (the project wrapper, which intentionally does not expose `env=`) instead of stdlib `subprocess.run` (which does). The fixture genuinely needs `env=` to pass deterministic `GIT_AUTHOR_*` / `GIT_COMMITTER_*` values for repository-bootstrap commits, so the right resolution is to use a name that cannot be confused with the wrapper. All 7 `TestResolveAcctDiffBase` + `TestPattern30MergeReadiness` tests still pass.
 

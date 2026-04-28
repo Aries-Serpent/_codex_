@@ -31,18 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Stub Cleanup and Analysis Tool
-
-This module provides AST-based stub detection and cleanup capabilities:
-1. AST-based stub detection (not regex)
-2. Self-reference exclusion (filters out valid abstract methods)
-3. Configurable detection patterns
-4. Automated cleanup suggestions
-
-Per gap analysis Phase A.3 requirements.
-"""
-
 import argparse
 import ast
 import json

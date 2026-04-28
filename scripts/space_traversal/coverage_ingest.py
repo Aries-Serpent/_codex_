@@ -29,17 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-import logging
-logger = logging.getLogger(__name__)
-Coverage ingestion (Cobertura / coverage.py XML -> audit_artifacts/coverage_map.json)
-
-Enhanced features:
-- Auto-discovery of coverage XML files based on config patterns
-- Robust parsing with multiple XML format support
-- discover_and_parse_coverage(cfg, artifacts_dir) - main entry point
-- parse_coverage_xml_to_map(xml_path, root) - XML parser
-"""
 import json
 import sys
 from pathlib import Path

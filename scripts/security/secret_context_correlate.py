@@ -30,29 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Secret Context Correlation (P6)
-
-Elevates entropy findings that appear near authentication/configuration contexts.
-Produces secret_context_report.json with elevated findings.
-
-Context Indicators (configurable):
-- Path contains: auth, config, credentials, secrets, .env
-- File proximity: within N lines of keywords like "password", "api_key", "token"
-
-Environment Knobs:
-  SECRET_CONTEXT_ENABLE=1         -> perform correlation
-  SECRET_CONTEXT_WINDOW=10        -> line window for keyword proximity
-  SECRET_CONTEXT_KEYWORDS=csv     -> additional keywords
-  SECRET_CONTEXT_ARTIFACT_DIR=dir -> override artifact directory (default ./audit_artifacts)
-  SECRET_CONTEXT_WORKSPACE_DIR=dir -> base directory for file paths in entropy report
-
-Outputs:
-  audit_artifacts/secret_context_report.json
-
-Integration:
-  Severity classification can use elevated context for higher weights.
-"""
 import logging
 
 logger = logging.getLogger(__name__)

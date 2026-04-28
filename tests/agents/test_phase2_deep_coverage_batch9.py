@@ -437,7 +437,7 @@ class TestPhase2_IntegrationPatterns:
                 obs(event)
 
         notifications = []
-        attach(lambda e: notifications.append(e))
+        attach(notifications.append)
         notify("event1")
         assert len(notifications) == 1
 
@@ -525,7 +525,7 @@ class TestPhase2_CrossModuleCommunication:
                     handler(data)
 
         results = []
-        subscribe("test", lambda d: results.append(d))
+        subscribe("test", results.append)
         publish("test", "data")
         assert len(results) == 1
 
@@ -548,7 +548,7 @@ class TestPhase2_CrossModuleCommunication:
             callback(result)
 
         results = []
-        async_operation(lambda r: results.append(r))
+        async_operation(results.append)
         assert results[0] == 42
 
 

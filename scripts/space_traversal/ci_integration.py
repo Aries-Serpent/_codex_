@@ -30,28 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-CI/CD integration helpers for v1.5.4
-
-Provides utilities for integrating audit pipeline with various CI systems.
-
-Features:
-- CI environment detection (GitHub Actions, GitLab CI, Jenkins)
-- GitHub Actions step summary generation
-- Output variable helpers
-- PR comment generation
-
-Example:
-    from scripts.space_traversal.ci_integration import (
-        detect_ci_environment,
-        write_github_step_summary,
-    )
-
-    env = detect_ci_environment()
-    if env["ci"] == "github_actions":
-        write_github_step_summary(avg_score, capabilities, regressions)
-"""
-
 import os
 from typing import Any, Optional
 

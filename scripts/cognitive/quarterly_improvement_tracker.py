@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Quarterly Improvement Tracker
-Aggregates metrics and analyzes trends for 5-10% quarterly improvements
-"""
 
 import json
 import logging

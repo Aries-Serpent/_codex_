@@ -29,13 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Configuration File Consolidation Script
-
-Consolidates duplicate configuration files following the canonical structure:
-- conf/ (Hydra structure) for training configs
-- config/ (singular) for application configs
-"""
 
 import shutil
 import sys

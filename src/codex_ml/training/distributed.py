@@ -19,10 +19,10 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any, Callable, Optional, Union
 
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel as DDP
-
 import torch
+
+dist = torch.distributed
+DDP = torch.nn.parallel.DistributedDataParallel
 
 logger = logging.getLogger(__name__)
 

@@ -31,13 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Intelligent Workflow Consolidation
-
-Safely consolidates redundant workflows with automatic backups and rollback capability.
-Implements phased consolidation with validation gates.
-"""
-
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path

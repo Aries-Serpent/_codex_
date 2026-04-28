@@ -263,9 +263,27 @@ def main() -> None:
             _sys.path.insert(0, _scripts_ci)
         from discussion_context_store import build_comment_context  # noqa: PLC0415
         inline_ctx = build_comment_context(pr_number, commit_sha, repo, token)
-    except Exception:
+    except ModuleNotFoundError as exc:
         # Graceful degradation — inline context is optional; rescue comment still posts.
-        pass  # context unavailable (first run, missing deps, etc.)
+        # Only treat it as "optional module absent" when the top-level module itself is
+        # missing; transitive import failures (exc.name != "discussion_context_store")
+        # are routed to the generic handler so packaging issues stay visible.
+        if exc.name == "discussion_context_store":
+            print(
+                f"ℹ️  Inline context unavailable: optional module not found "
+                f"({exc.name}). Continuing without context."
+            )
+        else:
+            print(
+                f"⚠️  Inline context import/build failed: {exc}. "
+                f"Continuing without context."
+            )
+    except Exception as exc:
+        # Graceful degradation — inline context is optional; rescue comment still posts.
+        print(
+            f"⚠️  Inline context import/build failed: {exc}. "
+            f"Continuing without context."
+        )
 
     ctx_section = (f"{inline_ctx}\n\n---\n\n") if inline_ctx else ""
     first_body = (

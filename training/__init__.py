@@ -14,20 +14,64 @@ _warnings.warn(
 )
 
 # Re-export all public members from canonical src.training modules
-import src.training.checkpoint_manager as _m4
-import src.training.config as _m5
-import src.training.data_utils as _m3
-import src.training.engine_hf_trainer as _m1
-import src.training.functional_training as _m2
-import src.training.trainer as _m6
-from src.training.checkpoint_manager import *  # noqa: F401, F403
-from src.training.config import *  # noqa: F401, F403
-from src.training.data_utils import *  # noqa: F401, F403
-from src.training.engine_hf_trainer import *  # noqa: F401, F403
-from src.training.functional_training import *  # noqa: F401, F403
-from src.training.trainer import *  # noqa: F401, F403
+from src.training.checkpoint_manager import CheckpointManager  # noqa: F401
+from src.training.config import TrainingConfig  # noqa: F401
+from src.training.data_utils import (  # noqa: F401
+    TextDataset,
+    cache_dataset,
+    deterministic_shuffle,
+    load_cached,
+    split_dataset,
+    split_texts,
+)
+from src.training.engine_hf_trainer import (  # noqa: F401
+    CSVMetricsWriter,
+    HFTrainerConfig,
+    NDJSONMetricsWriter,
+    build_parser,
+    build_trainer,
+    build_training_args,
+    load_training_arguments,
+    prepare_dataset,
+    run_hf_trainer,
+)
+from src.training.functional_training import (  # noqa: F401
+    TrainCfg,
+    evaluate_batches,
+    evaluate_dataloader,
+    main,
+    run_custom_trainer,
+)
+from src.training.trainer import (  # noqa: F401
+    CheckpointConfig,
+    Trainer,
+    TrainerConfig,
+)
 
-# Build __all__ from all imported modules
-__all__ = []
-for _mod in [_m1, _m2, _m3, _m4, _m5, _m6]:
-    __all__.extend([_name for _name in dir(_mod) if not _name.startswith("_")])
+__all__ = [
+    "CheckpointManager",
+    "TrainingConfig",
+    "TextDataset",
+    "cache_dataset",
+    "deterministic_shuffle",
+    "load_cached",
+    "split_dataset",
+    "split_texts",
+    "CSVMetricsWriter",
+    "HFTrainerConfig",
+    "NDJSONMetricsWriter",
+    "build_parser",
+    "build_trainer",
+    "build_training_args",
+    "load_training_arguments",
+    "prepare_dataset",
+    "run_hf_trainer",
+    "TrainCfg",
+    "evaluate_batches",
+    "evaluate_dataloader",
+    "main",
+    "run_custom_trainer",
+    "CheckpointConfig",
+    "Trainer",
+    "TrainerConfig",
+]

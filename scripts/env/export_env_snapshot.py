@@ -30,8 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""Write environment metadata and variables to JSON."""
-
 import json
 import os
 import sys

@@ -31,18 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Workflow Catalog Generator
-
-Creates comprehensive inventory of all GitHub Actions workflows with metadata.
-Stores data in .github/workflow-archive/WORKFLOW_INVENTORY.yaml
-
-SECURITY NOTE: This script extracts secret names (not values) from workflow files.
-Secret names are tokenized using SHA256 hashing and stored with base64 encoding
-for additional obfuscation. This prevents direct exposure of secret names in the
-inventory file while maintaining utility for internal tooling.
-"""
-
 import base64
 import hashlib
 import json

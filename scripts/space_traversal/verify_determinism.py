@@ -29,11 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Determinism Verifier
-Runs the audit pipeline multiple times and compares artifacts ignoring timestamp fields.
-Exits non-zero on mismatch.
-"""
 import argparse
 import json
 import subprocess

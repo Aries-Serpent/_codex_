@@ -9,8 +9,8 @@ from typing import Any, Mapping, Optional, Union
 
 import torch
 from codex_ml.config import ReasoningConfig, ReasoningHeadConfig, ToolAdapterConfig
-from torch import nn
 
+nn = torch.nn
 logger = logging.getLogger(__name__)
 
 

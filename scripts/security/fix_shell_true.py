@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Fix shell=False in subprocess calls across the codebase.
-Replaces shell=False with shell=False and uses shlex.split for command parsing.
-"""
 import logging
 import re
 

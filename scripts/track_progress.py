@@ -29,11 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Progress tracking script for High Maturity Achievement Plan.
-
-Monitors capability scores and provides actionable next steps.
-"""
 import json
 from pathlib import Path
 

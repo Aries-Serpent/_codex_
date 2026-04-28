@@ -29,19 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Automated Diagram and Visualization Update System
-
-Systematically updates Mermaid diagrams, architecture visualizations,
-and graphical representations to match current codebase state.
-
-Usage:
-    python scripts/maintenance/update_diagrams.py [--scan|--update|--validate]
-
-    --scan      Scan and report all diagrams needing updates
-    --update    Update diagrams with current information
-    --validate  Validate diagram syntax and accuracy
-"""
 
 import argparse
 import re

@@ -29,23 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-External Repository Ingestion System for Cognitive Brain
-
-This module provides comprehensive analysis and integration of external repositories
-into the cognitive brain ecosystem. Supports C/C++, Python, and other languages.
-
-Features:
-- Repository structure analysis
-- Code capability extraction
-- Integration recommendation generation
-- License compliance checking
-- Dependency mapping
-- Plugin adaptation strategies
-
-Usage:
-    python scripts/cognitive/ingest_external_repo.py --repo-url <url> --output cognitive/ingestion/
-"""
 
 import argparse
 import json

@@ -19,9 +19,8 @@ from copilot_session_log_retriever import CopilotSessionRetriever
 def create_demo_data():
     """Create demo database with sample session data."""
     # Create temporary database
-    temp_db = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
-    db_path = Path(temp_db.name)
-    temp_db.close()
+    with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as temp_db:
+        db_path = Path(temp_db.name)
 
     print(f"Creating demo database at: {db_path}")
 

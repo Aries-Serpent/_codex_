@@ -29,22 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Print to Logger Converter
-
-AST-based refactoring tool to convert print() calls to appropriate logger calls.
-
-Features:
-- Detects print() statements in modules with logging
-- Suggests appropriate log level based on context
-- Auto-converts with dry-run mode
-- Preserves formatting and f-strings
-- Handles multiple arguments
-
-Usage:
-    python scripts/convert_print_to_logger.py --file path/to/file.py --dry-run
-    python scripts/convert_print_to_logger.py --directory scripts/ --fix
-"""
 
 import argparse
 import ast

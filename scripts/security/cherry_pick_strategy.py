@@ -30,18 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Cherry-Pick Strategy for Clean Merge
-
-This script helps cherry-pick the ideal corrected versions from this PR
-into a clean branch based on the target (0D_base_), avoiding merge conflicts.
-
-Strategy:
-1. Create a new branch from 0D_base_
-2. Cherry-pick only the commits with actual fixes (not merge commits)
-3. This gives a clean history without conflicts
-"""
-
 import subprocess
 import sys
 from pathlib import Path

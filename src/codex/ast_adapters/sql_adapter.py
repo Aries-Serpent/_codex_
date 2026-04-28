@@ -12,12 +12,13 @@ from typing import Any, Dict, List, Optional
 
 try:
     import sqlparse
-    from sqlparse.sql import (
-        Identifier,
-        IdentifierList,
-        Statement,
-    )
-    from sqlparse.tokens import Keyword
+    import sqlparse.sql as _sqlparse_sql
+    import sqlparse.tokens as _sqlparse_tokens
+
+    Identifier = _sqlparse_sql.Identifier
+    IdentifierList = _sqlparse_sql.IdentifierList
+    Statement = _sqlparse_sql.Statement
+    Keyword = _sqlparse_tokens.Keyword
 
     _SQLPARSE_AVAILABLE = True
 except ImportError:  # pragma: no cover

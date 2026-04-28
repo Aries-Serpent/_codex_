@@ -26,7 +26,9 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
 
 # Optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional
-    from torch.utils.tensorboard import SummaryWriter
+    import torch.utils.tensorboard as _tb
+
+    SummaryWriter = _tb.SummaryWriter
 except Exception:  # pragma: no cover - tensorboard not installed
     SummaryWriter = None
 
@@ -64,6 +66,13 @@ try:  # pragma: no cover - optional
     import torch
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
+
+SummaryWriter = None
+try:  # pragma: no cover - optional
+    if torch is not None:
+        SummaryWriter = torch.utils.tensorboard.SummaryWriter
+except Exception:  # pragma: no cover - tensorboard not installed
+    pass
 
 
 _ensure_local_mlflow_tracking_uri_default()

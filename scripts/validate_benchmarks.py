@@ -29,12 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Benchmark Validation Script
-Phase 2: Performance Benchmarking
-
-Validates benchmark results against performance targets.
-"""
 
 import json
 import sys

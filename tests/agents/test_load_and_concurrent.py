@@ -26,9 +26,8 @@ class TestConcurrentMemoryAccess:
     @pytest.fixture
     def temp_db(self):
         """Create temporary database."""
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        temp_path = Path(temp_file.name)
-        temp_file.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
+            temp_path = Path(temp_file.name)
         yield temp_path
         if temp_path.exists():
             temp_path.unlink()
@@ -210,9 +209,8 @@ class TestMemoryPressure:
 
     def test_large_memory_dataset(self):
         """Test storing and retrieving large number of memories."""
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        temp_path = Path(temp_file.name)
-        temp_file.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
+            temp_path = Path(temp_file.name)
 
         try:
             if hasattr(AgentMemory, "__init__"):
@@ -294,9 +292,8 @@ class TestEnduranceTesting:
         """Test for memory leaks in repeated operations."""
         import sys
 
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        temp_path = Path(temp_file.name)
-        temp_file.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
+            temp_path = Path(temp_file.name)
 
         try:
             if hasattr(AgentMemory, "__init__"):
@@ -375,9 +372,8 @@ class TestPerformanceBenchmarks:
 
     def test_memory_search_performance(self):
         """Benchmark memory search performance."""
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        temp_path = Path(temp_file.name)
-        temp_file.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
+            temp_path = Path(temp_file.name)
 
         try:
             if hasattr(AgentMemory, "__init__"):
@@ -471,9 +467,8 @@ class TestScalability:
         # This would test database connection limits
         # Simplified version: just ensure many concurrent accesses work
 
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        temp_path = Path(temp_file.name)
-        temp_file.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
+            temp_path = Path(temp_file.name)
 
         try:
             if hasattr(AgentMemory, "__init__"):

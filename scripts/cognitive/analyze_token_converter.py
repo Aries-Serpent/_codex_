@@ -29,19 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Unified Token-Friendly Query Converter Analysis
-
-This module analyzes and integrates both Streamlit (Note_v2.py) and Tkinter (Notes.py)
-implementations of the Token-Friendly Query Converter application.
-
-Deterministic Analysis Strategy:
-1. Extract capabilities from both implementations
-2. Identify common functionality
-3. Determine optimal integration path
-4. Generate unified architecture recommendation
-5. Create cognitive brain integration plan
-"""
 
 import json
 from datetime import datetime
@@ -306,7 +293,7 @@ class ModelManager:
         )
         try:
             self.nlp = spacy.load("en_core_web_sm")
-        except:
+        except Exception:  # noqa: BLE001
             # Fallback if spacy model not available
             self.nlp = None
 

@@ -7,8 +7,9 @@ from dataclasses import dataclass
 from typing import Optional
 
 import torch
-from torch import nn
-from torch.nn import functional as F
+
+nn = torch.nn
+F = torch.nn.functional
 
 
 @dataclass(frozen=True)

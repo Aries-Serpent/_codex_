@@ -30,18 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Revert Overly Broad Date and Word Replacements
-
-This script fixes two types of incorrect replacements:
-1. Timestamps where years were removed: "2026-01-05" -> "Current Cycle-01-05" (INCORRECT)
-2. Words "may"/"May" changed to "phase"/"Phase 5": "may be" -> "phase be" (INCORRECT)
-
-The script restores:
-- Year portions in timestamps (e.g., "Current Cycle-01-05" -> "2026-01-05")
-- "may"/"May" words (e.g., "Phase 5 need" -> "May need", "Phase 5 14, Current Cycle" -> "May 14, 2026")
-"""
-
 import re
 import sys
 from pathlib import Path

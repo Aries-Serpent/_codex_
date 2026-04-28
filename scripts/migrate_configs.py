@@ -29,13 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Migrate legacy config directories to unified structure.
-
-Usage:
-    python scripts/migrate_configs.py --dry-run
-    python scripts/migrate_configs.py --execute
-"""
 import argparse
 import shutil
 from pathlib import Path

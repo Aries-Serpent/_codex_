@@ -29,21 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-🔐 GitHub Token Encryption Tool for _codex_
-
-> Generated: 2025-12-29 | Author: mbaetiong
-> Purpose: Secure token encoding/encryption for _codex_ repository secrets
-
-⚡ Energy: 5/5
-🧠 Roles: [Security Engineer], [DevOps Admin]
-
-USAGE:
-    python scripts/security/token_encryption_tool.py [--token TOKEN]
-
-ENVIRONMENT VARIABLES:
-    GITHUB_TOKEN or GH_TOKEN - Auto-detected if present
-"""
 import base64
 import hashlib
 import json

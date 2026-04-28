@@ -31,8 +31,8 @@ from typing import Any
 import ray
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
-from ray import serve
 
+serve = ray.serve
 logger = logging.getLogger(__name__)
 
 try:
@@ -151,7 +151,7 @@ def _freeze_override_value(value: Any) -> Hashable:
         return tuple(_freeze_override_value(item) for item in value)
     if isinstance(value, set | frozenset):
         return tuple(
-            _freeze_override_value(item) for item in sorted(value, key=lambda item: repr(item))
+            _freeze_override_value(item) for item in sorted(value, key=repr)
         )
     return repr(value)
 

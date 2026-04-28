@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Task Allocation
-Part of Decision Engine - integrates with R16 (Task Decomposition)
-"""
 import argparse
 import json
 from datetime import datetime

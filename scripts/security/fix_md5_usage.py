@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Fix MD5 usage by adding usedforsecurity=False parameter.
-This is safe for non-cryptographic uses like checksums and cache keys.
-"""
 import logging
 import re
 

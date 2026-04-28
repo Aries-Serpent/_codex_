@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Final comprehensive exception logging pass.
-Targets all remaining patterns to reach >70% coverage.
-"""
 import logging
 import re
 import sys

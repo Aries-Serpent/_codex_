@@ -29,22 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Automated Adoption Metrics Collection for AI Agent Analysis
-
-This script provides agent-consumable metrics about Phase 6 feature adoption.
-No human intervention required - designed for autonomous monitoring and analysis.
-
-Output Format: JSON with structured metrics for agent decision-making
-
-Usage:
-    python scripts/monitoring/collect_adoption_metrics.py --output metrics.json
-    python scripts/monitoring/collect_adoption_metrics.py --days 7 --format json
-
-Agent Integration:
-    from scripts.monitoring.collect_adoption_metrics import AdoptionMetricsCollector
-    collector = AdoptionMetricsCollector(days=7)
-    metrics = collector.collect_all()
-"""
 
 import argparse
 import json

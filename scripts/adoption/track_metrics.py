@@ -29,7 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Track Phase 6 MLOps Feature Adoption Metrics"""
 import argparse
 import json
 import logging

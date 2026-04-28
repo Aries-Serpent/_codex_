@@ -29,22 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Safe GitHub Token Scope Verification (PS-05)
-
-This module provides SECURE token verification without decoding or logging tokens.
-Uses GitHub API's x-oauth-scopes header to verify permissions safely.
-
-**Security Principles:**
-1. NEVER decode tokens programmatically
-2. NEVER log token values
-3. ALWAYS use environment variables
-4. ALWAYS verify via API, not decoding
-5. ALWAYS use constant-time operations where applicable
-
-**Replaces:** misc/manual_tools/token_decoder.py (DEPRECATED for security)
-**Created:** 2026-01-09 (PS-05: Token Security Neutralization)
-"""
 
 import logging
 import os

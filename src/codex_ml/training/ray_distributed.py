@@ -20,7 +20,6 @@ __all__ = [
 
 # Check Ray availability
 try:
-    import ray  # noqa: F401 - Testing optional dependency availability
     from ray import train
     from ray.train.torch import TorchTrainer
 

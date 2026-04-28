@@ -29,14 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""GitHub User Provisioning with MFA
-
-Automates user provisioning, OAuth setup, and MFA enrollment via GitHub API.
-
-Usage:
-    python scripts/github_user_provision.py --user USERNAME --email EMAIL
-    python scripts/github_user_provision.py --bulk users.json
-"""
 
 import argparse
 import json

@@ -24,12 +24,12 @@ logger = logging.getLogger(__name__)
 
 
 import hashlib  # noqa: E402
+import importlib.metadata  # noqa: E402
 import importlib.util  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import random  # noqa: E402
 import sys  # noqa: E402
-from importlib import metadata  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Callable, Sequence  # noqa: E402
 
@@ -112,7 +112,7 @@ class _DatasetRegistry:
 
         for group in self._ENTRY_POINT_GROUPS:
             try:
-                entry_points = metadata.entry_points(group=group)
+                entry_points = importlib.metadata.entry_points(group=group)
             except Exception:  # pragma: no cover - metadata backend failure
                 entry_points = ()  # type: ignore[assignment]
 

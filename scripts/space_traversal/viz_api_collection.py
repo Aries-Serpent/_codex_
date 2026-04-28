@@ -31,25 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-API Collection & Command Adjuster HTML for v1.5.4
-
-Generates interactive HTML interface for:
-- Building and adjusting CLI commands with visual controls
-- Checkboxes, dropdowns, radio buttons, toggles, sliders, knobs
-- Managing collections of API calls and audit commands
-- Saving/loading command presets
-- Batch execution planning
-
-Example:
-    from scripts.space_traversal.viz_api_collection import generate_api_collection
-
-    generate_api_collection(
-        output_path=Path("audit_artifacts/api_collection.html"),
-        repo_name="my-repo"
-    )
-"""
-
 from pathlib import Path
 from typing import Optional
 

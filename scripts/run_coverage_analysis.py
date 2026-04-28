@@ -29,17 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Coverage Analysis Runner
-
-Generates comprehensive coverage reports for the test suite.
-Outputs HTML, JSON, and XML formats for different use cases.
-
-Usage:
-    python scripts/run_coverage_analysis.py
-    python scripts/run_coverage_analysis.py --target agents
-    python scripts/run_coverage_analysis.py --html-only
-"""
 
 import logging
 import subprocess

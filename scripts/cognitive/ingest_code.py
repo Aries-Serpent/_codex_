@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Code Ingestion Module
-Part of Perception Layer - ingests and analyzes new code submissions
-"""
 import argparse
 import ast
 import hashlib

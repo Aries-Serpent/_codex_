@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Outcome Validator
-Validates execution outcomes against expectations
-"""
 import argparse
 import json
 from datetime import datetime

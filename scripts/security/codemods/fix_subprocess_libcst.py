@@ -19,7 +19,8 @@ from pathlib import Path
 from typing import Union
 
 import libcst as cst
-from libcst import matchers as m
+
+m = cst.matchers
 
 # Configure logging
 logger = logging.getLogger(__name__)

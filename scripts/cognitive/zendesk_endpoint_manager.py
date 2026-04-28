@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Zendesk Endpoint Manager for Cognitive Brain
-Ingested from external source and integrated into cognitive perception layer
-"""
 
 import argparse
 import csv
@@ -44,7 +40,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import requests
+from requests import Session as _Session
 from requests.exceptions import RequestException
 
 # Configure logging
@@ -101,7 +97,7 @@ class ZendeskEndpointManager:
         self.enable_cache = enable_cache
 
         self.base_url = f"https://{subdomain}.zendesk.com/api/v2"
-        self.session = requests.Session()
+        self.session = _Session()
         self.session.auth = (f"{email}/token", api_token)
         self.session.headers.update({
             "Content-Type": "application/json",

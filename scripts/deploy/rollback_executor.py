@@ -29,20 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Automated Rollback Executor for AI Agents
-
-Executes rollback procedures for Phase 6 features with zero human intervention.
-Designed for agent-driven recovery from deployment issues.
-
-Usage:
-    python scripts/deploy/rollback_executor.py --feature mlflow
-    python scripts/deploy/rollback_executor.py --all --dry-run
-
-Agent Integration:
-    from scripts.deploy.rollback_executor import RollbackExecutor
-    executor = RollbackExecutor()
-    result = executor.rollback_feature("mlflow")
-"""
 
 import argparse
 import json

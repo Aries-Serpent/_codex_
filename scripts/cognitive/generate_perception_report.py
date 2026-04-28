@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Perception Report Generator
-Generates human-readable reports from perception data
-"""
 import argparse
 import json
 from datetime import datetime

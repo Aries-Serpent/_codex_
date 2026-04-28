@@ -30,17 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Alternative Merge Strategy: Copy Files from Ideal Commit
-
-Instead of resolving merge conflicts, this script copies the corrected versions
-of all changed files from our PR branch (the "ideal" state) to ensure they
-override any conflicting versions in the base branch.
-
-This is equivalent to accepting all incoming changes but done by copying files
-rather than using git merge conflict resolution.
-"""
-
 import subprocess
 import sys
 from pathlib import Path

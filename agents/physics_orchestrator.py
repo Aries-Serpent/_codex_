@@ -520,8 +520,6 @@ class PhysicsInspiredOrchestrator:
         new_entropy = state.entropy + 0.01 * dt  # Entropy increases (2nd law)
 
         # Create new state
-        from agents.physics_orchestrator import EnergyState
-
         return EnergyState(
             configuration=(
                 state.configuration.copy()

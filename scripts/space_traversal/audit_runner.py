@@ -30,10 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Audit Runner - Orchestrates security audits across the codebase
-"""
-
 import argparse
 import importlib.util
 import json

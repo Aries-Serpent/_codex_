@@ -14,7 +14,6 @@ import logging
 import sys
 import traceback
 from datetime import datetime, timezone
-from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, Callable, Optional
 
@@ -57,7 +56,7 @@ class CodexErrorHandler:
         self.logger.propagate = False  # Don't propagate to parent loggers
 
         # Use RotatingFileHandler for automatic log rotation
-        handler = RotatingFileHandler(
+        handler = logging.handlers.RotatingFileHandler(
             self.error_log,
             maxBytes=max_bytes,
             backupCount=backup_count,

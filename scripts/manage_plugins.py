@@ -29,17 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Plugin Management CLI
-
-Discover, list, validate, and manage plugins.
-
-Usage:
-    python scripts/manage_plugins.py list [--group GROUP]
-    python scripts/manage_plugins.py discover [--auto-load]
-    python scripts/manage_plugins.py validate PLUGIN_NAME [--group GROUP]
-    python scripts/manage_plugins.py info PLUGIN_NAME --group GROUP
-"""
 import argparse
 import logging
 

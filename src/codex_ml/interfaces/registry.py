@@ -16,7 +16,6 @@ import os  # noqa: E402
 import sys  # noqa: E402
 import warnings  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
-from importlib import import_module  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Callable  # noqa: E402
 
@@ -73,7 +72,7 @@ def get(name: str, *, fallback: str | None = None) -> Any:
         return _REGISTRY[name]
     if fallback:
         module, attr = fallback.split(":")
-        return getattr(import_module(module), attr)
+        return getattr(importlib.import_module(module), attr)
     raise KeyError(f"No registered component named {name}")
 
 
@@ -84,7 +83,7 @@ def load_component(path: str) -> Any:
         raise ValueError(f"invalid component path: {path}")
     module_name, class_name = path.split(":", 1)
     importlib.invalidate_caches()
-    module = import_module(module_name)
+    module = importlib.import_module(module_name)
     return getattr(module, class_name)
 
 

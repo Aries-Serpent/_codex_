@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Knowledge Archiver
-Part of AfterMath - archives learnings to shared memory
-"""
 import argparse
 import hashlib
 import json

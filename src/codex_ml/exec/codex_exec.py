@@ -17,8 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-"""Unified Codex executor for local orchestration."""
-
 import argparse  # noqa: E402
 import logging  # noqa: E402
 from pathlib import Path  # noqa: E402

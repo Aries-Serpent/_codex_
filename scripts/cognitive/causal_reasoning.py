@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Causal Reasoning Module
-Part of Decision Engine - integrates with R13 (DoWhy framework)
-"""
 import argparse
 import json
 from datetime import datetime

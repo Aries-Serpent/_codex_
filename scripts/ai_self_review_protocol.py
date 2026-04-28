@@ -1,45 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""
-Ai Self Review Protocol
-
-Purpose:
-    Command-line utility (see argument parser for details)
-
-Usage:
-    python scripts/ai_self_review_protocol.py [options]
-
-    Examples:
-    $ python scripts/ai_self_review_protocol.py --help
-
-Arguments:
-    [To be documented]
-
-Environment Variables:
-    [To be documented]
-
-Dependencies:
-    [To be documented]
-
-Exit Codes:
-    0: Success
-    1: Error
-
-Author: Codex Team
-Last Updated: 2026-01-16
-"""
-
-
-"""
-AI Assistant Self-Review Protocol Implementation
-
-This module implements a comprehensive self-review protocol that ensures
-AI assistants perform thorough validation before concluding any interaction.
-It provides a deterministic, iterative process that prevents premature
-completion through autonomous self-healing cycles.
-"""
-
 import hashlib
 import json
 import sys

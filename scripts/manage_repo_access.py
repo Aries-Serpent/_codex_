@@ -29,14 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Repository Access Management
-
-Enforces MFA-based access control for GitHub repositories.
-
-Usage:
-    python scripts/manage_repo_access.py --enforce
-    python scripts/manage_repo_access.py --audit
-"""
 
 import argparse
 import json

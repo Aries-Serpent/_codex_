@@ -29,21 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Dependency Analyzer
-
-AST-based analysis tool to verify file dependencies and safe removal.
-
-Features:
-- Python import analysis using AST
-- Configuration file dependency checking
-- Build script analysis
-- Safe removal verification
-
-Usage:
-    python scripts/dependency_analyzer.py --file path/to/file.py
-    python scripts/dependency_analyzer.py --scan-directory scripts/
-"""
 
 import argparse
 import ast

@@ -29,20 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Validation script for Codebase QA Walkthrough Agent setup.
-
-This script validates that all components of the QA Walkthrough Agent are properly
-configured and ready for use. It checks:
-- Agent definition files
-- Workflow configuration
-- Documentation completeness
-- Integration points
-- Tool availability
-
-Usage:
-    python scripts/validate_qa_walkthrough_agent.py
-"""
 
 import subprocess
 import sys

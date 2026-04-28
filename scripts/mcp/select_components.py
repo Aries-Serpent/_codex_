@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Component Selection Tool for ChatGPT Project Packaging
-Filters repository files by topic or custom glob patterns
-"""
 
 import argparse
 import json

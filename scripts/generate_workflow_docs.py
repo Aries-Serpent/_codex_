@@ -29,23 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Automated Workflow Documentation Generator
-
-Purpose:
-    Generates comprehensive README.md files for GitHub Actions workflows
-    by parsing YAML metadata and structure.
-
-Usage:
-    python scripts/generate_workflow_docs.py [workflow_file|--all]
-
-    Examples:
-    $ python scripts/generate_workflow_docs.py .github/workflows/rust_swarm_ci.yml
-    $ python scripts/generate_workflow_docs.py --all
-
-Author: Codex Automation
-Last Updated: 2026-01-16
-"""
 
 import sys
 from pathlib import Path

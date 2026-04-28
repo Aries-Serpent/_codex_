@@ -5,9 +5,9 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any
 
-from codex.diagram.flows import *  # noqa: F403
+from codex.diagram.flows import Edge, flow_to_mermaid, intake_to_mermaid, sanitize_id
 
-__all__ = [*globals().get("__all__", []), "build_flow_edges"]
+__all__ = ["Edge", "flow_to_mermaid", "intake_to_mermaid", "sanitize_id", "build_flow_edges"]
 
 
 def build_flow_edges(steps: Iterable[Any]) -> tuple[list[tuple[str, str]], str]:

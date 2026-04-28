@@ -12,7 +12,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 try:
-    import requests
+    from requests import Session as _RequestsSession
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
 
@@ -71,7 +71,7 @@ class OllamaEmbeddingProvider:
         self.dimension = dimension
 
         # Configure session with retries
-        self.session = requests.Session()
+        self.session = _RequestsSession()
         retries = Retry(total=3, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
         self.session.mount("http://", HTTPAdapter(max_retries=retries))
 

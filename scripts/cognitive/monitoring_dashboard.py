@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Monitoring Dashboard
-Real-time metrics visualization and system monitoring
-"""
 
 import json
 import logging

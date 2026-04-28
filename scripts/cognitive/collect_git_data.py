@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Git Data Collector
-Part of Perception Layer - collects Git commit history for pattern analysis
-"""
 import argparse
 import json
 import subprocess

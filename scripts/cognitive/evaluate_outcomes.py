@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Outcome Evaluator
-Part of AfterMath - evaluates execution outcomes
-"""
 import argparse
 import json
 from datetime import datetime

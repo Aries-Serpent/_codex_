@@ -31,19 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-vendor_guard.py — Fail-fast scan for GPU vendor packages in CPU posture
-
-Behavior:
-  - Scans installed/available modules for nvidia-* / triton / torchtriton.
-  - Respects CODEX_ALLOW_TRITON_CPU=1 to filter 'triton'.
-  - If CODEX_FORCE_CPU=1 and any vendor present (after filter), exit code 1.
-  - Emits a single JSON line to stdout with summary; errors to stderr.
-
-Example:
-  python scripts/vendor_guard.py
-"""
-
 import json
 import os
 import pkgutil

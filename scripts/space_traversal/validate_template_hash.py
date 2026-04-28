@@ -29,11 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Validate Template Hash
-Computes concatenated Jinja template hash and compares with manifest's template_hash.
-Warns on mismatch (non-blocking).
-"""
 import hashlib
 import json
 from pathlib import Path

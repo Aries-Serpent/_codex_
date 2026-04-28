@@ -29,18 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Generate a reproducible wheel manifest with cryptographic hashes.
-
-This script creates a baseline artifact lock file that includes:
-- Wheel filenames
-- SHA256 hashes
-- Platform information
-- Python version
-
-Usage:
-    python scripts/ci/generate_wheel_manifest.py --wheelhouse /path/to/wheels --output manifest.json
-"""
 
 import argparse
 import hashlib

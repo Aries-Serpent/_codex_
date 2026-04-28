@@ -17,8 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-"""Plugin registry utilities for codex_ml."""
-
 import logging
 from collections.abc import Mapping, Sequence
 from typing import Callable

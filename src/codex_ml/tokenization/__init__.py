@@ -42,7 +42,6 @@ def __getattr__(name: str) -> Any:  # noqa: ANN401
 
 __all__ = [
     "load_tokenizer",
-    "get_tokenizer",
     "WhitespaceTokenizer",
     "HFTokenizer",
     "TokenizerAdapter",

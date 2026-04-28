@@ -31,24 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Swagger/OpenAPI-style Documentation for Audit CLI v1.5.4
-
-Generates interactive API documentation with:
-- Command reference with parameters
-- Try-it-out functionality
-- Request/response examples
-- Schema definitions
-
-Example:
-    from scripts.space_traversal.viz_swagger import generate_swagger_docs
-
-    generate_swagger_docs(
-        output_path=Path("audit_artifacts/api_docs.html"),
-        repo_name="my-repo"
-    )
-"""
-
 from datetime import datetime
 from pathlib import Path
 

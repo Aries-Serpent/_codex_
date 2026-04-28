@@ -29,18 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Expanded Context Audit Scanner
-Scans the repository for expanded-context workflow features including:
-- RAG (Retrieval-Augmented Generation)
-- Vectorstore persistence
-- Embeddings cache
-- Session logging
-- Copilot bridge
-- Subagent orchestrator
-- Summarization
-- Provenance tracking
-"""
 
 import argparse
 import json

@@ -29,19 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Security Validation Script for Authentication Module
-
-Performs comprehensive security checks on the authentication system.
-
-Usage:
-    Run from project root with PYTHONPATH set:
-        PYTHONPATH=. python scripts/validate_auth_security.py
-
-    Or install the package first:
-        pip install -e .
-        python scripts/validate_auth_security.py
-"""
 
 import sys
 import time

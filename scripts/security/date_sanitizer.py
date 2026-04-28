@@ -1,48 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""
-Date Sanitizer
-
-Purpose:
-    Main execution script
-
-Usage:
-    python scripts/security/date_sanitizer.py [options]
-
-    Examples:
-    $ python scripts/security/date_sanitizer.py --help
-
-Arguments:
-    [To be documented]
-
-Environment Variables:
-    [To be documented]
-
-Dependencies:
-    [To be documented]
-
-Exit Codes:
-    0: Success
-    1: Error
-
-Author: Codex Team
-Last Updated: 2026-01-16
-"""
-
-
-"""
-Date Sanitization Policy Enforcer
-
-This module provides smart date pattern detection and replacement for documentation.
-It distinguishes between:
-1. Actual timestamps/version dates (PRESERVED): "2026-01-05", "v1.2.3 (2026-01-05)", "Released: 2026-01-05"
-2. Calendar-based planning terminology (SANITIZED): "Q1 2026", "January 2026", "Phase 1 (Q2 2026)"
-
-The goal is to remove specific calendar commitments while preserving technical timestamps
-that are part of version history, release dates, or actual event logs.
-"""
-
 import re
 from typing import NamedTuple
 

@@ -111,11 +111,6 @@ def decode_and_validate(
 
 # ---- [END: Testable Entrypoint] ----
 
-"""
-Decode validator artifact snapshot, validate against schema, extract GAPs.
-
-Provides options: --stable-output, --generate-baseline, --baseline-path, --schema
-"""
 
 import argparse
 import base64

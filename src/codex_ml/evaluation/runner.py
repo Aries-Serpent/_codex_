@@ -41,7 +41,8 @@ from typing import Any, Callable, Optional, Union  # noqa: E402
 
 try:
     import torch
-    from torch.utils.data import DataLoader
+
+    DataLoader = torch.utils.data.DataLoader
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

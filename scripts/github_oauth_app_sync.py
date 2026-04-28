@@ -29,15 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""GitHub OAuth App Sync
-
-Validates and syncs OAuth app configuration.
-
-Usage:
-    python scripts/github_oauth_app_sync.py --validate
-    python scripts/github_oauth_app_sync.py --sync
-    python scripts/github_oauth_app_sync.py --health-check
-"""
 
 import argparse
 import json

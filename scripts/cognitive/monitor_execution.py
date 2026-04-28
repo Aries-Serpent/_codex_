@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - Execution Monitor
-Monitors real-time execution status across all agents
-"""
 import argparse
 import json
 from datetime import datetime

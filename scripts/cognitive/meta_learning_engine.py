@@ -29,24 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Meta-Learning Engine for Cognitive Brain - Phase 2 Implementation
-
-Enables cross-agent knowledge transfer, shared memory, and pattern reuse optimization
-to achieve 30-40% efficiency improvements across the V10 agent ecosystem.
-
-Features:
-- Shared memory architecture (GitHub Packages + Artifacts)
-- Pattern library with similarity detection
-- Cross-agent knowledge transfer protocols
-- Pattern reuse optimization
-- Learning compression algorithms
-- Integration with all 10 V10 agents
-
-Usage:
-    python scripts/cognitive/meta_learning_engine.py --mode transfer --source-agent 1 --target-agent 2
-    python scripts/cognitive/meta_learning_engine.py --mode optimize --patterns cognitive/patterns/
-"""
 
 import argparse
 import hashlib

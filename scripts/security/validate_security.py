@@ -29,9 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Security validation script - Run this to verify all security improvements.
-"""
 import logging
 import subprocess
 

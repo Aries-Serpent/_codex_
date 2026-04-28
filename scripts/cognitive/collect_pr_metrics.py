@@ -29,10 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Cognitive Brain - PR Metrics Collector
-Part of Perception Layer - collects Pull Request data for analysis
-"""
 import argparse
 import json
 import subprocess

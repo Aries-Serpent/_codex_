@@ -31,26 +31,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Workflow Secret Decoder
-
-Authorized utility to decode tokenized secret names from WORKFLOW_INVENTORY.yaml.
-
-SECURITY WARNING: This script decodes obfuscated secret names. Only use in
-authorized contexts (e.g., automated tooling, security audits). Do not expose
-decoded secret names in logs, dashboards, or public outputs.
-
-Usage:
-    # Decode a single base64-encoded secret
-    python scripts/decode_workflow_secrets.py --encoded "R0lUSFVCX1RPS0VO"
-
-    # List all secrets from inventory (tokens and hints only)
-    python scripts/decode_workflow_secrets.py --list-tokens
-
-    # Generate secret usage report (authorized contexts only)
-    python scripts/decode_workflow_secrets.py --report --authorized
-"""
-
 import argparse
 import base64
 import sys

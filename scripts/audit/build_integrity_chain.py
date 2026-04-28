@@ -30,21 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-import logging
-logger = logging.getLogger(__name__)
-Build Audit Integrity Chain artifacts and a manifest with SHA256 hashes.
-
-Artifacts (created or hashed if present):
- - audit_artifacts/context_index.json
- - audit_artifacts/facets.json
- - audit_artifacts/capabilities_raw.json
- - audit_artifacts/capabilities_scored.json
- - audit_artifacts/gaps.json
- - reports/capability_matrix_<ts>.md
- - audit_run_manifest.json
-"""
-
 import hashlib
 import json
 from datetime import datetime, timezone

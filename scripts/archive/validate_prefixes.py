@@ -30,27 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
-Prefix Enforcement Validator (BUNDLE_PREFIX_MODE)
-
-Purpose:
-- When BUNDLE_PREFIX_MODE=1, enforce allowed prefixes for bundle-like artifacts.
-- Allowed prefixes: patchset_, bundle_, har_
-- Targets audit_artifacts paths (bundles/, baselines/ optional future)
-
-Behavior:
-- Scan audit_artifacts/bundles for files not starting with allowed prefixes
-- Emit a JSON report and non-zero exit if violations found (unless --warn-only)
-
-Usage:
-  BUNDLE_PREFIX_MODE=1 python scripts/archive/validate_prefixes.py
-  python scripts/archive/validate_prefixes.py --warn-only
-
-Outputs:
-- audit_artifacts/prefix_validation_report.json
-"""
-
-
 import json
 import os
 import sys

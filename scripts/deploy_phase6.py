@@ -29,21 +29,6 @@ Last Updated: 2026-01-16
 """
 
 
-"""Deployment Script for Phase 6 Production Integration
-
-This script deploys all Phase 6 MLOps features to production:
-1. Validates all production configurations
-2. Initializes feature store
-3. Sets up monitoring dashboards
-4. Configures alerting
-5. Runs integration tests
-6. Generates deployment report
-
-Usage:
-    python scripts/deploy_phase6.py --environment production
-    python scripts/deploy_phase6.py --environment staging --dry-run
-    python scripts/deploy_phase6.py --validate-only
-"""
 
 import argparse
 import json

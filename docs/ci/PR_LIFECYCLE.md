@@ -2577,7 +2577,7 @@ cancel-in-progress: false  # never kill an in-progress approval sweep
 ## 25. CI Failure Issue Connection Map (S309)
 
 > **Generated:** 2026-04-07 · **Session:** S309
-> 
+>
 > This diagram maps every open CI failure issue (#3911–#3921) to its root cause,
 > the affected workflow(s), the fix applied, and the verification gate.
 
