@@ -17,7 +17,9 @@
 - [`4d303c33`] Merge pull request #4114 from Aries-Serpent/copilot/remove-unreachable-code-block (Statix, 2026-04-28)
 
 ### Files Modified
-No files modified
+- `scripts/manage_plugins.py` — moved `logger` init after all imports; replaced `logger.debug` + `print(…, file=sys.stderr)` with `logger.exception`
+- `tests/ci/test_post_rescue_comment.py` — removed seven duplicate `# pragma: allowlist secret` comments (kept one)
+- `.github/copilot-prompts/active/PR-4124-followup.md` — active follow-up prompt updated for this PR handoff
 
 ---
 

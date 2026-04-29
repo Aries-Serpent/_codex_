@@ -22605,7 +22605,6 @@ and the CI gate requirement.
 
 ---
 
-## SESSION SUMMARY — 2026-04-29T00:45Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4124)
 ## SESSION SUMMARY — 2026-04-29T00:49Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4124)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -22627,8 +22626,8 @@ and the CI gate requirement.
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/25085177859
-3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/25085249000
-4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/25085249000
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
 ### Root-Cause Note

@@ -31,8 +31,6 @@ Last Updated: 2026-01-16
 
 import argparse
 import logging
-
-logger = logging.getLogger(__name__)
 import json
 import sys
 from pathlib import Path
@@ -45,6 +43,8 @@ from codex_ml.plugins.entry_points import (
     PluginValidator,
     discover_plugins,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def cmd_list(args):
@@ -230,8 +230,7 @@ def main():
         elif args.command == "info":
             return cmd_info(args)
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        print(f"Error: {e}", file=sys.stderr)
+        logger.exception("Error while executing plugin management command")
         return 1
 
 
