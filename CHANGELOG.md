@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S182 — 2026-04-29 — stale .secrets.baseline + CODEX_MANIFEST hash mismatch)
+- **`.secrets.baseline`** — Re-synced via `sync_tracked_files.py --fix`; `CODEX_MANIFEST.json` entry updated to `hash=6858af208ac5…` at line 2053. Unblocks 🔐 Secrets Baseline Enforcer (run #493). Root cause: automated manifest refresh rotated `integrity_sha256`; baseline not re-synced before push.
+- **`.github/workflows/secrets-baseline-enforcer.yml`** — `Fail on genuine unfixed secrets` step now dumps captured `detect-secrets` output before exiting, surfacing exact file/line/type that triggered failure.
+- **`.pre-commit-config.yaml`** — Added `sync-baseline-on-manifest-change` pre-commit hook (id: `sync-baseline-on-manifest-change`) that runs `sync_tracked_files.py --fix --manifest-only` automatically when `CODEX_MANIFEST.json` is staged. Prevents RP-007 stale-baseline failures at commit time before `detect-secrets` hook runs.
+
 ### Fixed (auto-update — PR #4129)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4129 (SHA `40feb220`) at 2026-04-29T17:27Z [auto-generated]
 
