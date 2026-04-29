@@ -2,6 +2,27 @@
 
 
 
+## SESSION SUMMARY — 2026-04-29T17:44Z [auto-generated]
+
+**Session:** auto-20260429T1744-run3071 | **Run:** 25123998800 | **Date:** 2026-04-29
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## SESSION SUMMARY — 2026-04-29T15:04Z
+
+**Session:** copilot-fix-ci-failure-triage-report | **Branch:** copilot/fix-ci-failure-triage-report | **Date:** 2026-04-29
+
+**Task:** Fix 🔐 Secrets Baseline Enforcer CI failure (run #493 on main at 25400bbb)
+
+**Root Cause:** `.secrets.baseline` contained stale CODEX_MANIFEST.json entry. The `integrity_sha256` field in `CODEX_MANIFEST.json` was updated by an automated manifest refresh commit (8e9d271a4), but `.secrets.baseline` still stored the old hash (`b3461fbd56d8…`). When `detect-secrets-hook` rescanned the file, it found the new SHA-256 hash value (`a16f19fa…`) and flagged it as a new "Hex High Entropy String" secret not in the baseline.
+
+**Fix Applied:**
+- Ran `python scripts/ci/sync_tracked_files.py --fix` which updated `.secrets.baseline` to store the correct hash (`6858af208ac5…`) for `CODEX_MANIFEST.json:2053`
+- Updated `.github/workflows/secrets-baseline-enforcer.yml` to print captured scan output before failing (workflow hardening from issue analysis)
+
+**Verification:** `detect-secrets-hook --baseline .secrets.baseline CODEX_MANIFEST.json` and `sync_tracked_files.py` both exit 0 locally.
+
+
+
 
 
 

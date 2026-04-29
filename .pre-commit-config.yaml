@@ -400,6 +400,18 @@ repos:
         pass_filenames: false
         always_run: true
 
+      # Triggered specifically when CODEX_MANIFEST.json is staged — re-syncs
+      # .secrets.baseline to pick up any integrity_sha256 hash rotation before
+      # the detect-secrets hook runs.  Prevents the RP-007 "stale baseline"
+      # failure pattern (first diagnosed in S182, 2026-04-29).
+      - id: sync-baseline-on-manifest-change
+        name: "🔐 Re-sync .secrets.baseline when CODEX_MANIFEST.json changes"
+        entry: python scripts/ci/sync_tracked_files.py --fix --manifest-only
+        language: system
+        files: ^CODEX_MANIFEST\.json$
+        stages: [pre-commit]
+        pass_filenames: false
+
       # Ensures CODEX_MANIFEST.json integrity_sha256, .secrets.baseline,
       # CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md are always consistent
       # at commit time.  Auto-repairs with --fix if any inconsistency is found.
