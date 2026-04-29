@@ -22702,3 +22702,27 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## SESSION SUMMARY — 2026-04-29T10:10Z SESSION S180 (PR #4124 — Sync drift + CI healer)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All blocking comments reviewed ✅
+- [x] **0b.** CI failures on validation pipeline (run #25102548224) investigated — pre-commit exit-code-2 caused by stale `.secrets.baseline` (RP-007) after merge from main. Fixed with `sync_tracked_files.py --fix`. ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** Pattern 22 (sync) green, Pattern 25 (last-commit accountability) green ✅
+
+### Work Completed
+1. **sync_tracked_files --fix** — `.secrets.baseline` entries for CODEX_MANIFEST and agent_context.json were stale after merge from main (RP-007). Resynced both.
+2. **Pattern 25** — accountability report updated in this commit so the last-commit gate passes.
+
+### CI Failures Investigated
+- Run #25102548224 ("Validation Pipeline" / "Fast Validation"): `pre-commit checks failed` with exit code 2. Root cause: `.secrets.baseline` hashes drifted after the merge-from-main commit (`c6788da`) pulled in a new `agent_context.json`. Resolved by `sync_tracked_files.py --fix`.
+- Run #25102548256 ("Secrets Baseline Enforcer"): same RP-007 drift. Resolved above.
+- PR Status Dashboard score 92/100: only gap was "Resolve merge conflicts (mergeability pending)" — branch was merged from main in commit `c6788da`; no active conflicts.
+
+### Impact Score
+- Files changed: `.secrets.baseline`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- CI gates unblocked: Pattern 22 (sync drift), Pattern 25 (last-commit accountability)
+- Deferral Language Gate: 0 violations
+
+---
