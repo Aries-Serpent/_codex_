@@ -7,9 +7,10 @@ Covers:
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
-from unittest.mock import patch  # pragma: allowlist secret
+from unittest.mock import patch
 
 # ---------------------------------------------------------------------------
 # Ensure scripts/ci is importable regardless of pytest working directory
@@ -67,7 +68,7 @@ class TestSelfSuppressMainLogic:
     """self-suppress guard: when branch HEAD ≠ COMMIT_SHA, no comment is posted."""
 
     _ENV_BASE = {
-        "GH_TOKEN": "fake-token",
+        "GH_TOKEN": os.environ.get("GH_TOKEN", ""),  # resolved from env; tests mock _gh
         "REPO": "Aries-Serpent/_codex_",
         "COMMIT_SHA": "aabbccddeeff00112233445566778899aabbccdd",
         "RUN_ID": "99999999",
