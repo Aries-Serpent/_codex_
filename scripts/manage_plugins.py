@@ -229,7 +229,7 @@ def main():
             return cmd_validate(args)
         elif args.command == "info":
             return cmd_info(args)
-    except Exception as e:
+    except Exception:
         logger.exception("Error while executing plugin management command")
         return 1
 
