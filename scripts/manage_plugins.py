@@ -30,10 +30,8 @@ Last Updated: 2026-01-16
 
 
 import argparse
-import logging
-
-logger = logging.getLogger(__name__)
 import json
+import logging
 import sys
 from pathlib import Path
 
@@ -45,6 +43,13 @@ from codex_ml.plugins.entry_points import (
     PluginValidator,
     discover_plugins,
 )
+
+logger = logging.getLogger(__name__)
+
+
+def _safe_str(value: str) -> str:
+    """Return *value* with newlines replaced so it cannot inject fake log lines."""
+    return value.replace("\r", " ").replace("\n", " ")
 
 
 def cmd_list(args):
@@ -108,14 +113,14 @@ def cmd_validate(args):
     plugin_info = registry.get_plugin_info(args.group, args.plugin_name)
 
     if not plugin_info:
-        print(f"Plugin '{args.plugin_name}' not found in group '{args.group}'")
+        print(f"Plugin '{_safe_str(args.plugin_name)}' not found in group '{_safe_str(args.group)}'")
         return 1
 
     validator = PluginValidator()
     is_valid, error = validator.validate_plugin(plugin_info)
 
     print("=" * 70)
-    print(f"PLUGIN VALIDATION: {args.plugin_name}")
+    print(f"PLUGIN VALIDATION: {_safe_str(args.plugin_name)}")
     print("=" * 70)
     print(f"Group: {plugin_info.entry_point_group}")
     print(f"Module: {plugin_info.module_name}")
@@ -142,11 +147,11 @@ def cmd_info(args):
     plugin_info = registry.get_plugin_info(args.group, args.plugin_name)
 
     if not plugin_info:
-        print(f"Plugin '{args.plugin_name}' not found in group '{args.group}'")
+        print(f"Plugin '{_safe_str(args.plugin_name)}' not found in group '{_safe_str(args.group)}'")
         return 1
 
     print("=" * 70)
-    print(f"PLUGIN INFORMATION: {args.plugin_name}")
+    print(f"PLUGIN INFORMATION: {_safe_str(args.plugin_name)}")
     print("=" * 70)
     print(f"Name: {plugin_info.name}")
     print(f"Group: {plugin_info.entry_point_group}")
@@ -229,9 +234,8 @@ def main():
             return cmd_validate(args)
         elif args.command == "info":
             return cmd_info(args)
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        print(f"Error: {e}", file=sys.stderr)
+    except Exception:
+        logger.exception("Error while executing plugin management command")
         return 1
 
 

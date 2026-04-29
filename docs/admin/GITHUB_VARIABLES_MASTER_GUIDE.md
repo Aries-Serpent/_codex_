@@ -272,8 +272,8 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
-| 1 | `CODEX_ACTIVE_CODESPACE` | ✅ **Auto-set by Codespace** | `upgraded-engine-5pp4ggrr7jphvpp7` | Name of the currently active Codespace. Created automatically on first Codespace start; updated on every subsequent start/resume via `post-start.sh`. Changes whenever a new Codespace is created — never hardcode this value. |
-| 2 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://upgraded-engine-5pp4ggrr7jphvpp7-8765.preview.app.github.dev/webhook/github` | Public URL for webhook delivery. Derived from `CODEX_ACTIVE_CODESPACE`; updated automatically alongside it. |
+| 1 | `CODEX_ACTIVE_CODESPACE` | ✅ **Auto-set by Codespace** | `<auto-set-on-start>` | Name of the currently active Codespace. Created automatically on first Codespace start; updated on every subsequent start/resume via `post-start.sh`. Changes whenever a new Codespace is created — never hardcode this value. |
+| 2 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://<codespace-name>-8765.preview.app.github.dev/webhook/github` | Public URL for webhook delivery. Derived from `CODEX_ACTIVE_CODESPACE`; updated automatically alongside it. |
 
 > Both variables are written atomically by step 4b in `.devcontainer/scripts/post-start.sh` on every Codespace start and resume.  
 > `gh variable set` creates the variable if absent, so **no manual seeding is required** — the first Codespace start after this commit will provision both variables automatically.
@@ -348,8 +348,8 @@ All scripts fall back to safe coded defaults when variables are unset.
 
 | | |
 |---|---|
-| **Codespace name** | `upgraded-engine-5pp4ggrr7jphvpp7` |
-| **Resume existing** | [https://github.com/codespaces/upgraded-engine-5pp4ggrr7jphvpp7](https://github.com/codespaces/upgraded-engine-5pp4ggrr7jphvpp7) |
+| **Codespace name** | `<auto-set-on-start>` |
+| **Resume existing** | Open [GitHub Codespaces](https://github.com/codespaces) and select the active Codespace |
 | **New from PR** | [https://github.com/codespaces/new/Aries-Serpent/_codex_/pull/3503](https://github.com/codespaces/new/Aries-Serpent/_codex_/pull/3503) |
 | **Branch** | `copilot/implement-user-authentication` |
 | **Repo variable** | `CODEX_ACTIVE_CODESPACE` — auto-updated on every start/resume |
