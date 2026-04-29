@@ -68,7 +68,7 @@ class TestSelfSuppressMainLogic:
     """self-suppress guard: when branch HEAD ≠ COMMIT_SHA, no comment is posted."""
 
     _ENV_BASE = {
-        "GH_TOKEN": os.environ.get("GH_TOKEN", ""),  # resolved from env; tests mock _gh
+        "GH_TOKEN": "test-token",
         "REPO": "Aries-Serpent/_codex_",
         "COMMIT_SHA": "aabbccddeeff00112233445566778899aabbccdd",
         "RUN_ID": "99999999",
@@ -107,7 +107,9 @@ class TestSelfSuppressMainLogic:
         self._patch_env(monkeypatch, PR_NUMBER="4200")
         current_head = "1122334455661122334455661122334455661122"
         failure_sha = self._ENV_BASE["COMMIT_SHA"]
-        assert current_head != failure_sha
+        assert current_head != failure_sha, (
+            "Test setup error: current_head must differ from COMMIT_SHA for this test"
+        )
 
         with patch.object(prc, "_get_branch_head_sha", return_value=current_head):
             with patch.object(prc, "_gh") as mock_gh:

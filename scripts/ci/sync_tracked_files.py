@@ -93,6 +93,8 @@ CHANGELOG_PATH = REPO_ROOT / "CHANGELOG.md"
 ACCOUNTABILITY_PATH = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
 # RP-007: agent_context.json rotates frequently; its baseline entry drifts every session
 AGENT_CONTEXT_PATH = REPO_ROOT / ".codex" / "agent_context.json"
+# RP-007 variant: agent_auth_session.json rotates on every agent-auth-delegation run
+AGENT_AUTH_SESSION_PATH = REPO_ROOT / ".codex" / "agent_auth_session.json"
 
 # Sentinel for auto-generated entries
 _AUTO_SYNC_SENTINEL = "[auto-sync]"
@@ -461,6 +463,120 @@ def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
         message="agent_context.json baseline entry was stale (RP-007)",
         fix_description=f"updated to line={line_num} hash={hash_val}",
     )
+
+
+# ---------------------------------------------------------------------------
+# 2c. .secrets.baseline — agent_auth_session.json entry (RP-007 variant)
+# ---------------------------------------------------------------------------
+
+
+def check_agent_auth_session_baseline(result: SyncResult, *, fix: bool) -> None:
+    """Verify (and optionally repair) the agent_auth_session.json entry in ``.secrets.baseline``.
+
+    RP-007 variant: ``.codex/agent_auth_session.json`` is rewritten on every
+    agent-auth-delegation run (``run_id``, ``expires_at``, ``run_url``, ``pr_number``
+    all rotate), causing its ``hashed_secret`` entries in ``.secrets.baseline`` to
+    become stale — identical failure mode to ``agent_context.json``.
+
+    Fix strategy: targeted ``detect-secrets scan --no-verify`` on just this one file
+    (~200ms).  All entries are replaced atomically; supports multiple flagged lines.
+    """
+    if not AGENT_AUTH_SESSION_PATH.exists():
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=True,
+            message="agent_auth_session.json not found — skip",
+        )
+        return
+    if not SECRETS_BASELINE.exists():
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=False,
+            message=".secrets.baseline not found",
+        )
+        return
+
+    agent_rel = str(AGENT_AUTH_SESSION_PATH.relative_to(REPO_ROOT))
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "detect_secrets", "scan", "--no-verify", agent_rel],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=str(REPO_ROOT),
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(proc.stderr[:300])
+        scan: dict[str, Any] = json.loads(proc.stdout)
+    except Exception as exc:
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=False,
+            message=f"detect-secrets scan failed: {exc}",
+        )
+        return
+
+    new_entries = scan.get("results", {}).get(agent_rel, [])
+
+    try:
+        with SECRETS_BASELINE.open(encoding="utf-8") as f:
+            baseline: dict[str, Any] = json.load(f)
+    except json.JSONDecodeError as exc:
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=False,
+            message=f"JSON parse error in .secrets.baseline: {exc}",
+        )
+        return
+
+    existing_entries = baseline.get("results", {}).get(agent_rel, [])
+
+    def _snapshot(entries: list[dict]) -> list[tuple]:
+        return sorted(
+            (e.get("hashed_secret", ""), e.get("line_number", 0)) for e in entries
+        )
+
+    if not new_entries and not existing_entries:
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=True,
+            message="no high-entropy strings in agent_auth_session.json — no baseline entry needed",
+        )
+        return
+
+    if _snapshot(new_entries) == _snapshot(existing_entries):
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=True,
+            message=f"agent_auth_session.json entries correct ({len(new_entries)} entries)",
+        )
+        return
+
+    if not fix:
+        result.record(
+            ".secrets.baseline (agent_auth_session)",
+            ok=False,
+            message="agent_auth_session.json baseline entries are stale (RP-007 variant)",
+        )
+        return
+
+    # Fix: replace all entries for this file atomically
+    if new_entries:
+        baseline.setdefault("results", {})[agent_rel] = new_entries
+    elif agent_rel in baseline.get("results", {}):
+        del baseline["results"][agent_rel]
+    _write_json_atomic(SECRETS_BASELINE, baseline)
+
+    count = len(new_entries)
+    result.record(
+        ".secrets.baseline (agent_auth_session)",
+        ok=False,
+        fixed=True,
+        message="agent_auth_session.json baseline entries were stale (RP-007 variant)",
+        fix_description=f"replaced with {count} fresh entries",
+    )
+
+
 # ---------------------------------------------------------------------------
 
 _UNRELEASED_RE = re.compile(r"^## \[Unreleased\]", re.MULTILINE)
@@ -955,6 +1071,7 @@ def main(argv: list[str] | None = None) -> int:
         check_manifest_integrity(sync, fix=do_fix)
         check_secrets_baseline(sync, fix=do_fix)
         check_agent_context_baseline(sync, fix=do_fix)  # RP-007: agent_context.json drift
+        check_agent_auth_session_baseline(sync, fix=do_fix)  # RP-007 variant: agent_auth_session.json drift
 
     if docs_scope:
         check_changelog(sync, fix=do_fix)
