@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4130)
+### Fixed (S178d — 2026-04-29 — ROADMAP consistency, test determinism, RP-007 variant, ruff F401)
+- **`docs/ROADMAP.md`** — Documentation current value corrected `85%` → `95%` to match the 95% completion status stated on line 43 of the same file.
+- **`tests/ci/test_post_rescue_comment.py`** — `_ENV_BASE["GH_TOKEN"]` changed from `os.environ.get("GH_TOKEN", "")` to fixed `"test-token"` to eliminate environment-dependent non-determinism in tests that already mock `_gh`. Removed now-unused `import os` (ruff F401). Added descriptive message to bare `assert current_head != failure_sha` precondition guard for improved debuggability.
+- **`scripts/ci/sync_tracked_files.py`** — Added `AGENT_AUTH_SESSION_PATH` constant and `check_agent_auth_session_baseline()` function (RP-007 variant). `.codex/agent_auth_session.json` rotates on every `agent-auth-delegation` run but had no RP-007 handler, causing `🔐 Secrets Baseline Enforcer` to hard-fail. Wired new check into `main()` under `manifest_scope` alongside `check_agent_context_baseline`. Uses multi-entry `_snapshot()` comparator (sorts `(hashed_secret, line_number)` tuples) to correctly handle files with multiple flagged lines.
+
+
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4130 (SHA `43bbcf1e`) at 2026-04-29T23:14Z [auto-generated]
 
 ### Fixed (S182 — 2026-04-29 — stale .secrets.baseline + CODEX_MANIFEST hash mismatch)

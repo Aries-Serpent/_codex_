@@ -2,7 +2,29 @@
 
 
 
-## SESSION SUMMARY — 2026-04-29T17:44Z [auto-generated]
+## SESSION SUMMARY — S178d 2026-04-29T23:30Z
+
+**Session:** S178d | **Branch:** copilot/update-documentation-hub-status | **PR:** #4130 | **Date:** 2026-04-29
+
+**Task:** Apply 3 diff-spec fixes + resolve RP-007 variant for `agent_auth_session.json` + fix all failing CI checks on commit `bc7bc0a`
+
+**Root Causes Resolved:**
+1. `docs/ROADMAP.md` — Documentation current value was `85%` (stale vs. `95%` stated on line 43). Corrected to `95%`.
+2. `tests/ci/test_post_rescue_comment.py` — `GH_TOKEN` read from live env making tests non-deterministic; changed to fixed `"test-token"`. Bare assertion missing diagnostic message. `import os` left unused after env change (ruff F401).
+3. `scripts/ci/sync_tracked_files.py` — No RP-007 handler for `.codex/agent_auth_session.json` rotation, causing `🔐 Secrets Baseline Enforcer` to hard-fail on every delegation run.
+4. `.secrets.baseline` — CODEX_MANIFEST entry was stale (hash drift); updated via `sync_tracked_files.py --fix`.
+5. `CHANGELOG.md` — Missing S178d entry; added under `## [Unreleased]`.
+
+**Fix Applied:**
+- Removed unused `import os` from `tests/ci/test_post_rescue_comment.py` (ruff F401 clean)
+- Added `AGENT_AUTH_SESSION_PATH` constant + `check_agent_auth_session_baseline()` to `sync_tracked_files.py`
+- Updated `.secrets.baseline` via `sync_tracked_files.py --fix` (CODEX_MANIFEST hash drift)
+- Added `CHANGELOG.md` entry for S178d
+- Monitored all 50 approved workflows on `bc7bc0a`; resolved 1 genuine failure (Secrets Baseline Enforcer)
+
+**Verification:** `ruff check src/ tests/ --select F` → 0 errors. `sync_tracked_files.py --fix` → all consistent. `pytest tests/ci/test_post_rescue_comment.py` → 8 passed.
+
+
 
 **Session:** auto-20260429T1744-run3071 | **Run:** 25123998800 | **Date:** 2026-04-29
 
