@@ -8,3 +8,6 @@ rules:
     level: warning
   document-start:
     present: false
+  colons:
+    max-spaces-after: -1
+    max-spaces-before: 0
