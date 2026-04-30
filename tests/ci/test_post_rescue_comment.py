@@ -57,12 +57,13 @@ class TestGetBranchHeadSha:
             prc._get_branch_head_sha("t", "o/r", "feature/my branch")
 
         assert len(calls) == 1
+        path_lower = calls[0].lower()
         # Spaces in the branch name must be percent-encoded as %20.
-        assert "%20" in calls[0], (
+        assert "%20" in path_lower, (
             f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
         )
-        # Slashes in branch names must also be percent-encoded as %2F.
-        assert "%2F" in calls[0], (
+        # Slashes in branch names must also be percent-encoded as %2f (%2F).
+        assert "%2f" in path_lower, (
             f"Expected slash to be percent-encoded in branch path, got: {calls[0]!r}"
         )
 
