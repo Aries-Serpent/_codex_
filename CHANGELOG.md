@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S178g — 2026-04-30 — merge conflict resolution + secrets baseline re-sync)
+- **`CODEX_MANIFEST.json`** — Merged `main` into branch; resolved single conflict (CODEX_MANIFEST `integrity_sha256` drift from main's auto-refresh commit `5b79656`). Accepted main's version as it is the authoritative latest hash.
+- **`.secrets.baseline`** — Re-synced after merge: CODEX_MANIFEST entry updated from stale hash to `2c791e5d63cc…` (main's current `integrity_sha256`). Root cause of Secrets Baseline Enforcer run #25140603433: main's manifest was refreshed post-delegation but baseline had branch's older hash.
+
 ### Fixed (S178f — 2026-04-30 — mixed-returns code quality, self-trigger loop guard)
 - **`scripts/ci/approve_pending_runs.py`** — `_resolve_token()`: replaced `sys.exit(1)` with `raise SystemExit(1)` to resolve pylint R1710 "explicit returns mixed with implicit fall-through returns" code-quality finding. `raise` communicates a non-return path to static analysers; `sys.exit()` (a function call) does not.
 - **`scripts/ci/approve_via_playwright.py`** — `approve_via_browser()`: same `sys.exit(1)` → `raise SystemExit(1)` fix.
