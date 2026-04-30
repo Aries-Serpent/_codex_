@@ -89,13 +89,40 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.head_ref || github.ref_name }}
+          # Read from repo variable (CODEX_MAX_HEALER_RUNS_PER_HOUR) so the limit
+          # can be tuned without a code change. Falls back to 5 (S183d default).
+          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
+          # Skip healer when the triggering commit contains [skip ci].
+          # This breaks the sweep→validate→healer→sweep cascade:
+          # sweep pushes [skip ci] → CI skips → no failure event (but if a
+          # workflow_run fires anyway, this guard stops the healer re-entry).
+          CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI || 'true' }}
+          TRIGGERING_COMMIT_MSG: ${{ github.event.workflow_run.head_commit.message || '' }}
         run: |
-          # Hard brake: if >= 5 Iterative Self-Healing CI runs have been triggered
+          # Guard: skip if the triggering commit message contains [skip ci].
+          # Cascade vector: sweep pushes [skip ci] commit → some workflow_run still
+          # fires (e.g. workflow_run triggered by the completed healer itself on a
+          # different branch) → healer would re-run unnecessarily.
+          # Use nested if/elif to avoid grep executing when the feature is disabled.
+          if [[ "${CODEX_HEALER_SKIP_SKIPCI}" == "true" ]]; then
+            # ${TRIGGERING_COMMIT_MSG:0:80} — bash substring (supported by bash 4+,
+            # which is the GitHub Actions default shell). Used for truncated logging only.
+            COMMIT_PREVIEW="${TRIGGERING_COMMIT_MSG:0:80}"
+            if echo "${TRIGGERING_COMMIT_MSG}" | grep -qi '\[skip ci\]'; then
+              echo "::notice::Healer skipped — triggering commit contains [skip ci]: '${COMMIT_PREVIEW}'"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "### ⏭️ Healer Skipped — [skip ci] Commit" >> "$GITHUB_STEP_SUMMARY"
+              echo "Triggering commit contains \`[skip ci]\` — skipping healer to break sweep→validate→healer cascade." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+
+          # Hard brake: if >= N Iterative Self-Healing CI runs have been triggered
           # for this branch in the past hour, skip this run. This prevents the
           # self-healing cascade (issue #3860) where healer failures re-trigger the
           # healer indefinitely (SELF_HEALING_001 sub-scenario C).
-          # Lowered from 10→5 in S177 (issue #3977) to reduce cascade blast radius.
-          MAX_PER_HOUR=5
+          # Default 5 (lowered from 10→5 in S177). Override via CODEX_MAX_HEALER_RUNS_PER_HOUR.
+          MAX_PER_HOUR="${CODEX_MAX_HEALER_RUNS_PER_HOUR:-5}"
           ONE_HOUR_AGO=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || echo "")
@@ -764,7 +791,37 @@ jobs:
         if: steps.sweep.outputs.changed == 'true'
         env:
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          # CODEX_SWEEP_SKIP_MAIN: when 'true', skip pushing sweep commits to main/0D_base_.
+          # Set this variable to 'true' temporarily when many PRs are open to prevent
+          # sweep metadata commits (CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md, etc.)
+          # from generating merge conflicts in all open PRs at once.
+          # Default: 'false' (sweep pushes to all branches including main).
+          CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN || 'false' }}
         run: |
+          # Guard: skip push to integration/default branches when CODEX_SWEEP_SKIP_MAIN=true.
+          # This prevents sweep metadata commits from causing merge conflicts in open PRs.
+          # Admin can toggle CODEX_SWEEP_SKIP_MAIN=true during heavy PR activity periods.
+          # Protected branch list covers main and the staging integration branch (0D_base_).
+          # Additional branches can be added by setting CODEX_SWEEP_PROTECTED_BRANCHES
+          # as a repo variable (comma-separated) in the future.
+          PROTECTED_BRANCHES=("main" "0D_base_")
+          _skip_push=false
+          if [[ "${CODEX_SWEEP_SKIP_MAIN}" == "true" ]]; then
+            for _prot in "${PROTECTED_BRANCHES[@]}"; do
+              if [[ "${HEAD_BRANCH}" == "${_prot}" ]]; then
+                _skip_push=true
+                break
+              fi
+            done
+          fi
+          if [[ "${_skip_push}" == "true" ]]; then
+            echo "::warning::CODEX_SWEEP_SKIP_MAIN=true — skipping sweep push to protected branch '${HEAD_BRANCH}' to prevent merge conflicts in open PRs."
+            echo "### ⏭️ Sweep Push Skipped — CODEX_SWEEP_SKIP_MAIN" >> "$GITHUB_STEP_SUMMARY"
+            echo "Sweep changes computed but NOT pushed to \`${HEAD_BRANCH}\` (CODEX_SWEEP_SKIP_MAIN=true)." >> "$GITHUB_STEP_SUMMARY"
+            echo "Set repo variable \`CODEX_SWEEP_SKIP_MAIN=false\` to re-enable." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A

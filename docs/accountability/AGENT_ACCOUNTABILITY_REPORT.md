@@ -1,6 +1,32 @@
 # Agent Accountability Report
 
-## SESSION SUMMARY — S183d — 2026-04-30T22:13Z
+## SESSION SUMMARY — S183d Phase 2 — 2026-04-30T22:45Z
+
+**Session:** S183d-phase2 | **PR:** #4148 | **Task:** Additional variables/webhooks for autonomous behavior
+
+### New Repo Variables Queued (via process-variable-intents.yml)
+| Variable | Value | Purpose |
+|---|---|---|
+| `COPILOT_RUNNER_PROFILE` | `ubuntu-latest-m` | Larger runner for better session performance |
+| `CODEX_CACHE_VERSION` | `v2` | Explicit cache version (was implicit default) |
+| `CODEX_MAX_HEALER_RUNS_PER_HOUR` | `5` | Externalized rate cap — tunable without code change |
+| `CODEX_SWEEP_SKIP_MAIN` | `false` | Admin toggle to prevent sweep metadata pushing to main during heavy PR activity |
+| `CODEX_HEALER_SKIP_SKIPCI` | `true` | Skip healer when triggering commit has [skip ci] — breaks cascade |
+| `COPILOT_AGENT_STATE` | `ACTIVE` | Session lifecycle state tracking |
+
+### Workflow Improvements
+- `iterative-self-healing-ci.yml`: `[skip ci]` guard in triage rate_cap; reads `CODEX_MAX_HEALER_RUNS_PER_HOUR` from vars; `CODEX_SWEEP_SKIP_MAIN` guard in commit-and-push step
+- `agent-var-writer.yml`: expanded `ALLOWED_VAR_NAMES` from 6 → 19 entries (CI health, cascade control, runner/cache, session state)
+- `copilot-agent-vars-bootstrap.yml`: exports 5 new vars to `agent_context.json`
+- `copilot-setup-steps.yml`: supplemental cascade-control var injection step with live `vars.*` fallback
+- `.codex/AGENTIC_REPO_STATE.md`: full variable catalogue with toggle instructions for operators
+
+### Architecture: What's NOT Possible from Agent Side
+- Direct GitHub webhook endpoint creation (requires repo admin → settings)
+- repository_dispatch webhook registration (requires external service setup)
+- Modifying protected branch rules or Actions approval policies
+
+
 
 **Session:** S183d | **PR:** #4148 copilot/fix-ci-health-alert-issue | **Date:** 2026-04-30
 
