@@ -109,4 +109,3 @@ By: copilot-swe-agent[bot] — S183d
 Repo variable snapshot: `.codex/agent_context.json` (COPILOT_AGENT_AUTH_ENABLED=true confirmed)
 New variables queued: COPILOT_RUNNER_PROFILE, CODEX_CACHE_VERSION, CODEX_MAX_HEALER_RUNS_PER_HOUR,
   CODEX_SWEEP_SKIP_MAIN, CODEX_HEALER_SKIP_SKIPCI, COPILOT_AGENT_STATE
-
