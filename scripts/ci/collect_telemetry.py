@@ -194,7 +194,7 @@ class TelemetryCollector:
         "autostash-race": [
             "autostash", "unstaged changes", "cannot pull with rebase",
             "rebase race", "session_wrapup", "session-done push",
-            "fetch first", "rebase abort",
+            "rebase abort",
         ],
         # PUSH_RACE_001: concurrent push race (non-fast-forward rejection) when multiple
         # self-heal jobs or sweep jobs attempt to push to the same branch simultaneously.

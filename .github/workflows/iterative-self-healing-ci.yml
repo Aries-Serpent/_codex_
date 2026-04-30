@@ -635,12 +635,14 @@ jobs:
           # (SELF_HEALING_001 sub-scenario B: multiple heal jobs push simultaneously).
           _pushed=false
           for _attempt in 1 2 3; do
-            git pull --rebase --autostash origin "${TARGET_BRANCH}" 2>/dev/null || true
-            if git push origin "HEAD:refs/heads/${TARGET_BRANCH}"; then
+            _pull_err=$(git pull --rebase --autostash origin "${TARGET_BRANCH}" 2>&1) || \
+              echo "::warning::git pull attempt ${_attempt} non-zero: ${_pull_err}"
+            _push_err=$(git push origin "HEAD:refs/heads/${TARGET_BRANCH}" 2>&1)
+            if [ $? -eq 0 ]; then
               _pushed=true
               break
             fi
-            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s"
+            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
             sleep 5
           done
           if [ "${_pushed}" != "true" ]; then
@@ -765,12 +767,14 @@ jobs:
           # (SELF_HEALING_001 sub-scenario B: multiple sweep jobs push simultaneously).
           _pushed=false
           for _attempt in 1 2 3; do
-            git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>/dev/null || true
-            if git push origin "HEAD:refs/heads/${HEAD_BRANCH}"; then
+            _pull_err=$(git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>&1) || \
+              echo "::warning::git pull attempt ${_attempt} non-zero: ${_pull_err}"
+            _push_err=$(git push origin "HEAD:refs/heads/${HEAD_BRANCH}" 2>&1)
+            if [ $? -eq 0 ]; then
               _pushed=true
               break
             fi
-            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s"
+            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
             sleep 5
           done
           if [ "${_pushed}" != "true" ]; then
