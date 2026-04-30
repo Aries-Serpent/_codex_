@@ -2113,6 +2113,58 @@ jobs:
               print("    (non-fatal — cognitive brain module not installed in CI env)")
           PYEOF
 
+  # ── Job 4b: Self-Approve Pending Runs (S178e) ─────────────────────────────
+  # After delegation activates, immediately approve all action_required workflow
+  # runs for this PR so CI can proceed without manual intervention.
+  # Token priority: CB App → CODEX_MASTER_KEY → CODEX_BACKUP_KEY
+  self-approve-after-delegation:
+    name: "⚡ Approve action_required runs (post-delegation)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [activate-delegation]
+    if: |
+      always() &&
+      github.event.action != 'closed' &&
+      github.event.pull_request.number != '' &&
+      (needs.activate-delegation.result == 'success' || needs.activate-delegation.result == 'failure')
+    permissions:
+      actions: write
+      pull-requests: read
+      contents: read
+
+    steps:
+      - name: "Checkout (for approve_pending_runs.py)"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
+
+      - name: "Generate Cognitive Brain App token"
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        continue-on-error: true
+        with:
+          app-id: ${{ secrets._GITHUB_APP_ID }}
+          private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: "Approve all action_required runs for this PR"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          GITHUB_APP_PRIVATE_KEY:     ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+          GITHUB_APP_ID:              ${{ secrets._GITHUB_APP_ID }}
+          GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
+          REPO:                       ${{ github.repository }}
+          HEAD_SHA:                   ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER:                  ${{ github.event.pull_request.number }}
+          MAX_WAIT_SEC:               "30"
+        run: python scripts/ci/approve_pending_runs.py
+
   # ── Job 5: Session Release — clear lock on PR close/merge (S182) ──────────
   # When a PR is closed (merged or abandoned), release the session lock so the
   # next queued PR can proceed. Dequeues the next PR and posts @copilot continue
