@@ -301,6 +301,7 @@ jobs:
 
       - name: Upsert @copilot prompt as PR comment
         if: needs.should-escalate.outputs.pr_number != ''
+        continue-on-error: true  # best-effort — comment failure must not mask the actual CI failure
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ needs.should-escalate.outputs.pr_number }}
@@ -383,6 +384,7 @@ jobs:
 
       - name: Create escalation Issue when no PR exists
         if: needs.should-escalate.outputs.pr_number == ''
+        continue-on-error: true  # best-effort — issue creation failure must not mask the actual CI failure
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ needs.should-escalate.outputs.head_branch }}

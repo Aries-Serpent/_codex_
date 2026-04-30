@@ -171,12 +171,13 @@ jobs:
           # Added changelog-* (check_7 CHANGELOG cross-PR), pip-cache-* (sparse checkout),
           # policy-gate-* (pre-create pip cache fix), rebase-gate-* (branch gate),
           # auth-delegation (REQ-10 branch-diverged caused by scheduled bot commits).
+          # push-race: sweep/heal push race — auto_fix is a no-op but baseline-sweep handles it.
           # integration-branch-direct-session: NOT fixable — structural redirect only.
           # self-healing: NOT fixable — cascade detection; see SELF_HEALING_001 pattern.
           case "$PATTERN" in
             ruff-*|import-*|yaml-*|timeout-config|unused-import|auto-fix|\
             changelog-*|pip-cache-*|policy-gate-*|rebase-gate-*|mypy-baseline|\
-            auth-delegation|branch-diverged)
+            auth-delegation|branch-diverged|push-race|autostash-race)
               echo "fixable=true"  >> "$GITHUB_OUTPUT"
               ;;
             self-healing)
@@ -630,10 +631,22 @@ jobs:
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
           Iteration: ${MATRIX_ITERATION} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${TRIAGE_RUN_ID}
           COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
-          # Fast-forward push to the triggering branch. Because the working tree
-          # was already checked out at origin/${TARGET_BRANCH}, the fix commit is
-          # one commit ahead of origin/${TARGET_BRANCH} — the push is accepted.
-          git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
+          # Retry push up to 3 times with rebase to handle concurrent push race
+          # (SELF_HEALING_001 sub-scenario B: multiple heal jobs push simultaneously).
+          _pushed=false
+          for _attempt in 1 2 3; do
+            git pull --rebase --autostash origin "${TARGET_BRANCH}" 2>/dev/null || true
+            if git push origin "HEAD:refs/heads/${TARGET_BRANCH}"; then
+              _pushed=true
+              break
+            fi
+            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s"
+            sleep 5
+          done
+          if [ "${_pushed}" != "true" ]; then
+            echo "::error::Heal push failed after 3 attempts — concurrent push race detected"
+            exit 1
+          fi
 
       - name: Report iteration
         if: always()
@@ -748,8 +761,22 @@ jobs:
           git diff --cached --stat
           # [skip ci] prevents push-triggered workflows from re-triggering the healer
           git commit -m "fix(ci): universal baseline sweep — sync+auto_fix [skip ci]"
-          git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>/dev/null || true
-          git push origin "HEAD:refs/heads/${HEAD_BRANCH}"
+          # Retry push up to 3 times with rebase to handle concurrent push race on main
+          # (SELF_HEALING_001 sub-scenario B: multiple sweep jobs push simultaneously).
+          _pushed=false
+          for _attempt in 1 2 3; do
+            git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>/dev/null || true
+            if git push origin "HEAD:refs/heads/${HEAD_BRANCH}"; then
+              _pushed=true
+              break
+            fi
+            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s"
+            sleep 5
+          done
+          if [ "${_pushed}" != "true" ]; then
+            echo "::error::Sweep push failed after 3 attempts — concurrent push race detected"
+            exit 1
+          fi
           echo "✅ Sweep commit pushed to ${HEAD_BRANCH}" >> "$GITHUB_STEP_SUMMARY"
 
   escalate:

@@ -196,6 +196,13 @@ class TelemetryCollector:
             "rebase race", "session_wrapup", "session-done push",
             "fetch first", "rebase abort",
         ],
+        # PUSH_RACE_001: concurrent push race (non-fast-forward rejection) when multiple
+        # self-heal jobs or sweep jobs attempt to push to the same branch simultaneously.
+        "push-race": [
+            "non-fast-forward", "push rejected", "failed to push",
+            "concurrent push", "push failed after", "updates were rejected",
+            "push race", "fetch first",
+        ],
     }
 
     def __init__(self, owner: str, repo: str, token: str):

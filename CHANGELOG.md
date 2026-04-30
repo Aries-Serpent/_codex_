@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4148)
+### Fixed (S183 — 2026-04-30 — CI health alert: self-healing cascade fixes)
+- **`.github/workflows/agent-auth-delegation.yml`** — Added dependabot actor exemption to REQ-5 (CHANGELOG.md check). The check now skips for `dependabot[bot]` and `dependabot-preview[bot]` actors, matching the existing REQ-4 exemption. Root cause: dependabot PRs failed REQ-5 because CHANGELOG.md is never updated in automated version-bump commits.
+- **`.github/workflows/iterative-self-healing-ci.yml`** — Added push retry loop (3 attempts with `git pull --rebase --autostash` between each) to the "Commit and push sweep fixes" and "Commit and push fix" steps. Fixes SELF_HEALING_001 sub-scenario B: concurrent sweep/heal jobs pushing to `main` simultaneously caused non-fast-forward rejection, marking the whole run as failed.
+- **`.github/workflows/iterative-self-healing-ci.yml`** — Added `push-race` and `autostash-race` to the fixable patterns list so the triage job correctly marks them as auto-fixable.
+- **`.github/workflows/comment-review-gate.yml`** — Fixed `set -e` premature exit bug: added `set +e`/`set -e` around `check_pr_comments.py` call so exit codes 1 (blocking comments) and 2 (warnings) are properly captured instead of killing the step. Added `continue-on-error: true` to the rescue comment step.
+- **`.github/workflows/copilot-iterative-self-healing.yml`** — Added `continue-on-error: true` to "Upsert @copilot prompt as PR comment" and "Create escalation Issue when no PR exists" steps. These are best-effort notification steps; their failure must not mask the actual CI failure that triggered them.
+- **`scripts/ci/collect_telemetry.py`** — Added `push-race` pattern keywords (`non-fast-forward`, `push rejected`, `updates were rejected`, etc.) to `PATTERN_KEYWORDS` to classify concurrent push race failures as `push-race` instead of `unknown`.
+
+
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4148 (SHA `c1891c9d`) at 2026-04-30T20:30Z [auto-generated]
 
 ### Fixed (S178k — 2026-04-30 — cherry-pick dependabot PRs #4142/#4143/#4144 + merge main)
