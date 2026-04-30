@@ -65,17 +65,15 @@ on:
         default: false
         type: boolean
 
-# One sweep at a time per context to avoid duplicate approval races.
-# - schedule: single global sweep group (no per-run collision)
-# - workflow_run: one group per triggering run ID
-# - workflow_dispatch / other: fall back to this run's own ID
+# Global single-slot concurrency: at most one approval sweep runs at a time,
+# with the latest queued run replacing any previously queued (but not yet
+# started) run.  Using per-trigger-run-ID groups previously allowed unbounded
+# parallel self-approve instances, each one completing and triggering yet more
+# workflow_run events → exponential cascade (SELF_HEALING_001).
+# Since approve_pending_runs.py sweeps ALL pending runs in one pass, running
+# multiple concurrent copies provides no benefit and only amplifies the cascade.
 concurrency:
-  group: >-
-    self-approve-${{
-      github.event_name == 'schedule' && 'schedule-sweep' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.id != '' && github.event.workflow_run.id) ||
-      github.run_id
-    }}
+  group: self-approve-global
   cancel-in-progress: false
 
 permissions:
