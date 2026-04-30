@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 fully resolved: SAR-G01/G02/G05; SAR-G03 remains OPEN — Partial (75/100) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
+| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 resolved: SAR-G01/G02; P1 open: SAR-G03 — Partial (75/100); P2 resolved: SAR-G05 — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |
@@ -386,7 +386,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-04-30 (W-142 S116): Level 3.95 — P1 gaps partially resolved (SAR-G01/G02/G05 COMPLETE; SAR-G03 OPEN — Partial 75/100).
+> ✅ Updated 2026-04-30 (W-142 S116): Level 3.95 — P1: SAR-G01/G02 resolved, SAR-G03 OPEN (Partial 75/100); P2: SAR-G05 resolved.
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
