@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S178f — 2026-04-30 — mixed-returns code quality, self-trigger loop guard)
+- **`scripts/ci/approve_pending_runs.py`** — `_resolve_token()`: replaced `sys.exit(1)` with `raise SystemExit(1)` to resolve pylint R1710 "explicit returns mixed with implicit fall-through returns" code-quality finding. `raise` communicates a non-return path to static analysers; `sys.exit()` (a function call) does not.
+- **`scripts/ci/approve_via_playwright.py`** — `approve_via_browser()`: same `sys.exit(1)` → `raise SystemExit(1)` fix.
+- **`.github/workflows/self-approve-pending-runs.yml`** — Added job-level `if:` guard that skips execution when `github.event.workflow_run.name == '⚡ Self-Approve Pending Workflow Runs'`. Without this guard the `workflow_run: workflows: ["*"]` trigger fires on the workflow's own completion, creating an infinite cascade loop that would exhaust Actions minutes.
+
 ### Added (S178e — 2026-04-29 — Autonomous agent self-approval loop)
 - **`scripts/ci/approve_pending_runs.py`** — New Python script (mirrors `post_rescue_comment.py` pattern) that uses the Cognitive Brain GitHub App installation token (primary), CODEX_MASTER_KEY PAT (secondary), or CODEX_BACKUP_KEY (tertiary) to call `POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve` on every `action_required` workflow run for a given SHA or across all open PRs (sweep mode). Enables the full autonomous loop.
 - **`.github/workflows/self-approve-pending-runs.yml`** — Dedicated lightweight workflow triggered by `schedule` (every 2 minutes) and `workflow_run` (cascade after any workflow completes). Both triggers run from the default-branch context and are **never** `action_required`, breaking the push→block cycle. Uses CB App token (full-admin, no restrictions) as primary.

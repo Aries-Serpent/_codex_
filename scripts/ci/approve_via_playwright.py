@@ -70,7 +70,7 @@ def approve_via_browser(
     except ImportError:
         print("❌ playwright not installed — run: pip install playwright && playwright install chromium",
               file=sys.stderr)
-        sys.exit(1)
+        raise SystemExit(1)
 
     runs = _list_action_required_runs(repo, sha, token)
     if not runs:

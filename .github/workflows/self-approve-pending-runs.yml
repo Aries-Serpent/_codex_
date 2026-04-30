@@ -88,6 +88,12 @@ jobs:
     name: "⚡ Approve action_required runs"
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Self-trigger guard: skip when this workflow triggers itself via workflow_run.
+    # Without this guard, every completion of self-approve-pending-runs.yml would
+    # fire a new instance, creating an infinite cascade loop.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.name != '⚡ Self-Approve Pending Workflow Runs'
 
     steps:
       - name: "Checkout (for approve_pending_runs.py)"

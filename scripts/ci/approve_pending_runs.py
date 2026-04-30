@@ -154,7 +154,7 @@ def _resolve_token() -> tuple[str, str]:
 
     print("❌ No token available — set GH_TOKEN, CODEX_MASTER_KEY, or App secrets",
           file=sys.stderr)
-    sys.exit(1)
+    raise SystemExit(1)
 
 
 def _get_action_required_runs(
