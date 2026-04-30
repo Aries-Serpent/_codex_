@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-30T00:35:00Z",
+  "generated_at": "2026-04-30T02:05:46Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1604,6 +1604,11 @@
       "has_concurrency": true
     },
     {
+      "name": "self-approve-pending-runs",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "semgrep_sarif",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2050,5 +2055,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "ceba342badf27a4d225aced9cd352854d8415bac5d1638e7c81c177dc183d643"
+  "integrity_sha256": "345792b4932c2834b0d5f8cb0a06e8c2dd6fa8ccb8d0f13075218ca0be55bff1"
 }
