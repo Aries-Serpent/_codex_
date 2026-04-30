@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4133)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4133 (SHA `86cd6ec4`) at 2026-04-30T02:05Z [auto-generated]
+### Fixed (S178h — 2026-04-30 — merge main into branch, sync tracked files)
+- Merged latest `main` (commit `8cc5be6`) into branch. Auto-merged `AGENT_ACCOUNTABILITY_REPORT.md` (merge=union). Accepted main's `CODEX_MANIFEST.json` and `.secrets.baseline` updates. All tracked files consistent.
 
 ### Fixed (S178g — 2026-04-30 — merge conflict resolution + secrets baseline re-sync)
 - **`CODEX_MANIFEST.json`** — Merged `main` into branch; resolved single conflict (CODEX_MANIFEST `integrity_sha256` drift from main's auto-refresh commit `5b79656`). Accepted main's version as it is the authoritative latest hash.
