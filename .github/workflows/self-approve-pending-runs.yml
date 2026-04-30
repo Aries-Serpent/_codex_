@@ -39,7 +39,7 @@ name: "⚡ Self-Approve Pending Workflow Runs"
 on:
   # ── Primary: periodic sweep — never action_required ─────────────────────
   schedule:
-    - cron: '*/2 * * * *'    # every 2 minutes
+    - cron: '*/5 * * * *'    # every 5 minutes
 
   # ── Secondary: cascade — fires after any workflow completes ─────────────
   # When the first manually-approved run finishes, this fires and approves

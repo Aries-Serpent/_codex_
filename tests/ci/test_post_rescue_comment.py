@@ -61,6 +61,10 @@ class TestGetBranchHeadSha:
         assert "%20" in calls[0], (
             f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
         )
+        # Slashes in branch names must also be percent-encoded as %2F.
+        assert "%2F" in calls[0], (
+            f"Expected slash to be percent-encoded in branch path, got: {calls[0]!r}"
+        )
 
 
 class TestSelfSuppressMainLogic:
@@ -112,8 +116,9 @@ class TestSelfSuppressMainLogic:
 
         with patch.object(prc, "_get_branch_head_sha", return_value=current_head):
             with patch.object(prc, "_gh") as mock_gh:
-                prc.main()
+                result = prc.main()
 
+        assert result is None
         out = capsys.readouterr().out
         assert "suppressed" in out.lower() or "superseded" in out.lower(), (
             f"Expected suppression message in stdout, got: {out!r}"
