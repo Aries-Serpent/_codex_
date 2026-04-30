@@ -89,13 +89,40 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.head_ref || github.ref_name }}
+          # Read from repo variable (CODEX_MAX_HEALER_RUNS_PER_HOUR) so the limit
+          # can be tuned without a code change. Falls back to 5 (S183d default).
+          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
+          # Skip healer when the triggering commit contains [skip ci].
+          # This breaks the sweep→validate→healer→sweep cascade:
+          # sweep pushes [skip ci] → CI skips → no failure event (but if a
+          # workflow_run fires anyway, this guard stops the healer re-entry).
+          CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI || 'true' }}
+          TRIGGERING_COMMIT_MSG: ${{ github.event.workflow_run.head_commit.message || '' }}
         run: |
-          # Hard brake: if >= 5 Iterative Self-Healing CI runs have been triggered
+          # Guard: skip if the triggering commit message contains [skip ci].
+          # Cascade vector: sweep pushes [skip ci] commit → some workflow_run still
+          # fires (e.g. workflow_run triggered by the completed healer itself on a
+          # different branch) → healer would re-run unnecessarily.
+          # Use nested if/elif to avoid grep executing when the feature is disabled.
+          if [[ "${CODEX_HEALER_SKIP_SKIPCI}" == "true" ]]; then
+            # ${TRIGGERING_COMMIT_MSG:0:80} — bash substring (supported by bash 4+,
+            # which is the GitHub Actions default shell). Used for truncated logging only.
+            COMMIT_PREVIEW="${TRIGGERING_COMMIT_MSG:0:80}"
+            if echo "${TRIGGERING_COMMIT_MSG}" | grep -qi '\[skip ci\]'; then
+              echo "::notice::Healer skipped — triggering commit contains [skip ci]: '${COMMIT_PREVIEW}'"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "### ⏭️ Healer Skipped — [skip ci] Commit" >> "$GITHUB_STEP_SUMMARY"
+              echo "Triggering commit contains \`[skip ci]\` — skipping healer to break sweep→validate→healer cascade." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+
+          # Hard brake: if >= N Iterative Self-Healing CI runs have been triggered
           # for this branch in the past hour, skip this run. This prevents the
           # self-healing cascade (issue #3860) where healer failures re-trigger the
           # healer indefinitely (SELF_HEALING_001 sub-scenario C).
-          # Lowered from 10→5 in S177 (issue #3977) to reduce cascade blast radius.
-          MAX_PER_HOUR=5
+          # Default 5 (lowered from 10→5 in S177). Override via CODEX_MAX_HEALER_RUNS_PER_HOUR.
+          MAX_PER_HOUR="${CODEX_MAX_HEALER_RUNS_PER_HOUR:-5}"
           ONE_HOUR_AGO=$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || date -u -v-1H +%Y-%m-%dT%H:%M:%SZ 2>/dev/null \
             || echo "")
@@ -171,12 +198,13 @@ jobs:
           # Added changelog-* (check_7 CHANGELOG cross-PR), pip-cache-* (sparse checkout),
           # policy-gate-* (pre-create pip cache fix), rebase-gate-* (branch gate),
           # auth-delegation (REQ-10 branch-diverged caused by scheduled bot commits).
+          # push-race: sweep/heal push race — auto_fix is a no-op but baseline-sweep handles it.
           # integration-branch-direct-session: NOT fixable — structural redirect only.
           # self-healing: NOT fixable — cascade detection; see SELF_HEALING_001 pattern.
           case "$PATTERN" in
             ruff-*|import-*|yaml-*|timeout-config|unused-import|auto-fix|\
             changelog-*|pip-cache-*|policy-gate-*|rebase-gate-*|mypy-baseline|\
-            auth-delegation|branch-diverged)
+            auth-delegation|branch-diverged|push-race|autostash-race)
               echo "fixable=true"  >> "$GITHUB_OUTPUT"
               ;;
             self-healing)
@@ -630,10 +658,24 @@ jobs:
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
           Iteration: ${MATRIX_ITERATION} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${TRIAGE_RUN_ID}
           COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
-          # Fast-forward push to the triggering branch. Because the working tree
-          # was already checked out at origin/${TARGET_BRANCH}, the fix commit is
-          # one commit ahead of origin/${TARGET_BRANCH} — the push is accepted.
-          git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
+          # Retry push up to 3 times with rebase to handle concurrent push race
+          # (SELF_HEALING_001 sub-scenario B: multiple heal jobs push simultaneously).
+          _pushed=false
+          for _attempt in 1 2 3; do
+            _pull_err=$(git pull --rebase --autostash origin "${TARGET_BRANCH}" 2>&1) || \
+              echo "::warning::git pull attempt ${_attempt} non-zero: ${_pull_err}"
+            if _push_err=$(git push origin "HEAD:refs/heads/${TARGET_BRANCH}" 2>&1); then
+              _pushed=true
+              break
+            else
+              echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
+              sleep 5
+            fi
+          done
+          if [ "${_pushed}" != "true" ]; then
+            echo "::error::Heal push failed after 3 attempts — concurrent push race detected"
+            exit 1
+          fi
 
       - name: Report iteration
         if: always()
@@ -664,6 +706,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: triage
+    # Per-branch concurrency lock: only one sweep runs on a given branch at a time.
+    # cancel-in-progress: false ensures an in-progress sweep is never aborted; a
+    # second trigger will queue behind it instead of losing its commit.
+    # This eliminates the push race (SELF_HEALING_001-B) at the source by serialising
+    # all sweeps that target the same branch across concurrent workflow_run events.
+    concurrency:
+      group: baseline-sweep-${{ needs.triage.outputs.head_branch || github.ref_name }}
+      cancel-in-progress: false
     # Run whenever triage ran (regardless of fixable flag), unless it was skipped
     # by the cascade brake.  skip==true means rate_cap fired — nothing to do.
     if: >
@@ -741,15 +791,61 @@ jobs:
         if: steps.sweep.outputs.changed == 'true'
         env:
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          # CODEX_SWEEP_SKIP_MAIN: when 'true', skip pushing sweep commits to main/0D_base_.
+          # Set this variable to 'true' temporarily when many PRs are open to prevent
+          # sweep metadata commits (CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md, etc.)
+          # from generating merge conflicts in all open PRs at once.
+          # Default: 'false' (sweep pushes to all branches including main).
+          CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN || 'false' }}
         run: |
+          # Guard: skip push to integration/default branches when CODEX_SWEEP_SKIP_MAIN=true.
+          # This prevents sweep metadata commits from causing merge conflicts in open PRs.
+          # Admin can toggle CODEX_SWEEP_SKIP_MAIN=true during heavy PR activity periods.
+          # Protected branch list covers main and the staging integration branch (0D_base_).
+          # Additional branches can be added by setting CODEX_SWEEP_PROTECTED_BRANCHES
+          # as a repo variable (comma-separated) in the future.
+          PROTECTED_BRANCHES=("main" "0D_base_")
+          _skip_push=false
+          if [[ "${CODEX_SWEEP_SKIP_MAIN}" == "true" ]]; then
+            for _prot in "${PROTECTED_BRANCHES[@]}"; do
+              if [[ "${HEAD_BRANCH}" == "${_prot}" ]]; then
+                _skip_push=true
+                break
+              fi
+            done
+          fi
+          if [[ "${_skip_push}" == "true" ]]; then
+            echo "::warning::CODEX_SWEEP_SKIP_MAIN=true — skipping sweep push to protected branch '${HEAD_BRANCH}' to prevent merge conflicts in open PRs."
+            echo "### ⏭️ Sweep Push Skipped — CODEX_SWEEP_SKIP_MAIN" >> "$GITHUB_STEP_SUMMARY"
+            echo "Sweep changes computed but NOT pushed to \`${HEAD_BRANCH}\` (CODEX_SWEEP_SKIP_MAIN=true)." >> "$GITHUB_STEP_SUMMARY"
+            echo "Set repo variable \`CODEX_SWEEP_SKIP_MAIN=false\` to re-enable." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           git diff --cached --stat
           # [skip ci] prevents push-triggered workflows from re-triggering the healer
           git commit -m "fix(ci): universal baseline sweep — sync+auto_fix [skip ci]"
-          git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>/dev/null || true
-          git push origin "HEAD:refs/heads/${HEAD_BRANCH}"
+          # Retry push up to 3 times with rebase to handle concurrent push race on main
+          # (SELF_HEALING_001 sub-scenario B: multiple sweep jobs push simultaneously).
+          _pushed=false
+          for _attempt in 1 2 3; do
+            _pull_err=$(git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>&1) || \
+              echo "::warning::git pull attempt ${_attempt} non-zero: ${_pull_err}"
+            if _push_err=$(git push origin "HEAD:refs/heads/${HEAD_BRANCH}" 2>&1); then
+              _pushed=true
+              break
+            else
+              echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
+              sleep 5
+            fi
+          done
+          if [ "${_pushed}" != "true" ]; then
+            echo "::error::Sweep push failed after 3 attempts — concurrent push race detected"
+            exit 1
+          fi
           echo "✅ Sweep commit pushed to ${HEAD_BRANCH}" >> "$GITHUB_STEP_SUMMARY"
 
   escalate:

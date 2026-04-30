@@ -79,6 +79,12 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           GITHUB_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
+          # Disable exit-on-error so we can capture the exit code explicitly.
+          # check_pr_comments.py uses non-zero exit codes to signal unaddressed
+          # comments (exit 1=blocking, 2=warning, 3=API error) which are expected
+          # return values, not script failures.  Without set +e, set -e would
+          # terminate the step before EXIT_CODE=$? is reached.
+          set +e
           python3 scripts/ci/check_pr_comments.py \
             --pr "${{ steps.pr_info.outputs.pr_number }}" \
             --repo "${{ steps.pr_info.outputs.repo }}" \
@@ -86,6 +92,7 @@ jobs:
             --output-json /tmp/comment_review_report.json \
             --write-session-requirements /tmp/session_requirements.md
           EXIT_CODE=$?
+          set -e
 
           # Parse counts from report
           BLOCKING=$(python3 -c "
@@ -201,6 +208,7 @@ jobs:
           fetch-depth: 1
 
       - name: Post or update rescue comment
+        continue-on-error: true  # rescue comment is best-effort; don't mask the gate failure
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

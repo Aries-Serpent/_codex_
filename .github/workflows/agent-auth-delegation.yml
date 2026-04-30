@@ -895,6 +895,13 @@ jobs:
           echo "### 🔍 CHANGELOG.md Check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
+          # Dependabot bots don't maintain the CHANGELOG — same exemption as REQ-4.
+          ACTOR="${{ github.actor }}"
+          if [[ "${ACTOR}" == "dependabot[bot]" || "${ACTOR}" == "dependabot-preview[bot]" ]]; then
+            echo "⏭️ **SKIP** — Actor is \`${ACTOR}\` (bot); CHANGELOG.md not required." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
           if [ ! -f "$CHANGELOG" ]; then
             echo "⚠️ **SKIP** — \`${CHANGELOG}\` does not exist in repo root." >> "$GITHUB_STEP_SUMMARY"
             exit 0

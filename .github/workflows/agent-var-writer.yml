@@ -101,7 +101,8 @@ jobs:
           script: |
             const fs = require('fs');
 
-            // Only these variables can be set autonomously (security allowlist)
+            // Only these variables can be set autonomously (security allowlist).
+            // Add only non-sensitive config/flag variables here — never secrets.
             const ALLOWED_VAR_NAMES = [
               'COPILOT_AGENT_AUTH_ENABLED',
               'COGNITIVE_BRAIN_ALLOWED_ACTORS',
@@ -109,6 +110,20 @@ jobs:
               'CODEX_COVERAGE_THRESHOLD',
               'CODEX_AUDIT_DEPTH',
               'CODEX_AGENT_WORK_QUEUE',
+              // CI health & session state (written by healer / session-done workflows)
+              'CODEX_CI_FAILURE_RATE',
+              'CODEX_CI_LAST_GREEN_SHA',
+              'COPILOT_AGENT_STATE',
+              'COPILOT_AGENT_SESSION_EXPIRES',
+              'COPILOT_AGENT_LAST_SESSION_ID',
+              'COGNITIVE_BRAIN_SESSION_NUMBER',
+              // Tuning knobs for cascade control (S183d)
+              'CODEX_MAX_HEALER_RUNS_PER_HOUR',
+              'CODEX_SWEEP_SKIP_MAIN',
+              'CODEX_HEALER_SKIP_SKIPCI',
+              // Runner & cache config (performance)
+              'COPILOT_RUNNER_PROFILE',
+              'CODEX_CACHE_VERSION',
             ];
 
             const pendingFile = '.codex/pending_var_updates.json';

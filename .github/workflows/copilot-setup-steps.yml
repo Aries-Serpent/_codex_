@@ -316,6 +316,40 @@ jobs:
             echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
           fi
 
+      - name: "⚙️ Inject cascade-control & tuning variables (live vars fallback)"
+        # Supplement agent_context.json injection with live vars.* values for the
+        # critical cascade-control knobs added in S183d. These may not yet be in
+        # agent_context.json if vars-bootstrap hasn't run since the variables were
+        # first created. The explicit injection here ensures agent sessions always
+        # see the current values regardless of the bootstrap timing.
+        env:
+          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
+          CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
+          CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI }}
+          COPILOT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE }}
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION }}
+          COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
+          CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
+        run: |
+          # Write non-empty values to GITHUB_ENV (live override of agent_context.json).
+          # ${!var} is bash indirect expansion: given var="FOO", ${!var} expands to
+          # the VALUE of the variable named FOO (i.e. the same as ${FOO}).
+          for var in \
+            CODEX_MAX_HEALER_RUNS_PER_HOUR \
+            CODEX_SWEEP_SKIP_MAIN \
+            CODEX_HEALER_SKIP_SKIPCI \
+            COPILOT_RUNNER_PROFILE \
+            CODEX_CACHE_VERSION \
+            COPILOT_AGENT_STATE \
+            CODEX_CI_LAST_GREEN_SHA; do
+            val="${!var}"
+            if [ -n "$val" ]; then
+              echo "${var}=${val}" >> "$GITHUB_ENV"
+              echo "  ✅ ${var}=${val}"
+            fi
+          done
+          echo "── Cascade-control var injection complete ──"
+
       - name: "🛡️ Install safe-git-show guard on PATH"
         run: |
           if [ -f scripts/ci/safe_git_show.sh ]; then

@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "operation": "set",
+  "scope": "repo",
+  "owner": "Aries-Serpent",
+  "repo": "_codex_",
+  "name": "COPILOT_RUNNER_PROFILE",
+  "value": "ubuntu-latest-m",
+  "queued_at": "2026-04-30T22:23:52Z",
+  "queued_by": "variable_intent_writer",
+  "note": "Processed by .github/workflows/process-variable-intents.yml on next push using CODEX_MASTER_KEY."
+}
