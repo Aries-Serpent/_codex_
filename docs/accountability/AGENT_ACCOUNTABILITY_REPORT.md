@@ -1,5 +1,27 @@
 # Agent Accountability Report
 
+## SESSION SUMMARY — S183d — 2026-04-30T22:13Z
+
+**Session:** S183d | **PR:** #4148 copilot/fix-ci-health-alert-issue | **Date:** 2026-04-30
+
+### Actions Taken
+- Fixed `self-approve-pending-runs.yml`: replaced per-trigger-run-ID concurrency group with single global key `self-approve-global` (cascade amplifier fix)
+- Validated all 32 auto_fix patterns pass locally (0 issues, Pattern 30: 100/100)
+- Diagnosed cascade anatomy: failed_workflow → N parallel self-approves → N healer triggers → N sweep pushes to main → merge conflicts on open PRs
+- Confirmed `[skip ci]` on sweep commits prevents push-triggered CI re-fires
+- Confirmed healer self-trigger guard prevents healer-completions from re-triggering healer
+- Confirmed yamllint exits 0 (warnings only, no errors) on all changed workflow files
+- Appended S183d PDA entry to `.codex/aftermath/pda_iterations.jsonl`
+- Ran `sync_tracked_files.py --fix` to ensure all tracked files consistent
+
+### Lessons Hardened (S183 Series)
+1. **CASCADE ANATOMY**: `failed_workflow` → self-approve (old: per-run-ID groups = unbounded parallel) → approves N pending runs → N completions → N more self-approves. Fix: `group: self-approve-global`
+2. **Pattern 25**: AGENT_ACCOUNTABILITY_REPORT.md MUST be in HEAD commit. Always include in same commit as other changes.
+3. **Push retry bash safety**: Use `if _err=$(cmd 2>&1); then ... else ... fi` NOT `_err=$(cmd 2>&1); if [ $? -eq 0 ]` under `set -e`
+4. **Sweep main conflicts**: Sweep pushes metadata files to HEAD_BRANCH. If HEAD_BRANCH=main, open PRs modifying those files get merge conflicts. Mitigation: global self-approve key reduces healer frequency.
+5. **Concurrency key normalization**: Use `github.ref_name` (bare branch) NOT `github.ref` (refs/heads/...) as fallback in concurrency groups.
+
+
 
 
 
