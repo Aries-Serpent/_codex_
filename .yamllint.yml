@@ -8,3 +8,7 @@ rules:
     level: warning
   document-start:
     present: false
+  # Allow aligned env variable blocks in GitHub Actions workflows (e.g., padded colon spacing)
+  colons:
+    max-spaces-after: -1
+    max-spaces-before: 0
