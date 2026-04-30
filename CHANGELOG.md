@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S178k — 2026-04-30 — cherry-pick dependabot PRs #4142/#4143/#4144 + merge main)
+- **`requirements-notebook.txt`** — Applied dependency bumps from PRs #4142, #4143, #4144: `jupyterlab` 4.5.6→4.5.7 and `notebook` 7.4.7→7.5.6.
+- **`requirements/lock.txt`** — Corresponding lock-file updates for `jupyterlab==4.5.7` and `notebook==7.5.6`.
+- **`.yamllint.yml`** — Added `colons: max-spaces-after: -1` rule (from PR #4143) to allow aligned env-variable blocks in GitHub Actions workflow files.
+- Merged latest `main` (13 commits ahead) to resolve branch divergence.
+
+### Fixed (S178i — 2026-04-30 — actionlint cron violation in auto-approve-workflows.yml)
+- **`.github/workflows/auto-approve-workflows.yml`** — Changed `cron: '*/2 * * * *'` to `'*/5 * * * *'` to satisfy actionlint minimum 5-minute interval requirement. Root cause of `actionlint — Workflow Compliance` failing on commit `c1abf235bb6e`.
+
+### Fixed (S178h — 2026-04-30 — merge main into branch, sync tracked files)
+- Merged latest `main` (commit `8cc5be6`) into branch. Auto-merged `AGENT_ACCOUNTABILITY_REPORT.md` (merge=union). Accepted main's `CODEX_MANIFEST.json` and `.secrets.baseline` updates. All tracked files consistent.
+
 ### Fixed (S178g — 2026-04-30 — merge conflict resolution + secrets baseline re-sync)
 - **`CODEX_MANIFEST.json`** — Merged `main` into branch; resolved single conflict (CODEX_MANIFEST `integrity_sha256` drift from main's auto-refresh commit `5b79656`). Accepted main's version as it is the authoritative latest hash.
 - **`.secrets.baseline`** — Re-synced after merge: CODEX_MANIFEST entry updated from stale hash to `2c791e5d63cc…` (main's current `integrity_sha256`). Root cause of Secrets Baseline Enforcer run #25140603433: main's manifest was refreshed post-delegation but baseline had branch's older hash.
