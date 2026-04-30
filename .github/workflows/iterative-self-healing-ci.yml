@@ -679,6 +679,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: triage
+    # Per-branch concurrency lock: only one sweep runs on a given branch at a time.
+    # cancel-in-progress: false ensures an in-progress sweep is never aborted; a
+    # second trigger will queue behind it instead of losing its commit.
+    # This eliminates the push race (SELF_HEALING_001-B) at the source by serialising
+    # all sweeps that target the same branch across concurrent workflow_run events.
+    concurrency:
+      group: baseline-sweep-${{ needs.triage.outputs.head_branch || github.ref }}
+      cancel-in-progress: false
     # Run whenever triage ran (regardless of fixable flag), unless it was skipped
     # by the cascade brake.  skip==true means rate_cap fired — nothing to do.
     if: >
