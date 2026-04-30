@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4152)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4152 (SHA `6cdd1c2d`) at 2026-04-30T22:50Z [auto-generated]
+
 ### Fixed (S183 — 2026-04-30 — CI health alert: self-healing cascade fixes)
 - **`.github/workflows/agent-auth-delegation.yml`** — Added dependabot actor exemption to REQ-5 (CHANGELOG.md check). The check now skips for `dependabot[bot]` and `dependabot-preview[bot]` actors, matching the existing REQ-4 exemption. Root cause: dependabot PRs failed REQ-5 because CHANGELOG.md is never updated in automated version-bump commits.
 - **`.github/workflows/iterative-self-healing-ci.yml`** — Added per-branch job-level `concurrency` lock to the `baseline-sweep` job (`group: baseline-sweep-<branch>`, `cancel-in-progress: false`). Only one sweep can run per branch at a time; additional triggers queue instead of racing. This eliminates the concurrent push race (SELF_HEALING_001-B) at its source.
