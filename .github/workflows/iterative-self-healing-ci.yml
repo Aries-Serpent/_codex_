@@ -637,13 +637,13 @@ jobs:
           for _attempt in 1 2 3; do
             _pull_err=$(git pull --rebase --autostash origin "${TARGET_BRANCH}" 2>&1) || \
               echo "::warning::git pull attempt ${_attempt} non-zero: ${_pull_err}"
-            _push_err=$(git push origin "HEAD:refs/heads/${TARGET_BRANCH}" 2>&1)
-            if [ $? -eq 0 ]; then
+            if _push_err=$(git push origin "HEAD:refs/heads/${TARGET_BRANCH}" 2>&1); then
               _pushed=true
               break
+            else
+              echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
+              sleep 5
             fi
-            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
-            sleep 5
           done
           if [ "${_pushed}" != "true" ]; then
             echo "::error::Heal push failed after 3 attempts — concurrent push race detected"
@@ -685,7 +685,7 @@ jobs:
     # This eliminates the push race (SELF_HEALING_001-B) at the source by serialising
     # all sweeps that target the same branch across concurrent workflow_run events.
     concurrency:
-      group: baseline-sweep-${{ needs.triage.outputs.head_branch || github.ref }}
+      group: baseline-sweep-${{ needs.triage.outputs.head_branch || github.ref_name }}
       cancel-in-progress: false
     # Run whenever triage ran (regardless of fixable flag), unless it was skipped
     # by the cascade brake.  skip==true means rate_cap fired — nothing to do.
@@ -777,13 +777,13 @@ jobs:
           for _attempt in 1 2 3; do
             _pull_err=$(git pull --rebase --autostash origin "${HEAD_BRANCH}" 2>&1) || \
               echo "::warning::git pull attempt ${_attempt} non-zero: ${_pull_err}"
-            _push_err=$(git push origin "HEAD:refs/heads/${HEAD_BRANCH}" 2>&1)
-            if [ $? -eq 0 ]; then
+            if _push_err=$(git push origin "HEAD:refs/heads/${HEAD_BRANCH}" 2>&1); then
               _pushed=true
               break
+            else
+              echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
+              sleep 5
             fi
-            echo "::warning::Push attempt ${_attempt} failed — retrying in 5s: ${_push_err}"
-            sleep 5
           done
           if [ "${_pushed}" != "true" ]; then
             echo "::error::Sweep push failed after 3 attempts — concurrent push race detected"
