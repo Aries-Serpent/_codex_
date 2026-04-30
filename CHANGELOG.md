@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S178i — 2026-04-30 — actionlint cron violation in auto-approve-workflows.yml)
+- **`.github/workflows/auto-approve-workflows.yml`** — Changed `cron: '*/2 * * * *'` to `'*/5 * * * *'` to satisfy actionlint minimum 5-minute interval requirement. Root cause of `actionlint — Workflow Compliance` failing on commit `c1abf235bb6e`.
+
 ### Fixed (S178h — 2026-04-30 — merge main into branch, sync tracked files)
 - Merged latest `main` (commit `8cc5be6`) into branch. Auto-merged `AGENT_ACCOUNTABILITY_REPORT.md` (merge=union). Accepted main's `CODEX_MANIFEST.json` and `.secrets.baseline` updates. All tracked files consistent.
 

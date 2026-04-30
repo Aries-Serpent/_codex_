@@ -49,11 +49,11 @@ on:
   pull_request:
     types: [synchronize, opened, reopened, ready_for_review]
 
-  # Periodic sweep: approves pending runs on ALL open PRs every 2 minutes.
+  # Periodic sweep: approves pending runs on ALL open PRs every 5 minutes.
   # Schedule triggers run from the DEFAULT BRANCH and are NEVER action_required —
   # this is the primary autonomous approval mechanism.
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '*/5 * * * *'
 
   # Manual trigger with full control.
   workflow_dispatch:
