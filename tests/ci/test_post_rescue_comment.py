@@ -89,8 +89,10 @@ class TestSelfSuppressMainLogic:
 
         Optional variables that are *not* explicitly provided are deleted to
         avoid cross-test leakage. In particular, ``PR_NUMBER`` is removed unless
-        overridden so tests can intentionally switch between push mode (absent)
-        and PR-triggered mode (present).
+        overridden so tests can intentionally switch execution paths:
+        push mode (``PR_NUMBER`` absent, so the script performs PR lookup via API)
+        versus PR-triggered mode (``PR_NUMBER`` present, so the script uses that
+        PR directly and skips lookup).
         """
         env = {**self._ENV_BASE, **overrides}
         for k, v in env.items():
@@ -135,9 +137,11 @@ class TestSelfSuppressMainLogic:
 
         with patch.object(prc, "_get_branch_head_sha", return_value=commit_sha):
             with patch.object(prc, "_find_rescue_comment", return_value=(None, "")):
-                # build_comment_context is an optional import inside main(); it may
-                # fail silently when the discussion_context_store module is absent.
-                # Patching _gh to return a valid 201 lets the POST succeed cleanly.
+                # This test focuses on the "HEAD matches COMMIT_SHA" path reaching
+                # the comment POST step. main() may optionally enrich the comment
+                # via build_comment_context (from discussion_context_store), but
+                # that enrichment is not required for this behavior. Returning 201
+                # from _gh keeps the test deterministic and validates post-attempt flow.
                 with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})):
                     prc.main()
 
