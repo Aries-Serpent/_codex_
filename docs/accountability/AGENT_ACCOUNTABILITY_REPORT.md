@@ -23834,3 +23834,16 @@ and the CI gate requirement.
   Fix: accepted main's `CODEX_MANIFEST.json` and re-ran `sync_tracked_files.py --fix`;
   `.secrets.baseline` updated from `634434...` to `4f1d6b...` to match main's hash.
 - All 10 rescue-comment tests pass; ruff clean; all tracked files consistent.
+
+## Session S294-cont2 (2026-05-01)
+- **Pre-Merge Validation / Pattern 30 re-check**: CI runs `25233887430` (Pre-Merge Validation)
+  and `25233887434` (Validation Pipeline) failed on commit `d7a6214` with Pattern 30 stale
+  (`sync_tracked_files: ❌ stale`). Root cause: those CI runs launched before commit `7e9c85a`
+  (which fixed Pattern 30) was pushed, so they ran against the stale merge preview.
+  No new code failures — all patterns pass on current HEAD.
+- **Post rescue comment failures**: Both "Post rescue comment" jobs failed with HTTP 403
+  (GitHub API rate limit exceeded at 21:38-21:40 UTC). Transient infrastructure issue;
+  no code fix needed.
+- **Pattern 22 (RP-004)**: CI Rescue flagged Pattern 22 on `d7a6214`. `sync_tracked_files --check`
+  passes cleanly on current HEAD (CODEX_MANIFEST SHA consistent at `f23f84ad4c8d`).
+- All 10 rescue-comment tests pass; ruff clean; all patterns (22, 25, 30) green.
