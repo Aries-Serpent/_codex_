@@ -46,7 +46,7 @@ class TestGetBranchHeadSha:
         assert result is None
 
     def test_url_encodes_branch_name(self):
-        """Branches with '/' or special chars must be URL-encoded."""
+        """Branches with spaces and '/' must be URL-encoded."""
         calls = []
 
         def _mock_gh(method, path, token):
@@ -188,13 +188,12 @@ class TestSelfSuppressMainLogic:
 
         with patch.object(prc, "_get_branch_head_sha", return_value=commit_sha):
             with patch.object(prc, "_find_rescue_comment", return_value=(None, "")):
-                if maybe_builder is not None:
-                    with patch.object(prc, "build_comment_context", return_value={"summary": "extra context"}) as mock_ctx:
-                        with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})) as mock_gh:
+                with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})) as mock_gh:
+                    if maybe_builder is not None:
+                        with patch.object(prc, "build_comment_context", return_value={"summary": "extra context"}) as mock_ctx:
                             prc.main()
-                    assert mock_ctx.called, "Expected build_comment_context to be called when available"
-                else:
-                    with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})) as mock_gh:
+                        assert mock_ctx.called, "Expected build_comment_context to be called when available"
+                    else:
                         prc.main()
 
         post_calls = [c for c in mock_gh.call_args_list if c.args and c.args[0] == "POST"]

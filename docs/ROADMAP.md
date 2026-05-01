@@ -2,7 +2,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Last Updated**: 2026-04-28 | **Version**: 2.1.0 | **Owner**: DevOps + Agent Team
+**Roadmap Version Date**: 2026-04-28 | **Version**: 2.1.0 | **Owner**: DevOps + Agent Team
 
 ---
 
@@ -187,7 +187,7 @@
 
 #### 2. **Coverage Improvement to 95%+** (Phase 9 extension)
 **Timeline**: 2026-04-13 to 2026-05-22
-**Status**: 🟡 Planning
+**Status**: 🟢 Active
 **Effort**: 5-8 sessions (~150K-300K tokens)
 
 **Tasks**:
@@ -262,7 +262,7 @@
 
 #### 0. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS
 **Timeline**: 2026-03-15 to 2026-05-31  
-**Status**: 🟡 In progress — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100)  
+**Status**: 🟡 In progress (as of 2026-04-28 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31  
 **Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
 
 | Gap | Owner | Playbook | ETA |
@@ -366,7 +366,7 @@
 
 | Metric | Current | Cycle 1 Target | Cycle 2 Target | Cycle 3 Target |
 |--------|---------|-----------|-----------|-----------|
-| **Agent Autonomy** | 40% | 70%+ | 85%+ | 95%+ |
+| **Agent Autonomy** | 70% | 70%+ | 85%+ | 95%+ |
 | **Session Success Rate** | 85%+ | 90%+ | 95%+ | 98%+ |
 | **Iteration Cycle** | 1-2 iterations | 1 iteration | <1 iteration | <1 iteration |
 | **Blocker Resolution** | 100% | 100% | 100% | 100% |
