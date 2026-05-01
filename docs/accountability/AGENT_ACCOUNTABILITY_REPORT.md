@@ -23807,3 +23807,21 @@ and the CI gate requirement.
 - Cascading rescue/escalation comments (same failure triggering ci_rescue.py +
   iterative-self-healing-ci + copilot-iterative-self-healing independently) create noisy signals
   and should be deduplicated at the posting step before summoning the agent.
+
+## Session S294-cont-2 — 2026-05-01 — PR #4160 — Fix cascading @copilot escalations
+
+### What Was Done
+- **Root cause identified**: Three independent workflows all checked for their OWN HTML
+  comment marker, so none could see that the others had already summoned the agent:
+  - `ci-rescue.yml` → `<!-- ci-rescue-sha:{pr}:{sha12} -->`
+  - `iterative-self-healing-ci.yml` copilot-escalation job → `<!-- copilot-escalation:{PR} -->`
+  - `copilot-iterative-self-healing.yml` → `<!-- copilot-healing:{sha}:{category} -->`
+  For a single CI failure all three could fire within seconds and each would see zero
+  existing comments (matching its own marker) and create a separate @copilot request.
+- **Fix applied**: Both `iterative-self-healing-ci.yml` (copilot-escalation job) and
+  `copilot-iterative-self-healing.yml` now use a unified JQ expression in their 30-min
+  dedup guards that matches ANY of the three marker prefixes:
+  `test("<!-- (ci-rescue-sha|copilot-escalation|copilot-healing):")`.
+  The first workflow to fire posts its comment; the others detect the existing escalation
+  and skip — preventing cascading agent invocations for the same failure event.
+- YAML validated; all CI patterns (22, 25, ruff, sync) still pass.

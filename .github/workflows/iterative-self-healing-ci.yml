@@ -1068,12 +1068,15 @@ jobs:
 
           RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
 
-          # ── Dedup guard: skip if a copilot-escalation comment was posted < 30 min ago ──
+          # ── Dedup guard: skip if ANY @copilot rescue/escalation/healing comment
+          # was posted < 30 min ago — unified across all three posting workflows
+          # (ci-rescue.yml, iterative-self-healing-ci.yml, copilot-iterative-self-healing.yml).
+          # Previously each workflow only checked its own marker, allowing all three
+          # to fire simultaneously for the same failure and each summon the agent
+          # independently.  The shared check ensures the first poster wins and the
+          # others are silenced for the 30-minute cooldown window.
           ESCALATION_MARKER="<!-- copilot-escalation:${PR_NUMBER} -->"
-          # Use a heredoc-fed jq expression to avoid double-quote nesting inside
-          # the --jq flag argument (reviewer: jq program must not embed double
-          # quotes in a double-quoted shell string — use single-quote wrapper).
-          JQ_EXPR='[.comments[] | select(.body | contains("<!-- copilot-escalation:"))] | last | .createdAt // empty'
+          JQ_EXPR='[.comments[] | select(.body | test("<!-- (ci-rescue-sha|copilot-escalation|copilot-healing):"))] | last | .createdAt // empty'
           LAST_ESC=$(gh pr view "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
             --json comments --jq "$JQ_EXPR" \
             2>/dev/null || echo "")
@@ -1082,9 +1085,9 @@ jobs:
             LAST_TS=$(date -d "${LAST_ESC}" +%s 2>/dev/null || echo "0")
             ELAPSED=$(( NOW_TS - LAST_TS ))
             if [ "$ELAPSED" -lt 1800 ]; then
-              echo "::notice::Skipping copilot-escalation — posted ${ELAPSED}s ago (< 30 min cooldown)"
-              echo "### ⏭️ Copilot Escalation Skipped (cooldown)" >> "$GITHUB_STEP_SUMMARY"
-              echo "Last escalation was ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"
+              echo "::notice::Skipping copilot-escalation — a rescue/escalation/healing comment was already posted ${ELAPSED}s ago (< 30 min cooldown)"
+              echo "### ⏭️ Copilot Escalation Skipped (cooldown — shared marker)" >> "$GITHUB_STEP_SUMMARY"
+              echo "An @copilot escalation was already posted ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi
           fi
