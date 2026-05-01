@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183l — 2026-05-01 — CI rescue: merge main to resolve branch divergence)
+- **Branch divergence resolved**: Merged `origin/main` (commits `6bd88adc`, `5130cef8`) into branch — branch was 2 commits behind main, causing SHA drift in merge preview CI runs.
+- **Validation Pipeline lint failure** (run #25202959795) and **Auto-Fix PR Check** (run #25202959775) failures were artifacts of CI running on merge preview commit `d0397b99` vs actual branch HEAD. Resolved by merging main.
+- `sync_tracked_files --check` ✅; `ruff check src/` ✅; all CI patterns pass on merged HEAD.
+
+
 ### Fixed (S183j — 2026-05-01 — CI rescue: address stale check failures on commit 5716e342)
 - **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** — Added S183j session entry; Pattern 25 (Last-Commit Accountability) compliance maintained.
 - All 32 CI patterns confirmed passing (100/100) on HEAD `814e57a`: ruff clean, sync_tracked_files consistent, Pattern 25/30 green.
