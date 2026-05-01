@@ -146,8 +146,78 @@ jobs:
             echo "📝 **Changed:** \`${CHANGED_FILES}\`" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Commit sweep fixes — main
+      # Guard: skip push to main when open PRs touch the same files the sweep
+      # would modify.  Pushing a sweep commit to main while a PR branch is open
+      # causes merge conflicts on .secrets.baseline,
+      # docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md, docs/ROADMAP.md, and
+      # CODEX_MANIFEST.json — the exact files the sweep always rewrites.
+      #
+      # Algorithm:
+      #   1. Collect the list of files the sweep actually changed (git diff --name-only).
+      #   2. List all open PRs targeting main via the GitHub REST API.
+      #   3. For each open PR, fetch its changed-file list.
+      #   4. If any PR file overlaps with the sweep's changed files → set
+      #      pr_conflict=true and skip the push.  Log the offending PRs to the
+      #      job summary so engineers know why the sweep was deferred.
+      - name: Open-PR conflict guard — skip push when PRs touch sweep files
+        id: pr_guard
         if: steps.rate.outputs.skip != 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Files the sweep actually changed on disk
+          SWEEP_FILES=$(git diff --name-only HEAD 2>/dev/null || git diff --name-only)
+          if [ -z "$SWEEP_FILES" ]; then
+            # Nothing changed — guard is moot
+            echo "pr_conflict=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "🔍 Sweep changed files:" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "$SWEEP_FILES" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+
+          # Fetch open PRs targeting main (page 1, up to 100)
+          OPEN_PRS=$(gh api "repos/${REPO}/pulls?base=main&state=open&per_page=100" \
+            --jq '.[].number' 2>/dev/null || echo "")
+
+          if [ -z "$OPEN_PRS" ]; then
+            echo "pr_conflict=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️ No open PRs targeting main — sweep push is safe." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          CONFLICT_PRS=""
+          for PR_NUM in $OPEN_PRS; do
+            # Get the list of files changed in this PR (up to 100 per page — sufficient
+            # for the sweep's small set of target files: .secrets.baseline,
+            # AGENT_ACCOUNTABILITY_REPORT.md, ROADMAP.md, CODEX_MANIFEST.json)
+            PR_FILES=$(gh api "repos/${REPO}/pulls/${PR_NUM}/files?per_page=100" \
+              --jq '.[].filename' 2>/dev/null || echo "")
+            # Check overlap with sweep files
+            while IFS= read -r sweep_file; do
+              if echo "$PR_FILES" | grep -qxF "$sweep_file"; then
+                CONFLICT_PRS="${CONFLICT_PRS} #${PR_NUM}"
+                break
+              fi
+            done <<< "$SWEEP_FILES"
+          done
+
+          if [ -n "$CONFLICT_PRS" ]; then
+            echo "pr_conflict=true" >> "$GITHUB_OUTPUT"
+            echo "⚠️ **Sweep push deferred** — open PR(s) touch the same files:" >> "$GITHUB_STEP_SUMMARY"
+            echo "> PRs:${CONFLICT_PRS}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "The sweep will be applied the next time these PRs are merged." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "pr_conflict=false" >> "$GITHUB_OUTPUT"
+            echo "✅ No open PRs conflict with sweep files — push is safe." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit sweep fixes — main
+        if: steps.rate.outputs.skip != 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true' && steps.pr_guard.outputs.pr_conflict != 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -255,8 +325,43 @@ jobs:
             echo "changed_files=$(git diff --name-only | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit sweep fixes — 0D_base_
+      - name: Open-PR conflict guard — skip push when PRs touch sweep files (0D_base_)
+        id: pr_guard_staging
         if: steps.branch_check.outputs.exists == 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          SWEEP_FILES=$(git diff --name-only HEAD 2>/dev/null || git diff --name-only)
+          if [ -z "$SWEEP_FILES" ]; then
+            echo "pr_conflict=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Check open PRs targeting 0D_base_
+          OPEN_PRS=$(gh api "repos/${REPO}/pulls?base=0D_base_&state=open&per_page=100" \
+            --jq '.[].number' 2>/dev/null || echo "")
+          CONFLICT_PRS=""
+          for PR_NUM in $OPEN_PRS; do
+            # Up to 100 files per PR — sufficient for the sweep's small set of target files
+            PR_FILES=$(gh api "repos/${REPO}/pulls/${PR_NUM}/files?per_page=100" \
+              --jq '.[].filename' 2>/dev/null || echo "")
+            while IFS= read -r sweep_file; do
+              if echo "$PR_FILES" | grep -qxF "$sweep_file"; then
+                CONFLICT_PRS="${CONFLICT_PRS} #${PR_NUM}"
+                break
+              fi
+            done <<< "$SWEEP_FILES"
+          done
+          if [ -n "$CONFLICT_PRS" ]; then
+            echo "pr_conflict=true" >> "$GITHUB_OUTPUT"
+            echo "⚠️ **0D_base_ sweep push deferred** — open PR(s) touch the same files: ${CONFLICT_PRS}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "pr_conflict=false" >> "$GITHUB_OUTPUT"
+            echo "✅ No open PRs conflict with 0D_base_ sweep files — push is safe." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit sweep fixes — 0D_base_
+        if: steps.branch_check.outputs.exists == 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true' && steps.pr_guard_staging.outputs.pr_conflict != 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

@@ -309,11 +309,16 @@ jobs:
           CATEGORY: ${{ steps.build_prompt.outputs.category }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
-          # ── Rate-limit dedup guard: skip if a copilot-healing prompt was posted < 30 min ago ──
-          # Mirrors the guard in iterative-self-healing-ci.yml copilot-escalation job.
+          # ── Rate-limit dedup guard: skip if ANY @copilot rescue/escalation/healing
+          # comment was posted < 30 min ago — unified across all three posting workflows
+          # (ci-rescue.yml, iterative-self-healing-ci.yml, copilot-iterative-self-healing.yml).
+          # Previously each workflow only checked its own marker, allowing all three
+          # to fire simultaneously for the same failure and each summon the agent
+          # independently.  The shared check ensures the first poster wins and the
+          # others are silenced for the 30-minute cooldown window.
           SHA_SHORT="${HEAD_SHA:0:12}"
           MARKER="<!-- copilot-healing:${SHA_SHORT}:${CATEGORY} -->"
-          JQ_EXPR='[.[] | select(.body | contains("<!-- copilot-healing:"))] | last | .created_at // empty'
+          JQ_EXPR='[.[] | select(.body | test("<!-- (ci-rescue-sha|copilot-escalation|copilot-healing):"))] | last | .created_at // empty'
           LAST_POST=$(gh api \
             "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
             --jq "$JQ_EXPR" 2>/dev/null || echo "")
@@ -322,9 +327,9 @@ jobs:
             LAST_TS=$(date -d "${LAST_POST}" +%s 2>/dev/null || echo "0")
             ELAPSED=$(( NOW_TS - LAST_TS ))
             if [ "$ELAPSED" -lt 1800 ]; then
-              echo "::notice::Skipping copilot-healing prompt — last post was ${ELAPSED}s ago (< 30 min cooldown)"
-              echo "### ⏭️ @copilot Prompt Skipped (cooldown)" >> "$GITHUB_STEP_SUMMARY"
-              echo "Last healing comment was ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"
+              echo "::notice::Skipping copilot-healing prompt — a rescue/escalation/healing comment was already posted ${ELAPSED}s ago (< 30 min cooldown)"
+              echo "### ⏭️ @copilot Prompt Skipped (cooldown — shared marker)" >> "$GITHUB_STEP_SUMMARY"
+              echo "An @copilot escalation was already posted ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi
           fi

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S294 — 2026-05-01 — PR #4160 — docstring/CI/sweep fixes)
+- **mypy baseline reset** — baseline was stale at 117; actual count on both `main` and PR branch is 181 (same 64-error gap pre-existing on main). Updated `.mypy_baseline` to 181; zero new errors introduced by this PR.
+- **Pattern 22 / Tracked File Sync** — Stale CODEX_MANIFEST hash in `.secrets.baseline` (introduced by merge commit from `origin/main`) fixed via `sync_tracked_files.py --fix`.
+- **Pattern 25 / REQ-4** — `AGENT_ACCOUNTABILITY_REPORT.md` included in each commit to satisfy `agent-auth-delegation.yml` REQ-4 gate.
+- **`agents/mental_mapping.py`** — Docstring capitalisation (`set_clock`), missing `metadata` param doc (`create_node`), and positional→keyword arg fix for three `connect_nodes` call-sites (was silently binding `EdgeType.X` to the `source` alias).
+- **`tests/ci/test_post_rescue_comment.py`** — Added push-mode suppression test and enrichment-integration test (10/10 passing).
+- **`codebase-health-sweep.yml`** — Open-PR conflict guard added to `sweep-main` and `sweep-staging` jobs: sweep skips push when any open PR targeting that branch touches the same files, eliminating recurring merge-conflict pattern.
+
+### Fixed (auto-update — PR #4160)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4160 (SHA `7c5152c3`) at 2026-05-01T20:02Z [auto-generated]
+
 ### Fixed (S183m — 2026-05-01 — verification session: confirm S183l fixes hold)
 - **All CI rescue comments addressed**: #4358052943, #4358061983, #4358066312, #4358082273, #4358100167.
 - `ruff check src/` ✅; `sync_tracked_files --check` ✅; `auto_fix_common_issues --check-only` ✅ 100/100 on HEAD `2375716`.

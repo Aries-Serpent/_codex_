@@ -130,6 +130,36 @@ class TestSelfSuppressMainLogic:
         post_calls = [c for c in mock_gh.call_args_list if c.args[0] == "POST"]
         assert not post_calls, "POST should not be called for superseded commit"
 
+    def test_suppresses_when_head_differs_push_mode(self, monkeypatch, capsys):
+        """Push mode (PR_NUMBER absent): main() should lookup PR via API and
+        still suppress posting when branch HEAD != COMMIT_SHA.
+        """
+        self._patch_env(monkeypatch)
+        current_head = "1122334455661122334455661122334455661122"
+        failure_sha = self._ENV_BASE["COMMIT_SHA"]
+        assert current_head != failure_sha, (
+            "Test setup error: current_head must differ from COMMIT_SHA for this test"
+        )
+
+        def _gh_side_effect(method, path, token, body=None):
+            if method == "GET":
+                return 200, [{"number": 4200}]
+            return 200, {}
+
+        with patch.object(prc, "_get_branch_head_sha", return_value=current_head):
+            with patch.object(prc, "_gh", side_effect=_gh_side_effect) as mock_gh:
+                result = prc.main()
+
+        assert result is None
+        out = capsys.readouterr().out
+        assert "suppressed" in out.lower() or "superseded" in out.lower(), (
+            f"Expected suppression message in stdout, got: {out!r}"
+        )
+        get_calls = [c for c in mock_gh.call_args_list if c.args[0] == "GET"]
+        assert get_calls, "Expected GET call(s) for PR lookup in push mode"
+        post_calls = [c for c in mock_gh.call_args_list if c.args[0] == "POST"]
+        assert not post_calls, "POST should not be called for superseded commit"
+
     def test_posts_when_head_matches(self, monkeypatch, capsys):
         """When branch HEAD == COMMIT_SHA, the rescue comment should be attempted."""
         self._patch_env(monkeypatch, PR_NUMBER="4200")
@@ -148,6 +178,30 @@ class TestSelfSuppressMainLogic:
         out = capsys.readouterr().out
         assert "✅" in out or "Posted" in out, (
             f"Expected success message for matching SHA, got: {out!r}"
+        )
+
+    def test_posts_when_head_matches_with_enrichment_enabled(self, monkeypatch, capsys):
+        """When enrichment support is available, main() should still post successfully."""
+        self._patch_env(monkeypatch, PR_NUMBER="4200")
+        commit_sha = self._ENV_BASE["COMMIT_SHA"]
+        maybe_builder = getattr(prc, "build_comment_context", None)
+
+        with patch.object(prc, "_get_branch_head_sha", return_value=commit_sha):
+            with patch.object(prc, "_find_rescue_comment", return_value=(None, "")):
+                if maybe_builder is not None:
+                    with patch.object(prc, "build_comment_context", return_value={"summary": "extra context"}) as mock_ctx:
+                        with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})) as mock_gh:
+                            prc.main()
+                    assert mock_ctx.called, "Expected build_comment_context to be called when available"
+                else:
+                    with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})) as mock_gh:
+                        prc.main()
+
+        post_calls = [c for c in mock_gh.call_args_list if c.args and c.args[0] == "POST"]
+        assert post_calls, "Expected POST to be attempted on matching SHA with enrichment path enabled"
+        out = capsys.readouterr().out
+        assert "✅" in out or "Posted" in out, (
+            f"Expected success message for matching SHA with enrichment, got: {out!r}"
         )
 
     def test_no_suppress_when_head_unavailable(self, monkeypatch, capsys):
