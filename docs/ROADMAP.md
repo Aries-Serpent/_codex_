@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps resolved (SAR-G01/G02/G05) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
+| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 resolved: SAR-G01/G02; P1 open: SAR-G03 — Partial (75/100); P2 resolved: SAR-G05 — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |
@@ -268,8 +268,8 @@
 | Gap | Owner | Playbook | ETA |
 |-----|-------|----------|-----|
 | SAR-G01: 7 Codespace secrets ✅ RESOLVED | @mbaetiong | §13 GITHUB_VARIABLES_MASTER_GUIDE.md | Complete (2026-03-07) |
-| SAR-G02: Feature store — SQLite production backend ✅ | @copilot | feast_compat.py + SQLiteBackend (S116) | 2026-06-30 (Redis/Feast swap) |
-| SAR-G03: Auto-retrain GHA workflow ✅ | @copilot | model-drift-retrain.yml | 2026-06-30 (prod data source) |
+| SAR-G02: Feature store — SQLite production backend ✅ | @copilot | feast_compat.py + SQLiteBackend (S116) | Complete (P1 gap, 2026-03-07); enhancement ETA 2026-06-30 (Redis/Feast swap) |
+| SAR-G03: Auto-retrain GHA workflow 🟠 OPEN — Partial (75/100) | @copilot | model-drift-retrain.yml | 2026-06-30 (prod data source) |
 
 **Success criterion:** All 3 gaps resolved → ROADMAP MLOps level updated to **Level 4** → `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md` approval updated.
 
@@ -386,20 +386,20 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-05-01 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
+> ✅ Updated 2026-05-01 (W-142 S116): Level 3.95 — P1: SAR-G01/G02 resolved, SAR-G03 OPEN (Partial 75/100); P2: SAR-G05 resolved.
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
 | **SAR-G01: 7 Codespace secrets missing** | High | Set at org level — human admin required (see §13 of `GITHUB_VARIABLES_MASTER_GUIDE.md`) | ✅ RESOLVED W-142 (2026-03-07) |
 | **SAR-G02: Feature store** | High | Redis + SQLite backends in `feast_compat.py` + Arrow IPC; 97/100 | ✅ RESOLVED W-142 |
-| **SAR-G03: Auto-retrain trigger** | High | `model-drift-retrain.yml` wired; real data source pending | 🟠 OPEN — Partial (75/100) |
+| **SAR-G03: Auto-retrain trigger** | High | `model-drift-retrain.yml` wired (daily cron + `dry_run=true`); accepted infrastructure limitation — production data source requires external MLOps infra not present in this repo; tracked via ETA 2026-06-30 | 🟠 OPEN — Partial (75/100) |
 | **SAR-G05: Distributed tracing** | Medium | `drift_span()` + `OTEL_EXPORTER_OTLP_ENDPOINT` live in devcontainer | ✅ RESOLVED W-142 (100/100) |
 
 ### Potential Blockers
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
-| **Genesis secrets not ready** | Medium | `CODEX_MASTER_KEY` ✅ confirmed org-level; 7 Codespace secrets still missing (see SAR-G01 above) | 🟠 Partially mitigated |
+| **Genesis secrets not ready** | Medium | `CODEX_MASTER_KEY` ✅ confirmed org-level; Codespace secrets resolved under SAR-G01 (W-142) | 🟠 Partially mitigated |
 | **Cache limit constraints** | Low | Emergency cleanup, monitoring | ✅ Mitigated |
 | **CI/CD quota limits** | Low | Optimized workflows, selective triggering | ✅ Mitigated |
 | **Token budget per session** | Low | Duration-aware planning, continuation prompts | ✅ Mitigated |

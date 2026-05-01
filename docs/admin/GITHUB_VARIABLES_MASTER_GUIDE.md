@@ -212,8 +212,8 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 1 | `AGENT_HANDOFF_TIMEOUT_SECONDS` | ✅ | `120` | Timeout for agent handoff operations |
 | 2 | `AUTO_PROMOTE_TIER_ENABLED` | ✅ | `true` | Auto-promotion tier for agent capabilities |
 | 3 | `AUTONOMOUS_ACTIONS_ENABLED` | ✅ | `true` | ⚠️ **Human governance flag** — gates autonomous agent actions |
-| 4 | `CODEX_CI_FAILURE_RATE` | ✅ | `10.7:degraded` (auto-updated) | Current CI failure rate — format: `<float>:<status>` where status ∈ `{ok, degraded, critical}`. Updated by `ci-health-monitor.yml`. |
-| 5 | `CODEX_CI_FAILURE_THRESHOLD` | ✅ | `10.0` | CI failure rate threshold for `degraded` state |
+| 4 | `CODEX_CI_FAILURE_RATE` | ✅ | `10.7:degraded` (auto-updated) | Current CI failure rate (%) — format: `<float>:<status>` where status ∈ `{ok, degraded, critical}`. Updated by `ci-health-monitor.yml`. |
+| 5 | `CODEX_CI_FAILURE_THRESHOLD` | ✅ | `10.0` | CI failure rate threshold (%) for `degraded` state (e.g., `10.0` = 10.0%) |
 | 6 | `CODEX_CI_LAST_GREEN_SHA` | ✅ | *(sha)* (auto-updated) | Last commit SHA with all-green CI |
 | 7 | `EMBEDDING_INDEX_AUTO_REBUILD` | ✅ | `true` | Auto-rebuild FAISS embedding index on changes |
 
@@ -265,8 +265,10 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 8 | `WANDB_MODE` | ✅ | `offline` | Weights & Biases run mode |
 | 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit |
 | 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) |
-| 11 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set and OTel SDK packages are installed, `init_tracing()` activates distributed tracing. Leave unset for offline/local environments. **SAR-G05.** |
-| 12 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **If authentication is required, do not store credentials in a repository variable. Instead, set `REDIS_URL` from a GitHub Actions Secret or Codespaces Secret containing the full authenticated URL (including credentials if needed) — repository variables are visible to all users with read access, while the runtime environment variable may safely contain credentials when injected from a secret.** **SAR-G02.** |
+| 11 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set and the required OTel Python packages are installed (at minimum `opentelemetry-sdk` and `opentelemetry-exporter-otlp`), `init_tracing()` activates distributed tracing. Install via `pip install opentelemetry-sdk opentelemetry-exporter-otlp` (or include them in project dependency files) and leave unset for offline/local environments. **SAR-G05.** |
+| 12 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **SAR-G02.** |
+
+> ⚠️ **Security note (REDIS_URL):** If authentication is required, do **not** store credentials in a repository variable. Set `REDIS_URL` from a **GitHub Actions Secret** or **Codespaces Secret** containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.
 
 ### 6g. Webhook / Infra
 
@@ -287,7 +289,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 
 | # | Variable | Status | Recommended Value | Script Default | Purpose |
 |---|---|---|---|---|---|
-| 1 | `AGENT_KILL_SWITCH` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | ⚠️ **Human governance flag** — set to `"1"` to immediately halt all agent loops (Phases 1 & 7). Checked at loop entry before any work runs. **Default is `"0"` so CI passes by default when the variable is unset.** Any workflow step that calls `autonomy_scheduler.py` or `agent_runner.py` with `AGENT_KILL_SWITCH=1` will receive exit code 1 — ensure such steps use `continue-on-error: true` if non-blocking is required. |
+| 1 | `AGENT_KILL_SWITCH` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | ⚠️ **Human governance flag** — set to `"1"` to immediately halt all agent loops (Phases 1 & 7). Checked at loop entry before any work runs. **If the variable is unset, the scripts explicitly fall back to coded default `"0"`, so CI passes by default.** Any workflow step that calls `autonomy_scheduler.py` or `agent_runner.py` with `AGENT_KILL_SWITCH=1` will receive exit code 1 — ensure such steps use `continue-on-error: true` if non-blocking is required. |
 | 2 | `AUTONOMY_BUDGET_SECONDS` | ✅ **Set** `90` (2026-03-07) | `60` | `300` | Max wall-clock seconds per `autonomy_scheduler.py` run (Phase 1). Admin chose 90s (between recommended CI=60 and script default=300). |
 | 3 | `AUTONOMY_MAX_ITERATIONS` | ✅ **Set** `3` (2026-03-07) | `3` | `10` | Max health-sense/decide/act iterations per scheduler run (Phase 1). |
 | 4 | `AUTONOMY_DRY_RUN` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | Set to `"1"` to disable all mutating filesystem writes in `autonomy_scheduler.py` (Phase 1). |

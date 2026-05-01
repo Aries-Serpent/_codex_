@@ -13,7 +13,7 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 
 import requests
@@ -229,7 +229,7 @@ class TelemetryCollector:
         Returns:
             List of workflow run dictionaries
         """
-        since = (datetime.utcnow() - timedelta(days=days)).isoformat()
+        since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
         url = f"{self.base_url}/repos/{self.owner}/{self.repo}/actions/runs"
         params = {"branch": branch, "per_page": 100, "created": f">={since}"}
 
@@ -278,7 +278,7 @@ class TelemetryCollector:
         return response.json()["artifacts"]
 
     def classify_failure(self, run: Dict, jobs: List[Dict]) -> str:
-        """Classify failure into one of 5 patterns.
+        """Classify failure into predefined pattern categories.
 
         Args:
             run: Workflow run dictionary
@@ -330,7 +330,7 @@ class TelemetryCollector:
         print(f"Found {len(failed_runs)} failed runs out of {len(runs)} total")
 
         telemetry_data = {
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "repository": f"{self.owner}/{self.repo}",
             "branch": branch,
             "days_analyzed": days,

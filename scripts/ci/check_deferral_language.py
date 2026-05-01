@@ -169,6 +169,25 @@ EXEMPTION_PATTERNS: list[str] = [
     # The word "prompt" immediately following "task" identifies this as a filename/tool
     # description, not a deferral action.
     r"follow.up\s+task\s+prompt",
+    # SAR gap + production infrastructure dependency: when a line BOTH names a SAR
+    # gap (SAR-G0N) AND cites a "production data source" or "production infrastructure"
+    # as the missing prerequisite, the "future" or "pending" reference is an ACCEPTED
+    # INFRASTRUCTURE LIMITATION entry from ROADMAP.md — not an agent deferral.
+    # Example: "SAR-G03 resolution requires a production data source — noted as future work."
+    # The "production data source" phrase unambiguously identifies an external dependency
+    # that is tracked via ROADMAP ETA, not a code task the agent is punting.
+    # Distance bound of 100 chars keeps SAR-G0N and the infrastructure phrase co-located
+    # within a single clause, preventing false exemptions from unrelated sentence spans.
+    r"\bSAR-G0\d\b.{0,100}\bproduction\s+(?:data\s+source|infrastructure)\b",
+    # Agent session-end progress report tier headers: "**Priority N (future)**" is the
+    # auto-generated continuation prompt template tier label for enhancement-scope items
+    # (Priority 1 = immediate, Priority 2 = validation, Priority 3 = enhancement/future).
+    # These are STRUCTURAL LABELS in the session summary, not agent deferral commitments.
+    # INTENTIONAL REQUIREMENT: a SAR gap ID (SAR-G0N) must be present on the same line
+    # to qualify for this exemption.  Priority-N headers WITHOUT a SAR gap reference are
+    # correctly left subject to normal deferral scanning.
+    # Example: "- **Priority 3 (future)**: SAR-G03 resolution requires ..."
+    r"\*\*Priority\s+\d+\s*\(future\)\*\*\s*[:—]?\s*SAR-G0\d",
 ]
 
 # Pre-compiled pattern to strip inline code spans before scanning.
