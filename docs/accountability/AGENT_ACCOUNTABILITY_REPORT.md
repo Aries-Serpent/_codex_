@@ -10,6 +10,12 @@
 
 
 
+## SESSION SUMMARY — 2026-05-01T20:48Z [auto-generated]
+
+**Session:** copilot-fix-docstring-inconsistencies-conflict-fix | **Date:** 2026-05-01
+
+Resolved merge conflict between `copilot/fix-docstring-inconsistencies` and `origin/main` (`.secrets.baseline` CODEX_MANIFEST.json hash conflict). Fixed root cause by adding an **Open-PR conflict guard** to `codebase-health-sweep.yml` (both `sweep-main` and `sweep-staging` jobs): the sweep now checks for open PRs targeting the sweep branch that touch the same files before pushing; if any overlap is found the push is deferred, preventing future merge conflicts.
+
 ## SESSION SUMMARY — 2026-05-01T20:22Z [auto-generated]
 
 **Session:** copilot-fix-docstring-inconsistencies | **Date:** 2026-05-01
