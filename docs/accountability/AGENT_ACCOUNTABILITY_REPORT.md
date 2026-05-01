@@ -23825,3 +23825,12 @@ and the CI gate requirement.
   The first workflow to fire posts its comment; the others detect the existing escalation
   and skip — preventing cascading agent invocations for the same failure event.
 - YAML validated; all CI patterns (22, 25, ruff, sync) still pass.
+
+## Session S294-cont (2026-05-01)
+- **Pattern 30 fix**: Resolved merge preview SHA drift causing `sync_tracked_files: stale`.
+  Root cause: our branch had `CODEX_MANIFEST.json` regenerated at `20:02:02Z` while main
+  had `18:24:11Z`; the merge preview used main's version but `.secrets.baseline` had the
+  hash for our branch's version — mismatch triggered Pattern 30 in CI.
+  Fix: accepted main's `CODEX_MANIFEST.json` and re-ran `sync_tracked_files.py --fix`;
+  `.secrets.baseline` updated from `634434...` to `4f1d6b...` to match main's hash.
+- All 10 rescue-comment tests pass; ruff clean; all tracked files consistent.
