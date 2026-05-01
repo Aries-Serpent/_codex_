@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183g — 2026-05-01 — CI rescue: address PR Auto-Fix Check and Deferral Language Gate follow-up)
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** — Added S183g session entry; Pattern 25 (Last-Commit Accountability) compliance maintained.
+- All 32 CI patterns confirmed passing (100/100): ruff clean, sync_tracked_files consistent, Pattern 25/30 green.
+
 ### Fixed (S183f — 2026-05-01 — deferral language gate: SAR gap infrastructure exemption)
 - **`scripts/ci/check_deferral_language.py`** — Added two targeted exemption patterns for SAR gap infrastructure dependency descriptions: (1) `SAR-G0N + production data source/infrastructure` combination, (2) `**Priority N (future)**: SAR-G0N` auto-generated continuation prompt tier headers. These correctly classify ROADMAP-tracked infrastructure limitations as accepted gaps, not agent deferrals.
 - **`docs/ROADMAP.md`** — Updated SAR-G03 mitigation column to use accepted-limitation language ("accepted infrastructure limitation — production data source requires external MLOps infra") instead of ambiguous "pending" wording.
