@@ -445,6 +445,10 @@ class MentalMappingModel:
             justification = properties.get("justification", justification)
             evidence = properties.get("evidence", evidence)
 
+        # Ensure node IDs are valid hashable keys for dict/set operations
+        if not isinstance(source_id, str) or not isinstance(target_id, str):
+            raise TypeError("source_id and target_id must be strings")
+
         if source_id not in self.nodes or target_id not in self.nodes:
             raise ValueError("Both nodes must exist in the map")
 
