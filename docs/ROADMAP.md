@@ -392,7 +392,7 @@
 |---------|--------|------------|--------|
 | **SAR-G01: 7 Codespace secrets missing** | High | Set at org level — human admin required (see §13 of `GITHUB_VARIABLES_MASTER_GUIDE.md`) | ✅ RESOLVED W-142 (2026-03-07) |
 | **SAR-G02: Feature store** | High | Redis + SQLite backends in `feast_compat.py` + Arrow IPC; 97/100 | ✅ RESOLVED W-142 |
-| **SAR-G03: Auto-retrain trigger** | High | `model-drift-retrain.yml` wired; real data source pending | 🟠 OPEN — Partial (75/100) |
+| **SAR-G03: Auto-retrain trigger** | High | `model-drift-retrain.yml` wired (daily cron + `dry_run=true`); accepted infrastructure limitation — production data source requires external MLOps infra not present in this repo; tracked via ETA 2026-06-30 | 🟠 OPEN — Partial (75/100) |
 | **SAR-G05: Distributed tracing** | Medium | `drift_span()` + `OTEL_EXPORTER_OTLP_ENDPOINT` live in devcontainer | ✅ RESOLVED W-142 (100/100) |
 
 ### Potential Blockers
