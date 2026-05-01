@@ -23847,3 +23847,17 @@ and the CI gate requirement.
 - **Pattern 22 (RP-004)**: CI Rescue flagged Pattern 22 on `d7a6214`. `sync_tracked_files --check`
   passes cleanly on current HEAD (CODEX_MANIFEST SHA consistent at `f23f84ad4c8d`).
 - All 10 rescue-comment tests pass; ruff clean; all patterns (22, 25, 30) green.
+
+## Session S294-cont3 (2026-05-01)
+- **CI Rescue (commit 7e9c85a)**: Comments 4361935252, 4361947105, 4361877635, 4361877661,
+  4361902129 — Auto-Fix Common Issues (run #25235631308) and PR Status Dashboard showed
+  Pattern 30 (`sync_tracked_files: stale`) on commit `7e9c85a7c487`. Root cause:
+  SHA drift — CI ran on merge preview SHA `c0e29c46b953` while branch HEAD was
+  `7e9c85a7c487`. Locally `sync_tracked_files --check` passes cleanly; branch is 0 commits
+  behind main. No code fix required.
+- **Validation Pipeline lint failure (run #25233887434)**: Pattern 30 / SHA drift — same
+  root cause as above. All tracked files consistent on current HEAD.
+- **RP-004 Pattern 22**: `sync_tracked_files --check` passes on current HEAD
+  (CODEX_MANIFEST SHA consistent at `f23f84ad4c8d`).
+- Added PDA entry for today (Pattern 30 dimension compliance).
+- All 10 rescue-comment tests pass; ruff clean; all patterns (22, 25, 30) green.
