@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183m — 2026-05-01 — verification session: confirm S183l fixes hold)
+- **All CI rescue comments addressed**: #4358052943, #4358061983, #4358066312, #4358082273, #4358100167.
+- `ruff check src/` ✅; `sync_tracked_files --check` ✅; `auto_fix_common_issues --check-only` ✅ 100/100 on HEAD `2375716`.
+
 ### Fixed (S183l — 2026-05-01 — CI rescue: merge main to resolve branch divergence)
 - **Branch divergence resolved**: Merged `origin/main` (commits `6bd88adc`, `5130cef8`) into branch — branch was 2 commits behind main, causing SHA drift in merge preview CI runs.
 - **Validation Pipeline lint failure** (run #25202959795) and **Auto-Fix PR Check** (run #25202959775) failures were artifacts of CI running on merge preview commit `d0397b99` vs actual branch HEAD. Resolved by merging main.
