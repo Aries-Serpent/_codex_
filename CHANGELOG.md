@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4171)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4171 (SHA `9d8cbdf6`) at 2026-05-01T23:55Z [auto-generated]
+
 ### Fixed (S294 — 2026-05-01 — PR #4160 — docstring/CI/sweep fixes)
 - **mypy baseline reset** — baseline was stale at 117; actual count on both `main` and PR branch is 181 (same 64-error gap pre-existing on main). Updated `.mypy_baseline` to 181; zero new errors introduced by this PR.
 - **Pattern 22 / Tracked File Sync** — Stale CODEX_MANIFEST hash in `.secrets.baseline` (introduced by merge commit from `origin/main`) fixed via `sync_tracked_files.py --fix`.
