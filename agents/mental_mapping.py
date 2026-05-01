@@ -41,7 +41,7 @@ _clock: Callable[[], str] = _default_clock
 
 def set_clock(clock_fn: Callable[[], str]) -> None:
     """
-    set a custom clock function for timestamp generation.
+    Set a custom clock function for timestamp generation.
 
     Useful for testing to provide deterministic timestamps.
 
@@ -332,6 +332,7 @@ class MentalMappingModel:
             importance: Importance level
             tags: Tags list
             context: Context dict
+            metadata: Metadata dict
 
         Returns:
             MentalNode object
@@ -534,7 +535,7 @@ class MentalMappingModel:
         self.connect_nodes(
             problem_node.node_id,
             hypothesis_node.node_id,
-            EdgeType.LEADS_TO,
+            edge_type=EdgeType.LEADS_TO,
             weight=0.7,
             justification="Hypothesis generated from problem analysis",
         )
@@ -564,7 +565,7 @@ class MentalMappingModel:
         self.connect_nodes(
             hypothesis_node.node_id,
             evidence_node.node_id,
-            EdgeType.SUPPORTS,
+            edge_type=EdgeType.SUPPORTS,
             weight=0.8,
             justification="Evidence validates hypothesis",
         )
@@ -615,7 +616,7 @@ class MentalMappingModel:
         self.connect_nodes(
             problem_node_id,
             decision_node.node_id,
-            EdgeType.LEADS_TO,
+            edge_type=EdgeType.LEADS_TO,
             weight=confidence,
             justification="Decision made to address problem",
         )
