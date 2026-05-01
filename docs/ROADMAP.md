@@ -386,7 +386,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-04-30 (W-142 S116): Level 3.95 — P1: SAR-G01/G02 resolved, SAR-G03 OPEN (Partial 75/100); P2: SAR-G05 resolved.
+> ✅ Updated 2026-05-01 (W-142 S116): Level 3.95 — P1: SAR-G01/G02 resolved, SAR-G03 OPEN (Partial 75/100); P2: SAR-G05 resolved.
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
