@@ -191,7 +191,9 @@ jobs:
 
           CONFLICT_PRS=""
           for PR_NUM in $OPEN_PRS; do
-            # Get the list of files changed in this PR (up to 300 files)
+            # Get the list of files changed in this PR (up to 100 per page — sufficient
+            # for the sweep's small set of target files: .secrets.baseline,
+            # AGENT_ACCOUNTABILITY_REPORT.md, ROADMAP.md, CODEX_MANIFEST.json)
             PR_FILES=$(gh api "repos/${REPO}/pulls/${PR_NUM}/files?per_page=100" \
               --jq '.[].filename' 2>/dev/null || echo "")
             # Check overlap with sweep files
@@ -324,7 +326,7 @@ jobs:
           fi
 
       - name: Open-PR conflict guard — skip push when PRs touch sweep files (0D_base_)
-        id: pr_guard
+        id: pr_guard_staging
         if: steps.branch_check.outputs.exists == 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -340,6 +342,7 @@ jobs:
             --jq '.[].number' 2>/dev/null || echo "")
           CONFLICT_PRS=""
           for PR_NUM in $OPEN_PRS; do
+            # Up to 100 files per PR — sufficient for the sweep's small set of target files
             PR_FILES=$(gh api "repos/${REPO}/pulls/${PR_NUM}/files?per_page=100" \
               --jq '.[].filename' 2>/dev/null || echo "")
             while IFS= read -r sweep_file; do
@@ -358,7 +361,7 @@ jobs:
           fi
 
       - name: Commit sweep fixes — 0D_base_
-        if: steps.branch_check.outputs.exists == 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true' && steps.pr_guard.outputs.pr_conflict != 'true'
+        if: steps.branch_check.outputs.exists == 'true' && steps.sweep.outputs.changed == 'true' && github.event.inputs.dry_run != 'true' && steps.pr_guard_staging.outputs.pr_conflict != 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
