@@ -34,11 +34,10 @@ class TestAdminAutomationAgentIntegration:
     def agent(self, mock_github_token, tmp_path):
         """Create an agent instance with mocked dependencies."""
         with patch.dict(os.environ, {"GITHUB_TOKEN": mock_github_token}):
-            agent = AdminAutomationAgent(
+            return AdminAutomationAgent(
                 github_token=mock_github_token,
                 config_path=tmp_path / "config.yml"
             )
-            return agent
 
     def test_agent_initialization(self, agent, mock_github_token):
         """Test that agent initializes correctly."""
@@ -122,12 +121,11 @@ class TestSecretsManagerIntegration:
         from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"}):
-            manager = GitHubSecretsManager(
+            return GitHubSecretsManager(
                 owner="test-owner",
                 repo="test-repo",
                 token="test_token"
             )
-            return manager
 
     def test_generate_secure_key(self, secrets_manager):
         """Test secure key generation."""
@@ -263,7 +261,7 @@ class TestSecurityCompliance:
         assert "SECRET_KEY" not in redacted
 
         # Verify redacted keys present
-        assert all(key.startswith("secret_") for key in redacted.keys())
+        assert all(key.startswith("secret_") for key in redacted)
 
         # Verify count preserved
         assert len(redacted) == len(secrets_dict)

@@ -68,10 +68,7 @@ def _resolve_metrics(cfg: dict[str, Any], names: Sequence[str] | None) -> dict[s
     configured = evaluation_cfg.get("metrics")
 
     candidates: Iterable[str] | dict[str, Any]
-    if names:
-        candidates = list(names)
-    else:
-        candidates = configured or []
+    candidates = list(names) if names else configured or []
 
     resolved: dict[str, Callable] = {}
     if isinstance(candidates, dict):

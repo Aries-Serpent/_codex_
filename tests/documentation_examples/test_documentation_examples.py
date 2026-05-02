@@ -23,15 +23,13 @@ import pytest
 def extract_python_blocks(content: str) -> list[str]:
     """Extract Python code blocks from markdown content."""
     pattern = r"```python\n(.*?)```"
-    blocks = re.findall(pattern, content, re.DOTALL)
-    return blocks
+    return re.findall(pattern, content, re.DOTALL)
 
 
 def extract_bash_blocks(content: str) -> list[str]:
     """Extract bash/shell code blocks from markdown content."""
     pattern = r"```(?:bash|shell|sh)\n(.*?)```"
-    blocks = re.findall(pattern, content, re.DOTALL)
-    return blocks
+    return re.findall(pattern, content, re.DOTALL)
 
 
 def is_valid_python_syntax(code: str) -> bool:

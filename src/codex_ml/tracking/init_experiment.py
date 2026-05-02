@@ -381,10 +381,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     try:
         from omegaconf import DictConfig, OmegaConf
 
-        if isinstance(cfg, DictConfig):
-            resolved = OmegaConf.to_container(cfg, resolve=True)
-        else:
-            resolved = cfg
+        resolved = OmegaConf.to_container(cfg, resolve=True) if isinstance(cfg, DictConfig) else cfg
     except Exception:  # pragma: no cover - OmegaConf missing
         resolved = cfg
     serialised = _to_jsonable(resolved)

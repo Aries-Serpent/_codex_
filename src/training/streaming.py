@@ -26,10 +26,7 @@ def stream_texts(
     produced = 0
     for path in glob(path_glob, recursive=True):
         result = ingest(path, encoding=encoding, chunk_size=chunk_size)
-        if isinstance(result, str):
-            chunks = [result]
-        else:
-            chunks = result
+        chunks = [result] if isinstance(result, str) else result
         for chunk in chunks:
             if sample_every_k > 1 and produced % sample_every_k != 0:
                 produced += 1

@@ -233,4 +233,4 @@ def main():
     return 0 if stats['files_modified'] >= 0 else 1
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

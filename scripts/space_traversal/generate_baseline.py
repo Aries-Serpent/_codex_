@@ -93,8 +93,7 @@ def _load_decoded(path: Path) -> dict[str, Any]:
     # Path can be binary (b64+gz) or decoded json
     if path.suffix in {".b64", ".gz", ".gz.b64"} or path.name.endswith(".b64"):
         return load_from_local(str(path), DEFAULT_MAX_BYTES)
-    else:
-        return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _ensure_report(decoded: dict[str, Any]) -> dict[str, Any]:

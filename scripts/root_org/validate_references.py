@@ -186,10 +186,9 @@ def assess_risk(reference_count: int) -> str:
     """Assess risk level based on reference count (Physics Model: Balance⚖️)."""
     if reference_count == 0:
         return "LOW"
-    elif reference_count <= 5:
+    if reference_count <= 5:
         return "MEDIUM"
-    else:
-        return "HIGH"
+    return "HIGH"
 
 
 def generate_report(
@@ -315,10 +314,9 @@ Examples:
     risk = assess_risk(stats['total_references'])
     if risk == "HIGH":
         return 2  # High risk
-    elif risk == "MEDIUM":
+    if risk == "MEDIUM":
         return 1  # Medium risk
-    else:
-        return 0  # Low risk
+    return 0  # Low risk
 
 
 if __name__ == '__main__':

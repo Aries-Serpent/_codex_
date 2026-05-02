@@ -110,9 +110,8 @@ def scan_repository(root: Path) -> set[str]:
                 markers.update(file_markers)
 
     # Filter out built-in pytest markers
-    markers = markers - BUILTIN_MARKERS
+    return markers - BUILTIN_MARKERS
 
-    return markers
 
 
 def read_existing_markers(pytest_ini_path: Path) -> dict[str, str]:
@@ -221,9 +220,8 @@ def main():
     if discovered_markers:
         changed = update_pytest_ini(pytest_ini, discovered_markers)
         return 0 if not changed else 1
-    else:
-        print("No markers found")
-        return 0
+    print("No markers found")
+    return 0
 
 
 if __name__ == "__main__":

@@ -139,9 +139,7 @@ def check_package_py312_support(package: str) -> dict[str, Any]:
                 if match:
                     major, minor = int(match.group(1)), int(match.group(2))
                     # If requires >= 3.x where x <= 12, likely supports 3.12
-                    if major == 3 and minor <= 12:
-                        result["supports_312"] = True
-                    elif major < 3:
+                    if major == 3 and minor <= 12 or major < 3:
                         result["supports_312"] = True
             # No upper bound restriction typically means support
             elif "<" not in req and "!=" not in req:
@@ -298,10 +296,9 @@ def main() -> int:
         print("❌ Python 3.12 migration readiness: NOT READY")
         print("   Please resolve incompatible dependencies before migrating.")
         return 1
-    else:
-        print("✅ Python 3.12 migration readiness: READY")
-        print("   All dependencies support Python 3.12!")
-        return 0
+    print("✅ Python 3.12 migration readiness: READY")
+    print("   All dependencies support Python 3.12!")
+    return 0
 
 
 if __name__ == "__main__":

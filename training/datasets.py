@@ -9,7 +9,7 @@ from __future__ import annotations
 import warnings as _warnings
 
 _warnings.warn(
-    "Importing from 'training.datasets' is deprecated. " "Use 'src.training.datasets' instead.",
+    "Importing from 'training.datasets' is deprecated. Use 'src.training.datasets' instead.",
     DeprecationWarning,
     stacklevel=2,
 )

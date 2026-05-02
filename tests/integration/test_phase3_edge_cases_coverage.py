@@ -781,10 +781,7 @@ class TestPartialFailuresAndRollback:
                 prepare_votes[p] = True
 
         # Phase 2: Commit or abort
-        if all(prepare_votes.values()):
-            decision = "COMMIT"
-        else:
-            decision = "ABORT"
+        decision = "COMMIT" if all(prepare_votes.values()) else "ABORT"
 
         assert decision == "ABORT"
 
@@ -944,9 +941,8 @@ class TestPartialFailuresAndRollback:
             if should_fail:
                 results["failed"].append(item_id)
                 return {"status": "error", "id": item_id}
-            else:
-                results["success"].append(item_id)
-                return {"status": "success", "id": item_id}
+            results["success"].append(item_id)
+            return {"status": "success", "id": item_id}
 
         # Process multiple items
         items = [

@@ -165,9 +165,8 @@ class OutcomeAnalyzer:
         reward = base_reward * efficiency * (1 - time_penalty) + complexity_bonus
 
         # Clamp to [-1, +1]
-        reward = max(-1.0, min(1.0, reward))
+        return max(-1.0, min(1.0, reward))
 
-        return reward
 
     def _identify_patterns(
         self,

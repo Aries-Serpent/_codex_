@@ -62,14 +62,13 @@ def generate_manifest(wheelhouse_dir: Path, platform: str, python_version: str) 
         }
         wheels.append(wheel_info)
 
-    manifest = {
+    return {
         "platform": platform,
         "python_version": python_version,
         "wheels": wheels,
         "count": len(wheels),
     }
 
-    return manifest
 
 
 def main():

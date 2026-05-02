@@ -54,8 +54,7 @@ class MFASecret:
         ]
 
         label = f"{quote(self.issuer)}:{quote(account_name)}"
-        uri = f"otpauth://totp/{label}?{'&'.join(params)}"
-        return uri
+        return f"otpauth://totp/{label}?{'&'.join(params)}"
 
 
 @dataclass
@@ -353,10 +352,9 @@ class MFAProvider:
                     backup_code.used_at = time.time()
                     self._record_attempt(user_id, True)
                     return True
-                else:
-                    # Code already used
-                    self._record_attempt(user_id, False)
-                    return False
+                # Code already used
+                self._record_attempt(user_id, False)
+                return False
 
         # No matching code
         self._record_attempt(user_id, False)

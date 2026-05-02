@@ -172,16 +172,16 @@ class TestConstants:
         """Test default output root constant."""
         from codex_crm.cli import DEFAULT_OUTPUT_ROOT
 
-        assert DEFAULT_OUTPUT_ROOT == Path(".codex") / "crm"
+        assert Path(".codex") / "crm" == DEFAULT_OUTPUT_ROOT
 
     def test_default_zendesk_output(self):
         """Test default Zendesk output constant."""
         from codex_crm.cli import DEFAULT_ZENDESK_OUTPUT
 
-        assert DEFAULT_ZENDESK_OUTPUT == Path(".codex") / "crm" / "zendesk"
+        assert Path(".codex") / "crm" / "zendesk" == DEFAULT_ZENDESK_OUTPUT
 
     def test_default_d365_output(self):
         """Test default D365 output constant."""
         from codex_crm.cli import DEFAULT_D365_OUTPUT
 
-        assert DEFAULT_D365_OUTPUT == Path(".codex") / "crm" / "d365"
+        assert Path(".codex") / "crm" / "d365" == DEFAULT_D365_OUTPUT

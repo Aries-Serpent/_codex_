@@ -170,10 +170,7 @@ def _encode_labels(
 ) -> tuple[list[int], dict[Any, int]]:
     ints: list[int] = []
     mapping: dict[Any, int]
-    if fallback is None:
-        mapping = {}
-    else:
-        mapping = fallback
+    mapping = {} if fallback is None else fallback
     for value in values:
         if value is None:
             raise EvaluationError(f"Missing value for metric {metric_name}")

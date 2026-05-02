@@ -358,8 +358,7 @@ class PatternAnalyzer:
             weighted_sum += confidence * weight
             total_weight += weight
 
-        overall = weighted_sum / total_weight if total_weight > 0 else 0.0
-        return overall
+        return weighted_sum / total_weight if total_weight > 0 else 0.0
 
 
 def main():

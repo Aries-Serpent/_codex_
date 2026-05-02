@@ -318,8 +318,7 @@ def _coerce_reasoning_config(payload: Any) -> ReasoningConfig | None:
         return cfg
     if isinstance(payload, bool):
         if not payload:
-            cfg = ReasoningConfig(enabled=False)
-            return cfg
+            return ReasoningConfig(enabled=False)
         cfg = ReasoningConfig()
         cfg.validate("training.reasoning")
         return cfg
@@ -558,7 +557,7 @@ def _resolve_dtype(dtype: Optional[str]):
         "float16": torch.float16,
         "f16": torch.float16,
     }
-    return mapping.get(dtype.lower(), None)
+    return mapping.get(dtype.lower())
 
 
 def _resolve_device(device: Optional[str]):
@@ -1684,9 +1683,7 @@ def run_training(
             return
 
         cfg: dict[str, Any] = {}
-        if isinstance(run_config, Mapping):
-            cfg = dict(run_config)
-        elif isinstance(run_config, dict):
+        if isinstance(run_config, (Mapping, dict)):
             cfg = dict(run_config)
 
         meta_payload: dict[str, Any] = {}

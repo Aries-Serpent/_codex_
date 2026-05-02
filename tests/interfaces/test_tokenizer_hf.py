@@ -301,4 +301,3 @@ def test_integration_with_real_model() -> None:
     """Integration test with a real model (skipped by default)."""
     # This test would use a real model and verify end-to-end functionality
     # Skipped by default to avoid requiring large model downloads in CI
-    pass

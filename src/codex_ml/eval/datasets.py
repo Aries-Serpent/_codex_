@@ -283,13 +283,12 @@ def load_dataset(
         "num_examples": len(data),
     }
 
-    bundle = DatasetBundle(
+    return DatasetBundle(
         examples=data,
         dataset_hash=_hash_examples(data),
         source=name_or_path,
         metadata={k: v for k, v in metadata.items() if v is not None},
     )
-    return bundle
 
 
 __all__ = ["Example", "DatasetBundle", "load_dataset"]

@@ -41,7 +41,7 @@ def _tiny_sp_model(tmp_path: Path) -> str:
     # vocab=64 is enough for small sample text; use UNK/BOS/EOS/PAD.
     txt = tmp_path / "toy.txt"
     txt.write_text(
-        "hello world\n" "hello codex\n" "general kenobi\n" "lorem ipsum dolor sit amet\n"
+        "hello world\nhello codex\ngeneral kenobi\nlorem ipsum dolor sit amet\n"
     )
     model_prefix = str(tmp_path / "toy_sp")
     spm.SentencePieceTrainer.Train(

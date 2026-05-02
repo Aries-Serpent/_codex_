@@ -160,12 +160,11 @@ class StrategyOptimizer:
         if avg_complexity < 0.3 and num_agents <= 2:
             # Simple problem: Q-Learning
             return AlgorithmType.Q_LEARNING
-        elif avg_complexity < 0.7:
+        if avg_complexity < 0.7:
             # Moderate complexity: DQN
             return AlgorithmType.DQN
-        else:
-            # Complex problem: PPO
-            return AlgorithmType.PPO
+        # Complex problem: PPO
+        return AlgorithmType.PPO
 
     def optimize_strategy(
         self,
@@ -213,11 +212,10 @@ class StrategyOptimizer:
             self.algorithm.track_episode(episode_reward)  # type: ignore[union-attr]
 
             # Check convergence
-            if episode >= self.convergence_window:
-                if self._check_convergence():
-                    converged = True
-                    logger.info(f"Converged at episode {episode}")
-                    break
+            if episode >= self.convergence_window and self._check_convergence():
+                converged = True
+                logger.info(f"Converged at episode {episode}")
+                break
 
             # Check if target improvement reached
             current_improvement = self._calculate_improvement()
@@ -350,10 +348,9 @@ class StrategyOptimizer:
         window = min(100, len(self.training_history))
         current_performance = np.mean(self.training_history[-window:])
 
-        improvement = (current_performance - self.baseline_performance) / abs(
+        return (current_performance - self.baseline_performance) / abs(
             self.baseline_performance
         )
-        return improvement
 
     def _update_metrics(self, converged: bool):
         """
@@ -398,7 +395,7 @@ class StrategyOptimizer:
         Returns:
             Results dictionary
         """
-        results = {
+        return {
             "algorithm": self.algorithm_type.value,
             "episodes_trained": self.episode_count,
             "baseline_performance": self.baseline_performance,
@@ -412,7 +409,6 @@ class StrategyOptimizer:
             "policy": self.algorithm.get_policy() if self.algorithm else None,
         }
 
-        return results
 
     def get_strategy(self) -> Dict[str, Any]:
         """

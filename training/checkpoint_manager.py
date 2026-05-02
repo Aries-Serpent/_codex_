@@ -11,6 +11,7 @@ import os
 import warnings as _warnings
 from pathlib import Path
 from typing import Any, Dict, Optional
+import contextlib
 
 _warnings.warn(
     "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
@@ -198,7 +199,7 @@ class CheckpointManager:
                             except Exception:
                                 path = None
                     if path is not None:
-                        try:
+                        with contextlib.suppress(TypeError, ValueError):
                             self._best_records.append(
                                 {
                                     "path": str(path),
@@ -206,8 +207,6 @@ class CheckpointManager:
                                     "step": int(data.get("step", 0)),
                                 }
                             )
-                        except (TypeError, ValueError):
-                            pass
             except Exception:
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
@@ -344,10 +343,8 @@ class CheckpointManager:
         for p in ckpts[: -self.keep_last]:
             if p.name in protected:
                 continue
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 p.unlink()
-            except FileNotFoundError:
-                pass
 
     def _update_best(self, path: Path, step: int, metrics: Optional[Dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:

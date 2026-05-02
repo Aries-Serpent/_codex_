@@ -331,10 +331,7 @@ class TestResourceMonitoring:
 
         # Calculate trend (simple linear)
         n = len(usage_history)
-        if n > 1:
-            trend = (usage_history[-1] - usage_history[0]) / (n - 1)
-        else:
-            trend = 0
+        trend = (usage_history[-1] - usage_history[0]) / (n - 1) if n > 1 else 0
 
         assert trend == 5.0  # Increasing by 5% per sample
 

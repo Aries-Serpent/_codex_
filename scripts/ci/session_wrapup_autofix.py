@@ -1641,9 +1641,8 @@ def main(argv: list[str] | None = None) -> int:
         if ok:
             print(f"✅ PR #{args.pr_number}: scorecard + follow-up + WEC refreshed")
             return 0
-        else:
-            print(f"❌ PR #{args.pr_number}: mandatory description update failed", file=sys.stderr)
-            return 1
+        print(f"❌ PR #{args.pr_number}: mandatory description update failed", file=sys.stderr)
+        return 1
 
     # --fix-all delegates to auto_fix_all_missing() which covers every requirement
     if args.fix_all:

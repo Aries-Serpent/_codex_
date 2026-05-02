@@ -502,9 +502,8 @@ class TestCreateEmbeddingProvider:
         with patch(
             "codex.rag.embeddings.LocalSentenceTransformerProvider",
             side_effect=RuntimeError("no model"),
-        ):
-            with patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}):
-                provider = create_embedding_provider(provider_type="auto", use_cache=False)
+        ), patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}):
+            provider = create_embedding_provider(provider_type="auto", use_cache=False)
         assert provider is mock_ollama_instance
 
     def test_auto_skips_ollama_when_server_down(self):
@@ -519,9 +518,8 @@ class TestCreateEmbeddingProvider:
         with patch(
             "codex.rag.embeddings.LocalSentenceTransformerProvider",
             side_effect=RuntimeError("no model"),
-        ):
-            with patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}):
-                provider = create_embedding_provider(provider_type="auto", use_cache=False)
+        ), patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}):
+            provider = create_embedding_provider(provider_type="auto", use_cache=False)
         # Ollama skipped (health check failed) → falls through to TF-IDF
         assert provider is not None
         assert not isinstance(provider, type(mock_ollama_instance))
@@ -538,14 +536,13 @@ class TestCreateEmbeddingProvider:
         with patch(
             "codex.rag.embeddings.LocalSentenceTransformerProvider",
             side_effect=RuntimeError("no model"),
-        ):
-            with patch.dict(sys.modules, {
-                "codex.rag.providers.ollama_provider": mock_ollama_module,
-                "codex.rag.providers.llamacpp_provider": mock_llamacpp_module,
-            }):
-                provider = create_embedding_provider(
-                    provider_type="auto", use_cache=False, model_path="/tmp/model.gguf"
-                )
+        ), patch.dict(sys.modules, {
+            "codex.rag.providers.ollama_provider": mock_ollama_module,
+            "codex.rag.providers.llamacpp_provider": mock_llamacpp_module,
+        }):
+            provider = create_embedding_provider(
+                provider_type="auto", use_cache=False, model_path="/tmp/model.gguf"
+            )
         assert provider is mock_llamacpp_instance
 
     def test_auto_uses_gpt4all_when_st_ollama_llamacpp_fail(self):
@@ -561,12 +558,11 @@ class TestCreateEmbeddingProvider:
         with patch(
             "codex.rag.embeddings.LocalSentenceTransformerProvider",
             side_effect=RuntimeError("no model"),
-        ):
-            with patch.dict(sys.modules, {
-                "codex.rag.providers.ollama_provider": mock_ollama_module,
-                "codex.rag.providers.gpt4all_provider": mock_gpt4all_module,
-            }):
-                provider = create_embedding_provider(provider_type="auto", use_cache=False)
+        ), patch.dict(sys.modules, {
+            "codex.rag.providers.ollama_provider": mock_ollama_module,
+            "codex.rag.providers.gpt4all_provider": mock_gpt4all_module,
+        }):
+            provider = create_embedding_provider(provider_type="auto", use_cache=False)
         assert provider is mock_gpt4all_instance
 
     def test_auto_fallbacks_to_tfidf_when_st_unavailable(self):

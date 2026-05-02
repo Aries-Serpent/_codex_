@@ -197,16 +197,14 @@ def snapshot_config(config: Any, *, exclude_keys: Sequence[str] | None = None) -
                 result[str_key] = cleaned
             return result
         if isinstance(value, list):
-            cleaned_list = [item for item in (_prune(v) for v in value) if item is not None]
-            return cleaned_list
+            return [item for item in (_prune(v) for v in value) if item is not None]
         if isinstance(value, tuple):
             cleaned_tuple = tuple(item for item in (_prune(v) for v in value) if item is not None)
             return list(cleaned_tuple)
         if isinstance(value, set):
-            cleaned_set = [
+            return [
                 item for item in (_prune(v) for v in sorted(value, key=str)) if item is not None
             ]
-            return cleaned_set
         if value is None:
             return None
         if isinstance(value, str):

@@ -21,10 +21,7 @@ def extract_module_docstring(lines: List[str]) -> Tuple[List[str], int]:
     # Skip shebang and encoding declarations
     while i < len(lines):
         line = lines[i]
-        if line.startswith('#!') or line.startswith('# -*- coding') or line.startswith('# coding:'):
-            docstring_lines.append(line)
-            i += 1
-        elif line.strip() == '':
+        if line.startswith('#!') or line.startswith('# -*- coding') or line.startswith('# coding:') or line.strip() == '':
             docstring_lines.append(line)
             i += 1
         else:

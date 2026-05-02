@@ -155,11 +155,10 @@ def check_security_status():
                         'passed': True,
                         'message': 'Security scan shows vulnerabilities were addressed'
                     }
-                else:
-                    return {
-                        'passed': False,
-                        'message': 'Security scan indicates unresolved vulnerabilities'
-                    }
+                return {
+                    'passed': False,
+                    'message': 'Security scan indicates unresolved vulnerabilities'
+                }
 
         # Pass if scan exists and has content (assumed reviewed)
         return {

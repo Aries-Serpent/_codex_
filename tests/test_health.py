@@ -66,7 +66,7 @@ def test_readiness_check_includes_directory_checks():
 
     # Should check for .codex, src, configs directories
     checks = result["checks"]
-    assert any("dir_" in key for key in checks.keys())
+    assert any("dir_" in key for key in checks)
 
 
 def test_readiness_check_graceful_on_missing_psutil():

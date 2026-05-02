@@ -61,10 +61,7 @@ def test_missing_tombstone_fails():
         stub_path.unlink()
 
     # ensure evidence clean (backup existing)
-    if EVIDENCE_FILE.exists():
-        backup = EVIDENCE_FILE.read_text()
-    else:
-        backup = None
+    backup = EVIDENCE_FILE.read_text() if EVIDENCE_FILE.exists() else None
 
     try:
         r = subprocess.run(
@@ -103,10 +100,7 @@ def test_tombstone_and_evidence_pass():
 
     # append evidence entry (backup existing)
     EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-    if EVIDENCE_FILE.exists():
-        backup = EVIDENCE_FILE.read_text()
-    else:
-        backup = None
+    backup = EVIDENCE_FILE.read_text() if EVIDENCE_FILE.exists() else None
 
     entry = {"path": removed[0], "tombstone": True}
     with EVIDENCE_FILE.open("a", encoding="utf-8") as fh:

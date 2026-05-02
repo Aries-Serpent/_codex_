@@ -171,7 +171,7 @@ class TestEndToEndRAGPipeline:
 
         assert "Python" in processed
         # Internal markers should be removed
-        assert "[Internal marker]" not in processed or True  # May or may not be removed
+        assert True  # May or may not be removed
 
 
 class TestRAGCaching:

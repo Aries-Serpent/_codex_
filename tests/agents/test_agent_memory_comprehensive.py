@@ -191,9 +191,8 @@ class TestAgentMemory:
         """Create AgentMemory with temp database."""
         if hasattr(AgentMemory, "__init__"):
             return AgentMemory(db_path=str(temp_db))
-        else:
-            # Fallback for different API
-            return AgentMemory()
+        # Fallback for different API
+        return AgentMemory()
 
     # ========== INITIALIZATION TESTS ==========
 

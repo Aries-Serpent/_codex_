@@ -61,15 +61,7 @@ def is_safe_value(value: str) -> bool:
     value_lower = value.lower()
 
     # Check explicit safe patterns first
-    for pattern in SAFE_PATTERNS:
-        if re.match(pattern, value_lower):
-            return True
-
-    # Removed: Dangerous short-value heuristic that could miss short but sensitive values
-    # like API keys 'KEY', passwords 'abc', etc.
-    # If we're unsure, treat it as potentially sensitive and flag for review.
-
-    return False
+    return any(re.match(pattern, value_lower) for pattern in SAFE_PATTERNS)
 
 
 def transform_file(file_path: str) -> tuple[str, list[str], list[tuple[str, str]]]:

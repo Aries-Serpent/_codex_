@@ -137,8 +137,7 @@ class SignstoreClient:
 
         if _HAS_SIGSTORE:
             return self._sigstore_sign(record_bytes, actor, signed_at)
-        else:
-            return self._mock_sign_record(record_bytes, actor, signed_at)
+        return self._mock_sign_record(record_bytes, actor, signed_at)
 
     def verify_signature(
         self,

@@ -861,8 +861,7 @@ def get_config(
         ) from e
 
     with initialize_config_dir(str(CONFIG_PATH.resolve()), version_base=None):
-        cfg = compose(config_name=config_name, overrides=overrides or [])
-    return cfg
+        return compose(config_name=config_name, overrides=overrides or [])
 
 
 def load_yaml(path: str | Path) -> dict[str, Any]:

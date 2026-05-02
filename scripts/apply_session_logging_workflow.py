@@ -55,7 +55,6 @@ try:
     _codex_sqlite_auto()
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    pass
 import textwrap
 from pathlib import Path
 

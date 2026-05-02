@@ -436,10 +436,7 @@ def generate_capability_detail(
     trend_values = []
     for i, t in enumerate(reversed(trend_history[-50:])):
         ts = t.get("timestamp")
-        if ts:
-            label = datetime.fromtimestamp(ts).strftime("%m/%d %H:%M")
-        else:
-            label = f"Run {i + 1}"
+        label = datetime.fromtimestamp(ts).strftime("%m/%d %H:%M") if ts else f"Run {i + 1}"
         trend_labels.append(label)
         trend_values.append(t.get("score", 0))
 

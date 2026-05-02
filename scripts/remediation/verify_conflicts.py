@@ -82,14 +82,13 @@ def check_import(
             # Accept both site-packages and dist-packages
             if "site-packages" in str(origin) or "dist-packages" in str(origin):
                 return True, origin
-            else:
-                if not quiet:
-                    print("  [RISK] Unexpected location!")
-                    print(
-                        f"         Expected path containing: '{expected_location_substr}' or 'dist-packages'"
-                    )
-                    print(f"         Actual path:              '{origin}'")
-                return False, origin
+            if not quiet:
+                print("  [RISK] Unexpected location!")
+                print(
+                    f"         Expected path containing: '{expected_location_substr}' or 'dist-packages'"
+                )
+                print(f"         Actual path:              '{origin}'")
+            return False, origin
         return True, origin
     except Exception as e:
         logger.debug(f"Exception: {e}")

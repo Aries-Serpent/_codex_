@@ -166,5 +166,4 @@ def load_arrow(file_path: Path, batch_size: Optional[int] = None):
 
     if batch_size:
         return loader.load_batched()
-    else:
-        return loader.load()
+    return loader.load()

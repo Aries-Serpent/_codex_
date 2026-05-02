@@ -805,7 +805,7 @@ class AgentMemorySystem:
 
     def _load_patterns(self) -> None:
         """Load patterns from database."""
-        pass  # Patterns are stored in-memory for simplicity
+        # Patterns are stored in-memory for simplicity
 
     def _init_common_patterns(self) -> None:
         """Initialize common decision patterns."""

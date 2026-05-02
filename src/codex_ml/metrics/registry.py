@@ -533,10 +533,7 @@ def f1(preds: Sequence[str], targets: Sequence[str]) -> float:
 
 def _distinct_ngrams(preds: Sequence[str], n: int) -> float:
     toks = [tok for p in preds for tok in _norm_str(p, remove_punct=True).split()]
-    if n <= 1:
-        ngrams = toks
-    else:
-        ngrams = [" ".join(toks[i : i + n]) for i in range(max(0, len(toks) - n + 1))]
+    ngrams = toks if n <= 1 else [" ".join(toks[i:i + n]) for i in range(max(0, len(toks) - n + 1))]
     total = len(ngrams)
     return float(len(set(ngrams)) / total) if total else 0.0
 

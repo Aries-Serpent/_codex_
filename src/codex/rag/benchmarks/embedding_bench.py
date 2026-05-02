@@ -82,7 +82,7 @@ def _get_provider(name: str):
 
     if name == "tfidf":
         return create_embedding_provider("tfidf")
-    elif name == "transformers":
+    if name == "transformers":
         try:
             return create_embedding_provider("transformers")
         except Exception:

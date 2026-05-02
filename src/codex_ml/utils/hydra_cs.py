@@ -32,8 +32,7 @@ def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bo
         try:
             if group:
                 return bool(config_store.exists(group=group, name=name))
-            else:
-                return bool(config_store.exists(name=name))
+            return bool(config_store.exists(name=name))
         except Exception:
             logger.debug("safe_exists: ConfigStore.exists() raised", exc_info=True)
             return False
@@ -45,11 +44,10 @@ def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bo
             items = config_store.list(group)
             # Check if name.yaml is in the list
             return f"{name}.yaml" in items
-        else:
-            # List items at root
-            items = config_store.list("")
-            # Check if name.yaml is in the list
-            return f"{name}.yaml" in items
+        # List items at root
+        items = config_store.list("")
+        # Check if name.yaml is in the list
+        return f"{name}.yaml" in items
     except Exception:
         logger.debug("safe_exists: ConfigStore.list() raised", exc_info=True)
         return False

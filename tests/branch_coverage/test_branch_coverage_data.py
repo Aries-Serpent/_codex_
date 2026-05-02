@@ -27,20 +27,14 @@ class TestDataLoadingBranches:
         """Test branch when dataset file exists."""
         dataset_path = Path("/data/train.json")
         with patch.object(Path, "exists", return_value=True):
-            if dataset_path.exists():
-                status = "found"
-            else:
-                status = "not_found"
+            status = "found" if dataset_path.exists() else "not_found"
             assert status == "found"
 
     def test_dataset_missing_branch(self) -> None:
         """Test branch when dataset file is missing."""
         dataset_path = Path("/data/nonexistent.json")
         with patch.object(Path, "exists", return_value=False):
-            if dataset_path.exists():
-                status = "found"
-            else:
-                status = "not_found"
+            status = "found" if dataset_path.exists() else "not_found"
             assert status == "not_found"
 
     def test_dataset_format_json_branch(self) -> None:
@@ -102,19 +96,13 @@ class TestDataLoadingBranches:
     def test_streaming_enabled_branch(self) -> None:
         """Test streaming mode enabled branch."""
         streaming = True
-        if streaming:
-            loader_type = "iterable"
-        else:
-            loader_type = "map"
+        loader_type = "iterable" if streaming else "map"
         assert loader_type == "iterable"
 
     def test_streaming_disabled_branch(self) -> None:
         """Test streaming mode disabled branch."""
         streaming = False
-        if streaming:
-            loader_type = "iterable"
-        else:
-            loader_type = "map"
+        loader_type = "iterable" if streaming else "map"
         assert loader_type == "map"
 
 
@@ -131,10 +119,7 @@ class TestDataValidationBranches:
         data = {"text": "sample", "label": 1}
         required_fields = ["text", "label"]
         is_valid = all(field in data for field in required_fields)
-        if is_valid:
-            status = "valid"
-        else:
-            status = "invalid"
+        status = "valid" if is_valid else "invalid"
         assert status == "valid"
 
     def test_schema_invalid_branch(self) -> None:
@@ -142,10 +127,7 @@ class TestDataValidationBranches:
         data = {"text": "sample"}  # Missing 'label'
         required_fields = ["text", "label"]
         is_valid = all(field in data for field in required_fields)
-        if is_valid:
-            status = "valid"
-        else:
-            status = "invalid"
+        status = "valid" if is_valid else "invalid"
         assert status == "invalid"
 
     def test_data_type_string_branch(self) -> None:
@@ -192,19 +174,13 @@ class TestDataValidationBranches:
     def test_empty_data_branch(self) -> None:
         """Test empty data handling branch."""
         data: list[Any] = []
-        if len(data) == 0:
-            status = "empty"
-        else:
-            status = "has_data"
+        status = "empty" if len(data) == 0 else "has_data"
         assert status == "empty"
 
     def test_non_empty_data_branch(self) -> None:
         """Test non-empty data handling branch."""
         data = [{"text": "sample"}]
-        if len(data) == 0:
-            status = "empty"
-        else:
-            status = "has_data"
+        status = "empty" if len(data) == 0 else "has_data"
         assert status == "has_data"
 
 
@@ -219,73 +195,49 @@ class TestDataSplitBranches:
     def test_split_ratio_valid_branch(self) -> None:
         """Test valid split ratio branch."""
         train_ratio, val_ratio = 0.8, 0.2
-        if abs(train_ratio + val_ratio - 1.0) < 1e-9:
-            status = "valid"
-        else:
-            status = "invalid"
+        status = "valid" if abs(train_ratio + val_ratio - 1.0) < 1e-09 else "invalid"
         assert status == "valid"
 
     def test_split_ratio_invalid_branch(self) -> None:
         """Test invalid split ratio branch."""
         train_ratio, val_ratio = 0.8, 0.3  # Sum > 1
-        if abs(train_ratio + val_ratio - 1.0) < 1e-9:
-            status = "valid"
-        else:
-            status = "invalid"
+        status = "valid" if abs(train_ratio + val_ratio - 1.0) < 1e-09 else "invalid"
         assert status == "invalid"
 
     def test_stratified_split_enabled_branch(self) -> None:
         """Test stratified split enabled branch."""
         stratified = True
-        if stratified:
-            split_method = "stratified"
-        else:
-            split_method = "random"
+        split_method = "stratified" if stratified else "random"
         assert split_method == "stratified"
 
     def test_stratified_split_disabled_branch(self) -> None:
         """Test stratified split disabled branch."""
         stratified = False
-        if stratified:
-            split_method = "stratified"
-        else:
-            split_method = "random"
+        split_method = "stratified" if stratified else "random"
         assert split_method == "random"
 
     def test_seed_provided_branch(self) -> None:
         """Test seed provided branch."""
         seed = 42
-        if seed is not None:
-            reproducible = True
-        else:
-            reproducible = False
+        reproducible = seed is not None
         assert reproducible is True
 
     def test_seed_not_provided_branch(self) -> None:
         """Test seed not provided branch."""
         seed = None
-        if seed is not None:
-            reproducible = True
-        else:
-            reproducible = False
+        reproducible = seed is not None
         assert reproducible is False
 
     def test_train_test_val_split_branch(self) -> None:
         """Test train-test-val split branch."""
         include_val = True
-        if include_val:
-            splits = ["train", "test", "val"]
-        else:
-            splits = ["train", "test"]
+        splits = ["train", "test", "val"] if include_val else ["train", "test"]
         assert len(splits) == 3
 
     def test_train_test_only_split_branch(self) -> None:
         """Test train-test only split branch."""
         include_val = False
-        if include_val:
-            splits = ["train", "test", "val"]
-        else:
-            splits = ["train", "test"]
+        splits = ["train", "test", "val"] if include_val else ["train", "test"]
         assert len(splits) == 2
 
 
@@ -301,48 +253,33 @@ class TestDataCacheBranches:
         """Test cache hit branch."""
         cache_exists = True
         cache_valid = True
-        if cache_exists and cache_valid:
-            source = "cache"
-        else:
-            source = "disk"
+        source = "cache" if cache_exists and cache_valid else "disk"
         assert source == "cache"
 
     def test_cache_miss_no_cache_branch(self) -> None:
         """Test cache miss (no cache exists) branch."""
         cache_exists = False
         cache_valid = True
-        if cache_exists and cache_valid:
-            source = "cache"
-        else:
-            source = "disk"
+        source = "cache" if cache_exists and cache_valid else "disk"
         assert source == "disk"
 
     def test_cache_miss_invalid_branch(self) -> None:
         """Test cache miss (cache invalid) branch."""
         cache_exists = True
         cache_valid = False
-        if cache_exists and cache_valid:
-            source = "cache"
-        else:
-            source = "disk"
+        source = "cache" if cache_exists and cache_valid else "disk"
         assert source == "disk"
 
     def test_cache_enabled_branch(self) -> None:
         """Test caching enabled branch."""
         use_cache = True
-        if use_cache:
-            cache_status = "enabled"
-        else:
-            cache_status = "disabled"
+        cache_status = "enabled" if use_cache else "disabled"
         assert cache_status == "enabled"
 
     def test_cache_disabled_branch(self) -> None:
         """Test caching disabled branch."""
         use_cache = False
-        if use_cache:
-            cache_status = "enabled"
-        else:
-            cache_status = "disabled"
+        cache_status = "enabled" if use_cache else "disabled"
         assert cache_status == "disabled"
 
 
@@ -357,55 +294,37 @@ class TestDataTransformBranches:
     def test_normalize_enabled_branch(self) -> None:
         """Test normalization enabled branch."""
         normalize = True
-        if normalize:
-            transform = "normalized"
-        else:
-            transform = "raw"
+        transform = "normalized" if normalize else "raw"
         assert transform == "normalized"
 
     def test_normalize_disabled_branch(self) -> None:
         """Test normalization disabled branch."""
         normalize = False
-        if normalize:
-            transform = "normalized"
-        else:
-            transform = "raw"
+        transform = "normalized" if normalize else "raw"
         assert transform == "raw"
 
     def test_tokenize_enabled_branch(self) -> None:
         """Test tokenization enabled branch."""
         tokenize = True
-        if tokenize:
-            output = "tokens"
-        else:
-            output = "text"
+        output = "tokens" if tokenize else "text"
         assert output == "tokens"
 
     def test_tokenize_disabled_branch(self) -> None:
         """Test tokenization disabled branch."""
         tokenize = False
-        if tokenize:
-            output = "tokens"
-        else:
-            output = "text"
+        output = "tokens" if tokenize else "text"
         assert output == "text"
 
     def test_augment_enabled_branch(self) -> None:
         """Test data augmentation enabled branch."""
         augment = True
-        if augment:
-            aug_status = "augmented"
-        else:
-            aug_status = "original"
+        aug_status = "augmented" if augment else "original"
         assert aug_status == "augmented"
 
     def test_augment_disabled_branch(self) -> None:
         """Test data augmentation disabled branch."""
         augment = False
-        if augment:
-            aug_status = "augmented"
-        else:
-            aug_status = "original"
+        aug_status = "augmented" if augment else "original"
         assert aug_status == "original"
 
     @pytest.mark.parametrize(
@@ -420,10 +339,7 @@ class TestDataTransformBranches:
         self, max_length: int | None, expected: str
     ) -> None:
         """Test truncation branches."""
-        if max_length and max_length > 0:
-            result = "truncated"
-        else:
-            result = "no_truncation"
+        result = "truncated" if max_length and max_length > 0 else "no_truncation"
         assert result == expected
 
 

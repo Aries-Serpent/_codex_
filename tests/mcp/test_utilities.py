@@ -73,8 +73,7 @@ def mock_error_handler(params: Dict[str, Any]) -> Dict[str, Any]:
         error_type = params.get("error_type", "generic")
         if error_type == "not_found":
             raise ToolNotFound("Tool not found")
-        else:
-            raise MCPError("Generic error")
+        raise MCPError("Generic error")
     return {"success": True}
 
 
@@ -151,8 +150,7 @@ class ToolHandlerHelper:
 # Deterministic Random Utilities
 def get_deterministic_rng(seed: int = 42) -> random.Random:
     """Get deterministic RNG for reproducible tests."""
-    rng = random.Random(seed)
-    return rng
+    return random.Random(seed)
 
 
 def generate_test_data(count: int = 10, seed: int = 42) -> List[Dict[str, Any]]:

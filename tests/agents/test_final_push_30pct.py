@@ -201,7 +201,7 @@ class TestMentalMappingAdditional:
         model = MentalMappingModel()
 
         assert hasattr(model, "edges")
-        assert isinstance(model.edges, list) or isinstance(model.edges, dict)
+        assert isinstance(model.edges, (list, dict))
 
 
 class TestSelfHealingAdditional:

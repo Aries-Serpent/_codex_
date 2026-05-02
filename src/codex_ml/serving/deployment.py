@@ -100,9 +100,8 @@ class TrafficSplitter:
         if rand < self.blue_weight:
             self.blue_requests += 1
             return "blue"
-        else:
-            self.green_requests += 1
-            return "green"
+        self.green_requests += 1
+        return "green"
 
     def record_error(self, deployment: str):
         """Record error for deployment."""
@@ -117,10 +116,9 @@ class TrafficSplitter:
             if self.blue_requests == 0:
                 return 0.0
             return (self.blue_errors / self.blue_requests) * 100
-        else:
-            if self.green_requests == 0:
-                return 0.0
-            return (self.green_errors / self.green_requests) * 100
+        if self.green_requests == 0:
+            return 0.0
+        return (self.green_errors / self.green_requests) * 100
 
     def update_health(self, deployment: str, healthy: bool):
         """Update health status for deployment."""

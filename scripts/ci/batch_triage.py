@@ -153,9 +153,8 @@ class BatchTriageEngine:
 
             if result.returncode == 0:
                 return result.stdout
-            else:
-                logger.warning(f"Failed to fetch logs for run {run_id}: {result.stderr}")
-                return None
+            logger.warning(f"Failed to fetch logs for run {run_id}: {result.stderr}")
+            return None
 
         except subprocess.TimeoutExpired:
             logger.error(f"Timeout fetching logs for run {run_id}")
@@ -181,9 +180,8 @@ class BatchTriageEngine:
 
             if result.returncode == 0:
                 return json.loads(result.stdout)
-            else:
-                logger.warning(f"Failed to fetch issue {issue_num}: {result.stderr}")
-                return None
+            logger.warning(f"Failed to fetch issue {issue_num}: {result.stderr}")
+            return None
 
         except Exception as e:
             logger.error(f"Error fetching issue {issue_num}: {e}")
@@ -255,16 +253,15 @@ class BatchTriageEngine:
         """Classify failure type from logs"""
         if re.search(r'FAILED.*test', logs, re.IGNORECASE):
             return 'test_failure'
-        elif re.search(r'ModuleNotFoundError|ImportError', logs):
+        if re.search(r'ModuleNotFoundError|ImportError', logs):
             return 'import_error'
-        elif re.search(r'SyntaxError', logs):
+        if re.search(r'SyntaxError', logs):
             return 'syntax_error'
-        elif re.search(r'build.*failed', logs, re.IGNORECASE):
+        if re.search(r'build.*failed', logs, re.IGNORECASE):
             return 'build_failure'
-        elif re.search(r'lint.*error', logs, re.IGNORECASE):
+        if re.search(r'lint.*error', logs, re.IGNORECASE):
             return 'lint_error'
-        else:
-            return 'unknown'
+        return 'unknown'
 
     def group_failures(self, strategy: str = 'root_cause') -> None:
         """Group failures by specified strategy"""

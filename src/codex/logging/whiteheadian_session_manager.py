@@ -343,8 +343,7 @@ class WhiteheadianSessionManager:
         if not 0.0 <= definiteness <= 1.0:
             raise ValueError(f"Definiteness must be 0.0-1.0, got {definiteness}")
 
-        satisfaction = (prehensions + realizations) * definiteness
-        return satisfaction
+        return (prehensions + realizations) * definiteness
 
     def get_prehension_history(self, session_id: str) -> List[str]:
         """

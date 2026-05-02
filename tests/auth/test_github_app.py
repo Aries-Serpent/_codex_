@@ -193,9 +193,8 @@ class TestInstallationToken:
         with mock.patch("urllib.request.urlopen",
                         side_effect=urllib.error.HTTPError(
                             url="", code=401, msg="Unauthorized", hdrs=None, fp=None
-                        )):
-            with pytest.raises(AuthenticationError, match="HTTP 401"):
-                github_app.get_installation_token(installation_id=1)
+                        )), pytest.raises(AuthenticationError, match="HTTP 401"):
+            github_app.get_installation_token(installation_id=1)
 
 
 # ---------------------------------------------------------------------------

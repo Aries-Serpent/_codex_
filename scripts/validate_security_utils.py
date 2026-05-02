@@ -160,7 +160,7 @@ def test_codeql_alert_prevention():
     assert "value1" not in log_message, "Secret value should not be in log"
 
     # Verify redacted dict doesn't contain original keys
-    for key in redacted_result.keys():
+    for key in redacted_result:
         has_secret_prefix = key.startswith("secret_")
         assert has_secret_prefix, f"Key '{key}' should start with 'secret_'"
 

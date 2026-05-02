@@ -126,24 +126,23 @@ class SemanticClusterer:
             cluster.confidence_score = cluster.average_similarity
             self._text_to_cluster[text_hash] = best_cluster_id
             return best_cluster_id, False
-        else:
-            # Create new cluster
-            cluster_id = self._generate_cluster_id(text)
-            member = ClusterMember(text=text, embedding=embedding, source=source)
-            cluster = SemanticCluster(
-                cluster_id=cluster_id,
-                centroid_text=text,
-                centroid_embedding=embedding,
-                members=[member],
-            )
-            self._clusters[cluster_id] = cluster
-            self._text_to_cluster[text_hash] = cluster_id
+        # Create new cluster
+        cluster_id = self._generate_cluster_id(text)
+        member = ClusterMember(text=text, embedding=embedding, source=source)
+        cluster = SemanticCluster(
+            cluster_id=cluster_id,
+            centroid_text=text,
+            centroid_embedding=embedding,
+            members=[member],
+        )
+        self._clusters[cluster_id] = cluster
+        self._text_to_cluster[text_hash] = cluster_id
 
-            # Cleanup if over limit
-            if len(self._clusters) > self.max_clusters:
-                self._prune_smallest_clusters()
+        # Cleanup if over limit
+        if len(self._clusters) > self.max_clusters:
+            self._prune_smallest_clusters()
 
-            return cluster_id, True
+        return cluster_id, True
 
     def get_cluster(self, cluster_id: str) -> Optional[SemanticCluster]:
         """Get cluster by ID."""
@@ -242,8 +241,7 @@ class SemanticClusterer:
         """
         if embedding1 and embedding2:
             return self._cosine_similarity(embedding1, embedding2)
-        else:
-            return self._token_similarity(text1, text2)
+        return self._token_similarity(text1, text2)
 
     def _cosine_similarity(self, vec1: list[float], vec2: list[float]) -> float:
         """Compute cosine similarity between two vectors."""

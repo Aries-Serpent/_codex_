@@ -52,10 +52,7 @@ def _split_rows(
         return [], []
 
     k = max(1, int(round(n * (1 - split))))
-    if n > 1:
-        k = min(k, n - 1)
-    else:
-        k = min(k, n)
+    k = min(k, n - 1) if n > 1 else min(k, n)
     return rows[:k], rows[k:]
 
 
@@ -136,7 +133,7 @@ def main() -> int:
     if not fieldnames:
         # Fallback for headerless CSVs: preserve key order from the first row.
         for row in rows:
-            fieldnames.extend(k for k in row.keys() if k not in fieldnames)
+            fieldnames.extend(k for k in row if k not in fieldnames)
             if fieldnames:
                 break
 

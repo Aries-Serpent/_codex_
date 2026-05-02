@@ -84,10 +84,7 @@ def git_relevant_changes(base: str, head: str) -> list[DiffEntry]:
         if not parts:
             continue
         status = parts[0]
-        if status.startswith("D"):
-            if len(parts) >= 2:
-                entries.append(DiffEntry(status=status, path=parts[1], original_path=parts[1]))
-        elif status.startswith("M"):
+        if status.startswith("D") or status.startswith("M"):
             if len(parts) >= 2:
                 entries.append(DiffEntry(status=status, path=parts[1], original_path=parts[1]))
         elif status.startswith("R"):

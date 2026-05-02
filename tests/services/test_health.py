@@ -41,10 +41,9 @@ class TestHealthChecks:
 
             if all(s == HealthStatus.HEALTHY for s in statuses):
                 return HealthStatus.HEALTHY
-            elif any(s == HealthStatus.UNHEALTHY for s in statuses):
+            if any(s == HealthStatus.UNHEALTHY for s in statuses):
                 return HealthStatus.UNHEALTHY
-            else:
-                return HealthStatus.DEGRADED
+            return HealthStatus.DEGRADED
 
         # All healthy
         components = [
@@ -189,10 +188,9 @@ class TestHealthEndpoints:
         def get_status_code(health_status):
             if health_status == HealthStatus.HEALTHY:
                 return 200
-            elif health_status == HealthStatus.DEGRADED:
+            if health_status == HealthStatus.DEGRADED:
                 return 200  # Still 200 but with degraded status
-            else:
-                return 503  # Service Unavailable
+            return 503  # Service Unavailable
 
         assert get_status_code(HealthStatus.HEALTHY) == 200
         assert get_status_code(HealthStatus.DEGRADED) == 200

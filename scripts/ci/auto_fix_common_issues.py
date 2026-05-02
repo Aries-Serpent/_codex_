@@ -75,7 +75,7 @@ def _advance_triple_quote_state(line: str, in_str: bool, delim: str) -> tuple[bo
         count = stripped.count(d)
         if not in_str and count % 2 == 1:
             return True, d
-        elif in_str and delim == d and count % 2 == 1:
+        if in_str and delim == d and count % 2 == 1:
             return False, ""
     return in_str, delim
 

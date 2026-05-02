@@ -208,7 +208,7 @@ def _build_training_config() -> dict[str, Any]:
             "accountant": "rdp",
         },
     }
-    data = {
+    return {
         **shared,
         "model": "minilm",
         "output_dir": "runs/default",
@@ -219,7 +219,6 @@ def _build_training_config() -> dict[str, Any]:
         },
         "hf_trainer": hf_block,
     }
-    return data
 
 
 def task_create_training_config() -> None:

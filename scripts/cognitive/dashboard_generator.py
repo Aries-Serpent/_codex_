@@ -384,14 +384,13 @@ def get_health_status(score: float) -> Dict[str, str]:
     """Get health status based on score."""
     if score >= 90:
         return {"emoji": "🌟", "label": "Excellent", "color": "green"}
-    elif score >= 70:
+    if score >= 70:
         return {"emoji": "✅", "label": "Good", "color": "green"}
-    elif score >= 50:
+    if score >= 50:
         return {"emoji": "⚠️", "label": "Fair", "color": "yellow"}
-    elif score >= 30:
+    if score >= 30:
         return {"emoji": "🔶", "label": "Needs Attention", "color": "orange"}
-    else:
-        return {"emoji": "🔴", "label": "Critical", "color": "red"}
+    return {"emoji": "🔴", "label": "Critical", "color": "red"}
 
 
 def save_dashboard(

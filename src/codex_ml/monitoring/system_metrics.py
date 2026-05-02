@@ -381,8 +381,7 @@ def system_snapshot() -> dict[str, Any]:
         errors.append({"component": "gpu", "error": repr(exc)})
         gpu_payload = None
 
-    snapshot = {"ts": ts, "cpu": cpu_payload, "gpu": gpu_payload, "errors": errors}
-    return snapshot
+    return {"ts": ts, "cpu": cpu_payload, "gpu": gpu_payload, "errors": errors}
 
 
 def system_metrics_scalars(payload: Mapping[str, Any]) -> dict[str, float]:

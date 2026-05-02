@@ -310,8 +310,7 @@ def main():
     # Exit with error code if any rollbacks failed
     if report.get("summary", {}).get("all_successful", True):
         return 0
-    else:
-        return 1
+    return 1
 
 
 if __name__ == "__main__":

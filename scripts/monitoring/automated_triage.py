@@ -327,10 +327,7 @@ def main():
 
         analysis = analyzer.analyze_failure(args.run_id, args.workflow_name, logs)
 
-        if args.json:
-            output = json.dumps(analysis, indent=2)
-        else:
-            output = analyzer.generate_report(analysis)
+        output = json.dumps(analysis, indent=2) if args.json else analyzer.generate_report(analysis)
 
         # Write to file
         output_path = Path(args.output)

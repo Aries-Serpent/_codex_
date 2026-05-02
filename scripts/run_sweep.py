@@ -66,8 +66,7 @@ CODEX_HY_OUT = Path(".codex") / "hydra_last"
 def _expand(grid: dict[str, list[object]]) -> list[dict[str, object]]:
     keys = list(grid.keys())
     values = [v if isinstance(v, list) else [v] for v in grid.values()]
-    combos = [dict(zip(keys, combo)) for combo in itertools.product(*values)]
-    return combos
+    return [dict(zip(keys, combo)) for combo in itertools.product(*values)]
 
 
 def _validate_override(key: str, value: object) -> None:

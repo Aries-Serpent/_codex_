@@ -64,9 +64,8 @@ def resolve_relative_path(base_file: Path, link_target: str) -> Path:
         return base_file
 
     base_dir = base_file.parent
-    target_path = (base_dir / link_target).resolve()
+    return (base_dir / link_target).resolve()
 
-    return target_path
 
 
 def check_file_exists(file_path: Path, link_target: str) -> Tuple[bool, str]:
@@ -81,8 +80,7 @@ def check_file_exists(file_path: Path, link_target: str) -> Tuple[bool, str]:
 
     if target_path.exists():
         return (True, "OK")
-    else:
-        return (False, f"File not found: {target_path.relative_to(REPO_ROOT)}")
+    return (False, f"File not found: {target_path.relative_to(REPO_ROOT)}")
 
 
 def scan_file(file_path: Path) -> List[BrokenLink]:

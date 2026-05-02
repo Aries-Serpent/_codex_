@@ -89,10 +89,7 @@ def bleu(
     if pred_len == 0:
         return 0.0
 
-    if pred_len > target_len:
-        brevity_penalty = 1.0
-    else:
-        brevity_penalty = math.exp(1.0 - (target_len / pred_len))
+    brevity_penalty = 1.0 if pred_len > target_len else math.exp(1.0 - target_len / pred_len)
 
     return float(brevity_penalty * geo_mean)
 

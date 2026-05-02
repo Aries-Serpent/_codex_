@@ -26,9 +26,8 @@ class TestFileOperationExceptions:
 
     def test_file_not_found_handler(self) -> None:
         """Test FileNotFoundError handling."""
-        with pytest.raises(FileNotFoundError):
-            with open("/nonexistent/path/file.txt") as f:
-                f.read()
+        with pytest.raises(FileNotFoundError), open("/nonexistent/path/file.txt") as f:
+            f.read()
 
     def test_file_not_found_graceful_recovery(self) -> None:
         """Test graceful recovery from FileNotFoundError."""

@@ -316,10 +316,7 @@ def _augment_prompts(
         cleaned = prompt.strip()
         if not cleaned:
             continue
-        if rng is None:
-            suffix = templates[index % len(templates)]
-        else:
-            suffix = rng.choice(templates)
+        suffix = templates[index % len(templates)] if rng is None else rng.choice(templates)
         augmented.append({"prompt": cleaned, "completion": f"{cleaned}\n\n{suffix}"})
     return augmented
 

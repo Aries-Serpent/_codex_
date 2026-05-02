@@ -84,10 +84,7 @@ class TimeTerminologyReplacer:
 
     def should_preserve_line(self, line: str) -> bool:
         """Check if line contains patterns that should be preserved."""
-        for pattern in self.preserve_patterns:
-            if re.search(pattern, line, re.IGNORECASE):
-                return True
-        return False
+        return any(re.search(pattern, line, re.IGNORECASE) for pattern in self.preserve_patterns)
 
     def process_file(self, filepath: Path) -> Tuple[bool, List[str]]:
         """Process a single file and return (changed, change_descriptions)."""

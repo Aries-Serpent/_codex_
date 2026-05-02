@@ -9,6 +9,7 @@ import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
+import contextlib
 
 
 @dataclass
@@ -61,31 +62,23 @@ class ASTConfig:
 
         # Parse timeout
         if env_timeout := os.getenv("AST_PARSE_TIMEOUT"):
-            try:
+            with contextlib.suppress(ValueError):
                 self.parse_timeout = int(env_timeout)
-            except ValueError:
-                pass
 
         # Complexity threshold
         if env_threshold := os.getenv("AST_COMPLEXITY_THRESHOLD"):
-            try:
+            with contextlib.suppress(ValueError):
                 self.complexity_threshold = int(env_threshold)
-            except ValueError:
-                pass
 
         # Max function lines
         if env_lines := os.getenv("AST_MAX_FUNCTION_LINES"):
-            try:
+            with contextlib.suppress(ValueError):
                 self.max_function_lines = int(env_lines)
-            except ValueError:
-                pass
 
         # Max file lines
         if env_file_lines := os.getenv("AST_MAX_FILE_LINES"):
-            try:
+            with contextlib.suppress(ValueError):
                 self.max_file_lines = int(env_file_lines)
-            except ValueError:
-                pass
 
         # Output format
         if env_format := os.getenv("AST_OUTPUT_FORMAT"):
@@ -98,10 +91,8 @@ class ASTConfig:
 
         # Max parallel workers
         if env_parallel := os.getenv("AST_MAX_PARALLEL"):
-            try:
+            with contextlib.suppress(ValueError):
                 self.max_parallel = max(1, int(env_parallel))
-            except ValueError:
-                pass
 
         # Cache enabled
         if env_cache := os.getenv("AST_CACHE_ENABLED"):
@@ -144,7 +135,7 @@ class ASTConfig:
     @classmethod
     def from_dict(cls, data: dict) -> "ASTConfig":
         """Create from dictionary."""
-        config = cls(
+        return cls(
             parser_backend=data.get("parser_backend", "libcst"),
             parse_timeout=data.get("parse_timeout", 30),
             supported_languages=data.get("supported_languages", ["python", "yaml", "json"]),
@@ -159,7 +150,6 @@ class ASTConfig:
             cache_path=Path(data.get("cache_path", ".ast_cache")),
             db_path=Path(data["db_path"]) if data.get("db_path") else None,
         )
-        return config
 
     def validate(self) -> List[str]:
         """Validate configuration and return list of errors."""

@@ -32,7 +32,7 @@ class StreamingLoss(BaseMetric):
 
     def update(self, preds: Any, labels: Any, **kwargs) -> None:
         # Expect a scalar loss passed via kwargs or preds
-        loss = kwargs.get("loss", None)
+        loss = kwargs.get("loss")
         if loss is None:
             # fallback: mean over preds if tensor/array
             arr = _to_numpy(preds)

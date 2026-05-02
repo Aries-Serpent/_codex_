@@ -78,19 +78,18 @@ class QuantumConfig:
             raise ValueError(f"t2_decoherence_us must be >= 0, got {self.t2_decoherence_us}")
 
         # If quantum_mode is False, all features should be disabled
-        if not self.quantum_mode:
-            if any(
-                [
-                    self.superposition,
-                    self.entanglement,
-                    self.uncertainty,
-                    self.wave_collapse,
-                ]
-            ):
-                raise ValueError(
-                    "Cannot enable individual features when quantum_mode is False. "
-                    "Set CODEX_QUANTUM_MODE=true first."
-                )
+        if not self.quantum_mode and any(
+            [
+                self.superposition,
+                self.entanglement,
+                self.uncertainty,
+                self.wave_collapse,
+            ]
+        ):
+            raise ValueError(
+                "Cannot enable individual features when quantum_mode is False. "
+                "Set CODEX_QUANTUM_MODE=true first."
+            )
 
     @classmethod
     def from_env(cls) -> "QuantumConfig":

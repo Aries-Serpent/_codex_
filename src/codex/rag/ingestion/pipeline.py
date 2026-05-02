@@ -458,10 +458,7 @@ class IngestionPipeline:
             raise ValueError(f"Not a directory: {directory}")
 
         # Find matching files
-        if recursive:
-            files = list(dir_path.rglob(pattern))
-        else:
-            files = list(dir_path.glob(pattern))
+        files = list(dir_path.rglob(pattern)) if recursive else list(dir_path.glob(pattern))
 
         # Filter to files only
         files = [f for f in files if f.is_file()]
@@ -492,13 +489,12 @@ class IngestionPipeline:
                     time.sleep(self.config.retry_delay_seconds * (attempt + 1))
 
         # All retries failed
-        result = IngestionResult(
+        return IngestionResult(
             document_id=str(file_path),
             status=IngestionStatus.FAILED,
             error_message=str(last_error) if last_error else "Max retries exceeded",
             retries=self.config.max_retries,
         )
-        return result
 
     def _update_batch_result(
         self,

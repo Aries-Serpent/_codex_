@@ -284,10 +284,7 @@ class TestDataPipelineProperties:
     def test_reduce_sum_matches_builtin(self, lst: list[int]) -> None:
         """Manual reduce matches builtin sum."""
         from functools import reduce
-        if lst:
-            reduced = reduce(lambda a, b: a + b, lst, 0)
-        else:
-            reduced = 0
+        reduced = reduce(lambda a, b: a + b, lst, 0) if lst else 0
         assert reduced == sum(lst)
 
 

@@ -123,8 +123,7 @@ class TestOptimizerSetup:
             pytest.skip("PyTorch not available")
         import torch.nn as nn
 
-        model = nn.Linear(10, 2)
-        return model
+        return nn.Linear(10, 2)
 
     def test_adam_optimizer_setup(self, simple_model):
         """Test setting up Adam optimizer."""
@@ -241,8 +240,7 @@ class TestLearningRateScheduling:
         import torch.nn as nn
 
         model = nn.Linear(10, 2)
-        optimizer = optim.Adam(model.parameters(), lr=0.1)
-        return optimizer
+        return optim.Adam(model.parameters(), lr=0.1)
 
     def test_step_lr_scheduler(self, optimizer_with_model):
         """Test StepLR scheduler."""

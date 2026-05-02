@@ -86,8 +86,7 @@ def get_conflicted_files() -> list[str]:
     if returncode != 0:
         return []
 
-    files = [line.strip() for line in stdout.strip().split('\n') if line.strip()]
-    return files
+    return [line.strip() for line in stdout.strip().split('\n') if line.strip()]
 
 
 def get_all_pr_files() -> list[str]:
@@ -144,8 +143,7 @@ def get_all_pr_files() -> list[str]:
         print(f"Error: Could not get changed files from {base_commit}", file=sys.stderr)
         return []
 
-    files = [line.strip() for line in stdout.strip().split('\n') if line.strip()]
-    return files
+    return [line.strip() for line in stdout.strip().split('\n') if line.strip()]
 
 
 def resolve_conflict_accept_ours(filepath: str) -> bool:

@@ -134,11 +134,10 @@ class TestTrainingThroughputBenchmarks:
             predictions = [0.5 + 0.1 * i for i in range(100)]
             targets = [0.0 if i < 50 else 1.0 for i in range(100)]
             # Cross-entropy approximation
-            loss = sum(
+            return sum(
                 -t * (p if p > 0 else 1e-10) - (1 - t) * (1 - p if p < 1 else 1e-10)
                 for p, t in zip(predictions, targets)
             ) / len(predictions)
-            return loss
 
         result = benchmark(compute_loss, iterations=1000)
         assert result.throughput > 0
@@ -170,11 +169,10 @@ class TestTrainingMemoryBenchmarks:
     def test_batch_memory_allocation(self) -> None:
         """Benchmark memory allocation for batches."""
         def allocate_batch() -> list[dict[str, Any]]:
-            batch = [
+            return [
                 {"input_ids": list(range(512)), "attention_mask": [1] * 512}
                 for _ in range(32)
             ]
-            return batch
 
         result = benchmark(allocate_batch, iterations=100)
         # Memory increase should be reasonable
@@ -292,8 +290,7 @@ class TestTrainingLatencyBenchmarks:
                 "model_state": {f"param_{i}": [0.1] * 100 for i in range(10)},
             }
             # Simulate serialization
-            serialized = json.dumps(checkpoint)
-            return serialized
+            return json.dumps(checkpoint)
 
         result = benchmark(save_checkpoint, iterations=100)
         avg_latency_ms = result.duration_ms / result.iterations
@@ -419,8 +416,7 @@ class TestTrainingEfficiencyBenchmarks:
 
         def memory_access_pattern() -> float:
             # Sequential access
-            total = sum(data)
-            return total
+            return sum(data)
 
         result = benchmark(memory_access_pattern, iterations=500)
         assert result.throughput > 0

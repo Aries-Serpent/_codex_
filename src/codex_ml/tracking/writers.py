@@ -43,6 +43,7 @@ from codex_ml.logging.ndjson_logger import (
 from codex_ml.logging.permissions import get_log_file_mode
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking_decision
 from codex_ml.utils.optional_dependencies import format_optional_dependency_error
+import contextlib
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
@@ -214,10 +215,8 @@ class _SummaryRotator:
 
     def _rotate(self) -> None:
         if self.backup_count <= 0:
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 self.path.unlink()
-            except FileNotFoundError:
-                pass
             self._rollover_ts = time.time()
             return
 
@@ -287,10 +286,7 @@ def _is_local_mlflow_uri(uri: str) -> bool:
             return netloc in {"", "localhost"}
         return True
 
-    if "://" not in uri and len(parsed.scheme) == 1:
-        return True
-
-    return False
+    return bool("://" not in uri and len(parsed.scheme) == 1)
 
 
 def _write_deterministic_json(path: Path, record: MappingABC[str, Any]) -> None:

@@ -115,7 +115,7 @@ class SignatureValidator:
         """Extract function name from call node."""
         if isinstance(call_node.func, ast.Attribute):
             return call_node.func.attr
-        elif isinstance(call_node.func, ast.Name):
+        if isinstance(call_node.func, ast.Name):
             return call_node.func.id
         return None
 

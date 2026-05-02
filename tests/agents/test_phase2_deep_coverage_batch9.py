@@ -337,10 +337,7 @@ class TestPhase2_NumericalStability:
         """Test handling underflow"""
         small_value = 1e-308
         min_float = 2.2e-308
-        if small_value < min_float:
-            result = 0.0
-        else:
-            result = small_value
+        result = 0.0 if small_value < min_float else small_value
         assert result == 0.0
 
     def test_loss_of_precision(self):

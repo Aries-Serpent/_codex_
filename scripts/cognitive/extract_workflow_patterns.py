@@ -79,12 +79,11 @@ class PatternWave:
         if phase_diff < math.pi / 4:
             # Constructive interference (patterns correlate strongly)
             return self.amplitude + other.amplitude
-        elif phase_diff > 3 * math.pi / 4:
+        if phase_diff > 3 * math.pi / 4:
             # Destructive interference (patterns anti-correlate)
             return abs(self.amplitude - other.amplitude)
-        else:
-            # Partial interference
-            return math.sqrt(self.amplitude**2 + other.amplitude**2)
+        # Partial interference
+        return math.sqrt(self.amplitude**2 + other.amplitude**2)
 
 
 class QuantumPatternClassifier:

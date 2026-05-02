@@ -116,13 +116,12 @@ def load_assignment_mappings(path: Path, auto_migrate: bool = True) -> dict[str,
                 v2_path = Path(tf.name)
 
             try:
-                v3_data = AssignmentMappingMigration.migrate_v2_to_v3(v2_path)
-                return v3_data
+                return AssignmentMappingMigration.migrate_v2_to_v3(v2_path)
             finally:
                 v2_path.unlink()
         return data
 
-    elif version == "2.0":
+    if version == "2.0":
         warnings.warn(
             "Loading v2 assignment mappings. Consider migrating to v3.",
             PendingDeprecationWarning,
@@ -139,14 +138,12 @@ def load_assignment_mappings(path: Path, auto_migrate: bool = True) -> dict[str,
                 temp_path = Path(tf.name)
 
             try:
-                v3_data = AssignmentMappingMigration.migrate_v2_to_v3(temp_path)
-                return v3_data
+                return AssignmentMappingMigration.migrate_v2_to_v3(temp_path)
             finally:
                 temp_path.unlink()
         return data
 
-    elif version == "3.0":
+    if version == "3.0":
         return data
 
-    else:
-        raise ValueError(f"Unknown assignment mapping version: {version}")
+    raise ValueError(f"Unknown assignment mapping version: {version}")

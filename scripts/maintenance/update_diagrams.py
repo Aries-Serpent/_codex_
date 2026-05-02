@@ -200,10 +200,7 @@ class DiagramUpdater:
                 return False  # At least one current workflow found
 
         # If no current workflows found, might be outdated
-        if 'workflow' in content.lower() and len(workflow_files) > 0:
-            return True
-
-        return False
+        return bool('workflow' in content.lower() and len(workflow_files) > 0)
 
     def _architecture_diagram_outdated(self, content: str) -> bool:
         """Check if architecture diagram matches current structure."""

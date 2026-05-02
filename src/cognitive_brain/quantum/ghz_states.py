@@ -340,9 +340,8 @@ class GHZStateManager:
         total_correlation = sum(ghz_state.correlation_matrix.values())
         num_pairs = len(ghz_state.correlation_matrix)
 
-        rho_multi = total_correlation / num_pairs if num_pairs > 0 else 0.0
+        return total_correlation / num_pairs if num_pairs > 0 else 0.0
 
-        return rho_multi
 
     def get_state(self, state_id: str) -> GHZState:
         """

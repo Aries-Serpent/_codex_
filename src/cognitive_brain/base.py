@@ -127,8 +127,7 @@ class Planner(ABC):
         observation = self.observe(input_data)
         orientation = self.orient(observation)
         decision = self.decide(orientation)
-        result = self.act(decision)
-        return result
+        return self.act(decision)
 
 
 class MemoryInterface(ABC):

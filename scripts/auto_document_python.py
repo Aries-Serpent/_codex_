@@ -181,10 +181,7 @@ def main():
         print("Usage: python scripts/auto_document_python.py [module_path|--all]")
         sys.exit(1)
 
-    if sys.argv[1] == '--all':
-        directory = Path('src')
-    else:
-        directory = Path(sys.argv[1])
+    directory = Path('src') if sys.argv[1] == '--all' else Path(sys.argv[1])
 
     if not directory.exists():
         print(f"❌ Path {directory} does not exist")

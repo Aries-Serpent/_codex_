@@ -1244,10 +1244,9 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
                 click.echo("\n🔍 Dry run mode - no files deleted")
                 return
 
-            if not yes:
-                if not click.confirm(f"\nDelete {len(files_to_delete)} files?"):
-                    click.echo("Cancelled")
-                    return
+            if not yes and not click.confirm(f"\nDelete {len(files_to_delete)} files?"):
+                click.echo("Cancelled")
+                return
 
             deleted = 0
             for f in files_to_delete:

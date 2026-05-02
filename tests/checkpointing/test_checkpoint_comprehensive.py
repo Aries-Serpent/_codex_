@@ -32,16 +32,14 @@ pytestmark = pytest.mark.ml_comprehensive
 @pytest.fixture
 def mock_model():
     """Create mock model"""
-    model = torch.nn.Linear(10, 5)
-    return model
+    return torch.nn.Linear(10, 5)
 
 
 @pytest.fixture
 def mock_optimizer():
     """Create mock optimizer"""
     model = torch.nn.Linear(10, 5)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    return optimizer
+    return torch.optim.Adam(model.parameters(), lr=0.001)
 
 
 @pytest.fixture

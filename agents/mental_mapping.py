@@ -927,7 +927,7 @@ class MentalMappingModel:
 
     def get_mental_map_summary(self) -> dict:
         """Get a summary of the mental map"""
-        summary = {
+        return {
             "map_id": self.map_id,
             "agent_id": self.agent_id,
             "created_at": self.created_at,
@@ -938,7 +938,6 @@ class MentalMappingModel:
             "learning_history_size": len(self.learning_history),
             "appraisal_metrics": self.appraisal_metrics,
         }
-        return summary
 
     def visualize_reasoning_path(self, start_node_id: str, max_depth: int = 5) -> str:
         """Generate a text visualization of reasoning path from a node"""
@@ -1277,9 +1276,8 @@ class MentalMappingModel:
             if edge.source_id == node_id:
                 if edge.target_id in self.nodes:
                     connected.append(self.nodes[edge.target_id])
-            elif edge.target_id == node_id:
-                if edge.source_id in self.nodes:
-                    connected.append(self.nodes[edge.source_id])
+            elif edge.target_id == node_id and edge.source_id in self.nodes:
+                connected.append(self.nodes[edge.source_id])
 
         return connected
 

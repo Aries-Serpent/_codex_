@@ -97,9 +97,8 @@ class VectorizedEvolution:
         H_psi = kinetic_term + mass_term
 
         # Evolve: ψ(t+dt) = ψ(t) - (i/ℏ)Hψ dt
-        evolved = spinors - (1j / self.hbar) * H_psi * dt
+        return spinors - (1j / self.hbar) * H_psi * dt
 
-        return evolved
 
     def batch_normalize(self, spinors: np.ndarray) -> np.ndarray:
         """
@@ -148,9 +147,8 @@ class VectorizedEvolution:
         currents = np.einsum("nji,ni->nj", psi_dag_alpha, spinors)  # (N, 3)
 
         # Multiply by c and take real part (current is real)
-        currents = self.c * np.real(currents)
+        return self.c * np.real(currents)
 
-        return currents
 
     def batch_compute_probabilities(self, spinors: np.ndarray) -> dict[str, np.ndarray]:
         """
@@ -221,9 +219,8 @@ class VectorizedEvolution:
         momentum_mag = np.where(momentum_mag > 1e-10, momentum_mag, 1.0)
 
         # Helicity (simplified as spin-z for now)
-        helicity = spin_z * np.sign(momentum_dir[:, 2])  # Use z-component sign
+        return spin_z * np.sign(momentum_dir[:, 2])  # Use z-component sign
 
-        return helicity
 
     def batch_compute_zitterbewegung(self, spinors: np.ndarray) -> np.ndarray:
         """
@@ -244,9 +241,8 @@ class VectorizedEvolution:
         P_minus = np.sum(np.abs(spinors[:, 2:]) ** 2, axis=1)
 
         # Amplitude
-        amplitude = 2 * np.sqrt(P_plus * P_minus)
+        return 2 * np.sqrt(P_plus * P_minus)
 
-        return amplitude
 
 
 class SpatialIndex:

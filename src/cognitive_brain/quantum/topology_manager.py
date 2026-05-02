@@ -251,8 +251,7 @@ class TopologyManager:
         agent_idx = self.agent_ids.index(agent_id)
         neighbor_indices = np.where(self.adjacency_matrix[agent_idx] == 1)[0]
 
-        neighbors = [self.agent_ids[idx] for idx in neighbor_indices]
-        return neighbors
+        return [self.agent_ids[idx] for idx in neighbor_indices]
 
     def update_correlation(self, agent1_id: str, agent2_id: str, correlation: float) -> None:
         """

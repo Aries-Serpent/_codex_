@@ -16,8 +16,7 @@ class TestSqliteDAL:
         """Create a temporary SQLite DAL for testing."""
         db_path = tmp_path / "test_archive.db"
         url = f"sqlite:///{db_path}"
-        dal = SqliteDAL.from_url(url)
-        return dal
+        return SqliteDAL.from_url(url)
 
     def test_dal_initialization(self, tmp_path):
         """Test that DAL initializes and creates database."""

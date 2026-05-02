@@ -56,12 +56,11 @@ def calculate_trend(scores: list[float]) -> tuple[str, str, str]:
 
     if abs(delta) < 0.01:
         return ("Stable", "trend-stable", "→")
-    elif delta > 0:
+    if delta > 0:
         pct = (delta / avg_first) * 100 if avg_first > 0 else 0
         return (f"+{pct:.1f}%", "trend-up", "↑")
-    else:
-        pct = (abs(delta) / avg_first) * 100 if avg_first > 0 else 0
-        return (f"-{pct:.1f}%", "trend-down", "↓")
+    pct = (abs(delta) / avg_first) * 100 if avg_first > 0 else 0
+    return (f"-{pct:.1f}%", "trend-down", "↓")
 
 
 def load_audit_runs(history_dir: Path) -> list[dict]:

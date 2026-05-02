@@ -131,15 +131,14 @@ class AlertCloser:
             if response.status_code == 200:
                 logger.info(f"✅ Successfully closed alert #{alert_number}")
                 return True
-            elif response.status_code == 404:
+            if response.status_code == 404:
                 logger.error(f"❌ Alert #{alert_number} not found")
                 return False
-            elif response.status_code == 403:
+            if response.status_code == 403:
                 logger.error("❌ Insufficient permissions to close alerts")
                 return False
-            else:
-                logger.error(f"❌ Failed to close alert: {response.status_code} - {response.text}")
-                return False
+            logger.error(f"❌ Failed to close alert: {response.status_code} - {response.text}")
+            return False
 
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ Request error: {e}")
@@ -387,28 +386,27 @@ Dismissal reasons:
             )
 
         return 0 if success else 1
-    else:
-        results = closer.close_alerts_batch(
-            alert_numbers=alert_numbers,
-            reason=args.reason,
-            comment_template=args.comment,
-            pr_number=args.pr,
-            commit_sha=args.commit,
-        )
+    results = closer.close_alerts_batch(
+        alert_numbers=alert_numbers,
+        reason=args.reason,
+        comment_template=args.comment,
+        pr_number=args.pr,
+        commit_sha=args.commit,
+    )
 
-        # Log all successful closures
-        if not args.dry_run:
-            for alert_number, success in results.items():
-                if success:
-                    closer.log_closure(
-                        alert_number=alert_number,
-                        reason=args.reason,
-                        comment=args.comment,
-                        log_file=args.log_file,
-                    )
+    # Log all successful closures
+    if not args.dry_run:
+        for alert_number, success in results.items():
+            if success:
+                closer.log_closure(
+                    alert_number=alert_number,
+                    reason=args.reason,
+                    comment=args.comment,
+                    log_file=args.log_file,
+                )
 
-        # Return 0 if all succeeded, 1 if any failed
-        return 0 if all(results.values()) else 1
+    # Return 0 if all succeeded, 1 if any failed
+    return 0 if all(results.values()) else 1
 
 
 if __name__ == "__main__":

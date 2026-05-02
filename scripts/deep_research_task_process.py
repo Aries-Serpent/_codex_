@@ -1103,7 +1103,7 @@ def phase4_results() -> None:
         lines.append("\n- **Residual Gaps:**")
         lines.append("    - `Ingestor` remains a placeholder pending real ingestion logic.")
         lines.append(
-            "    - CLI tasks are stubs; integrate with internal APIs for true " "maintenance ops."
+            "    - CLI tasks are stubs; integrate with internal APIs for true maintenance ops."
         )
         lines.append("    - Potential Bandit findings require periodic triage.")
         lines.append("    - Secret baseline may need refresh as code evolves.")
@@ -1134,7 +1134,7 @@ def run_all() -> int:
         phase3_construction()
         phase4_results()
         if not DRY_RUN:
-            print("Completed repository improvement tasks for " f"{GITHUB_ORG}/{GITHUB_REPO}.")
+            print(f"Completed repository improvement tasks for {GITHUB_ORG}/{GITHUB_REPO}.")
             print(f"Results and change log have been updated in {CODEX_DIR}.")
         else:
             print("Dry-run complete (no files modified).")

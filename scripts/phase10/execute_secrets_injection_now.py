@@ -87,9 +87,8 @@ def inject_secret_via_cli(name, value):
         if process.returncode == 0:
             print(f"✅ {name} injected successfully via gh CLI")
             return True
-        else:
-            print(f"❌ {name} failed: {stderr}")
-            return False
+        print(f"❌ {name} failed: {stderr}")
+        return False
     except Exception as e:
         print(f"❌ {name} error: {e}")
         return False

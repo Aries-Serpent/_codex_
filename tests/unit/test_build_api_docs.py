@@ -242,9 +242,8 @@ class TestLogging:
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
         monkeypatch.setattr(build_api_docs, "build_docs", lambda *args: None)
 
-        with patch("sys.argv", ["build_api_docs.py"]):
-            with caplog.at_level("INFO"):
-                build_api_docs.main()
+        with patch("sys.argv", ["build_api_docs.py"]), caplog.at_level("INFO"):
+            build_api_docs.main()
 
         # Should log the final module list
         assert "Final module list to document" in caplog.text

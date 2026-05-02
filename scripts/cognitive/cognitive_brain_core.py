@@ -229,10 +229,9 @@ def main():
     if results["overall_status"] == "success":
         print("\n✅ Cognitive Brain cycle completed successfully!")
         return 0
-    else:
-        print("\n❌ Cognitive Brain cycle encountered errors")
-        return 1
+    print("\n❌ Cognitive Brain cycle encountered errors")
+    return 1
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

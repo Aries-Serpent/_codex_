@@ -390,9 +390,8 @@ class LRUCache:
             # Move to end (most recently used)
             self.cache.move_to_end(key)
             return self.cache[key]
-        else:
-            self.misses += 1
-            return None
+        self.misses += 1
+        return None
 
     def put(self, key: str, value: Any):
         """
@@ -508,9 +507,8 @@ class CachedRetriever(Retriever):
         normalized = q.lower().strip()
 
         # Remove extra whitespace
-        normalized = " ".join(normalized.split())
+        return " ".join(normalized.split())
 
-        return normalized
 
     def _make_cache_key(self, q: str, top_k: int, min_score: Optional[float]) -> str:
         """

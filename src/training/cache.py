@@ -38,7 +38,7 @@ class TokenCache:
             return
         shard_path = self.out_dir / f"shard_{self._shard_idx:05d}.npz"
         data: dict[str, np.ndarray] = {}
-        for key in self._buffer[0].keys():
+        for key in self._buffer[0]:
             data[key] = np.concatenate([b[key] for b in self._buffer], axis=0)
         np.savez(shard_path, **data)
         rows = int(next(iter(data.values())).shape[0])

@@ -101,7 +101,7 @@ def print_progress_report(caps: list[dict]):
     print("\n📈 Phase Targets")
     phase1_complete = len(categories["critical"]) == 0 and len(categories["low"]) == 0
     phase2_complete = len(categories["medium"]) == 0
-    len(categories["high"]) == len(caps)
+    phase3_complete = len(categories["high"]) == len(caps)
 
     print(
         f"  Phase 1 (ALL ≥0.70):  {'✅' if phase1_complete else '❌'} {len(categories['critical']) + len(categories['low'])} remaining"

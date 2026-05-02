@@ -134,12 +134,11 @@ class FeatureHealthMonitor:
         """
         if freshness_minutes < self.FRESHNESS_THRESHOLDS["FRESH"]:
             return "FRESH"
-        elif freshness_minutes < self.FRESHNESS_THRESHOLDS["ACCEPTABLE"]:
+        if freshness_minutes < self.FRESHNESS_THRESHOLDS["ACCEPTABLE"]:
             return "ACCEPTABLE"
-        elif freshness_minutes < self.FRESHNESS_THRESHOLDS["STALE"]:
+        if freshness_minutes < self.FRESHNESS_THRESHOLDS["STALE"]:
             return "STALE"
-        else:
-            return "VERY_STALE"
+        return "VERY_STALE"
 
     def check_feature_health(self, feature_name: str) -> FeatureHealthStatus:
         """Check health of a feature.
@@ -271,7 +270,7 @@ class FeatureHealthMonitor:
         total = sum(report.values())
 
         if total == 0:
-            return {level: 0.0 for level in report.keys()}
+            return {level: 0.0 for level in report}
 
         return {level: (count / total) * 100 for level, count in report.items()}
 
@@ -367,10 +366,9 @@ class FeatureHealthMonitor:
         """
         if format == "json":
             return self._generate_json_report(health_statuses, include_recommendations)
-        elif format == "markdown":
+        if format == "markdown":
             return self._generate_markdown_report(health_statuses, include_recommendations)
-        else:
-            raise ValueError(f"Unsupported format: {format}")
+        raise ValueError(f"Unsupported format: {format}")
 
     def _generate_json_report(
         self,

@@ -234,10 +234,9 @@ class TestMainEdgeCases:
     def test_none_argv_uses_defaults(self) -> None:
         """Test None argv uses default behavior."""
         # main(None) should use sys.argv[1:]
-        with patch("builtins.print"):
-            with patch.object(sys, "argv", ["prog"]):
-                result = main(None)
-                assert isinstance(result, int)
+        with patch("builtins.print"), patch.object(sys, "argv", ["prog"]):
+            result = main(None)
+            assert isinstance(result, int)
 
     @patch("codex_ml.main._forward_to_cli")
     def test_forward_strips_leading_separator(self, mock_forward: MagicMock) -> None:

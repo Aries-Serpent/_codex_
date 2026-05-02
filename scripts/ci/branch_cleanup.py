@@ -246,10 +246,7 @@ def is_protected(branch_name: str) -> bool:
     """Return True if *branch_name* must never be deleted."""
     if branch_name in PROTECTED_PATTERNS:
         return True
-    for prefix in PROTECTED_PREFIX_PATTERNS:
-        if branch_name.startswith(prefix):
-            return True
-    return False
+    return any(branch_name.startswith(prefix) for prefix in PROTECTED_PREFIX_PATTERNS)
 
 
 # ---------------------------------------------------------------------------

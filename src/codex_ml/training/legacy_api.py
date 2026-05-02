@@ -316,8 +316,7 @@ def _maybe_resolve_container(value: Any) -> Any:
     """Resolve DictConfig objects into plain Python containers when possible."""
 
     if DictConfig is not None and isinstance(value, DictConfig):
-        resolved = OmegaConf.to_container(value, resolve=True)
-        return resolved
+        return OmegaConf.to_container(value, resolve=True)
     return value
 
 
@@ -1373,10 +1372,7 @@ def run_functional_training(
 
     if cfg.amp_enable and "dtype" not in train_kwargs:
         dtype_override: Optional[str]
-        if isinstance(cfg.amp_dtype, str):
-            lower = cfg.amp_dtype.strip().lower()
-        else:
-            lower = ""
+        lower = cfg.amp_dtype.strip().lower() if isinstance(cfg.amp_dtype, str) else ""
         if lower in {"bf16", "bfloat16"}:
             dtype_override = "bf16"
         elif lower in {"fp16", "float16", "half"}:

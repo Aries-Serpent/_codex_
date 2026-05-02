@@ -58,6 +58,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+import contextlib
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -326,10 +327,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0
 
     finally:
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(tmp_path)
-        except OSError:
-            pass
 
 
 if __name__ == "__main__":

@@ -82,5 +82,6 @@ def test_audit_parity_smoke(tmp_path):
     assert abs(sum(nw.values()) - 1.0) < 1e-6, f"normalized_weights do not sum to 1.0: {nw}"
 
     # Optionally, minimal check: no NaN scores
+    import math
     for c in scored_j.get("capabilities", []):
-        assert not (c["score"] != c["score"]), f"NaN score for capability {c['id']}"
+        assert not math.isnan(c["score"]), f"NaN score for capability {c['id']}"

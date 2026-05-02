@@ -69,9 +69,8 @@ class TestJSONLLoader:
 
     def test_load_jsonl_invalid_path(self):
         """Test JSONL loader with invalid path"""
-        with pytest.raises(FileNotFoundError):
-            with open("nonexistent.jsonl"):
-                pass
+        with pytest.raises(FileNotFoundError), open("nonexistent.jsonl"):
+            pass
 
 
 class TestCSVLoader:

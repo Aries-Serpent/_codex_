@@ -259,9 +259,8 @@ class AgentCore:
 
         # Placeholder: In production, this would call the LLM with tools
         # and iterate until task is complete or max calls reached
-        response = f"[Agent Core] Task processed: {task[:100]}..."
+        return f"[Agent Core] Task processed: {task[:100]}..."
 
-        return response
 
     async def _verify_response(self, response: str, context: list[str]) -> float:
         """Verify response using Chain-of-Verification."""

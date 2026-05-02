@@ -60,10 +60,9 @@ class AccelerateInitResult:
         """Human-readable summary."""
         if self.success:
             return f"AccelerateInitResult(success=True, backend={self.backend}, world_size={self.world_size})"  # noqa: E501
-        elif self.skip_reason:
+        if self.skip_reason:
             return f"AccelerateInitResult(skipped, reason={self.skip_reason})"
-        else:
-            return f"AccelerateInitResult(failed, error={self.error})"
+        return f"AccelerateInitResult(failed, error={self.error})"
 
 
 def is_accelerate_available() -> bool:

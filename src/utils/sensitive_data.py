@@ -222,14 +222,13 @@ def mask_sensitive_data(text: str) -> str:
     text = re.sub(r"\b(sk|pk)_[a-z]+_[A-Za-z0-9]{8,}\b", "***_REDACTED_***", text)
 
     # Password in quotes/assignments (password="value" or password: "value")
-    text = re.sub(
+    return re.sub(
         r'(password|passwd|pwd|secret)\s*[=:]\s*["\']([^"\']+)["\']',
         r'\1="***"',
         text,
         flags=re.IGNORECASE,
     )
 
-    return text
 
 
 def hash_sensitive_value(value: str) -> str:

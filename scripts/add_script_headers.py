@@ -68,27 +68,27 @@ def infer_purpose(script_path: Path, content: str) -> str:
     # Common patterns
     if 'test' in name:
         return f"Test script for {name.replace('test_', '')}"
-    elif 'generate' in name:
+    if 'generate' in name:
         return f"Generates {name.replace('generate_', '')}"
-    elif 'analyze' in name or 'analyse' in name:
+    if 'analyze' in name or 'analyse' in name:
         return f"Analyzes {name.replace('analyze_', '').replace('analyse_', '')}"
-    elif 'validate' in name:
+    if 'validate' in name:
         return f"Validates {name.replace('validate_', '')}"
-    elif 'migrate' in name:
+    if 'migrate' in name:
         return f"Migration script for {name.replace('migrate_', '')}"
-    elif 'setup' in name:
+    if 'setup' in name:
         return f"Setup script for {name.replace('setup_', '')}"
-    elif 'run' in name:
+    if 'run' in name:
         return f"Runs {name.replace('run_', '')}"
-    elif 'build' in name:
+    if 'build' in name:
         return f"Builds {name.replace('build_', '')}"
-    elif 'deploy' in name:
+    if 'deploy' in name:
         return f"Deploys {name.replace('deploy_', '')}"
-    elif 'sync' in name:
+    if 'sync' in name:
         return f"Synchronizes {name.replace('sync_', '')}"
-    elif 'update' in name:
+    if 'update' in name:
         return f"Updates {name.replace('update_', '')}"
-    elif 'init' in name:
+    if 'init' in name:
         return f"Initializes {name.replace('init_', '')}"
 
     # Check content for clues
@@ -132,13 +132,12 @@ def generate_script_header(script_path: Path) -> Optional[str]:
     title = script_path.stem.replace('_', ' ').title()
     purpose = infer_purpose(script_path, content)
 
-    header = HEADER_TEMPLATE.format(
+    return HEADER_TEMPLATE.format(
         title=title,
         purpose=purpose,
         script_path=script_path
     )
 
-    return header
 
 def add_header_to_script(script_path: Path) -> bool:
     """

@@ -60,8 +60,7 @@ class AftermathParser:
             return None
 
         try:
-            data = yaml.safe_load(match.group(1))
-            return data
+            return yaml.safe_load(match.group(1))
         except yaml.YAMLError as e:
             print(f"YAML parse error: {e}", file=sys.stderr)
             return None

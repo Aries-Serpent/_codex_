@@ -410,11 +410,10 @@ class TestPersistIndex:
         embeddings = np.random.randn(1, 384).astype(np.float32)
         chunks = [(0, 10, "Test")]
 
-        with patch("codex.rag.indexer.faiss", None):
-            with pytest.raises(ImportError):
-                persist_index(
-                    index_name="test", embeddings=embeddings, chunks=chunks, index_dir=str(tmp_path)
-                )
+        with patch("codex.rag.indexer.faiss", None), pytest.raises(ImportError):
+            persist_index(
+                index_name="test", embeddings=embeddings, chunks=chunks, index_dir=str(tmp_path)
+            )
 
 
 class TestLoadIndex:
@@ -422,9 +421,8 @@ class TestLoadIndex:
 
     def test_load_index_not_found(self, tmp_path):
         """Test loading non-existent index raises error."""
-        with patch("codex.rag.indexer.faiss"):
-            with pytest.raises(FileNotFoundError):
-                load_index(index_name="nonexistent", tenant_id="test", index_dir=str(tmp_path))
+        with patch("codex.rag.indexer.faiss"), pytest.raises(FileNotFoundError):
+            load_index(index_name="nonexistent", tenant_id="test", index_dir=str(tmp_path))
 
     def test_load_index_basic(self, tmp_path):
         """Test loading a valid index."""
@@ -458,9 +456,8 @@ class TestLoadIndex:
 
     def test_load_index_faiss_not_installed(self, tmp_path):
         """Test error when FAISS not installed."""
-        with patch("codex.rag.indexer.faiss", None):
-            with pytest.raises(ImportError):
-                load_index(index_name="test", tenant_id="test", index_dir=str(tmp_path))
+        with patch("codex.rag.indexer.faiss", None), pytest.raises(ImportError):
+            load_index(index_name="test", tenant_id="test", index_dir=str(tmp_path))
 
     def test_load_index_missing_chunks_file(self, tmp_path):
         """Test loading index with missing chunks file."""

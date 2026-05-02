@@ -69,10 +69,7 @@ def validate_owners(rules: list[CodeownersRule]) -> bool:
 
 
 def has_default_rule(rules: list[CodeownersRule]) -> bool:
-    for r in rules:
-        if r.pattern == "*":
-            return True
-    return False
+    return any(r.pattern == "*" for r in rules)
 
 
 def heuristic_coverage(rules: list[CodeownersRule]) -> dict[str, bool]:

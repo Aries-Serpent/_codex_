@@ -80,8 +80,7 @@ class RougeMetric(MetricAdapter):
 
         if HAS_ROUGE:
             return self._compute_rouge_score()
-        else:
-            return self._compute_basic()
+        return self._compute_basic()
 
     def _compute_rouge_score(self) -> dict[str, float]:
         """Compute ROUGE using rouge-score library."""

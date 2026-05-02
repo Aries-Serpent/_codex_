@@ -52,9 +52,8 @@ def generate_github_anchor(heading_text: str) -> str:
     anchor = re.sub(r'-+', '-', anchor)
 
     # Strip leading/trailing hyphens
-    anchor = anchor.strip('-')
+    return anchor.strip('-')
 
-    return anchor
 
 
 def extract_headers_with_line_numbers(content: str) -> List[Tuple[str, str, int]]:

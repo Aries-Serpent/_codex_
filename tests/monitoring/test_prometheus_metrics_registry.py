@@ -11,8 +11,7 @@ import pytest
 def _metrics_module_fixture():
     """Reload the metrics module to ensure a clean environment per test."""
 
-    module = importlib.import_module("codex_ml.monitoring.prometheus_metrics")
-    return module
+    return importlib.import_module("codex_ml.monitoring.prometheus_metrics")
 
 
 def test_codex_metrics_registry_records_metrics(metrics_module):

@@ -188,7 +188,7 @@ class AutoHandoff:
     def _init_tracking_data(self) -> Dict[str, Any]:
         """Initialize new tracking data structure."""
         now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-        data = {
+        return {
             "version": "1.0.0",
             "created": now_iso,
             "last_updated": now_iso,
@@ -209,7 +209,6 @@ class AutoHandoff:
                 "timeout_minutes": 60
             }
         }
-        return data
 
     def save_tracking_data(self, data: Dict[str, Any]) -> None:
         """Save tracking data to file."""
@@ -310,7 +309,7 @@ class AutoHandoff:
             recommendations_str = "- Review deliverables and provide feedback\n"
 
         # Generate comment
-        comment = f"""## 📤 HANDOFF: {direction}
+        return f"""## 📤 HANDOFF: {direction}
 
 @{context.to_agent} {context.phase} - Handoff Initiated
 
@@ -388,7 +387,6 @@ class AutoHandoff:
 
 `#handoff` `#{context.from_agent}-to-{context.to_agent}` `#automated`
 """
-        return comment
 
     def execute_handoff(
         self,

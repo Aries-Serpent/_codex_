@@ -30,6 +30,7 @@ from agents.physics_orchestrator import (
     ForceVector,
     PhysicsInspiredOrchestrator,
 )
+import contextlib
 
 
 class TestPhysicsOrchestratorInit:
@@ -288,10 +289,8 @@ class TestWavePropagatorMethods:
         try:
             propagator = WavePropagator(grid_size=10)
             if hasattr(propagator, "add_source"):
-                try:
+                with contextlib.suppress(TypeError, AttributeError):
                     propagator.add_source(position=[5, 5], amplitude=1.0)
-                except (TypeError, AttributeError):
-                    pass
         except TypeError:
             pytest.skip("WavePropagator init differs")
 

@@ -272,18 +272,16 @@ class WorkflowRefactorer:
 
         for workflow_path in workflows:
             try:
-                if add_dispatch:
-                    if self.add_workflow_dispatch(workflow_path):
-                        results["dispatch_added"] += 1
+                if add_dispatch and self.add_workflow_dispatch(workflow_path):
+                    results["dispatch_added"] += 1
 
                 if ensure_self_hosted:
                     runner_result = self.ensure_self_hosted_runner(workflow_path)
                     if runner_result.get("modified"):
                         results["runner_updated"] += 1
 
-                if add_digest:
-                    if self.add_codex_digest_step(workflow_path):
-                        results["digest_added"] += 1
+                if add_digest and self.add_codex_digest_step(workflow_path):
+                    results["digest_added"] += 1
 
             except Exception as e:
                 logger.error(f"Error processing {workflow_path.name}: {e}")
@@ -322,9 +320,7 @@ class WorkflowRefactorer:
 
             # Check for workflow_dispatch
             has_dispatch = False
-            if isinstance(data["on"], dict):
-                has_dispatch = "workflow_dispatch" in data["on"]
-            elif isinstance(data["on"], list):
+            if isinstance(data["on"], dict) or isinstance(data["on"], list):
                 has_dispatch = "workflow_dispatch" in data["on"]
 
             # Check runner tags

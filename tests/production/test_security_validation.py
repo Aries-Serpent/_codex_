@@ -222,9 +222,7 @@ def test_input_sanitization_email():
         if not email_pattern.match(email):
             return False
         # Check for consecutive dots
-        if '..' in email:
-            return False
-        return True
+        return '..' not in email
 
     valid_emails = ['test@example.com', 'user.name+tag@example.co.uk']
     invalid_emails = ['<script>@test.com', 'test@', '@example.com', 'test..test@example.com']
@@ -242,8 +240,7 @@ def test_input_sanitization_filename():
         # Remove path separators and null bytes
         sanitized = filename.replace('/', '').replace('\\', '').replace('\0', '')
         # Remove parent directory references
-        sanitized = sanitized.replace('..', '')
-        return sanitized
+        return sanitized.replace('..', '')
 
     dangerous_filenames = [
         '../../../etc/passwd',

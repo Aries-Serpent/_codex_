@@ -296,8 +296,7 @@ class JsonRpcHandler:
         if isinstance(data, list):
             responses = await self.handle_batch(data)
             return responses if responses else None
-        else:
-            return await self.handle_request(data)
+        return await self.handle_request(data)
 
     def get_registered_methods(self) -> list[str]:
         """Get list of registered method names.

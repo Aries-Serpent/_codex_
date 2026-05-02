@@ -116,7 +116,7 @@ class YAMLASTAdapter(BaseASTAdapter):
 
             return node
 
-        elif isinstance(data, list):
+        if isinstance(data, list):
             # Sequence node
             node = StandardizedASTNode(
                 node_id=str(uuid.uuid4()),
@@ -137,22 +137,20 @@ class YAMLASTAdapter(BaseASTAdapter):
 
             return node
 
-        else:
-            # Scalar node (string, int, float, bool, None)
-            node = StandardizedASTNode(
-                node_id=str(uuid.uuid4()),
-                node_type="scalar",
-                name=key or "<scalar>",
-                children=[],
-                metadata={
-                    "value": data,
-                    "value_type": type(data).__name__,
-                    "is_null": data is None,
-                },
-                parent=parent,
-            )
+        # Scalar node (string, int, float, bool, None)
+        return StandardizedASTNode(
+            node_id=str(uuid.uuid4()),
+            node_type="scalar",
+            name=key or "<scalar>",
+            children=[],
+            metadata={
+                "value": data,
+                "value_type": type(data).__name__,
+                "is_null": data is None,
+            },
+            parent=parent,
+        )
 
-            return node
 
     def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
         """

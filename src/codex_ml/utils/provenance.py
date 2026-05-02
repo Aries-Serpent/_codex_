@@ -368,10 +368,7 @@ def snapshot_hydra_config(
     out_dir.mkdir(parents=True, exist_ok=True)
     rendered_config: str
     if OmegaConf is not None:
-        if isinstance(cfg, DictConfig):
-            target = cfg
-        else:
-            target = OmegaConf.create(cfg)
+        target = cfg if isinstance(cfg, DictConfig) else OmegaConf.create(cfg)
 
         if hasattr(OmegaConf, "to_yaml"):
             rendered_config = OmegaConf.to_yaml(target)

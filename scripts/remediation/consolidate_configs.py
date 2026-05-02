@@ -218,9 +218,8 @@ class ConfigConsolidator:
                 print(f"  ⚠ {error}")
             print()
             return False
-        else:
-            print("✓ No errors")
-            return True
+        print("✓ No errors")
+        return True
 
 
 def main():

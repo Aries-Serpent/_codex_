@@ -339,9 +339,8 @@ class SecurityValidator:
         if self.failed == 0:
             print("\n🎉 All security tests passed!")
             return 0
-        else:
-            print(f"\n⚠️  {self.failed} security test(s) failed!")
-            return 1
+        print(f"\n⚠️  {self.failed} security test(s) failed!")
+        return 1
 
 
 def main():

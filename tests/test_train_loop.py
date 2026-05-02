@@ -125,7 +125,6 @@ def test_record_metrics_unserializable(tmp_path, monkeypatch):
     class UnserializableObject:
         """Object that cannot be JSON serialized."""
 
-        pass
 
     monkeypatch.setattr(train_loop, "ART_DIR", tmp_path, raising=False)
 

@@ -794,10 +794,7 @@ def consolidate(
         try:
             # ── fetch ──────────────────────────────────────────────────────
             existing = _find_dashboard_comment(pr_number, token)
-            if existing:
-                sections = _decode_sections(existing["body"])
-            else:
-                sections = {}
+            sections = _decode_sections(existing["body"]) if existing else {}
 
             # ── merge ──────────────────────────────────────────────────────
             sections[workflow_name] = {

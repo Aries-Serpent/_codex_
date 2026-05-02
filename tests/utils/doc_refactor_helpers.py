@@ -85,9 +85,8 @@ def filter_broken_markers(content: str) -> str:
     content = re.sub(r"<!--\s*BROKEN\s+ANCHOR:.*?-->", "", content, flags=re.DOTALL | re.IGNORECASE)
 
     # Remove <!-- BROKEN: ... --> comments
-    content = re.sub(r"<!--\s*BROKEN:.*?-->", "", content, flags=re.DOTALL | re.IGNORECASE)
+    return re.sub(r"<!--\s*BROKEN:.*?-->", "", content, flags=re.DOTALL | re.IGNORECASE)
 
-    return content
 
 
 def resolve_doc_path(old_path: str, repo_root: Optional[Path] = None) -> Optional[Path]:

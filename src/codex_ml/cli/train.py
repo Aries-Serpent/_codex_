@@ -157,9 +157,7 @@ def _apply_prompt_sanitization(
         if update_dict is not None:
             update_dict[key] = sanitised
         try:
-            if isinstance(config_obj, DictConfig):
-                config_obj[key] = sanitised
-            elif isinstance(config_obj, dict):
+            if isinstance(config_obj, (DictConfig, dict)):
                 config_obj[key] = sanitised
         except Exception as e:
             logger.debug(f"Exception: {e}")

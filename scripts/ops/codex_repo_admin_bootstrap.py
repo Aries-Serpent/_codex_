@@ -203,11 +203,11 @@ class GitHubSession:
 
 def _default_repo_settings(preset: str = "default") -> dict[str, object]:
     squash_only = preset in {"default", "strict"}
-    allow_auto_merge = True if preset == "default" else False
+    allow_auto_merge = preset == "default"
     return {
         "allow_squash_merge": squash_only,
         "allow_merge_commit": not squash_only and preset != "strict",
-        "allow_rebase_merge": False if preset != "relaxed" else True,
+        "allow_rebase_merge": preset == "relaxed",
         "delete_branch_on_merge": True,
         "allow_auto_merge": allow_auto_merge,
         "squash_merge_commit_message": "PR_BODY",
@@ -228,13 +228,7 @@ def _branch_protection_template(
 ) -> dict[str, object]:
     contexts = list(status_checks)
     required_status_checks: dict[str, object] | None
-    if contexts:
-        required_status_checks = {
-            "strict": True,
-            "contexts": contexts,
-        }
-    else:
-        required_status_checks = None
+    required_status_checks = {"strict": True, "contexts": contexts} if contexts else None
     return {
         "branch": branch,
         "required_status_checks": required_status_checks,

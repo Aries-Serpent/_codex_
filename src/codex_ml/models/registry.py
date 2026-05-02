@@ -13,10 +13,7 @@ from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrai
 from codex_ml.utils.optional import optional_import
 
 _torch_module, _HAS_TORCH = optional_import("torch")
-if _HAS_TORCH:
-    torch = cast(Any, _torch_module)
-else:
-    torch = None
+torch = cast(Any, _torch_module) if _HAS_TORCH else None
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel

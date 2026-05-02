@@ -314,7 +314,7 @@ class TestPhase2_PerformanceOptimization:
         gamma = 1.0 / np.sqrt(1.0 - (v / c) ** 2)
         E = gamma * m * c**2
         rest_energy = m * c**2
-        assert E > rest_energy  # Relativistic energy > rest energy
+        assert rest_energy < E  # Relativistic energy > rest energy
 
     def test_kinetic_energy_relativistic(self):
         """Test K = γmc² - mc² (Eq #18)"""

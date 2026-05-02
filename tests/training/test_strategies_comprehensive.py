@@ -50,8 +50,7 @@ def mock_config():
 @pytest.fixture
 def mock_callback():
     """Create a mock callback."""
-    callback = MagicMock(spec=TrainingCallback)
-    return callback
+    return MagicMock(spec=TrainingCallback)
 
 
 @pytest.fixture

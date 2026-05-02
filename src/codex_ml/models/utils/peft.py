@@ -63,10 +63,7 @@ def apply_lora_if_available(
             selected_task_type = TaskType(selected_task_type)
 
     modules: Optional[Sequence[str]]
-    if target_modules is None:
-        modules = None
-    else:
-        modules = tuple(str(module) for module in target_modules)
+    modules = None if target_modules is None else tuple(str(module) for module in target_modules)
 
     cfg = LoraConfig(
         r=r,

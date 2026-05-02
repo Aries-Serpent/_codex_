@@ -685,10 +685,7 @@ class CSVMetricsWriter:
         self._header: list[str] | None = None
 
     def write(self, obj: Mapping[str, Any] | LogRecord) -> None:
-        if isinstance(obj, LogRecord):
-            row = obj.redacted().dict()
-        else:
-            row = dict(obj)
+        row = obj.redacted().dict() if isinstance(obj, LogRecord) else dict(obj)
         new_keys = set(row)
         if self._header is None:
             self._header = sorted(new_keys)
@@ -1021,9 +1018,8 @@ def run_hf_trainer(
         and torch.cuda.is_available()
         and getattr(torch.backends, "cudnn", None) is not None
         and getattr(torch.backends.cudnn, "enabled", False)
-    ):
-        if not torch.backends.cudnn.deterministic:
-            raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
+    ) and not torch.backends.cudnn.deterministic:
+        raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
     except Exception as exc:  # pragma: no cover - logging best effort

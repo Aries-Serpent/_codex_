@@ -472,9 +472,8 @@ class EntanglementManager:
             abs(p00 - 0.5) + abs(p11 - 0.5) + abs(p01 - 0.0) + abs(p10 - 0.0)
         ) / 2  # Normalize to [0, 1]
 
-        fidelity = 1.0 - deviation
+        return 1.0 - deviation
 
-        return fidelity
 
     def compute_mutual_information(self, pair_id: str) -> float:
         """

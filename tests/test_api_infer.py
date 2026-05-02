@@ -10,6 +10,7 @@ import pytest
 
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
 from fastapi.testclient import TestClient  # noqa: E402
+import contextlib
 
 
 @pytest.fixture(autouse=True)
@@ -29,10 +30,8 @@ def _set_env(monkeypatch):
 
     def _clear_app_state():
         for state_attr in ("tokenizer", "model"):
-            try:
+            with contextlib.suppress(AttributeError, KeyError):
                 delattr(module.app.state, state_attr)
-            except (AttributeError, KeyError):
-                pass
 
     _clear_app_state()
     yield module.app

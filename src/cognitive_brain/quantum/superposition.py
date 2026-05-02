@@ -572,10 +572,7 @@ class SuperpositionEngine:
         max_entropy = math.log(len(probabilities)) if len(probabilities) > 1 else 1.0
 
         # Normalized entropy: 0 (peaked) to 1 (uniform)
-        if max_entropy > 0:
-            normalized_entropy = entropy / max_entropy
-        else:
-            normalized_entropy = 0.0
+        normalized_entropy = entropy / max_entropy if max_entropy > 0 else 0.0
 
         # Coherence is inverse of entropy
         coherence = 1.0 - normalized_entropy

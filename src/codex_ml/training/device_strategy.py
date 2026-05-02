@@ -169,8 +169,7 @@ class DeviceConfig:
                 self.device,
                 exc,
             )
-            model = model.to(device=torch.device("cpu"), dtype=torch.float32)
-            return model
+            return model.to(device=torch.device("cpu"), dtype=torch.float32)
 
     def apply_to_tensor(self, tensor: Any) -> Any:
         """Return tensor on the configured device and dtype.

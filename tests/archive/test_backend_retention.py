@@ -57,7 +57,7 @@ def _archive_sample(
     }
     if delete_after is not None:
         metadata["delete_after"] = delete_after
-    result = backend.record_archive(
+    return backend.record_archive(
         repo=repo,
         path=path,
         commit_sha=commit_sha,
@@ -70,7 +70,6 @@ def _archive_sample(
         context={"trigger": "unit-test"},
         tags=["retention"],
     )
-    return result
 
 
 def test_delete_approval_blocked_by_legal_hold(archive_backend: ArchiveBackend) -> None:

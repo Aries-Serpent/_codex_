@@ -342,10 +342,7 @@ class FeatureStore:
         Returns:
             Dictionary of feature values at the given time
         """
-        if isinstance(timestamp, str):
-            target_time = datetime.fromisoformat(timestamp)
-        else:
-            target_time = timestamp
+        target_time = datetime.fromisoformat(timestamp) if isinstance(timestamp, str) else timestamp
 
         results = {}
 

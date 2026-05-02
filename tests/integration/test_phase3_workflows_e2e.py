@@ -693,9 +693,8 @@ class TestCompleteAgentWorkflow:
                 # Simulate failure on step 2, first try
                 if step["step"] == 2 and retry == 0:
                     continue
-                else:
-                    attempt["success"] = True
-                    break
+                attempt["success"] = True
+                break
 
             execution_attempts.append(attempt)
 

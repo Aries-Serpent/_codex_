@@ -43,7 +43,7 @@ class WorkflowMonitor:
         status = run.get('status', 'unknown')
         conclusion = run.get('conclusion', 'N/A')
 
-        analysis = {
+        return {
             'id': run.get('id'),
             'name': run.get('name'),
             'status': status,
@@ -57,27 +57,24 @@ class WorkflowMonitor:
             'passed': conclusion == 'success',
         }
 
-        return analysis
 
     def _categorize_status(self, status: str, conclusion: str) -> str:
         """Categorize workflow status for reporting."""
         if status == 'in_progress':
             return 'RUNNING'
-        elif status == 'completed':
+        if status == 'completed':
             if conclusion == 'success':
                 return 'SUCCESS'
-            elif conclusion == 'failure':
+            if conclusion == 'failure':
                 return 'FAILURE'
-            elif conclusion == 'action_required':
+            if conclusion == 'action_required':
                 return 'AWAITING_ACTION'
-            elif conclusion == 'skipped':
+            if conclusion == 'skipped':
                 return 'SKIPPED'
-            else:
-                return 'COMPLETED_UNKNOWN'
-        elif status == 'queued':
+            return 'COMPLETED_UNKNOWN'
+        if status == 'queued':
             return 'QUEUED'
-        else:
-            return 'UNKNOWN'
+        return 'UNKNOWN'
 
     def check_workflows(self) -> Dict[str, Any]:
         """Perform a workflow status check."""

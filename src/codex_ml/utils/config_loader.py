@@ -232,10 +232,7 @@ def _apply_overrides_to_mapping(
         for part in parts[:-1]:
             next_val = target.get(part)
             if not isinstance(next_val, dict):
-                if isinstance(next_val, Mapping):
-                    next_val = dict(next_val)
-                else:
-                    next_val = {}
+                next_val = dict(next_val) if isinstance(next_val, Mapping) else {}
             target[part] = next_val
             target = target[part]
         target[parts[-1]] = parsed

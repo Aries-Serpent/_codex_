@@ -173,9 +173,7 @@ class ContextDistiller:
             for match in re.finditer(import_pattern, content, re.MULTILINE):
                 module, names = match.groups()
                 # Skip relative imports (from . import) and star imports
-                if module and not module.startswith(".") and "*" not in names:
-                    imports.extend([n.strip() for n in names.split(",")])
-                elif not module and "*" not in names:
+                if module and not module.startswith(".") and "*" not in names or not module and "*" not in names:
                     imports.extend([n.strip() for n in names.split(",")])
             structure["imports"] = imports[:20]  # Limit to first 20 for brevity
 
@@ -330,9 +328,8 @@ class ContextDistiller:
             logger.info(f"Compressed with sentencepiece: {len(content)} → {len(compressed)} chars")
 
             return compressed
-        else:
-            logger.warning("Sentencepiece model not found, skipping compression")
-            return content
+        logger.warning("Sentencepiece model not found, skipping compression")
+        return content
 
 
 def generate_context_digest(output_path: Optional[Path] = None, max_tokens: int = 100000) -> Path:

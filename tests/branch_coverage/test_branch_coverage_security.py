@@ -26,19 +26,13 @@ class TestScopeValidatorBranches:
     def test_scope_none_branch(self) -> None:
         """Test NONE scope branch."""
         scope = 0  # NONE
-        if scope == 0:
-            result = "no_permissions"
-        else:
-            result = "has_permissions"
+        result = "no_permissions" if scope == 0 else "has_permissions"
         assert result == "no_permissions"
 
     def test_scope_has_permissions_branch(self) -> None:
         """Test scope with permissions branch."""
         scope = 1  # READ_REPO
-        if scope == 0:
-            result = "no_permissions"
-        else:
-            result = "has_permissions"
+        result = "no_permissions" if scope == 0 else "has_permissions"
         assert result == "has_permissions"
 
     def test_scope_hierarchical_admin_branch(self) -> None:
@@ -121,10 +115,7 @@ class TestScopeValidatorBranches:
         required_scopes = {"read"}
         user_scopes = {"read", "write"}
         has_required = required_scopes.issubset(user_scopes)
-        if has_required:
-            status = "authorized"
-        else:
-            status = "unauthorized"
+        status = "authorized" if has_required else "unauthorized"
         assert status == "authorized"
 
     def test_scope_validation_insufficient_branch(self) -> None:
@@ -132,10 +123,7 @@ class TestScopeValidatorBranches:
         required_scopes = {"write", "admin"}
         user_scopes = {"read"}
         has_required = required_scopes.issubset(user_scopes)
-        if has_required:
-            status = "authorized"
-        else:
-            status = "unauthorized"
+        status = "authorized" if has_required else "unauthorized"
         assert status == "unauthorized"
 
 
@@ -150,10 +138,7 @@ class TestAPIKeyValidatorBranches:
     def test_api_key_from_parameter_branch(self) -> None:
         """Test API key initialization from parameter branch."""
         secret_key = "test-secret-key"
-        if secret_key:
-            key_source = "parameter"
-        else:
-            key_source = "environment"
+        key_source = "parameter" if secret_key else "environment"
         assert key_source == "parameter"
 
     def test_api_key_from_environment_branch(self) -> None:
@@ -164,10 +149,7 @@ class TestAPIKeyValidatorBranches:
                 key_source = "parameter"
             else:
                 env_key = os.environ.get("AUTH_SECRET_KEY")
-                if env_key:
-                    key_source = "environment"
-                else:
-                    key_source = "fallback"
+                key_source = "environment" if env_key else "fallback"
             assert key_source == "environment"
 
     def test_api_key_development_fallback_branch(self) -> None:
@@ -185,10 +167,7 @@ class TestAPIKeyValidatorBranches:
                         key_source = "environment"
                     else:
                         is_prod = os.environ.get("CODEX_ENV") == "production"
-                        if not is_prod:
-                            key_source = "fallback"
-                        else:
-                            key_source = "error"
+                        key_source = "fallback" if not is_prod else "error"
                 assert key_source == "fallback"
 
     def test_api_key_production_error_branch(self) -> None:
@@ -210,63 +189,39 @@ class TestAPIKeyValidatorBranches:
                         key_source = "environment"
                     else:
                         is_prod = os.environ.get("CODEX_ENV") == "production"
-                        if not is_prod:
-                            key_source = "fallback"
-                        else:
-                            key_source = "error"
+                        key_source = "fallback" if not is_prod else "error"
                 assert key_source == "error"
 
     def test_api_key_hash_match_branch(self) -> None:
         """Test API key hash match branch."""
         provided_hash = "abc123"
         stored_hash = "abc123"
-        if provided_hash == stored_hash:
-            result = "valid"
-        else:
-            result = "invalid"
+        result = "valid" if provided_hash == stored_hash else "invalid"
         assert result == "valid"
 
     def test_api_key_hash_mismatch_branch(self) -> None:
         """Test API key hash mismatch branch."""
         provided_hash = "abc123"
         stored_hash = "xyz789"
-        if provided_hash == stored_hash:
-            result = "valid"
-        else:
-            result = "invalid"
+        result = "valid" if provided_hash == stored_hash else "invalid"
         assert result == "invalid"
 
     def test_api_key_revoked_check_branch(self) -> None:
         """Test API key revoked check branch."""
         key_status = "revoked"
-        if key_status == "revoked":
-            access = "denied"
-        elif key_status == "expired":
-            access = "denied"
-        else:
-            access = "granted"
+        access = "denied" if key_status == "revoked" or key_status == "expired" else "granted"
         assert access == "denied"
 
     def test_api_key_expired_check_branch(self) -> None:
         """Test API key expired check branch."""
         key_status = "expired"
-        if key_status == "revoked":
-            access = "denied"
-        elif key_status == "expired":
-            access = "denied"
-        else:
-            access = "granted"
+        access = "denied" if key_status == "revoked" or key_status == "expired" else "granted"
         assert access == "denied"
 
     def test_api_key_active_check_branch(self) -> None:
         """Test API key active check branch."""
         key_status = "active"
-        if key_status == "revoked":
-            access = "denied"
-        elif key_status == "expired":
-            access = "denied"
-        else:
-            access = "granted"
+        access = "denied" if key_status == "revoked" or key_status == "expired" else "granted"
         assert access == "granted"
 
 
@@ -336,19 +291,13 @@ class TestAuthMethodBranches:
     def test_auth_enabled_branch(self) -> None:
         """Test authentication enabled branch."""
         auth_enabled = True
-        if auth_enabled:
-            mode = "protected"
-        else:
-            mode = "public"
+        mode = "protected" if auth_enabled else "public"
         assert mode == "protected"
 
     def test_auth_disabled_branch(self) -> None:
         """Test authentication disabled branch."""
         auth_enabled = False
-        if auth_enabled:
-            mode = "protected"
-        else:
-            mode = "public"
+        mode = "protected" if auth_enabled else "public"
         assert mode == "public"
 
 
@@ -422,20 +371,14 @@ class TestRateLimitBranches:
         """Test rate limit exceeded branch."""
         request_count = 150
         rate_limit = 100
-        if request_count > rate_limit:
-            action = "reject"
-        else:
-            action = "allow"
+        action = "reject" if request_count > rate_limit else "allow"
         assert action == "reject"
 
     def test_rate_limit_within_limit_branch(self) -> None:
         """Test rate limit within limit branch."""
         request_count = 50
         rate_limit = 100
-        if request_count > rate_limit:
-            action = "reject"
-        else:
-            action = "allow"
+        action = "reject" if request_count > rate_limit else "allow"
         assert action == "allow"
 
     def test_rate_limit_window_expired_branch(self) -> None:
@@ -445,10 +388,7 @@ class TestRateLimitBranches:
         last_reset = time.time() - 120  # 2 minutes ago
         window_size = 60  # 1 minute
         current_time = time.time()
-        if (current_time - last_reset) > window_size:
-            action = "reset_counter"
-        else:
-            action = "continue_counting"
+        action = "reset_counter" if current_time - last_reset > window_size else "continue_counting"
         assert action == "reset_counter"
 
     def test_rate_limit_window_active_branch(self) -> None:
@@ -458,28 +398,19 @@ class TestRateLimitBranches:
         last_reset = time.time() - 30  # 30 seconds ago
         window_size = 60  # 1 minute
         current_time = time.time()
-        if (current_time - last_reset) > window_size:
-            action = "reset_counter"
-        else:
-            action = "continue_counting"
+        action = "reset_counter" if current_time - last_reset > window_size else "continue_counting"
         assert action == "continue_counting"
 
     def test_rate_limit_enabled_branch(self) -> None:
         """Test rate limiting enabled branch."""
         rate_limit_enabled = True
-        if rate_limit_enabled:
-            checker = "rate_limiter"
-        else:
-            checker = "no_limit"
+        checker = "rate_limiter" if rate_limit_enabled else "no_limit"
         assert checker == "rate_limiter"
 
     def test_rate_limit_disabled_branch(self) -> None:
         """Test rate limiting disabled branch."""
         rate_limit_enabled = False
-        if rate_limit_enabled:
-            checker = "rate_limiter"
-        else:
-            checker = "no_limit"
+        checker = "rate_limiter" if rate_limit_enabled else "no_limit"
         assert checker == "no_limit"
 
 
@@ -497,10 +428,7 @@ class TestTokenClaimsBranches:
 
         exp = time.time() - 3600  # Expired 1 hour ago
         current_time = time.time()
-        if exp < current_time:
-            status = "expired"
-        else:
-            status = "valid"
+        status = "expired" if exp < current_time else "valid"
         assert status == "expired"
 
     def test_token_valid_branch(self) -> None:
@@ -509,10 +437,7 @@ class TestTokenClaimsBranches:
 
         exp = time.time() + 3600  # Expires in 1 hour
         current_time = time.time()
-        if exp < current_time:
-            status = "expired"
-        else:
-            status = "valid"
+        status = "expired" if exp < current_time else "valid"
         assert status == "valid"
 
     def test_token_not_before_future_branch(self) -> None:
@@ -521,10 +446,7 @@ class TestTokenClaimsBranches:
 
         nbf = time.time() + 3600  # Not valid until 1 hour from now
         current_time = time.time()
-        if nbf > current_time:
-            status = "not_yet_valid"
-        else:
-            status = "valid"
+        status = "not_yet_valid" if nbf > current_time else "valid"
         assert status == "not_yet_valid"
 
     def test_token_not_before_past_branch(self) -> None:
@@ -533,50 +455,35 @@ class TestTokenClaimsBranches:
 
         nbf = time.time() - 3600  # Valid since 1 hour ago
         current_time = time.time()
-        if nbf > current_time:
-            status = "not_yet_valid"
-        else:
-            status = "valid"
+        status = "not_yet_valid" if nbf > current_time else "valid"
         assert status == "valid"
 
     def test_token_issuer_match_branch(self) -> None:
         """Test token issuer match branch."""
         token_issuer = "codex-auth"
         expected_issuer = "codex-auth"
-        if token_issuer == expected_issuer:
-            status = "valid"
-        else:
-            status = "invalid_issuer"
+        status = "valid" if token_issuer == expected_issuer else "invalid_issuer"
         assert status == "valid"
 
     def test_token_issuer_mismatch_branch(self) -> None:
         """Test token issuer mismatch branch."""
         token_issuer = "unknown-issuer"
         expected_issuer = "codex-auth"
-        if token_issuer == expected_issuer:
-            status = "valid"
-        else:
-            status = "invalid_issuer"
+        status = "valid" if token_issuer == expected_issuer else "invalid_issuer"
         assert status == "invalid_issuer"
 
     def test_token_audience_match_branch(self) -> None:
         """Test token audience match branch."""
         token_audience = "codex-api"
         expected_audience = "codex-api"
-        if token_audience == expected_audience:
-            status = "valid"
-        else:
-            status = "invalid_audience"
+        status = "valid" if token_audience == expected_audience else "invalid_audience"
         assert status == "valid"
 
     def test_token_audience_mismatch_branch(self) -> None:
         """Test token audience mismatch branch."""
         token_audience = "other-api"
         expected_audience = "codex-api"
-        if token_audience == expected_audience:
-            status = "valid"
-        else:
-            status = "invalid_audience"
+        status = "valid" if token_audience == expected_audience else "invalid_audience"
         assert status == "invalid_audience"
 
 
@@ -591,55 +498,37 @@ class TestSecurityDecoratorBranches:
     def test_decorator_validator_present_branch(self) -> None:
         """Test decorator with validator present branch."""
         validator = MagicMock()
-        if validator is None:
-            error = "no_validator"
-        else:
-            error = None
+        error = "no_validator" if validator is None else None
         assert error is None
 
     def test_decorator_validator_missing_branch(self) -> None:
         """Test decorator with validator missing branch."""
         validator = None
-        if validator is None:
-            error = "no_validator"
-        else:
-            error = None
+        error = "no_validator" if validator is None else None
         assert error == "no_validator"
 
     def test_decorator_scope_check_passed_branch(self) -> None:
         """Test decorator scope check passed branch."""
         has_scope = True
-        if has_scope:
-            action = "execute"
-        else:
-            action = "reject"
+        action = "execute" if has_scope else "reject"
         assert action == "execute"
 
     def test_decorator_scope_check_failed_branch(self) -> None:
         """Test decorator scope check failed branch."""
         has_scope = False
-        if has_scope:
-            action = "execute"
-        else:
-            action = "reject"
+        action = "execute" if has_scope else "reject"
         assert action == "reject"
 
     def test_decorator_logging_enabled_branch(self) -> None:
         """Test decorator logging enabled branch."""
         debug_mode = True
-        if debug_mode:
-            log_action = "log_call"
-        else:
-            log_action = "silent"
+        log_action = "log_call" if debug_mode else "silent"
         assert log_action == "log_call"
 
     def test_decorator_logging_disabled_branch(self) -> None:
         """Test decorator logging disabled branch."""
         debug_mode = False
-        if debug_mode:
-            log_action = "log_call"
-        else:
-            log_action = "silent"
+        log_action = "log_call" if debug_mode else "silent"
         assert log_action == "silent"
 
 
@@ -654,19 +543,13 @@ class TestTLSConfigBranches:
     def test_tls_enabled_branch(self) -> None:
         """Test TLS enabled branch."""
         tls_enabled = True
-        if tls_enabled:
-            protocol = "https"
-        else:
-            protocol = "http"
+        protocol = "https" if tls_enabled else "http"
         assert protocol == "https"
 
     def test_tls_disabled_branch(self) -> None:
         """Test TLS disabled branch."""
         tls_enabled = False
-        if tls_enabled:
-            protocol = "https"
-        else:
-            protocol = "http"
+        protocol = "https" if tls_enabled else "http"
         assert protocol == "http"
 
     def test_tls_version_1_3_branch(self) -> None:
@@ -705,17 +588,11 @@ class TestTLSConfigBranches:
     def test_tls_cert_validation_strict_branch(self) -> None:
         """Test TLS certificate validation strict branch."""
         verify_cert = True
-        if verify_cert:
-            validation = "strict"
-        else:
-            validation = "disabled"
+        validation = "strict" if verify_cert else "disabled"
         assert validation == "strict"
 
     def test_tls_cert_validation_disabled_branch(self) -> None:
         """Test TLS certificate validation disabled branch."""
         verify_cert = False
-        if verify_cert:
-            validation = "strict"
-        else:
-            validation = "disabled"
+        validation = "strict" if verify_cert else "disabled"
         assert validation == "disabled"

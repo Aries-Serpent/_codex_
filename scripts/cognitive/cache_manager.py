@@ -268,9 +268,8 @@ class CacheIntelligence:
                     / total_accesses
                 )
                 return value
-            else:
-                # Cache miss
-                cache.metrics.miss_count += 1
+            # Cache miss
+            cache.metrics.miss_count += 1
 
         return None
 

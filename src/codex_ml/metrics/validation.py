@@ -31,7 +31,7 @@ def validate_metric_registry() -> list[str]:
         logger.debug(f"ImportError: {e}")
         raise MetricValidationError(f"Failed to import metric registry: {e}") from e
 
-    for metric_name in METRIC_REGISTRY.keys():
+    for metric_name in METRIC_REGISTRY:
         try:
             metric_fn = get_metric(metric_name)
             if not callable(metric_fn):

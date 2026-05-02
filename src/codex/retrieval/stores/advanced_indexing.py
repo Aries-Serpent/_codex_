@@ -565,7 +565,7 @@ def optimize_index_parameters(
             "estimated_build_time": "medium" if M <= 32 else "high",
         }
 
-    elif index_type == IndexType.IVF_PQ:
+    if index_type == IndexType.IVF_PQ:
         # IVF-PQ parameter recommendations
         nlist = max(int(math.sqrt(dataset_size)), 1000)
         nlist = min(nlist, dataset_size // 39)  # At least 39 vectors per list
@@ -595,8 +595,7 @@ def optimize_index_parameters(
             "estimated_compression_ratio": round((dimension * 4) / bytes_per_vector, 1),
         }
 
-    else:
-        raise ValueError(f"Optimization not supported for index type: {index_type}")
+    raise ValueError(f"Optimization not supported for index type: {index_type}")
 
 
 # Example usage documentation

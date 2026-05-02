@@ -125,10 +125,7 @@ def classification_accuracy(outputs: Any, labels: Any) -> float:
         labels = labels.detach()
     if hasattr(labels, "cpu"):
         labels = labels.cpu()
-    if hasattr(labels, "numpy"):
-        labels_array = np.asarray(labels)
-    else:
-        labels_array = labels
+    labels_array = np.asarray(labels) if hasattr(labels, "numpy") else labels
     predictions = logits.argmax(axis=-1)
     return float(metrics_accuracy(predictions, labels_array))
 

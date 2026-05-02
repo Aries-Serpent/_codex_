@@ -38,10 +38,7 @@ def is_known_error(stderr: str) -> bool:
     import re
 
     stderr_lower = stderr.lower()
-    for pattern in KNOWN_ERROR_PATTERNS:
-        if re.search(pattern.lower(), stderr_lower):
-            return True
-    return False
+    return any(re.search(pattern.lower(), stderr_lower) for pattern in KNOWN_ERROR_PATTERNS)
 
 
 @pytest.mark.skipif(not _HAS_AUDIT_SCANNERS, reason="audit scanner scripts not on PYTHONPATH")

@@ -44,10 +44,9 @@ def apply_fixes_by_pattern(pattern: int, repo_root: Path) -> bool:
         if result.returncode == 0:
             print(f"✅ Pattern {pattern} fixes applied successfully")
             return True
-        else:
-            print(f"⚠️  Pattern {pattern} fixes completed with warnings")
-            print(result.stdout)
-            return True
+        print(f"⚠️  Pattern {pattern} fixes completed with warnings")
+        print(result.stdout)
+        return True
 
     except Exception as e:
         print(f"❌ Error applying Pattern {pattern} fixes: {e}")
@@ -73,10 +72,9 @@ def validate_fixes(repo_root: Path) -> bool:
         if result.returncode == 0:
             print("✅ All auto-fixable issues resolved!")
             return True
-        else:
-            print("⚠️  Some issues remain:")
-            print(result.stdout)
-            return False
+        print("⚠️  Some issues remain:")
+        print(result.stdout)
+        return False
 
     except Exception as e:
         print(f"❌ Validation error: {e}")

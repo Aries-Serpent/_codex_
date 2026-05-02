@@ -102,10 +102,7 @@ class WorkflowDeprecator:
             if not path.exists():
                 continue
 
-            if path.is_file():
-                files_to_check = [path]
-            else:
-                files_to_check = list(path.rglob('*.md'))
+            files_to_check = [path] if path.is_file() else list(path.rglob('*.md'))
 
             for file_path in files_to_check:
                 try:
@@ -320,10 +317,7 @@ If you were referencing `{self.workflow_file}` in your code or documentation:
 
         # Step 2: Determine consolidated suite
         print("Step 2: Determining consolidated suite...")
-        if consolidated_suite:
-            suite_file = consolidated_suite
-        else:
-            suite_file = self.get_consolidated_suite()
+        suite_file = consolidated_suite or self.get_consolidated_suite()
 
         if not suite_file:
             print(f"❌ No consolidated suite found for {self.workflow_file}")

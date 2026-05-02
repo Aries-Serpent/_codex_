@@ -426,7 +426,7 @@ class TestDataStructureInvariants:
     )
     def test_dict_keys_values_correspondence(self, dictionary):
         """Property: Dict keys and values maintain correspondence."""
-        for key in dictionary.keys():
+        for key in dictionary:
             assert key in dictionary
             assert dictionary[key] == dictionary.get(key)
 

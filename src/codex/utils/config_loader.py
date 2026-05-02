@@ -190,10 +190,9 @@ class ConfigLoader:
             if primary.exists():
                 return primary
             return self.repo_root / "configs"
-        elif not Path(config_dir).is_absolute():
+        if not Path(config_dir).is_absolute():
             return self.repo_root / config_dir
-        else:
-            return Path(config_dir)
+        return Path(config_dir)
 
     def _try_legacy_path(self, config_name: str, primary_dir: Path) -> Path | None:
         """Try to find config in legacy location.

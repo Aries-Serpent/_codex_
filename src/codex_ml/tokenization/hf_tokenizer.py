@@ -149,10 +149,7 @@ class _WhitespaceFallbackTokenizer:
             self.eos_token = eos_tok
             self.eos_token_id = self._ensure_token(eos_tok)
         additional = mapping.get("additional_special_tokens")
-        if isinstance(additional, str):
-            additional_tokens = [additional]
-        else:
-            additional_tokens = list(additional or [])
+        additional_tokens = [additional] if isinstance(additional, str) else list(additional or [])
         for token in additional_tokens:
             if isinstance(token, str):
                 self._ensure_token(token)

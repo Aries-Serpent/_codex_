@@ -345,9 +345,8 @@ class AsyncDataPrefetcher:
         """Move batch to device."""
         if isinstance(batch, torch.Tensor):
             return batch.to(self.device, non_blocking=True)
-        elif isinstance(batch, dict):
+        if isinstance(batch, dict):
             return {k: self._to_device(v) for k, v in batch.items()}
-        elif isinstance(batch, (list, tuple)):
+        if isinstance(batch, (list, tuple)):
             return type(batch)(self._to_device(item) for item in batch)
-        else:
-            return batch
+        return batch

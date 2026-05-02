@@ -110,10 +110,9 @@ def get_staleness_level(date_obj: datetime) -> str:
 
     if age_days < 30:
         return 'Fresh'
-    elif age_days < 90:
+    if age_days < 90:
         return 'Aging'
-    else:
-        return 'Stale'
+    return 'Stale'
 
 def audit_file(file_path: Path, repo_root: Path) -> Dict:
     """Audit a single markdown file.

@@ -103,7 +103,6 @@ def scan_directory(base_path: Path) -> list[dict[str, Any]]:
                 logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 # Skip files that can't be accessed
-                pass
 
     return files
 
@@ -156,7 +155,6 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
             logger.debug(f"OSError: {e}")
             logger.warning(f"OSError: {e}", exc_info=True)
             # The plan file is optional; skip if it cannot be read.
-            pass
 
     return {"gaps": gaps_data, "plans": plans_data}
 
@@ -399,7 +397,6 @@ def generate_html_dashboard(
             html_content += generate_planning_css()
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
-            pass
 
     html_content += """
     </style>

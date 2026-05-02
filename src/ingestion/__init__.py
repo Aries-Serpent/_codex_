@@ -182,11 +182,10 @@ def _call_repo_read_text(
         raise RuntimeError(f"repo read_text failed: {exc}") from exc
 
     # Normalise return value
-    if isinstance(result, tuple) or isinstance(result, list):
-        if len(result) >= 1:
-            txt = result[0]
-            used = result[1] if len(result) > 1 else None
-            return str(txt), (str(used) if used is not None else None)
+    if (isinstance(result, (tuple, list))) and len(result) >= 1:
+        txt = result[0]
+        used = result[1] if len(result) > 1 else None
+        return str(txt), (str(used) if used is not None else None)
     if isinstance(result, str):
         return result, None
     # Coerce to string for unexpected return types

@@ -325,9 +325,8 @@ def section_b_blocking_comments(
         dt = _parse_dt(ts_str)
         if dt is None:
             return False
-        if comment_id is not None:
-            if copilot_reply_index.get(comment_id):
-                return True
+        if comment_id is not None and copilot_reply_index.get(comment_id):
+            return True
         return any(rt > dt for rt in copilot_times)
 
     blocking: list[dict] = []
@@ -414,10 +413,7 @@ def _get_job_log_tail(owner: str, repo: str, job_id: int | str, token: str, line
         # The logs endpoint redirects; urllib follows redirects automatically.
         # If _api_get returns None it means we got an error response.
         return "_Log unavailable (may require actions:read scope)._"
-    if isinstance(data, str):
-        raw = data
-    else:
-        raw = str(data)
+    raw = data if isinstance(data, str) else str(data)
     # Strip ANSI escape sequences for readability
     # re is imported at module level
     raw = re.sub(r"\x1b\[[0-9;]*[a-zA-Z]", "", raw)

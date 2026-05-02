@@ -76,7 +76,7 @@ def check_package_version(package: str, min_version: str) -> tuple[bool, str]:
                     req_num = int(req.split("+")[0].split("-")[0])
                     if inst_num > req_num:
                         return True, installed
-                    elif inst_num < req_num:
+                    if inst_num < req_num:
                         return False, installed
 
                 return True, installed  # Equal versions
@@ -185,13 +185,12 @@ def main():
         print("\n✅ All security checks passed!")
         print("\n🔒 All 14 Dependabot vulnerabilities have been remediated.")
         return 0
-    else:
-        print("\n❌ Security vulnerabilities remain!")
-        print("\nTo fix:")
-        print("  1. Run: pip install -r requirements.txt --upgrade")
-        print("  2. Regenerate lock files if needed")
-        print("  3. Rerun this audit script")
-        return 1
+    print("\n❌ Security vulnerabilities remain!")
+    print("\nTo fix:")
+    print("  1. Run: pip install -r requirements.txt --upgrade")
+    print("  2. Regenerate lock files if needed")
+    print("  3. Rerun this audit script")
+    return 1
 
 
 if __name__ == "__main__":

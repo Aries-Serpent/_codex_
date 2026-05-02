@@ -161,10 +161,9 @@ class ExecutionPolicy:
             priority = template.get("priority", 2)
             if priority == 0:  # P0 Critical
                 return 4
-            elif priority == 1:  # P1 High
+            if priority == 1:  # P1 High
                 return 24
-            else:
-                return 72
+            return 72
         return 48  # Default 48 hours
 
 
@@ -235,20 +234,19 @@ class AutonomousExecutor:
                 automation_level=self.automation_level,
                 required_approval=False,
             )
-        else:
-            # Request approval
-            approval = self._create_approval_request(adjustment, reason)
-            self._pending_approvals[approval.id] = approval
+        # Request approval
+        approval = self._create_approval_request(adjustment, reason)
+        self._pending_approvals[approval.id] = approval
 
-            return ExecutionResult(
-                success=False,
-                adjustment_id=adjustment.id,
-                objective=None,
-                message=f"Awaiting approval: {reason}. Request ID: {approval.id}",
-                executed_at=now,
-                automation_level=self.automation_level,
-                required_approval=True,
-            )
+        return ExecutionResult(
+            success=False,
+            adjustment_id=adjustment.id,
+            objective=None,
+            message=f"Awaiting approval: {reason}. Request ID: {approval.id}",
+            executed_at=now,
+            automation_level=self.automation_level,
+            required_approval=True,
+        )
 
     def _create_approval_request(self, adjustment: Adjustment, reason: str) -> ApprovalRequest:
         """Create an approval request."""

@@ -344,8 +344,7 @@ class TestEndToEndRAGBenchmarks:
             # 2. Retrieve documents
             docs = retrieve(query_embedding)
             # 3. Generate response
-            response = generate_response(query, docs)
-            return response
+            return generate_response(query, docs)
 
         latencies = []
         for _ in range(100):

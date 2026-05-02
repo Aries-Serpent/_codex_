@@ -756,7 +756,7 @@ class TestViewerCLIWrapper:
         session_id = "test-viewer-123"
         with manager.connection() as conn:
             conn.execute(
-                "INSERT INTO session_events (ts, session_id, role, message) " "VALUES (?, ?, ?, ?)",
+                "INSERT INTO session_events (ts, session_id, role, message) VALUES (?, ?, ?, ?)",
                 (time.time(), session_id, "user", "Test message"),
             )
             conn.commit()
@@ -801,7 +801,7 @@ class TestViewerCLIWrapper:
         session_id = "test-e2e-456"
         with manager.connection() as conn:
             conn.execute(
-                "INSERT INTO session_events (ts, session_id, role, message) " "VALUES (?, ?, ?, ?)",
+                "INSERT INTO session_events (ts, session_id, role, message) VALUES (?, ?, ?, ?)",
                 (time.time(), session_id, "user", "E2E test message"),
             )
             conn.commit()

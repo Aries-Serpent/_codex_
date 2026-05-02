@@ -101,8 +101,7 @@ def decide(
     if uri is not None:
         overrides["MLFLOW_TRACKING_URI"] = uri
     with _patched_environ(overrides):
-        decision = bootstrap_offline_tracking_decision(force=force, requested_uri=uri)
-    return decision
+        return bootstrap_offline_tracking_decision(force=force, requested_uri=uri)
 
 
 if typer is not None:  # pragma: no cover - exercised via CLI tests

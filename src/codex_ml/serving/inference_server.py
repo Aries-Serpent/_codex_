@@ -118,8 +118,7 @@ class AuthManager:
         try:
             from jose import JWTError, jwt
 
-            payload = jwt.decode(token, self.jwt_secret, algorithms=[self.jwt_algorithm])
-            return payload
+            return jwt.decode(token, self.jwt_secret, algorithms=[self.jwt_algorithm])
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
@@ -277,8 +276,7 @@ class ModelServer:
         """
         if self.circuit_breaker:
             return self.circuit_breaker.call(self.predict, inputs)
-        else:
-            return self.predict(inputs)
+        return self.predict(inputs)
 
     def embed(self, texts: list[str]):
         if self.model is None:

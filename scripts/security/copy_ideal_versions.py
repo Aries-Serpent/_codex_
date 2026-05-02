@@ -71,8 +71,7 @@ def get_changed_files_in_pr() -> list[str]:
         print(f"Error: Could not get changed files from {base_commit}", file=sys.stderr)
         return []
 
-    files = [line.strip() for line in stdout.strip().split('\n') if line.strip()]
-    return files
+    return [line.strip() for line in stdout.strip().split('\n') if line.strip()]
 
 
 def copy_file_from_head(filepath: str) -> bool:

@@ -201,7 +201,7 @@ class DatasetManifest:
 
         total_size = sum(
             (self.dataset_path / rel_path).stat().st_size
-            for rel_path in self.manifest["file_hashes"].keys()
+            for rel_path in self.manifest["file_hashes"]
             if (self.dataset_path / rel_path).exists()
         )
         self.manifest["total_size_bytes"] = total_size

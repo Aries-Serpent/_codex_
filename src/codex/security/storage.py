@@ -188,16 +188,15 @@ class SecureStorage:
 
         if self.algorithm == "fernet":
             return cast(Fernet, self.cipher).encrypt(data_bytes)
-        elif self.algorithm in ("aes-gcm", "chacha20"):
+        if self.algorithm in ("aes-gcm", "chacha20"):
             # Generate random nonce
             nonce = os.urandom(12)  # 96-bit nonce for GCM/ChaCha20
             aead_cipher = cast(Union[AESGCM, ChaCha20Poly1305], self.cipher)
             ciphertext = aead_cipher.encrypt(nonce, data_bytes, None)
             # Prepend nonce to ciphertext
             return nonce + ciphertext
-        else:
-            # Should never reach here due to validation in __init__
-            raise ValueError(f"Unsupported algorithm: {self.algorithm}")
+        # Should never reach here due to validation in __init__
+        raise ValueError(f"Unsupported algorithm: {self.algorithm}")
 
     def decrypt(self, encrypted: bytes) -> str:
         """
@@ -215,16 +214,15 @@ class SecureStorage:
         """
         if self.algorithm == "fernet":
             return cast(Fernet, self.cipher).decrypt(encrypted).decode("utf-8")
-        elif self.algorithm in ("aes-gcm", "chacha20"):
+        if self.algorithm in ("aes-gcm", "chacha20"):
             # Extract nonce (first 12 bytes)
             nonce = encrypted[:12]
             ciphertext = encrypted[12:]
             aead_cipher = cast(Union[AESGCM, ChaCha20Poly1305], self.cipher)
             plaintext = aead_cipher.decrypt(nonce, ciphertext, None)
             return plaintext.decode("utf-8")
-        else:
-            # Should never reach here due to validation in __init__
-            raise ValueError(f"Unsupported algorithm: {self.algorithm}")
+        # Should never reach here due to validation in __init__
+        raise ValueError(f"Unsupported algorithm: {self.algorithm}")
 
     def store_secret(self, filepath: str, secret: str) -> None:
         """

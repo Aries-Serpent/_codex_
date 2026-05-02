@@ -205,13 +205,12 @@ class Phase6Deployer:
                     "output": result.stdout,
                 }
                 return True
-            else:
-                logger.error(f"✗ Feature store initialization failed: {result.stderr}")
-                self.results["deployments"]["feature_store"] = {
-                    "status": "failed",
-                    "error": result.stderr,
-                }
-                return False
+            logger.error(f"✗ Feature store initialization failed: {result.stderr}")
+            self.results["deployments"]["feature_store"] = {
+                "status": "failed",
+                "error": result.stderr,
+            }
+            return False
 
         except Exception as e:
             logger.debug(f"Exception: {e}")
@@ -337,14 +336,13 @@ class Phase6Deployer:
                 logger.info("✓ All integration tests passed")
                 self.results["tests"]["integration"] = {"status": "passed", "output": result.stdout}
                 return True
-            else:
-                logger.warning(f"⚠ Some integration tests failed:\n{result.stdout}")
-                self.results["tests"]["integration"] = {
-                    "status": "failed",
-                    "output": result.stdout,
-                    "error": result.stderr,
-                }
-                return False
+            logger.warning(f"⚠ Some integration tests failed:\n{result.stdout}")
+            self.results["tests"]["integration"] = {
+                "status": "failed",
+                "output": result.stdout,
+                "error": result.stderr,
+            }
+            return False
 
         except Exception as e:
             logger.debug(f"Exception: {e}")

@@ -83,7 +83,7 @@ class TestEndToEndWorkflows:
         service_registry["api-2"] = {"host": "10.0.1.2", "port": 8000}
 
         # Discover services
-        api_services = [s for s in service_registry.keys() if s.startswith("api")]
+        api_services = [s for s in service_registry if s.startswith("api")]
 
         assert len(api_services) == 2
 

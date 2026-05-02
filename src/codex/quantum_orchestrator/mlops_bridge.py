@@ -308,10 +308,9 @@ class DistributedCoordinator:
         """
         if strategy == "round_robin":
             return self._partition_round_robin(task_ids)
-        elif strategy == "hash":
+        if strategy == "hash":
             return self._partition_hash(task_ids)
-        else:
-            raise ValueError(f"Unknown strategy: {strategy}")
+        raise ValueError(f"Unknown strategy: {strategy}")
 
     def _partition_round_robin(self, task_ids: list[str]) -> dict[str, list[str]]:
         """Round-robin task distribution."""
@@ -457,11 +456,10 @@ class ObservableOrchestrator:
     def _has_converged(self) -> bool:
         """Check if orchestration has converged."""
         # All tasks completed
-        all_complete = all(
+        return all(
             abs(task.spinor.total_probability) < 0.01
             for task in self.orchestrator.state.tasks.values()
         )
-        return all_complete
 
     def get_metrics_report(self) -> str:
         """Get metrics in Prometheus format."""

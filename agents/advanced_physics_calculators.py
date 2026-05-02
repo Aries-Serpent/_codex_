@@ -535,9 +535,8 @@ class ChaoticNeuralNetwork:
         evolved_state = self.evolve(steps=5)
 
         # Extract output from last output_size neurons
-        output = evolved_state[-self.output_size :].tolist()
+        return evolved_state[-self.output_size :].tolist()
 
-        return output
 
     def evolve(self, steps: int = 10) -> np.ndarray:
         """
@@ -701,9 +700,8 @@ class FractalAnalyzer:
             return 1.0  # Avoid division by zero
 
         slope = (n * sum_xy - sum_x * sum_y) / denominator
-        dimension = -slope  # Negative slope is the dimension
+        return -slope  # Negative slope is the dimension
 
-        return dimension
 
     def analyze_code_tree(
         self, tree_structure: dict[str, Any], current_depth: int = 0
@@ -942,10 +940,9 @@ class FluidChannel:
         re = self.reynolds_number(velocity=velocity, viscosity=viscosity)
         if re < 2300:
             return "laminar"
-        elif re < 4000:
+        if re < 4000:
             return "transitional"
-        else:
-            return "turbulent"
+        return "turbulent"
 
     def pressure_drop(
         self,
@@ -1036,8 +1033,7 @@ class FluidFlowScheduler:
             channel.current_flow += flow_rate
             channel.pressure += flow_rate * 0.1  # Pressure increases with flow
             return True
-        else:
-            return False
+        return False
 
     def balance_pressure(self) -> dict[str, Any]:
         """
@@ -1490,12 +1486,11 @@ class WavePropagator:
                 "destructive": 0.0,
                 "net": interference_factor - 1.0,
             }
-        else:
-            return {
-                "constructive": 0.0,
-                "destructive": 1.0 - interference_factor,
-                "net": interference_factor - 1.0,
-            }
+        return {
+            "constructive": 0.0,
+            "destructive": 1.0 - interference_factor,
+            "net": interference_factor - 1.0,
+        }
 
     def wavelet_transform(
         self, signal: np.ndarray, scales: Optional[list[int]] = None
@@ -1631,9 +1626,8 @@ class RelativityScheduler:
             v_magnitude = MAX_VELOCITY_FRACTION * self.c
 
         beta = v_magnitude / self.c
-        gamma = 1.0 / math.sqrt(1.0 - beta**2)
+        return 1.0 / math.sqrt(1.0 - beta**2)
 
-        return gamma
 
     def time_dilation(self, agent_id: str, coordinate_time: float) -> float:
         """
@@ -1649,9 +1643,8 @@ class RelativityScheduler:
         agent = self.agents[agent_id]
         gamma = self.lorentz_factor(agent["velocity"])
 
-        proper_time = coordinate_time / gamma
+        return coordinate_time / gamma
 
-        return proper_time
 
     def communication_delay(self, agent_a_id: str, agent_b_id: str) -> float:
         """
@@ -1668,9 +1661,8 @@ class RelativityScheduler:
         pos_b = self.agents[agent_b_id]["position"]
 
         distance = np.linalg.norm(pos_a - pos_b)
-        delay = distance / self.c
+        return distance / self.c
 
-        return delay
 
     def synchronize_clocks(self) -> dict[str, float]:
         """

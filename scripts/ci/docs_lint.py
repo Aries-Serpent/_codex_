@@ -354,13 +354,12 @@ def lint(
         # --- FENCE checks ---
         result.issues.extend(_check_fences(entry, lines))
 
-        # --- STUB check ---
-        if strict or True:  # always warn on stubs
-            stubs = _check_stub(entry, text)
-            if strict:
-                for s in stubs:
-                    s.severity = "error"
-            result.issues.extend(stubs)
+        # --- STUB check --- (always enabled)
+        stubs = _check_stub(entry, text)
+        if strict:
+            for s in stubs:
+                s.severity = "error"
+        result.issues.extend(stubs)
 
         # --- DEAD_LINK checks ---
         if check_links:

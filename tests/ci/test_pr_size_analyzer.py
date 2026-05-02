@@ -21,12 +21,11 @@ def calculate_pr_size(changed_files: int) -> tuple[str, str]:
     """
     if changed_files < 20:
         return "small", "full_validation"
-    elif changed_files < 100:
+    if changed_files < 100:
         return "medium", "targeted_tests"
-    elif changed_files < 500:
+    if changed_files < 500:
         return "large", "smoke_tests"
-    else:
-        return "refactor", "import_validation"
+    return "refactor", "import_validation"
 
 
 class TestPRSizeAnalyzer:

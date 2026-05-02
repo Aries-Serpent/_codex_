@@ -99,7 +99,7 @@ def bar_chart(
     if not data:
         return ""
 
-    max_label = max(len(k) for k in data.keys())
+    max_label = max(len(k) for k in data)
     max_val = max(data.values()) if data.values() else 1
 
     items = data.items()
@@ -131,10 +131,9 @@ def trend_indicator(current: float, previous: float, threshold: float = 0.02) ->
     delta = current - previous
     if delta > threshold:
         return "📈"  # Improving
-    elif delta < -threshold:
+    if delta < -threshold:
         return "📉"  # Declining
-    else:
-        return "➡️"  # Stable
+    return "➡️"  # Stable
 
 
 def score_badge(score: float) -> str:
@@ -149,12 +148,11 @@ def score_badge(score: float) -> str:
     """
     if score >= 0.95:
         return f"🟢 {score:.3f}"
-    elif score >= 0.85:
+    if score >= 0.85:
         return f"🟡 {score:.3f}"
-    elif score >= 0.70:
+    if score >= 0.70:
         return f"🟠 {score:.3f}"
-    else:
-        return f"🔴 {score:.3f}"
+    return f"🔴 {score:.3f}"
 
 
 def mini_bar(value: float, width: int = 10) -> str:

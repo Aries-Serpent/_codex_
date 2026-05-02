@@ -339,13 +339,12 @@ def stage_i4_postprocess(
         "version": PIPELINE_VERSION,
     }
     output_hash = sha256_bytes(json.dumps(payload, sort_keys=True).encode("utf-8"))
-    manifest = {
+    return {
         "output_hash": output_hash,
         "payload": payload,
         "timings": timings,
         "safeguards": SAFEGUARD_KEYWORDS,
     }
-    return manifest
 
 
 # ---- Runner ----

@@ -154,8 +154,7 @@ class WorkflowMonitor:
         try:
             created_dt = datetime.fromisoformat(created.replace('Z', '+00:00'))
             updated_dt = datetime.fromisoformat(updated.replace('Z', '+00:00'))
-            duration = (updated_dt - created_dt).total_seconds() / 60
-            return duration
+            return (updated_dt - created_dt).total_seconds() / 60
         except Exception:
             return None
 

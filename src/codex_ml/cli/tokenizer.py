@@ -56,10 +56,7 @@ def _echo(message: str) -> None:
 
 def _load_mapping(path: Path) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8")
-    if _HAS_YAML:
-        data = yaml.safe_load(text)
-    else:
-        data = json.loads(text)
+    data = yaml.safe_load(text) if _HAS_YAML else json.loads(text)
     if not isinstance(data, dict):
         raise ValueError(f"Tokenizer config at {path} must be a mapping")
     return data
@@ -68,8 +65,7 @@ def _load_mapping(path: Path) -> dict[str, Any]:
 def _coerce_config(data: dict[str, Any]) -> _TrainTokenizerConfig:
     from codex_ml.tokenization import train_tokenizer as trainer
 
-    cfg = trainer.TrainTokenizerConfig(**data)
-    return cfg
+    return trainer.TrainTokenizerConfig(**data)
 
 
 def _prepare_config(

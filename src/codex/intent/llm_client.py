@@ -171,7 +171,7 @@ class CodexLLMClient:
         imports = ", ".join(context.get("imports", [])[:50])
         source_excerpt = _truncate_context(context.get("source_excerpt", ""))
 
-        prompt = f"""## System Prompt
+        return f"""## System Prompt
 You are analyzing Python code to infer its purpose. Be conservative and factual.
 Do NOT invent functionality that is not evident in the code or execution traces.
 If uncertain, lower your confidence score and list assumptions.
@@ -203,7 +203,6 @@ Respond with valid JSON matching this schema:
 
 Return ONLY valid JSON, no explanation or markdown."""
 
-        return prompt
 
     def infer_intent(self, context: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Infer intent using LLM.

@@ -291,9 +291,8 @@ def main():
         print(f"\n❌ Found {issue_count} documentation issues")
         print("Please update documentation before concluding work.")
         return 1
-    else:
-        print("\n✅ All documentation checks passed!")
-        return 0
+    print("\n✅ All documentation checks passed!")
+    return 0
 
 
 if __name__ == '__main__':

@@ -197,7 +197,7 @@ class MarkdownAnalyzer:
 
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                pass  # Skip files that cannot be processed
+                # Skip files that cannot be processed
 
     def _analyze_file(self, path: Path) -> MarkdownFile:
         """Analyze a single markdown file."""

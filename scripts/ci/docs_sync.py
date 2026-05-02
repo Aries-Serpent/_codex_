@@ -205,14 +205,13 @@ def resolve_marker(marker: str, repo_root: Path) -> tuple[Optional[str], Optiona
         if extracted is None:
             return None, f"Symbol '{symbol}' not found in {file_part}"
         return lang, dedent(extracted)
-    else:
-        # Try class first, then function
-        extracted = _extract_class(raw, symbol)
-        if extracted is None:
-            extracted = _extract_function(raw, symbol)
-        if extracted is None:
-            return None, f"Symbol '{symbol}' not found in {file_part}"
-        return lang, dedent(extracted)
+    # Try class first, then function
+    extracted = _extract_class(raw, symbol)
+    if extracted is None:
+        extracted = _extract_function(raw, symbol)
+    if extracted is None:
+        return None, f"Symbol '{symbol}' not found in {file_part}"
+    return lang, dedent(extracted)
 
 
 # ---------------------------------------------------------------------------

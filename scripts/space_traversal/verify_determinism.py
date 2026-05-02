@@ -46,9 +46,9 @@ def normalized_json(path: Path) -> dict:
         """Round all float values to specified decimals."""
         if isinstance(obj, float):
             return round(obj, decimals)
-        elif isinstance(obj, dict):
+        if isinstance(obj, dict):
             return {k: round_floats(v, decimals) for k, v in obj.items()}
-        elif isinstance(obj, list):
+        if isinstance(obj, list):
             return [round_floats(item, decimals) for item in obj]
         return obj
 
@@ -73,14 +73,13 @@ def normalized_json(path: Path) -> dict:
                     if "found_patterns" in cap:
                         cap["found_patterns"] = sorted(cap["found_patterns"])
             return result
-        elif isinstance(obj, list):
+        if isinstance(obj, list):
             return [remove_volatile(item) for item in obj]
         return obj
 
     # First remove volatile fields, then round floats
     normalized = remove_volatile(data)
-    normalized = round_floats(normalized)
-    return normalized
+    return round_floats(normalized)
 
 
 def run_pipeline():

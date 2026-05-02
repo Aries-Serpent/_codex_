@@ -217,8 +217,7 @@ class TestCheckpointing:
             def save(self, checkpoint_path):
                 self.checkpoints.append(checkpoint_path)
                 if len(self.checkpoints) > self.max:
-                    removed = self.checkpoints.pop(0)
-                    return removed
+                    return self.checkpoints.pop(0)
                 return None
 
         manager = CheckpointManager(max_checkpoints=3)

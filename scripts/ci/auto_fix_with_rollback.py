@@ -32,13 +32,11 @@ from typing import List
 class PreFlightError(Exception):
     """Raised when pre-flight checks fail."""
 
-    pass
 
 
 class FixApplicationError(Exception):
     """Raised when fix application fails."""
 
-    pass
 
 
 class AutoFixWithRollback:

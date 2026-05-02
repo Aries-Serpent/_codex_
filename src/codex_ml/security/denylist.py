@@ -99,10 +99,7 @@ class DenylistEnforcer:
             return False
         if any(pattern in prompt_lower for pattern in self.rules.blocked_prompt_patterns):
             return False
-        for compiled, _ in self.rules.redaction_patterns:
-            if compiled.search(prompt):
-                return False
-        return True
+        return all(not compiled.search(prompt) for compiled, _ in self.rules.redaction_patterns)
 
     def ensure_allowed(self, prompt: str) -> None:
         if not self.is_prompt_allowed(prompt):

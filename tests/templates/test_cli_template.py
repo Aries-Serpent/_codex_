@@ -193,7 +193,6 @@ class TestCLIErrorHandling:
         """Test that keyboard interrupt is handled gracefully."""
         # This test is difficult to implement in a unit test
         # Consider using signal handling or mocking
-        pass
 
     def test_unknown_command_shows_available_commands(self) -> None:
         """Test that unknown command shows available commands."""

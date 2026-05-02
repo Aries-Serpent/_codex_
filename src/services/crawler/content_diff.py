@@ -181,14 +181,13 @@ class ContentDiffer:
         """
         if change_ratio == 0:
             return ChangeType.NO_CHANGE
-        elif change_ratio < self.MINOR_THRESHOLD:
+        if change_ratio < self.MINOR_THRESHOLD:
             return ChangeType.MINOR
-        elif change_ratio < self.MODERATE_THRESHOLD:
+        if change_ratio < self.MODERATE_THRESHOLD:
             return ChangeType.MODERATE
-        elif change_ratio < self.MAJOR_THRESHOLD:
+        if change_ratio < self.MAJOR_THRESHOLD:
             return ChangeType.MAJOR
-        else:
-            return ChangeType.COMPLETE
+        return ChangeType.COMPLETE
 
     def diff(
         self,
@@ -619,9 +618,8 @@ class SemanticDiffer:
         text = re.sub(r"\s+", " ", text)
 
         # Remove leading/trailing whitespace
-        text = text.strip()
+        return text.strip()
 
-        return text
 
     def should_resync(self, old_content: str, new_content: str) -> Tuple[bool, Dict[str, Any]]:
         """Determine if content should be resynced based on semantic diff.

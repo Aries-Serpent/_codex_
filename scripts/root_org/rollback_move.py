@@ -61,23 +61,21 @@ def rollback_git_mv(source: str, target: str, dry_run: bool = False) -> bool:
         if result.returncode == 0:
             print(f"  ✓ Rolled back: {target} → {source}")
             return True
-        else:
-            print(f"  ❌ Rollback failed: {result.stderr}")
+        print(f"  ❌ Rollback failed: {result.stderr}")
 
-            # Try git checkout as fallback
-            print("  Trying git checkout fallback...")
-            result = subprocess.run(
-                ['git', 'checkout', 'HEAD', '--', source],
-                capture_output=True,
-                text=True
-            )
+        # Try git checkout as fallback
+        print("  Trying git checkout fallback...")
+        result = subprocess.run(
+            ['git', 'checkout', 'HEAD', '--', source],
+            capture_output=True,
+            text=True
+        )
 
-            if result.returncode == 0:
-                print(f"  ✓ Restored from HEAD: {source}")
-                return True
-            else:
-                print(f"  ❌ Checkout fallback failed: {result.stderr}")
-                return False
+        if result.returncode == 0:
+            print(f"  ✓ Restored from HEAD: {source}")
+            return True
+        print(f"  ❌ Checkout fallback failed: {result.stderr}")
+        return False
 
     except Exception as e:
         print(f"  ❌ Error: {e}")
@@ -102,9 +100,8 @@ def rollback_from_commit(file_path: str, commit_sha: str = 'HEAD~1', dry_run: bo
         if result.returncode == 0:
             print(f"  ✓ Restored from {commit_sha}")
             return True
-        else:
-            print(f"  ❌ Rollback failed: {result.stderr}")
-            return False
+        print(f"  ❌ Rollback failed: {result.stderr}")
+        return False
 
     except Exception as e:
         print(f"  ❌ Error: {e}")
@@ -155,12 +152,10 @@ def rollback_last_operation(dry_run: bool = False) -> bool:
             if result.returncode == 0:
                 print("✅ Successfully rolled back last commit")
                 return True
-            else:
-                print(f"❌ Rollback failed: {result.stderr}")
-                return False
-        else:
-            print("[DRY RUN] Would execute: git reset --soft HEAD~1")
-            return True
+            print(f"❌ Rollback failed: {result.stderr}")
+            return False
+        print("[DRY RUN] Would execute: git reset --soft HEAD~1")
+        return True
 
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -242,19 +237,18 @@ Examples:
         success = rollback_last_operation(args.dry_run)
         return 0 if success else 1
 
-    elif args.batch and args.commits:
+    if args.batch and args.commits:
         success = rollback_batch_from_file(args.commits, args.dry_run)
         return 0 if success else 1
 
-    elif args.file:
+    if args.file:
         success = rollback_from_commit(args.file, args.commit, args.dry_run)
         if success and not args.dry_run:
             log_rollback(args.file, success)
         return 0 if success else 1
 
-    else:
-        parser.print_help()
-        return 1
+    parser.print_help()
+    return 1
 
 
 if __name__ == '__main__':

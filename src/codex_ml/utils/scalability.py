@@ -59,10 +59,9 @@ class LRUCache:
                     self._access_order.remove(key)
                     self._access_order.append(key)
                     return value
-                else:
-                    # Expired
-                    del self._cache[key]
-                    self._access_order.remove(key)
+                # Expired
+                del self._cache[key]
+                self._access_order.remove(key)
             self._misses += 1
             return None
 
@@ -232,9 +231,7 @@ class CircuitBreaker:
             self._failures += 1
             self._last_failure_time = time.time()
 
-            if self._state == "half-open":
-                self._state = "open"
-            elif self._failures >= self.failure_threshold:
+            if self._state == "half-open" or self._failures >= self.failure_threshold:
                 self._state = "open"
 
     def __call__(self, func: Callable[..., T]) -> Callable[..., T]:
@@ -291,12 +288,11 @@ class LoadBalancer:
 
         if self.strategy == "round_robin":
             return self._round_robin(healthy)
-        elif self.strategy == "least_connections":
+        if self.strategy == "least_connections":
             return self._least_connections(healthy)
-        elif self.strategy == "weighted":
+        if self.strategy == "weighted":
             return self._weighted(healthy)
-        else:
-            return healthy[0]
+        return healthy[0]
 
     def _round_robin(self, endpoints: list[Endpoint]) -> Endpoint:
         with self._lock:

@@ -337,8 +337,7 @@ class LLMService:
                 top_p=generate_kwargs.get("top_p", 0.95),
                 top_k=generate_kwargs.get("top_k"),
             )
-        texts = self.tokenizer.batch_decode(output, skip_special_tokens=True)
-        return texts
+        return self.tokenizer.batch_decode(output, skip_special_tokens=True)
 
     @serve.batch(max_batch_size=8, batch_wait_timeout_s=0.02)
     async def _predict_batch(self, payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:

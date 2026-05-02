@@ -40,6 +40,7 @@ import math
 import os
 import re
 from pathlib import Path
+import contextlib
 
 DEFAULT_PATTERNS = [
     # Basic secret-like patterns
@@ -73,10 +74,8 @@ def load_patterns(config_file: Path | None) -> list[re.Pattern]:
         elif isinstance(data, list):
             extra = data
         for p in extra:
-            try:
+            with contextlib.suppress(re.error):
                 pats.append(re.compile(p))
-            except re.error:
-                pass
     return pats
 
 

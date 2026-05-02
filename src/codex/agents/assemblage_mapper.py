@@ -312,8 +312,7 @@ class AssemblageMapper:
         # Fluidity factor (less territorialized = more capacity)
         fluidity = 1.0 - assemblage.territorialization
 
-        capacity = active_agents * avg_capabilities * (0.5 + 0.5 * fluidity)
-        return capacity
+        return active_agents * avg_capabilities * (0.5 + 0.5 * fluidity)
 
     def optimize_assemblage(
         self, assemblage_id: str, target_capabilities: Set[AgentCapability]

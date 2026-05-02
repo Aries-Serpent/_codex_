@@ -85,11 +85,7 @@ def should_archive(filename: str, preserve_files: set[str], archive_patterns: li
 
     # Check if filename contains archive patterns
     upper_name = filename.upper()
-    for pattern in archive_patterns:
-        if pattern in upper_name:
-            return True
-
-    return False
+    return any(pattern in upper_name for pattern in archive_patterns)
 
 
 def analyze_file(filepath: Path) -> dict:

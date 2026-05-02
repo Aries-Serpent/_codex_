@@ -62,9 +62,8 @@ class TokenizationCache:
             entry = self.cache[key]
             if datetime.now(timezone.utc) - entry["timestamp"] < self.ttl:
                 return entry["tokens"]
-            else:
-                # Cache expired, remove entry
-                del self.cache[key]
+            # Cache expired, remove entry
+            del self.cache[key]
         return None
 
     def set(self, text: str, tokenizer_config: dict[str, Any], tokens: list[Any]) -> None:

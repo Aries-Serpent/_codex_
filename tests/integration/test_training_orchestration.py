@@ -42,10 +42,7 @@ class TestCurriculumLearning:
         max_stages = 3
 
         # Simulate stage advancement
-        if current_stage < max_stages - 1:
-            next_stage = current_stage + 1
-        else:
-            next_stage = current_stage
+        next_stage = current_stage + 1 if current_stage < max_stages - 1 else current_stage
 
         assert next_stage == 1
 

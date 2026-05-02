@@ -46,8 +46,7 @@ class ApiKeyStore:
             return set()
         with self.path.open("r", encoding="utf-8") as handle:
             payload = json.load(handle)
-        records = {ApiKeyRecord.from_dict(item) for item in payload.get("keys", [])}
-        return records
+        return {ApiKeyRecord.from_dict(item) for item in payload.get("keys", [])}
 
     def _dump(self, records: Iterable[ApiKeyRecord]) -> None:
         serialized = {

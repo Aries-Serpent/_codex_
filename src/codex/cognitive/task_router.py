@@ -116,10 +116,7 @@ class TaskRouter:
             agent_tags = set(agent.get("capability_tags", []))
             request_tags = set(t.lower() for t in request.tags)
             matched = list(agent_tags & request_tags)
-            if not agent_tags:
-                score = 0.0
-            else:
-                score = len(matched) / max(len(request_tags), 1)
+            score = 0.0 if not agent_tags else len(matched) / max(len(request_tags), 1)
             # 3. Pattern store success-rate tie-break
             name = agent.get("name", "")
             success_bonus = self._pattern_success.get(name, 0.0) * 0.1

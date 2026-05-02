@@ -397,14 +397,13 @@ class ModelRetrainingAutomation:
                 "new_version": self.models_registry[model_name]["version"],
                 "improvement": retraining_result.improvement
             }
-        else:
-            logger.info(f"Skipping deployment for {model_name}: insufficient improvement")
-            return {
-                "status": "not_deployed",
-                "reason": "insufficient_improvement",
-                "improvement": retraining_result.improvement,
-                "threshold": self.improvement_threshold
-            }
+        logger.info(f"Skipping deployment for {model_name}: insufficient improvement")
+        return {
+            "status": "not_deployed",
+            "reason": "insufficient_improvement",
+            "improvement": retraining_result.improvement,
+            "threshold": self.improvement_threshold
+        }
 
     def _backup_current_model(self, model_name: str):
         """Backup current model before deploying new one"""
@@ -476,7 +475,7 @@ class ModelRetrainingAutomation:
 
         avg_improvement = np.mean([r.improvement for r in self.retraining_history])
 
-        report = {
+        return {
             "total_retrainings": len(self.retraining_history),
             "deployed_count": deployed_count,
             "deployment_rate": deployed_count / len(self.retraining_history),
@@ -487,7 +486,6 @@ class ModelRetrainingAutomation:
             ]
         }
 
-        return report
 
 
 def main():
@@ -558,4 +556,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

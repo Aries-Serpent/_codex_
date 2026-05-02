@@ -1303,6 +1303,7 @@ def set_deterministic_seed():
 import tempfile  # noqa: E402
 from pathlib import Path  # noqa: E402,F811
 from typing import Generator  # noqa: E402
+import contextlib
 
 
 @pytest.fixture
@@ -1686,30 +1687,22 @@ def mock_sentence_transformer(monkeypatch):
             "sentence_transformers.SentenceTransformer", MockSentenceTransformer
         )
         # Also patch in specific modules that import it
-        try:
+        with contextlib.suppress(AttributeError):
             monkeypatch.setattr(
                 "codex.rag.embeddings.SentenceTransformer", MockSentenceTransformer
             )
-        except AttributeError:
-            pass
-        try:
+        with contextlib.suppress(AttributeError):
             monkeypatch.setattr(
                 "codex.rag.indexer.SentenceTransformer", MockSentenceTransformer
             )
-        except AttributeError:
-            pass
-        try:
+        with contextlib.suppress(AttributeError):
             monkeypatch.setattr(
                 "codex.rag.retriever.SentenceTransformer", MockSentenceTransformer
             )
-        except AttributeError:
-            pass
-        try:
+        with contextlib.suppress(AttributeError):
             monkeypatch.setattr(
                 "codex.rag._model_utils.SentenceTransformer", MockSentenceTransformer
             )
-        except AttributeError:
-            pass
     except ImportError:
         # sentence_transformers not available, nothing to mock
         pass

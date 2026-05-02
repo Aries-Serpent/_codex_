@@ -169,8 +169,7 @@ class ChunkingPipeline:
                 if part:
                     result.append(part)
             return result
-        else:
-            return text.split(separator)
+        return text.split(separator)
 
     def _split_large_text(self, text: str, base_index: int) -> Iterator[Chunk]:
         """Split large text into overlapping chunks."""

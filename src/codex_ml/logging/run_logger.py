@@ -181,10 +181,7 @@ class RunLogger:
         """Persist a single metric event and return the structured payload."""
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
         raw_tags: dict[str, Any]
-        if isinstance(tags, MappingABC):
-            raw_tags = {str(k): tags[k] for k in tags}
-        else:
-            raw_tags = {}
+        raw_tags = {str(k): tags[k] for k in tags} if isinstance(tags, MappingABC) else {}
 
         record: dict[str, Any] = {
             "step": int(step),

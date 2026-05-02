@@ -93,10 +93,9 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
         """Recursively sanitize a value."""
         if isinstance(value, dict):
             return {k: _sanitize_value(v) for k, v in value.items()}
-        elif isinstance(value, (list, tuple)):
+        if isinstance(value, (list, tuple)):
             return type(value)(_sanitize_value(item) for item in value)
-        else:
-            return sanitize_log_input(value, max_length)
+        return sanitize_log_input(value, max_length)
 
     return _sanitize_value(data)
 

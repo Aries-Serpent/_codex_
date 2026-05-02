@@ -174,37 +174,25 @@ class TestLoggingBranches:
     def test_log_with_exception_info_branch(self) -> None:
         """Test logging with exception info branch."""
         include_exc = True
-        if include_exc:
-            log_extra = {"exc_info": True}
-        else:
-            log_extra = {}
+        log_extra = {"exc_info": True} if include_exc else {}
         assert "exc_info" in log_extra
 
     def test_log_without_exception_info_branch(self) -> None:
         """Test logging without exception info branch."""
         include_exc = False
-        if include_exc:
-            log_extra = {"exc_info": True}
-        else:
-            log_extra = {}
+        log_extra = {"exc_info": True} if include_exc else {}
         assert "exc_info" not in log_extra
 
     def test_structured_logging_enabled_branch(self) -> None:
         """Test structured logging enabled branch."""
         structured = True
-        if structured:
-            log_format = "json"
-        else:
-            log_format = "text"
+        log_format = "json" if structured else "text"
         assert log_format == "json"
 
     def test_structured_logging_disabled_branch(self) -> None:
         """Test structured logging disabled branch."""
         structured = False
-        if structured:
-            log_format = "json"
-        else:
-            log_format = "text"
+        log_format = "json" if structured else "text"
         assert log_format == "text"
 
 
@@ -220,20 +208,14 @@ class TestFileOperationBranches:
         """Test file exists check - true branch."""
         with patch.object(Path, "exists", return_value=True):
             path = Path("test.txt")  # Relative path avoids OS-specific issues
-            if path.exists():
-                action = "read"
-            else:
-                action = "create"
+            action = "read" if path.exists() else "create"
             assert action == "read"
 
     def test_file_exists_check_false_branch(self) -> None:
         """Test file exists check - false branch."""
         with patch.object(Path, "exists", return_value=False):
             path = Path("nonexistent.txt")  # Relative path avoids OS-specific issues
-            if path.exists():
-                action = "read"
-            else:
-                action = "create"
+            action = "read" if path.exists() else "create"
             assert action == "create"
 
     def test_file_is_file_branch(self) -> None:
@@ -277,37 +259,25 @@ class TestFileOperationBranches:
     def test_file_read_mode_text_branch(self) -> None:
         """Test file read mode - text branch."""
         binary = False
-        if binary:
-            mode = "rb"
-        else:
-            mode = "r"
+        mode = "rb" if binary else "r"
         assert mode == "r"
 
     def test_file_read_mode_binary_branch(self) -> None:
         """Test file read mode - binary branch."""
         binary = True
-        if binary:
-            mode = "rb"
-        else:
-            mode = "r"
+        mode = "rb" if binary else "r"
         assert mode == "rb"
 
     def test_file_write_mode_append_branch(self) -> None:
         """Test file write mode - append branch."""
         append = True
-        if append:
-            mode = "a"
-        else:
-            mode = "w"
+        mode = "a" if append else "w"
         assert mode == "a"
 
     def test_file_write_mode_overwrite_branch(self) -> None:
         """Test file write mode - overwrite branch."""
         append = False
-        if append:
-            mode = "a"
-        else:
-            mode = "w"
+        mode = "a" if append else "w"
         assert mode == "w"
 
 
@@ -322,55 +292,37 @@ class TestPathOperationBranches:
     def test_path_absolute_branch(self) -> None:
         """Test absolute path branch."""
         path = "/absolute/path"
-        if path.startswith("/"):
-            path_type = "absolute"
-        else:
-            path_type = "relative"
+        path_type = "absolute" if path.startswith("/") else "relative"
         assert path_type == "absolute"
 
     def test_path_relative_branch(self) -> None:
         """Test relative path branch."""
         path = "relative/path"
-        if path.startswith("/"):
-            path_type = "absolute"
-        else:
-            path_type = "relative"
+        path_type = "absolute" if path.startswith("/") else "relative"
         assert path_type == "relative"
 
     def test_path_home_expansion_needed_branch(self) -> None:
         """Test path home expansion needed branch."""
         path = "~/Documents"
-        if path.startswith("~"):
-            expanded = True
-        else:
-            expanded = False
+        expanded = bool(path.startswith("~"))
         assert expanded is True
 
     def test_path_home_expansion_not_needed_branch(self) -> None:
         """Test path home expansion not needed branch."""
         path = "/home/user/Documents"
-        if path.startswith("~"):
-            expanded = True
-        else:
-            expanded = False
+        expanded = bool(path.startswith("~"))
         assert expanded is False
 
     def test_path_parent_directory_branch(self) -> None:
         """Test parent directory navigation branch."""
         path = "../parent/file.txt"
-        if ".." in path:
-            has_parent_ref = True
-        else:
-            has_parent_ref = False
+        has_parent_ref = ".." in path
         assert has_parent_ref is True
 
     def test_path_no_parent_directory_branch(self) -> None:
         """Test no parent directory navigation branch."""
         path = "current/file.txt"
-        if ".." in path:
-            has_parent_ref = True
-        else:
-            has_parent_ref = False
+        has_parent_ref = ".." in path
         assert has_parent_ref is False
 
     @pytest.mark.parametrize(
@@ -409,91 +361,61 @@ class TestStringOperationBranches:
     def test_string_empty_check_true_branch(self) -> None:
         """Test string empty check - true branch."""
         text = ""
-        if not text:
-            status = "empty"
-        else:
-            status = "non_empty"
+        status = "empty" if not text else "non_empty"
         assert status == "empty"
 
     def test_string_empty_check_false_branch(self) -> None:
         """Test string empty check - false branch."""
         text = "content"
-        if not text:
-            status = "empty"
-        else:
-            status = "non_empty"
+        status = "empty" if not text else "non_empty"
         assert status == "non_empty"
 
     def test_string_whitespace_only_branch(self) -> None:
         """Test string whitespace only branch."""
         text = "   "
-        if not text.strip():
-            status = "whitespace_only"
-        else:
-            status = "has_content"
+        status = "whitespace_only" if not text.strip() else "has_content"
         assert status == "whitespace_only"
 
     def test_string_has_content_branch(self) -> None:
         """Test string has content branch."""
         text = "  content  "
-        if not text.strip():
-            status = "whitespace_only"
-        else:
-            status = "has_content"
+        status = "whitespace_only" if not text.strip() else "has_content"
         assert status == "has_content"
 
     def test_string_prefix_match_branch(self) -> None:
         """Test string prefix match branch."""
         text = "prefix_content"
-        if text.startswith("prefix_"):
-            matched = True
-        else:
-            matched = False
+        matched = bool(text.startswith("prefix_"))
         assert matched is True
 
     def test_string_prefix_no_match_branch(self) -> None:
         """Test string prefix no match branch."""
         text = "content"
-        if text.startswith("prefix_"):
-            matched = True
-        else:
-            matched = False
+        matched = bool(text.startswith("prefix_"))
         assert matched is False
 
     def test_string_suffix_match_branch(self) -> None:
         """Test string suffix match branch."""
         text = "file.txt"
-        if text.endswith(".txt"):
-            matched = True
-        else:
-            matched = False
+        matched = bool(text.endswith(".txt"))
         assert matched is True
 
     def test_string_suffix_no_match_branch(self) -> None:
         """Test string suffix no match branch."""
         text = "file.json"
-        if text.endswith(".txt"):
-            matched = True
-        else:
-            matched = False
+        matched = bool(text.endswith(".txt"))
         assert matched is False
 
     def test_string_contains_branch(self) -> None:
         """Test string contains substring branch."""
         text = "hello world"
-        if "world" in text:
-            found = True
-        else:
-            found = False
+        found = "world" in text
         assert found is True
 
     def test_string_not_contains_branch(self) -> None:
         """Test string does not contain substring branch."""
         text = "hello world"
-        if "goodbye" in text:
-            found = True
-        else:
-            found = False
+        found = "goodbye" in text
         assert found is False
 
 
@@ -508,55 +430,37 @@ class TestCollectionOperationBranches:
     def test_list_empty_check_true_branch(self) -> None:
         """Test list empty check - true branch."""
         items: List[Any] = []
-        if not items:
-            status = "empty"
-        else:
-            status = "non_empty"
+        status = "empty" if not items else "non_empty"
         assert status == "empty"
 
     def test_list_empty_check_false_branch(self) -> None:
         """Test list empty check - false branch."""
         items = [1, 2, 3]
-        if not items:
-            status = "empty"
-        else:
-            status = "non_empty"
+        status = "empty" if not items else "non_empty"
         assert status == "non_empty"
 
     def test_dict_key_exists_branch(self) -> None:
         """Test dictionary key exists branch."""
         data = {"key": "value"}
-        if "key" in data:
-            result = data["key"]
-        else:
-            result = "default"
+        result = data.get("key", "default")
         assert result == "value"
 
     def test_dict_key_missing_branch(self) -> None:
         """Test dictionary key missing branch."""
         data: Dict[str, Any] = {}
-        if "key" in data:
-            result = data["key"]
-        else:
-            result = "default"
+        result = data.get("key", "default")
         assert result == "default"
 
     def test_list_contains_item_branch(self) -> None:
         """Test list contains item branch."""
         items = [1, 2, 3]
-        if 2 in items:
-            found = True
-        else:
-            found = False
+        found = 2 in items
         assert found is True
 
     def test_list_not_contains_item_branch(self) -> None:
         """Test list does not contain item branch."""
         items = [1, 2, 3]
-        if 5 in items:
-            found = True
-        else:
-            found = False
+        found = 5 in items
         assert found is False
 
     def test_set_intersection_empty_branch(self) -> None:
@@ -564,10 +468,7 @@ class TestCollectionOperationBranches:
         set1 = {1, 2, 3}
         set2 = {4, 5, 6}
         intersection = set1 & set2
-        if len(intersection) > 0:
-            status = "overlap"
-        else:
-            status = "disjoint"
+        status = "overlap" if len(intersection) > 0 else "disjoint"
         assert status == "disjoint"
 
     def test_set_intersection_non_empty_branch(self) -> None:
@@ -575,10 +476,7 @@ class TestCollectionOperationBranches:
         set1 = {1, 2, 3}
         set2 = {2, 3, 4}
         intersection = set1 & set2
-        if len(intersection) > 0:
-            status = "overlap"
-        else:
-            status = "disjoint"
+        status = "overlap" if len(intersection) > 0 else "disjoint"
         assert status == "overlap"
 
 
@@ -664,10 +562,7 @@ class TestNumericComparisonBranches:
         value = 50
         min_val = 0
         max_val = 100
-        if min_val <= value <= max_val:
-            status = "in_range"
-        else:
-            status = "out_of_range"
+        status = "in_range" if min_val <= value <= max_val else "out_of_range"
         assert status == "in_range"
 
     def test_range_check_below_range_branch(self) -> None:
@@ -675,10 +570,7 @@ class TestNumericComparisonBranches:
         value = -10
         min_val = 0
         max_val = 100
-        if min_val <= value <= max_val:
-            status = "in_range"
-        else:
-            status = "out_of_range"
+        status = "in_range" if min_val <= value <= max_val else "out_of_range"
         assert status == "out_of_range"
 
     def test_range_check_above_range_branch(self) -> None:
@@ -686,8 +578,5 @@ class TestNumericComparisonBranches:
         value = 150
         min_val = 0
         max_val = 100
-        if min_val <= value <= max_val:
-            status = "in_range"
-        else:
-            status = "out_of_range"
+        status = "in_range" if min_val <= value <= max_val else "out_of_range"
         assert status == "out_of_range"

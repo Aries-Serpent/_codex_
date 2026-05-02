@@ -85,7 +85,7 @@ def query(query_text: str, top_k: int = 5) -> list[dict[str, Any]]:
         import numpy as np
         from sentence_transformers import SentenceTransformer
     except ImportError as exc:
-        print(f"WARNING: Missing dependency — {exc}\n" "Falling back to SQLite keyword search.")
+        print(f"WARNING: Missing dependency — {exc}\nFalling back to SQLite keyword search.")
         return _sqlite_keyword_search(query_text, top_k)
 
     meta = json.loads(META_PATH.read_text(encoding="utf-8"))

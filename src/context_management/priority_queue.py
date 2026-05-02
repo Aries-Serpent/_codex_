@@ -10,6 +10,7 @@ import math
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import IntEnum
+from functools import total_ordering
 from typing import Any, Optional
 
 
@@ -23,6 +24,7 @@ class Priority(IntEnum):
     DISPOSABLE = 1  # Can prune freely: debug output, verbose logs
 
 
+@total_ordering
 @dataclass
 class PriorityItem:
     """An item in the priority queue."""

@@ -184,10 +184,7 @@ def append_entry(session_data: dict, dry_run: bool = False) -> None:
 
     # Insert before the last --- separator
     parts = report_text.rsplit("---", 1)
-    if len(parts) == 2:
-        updated = parts[0] + entry + "---" + parts[1]
-    else:
-        updated = report_text + entry
+    updated = parts[0] + entry + "---" + parts[1] if len(parts) == 2 else report_text + entry
 
     REPORT.write_text(updated, encoding="utf-8")
     print(f"Appended W-{w_num:03d} for session {session_data['session_id'][:8]}")

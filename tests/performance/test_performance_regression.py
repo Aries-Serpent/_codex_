@@ -41,9 +41,9 @@ class PerformanceBaseline:
 
         if metric == "ops_per_sec" and "min_ops_per_sec" in baseline:
             return actual_value >= baseline["min_ops_per_sec"]
-        elif metric == "time_ms" and "max_time_ms" in baseline:
+        if metric == "time_ms" and "max_time_ms" in baseline:
             return actual_value <= baseline["max_time_ms"]
-        elif metric == "memory_mb" and "max_mb" in baseline:
+        if metric == "memory_mb" and "max_mb" in baseline:
             return actual_value <= baseline["max_mb"]
 
         return True

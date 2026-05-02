@@ -226,7 +226,7 @@ def aggregate_trends(
     trending_up.sort(key=lambda x: x[1], reverse=True)
     trending_down.sort(key=lambda x: x[1])
 
-    result = {
+    return {
         "capability_trends": dict(capability_trends),
         "run_count": len(runs),
         "time_range": {
@@ -246,7 +246,6 @@ def aggregate_trends(
         },
     }
 
-    return result
 
 
 def generate_trend_report(trend_data: dict[str, Any], output_path: Path) -> None:

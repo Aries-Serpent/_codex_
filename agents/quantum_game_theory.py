@@ -420,9 +420,8 @@ class QuantumGameState:
         if team == TeamType.BLUE:
             # Trace over Red (indices 1 and 3)
             return np.trace(rho, axis1=1, axis2=3)
-        else:
-            # Trace over Blue (indices 0 and 2)
-            return np.trace(rho, axis1=0, axis2=2)
+        # Trace over Blue (indices 0 and 2)
+        return np.trace(rho, axis1=0, axis2=2)
 
     def measure(self, rng: Optional[np.random.Generator] = None) -> tuple[int, int]:
         """Measure joint state, returning (blue_strategy_idx, red_strategy_idx)"""
@@ -575,8 +574,7 @@ class ClassicalGameEngine:
         """Compute expected payoff for a team under current mixed strategies."""
         if team == TeamType.BLUE:
             return np.einsum("i,ij,j->", self.pi_blue, self.payoff_blue, self.pi_red)
-        else:
-            return np.einsum("i,ij,j->", self.pi_blue, self.payoff_red, self.pi_red)
+        return np.einsum("i,ij,j->", self.pi_blue, self.payoff_red, self.pi_red)
 
     def best_response_blue(self) -> int:
         """Compute Blue's best response to Red's current strategy"""
@@ -833,17 +831,16 @@ class QuantumInspiredGameEngine:
             s = math.sin(theta / 2)
             exp_phi = np.exp(1j * phi)
             return np.array([[c, -exp_phi * s], [np.conj(exp_phi) * s, c]], dtype=complex)
-        else:
-            # Block-diagonal extension
-            U = np.eye(dimension, dtype=complex)
-            for k in range(0, dimension - 1, 2):
-                c = math.cos(theta / 2)
-                s = math.sin(theta / 2)
-                U[k, k] = c
-                U[k, k + 1] = -s
-                U[k + 1, k] = s
-                U[k + 1, k + 1] = c
-            return U
+        # Block-diagonal extension
+        U = np.eye(dimension, dtype=complex)
+        for k in range(0, dimension - 1, 2):
+            c = math.cos(theta / 2)
+            s = math.sin(theta / 2)
+            U[k, k] = c
+            U[k, k + 1] = -s
+            U[k + 1, k] = s
+            U[k + 1, k + 1] = c
+        return U
 
     def apply_strategy_update(
         self, theta_blue: float, theta_red: float, phi_blue: float = 0.0, phi_red: float = 0.0
@@ -869,8 +866,7 @@ class QuantumInspiredGameEngine:
         """Calculate expected payoff for a team: ⟨ψ|Û|ψ⟩"""
         if team == TeamType.BLUE:
             return self.U_blue.expected_value(self.game_state.joint_wavefunction)
-        else:
-            return self.U_red.expected_value(self.game_state.joint_wavefunction)
+        return self.U_red.expected_value(self.game_state.joint_wavefunction)
 
     def payoff_variance(self, team: TeamType) -> float:
         """Calculate variance of payoff: ⟨ψ|Û²|ψ⟩ - ⟨ψ|Û|ψ⟩²

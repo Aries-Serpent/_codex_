@@ -181,7 +181,6 @@ def parse_requirements(req_path: Path) -> list[str]:
                 entries.append(stripped)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        pass
     return entries
 
 

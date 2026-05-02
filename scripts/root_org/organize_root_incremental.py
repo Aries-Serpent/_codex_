@@ -79,9 +79,8 @@ def execute_git_mv(source: Path, target: Path, dry_run: bool = False) -> bool:
 
         if result.returncode == 0:
             return True
-        else:
-            print(f"  ❌ Git mv failed: {result.stderr}")
-            return False
+        print(f"  ❌ Git mv failed: {result.stderr}")
+        return False
 
     except Exception as e:
         print(f"  ❌ Error: {e}")
@@ -254,7 +253,7 @@ Examples:
         success = move_file_safely(args.file, args.target, dry_run=args.dry_run)
         return 0 if success else 1
 
-    elif args.plan:
+    if args.plan:
         # Plan mode
         if not args.plan.exists():
             print(f"Error: Plan file not found: {args.plan}")
@@ -268,9 +267,8 @@ Examples:
         )
         return 0 if success else 1
 
-    else:
-        parser.print_help()
-        return 1
+    parser.print_help()
+    return 1
 
 
 if __name__ == '__main__':

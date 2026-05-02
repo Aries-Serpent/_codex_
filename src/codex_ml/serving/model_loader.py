@@ -220,8 +220,7 @@ class ModelLoader:
 
         if is_local:
             return self._load_local(config)
-        else:
-            return self._load_huggingface(config)
+        return self._load_huggingface(config)
 
     def _load_local(self, config: ModelConfig) -> dict[str, Any]:
         """Load model from local checkpoint

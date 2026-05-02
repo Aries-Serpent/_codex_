@@ -33,8 +33,7 @@ class MockEmbedder(EmbedderInterface):
     def _text_to_vector(self, t: str):
         h = hashlib.sha256(t.encode("utf-8")).digest()
         # Convert bytes -> floats in [0,1)
-        vec = [((b & 0xFF) / 255.0) for b in h[: self.dim]]
-        return vec
+        return [((b & 0xFF) / 255.0) for b in h[: self.dim]]
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         return [self._text_to_vector(t) for t in texts]

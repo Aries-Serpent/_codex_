@@ -66,8 +66,7 @@ class TestInferenceThroughputBenchmarks:
         def generate_token() -> int:
             # Simulate token generation
             logits = [0.01 * i for i in range(100)]  # Simplified
-            token_id = logits.index(max(logits))
-            return token_id
+            return logits.index(max(logits))
 
         iterations = 1000
         start = time.perf_counter()
@@ -153,9 +152,8 @@ class TestInferenceThroughputBenchmarks:
             scores = [q * k for q, k in zip(query, key)]
             max_score = max(scores)
             exp_scores = [s - max_score for s in scores]  # Numerical stability
-            attention = [e / sum(exp_scores) if sum(exp_scores) > 0 else 1/seq_len
+            return [e / sum(exp_scores) if sum(exp_scores) > 0 else 1/seq_len
                         for e in exp_scores]
-            return attention
 
         iterations = 500
         start = time.perf_counter()
@@ -201,8 +199,7 @@ class TestInferenceLatencyBenchmarks:
         def generate_next_token(context_length: int) -> int:
             # Simulate context-dependent generation
             context = list(range(context_length))
-            score = sum(context) % 50000
-            return score
+            return sum(context) % 50000
 
         latencies = []
         for ctx_len in range(10, 110, 10):

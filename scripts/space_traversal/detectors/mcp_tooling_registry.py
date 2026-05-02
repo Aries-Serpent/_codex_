@@ -28,9 +28,7 @@ def _validate_path(path: str) -> bool:
     if len(path) > 1000:
         return False
     # Safeguard: Sanitize - reject paths with dangerous patterns
-    if ".." in path or path.startswith("/"):
-        return False
-    return True
+    return not (".." in path or path.startswith("/"))
 
 
 def detect(file_index: dict[str, Any]) -> dict[str, Any]:

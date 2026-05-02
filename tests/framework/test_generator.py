@@ -108,7 +108,7 @@ class Test{self.spec.class_name}_{self.spec.method_name}:
 
     def _generate_happy_path_test(self) -> str:
         """Generate happy path test."""
-        inputs_str = ", ".join(f"{k}=..." for k in self.spec.inputs.keys())
+        inputs_str = ", ".join(f"{k}=..." for k in self.spec.inputs)
 
         return f'''    # ========== HAPPY PATH TESTS ==========
 

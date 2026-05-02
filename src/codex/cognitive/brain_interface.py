@@ -460,10 +460,9 @@ class AgentBrainInterface:
         """Convert numeric score to confidence level."""
         if score >= 0.85:
             return PatternConfidence.HIGH
-        elif score >= 0.60:
+        if score >= 0.60:
             return PatternConfidence.MEDIUM
-        else:
-            return PatternConfidence.LOW
+        return PatternConfidence.LOW
 
     # =========================================================================
     # Pattern Store Access

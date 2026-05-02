@@ -264,13 +264,12 @@ class Ticket(_ZendeskBaseModel):
 
             return {"ticket": payload}
 
-        else:
-            # For updates, only include changed fields
-            # Caller should use diff() to determine what to update
-            return self.model_dump(
-                exclude_none=True,
-                exclude={"id", "url", "created_at", "updated_at", "raw_subject"},
-            )
+        # For updates, only include changed fields
+        # Caller should use diff() to determine what to update
+        return self.model_dump(
+            exclude_none=True,
+            exclude={"id", "url", "created_at", "updated_at", "raw_subject"},
+        )
 
 
 class TicketRequest(_ZendeskBaseModel):

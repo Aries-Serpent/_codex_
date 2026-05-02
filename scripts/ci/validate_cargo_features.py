@@ -156,16 +156,15 @@ def main():
         print("  ✓ 'extension-module' feature declared with pyo3 dependency")
         print("  ✓ Features match usage in src/lib.rs")
         return 0
-    else:
-        print("❌ Cargo.toml feature validation FAILED!")
-        print()
-        print("Errors found:")
-        for error in errors:
-            print(f"  {error}")
-        print()
-        print("This validation prevents regressions like the January 19, 2026 incident")
-        print("where missing features caused 10 CI failures.")
-        return 1
+    print("❌ Cargo.toml feature validation FAILED!")
+    print()
+    print("Errors found:")
+    for error in errors:
+        print(f"  {error}")
+    print()
+    print("This validation prevents regressions like the January 19, 2026 incident")
+    print("where missing features caused 10 CI failures.")
+    return 1
 
 
 if __name__ == "__main__":

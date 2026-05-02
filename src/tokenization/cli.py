@@ -416,10 +416,7 @@ def encode(
         )
 
     try:
-        if isinstance(ids_candidate, Sequence):
-            ids_source = ids_candidate
-        else:
-            ids_source = list(ids_candidate)
+        ids_source = ids_candidate if isinstance(ids_candidate, Sequence) else list(ids_candidate)
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         _fail(

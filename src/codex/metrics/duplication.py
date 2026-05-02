@@ -125,8 +125,7 @@ class DuplicationDetector:
             )
 
             # Parse pylint JSON output
-            duplicates = self._parse_pylint_output(result.stdout, result.stderr)
-            return duplicates
+            return self._parse_pylint_output(result.stdout, result.stderr)
 
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
@@ -240,10 +239,9 @@ class DuplicationDetector:
         """Determine severity based on number of occurrences"""
         if num_occurrences >= 5:
             return "high"
-        elif num_occurrences >= 3:
+        if num_occurrences >= 3:
             return "medium"
-        else:
-            return "low"
+        return "low"
 
     def _is_trivial(self, code: str) -> bool:
         """Check if code matches trivial patterns"""
@@ -251,11 +249,7 @@ class DuplicationDetector:
             return False
 
         code = code.strip()
-        for pattern in TRIVIAL_PATTERNS:
-            if re.match(pattern, code):
-                return True
-
-        return False
+        return any(re.match(pattern, code) for pattern in TRIVIAL_PATTERNS)
 
 
 def detect_duplicates(

@@ -84,9 +84,8 @@ class SelfHealingValidator:
 
         # Calculate average confidence from recent outcomes
         recent = relevant[-10:]  # Last 10 actions
-        avg_confidence = sum(h.get("new_confidence", 0.7) for h in recent) / len(recent)
+        return sum(h.get("new_confidence", 0.7) for h in recent) / len(recent)
 
-        return avg_confidence
 
     def _load_history(self) -> List[Dict[str, any]]:
         """Load self-healing history from file."""

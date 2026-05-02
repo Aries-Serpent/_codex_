@@ -16,10 +16,7 @@ def accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> "torch.Tensor":
     """
     Compute classification accuracy from logits and integer targets.
     """
-    if logits.ndim == 2:
-        preds = logits.argmax(dim=-1)
-    else:
-        preds = logits
+    preds = logits.argmax(dim=-1) if logits.ndim == 2 else logits
     return (preds == targets).float().mean()
 
 

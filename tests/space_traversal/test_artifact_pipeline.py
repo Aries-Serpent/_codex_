@@ -51,7 +51,7 @@ def test_decode_and_extract(tmp_path: Path):
     assert summary.exists()
     with open(gaps, "r", encoding="utf-8") as fh:
         data = json.load(fh)
-    assert isinstance(data, list) or isinstance(data, dict)
+    assert isinstance(data, (list, dict))
 
 
 def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:

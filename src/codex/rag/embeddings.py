@@ -95,7 +95,7 @@ class LocalSentenceTransformerProvider:
         if not self.model:
             raise RuntimeError("Model not loaded")
 
-        embeddings = self.model.encode(
+        return self.model.encode(
             texts,
             batch_size=batch_size,
             show_progress_bar=show_progress,
@@ -103,7 +103,6 @@ class LocalSentenceTransformerProvider:
             device="cpu",  # Explicit device specification
         )
 
-        return embeddings
 
     def get_dimension(self) -> int:
         """Get embedding dimension."""
@@ -419,8 +418,7 @@ def create_embedding_provider(
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
                 return provider
-            else:
-                logger.debug("Ollama server not running")
+            logger.debug("Ollama server not running")
         except Exception as e:
             logger.debug(f"Ollama unavailable: {e}")
 

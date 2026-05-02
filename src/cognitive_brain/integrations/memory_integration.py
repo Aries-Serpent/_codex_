@@ -304,7 +304,7 @@ class MemoryAugmentedComplianceAssessor:
             risk_value = risk_encoding[risk_level_normalized]
 
         # Normalize features to 0-1 range
-        features = {
+        return {
             "score": audit.score,  # Already 0-1
             "risk": risk_value,
             "cost_normalized": min(audit.remediation_cost / 20000, 1.0),  # Cap at $20k
@@ -312,7 +312,6 @@ class MemoryAugmentedComplianceAssessor:
             "violation_count": min(len(audit.violations) / 10.0, 1.0),  # Cap at 10
         }
 
-        return features
 
 
 # Alias for backward compatibility

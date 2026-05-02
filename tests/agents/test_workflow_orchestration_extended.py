@@ -226,7 +226,7 @@ class TestWorkflowEdgeCases:
         try:
             result = navigator.create_workflow("empty-wf", [])
             # Either succeeds or raises ValueError
-            assert result == "empty-wf" or True
+            assert True
         except ValueError:
             # Expected for some implementations
             pass

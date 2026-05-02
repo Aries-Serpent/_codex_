@@ -46,8 +46,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     root = Path(args.repo_root).resolve()
     results = run_health_check(root)
-    overall = 0 if all(rc == 0 for rc in results.values()) else 1
-    return overall
+    return 0 if all(rc == 0 for rc in results.values()) else 1
 
 
 if __name__ == "__main__":  # pragma: no cover

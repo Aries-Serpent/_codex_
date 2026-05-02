@@ -461,16 +461,14 @@ class TestConfiguration:
             f.flush()
             filepath = Path(f.name)
 
-        with pytest.raises(json.JSONDecodeError):
-            with open(filepath) as config_file:
-                json.load(config_file)
+        with pytest.raises(json.JSONDecodeError), open(filepath) as config_file:
+            json.load(config_file)
         filepath.unlink()
 
     def test_config_missing_file(self):
         """Test missing config file"""
-        with pytest.raises(FileNotFoundError):
-            with open("/nonexistent.json"):
-                pass
+        with pytest.raises(FileNotFoundError), open("/nonexistent.json"):
+            pass
 
     def test_config_empty_file(self):
         """Test empty config file"""
@@ -479,9 +477,8 @@ class TestConfiguration:
             f.flush()
             filepath = Path(f.name)
 
-        with pytest.raises(json.JSONDecodeError):
-            with open(filepath) as config_file:
-                json.load(config_file)
+        with pytest.raises(json.JSONDecodeError), open(filepath) as config_file:
+            json.load(config_file)
         filepath.unlink()
 
     def test_config_nested_values(self):
@@ -673,9 +670,8 @@ class TestErrorPaths:
 
     def test_error_file_not_found(self):
         """Test FileNotFoundError"""
-        with pytest.raises(FileNotFoundError):
-            with open("/nonexistent"):
-                pass
+        with pytest.raises(FileNotFoundError), open("/nonexistent"):
+            pass
 
     def test_error_permission_error(self):
         """Test PermissionError simulation"""

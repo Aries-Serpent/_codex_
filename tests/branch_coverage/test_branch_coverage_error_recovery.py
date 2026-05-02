@@ -86,10 +86,7 @@ class TestRetryLogicBranches:
         calculated_delay = 128.0
         max_delay = 60.0
 
-        if calculated_delay > max_delay:
-            actual_delay = max_delay
-        else:
-            actual_delay = calculated_delay
+        actual_delay = max_delay if calculated_delay > max_delay else calculated_delay
 
         assert actual_delay == 60.0
 
@@ -110,10 +107,7 @@ class TestRetryLogicBranches:
         """Test retry disabled."""
         max_attempts = 1
 
-        if max_attempts <= 1:
-            retry_enabled = False
-        else:
-            retry_enabled = True
+        retry_enabled = not max_attempts <= 1
 
         assert retry_enabled is False
 
@@ -130,10 +124,7 @@ class TestGracefulDegradationBranches:
         """Test primary service available."""
         primary_available = True
 
-        if primary_available:
-            service = "primary"
-        else:
-            service = "fallback"
+        service = "primary" if primary_available else "fallback"
 
         assert service == "primary"
 
@@ -267,10 +258,7 @@ class TestFallbackChainBranches:
         fallback_available = True
 
         if elapsed > timeout:
-            if fallback_available:
-                result = "fallback_used"
-            else:
-                result = "timeout_error"
+            result = "fallback_used" if fallback_available else "timeout_error"
         else:
             result = "primary_used"
 
@@ -307,10 +295,7 @@ class TestCircuitBreakerBranches:
         failure_count = 2
         threshold = 5
 
-        if failure_count >= threshold:
-            state = "open"
-        else:
-            state = "closed"
+        state = "open" if failure_count >= threshold else "closed"
 
         assert state == "closed"
 
@@ -319,10 +304,7 @@ class TestCircuitBreakerBranches:
         failure_count = 5
         threshold = 5
 
-        if failure_count >= threshold:
-            state = "open"
-        else:
-            state = "closed"
+        state = "open" if failure_count >= threshold else "closed"
 
         assert state == "open"
 
@@ -332,10 +314,7 @@ class TestCircuitBreakerBranches:
         time_since_open = 65
         timeout = 60
 
-        if state == "open" and time_since_open > timeout:
-            new_state = "half_open"
-        else:
-            new_state = state
+        new_state = "half_open" if state == "open" and time_since_open > timeout else state
 
         assert new_state == "half_open"
 
@@ -363,13 +342,7 @@ class TestCircuitBreakerBranches:
         state = "half_open"
         request_success = False
 
-        if state == "half_open":
-            if request_success:
-                new_state = "closed"
-            else:
-                new_state = "open"
-        else:
-            new_state = state
+        new_state = ("closed" if request_success else "open") if state == "half_open" else state
 
         assert new_state == "open"
 
@@ -377,10 +350,7 @@ class TestCircuitBreakerBranches:
         """Test call allowed when circuit closed."""
         state = "closed"
 
-        if state == "open":
-            allowed = False
-        else:
-            allowed = True
+        allowed = state != "open"
 
         assert allowed is True
 
@@ -388,10 +358,7 @@ class TestCircuitBreakerBranches:
         """Test call blocked when circuit open."""
         state = "open"
 
-        if state == "open":
-            allowed = False
-        else:
-            allowed = True
+        allowed = state != "open"
 
         assert allowed is False
 
@@ -448,13 +415,7 @@ class TestErrorRecoveryStrategyBranches:
         error_occurred = True
         cleanup_required = True
 
-        if error_occurred:
-            if cleanup_required:
-                cleanup_done = True
-            else:
-                cleanup_done = False
-        else:
-            cleanup_done = False
+        cleanup_done = (bool(cleanup_required)) if error_occurred else False
 
         assert cleanup_done is True
 
@@ -463,10 +424,7 @@ class TestErrorRecoveryStrategyBranches:
         resources_acquired = True
         error_occurred = True
 
-        if error_occurred and resources_acquired:
-            resources_released = True
-        else:
-            resources_released = False
+        resources_released = bool(error_occurred and resources_acquired)
 
         assert resources_released is True
 
@@ -526,10 +484,7 @@ class TestHealthCheckRecoveryBranches:
         health = "unhealthy"
         auto_recovery_enabled = True
 
-        if health == "unhealthy" and auto_recovery_enabled:
-            recovery_triggered = True
-        else:
-            recovery_triggered = False
+        recovery_triggered = bool(health == "unhealthy" and auto_recovery_enabled)
 
         assert recovery_triggered is True
 
@@ -538,9 +493,6 @@ class TestHealthCheckRecoveryBranches:
         health = "unhealthy"
         auto_recovery_enabled = False
 
-        if health == "unhealthy" and auto_recovery_enabled:
-            recovery_triggered = True
-        else:
-            recovery_triggered = False
+        recovery_triggered = bool(health == "unhealthy" and auto_recovery_enabled)
 
         assert recovery_triggered is False

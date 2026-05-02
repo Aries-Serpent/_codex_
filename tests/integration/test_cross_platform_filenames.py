@@ -35,9 +35,8 @@ def test_existing_reports_directory_compliance():
     violations = []
 
     for path in reports_dir.rglob("*"):
-        if path.is_file():
-            if any(char in path.name for char in WINDOWS_ILLEGAL_CHARS):
-                violations.append(str(path.relative_to(repo_root)))
+        if path.is_file() and any(char in path.name for char in WINDOWS_ILLEGAL_CHARS):
+            violations.append(str(path.relative_to(repo_root)))
 
     if violations:
         pytest.fail(

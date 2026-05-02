@@ -48,9 +48,9 @@ class WorkflowRun:
                 "action_required": "⚠️",
             }.get(self.conclusion or "", "❓")
             return f"{emoji} {self.conclusion or 'unknown'}"
-        elif self.status == "in_progress":
+        if self.status == "in_progress":
             return "🔄 in_progress"
-        elif self.status == "queued":
+        if self.status == "queued":
             return "⏳ queued"
         return f"❓ {self.status}"
 

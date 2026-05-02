@@ -594,10 +594,9 @@ class ZendeskKnowledgeSyncService:
                     logger.warning(f"API endpoint not found (404): {paginated_url}")
                     missing_articles.append({"url": paginated_url, "page": page_num})
                     break
-                else:
-                    logger.error(f"HTTP error {e.code} fetching page {page_num}: {e}")
-                    failed += len(articles) if "articles" in locals() else 0
-                    break
+                logger.error(f"HTTP error {e.code} fetching page {page_num}: {e}")
+                failed += len(articles) if "articles" in locals() else 0
+                break
             except Exception as e:
                 logger.error(f"Failed to fetch page {page_num}: {e}")
                 failed += len(articles) if "articles" in locals() else 0

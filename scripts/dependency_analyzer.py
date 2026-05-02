@@ -287,7 +287,7 @@ def assess_safe_removal(target_file: Path, root_directory: Path) -> tuple[str, s
         ref_count = len(details["text_references"])
         if ref_count > 5:
             return "risky", f"Referenced in {ref_count} files", details
-        elif ref_count > 0:
+        if ref_count > 0:
             return "risky", f"Referenced in {ref_count} file(s)", details
 
     return "safe", "No critical dependencies found", details
@@ -412,4 +412,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

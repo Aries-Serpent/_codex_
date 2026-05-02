@@ -138,8 +138,7 @@ class OAuthManager:
         """
         digest = hashlib.sha256(verifier.encode()).digest()
         # Base64 URL-safe encoding without padding
-        challenge = base64.urlsafe_b64encode(digest).decode().rstrip("=")
-        return challenge
+        return base64.urlsafe_b64encode(digest).decode().rstrip("=")
 
     def initiate_flow(self, config: Optional[OAuthConfig] = None) -> Dict[str, str]:
         """
@@ -347,7 +346,7 @@ class OAuthManager:
         if not access_token:
             raise ValueError("No access token in refresh response")
 
-        token = OAuthToken(
+        return OAuthToken(
             access_token=access_token,
             token_type=token_response.get("token_type", "bearer"),
             expires_in=token_response.get("expires_in", 0),
@@ -357,7 +356,6 @@ class OAuthManager:
             scope=token_response.get("scope"),
         )
 
-        return token
 
     def get_github_user(self, access_token: str) -> Dict:
         """

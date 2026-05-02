@@ -273,9 +273,8 @@ def gather_tensor(tensor: torch.Tensor, dst: int = 0):
         tensor_list = [torch.zeros_like(tensor) for _ in range(world_size)]
         dist.gather(tensor, gather_list=tensor_list, dst=dst)
         return tensor_list
-    else:
-        dist.gather(tensor, dst=dst)
-        return None
+    dist.gather(tensor, dst=dst)
+    return None
 
 
 def print_once(message: str, rank: int = 0):

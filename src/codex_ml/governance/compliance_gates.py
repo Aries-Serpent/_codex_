@@ -99,9 +99,9 @@ class ComplianceGate:
         """
         if self.policy == "GDPR":
             return self._validate_gdpr(model, data, deployment)
-        elif self.policy == "HIPAA":
+        if self.policy == "HIPAA":
             return self._validate_hipaa(model, data, deployment)
-        elif self.policy == "SOC2":
+        if self.policy == "SOC2":
             return self._validate_soc2(model, data, deployment)
         return ComplianceReport(policy=self.policy, violations=[], checks_passed=0, checks_total=0)  # type: ignore[call-arg]
 

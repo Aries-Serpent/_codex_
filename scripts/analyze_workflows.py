@@ -120,10 +120,9 @@ class WorkflowAnalyzer:
                     jobs.append(job_name)
 
                     # Check for if: false guard
-                    if job_data.get('if') == 'false':
-                        if status == 'active':
-                            status = 'guarded'
-                            guard_condition = f'job: {job_name}: if: false'
+                    if job_data.get('if') == 'false' and status == 'active':
+                        status = 'guarded'
+                        guard_condition = f'job: {job_name}: if: false'
 
                     # Extract runs-on
                     runs_on = job_data.get('runs-on', '')
@@ -253,7 +252,7 @@ class WorkflowAnalyzer:
 
     def generate_summary(self) -> Dict:
         """Generate summary statistics."""
-        summary = {
+        return {
             'total_workflows': len(self.workflows),
             'active': sum(1 for w in self.workflows if w.status == 'active'),
             'guarded': sum(1 for w in self.workflows if w.status == 'guarded'),
@@ -264,7 +263,6 @@ class WorkflowAnalyzer:
             'secrets_used': len(set(s for w in self.workflows for s in w.resources.secrets)),
             'unique_actions': len(set(a for w in self.workflows for a in w.resources.actions_used)),
         }
-        return summary
 
     def export_json(self, output_path: Path) -> None:
         """Export analysis to JSON."""

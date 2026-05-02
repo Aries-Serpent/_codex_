@@ -167,9 +167,8 @@ def calculate_fetch_multiplier(filters: Optional[dict[str, Any]] = None) -> int:
     # Adjust multiplier based on complexity
     if num_conditions == 0:
         return 1
-    elif num_conditions == 1:
+    if num_conditions == 1:
         return 3  # Fetch 3x for single condition
-    elif num_conditions == 2:
+    if num_conditions == 2:
         return 5  # Fetch 5x for two conditions
-    else:
-        return 10  # Fetch 10x for complex filters
+    return 10  # Fetch 10x for complex filters

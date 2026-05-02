@@ -18,7 +18,6 @@ class TableGenerator:
 
     def __init__(self):
         """Initialize table generator."""
-        pass
 
     def generate_summary_table(self, run: Any, workflow_name: str) -> str:
         """
@@ -43,7 +42,7 @@ class TableGenerator:
         # Get trigger event
         event = run.event
 
-        table = f"""| Metric | Value |
+        return f"""| Metric | Value |
 |--------|-------|
 | **Workflow** | {workflow_name} |
 | **Run ID** | [#{run_id}]({run.html_url}) |
@@ -53,7 +52,6 @@ class TableGenerator:
 | **Duration** | {duration} |
 | **Triggered By** | {event} |"""
 
-        return table
 
     def generate_diagnostic_links_table(self, run: Any) -> str:
         """
@@ -76,14 +74,13 @@ class TableGenerator:
         # Artifacts URL (if available)
         artifacts_url = f"{repo_url}/actions/runs/{run_id}#artifacts" if repo_url else '#'
 
-        table = f"""| Resource | Link |
+        return f"""| Resource | Link |
 |----------|------|
 | **Workflow Run** | [#{run_id}]({run_url}) |
 | **Logs** | [View Logs]({logs_url}) |
 | **Artifacts** | [Browse Artifacts]({artifacts_url}) |
 | **Rerun** | [Rerun Failed Jobs]({rerun_url}) |"""
 
-        return table
 
     def generate_metrics_table(self, metrics: Dict[str, Any]) -> str:
         """
@@ -95,7 +92,7 @@ class TableGenerator:
         Returns:
             Markdown table string
         """
-        table = f"""| Metric | Value |
+        return f"""| Metric | Value |
 |--------|-------|
 | **Consecutive Failures** | {metrics.get('consecutive_failures', 0)} |
 | **Failure Rate** | {metrics.get('failure_rate', 0):.1f}% |
@@ -103,7 +100,6 @@ class TableGenerator:
 | **Total Failures** | {metrics.get('total_failures', 0)} |
 | **Flakiness Score** | {metrics.get('flakiness_score', 0):.2f} |"""
 
-        return table
 
     def generate_pattern_table(self, patterns: List[Dict[str, Any]]) -> str:
         """
@@ -251,14 +247,13 @@ class TableGenerator:
         """
         if seconds < 60:
             return f"{seconds:.0f}s"
-        elif seconds < 3600:
+        if seconds < 3600:
             minutes = seconds // 60
             secs = seconds % 60
             return f"{minutes:.0f}m {secs:.0f}s"
-        else:
-            hours = seconds // 3600
-            minutes = (seconds % 3600) // 60
-            return f"{hours:.0f}h {minutes:.0f}m"
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        return f"{hours:.0f}h {minutes:.0f}m"
 
     def generate_comparison_table(
         self,
@@ -283,7 +278,7 @@ class TableGenerator:
         duration_diff = current_duration - previous_duration
         duration_pct = (duration_diff / previous_duration * 100) if previous_duration > 0 else 0
 
-        table = f"""| Metric | Current (Failed) | Previous (Success) | Change |
+        return f"""| Metric | Current (Failed) | Previous (Success) | Change |
 |--------|-----------------|-------------------|--------|
 | **Run ID** | [#{current_run.id}]({current_run.html_url}) | [#{previous_success.id}]({previous_success.html_url}) | - |
 | **Duration** | {self._format_duration(current_duration)} | {self._format_duration(previous_duration)} | {duration_diff:+.0f}s ({duration_pct:+.1f}%) |
@@ -291,4 +286,3 @@ class TableGenerator:
 | **Time** | {current_run.created_at.strftime('%Y-%m-%d %H:%M') if current_run.created_at else 'N/A'} | {previous_success.created_at.strftime('%Y-%m-%d %H:%M') if previous_success.created_at else 'N/A'} | - |
 """
 
-        return table

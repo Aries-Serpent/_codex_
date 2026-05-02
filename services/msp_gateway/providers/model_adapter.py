@@ -27,12 +27,10 @@ class ModelAdapter(ABC):
         Returns:
             Dictionary with 'text', 'tokens_used', and 'model' keys
         """
-        pass
 
     @abstractmethod
     def get_model_info(self) -> Dict[str, str]:
         """Get model information"""
-        pass
 
 
 class LocalTransformersAdapter(ModelAdapter):
@@ -190,7 +188,6 @@ def create_model_adapter(
     """
     if backend == "transformers" or backend == "local":
         return LocalTransformersAdapter(model_path, device, **kwargs)
-    elif backend == "mock":
+    if backend == "mock":
         return MockModelAdapter()
-    else:
-        raise ValueError(f"Unknown backend: {backend}")
+    raise ValueError(f"Unknown backend: {backend}")

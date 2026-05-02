@@ -78,7 +78,7 @@ def _build_manifest(
 ) -> dict[str, Any]:
     """Assemble the manifest payload."""
 
-    manifest = {
+    return {
         "$schema": MANIFEST_SCHEMA,
         "schema_version": MANIFEST_VERSION,
         "seed": int(seed),
@@ -95,7 +95,6 @@ def _build_manifest(
             "test": test.as_dict(),
         },
     }
-    return manifest
 
 
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:

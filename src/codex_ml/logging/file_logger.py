@@ -27,7 +27,7 @@ def _normalize_formats(formats: Iterable[JsonLogFmt | str]) -> tuple[JsonLogFmt,
 
 
 def _iter_fieldnames(row: Mapping[str, object]) -> Iterator[str]:
-    for key in row.keys():
+    for key in row:
         yield str(key)
 
 

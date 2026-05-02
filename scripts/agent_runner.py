@@ -116,8 +116,7 @@ def _phase4_uncertainty(deadline: float) -> dict[str, Any]:
         return {"skipped": True, "reason": "budget_exceeded"}
     try:
         bu = _import_script("budget_uncertainty")
-        result = bu.scenario_ci_health()
-        return result
+        return bu.scenario_ci_health()
     except Exception as exc:  # noqa: BLE001
         log.warning("Phase 4 error: %s", exc)
         return {"error": str(exc)}

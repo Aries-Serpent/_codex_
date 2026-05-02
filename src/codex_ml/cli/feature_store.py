@@ -320,10 +320,9 @@ def info(
             if feature is None:
                 console.print(f"[yellow]Feature not found: {feature_name}[/yellow]")
                 return
-            else:
-                console.print(
-                    f"[yellow]Feature exists but has no metadata: {feature_name}[/yellow]"
-                )
+            console.print(
+                f"[yellow]Feature exists but has no metadata: {feature_name}[/yellow]"
+            )
                 # Continue with health check even without metadata
 
         # Get health status

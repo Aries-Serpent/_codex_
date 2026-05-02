@@ -276,7 +276,7 @@ class ActionProposer:
                 proposed_at=datetime.now().isoformat()
             )
 
-        elif metric.name == "code_duplication":
+        if metric.name == "code_duplication":
             return ProposedAction(
                 id=self._generate_id("duplication"),
                 type=ActionType.REFACTORING,
@@ -290,7 +290,7 @@ class ActionProposer:
                 proposed_at=datetime.now().isoformat()
             )
 
-        elif metric.name == "test_coverage":
+        if metric.name == "test_coverage":
             return ProposedAction(
                 id=self._generate_id("tests"),
                 type=ActionType.TESTING,
@@ -304,20 +304,19 @@ class ActionProposer:
                 proposed_at=datetime.now().isoformat()
             )
 
-        elif metric.name == "security_scan":
-            if metric.value > 0:
-                return ProposedAction(
-                    id=self._generate_id("security"),
-                    type=ActionType.SECURITY,
-                    decision_level=DecisionLevel.ESCALATE,
-                    description="Address potential security vulnerabilities",
-                    rationale=f"Found {int(metric.value)} potential security issues",
-                    estimated_impact="Enhanced security posture",
-                    risk_level="high",
-                    reversibility=False,
-                    estimated_duration="Variable",
-                    proposed_at=datetime.now().isoformat()
-                )
+        if metric.name == "security_scan" and metric.value > 0:
+            return ProposedAction(
+                id=self._generate_id("security"),
+                type=ActionType.SECURITY,
+                decision_level=DecisionLevel.ESCALATE,
+                description="Address potential security vulnerabilities",
+                rationale=f"Found {int(metric.value)} potential security issues",
+                estimated_impact="Enhanced security posture",
+                risk_level="high",
+                reversibility=False,
+                estimated_duration="Variable",
+                proposed_at=datetime.now().isoformat()
+            )
 
         return None
 
@@ -454,10 +453,9 @@ class AutonomousAgent:
 
         if action.type == ActionType.TESTING:
             return "Test generation would be triggered here"
-        elif action.type == ActionType.MAINTENANCE:
+        if action.type == ActionType.MAINTENANCE:
             return "Maintenance tasks would be executed here"
-        else:
-            return f"Action of type {action.type.value} would be executed here"
+        return f"Action of type {action.type.value} would be executed here"
 
     def _record_execution(self, action: ProposedAction):
         """Record action execution for learning."""
@@ -480,9 +478,9 @@ class AutonomousAgent:
         def enum_to_value(obj):
             if isinstance(obj, Enum):
                 return obj.value
-            elif isinstance(obj, dict):
+            if isinstance(obj, dict):
                 return {k: enum_to_value(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
+            if isinstance(obj, list):
                 return [enum_to_value(item) for item in obj]
             return obj
 

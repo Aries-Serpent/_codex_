@@ -181,25 +181,23 @@ class TestPersistAndLoadIndex:
 
     def test_load_nonexistent_index(self):
         """Test loading non-existent index"""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with pytest.raises(FileNotFoundError):
-                load_index(
-                    index_name="nonexistent",
-                    tenant_id="test",
-                    index_dir=tmpdir,
-                )
+        with tempfile.TemporaryDirectory() as tmpdir, pytest.raises(FileNotFoundError):
+            load_index(
+                index_name="nonexistent",
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
 
     def test_persist_empty_embeddings(self):
         """Test persisting empty embeddings raises error"""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with pytest.raises(ValueError):
-                persist_index(
-                    index_name="test",
-                    embeddings=np.array([]),
-                    chunks=[],
-                    tenant_id="test",
-                    index_dir=tmpdir,
-                )
+        with tempfile.TemporaryDirectory() as tmpdir, pytest.raises(ValueError):
+            persist_index(
+                index_name="test",
+                embeddings=np.array([]),
+                chunks=[],
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
 
     def test_persist_mismatched_data(self):
         """Test persisting with mismatched embeddings and chunks"""
@@ -265,14 +263,13 @@ class TestBuildIndexFromFiles:
 
     def test_build_from_empty_list(self):
         """Test building index from empty file list"""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with pytest.raises(ValueError):
-                build_index_from_files(
-                    files=[],
-                    index_name="test",
-                    tenant_id="test",
-                    index_dir=tmpdir,
-                )
+        with tempfile.TemporaryDirectory() as tmpdir, pytest.raises(ValueError):
+            build_index_from_files(
+                files=[],
+                index_name="test",
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
 
     def test_build_with_nonexistent_file(self):
         """Test building index with non-existent file (should skip)"""

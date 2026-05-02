@@ -492,9 +492,8 @@ class SentencePieceTokenizer(TokenizerAdapter):
         if truncation in ("only_first", "longest_first") and max_length:
             if len(ids) > max_length:
                 ids = ids[:max_length]
-        elif truncation == "only_second" and max_length:
-            if len(ids) > max_length:
-                ids = ids[-max_length:]
+        elif truncation == "only_second" and max_length and len(ids) > max_length:
+            ids = ids[-max_length:]
 
         if padding in (True, "longest", "max_length") and max_length:
             pad_id = self._infer_pad_id()

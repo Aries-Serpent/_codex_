@@ -44,12 +44,12 @@ def windows_safe_timestamp(fmt: str = 'iso') -> str:
     if fmt == 'compact':
         # Compact numeric: 20260121_143045
         return now.strftime('%Y%m%d_%H%M%S')
-    elif fmt == 'readable':
+    if fmt == 'readable':
         # Human-friendly: 2026-01-21-14-30-45-UTC
         return now.strftime('%Y-%m-%d-%H-%M-%S-UTC')
-    else:  # iso
-        # ISO-8601-like with hyphens: 2026-01-21T14-30-45Z
-        return now.strftime('%Y-%m-%dT%H-%M-%SZ')
+    # iso
+    # ISO-8601-like with hyphens: 2026-01-21T14-30-45Z
+    return now.strftime('%Y-%m-%dT%H-%M-%SZ')
 
 
 def ensure_coverage_xml(path: Path = Path("coverage.xml")) -> bool:
@@ -381,10 +381,9 @@ def main() -> int:
         print("✓ ALL ARTIFACTS ENSURED")
         print("=" * 70)
         return 0
-    else:
-        print("✗ SOME ARTIFACTS FAILED")
-        print("=" * 70)
-        return 1
+    print("✗ SOME ARTIFACTS FAILED")
+    print("=" * 70)
+    return 1
 
 
 if __name__ == "__main__":

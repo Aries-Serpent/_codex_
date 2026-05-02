@@ -126,11 +126,13 @@ class TestNumericEdgeCases:
 
     def test_zero_values(self) -> None:
         """Test handling of zero values."""
-        assert 0 == 0
+        zero_int = 0
+        zero_float = 0.0
+        assert zero_int == zero_float  # int/float zero equality
         assert 0.0 == 0
         assert -0.0 == 0.0
-        assert 0 != None
-        assert not 0  # 0 is falsy
+        assert zero_int is not None
+        assert not zero_int  # 0 is falsy
 
     def test_negative_values(self) -> None:
         """Test handling of negative values."""

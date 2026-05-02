@@ -42,8 +42,7 @@ class ComprehensiveLinkAuditor:
                 target = self.repo_root / rel_path
                 if target.exists():
                     return True, "github_valid"
-                else:
-                    return False, f"github_broken:{rel_path}"
+                return False, f"github_broken:{rel_path}"
             return True, "external"
 
         # Handle relative paths
@@ -57,8 +56,7 @@ class ComprehensiveLinkAuditor:
 
             if target.exists():
                 return True, "relative_valid"
-            else:
-                return False, f"relative_broken:{link_path}"
+            return False, f"relative_broken:{link_path}"
         except (ValueError, OSError):
             return False, f"path_error:{link_path}"
 
