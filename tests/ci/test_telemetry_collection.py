@@ -26,7 +26,7 @@ class TestTelemetryCollector:
     def collector(self):
         """Create a TelemetryCollector instance for testing."""
         return TelemetryCollector(
-            owner="test-owner", repo="test-repo", token="test-token"
+            owner="test-owner", repo="test-repo", token="test-token"  # pragma: allowlist secret
         )
 
     @pytest.fixture
@@ -311,7 +311,7 @@ class TestClassifyRunCLI:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
 
     def test_classify_run_rebase_gate(self, collector):
         """--classify-run returns rebase-gate for branch-rebase-gate workflow failures."""
@@ -407,7 +407,7 @@ class TestAnalyzeMultiJobCascade:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
 
     def _make_report(self, distribution: dict) -> dict:
         """Build a minimal telemetry_data dict with the given pattern_distribution."""
@@ -543,7 +543,7 @@ class TestCancelledRunsHandling:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
 
     def _make_run(self, run_id, name, conclusion):
         return {
@@ -653,7 +653,7 @@ class TestApprovalCascadeClassification:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
 
     def test_self_approve_workflow_classified_as_approval_cascade(self, collector):
         """⚡ Self-Approve Pending Workflow Runs → approval-cascade, not unknown."""

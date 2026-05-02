@@ -1,6 +1,29 @@
 # Agent Accountability Report
 
-## SESSION SUMMARY — 2026-05-02T22:10Z — PR #4193 code-quality fixes
+## SESSION SUMMARY — 2026-05-02T22:25Z — PR #4193 secrets baseline fix
+
+**Session:** copilot-4193-secrets-baseline | **Date:** 2026-05-02 | **PR:** #4193
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** New comments reviewed — #4364842606 (Secrets Baseline) and #4364846775 (CI Rescue) addressed ✅
+- [x] **0b.** Root cause: `tests/ci/test_telemetry_collection.py` uses `token="test-token"` (×5) — false positive, not in baseline ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** All `token="test-token"` lines annotated with `# pragma: allowlist secret` ✅
+- [x] **3.** `sync_tracked_files.py --fix` run — all tracked files consistent ✅
+- [x] **4.** `ruff check src/` → 0 violations ✅
+- [x] **5.** 41/41 telemetry tests pass after pragma changes ✅
+
+### Work Completed
+1. **Secrets Baseline Enforcer (#4364842606)** — Added `# pragma: allowlist secret` to all 5 `token="test-token"` occurrences in `tests/ci/test_telemetry_collection.py` (lines 29, 314, 410, 546, 656). Fixed syntax error caused by sed placing comment inside parentheses. Updated `.secrets.baseline` via `sync_tracked_files.py --fix`.
+2. **CI Rescue (#4364846775)** — Root cause is the secrets baseline issue above + SHA drift (CI ran on merge-preview `53c0a51`). Both are resolved by this commit.
+3. **Previous session (58ce15c)** — All 9 F841 unused-variable issues fixed; CHANGELOG and accountability report updated.
+
+### Impact
+- `detect-secrets scan` will no longer flag `test_telemetry_collection.py`
+- `sync_tracked_files.py --fix` → all consistent
+- 41 telemetry tests pass
+
+
 
 **Session:** copilot-4193-f841-fix | **Date:** 2026-05-02 | **PR:** #4193
 
