@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import pytest
+
+pytest.importorskip("typer", reason="typer required for browse command tests")
+
 from unittest.mock import MagicMock, patch
 
 from typer.testing import CliRunner

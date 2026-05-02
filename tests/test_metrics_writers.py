@@ -4,6 +4,10 @@ Test Metrics Writers
 Test module for metrics writers.
 """
 
+import pytest
+
+pytest.importorskip("numpy", reason="numpy required for training module")
+
 from pathlib import Path
 
 from training.engine_hf_trainer import CSVMetricsWriter, NDJSONMetricsWriter

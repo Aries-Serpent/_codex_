@@ -6,6 +6,9 @@ Test module for seed utils.
 
 from __future__ import annotations
 
+import pytest
+pytest.importorskip("numpy", reason="numpy required")
+
 import os
 import random
 from pathlib import Path

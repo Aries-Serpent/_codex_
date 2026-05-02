@@ -3,6 +3,9 @@ Test Custom Loop Overfit
 
 Test module for custom loop overfit.
 """
+import pytest
+pytest.importorskip("numpy", reason="numpy required")
+
 
 import pytest
 

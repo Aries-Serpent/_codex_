@@ -3,6 +3,9 @@ Test Lora Optional
 
 Test module for lora optional.
 """
+import pytest
+pytest.importorskip("numpy", reason="numpy required")
+
 
 import pytest
 

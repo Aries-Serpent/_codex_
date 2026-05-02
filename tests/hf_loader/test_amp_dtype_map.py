@@ -6,6 +6,10 @@ Test module for amp dtype map.
 
 import importlib
 
+import pytest
+
+pytest.importorskip("torch", reason="PyTorch required for amp dtype map")
+
 
 def test_amp_dtype_map_behavior():
     mod = importlib.import_module("src.codex_ml.hf_loader")
