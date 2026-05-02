@@ -1,6 +1,4 @@
 """
-from __future__ import annotations
-
 Codex Cli Module
 
 This module provides functionality for codex cli.
@@ -16,6 +14,8 @@ Functions:
 
 Author: Codex Team
 """
+
+from __future__ import annotations
 
 import logging
 

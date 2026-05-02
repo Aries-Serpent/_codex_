@@ -44,6 +44,12 @@ class TelemetryCollector:
             "workflow-analytics", "workflow analytics", "cognitive-brain",
             "cognitive brain", "cascade", "art_workflow",
         ],
+        # ── Approval / self-approve automation ────────────────────────────────
+        "approval-cascade": [
+            "self-approve", "pending workflow", "approval sweep", "approve pending",
+            "self approve", "self_approve", "pending-runs", "flush-queued",
+            "flush queued",
+        ],
         # ── Integration-branch direct-session guard (REQ-11) ──────────────────
         # MUST be checked BEFORE auth-delegation: agent-auth-delegation.yml run
         # name contains "delegation" which otherwise matches auth-delegation first.
@@ -323,11 +329,19 @@ class TelemetryCollector:
         print(f"Collecting workflow runs from {branch} (last {days} days)...")
         runs = self.collect_workflow_runs(branch, days)
 
-        # Filter to failed runs
-        failed_runs = [
-            r for r in runs if r["conclusion"] in ["failure", "cancelled", "timed_out"]
+        # Separate genuine failures from operational cancellations.
+        # Cancelled runs are typically concurrency-guard no-ops (self-approve,
+        # healer, rescue workflows) and should not inflate the failure rate.
+        genuinely_failed_runs = [
+            r for r in runs if r["conclusion"] in ["failure", "timed_out"]
         ]
-        print(f"Found {len(failed_runs)} failed runs out of {len(runs)} total")
+        cancelled_runs = [r for r in runs if r["conclusion"] == "cancelled"]
+        # Keep backward-compat: "failed_runs" in the report = genuine failures only
+        failed_runs = genuinely_failed_runs
+        print(
+            f"Found {len(failed_runs)} failed runs "
+            f"({len(cancelled_runs)} cancelled/skipped) out of {len(runs)} total"
+        )
 
         telemetry_data = {
             "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -337,6 +351,7 @@ class TelemetryCollector:
             "summary": {
                 "total_runs": len(runs),
                 "failed_runs": len(failed_runs),
+                "cancelled_runs": len(cancelled_runs),
                 "failure_rate": len(failed_runs) / len(runs) if runs else 0,
             },
             "pattern_distribution": {},

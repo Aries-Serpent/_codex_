@@ -265,10 +265,6 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 8 | `WANDB_MODE` | ✅ | `offline` | Weights & Biases run mode |
 | 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit |
 | 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) |
-| 11 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set and the required OTel Python packages are installed (at minimum `opentelemetry-sdk` and `opentelemetry-exporter-otlp`), `init_tracing()` activates distributed tracing. Install via `pip install opentelemetry-sdk opentelemetry-exporter-otlp` (or include them in project dependency files) and leave unset for offline/local environments. **SAR-G05.** |
-| 12 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **SAR-G02.** |
-
-> ⚠️ **Security note (REDIS_URL):** If authentication is required, do **not** store credentials in a repository variable. Set `REDIS_URL` from a **GitHub Actions Secret** or **Codespaces Secret** containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.
 
 ### 6g. Webhook / Infra
 
@@ -276,6 +272,10 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 |---|---|---|---|---|
 | 1 | `CODEX_ACTIVE_CODESPACE` | ✅ **Auto-set by Codespace** | `<auto-set-on-start>` | Name of the currently active Codespace. Created automatically on first Codespace start; updated on every subsequent start/resume via `post-start.sh`. Changes whenever a new Codespace is created — never hardcode this value. |
 | 2 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://<codespace-name>-8765.preview.app.github.dev/webhook/github` | Public URL for webhook delivery. Derived from `CODEX_ACTIVE_CODESPACE`; updated automatically alongside it. |
+| 3 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set and the required OTel Python packages are installed (at minimum `opentelemetry-sdk` and `opentelemetry-exporter-otlp`), `init_tracing()` activates distributed tracing. Install via `pip install opentelemetry-sdk opentelemetry-exporter-otlp` (or include them in project dependency files) and leave unset for offline/local environments. **SAR-G05.** |
+| 4 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **SAR-G02.** |
+
+> ⚠️ **Security note (REDIS_URL):** If authentication is required, do **not** store credentials in a repository variable. Set `REDIS_URL` from a **GitHub Actions Secret** or **Codespaces Secret** containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.
 
 > Both variables are written atomically by step 4b in `.devcontainer/scripts/post-start.sh` on every Codespace start and resume.  
 > `gh variable set` creates the variable if absent, so **no manual seeding is required** — the first Codespace start after this commit will provision both variables automatically.

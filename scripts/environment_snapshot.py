@@ -35,20 +35,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Enhanced environment snapshot with git commit, conda env, and seed tracking.
-
-This script extends the basic environment snapshot to include:
-- Git commit SHA for reproducibility
-- Conda environment (if available)
-- Python version and packages
-- Seed value (if provided)
-- System metadata
-
-Usage:
-    python scripts/environment_snapshot.py --out env_snapshot.json
-    python scripts/environment_snapshot.py --out env_snapshot.json --seed 42
-"""
+# Enhanced environment snapshot with git commit, conda env, and seed tracking.
+#
+# This script extends the basic environment snapshot to include:
+# - Git commit SHA for reproducibility
+# - Conda environment (if available)
+# - Python version and packages
+# - Seed value (if provided)
+# - System metadata
+#
+# Usage:
+#     python scripts/environment_snapshot.py --out env_snapshot.json
+#     python scripts/environment_snapshot.py --out env_snapshot.json --seed 42
 
 import argparse
 import json
@@ -94,7 +92,7 @@ def get_conda_env() -> dict[str, Any] | None:
             ).strip()
             info["version"] = conda_version
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get conda version", exc_info=True)
             # It's non-critical if we can't get the conda version; ignore and continue.
 
         # Try to get package list
@@ -111,13 +109,13 @@ def get_conda_env() -> dict[str, Any] | None:
             # Store first 10 packages as sample
             info["packages_sample"] = packages[:10]
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get conda package list", exc_info=True)
             # Non-critical if we can't get conda packages; ignore and continue.
 
         return info if info else None
 
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Failed to detect conda environment", exc_info=True)
         # If conda environment detection fails entirely, return None.
         return None
 
