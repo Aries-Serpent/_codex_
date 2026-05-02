@@ -33,7 +33,7 @@ Usage:
 import os
 import stat
 from pathlib import Path
-from typing import Literal, Optional
+from typing import TYPE_CHECKING, Literal, Optional, Union
 
 try:
     from cryptography.fernet import Fernet
@@ -43,8 +43,14 @@ try:
     from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
     CRYPTO_AVAILABLE = True
+    _CipherType = Union[Fernet, AESGCM, ChaCha20Poly1305]
 except ImportError:
     CRYPTO_AVAILABLE = False
+    if TYPE_CHECKING:
+        from cryptography.fernet import Fernet
+        from cryptography.hazmat.primitives.ciphers.aead import AESGCM, ChaCha20Poly1305
+
+        _CipherType = Union[Fernet, AESGCM, ChaCha20Poly1305]
 
 
 EncryptionAlgorithm = Literal["fernet", "aes-gcm", "chacha20"]
@@ -115,6 +121,7 @@ class SecureStorage:
             )
 
         self.algorithm = algorithm
+        self.cipher: "_CipherType"
 
         if algorithm == "fernet":
             self.cipher = Fernet(key.encode() if isinstance(key, str) else key)

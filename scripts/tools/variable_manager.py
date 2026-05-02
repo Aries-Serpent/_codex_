@@ -63,7 +63,9 @@ try:
     _sys.path.insert(0, str(__import__("pathlib").Path(__file__).parents[2] / "src"))
     from codex.utils.json_safe import safe_json_loads as _safe_json_loads
 except Exception:  # pragma: no cover
-    _safe_json_loads = json.loads  # type: ignore[assignment]
+    def _safe_json_loads(text: Any, *, source: str = "<unknown>", **kwargs: Any) -> Any:  # type: ignore[misc]
+        """Fallback when codex.utils.json_safe is unavailable."""
+        return json.loads(text, **kwargs)
 import os
 import sys
 import urllib.error

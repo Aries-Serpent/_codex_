@@ -190,11 +190,18 @@ class GitHubApp:
         try:
             from cryptography.hazmat.primitives import hashes, serialization
             from cryptography.hazmat.primitives.asymmetric import padding
+            from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 
             private_key = serialization.load_pem_private_key(
                 self._config.private_key_pem.encode("utf-8"),
                 password=None,
             )
+
+            if not isinstance(private_key, RSAPrivateKey):
+                raise ValueError(
+                    "GitHub App JWT signing requires an RSA private key; "
+                    f"got {type(private_key).__name__}"
+                )
 
             header_b64 = _b64url(json.dumps(header, separators=(",", ":")))
             payload_b64 = _b64url(json.dumps(payload, separators=(",", ":")))
