@@ -176,7 +176,7 @@ def test_pool_toggle_invokes_helper(monkeypatch, tmp_path):
 
     def spy_auto_enable_from_env() -> None:
         called["v"] = True
-        return None
+        return
 
     # Use object-based patching to avoid string-path resolution issues.
     try:

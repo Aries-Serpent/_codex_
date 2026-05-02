@@ -52,7 +52,7 @@ except Exception:  # pragma: no cover
 
     def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
         """Fallback error logger when codex_digest is unavailable."""
-        return None
+        return
 
 
 # Resolve helper scripts relative to this file so the CLI works from any CWD.

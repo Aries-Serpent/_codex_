@@ -616,7 +616,6 @@ def run_evaluation(
     sink_kind = metrics_sinks[0] if metrics_sinks else "none"
     sink_target_path: Path | None = None
     sink_stack = ExitStack()
-    _sink = create_sink("none")
     try:
         if sink_kind not in {"none", "csv", "ndjson"}:
             raise EvaluationError(f"Unsupported metrics sink: {sink_kind}")

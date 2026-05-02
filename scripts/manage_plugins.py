@@ -227,9 +227,11 @@ def main():
 
     try:
         if args.command == "list":
-            return cmd_list(args)
+            cmd_list(args)
+            return 0
         if args.command == "discover":
-            return cmd_discover(args)
+            cmd_discover(args)
+            return 0
         if args.command == "validate":
             return cmd_validate(args)
         if args.command == "info":

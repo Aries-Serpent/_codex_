@@ -41,8 +41,6 @@ TensorDataset = torch_data.data.TensorDataset  # type: ignore[attr-defined]
 
 TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
 skip_if_stub = pytest.mark.skipif(TORCH_STUB, reason="trainer tests require real torch")
-TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
-skip_if_stub = pytest.mark.skipif(TORCH_STUB, reason="trainer tests require real torch")
 
 
 def test_extended_trainer_module_available() -> None:

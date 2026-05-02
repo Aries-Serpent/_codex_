@@ -514,7 +514,7 @@ class TestCLIEdgeCases:
         invalid_utf8 = b'\xff\xfe invalid utf8 \x80\x81'
 
         try:
-            decoded = invalid_utf8.decode('utf-8')
+            invalid_utf8.decode('utf-8')
             assert False, "Should raise UnicodeDecodeError"
         except UnicodeDecodeError:
             # Handle with errors='replace'

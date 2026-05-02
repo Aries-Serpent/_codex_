@@ -273,7 +273,8 @@ def log_event(
             logger.warning("shared log_event keyword call failed (retrying without meta): %s", e)
             _shared_log_event(session_id, role, message, db_path=db_path)
         return None
-    return _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
+    _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
+    return None
 
 
 _ALLOWED_ROLES = {"system", "user", "assistant", "tool", "INFO", "WARN"}

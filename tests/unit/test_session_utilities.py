@@ -92,23 +92,22 @@ class TestSearchCache:
     def test_memoization(self):
         """Test search result memoization."""
         cache = SearchCache()
-        call_count = 0
+        call_count = [0]
 
         @cache.memoize
         def dummy_search(query):
-            nonlocal call_count
-            call_count += 1
+            call_count[0] += 1
             return f"result for {query}"
 
         # First call
         result1 = dummy_search("test")
         assert result1 == "result for test"
-        assert call_count == 1
+        assert call_count[0] == 1
 
         # Second call (cached)
         result2 = dummy_search("test")
         assert result2 == "result for test"
-        assert call_count == 1  # Should not increment
+        assert call_count[0] == 1  # Should not increment
 
 
 class TestContextDiscovery:

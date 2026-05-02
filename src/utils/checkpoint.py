@@ -255,7 +255,7 @@ def save_checkpoint(
     # canonical implementation.
     if target.exists() and target.is_dir():
         _canonical_save_checkpoint(target, dict(state), **kwargs)
-        return None
+        return
 
     checkpoint_dir = target.parent if str(target.parent) else Path(".")
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -285,7 +285,7 @@ def save_checkpoint(
         except Exception as exc:
             logger.debug(f"Exception: {exc}")
             LOGGER.debug("Failed to clean up symlink %s during archive: %s", target, exc)
-    return None
+    return
 
 
 def load_checkpoint(

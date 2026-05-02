@@ -410,7 +410,7 @@ class _TorchInferenceContext:
             self._inference.__enter__()
         if self._autocast is not None:
             self._autocast.__enter__()
-        return None
+        return
 
     def __exit__(self, exc_type, exc, tb) -> None:
         if self._autocast is not None:

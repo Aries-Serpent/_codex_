@@ -986,11 +986,8 @@ def generate_cli_builder(
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
-    html = CLI_BUILDER_TEMPLATE.format(
-        repo_name=repo_name,
-        version=version,
-        timestamp=timestamp,
-    )
+    _fmt_args = {"repo_name": repo_name, "version": version, "timestamp": timestamp}
+    html = CLI_BUILDER_TEMPLATE.format(**_fmt_args)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8")

@@ -559,10 +559,10 @@ def _run_minilm_training(
         n_train = total
         n_val = 0
         n_test = 0
-        if total > 0:
-            print(
-                "Warning: dataset too small for validation/test split; using all data for training"
-            )
+        # total >= 2 here (validated above), so always print the warning
+        print(
+            "Warning: dataset too small for validation/test split; using all data for training"
+        )
     train_tokens = tokens[:n_train]
     val_tokens = tokens[n_train : n_train + n_val]
     _ = tokens[n_train + n_val : n_train + n_val + n_test]

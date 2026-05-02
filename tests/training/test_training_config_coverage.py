@@ -20,7 +20,6 @@ try:
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
-    pytestmark = pytest.mark.skip("PyTorch not available")
 
 
 class TestTrainingConfiguration:

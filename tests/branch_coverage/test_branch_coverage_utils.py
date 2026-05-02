@@ -43,7 +43,6 @@ class TestErrorHandlingBranches:
 
     def test_multiple_except_first_branch(self) -> None:
         """Test multiple except clauses - first match."""
-        error_type = "none"
         try:
             raise ValueError("test")
         except ValueError:
@@ -56,7 +55,6 @@ class TestErrorHandlingBranches:
 
     def test_multiple_except_second_branch(self) -> None:
         """Test multiple except clauses - second match."""
-        error_type = "none"
         try:
             raise TypeError("test")
         except ValueError:
@@ -69,7 +67,6 @@ class TestErrorHandlingBranches:
 
     def test_multiple_except_generic_branch(self) -> None:
         """Test multiple except clauses - generic catch."""
-        error_type = "none"
         try:
             raise RuntimeError("test")
         except ValueError:

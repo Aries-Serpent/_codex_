@@ -1205,11 +1205,12 @@ def generate_swagger_docs(
         repo_name: Repository name for display
         version: Pipeline version
     """
-    html = SWAGGER_TEMPLATE.format(
-        repo_name=repo_name,
-        version=version,
-        timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
-    )
+    _fmt_args = {
+        "repo_name": repo_name,
+        "version": version,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
+    }
+    html = SWAGGER_TEMPLATE.format(**_fmt_args)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8")

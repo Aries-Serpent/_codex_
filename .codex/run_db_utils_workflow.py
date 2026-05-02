@@ -240,7 +240,6 @@ def safe_inject_imports(pth: Path):
         ]
     )
     # place after first import block if possible
-    after = before
     m = re.search(
         r"(^import\s.+$|^from\s.+import\s.+$)(?:\n(?:import|from).+$)*",
         before,

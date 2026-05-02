@@ -166,13 +166,11 @@ def _infer_heuristic(
     all_imports = list(set(all_imports))
 
     # Determine code type
-    goal = "Unknown Python code"
     actors = ["user"]
     inputs: list[InputSpec] = []
     outputs: list[OutputSpec] = []
     constraints: list[str] = []
     side_effects: list[str] = []
-    confidence = 0.5
     assumptions: list[str] = []
 
     if _detect_cli_tool(all_imports, []):

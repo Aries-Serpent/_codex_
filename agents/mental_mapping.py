@@ -981,6 +981,8 @@ class MentalMappingModel:
                         lines.append(f"{indent}  └─[{edge.edge_type.value}]→")
                         lines.extend(traverse(connected_id, depth + 1))
 
+            return lines
+
         return "\n".join(traverse(start_node_id))
 
     def cluster_nodes(self, similarity_threshold: float = 0.7) -> dict[str, list[str]]:

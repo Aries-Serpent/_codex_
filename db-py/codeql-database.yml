@@ -1,0 +1,13 @@
+---
+sourceLocationPrefix: /home/runner/work/_codex_/_codex_
+baselineLinesOfCode: 673312
+unicodeNewlines: false
+columnKind: utf32
+primaryLanguage: python
+creationMetadata:
+  sha: 27f5d98ba551ac759d15cce12c6fdaec33054b6f
+  cliVersion: 2.25.1
+  creationTime: 2026-05-02T20:26:03.480284421Z
+overlayBaseDatabase: false
+overlayDatabase: false
+finalised: true

@@ -356,7 +356,6 @@ class ArchiveDAL:
                 raise PermissionError("Item is under legal hold and cannot be purged")
             artifact_id = item["artifact_id"]
             blob_scrubbed = False
-            reference_count = 1
             if apply:
                 row = execute(  # type: ignore[call-arg]
                     """

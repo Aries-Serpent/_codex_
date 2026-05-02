@@ -1,0 +1,1014 @@
+‡ÓAttribute()M/home/runner/work/_codex_/_codex_/scripts/space_traversal/viz_cli_builder.pysSurplus named argument for string format. An argument named 'timestamp' is provided, but it is not required by $@.StringLiteralùNformat "
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit CLI Builder - {repo_name}</title>
+    <style>
+        :root {{
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --accent: #e94560;
+            --accent-hover: #ff6b6b;
+            --text-primary: #eee;
+            --text-secondary: #aaa;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --border: #333;
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+
+        /* Header */
+        .header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }}
+        .header h1 {{
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+        .header .meta {{
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }}
+
+        /* Main Layout */
+        .main-grid {{
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+        }}
+        @media (max-width: 900px) {{
+            .main-grid {{ grid-template-columns: 1fr; }}
+        }}
+
+        /* Sidebar - Command Selection */
+        .sidebar {{
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }}
+        .sidebar h2 {{
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }}
+
+        /* Command Buttons */
+        .command-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }}
+        .command-btn {{
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }}
+        .command-btn:hover {{
+            background: var(--accent);
+            transform: translateX(4px);
+        }}
+        .command-btn.active {{
+            border-color: var(--accent);
+            background: var(--accent);
+        }}
+        .command-btn .cmd-name {{
+            font-weight: 600;
+            display: block;
+        }}
+        .command-btn .cmd-desc {{
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }}
+        .command-btn.active .cmd-desc {{
+            color: var(--text-primary);
+        }}
+
+        /* Main Content */
+        .content {{
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }}
+
+        /* Cards */
+        .card {{
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+        }}
+        .card h3 {{
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+
+        /* Form Controls */
+        .form-group {{
+            margin-bottom: 20px;
+        }}
+        .form-group:last-child {{
+            margin-bottom: 0;
+        }}
+        .form-label {{
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }}
+        .form-label .required {{
+            color: var(--accent);
+        }}
+
+        /* Text Input */
+        .form-input {{
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }}
+        .form-input:focus {{
+            outline: none;
+            border-color: var(--accent);
+        }}
+        .form-input::placeholder {{
+            color: var(--text-secondary);
+        }}
+
+        /* Select */
+        .form-select {{
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }}
+        .form-select:focus {{
+            outline: none;
+            border-color: var(--accent);
+        }}
+
+        /* Range Slider (Knob) */
+        .knob-container {{
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }}
+        .knob-slider {{
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            outline: none;
+        }}
+        .knob-slider::-webkit-slider-thumb {{
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }}
+        .knob-slider::-webkit-slider-thumb:hover {{
+            transform: scale(1.2);
+        }}
+        .knob-slider::-moz-range-thumb {{
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }}
+        .knob-value {{
+            min-width: 60px;
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Consolas', monospace;
+            font-weight: 600;
+        }}
+
+        /* Rotary Knob Style */
+        .rotary-knob-container {{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }}
+        .rotary-knob {{
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 135deg,
+                var(--bg-tertiary) 0deg,
+                var(--accent) calc(var(--knob-percent, 0) * 2.7deg),
+                var(--bg-tertiary) calc(var(--knob-percent, 0) * 2.7deg)
+            );
+            cursor: grab;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.1);
+        }}
+        .rotary-knob::before {{
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+        }}
+        .rotary-knob::after {{
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 2px;
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(calc((var(--knob-percent, 0) * 2.7deg) - 135deg));
+            box-shadow: 0 0 8px var(--accent);
+        }}
+        .rotary-knob:active {{
+            cursor: grabbing;
+        }}
+        .rotary-value {{
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Consolas', monospace;
+            color: var(--accent);
+        }}
+        .rotary-label {{
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }}
+
+        /* Number Stepper */
+        .stepper-container {{
+            display: flex;
+            align-items: center;
+            gap: 0;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+        }}
+        .stepper-btn {{
+            width: 44px;
+            height: 44px;
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }}
+        .stepper-btn:hover {{
+            background: var(--accent);
+        }}
+        .stepper-btn:active {{
+            transform: scale(0.95);
+        }}
+        .stepper-value {{
+            min-width: 80px;
+            padding: 0 16px;
+            text-align: center;
+            font-family: 'Consolas', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: var(--bg-primary);
+        }}
+
+        /* Toggle Switch */
+        .toggle-container {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }}
+        .toggle {{
+            position: relative;
+            width: 56px;
+            height: 28px;
+            background: var(--bg-tertiary);
+            border-rad..."qSurplus named argument for string format. An argument named 'version' is provided, but it is not required by $@.J/home/runner/work/_codex_/_codex_/scripts/space_traversal/viz_docs_hub.py≈Nformat "
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Hub - {repo_name}</title>
+    <style>
+        :root {{
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-card: #1c2128;
+            --accent: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-orange: #d29922;
+            --accent-purple: #a371f7;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }}
+
+        /* Header */
+        .header {{
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }}
+        .header h1 {{
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }}
+        .header .subtitle {{
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }}
+        .header .version {{
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }}
+
+        /* Search */
+        .search-container {{
+            max-width: 600px;
+            margin: -25px auto 30px;
+            padding: 0 20px;
+        }}
+        .search-box {{
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+        }}
+        .search-box:focus {{
+            border-color: var(--accent);
+        }}
+
+        /* Container */
+        .container {{
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }}
+
+        /* Category Grid */
+        .category-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }}
+
+        /* Category Card */
+        .category-card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }}
+        .category-header {{
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }}
+        .category-icon {{
+            font-size: 1.5rem;
+        }}
+        .category-title {{
+            font-size: 1.2rem;
+            font-weight: 600;
+        }}
+        .category-count {{
+            margin-left: auto;
+            background: var(--bg-primary);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }}
+
+        /* Doc Items */
+        .doc-list {{
+            padding: 10px;
+        }}
+        .doc-item {{
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }}
+        .doc-item:hover {{
+            background: var(--bg-tertiary);
+        }}
+        .doc-item .icon {{
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }}
+        .doc-item .info {{
+            flex: 1;
+        }}
+        .doc-item .title {{
+            font-weight: 500;
+            margin-bottom: 2px;
+        }}
+        .doc-item .desc {{
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }}
+        .doc-item .badge {{
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }}
+        .badge-new {{ background: var(--accent-green); color: #000; }}
+        .badge-updated {{ background: var(--accent-orange); color: #000; }}
+        .badge-api {{ background: var(--accent-purple); color: #fff; }}
+
+        /* Quick Links */
+        .quick-links {{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }}
+        .quick-link {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+        }}
+        .quick-link:hover {{
+            border-color: var(--accent);
+            background: var(--bg-card);
+        }}
+
+        /* Mermaid Diagram Section */
+        .diagram-section {{
+            margin: 40px 0;
+            padding: 30px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }}
+        .diagram-section h2 {{
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+        .mermaid {{
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }}
+
+        /* Footer */
+        .footer {{
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>ÔøΩ Documentation Hub</h1>
+        <div class="subtitle">{repo_name} - Comprehensive Documentation Portal</div>
+        <span class="version">v{version}</span>
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="ÔøΩ Search documentation..." id="searchInput" onkeyup="filterDocs()">
+    </div>
+
+    <div class="container">
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <a href="#getting-started" class="quick-link">ÔøΩ Getting Started</a>
+            <a href="#api-reference" class="quick-link">ÔøΩ API Reference</a>
+            <a href="#audit-pipeline" class="quick-link">ÔøΩ Audit Pipeline</a>
+            <a href="#cli-tools" class="quick-link">‚å®Ô∏è CLI Tools</a>
+            <a href="#architecture" class="quick-link">ÔøΩÔ∏è Architecture</a>
+            <a href="#wiki" class="quick-link">ÔøΩ Wiki</a>
+        </div>
+
+        <!-- Architecture Diagram -->
+        <div class="diagram-section" id="architecture">
+            <h2>ÔøΩÔ∏è System Architecture</h2>
+            <div class="mermaid">
+flowchart TB
+    subgraph AuditPipeline["ÔøΩ Audit Pipeline v1.5.x"]
+        direction TB
+        AR[audit_runner.py] --> TD[(TrendDatabase)]
+        AR --> TC[trend_compare.py]
+        AR --> VIZ[Visualization]
+
+        subgraph Storage["ÔøΩ Storage Layer"]
+            TD --> SQLite[(SQLite DB)]
+            TD --> Migrations[Schema Migrations]
+        end
+
+        subgraph Visualization["ÔøΩ Visualization"]
+            VIZ --> ASCII[viz_ascii.py]
+            VIZ --> HTML[viz_html.py]
+            VIZ --> CLI_B[viz_cli_builder.py]
+            VIZ --> API_C[viz_api_collection.py]
+            VIZ --> SWAGGER[viz_swagger.py]
+            VIZ --> DOCS[viz_docs_hub.py]
+        end
+
+        subgraph Integration["ÔøΩ Integration"]
+            WH[webhooks.py] --> Slack
+            WH --> Teams
+            CI[ci_integration.py] --> GitHub
+            CI --> GitLab
+            CI --> Jenkins
+        end
+    end
+
+    subgraph Outputs["ÔøΩ Generated Outputs"]
+        Dashboard[HTML Dashboard]
+        Reports[Trend Reports]
+        Wiki[Wiki Bundle]
+        APIDoc[API Documentation]
+    end
+
+    VIZ --> Dashboard
+    TC --> Reports
+    DOCS --> Wiki
+    SWAGGER --> APIDoc
+            </div>
+        </div>
+
+        <!-- Documentation Categories -->
+        <div class="category-grid" id="docGrid">
+            <!-- Getting Started -->
+            <div class="category-card" id="getting-started">
+                <div class="category-header">
+                    <span class="category-icon">ÔøΩ</span>
+                    <span class="category-title">Getting Started</span>
+                    <span class="category-count">5 docs</span>
+                </div>
+                <div class="doc-list">
+                    <div class="doc-item" onclick="openDoc('README.md')">
+                        <span class="icon">ÔøΩ</span>
+                        <div class="info">
+                            <div class="title">README.md</div>
+                            <div class="desc">Main repository overview and quick start</div>
+                        </div>
+                    </div>
+                    <div class="doc-item" onclick="openDoc('AGENTS.md')">
+                        <span class="icon">ÔøΩ</span>
+                        <div class="info">
+                            <div class="title">AGENTS.md</div>
+                            <div class="desc">Comprehensive guide for AI agents and contributors</div>
+                        </div>
+                        <span class="badge badge-updated">Updated</span>
+ ..."I/home/runner/work/_codex_/_codex_/scripts/space_traversal/viz_swagger.pyùNformat "
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit CLI API Reference - {repo_name}</title>
+    <style>
+        :root {{
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #252525;
+            --bg-tertiary: #2d2d2d;
+            --bg-code: #1e1e1e;
+            --accent-blue: #61affe;
+            --accent-green: #49cc90;
+            --accent-orange: #fca130;
+            --accent-red: #f93e3e;
+            --accent-purple: #9012fe;
+            --accent-cyan: #50e3c2;
+            --text-primary: #fff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #8a8a8a;
+            --border: #404040;
+            --shadow: rgba(0,0,0,0.4);
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }}
+
+        /* Header */
+        .swagger-header {{
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+            padding: 40px 0;
+            border-bottom: 4px solid var(--accent-green);
+        }}
+        .swagger-header .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }}
+        .swagger-header h1 {{
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }}
+        .swagger-header .version {{
+            background: var(--accent-green);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }}
+        .swagger-header .description {{
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 600px;
+        }}
+        .swagger-header .meta {{
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }}
+        .swagger-header .meta a {{
+            color: var(--accent-blue);
+            text-decoration: none;
+        }}
+        .swagger-header .meta a:hover {{
+            text-decoration: underline;
+        }}
+
+        /* Main Layout */
+        .swagger-main {{
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+        }}
+
+        /* Sidebar */
+        .swagger-sidebar {{
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            height: calc(100vh - 180px);
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+        }}
+        .sidebar-section {{
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }}
+        .sidebar-section-title {{
+            padding: 0 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }}
+        .sidebar-item {{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 0.9rem;
+        }}
+        .sidebar-item:hover {{
+            background: var(--bg-tertiary);
+        }}
+        .sidebar-item.active {{
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent-green);
+        }}
+        .method-badge {{
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            min-width: 45px;
+            text-align: center;
+        }}
+        .method-get {{ background: var(--accent-blue); color: #000; }}
+        .method-post {{ background: var(--accent-green); color: #000; }}
+        .method-put {{ background: var(--accent-orange); color: #000; }}
+        .method-delete {{ background: var(--accent-red); color: #fff; }}
+        .method-run {{ background: var(--accent-purple); color: #fff; }}
+
+        /* Content */
+        .swagger-content {{
+            flex: 1;
+            padding: 32px;
+            min-height: calc(100vh - 180px);
+        }}
+
+        /* Endpoint Card */
+        .endpoint-card {{
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }}
+        .endpoint-header {{
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: background 0.15s;
+        }}
+        .endpoint-header:hover {{
+            background: #363636;
+        }}
+        .endpoint-header .method-badge {{
+            font-size: 0.75rem;
+            padding: 6px 12px;
+        }}
+        .endpoint-path {{
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            flex: 1;
+        }}
+        .endpoint-summary {{
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }}
+        .endpoint-expand {{
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }}
+        .endpoint-card.expanded .endpoint-expand {{
+            transform: rotate(180deg);
+        }}
+
+        .endpoint-body {{
+            display: none;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }}
+        .endpoint-card.expanded .endpoint-body {{
+            display: block;
+        }}
+
+        /* Description */
+        .endpoint-description {{
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }}
+
+        /* Parameters Section */
+        .params-section {{
+            margin-bottom: 24px;
+        }}
+        .params-title {{
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+        .params-table {{
+            width: 100%;
+            border-collapse: collapse;
+        }}
+        .params-table th {{
+            text-align: left;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }}
+        .params-table td {{
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }}
+        .param-name {{
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+        }}
+        .param-required {{
+            color: var(--accent-red);
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }}
+        .param-type {{
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'SF Mono', 'Consolas', monospace;
+        }}
+        .param-desc {{
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }}
+        .param-default {{
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }}
+        .param-default code {{
+            background: var(--bg-code);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+        }}
+
+        /* Try It Out Section */
+        .try-section {{
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }}
+        .try-title {{
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+        .try-form {{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }}
+        .try-field {{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }}
+        .try-label {{
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }}
+        .try-input {{
+            padding: 10px 14px;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }}
+        .try-input:focus {{
+            outline: none;
+            border-color: var(--accent-blue);
+        }}
+        .try-input::placeholder {{
+            color: var(--text-muted);
+        }}
+        .try-select {{
+            padding: 10px 14px;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }}
+        .try-checkbox-group {{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }}
+        .try-checkbox {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+  ..."«#selectcallei sfmtei	fmt_reprs’Èˆ˝ ›·YéÈˆ˝Ã'…⁄’Èˆ˝ ›·¯OéÈˆ˝Ã'…⁄¯Îˆ˝ ÈPõüY”Îˆ˝ÃÈPã≥QŒÉ˜˝ ˘ü∏	º	Y©É˜˝Ã˘ü(®	¬†ŒÉ˜˝ ˘ü∏	º	¯O©É˜˝Ã˘ü(®	¬†®---
+runFileName: run-info-20260502.203036.906.yml
+relativeBqrsPath: codeql/python-queries/Expressions/Formatting/UnusedNamedArgumentIn3101Format.bqrs
+metadata:
+  name: Unused named argument in formatting call
+  description: Including surplus keyword arguments in a formatting call makes code
+    more difficult to read and may indicate an error.
+  kind: problem
+  tags: |-
+    quality
+           maintainability
+           useless-code
+  problem.severity: warning
+  sub-severity: high
+  precision: very-high
+  id: py/str-format/surplus-named-argument
