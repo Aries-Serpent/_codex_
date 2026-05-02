@@ -189,8 +189,7 @@ class TestDocumentCache:
 
             # Retrieve all
             for doc_id, content, metadata in documents:
-                cached = cache.get(doc_id)
-                assert True  # May or may not be cached
+                cache.get(doc_id)  # May or may not be cached
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 

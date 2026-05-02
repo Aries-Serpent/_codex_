@@ -224,9 +224,8 @@ class TestWorkflowEdgeCases:
 
         # Should handle empty steps gracefully
         try:
-            result = navigator.create_workflow("empty-wf", [])
+            navigator.create_workflow("empty-wf", [])
             # Either succeeds or raises ValueError
-            assert True
         except ValueError:
             # Expected for some implementations
             pass
