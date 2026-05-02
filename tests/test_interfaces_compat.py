@@ -117,7 +117,8 @@ class _DummyRLAgent(RLAgent):
 def test_rl_agent_abc(tmp_path):
     agent = _DummyRLAgent()
     assert agent.act({}) == 1
-    assert isinstance(agent.update({}), dict)
+    update_result = agent.update({})
+    assert isinstance(update_result, dict)
     p = tmp_path / "agent.bin"
     agent.save(str(p))
     assert p.exists()
