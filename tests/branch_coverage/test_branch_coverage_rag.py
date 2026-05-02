@@ -13,6 +13,7 @@ import hashlib
 import os
 from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
+
 from tests.branch_coverage import branch_input
 
 # ============================================================================

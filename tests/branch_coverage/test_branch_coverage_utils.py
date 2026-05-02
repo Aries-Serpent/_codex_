@@ -14,6 +14,7 @@ from typing import Any, Dict, List
 from unittest.mock import patch
 
 import pytest
+
 from tests.branch_coverage import branch_input
 
 # ============================================================================
