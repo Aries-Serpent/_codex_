@@ -305,9 +305,10 @@ class TestGitHubDataTypes:
         """Test Repository data type."""
         if HAS_GITHUB_CLIENT and Repository:
             repo = Repository(
+                id=1,
                 name="test-repo",
                 owner="testuser",
-                description="Test",
+                url="https://github.com/testuser/test-repo",
             )
             assert repo.name == "test-repo"
 
@@ -316,9 +317,11 @@ class TestGitHubDataTypes:
         if HAS_GITHUB_CLIENT:
             try:
                 issue = Issue(
+                    id=1,
                     number=1,
                     title="Test Issue",
                     state="open",
+                    url="https://github.com/testuser/test-repo/issues/1",
                 )
                 assert issue.number == 1
             except (NameError, TypeError):
@@ -329,11 +332,13 @@ class TestGitHubDataTypes:
         if HAS_GITHUB_CLIENT:
             try:
                 pr = PullRequest(
+                    id=1,
                     number=1,
                     title="Test PR",
                     state="open",
-                    head="feature",
-                    base="main",
+                    url="https://github.com/testuser/test-repo/pull/1",
+                    head_ref="feature",
+                    base_ref="main",
                 )
                 assert pr.number == 1
             except (NameError, TypeError):
