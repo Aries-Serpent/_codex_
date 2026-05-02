@@ -217,15 +217,14 @@ def main() -> int:
         print("✓ ALL CHECKS PASSED - Test environment is ready")
         print("=" * 70)
         return 0
-    else:
-        print("✗ VALIDATION FAILED - Please install missing plugins")
-        print("=" * 70)
-        print()
-        print("To fix, run:")
-        print("  pip install -r requirements-test.txt")
-        print("  # or")
-        print("  pip install -e .[test]")
-        return 1
+    print("✗ VALIDATION FAILED - Please install missing plugins")
+    print("=" * 70)
+    print()
+    print("To fix, run:")
+    print("  pip install -r requirements-test.txt")
+    print("  # or")
+    print("  pip install -e .[test]")
+    return 1
 
 
 if __name__ == "__main__":

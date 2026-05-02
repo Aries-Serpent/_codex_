@@ -340,7 +340,7 @@ class SBOMGenerator:
                 "specVersion": "1.4",
                 "components": self.components,
             }
-        elif format == "spdx":
+        if format == "spdx":
             return {
                 "spdxVersion": "SPDX-2.3",
                 "packages": [
@@ -352,8 +352,7 @@ class SBOMGenerator:
                     for c in self.components
                 ],
             }
-        else:
-            raise ValueError(f"Unknown format: {format}")
+        raise ValueError(f"Unknown format: {format}")
 
     def validate(self) -> list[str]:
         """Validate SBOM completeness."""

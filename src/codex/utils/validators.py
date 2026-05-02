@@ -64,10 +64,9 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
     lines = content.split("\n")
 
     # Check shebang (for .sh or .py files)
-    if file_path.endswith((".sh", ".py")):
-        if lines and not lines[0].startswith("#!"):
-            issues["has_shebang"] = False
-            logger.warning(f"Missing shebang in {file_path}")
+    if file_path.endswith((".sh", ".py")) and lines and not lines[0].startswith("#!"):
+        issues["has_shebang"] = False
+        logger.warning(f"Missing shebang in {file_path}")
 
     # Check balanced braces
     open_braces = content.count("{")
@@ -141,14 +140,12 @@ def validate_with_checksum(
             if sha == expected_sha256:
                 logger.info(f"Checksum valid: {file_path}")
                 return True, sha
-            else:
-                logger.error(
-                    f"Checksum mismatch: {file_path}\n  Expected: {expected_sha256}\n  Got: {sha}"
-                )
-                return False, sha
-        else:
-            logger.info(f"Checksum computed: {sha} ({file_path})")
-            return True, sha
+            logger.error(
+                f"Checksum mismatch: {file_path}\n  Expected: {expected_sha256}\n  Got: {sha}"
+            )
+            return False, sha
+        logger.info(f"Checksum computed: {sha} ({file_path})")
+        return True, sha
     except Exception as e:
         logger.debug(f"Exception: {e}")
         logger.error(f"Checksum validation failed: {e}")
@@ -181,9 +178,8 @@ def validate_with_diff(
         if result.returncode == 0:
             logger.info(f"Files identical: {original_file} == {modified_file}")
             return True, ""
-        else:
-            logger.info(f"Files differ: {original_file} vs {modified_file}")
-            return False, result.stdout
+        logger.info(f"Files differ: {original_file} vs {modified_file}")
+        return False, result.stdout
     except Exception as e:
         logger.debug(f"Exception: {e}")
         logger.error(f"Diff validation failed: {e}")

@@ -269,9 +269,7 @@ def generate_complex_scenarios(
         # Ground truth: use adjusted score for consistency
         if adjusted_score >= 0.85:
             ground_truth = ComplianceDecision.APPROVE_WITH_MONITORING
-        elif adjusted_score >= 0.65:
-            ground_truth = ComplianceDecision.CONDITIONAL_APPROVAL
-        elif audit.remediation_cost < 6000:
+        elif adjusted_score >= 0.65 or audit.remediation_cost < 6000:
             ground_truth = ComplianceDecision.CONDITIONAL_APPROVAL
         else:
             ground_truth = ComplianceDecision.REJECT

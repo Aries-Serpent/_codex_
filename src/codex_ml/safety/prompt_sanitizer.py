@@ -83,9 +83,8 @@ class PromptSanitizer:
                         f"Unsafe prompt detected (pattern: {pattern.pattern}). "
                         f"Prompt rejected for security."
                     )
-                else:
-                    # Remove pattern in non-strict mode
-                    prompt = pattern.sub("[REDACTED]", prompt)
+                # Remove pattern in non-strict mode
+                prompt = pattern.sub("[REDACTED]", prompt)
 
         if prompt != original:
             logger.info(

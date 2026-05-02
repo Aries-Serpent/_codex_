@@ -38,5 +38,5 @@ def test_packaging_entry_points_declared() -> None:
 
     assert "lines" in entry_points["codex_ml.datasets"], "lines dataset must be declared"
     assert any(
-        name for name in entry_points["codex_ml.reward_models"].keys()
+        name for name in entry_points["codex_ml.reward_models"]
     ), "Reward models must be discoverable"

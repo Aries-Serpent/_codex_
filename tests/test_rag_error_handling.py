@@ -103,13 +103,12 @@ class TestIndexerErrorHandling:
 
     def test_load_index_nonexistent(self):
         """Test loading non-existent index"""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with pytest.raises(FileNotFoundError):
-                load_index(
-                    index_name="nonexistent",
-                    tenant_id="test",
-                    index_dir=tmpdir,
-                )
+        with tempfile.TemporaryDirectory() as tmpdir, pytest.raises(FileNotFoundError):
+            load_index(
+                index_name="nonexistent",
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
 
     def test_build_index_no_valid_files(self):
         """Test building index with no valid files"""

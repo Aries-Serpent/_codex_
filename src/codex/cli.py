@@ -52,7 +52,7 @@ except Exception:  # pragma: no cover
 
     def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
         """Fallback error logger when codex_digest is unavailable."""
-        return None
+        return
 
 
 # Resolve helper scripts relative to this file so the CLI works from any CWD.
@@ -601,7 +601,6 @@ def resume_cmd(run_dir: Path) -> None:
                 click.echo(json.dumps(parsed, indent=2, sort_keys=True))
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 click.echo(content)
             raise SystemExit(0)
 
@@ -615,7 +614,6 @@ def resume_cmd(run_dir: Path) -> None:
                     parsed = json.loads(content)
                     click.echo(json.dumps(parsed, indent=2, sort_keys=True))
                 except Exception:
-                    logger.warning("Exception occurred", exc_info=True)
                     logger.warning("Exception occurred", exc_info=True)
                     click.echo(content)
                 raise SystemExit(0)
@@ -1246,10 +1244,9 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
                 click.echo("\n🔍 Dry run mode - no files deleted")
                 return
 
-            if not yes:
-                if not click.confirm(f"\nDelete {len(files_to_delete)} files?"):
-                    click.echo("Cancelled")
-                    return
+            if not yes and not click.confirm(f"\nDelete {len(files_to_delete)} files?"):
+                click.echo("Cancelled")
+                return
 
             deleted = 0
             for f in files_to_delete:

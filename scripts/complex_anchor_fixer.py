@@ -85,10 +85,7 @@ def validate_file_syntax(file_path: Path) -> bool:
         # Allow some imbalance (code blocks, etc.) but flag major issues
         if abs(brackets['['] - brackets[']']) > 10:
             return False
-        if abs(brackets['('] - brackets[')']) > 10:
-            return False
-
-        return True
+        return not abs(brackets['('] - brackets[')']) > 10
     except Exception:
         return False
 

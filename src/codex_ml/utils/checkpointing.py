@@ -87,6 +87,7 @@ try:  # pragma: no cover - optional torch dependency
 
     # Verify torch is actually functional (not just a stub)
     _ = torch.manual_seed
+    _ = torch.get_rng_state()  # ensure get_rng_state is callable (catches stub modules)
     TORCH_AVAILABLE = True
 except Exception:  # pragma: no cover - torch missing
     TORCH_AVAILABLE = False
@@ -656,8 +657,7 @@ def _safe_environment_summary() -> dict[str, Any]:
                 # Sanitize: keep only pickle-safe scalar types to prevent
                 # MagicMock or other non-serializable objects from leaking in.
                 safe_types = (str, int, float, bool, type(None))
-                env = {k: v for k, v in env.items() if isinstance(v, safe_types)}
-                return env
+                return {k: v for k, v in env.items() if isinstance(v, safe_types)}
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         logger.info(

@@ -134,12 +134,11 @@ class FeatureHealthMonitor:
         """
         if freshness_minutes < self.FRESHNESS_THRESHOLDS["FRESH"]:
             return "FRESH"
-        elif freshness_minutes < self.FRESHNESS_THRESHOLDS["ACCEPTABLE"]:
+        if freshness_minutes < self.FRESHNESS_THRESHOLDS["ACCEPTABLE"]:
             return "ACCEPTABLE"
-        elif freshness_minutes < self.FRESHNESS_THRESHOLDS["STALE"]:
+        if freshness_minutes < self.FRESHNESS_THRESHOLDS["STALE"]:
             return "STALE"
-        else:
-            return "VERY_STALE"
+        return "VERY_STALE"
 
     def check_feature_health(self, feature_name: str) -> FeatureHealthStatus:
         """Check health of a feature.
@@ -271,7 +270,7 @@ class FeatureHealthMonitor:
         total = sum(report.values())
 
         if total == 0:
-            return {level: 0.0 for level in report.keys()}
+            return {level: 0.0 for level in report}
 
         return {level: (count / total) * 100 for level, count in report.items()}
 
@@ -367,10 +366,9 @@ class FeatureHealthMonitor:
         """
         if format == "json":
             return self._generate_json_report(health_statuses, include_recommendations)
-        elif format == "markdown":
+        if format == "markdown":
             return self._generate_markdown_report(health_statuses, include_recommendations)
-        else:
-            raise ValueError(f"Unsupported format: {format}")
+        raise ValueError(f"Unsupported format: {format}")
 
     def _generate_json_report(
         self,
@@ -408,7 +406,7 @@ class FeatureHealthMonitor:
     def _generate_markdown_report(
         self,
         health_statuses: dict[str, FeatureHealthStatus],
-        include_recommendations: bool,
+        include_recommendations: bool = True,
     ) -> str:
         """Generate Markdown health report."""
         lines = []
@@ -598,7 +596,7 @@ class FeatureHealthMonitor:
             # Get health statuses for markdown generation
             feature_names = list(report["health_statuses"].keys())
             health_statuses = self.check_all_features(feature_names)
-            markdown_content = self._generate_markdown_report(health_statuses)  # type: ignore[call-arg]
+            markdown_content = self._generate_markdown_report(health_statuses)
             with open(output_file, "w") as f:
                 f.write(markdown_content)
             logger.info(f"Saved markdown health report to {output_path}")

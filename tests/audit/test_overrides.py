@@ -11,7 +11,7 @@ from scripts.space_traversal import audit_runner as runner
 
 
 def make_cfg(tmp_path):
-    cfg = {
+    return {
         "output": {"artifacts_dir": str(tmp_path)},
         "weights": {
             "functionality": 0.25,
@@ -26,7 +26,6 @@ def make_cfg(tmp_path):
         "matrix_template": "templates/audit/capability_matrix.md.j2",
         "metrics_schema_version": "2.0.0",
     }
-    return cfg
 
 
 def test_overrides_merging(tmp_path):

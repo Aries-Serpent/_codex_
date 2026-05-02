@@ -159,29 +159,27 @@ class TestRetrieverInitialization:
         with patch(
             "codex.rag.indexer.load_index",
             return_value=(mock_faiss_index, chunks_metadata, index_metadata),
-        ) as mock_load:
-            with patch(
-                "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
-            ):
-                retriever = Retriever(index_dir=str(temp_index_dir), index_name="test_index")
+        ) as mock_load, patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
+            retriever = Retriever(index_dir=str(temp_index_dir), index_name="test_index")
 
-                mock_load.assert_called_once()
-                assert retriever.faiss_index is mock_faiss_index
-                assert retriever.chunks_metadata == chunks_metadata
-                assert retriever.index_metadata == index_metadata
+            mock_load.assert_called_once()
+            assert retriever.faiss_index is mock_faiss_index
+            assert retriever.chunks_metadata == chunks_metadata
+            assert retriever.index_metadata == index_metadata
 
     def test_initialization_index_not_found(self, temp_index_dir, mock_sentence_transformer):
         """Test initialization handles missing index gracefully."""
         with patch(
             "codex.rag.indexer.load_index", side_effect=FileNotFoundError("Index not found")
+        ), patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
         ):
-            with patch(
-                "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
-            ):
-                # Should not raise, but log warning
-                retriever = Retriever(index_dir=str(temp_index_dir), index_name="nonexistent")
+            # Should not raise, but log warning
+            retriever = Retriever(index_dir=str(temp_index_dir), index_name="nonexistent")
 
-                assert retriever.faiss_index is None
+            assert retriever.faiss_index is None
 
     def test_initialization_loads_embedding_model(self, temp_index_dir, mock_faiss_index):
         """Test that initialization loads the embedding model."""
@@ -270,14 +268,13 @@ class TestRetrieverQuery:
 
     def test_query_no_index_loaded(self, temp_index_dir, mock_sentence_transformer):
         """Test query without loaded index returns empty results."""
-        with patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError):
-            with patch(
-                "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
-            ):
-                retriever = Retriever(index_dir=str(temp_index_dir))
-                results = retriever.query("test", top_k=5)
+        with patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError), patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
+            retriever = Retriever(index_dir=str(temp_index_dir))
+            results = retriever.query("test", top_k=5)
 
-                assert results == []
+            assert results == []
 
     def test_query_top_k_respected(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -477,15 +474,14 @@ class TestRetrieverHelperMethods:
 
         with patch(
             "codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], index_metadata)
+        ), patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
         ):
-            with patch(
-                "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
-            ):
-                retriever = Retriever(index_dir=str(temp_index_dir))
+            retriever = Retriever(index_dir=str(temp_index_dir))
 
-                chunk = {}  # No file in chunk
-                file = retriever._extract_file_from_metadata(chunk)
-                assert file == "index_file.py"
+            chunk = {}  # No file in chunk
+            file = retriever._extract_file_from_metadata(chunk)
+            assert file == "index_file.py"
 
     def test_extract_file_unknown(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -512,29 +508,27 @@ class TestRetrieverStats:
 
         with patch(
             "codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, metadata)
+        ), patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
         ):
-            with patch(
-                "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
-            ):
-                retriever = Retriever(
-                    index_dir=str(temp_index_dir), index_name="my_index", tenant_id="my_tenant"
-                )
+            retriever = Retriever(
+                index_dir=str(temp_index_dir), index_name="my_index", tenant_id="my_tenant"
+            )
 
-                stats = retriever.get_stats()
+            stats = retriever.get_stats()
 
-                assert stats["index_name"] == "my_index"
-                assert stats["tenant_id"] == "my_tenant"
-                assert stats["num_vectors"] == 3  # from mock
-                assert stats["num_chunks"] == 5
-                assert stats["index_metadata"] == metadata
+            assert stats["index_name"] == "my_index"
+            assert stats["tenant_id"] == "my_tenant"
+            assert stats["num_vectors"] == 3  # from mock
+            assert stats["num_chunks"] == 5
+            assert stats["index_metadata"] == metadata
 
     def test_get_stats_no_index(self, temp_index_dir, mock_sentence_transformer):
         """Test getting stats when no index is loaded."""
-        with patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError):
-            with patch(
-                "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
-            ):
-                retriever = Retriever(index_dir=str(temp_index_dir))
-                stats = retriever.get_stats()
+        with patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError), patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
+            retriever = Retriever(index_dir=str(temp_index_dir))
+            stats = retriever.get_stats()
 
-                assert stats["num_vectors"] == 0
+            assert stats["num_vectors"] == 0

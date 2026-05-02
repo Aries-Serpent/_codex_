@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import re
 import time
+from functools import total_ordering
 from typing import Any
 
 import pytest
@@ -28,6 +29,7 @@ from hypothesis import strategies as st  # noqa: E402
 # --- Semantic Versioning Tests ---
 
 
+@total_ordering
 class SemanticVersion:
     """Semantic version representation."""
 
@@ -93,6 +95,10 @@ class SemanticVersion:
         if not isinstance(other, SemanticVersion):
             return False
         return (self.major, self.minor, self.patch) == (other.major, other.minor, other.patch)
+
+    def __hash__(self) -> int:
+        """Hash based on version tuple."""
+        return hash((self.major, self.minor, self.patch))
 
 
 class TestSemanticVersion:
@@ -491,7 +497,7 @@ class TagManager:
         """List tags matching pattern."""
         if pattern is None:
             return list(self.tags.keys())
-        return [t for t in self.tags.keys() if re.match(pattern, t)]
+        return [t for t in self.tags if re.match(pattern, t)]
 
 
 class TestTagManager:

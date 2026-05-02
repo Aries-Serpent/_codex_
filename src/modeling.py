@@ -311,7 +311,6 @@ def _ensure_bf16_capability(
         supported = tensor.dtype == torch.bfloat16
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         supported = False
 
     if supported:

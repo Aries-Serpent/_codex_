@@ -316,8 +316,7 @@ def _maybe_resolve_container(value: Any) -> Any:
     """Resolve DictConfig objects into plain Python containers when possible."""
 
     if DictConfig is not None and isinstance(value, DictConfig):
-        resolved = OmegaConf.to_container(value, resolve=True)
-        return resolved
+        return OmegaConf.to_container(value, resolve=True)
     return value
 
 
@@ -479,20 +478,17 @@ def _start_system_metrics_logger(path: Path, interval: float):
         from codex_ml.monitoring.system_metrics import SystemMetricsLogger
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger.start()
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
     return metrics_logger
@@ -560,7 +556,6 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         try:
             return bool(int(raw))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return bool(raw)
 
@@ -1377,10 +1372,7 @@ def run_functional_training(
 
     if cfg.amp_enable and "dtype" not in train_kwargs:
         dtype_override: Optional[str]
-        if isinstance(cfg.amp_dtype, str):
-            lower = cfg.amp_dtype.strip().lower()
-        else:
-            lower = ""
+        lower = cfg.amp_dtype.strip().lower() if isinstance(cfg.amp_dtype, str) else ""
         if lower in {"bf16", "bfloat16"}:
             dtype_override = "bf16"
         elif lower in {"fp16", "float16", "half"}:

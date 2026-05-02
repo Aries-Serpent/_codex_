@@ -415,11 +415,10 @@ class TestLiveTestDryRun(unittest.TestCase):
                 call_count["get"] += 1
                 if call_count["get"] == 1:
                     return (200, {"name": VAR, "value": "delegation_active_W118"})
-                elif call_count["get"] == 2:
+                if call_count["get"] == 2:
                     return (200, {"name": VAR, "value": "delegation_verified_W118"})
-                else:
-                    # After delete — should raise 404
-                    raise GitHubAPIError(404, "Not Found")
+                # After delete — should raise 404
+                raise GitHubAPIError(404, "Not Found")
             if method == "POST":
                 return (201, None)
             if method == "PATCH":

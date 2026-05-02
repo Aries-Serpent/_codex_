@@ -248,9 +248,9 @@ def main() -> int:
 
     if args.cmd == "parse":
         return cmd_parse(args.path)
-    elif args.cmd == "write":
+    if args.cmd == "write":
         return cmd_write(topic=args.topic, template=args.template)
-    elif args.cmd == "status":
+    if args.cmd == "status":
         return cmd_status()
     return 0
 

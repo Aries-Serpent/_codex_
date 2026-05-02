@@ -236,12 +236,7 @@ class DependencyGraph:
             rec_stack.remove(node)
             return False
 
-        for node in self.nodes:
-            if node not in visited:
-                if dfs(node):
-                    return True
-
-        return False
+        return any(node not in visited and dfs(node) for node in self.nodes)
 
     def find_cycle(self) -> Optional[List[str]]:
         """Find a cycle in the graph if one exists.

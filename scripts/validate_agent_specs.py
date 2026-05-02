@@ -136,7 +136,7 @@ def generate_report(results: list[dict[str, Any]]) -> dict[str, Any]:
     compliant = [r for r in results if r['valid']]
     non_compliant = [r for r in results if not r['valid']]
 
-    report = {
+    return {
         "metadata": {
             "generated_at": __import__('datetime').datetime.now().isoformat(),
             "schema_path": str(SCHEMA_PATH),
@@ -157,7 +157,6 @@ def generate_report(results: list[dict[str, Any]]) -> dict[str, Any]:
         ]
     }
 
-    return report
 
 
 def main():

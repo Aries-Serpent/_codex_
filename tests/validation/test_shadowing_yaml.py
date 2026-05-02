@@ -29,6 +29,6 @@ if __name__ == "__main__":
         print("✅ test_yaml_is_library_or_skip PASSED")
     except AssertionError as e:
         print(f"❌ test_yaml_is_library_or_skip FAILED: {e}")
-        exit(1)
+        raise SystemExit(1)
     except Exception as e:
         print(f"⚠️  test_yaml_is_library_or_skip SKIPPED: {e}")

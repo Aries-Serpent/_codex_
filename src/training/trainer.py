@@ -442,7 +442,6 @@ class Trainer:
                 payload = json.loads(pointer.read_text(encoding="utf-8"))
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 payload = {}
             path_hint = payload.get("path")
             if path_hint:

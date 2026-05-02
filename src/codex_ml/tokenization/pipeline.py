@@ -84,10 +84,7 @@ def load_train_config(config_path: str) -> TrainTokenizerConfig:
 def _resolve_corpus_files(cfg: TrainTokenizerConfig) -> list[str]:
     values = cfg.corpus_glob
     patterns: Iterable[str]
-    if isinstance(values, str):
-        patterns = (values,)
-    else:
-        patterns = values
+    patterns = (values,) if isinstance(values, str) else values
     files: list[str] = []
     for pattern in patterns:
         files.extend(sorted(glob(pattern, recursive=True)))

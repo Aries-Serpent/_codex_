@@ -366,13 +366,13 @@ class AlertRule:
         """Evaluate if alert should fire."""
         if self.operator == "gt":
             return value > self.threshold
-        elif self.operator == "lt":
+        if self.operator == "lt":
             return value < self.threshold
-        elif self.operator == "eq":
+        if self.operator == "eq":
             return value == self.threshold
-        elif self.operator == "gte":
+        if self.operator == "gte":
             return value >= self.threshold
-        elif self.operator == "lte":
+        if self.operator == "lte":
             return value <= self.threshold
         return False
 
@@ -392,14 +392,13 @@ class AlertManager:
         """Check metrics against rules and return fired alerts."""
         fired = []
         for rule in self.rules:
-            if rule.metric in metrics:
-                if rule.evaluate(metrics[rule.metric]):
-                    fired.append(rule.name)
-                    self.active_alerts[rule.name] = {
-                        "metric": rule.metric,
-                        "value": metrics[rule.metric],
-                        "threshold": rule.threshold,
-                    }
+            if rule.metric in metrics and rule.evaluate(metrics[rule.metric]):
+                fired.append(rule.name)
+                self.active_alerts[rule.name] = {
+                    "metric": rule.metric,
+                    "value": metrics[rule.metric],
+                    "threshold": rule.threshold,
+                }
         return fired
 
     def resolve_alert(self, name: str) -> bool:

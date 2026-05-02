@@ -17,6 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
@@ -214,10 +215,8 @@ class _SummaryRotator:
 
     def _rotate(self) -> None:
         if self.backup_count <= 0:
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 self.path.unlink()
-            except FileNotFoundError:
-                pass
             self._rollover_ts = time.time()
             return
 
@@ -287,10 +286,7 @@ def _is_local_mlflow_uri(uri: str) -> bool:
             return netloc in {"", "localhost"}
         return True
 
-    if "://" not in uri and len(parsed.scheme) == 1:
-        return True
-
-    return False
+    return bool("://" not in uri and len(parsed.scheme) == 1)
 
 
 def _write_deterministic_json(path: Path, record: MappingABC[str, Any]) -> None:

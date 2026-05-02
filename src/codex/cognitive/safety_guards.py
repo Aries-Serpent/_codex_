@@ -392,7 +392,7 @@ class SafetyGuard:
         """Get the rate limit type for an adjustment."""
         if adjustment.type == AdjustmentType.ADD_OBJECTIVE:
             return "objective_creation"
-        elif adjustment.type in (
+        if adjustment.type in (
             AdjustmentType.PRIORITY_INCREASE,
             AdjustmentType.PRIORITY_DECREASE,
         ):

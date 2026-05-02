@@ -44,10 +44,9 @@ def run_command(cmd: List[str], description: str, check: bool = False) -> Tuple[
         if result.returncode == 0:
             print(f"✅ {description} - SUCCESS")
             return True, output
-        else:
-            # Ruff exits 1 if issues found, but fixes may have been applied
-            print(f"⚠️  {description} - Completed with warnings (exit code {result.returncode})")
-            return True, output
+        # Ruff exits 1 if issues found, but fixes may have been applied
+        print(f"⚠️  {description} - Completed with warnings (exit code {result.returncode})")
+        return True, output
     except Exception as e:
         print(f"❌ {description} - FAILED: {e}")
         return False, str(e)
@@ -221,10 +220,9 @@ def main() -> int:
             print("  2. Run tests: pytest tests/ -v")
             print("  3. Commit: git add -A && git commit -m 'fix: auto-resolve Ruff violations'")
         return 0
-    else:
-        print("⚠️  Code quality fixes completed with warnings")
-        print("Review the output above for details")
-        return 1
+    print("⚠️  Code quality fixes completed with warnings")
+    print("Review the output above for details")
+    return 1
 
 
 if __name__ == "__main__":

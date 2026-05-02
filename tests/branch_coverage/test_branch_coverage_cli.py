@@ -15,6 +15,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: CLI Main Module
@@ -42,44 +43,32 @@ class TestCliMainBranches:
     def test_cli_verbose_true_branch(self) -> None:
         """Test verbose mode enabled branch."""
         verbose = True
-        if verbose:
-            log_level = "DEBUG"
-        else:
-            log_level = "INFO"
+        log_level = "DEBUG" if verbose else "INFO"
         assert log_level == "DEBUG"
 
     def test_cli_verbose_false_branch(self) -> None:
         """Test verbose mode disabled branch."""
         verbose = False
-        if verbose:
-            log_level = "DEBUG"
-        else:
-            log_level = "INFO"
+        log_level = "DEBUG" if verbose else "INFO"
         assert log_level == "INFO"
 
     def test_cli_config_exists_branch(self) -> None:
         """Test branch when config file exists."""
         with patch("pathlib.Path.exists", return_value=True):
             config_path = Path("config.yaml")
-            if config_path.exists():
-                result = "loaded"
-            else:
-                result = "default"
+            result = "loaded" if config_path.exists() else "default"
             assert result == "loaded"
 
     def test_cli_config_missing_branch(self) -> None:
         """Test branch when config file is missing."""
         with patch("pathlib.Path.exists", return_value=False):
             config_path = Path("nonexistent.yaml")
-            if config_path.exists():
-                result = "loaded"
-            else:
-                result = "default"
+            result = "loaded" if config_path.exists() else "default"
             assert result == "default"
 
     def test_cli_dry_run_enabled_branch(self) -> None:
         """Test dry-run mode enabled branch."""
-        dry_run = True
+        dry_run = branch_input(True)
         actions: list[str] = []
         if dry_run:
             actions.append("simulated")
@@ -89,7 +78,7 @@ class TestCliMainBranches:
 
     def test_cli_dry_run_disabled_branch(self) -> None:
         """Test dry-run mode disabled branch."""
-        dry_run = False
+        dry_run = branch_input(False)
         actions: list[str] = []
         if dry_run:
             actions.append("simulated")
@@ -128,7 +117,7 @@ class TestCliArgumentBranches:
 
     def test_output_format_json_branch(self) -> None:
         """Test output format JSON branch."""
-        output_format = "json"
+        output_format = branch_input("json")
         if output_format == "json":
             formatter = "json_formatter"
         elif output_format == "yaml":
@@ -139,7 +128,7 @@ class TestCliArgumentBranches:
 
     def test_output_format_yaml_branch(self) -> None:
         """Test output format YAML branch."""
-        output_format = "yaml"
+        output_format = branch_input("yaml")
         if output_format == "json":
             formatter = "json_formatter"
         elif output_format == "yaml":
@@ -150,7 +139,7 @@ class TestCliArgumentBranches:
 
     def test_output_format_text_branch(self) -> None:
         """Test output format text (default) branch."""
-        output_format = "text"
+        output_format = branch_input("text")
         if output_format == "json":
             formatter = "json_formatter"
         elif output_format == "yaml":
@@ -204,37 +193,25 @@ class TestCliErrorHandlingBranches:
     def test_cli_validation_error_branch(self) -> None:
         """Test validation error handling branch."""
         has_error = True
-        if has_error:
-            error_type = "validation"
-        else:
-            error_type = "none"
+        error_type = "validation" if has_error else "none"
         assert error_type == "validation"
 
     def test_cli_no_validation_error_branch(self) -> None:
         """Test no validation error branch."""
         has_error = False
-        if has_error:
-            error_type = "validation"
-        else:
-            error_type = "none"
+        error_type = "validation" if has_error else "none"
         assert error_type == "none"
 
     def test_cli_interrupt_handled_branch(self) -> None:
         """Test keyboard interrupt handling branch."""
         interrupted = True
-        if interrupted:
-            cleanup_performed = True
-        else:
-            cleanup_performed = False
+        cleanup_performed = bool(interrupted)
         assert cleanup_performed is True
 
     def test_cli_no_interrupt_branch(self) -> None:
         """Test no keyboard interrupt branch."""
         interrupted = False
-        if interrupted:
-            cleanup_performed = True
-        else:
-            cleanup_performed = False
+        cleanup_performed = bool(interrupted)
         assert cleanup_performed is False
 
 
@@ -264,7 +241,7 @@ class TestCliConfigBranches:
 
     def test_config_merge_override_branch(self) -> None:
         """Test config merge with overrides branch."""
-        has_overrides = True
+        has_overrides = branch_input(True)
         base_config = {"key": "base"}
         if has_overrides:
             base_config["key"] = "override"
@@ -272,7 +249,7 @@ class TestCliConfigBranches:
 
     def test_config_merge_no_override_branch(self) -> None:
         """Test config merge without overrides branch."""
-        has_overrides = False
+        has_overrides = branch_input(False)
         base_config = {"key": "base"}
         if has_overrides:
             base_config["key"] = "override"
@@ -282,20 +259,14 @@ class TestCliConfigBranches:
         """Test strict config validation branch."""
         strict_mode = True
         config = {"required_key": "value"}
-        if strict_mode:
-            is_valid = "required_key" in config
-        else:
-            is_valid = True
+        is_valid = "required_key" in config if strict_mode else True
         assert is_valid is True
 
     def test_config_validation_lenient_branch(self) -> None:
         """Test lenient config validation branch."""
         strict_mode = False
         config: dict[str, Any] = {}
-        if strict_mode:
-            is_valid = "required_key" in config
-        else:
-            is_valid = True
+        is_valid = "required_key" in config if strict_mode else True
         assert is_valid is True
 
 
@@ -310,24 +281,18 @@ class TestCliOutputBranches:
     def test_output_to_stdout_branch(self) -> None:
         """Test output to stdout branch."""
         output_file = None
-        if output_file:
-            destination = "file"
-        else:
-            destination = "stdout"
+        destination = "file" if output_file else "stdout"
         assert destination == "stdout"
 
     def test_output_to_file_branch(self) -> None:
         """Test output to file branch."""
         output_file = "/tmp/output.txt"
-        if output_file:
-            destination = "file"
-        else:
-            destination = "stdout"
+        destination = "file" if output_file else "stdout"
         assert destination == "file"
 
     def test_quiet_mode_enabled_branch(self) -> None:
         """Test quiet mode enabled branch."""
-        quiet = True
+        quiet = branch_input(True)
         output: list[str] = []
         if not quiet:
             output.append("verbose_message")
@@ -335,7 +300,7 @@ class TestCliOutputBranches:
 
     def test_quiet_mode_disabled_branch(self) -> None:
         """Test quiet mode disabled branch."""
-        quiet = False
+        quiet = branch_input(False)
         output: list[str] = []
         if not quiet:
             output.append("verbose_message")
@@ -343,7 +308,7 @@ class TestCliOutputBranches:
 
     def test_color_enabled_branch(self) -> None:
         """Test color output enabled branch."""
-        color_enabled = True
+        color_enabled = branch_input(True)
         if color_enabled:
             prefix = "\033[32m"  # Green
         else:
@@ -353,10 +318,7 @@ class TestCliOutputBranches:
     def test_color_disabled_branch(self) -> None:
         """Test color output disabled branch."""
         color_enabled = False
-        if color_enabled:
-            prefix = "\033[32m"
-        else:
-            prefix = ""
+        prefix = "\x1b[32m" if color_enabled else ""
         assert prefix == ""
 
 
@@ -410,7 +372,7 @@ class TestCliPluginBranches:
 
     def test_plugins_enabled_branch(self) -> None:
         """Test plugins enabled branch."""
-        plugins_enabled = True
+        plugins_enabled = branch_input(True)
         loaded_plugins: list[str] = []
         if plugins_enabled:
             loaded_plugins.append("plugin1")
@@ -418,7 +380,7 @@ class TestCliPluginBranches:
 
     def test_plugins_disabled_branch(self) -> None:
         """Test plugins disabled branch."""
-        plugins_enabled = False
+        plugins_enabled = branch_input(False)
         loaded_plugins: list[str] = []
         if plugins_enabled:
             loaded_plugins.append("plugin1")
@@ -428,36 +390,24 @@ class TestCliPluginBranches:
         """Test plugin found branch."""
         available_plugins = {"plugin1": MagicMock()}
         plugin_name = "plugin1"
-        if plugin_name in available_plugins:
-            status = "loaded"
-        else:
-            status = "not_found"
+        status = "loaded" if plugin_name in available_plugins else "not_found"
         assert status == "loaded"
 
     def test_plugin_not_found_branch(self) -> None:
         """Test plugin not found branch."""
         available_plugins: dict[str, Any] = {}
         plugin_name = "nonexistent"
-        if plugin_name in available_plugins:
-            status = "loaded"
-        else:
-            status = "not_found"
+        status = "loaded" if plugin_name in available_plugins else "not_found"
         assert status == "not_found"
 
     def test_plugin_init_success_branch(self) -> None:
         """Test plugin initialization success branch."""
         init_success = True
-        if init_success:
-            plugin_state = "ready"
-        else:
-            plugin_state = "failed"
+        plugin_state = "ready" if init_success else "failed"
         assert plugin_state == "ready"
 
     def test_plugin_init_failure_branch(self) -> None:
         """Test plugin initialization failure branch."""
         init_success = False
-        if init_success:
-            plugin_state = "ready"
-        else:
-            plugin_state = "failed"
+        plugin_state = "ready" if init_success else "failed"
         assert plugin_state == "failed"

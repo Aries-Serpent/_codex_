@@ -46,7 +46,7 @@ def precision_recall_f1(logits: torch.Tensor, targets: torch.Tensor) -> tuple[fl
     if logits.ndim == 1 or (logits.ndim > 1 and logits.shape[-1] == 1):
         logits_1d = logits.squeeze(-1)
 
-        if logits_1d.dtype.is_floating_point and torch.all((0.0 <= logits_1d) & (logits_1d <= 1.0)):
+        if logits_1d.dtype.is_floating_point and torch.all((logits_1d >= 0.0) & (logits_1d <= 1.0)):
             preds = (logits_1d >= 0.5).to(targets.dtype)
         else:
             preds = (logits_1d >= 0).to(targets.dtype)

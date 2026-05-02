@@ -653,7 +653,7 @@ class PhysicsGuidedDeveloperOrchestrator:
         app_name = specs.get("app_name", "my_app")
         app_type = specs.get("app_type", "cli")
 
-        code = f'''#!/usr/bin/env python3
+        return f'''#!/usr/bin/env python3
 """
 {app_name} - Generated application
 Type: {app_type}
@@ -667,7 +667,6 @@ def main():
 if __name__ == "__main__":
     main()
 '''
-        return code
 
     def _generate_generic_code(self, specs: dict[str, Any]) -> str:
         """Generate generic code from specifications."""
@@ -697,11 +696,10 @@ def placeholder():
         if self.app_type == AppType.PYTHON_CLI:
             framework = specs.get("cli_framework", "argparse")
             return self._generate_cli_main(app_name, description, framework)
-        elif self.app_type == AppType.PYTHON_API:
+        if self.app_type == AppType.PYTHON_API:
             framework = specs.get("api_framework", "fastapi")
             return self._generate_api_main(app_name, description, framework)
-        else:
-            return f'''"""
+        return f'''"""
 {description}
 """
 
@@ -739,7 +737,7 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-        elif framework == "typer":
+        if framework == "typer":
             return f'''"""
 {description}
 """
@@ -759,8 +757,7 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-        else:
-            return f"# CLI framework: {framework}\n# TODO: Implement\n"
+        return f"# CLI framework: {framework}\n# TODO: Implement\n"
 
     def _generate_api_main(self, app_name: str, description: str, framework: str) -> str:
         """Generate API application main module."""
@@ -790,8 +787,7 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-        else:
-            return f"# API framework: {framework}\n# TODO: Implement\n"
+        return f"# API framework: {framework}\n# TODO: Implement\n"
 
     def _generate_function(self, component: CodeComponent, specs: dict[str, Any]) -> str:
         """Generate function code."""

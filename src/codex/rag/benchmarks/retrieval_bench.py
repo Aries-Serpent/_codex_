@@ -114,8 +114,7 @@ def _query_index(query: str, index_name: str, top_k: int, tmpdir: str) -> List[D
 
     retriever = Retriever(index_name=index_name, tenant_id="benchmark", index_dir=tmpdir)
 
-    results = retriever.query(query, top_k=top_k)
-    return results
+    return retriever.query(query, top_k=top_k)
 
 
 def _calculate_percentiles(results: List) -> None:

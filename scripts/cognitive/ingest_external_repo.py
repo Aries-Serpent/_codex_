@@ -113,9 +113,8 @@ class ExternalRepoIngestor:
             if result.returncode == 0:
                 print(f"✅ Successfully cloned {repo_url}")
                 return True
-            else:
-                print(f"❌ Failed to clone: {result.stderr}")
-                return False
+            print(f"❌ Failed to clone: {result.stderr}")
+            return False
 
         except Exception as e:
             print(f"❌ Error cloning repository: {e}")
@@ -154,14 +153,13 @@ class ExternalRepoIngestor:
 
                     if "gpl" in content:
                         return "GPL (GNU General Public License)"
-                    elif "mit" in content:
+                    if "mit" in content:
                         return "MIT License"
-                    elif "apache" in content:
+                    if "apache" in content:
                         return "Apache License"
-                    elif "bsd" in content:
+                    if "bsd" in content:
                         return "BSD License"
-                    else:
-                        return "Custom/Other License"
+                    return "Custom/Other License"
                 except Exception:
                     pass
 

@@ -106,7 +106,7 @@ def extract_workflow_metadata(workflow_path: Path) -> dict[str, Any]:
             return {"error": "Empty workflow file"}
 
         # Extract key metadata
-        metadata = {
+        return {
             "name": workflow_data.get("name", workflow_path.stem),
             "filename": workflow_path.name,
             "path": str(workflow_path.relative_to(Path.cwd())),
@@ -124,7 +124,6 @@ def extract_workflow_metadata(workflow_path: Path) -> dict[str, Any]:
             "status": "active",
         }
 
-        return metadata
 
     except Exception as e:
         return {

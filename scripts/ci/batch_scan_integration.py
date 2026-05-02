@@ -113,8 +113,7 @@ def _span(name: str, **attrs) -> "_NoOpSpan | Any":
     tracer = _get_tracer()
     if tracer is None:
         return _NoOpSpan()
-    span = tracer.start_as_current_span(name)
-    return span
+    return tracer.start_as_current_span(name)
 
 
 @dataclass

@@ -207,10 +207,7 @@ def _extract_exports(tree: ast.AST) -> list[str]:
     exports = []
 
     for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            if not node.name.startswith("_"):
-                exports.append(node.name)
-        elif isinstance(node, ast.ClassDef):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             if not node.name.startswith("_"):
                 exports.append(node.name)
         elif isinstance(node, ast.Assign):
@@ -236,11 +233,9 @@ def _calculate_complexity(tree: ast.AST) -> ComplexityMetrics:
 
     for node in ast.walk(tree):
         # Control flow statements increase complexity
-        if isinstance(node, (ast.If, ast.While, ast.For, ast.AsyncFor)):
-            complexity += 1
-        elif isinstance(node, ast.ExceptHandler):
-            complexity += 1
-        elif isinstance(node, (ast.And, ast.Or)):
+        if isinstance(
+            node, (ast.If, ast.While, ast.For, ast.AsyncFor, ast.ExceptHandler, ast.And, ast.Or)
+        ):
             complexity += 1
         elif isinstance(node, ast.comprehension):
             complexity += 1

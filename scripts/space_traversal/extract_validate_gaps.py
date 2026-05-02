@@ -19,7 +19,7 @@ def extract_gaps(decoded_json: dict[str, Any]) -> list[Any]:
     gaps = decoded_json.get("gaps")
     if isinstance(gaps, list):
         return gaps
-    elif gaps is not None:
+    if gaps is not None:
         # For robustness, if gaps is a dict or other type, return as singleton list
         return [gaps]
     return []

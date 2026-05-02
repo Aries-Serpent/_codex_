@@ -82,12 +82,11 @@ class MonitoringSensor:
 
             if health_score < 50 and critical_failures >= 3:
                 return True, "Critical system health with multiple severe failures", 0.9
-            elif health_score < 80 and critical_failures >= 2:
+            if health_score < 80 and critical_failures >= 2:
                 return True, "Degraded health with critical failures", 0.75
-            elif health_score < 80:
+            if health_score < 80:
                 return False, "System degraded but not critical", 0.5
-            else:
-                return False, "System healthy, no action needed", 0.3
+            return False, "System healthy, no action needed", 0.3
         except Exception as e:
             logger.error(f"Error in action decision: {e}")
             return False, f"Error: {e}", 0.0

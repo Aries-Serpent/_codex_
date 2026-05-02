@@ -324,10 +324,7 @@ def test_api_request_validation_performance():
 
         if not isinstance(data['input'], list):
             return False
-        if len(data['input']) == 0 or len(data['input']) > 1000:
-            return False
-
-        return True
+        return not (len(data['input']) == 0 or len(data['input']) > 1000)
 
     valid_request = {
         'input': [[1.0] * 100],

@@ -268,9 +268,8 @@ class GitHubSecretsManager:
                 # Security: Don't log secret names - CodeQL alert #3330
                 logger.info("✅ Secret set successfully via gh CLI")
                 return True
-            else:
-                logger.error(f"❌ Failed to set secret via gh CLI: {stderr}")
-                return False
+            logger.error(f"❌ Failed to set secret via gh CLI: {stderr}")
+            return False
 
         except FileNotFoundError:
             logger.error("❌ gh CLI not found. Install from: https://cli.github.com/")
@@ -303,13 +302,12 @@ class GitHubSecretsManager:
                     # Security: Don't log secret names - CodeQL alert #3331
                     logger.info("✅ Secret exists")
                     return True
-                elif response.status_code == 404:
+                if response.status_code == 404:
                     # Security: Don't log secret names - CodeQL alert #3332
                     logger.info("ℹ️  Secret does not exist")
                     return False
-                else:
-                    logger.warning(f"⚠️  Unexpected status code: {response.status_code}")
-                    return False
+                logger.warning(f"⚠️  Unexpected status code: {response.status_code}")
+                return False
             except Exception as e:
                 logger.warning(f"⚠️  API verification failed: {e}")
 
@@ -517,7 +515,7 @@ def main():
             return 1
         return 0
 
-    elif args.action == "generate-key":
+    if args.action == "generate-key":
         key = manager.generate_secure_key(args.key_length)
         print(f"\n🔑 Generated Key ({args.key_length*8}-bit):")
         print("=" * 60)
@@ -537,7 +535,7 @@ def main():
             return 0 if success else 1
         return 0
 
-    elif args.action == "set":
+    if args.action == "set":
         if not args.name or not args.value:
             logger.error("❌ --name and --value required for set action")
             return 1
@@ -552,14 +550,14 @@ def main():
 
         return 0 if success else 1
 
-    elif args.action == "verify":
+    if args.action == "verify":
         if not args.name:
             logger.error("❌ --name required for verify action")
             return 1
         exists = manager.verify_secret_exists(args.name)
         return 0 if exists else 1
 
-    elif args.action == "list":
+    if args.action == "list":
         secrets = manager.list_secrets()
         print(f"\n📋 Secrets in {args.owner}/{args.repo}:")
         print("=" * 60)

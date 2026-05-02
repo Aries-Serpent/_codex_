@@ -131,7 +131,6 @@ def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True
             torch.use_deterministic_algorithms(True, warn_only=False)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Older torch versions may not support warn_only
             torch.use_deterministic_algorithms(True)
         torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
@@ -247,7 +246,6 @@ def _tokenizer_identity(tokenizer: Any) -> str:
         rep = tokenizer.__repr__()[:64]
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         rep = cls
     return f"{cls}:{rep}"
 
@@ -341,13 +339,12 @@ def stage_i4_postprocess(
         "version": PIPELINE_VERSION,
     }
     output_hash = sha256_bytes(json.dumps(payload, sort_keys=True).encode("utf-8"))
-    manifest = {
+    return {
         "output_hash": output_hash,
         "payload": payload,
         "timings": timings,
         "safeguards": SAFEGUARD_KEYWORDS,
     }
-    return manifest
 
 
 # ---- Runner ----

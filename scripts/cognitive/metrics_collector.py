@@ -188,9 +188,8 @@ def extract_session_metrics(
     first_timestamp = None
     for entry in action_entries:
         ts = parse_timestamp(entry.get('timestamp', ''))
-        if ts:
-            if first_timestamp is None or ts < first_timestamp:
-                first_timestamp = ts
+        if ts and (first_timestamp is None or ts < first_timestamp):
+            first_timestamp = ts
 
         action = entry.get('action', '').lower()
         path = entry.get('path', '')

@@ -112,10 +112,7 @@ def matches_pattern(file_path: Path, patterns: list[str]) -> bool:
 def should_exclude_dir(dir_path: Path, repo_root: Path) -> bool:
     """Check if directory should be excluded from scanning."""
     rel_path = str(dir_path.relative_to(repo_root))
-    for exclude in EXCLUDE_DIRS:
-        if exclude in rel_path or dir_path.name in EXCLUDE_DIRS:
-            return True
-    return False
+    return any(exclude in rel_path or dir_path.name in EXCLUDE_DIRS for exclude in EXCLUDE_DIRS)
 
 
 def categorize_file(file_path: Path, repo_root: Path) -> str | None:
@@ -220,18 +217,17 @@ def _get_recommendation(category: str | None, age_days: int, size_mb: float) -> 
     """Generate offload recommendation based on file characteristics."""
     if category == "temp" and age_days > 90:
         return "offload_to_temp-outputs"
-    elif category == "reports" and age_days > 180:
+    if category == "reports" and age_days > 180:
         return "offload_to_deprecated-reports"
-    elif category == "logs" and age_days > 180:
+    if category == "logs" and age_days > 180:
         return "offload_to_historical-logs"
-    elif category == "coverage" and age_days > 90:
+    if category == "coverage" and age_days > 90:
         return "offload_to_historical-coverage"
-    elif category == "artifacts" and age_days > 180:
+    if category == "artifacts" and age_days > 180:
         return "offload_to_historical-artifacts"
-    elif size_mb > 5.0:
+    if size_mb > 5.0:
         return "compress_or_offload"
-    else:
-        return "review_manually"
+    return "review_manually"
 
 
 def log_to_action_log(

@@ -45,4 +45,4 @@ def test_sanitize_preserves_safe_text():
     prompt = "This is a safe prompt without HTML"
     escaped = sanitize_prompt(prompt)
     # Should still be readable
-    assert "This is a safe prompt without HTML" == escaped
+    assert escaped == "This is a safe prompt without HTML"

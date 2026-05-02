@@ -110,13 +110,12 @@ class ContextWindowOptimizer:
 
 def create_session_snapshot(session_id: int = 0) -> dict:
     """Create a compact session state snapshot for cross-session transfer."""
-    snapshot = {
+    return {
         "session_id": session_id,
         "planset_status": _scan_planset_status(),
         "active_files": _scan_recent_changes(),
         "key_metrics": _extract_metrics(),
     }
-    return snapshot
 
 
 def _scan_planset_status() -> dict:

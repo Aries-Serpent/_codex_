@@ -222,8 +222,7 @@ class TestModelParallelism(unittest.TestCase):
             def forward(self, x):
                 x = self.layer1(x)
                 # In real multi-GPU, would move to device 1 here
-                x = self.layer2(x)
-                return x
+                return self.layer2(x)
 
         model = SplitModel()
         x = torch.randn(4, 10)

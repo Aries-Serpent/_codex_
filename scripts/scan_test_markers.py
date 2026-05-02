@@ -74,29 +74,27 @@ class MarkerScanner:
     def _parse_decorator(self, decorator: ast.expr) -> Dict:
         """Parse a decorator AST node to extract marker info."""
         # Handle @pytest.mark.skip
-        if isinstance(decorator, ast.Attribute):
-            if (hasattr(decorator.value, 'attr') and
-                decorator.value.attr == 'mark' and
-                decorator.attr in self.TRACKED_MARKERS):
-                return {'type': decorator.attr}
+        if isinstance(decorator, ast.Attribute) and (hasattr(decorator.value, 'attr') and
+            decorator.value.attr == 'mark' and
+            decorator.attr in self.TRACKED_MARKERS):
+            return {'type': decorator.attr}
 
         # Handle @pytest.mark.skip(reason="...")
-        if isinstance(decorator, ast.Call):
-            if isinstance(decorator.func, ast.Attribute):
-                if (hasattr(decorator.func.value, 'attr') and
-                    decorator.func.value.attr == 'mark' and
-                    decorator.func.attr in self.TRACKED_MARKERS):
+        if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Attribute):
+            if (hasattr(decorator.func.value, 'attr') and
+                decorator.func.value.attr == 'mark' and
+                decorator.func.attr in self.TRACKED_MARKERS):
 
-                    reason = ''
-                    for keyword in decorator.keywords:
-                        if keyword.arg == 'reason':
-                            if isinstance(keyword.value, ast.Constant):
-                                reason = keyword.value.value
+                reason = ''
+                for keyword in decorator.keywords:
+                    if keyword.arg == 'reason':
+                        if isinstance(keyword.value, ast.Constant):
+                            reason = keyword.value.value
 
-                    return {
-                        'type': decorator.func.attr,
-                        'reason': reason
-                    }
+                return {
+                    'type': decorator.func.attr,
+                    'reason': reason
+                }
 
         return None
 

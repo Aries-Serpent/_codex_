@@ -575,7 +575,6 @@ def validate_standardization(
 
     issues = []
     warnings = []
-    total_records = 0
     valid_records = 0
     repaired_records = 0
 

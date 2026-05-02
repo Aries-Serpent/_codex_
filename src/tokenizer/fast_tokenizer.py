@@ -104,7 +104,7 @@ class FastTokenizerWrapper:
         ids = self.encode(
             text,
             padding=padding,
-            truncation=True if max_length is not None else False,
+            truncation=max_length is not None,
             max_length=max_length,
         )
         return {"input_ids": ids}

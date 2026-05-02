@@ -62,9 +62,9 @@ class SLAPauseCondition(BaseModel):
 
         if self.operator == "equals":
             return ticket_value == self.value
-        elif self.operator == "contains":
+        if self.operator == "contains":
             return self.value in str(ticket_value)
-        elif self.operator == "not_equals":
+        if self.operator == "not_equals":
             return ticket_value != self.value
 
         # Default: condition not met
@@ -370,9 +370,8 @@ class SLAPolicy(BaseModel):
                     if remaining <= available:
                         current = current + timedelta(minutes=remaining)
                         break
-                    else:
-                        remaining -= available
-                        current = day_end
+                    remaining -= available
+                    current = day_end
 
             # Advance to next day start
             next_day = (current + timedelta(days=1)).replace(

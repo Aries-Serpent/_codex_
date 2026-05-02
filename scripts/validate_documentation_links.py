@@ -64,8 +64,7 @@ def extract_markdown_links(content: str) -> list[dict[str, Any]]:
 def resolve_relative_path(source_file: Path, link_path: str) -> Path:
     """Resolve relative path from source file to linked file."""
     source_dir = source_file.parent
-    target_path = (source_dir / link_path).resolve()
-    return target_path
+    return (source_dir / link_path).resolve()
 
 
 def validate_documentation_links() -> int:
@@ -138,9 +137,8 @@ def validate_documentation_links() -> int:
             print()
 
         return 1
-    else:
-        print("\n✅ All internal links are valid!")
-        return 0
+    print("\n✅ All internal links are valid!")
+    return 0
 
 
 if __name__ == "__main__":

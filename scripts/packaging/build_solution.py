@@ -90,11 +90,7 @@ def copy_includes(
         """Ignore patterns for shutil.copytree."""
         ignored = set()
         for name in names:
-            if name in {"__pycache__", ".pyc", ".pytest_cache", ".git"}:
-                ignored.add(name)
-            elif name.endswith((".pyc", ".pyo", ".pyd", ".so", ".dylib")):
-                ignored.add(name)
-            elif name.endswith((".egg-info", ".dist-info")):
+            if name in {"__pycache__", ".pyc", ".pytest_cache", ".git"} or name.endswith((".pyc", ".pyo", ".pyd", ".so", ".dylib")) or name.endswith((".egg-info", ".dist-info")):
                 ignored.add(name)
         return ignored
 

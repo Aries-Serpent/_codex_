@@ -29,8 +29,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
 
     try:
         # Prefer constructor with mode if available.
-        es = EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)
-        return es
+        return EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)
     except TypeError:
         # Constructor didn't accept `mode` — fall back to old behavior.
         try:

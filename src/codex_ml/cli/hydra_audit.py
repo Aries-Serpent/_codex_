@@ -109,7 +109,6 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         data = yaml.safe_load(text)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return {}
     return data or {}
 
@@ -124,9 +123,8 @@ def _find_unresolved(node: Any, prefix: str = "") -> list[str]:
         for idx, value in enumerate(node):
             key_path = f"{prefix}[{idx}]" if prefix else f"[{idx}]"
             hits.extend(_find_unresolved(value, key_path))
-    elif isinstance(node, str):
-        if UNRESOLVED_RE.search(node):
-            hits.append(prefix or "<root>")
+    elif isinstance(node, str) and UNRESOLVED_RE.search(node):
+        hits.append(prefix or "<root>")
     return hits
 
 

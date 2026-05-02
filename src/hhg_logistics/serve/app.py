@@ -93,7 +93,6 @@ def _seed_everything(seed: int) -> dict[str, bool]:
                 use_det(True)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
         status["torch"] = True
     except Exception as exc:  # pragma: no cover - optional dependency missing
@@ -150,9 +149,7 @@ def _freeze_override_value(value: Any) -> Hashable:
     if isinstance(value, Sequence) and not isinstance(value, str | bytes | bytearray):
         return tuple(_freeze_override_value(item) for item in value)
     if isinstance(value, set | frozenset):
-        return tuple(
-            _freeze_override_value(item) for item in sorted(value, key=repr)
-        )
+        return tuple(_freeze_override_value(item) for item in sorted(value, key=repr))
     return repr(value)
 
 
@@ -338,8 +335,7 @@ class LLMService:
                 top_p=generate_kwargs.get("top_p", 0.95),
                 top_k=generate_kwargs.get("top_k"),
             )
-        texts = self.tokenizer.batch_decode(output, skip_special_tokens=True)
-        return texts
+        return self.tokenizer.batch_decode(output, skip_special_tokens=True)
 
     @serve.batch(max_batch_size=8, batch_wait_timeout_s=0.02)
     async def _predict_batch(self, payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -412,7 +408,7 @@ class _TorchInferenceContext:
             self._inference.__enter__()
         if self._autocast is not None:
             self._autocast.__enter__()
-        return None
+        return
 
     def __exit__(self, exc_type, exc, tb) -> None:
         if self._autocast is not None:

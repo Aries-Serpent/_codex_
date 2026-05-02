@@ -469,9 +469,8 @@ class TestMultiOrchestratorScenarios:
 
         # Copy over required variables
         for key, var in orch1.required_variables.items():
-            if var.is_satisfied():
-                if key not in orch2.required_variables:
-                    orch2.required_variables[key] = var
+            if var.is_satisfied() and key not in orch2.required_variables:
+                orch2.required_variables[key] = var
 
         architecture = orch2.suggest_architecture(requirements)
 

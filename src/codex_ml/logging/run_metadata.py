@@ -41,7 +41,6 @@ def _stringify_path(value: Any) -> str | None:
         return str(value)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -51,7 +50,6 @@ def _coerce_int(value: Any) -> int | None:
     try:
         return int(value)
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -78,7 +76,6 @@ def build_run_metadata(
         try:
             commit = lookup()
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             commit = None
         if commit:

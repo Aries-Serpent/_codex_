@@ -70,8 +70,7 @@ def load_mask(path: str | Path) -> np.ndarray:
     mask = iio.imread(str(path))
     if mask.ndim == 3:
         mask = mask[..., 0]
-    mask = (mask > 0).astype(np.uint8) * 255
-    return mask
+    return (mask > 0).astype(np.uint8) * 255
 
 
 def save_image(image: np.ndarray, path: str | Path) -> Path:

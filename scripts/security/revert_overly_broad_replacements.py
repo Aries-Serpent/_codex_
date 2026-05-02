@@ -61,11 +61,10 @@ def infer_year_from_month_day(month: str, day: str) -> str:
     if month_num == 1:
         return "2026"
     # December dates are 2025
-    elif month_num == 12:
+    if month_num == 12:
         return "2025"
     # For other months, default to 2025 (most common in the archive)
-    else:
-        return "2025"
+    return "2025"
 
 
 def fix_timestamps(content: str, filepath: Path) -> tuple[str, int]:

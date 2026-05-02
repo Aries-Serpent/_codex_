@@ -103,9 +103,7 @@ class ContextNormalizer:
 
         # Limit consecutive newlines
         replacement = "\n" * self.max_consecutive_newlines
-        text = self.MULTI_NEWLINE.sub(replacement, text)
-
-        return text
+        return self.MULTI_NEWLINE.sub(replacement, text)
 
     def normalize_for_fingerprint(self, text: str) -> str:
         """

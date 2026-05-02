@@ -116,8 +116,7 @@ def validate_input(
         for pattern in XSS_PATTERNS:
             if pattern.search(value):
                 raise SecurityError("XSS pattern detected in HTML input")
-        sanitized = sanitize_user_content(value, content_type="html")
-        return sanitized
+        return sanitize_user_content(value, content_type="html")
 
     if input_type == "path":
         _validate_path_input(value)
@@ -230,9 +229,9 @@ def check_permissions(path: Path, mode: str) -> bool:
 
     if mode == "read":
         return os.access(path, os.R_OK)
-    elif mode == "write":
+    if mode == "write":
         return os.access(path, os.W_OK)
-    elif mode == "execute":
+    if mode == "execute":
         return os.access(path, os.X_OK)
 
     return False

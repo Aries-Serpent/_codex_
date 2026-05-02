@@ -36,13 +36,16 @@ def _sha256_file(path: Path, chunk: int = 1 << 20) -> str:
 
 def manifest_for_paths(
     paths: Iterable[Path],
-    out_path: Path,
+    out_path: Optional[Path] = None,
     extra_fields: Optional[Mapping[str, object]] = None,
 ) -> None:
     """
     Write an NDJSON manifest for the given file paths.
     Each line: {"path": "...", "sha256": "...", "bytes": N, "mtime": float, ...extra}
+    When *out_path* is ``None`` the manifest is computed but not written.
     """
+    if out_path is None:
+        return
     out_path.parent.mkdir(parents=True, exist_ok=True)
     extra_fields = dict(extra_fields or {})
     with out_path.open("w", encoding="utf-8") as f_out:

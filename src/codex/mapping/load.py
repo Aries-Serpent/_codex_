@@ -70,8 +70,7 @@ def _resolve_path(path: Path) -> Path:
     if path.is_absolute():
         return path
     repo_root = Path(__file__).resolve().parents[3]
-    candidate = repo_root / path
-    return candidate
+    return repo_root / path
 
 
 def _load_csv(path: Path, model: type[T]) -> MappingLoadResult[T]:

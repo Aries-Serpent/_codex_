@@ -336,18 +336,17 @@ class BatchTriageLearningEngine:
 
         if "test" in lower_desc and "fail" in lower_desc:
             return "test_failure"
-        elif "timeout" in lower_desc:
+        if "timeout" in lower_desc:
             return "timeout"
-        elif "import" in lower_desc or "module" in lower_desc:
+        if "import" in lower_desc or "module" in lower_desc:
             return "import_error"
-        elif "syntax" in lower_desc:
+        if "syntax" in lower_desc:
             return "syntax_error"
-        elif "permission" in lower_desc or "access" in lower_desc:
+        if "permission" in lower_desc or "access" in lower_desc:
             return "permission_error"
-        elif "network" in lower_desc or "connection" in lower_desc:
+        if "network" in lower_desc or "connection" in lower_desc:
             return "network_error"
-        else:
-            return "unknown"
+        return "unknown"
 
     def _load_historical_patterns(self) -> Dict[str, FailurePattern]:
         """Load all historical patterns from storage"""
@@ -536,7 +535,6 @@ class BatchTriageLearningEngine:
         """Calculate confidence level based on data volume"""
         if total_occurrences >= 20:
             return "high"
-        elif total_occurrences >= 10:
+        if total_occurrences >= 10:
             return "medium"
-        else:
-            return "low"
+        return "low"

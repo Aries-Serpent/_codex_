@@ -125,10 +125,9 @@ def scrub(
         u, d = m.group(1), m.group(2)
         if mode == RedactionMode.TOKEN_REPLACEMENT:
             return "[EMAIL_REDACTED]"
-        elif mode == RedactionMode.SEMANTIC_PRESERVATION:
+        if mode == RedactionMode.SEMANTIC_PRESERVATION:
             return "user@domain.com"
-        else:
-            return u[:2] + "***@" + ("***" + d[-4:])
+        return u[:2] + "***@" + ("***" + d[-4:])
 
     # Phone scrubbing
     def mask_phone(m: re.Match) -> str:
@@ -137,10 +136,9 @@ def scrub(
         flags.redaction_details.append({"type": "phone", "position": m.start()})
         if mode == RedactionMode.TOKEN_REPLACEMENT:
             return "[PHONE_REDACTED]"
-        elif mode == RedactionMode.SEMANTIC_PRESERVATION:
+        if mode == RedactionMode.SEMANTIC_PRESERVATION:
             return "+1-555-000-0000"
-        else:
-            return "[PHONE_REDACTED]"
+        return "[PHONE_REDACTED]"
 
     # IPv4 scrubbing
     def mask_ipv4(m: re.Match) -> str:
@@ -149,10 +147,9 @@ def scrub(
         flags.redaction_details.append({"type": "ipv4", "position": m.start()})
         if mode == RedactionMode.TOKEN_REPLACEMENT:
             return "[IPV4_REDACTED]"
-        elif mode == RedactionMode.SEMANTIC_PRESERVATION:
+        if mode == RedactionMode.SEMANTIC_PRESERVATION:
             return "10.0.0.1"
-        else:
-            return "[IPV4_REDACTED]"
+        return "[IPV4_REDACTED]"
 
     # IPv6 scrubbing
     def mask_ipv6(m: re.Match) -> str:

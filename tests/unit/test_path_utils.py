@@ -20,7 +20,7 @@ class TestWindowsSafeTimestamp:
         result = windows_safe_timestamp(dt, fmt="iso")
 
         assert ":" not in result
-        assert "2026-01-21T14-30-45Z" == result
+        assert result == "2026-01-21T14-30-45Z"
 
     def test_compact_format(self):
         """Test compact format is numeric only."""

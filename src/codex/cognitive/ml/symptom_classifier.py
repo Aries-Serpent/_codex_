@@ -90,8 +90,7 @@ class TfidfVectorizer:
             List of tokens.
         """
         # Simple word tokenization
-        tokens = re.findall(r"\b[a-z_][a-z0-9_]*\b", text.lower())
-        return tokens
+        return re.findall(r"\b[a-z_][a-z0-9_]*\b", text.lower())
 
     def _compute_tf(self, tokens: list[str]) -> dict[str, float]:
         """Compute term frequency.

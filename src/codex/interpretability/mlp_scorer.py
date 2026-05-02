@@ -114,9 +114,7 @@ class MLPScorer:
                 return True
             return True
         # Fallback to common naming for standalone blocks.
-        if leaf_name in {"dense", "feedforward"}:
-            return True
-        return False
+        return leaf_name in {"dense", "feedforward"}
 
     def extract_mlp_activations(
         self,

@@ -100,9 +100,8 @@ def calculate_file_hash(file_path: Path) -> str:
 
 def compress_file(file_path: Path, output_path: Path) -> None:
     """Compress a file using gzip."""
-    with open(file_path, "rb") as f_in:
-        with gzip.open(output_path, "wb") as f_out:
-            shutil.copyfileobj(f_in, f_out)
+    with open(file_path, "rb") as f_in, gzip.open(output_path, "wb") as f_out:
+        shutil.copyfileobj(f_in, f_out)
     logger.info(
         f"Compressed {file_path.name}: {file_path.stat().st_size} -> {output_path.stat().st_size} bytes"
     )

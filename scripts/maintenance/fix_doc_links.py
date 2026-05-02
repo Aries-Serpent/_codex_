@@ -48,8 +48,7 @@ class LinkFixer:
 
         # Resolve relative path
         current_dir = current_file.parent
-        target_path = (current_dir / url_without_anchor).resolve()
-        return target_path
+        return (current_dir / url_without_anchor).resolve()
 
     def is_outside_docs(self, target_path: Path) -> bool:
         """Check if target path is outside docs/ directory"""
@@ -116,10 +115,9 @@ class LinkFixer:
                 new_link = f"[{link_text}]({github_url})"
                 self.stats['fixed_outside_docs'] += 1
                 return new_link, "Outside docs/ → GitHub URL"
-            else:
-                self.stats['error_conversion'] += 1
-                self.errors.append(f"{current_file.relative_to(REPO_ROOT)}: Cannot convert to GitHub URL: {link_url}")
-                return None, "CONVERSION_ERROR"
+            self.stats['error_conversion'] += 1
+            self.errors.append(f"{current_file.relative_to(REPO_ROOT)}: Cannot convert to GitHub URL: {link_url}")
+            return None, "CONVERSION_ERROR"
 
         # Link is valid and inside docs/
         self.stats['valid_internal'] += 1

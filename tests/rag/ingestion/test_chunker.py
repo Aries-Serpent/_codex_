@@ -299,7 +299,7 @@ class TestChunker:
         assert len(chunks) == 0
 
 
-class TestChunkDocumentFunction:
+class TestChunkDocumentFunctionConvenience:
     """Tests for chunk_document convenience function."""
 
     def test_basic_chunking(self):

@@ -46,10 +46,7 @@ def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator
 
     context: Any
     try:
-        if target_dtype is not None:
-            context = autocast_cls(dtype=target_dtype)
-        else:
-            context = autocast_cls()
+        context = autocast_cls(dtype=target_dtype) if target_dtype is not None else autocast_cls()
     except Exception:  # pragma: no cover - AMP context creation failed
         yield
         return

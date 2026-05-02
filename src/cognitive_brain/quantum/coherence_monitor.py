@@ -47,12 +47,12 @@ class AlertThreshold:
         if self.comparison == "less_than":
             if value < self.critical_threshold:
                 return AlertLevel.CRITICAL
-            elif value < self.warning_threshold:
+            if value < self.warning_threshold:
                 return AlertLevel.WARNING
         elif self.comparison == "greater_than":
             if value > self.critical_threshold:
                 return AlertLevel.CRITICAL
-            elif value > self.warning_threshold:
+            if value > self.warning_threshold:
                 return AlertLevel.WARNING
 
         return None

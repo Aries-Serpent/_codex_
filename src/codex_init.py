@@ -145,7 +145,7 @@ class ConfigLoader:
         try:
             if suffix in [".yaml", ".yml"]:
                 return self._load_yaml(file_path)
-            elif suffix == ".json":
+            if suffix == ".json":
                 with open(file_path, "r") as f:
                     return json.load(f)
             elif suffix == ".toml":
@@ -218,9 +218,8 @@ class ConfigLoader:
             )
             if self.strict_mode:
                 raise DeprecationWarning(message)
-            else:
-                warnings.warn(message, DeprecationWarning)
-                logger.warning(message)
+            warnings.warn(message, DeprecationWarning)
+            logger.warning(message)
 
         # Load from deprecated location
         deprecated_dir = REPO_ROOT / directory

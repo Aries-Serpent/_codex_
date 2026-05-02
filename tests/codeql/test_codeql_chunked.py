@@ -410,17 +410,15 @@ class TestErrorHandling:
             temp_path = f.name
 
         try:
-            with pytest.raises(json.JSONDecodeError):
-                with open(temp_path) as f:
-                    json.load(f)
+            with pytest.raises(json.JSONDecodeError), open(temp_path) as f:
+                json.load(f)
         finally:
             os.unlink(temp_path)
 
     def test_missing_file_handling(self) -> None:
         """Test handling of missing SARIF file."""
-        with pytest.raises(FileNotFoundError):
-            with open("/nonexistent/path/file.sarif") as f:
-                json.load(f)
+        with pytest.raises(FileNotFoundError), open("/nonexistent/path/file.sarif") as f:
+            json.load(f)
 
     def test_empty_directory_handling(self) -> None:
         """Test handling of empty input directory."""

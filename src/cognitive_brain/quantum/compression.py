@@ -431,9 +431,7 @@ class PatternCompressor:
         levels = 2**self.quantization_bits
 
         # Quantize
-        quantized = np.round(vector / max_val * (levels // 2)) / (levels // 2) * max_val
-
-        return quantized
+        return np.round(vector / max_val * (levels // 2)) / (levels // 2) * max_val
 
     def _dequantize(self, vector: np.ndarray) -> np.ndarray:
         """

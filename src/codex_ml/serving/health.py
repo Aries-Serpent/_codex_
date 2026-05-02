@@ -118,9 +118,8 @@ def get_health_router():
     @router.get("/ready")
     async def readiness():
         """Readiness check endpoint - returns 200 if service is ready."""
-        result = readiness_check()
+        return readiness_check()
         # Could return 503 if not ready, but for now return 200 with ready=false
-        return result
 
     @router.get("/healthz")
     async def healthz():

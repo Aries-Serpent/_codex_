@@ -68,7 +68,6 @@ class PooledConnectionProxy:
                 self._conn.commit()
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 # Mirror sqlite behaviour which would raise the exception; allow
                 # propagation to caller.
                 raise

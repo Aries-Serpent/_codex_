@@ -144,9 +144,8 @@ class TestRetryExecution:
                 # Simulate success
                 result = "pass"
                 break
-            else:
-                # Simulate failure
-                result = "fail"
+            # Simulate failure
+            result = "fail"
 
         assert result == "pass"
         assert attempts == 3  # Failed 2, succeeded on 3rd
@@ -328,10 +327,7 @@ class TestRetryIntegration:
             fixture_state.append(f"setup_{retry}")
 
             # Test execution
-            if retry == 2:
-                result = "pass"
-            else:
-                result = "fail"
+            result = "pass" if retry == 2 else "fail"
 
             # Teardown
             fixture_state.append(f"teardown_{retry}")

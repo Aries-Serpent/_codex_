@@ -487,9 +487,6 @@ class AgentMemory:
         if lookup_id is None:
             return None
 
-        if lookup_id is None:
-            return None
-
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (lookup_id,))
             row = cursor.fetchone()
@@ -805,7 +802,7 @@ class AgentMemorySystem:
 
     def _load_patterns(self) -> None:
         """Load patterns from database."""
-        pass  # Patterns are stored in-memory for simplicity
+        # Patterns are stored in-memory for simplicity
 
     def _init_common_patterns(self) -> None:
         """Initialize common decision patterns."""

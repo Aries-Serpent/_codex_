@@ -264,7 +264,7 @@ class TestRegistryIntegration:
         registry = Registry(kind="metrics")
 
         # Register items using stable names
-        for name in METRIC_NAMES.keys():
+        for name in METRIC_NAMES:
             registry.register(name, lambda: name)
 
         # list() should return in stable sorted order

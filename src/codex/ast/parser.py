@@ -250,9 +250,9 @@ class UniversalParser:
         """Convert decorator AST node to string."""
         if isinstance(decorator, ast.Name):
             return f"@{decorator.id}"
-        elif isinstance(decorator, ast.Attribute):
+        if isinstance(decorator, ast.Attribute):
             return f"@{ast.unparse(decorator)}"
-        elif isinstance(decorator, ast.Call):
+        if isinstance(decorator, ast.Call):
             return f"@{ast.unparse(decorator)}"
         return "@<unknown>"
 

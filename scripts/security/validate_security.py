@@ -47,10 +47,7 @@ def run_check(name: str, pattern: str, should_find: bool = False) -> tuple[bool,
 
     count = len([line for line in result.stdout.split('\n') if line.strip()])
 
-    if should_find:
-        passed = count > 0
-    else:
-        passed = count == 0
+    passed = count > 0 if should_find else count == 0
 
     return passed, count
 
@@ -200,14 +197,13 @@ def main():
         print("🎉 ALL SECURITY CHECKS PASSED!")
         print("✅ Codebase is production-ready")
         return 0
-    elif passed >= total * 0.8:
+    if passed >= total * 0.8:
         print("⚠️  MOST SECURITY CHECKS PASSED")
         print("✅ Codebase is acceptable with minor improvements needed")
         return 0
-    else:
-        print("❌ SECURITY CHECKS FAILED")
-        print("⚠️  Review and fix issues before deployment")
-        return 1
+    print("❌ SECURITY CHECKS FAILED")
+    print("⚠️  Review and fix issues before deployment")
+    return 1
 
 if __name__ == '__main__':
     sys.exit(main())

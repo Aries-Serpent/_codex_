@@ -792,11 +792,12 @@ def generate_docs_hub(
         repo_name: Repository name for display
         version: Pipeline version
     """
-    html = DOCS_HUB_TEMPLATE.format(
-        repo_name=repo_name,
-        version=version,
-        timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
-    )
+    _fmt_args = {
+        "repo_name": repo_name,
+        "version": version,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
+    }
+    html = DOCS_HUB_TEMPLATE.format(**_fmt_args)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8")

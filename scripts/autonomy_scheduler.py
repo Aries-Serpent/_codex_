@@ -251,10 +251,9 @@ def run(dry_run: bool = DRY_RUN, max_iterations: int = MAX_ITERATIONS, budget_se
             if all_nominal:
                 log.info("All sensors nominal — self-evaluation passed")
                 break
-            else:
-                for action in actions:
-                    if action["type"] == "alert":
-                        log.warning("ALERT [%s]: %s", action["priority"], action["description"])
+            for action in actions:
+                if action["type"] == "alert":
+                    log.warning("ALERT [%s]: %s", action["priority"], action["description"])
 
             # Sleep briefly to avoid tight loop
             if time.monotonic() + 5 > deadline:

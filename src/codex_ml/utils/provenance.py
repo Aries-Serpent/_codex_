@@ -63,7 +63,6 @@ def _pip_freeze() -> list[str]:
         output = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return []
     return [line.strip() for line in output.splitlines() if line.strip()]
 
@@ -263,7 +262,6 @@ def _hardware_fingerprint(hardware: Mapping[str, Any] | None) -> str | None:
         )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         serialized = repr(hardware)
 
     digest = hashlib.sha256(serialized.encode("utf-8"))
@@ -370,10 +368,7 @@ def snapshot_hydra_config(
     out_dir.mkdir(parents=True, exist_ok=True)
     rendered_config: str
     if OmegaConf is not None:
-        if isinstance(cfg, DictConfig):
-            target = cfg
-        else:
-            target = OmegaConf.create(cfg)
+        target = cfg if isinstance(cfg, DictConfig) else OmegaConf.create(cfg)
 
         if hasattr(OmegaConf, "to_yaml"):
             rendered_config = OmegaConf.to_yaml(target)

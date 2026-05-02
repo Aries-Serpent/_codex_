@@ -146,7 +146,6 @@ def _apply_prompt_sanitization(
             raw = config_obj.get(key) if hasattr(config_obj, "get") else getattr(config_obj, key)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             raw = None
         sequence = _coerce_sequence(raw)
         if sequence is None or not sequence:
@@ -158,9 +157,7 @@ def _apply_prompt_sanitization(
         if update_dict is not None:
             update_dict[key] = sanitised
         try:
-            if isinstance(config_obj, DictConfig):
-                config_obj[key] = sanitised
-            elif isinstance(config_obj, dict):
+            if isinstance(config_obj, (DictConfig, dict)):
                 config_obj[key] = sanitised
         except Exception as e:
             logger.debug(f"Exception: {e}")
@@ -396,19 +393,8 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
     )
 
     # Minimal verification context (non-breaking error capture hook)
-    try:
-        # NOTE: When constructing DataLoader, pass worker_init_fn=seed_worker from utils.torch_det
-        pass  # Placeholder for model verification if needed
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        try:
-            from codex_ml.utils.errors import record_error
-
-            record_error("T00", "pre_training_check", str(e), "cli.train")
-        except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
-            # Error recording failed, continue silently
+    # NOTE: When constructing DataLoader, pass worker_init_fn=seed_worker from utils.torch_det
+    # Placeholder for model verification if needed (no current verification step)
 
     run_training(
         epochs=int(epochs),

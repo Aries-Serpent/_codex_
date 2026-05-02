@@ -35,7 +35,7 @@ def test_session_query_cli(tmp_path):
             "message TEXT, seq INTEGER, meta TEXT)"
         )
         con.executemany(
-            "INSERT INTO session_events(timestamp, session_id, role, message) " "VALUES (?,?,?,?)",
+            "INSERT INTO session_events(timestamp, session_id, role, message) VALUES (?,?,?,?)",
             [
                 ("2025-01-01T00:00:00Z", "S1", "user", "hi"),
                 ("2025-01-01T00:00:01Z", "S1", "assistant", "yo"),
@@ -62,7 +62,7 @@ def test_session_query_cli_session_with_last(tmp_path):
             "message TEXT, seq INTEGER, meta TEXT)"
         )
         con.executemany(
-            "INSERT INTO session_events(timestamp, session_id, role, message) " "VALUES (?,?,?,?)",
+            "INSERT INTO session_events(timestamp, session_id, role, message) VALUES (?,?,?,?)",
             [
                 ("2025-01-01T00:00:00Z", "S1", "user", "hi"),
                 ("2025-01-01T00:00:01Z", "S1", "assistant", "yo"),

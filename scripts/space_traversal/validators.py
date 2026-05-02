@@ -56,8 +56,7 @@ def check_missing_detectors(scored_path: str, overrides: dict[str, list[str]]) -
     scored = load_json(scored_path)
     have = {c["id"] for c in scored.get("capabilities", [])}
     expect = set(overrides.keys()) if overrides else set()
-    missing = sorted(expect - have)
-    return missing
+    return sorted(expect - have)
 
 
 def emit_summary(

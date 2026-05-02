@@ -430,7 +430,7 @@ class MetricHistory:
         diff = self.values[-1] - self.values[0]
         if diff < -0.01:
             return "decreasing"
-        elif diff > 0.01:
+        if diff > 0.01:
             return "increasing"
         return "stable"
 

@@ -145,9 +145,7 @@ class SQLASTAdapter(BaseASTAdapter):
             self._extract_update_components(stmt, node)
         elif stmt_type == "DELETE":
             self._extract_delete_components(stmt, node)
-        elif stmt_type.startswith("CREATE"):
-            self._extract_ddl_components(stmt, node)
-        elif stmt_type in ("ALTER", "DROP"):
+        elif stmt_type.startswith("CREATE") or stmt_type in ("ALTER", "DROP"):
             self._extract_ddl_components(stmt, node)
 
         return node

@@ -4,6 +4,7 @@ Target: 25+ edge case tests for CLI entry points
 Coverage Target: src/codex_ml/cli/codex_cli.py (846 lines, 0% → 60%+)
 """
 
+import contextlib
 import os
 from io import StringIO
 from unittest.mock import patch
@@ -268,10 +269,9 @@ class TestCLIEdgeCases:
             'LD_PRELOAD': '/evil.so',
             'PYTHONPATH': '/bad/modules'
         }
-        with patch.dict(os.environ, malicious_env):
-            with patch('sys.argv', ['codex', 'cmd']):
-                # Should not be vulnerable to env injection
-                pytest.skip("Test not fully implemented - placeholder for edge case coverage")
+        with patch.dict(os.environ, malicious_env), patch('sys.argv', ['codex', 'cmd']):
+            # Should not be vulnerable to env injection
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     # ========== Phase 27.1 Sub-batch A2: Signal Handling (6 tests) ==========
 
@@ -284,7 +284,6 @@ class TestCLIEdgeCases:
         def signal_handler(signum, frame):
             cleanup_called.append(True)
             # Simulate cleanup
-            pass
 
         original_handler = signal.signal(signal.SIGINT, signal_handler)
         try:
@@ -373,10 +372,8 @@ class TestCLIEdgeCases:
         try:
             # Simulate multiple signals
             for _ in range(3):
-                try:
+                with contextlib.suppress(KeyboardInterrupt):
                     os.kill(os.getpid(), signal.SIGINT)
-                except KeyboardInterrupt:
-                    pass
 
             # Thread safety verified by no deadlock
             assert len(signal_count) >= 1
@@ -517,7 +514,7 @@ class TestCLIEdgeCases:
         invalid_utf8 = b'\xff\xfe invalid utf8 \x80\x81'
 
         try:
-            decoded = invalid_utf8.decode('utf-8')
+            invalid_utf8.decode('utf-8')
             assert False, "Should raise UnicodeDecodeError"
         except UnicodeDecodeError:
             # Handle with errors='replace'
@@ -644,10 +641,9 @@ class TestCLIEdgeCases:
     def test_cli_stderr_redirect(self):
         """Test CLI with stderr redirected"""
         captured_errors = StringIO()
-        with patch('sys.stderr', captured_errors):
-            with patch('sys.argv', ['codex', 'invalid']):
-                # Should write errors to stderr
-                pytest.skip("Test not fully implemented - placeholder for edge case coverage")
+        with patch('sys.stderr', captured_errors), patch('sys.argv', ['codex', 'invalid']):
+            # Should write errors to stderr
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_pipe_input(self):
         """Test CLI reading from pipe/stdin"""
@@ -698,10 +694,9 @@ class TestCLIEdgeCases:
 
     def test_cli_color_output_disabled(self):
         """Test CLI with color output disabled"""
-        with patch.dict(os.environ, {'NO_COLOR': '1'}):
-            with patch('sys.argv', ['codex', 'cmd']):
-                # Should respect NO_COLOR environment variable
-                pytest.skip("Test not fully implemented - placeholder for edge case coverage")
+        with patch.dict(os.environ, {'NO_COLOR': '1'}), patch('sys.argv', ['codex', 'cmd']):
+            # Should respect NO_COLOR environment variable
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_interactive_mode_non_tty(self):
         """Test CLI interactive mode when not running in TTY"""

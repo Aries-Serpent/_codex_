@@ -237,7 +237,7 @@ def main() -> None:
     print(f"  Models Used: {', '.join(stats['models_used']) or 'None'}")
 
     if not stats["total_requests"]:
-        print("\n💡 No usage data yet. " "Run the autonomous agent to generate usage logs.")
+        print("\n💡 No usage data yet. Run the autonomous agent to generate usage logs.")
 
 
 if __name__ == "__main__":

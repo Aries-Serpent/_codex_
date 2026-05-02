@@ -26,9 +26,8 @@ def test_maybe_wandb_raises_when_missing(monkeypatch):
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
 
-    with pytest.raises(ImportError) as excinfo:
-        with maybe_wandb(run_name="test", enable=True):
-            pass
+    with pytest.raises(ImportError) as excinfo, maybe_wandb(run_name="test", enable=True):
+        pass
 
     assert "pip install wandb" in str(excinfo.value)
 

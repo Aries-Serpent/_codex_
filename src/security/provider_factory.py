@@ -58,27 +58,26 @@ class ProviderFactory:
 
                 return GitHubTokenProvider(config)
 
-            elif provider_type == ProviderType.AWS_SECRETS_MANAGER:
+            if provider_type == ProviderType.AWS_SECRETS_MANAGER:
                 from security.providers.aws_provider import AWSSecretsManagerProvider
 
                 return AWSSecretsManagerProvider(config)
 
-            elif provider_type == ProviderType.AZURE_KEY_VAULT:
+            if provider_type == ProviderType.AZURE_KEY_VAULT:
                 # Future implementation
                 raise ProviderConfigError("Azure Key Vault provider not yet implemented")
 
-            elif provider_type == ProviderType.HASHICORP_VAULT:
+            if provider_type == ProviderType.HASHICORP_VAULT:
                 # Future implementation
                 raise ProviderConfigError("HashiCorp Vault provider not yet implemented")
 
-            elif provider_type == ProviderType.ENVIRONMENT:
+            if provider_type == ProviderType.ENVIRONMENT:
                 # For testing - returns stub provider
                 from security.providers.environment_provider import EnvironmentProvider
 
                 return EnvironmentProvider(config)
 
-            else:
-                raise ProviderConfigError(f"Unsupported provider type: {provider_type}")
+            raise ProviderConfigError(f"Unsupported provider type: {provider_type}")
 
         except ImportError as e:
             raise ProviderConfigError(

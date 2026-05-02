@@ -191,12 +191,10 @@ def summarize_gap_value(key: str, value: Any) -> str:
             return f"{len(value)} gap records"
         if isinstance(value, dict):
             return "gaps map"
-    if key in ("failures", "errors"):
-        if isinstance(value, list):
-            return f"{len(value)} failures"
-    if key == "evidence":
-        if isinstance(value, dict):
-            return "evidence object"
+    if key in ("failures", "errors") and isinstance(value, list):
+        return f"{len(value)} failures"
+    if key == "evidence" and isinstance(value, dict):
+        return "evidence object"
     return (repr(value)[:200] + "...") if not isinstance(value, (str, int, float)) else repr(value)
 
 

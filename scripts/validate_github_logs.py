@@ -328,14 +328,13 @@ class SelfHealingValidator:
             print("✅ All validations passed! Implementation is production-ready.")
             print("=" * 70)
             return 0
-        elif self.issues:
+        if self.issues:
             print("⚠️  Issues found that need attention.")
             print("=" * 70)
             return 1
-        else:
-            print("⚠️  Some validations failed but no critical issues found.")
-            print("=" * 70)
-            return 1
+        print("⚠️  Some validations failed but no critical issues found.")
+        print("=" * 70)
+        return 1
 
 
 def main():

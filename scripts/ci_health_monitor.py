@@ -40,14 +40,13 @@ class CIHealthMonitor:
         """Generate comprehensive health report."""
         issues = self.analyze_workflow_logs()
 
-        report = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "issues_found": len(issues),
             "issues": issues,
             "recommendations": self._generate_recommendations(issues)
         }
 
-        return report
 
     def _generate_recommendations(self, issues):
         """Generate actionable recommendations."""

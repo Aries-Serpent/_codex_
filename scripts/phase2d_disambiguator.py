@@ -123,9 +123,8 @@ class ComplexFileDisambiguator:
                     return Path('README.md') if 'root' in file_index else None
 
             # Agent references
-            if 'agents' in source_parts:
-                if 'agents' in file_index:
-                    return file_index['agents']
+            if 'agents' in source_parts and 'agents' in file_index:
+                return file_index['agents']
 
             # GitHub agents references
             if '.github' in source_parts and 'agents' in source_parts:
@@ -197,9 +196,9 @@ class ComplexFileDisambiguator:
             if 'github.com/Aries-Serpent/_codex_' in link_url:
                 if '/README.md' in link_url:
                     return 'README.md'
-                elif '/INDEX.md' in link_url:
+                if '/INDEX.md' in link_url:
                     return 'INDEX.md'
-                elif '/ARCHITECTURE.md' in link_url:
+                if '/ARCHITECTURE.md' in link_url:
                     return 'ARCHITECTURE.md'
             return None
 
@@ -210,9 +209,9 @@ class ComplexFileDisambiguator:
         # Check for our target files
         if 'readme.md' in link_lower:
             return 'README.md'
-        elif 'index.md' in link_lower:
+        if 'index.md' in link_lower:
             return 'INDEX.md'
-        elif 'architecture.md' in link_lower:
+        if 'architecture.md' in link_lower:
             return 'ARCHITECTURE.md'
 
         return None
@@ -408,4 +407,4 @@ def main():
     return 0 if len(stats['errors']) == 0 else 1
 
 if __name__ == '__main__':
-    exit(main())
+    raise SystemExit(main())

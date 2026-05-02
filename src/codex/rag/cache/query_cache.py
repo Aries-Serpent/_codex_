@@ -116,9 +116,22 @@ class QueryCache:
         print(f"Hit rate: {stats.hit_rate:.2%}")
     """
 
-    def __init__(self, config: Optional[QueryCacheConfig] = None):
-        """Initialize query cache."""
-        self.config = config or QueryCacheConfig()
+    def __init__(
+        self,
+        config: Optional[QueryCacheConfig] = None,
+        *,
+        ttl: Optional[float] = None,
+    ):
+        """Initialize query cache.
+
+        Args:
+            config: Optional :class:`QueryCacheConfig` instance.
+            ttl: Convenience shorthand for ``config.default_ttl``.  Ignored when
+                *config* is provided explicitly.
+        """
+        if config is None:
+            config = QueryCacheConfig(default_ttl=ttl) if ttl is not None else QueryCacheConfig()
+        self.config = config
 
         # Use OrderedDict for LRU ordering
         self._cache: OrderedDict[str, CacheEntry] = OrderedDict()

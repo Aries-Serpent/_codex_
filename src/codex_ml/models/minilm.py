@@ -55,8 +55,7 @@ class _Block(nn.Module):
         h, _ = self.attn(x, x, x, attn_mask=attn_mask)
         x = self.ln1(x + h)
         h = self.mlp(x)
-        x = self.ln2(x + h)
-        return x
+        return self.ln2(x + h)
 
 
 class MiniLM(nn.Module):
@@ -94,8 +93,7 @@ class MiniLM(nn.Module):
         for block in self.blocks:
             x = block(x, mask)
         x = self.ln_f(x)
-        logits = self.head(x)
-        return logits
+        return self.head(x)
 
     # checkpoint helpers -------------------------------------------------
     def save_pretrained(self, path: Union[str, Path]) -> None:

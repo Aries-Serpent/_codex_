@@ -11,6 +11,7 @@ Provides:
 from __future__ import annotations
 
 import logging
+import logging.handlers
 import sys
 import traceback
 from datetime import datetime, timezone

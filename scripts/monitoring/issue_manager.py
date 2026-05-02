@@ -209,12 +209,11 @@ _This issue will be automatically updated with new information and closed when t
         """Format duration in human-readable format."""
         if seconds < 60:
             return f"{seconds:.0f}s"
-        elif seconds < 3600:
+        if seconds < 3600:
             return f"{seconds / 60:.0f}m {seconds % 60:.0f}s"
-        else:
-            hours = seconds // 3600
-            minutes = (seconds % 3600) // 60
-            return f"{hours:.0f}h {minutes:.0f}m"
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        return f"{hours:.0f}h {minutes:.0f}m"
 
     def create_failure_issue(self, failure_data: Dict[str, Any]) -> Optional[Issue]:
         """

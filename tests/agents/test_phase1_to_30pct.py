@@ -10,6 +10,8 @@ Based on Coverage Uplift Paths Table (Equations 1-53):
 Strategy: Focus on agents module with largest statement counts
 """
 
+import contextlib
+
 import pytest
 
 from agents.advanced_physics_calculators import (
@@ -288,10 +290,8 @@ class TestWavePropagatorMethods:
         try:
             propagator = WavePropagator(grid_size=10)
             if hasattr(propagator, "add_source"):
-                try:
+                with contextlib.suppress(TypeError, AttributeError):
                     propagator.add_source(position=[5, 5], amplitude=1.0)
-                except (TypeError, AttributeError):
-                    pass
         except TypeError:
             pytest.skip("WavePropagator init differs")
 

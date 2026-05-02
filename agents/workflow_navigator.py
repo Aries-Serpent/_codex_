@@ -72,15 +72,14 @@ class WorkflowStep:
                 self.status = StepStatus.COMPLETED
                 return {"success": True, "stdout": result.stdout, "stderr": result.stderr}
 
-            elif self.uses:
+            if self.uses:
                 # Call another workflow or function
                 # This would be implemented to dynamically import and call
                 self.status = StepStatus.COMPLETED
                 return {"success": True, "message": f"Would execute: {self.uses}"}
 
-            else:
-                self.status = StepStatus.SKIPPED
-                return {"success": True, "message": "No action defined"}
+            self.status = StepStatus.SKIPPED
+            return {"success": True, "message": "No action defined"}
 
         except Exception as e:
             logger.debug(f"Exception: {e}")
@@ -182,7 +181,7 @@ class WorkflowNavigator:
                     ),
                 ],
             )
-        elif workflow_type == "self_heal":
+        if workflow_type == "self_heal":
             return Workflow(
                 workflow_id="SELF_HEAL_DYNAMIC",
                 name="Self-Healing Issue Resolution",
@@ -203,7 +202,7 @@ class WorkflowNavigator:
                     ),
                 ],
             )
-        elif workflow_type == "audit_coverage":
+        if workflow_type == "audit_coverage":
             return Workflow(
                 workflow_id="AUDIT_COVERAGE_DYNAMIC",
                 name="Audit Coverage Analysis",
@@ -225,7 +224,7 @@ class WorkflowNavigator:
                     ),
                 ],
             )
-        elif workflow_type == "test_run":
+        if workflow_type == "test_run":
             return Workflow(
                 workflow_id="TEST_RUN_DYNAMIC",
                 name="Test Execution",
@@ -243,8 +242,7 @@ class WorkflowNavigator:
                     ),
                 ],
             )
-        else:
-            raise ValueError(f"Unknown workflow type: {workflow_type}")
+        raise ValueError(f"Unknown workflow type: {workflow_type}")
 
     def _register_default_workflows(self):
         """Register the default tokenized workflows"""
@@ -557,8 +555,7 @@ class WorkflowNavigator:
         if workflow and workflow.steps:
             if self.current_step_index >= len(workflow.steps):
                 return "Workflow completed"
-            else:
-                return f"Start workflow: {workflow.name}"
+            return f"Start workflow: {workflow.name}"
 
         return None
 
@@ -650,7 +647,7 @@ class WorkflowNavigator:
                     "error": result.get("error"),
                     "results": results,
                 }
-            elif result["success"]:
+            if result["success"]:
                 print("  ✓ Completed")
             else:
                 print("  ⊘ Skipped (optional)")
@@ -749,13 +746,15 @@ class WorkflowNavigator:
             # On Windows, symlinks may fail, so just copy
             shutil.copy(filepath, current_path)
 
-    def get_workflow_suggestions(self, current_state: dict[str, Any]) -> list[Workflow]:
+    def get_workflow_suggestions(self, current_state: dict[str, Any] | None = None) -> list[Workflow]:
         """
         Suggest workflows based on current state
 
         Uses simple heuristics, but could integrate with physics orchestrator
         """
         suggestions = []
+        if current_state is None:
+            current_state = {}
 
         # If recent commit, suggest audit
         if current_state.get("recent_commits"):

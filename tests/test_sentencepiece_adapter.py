@@ -204,8 +204,7 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
 def _get_adapter_module():
     """Import and return the sentencepiece_adapter module, skipping tests when unavailable."""
     try:
-        module = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-        return module
+        return importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     except Exception:  # noqa: BLE001
         # If the module cannot be imported for reasons unrelated to sentencepiece, raise so tests fail loudly.
         raise

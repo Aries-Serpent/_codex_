@@ -165,8 +165,8 @@ class EarlyStopping:
 
         if self.mode == "min":
             return value < (self.best_value - self.min_delta)
-        else:  # mode == "max"
-            return value > (self.best_value + self.min_delta)
+        # mode == "max"
+        return value > (self.best_value + self.min_delta)
 
     def update(self, value: float, epoch: int = 0) -> bool:
         """Update early stopping state with a new metric value.
@@ -185,14 +185,13 @@ class EarlyStopping:
             if self.verbose:
                 logger.info(f"Epoch {epoch}: {self.monitor} improved to {value:.4f}")
             return True
-        else:
-            self.wait += 1
-            if self.verbose:
-                logger.info(
-                    f"Epoch {epoch}: {self.monitor} did not improve from {self.best_value:.4f} "
-                    f"(current: {value:.4f}, wait: {self.wait}/{self.patience})"
-                )
-            return False
+        self.wait += 1
+        if self.verbose:
+            logger.info(
+                f"Epoch {epoch}: {self.monitor} did not improve from {self.best_value:.4f} "
+                f"(current: {value:.4f}, wait: {self.wait}/{self.patience})"
+            )
+        return False
 
     def should_stop(self, value: float, epoch: int = 0) -> bool:
         """Check if training should stop based on the current metric value.
@@ -452,9 +451,7 @@ def auto_inject_early_stopping_for_trainer(
         return callbacks
 
     # Inject callback
-    callbacks = inject_early_stopping(callbacks, config=config)
-
-    return callbacks
+    return inject_early_stopping(callbacks, config=config)
 
 
 def create_early_stopping_from_config(

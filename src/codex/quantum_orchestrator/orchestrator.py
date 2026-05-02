@@ -360,9 +360,7 @@ class DiracOperator:
         mass_term = beta @ psi * m * c * c
 
         # Total Hamiltonian
-        H_psi = kinetic + mass_term
-
-        return H_psi
+        return kinetic + mass_term
 
     def compute_current(self, task: TaskState) -> np.ndarray:
         """

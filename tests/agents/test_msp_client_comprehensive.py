@@ -70,8 +70,7 @@ class TestMSPClientMocked:
     @pytest.fixture
     def mock_client(self):
         """Create mocked MSP client."""
-        client = MSPClient(base_url="https://test.msp/api", api_key="test_key")
-        return client
+        return MSPClient(base_url="https://test.msp/api", api_key="test_key")
 
     def test_client_request_structure(self, mock_client):
         """Test basic request structure."""
@@ -88,9 +87,8 @@ class TestMSPClientMocked:
         if hasattr(mock_client, "request"):
             with patch.object(
                 mock_client, "request", side_effect=ConnectionError("Connection failed")
-            ):
-                with pytest.raises(ConnectionError):
-                    mock_client.request("GET", "/test")
+            ), pytest.raises(ConnectionError):
+                mock_client.request("GET", "/test")
 
     def test_client_handles_timeout(self, mock_client):
         """Test handling of timeout."""
@@ -99,9 +97,8 @@ class TestMSPClientMocked:
         if hasattr(mock_client, "request"):
             with patch.object(
                 mock_client, "request", side_effect=socket.timeout("Request timed out")
-            ):
-                with pytest.raises((socket.timeout, TimeoutError)):
-                    mock_client.request("GET", "/test")
+            ), pytest.raises((socket.timeout, TimeoutError)):
+                mock_client.request("GET", "/test")
 
     def test_client_retry_logic(self, mock_client):
         """Test retry logic on failures."""
@@ -225,7 +222,7 @@ class TestMSPClientAuthentication:
             # Check for API key in various possible header names
             has_auth = any(
                 key.lower() in ["authorization", "x-api-key", "api-key"]
-                for key in headers.keys()
+                for key in headers
             )
             assert has_auth or "secret_key_123" in str(headers.values())
 

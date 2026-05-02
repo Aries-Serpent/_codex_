@@ -207,10 +207,7 @@ def _extract_marker(body: str) -> str:
 
 def _is_protected(body: str) -> bool:
     """Return True if the comment body contains a protected fragment."""
-    for frag in _PROTECTED_BODY_FRAGMENTS:
-        if frag in (body or ""):
-            return True
-    return False
+    return any(frag in (body or "") for frag in _PROTECTED_BODY_FRAGMENTS)
 
 
 def find_duplicates(
@@ -761,13 +758,13 @@ def main() -> int:
 
     if args.cmd == "stats":
         return cmd_stats(args.discussion, token)
-    elif args.cmd == "scan":
+    if args.cmd == "scan":
         return cmd_scan(args.discussion, args.marker_prefix, token)
-    elif args.cmd == "generate-manifest":
+    if args.cmd == "generate-manifest":
         return cmd_generate_manifest(args.discussions, args.marker_prefix, args.output, token)
-    elif args.cmd == "execute-manifest":
+    if args.cmd == "execute-manifest":
         return cmd_execute_manifest(args.manifest, token, args.delay_ms)
-    elif args.cmd == "dedup":
+    if args.cmd == "dedup":
         return cmd_dedup(args.discussion, args.marker_prefix, args.execute, token, args.delay_ms)
     return 0
 

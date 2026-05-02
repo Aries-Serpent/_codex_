@@ -220,13 +220,12 @@ def main(argv: Optional[list] = None):
     # Dispatch to command handler
     if args.command == "parse":
         return parse_command(args)
-    elif args.command == "stats":
+    if args.command == "stats":
         return stats_command(args)
-    elif args.command == "query":
+    if args.command == "query":
         return query_command(args)
-    else:
-        parser.print_help()
-        return 1
+    parser.print_help()
+    return 1
 
 
 if __name__ == "__main__":

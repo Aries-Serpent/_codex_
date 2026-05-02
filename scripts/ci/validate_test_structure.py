@@ -90,8 +90,7 @@ def main():
         if len(syntax_errors) > 5:
             print(f"  ... and {len(syntax_errors) - 5} more")
         return 1
-    else:
-        print("✓ All test files have valid syntax")
+    print("✓ All test files have valid syntax")
     print()
 
     # Check 3: conftest.py

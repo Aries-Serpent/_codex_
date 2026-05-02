@@ -287,9 +287,8 @@ def main():
     if issue_count > 0:
         print(f"⚠️  Found {issue_count} file handle issues")
         return 1
-    else:
-        print("✅ No issues found")
-        return 0
+    print("✅ No issues found")
+    return 0
 
 
 if __name__ == '__main__':

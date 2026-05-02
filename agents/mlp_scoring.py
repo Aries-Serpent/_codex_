@@ -106,26 +106,25 @@ class MLPScorer:
             y = self.W2 @ h + self.b2
 
             return float(y[0])
-        else:
-            # Pure Python fallback
+        # Pure Python fallback
 
-            # Hidden layer: h = ReLU(W1 @ x + b1)
-            h = []
-            for i in range(self.hidden_dim):
-                # Dot product
-                activation = sum(
-                    w * f for w, f in zip(self.W1[i], features_list)
-                )
-                activation += self.b1[i]
+        # Hidden layer: h = ReLU(W1 @ x + b1)
+        h = []
+        for i in range(self.hidden_dim):
+            # Dot product
+            activation = sum(
+                w * f for w, f in zip(self.W1[i], features_list)
+            )
+            activation += self.b1[i]
 
-                # ReLU
-                h.append(max(0.0, activation))
+            # ReLU
+            h.append(max(0.0, activation))
 
-            # Output layer: y = W2 @ h + b2
-            y = sum(w * h_val for w, h_val in zip(self.W2[0], h))
-            y += self.b2[0]
+        # Output layer: y = W2 @ h + b2
+        y = sum(w * h_val for w, h_val in zip(self.W2[0], h))
+        y += self.b2[0]
 
-            return y
+        return y
 
     def batch_score(self, feature_batch: Iterable[Iterable[float]]) -> list[float]:
         """

@@ -86,7 +86,7 @@ class TestGetRegistry:
         class MockException(Exception):
             pass
 
-        for group_name in _GROUPS.keys():
+        for group_name in _GROUPS:
             registry = _get_registry(group_name, bad_param_exc=MockException)
             assert registry is not None
 

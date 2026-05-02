@@ -123,23 +123,31 @@ class MultiLocaleSyncManager:
     priority, scheduling, and resource management.
     """
 
-    def __init__(self, max_workers: int = 4):
+    def __init__(
+        self,
+        max_workers: int = 4,
+        locales: Optional[List["LocaleConfig"]] = None,
+    ):
         """Initialize sync manager with worker pool."""
         self.max_workers = max_workers
         self.locales: Dict[str, LocaleConfig] = {}
 
-        # Initialize default locales
-        for locale_code, priority in [
-            ("en-us", 10),
-            ("es", 9),
-            ("fr", 8),
-            ("de", 8),
-            ("ja", 7),
-        ]:
-            self.locales[locale_code] = LocaleConfig(
-                locale_code=locale_code,
-                priority=priority
-            )
+        if locales is not None:
+            for loc in locales:
+                self.locales[loc.locale_code] = loc
+        else:
+            # Initialize default locales
+            for locale_code, priority in [
+                ("en-us", 10),
+                ("es", 9),
+                ("fr", 8),
+                ("de", 8),
+                ("ja", 7),
+            ]:
+                self.locales[locale_code] = LocaleConfig(
+                    locale_code=locale_code,
+                    priority=priority
+                )
 
     def add_locale(self, config: LocaleConfig) -> None:
         """Add a locale to the sync manager."""

@@ -323,7 +323,7 @@ class TestReproducibility:
         # result1 = trainer.train(sample_training_config, sample_dataset)
         # result2 = trainer.train(sample_training_config, sample_dataset)
         # assert result1.final_loss == result2.final_loss
-        pass  # Placeholder
+        # Placeholder
 
     @requires_torch
     @pytest.mark.skip(reason="Placeholder test - implement when model module is ready")
@@ -338,7 +338,7 @@ class TestReproducibility:
         # torch.manual_seed(42)
         # output2 = mock_model(input_tensor)
         # assert torch.allclose(output1, output2)
-        pass  # Placeholder
+        # Placeholder
 
 
 # =============================================================================

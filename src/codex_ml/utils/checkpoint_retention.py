@@ -46,7 +46,6 @@ def _epoch_sort_key(path: Path) -> tuple[int, str]:
         return int(suffix), name
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return (10**12, name)
 
 
@@ -75,7 +74,6 @@ def _load_metric(dir_path: Path, metric: str) -> Optional[float]:
     try:
         data = json.loads(meta_path.read_text(encoding="utf-8"))
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
     value = data.get(metric)

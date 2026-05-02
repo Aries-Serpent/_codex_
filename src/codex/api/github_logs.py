@@ -133,12 +133,11 @@ async def get_check_run_logs(
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
             raise HTTPException(status_code=404, detail=str(e)) from e
-        elif "rate limit" in str(e).lower():
+        if "rate limit" in str(e).lower():
             raise HTTPException(status_code=429, detail=str(e)) from e
-        elif "authentication" in str(e).lower():
+        if "authentication" in str(e).lower():
             raise HTTPException(status_code=401, detail=str(e)) from e
-        else:
-            raise HTTPException(status_code=500, detail=str(e)) from e
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @router.get(
@@ -184,12 +183,11 @@ async def get_job_logs(
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
             raise HTTPException(status_code=404, detail=str(e)) from e
-        elif "rate limit" in str(e).lower():
+        if "rate limit" in str(e).lower():
             raise HTTPException(status_code=429, detail=str(e)) from e
-        elif "authentication" in str(e).lower():
+        if "authentication" in str(e).lower():
             raise HTTPException(status_code=401, detail=str(e)) from e
-        else:
-            raise HTTPException(status_code=500, detail=str(e)) from e
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @router.get(
@@ -261,9 +259,8 @@ async def list_check_runs(
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
             raise HTTPException(status_code=404, detail=str(e)) from e
-        elif "rate limit" in str(e).lower():
+        if "rate limit" in str(e).lower():
             raise HTTPException(status_code=429, detail=str(e)) from e
-        elif "authentication" in str(e).lower():
+        if "authentication" in str(e).lower():
             raise HTTPException(status_code=401, detail=str(e)) from e
-        else:
-            raise HTTPException(status_code=500, detail=str(e)) from e
+        raise HTTPException(status_code=500, detail=str(e)) from e

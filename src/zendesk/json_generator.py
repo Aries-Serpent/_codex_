@@ -523,7 +523,7 @@ class ZendeskJSONGenerator:
                 var_name = match.group(1)
                 if var_name in variables:
                     return variables[var_name]
-                elif strict:
+                if strict:
                     raise ValueError(f"Missing required variable: {var_name}")
                 return obj
 
@@ -532,16 +532,16 @@ class ZendeskJSONGenerator:
                 var_name = m.group(1)
                 if var_name in variables:
                     return str(variables[var_name])
-                elif strict:
+                if strict:
                     raise ValueError(f"Missing required variable: {var_name}")
                 return m.group(0)
 
             return PLACEHOLDER_PATTERN.sub(replace_match, obj)
 
-        elif isinstance(obj, dict):
+        if isinstance(obj, dict):
             return {k: self._replace_placeholders(v, variables, strict) for k, v in obj.items()}
 
-        elif isinstance(obj, list):
+        if isinstance(obj, list):
             return [self._replace_placeholders(item, variables, strict) for item in obj]
 
         return obj
@@ -696,9 +696,9 @@ class ZendeskJSONGenerator:
         """Infer HTTP method from template name."""
         if template_name.startswith("create_") or template_name.startswith("search_"):
             return "POST"
-        elif template_name.startswith("update_") or template_name.startswith("bulk_"):
+        if template_name.startswith("update_") or template_name.startswith("bulk_"):
             return "PUT"
-        elif template_name.startswith("delete_"):
+        if template_name.startswith("delete_"):
             return "DELETE"
         return "GET"
 

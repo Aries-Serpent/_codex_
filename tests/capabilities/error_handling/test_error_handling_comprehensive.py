@@ -40,7 +40,6 @@ class CodexError(Exception):
 class ConfigurationError(CodexError):
     """Configuration related errors."""
 
-    pass
 
 
 class ValidationError(CodexError):
@@ -163,7 +162,6 @@ class Retrier:
                 if attempt < self.config.max_retries:
                     self.config.get_delay(attempt)
                     # In tests, we don't actually sleep
-                    pass
         if last_error is None:
             raise RuntimeError("Retry failed: no exception was captured")
         raise last_error
@@ -270,9 +268,7 @@ class CircuitBreaker:
         """Record failed call."""
         self.failure_count += 1
         self.last_failure_time = time.time()
-        if self.state == CircuitState.HALF_OPEN:
-            self._open()
-        elif self.failure_count >= self.failure_threshold:
+        if self.state == CircuitState.HALF_OPEN or self.failure_count >= self.failure_threshold:
             self._open()
 
     def can_execute(self) -> bool:

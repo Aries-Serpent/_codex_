@@ -149,8 +149,7 @@ class TestRAGAccessControl:
             # Redact phone numbers
             text = re.sub(r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', '[PHONE REDACTED]', text)
             # Redact SSN
-            text = re.sub(r'\b\d{3}-\d{2}-\d{4}\b', '[SSN REDACTED]', text)
-            return text
+            return re.sub(r'\b\d{3}-\d{2}-\d{4}\b', '[SSN REDACTED]', text)
 
         text = "Contact john@example.com or 555-123-4567. SSN: 123-45-6789"
         redacted = redact_pii(text)

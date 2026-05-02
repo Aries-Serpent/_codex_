@@ -138,7 +138,7 @@ def generate_trend_report() -> dict:
         round(aais_gap / avg_velocity) if avg_velocity > 0 else 0
     )
 
-    report = {
+    return {
         "current_metrics": metrics,
         "session_history": sessions,
         "aais_progression": {
@@ -166,7 +166,6 @@ def generate_trend_report() -> dict:
         },
     }
 
-    return report
 
 
 def main() -> int:

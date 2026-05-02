@@ -100,7 +100,6 @@ def search_for_gaps() -> None:
             text = path.read_text(encoding="utf-8")
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             continue
         for pattern in patterns:
             for match in re.finditer(pattern, text):

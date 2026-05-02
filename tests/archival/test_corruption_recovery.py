@@ -130,10 +130,9 @@ class TestCorruptionDetection:
 
         # Truncate archive
         truncated_path = tmp_path / "truncated.tar.gz"
-        with open(archive_path, "rb") as src:
-            with open(truncated_path, "wb") as dst:
-                # Only copy half
-                dst.write(src.read(original_size // 2))
+        with open(archive_path, "rb") as src, open(truncated_path, "wb") as dst:
+            # Only copy half
+            dst.write(src.read(original_size // 2))
 
         # Truncated file is smaller
         assert truncated_path.stat().st_size < original_size

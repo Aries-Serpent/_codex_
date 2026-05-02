@@ -141,11 +141,7 @@ def should_ignore_file(filepath: str, extra_patterns: Optional[List[str]] = None
     """Check if a file should be ignored based on patterns."""
     all_patterns = IGNORE_PATTERNS + (extra_patterns or [])
 
-    for pattern in all_patterns:
-        if re.search(pattern, filepath):
-            return True
-
-    return False
+    return any(re.search(pattern, filepath) for pattern in all_patterns)
 
 
 def parse_action_log(

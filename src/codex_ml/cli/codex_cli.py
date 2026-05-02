@@ -315,7 +315,6 @@ def config_sweep(
                 resolved_dataset_path = Path(maybe_path)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             resolved_dataset_path = None
     if resolved_dataset_path is not None and resolved_dataset_path.exists():
         dataset_hash = _hash_dataset(resolved_dataset_path)

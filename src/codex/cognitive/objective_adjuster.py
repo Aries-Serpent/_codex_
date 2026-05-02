@@ -453,7 +453,7 @@ class ObjectiveAdjuster:
 
             return objective
 
-        elif adjustment.type == AdjustmentType.PRIORITY_INCREASE:
+        if adjustment.type == AdjustmentType.PRIORITY_INCREASE:
             objective_id = adjustment.parameters.get("objective_id")
             if objective_id:
                 objective = self.store.get_objective(objective_id)  # type: ignore[assignment]

@@ -64,16 +64,12 @@ def validate_local_link(link: str, base_path: Path) -> Tuple[bool, Optional[str]
         return True, None
 
     # Resolve relative path
-    if link.startswith('/'):
-        full_path = Path(link[1:])
-    else:
-        full_path = (base_path.parent / link).resolve()
+    full_path = Path(link[1:]) if link.startswith('/') else (base_path.parent / link).resolve()
 
     # Check if file exists
     if full_path.exists():
         return True, None
-    else:
-        return False, f"File not found: {full_path}"
+    return False, f"File not found: {full_path}"
 
 
 def validate_workflow_links(verbose: bool = False) -> int:
@@ -158,18 +154,17 @@ def validate_workflow_links(verbose: bool = False) -> int:
                     f.write("\n")
 
         return 1
-    else:
-        print("✅ All links are valid!")
+    print("✅ All links are valid!")
 
-        # Write to GitHub step summary if available
-        github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
-        if github_step_summary_path:
-            github_step_summary = Path(github_step_summary_path)
-            with github_step_summary.open('a') as f:
-                f.write("## ✅ All Links Valid\n\n")
-                f.write(f"Validated {total_links} links in workflow documentation.\n")
+    # Write to GitHub step summary if available
+    github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+    if github_step_summary_path:
+        github_step_summary = Path(github_step_summary_path)
+        with github_step_summary.open('a') as f:
+            f.write("## ✅ All Links Valid\n\n")
+            f.write(f"Validated {total_links} links in workflow documentation.\n")
 
-        return 0
+    return 0
 
 
 def main():

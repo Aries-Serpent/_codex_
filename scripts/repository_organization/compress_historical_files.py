@@ -75,9 +75,8 @@ def compress_file_gzip(source_path: Path, dry_run: bool = False) -> Path | None:
         return dest_path
 
     try:
-        with open(source_path, "rb") as f_in:
-            with gzip.open(dest_path, "wb") as f_out:
-                shutil.copyfileobj(f_in, f_out)
+        with open(source_path, "rb") as f_in, gzip.open(dest_path, "wb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
 
         # Capture original size before removing original file
         original_size = source_path.stat().st_size
@@ -282,10 +281,7 @@ def main() -> int:
         return 1
 
     # Determine categories to compress
-    if args.all:
-        categories = list(COMPRESSIBLE_CATEGORIES)
-    else:
-        categories = [args.category]
+    categories = list(COMPRESSIBLE_CATEGORIES) if args.all else [args.category]
 
     # Compress each category
     total_files = 0

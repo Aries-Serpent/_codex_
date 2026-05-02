@@ -104,10 +104,7 @@ def add_entry_to_log(entry: str, resolved: bool = True) -> None:
     content = log_file.read_text()
 
     # Find the appropriate section
-    if resolved:
-        section_marker = "## Resolved Issues"
-    else:
-        section_marker = "## Active Issues (Unresolved)"
+    section_marker = "## Resolved Issues" if resolved else "## Active Issues (Unresolved)"
 
     # Find insertion point (after section header)
     section_start = content.find(section_marker)

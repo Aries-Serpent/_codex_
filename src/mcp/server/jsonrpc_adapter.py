@@ -48,8 +48,7 @@ def register_jsonrpc_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> Non
     @app.post("/jsonrpc")
     async def jsonrpc_endpoint(payload: Any = Body(...)):
         adapter = _get_adapter()
-        response = await handle_jsonrpc_request(payload, adapter)
-        return response
+        return await handle_jsonrpc_request(payload, adapter)
 
 
 def _get_adapter() -> BackendAdapter:
@@ -66,8 +65,7 @@ async def handle_jsonrpc_request(
 ) -> Union[dict[str, Any], list[dict[str, Any]]]:
     if isinstance(payload, list):
         tasks = [asyncio.create_task(_dispatch_method(p, adapter)) for p in payload]
-        results = await asyncio.gather(*tasks)
-        return results
+        return await asyncio.gather(*tasks)
     return await _dispatch_method(payload, adapter)
 
 

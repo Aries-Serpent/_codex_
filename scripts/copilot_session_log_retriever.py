@@ -15,6 +15,7 @@ Usage:
 """
 
 import argparse
+import contextlib
 import json
 import logging
 import os
@@ -210,10 +211,8 @@ class CopilotSessionRetriever:
         for row in cursor.fetchall():
             metadata = {}
             if row['metadata']:
-                try:
+                with contextlib.suppress(json.JSONDecodeError):
                     metadata = json.loads(row['metadata'])
-                except json.JSONDecodeError:
-                    pass
 
             entries.append(SessionLogEntry(
                 session_id=row['session_id'],

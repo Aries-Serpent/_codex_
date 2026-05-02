@@ -113,10 +113,9 @@ def hash_secure(data: str, algorithm: str = "sha256") -> str:
     """
     if algorithm == "sha256":
         return hashlib.sha256(data.encode("utf-8")).hexdigest()
-    elif algorithm == "sha512":
+    if algorithm == "sha512":
         return hashlib.sha512(data.encode("utf-8")).hexdigest()
-    else:
-        raise ValueError(f"Unsupported algorithm: {algorithm}. Use 'sha256' or 'sha512'.")
+    raise ValueError(f"Unsupported algorithm: {algorithm}. Use 'sha256' or 'sha512'.")
 
 
 def mask_sensitive(value: str, show_chars: int = 4) -> str:

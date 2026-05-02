@@ -213,9 +213,11 @@ class ResearchIntegrationPipeline:
             title = mock_titles[i % len(mock_titles)]
 
             # Generate abstract
-            abstract = f"This paper presents a novel approach to {title.lower()}. " \
-                      f"We demonstrate significant improvements over existing methods " \
-                      f"and provide theoretical guarantees for convergence."
+            abstract = (
+                f"This paper presents a novel approach to {title.lower()}. "
+                f"We demonstrate significant improvements over existing methods "
+                f"and provide theoretical guarantees for convergence."
+            )
 
             # Calculate relevance
             relevance = self._calculate_relevance(title, abstract)
@@ -321,7 +323,7 @@ class ResearchIntegrationPipeline:
             paper.implementation_effort = "high"
             estimated_weeks = "8-12 weeks"
 
-        assessment = {
+        return {
             "paper_id": paper.arxiv_id,
             "title": paper.title,
             "feasibility_score": overall_feasibility,
@@ -331,7 +333,6 @@ class ResearchIntegrationPipeline:
             "recommendation": "proceed" if overall_feasibility > 0.6 else "defer"
         }
 
-        return assessment
 
     def create_integration_roadmap(
         self,
@@ -408,7 +409,7 @@ class ResearchIntegrationPipeline:
             papers = self.discovered_papers
 
         # Sort by relevance score (descending) and feasibility score (descending)
-        sorted_papers = sorted(
+        return sorted(
             papers,
             key=lambda p: (
                 {"critical": 4, "high": 3, "medium": 2, "low": 1}.get(p.priority, 0),
@@ -418,7 +419,6 @@ class ResearchIntegrationPipeline:
             reverse=True
         )
 
-        return sorted_papers
 
     def generate_integration_report(
         self,
@@ -508,9 +508,8 @@ class ResearchIntegrationPipeline:
         avg_weeks_per_integration = total_weeks / len(roadmaps)
 
         # Estimate annual capacity
-        estimated_annual = int(weeks_per_year / avg_weeks_per_integration)
+        return int(weeks_per_year / avg_weeks_per_integration)
 
-        return estimated_annual
 
     def _generate_markdown_report(self, report: Dict[str, Any]):
         """Generate markdown version of integration report"""
@@ -599,4 +598,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

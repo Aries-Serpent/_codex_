@@ -396,11 +396,10 @@ def validate_document(
 
     if isinstance(source, (str, Path)) and Path(source).exists():
         return validator.validate_file(source)
-    elif isinstance(source, bytes):
+    if isinstance(source, bytes):
         return validator.validate_bytes(source, filename)
-    elif isinstance(source, str):
+    if isinstance(source, str):
         return validator.validate_text(source)
-    else:
-        result = ValidationResult(is_valid=False, document_format=DocumentFormat.UNKNOWN)
-        result.add_error(f"Unsupported source type: {type(source)}")
-        return result
+    result = ValidationResult(is_valid=False, document_format=DocumentFormat.UNKNOWN)
+    result.add_error(f"Unsupported source type: {type(source)}")
+    return result

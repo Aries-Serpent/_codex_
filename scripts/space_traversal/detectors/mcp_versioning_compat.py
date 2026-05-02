@@ -216,10 +216,7 @@ def _is_safe_path(path: Path) -> bool:
             return False
 
         # Validate path exists and is a file
-        if not resolved.exists() or not resolved.is_file():
-            return False
-
-        return True
+        return not (not resolved.exists() or not resolved.is_file())
     except Exception:
         # Defensive fallback (safeguard)
         return False

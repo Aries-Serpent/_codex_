@@ -145,11 +145,10 @@ def main() -> int:
         print(f"✅ All checks passed ({passed}/{total})")
         print("\n🎉 Python 3.12 version configuration is valid!")
         return 0
-    else:
-        failed = total - passed
-        print(f"❌ {failed} check(s) failed ({passed}/{total} passed)")
-        print("\n💡 Fix the issues above and run again.")
-        return 1
+    failed = total - passed
+    print(f"❌ {failed} check(s) failed ({passed}/{total} passed)")
+    print("\n💡 Fix the issues above and run again.")
+    return 1
 
 
 if __name__ == "__main__":

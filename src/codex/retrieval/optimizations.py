@@ -321,9 +321,8 @@ def enable_memory_mapped_index(index_path: Path, read_only: bool = True) -> bool
     if size_mb > 100:
         logger.info(f"Large index detected ({size_mb:.2f} MB), memory mapping recommended")
         return True
-    else:
-        logger.info(f"Small index ({size_mb:.2f} MB), memory mapping not needed")
-        return False
+    logger.info(f"Small index ({size_mb:.2f} MB), memory mapping not needed")
+    return False
 
 
 def precompute_index_structures(store: Any, sample_size: int = 10000) -> None:

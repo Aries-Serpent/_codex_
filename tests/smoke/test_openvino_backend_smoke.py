@@ -42,12 +42,9 @@ def _load_backend(mock_openvino: bool = False):
             sys.modules,
             {"openvino": mock_ov, "openvino.runtime": mock_ov_runtime},
         ):
-            mod = importlib.import_module(mod_name)
-        return mod
-    else:
-        with patch.dict(sys.modules, {"openvino": None, "openvino.runtime": None}):
-            mod = importlib.import_module(mod_name)
-        return mod
+            return importlib.import_module(mod_name)
+    with patch.dict(sys.modules, {"openvino": None, "openvino.runtime": None}):
+        return importlib.import_module(mod_name)
 
 
 class TestOpenVINOBackendUnavailable:

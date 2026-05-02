@@ -169,8 +169,7 @@ class TokenManager:
         signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
 
         # Combine all parts
-        token = f"{header_b64}.{payload_b64}.{signature_b64}"
-        return token
+        return f"{header_b64}.{payload_b64}.{signature_b64}"
 
     def _decode_token(self, token: str) -> TokenClaims:
         """
@@ -216,9 +215,7 @@ class TokenManager:
             payload = json.loads(payload_bytes.decode())
 
             # Create claims
-            claims = TokenClaims.from_dict(payload)
-
-            return claims
+            return TokenClaims.from_dict(payload)
 
         except Exception as e:
             error_msg = sanitize_log_message(f"Token decode failed: {str(e)}")

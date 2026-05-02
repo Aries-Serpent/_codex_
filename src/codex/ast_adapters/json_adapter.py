@@ -115,7 +115,7 @@ class JSONASTAdapter(BaseASTAdapter):
 
             return node
 
-        elif isinstance(data, list):
+        if isinstance(data, list):
             # Array node
             node = StandardizedASTNode(
                 node_id=str(uuid.uuid4()),
@@ -136,22 +136,19 @@ class JSONASTAdapter(BaseASTAdapter):
 
             return node
 
-        else:
-            # Primitive node (string, int, float, bool, None)
-            node = StandardizedASTNode(
-                node_id=str(uuid.uuid4()),
-                node_type="primitive",
-                name=key or "<primitive>",
-                children=[],
-                metadata={
-                    "value": data,
-                    "value_type": type(data).__name__,
-                    "is_null": data is None,
-                },
-                parent=parent,
-            )
-
-            return node
+        # Primitive node (string, int, float, bool, None)
+        return StandardizedASTNode(
+            node_id=str(uuid.uuid4()),
+            node_type="primitive",
+            name=key or "<primitive>",
+            children=[],
+            metadata={
+                "value": data,
+                "value_type": type(data).__name__,
+                "is_null": data is None,
+            },
+            parent=parent,
+        )
 
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """

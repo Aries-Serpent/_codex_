@@ -162,9 +162,7 @@ class ConsistentHashRing:
 
         # Get shard ID from ring map
         ring_hash = self._ring[idx]
-        shard_id = self._ring_map[ring_hash]
-
-        return shard_id
+        return self._ring_map[ring_hash]
 
     def get_shard_distribution(self, keys: List[str]) -> Dict[int, int]:
         """Analyze shard distribution for a list of keys.
@@ -252,12 +250,11 @@ def get_shard_for_id(doc_id: str, total_shards: int, use_consistent_hashing: boo
         # Use consistent hashing for better distribution
         ring = ConsistentHashRing(total_shards)
         return ring.get_shard(doc_id)
-    else:
-        # Simple modulo hashing - MD5 used for distribution, not security
-        # nosec B324 - MD5 used for data distribution hashing, not cryptographic security
-        hash_obj = hashlib.md5(doc_id.encode(), usedforsecurity=False)
-        hash_int = int.from_bytes(hash_obj.digest()[:4], "big")
-        return hash_int % total_shards
+    # Simple modulo hashing - MD5 used for distribution, not security
+    # nosec B324 - MD5 used for data distribution hashing, not cryptographic security
+    hash_obj = hashlib.md5(doc_id.encode(), usedforsecurity=False)
+    hash_int = int.from_bytes(hash_obj.digest()[:4], "big")
+    return hash_int % total_shards
 
 
 class ShardManager:

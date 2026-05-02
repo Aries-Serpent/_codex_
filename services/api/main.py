@@ -40,7 +40,7 @@ if not hasattr(torch, "tensor") or not hasattr(torch, "as_tensor"):
                 for part in item:
                     current = current[part]
                     if isinstance(current, _FakeTensor):
-                        current = current
+                        pass  # already a _FakeTensor
                 return current
             value = self._data[item]
             return _FakeTensor(value) if isinstance(value, list) else value

@@ -309,8 +309,7 @@ def bleu(
         result = float(score.score / 100.0)
         # Clamp to [0, 1] — sacrebleu can return values marginally above 1.0
         # due to floating-point arithmetic (e.g. 1.0000000000000004).
-        result = max(0.0, min(1.0, result))
-        return result
+        return max(0.0, min(1.0, result))
     except Exception:
         logger.warning(
             "sacrebleu import or computation failed, falling back to NLTK",
@@ -355,7 +354,6 @@ def rouge_l(
     try:
         from rouge_score import rouge_scorer
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)

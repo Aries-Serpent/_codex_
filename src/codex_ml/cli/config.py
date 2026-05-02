@@ -170,7 +170,7 @@ def _normalize_defaults(defaults: Any) -> list[str]:
         if isinstance(entry, str):
             normalized.append(entry)
         elif isinstance(entry, dict):
-            normalized.extend(str(key) for key in entry.keys())
+            normalized.extend(str(key) for key in entry)
     return normalized
 
 

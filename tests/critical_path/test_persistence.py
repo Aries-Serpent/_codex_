@@ -220,26 +220,25 @@ class TestTransactionHandling:
             conn.commit()
 
         # Two separate connections
-        with manager.connection() as conn1:
-            with manager.connection() as conn2:
-                cursor1 = conn1.cursor()
-                cursor2 = conn2.cursor()
+        with manager.connection() as conn1, manager.connection() as conn2:
+            cursor1 = conn1.cursor()
+            cursor2 = conn2.cursor()
 
-                # Connection 1 starts transaction
-                cursor1.execute("UPDATE inventory SET quantity = 5 WHERE id = 1")
+            # Connection 1 starts transaction
+            cursor1.execute("UPDATE inventory SET quantity = 5 WHERE id = 1")
 
-                # Connection 2 still sees old value (isolation)
-                cursor2.execute("SELECT quantity FROM inventory WHERE id = 1")
-                row = cursor2.fetchone()
-                assert row[0] == 10  # Unchanged
+            # Connection 2 still sees old value (isolation)
+            cursor2.execute("SELECT quantity FROM inventory WHERE id = 1")
+            row = cursor2.fetchone()
+            assert row[0] == 10  # Unchanged
 
-                # Connection 1 commits
-                conn1.commit()
+            # Connection 1 commits
+            conn1.commit()
 
-                # Connection 2 now sees new value
-                cursor2.execute("SELECT quantity FROM inventory WHERE id = 1")
-                row = cursor2.fetchone()
-                assert row[0] == 5  # Updated
+            # Connection 2 now sees new value
+            cursor2.execute("SELECT quantity FROM inventory WHERE id = 1")
+            row = cursor2.fetchone()
+            assert row[0] == 5  # Updated
 
     def test_nested_transactions(self, tmp_path):
         """Test nested transaction-like behavior using savepoints."""
@@ -611,9 +610,8 @@ class TestBackupRestoreWorkflows:
             conn.commit()
 
         # Backup using SQLite backup API
-        with manager.connection() as source:
-            with sqlite3.connect(backup_path) as target:
-                _raw_conn(source).backup(_raw_conn(target))
+        with manager.connection() as source, sqlite3.connect(backup_path) as target:
+            _raw_conn(source).backup(_raw_conn(target))
 
         # Verify backup
         assert backup_path.exists()
@@ -643,14 +641,12 @@ class TestBackupRestoreWorkflows:
             conn.commit()
 
         # Create backup
-        with sqlite3.connect(original_db) as source:
-            with sqlite3.connect(backup_db) as target:
-                _raw_conn(source).backup(_raw_conn(target))
+        with sqlite3.connect(original_db) as source, sqlite3.connect(backup_db) as target:
+            _raw_conn(source).backup(_raw_conn(target))
 
         # Restore to new location
-        with sqlite3.connect(backup_db) as source:
-            with sqlite3.connect(restored_db) as target:
-                _raw_conn(source).backup(_raw_conn(target))
+        with sqlite3.connect(backup_db) as source, sqlite3.connect(restored_db) as target:
+            _raw_conn(source).backup(_raw_conn(target))
 
         # Verify restore
         with sqlite3.connect(restored_db) as conn:
@@ -679,9 +675,8 @@ class TestBackupRestoreWorkflows:
 
         # Backup 1
         backup1 = backup_dir / "backup1.db"
-        with sqlite3.connect(db_path) as source:
-            with sqlite3.connect(backup1) as target:
-                _raw_conn(source).backup(_raw_conn(target))
+        with sqlite3.connect(db_path) as source, sqlite3.connect(backup1) as target:
+            _raw_conn(source).backup(_raw_conn(target))
 
         # More changes
         with manager.connection() as conn:
@@ -691,9 +686,8 @@ class TestBackupRestoreWorkflows:
 
         # Backup 2
         backup2 = backup_dir / "backup2.db"
-        with sqlite3.connect(db_path) as source:
-            with sqlite3.connect(backup2) as target:
-                _raw_conn(source).backup(_raw_conn(target))
+        with sqlite3.connect(db_path) as source, sqlite3.connect(backup2) as target:
+            _raw_conn(source).backup(_raw_conn(target))
 
         # Verify backups have different content
         with sqlite3.connect(backup1) as conn:
@@ -728,9 +722,8 @@ class TestBackupRestoreWorkflows:
             conn.commit()
 
         # Backup
-        with sqlite3.connect(db_path) as source:
-            with sqlite3.connect(backup_path) as target:
-                _raw_conn(source).backup(_raw_conn(target))
+        with sqlite3.connect(db_path) as source, sqlite3.connect(backup_path) as target:
+            _raw_conn(source).backup(_raw_conn(target))
 
         # Verify backup
         with sqlite3.connect(backup_path) as conn:

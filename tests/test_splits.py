@@ -20,8 +20,10 @@ def test_stable_fold_deterministic(example_id):
 
 
 def test_assign_split_stable():
-    assert assign_split("alpha") == assign_split("alpha")
-    assert assign_split("alpha") in {"train", "val", "test"}
+    result_a = assign_split("alpha")
+    result_b = assign_split("alpha")
+    assert result_a == result_b
+    assert result_a in {"train", "val", "test"}
 
 
 @pytest.mark.parametrize("count", [101, 1000])

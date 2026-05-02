@@ -96,12 +96,11 @@ class IntelligentAudioAnalyzer:
         # Decision tree classification
         if zcr_mean > 0.15 and spectral_centroid_mean > 3000:
             return "speech"
-        elif tempo > 80 and features.get("has_strong_beat"):
+        if tempo > 80 and features.get("has_strong_beat"):
             return "music"
-        elif zcr_mean < 0.05:
+        if zcr_mean < 0.05:
             return "ambient"
-        else:
-            return "mixed"
+        return "mixed"
 
     def _detect_problems(self, audio: Optional[np.ndarray], features: Dict[str, Any]) -> List[str]:
         """Detect audio problems."""

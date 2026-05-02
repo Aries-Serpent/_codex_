@@ -69,7 +69,6 @@ def append_error_entry(step_name: str, message: str, context: str, question: str
             handle.write(block)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Error reporting should never raise further exceptions.
 
 
@@ -97,7 +96,6 @@ def _load_policy_from_file() -> Optional[str]:
     try:
         raw = path.read_text(encoding="utf-8")
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
     # Minimal TOML parse: look for 'policy = "<value>"'
@@ -256,7 +254,6 @@ def init_metric_plugins(*, force: bool = False) -> int:
     try:
         from codex_ml.plugins import load_plugins
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return 0
 
@@ -536,10 +533,9 @@ def f1(preds: Sequence[str], targets: Sequence[str]) -> float:
 
 def _distinct_ngrams(preds: Sequence[str], n: int) -> float:
     toks = [tok for p in preds for tok in _norm_str(p, remove_punct=True).split()]
-    if n <= 1:
-        ngrams = toks
-    else:
-        ngrams = [" ".join(toks[i : i + n]) for i in range(max(0, len(toks) - n + 1))]
+    ngrams = (
+        toks if n <= 1 else [" ".join(toks[i : i + n]) for i in range(max(0, len(toks) - n + 1))]
+    )
     total = len(ngrams)
     return float(len(set(ngrams)) / total) if total else 0.0
 

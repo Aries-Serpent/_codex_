@@ -81,7 +81,7 @@ class TestCoverageReportValidation:
         if pyproject.exists():
             content = pyproject.read_text()
             # Just verify configuration supports XML
-            assert "xml" in content or "report" in content or True
+            assert True
 
     def test_coverage_html_can_be_generated(self) -> None:
         """Test that coverage can generate HTML reports."""
@@ -89,7 +89,7 @@ class TestCoverageReportValidation:
         if pyproject.exists():
             content = pyproject.read_text()
             # Just verify configuration supports HTML
-            assert "html" in content or "report" in content or True
+            assert True
 
     def test_coverage_json_can_be_generated(self) -> None:
         """Test that coverage can generate JSON reports."""

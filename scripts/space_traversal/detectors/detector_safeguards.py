@@ -197,10 +197,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
 
         # Read and analyze file (bounded read for safety)
         # Support both absolute paths (for tests) and relative paths (for repo files)
-        if path_obj.is_absolute():
-            text = _read_text(path_obj)
-        else:
-            text = _read_text(REPO_ROOT / rel_path)
+        text = _read_text(path_obj) if path_obj.is_absolute() else _read_text(REPO_ROOT / rel_path)
 
         if not text:
             continue

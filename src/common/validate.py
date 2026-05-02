@@ -86,7 +86,6 @@ def run_clean_checkpoint(
         suite = context.get_expectation_suite(suite_name)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         suite = context.add_or_update_expectation_suite(suite_name)
 
     validator = context.sources.pandas_default.read_csv(str(clean_csv))

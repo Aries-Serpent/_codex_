@@ -104,7 +104,6 @@ def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
         mlflow.set_tracking_uri(uri)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
 
 
@@ -428,7 +427,6 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
             # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
             _nv.nvmlShutdown()
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             gpu = False
 
@@ -791,7 +789,6 @@ def _filter_scalars(values: dict[str, Any]) -> dict[str, float]:
         try:
             out[k] = float(v)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             continue
     return out

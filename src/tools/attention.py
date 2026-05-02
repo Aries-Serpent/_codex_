@@ -70,30 +70,28 @@ class AttentionScorer:
             weights = exp_scores / np.sum(exp_scores)
 
             return weights.tolist()
-        else:
-            # Pure Python fallback
-            d_k = len(query_list)
+        # Pure Python fallback
+        d_k = len(query_list)
 
-            # Compute dot products
-            scores = []
-            for key in keys_list:
-                dot_product = sum(q * k for q, k in zip(query_list, key, strict=False))
-                scores.append(dot_product / math.sqrt(d_k))
+        # Compute dot products
+        scores = []
+        for key in keys_list:
+            dot_product = sum(q * k for q, k in zip(query_list, key, strict=False))
+            scores.append(dot_product / math.sqrt(d_k))
 
-            # Apply temperature
-            scores = [s / temperature for s in scores]
+        # Apply temperature
+        scores = [s / temperature for s in scores]
 
-            # Softmax with numerical stability
-            max_score = max(scores) if scores else 0.0
-            exp_scores = [math.exp(s - max_score) for s in scores]
-            sum_exp = sum(exp_scores)
+        # Softmax with numerical stability
+        max_score = max(scores) if scores else 0.0
+        exp_scores = [math.exp(s - max_score) for s in scores]
+        sum_exp = sum(exp_scores)
 
-            if sum_exp == 0:
-                # Uniform distribution if all scores are -inf
-                return [1.0 / len(keys_list)] * len(keys_list)
+        if sum_exp == 0:
+            # Uniform distribution if all scores are -inf
+            return [1.0 / len(keys_list)] * len(keys_list)
 
-            weights = [e / sum_exp for e in exp_scores]
-            return weights
+        return [e / sum_exp for e in exp_scores]
 
     @staticmethod
     def top_k_indices(

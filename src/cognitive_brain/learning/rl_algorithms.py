@@ -237,7 +237,7 @@ class QLearning(RLAlgorithm):
         """
         if available_actions is None:
             # Get all actions seen from this state
-            available_actions = [a for (s, a) in self.q_table.keys() if s == state]
+            available_actions = [a for (s, a) in self.q_table if s == state]
             if not available_actions:
                 # Explore if no actions known
                 return np.random.choice(["action_0", "action_1", "action_2"])
@@ -246,15 +246,12 @@ class QLearning(RLAlgorithm):
         if np.random.random() < self.epsilon:
             # Explore: random action
             return np.random.choice(available_actions)
-        else:
-            # Exploit: best known action
-            q_values = [self._get_q_value(state, a) for a in available_actions]
-            max_q = max(q_values)
-            # Handle ties randomly
-            best_actions = [
-                a for a, q in zip(available_actions, q_values, strict=False) if q == max_q
-            ]
-            return np.random.choice(best_actions)
+        # Exploit: best known action
+        q_values = [self._get_q_value(state, a) for a in available_actions]
+        max_q = max(q_values)
+        # Handle ties randomly
+        best_actions = [a for a, q in zip(available_actions, q_values, strict=False) if q == max_q]
+        return np.random.choice(best_actions)
 
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """
@@ -276,7 +273,7 @@ class QLearning(RLAlgorithm):
             target_q = reward
         else:
             # Get max Q-value for next state
-            next_actions = [a for (s, a) in self.q_table.keys() if s == next_state]
+            next_actions = [a for (s, a) in self.q_table if s == next_state]
             if next_actions:
                 next_q_values = [self._get_q_value(next_state, a) for a in next_actions]
                 max_next_q = max(next_q_values)
@@ -305,10 +302,10 @@ class QLearning(RLAlgorithm):
             Mapping from states to best actions
         """
         policy = {}
-        states = set(s for (s, a) in self.q_table.keys())
+        states = set(s for (s, a) in self.q_table)
 
         for state in states:
-            actions = [a for (s, a) in self.q_table.keys() if s == state]
+            actions = [a for (s, a) in self.q_table if s == state]
             if actions:
                 q_values = [self._get_q_value(state, a) for a in actions]
                 best_action = actions[np.argmax(q_values)]
@@ -326,7 +323,7 @@ class QLearning(RLAlgorithm):
         Returns:
             State value
         """
-        actions = [a for (s, a) in self.q_table.keys() if s == state]
+        actions = [a for (s, a) in self.q_table if s == state]
         if not actions:
             return 0.0
 
@@ -446,10 +443,9 @@ class DQN(RLAlgorithm):
         if np.random.random() < self.epsilon:
             # Explore
             return np.random.choice(["action_0", "action_1", "action_2"])
-        else:
-            # Exploit
-            q_values = self._get_q_values(state)
-            return max(q_values, key=q_values.get)  # type: ignore[arg-type]
+        # Exploit
+        q_values = self._get_q_values(state)
+        return max(q_values, key=q_values.get)  # type: ignore[arg-type]
 
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """
@@ -623,9 +619,7 @@ class PPO(RLAlgorithm):
         max_logit = max(logits.values())
         exp_logits = {a: np.exp(logit_val - max_logit) for a, logit_val in logits.items()}
         total = sum(exp_logits.values())
-        probs = {a: e / total for a, e in exp_logits.items()}
-
-        return probs
+        return {a: e / total for a, e in exp_logits.items()}
 
     def _get_value(self, state: Any) -> float:
         """

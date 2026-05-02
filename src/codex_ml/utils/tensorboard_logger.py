@@ -48,10 +48,7 @@ def get_tb_writer(
         return
 
     # Set default log directory
-    if log_dir is None:
-        log_dir = Path("artifacts/tb_runs")
-    else:
-        log_dir = Path(log_dir)
+    log_dir = Path("artifacts/tb_runs") if log_dir is None else Path(log_dir)
 
     # Try to import TensorBoard
     writer = None
@@ -81,7 +78,6 @@ def get_tb_writer(
 
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Any other error - gracefully degrade
         yield None
 
@@ -91,7 +87,6 @@ def get_tb_writer(
             try:
                 writer.close()
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 # Silently ignore close errors to ensure cleanup doesn't fail
                 # the entire context. Common errors include already-closed writers

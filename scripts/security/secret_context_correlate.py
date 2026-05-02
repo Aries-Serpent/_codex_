@@ -88,7 +88,6 @@ def load_file_content(file_path: Path) -> Optional[FileContent]:
         text = file_path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
     lines = text.splitlines()

@@ -89,9 +89,8 @@ class SQLiteUserRepository(UserRepository):
         return self._conn
 
     def _init_schema(self) -> None:
-        with self._lock:
-            with self._get_conn() as conn:
-                conn.executescript(_SCHEMA)
+        with self._lock, self._get_conn() as conn:
+            conn.executescript(_SCHEMA)
 
     # ------------------------------------------------------------------ #
     # Write operations                                                     #
@@ -103,39 +102,38 @@ class SQLiteUserRepository(UserRepository):
         Raises:
             ValueError: If ``username`` or ``email`` already exists.
         """
-        with self._lock:
-            with self._get_conn() as conn:
-                try:
-                    conn.execute(
-                        """
+        with self._lock, self._get_conn() as conn:
+            try:
+                conn.execute(
+                    """
                         INSERT INTO users
                             (id, username, email, password_hash, is_active,
                              roles, display_name, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
-                        (
-                            user.user_id,
-                            user.username,
-                            user.email,
-                            user.password_hash,
-                            int(user.is_active),
-                            json.dumps(user.roles),
-                            user.display_name,
-                            user.created_at,
-                            user.updated_at,
-                        ),
-                    )
-                except sqlite3.IntegrityError as exc:
-                    msg = str(exc).lower()
-                    if "username" in msg:
-                        raise ValueError(
-                            f"Username '{sanitize_log_message(user.username)}' is already taken"
-                        ) from exc
-                    if "email" in msg:
-                        raise ValueError(
-                            f"Email '{sanitize_log_message(user.email)}' is already registered"
-                        ) from exc
-                    raise ValueError(str(exc)) from exc
+                    (
+                        user.user_id,
+                        user.username,
+                        user.email,
+                        user.password_hash,
+                        int(user.is_active),
+                        json.dumps(user.roles),
+                        user.display_name,
+                        user.created_at,
+                        user.updated_at,
+                    ),
+                )
+            except sqlite3.IntegrityError as exc:
+                msg = str(exc).lower()
+                if "username" in msg:
+                    raise ValueError(
+                        f"Username '{sanitize_log_message(user.username)}' is already taken"
+                    ) from exc
+                if "email" in msg:
+                    raise ValueError(
+                        f"Email '{sanitize_log_message(user.email)}' is already registered"
+                    ) from exc
+                raise ValueError(str(exc)) from exc
         return user
 
     def update(self, user: User) -> User:
@@ -144,10 +142,9 @@ class SQLiteUserRepository(UserRepository):
         Raises:
             KeyError: If ``user.user_id`` is not found.
         """
-        with self._lock:
-            with self._get_conn() as conn:
-                cursor = conn.execute(
-                    """
+        with self._lock, self._get_conn() as conn:
+            cursor = conn.execute(
+                """
                     UPDATE users SET
                         username      = ?,
                         email         = ?,
@@ -158,19 +155,19 @@ class SQLiteUserRepository(UserRepository):
                         updated_at    = ?
                     WHERE id = ?
                     """,
-                    (
-                        user.username,
-                        user.email,
-                        user.password_hash,
-                        int(user.is_active),
-                        json.dumps(user.roles),
-                        user.display_name,
-                        time.time(),
-                        user.user_id,
-                    ),
-                )
-                if cursor.rowcount == 0:
-                    raise KeyError(f"User '{user.user_id}' not found")
+                (
+                    user.username,
+                    user.email,
+                    user.password_hash,
+                    int(user.is_active),
+                    json.dumps(user.roles),
+                    user.display_name,
+                    time.time(),
+                    user.user_id,
+                ),
+            )
+            if cursor.rowcount == 0:
+                raise KeyError(f"User '{user.user_id}' not found")
         return user
 
     def delete(self, user_id: str) -> None:
@@ -179,38 +176,33 @@ class SQLiteUserRepository(UserRepository):
         Raises:
             KeyError: If *user_id* is not found.
         """
-        with self._lock:
-            with self._get_conn() as conn:
-                cursor = conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
-                if cursor.rowcount == 0:
-                    raise KeyError(f"User '{user_id}' not found")
+        with self._lock, self._get_conn() as conn:
+            cursor = conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+            if cursor.rowcount == 0:
+                raise KeyError(f"User '{user_id}' not found")
 
     # ------------------------------------------------------------------ #
     # Read / query operations                                              #
     # ------------------------------------------------------------------ #
 
     def get_by_id(self, user_id: str) -> Optional[User]:
-        with self._lock:
-            with self._get_conn() as conn:
-                row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+        with self._lock, self._get_conn() as conn:
+            row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
         return _row_to_user(row) if row else None
 
     def get_by_username(self, username: str) -> Optional[User]:
         username = username.strip()
-        with self._lock:
-            with self._get_conn() as conn:
-                row = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+        with self._lock, self._get_conn() as conn:
+            row = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
         return _row_to_user(row) if row else None
 
     def get_by_email(self, email: str) -> Optional[User]:
         email = email.strip().lower()
-        with self._lock:
-            with self._get_conn() as conn:
-                row = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+        with self._lock, self._get_conn() as conn:
+            row = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
         return _row_to_user(row) if row else None
 
     def list_all(self) -> list[User]:
-        with self._lock:
-            with self._get_conn() as conn:
-                rows = conn.execute("SELECT * FROM users").fetchall()
+        with self._lock, self._get_conn() as conn:
+            rows = conn.execute("SELECT * FROM users").fetchall()
         return [_row_to_user(r) for r in rows]

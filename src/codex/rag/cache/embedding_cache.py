@@ -7,6 +7,7 @@ Provides caching for embedding vectors with:
 - Batch caching operations
 """
 
+import contextlib
 import hashlib
 import logging
 import threading
@@ -346,10 +347,8 @@ class EmbeddingCache:
             if self._disk_path:
                 disk_file = self._disk_path / f"{key}.npy"
                 if disk_file.exists():
-                    try:
+                    with contextlib.suppress(OSError):
                         disk_file.unlink()
-                    except OSError:
-                        pass
                     found = True
             return found
         finally:
@@ -365,10 +364,8 @@ class EmbeddingCache:
             # Also remove all disk files so get() cannot resurrect entries via _load_from_disk
             if self._disk_path:
                 for disk_file in self._disk_path.glob("*.npy"):
-                    try:
+                    with contextlib.suppress(OSError):
                         disk_file.unlink()
-                    except OSError:
-                        pass
             logger.debug("Embedding cache cleared")
         finally:
             self._release_lock()

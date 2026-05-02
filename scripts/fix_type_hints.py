@@ -235,9 +235,8 @@ def fix_imports(file_path: Path, analysis: dict, dry_run: bool = True) -> bool:
                 # Found first real line
                 if stripped.startswith("import ") or stripped.startswith("from "):
                     continue
-                else:
-                    insert_line = i
-                    break
+                insert_line = i
+                break
 
             # Insert new import
             new_import = f"from typing import {', '.join(sorted(missing))}\n"
@@ -281,9 +280,8 @@ def process_directory(directory: Path, dry_run: bool = True, fix: bool = False) 
             stats["needs_fix"] += 1
             logger.info(f"\n{py_file}: Missing {analysis['missing']}")
 
-            if fix:
-                if fix_imports(py_file, analysis, dry_run):
-                    stats["fixed"] += 1
+            if fix and fix_imports(py_file, analysis, dry_run):
+                stats["fixed"] += 1
 
     return stats
 
@@ -332,7 +330,7 @@ def main():
 
         return 0
 
-    elif args.directory:
+    if args.directory:
         stats = process_directory(args.directory, dry_run, args.fix or dry_run)
 
         logger.info(f"\n{'='*60}")
@@ -346,9 +344,8 @@ def main():
 
         return 0 if stats["errors"] == 0 else 1
 
-    else:
-        parser.print_help()
-        return 1
+    parser.print_help()
+    return 1
 
 
 if __name__ == "__main__":

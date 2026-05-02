@@ -65,8 +65,7 @@ def _instantiate_fallback(torch_mod: Any) -> Any:
     # Minimal model to support smoke tests without external checkpoints.
     import torch.nn as nn
 
-    model = nn.Sequential(nn.Linear(4, 4), nn.ReLU(), nn.Linear(4, 2))
-    return model
+    return nn.Sequential(nn.Linear(4, 4), nn.ReLU(), nn.Linear(4, 2))
 
 
 def _load_checkpoint(torch_mod: Any, config: ModelConfig, map_location: str) -> Any:

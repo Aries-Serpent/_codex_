@@ -47,7 +47,7 @@ def report_main(format: str, output: str, report_type: str):
     if not entries:
         md = "# Codex Metrics Report\n\n_No metrics data found in `.codex/metrics.ndjson`._\n"
     else:
-        keys = sorted({k for e in entries for k in e.keys()})
+        keys = sorted({k for e in entries for k in e})
         header = "| " + " | ".join(keys) + " |"
         sep = "| " + " | ".join("---" for _ in keys) + " |"
         rows = []
@@ -77,7 +77,7 @@ def dashboard_main(output: str, open_browser: bool):
     if not entries:
         body = "<p><em>No metrics data found in <code>.codex/metrics.ndjson</code>.</em></p>"
     else:
-        keys = sorted({k for e in entries for k in e.keys()})
+        keys = sorted({k for e in entries for k in e})
         header_cells = "".join(f"<th>{k}</th>" for k in keys)
         rows_html = ""
         for e in entries:

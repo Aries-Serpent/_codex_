@@ -77,9 +77,9 @@ class MemoryAugmentedComplianceAssessor:
 
     def __init__(
         self,
-        config: QuantumConfig,
-        monitor: CoherenceMonitor,
-        repository: QuantumMetricRepository,
+        config: Optional[QuantumConfig] = None,
+        monitor: Optional[CoherenceMonitor] = None,
+        repository: Optional[QuantumMetricRepository] = None,
         memory_manager: Optional[QuantumMemoryManager] = None,
         confidence_threshold: float = 0.85,
         enable_memory: bool = True,
@@ -88,16 +88,16 @@ class MemoryAugmentedComplianceAssessor:
         Initialize memory-augmented assessor.
 
         Args:
-            config: Quantum configuration
-            monitor: Coherence monitor
-            repository: Metric repository
+            config: Quantum configuration (defaults to ``QuantumConfig()``)
+            monitor: Coherence monitor (defaults to ``CoherenceMonitor()``)
+            repository: Metric repository (defaults to ``QuantumMetricRepository()``)
             memory_manager: Memory manager (created if None)
             confidence_threshold: Minimum confidence for cache hit (default: 0.85)
             enable_memory: Whether to use memory (feature flag)
         """
-        self.config = config
-        self.monitor = monitor
-        self.repository = repository
+        self.config = config or QuantumConfig()
+        self.monitor = monitor or CoherenceMonitor()
+        self.repository = repository or QuantumMetricRepository()
         self.confidence_threshold = confidence_threshold
         self.enable_memory = enable_memory
 
@@ -108,7 +108,7 @@ class MemoryAugmentedComplianceAssessor:
 
         # Create or use provided memory manager
         if memory_manager is None:
-            self.memory = QuantumMemoryManager(config)
+            self.memory = QuantumMemoryManager(self.config)
         else:
             self.memory = memory_manager
 
@@ -304,15 +304,13 @@ class MemoryAugmentedComplianceAssessor:
             risk_value = risk_encoding[risk_level_normalized]
 
         # Normalize features to 0-1 range
-        features = {
+        return {
             "score": audit.score,  # Already 0-1
             "risk": risk_value,
             "cost_normalized": min(audit.remediation_cost / 20000, 1.0),  # Cap at $20k
             "impact": audit.business_impact,  # Already 0-1
             "violation_count": min(len(audit.violations) / 10.0, 1.0),  # Cap at 10
         }
-
-        return features
 
 
 # Alias for backward compatibility

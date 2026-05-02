@@ -79,4 +79,6 @@ def test_take_n_strict(tmp_path: Path) -> None:
 @pytest.mark.parametrize("seed", [0, 1])
 def test_seeded_shuffle_deterministic(seed: int) -> None:
     items = [1, 2, 3, 4]
-    assert seeded_shuffle(items, seed) == seeded_shuffle(items, seed)
+    result_a = seeded_shuffle(items, seed)
+    result_b = seeded_shuffle(items, seed)
+    assert result_a == result_b

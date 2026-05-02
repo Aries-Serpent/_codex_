@@ -174,8 +174,7 @@ class StatementFingerprinter:
     def _normalize(self, text: str) -> str:
         """Basic normalization for fingerprinting."""
         text = text.lower().strip()
-        text = re.sub(r"\s+", " ", text)
-        return text
+        return re.sub(r"\s+", " ", text)
 
     def _tokenize(self, text: str) -> list[str]:
         """Tokenize text into words."""

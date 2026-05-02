@@ -540,7 +540,7 @@ def _prune_best_k(
     entries = idx.get("entries", [])
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
-    reverse = True if mode == "max" else False
+    reverse = mode == "max"
 
     entries_sorted = sorted(
         entries, key=lambda e: _metric_sort_key(e, reverse=reverse), reverse=reverse
@@ -806,7 +806,7 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
             f"Checksum mismatch for {p.name}: expected {expected}, got {actual}"
         )
     # Return a dataclass for convenience
-    return CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})
+    return CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__})
 
 
 def load_checkpoint(
@@ -832,7 +832,7 @@ def load_checkpoint(
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
-    meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})
+    meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__})
     # Integrity verification
     digest_meta = dict(meta_dict, sha256=None)
     expected_digest = meta_dict.get("sha256")
@@ -858,7 +858,7 @@ def load_best(
     if not entries:
         raise FileNotFoundError("No checkpoints found in index.")
     mode = idx.get("mode", "min").lower()
-    reverse = True if mode == "max" else False
+    reverse = mode == "max"
     entries_sorted = sorted(
         entries,
         key=lambda e: _metric_sort_key(e, reverse=reverse),

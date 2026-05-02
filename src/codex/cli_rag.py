@@ -821,8 +821,7 @@ def benchmark(
                         f"  • {reg['name']}: {reg['duration_change_percent']:.1f}% slower"
                     )
                 raise typer.Exit(1)
-            else:
-                console.print("\n[green]✅ No performance regressions detected[/green]")
+            console.print("\n[green]✅ No performance regressions detected[/green]")
 
     except ImportError as e:
         console.print(f"[red]❌ Missing benchmark dependencies: {e}[/red]")

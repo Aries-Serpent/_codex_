@@ -613,10 +613,7 @@ def main():
         return
 
     if report:
-        if args.json:
-            output = json.dumps(report.to_dict(), indent=2)
-        else:
-            output = report.to_markdown()
+        output = json.dumps(report.to_dict(), indent=2) if args.json else report.to_markdown()
 
         if args.output:
             args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -628,7 +625,7 @@ def main():
 
         # Exit with appropriate code
         if not report.is_valid:
-            exit(1)
+            raise SystemExit(1)
 
 
 if __name__ == "__main__":

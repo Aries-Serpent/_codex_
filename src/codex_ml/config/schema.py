@@ -118,7 +118,7 @@ def _coerce_eval(data: dict[str, Any]) -> EvalConfig:
     return EvalConfig(
         batch_size=int(data.get("batch_size", 8)),
         split=str(data.get("split", "validation")),
-        max_batches=(None if data.get("max_batches", None) is None else int(data["max_batches"])),
+        max_batches=(None if data.get("max_batches") is None else int(data["max_batches"])),
     )
 
 

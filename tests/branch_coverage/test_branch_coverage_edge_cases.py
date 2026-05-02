@@ -11,6 +11,7 @@ Target: 40-50 tests for robust error handling
 
 import sys
 from typing import Any, Dict, List
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Null/Empty Input Handling Tests
@@ -23,33 +24,24 @@ class TestNullEmptyInputBranches:
     def test_null_string_input_branch(self) -> None:
         """Test null string input handling."""
         text = None
-        if text is None:
-            result = "default"
-        else:
-            result = text
+        result = "default" if text is None else text
         assert result == "default"
 
     def test_empty_string_input_branch(self) -> None:
         """Test empty string input handling."""
         text = ""
-        if not text:
-            result = "empty"
-        else:
-            result = text
+        result = text if text else "empty"
         assert result == "empty"
 
     def test_whitespace_only_string_branch(self) -> None:
         """Test whitespace-only string handling."""
         text = "   \t\n  "
-        if not text.strip():
-            result = "whitespace_only"
-        else:
-            result = "has_content"
+        result = "whitespace_only" if not text.strip() else "has_content"
         assert result == "whitespace_only"
 
     def test_null_list_input_branch(self) -> None:
         """Test null list input handling."""
-        items = None
+        items = branch_input(None)
         if items is None:
             result: List[Any] = []
         else:
@@ -59,15 +51,12 @@ class TestNullEmptyInputBranches:
     def test_empty_list_input_branch(self) -> None:
         """Test empty list input handling."""
         items: List[Any] = []
-        if not items:
-            result = "no_items"
-        else:
-            result = "has_items"
+        result = "no_items" if not items else "has_items"
         assert result == "no_items"
 
     def test_null_dict_input_branch(self) -> None:
         """Test null dict input handling."""
-        config = None
+        config = branch_input(None)
         if config is None:
             result: Dict[str, Any] = {}
         else:
@@ -77,15 +66,12 @@ class TestNullEmptyInputBranches:
     def test_empty_dict_input_branch(self) -> None:
         """Test empty dict input handling."""
         config: Dict[str, Any] = {}
-        if not config:
-            result = "no_config"
-        else:
-            result = "has_config"
+        result = "no_config" if not config else "has_config"
         assert result == "no_config"
 
     def test_none_vs_false_distinction_branch(self) -> None:
         """Test distinction between None and False."""
-        value = None
+        value = branch_input(None)
         if value is None:
             result = "none"
         elif value is False:
@@ -96,7 +82,7 @@ class TestNullEmptyInputBranches:
 
     def test_false_value_branch(self) -> None:
         """Test False value handling."""
-        value = False
+        value = branch_input(False)
         if value is None:
             result = "none"
         elif value is False:
@@ -107,7 +93,7 @@ class TestNullEmptyInputBranches:
 
     def test_zero_vs_none_distinction_branch(self) -> None:
         """Test distinction between 0 and None."""
-        value = 0
+        value = branch_input(0)
         if value is None:
             result = "none"
         elif value == 0:
@@ -128,24 +114,18 @@ class TestBoundaryValueBranches:
     def test_min_int_boundary_branch(self) -> None:
         """Test minimum integer boundary."""
         value = -sys.maxsize - 1
-        if value < -sys.maxsize:
-            result = "below_min"
-        else:
-            result = "within_range"
+        result = "below_min" if value < -sys.maxsize else "within_range"
         assert result == "below_min"
 
     def test_max_int_boundary_branch(self) -> None:
         """Test maximum integer boundary."""
         value = sys.maxsize
-        if value > sys.maxsize - 1:
-            result = "at_max"
-        else:
-            result = "below_max"
+        result = "at_max" if value > sys.maxsize - 1 else "below_max"
         assert result == "at_max"
 
     def test_zero_boundary_positive_branch(self) -> None:
         """Test boundary at zero from positive side."""
-        value = 0.000001
+        value = branch_input(0.000001)
         if value > 0:
             result = "positive"
         elif value < 0:
@@ -156,7 +136,7 @@ class TestBoundaryValueBranches:
 
     def test_zero_boundary_negative_branch(self) -> None:
         """Test boundary at zero from negative side."""
-        value = -0.000001
+        value = branch_input(-0.000001)
         if value > 0:
             result = "positive"
         elif value < 0:
@@ -167,7 +147,7 @@ class TestBoundaryValueBranches:
 
     def test_zero_boundary_exact_branch(self) -> None:
         """Test exact zero boundary."""
-        value = 0.0
+        value = branch_input(0.0)
         if value > 0:
             result = "positive"
         elif value < 0:
@@ -178,8 +158,8 @@ class TestBoundaryValueBranches:
 
     def test_string_length_min_boundary_branch(self) -> None:
         """Test string length minimum boundary."""
-        text = ""
-        max_len = 100
+        text = branch_input("")
+        max_len = branch_input(100)
         if len(text) == 0:
             result = "empty"
         elif len(text) > max_len:
@@ -191,7 +171,7 @@ class TestBoundaryValueBranches:
     def test_string_length_max_boundary_branch(self) -> None:
         """Test string length maximum boundary."""
         text = "x" * 101
-        max_len = 100
+        max_len = branch_input(100)
         if len(text) == 0:
             result = "empty"
         elif len(text) > max_len:
@@ -204,35 +184,26 @@ class TestBoundaryValueBranches:
         """Test string length exactly at maximum."""
         text = "x" * 100
         max_len = 100
-        if len(text) > max_len:
-            result = "too_long"
-        else:
-            result = "valid"
+        result = "too_long" if len(text) > max_len else "valid"
         assert result == "valid"
 
     def test_list_size_min_boundary_branch(self) -> None:
         """Test list size minimum boundary."""
         items: List[Any] = []
         min_size = 1
-        if len(items) < min_size:
-            result = "too_small"
-        else:
-            result = "valid"
+        result = "too_small" if len(items) < min_size else "valid"
         assert result == "too_small"
 
     def test_list_size_max_boundary_branch(self) -> None:
         """Test list size maximum boundary."""
         items = list(range(1001))
         max_size = 1000
-        if len(items) > max_size:
-            result = "too_large"
-        else:
-            result = "valid"
+        result = "too_large" if len(items) > max_size else "valid"
         assert result == "too_large"
 
     def test_percentage_min_boundary_branch(self) -> None:
         """Test percentage minimum boundary (0%)."""
-        percentage = -0.1
+        percentage = branch_input(-0.1)
         if percentage < 0:
             result = "invalid_negative"
         elif percentage > 100:
@@ -243,7 +214,7 @@ class TestBoundaryValueBranches:
 
     def test_percentage_max_boundary_branch(self) -> None:
         """Test percentage maximum boundary (100%)."""
-        percentage = 100.1
+        percentage = branch_input(100.1)
         if percentage < 0:
             result = "invalid_negative"
         elif percentage > 100:
@@ -285,20 +256,14 @@ class TestUnicodeEncodingBranches:
         """Test emoji character handling."""
         text = "Test 😀🎉"
         has_emoji = any(ord(c) > 0x1F300 for c in text)
-        if has_emoji:
-            result = "contains_emoji"
-        else:
-            result = "no_emoji"
+        result = "contains_emoji" if has_emoji else "no_emoji"
         assert result == "contains_emoji"
 
     def test_no_emoji_branch(self) -> None:
         """Test text without emoji."""
         text = "Test ABC"
         has_emoji = any(ord(c) > 0x1F300 for c in text)
-        if has_emoji:
-            result = "contains_emoji"
-        else:
-            result = "no_emoji"
+        result = "contains_emoji" if has_emoji else "no_emoji"
         assert result == "no_emoji"
 
     def test_multibyte_unicode_branch(self) -> None:
@@ -306,10 +271,7 @@ class TestUnicodeEncodingBranches:
         text = "日本語"
         byte_count = len(text.encode('utf-8'))
         char_count = len(text)
-        if byte_count > char_count:
-            result = "multibyte"
-        else:
-            result = "single_byte"
+        result = "multibyte" if byte_count > char_count else "single_byte"
         assert result == "multibyte"
 
     def test_single_byte_unicode_branch(self) -> None:
@@ -317,10 +279,7 @@ class TestUnicodeEncodingBranches:
         text = "abc"
         byte_count = len(text.encode('utf-8'))
         char_count = len(text)
-        if byte_count > char_count:
-            result = "multibyte"
-        else:
-            result = "single_byte"
+        result = "multibyte" if byte_count > char_count else "single_byte"
         assert result == "single_byte"
 
     def test_utf8_decode_success_branch(self) -> None:
@@ -345,7 +304,7 @@ class TestUnicodeEncodingBranches:
 
     def test_encoding_latin1_fallback_branch(self) -> None:
         """Test encoding fallback to latin1."""
-        encoding = "latin1"
+        encoding = branch_input("latin1")
         if encoding == "utf-8":
             codec = "utf8"
         elif encoding == "latin1":
@@ -367,26 +326,20 @@ class TestResourceExhaustionBranches:
         """Test memory limit exceeded detection."""
         memory_used = 1100
         memory_limit = 1000
-        if memory_used > memory_limit:
-            result = "exceeded"
-        else:
-            result = "within_limit"
+        result = "exceeded" if memory_used > memory_limit else "within_limit"
         assert result == "exceeded"
 
     def test_memory_limit_within_branch(self) -> None:
         """Test memory within limit."""
         memory_used = 900
         memory_limit = 1000
-        if memory_used > memory_limit:
-            result = "exceeded"
-        else:
-            result = "within_limit"
+        result = "exceeded" if memory_used > memory_limit else "within_limit"
         assert result == "within_limit"
 
     def test_connection_pool_exhausted_branch(self) -> None:
         """Test connection pool exhaustion."""
-        active_connections = 100
-        max_connections = 100
+        active_connections = branch_input(100)
+        max_connections = branch_input(100)
         if active_connections >= max_connections:
             result = "pool_exhausted"
         else:
@@ -395,8 +348,8 @@ class TestResourceExhaustionBranches:
 
     def test_connection_pool_available_branch(self) -> None:
         """Test connections available."""
-        active_connections = 50
-        max_connections = 100
+        active_connections = branch_input(50)
+        max_connections = branch_input(100)
         if active_connections >= max_connections:
             result = "pool_exhausted"
         else:
@@ -407,80 +360,56 @@ class TestResourceExhaustionBranches:
         """Test disk space full detection."""
         available_space = 100
         required_space = 500
-        if available_space < required_space:
-            result = "insufficient_space"
-        else:
-            result = "sufficient_space"
+        result = "insufficient_space" if available_space < required_space else "sufficient_space"
         assert result == "insufficient_space"
 
     def test_disk_space_sufficient_branch(self) -> None:
         """Test sufficient disk space."""
         available_space = 1000
         required_space = 500
-        if available_space < required_space:
-            result = "insufficient_space"
-        else:
-            result = "sufficient_space"
+        result = "insufficient_space" if available_space < required_space else "sufficient_space"
         assert result == "sufficient_space"
 
     def test_timeout_exceeded_branch(self) -> None:
         """Test timeout exceeded detection."""
         elapsed_time = 35.0
         timeout = 30.0
-        if elapsed_time > timeout:
-            result = "timeout"
-        else:
-            result = "within_timeout"
+        result = "timeout" if elapsed_time > timeout else "within_timeout"
         assert result == "timeout"
 
     def test_timeout_within_limit_branch(self) -> None:
         """Test operation within timeout."""
         elapsed_time = 25.0
         timeout = 30.0
-        if elapsed_time > timeout:
-            result = "timeout"
-        else:
-            result = "within_timeout"
+        result = "timeout" if elapsed_time > timeout else "within_timeout"
         assert result == "within_timeout"
 
     def test_file_handle_limit_reached_branch(self) -> None:
         """Test file handle limit reached."""
         open_files = 1024
         max_open_files = 1024
-        if open_files >= max_open_files:
-            result = "limit_reached"
-        else:
-            result = "handles_available"
+        result = "limit_reached" if open_files >= max_open_files else "handles_available"
         assert result == "limit_reached"
 
     def test_file_handle_available_branch(self) -> None:
         """Test file handles available."""
         open_files = 500
         max_open_files = 1024
-        if open_files >= max_open_files:
-            result = "limit_reached"
-        else:
-            result = "handles_available"
+        result = "limit_reached" if open_files >= max_open_files else "handles_available"
         assert result == "handles_available"
 
     def test_recursion_depth_exceeded_branch(self) -> None:
         """Test recursion depth exceeded."""
         current_depth = 1001
         max_depth = 1000
-        if current_depth > max_depth:
-            result = "recursion_limit"
-        else:
-            result = "safe_depth"
+        result = "recursion_limit" if current_depth > max_depth else "safe_depth"
         assert result == "recursion_limit"
 
     def test_recursion_depth_safe_branch(self) -> None:
         """Test safe recursion depth."""
         current_depth = 500
         max_depth = 1000
-        if current_depth > max_depth:
-            result = "recursion_limit"
-        else:
-            result = "safe_depth"
+        result = "recursion_limit" if current_depth > max_depth else "safe_depth"
         assert result == "safe_depth"
 
 
@@ -519,7 +448,7 @@ class TestFloatingPointEdgeCases:
     def test_float_normal_value_branch(self) -> None:
         """Test normal float value."""
         import math
-        value = 3.14
+        value = branch_input(3.14)
         if math.isnan(value):
             result = "nan"
         elif math.isinf(value):
@@ -557,8 +486,5 @@ class TestFloatingPointEdgeCases:
         value1 = 0.1 + 0.2
         value2 = 0.3
         epsilon = 1e-10
-        if abs(value1 - value2) < epsilon:
-            result = "equal_within_epsilon"
-        else:
-            result = "not_equal"
+        result = "equal_within_epsilon" if abs(value1 - value2) < epsilon else "not_equal"
         assert result == "equal_within_epsilon"

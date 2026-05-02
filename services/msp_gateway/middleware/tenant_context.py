@@ -455,5 +455,4 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         # Attach tenant to request state
         request.state.tenant = tenant
 
-        response = await call_next(request)
-        return response
+        return await call_next(request)

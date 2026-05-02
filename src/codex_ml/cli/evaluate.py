@@ -257,13 +257,12 @@ def evaluate(
         except Exception as exc:  # pragma: no cover - defensive
             return {"error": f"Failed to load checkpoint: {exc}"}
 
-    metrics = {
+    return {
         "evaluated_epoch_dir": str(epoch_dir),
         "model_name": model_name,
         "model_params": model_params,
         "status": "ok",
     }
-    return metrics
 
 
 def _run_dataset_evaluation(

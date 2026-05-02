@@ -58,6 +58,7 @@ def load_tokenizer(
     path: Optional[str] = None,
     *,
     use_fast: bool = True,
+    allow_remote: bool = False,
 ) -> TokenizerAdapter:
     """Load a tokenizer by name or filesystem path."""
 
@@ -203,7 +204,6 @@ def deprecated_legacy_access(name: str):
         logger.warning(f"ModuleNotFoundError: {e}", exc_info=True)
         raise
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         if name == "SPTokenizer":  # pragma: no cover - optional dependency guard
             raise

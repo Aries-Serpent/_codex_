@@ -399,7 +399,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
 
             try:
                 engine = QuantumInspiredGameEngine(num_players=0)
-                assert engine is not None or True
+                assert True
             except (ValueError, TypeError):
                 # Expected validation
                 assert True
@@ -442,7 +442,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
             # Test with asymmetric matrix if supported
             try:
                 op = PayoffOperator(matrix=[[1, 2, 3], [4, 5, 6]])
-                assert op is not None or True
+                assert True
             except (TypeError, ValueError):
                 assert True
         except ImportError:

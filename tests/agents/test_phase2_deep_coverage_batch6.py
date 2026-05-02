@@ -557,7 +557,7 @@ class TestPhase2_NumericalMethods:
             c = (a + b) / 2
             if f(c) == 0:
                 break
-            elif f(a) * f(c) < 0:
+            if f(a) * f(c) < 0:
                 b = c
             else:
                 a = c

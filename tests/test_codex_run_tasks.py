@@ -66,8 +66,7 @@ def _call_run_task_flexibly(*args, **kwargs) -> int:
     for call_args in attempts:
         try:
             call_args = tuple(a for a in call_args if a is not None)
-            rc = func(*call_args)
-            return rc
+            return func(*call_args)
         except TypeError as e:
             last_exc = e
             continue

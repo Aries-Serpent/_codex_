@@ -22,7 +22,6 @@ def _safe_float(value: object) -> float:
         return float(value)  # type: ignore[arg-type]
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return 0.0
 
 
@@ -32,7 +31,6 @@ def _perplexity(avg_loss: float) -> float:
 
         return float(math.exp(avg_loss))
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return float("inf")
 

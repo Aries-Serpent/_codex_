@@ -146,12 +146,11 @@ class QuantumPlugin:
         """
         if self.state == PluginState.COLLAPSED:
             return 1.0
-        elif self.state == PluginState.DECOHERENT:
+        if self.state == PluginState.DECOHERENT:
             return 0.0
-        else:
-            # Base probability modified by energy cost
-            # Lower energy cost = higher probability
-            return max(0.1, 1.0 / (1.0 + self.energy_cost))
+        # Base probability modified by energy cost
+        # Lower energy cost = higher probability
+        return max(0.1, 1.0 / (1.0 + self.energy_cost))
 
 
 @dataclass

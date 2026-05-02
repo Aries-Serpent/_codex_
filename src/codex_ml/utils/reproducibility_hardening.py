@@ -485,8 +485,7 @@ class ReproducibilityManager:
             Seeding status dict
         """
         logger.info(f"Setting up reproducibility (seed={self.seed}, strict={strict})")
-        status = enable_deterministic_training(seed=self.seed, strict=strict)
-        return status
+        return enable_deterministic_training(seed=self.seed, strict=strict)
 
     def capture_environment(self) -> dict[str, Any]:
         """
@@ -496,8 +495,7 @@ class ReproducibilityManager:
             Environment snapshot dict
         """
         snapshot_path = self.output_dir / "env_snapshot.txt"
-        snapshot = save_env_snapshot(snapshot_path)
-        return snapshot
+        return save_env_snapshot(snapshot_path)
 
     def finalize(
         self,

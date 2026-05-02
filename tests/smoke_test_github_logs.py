@@ -147,10 +147,9 @@ def main():
         print("✓ All smoke tests passed!")
         print("=" * 60)
         return 0
-    else:
-        print("✗ Some tests failed")
-        print("=" * 60)
-        return 1
+    print("✗ Some tests failed")
+    print("=" * 60)
+    return 1
 
 
 if __name__ == "__main__":

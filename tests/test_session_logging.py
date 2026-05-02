@@ -59,7 +59,7 @@ def _discover_rows(db_path, session_id):
         q = f"SELECT * FROM {t} WHERE {c_session}=?"
         cur.execute(q, (session_id,))
         for r in cur.fetchall():
-            rows.append({k: r[k] for k in r.keys()})
+            rows.append({k: r[k] for k in r})
     con.close()
     return rows
 
@@ -215,7 +215,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
         ("B", "2025-01-01T00:00:02Z", "user", "bye"),
     ]
     cur.executemany(
-        "INSERT INTO session_events(session_id, timestamp, role, message) " "VALUES (?,?,?,?)",
+        "INSERT INTO session_events(session_id, timestamp, role, message) VALUES (?,?,?,?)",
         data,
     )
     con.commit()

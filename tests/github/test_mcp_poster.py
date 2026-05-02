@@ -454,13 +454,12 @@ def test_create_discussion_success(poster, monkeypatch):
                     },
                 }
             })
-        else:
-            # Second call: create discussion
-            return _graphql_response({
-                "createDiscussion": {
-                    "discussion": {"number": 5, "url": "https://github.com/discuss/5", "title": "Test"},
-                }
-            })
+        # Second call: create discussion
+        return _graphql_response({
+            "createDiscussion": {
+                "discussion": {"number": 5, "url": "https://github.com/discuss/5", "title": "Test"},
+            }
+        })
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     result = poster.create_discussion("owner/repo", "Test", "Body text", "session-summaries")
@@ -498,12 +497,11 @@ def test_create_discussion_category_fallback(poster, monkeypatch):
                     },
                 }
             })
-        else:
-            return _graphql_response({
-                "createDiscussion": {
-                    "discussion": {"number": 6, "url": "https://github.com/discuss/6", "title": "t"},
-                }
-            })
+        return _graphql_response({
+            "createDiscussion": {
+                "discussion": {"number": 6, "url": "https://github.com/discuss/6", "title": "t"},
+            }
+        })
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     # "nonexistent-slug" won't match "general", should fall back to first category
@@ -1108,8 +1106,7 @@ class TestUpsertDiscussionComment:
                     return _graphql_response(
                         {"repository": {"discussion": {"comments": {"nodes": []}}}}
                     )
-                else:
-                    return _discussion_node_response("DI_1")
+                return _discussion_node_response("DI_1")
             return _add_comment_response()
 
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)

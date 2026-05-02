@@ -26,12 +26,12 @@ def test_network_timeout_handling():
     def fetch_with_retry(url, max_retries=3):
         for attempt in range(max_retries):
             try:
-                result = fetch_with_timeout(url)
-                return result
+                return fetch_with_timeout(url)
             except Exception:  # noqa: BLE001
                 if attempt == max_retries - 1:
                     raise
                 time.sleep(0.01 * (attempt + 1))  # Exponential backoff
+        raise RuntimeError("retry loop exited without success")
 
     result = fetch_with_retry('http://example.com')
     assert result['status'] == 'success'
@@ -150,12 +150,12 @@ def test_database_connection_recovery(tmp_path):
     def connect_with_retry(db_path, max_retries=3):
         for attempt in range(max_retries):
             try:
-                conn = sqlite3.connect(str(db_path))
-                return conn
+                return sqlite3.connect(str(db_path))
             except sqlite3.Error:
                 if attempt == max_retries - 1:
                     raise
                 time.sleep(0.01)
+        raise RuntimeError("retry loop exited without success")
 
     # Initial connection
     conn = connect_with_retry(db_path)

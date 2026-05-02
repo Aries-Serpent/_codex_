@@ -44,10 +44,10 @@ def test_exchange_and_revoke_offline(monkeypatch):
             if method == "POST" and "/access_tokens" in url:
                 assert json == {"repositories": ["o/r1"], "permissions": {"contents": "read"}}
                 return DummyResp(201, {"token": "inst.token", "expires_at": "2099-01-01T00:00:00Z"})
-            elif method == "DELETE" and url.endswith("/installation/token"):
+            if method == "DELETE" and url.endswith("/installation/token"):
                 assert headers and "token inst.token" in headers.get("Authorization", "")
                 return DummyResp(204)
-            elif method == "GET" and url.endswith("/rate_limit"):
+            if method == "GET" and url.endswith("/rate_limit"):
                 return DummyResp(200, {"resources": {"core": {"remaining": 5000}}})
             return DummyResp(404)
 

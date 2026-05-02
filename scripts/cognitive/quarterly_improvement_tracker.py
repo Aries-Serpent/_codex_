@@ -331,9 +331,8 @@ class QuarterlyImprovementTracker:
                         for item in data:
                             if metric_name in item:
                                 values.append(float(item[metric_name]))
-                    elif isinstance(data, dict):
-                        if metric_name in data:
-                            values.append(float(data[metric_name]))
+                    elif isinstance(data, dict) and metric_name in data:
+                        values.append(float(data[metric_name]))
             except (json.JSONDecodeError, KeyError, ValueError) as e:
                 logger.warning(f"Could not parse metric from {file.name}: {e}")
                 continue
@@ -418,7 +417,7 @@ class QuarterlyImprovementTracker:
 
         if overall_improvements:
             avg_improvements_by_metric = {}
-            for metric in trend_analysis.keys():
+            for metric in trend_analysis:
                 improvements = [
                     imp.get(metric, 0.0)
                     for imp in overall_improvements
@@ -643,4 +642,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

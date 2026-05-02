@@ -5,6 +5,8 @@ import types
 
 import pytest
 
+pytest.importorskip("numpy", reason="numpy required for training modules")
+
 
 def _assert_same_public_api(mod_a: types.ModuleType, mod_b: types.ModuleType, at_least: int = 3):
     """Verify two modules expose overlapping public API."""

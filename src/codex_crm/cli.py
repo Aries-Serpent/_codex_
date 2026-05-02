@@ -84,10 +84,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "apply-zd":
         emit_zendesk_config(args.out)
         return 0
-    elif args.command == "apply-d365":
+    if args.command == "apply-d365":
         emit_d365_config(args.out)
         return 0
-    elif args.command == "import-pa-zip":
+    if args.command == "import-pa-zip":
         package = read_pa_legacy(args.source)
         template = to_template(package)
         destination = Path(args.out)
@@ -97,20 +97,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         output_filename = f"{source_name}.template.json"
         (destination / output_filename).write_text(json.dumps(template, indent=2), encoding="utf-8")
         return 0
-    elif args.command == "import-zaf-zip":
+    if args.command == "import-zaf-zip":
         zaf_package = read_zaf(args.source)
         scaffold_template(zaf_package, args.out)
         return 0
-    elif args.command == "gen-diagram":
+    if args.command == "gen-diagram":
         steps = [step.strip() for step in args.steps.split(";") if step.strip()]
         Path(args.out).write_text(flow_to_mermaid(args.flow, steps), encoding="utf-8")
         return 0
-    elif args.command == "evidence-pack":
+    if args.command == "evidence-pack":
         write_evidence(args.out)
         return 0
-    else:  # pragma: no cover - defensive branch
-        parser.print_help()
-        return 2
+    # pragma: no cover - defensive branch
+    parser.print_help()
+    return 2
 
 
 if __name__ == "__main__":

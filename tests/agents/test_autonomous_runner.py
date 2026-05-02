@@ -318,20 +318,19 @@ class TestMainFunction:
             with patch.dict(os.environ, {
                 "AGENT_TASK": "Custom test task",
                 "MODEL_PREFERENCE": "gpt-4",
-            }):
-                with patch("src.agents.autonomous_runner.AutonomousAgent") as mock_agent:
-                    mock_instance = MagicMock()
-                    mock_instance.execute = AsyncMock(return_value=MagicMock(
-                        success=True,
-                        response="Test response",
-                    ))
-                    mock_instance.client.get_usage_summary.return_value = {}
-                    mock_agent.return_value = mock_instance
+            }), patch("src.agents.autonomous_runner.AutonomousAgent") as mock_agent:
+                mock_instance = MagicMock()
+                mock_instance.execute = AsyncMock(return_value=MagicMock(
+                    success=True,
+                    response="Test response",
+                ))
+                mock_instance.client.get_usage_summary.return_value = {}
+                mock_agent.return_value = mock_instance
 
-                    with patch("builtins.print"):
-                        await main()
+                with patch("builtins.print"):
+                    await main()
 
-                    mock_instance.execute.assert_called_once()
+                mock_instance.execute.assert_called_once()
         except ImportError:
             pytest.skip("autonomous_runner module not available")
 

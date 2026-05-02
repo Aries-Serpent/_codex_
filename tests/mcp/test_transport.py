@@ -219,8 +219,7 @@ class TestTransportReconnection:
     def test_exponential_backoff(self):
         """Reconnection uses exponential backoff."""
         def calculate_backoff(attempt, base=1.0, max_delay=60.0):
-            delay = min(base * (2 ** attempt), max_delay)
-            return delay
+            return min(base * (2 ** attempt), max_delay)
 
         assert calculate_backoff(0) == 1.0
         assert calculate_backoff(1) == 2.0

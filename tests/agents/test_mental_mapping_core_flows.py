@@ -53,13 +53,12 @@ class TestMentalMappingCoreFlows:
     @pytest.fixture
     def problem_node(self, mental_map):
         """Create a problem node."""
-        node = mental_map.create_node(
+        return mental_map.create_node(
             node_type=NodeType.PROBLEM,
             content="How to optimize database queries?",
             # Note: metadata is stored in context, not as separate parameter
             context={"priority": "high", "complexity": "medium"},
         )
-        return node
 
     # ========== THINK THROUGH PROBLEM TESTS ==========
 
@@ -342,7 +341,7 @@ class TestMentalMappingCoreFlows:
             assert isinstance(review_result, (list, tuple, set, dict))  # was: len() >= 0 (always true)
         else:
             # Method executed successfully
-            assert review_result is not None or True
+            assert True
 
     def test_iterative_review_improves_confidence(self, mental_map):
         """Test that review improves node confidence."""

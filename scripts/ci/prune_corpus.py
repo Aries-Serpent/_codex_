@@ -51,7 +51,7 @@ def get_stats(conn: sqlite3.Connection) -> dict:
     try:
         total = conn.execute("SELECT COUNT(*) FROM agent_sessions").fetchone()[0]
         stale = conn.execute(
-            "SELECT COUNT(*) FROM agent_sessions " "WHERE start_time < datetime('now', ?)",
+            "SELECT COUNT(*) FROM agent_sessions WHERE start_time < datetime('now', ?)",
             (f"-{RETENTION_DAYS} days",),
         ).fetchone()[0]
         oldest = conn.execute("SELECT MIN(start_time) FROM agent_sessions").fetchone()[0]

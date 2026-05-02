@@ -80,7 +80,6 @@ def maybe_emit_checkpoint_saved_event(
         return True
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False
 
 

@@ -11,10 +11,7 @@ from typing import Any, Optional
 def hash_credential(credential: str | bytes) -> str:
     """Return a SHA-256 hex digest for the provided credential."""
 
-    if isinstance(credential, str):
-        data = credential.encode("utf-8")
-    else:
-        data = credential
+    data = credential.encode("utf-8") if isinstance(credential, str) else credential
     return hashlib.sha256(data).hexdigest()
 
 

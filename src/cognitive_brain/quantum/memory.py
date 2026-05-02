@@ -365,9 +365,7 @@ class QuantumMemoryManager:
         access_score = min(pattern.access_count / 100.0, 1.0)
 
         # Weighted combination
-        score = 0.4 * access_score + 0.4 * pattern.success_rate + 0.2 * pattern.confidence
-
-        return score
+        return 0.4 * access_score + 0.4 * pattern.success_rate + 0.2 * pattern.confidence
 
     def _is_distinctive(self, pattern: MemoryPattern, threshold: float = 0.95) -> bool:
         """

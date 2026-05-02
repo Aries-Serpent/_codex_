@@ -214,7 +214,7 @@ def _create_pytorch_scheduler(
         # Constant LR (identity scheduler)
         return _make_lambda_lr(lambda step: 1.0)
 
-    elif scheduler_type == "constant_with_warmup":
+    if scheduler_type == "constant_with_warmup":
 
         def lr_lambda(step):
             if step < num_warmup_steps:
@@ -223,7 +223,7 @@ def _create_pytorch_scheduler(
 
         return _make_lambda_lr(lr_lambda)
 
-    elif scheduler_type == "linear":
+    if scheduler_type == "linear":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for linear scheduler")
 
@@ -238,7 +238,7 @@ def _create_pytorch_scheduler(
 
         return _make_lambda_lr(lr_lambda)
 
-    elif scheduler_type == "cosine":
+    if scheduler_type == "cosine":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for cosine scheduler")
 
@@ -252,7 +252,7 @@ def _create_pytorch_scheduler(
 
         return _make_lambda_lr(lr_lambda)
 
-    elif scheduler_type == "cosine_with_restarts":
+    if scheduler_type == "cosine_with_restarts":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for cosine_with_restarts")
 
@@ -263,7 +263,7 @@ def _create_pytorch_scheduler(
             **kwargs,
         )
 
-    elif scheduler_type == "polynomial":
+    if scheduler_type == "polynomial":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for polynomial scheduler")
 
@@ -274,7 +274,7 @@ def _create_pytorch_scheduler(
             **kwargs,
         )
 
-    elif scheduler_type == "inverse_sqrt":
+    if scheduler_type == "inverse_sqrt":
 
         def lr_lambda(step):
             if step < num_warmup_steps:
@@ -283,12 +283,11 @@ def _create_pytorch_scheduler(
 
         return _make_lambda_lr(lr_lambda)
 
-    else:
-        raise ValueError(
-            f"Unknown scheduler type: {scheduler_type}. "
-            f"Available types: constant, constant_with_warmup, linear, "
-            f"cosine, cosine_with_restarts, polynomial, inverse_sqrt"
-        )
+    raise ValueError(
+        f"Unknown scheduler type: {scheduler_type}. "
+        f"Available types: constant, constant_with_warmup, linear, "
+        f"cosine, cosine_with_restarts, polynomial, inverse_sqrt"
+    )
 
 
 def get_available_schedulers() -> list[str]:

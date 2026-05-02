@@ -530,10 +530,7 @@ class TestPhase2_WorkflowPatterns:
     def test_conditional_pattern(self):
         """Test conditional branching"""
         condition = True
-        if condition:
-            result = "branch_a"
-        else:
-            result = "branch_b"
+        result = "branch_a" if condition else "branch_b"
         assert result == "branch_a"
 
     def test_loop_pattern(self):

@@ -28,7 +28,6 @@ try:
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     # fall back to existing local implementation below (if present)
 
 
@@ -216,7 +215,6 @@ class CheckpointManager:  # type: ignore[no-redef]
                                 path = self._best_file.read_text(encoding="utf-8").strip()
                             except Exception:
                                 logger.warning("Exception occurred", exc_info=True)
-                                logger.warning("Exception occurred", exc_info=True)
                                 path = None
                     if path is not None:
                         try:
@@ -231,7 +229,6 @@ class CheckpointManager:  # type: ignore[no-redef]
                             logger.debug("Skipping malformed checkpoint data: %s", e)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
         self._best = self._best_records[0]["value"] if self._best_records else None
@@ -244,7 +241,6 @@ class CheckpointManager:  # type: ignore[no-redef]
         try:
             return int(path.stem.split("-")[1])
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return -1
 

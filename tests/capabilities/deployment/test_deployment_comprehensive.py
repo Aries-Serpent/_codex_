@@ -105,8 +105,7 @@ class HealthProbe:
             if result:
                 self._consecutive_failures = 0
                 return HealthStatus.HEALTHY
-            else:
-                self._consecutive_failures += 1
+            self._consecutive_failures += 1
         except Exception:  # noqa: BLE001
             self._consecutive_failures += 1
 

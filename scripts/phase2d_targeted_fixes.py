@@ -122,10 +122,7 @@ class TargetedLinkFixer:
 
         # Skip if link text indicates it's an example
         example_indicators = ['example', 'placeholder', 'your-', 'sample']
-        if any(indicator in link_text.lower() for indicator in example_indicators):
-            return True
-
-        return False
+        return bool(any(indicator in link_text.lower() for indicator in example_indicators))
 
     def fix_file(self, file_path: Path) -> Dict:
         """Fix broken links in a single file"""

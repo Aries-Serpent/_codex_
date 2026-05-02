@@ -160,7 +160,7 @@ class TokenConverterAnalyzer:
     def generate_integration_strategy(self) -> Dict[str, Any]:
         """Generate deterministic integration strategy"""
 
-        strategy = {
+        return {
             "approach": "HYBRID_ARCHITECTURE",
             "rationale": [
                 "Both implementations serve different use cases",
@@ -197,7 +197,6 @@ class TokenConverterAnalyzer:
             }
         }
 
-        return strategy
 
     def generate_cognitive_brain_integration(self) -> Dict[str, Any]:
         """Generate integration plan for cognitive brain system"""
@@ -512,7 +511,7 @@ class CognitiveBrainAdapter:
         # Create unified module
         unified_module_code = self.generate_unified_module()
 
-        results = {
+        return {
             "analysis_timestamp": datetime.now().isoformat(),
             "streamlit_analysis": self.streamlit_analysis,
             "tkinter_analysis": self.tkinter_analysis,
@@ -536,7 +535,6 @@ class CognitiveBrainAdapter:
             ]
         }
 
-        return results
 
 
 def main():

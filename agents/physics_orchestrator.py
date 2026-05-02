@@ -217,8 +217,13 @@ class PhysicsInspiredOrchestrator:
     4. ACT: Execute chosen path with confidence
     """
 
-    def __init__(self, config_path: Optional[Path] = None):
-        self.config = self._load_config(config_path)
+    def __init__(
+        self,
+        config_path: Optional[Path] = None,
+        *,
+        config: Optional[dict] = None,
+    ):
+        self.config = config if config is not None else self._load_config(config_path)
         self.decision_history: list[dict] = []
         self.force_vectors: list[ForceVector] = []
         self._mlp_scorer: Optional[Any] = None
@@ -396,8 +401,7 @@ class PhysicsInspiredOrchestrator:
                 print(f"   Optimization Score: {path.optimization_score:.4f}")
                 print(f"   Expected Impact: {path.impact:.2f}")
                 return path
-            else:
-                print("   ❌ Does not meet constraints")
+            print("   ❌ Does not meet constraints")
 
         print("\n⚠️  No path meets all constraints")
         return None
@@ -2003,14 +2007,13 @@ class ReflectionLoop:
         """
         if abs(error) < 0.05:
             return "calibration_optimal"
-        elif error > 0.2:
+        if error > 0.2:
             return "increase_confidence_in_predictions"
-        elif error < -0.2:
+        if error < -0.2:
             return "be_more_conservative"
-        elif abs(correction) > 0.3:
+        if abs(correction) > 0.3:
             return "significant_adjustment_needed"
-        else:
-            return "minor_calibration_recommended"
+        return "minor_calibration_recommended"
 
     def get_performance_metrics(self) -> dict[str, Any]:
         """
@@ -2144,8 +2147,7 @@ class EntangledDependency:
 
         if same_outcome:
             return base_prob * (1 + self.correlation * self.strength)
-        else:
-            return base_prob * (1 - self.correlation * self.strength)
+        return base_prob * (1 - self.correlation * self.strength)
 
     def collapse_b_given_a(self, outcome_a: bool) -> float:
         """
@@ -2156,9 +2158,8 @@ class EntangledDependency:
         if self.correlation > 0:
             # Positive correlation: same outcome more likely
             return 0.5 + (0.5 * self.correlation * self.strength * (1 if outcome_a else -1))
-        else:
-            # Negative correlation: opposite outcome more likely
-            return 0.5 + (0.5 * self.correlation * self.strength * (-1 if outcome_a else 1))
+        # Negative correlation: opposite outcome more likely
+        return 0.5 + (0.5 * self.correlation * self.strength * (-1 if outcome_a else 1))
 
 
 class QuantumWalkExplorer:
@@ -2237,10 +2238,7 @@ class QuantumWalkExplorer:
         new_state = {}
 
         for (pos, direction), amp in self.state.items():
-            if direction == 0:
-                new_pos = max(0, pos - 1)
-            else:
-                new_pos = min(self.num_positions - 1, pos + 1)
+            new_pos = max(0, pos - 1) if direction == 0 else min(self.num_positions - 1, pos + 1)
 
             key = (new_pos, direction)
             new_state[key] = new_state.get(key, 0) + amp
@@ -2548,8 +2546,7 @@ class PINNValidator:
         Residual = max(0, E_total - E_max) / E_max
         """
         max_energy = 100.0  # Maximum reasonable energy
-        residual = max(0, path.total_energy - max_energy) / max_energy
-        return residual
+        return max(0, path.total_energy - max_energy) / max_energy
 
     def _momentum_alignment_residual(self, path: ActionPath) -> float:
         """
@@ -2608,14 +2605,13 @@ class PINNValidator:
         """Generate actionable recommendation based on validation"""
         if physics_score >= 0.9:
             return "path_optimal"
-        elif physics_score >= 0.7:
+        if physics_score >= 0.7:
             return "path_acceptable"
-        elif physics_score >= 0.5:
+        if physics_score >= 0.5:
             # Find worst constraint
             worst = max(residuals, key=residuals.get)
             return f"improve_{worst}"
-        else:
-            return "path_infeasible"
+        return "path_infeasible"
 
     def validate_batch(self, paths: list[ActionPath]) -> dict[str, Any]:
         """
@@ -2782,11 +2778,10 @@ class QuantumPhysicsOrchestrator:
         """
         if use_swarm:
             return self.swarm.coordinate_agents(agent_positions, target)
-        else:
-            # Simple gradient-based coordination
-            return [
-                tuple(p + 0.1 * (t - p) for p, t in zip(pos, target)) for pos in agent_positions
-            ]
+        # Simple gradient-based coordination
+        return [
+            tuple(p + 0.1 * (t - p) for p, t in zip(pos, target)) for pos in agent_positions
+        ]
 
     def get_decision_summary(self) -> dict[str, Any]:
         """Get summary of all decisions made"""
@@ -2902,8 +2897,7 @@ class QuantumOperator:
             for j in range(self.dimension):
                 result[i] += self.number[i][j] * state[j]
 
-        expectation = sum(s * r for s, r in zip(state, result))
-        return expectation
+        return sum(s * r for s, r in zip(state, result))
 
     def coherent_state(self, alpha: complex) -> list[complex]:
         """
@@ -3238,7 +3232,7 @@ class PathIntegralCalculator:
             "classical_path": path_labels[classical_idx],
             "classical_action": classical_action,
             "interference_strength": interference_strength,
-            "constructive_interference": P > classical_prob,
+            "constructive_interference": classical_prob < P,
             "quantum_advantage": interference_strength > 0.1,
         }
 

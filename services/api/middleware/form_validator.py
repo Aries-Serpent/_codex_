@@ -89,5 +89,4 @@ class SecureMultipartMiddleware(BaseHTTPMiddleware):
                         status_code=400,
                     )
 
-        response = await call_next(request)
-        return response
+        return await call_next(request)

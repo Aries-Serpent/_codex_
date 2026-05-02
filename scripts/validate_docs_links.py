@@ -94,9 +94,8 @@ def generate_anchor_id(heading_text: str) -> str:
     anchor = re.sub(r'-+', '-', anchor)
 
     # Strip leading/trailing hyphens
-    anchor = anchor.strip('-')
+    return anchor.strip('-')
 
-    return anchor
 
 
 class HeadingParser:

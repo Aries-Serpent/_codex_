@@ -421,7 +421,6 @@ def capture_exceptions(
                 return int(result)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)  # type: ignore[union-attr]
-                logger.warning("Exception occurred", exc_info=True)  # type: ignore[union-attr]
                 return 0
 
         return _wrapped

@@ -281,7 +281,6 @@ class TestScopeDecorators:
         @require_scope("repo:read")
         def my_function():
             """My docstring."""
-            pass
 
         assert my_function.__name__ == "my_function"
         assert my_function.__doc__ == "My docstring."

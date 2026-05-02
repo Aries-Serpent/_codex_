@@ -89,19 +89,17 @@ class TaskVector:
         """Vector addition."""
         if isinstance(other, TaskVector):
             return TaskVector.from_array(self.to_array() + other.to_array())
-        elif isinstance(other, np.ndarray):
+        if isinstance(other, np.ndarray):
             return TaskVector.from_array(self.to_array() + other)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __sub__(self, other: Union["TaskVector", np.ndarray]) -> Union["TaskVector", np.ndarray]:
         """Vector subtraction."""
         if isinstance(other, TaskVector):
             return self.to_array() - other.to_array()
-        elif isinstance(other, np.ndarray):
+        if isinstance(other, np.ndarray):
             return self.to_array() - other
-        else:
-            raise TypeError(f"Cannot subtract {type(other)} from TaskVector")
+        raise TypeError(f"Cannot subtract {type(other)} from TaskVector")
 
     def __mul__(self, scalar: float) -> "TaskVector":
         """Scalar multiplication."""

@@ -73,12 +73,11 @@ class TestProductionErrorHandling:
         def categorize_error(exc: Exception) -> str:
             if isinstance(exc, (ValueError, TypeError)):
                 return "validation_error"
-            elif isinstance(exc, (ConnectionError, TimeoutError)):
+            if isinstance(exc, (ConnectionError, TimeoutError)):
                 return "network_error"
-            elif isinstance(exc, (FileNotFoundError, PermissionError)):
+            if isinstance(exc, (FileNotFoundError, PermissionError)):
                 return "io_error"
-            else:
-                return "internal_error"
+            return "internal_error"
 
         assert categorize_error(ValueError("bad value")) == "validation_error"
         assert categorize_error(ConnectionError("no network")) == "network_error"
@@ -244,10 +243,9 @@ class TestGracefulDegradation:
         def get_analytics() -> str:
             if features["advanced_analytics"]:
                 return "advanced"
-            elif features["basic_analytics"]:
+            if features["basic_analytics"]:
                 return "basic"
-            else:
-                return "none"
+            return "none"
 
         result = get_analytics()
         assert result == "basic"

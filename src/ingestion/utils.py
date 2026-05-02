@@ -42,7 +42,6 @@ try:
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore[assignment]
 
 # Try to import the io_text.read_text helper if available. Some historical
@@ -51,7 +50,6 @@ except Exception:
 try:
     from .io_text import read_text as _io_read_text
 except Exception:
-    logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
     _io_read_text = None  # type: ignore[assignment]
 
@@ -85,7 +83,6 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         data = path.read_bytes()[: max(1024, int(sample_size))]
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
     # BOM checks
@@ -116,7 +113,6 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         best = result.best() if result is not None else None
         enc = best.encoding.lower().replace("_", "-") if best and best.encoding else None
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         enc = None
     if enc:
@@ -149,7 +145,6 @@ def _detect_encoding(path: Union[str, Path]) -> str:
         try:
             return _repo_detect_encoding(p)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # fall through to fallback detector
     return _fallback_detect_encoding(p)
@@ -270,7 +265,6 @@ def _manual_read_text(
         text = data.decode(enc if isinstance(enc, str) else "utf-8", errors)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Fallback: try common encodings with replacement to ensure we return something
         for trial in ("utf-8", "cp1252", "iso-8859-1"):
             try:
@@ -278,7 +272,6 @@ def _manual_read_text(
                 enc = trial
                 break
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         else:
@@ -325,10 +318,8 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
                     result = _io_read_text(p)
                 except Exception:
                     logger.warning("Exception occurred", exc_info=True)
-                    logger.warning("Exception occurred", exc_info=True)
                     result = None
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # If the helper raised for any reason, fall back to manual reader below
             result = None

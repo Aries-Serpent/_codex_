@@ -15,6 +15,7 @@ from typing import Any, Dict, List
 from unittest.mock import patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: Config Loading
@@ -28,25 +29,19 @@ class TestConfigLoadingBranches:
         """Test configuration file exists branch."""
         with patch.object(Path, "exists", return_value=True):
             config_path = Path("config.yaml")
-            if config_path.exists():
-                source = "file"
-            else:
-                source = "default"
+            source = "file" if config_path.exists() else "default"
             assert source == "file"
 
     def test_config_file_missing_branch(self) -> None:
         """Test configuration file missing branch."""
         with patch.object(Path, "exists", return_value=False):
             config_path = Path("missing.yaml")
-            if config_path.exists():
-                source = "file"
-            else:
-                source = "default"
+            source = "file" if config_path.exists() else "default"
             assert source == "default"
 
     def test_config_format_yaml_branch(self) -> None:
         """Test YAML configuration format branch."""
-        config_file = "config.yaml"
+        config_file = branch_input("config.yaml")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -59,7 +54,7 @@ class TestConfigLoadingBranches:
 
     def test_config_format_json_branch(self) -> None:
         """Test JSON configuration format branch."""
-        config_file = "config.json"
+        config_file = branch_input("config.json")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -72,7 +67,7 @@ class TestConfigLoadingBranches:
 
     def test_config_format_toml_branch(self) -> None:
         """Test TOML configuration format branch."""
-        config_file = "config.toml"
+        config_file = branch_input("config.toml")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -85,7 +80,7 @@ class TestConfigLoadingBranches:
 
     def test_config_format_unknown_branch(self) -> None:
         """Test unknown configuration format branch."""
-        config_file = "config.xyz"
+        config_file = branch_input("config.xyz")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -128,68 +123,37 @@ class TestConfigValidationBranches:
     def test_config_required_field_present_branch(self) -> None:
         """Test required field present branch."""
         config = {"required_field": "value"}
-        if "required_field" in config:
-            status = "valid"
-        else:
-            status = "invalid"
+        status = "valid" if "required_field" in config else "invalid"
         assert status == "valid"
 
     def test_config_required_field_missing_branch(self) -> None:
         """Test required field missing branch."""
         config: Dict[str, Any] = {}
-        if "required_field" in config:
-            status = "valid"
-        else:
-            status = "invalid"
+        status = "valid" if "required_field" in config else "invalid"
         assert status == "invalid"
 
     def test_config_type_string_branch(self) -> None:
         """Test string type validation branch."""
         value = "string_value"
-        if isinstance(value, str):
-            type_valid = True
-        elif isinstance(value, int):
-            type_valid = True
-        elif isinstance(value, bool):
-            type_valid = True
-        else:
-            type_valid = False
+        type_valid = bool(isinstance(value, (str, int, bool)))
         assert type_valid is True
 
     def test_config_type_int_branch(self) -> None:
         """Test integer type validation branch."""
         value = 42
-        if isinstance(value, str):
-            type_valid = True
-        elif isinstance(value, bool):
-            type_valid = True
-        elif isinstance(value, int):
-            type_valid = True
-        else:
-            type_valid = False
+        type_valid = bool(isinstance(value, (str, bool, int)))
         assert type_valid is True
 
     def test_config_type_bool_branch(self) -> None:
         """Test boolean type validation branch."""
         value = True
-        if isinstance(value, str):
-            type_valid = True
-        elif isinstance(value, bool):
-            type_valid = True
-        elif isinstance(value, int):
-            type_valid = True
-        else:
-            type_valid = False
+        type_valid = bool(isinstance(value, (str, bool, int)))
         assert type_valid is True
 
     def test_config_type_invalid_branch(self) -> None:
         """Test invalid type validation branch."""
-        value = []  # List not expected
-        if isinstance(value, str):
-            type_valid = True
-        elif isinstance(value, int) and not isinstance(value, bool):
-            type_valid = True
-        elif isinstance(value, bool):
+        value = branch_input([])  # List not expected
+        if isinstance(value, str) or isinstance(value, int) and not isinstance(value, bool) or isinstance(value, bool):
             type_valid = True
         else:
             type_valid = False
@@ -200,10 +164,7 @@ class TestConfigValidationBranches:
         value = 50
         min_val = 0
         max_val = 100
-        if min_val <= value <= max_val:
-            status = "valid"
-        else:
-            status = "out_of_range"
+        status = "valid" if min_val <= value <= max_val else "out_of_range"
         assert status == "valid"
 
     def test_config_range_below_min_branch(self) -> None:
@@ -211,10 +172,7 @@ class TestConfigValidationBranches:
         value = -10
         min_val = 0
         max_val = 100
-        if min_val <= value <= max_val:
-            status = "valid"
-        else:
-            status = "out_of_range"
+        status = "valid" if min_val <= value <= max_val else "out_of_range"
         assert status == "out_of_range"
 
     def test_config_range_above_max_branch(self) -> None:
@@ -222,10 +180,7 @@ class TestConfigValidationBranches:
         value = 150
         min_val = 0
         max_val = 100
-        if min_val <= value <= max_val:
-            status = "valid"
-        else:
-            status = "out_of_range"
+        status = "valid" if min_val <= value <= max_val else "out_of_range"
         assert status == "out_of_range"
 
 
@@ -240,7 +195,7 @@ class TestConfigMergingBranches:
     def test_config_merge_override_present_branch(self) -> None:
         """Test configuration merge with override present branch."""
         base_config = {"key": "base_value"}
-        override_config = {"key": "override_value"}
+        override_config = branch_input({"key": "override_value"})
         if "key" in override_config:
             merged_value = override_config["key"]
         else:
@@ -269,8 +224,8 @@ class TestConfigMergingBranches:
 
     def test_config_merge_nested_dict_branch(self) -> None:
         """Test nested dictionary merge branch."""
-        base = {"section": {"key": "base"}}
-        override = {"section": {"key": "override"}}
+        base = branch_input({"section": {"key": "base"}})
+        override = branch_input({"section": {"key": "override"}})
         if isinstance(base.get("section"), dict) and isinstance(
             override.get("section"), dict
         ):
@@ -281,8 +236,8 @@ class TestConfigMergingBranches:
 
     def test_config_merge_non_dict_branch(self) -> None:
         """Test non-dictionary merge branch."""
-        base = {"section": "value"}
-        override = {"section": "override"}
+        base = branch_input({"section": "value"})
+        override = branch_input({"section": "override"})
         if isinstance(base.get("section"), dict) and isinstance(
             override.get("section"), dict
         ):
@@ -304,50 +259,35 @@ class TestConfigCachingBranches:
         """Test configuration cache hit branch."""
         cache: Dict[str, Any] = {"config.yaml": {"key": "cached"}}
         config_path = "config.yaml"
-        if config_path in cache:
-            source = "cache"
-        else:
-            source = "load"
+        source = "cache" if config_path in cache else "load"
         assert source == "cache"
 
     def test_config_cache_miss_branch(self) -> None:
         """Test configuration cache miss branch."""
         cache: Dict[str, Any] = {}
         config_path = "config.yaml"
-        if config_path in cache:
-            source = "cache"
-        else:
-            source = "load"
+        source = "cache" if config_path in cache else "load"
         assert source == "load"
 
     def test_config_cache_invalidation_enabled_branch(self) -> None:
         """Test cache invalidation enabled branch."""
         cache_enabled = True
         file_modified = True
-        if cache_enabled and file_modified:
-            action = "invalidate"
-        else:
-            action = "use_cache"
+        action = "invalidate" if cache_enabled and file_modified else "use_cache"
         assert action == "invalidate"
 
     def test_config_cache_use_cached_branch(self) -> None:
         """Test use cached configuration branch."""
         cache_enabled = True
         file_modified = False
-        if cache_enabled and file_modified:
-            action = "invalidate"
-        else:
-            action = "use_cache"
+        action = "invalidate" if cache_enabled and file_modified else "use_cache"
         assert action == "use_cache"
 
     def test_config_cache_disabled_branch(self) -> None:
         """Test cache disabled branch."""
         cache_enabled = False
         file_modified = False
-        if cache_enabled and file_modified:
-            action = "invalidate"
-        else:
-            action = "use_cache"
+        action = "invalidate" if cache_enabled and file_modified else "use_cache"
         assert action == "use_cache"
 
 
@@ -362,10 +302,7 @@ class TestEnvironmentOverridesBranches:
     def test_env_override_present_branch(self) -> None:
         """Test environment override present branch."""
         with patch.dict(os.environ, {"CODEX_LOG_LEVEL": "DEBUG"}):
-            if "CODEX_LOG_LEVEL" in os.environ:
-                log_level = os.environ["CODEX_LOG_LEVEL"]
-            else:
-                log_level = "INFO"
+            log_level = os.environ.get("CODEX_LOG_LEVEL", "INFO")
             assert log_level == "DEBUG"
 
     def test_env_override_absent_branch(self) -> None:
@@ -416,10 +353,7 @@ class TestEnvironmentOverridesBranches:
         config_value = "config"
         env_value = "env"
         has_env = bool(env_value)
-        if has_env:
-            final_value = env_value
-        else:
-            final_value = config_value
+        final_value = env_value if has_env else config_value
         assert final_value == "env"
 
     def test_env_priority_config_when_no_env_branch(self) -> None:
@@ -427,10 +361,7 @@ class TestEnvironmentOverridesBranches:
         config_value = "config"
         env_value = None
         has_env = bool(env_value)
-        if has_env:
-            final_value = env_value
-        else:
-            final_value = config_value
+        final_value = env_value if has_env else config_value
         assert final_value == "config"
 
 
@@ -445,62 +376,44 @@ class TestHydraConfigBranches:
     def test_hydra_compose_with_overrides_branch(self) -> None:
         """Test Hydra compose with overrides branch."""
         overrides = ["model.name=bert", "training.epochs=10"]
-        if len(overrides) > 0:
-            mode = "with_overrides"
-        else:
-            mode = "default"
+        mode = "with_overrides" if len(overrides) > 0 else "default"
         assert mode == "with_overrides"
 
     def test_hydra_compose_without_overrides_branch(self) -> None:
         """Test Hydra compose without overrides branch."""
         overrides: List[str] = []
-        if len(overrides) > 0:
-            mode = "with_overrides"
-        else:
-            mode = "default"
+        mode = "with_overrides" if len(overrides) > 0 else "default"
         assert mode == "default"
 
     def test_hydra_config_path_absolute_branch(self) -> None:
         """Test Hydra config path absolute branch."""
         config_path = "/absolute/path/config"
-        if config_path.startswith("/"):
-            path_type = "absolute"
-        else:
-            path_type = "relative"
+        path_type = "absolute" if config_path.startswith("/") else "relative"
         assert path_type == "absolute"
 
     def test_hydra_config_path_relative_branch(self) -> None:
         """Test Hydra config path relative branch."""
         config_path = "relative/path/config"
-        if config_path.startswith("/"):
-            path_type = "absolute"
-        else:
-            path_type = "relative"
+        path_type = "absolute" if config_path.startswith("/") else "relative"
         assert path_type == "relative"
 
     def test_hydra_config_group_exists_branch(self) -> None:
         """Test Hydra config group exists branch."""
         available_groups = {"model", "training", "data"}
         requested_group = "model"
-        if requested_group in available_groups:
-            status = "found"
-        else:
-            status = "not_found"
+        status = "found" if requested_group in available_groups else "not_found"
         assert status == "found"
 
     def test_hydra_config_group_missing_branch(self) -> None:
         """Test Hydra config group missing branch."""
         available_groups = {"model", "training", "data"}
         requested_group = "unknown"
-        if requested_group in available_groups:
-            status = "found"
-        else:
-            status = "not_found"
+        status = "found" if requested_group in available_groups else "not_found"
         assert status == "not_found"
 
     def test_hydra_structured_config_branch(self) -> None:
         """Test Hydra structured config branch."""
-        config_type = "structured"
+        config_type = branch_input("structured")
         if config_type == "structured":
             validator = "dataclass_validator"
         elif config_type == "dict":
@@ -511,7 +424,7 @@ class TestHydraConfigBranches:
 
     def test_hydra_dict_config_branch(self) -> None:
         """Test Hydra dict config branch."""
-        config_type = "dict"
+        config_type = branch_input("dict")
         if config_type == "structured":
             validator = "dataclass_validator"
         elif config_type == "dict":
@@ -522,7 +435,7 @@ class TestHydraConfigBranches:
 
     def test_hydra_no_validation_branch(self) -> None:
         """Test Hydra no validation branch."""
-        config_type = "unstructured"
+        config_type = branch_input("unstructured")
         if config_type == "structured":
             validator = "dataclass_validator"
         elif config_type == "dict":
@@ -544,50 +457,35 @@ class TestConfigSchemaBranches:
         """Test schema version match branch."""
         config_version = "1.0"
         schema_version = "1.0"
-        if config_version == schema_version:
-            status = "compatible"
-        else:
-            status = "version_mismatch"
+        status = "compatible" if config_version == schema_version else "version_mismatch"
         assert status == "compatible"
 
     def test_schema_version_mismatch_branch(self) -> None:
         """Test schema version mismatch branch."""
         config_version = "1.0"
         schema_version = "2.0"
-        if config_version == schema_version:
-            status = "compatible"
-        else:
-            status = "version_mismatch"
+        status = "compatible" if config_version == schema_version else "version_mismatch"
         assert status == "version_mismatch"
 
     def test_schema_strict_mode_enabled_branch(self) -> None:
         """Test schema strict mode enabled branch."""
         strict = True
         unknown_fields = ["extra_field"]
-        if strict and len(unknown_fields) > 0:
-            action = "reject"
-        else:
-            action = "accept"
+        action = "reject" if strict and len(unknown_fields) > 0 else "accept"
         assert action == "reject"
 
     def test_schema_strict_mode_disabled_branch(self) -> None:
         """Test schema strict mode disabled branch."""
         strict = False
         unknown_fields = ["extra_field"]
-        if strict and len(unknown_fields) > 0:
-            action = "reject"
-        else:
-            action = "accept"
+        action = "reject" if strict and len(unknown_fields) > 0 else "accept"
         assert action == "accept"
 
     def test_schema_no_unknown_fields_branch(self) -> None:
         """Test schema with no unknown fields branch."""
         strict = True
         unknown_fields: List[str] = []
-        if strict and len(unknown_fields) > 0:
-            action = "reject"
-        else:
-            action = "accept"
+        action = "reject" if strict and len(unknown_fields) > 0 else "accept"
         assert action == "accept"
 
 
@@ -610,7 +508,7 @@ class TestDefaultValueBranches:
 
     def test_default_value_overridden_branch(self) -> None:
         """Test default value overridden branch."""
-        config = {"timeout": 60}
+        config = branch_input({"timeout": 60})
         if "timeout" in config:
             timeout = config["timeout"]
         else:
@@ -619,7 +517,7 @@ class TestDefaultValueBranches:
 
     def test_default_factory_callable_branch(self) -> None:
         """Test default factory callable branch."""
-        has_factory = True
+        has_factory = branch_input(True)
         if has_factory:
             default = []  # Factory creates new list
         else:
@@ -629,10 +527,7 @@ class TestDefaultValueBranches:
     def test_default_factory_none_branch(self) -> None:
         """Test default factory none branch."""
         has_factory = False
-        if has_factory:
-            default = []
-        else:
-            default = None
+        default = [] if has_factory else None
         assert default is None
 
     @pytest.mark.parametrize(
@@ -648,8 +543,5 @@ class TestDefaultValueBranches:
         self, value: Any, default: str, expected: Any
     ) -> None:
         """Test falsy value handling branches."""
-        if value is None:
-            result = default
-        else:
-            result = value
+        result = default if value is None else value
         assert result == expected

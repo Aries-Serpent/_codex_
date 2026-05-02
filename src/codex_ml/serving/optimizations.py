@@ -153,11 +153,10 @@ class MemoryPool:
                 buf = self.available.popleft()
                 self.in_use.add(id(buf))
                 return buf
-            else:
-                # Pool exhausted, allocate new
-                buf = bytearray(self.buffer_size)
-                self.in_use.add(id(buf))
-                return buf
+            # Pool exhausted, allocate new
+            buf = bytearray(self.buffer_size)
+            self.in_use.add(id(buf))
+            return buf
 
     def return_buffer(self, buf: bytearray):
         """Return buffer to pool."""
@@ -328,8 +327,6 @@ class AsyncPredictionPipeline:
             prediction = await asyncio.get_event_loop().run_in_executor(None, self.model, processed)
 
             # Stage 3: Postprocess (async I/O)
-            result = await asyncio.get_event_loop().run_in_executor(
+            return await asyncio.get_event_loop().run_in_executor(
                 None, self.postprocess_fn, prediction
             )
-
-            return result

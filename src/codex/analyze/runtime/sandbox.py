@@ -346,8 +346,7 @@ except SystemExit:
             wrapper_path = f.name
 
         try:
-            result = self.execute(Path(wrapper_path), stdin_input=stdin_input)
-            return result
+            return self.execute(Path(wrapper_path), stdin_input=stdin_input)
         finally:
             os.unlink(wrapper_path)
 

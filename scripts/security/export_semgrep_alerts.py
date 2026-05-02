@@ -54,7 +54,7 @@ def export_alerts_offline() -> list[dict[str, Any]]:
     """
     logger.info("Running in offline mode - generating sample alerts")
 
-    sample_alerts = [
+    return [
         {
             "number": 1,
             "rule": {
@@ -105,7 +105,6 @@ def export_alerts_offline() -> list[dict[str, Any]]:
         },
     ]
 
-    return sample_alerts
 
 
 def export_alerts() -> list[dict[str, Any]]:

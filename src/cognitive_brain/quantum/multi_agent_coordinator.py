@@ -280,12 +280,11 @@ class MultiAgentCoordinator:
 
         if self.voting_strategy == VotingStrategy.MAJORITY:
             return self._majority_vote(decisions)
-        elif self.voting_strategy == VotingStrategy.WEIGHTED:
+        if self.voting_strategy == VotingStrategy.WEIGHTED:
             return self._weighted_vote(decisions)
-        elif self.voting_strategy == VotingStrategy.CONFIDENCE_BASED:
+        if self.voting_strategy == VotingStrategy.CONFIDENCE_BASED:
             return self._confidence_based_vote(decisions)
-        else:
-            raise ValueError(f"Unknown voting strategy: {self.voting_strategy}")
+        raise ValueError(f"Unknown voting strategy: {self.voting_strategy}")
 
     def _majority_vote(self, decisions: List[AgentDecision]) -> str:
         """

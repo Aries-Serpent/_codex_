@@ -42,7 +42,6 @@ def _resolve_git_sha() -> str | None:
         ref = head.read_text(encoding="utf-8").strip()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
     if ref.startswith("ref:"):
@@ -50,7 +49,6 @@ def _resolve_git_sha() -> str | None:
         try:
             resolved = ref_path.read_text(encoding="utf-8").strip()
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return None
         return resolved or None
@@ -119,7 +117,6 @@ def attach_integrity(
         try:
             entry["path"] = str(ckpt_path.resolve().relative_to(base_path.resolve()))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             entry["path"] = str(ckpt_path)
     else:
@@ -200,16 +197,14 @@ def snapshot_config(config: Any, *, exclude_keys: Sequence[str] | None = None) -
                 result[str_key] = cleaned
             return result
         if isinstance(value, list):
-            cleaned_list = [item for item in (_prune(v) for v in value) if item is not None]
-            return cleaned_list
+            return [item for item in (_prune(v) for v in value) if item is not None]
         if isinstance(value, tuple):
             cleaned_tuple = tuple(item for item in (_prune(v) for v in value) if item is not None)
             return list(cleaned_tuple)
         if isinstance(value, set):
-            cleaned_set = [
+            return [
                 item for item in (_prune(v) for v in sorted(value, key=str)) if item is not None
             ]
-            return cleaned_set
         if value is None:
             return None
         if isinstance(value, str):

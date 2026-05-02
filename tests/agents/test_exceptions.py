@@ -122,49 +122,49 @@ class TestPhysicsExceptions:
     """Tests for physics-specific exceptions."""
 
     def test_entanglement_error(self) -> None:
+        assert issubclass(EntanglementError, AgentError)
         with pytest.raises(EntanglementError):
             raise EntanglementError("Entanglement failed")
-        assert issubclass(EntanglementError, AgentError)
 
     def test_gauge_error(self) -> None:
+        assert issubclass(GaugeError, AgentError)
         with pytest.raises(GaugeError):
             raise GaugeError("Gauge symmetry violated")
-        assert issubclass(GaugeError, AgentError)
 
     def test_continuity_error(self) -> None:
+        assert issubclass(ContinuityError, AgentValidationError)
         with pytest.raises(ContinuityError):
             raise ContinuityError("Continuity equation violated")
-        assert issubclass(ContinuityError, AgentValidationError)
 
     def test_bound_check_error(self) -> None:
+        assert issubclass(BoundCheckError, AgentValidationError)
         with pytest.raises(BoundCheckError):
             raise BoundCheckError("|j| > c")
-        assert issubclass(BoundCheckError, AgentValidationError)
 
     def test_physics_error(self) -> None:
+        assert issubclass(PhysicsError, AgentError)
         with pytest.raises(PhysicsError):
             raise PhysicsError("Physics error")
-        assert issubclass(PhysicsError, AgentError)
 
     def test_validation_error_alias(self) -> None:
+        assert issubclass(ValidationError, AgentValidationError)
         with pytest.raises(ValidationError):
             raise ValidationError("Validation failed")
-        assert issubclass(ValidationError, AgentValidationError)
 
     def test_convergence_error(self) -> None:
+        assert issubclass(ConvergenceError, PhysicsError)
         with pytest.raises(ConvergenceError):
             raise ConvergenceError("Failed to converge")
-        assert issubclass(ConvergenceError, PhysicsError)
 
     def test_invariant_violation_error(self) -> None:
+        assert issubclass(InvariantViolationError, PhysicsError)
         with pytest.raises(InvariantViolationError):
             raise InvariantViolationError("Invariant violated")
-        assert issubclass(InvariantViolationError, PhysicsError)
 
     def test_causality_violation_error(self) -> None:
+        assert issubclass(CausalityViolationError, PhysicsError)
         with pytest.raises(CausalityViolationError):
             raise CausalityViolationError("v > c")
-        assert issubclass(CausalityViolationError, PhysicsError)
 
 
 class TestExceptionHierarchy:

@@ -244,10 +244,9 @@ class AWSSecretsManagerProvider(SecretProvider):
             # Return either SecretString or SecretBinary
             if "SecretString" in response:
                 return response["SecretString"]
-            else:
-                import base64
+            import base64
 
-                return base64.b64encode(response["SecretBinary"]).decode("utf-8")
+            return base64.b64encode(response["SecretBinary"]).decode("utf-8")
 
         except ClientError as e:
             raise ValidationError(f"Failed to get secret value: {e}") from e

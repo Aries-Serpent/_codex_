@@ -118,7 +118,6 @@ def _load_config(config_path: str | Path | None) -> _DataConfig:
         return _default_config()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return _default_config()
 
     cfg = _extract_config(mapping)

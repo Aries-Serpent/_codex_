@@ -19,14 +19,13 @@ class CodeMetrics:
         """Compute quality grade (A-F) from maintainability index."""
         if self.maintainability_index >= 85:
             return "A"
-        elif self.maintainability_index >= 70:
+        if self.maintainability_index >= 70:
             return "B"
-        elif self.maintainability_index >= 55:
+        if self.maintainability_index >= 55:
             return "C"
-        elif self.maintainability_index >= 40:
+        if self.maintainability_index >= 40:
             return "D"
-        else:
-            return "F"
+        return "F"
 
     def to_dict(self) -> dict:
         """Serialize to dictionary."""

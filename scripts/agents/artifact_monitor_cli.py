@@ -372,7 +372,7 @@ class ArtifactMonitorCLI:
 
                 if cmd == 'exit':
                     break
-                elif cmd == 'help':
+                if cmd == 'help':
                     print("Commands: check, report, patterns, state, help, exit")
                 elif cmd == 'check':
                     workflow = parts[1] if len(parts) > 1 else None
@@ -518,15 +518,14 @@ Examples:
     try:
         if args.command == 'check':
             return cli.cmd_check(args.workflow)
-        elif args.command == 'report':
+        if args.command == 'report':
             return cli.cmd_report(args.days, args.output)
-        elif args.command == 'test-patterns':
+        if args.command == 'test-patterns':
             return cli.cmd_test_patterns(args.log_file, args.test_string)
-        elif args.command == 'interactive':
+        if args.command == 'interactive':
             return cli.cmd_interactive()
-        else:
-            print(f"Unknown command: {args.command}")
-            return 1
+        print(f"Unknown command: {args.command}")
+        return 1
     except Exception as e:
         print(f"Error executing command: {e}")
         import traceback

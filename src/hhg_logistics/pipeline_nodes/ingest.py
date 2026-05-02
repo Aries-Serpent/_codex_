@@ -36,5 +36,4 @@ def ingest_rows(path: Path) -> list[dict]:
 
     with path.open("r", newline="") as f:
         reader = csv.DictReader(f)
-        rows = [dict(r) for r in reader]
-    return rows
+        return [dict(r) for r in reader]

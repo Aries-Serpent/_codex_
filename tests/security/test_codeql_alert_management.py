@@ -285,13 +285,11 @@ class TestIntegration:
     def test_fetch_and_export_workflow(self):
         """Test fetching alerts and exporting them."""
         # This would require a real GitHub token and repo
-        pass
 
     @pytest.mark.skip("Requires live GitHub API access")
     def test_close_alert_workflow(self):
         """Test closing an alert."""
         # This would require a real GitHub token and repo
-        pass
 
 
 if __name__ == "__main__":

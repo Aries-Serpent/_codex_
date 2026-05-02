@@ -249,7 +249,7 @@ class EnvironmentManager:
         Returns:
             Dictionary of all CODEX_* variables and their values
         """
-        return {var_name: self.get(var_name) for var_name in self.ENV_VARS.keys()}
+        return {var_name: self.get(var_name) for var_name in self.ENV_VARS}
 
 
 # Global instance

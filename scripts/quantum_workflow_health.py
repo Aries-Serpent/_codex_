@@ -60,13 +60,11 @@ class QuantumWorkflowState:
         if self.status == 'completed':
             if self.conclusion == 'success':
                 return complex(0.9, 0.1)  # High health
-            elif self.conclusion == 'failure':
+            if self.conclusion == 'failure':
                 return complex(0.1, 0.9)  # Low health
-            else:
-                return complex(0.5, 0.5)  # Uncertain
-        else:
-            # In progress = superposition
-            return complex(0.7, 0.3)
+            return complex(0.5, 0.5)  # Uncertain
+        # In progress = superposition
+        return complex(0.7, 0.3)
 
     def measure_health(self) -> str:
         """Collapse wave function to definite health state"""
@@ -236,10 +234,9 @@ class QuantumWorkflowHealthAnalyzer:
 
         if healthy_ratio > 0.8:
             return 'healthy'
-        elif healthy_ratio > 0.5:
+        if healthy_ratio > 0.5:
             return 'degraded'
-        else:
-            return 'critical'
+        return 'critical'
 
     def _calculate_coherence(self, states: List[QuantumWorkflowState]) -> float:
         """Calculate quantum coherence (system stability)"""

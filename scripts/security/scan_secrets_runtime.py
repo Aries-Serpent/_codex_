@@ -35,6 +35,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 import argparse
+import contextlib
 import json
 import math
 import os
@@ -66,7 +67,6 @@ def load_patterns(config_file: Path | None) -> list[re.Pattern]:
                 data = yaml.safe_load(config_file.read_text())
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 data = None
         extra = []
         if isinstance(data, dict) and "patterns" in data and isinstance(data["patterns"], list):
@@ -74,10 +74,8 @@ def load_patterns(config_file: Path | None) -> list[re.Pattern]:
         elif isinstance(data, list):
             extra = data
         for p in extra:
-            try:
+            with contextlib.suppress(re.error):
                 pats.append(re.compile(p))
-            except re.error:
-                pass
     return pats
 
 
@@ -110,7 +108,6 @@ def scan_path(
         try:
             text = p.read_text(encoding="utf-8", errors="ignore")
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             continue
         files_scanned += 1

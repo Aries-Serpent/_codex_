@@ -255,7 +255,7 @@ def save_checkpoint(
     # canonical implementation.
     if target.exists() and target.is_dir():
         _canonical_save_checkpoint(target, dict(state), **kwargs)
-        return None
+        return
 
     checkpoint_dir = target.parent if str(target.parent) else Path(".")
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -285,7 +285,7 @@ def save_checkpoint(
         except Exception as exc:
             logger.debug(f"Exception: {exc}")
             LOGGER.debug("Failed to clean up symlink %s during archive: %s", target, exc)
-    return None
+    return
 
 
 def load_checkpoint(
@@ -321,7 +321,6 @@ def load_checkpoint(
         return state
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         fallback = _load_legacy_checkpoint_payload(path, map_location=kwargs.get("map_location"))
         if fallback is None:
             raise
@@ -351,7 +350,6 @@ def _load_legacy_checkpoint_payload(
             loaded = _torch_load(str(path), map_location=map_location)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             loaded = None
         if isinstance(loaded, Mapping):
             candidate = loaded
@@ -362,7 +360,6 @@ def _load_legacy_checkpoint_payload(
 
             loaded = safe_pickle_load(str(path), use_restricted_unpickler=True)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return None
         if not isinstance(loaded, Mapping):

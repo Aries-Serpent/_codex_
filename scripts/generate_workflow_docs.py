@@ -199,10 +199,7 @@ def main():
 
     workflows_dir = Path('.github/workflows')
 
-    if sys.argv[1] == '--all':
-        workflows = list(workflows_dir.glob('*.yml'))
-    else:
-        workflows = [Path(sys.argv[1])]
+    workflows = list(workflows_dir.glob('*.yml')) if sys.argv[1] == '--all' else [Path(sys.argv[1])]
 
     print(f"📚 Generating documentation for {len(workflows)} workflows")
     print("="*60)

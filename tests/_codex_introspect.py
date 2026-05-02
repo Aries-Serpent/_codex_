@@ -73,7 +73,7 @@ def resolve_fetch_messages():
                 sig = inspect.signature(fn)
             except ImportError:
                 sig = None
-            meta = {
+            return {
                 "module": mod,
                 "callable": fn,
                 "accepts_db_path": (
@@ -84,7 +84,6 @@ def resolve_fetch_messages():
                 "signature": str(sig) if sig else "unknown",
                 "module_obj": m,
             }
-            return meta
     return {"error": "fetch_messages not found", "errors": errors}
 
 

@@ -79,7 +79,6 @@ class StandardizationManager:
             self.schema_validator.validate(record, version="1.0")
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # If validation fails, continue anyway (graceful degradation)
 
         # Create standardization metadata
@@ -110,7 +109,6 @@ class StandardizationManager:
         try:
             self.schema_validator.validate(enhanced_record, version="2.0")
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # If validation fails, continue anyway (graceful degradation)
 

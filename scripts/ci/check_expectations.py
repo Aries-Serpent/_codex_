@@ -258,14 +258,13 @@ def main(argv: list[str] | None = None) -> int:
             if info["safe"]:
                 print(f"✅ {target} — ARCHIVE SAFE (all {info['total']} expectation(s) enforced)")
                 return 0
-            else:
-                print(
-                    f"🚫 {target} — ARCHIVE BLOCKED\n"
-                    f"   {len(info['blocking_ids'])} of {info['total']} expectation(s) not enforced: "
-                    f"{', '.join(info['blocking_ids'])}\n"
-                    f"   Fix these expectations in {REGISTRY_PATH.relative_to(REPO_ROOT)} first."
-                )
-                return 1
+            print(
+                f"🚫 {target} — ARCHIVE BLOCKED\n"
+                f"   {len(info['blocking_ids'])} of {info['total']} expectation(s) not enforced: "
+                f"{', '.join(info['blocking_ids'])}\n"
+                f"   Fix these expectations in {REGISTRY_PATH.relative_to(REPO_ROOT)} first."
+            )
+            return 1
 
         print("\n📋 Archive safety by source document:\n")
         print(f"  {'STATUS':<8}  {'BLOCKED IDs':<20}  Document")

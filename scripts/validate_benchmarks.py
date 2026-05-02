@@ -194,7 +194,7 @@ def validate_concurrent_agents(results: Dict[str, Any]) -> Tuple[bool, str]:
     details = []
 
     # Check if 1000 agents benchmark exists
-    agent_1000 = next((k for k in agent_results.keys() if "1000" in k), None)
+    agent_1000 = next((k for k in agent_results if "1000" in k), None)
 
     if agent_1000:
         result = agent_results[agent_1000]

@@ -106,8 +106,7 @@ class DatasetManifest:
     def write(self, path: str | Path) -> Path:
         """Persist the manifest to ``path`` atomically."""
 
-        result = cast(Path, safe_write_text(path, self.to_json()))
-        return result
+        return cast(Path, safe_write_text(path, self.to_json()))
 
     @staticmethod
     def load(path: str | Path) -> DatasetManifest:

@@ -680,14 +680,13 @@ def check_via_api(repo: str, token: str, pr_number: int) -> tuple[str, int, int,
 
     if status == "identical":
         return "up-to-date", 0, 0, base_branch, head_branch
-    elif status == "behind":
+    if status == "behind":
         return "behind", behind_by, ahead_by, base_branch, head_branch
-    elif status == "ahead":
+    if status == "ahead":
         return "ahead", behind_by, ahead_by, base_branch, head_branch
-    elif status == "diverged":
+    if status == "diverged":
         return "diverged", behind_by, ahead_by, base_branch, head_branch
-    else:
-        return "unknown", behind_by, ahead_by, base_branch, head_branch
+    return "unknown", behind_by, ahead_by, base_branch, head_branch
 
 
 # ---------------------------------------------------------------------------
@@ -1026,12 +1025,11 @@ def main() -> int:
                         f"Auto-merged by `branch-rebase-gate.yml`.\n"
                     )
                     return 0
-                else:
-                    # Auto-merge failed — fall through to rich helper comment.
-                    # gap_commits_for_comment was initialised to [] above; set it
-                    # here so the comment includes the full gap table.
-                    print(f"  ⚠️  Auto-merge failed ({detail}) — falling back to helper comment")
-                    gap_commits_for_comment = gap_commits
+                # Auto-merge failed — fall through to rich helper comment.
+                # gap_commits_for_comment was initialised to [] above; set it
+                # here so the comment includes the full gap table.
+                print(f"  ⚠️  Auto-merge failed ({detail}) — falling back to helper comment")
+                gap_commits_for_comment = gap_commits
             else:
                 n_func = len(classified.get("functional", []))
                 print(f"  ℹ️  Gap contains {n_func} functional commit(s) — manual rebase required")

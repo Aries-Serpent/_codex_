@@ -166,49 +166,34 @@ class TestPhase2_BranchCoverage:
     def test_conditional_true_branch(self):
         """Test true branch of conditionals"""
         value = 10
-        if value > 5:
-            result = "greater"
-        else:
-            result = "less_or_equal"
+        result = "greater" if value > 5 else "less_or_equal"
         assert result == "greater"
 
     def test_conditional_false_branch(self):
         """Test false branch of conditionals"""
         value = 3
-        if value > 5:
-            result = "greater"
-        else:
-            result = "less_or_equal"
+        result = "greater" if value > 5 else "less_or_equal"
         assert result == "less_or_equal"
 
     def test_multiple_conditions_all_true(self):
         """Test AND conditions all true"""
         a = True
         b = True
-        if a and b:
-            result = "both_true"
-        else:
-            result = "not_both"
+        result = "both_true" if a and b else "not_both"
         assert result == "both_true"
 
     def test_multiple_conditions_one_false(self):
         """Test AND conditions with one false"""
         a = True
         b = False
-        if a and b:
-            result = "both_true"
-        else:
-            result = "not_both"
+        result = "both_true" if a and b else "not_both"
         assert result == "not_both"
 
     def test_or_conditions_all_false(self):
         """Test OR conditions all false"""
         a = False
         b = False
-        if a or b:
-            result = "at_least_one"
-        else:
-            result = "none"
+        result = "at_least_one" if a or b else "none"
         assert result == "none"
 
 
@@ -503,6 +488,8 @@ class TestPhase2_SpecialMethods:
 
             def __eq__(self, other):
                 return self.value == other.value
+
+            __hash__ = None  # unhashable due to mutable value-based equality
 
         obj1 = MyClass(10)
         obj2 = MyClass(10)

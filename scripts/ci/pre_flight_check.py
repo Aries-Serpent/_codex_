@@ -253,9 +253,8 @@ class PreFlightValidator:
             # Check for jobs without timeout
             if "jobs:" in content:
                 # Look for pytest runs without timeout-minutes
-                if "pytest" in content:
-                    if "timeout-minutes:" not in content:
-                        issues.append(f"{workflow_file.name}: No timeout-minutes set for pytest job")
+                if "pytest" in content and "timeout-minutes:" not in content:
+                    issues.append(f"{workflow_file.name}: No timeout-minutes set for pytest job")
 
         if issues:
             return CheckResult(

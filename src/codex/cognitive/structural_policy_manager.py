@@ -18,6 +18,7 @@ CODEBASE_AGENCY_POLICY.md compliance:
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
@@ -197,7 +198,7 @@ class StructuralPolicyManager:
             return False
 
         actor_tier = self._resolve_tier(actor)
-        required_tier = ACTION_TIER_MAP.get(action, None)
+        required_tier = ACTION_TIER_MAP.get(action)
 
         if required_tier is None:
             # Unknown action — deny by default (fail-deny)
@@ -290,10 +291,8 @@ class StructuralPolicyManager:
         lines = self._audit_log.read_text().splitlines()
         entries = []
         for line in lines[-last_n:]:
-            try:
+            with contextlib.suppress(json.JSONDecodeError):
                 entries.append(json.loads(line))
-            except json.JSONDecodeError:
-                pass
         return entries
 
 

@@ -420,9 +420,8 @@ class QuantumGameState:
         if team == TeamType.BLUE:
             # Trace over Red (indices 1 and 3)
             return np.trace(rho, axis1=1, axis2=3)
-        else:
-            # Trace over Blue (indices 0 and 2)
-            return np.trace(rho, axis1=0, axis2=2)
+        # Trace over Blue (indices 0 and 2)
+        return np.trace(rho, axis1=0, axis2=2)
 
     def measure(self, rng: Optional[np.random.Generator] = None) -> tuple[int, int]:
         """Measure joint state, returning (blue_strategy_idx, red_strategy_idx)"""
@@ -575,8 +574,7 @@ class ClassicalGameEngine:
         """Compute expected payoff for a team under current mixed strategies."""
         if team == TeamType.BLUE:
             return np.einsum("i,ij,j->", self.pi_blue, self.payoff_blue, self.pi_red)
-        else:
-            return np.einsum("i,ij,j->", self.pi_blue, self.payoff_red, self.pi_red)
+        return np.einsum("i,ij,j->", self.pi_blue, self.payoff_red, self.pi_red)
 
     def best_response_blue(self) -> int:
         """Compute Blue's best response to Red's current strategy"""
@@ -741,21 +739,35 @@ class QuantumInspiredGameEngine:
 
     def __init__(
         self,
-        blue_strategies: list[str],
-        red_strategies: list[str],
-        payoff_blue: np.ndarray,
-        payoff_red: np.ndarray,
+        blue_strategies: list[str] | None = None,
+        red_strategies: list[str] | None = None,
+        payoff_blue: "np.ndarray | None" = None,
+        payoff_red: "np.ndarray | None" = None,
         entanglement: float = 0.0,
+        *,
+        num_players: int | None = None,
     ):
         """Initialize quantum game engine.
 
         Args:
             blue_strategies: list of Blue team strategy names
             red_strategies: list of Red team strategy names
-            payoff_blue: Payoff matrix P_A[i,j] for Blue
-            payoff_red: Payoff matrix P_B[i,j] for Red
-            entanglement: Initial entanglement strength (0-1)
+            payoff_blue: Payoff matrix for Blue team (|blue|×|red|)
+            payoff_red: Payoff matrix for Red team (|blue|×|red|)
+            entanglement: Quantum entanglement strength (0 = classical, 1 = max)
+            num_players: Convenience shorthand — when supplied (and *blue_strategies*
+                is not), creates a symmetric zero-sum game with *num_players* strategies.
         """
+        if blue_strategies is None:
+            n = max(num_players or 0, 0)
+            blue_strategies = [f"strategy_{i}" for i in range(n)]
+            red_strategies = [f"strategy_{i}" for i in range(n)]
+        if red_strategies is None:
+            red_strategies = list(blue_strategies)
+        if payoff_blue is None:
+            payoff_blue = np.zeros((len(blue_strategies), len(red_strategies)))
+        if payoff_red is None:
+            payoff_red = np.zeros((len(blue_strategies), len(red_strategies)))
         self.blue_strategies = blue_strategies
         self.red_strategies = red_strategies
 
@@ -819,17 +831,16 @@ class QuantumInspiredGameEngine:
             s = math.sin(theta / 2)
             exp_phi = np.exp(1j * phi)
             return np.array([[c, -exp_phi * s], [np.conj(exp_phi) * s, c]], dtype=complex)
-        else:
-            # Block-diagonal extension
-            U = np.eye(dimension, dtype=complex)
-            for k in range(0, dimension - 1, 2):
-                c = math.cos(theta / 2)
-                s = math.sin(theta / 2)
-                U[k, k] = c
-                U[k, k + 1] = -s
-                U[k + 1, k] = s
-                U[k + 1, k + 1] = c
-            return U
+        # Block-diagonal extension
+        U = np.eye(dimension, dtype=complex)
+        for k in range(0, dimension - 1, 2):
+            c = math.cos(theta / 2)
+            s = math.sin(theta / 2)
+            U[k, k] = c
+            U[k, k + 1] = -s
+            U[k + 1, k] = s
+            U[k + 1, k + 1] = c
+        return U
 
     def apply_strategy_update(
         self, theta_blue: float, theta_red: float, phi_blue: float = 0.0, phi_red: float = 0.0
@@ -855,8 +866,7 @@ class QuantumInspiredGameEngine:
         """Calculate expected payoff for a team: ⟨ψ|Û|ψ⟩"""
         if team == TeamType.BLUE:
             return self.U_blue.expected_value(self.game_state.joint_wavefunction)
-        else:
-            return self.U_red.expected_value(self.game_state.joint_wavefunction)
+        return self.U_red.expected_value(self.game_state.joint_wavefunction)
 
     def payoff_variance(self, team: TeamType) -> float:
         """Calculate variance of payoff: ⟨ψ|Û²|ψ⟩ - ⟨ψ|Û|ψ⟩²
@@ -1050,10 +1060,10 @@ class BlueRedTeamSimulator:
 
     def __init__(
         self,
-        blue_strategies: list[str],
-        red_strategies: list[str],
-        payoff_blue: np.ndarray,
-        payoff_red: np.ndarray,
+        blue_strategies: list[str] | None = None,
+        red_strategies: list[str] | None = None,
+        payoff_blue: "np.ndarray | None" = None,
+        payoff_red: "np.ndarray | None" = None,
         mode: str = "quantum",
         entanglement: float = 0.0,
         noise_level: float = 0.0,
@@ -1062,15 +1072,23 @@ class BlueRedTeamSimulator:
         """Initialize simulator.
 
         Args:
-            blue_strategies: Defense strategy names
-            red_strategies: Attack strategy names
-            payoff_blue: Blue team payoff matrix
-            payoff_red: Red team payoff matrix
+            blue_strategies: Defense strategy names (defaults to empty list)
+            red_strategies: Attack strategy names (defaults to empty list)
+            payoff_blue: Blue team payoff matrix (auto-created if omitted)
+            payoff_red: Red team payoff matrix (auto-created if omitted)
             mode: "classical" or "quantum"
             entanglement: Entanglement strength for quantum mode
             noise_level: Decoherence level for modeling uncertainty
             risk_aversion: Risk aversion parameter for decision making
         """
+        if blue_strategies is None:
+            blue_strategies = []
+        if red_strategies is None:
+            red_strategies = []
+        if payoff_blue is None:
+            payoff_blue = np.zeros((len(blue_strategies), max(len(red_strategies), 1)))
+        if payoff_red is None:
+            payoff_red = np.zeros((len(blue_strategies), max(len(red_strategies), 1)))
         self.mode = mode
         self.noise_level = noise_level
         self.risk_aversion = risk_aversion

@@ -141,12 +141,12 @@ class TokenScopeVerifier:
             scopes = [s.strip() for s in scopes_header.split(",") if s.strip()]
 
             # Check required scopes
-            required_met = all(scope in scopes for scope in self.REQUIRED_SCOPES.keys())
-            missing_required = [s for s in self.REQUIRED_SCOPES.keys() if s not in scopes]
+            required_met = all(scope in scopes for scope in self.REQUIRED_SCOPES)
+            missing_required = [s for s in self.REQUIRED_SCOPES if s not in scopes]
 
             # Check recommended scopes
-            recommended_met = all(scope in scopes for scope in self.RECOMMENDED_SCOPES.keys())
-            missing_recommended = [s for s in self.RECOMMENDED_SCOPES.keys() if s not in scopes]
+            recommended_met = all(scope in scopes for scope in self.RECOMMENDED_SCOPES)
+            missing_recommended = [s for s in self.RECOMMENDED_SCOPES if s not in scopes]
 
             # Get rate limit info (useful for debugging)
             rate_limit_remaining = int(response.headers.get("x-ratelimit-remaining", 0))

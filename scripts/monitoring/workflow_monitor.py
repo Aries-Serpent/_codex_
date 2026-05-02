@@ -30,20 +30,17 @@ class WorkflowMonitor:
 
     def get_workflow_runs(self) -> List[Dict[str, Any]]:
         """Get current workflow runs for the branch."""
-        try:
-            # Use GitHub API (would need gh CLI or API token in production)
-            # For now, return empty list as placeholder
-            return []
-        except Exception as e:
-            print(f"Error fetching workflow runs: {e}")
-            return []
+        # Use GitHub API (would need gh CLI or API token in production).
+        # For now, return empty list as placeholder; no remote calls are made,
+        # so no exception handling is required at this level.
+        return []
 
     def analyze_workflow_status(self, run: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze a workflow run and categorize its status."""
         status = run.get('status', 'unknown')
         conclusion = run.get('conclusion', 'N/A')
 
-        analysis = {
+        return {
             'id': run.get('id'),
             'name': run.get('name'),
             'status': status,
@@ -57,27 +54,24 @@ class WorkflowMonitor:
             'passed': conclusion == 'success',
         }
 
-        return analysis
 
     def _categorize_status(self, status: str, conclusion: str) -> str:
         """Categorize workflow status for reporting."""
         if status == 'in_progress':
             return 'RUNNING'
-        elif status == 'completed':
+        if status == 'completed':
             if conclusion == 'success':
                 return 'SUCCESS'
-            elif conclusion == 'failure':
+            if conclusion == 'failure':
                 return 'FAILURE'
-            elif conclusion == 'action_required':
+            if conclusion == 'action_required':
                 return 'AWAITING_ACTION'
-            elif conclusion == 'skipped':
+            if conclusion == 'skipped':
                 return 'SKIPPED'
-            else:
-                return 'COMPLETED_UNKNOWN'
-        elif status == 'queued':
+            return 'COMPLETED_UNKNOWN'
+        if status == 'queued':
             return 'QUEUED'
-        else:
-            return 'UNKNOWN'
+        return 'UNKNOWN'
 
     def check_workflows(self) -> Dict[str, Any]:
         """Perform a workflow status check."""

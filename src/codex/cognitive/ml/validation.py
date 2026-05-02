@@ -427,14 +427,13 @@ class HyperparameterTuner:
         """Get value of target metric."""
         if self.metric == MetricType.ACCURACY:
             return metrics.accuracy
-        elif self.metric == MetricType.PRECISION:
+        if self.metric == MetricType.PRECISION:
             return metrics.precision
-        elif self.metric == MetricType.RECALL:
+        if self.metric == MetricType.RECALL:
             return metrics.recall
-        elif self.metric == MetricType.F1_SCORE:
+        if self.metric == MetricType.F1_SCORE:
             return metrics.f1_score
-        else:
-            return metrics.accuracy
+        return metrics.accuracy
 
     def get_last_result(self) -> TuningResult | None:
         """Get result from last tuning."""
@@ -569,14 +568,13 @@ class PerformanceTracker:
         """Get value of specific metric."""
         if metric == MetricType.ACCURACY:
             return metrics.accuracy
-        elif metric == MetricType.PRECISION:
+        if metric == MetricType.PRECISION:
             return metrics.precision
-        elif metric == MetricType.RECALL:
+        if metric == MetricType.RECALL:
             return metrics.recall
-        elif metric == MetricType.F1_SCORE:
+        if metric == MetricType.F1_SCORE:
             return metrics.f1_score
-        else:
-            return metrics.accuracy
+        return metrics.accuracy
 
     def get_alerts(self) -> list[dict[str, Any]]:
         """Get all performance alerts."""
@@ -737,9 +735,8 @@ class ModelRegistry:
         if random.random() < test["traffic_split"]:
             test["results"]["a_samples"] += 1
             return test["version_a"]
-        else:
-            test["results"]["b_samples"] += 1
-            return test["version_b"]
+        test["results"]["b_samples"] += 1
+        return test["version_b"]
 
     def compare_versions(
         self,

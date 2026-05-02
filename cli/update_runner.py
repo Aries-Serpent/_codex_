@@ -208,7 +208,7 @@ def _build_training_config() -> dict[str, Any]:
             "accountant": "rdp",
         },
     }
-    data = {
+    return {
         **shared,
         "model": "minilm",
         "output_dir": "runs/default",
@@ -219,7 +219,6 @@ def _build_training_config() -> dict[str, Any]:
         },
         "hf_trainer": hf_block,
     }
-    return data
 
 
 def task_create_training_config() -> None:
@@ -302,7 +301,7 @@ def task_update_cli() -> None:
 
     pattern = re.compile(
         r"@codex\.command\(\)\n@click\.option\(\"--text\",.*?\n"  # decorator portion
-        r"def train\([^)]*\):\n(?:    .*(?:\n|$))+?"  # body
+        r"def train\([^)]*\):\n(?:    .*(?:\n|\Z))+?"  # body
         r"(?=\n@codex\.command|\nif __name__ == \"__main__\"|\Z)",
         re.DOTALL,
     )

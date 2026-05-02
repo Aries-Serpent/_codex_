@@ -227,12 +227,14 @@ def main():
 
     try:
         if args.command == "list":
-            return cmd_list(args)
-        elif args.command == "discover":
-            return cmd_discover(args)
-        elif args.command == "validate":
+            cmd_list(args)
+            return 0
+        if args.command == "discover":
+            cmd_discover(args)
+            return 0
+        if args.command == "validate":
             return cmd_validate(args)
-        elif args.command == "info":
+        if args.command == "info":
             return cmd_info(args)
     except Exception:
         logger.exception("Error while executing plugin management command")

@@ -42,7 +42,6 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
 
         def set_format(self, *args, **kwargs):
             """Mock set_format method required by HF trainer."""
-            pass
 
     dummy_ds = DummyDataset()
 

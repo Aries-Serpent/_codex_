@@ -122,19 +122,18 @@ class ActionProposer:
                     "workflow": workflow,
                     "message": f"Workflow {workflow} rerun initiated"
                 }
-            elif action_type == "analyze_logs":
+            if action_type == "analyze_logs":
                 return {
                     "status": "executed",
                     "action_type": action_type,
                     "workflow": workflow,
                     "message": f"Log analysis initiated for {workflow}"
                 }
-            else:
-                return {
-                    "status": "executed",
-                    "action_type": action_type,
-                    "workflow": workflow
-                }
+            return {
+                "status": "executed",
+                "action_type": action_type,
+                "workflow": workflow
+            }
         except Exception as e:
             logger.error(f"Error executing action: {e}")
             return {

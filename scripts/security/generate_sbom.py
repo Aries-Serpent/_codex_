@@ -49,11 +49,9 @@ def list_distributions():
             yield dist
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Fallback: pip freeze
 
         # Not reliable; advise using importlib.metadata
-        pass
 
 
 def sbom() -> dict:
@@ -74,8 +72,6 @@ def sbom() -> dict:
             )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
-        pass
     return {
         "bomFormat": "CycloneDX",
         "specVersion": "1.4",

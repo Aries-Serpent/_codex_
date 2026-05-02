@@ -16,10 +16,7 @@ def buggy_compute_brevity_penalty(hypotheses, norm_refs):
     for refs in norm_refs:
         idx = norm_refs.index(refs)
         cand = len(hypotheses[idx].split())
-        if not refs:
-            best = 0
-        else:
-            best = min((abs(len(r.split()) - cand), len(r.split())) for r in refs)[1]
+        best = 0 if not refs else min((abs(len(r.split()) - cand), len(r.split())) for r in refs)[1]
         ref_len += best
     if hyp_len == 0:
         return 0.0
@@ -35,10 +32,7 @@ def manual_brevity_penalty(hypotheses, norm_refs):
     ref_len = 0
     for hyp, refs in zip(hypotheses, norm_refs):
         cand = len(hyp.split())
-        if not refs:
-            best = 0
-        else:
-            best = min((abs(len(r.split()) - cand), len(r.split())) for r in refs)[1]
+        best = 0 if not refs else min((abs(len(r.split()) - cand), len(r.split())) for r in refs)[1]
         ref_len += best
     if hyp_len == 0:
         return 0.0

@@ -22,10 +22,7 @@ def _read_text(path_input) -> str:
     """
     try:
         # Validation: Convert to Path if string
-        if isinstance(path_input, str):
-            path = Path(path_input)
-        else:
-            path = path_input
+        path = Path(path_input) if isinstance(path_input, str) else path_input
 
         if not path.is_absolute():
             path = REPO_ROOT / path

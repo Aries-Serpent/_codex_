@@ -69,7 +69,6 @@ def py_ast_hash(text: str) -> str:
         return hashlib.sha256(dump.encode("utf-8")).hexdigest()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return ""
 
 

@@ -754,10 +754,9 @@ def main():
         print("✅ All validation tests passed!")
         print("Phase 10 implementation ready for deployment")
         return 0
-    else:
-        print("❌ Some validation tests failed")
-        print("Review failures above and address before deployment")
-        return 1
+    print("❌ Some validation tests failed")
+    print("Review failures above and address before deployment")
+    return 1
 
 
 if __name__ == "__main__":

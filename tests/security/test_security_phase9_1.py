@@ -324,8 +324,7 @@ class TestInputValidation:
             # Remove dangerous characters
             safe = re.sub(r'[^\w\s.-]', '', filename)
             # Remove path traversal
-            safe = safe.replace('..', '')
-            return safe
+            return safe.replace('..', '')
 
         assert ".." not in sanitize_filename("../etc/passwd")
         assert "/" not in sanitize_filename("path/to/file")

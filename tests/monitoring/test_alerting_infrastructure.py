@@ -251,10 +251,7 @@ class TestAlertTriggers:
         current_state = "pending"
         duration_met = True
 
-        if current_state == "pending" and duration_met:
-            new_state = "firing"
-        else:
-            new_state = current_state
+        new_state = "firing" if current_state == "pending" and duration_met else current_state
 
         assert new_state == "firing"
 
@@ -263,10 +260,7 @@ class TestAlertTriggers:
         current_state = "firing"
         condition_met = False
 
-        if current_state == "firing" and not condition_met:
-            new_state = "resolved"
-        else:
-            new_state = current_state
+        new_state = "resolved" if current_state == "firing" and not condition_met else current_state
 
         assert new_state == "resolved"
 

@@ -399,13 +399,11 @@ class NoetherCurrent:
 
         # j = (ℏ/2mi)(ψ*∇ψ - ψ∇ψ*)
         # Simplified for discrete representation
-        current = (
+        return (
             self.constants.hbar
             / (2.0 * task.rest_mass)
             * np.real(np.sum(psi_star) * gradient_psi - np.sum(psi) * np.conj(gradient_psi))
         )
-
-        return current
 
     def momentum_current(self, task: TaskState) -> np.ndarray:
         """
@@ -421,9 +419,7 @@ class NoetherCurrent:
         """
         # Momentum density: g = ρv where ρ = |ψ|²
         probability_density = task.spinor.total_probability
-        momentum_current = probability_density * task.velocity
-
-        return momentum_current
+        return probability_density * task.velocity
 
     def verify_continuity(
         self,

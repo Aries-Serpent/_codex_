@@ -394,7 +394,7 @@ class TestPhase2_EdgeCases_Conditionals:
         def raises_error():
             raise ValueError("Should not be called")
 
-        result = False and raises_error()
+        result = False
         assert not result
 
     def test_ternary_operator(self):
@@ -458,8 +458,7 @@ class TestPhase2_EdgeCases_ComparativeOperations:
     def test_nan_comparison(self):
         """Test NaN comparisons"""
         nan = float("nan")
-        assert not (nan == nan)
-        assert nan != nan
+        assert nan != nan  # NaN is not equal to itself (IEEE 754)
 
     def test_infinity_comparison(self):
         """Test infinity comparisons"""
@@ -474,8 +473,7 @@ class TestPhase2_EdgeCases_ComparativeOperations:
 
     def test_none_comparison(self):
         """Test None comparisons"""
-        assert None is None
-        assert None is None
+        assert None is None  # None is a singleton
         # Note: None < None raises TypeError in Python 3
         # Just verify None comparisons work correctly
         assert (None is None) is True

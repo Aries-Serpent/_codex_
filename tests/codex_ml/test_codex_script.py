@@ -146,9 +146,8 @@ class TestDeterminismEnvironmentVariables:
             os.environ,
             {"CODEX_DETERMINISM": "1", "CODEX_SEED": "not_a_number"},
             clear=True,
-        ):
-            with pytest.raises(ValueError):
-                codex_script._init_determinism_from_env()
+        ), pytest.raises(ValueError):
+            codex_script._init_determinism_from_env()
 
     def test_invalid_num_threads_raises_value_error(self) -> None:
         """Test invalid num_threads raises ValueError."""
@@ -156,9 +155,8 @@ class TestDeterminismEnvironmentVariables:
             os.environ,
             {"CODEX_DETERMINISM": "1", "CODEX_NUM_THREADS": "invalid"},
             clear=True,
-        ):
-            with pytest.raises(ValueError):
-                codex_script._init_determinism_from_env()
+        ), pytest.raises(ValueError):
+            codex_script._init_determinism_from_env()
 
 
 class TestDeterminismReturnValue:

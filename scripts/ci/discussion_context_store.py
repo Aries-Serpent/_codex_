@@ -237,9 +237,7 @@ def _gather_context(
                 patterns.append("RP-009")
             elif "actionlint" in name or "workflow" in name:
                 patterns.append("RP-ACTIONLINT")
-            elif "validation" in name or "validate" in name:
-                patterns.append("RP-RUFF")
-            elif "auto-fix" in name:
+            elif "validation" in name or "validate" in name or "auto-fix" in name:
                 patterns.append("RP-RUFF")
         patterns = sorted(set(patterns))
 
@@ -771,9 +769,9 @@ def main() -> int:
 
     if args.cmd == "post":
         return cmd_post(args, token)
-    elif args.cmd == "query":
+    if args.cmd == "query":
         return cmd_query(args, token)
-    elif args.cmd == "list":
+    if args.cmd == "list":
         return cmd_list(args, token)
     return 0
 

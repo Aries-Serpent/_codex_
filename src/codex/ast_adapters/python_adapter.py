@@ -94,20 +94,20 @@ class PythonASTAdapter(BaseASTAdapter):
             self._process_function(cst_node, parent)
             return  # Don't continue processing - children handled in _process_function
 
-        elif isinstance(cst_node, cst.ClassDef):
+        if isinstance(cst_node, cst.ClassDef):
             self._process_class(cst_node, parent)
             return  # Don't continue processing - children handled in _process_class
 
-        elif isinstance(cst_node, cst.Import) or isinstance(cst_node, cst.ImportFrom):
+        if isinstance(cst_node, (cst.Import, cst.ImportFrom)):
             self._process_import(cst_node, parent)
             return
 
-        elif isinstance(cst_node, cst.Assign):
+        if isinstance(cst_node, cst.Assign):
             self._process_assignment(cst_node, parent)
             return
 
         # Recursively process children for other compound statements
-        elif hasattr(cst_node, "body"):
+        if hasattr(cst_node, "body"):
             if isinstance(cst_node.body, cst.IndentedBlock):
                 for stmt in cst_node.body.body:
                     self._process_node(stmt, parent)
@@ -178,7 +178,7 @@ class PythonASTAdapter(BaseASTAdapter):
         """Extract full dotted name from libcst node (handles Name and Attribute)."""
         if isinstance(node, cst.Name):
             return node.value
-        elif isinstance(node, cst.Attribute):
+        if isinstance(node, cst.Attribute):
             return f"{self._get_full_name(node.value)}.{node.attr.value}"
         return str(node)
 

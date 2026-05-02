@@ -173,10 +173,7 @@ def main() -> None:
 
     report = run_assessment()
 
-    if args.json:
-        out = json.dumps(report.to_dict(), indent=2)
-    else:
-        out = format_report(report)
+    out = json.dumps(report.to_dict(), indent=2) if args.json else format_report(report)
 
     if args.output:
         Path(args.output).write_text(out)

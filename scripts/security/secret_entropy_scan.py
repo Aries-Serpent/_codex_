@@ -65,7 +65,6 @@ def scan_file(path: Path, entropy_threshold: float, allow_prefixes: list[str]) -
         txt = path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return []
 
     findings = []

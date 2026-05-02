@@ -240,7 +240,6 @@ class CodeSmellDetector:
             return self.detect_string(code, file_path)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return []
 
     def detect_string(self, code: str, file_path: Optional[Path] = None) -> list[CodeSmell]:

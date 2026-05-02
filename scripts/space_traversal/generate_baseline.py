@@ -93,8 +93,7 @@ def _load_decoded(path: Path) -> dict[str, Any]:
     # Path can be binary (b64+gz) or decoded json
     if path.suffix in {".b64", ".gz", ".gz.b64"} or path.name.endswith(".b64"):
         return load_from_local(str(path), DEFAULT_MAX_BYTES)
-    else:
-        return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _ensure_report(decoded: dict[str, Any]) -> dict[str, Any]:
@@ -136,7 +135,7 @@ def build_baseline(
     return destination
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv=None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate baseline from base64+gz Phase-A snapshot or decoded report"
     )
@@ -148,7 +147,7 @@ def parse_args() -> argparse.Namespace:
         "--stable-output", action="store_true", help="write deterministic/stable JSON output"
     )
     parser.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES)
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def main(argv=None):

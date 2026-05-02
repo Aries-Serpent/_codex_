@@ -109,17 +109,15 @@ class MetricThreshold:
         if self.comparison == "gte":
             if value >= self.target:
                 return True, None
-            elif value >= self.warning_threshold:
+            if value >= self.warning_threshold:
                 return False, AlertSeverity.WARNING
-            else:
-                return False, AlertSeverity.CRITICAL
-        else:  # lte
-            if value <= self.target:
-                return True, None
-            elif value <= self.warning_threshold:
-                return False, AlertSeverity.WARNING
-            else:
-                return False, AlertSeverity.CRITICAL
+            return False, AlertSeverity.CRITICAL
+        # lte
+        if value <= self.target:
+            return True, None
+        if value <= self.warning_threshold:
+            return False, AlertSeverity.WARNING
+        return False, AlertSeverity.CRITICAL
 
 
 @dataclass
@@ -291,10 +289,7 @@ class TrendAnalyzer:
 
         # Slope and intercept
         denominator = n * sum_x2 - sum_x * sum_x
-        if abs(denominator) < 1e-10:
-            slope = 0.0
-        else:
-            slope = (n * sum_xy - sum_x * sum_y) / denominator
+        slope = 0.0 if abs(denominator) < 1e-10 else (n * sum_xy - sum_x * sum_y) / denominator
 
         # R-squared (coefficient of determination)
         mean_y = sum_y / n
@@ -316,10 +311,7 @@ class TrendAnalyzer:
         # Calculate change percent
         start_value = filtered[0].value
         end_value = filtered[-1].value
-        if start_value > 0:
-            change_percent = ((end_value - start_value) / start_value) * 100
-        else:
-            change_percent = 0.0
+        change_percent = (end_value - start_value) / start_value * 100 if start_value > 0 else 0.0
 
         return TrendAnalysis(
             metric_type=filtered[0].metric_type,

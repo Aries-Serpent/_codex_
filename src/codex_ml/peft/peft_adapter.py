@@ -115,7 +115,6 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
             model.peft_config = dict(merged)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Silently ignore attribute setting failures
         return model
 
@@ -143,7 +142,6 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
             adapted.peft_config = dict(merged)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures but continue with adapted model
         return adapted
     except Exception:  # pragma: no cover - defensive fallback
@@ -151,7 +149,6 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         try:
             model.peft_config = dict(merged)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures in fallback case
         return model

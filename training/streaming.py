@@ -9,7 +9,7 @@ from __future__ import annotations
 import warnings as _warnings
 
 _warnings.warn(
-    "Importing from 'training.streaming' is deprecated. " "Use 'src.training.streaming' instead.",
+    "Importing from 'training.streaming' is deprecated. Use 'src.training.streaming' instead.",
     DeprecationWarning,
     stacklevel=2,
 )

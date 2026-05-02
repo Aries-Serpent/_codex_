@@ -81,10 +81,7 @@ def _load_line_text_dataset(root: Path) -> Iterable[str]:
     """
 
     root = root.expanduser().resolve()
-    if root.is_file():
-        paths = [root]
-    else:
-        paths = sorted(root.rglob("*.txt"))
+    paths = [root] if root.is_file() else sorted(root.rglob("*.txt"))
     for p in paths:
         for line in p.read_text(encoding="utf-8", errors="ignore").splitlines():
             line = line.strip()

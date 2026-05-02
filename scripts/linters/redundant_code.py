@@ -85,24 +85,23 @@ class RedundantCodeDetector(ast.NodeVisitor):
             last_stmt = node.body[-1]
 
             # Check for explicit return None at end
-            if isinstance(last_stmt, ast.Return):
-                if last_stmt.value is None or (
-                    isinstance(last_stmt.value, ast.Constant) and last_stmt.value.value is None
-                ):
-                    # Check if function has other return statements
-                    has_other_returns = any(
-                        isinstance(stmt, ast.Return) and stmt != last_stmt
-                        for stmt in ast.walk(node)
-                    )
+            if isinstance(last_stmt, ast.Return) and (last_stmt.value is None or (
+                isinstance(last_stmt.value, ast.Constant) and last_stmt.value.value is None
+            )):
+                # Check if function has other return statements
+                has_other_returns = any(
+                    isinstance(stmt, ast.Return) and stmt != last_stmt
+                    for stmt in ast.walk(node)
+                )
 
-                    if not has_other_returns:
-                        self.issues.append(
-                            (
-                                last_stmt.lineno,
-                                "redundant_return_none",
-                                "Redundant 'return None' at end of function (implicit return)",
-                            )
+                if not has_other_returns:
+                    self.issues.append(
+                        (
+                            last_stmt.lineno,
+                            "redundant_return_none",
+                            "Redundant 'return None' at end of function (implicit return)",
                         )
+                    )
 
         self.generic_visit(node)
 
@@ -190,14 +189,13 @@ def fix_redundant_pass(
 
         # Remove lines in reverse order to maintain line numbers
         for line_num, _, _ in sorted(pass_issues, reverse=True):
-            if 1 <= line_num <= len(lines):
-                if lines[line_num - 1].strip() == "pass":
-                    if dry_run:
-                        logger.info(
-                            f"[DRY RUN] Would remove line {line_num}: {lines[line_num - 1].rstrip()}"
-                        )
-                    else:
-                        del lines[line_num - 1]
+            if 1 <= line_num <= len(lines) and lines[line_num - 1].strip() == "pass":
+                if dry_run:
+                    logger.info(
+                        f"[DRY RUN] Would remove line {line_num}: {lines[line_num - 1].rstrip()}"
+                    )
+                else:
+                    del lines[line_num - 1]
 
         if not dry_run:
             with open(file_path, "w", encoding="utf-8") as f:
@@ -228,9 +226,8 @@ def process_directory(directory: Path, fix: bool = False, dry_run: bool = True) 
             for line, issue_type, message in issues:
                 logger.info(f"  Line {line} [{issue_type}]: {message}")
 
-            if fix:
-                if fix_redundant_pass(py_file, issues, dry_run):
-                    stats["fixed"] += 1
+            if fix and fix_redundant_pass(py_file, issues, dry_run):
+                stats["fixed"] += 1
 
     return stats
 
@@ -279,7 +276,7 @@ def main():
 
         return 0
 
-    elif args.directory:
+    if args.directory:
         stats = process_directory(args.directory, args.fix, dry_run)
 
         logger.info(f"\n{'='*60}")
@@ -293,9 +290,8 @@ def main():
 
         return 0 if stats["issues_found"] == 0 else 1
 
-    else:
-        parser.print_help()
-        return 1
+    parser.print_help()
+    return 1
 
 
 if __name__ == "__main__":

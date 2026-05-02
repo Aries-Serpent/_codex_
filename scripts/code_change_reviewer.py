@@ -89,13 +89,12 @@ class CodeChangeReviewer:
 
             # Check for bare except clauses
             for node in ast.walk(tree):
-                if isinstance(node, ast.ExceptHandler):
-                    if node.type is None:
-                        issues.append((
-                            IssueType.RISK,
-                            Priority.HIGH,
-                            "Bare except clause can hide errors"
-                        ))
+                if isinstance(node, ast.ExceptHandler) and node.type is None:
+                    issues.append((
+                        IssueType.RISK,
+                        Priority.HIGH,
+                        "Bare except clause can hide errors"
+                    ))
 
         except (SyntaxError, UnicodeDecodeError) as e:
             logger.debug(f"Exception: {e}")
@@ -112,7 +111,7 @@ class CodeChangeReviewer:
         issues = []
 
         for filepath in changed_files:
-            if not filepath.suffix == '.py':
+            if filepath.suffix != '.py':
                 continue
 
             # Skip test files themselves

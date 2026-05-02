@@ -13,6 +13,7 @@ import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Cross-Module Conditional Branches
@@ -27,16 +28,10 @@ class TestCrossModuleIntegrationBranches:
         config = {"model_type": "bert", "load_in_8bit": True}
 
         # Config processing
-        if "model_type" in config:
-            model_type = config["model_type"]
-        else:
-            model_type = "default"
+        model_type = config.get("model_type", "default")
 
         # Model loading decision
-        if config.get("load_in_8bit", False):
-            quantization = "8bit"
-        else:
-            quantization = "none"
+        quantization = "8bit" if config.get("load_in_8bit", False) else "none"
 
         assert model_type == "bert"
         assert quantization == "8bit"
@@ -46,16 +41,10 @@ class TestCrossModuleIntegrationBranches:
         auth_token = "valid_token"
 
         # Auth validation
-        if auth_token:
-            authenticated = True
-        else:
-            authenticated = False
+        authenticated = bool(auth_token)
 
         # API access decision
-        if authenticated:
-            api_access = "granted"
-        else:
-            api_access = "denied"
+        api_access = "granted" if authenticated else "denied"
 
         assert api_access == "granted"
 
@@ -78,10 +67,7 @@ class TestCrossModuleIntegrationBranches:
         data = {"text": "sample", "processed": False}
 
         # Stage 1: Validation
-        if "text" in data:
-            validated = True
-        else:
-            validated = False
+        validated = "text" in data
 
         # Stage 2: Processing (depends on validation)
         if validated:
@@ -95,8 +81,8 @@ class TestCrossModuleIntegrationBranches:
 
     def test_model_device_strategy_cascade_branch(self) -> None:
         """Test model to device strategy cascade."""
-        model_size = "large"
-        available_memory = 8000  # MB
+        model_size = branch_input("large")
+        available_memory = branch_input(8000)  # MB
 
         # Model size check
         if model_size == "large":
@@ -119,8 +105,8 @@ class TestCrossModuleIntegrationBranches:
 
     def test_logging_level_cascade_branch(self) -> None:
         """Test logging level cascade across modules."""
-        debug_mode = True
-        verbose = False
+        debug_mode = branch_input(True)
+        verbose = branch_input(False)
 
         # Module A logging decision
         if debug_mode:
@@ -131,10 +117,7 @@ class TestCrossModuleIntegrationBranches:
             module_a_level = "WARNING"
 
         # Module B inherits and adjusts
-        if module_a_level == "DEBUG":
-            module_b_level = "DEBUG"
-        else:
-            module_b_level = "INFO"
+        module_b_level = "DEBUG" if module_a_level == "DEBUG" else "INFO"
 
         assert module_a_level == "DEBUG"
         assert module_b_level == "DEBUG"
@@ -155,16 +138,13 @@ class TestConfigurationCascadeBranches:
         with patch.dict(os.environ, {"CONFIG_KEY": "env_value"}):
             env_value = os.environ.get("CONFIG_KEY")
 
-            if env_value:
-                final_value = env_value
-            else:
-                final_value = config_file_value
+            final_value = env_value or config_file_value
 
             assert final_value == "env_value"
 
     def test_cli_override_env_var_branch(self) -> None:
         """Test CLI argument overrides environment variable."""
-        cli_arg = "cli_value"
+        cli_arg = branch_input("cli_value")
 
         with patch.dict(os.environ, {"CONFIG_KEY": "env_value"}):
             env_value = os.environ.get("CONFIG_KEY")
@@ -180,7 +160,7 @@ class TestConfigurationCascadeBranches:
 
     def test_default_config_used_branch(self) -> None:
         """Test default configuration used when no overrides."""
-        cli_arg = None
+        cli_arg = branch_input(None)
 
         with patch.dict(os.environ, {}, clear=True):
             env = {k: v for k, v in os.environ.items() if k != "CONFIG_KEY"}
@@ -201,19 +181,10 @@ class TestConfigurationCascadeBranches:
         config = {"api_key": "test_key", "timeout": 30}
 
         # Validation stage 1: Required fields
-        if "api_key" not in config:
-            stage1_valid = False
-        else:
-            stage1_valid = True
+        stage1_valid = not "api_key" not in config
 
         # Validation stage 2: Value ranges (depends on stage 1)
-        if stage1_valid:
-            if config.get("timeout", 0) > 0:
-                stage2_valid = True
-            else:
-                stage2_valid = False
-        else:
-            stage2_valid = False
+        stage2_valid = (config.get("timeout", 0) > 0) if stage1_valid else False
 
         assert stage1_valid is True
         assert stage2_valid is True
@@ -221,7 +192,7 @@ class TestConfigurationCascadeBranches:
     def test_config_merge_deep_nested_branch(self) -> None:
         """Test deep nested configuration merge."""
         base = {"db": {"host": "localhost", "port": 5432}}
-        override = {"db": {"port": 3306}}
+        override = branch_input({"db": {"port": 3306}})
 
         # Merge logic
         result = base.copy()
@@ -247,10 +218,7 @@ class TestErrorPropagationBranches:
         """Test error propagation single level."""
         error_occurred = True
 
-        if error_occurred:
-            error_propagated = True
-        else:
-            error_propagated = False
+        error_propagated = bool(error_occurred)
 
         assert error_propagated is True
 
@@ -259,16 +227,10 @@ class TestErrorPropagationBranches:
         level1_error = True
 
         # Level 2 receives error
-        if level1_error:
-            level2_error = True
-        else:
-            level2_error = False
+        level2_error = bool(level1_error)
 
         # Level 3 receives error
-        if level2_error:
-            level3_error = True
-        else:
-            level3_error = False
+        level3_error = bool(level2_error)
 
         assert level3_error is True
 
@@ -278,16 +240,13 @@ class TestErrorPropagationBranches:
         suppress_errors = True
 
         # Level 2 may suppress
-        if level1_error and not suppress_errors:
-            level2_error = True
-        else:
-            level2_error = False
+        level2_error = bool(level1_error and not suppress_errors)
 
         assert level2_error is False
 
     def test_error_transformation_branch(self) -> None:
         """Test error transformation across levels."""
-        original_error = "ValueError"
+        original_error = branch_input("ValueError")
 
         # Transform error type
         if original_error == "ValueError":
@@ -301,14 +260,11 @@ class TestErrorPropagationBranches:
 
     def test_error_logging_cascade_branch(self) -> None:
         """Test error logging cascade."""
-        error_occurred = True
+        error_occurred = branch_input(True)
         log_errors = True
 
         if error_occurred:
-            if log_errors:
-                logged = True
-            else:
-                logged = False
+            logged = bool(log_errors)
             propagate = True
         else:
             logged = False
@@ -330,10 +286,7 @@ class TestRealModuleImportBranches:
         """Test pathlib.Path import and usage."""
         path = Path("/test/path")
 
-        if path.is_absolute():
-            path_type = "absolute"
-        else:
-            path_type = "relative"
+        path_type = "absolute" if path.is_absolute() else "relative"
 
         assert path_type == "absolute"
 
@@ -342,10 +295,7 @@ class TestRealModuleImportBranches:
         test_key = "TEST_INTEGRATION_KEY_12345"
 
         with patch.dict(os.environ, {test_key: "test_value"}):
-            if test_key in os.environ:
-                value = os.environ[test_key]
-            else:
-                value = None
+            value = os.environ.get(test_key, None)
 
             assert value == "test_value"
 
@@ -402,8 +352,8 @@ class TestServiceIntegrationBranches:
 
     def test_authentication_to_authorization_branch(self) -> None:
         """Test authentication to authorization flow."""
-        user_authenticated = True
-        user_role = "admin"
+        user_authenticated = branch_input(True)
+        user_role = branch_input("admin")
 
         # Authentication check
         if not user_authenticated:
@@ -426,16 +376,10 @@ class TestServiceIntegrationBranches:
         cache_enabled = True
 
         # Rate limit check
-        if request_count > rate_limit:
-            rate_limited = True
-        else:
-            rate_limited = False
+        rate_limited = request_count > rate_limit
 
         # Caching decision (based on rate limiting)
-        if rate_limited and cache_enabled:
-            use_cache = True
-        else:
-            use_cache = False
+        use_cache = bool(rate_limited and cache_enabled)
 
         assert rate_limited is True
         assert use_cache is True
@@ -445,17 +389,11 @@ class TestServiceIntegrationBranches:
         data = {"field1": "value1", "field2": 100}
 
         # Validation
-        if "field1" in data and "field2" in data:
-            valid = True
-        else:
-            valid = False
+        valid = bool("field1" in data and "field2" in data)
 
         # Processing (depends on validation)
         if valid:
-            if data["field2"] > 50:
-                processing_mode = "high_priority"
-            else:
-                processing_mode = "normal"
+            processing_mode = "high_priority" if data["field2"] > 50 else "normal"
         else:
             processing_mode = "skipped"
 
@@ -463,8 +401,8 @@ class TestServiceIntegrationBranches:
 
     def test_circuit_breaker_integration_branch(self) -> None:
         """Test circuit breaker integration."""
-        failure_count = 5
-        failure_threshold = 3
+        failure_count = branch_input(5)
+        failure_threshold = branch_input(3)
         circuit_state = "closed"
 
         # Circuit breaker logic
@@ -472,10 +410,7 @@ class TestServiceIntegrationBranches:
             circuit_state = "open"
 
         # Service call decision
-        if circuit_state == "open":
-            allow_call = False
-        else:
-            allow_call = True
+        allow_call = circuit_state != "open"
 
         assert circuit_state == "open"
         assert allow_call is False
@@ -491,8 +426,8 @@ class TestStateMachineIntegrationBranches:
 
     def test_state_transition_valid_branch(self) -> None:
         """Test valid state transition."""
-        current_state = "idle"
-        event = "start"
+        current_state = branch_input("idle")
+        event = branch_input("start")
 
         if current_state == "idle" and event == "start":
             next_state = "running"
@@ -514,17 +449,14 @@ class TestStateMachineIntegrationBranches:
             ("running", "stop"): "stopped",
         }
 
-        if (current_state, event) in valid_transitions:
-            next_state = valid_transitions[(current_state, event)]
-        else:
-            next_state = current_state
+        next_state = valid_transitions.get((current_state, event), current_state)
 
         assert next_state == "stopped"
 
     def test_state_machine_guard_condition_branch(self) -> None:
         """Test state machine with guard conditions."""
-        current_state = "processing"
-        progress = 95
+        current_state = branch_input("processing")
+        progress = branch_input(95)
 
         if current_state == "processing":
             if progress >= 100:
@@ -542,9 +474,6 @@ class TestStateMachineIntegrationBranches:
         """Test concurrent state access handling."""
         state_locked = True
 
-        if state_locked:
-            access = "blocked"
-        else:
-            access = "allowed"
+        access = "blocked" if state_locked else "allowed"
 
         assert access == "blocked"

@@ -35,7 +35,7 @@ class AnalyticsDashboard:
         stats = self.metrics_db.get_stats(hours=hours)
         percentiles = self.metrics_db.get_percentiles(hours=hours)
 
-        html = f"""
+        return f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -209,7 +209,6 @@ class AnalyticsDashboard:
 </body>
 </html>
 """  # noqa: E501
-        return html
 
     def save_to_file(self, output_path: Path, hours: int = 24) -> None:
         """

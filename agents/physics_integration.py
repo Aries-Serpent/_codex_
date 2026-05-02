@@ -284,7 +284,7 @@ class HybridPhysicsOrchestrator:
 
     def get_capabilities(self) -> dict[str, bool]:
         """Get available physics paradigms."""
-        capabilities = {
+        return {
             "classical_physics": PHYSICS_ORCHESTRATOR_AVAILABLE,
             "chaos_theory": ADVANCED_PHYSICS_AVAILABLE,
             "fractal_geometry": ADVANCED_PHYSICS_AVAILABLE,
@@ -293,7 +293,6 @@ class HybridPhysicsOrchestrator:
             "wave_propagation": ADVANCED_PHYSICS_AVAILABLE,
             "relativistic_effects": ADVANCED_PHYSICS_AVAILABLE,
         }
-        return capabilities
 
 
 def create_hybrid_orchestrator(session_id: Optional[str] = None) -> HybridPhysicsOrchestrator:

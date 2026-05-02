@@ -144,7 +144,6 @@ class PineconeAdapter(BackendAdapter):
                 self._index_upsert(vectors=vectors, namespace=namespace)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone upsert failed")
             raise
@@ -178,7 +177,6 @@ class PineconeAdapter(BackendAdapter):
                     namespace=namespace,
                 )
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone query failed")
@@ -224,7 +222,6 @@ class PineconeAdapter(BackendAdapter):
             return True
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone delete failed")
             return False
@@ -238,7 +235,6 @@ class PineconeAdapter(BackendAdapter):
                 stats = self._index.describe_index_stats()
                 info["stats"] = stats
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             logger.debug("Failed to fetch Pinecone index stats during health_check")
         return info

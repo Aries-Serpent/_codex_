@@ -130,25 +130,24 @@ class SparseLinearProbe:
             )
 
             return concepts.tolist()
-        else:
-            # Pure Python fallback
-            concepts = []
-            for i, weight_row in enumerate(self.weights):
-                # Dot product
-                score = sum(w * v for w, v in zip(weight_row, vector_list))
-                score += self.bias[i]
+        # Pure Python fallback
+        concepts = []
+        for i, weight_row in enumerate(self.weights):
+            # Dot product
+            score = sum(w * v for w, v in zip(weight_row, vector_list))
+            score += self.bias[i]
 
-                # L1 soft-thresholding
-                if abs(score) > self.sparsity_threshold:
-                    score = math.copysign(
-                        abs(score) - self.sparsity_threshold, score
-                    )
-                else:
-                    score = 0.0
+            # L1 soft-thresholding
+            if abs(score) > self.sparsity_threshold:
+                score = math.copysign(
+                    abs(score) - self.sparsity_threshold, score
+                )
+            else:
+                score = 0.0
 
-                concepts.append(score)
+            concepts.append(score)
 
-            return concepts
+        return concepts
 
     def top_concepts(self, vector: Iterable[float], k: int = 3) -> list[tuple[str, float]]:
         """
@@ -271,16 +270,15 @@ class UnembeddingHead:
 
             logits = weights_array @ vec_array + bias_array
             return logits.tolist()
-        else:
-            # Pure Python fallback
-            logits = []
-            for i, weight_row in enumerate(self.weights):
-                # Dot product
-                score = sum(w * v for w, v in zip(weight_row, vector_list))
-                score += self.bias[i]
-                logits.append(score)
+        # Pure Python fallback
+        logits = []
+        for i, weight_row in enumerate(self.weights):
+            # Dot product
+            score = sum(w * v for w, v in zip(weight_row, vector_list))
+            score += self.bias[i]
+            logits.append(score)
 
-            return logits
+        return logits
 
 
 def top_k_labels(

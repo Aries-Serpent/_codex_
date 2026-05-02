@@ -40,7 +40,6 @@ def _supports_bfloat16() -> bool:
                 return capability[0] >= 8
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 # Try alternative check
                 checker = getattr(torch.cuda, "is_bf16_supported", None)
                 if callable(checker):
@@ -170,8 +169,7 @@ class DeviceConfig:
                 self.device,
                 exc,
             )
-            model = model.to(device=torch.device("cpu"), dtype=torch.float32)
-            return model
+            return model.to(device=torch.device("cpu"), dtype=torch.float32)
 
     def apply_to_tensor(self, tensor: Any) -> Any:
         """Return tensor on the configured device and dtype.

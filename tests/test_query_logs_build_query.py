@@ -136,8 +136,7 @@ def _discover_candidates() -> List[str]:
             except Exception:  # noqa: BLE001
                 rel = str(p)
             out.append(rel)
-    out = sorted(set(out), key=lambda s: (len(s.split("/")), s))
-    return out
+    return sorted(set(out), key=lambda s: (len(s.split("/")), s))
 
 
 def _resolve_candidates() -> List[str]:

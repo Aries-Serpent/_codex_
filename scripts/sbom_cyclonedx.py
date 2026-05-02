@@ -202,7 +202,7 @@ def _build_bom(
     if project_version:
         component["version"] = project_version
     metadata["component"] = component
-    bom = {
+    return {
         "bomFormat": "CycloneDX",
         "specVersion": "1.5",
         "serialNumber": f"urn:uuid:{uuid.uuid4()}",
@@ -210,7 +210,6 @@ def _build_bom(
         "metadata": metadata,
         "components": [record.as_component() for record in records],
     }
-    return bom
 
 
 def _write_packages_txt(records: Sequence[PackageRecord], output: Path) -> None:

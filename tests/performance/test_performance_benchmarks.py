@@ -70,14 +70,13 @@ class TestBridgeIPCLatency:
 
         # Benchmark message creation
         def create_message():
-            msg = ContextMessage(
+            return ContextMessage(
                 timestamp=datetime.now(UTC).isoformat(),
                 source="benchmark",
                 message_type="test",
                 context={"data": "test"},
                 auth_token=auth_token
             )
-            return msg
 
         results = PerformanceBenchmark.measure_latency(create_message, iterations=1000)
 
@@ -109,8 +108,7 @@ class TestPIIScrubbing:
         def scrub_pii(text: str) -> str:
             """Mock PII scrubbing function"""
             text = re.sub(EMAIL_PATTERN, '[EMAIL_REDACTED]', text)
-            text = re.sub(IPV4_PATTERN, '[IP_REDACTED]', text)
-            return text
+            return re.sub(IPV4_PATTERN, '[IP_REDACTED]', text)
 
         # Test document
         document = """

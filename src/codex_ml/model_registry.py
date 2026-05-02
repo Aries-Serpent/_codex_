@@ -130,7 +130,6 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
             adapter_name = load_adapter(adapter_path)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             adapter_name = None
         else:
             set_active = getattr(model, "set_active_adapters", None)
@@ -144,7 +143,6 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
     try:
         model.lora_adapter_path = adapter_path
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Silently ignore failures; attaching metadata is best effort.
 
@@ -164,7 +162,6 @@ def _to_bool(value: Any, default: bool) -> bool:
         return bool(value)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return default
 
 
@@ -173,7 +170,6 @@ def _to_int(value: Any, default: int) -> int:
         return int(value)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return default
 
 
@@ -181,7 +177,6 @@ def _to_float(value: Any, default: float) -> float:
     try:
         return float(value)
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return default
 
@@ -352,7 +347,6 @@ def get_model(
             config=config,
         )
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Attaching metadata is best-effort only.
 

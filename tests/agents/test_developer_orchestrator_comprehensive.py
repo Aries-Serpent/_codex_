@@ -349,7 +349,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         try:
             result = orchestrator.analyze_requirements(None)  # type: ignore
             # Should either work or raise appropriate error
-            assert result is not None or True
+            assert True
         except (TypeError, AttributeError):
             # Acceptable to raise error for None
             pass

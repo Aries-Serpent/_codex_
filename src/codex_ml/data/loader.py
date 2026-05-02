@@ -90,7 +90,6 @@ class CacheManifest:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return None
         return cls(
             version=str(data.get("version", "1")),
@@ -386,7 +385,6 @@ def load_dataset(
                 return data
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             try:
                 cache_file.unlink()
             except FileNotFoundError as e:
@@ -434,7 +432,7 @@ def load_dataset(
 
 def apply_safety_filter(
     texts: Sequence[str],
-    filter_enabled: bool,
+    filter_enabled: bool = True,
     safety_fn: Optional[Callable[[str], str]] = None,
 ) -> list[str]:
     """Optionally apply ``safety_fn`` to each text when ``filter_enabled``."""

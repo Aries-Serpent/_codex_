@@ -295,7 +295,7 @@ if __name__ == "__main__":
     # Exit with appropriate code
     if results["target_met"]:
         print("✅ EXP-1 VALIDATION SUCCESSFUL")
-        exit(0)
+        raise SystemExit(0)
     else:
         print("⚠️ EXP-1 VALIDATION: TARGET NOT MET")
-        exit(1)
+        raise SystemExit(1)

@@ -27,7 +27,7 @@ def test_cli_smoke(tmp_path):
         "role TEXT, message TEXT, seq INTEGER, meta TEXT)"
     )
     con.executemany(
-        "INSERT INTO session_events(session_id, timestamp, role, message) " "VALUES (?,?,?,?)",
+        "INSERT INTO session_events(session_id, timestamp, role, message) VALUES (?,?,?,?)",
         [
             ("S1", "2025-01-01T00:00:00Z", "user", "hi"),
             ("S1", "2025-01-01T00:00:01Z", "assistant", "yo"),

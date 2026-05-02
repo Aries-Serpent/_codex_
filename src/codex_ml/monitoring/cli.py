@@ -48,12 +48,9 @@ def _export_file(src: str, dst: str, fmt: str, *, echo, bad_param_exc) -> None:
     for r in records:
         try:
             rows.append(
-                LogRecord(
-                    **{k: r.get(k) for k in LogRecord.__dataclass_fields__.keys() if k in r}
-                ).dict()
+                LogRecord(**{k: r.get(k) for k in LogRecord.__dataclass_fields__ if k in r}).dict()
             )
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             rows.append(r)
     if fmt == "csv":

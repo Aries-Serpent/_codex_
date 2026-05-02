@@ -227,10 +227,7 @@ def evaluate_epoch(
                     all_targets.extend(_coerce_batch(batch_targets))
                 else:
                     # Use argmax classification assumption; adapt later for regression
-                    if hasattr(outputs, "argmax"):
-                        preds = outputs.argmax(dim=-1)
-                    else:
-                        preds = outputs
+                    preds = outputs.argmax(dim=-1) if hasattr(outputs, "argmax") else outputs
                     pred_tensor = preds.detach().cpu()
                     if pred_tensor.ndim == 0:
                         pred_tensor = pred_tensor.reshape(1)

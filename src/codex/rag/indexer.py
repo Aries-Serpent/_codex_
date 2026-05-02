@@ -364,17 +364,16 @@ def build_index_from_files(
     if not all_chunks:
         if not any(file_path.exists() for file_path in files):
             raise ValueError("No valid input files found")
-        elif all(fm["chunks"] == 0 for fm in file_metadata if fm):
+        if all(fm["chunks"] == 0 for fm in file_metadata if fm):
             raise ValueError("Input files contain no text content")
-        elif processing_errors:
+        if processing_errors:
             raise ValueError(
                 f"No chunks generated - {len(processing_errors)} file(s) failed to process: "
                 f"{', '.join(processing_errors[:3])}{'...' if len(processing_errors) > 3 else ''}"
             )
-        else:
-            raise ValueError(
-                "No chunks generated from input files - files may be empty or in unsupported format"
-            )
+        raise ValueError(
+            "No chunks generated from input files - files may be empty or in unsupported format"
+        )
 
     logger.info(f"Total chunks: {len(all_chunks)} from {len(files)} files")
 
@@ -390,7 +389,7 @@ def build_index_from_files(
         "overlap": overlap,
     }
 
-    index_path = persist_index(
+    return persist_index(
         index_name=index_name,
         embeddings=embeddings,
         chunks=all_chunks,
@@ -398,8 +397,6 @@ def build_index_from_files(
         tenant_id=tenant_id,
         index_dir=index_dir,
     )
-
-    return index_path
 
 
 # ============================================================================
@@ -539,17 +536,16 @@ def manage_tenant_indices(
                 message=f"Successfully created {len(created)} index(es) for tenant '{tenant_id}'",
                 details={"created_indices": created},
             )
-        else:
-            return TenantOperationResult(
-                success=False,
-                operation=op_enum,
-                tenant_id=tenant_id,
-                index_names=index_names,
-                message=f"Failed to create any indices for tenant '{tenant_id}'",
-            )
+        return TenantOperationResult(
+            success=False,
+            operation=op_enum,
+            tenant_id=tenant_id,
+            index_names=index_names,
+            message=f"Failed to create any indices for tenant '{tenant_id}'",
+        )
 
     # UPDATE: Rebuild existing index with new data
-    elif op_enum == IndexOperation.UPDATE:
+    if op_enum == IndexOperation.UPDATE:
         files = kwargs.get("files", [])
         if not files:
             return TenantOperationResult(
@@ -592,17 +588,16 @@ def manage_tenant_indices(
                 message=f"Successfully updated {len(updated)} index(es) for tenant '{tenant_id}'",
                 details={"updated_indices": updated},
             )
-        else:
-            return TenantOperationResult(
-                success=False,
-                operation=op_enum,
-                tenant_id=tenant_id,
-                index_names=index_names,
-                message=f"Failed to update any indices for tenant '{tenant_id}'",
-            )
+        return TenantOperationResult(
+            success=False,
+            operation=op_enum,
+            tenant_id=tenant_id,
+            index_names=index_names,
+            message=f"Failed to update any indices for tenant '{tenant_id}'",
+        )
 
     # DELETE: Remove indices
-    elif op_enum == IndexOperation.DELETE:
+    if op_enum == IndexOperation.DELETE:
         deleted = []
         for index_name in index_names:
             try:
@@ -625,17 +620,16 @@ def manage_tenant_indices(
                 message=f"Successfully deleted {len(deleted)} index(es) for tenant '{tenant_id}'",
                 details={"deleted_indices": deleted},
             )
-        else:
-            return TenantOperationResult(
-                success=False,
-                operation=op_enum,
-                tenant_id=tenant_id,
-                index_names=index_names,
-                message=f"No indices deleted for tenant '{tenant_id}'",
-            )
+        return TenantOperationResult(
+            success=False,
+            operation=op_enum,
+            tenant_id=tenant_id,
+            index_names=index_names,
+            message=f"No indices deleted for tenant '{tenant_id}'",
+        )
 
     # MERGE: Combine multiple indices into one
-    elif op_enum == IndexOperation.MERGE:
+    if op_enum == IndexOperation.MERGE:
         merge_name = kwargs.get("merge_name")
         if not merge_name:
             return TenantOperationResult(

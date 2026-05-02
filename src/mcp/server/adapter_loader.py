@@ -80,5 +80,4 @@ async def lazy_connect_all(timeout: float = 1.0) -> bool:
         return True
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False

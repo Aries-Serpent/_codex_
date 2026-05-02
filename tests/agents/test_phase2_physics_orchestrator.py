@@ -270,10 +270,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
             sig = inspect.signature(ForceVector)
             # Build with required params, filling in sensible defaults
             params = {p: (-5.0 if "magnitude" in p else "backward") for p in sig.parameters if sig.parameters[p].default is inspect.Parameter.empty}
-            if params:
-                force = ForceVector(**params)
-            else:
-                force = ForceVector()
+            force = ForceVector(**params) if params else ForceVector()
             assert force is not None
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ForceVector not available")

@@ -197,5 +197,4 @@ def load_parquet(
 
     if batch_size:
         return loader.load_batched(batch_size)
-    else:
-        return loader.load()
+    return loader.load()

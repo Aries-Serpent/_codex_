@@ -225,10 +225,7 @@ def main() -> None:
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
 
-    if args.workflow:
-        files = [Path(args.workflow)]
-    else:
-        files = sorted(WORKFLOWS_DIR.glob("*.yml"))
+    files = [Path(args.workflow)] if args.workflow else sorted(WORKFLOWS_DIR.glob("*.yml"))
 
     changed = 0
     skipped = 0

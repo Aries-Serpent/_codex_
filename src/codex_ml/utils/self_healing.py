@@ -228,8 +228,7 @@ def auto_remediate(
                 if "batch_size" in kwargs:
                     kwargs["batch_size"] = healer.batch_size
 
-                result = func(*args, **kwargs)
-                return result
+                return func(*args, **kwargs)
 
         except Exception as e:
             logger.debug(f"Exception: {e}")

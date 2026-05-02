@@ -315,15 +315,14 @@ class ScopeValidator:
                 required_scopes=required,
                 message="Scope validation successful",
             )
-        else:
-            missing = required & ~self.scopes
-            return ScopeValidationResult(
-                valid=False,
-                granted_scopes=self.scopes,
-                required_scopes=required,
-                missing_scopes=missing,
-                message=f"Missing scopes: {missing.to_strings()}",
-            )
+        missing = required & ~self.scopes
+        return ScopeValidationResult(
+            valid=False,
+            granted_scopes=self.scopes,
+            required_scopes=required,
+            missing_scopes=missing,
+            message=f"Missing scopes: {missing.to_strings()}",
+        )
 
     def get_granted_scopes(self) -> Set[str]:
         """Get set of granted scope strings.

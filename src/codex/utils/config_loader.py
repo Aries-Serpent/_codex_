@@ -65,11 +65,13 @@ if not _HYDRA_AVAILABLE:
 
             def __init__(
                 self,
+                missing_cfg_file: str | None = None,
                 *,
-                missing_cfg_file: str,
                 message: str | None = None,
                 **kwargs: Any,
             ) -> None:
+                if missing_cfg_file is None:
+                    missing_cfg_file = kwargs.pop("missing_cfg_file", "")
                 self.missing_cfg_file = missing_cfg_file
                 resolved = message or f"Missing config file: {missing_cfg_file}"
                 super().__init__(resolved)
@@ -188,10 +190,9 @@ class ConfigLoader:
             if primary.exists():
                 return primary
             return self.repo_root / "configs"
-        elif not Path(config_dir).is_absolute():
+        if not Path(config_dir).is_absolute():
             return self.repo_root / config_dir
-        else:
-            return Path(config_dir)
+        return Path(config_dir)
 
     def _try_legacy_path(self, config_name: str, primary_dir: Path) -> Path | None:
         """Try to find config in legacy location.

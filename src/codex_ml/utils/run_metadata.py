@@ -38,7 +38,6 @@ def _sha256_file(path: Path) -> str | None:
         return hasher.hexdigest()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -80,6 +79,5 @@ def write_run_manifest(directory: str | Path, payload: dict[str, Any]) -> None:
         manifest = target_dir / "run_manifest.json"
         manifest.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return

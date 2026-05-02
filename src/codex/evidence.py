@@ -84,5 +84,4 @@ def _git_commit_sha() -> str:
         )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return "unknown"

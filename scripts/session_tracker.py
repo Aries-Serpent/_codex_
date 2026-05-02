@@ -377,22 +377,22 @@ def main() -> int:
 
     if args.cmd == "start":
         return cmd_start(label=args.label)
-    elif args.cmd == "end":
+    if args.cmd == "end":
         return cmd_end(session_id=args.session_id, outcome=args.outcome)
-    elif args.cmd == "status":
+    if args.cmd == "status":
         return cmd_status()
-    elif args.cmd == "resume":
+    if args.cmd == "resume":
         return cmd_resume()
-    elif args.cmd == "list":
+    if args.cmd == "list":
         return cmd_list(limit=args.limit)
-    elif args.cmd == "archive":
+    if args.cmd == "archive":
         return cmd_archive(
             session_id=args.session_id,
             reason=args.reason,
             pr_number=args.pr_number,
             dry_run=args.dry_run,
         )
-    elif args.cmd == "metrics":
+    if args.cmd == "metrics":
         return cmd_metrics(output_format=args.format)
     return 0
 

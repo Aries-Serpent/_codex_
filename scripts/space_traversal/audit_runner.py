@@ -1184,7 +1184,7 @@ def main() -> None:
             print(f"Stage S7 complete: audit_run_manifest.json ({len(warnings)} warnings)")
         return
 
-    elif args.command == "explain":
+    if args.command == "explain":
         # Explain a capability - load scored capabilities and show explanation
         scored_file = Path("audit_artifacts/capabilities_scored.json")
         if not scored_file.exists():
@@ -1212,7 +1212,7 @@ def main() -> None:
 
         return
 
-    elif args.command == "diff":
+    if args.command == "diff":
         # Diff two scored capability files and output CSV with ID,OLD,NEW,DELTA
         try:
             old_data = json.loads(Path(args.old).read_text()) if Path(args.old).exists() else {}
@@ -1234,7 +1234,7 @@ def main() -> None:
 
         return
 
-    elif args.command == "run":
+    if args.command == "run":
         # Run full audit pipeline - runs all stages in sequence
         logger.info("Running full audit pipeline...")
         artifacts_dir = Path("audit_artifacts")

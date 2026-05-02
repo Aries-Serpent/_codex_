@@ -250,7 +250,7 @@ class TestSecurityUtilsIntegration:
         assert "value2" not in log_message
 
         # Verify redacted dict doesn't contain original keys
-        for key in redacted_result.keys():
+        for key in redacted_result:
             assert key.startswith("secret_")
 
     def test_production_safety_defaults(self):

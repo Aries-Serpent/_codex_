@@ -260,7 +260,7 @@ def func():
         results = detector.detect_directory(tmp_path, exclude_patterns=["test_*.py"])
 
         # test_file.py should be excluded
-        assert all("test_file.py" not in path for path in results.keys())
+        assert all("test_file.py" not in path for path in results)
 
     def test_smell_to_dict(self):
         """Test CodeSmell serialization."""

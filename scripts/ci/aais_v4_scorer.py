@@ -522,10 +522,7 @@ def main() -> None:
 
     result = compute_v4_score()
 
-    if args.json:
-        output = json.dumps(to_dict(result), indent=2)
-    else:
-        output = format_report(result)
+    output = json.dumps(to_dict(result), indent=2) if args.json else format_report(result)
 
     print(output)
 

@@ -199,9 +199,7 @@ def _extract_tar(tar_path: Path, dest_dir: Path) -> None:
         member_path = Path(member_name)
         if member_path.is_absolute():
             return False
-        if ".." in member_path.parts:
-            return False
-        return True
+        return ".." not in member_path.parts
 
     with tarfile.open(tar_path, "r:*") as tf:
         for member in tf.getmembers():

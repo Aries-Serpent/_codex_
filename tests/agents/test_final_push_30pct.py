@@ -176,7 +176,7 @@ class TestAdvancedPhysicsCalculatorsAdditional:
         from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         try:
-            network = ChaoticNeuralNetwork(input_dim=3, hidden_dim=5)
+            network = ChaoticNeuralNetwork(input_size=3, hidden_size=5)
             assert network is not None
         except (ImportError, TypeError):
             pytest.skip("ChaoticNeuralNetwork requires optional dependencies")
@@ -201,7 +201,7 @@ class TestMentalMappingAdditional:
         model = MentalMappingModel()
 
         assert hasattr(model, "edges")
-        assert isinstance(model.edges, list) or isinstance(model.edges, dict)
+        assert isinstance(model.edges, (list, dict))
 
 
 class TestSelfHealingAdditional:

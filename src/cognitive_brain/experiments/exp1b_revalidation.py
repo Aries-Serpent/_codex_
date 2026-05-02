@@ -338,10 +338,7 @@ def _classical_assessment(audit: AuditResult) -> ComplianceDecision:
 
     # Pass 3: Risk-adjusted normalization
     total = sum(scores.values())
-    if total > 0:
-        normalized = {k: v / total for k, v in scores.items()}
-    else:
-        normalized = scores
+    normalized = {k: v / total for k, v in scores.items()} if total > 0 else scores
 
     # Pass 4: PII and violation checks (if available)
     if hasattr(audit, "pii_indicators") and audit.pii_indicators > 0:
@@ -362,10 +359,7 @@ def _classical_assessment(audit: AuditResult) -> ComplianceDecision:
 
     # Pass 5: Final re-normalization and decision
     total = sum(normalized.values())
-    if total > 0:
-        final = {k: v / total for k, v in normalized.items()}
-    else:
-        final = normalized
+    final = {k: v / total for k, v in normalized.items()} if total > 0 else normalized
 
     return max(final, key=final.get)  # type: ignore[arg-type]
 

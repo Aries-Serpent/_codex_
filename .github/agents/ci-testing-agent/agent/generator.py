@@ -10,15 +10,16 @@ from typing import Any, Dict, List
 class TestGenerator:
     """Generates test scaffolding for uncovered code paths."""
 
-    def __init__(self, workspace: Path):
+    def __init__(self, workspace: Path | None = None):
         """
         Initialize TestGenerator.
 
         Args:
-            workspace: Path to repository workspace
+            workspace: Path to repository workspace.  Defaults to current
+                working directory when not provided.
         """
-        self.workspace = workspace
-        self.src_dir = workspace / "src"
+        self.workspace = workspace or Path(".")
+        self.src_dir = self.workspace / "src"
 
     def generate(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """

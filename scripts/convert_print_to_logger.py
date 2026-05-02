@@ -99,12 +99,11 @@ class PrintDetector(ast.NodeVisitor):
         # Check for error/warning indicators
         if any(word in args_str for word in ["error", "fail", "exception", "fatal"]):
             return "error"
-        elif any(word in args_str for word in ["warning", "warn", "caution"]):
+        if any(word in args_str for word in ["warning", "warn", "caution"]):
             return "warning"
-        elif any(word in args_str for word in ["debug", "trace"]):
+        if any(word in args_str for word in ["debug", "trace"]):
             return "debug"
-        else:
-            return "info"
+        return "info"
 
 
 def analyze_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
@@ -221,11 +220,9 @@ def convert_print_statement(line: str, level: str) -> str:
                     if HAS_AST_UNPARSE:
                         # Reconstruct arguments
                         args_src = [ast.unparse(arg) for arg in call.args]
-                        logger_call = f"{indent}logger.{level}({', '.join(args_src)}){comment}"
-                        return logger_call
-                    else:
-                        # Fallback to regex for older Python versions
-                        break
+                        return f"{indent}logger.{level}({', '.join(args_src)}){comment}"
+                    # Fallback to regex for older Python versions
+                    break
     except Exception:
         # If AST parsing fails, fallback to regex patterns
         pass
@@ -309,9 +306,8 @@ def process_directory(directory: Path, fix: bool = False, dry_run: bool = True) 
                 if fix:
                     add_logging_import(py_file, dry_run)
 
-            if fix:
-                if convert_print_to_logger(py_file, print_calls, dry_run):
-                    stats["converted"] += 1
+            if fix and convert_print_to_logger(py_file, print_calls, dry_run):
+                stats["converted"] += 1
 
     return stats
 
@@ -359,7 +355,7 @@ def main():
 
         return 0
 
-    elif args.directory:
+    if args.directory:
         stats = process_directory(args.directory, args.fix or dry_run, dry_run)
 
         logger.info(f"\n{'='*60}")
@@ -374,9 +370,8 @@ def main():
 
         return 0
 
-    else:
-        parser.print_help()
-        return 1
+    parser.print_help()
+    return 1
 
 
 if __name__ == "__main__":

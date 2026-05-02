@@ -184,7 +184,7 @@ def generate_lockfile() -> None:
     result = subprocess.run(COMPILE_COMMAND, capture_output=True, text=True)
     if result.returncode != 0:
         raise RuntimeError(
-            "uv pip compile failed\n" f"stdout:\n{result.stdout}\n" f"stderr:\n{result.stderr}"
+            f"uv pip compile failed\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
         )
     _inject_provenance_header(COMPILE_COMMAND)
 
@@ -236,7 +236,6 @@ def _load_lock_versions() -> dict[str, tuple[Requirement, str | None]]:
             req = Requirement(line)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Skip entries that cannot be parsed as standard requirements.
             continue
         version = None
@@ -263,8 +262,7 @@ def _collect_requirements_from_txt() -> list[Requirement]:
 def _collect_requirements_from_pyproject() -> list[Requirement]:
     with PYPROJECT.open("rb") as handle:
         data = tomllib.load(handle)
-    dependencies = [Requirement(dep) for dep in data.get("project", {}).get("dependencies", [])]
-    return dependencies
+    return [Requirement(dep) for dep in data.get("project", {}).get("dependencies", [])]
 
 
 def verify_lock_alignment() -> None:

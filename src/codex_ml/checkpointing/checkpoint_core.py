@@ -116,7 +116,6 @@ def load_checkpoint(
                 meta = json.load(f)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             meta = {}
     # Validate schema version for compatibility
     checkpoint_version = payload.get("_schema_version") or payload.get("schema_version", "1.0")

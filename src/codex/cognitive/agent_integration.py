@@ -386,7 +386,7 @@ def get_brain_integration_section(agent_id: str, category: AgentCategory) -> str
 
     adapter = category_adapters.get(category, "BaseAdapter")
 
-    section = f'''
+    return f'''
 
 ## 🧠 Cognitive Brain Integration
 
@@ -468,7 +468,6 @@ brain.write_session_state({{
 **Last Updated**: {datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
 
 '''
-    return section
 
 
 if __name__ == "__main__":

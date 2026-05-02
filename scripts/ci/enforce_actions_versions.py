@@ -107,10 +107,7 @@ WORKFLOW_DIRS = [
 
 
 def _is_exempt(action: str, version: str) -> bool:
-    for pat in _EXEMPT_PATTERNS:
-        if re.match(pat, action) or re.match(pat, version):
-            return True
-    return False
+    return any(re.match(pat, action) or re.match(pat, version) for pat in _EXEMPT_PATTERNS)
 
 
 def scan_file(path: Path) -> list[dict]:

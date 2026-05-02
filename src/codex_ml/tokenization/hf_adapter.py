@@ -70,7 +70,6 @@ class HFTokenizerAdapter(TokenizerAdapter):
                 idx = self._tokenizer.token_to_id(candidate)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 idx = None
             if idx is not None and idx >= 0:
                 return int(idx)
@@ -88,7 +87,6 @@ class HFTokenizerAdapter(TokenizerAdapter):
         try:
             return int(self._tokenizer.get_vocab_size())
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return 0
 

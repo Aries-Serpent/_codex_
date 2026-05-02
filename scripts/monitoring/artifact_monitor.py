@@ -134,9 +134,8 @@ class ArtifactMonitor:
             raise FileNotFoundError(f"Config file not found: {config_path}")
 
         with open(config_path, 'r') as f:
-            config = yaml.safe_load(f)
+            return yaml.safe_load(f)
 
-        return config
 
     def _matches_pattern(self, workflow_name: str, patterns: List[str]) -> bool:
         """Check if workflow name matches any pattern."""
@@ -156,10 +155,7 @@ class ArtifactMonitor:
             return False
 
         # Check inclusion patterns
-        if self._matches_pattern(workflow_name, config.get('include_patterns', [])):
-            return True
-
-        return False
+        return bool(self._matches_pattern(workflow_name, config.get('include_patterns', [])))
 
     def _check_rate_limit(self) -> None:
         """Check GitHub API rate limit and wait if necessary."""

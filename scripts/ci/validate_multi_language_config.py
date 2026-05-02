@@ -180,7 +180,7 @@ class MultiLanguageValidator:
             try:
                 content = js_file.read_text()
                 # Look for optional require() or import
-                for pkg in optional_deps.keys():
+                for pkg in optional_deps:
                     if f"require('{pkg}')" in content or f'require("{pkg}")' in content:
                         used_optional.add(pkg)
                     if f"from '{pkg}'" in content or f'from "{pkg}"' in content:
@@ -295,27 +295,26 @@ def main():
     if is_valid:
         print("✅ All language configurations validated successfully!")
         return 0
-    else:
-        print(f"❌ Found {len(issues)} configuration issues:")
+    print(f"❌ Found {len(issues)} configuration issues:")
+    print()
+
+    for issue in issues:
+        severity_emoji = {
+            'critical': '🔴',
+            'high': '🟠',
+            'medium': '🟡',
+            'low': '🔵',
+        }.get(issue.severity, '⚪')
+
+        print(f"{severity_emoji} [{issue.severity.upper()}] {issue.issue_type}")
+        print(f"   Feature: {issue.feature_name}")
+        print(f"   Location: {issue.location}")
+        print(f"   Issue: {issue.description}")
+        if issue.fix_suggestion:
+            print(f"   Fix: {issue.fix_suggestion}")
         print()
 
-        for issue in issues:
-            severity_emoji = {
-                'critical': '🔴',
-                'high': '🟠',
-                'medium': '🟡',
-                'low': '🔵',
-            }.get(issue.severity, '⚪')
-
-            print(f"{severity_emoji} [{issue.severity.upper()}] {issue.issue_type}")
-            print(f"   Feature: {issue.feature_name}")
-            print(f"   Location: {issue.location}")
-            print(f"   Issue: {issue.description}")
-            if issue.fix_suggestion:
-                print(f"   Fix: {issue.fix_suggestion}")
-            print()
-
-        return 1
+    return 1
 
 
 if __name__ == '__main__':

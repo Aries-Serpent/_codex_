@@ -362,22 +362,25 @@ class TestQualityDashboard:
         """Test generating quality alerts."""
         alerts: list[dict[str, Any]] = []
 
+        coverage = 75.0
+        flaky_count = 10
+
         # Coverage below threshold
-        if 75.0 < 80.0:
+        if coverage < 80.0:
             alerts.append({
                 "type": "warning",
                 "message": "Coverage below 80%",
                 "metric": "coverage",
-                "value": 75.0,
+                "value": coverage,
             })
 
         # High flaky test count
-        if 10 > 5:
+        if flaky_count > 5:
             alerts.append({
                 "type": "error",
                 "message": "High number of flaky tests",
                 "metric": "flaky_tests",
-                "value": 10,
+                "value": flaky_count,
             })
 
         assert len(alerts) == 2

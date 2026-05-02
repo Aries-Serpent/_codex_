@@ -231,37 +231,34 @@ def safe_model_to_device(
 
             return model
 
-        else:
-            # Standard device transfer for normal tensors
-            logger.debug(f"Moving model to {device} using standard .to()")
-            nn_mod = getattr(torch, "nn", None)
-            torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
-            # Validate model type only for the standard (non-meta) path
-            if torch_module_type is not None and not isinstance(model, torch_module_type):
-                if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
-                    raise TypeError(
-                        f"Expected torch.nn.Module or model with .to() method, "
-                        f"got {type(model).__name__}"
-                    )
-            if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
-                # Build .to() kwargs
-                to_kwargs = {"device": device, "non_blocking": non_blocking}
-                if dtype is not None:
-                    to_kwargs["dtype"] = dtype
+        # Standard device transfer for normal tensors
+        logger.debug(f"Moving model to {device} using standard .to()")
+        nn_mod = getattr(torch, "nn", None)
+        torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
+        # Validate model type only for the standard (non-meta) path
+        if torch_module_type is not None and not isinstance(model, torch_module_type):
+            if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
+                raise TypeError(
+                    f"Expected torch.nn.Module or model with .to() method, "
+                    f"got {type(model).__name__}"
+                )
+        if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
+            # Build .to() kwargs
+            to_kwargs = {"device": device, "non_blocking": non_blocking}
+            if dtype is not None:
+                to_kwargs["dtype"] = dtype
 
-                result = model.to(**to_kwargs)  # type: ignore[attr-defined]  # safe-device-placement: internal implementation
+            result = model.to(**to_kwargs)  # type: ignore[attr-defined]  # safe-device-placement: internal implementation
 
-                # Log standard transfer timing
-                duration = time.time() - start_time
-                if duration > 1.0:  # Only log if takes more than 1 second
-                    logger.info(
-                        f"Model device transfer completed in {duration:.3f}s. Device: {device}"
-                    )
+            # Log standard transfer timing
+            duration = time.time() - start_time
+            if duration > 1.0:  # Only log if takes more than 1 second
+                logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
 
-                return result
+            return result
 
-            # For SentenceTransformer or other models with .to() method
-            return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
+        # For SentenceTransformer or other models with .to() method
+        return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
 
     except ImportError:
         # PyTorch not available - try fallback .to() method if model has it

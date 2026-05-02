@@ -9,4 +9,6 @@ from codex_ml.tokenization import base
 
 def test_tokenize_example_is_deterministic():
     text = "codex"
-    assert base.tokenize_example(text) == base.tokenize_example(text)
+    result_a = base.tokenize_example(text)
+    result_b = base.tokenize_example(text)
+    assert result_a == result_b

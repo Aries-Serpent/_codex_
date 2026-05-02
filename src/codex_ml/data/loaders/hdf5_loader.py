@@ -97,15 +97,14 @@ class HDF5Loader:
                 data = obj[:]
                 logger.info(f"Loaded dataset shape: {data.shape}")
                 return data
-            elif isinstance(obj, h5py.Group):
+            if isinstance(obj, h5py.Group):
                 # Group of datasets
                 data = {}
-                for key in obj.keys():
+                for key in obj:
                     data[key] = obj[key][:]
                 logger.info(f"Loaded group with {len(data)} datasets")
                 return data
-            else:
-                raise ValueError(f"Unknown HDF5 object type: {type(obj)}")
+            raise ValueError(f"Unknown HDF5 object type: {type(obj)}")
 
     def load_chunked(self, chunk_size: int = 1000):
         """
@@ -149,7 +148,7 @@ class HDF5Loader:
                     "chunks": obj.chunks,
                     "attributes": dict(obj.attrs),
                 }
-            elif isinstance(obj, h5py.Group):
+            if isinstance(obj, h5py.Group):
                 return {
                     "type": "group",
                     "keys": list(obj.keys()),
@@ -200,5 +199,4 @@ def load_hdf5(file_path: Path, dataset_path: str = "/", chunk_size: Optional[int
 
     if chunk_size:
         return loader.load_chunked(chunk_size)
-    else:
-        return loader.load()
+    return loader.load()

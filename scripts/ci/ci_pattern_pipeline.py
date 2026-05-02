@@ -49,6 +49,7 @@ Exit codes
 from __future__ import annotations
 
 import argparse
+import contextlib
 import importlib.util
 import json
 import os
@@ -326,10 +327,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0
 
     finally:
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(tmp_path)
-        except OSError:
-            pass
 
 
 if __name__ == "__main__":

@@ -269,14 +269,13 @@ class QAWalkthroughValidator:
             print(f"{RED}❌ Validation FAILED{RESET}")
             print("Please fix the errors above before using the QA Walkthrough Agent.\n")
             return False
-        elif self.warnings:
+        if self.warnings:
             print(f"{YELLOW}⚠️  Validation PASSED with warnings{RESET}")
             print("The agent should work, but consider addressing the warnings.\n")
             return True
-        else:
-            print(f"{GREEN}✅ Validation PASSED{RESET}")
-            print("QA Walkthrough Agent is ready to use!\n")
-            return True
+        print(f"{GREEN}✅ Validation PASSED{RESET}")
+        print("QA Walkthrough Agent is ready to use!\n")
+        return True
 
     def print_usage_instructions(self):
         """Print usage instructions."""

@@ -90,9 +90,8 @@ testpaths = ["tests"]
         assert data["section"]["key"] == "value"
 
         # Text mode should raise TypeError
-        with pytest.raises(TypeError):
-            with open(toml_file, "r") as f:
-                tomllib.load(f)
+        with pytest.raises(TypeError), open(toml_file, "r") as f:
+            tomllib.load(f)
 
     def test_complex_toml_structure(self, tmp_path):
         """Test loading complex TOML structures."""
@@ -295,9 +294,8 @@ class TestTomlErrorHandling:
 
         try:
             import tomllib
-            with pytest.raises(tomllib.TOMLDecodeError):
-                with open(toml_file, "rb") as f:
-                    tomllib.load(f)
+            with pytest.raises(tomllib.TOMLDecodeError), open(toml_file, "rb") as f:
+                tomllib.load(f)
         except ImportError:
             try:
                 import tomli
@@ -311,8 +309,7 @@ class TestTomlErrorHandling:
         """Test handling of missing TOML file."""
         try:
             import tomllib
-            with pytest.raises(FileNotFoundError):
-                with open("nonexistent.toml", "rb") as f:
-                    tomllib.load(f)
+            with pytest.raises(FileNotFoundError), open("nonexistent.toml", "rb") as f:
+                tomllib.load(f)
         except ImportError:
             pytest.skip("tomllib not available")

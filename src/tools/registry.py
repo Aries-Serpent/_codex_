@@ -305,9 +305,8 @@ def register_tool(
     if handler is not None:
         # Called as @register_tool("name")
         return decorator(handler)
-    else:
-        # Called as @register_tool("name", description="...")
-        return decorator
+    # Called as @register_tool("name", description="...")
+    return decorator
 
 
 def main() -> None:

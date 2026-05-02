@@ -137,7 +137,6 @@ def _format_context(context: dict[str, Any] | str | None) -> str:
         return json.dumps(context, sort_keys=True, default=str)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return str(context)
 
 
@@ -417,10 +416,7 @@ def encode(
         )
 
     try:
-        if isinstance(ids_candidate, Sequence):
-            ids_source = ids_candidate
-        else:
-            ids_source = list(ids_candidate)
+        ids_source = ids_candidate if isinstance(ids_candidate, Sequence) else list(ids_candidate)
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         _fail(

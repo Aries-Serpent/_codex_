@@ -73,8 +73,7 @@ class BleuMetric(MetricAdapter):
 
         if HAS_SACREBLEU:
             return self._compute_sacrebleu()
-        else:
-            return self._compute_basic()
+        return self._compute_basic()
 
     def _compute_sacrebleu(self) -> dict[str, float]:
         """Compute BLEU using sacrebleu library."""

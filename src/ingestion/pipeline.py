@@ -562,10 +562,7 @@ def ingest_directory(
 
     pipeline = IngestionPipeline(config)
 
-    if recursive:
-        files = sorted(directory.rglob(pattern))
-    else:
-        files = sorted(directory.glob(pattern))
+    files = sorted(directory.rglob(pattern)) if recursive else sorted(directory.glob(pattern))
 
     for file_path in files:
         if file_path.is_file():

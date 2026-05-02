@@ -45,8 +45,7 @@ def main(cfg: DictConfig) -> Any:
     eff_seed = set_seed(getattr(getattr(cfg, "train", {}), "seed", None))
     logger.info("Seed set to %s", eff_seed)
     logger.info("Composed config:\n%s", OmegaConf.to_yaml(cfg))
-    result = run_pipeline(cfg)
-    return result
+    return run_pipeline(cfg)
 
 
 if __name__ == "__main__":

@@ -64,14 +64,12 @@ class EmbeddingModel:
         if not self.model:
             raise RuntimeError("Model not loaded")
 
-        embeddings = self.model.encode(
+        return self.model.encode(
             texts,
             batch_size=batch_size,
             show_progress_bar=show_progress,
             convert_to_numpy=True,
         )
-
-        return embeddings
 
 
 class KnowledgeBaseLoader:

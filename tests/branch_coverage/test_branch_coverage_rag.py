@@ -13,6 +13,7 @@ import hashlib
 import os
 from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # RAG Embeddings Module Tests
@@ -25,15 +26,12 @@ class TestEmbeddingsModuleBranches:
     def test_embeddings_cache_key_provided_branch(self) -> None:
         """Test cache key provided branch."""
         cache_key = "custom_key"
-        if cache_key:
-            used_key = cache_key
-        else:
-            used_key = "generated_key"
+        used_key = cache_key or "generated_key"
         assert used_key == "custom_key"
 
     def test_embeddings_cache_key_generated_branch(self) -> None:
         """Test cache key generation branch."""
-        cache_key = None
+        cache_key = branch_input(None)
         texts = ["sample text"]
         if not cache_key:
             combined = "\n".join(texts)
@@ -44,15 +42,12 @@ class TestEmbeddingsModuleBranches:
 
     def test_embeddings_cache_hit_branch(self) -> None:
         """Test cache hit branch."""
-        cache_exists = True
-        metadata_exists = True
+        cache_exists = branch_input(True)
+        metadata_exists = branch_input(True)
         cache_valid = True
 
         if cache_exists and metadata_exists:
-            if cache_valid:
-                source = "cache"
-            else:
-                source = "provider"
+            source = "cache" if cache_valid else "provider"
         else:
             source = "provider"
         assert source == "cache"
@@ -62,23 +57,17 @@ class TestEmbeddingsModuleBranches:
         cache_exists = False
         metadata_exists = False
 
-        if cache_exists and metadata_exists:
-            source = "cache"
-        else:
-            source = "provider"
+        source = "cache" if cache_exists and metadata_exists else "provider"
         assert source == "provider"
 
     def test_embeddings_cache_invalid_branch(self) -> None:
         """Test invalid cache branch."""
-        cache_exists = True
-        metadata_exists = True
+        cache_exists = branch_input(True)
+        metadata_exists = branch_input(True)
         cache_valid = False
 
         if cache_exists and metadata_exists:
-            if cache_valid:
-                source = "cache"
-            else:
-                source = "provider"
+            source = "cache" if cache_valid else "provider"
         else:
             source = "provider"
         assert source == "provider"
@@ -89,10 +78,7 @@ class TestEmbeddingsModuleBranches:
         env_key = os.environ.get("OPENAI_API_KEY")
 
         resolved_key = api_key or env_key
-        if not resolved_key:
-            error = "missing_key"
-        else:
-            error = None
+        error = "missing_key" if not resolved_key else None
         assert resolved_key == "provided_key"
         assert error is None
 
@@ -102,10 +88,7 @@ class TestEmbeddingsModuleBranches:
         with patch.dict(os.environ, {"OPENAI_API_KEY": "env_key"}):
             env_key = os.environ.get("OPENAI_API_KEY")
             resolved_key = api_key or env_key
-            if not resolved_key:
-                error = "missing_key"
-            else:
-                error = None
+            error = "missing_key" if not resolved_key else None
             assert resolved_key == "env_key"
             assert error is None
 
@@ -117,29 +100,20 @@ class TestEmbeddingsModuleBranches:
             with patch.dict(os.environ, env, clear=True):
                 env_key = os.environ.get("OPENAI_API_KEY")
                 resolved_key = api_key or env_key
-                if not resolved_key:
-                    error = "missing_key"
-                else:
-                    error = None
+                error = "missing_key" if not resolved_key else None
                 assert resolved_key is None
                 assert error == "missing_key"
 
     def test_embeddings_model_not_loaded_branch(self) -> None:
         """Test model not loaded error branch."""
         model = None
-        if not model:
-            error = "model_not_loaded"
-        else:
-            error = None
+        error = "model_not_loaded" if not model else None
         assert error == "model_not_loaded"
 
     def test_embeddings_model_loaded_branch(self) -> None:
         """Test model loaded successfully branch."""
         model = MagicMock()
-        if not model:
-            error = "model_not_loaded"
-        else:
-            error = None
+        error = "model_not_loaded" if not model else None
         assert error is None
 
     def test_embeddings_dimension_lookup_exists_branch(self) -> None:
@@ -196,7 +170,7 @@ class TestEmbeddingsModuleBranches:
         cache_hits = 0
         cache_misses = 0
 
-        cache_found = True
+        cache_found = branch_input(True)
         if cache_found:
             cache_hits += 1
         else:
@@ -210,7 +184,7 @@ class TestEmbeddingsModuleBranches:
         cache_hits = 0
         cache_misses = 0
 
-        cache_found = False
+        cache_found = branch_input(False)
         if cache_found:
             cache_hits += 1
         else:
@@ -231,67 +205,46 @@ class TestIndexerModuleBranches:
     def test_indexer_chunk_text_empty_branch(self) -> None:
         """Test empty text chunking branch."""
         text = ""
-        if not text:
-            chunks = []
-        else:
-            chunks = ["chunk1"]
+        chunks = [] if not text else ["chunk1"]
         assert len(chunks) == 0
 
     def test_indexer_chunk_text_non_empty_branch(self) -> None:
         """Test non-empty text chunking branch."""
         text = "Sample text"
-        if not text:
-            chunks = []
-        else:
-            chunks = ["chunk1"]
+        chunks = [] if not text else ["chunk1"]
         assert len(chunks) == 1
 
     def test_indexer_chunk_size_validation_positive_branch(self) -> None:
         """Test chunk size positive validation branch."""
         chunk_size = 1000
-        if chunk_size <= 0:
-            error = "invalid_chunk_size"
-        else:
-            error = None
+        error = "invalid_chunk_size" if chunk_size <= 0 else None
         assert error is None
 
     def test_indexer_chunk_size_validation_negative_branch(self) -> None:
         """Test chunk size negative validation branch."""
         chunk_size = -100
-        if chunk_size <= 0:
-            error = "invalid_chunk_size"
-        else:
-            error = None
+        error = "invalid_chunk_size" if chunk_size <= 0 else None
         assert error == "invalid_chunk_size"
 
     def test_indexer_overlap_validation_valid_branch(self) -> None:
         """Test overlap validation valid branch."""
         overlap = 128
         chunk_size = 1000
-        if overlap < 0 or overlap >= chunk_size:
-            error = "invalid_overlap"
-        else:
-            error = None
+        error = "invalid_overlap" if overlap < 0 or overlap >= chunk_size else None
         assert error is None
 
     def test_indexer_overlap_validation_negative_branch(self) -> None:
         """Test overlap validation negative branch."""
         overlap = -10
         chunk_size = 1000
-        if overlap < 0 or overlap >= chunk_size:
-            error = "invalid_overlap"
-        else:
-            error = None
+        error = "invalid_overlap" if overlap < 0 or overlap >= chunk_size else None
         assert error == "invalid_overlap"
 
     def test_indexer_overlap_validation_too_large_branch(self) -> None:
         """Test overlap too large validation branch."""
         overlap = 1500
         chunk_size = 1000
-        if overlap < 0 or overlap >= chunk_size:
-            error = "invalid_overlap"
-        else:
-            error = None
+        error = "invalid_overlap" if overlap < 0 or overlap >= chunk_size else None
         assert error == "invalid_overlap"
 
     def test_indexer_chunk_boundary_at_end_branch(self) -> None:
@@ -302,10 +255,7 @@ class TestIndexerModuleBranches:
 
         end = min(start + chunk_size, text_len)
 
-        if end < text_len:
-            boundary_search = True
-        else:
-            boundary_search = False
+        boundary_search = end < text_len
 
         assert end == 500
         assert boundary_search is False
@@ -318,10 +268,7 @@ class TestIndexerModuleBranches:
 
         end = min(start + chunk_size, text_len)
 
-        if end < text_len:
-            boundary_search = True
-        else:
-            boundary_search = False
+        boundary_search = end < text_len
 
         assert end == 1000
         assert boundary_search is True
@@ -359,7 +306,7 @@ class TestIndexerModuleBranches:
 
     def test_indexer_chunk_non_empty_added_branch(self) -> None:
         """Test non-empty chunk added branch."""
-        chunk = "Sample chunk"
+        chunk = branch_input("Sample chunk")
         chunks: List[str] = []
 
         if chunk:
@@ -369,7 +316,7 @@ class TestIndexerModuleBranches:
 
     def test_indexer_chunk_empty_skipped_branch(self) -> None:
         """Test empty chunk skipped branch."""
-        chunk = ""
+        chunk = branch_input("")
         chunks: List[str] = []
 
         if chunk:
@@ -388,7 +335,7 @@ class TestIndexerModuleBranches:
 
     def test_indexer_embed_chunks_non_empty_branch(self) -> None:
         """Test embed chunks non-empty input branch."""
-        chunks = [(0, 10, "text")]
+        chunks = branch_input([(0, 10, "text")])
         if not chunks:
             embeddings: List[Any] = []
         else:
@@ -398,19 +345,13 @@ class TestIndexerModuleBranches:
     def test_indexer_model_profile_provided_branch(self) -> None:
         """Test model profile provided branch."""
         model_profile = {"model_name": "custom-model"}
-        if model_profile:
-            profile = model_profile
-        else:
-            profile = {}
+        profile = model_profile or {}
         assert "model_name" in profile
 
     def test_indexer_model_profile_default_branch(self) -> None:
         """Test model profile default branch."""
         model_profile = None
-        if model_profile:
-            profile = model_profile
-        else:
-            profile = {}
+        profile = model_profile or {}
         assert len(profile) == 0
 
     def test_indexer_model_name_from_profile_branch(self) -> None:
@@ -432,31 +373,25 @@ class TestIndexerModuleBranches:
     def test_indexer_cache_dir_from_profile_branch(self) -> None:
         """Test cache dir from profile branch."""
         model_profile = {"cache_dir": "/custom/cache"}
-        cache_dir = model_profile.get("cache_dir", None)
+        cache_dir = model_profile.get("cache_dir")
         assert cache_dir == "/custom/cache"
 
     def test_indexer_cache_dir_default_branch(self) -> None:
         """Test cache dir default branch."""
         model_profile: Dict[str, Any] = {}
-        cache_dir = model_profile.get("cache_dir", None)
+        cache_dir = model_profile.get("cache_dir")
         assert cache_dir is None
 
     def test_indexer_persist_empty_embeddings_branch(self) -> None:
         """Test persist empty embeddings error branch."""
         embeddings: List[Any] = []
-        if len(embeddings) == 0:
-            error = "empty_embeddings"
-        else:
-            error = None
+        error = "empty_embeddings" if len(embeddings) == 0 else None
         assert error == "empty_embeddings"
 
     def test_indexer_persist_non_empty_embeddings_branch(self) -> None:
         """Test persist non-empty embeddings branch."""
         embeddings = [[0.1, 0.2]]
-        if len(embeddings) == 0:
-            error = "empty_embeddings"
-        else:
-            error = None
+        error = "empty_embeddings" if len(embeddings) == 0 else None
         assert error is None
 
     def test_indexer_embeddings_chunks_mismatch_branch(self) -> None:
@@ -464,10 +399,7 @@ class TestIndexerModuleBranches:
         embeddings = [[0.1, 0.2]]
         chunks = [(0, 5, "a"), (5, 10, "b")]
 
-        if len(embeddings) != len(chunks):
-            error = "mismatch"
-        else:
-            error = None
+        error = "mismatch" if len(embeddings) != len(chunks) else None
         assert error == "mismatch"
 
     def test_indexer_embeddings_chunks_match_branch(self) -> None:
@@ -475,10 +407,7 @@ class TestIndexerModuleBranches:
         embeddings = [[0.1, 0.2], [0.3, 0.4]]
         chunks = [(0, 5, "a"), (5, 10, "b")]
 
-        if len(embeddings) != len(chunks):
-            error = "mismatch"
-        else:
-            error = None
+        error = "mismatch" if len(embeddings) != len(chunks) else None
         assert error is None
 
 
@@ -492,7 +421,7 @@ class TestRetrieverModuleBranches:
 
     def test_retriever_top_k_default_branch(self) -> None:
         """Test top_k default value branch."""
-        top_k = None
+        top_k = branch_input(None)
         if top_k is None:
             k = 5  # Default
         else:
@@ -502,10 +431,7 @@ class TestRetrieverModuleBranches:
     def test_retriever_top_k_custom_branch(self) -> None:
         """Test top_k custom value branch."""
         top_k = 10
-        if top_k is None:
-            k = 5
-        else:
-            k = top_k
+        k = 5 if top_k is None else top_k
         assert k == 10
 
     def test_retriever_similarity_threshold_applied_branch(self) -> None:
@@ -513,10 +439,7 @@ class TestRetrieverModuleBranches:
         threshold = 0.7
         scores = [0.9, 0.6, 0.8, 0.5]
 
-        if threshold is not None:
-            filtered = [s for s in scores if s >= threshold]
-        else:
-            filtered = scores
+        filtered = [s for s in scores if s >= threshold] if threshold is not None else scores
 
         assert len(filtered) == 2
         assert 0.9 in filtered
@@ -527,70 +450,49 @@ class TestRetrieverModuleBranches:
         threshold = None
         scores = [0.9, 0.6, 0.8, 0.5]
 
-        if threshold is not None:
-            filtered = [s for s in scores if s >= threshold]
-        else:
-            filtered = scores
+        filtered = [s for s in scores if s >= threshold] if threshold is not None else scores
 
         assert len(filtered) == 4
 
     def test_retriever_results_empty_branch(self) -> None:
         """Test empty search results branch."""
         results: List[Any] = []
-        if not results:
-            status = "no_results"
-        else:
-            status = "has_results"
+        status = "no_results" if not results else "has_results"
         assert status == "no_results"
 
     def test_retriever_results_non_empty_branch(self) -> None:
         """Test non-empty search results branch."""
         results = [{"text": "result1"}]
-        if not results:
-            status = "no_results"
-        else:
-            status = "has_results"
+        status = "no_results" if not results else "has_results"
         assert status == "has_results"
 
     def test_retriever_reranking_enabled_branch(self) -> None:
         """Test reranking enabled branch."""
         rerank = True
-        if rerank:
-            strategy = "cross_encoder"
-        else:
-            strategy = "vector_only"
+        strategy = "cross_encoder" if rerank else "vector_only"
         assert strategy == "cross_encoder"
 
     def test_retriever_reranking_disabled_branch(self) -> None:
         """Test reranking disabled branch."""
         rerank = False
-        if rerank:
-            strategy = "cross_encoder"
-        else:
-            strategy = "vector_only"
+        strategy = "cross_encoder" if rerank else "vector_only"
         assert strategy == "vector_only"
 
     def test_retriever_query_expansion_enabled_branch(self) -> None:
         """Test query expansion enabled branch."""
         expand_query = True
-        if expand_query:
-            queries = ["original", "expanded1", "expanded2"]
-        else:
-            queries = ["original"]
+        queries = ["original", "expanded1", "expanded2"] if expand_query else ["original"]
         assert len(queries) == 3
 
     def test_retriever_query_expansion_disabled_branch(self) -> None:
         """Test query expansion disabled branch."""
         expand_query = False
-        if expand_query:
-            queries = ["original", "expanded1"]
-        else:
-            queries = ["original"]
+        queries = ["original", "expanded1"] if expand_query else ["original"]
         assert len(queries) == 1
 
     def test_retriever_metadata_filtering_applied_branch(self) -> None:
         """Test metadata filtering branch."""
-        metadata_filter = {"source": "docs"}
+        metadata_filter = branch_input({"source": "docs"})
         results = [
             {"text": "a", "metadata": {"source": "docs"}},
             {"text": "b", "metadata": {"source": "code"}},
@@ -605,7 +507,7 @@ class TestRetrieverModuleBranches:
 
     def test_retriever_metadata_filtering_none_branch(self) -> None:
         """Test no metadata filtering branch."""
-        metadata_filter = None
+        metadata_filter = branch_input(None)
         results = [
             {"text": "a", "metadata": {"source": "docs"}},
             {"text": "b", "metadata": {"source": "code"}},

@@ -238,35 +238,31 @@ class MonitoringDashboard:
             value = np.random.normal(base * 0.8, base * 0.2)
             return max(0, value)
 
-        elif "accuracy" in metric_name or "precision" in metric_name or "rate" in metric_name:
+        if "accuracy" in metric_name or "precision" in metric_name or "rate" in metric_name:
             # Ratio metrics (0-1)
             target = self.metrics[metric_name]["target"]
             value = np.random.normal(target, 0.05)
             return max(0.0, min(1.0, value))
 
-        elif "score" in metric_name:
+        if "score" in metric_name:
             # Score metrics (0-1)
             target = self.metrics[metric_name]["target"]
             value = np.random.normal(target, 0.03)
             return max(0.0, min(1.0, value))
 
-        elif "memory_usage" in metric_name:
+        if "memory_usage" in metric_name:
             # Memory in MB
-            value = random.uniform(500, 1500)
-            return value
+            return random.uniform(500, 1500)
 
-        elif "cpu_utilization" in metric_name:
+        if "cpu_utilization" in metric_name:
             # CPU utilization (0-1)
-            value = random.uniform(0.3, 0.85)
-            return value
+            return random.uniform(0.3, 0.85)
 
-        elif "disk_usage" in metric_name:
+        if "disk_usage" in metric_name:
             # Disk in GB
-            value = random.uniform(10, 60)
-            return value
+            return random.uniform(10, 60)
 
-        else:
-            return random.uniform(0.5, 1.0)
+        return random.uniform(0.5, 1.0)
 
     def _determine_status(
         self,
@@ -279,19 +275,16 @@ class MonitoringDashboard:
         if "latency" in metric_name:
             if value <= target:
                 return "normal"
-            elif value <= target * 1.5:
+            if value <= target * 1.5:
                 return "warning"
-            else:
-                return "critical"
+            return "critical"
 
         # For most other metrics, higher is better
-        else:
-            if value >= target:
-                return "normal"
-            elif value >= target * 0.85:
-                return "warning"
-            else:
-                return "critical"
+        if value >= target:
+            return "normal"
+        if value >= target * 0.85:
+            return "warning"
+        return "critical"
 
     def _check_alerts(self, snapshots: Dict[str, MetricSnapshot]):
         """Check if any alert rules are triggered"""
@@ -304,11 +297,7 @@ class MonitoringDashboard:
 
             triggered = False
 
-            if rule.operator == "gt" and snapshot.value > rule.threshold:
-                triggered = True
-            elif rule.operator == "lt" and snapshot.value < rule.threshold:
-                triggered = True
-            elif rule.operator == "eq" and snapshot.value == rule.threshold:
+            if rule.operator == "gt" and snapshot.value > rule.threshold or rule.operator == "lt" and snapshot.value < rule.threshold or rule.operator == "eq" and snapshot.value == rule.threshold:
                 triggered = True
 
             if triggered:
@@ -389,7 +378,7 @@ class MonitoringDashboard:
         else:
             overall_status = "normal"
 
-        dashboard = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "overall_status": overall_status,
             "summary": {
@@ -405,7 +394,6 @@ class MonitoringDashboard:
             "active_alerts": self.active_alerts
         }
 
-        return dashboard
 
     def generate_dashboard_html(self, output_path: Optional[str] = None) -> str:
         """
@@ -677,4 +665,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

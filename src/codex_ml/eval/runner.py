@@ -50,7 +50,6 @@ def _append_error_report(
         reports_dir.mkdir(parents=True, exist_ok=True)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # If error reporting fails we swallow the exception to avoid cascading failures.
         return
 
@@ -59,7 +58,6 @@ def _append_error_report(
         context_payload = context or {}
         context_str = json.dumps(context_payload, sort_keys=True, default=str)
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         context_str = repr(context)
 
@@ -78,7 +76,6 @@ def _append_error_report(
         with error_file.open("a", encoding="utf-8") as fh:
             fh.write("\n".join(block_lines))
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Suppress logging failures to keep evaluation running.
         return
@@ -173,10 +170,7 @@ def _encode_labels(
 ) -> tuple[list[int], dict[Any, int]]:
     ints: list[int] = []
     mapping: dict[Any, int]
-    if fallback is None:
-        mapping = {}
-    else:
-        mapping = fallback
+    mapping = {} if fallback is None else fallback
     for value in values:
         if value is None:
             raise EvaluationError(f"Missing value for metric {metric_name}")
@@ -622,7 +616,6 @@ def run_evaluation(
     sink_kind = metrics_sinks[0] if metrics_sinks else "none"
     sink_target_path: Path | None = None
     sink_stack = ExitStack()
-    _sink = create_sink("none")
     try:
         if sink_kind not in {"none", "csv", "ndjson"}:
             raise EvaluationError(f"Unsupported metrics sink: {sink_kind}")
@@ -669,7 +662,6 @@ def run_evaluation(
         set_global_determinism(1337)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Determinism module not available or failed to initialize
 
     # Structured log (append-only)
@@ -680,7 +672,6 @@ def run_evaluation(
         _jl.write(event="eval_start", metrics_sink=sink_kind)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Logging module not available or failed to initialize
 
     # Optional perf sampling
@@ -690,7 +681,6 @@ def run_evaluation(
 
             PerfSampler().run(steps=3)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Performance sampler not available or failed
 

@@ -164,7 +164,6 @@ def compute_directory_hash(
             hashes[str(rel_path)] = compute_file_hash(filepath)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             continue
 
     return hashes
@@ -202,7 +201,7 @@ class DatasetManifest:
 
         total_size = sum(
             (self.dataset_path / rel_path).stat().st_size
-            for rel_path in self.manifest["file_hashes"].keys()
+            for rel_path in self.manifest["file_hashes"]
             if (self.dataset_path / rel_path).exists()
         )
         self.manifest["total_size_bytes"] = total_size

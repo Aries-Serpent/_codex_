@@ -76,11 +76,10 @@ class TestKnowledgeBasePersistence:
         """Test loading knowledge base."""
         try:
             from src.codex.knowledge import base
-            if hasattr(base, 'KnowledgeBase'):
-                if hasattr(base.KnowledgeBase, 'load'):
-                    with patch.object(base.KnowledgeBase, 'load') as mock_load:
-                        mock_load.return_value = base.KnowledgeBase()
-                        kb = base.KnowledgeBase.load("/tmp/kb.json")
-                        assert kb is not None
+            if hasattr(base, 'KnowledgeBase') and hasattr(base.KnowledgeBase, 'load'):
+                with patch.object(base.KnowledgeBase, 'load') as mock_load:
+                    mock_load.return_value = base.KnowledgeBase()
+                    kb = base.KnowledgeBase.load("/tmp/kb.json")
+                    assert kb is not None
         except (ImportError, AttributeError):
             pytest.skip("KnowledgeBase.load not available")

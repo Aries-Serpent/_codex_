@@ -48,14 +48,13 @@ class RetrievalAdapter:
             List of search results
         """
         try:
-            results = self.engine.search(
+            return self.engine.search(
                 tenant_id=tenant_id,
                 query=query,
                 top_k=top_k,
                 index_name=index_name,
                 filters=filters,
             )
-            return results
         except Exception as e:
             logger.error(
                 f"Error querying knowledge base for tenant {sanitize_log_input(tenant_id)}: {sanitize_log_input(str(e))}"

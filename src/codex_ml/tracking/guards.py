@@ -63,9 +63,7 @@ def _is_remote_uri(uri: str) -> bool:
     scheme = urlparse(uri).scheme.lower()
     if not scheme:
         return False
-    if scheme in _LOCAL_SCHEME_NAMES or uri.startswith(_FILE_PREFIXES):
-        return False
-    return True
+    return not (scheme in _LOCAL_SCHEME_NAMES or uri.startswith(_FILE_PREFIXES))
 
 
 def _is_local_uri(uri: str) -> bool:

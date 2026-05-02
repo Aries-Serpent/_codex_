@@ -453,10 +453,7 @@ class TestAgentOrchestrationLoad:
         # Calculate required agents
         required_agents = (pending_tasks + tasks_per_agent - 1) // tasks_per_agent
 
-        if required_agents > current_agents:
-            agents_to_add = required_agents - current_agents
-        else:
-            agents_to_add = 0
+        agents_to_add = required_agents - current_agents if required_agents > current_agents else 0
 
         new_agent_count = current_agents + agents_to_add
 

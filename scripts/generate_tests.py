@@ -94,7 +94,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.spec == "all":
-        for spec_name in SPEC_MAP.keys():
+        for spec_name in SPEC_MAP:
             print(f"\n{'='*80}")
             generate_for_spec(spec_name, output_dir)
     elif args.spec:

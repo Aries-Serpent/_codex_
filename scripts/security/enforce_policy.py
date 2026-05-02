@@ -58,7 +58,6 @@ def bandit_check(threshold: str) -> tuple[bool, str]:
         data = json.loads(out or "{}")
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False, "Bandit JSON parse error"
     severity_rank = {"none": 0, "low": 1, "medium": 2, "high": 3}
     max_allowed = severity_rank.get(threshold.lower(), 3)
@@ -77,7 +76,6 @@ def pip_audit_check(max_critical: int, max_high: int) -> tuple[bool, str]:
     try:
         data = json.loads(out or "[]")
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return False, "pip-audit JSON parse error"
     crit = sum(

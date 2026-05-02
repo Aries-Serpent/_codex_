@@ -106,7 +106,7 @@ class StubAnalyzer:
                             func_to_class[node] = class_node
 
             # Find the function node at the given line
-            for func_node in func_to_class.keys():
+            for func_node in func_to_class:
                 if hasattr(func_node, "lineno") and hasattr(func_node, "end_lineno"):
                     if (
                         func_node.lineno
@@ -117,7 +117,7 @@ class StubAnalyzer:
                         for decorator in func_node.decorator_list:
                             if isinstance(decorator, ast.Name) and decorator.id == "abstractmethod":
                                 return True
-                            elif (
+                            if (
                                 isinstance(decorator, ast.Attribute)
                                 and decorator.attr == "abstractmethod"
                             ):
@@ -129,7 +129,7 @@ class StubAnalyzer:
                             for base in parent_class.bases:
                                 if isinstance(base, ast.Name) and base.id == "ABC":
                                     return True
-                                elif isinstance(base, ast.Attribute) and base.attr == "ABC":
+                                if isinstance(base, ast.Attribute) and base.attr == "ABC":
                                     return True
 
             # Also check for top-level functions (not in classes)
@@ -144,7 +144,7 @@ class StubAnalyzer:
                                     and decorator.id == "abstractmethod"
                                 ):
                                     return True
-                                elif (
+                                if (
                                     isinstance(decorator, ast.Attribute)
                                     and decorator.attr == "abstractmethod"
                                 ):
@@ -252,10 +252,9 @@ class StubAnalyzer:
 
         if "P0" in line_upper or "CRITICAL" in line_upper or "BLOCKING" in line_upper:
             return "P0"
-        elif "P1" in line_upper or "HIGH" in line_upper or "IMPORTANT" in line_upper:
+        if "P1" in line_upper or "HIGH" in line_upper or "IMPORTANT" in line_upper:
             return "P1"
-        else:
-            return "P2"
+        return "P2"
 
     def get_by_priority(self, priority: str) -> list[StubInfo]:
         """Get stubs by priority level.
@@ -285,7 +284,7 @@ class StubAnalyzer:
         Returns:
             Summary dict with counts by priority and type
         """
-        summary = {
+        return {
             "total": len(self.stubs),
             "by_priority": {
                 "P0": len(self.get_by_priority("P0")),
@@ -298,7 +297,6 @@ class StubAnalyzer:
                 "FIXME": len(self.get_by_type("FIXME")),
             },
         }
-        return summary
 
 
 def find_stubs(source_dirs: Optional[list[Path]] = None) -> list[StubInfo]:

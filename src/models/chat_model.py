@@ -138,10 +138,7 @@ class ChatModel:
         options.setdefault("max_new_tokens", max_tokens)
         outputs = self.model.generate(**inputs, **options)
         sequence = getattr(outputs, "sequences", None)
-        if sequence is not None:
-            token_ids = sequence[0]
-        else:
-            token_ids = outputs[0]
+        token_ids = sequence[0] if sequence is not None else outputs[0]
         if hasattr(token_ids, "detach"):
             token_ids = token_ids.detach()
         if hasattr(token_ids, "to"):

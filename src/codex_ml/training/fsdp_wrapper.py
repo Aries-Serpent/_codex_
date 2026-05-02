@@ -187,7 +187,7 @@ class FSDPTrainer:
                 reduce_dtype=torch.float16,
                 buffer_dtype=torch.float16,
             )
-        elif self.config.mixed_precision == "bf16":
+        if self.config.mixed_precision == "bf16":
             return MixedPrecision(
                 param_dtype=torch.bfloat16,
                 reduce_dtype=torch.bfloat16,
@@ -221,12 +221,11 @@ class FSDPTrainer:
                 transformer_auto_wrap_policy,
                 transformer_layer_cls=set(transformer_layer_cls),
             )
-        else:
-            # Size-based wrapping
-            return functools.partial(
-                size_based_auto_wrap_policy,
-                min_num_params=self.config.min_num_params,
-            )
+        # Size-based wrapping
+        return functools.partial(
+            size_based_auto_wrap_policy,
+            min_num_params=self.config.min_num_params,
+        )
 
     def wrap_model(
         self,
@@ -445,8 +444,7 @@ class FSDPCheckpointManager:
 
         if self.use_sharded_checkpoint:
             return self._load_sharded_checkpoint(checkpoint_path, fsdp_model, optimizer, rank)
-        else:
-            return self._load_full_checkpoint(checkpoint_path, fsdp_model, optimizer)
+        return self._load_full_checkpoint(checkpoint_path, fsdp_model, optimizer)
 
     def _load_full_checkpoint(
         self,

@@ -24,20 +24,18 @@ def categorize_broken_link(url: str, reason: str) -> str:
     # Pattern matching for categorization
     if reason.startswith("github_broken"):
         return "github_reference"
-    elif reason.startswith("relative_broken"):
+    if reason.startswith("relative_broken"):
         # Check if it's a likely file reference
         if any(ext in url for ext in ['.md', '.py', '.yml', '.yaml', '.json', '.txt']):
             return "deleted_file"
-        elif url.startswith('http') or url.startswith('blob:'):
+        if url.startswith('http') or url.startswith('blob:'):
             return "malformed_url"
-        elif '[' in url or ']' in url or '{' in url:
+        if '[' in url or ']' in url or '{' in url:
             return "code_snippet"  # Likely code, not a real link
-        else:
-            return "broken_relative"
-    elif reason.startswith("external"):
+        return "broken_relative"
+    if reason.startswith("external"):
         return "external_broken"
-    else:
-        return "other"
+    return "other"
 
 def analyze_broken_links(data: dict) -> Dict[str, Any]:
     """Analyze and categorize all broken links."""
@@ -75,10 +73,7 @@ def analyze_broken_links(data: dict) -> Dict[str, Any]:
         if 'archive' in file_path.lower() or 'deprecated' in file_path.lower():
             priority = 'low'
         elif any(x in file_path.lower() for x in ['readme', 'index', 'guide', 'docs/']):
-            if 'template' not in file_path.lower():
-                priority = 'high'
-            else:
-                priority = 'medium'
+            priority = 'high' if 'template' not in file_path.lower() else 'medium'
         else:
             priority = 'medium'
 
@@ -267,4 +262,4 @@ def main():
     return 0
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())

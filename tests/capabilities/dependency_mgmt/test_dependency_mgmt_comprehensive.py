@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from functools import total_ordering
 from typing import Any
 
 import pytest
@@ -24,6 +25,7 @@ pytest.importorskip("hypothesis", reason="hypothesis required for property tests
 # --- Dependency Version Tests ---
 
 
+@total_ordering
 class DependencyVersion:
     """Dependency version representation."""
 
@@ -56,6 +58,14 @@ class DependencyVersion:
 
     def __lt__(self, other: "DependencyVersion") -> bool:
         return (self.major, self.minor, self.patch) < (other.major, other.minor, other.patch)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, DependencyVersion):
+            return False
+        return (self.major, self.minor, self.patch) == (other.major, other.minor, other.patch)
+
+    def __hash__(self) -> int:
+        return hash((self.major, self.minor, self.patch))
 
 
 class TestDependencyVersion:

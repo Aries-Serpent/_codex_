@@ -446,8 +446,7 @@ class TaskSpawner:
         """
         if mode is None:
             return self.number_op.total(self.fock_state)
-        else:
-            return self.number_op.apply(self.fock_state, mode)
+        return self.number_op.apply(self.fock_state, mode)
 
     def on_spawn(self, callback: Callable[[str, str], None]) -> None:
         """Register callback for spawn events."""

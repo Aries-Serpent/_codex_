@@ -85,8 +85,7 @@ class RayDistributedTrainer:
             scaling_config=scaling_config,
         )
 
-        result = trainer.fit()
-        return result
+        return trainer.fit()
 
 
 def ray_train_loop(config: dict[str, Any]) -> None:

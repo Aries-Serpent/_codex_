@@ -129,7 +129,6 @@ def main(argv=None) -> int:
         from omegaconf import DictConfig, OmegaConf
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return _print_missing("hydra-core")
 
     from codex_ml.training.unified_training import run_unified_training

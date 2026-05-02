@@ -263,9 +263,8 @@ class DictSerializable:
         print()
 
         # Step 2: Generate report
-        stats = self.generate_refactoring_report()
+        return self.generate_refactoring_report()
 
-        return stats
 
 
 def main():

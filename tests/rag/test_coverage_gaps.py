@@ -553,9 +553,8 @@ class TestModelUtilsSafeLoad:
         with patch(
             "sentence_transformers.SentenceTransformer",
             side_effect=[NotImplementedError("meta tensor"), no_to_empty_model],
-        ):
-            with pytest.raises(RuntimeError, match="to_empty"):
-                _mu.safe_load_sentence_transformer("test-model", None)
+        ), pytest.raises(RuntimeError, match="to_empty"):
+            _mu.safe_load_sentence_transformer("test-model", None)
 
 
 # ===========================================================================

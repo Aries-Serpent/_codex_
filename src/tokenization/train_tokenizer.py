@@ -222,21 +222,16 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             spm.SentencePieceTrainer.Train(**train_kwargs)
         model_path = model_prefix.with_suffix(".model")
         if "sentencepiece_model_pb2" not in sys.modules:
-            try:  # pragma: no cover - optional dependency handling
-                pass
-            except Exception:
+            # pragma: no cover - optional dependency handling
+            try:
+                from sentencepiece import sentencepiece_model_pb2 as _sp_model_pb2
+            except Exception:  # pragma: no cover - dependency still missing
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
-                try:
-                    from sentencepiece import sentencepiece_model_pb2 as _sp_model_pb2
-                except Exception:  # pragma: no cover - dependency still missing
-                    _sp_model_pb2 = None
-                else:
-                    sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
+            else:
+                sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
         try:
             tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             processor = spm.SentencePieceProcessor()
             processor.Load(str(model_path))

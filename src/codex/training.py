@@ -559,10 +559,8 @@ def _run_minilm_training(
         n_train = total
         n_val = 0
         n_test = 0
-        if total > 0:
-            print(
-                "Warning: dataset too small for validation/test split; using all data for training"
-            )
+        # total >= 2 here (validated above), so always print the warning
+        print("Warning: dataset too small for validation/test split; using all data for training")
     train_tokens = tokens[:n_train]
     val_tokens = tokens[n_train : n_train + n_val]
     _ = tokens[n_train + n_val : n_train + n_val + n_test]
@@ -1144,11 +1142,12 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
 
 def _codex_epoch_metrics(y_true, y_pred) -> dict:
     try:
-        from codex_ml.metrics import perplexity, token_accuracy
+        from codex_ml.metrics import token_accuracy
+        from codex_ml.metrics.api import perplexity as perplexity_from_preds
 
         return {
             "token_accuracy": float(token_accuracy(y_true, y_pred)),
-            "perplexity": float(perplexity(y_true, y_pred)),
+            "perplexity": float(perplexity_from_preds(y_true, y_pred)),
         }
     except Exception:
         logger.warning("Exception occurred", exc_info=True)

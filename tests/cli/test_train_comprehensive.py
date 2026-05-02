@@ -26,14 +26,13 @@ except ImportError:
 @pytest.fixture
 def mock_hydra_config():
     """Create mock Hydra config."""
-    cfg = {
+    return {
         "model": {"name": "test-model", "hidden_size": 128},
         "training": {"epochs": 5, "batch_size": 16, "learning_rate": 1e-4},
         "data": {"train_path": "/data/train.jsonl", "val_path": "/data/val.jsonl"},
         "seed": 42,
         "output_dir": "/tmp/output",
     }
-    return cfg
 
 
 class TestModuleImports:

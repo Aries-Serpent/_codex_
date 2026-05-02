@@ -95,7 +95,7 @@ class DevicePlacementChecker(ast.NodeVisitor):
             return node.id in self.model_var_names or \
                    any(pattern in node.id for pattern in ['model', 'net', 'encoder', 'decoder'])
 
-        elif isinstance(node, ast.Attribute):
+        if isinstance(node, ast.Attribute):
             # Attribute: self.model.to()
             return node.attr in self.model_var_names or \
                    any(pattern in node.attr for pattern in ['model', 'net', 'encoder', 'decoder'])
@@ -190,9 +190,8 @@ def main(files: List[str]) -> int:
         print("Please use safe_model_to_device() instead of direct .to() calls.")
         print("See: .codex/CODING_STANDARDS_ML_DEVICE_PLACEMENT.md")
         return 1
-    else:
-        print("✅ No unsafe device placement patterns detected.")
-        return 0
+    print("✅ No unsafe device placement patterns detected.")
+    return 0
 
 
 if __name__ == '__main__':
