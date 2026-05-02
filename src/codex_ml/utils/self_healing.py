@@ -143,8 +143,7 @@ class SelfHealingContext:
         if (
             "out of memory" in exc_str
             or "oom" in exc_str
-            or "cuda" in exc_str
-            and "memory" in exc_str
+            or ("cuda" in exc_str and "memory" in exc_str)
         ):
             return FailureType.OOM
 

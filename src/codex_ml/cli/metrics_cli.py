@@ -116,7 +116,6 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
         return True
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False
 
 
