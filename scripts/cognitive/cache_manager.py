@@ -250,25 +250,8 @@ class CacheIntelligence:
 
         # Search for key
         for cache in search_caches:
-            start_time = time.time()
-
             # Check if cache has this key (simplified - real impl would check actual cache)
-            # For now, this is a placeholder that tracks metrics
-            value = None  # Placeholder: would query actual cache here
-
-            access_time = (time.time() - start_time) * 1000  # Convert to ms
-
-            if value is not None:
-                # Cache hit
-                cache.metrics.hit_count += 1
-                # Update average access time
-                total_accesses = cache.metrics.hit_count + cache.metrics.miss_count
-                cache.metrics.avg_access_time_ms = (
-                    (cache.metrics.avg_access_time_ms * (total_accesses - 1) + access_time)
-                    / total_accesses
-                )
-                return value
-            # Cache miss
+            # For now, this is a placeholder that tracks metrics; always a miss until real lookup is wired in.
             cache.metrics.miss_count += 1
 
         return None

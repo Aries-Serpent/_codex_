@@ -410,8 +410,6 @@ def main(argv: list[str] | None = None) -> int:
                     _cache_put(args.cache_dir, cache_key, json.dumps(payload))
             return 0
 
-    return 0
-
 
 if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
     raise SystemExit(main())

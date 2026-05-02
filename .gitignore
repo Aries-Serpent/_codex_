@@ -460,3 +460,5 @@ actionlint
 
 # Accidental pip-install output files (=X.Y pattern from mistyped pip commands)
 =*
+db-py/
+codeql-results.sarif

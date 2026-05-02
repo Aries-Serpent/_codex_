@@ -487,9 +487,6 @@ class AgentMemory:
         if lookup_id is None:
             return None
 
-        if lookup_id is None:
-            return None
-
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (lookup_id,))
             row = cursor.fetchone()

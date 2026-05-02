@@ -393,18 +393,8 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
     )
 
     # Minimal verification context (non-breaking error capture hook)
-    try:
-        # NOTE: When constructing DataLoader, pass worker_init_fn=seed_worker from utils.torch_det
-        pass  # Placeholder for model verification if needed
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        try:
-            from codex_ml.utils.errors import record_error
-
-            record_error("T00", "pre_training_check", str(e), "cli.train")
-        except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            # Error recording failed, continue silently
+    # NOTE: When constructing DataLoader, pass worker_init_fn=seed_worker from utils.torch_det
+    # Placeholder for model verification if needed (no current verification step)
 
     run_training(
         epochs=int(epochs),

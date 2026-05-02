@@ -30,13 +30,10 @@ class WorkflowMonitor:
 
     def get_workflow_runs(self) -> List[Dict[str, Any]]:
         """Get current workflow runs for the branch."""
-        try:
-            # Use GitHub API (would need gh CLI or API token in production)
-            # For now, return empty list as placeholder
-            return []
-        except Exception as e:
-            print(f"Error fetching workflow runs: {e}")
-            return []
+        # Use GitHub API (would need gh CLI or API token in production).
+        # For now, return empty list as placeholder; no remote calls are made,
+        # so no exception handling is required at this level.
+        return []
 
     def analyze_workflow_status(self, run: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze a workflow run and categorize its status."""

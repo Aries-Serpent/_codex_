@@ -965,8 +965,6 @@ def _cast_batch_for_policy(
     else:
         reason = "policy_unhandled"
     if target_dtype is None:
-        if target_dtype is not None:
-            event_payload["to"] = str(target_dtype)
         event_payload["status"] = status
         event_payload["reason"] = reason or "no_target_dtype"
         _append_metrics_event(art_dir_path, event_payload)
