@@ -81,7 +81,6 @@ def get_tb_writer(
 
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Any other error - gracefully degrade
         yield None
 
@@ -91,7 +90,6 @@ def get_tb_writer(
             try:
                 writer.close()
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 # Silently ignore close errors to ensure cleanup doesn't fail
                 # the entire context. Common errors include already-closed writers

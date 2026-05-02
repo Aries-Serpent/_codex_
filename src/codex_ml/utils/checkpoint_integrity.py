@@ -42,7 +42,6 @@ def _resolve_git_sha() -> str | None:
         ref = head.read_text(encoding="utf-8").strip()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
     if ref.startswith("ref:"):
@@ -50,7 +49,6 @@ def _resolve_git_sha() -> str | None:
         try:
             resolved = ref_path.read_text(encoding="utf-8").strip()
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return None
         return resolved or None
@@ -119,7 +117,6 @@ def attach_integrity(
         try:
             entry["path"] = str(ckpt_path.resolve().relative_to(base_path.resolve()))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             entry["path"] = str(ckpt_path)
     else:

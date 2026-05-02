@@ -55,7 +55,6 @@ def append_error(step_number: str, description: str, message: str, context: str)
             handle.write(entry)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # The error log must never raise a secondary exception; downstream
         # callers still need the original error to propagate.
         return

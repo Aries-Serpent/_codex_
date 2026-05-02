@@ -93,7 +93,6 @@ def _seed_everything(seed: int) -> dict[str, bool]:
                 use_det(True)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
         status["torch"] = True
     except Exception as exc:  # pragma: no cover - optional dependency missing

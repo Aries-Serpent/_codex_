@@ -69,7 +69,6 @@ def append_error_entry(step_name: str, message: str, context: str, question: str
             handle.write(block)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Error reporting should never raise further exceptions.
 
 
@@ -97,7 +96,6 @@ def _load_policy_from_file() -> Optional[str]:
     try:
         raw = path.read_text(encoding="utf-8")
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
     # Minimal TOML parse: look for 'policy = "<value>"'
@@ -256,7 +254,6 @@ def init_metric_plugins(*, force: bool = False) -> int:
     try:
         from codex_ml.plugins import load_plugins
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return 0
 

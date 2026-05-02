@@ -170,7 +170,6 @@ def load_jsonl(path: str | Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
                 obj = json.loads(line)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 skipped += 1
                 continue
             if not isinstance(obj, dict):
@@ -536,7 +535,6 @@ def _log_safety_decision(path: Path, prompt: SafetyResult, completion: SafetyRes
         )
         log_error("data.safety", "dataset sample sanitized", context)
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Logging should not interfere with dataset streaming.
 

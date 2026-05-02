@@ -33,5 +33,4 @@ def seed_worker(worker_id):
         random.seed(worker_seed)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Torch/NumPy not available or seeding failed

@@ -338,7 +338,6 @@ class PROperator:
                         )
                     except Exception:
                         logger.warning("Exception occurred", exc_info=True)
-                        logger.warning("Exception occurred", exc_info=True)
                         # File doesn't exist, create it
                         repo.create_file(
                             path=path,

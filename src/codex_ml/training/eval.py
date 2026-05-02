@@ -25,7 +25,6 @@ def _safe_float(value: object) -> float:
         return float(value)  # type: ignore[arg-type]
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return 0.0
 
 
@@ -87,7 +86,6 @@ def evaluate(
                     try:
                         metrics = metrics_fn(outputs, batch_for_device)
                     except Exception:
-                        logger.warning("Exception occurred", exc_info=True)
                         logger.warning("Exception occurred", exc_info=True)
                         metrics = {}
                     for key, value in metrics.items():

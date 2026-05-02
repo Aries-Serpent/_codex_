@@ -35,7 +35,6 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
         import mlflow
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return {"mlflow": "unavailable"}
 
     uri = tracking_uri or "file:./mlruns"
@@ -59,7 +58,6 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
         import wandb
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return {"wandb": "unavailable"}
 
     os.environ["WANDB_MODE"] = "offline"
@@ -72,7 +70,6 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
             getattr(getattr(run, "settings", None), "mode", "offline") or "offline"
         )
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         resolved["wandb_mode"] = "offline"
     finally:

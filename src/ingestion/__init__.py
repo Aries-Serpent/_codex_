@@ -31,7 +31,6 @@ try:
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore[assignment]
 
 try:
@@ -42,7 +41,6 @@ try:
     from .io_text import read_text as _io_text_read_text
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     _io_text_read_text = None  # type: ignore[assignment]
 
 try:
@@ -52,7 +50,6 @@ try:
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     _io_text__detect_encoding = None  # type: ignore[assignment]
 
 # Deterministic shuffle and legacy read_text_file may live in utils
@@ -60,7 +57,6 @@ try:
     from .utils import deterministic_shuffle as _deterministic_shuffle
     from .utils import read_text_file as _utils_read_text_file
 except Exception:
-    logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
     _deterministic_shuffle = None  # type: ignore[assignment]
     _utils_read_text_file = None  # type: ignore[assignment]
@@ -108,7 +104,6 @@ def detect_encoding(path: Union[str, Path]) -> str:
             return _repo_detect_encoding(p)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Fall through to other detectors
     if _io_text__detect_encoding is not None:
         try:
@@ -121,7 +116,6 @@ def detect_encoding(path: Union[str, Path]) -> str:
     try:
         raw = p.read_bytes()[:65536]
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
@@ -142,7 +136,6 @@ def detect_encoding(path: Union[str, Path]) -> str:
             raw.decode(enc)
             return enc
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             continue
 
@@ -222,7 +215,6 @@ def _manual_read_text(
         text = raw.decode(enc, errors)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         # Try common fallbacks
         for trial in ("utf-8", "cp1252", "iso-8859-1"):
             try:
@@ -230,7 +222,6 @@ def _manual_read_text(
                 enc = trial
                 break
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         else:
@@ -271,7 +262,6 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
             txt, used = _call_repo_read_text(p, encoding=encoding, errors=errors)
             return txt
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Fall through to manual reader
 

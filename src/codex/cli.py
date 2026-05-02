@@ -601,7 +601,6 @@ def resume_cmd(run_dir: Path) -> None:
                 click.echo(json.dumps(parsed, indent=2, sort_keys=True))
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 click.echo(content)
             raise SystemExit(0)
 
@@ -615,7 +614,6 @@ def resume_cmd(run_dir: Path) -> None:
                     parsed = json.loads(content)
                     click.echo(json.dumps(parsed, indent=2, sort_keys=True))
                 except Exception:
-                    logger.warning("Exception occurred", exc_info=True)
                     logger.warning("Exception occurred", exc_info=True)
                     click.echo(content)
                 raise SystemExit(0)

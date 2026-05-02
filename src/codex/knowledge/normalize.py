@@ -58,7 +58,6 @@ def pdf_to_text_bytes(p: Path) -> bytes:
         return txt.encode("utf-8")
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         raw = p.read_bytes()
         return b"[PDF_EXTRACTOR_MISSING]\n" + raw
 

@@ -54,7 +54,6 @@ def _export_file(src: str, dst: str, fmt: str, *, echo, bad_param_exc) -> None:
             )
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             rows.append(r)
     if fmt == "csv":
         keys = [

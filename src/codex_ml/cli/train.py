@@ -146,7 +146,6 @@ def _apply_prompt_sanitization(
             raw = config_obj.get(key) if hasattr(config_obj, "get") else getattr(config_obj, key)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             raw = None
         sequence = _coerce_sequence(raw)
         if sequence is None or not sequence:
@@ -406,7 +405,6 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
 
             record_error("T00", "pre_training_check", str(e), "cli.train")
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Error recording failed, continue silently
 

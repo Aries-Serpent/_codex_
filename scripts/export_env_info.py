@@ -49,7 +49,6 @@ try:
     info["cuda"] = torch.version.cuda if torch.cuda.is_available() else None
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     info["torch"] = None
     info["cuda"] = None
 print(json.dumps(info, indent=2))

@@ -63,7 +63,6 @@ def resolved_db_path(path: str | None) -> pathlib.Path:
         return pathlib.Path(logging_config.DEFAULT_LOG_DB)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return DEFAULT_DB
 
 

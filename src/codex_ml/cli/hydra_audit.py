@@ -109,7 +109,6 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         data = yaml.safe_load(text)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return {}
     return data or {}
 

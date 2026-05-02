@@ -68,7 +68,6 @@ def init_tokenizer_plugins(*, force: bool = False) -> int:
         from codex_ml.plugins import load_plugins
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         _TOKENIZER_PLUGINS_LOADED = True
         return 0
 

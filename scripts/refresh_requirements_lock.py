@@ -236,7 +236,6 @@ def _load_lock_versions() -> dict[str, tuple[Requirement, str | None]]:
             req = Requirement(line)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Skip entries that cannot be parsed as standard requirements.
             continue
         version = None

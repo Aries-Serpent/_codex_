@@ -356,7 +356,6 @@ def rouge_l(
         from rouge_score import rouge_scorer
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
     scores: list[float] = []

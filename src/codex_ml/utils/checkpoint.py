@@ -332,7 +332,6 @@ def _update_best_k(
             existing = []
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         existing = []
     filtered: list[dict[str, Any]] = [rec for rec in existing if rec.get("path") != out_dir.name]
     filtered.append(entry)

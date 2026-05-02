@@ -122,7 +122,6 @@ def is_deterministic_mode_enabled() -> bool:
         return False
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False
 
 

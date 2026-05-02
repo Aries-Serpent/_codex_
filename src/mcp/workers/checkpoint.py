@@ -31,7 +31,6 @@ def load_checkpoint(path: str) -> set[str]:
         return set(json.loads(p.read_text()))
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return set()
 
 

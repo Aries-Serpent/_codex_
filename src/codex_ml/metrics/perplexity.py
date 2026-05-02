@@ -21,5 +21,4 @@ def perplexity_from_loss(loss: float) -> float:
         return float(math.exp(float(loss)))
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return float("inf")

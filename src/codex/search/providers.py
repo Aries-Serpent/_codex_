@@ -53,7 +53,6 @@ class InternalRepoSearch(SearchProvider):
             )
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return []
 
         results: list[dict[str, Any]] = []
@@ -119,7 +118,6 @@ class SearchRegistry:
             try:
                 results.extend(provider.search(query))
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 # Each provider is responsible for handling its own errors. If
                 # an unexpected exception bubbles up we swallow it here so that

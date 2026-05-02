@@ -53,7 +53,6 @@ def _ensure_nvml() -> bool:
         return True
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False
 
 
@@ -77,7 +76,6 @@ def get_proc_stats() -> dict[str, Any]:
         return {"cpu_pct": float(cpu_pct), "rss_mb": float(rss_mb)}
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return {}
 
 
@@ -90,7 +88,6 @@ def get_sys_stats() -> dict[str, Any]:
         mem_pct = _psutil.virtual_memory().percent
         return {"cpu_pct": float(cpu_pct), "mem_pct": float(mem_pct)}
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return {}
 
@@ -137,7 +134,6 @@ def get_gpu_stats() -> list[dict[str, Any]]:
             )
         return out
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return []
     finally:

@@ -90,7 +90,6 @@ class CacheManifest:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return None
         return cls(
             version=str(data.get("version", "1")),
@@ -385,7 +384,6 @@ def load_dataset(
             if isinstance(data, list):
                 return data
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             try:
                 cache_file.unlink()

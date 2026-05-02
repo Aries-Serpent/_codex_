@@ -101,7 +101,6 @@ class FileProcessor:
             return sha256.hexdigest()
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return ""
 
     @classmethod
@@ -247,7 +246,6 @@ class FileProcessor:
                 compressed = gzip.compress(f.read())
                 size_compressed = len(compressed)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             size_compressed = stat.st_size
 

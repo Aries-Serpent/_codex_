@@ -52,13 +52,11 @@ def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
                 torch.use_deterministic_algorithms(True, warn_only=False)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
             try:
                 torch.backends.cudnn.deterministic = True
                 torch.backends.cudnn.benchmark = False
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.backends.cudnn unavailable", exc_info=True)
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")

@@ -47,7 +47,6 @@ def _get_registry_factory(name: str):
         return get_model(name)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -165,7 +164,6 @@ def load_model_with_optional_lora(
             return PeftModel.from_pretrained(model, lora_path, **extra)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return model
 
     TaskType = None
@@ -174,7 +172,6 @@ def load_model_with_optional_lora(
 
         TaskType = _TaskType
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         TaskType = None
 

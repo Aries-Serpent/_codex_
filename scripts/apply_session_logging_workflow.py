@@ -55,7 +55,6 @@ try:
     _codex_sqlite_auto()
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     pass
 import textwrap
 from pathlib import Path
@@ -79,7 +78,6 @@ def git_root() -> Path:
         out = run(["git", "rev-parse", "--show-toplevel"], capture_output=True).stdout.strip()
         return Path(out)
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return Path.cwd()
 
@@ -191,7 +189,6 @@ def search_candidates(root: Path):
             txt = p.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             continue
         for sym in (
             r"\blog_event\b",
@@ -238,7 +235,6 @@ try:
     from codex.logging.db import init_db as _shared_init_db      # type: ignore
     from codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
 except Exception:
-    logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
     _shared_log_event = None
     _shared_init_db = None

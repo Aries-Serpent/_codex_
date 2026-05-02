@@ -66,7 +66,6 @@ class InternalRepoSearch(SearchProvider):
                             )
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 continue
         return {"status": "ok", "query": query, "results": results}
 

@@ -25,7 +25,6 @@ def _resolve_version() -> str:
         mod = importlib.import_module("codex_ml")
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return "unknown"
     return str(getattr(mod, "__version__", "unknown"))
 

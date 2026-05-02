@@ -32,13 +32,11 @@ def _iter_entry_points(group: str) -> Iterable[Any]:
             eps = metadata.entry_points()
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return ()
         if hasattr(eps, "select"):
             return eps.select(group=group)
         return [ep for ep in eps if getattr(ep, "group", None) == group]
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return ()
 
@@ -56,7 +54,6 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
             return True
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return False
 
     if callable(target):
@@ -68,7 +65,6 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
             logger.warning(f"TypeError: {e}", exc_info=True)
             return False
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return False
 
@@ -93,10 +89,8 @@ def _register_direct(register: Optional[RegisterFn], name: str, target: Any) -> 
             return True
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             return False
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return False
 
@@ -123,7 +117,6 @@ def load_plugins(group: str, *, register: Optional[RegisterFn] = None) -> int:
         try:
             target = ep.load()
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             continue
 

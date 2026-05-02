@@ -204,7 +204,6 @@ def deprecated_legacy_access(name: str):
         raise
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         if name == "SPTokenizer":  # pragma: no cover - optional dependency guard
             raise
         raise

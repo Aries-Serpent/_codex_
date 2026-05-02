@@ -137,7 +137,6 @@ def _format_context(context: dict[str, Any] | str | None) -> str:
         return json.dumps(context, sort_keys=True, default=str)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return str(context)
 
 

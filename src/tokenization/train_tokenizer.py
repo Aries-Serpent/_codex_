@@ -226,7 +226,6 @@ def train(cfg: TrainTokenizerConfig) -> Path:
                 pass
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 try:
                     from sentencepiece import sentencepiece_model_pb2 as _sp_model_pb2
                 except Exception:  # pragma: no cover - dependency still missing
@@ -236,7 +235,6 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         try:
             tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             processor = spm.SentencePieceProcessor()
             processor.Load(str(model_path))

@@ -36,7 +36,6 @@ def optional_import(name: str) -> tuple[types.ModuleType | None, bool]:
         return importlib.import_module(name), True
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None, False
 
 

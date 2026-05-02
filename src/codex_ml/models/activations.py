@@ -29,7 +29,6 @@ try:
     import torch.nn as nn
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
     torch, nn = None, None  # type: ignore
 _REGISTRY: dict[str, Callable] = {}
 

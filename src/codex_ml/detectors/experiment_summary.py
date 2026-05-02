@@ -42,7 +42,6 @@ def detector_experiment_summary(
         payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return DetectorResult(
             name="experiment_summary",
             score=0.0,

@@ -161,7 +161,6 @@ def _get_git_commit() -> Optional[str]:
         )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -296,7 +295,6 @@ def init_experiment(cfg: Any) -> ExperimentContext:
             try:
                 converted = getter()
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 continue
             if isinstance(converted, MappingABC):

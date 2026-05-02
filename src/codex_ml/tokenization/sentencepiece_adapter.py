@@ -93,7 +93,6 @@ def _get_sentencepiece():
                         self.vocab = list(data.get("vocab", []))
                     except Exception:
                         logger.warning("Exception occurred", exc_info=True)
-                        logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 
             def encode(self, text: str, out_type=int):

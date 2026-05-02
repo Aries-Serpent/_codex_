@@ -233,7 +233,6 @@ def train(
             )
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             config_snapshot = None
     else:
         metrics_path = configured_metrics_path
@@ -254,13 +253,11 @@ def train(
                 return int(len(tensor))
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 shape = getattr(tensor, "shape", None)
                 if shape:
                     try:
                         return int(shape[0])
                     except Exception:
-                        logger.warning("Exception occurred", exc_info=True)
                         logger.warning("Exception occurred", exc_info=True)
                         return 0
                 return 0
@@ -313,7 +310,6 @@ def train(
                 stop_event=stop_event,
             )
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             system_thread = None
 
@@ -381,11 +377,9 @@ def train(
                         loss_value = float(raw_loss.detach().cpu().item())
                     except Exception:
                         logger.warning("Exception occurred", exc_info=True)
-                        logger.warning("Exception occurred", exc_info=True)
                         try:
                             loss_value = float(loss.detach().cpu().item())
                         except Exception:
-                            logger.warning("Exception occurred", exc_info=True)
                             logger.warning("Exception occurred", exc_info=True)
                             loss_value = None
                     if loss_value is not None:

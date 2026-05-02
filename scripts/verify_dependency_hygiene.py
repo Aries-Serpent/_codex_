@@ -67,7 +67,6 @@ def load_lines() -> list[dict[str, Any]]:
             data.append(json.loads(s))
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             print(f"[verify_hygiene] malformed evidence at line {i}", file=sys.stderr)
     return data
 

@@ -197,7 +197,6 @@ class MarkdownAnalyzer:
 
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 pass  # Skip files that cannot be processed
 
     def _analyze_file(self, path: Path) -> MarkdownFile:
@@ -210,7 +209,6 @@ class MarkdownAnalyzer:
         try:
             content = path.read_text(errors="ignore").lower()
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             content = ""
 

@@ -57,7 +57,6 @@ def _has_deprecation_tag(p: Path) -> bool:
         txt = p.read_text(encoding="utf-8", errors="ignore")
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False
     return bool(DEPRECATION_PAT.search(txt))
 

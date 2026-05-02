@@ -95,7 +95,6 @@ def get_conda_env() -> dict[str, Any] | None:
             info["version"] = conda_version
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # It's non-critical if we can't get the conda version; ignore and continue.
             pass
 
@@ -114,14 +113,12 @@ def get_conda_env() -> dict[str, Any] | None:
             info["packages_sample"] = packages[:10]
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Non-critical if we can't get conda packages; ignore and continue.
             pass
 
         return info if info else None
 
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # If conda environment detection fails entirely, return None.
         return None
@@ -159,7 +156,6 @@ def get_git_info() -> dict[str, Any] | None:
             info["commit"] = commit
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Non-critical if git commit lookup fails; ignore and continue.
             pass
 
@@ -174,7 +170,6 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["commit_short"] = short_commit
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Non-critical if short commit lookup fails; ignore and continue.
             pass
@@ -191,7 +186,6 @@ def get_git_info() -> dict[str, Any] | None:
             info["branch"] = branch
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Non-critical if branch name lookup fails; ignore and continue.
             pass
 
@@ -207,14 +201,12 @@ def get_git_info() -> dict[str, Any] | None:
             info["dirty"] = bool(status)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Non-critical if git status check fails; ignore and continue.
             pass
 
         return info if info else None
 
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # If git info detection fails entirely, return None.
         return None

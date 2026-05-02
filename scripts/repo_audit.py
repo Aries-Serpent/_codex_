@@ -109,7 +109,6 @@ def find_stubs() -> list[dict[str, object]]:
             text = file_path.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             continue
         for pattern in STUB_PATTERNS:
             for match in re.finditer(pattern, text):
@@ -133,7 +132,6 @@ def detect_tokenizers() -> dict[str, Iterable[str]]:
         try:
             text = file_path.read_text(encoding="utf-8", errors="ignore")
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             continue
         if (

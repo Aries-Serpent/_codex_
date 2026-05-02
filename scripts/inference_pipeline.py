@@ -131,7 +131,6 @@ def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True
             torch.use_deterministic_algorithms(True, warn_only=False)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             # Older torch versions may not support warn_only
             torch.use_deterministic_algorithms(True)
         torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
@@ -246,7 +245,6 @@ def _tokenizer_identity(tokenizer: Any) -> str:
     try:
         rep = tokenizer.__repr__()[:64]
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         rep = cls
     return f"{cls}:{rep}"

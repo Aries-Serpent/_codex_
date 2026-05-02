@@ -64,7 +64,6 @@ def load_allowlist(p: Path) -> dict[str, str]:
         data = yaml.safe_load(p.read_text())
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         data = None
     if isinstance(data, dict):
         return {k.lower(): str(v) for k, v in data.items()}

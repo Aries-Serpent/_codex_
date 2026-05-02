@@ -479,20 +479,17 @@ def _start_system_metrics_logger(path: Path, interval: float):
         from codex_ml.monitoring.system_metrics import SystemMetricsLogger
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger.start()
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
     return metrics_logger
@@ -560,7 +557,6 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         try:
             return bool(int(raw))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return bool(raw)
 

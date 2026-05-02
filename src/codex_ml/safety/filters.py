@@ -322,7 +322,6 @@ def _parse_scalar(value: str) -> Any:
         return ast.literal_eval(value)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return value
 
 

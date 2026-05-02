@@ -307,12 +307,10 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
                 )
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 entry["temp_c"] = None
             try:
                 entry["power_w"] = float(pynvml.nvmlDeviceGetPowerUsage(handle) / 1000.0)
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 entry["power_w"] = None
             devices.append(entry)
@@ -337,7 +335,6 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
         try:
             pynvml.nvmlShutdown()
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
 
 
@@ -502,7 +499,6 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
                 _write_record(target, sample_system_metrics())
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 # Avoid killing the loop due to transient psutil errors.
             stop_event.wait(max(0.1, float(interval)))
 
@@ -586,7 +582,6 @@ class SystemMetricsLogger:
             try:
                 _write_record(self._path, sample_system_metrics())
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
             self._stop.wait(self._interval)
 

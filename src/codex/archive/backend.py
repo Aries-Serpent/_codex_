@@ -513,7 +513,6 @@ class ArchiveDAL:
                 self._conn.commit()
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 self._conn.rollback()
                 raise
             finally:

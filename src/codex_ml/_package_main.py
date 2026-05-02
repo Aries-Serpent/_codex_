@@ -21,7 +21,6 @@ def _run_cli() -> int:
         mod = importlib.import_module("codex_ml.cli")
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         sys.stdout.write("codex_ml: package entrypoint\nTry: python -m codex_ml.cli --help\n")
         return 0
     if hasattr(mod, "main"):

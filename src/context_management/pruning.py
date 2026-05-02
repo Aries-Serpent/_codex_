@@ -173,7 +173,6 @@ class PriorityPruner:
                     pruned_text = self._summarizer(text)
                 except Exception:
                     logger.warning("Exception occurred", exc_info=True)
-                    logger.warning("Exception occurred", exc_info=True)
                     # Fall back to truncation
                     pruned_text = self._truncate(text, matched_rule)
             else:

@@ -63,7 +63,6 @@ def _pip_freeze() -> list[str]:
         output = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return []
     return [line.strip() for line in output.splitlines() if line.strip()]
 
@@ -262,7 +261,6 @@ def _hardware_fingerprint(hardware: Mapping[str, Any] | None) -> str | None:
             separators=(",", ":"),
         )
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         serialized = repr(hardware)
 

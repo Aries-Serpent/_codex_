@@ -321,7 +321,6 @@ def load_checkpoint(
         return state
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         fallback = _load_legacy_checkpoint_payload(path, map_location=kwargs.get("map_location"))
         if fallback is None:
             raise
@@ -351,7 +350,6 @@ def _load_legacy_checkpoint_payload(
             loaded = _torch_load(str(path), map_location=map_location)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
             loaded = None
         if isinstance(loaded, Mapping):
             candidate = loaded
@@ -362,7 +360,6 @@ def _load_legacy_checkpoint_payload(
 
             loaded = safe_pickle_load(str(path), use_restricted_unpickler=True)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return None
         if not isinstance(loaded, Mapping):

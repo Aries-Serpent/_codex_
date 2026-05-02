@@ -67,7 +67,6 @@ def validate_metric_exists(metric_name: str) -> bool:
         return callable(metric_fn)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return False
 
 
