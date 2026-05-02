@@ -836,7 +836,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
         exit_code = 0
         try:
-            codex(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
+            codex.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
         except click.exceptions.Exit as exc:
             exit_code = exc.exit_code
         log_event(

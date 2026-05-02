@@ -72,7 +72,8 @@ def check_model_tensors(model_name: str = "all-MiniLM-L6-v2") -> bool:
         embeddings = model.encode(test_text, convert_to_tensor=True)
 
         assert embeddings.device.type == "cpu", f"Unexpected device: {embeddings.device}"
-        assert not torch.isnan(embeddings).any(), "NaN detected in embeddings"
+        embeddings_has_nan = torch.isnan(embeddings).any()
+        assert not embeddings_has_nan, "NaN detected in embeddings"
 
         print(f"✅ Inference successful: {embeddings.shape}")
         return True

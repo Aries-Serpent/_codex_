@@ -88,7 +88,7 @@ def _validate_override(key: str, value: object) -> None:
     # Value must be convertible to string and contain no shell metacharacters
     str_value = str(value)
     # Reject shell metacharacters: $, `, |, &, ;, <, >, (, ), etc.
-    if re.search(r'[`$|&;<>()\\]', str_value):
+    if re.search(r'[`\$|&;<>()\\]', str_value):
         raise ValueError(f"Override value contains shell metacharacters: {str_value!r}")
 
 

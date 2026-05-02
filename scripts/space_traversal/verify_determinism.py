@@ -138,7 +138,8 @@ def main():
         snap = {}
         for rel in ARTIFACTS:
             p = ROOT / rel
-            assert p.exists(), f"Artifact missing: {rel}"
+            artifact_exists = p.exists()
+            assert artifact_exists, f"Artifact missing: {rel}"
             snap[rel] = normalized_json(p)
         snapshots.append(snap)
 

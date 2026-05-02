@@ -161,7 +161,8 @@ def test_codeql_alert_prevention():
 
     # Verify redacted dict doesn't contain original keys
     for key in redacted_result.keys():
-        assert key.startswith("secret_"), f"Key '{key}' should start with 'secret_'"
+        has_secret_prefix = key.startswith("secret_")
+        assert has_secret_prefix, f"Key '{key}' should start with 'secret_'"
 
     assert len(redacted_result) == 4, f"Expected 4 secrets, got {len(redacted_result)}"
 

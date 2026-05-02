@@ -179,7 +179,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 "`pip install typer`."
             )
         try:
-            app(prog_name="codex-tracking", args=arg_list, standalone_mode=False)
+            app.main(prog_name="codex-tracking", args=arg_list, standalone_mode=False)
         except typer.Exit as exc:
             exit_code = int(exc.exit_code or 0)
         else:

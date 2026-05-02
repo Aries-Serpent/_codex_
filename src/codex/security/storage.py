@@ -33,7 +33,7 @@ Usage:
 import os
 import stat
 from pathlib import Path
-from typing import Literal, Optional
+from typing import TYPE_CHECKING, Literal, Optional, Union, cast
 
 try:
     from cryptography.fernet import Fernet
@@ -45,6 +45,12 @@ try:
     CRYPTO_AVAILABLE = True
 except ImportError:
     CRYPTO_AVAILABLE = False
+    if TYPE_CHECKING:  # Stubs-only imports so type checkers know the types
+        from cryptography.fernet import Fernet
+        from cryptography.hazmat.primitives.ciphers.aead import AESGCM, ChaCha20Poly1305
+
+if TYPE_CHECKING:
+    _CipherType = Union[Fernet, AESGCM, ChaCha20Poly1305]
 
 
 EncryptionAlgorithm = Literal["fernet", "aes-gcm", "chacha20"]
@@ -115,6 +121,7 @@ class SecureStorage:
             )
 
         self.algorithm = algorithm
+        self.cipher: "_CipherType"
 
         if algorithm == "fernet":
             self.cipher = Fernet(key.encode() if isinstance(key, str) else key)
@@ -180,11 +187,12 @@ class SecureStorage:
         data_bytes = data.encode("utf-8")
 
         if self.algorithm == "fernet":
-            return self.cipher.encrypt(data_bytes)
+            return cast(Fernet, self.cipher).encrypt(data_bytes)
         elif self.algorithm in ("aes-gcm", "chacha20"):
             # Generate random nonce
             nonce = os.urandom(12)  # 96-bit nonce for GCM/ChaCha20
-            ciphertext = self.cipher.encrypt(nonce, data_bytes, None)
+            aead_cipher = cast(Union[AESGCM, ChaCha20Poly1305], self.cipher)
+            ciphertext = aead_cipher.encrypt(nonce, data_bytes, None)
             # Prepend nonce to ciphertext
             return nonce + ciphertext
         else:
@@ -206,12 +214,13 @@ class SecureStorage:
             cryptography.exceptions.InvalidTag: If authentication fails (GCM/ChaCha20)
         """
         if self.algorithm == "fernet":
-            return self.cipher.decrypt(encrypted).decode("utf-8")
+            return cast(Fernet, self.cipher).decrypt(encrypted).decode("utf-8")
         elif self.algorithm in ("aes-gcm", "chacha20"):
             # Extract nonce (first 12 bytes)
             nonce = encrypted[:12]
             ciphertext = encrypted[12:]
-            plaintext = self.cipher.decrypt(nonce, ciphertext, None)
+            aead_cipher = cast(Union[AESGCM, ChaCha20Poly1305], self.cipher)
+            plaintext = aead_cipher.decrypt(nonce, ciphertext, None)
             return plaintext.decode("utf-8")
         else:
             # Should never reach here due to validation in __init__

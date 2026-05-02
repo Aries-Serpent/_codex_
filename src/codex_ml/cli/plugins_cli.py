@@ -170,7 +170,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         exit_code = 0
         if typer is not None:
             try:
-                app(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
+                app.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
             except typer.Exit as exc:
                 exit_code = exc.exit_code
         else:
