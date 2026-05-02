@@ -253,9 +253,7 @@ def safe_model_to_device(
             # Log standard transfer timing
             duration = time.time() - start_time
             if duration > 1.0:  # Only log if takes more than 1 second
-                logger.info(
-                    f"Model device transfer completed in {duration:.3f}s. Device: {device}"
-                )
+                logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
 
             return result
 

@@ -261,7 +261,6 @@ class AgentCore:
         # and iterate until task is complete or max calls reached
         return f"[Agent Core] Task processed: {task[:100]}..."
 
-
     async def _verify_response(self, response: str, context: list[str]) -> float:
         """Verify response using Chain-of-Verification."""
         if not self._verification_engine:

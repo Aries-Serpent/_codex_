@@ -103,7 +103,6 @@ class LocalSentenceTransformerProvider:
             device="cpu",  # Explicit device specification
         )
 
-
     def get_dimension(self) -> int:
         """Get embedding dimension."""
         if not self.model:

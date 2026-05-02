@@ -4,6 +4,7 @@ Test Split Determinism
 Test module for split determinism.
 """
 import pytest
+
 pytest.importorskip("numpy", reason="numpy required")
 
 

@@ -342,7 +342,6 @@ class GHZStateManager:
 
         return total_correlation / num_pairs if num_pairs > 0 else 0.0
 
-
     def get_state(self, state_id: str) -> GHZState:
         """
         Retrieve GHZ state by ID.

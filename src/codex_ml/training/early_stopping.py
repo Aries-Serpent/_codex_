@@ -454,7 +454,6 @@ def auto_inject_early_stopping_for_trainer(
     return inject_early_stopping(callbacks, config=config)
 
 
-
 def create_early_stopping_from_config(
     config: EarlyStoppingConfig,
 ) -> Optional[EarlyStopping]:

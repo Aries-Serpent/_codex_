@@ -231,7 +231,4 @@ class QuantumTestSuite:
         phase_diff = test1.phase - test2.phase
 
         # Interference term
-        return (
-            amplitude1**2 + amplitude2**2 + 2 * amplitude1 * amplitude2 * math.cos(phase_diff)
-        )
-
+        return amplitude1**2 + amplitude2**2 + 2 * amplitude1 * amplitude2 * math.cos(phase_diff)

@@ -330,4 +330,3 @@ class AsyncPredictionPipeline:
             return await asyncio.get_event_loop().run_in_executor(
                 None, self.postprocess_fn, prediction
             )
-

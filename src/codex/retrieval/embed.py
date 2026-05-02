@@ -72,7 +72,6 @@ class EmbeddingModel:
         )
 
 
-
 class KnowledgeBaseLoader:
     """Loads knowledge base from NDJSON format"""
 

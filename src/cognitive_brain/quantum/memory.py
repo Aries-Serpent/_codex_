@@ -367,7 +367,6 @@ class QuantumMemoryManager:
         # Weighted combination
         return 0.4 * access_score + 0.4 * pattern.success_rate + 0.2 * pattern.confidence
 
-
     def _is_distinctive(self, pattern: MemoryPattern, threshold: float = 0.95) -> bool:
         """
         Check if pattern is distinctive enough for LTM.

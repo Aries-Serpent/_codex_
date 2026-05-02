@@ -596,7 +596,7 @@ class FeatureHealthMonitor:
             # Get health statuses for markdown generation
             feature_names = list(report["health_statuses"].keys())
             health_statuses = self.check_all_features(feature_names)
-            markdown_content = self._generate_markdown_report(health_statuses)  # type: ignore[call-arg]
+            markdown_content = self._generate_markdown_report(health_statuses)
             with open(output_file, "w") as f:
                 f.write(markdown_content)
             logger.info(f"Saved markdown health report to {output_path}")

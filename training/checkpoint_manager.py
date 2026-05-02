@@ -6,12 +6,12 @@ This module remains for BC with 'from training.checkpoint_manager import Checkpo
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import warnings as _warnings
 from pathlib import Path
 from typing import Any, Dict, Optional
-import contextlib
 
 _warnings.warn(
     "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",

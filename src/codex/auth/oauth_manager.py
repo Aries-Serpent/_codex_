@@ -356,7 +356,6 @@ class OAuthManager:
             scope=token_response.get("scope"),
         )
 
-
     def get_github_user(self, access_token: str) -> Dict:
         """
         Get GitHub user information using access token.

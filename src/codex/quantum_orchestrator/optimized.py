@@ -99,7 +99,6 @@ class VectorizedEvolution:
         # Evolve: ψ(t+dt) = ψ(t) - (i/ℏ)Hψ dt
         return spinors - (1j / self.hbar) * H_psi * dt
 
-
     def batch_normalize(self, spinors: np.ndarray) -> np.ndarray:
         """
         Normalize all spinors simultaneously.
@@ -148,7 +147,6 @@ class VectorizedEvolution:
 
         # Multiply by c and take real part (current is real)
         return self.c * np.real(currents)
-
 
     def batch_compute_probabilities(self, spinors: np.ndarray) -> dict[str, np.ndarray]:
         """
@@ -221,7 +219,6 @@ class VectorizedEvolution:
         # Helicity (simplified as spin-z for now)
         return spin_z * np.sign(momentum_dir[:, 2])  # Use z-component sign
 
-
     def batch_compute_zitterbewegung(self, spinors: np.ndarray) -> np.ndarray:
         """
         Compute zitterbewegung amplitude for all tasks.
@@ -242,7 +239,6 @@ class VectorizedEvolution:
 
         # Amplitude
         return 2 * np.sqrt(P_plus * P_minus)
-
 
 
 class SpatialIndex:

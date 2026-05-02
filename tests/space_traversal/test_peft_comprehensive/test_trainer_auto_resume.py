@@ -4,6 +4,7 @@ Test Trainer Auto Resume
 Test module for trainer auto resume.
 """
 import pytest
+
 pytest.importorskip("numpy", reason="numpy required")
 
 

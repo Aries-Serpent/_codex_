@@ -433,7 +433,6 @@ class PatternCompressor:
         # Quantize
         return np.round(vector / max_val * (levels // 2)) / (levels // 2) * max_val
 
-
     def _dequantize(self, vector: np.ndarray) -> np.ndarray:
         """
         Dequantize vector (no-op, already in float form).

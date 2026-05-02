@@ -35,12 +35,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 import argparse
+import contextlib
 import json
 import math
 import os
 import re
 from pathlib import Path
-import contextlib
 
 DEFAULT_PATTERNS = [
     # Basic secret-like patterns

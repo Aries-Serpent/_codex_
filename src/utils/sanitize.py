@@ -77,4 +77,3 @@ def sanitize_prompt(prompt: Optional[str], max_length: Optional[int] = None) -> 
     escaped = html.escape(prompt, quote=True)
     # Optionally escape single quote for contexts that use single-quoted attributes
     return escaped.replace("'", "&#x27;")
-

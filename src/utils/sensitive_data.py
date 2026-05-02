@@ -230,7 +230,6 @@ def mask_sensitive_data(text: str) -> str:
     )
 
 
-
 def hash_sensitive_value(value: str) -> str:
     """Create consistent hash of sensitive value for logging/comparison.
 

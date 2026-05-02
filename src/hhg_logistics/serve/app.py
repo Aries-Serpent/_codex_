@@ -149,9 +149,7 @@ def _freeze_override_value(value: Any) -> Hashable:
     if isinstance(value, Sequence) and not isinstance(value, str | bytes | bytearray):
         return tuple(_freeze_override_value(item) for item in value)
     if isinstance(value, set | frozenset):
-        return tuple(
-            _freeze_override_value(item) for item in sorted(value, key=repr)
-        )
+        return tuple(_freeze_override_value(item) for item in sorted(value, key=repr))
     return repr(value)
 
 

@@ -7,6 +7,7 @@ Provides caching for embedding vectors with:
 - Batch caching operations
 """
 
+import contextlib
 import hashlib
 import logging
 import threading
@@ -16,7 +17,6 @@ from pathlib import Path
 from typing import Any, Optional
 
 import numpy as np
-import contextlib
 
 logger = logging.getLogger(__name__)
 

@@ -620,7 +620,6 @@ class SemanticDiffer:
         # Remove leading/trailing whitespace
         return text.strip()
 
-
     def should_resync(self, old_content: str, new_content: str) -> Tuple[bool, Dict[str, Any]]:
         """Determine if content should be resynced based on semantic diff.
 

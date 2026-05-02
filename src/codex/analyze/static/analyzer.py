@@ -233,7 +233,9 @@ def _calculate_complexity(tree: ast.AST) -> ComplexityMetrics:
 
     for node in ast.walk(tree):
         # Control flow statements increase complexity
-        if isinstance(node, (ast.If, ast.While, ast.For, ast.AsyncFor, ast.ExceptHandler, ast.And, ast.Or)):
+        if isinstance(
+            node, (ast.If, ast.While, ast.For, ast.AsyncFor, ast.ExceptHandler, ast.And, ast.Or)
+        ):
             complexity += 1
         elif isinstance(node, ast.comprehension):
             complexity += 1

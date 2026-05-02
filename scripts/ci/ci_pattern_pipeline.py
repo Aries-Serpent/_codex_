@@ -49,6 +49,7 @@ Exit codes
 from __future__ import annotations
 
 import argparse
+import contextlib
 import importlib.util
 import json
 import os
@@ -58,7 +59,6 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-import contextlib
 
 # ---------------------------------------------------------------------------
 # Paths

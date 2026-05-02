@@ -4,6 +4,7 @@ Test Checkpoint Resume
 Test module for checkpoint resume.
 """
 import pytest
+
 pytest.importorskip("numpy", reason="numpy required")
 
 

@@ -151,7 +151,6 @@ class YAMLASTAdapter(BaseASTAdapter):
             parent=parent,
         )
 
-
     def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
         """
         Traverse AST depth-first, yielding all nodes.

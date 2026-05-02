@@ -150,7 +150,6 @@ class JSONASTAdapter(BaseASTAdapter):
             parent=parent,
         )
 
-
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """
         Extract JSON-specific metadata from a node.

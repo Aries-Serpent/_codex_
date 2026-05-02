@@ -18,8 +18,8 @@ try:
     from .run_logger import METRICS_SCHEMA_URI, PARAMS_SCHEMA_URI, RunLogger
 except Exception:  # pragma: no cover - optional mlflow dependency
     RunLogger = None  # type: ignore[assignment,misc]
-    PARAMS_SCHEMA_URI: str = ""  # type: ignore[assignment]
-    METRICS_SCHEMA_URI: str = ""  # type: ignore[assignment]
+    PARAMS_SCHEMA_URI: str = ""
+    METRICS_SCHEMA_URI: str = ""
 
 __all__ = [
     "RunLogger",

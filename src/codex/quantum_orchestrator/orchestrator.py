@@ -362,7 +362,6 @@ class DiracOperator:
         # Total Hamiltonian
         return kinetic + mass_term
 
-
     def compute_current(self, task: TaskState) -> np.ndarray:
         """
         Compute Dirac current: j = cψ†αψ.

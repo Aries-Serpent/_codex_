@@ -10,6 +10,8 @@ Based on Coverage Uplift Paths Table (Equations 1-53):
 Strategy: Focus on agents module with largest statement counts
 """
 
+import contextlib
+
 import pytest
 
 from agents.advanced_physics_calculators import (
@@ -30,7 +32,6 @@ from agents.physics_orchestrator import (
     ForceVector,
     PhysicsInspiredOrchestrator,
 )
-import contextlib
 
 
 class TestPhysicsOrchestratorInit:

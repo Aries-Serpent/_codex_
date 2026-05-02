@@ -405,7 +405,6 @@ class NoetherCurrent:
             * np.real(np.sum(psi_star) * gradient_psi - np.sum(psi) * np.conj(gradient_psi))
         )
 
-
     def momentum_current(self, task: TaskState) -> np.ndarray:
         """
         Compute momentum current (momentum density).
@@ -421,7 +420,6 @@ class NoetherCurrent:
         # Momentum density: g = ρv where ρ = |ψ|²
         probability_density = task.spinor.total_probability
         return probability_density * task.velocity
-
 
     def verify_continuity(
         self,

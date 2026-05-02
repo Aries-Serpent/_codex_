@@ -313,6 +313,5 @@ class MemoryAugmentedComplianceAssessor:
         }
 
 
-
 # Alias for backward compatibility
 ComplianceAssessor = MemoryAugmentedComplianceAssessor

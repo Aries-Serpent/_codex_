@@ -203,7 +203,6 @@ Respond with valid JSON matching this schema:
 
 Return ONLY valid JSON, no explanation or markdown."""
 
-
     def infer_intent(self, context: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Infer intent using LLM.
 

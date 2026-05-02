@@ -18,6 +18,7 @@ CODEBASE_AGENCY_POLICY.md compliance:
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
@@ -26,7 +27,6 @@ from dataclasses import dataclass
 from enum import IntEnum, unique
 from pathlib import Path
 from typing import Any
-import contextlib
 
 logger = logging.getLogger(__name__)
 

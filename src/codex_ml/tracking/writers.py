@@ -17,6 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
@@ -43,7 +44,6 @@ from codex_ml.logging.ndjson_logger import (
 from codex_ml.logging.permissions import get_log_file_mode
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking_decision
 from codex_ml.utils.optional_dependencies import format_optional_dependency_error
-import contextlib
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"

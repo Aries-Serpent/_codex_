@@ -1300,10 +1300,10 @@ def set_deterministic_seed():
 # RAG Module Fixtures (Added 2026-01-08)
 # ============================================================================
 
+import contextlib
 import tempfile  # noqa: E402
 from pathlib import Path  # noqa: E402,F811
 from typing import Generator  # noqa: E402
-import contextlib
 
 
 @pytest.fixture

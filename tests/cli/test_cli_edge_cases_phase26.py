@@ -4,12 +4,12 @@ Target: 25+ edge case tests for CLI entry points
 Coverage Target: src/codex_ml/cli/codex_cli.py (846 lines, 0% → 60%+)
 """
 
+import contextlib
 import os
 from io import StringIO
 from unittest.mock import patch
 
 import pytest
-import contextlib
 
 # Import CLI modules
 try:

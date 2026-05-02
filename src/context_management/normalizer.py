@@ -105,7 +105,6 @@ class ContextNormalizer:
         replacement = "\n" * self.max_consecutive_newlines
         return self.MULTI_NEWLINE.sub(replacement, text)
 
-
     def normalize_for_fingerprint(self, text: str) -> str:
         """
         Aggressive normalization for fingerprinting.

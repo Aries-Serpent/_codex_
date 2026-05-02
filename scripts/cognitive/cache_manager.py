@@ -11,7 +11,6 @@ AAIS Contribution: +7.0 points (Discovery +1.2, Introspection +1.8, Patterns +0.
 """
 
 import json
-import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional

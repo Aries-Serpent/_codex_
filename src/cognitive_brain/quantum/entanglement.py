@@ -474,7 +474,6 @@ class EntanglementManager:
 
         return 1.0 - deviation
 
-
     def compute_mutual_information(self, pair_id: str) -> float:
         """
         Compute mutual information between agent states (bits).

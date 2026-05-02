@@ -78,4 +78,3 @@ def sanitize_filename(filename: str) -> str:
 
     # Replace multiple underscores with single
     return re.sub(r"_+", "_", sanitized)
-

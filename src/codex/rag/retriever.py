@@ -509,7 +509,6 @@ class CachedRetriever(Retriever):
         # Remove extra whitespace
         return " ".join(normalized.split())
 
-
     def _make_cache_key(self, q: str, top_k: int, min_score: Optional[float]) -> str:
         """
         Create cache key from query parameters.

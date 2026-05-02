@@ -217,7 +217,6 @@ class TokenManager:
             # Create claims
             return TokenClaims.from_dict(payload)
 
-
         except Exception as e:
             error_msg = sanitize_log_message(f"Token decode failed: {str(e)}")
             raise ValueError(error_msg) from e

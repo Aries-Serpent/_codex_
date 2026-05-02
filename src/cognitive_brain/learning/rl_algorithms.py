@@ -250,9 +250,7 @@ class QLearning(RLAlgorithm):
         q_values = [self._get_q_value(state, a) for a in available_actions]
         max_q = max(q_values)
         # Handle ties randomly
-        best_actions = [
-            a for a, q in zip(available_actions, q_values, strict=False) if q == max_q
-        ]
+        best_actions = [a for a, q in zip(available_actions, q_values, strict=False) if q == max_q]
         return np.random.choice(best_actions)
 
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
@@ -622,7 +620,6 @@ class PPO(RLAlgorithm):
         exp_logits = {a: np.exp(logit_val - max_logit) for a, logit_val in logits.items()}
         total = sum(exp_logits.values())
         return {a: e / total for a, e in exp_logits.items()}
-
 
     def _get_value(self, state: Any) -> float:
         """

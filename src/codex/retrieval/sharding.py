@@ -164,7 +164,6 @@ class ConsistentHashRing:
         ring_hash = self._ring[idx]
         return self._ring_map[ring_hash]
 
-
     def get_shard_distribution(self, keys: List[str]) -> Dict[int, int]:
         """Analyze shard distribution for a list of keys.
 

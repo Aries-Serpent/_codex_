@@ -348,9 +348,7 @@ class StrategyOptimizer:
         window = min(100, len(self.training_history))
         current_performance = np.mean(self.training_history[-window:])
 
-        return (current_performance - self.baseline_performance) / abs(
-            self.baseline_performance
-        )
+        return (current_performance - self.baseline_performance) / abs(self.baseline_performance)
 
     def _update_metrics(self, converged: bool):
         """
@@ -408,7 +406,6 @@ class StrategyOptimizer:
             "training_history": self.training_history.copy(),
             "policy": self.algorithm.get_policy() if self.algorithm else None,
         }
-
 
     def get_strategy(self) -> Dict[str, Any]:
         """

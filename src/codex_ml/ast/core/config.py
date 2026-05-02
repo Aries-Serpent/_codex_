@@ -5,11 +5,11 @@ Provides configuration dataclass with environment variable overrides
 and sensible defaults.
 """
 
+import contextlib
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
-import contextlib
 
 
 @dataclass
