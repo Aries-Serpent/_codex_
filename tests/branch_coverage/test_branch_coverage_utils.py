@@ -14,6 +14,7 @@ from typing import Any, Dict, List
 from unittest.mock import patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: Error Handling
@@ -153,7 +154,7 @@ class TestLoggingBranches:
 
     def test_log_conditional_debug_enabled_branch(self) -> None:
         """Test conditional logging when debug enabled."""
-        debug_enabled = True
+        debug_enabled = branch_input(True)
         logged = False
         if debug_enabled:
             # Expensive logging operation
@@ -162,7 +163,7 @@ class TestLoggingBranches:
 
     def test_log_conditional_debug_disabled_branch(self) -> None:
         """Test conditional logging when debug disabled."""
-        debug_enabled = False
+        debug_enabled = branch_input(False)
         logged = False
         if debug_enabled:
             logged = True
@@ -487,8 +488,8 @@ class TestNumericComparisonBranches:
 
     def test_comparison_less_than_branch(self) -> None:
         """Test less than comparison branch."""
-        value = 5
-        threshold = 10
+        value = branch_input(5)
+        threshold = branch_input(10)
         if value < threshold:
             result = "below"
         elif value > threshold:
@@ -499,8 +500,8 @@ class TestNumericComparisonBranches:
 
     def test_comparison_greater_than_branch(self) -> None:
         """Test greater than comparison branch."""
-        value = 15
-        threshold = 10
+        value = branch_input(15)
+        threshold = branch_input(10)
         if value < threshold:
             result = "below"
         elif value > threshold:
@@ -511,8 +512,8 @@ class TestNumericComparisonBranches:
 
     def test_comparison_equal_branch(self) -> None:
         """Test equal comparison branch."""
-        value = 10
-        threshold = 10
+        value = branch_input(10)
+        threshold = branch_input(10)
         if value < threshold:
             result = "below"
         elif value > threshold:
@@ -523,7 +524,7 @@ class TestNumericComparisonBranches:
 
     def test_zero_check_positive_branch(self) -> None:
         """Test zero check - positive value branch."""
-        value = 5
+        value = branch_input(5)
         if value > 0:
             sign = "positive"
         elif value < 0:
@@ -534,7 +535,7 @@ class TestNumericComparisonBranches:
 
     def test_zero_check_negative_branch(self) -> None:
         """Test zero check - negative value branch."""
-        value = -5
+        value = branch_input(-5)
         if value > 0:
             sign = "positive"
         elif value < 0:
@@ -545,7 +546,7 @@ class TestNumericComparisonBranches:
 
     def test_zero_check_zero_branch(self) -> None:
         """Test zero check - zero value branch."""
-        value = 0
+        value = branch_input(0)
         if value > 0:
             sign = "positive"
         elif value < 0:

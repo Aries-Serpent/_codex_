@@ -15,6 +15,7 @@ from typing import Any, Dict, List
 from unittest.mock import patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: Config Loading
@@ -40,7 +41,7 @@ class TestConfigLoadingBranches:
 
     def test_config_format_yaml_branch(self) -> None:
         """Test YAML configuration format branch."""
-        config_file = "config.yaml"
+        config_file = branch_input("config.yaml")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -53,7 +54,7 @@ class TestConfigLoadingBranches:
 
     def test_config_format_json_branch(self) -> None:
         """Test JSON configuration format branch."""
-        config_file = "config.json"
+        config_file = branch_input("config.json")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -66,7 +67,7 @@ class TestConfigLoadingBranches:
 
     def test_config_format_toml_branch(self) -> None:
         """Test TOML configuration format branch."""
-        config_file = "config.toml"
+        config_file = branch_input("config.toml")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -79,7 +80,7 @@ class TestConfigLoadingBranches:
 
     def test_config_format_unknown_branch(self) -> None:
         """Test unknown configuration format branch."""
-        config_file = "config.xyz"
+        config_file = branch_input("config.xyz")
         if config_file.endswith(".yaml") or config_file.endswith(".yml"):
             parser = "yaml_parser"
         elif config_file.endswith(".json"):
@@ -151,7 +152,7 @@ class TestConfigValidationBranches:
 
     def test_config_type_invalid_branch(self) -> None:
         """Test invalid type validation branch."""
-        value = []  # List not expected
+        value = branch_input([])  # List not expected
         if isinstance(value, str) or isinstance(value, int) and not isinstance(value, bool) or isinstance(value, bool):
             type_valid = True
         else:
@@ -194,7 +195,7 @@ class TestConfigMergingBranches:
     def test_config_merge_override_present_branch(self) -> None:
         """Test configuration merge with override present branch."""
         base_config = {"key": "base_value"}
-        override_config = {"key": "override_value"}
+        override_config = branch_input({"key": "override_value"})
         if "key" in override_config:
             merged_value = override_config["key"]
         else:
@@ -223,8 +224,8 @@ class TestConfigMergingBranches:
 
     def test_config_merge_nested_dict_branch(self) -> None:
         """Test nested dictionary merge branch."""
-        base = {"section": {"key": "base"}}
-        override = {"section": {"key": "override"}}
+        base = branch_input({"section": {"key": "base"}})
+        override = branch_input({"section": {"key": "override"}})
         if isinstance(base.get("section"), dict) and isinstance(
             override.get("section"), dict
         ):
@@ -235,8 +236,8 @@ class TestConfigMergingBranches:
 
     def test_config_merge_non_dict_branch(self) -> None:
         """Test non-dictionary merge branch."""
-        base = {"section": "value"}
-        override = {"section": "override"}
+        base = branch_input({"section": "value"})
+        override = branch_input({"section": "override"})
         if isinstance(base.get("section"), dict) and isinstance(
             override.get("section"), dict
         ):
@@ -412,7 +413,7 @@ class TestHydraConfigBranches:
 
     def test_hydra_structured_config_branch(self) -> None:
         """Test Hydra structured config branch."""
-        config_type = "structured"
+        config_type = branch_input("structured")
         if config_type == "structured":
             validator = "dataclass_validator"
         elif config_type == "dict":
@@ -423,7 +424,7 @@ class TestHydraConfigBranches:
 
     def test_hydra_dict_config_branch(self) -> None:
         """Test Hydra dict config branch."""
-        config_type = "dict"
+        config_type = branch_input("dict")
         if config_type == "structured":
             validator = "dataclass_validator"
         elif config_type == "dict":
@@ -434,7 +435,7 @@ class TestHydraConfigBranches:
 
     def test_hydra_no_validation_branch(self) -> None:
         """Test Hydra no validation branch."""
-        config_type = "unstructured"
+        config_type = branch_input("unstructured")
         if config_type == "structured":
             validator = "dataclass_validator"
         elif config_type == "dict":
@@ -507,7 +508,7 @@ class TestDefaultValueBranches:
 
     def test_default_value_overridden_branch(self) -> None:
         """Test default value overridden branch."""
-        config = {"timeout": 60}
+        config = branch_input({"timeout": 60})
         if "timeout" in config:
             timeout = config["timeout"]
         else:
@@ -516,7 +517,7 @@ class TestDefaultValueBranches:
 
     def test_default_factory_callable_branch(self) -> None:
         """Test default factory callable branch."""
-        has_factory = True
+        has_factory = branch_input(True)
         if has_factory:
             default = []  # Factory creates new list
         else:

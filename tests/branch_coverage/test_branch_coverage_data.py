@@ -14,6 +14,7 @@ from typing import Any
 from unittest.mock import patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: Data Loading
@@ -132,7 +133,7 @@ class TestDataValidationBranches:
 
     def test_data_type_string_branch(self) -> None:
         """Test string data type validation branch."""
-        value = "text content"
+        value = branch_input("text content")
         if isinstance(value, str):
             dtype = "string"
         elif isinstance(value, int):
@@ -145,7 +146,7 @@ class TestDataValidationBranches:
 
     def test_data_type_int_branch(self) -> None:
         """Test integer data type validation branch."""
-        value = 42
+        value = branch_input(42)
         if isinstance(value, str):
             dtype = "string"
         elif isinstance(value, bool):
@@ -160,7 +161,7 @@ class TestDataValidationBranches:
 
     def test_data_type_float_branch(self) -> None:
         """Test float data type validation branch."""
-        value = 3.14
+        value = branch_input(3.14)
         if isinstance(value, str):
             dtype = "string"
         elif isinstance(value, int) and not isinstance(value, bool):
@@ -353,7 +354,7 @@ class TestDataEncodingBranches:
 
     def test_encoding_utf8_branch(self) -> None:
         """Test UTF-8 encoding branch."""
-        encoding = "utf-8"
+        encoding = branch_input("utf-8")
         if encoding == "utf-8":
             decoder = "utf8_decoder"
         elif encoding == "utf-16":
@@ -364,7 +365,7 @@ class TestDataEncodingBranches:
 
     def test_encoding_utf16_branch(self) -> None:
         """Test UTF-16 encoding branch."""
-        encoding = "utf-16"
+        encoding = branch_input("utf-16")
         if encoding == "utf-8":
             decoder = "utf8_decoder"
         elif encoding == "utf-16":
@@ -375,7 +376,7 @@ class TestDataEncodingBranches:
 
     def test_encoding_ascii_branch(self) -> None:
         """Test ASCII encoding (default) branch."""
-        encoding = "ascii"
+        encoding = branch_input("ascii")
         if encoding == "utf-8":
             decoder = "utf8_decoder"
         elif encoding == "utf-16":
@@ -386,7 +387,7 @@ class TestDataEncodingBranches:
 
     def test_decode_errors_strict_branch(self) -> None:
         """Test strict decode error handling branch."""
-        error_mode = "strict"
+        error_mode = branch_input("strict")
         if error_mode == "strict":
             handler = "raise_exception"
         elif error_mode == "ignore":
@@ -397,7 +398,7 @@ class TestDataEncodingBranches:
 
     def test_decode_errors_ignore_branch(self) -> None:
         """Test ignore decode error handling branch."""
-        error_mode = "ignore"
+        error_mode = branch_input("ignore")
         if error_mode == "strict":
             handler = "raise_exception"
         elif error_mode == "ignore":
@@ -408,7 +409,7 @@ class TestDataEncodingBranches:
 
     def test_decode_errors_replace_branch(self) -> None:
         """Test replace decode error handling branch."""
-        error_mode = "replace"
+        error_mode = branch_input("replace")
         if error_mode == "strict":
             handler = "raise_exception"
         elif error_mode == "ignore":

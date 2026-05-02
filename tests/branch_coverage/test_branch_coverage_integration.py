@@ -13,6 +13,7 @@ import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Cross-Module Conditional Branches
@@ -80,8 +81,8 @@ class TestCrossModuleIntegrationBranches:
 
     def test_model_device_strategy_cascade_branch(self) -> None:
         """Test model to device strategy cascade."""
-        model_size = "large"
-        available_memory = 8000  # MB
+        model_size = branch_input("large")
+        available_memory = branch_input(8000)  # MB
 
         # Model size check
         if model_size == "large":
@@ -104,8 +105,8 @@ class TestCrossModuleIntegrationBranches:
 
     def test_logging_level_cascade_branch(self) -> None:
         """Test logging level cascade across modules."""
-        debug_mode = True
-        verbose = False
+        debug_mode = branch_input(True)
+        verbose = branch_input(False)
 
         # Module A logging decision
         if debug_mode:
@@ -143,7 +144,7 @@ class TestConfigurationCascadeBranches:
 
     def test_cli_override_env_var_branch(self) -> None:
         """Test CLI argument overrides environment variable."""
-        cli_arg = "cli_value"
+        cli_arg = branch_input("cli_value")
 
         with patch.dict(os.environ, {"CONFIG_KEY": "env_value"}):
             env_value = os.environ.get("CONFIG_KEY")
@@ -159,7 +160,7 @@ class TestConfigurationCascadeBranches:
 
     def test_default_config_used_branch(self) -> None:
         """Test default configuration used when no overrides."""
-        cli_arg = None
+        cli_arg = branch_input(None)
 
         with patch.dict(os.environ, {}, clear=True):
             env = {k: v for k, v in os.environ.items() if k != "CONFIG_KEY"}
@@ -191,7 +192,7 @@ class TestConfigurationCascadeBranches:
     def test_config_merge_deep_nested_branch(self) -> None:
         """Test deep nested configuration merge."""
         base = {"db": {"host": "localhost", "port": 5432}}
-        override = {"db": {"port": 3306}}
+        override = branch_input({"db": {"port": 3306}})
 
         # Merge logic
         result = base.copy()
@@ -245,7 +246,7 @@ class TestErrorPropagationBranches:
 
     def test_error_transformation_branch(self) -> None:
         """Test error transformation across levels."""
-        original_error = "ValueError"
+        original_error = branch_input("ValueError")
 
         # Transform error type
         if original_error == "ValueError":
@@ -259,7 +260,7 @@ class TestErrorPropagationBranches:
 
     def test_error_logging_cascade_branch(self) -> None:
         """Test error logging cascade."""
-        error_occurred = True
+        error_occurred = branch_input(True)
         log_errors = True
 
         if error_occurred:
@@ -351,8 +352,8 @@ class TestServiceIntegrationBranches:
 
     def test_authentication_to_authorization_branch(self) -> None:
         """Test authentication to authorization flow."""
-        user_authenticated = True
-        user_role = "admin"
+        user_authenticated = branch_input(True)
+        user_role = branch_input("admin")
 
         # Authentication check
         if not user_authenticated:
@@ -400,8 +401,8 @@ class TestServiceIntegrationBranches:
 
     def test_circuit_breaker_integration_branch(self) -> None:
         """Test circuit breaker integration."""
-        failure_count = 5
-        failure_threshold = 3
+        failure_count = branch_input(5)
+        failure_threshold = branch_input(3)
         circuit_state = "closed"
 
         # Circuit breaker logic
@@ -425,8 +426,8 @@ class TestStateMachineIntegrationBranches:
 
     def test_state_transition_valid_branch(self) -> None:
         """Test valid state transition."""
-        current_state = "idle"
-        event = "start"
+        current_state = branch_input("idle")
+        event = branch_input("start")
 
         if current_state == "idle" and event == "start":
             next_state = "running"
@@ -454,8 +455,8 @@ class TestStateMachineIntegrationBranches:
 
     def test_state_machine_guard_condition_branch(self) -> None:
         """Test state machine with guard conditions."""
-        current_state = "processing"
-        progress = 95
+        current_state = branch_input("processing")
+        progress = branch_input(95)
 
         if current_state == "processing":
             if progress >= 100:

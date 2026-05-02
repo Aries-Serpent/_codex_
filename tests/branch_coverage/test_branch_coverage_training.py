@@ -13,6 +13,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: Training Loop
@@ -48,8 +49,8 @@ class TestTrainingLoopBranches:
 
     def test_mixed_precision_enabled_branch(self) -> None:
         """Test mixed precision enabled branch."""
-        fp16 = True
-        bf16 = False
+        fp16 = branch_input(True)
+        bf16 = branch_input(False)
         if fp16:
             dtype = "float16"
         elif bf16:
@@ -60,8 +61,8 @@ class TestTrainingLoopBranches:
 
     def test_mixed_precision_bf16_branch(self) -> None:
         """Test BF16 mixed precision branch."""
-        fp16 = False
-        bf16 = True
+        fp16 = branch_input(False)
+        bf16 = branch_input(True)
         if fp16:
             dtype = "float16"
         elif bf16:
@@ -72,8 +73,8 @@ class TestTrainingLoopBranches:
 
     def test_mixed_precision_disabled_branch(self) -> None:
         """Test mixed precision disabled branch."""
-        fp16 = False
-        bf16 = False
+        fp16 = branch_input(False)
+        bf16 = branch_input(False)
         if fp16:
             dtype = "float16"
         elif bf16:
@@ -252,8 +253,8 @@ class TestLRSchedulerBranches:
 
     def test_warmup_steps_vs_ratio_branch(self) -> None:
         """Test warmup steps takes precedence over ratio branch."""
-        warmup_steps = 100
-        warmup_ratio = 0.1
+        warmup_steps = branch_input(100)
+        warmup_ratio = branch_input(0.1)
         if warmup_steps > 0:
             warmup_source = "steps"
         elif warmup_ratio > 0:
@@ -264,8 +265,8 @@ class TestLRSchedulerBranches:
 
     def test_warmup_ratio_only_branch(self) -> None:
         """Test warmup ratio only branch."""
-        warmup_steps = 0
-        warmup_ratio = 0.1
+        warmup_steps = branch_input(0)
+        warmup_ratio = branch_input(0.1)
         if warmup_steps > 0:
             warmup_source = "steps"
         elif warmup_ratio > 0:
@@ -344,7 +345,7 @@ class TestModelLoadingBranches:
 
     def test_model_dtype_float32_branch(self) -> None:
         """Test model dtype float32 branch."""
-        torch_dtype = "float32"
+        torch_dtype = branch_input("float32")
         if torch_dtype == "float32":
             dtype_str = "torch.float32"
         elif torch_dtype == "float16":
@@ -357,7 +358,7 @@ class TestModelLoadingBranches:
 
     def test_model_dtype_auto_branch(self) -> None:
         """Test model dtype auto branch."""
-        torch_dtype = "auto"
+        torch_dtype = branch_input("auto")
         if torch_dtype == "float32":
             dtype_str = "torch.float32"
         elif torch_dtype == "float16":
@@ -391,7 +392,7 @@ class TestPEFTConfigBranches:
 
     def test_lora_rank_high_branch(self) -> None:
         """Test high LoRA rank branch."""
-        lora_r = 64
+        lora_r = branch_input(64)
         if lora_r >= 32:
             rank_category = "high"
         elif lora_r >= 8:
@@ -402,7 +403,7 @@ class TestPEFTConfigBranches:
 
     def test_lora_rank_medium_branch(self) -> None:
         """Test medium LoRA rank branch."""
-        lora_r = 16
+        lora_r = branch_input(16)
         if lora_r >= 32:
             rank_category = "high"
         elif lora_r >= 8:
@@ -413,7 +414,7 @@ class TestPEFTConfigBranches:
 
     def test_lora_rank_low_branch(self) -> None:
         """Test low LoRA rank branch."""
-        lora_r = 4
+        lora_r = branch_input(4)
         if lora_r >= 32:
             rank_category = "high"
         elif lora_r >= 8:

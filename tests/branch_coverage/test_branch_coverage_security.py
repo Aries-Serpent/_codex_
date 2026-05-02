@@ -14,6 +14,7 @@ from typing import Dict
 from unittest.mock import MagicMock, patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: Scope Validator
@@ -37,7 +38,7 @@ class TestScopeValidatorBranches:
 
     def test_scope_hierarchical_admin_branch(self) -> None:
         """Test hierarchical admin scope branch."""
-        permission = "admin"
+        permission = branch_input("admin")
         if permission == "admin":
             implied = ["write", "read"]
         elif permission == "write":
@@ -48,7 +49,7 @@ class TestScopeValidatorBranches:
 
     def test_scope_hierarchical_write_branch(self) -> None:
         """Test hierarchical write scope branch."""
-        permission = "write"
+        permission = branch_input("write")
         if permission == "admin":
             implied = ["write", "read"]
         elif permission == "write":
@@ -59,7 +60,7 @@ class TestScopeValidatorBranches:
 
     def test_scope_hierarchical_read_branch(self) -> None:
         """Test hierarchical read scope branch."""
-        permission = "read"
+        permission = branch_input("read")
         if permission == "admin":
             implied = ["write", "read"]
         elif permission == "write":
@@ -70,7 +71,7 @@ class TestScopeValidatorBranches:
 
     def test_scope_format_with_colon_branch(self) -> None:
         """Test scope format with colon separator branch."""
-        scope_str = "repo:read"
+        scope_str = branch_input("repo:read")
         if ":" in scope_str:
             parts = scope_str.split(":")
             resource = parts[0]
@@ -82,7 +83,7 @@ class TestScopeValidatorBranches:
 
     def test_scope_format_without_colon_branch(self) -> None:
         """Test scope format without colon (default) branch."""
-        scope_str = "repo"
+        scope_str = branch_input("repo")
         if ":" in scope_str:
             parts = scope_str.split(":")
             resource = parts[0]
@@ -143,7 +144,7 @@ class TestAPIKeyValidatorBranches:
 
     def test_api_key_from_environment_branch(self) -> None:
         """Test API key initialization from environment branch."""
-        secret_key = None
+        secret_key = branch_input(None)
         with patch.dict(os.environ, {"AUTH_SECRET_KEY": "env-secret"}):
             if secret_key:
                 key_source = "parameter"
@@ -154,7 +155,7 @@ class TestAPIKeyValidatorBranches:
 
     def test_api_key_development_fallback_branch(self) -> None:
         """Test API key development fallback branch."""
-        secret_key = None
+        secret_key = branch_input(None)
         with patch.dict(os.environ, {}, clear=True):
             env = {k: v for k, v in os.environ.items() if k != "AUTH_SECRET_KEY"}
             env["CODEX_ENV"] = "development"
@@ -172,7 +173,7 @@ class TestAPIKeyValidatorBranches:
 
     def test_api_key_production_error_branch(self) -> None:
         """Test API key production error branch."""
-        secret_key = None
+        secret_key = branch_input(None)
         with patch.dict(os.environ, {"CODEX_ENV": "production"}, clear=True):
             env = {
                 k: v
@@ -257,7 +258,7 @@ class TestAuthMethodBranches:
 
     def test_auth_method_jwt_header_branch(self) -> None:
         """Test JWT from Authorization header branch."""
-        headers = {"Authorization": "Bearer token123"}
+        headers = branch_input({"Authorization": "Bearer token123"})
         if "Authorization" in headers:
             auth_type = "bearer"
         elif "X-API-Key" in headers:
@@ -327,7 +328,7 @@ class TestPathExemptionBranches:
 
     def test_path_prefix_exempt_branch(self) -> None:
         """Test path prefix exemption branch."""
-        path = "/public/docs/index.html"
+        path = branch_input("/public/docs/index.html")
         if path.startswith("/public/"):
             exempt = True
         elif path.startswith("/api/"):
@@ -338,7 +339,7 @@ class TestPathExemptionBranches:
 
     def test_path_prefix_api_branch(self) -> None:
         """Test path prefix API (protected) branch."""
-        path = "/api/users"
+        path = branch_input("/api/users")
         if path.startswith("/public/"):
             exempt = True
         elif path.startswith("/api/"):
@@ -349,7 +350,7 @@ class TestPathExemptionBranches:
 
     def test_path_prefix_other_branch(self) -> None:
         """Test path prefix other branch."""
-        path = "/other/endpoint"
+        path = branch_input("/other/endpoint")
         if path.startswith("/public/"):
             exempt = True
         elif path.startswith("/api/"):
@@ -554,7 +555,7 @@ class TestTLSConfigBranches:
 
     def test_tls_version_1_3_branch(self) -> None:
         """Test TLS version 1.3 branch."""
-        tls_version = "1.3"
+        tls_version = branch_input("1.3")
         if tls_version == "1.3":
             min_version = "TLSv1_3"
         elif tls_version == "1.2":
@@ -565,7 +566,7 @@ class TestTLSConfigBranches:
 
     def test_tls_version_1_2_branch(self) -> None:
         """Test TLS version 1.2 branch."""
-        tls_version = "1.2"
+        tls_version = branch_input("1.2")
         if tls_version == "1.3":
             min_version = "TLSv1_3"
         elif tls_version == "1.2":
@@ -576,7 +577,7 @@ class TestTLSConfigBranches:
 
     def test_tls_version_default_branch(self) -> None:
         """Test TLS version default branch."""
-        tls_version = "unknown"
+        tls_version = branch_input("unknown")
         if tls_version == "1.3":
             min_version = "TLSv1_3"
         elif tls_version == "1.2":

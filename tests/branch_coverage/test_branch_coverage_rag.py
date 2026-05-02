@@ -13,6 +13,7 @@ import hashlib
 import os
 from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # RAG Embeddings Module Tests
@@ -30,7 +31,7 @@ class TestEmbeddingsModuleBranches:
 
     def test_embeddings_cache_key_generated_branch(self) -> None:
         """Test cache key generation branch."""
-        cache_key = None
+        cache_key = branch_input(None)
         texts = ["sample text"]
         if not cache_key:
             combined = "\n".join(texts)
@@ -41,8 +42,8 @@ class TestEmbeddingsModuleBranches:
 
     def test_embeddings_cache_hit_branch(self) -> None:
         """Test cache hit branch."""
-        cache_exists = True
-        metadata_exists = True
+        cache_exists = branch_input(True)
+        metadata_exists = branch_input(True)
         cache_valid = True
 
         if cache_exists and metadata_exists:
@@ -61,8 +62,8 @@ class TestEmbeddingsModuleBranches:
 
     def test_embeddings_cache_invalid_branch(self) -> None:
         """Test invalid cache branch."""
-        cache_exists = True
-        metadata_exists = True
+        cache_exists = branch_input(True)
+        metadata_exists = branch_input(True)
         cache_valid = False
 
         if cache_exists and metadata_exists:
@@ -169,7 +170,7 @@ class TestEmbeddingsModuleBranches:
         cache_hits = 0
         cache_misses = 0
 
-        cache_found = True
+        cache_found = branch_input(True)
         if cache_found:
             cache_hits += 1
         else:
@@ -183,7 +184,7 @@ class TestEmbeddingsModuleBranches:
         cache_hits = 0
         cache_misses = 0
 
-        cache_found = False
+        cache_found = branch_input(False)
         if cache_found:
             cache_hits += 1
         else:
@@ -305,7 +306,7 @@ class TestIndexerModuleBranches:
 
     def test_indexer_chunk_non_empty_added_branch(self) -> None:
         """Test non-empty chunk added branch."""
-        chunk = "Sample chunk"
+        chunk = branch_input("Sample chunk")
         chunks: List[str] = []
 
         if chunk:
@@ -315,7 +316,7 @@ class TestIndexerModuleBranches:
 
     def test_indexer_chunk_empty_skipped_branch(self) -> None:
         """Test empty chunk skipped branch."""
-        chunk = ""
+        chunk = branch_input("")
         chunks: List[str] = []
 
         if chunk:
@@ -334,7 +335,7 @@ class TestIndexerModuleBranches:
 
     def test_indexer_embed_chunks_non_empty_branch(self) -> None:
         """Test embed chunks non-empty input branch."""
-        chunks = [(0, 10, "text")]
+        chunks = branch_input([(0, 10, "text")])
         if not chunks:
             embeddings: List[Any] = []
         else:
@@ -420,7 +421,7 @@ class TestRetrieverModuleBranches:
 
     def test_retriever_top_k_default_branch(self) -> None:
         """Test top_k default value branch."""
-        top_k = None
+        top_k = branch_input(None)
         if top_k is None:
             k = 5  # Default
         else:
@@ -491,7 +492,7 @@ class TestRetrieverModuleBranches:
 
     def test_retriever_metadata_filtering_applied_branch(self) -> None:
         """Test metadata filtering branch."""
-        metadata_filter = {"source": "docs"}
+        metadata_filter = branch_input({"source": "docs"})
         results = [
             {"text": "a", "metadata": {"source": "docs"}},
             {"text": "b", "metadata": {"source": "code"}},
@@ -506,7 +507,7 @@ class TestRetrieverModuleBranches:
 
     def test_retriever_metadata_filtering_none_branch(self) -> None:
         """Test no metadata filtering branch."""
-        metadata_filter = None
+        metadata_filter = branch_input(None)
         results = [
             {"text": "a", "metadata": {"source": "docs"}},
             {"text": "b", "metadata": {"source": "code"}},

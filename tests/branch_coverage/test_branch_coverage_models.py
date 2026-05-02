@@ -12,6 +12,7 @@ Target: Real code coverage improvement for training modules
 import os
 from typing import Any, List
 from unittest.mock import MagicMock, patch
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Training Strategy Module Tests
@@ -32,7 +33,7 @@ class TestTrainingStrategyBranches:
 
     def test_strategy_callbacks_none_branch(self) -> None:
         """Test callbacks none branch."""
-        callbacks = None
+        callbacks = branch_input(None)
         if callbacks:
             result = list(callbacks)
         else:
@@ -299,7 +300,7 @@ class TestCurriculumLearningBranches:
 
     def test_curriculum_phase_transition_branch(self) -> None:
         """Test curriculum phase transition branch."""
-        current_epoch = 10
+        current_epoch = branch_input(10)
         phase_epochs = [0, 5, 10, 15]
 
         for i, epoch_threshold in enumerate(phase_epochs):
@@ -355,7 +356,7 @@ class TestModelLoadingBranches:
 
     def test_model_dtype_fp32_branch(self) -> None:
         """Test model dtype FP32 branch."""
-        dtype = "float32"
+        dtype = branch_input("float32")
         if dtype == "float32":
             torch_dtype = "torch.float32"
         elif dtype == "float16":
@@ -368,7 +369,7 @@ class TestModelLoadingBranches:
 
     def test_model_dtype_fp16_branch(self) -> None:
         """Test model dtype FP16 branch."""
-        dtype = "float16"
+        dtype = branch_input("float16")
         if dtype == "float32":
             torch_dtype = "torch.float32"
         elif dtype == "float16":
@@ -381,7 +382,7 @@ class TestModelLoadingBranches:
 
     def test_model_dtype_bf16_branch(self) -> None:
         """Test model dtype BF16 branch."""
-        dtype = "bfloat16"
+        dtype = branch_input("bfloat16")
         if dtype == "float32":
             torch_dtype = "torch.float32"
         elif dtype == "float16":
@@ -394,7 +395,7 @@ class TestModelLoadingBranches:
 
     def test_model_dtype_auto_branch(self) -> None:
         """Test model dtype auto branch."""
-        dtype = "auto"
+        dtype = branch_input("auto")
         if dtype == "float32":
             torch_dtype = "torch.float32"
         elif dtype == "float16":
@@ -464,7 +465,7 @@ class TestFSDPWrapperBranches:
 
     def test_fsdp_sharding_full_branch(self) -> None:
         """Test FSDP full sharding branch."""
-        sharding_strategy = "full"
+        sharding_strategy = branch_input("full")
         if sharding_strategy == "full":
             shard_type = "FULL_SHARD"
         elif sharding_strategy == "shard_grad_op":
@@ -475,7 +476,7 @@ class TestFSDPWrapperBranches:
 
     def test_fsdp_sharding_grad_op_branch(self) -> None:
         """Test FSDP gradient sharding branch."""
-        sharding_strategy = "shard_grad_op"
+        sharding_strategy = branch_input("shard_grad_op")
         if sharding_strategy == "full":
             shard_type = "FULL_SHARD"
         elif sharding_strategy == "shard_grad_op":
@@ -486,7 +487,7 @@ class TestFSDPWrapperBranches:
 
     def test_fsdp_sharding_none_branch(self) -> None:
         """Test FSDP no sharding branch."""
-        sharding_strategy = "none"
+        sharding_strategy = branch_input("none")
         if sharding_strategy == "full":
             shard_type = "FULL_SHARD"
         elif sharding_strategy == "shard_grad_op":

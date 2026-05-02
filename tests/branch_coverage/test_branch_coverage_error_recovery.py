@@ -8,6 +8,7 @@ Created: 2026-01-19
 Phase: 4.3 Part 3 - Error Recovery & Resilience Tests
 Target: 20-30 tests for error recovery scenarios
 """
+from tests.branch_coverage import branch_input
 
 
 
@@ -22,9 +23,9 @@ class TestRetryLogicBranches:
 
     def test_retry_success_first_attempt_branch(self) -> None:
         """Test success on first attempt (no retry)."""
-        attempt = 1
-        max_attempts = 3
-        success = True
+        attempt = branch_input(1)
+        max_attempts = branch_input(3)
+        success = branch_input(True)
 
         if success:
             result = "success"
@@ -37,9 +38,9 @@ class TestRetryLogicBranches:
 
     def test_retry_success_second_attempt_branch(self) -> None:
         """Test success on second attempt."""
-        attempt = 2
-        max_attempts = 3
-        success = True
+        attempt = branch_input(2)
+        max_attempts = branch_input(3)
+        success = branch_input(True)
 
         if success:
             result = "success"
@@ -52,9 +53,9 @@ class TestRetryLogicBranches:
 
     def test_retry_exhausted_attempts_branch(self) -> None:
         """Test all retry attempts exhausted."""
-        attempt = 3
-        max_attempts = 3
-        success = False
+        attempt = branch_input(3)
+        max_attempts = branch_input(3)
+        success = branch_input(False)
 
         if success:
             result = "success"
@@ -67,7 +68,7 @@ class TestRetryLogicBranches:
 
     def test_retry_with_exponential_backoff_branch(self) -> None:
         """Test exponential backoff calculation."""
-        attempt = 3
+        attempt = branch_input(3)
         base_delay = 1.0
 
         if attempt == 1:
@@ -93,7 +94,7 @@ class TestRetryLogicBranches:
     def test_retry_with_jitter_branch(self) -> None:
         """Test retry with jitter enabled."""
         base_delay = 5.0
-        use_jitter = True
+        use_jitter = branch_input(True)
 
         if use_jitter:
             # Add random jitter (simulated)
@@ -130,8 +131,8 @@ class TestGracefulDegradationBranches:
 
     def test_degradation_fallback_to_secondary_branch(self) -> None:
         """Test fallback to secondary service."""
-        primary_available = False
-        secondary_available = True
+        primary_available = branch_input(False)
+        secondary_available = branch_input(True)
 
         if primary_available:
             service = "primary"
@@ -144,8 +145,8 @@ class TestGracefulDegradationBranches:
 
     def test_degradation_no_service_available_branch(self) -> None:
         """Test no service available."""
-        primary_available = False
-        secondary_available = False
+        primary_available = branch_input(False)
+        secondary_available = branch_input(False)
 
         if primary_available:
             service = "primary"
@@ -158,7 +159,7 @@ class TestGracefulDegradationBranches:
 
     def test_degradation_feature_disabled_branch(self) -> None:
         """Test feature gracefully disabled."""
-        feature_error = True
+        feature_error = branch_input(True)
 
         if feature_error:
             feature_enabled = False
@@ -172,8 +173,8 @@ class TestGracefulDegradationBranches:
 
     def test_degradation_cached_response_branch(self) -> None:
         """Test using cached response on error."""
-        service_error = True
-        has_cache = True
+        service_error = branch_input(True)
+        has_cache = branch_input(True)
 
         if not service_error:
             response = "fresh_data"
@@ -186,8 +187,8 @@ class TestGracefulDegradationBranches:
 
     def test_degradation_partial_results_branch(self) -> None:
         """Test returning partial results on error."""
-        results_available = 5
-        expected_results = 10
+        results_available = branch_input(5)
+        expected_results = branch_input(10)
 
         if results_available >= expected_results:
             status = "complete"
@@ -222,8 +223,8 @@ class TestFallbackChainBranches:
 
     def test_fallback_chain_second_succeeds_branch(self) -> None:
         """Test second fallback option succeeds."""
-        primary_failed = True
-        secondary_success = True
+        primary_failed = branch_input(True)
+        secondary_success = branch_input(True)
 
         if not primary_failed:
             result = "primary"
@@ -236,9 +237,9 @@ class TestFallbackChainBranches:
 
     def test_fallback_chain_all_fail_branch(self) -> None:
         """Test all fallback options fail."""
-        primary_failed = True
-        secondary_failed = True
-        tertiary_failed = True
+        primary_failed = branch_input(True)
+        secondary_failed = branch_input(True)
+        tertiary_failed = branch_input(True)
 
         if not primary_failed:
             result = "primary"
@@ -253,8 +254,8 @@ class TestFallbackChainBranches:
 
     def test_fallback_with_timeout_branch(self) -> None:
         """Test fallback with timeout."""
-        elapsed = 5.0
-        timeout = 3.0
+        elapsed = branch_input(5.0)
+        timeout = branch_input(3.0)
         fallback_available = True
 
         if elapsed > timeout:
@@ -320,8 +321,8 @@ class TestCircuitBreakerBranches:
 
     def test_circuit_breaker_reset_branch(self) -> None:
         """Test circuit breaker reset after success."""
-        state = "half_open"
-        request_success = True
+        state = branch_input("half_open")
+        request_success = branch_input(True)
 
         if state == "half_open":
             if request_success:
@@ -373,7 +374,7 @@ class TestErrorRecoveryStrategyBranches:
 
     def test_recovery_retry_strategy_branch(self) -> None:
         """Test retry recovery strategy."""
-        error_type = "transient"
+        error_type = branch_input("transient")
 
         if error_type == "transient":
             strategy = "retry"
@@ -386,7 +387,7 @@ class TestErrorRecoveryStrategyBranches:
 
     def test_recovery_fallback_strategy_branch(self) -> None:
         """Test fallback recovery strategy."""
-        error_type = "permanent"
+        error_type = branch_input("permanent")
 
         if error_type == "transient":
             strategy = "retry"
@@ -399,7 +400,7 @@ class TestErrorRecoveryStrategyBranches:
 
     def test_recovery_fail_fast_branch(self) -> None:
         """Test fail fast strategy."""
-        error_type = "critical"
+        error_type = branch_input("critical")
 
         if error_type == "transient":
             strategy = "retry"
@@ -439,8 +440,8 @@ class TestHealthCheckRecoveryBranches:
 
     def test_health_check_healthy_branch(self) -> None:
         """Test healthy status."""
-        response_time = 50
-        error_rate = 0.01
+        response_time = branch_input(50)
+        error_rate = branch_input(0.01)
 
         if response_time < 100 and error_rate < 0.05:
             health = "healthy"
@@ -453,8 +454,8 @@ class TestHealthCheckRecoveryBranches:
 
     def test_health_check_degraded_branch(self) -> None:
         """Test degraded status."""
-        response_time = 150
-        error_rate = 0.08
+        response_time = branch_input(150)
+        error_rate = branch_input(0.08)
 
         if response_time < 100 and error_rate < 0.05:
             health = "healthy"
@@ -467,8 +468,8 @@ class TestHealthCheckRecoveryBranches:
 
     def test_health_check_unhealthy_branch(self) -> None:
         """Test unhealthy status."""
-        response_time = 250
-        error_rate = 0.15
+        response_time = branch_input(250)
+        error_rate = branch_input(0.15)
 
         if response_time < 100 and error_rate < 0.05:
             health = "healthy"

@@ -11,6 +11,7 @@ Target: 40-50 tests for robust error handling
 
 import sys
 from typing import Any, Dict, List
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Null/Empty Input Handling Tests
@@ -40,7 +41,7 @@ class TestNullEmptyInputBranches:
 
     def test_null_list_input_branch(self) -> None:
         """Test null list input handling."""
-        items = None
+        items = branch_input(None)
         if items is None:
             result: List[Any] = []
         else:
@@ -55,7 +56,7 @@ class TestNullEmptyInputBranches:
 
     def test_null_dict_input_branch(self) -> None:
         """Test null dict input handling."""
-        config = None
+        config = branch_input(None)
         if config is None:
             result: Dict[str, Any] = {}
         else:
@@ -70,7 +71,7 @@ class TestNullEmptyInputBranches:
 
     def test_none_vs_false_distinction_branch(self) -> None:
         """Test distinction between None and False."""
-        value = None
+        value = branch_input(None)
         if value is None:
             result = "none"
         elif value is False:
@@ -81,7 +82,7 @@ class TestNullEmptyInputBranches:
 
     def test_false_value_branch(self) -> None:
         """Test False value handling."""
-        value = False
+        value = branch_input(False)
         if value is None:
             result = "none"
         elif value is False:
@@ -92,7 +93,7 @@ class TestNullEmptyInputBranches:
 
     def test_zero_vs_none_distinction_branch(self) -> None:
         """Test distinction between 0 and None."""
-        value = 0
+        value = branch_input(0)
         if value is None:
             result = "none"
         elif value == 0:
@@ -124,7 +125,7 @@ class TestBoundaryValueBranches:
 
     def test_zero_boundary_positive_branch(self) -> None:
         """Test boundary at zero from positive side."""
-        value = 0.000001
+        value = branch_input(0.000001)
         if value > 0:
             result = "positive"
         elif value < 0:
@@ -135,7 +136,7 @@ class TestBoundaryValueBranches:
 
     def test_zero_boundary_negative_branch(self) -> None:
         """Test boundary at zero from negative side."""
-        value = -0.000001
+        value = branch_input(-0.000001)
         if value > 0:
             result = "positive"
         elif value < 0:
@@ -146,7 +147,7 @@ class TestBoundaryValueBranches:
 
     def test_zero_boundary_exact_branch(self) -> None:
         """Test exact zero boundary."""
-        value = 0.0
+        value = branch_input(0.0)
         if value > 0:
             result = "positive"
         elif value < 0:
@@ -157,8 +158,8 @@ class TestBoundaryValueBranches:
 
     def test_string_length_min_boundary_branch(self) -> None:
         """Test string length minimum boundary."""
-        text = ""
-        max_len = 100
+        text = branch_input("")
+        max_len = branch_input(100)
         if len(text) == 0:
             result = "empty"
         elif len(text) > max_len:
@@ -170,7 +171,7 @@ class TestBoundaryValueBranches:
     def test_string_length_max_boundary_branch(self) -> None:
         """Test string length maximum boundary."""
         text = "x" * 101
-        max_len = 100
+        max_len = branch_input(100)
         if len(text) == 0:
             result = "empty"
         elif len(text) > max_len:
@@ -202,7 +203,7 @@ class TestBoundaryValueBranches:
 
     def test_percentage_min_boundary_branch(self) -> None:
         """Test percentage minimum boundary (0%)."""
-        percentage = -0.1
+        percentage = branch_input(-0.1)
         if percentage < 0:
             result = "invalid_negative"
         elif percentage > 100:
@@ -213,7 +214,7 @@ class TestBoundaryValueBranches:
 
     def test_percentage_max_boundary_branch(self) -> None:
         """Test percentage maximum boundary (100%)."""
-        percentage = 100.1
+        percentage = branch_input(100.1)
         if percentage < 0:
             result = "invalid_negative"
         elif percentage > 100:
@@ -303,7 +304,7 @@ class TestUnicodeEncodingBranches:
 
     def test_encoding_latin1_fallback_branch(self) -> None:
         """Test encoding fallback to latin1."""
-        encoding = "latin1"
+        encoding = branch_input("latin1")
         if encoding == "utf-8":
             codec = "utf8"
         elif encoding == "latin1":
@@ -337,8 +338,8 @@ class TestResourceExhaustionBranches:
 
     def test_connection_pool_exhausted_branch(self) -> None:
         """Test connection pool exhaustion."""
-        active_connections = 100
-        max_connections = 100
+        active_connections = branch_input(100)
+        max_connections = branch_input(100)
         if active_connections >= max_connections:
             result = "pool_exhausted"
         else:
@@ -347,8 +348,8 @@ class TestResourceExhaustionBranches:
 
     def test_connection_pool_available_branch(self) -> None:
         """Test connections available."""
-        active_connections = 50
-        max_connections = 100
+        active_connections = branch_input(50)
+        max_connections = branch_input(100)
         if active_connections >= max_connections:
             result = "pool_exhausted"
         else:
@@ -447,7 +448,7 @@ class TestFloatingPointEdgeCases:
     def test_float_normal_value_branch(self) -> None:
         """Test normal float value."""
         import math
-        value = 3.14
+        value = branch_input(3.14)
         if math.isnan(value):
             result = "nan"
         elif math.isinf(value):

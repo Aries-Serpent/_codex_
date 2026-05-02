@@ -15,6 +15,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: CLI Main Module
@@ -67,7 +68,7 @@ class TestCliMainBranches:
 
     def test_cli_dry_run_enabled_branch(self) -> None:
         """Test dry-run mode enabled branch."""
-        dry_run = True
+        dry_run = branch_input(True)
         actions: list[str] = []
         if dry_run:
             actions.append("simulated")
@@ -77,7 +78,7 @@ class TestCliMainBranches:
 
     def test_cli_dry_run_disabled_branch(self) -> None:
         """Test dry-run mode disabled branch."""
-        dry_run = False
+        dry_run = branch_input(False)
         actions: list[str] = []
         if dry_run:
             actions.append("simulated")
@@ -116,7 +117,7 @@ class TestCliArgumentBranches:
 
     def test_output_format_json_branch(self) -> None:
         """Test output format JSON branch."""
-        output_format = "json"
+        output_format = branch_input("json")
         if output_format == "json":
             formatter = "json_formatter"
         elif output_format == "yaml":
@@ -127,7 +128,7 @@ class TestCliArgumentBranches:
 
     def test_output_format_yaml_branch(self) -> None:
         """Test output format YAML branch."""
-        output_format = "yaml"
+        output_format = branch_input("yaml")
         if output_format == "json":
             formatter = "json_formatter"
         elif output_format == "yaml":
@@ -138,7 +139,7 @@ class TestCliArgumentBranches:
 
     def test_output_format_text_branch(self) -> None:
         """Test output format text (default) branch."""
-        output_format = "text"
+        output_format = branch_input("text")
         if output_format == "json":
             formatter = "json_formatter"
         elif output_format == "yaml":
@@ -240,7 +241,7 @@ class TestCliConfigBranches:
 
     def test_config_merge_override_branch(self) -> None:
         """Test config merge with overrides branch."""
-        has_overrides = True
+        has_overrides = branch_input(True)
         base_config = {"key": "base"}
         if has_overrides:
             base_config["key"] = "override"
@@ -248,7 +249,7 @@ class TestCliConfigBranches:
 
     def test_config_merge_no_override_branch(self) -> None:
         """Test config merge without overrides branch."""
-        has_overrides = False
+        has_overrides = branch_input(False)
         base_config = {"key": "base"}
         if has_overrides:
             base_config["key"] = "override"
@@ -291,7 +292,7 @@ class TestCliOutputBranches:
 
     def test_quiet_mode_enabled_branch(self) -> None:
         """Test quiet mode enabled branch."""
-        quiet = True
+        quiet = branch_input(True)
         output: list[str] = []
         if not quiet:
             output.append("verbose_message")
@@ -299,7 +300,7 @@ class TestCliOutputBranches:
 
     def test_quiet_mode_disabled_branch(self) -> None:
         """Test quiet mode disabled branch."""
-        quiet = False
+        quiet = branch_input(False)
         output: list[str] = []
         if not quiet:
             output.append("verbose_message")
@@ -307,7 +308,7 @@ class TestCliOutputBranches:
 
     def test_color_enabled_branch(self) -> None:
         """Test color output enabled branch."""
-        color_enabled = True
+        color_enabled = branch_input(True)
         if color_enabled:
             prefix = "\033[32m"  # Green
         else:
@@ -371,7 +372,7 @@ class TestCliPluginBranches:
 
     def test_plugins_enabled_branch(self) -> None:
         """Test plugins enabled branch."""
-        plugins_enabled = True
+        plugins_enabled = branch_input(True)
         loaded_plugins: list[str] = []
         if plugins_enabled:
             loaded_plugins.append("plugin1")
@@ -379,7 +380,7 @@ class TestCliPluginBranches:
 
     def test_plugins_disabled_branch(self) -> None:
         """Test plugins disabled branch."""
-        plugins_enabled = False
+        plugins_enabled = branch_input(False)
         loaded_plugins: list[str] = []
         if plugins_enabled:
             loaded_plugins.append("plugin1")
