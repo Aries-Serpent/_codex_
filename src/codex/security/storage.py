@@ -45,7 +45,7 @@ try:
     CRYPTO_AVAILABLE = True
 except ImportError:
     CRYPTO_AVAILABLE = False
-    if TYPE_CHECKING:
+    if TYPE_CHECKING:  # Stubs-only imports so type checkers know the types
         from cryptography.fernet import Fernet
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM, ChaCha20Poly1305
 

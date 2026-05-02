@@ -64,7 +64,11 @@ try:
     from codex.utils.json_safe import safe_json_loads as _safe_json_loads
 except Exception:  # pragma: no cover
     def _safe_json_loads(text: Any, *, source: str = "<unknown>", **kwargs: Any) -> Any:  # type: ignore[misc]
-        """Fallback when codex.utils.json_safe is unavailable."""
+        """Fallback when codex.utils.json_safe is unavailable.
+
+        The ``source`` parameter is accepted for API compatibility but ignored
+        here because the stdlib :func:`json.loads` does not support it.
+        """
         return json.loads(text, **kwargs)
 import os
 import sys
