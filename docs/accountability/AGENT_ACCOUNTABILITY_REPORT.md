@@ -24107,3 +24107,25 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session Entry — 2026-05-02 — PR #4193 — S183+ (secrets baseline line-number fix)
+
+### Summary
+Fixed stale `.secrets.baseline` line-number entries (8 entries across 5 files) that caused
+`detect-secrets-hook --baseline` to exit 3, triggering the Secrets Baseline Enforcer CI failure
+and Fast Validation failure. All line numbers have been updated to match the files as modified
+in this PR. `detect-secrets-hook --baseline` now exits 0.
+
+### Changes Made
+- `.secrets.baseline`: updated line numbers for `secrets-baseline-enforcer.yml` and
+  `tests/branch_coverage/` files modified in this PR.
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: this entry (Pattern 25 compliance).
+
+### CI Status at Time of Commit
+- `sync_tracked_files --check` → all consistent ✅
+- `auto_fix_common_issues.py --check-only` → Pattern 25 resolved in this commit ✅
+- `ruff check src/` → 0 violations ✅
+
+### §0 Compliance
+Per CODEBASE_AGENCY_POLICY.md §0: all bot-posted comments and failing CI checks reviewed
+before applying changes. Blocking comments addressed via `reply_to_comment` before committing.
