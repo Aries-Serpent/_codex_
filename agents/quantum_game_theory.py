@@ -741,21 +741,35 @@ class QuantumInspiredGameEngine:
 
     def __init__(
         self,
-        blue_strategies: list[str],
-        red_strategies: list[str],
-        payoff_blue: np.ndarray,
-        payoff_red: np.ndarray,
+        blue_strategies: list[str] | None = None,
+        red_strategies: list[str] | None = None,
+        payoff_blue: "np.ndarray | None" = None,
+        payoff_red: "np.ndarray | None" = None,
         entanglement: float = 0.0,
+        *,
+        num_players: int | None = None,
     ):
         """Initialize quantum game engine.
 
         Args:
             blue_strategies: list of Blue team strategy names
             red_strategies: list of Red team strategy names
-            payoff_blue: Payoff matrix P_A[i,j] for Blue
-            payoff_red: Payoff matrix P_B[i,j] for Red
-            entanglement: Initial entanglement strength (0-1)
+            payoff_blue: Payoff matrix for Blue team (|blue|×|red|)
+            payoff_red: Payoff matrix for Red team (|blue|×|red|)
+            entanglement: Quantum entanglement strength (0 = classical, 1 = max)
+            num_players: Convenience shorthand — when supplied (and *blue_strategies*
+                is not), creates a symmetric zero-sum game with *num_players* strategies.
         """
+        if blue_strategies is None:
+            n = max(num_players or 0, 0)
+            blue_strategies = [f"strategy_{i}" for i in range(n)]
+            red_strategies = [f"strategy_{i}" for i in range(n)]
+        if red_strategies is None:
+            red_strategies = list(blue_strategies)
+        if payoff_blue is None:
+            payoff_blue = np.zeros((len(blue_strategies), len(red_strategies)))
+        if payoff_red is None:
+            payoff_red = np.zeros((len(blue_strategies), len(red_strategies)))
         self.blue_strategies = blue_strategies
         self.red_strategies = red_strategies
 
@@ -1050,10 +1064,10 @@ class BlueRedTeamSimulator:
 
     def __init__(
         self,
-        blue_strategies: list[str],
-        red_strategies: list[str],
-        payoff_blue: np.ndarray,
-        payoff_red: np.ndarray,
+        blue_strategies: list[str] | None = None,
+        red_strategies: list[str] | None = None,
+        payoff_blue: "np.ndarray | None" = None,
+        payoff_red: "np.ndarray | None" = None,
         mode: str = "quantum",
         entanglement: float = 0.0,
         noise_level: float = 0.0,
@@ -1062,15 +1076,23 @@ class BlueRedTeamSimulator:
         """Initialize simulator.
 
         Args:
-            blue_strategies: Defense strategy names
-            red_strategies: Attack strategy names
-            payoff_blue: Blue team payoff matrix
-            payoff_red: Red team payoff matrix
+            blue_strategies: Defense strategy names (defaults to empty list)
+            red_strategies: Attack strategy names (defaults to empty list)
+            payoff_blue: Blue team payoff matrix (auto-created if omitted)
+            payoff_red: Red team payoff matrix (auto-created if omitted)
             mode: "classical" or "quantum"
             entanglement: Entanglement strength for quantum mode
             noise_level: Decoherence level for modeling uncertainty
             risk_aversion: Risk aversion parameter for decision making
         """
+        if blue_strategies is None:
+            blue_strategies = []
+        if red_strategies is None:
+            red_strategies = []
+        if payoff_blue is None:
+            payoff_blue = np.zeros((len(blue_strategies), max(len(red_strategies), 1)))
+        if payoff_red is None:
+            payoff_red = np.zeros((len(blue_strategies), max(len(red_strategies), 1)))
         self.mode = mode
         self.noise_level = noise_level
         self.risk_aversion = risk_aversion

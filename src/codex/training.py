@@ -1144,11 +1144,12 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
 
 def _codex_epoch_metrics(y_true, y_pred) -> dict:
     try:
-        from codex_ml.metrics import perplexity, token_accuracy
+        from codex_ml.metrics import token_accuracy
+        from codex_ml.metrics.api import perplexity as perplexity_from_preds
 
         return {
             "token_accuracy": float(token_accuracy(y_true, y_pred)),
-            "perplexity": float(perplexity(y_true, y_pred)),
+            "perplexity": float(perplexity_from_preds(y_true, y_pred)),
         }
     except Exception:
         logger.warning("Exception occurred", exc_info=True)

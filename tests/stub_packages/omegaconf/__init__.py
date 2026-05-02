@@ -11,7 +11,7 @@ class OmegaConf:
         return {}
 
     @staticmethod
-    def to_yaml(cfg):
+    def to_yaml(cfg, resolve=False, sort_keys=False):
         return ""
 
     @staticmethod

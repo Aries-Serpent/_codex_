@@ -55,6 +55,7 @@ def test_conformance_upsert_query_delete(adapter):
     assert isinstance(res, list)
     assert len(res) >= 1
     # delete one
-    assert adapter.delete(ns, items[0]["id"]) in (True, False)
+    delete_result = adapter.delete(ns, items[0]["id"])
+    assert delete_result in (True, False)
     # health still present
     _ = adapter.health_check()

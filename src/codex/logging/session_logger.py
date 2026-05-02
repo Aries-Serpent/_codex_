@@ -248,32 +248,24 @@ def log_event(
                 adapter_meta["meta"] = meta
             adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
             try:
-                _shared_log_event(  # type: ignore[call-arg]
-                    level=role,
-                    message=message,
-                    meta=adapter_meta_json,  # type: ignore[arg-type]
+                # log_adapters.log_event signature: (level, message, meta=None, db_path=None)
+                _shared_log_event(
+                    role,
+                    message,
+                    meta=adapter_meta_json,
                     db_path=db_path,
                 )
                 return None
             except TypeError as e:
-                logger.warning("monkeypatch adapter call failed (trying legacy): %s", e)
-                # Legacy adapters expect positional ``session_id``/``role`` arguments.
+                logger.warning("monkeypatch adapter call failed (trying minimal): %s", e)
                 try:
-                    if meta is not None:
-                        _shared_log_event(session_id, role, message, db_path, meta)
-                    else:
-                        _shared_log_event(session_id, role, message, db_path)
-                    return None
+                    _shared_log_event(role, message)
                 except TypeError as e:
-                    logger.warning("legacy positional call failed (trying minimal): %s", e)
-                    try:
-                        _shared_log_event(session_id, role, message)
-                    except TypeError as e:
-                        logger.debug(
-                            "shared log_event compatibility fallback failed: %s",
-                            e,
-                            exc_info=True,
-                        )
+                    logger.debug(
+                        "shared log_event compatibility fallback failed: %s",
+                        e,
+                        exc_info=True,
+                    )
             return None
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)

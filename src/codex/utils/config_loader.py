@@ -65,11 +65,13 @@ if not _HYDRA_AVAILABLE:
 
             def __init__(
                 self,
+                missing_cfg_file: str | None = None,
                 *,
-                missing_cfg_file: str,
                 message: str | None = None,
                 **kwargs: Any,
             ) -> None:
+                if missing_cfg_file is None:
+                    missing_cfg_file = kwargs.pop("missing_cfg_file", "")
                 self.missing_cfg_file = missing_cfg_file
                 resolved = message or f"Missing config file: {missing_cfg_file}"
                 super().__init__(resolved)

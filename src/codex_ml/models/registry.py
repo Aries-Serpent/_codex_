@@ -299,6 +299,7 @@ def get_model(
     device: Optional[Any] = None,
     dtype: Optional[Any] = None,
     adapter_loader: Optional[Any] = None,
+    local_files_only: bool = False,
 ) -> Any:
     """Instantiate a model by name with optional device/dtype overrides."""
 

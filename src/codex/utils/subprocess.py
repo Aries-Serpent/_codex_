@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import subprocess
 from pathlib import Path
-from typing import Sequence
+from typing import IO, Any, Sequence
 
 
 def run(
@@ -15,11 +15,21 @@ def run(
     text: bool = True,
     check: bool = True,
     timeout: float | None = None,
+    env: dict[str, str] | None = None,
+    input: str | bytes | None = None,  # noqa: A002
+    stdin: int | IO[Any] | None = None,
+    stdout: int | IO[Any] | None = None,
+    stderr: int | IO[Any] | None = None,
+    encoding: str | None = None,
+    errors: str | None = None,
+    shell: bool = False,  # accepted for API compatibility; always forced to False
 ) -> subprocess.CompletedProcess[str]:
     """Run *cmd* securely.
 
-    Parameters mirror :func:`subprocess.run` but ``shell`` is always ``False`` and
-    ``check`` defaults to ``True`` to ensure errors are surfaced.
+    Parameters mirror :func:`subprocess.run`.  ``shell`` is **always** ``False``
+    regardless of the value passed — this wrapper exists specifically to prevent
+    shell-injection risks.  ``check`` defaults to ``True`` to ensure errors are
+    surfaced immediately.
     """
     return subprocess.run(  # nosec B603
         list(cmd),
@@ -28,5 +38,12 @@ def run(
         text=text,
         check=check,
         timeout=timeout,
+        env=env,
+        input=input,
+        stdin=stdin,
+        stdout=stdout,
+        stderr=stderr,
+        encoding=encoding,
+        errors=errors,
         shell=False,
     )

@@ -360,8 +360,8 @@ def insert_import(src: str, name: str) -> str:
     suffix = src[ins_point:]
     insertion = f"import {name}\n"
     # Ensure a blank line after import block if needed
-    if suffix and not suffix.startswith("\n"):
-        insertion = insertion
+    if not suffix.startswith("\n"):
+        insertion = insertion + "\n" if suffix else insertion
     return prefix + insertion + suffix
 
 

@@ -251,7 +251,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                     manifest_for_paths(
                         collected,
                         Path("artifacts/data_manifest.jsonl"),
-                        {"run": training_cfg.get("run_name", "")},
                     )
                 except Exception as e:
                     logger.debug(f"Exception: {e}")

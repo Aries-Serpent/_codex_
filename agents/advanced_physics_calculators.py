@@ -556,7 +556,7 @@ class ChaoticNeuralNetwork:
         return np.array([n.state[0] for n in self.neurons])
 
     def generate_test_parameters(
-        self, param_ranges: list[tuple[float, float]], num_tests: int = 100
+        self, param_ranges: list[tuple[float, float]] | None = None, num_tests: int = 100
     ) -> list[list[float]]:
         """
         Generate chaotic test parameters for randomized testing.
@@ -564,13 +564,16 @@ class ChaoticNeuralNetwork:
         Uses chaotic dynamics to create diverse, non-repetitive test cases.
 
         Args:
-            param_ranges: list of (min, max) tuples for each parameter
+            param_ranges: list of (min, max) tuples for each parameter. Defaults
+                to ``[(0.0, 1.0)]`` when not provided.
             num_tests: Number of test cases to generate
 
         Returns:
             list of parameter vectors
         """
         test_cases = []
+        if param_ranges is None:
+            param_ranges = [(0.0, 1.0)]
 
         for _ in range(num_tests):
             # Evolve network
@@ -1007,8 +1010,15 @@ class FluidFlowScheduler:
 
         self.flow_history: list[dict[str, Any]] = []
 
-    def add_channel(self, channel: FluidChannel) -> None:
-        """Add a new channel to the network."""
+    def add_channel(
+        self, channel_or_id: "str | FluidChannel", channel: "FluidChannel | None" = None
+    ) -> None:
+        """Add a new channel to the network.
+
+        Can be called as ``add_channel(channel)`` or ``add_channel(channel_id, channel)``.
+        """
+        if channel is None:
+            channel = channel_or_id  # type: ignore[assignment]
         self.channels[channel.channel_id] = channel
 
     def inject_flow(self, channel_id: str, flow_rate: float) -> bool:

@@ -14,6 +14,13 @@ from typing import Any
 from .file_logger import FileLogger, JsonLogFmt
 from .session_logger import SessionLogger
 
+try:
+    from .run_logger import METRICS_SCHEMA_URI, PARAMS_SCHEMA_URI, RunLogger
+except Exception:  # pragma: no cover - optional mlflow dependency
+    RunLogger = None  # type: ignore[assignment,misc]
+    PARAMS_SCHEMA_URI: str = ""  # type: ignore[assignment]
+    METRICS_SCHEMA_URI: str = ""  # type: ignore[assignment]
+
 __all__ = [
     "RunLogger",
     "PARAMS_SCHEMA_URI",

@@ -302,7 +302,7 @@ def task_update_cli() -> None:
 
     pattern = re.compile(
         r"@codex\.command\(\)\n@click\.option\(\"--text\",.*?\n"  # decorator portion
-        r"def train\([^)]*\):\n(?:    .*(?:\n|$))+?"  # body
+        r"def train\([^)]*\):\n(?:    .*(?:\n|\Z))+?"  # body
         r"(?=\n@codex\.command|\nif __name__ == \"__main__\"|\Z)",
         re.DOTALL,
     )

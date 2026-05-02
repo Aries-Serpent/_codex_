@@ -77,7 +77,8 @@ def test_pinecone_adapter_upsert_query_delete():
     assert isinstance(res, list)
     assert len(res) >= 1
     assert res[0]["id"] in {"i1", "i2"}
-    assert adapter.delete(ns, "i1") is True
+    deleted = adapter.delete(ns, "i1")
+    assert deleted is True
     res2 = adapter.query_top_k(ns, [1.0, 0.0], top_k=5)
     ids = [r["id"] for r in res2]
     assert "i1" not in ids

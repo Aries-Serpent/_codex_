@@ -466,11 +466,9 @@ def spawn(count: int, mode: str):
 
     # Create orchestrator and spawner
     orchestrator = create_observable_orchestrator()
-    spawner = TaskSpawner()
-
-    # Create initial state
     initial_tasks = create_test_tasks(2)
     state = OrchestratorState(tasks=initial_tasks, constants=orchestrator.orchestrator.constants)
+    spawner = TaskSpawner(state)
 
     click.echo(f"\n📊 Initial state: {len(state.tasks)} tasks")
 

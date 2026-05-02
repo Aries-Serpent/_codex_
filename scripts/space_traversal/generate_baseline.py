@@ -136,7 +136,7 @@ def build_baseline(
     return destination
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv=None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate baseline from base64+gz Phase-A snapshot or decoded report"
     )
@@ -148,7 +148,7 @@ def parse_args() -> argparse.Namespace:
         "--stable-output", action="store_true", help="write deterministic/stable JSON output"
     )
     parser.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES)
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def main(argv=None):

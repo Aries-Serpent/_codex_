@@ -749,13 +749,15 @@ class WorkflowNavigator:
             # On Windows, symlinks may fail, so just copy
             shutil.copy(filepath, current_path)
 
-    def get_workflow_suggestions(self, current_state: dict[str, Any]) -> list[Workflow]:
+    def get_workflow_suggestions(self, current_state: dict[str, Any] | None = None) -> list[Workflow]:
         """
         Suggest workflows based on current state
 
         Uses simple heuristics, but could integrate with physics orchestrator
         """
         suggestions = []
+        if current_state is None:
+            current_state = {}
 
         # If recent commit, suggest audit
         if current_state.get("recent_commits"):

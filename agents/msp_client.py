@@ -20,6 +20,8 @@ class MSPClient:
         base_url: str = "http://127.0.0.1:8080",
         api_key: str = None,
         timeout: float = 30.0,
+        *,
+        endpoint: Optional[str] = None,
     ):
         """Initialize MSP Client
 
@@ -27,7 +29,11 @@ class MSPClient:
             base_url: Base URL of the MSP Gateway
             api_key: API key for authentication
             timeout: Request timeout in seconds
+            endpoint: Alias for *base_url* for API compatibility.
         """
+        if endpoint is not None and base_url == "http://127.0.0.1:8080":
+            base_url = endpoint
+        self.endpoint = base_url
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.timeout = timeout

@@ -217,8 +217,13 @@ class PhysicsInspiredOrchestrator:
     4. ACT: Execute chosen path with confidence
     """
 
-    def __init__(self, config_path: Optional[Path] = None):
-        self.config = self._load_config(config_path)
+    def __init__(
+        self,
+        config_path: Optional[Path] = None,
+        *,
+        config: Optional[dict] = None,
+    ):
+        self.config = config if config is not None else self._load_config(config_path)
         self.decision_history: list[dict] = []
         self.force_vectors: list[ForceVector] = []
         self._mlp_scorer: Optional[Any] = None

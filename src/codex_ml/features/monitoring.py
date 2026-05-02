@@ -408,7 +408,7 @@ class FeatureHealthMonitor:
     def _generate_markdown_report(
         self,
         health_statuses: dict[str, FeatureHealthStatus],
-        include_recommendations: bool,
+        include_recommendations: bool = True,
     ) -> str:
         """Generate Markdown health report."""
         lines = []

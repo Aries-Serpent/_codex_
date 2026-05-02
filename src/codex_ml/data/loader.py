@@ -432,7 +432,7 @@ def load_dataset(
 
 def apply_safety_filter(
     texts: Sequence[str],
-    filter_enabled: bool,
+    filter_enabled: bool = True,
     safety_fn: Optional[Callable[[str], str]] = None,
 ) -> list[str]:
     """Optionally apply ``safety_fn`` to each text when ``filter_enabled``."""

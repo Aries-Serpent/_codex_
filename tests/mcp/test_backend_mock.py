@@ -36,8 +36,10 @@ def test_delete_and_health(mock_backend: InMemoryMockBackend):
     ns = "delns"
     item = VectorItem({"id": "x", "embedding": [0.5, 0.5], "content": "x", "metadata": {}})
     mock_backend.upsert_batch(ns, [item])
-    assert mock_backend.delete(ns, "x") is True
+    deleted_first = mock_backend.delete(ns, "x")
+    assert deleted_first is True
     # delete again returns False
-    assert mock_backend.delete(ns, "x") is False
+    deleted_second = mock_backend.delete(ns, "x")
+    assert deleted_second is False
     health = mock_backend.health_check()
     assert health["status"] == "ok"

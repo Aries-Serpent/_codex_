@@ -93,19 +93,29 @@ class RAGMetrics:
         >>> prom_output = metrics.export_prometheus()
     """
 
-    def __init__(self, config: Optional[MetricsConfig] = None):
+    def __init__(
+        self,
+        config: Optional[MetricsConfig] = None,
+        *,
+        latency_threshold_ms: Optional[float] = None,
+    ):
         """
         Initialize RAG metrics tracker.
 
         Args:
             config: Optional MetricsConfig for fine-tuning memory usage.
                    If None, uses default configuration.
+            latency_threshold_ms: Convenience shorthand to set a query-latency
+                alert threshold in milliseconds.  Stored on the instance for
+                use by monitoring helpers.  Ignored when *config* is None and
+                only influences ``self.latency_threshold_ms``.
 
         Memory Optimization:
             Uses configurable window sizes per metric type to reduce memory footprint.
             Default total memory ~500KB for 1000 query latencies.
         """
         self.config = config or MetricsConfig()
+        self.latency_threshold_ms: Optional[float] = latency_threshold_ms
 
         # Metric storage (rolling windows with optimized sizes)
         self.query_latencies: deque = deque(maxlen=self.config.query_latency_window)

@@ -208,4 +208,4 @@ if typer is not None:  # pragma: no cover
         )
 
     if __name__ == "__main__":
-        app = app  # satisfy linters
+        app()  # pragma: no cover

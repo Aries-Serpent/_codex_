@@ -58,6 +58,7 @@ def load_tokenizer(
     path: Optional[str] = None,
     *,
     use_fast: bool = True,
+    allow_remote: bool = False,
 ) -> TokenizerAdapter:
     """Load a tokenizer by name or filesystem path."""
 
