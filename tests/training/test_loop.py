@@ -196,10 +196,13 @@ class TestCheckpointing:
 
         tracker = BestModelTracker()
 
-        assert tracker.update(1, 1.5)   # New best
-        assert tracker.update(2, 1.2)   # New best
+        is_best_1 = tracker.update(1, 1.5)
+        assert is_best_1   # New best
+        is_best_2 = tracker.update(2, 1.2)
+        assert is_best_2   # New best
         assert not tracker.update(3, 1.3)  # Not best
-        assert tracker.update(4, 1.0)   # New best
+        is_best_4 = tracker.update(4, 1.0)
+        assert is_best_4   # New best
 
         assert tracker.best_epoch == 4
         assert tracker.best_loss == 1.0

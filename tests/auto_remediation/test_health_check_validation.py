@@ -255,7 +255,6 @@ class TestStartupProbes:
 
     def test_startup_probe_disables_after_success(self):
         """Test startup probe disables after first success."""
-        startup_complete = False
 
         # Simulate successful startup check
         startup_complete = True

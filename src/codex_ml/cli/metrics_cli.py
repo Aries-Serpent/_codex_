@@ -27,7 +27,7 @@ _SAFE_IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 # Rejects characters that are universally dangerous in SQL identifiers
 # (whitespace, quotes, semicolons, comment starters) while allowing symbols
 # such as '$' that are legal in many SQL dialects.
-_RELAXED_IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_\$#@]*$")
+_RELAXED_IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_$#@]*$")
 
 
 def _validate_table(name: str, *, allow_unsafe: bool = False) -> str:

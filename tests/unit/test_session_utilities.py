@@ -28,7 +28,8 @@ class TestFileCache:
             temp_path = f.name
 
         try:
-            assert cache.add(temp_path)
+            add_result = cache.add(temp_path)
+            assert add_result
             stats = cache.stats()
             assert stats["cached_files"] == 1
         finally:

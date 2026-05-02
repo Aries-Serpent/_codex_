@@ -288,8 +288,10 @@ class TestCheckpointing:
 
         tracker = BestCheckpointTracker("loss", mode="min")
 
-        assert tracker.update("/ckpt/e1.pt", {"loss": 1.0})
-        assert tracker.update("/ckpt/e2.pt", {"loss": 0.8})
+        is_best_1 = tracker.update("/ckpt/e1.pt", {"loss": 1.0})
+        assert is_best_1
+        is_best_2 = tracker.update("/ckpt/e2.pt", {"loss": 0.8})
+        assert is_best_2
         assert not tracker.update("/ckpt/e3.pt", {"loss": 0.9})
 
         assert tracker.best_checkpoint == "/ckpt/e2.pt"

@@ -132,23 +132,52 @@ jobs:
             else
               TARGET_REF="${HEAD_REF}"
             fi
-            git pull --rebase --autostash origin "${TARGET_REF}" 2>/dev/null || true
-            git push origin "HEAD:${TARGET_REF}"
-            echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed to ${TARGET_REF}"
 
-            # Re-trigger MkDocs Pages build explicitly after the [skip ci] commit.
-            # [skip ci] prevents GitHub Actions workflows (including pages-mkdocs.yml) from
-            # running on the auto-refresh push, but the branch-mode pages-build-deployment
-            # (internal GitHub Pages service) is NOT skipped and would serve raw files → 404.
-            # This explicit workflow_dispatch call bypasses [skip ci] and ensures the MkDocs
-            # site is always rebuilt after a manifest refresh to main.
-            if [ "${TARGET_REF}" = "main" ]; then
-              echo "🔄 Triggering pages-mkdocs.yml rebuild to prevent branch-mode 404…"
-              gh workflow run pages-mkdocs.yml \
-                --ref main \
-                --field reason="post-manifest-refresh-pages-heal" 2>/dev/null \
-                && echo "✅ pages-mkdocs.yml rebuild triggered" \
-                || echo "⚠️  Could not trigger pages-mkdocs.yml (non-fatal; pages-health-guard.yml will self-heal)"
+            # ── Open-PR conflict guard ────────────────────────────────────────────
+            # Skip push to main/0D_base_ if any open PR targeting that branch
+            # touches the same files this refresh commits (CODEX_MANIFEST.json,
+            # .secrets.baseline, AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md).
+            # This prevents the recurring merge-conflict pattern on long-lived PRs.
+            PR_CONFLICT=false
+            if [ "${TARGET_REF}" = "main" ] || [ "${TARGET_REF}" = "0D_base_" ]; then
+              CHANGED_FILES=$(git diff HEAD~1 --name-only 2>/dev/null || echo "CODEX_MANIFEST.json .secrets.baseline")
+              OPEN_PRS=$(gh api "repos/${{ github.repository }}/pulls?base=${TARGET_REF}&state=open&per_page=100" \
+                --jq '.[].number' 2>/dev/null || echo "")
+              for PR_NUM in ${OPEN_PRS}; do
+                PR_FILES=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUM}/files?per_page=100" \
+                  --jq '.[].filename' 2>/dev/null || echo "")
+                while IFS= read -r f; do
+                  if echo "${PR_FILES}" | grep -qxF "${f}"; then
+                    PR_CONFLICT=true
+                    echo "⚠️  Open PR #${PR_NUM} touches ${f} — deferring push to ${TARGET_REF} to prevent merge conflict."
+                    break 2
+                  fi
+                done <<< "${CHANGED_FILES}"
+              done
+            fi
+            # ── end guard ────────────────────────────────────────────────────────
+
+            if [ "${PR_CONFLICT}" = "true" ]; then
+              echo "🚫 Push skipped — open PR conflict detected. The manifest will be refreshed when the conflicting PR merges."
+            else
+              git pull --rebase --autostash origin "${TARGET_REF}" 2>/dev/null || true
+              git push origin "HEAD:${TARGET_REF}"
+              echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed to ${TARGET_REF}"
+
+              # Re-trigger MkDocs Pages build explicitly after the [skip ci] commit.
+              # [skip ci] prevents GitHub Actions workflows (including pages-mkdocs.yml) from
+              # running on the auto-refresh push, but the branch-mode pages-build-deployment
+              # (internal GitHub Pages service) is NOT skipped and would serve raw files → 404.
+              # This explicit workflow_dispatch call bypasses [skip ci] and ensures the MkDocs
+              # site is always rebuilt after a manifest refresh to main.
+              if [ "${TARGET_REF}" = "main" ]; then
+                echo "🔄 Triggering pages-mkdocs.yml rebuild to prevent branch-mode 404…"
+                gh workflow run pages-mkdocs.yml \
+                  --ref main \
+                  --field reason="post-manifest-refresh-pages-heal" 2>/dev/null \
+                  && echo "✅ pages-mkdocs.yml rebuild triggered" \
+                  || echo "⚠️  Could not trigger pages-mkdocs.yml (non-fatal; pages-health-guard.yml will self-heal)"
+              fi
             fi
           fi
 

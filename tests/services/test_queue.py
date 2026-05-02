@@ -76,9 +76,12 @@ class TestQueueOperations:
         pq.push(1, "high priority")
         pq.push(2, "medium priority")
 
-        assert pq.pop() == "high priority"
-        assert pq.pop() == "medium priority"
-        assert pq.pop() == "low priority"
+        item1 = pq.pop()
+        item2 = pq.pop()
+        item3 = pq.pop()
+        assert item1 == "high priority"
+        assert item2 == "medium priority"
+        assert item3 == "low priority"
 
     def test_queue_size_limit(self):
         """Queue respects size limits."""

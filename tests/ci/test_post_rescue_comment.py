@@ -46,7 +46,7 @@ class TestGetBranchHeadSha:
         assert result is None
 
     def test_url_encodes_branch_name(self):
-        """Branches with '/' or special chars must be URL-encoded."""
+        """Branches with spaces and '/' must be URL-encoded."""
         calls = []
 
         def _mock_gh(method, path, token):
@@ -181,22 +181,34 @@ class TestSelfSuppressMainLogic:
         )
 
     def test_posts_when_head_matches_with_enrichment_enabled(self, monkeypatch, capsys):
-        """When enrichment support is available, main() should still post successfully."""
+        """When discussion_context_store is available, main() calls build_comment_context
+        and still posts the rescue comment successfully.
+
+        ``build_comment_context`` is imported *inside* ``main()`` via
+        ``from discussion_context_store import build_comment_context``, so it is
+        not a module-level attribute of ``prc``.  The correct patch target is the
+        function on the source module (``discussion_context_store.build_comment_context``),
+        which ensures the import inside ``main()`` picks up the mock.
+        """
         self._patch_env(monkeypatch, PR_NUMBER="4200")
         commit_sha = self._ENV_BASE["COMMIT_SHA"]
-        maybe_builder = getattr(prc, "build_comment_context", None)
 
-        with patch.object(prc, "_get_branch_head_sha", return_value=commit_sha):
-            with patch.object(prc, "_find_rescue_comment", return_value=(None, "")):
-                if maybe_builder is not None:
-                    with patch.object(prc, "build_comment_context", return_value={"summary": "extra context"}) as mock_ctx:
-                        with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})) as mock_gh:
-                            prc.main()
-                    assert mock_ctx.called, "Expected build_comment_context to be called when available"
-                else:
-                    with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})) as mock_gh:
-                        prc.main()
+        with (
+            patch.object(prc, "_get_branch_head_sha", return_value=commit_sha),
+            patch.object(prc, "_find_rescue_comment", return_value=(None, "")),
+            patch(
+                "discussion_context_store.build_comment_context",
+                return_value="# Inline Context\n\nExtra context for the agent.",
+            ) as mock_ctx,
+            patch.object(
+                prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})
+            ) as mock_gh,
+        ):
+            prc.main()
 
+        assert mock_ctx.called, (
+            "Expected build_comment_context to be called when discussion_context_store is available"
+        )
         post_calls = [c for c in mock_gh.call_args_list if c.args and c.args[0] == "POST"]
         assert post_calls, "Expected POST to be attempted on matching SHA with enrichment path enabled"
         out = capsys.readouterr().out
