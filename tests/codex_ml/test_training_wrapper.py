@@ -129,7 +129,7 @@ class TestEdgeCases:
         from codex_ml import training
 
         # These should not raise
-        _ = training.__name__
+        _name = training.__name__
         _ = training.__package__
 
     def test_pathlib_constants(self) -> None:

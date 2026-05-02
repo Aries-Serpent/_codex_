@@ -661,14 +661,6 @@ class MCPIntegration:
                 status="error",
                 error=str(exc),
             )
-        except Exception as exc:  # noqa: BLE001
-            logger.error("MCP streaming execution error for %s: %s", endpoint, exc)
-            return MCPResponse(
-                request_id=request.request_id,
-                server_name=request.server_name,
-                status="error",
-                error=str(exc),
-            )
 
     def _http_post_json_streaming(
         url: str,

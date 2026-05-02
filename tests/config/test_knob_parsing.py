@@ -319,8 +319,8 @@ class TestWarningAccumulation:
         # Don't set any env vars - multiple defaults will trigger warnings
         clear_warnings()
 
-        _ = get_pii_mode()  # Triggers warning
-        _ = get_allowlist_profile()  # Triggers another warning
+        get_pii_mode()  # Triggers warning
+        get_allowlist_profile()  # Triggers another warning
         depth, _ = get_depth()  # Triggers warnings
 
         warnings = get_warnings()

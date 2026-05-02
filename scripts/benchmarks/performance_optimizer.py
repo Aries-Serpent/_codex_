@@ -185,7 +185,8 @@ class PerformanceOptimizer:
 
             def validate_data():
                 # Simple validation checks
-                assert not data.isnull().any().any()
+                data_has_nulls = data.isnull().any().any()
+                assert not data_has_nulls
                 assert len(data) > 0
                 assert "label" in data.columns
 
