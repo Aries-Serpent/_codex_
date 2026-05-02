@@ -277,7 +277,6 @@ class TestPhase2_WorkflowStates:
 
     def test_workflow_state_transitions(self):
         """Test workflow state transitions"""
-        current = "pending"
         # Transition to running
         current = "running"
         assert current == "running"

@@ -130,12 +130,14 @@ def test_early_stopping_update():
     es = EarlyStopping(patience=3, mode="min", verbose=False)
 
     # First update is improvement
-    assert es.update(1.0, epoch=0)
+    improved_1 = es.update(1.0, epoch=0)
+    assert improved_1
     assert es.best_value == 1.0
     assert es.wait == 0
 
     # Better value is improvement
-    assert es.update(0.9, epoch=1)
+    improved_2 = es.update(0.9, epoch=1)
+    assert improved_2
     assert es.best_value == 0.9
     assert es.wait == 0
 

@@ -246,4 +246,8 @@ def auto_remediate(
                 break
 
     # All retries exhausted
-    raise last_exception  # type: ignore[misc]
+    if last_exception is None:
+        raise RuntimeError(
+            f"All {max_retries} retries exhausted without capturing exception context"
+        )
+    raise last_exception

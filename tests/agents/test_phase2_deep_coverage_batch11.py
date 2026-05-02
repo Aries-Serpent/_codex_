@@ -439,7 +439,6 @@ class TestPhase2_StateManagement:
 
     def test_state_machine_transitions(self):
         """Test state machine with multiple transitions"""
-        current = "idle"
 
         # Transition: idle -> processing
         current = "processing"

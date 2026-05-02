@@ -164,6 +164,8 @@ class Retrier:
                     self.config.get_delay(attempt)
                     # In tests, we don't actually sleep
                     pass
+        if last_error is None:
+            raise RuntimeError("Retry failed: no exception was captured")
         raise last_error
 
 
