@@ -1048,10 +1048,9 @@ class AdvancedOptimizer:
         # Simple heuristic
         if n_params <= 3:
             return 'bayesian'
-        elif n_params <= 10:
+        if n_params <= 10:
             return 'evolutionary'
-        else:
-            return 'random'
+        return 'random'
 
     def get_statistics(self) -> Dict[str, Any]:
         """Get optimizer statistics.

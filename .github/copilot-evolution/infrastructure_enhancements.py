@@ -874,7 +874,7 @@ class ProgressiveDeployment:
                 "All tests passed" if test_passed else "Tests failed",
             )
 
-        elif gate == DeploymentGate.SECURITY_SCAN:
+        if gate == DeploymentGate.SECURITY_SCAN:
             vulnerabilities = context.get("vulnerabilities", 0)
             passed = vulnerabilities == 0
             return (
@@ -884,7 +884,7 @@ class ProgressiveDeployment:
                 else f"Found {vulnerabilities} vulnerabilities",
             )
 
-        elif gate == DeploymentGate.CODE_REVIEW:
+        if gate == DeploymentGate.CODE_REVIEW:
             approvals = context.get("approvals", 0)
             required = context.get("required_approvals", 1)
             passed = approvals >= required
@@ -895,7 +895,7 @@ class ProgressiveDeployment:
                 else f"Need {required - approvals} more approvals",
             )
 
-        elif gate == DeploymentGate.PERFORMANCE:
+        if gate == DeploymentGate.PERFORMANCE:
             latency = context.get("latency_ms", 1000)
             threshold = context.get("latency_threshold_ms", 200)
             passed = latency <= threshold
@@ -906,7 +906,7 @@ class ProgressiveDeployment:
                 else f"Latency {latency}ms exceeds {threshold}ms",
             )
 
-        elif gate == DeploymentGate.MANUAL_APPROVAL:
+        if gate == DeploymentGate.MANUAL_APPROVAL:
             approved = context.get("manually_approved", False)
             return (
                 approved,

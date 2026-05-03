@@ -97,7 +97,7 @@ class NotebookLMAPI:
                 self._api_available = True
                 data = response.json()
                 return data.get('subscription_tier') == 'pro'
-            elif response.status_code == 404:
+            if response.status_code == 404:
                 click.echo("ℹ️  NotebookLM API not yet available. Use manual upload.", err=True)
                 self._api_available = False
                 return False
@@ -144,8 +144,7 @@ class NotebookLMAPI:
             notebook_id = response.json()['notebook_id']
             click.echo(f"✅ Created notebook: {notebook_id}")
             return notebook_id
-        else:
-            raise Exception(f"Failed to create notebook: {response.text}")
+        raise Exception(f"Failed to create notebook: {response.text}")
 
     def upload_source(self, notebook_id: str, source: NotebookLMSource) -> str:
         """Upload a source to NotebookLM notebook.
@@ -174,8 +173,7 @@ class NotebookLMAPI:
             source_id = response.json()['source_id']
             click.echo(f"✅ Uploaded source: {source.title}")
             return source_id
-        else:
-            raise Exception(f"Failed to upload source: {response.text}")
+        raise Exception(f"Failed to upload source: {response.text}")
 
     def generate_audio_overview(self, notebook_id: str,
                                 duration: str = "medium") -> str:
@@ -210,8 +208,7 @@ class NotebookLMAPI:
             audio_url = response.json()['audio_url']
             click.echo(f"🎙️ Generated audio overview: {audio_url}")
             return audio_url
-        else:
-            raise Exception(f"Failed to generate audio: {response.text}")
+        raise Exception(f"Failed to generate audio: {response.text}")
 
     def create_shared_link(self, notebook_id: str,
                           permissions: str = "view") -> str:
@@ -245,8 +242,7 @@ class NotebookLMAPI:
             share_url = response.json()['share_url']
             click.echo(f"🔗 Created shareable link: {share_url}")
             return share_url
-        else:
-            raise Exception(f"Failed to create share link: {response.text}")
+        raise Exception(f"Failed to create share link: {response.text}")
 
     def add_inline_citations(self, notebook_id: str,
                             source_ids: List[str]) -> Dict:
@@ -275,8 +271,7 @@ class NotebookLMAPI:
         if response.status_code == 200:
             click.echo(f"✅ Enabled inline citations for {len(source_ids)} sources")
             return response.json()
-        else:
-            raise Exception(f"Failed to enable citations: {response.text}")
+        raise Exception(f"Failed to enable citations: {response.text}")
 
     def export_notebook(self, notebook_id: str,
                        format: str = "pdf") -> str:
@@ -304,8 +299,7 @@ class NotebookLMAPI:
             download_url = response.json()['download_url']
             click.echo(f"📥 Export ready: {download_url}")
             return download_url
-        else:
-            raise Exception(f"Failed to export: {response.text}")
+        raise Exception(f"Failed to export: {response.text}")
 
 
 class ProjectArchitect:

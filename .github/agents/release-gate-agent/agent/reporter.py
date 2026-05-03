@@ -123,10 +123,9 @@ class ReleaseReporter:
 
         if status == "success" and health == "healthy":
             return "success"
-        elif status == "blocked":
+        if status == "blocked":
             return "blocked"
-        else:
-            return "failed"
+        return "failed"
 
     def _extract_lessons(
         self,

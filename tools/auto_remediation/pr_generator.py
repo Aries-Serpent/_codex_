@@ -206,7 +206,7 @@ class AutomatedPRGenerator:
                 if occurrences == 0:
                     print(f"Original code not found in {fix.file_path}")
                     return False
-                elif occurrences > 1:
+                if occurrences > 1:
                     print(f"Warning: Original code appears {occurrences} times in {fix.file_path}")
                     print("Consider using line-number-specific replacement for precision")
                     # Still proceed with first replacement, but warn user
@@ -246,9 +246,8 @@ class AutomatedPRGenerator:
             if result.returncode == 0:
                 print("✅ Tests passed")
                 return True
-            else:
-                print(f"❌ Tests failed:\n{result.stdout}\n{result.stderr}")
-                return False
+            print(f"❌ Tests failed:\n{result.stdout}\n{result.stderr}")
+            return False
 
         except subprocess.TimeoutExpired:
             print("❌ Tests timed out")

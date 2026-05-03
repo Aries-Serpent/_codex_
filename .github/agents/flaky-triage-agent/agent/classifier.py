@@ -206,12 +206,11 @@ class FlakyTestClassifier:
         """
         if pass_rate < self.CRITICAL_THRESHOLD:
             return FlakySeverity.CRITICAL
-        elif pass_rate < self.HIGH_THRESHOLD:
+        if pass_rate < self.HIGH_THRESHOLD:
             return FlakySeverity.HIGH
-        elif pass_rate < self.MEDIUM_THRESHOLD:
+        if pass_rate < self.MEDIUM_THRESHOLD:
             return FlakySeverity.MEDIUM
-        else:
-            return FlakySeverity.LOW
+        return FlakySeverity.LOW
 
     def _calculate_impact(self, stats: TestStatistics, severity: FlakySeverity) -> float:
         """

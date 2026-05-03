@@ -147,10 +147,9 @@ def main() -> int:
         print()
         print(f"Found {len(results)} fragile test files. Detailed JSON written to {OUT_JSON}")
         return 0
-    else:
-        print("No fragile test files (top-level unguarded optional imports) found under tests/.")
-        print("Note: tests may still transitively import modules that require optional packages.")
-        return 0
+    print("No fragile test files (top-level unguarded optional imports) found under tests/.")
+    print("Note: tests may still transitively import modules that require optional packages.")
+    return 0
 
 
 if __name__ == "__main__":

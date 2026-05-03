@@ -78,16 +78,15 @@ class CodexTokenDecoder:
         """Auto-detect which encoding method is available in environment"""
         if os.getenv('CODEX_GHP_TOKEN_CONFIG'):
             return 'aes_config'
-        elif os.getenv('CODEX_GHP_TOKEN_AES_CIPHERTEXT') and os.getenv('CODEX_GHP_TOKEN_AES_KEY'):
+        if os.getenv('CODEX_GHP_TOKEN_AES_CIPHERTEXT') and os.getenv('CODEX_GHP_TOKEN_AES_KEY'):
             return 'aes_separated'
-        elif os.getenv('CODEX_GHP_TOKEN_BASE64'):
+        if os.getenv('CODEX_GHP_TOKEN_BASE64'):
             return 'base64'
-        elif os.getenv('CODEX_GHP_TOKEN_HEX'):
+        if os.getenv('CODEX_GHP_TOKEN_HEX'):
             return 'hex'
-        elif os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN'):
+        if os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN'):
             return 'plaintext'
-        else:
-            return 'none'
+        return 'none'
 
     @staticmethod
     def decode_base64() -> Optional[str]:

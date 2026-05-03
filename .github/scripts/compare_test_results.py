@@ -34,9 +34,8 @@ def compare_test_results(results_file1: str, results_file2: str) -> int:
         for diff in differences:
             print(diff)
         return 1
-    else:
-        print("✅ Determinism check PASSED - all tests are deterministic")
-        return 0
+    print("✅ Determinism check PASSED - all tests are deterministic")
+    return 0
 
 
 if __name__ == '__main__':

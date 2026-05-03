@@ -72,8 +72,7 @@ class WorkflowAnalyticsScribe:
         """
         if self.use_scribe:
             return self._analyze_semantic(log_content, workflow_context)
-        else:
-            return self._analyze_regex(log_content)
+        return self._analyze_regex(log_content)
 
     def _analyze_regex(self, log_content: str) -> Dict[str, Any]:
         """Basic regex-based pattern detection."""
@@ -171,14 +170,13 @@ class WorkflowAnalyticsScribe:
 
         if "test" in name:
             return "testing"
-        elif "build" in name or "compile" in name:
+        if "build" in name or "compile" in name:
             return "build"
-        elif "deploy" in name or "release" in name:
+        if "deploy" in name or "release" in name:
             return "deployment"
-        elif "security" in name or "scan" in name:
+        if "security" in name or "scan" in name:
             return "security"
-        else:
-            return "general"
+        return "general"
 
     def _match_patterns_semantic(self, features: Dict[str, Any]) -> Dict[str, List[str]]:
         """Match patterns using semantic similarity."""

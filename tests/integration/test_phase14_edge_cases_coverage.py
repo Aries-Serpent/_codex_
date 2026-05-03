@@ -419,7 +419,9 @@ class TestTypeEdgeCases:
         assert "10" != 10
 
         # Float and int comparison
-        assert 10.0 == 10
+        ten_float = 10.0
+        ten_int = 10
+        assert ten_float == ten_int
 
     def test_callable_detection(self):
         """Test callable detection edge cases."""

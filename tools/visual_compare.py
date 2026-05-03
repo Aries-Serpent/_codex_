@@ -64,13 +64,12 @@ def compare(baseline: Path, candidate: Path, metric: str = "ssim") -> float:
     a, b = resize_to_match(a, b)
     if metric.lower() == "ssim":
         return metric_ssim(a, b)
-    elif metric.lower() == "mse":
+    if metric.lower() == "mse":
         # Return similarity-like score from MSE
         mse = float(((a - b) ** 2).mean())
         nmse = min(1.0, mse / (MAX_PIXEL_VALUE**2))
         return max(0.0, 1.0 - nmse)
-    else:
-        raise ValueError(f"Unknown metric: {metric}")
+    raise ValueError(f"Unknown metric: {metric}")
 
 
 def main(argv=None) -> int:

@@ -363,7 +363,7 @@ class ResourcePatternMatcher:
         """Extract function name from Call node."""
         if isinstance(node.func, ast.Name):
             return node.func.id
-        elif isinstance(node.func, ast.Attribute):
+        if isinstance(node.func, ast.Attribute):
             parts = []
             current = node.func
             while isinstance(current, ast.Attribute):

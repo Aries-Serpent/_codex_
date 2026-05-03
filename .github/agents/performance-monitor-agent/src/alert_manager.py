@@ -120,10 +120,9 @@ class AlertManager:
             original_count = len(self.alerts)
             self.alerts = [a for a in self.alerts if a.metric_name != metric_name]
             return original_count - len(self.alerts)
-        else:
-            count = len(self.alerts)
-            self.alerts = []
-            return count
+        count = len(self.alerts)
+        self.alerts = []
+        return count
 
     def get_metrics(self) -> Dict[str, Any]:
         """Get alert manager metrics"""

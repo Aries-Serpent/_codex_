@@ -2004,10 +2004,9 @@ class GroundingLayer:
         """
         if score < 0.3:
             return "infeasible"
-        elif score < 0.7:
+        if score < 0.7:
             return "risky"
-        else:
-            return "feasible"
+        return "feasible"
 
 
 class GitHubAPIAdapter:
@@ -2140,8 +2139,7 @@ class ActionValidator:
         try:
             if precondition(action.args):
                 return True, ""
-            else:
-                return False, f"Precondition failed for {action.op}"
+            return False, f"Precondition failed for {action.op}"
         except Exception as e:
             return False, f"Precondition check error: {str(e)}"
 
@@ -2169,8 +2167,7 @@ class ActionValidator:
         try:
             if postcondition(result):
                 return True, ""
-            else:
-                return False, f"Postcondition failed for {action.op}"
+            return False, f"Postcondition failed for {action.op}"
         except Exception as e:
             return False, f"Postcondition check error: {str(e)}"
 
@@ -3253,12 +3250,11 @@ class AdiabaticScheduler:
 
         if self.schedule == "linear":
             return progress
-        elif self.schedule == "exponential":
+        if self.schedule == "exponential":
             return 1.0 - math.exp(-3.0 * progress)
-        elif self.schedule == "cosine":
+        if self.schedule == "cosine":
             return 0.5 * (1.0 - math.cos(math.pi * progress))
-        else:
-            return progress
+        return progress
 
     def step(self) -> float:
         """Advance one step and return new β.

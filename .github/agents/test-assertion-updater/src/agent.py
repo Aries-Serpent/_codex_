@@ -154,12 +154,11 @@ class TestAssertionUpdater:
         """Generate a proposed fix for the assertion mismatch"""
         if mismatch.mismatch_type == 'string_format':
             return self._fix_string_format(mismatch)
-        elif mismatch.mismatch_type == 'data_structure':
+        if mismatch.mismatch_type == 'data_structure':
             return self._fix_data_structure(mismatch)
-        elif mismatch.mismatch_type == 'type_change':
+        if mismatch.mismatch_type == 'type_change':
             return self._fix_type_change(mismatch)
-        else:
-            raise ValueError(f"Unknown mismatch type: {mismatch.mismatch_type}")
+        raise ValueError(f"Unknown mismatch type: {mismatch.mismatch_type}")
 
     def _fix_string_format(self, mismatch: AssertionMismatch) -> FixProposal:
         """Generate fix for string format changes"""

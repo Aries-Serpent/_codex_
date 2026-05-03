@@ -202,14 +202,13 @@ class LearningEngineHealthCheck(HealthCheck):
                     latency_ms=latency,
                     details={'has_select_action': has_select, 'has_update': has_update},
                 )
-            else:
-                return HealthCheckResult(
-                    component=self.name,
-                    status=HealthStatus.DEGRADED,
-                    message="Learning engine missing methods",
-                    latency_ms=latency,
-                    details={'has_select_action': has_select, 'has_update': has_update},
-                )
+            return HealthCheckResult(
+                component=self.name,
+                status=HealthStatus.DEGRADED,
+                message="Learning engine missing methods",
+                latency_ms=latency,
+                details={'has_select_action': has_select, 'has_update': has_update},
+            )
         except Exception as e:
             return HealthCheckResult(
                 component=self.name,
@@ -275,12 +274,11 @@ class HealthCheckEndpoint:
 
         if all(s == HealthStatus.HEALTHY for s in statuses):
             return HealthStatus.HEALTHY
-        elif any(s == HealthStatus.UNHEALTHY for s in statuses):
+        if any(s == HealthStatus.UNHEALTHY for s in statuses):
             return HealthStatus.UNHEALTHY
-        elif any(s == HealthStatus.DEGRADED for s in statuses):
+        if any(s == HealthStatus.DEGRADED for s in statuses):
             return HealthStatus.DEGRADED
-        else:
-            return HealthStatus.UNKNOWN
+        return HealthStatus.UNKNOWN
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for API response.
@@ -880,8 +878,7 @@ class HealthEndpointTest(ProductionTest):
 
             if status in (HealthStatus.HEALTHY, HealthStatus.DEGRADED):
                 return True, f"Health endpoint operational: {status.value}"
-            else:
-                return False, f"Health endpoint unhealthy: {status.value}"
+            return False, f"Health endpoint unhealthy: {status.value}"
         except Exception as e:
             return False, f"Health endpoint failed: {str(e)}"
 

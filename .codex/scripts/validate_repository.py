@@ -359,9 +359,8 @@ def main():
     if results.is_success():
         print("\n✅ All validations passed!")
         return 0
-    else:
-        print("\n❌ Some validations failed. Please review the errors above.")
-        return 1
+    print("\n❌ Some validations failed. Please review the errors above.")
+    return 1
 
 
 if __name__ == "__main__":

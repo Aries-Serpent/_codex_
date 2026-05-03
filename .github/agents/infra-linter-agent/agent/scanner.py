@@ -243,22 +243,21 @@ class IaCScanner:
 
         if tool == "terraform":
             return self._scan_terraform(file_path, config)
-        elif tool == "kubernetes":
+        if tool == "kubernetes":
             return self._scan_kubernetes(file_path, config)
-        elif tool == "cloudformation":
+        if tool == "cloudformation":
             return self._scan_cloudformation(file_path, config)
-        elif tool == "docker":
+        if tool == "docker":
             return self._scan_docker(file_path, config)
-        elif tool == "ansible":
+        if tool == "ansible":
             return self._scan_ansible(file_path, config)
-        else:
-            return ScanResult(
-                file_path=str(file_path),
-                tool=tool,
-                linter="unknown",
-                success=False,
-                error_message=f"Unsupported tool: {tool}"
-            )
+        return ScanResult(
+            file_path=str(file_path),
+            tool=tool,
+            linter="unknown",
+            success=False,
+            error_message=f"Unsupported tool: {tool}"
+        )
 
     def _scan_terraform(self, file_path: Path, config: Dict[str, Any]) -> ScanResult:
         """

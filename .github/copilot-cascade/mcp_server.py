@@ -293,27 +293,26 @@ class MCPIntegration:
             logger.info(f"Mock connection to {server_name} established")
             return True
 
-        else:
-            # Real connection logic (requires aiohttp or similar)
-            try:
-                # Placeholder for real connection logic
-                # In production, this would use actual MCP client library
-                logger.info(f"Attempting real connection to {server.url}")
+        # Real connection logic (requires aiohttp or similar)
+        try:
+            # Placeholder for real connection logic
+            # In production, this would use actual MCP client library
+            logger.info(f"Attempting real connection to {server.url}")
 
-                # Simulated connection attempt
-                await asyncio.sleep(0.1)  # Simulated network delay
+            # Simulated connection attempt
+            await asyncio.sleep(0.1)  # Simulated network delay
 
-                self.active_connections[server_name] = {
-                    "status": "connected_real",
-                    "url": server.url,
-                    "timestamp": datetime.now(timezone.utc),
-                }
-                logger.info(f"Real connection to {server_name} established")
-                return True
+            self.active_connections[server_name] = {
+                "status": "connected_real",
+                "url": server.url,
+                "timestamp": datetime.now(timezone.utc),
+            }
+            logger.info(f"Real connection to {server_name} established")
+            return True
 
-            except Exception as e:
-                logger.error(f"Failed to connect to {server_name}: {e}")
-                return False
+        except Exception as e:
+            logger.error(f"Failed to connect to {server_name}: {e}")
+            return False
 
     async def execute(self, request: MCPRequest) -> MCPResponse:
         """
@@ -745,7 +744,7 @@ class MCPIntegration:
                 "recent_commits": 42,
             }
 
-        elif capability == "quantum_analysis":
+        if capability == "quantum_analysis":
             return {
                 "quantum_state": "superposition",
                 "entanglement_score": 0.85,
@@ -753,7 +752,7 @@ class MCPIntegration:
                 "analysis": "System exhibits strong quantum characteristics",
             }
 
-        elif capability == "entanglement_detection":
+        if capability == "entanglement_detection":
             return {
                 "entangled_pairs": [
                     {"task_a": "task_1", "task_b": "task_3", "strength": 0.78},
@@ -762,7 +761,7 @@ class MCPIntegration:
                 "total_detected": 2,
             }
 
-        elif capability == "code_search":
+        if capability == "code_search":
             return {
                 "query": payload.get("query", ""),
                 "results": [
@@ -772,7 +771,7 @@ class MCPIntegration:
                 "total_matches": 2,
             }
 
-        elif capability == "issue_management":
+        if capability == "issue_management":
             return {
                 "operation": payload.get("operation", "list"),
                 "issues": [
@@ -782,13 +781,12 @@ class MCPIntegration:
                 "count": 2,
             }
 
-        else:
-            return {
-                "capability": capability,
-                "status": "executed",
-                "mock": True,
-                "payload_received": payload,
-            }
+        return {
+            "capability": capability,
+            "status": "executed",
+            "mock": True,
+            "payload_received": payload,
+        }
 
     async def disconnect(self, server_name: str):
         """Disconnect from an MCP server."""

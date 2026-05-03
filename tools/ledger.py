@@ -111,10 +111,10 @@ def _main() -> int:
         )
         print(json.dumps(rec, indent=2))
         return 0
-    else:  # verify
-        last = verify_chain(Path(ns.path))
-        print(last or "")
-        return 0
+    # verify
+    last = verify_chain(Path(ns.path))
+    print(last or "")
+    return 0
 
 
 if __name__ == "__main__":  # pragma: no cover

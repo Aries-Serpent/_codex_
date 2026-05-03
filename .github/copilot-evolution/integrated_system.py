@@ -251,12 +251,11 @@ class KnowledgeHungerEngine:
         """Determine type of question to ask."""
         if gap.domain == "integration":
             return "integration"
-        elif gap.confidence < 0.5:
+        if gap.confidence < 0.5:
             return "conceptual"
-        elif "implementation" in gap.context.get("need", ""):
+        if "implementation" in gap.context.get("need", ""):
             return "technical"
-        else:
-            return "practical"
+        return "practical"
 
     def _generate_follow_ups(self, gap: KnowledgeGap) -> List[str]:
         """Generate follow-up questions."""
@@ -430,10 +429,9 @@ class KnowledgeIntegrator:
         """Parse answer in flexible format."""
         if isinstance(answer, dict):
             return answer
-        elif isinstance(answer, str):
+        if isinstance(answer, str):
             return {"answer": answer}
-        else:
-            return {"answer": str(answer)}
+        return {"answer": str(answer)}
 
     def _extract_knowledge(self, parsed: Dict) -> List[str]:
         """Extract knowledge components."""

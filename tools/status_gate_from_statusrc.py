@@ -47,9 +47,8 @@ def main() -> int:
     if ok:
         print(f"[OK] Gates passed (coverage={cov_pct:.2f}%, threshold={threshold:.2f}%)")
         return 0
-    else:
-        print("[FAIL] " + "; ".join(reasons))
-        return 1
+    print("[FAIL] " + "; ".join(reasons))
+    return 1
 
 
 if __name__ == "__main__":

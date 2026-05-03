@@ -192,7 +192,7 @@ class DocumentationAgent:
 
             return "\n".join(lines)
 
-        elif item.item_type == "class":
+        if item.item_type == "class":
             return f"TODO: Document {item.name} class.\n\nAttributes:\n    TODO"
 
         return "TODO: Add documentation."

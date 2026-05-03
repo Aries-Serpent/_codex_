@@ -157,14 +157,13 @@ class DependencyConflictResolver:
 
         if ecosystem == Ecosystem.PYTHON:
             return self._parse_python_requirements(file_path)
-        elif ecosystem == Ecosystem.JAVASCRIPT:
+        if ecosystem == Ecosystem.JAVASCRIPT:
             return self._parse_package_json(file_path)
-        elif ecosystem == Ecosystem.RUST:
+        if ecosystem == Ecosystem.RUST:
             return self._parse_cargo_toml(file_path)
-        elif ecosystem == Ecosystem.GO:
+        if ecosystem == Ecosystem.GO:
             return self._parse_go_mod(file_path)
-        else:
-            raise ValueError(f"Unsupported dependency file: {file_path}")
+        raise ValueError(f"Unsupported dependency file: {file_path}")
 
     def _detect_ecosystem(self, file_path: Path) -> Ecosystem:
         """Detect ecosystem from file name/extension"""
@@ -173,19 +172,18 @@ class DependencyConflictResolver:
         # Check for Python files
         if 'requirements' in name and name.endswith('.txt'):
             return Ecosystem.PYTHON
-        elif name in ('pyproject.toml',):
+        if name in ('pyproject.toml',):
             return Ecosystem.PYTHON
         # Check for JavaScript files
-        elif name in ('package.json', 'package-lock.json') or 'package' in name and name.endswith('.json'):
+        if name in ('package.json', 'package-lock.json') or 'package' in name and name.endswith('.json'):
             return Ecosystem.JAVASCRIPT
         # Check for Rust files
-        elif 'cargo' in name and name.endswith('.toml'):
+        if 'cargo' in name and name.endswith('.toml'):
             return Ecosystem.RUST
         # Check for Go files
-        elif 'go.mod' in name or name == 'go.mod':
+        if 'go.mod' in name or name == 'go.mod':
             return Ecosystem.GO
-        else:
-            raise ValueError(f"Cannot detect ecosystem for file: {file_path}")
+        raise ValueError(f"Cannot detect ecosystem for file: {file_path}")
 
     def _parse_python_requirements(self, file_path: Path) -> List[DependencyInfo]:
         """Parse Python requirements.txt file"""
@@ -295,7 +293,7 @@ class DependencyConflictResolver:
                 if line.startswith('require ('):
                     in_require = True
                     continue
-                elif in_require and line == ')':
+                if in_require and line == ')':
                     in_require = False
                     continue
 
@@ -469,10 +467,9 @@ class DependencyConflictResolver:
                 version_range = max(parsed) - min(parsed)
                 if version_range >= 2:
                     return "critical"
-                elif version_range == 1:
+                if version_range == 1:
                     return "high"
-                else:
-                    return "medium"
+                return "medium"
         except (ValueError, AttributeError):
             pass
 
@@ -619,10 +616,9 @@ class DependencyConflictResolver:
 
         if major_changes > 2:
             return "high"
-        elif major_changes > 0:
+        if major_changes > 0:
             return "medium"
-        else:
-            return "low"
+        return "low"
 
     def check_vulnerabilities(self) -> Dict[str, List[Dict]]:
         """Check dependencies for known vulnerabilities"""

@@ -112,15 +112,14 @@ class CodexQuantumReviewer:
 
         if event_type == "initial_review":
             return await self.perform_initial_review(event)
-        elif event_type == "incremental_review":
+        if event_type == "incremental_review":
             return await self.perform_incremental_review(event)
-        elif event_type == "analyze_human_feedback":
+        if event_type == "analyze_human_feedback":
             return await self.integrate_feedback(event)
-        elif event_type == "respond_to_mention":
+        if event_type == "respond_to_mention":
             return await self.respond_to_mention(event)
-        else:
-            logger.warning(f"Unhandled event type: {event_type}")
-            return {"status": "unhandled_event", "event": event_type}
+        logger.warning(f"Unhandled event type: {event_type}")
+        return {"status": "unhandled_event", "event": event_type}
 
     async def perform_initial_review(self, event: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -263,13 +262,12 @@ class CodexQuantumReviewer:
             await self.learning_system.learn_from_user_input(learning_content)
             return {"status": "learned", "content": learning_content}
 
-        elif "analyze" in body.lower():
+        if "analyze" in body.lower():
             # Trigger specific analysis
             return await self.perform_initial_review(event)
 
-        else:
-            # Generic re-review request
-            return await self.perform_initial_review(event)
+        # Generic re-review request
+        return await self.perform_initial_review(event)
 
     def _extract_review_context(self, event: Dict[str, Any]) -> ReviewContext:
         """

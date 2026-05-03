@@ -549,9 +549,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if failed_steps:
         log(f"Run completed with failures in steps: {failed_steps}")
         return 1
-    else:
-        log("Finished codex_audit_orchestrator run")
-        return 0
+    log("Finished codex_audit_orchestrator run")
+    return 0
 
 
 if __name__ == "__main__":

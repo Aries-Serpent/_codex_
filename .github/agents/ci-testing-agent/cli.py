@@ -109,9 +109,8 @@ def main() -> int:
         if result.get("status") == "success":
             print("✅ Task completed successfully")
             return 0
-        else:
-            print(f"⚠️ Task completed with status: {result.get('status')}")
-            return 1
+        print(f"⚠️ Task completed with status: {result.get('status')}")
+        return 1
 
     except FileNotFoundError as e:
         print(f"❌ File not found: {e}", file=sys.stderr)

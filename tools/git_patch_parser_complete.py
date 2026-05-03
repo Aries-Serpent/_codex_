@@ -525,12 +525,11 @@ class PatchApplier:
         try:
             if patch_file.operation == FileOperation.DELETE:
                 return self._delete_file(full_path, target_path)
-            elif patch_file.operation == FileOperation.CREATE:
+            if patch_file.operation == FileOperation.CREATE:
                 return self._create_file(patch_file, full_path, target_path)
-            elif patch_file.is_binary:
+            if patch_file.is_binary:
                 return self._apply_binary_patch(patch_file, full_path, target_path)
-            else:
-                return self._apply_text_patch(patch_file, full_path, target_path)
+            return self._apply_text_patch(patch_file, full_path, target_path)
         except Exception as e:
             return {
                 "file": target_path,

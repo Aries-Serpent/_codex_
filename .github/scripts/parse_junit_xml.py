@@ -35,11 +35,10 @@ def parse_junit_xml(junit_file: str) -> dict:
                 'success': True,
                 'message': f'**Tests:** {tests} total, {failures} failed, {errors} errors'
             }
-        else:
-            return {
-                'success': False,
-                'message': '**Tests:** Unable to parse JUnit XML'
-            }
+        return {
+            'success': False,
+            'message': '**Tests:** Unable to parse JUnit XML'
+        }
     except Exception as e:
         return {
             'success': False,

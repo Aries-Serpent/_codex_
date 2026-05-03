@@ -192,18 +192,17 @@ class CascadeMonitor:
 
         if "timeout" in error_lower:
             return "timeout"
-        elif "auth" in error_lower or "permission" in error_lower:
+        if "auth" in error_lower or "permission" in error_lower:
             return "authentication"
-        elif "not found" in error_lower or "404" in error_lower:
+        if "not found" in error_lower or "404" in error_lower:
             return "not_found"
-        elif "rate" in error_lower or "limit" in error_lower:
+        if "rate" in error_lower or "limit" in error_lower:
             return "rate_limit"
-        elif "connection" in error_lower or "network" in error_lower:
+        if "connection" in error_lower or "network" in error_lower:
             return "network"
-        elif "memory" in error_lower or "oom" in error_lower:
+        if "memory" in error_lower or "oom" in error_lower:
             return "memory"
-        else:
-            return "other"
+        return "other"
 
     def _calculate_trends(self) -> Dict[str, Any]:
         """Calculate performance trends."""
@@ -294,10 +293,9 @@ class CascadeMonitor:
         """Get health status message."""
         if status == "healthy":
             return f"System operating normally ({success_rate:.1f}% success rate)"
-        elif status == "warning":
+        if status == "warning":
             return f"Performance degraded ({success_rate:.1f}% success rate) - investigate errors"
-        else:
-            return f"Critical issues detected ({success_rate:.1f}% success rate) - immediate attention required"
+        return f"Critical issues detected ({success_rate:.1f}% success rate) - immediate attention required"
 
     def _save_metrics(self):
         """Save metrics to file."""

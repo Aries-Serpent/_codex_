@@ -253,12 +253,11 @@ class DependencyMonitor:
 
             if latest_parts[0] > curr_parts[0]:
                 return UpdateType.MAJOR
-            elif latest_parts[1] > curr_parts[1]:
+            if latest_parts[1] > curr_parts[1]:
                 return UpdateType.MINOR
-            elif latest_parts[2] > curr_parts[2]:
+            if latest_parts[2] > curr_parts[2]:
                 return UpdateType.PATCH
-            else:
-                return UpdateType.PATCH
+            return UpdateType.PATCH
         except (ValueError, IndexError):
             return UpdateType.MINOR
 
@@ -375,6 +374,6 @@ class DependencyMonitor:
         """Get changelog URL for package."""
         if ecosystem == "python":
             return f"https://pypi.org/project/{package}/#history"
-        elif ecosystem == "javascript":
+        if ecosystem == "javascript":
             return f"https://www.npmjs.com/package/{package}?activeTab=versions"
         return None

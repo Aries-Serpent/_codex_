@@ -85,9 +85,8 @@ def main() -> int:
         if check_connector(config):
             logger.info("Connector check passed")
             return 0
-        else:
-            logger.error("Connector check failed")
-            return 1
+        logger.error("Connector check failed")
+        return 1
 
     except Exception as e:
         logger.error(f"Error checking connector: {e}")

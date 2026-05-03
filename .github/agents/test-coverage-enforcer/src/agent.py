@@ -309,12 +309,11 @@ class TestCoverageEnforcer:
         """Calculate severity level based on coverage percentage"""
         if coverage >= 80:
             return CoverageSeverity.LOW
-        elif coverage >= 70:
+        if coverage >= 70:
             return CoverageSeverity.MEDIUM
-        elif coverage >= 60:
+        if coverage >= 60:
             return CoverageSeverity.HIGH
-        else:
-            return CoverageSeverity.CRITICAL
+        return CoverageSeverity.CRITICAL
 
     def enforce_thresholds(self, path: Path) -> EnforcementResult:
         """
@@ -463,12 +462,11 @@ def test_{func_name}_edge_cases():
         # Higher priority for functions in files with very low coverage
         if report.line_coverage < 50:
             return 1
-        elif report.line_coverage < 70:
+        if report.line_coverage < 70:
             return 2
-        elif report.line_coverage < 80:
+        if report.line_coverage < 80:
             return 3
-        else:
-            return 4
+        return 4
 
     def generate_coverage_report(self, output_format: str = 'text') -> str:
         """
@@ -482,10 +480,9 @@ def test_{func_name}_edge_cases():
         """
         if output_format == 'json':
             return self._generate_json_report()
-        elif output_format == 'html':
+        if output_format == 'html':
             return self._generate_html_report()
-        else:
-            return self._generate_text_report()
+        return self._generate_text_report()
 
     def _generate_text_report(self) -> str:
         """Generate text format coverage report"""

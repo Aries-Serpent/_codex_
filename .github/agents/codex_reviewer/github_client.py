@@ -112,8 +112,7 @@ class GitHubAPIClient:
 
         if HTTPX_AVAILABLE:
             return await self._post_with_httpx(url, payload)
-        else:
-            return await self._post_with_urllib(url, payload)
+        return await self._post_with_urllib(url, payload)
 
     async def _post_with_httpx(self, url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Post request using httpx library."""
@@ -202,8 +201,7 @@ class GitHubAPIClient:
 
         if HTTPX_AVAILABLE:
             return await self._post_with_httpx(url, payload)
-        else:
-            return await self._post_with_urllib(url, payload)
+        return await self._post_with_urllib(url, payload)
 
     async def get_pr_details(self, repo: str, pr_number: int) -> Dict[str, Any]:
         """

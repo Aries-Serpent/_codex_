@@ -205,23 +205,22 @@ def ensure_agents_md() -> bool:
             required_sections,
             "Create AGENTS.md with logging env vars, tools, and coding standards.",
         )
-    else:
-        cur = read(AGENTS)
-        need = []
-        if not re.search(r"Required Tools", cur, flags=re.I):
-            need.append("tools")
-        if not re.search(r"Coding Standards", cur, flags=re.I):
-            need.append("standards")
-        if not re.search(r"Logs are retained", cur):
-            need.append("retention")
-        if not need:
-            return False
-        merged = cur.rstrip() + "\n\n---\n\n" + required_sections
-        return write_if_changed(
-            AGENTS,
-            merged,
-            f"Augment AGENTS.md with missing sections: {', '.join(need)}.",
-        )
+    cur = read(AGENTS)
+    need = []
+    if not re.search(r"Required Tools", cur, flags=re.I):
+        need.append("tools")
+    if not re.search(r"Coding Standards", cur, flags=re.I):
+        need.append("standards")
+    if not re.search(r"Logs are retained", cur):
+        need.append("retention")
+    if not need:
+        return False
+    merged = cur.rstrip() + "\n\n---\n\n" + required_sections
+    return write_if_changed(
+        AGENTS,
+        merged,
+        f"Augment AGENTS.md with missing sections: {', '.join(need)}.",
+    )
 
 
 def ensure_readme_refs() -> bool:

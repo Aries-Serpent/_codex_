@@ -181,11 +181,10 @@ def main():
         print("✅ ALL PATTERNS VALIDATED SUCCESSFULLY")
         print("=" * 70)
         return 0
-    else:
-        print("\n" + "=" * 70)
-        print("❌ SOME PATTERNS FAILED VALIDATION")
-        print("=" * 70)
-        return 1
+    print("\n" + "=" * 70)
+    print("❌ SOME PATTERNS FAILED VALIDATION")
+    print("=" * 70)
+    return 1
 
 
 if __name__ == "__main__":

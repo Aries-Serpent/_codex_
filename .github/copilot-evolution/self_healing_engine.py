@@ -204,13 +204,13 @@ class SelfHealingEngine:
                 self.strategies[HealingStrategy.DOCKER_TAG_ERROR.value],
             )
 
-        elif "no modules were targeted" in error_lower or "target_modules" in error_lower:
+        if "no modules were targeted" in error_lower or "target_modules" in error_lower:
             return (
                 HealingStrategy.PEFT_TARGET_ERROR.value,
                 self.strategies[HealingStrategy.PEFT_TARGET_ERROR.value],
             )
 
-        elif (
+        if (
             "not in defaults list" in error_lower
             or "configcompositionexception" in error_lower
         ):
@@ -219,7 +219,7 @@ class SelfHealingEngine:
                 self.strategies[HealingStrategy.HYDRA_COMPOSITION.value],
             )
 
-        elif ("no attribute" in error_lower or "attributeerror" in error_type.lower()) and (
+        if ("no attribute" in error_lower or "attributeerror" in error_type.lower()) and (
             "bleuscore" in error_lower or "_pred_length" in error_lower
         ):
             return (
@@ -227,25 +227,25 @@ class SelfHealingEngine:
                 self.strategies[HealingStrategy.METRIC_COMPATIBILITY.value],
             )
 
-        elif "assert" in error_lower and "boltzmann" in component.lower():
+        if "assert" in error_lower and "boltzmann" in component.lower():
             return (
                 HealingStrategy.ASSERTION_ERROR.value,
                 self.strategies[HealingStrategy.ASSERTION_ERROR.value],
             )
 
-        elif "--timeout" in error_lower and "unrecognized" in error_lower:
+        if "--timeout" in error_lower and "unrecognized" in error_lower:
             return (
                 HealingStrategy.IMPORT_ERROR.value,
                 self.strategies[HealingStrategy.IMPORT_ERROR.value],
             )
 
-        elif "no patterns extracted" in error_lower or "empty" in error_lower:
+        if "no patterns extracted" in error_lower or "empty" in error_lower:
             return (
                 HealingStrategy.EMPTY_RESULT.value,
                 self.strategies[HealingStrategy.EMPTY_RESULT.value],
             )
 
-        elif "version" in error_lower or "compatibility" in error_lower:
+        if "version" in error_lower or "compatibility" in error_lower:
             return (
                 HealingStrategy.VERSION_MISMATCH.value,
                 self.strategies[HealingStrategy.VERSION_MISMATCH.value],

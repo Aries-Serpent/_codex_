@@ -287,12 +287,11 @@ class IaCValidator:
         """
         if severity_counts.get("CRITICAL", 0) > 0 or score < 25:
             return "critical"
-        elif severity_counts.get("HIGH", 0) > 0 or score < 50:
+        if severity_counts.get("HIGH", 0) > 0 or score < 50:
             return "high"
-        elif score < 75:
+        if score < 75:
             return "medium"
-        else:
-            return "low"
+        return "low"
 
     def _query_historical_patterns(self, scan_results: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
@@ -340,10 +339,9 @@ class IaCValidator:
 
         if risk in ["critical", "high"]:
             return "BLOCK"
-        elif risk == "medium":
+        if risk == "medium":
             return "WARN"
-        else:
-            return "APPROVE"
+        return "APPROVE"
 
     def _calculate_confidence(
         self,

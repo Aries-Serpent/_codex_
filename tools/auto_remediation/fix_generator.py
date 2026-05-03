@@ -375,7 +375,7 @@ def validate_input(data, max_length=1000):
             if occurrences == 0:
                 print(f"Warning: Original code not found in {fix.file_path}")
                 return False
-            elif occurrences > 1:
+            if occurrences > 1:
                 print(f"Warning: Ambiguous replacement - code appears {occurrences} times in {fix.file_path}")
                 print("Consider using AST-based or line-number-specific replacement")
                 # Only replace first occurrence to avoid unintended changes

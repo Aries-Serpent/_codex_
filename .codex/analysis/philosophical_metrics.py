@@ -168,12 +168,11 @@ class PhilosophicalMetricsCalculator:
         """
         if rate > 20:
             return "INTENSE BECOMING"
-        elif rate >= 10:
+        if rate >= 10:
             return "ACTIVE BECOMING"
-        elif rate >= 5:
+        if rate >= 5:
             return "MODERATE BECOMING"
-        else:
-            return "SLOW BECOMING"
+        return "SLOW BECOMING"
 
     @staticmethod
     def calculate_deterritorialization_force(
@@ -219,14 +218,13 @@ class PhilosophicalMetricsCalculator:
         """
         if force > 0.3:
             return "HIGH deterritorialization needed - break rigid patterns"
-        elif force > 0.1:
+        if force > 0.1:
             return "MODERATE deterritorialization - some flexibility needed"
-        elif force > -0.1:
+        if force > -0.1:
             return "EQUILIBRIUM - balanced state"
-        elif force > -0.3:
+        if force > -0.3:
             return "MODERATE reterritorialization - forming new patterns"
-        else:
-            return "HIGH reterritorialization - strong pattern formation"
+        return "HIGH reterritorialization - strong pattern formation"
 
 
 class PhilosophicalMetricsDashboard:

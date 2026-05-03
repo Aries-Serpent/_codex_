@@ -130,7 +130,7 @@ class TestNumericEdgeCases:
         zero_int = 0
         zero_float = 0.0
         assert zero_int == zero_float  # int/float zero equality
-        assert 0.0 == 0
+        assert zero_float == zero_int  # same check via named vars
         assert -0.0 == 0.0
         assert zero_int is not None
         assert not zero_int  # 0 is falsy

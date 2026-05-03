@@ -321,12 +321,11 @@ class DependencyEvaluator:
         """Estimate upgrade effort."""
         if breaking_risk == BreakingChangeRisk.CRITICAL:
             return "high (4-8 hours)"
-        elif breaking_risk == BreakingChangeRisk.HIGH:
+        if breaking_risk == BreakingChangeRisk.HIGH:
             return "medium (2-4 hours)"
-        elif breaking_risk == BreakingChangeRisk.MEDIUM:
+        if breaking_risk == BreakingChangeRisk.MEDIUM:
             return "low (1-2 hours)"
-        else:
-            return "minimal (<1 hour)"
+        return "minimal (<1 hour)"
 
     def _query_historical_success(self, package: str) -> float:
         """Query historical upgrade success rate."""

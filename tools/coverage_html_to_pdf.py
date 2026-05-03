@@ -348,9 +348,8 @@ def main(argv: Optional[List[str]] = None) -> int:
             if not args.persistent:
                 print("     (ephemeral - can be cleaned up after use)")
             return 0
-        else:
-            print("[FAIL] PDF generation failed", file=sys.stderr)
-            return 1
+        print("[FAIL] PDF generation failed", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

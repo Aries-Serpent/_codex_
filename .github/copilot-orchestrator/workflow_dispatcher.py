@@ -255,10 +255,9 @@ class CopilotWorkflowOrchestrator:
         """Calculate intelligent backoff interval."""
         if attempt < 10:
             return 2  # First 10 attempts: 2 seconds
-        elif attempt < 30:
+        if attempt < 30:
             return 5  # Next 20 attempts: 5 seconds
-        else:
-            return 10  # Remaining: 10 seconds
+        return 10  # Remaining: 10 seconds
 
     async def get_job_status(self, job_id: str) -> Dict[str, Any]:
         """Get current status of a job."""
@@ -283,12 +282,11 @@ class CopilotWorkflowOrchestrator:
         """Calculate estimated progress percentage."""
         if job.status == "completed":
             return 100.0
-        elif job.status in ("pending", "error", "failed_to_trigger"):
+        if job.status in ("pending", "error", "failed_to_trigger"):
             return 0.0
-        else:
-            elapsed = datetime.now() - job.triggered_at
-            progress = (elapsed.total_seconds() / job.estimated_duration.total_seconds()) * 100
-            return min(progress, 95.0)  # Cap at 95% until actually complete
+        elapsed = datetime.now() - job.triggered_at
+        progress = (elapsed.total_seconds() / job.estimated_duration.total_seconds()) * 100
+        return min(progress, 95.0)  # Cap at 95% until actually complete
 
     def get_active_jobs(self) -> List[Dict[str, Any]]:
         """Get list of all active jobs."""

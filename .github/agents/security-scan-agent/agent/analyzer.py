@@ -244,45 +244,42 @@ class SecurityAnalyzer:
         """Map CVSS score to severity enum."""
         if cvss_score >= 9.0:
             return VulnerabilitySeverity.CRITICAL
-        elif cvss_score >= 7.0:
+        if cvss_score >= 7.0:
             return VulnerabilitySeverity.HIGH
-        elif cvss_score >= 4.0:
+        if cvss_score >= 4.0:
             return VulnerabilitySeverity.MEDIUM
-        elif cvss_score >= 0.1:
+        if cvss_score >= 0.1:
             return VulnerabilitySeverity.LOW
-        else:
-            return VulnerabilitySeverity.INFO
+        return VulnerabilitySeverity.INFO
 
     def _calculate_priority(self, severity: VulnerabilitySeverity,
                           exploitability: float, impact: float) -> RemediationPriority:
         """Calculate remediation priority."""
         if severity == VulnerabilitySeverity.CRITICAL:
             return RemediationPriority.P0
-        elif severity == VulnerabilitySeverity.HIGH:
+        if severity == VulnerabilitySeverity.HIGH:
             if exploitability > 0.7:
                 return RemediationPriority.P0
             return RemediationPriority.P1
-        elif severity == VulnerabilitySeverity.MEDIUM:
+        if severity == VulnerabilitySeverity.MEDIUM:
             if exploitability > 0.8:
                 return RemediationPriority.P1
             return RemediationPriority.P2
-        elif severity == VulnerabilitySeverity.LOW:
+        if severity == VulnerabilitySeverity.LOW:
             return RemediationPriority.P3
-        else:
-            return RemediationPriority.P4
+        return RemediationPriority.P4
 
     def _select_remediation_strategy(self, finding: Any) -> str:
         """Select appropriate remediation strategy."""
         if finding.tool in ["Safety", "pip-audit"]:
             return "dependency_upgrade"
-        elif finding.cwe_id in ["CWE-89", "CWE-79"]:
+        if finding.cwe_id in ["CWE-89", "CWE-79"]:
             return "input_sanitization"
-        elif finding.cwe_id == "CWE-798":
+        if finding.cwe_id == "CWE-798":
             return "credential_removal"
-        elif finding.cwe_id == "CWE-327":
+        if finding.cwe_id == "CWE-327":
             return "crypto_upgrade"
-        else:
-            return "code_review"
+        return "code_review"
 
     def _is_auto_fixable(self, finding: Any) -> bool:
         """Determine if vulnerability can be auto-fixed."""
@@ -300,10 +297,9 @@ class SecurityAnalyzer:
         """Estimate remediation effort."""
         if auto_fixable:
             return "low (automated)"
-        elif finding.cwe_id in ["CWE-89", "CWE-79"]:
+        if finding.cwe_id in ["CWE-89", "CWE-79"]:
             return "medium (requires code changes)"
-        else:
-            return "high (requires investigation)"
+        return "high (requires investigation)"
 
     def _assess_compliance_impact(self, finding: Any) -> List[str]:
         """Assess compliance framework impacts."""

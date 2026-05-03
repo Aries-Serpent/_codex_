@@ -93,9 +93,8 @@ class Registry(Generic[T]):
         if item is not None:
             # Direct call: register(name, item)
             return _register(item)
-        else:
-            # Decorator: @register(name)
-            return _register
+        # Decorator: @register(name)
+        return _register
 
     def get(self, name: str, default: T | None = None) -> T | None:
         """Get a registered item by name.

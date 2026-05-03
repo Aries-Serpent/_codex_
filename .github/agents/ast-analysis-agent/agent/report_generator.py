@@ -73,12 +73,11 @@ class ReportGenerator:
         # Generate based on format
         if self.config.format == "json":
             return self._generate_json(filtered, metadata)
-        elif self.config.format == "csv":
+        if self.config.format == "csv":
             return self._generate_csv(filtered)
-        elif self.config.format == "html":
+        if self.config.format == "html":
             return self._generate_html(filtered, metadata)
-        else:
-            return self._generate_markdown(filtered, metadata)
+        return self._generate_markdown(filtered, metadata)
 
     def _filter_findings(self, findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Filter findings based on config."""

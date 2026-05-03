@@ -2111,7 +2111,7 @@ class ProductionHardeningManager:
                 success=True,
             )
 
-        elif error_context.severity == ErrorSeverity.MEDIUM:
+        if error_context.severity == ErrorSeverity.MEDIUM:
             # Fallback to alternative method
             return RecoveryAction(
                 action_id=action_id,
@@ -2120,7 +2120,7 @@ class ProductionHardeningManager:
                 success=True,
             )
 
-        elif error_context.severity == ErrorSeverity.HIGH:
+        if error_context.severity == ErrorSeverity.HIGH:
             # Initiate graceful degradation
             self.degrade_gracefully(error_context.message)
             return RecoveryAction(
@@ -2130,26 +2130,25 @@ class ProductionHardeningManager:
                 success=True,
             )
 
-        else:  # CRITICAL
-            # Escalate to manual intervention
-            return RecoveryAction(
-                action_id=action_id,
-                action_type="escalate",
-                description="Critical error - manual intervention required",
-                success=False,
-            )
+        # CRITICAL
+        # Escalate to manual intervention
+        return RecoveryAction(
+            action_id=action_id,
+            action_type="escalate",
+            description="Critical error - manual intervention required",
+            success=False,
+        )
 
     def _determine_disabled_capabilities(self, failure: str) -> List[str]:
         """Determine which capabilities to disable."""
         # Simple heuristic based on failure description
         if "memory" in failure.lower():
             return ["caching", "history_tracking"]
-        elif "network" in failure.lower():
+        if "network" in failure.lower():
             return ["remote_api", "external_services"]
-        elif "compute" in failure.lower():
+        if "compute" in failure.lower():
             return ["heavy_computation", "parallel_processing"]
-        else:
-            return ["non_critical_features"]
+        return ["non_critical_features"]
 
     def _trigger_monitoring(self, event: Any) -> None:
         """Trigger monitoring callbacks."""

@@ -188,15 +188,14 @@ def normalize_sqlite_reference(snippet: str, kind: str, repo_root: Path) -> str:
     default_path = DEFAULT_DB_REL.as_posix()
     if kind == "sqlalchemy":
         return re.sub(r'sqlite\+?:///[^"]+', f"sqlite:///./{default_path}", snippet)
-    elif kind == "sqlite3":
+    if kind == "sqlite3":
         return re.sub(
             r"(sqlite3\.connect\(\s*[ru]?)(['\"])([^'\"]+)(\2)(\s*\))",
             rf"\1\2{repo_root.as_posix()}/{default_path}\2\5",
             snippet,
         )
-    else:
-        replacement = rf"\1./{default_path}\1"
-        return re.sub(SQLITE_LITERAL_PATTERN, replacement, snippet)
+    replacement = rf"\1./{default_path}\1"
+    return re.sub(SQLITE_LITERAL_PATTERN, replacement, snippet)
 
 
 def try_update_file(

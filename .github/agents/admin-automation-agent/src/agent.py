@@ -562,11 +562,10 @@ def main():
     if result.get("success"):
         print("✅ Task completed successfully")
         return 0
-    else:
-        print("❌ Task failed")
-        if result.get("error"):
-            print("Error occurred")
-        return 1
+    print("❌ Task failed")
+    if result.get("error"):
+        print("Error occurred")
+    return 1
 
 
 if __name__ == "__main__":

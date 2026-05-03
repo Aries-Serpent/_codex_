@@ -436,7 +436,7 @@ class DocumentationSyncValidator:
                 for issue in self.issues
             ], indent=2)
 
-        elif output_format == 'markdown':
+        if output_format == 'markdown':
             lines = ['# Documentation Validation Report\n']
             lines.append(f'**Total Issues**: {len(self.issues)}\n')
 
@@ -453,20 +453,20 @@ class DocumentationSyncValidator:
 
             return '\n'.join(lines)
 
-        else:  # text
-            lines = ['Documentation Validation Report']
-            lines.append('=' * 50)
-            lines.append(f'Total Issues: {len(self.issues)}\n')
+        # text
+        lines = ['Documentation Validation Report']
+        lines.append('=' * 50)
+        lines.append(f'Total Issues: {len(self.issues)}\n')
 
-            for issue in self.issues:
-                lines.append(f'[{issue.severity.value.upper()}] {issue.file_path}')
-                lines.append(f'  Type: {issue.issue_type}')
-                lines.append(f'  {issue.description}')
-                if issue.suggested_fix:
-                    lines.append(f'  Fix: {issue.suggested_fix}')
-                lines.append('')
+        for issue in self.issues:
+            lines.append(f'[{issue.severity.value.upper()}] {issue.file_path}')
+            lines.append(f'  Type: {issue.issue_type}')
+            lines.append(f'  {issue.description}')
+            if issue.suggested_fix:
+                lines.append(f'  Fix: {issue.suggested_fix}')
+            lines.append('')
 
-            return '\n'.join(lines)
+        return '\n'.join(lines)
 
 
 def main():

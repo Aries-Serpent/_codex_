@@ -217,7 +217,6 @@ class ReleaseGatekeeper:
         """Generate human-readable reasoning."""
         if decision == ReleaseDecision.BLOCK:
             return f"Release BLOCKED due to {len(blockers)} blocker(s): {', '.join(blockers[:2])}"
-        elif decision == ReleaseDecision.APPROVE_WITH_MONITORING:
+        if decision == ReleaseDecision.APPROVE_WITH_MONITORING:
             return f"Release APPROVED with monitoring (risk: {risk_score:.2f}, {len(warnings)} warning(s))"
-        else:
-            return f"Release APPROVED (low risk: {risk_score:.2f})"
+        return f"Release APPROVED (low risk: {risk_score:.2f})"

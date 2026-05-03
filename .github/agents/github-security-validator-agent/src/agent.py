@@ -297,10 +297,9 @@ class SecurityValidator:
         """Generate validation report in specified format."""
         if format == "json":
             return json.dumps(self.results, indent=2)
-        elif format == "markdown":
+        if format == "markdown":
             return self._generate_markdown_report()
-        else:
-            return f"Unsupported format: {format}"
+        return f"Unsupported format: {format}"
 
     def _generate_markdown_report(self) -> str:
         """Generate markdown report."""

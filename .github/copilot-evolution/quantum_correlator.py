@@ -212,16 +212,15 @@ class QuantumPatternCorrelator:
 
         if 'quantum' in path_str:
             return 'quantum_physics'
-        elif 'security' in path_str or 'codemod' in path_str:
+        if 'security' in path_str or 'codemod' in path_str:
             return 'security'
-        elif 'compress' in path_str:
+        if 'compress' in path_str:
             return 'compression'
-        elif 'doc' in path_str or 'readme' in path_str:
+        if 'doc' in path_str or 'readme' in path_str:
             return 'documentation'
-        elif 'agent' in path_str or 'orchestrat' in path_str:
+        if 'agent' in path_str or 'orchestrat' in path_str:
             return 'ai_agents'
-        else:
-            return 'general'
+        return 'general'
 
     async def correlate_patterns(self, patterns_by_domain: Dict[str, List[Dict]]) -> List[PatternCorrelation]:
         """Correlate patterns across domains to find emergent capabilities."""

@@ -67,7 +67,7 @@ class TutorialGenerator:
         difficulties = [s.difficulty for s in self.sections]
         if "advanced" in difficulties:
             return "advanced"
-        elif "intermediate" in difficulties:
+        if "intermediate" in difficulties:
             return "intermediate"
         return "beginner"
 

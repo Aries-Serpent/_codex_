@@ -125,16 +125,15 @@ class ZendeskVoiceLinesClient:
 
             if response.status_code == 200:
                 return (True, "Connection successful!", response.status_code)
-            elif response.status_code == 401:
+            if response.status_code == 401:
                 return (False, "Authentication failed. Check your credentials.", response.status_code)
-            elif response.status_code == 403:
+            if response.status_code == 403:
                 return (False, "Access forbidden. Check your API permissions.", response.status_code)
-            else:
-                return (
-                    False,
-                    f"Connection failed with status {response.status_code}",
-                    response.status_code,
-                )
+            return (
+                False,
+                f"Connection failed with status {response.status_code}",
+                response.status_code,
+            )
         except requests.exceptions.Timeout:
             return (False, "Connection timeout. Check your subdomain.", 0)
         except requests.exceptions.ConnectionError:
@@ -230,8 +229,7 @@ class ZendeskVoiceLinesClient:
                     # Wait and retry on rate limit
                     time.sleep(5)
                     continue
-                else:
-                    raise
+                raise
 
         return pages
 

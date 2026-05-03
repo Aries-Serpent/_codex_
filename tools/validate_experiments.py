@@ -36,15 +36,14 @@ def load_config(path: Path):
     try:
         if path.suffix == ".json":
             return json.loads(path.read_text())
-        elif path.suffix == ".toml":
+        if path.suffix == ".toml":
             # Proper fallback for tomllib (Python 3.11+) vs tomli (Python <3.11)
             try:
                 import tomllib
             except ImportError:
                 import tomli as tomllib  # type: ignore
             return tomllib.loads(path.read_text())
-        else:
-            raise ValueError("Unsupported file extension.")
+        raise ValueError("Unsupported file extension.")
     except Exception as e:
         raise RuntimeError(f"Failed to load {path}: {e}")
 

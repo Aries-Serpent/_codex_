@@ -328,10 +328,9 @@ class SmartDelegationRouter:
 
         if complexity < self.complexity_thresholds["simple"]:
             return ("cli", ModelType.GPT_4O_MINI)
-        elif complexity < self.complexity_thresholds["medium"]:
+        if complexity < self.complexity_thresholds["medium"]:
             return ("cli", ModelType.CLAUDE_SONNET)
-        else:
-            return ("primary", ModelType.DEFAULT)
+        return ("primary", ModelType.DEFAULT)
 
     def _assess_complexity(self, task: DelegationTask) -> int:
         """Assess task complexity (1-10 scale)."""
@@ -377,10 +376,10 @@ class TokenBudgetManager:
         # Priority-based allocation
         if task.priority == 1:  # High
             return min(4000, remaining // 5)
-        elif task.priority == 2:  # Medium
+        if task.priority == 2:  # Medium
             return min(2000, remaining // 10)
-        else:  # Low
-            return min(1000, remaining // 20)
+        # Low
+        return min(1000, remaining // 20)
 
     def record_usage(self, task_id: str, tokens: int):
         """Record token usage."""

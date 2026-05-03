@@ -148,9 +148,8 @@ def main(argv: list[str]) -> int:
             pct = max(0.0, min(100.0, pct))
             print(f"{pct:.2f}")
             return 0
-        else:
-            print("ERROR: parsed non-finite coverage value", file=sys.stderr)
-            return 6
+        print("ERROR: parsed non-finite coverage value", file=sys.stderr)
+        return 6
     except FileNotFoundError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 3

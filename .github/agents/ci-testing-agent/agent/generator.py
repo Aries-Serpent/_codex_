@@ -116,10 +116,9 @@ class TestGenerator:
         # Check if it's a directory or file
         if module_path.is_dir():
             return module_path
-        elif module_path.with_suffix(".py").exists():
+        if module_path.with_suffix(".py").exists():
             return module_path.with_suffix(".py")
-        else:
-            return module_path
+        return module_path
 
     def _extract_functions(self, module_path: Path) -> List[Dict[str, Any]]:
         """

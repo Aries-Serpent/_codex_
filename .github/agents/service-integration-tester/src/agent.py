@@ -706,11 +706,10 @@ def main():
         if compliant:
             print("✅ Service is compliant with contract")
             return 0
-        else:
-            print("❌ Contract violations found:")
-            for violation in violations:
-                print(f"  - {violation}")
-            return 1
+        print("❌ Contract violations found:")
+        for violation in violations:
+            print(f"  - {violation}")
+        return 1
 
     elif args.command == 'generate-report':
         report = tester.generate_report(args.output)
