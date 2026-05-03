@@ -24502,3 +24502,10 @@ and the CI gate requirement.
 - Added module-level loggers to 51 files that lacked one
 - Fixed PR-4201-followup.md placeholder content per copilot-pull-request-reviewer feedback
 - Verified `ruff check src/ scripts/ training/` passes with 0 errors
+
+## 2026-05-03 08:56 UTC — PR #4201 RP-004 fix + follow-up prompt hardening
+- Addressed RP-004 (Pattern 22/30): `sync_tracked_files.py --fix` → all 6 tracked-file checks pass ✅
+- Addressed Pattern 25 (Last-Commit Accountability): this file updated in this commit
+- Updated `.github/copilot-prompts/active/PR-4201-followup.md` with latest session state and hardened CQL-001 iteration protocol
+- Verified: `ruff check src/ tests/` → 0 errors; `sync_tracked_files --check` → consistent
+- CQL-001 status: Reliability/Maintainability/AI Suggestions findings tracked for next iteration
