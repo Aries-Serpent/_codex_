@@ -603,9 +603,15 @@ jobs:
             const prs   = context.payload.workflow_run.pull_requests;
             if (!prs || prs.length === 0) return;
             const prNumber = prs[0].number;
-            // SHA used for a SHA-scoped dedup marker (prevents duplicate posts when
-            // both "Copilot coding agent" and "CodeQL" completions trigger this job).
-            const headSha = (context.payload.workflow_run.head_sha || '').slice(0, 12);
+            const MAX_COMMENT_LENGTH = 65536;
+            // Branch-head SHA used for a SHA-scoped upsert marker.
+            //
+            // Use the PR head SHA (not workflow_run.head_sha) because pull_request
+            // workflow_run events often carry ephemeral merge-preview SHAs.  Those
+            // merge-preview SHAs can change within one agent session even when the
+            // PR branch head has not, causing multiple @mbaetiong continuation
+            // comments instead of one same-session thread.
+            let headSha = (context.payload.workflow_run.head_sha || '').slice(0, 12);
 
             // Gate: only run when copilot-agent-session-done.yml WEC checkbox is checked
             let wecChecked = false;
@@ -613,6 +619,8 @@ jobs:
               const { data: prInfo } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
               if (prInfo.state !== 'open') { console.log(`PR #${prNumber} is closed — skipping.`); return; }
               wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prInfo.body || '');
+              const prHeadSha = (prInfo.head && prInfo.head.sha) ? prInfo.head.sha : '';
+              headSha = (prHeadSha || context.payload.workflow_run.head_sha || '').slice(0, 12);
             } catch (e) {
               console.log(`Cannot fetch PR for gate check: ${e.message}`); return;
             }
@@ -716,8 +724,13 @@ jobs:
               .map((f, i) => `**${i + 1}. ${f.source}**\n\n> ${(f.body || '').replace(/\n/g, '\n> ')}`)
               .join('\n\n---\n\n');
 
+            const PR_MARKER = `<!-- compiled-bot-feedback:pr-${prNumber} -->`;
+            const HEAD_MARKER = `<!-- compiled-bot-feedback-head:${headSha} -->`;
+            const RUN_MARKER = `<!-- compiled-bot-feedback-run:${context.runId} -->`;
+            const MARKER_PREFIX = `<!-- compiled-bot-feedback`;
             const compiledBody = [
-              `<!-- compiled-bot-feedback:${headSha} -->`,
+              PR_MARKER,
+              HEAD_MARKER,
               `@copilot continue with all current priority 1, 2, 3, and 4 tasks as well as addressing all code quality and security concerns listed below.`,
               ``,
               `**📋 Bot-reported findings (${findings.length} item${findings.length > 1 ? 's' : ''}):**`,
@@ -729,47 +742,68 @@ jobs:
               `> _[🔗 Workflow run](https://github.com/${owner}/${repo}/actions/runs/${context.runId})_`,
             ].join('\n');
 
-            // Upsert guard: uses GraphQL `last:50` (newest comments) instead of
-            // REST listComments which returns OLDEST comments first — per_page:N gives
-            // OLDEST N, not newest.  On an active PR with 60+ comments the old
-            // `per_page:5` guard NEVER detected recent markers, causing duplicates
-            // when "Copilot coding agent" AND "CodeQL" both triggered this job for the
-            // same commit (they both queued via the concurrency group and posted
-            // identical comments one minute apart).
-            //
-            // SHA-scoped marker `<!-- compiled-bot-feedback:{sha12} -->` means:
-            //  • The same commit's second trigger finds the existing marker → skips.
-            //  • A new commit's first trigger finds no matching SHA → posts fresh.
-            const SHA_MARKER = `<!-- compiled-bot-feedback:${headSha} -->`;
+            // Upsert guard: scan every PR comment page for either the new PR-scoped
+            // marker or any legacy compiled-bot-feedback marker.  A busy PR can have
+            // more than 100 comments, so newest-only GraphQL windows can miss the
+            // existing thread and create another @copilot request for the same issue.
+            // PR-scoped upsert keeps all same-session bot findings in one appended
+            // thread even when follow-up [skip ci] commits change the branch head SHA.
             let existingCommentId = null;
+            let existingCommentBody = '';
             try {
-              const gql = await github.graphql(
-                `query($owner: String!, $repo: String!, $pr: Int!) {
-                  repository(owner: $owner, name: $repo) {
-                    pullRequest(number: $pr) {
-                      comments(last: 50) {
-                        nodes { databaseId body }
-                      }
-                    }
+              for (let page = 1; ; page += 1) {
+                const { data: comments } = await github.rest.issues.listComments({
+                  owner, repo, issue_number: prNumber, per_page: 100, page,
+                });
+                if (!Array.isArray(comments) || comments.length === 0) break;
+                for (const comment of comments) {
+                  const body = comment.body || '';
+                  if (body.includes(PR_MARKER) || body.includes(MARKER_PREFIX)) {
+                    existingCommentId = comment.id;
+                    existingCommentBody = body;
                   }
-                }`,
-                { owner, repo, pr: prNumber }
-              );
-              const nodes = gql?.repository?.pullRequest?.comments?.nodes || [];
-              // Scan from newest to oldest (reverse of GraphQL `last:` order)
-              const found = nodes.slice().reverse().find(c => (c.body || '').includes(SHA_MARKER));
-              if (found) existingCommentId = found.databaseId;
+                }
+                if (comments.length < 100) break;
+              }
             } catch (e) {
               console.log(`Upsert lookup failed (non-fatal): ${e.message}`);
             }
 
             if (existingCommentId) {
-              console.log(`compile-bot-feedback already posted for SHA ${headSha} on PR #${prNumber} — skipping duplicate.`);
+              if (existingCommentBody.includes(RUN_MARKER)) {
+                console.log(`compile-bot-feedback already appended run ${context.runId} for SHA ${headSha} on PR #${prNumber} — skipping duplicate.`);
+                return;
+              }
+              let normalizedExistingBody = existingCommentBody.trimEnd();
+              if (!normalizedExistingBody.includes(PR_MARKER)) {
+                normalizedExistingBody = `${PR_MARKER}\n${normalizedExistingBody}`;
+              }
+              if (!normalizedExistingBody.includes(HEAD_MARKER)) {
+                normalizedExistingBody = normalizedExistingBody.replace(PR_MARKER, `${PR_MARKER}\n${HEAD_MARKER}`);
+              }
+              const appendParts = [normalizedExistingBody];
+              appendParts.push(
+                ``,
+                `---`,
+                RUN_MARKER,
+                `### 🔄 Same-session bot feedback update`,
+                ``,
+                `Additional request/run: [#${context.runId}](https://github.com/${owner}/${repo}/actions/runs/${context.runId})`,
+                ``,
+                findingsList,
+                ``,
+                `> _Appended by \`copilot-agent-session-done.yml\` · compile-bot-feedback job_`,
+              );
+              const appendBody = appendParts.join('\n');
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existingCommentId, body: appendBody.slice(0, MAX_COMMENT_LENGTH),
+              });
+              console.log(`Appended ${findings.length} bot finding(s) to existing @copilot continue comment #${existingCommentId} for PR #${prNumber}.`);
               return;
             }
 
             await github.rest.issues.createComment({
-              owner, repo, issue_number: prNumber, body: compiledBody,
+              owner, repo, issue_number: prNumber, body: `${compiledBody}\n${RUN_MARKER}`,
             });
             console.log(`Compiled ${findings.length} bot finding(s) into @copilot continue comment on PR #${prNumber}.`);
 

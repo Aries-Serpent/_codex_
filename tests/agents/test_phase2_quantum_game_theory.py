@@ -398,11 +398,10 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
             from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             try:
-                engine = QuantumInspiredGameEngine(num_players=0)
-                assert True
+                QuantumInspiredGameEngine(num_players=0)
             except (ValueError, TypeError):
                 # Expected validation
-                assert True
+                pass
         except TypeError:
             # num_players not a parameter
             pytest.skip("num_players not supported")
@@ -441,9 +440,8 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
 
             # Test with asymmetric matrix if supported
             try:
-                op = PayoffOperator(matrix=[[1, 2, 3], [4, 5, 6]])
-                assert True
+                PayoffOperator(matrix=[[1, 2, 3], [4, 5, 6]])
             except (TypeError, ValueError):
-                assert True
+                pass
         except ImportError:
             pytest.skip("Payoff matrix configuration not supported")

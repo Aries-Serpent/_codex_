@@ -347,9 +347,8 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     def test_analyze_requirements_with_none(self, orchestrator):
         """Test handling None user request."""
         try:
-            result = orchestrator.analyze_requirements(None)  # type: ignore
+            orchestrator.analyze_requirements(None)  # type: ignore
             # Should either work or raise appropriate error
-            assert True
         except (TypeError, AttributeError):
             # Acceptable to raise error for None
             pass

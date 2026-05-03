@@ -1,6 +1,4 @@
 """
-from __future__ import annotations
-
 Validate Module
 
 This module provides functionality for validate.
@@ -16,6 +14,8 @@ Functions:
 
 Author: Codex Team
 """
+
+from __future__ import annotations
 
 import logging
 
@@ -61,8 +61,6 @@ else:  # pragma: no cover - namespace stub without Typer attributes
 def _format_validation_error(exc: ValidationError) -> str:
     """Return a human-friendly message for schema validation errors."""
 
-    extra_keys: list[str] = []
-    messages: list[str] = []
     if ValidationError is None or exc is None:  # pragma: no cover - defensive fallback
         return str(exc)
 

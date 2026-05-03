@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183 — 2026-05-03 — PR #4193 — bot findings validation follow-up)
+- **PR bot findings follow-up** — Revalidated the current branch head after the PR continuation comment, confirmed ruff, tracked-file sync, targeted CI tests, and mypy baseline remain green locally, and recorded the final accountability/PDA entries for Pattern 25.
+
+### Fixed (S183 — 2026-05-03 — PR #4193 — rebase gate sync)
+- **Branch rebase gate** — Merged latest `origin/main` into `copilot/reorganize-observability-section` to clear REQ-10 divergence reported by Agent Token Delegation on commit `ad7bd1a`, preserving existing ruff and tracked-file sync cleanliness.
+
+### Fixed (S183 — 2026-05-03 — PR #4193 — PR comment upsert follow-up)
+- **`copilot-agent-session-done.yml`** — Switch compiled bot-feedback comments to a PR-scoped marker and scan all PR comment pages so repeated same-session bot findings append to one thread even after `[skip ci]` follow-up commits change the branch head SHA.
+- **`secrets-baseline-enforcer.yml`** — Upsert and append Secrets Baseline Enforcer rescue notices using a stable marker instead of creating a new PR comment for each failed run.
+
+### Fixed (S183 — 2026-05-03 — PR #4193 — same-session feedback comment upsert)
+- **`copilot-agent-session-done.yml`** — Use the PR branch head SHA (not ephemeral merge-preview SHA) for compiled bot-feedback markers and append same-session bot feedback updates to the existing `@mbaetiong`/`@copilot continue` thread instead of creating duplicate request comments.
+- **`scripts/ci/post_rescue_comment.py`** — Add visible-signature fallback matching and post-create duplicate consolidation so concurrent rescue posters for the same commit collapse into one appended thread.
+
+### Fixed (S183 — 2026-05-03 — PR #4193 — merge conflict resolution)
+- **Merge conflict resolution** — Merged latest `origin/main` into `copilot/reorganize-observability-section`, resolved the `CODEX_MANIFEST.json` generated metadata conflict by preserving the refreshed manifest from `main`, and re-synced `.secrets.baseline` with `sync_tracked_files.py --fix`.
+
+### Fixed (S183+ — 2026-05-02 — PR #4193 — observability/telemetry/code-quality)
+- **`scripts/track_progress.py`** — Remove unused `phase3_complete` variable (F841).
+- **`tests/agents/test_developer_orchestrator_comprehensive.py`** — Remove unused `result` assignment in try/except block (F841).
+- **`tests/agents/test_phase2_quantum_game_theory.py`** — Remove unused `engine` and `op` assignments in try/except blocks (F841).
+- **`tests/agents/test_workflow_orchestration_extended.py`** — Remove unused `result` assignment in try/except block (F841).
+- **`tests/rag/test_rag_caching_system.py`** — Remove unused `cached` assignment in loop (F841).
+- **`tests/rag/test_rag_integration_advanced.py`** — Remove unused `throughput` assignment (F841).
+- **`tests/validation/test_coverage_verification.py`** — Remove unused `content` assignments (F841, ×2).
+- **`src/codex_ml/cli/validate.py`** — Restore module docstring as first statement so `validate.__doc__` is not `None`; `from __future__ import annotations` placed after docstring.
+- **`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`** — Scope Codespace post-start.sh auto-provision note to `CODEX_ACTIVE_CODESPACE`/`WEBHOOK_RECEIVER_URL` only; `OTEL_EXPORTER_OTLP_ENDPOINT` and `REDIS_URL` moved to dedicated Observability / Data Store sub-headings.
+- **`scripts/environment_snapshot.py`** — Improve all 8 vague `"Exception occurred"` log warnings in `get_conda_env()` and `get_git_info()` with specific, actionable messages.
+- **`tests/ci/test_telemetry_collection.py`** — Add `TestCancelledRunsHandling` (4 tests) and `TestApprovalCascadeClassification` (5 tests) covering the `cancelled`-run separation and `approval-cascade` pattern bucket.
+
+### Fixed (auto-update — PR #4193)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4193 (SHA `c5c61938`) at 2026-05-02T21:24Z [auto-generated]
+
 ### Fixed (auto-update — PR #4179)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4179 (SHA `6da75db0`) at 2026-05-02T02:35Z [auto-generated]
 

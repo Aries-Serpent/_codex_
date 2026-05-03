@@ -489,9 +489,7 @@ class TestPerformanceBenchmarks:
                         pass
                 duration = time.time() - start
 
-                throughput = num_docs / duration
-                # Should index at least 10 docs/sec
-                assert True
+                _ = num_docs / duration  # throughput sanity — not asserted (benchmarking)
         except ImportError:
             pytest.skip("Module not available")
 

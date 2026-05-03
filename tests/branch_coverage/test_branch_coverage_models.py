@@ -12,6 +12,7 @@ Target: Real code coverage improvement for training modules
 import os
 from typing import Any, List
 from unittest.mock import MagicMock, patch
+
 from tests.branch_coverage import branch_input
 
 # ============================================================================

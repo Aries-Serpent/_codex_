@@ -79,17 +79,13 @@ class TestCoverageReportValidation:
         """Test that coverage can generate XML reports."""
         pyproject = Path("pyproject.toml")
         if pyproject.exists():
-            content = pyproject.read_text()
-            # Just verify configuration supports XML
-            assert True
+            pyproject.read_text()  # verify file is readable
 
     def test_coverage_html_can_be_generated(self) -> None:
         """Test that coverage can generate HTML reports."""
         pyproject = Path("pyproject.toml")
         if pyproject.exists():
-            content = pyproject.read_text()
-            # Just verify configuration supports HTML
-            assert True
+            pyproject.read_text()  # verify file is readable
 
     def test_coverage_json_can_be_generated(self) -> None:
         """Test that coverage can generate JSON reports."""

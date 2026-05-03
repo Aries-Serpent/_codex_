@@ -35,20 +35,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Enhanced environment snapshot with git commit, conda env, and seed tracking.
-
-This script extends the basic environment snapshot to include:
-- Git commit SHA for reproducibility
-- Conda environment (if available)
-- Python version and packages
-- Seed value (if provided)
-- System metadata
-
-Usage:
-    python scripts/environment_snapshot.py --out env_snapshot.json
-    python scripts/environment_snapshot.py --out env_snapshot.json --seed 42
-"""
+# Enhanced environment snapshot with git commit, conda env, and seed tracking.
+#
+# This script extends the basic environment snapshot to include:
+# - Git commit SHA for reproducibility
+# - Conda environment (if available)
+# - Python version and packages
+# - Seed value (if provided)
+# - System metadata
+#
+# Usage:
+#     python scripts/environment_snapshot.py --out env_snapshot.json
+#     python scripts/environment_snapshot.py --out env_snapshot.json --seed 42
 
 import argparse
 import json
@@ -94,7 +92,7 @@ def get_conda_env() -> dict[str, Any] | None:
             ).strip()
             info["version"] = conda_version
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get conda version", exc_info=True)
             # It's non-critical if we can't get the conda version; ignore and continue.
 
         # Try to get package list
@@ -111,13 +109,13 @@ def get_conda_env() -> dict[str, Any] | None:
             # Store first 10 packages as sample
             info["packages_sample"] = packages[:10]
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get conda package list", exc_info=True)
             # Non-critical if we can't get conda packages; ignore and continue.
 
         return info if info else None
 
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Failed to detect conda environment", exc_info=True)
         # If conda environment detection fails entirely, return None.
         return None
 
@@ -153,7 +151,7 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["commit"] = commit
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get git commit SHA", exc_info=True)
             # Non-critical if git commit lookup fails; ignore and continue.
 
         # Get short commit
@@ -167,7 +165,7 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["commit_short"] = short_commit
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get short git commit SHA", exc_info=True)
             # Non-critical if short commit lookup fails; ignore and continue.
 
         # Get branch name
@@ -181,7 +179,7 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["branch"] = branch
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get git branch name", exc_info=True)
             # Non-critical if branch name lookup fails; ignore and continue.
 
         # Check for uncommitted changes
@@ -195,13 +193,13 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["dirty"] = bool(status)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Failed to get git status", exc_info=True)
             # Non-critical if git status check fails; ignore and continue.
 
         return info if info else None
 
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Failed to detect git environment", exc_info=True)
         # If git info detection fails entirely, return None.
         return None
 

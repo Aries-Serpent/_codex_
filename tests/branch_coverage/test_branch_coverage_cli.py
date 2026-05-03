@@ -15,6 +15,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
+
 from tests.branch_coverage import branch_input
 
 # ============================================================================

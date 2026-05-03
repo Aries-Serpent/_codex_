@@ -26,7 +26,7 @@ class TestTelemetryCollector:
     def collector(self):
         """Create a TelemetryCollector instance for testing."""
         return TelemetryCollector(
-            owner="test-owner", repo="test-repo", token="test-token"
+            owner="test-owner", repo="test-repo", token="test-token"  # pragma: allowlist secret
         )
 
     @pytest.fixture
@@ -311,7 +311,7 @@ class TestClassifyRunCLI:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
 
     def test_classify_run_rebase_gate(self, collector):
         """--classify-run returns rebase-gate for branch-rebase-gate workflow failures."""
@@ -407,7 +407,7 @@ class TestAnalyzeMultiJobCascade:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
 
     def _make_report(self, distribution: dict) -> dict:
         """Build a minimal telemetry_data dict with the given pattern_distribution."""
@@ -529,3 +529,160 @@ class TestAnalyzeMultiJobCascade:
         assert isinstance(result["cascade_rate"], float)
         # round() to 4 places means no more than 4 decimal digits
         assert result["cascade_rate"] == round(result["cascade_rate"], 4)
+
+
+class TestCancelledRunsHandling:
+    """Tests for the cancelled-run separation introduced to fix the
+    42.7% false-positive CI failure rate (issue #4194).
+
+    Cancelled runs are concurrency-guard no-ops from self-approve, healer, and
+    rescue workflows. They must NOT be counted as genuine failures in
+    summary.failed_runs or influence failure_rate; instead they are reported
+    separately under summary.cancelled_runs.
+    """
+
+    @pytest.fixture
+    def collector(self):
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
+
+    def _make_run(self, run_id, name, conclusion):
+        return {
+            "id": run_id,
+            "name": name,
+            "html_url": f"https://github.com/test/test/actions/runs/{run_id}",
+            "conclusion": conclusion,
+            "created_at": "2024-01-01T00:00:00Z",
+        }
+
+    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    def test_cancelled_excluded_from_failed_runs(
+        self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
+    ):
+        """Cancelled runs must not appear in summary.failed_runs or failed_runs list."""
+        runs = [
+            self._make_run(1, "⚡ Self-Approve Pending Workflow Runs", "cancelled"),
+            self._make_run(2, "⚡ Self-Approve Pending Workflow Runs", "cancelled"),
+            self._make_run(3, "CI — Optimized", "failure"),
+        ]
+        mock_runs.return_value = runs
+        mock_jobs.return_value = []
+        mock_artifacts.return_value = []
+
+        report = collector.generate_report("main", output=str(tmp_path / "r.json"))
+
+        assert report["summary"]["failed_runs"] == 1
+        assert len(report["failed_runs"]) == 1
+        assert report["failed_runs"][0]["run_id"] == 3
+
+    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    def test_cancelled_counted_in_cancelled_runs_field(
+        self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
+    ):
+        """summary.cancelled_runs must equal the number of cancelled runs."""
+        runs = [
+            self._make_run(1, "⚡ Self-Approve", "cancelled"),
+            self._make_run(2, "Copilot Healer Auto-Poster", "cancelled"),
+            self._make_run(3, "CI — Optimized", "success"),
+        ]
+        mock_runs.return_value = runs
+        mock_jobs.return_value = []
+        mock_artifacts.return_value = []
+
+        report = collector.generate_report("main", output=str(tmp_path / "r.json"))
+
+        assert report["summary"]["cancelled_runs"] == 2
+
+    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    def test_failure_rate_excludes_cancelled(
+        self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
+    ):
+        """Failure rate must be computed from genuine failures / total runs only."""
+        runs = [
+            # 3 cancelled — should NOT count toward failure_rate numerator
+            self._make_run(1, "Self-Approve", "cancelled"),
+            self._make_run(2, "Self-Approve", "cancelled"),
+            self._make_run(3, "Self-Approve", "cancelled"),
+            # 1 genuine failure
+            self._make_run(4, "CI Tests", "failure"),
+            # 1 success
+            self._make_run(5, "CI Tests", "success"),
+        ]
+        mock_runs.return_value = runs
+        mock_jobs.return_value = []
+        mock_artifacts.return_value = []
+
+        report = collector.generate_report("main", output=str(tmp_path / "r.json"))
+
+        # 1 failure / 5 total = 0.2, NOT 4/5 = 0.8
+        assert report["summary"]["failure_rate"] == pytest.approx(1 / 5)
+        assert report["summary"]["total_runs"] == 5
+        assert report["summary"]["failed_runs"] == 1
+        assert report["summary"]["cancelled_runs"] == 3
+
+    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    def test_timed_out_still_counts_as_failure(
+        self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
+    ):
+        """timed_out must still be treated as a genuine failure, not operational overhead."""
+        runs = [
+            self._make_run(1, "Coverage Suite", "timed_out"),
+            self._make_run(2, "Self-Approve", "cancelled"),
+        ]
+        mock_runs.return_value = runs
+        mock_jobs.return_value = []
+        mock_artifacts.return_value = []
+
+        report = collector.generate_report("main", output=str(tmp_path / "r.json"))
+
+        assert report["summary"]["failed_runs"] == 1
+        assert report["summary"]["cancelled_runs"] == 1
+
+
+class TestApprovalCascadeClassification:
+    """Tests for the approval-cascade pattern bucket added to fix inflated
+    'unknown' counts from ⚡ Self-Approve Pending Workflow Runs cancellations.
+    """
+
+    @pytest.fixture
+    def collector(self):
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
+
+    def test_self_approve_workflow_classified_as_approval_cascade(self, collector):
+        """⚡ Self-Approve Pending Workflow Runs → approval-cascade, not unknown."""
+        run = {"name": "⚡ Self-Approve Pending Workflow Runs"}
+        jobs = [{"name": "approve-pending", "steps": []}]
+        assert collector.classify_failure(run, jobs) == "approval-cascade"
+
+    def test_pending_workflow_in_job_name(self, collector):
+        """'pending workflow' keyword in job name triggers approval-cascade."""
+        run = {"name": "Some Automation Workflow"}
+        jobs = [{"name": "pending workflow check", "steps": []}]
+        assert collector.classify_failure(run, jobs) == "approval-cascade"
+
+    def test_flush_queued_runs_classified(self, collector):
+        """flush-queued keyword triggers approval-cascade."""
+        run = {"name": "Flush Queued Runs"}
+        jobs = [{"name": "flush-queued", "steps": []}]
+        assert collector.classify_failure(run, jobs) == "approval-cascade"
+
+    def test_approval_cascade_does_not_match_generic_names(self, collector):
+        """Unrelated workflow names must NOT match approval-cascade."""
+        run = {"name": "CI Tests — Optimized with Caching"}
+        jobs = [{"name": "pytest", "steps": []}]
+        result = collector.classify_failure(run, jobs)
+        assert result != "approval-cascade"
+
+    def test_approval_cascade_bucket_defined_in_pattern_keywords(self, collector):
+        """The approval-cascade bucket must exist in PATTERN_KEYWORDS."""
+        assert "approval-cascade" in collector.PATTERN_KEYWORDS
+        keywords = collector.PATTERN_KEYWORDS["approval-cascade"]
+        assert any("self-approve" in kw for kw in keywords)
+        assert any("pending workflow" in kw or "approve pending" in kw for kw in keywords)
