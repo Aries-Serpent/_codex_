@@ -4,7 +4,7 @@
 **Branch**: `copilot/refactor-default-weakest-component`  
 **Author**: @Copilot  
 **Date**: 2026-05-03  
-**Commit**: `e97b4b52ac2bf03c848bf33e3dcbc69c8be562f8`  
+**Commit**: `7b462dbe4660bdf2ce1369a72d41332786f4729f`  
 **Status**: 🔄 ACTIVE
 
 ---
@@ -15,11 +15,15 @@
 - [`e97b4b52`] Initial plan (copilot-swe-agent[bot], 2026-05-03)
 - [`5a681c56`] Resolve CODEX_MANIFEST.json merge conflict — accept main generated_at/integrity, sync baseline
 - BLE001 stub cleanup: replaced 171 `_ = None  # noqa: BLE001` placeholders with `logger.debug("Suppressed exception in handler", exc_info=True)` across 99 files; 51 modules gained a module-level logger.
+- [`7b462db`] Universal baseline sweep — sync+auto_fix
+- **THIS SESSION**: Secrets Baseline Enforcer fix — pragma'd false-positive test API keys in `tests/agents/test_msp_client_comprehensive.py:54,73`; regenerated `.secrets.baseline`. Hardened `pr-followup-generator.yml` to trigger on `synchronize` / `edited` / `ready_for_review` so follow-up prompts are always up to date.
 
 ### Files Modified
 - `src/`, `scripts/`, `training/` — empty-except hygiene (logger.debug replacement)
 - `CODEX_MANIFEST.json` and `.secrets.baseline` — re-synced via `sync_tracked_files.py --fix`
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Pattern 25 updated each push
+- `tests/agents/test_msp_client_comprehensive.py` — pragma allowlist on test fixture API keys
+- `.github/workflows/pr-followup-generator.yml` — hardened triggers
 
 ---
 
@@ -116,4 +120,4 @@ python3 scripts/ci/auto_fix_common_issues.py --check-only
 
 **Generated**: 2026-05-03  
 **Template Version**: 2.0.0  
-**Last Updated**: 2026-05-03 05:10:30
+**Last Updated**: 2026-05-03 07:55:00 (Session: Secrets Baseline Enforcer fix + follow-up prompt hardening)

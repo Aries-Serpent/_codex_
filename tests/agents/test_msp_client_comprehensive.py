@@ -51,7 +51,7 @@ class TestMSPClientInitialization:
 
     def test_client_initialization_with_api_key(self):
         """Test initialization with API key."""
-        api_key = "test_api_key_12345"
+        api_key = "test_api_key_12345"  # pragma: allowlist secret
         client = MSPClient(api_key=api_key)
 
         assert hasattr(client, "api_key") or hasattr(client, "auth")
@@ -70,7 +70,7 @@ class TestMSPClientMocked:
     @pytest.fixture
     def mock_client(self):
         """Create mocked MSP client."""
-        return MSPClient(base_url="https://test.msp/api", api_key="test_key")
+        return MSPClient(base_url="https://test.msp/api", api_key="test_key")  # pragma: allowlist secret
 
     def test_client_request_structure(self, mock_client):
         """Test basic request structure."""

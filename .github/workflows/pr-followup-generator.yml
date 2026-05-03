@@ -1,8 +1,13 @@
 name: Generate PR Follow-Up Prompt
 
 on:
+  # HARDENED: always update follow-up prompts.
+  # Triggers on every PR event that can change PR state — open/reopen/synchronize
+  # (new commits)/edited (title or body) — so the prompt at
+  # `.github/copilot-prompts/active/PR-<n>-followup.md` is never stale.
+  # See requirement: "always maintain the most up to date follow up prompt".
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize, edited, ready_for_review]
   workflow_dispatch:
     inputs:
       pr_number:
