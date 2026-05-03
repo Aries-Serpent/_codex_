@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183 — 2026-05-03 — PR #4193 — merge conflict resolution)
+- **Merge conflict resolution** — Merged latest `origin/main` into `copilot/reorganize-observability-section`, resolved the `CODEX_MANIFEST.json` generated metadata conflict by preserving the refreshed manifest from `main`, and re-synced `.secrets.baseline` with `sync_tracked_files.py --fix`.
+
 ### Fixed (S183+ — 2026-05-02 — PR #4193 — observability/telemetry/code-quality)
 - **`scripts/track_progress.py`** — Remove unused `phase3_complete` variable (F841).
 - **`tests/agents/test_developer_orchestrator_comprehensive.py`** — Remove unused `result` assignment in try/except block (F841).
