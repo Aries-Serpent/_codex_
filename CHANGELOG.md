@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183 — 2026-05-03 — PR #4193 — rebase gate sync)
+- **Branch rebase gate** — Merged latest `origin/main` into `copilot/reorganize-observability-section` to clear REQ-10 divergence reported by Agent Token Delegation on commit `ad7bd1a`, preserving existing ruff and tracked-file sync cleanliness.
+
 ### Fixed (S183 — 2026-05-03 — PR #4193 — PR comment upsert follow-up)
 - **`copilot-agent-session-done.yml`** — Switch compiled bot-feedback comments to a PR-scoped marker and scan all PR comment pages so repeated same-session bot findings append to one thread even after `[skip ci]` follow-up commits change the branch head SHA.
 - **`secrets-baseline-enforcer.yml`** — Upsert and append Secrets Baseline Enforcer rescue notices using a stable marker instead of creating a new PR comment for each failed run.
