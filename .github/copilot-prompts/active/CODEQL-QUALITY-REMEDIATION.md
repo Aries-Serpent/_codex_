@@ -42,7 +42,7 @@
 | 🔵 Note | `py/unused-import` | 42+ | ✅ Fixed — ruff F401 sweep `7067d62`; bot-flagged imports `tests/` fixed `e323450` |
 | 🔵 Note | `py/unused-local-variable` | 62 | ✅ Fixed — ruff F841 sweep `7067d62` |
 | 🔵 Note | `py/ineffectual-statement` | bulk | ✅ Fixed — ruff F811/B018 sweep `7067d62` |
-| | **TOTAL** | **76+221+** | 22/26 rule groups fully resolved ✅ |
+| | **TOTAL** | **76+221+more** | 22/26 rule groups fully resolved ✅ (4 Error-level need live CodeQL scan) |
 
 ---
 
