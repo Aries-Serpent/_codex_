@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183 — 2026-05-03 — PR #4193 — same-session feedback comment upsert)
+- **`copilot-agent-session-done.yml`** — Use the PR branch head SHA (not ephemeral merge-preview SHA) for compiled bot-feedback markers and append same-session bot feedback updates to the existing `@mbaetiong`/`@copilot continue` thread instead of creating duplicate request comments.
+- **`scripts/ci/post_rescue_comment.py`** — Add visible-signature fallback matching and post-create duplicate consolidation so concurrent rescue posters for the same commit collapse into one appended thread.
+
 ### Fixed (S183 — 2026-05-03 — PR #4193 — merge conflict resolution)
 - **Merge conflict resolution** — Merged latest `origin/main` into `copilot/reorganize-observability-section`, resolved the `CODEX_MANIFEST.json` generated metadata conflict by preserving the refreshed manifest from `main`, and re-synced `.secrets.baseline` with `sync_tracked_files.py --fix`.
 

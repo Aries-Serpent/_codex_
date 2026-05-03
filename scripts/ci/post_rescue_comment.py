@@ -96,7 +96,8 @@ def _gh(
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
         with urllib.request.urlopen(req, timeout=20) as resp:
-            return resp.status, json.loads(resp.read())
+            raw = resp.read()
+            return resp.status, json.loads(raw) if raw else {}
     except urllib.error.HTTPError as exc:
         try:
             err_body = json.loads(exc.read())
@@ -110,8 +111,14 @@ def _find_rescue_comment(
     repo: str,
     pr_number: int,
     marker: str,
+    signature: str | None = None,
 ) -> tuple[int | None, str]:
-    """Return (comment_id, comment_body) for the first comment containing *marker*."""
+    """Return (comment_id, comment_body) for the first matching rescue comment.
+
+    The marker is authoritative.  The visible signature is a defensive fallback
+    for comments created by older rescue paths or API surfaces that omit HTML
+    comments from their rendered body.
+    """
     page = 1
     while True:
         status, comments = _gh(
@@ -123,12 +130,109 @@ def _find_rescue_comment(
             break
         for c in comments:
             body = c.get("body") or ""
-            if marker in body:
+            if marker in body or (signature and signature in body):
                 return c["id"], body
         if len(comments) < 100:
             break
         page += 1
     return None, ""
+
+
+def _matching_rescue_comments(
+    token: str,
+    repo: str,
+    pr_number: int,
+    marker: str,
+    signature: str,
+) -> list[dict]:
+    """Return all comments matching this SHA-scoped rescue thread."""
+    matches: list[dict] = []
+    page = 1
+    while True:
+        status, comments = _gh(
+            "GET",
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
+            token,
+        )
+        if status != 200 or not isinstance(comments, list) or not comments:
+            break
+        for c in comments:
+            body = c.get("body") or ""
+            if marker in body or signature in body:
+                matches.append(c)
+        if len(comments) < 100:
+            break
+        page += 1
+    return sorted(matches, key=lambda c: c.get("id", 0))
+
+
+def _consolidate_duplicate_rescue_comments(
+    token: str,
+    repo: str,
+    pr_number: int,
+    marker: str,
+    signature: str,
+    created_id: int,
+) -> None:
+    """Collapse same-SHA rescue-comment races into one appended thread."""
+    import time
+
+    time.sleep(3)
+    matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
+    if len(matches) <= 1:
+        return
+
+    canonical = matches[0]
+    canonical_id = canonical.get("id")
+    canonical_body = (canonical.get("body") or "").rstrip()
+
+    # If this process created a non-canonical duplicate, append its content to
+    # the canonical thread, then delete only its own duplicate comment.  If this
+    # process owns the canonical comment, fold in all later duplicates.
+    duplicates = (
+        [c for c in matches[1:] if c.get("id") == created_id]
+        if canonical_id != created_id
+        else matches[1:]
+    )
+    if not duplicates:
+        return
+
+    for duplicate in duplicates:
+        duplicate_body = (duplicate.get("body") or "").replace(marker, "").strip()
+        if duplicate_body and duplicate_body not in canonical_body:
+            canonical_body = (
+                canonical_body
+                + "\n\n---\n\n"
+                + "<details><summary>🔁 Consolidated duplicate rescue update</summary>\n\n"
+                + duplicate_body
+                + "\n\n</details>"
+            )[:MAX_COMMENT_LEN]
+
+    status, _ = _gh(
+        "PATCH",
+        f"/repos/{repo}/issues/comments/{canonical_id}",
+        token,
+        {"body": canonical_body},
+    )
+    if status not in (200, 201):
+        print(f"⚠️  Duplicate consolidation PATCH returned HTTP {status}.")
+        return
+
+    for duplicate in duplicates:
+        duplicate_id = duplicate.get("id")
+        if duplicate_id and duplicate_id != canonical_id:
+            delete_status, _ = _gh(
+                "DELETE",
+                f"/repos/{repo}/issues/comments/{duplicate_id}",
+                token,
+            )
+            if delete_status in (200, 204):
+                print(f"✅ Deleted duplicate rescue comment #{duplicate_id}.")
+            else:
+                print(
+                    f"⚠️  Duplicate rescue comment #{duplicate_id} "
+                    f"delete returned HTTP {delete_status}."
+                )
 
 
 def _get_branch_head_sha(token: str, repo: str, branch: str) -> str | None:
@@ -204,8 +308,11 @@ def main() -> None:
 
     # ONE rescue comment per PR per commit — all workflows share this marker.
     marker = f"<!-- ci-rescue-sha:{pr_number}:{sha_short} -->"
+    visible_signature = f"**Branch:** `{branch}` | **Commit:** `{commit_sha}`"
 
-    existing_id, existing_body = _find_rescue_comment(token, repo, pr_number, marker)
+    existing_id, existing_body = _find_rescue_comment(
+        token, repo, pr_number, marker, visible_signature
+    )
 
     # APPEND_ONLY mode: skip if no existing rescue comment found.
     if append_only and not existing_id:
@@ -319,6 +426,15 @@ def main() -> None:
     if status in (200, 201):
         url = resp.get("html_url", "(no url)") if isinstance(resp, dict) else "(no url)"
         print(f"✅ Posted rescue comment: {url}")
+        if isinstance(resp, dict) and resp.get("id"):
+            _consolidate_duplicate_rescue_comments(
+                token,
+                repo,
+                pr_number,
+                marker,
+                visible_signature,
+                int(resp["id"]),
+            )
     else:
         print(f"❌ POST failed: HTTP {status} — {resp}")
         sys.exit(1)

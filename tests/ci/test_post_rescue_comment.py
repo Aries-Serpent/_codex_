@@ -68,6 +68,68 @@ class TestGetBranchHeadSha:
         )
 
 
+class TestRescueCommentUpsert:
+    """Unit tests for same-SHA rescue comment upsert helpers."""
+
+    def test_find_rescue_comment_falls_back_to_visible_signature(self):
+        signature = "**Branch:** `feature` | **Commit:** `abc123`"
+
+        def _mock_gh(method, path, token, body=None):
+            assert method == "GET"
+            assert "page=1" in path
+            return 200, [{"id": 10, "body": f"## Rescue\n\n{signature}"}]
+
+        with patch.object(prc, "_gh", side_effect=_mock_gh):
+            comment_id, body = prc._find_rescue_comment(
+                "token",
+                "owner/repo",
+                4193,
+                "<!-- ci-rescue-sha:4193:abc123 -->",
+                signature,
+            )
+
+        assert comment_id == 10
+        assert signature in body
+
+    def test_consolidates_duplicate_rescue_comments(self):
+        marker = "<!-- ci-rescue-sha:4193:abc123def456 -->"
+        signature = "**Branch:** `feature` | **Commit:** `abc123def4567890`"
+        comments = [
+            {"id": 100, "body": f"{marker}\ncanonical\n{signature}"},
+            {"id": 101, "body": f"{marker}\nduplicate detail\n{signature}"},
+        ]
+        calls = []
+
+        def _mock_gh(method, path, token, body=None):
+            calls.append((method, path, body))
+            if method == "GET":
+                return 200, comments
+            if method == "PATCH":
+                assert path.endswith("/issues/comments/100")
+                assert "duplicate detail" in body["body"]
+                return 200, {"id": 100}
+            if method == "DELETE":
+                assert path.endswith("/issues/comments/101")
+                return 204, {}
+            raise AssertionError(f"unexpected call: {method} {path}")
+
+        with (
+            patch.object(prc, "_gh", side_effect=_mock_gh),
+            patch("time.sleep", return_value=None),
+        ):
+            prc._consolidate_duplicate_rescue_comments(
+                "token",
+                "owner/repo",
+                4193,
+                marker,
+                signature,
+                created_id=101,
+            )
+
+        methods = [call[0] for call in calls]
+        assert methods == ["GET", "PATCH", "DELETE"]
+
+
 class TestSelfSuppressMainLogic:
     """self-suppress guard: when branch HEAD ≠ COMMIT_SHA, no comment is posted."""
 

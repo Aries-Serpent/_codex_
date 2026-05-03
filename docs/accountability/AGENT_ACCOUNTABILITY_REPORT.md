@@ -24263,3 +24263,20 @@ before applying changes. Blocking CI rescue comments addressed via `reply_to_com
 - Pre-merge baseline: `ruff check src/ tests/ scripts/` → 0 violations ✅
 - Pre-merge baseline: `sync_tracked_files --check` → all consistent ✅
 - Post-resolution validation recorded in this session before commit ✅
+
+## SESSION SUMMARY — 2026-05-03T02:19Z SESSION S183-PR4193-comment-upsert [copilot] (Same-Session Feedback Comment Review — PR #4193)
+
+**PR:** #4193 | **Branch:** copilot/reorganize-observability-section | **Session:** S183-PR4193-comment-upsert
+
+### What Was Fixed
+- Addressed maintainer comment #4365193852 and the added requirement to review full-PR `mbaetiong` self-posted comment behavior.
+- Verified all 5 Copilot AI review threads remain resolved.
+- Verified local `ruff`, `sync_tracked_files`, and `auto_fix_common_issues` checks are green.
+- Updated `copilot-agent-session-done.yml` compile-bot-feedback handling so same-session bot feedback uses the PR branch head SHA instead of ephemeral merge-preview SHA.
+- Updated compile-bot-feedback to append additional same-session findings to the existing compiled `@copilot continue` comment instead of creating duplicate request comments for the same PR head.
+- Updated `post_rescue_comment.py` to match same-commit rescue comments by both canonical marker and visible branch/commit signature, then consolidate concurrent duplicate posts into one appended comment.
+
+### Verification
+- Workflow YAML parsed successfully ✅
+- Added targeted unit coverage for visible-signature fallback and duplicate rescue-comment consolidation ✅
+- Targeted local checks re-run before commit ✅
