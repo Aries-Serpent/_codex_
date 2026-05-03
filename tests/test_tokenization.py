@@ -12,8 +12,8 @@ from click.testing import CliRunner
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
 
-from codex_ml.cli.codex_cli import tokenizer_train  # noqa: E402
-from codex_ml.tokenization import (  # noqa: E402
+from codex_ml.cli.codex_cli import tokenizer_train
+from codex_ml.tokenization import (
     BOS_TOKEN,
     EOS_TOKEN,
     PAD_TOKEN,

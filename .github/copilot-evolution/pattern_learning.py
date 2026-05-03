@@ -23,7 +23,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +39,8 @@ class SemanticCluster:
 
     cluster_id: str
     name: str
-    centroid_features: Dict[str, float]
-    patterns: List[str]
+    centroid_features: dict[str, float]
+    patterns: list[str]
     cohesion_score: float
     created_at: str
     updated_at: str
@@ -51,7 +51,7 @@ class PatternEvolution:
     """Tracks evolution of a pattern over time."""
 
     pattern_id: str
-    versions: List[Dict[str, Any]]
+    versions: list[dict[str, Any]]
     current_version: int
     improvement_trend: float  # Positive = improving, Negative = degrading
     stability_score: float  # 0-1: How stable the pattern is
@@ -64,7 +64,7 @@ class AntiPattern:
     anti_pattern_id: str
     name: str
     description: str
-    detection_signature: Dict[str, Any]
+    detection_signature: dict[str, Any]
     severity: str  # low, medium, high, critical
     remediation: str
     occurrences: int
@@ -80,8 +80,8 @@ class BestPractice:
     description: str
     category: str
     confidence: float
-    supporting_evidence: List[str]
-    implementation_hints: List[str]
+    supporting_evidence: list[str]
+    implementation_hints: list[str]
     adoption_rate: float  # 0-1
 
 
@@ -105,8 +105,8 @@ class SemanticPatternClusterer:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.clusters: Dict[str, SemanticCluster] = {}
-        self.pattern_features: Dict[str, Dict[str, float]] = {}
+        self.clusters: dict[str, SemanticCluster] = {}
+        self.pattern_features: dict[str, dict[str, float]] = {}
 
         self._load_clusters()
 
@@ -152,7 +152,7 @@ class SemanticPatternClusterer:
         except Exception as e:
             logger.warning(f"Failed to save clusters: {e}")
 
-    def extract_features(self, pattern: Dict[str, Any]) -> Dict[str, float]:
+    def extract_features(self, pattern: dict[str, Any]) -> dict[str, float]:
         """
         Extract semantic features from a pattern.
 
@@ -162,7 +162,7 @@ class SemanticPatternClusterer:
         Returns:
             Feature vector as dictionary
         """
-        features: Dict[str, float] = {}
+        features: dict[str, float] = {}
 
         pattern_str = json.dumps(pattern, sort_keys=True).lower()
 
@@ -198,7 +198,7 @@ class SemanticPatternClusterer:
         return features
 
     def calculate_similarity(
-        self, features1: Dict[str, float], features2: Dict[str, float]
+        self, features1: dict[str, float], features2: dict[str, float]
     ) -> float:
         """
         Calculate cosine similarity between feature vectors.
@@ -229,8 +229,8 @@ class SemanticPatternClusterer:
         return dot_product / (math.sqrt(norm1) * math.sqrt(norm2))
 
     def cluster_patterns(
-        self, patterns: List[Dict[str, Any]], num_clusters: int = 5
-    ) -> List[SemanticCluster]:
+        self, patterns: list[dict[str, Any]], num_clusters: int = 5
+    ) -> list[SemanticCluster]:
         """
         Cluster patterns into semantic groups.
 
@@ -254,7 +254,7 @@ class SemanticPatternClusterer:
             self.pattern_features[pid] = self.extract_features(pattern)
 
         # Simple K-means-like clustering
-        clusters: List[SemanticCluster] = []
+        clusters: list[SemanticCluster] = []
 
         # Initialize cluster centroids
         step = max(1, len(pattern_ids) // num_clusters)
@@ -265,7 +265,7 @@ class SemanticPatternClusterer:
 
         # Assign patterns to clusters
         for _ in range(10):  # Max iterations
-            cluster_assignments: Dict[int, List[str]] = defaultdict(list)
+            cluster_assignments: dict[int, list[str]] = defaultdict(list)
 
             for pid in pattern_ids:
                 features = self.pattern_features[pid]
@@ -284,8 +284,8 @@ class SemanticPatternClusterer:
             for i, pids in cluster_assignments.items():
                 if not pids:
                     continue
-                new_centroid: Dict[str, float] = {}
-                all_keys: Set[str] = set()
+                new_centroid: dict[str, float] = {}
+                all_keys: set[str] = set()
                 for pid in pids:
                     all_keys.update(self.pattern_features[pid].keys())
 
@@ -339,7 +339,7 @@ class SemanticPatternClusterer:
 
         return clusters
 
-    def _calculate_cohesion(self, pattern_ids: List[str]) -> float:
+    def _calculate_cohesion(self, pattern_ids: list[str]) -> float:
         """Calculate cohesion score for a cluster."""
         if len(pattern_ids) < 2:
             return 1.0
@@ -357,8 +357,8 @@ class SemanticPatternClusterer:
         return total_sim / count if count > 0 else 0.0
 
     def find_similar_patterns(
-        self, pattern: Dict[str, Any], top_k: int = 5
-    ) -> List[Tuple[str, float]]:
+        self, pattern: dict[str, Any], top_k: int = 5
+    ) -> list[tuple[str, float]]:
         """
         Find patterns similar to the given pattern.
 
@@ -400,7 +400,7 @@ class PatternEvolutionTracker:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.evolutions: Dict[str, PatternEvolution] = {}
+        self.evolutions: dict[str, PatternEvolution] = {}
         self._load_evolutions()
 
         logger.info(
@@ -442,8 +442,8 @@ class PatternEvolutionTracker:
     def record_pattern_version(
         self,
         pattern_id: str,
-        pattern_data: Dict[str, Any],
-        metrics: Dict[str, float],
+        pattern_data: dict[str, Any],
+        metrics: dict[str, float],
     ) -> PatternEvolution:
         """
         Record a new version of a pattern.
@@ -493,7 +493,7 @@ class PatternEvolutionTracker:
 
         return evolution
 
-    def _calculate_trend(self, versions: List[Dict[str, Any]]) -> float:
+    def _calculate_trend(self, versions: list[dict[str, Any]]) -> float:
         """Calculate improvement trend from version history."""
         if len(versions) < 2:
             return 0.0
@@ -523,7 +523,7 @@ class PatternEvolutionTracker:
 
         return numerator / denominator
 
-    def _calculate_stability(self, versions: List[Dict[str, Any]]) -> float:
+    def _calculate_stability(self, versions: list[dict[str, Any]]) -> float:
         """Calculate stability score from version variance."""
         if len(versions) < 2:
             return 1.0
@@ -538,7 +538,7 @@ class PatternEvolutionTracker:
         # Convert variance to stability (lower variance = higher stability)
         return max(0.0, 1.0 - math.sqrt(variance) * 2)
 
-    def get_improving_patterns(self) -> List[PatternEvolution]:
+    def get_improving_patterns(self) -> list[PatternEvolution]:
         """Get patterns that are improving over time."""
         return [
             e
@@ -546,7 +546,7 @@ class PatternEvolutionTracker:
             if e.improvement_trend > 0.1 and e.stability_score > 0.5
         ]
 
-    def get_degrading_patterns(self) -> List[PatternEvolution]:
+    def get_degrading_patterns(self) -> list[PatternEvolution]:
         """Get patterns that are degrading over time."""
         return [
             e
@@ -575,7 +575,7 @@ class AntiPatternDetector:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.anti_patterns: Dict[str, AntiPattern] = {}
+        self.anti_patterns: dict[str, AntiPattern] = {}
         self._initialize_known_antipatterns()
         self._load_antipatterns()
 
@@ -692,8 +692,8 @@ class AntiPatternDetector:
             logger.warning(f"Failed to save anti-patterns: {e}")
 
     def detect(
-        self, content: str, context: Optional[Dict[str, Any]] = None
-    ) -> List[AntiPattern]:
+        self, content: str, context: Optional[dict[str, Any]] = None
+    ) -> list[AntiPattern]:
         """
         Detect anti-patterns in content.
 
@@ -750,7 +750,7 @@ class AntiPatternDetector:
 
         return detected
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get anti-pattern detection statistics."""
         return {
             "total_antipatterns": len(self.anti_patterns),
@@ -792,7 +792,7 @@ class BestPracticeRecommender:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.best_practices: Dict[str, BestPractice] = {}
+        self.best_practices: dict[str, BestPractice] = {}
         self._initialize_practices()
         self._load_practices()
 
@@ -916,9 +916,9 @@ class BestPracticeRecommender:
     def recommend(
         self,
         content: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
         top_k: int = 3,
-    ) -> List[BestPractice]:
+    ) -> list[BestPractice]:
         """
         Recommend best practices for the given content.
 
@@ -966,7 +966,7 @@ class BestPracticeRecommender:
         self,
         practice: BestPractice,
         content: str,
-        context: Optional[Dict[str, Any]],
+        context: Optional[dict[str, Any]],
     ) -> float:
         """Calculate relevance of a practice for the content."""
         relevance = 0.5  # Base relevance
@@ -997,7 +997,7 @@ class BestPracticeRecommender:
 
             logger.info(f"📈 Recorded adoption of {bp.name}: {bp.adoption_rate:.1%}")
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get best practice statistics."""
         return {
             "total_practices": len(self.best_practices),

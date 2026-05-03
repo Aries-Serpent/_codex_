@@ -306,7 +306,7 @@ class TestLoadDataset:
                     "toy_copy_task",  # Use preset to avoid HF requirement
                     hf_text_field="text",
                 )
-            except Exception:  # noqa: BLE001
+            except Exception:
                 pass  # Expected to fail for preset
 
             # Check if deprecation warning was issued

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Mapping, Sequence
 
 
 class PromptSecurityError(ValueError):
@@ -68,8 +68,8 @@ def load_secret(
 
 
 __all__ = [
-    "scan_prompt_for_unsafe_content",
-    "load_secret",
     "PromptSecurityError",
     "SecretNotFoundError",
+    "load_secret",
+    "scan_prompt_for_unsafe_content",
 ]

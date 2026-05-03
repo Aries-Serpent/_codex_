@@ -11,7 +11,7 @@ import pytest
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
 import contextlib
 
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture(autouse=True)

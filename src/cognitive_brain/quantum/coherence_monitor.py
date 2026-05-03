@@ -6,10 +6,11 @@ automatic rollbacks when coherence falls below acceptable thresholds.
 """
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 from cognitive_brain.models.quantum_metrics import (
     QuantumMetric,
@@ -115,7 +116,7 @@ class CoherenceMonitor:
 
         # Sprint 1: Add batching support
         self._batch_size = batch_size
-        self._pending_metrics: List[QuantumMetric] = []
+        self._pending_metrics: list[QuantumMetric] = []
 
         # Default thresholds from Phase 7 spec
         self.thresholds = [
@@ -145,7 +146,7 @@ class CoherenceMonitor:
             ),
         ]
 
-        self._active_alerts: List[Alert] = []
+        self._active_alerts: list[Alert] = []
         self._rollback_triggered = False
 
         # Lazy OpenTelemetry gauge — initialised on first use when the
@@ -186,13 +187,13 @@ class CoherenceMonitor:
                     description="Quantum coherence and accuracy metrics",
                     unit="1",
                 )
-            except Exception:  # noqa: BLE001
+            except Exception:
                 self._otel_gauge = False
                 return
 
         try:
             self._otel_gauge.set(value, {"feature": feature, "metric": metric_name})
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Suppressed exception in handler", exc_info=True)
     # ------------------------------------------------------------------
     # Metric recording
@@ -204,7 +205,7 @@ class CoherenceMonitor:
         metric_name: str,
         metric_value: float,
         agent_id: Optional[str] = None,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
     ) -> QuantumMetric:
         """
         Record a metric and check for alerts.
@@ -357,7 +358,7 @@ class CoherenceMonitor:
             },
         )
 
-    def get_feature_health(self, feature: str, hours: int = 24) -> Dict[str, Any]:
+    def get_feature_health(self, feature: str, hours: int = 24) -> dict[str, Any]:
         """
         Get health status for a quantum feature.
 
@@ -398,7 +399,7 @@ class CoherenceMonitor:
         }
 
     def _assess_health_status(
-        self, feature: str, coherence_stats: Dict, error_rates: List[float]
+        self, feature: str, coherence_stats: dict, error_rates: list[float]
     ) -> str:
         """
         Assess overall health status of a feature.
@@ -429,7 +430,7 @@ class CoherenceMonitor:
 
         return "healthy"
 
-    def get_all_features_health(self) -> Dict[str, Dict]:
+    def get_all_features_health(self) -> dict[str, dict]:
         """
         Get health status for all quantum features.
 
@@ -446,7 +447,7 @@ class CoherenceMonitor:
 
     def get_active_alerts(
         self, feature: Optional[str] = None, level: Optional[AlertLevel] = None
-    ) -> List[Alert]:
+    ) -> list[Alert]:
         """
         Get currently active alerts.
 
@@ -551,7 +552,7 @@ class CoherenceMonitor:
             return "critical"
         return "degraded"
 
-    def get_recent_alerts(self, feature: Any = None, hours: int = 24) -> List[Alert]:
+    def get_recent_alerts(self, feature: Any = None, hours: int = 24) -> list[Alert]:
         """Get recent alerts optionally filtered by feature.
 
         Args:

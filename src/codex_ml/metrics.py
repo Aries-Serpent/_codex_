@@ -7,8 +7,6 @@ Exposed callables can be referenced via entrypoint strings like:
 
 from __future__ import annotations
 
-from typing import Union
-
 import torch
 
 
@@ -20,7 +18,7 @@ def accuracy(logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
     return (preds == targets).float().mean()
 
 
-def precision(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tensor]) -> float:
+def precision(preds: list | torch.Tensor, targets: list | torch.Tensor) -> float:
     """
     Compute binary classification precision.
     """
@@ -37,7 +35,7 @@ def precision(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tenso
     return true_positives / predicted_positives
 
 
-def recall(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tensor]) -> float:
+def recall(preds: list | torch.Tensor, targets: list | torch.Tensor) -> float:
     """
     Compute binary classification recall.
     """
@@ -54,7 +52,7 @@ def recall(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tensor])
     return true_positives / actual_positives
 
 
-def f1_score(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tensor]) -> float:
+def f1_score(preds: list | torch.Tensor, targets: list | torch.Tensor) -> float:
     """
     Compute binary classification F1 score.
     """
@@ -86,9 +84,9 @@ def token_accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:
 
 __all__ = [
     "accuracy",
-    "precision",
-    "recall",
     "f1_score",
     "perplexity",
+    "precision",
+    "recall",
     "token_accuracy",
 ]

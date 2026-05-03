@@ -18,7 +18,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import requests
 
@@ -59,7 +59,7 @@ class GitHubAPIClient:
             "X-GitHub-Api-Version": "2022-11-28"
         })
 
-    def _request(self, method: str, endpoint: str, **kwargs) -> Optional[Dict[str, Any]]:
+    def _request(self, method: str, endpoint: str, **kwargs) -> Optional[dict[str, Any]]:
         """Make an authenticated request to the GitHub API.
 
         Args:
@@ -82,7 +82,7 @@ class GitHubAPIClient:
                 logger.error(f"Response body: {e.response.text[:500]}")
             return None
 
-    def fetch_pr_commits(self, owner: str, repo: str, pr_number: int) -> List[Dict[str, Any]]:
+    def fetch_pr_commits(self, owner: str, repo: str, pr_number: int) -> list[dict[str, Any]]:
         """Fetch all commits in a pull request.
 
         Args:
@@ -116,7 +116,7 @@ class GitHubAPIClient:
         logger.info(f"Total commits fetched: {len(commits)}")
         return commits
 
-    def fetch_check_runs(self, owner: str, repo: str, sha: str) -> List[Dict[str, Any]]:
+    def fetch_check_runs(self, owner: str, repo: str, sha: str) -> list[dict[str, Any]]:
         """Fetch check runs for a specific commit.
 
         Args:
@@ -134,7 +134,7 @@ class GitHubAPIClient:
 
         return data["check_runs"]
 
-    def fetch_workflow_runs(self, owner: str, repo: str, sha: str) -> List[Dict[str, Any]]:
+    def fetch_workflow_runs(self, owner: str, repo: str, sha: str) -> list[dict[str, Any]]:
         """Fetch workflow runs for a specific commit.
 
         Args:
@@ -153,7 +153,7 @@ class GitHubAPIClient:
 
         return data["workflow_runs"]
 
-    def fetch_workflow_artifacts(self, owner: str, repo: str, run_id: int) -> List[Dict[str, Any]]:
+    def fetch_workflow_artifacts(self, owner: str, repo: str, run_id: int) -> list[dict[str, Any]]:
         """Fetch artifacts for a specific workflow run.
 
         Args:
@@ -172,7 +172,7 @@ class GitHubAPIClient:
         return data["artifacts"]
 
 
-def is_check_failing(check_run: Dict[str, Any]) -> bool:
+def is_check_failing(check_run: dict[str, Any]) -> bool:
     """Determine if a check run is failing or non-successful.
 
     Args:
@@ -196,8 +196,8 @@ def process_commit(
     client: GitHubAPIClient,
     owner: str,
     repo: str,
-    commit: Dict[str, Any]
-) -> Optional[Tuple[str, List[str], List[Tuple[str, str]]]]:
+    commit: dict[str, Any]
+) -> Optional[tuple[str, list[str], list[tuple[str, str]]]]:
     """Process a single commit to extract failing checks and artifacts.
 
     Args:
@@ -251,7 +251,7 @@ def generate_markdown_report(
     owner: str,
     repo: str,
     pr_number: int,
-    results: List[Tuple[str, List[str], List[Tuple[str, str]]]],
+    results: list[tuple[str, list[str], list[tuple[str, str]]]],
     output_path: Path
 ) -> None:
     """Generate markdown report with failing checks and artifacts.

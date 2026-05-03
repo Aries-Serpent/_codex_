@@ -51,7 +51,7 @@ def validate_actor(actor: str) -> bool:
     # Primary: StructuralPolicyManager RBAC check with audit log
     try:
         return default_policy_manager.evaluate_permission(actor, "inject_session_context")
-    except Exception:  # noqa: BLE001 — fail-open to allowlist fallback
+    except Exception:
         return actor in ALLOWED_ACTORS
 
 
@@ -140,7 +140,7 @@ def register_mcp_session_hook(mcp_context: dict[str, Any]) -> dict[str, Any]:
             payload.injected_patterns,
         )
 
-    except Exception as exc:  # noqa: BLE001 — fail-open
+    except Exception as exc:
         logger.error(
             "Cognitive brain injection failed for actor=%s: %s — returning original context.",
             actor,

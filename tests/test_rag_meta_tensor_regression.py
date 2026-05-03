@@ -8,8 +8,8 @@ from __future__ import annotations
 import builtins
 import sys
 import types
+from collections.abc import Callable
 from types import SimpleNamespace
-from typing import Callable, Dict, List
 
 import pytest
 
@@ -45,7 +45,7 @@ def fake_model_factory() -> Callable[..., object]:
     """Build fake models with optional named modules, parameters, and buffers."""
 
     class FakeModule:
-        def __init__(self, parameters: List[object]):
+        def __init__(self, parameters: list[object]):
             self._parameters = parameters
 
         def named_parameters(self):
@@ -53,9 +53,9 @@ def fake_model_factory() -> Callable[..., object]:
 
     def _factory(
         *,
-        modules: List[object] | None = None,
-        parameters: List[object] | None = None,
-        buffers: List[object] | None = None,
+        modules: list[object] | None = None,
+        parameters: list[object] | None = None,
+        buffers: list[object] | None = None,
         device: SimpleNamespace | None = None,
         to_empty: Callable[..., object] | None = None,
         to: Callable[..., object] | None = None,
@@ -107,7 +107,7 @@ def test_has_meta_tensors_detects_meta_locations(
     device_factory: Callable[[str], SimpleNamespace],
 ) -> None:
     """Confirm meta tensors are detected across parameters, buffers, or device."""
-    kwargs: Dict[str, object] = {}
+    kwargs: dict[str, object] = {}
     if attribute_name == "parameters":
         kwargs["parameters"] = [meta_param]
     elif attribute_name == "buffers":
@@ -141,7 +141,7 @@ def test_safe_model_to_device_uses_to_empty_for_meta(
     meta_param: SimpleNamespace,
 ) -> None:
     """Ensure meta tensors trigger to_empty and return the moved model."""
-    call_state: Dict[str, str] = {}
+    call_state: dict[str, str] = {}
 
     def to_empty(device: str) -> str:
         call_state["device"] = device
@@ -168,7 +168,7 @@ def test_safe_model_to_device_uses_torch_module_to(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Validate that torch.nn.Module instances use their .to method."""
-    moved: Dict[str, str] = {}
+    moved: dict[str, str] = {}
 
     class FakeTorchModule:
         def to(self, device: str, **kwargs):
@@ -196,7 +196,7 @@ def test_safe_model_to_device_fallbacks_when_torch_missing(
     fake_model_factory: Callable[..., object],
 ) -> None:
     """Verify the fallback .to path is used if torch import fails."""
-    moved: Dict[str, str] = {}
+    moved: dict[str, str] = {}
 
     original_import = builtins.__import__
 

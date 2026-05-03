@@ -25,10 +25,9 @@ from __future__ import annotations
 import ast
 import json
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
 
 # Packages considered optional for tests (extend as needed)
-OPTIONAL_PKGS: Set[str] = {
+OPTIONAL_PKGS: set[str] = {
     "numpy",
     "np",
     "torch",
@@ -48,9 +47,9 @@ TESTS_DIR = REPO_ROOT / "tests"
 OUT_JSON = REPO_ROOT / ".codex" / "fragile_tests.json"
 
 
-def _collect_try_ranges(tree: ast.AST) -> List[Tuple[int, int]]:
+def _collect_try_ranges(tree: ast.AST) -> list[tuple[int, int]]:
     """Collect approximate (start_lineno, end_lineno) ranges for Try nodes."""
-    ranges: List[Tuple[int, int]] = []
+    ranges: list[tuple[int, int]] = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Try):
             start = getattr(node, "lineno", None) or 0
@@ -63,14 +62,14 @@ def _collect_try_ranges(tree: ast.AST) -> List[Tuple[int, int]]:
     return ranges
 
 
-def _is_line_in_ranges(lineno: int, ranges: List[Tuple[int, int]]) -> bool:
+def _is_line_in_ranges(lineno: int, ranges: list[tuple[int, int]]) -> bool:
     for a, b in ranges:
         if a <= lineno <= b:
             return True
     return False
 
 
-def analyze_file(path: Path) -> Tuple[bool, List[str]]:
+def analyze_file(path: Path) -> tuple[bool, list[str]]:
     """
     Analyze a single test file for fragile top-level imports.
 
@@ -88,10 +87,10 @@ def analyze_file(path: Path) -> Tuple[bool, List[str]]:
         # Syntax error files are ignored for this scan
         return False, []
 
-    fragile_imports: List[str] = []
+    fragile_imports: list[str] = []
 
     # Lines that invoke pytest.importorskip are treated as guarding imports.
-    guarded_lines: Set[int] = set()
+    guarded_lines: set[int] = set()
     if "importorskip" in source:
         for i, line in enumerate(source.splitlines(), start=1):
             if "importorskip" in line:
@@ -120,7 +119,7 @@ def analyze_file(path: Path) -> Tuple[bool, List[str]]:
     return (len(fragile_imports) > 0, fragile_imports)
 
 
-def discover_tests() -> List[Path]:
+def discover_tests() -> list[Path]:
     if not TESTS_DIR.exists():
         return []
     # Look for test files in tests/ recursively
@@ -130,7 +129,7 @@ def discover_tests() -> List[Path]:
 
 def main() -> int:
     test_files = discover_tests()
-    results: Dict[str, List[str]] = {}
+    results: dict[str, list[str]] = {}
 
     for f in test_files:
         fragile, imps = analyze_file(f)

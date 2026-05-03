@@ -22,9 +22,9 @@ pytest.importorskip("torch")
 pytestmark = pytest.mark.usefixtures("disable_torch_profiler")
 
 
-import os  # noqa: E402
-import sys  # noqa: E402
-import unittest  # noqa: E402
+import os
+import sys
+import unittest
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))

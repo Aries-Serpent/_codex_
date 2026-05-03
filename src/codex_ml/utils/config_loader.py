@@ -18,9 +18,10 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence
+from typing import Any, Optional
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 from omegaconf import DictConfig, OmegaConf

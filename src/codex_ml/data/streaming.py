@@ -20,16 +20,16 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Streaming dataset helpers for continual-learning style ingestion."""
 
 
 import json  # noqa: E402
+from collections.abc import Callable, Iterator  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Iterator  # noqa: E402
+from typing import Any  # noqa: E402
 
 from .datamodule import StreamingDataModule  # noqa: E402
 from .datamodule import (  # noqa: E402
-    default_example_validator as _default_example_validator,  # noqa: E402
+    default_example_validator as _default_example_validator,
 )
 
 Validator = Callable[[Any], None]
@@ -72,4 +72,4 @@ def iter_jsonl_chunks(
         yield tuple(buffer)
 
 
-__all__ = ["StreamingDataModule", "iter_jsonl_chunks", "default_example_validator"]
+__all__ = ["StreamingDataModule", "default_example_validator", "iter_jsonl_chunks"]

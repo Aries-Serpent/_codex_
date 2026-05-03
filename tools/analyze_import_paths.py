@@ -10,9 +10,9 @@ from __future__ import annotations
 import argparse
 import ast
 from collections import defaultdict
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List
 
 TARGET_ROOT = Path(__file__).resolve().parent.parent / "src"
 
@@ -39,13 +39,13 @@ def module_name_from_path(path: Path, base_dir: Path) -> str:
     return ".".join(relative.with_suffix("").parts)
 
 
-def parse_imports(path: Path) -> List[str]:
+def parse_imports(path: Path) -> list[str]:
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"))
     except (OSError, SyntaxError, UnicodeDecodeError):
         return []
 
-    imports: List[str] = []
+    imports: list[str] = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             imports.extend(alias.name.split(".")[0] for alias in node.names)
@@ -54,9 +54,9 @@ def parse_imports(path: Path) -> List[str]:
     return imports
 
 
-def analyze_coupling(base_dir: Path) -> List[ModuleCoupling]:
-    inbound: Dict[str, set[str]] = defaultdict(set)
-    outbound: Dict[str, set[str]] = defaultdict(set)
+def analyze_coupling(base_dir: Path) -> list[ModuleCoupling]:
+    inbound: dict[str, set[str]] = defaultdict(set)
+    outbound: dict[str, set[str]] = defaultdict(set)
 
     for path in discover_python_files(base_dir):
         module_name = module_name_from_path(path, base_dir)
@@ -66,7 +66,7 @@ def analyze_coupling(base_dir: Path) -> List[ModuleCoupling]:
             inbound[dependency].add(module_name)
 
     modules = set(outbound) | set(inbound)
-    results: List[ModuleCoupling] = []
+    results: list[ModuleCoupling] = []
     for module in sorted(modules):
         results.append(
             ModuleCoupling(

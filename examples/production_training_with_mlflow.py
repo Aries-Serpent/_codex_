@@ -13,7 +13,7 @@ from __future__ import annotations
 import argparse
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from codex_ml.training.loop import run_minimal_training
 
@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def load_config(config_path: str | None = None) -> Dict[str, Any]:
+def load_config(config_path: str | None = None) -> dict[str, Any]:
     """Load training configuration.
 
     Args:
@@ -61,8 +61,8 @@ def load_config(config_path: str | None = None) -> Dict[str, Any]:
 
 
 def train_with_tracking(
-    config: Dict[str, Any], run_dir: str = "artifacts/runs"
-) -> Dict[str, float]:
+    config: dict[str, Any], run_dir: str = "artifacts/runs"
+) -> dict[str, float]:
     """Run training with optional MLflow tracking.
 
     Args:

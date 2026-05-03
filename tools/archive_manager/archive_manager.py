@@ -42,7 +42,7 @@ import sys
 import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Optional
 
 # Optional imports for Parquet and querying
 try:
@@ -175,7 +175,7 @@ def sha256_hex(s: str) -> str:
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 
-def is_ignored_path(rel_path: str, ignores: List[str]) -> bool:
+def is_ignored_path(rel_path: str, ignores: list[str]) -> bool:
     parts = os.path.normpath(rel_path).split(os.sep)
     for p in parts:
         if p in ignores:
@@ -231,7 +231,7 @@ def to_posix(rel_path: str) -> str:
     return rel_path.replace(os.sep, "/")
 
 
-def matches_allowdeny(rel_path: str, allow_globs: List[str], deny_globs: List[str]) -> bool:
+def matches_allowdeny(rel_path: str, allow_globs: list[str], deny_globs: list[str]) -> bool:
     rel = to_posix(rel_path)
     if allow_globs:
         if not any(fnmatch.fnmatch(rel, patt) for patt in allow_globs):
@@ -269,7 +269,7 @@ def ensure_sqlite(db_path: str):
 
 
 def sqlite_upsert_rows(
-    db_path: str, rows: List[Tuple[str, str, Optional[str], int, str, int, Optional[str]]]
+    db_path: str, rows: list[tuple[str, str, Optional[str], int, str, int, Optional[str]]]
 ):
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
@@ -291,7 +291,7 @@ def sqlite_upsert_rows(
     conn.close()
 
 
-def sqlite_fetch_hash_map(db_path: str) -> Dict[str, str]:
+def sqlite_fetch_hash_map(db_path: str) -> dict[str, str]:
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
     cur.execute("SELECT path, hash FROM code_metadata WHERE deleted_at IS NULL")
@@ -300,7 +300,7 @@ def sqlite_fetch_hash_map(db_path: str) -> Dict[str, str]:
     return out
 
 
-def sqlite_active_paths(db_path: str) -> Set[str]:
+def sqlite_active_paths(db_path: str) -> set[str]:
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
     cur.execute("SELECT path FROM code_metadata WHERE deleted_at IS NULL")
@@ -309,7 +309,7 @@ def sqlite_active_paths(db_path: str) -> Set[str]:
     return out
 
 
-def sqlite_mark_deleted(db_path: str, paths: Set[str], ts: str):
+def sqlite_mark_deleted(db_path: str, paths: set[str], ts: str):
     if not paths:
         return 0
     conn = sqlite3.connect(db_path)
@@ -325,8 +325,8 @@ def sqlite_mark_deleted(db_path: str, paths: Set[str], ts: str):
 
 
 def sqlite_fetch_info_for_paths(
-    db_path: str, paths: Set[str]
-) -> Dict[str, Tuple[Optional[str], Optional[int], Optional[str]]]:
+    db_path: str, paths: set[str]
+) -> dict[str, tuple[Optional[str], Optional[int], Optional[str]]]:
     if not paths:
         return {}
     conn = sqlite3.connect(db_path)
@@ -355,7 +355,7 @@ def sqlite_max_row_id(db_path: str) -> int:
 # ---------------- scanning ----------------
 
 
-def scan_files(root: str, exts: List[str], ignores: List[str]) -> List[str]:
+def scan_files(root: str, exts: list[str], ignores: list[str]) -> list[str]:
     root = os.path.abspath(root)
     files = []
     for dirpath, dirnames, filenames in os.walk(root):
@@ -385,7 +385,7 @@ def read_text_file(path: str) -> Optional[str]:
 # ---------------- parquet ----------------
 
 
-def write_parquet_rows(rows: List[Tuple[int, str]], out_file: str, compression: str = "zstd"):
+def write_parquet_rows(rows: list[tuple[int, str]], out_file: str, compression: str = "zstd"):
     if pa is None or pq is None:
         raise RuntimeError("pyarrow is required for Parquet operations")
     table = pa.Table.from_pydict(
@@ -397,7 +397,7 @@ def write_parquet_rows(rows: List[Tuple[int, str]], out_file: str, compression: 
     pq.write_table(table, out_file, compression=compression)
 
 
-def list_parquet_deltas(base_file: str, deltas_dir: str) -> List[str]:
+def list_parquet_deltas(base_file: str, deltas_dir: str) -> list[str]:
     pattern = os.path.join(deltas_dir, "code_blobs_*.parquet")
     files = sorted(glob.glob(pattern))
     if base_file and os.path.exists(base_file):
@@ -420,7 +420,7 @@ def classify_deleted_path(rel_path: str) -> str:
     return "code"
 
 
-def append_jsonl(path: str, records: List[dict]):
+def append_jsonl(path: str, records: list[dict]):
     if not records:
         return
     with open(path, "a", encoding="utf-8") as f:
@@ -546,7 +546,7 @@ def cmd_update(args):
 
     changed = 0
     sqlite_rows, parquet_rows, jsonl_updates = [], [], []
-    current_paths: Set[str] = set()
+    current_paths: set[str] = set()
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = [
@@ -716,7 +716,7 @@ def iter_jsonl(path: str):
                 continue
 
 
-def summarize_tombstones(paths: List[str]) -> dict:
+def summarize_tombstones(paths: list[str]) -> dict:
     total = 0
     by_cat, by_day, paths_set = {}, {}, set()
     oldest, newest = None, None

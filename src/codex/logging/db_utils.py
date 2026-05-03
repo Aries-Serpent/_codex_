@@ -7,7 +7,6 @@ avoids triggering any GitHub Actions or network access.
 """
 
 # Constraint: DO NOT ACTIVATE ANY GitHub Actions files.
-# ruff: noqa: E501,E701,E702
 
 from __future__ import annotations
 
@@ -27,7 +26,7 @@ try:
 except Exception as e:
     logger.debug(f"Exception: {e}")
     logger.warning(f"Exception: {e}", exc_info=True)
-from typing import Optional, Union  # noqa: E402
+from typing import Optional  # noqa: E402
 
 # Common column name variants seen in repo/README and typical SQLite logs.
 LIKELY_MAP = {
@@ -161,7 +160,7 @@ def infer_columns(con: sqlite3.Connection, table: str) -> dict[str, Optional[str
     return mapping
 
 
-def resolve_db_path(base: Union[str, Path], name: Optional[str] = None) -> Path:
+def resolve_db_path(base: str | Path, name: Optional[str] = None) -> Path:
     """Resolve an absolute, normalized DB path under ``base``.
 
     Ensures the parent directory exists but does not create the database file.

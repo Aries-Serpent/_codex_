@@ -10,7 +10,7 @@ Target: Real code coverage improvement for training modules
 """
 
 import os
-from typing import Any, List
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 from tests.branch_coverage import branch_input
@@ -43,7 +43,7 @@ class TestTrainingStrategyBranches:
 
     def test_strategy_callbacks_empty_branch(self) -> None:
         """Test callbacks empty list branch."""
-        callbacks: List[Any] = []
+        callbacks: list[Any] = []
         result = list(callbacks) if callbacks else [MagicMock()]
         assert len(result) == 1
 

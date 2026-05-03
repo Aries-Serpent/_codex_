@@ -7,8 +7,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Optional, Sequence, Union
+from typing import Any, Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -52,7 +53,7 @@ else:  # pragma: no cover - optional dependency
 torch, _HAS_TORCH = optional_import("torch")
 
 try:  # optional dependency
-    import mlflow  # noqa: F401
+    import mlflow
 
     _HAS_MLFLOW = True
 except Exception:  # pragma: no cover - optional
@@ -153,7 +154,7 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
     return total
 
 
-def _to_path(value: Optional[Union[str, Path]]) -> Optional[Path]:
+def _to_path(value: Optional[str | Path]) -> Optional[Path]:
     if value is None:
         return None
     if isinstance(value, Path):
@@ -163,7 +164,7 @@ def _to_path(value: Optional[Union[str, Path]]) -> Optional[Path]:
     return Path(value).expanduser().resolve()
 
 
-def _resolve_checkpoint_dir(value: Optional[Union[str, Path]]) -> Optional[Path]:
+def _resolve_checkpoint_dir(value: Optional[str | Path]) -> Optional[Path]:
     path = _to_path(value)
     if path is None:
         return None
@@ -173,7 +174,7 @@ def _resolve_checkpoint_dir(value: Optional[Union[str, Path]]) -> Optional[Path]
 
 
 def _load_latest_checkpoint_dir(
-    checkpoint_dir: Optional[Union[str, Path]],
+    checkpoint_dir: Optional[str | Path],
 ) -> Optional[Path]:
     root = _resolve_checkpoint_dir(checkpoint_dir)
     if root is None:
@@ -218,7 +219,7 @@ def _load_latest_checkpoint_dir(
 
 
 def evaluate(
-    checkpoint_dir: Optional[Union[str, Path]],
+    checkpoint_dir: Optional[str | Path],
     model_name: Optional[str] = None,
     device: Optional[str] = None,
 ) -> dict[str, Any]:

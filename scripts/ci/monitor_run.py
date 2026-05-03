@@ -109,10 +109,11 @@ import subprocess
 import sys
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -174,17 +175,17 @@ class PollSnapshot:
     session_elapsed_ns:  int = 0   # sub-second nanosecond remainder (0–999999999)
     session_elapsed_str: str = ""  # human: "Xh Ym Zs NNNNNNNNNns"
     # ── Post-completion ───────────────────────────────────────────────────
-    cherry_picked:  List[str]       = field(default_factory=list)
+    cherry_picked:  list[str]       = field(default_factory=list)
     triage_passed:  Optional[bool]  = None
-    triage_details: List[str]       = field(default_factory=list)
+    triage_details: list[str]       = field(default_factory=list)
     error:          Optional[str]   = None
     completed:      bool            = False
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, d: Dict) -> PollSnapshot:
+    def from_dict(cls, d: dict) -> PollSnapshot:
         known = {f for f in cls.__dataclass_fields__}   # type: ignore[attr-defined]
         return cls(**{k: v for k, v in d.items() if k in known})
 
@@ -233,7 +234,7 @@ class _Client:
 
     def _get(self, path: str) -> Any:
         url = f"{API_BASE}{path}"
-        headers: Dict[str, str] = {
+        headers: dict[str, str] = {
             "Accept":               "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
@@ -269,10 +270,10 @@ class _Client:
         )
         return snap
 
-    def get_check_run(self, repo: str, check_id: int) -> Dict:
+    def get_check_run(self, repo: str, check_id: int) -> dict:
         return self._get(f"/repos/{repo}/check-runs/{check_id}")
 
-    def get_commit_runs(self, repo: str, sha: str) -> List[Dict]:
+    def get_commit_runs(self, repo: str, sha: str) -> list[dict]:
         d = self._get(f"/repos/{repo}/actions/runs?head_sha={sha}&per_page=20")
         return d.get("workflow_runs", [])
 
@@ -337,13 +338,13 @@ def _git(*args: str) -> str:
 
 _SKIP_PATTERNS = (".codex/agent_auth", "CODEX_MANIFEST")
 
-def cherry_pick_delta(branch: str, verbose: bool = False) -> List[str]:
+def cherry_pick_delta(branch: str, verbose: bool = False) -> list[str]:
     """Checkout files differing between HEAD and origin/<branch>; return applied paths."""
     _git("fetch", "origin", branch)
     diff_raw = _git("diff", "--name-only", "HEAD", f"origin/{branch}")
     if not diff_raw.strip():
         return []
-    applied: List[str] = []
+    applied: list[str] = []
     for path in diff_raw.splitlines():
         if any(path.startswith(p) for p in _SKIP_PATTERNS):
             continue
@@ -353,7 +354,7 @@ def cherry_pick_delta(branch: str, verbose: bool = False) -> List[str]:
             _log(f"  applied: {path}")
     return applied
 
-def run_triage(verbose: bool = False) -> tuple[bool, List[str]]:
+def run_triage(verbose: bool = False) -> tuple[bool, list[str]]:
     """Run ci_triage_repro.sh --json.  Returns (passed, detail_lines)."""
     if not TRIAGE_SCRIPT.exists():
         return True, ["triage script not found -- skipped"]

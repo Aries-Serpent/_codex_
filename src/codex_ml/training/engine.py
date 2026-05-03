@@ -20,12 +20,12 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Minimal training engine façade with optional MLflow logging."""
 
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence
+from typing import Any, Optional
 
 # Sentinel: distinguishes "explicitly passed None (no mlflow)" from "not provided (auto-detect)"
 _MLFLOW_UNSET: object = object()

@@ -5,7 +5,7 @@ Optimizes system throughput and identifies bottlenecks
 import random
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 RANDOM_SEED = 47
 
@@ -23,7 +23,7 @@ class ThroughputOptimizer:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.samples: List[ThroughputSample] = []
+        self.samples: list[ThroughputSample] = []
         self.target_rps = 1000.0  # Target: >1000 req/s
         self.initialized = True
 
@@ -55,7 +55,7 @@ class ThroughputOptimizer:
 
         return sum(s.requests_per_second for s in recent) / len(recent)
 
-    def identify_bottlenecks(self) -> List[str]:
+    def identify_bottlenecks(self) -> list[str]:
         """Identify performance bottlenecks"""
         bottlenecks = []
 
@@ -81,7 +81,7 @@ class ThroughputOptimizer:
 
         return bottlenecks
 
-    def suggest_optimizations(self) -> List[str]:
+    def suggest_optimizations(self) -> list[str]:
         """Suggest throughput optimizations"""
         suggestions = []
         bottlenecks = self.identify_bottlenecks()
@@ -99,7 +99,7 @@ class ThroughputOptimizer:
 
         return suggestions
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get optimizer metrics"""
         return {
             "seed": self.seed,

@@ -26,7 +26,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class Reflection:
     learning: str  # What was learned
     quality: QualityAssessment
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
         return (
@@ -106,7 +106,7 @@ class MetaKnowledge:
     strength_assessment: float  # 0.0 (weak) to 1.0 (strong)
     confidence: float  # 0.0 (uncertain) to 1.0 (certain)
     last_updated: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    evidence: List[str] = field(default_factory=list)
+    evidence: list[str] = field(default_factory=list)
 
 
 class MetaCognitiveReflectionLayer:
@@ -131,9 +131,9 @@ class MetaCognitiveReflectionLayer:
 
     def __init__(self, agent_id: str) -> None:
         self.agent_id = agent_id
-        self.reflections: List[Reflection] = []
-        self.strategy_patterns: Dict[str, StrategyPattern] = {}
-        self.meta_knowledge: Dict[str, MetaKnowledge] = {}
+        self.reflections: list[Reflection] = []
+        self.strategy_patterns: dict[str, StrategyPattern] = {}
+        self.meta_knowledge: dict[str, MetaKnowledge] = {}
         LOGGER.info(f"MetaCognitiveReflectionLayer initialized for {agent_id}")
 
     def reflect(
@@ -144,7 +144,7 @@ class MetaCognitiveReflectionLayer:
         analysis: str,
         learning: str,
         quality: QualityAssessment,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> Reflection:
         """
         Create a reflection on a specific aspect of the agent's process.
@@ -191,7 +191,7 @@ class MetaCognitiveReflectionLayer:
         analysis: str,
         learning: str,
         quality: QualityAssessment,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> Reflection:
         """Convenience method for reflecting on a decision."""
         return self.reflect(
@@ -211,7 +211,7 @@ class MetaCognitiveReflectionLayer:
         analysis: str,
         learning: str,
         quality: QualityAssessment,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> Reflection:
         """Convenience method for reflecting on an error."""
         return self.reflect(
@@ -231,7 +231,7 @@ class MetaCognitiveReflectionLayer:
         analysis: str,
         learning: str,
         quality: QualityAssessment,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> Reflection:
         """Convenience method for reflecting on a success."""
         return self.reflect(
@@ -289,7 +289,7 @@ class MetaCognitiveReflectionLayer:
 
         return pattern
 
-    def identify_strategy_patterns(self) -> List[StrategyPattern]:
+    def identify_strategy_patterns(self) -> list[StrategyPattern]:
         """
         Identify patterns in the agent's reflections.
 
@@ -302,7 +302,7 @@ class MetaCognitiveReflectionLayer:
         # In a real system, this would use ML pattern recognition
 
         # Look for repeated subjects in reflections
-        subject_counts: Dict[str, List[Reflection]] = {}
+        subject_counts: dict[str, list[Reflection]] = {}
         for reflection in self.reflections:
             subject = reflection.subject
             if subject not in subject_counts:
@@ -341,7 +341,7 @@ class MetaCognitiveReflectionLayer:
         domain: str,
         strength_assessment: float,
         confidence: float,
-        evidence: Optional[List[str]] = None,
+        evidence: Optional[list[str]] = None,
     ) -> MetaKnowledge:
         """
         Update meta-knowledge about a domain.
@@ -382,7 +382,7 @@ class MetaCognitiveReflectionLayer:
 
         return meta_k
 
-    def get_strengths(self, threshold: float = 0.7) -> List[MetaKnowledge]:
+    def get_strengths(self, threshold: float = 0.7) -> list[MetaKnowledge]:
         """
         Get domains where the agent has strong knowledge.
 
@@ -394,7 +394,7 @@ class MetaCognitiveReflectionLayer:
         """
         return [mk for mk in self.meta_knowledge.values() if mk.strength_assessment >= threshold]
 
-    def get_weaknesses(self, threshold: float = 0.5) -> List[MetaKnowledge]:
+    def get_weaknesses(self, threshold: float = 0.5) -> list[MetaKnowledge]:
         """
         Get domains where the agent has weak knowledge.
 
@@ -486,7 +486,7 @@ class MetaCognitiveReflectionLayer:
 
         return "\n".join(lines)
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about meta-cognitive reflections."""
         quality_counts: dict[str, Any] = {}
         for reflection in self.reflections:

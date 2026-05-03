@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("transformers")
 
-from codex_ml.hf_loader import (  # noqa: E402
+from codex_ml.hf_loader import (
     get_registered_causal_lm,
     load_causal_lm,
     register_causal_lm,

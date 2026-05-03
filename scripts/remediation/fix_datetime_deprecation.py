@@ -12,7 +12,6 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
-from typing import Set
 
 
 def fix_datetime_file(filepath: Path) -> bool:
@@ -78,8 +77,8 @@ def main() -> int:
         print("Error: scripts/ directory not found", file=sys.stderr)
         return 1
 
-    fixed_files: Set[Path] = set()
-    error_files: Set[Path] = set()
+    fixed_files: set[Path] = set()
+    error_files: set[Path] = set()
 
     print("🔄 Fixing deprecated datetime.now(timezone.utc) calls...\n")
 

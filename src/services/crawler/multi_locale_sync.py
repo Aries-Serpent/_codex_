@@ -14,10 +14,11 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,7 @@ class LocaleSyncResult:
     error_message: Optional[str] = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "locale_code": self.locale_code,
@@ -78,9 +79,9 @@ class MultiLocaleSyncResult:
     failed_locales: int
     total_articles_synced: int
     total_duration_seconds: float
-    locale_results: List[LocaleSyncResult] = field(default_factory=list)
+    locale_results: list[LocaleSyncResult] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "total_locales": self.total_locales,
@@ -117,7 +118,7 @@ class MultiLocaleSyncManager:
     def __init__(
         self,
         max_workers: int = 4,
-        locales: Optional[List[LocaleConfig]] = None,
+        locales: Optional[list[LocaleConfig]] = None,
     ):
         """Initialize the multi-locale sync manager.
 
@@ -142,7 +143,7 @@ class MultiLocaleSyncManager:
             return True
         return False
 
-    def get_sync_schedule(self) -> List[Dict[str, Any]]:
+    def get_sync_schedule(self) -> list[dict[str, Any]]:
         """Get the sync schedule for all locales.
 
         Returns:
@@ -340,6 +341,6 @@ class MultiLocaleSyncManager:
 __all__ = [
     "LocaleConfig",
     "LocaleSyncResult",
-    "MultiLocaleSyncResult",
     "MultiLocaleSyncManager",
+    "MultiLocaleSyncResult",
 ]

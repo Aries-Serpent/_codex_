@@ -15,7 +15,7 @@ try:
 except Exception as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
-from data.datasets import (  # noqa: E402
+from data.datasets import (
     DataLoaderConfig,
     build_text_classification_dataloaders,
     load_text_classification_dataset,

@@ -10,7 +10,7 @@ import json
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass
@@ -67,7 +67,7 @@ class WorkflowMonitorReport:
     successful: int = 0
     skipped: int = 0
     action_required: int = 0
-    workflows: List[WorkflowRun] = field(default_factory=list)
+    workflows: list[WorkflowRun] = field(default_factory=list)
 
     @property
     def all_complete(self) -> bool:
@@ -79,7 +79,7 @@ class WorkflowMonitorReport:
         """Check if any workflows failed."""
         return self.failed > 0
 
-    def update_from_workflows(self, workflows: List[WorkflowRun]):
+    def update_from_workflows(self, workflows: list[WorkflowRun]):
         """Update statistics from workflow list."""
         self.workflows = workflows
         self.total_workflows = len(workflows)
@@ -175,7 +175,7 @@ class WorkflowMonitorReport:
         print(f"\n💾 Report saved to: {filepath}")
 
 
-def parse_workflow_data(workflow_data: Dict[str, Any]) -> WorkflowRun:
+def parse_workflow_data(workflow_data: dict[str, Any]) -> WorkflowRun:
     """Parse workflow data from GitHub API response."""
     return WorkflowRun(
         id=workflow_data["id"],
@@ -190,7 +190,7 @@ def parse_workflow_data(workflow_data: Dict[str, Any]) -> WorkflowRun:
     )
 
 
-def load_workflow_runs(json_file: str) -> List[WorkflowRun]:
+def load_workflow_runs(json_file: str) -> list[WorkflowRun]:
     """Load workflow runs from JSON file."""
     with open(json_file) as f:
         data = json.load(f)

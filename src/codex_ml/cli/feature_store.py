@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 try:
     import typer
@@ -26,6 +26,8 @@ except ImportError as e:
     logger.warning(f"ImportError: {e}", exc_info=True)
     print("Error: typer and rich are required for CLI. Install with: pip install typer rich")
     sys.exit(1)
+
+import builtins
 
 from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
@@ -211,7 +213,7 @@ def health(
 
 @app.command()
 def materialize(
-    feature_names: List[str] = typer.Argument(..., help="Feature names to materialize"),
+    feature_names: builtins.list[str] = typer.Argument(..., help="Feature names to materialize"),
     output_path: str = typer.Option(
         ..., "--output", "-o", help="Output path for materialized features"
     ),

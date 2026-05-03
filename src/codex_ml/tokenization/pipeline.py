@@ -20,14 +20,14 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Tokenizer pipeline utilities exposed via the Codex CLI."""
 
 
 import json  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
 from dataclasses import asdict, fields  # noqa: E402
 from glob import glob  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable, Optional, Sequence  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 from tokenizers import Tokenizer  # noqa: E402
 
@@ -243,8 +243,8 @@ def run_decode(tokenizer_path: str, token_ids: Sequence[int]) -> str:
 __all__ = [
     "TokenizerPipelineError",
     "load_train_config",
+    "run_decode",
+    "run_encode",
     "run_train",
     "run_validate",
-    "run_encode",
-    "run_decode",
 ]

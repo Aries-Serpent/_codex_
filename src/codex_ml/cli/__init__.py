@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Codex ML command line interface."""
 
 
 import argparse
@@ -373,5 +372,5 @@ except Exception:  # pragma: no cover - optional CLI wiring
 
 main = package_main
 
-__all__ = ["cli", "main_cli", "main"]
-from . import utils  # noqa: F401
+__all__ = ["cli", "main", "main_cli"]
+from . import utils

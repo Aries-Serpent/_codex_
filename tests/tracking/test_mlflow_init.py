@@ -23,7 +23,7 @@ class _DummyMlflow:
     def __init__(self) -> None:
         self._active = None
 
-    def start_run(self, run_name=None, **kwargs):  # noqa: ANN001 - mirror mlflow API
+    def start_run(self, run_name=None, **kwargs):
         self._active = _DummyRun()
         return self._active
 
@@ -32,10 +32,10 @@ class _DummyMlflow:
             raise RuntimeError("no active run")
         self._active.data.tags[key] = value
 
-    def active_run(self):  # noqa: D401 - mimic mlflow
+    def active_run(self):
         return self._active
 
-    def get_run(self, run_id: str):  # noqa: D401 - mimic mlflow
+    def get_run(self, run_id: str):
         assert self._active is not None
         assert run_id == self._active.info.run_id
         return self._active

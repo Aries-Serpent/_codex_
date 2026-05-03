@@ -12,7 +12,7 @@ import time
 from collections import deque
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ class MetricDataPoint:
 
     timestamp: float
     value: float
-    labels: Dict[str, str] = field(default_factory=dict)
+    labels: dict[str, str] = field(default_factory=dict)
 
 
 class RAGMetrics:
@@ -119,13 +119,13 @@ class RAGMetrics:
 
         # Metric storage (rolling windows with optimized sizes)
         self.query_latencies: deque = deque(maxlen=self.config.query_latency_window)
-        self.index_sizes: Dict[str, MetricDataPoint] = {}
-        self.cache_stats: Dict[str, int] = {"hits": 0, "misses": 0}
+        self.index_sizes: dict[str, MetricDataPoint] = {}
+        self.cache_stats: dict[str, int] = {"hits": 0, "misses": 0}
         self.embedding_throughputs: deque = deque(maxlen=self.config.embedding_throughput_window)
 
         # Additional metrics
-        self.query_counts: Dict[str, int] = {}
-        self.error_counts: Dict[str, int] = {}
+        self.query_counts: dict[str, int] = {}
+        self.error_counts: dict[str, int] = {}
         self.index_build_times: deque = deque(maxlen=self.config.index_build_time_window)
 
         # Timestamp tracking
@@ -274,7 +274,7 @@ class RAGMetrics:
 
         logger.warning(f"Error tracked: {error_type} - {error_message}")
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get comprehensive statistics summary.
 
@@ -408,7 +408,7 @@ class RAGMetrics:
 
         return "\n".join(lines) + "\n"
 
-    def export_cloudwatch(self) -> Dict[str, Any]:
+    def export_cloudwatch(self) -> dict[str, Any]:
         """
         Export metrics in CloudWatch format.
 

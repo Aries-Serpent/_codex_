@@ -24,7 +24,7 @@ import sqlite3
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -41,7 +41,7 @@ class SessionLogEntry:
     timestamp: str
     role: str
     message: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -63,10 +63,10 @@ class SessionSummary:
     start_time: str
     end_time: Optional[str]
     message_count: int
-    expected_files: List[ExpectedFile]
+    expected_files: list[ExpectedFile]
     verified_files: int
     missing_files: int
-    notes: List[str] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
 
 
 class CopilotSessionRetriever:
@@ -133,7 +133,7 @@ class CopilotSessionRetriever:
         conn.close()
         logger.info(f"Created schema at {self.db_path}")
 
-    def list_sessions(self, limit: int = 50) -> List[Dict[str, Any]]:
+    def list_sessions(self, limit: int = 50) -> list[dict[str, Any]]:
         """
         List available sessions with metadata.
 
@@ -172,7 +172,7 @@ class CopilotSessionRetriever:
         conn.close()
         return sessions
 
-    def get_last_n_sessions(self, n: int = 20) -> List[str]:
+    def get_last_n_sessions(self, n: int = 20) -> list[str]:
         """
         Get the last N session IDs.
 
@@ -185,7 +185,7 @@ class CopilotSessionRetriever:
         sessions = self.list_sessions(limit=n)
         return [s['session_id'] for s in sessions]
 
-    def get_session_logs(self, session_id: str) -> List[SessionLogEntry]:
+    def get_session_logs(self, session_id: str) -> list[SessionLogEntry]:
         """
         Retrieve all log entries for a session.
 
@@ -225,7 +225,7 @@ class CopilotSessionRetriever:
         conn.close()
         return entries
 
-    def extract_expected_files(self, logs: List[SessionLogEntry]) -> List[ExpectedFile]:
+    def extract_expected_files(self, logs: list[SessionLogEntry]) -> list[ExpectedFile]:
         """
         Extract expected file operations from session logs.
 
@@ -236,7 +236,7 @@ class CopilotSessionRetriever:
             List of expected files
         """
         expected_files = []
-        seen_files: Set[Tuple[str, str]] = set()  # (path, operation)
+        seen_files: set[tuple[str, str]] = set()  # (path, operation)
 
         for log in logs:
             if log.role not in ['assistant', 'tool']:
@@ -266,7 +266,7 @@ class CopilotSessionRetriever:
 
         return expected_files
 
-    def verify_files(self, expected_files: List[ExpectedFile]) -> List[ExpectedFile]:
+    def verify_files(self, expected_files: list[ExpectedFile]) -> list[ExpectedFile]:
         """
         Verify that expected files exist in the repository.
 
@@ -346,9 +346,9 @@ class CopilotSessionRetriever:
 
     def process_sessions_in_batches(
         self,
-        session_ids: List[str],
+        session_ids: list[str],
         batch_size: int = 5
-    ) -> List[SessionSummary]:
+    ) -> list[SessionSummary]:
         """
         Process multiple sessions in batches.
 
@@ -388,7 +388,7 @@ class CopilotSessionRetriever:
 
     def generate_report(
         self,
-        summaries: List[SessionSummary],
+        summaries: list[SessionSummary],
         output_path: Optional[str] = None
     ) -> str:
         """

@@ -15,9 +15,10 @@ import math
 import random
 import time
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 # =============================================================================
 # CONSTANTS
@@ -53,7 +54,7 @@ class ExperimentConfig:
     target_value: float = 0.33
     max_iterations: int = 1000
     convergence_threshold: float = 0.001
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -75,15 +76,15 @@ class ExperimentResult:
     final_value: float
     iterations: int
     duration_seconds: float
-    history: List[float] = field(default_factory=list)
-    metrics: Dict[str, float] = field(default_factory=dict)
+    history: list[float] = field(default_factory=list)
+    metrics: dict[str, float] = field(default_factory=dict)
     timestamp: str = ""
 
     def __post_init__(self):
         if not self.timestamp:
             self.timestamp = datetime.utcnow().isoformat()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             'experiment_id': self.experiment_id,
@@ -155,8 +156,8 @@ class EXP7Validator(ValidationExperiment):
             Experiment result
         """
         start_time = time.time()
-        history: List[float] = []
-        metrics: Dict[str, float] = {}
+        history: list[float] = []
+        metrics: dict[str, float] = {}
 
         # Simulate learning if no engine provided
         if self.learning_engine is None:
@@ -243,7 +244,7 @@ class EXP7Validator(ValidationExperiment):
 
     def _run_simulated(self, config: ExperimentConfig, start_time: float) -> ExperimentResult:
         """Run simulated validation without actual engine."""
-        history: List[float] = []
+        history: list[float] = []
 
         # Simulate learning curve
         k1 = 0.5
@@ -308,8 +309,8 @@ class EXP8Validator(ValidationExperiment):
             Experiment result
         """
         start_time = time.time()
-        history: List[float] = []
-        metrics: Dict[str, float] = {}
+        history: list[float] = []
+        metrics: dict[str, float] = {}
 
         # Simulate transfer if no engine provided
         if self.transfer_engine is None:
@@ -318,11 +319,11 @@ class EXP8Validator(ValidationExperiment):
         # Run actual validation
         try:
             # Test transfer scenarios
-            transfer_scores: List[float] = []
+            transfer_scores: list[float] = []
 
             for i in range(min(config.max_iterations, 50)):
                 # Create mock Q-table
-                q_table: Dict[str, Dict[str, float]] = {}
+                q_table: dict[str, dict[str, float]] = {}
                 for j in range(10):
                     state_key = f"state_{j}"
                     q_table[state_key] = {
@@ -378,7 +379,7 @@ class EXP8Validator(ValidationExperiment):
 
     def _run_simulated(self, config: ExperimentConfig, start_time: float) -> ExperimentResult:
         """Run simulated validation without actual engine."""
-        history: List[float] = []
+        history: list[float] = []
 
         # Simulate transfer learning curve
         k1 = 0.45
@@ -417,8 +418,8 @@ class ValidationRunner:
 
     def __init__(self):
         """Initialize validation runner."""
-        self.experiments: Dict[str, ValidationExperiment] = {}
-        self.results: Dict[str, ExperimentResult] = {}
+        self.experiments: dict[str, ValidationExperiment] = {}
+        self.results: dict[str, ExperimentResult] = {}
 
     def register(self, experiment: ValidationExperiment) -> None:
         """Register an experiment.
@@ -458,7 +459,7 @@ class ValidationRunner:
 
         return result
 
-    def run_all(self) -> Dict[str, ExperimentResult]:
+    def run_all(self) -> dict[str, ExperimentResult]:
         """Run all registered experiments.
 
         Returns:
@@ -469,7 +470,7 @@ class ValidationRunner:
 
         return dict(self.results)
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get validation summary.
 
         Returns:
@@ -507,8 +508,8 @@ class OptimizationState:
     """
     iteration: int = 0
     best_value: float = float('-inf')
-    best_params: Dict[str, Any] = field(default_factory=dict)
-    history: List[float] = field(default_factory=list)
+    best_params: dict[str, Any] = field(default_factory=dict)
+    history: list[float] = field(default_factory=list)
     convergence: float = 0.0
 
 
@@ -524,8 +525,8 @@ class Optimizer(ABC):
     @abstractmethod
     def optimize(
         self,
-        objective: Callable[[Dict[str, Any]], float],
-        param_space: Dict[str, Tuple[float, float]],
+        objective: Callable[[dict[str, Any]], float],
+        param_space: dict[str, tuple[float, float]],
         max_iterations: int = 100,
     ) -> OptimizationState:
         """Run optimization.
@@ -563,8 +564,8 @@ class RandomSearchOptimizer(Optimizer):
 
     def optimize(
         self,
-        objective: Callable[[Dict[str, Any]], float],
-        param_space: Dict[str, Tuple[float, float]],
+        objective: Callable[[dict[str, Any]], float],
+        param_space: dict[str, tuple[float, float]],
         max_iterations: int = 100,
     ) -> OptimizationState:
         """Run random search optimization."""
@@ -636,15 +637,15 @@ class EvolutionaryOptimizer(Optimizer):
 
     def optimize(
         self,
-        objective: Callable[[Dict[str, Any]], float],
-        param_space: Dict[str, Tuple[float, float]],
+        objective: Callable[[dict[str, Any]], float],
+        param_space: dict[str, tuple[float, float]],
         max_iterations: int = 100,
     ) -> OptimizationState:
         """Run evolutionary optimization."""
         self.state = OptimizationState()
 
         # Initialize population
-        population: List[Tuple[Dict[str, Any], float]] = []
+        population: list[tuple[dict[str, Any], float]] = []
         for _ in range(self.population_size):
             params = {
                 name: self._rng.uniform(bounds[0], bounds[1])
@@ -655,7 +656,7 @@ class EvolutionaryOptimizer(Optimizer):
 
         for iteration in range(max_iterations):
             # Generate offspring
-            offspring: List[Tuple[Dict[str, Any], float]] = []
+            offspring: list[tuple[dict[str, Any], float]] = []
 
             for _ in range(self.offspring_size):
                 # Select parent
@@ -734,12 +735,12 @@ class BayesianOptimizer(Optimizer):
         self.xi = xi
         self._rng = random.Random(seed)  # nosec B311 - Not for crypto
         self.state = OptimizationState()
-        self._samples: List[Tuple[Dict[str, Any], float]] = []
+        self._samples: list[tuple[dict[str, Any], float]] = []
 
     def optimize(
         self,
-        objective: Callable[[Dict[str, Any]], float],
-        param_space: Dict[str, Tuple[float, float]],
+        objective: Callable[[dict[str, Any]], float],
+        param_space: dict[str, tuple[float, float]],
         max_iterations: int = 100,
     ) -> OptimizationState:
         """Run Bayesian optimization."""
@@ -806,7 +807,7 @@ class BayesianOptimizer(Optimizer):
 
         return self.state
 
-    def _estimate_mean(self, params: Dict[str, Any]) -> float:
+    def _estimate_mean(self, params: dict[str, Any]) -> float:
         """Estimate mean value at point (simplified GP approximation)."""
         if not self._samples:
             return 0.0
@@ -866,7 +867,7 @@ class NeuralPolicyNetwork:
         self._rng = random.Random(42)  # nosec B311 - Weight initialization
         self.weights = self._initialize_weights()
 
-    def _initialize_weights(self) -> Dict[str, List[List[float]]]:
+    def _initialize_weights(self) -> dict[str, list[list[float]]]:
         """Initialize network weights (placeholder)."""
         # Simple random initialization
         w1 = [
@@ -880,7 +881,7 @@ class NeuralPolicyNetwork:
 
         return {'w1': w1, 'w2': w2}
 
-    def forward(self, state: List[float]) -> List[float]:
+    def forward(self, state: list[float]) -> list[float]:
         """Forward pass through network.
 
         Args:
@@ -924,7 +925,7 @@ class NeuralPolicyNetwork:
         # Fallback for empty output (should not normally occur)
         return []
 
-    def select_action(self, state: List[float]) -> int:
+    def select_action(self, state: list[float]) -> int:
         """Select action from policy.
 
         Args:
@@ -945,7 +946,7 @@ class NeuralPolicyNetwork:
 
         return len(probs) - 1
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get network statistics.
 
         Returns:
@@ -985,18 +986,18 @@ class AdvancedOptimizer:
         Args:
             seed: Random seed for reproducibility
         """
-        self.optimizers: Dict[str, Optimizer] = {
+        self.optimizers: dict[str, Optimizer] = {
             'random': RandomSearchOptimizer(seed),
             'evolutionary': EvolutionaryOptimizer(seed=seed),
             'bayesian': BayesianOptimizer(seed=seed),
         }
         self.current_optimizer: str = 'bayesian'
-        self.optimization_history: List[Dict[str, Any]] = []
+        self.optimization_history: list[dict[str, Any]] = []
 
     def optimize(
         self,
-        objective: Callable[[Dict[str, Any]], float],
-        param_space: Dict[str, Tuple[float, float]],
+        objective: Callable[[dict[str, Any]], float],
+        param_space: dict[str, tuple[float, float]],
         optimizer_name: Optional[str] = None,
         max_iterations: int = 100,
     ) -> OptimizationState:
@@ -1033,7 +1034,7 @@ class AdvancedOptimizer:
 
     def auto_select_optimizer(
         self,
-        param_space: Dict[str, Tuple[float, float]],
+        param_space: dict[str, tuple[float, float]],
     ) -> str:
         """Auto-select best optimizer based on problem characteristics.
 
@@ -1052,7 +1053,7 @@ class AdvancedOptimizer:
             return 'evolutionary'
         return 'random'
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get optimizer statistics.
 
         Returns:

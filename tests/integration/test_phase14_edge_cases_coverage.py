@@ -406,8 +406,8 @@ class TestTypeEdgeCases:
         """Test boolean as integer edge case."""
         # In Python, bool is a subclass of int
         assert isinstance(True, int)
-        assert True == 1  # noqa: E712 - intentional bool/int comparison test
-        assert False == 0  # noqa: E712 - intentional bool/int comparison test
+        assert True == 1
+        assert False == 0
 
         # But they're not the same type identity
         assert type(True) is not type(1)

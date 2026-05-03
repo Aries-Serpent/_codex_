@@ -12,7 +12,6 @@ Tests: 20+
 import json
 import re
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -103,7 +102,7 @@ class TestYAMLSchemaValidation:
 class TestPydanticSchemaGeneration:
     """Tests for Pydantic schema generation capability."""
 
-    def _find_pydantic_imports(self) -> List[Path]:
+    def _find_pydantic_imports(self) -> list[Path]:
         """Find files that import Pydantic."""
         if not SRC_DIR.exists():
             return []

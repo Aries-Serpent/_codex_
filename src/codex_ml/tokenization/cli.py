@@ -20,9 +20,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Sequence
 
 from codex_ml.tokenization import sentencepiece_adapter
 
@@ -149,8 +149,8 @@ if __name__ == "__main__":
 
 
 __all__ = [
-    "encode",
-    "decode",
-    "main",
     "SentencePieceAdapter",
+    "decode",
+    "encode",
+    "main",
 ]

@@ -18,9 +18,9 @@ try:  # optional dependency for RNG disturbance
 except ImportError:  # pragma: no cover - numpy unavailable
     np = None
 
-from codex_ml.config import DataConfig  # noqa: E402
-from codex_ml.data.loader import prepare_data_from_config  # noqa: E402
-from codex_ml.utils.provenance import load_environment_summary  # noqa: E402
+from codex_ml.config import DataConfig
+from codex_ml.data.loader import prepare_data_from_config
+from codex_ml.utils.provenance import load_environment_summary
 
 
 def _read_lines(path) -> list[str]:
@@ -59,8 +59,8 @@ def test_prepare_data_repeatable(tmp_path) -> None:
     assert _strip_paths(result1["splits"]) == _strip_paths(result2["splits"])
 
     for split in ("train", "validation", "test"):
-        lines1 = _read_lines((tmp_path / "cache1" / f"{split}.txt"))
-        lines2 = _read_lines((tmp_path / "cache2" / f"{split}.txt"))
+        lines1 = _read_lines(tmp_path / "cache1" / f"{split}.txt")
+        lines2 = _read_lines(tmp_path / "cache2" / f"{split}.txt")
         assert lines1 == lines2
 
     prov1 = load_environment_summary(tmp_path / "cache1" / "provenance")

@@ -89,4 +89,4 @@ def set_deterministic(enabled: bool = True) -> None:
         logger.warning(f"Exception: {e}", exc_info=True)
 
 
-__all__ = ["set_reproducible", "set_deterministic"]
+__all__ = ["set_deterministic", "set_reproducible"]

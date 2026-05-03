@@ -13,7 +13,7 @@ import json
 import pytest
 
 pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi.testclient import TestClient
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -41,7 +41,7 @@ def _make_client(db_path: str, monkeypatch, **extra_env: str) -> TestClient:
 
     import cognitive_app.src.server.cli_api_server as _mod
     importlib.reload(_mod)
-    from cognitive_app.src.server.cli_api_server import app  # noqa: PLC0415
+    from cognitive_app.src.server.cli_api_server import app
     return TestClient(app, raise_server_exceptions=False)
 
 

@@ -16,7 +16,7 @@ import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
@@ -111,7 +111,7 @@ class AdminAutomationAgent:
         if Phase10Validator:
             self.validator = Phase10Validator()
 
-    def _load_config(self) -> Dict:
+    def _load_config(self) -> dict:
         """Load agent configuration."""
         try:
             if self.config_path and self.config_path.exists():
@@ -129,7 +129,7 @@ class AdminAutomationAgent:
             }
         }
 
-    def log_task(self, task: str, status: str, message: str, details: Optional[Dict] = None):
+    def log_task(self, task: str, status: str, message: str, details: Optional[dict] = None):
         """
         Log task execution with automatic sanitization of sensitive information.
 
@@ -162,7 +162,7 @@ class AdminAutomationAgent:
     # TASK 1: Setup Phase 10 (Automated)
     # ====================================================================
 
-    def task_setup_phase10(self, validate: bool = True, report: bool = True) -> Dict:
+    def task_setup_phase10(self, validate: bool = True, report: bool = True) -> dict:
         """
         Automated Phase 10 setup.
         Executes all automatable setup tasks.
@@ -236,7 +236,7 @@ class AdminAutomationAgent:
     # TASK 2: Health Check (Automated)
     # ====================================================================
 
-    def task_health_check(self, comprehensive: bool = True) -> Dict:
+    def task_health_check(self, comprehensive: bool = True) -> dict:
         """
         Comprehensive repository health check.
         """
@@ -271,10 +271,10 @@ class AdminAutomationAgent:
 
     def task_rotate_secrets(
         self,
-        secrets: List[str],
+        secrets: list[str],
         backup: bool = True,
         notify: bool = True
-    ) -> Dict:
+    ) -> dict:
         """
         Rotate repository secrets with backup and validation.
         """
@@ -339,7 +339,7 @@ class AdminAutomationAgent:
     # TASK 4: Validate Configuration (Automated)
     # ====================================================================
 
-    def task_validate_configuration(self) -> Dict:
+    def task_validate_configuration(self) -> dict:
         """
         Validate repository configuration files.
         """
@@ -352,7 +352,7 @@ class AdminAutomationAgent:
     # Helper Methods
     # ====================================================================
 
-    def _validate_environment(self) -> Dict:
+    def _validate_environment(self) -> dict:
         """Validate execution environment."""
         checks = {
             "github_token": self.github_token is not None,
@@ -372,7 +372,7 @@ class AdminAutomationAgent:
             "checks": checks
         }
 
-    def _validate_configuration(self) -> Dict:
+    def _validate_configuration(self) -> dict:
         """Validate configuration files exist and are valid."""
         files_to_check = {
             "repomix.config.json": self.repo_root / "repomix.config.json",
@@ -396,7 +396,7 @@ class AdminAutomationAgent:
             "files": results
         }
 
-    def _generate_setup_report(self, task_results: List[Dict]) -> Path:
+    def _generate_setup_report(self, task_results: list[dict]) -> Path:
         """Generate setup completion report."""
         report_dir = self.repo_root / ".codex" / "reports" / "admin-automation-agent"
         report_dir.mkdir(parents=True, exist_ok=True)
@@ -436,7 +436,7 @@ class AdminAutomationAgent:
         logger.info(f"  📄 Report saved: {report_path}")
         return report_path
 
-    def _generate_summary(self, task_results: List[Dict]) -> str:
+    def _generate_summary(self, task_results: list[dict]) -> str:
         """Generate human-readable summary."""
         completed = len([t for t in task_results if t.get("success")])
         total = len(task_results)
@@ -446,7 +446,7 @@ class AdminAutomationAgent:
         self,
         task: str,
         **kwargs
-    ) -> Dict:
+    ) -> dict:
         """
         Execute specified task.
 

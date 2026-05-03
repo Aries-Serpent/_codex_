@@ -7,8 +7,9 @@ Handles the AfterMath phase of the PDA loop, including:
 - Learning updates
 - Metrics collection
 """
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -24,7 +25,7 @@ class PatternCandidate:
     """
     name: str
     pattern_type: str
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
     confidence: float = 0.5
     occurrences: int = 1
 
@@ -71,7 +72,7 @@ class AfterMathHandler:
         self,
         learning_engine: Optional[Any] = None,
         pattern_store: Optional[Any] = None,
-        reward_weights: Optional[Dict[str, float]] = None,
+        reward_weights: Optional[dict[str, float]] = None,
     ):
         """Initialize AfterMath handler.
 
@@ -90,12 +91,12 @@ class AfterMathHandler:
         }
 
         # History tracking
-        self.updates: List[LearningUpdate] = []
-        self.patterns_extracted: List[PatternCandidate] = []
-        self.metrics_history: List[Dict[str, float]] = []
+        self.updates: list[LearningUpdate] = []
+        self.patterns_extracted: list[PatternCandidate] = []
+        self.metrics_history: list[dict[str, float]] = []
 
         # Pattern extraction rules
-        self.extraction_rules: List[Callable] = []
+        self.extraction_rules: list[Callable] = []
 
     def register_extraction_rule(self, rule: Callable) -> None:
         """Register a pattern extraction rule.
@@ -110,11 +111,11 @@ class AfterMathHandler:
         self,
         action: str,
         success: bool,
-        context: Dict[str, Any],
+        context: dict[str, Any],
         output: Any,
-        state: Optional[Dict[str, Any]] = None,
-        next_state: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        state: Optional[dict[str, Any]] = None,
+        next_state: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """Process aftermath of an action.
 
         Args:
@@ -173,7 +174,7 @@ class AfterMathHandler:
         self,
         action: str,
         success: bool,
-        context: Dict[str, Any],
+        context: dict[str, Any],
         output: Any,
     ) -> float:
         """Calculate reward for action.
@@ -216,9 +217,9 @@ class AfterMathHandler:
         self,
         action: str,
         success: bool,
-        context: Dict[str, Any],
+        context: dict[str, Any],
         output: Any,
-    ) -> List[PatternCandidate]:
+    ) -> list[PatternCandidate]:
         """Extract patterns from action result.
 
         Args:
@@ -279,10 +280,10 @@ class AfterMathHandler:
 
     def _update_learning(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         reward: float,
-        next_state: Dict[str, Any],
+        next_state: dict[str, Any],
         done: bool,
     ) -> LearningUpdate:
         """Update learning engine.
@@ -325,7 +326,7 @@ class AfterMathHandler:
         success: bool,
         reward: float,
         output: Any,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Collect processing metrics.
 
         Args:
@@ -350,7 +351,7 @@ class AfterMathHandler:
 
         return metrics
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get handler statistics.
 
         Returns:

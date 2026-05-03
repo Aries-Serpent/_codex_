@@ -23,7 +23,7 @@ def test_bf16_matmul_guard_raises_on_runtime_error(monkeypatch):
         def to(self, *_args, **_kwargs):
             return self
 
-        def __matmul__(self, _other):  # noqa: D401
+        def __matmul__(self, _other):
             raise RuntimeError("matmul not supported for bf16")
 
     fake_torch = types.SimpleNamespace(

@@ -20,9 +20,9 @@ For more robust testing:
 The current approach prioritizes fast unit tests over format validation.
 """
 
-import pytest  # noqa: E402
+import pytest
 
-from services.audio.analysis.intelligent_analyzer import (  # noqa: E402
+from services.audio.analysis.intelligent_analyzer import (
     AudioAnalysis,
     IntelligentAudioAnalyzer,
     ProfileMatch,

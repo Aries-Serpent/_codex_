@@ -22,7 +22,7 @@ import pytest
 SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent / "scripts" / "ci"
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from validate_cargo_features import main, validate_cargo_features  # noqa: E402
+from validate_cargo_features import main, validate_cargo_features
 
 
 class TestValidateCargoFeatures:

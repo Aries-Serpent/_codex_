@@ -20,15 +20,15 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Helpers for constructing small evaluation datasets."""
 
 
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import warnings  # noqa: E402
+from collections.abc import Iterable, Iterator, Sequence  # noqa: E402
 from dataclasses import asdict, dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable, Iterator, Sequence  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs  # noqa: E402
 
@@ -291,4 +291,4 @@ def load_dataset(
     )
 
 
-__all__ = ["Example", "DatasetBundle", "load_dataset"]
+__all__ = ["DatasetBundle", "Example", "load_dataset"]

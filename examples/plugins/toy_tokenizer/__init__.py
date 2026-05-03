@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable, List
+from typing import List
 
 
 @dataclass
 class ToyTokenizer:
     vocab: dict[str, int]
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         return [self.vocab.setdefault(ch, len(self.vocab)) for ch in text]
 
     def decode(self, ids: Iterable[int]) -> str:

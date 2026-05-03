@@ -101,7 +101,7 @@ try:  # pragma: no cover - numpy is optional for deployments
 except Exception:  # pragma: no cover - gracefully handle absence
     _np = None
 
-__all__ = ["save_checkpoint", "load_checkpoint", "restore_into", "prune_best_k"]
+__all__ = ["load_checkpoint", "prune_best_k", "restore_into", "save_checkpoint"]
 
 
 def _sha256_file(path: str, chunk_size: int = 1 << 20) -> str:

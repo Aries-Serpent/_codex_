@@ -20,10 +20,10 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 
-def get_last_operation() -> Optional[Dict]:
+def get_last_operation() -> Optional[dict]:
     """Get the last organization operation from action log."""
     log_file = Path('.codex/action_log.ndjson')
     if not log_file.exists():

@@ -12,4 +12,4 @@ from __future__ import annotations
 
 from .transformer import Patch, TransformResult, transform
 
-__all__ = ["transform", "Patch", "TransformResult"]
+__all__ = ["Patch", "TransformResult", "transform"]

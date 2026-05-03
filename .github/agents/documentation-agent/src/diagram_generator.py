@@ -4,7 +4,7 @@ Creates mermaid diagrams for architecture visualization
 """
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 RANDOM_SEED = 48
 
@@ -28,8 +28,8 @@ class DiagramGenerator:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.nodes: List[DiagramNode] = []
-        self.edges: List[DiagramEdge] = []
+        self.nodes: list[DiagramNode] = []
+        self.edges: list[DiagramEdge] = []
         self.initialized = True
 
     def add_node(self, id: str, label: str, type: str = "component") -> DiagramNode:
@@ -73,7 +73,7 @@ class DiagramGenerator:
         }
         return shapes.get(type, ("[", "]"))
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get metrics"""
         return {
             "seed": self.seed,

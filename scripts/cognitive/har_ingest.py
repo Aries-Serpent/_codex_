@@ -38,7 +38,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Ensure package imports
 sys.path.insert(0, os.getcwd())
@@ -52,12 +52,12 @@ class IngestContext:
     dry_run: bool
     ndjson_path: Path
     repo_root: Path
-    raw_har: Optional[Dict[str, Any]] = None
+    raw_har: Optional[dict[str, Any]] = None
     total_entries: int = 0
     pages_count: int = 0
     meta_creator: Optional[str] = None
     meta_browser: Optional[str] = None
-    normalized: Optional[List[Dict[str, Any]]] = None
+    normalized: Optional[list[dict[str, Any]]] = None
     pages_jsonl_path: Optional[Path] = None
 
 

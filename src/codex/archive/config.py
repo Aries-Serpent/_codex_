@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Configuration helpers for the archive command surface."""
 
 
 import os  # noqa: E402

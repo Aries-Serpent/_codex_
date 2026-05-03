@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -50,8 +50,8 @@ class SecretMetadata:
     updated_at: datetime
     expires_at: Optional[datetime] = None
     rotation_policy: Optional[str] = None
-    tags: Optional[Dict[str, str]] = None
-    scopes: Optional[List[str]] = None
+    tags: Optional[dict[str, str]] = None
+    scopes: Optional[list[str]] = None
 
 
 @dataclass
@@ -63,7 +63,7 @@ class RotationResult:
     new_secret_id: Optional[str] = None
     new_secret_value: Optional[str] = None
     error_message: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
 
 
 class SecretProviderError(Exception):
@@ -153,7 +153,7 @@ class SecretProvider(ABC):
             SecretProviderError: If secret not found
         """
 
-    def get_scopes(self, secret_id: str) -> List[str]:
+    def get_scopes(self, secret_id: str) -> list[str]:
         """Get scopes/permissions associated with a secret.
 
         Default implementation returns empty list.
@@ -184,7 +184,7 @@ class SecretProvider(ABC):
         """
         raise NotImplementedError(f"{self.__class__.__name__} does not support revocation")
 
-    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[dict[str, str]] = None) -> list[SecretMetadata]:
         """List all secrets managed by this provider.
 
         Default implementation raises NotImplementedError.
@@ -244,7 +244,7 @@ class TokenProvider(SecretProvider):
 
     @abstractmethod
     def create_token(
-        self, name: str, scopes: List[str], expires_in_days: Optional[int] = None
+        self, name: str, scopes: list[str], expires_in_days: Optional[int] = None
     ) -> RotationResult:
         """Create a new token.
 
@@ -261,7 +261,7 @@ class TokenProvider(SecretProvider):
         """
 
     @abstractmethod
-    def update_token_scopes(self, secret_id: str, scopes: List[str]) -> bool:
+    def update_token_scopes(self, secret_id: str, scopes: list[str]) -> bool:
         """Update scopes for an existing token.
 
         Args:

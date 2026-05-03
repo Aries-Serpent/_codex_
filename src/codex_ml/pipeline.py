@@ -15,10 +15,11 @@ import os
 import random
 import time
 from collections import Counter
+from collections.abc import Iterable, Mapping, Sequence
 from contextlib import contextmanager
 from pathlib import Path
 from statistics import fmean
-from typing import Any, Iterable, Mapping, Optional, Sequence
+from typing import Any, Optional
 
 from .config import (
     PretrainingConfig,

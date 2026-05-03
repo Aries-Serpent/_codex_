@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 from codex_ml.interfaces.rl import RLAgent
 
@@ -40,22 +41,22 @@ class ScriptedAgent(RLAgent):
         loop = bool(payload.get("loop", True))
         return cls(_PolicyState(actions=parsed_actions, loop=loop))
 
-    def act(self, state: Any) -> Any:  # noqa: D401 - interface compliance
+    def act(self, state: Any) -> Any:
         action = self._policy.actions[self._index]
         self._index += 1
         if self._index >= len(self._policy.actions):
             self._index = 0 if self._policy.loop else len(self._policy.actions) - 1
         return action
 
-    def update(self, trajectory: Mapping[str, Any]) -> dict[str, float]:  # noqa: D401
+    def update(self, trajectory: Mapping[str, Any]) -> dict[str, float]:
         return {"loss": 0.0}
 
-    def save(self, path: str) -> None:  # noqa: D401
+    def save(self, path: str) -> None:
         target = Path(path)
         payload = {"actions": list(self._policy.actions), "loop": self._policy.loop}
         target.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
-    def load(self, path: str) -> None:  # noqa: D401
+    def load(self, path: str) -> None:
         reloaded = self.from_file(path)
         self._policy = reloaded._policy
         self._index = 0

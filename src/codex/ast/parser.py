@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 import ast  # noqa: E402
 import hashlib  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Optional, Union  # noqa: E402
+from typing import Optional  # noqa: E402
 
 from .node import NodeType, SourceLocation, StandardizedASTNode  # noqa: E402
 
@@ -67,7 +67,7 @@ class UniversalParser:
         self._node_counter += 1
         return f"{prefix}_{self._node_counter}"
 
-    def parse_file(self, file_path: Union[str, Path]) -> Optional[StandardizedASTNode]:
+    def parse_file(self, file_path: str | Path) -> Optional[StandardizedASTNode]:
         """Parse a Python file into StandardizedASTNode tree.
 
         Args:
@@ -256,7 +256,7 @@ class UniversalParser:
             return f"@{ast.unparse(decorator)}"
         return "@<unknown>"
 
-    def _extract_type_hints(self, node: Union[ast.FunctionDef, ast.AsyncFunctionDef]) -> dict:
+    def _extract_type_hints(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict:
         """Extract type hints from function definition."""
         hints = {}
 
@@ -374,7 +374,7 @@ class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):  # type:
 
 
 # Convenience function
-def parse_python(source: Union[str, Path], strict: bool = False) -> Optional[StandardizedASTNode]:
+def parse_python(source: str | Path, strict: bool = False) -> Optional[StandardizedASTNode]:
     """Parse Python source into StandardizedASTNode tree.
 
     Args:

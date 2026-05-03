@@ -138,7 +138,7 @@ class TestCompareWithBaseline:
 
 class TestCLI:
     def test_cli_suite_flag(self, tmp_path):
-        from cpu_baseline import main  # noqa: PLC0415
+        from cpu_baseline import main
         json_path = tmp_path / "result.json"
         rc = main(["--suite", "cpu", "--json", str(json_path)])
         assert rc == 0
@@ -147,14 +147,14 @@ class TestCLI:
         assert "cpu" in data["suites"]
 
     def test_cli_compare_creates_baseline_if_missing(self, tmp_path):
-        from cpu_baseline import main  # noqa: PLC0415
+        from cpu_baseline import main
         baseline_path = tmp_path / "baseline.json"
         rc = main(["--suite", "cpu", "--compare", str(baseline_path)])
         assert rc == 0
         assert baseline_path.exists()
 
     def test_cli_compare_no_regression(self, tmp_path):
-        from cpu_baseline import main, run_benchmarks  # noqa: PLC0415
+        from cpu_baseline import main, run_benchmarks
         # Save a baseline first
         baseline_path = tmp_path / "baseline.json"
         baseline = run_benchmarks(["cpu"])

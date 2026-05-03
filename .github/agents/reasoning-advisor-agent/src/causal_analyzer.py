@@ -1,7 +1,7 @@
 """Causal Analyzer for Reasoning Advisor Agent"""
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 RANDOM_SEED = 50
 
@@ -10,7 +10,7 @@ class CausalRelation:
     cause: str
     effect: str
     confidence: float
-    evidence: List[str]
+    evidence: list[str]
 
 class CausalAnalyzer:
     """Analyze causal relationships in code changes"""
@@ -18,19 +18,19 @@ class CausalAnalyzer:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.relations: List[CausalRelation] = []
+        self.relations: list[CausalRelation] = []
         self.initialized = True
 
-    def add_relation(self, cause: str, effect: str, confidence: float, evidence: List[str]) -> CausalRelation:
+    def add_relation(self, cause: str, effect: str, confidence: float, evidence: list[str]) -> CausalRelation:
         rel = CausalRelation(cause=cause, effect=effect, confidence=confidence, evidence=evidence)
         self.relations.append(rel)
         return rel
 
-    def analyze_impact(self, change: str) -> List[CausalRelation]:
+    def analyze_impact(self, change: str) -> list[CausalRelation]:
         """Analyze causal impact of a change"""
         return [r for r in self.relations if r.cause == change]
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         return {
             "seed": self.seed,
             "total_relations": len(self.relations),

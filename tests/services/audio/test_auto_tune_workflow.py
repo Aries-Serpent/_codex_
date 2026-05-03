@@ -7,9 +7,9 @@ Test module for auto tune workflow.
 #!/usr/bin/env python3
 """Test suite for auto-tune workflow."""
 
-import pytest  # noqa: E402
+import pytest
 
-from services.audio.workflow.auto_tune_workflow import (  # noqa: E402
+from services.audio.workflow.auto_tune_workflow import (
     AutoTuneWorkflow,
     WorkflowResult,
 )

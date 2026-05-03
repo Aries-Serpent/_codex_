@@ -11,7 +11,6 @@ import argparse
 import json
 import re
 from pathlib import Path
-from typing import Dict, List
 
 _AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
 
@@ -31,8 +30,8 @@ def _redact_snippet(snippet: str) -> str:
                       redacted, flags=re.IGNORECASE)
 
 
-def _iter_text_files(root: Path) -> List[Path]:
-    files: List[Path] = []
+def _iter_text_files(root: Path) -> list[Path]:
+    files: list[Path] = []
     for p in root.rglob("*"):
         if not p.is_file():
             continue
@@ -42,8 +41,8 @@ def _iter_text_files(root: Path) -> List[Path]:
     return files
 
 
-def scan(root: Path) -> Dict[str, List[Dict[str, str]]]:
-    findings: List[Dict[str, str]] = []
+def scan(root: Path) -> dict[str, list[dict[str, str]]]:
+    findings: list[dict[str, str]] = []
     for f in _iter_text_files(root):
         try:
             text = f.read_text(encoding="utf-8", errors="ignore")
@@ -57,13 +56,13 @@ def scan(root: Path) -> Dict[str, List[Dict[str, str]]]:
     return {"findings": findings, "total_findings": len(findings)}
 
 
-def _write_json(path: Path, data: Dict[str, object]) -> None:
+def _write_json(path: Path, data: dict[str, object]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, data: Dict[str, object]) -> None:
+def _write_markdown(path: Path, data: dict[str, object]) -> None:
     findings = data.get("findings", []) or []
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# `_codex_` Secret Scan Stub\n")
     lines.append(f"- Total findings: **{data.get('total_findings', 0)}**\n")
     if not findings:

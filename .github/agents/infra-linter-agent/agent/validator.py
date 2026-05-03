@@ -15,7 +15,7 @@ Part of the Cognitive Brain Phase 6 agent ecosystem.
 import logging
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Cognitive brain integration
 try:
@@ -26,7 +26,7 @@ except ImportError:
         def __init__(self, db_path: Optional[str] = None):
             self.db_path = db_path
 
-        def query_patterns(self, pattern_type: str, metadata: Dict[str, Any]) -> List[Dict[str, Any]]:
+        def query_patterns(self, pattern_type: str, metadata: dict[str, Any]) -> list[dict[str, Any]]:
             return []
 
 # #AFTERMATH_PATTERN_IDENTIFIED: iac_validation_decisions
@@ -44,8 +44,8 @@ class ValidationResult:
     high_issues: int
     medium_issues: int
     low_issues: int
-    blockers: List[Dict[str, Any]]
-    warnings: List[Dict[str, Any]]
+    blockers: list[dict[str, Any]]
+    warnings: list[dict[str, Any]]
     recommendation: str  # APPROVE/WARN/BLOCK
     confidence: float  # 0.0-1.0
     reasoning: str
@@ -78,8 +78,8 @@ class IaCValidator:
 
     def validate(
         self,
-        scan_results: Dict[str, Any],
-        policy_config: Optional[Dict[str, Any]] = None
+        scan_results: dict[str, Any],
+        policy_config: Optional[dict[str, Any]] = None
     ) -> ValidationResult:
         """
         Assess risk and make recommendation based on scan results.
@@ -137,7 +137,7 @@ class IaCValidator:
         logger.info(f"Validation complete: {recommendation} (score={score}, risk={risk})")
         return result
 
-    def _get_default_policy(self) -> Dict[str, Any]:
+    def _get_default_policy(self) -> dict[str, Any]:
         """Return default organizational security policy"""
         return {
             "block_on_critical": True,
@@ -149,7 +149,7 @@ class IaCValidator:
             "min_security_score": 50
         }
 
-    def _count_severities(self, findings: List[Dict[str, Any]]) -> Dict[str, int]:
+    def _count_severities(self, findings: list[dict[str, Any]]) -> dict[str, int]:
         """Count findings by severity level"""
         counts = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
         for finding in findings:
@@ -160,7 +160,7 @@ class IaCValidator:
 
     def _calculate_security_score(
         self,
-        severity_counts: Dict[str, int],
+        severity_counts: dict[str, int],
         total_findings: int
     ) -> int:
         """
@@ -188,9 +188,9 @@ class IaCValidator:
 
     def _identify_blockers(
         self,
-        findings: List[Dict[str, Any]],
-        policy: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        findings: list[dict[str, Any]],
+        policy: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Identify findings that should block deployment.
 
@@ -241,9 +241,9 @@ class IaCValidator:
 
     def _identify_warnings(
         self,
-        findings: List[Dict[str, Any]],
-        policy: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        findings: list[dict[str, Any]],
+        policy: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Identify findings that should generate warnings (non-blocking).
 
@@ -273,8 +273,8 @@ class IaCValidator:
     def _assess_risk_level(
         self,
         score: int,
-        severity_counts: Dict[str, int],
-        blockers: List[Dict[str, Any]]
+        severity_counts: dict[str, int],
+        blockers: list[dict[str, Any]]
     ) -> str:
         """
         Determine overall risk level: low/medium/high/critical.
@@ -293,7 +293,7 @@ class IaCValidator:
             return "medium"
         return "low"
 
-    def _query_historical_patterns(self, scan_results: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _query_historical_patterns(self, scan_results: dict[str, Any]) -> list[dict[str, Any]]:
         """
         Query cognitive brain for historical IaC vulnerability patterns.
 
@@ -323,8 +323,8 @@ class IaCValidator:
     def _make_recommendation(
         self,
         risk: str,
-        blockers: List[Dict[str, Any]],
-        policy: Dict[str, Any]
+        blockers: list[dict[str, Any]],
+        policy: dict[str, Any]
     ) -> str:
         """
         Make deployment recommendation: APPROVE/WARN/BLOCK.
@@ -345,9 +345,9 @@ class IaCValidator:
 
     def _calculate_confidence(
         self,
-        findings: List[Dict[str, Any]],
-        blockers: List[Dict[str, Any]],
-        warnings: List[Dict[str, Any]]
+        findings: list[dict[str, Any]],
+        blockers: list[dict[str, Any]],
+        warnings: list[dict[str, Any]]
     ) -> float:
         """
         Calculate confidence in the recommendation (0.0-1.0).
@@ -380,8 +380,8 @@ class IaCValidator:
     def _generate_reasoning(
         self,
         risk: str,
-        blockers: List[Dict[str, Any]],
-        warnings: List[Dict[str, Any]],
+        blockers: list[dict[str, Any]],
+        warnings: list[dict[str, Any]],
         score: int
     ) -> str:
         """Generate human-readable reasoning for the recommendation"""

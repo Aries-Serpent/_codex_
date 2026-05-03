@@ -21,10 +21,10 @@ import torch.nn as nn
 logger = logging.getLogger(__name__)
 
 __all__ = [
-    "TorchProfiler",
     "MemoryOptimizer",
-    "optimize_model",
+    "TorchProfiler",
     "enable_gradient_checkpointing",
+    "optimize_model",
     "profile_model",
 ]
 

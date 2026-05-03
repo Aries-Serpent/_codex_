@@ -11,10 +11,10 @@ import pytest
 fastapi = pytest.importorskip("fastapi")
 pytest.importorskip("fastapi.testclient")
 
-from fastapi import FastAPI  # noqa: E402
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
-from mcp.middleware.rate_limit_middleware import (  # noqa: E402
+from mcp.middleware.rate_limit_middleware import (
     RateLimitMiddleware,
     clear_buckets,
 )

@@ -37,7 +37,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 
 @dataclass
@@ -46,13 +46,13 @@ class Pattern:
     pattern_id: str
     pattern_type: str  # "code", "decision", "optimization", "failure"
     source_agent: int
-    context: Dict[str, Any]
+    context: dict[str, Any]
     effectiveness: float  # 0.0 to 1.0
     usage_count: int = 0
     last_used: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "pattern_id": self.pattern_id,
             "pattern_type": self.pattern_type,
@@ -65,7 +65,7 @@ class Pattern:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Pattern':
+    def from_dict(cls, data: dict[str, Any]) -> 'Pattern':
         return cls(**data)
 
 
@@ -95,9 +95,9 @@ class SharedMemory:
         self.data_dir.mkdir(exist_ok=True)
         self.metadata_dir.mkdir(exist_ok=True)
 
-        self.index: Dict[str, Dict[str, Any]] = self._load_index()
+        self.index: dict[str, dict[str, Any]] = self._load_index()
 
-    def _load_index(self) -> Dict[str, Dict[str, Any]]:
+    def _load_index(self) -> dict[str, dict[str, Any]]:
         """Load memory index from disk"""
         if self.index_file.exists():
             with open(self.index_file) as f:
@@ -109,7 +109,7 @@ class SharedMemory:
         with open(self.index_file, 'w') as f:
             json.dump(self.index, f, indent=2)
 
-    def store(self, data: Dict[str, Any], metadata: Dict[str, Any]) -> str:
+    def store(self, data: dict[str, Any], metadata: dict[str, Any]) -> str:
         """Store data with metadata, return unique ID"""
         # Generate unique ID from data hash
         data_str = json.dumps(data, sort_keys=True)
@@ -137,7 +137,7 @@ class SharedMemory:
 
         return data_id
 
-    def retrieve(self, data_id: str) -> Optional[Dict[str, Any]]:
+    def retrieve(self, data_id: str) -> Optional[dict[str, Any]]:
         """Retrieve data by ID"""
         if data_id not in self.index:
             return None
@@ -149,7 +149,7 @@ class SharedMemory:
         with open(data_file) as f:
             return json.load(f)
 
-    def get_metadata(self, data_id: str) -> Optional[Dict[str, Any]]:
+    def get_metadata(self, data_id: str) -> Optional[dict[str, Any]]:
         """Retrieve metadata by ID"""
         if data_id not in self.index:
             return None
@@ -161,7 +161,7 @@ class SharedMemory:
         with open(metadata_file) as f:
             return json.load(f)
 
-    def search(self, query: Dict[str, Any]) -> List[str]:
+    def search(self, query: dict[str, Any]) -> list[str]:
         """Search for data IDs matching query criteria"""
         matches = []
 
@@ -186,9 +186,9 @@ class PatternLibrary:
         self.library_path.mkdir(parents=True, exist_ok=True)
 
         self.patterns_file = self.library_path / "patterns.json"
-        self.patterns: Dict[str, Pattern] = self._load_patterns()
+        self.patterns: dict[str, Pattern] = self._load_patterns()
 
-    def _load_patterns(self) -> Dict[str, Pattern]:
+    def _load_patterns(self) -> dict[str, Pattern]:
         """Load patterns from disk"""
         if self.patterns_file.exists():
             with open(self.patterns_file) as f:
@@ -219,7 +219,7 @@ class PatternLibrary:
             self.patterns[pattern_id].last_used = datetime.now().isoformat()
             self._save_patterns()
 
-    def find_similar_patterns(self, pattern: Pattern, threshold: float = 0.7) -> List[Pattern]:
+    def find_similar_patterns(self, pattern: Pattern, threshold: float = 0.7) -> list[Pattern]:
         """Find patterns similar to the given pattern"""
         similar = []
 
@@ -247,7 +247,7 @@ class PatternLibrary:
 
         return similar
 
-    def get_top_patterns(self, pattern_type: Optional[str] = None, limit: int = 10) -> List[Pattern]:
+    def get_top_patterns(self, pattern_type: Optional[str] = None, limit: int = 10) -> list[Pattern]:
         """Get top patterns by effectiveness"""
         patterns = list(self.patterns.values())
 
@@ -280,7 +280,7 @@ class MetaLearningEngine:
         self.pattern_library = PatternLibrary(pattern_library_path)
 
         self.transfers_log = shared_memory_path / "transfers.json"
-        self.transfers: List[KnowledgeTransfer] = self._load_transfers()
+        self.transfers: list[KnowledgeTransfer] = self._load_transfers()
 
         self.metrics = {
             "total_patterns": 0,
@@ -290,7 +290,7 @@ class MetaLearningEngine:
             "pattern_reuse_rate": 0.0
         }
 
-    def _load_transfers(self) -> List[KnowledgeTransfer]:
+    def _load_transfers(self) -> list[KnowledgeTransfer]:
         """Load transfer history"""
         if self.transfers_log.exists():
             with open(self.transfers_log) as f:
@@ -309,7 +309,7 @@ class MetaLearningEngine:
         source_agent: int,
         target_agent: int,
         pattern: Pattern
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Transfer learned pattern from source to target agent"""
 
         # Validate agents
@@ -352,7 +352,7 @@ class MetaLearningEngine:
             "transfer_id": transfer.transfer_id
         }
 
-    def optimize_reuse(self) -> Dict[str, Any]:
+    def optimize_reuse(self) -> dict[str, Any]:
         """Identify and consolidate reusable patterns across agents"""
         print("🔄 Optimizing pattern reuse across agents...")
 
@@ -364,8 +364,8 @@ class MetaLearningEngine:
             }
 
         # Find similar pattern groups
-        pattern_groups: List[List[Pattern]] = []
-        processed: Set[str] = set()
+        pattern_groups: list[list[Pattern]] = []
+        processed: set[str] = set()
 
         for pattern in all_patterns:
             if pattern.pattern_id in processed:
@@ -405,7 +405,7 @@ class MetaLearningEngine:
 
         return result
 
-    def calculate_metrics(self) -> Dict[str, Any]:
+    def calculate_metrics(self) -> dict[str, Any]:
         """Calculate meta-learning performance metrics"""
         self.metrics["total_patterns"] = len(self.pattern_library.patterns)
         self.metrics["total_transfers"] = len(self.transfers)
@@ -424,7 +424,7 @@ class MetaLearningEngine:
 
         return self.metrics
 
-    def apply_lessons_to_task(self, task_context: Dict[str, Any], lessons: List[str]) -> Dict[str, Any]:
+    def apply_lessons_to_task(self, task_context: dict[str, Any], lessons: list[str]) -> dict[str, Any]:
         """Apply meta-learning lessons to a specific task (e.g., LiceCAP ingestion)"""
         print("\n🧠 Applying meta-learning to task...")
 

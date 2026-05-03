@@ -17,7 +17,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-from deployment_orchestrator import (  # noqa: E402
+from deployment_orchestrator import (
     DeploymentManifest,
     DeploymentOrchestrator,
     DeploymentPhase,
@@ -676,7 +676,7 @@ class TestDeploymentOrchestrator:
             success = orchestrator.execute()
             # Should fail gracefully
             assert success is False
-        except Exception:  # noqa: BLE001
+        except Exception:
             pytest.fail("Exception should be caught and handled")
         finally:
             # Restore original method

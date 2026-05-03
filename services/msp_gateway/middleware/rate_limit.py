@@ -7,7 +7,7 @@ import json
 import logging
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Optional
 
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
@@ -65,8 +65,8 @@ class RateLimiter:
     """Per-tenant rate limiter using token buckets"""
 
     def __init__(self):
-        self.request_buckets: Dict[str, TokenBucket] = {}
-        self.token_buckets: Dict[str, TokenBucket] = {}
+        self.request_buckets: dict[str, TokenBucket] = {}
+        self.token_buckets: dict[str, TokenBucket] = {}
 
     def _get_or_create_bucket(
         self,
@@ -88,7 +88,7 @@ class RateLimiter:
 
         return buckets[tenant_id]
 
-    def check_request_limit(self, tenant_id: str, quota: Optional[Dict[str, int]] = None) -> bool:
+    def check_request_limit(self, tenant_id: str, quota: Optional[dict[str, int]] = None) -> bool:
         """Check if request is within rate limit
 
         Returns:
@@ -116,7 +116,7 @@ class RateLimiter:
         self,
         tenant_id: str,
         tokens: int,
-        quota: Optional[Dict[str, int]] = None,
+        quota: Optional[dict[str, int]] = None,
     ) -> bool:
         """Check if token usage is within rate limit
 

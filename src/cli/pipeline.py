@@ -5,14 +5,14 @@ Pipeline orchestration for CLI commands.
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 class PipelineValidationError(Exception):
     """Raised when pipeline configuration validation fails."""
 
 
-def validate_pipeline_config(config: Dict[str, Any]) -> None:
+def validate_pipeline_config(config: dict[str, Any]) -> None:
     """
     Validate pipeline configuration.
 
@@ -55,8 +55,8 @@ def run_pipeline(
     tokenizer: Optional[Any],
     train_ds: Optional[Any],
     val_ds: Optional[Any],
-    config: Dict[str, Any],
-) -> Dict[str, Any]:
+    config: dict[str, Any],
+) -> dict[str, Any]:
     """
     Run training pipeline with validation.
 

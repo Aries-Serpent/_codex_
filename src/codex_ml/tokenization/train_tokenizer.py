@@ -12,11 +12,10 @@ fully featured trainer.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from tokenization import train_tokenizer as _legacy_train_tokenizer
 from tokenization.train_tokenizer import (
-    TrainTokenizerConfig as TrainTokenizerConfig,  # explicit re-export for type checkers
+    TrainTokenizerConfig,  # explicit re-export for type checkers
 )
 
 
@@ -32,8 +31,6 @@ def run(cfg: TrainTokenizerConfig) -> Path:
     return train(cfg)
 
 
-if TYPE_CHECKING:  # pragma: no cover - Hydra entry point only used at runtime
-    from omegaconf import DictConfig as DictConfig
 
 
 # ``main`` is provided for ``python -m codex_ml.tokenization.train_tokenizer``
@@ -42,4 +39,4 @@ if TYPE_CHECKING:  # pragma: no cover - Hydra entry point only used at runtime
 main = _legacy_train_tokenizer.main
 
 
-__all__ = ["TrainTokenizerConfig", "train", "run", "main"]
+__all__ = ["TrainTokenizerConfig", "main", "run", "train"]

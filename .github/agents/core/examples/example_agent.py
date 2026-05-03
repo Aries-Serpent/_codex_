@@ -19,7 +19,7 @@ import tempfile
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Import from parent package (core/)
 try:
@@ -61,9 +61,9 @@ class CodeAnalysisAgent(CognitiveAgent):
             workspace=workspace
         )
         self.pattern_recognizer = PatternRecognizer()
-        self.analysis_results: List[Dict[str, Any]] = []
+        self.analysis_results: list[dict[str, Any]] = []
 
-    def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         PERCEPTION: Gather context and analyze the task environment.
 
@@ -151,7 +151,7 @@ class CodeAnalysisAgent(CognitiveAgent):
 
         return context
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         DECISION: Determine the optimal course of action.
 
@@ -202,7 +202,7 @@ class CodeAnalysisAgent(CognitiveAgent):
             "estimated_time": len(steps) * 10  # 10 seconds per step
         }
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """
         ACTION: Execute the decided plan with guardrails.
 
@@ -286,10 +286,10 @@ class CodeAnalysisAgent(CognitiveAgent):
 
     def aftermath(
         self,
-        result: Dict[str, Any],
-        context: Dict[str, Any],
-        decision: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        result: dict[str, Any],
+        context: dict[str, Any],
+        decision: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         AFTERMATH: Learn from execution and persist insights.
 

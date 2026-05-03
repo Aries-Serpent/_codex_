@@ -244,7 +244,7 @@ class TestOfflineCapability:
                 )
                 # If we got here, retrieval setup worked
                 assert retriever.faiss_index is not None
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # Expected if sentence-transformers not available
                 pass
 

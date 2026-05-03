@@ -4,7 +4,7 @@ Creates tutorials from usage patterns and examples
 """
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 RANDOM_SEED = 48
 
@@ -22,7 +22,7 @@ class TutorialGenerator:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.sections: List[TutorialSection] = []
+        self.sections: list[TutorialSection] = []
         self.initialized = True
 
     def add_section(self, title: str, content: str, code: str, difficulty: str = "beginner") -> TutorialSection:
@@ -71,7 +71,7 @@ class TutorialGenerator:
             return "intermediate"
         return "beginner"
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get metrics"""
         return {
             "seed": self.seed,

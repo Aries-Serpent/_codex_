@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -15,7 +15,7 @@ class KBSearchReq(BaseModel):
 
 class HygieneReq(BaseModel):
     diff: str | None = None
-    checks: List[str] | None = None
+    checks: list[str] | None = None
 
 
 class TestsReq(BaseModel):
@@ -31,7 +31,7 @@ class CreatePRReq(BaseModel):
 
 
 @app.post("/kb/search")
-def kb_search(req: KBSearchReq) -> Dict[str, Any]:
+def kb_search(req: KBSearchReq) -> dict[str, Any]:
     # Deterministic stubbed results
     results = [
         {
@@ -45,7 +45,7 @@ def kb_search(req: KBSearchReq) -> Dict[str, Any]:
 
 
 @app.post("/repo/hygiene")
-def repo_hygiene(req: HygieneReq) -> Dict[str, Any]:
+def repo_hygiene(req: HygieneReq) -> dict[str, Any]:
     findings = []
     if req.diff and "TODO" in req.diff:
         findings.append({"type": "lint", "message": "Found TODO in diff"})
@@ -53,13 +53,13 @@ def repo_hygiene(req: HygieneReq) -> Dict[str, Any]:
 
 
 @app.post("/tests/run")
-def tests_run(req: TestsReq | None = None) -> Dict[str, Any]:
+def tests_run(req: TestsReq | None = None) -> dict[str, Any]:
     # Stubbed: always pass a small set
     return {"passed": 12, "failed": 0, "duration_s": 1.23}
 
 
 @app.post("/git/create-pr")
-def git_create_pr(req: CreatePRReq) -> Dict[str, Any]:
+def git_create_pr(req: CreatePRReq) -> dict[str, Any]:
     dry = not bool(req.confirm)
     if dry:
         return {

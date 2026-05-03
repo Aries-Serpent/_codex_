@@ -11,11 +11,11 @@ Complete test coverage for Phase 9.1 - 100 comprehensive tests
 """
 
 import importlib
-import json  # noqa: E402
-import tempfile  # noqa: E402
-from pathlib import Path  # noqa: E402
+import json
+import tempfile
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 # ============================================================================
 # CODE INGESTION TESTS (20 tests)

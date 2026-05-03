@@ -8,7 +8,8 @@ against real downstream call-sites.
 
 from __future__ import annotations
 
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 __all__ = [
     "Module",

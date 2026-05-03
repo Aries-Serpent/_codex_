@@ -8,8 +8,9 @@ import json
 import sys
 import time
 from collections import Counter
+from collections.abc import Iterable, Iterator, Sequence
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Sequence, Tuple
+from typing import Any
 
 try:  # pragma: no cover - optional dependency guard
     import yaml
@@ -22,7 +23,7 @@ except Exception:  # pragma: no cover
     Draft202012Validator = None  # type: ignore[assignment]
     Draft7Validator = None  # type: ignore[assignment]
 
-DEFAULT_GROUPS: Dict[str, Tuple[Tuple[Path, Path], ...]] = {
+DEFAULT_GROUPS: dict[str, tuple[tuple[Path, Path], ...]] = {
     "training": (
         (Path("configs/training/base.yaml"), Path("configs/schemas/training.schema.yaml")),
         (
@@ -64,7 +65,7 @@ def iter_yaml_files(root: Path) -> Iterable[Path]:
         yield path
 
 
-def _flatten_groups(groups: Sequence[str]) -> Tuple[Tuple[Path, Path], ...]:
+def _flatten_groups(groups: Sequence[str]) -> tuple[tuple[Path, Path], ...]:
     if not groups or "all" in groups:
         selected = list(DEFAULT_GROUPS)
     else:
@@ -74,7 +75,7 @@ def _flatten_groups(groups: Sequence[str]) -> Tuple[Tuple[Path, Path], ...]:
     if unknown:
         raise SystemExit(f"unknown group(s): {sorted(unknown)}")
 
-    flattened: List[Tuple[Path, Path]] = []
+    flattened: list[tuple[Path, Path]] = []
     for group in selected:
         flattened.extend(DEFAULT_GROUPS[group])
     return tuple(flattened)
@@ -108,13 +109,13 @@ def _iter_errors(instance: Any, schema: Any) -> Iterator[str]:
         yield f"{location}: {error.message}"
 
 
-def _filter_errors(errors: List[str], *, allow_partial: bool) -> List[str]:
+def _filter_errors(errors: list[str], *, allow_partial: bool) -> list[str]:
     if not allow_partial:
         return errors
     return [err for err in errors if "required property" not in err]
 
 
-def validate_pair(config_path: Path, schema_path: Path) -> List[str]:
+def validate_pair(config_path: Path, schema_path: Path) -> list[str]:
     try:
         instance = _load_yaml(config_path)
     except Exception as exc:
@@ -127,8 +128,8 @@ def validate_pair(config_path: Path, schema_path: Path) -> List[str]:
 
 
 def _build_report(
-    results: List[Dict[str, Any]], *, started_at: str, duration_seconds: float, exit_code: int
-) -> Dict[str, Any]:
+    results: list[dict[str, Any]], *, started_at: str, duration_seconds: float, exit_code: int
+) -> dict[str, Any]:
     counts = Counter(result["status"] for result in results)
     return {
         "total": len(results),
@@ -140,18 +141,18 @@ def _build_report(
     }
 
 
-def _write_report(path: Path, report: Dict[str, Any]) -> None:
+def _write_report(path: Path, report: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
 
-def _append_log(path: Path, report: Dict[str, Any]) -> None:
+def _append_log(path: Path, report: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as log_file:
         log_file.write(json.dumps(report) + "\n")
 
 
-def _resolve_targets(args: argparse.Namespace) -> Iterable[Tuple[Path, Path]]:
+def _resolve_targets(args: argparse.Namespace) -> Iterable[tuple[Path, Path]]:
     if args.root:
         if args.config:
             raise SystemExit("--config cannot be used with --root; pick one mode")
@@ -207,12 +208,12 @@ def main(argv: Iterable[str] | None = None) -> int:
 
     allow_partial = bool(parsed.allow_partial or (parsed.root and not parsed.strict))
     exit_code = 0
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     start_ts = time.time()
 
     for config_path, schema_path in _resolve_targets(parsed):
         status = "ok"
-        filtered_errors: List[str] = []
+        filtered_errors: list[str] = []
 
         if not config_path.exists():
             status = "missing_config"

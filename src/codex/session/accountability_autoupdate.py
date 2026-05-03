@@ -45,7 +45,7 @@ import subprocess
 import sys
 import tempfile
 from collections import Counter
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +159,7 @@ _STOPWORDS = frozenset(
 # ---------------------------------------------------------------------------
 
 
-def _run_git(args: List[str], fallback: str = "") -> str:
+def _run_git(args: list[str], fallback: str = "") -> str:
     """Run a git command and return stripped stdout, or *fallback* on error."""
     try:
         result = subprocess.run(
@@ -178,7 +178,7 @@ def _run_git(args: List[str], fallback: str = "") -> str:
 def collect_metadata(
     session_id: Optional[str] = None,
     narrative: Optional[str] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Gather session metadata from git and environment.
 
     Parameters
@@ -203,7 +203,7 @@ def collect_metadata(
         session_id = os.environ.get("CODEX_SESSION_ID")
     if not session_id:
         raw = f"{commit_sha}:{timestamp}".encode()
-        session_id = hashlib.sha1(raw, usedforsecurity=False).hexdigest()[:12]  # noqa: S324
+        session_id = hashlib.sha1(raw, usedforsecurity=False).hexdigest()[:12]
 
     # Author ---------------------------------------------------------------
     author = (
@@ -319,8 +319,8 @@ def compute_score(
 
 def tokenize_narrative(
     narrative: str,
-    modified_filenames: Optional[List[str]] = None,
-) -> List[Dict[str, Any]]:
+    modified_filenames: Optional[list[str]] = None,
+) -> list[dict[str, Any]]:
     """Tokenise *narrative* into weighted terms.
 
     Steps:
@@ -344,7 +344,7 @@ def tokenize_narrative(
 
     # Sentence split → word tokenise
     sentences = re.split(r"[.!?]+", narrative)
-    words: List[str] = []
+    words: list[str] = []
     for sentence in sentences:
         tokens = re.findall(r"[a-zA-Z0-9]+", sentence.lower())
         words.extend(t for t in tokens if t not in _STOPWORDS and len(t) > 1)
@@ -357,7 +357,7 @@ def tokenize_narrative(
     max_count = max(counter.values())
 
     # Build weighted list
-    weighted: Dict[str, float] = {}
+    weighted: dict[str, float] = {}
     for token, count in counter.items():
         base_tf = count / max_count
         boost = 0.0
@@ -381,7 +381,7 @@ def tokenize_narrative(
 
 
 def generate_markdown_entry(
-    metadata: Dict[str, Any], score: float, tokens: List[Dict[str, Any]]
+    metadata: dict[str, Any], score: float, tokens: list[dict[str, Any]]
 ) -> str:
     """Generate a structured markdown entry for the accountability report.
 
@@ -495,7 +495,7 @@ def append_to_report(
 # ---------------------------------------------------------------------------
 
 
-def generate_changelog_entry(metadata: Dict[str, Any], score: float) -> str:
+def generate_changelog_entry(metadata: dict[str, Any], score: float) -> str:
     """Generate a Keep-a-Changelog entry for the ``[Unreleased]`` section.
 
     Returns a markdown string suitable for insertion right after the
@@ -589,9 +589,9 @@ def update_changelog(
 
 
 def write_session_artifact(
-    metadata: Dict[str, Any],
+    metadata: dict[str, Any],
     score: float,
-    tokens: List[Dict[str, Any]],
+    tokens: list[dict[str, Any]],
     sessions_dir: pathlib.Path = SESSIONS_DIR,
 ) -> pathlib.Path:
     """Write a JSON artifact to ``.codex/sessions/<session_id>.json``.
@@ -632,7 +632,7 @@ def run(
     report_path: pathlib.Path = REPORT_PATH,
     changelog_path: Optional[pathlib.Path] = CHANGELOG_PATH,
     sessions_dir: pathlib.Path = SESSIONS_DIR,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Execute the full accountability auto-update pipeline.
 
     Updates both the accountability report **and** the CHANGELOG
@@ -731,7 +731,7 @@ def run(
 # ---------------------------------------------------------------------------
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     """CLI entry-point for the accountability auto-update script."""
     parser = argparse.ArgumentParser(
         description="Append a scored session entry to the accountability report.",

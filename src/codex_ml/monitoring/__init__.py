@@ -10,6 +10,6 @@ __all__ = [
     "CodexMetricsRegistry",
     "SystemMetricsLogger",
     "get_metrics_text",
-    "metrics_endpoint_fastapi",
     "metrics_enabled",
+    "metrics_endpoint_fastapi",
 ]

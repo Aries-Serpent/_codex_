@@ -6,7 +6,7 @@ Provides seamless integration of Q-learning with the Cognitive Brain system.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Try imports
 try:
@@ -99,13 +99,13 @@ class LearningIntegrator:
         self.metrics = LearningMetrics()
 
         # Action registry
-        self.actions: List[str] = []
+        self.actions: list[str] = []
 
         # Session tracking
-        self.session_rewards: List[float] = []
+        self.session_rewards: list[float] = []
         self.initialized = False
 
-    def initialize(self, actions: Optional[List[str]] = None) -> None:
+    def initialize(self, actions: Optional[list[str]] = None) -> None:
         """Initialize the learning engine.
 
         Args:
@@ -142,7 +142,7 @@ class LearningIntegrator:
 
         self.initialized = True
 
-    def select_action(self, state: Dict[str, Any]) -> str:
+    def select_action(self, state: dict[str, Any]) -> str:
         """Select action using Q-learning.
 
         Args:
@@ -163,11 +163,11 @@ class LearningIntegrator:
 
     def process_outcome(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         success: bool,
-        output: Optional[Dict[str, Any]] = None,
-        next_state: Optional[Dict[str, Any]] = None,
+        output: Optional[dict[str, Any]] = None,
+        next_state: Optional[dict[str, Any]] = None,
     ) -> float:
         """Process action outcome and update learning.
 
@@ -247,7 +247,7 @@ class LearningIntegrator:
 
         return self.metrics
 
-    def _calculate_reward(self, success: bool, output: Optional[Dict[str, Any]]) -> float:
+    def _calculate_reward(self, success: bool, output: Optional[dict[str, Any]]) -> float:
         """Calculate reward using reward shaper.
 
         Args:
@@ -270,7 +270,7 @@ class LearningIntegrator:
         # Simple reward
         return 1.0 if success else -0.5
 
-    def _augment_state_with_memory(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    def _augment_state_with_memory(self, state: dict[str, Any]) -> dict[str, Any]:
         """Augment state with relevant memory patterns.
 
         Args:
@@ -294,7 +294,7 @@ class LearningIntegrator:
 
     def _store_in_memory(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         reward: float,
         success: bool,
@@ -353,7 +353,7 @@ class LearningIntegrator:
 
         return self.metrics
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get comprehensive statistics.
 
         Returns:

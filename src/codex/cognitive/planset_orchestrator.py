@@ -38,7 +38,7 @@ import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from codex.cognitive.quantum_planset_engine import (
     ImprovementArea,
@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 # Planset-filename → ImprovementArea mapping
 # Covers every unfinished planset found in the .codex/plans/ audit.
 # ---------------------------------------------------------------------------
-_PLANSET_MAP: Dict[str, ImprovementArea] = {
+_PLANSET_MAP: dict[str, ImprovementArea] = {
     # CI / Self-Healing
     "CI_FINAL_RESOLUTION_PR3339_MERGE_PLANSET": ImprovementArea.CI_SELF_HEALING,
     "CUSTOM_AGENT_PLANSET_CI_FAILURE_DIAGNOSTICIAN": ImprovementArea.CI_SELF_HEALING,
@@ -164,13 +164,13 @@ class PromptSet:
     source_planset: str
     agent: str
     prompt: str
-    context: Dict[str, Any]
+    context: dict[str, Any]
     amplitude: float
     order: int
     step_id: str
     description: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     def to_json(self) -> str:
@@ -182,17 +182,17 @@ class OrchestrationState:
     """Persisted state between orchestrator sessions."""
 
     session_id: str
-    active_areas: List[str] = field(default_factory=list)
-    completed_steps: Dict[str, List[str]] = field(default_factory=dict)
-    deferred_areas: List[str] = field(default_factory=list)
-    decoherence_sessions: Dict[str, int] = field(default_factory=dict)
+    active_areas: list[str] = field(default_factory=list)
+    completed_steps: dict[str, list[str]] = field(default_factory=dict)
+    deferred_areas: list[str] = field(default_factory=list)
+    decoherence_sessions: dict[str, int] = field(default_factory=dict)
     last_updated: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> OrchestrationState:
+    def from_dict(cls, data: dict[str, Any]) -> OrchestrationState:
         return cls(
             session_id=data.get("session_id", ""),
             active_areas=data.get("active_areas", []),
@@ -241,7 +241,7 @@ class PlansetOrchestrator:
     # Public API
     # ------------------------------------------------------------------
 
-    def survey(self) -> List[PlansetRecord]:
+    def survey(self) -> list[PlansetRecord]:
         """
         Scan ``planset_dir`` for markdown files, detect completion status,
         and map each to an ``ImprovementArea``.
@@ -251,7 +251,7 @@ class PlansetOrchestrator:
         List[PlansetRecord]
             One record per ``.md`` file found, sorted by area then filename.
         """
-        records: List[PlansetRecord] = []
+        records: list[PlansetRecord] = []
         if not self._dir.exists():
             return records
 
@@ -291,10 +291,10 @@ class PlansetOrchestrator:
 
     def generate_session(
         self,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
         max_prompts: int = 10,
         include_complete: bool = False,
-    ) -> List[PromptSet]:
+    ) -> list[PromptSet]:
         """
         Generate a ranked list of ``PromptSet`` objects for the current session.
 
@@ -319,7 +319,7 @@ class PlansetOrchestrator:
         ctx = context or {}
         records = self.survey()
         seen_areas: set = set()
-        all_prompts: List[PromptSet] = []
+        all_prompts: list[PromptSet] = []
 
         for rec in records:
             if rec.area is None:
@@ -363,7 +363,7 @@ class PlansetOrchestrator:
 
     def next_promptset(
         self,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
     ) -> Optional[PromptSet]:
         """
         Return the single highest-priority ``PromptSet`` for the current session.
@@ -403,7 +403,7 @@ class PlansetOrchestrator:
         self._state.last_updated = datetime.now(timezone.utc).isoformat()
         self._save_state()
 
-    def summary(self, context: Optional[Dict[str, Any]] = None) -> str:
+    def summary(self, context: Optional[dict[str, Any]] = None) -> str:
         """
         Return a Markdown summary table of the next session's ranked prompts.
 
@@ -458,8 +458,8 @@ class PlansetOrchestrator:
     # ------------------------------------------------------------------
 
     def _build_area_context(
-        self, area: ImprovementArea, global_ctx: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, area: ImprovementArea, global_ctx: dict[str, Any]
+    ) -> dict[str, Any]:
         """Merge global session context with area-specific defaults."""
         ctx = dict(global_ctx)
         # Propagate common signals to per-area keys the engine understands
@@ -495,7 +495,7 @@ class PlansetOrchestrator:
         step: PlanStep,
         area: ImprovementArea,
         source_planset: str,
-        context: Dict[str, Any],
+        context: dict[str, Any],
         order: int,
     ) -> PromptSet:
         """Convert a ``PlanStep`` into a concrete ``PromptSet``."""

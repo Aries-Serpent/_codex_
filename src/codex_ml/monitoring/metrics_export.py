@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Prometheus metrics export helpers."""
 
 
 try:  # Optional dependency for Prometheus integration

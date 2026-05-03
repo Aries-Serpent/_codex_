@@ -18,7 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 DEFAULT_FILES = [
     "_codex_status_update-2025-11-27.md",
@@ -34,7 +34,7 @@ DEFAULT_FILES = [
 ]
 
 
-def _describe(path: Path) -> Dict[str, Any]:
+def _describe(path: Path) -> dict[str, Any]:
     return {
         "path": str(path),
         "exists": path.exists(),
@@ -42,9 +42,9 @@ def _describe(path: Path) -> Dict[str, Any]:
     }
 
 
-def build_manifest(repo_root: Path, audit: str) -> Dict[str, Any]:
+def build_manifest(repo_root: Path, audit: str) -> dict[str, Any]:
     repo_root = repo_root.resolve()
-    files: List[str] = list(DEFAULT_FILES)
+    files: list[str] = list(DEFAULT_FILES)
     if audit not in files:
         files.insert(0, audit)
 

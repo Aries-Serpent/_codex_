@@ -34,26 +34,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Status Update Audit Report Generator (v1.1.0)
-
-Purpose:
-- Produce a concise Codex Status Update Audit Report as Markdown under reports/
-- Summarize current capability scores, low maturity items, integrity chain,
-  warnings, and optional regressions/improvements vs a baseline.
-
-Inputs (by default, from .copilot-space/workflow.yaml and audit_artifacts/):
-- audit_artifacts/capabilities_scored.json (required)
-- audit_artifacts/gaps.json (optional; will compute using threshold if missing)
-- audit_run_manifest.json (optional integrity+weights data)
-- .copilot-space/workflow.yaml (for thresholds, directories)
-
-Optional:
-- --base <path/to/scored.json> to compute deltas vs baseline scored file
-
-Determinism:
-- Offline-only, sorted output, no network.
-"""
 
 
 import argparse

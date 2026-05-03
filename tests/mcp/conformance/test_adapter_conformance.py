@@ -13,7 +13,8 @@ Test module for adapter conformance.
 # e.g. "src.mcp.backends.mock_backend.InMemoryMockBackend" or "src.mcp.backends.pinecone_adapter.PineconeAdapter"
 import importlib
 import os
-from typing import Any, Dict, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 import pytest
 
@@ -34,7 +35,7 @@ def adapter():
     return inst
 
 
-def sample_items() -> Iterable[Dict[str, Any]]:
+def sample_items() -> Iterable[dict[str, Any]]:
     return [
         {"id": "conf-a", "embedding": [1.0, 0.0], "content": "a", "metadata": {"tag": "x"}},
         {"id": "conf-b", "embedding": [0.9, 0.1], "content": "b", "metadata": {"tag": "y"}},

@@ -10,12 +10,12 @@ import pytest
 
 pytest.importorskip('sentencepiece')
 pytest.importorskip('sentencepiece')
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402  # noqa: E402
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_train_tokenizer_smoke(tmp_path):
     pytest.importorskip("sentencepiece")
-    from tokenizers import Tokenizer  # noqa: PLC0415
+    from tokenizers import Tokenizer
 
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("hello world\n" * 5)

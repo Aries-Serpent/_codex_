@@ -11,7 +11,7 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 try:
     import yaml
@@ -37,7 +37,7 @@ class SecurityValidator:
         }
         self.repo_root = Path(__file__).parent.parent.parent.parent.parent
 
-    def _load_config(self, config_path: str) -> Dict:
+    def _load_config(self, config_path: str) -> dict:
         """Load configuration from YAML file."""
         config_file = Path(__file__).parent.parent / config_path
 
@@ -52,7 +52,7 @@ class SecurityValidator:
         with open(config_file, 'r') as f:
             return yaml.safe_load(f)
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration."""
         return {
             "agent": {
@@ -71,7 +71,7 @@ class SecurityValidator:
             }
         }
 
-    def validate_audit_logging(self) -> Dict:
+    def validate_audit_logging(self) -> dict:
         """Validate organization audit logging configuration (HA-OPT-002)."""
         print("🔐 Validating Audit Logging Configuration...")
 
@@ -104,7 +104,7 @@ class SecurityValidator:
 
         return result
 
-    def validate_codeql_suppressions(self) -> Dict:
+    def validate_codeql_suppressions(self) -> dict:
         """Validate CodeQL suppressions and check 90-day rotation (HA-OPT-003)."""
         print("🔍 Validating CodeQL Suppressions...")
 
@@ -168,7 +168,7 @@ class SecurityValidator:
 
         return result
 
-    def _scan_file_for_suppressions(self, file_path: Path, patterns: List[str]) -> List[Dict]:
+    def _scan_file_for_suppressions(self, file_path: Path, patterns: list[str]) -> list[dict]:
         """Scan a file for suppression comments."""
         suppressions = []
 
@@ -188,7 +188,7 @@ class SecurityValidator:
 
         return suppressions
 
-    def validate_branch_protection(self) -> Dict:
+    def validate_branch_protection(self) -> dict:
         """Validate branch protection rules."""
         print("🛡️  Validating Branch Protection...")
 
@@ -217,7 +217,7 @@ class SecurityValidator:
 
         return result
 
-    def validate_secret_scanning(self) -> Dict:
+    def validate_secret_scanning(self) -> dict:
         """Validate secret scanning configuration."""
         print("🔐 Validating Secret Scanning...")
 
@@ -245,7 +245,7 @@ class SecurityValidator:
 
         return result
 
-    def validate_all(self) -> Dict:
+    def validate_all(self) -> dict:
         """Run all enabled validations."""
         print(f"\n🤖 GitHub Security Validator Agent v{self.version}")
         print("=" * 70)

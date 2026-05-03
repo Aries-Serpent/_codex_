@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import importlib.util
 import os
-from typing import Dict
 
 import pytest
 
@@ -23,12 +22,12 @@ try:  # pragma: no cover - hydra stub may omit utils
 except ModuleNotFoundError:
     pytest.skip("Hydra utilities unavailable", allow_module_level=True)
 
-from codex_ml.cli.evaluate import _sanitize_eval_config  # noqa: E402
-from codex_ml.cli.train import _run_from_cfg  # noqa: E402
-from omegaconf import OmegaConf  # noqa: E402
+from codex_ml.cli.evaluate import _sanitize_eval_config
+from codex_ml.cli.train import _run_from_cfg
+from omegaconf import OmegaConf
 
 
-def _make_base_cfg() -> Dict:
+def _make_base_cfg() -> dict:
     return {
         "epochs": 1,
         "grad_accum": 1,
@@ -45,7 +44,7 @@ def _make_base_cfg() -> Dict:
 
 
 def test_train_cli_sanitises_dataset(monkeypatch):
-    calls: Dict[str, object] = {}
+    calls: dict[str, object] = {}
 
     def _stub_run_training(**kwargs):
         calls["called"] = True

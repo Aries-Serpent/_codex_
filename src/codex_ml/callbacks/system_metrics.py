@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""System metrics callback for optional CPU/GPU sampling."""
 
 
 from contextlib import suppress  # noqa: E402

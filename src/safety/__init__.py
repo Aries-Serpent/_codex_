@@ -24,4 +24,4 @@ class SafetyProfile:
 
 DEFAULT_SAFETY_PROFILE: Final[SafetyProfile] = SafetyProfile()
 
-__all__ = ["SafetyProfile", "DEFAULT_SAFETY_PROFILE"]
+__all__ = ["DEFAULT_SAFETY_PROFILE", "SafetyProfile"]

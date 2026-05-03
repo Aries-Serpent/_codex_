@@ -14,10 +14,10 @@ ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ingestion.csv_ingestor import load_csv  # noqa: E402
-from ingestion.file_ingestor import read_file  # noqa: E402
-from ingestion.json_ingestor import load_json  # noqa: E402
-from ingestion.utils import read_text_file  # noqa: E402
+from ingestion.csv_ingestor import load_csv
+from ingestion.file_ingestor import read_file
+from ingestion.json_ingestor import load_json
+from ingestion.utils import read_text_file
 
 ENCODINGS = ["iso-8859-1", "cp1252", "utf-16", "auto"]
 

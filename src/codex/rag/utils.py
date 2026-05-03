@@ -30,7 +30,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -369,12 +369,12 @@ class ProvenanceMetadata:
     """
 
     source_file: Path
-    line_range: Tuple[int, int]
+    line_range: tuple[int, int]
     chunk_id: str
     indexed_at: datetime
     embedding_model: str
     retrieval_score: float
-    char_range: Optional[Tuple[int, int]] = None
+    char_range: Optional[tuple[int, int]] = None
     metadata: Optional[dict] = None
 
     def to_dict(self) -> dict:

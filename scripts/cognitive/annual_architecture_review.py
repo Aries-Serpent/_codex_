@@ -35,7 +35,7 @@ import logging
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -49,8 +49,8 @@ class ComponentHealth:
     uptime_percentage: float
     error_rate: float
     performance_score: float
-    issues: List[str]
-    recommendations: List[str]
+    issues: list[str]
+    recommendations: list[str]
 
 
 @dataclass
@@ -107,7 +107,7 @@ class AnnualArchitectureReview:
             "hydra-core": "1.3.0+"
         }
 
-    def assess_system_health(self) -> Dict[str, ComponentHealth]:
+    def assess_system_health(self) -> dict[str, ComponentHealth]:
         """
         Assess health of all system components
 
@@ -170,7 +170,7 @@ class AnnualArchitectureReview:
             recommendations=recommendations
         )
 
-    def evaluate_technology_stack(self) -> Dict[str, TechnologyAssessment]:
+    def evaluate_technology_stack(self) -> dict[str, TechnologyAssessment]:
         """
         Evaluate all technologies in the stack
 
@@ -261,7 +261,7 @@ class AnnualArchitectureReview:
         deprecated = []
         return technology in deprecated
 
-    def analyze_architectural_debt(self) -> Dict[str, Any]:
+    def analyze_architectural_debt(self) -> dict[str, Any]:
         """
         Analyze technical/architectural debt
 
@@ -311,7 +311,7 @@ class AnnualArchitectureReview:
             "items": debt_items
         }
 
-    def assess_security_posture(self) -> Dict[str, Any]:
+    def assess_security_posture(self) -> dict[str, Any]:
         """
         Assess overall security posture
 
@@ -372,7 +372,7 @@ class AnnualArchitectureReview:
             ]
         }
 
-    def evaluate_scalability(self) -> Dict[str, Any]:
+    def evaluate_scalability(self) -> dict[str, Any]:
         """
         Evaluate system scalability
 
@@ -430,7 +430,7 @@ class AnnualArchitectureReview:
             "recommendations": recommendations
         }
 
-    def generate_annual_report(self, year: int) -> Dict[str, Any]:
+    def generate_annual_report(self, year: int) -> dict[str, Any]:
         """
         Generate comprehensive annual architecture review report
 
@@ -529,7 +529,7 @@ class AnnualArchitectureReview:
 
         return report
 
-    def _generate_markdown_report(self, report: Dict[str, Any], year: int):
+    def _generate_markdown_report(self, report: dict[str, Any], year: int):
         """Generate markdown version of annual report"""
         md_content = f"""# Annual Architecture Review: {year}
 

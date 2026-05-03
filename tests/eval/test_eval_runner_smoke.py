@@ -16,9 +16,9 @@ pytest.importorskip("typer")
 
 pytest.importorskip("datasets")
 
-from typer.testing import CliRunner  # noqa: E402
+from typer.testing import CliRunner
 
-from codex_ml.eval import eval_runner  # noqa: E402
+from codex_ml.eval import eval_runner
 
 
 def test_eval_runner_smoke(tmp_path: Path):

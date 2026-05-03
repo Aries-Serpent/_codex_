@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import pytest
 
 pytest.importorskip("typer")
-from typer.testing import CliRunner  # noqa: E402
+from typer.testing import CliRunner
 
-from codex_ml.cli import plugins_cli  # noqa: E402
+from codex_ml.cli import plugins_cli
 
 pytestmark = pytest.mark.not_slow
 

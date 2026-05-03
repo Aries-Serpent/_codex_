@@ -25,9 +25,10 @@ import json
 import logging
 import re
 import shlex
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import Optional
 
 # Repository root default used for CLI invocations.
 ROOT = Path(__file__).resolve().parents[1]
@@ -167,10 +168,10 @@ def _audit_pytest_ini(pytest_ini: Path, *, repo_root: Optional[Path] = None) -> 
 _NAV_ITEM_PATTERN = re.compile(r"[A-Za-z0-9_./-]+\.md")
 
 
-def _flatten_nav_items(nav: Iterable) -> List[str]:
+def _flatten_nav_items(nav: Iterable) -> list[str]:
     """Recursively flatten MkDocs ``nav`` entries into a list of strings."""
 
-    items: List[str] = []
+    items: list[str] = []
 
     def _walk(node: Iterable | dict | str) -> None:
         if isinstance(node, list):
@@ -187,7 +188,7 @@ def _flatten_nav_items(nav: Iterable) -> List[str]:
     return items
 
 
-def _parse_nav_from_yaml(text: str) -> List[str]:
+def _parse_nav_from_yaml(text: str) -> list[str]:
     """Parse the MkDocs nav structure using PyYAML when available."""
 
     if yaml is None:  # pragma: no cover - exercised when PyYAML missing.
@@ -201,7 +202,7 @@ def _parse_nav_from_yaml(text: str) -> List[str]:
     return _flatten_nav_items(nav)
 
 
-def _parse_nav_fallback(text: str) -> List[str]:
+def _parse_nav_fallback(text: str) -> list[str]:
     """Best-effort nav parser when PyYAML is unavailable."""
 
     return _NAV_ITEM_PATTERN.findall(text)
@@ -217,11 +218,11 @@ _TEST_REFERENCE_PATTERN = re.compile(r"(tests/[A-Za-z0-9_./-]+\.py)")
 _RELATIVE_IGNORES = ("http://", "https://", "mailto:", "tel:", "#", "{{", "{%")
 
 
-def _normalise_nav_paths(items: Iterable[str], *, docs_root: Path, repo_root: Path) -> List[str]:
+def _normalise_nav_paths(items: Iterable[str], *, docs_root: Path, repo_root: Path) -> list[str]:
     """Convert nav entries to ``docs/...`` repository-relative paths."""
 
     docs_prefix = docs_root.relative_to(repo_root)
-    normalised: List[str] = []
+    normalised: list[str] = []
     seen: set[str] = set()
     for item in items:
         value = item.strip()
@@ -244,8 +245,8 @@ def _iter_markdown_files(docs_root: Path) -> Iterable[Path]:
             yield path
 
 
-def _extract_relative_links(text: str) -> List[str]:
-    links: List[str] = []
+def _extract_relative_links(text: str) -> list[str]:
+    links: list[str] = []
     for match in _LINK_PATTERN.finditer(text):
         target = match.group(1).strip()
         if not target:
@@ -256,7 +257,7 @@ def _extract_relative_links(text: str) -> List[str]:
     return links
 
 
-def _resolve_link_candidates(doc_path: Path, target: str, repo_root: Path) -> List[Path]:
+def _resolve_link_candidates(doc_path: Path, target: str, repo_root: Path) -> list[Path]:
     pure_target = target.split("#", 1)[0].split("?", 1)[0]
     if not pure_target:
         return []
@@ -265,8 +266,8 @@ def _resolve_link_candidates(doc_path: Path, target: str, repo_root: Path) -> Li
     return [rel_candidate, alt_candidate]
 
 
-def _find_broken_links(docs_root: Path, repo_root: Path) -> List[BrokenLink]:
-    broken: List[BrokenLink] = []
+def _find_broken_links(docs_root: Path, repo_root: Path) -> list[BrokenLink]:
+    broken: list[BrokenLink] = []
     seen: set[tuple[str, str]] = set()
     for doc in _iter_markdown_files(docs_root):
         try:
@@ -284,7 +285,7 @@ def _find_broken_links(docs_root: Path, repo_root: Path) -> List[BrokenLink]:
     return broken
 
 
-def _find_missing_tests(docs_root: Path, repo_root: Path) -> List[str]:
+def _find_missing_tests(docs_root: Path, repo_root: Path) -> list[str]:
     missing: set[str] = set()
     for doc in _iter_markdown_files(docs_root):
         try:
@@ -320,7 +321,7 @@ def run_audit(repo_root: Path, *, docs_dir: str = "docs") -> dict:
             pytest_hint = hint
             break
     mkdocs_path = repo_root / "mkdocs.yml"
-    nav_items: List[str] = []
+    nav_items: list[str] = []
     if mkdocs_path.exists():
         text = mkdocs_path.read_text(encoding="utf-8")
         nav_items = _parse_nav_from_yaml(text)

@@ -12,7 +12,6 @@ Tests: 15+
 import subprocess
 import sys
 from pathlib import Path
-from typing import Tuple
 
 import pytest
 
@@ -48,7 +47,7 @@ class TestCLIWorkflowDiscovery:
 class TestCLIHelpCommands:
     """Tests for CLI help commands."""
 
-    def _run_command(self, cmd: list, timeout: int = 30) -> Tuple[int, str, str]:
+    def _run_command(self, cmd: list, timeout: int = 30) -> tuple[int, str, str]:
         """Run a command and return exit code, stdout, stderr."""
         try:
             result = subprocess.run(

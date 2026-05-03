@@ -132,7 +132,7 @@ sys.modules.setdefault("fastapi", fastapi_module)
 sys.modules.setdefault("fastapi.responses", responses_module)
 
 
-from hhg_logistics.serve.app import (  # noqa: E402  (import after stubbing)
+from hhg_logistics.serve.app import (
     GenConfig,
     LLMService,
     _config_fingerprint,

@@ -12,8 +12,8 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
-import torch  # noqa: E402
-from src.training.engine_hf_trainer import _seed_everything  # noqa: E402
+import torch
+from src.training.engine_hf_trainer import _seed_everything
 
 
 def test_seed_repeats():

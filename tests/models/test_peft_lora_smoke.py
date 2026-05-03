@@ -12,7 +12,7 @@ torch = pytest.importorskip("torch")
 pytest.importorskip("transformers")
 peft = pytest.importorskip("peft")
 
-from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora  # noqa: E402
+from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora
 
 
 def _tiny_torch_model():

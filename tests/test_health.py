@@ -6,14 +6,14 @@ Test module for health.
 
 #!/usr/bin/env python3
 """Tests for health check endpoints."""
-import sys  # noqa: E402
-from pathlib import Path  # noqa: E402
+import sys
+from pathlib import Path
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from codex_ml.serving.health import health_check, readiness_check  # noqa: E402
+from codex_ml.serving.health import health_check, readiness_check
 
 
 def test_health_check_returns_healthy_status():

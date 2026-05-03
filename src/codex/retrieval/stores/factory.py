@@ -5,7 +5,7 @@ Provides centralized management and creation of vector stores
 
 import logging
 from enum import Enum
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -25,10 +25,10 @@ class VectorStoreRegistry:
     Allows registration and retrieval of vector store classes.
     """
 
-    _stores: dict[str, Type] = {}
+    _stores: dict[str, type] = {}
 
     @classmethod
-    def register(cls, store_type: str, store_class: Type) -> None:
+    def register(cls, store_type: str, store_class: type) -> None:
         """Register a vector store implementation"""
         if store_type in cls._stores:
             logger.warning(f"Overwriting existing store type: {store_type}")
@@ -36,7 +36,7 @@ class VectorStoreRegistry:
         logger.info(f"Registered vector store: {store_type}")
 
     @classmethod
-    def get(cls, store_type: str) -> Optional[Type]:
+    def get(cls, store_type: str) -> Optional[type]:
         """Get a registered vector store class"""
         return cls._stores.get(store_type)
 

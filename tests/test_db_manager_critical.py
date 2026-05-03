@@ -14,7 +14,7 @@ class TestDBManagerPoolCleanup:
 
     def test_close_all_pools_success(self, tmp_path):
         """Test successful pool cleanup without errors."""
-        from codex.logging.db_manager import DBManager  # noqa: F811
+        from codex.logging.db_manager import DBManager
 
         # Enable pooling
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
@@ -24,7 +24,7 @@ class TestDBManagerPoolCleanup:
 
             importlib.import_module("codex.logging.db_manager")
             importlib.reload(sys.modules["codex.logging.db_manager"])
-            from codex.logging.db_manager import DBManager  # noqa: F811
+            from codex.logging.db_manager import DBManager
 
             # Clear any existing pools from previous tests
             DBManager.close_all_pools()
@@ -59,7 +59,7 @@ class TestDBManagerPoolCleanup:
 
     def test_close_all_pools_with_connection_errors(self, tmp_path):
         """Test pool cleanup when some connections fail to close."""
-        from codex.logging.db_manager import DBManager  # noqa: F811
+        from codex.logging.db_manager import DBManager
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
@@ -67,7 +67,7 @@ class TestDBManagerPoolCleanup:
 
             importlib.import_module("codex.logging.db_manager")
             importlib.reload(sys.modules["codex.logging.db_manager"])
-            from codex.logging.db_manager import DBManager  # noqa: F811
+            from codex.logging.db_manager import DBManager
 
             db_path = tmp_path / "test_errors.db"
             manager = DBManager(db_path=db_path)
@@ -97,7 +97,7 @@ class TestDBManagerPoolCleanup:
 
     def test_close_all_pools_empty_pool(self):
         """Test pool cleanup with no connections."""
-        from codex.logging.db_manager import DBManager  # noqa: F811
+        from codex.logging.db_manager import DBManager
 
         # Ensure pool is empty
         DBManager._CONNECTION_POOL.clear()
@@ -113,7 +113,7 @@ class TestDBManagerPoolCleanup:
 
     def test_close_all_pools_multiple_databases(self, tmp_path):
         """Test pool cleanup with multiple database pools."""
-        from codex.logging.db_manager import DBManager  # noqa: F811
+        from codex.logging.db_manager import DBManager
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
@@ -121,7 +121,7 @@ class TestDBManagerPoolCleanup:
 
             importlib.import_module("codex.logging.db_manager")
             importlib.reload(sys.modules["codex.logging.db_manager"])
-            from codex.logging.db_manager import DBManager  # noqa: F811
+            from codex.logging.db_manager import DBManager
 
             # Create two databases
             db1 = DBManager(db_path=tmp_path / "db1.db")
@@ -148,7 +148,7 @@ class TestDBManagerPoolCleanup:
 
     def test_logger_accessible_from_classmethod(self):
         """Test that _logger is accessible from classmethod (regression test)."""
-        from codex.logging.db_manager import DBManager  # noqa: F811
+        from codex.logging.db_manager import DBManager
 
         # Verify class attribute exists
         assert hasattr(DBManager, "_logger"), "DBManager should have _logger class attribute"
@@ -163,7 +163,7 @@ class TestDBManagerPoolCleanup:
 
     def test_instance_logger_access(self, tmp_path):
         """Test that instance methods can still access logger."""
-        from codex.logging.db_manager import DBManager  # noqa: F811
+        from codex.logging.db_manager import DBManager
 
         db = DBManager(db_path=tmp_path / "test_instance.db")
 
@@ -180,7 +180,7 @@ class TestDBManagerPoolCleanup:
         """Test that errors during close are logged at DEBUG level."""
         import logging
 
-        from codex.logging.db_manager import DBManager  # noqa: F811
+        from codex.logging.db_manager import DBManager
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
@@ -188,7 +188,7 @@ class TestDBManagerPoolCleanup:
 
             importlib.import_module("codex.logging.db_manager")
             importlib.reload(sys.modules["codex.logging.db_manager"])
-            from codex.logging.db_manager import DBManager  # noqa: F811
+            from codex.logging.db_manager import DBManager
 
             db = DBManager(db_path=tmp_path / "test_logging.db")
             db.init_schema()

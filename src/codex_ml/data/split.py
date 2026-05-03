@@ -11,9 +11,10 @@ from __future__ import annotations
 import hashlib
 import json
 import random
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Optional, Sequence
+from typing import Any, Optional
 
 DEFAULT_MANIFEST_NAME = "split_manifest.json"
 DEFAULT_CHECKSUMS_NAME = "split_checksums.json"
@@ -214,8 +215,8 @@ def train_val_test_split(
 
 
 __all__ = [
-    "train_val_test_split",
-    "SplitMetadata",
-    "DEFAULT_MANIFEST_NAME",
     "DEFAULT_CHECKSUMS_NAME",
+    "DEFAULT_MANIFEST_NAME",
+    "SplitMetadata",
+    "train_val_test_split",
 ]

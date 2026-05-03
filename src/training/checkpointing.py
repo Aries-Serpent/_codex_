@@ -21,10 +21,11 @@ import inspect
 import json
 import logging
 import math
+from collections.abc import Mapping
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - torch is optional in minimal environments
@@ -310,8 +311,8 @@ def load_checkpoint(
 
 __all__ = [
     "RNGState",
-    "snapshot_rng_state",
+    "load_checkpoint",
     "restore_rng_state",
     "save_checkpoint",
-    "load_checkpoint",
+    "snapshot_rng_state",
 ]

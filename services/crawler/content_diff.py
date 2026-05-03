@@ -17,7 +17,7 @@ import logging
 import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class DiffSegment:
     line_start: int
     line_end: int
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "change_type": self.change_type,
@@ -62,7 +62,7 @@ class ContentDiffResult:
     similarity_ratio: float  # 1.0 = identical, 0.0 = completely different
     old_hash: str
     new_hash: str
-    segments: List[DiffSegment] = field(default_factory=list)
+    segments: list[DiffSegment] = field(default_factory=list)
     old_line_count: int = 0
     new_line_count: int = 0
     lines_added: int = 0
@@ -78,7 +78,7 @@ class ContentDiffResult:
         """
         return self.change_type != ChangeType.NO_CHANGE
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "change_type": self.change_type.value,
@@ -262,9 +262,9 @@ class ContentDiffer:
 
     def _extract_segments(
         self,
-        old_lines: List[str],
-        new_lines: List[str],
-    ) -> List[DiffSegment]:
+        old_lines: list[str],
+        new_lines: list[str],
+    ) -> list[DiffSegment]:
         """Extract changed segments from line diff.
 
         Args:
@@ -340,7 +340,7 @@ class ContentDiffer:
         self,
         old_content: str,
         new_content: str,
-    ) -> Tuple[bool, ChangeType, float]:
+    ) -> tuple[bool, ChangeType, float]:
         """Quick check if content should be resynced.
 
         Args:
@@ -388,7 +388,7 @@ class IncrementalSyncDecider:
         self,
         old_content: str,
         new_content: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Decide sync strategy for content change.
 
         Args:
@@ -559,7 +559,7 @@ class SemanticDiffer:
         self,
         old_content: str,
         new_content: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Compute semantic diff between content versions.
 
         Args:
@@ -629,7 +629,7 @@ class SemanticDiffer:
         self,
         old_content: str,
         new_content: str
-    ) -> Tuple[bool, Dict[str, Any]]:
+    ) -> tuple[bool, dict[str, Any]]:
         """Determine if content should be resynced based on semantic diff.
 
         Args:

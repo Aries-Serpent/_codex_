@@ -6,7 +6,7 @@ from typing import Any
 # package does not crash in environments where slowapi is not installed.
 app: Any = None
 try:
-    from .rag_api import app  # noqa: F811 — re-assigns the Any sentinel above
+    from .rag_api import app
 except ImportError as exc:  # pragma: no cover — slowapi missing in lightweight envs
     if getattr(exc, "name", None) == "slowapi":
         pass  # app stays None

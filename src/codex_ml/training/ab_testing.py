@@ -15,7 +15,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["ModelVariant", "ABTestConfig", "ABTestManager"]
+__all__ = ["ABTestConfig", "ABTestManager", "ModelVariant"]
 
 
 @dataclass

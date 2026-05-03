@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[2] / "scripts"))
-from list_checkpoints import apply_retention_policy, list_checkpoints  # noqa: E402
+from list_checkpoints import apply_retention_policy, list_checkpoints
 
 
 class TestCheckpointListing:

@@ -5,8 +5,9 @@ from __future__ import annotations
 import logging
 import os
 import re
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
@@ -172,8 +173,8 @@ def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
 
 
 __all__ = [
+    "KNOWN_MODEL_REVISIONS",
+    "HFModelUnavailableError",
     "ensure_pinned_kwargs",
     "load_from_pretrained",
-    "HFModelUnavailableError",
-    "KNOWN_MODEL_REVISIONS",
 ]

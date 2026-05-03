@@ -145,4 +145,4 @@ def _torch_supports_weights_only() -> bool:
     return "weights_only" in signature.parameters
 
 
-__all__ = ["save_checkpoint", "load_checkpoint", "SCHEMA_VERSION"]
+__all__ = ["SCHEMA_VERSION", "load_checkpoint", "save_checkpoint"]

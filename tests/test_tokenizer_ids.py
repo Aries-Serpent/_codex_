@@ -9,7 +9,7 @@ import pytest
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
 
-from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter  # noqa: E402
+from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
 
 def test_tokenizer_pad_eos_ids():

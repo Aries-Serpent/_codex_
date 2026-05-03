@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     from .github_client import GitHubAPIClient
@@ -40,9 +40,9 @@ class PRAnalysisResult:
     has_failing_checks: bool
     has_merge_conflicts: bool
     reviewer_count: int
-    pattern_matches: List[PatternMatch] = field(default_factory=list)
-    signals: List[str] = field(default_factory=list)
-    routing_suggestions: List[str] = field(default_factory=list)
+    pattern_matches: list[PatternMatch] = field(default_factory=list)
+    signals: list[str] = field(default_factory=list)
+    routing_suggestions: list[str] = field(default_factory=list)
     summary_md: str = ""
 
     @property
@@ -56,11 +56,11 @@ class IssueAnalysisResult:
 
     issue_number: int
     title: str
-    suggested_labels: List[str] = field(default_factory=list)
+    suggested_labels: list[str] = field(default_factory=list)
     suggested_priority: str = "medium"  # critical/high/medium/low
     routing_agent: Optional[str] = None
     triage_confidence: float = 0.0
-    signals: List[str] = field(default_factory=list)
+    signals: list[str] = field(default_factory=list)
     summary_md: str = ""
 
 
@@ -71,9 +71,9 @@ class WorkflowHealthResult:
     total_runs: int
     failure_rate: float  # 0–1
     avg_duration_seconds: float
-    flaky_jobs: List[str] = field(default_factory=list)
-    degraded_workflows: List[str] = field(default_factory=list)
-    pattern_matches: List[PatternMatch] = field(default_factory=list)
+    flaky_jobs: list[str] = field(default_factory=list)
+    degraded_workflows: list[str] = field(default_factory=list)
+    pattern_matches: list[PatternMatch] = field(default_factory=list)
     health_score: float = 100.0  # 0–100
     summary_md: str = ""
 
@@ -187,8 +187,8 @@ class PRAnalyzer:
 
         # Health score (0–100)
         deductions = 0.0
-        signals: List[str] = []
-        routing: List[str] = []
+        signals: list[str] = []
+        routing: list[str] = []
 
         if is_stale:
             deductions += 15
@@ -285,7 +285,7 @@ class IssueAnalyzer:
         combined = f"{title} {body}"
 
         # Suggest labels
-        suggested_labels: List[str] = []
+        suggested_labels: list[str] = []
         for label, keywords in self._LABEL_PATTERNS.items():
             if any(kw in combined for kw in keywords):
                 suggested_labels.append(label)
@@ -372,7 +372,7 @@ class WorkflowAnalyzer:
                 summary_md="Unable to fetch workflow runs.",
             )
 
-        runs: List[Dict[str, Any]] = resp.data.get("workflow_runs", [])
+        runs: list[dict[str, Any]] = resp.data.get("workflow_runs", [])
         if not runs:
             return WorkflowHealthResult(
                 total_runs=0,
@@ -387,7 +387,7 @@ class WorkflowAnalyzer:
         failure_rate = failures / total if total > 0 else 0.0
 
         # Duration calculation (simplified: created_at to updated_at)
-        durations: List[float] = []
+        durations: list[float] = []
         for run in runs:
             ca = run.get("created_at", "")
             ua = run.get("updated_at", "")
@@ -402,7 +402,7 @@ class WorkflowAnalyzer:
         avg_duration = sum(durations) / len(durations) if durations else 0.0
 
         # Degraded workflows
-        workflow_failures: Dict[str, int] = {}
+        workflow_failures: dict[str, int] = {}
         for run in runs:
             name = run.get("name", "unknown")
             if run.get("conclusion") == "failure":
@@ -411,7 +411,7 @@ class WorkflowAnalyzer:
         degraded = [name for name, count in workflow_failures.items() if count >= 3]
 
         # Long-running jobs (jobs endpoint would be needed; approximate here)
-        long_running_jobs: List[str] = []
+        long_running_jobs: list[str] = []
 
         # Pattern matching
         context = {

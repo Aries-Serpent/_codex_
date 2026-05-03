@@ -22,7 +22,7 @@ import argparse
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import yaml
 
@@ -36,10 +36,10 @@ class FileResult:
     error: Optional[str]
 
 
-def _iter_yaml_files(root: Path) -> List[Path]:
+def _iter_yaml_files(root: Path) -> list[Path]:
     if not root.exists():
         return []
-    files: List[Path] = []
+    files: list[Path] = []
     for p in root.rglob("*.yaml"):
         if p.is_file():
             files.append(p)
@@ -62,7 +62,7 @@ def _validate_file(path: Path) -> FileResult:
     return FileResult(path=str(path), ok=True, error=None)
 
 
-def _write_json(path: Path, results: List[FileResult]) -> None:
+def _write_json(path: Path, results: list[FileResult]) -> None:
     data = {
         "total_files": len(results),
         "num_ok": sum(1 for r in results if r.ok),
@@ -72,12 +72,12 @@ def _write_json(path: Path, results: List[FileResult]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, results: List[FileResult]) -> None:
+def _write_markdown(path: Path, results: list[FileResult]) -> None:
     total = len(results)
     num_ok = sum(1 for r in results if r.ok)
     num_failed = sum(1 for r in results if not r.ok)
 
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# _codex_ Config Validation Report\n")
     lines.append(f"- Total files: **{total}**")
     lines.append(f"- OK : **{num_ok}**")

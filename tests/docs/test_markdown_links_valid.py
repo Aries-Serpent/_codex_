@@ -6,7 +6,6 @@ Part of documentation-system capability maturity improvement.
 
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 import pytest
 
@@ -28,7 +27,7 @@ def link_pattern():
     return re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
 
 
-def extract_links(content: str, pattern: re.Pattern) -> List[Tuple[str, str]]:
+def extract_links(content: str, pattern: re.Pattern) -> list[tuple[str, str]]:
     """Extract all links from markdown content."""
     return pattern.findall(content)
 

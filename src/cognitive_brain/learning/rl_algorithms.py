@@ -12,7 +12,7 @@ import logging
 from abc import ABC, abstractmethod
 from collections import deque
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import numpy as np
 
@@ -57,7 +57,7 @@ class ReplayBuffer:
         experience = Experience(state, action, reward, next_state, done)
         self.buffer.append(experience)
 
-    def sample(self, batch_size: int) -> List[Experience]:
+    def sample(self, batch_size: int) -> list[Experience]:
         """
         Sample random batch of experiences.
 
@@ -103,7 +103,7 @@ class RLAlgorithm(ABC):
         self.discount_factor = discount_factor
         self.episode_count = 0
         self.total_reward = 0.0
-        self.episode_rewards: List[float] = []
+        self.episode_rewards: list[float] = []
 
     @abstractmethod
     def select_action(self, state: Any) -> Any:
@@ -131,7 +131,7 @@ class RLAlgorithm(ABC):
         """
 
     @abstractmethod
-    def get_policy(self) -> Dict[Any, Any]:
+    def get_policy(self) -> dict[Any, Any]:
         """
         Get current policy.
 
@@ -209,11 +209,11 @@ class QLearning(RLAlgorithm):
             epsilon_min: Minimum epsilon value
         """
         super().__init__(learning_rate, discount_factor)
-        self.q_table: Dict[Tuple[Any, Any], float] = {}
+        self.q_table: dict[tuple[Any, Any], float] = {}
         self.epsilon = epsilon
         self.epsilon_decay = epsilon_decay
         self.epsilon_min = epsilon_min
-        self.state_visits: Dict[Any, int] = {}
+        self.state_visits: dict[Any, int] = {}
         self.update_count = 0
 
     def _get_q_value(self, state: Any, action: Any) -> float:
@@ -224,7 +224,7 @@ class QLearning(RLAlgorithm):
         """Set Q-value for state-action pair."""
         self.q_table[(state, action)] = value
 
-    def select_action(self, state: Any, available_actions: Optional[List[Any]] = None) -> Any:
+    def select_action(self, state: Any, available_actions: Optional[list[Any]] = None) -> Any:
         """
         Select action using ε-greedy policy.
 
@@ -294,7 +294,7 @@ class QLearning(RLAlgorithm):
         if done:
             self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
 
-    def get_policy(self) -> Dict[Any, Any]:
+    def get_policy(self) -> dict[Any, Any]:
         """
         Get greedy policy from Q-table.
 
@@ -397,15 +397,15 @@ class DQN(RLAlgorithm):
         self.replay_buffer = ReplayBuffer(buffer_capacity)
 
         # Simplified linear Q-network (weights for state features)
-        self.q_weights: Dict[Any, np.ndarray] = {}
-        self.target_weights: Dict[Any, np.ndarray] = {}
+        self.q_weights: dict[Any, np.ndarray] = {}
+        self.target_weights: dict[Any, np.ndarray] = {}
 
         # Training statistics
         self.step_count = 0
         self.update_count = 0
-        self.loss_history: List[float] = []
+        self.loss_history: list[float] = []
 
-    def _get_q_values(self, state: Any, use_target: bool = False) -> Dict[Any, float]:
+    def _get_q_values(self, state: Any, use_target: bool = False) -> dict[Any, float]:
         """
         Get Q-values for all actions in state.
 
@@ -522,7 +522,7 @@ class DQN(RLAlgorithm):
                     tau * self.q_weights[action] + (1 - tau) * self.target_weights[action]
                 )
 
-    def get_policy(self) -> Dict[Any, Any]:
+    def get_policy(self) -> dict[Any, Any]:
         """
         Get greedy policy from Q-network.
 
@@ -582,24 +582,24 @@ class PPO(RLAlgorithm):
         self.epochs_per_update = epochs_per_update
 
         # Policy network (actor) - action probabilities
-        self.policy_weights: Dict[str, float] = {
+        self.policy_weights: dict[str, float] = {
             "action_0": 0.0,
             "action_1": 0.0,
             "action_2": 0.0,
         }
 
         # Value network (critic) - state values
-        self.value_weights: Dict[Any, float] = {}
+        self.value_weights: dict[Any, float] = {}
 
         # Trajectory buffer
-        self.trajectory: List[Dict] = []
+        self.trajectory: list[dict] = []
 
         # Statistics
         self.policy_updates = 0
-        self.value_loss_history: List[float] = []
-        self.policy_loss_history: List[float] = []
+        self.value_loss_history: list[float] = []
+        self.policy_loss_history: list[float] = []
 
-    def _get_action_probs(self, state: Any) -> Dict[str, float]:
+    def _get_action_probs(self, state: Any) -> dict[str, float]:
         """
         Get action probabilities from policy network.
 
@@ -683,7 +683,7 @@ class PPO(RLAlgorithm):
             self._update_policy()
             self.trajectory.clear()
 
-    def _compute_advantages(self) -> List[float]:
+    def _compute_advantages(self) -> list[float]:
         """
         Compute advantages using Generalized Advantage Estimation (GAE).
 
@@ -763,7 +763,7 @@ class PPO(RLAlgorithm):
 
         self.policy_updates += 1
 
-    def get_policy(self) -> Dict[Any, Any]:
+    def get_policy(self) -> dict[Any, Any]:
         """
         Get current policy.
 

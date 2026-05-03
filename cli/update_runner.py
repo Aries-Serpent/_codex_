@@ -10,9 +10,10 @@ import os
 import re
 import textwrap
 from collections import defaultdict
+from collections.abc import Iterable, Sequence
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, Sequence
+from typing import Any
 
 import yaml
 
@@ -107,7 +108,7 @@ def phase_search_and_mapping() -> None:
     phase = "Phase2"
     _append_phase_heading("Phase 2 – Search & Mapping")
     repo_root = REPO_ROOT
-    mapping: Dict[str, list[str]] = defaultdict(list)
+    mapping: dict[str, list[str]] = defaultdict(list)
     try:
         for root, dirs, files in os.walk(repo_root):
             root_path = Path(root)

@@ -9,10 +9,10 @@ Error Capture, and Finalization.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Iterable, Mapping, MutableMapping, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +146,7 @@ def step_context(
 ):
     try:
         yield
-    except Exception as exc:  # noqa: PERF203 - explicit capture for error taxonomy
+    except Exception as exc:
         record_error(ctx, phase, step, exc, extra_context=extra_context)
         if rollback:
             rollback(ctx)
@@ -207,7 +207,7 @@ def _controlled_pruning_phase(ctx: WorkflowContext, plan: CapabilityPlan) -> Non
     ctx.register_rollback("controlled_pruning", rollback)
 
 
-def _error_capture_phase(ctx: WorkflowContext, plan: CapabilityPlan) -> None:  # noqa: ARG001
+def _error_capture_phase(ctx: WorkflowContext, plan: CapabilityPlan) -> None:
     if ctx.errors:
         ctx.apply_rollbacks()
     ctx.notes.append("errors-reviewed")

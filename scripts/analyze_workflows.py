@@ -15,7 +15,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Optional
 
 import yaml
 
@@ -23,12 +23,12 @@ import yaml
 @dataclass
 class WorkflowResource:
     """Resource requirements for a workflow."""
-    python_versions: Set[str] = field(default_factory=set)
+    python_versions: set[str] = field(default_factory=set)
     docker_required: bool = False
     self_hosted: bool = False
-    secrets: Set[str] = field(default_factory=set)
-    actions_used: Set[str] = field(default_factory=set)
-    runners: Set[str] = field(default_factory=set)
+    secrets: set[str] = field(default_factory=set)
+    actions_used: set[str] = field(default_factory=set)
+    runners: set[str] = field(default_factory=set)
 
 
 @dataclass
@@ -38,9 +38,9 @@ class WorkflowInfo:
     path: str
     status: str  # active, guarded, disabled, archived
     guard_condition: Optional[str] = None
-    jobs: List[str] = field(default_factory=list)
+    jobs: list[str] = field(default_factory=list)
     resources: WorkflowResource = field(default_factory=WorkflowResource)
-    failure_patterns: List[str] = field(default_factory=list)
+    failure_patterns: list[str] = field(default_factory=list)
 
 
 class WorkflowAnalyzer:
@@ -49,8 +49,8 @@ class WorkflowAnalyzer:
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.workflows_dir = repo_root / ".github" / "workflows"
-        self.workflows: List[WorkflowInfo] = []
-        self.failure_patterns: Dict[str, List[str]] = {}
+        self.workflows: list[WorkflowInfo] = []
+        self.failure_patterns: dict[str, list[str]] = {}
 
     def analyze_all_workflows(self) -> None:
         """Analyze all workflow files."""
@@ -250,7 +250,7 @@ class WorkflowAnalyzer:
                 if 'code-quality' in self.failure_patterns:
                     workflow.failure_patterns.extend(self.failure_patterns['code-quality'])
 
-    def generate_summary(self) -> Dict:
+    def generate_summary(self) -> dict:
         """Generate summary statistics."""
         return {
             'total_workflows': len(self.workflows),

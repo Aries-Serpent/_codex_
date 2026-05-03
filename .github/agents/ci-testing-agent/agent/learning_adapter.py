@@ -13,7 +13,7 @@ with CI testing workflows.
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 # Duration normalization baseline (ms) - configurable for different test suites
 DEFAULT_DURATION_NORMALIZATION_MS = 1000
@@ -43,7 +43,7 @@ class TestCase:
     duration_ms: float = 0.0
     failure_rate: float = 0.0
     priority: float = 0.5
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -112,8 +112,8 @@ class LearningAdapter:
         self.pattern_recognizer: Optional[Any] = None
 
         # Test history
-        self.test_history: Dict[str, List[bool]] = {}  # name -> [pass/fail history]
-        self.session_results: List[TestResult] = []
+        self.test_history: dict[str, list[bool]] = {}  # name -> [pass/fail history]
+        self.session_results: list[TestResult] = []
 
         # Prioritization state
         self.prioritization_actions = [
@@ -156,9 +156,9 @@ class LearningAdapter:
 
     def prioritize_tests(
         self,
-        tests: List[TestCase],
-        context: Optional[Dict[str, Any]] = None,
-    ) -> List[TestCase]:
+        tests: list[TestCase],
+        context: Optional[dict[str, Any]] = None,
+    ) -> list[TestCase]:
         """Prioritize tests using learned patterns.
 
         Args:
@@ -182,7 +182,7 @@ class LearningAdapter:
 
         return prioritized
 
-    def _calculate_priority(self, test: TestCase, context: Dict[str, Any]) -> float:
+    def _calculate_priority(self, test: TestCase, context: dict[str, Any]) -> float:
         """Calculate priority for a test.
 
         Args:
@@ -255,7 +255,7 @@ class LearningAdapter:
 
         return changed_name in test_name or test_name in changed_name
 
-    def _build_state(self, test: TestCase, context: Dict[str, Any]) -> Dict[str, Any]:
+    def _build_state(self, test: TestCase, context: dict[str, Any]) -> dict[str, Any]:
         """Build state representation for learning.
 
         Args:
@@ -363,7 +363,7 @@ class LearningAdapter:
 
         return reward
 
-    def end_session(self) -> Dict[str, Any]:
+    def end_session(self) -> dict[str, Any]:
         """End testing session and update learning.
 
         Returns:
@@ -398,7 +398,7 @@ class LearningAdapter:
 
         return stats
 
-    def predict_failures(self, tests: List[TestCase]) -> List[Tuple[TestCase, float]]:
+    def predict_failures(self, tests: list[TestCase]) -> list[tuple[TestCase, float]]:
         """Predict which tests are likely to fail.
 
         Args:
@@ -427,7 +427,7 @@ class LearningAdapter:
 
         return predictions
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get adapter statistics.
 
         Returns:

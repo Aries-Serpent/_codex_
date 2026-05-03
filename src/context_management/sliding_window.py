@@ -5,10 +5,11 @@ Manages token windows for context management, implementing
 sliding window strategy with summarization triggers.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 
 class WindowStrategy(Enum):

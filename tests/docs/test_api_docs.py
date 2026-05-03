@@ -12,7 +12,6 @@ Tests: 15+
 import json
 import re
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -55,7 +54,7 @@ class TestAPIDocsStructure:
 class TestOpenAPISchema:
     """Tests for OpenAPI schema validation."""
 
-    def _find_openapi_files(self) -> List[Path]:
+    def _find_openapi_files(self) -> list[Path]:
         """Find OpenAPI/Swagger schema files."""
         patterns = [
             "openapi*.json",
@@ -104,7 +103,7 @@ class TestOpenAPISchema:
 class TestEndpointDocumentation:
     """Tests for endpoint documentation."""
 
-    def _find_fastapi_routers(self) -> List[Path]:
+    def _find_fastapi_routers(self) -> list[Path]:
         """Find FastAPI router files."""
         if not SRC_DIR.exists():
             return []

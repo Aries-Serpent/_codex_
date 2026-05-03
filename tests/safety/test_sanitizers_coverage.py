@@ -12,7 +12,7 @@ Created: 2026-01-18 (Phase 14.2)
 from __future__ import annotations
 
 import re
-from typing import Pattern
+from re import Pattern
 
 import pytest
 

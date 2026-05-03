@@ -12,10 +12,11 @@ logger = logging.getLogger(__name__)
 
 import ast  # noqa: E402
 import re  # noqa: E402
+from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Callable, Optional, Union  # noqa: E402
+from typing import Optional  # noqa: E402
 
 
 class SmellSeverity(Enum):
@@ -222,7 +223,7 @@ class CodeSmellDetector:
         if rule_id in self.rules:
             self.rules[rule_id].enabled = True
 
-    def detect_file(self, file_path: Union[str, Path]) -> list[CodeSmell]:
+    def detect_file(self, file_path: str | Path) -> list[CodeSmell]:
         """Detect code smells in a Python file.
 
         Args:
@@ -270,7 +271,7 @@ class CodeSmellDetector:
 
     def detect_directory(
         self,
-        directory: Union[str, Path],
+        directory: str | Path,
         exclude_patterns: Optional[list[str]] = None,
     ) -> dict[str, list[CodeSmell]]:
         """Detect code smells in all Python files in directory.
@@ -601,7 +602,7 @@ class CodeSmellDetector:
 
 
 # Convenience function
-def detect_smells(source: Union[str, Path]) -> list[CodeSmell]:
+def detect_smells(source: str | Path) -> list[CodeSmell]:
     """Detect code smells in Python source.
 
     Args:

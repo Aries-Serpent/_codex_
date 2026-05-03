@@ -20,7 +20,7 @@ import os
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 try:
     import aiohttp
@@ -55,7 +55,7 @@ class SecurityVulnerability:
     cwe_id: Optional[str] = None
     fix_suggestion: Optional[str] = None
     confidence: float = 0.8
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -67,7 +67,7 @@ class SecurityFix:
     fixed_code: str
     explanation: str
     confidence: float
-    test_cases: List[str] = field(default_factory=list)
+    test_cases: list[str] = field(default_factory=list)
     validated: bool = False
 
 
@@ -93,10 +93,10 @@ class CopilotSecurityAgent:
         self.github_token = github_token or os.environ.get("GITHUB_TOKEN", "")
         self.repo_owner = repo_owner or self._extract_repo_info()[0]
         self.repo_name = repo_name or self._extract_repo_info()[1]
-        self.vulnerability_cache: Dict[str, SecurityVulnerability] = {}
+        self.vulnerability_cache: dict[str, SecurityVulnerability] = {}
         self.fix_patterns = self._load_fix_patterns()
 
-    def _extract_repo_info(self) -> Tuple[str, str]:
+    def _extract_repo_info(self) -> tuple[str, str]:
         """Extract repository owner and name from git config or environment."""
         # Try environment variables first (CI environment)
         github_repository = os.environ.get("GITHUB_REPOSITORY", "")
@@ -136,7 +136,7 @@ class CopilotSecurityAgent:
 
         return "unknown-owner", "unknown-repo"
 
-    def _load_fix_patterns(self) -> Dict[str, Any]:
+    def _load_fix_patterns(self) -> dict[str, Any]:
         """Load fix patterns from YAML configuration."""
         patterns_file = Path(__file__).parent / "fix_patterns.yaml"
         if patterns_file.exists():
@@ -174,7 +174,7 @@ class CopilotSecurityAgent:
     async def scan_for_vulnerabilities(
         self,
         branch: Optional[str] = None,
-    ) -> List[SecurityVulnerability]:
+    ) -> list[SecurityVulnerability]:
         """Actively scan for vulnerabilities across the repository.
 
         Args:
@@ -214,7 +214,7 @@ class CopilotSecurityAgent:
     async def _fetch_github_security_alerts(
         self,
         branch: Optional[str] = None,
-    ) -> List[SecurityVulnerability]:
+    ) -> list[SecurityVulnerability]:
         """Fetch security alerts from GitHub Advanced Security."""
         if not self.github_token:
             logger.warning("No GitHub token available - cannot fetch security alerts")
@@ -252,7 +252,7 @@ class CopilotSecurityAgent:
 
         return vulnerabilities
 
-    def _parse_github_alert(self, alert: Dict[str, Any]) -> Optional[SecurityVulnerability]:
+    def _parse_github_alert(self, alert: dict[str, Any]) -> Optional[SecurityVulnerability]:
         """Parse a GitHub code scanning alert into a SecurityVulnerability."""
         try:
             most_recent = alert.get("most_recent_instance", {})
@@ -280,7 +280,7 @@ class CopilotSecurityAgent:
             logger.warning(f"Error parsing GitHub alert: {e}")
             return None
 
-    def _extract_cwe_id(self, rule: Dict[str, Any]) -> Optional[str]:
+    def _extract_cwe_id(self, rule: dict[str, Any]) -> Optional[str]:
         """Extract CWE ID from rule metadata."""
         cwe_tags = rule.get("tags", [])
         for tag in cwe_tags:
@@ -288,7 +288,7 @@ class CopilotSecurityAgent:
                 return tag.replace("external/cwe/cwe-", "CWE-")
         return None
 
-    async def _run_local_security_scan(self) -> List[SecurityVulnerability]:
+    async def _run_local_security_scan(self) -> list[SecurityVulnerability]:
         """Run local security scanning using available tools."""
         vulnerabilities = []
 
@@ -328,8 +328,8 @@ class CopilotSecurityAgent:
 
     def _prioritize_vulnerabilities(
         self,
-        vulnerabilities: List[SecurityVulnerability],
-    ) -> List[SecurityVulnerability]:
+        vulnerabilities: list[SecurityVulnerability],
+    ) -> list[SecurityVulnerability]:
         """Prioritize vulnerabilities by severity and confidence."""
         severity_order = {
             "critical": 0,
@@ -394,7 +394,7 @@ class CopilotSecurityAgent:
         self,
         vuln: SecurityVulnerability,
         vulnerable_code: str,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict[str, Any]]:
         """Generate fix using existing security codemods."""
         scripts_dir = self.repo_path / "scripts" / "security" / "codemods"
 
@@ -441,7 +441,7 @@ class CopilotSecurityAgent:
 
         return None
 
-    def get_status_summary(self) -> Dict[str, Any]:
+    def get_status_summary(self) -> dict[str, Any]:
         """Get summary of security agent status."""
         return {
             "repo": f"{self.repo_owner}/{self.repo_name}",

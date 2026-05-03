@@ -27,7 +27,7 @@ Updated: 2026-02-12 (PS-13: Agent Task Router)
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 class AgentOrchestrator:
     """Orchestrates routing of failures to specialized agents."""
 
-    def __init__(self, config: Dict[str, Any], dry_run: bool = False):
+    def __init__(self, config: dict[str, Any], dry_run: bool = False):
         """
         Initialize agent orchestrator.
 
@@ -52,9 +52,9 @@ class AgentOrchestrator:
 
     def route_failure(
         self,
-        failure_data: Dict[str, Any],
-        pattern_matches: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        failure_data: dict[str, Any],
+        pattern_matches: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """
         Route failure to appropriate specialized agents.
 
@@ -96,9 +96,9 @@ class AgentOrchestrator:
 
     def _select_agents(
         self,
-        failure_data: Dict[str, Any],
-        pattern_matches: List[Dict[str, Any]]
-    ) -> List[str]:
+        failure_data: dict[str, Any],
+        pattern_matches: list[dict[str, Any]]
+    ) -> list[str]:
         """
         Select which agents should be invoked based on patterns.
 
@@ -138,9 +138,9 @@ class AgentOrchestrator:
     def _invoke_agent(
         self,
         agent_name: str,
-        failure_data: Dict[str, Any],
-        pattern_matches: List[Dict[str, Any]]
-    ) -> Optional[Dict[str, Any]]:
+        failure_data: dict[str, Any],
+        pattern_matches: list[dict[str, Any]]
+    ) -> Optional[dict[str, Any]]:
         """
         Invoke a specialized agent with failure context.
 
@@ -245,9 +245,9 @@ class AgentOrchestrator:
     def _generate_recommendation_from_patterns(
         self,
         agent_name: str,
-        failure_data: Dict[str, Any],
-        pattern_matches: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        failure_data: dict[str, Any],
+        pattern_matches: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """
         Generate agent recommendation based on matched patterns.
 
@@ -307,18 +307,18 @@ class AgentOrchestrator:
     def _generate_simulated_recommendation(
         self,
         agent_name: str,
-        failure_data: Dict[str, Any],
-        pattern_matches: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        failure_data: dict[str, Any],
+        pattern_matches: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """Generate simulated recommendation for dry-run mode."""
         return self._generate_recommendation_from_patterns(agent_name, failure_data, pattern_matches)
 
     def _generate_fallback_recommendation(
         self,
         agent_name: str,
-        failure_data: Dict[str, Any],
-        pattern_matches: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        failure_data: dict[str, Any],
+        pattern_matches: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """Generate fallback recommendation when agent not found."""
         workflow_name = failure_data['workflow_name']
 
@@ -338,8 +338,8 @@ class AgentOrchestrator:
 
     def aggregate_recommendations(
         self,
-        recommendations: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        recommendations: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """
         Aggregate recommendations from multiple agents.
 
@@ -397,7 +397,7 @@ class AgentOrchestrator:
 
     def generate_agent_analysis_section(
         self,
-        recommendations: List[Dict[str, Any]]
+        recommendations: list[dict[str, Any]]
     ) -> str:
         """
         Generate formatted agent analysis section for issue body.
@@ -447,7 +447,7 @@ class AgentOrchestrator:
 
 # Task classification taxonomy: 7 categories with keyword→agent mappings.
 # Each category maps keywords to an ordered list of agents (primary + fallbacks).
-TASK_ROUTING_TABLE: Dict[str, Dict[str, Any]] = {
+TASK_ROUTING_TABLE: dict[str, dict[str, Any]] = {
     "ci_cd": {
         "keywords": [
             "ci", "cd", "pipeline", "workflow", "build", "deploy", "github actions",
@@ -525,7 +525,7 @@ class TaskRouter:
 
     def __init__(
         self,
-        routing_table: Optional[Dict[str, Dict[str, Any]]] = None,
+        routing_table: Optional[dict[str, dict[str, Any]]] = None,
         default_agent: str = "ci-testing-agent",
         confidence_threshold: float = 0.3,
     ):
@@ -540,7 +540,7 @@ class TaskRouter:
         self.default_agent = default_agent
         self.confidence_threshold = confidence_threshold
 
-    def route_task(self, task_description: str) -> Dict[str, Any]:
+    def route_task(self, task_description: str) -> dict[str, Any]:
         """Route a task description to the best-matching agent.
 
         Tokenizes the task description, scores each category by keyword
@@ -579,7 +579,7 @@ class TaskRouter:
 
     def _score_categories(
         self, task_description: str
-    ) -> List[tuple]:
+    ) -> list[tuple]:
         """Score every category by keyword match ratio.
 
         Returns a list of ``(category, score)`` tuples sorted descending by
@@ -587,7 +587,7 @@ class TaskRouter:
         lowercased task description.
         """
         text = task_description.lower()
-        scores: List[tuple] = []
+        scores: list[tuple] = []
 
         for category, entry in self.routing_table.items():
             keywords = entry["keywords"]
@@ -599,7 +599,7 @@ class TaskRouter:
         scores.sort(key=lambda x: x[1], reverse=True)
         return scores
 
-    def list_categories(self) -> List[Dict[str, Any]]:
+    def list_categories(self) -> list[dict[str, Any]]:
         """Return a summary of all routing categories.
 
         Returns:
@@ -617,7 +617,7 @@ class TaskRouter:
         ]
 
 
-def route_task(task_description: str, **kwargs: Any) -> Dict[str, Any]:
+def route_task(task_description: str, **kwargs: Any) -> dict[str, Any]:
     """Convenience function — creates a TaskRouter and routes a single task.
 
     Args:

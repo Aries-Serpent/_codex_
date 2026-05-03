@@ -13,7 +13,7 @@ Features:
 AAIS Contribution: +3.0 points (Runtime Introspection)
 """
 
-from typing import Generic, List, Optional, Tuple, TypeVar
+from typing import Generic, Optional, TypeVar
 
 K = TypeVar("K")
 V = TypeVar("V")
@@ -110,7 +110,7 @@ class RobinHoodHashTable(Generic[K, V]):
         self.size = 0
 
         # Storage: (key, value, psl) where psl = probe sequence length
-        self.table: List[Optional[Tuple[K, V, int]]] = [None] * self.capacity
+        self.table: list[Optional[tuple[K, V, int]]] = [None] * self.capacity
 
         # Metrics
         self.total_lookups = 0
@@ -302,8 +302,8 @@ class CuckooHashTable(Generic[K, V]):
         self.size = 0
 
         # Two hash tables
-        self.table1: List[Optional[Tuple[K, V]]] = [None] * self.capacity
-        self.table2: List[Optional[Tuple[K, V]]] = [None] * self.capacity
+        self.table1: list[Optional[tuple[K, V]]] = [None] * self.capacity
+        self.table2: list[Optional[tuple[K, V]]] = [None] * self.capacity
 
         # Metrics
         self.total_lookups = 0

@@ -17,7 +17,7 @@ import ast
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -27,13 +27,13 @@ class APIPattern:
     name: str
     pattern_type: str  # "deprecated", "breaking_change", "version_incompatible", "unsafe_api"
     description: str
-    locations: List[str]
+    locations: list[str]
     confidence: float  # 0.0 to 1.0
     severity: str  # "critical", "high", "medium", "low"
     deprecated_in: Optional[str]  # Version where deprecated
     removed_in: Optional[str]  # Version where removed
     migration_guide: str  # How to migrate
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class APIPatternMatcher:
@@ -65,10 +65,10 @@ class APIPatternMatcher:
 
     def __init__(self):
         """Initialize API pattern matcher."""
-        self.detected_patterns: List[APIPattern] = []
+        self.detected_patterns: list[APIPattern] = []
         #AFTERMATH_METRIC: api_matcher_initialized
 
-    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> List[APIPattern]:
+    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> list[APIPattern]:
         """
         Analyze a file for API usage issues.
 
@@ -87,7 +87,7 @@ class APIPatternMatcher:
             except (IOError, UnicodeDecodeError):
                 return []
 
-        detected: List[APIPattern] = []
+        detected: list[APIPattern] = []
 
         # PERCEIVE: Multi-layer API scanning
         if file_path.suffix == ".py":
@@ -112,7 +112,7 @@ class APIPatternMatcher:
 
         return detected
 
-    def _detect_deprecated_imports(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
+    def _detect_deprecated_imports(self, tree: ast.AST, file_path: Path) -> list[APIPattern]:
         """
         Detect deprecated module imports.
 
@@ -166,7 +166,7 @@ class APIPatternMatcher:
 
         return detected
 
-    def _detect_deprecated_functions(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
+    def _detect_deprecated_functions(self, tree: ast.AST, file_path: Path) -> list[APIPattern]:
         """
         Detect deprecated function/method calls.
 
@@ -219,7 +219,7 @@ class APIPatternMatcher:
 
         return detected
 
-    def _detect_unsafe_apis(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
+    def _detect_unsafe_apis(self, tree: ast.AST, file_path: Path) -> list[APIPattern]:
         """
         Detect unsafe or risky API usage.
 
@@ -262,7 +262,7 @@ class APIPatternMatcher:
 
         return detected
 
-    def _detect_version_incompatibilities(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
+    def _detect_version_incompatibilities(self, tree: ast.AST, file_path: Path) -> list[APIPattern]:
         """
         Detect Python version-specific features.
 
@@ -311,7 +311,7 @@ class APIPatternMatcher:
 
         return detected
 
-    def _detect_regex_patterns(self, content: str, file_path: Path) -> List[APIPattern]:
+    def _detect_regex_patterns(self, content: str, file_path: Path) -> list[APIPattern]:
         """
         Detect API issues using regex patterns.
 
@@ -351,7 +351,7 @@ class APIPatternMatcher:
             return '.'.join(reversed(parts))
         return "unknown"
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Generate summary of detected API issues.
 

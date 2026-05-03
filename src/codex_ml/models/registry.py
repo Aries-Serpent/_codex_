@@ -339,4 +339,4 @@ def list_models() -> list[str]:
     return model_registry.list()
 
 
-__all__ = ["model_registry", "register_model", "get_model", "list_models"]
+__all__ = ["get_model", "list_models", "model_registry", "register_model"]

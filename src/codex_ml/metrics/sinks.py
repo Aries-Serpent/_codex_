@@ -7,7 +7,7 @@ import json
 from dataclasses import dataclass
 from typing import Protocol, TextIO, runtime_checkable
 
-__all__ = ["MetricsSink", "CsvSink", "NdjsonSink", "NullSink", "create_sink"]
+__all__ = ["CsvSink", "MetricsSink", "NdjsonSink", "NullSink", "create_sink"]
 
 
 @runtime_checkable

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 from codex.zendesk.quantum import ZendeskTicket
 from rag.pipelines.chunking import Chunk, ChunkingPipeline
@@ -83,4 +83,4 @@ class ZendeskRAGBridge:
         return contexts
 
 
-__all__ = ["ZendeskRAGBridge", "TicketContext"]
+__all__ = ["TicketContext", "ZendeskRAGBridge"]

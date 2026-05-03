@@ -13,7 +13,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Add core to path for CognitiveBrain access
 _core_path = str(Path(__file__).parent.parent.parent / "core")
@@ -28,7 +28,7 @@ class ValidationResult:
     check_name: str
     passed: bool
     score: float  # 0.0 - 1.0
-    details: Dict[str, Any]
+    details: dict[str, Any]
     error_message: str = ""
     timestamp: datetime = None
 
@@ -60,9 +60,9 @@ class ReleaseValidator:
             import os
             brain_db_path = Path(os.getenv("CODEX_DB_PATH", ".codex/brain.db"))
         self.brain = CognitiveBrain(brain_db_path)
-        self.validations: List[ValidationResult] = []
+        self.validations: list[ValidationResult] = []
 
-    def perceive(self, release_info: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, release_info: dict[str, Any]) -> dict[str, Any]:
         """
         PERCEIVE: Gather all release validation data.
 
@@ -321,7 +321,7 @@ class ReleaseValidator:
                 error_message=f"Documentation check skipped: {str(e)}"
             )
 
-    def _to_dict(self, validation: ValidationResult) -> Dict[str, Any]:
+    def _to_dict(self, validation: ValidationResult) -> dict[str, Any]:
         """Convert ValidationResult to dictionary."""
         return {
             "check_name": validation.check_name,

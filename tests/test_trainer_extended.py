@@ -19,8 +19,8 @@ torch_data = getattr(torch, "utils", None)
 if torch_data is None or not hasattr(torch_data, "data"):
     pytest.skip("torch.utils.data not available", allow_module_level=True)
 
-from logging_utils import LoggingConfig  # noqa: E402
-from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig  # noqa: E402
+from logging_utils import LoggingConfig
+from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 DataLoader = torch_data.data.DataLoader  # type: ignore[attr-defined]
 TensorDataset = torch_data.data.TensorDataset  # type: ignore[attr-defined]

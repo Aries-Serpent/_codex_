@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Top-level data package exports with lazy loader bindings."""
 
 
 from importlib import import_module
@@ -76,6 +75,6 @@ if TYPE_CHECKING:  # pragma: no cover - import for type checkers only
     )
     from .streaming import iter_jsonl_chunks
 from . import (
-    dataloader,  # noqa: F401
-    loaders,  # noqa: F401
+    dataloader,
+    loaders,
 )

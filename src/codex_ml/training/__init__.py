@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Mapping, Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 from .device_strategy import DeviceConfig, DeviceMapper
 from .dp_config import DifferentialPrivacyConfig, make_private_model
@@ -12,12 +13,12 @@ from .legacy_api import (
     SafetySettings,
     SchedulerSettings,
     TrainingRunConfig,
-    _evaluate_model,  # noqa: F401 - Compatibility exports for tests (PR #3330)
+    _evaluate_model,
     build_dataloader,
-    get_hf_revision,  # noqa: F401 - Compatibility exports for tests (PR #3330)
+    get_hf_revision,
 )
 from .legacy_api import (
-    run_functional_training as _legacy_run_functional_training,  # noqa: F401 re-exported via __all__
+    run_functional_training as _legacy_run_functional_training,
 )
 from .rng_checkpoint import RNGState, set_seed
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
@@ -43,30 +44,30 @@ except ImportError:  # pragma: no cover - optional
     load_from_pretrained = None
 
 __all__ = [
-    "SafetySettings",
-    "OptimizerSettings",
-    "SchedulerSettings",
-    "TrainingRunConfig",
-    "UnifiedTrainingConfig",
-    "run_functional_training",
-    "run_unified_training",
-    "run_functional_training",
-    "TrainingRunConfig",
-    "SafetySettings",
-    "OptimizerSettings",
-    "SchedulerSettings",
-    "build_dataloader",
-    "DifferentialPrivacyConfig",
-    "make_private_model",
     "DeviceConfig",
     "DeviceMapper",
+    "DifferentialPrivacyConfig",
+    "OptimizerSettings",
+    "OptimizerSettings",
     "RNGState",
-    "set_seed",
-    "maybe_autocast",  # Added for test compatibility (PR #3248)
-    "load_from_pretrained",  # Added for test compatibility (PR #3248)
+    "SafetySettings",
+    "SafetySettings",
+    "SchedulerSettings",
+    "SchedulerSettings",
+    "TrainingRunConfig",
+    "TrainingRunConfig",
+    "UnifiedTrainingConfig",
     "_evaluate_model",  # Added for test compatibility (PR #3330)
+    "build_dataloader",
     "get_hf_revision",  # Added for test compatibility (PR #3330)
+    "load_from_pretrained",  # Added for test compatibility (PR #3248)
+    "make_private_model",
+    "maybe_autocast",  # Added for test compatibility (PR #3248)
     "mlflow_run",  # Added for test compatibility (legacy patch target)
+    "run_functional_training",
+    "run_functional_training",
+    "run_unified_training",
+    "set_seed",
 ]
 
 

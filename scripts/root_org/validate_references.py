@@ -21,7 +21,6 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +82,7 @@ def escape_regex(text: str) -> str:
     return re.escape(text)
 
 
-def generate_patterns(file_path: str) -> List[re.Pattern]:
+def generate_patterns(file_path: str) -> list[re.Pattern]:
     """Generate compiled regex patterns for the given file path."""
     patterns = []
     escaped_path = escape_regex(file_path)
@@ -109,8 +108,8 @@ def generate_patterns(file_path: str) -> List[re.Pattern]:
 def scan_file_for_references(
     file_path: Path,
     target_file: str,
-    patterns: List[re.Pattern]
-) -> List[Dict[str, any]]:
+    patterns: list[re.Pattern]
+) -> list[dict[str, any]]:
     """Scan a single file for references to the target file."""
     references = []
 
@@ -145,7 +144,7 @@ def scan_repository(
     target_file: str,
     root_dir: Path,
     dry_run: bool = False
-) -> Tuple[List[Dict], Dict[str, int]]:
+) -> tuple[list[dict], dict[str, int]]:
     """Scan the entire repository for references to target file."""
     patterns = generate_patterns(target_file)
     all_references = []
@@ -195,8 +194,8 @@ def assess_risk(reference_count: int) -> str:
 
 def generate_report(
     target_file: str,
-    references: List[Dict],
-    stats: Dict[str, int],
+    references: list[dict],
+    stats: dict[str, int],
     output_format: str = 'text'
 ) -> str:
     """Generate validation report."""
@@ -256,7 +255,7 @@ def generate_report(
     return '\n'.join(lines)
 
 
-def log_to_ndjson(target_file: str, references: List[Dict], stats: Dict[str, int]):
+def log_to_ndjson(target_file: str, references: list[dict], stats: dict[str, int]):
     """Log validation results to .codex/action_log.ndjson."""
     log_entry = {
         'timestamp': datetime.now().isoformat(),

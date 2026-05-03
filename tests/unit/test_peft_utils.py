@@ -27,7 +27,7 @@ def test_freeze_counts():
         pytest.skip("transformers/peft not installed")
     try:
         bundle = load_hf_llm("sshleifer/tiny-gpt2")
-    except Exception:  # noqa: BLE001
+    except Exception:
         pytest.skip("model weights not available offline")
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)

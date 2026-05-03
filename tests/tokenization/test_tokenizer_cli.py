@@ -11,7 +11,7 @@ import pytest
 
 pytest.importorskip("sentencepiece")
 
-import codex_ml.tokenization.cli as cli  # noqa: E402
+import codex_ml.tokenization.cli as cli
 
 
 def test_train_cli(tmp_path, monkeypatch):

@@ -42,7 +42,7 @@ class _RateLimitBackend(ABC):
         """Return True if the request should be allowed, False if throttled."""
         raise NotImplementedError("Subclasses must implement consume()")
 
-    def close(self) -> None:  # noqa: B027
+    def close(self) -> None:
         """Optional cleanup."""
 
 

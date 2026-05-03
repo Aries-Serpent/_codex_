@@ -20,7 +20,7 @@ import functools
 import logging
 import secrets
 import time
-from typing import Callable
+from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 _secure_random = secrets.SystemRandom()

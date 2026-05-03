@@ -22,7 +22,7 @@ import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Error pattern detection regexes
 ERROR_PATTERNS = {
@@ -40,7 +40,7 @@ ERROR_PATTERNS = {
 }
 
 
-def run_gh_command(command: List[str]) -> str:
+def run_gh_command(command: list[str]) -> str:
     """Run GitHub CLI command and return output."""
     try:
         result = subprocess.run(
@@ -62,7 +62,7 @@ def get_workflow_runs(
     limit: int = 50,
     workflow: Optional[str] = None,
     status: Optional[str] = None,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Fetch workflow runs from GitHub API."""
     command = [
         "run",
@@ -95,7 +95,7 @@ def get_workflow_logs(run_id: int) -> str:
     return run_gh_command(["run", "view", str(run_id), "--log"])
 
 
-def analyze_log_for_patterns(log_content: str) -> Dict[str, List[str]]:
+def analyze_log_for_patterns(log_content: str) -> dict[str, list[str]]:
     """Analyze log content for known error patterns."""
     results = defaultdict(list)
 
@@ -109,7 +109,7 @@ def analyze_log_for_patterns(log_content: str) -> Dict[str, List[str]]:
     return dict(results)
 
 
-def calculate_statistics(runs: List[Dict[str, Any]]) -> Dict[str, Any]:
+def calculate_statistics(runs: list[dict[str, Any]]) -> dict[str, Any]:
     """Calculate statistics from workflow runs."""
     total = len(runs)
     if total == 0:
@@ -156,11 +156,11 @@ def calculate_statistics(runs: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def generate_report(
-    runs: List[Dict[str, Any]],
-    statistics: Dict[str, Any],
-    error_patterns: Dict[int, Dict[str, List[str]]],
+    runs: list[dict[str, Any]],
+    statistics: dict[str, Any],
+    error_patterns: dict[int, dict[str, list[str]]],
     args: argparse.Namespace,
-) -> tuple[Dict[str, Any], str]:
+) -> tuple[dict[str, Any], str]:
     """Generate JSON and Markdown reports."""
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%SZ")
 

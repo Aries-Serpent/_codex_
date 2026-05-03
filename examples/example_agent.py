@@ -14,7 +14,7 @@ This example shows:
 """
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -37,7 +37,7 @@ class ExampleAgent(CognitiveAgent):
         )
         self.pattern_recognizer = PatternRecognizer()
 
-    def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         PERCEPTION: Analyze file and gather context.
 
@@ -77,7 +77,7 @@ class ExampleAgent(CognitiveAgent):
 
         return context
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         DECISION: Determine what actions to take.
 
@@ -114,7 +114,7 @@ class ExampleAgent(CognitiveAgent):
 
         return decision
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """
         ACTION: Execute the planned actions.
 
@@ -153,10 +153,10 @@ class ExampleAgent(CognitiveAgent):
 
     def aftermath(
         self,
-        result: Dict[str, Any],
-        context: Dict[str, Any],
-        decision: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        result: dict[str, Any],
+        context: dict[str, Any],
+        decision: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         AFTERMATH: Learn from execution and persist insights.
 

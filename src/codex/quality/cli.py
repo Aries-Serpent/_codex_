@@ -21,7 +21,6 @@ import sys
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
-"""Code smell detection CLI."""
 
 import click  # noqa: E402
 

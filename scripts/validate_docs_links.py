@@ -60,7 +60,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Optional
 
 import yaml
 
@@ -107,13 +107,13 @@ class HeadingParser:
     def __init__(self, docs_dir: Path):
         self.docs_dir = docs_dir
         # Map of file path -> list of (heading_text, anchor_id, line_number)
-        self.headings_by_file: Dict[str, List[Tuple[str, str, int]]] = {}
+        self.headings_by_file: dict[str, list[tuple[str, str, int]]] = {}
         # Map of file path -> set of anchor IDs for quick lookup
-        self.anchors_by_file: Dict[str, Set[str]] = {}
+        self.anchors_by_file: dict[str, set[str]] = {}
         # Track duplicate anchors
-        self.duplicate_anchors: Dict[str, List[int]] = {}
+        self.duplicate_anchors: dict[str, list[int]] = {}
 
-    def parse_all_files(self, markdown_files: List[Path]) -> None:
+    def parse_all_files(self, markdown_files: list[Path]) -> None:
         """Parse headings from all markdown files."""
         for md_file in markdown_files:
             self.parse_file(md_file)
@@ -182,7 +182,7 @@ class HeadingParser:
         """Check if a file has a specific anchor."""
         return anchor_id in self.anchors_by_file.get(file_path, set())
 
-    def get_similar_anchors(self, file_path: str, target_anchor: str, threshold: float = 0.6) -> List[Tuple[str, float]]:
+    def get_similar_anchors(self, file_path: str, target_anchor: str, threshold: float = 0.6) -> list[tuple[str, float]]:
         """Find similar anchors in a file using fuzzy matching."""
         if file_path not in self.anchors_by_file:
             return []
@@ -217,9 +217,9 @@ class LinkValidator:
         self.workers = workers  # Number of parallel workers
         self.use_cache = use_cache  # Enable result caching
         self.validate_anchors = validate_anchors  # Enable anchor validation
-        self.errors: List[Dict] = []
-        self.warnings: List[Dict] = []
-        self.fixed: List[Dict] = []
+        self.errors: list[dict] = []
+        self.warnings: list[dict] = []
+        self.fixed: list[dict] = []
         self.false_positives_skipped = 0
         self.links_validated = 0
         self.cache_hits = 0
@@ -227,7 +227,7 @@ class LinkValidator:
         self.anchors_validated = 0
         self.heading_parser: Optional[HeadingParser] = None
 
-    def load_cache(self) -> Dict[str, Dict]:
+    def load_cache(self) -> dict[str, dict]:
         """Load cached validation results."""
         if not self.use_cache or not CACHE_FILE.exists():
             return {}
@@ -237,7 +237,7 @@ class LinkValidator:
         except Exception:
             return {}
 
-    def save_cache(self, cache: Dict[str, Dict]):
+    def save_cache(self, cache: dict[str, dict]):
         """Save validation cache."""
         if not self.use_cache:
             return
@@ -305,7 +305,7 @@ class LinkValidator:
 
         return False
 
-    def validate_all(self) -> Tuple[int, int, int]:
+    def validate_all(self) -> tuple[int, int, int]:
         """Run all validations. Returns (errors, warnings, fixed)."""
         print("🔍 GitHub Pages Manager - Link Validation\n")
         print(f"📂 Root: {self.root_dir}")
@@ -415,14 +415,14 @@ class LinkValidator:
         elapsed = time.time() - start_time
         print(f"\n⏱️  Validation completed in {elapsed:.2f}s")
 
-    def _validate_markdown_files_sequential(self, md_files: List[Path], cache: Dict):
+    def _validate_markdown_files_sequential(self, md_files: list[Path], cache: dict):
         """Validate files sequentially (original behavior)."""
         for md_file in md_files:
             file_result = self._validate_single_file_with_cache(md_file, cache)
             if file_result:
                 self._merge_file_result(file_result)
 
-    def _validate_markdown_files_parallel(self, md_files: List[Path], cache: Dict):
+    def _validate_markdown_files_parallel(self, md_files: list[Path], cache: dict):
         """Validate files using the same logic as sequential mode.
 
         NOTE: This method currently processes files sequentially to avoid
@@ -435,7 +435,7 @@ class LinkValidator:
             if file_result:
                 self._merge_file_result(file_result)
 
-    def _validate_single_file_with_cache(self, md_file: Path, cache: Dict) -> Dict:
+    def _validate_single_file_with_cache(self, md_file: Path, cache: dict) -> dict:
         """Validate a single file with cache support. Thread-safe."""
         cache_key = str(md_file.relative_to(self.root_dir))
         mtime = self.get_file_mtime(md_file)
@@ -465,14 +465,14 @@ class LinkValidator:
 
         return result
 
-    def _merge_file_result(self, result: Dict):
+    def _merge_file_result(self, result: dict):
         """Merge file validation result into global state. Thread-safe aggregation."""
         if result.get('errors'):
             self.errors.extend(result['errors'])
         self.links_validated += result.get('links_validated', 0)
         self.false_positives_skipped += result.get('false_positives_skipped', 0)
 
-    def _validate_markdown_file_worker(self, md_file: Path) -> Dict:
+    def _validate_markdown_file_worker(self, md_file: Path) -> dict:
         """Worker function to validate a single markdown file. Returns results dict."""
         errors = []
         links_validated = 0
@@ -529,7 +529,7 @@ class LinkValidator:
             'false_positives_skipped': false_positives_skipped
         }
 
-    def _validate_link_worker(self, md_file: Path, url: str, text: str, line_num: int, in_code_block: bool = False) -> Dict:
+    def _validate_link_worker(self, md_file: Path, url: str, text: str, line_num: int, in_code_block: bool = False) -> dict:
         """Validate a single link (worker version). Returns result dict."""
         # Skip links inside code blocks (unless in strict mode)
         if in_code_block and not self.strict:
@@ -804,7 +804,7 @@ class LinkValidator:
         else:
             print("   ✅ cognitive_app live URL documented")
 
-    def _find_similar_files(self, target: Path) -> List[str]:
+    def _find_similar_files(self, target: Path) -> list[str]:
         """Find files with similar names for suggestions."""
         target_name = target.name.lower()
         target_stem = target.stem.lower()

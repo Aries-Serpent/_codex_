@@ -6,7 +6,7 @@ Test module for tokenizer roundtrip.
 
 from __future__ import annotations
 
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 
 from codex_ml.interfaces.tokenizer import HFTokenizer, WhitespaceTokenizer
 
@@ -21,7 +21,7 @@ def _safe_tokenizer() -> HFTokenizer | WhitespaceTokenizer:
             truncation=True,
             max_length=16,
         )
-    except Exception:  # noqa: BLE001
+    except Exception:
         return WhitespaceTokenizer()
 
 

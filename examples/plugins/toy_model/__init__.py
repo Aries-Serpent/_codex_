@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable, List
+from typing import List
 
 
 @dataclass
 class ToyModel:
     bias: float = 0.0
 
-    def __call__(self, inputs: Iterable[float]) -> List[float]:
+    def __call__(self, inputs: Iterable[float]) -> list[float]:
         return [float(x) + self.bias for x in inputs]
 
 

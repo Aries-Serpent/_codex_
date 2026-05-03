@@ -82,7 +82,7 @@ import os
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # ── Default server URL ────────────────────────────────────────────────────────
 _DEFAULT_URL = "http://localhost:8765"
@@ -156,7 +156,7 @@ class BrainClient:
             )
         return urllib.request.urlopen(req, timeout=timeout)  # nosec B310
 
-    def _auth_header(self) -> Dict[str, str]:
+    def _auth_header(self) -> dict[str, str]:
         """Return a Bearer auth header using the best available token.
 
         Token priority (highest → lowest):
@@ -178,7 +178,7 @@ class BrainClient:
         ).strip()
         return {"Authorization": f"Bearer {token}"} if token else {}
 
-    def _get(self, path: str, params: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+    def _get(self, path: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
         url = f"{self.base_url}{path}"
         if params:
             url = f"{url}?{urllib.parse.urlencode(params)}"
@@ -194,8 +194,8 @@ class BrainClient:
             raise BrainClientError(f"GET {path} unreachable: {exc}") from exc
 
     def _post(
-        self, path: str, body: Any, extra_headers: Optional[Dict[str, str]] = None
-    ) -> Dict[str, Any]:
+        self, path: str, body: Any, extra_headers: Optional[dict[str, str]] = None
+    ) -> dict[str, Any]:
         url = f"{self.base_url}{path}"
         data = json.dumps(body).encode()
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -212,7 +212,7 @@ class BrainClient:
         except OSError as exc:
             raise BrainClientError(f"POST {path} unreachable: {exc}") from exc
 
-    def _delete(self, path: str) -> Dict[str, Any]:
+    def _delete(self, path: str) -> dict[str, Any]:
         url = f"{self.base_url}{path}"
         headers = {"Accept": "application/json"}
         headers.update(self._auth_header())
@@ -227,7 +227,7 @@ class BrainClient:
 
     # ── Public API ────────────────────────────────────────────────────────────
 
-    def health(self) -> Dict[str, Any]:
+    def health(self) -> dict[str, Any]:
         """Return the server health payload.
 
         Returns
@@ -249,8 +249,8 @@ class BrainClient:
         command: str,
         cwd: Optional[str] = None,
         timeout: int = 30,
-        env: Optional[Dict[str, str]] = None,
-    ) -> Dict[str, Any]:
+        env: Optional[dict[str, str]] = None,
+    ) -> dict[str, Any]:
         """Execute a shell command via the server and return the result.
 
         Parameters
@@ -268,14 +268,14 @@ class BrainClient:
         ------
         BrainClientError if the command was blocked or the server errored.
         """
-        payload: Dict[str, Any] = {"command": command, "timeout": timeout}
+        payload: dict[str, Any] = {"command": command, "timeout": timeout}
         if cwd:
             payload["cwd"] = cwd
         if env:
             payload["env"] = env
         return self._post("/api/cli/run", payload)
 
-    def cli_history(self, limit: int = 50) -> Dict[str, Any]:
+    def cli_history(self, limit: int = 50) -> dict[str, Any]:
         """Return recent command history.
 
         Returns
@@ -284,7 +284,7 @@ class BrainClient:
         """
         return self._get("/api/cli/history", params={"limit": str(limit)})
 
-    def clear_history(self) -> Dict[str, Any]:
+    def clear_history(self) -> dict[str, Any]:
         """Clear CLI command history (both in-memory and SQLite).
 
         Returns
@@ -297,11 +297,11 @@ class BrainClient:
         self,
         method: str,
         url: str,
-        headers: Optional[Dict[str, str]] = None,
-        params: Optional[Dict[str, str]] = None,
+        headers: Optional[dict[str, str]] = None,
+        params: Optional[dict[str, str]] = None,
         body: Any = None,
         timeout: int = 30,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Proxy an HTTP request through the server (secondary agent API mechanism).
 
         **Agent API priority hierarchy:**
@@ -356,7 +356,7 @@ class BrainClient:
         # POST to any API
         resp = brain.proxy_request("POST", "https://api.example.com/data", body={"k": "v"})
         """
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "method": method.upper(),
             "url": url,
             "timeout": timeout,
@@ -369,7 +369,7 @@ class BrainClient:
             payload["body"] = body
         return self._post("/api/request", payload)
 
-    def memory_state(self) -> Dict[str, Any]:
+    def memory_state(self) -> dict[str, Any]:
         """Return STM/LTM memory statistics (requires CODEX_MASTER_KEY).
 
         Returns
@@ -383,7 +383,7 @@ class BrainClient:
         """
         return self._get("/api/memory/state")
 
-    def memory_search(self, query: str, limit: int = 20) -> Dict[str, Any]:
+    def memory_search(self, query: str, limit: int = 20) -> dict[str, Any]:
         """Full-text search over STM + LTM entries (requires CODEX_MASTER_KEY).
 
         Parameters
@@ -397,7 +397,7 @@ class BrainClient:
         """
         return self._get("/api/memory/search", params={"q": query, "limit": str(limit)})
 
-    def ooda_metrics(self) -> Dict[str, Any]:
+    def ooda_metrics(self) -> dict[str, Any]:
         """Return OODA loop execution metrics.
 
         Returns
@@ -406,7 +406,7 @@ class BrainClient:
         """
         return self._get("/api/ooda/metrics")
 
-    def ooda_process(self, input_data: Any, context: Any = None) -> Dict[str, Any]:
+    def ooda_process(self, input_data: Any, context: Any = None) -> dict[str, Any]:
         """Route input through the OODA cognitive orchestrator.
 
         Parameters
@@ -418,7 +418,7 @@ class BrainClient:
         -------
         dict with keys: success, output, metrics, errors.
         """
-        payload: Dict[str, Any] = {"input": input_data}
+        payload: dict[str, Any] = {"input": input_data}
         if context is not None:
             payload["context"] = context
         return self._post("/api/ooda/process", payload)
@@ -430,14 +430,14 @@ class BrainClient:
         result = self.run_command("git status --short", timeout=10)
         return result.get("stdout", "").strip()
 
-    def git_log(self, n: int = 10) -> List[str]:
+    def git_log(self, n: int = 10) -> list[str]:
         """Return the last N git log lines as a list."""
         result = self.run_command(f"git --no-pager log --oneline -{n}", timeout=10)
         return [line for line in result.get("stdout", "").splitlines() if line]
 
     def github_repo_info(
         self, owner: str = "Aries-Serpent", repo: str = "_codex_"
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Fetch basic GitHub repo metadata via the proxy endpoint.
 
         Returns
@@ -452,7 +452,7 @@ class BrainClient:
         owner: str = "Aries-Serpent",
         repo: str = "_codex_",
         per_page: int = 5,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Fetch the most recent GitHub Actions workflow runs via the proxy.
 
         Returns

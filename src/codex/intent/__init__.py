@@ -15,7 +15,7 @@ from .inferer import IntentSpec, infer_intent
 from .llm_client import CodexLLMClient
 
 __all__ = [
-    "infer_intent",
-    "IntentSpec",
     "CodexLLMClient",
+    "IntentSpec",
+    "infer_intent",
 ]

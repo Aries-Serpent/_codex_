@@ -396,7 +396,7 @@ class TestAgentMemory:
             # Second add should either update or raise error
             try:
                 memory_system.add_memory(entry2)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # Acceptable to reject duplicates
                 pass
 

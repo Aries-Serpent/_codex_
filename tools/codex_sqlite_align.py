@@ -31,7 +31,7 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 # -------------------- Constants & Helpers --------------------
 
@@ -114,14 +114,14 @@ class ChangeEntry:
 class PruneEntry:
     file: str
     reason: str
-    alternatives: List[str]
+    alternatives: list[str]
     risk: str
 
 
 @dataclass
 class CoverageReport:
-    implemented_objectives: Dict[str, bool]
-    executed_objectives: Dict[str, bool]
+    implemented_objectives: dict[str, bool]
+    executed_objectives: dict[str, bool]
     pruning_penalty_lambda: float
     pruned_items: int
     implemented_coverage: float
@@ -158,7 +158,7 @@ def should_skip_dir(dir_name: str) -> bool:
     return False
 
 
-def iter_repo_files(root: Path) -> List[Path]:
+def iter_repo_files(root: Path) -> list[Path]:
     files = []
     for base, dirs, fns in os.walk(root):
         dirs[:] = [d for d in dirs if not should_skip_dir(d)]
@@ -171,7 +171,7 @@ def iter_repo_files(root: Path) -> List[Path]:
     return files
 
 
-def find_sqlite_references(text: str) -> List[Tuple[re.Match, str]]:
+def find_sqlite_references(text: str) -> list[tuple[re.Match, str]]:
     results = []
     for pat in SQLITE_PATH_PATTERNS:
         for m in re.finditer(pat, text):
@@ -201,8 +201,8 @@ def normalize_sqlite_reference(snippet: str, kind: str, repo_root: Path) -> str:
 def try_update_file(
     p: Path,
     repo_root: Path,
-    change_log: List[ChangeEntry],
-    prunes: List[PruneEntry],
+    change_log: list[ChangeEntry],
+    prunes: list[PruneEntry],
     research_path: Path,
 ):
     try:
@@ -262,7 +262,7 @@ def try_update_file(
 
 
 def update_readme(
-    readme: Path, repo_root: Path, change_log: List[ChangeEntry], research_path: Path
+    readme: Path, repo_root: Path, change_log: list[ChangeEntry], research_path: Path
 ):
     if not readme.exists():
         return
@@ -295,7 +295,7 @@ def update_readme(
         step_error("3.4: README Reference Updates", e, context, research_path)
 
 
-def discover_db_files(repo_root: Path) -> List[Path]:
+def discover_db_files(repo_root: Path) -> list[Path]:
     candidates = []
     for base, dirs, fns in os.walk(repo_root):
         dirs[:] = [d for d in dirs if not should_skip_dir(d)]
@@ -340,8 +340,8 @@ def _validate_table(name: str) -> str:
     return _validate_ident(name, "table")
 
 
-def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
-    info: Dict[str, Any] = {"db": str(db_path), "tables": []}
+def sqlite_catalog(db_path: Path, max_rows: int = 50) -> dict[str, Any]:
+    info: dict[str, Any] = {"db": str(db_path), "tables": []}
     con = None
     try:
         con = sqlite3.connect(db_path)
@@ -392,7 +392,7 @@ def fetch_rows(conn: Connection, table: str, limit: int) -> list[Row]:
     ).fetchall()
 
 
-def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
+def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> list[str]:
     generated = []
     con = None
     try:
@@ -451,8 +451,8 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     research_md = out_dir / "research_questions.md"
-    change_log: List[ChangeEntry] = []
-    prunes: List[PruneEntry] = []
+    change_log: list[ChangeEntry] = []
+    prunes: list[PruneEntry] = []
 
     (repo_root / ".codex").mkdir(parents=True, exist_ok=True)
 

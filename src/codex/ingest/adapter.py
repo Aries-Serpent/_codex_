@@ -27,7 +27,7 @@ import zipfile
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from .manifest import IngestManifest, parse_manifest
 
@@ -271,8 +271,8 @@ def _clone_git_repo(url: str, ref: Optional[str], dest_dir: Path) -> None:
 
 
 def ingest(
-    source: Union[str, Path],
-    manifest_path: Optional[Union[str, Path]] = None,
+    source: str | Path,
+    manifest_path: Optional[str | Path] = None,
     snapshot_id: Optional[str] = None,
     artifacts_dir: Optional[Path] = None,
 ) -> Snapshot:

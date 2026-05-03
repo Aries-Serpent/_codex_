@@ -8,7 +8,7 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 
 class ComplexFileDisambiguator:
@@ -29,7 +29,7 @@ class ComplexFileDisambiguator:
         self.index_files = self._index_files('INDEX.md')
         self.architecture_files = self._index_files('ARCHITECTURE.md')
 
-    def _index_files(self, filename: str) -> Dict[str, Path]:
+    def _index_files(self, filename: str) -> dict[str, Path]:
         """Index all instances of a specific filename in the repository"""
         index = {}
         for path in self.repo_root.rglob(filename):
@@ -44,7 +44,7 @@ class ComplexFileDisambiguator:
         return index
 
     def _find_closest_file(self, source_file: Path, target_filename: str,
-                          file_index: Dict[str, Path]) -> Optional[Path]:
+                          file_index: dict[str, Path]) -> Optional[Path]:
         """Find the most contextually appropriate target file"""
         source_dir = source_file.parent
 
@@ -111,7 +111,7 @@ class ComplexFileDisambiguator:
         return steps_up + steps_down
 
     def _apply_domain_rules(self, source_file: Path, target_filename: str,
-                           file_index: Dict[str, Path]) -> Optional[Path]:
+                           file_index: dict[str, Path]) -> Optional[Path]:
         """Apply domain-specific disambiguation rules"""
         source_dir = source_file.parent
         source_parts = source_dir.parts
@@ -174,7 +174,7 @@ class ComplexFileDisambiguator:
             # Fall back to absolute GitHub URL
             return f"https://github.com/Aries-Serpent/_codex_/blob/main/{target_file}"
 
-    def _extract_links(self, content: str) -> List[Tuple[str, str, str]]:
+    def _extract_links(self, content: str) -> list[tuple[str, str, str]]:
         """Extract markdown links and their components"""
         # Pattern: [text](link)
         pattern = r'\[([^\]]+)\]\(([^)]+)\)'
@@ -240,7 +240,7 @@ class ComplexFileDisambiguator:
         except ValueError:
             return False
 
-    def process_file(self, file_path: Path) -> Dict:
+    def process_file(self, file_path: Path) -> dict:
         """Process a single markdown file"""
         result = {
             'file': str(file_path),
@@ -307,7 +307,7 @@ class ComplexFileDisambiguator:
 
         return result
 
-    def process_repository(self) -> Dict:
+    def process_repository(self) -> dict:
         """Process all markdown files in priority directories"""
         results = []
 

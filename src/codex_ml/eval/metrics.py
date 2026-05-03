@@ -7,7 +7,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 import math  # noqa: E402
-from typing import Iterable, Optional, Sequence  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
+from typing import Optional  # noqa: E402
 
 try:  # Optional dependency for efficiency
     import numpy as _np
@@ -17,18 +18,18 @@ except Exception:  # pragma: no cover - numpy is optional
 __all__ = [
     "MetricError",
     "accuracy",
+    "average_forgetting",
+    "backward_transfer",
     "bleu",
     "classification_f1",
     "exact_match_strict",
+    "forward_transfer",
     "macro_f1",
     "micro_f1",
     "perplexity",
+    "rouge_l",
     "token_accuracy",
     "token_stats",
-    "rouge_l",
-    "forward_transfer",
-    "backward_transfer",
-    "average_forgetting",
 ]
 
 

@@ -10,7 +10,7 @@ import sqlite3
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class CognitiveBrain:
@@ -168,7 +168,7 @@ class CognitiveBrain:
         self,
         session_id: str,
         status: str,
-        metrics: Optional[Dict[str, Any]] = None
+        metrics: Optional[dict[str, Any]] = None
     ) -> None:
         """
         End an agent session and store metrics.
@@ -196,7 +196,7 @@ class CognitiveBrain:
         pattern_name: str,
         pattern_type: str,
         description: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[dict[str, Any]] = None
     ) -> int:
         """
         Record a pattern occurrence.
@@ -283,10 +283,10 @@ class CognitiveBrain:
     def record_decision(
         self,
         session_id: str,
-        context: Dict[str, Any],
-        decision: Dict[str, Any],
+        context: dict[str, Any],
+        decision: dict[str, Any],
         rationale: Optional[str] = None,
-        outcome: Optional[Dict[str, Any]] = None,
+        outcome: Optional[dict[str, Any]] = None,
         success: Optional[bool] = None
     ) -> int:
         """
@@ -325,7 +325,7 @@ class CognitiveBrain:
         self,
         pattern_name: str,
         limit: int = 10
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get similar patterns by name matching.
 
@@ -353,7 +353,7 @@ class CognitiveBrain:
         self,
         category: Optional[str] = None,
         limit: int = 10
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get recent lessons learned.
 
@@ -389,7 +389,7 @@ class CognitiveBrain:
         self,
         agent_name: Optional[str] = None,
         limit: int = 10
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get session history.
 
@@ -430,7 +430,7 @@ class CognitiveBrain:
 
             return results
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get cognitive brain statistics.
 

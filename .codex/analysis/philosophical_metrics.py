@@ -19,7 +19,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -33,9 +33,9 @@ class PhilosophicalMetrics:
     rate_of_becoming: float = 0.0  # events per hour
     deterritorialization_force: float = 0.0  # can be negative
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert metrics to dictionary."""
         return {
             "rhizomaticity": self.rhizomaticity,
@@ -243,7 +243,7 @@ class PhilosophicalMetricsDashboard:
 
     def __init__(self) -> None:
         self.calculator = PhilosophicalMetricsCalculator()
-        self.metrics_history: List[PhilosophicalMetrics] = []
+        self.metrics_history: list[PhilosophicalMetrics] = []
         LOGGER.info("PhilosophicalMetricsDashboard initialized")
 
     def calculate_current_metrics(
@@ -257,7 +257,7 @@ class PhilosophicalMetricsDashboard:
         time_hours: float = 1.0,
         rigidity: float = 0.0,
         innovation: float = 0.0,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> PhilosophicalMetrics:
         """
         Calculate all current philosophical metrics.
@@ -318,7 +318,7 @@ class PhilosophicalMetricsDashboard:
         """Get the most recent metrics."""
         return self.metrics_history[-1] if self.metrics_history else None
 
-    def get_metrics_trend(self, metric_name: str, count: int = 10) -> List[float]:
+    def get_metrics_trend(self, metric_name: str, count: int = 10) -> list[float]:
         """
         Get trend data for a specific metric.
 
@@ -414,7 +414,7 @@ class PhilosophicalMetricsDashboard:
 
         return "\n".join(report_lines)
 
-    def export_metrics(self, output_path: Optional[Path] = None) -> Dict[str, Any]:
+    def export_metrics(self, output_path: Optional[Path] = None) -> dict[str, Any]:
         """
         Export metrics history to a dictionary (or file).
 
@@ -439,7 +439,7 @@ class PhilosophicalMetricsDashboard:
 
         return data
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about the metrics dashboard."""
         if not self.metrics_history:
             return {"total_measurements": 0}

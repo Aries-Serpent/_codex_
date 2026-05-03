@@ -12,8 +12,9 @@ from __future__ import annotations
 
 import time
 from collections import deque
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
 import pytest
 
@@ -22,8 +23,8 @@ pytest.importorskip("hypothesis")
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import given, settings  # noqa: E402
-from hypothesis import strategies as st  # noqa: E402
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 # --- Exception Hierarchy Tests ---
 
@@ -386,7 +387,7 @@ class DeadLetterQueue:
                 else:
                     entry["retry_count"] += 1
                     remaining.append(entry)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 entry["retry_count"] += 1
                 remaining.append(entry)
         self.queue.clear()
@@ -460,7 +461,7 @@ class RemediationAction:
             else:
                 self.failure_count += 1
             return result
-        except Exception:  # noqa: BLE001
+        except Exception:
             self.failure_count += 1
             return False
 

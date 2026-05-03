@@ -12,4 +12,4 @@ from __future__ import annotations
 
 from . import runtime, static
 
-__all__ = ["static", "runtime"]
+__all__ = ["runtime", "static"]

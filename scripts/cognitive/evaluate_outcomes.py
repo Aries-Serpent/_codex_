@@ -33,7 +33,7 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 def evaluate_outcomes(
@@ -41,7 +41,7 @@ def evaluate_outcomes(
     expected_dir: str,
     output_path: str,
     metrics: str = "success_rate,accuracy,efficiency"
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Evaluate execution outcomes against expectations.
 

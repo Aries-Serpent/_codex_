@@ -20,51 +20,50 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Utility helpers and modules re-exported for convenience."""
 
 
 from . import (
-    checkpoint_core,  # noqa: F401
-    checkpointing,  # noqa: F401
-    error_log,  # noqa: F401
+    checkpoint_core,
+    checkpointing,
+    error_log,
 )
 
 try:  # pragma: no cover - optional torch dependency
-    from . import modeling  # noqa: F401
+    from . import modeling
 except Exception:  # pragma: no cover - allow utilities without torch
     modeling = None  # type: ignore[assignment]
-from . import provenance  # noqa: F401
-from .atomic_io import safe_write_bytes, safe_write_text  # noqa: F401
-from .checkpointing import CheckpointManager  # noqa: F401
-from .provenance import environment_summary  # noqa: F401
-from .repro import (  # noqa: F401
+from . import provenance
+from .atomic_io import safe_write_bytes, safe_write_text
+from .checkpointing import CheckpointManager
+from .provenance import environment_summary
+from .repro import (
     record_dataset_checksums,
     restore_rng_state,
     set_deterministic,
     set_seed,
     snapshot_rng_state,
 )
-from .seed import deterministic_shuffle  # noqa: F401
-from .seeding import set_reproducible  # noqa: F401
-from .storage import FSSpecStorage, StorageProvider  # noqa: F401
+from .seed import deterministic_shuffle
+from .seeding import set_reproducible
+from .storage import FSSpecStorage, StorageProvider
 
 __all__ = [
     "CheckpointManager",
+    "FSSpecStorage",
+    "StorageProvider",
     "checkpoint_core",
     "checkpointing",
+    "deterministic_shuffle",
+    "environment_summary",
     "error_log",
     "modeling",
     "provenance",
-    "environment_summary",
-    "deterministic_shuffle",
-    "set_reproducible",
-    "set_deterministic",
-    "set_seed",
-    "snapshot_rng_state",
-    "restore_rng_state",
     "record_dataset_checksums",
+    "restore_rng_state",
     "safe_write_bytes",
     "safe_write_text",
-    "FSSpecStorage",
-    "StorageProvider",
+    "set_deterministic",
+    "set_reproducible",
+    "set_seed",
+    "snapshot_rng_state",
 ]

@@ -4,7 +4,6 @@ Admin operations for tenant management and system configuration
 """
 
 import logging
-from typing import List
 
 from fastapi import APIRouter, HTTPException, Response, status
 
@@ -103,7 +102,7 @@ async def get_tenant(tenant_id: str):
     )
 
 
-@router.get("/tenants", response_model=List[TenantResponse])
+@router.get("/tenants", response_model=list[TenantResponse])
 async def list_tenants():
     """List all tenants
 

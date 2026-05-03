@@ -33,7 +33,7 @@ def _make_app(secret: str = _SECRET) -> "FastAPI":
     """Build a minimal FastAPI app that exposes get_token_scopes as a route."""
     from fastapi import Depends
 
-    from security.decorators import get_token_scopes  # noqa: E402
+    from security.decorators import get_token_scopes
 
     app = FastAPI()
 

@@ -20,14 +20,14 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""JSON Lines dataset loader with deterministic caching and splitting."""
 
 
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import random  # noqa: E402
+from collections.abc import Iterator, Mapping  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterator, Mapping  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.utils.repro import record_dataset_checksums  # noqa: E402
 

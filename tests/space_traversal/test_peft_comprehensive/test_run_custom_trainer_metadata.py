@@ -20,7 +20,7 @@ torch = pytest.importorskip("torch")
 # PyTorch 2.x + Python 3.12 isinstance() union-type bug — fixed in PyTorch 2.2.0 (DR-003)
 try:
     _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
-except Exception:  # noqa: BLE001
+except Exception:
     _TORCH_312_BUG = False
 
 

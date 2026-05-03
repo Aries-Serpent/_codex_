@@ -122,8 +122,8 @@ def compute_coherence(
 
 
 __all__ = [
+    "compute_coherence",
+    "workflow_coherence_score",
     "workflow_duration",
     "workflow_step_duration",
-    "workflow_coherence_score",
-    "compute_coherence",
 ]

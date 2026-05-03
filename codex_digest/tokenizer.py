@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable, List
 
 
 @dataclass(frozen=True)
@@ -17,7 +17,7 @@ class Tokenizer:
     def normalize(self, s: str) -> str:
         return re.sub(r"\s+", " ", s).strip()
 
-    def tokenize(self, s: str) -> List[Token]:
+    def tokenize(self, s: str) -> list[Token]:
         raise NotImplementedError
 
 
@@ -31,9 +31,9 @@ class DefaultTokenizer(Tokenizer):
     WORD = re.compile(r"[A-Za-z_]+")
     NUM = re.compile(r"\d+(?:\.\d+)?")
 
-    def tokenize(self, s: str) -> List[Token]:
+    def tokenize(self, s: str) -> list[Token]:
         s = self.normalize(s)
-        out: List[Token] = []
+        out: list[Token] = []
         i = 0
         while i < len(s):
             ch = s[i]

@@ -19,7 +19,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 from detector import TestStatistics
@@ -51,9 +51,9 @@ class FlakyTestClassification:
     confidence: float  # 0.0 to 1.0
     pass_rate: float
     recommended_action: RemediationAction
-    reasons: List[str]  # Why classified as flaky
+    reasons: list[str]  # Why classified as flaky
     impact_score: float  # 0.0 to 1.0 (higher = more impact)
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class FlakyTestClassifier:
@@ -87,11 +87,11 @@ class FlakyTestClassifier:
             cognitive_brain_path: Path to cognitive brain database
         """
         self.cognitive_brain_path = cognitive_brain_path
-        self.classifications: List[FlakyTestClassification] = []
+        self.classifications: list[FlakyTestClassification] = []
 
         #AFTERMATH_METRIC: classifier_initialized
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         DECIDE phase - classify flaky tests and determine actions.
 
@@ -132,7 +132,7 @@ class FlakyTestClassifier:
 
         return decision
 
-    def _classify_test(self, stats: TestStatistics, context: Dict[str, Any]) -> FlakyTestClassification:
+    def _classify_test(self, stats: TestStatistics, context: dict[str, Any]) -> FlakyTestClassification:
         """
         Classify a single test.
 
@@ -270,7 +270,7 @@ class FlakyTestClassifier:
         # Low severity or low confidence -> monitor
         return RemediationAction.MONITOR
 
-    def _determine_action(self, classification: FlakyTestClassification) -> Dict[str, Any]:
+    def _determine_action(self, classification: FlakyTestClassification) -> dict[str, Any]:
         """
         Determine specific action details.
 
@@ -310,7 +310,7 @@ class FlakyTestClassifier:
 
         return action
 
-    def _prioritize_by_impact(self, classifications: List[FlakyTestClassification]) -> List[str]:
+    def _prioritize_by_impact(self, classifications: list[FlakyTestClassification]) -> list[str]:
         """
         Prioritize tests by impact score.
 
@@ -326,7 +326,7 @@ class FlakyTestClassifier:
 
         #AFTERMATH_METRIC: tests_prioritized = len(priorities)
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Generate classifier summary.
 

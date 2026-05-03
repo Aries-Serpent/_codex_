@@ -10,10 +10,9 @@ import importlib.util
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 
-def check_plugin(name: str, import_name: str) -> Tuple[bool, str]:
+def check_plugin(name: str, import_name: str) -> tuple[bool, str]:
     """
     Check if a pytest plugin is available.
 
@@ -34,7 +33,7 @@ def check_plugin(name: str, import_name: str) -> Tuple[bool, str]:
         return False, f"✗ {name} ({import_name}) - NOT FOUND: {e}"
 
 
-def check_pytest_args(args: List[str]) -> Tuple[bool, str]:
+def check_pytest_args(args: list[str]) -> tuple[bool, str]:
     """
     Check if pytest accepts specific command-line arguments.
 
@@ -95,7 +94,7 @@ def check_pytest_args(args: List[str]) -> Tuple[bool, str]:
         return False, f"✗ Error checking pytest args: {e}"
 
 
-def validate_config_files() -> Tuple[bool, str]:
+def validate_config_files() -> tuple[bool, str]:
     """
     Verify required config files exist.
 
@@ -119,7 +118,7 @@ def validate_config_files() -> Tuple[bool, str]:
     return True, f"✓ All required config files exist ({len(required_configs)} files)"
 
 
-def validate_test_structure() -> Tuple[bool, str]:
+def validate_test_structure() -> tuple[bool, str]:
     """
     Verify test directory structure.
 

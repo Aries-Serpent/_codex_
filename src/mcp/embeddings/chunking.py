@@ -16,7 +16,7 @@ Author: Codex Team
 """
 
 # Simple heuristic chunker (character-based) with overlap to approximate token chunking.
-from typing import Iterable
+from collections.abc import Iterable
 
 
 def chunk_text(text: str, max_chars: int = 1000, overlap: int = 200) -> list[str]:

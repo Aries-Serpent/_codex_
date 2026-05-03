@@ -6,11 +6,11 @@ Test module for error logging.
 
 #!/usr/bin/env python3
 """Tests for error_logging utility."""
-from pathlib import Path  # noqa: E402
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
-from src.utils.error_logging import append_error  # noqa: E402
+from src.utils.error_logging import append_error
 
 
 def test_append_error_creates_file(tmp_path, monkeypatch):

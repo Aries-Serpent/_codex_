@@ -10,9 +10,10 @@ import platform
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, MutableMapping, Sequence
+from typing import Any
 
 logger = logging.getLogger(__name__)
 try:  # Optional dependency

@@ -9,11 +9,11 @@ PS-06 Enhancement: Includes multi-locale sync and content diffing.
 from __future__ import annotations
 
 __all__ = [
-    "ZendeskKnowledgeSyncService",
-    "MultiLocaleSyncManager",
-    "LocaleConfig",
     "ContentDiffer",
     "IncrementalSyncDecider",
+    "LocaleConfig",
+    "MultiLocaleSyncManager",
+    "ZendeskKnowledgeSyncService",
 ]
 
 from .content_diff import ContentDiffer, IncrementalSyncDecider

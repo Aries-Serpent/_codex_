@@ -11,7 +11,6 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict
 
 import requests
 import yaml
@@ -199,7 +198,7 @@ class CacheMonitor:
             )
         return token
 
-    def get_cache_usage(self) -> Dict:
+    def get_cache_usage(self) -> dict:
         """Get cache usage statistics"""
         print("\n" + "=" * 70)
         print("CACHE USAGE ANALYSIS")
@@ -259,7 +258,7 @@ class CacheMonitor:
             print(f"❌ Error fetching cache data: {e}")
             return {}
 
-    def analyze_workflow_performance(self, days: int = 7) -> Dict:
+    def analyze_workflow_performance(self, days: int = 7) -> dict:
         """Analyze workflow performance over last N days"""
         print("\n" + "=" * 70)
         print(f"WORKFLOW PERFORMANCE (Last {days} days)")

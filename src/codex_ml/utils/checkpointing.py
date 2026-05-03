@@ -412,7 +412,7 @@ def _load_into_target(target: Any, state_dict: Mapping[str, Any], *, strict: boo
         loader(state_dict)
 
 
-def _snapshot_state(source: Union[Any, StateMapping, None]) -> Optional[dict[str, Any]]:
+def _snapshot_state(source: Any | StateMapping | None) -> Optional[dict[str, Any]]:
     if source is None:
         return None
     if isinstance(source, Mapping):
@@ -426,7 +426,7 @@ def _snapshot_state(source: Union[Any, StateMapping, None]) -> Optional[dict[str
 
 
 def load_checkpoint(
-    path: Union[str, Path],
+    path: str | Path,
     map_location: Optional[str] = "cpu",
     *,
     format: Optional[str] = None,
@@ -577,7 +577,7 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
                 try:
                     if torch.cuda.is_available():
                         cuda_version = torch.version.cuda
-                except Exception:  # noqa: BLE001 — CUDA version detection is best-effort
+                except Exception:
                     logger.debug("Suppressed exception in handler", exc_info=True)
             info["cuda"] = _safe_str_value(cuda_version)
         except Exception:
@@ -621,7 +621,7 @@ def _compute_file_checksum(path: Path) -> Optional[str]:
 
 
 def _capture_dataset_checksums(
-    dataset_paths: Optional[list[Union[str, Path]]] = None,
+    dataset_paths: Optional[list[str | Path]] = None,
 ) -> dict[str, str]:
     """Capture checksums of dataset files for reproducibility.
 
@@ -670,15 +670,15 @@ def _safe_environment_summary() -> dict[str, Any]:
 
 
 def save_checkpoint(
-    path: Union[str, Path],
+    path: str | Path,
     model: Optional[StateDictProvider],
-    optimizer: Union[Any, StateMapping, None],
-    scheduler: Union[Any, StateMapping, None],
+    optimizer: Any | StateMapping | None,
+    scheduler: Any | StateMapping | None,
     epoch: int,
     extra: Optional[Mapping[str, Any]] = None,
     *,
     format: Optional[str] = None,
-    dataset_paths: Optional[list[Union[str, Path]]] = None,
+    dataset_paths: Optional[list[str | Path]] = None,
 ) -> None:
     """Save a training checkpoint using ``torch`` when available, ``pickle`` otherwise.
 
@@ -780,7 +780,7 @@ def save_checkpoint(
 
 
 def load_training_checkpoint(
-    path: Union[str, Path],
+    path: str | Path,
     model: Optional[Any] = None,
     optimizer: Optional[Any] = None,
     scheduler: Optional[Any] = None,
@@ -1131,7 +1131,7 @@ def load_rng_state(state: dict[str, Any], *, prefer_resume: bool = True) -> None
 
 def set_seed(
     seed: int,
-    out_dir: Optional[Union[Path, str]] = None,
+    out_dir: Optional[Path | str] = None,
     *,
     deterministic: Optional[bool] = None,
 ) -> dict[str, int]:
@@ -1635,20 +1635,20 @@ class CheckpointManager:
 
 
 __all__ = [
-    "CheckpointManager",
     "CheckpointLoadError",
-    "save_checkpoint",
-    "save_ckpt",
-    "load_checkpoint",
-    "load_training_checkpoint",
-    "verify_ckpt_integrity",
-    "build_payload_bytes",
-    "load_payload",
-    "dump_rng_state",
-    "load_rng_state",
-    "set_seed",
+    "CheckpointManager",
+    "GradScalerStateDictProvider",
     "ModuleStateDictProvider",
     "OptimizerStateDictProvider",
     "SchedulerStateDictProvider",
-    "GradScalerStateDictProvider",
+    "build_payload_bytes",
+    "dump_rng_state",
+    "load_checkpoint",
+    "load_payload",
+    "load_rng_state",
+    "load_training_checkpoint",
+    "save_checkpoint",
+    "save_ckpt",
+    "set_seed",
+    "verify_ckpt_integrity",
 ]

@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Flag, auto
-from typing import List, Optional, Set
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,7 @@ class TokenScope(Flag):
         return scope_map[scope]
 
     @classmethod
-    def from_list(cls, scopes: List[str]) -> TokenScope:
+    def from_list(cls, scopes: list[str]) -> TokenScope:
         """Parse multiple scopes from list.
 
         Args:
@@ -159,7 +159,7 @@ class TokenScope(Flag):
             result |= cls.from_string(scope)
         return result
 
-    def to_strings(self) -> Set[str]:
+    def to_strings(self) -> set[str]:
         """Convert scope flags to string representation.
 
         Returns:
@@ -227,7 +227,7 @@ class ScopeValidator:
         >>> validator.require(TokenScope.WRITE_WORKFLOW)  # Raises InsufficientScopeError
     """
 
-    def __init__(self, token_scopes: List[str] | TokenScope):
+    def __init__(self, token_scopes: list[str] | TokenScope):
         """Initialize validator with token scopes.
 
         Args:
@@ -251,7 +251,7 @@ class ScopeValidator:
         """
         return self.scopes.has(required)
 
-    def has_any_scope(self, required_scopes: List[TokenScope]) -> bool:
+    def has_any_scope(self, required_scopes: list[TokenScope]) -> bool:
         """Check if token has any of the required scopes.
 
         Args:
@@ -280,7 +280,7 @@ class ScopeValidator:
                 f"Missing: {missing.to_strings()}"
             )
 
-    def require_any_scope(self, required_scopes: List[TokenScope]) -> None:
+    def require_any_scope(self, required_scopes: list[TokenScope]) -> None:
         """Require at least one of the specified scopes.
 
         Args:
@@ -324,7 +324,7 @@ class ScopeValidator:
             message=f"Missing scopes: {missing.to_strings()}",
         )
 
-    def get_granted_scopes(self) -> Set[str]:
+    def get_granted_scopes(self) -> set[str]:
         """Get set of granted scope strings.
 
         Returns:

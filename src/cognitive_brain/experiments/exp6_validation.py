@@ -16,7 +16,6 @@ import argparse
 import logging
 import sys
 from datetime import datetime, timezone
-from typing import Dict, List
 
 import numpy as np
 
@@ -44,7 +43,7 @@ TARGET_REDUNDANCY_REDUCTION = 0.40  # 40% reduction
 TARGET_CONSENSUS_LATENCY_MS = 20.0  # < 20ms
 
 
-def measure_multi_agent_correlation(agent_counts: List[int], trials: int = 50) -> Dict[str, float]:
+def measure_multi_agent_correlation(agent_counts: list[int], trials: int = 50) -> dict[str, float]:
     """
     Measure multi-agent correlation across different agent counts.
 
@@ -99,7 +98,7 @@ def measure_multi_agent_correlation(agent_counts: List[int], trials: int = 50) -
 
 def measure_decision_quality_improvement(
     num_scenarios: int = 100, num_agents: int = 4
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Measure decision quality improvement with multi-agent coordination.
 
@@ -167,7 +166,7 @@ def measure_decision_quality_improvement(
     return results
 
 
-def measure_redundancy_reduction(num_scenarios: int = 100, num_agents: int = 5) -> Dict[str, float]:
+def measure_redundancy_reduction(num_scenarios: int = 100, num_agents: int = 5) -> dict[str, float]:
     """
     Measure redundancy reduction through intelligent agent coordination.
 
@@ -212,7 +211,7 @@ def measure_redundancy_reduction(num_scenarios: int = 100, num_agents: int = 5) 
     return results
 
 
-def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dict[str, float]:
+def measure_consensus_latency(agent_counts: list[int], trials: int = 100) -> dict[str, float]:
     """
     Measure consensus decision latency.
 
@@ -270,11 +269,11 @@ def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dic
 
 
 def calculate_k1_impact(
-    correlation_results: Dict,
-    quality_results: Dict,
-    redundancy_results: Dict,
-    latency_results: Dict,
-) -> Dict[str, float]:
+    correlation_results: dict,
+    quality_results: dict,
+    redundancy_results: dict,
+    latency_results: dict,
+) -> dict[str, float]:
     """
     Calculate k₁ impact from Phase 8.2 multi-agent orchestration.
 
@@ -334,12 +333,12 @@ def calculate_k1_impact(
 
 
 def run_validation(
-    agent_counts: List[int] | None = None,
+    agent_counts: list[int] | None = None,
     num_scenarios: int = 100,
     num_agents: int = 4,
     correlation_trials: int = 50,
     latency_trials: int = 100,
-) -> Dict:
+) -> dict:
     """
     Run complete Phase 8.2 validation experiment.
 

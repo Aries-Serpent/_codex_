@@ -11,9 +11,10 @@ from __future__ import annotations
 
 import os
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Optional, TypeVar
+from typing import Optional, TypeVar
 
 T = TypeVar("T")
 

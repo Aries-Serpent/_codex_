@@ -24,10 +24,9 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import List
 
 
-def _run_command(cmd: List[str], description: str) -> int:
+def _run_command(cmd: list[str], description: str) -> int:
     """Run a command and return its exit code.
 
     Output streams in real-time (not buffered) for better user experience
@@ -42,7 +41,7 @@ def _run_command(cmd: List[str], description: str) -> int:
         return 1
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     """Main entry point for status audit command."""
     parser = argparse.ArgumentParser(
         description="Generate a comprehensive Codex status update audit report"

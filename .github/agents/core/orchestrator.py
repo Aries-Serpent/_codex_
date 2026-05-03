@@ -8,7 +8,7 @@ Enables complex multi-agent workflows with dependency management.
 import asyncio
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class TaskStatus(Enum):
@@ -26,11 +26,11 @@ class AgentTask:
     task_id: str
     agent_name: str
     task_type: str
-    parameters: Dict[str, Any]
-    dependencies: List[str]  # List of task_ids this depends on
+    parameters: dict[str, Any]
+    dependencies: list[str]  # List of task_ids this depends on
     priority: int = 5  # 1-10, 10 is highest
     status: TaskStatus = TaskStatus.PENDING
-    result: Optional[Dict[str, Any]] = None
+    result: Optional[dict[str, Any]] = None
     error: Optional[str] = None
 
 
@@ -54,7 +54,7 @@ class AgentOrchestrator:
         """
         self.max_parallel = max_parallel
         self.agents = {}
-        self.tasks: Dict[str, AgentTask] = {}
+        self.tasks: dict[str, AgentTask] = {}
 
     def register_agent(self, name: str, agent_instance):
         """
@@ -71,8 +71,8 @@ class AgentOrchestrator:
         task_id: str,
         agent_name: str,
         task_type: str,
-        parameters: Dict[str, Any],
-        dependencies: Optional[List[str]] = None,
+        parameters: dict[str, Any],
+        dependencies: Optional[list[str]] = None,
         priority: int = 5
     ) -> AgentTask:
         """
@@ -139,7 +139,7 @@ class AgentOrchestrator:
 
         return True
 
-    def _get_ready_tasks(self) -> List[AgentTask]:
+    def _get_ready_tasks(self) -> list[AgentTask]:
         """
         Get tasks ready for execution (all dependencies completed).
 
@@ -166,7 +166,7 @@ class AgentOrchestrator:
         ready.sort(key=lambda t: t.priority, reverse=True)
         return ready
 
-    async def _execute_task(self, task: AgentTask) -> Dict[str, Any]:
+    async def _execute_task(self, task: AgentTask) -> dict[str, Any]:
         """
         Execute a single task asynchronously.
 
@@ -202,7 +202,7 @@ class AgentOrchestrator:
             task.error = str(e)
             raise
 
-    async def execute_workflow(self) -> Dict[str, Any]:
+    async def execute_workflow(self) -> dict[str, Any]:
         """
         Execute the complete workflow with parallel execution.
 
@@ -276,7 +276,7 @@ class AgentOrchestrator:
             }
         }
 
-    def get_workflow_summary(self) -> Dict[str, Any]:
+    def get_workflow_summary(self) -> dict[str, Any]:
         """
         Get summary of workflow execution.
 

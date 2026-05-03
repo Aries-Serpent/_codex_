@@ -20,8 +20,8 @@ except Exception:  # pragma: no cover - gracefully degrade when peft unavailable
 __all__ = [
     "build_peft_config",
     "enable_peft",
-    "load_adapter_for_inference",
     "ensure_peft_available",
+    "load_adapter_for_inference",
 ]
 
 

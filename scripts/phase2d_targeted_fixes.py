@@ -8,7 +8,6 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Dict, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +54,7 @@ class TargetedLinkFixer:
             # Fallback to GitHub URL
             return f"https://github.com/Aries-Serpent/_codex_/blob/main/{target_path}"
 
-    def _fix_link(self, source_file: Path, link_url: str) -> Tuple[str, bool]:
+    def _fix_link(self, source_file: Path, link_url: str) -> tuple[str, bool]:
         """Attempt to fix a broken link, return (new_url, was_fixed)"""
         # Check if link references a relocated file
         for filename, correct_path in self.relocations.items():
@@ -126,7 +125,7 @@ class TargetedLinkFixer:
         example_indicators = ['example', 'placeholder', 'your-', 'sample']
         return bool(any(indicator in link_text.lower() for indicator in example_indicators))
 
-    def fix_file(self, file_path: Path) -> Dict:
+    def fix_file(self, file_path: Path) -> dict:
         """Fix broken links in a single file"""
         result = {
             'file': str(file_path.relative_to(self.repo_root)),
@@ -177,7 +176,7 @@ class TargetedLinkFixer:
 
         return result
 
-    def fix_repository(self) -> Dict:
+    def fix_repository(self) -> dict:
         """Fix broken links across repository"""
         results = []
 

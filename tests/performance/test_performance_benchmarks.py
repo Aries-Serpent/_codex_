@@ -15,7 +15,6 @@ from __future__ import annotations
 import statistics
 import time
 from datetime import UTC, datetime
-from typing import Dict
 
 import pytest
 
@@ -31,7 +30,7 @@ class PerformanceBenchmark:
     """Base class for performance benchmarks"""
 
     @staticmethod
-    def measure_latency(func, iterations: int = 100) -> Dict[str, float]:
+    def measure_latency(func, iterations: int = 100) -> dict[str, float]:
         """Measure function latency over multiple iterations"""
         latencies = []
 

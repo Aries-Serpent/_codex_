@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from fastapi import Body, FastAPI
 from pydantic import ValidationError
@@ -62,7 +62,7 @@ def _get_adapter() -> BackendAdapter:
 # Minimal JSON-RPC helper. Supports batching and parameter validation; maps validation errors to JSON-RPC -32602.  # noqa: E501
 async def handle_jsonrpc_request(
     payload: Any, adapter: BackendAdapter
-) -> Union[dict[str, Any], list[dict[str, Any]]]:
+) -> dict[str, Any] | list[dict[str, Any]]:
     if isinstance(payload, list):
         tasks = [asyncio.create_task(_dispatch_method(p, adapter)) for p in payload]
         return await asyncio.gather(*tasks)

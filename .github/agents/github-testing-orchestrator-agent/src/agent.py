@@ -12,7 +12,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 try:
     import yaml
@@ -36,7 +36,7 @@ class TestOrchestrator:
             "overall_status": "not_run"
         }
 
-    def _load_config(self, config_path: str) -> Dict:
+    def _load_config(self, config_path: str) -> dict:
         """Load configuration from YAML file."""
         config_file = Path(__file__).parent.parent / config_path
 
@@ -51,7 +51,7 @@ class TestOrchestrator:
         with open(config_file, 'r') as f:
             return yaml.safe_load(f)
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration."""
         return {
             "agent": {
@@ -72,7 +72,7 @@ class TestOrchestrator:
             }
         }
 
-    def run_e2e_sync_tests(self) -> Dict:
+    def run_e2e_sync_tests(self) -> dict:
         """Run end-to-end sync validation tests (HA-TEST-001)."""
         print("🔄 Running End-to-End Sync Tests...")
 
@@ -100,16 +100,16 @@ class TestOrchestrator:
             "target_latency_seconds": suite_config.get("target_latency_seconds", 300)
         }
 
-    def _test_trigger_workflow(self) -> Dict:
+    def _test_trigger_workflow(self) -> dict:
         """Test workflow triggering."""
         # In a real implementation, this would trigger the actual workflow
         return {"name": "trigger_workflow", "status": "passed", "message": "Workflow triggered successfully"}
 
-    def _test_monitor_execution(self) -> Dict:
+    def _test_monitor_execution(self) -> dict:
         """Test workflow execution monitoring."""
         return {"name": "monitor_execution", "status": "passed", "message": "Workflow execution monitored"}
 
-    def _test_validate_xml_bundle(self) -> Dict:
+    def _test_validate_xml_bundle(self) -> dict:
         """Test XML bundle validation."""
         # Check if repomix.config.json exists
         config_path = Path(__file__).parent.parent.parent.parent.parent / "repomix.config.json"
@@ -117,15 +117,15 @@ class TestOrchestrator:
             return {"name": "validate_xml_bundle", "status": "passed", "message": "XML bundle configuration valid"}
         return {"name": "validate_xml_bundle", "status": "skipped", "message": "Configuration not found"}
 
-    def _test_check_drive_upload(self) -> Dict:
+    def _test_check_drive_upload(self) -> dict:
         """Test Google Drive upload."""
         return {"name": "check_drive_upload", "status": "skipped", "message": "Requires Google Cloud setup"}
 
-    def _test_verify_notebooklm_index(self) -> Dict:
+    def _test_verify_notebooklm_index(self) -> dict:
         """Test NotebookLM indexing."""
         return {"name": "verify_notebooklm_index", "status": "skipped", "message": "Requires NotebookLM setup"}
 
-    def run_security_scan_tests(self) -> Dict:
+    def run_security_scan_tests(self) -> dict:
         """Run security scanning verification tests (HA-TEST-002)."""
         print("🔐 Running Security Scan Tests...")
 
@@ -158,7 +158,7 @@ class TestOrchestrator:
         except FileNotFoundError:
             return False
 
-    def run_ai_architect_tests(self) -> Dict:
+    def run_ai_architect_tests(self) -> dict:
         """Run AI Architect testing (HA-TEST-003)."""
         print("🤖 Running AI Architect Tests...")
 
@@ -179,7 +179,7 @@ class TestOrchestrator:
             "duration_seconds": int(time.time() - start_time)
         }
 
-    def run_performance_tests(self) -> Dict:
+    def run_performance_tests(self) -> dict:
         """Run performance benchmarking (HA-TEST-004)."""
         print("⚡ Running Performance Tests...")
 
@@ -206,7 +206,7 @@ class TestOrchestrator:
             "max_consolidation_time_seconds": suite_config.get("max_consolidation_time_seconds", 120)
         }
 
-    def run_error_handling_tests(self) -> Dict:
+    def run_error_handling_tests(self) -> dict:
         """Run error handling validation (HA-TEST-005)."""
         print("🛡️ Running Error Handling Tests...")
 
@@ -226,7 +226,7 @@ class TestOrchestrator:
             "duration_seconds": int(time.time() - start_time)
         }
 
-    def run_documentation_tests(self) -> Dict:
+    def run_documentation_tests(self) -> dict:
         """Run documentation accuracy tests (HA-TEST-006)."""
         print("📚 Running Documentation Tests...")
 
@@ -254,7 +254,7 @@ class TestOrchestrator:
             "duration_seconds": int(time.time() - start_time)
         }
 
-    def run_all_suites(self) -> Dict:
+    def run_all_suites(self) -> dict:
         """Run all enabled test suites."""
         print(f"\n🤖 GitHub Testing Orchestrator Agent v{self.version}")
         print("=" * 70)

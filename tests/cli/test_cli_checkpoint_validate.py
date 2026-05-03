@@ -15,10 +15,10 @@ pytest.importorskip("typer")
 
 
 typer = pytest.importorskip("typer", reason="typer not installed")
-from typer.testing import CliRunner  # type: ignore  # noqa: E402
+from typer.testing import CliRunner  # type: ignore
 
-from codex_ml.cli import checkpoint_validate  # noqa: E402
-from codex_ml.utils import checkpoint_core  # noqa: E402
+from codex_ml.cli import checkpoint_validate
+from codex_ml.utils import checkpoint_core
 
 
 def _write_checkpoint(tmp_path: Path) -> Path:

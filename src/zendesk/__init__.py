@@ -11,10 +11,10 @@ from .json_generator import (
 )
 
 __all__ = [
+    "PLACEHOLDER_PATTERN",
+    "ScriptTemplate",
+    "TemplateVariable",
     "ZendeskAPIClient",
     "ZendeskConfig",
     "ZendeskJSONGenerator",
-    "ScriptTemplate",
-    "TemplateVariable",
-    "PLACEHOLDER_PATTERN",
 ]

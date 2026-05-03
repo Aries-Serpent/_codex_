@@ -20,12 +20,11 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Streaming JSONL reader utilities."""
 
 
 import json  # noqa: E402
+from collections.abc import Iterator, Mapping, MutableMapping  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Iterator, Mapping, MutableMapping  # noqa: E402
 
 __all__ = ["iter_jsonl"]
 

@@ -27,13 +27,14 @@ import json
 import subprocess
 import sys
 import textwrap
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple, cast
+from typing import Optional, cast
 
 VERSION = "1.2.0"
 
 
-def _run(cmd: List[str]) -> Tuple[int, str, str]:
+def _run(cmd: list[str]) -> tuple[int, str, str]:
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     out, err = p.communicate()
     return p.returncode, out, err
@@ -60,7 +61,7 @@ def _ensure_parent(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
 
-def _scan_repo(root: Path) -> Dict[str, object]:
+def _scan_repo(root: Path) -> dict[str, object]:
     """Lightweight, local-only repo scan for top-level signals."""
     entries = sorted([p for p in root.iterdir() if not p.name.startswith(".")])
     top_dirs = [p.name for p in entries if p.is_dir()]
@@ -81,7 +82,7 @@ def _scan_repo(root: Path) -> Dict[str, object]:
     return {"top_dirs": top_dirs, "key_files": key_files}
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Generate a local STATUS_REPORT.md")
     ap.add_argument("--summary", help="Path to assistant summary JSON (optional)")
     ap.add_argument("--selected", type=int, help="Chosen candidate id 1..4 (optional)")
@@ -111,12 +112,12 @@ def main(argv: List[str] | None = None) -> int:
 
     generated_at = _stamp()
 
-    sections: List[str] = []
+    sections: list[str] = []
     header = f"# Status Report — _codex_ (v{VERSION})  \nGenerated: {generated_at}\n"
     sections.append(header)
     sections.append("## Gates Summary")
 
-    gate_results: List[Tuple[str, str]] = []
+    gate_results: list[tuple[str, str]] = []
 
     # 1) Fence integrity
     cmd_f = [sys.executable, "tools/validate_fences.py"]
@@ -243,9 +244,9 @@ def main(argv: List[str] | None = None) -> int:
         template_path = Path(args.template)
         template_text = template_path.read_text(encoding="utf-8")
         repo_info = _scan_repo(Path.cwd())
-        top_dirs = cast(List[str], repo_info.get("top_dirs", []))
-        key_files = cast(Dict[str, bool], repo_info.get("key_files", {}))
-        repo_map_lines: List[str] = []
+        top_dirs = cast(list[str], repo_info.get("top_dirs", []))
+        key_files = cast(dict[str, bool], repo_info.get("key_files", {}))
+        repo_map_lines: list[str] = []
         if top_dirs:
             repo_map_lines.append("### Top-level directories")
             repo_map_lines.append(_md_bullets(top_dirs))

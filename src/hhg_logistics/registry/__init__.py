@@ -27,7 +27,7 @@ from typing import Any
 from common.registry import DATASETS, METRICS, MODELS
 from hhg_logistics.model.peft_utils import load_hf_llm
 
-__all__ = ["register_tiny_model", "register_features_csv", "register_mean_value"]
+__all__ = ["register_features_csv", "register_mean_value", "register_tiny_model"]
 
 try:  # pragma: no cover - optional dependency
     import pandas as pd

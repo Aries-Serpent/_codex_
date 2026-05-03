@@ -10,7 +10,7 @@ import shlex
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +44,8 @@ class RemediationAction:
     confidence: float
     description: str
     automated_fix: Optional[str] = None
-    manual_steps: Optional[List[str]] = None
-    files_to_modify: Optional[List[str]] = None
+    manual_steps: Optional[list[str]] = None
+    files_to_modify: Optional[list[str]] = None
     approval_required: bool = True
     estimated_resolution_time_minutes: int = 30
 
@@ -61,7 +61,7 @@ class RemediationAction:
         else:
             self.approval_required = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "action_id": self.action_id,
@@ -116,7 +116,7 @@ class RemediationEngine:
         """
         self.repo_root = repo_root
         self.dry_run = dry_run
-        self.actions: List[RemediationAction] = []
+        self.actions: list[RemediationAction] = []
 
     def _validate_command(self, cmd_string: str) -> bool:
         """
@@ -158,10 +158,10 @@ class RemediationEngine:
         self,
         failure_type: str,
         root_cause: str,
-        detected_issues: List[Dict[str, Any]],
-        suggested_actions: List[Dict[str, Any]],
+        detected_issues: list[dict[str, Any]],
+        suggested_actions: list[dict[str, Any]],
         confidence: float = 0.5,
-    ) -> List[RemediationAction]:
+    ) -> list[RemediationAction]:
         """
         Generate remediation actions for a failure.
 
@@ -212,9 +212,9 @@ class RemediationEngine:
     def _generate_test_failure_remediations(
         self,
         root_cause: str,
-        detected_issues: List[Dict[str, Any]],
+        detected_issues: list[dict[str, Any]],
         confidence: float,
-    ) -> List[RemediationAction]:
+    ) -> list[RemediationAction]:
         """Generate remediations for test failures."""
         actions = []
 
@@ -250,9 +250,9 @@ class RemediationEngine:
     def _generate_import_error_remediations(
         self,
         root_cause: str,
-        detected_issues: List[Dict[str, Any]],
+        detected_issues: list[dict[str, Any]],
         confidence: float,
-    ) -> List[RemediationAction]:
+    ) -> list[RemediationAction]:
         """Generate remediations for import errors."""
         actions = []
 
@@ -281,9 +281,9 @@ class RemediationEngine:
     def _generate_build_failure_remediations(
         self,
         root_cause: str,
-        detected_issues: List[Dict[str, Any]],
+        detected_issues: list[dict[str, Any]],
         confidence: float,
-    ) -> List[RemediationAction]:
+    ) -> list[RemediationAction]:
         """Generate remediations for build failures."""
         actions = []
 
@@ -307,9 +307,9 @@ class RemediationEngine:
     def _generate_lint_error_remediations(
         self,
         root_cause: str,
-        detected_issues: List[Dict[str, Any]],
+        detected_issues: list[dict[str, Any]],
         confidence: float,
-    ) -> List[RemediationAction]:
+    ) -> list[RemediationAction]:
         """Generate remediations for lint errors."""
         actions = []
 
@@ -356,7 +356,7 @@ class RemediationEngine:
 
     def _convert_suggested_action(
         self,
-        suggested: Dict[str, Any],
+        suggested: dict[str, Any],
         confidence: float,
     ) -> Optional[RemediationAction]:
         """Convert suggested action to RemediationAction."""
@@ -415,7 +415,7 @@ class RemediationEngine:
         # Medium risk: everything else
         return RiskLevel.MEDIUM
 
-    def filter_by_risk(self, risk_level: RiskLevel) -> List[RemediationAction]:
+    def filter_by_risk(self, risk_level: RiskLevel) -> list[RemediationAction]:
         """
         Filter actions by risk level.
 
@@ -427,7 +427,7 @@ class RemediationEngine:
         """
         return [a for a in self.actions if a.risk_level == risk_level]
 
-    def apply_action(self, action: RemediationAction) -> Dict[str, Any]:
+    def apply_action(self, action: RemediationAction) -> dict[str, Any]:
         """
         Apply a remediation action.
 
@@ -485,7 +485,7 @@ class RemediationEngine:
             logger.error(f"Failed to apply action {action.action_id}: {e}")
             return {"success": False, "error": str(e), "action_id": action.action_id}
 
-    def generate_report(self) -> Dict[str, Any]:
+    def generate_report(self) -> dict[str, Any]:
         """
         Generate remediation report.
 

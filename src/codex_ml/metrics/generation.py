@@ -9,7 +9,7 @@ Generated: 2025-11-19 04:20:17
 from __future__ import annotations
 
 import math
-from typing import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 
 
 def _tokenize(s: str) -> list[str]:

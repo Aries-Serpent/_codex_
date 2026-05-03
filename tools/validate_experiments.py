@@ -16,7 +16,6 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import List
 
 try:
     import jsonschema
@@ -58,7 +57,7 @@ def validate(schema, config, path: Path):
         return False, f"{path}: {e}"
 
 
-def discover(paths: List[Path]) -> List[Path]:
+def discover(paths: list[Path]) -> list[Path]:
     """
     Discover config files, excluding schema files.
     Skips files named like 'schema*.json', '*.schema.json', or in 'schemas/' directories.

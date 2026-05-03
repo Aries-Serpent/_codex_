@@ -14,7 +14,7 @@ import asyncio
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Configure logging
 logging.basicConfig(
@@ -29,10 +29,10 @@ class IntegratedSystemTester:
 
     def __init__(self):
         """Initialize tester."""
-        self.test_results: List[Dict[str, Any]] = []
+        self.test_results: list[dict[str, Any]] = []
         self.repo_path = Path(".")
 
-    async def run_all_tests(self) -> Dict[str, Any]:
+    async def run_all_tests(self) -> dict[str, Any]:
         """Run all integration tests."""
         logger.info("🚀 Starting Integrated System Tests")
 
@@ -90,7 +90,7 @@ class IntegratedSystemTester:
 
         return results
 
-    async def test_pattern_extraction(self) -> Dict[str, Any]:
+    async def test_pattern_extraction(self) -> dict[str, Any]:
         """Test pattern extraction from repository."""
         try:
             from quantum_correlator import QuantumPatternCorrelator
@@ -126,7 +126,7 @@ class IntegratedSystemTester:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_pattern_correlation(self) -> Dict[str, Any]:
+    async def test_pattern_correlation(self) -> dict[str, Any]:
         """Test pattern correlation across domains."""
         try:
             from quantum_correlator import QuantumPatternCorrelator
@@ -164,7 +164,7 @@ class IntegratedSystemTester:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_knowledge_gap_detection(self) -> Dict[str, Any]:
+    async def test_knowledge_gap_detection(self) -> dict[str, Any]:
         """Test knowledge gap detection."""
         try:
             from integrated_system import IntegratedEvolutionSystem
@@ -207,7 +207,7 @@ class IntegratedSystemTester:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_question_generation(self) -> Dict[str, Any]:
+    async def test_question_generation(self) -> dict[str, Any]:
         """Test intelligent question generation."""
         try:
             from integrated_system import IntegratedEvolutionSystem
@@ -241,7 +241,7 @@ class IntegratedSystemTester:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_knowledge_integration(self) -> Dict[str, Any]:
+    async def test_knowledge_integration(self) -> dict[str, Any]:
         """Test knowledge integration from human input."""
         try:
             from integrated_system import IntegratedEvolutionSystem
@@ -280,7 +280,7 @@ class IntegratedSystemTester:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_evolution_cycle(self) -> Dict[str, Any]:
+    async def test_evolution_cycle(self) -> dict[str, Any]:
         """Test full evolution cycle."""
         try:
             from integrated_system import IntegratedEvolutionSystem
@@ -328,7 +328,7 @@ class IntegratedSystemTester:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_security_scenario(self) -> Dict[str, Any]:
+    async def test_security_scenario(self) -> dict[str, Any]:
         """Test real-world security vulnerability scenario."""
         try:
             from integrated_system import IntegratedEvolutionSystem
@@ -390,7 +390,7 @@ class IntegratedSystemTester:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    def save_results(self, results: Dict[str, Any], output_file: str = "test_results.json"):
+    def save_results(self, results: dict[str, Any], output_file: str = "test_results.json"):
         """Save test results to file."""
         output_path = Path("data") / output_file
         output_path.parent.mkdir(parents=True, exist_ok=True)

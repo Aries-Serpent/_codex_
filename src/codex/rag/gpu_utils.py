@@ -5,7 +5,6 @@ Provides GPU detection, memory management, and automatic CPU/GPU fallback.
 """
 
 import logging
-from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ def check_cuda_available() -> bool:
         return False
 
 
-def get_gpu_memory() -> Tuple[int, int]:
+def get_gpu_memory() -> tuple[int, int]:
     """
     Get GPU memory (free, total) in bytes.
 

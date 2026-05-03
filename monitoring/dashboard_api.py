@@ -3,7 +3,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,7 +51,7 @@ async def health_check():
 
 
 @app.get("/api/metrics/ci")
-async def get_ci_metrics() -> Dict[str, Any]:
+async def get_ci_metrics() -> dict[str, Any]:
     """Get current CI/CD metrics."""
     # In production, would query from InfluxDB or Prometheus
     metrics_dir = Path("metrics_data")
@@ -75,7 +75,7 @@ async def get_ci_metrics() -> Dict[str, Any]:
 
 
 @app.get("/api/metrics/security")
-async def get_security_metrics() -> Dict[str, Any]:
+async def get_security_metrics() -> dict[str, Any]:
     """Get current security metrics."""
     metrics_dir = Path("metrics_data")
 
@@ -103,7 +103,7 @@ async def get_security_metrics() -> Dict[str, Any]:
 
 
 @app.get("/api/metrics/agents")
-async def get_agent_metrics() -> Dict[str, Any]:
+async def get_agent_metrics() -> dict[str, Any]:
     """Get custom agent performance metrics."""
     metrics_dir = Path("metrics_data")
 
@@ -124,7 +124,7 @@ async def get_agent_metrics() -> Dict[str, Any]:
 
 
 @app.get("/api/alerts")
-async def get_alerts() -> Dict[str, Any]:
+async def get_alerts() -> dict[str, Any]:
     """Get active and recent alerts."""
     return {
         "active_alerts": [],
@@ -135,7 +135,7 @@ async def get_alerts() -> Dict[str, Any]:
 
 
 @app.get("/api/metrics/history/ci")
-async def get_ci_history(hours: int = 24) -> List[Dict[str, Any]]:
+async def get_ci_history(hours: int = 24) -> list[dict[str, Any]]:
     """Get historical CI metrics."""
     # Would query time-series database
     # For now, return empty or load from files
@@ -143,7 +143,7 @@ async def get_ci_history(hours: int = 24) -> List[Dict[str, Any]]:
 
 
 @app.get("/api/metrics/history/security")
-async def get_security_history(hours: int = 24) -> List[Dict[str, Any]]:
+async def get_security_history(hours: int = 24) -> list[dict[str, Any]]:
     """Get historical security metrics."""
     # Would query time-series database
     return []

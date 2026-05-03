@@ -13,7 +13,7 @@ import hashlib
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class ContextDistiller:
 
     def __init__(
         self,
-        src_dirs: Optional[List[Path]] = None,
+        src_dirs: Optional[list[Path]] = None,
         max_tokens: int = 100000,
         output_path: Optional[Path] = None,
     ):
@@ -70,7 +70,7 @@ class ContextDistiller:
 
         logger.info(f"ContextDistiller initialized: max_tokens={max_tokens}")
 
-    def scan_codebase(self) -> Dict[str, List[Path]]:
+    def scan_codebase(self) -> dict[str, list[Path]]:
         """
         Scan codebase for relevant files.
 
@@ -129,7 +129,7 @@ class ContextDistiller:
         path_str = str(file_path)
         return any(pattern in path_str for pattern in ignore_patterns)
 
-    def extract_code_structure(self, file_path: Path) -> Dict[str, Any]:
+    def extract_code_structure(self, file_path: Path) -> dict[str, Any]:
         """
         Extract high-level structure from code file.
 

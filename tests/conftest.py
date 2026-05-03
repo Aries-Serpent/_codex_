@@ -1097,7 +1097,7 @@ def _restore_torch_tensor():
     torch.Tensor with a fake class; restores the original after every test.
     """
     try:
-        import sys as _sys  # noqa: PLC0415
+        import sys as _sys
 
         _torch = _sys.modules.get(
             "torch"
@@ -1125,7 +1125,7 @@ def _isolate_rng_state():
     Methodology report Fix 3: prevents RNG state leakage between tests that
     call set_seed/set_reproducible, ensuring repeatable results.
     """
-    import random as _random  # noqa: PLC0415
+    import random as _random
 
     py_state = _random.getstate()
 
@@ -1301,9 +1301,9 @@ def set_deterministic_seed():
 # ============================================================================
 
 import contextlib
-import tempfile  # noqa: E402
-from pathlib import Path  # noqa: E402,F811
-from typing import Generator  # noqa: E402
+import tempfile
+from collections.abc import Generator
+from pathlib import Path
 
 
 @pytest.fixture
@@ -1811,7 +1811,7 @@ def session_resource_manager():
                 warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
         else:
             logger.info("✓ No resource leaks detected at session end")
-    except Exception:  # Best-effort cleanup; psutil may not be available  # noqa: BLE001
+    except Exception:  # Best-effort cleanup; psutil may not be available
         pass
 
 
@@ -1863,7 +1863,7 @@ def protect_stderr():
             sys.stderr = original_stderr
         if sys.stdout is not original_stdout:
             sys.stdout = original_stdout
-    except Exception:  # noqa: BLE001
+    except Exception:
         # Force restore on any error
         sys.stderr = original_stderr
         sys.stdout = original_stdout
@@ -1920,7 +1920,7 @@ def force_file_cleanup():
             close_method = getattr(obj, "close", None)
             closed_attr = getattr(obj, "closed", None)
             name_attr = getattr(obj, "name", None)
-        except Exception:  # noqa: BLE001
+        except Exception:
             continue  # Skip objects with unsafe attribute access
 
         try:
@@ -1938,7 +1938,7 @@ def force_file_cleanup():
                     # It's an open file object (not stdin/stdout/stderr which have int names)
                     try:
                         close_method()
-                    except Exception:  # noqa: BLE001
+                    except Exception:
                         pass  # Already closed or not closeable
         except (ReferenceError, AttributeError):
             pass  # Object was garbage collected during iteration
@@ -1996,7 +1996,7 @@ def pytest_runtest_protocol(item, nextitem):
                 f"+{after_memory - before_memory:.1f}MB)",
                 ResourceWarning,
             )
-    except Exception:  # psutil optional; skip leak check if unavailable  # noqa: BLE001
+    except Exception:  # psutil optional; skip leak check if unavailable
         pass
 
 
@@ -2085,7 +2085,7 @@ def _end_active_mlflow_runs():
             mlflow.end_run()
     except ImportError:
         pass  # MLflow not installed — nothing to clean up
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
         )
@@ -2099,7 +2099,7 @@ def _end_active_mlflow_runs():
             mlflow.end_run()
     except ImportError:
         pass  # MLflow not installed — nothing to clean up
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (post-test): unexpected error: %s", exc
         )

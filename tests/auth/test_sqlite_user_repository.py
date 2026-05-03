@@ -181,7 +181,7 @@ class TestSQLiteUserRepositoryThreadSafety:
                     password_hash="s:h",
                 )
                 repo.create(user)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 errors.append(exc)
 
         threads = [threading.Thread(target=worker, args=(i,)) for i in range(20)]
@@ -209,14 +209,14 @@ class TestSQLiteUserRepositoryThreadSafety:
                     password_hash="s:h",
                 )
                 repo.create(user)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 errors.append(exc)
 
         def reader() -> None:
             try:
                 repo.list_all()
                 repo.get_by_username("seed")
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 errors.append(exc)
 
         threads = (

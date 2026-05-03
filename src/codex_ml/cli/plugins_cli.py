@@ -20,12 +20,12 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""CLI utilities for inspecting plugin registries."""
 
 
 import inspect
 import sys
-from typing import Optional, Sequence
+from collections.abc import Sequence
+from typing import Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

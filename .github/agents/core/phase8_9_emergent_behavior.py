@@ -27,10 +27,11 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 import hashlib
 import random
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 # =============================================================================
 # CONSTANTS FOR PHASE 8.9
@@ -108,7 +109,7 @@ class EmergentPattern:
     first_observed: datetime = field(default_factory=datetime.now)
     last_observed: datetime = field(default_factory=datetime.now)
     observation_count: int = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate pattern metrics."""
@@ -127,8 +128,8 @@ class TemporalSnapshot:
         metrics: Observed metrics
     """
     timestamp: datetime
-    state: Dict[str, Any]
-    metrics: Dict[str, float] = field(default_factory=dict)
+    state: dict[str, Any]
+    metrics: dict[str, float] = field(default_factory=dict)
 
 
 class EmergentPatternDetector:
@@ -164,9 +165,9 @@ class EmergentPatternDetector:
         self.seed = seed
 
         # State tracking
-        self.detected_patterns: Dict[str, EmergentPattern] = {}
+        self.detected_patterns: dict[str, EmergentPattern] = {}
         self.temporal_history: deque = deque(maxlen=stability_window * 2)
-        self.pattern_signatures: Set[str] = set()
+        self.pattern_signatures: set[str] = set()
 
         # Metrics
         self.total_observations = 0
@@ -175,7 +176,7 @@ class EmergentPatternDetector:
         # Set random seed
         random.seed(seed)
 
-    def observe(self, state: Dict[str, Any], metrics: Optional[Dict[str, float]] = None) -> List[EmergentPattern]:
+    def observe(self, state: dict[str, Any], metrics: Optional[dict[str, float]] = None) -> list[EmergentPattern]:
         """Observe system state and detect emergent patterns.
 
         Args:
@@ -231,7 +232,7 @@ class EmergentPatternDetector:
 
         return detected
 
-    def _detect_behavioral_patterns(self) -> List[EmergentPattern]:
+    def _detect_behavioral_patterns(self) -> list[EmergentPattern]:
         """Detect behavioral patterns in recent history."""
         patterns = []
 
@@ -265,7 +266,7 @@ class EmergentPatternDetector:
 
         return patterns
 
-    def _detect_structural_patterns(self, state: Dict[str, Any]) -> List[EmergentPattern]:
+    def _detect_structural_patterns(self, state: dict[str, Any]) -> list[EmergentPattern]:
         """Detect structural patterns in state."""
         patterns = []
 
@@ -290,7 +291,7 @@ class EmergentPatternDetector:
 
         return patterns
 
-    def _detect_temporal_patterns(self) -> List[EmergentPattern]:
+    def _detect_temporal_patterns(self) -> list[EmergentPattern]:
         """Detect temporal patterns in history."""
         patterns = []
 
@@ -315,7 +316,7 @@ class EmergentPatternDetector:
 
         return patterns
 
-    def _detect_relational_patterns(self, state: Dict[str, Any]) -> List[EmergentPattern]:
+    def _detect_relational_patterns(self, state: dict[str, Any]) -> list[EmergentPattern]:
         """Detect relational patterns between components."""
         patterns = []
 
@@ -344,7 +345,7 @@ class EmergentPatternDetector:
 
         return patterns
 
-    def _has_hierarchical_structure(self, state: Dict[str, Any]) -> bool:
+    def _has_hierarchical_structure(self, state: dict[str, Any]) -> bool:
         """Check if state has hierarchical structure."""
         for value in state.values():
             if isinstance(value, dict) and len(value) > 0:
@@ -386,7 +387,7 @@ class EmergentPatternDetector:
         """Compute unique signature for pattern."""
         return hashlib.md5(pattern_id.encode(), usedforsecurity=False).hexdigest()[:16]  # nosec B324 - Not for security, signature generation only
 
-    def get_patterns(self, pattern_type: Optional[PatternType] = None) -> List[EmergentPattern]:
+    def get_patterns(self, pattern_type: Optional[PatternType] = None) -> list[EmergentPattern]:
         """Get detected patterns, optionally filtered by type.
 
         Args:
@@ -400,7 +401,7 @@ class EmergentPatternDetector:
             patterns = [p for p in patterns if p.pattern_type == pattern_type]
         return patterns
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get detector metrics.
 
         Returns:
@@ -434,7 +435,7 @@ class PerformanceBaseline:
     """
     metric_name: str
     baseline_value: float
-    samples: List[float] = field(default_factory=list)
+    samples: list[float] = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
 
 
@@ -453,7 +454,7 @@ class ImprovementAction:
     action_id: str
     action_type: str
     description: str
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict[str, Any] = field(default_factory=dict)
     applied_at: datetime = field(default_factory=datetime.now)
     rolled_back: bool = False
 
@@ -491,9 +492,9 @@ class SelfImprovementEngine:
         self.seed = seed
 
         # State
-        self.baselines: Dict[str, PerformanceBaseline] = {}
-        self.actions: List[ImprovementAction] = []
-        self.active_actions: List[ImprovementAction] = []
+        self.baselines: dict[str, PerformanceBaseline] = {}
+        self.actions: list[ImprovementAction] = []
+        self.active_actions: list[ImprovementAction] = []
 
         # Metrics
         self.improvements_applied = 0
@@ -501,7 +502,7 @@ class SelfImprovementEngine:
 
         random.seed(seed)
 
-    def establish_baseline(self, metric_name: str, samples: List[float]) -> PerformanceBaseline:
+    def establish_baseline(self, metric_name: str, samples: list[float]) -> PerformanceBaseline:
         """Establish performance baseline for a metric.
 
         Args:
@@ -546,7 +547,7 @@ class SelfImprovementEngine:
         self,
         action_type: str,
         description: str,
-        parameters: Optional[Dict[str, Any]] = None,
+        parameters: Optional[dict[str, Any]] = None,
     ) -> ImprovementAction:
         """Apply an improvement action.
 
@@ -625,7 +626,7 @@ class SelfImprovementEngine:
                 baseline.samples = baseline.samples[-self.baseline_history_size:]
             baseline.baseline_value = sum(baseline.samples) / len(baseline.samples)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get engine metrics.
 
         Returns:
@@ -675,8 +676,8 @@ class Capability:
     description: str
     complexity: float = 0.0
     utility: float = 0.0
-    prerequisites: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    prerequisites: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate capability metrics."""
@@ -692,8 +693,8 @@ class CapabilityTaxonomy:
         levels: Capabilities organized by taxonomy level
         relationships: Parent-child relationships
     """
-    levels: Dict[int, List[Capability]] = field(default_factory=dict)
-    relationships: Dict[str, List[str]] = field(default_factory=dict)
+    levels: dict[int, list[Capability]] = field(default_factory=dict)
+    relationships: dict[str, list[str]] = field(default_factory=dict)
 
 
 class CapabilityDiscoverer:
@@ -726,9 +727,9 @@ class CapabilityDiscoverer:
         self.seed = seed
 
         # State
-        self.discovered_capabilities: Dict[str, Capability] = {}
+        self.discovered_capabilities: dict[str, Capability] = {}
         self.taxonomy = CapabilityTaxonomy()
-        self.combination_cache: Dict[Tuple[str, str], Optional[str]] = {}
+        self.combination_cache: dict[tuple[str, str], Optional[str]] = {}
 
         # Metrics
         self.discoveries_made = 0
@@ -737,7 +738,7 @@ class CapabilityDiscoverer:
 
         random.seed(seed)
 
-    def discover_capabilities(self, context: Dict[str, Any]) -> List[Capability]:
+    def discover_capabilities(self, context: dict[str, Any]) -> list[Capability]:
         """Discover capabilities in given context.
 
         Args:
@@ -978,7 +979,7 @@ class CapabilityDiscoverer:
             if level_caps:
                 self.taxonomy.levels[level] = level_caps
 
-    def get_capabilities(self, capability_type: Optional[CapabilityType] = None) -> List[Capability]:
+    def get_capabilities(self, capability_type: Optional[CapabilityType] = None) -> list[Capability]:
         """Get discovered capabilities, optionally filtered by type.
 
         Args:
@@ -992,7 +993,7 @@ class CapabilityDiscoverer:
             caps = [c for c in caps if c.capability_type == capability_type]
         return caps
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get discoverer metrics.
 
         Returns:
@@ -1027,8 +1028,8 @@ class LearningStrategy:
     strategy_id: str
     name: str
     description: str
-    parameters: Dict[str, Any] = field(default_factory=dict)
-    performance: List[float] = field(default_factory=list)
+    parameters: dict[str, Any] = field(default_factory=dict)
+    performance: list[float] = field(default_factory=list)
     generation: int = 0
 
 
@@ -1043,7 +1044,7 @@ class MetaStrategy:
         adaptation_rate: Rate of strategy adaptation
     """
     meta_strategy_id: str
-    base_strategies: List[str] = field(default_factory=list)
+    base_strategies: list[str] = field(default_factory=list)
     combination_rule: str = "weighted_average"
     adaptation_rate: float = 0.1
 
@@ -1080,9 +1081,9 @@ class MetaMetaLearner:
         self.seed = seed
 
         # State
-        self.strategies: Dict[str, LearningStrategy] = {}
-        self.meta_strategies: Dict[str, MetaStrategy] = {}
-        self.strategy_evolution_history: List[List[str]] = []
+        self.strategies: dict[str, LearningStrategy] = {}
+        self.meta_strategies: dict[str, MetaStrategy] = {}
+        self.strategy_evolution_history: list[list[str]] = []
 
         # Metrics
         self.total_learning_iterations = 0
@@ -1092,7 +1093,7 @@ class MetaMetaLearner:
 
     def meta_meta_learn(
         self,
-        task: Dict[str, Any],
+        task: dict[str, Any],
         meta_strategy: Optional[MetaStrategy] = None,
     ) -> LearningStrategy:
         """Perform meta-meta-learning on task.
@@ -1133,7 +1134,7 @@ class MetaMetaLearner:
 
         return evolved_strategy
 
-    def _base_learn(self, task: Dict[str, Any]) -> LearningStrategy:
+    def _base_learn(self, task: dict[str, Any]) -> LearningStrategy:
         """Base-level learning (L¹).
 
         Args:
@@ -1160,7 +1161,7 @@ class MetaMetaLearner:
 
     def _meta_learn(
         self,
-        task: Dict[str, Any],
+        task: dict[str, Any],
         base_strategy: LearningStrategy,
     ) -> LearningStrategy:
         """Meta-learning (L²): Learn how to learn.
@@ -1196,7 +1197,7 @@ class MetaMetaLearner:
 
     def _meta_meta_learn_internal(
         self,
-        task: Dict[str, Any],
+        task: dict[str, Any],
         meta_strategy: LearningStrategy,
         meta_meta_strategy: MetaStrategy,
     ) -> LearningStrategy:
@@ -1284,7 +1285,7 @@ class MetaMetaLearner:
         )
         return strategies[0]
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get learner metrics.
 
         Returns:
@@ -1356,8 +1357,8 @@ class Plan:
     """
     plan_id: str
     goal: Goal
-    subgoals: List[Subgoal] = field(default_factory=list)
-    execution_order: List[str] = field(default_factory=list)
+    subgoals: list[Subgoal] = field(default_factory=list)
+    execution_order: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -1373,8 +1374,8 @@ class ExecutionResult:
     """
     plan_id: str
     success: bool
-    completed_subgoals: List[str] = field(default_factory=list)
-    failed_subgoals: List[str] = field(default_factory=list)
+    completed_subgoals: list[str] = field(default_factory=list)
+    failed_subgoals: list[str] = field(default_factory=list)
     execution_time: float = 0.0
 
 
@@ -1408,9 +1409,9 @@ class HierarchicalPlanner:
         self.seed = seed
 
         # State
-        self.goals: Dict[str, Goal] = {}
-        self.plans: Dict[str, Plan] = {}
-        self.execution_results: List[ExecutionResult] = []
+        self.goals: dict[str, Goal] = {}
+        self.plans: dict[str, Plan] = {}
+        self.execution_results: list[ExecutionResult] = []
 
         # Metrics
         self.total_plans_created = 0
@@ -1419,7 +1420,7 @@ class HierarchicalPlanner:
 
         random.seed(seed)
 
-    def decompose_goal(self, goal: Goal) -> List[Subgoal]:
+    def decompose_goal(self, goal: Goal) -> list[Subgoal]:
         """Decompose goal into subgoals.
 
         Args:
@@ -1463,7 +1464,7 @@ class HierarchicalPlanner:
 
         return subgoals
 
-    def _decompose_recursive(self, goal: Goal, current_level: int) -> List[Subgoal]:
+    def _decompose_recursive(self, goal: Goal, current_level: int) -> list[Subgoal]:
         """Recursively decompose goal."""
         if current_level >= self.max_depth:
             return []
@@ -1513,7 +1514,7 @@ class HierarchicalPlanner:
 
         return plan
 
-    def _compute_execution_order(self, subgoals: List[Subgoal]) -> List[str]:
+    def _compute_execution_order(self, subgoals: list[Subgoal]) -> list[str]:
         """Compute execution order for subgoals."""
         # Sort by level and order
         sorted_subgoals = sorted(subgoals, key=lambda s: (s.level, s.order))
@@ -1567,7 +1568,7 @@ class HierarchicalPlanner:
         self.execution_results.append(result)
         return result
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get planner metrics.
 
         Returns:
@@ -1604,9 +1605,9 @@ class Agent:
         capabilities: Agent capabilities
     """
     agent_id: str
-    state: Dict[str, Any] = field(default_factory=dict)
-    beliefs: Dict[str, Any] = field(default_factory=dict)
-    capabilities: List[str] = field(default_factory=list)
+    state: dict[str, Any] = field(default_factory=dict)
+    beliefs: dict[str, Any] = field(default_factory=dict)
+    capabilities: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -1619,10 +1620,10 @@ class SwarmState:
         consensus_level: Current consensus level [0, 1]
         emergent_behaviors: Detected emergent behaviors
     """
-    agents: List[Agent]
+    agents: list[Agent]
     coherence: float = 1.0
     consensus_level: float = 0.0
-    emergent_behaviors: List[str] = field(default_factory=list)
+    emergent_behaviors: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -1656,7 +1657,7 @@ class Decision:
     decision_id: str
     chosen_proposal: str
     consensus_level: float
-    participating_agents: List[str] = field(default_factory=list)
+    participating_agents: list[str] = field(default_factory=list)
 
 
 class SwarmCoordinator:
@@ -1693,7 +1694,7 @@ class SwarmCoordinator:
 
         # State
         self.swarm_state: Optional[SwarmState] = None
-        self.decisions: List[Decision] = []
+        self.decisions: list[Decision] = []
 
         # Metrics
         self.total_coordinations = 0
@@ -1701,7 +1702,7 @@ class SwarmCoordinator:
 
         random.seed(seed)
 
-    def coordinate_swarm(self, agents: List[Agent]) -> SwarmState:
+    def coordinate_swarm(self, agents: list[Agent]) -> SwarmState:
         """Coordinate swarm of agents.
 
         Args:
@@ -1734,7 +1735,7 @@ class SwarmCoordinator:
 
         return self.swarm_state
 
-    def achieve_consensus(self, proposals: List[Proposal]) -> Decision:
+    def achieve_consensus(self, proposals: list[Proposal]) -> Decision:
         """Achieve consensus on proposals.
 
         Args:
@@ -1783,7 +1784,7 @@ class SwarmCoordinator:
         self.decisions.append(decision)
         return decision
 
-    def _detect_swarm_emergent_behaviors(self) -> List[str]:
+    def _detect_swarm_emergent_behaviors(self) -> list[str]:
         """Detect emergent behaviors in swarm."""
         behaviors = []
 
@@ -1808,7 +1809,7 @@ class SwarmCoordinator:
 
         return behaviors
 
-    def _are_synchronized(self, states: List[Dict[str, Any]]) -> bool:
+    def _are_synchronized(self, states: list[dict[str, Any]]) -> bool:
         """Check if agent states are synchronized."""
         if len(states) < 2:
             return False
@@ -1844,7 +1845,7 @@ class SwarmCoordinator:
         # Simple heuristic: average coherence
         return self.swarm_state.coherence
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get coordinator metrics.
 
         Returns:
@@ -1895,7 +1896,7 @@ class ErrorContext:
     message: str
     stack_trace: str = ""
     timestamp: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -1926,7 +1927,7 @@ class DegradedMode:
     """
     mode_id: str
     description: str
-    capabilities_disabled: List[str] = field(default_factory=list)
+    capabilities_disabled: list[str] = field(default_factory=list)
     performance_impact: float = 0.0
 
 
@@ -1963,13 +1964,13 @@ class ProductionHardeningManager:
         self.seed = seed
 
         # State
-        self.errors: List[ErrorContext] = []
-        self.recovery_actions: List[RecoveryAction] = []
-        self.degraded_modes: Dict[str, DegradedMode] = {}
+        self.errors: list[ErrorContext] = []
+        self.recovery_actions: list[RecoveryAction] = []
+        self.degraded_modes: dict[str, DegradedMode] = {}
         self.current_mode: Optional[str] = None
 
         # Monitoring hooks
-        self.monitoring_callbacks: List[Callable] = []
+        self.monitoring_callbacks: list[Callable] = []
 
         # Metrics
         self.total_errors = 0
@@ -1978,7 +1979,7 @@ class ProductionHardeningManager:
 
         random.seed(seed)
 
-    def handle_error(self, error: Exception, context: Optional[Dict[str, Any]] = None) -> RecoveryAction:
+    def handle_error(self, error: Exception, context: Optional[dict[str, Any]] = None) -> RecoveryAction:
         """Handle an error with appropriate recovery action.
 
         Args:
@@ -2139,7 +2140,7 @@ class ProductionHardeningManager:
             success=False,
         )
 
-    def _determine_disabled_capabilities(self, failure: str) -> List[str]:
+    def _determine_disabled_capabilities(self, failure: str) -> list[str]:
         """Determine which capabilities to disable."""
         # Simple heuristic based on failure description
         if "memory" in failure.lower():
@@ -2159,7 +2160,7 @@ class ProductionHardeningManager:
                 # Don't let monitoring failures cascade
                 print(f"Monitoring callback failed: {e}")
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get hardening manager metrics.
 
         Returns:

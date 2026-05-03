@@ -7,10 +7,10 @@ Test module for standardization.
 # tests/archive/test_standardization.py
 """Tests for standardization layer."""
 
-import pytest  # noqa: E402
+import pytest
 
-from codex.archive.evidence_schema import EvidenceSchemaValidator  # noqa: E402
-from codex.archive.standardization import (  # noqa: E402
+from codex.archive.evidence_schema import EvidenceSchemaValidator
+from codex.archive.standardization import (
     SLSA_LEVEL,
     STANDARDIZATION_VERSION,
     StandardizationManager,

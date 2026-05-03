@@ -8,7 +8,7 @@ from pathlib import Path
 # Add scripts directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
 
-from validate_code_fences import check_code_fences, fix_code_fences  # noqa: E402
+from validate_code_fences import check_code_fences, fix_code_fences
 
 
 class TestCheckCodeFences:

@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import yaml
 
@@ -27,7 +28,7 @@ def _split_frontmatter(raw: str) -> tuple[dict[str, Any], str]:
         if not isinstance(data, dict):
             LOGGER.warning("Frontmatter is not a mapping; defaulting to empty dict")
             data = {}
-    except yaml.YAMLError as exc:  # noqa: PERF203
+    except yaml.YAMLError as exc:
         LOGGER.warning("Failed to parse frontmatter: %s", exc)
         data = {}
     return data, body
@@ -84,6 +85,6 @@ class SkillDocLoader:
                 manifests.append(self.load_manifest(path))
             except FileNotFoundError:
                 LOGGER.warning("Skill doc not found: %s", path)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 LOGGER.warning("Failed to load skill doc %s: %s", path, exc)
         return manifests

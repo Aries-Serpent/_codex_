@@ -6,7 +6,7 @@ import json
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -15,7 +15,7 @@ class PerformanceMetric:
     value: float
     unit: str
     timestamp: str
-    tags: Dict[str, str]
+    tags: dict[str, str]
     threshold: Optional[float] = None
 
 
@@ -23,14 +23,14 @@ class PerformanceMonitor:
     def __init__(self, metrics_file: str = "data/performance_metrics.json"):
         self.metrics_file = Path(metrics_file)
         self.metrics_file.parent.mkdir(parents=True, exist_ok=True)
-        self.metrics: List[PerformanceMetric] = []
+        self.metrics: list[PerformanceMetric] = []
 
     def record_metric(
         self,
         name: str,
         value: float,
         unit: str,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
         threshold: Optional[float] = None,
     ):
         metric = PerformanceMetric(

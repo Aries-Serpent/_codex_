@@ -14,13 +14,12 @@ import json
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
 
 
-def load_review_queue(queue_file: Path) -> List[Dict]:
+def load_review_queue(queue_file: Path) -> list[dict]:
     """Load the review queue JSON file."""
     with open(queue_file, encoding='utf-8') as f:
         return json.load(f)
@@ -90,7 +89,7 @@ def validate_file_syntax(file_path: Path) -> bool:
         return False
 
 
-def process_batch(items: List[Dict], batch_num: int, dry_run: bool = False) -> Tuple[int, int, List[str]]:
+def process_batch(items: list[dict], batch_num: int, dry_run: bool = False) -> tuple[int, int, list[str]]:
     """
     Process a batch of fixes.
     Returns (successful_fixes, failed_fixes, affected_files).
@@ -127,7 +126,7 @@ def process_batch(items: List[Dict], batch_num: int, dry_run: bool = False) -> T
     return successful, failed, list(affected_files)
 
 
-def validate_batch(files: List[str]) -> bool:
+def validate_batch(files: list[str]) -> bool:
     """
     Validate all files in a batch after fixes are applied.
     Returns True if all files pass validation.
@@ -146,7 +145,7 @@ def validate_batch(files: List[str]) -> bool:
     return all_valid
 
 
-def generate_resolution_log(fixes: List[Dict], successful: int, failed: int) -> Dict:
+def generate_resolution_log(fixes: list[dict], successful: int, failed: int) -> dict:
     """Generate a resolution log for audit trail."""
     return {
         'timestamp': '2026-02-13T23:58:00Z',

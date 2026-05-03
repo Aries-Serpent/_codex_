@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Reference metric implementations used by Codex training loops."""
 
 
 import json  # noqa: E402
@@ -399,12 +398,12 @@ def load_metrics_from_file(path: str | Path) -> dict[str, Any]:
 
 
 __all__ = [
-    "MetricBase",
-    "F1Score",
-    "BLEUScore",
-    "TokenAccuracy",
-    "RecallScore",
-    "MetricRegistry",
     "DEFAULT_METRICS",
+    "BLEUScore",
+    "F1Score",
+    "MetricBase",
+    "MetricRegistry",
+    "RecallScore",
+    "TokenAccuracy",
     "load_metrics_from_file",
 ]

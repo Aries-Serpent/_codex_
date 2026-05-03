@@ -6,7 +6,6 @@ Parses the workflow status from PR comment and tracks completion.
 
 import re
 from datetime import datetime, timezone
-from typing import Dict, List, Tuple
 
 # Raw data from PR #3152 comment
 WORKFLOW_DATA = """
@@ -68,7 +67,7 @@ Validate Secrets Documentation / validate-secrets-docs (push) Successful in 10s
 """
 
 
-def parse_workflows() -> Tuple[List[Dict], Dict[str, int]]:
+def parse_workflows() -> tuple[list[dict], dict[str, int]]:
     """Parse workflow data and return structured information."""
     workflows = []
     status_counts = {
@@ -187,7 +186,7 @@ def generate_monitoring_report():
     return workflows, counts
 
 
-def save_structured_report(workflows: List[Dict], counts: Dict[str, int]):
+def save_structured_report(workflows: list[dict], counts: dict[str, int]):
     """Save structured monitoring data."""
     import json
     from pathlib import Path

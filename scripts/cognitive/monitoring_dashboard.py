@@ -37,7 +37,7 @@ from collections import deque
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -79,13 +79,13 @@ class MonitoringDashboard:
         self.data_path.mkdir(parents=True, exist_ok=True)
 
         # Metric history (using deque for efficient FIFO)
-        self.metric_history: Dict[str, deque] = {}
+        self.metric_history: dict[str, deque] = {}
 
         # Alert rules
-        self.alert_rules: List[AlertRule] = self._initialize_alert_rules()
+        self.alert_rules: list[AlertRule] = self._initialize_alert_rules()
 
         # Active alerts
-        self.active_alerts: List[Dict[str, Any]] = []
+        self.active_alerts: list[dict[str, Any]] = []
 
         # Define metrics to monitor
         self.metrics = {
@@ -117,7 +117,7 @@ class MonitoringDashboard:
         for metric in self.metrics:
             self.metric_history[metric] = deque(maxlen=history_size)
 
-    def _initialize_alert_rules(self) -> List[AlertRule]:
+    def _initialize_alert_rules(self) -> list[AlertRule]:
         """Initialize default alert rules"""
         return [
             # Performance alerts
@@ -185,7 +185,7 @@ class MonitoringDashboard:
             ),
         ]
 
-    def collect_metrics(self) -> Dict[str, MetricSnapshot]:
+    def collect_metrics(self) -> dict[str, MetricSnapshot]:
         """
         Collect current metrics from all components
 
@@ -286,7 +286,7 @@ class MonitoringDashboard:
             return "warning"
         return "critical"
 
-    def _check_alerts(self, snapshots: Dict[str, MetricSnapshot]):
+    def _check_alerts(self, snapshots: dict[str, MetricSnapshot]):
         """Check if any alert rules are triggered"""
         new_alerts = []
 
@@ -319,7 +319,7 @@ class MonitoringDashboard:
         if new_alerts:
             self._save_alerts(new_alerts)
 
-    def _save_alerts(self, alerts: List[Dict[str, Any]]):
+    def _save_alerts(self, alerts: list[dict[str, Any]]):
         """Save alerts to disk"""
         alerts_file = self.data_path / f"alerts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(alerts_file, 'w') as f:
@@ -329,7 +329,7 @@ class MonitoringDashboard:
         self,
         metric_name: str,
         lookback_seconds: Optional[int] = None
-    ) -> List[MetricSnapshot]:
+    ) -> list[MetricSnapshot]:
         """
         Get history for a specific metric
 
@@ -354,7 +354,7 @@ class MonitoringDashboard:
 
         return history
 
-    def get_current_dashboard(self) -> Dict[str, Any]:
+    def get_current_dashboard(self) -> dict[str, Any]:
         """
         Get current dashboard state with all metrics
 

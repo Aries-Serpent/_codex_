@@ -22,7 +22,7 @@ import math
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class StrategyFeatures:
 
     error_type_hash: str
     component_hash: str
-    message_keywords: List[str]
+    message_keywords: list[str]
     severity_score: float
     stack_depth: int
     file_extension: str
@@ -55,8 +55,8 @@ class StrategyPrediction:
 
     strategy_name: str
     confidence: float
-    alternative_strategies: List[Tuple[str, float]]
-    features_used: List[str]
+    alternative_strategies: list[tuple[str, float]]
+    features_used: list[str]
     model_version: str = "1.0.0"
 
 
@@ -108,13 +108,13 @@ class MLStrategySelector:
         self.learning_rate = learning_rate
 
         # Strategy weights (learned from experience)
-        self.strategy_weights: Dict[str, float] = self._load_weights()
+        self.strategy_weights: dict[str, float] = self._load_weights()
 
         # Training history
-        self.training_examples: List[LearningExample] = []
+        self.training_examples: list[LearningExample] = []
 
         # Feature importance scores
-        self.feature_importance: Dict[str, float] = {
+        self.feature_importance: dict[str, float] = {
             "error_type_hash": 0.25,
             "message_keywords": 0.20,
             "component_hash": 0.15,
@@ -126,14 +126,14 @@ class MLStrategySelector:
         }
 
         # Keyword to strategy mapping - loaded from config or defaults
-        self.keyword_strategy_map: Dict[str, str] = self._load_keyword_strategy_map()
+        self.keyword_strategy_map: dict[str, str] = self._load_keyword_strategy_map()
 
         logger.info(
             f"✅ MLStrategySelector initialized | "
             f"Auto-merge threshold: {self.auto_merge_threshold:.0%}"
         )
 
-    def _load_keyword_strategy_map(self) -> Dict[str, str]:
+    def _load_keyword_strategy_map(self) -> dict[str, str]:
         """
         Load keyword-to-strategy mapping from config file or use defaults.
 
@@ -183,7 +183,7 @@ class MLStrategySelector:
             "no patterns": "empty_result",
         }
 
-    def _load_weights(self) -> Dict[str, float]:
+    def _load_weights(self) -> dict[str, float]:
         """Load strategy weights from disk."""
         weights_file = self.model_path / "strategy_weights.json"
         try:
@@ -217,7 +217,7 @@ class MLStrategySelector:
         except Exception as e:
             logger.warning(f"Failed to save weights: {e}")
 
-    def extract_features(self, error_context: Dict[str, Any]) -> StrategyFeatures:
+    def extract_features(self, error_context: dict[str, Any]) -> StrategyFeatures:
         """
         Extract features from error context for ML prediction.
 
@@ -258,7 +258,7 @@ class MLStrategySelector:
             timestamp_hour=datetime.utcnow().hour,
         )
 
-    def _extract_keywords(self, message: str) -> List[str]:
+    def _extract_keywords(self, message: str) -> list[str]:
         """Extract relevant keywords from error message."""
         keywords = []
         for keyword in self.keyword_strategy_map.keys():
@@ -266,14 +266,14 @@ class MLStrategySelector:
                 keywords.append(keyword)
         return keywords[:10]  # Limit to 10 keywords
 
-    def _calculate_severity(self, context: Dict[str, Any]) -> float:
+    def _calculate_severity(self, context: dict[str, Any]) -> float:
         """Calculate severity score (0-1)."""
         severity = context.get("severity", "medium")
         severity_map = {"low": 0.3, "medium": 0.5, "high": 0.8, "critical": 1.0}
         return severity_map.get(severity, 0.5)
 
     def predict_strategy(
-        self, error_context: Dict[str, Any]
+        self, error_context: dict[str, Any]
     ) -> StrategyPrediction:
         """
         Predict best healing strategy using ML.
@@ -287,7 +287,7 @@ class MLStrategySelector:
         features = self.extract_features(error_context)
 
         # Calculate strategy scores
-        scores: Dict[str, float] = {}
+        scores: dict[str, float] = {}
 
         for strategy in self.strategy_weights.keys():
             score = self._calculate_strategy_score(features, strategy)
@@ -395,7 +395,7 @@ class MLStrategySelector:
 
     def get_merge_recommendation(
         self, prediction: StrategyPrediction
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Get merge recommendation with reasoning.
 
@@ -430,7 +430,7 @@ class MLStrategySelector:
 
         return recommendation
 
-    def get_model_stats(self) -> Dict[str, Any]:
+    def get_model_stats(self) -> dict[str, Any]:
         """Get model statistics and performance metrics."""
         return {
             "model_version": "1.0.0",
@@ -455,7 +455,7 @@ class SharedPattern:
     pattern_id: str
     source_repo: str
     pattern_type: str
-    pattern_data: Dict[str, Any]
+    pattern_data: dict[str, Any]
     success_rate: float
     usage_count: int
     created_at: str
@@ -477,7 +477,7 @@ class CrossRepoPatternSharing:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.shared_patterns: Dict[str, SharedPattern] = {}
+        self.shared_patterns: dict[str, SharedPattern] = {}
         self._load_patterns()
 
         logger.info(
@@ -522,7 +522,7 @@ class CrossRepoPatternSharing:
     def share_pattern(
         self,
         pattern_type: str,
-        pattern_data: Dict[str, Any],
+        pattern_data: dict[str, Any],
         source_repo: str,
         success_rate: float = 1.0,
     ) -> SharedPattern:
@@ -567,9 +567,9 @@ class CrossRepoPatternSharing:
     def find_matching_patterns(
         self,
         pattern_type: str,
-        keywords: Optional[List[str]] = None,
+        keywords: Optional[list[str]] = None,
         min_success_rate: float = 0.7,
-    ) -> List[SharedPattern]:
+    ) -> list[SharedPattern]:
         """
         Find matching patterns from shared repository.
 
@@ -632,7 +632,7 @@ class CrossRepoPatternSharing:
             f"usage={pattern.usage_count}, success_rate={pattern.success_rate:.1%}"
         )
 
-    def get_sharing_stats(self) -> Dict[str, Any]:
+    def get_sharing_stats(self) -> dict[str, Any]:
         """Get statistics about pattern sharing."""
         if not self.shared_patterns:
             return {

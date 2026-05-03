@@ -28,8 +28,9 @@ import json  # noqa: E402
 import os  # noqa: E402
 import statistics as stats  # noqa: E402
 import time  # noqa: E402
+from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
-from typing import Any, Callable  # noqa: E402
+from typing import Any  # noqa: E402
 
 
 def _maybe_cuda_sync() -> None:

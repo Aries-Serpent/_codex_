@@ -5,11 +5,11 @@ from __future__ import annotations
 
 import json
 import subprocess
+from collections.abc import Iterable, Iterator
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, List, Tuple
 
 # Extensions to include in the repository map
-EXTENSIONS: Tuple[str, ...] = (
+EXTENSIONS: tuple[str, ...] = (
     ".py",
     ".md",
     ".yaml",
@@ -24,7 +24,7 @@ EXTENSIONS: Tuple[str, ...] = (
 OUTPUT_FILE_NAME = "_codex_repo_map.json"
 
 # Directory names to exclude anywhere in the path
-EXCLUDED_DIRS: Tuple[str, ...] = (
+EXCLUDED_DIRS: tuple[str, ...] = (
     ".git",
     "__pycache__",
     "build",
@@ -33,7 +33,7 @@ EXCLUDED_DIRS: Tuple[str, ...] = (
 )
 
 # Specific filenames to exclude
-EXCLUDED_FILENAMES: Tuple[str, ...] = (OUTPUT_FILE_NAME,)
+EXCLUDED_FILENAMES: tuple[str, ...] = (OUTPUT_FILE_NAME,)
 
 
 def should_skip(path: Path) -> bool:
@@ -87,10 +87,10 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
         yield path
 
 
-def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
+def map_repo(root_dir: Path) -> dict[str, list[dict[str, int]]]:
     """Return a mapping of file extensions to metadata for repository files."""
 
-    files_by_extension: Dict[str, List[Dict[str, int]]] = {}
+    files_by_extension: dict[str, list[dict[str, int]]] = {}
 
     for path in iter_repo_files(root_dir):
         extension = path.suffix
@@ -103,7 +103,7 @@ def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
         files_by_extension.setdefault(extension, []).append(file_info)
 
     # Ensure deterministic ordering for easier diffing and readability
-    ordered_map: Dict[str, List[Dict[str, int]]] = {}
+    ordered_map: dict[str, list[dict[str, int]]] = {}
     for extension in sorted(files_by_extension):
         ordered_map[extension] = sorted(
             files_by_extension[extension], key=lambda entry: entry["path"]
@@ -112,7 +112,7 @@ def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
     return ordered_map
 
 
-def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, int]]]) -> Path:
+def write_repo_map(root_dir: Path, data: dict[str, list[dict[str, int]]]) -> Path:
     """Write the repository map JSON file to the root directory."""
     output_path = root_dir / OUTPUT_FILE_NAME
     output_path.write_text(json.dumps(data, indent=2), encoding="utf-8")

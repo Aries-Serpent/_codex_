@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Tuple
 
 try:
     from PIL import Image
@@ -37,7 +36,7 @@ def to_array(img) -> "np.ndarray":
     return np.asarray(img, dtype=np.float32)
 
 
-def resize_to_match(a, b) -> Tuple["np.ndarray", "np.ndarray"]:
+def resize_to_match(a, b) -> tuple["np.ndarray", "np.ndarray"]:
     # Resize b to a's size if different
     if a.shape == b.shape:
         return a, b

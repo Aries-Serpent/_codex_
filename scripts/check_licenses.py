@@ -34,12 +34,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python
-"""Simple license checker using pip-licenses."""
 
 import json
 import subprocess
 import sys
-from typing import Iterable
+from collections.abc import Iterable
 
 ALLOWED: set[str] = {"MIT", "Apache-2.0", "BSD-3-Clause", "BSD", "ISC"}
 

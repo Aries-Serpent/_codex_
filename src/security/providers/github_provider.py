@@ -28,7 +28,7 @@ import logging
 import os
 import re
 from datetime import UTC, datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from security.providers.base import (
     ProviderConfig,
@@ -310,7 +310,7 @@ class GitHubTokenProvider(TokenProvider):
             logger.error(f"Failed to get token expiration: {e}")
             return None
 
-    def get_scopes(self, secret_id: str) -> List[str]:
+    def get_scopes(self, secret_id: str) -> list[str]:
         """Get GitHub token scopes.
 
         Args:
@@ -327,7 +327,7 @@ class GitHubTokenProvider(TokenProvider):
             return []
 
     def create_token(
-        self, name: str, scopes: List[str], expires_in_days: Optional[int] = None
+        self, name: str, scopes: list[str], expires_in_days: Optional[int] = None
     ) -> RotationResult:
         """Create a new GitHub token via the REST API.
 
@@ -399,7 +399,7 @@ class GitHubTokenProvider(TokenProvider):
                     "PAT-style scopes (e.g. 'repo', 'workflow')."
                 ),
             )
-        permissions: Dict[str, str] = {s: "write" for s in scopes} if scopes else {}
+        permissions: dict[str, str] = {s: "write" for s in scopes} if scopes else {}
 
         url = f"{self.api_url}/app/installations/{installation_id}/access_tokens"
         headers = {
@@ -407,7 +407,7 @@ class GitHubTokenProvider(TokenProvider):
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         if permissions:
             body["permissions"] = permissions
 
@@ -454,7 +454,7 @@ class GitHubTokenProvider(TokenProvider):
                 error_message=f"Token creation request failed: {e}",
             )
 
-    def update_token_scopes(self, secret_id: str, scopes: List[str]) -> bool:
+    def update_token_scopes(self, secret_id: str, scopes: list[str]) -> bool:
         """Update GitHub token scopes.
 
         For fine-grained PATs, updates the permission set via
@@ -499,7 +499,7 @@ class GitHubTokenProvider(TokenProvider):
             installation_id = self.config.get(
                 "installation_id", os.environ.get("GITHUB_APP_INSTALLATION_ID", secret_id)
             )
-            permissions: Dict[str, str] = {s: "write" for s in scopes} if scopes else {}
+            permissions: dict[str, str] = {s: "write" for s in scopes} if scopes else {}
             url = f"{self.api_url}/user/installations/{installation_id}/permissions"
             headers = {
                 "Authorization": f"Bearer {self.token}",
@@ -578,7 +578,7 @@ class GitHubTokenProvider(TokenProvider):
             logger.error("revoke_secret() failed: %s", exc)
             return False
 
-    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[dict[str, str]] = None) -> list[SecretMetadata]:
         """List GitHub tokens via the GitHub REST API.
 
         Calls GET /user to confirm the token is valid and returns a single

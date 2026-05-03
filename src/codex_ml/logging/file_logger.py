@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import csv
 import json
+from collections.abc import Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Iterator, Literal, Mapping, Optional, cast
+from typing import Literal, Optional, cast
 
 JsonLogFmt = Literal["ndjson", "csv"]
 

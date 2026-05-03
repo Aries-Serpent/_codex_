@@ -23,7 +23,7 @@ import os
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["init_wandb_offline", "init_mlflow_local"]
+__all__ = ["init_mlflow_local", "init_wandb_offline"]
 
 
 def init_wandb_offline(project: str = "codex"):

@@ -251,7 +251,7 @@ class SessionContextInjector:
                     logger.info(
                         "BrainClient reports server unavailable; skipping live context fetch."
                     )
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.debug("BrainClient.is_available() raised: %s", exc)
 
         # PDA: PLAN — attempt live fetch
@@ -261,7 +261,7 @@ class SessionContextInjector:
             payload = self._build_payload(raw, session_metadata, reconstructed=False)
             self._write_cache(payload)
             return payload
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             live_error = exc
             logger.warning("Live context fetch failed: %s", exc)
 
@@ -372,7 +372,7 @@ class SessionContextInjector:
                 result.append(merged)
             logger.debug("CB-003: compressed %d patterns via PatternCompressor.", len(result))
             return result
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.debug("PatternCompressor pass skipped: %s", exc)
             return patterns
 
@@ -430,7 +430,7 @@ class SessionContextInjector:
                         len(reconstructed_patterns),
                         len(reconstructed_facts),
                     )
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.debug("BrainClient.memory_search() skipped during reconstruction: %s", exc)
 
         # Entropy minimisation: read latest status file
@@ -453,7 +453,7 @@ class SessionContextInjector:
         )
         try:
             self._api.store_memory(lesson, tags=["api-failure", "reconstruction"])
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Suppressed exception in handler", exc_info=True)
         return SessionContextPayload(
             session_id=(f"reconstructed-{hashlib.sha256(str(meta).encode()).hexdigest()[:8]}"),

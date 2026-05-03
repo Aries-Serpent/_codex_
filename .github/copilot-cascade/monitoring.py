@@ -12,7 +12,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +26,9 @@ class CascadeMetrics:
     failed_cascades: int = 0
     total_tokens: int = 0
     total_time: float = 0.0
-    model_usage: Dict[str, int] = field(default_factory=dict)
-    error_types: Dict[str, int] = field(default_factory=dict)
-    performance_history: List[Dict[str, Any]] = field(default_factory=list)
+    model_usage: dict[str, int] = field(default_factory=dict)
+    error_types: dict[str, int] = field(default_factory=dict)
+    performance_history: list[dict[str, Any]] = field(default_factory=list)
 
 
 class CascadeMonitor:
@@ -52,7 +52,7 @@ class CascadeMonitor:
 
         logger.info(f"Cascade monitor initialized. Log directory: {self.log_dir}")
 
-    def record_cascade(self, results: Dict[str, Any]):
+    def record_cascade(self, results: dict[str, Any]):
         """
         Record cascade execution metrics.
 
@@ -111,7 +111,7 @@ class CascadeMonitor:
             f"Recorded cascade: {results.get('task_id')} (success={history_entry['success']})"
         )
 
-    def get_dashboard_data(self) -> Dict[str, Any]:
+    def get_dashboard_data(self) -> dict[str, Any]:
         """
         Get data for monitoring dashboard.
 
@@ -157,7 +157,7 @@ class CascadeMonitor:
             "health": self._calculate_health_status(success_rate),
         }
 
-    def get_detailed_statistics(self) -> Dict[str, Any]:
+    def get_detailed_statistics(self) -> dict[str, Any]:
         """Get detailed statistics for analysis."""
         if not self.metrics.performance_history:
             return {"status": "no_data"}
@@ -204,7 +204,7 @@ class CascadeMonitor:
             return "memory"
         return "other"
 
-    def _calculate_trends(self) -> Dict[str, Any]:
+    def _calculate_trends(self) -> dict[str, Any]:
         """Calculate performance trends."""
         history = self.metrics.performance_history
 
@@ -270,7 +270,7 @@ class CascadeMonitor:
 
         return round(total_cost, 4)
 
-    def _calculate_health_status(self, success_rate: float) -> Dict[str, Any]:
+    def _calculate_health_status(self, success_rate: float) -> dict[str, Any]:
         """Calculate overall system health status."""
         if success_rate >= 90:
             status = "healthy"
@@ -392,13 +392,13 @@ def get_monitor() -> CascadeMonitor:
     return _monitor_instance
 
 
-def record_cascade(results: Dict[str, Any]):
+def record_cascade(results: dict[str, Any]):
     """Convenience function to record cascade (uses singleton)."""
     monitor = get_monitor()
     monitor.record_cascade(results)
 
 
-def get_dashboard_data() -> Dict[str, Any]:
+def get_dashboard_data() -> dict[str, Any]:
     """Convenience function to get dashboard data (uses singleton)."""
     monitor = get_monitor()
     return monitor.get_dashboard_data()

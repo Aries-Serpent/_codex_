@@ -13,7 +13,7 @@ from click.testing import CliRunner
 
 pytest.importorskip("omegaconf")
 
-from codex_ml.cli.codex_cli import codex  # noqa: E402
+from codex_ml.cli.codex_cli import codex
 
 
 def test_export_env_cli(tmp_path) -> None:

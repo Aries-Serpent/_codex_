@@ -8,7 +8,7 @@ supporting both DML (SELECT, INSERT, UPDATE, DELETE) and DDL
 from __future__ import annotations
 
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     import sqlparse
@@ -52,8 +52,8 @@ class SQLASTAdapter(BaseASTAdapter):
                 "sqlparse is required for SQLASTAdapter. Install it with: pip install sqlparse>=0.4"
             )
         super().__init__()
-        self._tables: List[str] = []
-        self._columns: List[str] = []
+        self._tables: list[str] = []
+        self._columns: list[str] = []
 
     def parse(self, source: str, file_path: Optional[str] = None) -> StandardizedASTNode:
         """Parse SQL source into standardized AST.
@@ -331,7 +331,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
         node.metadata.update({"object_name": object_name})
 
-    def get_tables(self) -> List[str]:
+    def get_tables(self) -> list[str]:
         """Get list of tables referenced in parsed SQL.
 
         Returns:
@@ -339,7 +339,7 @@ class SQLASTAdapter(BaseASTAdapter):
         """
         return list(set(self._tables))
 
-    def get_columns(self) -> List[str]:
+    def get_columns(self) -> list[str]:
         """Get list of columns referenced in parsed SQL.
 
         Returns:
@@ -347,7 +347,7 @@ class SQLASTAdapter(BaseASTAdapter):
         """
         return list(set(self._columns))
 
-    def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
+    def extract_metadata(self, node: StandardizedASTNode) -> dict[str, Any]:
         """Extract SQL-specific metadata from a node.
 
         Args:

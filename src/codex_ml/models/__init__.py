@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Model registry for codex_ml using the plugin framework."""
 
 
 import os
@@ -30,16 +29,16 @@ from codex_ml.plugins.registries import load_model_entry_points
 from codex_ml.plugins.registries import models as _models_registry
 
 __all__ = [
+    "DecoderOnlyLM",
     "MiniLM",
     "MiniLMConfig",
-    "DecoderOnlyLM",
     "ModelConfig",
-    "register_model",
-    "get_model",
+    "ReasoningHarness",
     "ReasoningHead",
     "ToolUseAdapter",
-    "ReasoningHarness",
     "attach_reasoning_adapters",
+    "get_model",
+    "register_model",
 ]
 
 
@@ -52,7 +51,7 @@ def register_model(name: str):
 _EP_LOADED = False
 
 
-def get_model(name: str) -> Optional[Type[object]]:
+def get_model(name: str) -> Optional[type[object]]:
     """Return a model class from the registry, loading entry points if enabled."""
 
     global _EP_LOADED

@@ -9,10 +9,10 @@ a blank line and optionally fixes them by inserting the required spacing.
 import argparse
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
-def check_table_spacing(file_path: Path) -> List[Dict[str, Any]]:
+def check_table_spacing(file_path: Path) -> list[dict[str, Any]]:
     """
     Check if tables have proper spacing after headers/text.
 
@@ -59,7 +59,7 @@ def check_table_spacing(file_path: Path) -> List[Dict[str, Any]]:
 
 
 def fix_table_spacing(
-    file_path: Path, issues: List[Dict[str, Any]], dry_run: bool = False
+    file_path: Path, issues: list[dict[str, Any]], dry_run: bool = False
 ) -> bool:
     """
     Fix table spacing issues by inserting blank lines.
@@ -101,7 +101,7 @@ def fix_table_spacing(
 
 def scan_directory(
     docs_dir: Path, fix: bool = False, dry_run: bool = False
-) -> Tuple[int, int, int]:
+) -> tuple[int, int, int]:
     """
     Scan directory for markdown files with table spacing issues.
 

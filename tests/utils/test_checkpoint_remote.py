@@ -9,8 +9,8 @@ import pytest
 
 pytest.importorskip("fsspec")
 
-from codex_ml.utils.checkpointing import CheckpointManager  # noqa: E402
-from codex_ml.utils.storage import FSSpecStorage  # noqa: E402
+from codex_ml.utils.checkpointing import CheckpointManager
+from codex_ml.utils.storage import FSSpecStorage
 
 
 class _DummyModule:

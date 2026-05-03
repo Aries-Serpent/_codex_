@@ -52,7 +52,7 @@ import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -99,7 +99,7 @@ def _build_phase_token() -> str:
     latest = status_files[0]
     text = latest.read_text(encoding="utf-8")
     # Extract lines up to first blank line after the first table
-    lines: List[str] = []
+    lines: list[str] = []
     in_table = False
     for line in text.splitlines():
         stripped = line.strip()
@@ -121,7 +121,7 @@ def _build_manifest_token(manifest_path: Path) -> str:
     if not manifest_path.exists():
         return _token("MANIFEST", "_CODEX_MANIFEST.json not found._")
     try:
-        manifest: Dict[str, Any] = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest: dict[str, Any] = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as exc:
         return _token("MANIFEST", f"_Error reading manifest: {exc}_")
 
@@ -180,18 +180,18 @@ def _build_patterns_token(db_path: str) -> str:
 
     try:
         # High-recurrence (≥3 occurrences, ≥50% fix rate)
-        high_rec: List[Dict[str, Any]] = recorder.high_recurrence(conn, min_occurrences=3)
+        high_rec: list[dict[str, Any]] = recorder.high_recurrence(conn, min_occurrences=3)
         # Cross-PR correlation (same pattern in ≥3 distinct SHAs)
-        cross_pr: List[Dict[str, Any]] = recorder.cross_pr_correlation(conn, min_prs=3)
+        cross_pr: list[dict[str, Any]] = recorder.cross_pr_correlation(conn, min_prs=3)
         # 7-day trend totals
-        trend: List[Dict[str, Any]] = recorder.pattern_trend(conn, days=7)
+        trend: list[dict[str, Any]] = recorder.pattern_trend(conn, days=7)
         total_7d = sum(r.get("count", 0) for r in trend)
     except Exception as exc:  # noqa: BLE001
         return _token("PATTERNS", f"_Error querying pattern DB: {exc}_")
     finally:
         conn.close()
 
-    lines: List[str] = [f"**7-day total occurrences:** {total_7d}  ", ""]
+    lines: list[str] = [f"**7-day total occurrences:** {total_7d}  ", ""]
 
     if high_rec:
         lines += [
@@ -225,7 +225,7 @@ def _build_patterns_token(db_path: str) -> str:
 def _build_next_steps_token(manifest_path: Path) -> str:
     """Build next-steps token from manifest phase_8 roadmap if present."""
     try:
-        manifest: Dict[str, Any] = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest: dict[str, Any] = json.loads(manifest_path.read_text(encoding="utf-8"))
         roadmap = manifest.get("phase_8_roadmap", [])
         if roadmap:
             lines = ["### Phase 8 Roadmap", ""]

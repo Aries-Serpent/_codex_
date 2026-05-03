@@ -1,26 +1,25 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List
 
 
 @dataclass
 class PlanStep:
     name: str
     action_kind: str
-    params: Dict[str, str]
-    requires: List[str] = field(default_factory=list)
+    params: dict[str, str]
+    requires: list[str] = field(default_factory=list)
 
 
 @dataclass
 class Plan:
-    steps: List[PlanStep]
+    steps: list[PlanStep]
 
 
 def compose_workflow(actions) -> Plan:
-    steps: List[PlanStep] = []
+    steps: list[PlanStep] = []
     for a in actions:
-        reqs: List[str] = []
+        reqs: list[str] = []
         if a.kind == "ENSURE_PYTEST_COV":
             reqs.append("RUN_PRECOMMIT_VERBOSE")
         steps.append(
@@ -34,5 +33,5 @@ def compose_workflow(actions) -> Plan:
     return Plan(steps=steps)
 
 
-def execute_step(step: PlanStep, env: Dict[str, str]) -> Dict[str, str]:
+def execute_step(step: PlanStep, env: dict[str, str]) -> dict[str, str]:
     return {"status": "ok", "step": step.name, "action": step.action_kind, "params": step.params}

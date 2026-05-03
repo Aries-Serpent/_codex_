@@ -18,7 +18,8 @@ Author: Codex Team
 # Simple in-memory mock vector backend implementing BackendAdapter
 import math
 import threading
-from typing import Any, Iterable, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
 from .interface import BackendAdapter, BackendResponse, VectorItem
 

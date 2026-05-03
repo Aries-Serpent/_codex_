@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
 
-from codex.auth.middleware import (  # noqa: E402
+from codex.auth.middleware import (
     APIKeyValidator,
     AuthConfig,
     AuthMethod,
@@ -23,7 +23,7 @@ from codex.auth.middleware import (  # noqa: E402
     get_current_scopes,
     get_current_user,
 )
-from codex.auth.token_manager import TokenManager  # noqa: E402
+from codex.auth.token_manager import TokenManager
 
 
 class TestAuthConfig:

@@ -9,7 +9,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from tests.framework.test_generator import OrchestrationFlowSpec  # noqa: E402
+from tests.framework.test_generator import OrchestrationFlowSpec
 
 # ========== PHYSICS ORCHESTRATOR SPECS ==========
 

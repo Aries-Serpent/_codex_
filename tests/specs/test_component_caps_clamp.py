@@ -38,7 +38,7 @@ def test_component_caps_reduce_component_value(tmp_path):
     if not runner.exists():
         pytest.skip("audit runner missing")
     try:
-        import yaml  # noqa: F401
+        import yaml
     except ImportError:
         pytest.skip("pyyaml not installed")
 

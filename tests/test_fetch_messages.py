@@ -1,6 +1,5 @@
 """Tests for fetch_messages covering custom and default DB paths."""
 
-# ruff: noqa: E501
 import importlib
 import importlib.util
 import inspect

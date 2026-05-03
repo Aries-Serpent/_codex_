@@ -348,7 +348,7 @@ def test_tool_fallback_pattern():
             handler = registry.get_tool(tool_name)
             if handler:
                 return handler(params)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass  # Intentionally swallow exception to test fallback mechanism
 
         fallback = registry.get_tool(fallback_name)

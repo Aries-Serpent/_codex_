@@ -8,7 +8,7 @@ import pytest
 
 pytest.importorskip("yaml")
 
-from mcp.packager.generator import generate_package, load_config  # noqa: E402
+from mcp.packager.generator import generate_package, load_config
 
 
 def test_packager_generates_files(tmp_path):

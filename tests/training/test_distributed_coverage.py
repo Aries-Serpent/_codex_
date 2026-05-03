@@ -33,7 +33,7 @@ sys.modules["torch.distributed"] = mock_torch.distributed
 sys.modules["torch.nn"] = mock_torch.nn
 sys.modules["torch.nn.parallel"] = mock_torch.nn.parallel
 
-from codex_ml.training.distributed import (  # noqa: E402
+from codex_ml.training.distributed import (
     DistributedConfig,
     DistributedManager,
     distributed_context,

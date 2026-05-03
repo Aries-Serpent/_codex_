@@ -17,18 +17,18 @@ pytest.importorskip("transformers")
 
 accelerate_available = importlib.util.find_spec("accelerate") is not None
 
-from fastapi.testclient import TestClient  # noqa: E402
-from tokenizers import Tokenizer  # noqa: E402
-from tokenizers.models import WordLevel  # noqa: E402
-from tokenizers.pre_tokenizers import Whitespace  # noqa: E402
+from fastapi.testclient import TestClient
+from tokenizers import Tokenizer
+from tokenizers.models import WordLevel
+from tokenizers.pre_tokenizers import Whitespace
 
-from cli import train_codex  # noqa: E402
-from transformers import AutoModelForCausalLM, GPT2Config  # noqa: E402
+from cli import train_codex
+from transformers import AutoModelForCausalLM, GPT2Config
 
 api_app = importlib.import_module("codex.api.app")
-from codex_ml.security import DenylistEnforcer, DenylistViolation  # noqa: E402
-from codex_ml.utils import checkpointing  # noqa: E402
-from src.tokenization.loader import load_tokenizer  # noqa: E402
+from codex_ml.security import DenylistEnforcer, DenylistViolation
+from codex_ml.utils import checkpointing
+from src.tokenization.loader import load_tokenizer
 
 
 @pytest.fixture()

@@ -26,7 +26,7 @@ import logging
 import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -59,7 +59,7 @@ def parse_timestamp(ts: str) -> Optional[datetime]:
 def load_action_log(
     log_path: Path,
     since: Optional[datetime] = None
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Load action log entries."""
     if not log_path.exists():
         return []
@@ -83,7 +83,7 @@ def load_action_log(
     return entries
 
 
-def load_pattern_store(store_path: Path) -> Dict[str, Any]:
+def load_pattern_store(store_path: Path) -> dict[str, Any]:
     """Load pattern learning store."""
     if not store_path.exists():
         return {"patterns": {}, "statistics": {}, "learning_log": []}
@@ -99,7 +99,7 @@ def get_git_commits(
     repo_root: Path,
     since: Optional[datetime] = None,
     limit: int = 100
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Get git commit history."""
     try:
         cmd = ['git', '--no-pager', 'log', f'-{limit}', '--format=%H|%s|%ai']
@@ -130,10 +130,10 @@ def get_git_commits(
 
 
 def extract_session_metrics(
-    action_entries: List[Dict[str, Any]],
-    pattern_store: Dict[str, Any],
-    commits: List[Dict[str, Any]]
-) -> Dict[str, Any]:
+    action_entries: list[dict[str, Any]],
+    pattern_store: dict[str, Any],
+    commits: list[dict[str, Any]]
+) -> dict[str, Any]:
     """Extract comprehensive session metrics."""
     now = datetime.now(timezone.utc)
 
@@ -257,9 +257,9 @@ def extract_session_metrics(
 
 
 def calculate_trends(
-    current: Dict[str, Any],
-    previous: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    current: dict[str, Any],
+    previous: Optional[dict[str, Any]] = None
+) -> dict[str, Any]:
     """Calculate metric trends compared to previous period."""
     trends = {
         "files_trend": "stable",
@@ -306,7 +306,7 @@ def calculate_trends(
 
 
 def generate_ascii_chart(
-    data: List[Tuple[str, float]],
+    data: list[tuple[str, float]],
     width: int = 40,
     title: str = "Chart"
 ) -> str:
@@ -327,7 +327,7 @@ def generate_ascii_chart(
 
 
 def save_metrics(
-    metrics: Dict[str, Any],
+    metrics: dict[str, Any],
     output_path: Path
 ) -> None:
     """Save metrics to JSON file."""

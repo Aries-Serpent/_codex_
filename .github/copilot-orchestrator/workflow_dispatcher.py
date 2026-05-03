@@ -17,7 +17,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     import aiohttp
@@ -45,10 +45,10 @@ class WorkflowJob:
     status: str = "pending"
     triggered_at: datetime = field(default_factory=datetime.now)
     estimated_duration: timedelta = timedelta(minutes=5)
-    inputs: Dict[str, Any] = field(default_factory=dict)
-    outputs: Dict[str, Any] = field(default_factory=dict)
-    artifacts: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    inputs: dict[str, Any] = field(default_factory=dict)
+    outputs: dict[str, Any] = field(default_factory=dict)
+    artifacts: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class CopilotWorkflowOrchestrator:
@@ -81,8 +81,8 @@ class CopilotWorkflowOrchestrator:
         self.github_token = github_token or os.environ.get("GITHUB_TOKEN", "")
         self.repo_owner = repo_owner or os.environ.get("GITHUB_REPOSITORY", "").split("/")[0]
         self.repo_name = repo_name or os.environ.get("GITHUB_REPOSITORY", "").split("/")[1] if "/" in os.environ.get("GITHUB_REPOSITORY", "") else ""
-        self.active_jobs: Dict[str, WorkflowJob] = {}
-        self.monitoring_tasks: Dict[str, asyncio.Task] = {}
+        self.active_jobs: dict[str, WorkflowJob] = {}
+        self.monitoring_tasks: dict[str, asyncio.Task] = {}
         self.session: Optional[aiohttp.ClientSession] = None
 
     async def __aenter__(self):
@@ -105,7 +105,7 @@ class CopilotWorkflowOrchestrator:
     async def trigger_workflow(
         self,
         workflow_name: str,
-        inputs: Optional[Dict[str, Any]] = None,
+        inputs: Optional[dict[str, Any]] = None,
         priority: WorkflowPriority = WorkflowPriority.MEDIUM,
         wait_for_completion: bool = False,
         ref: str = "main",
@@ -259,7 +259,7 @@ class CopilotWorkflowOrchestrator:
             return 5  # Next 20 attempts: 5 seconds
         return 10  # Remaining: 10 seconds
 
-    async def get_job_status(self, job_id: str) -> Dict[str, Any]:
+    async def get_job_status(self, job_id: str) -> dict[str, Any]:
         """Get current status of a job."""
         if job_id not in self.active_jobs:
             return {"error": "Job not found"}
@@ -288,7 +288,7 @@ class CopilotWorkflowOrchestrator:
         progress = (elapsed.total_seconds() / job.estimated_duration.total_seconds()) * 100
         return min(progress, 95.0)  # Cap at 95% until actually complete
 
-    def get_active_jobs(self) -> List[Dict[str, Any]]:
+    def get_active_jobs(self) -> list[dict[str, Any]]:
         """Get list of all active jobs."""
         return [
             {

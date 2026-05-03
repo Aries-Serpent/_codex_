@@ -2,7 +2,6 @@
 
 import hashlib
 from pathlib import Path
-from typing import Dict, List, Set
 
 from .schema import DuplicateGroup, MemberFile
 
@@ -37,7 +36,7 @@ class ExactDetector:
     def __init__(
         self,
         root_path: Path,
-        exclude_patterns: List[str] = None,
+        exclude_patterns: list[str] = None,
         respect_gitignore: bool = True,
     ):
         """
@@ -54,7 +53,7 @@ class ExactDetector:
         self.respect_gitignore = respect_gitignore
         self.gitignore_patterns = self._load_gitignore() if respect_gitignore else set()
 
-    def _load_gitignore(self) -> Set[str]:
+    def _load_gitignore(self) -> set[str]:
         """Load patterns from .gitignore."""
         gitignore_path = self.root_path / ".gitignore"
         patterns = set()
@@ -106,7 +105,7 @@ class ExactDetector:
         except Exception:
             return ""
 
-    def scan(self) -> List[DuplicateGroup]:
+    def scan(self) -> list[DuplicateGroup]:
         """
         Scan repository and return list of duplicate groups.
 
@@ -114,7 +113,7 @@ class ExactDetector:
             List of duplicate groups
         """
         # Build hash -> files mapping
-        hash_to_files: Dict[str, List[Path]] = {}
+        hash_to_files: dict[str, list[Path]] = {}
 
         # Scan all files
         for file_path in self.root_path.rglob("*"):

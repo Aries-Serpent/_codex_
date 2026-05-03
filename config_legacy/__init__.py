@@ -30,11 +30,12 @@ import importlib
 import importlib.util
 import os
 import sys
+from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable, Iterator, Sequence
+from typing import Any
 
 __all__: list[str]
 

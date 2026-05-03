@@ -1,7 +1,8 @@
 import argparse
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import Optional
 
 from codex.analysis.duplication import DuplicationReport, analyze_duplication
 
@@ -55,7 +56,7 @@ class DuplicationAnalyzer:
             lines.append(f"- {rec}")
         return "\n".join(lines)
 
-    def find_refactoring_candidates(self, min_duplicates: int = 2) -> List[dict]:
+    def find_refactoring_candidates(self, min_duplicates: int = 2) -> list[dict]:
         if self._last_report is None:
             self.analyze()
         assert self._last_report is not None
@@ -66,7 +67,7 @@ class DuplicationAnalyzer:
         ]
 
 
-def _cli(argv: Optional[List[str]] = None) -> int:
+def _cli(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Analyze code duplication")
     parser.add_argument("root", type=str, help="Root directory to analyze")
     parser.add_argument(

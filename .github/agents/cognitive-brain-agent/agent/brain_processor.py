@@ -6,7 +6,7 @@ Coordinates the PDA loop, learning integration, and pattern management.
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Try imports from parent packages
 try:
@@ -28,8 +28,8 @@ class TaskContext:
     """
     task_id: str
     task_type: str
-    input_data: Dict[str, Any]
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    input_data: dict[str, Any]
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -47,9 +47,9 @@ class ProcessingResult:
     task_id: str
     success: bool
     output: Any
-    patterns_used: List[str] = field(default_factory=list)
+    patterns_used: list[str] = field(default_factory=list)
     learning_updates: int = 0
-    metrics: Dict[str, float] = field(default_factory=dict)
+    metrics: dict[str, float] = field(default_factory=dict)
 
 
 class CognitiveBrainProcessor:
@@ -101,10 +101,10 @@ class CognitiveBrainProcessor:
             ])
 
         # Action handlers
-        self.action_handlers: Dict[str, callable] = {}
+        self.action_handlers: dict[str, callable] = {}
 
         # Processing history
-        self.history: List[ProcessingResult] = []
+        self.history: list[ProcessingResult] = []
 
     def register_action_handler(self, action: str, handler: callable) -> None:
         """Register a handler for an action.
@@ -149,7 +149,7 @@ class CognitiveBrainProcessor:
         self.history.append(result)
         return result
 
-    def _perceive(self, context: TaskContext) -> Dict[str, Any]:
+    def _perceive(self, context: TaskContext) -> dict[str, Any]:
         """Perceive phase: Analyze context and retrieve patterns.
 
         Args:
@@ -183,7 +183,7 @@ class CognitiveBrainProcessor:
 
         return perception
 
-    def _decide(self, perception: Dict[str, Any]) -> str:
+    def _decide(self, perception: dict[str, Any]) -> str:
         """Decide phase: Select optimal action using Q-learning.
 
         Args:
@@ -229,7 +229,7 @@ class CognitiveBrainProcessor:
         action: str,
         output: Any,
         success: bool,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """AfterMath phase: Update learning and extract patterns.
 
         Args:
@@ -300,7 +300,7 @@ class CognitiveBrainProcessor:
 
         return reward
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get processor statistics.
 
         Returns:

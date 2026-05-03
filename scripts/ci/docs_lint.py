@@ -30,7 +30,7 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -68,18 +68,18 @@ class Issue:
 
 @dataclass
 class LintResult:
-    issues: List[Issue] = field(default_factory=list)
+    issues: list[Issue] = field(default_factory=list)
 
     @property
-    def errors(self) -> List[Issue]:
+    def errors(self) -> list[Issue]:
         return [i for i in self.issues if i.severity == "error"]
 
     @property
-    def warnings(self) -> List[Issue]:
+    def warnings(self) -> list[Issue]:
         return [i for i in self.issues if i.severity == "warning"]
 
     @property
-    def fixable(self) -> List[Issue]:
+    def fixable(self) -> list[Issue]:
         return [i for i in self.issues if i.fixable]
 
 

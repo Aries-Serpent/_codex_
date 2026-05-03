@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 import torch
 
@@ -96,7 +96,7 @@ class MiniLM(nn.Module):
         return self.head(x)
 
     # checkpoint helpers -------------------------------------------------
-    def save_pretrained(self, path: Union[str, Path]) -> None:
+    def save_pretrained(self, path: str | Path) -> None:
         path = Path(path)
         path.mkdir(parents=True, exist_ok=True)
         with (path / "config.json").open("w") as f:
@@ -104,7 +104,7 @@ class MiniLM(nn.Module):
         torch.save(self.state_dict(), path / "pytorch_model.bin")
 
     @classmethod
-    def from_pretrained(cls, path: Union[str, Path], *, device: Optional[str] = None) -> MiniLM:
+    def from_pretrained(cls, path: str | Path, *, device: Optional[str] = None) -> MiniLM:
         path = Path(path)
         with (path / "config.json").open() as f:
             cfg = MiniLMConfig(**json.load(f))

@@ -41,7 +41,7 @@ if _SCRIPTS_CI is None:
 if str(_SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_CI))
 
-import session_wrapup_autofix as swa  # noqa: E402  (after sys.path fix)
+import session_wrapup_autofix as swa
 
 # ===========================================================================
 # _extract_wec_state

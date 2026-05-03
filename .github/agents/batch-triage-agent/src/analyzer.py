@@ -8,7 +8,7 @@ capabilities for pattern recognition, learning, and cognitive brain integration.
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Add parent directories to path for imports
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -54,8 +54,8 @@ class BatchTriageAnalyzer(BatchTriageEngine):
         self.patterns_dir.mkdir(parents=True, exist_ok=True)
 
         # Additional tracking
-        self.confidence_scores: Dict[int, float] = {}
-        self.historical_matches: Dict[int, List[Dict]] = {}
+        self.confidence_scores: dict[int, float] = {}
+        self.historical_matches: dict[int, list[dict]] = {}
 
     def analyze_with_confidence(self, failure: FailureRecord) -> float:
         """
@@ -86,7 +86,7 @@ class BatchTriageAnalyzer(BatchTriageEngine):
 
         return confidence
 
-    def enrich_with_historical_context(self, failure: FailureRecord) -> Dict[str, Any]:
+    def enrich_with_historical_context(self, failure: FailureRecord) -> dict[str, Any]:
         """
         Enrich failure with historical context from cognitive brain.
 
@@ -145,7 +145,7 @@ class BatchTriageAnalyzer(BatchTriageEngine):
 
         return total_confidence / len(group.failures)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """
         Get analysis metrics.
 
@@ -161,7 +161,7 @@ class BatchTriageAnalyzer(BatchTriageEngine):
             "with_historical_context": len(self.historical_matches),
         }
 
-    def export_for_learning(self) -> Dict[str, Any]:
+    def export_for_learning(self) -> dict[str, Any]:
         """
         Export analysis results for cognitive brain learning.
 

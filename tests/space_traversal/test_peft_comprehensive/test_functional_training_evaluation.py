@@ -7,7 +7,7 @@ Test module for functional training evaluation.
 from __future__ import annotations
 
 import types
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -18,17 +18,17 @@ if not hasattr(torch, "tensor") or not hasattr(torch, "utils"):
 
 
 class DummyDataset(torch.utils.data.Dataset):
-    def __init__(self, mapping: Dict[str, Any]):
+    def __init__(self, mapping: dict[str, Any]):
         self._data = {k: torch.tensor(v) for k, v in mapping.items()}
 
     def __len__(self) -> int:
         return int(self._data["input_ids"].shape[0])
 
-    def __getitem__(self, index: int) -> Dict[str, Any]:
+    def __getitem__(self, index: int) -> dict[str, Any]:
         return {key: value[index] for key, value in self._data.items()}
 
     @classmethod
-    def from_dict(cls, mapping: Dict[str, Any]) -> "DummyDataset":
+    def from_dict(cls, mapping: dict[str, Any]) -> "DummyDataset":
         return cls(mapping)
 
     def with_format(self, fmt: str) -> "DummyDataset":
@@ -49,7 +49,7 @@ class DummyTokenizer:
 
     def __call__(
         self, texts, padding: bool = True, return_tensors: str = "pt", **kwargs
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         if isinstance(texts, str):
             texts = [texts]
         max_len = max(len(text.split()) for text in texts)

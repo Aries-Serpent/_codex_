@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 from datetime import UTC, datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from security.providers.base import (
     ProviderConfig,
@@ -256,7 +256,7 @@ class AWSSecretsManagerProvider(SecretProvider):
         name: str,
         secret_value: str,
         description: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
     ) -> RotationResult:
         """Create new AWS secret.
 
@@ -319,7 +319,7 @@ class AWSSecretsManagerProvider(SecretProvider):
             logger.error(f"Failed to delete secret: {e}")
             return False
 
-    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[dict[str, str]] = None) -> list[SecretMetadata]:
         """List all secrets in AWS Secrets Manager.
 
         Args:

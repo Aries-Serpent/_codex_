@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Settings and schema definitions for Codex ML configuration."""
 
 
 import warnings  # noqa: E402

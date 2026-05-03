@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import yaml
 
@@ -53,8 +53,8 @@ class CoverageIssue:
     issue_type: str  # 'uncovered_lines', 'missing_branch', 'untested_function'
     severity: CoverageSeverity
     description: str
-    line_numbers: List[int] = field(default_factory=list)
-    suggested_tests: List[str] = field(default_factory=list)
+    line_numbers: list[int] = field(default_factory=list)
+    suggested_tests: list[str] = field(default_factory=list)
     confidence: float = 1.0
 
 
@@ -67,9 +67,9 @@ class CoverageReport:
     function_coverage: float
     total_lines: int
     covered_lines: int
-    missing_lines: List[int] = field(default_factory=list)
-    partial_branches: List[int] = field(default_factory=list)
-    uncovered_functions: List[str] = field(default_factory=list)
+    missing_lines: list[int] = field(default_factory=list)
+    partial_branches: list[int] = field(default_factory=list)
+    uncovered_functions: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -91,7 +91,7 @@ class EnforcementResult:
     threshold: float
     gaps_found: int
     suggestions_generated: int
-    enforcement_actions: List[str] = field(default_factory=list)
+    enforcement_actions: list[str] = field(default_factory=list)
 
 
 class TestCoverageEnforcer:
@@ -104,10 +104,10 @@ class TestCoverageEnforcer:
         self.branch_threshold = self.config.get('thresholds', {}).get('branch', 70)
         self.function_threshold = self.config.get('thresholds', {}).get('function', 85)
         self.auto_generate = self.config.get('auto_generate_tests', False)
-        self.issues: List[CoverageIssue] = []
-        self.reports: Dict[Path, CoverageReport] = {}
+        self.issues: list[CoverageIssue] = []
+        self.reports: dict[Path, CoverageReport] = {}
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load agent configuration from YAML file"""
         if config_path is None:
             config_path = Path(__file__).parent.parent / "config" / "agent_config.yaml"
@@ -118,7 +118,7 @@ class TestCoverageEnforcer:
         with open(config_path) as f:
             return yaml.safe_load(f)
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration"""
         return {
             'agent_name': 'test-coverage-enforcer',
@@ -148,7 +148,7 @@ class TestCoverageEnforcer:
             }
         }
 
-    def analyze_coverage(self, path: Path, coverage_file: Optional[Path] = None) -> Dict[Path, CoverageReport]:
+    def analyze_coverage(self, path: Path, coverage_file: Optional[Path] = None) -> dict[Path, CoverageReport]:
         """
         Analyze test coverage for given path using coverage.py
 
@@ -176,7 +176,7 @@ class TestCoverageEnforcer:
 
         return self.reports
 
-    def _run_coverage_analysis(self, path: Path) -> Dict:
+    def _run_coverage_analysis(self, path: Path) -> dict:
         """Run pytest with coverage.py to collect coverage data"""
         try:
             # Run pytest with coverage
@@ -200,7 +200,7 @@ class TestCoverageEnforcer:
             print(f"Coverage analysis failed: {e}")
             return {}
 
-    def _load_coverage_data(self, coverage_file: Path) -> Dict:
+    def _load_coverage_data(self, coverage_file: Path) -> dict:
         """Load coverage data from existing .coverage file"""
         try:
             # Use coverage.py API to read data
@@ -221,7 +221,7 @@ class TestCoverageEnforcer:
             print(f"Failed to load coverage data: {e}")
             return {}
 
-    def _create_coverage_report(self, file_path: str, data: Dict) -> CoverageReport:
+    def _create_coverage_report(self, file_path: str, data: dict) -> CoverageReport:
         """Create structured coverage report from raw data"""
         path = Path(file_path)
 
@@ -256,7 +256,7 @@ class TestCoverageEnforcer:
             uncovered_functions=[f[0] for f in uncovered_funcs]
         )
 
-    def _extract_functions(self, file_path: Path) -> List[Tuple[str, int, int]]:
+    def _extract_functions(self, file_path: Path) -> list[tuple[str, int, int]]:
         """Extract function definitions from Python file"""
         if not file_path.exists() or file_path.suffix != '.py':
             return []
@@ -367,7 +367,7 @@ class TestCoverageEnforcer:
             enforcement_actions=actions
         )
 
-    def generate_test_suggestions(self, reports: Dict[Path, CoverageReport]) -> List[TestGenerationSuggestion]:
+    def generate_test_suggestions(self, reports: dict[Path, CoverageReport]) -> list[TestGenerationSuggestion]:
         """
         Generate suggestions for new tests to improve coverage
 

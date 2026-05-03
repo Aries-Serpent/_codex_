@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable, Mapping
 from pathlib import Path
-from typing import Iterable, Mapping
 
 
 def accuracy(predictions: Iterable[int], labels: Iterable[int]) -> float:

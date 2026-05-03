@@ -19,7 +19,7 @@ from codex_ml.plugins.plugin_registry import Plugin, PluginMetadata, register_pl
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["FairnessCheckerPlugin", "FairnessMetrics", "BiasAlert"]
+__all__ = ["BiasAlert", "FairnessCheckerPlugin", "FairnessMetrics"]
 
 
 @dataclass

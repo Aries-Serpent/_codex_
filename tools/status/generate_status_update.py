@@ -27,9 +27,10 @@ import datetime as dt
 import json
 import os
 import re
+from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, List, Optional, Sequence, Set, Tuple
+from typing import Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CODEX_DIR = REPO_ROOT / ".codex"
@@ -37,7 +38,7 @@ STATUS_DIR = CODEX_DIR / "status"
 ERROR_LOG_PATH = CODEX_DIR / "errors.ndjson"
 UTC = dt.timezone.utc
 
-SRC_DIRS: Tuple[Path, ...] = (
+SRC_DIRS: tuple[Path, ...] = (
     REPO_ROOT / "src",
     REPO_ROOT / "codex_ml",
 )
@@ -86,10 +87,10 @@ class PythonFile:
     text: str
     parsed: bool
     tree: Optional[ast.AST]
-    imports: Set[str] = field(default_factory=set)
+    imports: set[str] = field(default_factory=set)
 
 
-def log_error(step: str, error_message: str, context: Optional[Dict[str, str]] = None) -> None:
+def log_error(step: str, error_message: str, context: Optional[dict[str, str]] = None) -> None:
     """Append a JSON error record to `.codex/errors.ndjson`."""
 
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
@@ -107,7 +108,7 @@ def log_error(step: str, error_message: str, context: Optional[Dict[str, str]] =
         pass
 
 
-def safe_read_text(path: Path) -> Tuple[str, bool]:
+def safe_read_text(path: Path) -> tuple[str, bool]:
     """Read text from a file, logging and returning ``False`` on failure."""
 
     try:
@@ -117,8 +118,8 @@ def safe_read_text(path: Path) -> Tuple[str, bool]:
         return "", False
 
 
-def collect_imports(tree: ast.AST) -> Set[str]:
-    modules: Set[str] = set()
+def collect_imports(tree: ast.AST) -> set[str]:
+    modules: set[str] = set()
 
     class ImportVisitor(ast.NodeVisitor):
         def visit_Import(self, node: ast.Import) -> None:  # noqa: D401
@@ -133,7 +134,7 @@ def collect_imports(tree: ast.AST) -> Set[str]:
     return modules
 
 
-def existing_src_dirs() -> List[Path]:
+def existing_src_dirs() -> list[Path]:
     dirs = [d for d in SRC_DIRS if d.exists()]
     return sorted(dirs)
 
@@ -164,12 +165,12 @@ def iter_python_files(paths: Iterable[Path]) -> Iterator[Path]:
             yield candidate
 
 
-def load_python_files(paths: Iterable[Path]) -> List[PythonFile]:
-    python_files: List[PythonFile] = []
+def load_python_files(paths: Iterable[Path]) -> list[PythonFile]:
+    python_files: list[PythonFile] = []
     for py_path in iter_python_files(paths):
         text, ok = safe_read_text(py_path)
         tree: Optional[ast.AST] = None
-        imports: Set[str] = set()
+        imports: set[str] = set()
         parsed = False
         if ok:
             try:
@@ -184,7 +185,7 @@ def load_python_files(paths: Iterable[Path]) -> List[PythonFile]:
     return python_files
 
 
-def strip_docstring(body: Sequence[ast.stmt]) -> List[ast.stmt]:
+def strip_docstring(body: Sequence[ast.stmt]) -> list[ast.stmt]:
     if not body:
         return []
     body_list = list(body)
@@ -226,8 +227,8 @@ def classify_placeholder(message: Optional[str]) -> bool:
     return any(keyword in lowered for keyword in PLACEHOLDER_KEYWORDS)
 
 
-def scan_stubs(python_files: Sequence[PythonFile]) -> List[Dict[str, object]]:
-    findings: List[Dict[str, object]] = []
+def scan_stubs(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
+    findings: list[dict[str, object]] = []
 
     for py_file in python_files:
         if not py_file.parsed or not py_file.tree:
@@ -237,7 +238,7 @@ def scan_stubs(python_files: Sequence[PythonFile]) -> List[Dict[str, object]]:
 
         class StubVisitor(ast.NodeVisitor):
             def __init__(self) -> None:
-                self.context: List[str] = []
+                self.context: list[str] = []
 
             def push(self, name: str) -> None:
                 self.context.append(name)
@@ -315,8 +316,8 @@ def scan_stubs(python_files: Sequence[PythonFile]) -> List[Dict[str, object]]:
     return findings
 
 
-def count_todos(python_files: Sequence[PythonFile]) -> List[Dict[str, object]]:
-    todo_rows: List[Dict[str, object]] = []
+def count_todos(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
+    todo_rows: list[dict[str, object]] = []
     patterns = {kw: re.compile(rf"\b{re.escape(kw)}\b", re.IGNORECASE) for kw in TODO_KEYWORDS}
 
     for py_file in python_files:
@@ -343,8 +344,8 @@ def is_trivial_init(init_path: Path) -> bool:
     return all(line.startswith(allowed_prefixes) for line in stripped_lines)
 
 
-def find_empty_packages() -> List[Dict[str, str]]:
-    empty: List[Dict[str, str]] = []
+def find_empty_packages() -> list[dict[str, str]]:
+    empty: list[dict[str, str]] = []
     for src_root in existing_src_dirs():
         for directory in sorted(src_root.rglob("*")):
             if not directory.is_dir():
@@ -380,8 +381,8 @@ def find_empty_packages() -> List[Dict[str, str]]:
     return empty
 
 
-def load_docs_texts() -> Dict[Path, str]:
-    docs: Dict[Path, str] = {}
+def load_docs_texts() -> dict[Path, str]:
+    docs: dict[Path, str] = {}
     if not DOCS_DIR.exists():
         return docs
     for extension in ("*.md", "*.rst"):
@@ -392,8 +393,8 @@ def load_docs_texts() -> Dict[Path, str]:
     return docs
 
 
-def find_docs_mentions(doc_texts: Dict[Path, str], term: str) -> List[str]:
-    mentions: List[str] = []
+def find_docs_mentions(doc_texts: dict[Path, str], term: str) -> list[str]:
+    mentions: list[str] = []
     lowered = term.lower()
     for doc_path, text in doc_texts.items():
         if lowered in text.lower():
@@ -436,8 +437,8 @@ def classify_cli_status(body: Sequence[ast.stmt]) -> str:
     return "implemented"
 
 
-def extract_cli_names(decorator: ast.AST) -> List[str]:
-    names: List[str] = []
+def extract_cli_names(decorator: ast.AST) -> list[str]:
+    names: list[str] = []
     if isinstance(decorator, ast.Call):
         for arg in decorator.args:
             if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
@@ -453,9 +454,9 @@ def extract_cli_names(decorator: ast.AST) -> List[str]:
 
 
 def discover_cli(
-    python_files: Sequence[PythonFile], doc_texts: Dict[Path, str]
-) -> List[Dict[str, object]]:
-    cli_entries: List[Dict[str, object]] = []
+    python_files: Sequence[PythonFile], doc_texts: dict[Path, str]
+) -> list[dict[str, object]]:
+    cli_entries: list[dict[str, object]] = []
 
     for py_file in python_files:
         if not py_file.parsed or not py_file.tree:
@@ -469,7 +470,7 @@ def discover_cli(
             decorators = node.decorator_list
             decorator_names = [get_attr_name(dec) for dec in decorators]
             cli_related = False
-            cli_names: List[str] = []
+            cli_names: list[str] = []
             for decorator in decorators:
                 name = get_attr_name(decorator)
                 base = name.lower()
@@ -484,7 +485,7 @@ def discover_cli(
 
             cli_names = sorted(set(cli_names)) or [node.name]
             status = classify_cli_status(node.body)
-            docs_mentions: List[str] = []
+            docs_mentions: list[str] = []
             for candidate in {node.name, *cli_names}:
                 docs_mentions.extend(find_docs_mentions(doc_texts, candidate))
             entry = {
@@ -511,8 +512,8 @@ def registry_value_repr(py_file: PythonFile, node: ast.AST) -> str:
     return type(node).__name__
 
 
-def inspect_registries(python_files: Sequence[PythonFile]) -> List[Dict[str, object]]:
-    registries: List[Dict[str, object]] = []
+def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
+    registries: list[dict[str, object]] = []
 
     for py_file in python_files:
         if "registry" not in py_file.path.name.lower():
@@ -521,7 +522,7 @@ def inspect_registries(python_files: Sequence[PythonFile]) -> List[Dict[str, obj
             continue
 
         rel_path = str(py_file.path.relative_to(REPO_ROOT))
-        entries: Dict[str, Dict[str, object]] = {}
+        entries: dict[str, dict[str, object]] = {}
 
         for node in ast.walk(py_file.tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
@@ -624,9 +625,9 @@ def module_name_from_path(path: Path) -> str:
     return ".".join(relative.with_suffix("").parts)
 
 
-def map_tests(python_files: Sequence[PythonFile]) -> Dict[str, object]:
+def map_tests(python_files: Sequence[PythonFile]) -> dict[str, object]:
     src_files = [pf for pf in python_files if pf.path.suffix == ".py"]
-    module_entries: List[Dict[str, str]] = []
+    module_entries: list[dict[str, str]] = []
     for pf in src_files:
         module_name = module_name_from_path(pf.path)
         if not module_name:
@@ -641,7 +642,7 @@ def map_tests(python_files: Sequence[PythonFile]) -> Dict[str, object]:
     test_files = load_python_files([TESTS_DIR]) if TESTS_DIR.exists() else []
     test_texts = [(str(pf.path.relative_to(REPO_ROOT)), pf.text) for pf in test_files]
 
-    modules_without_tests: List[str] = []
+    modules_without_tests: list[str] = []
     for entry in module_entries:
         module_name = entry["module"]
         module_file = entry["file"].replace(os.sep, "/")
@@ -673,13 +674,13 @@ def map_tests(python_files: Sequence[PythonFile]) -> Dict[str, object]:
     }
 
 
-def docs_crossreferences(doc_texts: Dict[Path, str]) -> List[Dict[str, object]]:
+def docs_crossreferences(doc_texts: dict[Path, str]) -> list[dict[str, object]]:
     topic_patterns = {topic: re.compile(re.escape(topic), re.IGNORECASE) for topic in DOC_TOPICS}
-    crossrefs: List[Dict[str, object]] = []
+    crossrefs: list[dict[str, object]] = []
 
     for doc_path, text in doc_texts.items():
         lines = text.splitlines()
-        topics: List[Dict[str, object]] = []
+        topics: list[dict[str, object]] = []
         for topic, pattern in topic_patterns.items():
             matches = [idx + 1 for idx, line in enumerate(lines) if pattern.search(line)]
             if matches:
@@ -715,13 +716,13 @@ def parse_requirements_line(line: str) -> Optional[str]:
     return package.lower().replace("_", "-")
 
 
-def packaging_summary() -> Dict[str, object]:
-    summary: Dict[str, object] = {}
+def packaging_summary() -> dict[str, object]:
+    summary: dict[str, object] = {}
 
     pyproject = REPO_ROOT / "pyproject.toml"
     summary["pyproject"] = pyproject.exists()
 
-    requirement_files: List[str] = []
+    requirement_files: list[str] = []
     for pattern in ("requirements*.txt", "requirements*.in"):
         for path in sorted(REPO_ROOT.glob(pattern)):
             if path.is_file():
@@ -740,7 +741,7 @@ def packaging_summary() -> Dict[str, object]:
             lock_files.append(str(path.relative_to(REPO_ROOT)))
     summary["lock_files"] = sorted(lock_files)
 
-    package_map: Dict[str, List[Dict[str, str]]] = {}
+    package_map: dict[str, list[dict[str, str]]] = {}
     for rel_path in summary["requirement_files"]:
         path = REPO_ROOT / rel_path
         text, ok = safe_read_text(path)
@@ -752,7 +753,7 @@ def packaging_summary() -> Dict[str, object]:
                 continue
             package_map.setdefault(package, []).append({"file": rel_path, "spec": line.strip()})
 
-    duplicates: List[Dict[str, object]] = []
+    duplicates: list[dict[str, object]] = []
     for package, records in sorted(package_map.items()):
         files = {record["file"] for record in records}
         specs = {record["spec"] for record in records}
@@ -770,7 +771,7 @@ def packaging_summary() -> Dict[str, object]:
     return summary
 
 
-def compliance_summary() -> Dict[str, object]:
+def compliance_summary() -> dict[str, object]:
     license_files = [
         str(path.relative_to(REPO_ROOT))
         for path in sorted(REPO_ROOT.glob("**/LICENSE*"))
@@ -789,15 +790,15 @@ def compliance_summary() -> Dict[str, object]:
     }
 
 
-def reproducibility_summary(python_files: Sequence[PythonFile]) -> Dict[str, object]:
+def reproducibility_summary(python_files: Sequence[PythonFile]) -> dict[str, object]:
     manifest_files = [
         str(path.relative_to(REPO_ROOT))
         for path in sorted(REPO_ROOT.rglob("manifest.json"))
         if path.is_file()
     ]
 
-    seed_modules: List[str] = []
-    seed_calls: List[Dict[str, object]] = []
+    seed_modules: list[str] = []
+    seed_calls: list[dict[str, object]] = []
     seed_patterns = [
         "random.seed",
         "np.random.seed",
@@ -819,7 +820,7 @@ def reproducibility_summary(python_files: Sequence[PythonFile]) -> Dict[str, obj
             )
 
     checkpoint_patterns = ("*.ckpt", "*.pt", "*.pth", "*.bin")
-    checkpoint_files: Set[str] = set()
+    checkpoint_files: set[str] = set()
     for pattern in checkpoint_patterns:
         for path in sorted(REPO_ROOT.rglob(pattern)):
             if path.is_file():
@@ -836,7 +837,7 @@ def reproducibility_summary(python_files: Sequence[PythonFile]) -> Dict[str, obj
     }
 
 
-def build_summary_counts(data: Dict[str, object]) -> Dict[str, object]:
+def build_summary_counts(data: dict[str, object]) -> dict[str, object]:
     stubs = data.get("stubs", [])
     todo_counts = data.get("todo_counts", [])
     empty_packages = data.get("empty_packages", [])
@@ -844,16 +845,16 @@ def build_summary_counts(data: Dict[str, object]) -> Dict[str, object]:
     registries = data.get("registries", [])
     tests = data.get("tests", {})
 
-    kind_counts: Dict[str, int] = {}
+    kind_counts: dict[str, int] = {}
     for item in stubs:
         kind_counts[item["kind"]] = kind_counts.get(item["kind"], 0) + 1
 
-    cli_status_counts: Dict[str, int] = {}
+    cli_status_counts: dict[str, int] = {}
     for entry in cli_entries:
         status = entry["status"]
         cli_status_counts[status] = cli_status_counts.get(status, 0) + 1
 
-    registry_status_counts: Dict[str, int] = {}
+    registry_status_counts: dict[str, int] = {}
     for entry in registries:
         status = entry["status"]
         registry_status_counts[status] = registry_status_counts.get(status, 0) + 1
@@ -873,18 +874,18 @@ def build_summary_counts(data: Dict[str, object]) -> Dict[str, object]:
     }
 
 
-def render_table_rows(rows: List[str]) -> List[str]:
+def render_table_rows(rows: list[str]) -> list[str]:
     return rows if rows else ["| (none) |"]
 
 
-def write_report(author: str, date: str, data: Dict[str, object], write: bool) -> Path:
+def write_report(author: str, date: str, data: dict[str, object], write: bool) -> Path:
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
     out_path = STATUS_DIR / f"_codex_status_update-{date}.md"
     generated_ts = dt.datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
 
     summary_counts = build_summary_counts(data)
 
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# Status Update: Exhaustive Audit")
     lines.append(f"> Generated: {generated_ts} | Author: {author}")
     lines.append("")
@@ -961,7 +962,7 @@ def write_report(author: str, date: str, data: Dict[str, object], write: bool) -
     lines.append("## Registries and Plugins")
     lines.append("| Registry File | Key | Implementation | Status |")
     lines.append("| --- | --- | --- | --- |")
-    registry_rows: List[str] = []
+    registry_rows: list[str] = []
     for registry in data.get("registries", []):
         entries = registry.get("entries", [])
         if entries:
@@ -999,7 +1000,7 @@ def write_report(author: str, date: str, data: Dict[str, object], write: bool) -
     lines.append("## Docs Cross-References")
     lines.append("| Doc | Topic | Line(s) | Count |")
     lines.append("| --- | --- | --- | --- |")
-    doc_rows: List[str] = []
+    doc_rows: list[str] = []
     for entry in data.get("docs", []):
         doc = entry["doc"]
         topics = entry.get("topics", [])
@@ -1076,7 +1077,7 @@ def write_report(author: str, date: str, data: Dict[str, object], write: bool) -
     return out_path
 
 
-def write_status_snapshot(data: Dict[str, object]) -> None:
+def write_status_snapshot(data: dict[str, object]) -> None:
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     snapshot_path = CODEX_DIR / "status_scan.json"
     snapshot_path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
@@ -1097,7 +1098,7 @@ def generate(author: str, date: str, write: bool) -> Path:
     compliance = compliance_summary()
     reproducibility = reproducibility_summary(src_python_files)
 
-    data: Dict[str, object] = {
+    data: dict[str, object] = {
         "generated_at": utc_timestamp() + "Z",
         "author": author,
         "date": date,

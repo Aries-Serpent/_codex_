@@ -8,7 +8,6 @@ import ast
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Set
 
 
 @dataclass
@@ -17,9 +16,9 @@ class ModuleInfo:
 
     path: str
     lines: int
-    classes: List[str] = field(default_factory=list)
-    functions: List[str] = field(default_factory=list)
-    methods: Dict[str, List[str]] = field(default_factory=dict)
+    classes: list[str] = field(default_factory=list)
+    functions: list[str] = field(default_factory=list)
+    methods: dict[str, list[str]] = field(default_factory=dict)
 
 
 def extract_code_elements(filepath: str) -> ModuleInfo:
@@ -52,7 +51,7 @@ def extract_code_elements(filepath: str) -> ModuleInfo:
     return info
 
 
-def find_test_coverage(module_path: str, test_dirs: List[str]) -> Set[str]:
+def find_test_coverage(module_path: str, test_dirs: list[str]) -> set[str]:
     """Find which functions/classes from module are tested."""
     module_name = Path(module_path).stem
     tested_items = set()
@@ -78,7 +77,7 @@ def find_test_coverage(module_path: str, test_dirs: List[str]) -> Set[str]:
     return tested_items
 
 
-def analyze_rag_module(rag_dir: str, test_dirs: List[str]) -> Dict:
+def analyze_rag_module(rag_dir: str, test_dirs: list[str]) -> dict:
     """Analyze RAG module structure and identify gaps."""
     rag_path = Path(rag_dir)
 
@@ -158,7 +157,7 @@ def analyze_rag_module(rag_dir: str, test_dirs: List[str]) -> Dict:
     return results
 
 
-def generate_report(results: Dict) -> str:
+def generate_report(results: dict) -> str:
     """Generate markdown coverage report."""
     report = []
     report.append("# RAG Module Coverage Analysis\n")

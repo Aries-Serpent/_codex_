@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 import os
 from datetime import UTC, datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from security.providers.base import (
     ProviderConfig,
@@ -169,7 +169,7 @@ class EnvironmentProvider(SecretProvider):
         logger.info("Set environment variable via EnvironmentSecretProvider")
         return True
 
-    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[dict[str, str]] = None) -> list[SecretMetadata]:
         """List all environment variables with prefix.
 
         Args:

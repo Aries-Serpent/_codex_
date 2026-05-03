@@ -20,13 +20,12 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Prometheus metrics registry helpers for Codex workflows."""
 
 
 import os  # noqa: E402
 import time  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
 from contextlib import contextmanager  # noqa: E402
-from typing import Iterable  # noqa: E402
 
 try:  # Optional dependency: prometheus-client
     from prometheus_client import CollectorRegistry, Counter, Gauge, Histogram

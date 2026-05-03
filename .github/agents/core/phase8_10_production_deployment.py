@@ -28,7 +28,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 # =============================================================================
 # CONSTANTS FOR PHASE 8.10
@@ -113,9 +113,9 @@ class AgentManifest:
     category: AgentCategory
     description: str
     author: str
-    dependencies: List[str] = field(default_factory=list)
-    capabilities: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    dependencies: list[str] = field(default_factory=list)
+    capabilities: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -173,9 +173,9 @@ class AgentMarketplace:
         self.seed = seed
 
         # State
-        self.registered_agents: Dict[str, AgentManifest] = {}
-        self.agent_versions: Dict[str, List[str]] = defaultdict(list)
-        self.capability_index: Dict[str, List[str]] = defaultdict(list)
+        self.registered_agents: dict[str, AgentManifest] = {}
+        self.agent_versions: dict[str, list[str]] = defaultdict(list)
+        self.capability_index: dict[str, list[str]] = defaultdict(list)
 
         # Metrics
         self.total_registrations = 0
@@ -232,7 +232,7 @@ class AgentMarketplace:
         self,
         capability: Optional[str] = None,
         category: Optional[AgentCategory] = None,
-    ) -> List[AgentManifest]:
+    ) -> list[AgentManifest]:
         """Discover agents by capability or category.
 
         Args:
@@ -304,7 +304,7 @@ class AgentMarketplace:
             return False
         return True
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get marketplace metrics.
 
         Returns:
@@ -356,8 +356,8 @@ class TestResult:
     test_id: str
     success: bool
     duration_seconds: float
-    errors: List[str] = field(default_factory=list)
-    metrics: Dict[str, float] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    metrics: dict[str, float] = field(default_factory=dict)
 
 
 class RealWorldTestingInfrastructure:
@@ -399,9 +399,9 @@ class RealWorldTestingInfrastructure:
         self.seed = seed
 
         # State
-        self.test_repositories: List[str] = []
-        self.test_results: List[TestResult] = []
-        self.active_tests: Set[str] = set()
+        self.test_repositories: list[str] = []
+        self.test_results: list[TestResult] = []
+        self.active_tests: set[str] = set()
 
         # Metrics
         self.total_tests_executed = 0
@@ -514,7 +514,7 @@ class RealWorldTestingInfrastructure:
         variant_a_id: str,
         variant_b_id: str,
         sample_size: int = BETA_TEST_SAMPLE_SIZE,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run A/B test between two variants.
 
         Args:
@@ -574,7 +574,7 @@ class RealWorldTestingInfrastructure:
             "sample_size": sample_size,
         }
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get testing infrastructure metrics.
 
         Returns:
@@ -658,7 +658,7 @@ class PerformanceBenchmarkSuite:
 
     def __init__(
         self,
-        percentiles: List[int] = None,
+        percentiles: list[int] = None,
         sample_rate_hz: float = RESOURCE_SAMPLE_RATE_HZ,
         seed: int = RANDOM_SEED_8_10,
     ):
@@ -674,9 +674,9 @@ class PerformanceBenchmarkSuite:
         self.seed = seed
 
         # State
-        self.latency_measurements: List[LatencyMeasurement] = []
-        self.benchmarks: List[BenchmarkResult] = []
-        self.performance_baselines: Dict[str, float] = {}
+        self.latency_measurements: list[LatencyMeasurement] = []
+        self.benchmarks: list[BenchmarkResult] = []
+        self.performance_baselines: dict[str, float] = {}
 
         # Metrics
         self.total_measurements = 0
@@ -717,7 +717,7 @@ class PerformanceBenchmarkSuite:
     def run_benchmark(
         self,
         benchmark_id: str,
-        operations: List[str],
+        operations: list[str],
         num_iterations: int = 100,
     ) -> BenchmarkResult:
         """Run comprehensive performance benchmark.
@@ -804,7 +804,7 @@ class PerformanceBenchmarkSuite:
 
         return p95_regression > threshold_percent
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get benchmarking metrics.
 
         Returns:
@@ -834,7 +834,7 @@ class MetricPoint:
     timestamp: datetime
     name: str
     value: float
-    tags: Dict[str, str] = field(default_factory=dict)
+    tags: dict[str, str] = field(default_factory=dict)
 
 
 class MonitoringObservability:
@@ -848,11 +848,11 @@ class MonitoringObservability:
     """
 
     def __init__(self, seed: int = RANDOM_SEED_8_10):
-        self.metrics: List[MetricPoint] = []
+        self.metrics: list[MetricPoint] = []
         self.total_metrics_exported = 0
         random.seed(seed)
 
-    def export_metric(self, name: str, value: float, tags: Optional[Dict[str, str]] = None) -> None:
+    def export_metric(self, name: str, value: float, tags: Optional[dict[str, str]] = None) -> None:
         """Export metric to monitoring system."""
         metric = MetricPoint(
             timestamp=datetime.now(),
@@ -863,7 +863,7 @@ class MonitoringObservability:
         self.metrics.append(metric)
         self.total_metrics_exported += 1
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         return {
             "total_metrics_exported": self.total_metrics_exported,
             "metrics_count": len(self.metrics),
@@ -896,7 +896,7 @@ class DocumentationPortal:
     """
 
     def __init__(self, seed: int = RANDOM_SEED_8_10):
-        self.pages: Dict[str, DocumentationPage] = {}
+        self.pages: dict[str, DocumentationPage] = {}
         self.total_pages_generated = 0
         random.seed(seed)
 
@@ -912,7 +912,7 @@ class DocumentationPortal:
         self.total_pages_generated += 1
         return page
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         return {
             "total_pages_generated": self.total_pages_generated,
             "pages_count": len(self.pages),
@@ -945,8 +945,8 @@ class SecurityHardening:
     """
 
     def __init__(self, seed: int = RANDOM_SEED_8_10):
-        self.events: List[SecurityEvent] = []
-        self.rate_limits: Dict[str, int] = {}
+        self.events: list[SecurityEvent] = []
+        self.rate_limits: dict[str, int] = {}
         self.total_requests_validated = 0
         random.seed(seed)
 
@@ -968,7 +968,7 @@ class SecurityHardening:
         )
         self.events.append(event)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         blocked_count = sum(1 for e in self.events if e.blocked)
         return {
             "total_requests_validated": self.total_requests_validated,
@@ -1003,7 +1003,7 @@ class ContinuousDeploymentPipeline:
     """
 
     def __init__(self, seed: int = RANDOM_SEED_8_10):
-        self.deployments: List[DeploymentStatus] = []
+        self.deployments: list[DeploymentStatus] = []
         self.total_deployments = 0
         random.seed(seed)
 
@@ -1028,7 +1028,7 @@ class ContinuousDeploymentPipeline:
                 return True
         return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         successful = sum(1 for d in self.deployments if d.health_check_passed)
         return {
             "total_deployments": self.total_deployments,

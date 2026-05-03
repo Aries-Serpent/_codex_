@@ -11,8 +11,8 @@ import pytest
 
 pytest.importorskip("omegaconf")
 
-from codex_ml.config import DataConfig  # noqa: E402
-from codex_ml.data.loader import prepare_data_from_config  # noqa: E402
+from codex_ml.config import DataConfig
+from codex_ml.data.loader import prepare_data_from_config
 
 
 def test_prepare_data_deterministic(tmp_path: Path) -> None:

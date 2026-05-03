@@ -24,9 +24,10 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 
 import math
 import random
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 # =============================================================================
 # CONSTANTS FOR PHASE 8.11
@@ -101,7 +102,7 @@ class Predicate:
         arity: Number of arguments
     """
     name: str
-    arguments: List[str]
+    arguments: list[str]
 
     @property
     def arity(self) -> int:
@@ -118,8 +119,8 @@ class LogicalFormula:
         variables: Quantified variables (for forall/exists)
     """
     operator: LogicOperator
-    operands: List[Union[Predicate, 'LogicalFormula']]
-    variables: List[str] = field(default_factory=list)
+    operands: list[Union[Predicate, 'LogicalFormula']]
+    variables: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -134,7 +135,7 @@ class InferenceResult:
     """
     conclusion: LogicalFormula
     confidence: float
-    proof_steps: List[str]
+    proof_steps: list[str]
     inference_type: str
 
 
@@ -177,8 +178,8 @@ class SymbolicReasoningEngine:
         self.seed = seed
 
         # State
-        self.knowledge_base: List[LogicalFormula] = []
-        self.inference_history: List[InferenceResult] = []
+        self.knowledge_base: list[LogicalFormula] = []
+        self.inference_history: list[InferenceResult] = []
 
         # Metrics
         self.total_inferences = 0
@@ -310,7 +311,7 @@ class SymbolicReasoningEngine:
                 return self._formulas_match(rule.operands[1], goal)
         return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get reasoning engine metrics.
 
         Returns:
@@ -373,7 +374,7 @@ class InterventionResult:
     intervention: str
     outcome: str
     effect_size: float
-    confidence_interval: Tuple[float, float]
+    confidence_interval: tuple[float, float]
 
 
 class CausalInferenceSystem:
@@ -415,9 +416,9 @@ class CausalInferenceSystem:
         self.seed = seed
 
         # State
-        self.causal_graph_nodes: Dict[str, CausalNode] = {}
-        self.causal_graph_edges: List[CausalEdge] = []
-        self.intervention_results: List[InterventionResult] = []
+        self.causal_graph_nodes: dict[str, CausalNode] = {}
+        self.causal_graph_edges: list[CausalEdge] = []
+        self.intervention_results: list[InterventionResult] = []
 
         # Metrics
         self.total_interventions = 0
@@ -436,8 +437,8 @@ class CausalInferenceSystem:
 
     def discover_causal_structure(
         self,
-        data: Dict[str, List[float]],
-    ) -> List[CausalEdge]:
+        data: dict[str, list[float]],
+    ) -> list[CausalEdge]:
         """Discover causal structure from observational data.
 
         Args:
@@ -517,8 +518,8 @@ class CausalInferenceSystem:
 
     def counterfactual_query(
         self,
-        factual: Dict[str, float],
-        intervention: Dict[str, float],
+        factual: dict[str, float],
+        intervention: dict[str, float],
         query_var: str,
     ) -> float:
         """Answer counterfactual query.
@@ -542,7 +543,7 @@ class CausalInferenceSystem:
 
         return base_value
 
-    def _compute_correlation(self, x: List[float], y: List[float]) -> float:
+    def _compute_correlation(self, x: list[float], y: list[float]) -> float:
         """Compute correlation between two variables."""
         if len(x) != len(y) or len(x) == 0:
             return 0.0
@@ -566,7 +567,7 @@ class CausalInferenceSystem:
                 return True
         return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get causal inference metrics.
 
         Returns:
@@ -597,7 +598,7 @@ class Timeline:
     """
     timeline_id: str
     branch_point: int
-    events: List[str]
+    events: list[str]
     outcome_utility: float = 0.0
 
 
@@ -612,8 +613,8 @@ class CounterfactualScenario:
         confidence: Prediction confidence
     """
     scenario_id: str
-    intervention: Dict[str, Any]
-    predicted_outcome: Dict[str, Any]
+    intervention: dict[str, Any]
+    predicted_outcome: dict[str, Any]
     confidence: float
 
 
@@ -656,8 +657,8 @@ class CounterfactualPlanner:
         self.seed = seed
 
         # State
-        self.timelines: List[Timeline] = []
-        self.scenarios: List[CounterfactualScenario] = []
+        self.timelines: list[Timeline] = []
+        self.scenarios: list[CounterfactualScenario] = []
 
         # Metrics
         self.total_scenarios_generated = 0
@@ -667,8 +668,8 @@ class CounterfactualPlanner:
 
     def generate_counterfactual_scenario(
         self,
-        current_state: Dict[str, Any],
-        intervention: Dict[str, Any],
+        current_state: dict[str, Any],
+        intervention: dict[str, Any],
     ) -> CounterfactualScenario:
         """Generate what-if scenario.
 
@@ -748,9 +749,9 @@ class CounterfactualPlanner:
 
     def minimize_counterfactual_regret(
         self,
-        action_history: List[str],
+        action_history: list[str],
         utility_function: Callable[[str], float],
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Minimize counterfactual regret.
 
         Args:
@@ -785,7 +786,7 @@ class CounterfactualPlanner:
         # PDA: AfterMath - Return optimized strategy
         return strategy
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get counterfactual planning metrics.
 
         Returns:
@@ -821,8 +822,8 @@ class Objective:
 class Solution:
     """Solution in multi-objective space."""
     solution_id: str
-    variables: Dict[str, float]
-    objective_values: Dict[str, float]
+    variables: dict[str, float]
+    objective_values: dict[str, float]
     is_pareto_optimal: bool = False
     dominates_count: int = 0
 
@@ -850,7 +851,7 @@ class MultiObjectiveOptimizer:
 
     def __init__(
         self,
-        objectives: List[Objective],
+        objectives: list[Objective],
         population_size: int = PARETO_POPULATION_SIZE,
         seed: int = RANDOM_SEED_8_11,
     ):
@@ -860,8 +861,8 @@ class MultiObjectiveOptimizer:
         self.seed = seed
 
         # State
-        self.population: List[Solution] = []
-        self.pareto_front: List[Solution] = []
+        self.population: list[Solution] = []
+        self.pareto_front: list[Solution] = []
 
         # Metrics
         self.generations_evolved = 0
@@ -872,7 +873,7 @@ class MultiObjectiveOptimizer:
     def evaluate_solution(
         self,
         solution: Solution,
-        objective_functions: Dict[str, Callable],
+        objective_functions: dict[str, Callable],
     ) -> Solution:
         """Evaluate solution on all objectives."""
         self.solutions_evaluated += 1
@@ -920,7 +921,7 @@ class MultiObjectiveOptimizer:
                 sol.is_pareto_optimal = True
                 self.pareto_front.append(sol)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         return {
             "generations_evolved": self.generations_evolved,
             "solutions_evaluated": self.solutions_evaluated,
@@ -948,9 +949,9 @@ class Explanation:
     explanation_id: str
     decision: str
     natural_language: str
-    feature_importances: List[FeatureImportance]
+    feature_importances: list[FeatureImportance]
     confidence: float
-    reasoning_chain: List[str]
+    reasoning_chain: list[str]
 
 
 class ExplainableAI:
@@ -986,7 +987,7 @@ class ExplainableAI:
         self.seed = seed
 
         # State
-        self.explanations: List[Explanation] = []
+        self.explanations: list[Explanation] = []
 
         # Metrics
         self.total_explanations_generated = 0
@@ -996,7 +997,7 @@ class ExplainableAI:
     def explain_decision(
         self,
         decision: str,
-        features: Dict[str, float],
+        features: dict[str, float],
         model_prediction: Callable,
     ) -> Explanation:
         """Generate explanation for decision."""
@@ -1046,7 +1047,7 @@ class ExplainableAI:
     def _generate_natural_language(
         self,
         decision: str,
-        top_features: List[FeatureImportance],
+        top_features: list[FeatureImportance],
     ) -> str:
         """Generate natural language explanation."""
         if not top_features:
@@ -1059,7 +1060,7 @@ class ExplainableAI:
 
         return f"Decision '{decision}' was primarily influenced by: {feature_text}."
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         avg_confidence = (
             sum(e.confidence for e in self.explanations) / len(self.explanations)
             if self.explanations else 0.0
@@ -1083,15 +1084,15 @@ class HumanFeedback:
     plan_id: str
     rating: float  # [0, 5]
     critique: str
-    suggested_modifications: List[str]
+    suggested_modifications: list[str]
 
 
 @dataclass
 class CollaborativePlan:
     """Collaboratively created plan."""
     plan_id: str
-    goals: List[str]
-    steps: List[str]
+    goals: list[str]
+    steps: list[str]
     human_iterations: int
     final_rating: float
 
@@ -1129,8 +1130,8 @@ class InteractivePlanner:
         self.seed = seed
 
         # State
-        self.plans: List[CollaborativePlan] = []
-        self.feedback_history: List[HumanFeedback] = []
+        self.plans: list[CollaborativePlan] = []
+        self.feedback_history: list[HumanFeedback] = []
 
         # Metrics
         self.total_collaborations = 0
@@ -1140,7 +1141,7 @@ class InteractivePlanner:
 
     def create_plan_with_human(
         self,
-        goals: List[str],
+        goals: list[str],
     ) -> CollaborativePlan:
         """Create plan collaboratively with human."""
         self.total_collaborations += 1
@@ -1187,7 +1188,7 @@ class InteractivePlanner:
 
         return plan
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         acceptance_rate = (
             self.plans_accepted / self.total_collaborations
             if self.total_collaborations > 0 else 0.0
@@ -1210,12 +1211,12 @@ class InteractivePlanner:
 class PlanningNode:
     """Node in planning tree."""
     node_id: str
-    state: Dict[str, Any]
+    state: dict[str, Any]
     action: Optional[str]
     value: float = 0.0
     visits: int = 0
     parent: Optional[str] = None
-    children: List[str] = field(default_factory=list)
+    children: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -1223,7 +1224,7 @@ class ContingencyBranch:
     """Contingency branch in plan."""
     branch_id: str
     condition: str
-    alternative_actions: List[str]
+    alternative_actions: list[str]
     probability: float
 
 
@@ -1260,8 +1261,8 @@ class LongHorizonPlanner:
         self.seed = seed
 
         # State
-        self.planning_tree: Dict[str, PlanningNode] = {}
-        self.contingency_branches: List[ContingencyBranch] = []
+        self.planning_tree: dict[str, PlanningNode] = {}
+        self.contingency_branches: list[ContingencyBranch] = []
 
         # Metrics
         self.total_simulations = 0
@@ -1271,9 +1272,9 @@ class LongHorizonPlanner:
 
     def mcts_search(
         self,
-        initial_state: Dict[str, Any],
-        available_actions: List[str],
-    ) -> List[str]:
+        initial_state: dict[str, Any],
+        available_actions: list[str],
+    ) -> list[str]:
         """Perform MCTS search for best action sequence."""
         root_id = "root"
         self.planning_tree[root_id] = PlanningNode(
@@ -1316,9 +1317,9 @@ class LongHorizonPlanner:
 
     def create_contingency_plan(
         self,
-        base_plan: List[str],
-        uncertainties: List[str],
-    ) -> List[ContingencyBranch]:
+        base_plan: list[str],
+        uncertainties: list[str],
+    ) -> list[ContingencyBranch]:
         """Create contingency plan for uncertainties."""
         branches = []
 
@@ -1372,7 +1373,7 @@ class LongHorizonPlanner:
             else:
                 break
 
-    def _extract_best_path(self, root_id: str) -> List[str]:
+    def _extract_best_path(self, root_id: str) -> list[str]:
         """Extract best action sequence."""
         path = []
         current_id = root_id
@@ -1399,7 +1400,7 @@ class LongHorizonPlanner:
 
         return path
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         return {
             "total_simulations": self.total_simulations,
             "plans_generated": self.plans_generated,

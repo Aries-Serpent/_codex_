@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 SCANS: dict[str, list[str]] = {
     "bandit": ["bandit", "-r", "src", "-f", "json"],

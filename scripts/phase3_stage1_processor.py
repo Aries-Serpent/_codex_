@@ -7,7 +7,6 @@ Removes or updates references to deleted files in high-priority documentation.
 import json
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -18,7 +17,7 @@ def load_categorization() -> dict:
     with open(cat_file) as f:
         return json.load(f)
 
-def get_high_priority_files(cat_data: dict) -> List[Tuple[str, dict]]:
+def get_high_priority_files(cat_data: dict) -> list[tuple[str, dict]]:
     """Get list of high-priority files with broken links."""
     high_priority = []
 

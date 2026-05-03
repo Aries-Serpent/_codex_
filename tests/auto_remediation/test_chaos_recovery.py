@@ -13,7 +13,7 @@ Phase: 20.3 Self-Healing Infrastructure
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -22,7 +22,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def chaos_config() -> Dict[str, Any]:
+def chaos_config() -> dict[str, Any]:
     """Configuration for chaos experiments."""
     return {
         "experiment_duration_seconds": 300,
@@ -42,7 +42,7 @@ def chaos_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def cluster_state() -> Dict[str, Any]:
+def cluster_state() -> dict[str, Any]:
     """Mock cluster state for chaos testing."""
     return {
         "nodes": [

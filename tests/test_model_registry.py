@@ -21,8 +21,8 @@ try:
 except ImportError:
     _TORCH_312_BUG = False
 
-from codex_ml.models.registry import get_model  # noqa: E402
-from codex_ml.plugins.registries import models as plugin_models  # noqa: E402
+from codex_ml.models.registry import get_model
+from codex_ml.plugins.registries import models as plugin_models
 
 GPT2Config = transformers.GPT2Config
 GPT2LMHeadModel = transformers.GPT2LMHeadModel

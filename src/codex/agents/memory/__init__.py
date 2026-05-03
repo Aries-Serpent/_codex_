@@ -33,12 +33,12 @@ from .manager import MemoryManager
 from .protocol import MemoryEntry, MemoryProtocol, MemoryQuery
 
 __all__ = [
-    "MemoryProtocol",
-    "MemoryEntry",
-    "MemoryQuery",
     "JSONLMemoryBackend",
-    "SQLiteMemoryBackend",
+    "MemoryEntry",
     "MemoryManager",
+    "MemoryProtocol",
+    "MemoryQuery",
+    "SQLiteMemoryBackend",
 ]
 
 __version__ = "0.1.0"

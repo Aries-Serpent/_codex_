@@ -13,7 +13,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 # Add parent paths for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'src'))
@@ -43,7 +43,7 @@ class GitHubTestOrchestratorAgent:
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.repo_name = os.getenv('GITHUB_REPOSITORY', 'unknown/unknown')
 
-    def run(self, action: str, **kwargs) -> Dict:
+    def run(self, action: str, **kwargs) -> dict:
         """Execute agent action."""
         print(f"[Test Orchestrator] Running action: {action}")
 

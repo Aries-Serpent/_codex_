@@ -23,7 +23,7 @@ import json
 import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -56,16 +56,16 @@ class HandoffContext:
         self.timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
         # Extracted data
-        self.completed_tasks: List[str] = []
-        self.pending_tasks: List[str] = []
-        self.deliverables: List[Dict[str, str]] = []
-        self.patterns_applied: List[str] = []
-        self.blockers: List[str] = []
-        self.metrics: Dict[str, Any] = {}
-        self.files_modified: List[str] = []
-        self.recommendations: List[str] = []
+        self.completed_tasks: list[str] = []
+        self.pending_tasks: list[str] = []
+        self.deliverables: list[dict[str, str]] = []
+        self.patterns_applied: list[str] = []
+        self.blockers: list[str] = []
+        self.metrics: dict[str, Any] = {}
+        self.files_modified: list[str] = []
+        self.recommendations: list[str] = []
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary."""
         return {
             "from_agent": self.from_agent,
@@ -99,7 +99,7 @@ class AutoHandoff:
         if not ACTION_LOG_PATH.exists():
             return context
 
-        file_ops: Dict[str, List[str]] = {
+        file_ops: dict[str, list[str]] = {
             "created": [],
             "modified": [],
             "commits": []
@@ -153,9 +153,9 @@ class AutoHandoff:
 
         return context
 
-    def load_patterns(self) -> List[str]:
+    def load_patterns(self) -> list[str]:
         """Load applied patterns from pattern store."""
-        patterns: List[str] = []
+        patterns: list[str] = []
 
         if not PATTERN_STORE.exists():
             return patterns
@@ -173,7 +173,7 @@ class AutoHandoff:
             logger.debug("Suppressed exception in handler", exc_info=True)
         return patterns[:5]  # Top 5
 
-    def load_tracking_data(self) -> Dict[str, Any]:
+    def load_tracking_data(self) -> dict[str, Any]:
         """Load or initialize handoff tracking data."""
         if TRACKING_FILE.exists():
             try:
@@ -185,7 +185,7 @@ class AutoHandoff:
         # Initialize new tracking data
         return self._init_tracking_data()
 
-    def _init_tracking_data(self) -> Dict[str, Any]:
+    def _init_tracking_data(self) -> dict[str, Any]:
         """Initialize new tracking data structure."""
         now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         return {
@@ -210,14 +210,14 @@ class AutoHandoff:
             }
         }
 
-    def save_tracking_data(self, data: Dict[str, Any]) -> None:
+    def save_tracking_data(self, data: dict[str, Any]) -> None:
         """Save tracking data to file."""
         data["last_updated"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         TRACKING_FILE.parent.mkdir(parents=True, exist_ok=True)
         with open(TRACKING_FILE, 'w') as f:
             json.dump(data, f, indent=2)
 
-    def generate_handoff_id(self, data: Dict[str, Any]) -> str:
+    def generate_handoff_id(self, data: dict[str, Any]) -> str:
         """Generate unique handoff ID."""
         count = len(data.get("handoffs", []))
         return f"HO-{count + 1:03d}"
@@ -227,7 +227,7 @@ class AutoHandoff:
         handoff_id: str,
         context: HandoffContext,
         status: str = "pending"
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create a handoff record for tracking."""
         return {
             "id": handoff_id,
@@ -395,7 +395,7 @@ class AutoHandoff:
         phase: str = "",
         pr_number: Optional[int] = None,
         output_path: Optional[Path] = None
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Execute a complete handoff workflow."""
 
         # Extract context
@@ -480,7 +480,7 @@ class AutoHandoff:
         print(f"❌ Handoff {handoff_id} not found")
         return False
 
-    def get_handoff_status(self, handoff_id: str) -> Optional[Dict[str, Any]]:
+    def get_handoff_status(self, handoff_id: str) -> Optional[dict[str, Any]]:
         """Get status of a specific handoff."""
         tracking_data = self.load_tracking_data()
 
@@ -494,7 +494,7 @@ class AutoHandoff:
         self,
         status_filter: Optional[str] = None,
         limit: int = 10
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """List recent handoffs with optional status filter."""
         tracking_data = self.load_tracking_data()
         handoffs = tracking_data.get("handoffs", [])

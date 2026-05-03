@@ -33,10 +33,10 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def monitor_execution(results_dir: str, output_path: str, real_time: bool = False) -> Dict[str, Any]:
+def monitor_execution(results_dir: str, output_path: str, real_time: bool = False) -> dict[str, Any]:
     """
     Monitor execution status across all agents.
 

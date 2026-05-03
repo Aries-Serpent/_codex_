@@ -14,7 +14,7 @@ import pytest
 
 pytest.importorskip("numpy")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
 # Check for FAISS specifically
 FAISS_AVAILABLE = importlib.util.find_spec('faiss') is not None

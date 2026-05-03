@@ -38,9 +38,10 @@ import json  # noqa: E402
 import os  # noqa: E402
 import sqlite3  # noqa: E402
 import sys  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable, Optional  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - platform dependent
     import fcntl

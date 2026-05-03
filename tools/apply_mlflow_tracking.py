@@ -28,7 +28,7 @@ import textwrap
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
@@ -270,7 +270,7 @@ def apply() -> None:
         q5("3: Best-Effort Construction — write files", str(e), f"path={REPO}")
 
 
-def _set_global_seeds(seed: int) -> Dict[str, Any]:
+def _set_global_seeds(seed: int) -> dict[str, Any]:
     try:
         import numpy as np  # type: ignore
     except Exception:  # pragma: no cover

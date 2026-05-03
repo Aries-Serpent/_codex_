@@ -13,7 +13,7 @@ from pathlib import Path
 # Add scripts/hooks to path for import
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'scripts' / 'hooks'))
 
-from pre_commit_verify import (  # noqa: E402
+from pre_commit_verify import (
     extract_expected_files,
     generate_report,
     load_gitignore_patterns,

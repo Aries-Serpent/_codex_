@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""HuggingFace dataset loaders with streaming support."""
 
 
 from typing import Any  # noqa: E402

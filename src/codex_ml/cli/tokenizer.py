@@ -33,7 +33,7 @@ else:  # pragma: no cover - Typer missing in environment
     typer = None
 
     class _FallbackTyper:
-        def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: D401 - compatibility stub
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise RuntimeError("Typer is required for codex_ml.cli.tokenizer")
 
     _Typer = _FallbackTyper

@@ -13,7 +13,7 @@ import re
 import time
 import urllib.request as _urllib_request
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import quote
 
 import requests
@@ -94,7 +94,7 @@ def _validate_ref(ref: str) -> None:
         )
 
 
-def _auth_headers() -> Dict[str, str]:
+def _auth_headers() -> dict[str, str]:
     h = {"Accept": "application/vnd.github+json"}
     if TOKEN:
         h["Authorization"] = f"Bearer {TOKEN}"
@@ -211,7 +211,7 @@ def code_search(owner: str, repo: str, q: str, ref: str = "main"):
     return {"count": len(hits), "items": hits}
 
 
-def gh_post(url: str, payload: Dict[str, Any]) -> Any:
+def gh_post(url: str, payload: dict[str, Any]) -> Any:
     """POST *payload* to the GitHub API and return the parsed JSON response.
 
     The *url* must start with the expected :data:`BASE` constant to prevent
@@ -231,7 +231,7 @@ def gh_post(url: str, payload: Dict[str, Any]) -> Any:
         return json.loads(resp.read())
 
 
-def create_branch(owner: str, repo: str, branch: str, sha: str) -> Dict[str, Any]:
+def create_branch(owner: str, repo: str, branch: str, sha: str) -> dict[str, Any]:
     """Create *branch* pointing at *sha* via the GitHub Refs API (IMP-011)."""
     _validate_repo_component(owner, "owner")
     _validate_repo_component(repo, "repo")
@@ -257,7 +257,7 @@ def open_pull_request(
     base: str,
     body: str = "",
     draft: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Open a pull request (IMP-011)."""
     _validate_repo_component(owner, "owner")
     _validate_repo_component(repo, "repo")
@@ -273,11 +273,11 @@ def merge_branches(
     base: str,
     head: str,
     commit_message: str = "",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Server-side merge of *head* into *base* (IMP-011)."""
     _validate_repo_component(owner, "owner")
     _validate_repo_component(repo, "repo")
-    payload: Dict[str, Any] = {"base": base, "head": head}
+    payload: dict[str, Any] = {"base": base, "head": head}
     if commit_message:
         payload["commit_message"] = commit_message
     return gh_post(f"{BASE}/repos/{owner}/{repo}/merges", payload)
@@ -352,7 +352,7 @@ class App(BaseHTTPRequestHandler):
             )
         raw_body = self.rfile.read(content_length) if content_length > 0 else b"{}"
         try:
-            body: Dict[str, Any] = json.loads(raw_body) if raw_body.strip() else {}
+            body: dict[str, Any] = json.loads(raw_body) if raw_body.strip() else {}
         except json.JSONDecodeError as exc:
             return self._ok({"error": f"invalid JSON body: {exc}"}, 400)
 

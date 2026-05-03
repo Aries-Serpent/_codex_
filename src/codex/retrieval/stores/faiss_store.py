@@ -16,7 +16,7 @@ import hashlib
 import logging
 import uuid
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import numpy as np
 
@@ -537,7 +537,7 @@ class FAISSStore(VectorStore):
         logger.info(f"Added {n_vectors} vectors to index (total: {self.index.ntotal})")
         return ids
 
-    def delete(self, ids: Union[str, list[str]]) -> int:
+    def delete(self, ids: str | list[str]) -> int:
         """Delete vectors by ID
 
         Note: FAISS doesn't support efficient deletion, so we mark as deleted
@@ -595,7 +595,7 @@ class FAISSStore(VectorStore):
 
         return deleted_count
 
-    def get(self, ids: Union[str, list[str]]) -> list[dict[str, Any]]:
+    def get(self, ids: str | list[str]) -> list[dict[str, Any]]:
         """Retrieve vectors by ID
 
         Args:

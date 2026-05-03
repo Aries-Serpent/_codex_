@@ -7,7 +7,7 @@ environment variable-based feature flags and validation.
 
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -194,7 +194,7 @@ class QuantumConfig:
 
         return feature_map[feature]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Convert configuration to dictionary.
 

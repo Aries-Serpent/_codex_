@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Union
 
 # Try to use the repository's encoding detector if present; otherwise provide
 # a local, conservative fallback detector to preserve functionality.
@@ -106,7 +105,7 @@ __all__ = ["read_text"]
 
 
 def read_text(
-    path: Union[Path, str], encoding: str = "utf-8", errors: str = "strict"
+    path: Path | str, encoding: str = "utf-8", errors: str = "strict"
 ) -> tuple[str, str]:
     """Read text from ``path`` normalising newlines and stripping BOMs.
 

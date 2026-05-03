@@ -7,7 +7,7 @@ Defines the contract that all language-specific adapters must implement.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -32,10 +32,10 @@ class StandardizedASTNode:
 
     # Structure (with defaults)
     parent: Optional["StandardizedASTNode"] = None
-    children: List["StandardizedASTNode"] = field(default_factory=list)
+    children: list["StandardizedASTNode"] = field(default_factory=list)
 
     # Metadata (extensible)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     # Original source
     source_text: Optional[str] = None
@@ -54,7 +54,7 @@ class StandardizedASTNode:
             return f"{self.parent.full_name}.{self.name}"
         return self.name
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert node to dictionary representation."""
         return {
             "node_id": self.node_id,
@@ -115,7 +115,7 @@ class BaseASTAdapter(ABC):
         """
 
     @abstractmethod
-    def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
+    def extract_metadata(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Extract language-specific metadata from a node.
 
@@ -141,7 +141,7 @@ class BaseASTAdapter(ABC):
             source_code = f.read()
         return self.parse(source_code)
 
-    def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
+    def traverse(self, node: Optional[StandardizedASTNode] = None) -> list[StandardizedASTNode]:
         """
         Traverse AST and return all nodes in depth-first order.
 
@@ -163,7 +163,7 @@ class BaseASTAdapter(ABC):
 
         return nodes
 
-    def find_nodes_by_type(self, node_type: str) -> List[StandardizedASTNode]:
+    def find_nodes_by_type(self, node_type: str) -> list[StandardizedASTNode]:
         """
         Find all nodes of a specific type.
 
@@ -176,7 +176,7 @@ class BaseASTAdapter(ABC):
         all_nodes = self.traverse()
         return [node for node in all_nodes if node.node_type == node_type]
 
-    def get_stats(self) -> Dict[str, int]:
+    def get_stats(self) -> dict[str, int]:
         """
         Get statistics about the AST.
 

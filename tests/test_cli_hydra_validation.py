@@ -6,7 +6,7 @@ import importlib
 import importlib.util
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -30,9 +30,9 @@ def test_hydra_main_offline_compose(monkeypatch, tmp_path) -> None:
     if hydra_file and repo_root in hydra_file.parents:
         pytest.skip("real hydra-core not installed; stub module active")
 
-    captured: Dict[str, Any] = {}
+    captured: dict[str, Any] = {}
 
-    def fake_run(config: Dict[str, Any]) -> Dict[str, Any]:
+    def fake_run(config: dict[str, Any]) -> dict[str, Any]:
         captured.update(config)
         return {"status": "ok"}
 

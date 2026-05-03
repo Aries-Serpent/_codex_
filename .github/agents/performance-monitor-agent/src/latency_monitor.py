@@ -6,7 +6,7 @@ import random
 import statistics
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 RANDOM_SEED = 47  # Performance Monitor Agent seed
 
@@ -17,7 +17,7 @@ class LatencyMetric:
     endpoint: str
     latency_ms: float
     status_code: int
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 class LatencyMonitor:
     """Monitor request latencies and detect performance issues"""
@@ -25,7 +25,7 @@ class LatencyMonitor:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.measurements: List[LatencyMetric] = []
+        self.measurements: list[LatencyMetric] = []
         self.thresholds = {
             "p50": 50.0,   # 50ms
             "p95": 100.0,  # 100ms
@@ -38,7 +38,7 @@ class LatencyMonitor:
         endpoint: str,
         latency_ms: float,
         status_code: int = 200,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[dict[str, Any]] = None
     ) -> None:
         """Record a latency measurement"""
         metric = LatencyMetric(
@@ -50,7 +50,7 @@ class LatencyMonitor:
         )
         self.measurements.append(metric)
 
-    def get_percentiles(self, endpoint: Optional[str] = None) -> Dict[str, float]:
+    def get_percentiles(self, endpoint: Optional[str] = None) -> dict[str, float]:
         """Calculate latency percentiles"""
         measurements = self.measurements
         if endpoint:
@@ -68,7 +68,7 @@ class LatencyMonitor:
             "p99": latencies[int(n * 0.99)] if n > 0 else 0.0,
         }
 
-    def check_thresholds(self, endpoint: Optional[str] = None) -> Dict[str, bool]:
+    def check_thresholds(self, endpoint: Optional[str] = None) -> dict[str, bool]:
         """Check if latencies exceed thresholds"""
         percentiles = self.get_percentiles(endpoint)
         return {
@@ -77,7 +77,7 @@ class LatencyMonitor:
             "p99_ok": percentiles["p99"] <= self.thresholds["p99"],
         }
 
-    def detect_anomalies(self, window_size: int = 100) -> List[LatencyMetric]:
+    def detect_anomalies(self, window_size: int = 100) -> list[LatencyMetric]:
         """Detect anomalous latency measurements"""
         if len(self.measurements) < window_size:
             return []
@@ -92,7 +92,7 @@ class LatencyMonitor:
 
         return [m for m in recent if m.latency_ms > threshold]
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get monitoring metrics"""
         percentiles = self.get_percentiles()
         return {

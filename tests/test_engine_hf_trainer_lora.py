@@ -15,8 +15,8 @@ pytest.importorskip("torch")
 pytest.importorskip("transformers")
 pytest.importorskip("peft")
 
-import torch  # noqa: E402
-from src.training import engine_hf_trainer as hf  # noqa: E402
+import torch
+from src.training import engine_hf_trainer as hf
 
 
 def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:

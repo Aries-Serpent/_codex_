@@ -12,14 +12,14 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import yaml
 
 VALID_RISK_LEVELS = {"low", "medium", "high"}
 
 
-def load_hardship(path: Path) -> Dict[str, Any]:
+def load_hardship(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(path)
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -28,7 +28,7 @@ def load_hardship(path: Path) -> Dict[str, Any]:
     return data
 
 
-def validate_structure(data: Dict[str, Any]) -> None:
+def validate_structure(data: dict[str, Any]) -> None:
     gaps = data.get("gaps")
     if not isinstance(gaps, dict):
         raise ValueError("hardship.gaps must be a mapping of gap_id -> metadata")

@@ -16,21 +16,22 @@ import logging
 import threading
 import time
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import wraps
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
 __all__ = [
-    "LRUCache",
-    "RateLimiter",
     "CircuitBreaker",
+    "LRUCache",
     "LoadBalancer",
-    "ResourcePool",
     "PerformanceMonitor",
+    "RateLimiter",
+    "ResourcePool",
     "cached",
     "rate_limited",
 ]

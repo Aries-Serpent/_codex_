@@ -21,7 +21,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class GeneratedPR:
     title: str
     description: str
     branch_name: str
-    fixes: List[FixSuggestion]
+    fixes: list[FixSuggestion]
     confidence: float
     auto_merge_eligible: bool
     created_at: str
@@ -69,8 +69,8 @@ class PRTemplate:
     name: str
     title_template: str
     description_template: str
-    labels: List[str]
-    reviewers: List[str]
+    labels: list[str]
+    reviewers: list[str]
 
 
 # ============================================================================
@@ -89,7 +89,7 @@ class FixCodeGenerator:
     def __init__(self):
         """Initialize fix code generator."""
         # Fix templates for common issues
-        self.fix_templates: Dict[str, Dict[str, Any]] = {
+        self.fix_templates: dict[str, dict[str, Any]] = {
             "docker_tag_error": {
                 "pattern": r"ghcr\.io/[^:]+:[^}]+\}",
                 "fix_template": self._docker_tag_fix_template,
@@ -125,7 +125,7 @@ class FixCodeGenerator:
         self,
         issue_type: str,
         file_content: str,
-        context: Dict[str, Any],
+        context: dict[str, Any],
     ) -> Optional[FixSuggestion]:
         """
         Generate a fix for the given issue.
@@ -178,8 +178,8 @@ class FixCodeGenerator:
             return None
 
     def _docker_tag_fix_template(
-        self, content: str, context: Dict[str, Any]
-    ) -> Tuple[Optional[str], float, str]:
+        self, content: str, context: dict[str, Any]
+    ) -> tuple[Optional[str], float, str]:
         """
         Generate fix for Docker tag errors in GitHub Actions workflow YAML.
 
@@ -214,8 +214,8 @@ class FixCodeGenerator:
         )
 
     def _peft_target_fix_template(
-        self, content: str, context: Dict[str, Any]
-    ) -> Tuple[Optional[str], float, str]:
+        self, content: str, context: dict[str, Any]
+    ) -> tuple[Optional[str], float, str]:
         """Generate fix for PEFT target_modules errors."""
         # Remove target_modules parameter entirely
         pattern = r',?\s*target_modules=\[.*?\]'
@@ -231,8 +231,8 @@ class FixCodeGenerator:
         )
 
     def _hydra_composition_fix_template(
-        self, content: str, context: Dict[str, Any]
-    ) -> Tuple[Optional[str], float, str]:
+        self, content: str, context: dict[str, Any]
+    ) -> tuple[Optional[str], float, str]:
         """Generate fix for Hydra composition errors."""
         # Add + prefix for non-default config groups
         pattern = r'overrides=\["(\w+)='
@@ -248,8 +248,8 @@ class FixCodeGenerator:
         )
 
     def _assertion_fix_template(
-        self, content: str, context: Dict[str, Any]
-    ) -> Tuple[Optional[str], float, str]:
+        self, content: str, context: dict[str, Any]
+    ) -> tuple[Optional[str], float, str]:
         """Generate fix for assertion errors."""
         # Fix Boltzmann probability assertion
         pattern = r"assert 0\.0 < prob"
@@ -266,8 +266,8 @@ class FixCodeGenerator:
         )
 
     def _import_error_fix_template(
-        self, content: str, context: Dict[str, Any]
-    ) -> Tuple[Optional[str], float, str]:
+        self, content: str, context: dict[str, Any]
+    ) -> tuple[Optional[str], float, str]:
         """Generate fix for import/dependency errors."""
         # Add missing pytest plugins
         if "pip install" in content and "pytest" in content:
@@ -292,8 +292,8 @@ class FixCodeGenerator:
         return None, 0.0, "No import error fix applicable"
 
     def _artifact_version_fix_template(
-        self, content: str, context: Dict[str, Any]
-    ) -> Tuple[Optional[str], float, str]:
+        self, content: str, context: dict[str, Any]
+    ) -> tuple[Optional[str], float, str]:
         """Generate fix for artifact action version errors."""
         # Replace v6 with v4
         pattern = r"actions/upload-artifact@v\d+"
@@ -334,7 +334,7 @@ class PRDescriptionGenerator:
             f"Templates: {len(self.templates)}"
         )
 
-    def _load_templates(self) -> Dict[str, PRTemplate]:
+    def _load_templates(self) -> dict[str, PRTemplate]:
         """Load PR templates."""
         return {
             "healing_fix": PRTemplate(
@@ -397,9 +397,9 @@ This PR addresses {count} issues detected across the codebase.
 
     def generate_description(
         self,
-        fixes: List[FixSuggestion],
+        fixes: list[FixSuggestion],
         template_id: str = "healing_fix",
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """
         Generate PR title and description.
 
@@ -453,7 +453,7 @@ This PR addresses {count} issues detected across the codebase.
 
         return title, description
 
-    def _generate_changes_summary(self, fixes: List[FixSuggestion]) -> str:
+    def _generate_changes_summary(self, fixes: list[FixSuggestion]) -> str:
         """Generate a summary of changes."""
         summaries = []
         for fix in fixes:
@@ -496,7 +496,7 @@ class AutomatedPRGenerator:
         self.fix_generator = FixCodeGenerator()
         self.description_generator = PRDescriptionGenerator()
 
-        self.generated_prs: Dict[str, GeneratedPR] = {}
+        self.generated_prs: dict[str, GeneratedPR] = {}
         self._load_prs()
 
         logger.info(
@@ -559,7 +559,7 @@ class AutomatedPRGenerator:
 
     def generate_pr(
         self,
-        issues: List[Dict[str, Any]],
+        issues: list[dict[str, Any]],
     ) -> GeneratedPR:
         """
         Generate a PR for the given issues.
@@ -570,7 +570,7 @@ class AutomatedPRGenerator:
         Returns:
             GeneratedPR object
         """
-        fixes: List[FixSuggestion] = []
+        fixes: list[FixSuggestion] = []
 
         for issue in issues:
             fix = self.fix_generator.generate_fix(
@@ -648,7 +648,7 @@ class AutomatedPRGenerator:
 
         return pr
 
-    def get_pr_statistics(self) -> Dict[str, Any]:
+    def get_pr_statistics(self) -> dict[str, Any]:
         """Get PR generation statistics."""
         status_counts = {}
         for pr in self.generated_prs.values():
@@ -697,7 +697,7 @@ class AutomatedPRGenerator:
 
         return "\n".join(lines)
 
-    def generate_pr_github_action_step(self, pr: GeneratedPR) -> Dict[str, Any]:
+    def generate_pr_github_action_step(self, pr: GeneratedPR) -> dict[str, Any]:
         """
         Generate GitHub Actions step to create the PR.
 

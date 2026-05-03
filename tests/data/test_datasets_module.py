@@ -12,9 +12,9 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-import pytest  # noqa: E402
+import pytest
 
-import data.datasets as datasets  # noqa: E402
+import data.datasets as datasets
 
 torch = pytest.importorskip("torch")
 TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")

@@ -14,10 +14,10 @@ import os
 import random as _random
 import tempfile
 import warnings as _warnings
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from contextlib import suppress
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
@@ -47,9 +47,9 @@ _restore_rng_state: Callable[[Mapping[str, Any]], None] | None = None
 # If a local legacy implementation exists in the repository, import it.
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
-    from training.checkpoint_manager import CheckpointManager  # noqa: F401
+    from training.checkpoint_manager import CheckpointManager
 except Exception:  # pragma: no cover - fallback to canonical
-    from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore # noqa: F401
+    from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore
 
 try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (  # type: ignore[no-redef]  # noqa: I001
@@ -336,7 +336,7 @@ def load_checkpoint(
         return legacy_state
 
 
-__all__ = ["CheckpointManager", "save_checkpoint", "load_checkpoint"]
+__all__ = ["CheckpointManager", "load_checkpoint", "save_checkpoint"]
 
 
 def _load_legacy_checkpoint_payload(

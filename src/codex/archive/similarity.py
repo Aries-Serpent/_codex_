@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Similarity utilities for consolidation heuristics."""
 
 
 import ast  # noqa: E402

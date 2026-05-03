@@ -17,4 +17,4 @@ SAMPLE_ZAF_BUNDLE: Mapping[str, Payload] = {
     "subdir/duplicate.txt": "root\n",
 }
 
-__all__ = ["Payload", "SAMPLE_ZAF_BUNDLE"]
+__all__ = ["SAMPLE_ZAF_BUNDLE", "Payload"]

@@ -120,7 +120,7 @@ def _stub_modules(monkeypatch):
     # Mock load_from_pretrained in legacy_api so the tokenizer load never
     # reaches the HuggingFace Hub. Return a _DummyTokenizer for all factories.
     try:
-        import codex_ml.training.legacy_api as _lapi  # noqa: PLC0415
+        import codex_ml.training.legacy_api as _lapi
 
         monkeypatch.setattr(
             _lapi,
@@ -153,7 +153,7 @@ def test_run_functional_training_resume(monkeypatch, tmp_path):
         return {"result": "ok"}
 
     # Patch at the legacy_api module level so the already-imported symbol is replaced.
-    import codex_ml.training.legacy_api as _lapi  # noqa: PLC0415
+    import codex_ml.training.legacy_api as _lapi
 
     monkeypatch.setattr(_lapi, "load_training_checkpoint", fake_load_ckpt)
     # _evaluate_model uses a raw DataLoader that expects integer-indexed datasets;

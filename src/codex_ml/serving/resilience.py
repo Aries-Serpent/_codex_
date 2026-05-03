@@ -11,10 +11,11 @@ Provides fault-tolerance and graceful degradation:
 
 import logging
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 from threading import Lock
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

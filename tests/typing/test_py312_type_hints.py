@@ -7,7 +7,8 @@ Tests PEP 585 (list[T]), PEP 604 (X | Y), and generic types.
 from __future__ import annotations
 
 import sys
-from typing import Any, Callable, Literal, Optional, TypeVar, Union, get_type_hints
+from collections.abc import Callable
+from typing import Any, Literal, Optional, TypeVar, get_type_hints
 
 import pytest
 
@@ -189,7 +190,7 @@ class TestTypeHintCompatibility:
         """Test different ways to express Union."""
         # Union is already imported at module level
         # Old style
-        def func1(x: Union[str, int]) -> Union[str, None]:
+        def func1(x: str | int) -> str | None:
             return str(x) if isinstance(x, int) else x
 
         # New style (Python 3.10+)
@@ -283,8 +284,9 @@ class TestRealWorldTypeHints:
 
     def test_decorator_with_type_hints(self):
         """Test that decorators preserve type hints."""
+        from collections.abc import Callable
         from functools import wraps
-        from typing import Callable, TypeVar
+        from typing import TypeVar
 
         F = TypeVar('F', bound=Callable[..., Any])
 

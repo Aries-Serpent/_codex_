@@ -9,9 +9,9 @@ from __future__ import annotations
 import pytest
 
 pytest.importorskip("pydantic")
-from pydantic import ValidationError  # noqa: E402
+from pydantic import ValidationError
 
-from codex_ml.config_schema import (  # noqa: E402
+from codex_ml.config_schema import (
     LoraConfig,
     TrainConfig,
     validate_config,

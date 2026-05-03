@@ -17,7 +17,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     from .github_client import GitHubAPIClient
@@ -35,14 +35,14 @@ class HygieneIssue:
     severity: str  # critical | high | medium | low | info
     description: str
     remediation: str
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class HygieneReport:
     """Full hygiene report for a repository."""
 
-    issues: List[HygieneIssue] = field(default_factory=list)
+    issues: list[HygieneIssue] = field(default_factory=list)
     hygiene_score: float = 100.0  # 0–100
     summary_md: str = ""
     checked_at: datetime = field(default_factory=lambda: datetime.now(tz=timezone.utc))
@@ -77,7 +77,7 @@ class RepoHygiene:
 
     def run_all_checks(self) -> HygieneReport:
         """Run all hygiene checks and return a consolidated report."""
-        issues: List[HygieneIssue] = []
+        issues: list[HygieneIssue] = []
 
         issues.extend(self._check_stale_branches())
         issues.extend(self._check_orphaned_root_files())
@@ -108,9 +108,9 @@ class RepoHygiene:
             summary_md="\n".join(summary_lines),
         )
 
-    def _check_stale_branches(self) -> List[HygieneIssue]:
+    def _check_stale_branches(self) -> list[HygieneIssue]:
         """Detect branches inactive > STALE_BRANCH_DAYS with no open PR."""
-        issues: List[HygieneIssue] = []
+        issues: list[HygieneIssue] = []
         resp = self.client.list_branches(per_page=100)
         if not resp.ok or not isinstance(resp.data, list):
             logger.debug("Could not fetch branches: %s", resp.error)
@@ -162,9 +162,9 @@ class RepoHygiene:
 
         return issues
 
-    def _check_orphaned_root_files(self) -> List[HygieneIssue]:
+    def _check_orphaned_root_files(self) -> list[HygieneIssue]:
         """Detect stray report/log files in the repository root."""
-        issues: List[HygieneIssue] = []
+        issues: list[HygieneIssue] = []
         if not self.repo_root.is_dir():
             return issues
 
@@ -189,9 +189,9 @@ class RepoHygiene:
 
         return issues
 
-    def _check_dependency_drift(self) -> List[HygieneIssue]:
+    def _check_dependency_drift(self) -> list[HygieneIssue]:
         """Detect unpinned dependencies in requirements files."""
-        issues: List[HygieneIssue] = []
+        issues: list[HygieneIssue] = []
         req_files = list(self.repo_root.glob("requirements*.txt"))
 
         for req_file in req_files:
@@ -223,9 +223,9 @@ class RepoHygiene:
 
         return issues
 
-    def _check_contributor_gaps(self) -> List[HygieneIssue]:
+    def _check_contributor_gaps(self) -> list[HygieneIssue]:
         """Detect ownership gaps: no CODEOWNERS or missing coverage."""
-        issues: List[HygieneIssue] = []
+        issues: list[HygieneIssue] = []
         codeowners_paths = [
             self.repo_root / "CODEOWNERS",
             self.repo_root / ".github" / "CODEOWNERS",

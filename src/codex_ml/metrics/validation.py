@@ -88,7 +88,7 @@ def get_all_registered_metrics() -> list[str]:
 
 __all__ = [
     "MetricValidationError",
-    "validate_metric_registry",
-    "validate_metric_exists",
     "get_all_registered_metrics",
+    "validate_metric_exists",
+    "validate_metric_registry",
 ]

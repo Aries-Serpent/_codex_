@@ -12,7 +12,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 # --------------------------- Utilities & Logging ---------------------------
 
@@ -86,7 +86,7 @@ def log_error(step: str, err: str, ctx: str):
     print(line["research_question"], file=sys.stderr)
 
 
-def run(cmd: List[str]) -> Tuple[int, str, str]:
+def run(cmd: list[str]) -> tuple[int, str, str]:
     try:
         p = subprocess.run(cmd, cwd=R, text=True, capture_output=True)
         return (p.returncode, p.stdout, p.stderr)
@@ -107,7 +107,7 @@ def clean_state_best_effort():
 SKIP_DIRS = {".git", ".venv", "venv", ".mypy_cache", ".ruff_cache", "__pycache__"}
 
 
-def build_inventory() -> Dict:
+def build_inventory() -> dict:
     items = []
     for p in R.rglob("*"):
         if any(part in SKIP_DIRS for part in p.parts):
@@ -131,7 +131,7 @@ S_SRC = R / "src" / "codex"
 TESTS = R / "tests"
 
 
-def exists_summary() -> Dict[str, bool]:
+def exists_summary() -> dict[str, bool]:
     return {
         "codex_dir": D_TOP.exists(),
         "src_codex_dir": S_SRC.exists(),

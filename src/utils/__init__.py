@@ -24,8 +24,8 @@ from .checkpointing import (
 from .training_callbacks import EarlyStopping
 
 __all__ = [
-    "EarlyStopping",
     "CheckpointManager",
+    "EarlyStopping",
     "dump_rng_state",
     "load_rng_state",
     "set_seed",

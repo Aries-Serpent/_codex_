@@ -83,4 +83,4 @@ def maybe_emit_checkpoint_saved_event(
         return False
 
 
-__all__ = ["toggle_checkpoint_json_logging", "maybe_emit_checkpoint_saved_event"]
+__all__ = ["maybe_emit_checkpoint_saved_event", "toggle_checkpoint_json_logging"]

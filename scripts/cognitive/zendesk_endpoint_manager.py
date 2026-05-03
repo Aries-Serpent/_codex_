@@ -39,7 +39,7 @@ import time
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from requests import Session as _Session
 from requests.exceptions import RequestException
@@ -108,7 +108,7 @@ class ZendeskEndpointManager:
         # Cache setup
         self.cache_dir = self.output_dir / CACHE_SUBDIR_NAME
         self.cache_file = self.cache_dir / CACHE_FILE_NAME
-        self.cache: Dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
         if self.enable_cache:
             self._load_cache()
@@ -161,9 +161,9 @@ class ZendeskEndpointManager:
         self,
         endpoint: str,
         method: str = "GET",
-        params: Optional[Dict] = None,
-        data: Optional[Dict] = None
-    ) -> Optional[Dict]:
+        params: Optional[dict] = None,
+        data: Optional[dict] = None
+    ) -> Optional[dict]:
         """Make API request with retry logic"""
         url = f"{self.base_url}/{endpoint}"
 
@@ -227,7 +227,7 @@ class ZendeskEndpointManager:
         self,
         endpoint: str,
         use_cache: bool = True
-    ) -> Optional[List[Dict]]:
+    ) -> Optional[list[dict]]:
         """Fetch data from a Zendesk endpoint"""
         cache_key = f"endpoint_{endpoint}"
 
@@ -273,7 +273,7 @@ class ZendeskEndpointManager:
 
         return all_items
 
-    def export_to_json(self, endpoint: str, data: List[Dict]) -> Path:
+    def export_to_json(self, endpoint: str, data: list[dict]) -> Path:
         """Export endpoint data to JSON file"""
         output_file = self.output_dir / f"{endpoint}.json"
         output_file.parent.mkdir(parents=True, exist_ok=True)
@@ -284,7 +284,7 @@ class ZendeskEndpointManager:
         logger.info(f"Exported {len(data)} items to {output_file}")
         return output_file
 
-    def export_to_csv(self, endpoint: str, data: List[Dict]) -> Path:
+    def export_to_csv(self, endpoint: str, data: list[dict]) -> Path:
         """Export endpoint data to CSV file"""
         if not data:
             logger.warning(f"No data to export for {endpoint}")
@@ -308,7 +308,7 @@ class ZendeskEndpointManager:
         logger.info(f"Exported {len(data)} items to {output_file}")
         return output_file
 
-    def fetch_all_endpoints(self, export_format: str = "json") -> Dict[str, Any]:
+    def fetch_all_endpoints(self, export_format: str = "json") -> dict[str, Any]:
         """Fetch data from all known endpoints"""
         results = {}
 
@@ -343,7 +343,7 @@ class ZendeskEndpointManager:
 
         return results
 
-    def generate_summary_report(self, results: Dict[str, Any]) -> Path:
+    def generate_summary_report(self, results: dict[str, Any]) -> Path:
         """Generate summary report of all fetched endpoints"""
         report_file = self.output_dir / "summary_report.txt"
 

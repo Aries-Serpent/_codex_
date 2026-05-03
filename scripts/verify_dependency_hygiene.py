@@ -35,15 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-verify_dependency_hygiene.py — Summarize dependency evidence and assert vendor hygiene
-
-- Prints counts per 'action' in dependency_ops.jsonl
-- Warns if any DEPENDENCY_VENDOR_PURGE events leave non-empty vendor_list_after
-- Exits non-zero (7) if vendor residue persists while CODEX_FAIL_ON_GPU_RESIDUE=1
-
-This is a convenience complement to nox session 'verify_hygiene'.
-"""
 
 import json
 import os

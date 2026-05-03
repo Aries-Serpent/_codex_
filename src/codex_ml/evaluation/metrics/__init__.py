@@ -29,7 +29,7 @@ from codex_ml.evaluation.metrics.rouge import RougeMetric
 __all__ = [
     "AccuracyMetric",
     "BleuMetric",
-    "RougeMetric",
-    "PerplexityMetric",
     "LatencyMetric",
+    "PerplexityMetric",
+    "RougeMetric",
 ]

@@ -63,7 +63,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           PR_NUMBER="${{ steps.pr_number.outputs.pr_number }}"
-          echo "🚀 Generating follow-up prompt for PR #${PR_NUMBER}"
+          echo "🔍 Checking if PR-${PR_NUMBER}-followup.md already has real agent/human content..."
+
+          # Guard: skip regeneration if the file already contains non-placeholder
+          # task content written by a Copilot session.  Exit code 0 = has real
+          # content (skip); exit code 2 = placeholder or missing (regenerate).
+          CHECK_EXIT=0
+          python scripts/generate_pr_followup.py \
+            "${PR_NUMBER}" \
+            --check-real-content || CHECK_EXIT=$?
+
+          if [ "${CHECK_EXIT}" -eq 0 ]; then
+            echo "✅ Existing real content detected — skipping regeneration to protect agent changes."
+            exit 0
+          fi
+
+          echo "🚀 No real content found — generating follow-up prompt for PR #${PR_NUMBER}"
 
           python scripts/generate_pr_followup.py \
             "${PR_NUMBER}" \

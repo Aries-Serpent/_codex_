@@ -33,10 +33,10 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def dispatch_agent(agent_id: int, tasks_json: str, output_path: str) -> Dict[str, Any]:
+def dispatch_agent(agent_id: int, tasks_json: str, output_path: str) -> dict[str, Any]:
     """
     Dispatch tasks to a specific agent.
 

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import argparse
 import ast
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List, Set
 
 
 def iter_source_modules(source_root: Path) -> Iterable[Path]:
@@ -15,12 +15,12 @@ def iter_source_modules(source_root: Path) -> Iterable[Path]:
         yield path
 
 
-def candidate_test_names(module_path: Path) -> Set[str]:
+def candidate_test_names(module_path: Path) -> set[str]:
     stem = module_path.stem
     return {f"test_{stem}.py", f"{stem}_test.py"}
 
 
-def load_aggregate_modules(tests_root: Path) -> Set[str]:
+def load_aggregate_modules(tests_root: Path) -> set[str]:
     """Load module paths declared in aggregate readiness tests, if present."""
 
     readiness_file = tests_root / "test_readiness_remaining_modules.py"
@@ -34,7 +34,7 @@ def load_aggregate_modules(tests_root: Path) -> Set[str]:
 
     for node in tree.body:
         assign_value = None
-        target_ids: Set[str] = set()
+        target_ids: set[str] = set()
 
         if isinstance(node, ast.Assign):
             assign_value = node.value
@@ -53,8 +53,8 @@ def load_aggregate_modules(tests_root: Path) -> Set[str]:
     return set()
 
 
-def find_missing_tests(source_root: Path, tests_root: Path) -> List[str]:
-    missing: List[str] = []
+def find_missing_tests(source_root: Path, tests_root: Path) -> list[str]:
+    missing: list[str] = []
     test_files = {path.name for path in tests_root.rglob("test_*.py")}
     aggregate_modules = load_aggregate_modules(tests_root)
 

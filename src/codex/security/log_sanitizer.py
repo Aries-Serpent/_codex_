@@ -22,7 +22,8 @@ Usage:
 """
 
 import re
-from typing import Any, Pattern
+from re import Pattern
+from typing import Any
 
 # Patterns for detecting sensitive data
 SENSITIVE_PATTERNS: list[tuple[Pattern[str], str]] = [
@@ -206,10 +207,10 @@ mask_secrets = mask_sensitive
 
 
 __all__ = [
-    "sanitize_log",
+    "mask_secrets",
     "mask_sensitive",
+    "safe_log",
     "safe_log_message",
     "sanitize_dict_for_log",
-    "safe_log",
-    "mask_secrets",
+    "sanitize_log",
 ]

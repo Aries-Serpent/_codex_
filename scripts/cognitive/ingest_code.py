@@ -35,10 +35,10 @@ import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def analyze_python_code(code_content: str) -> Dict[str, Any]:
+def analyze_python_code(code_content: str) -> dict[str, Any]:
     """
     Analyze Python code structure using AST.
 
@@ -105,7 +105,7 @@ def analyze_python_code(code_content: str) -> Dict[str, Any]:
     return analysis
 
 
-def ingest_code(code_path: str, output_path: str, project_name: str = "unknown") -> Dict[str, Any]:
+def ingest_code(code_path: str, output_path: str, project_name: str = "unknown") -> dict[str, Any]:
     """
     Ingest and analyze a Python code file.
 

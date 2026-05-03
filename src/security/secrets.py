@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-import secrets
+import secrets as _secrets
 import string
 import time
 from collections.abc import Iterable
@@ -94,12 +94,12 @@ def rotate_secret(
     state: SecretRotationState,
     *,
     policy: SecretRotationPolicy | None = None,
-    generator: secrets.SystemRandom | None = None,
+    generator: _secrets.SystemRandom | None = None,
 ) -> str:
     """Rotate the secret associated with the provided state."""
 
     policy = policy or SecretRotationPolicy()
-    generator = generator or secrets.SystemRandom()
+    generator = generator or _secrets.SystemRandom()
     now = time.time()
 
     if now - state.last_rotated < policy.max_age_seconds:

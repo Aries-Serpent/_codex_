@@ -14,7 +14,7 @@ import subprocess
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Cognitive Brain integration
 try:
@@ -46,7 +46,7 @@ class ScanResult:
     file_path: str
     tool: str  # terraform/kubernetes/cloudformation/docker/ansible
     linter: str  # tfsec/kubectl/cfn-lint/hadolint/ansible-lint
-    findings: List[Finding] = field(default_factory=list)
+    findings: list[Finding] = field(default_factory=list)
     scan_duration: float = 0.0
     success: bool = True
     error_message: Optional[str] = None
@@ -100,7 +100,7 @@ class IaCScanner:
         # #AFTERMATH_METRIC: files_scanned
         self.files_scanned_count = 0
 
-    def scan(self, config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def scan(self, config: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """
         Main entry point: Discover and scan all IaC files
 
@@ -148,7 +148,7 @@ class IaCScanner:
         # #AFTERMATH_PATTERN_IDENTIFIED: iac_scanning_patterns
         return self._aggregate_results(results, duration)
 
-    def _discover_iac_files(self, ignore_paths: List[str]) -> List[Dict[str, Any]]:
+    def _discover_iac_files(self, ignore_paths: list[str]) -> list[dict[str, Any]]:
         """
         Find all IaC files in repository
 
@@ -227,7 +227,7 @@ class IaCScanner:
 
         return None
 
-    def _scan_file(self, file_info: Dict[str, Any], config: Dict[str, Any]) -> ScanResult:
+    def _scan_file(self, file_info: dict[str, Any], config: dict[str, Any]) -> ScanResult:
         """
         Run appropriate linter(s) for this file
 
@@ -259,7 +259,7 @@ class IaCScanner:
             error_message=f"Unsupported tool: {tool}"
         )
 
-    def _scan_terraform(self, file_path: Path, config: Dict[str, Any]) -> ScanResult:
+    def _scan_terraform(self, file_path: Path, config: dict[str, Any]) -> ScanResult:
         """
         Scan Terraform file with tfsec
 
@@ -306,7 +306,7 @@ class IaCScanner:
             success=True
         )
 
-    def _scan_kubernetes(self, file_path: Path, config: Dict[str, Any]) -> ScanResult:
+    def _scan_kubernetes(self, file_path: Path, config: dict[str, Any]) -> ScanResult:
         """
         Scan Kubernetes manifest with kube-score
 
@@ -353,7 +353,7 @@ class IaCScanner:
             success=True
         )
 
-    def _scan_cloudformation(self, file_path: Path, config: Dict[str, Any]) -> ScanResult:
+    def _scan_cloudformation(self, file_path: Path, config: dict[str, Any]) -> ScanResult:
         """
         Scan CloudFormation template with cfn-lint
 
@@ -399,7 +399,7 @@ class IaCScanner:
             success=True
         )
 
-    def _scan_docker(self, file_path: Path, config: Dict[str, Any]) -> ScanResult:
+    def _scan_docker(self, file_path: Path, config: dict[str, Any]) -> ScanResult:
         """
         Scan Dockerfile with hadolint
 
@@ -444,7 +444,7 @@ class IaCScanner:
             success=True
         )
 
-    def _scan_ansible(self, file_path: Path, config: Dict[str, Any]) -> ScanResult:
+    def _scan_ansible(self, file_path: Path, config: dict[str, Any]) -> ScanResult:
         """
         Scan Ansible playbook with ansible-lint
 
@@ -488,7 +488,7 @@ class IaCScanner:
             success=True
         )
 
-    def _aggregate_results(self, results: List[ScanResult], total_duration: float) -> Dict[str, Any]:
+    def _aggregate_results(self, results: list[ScanResult], total_duration: float) -> dict[str, Any]:
         """
         Aggregate scan results into summary format
 

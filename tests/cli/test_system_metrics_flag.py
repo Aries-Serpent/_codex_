@@ -24,18 +24,18 @@ def test_train_starts_system_metrics(monkeypatch, tmp_path: Path):
         return cfg_obj, raw_cfg
 
     class DummyLogger:
-        def __init__(self, path):  # noqa: ARG002
+        def __init__(self, path):
             calls["logger_path"] = path
 
         def __enter__(self):
             calls["logger_started"] = True
             return self
 
-        def __exit__(self, exc_type, exc, tb):  # noqa: ARG002
+        def __exit__(self, exc_type, exc, tb):
             calls["logger_stopped"] = True
             return False
 
-    def fake_run_functional_training(config=None, resume=False):  # noqa: ARG001
+    def fake_run_functional_training(config=None, resume=False):
         calls["ran"] = True
 
     monkeypatch.setattr("codex_ml.cli.codex_cli.load_app_config", fake_load_app_config)

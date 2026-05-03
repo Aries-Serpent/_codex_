@@ -17,12 +17,12 @@ These tests validate the status audit CLI functionality including:
 - Baseline comparison
 """
 
-import json  # noqa: E402
-import subprocess  # noqa: E402
-import sys  # noqa: E402
-from pathlib import Path  # noqa: E402
+import json
+import subprocess
+import sys
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 
 @pytest.fixture

@@ -36,7 +36,6 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +46,8 @@ class LinkChecker:
     def __init__(self, root_dir: Path):
         self.root_dir = root_dir
         self.docs_dir = root_dir / "docs"
-        self.broken_links: List[Tuple[Path, str, str]] = []
-        self.all_files: Set[Path] = set()
+        self.broken_links: list[tuple[Path, str, str]] = []
+        self.all_files: set[Path] = set()
         self.link_pattern = re.compile(r'\[([^\]]+)\]\(([^\)]+)\)')
 
     def scan_all_files(self) -> None:
@@ -83,7 +82,7 @@ class LinkChecker:
         except (ValueError, OSError):
             return False
 
-    def scan_file(self, file_path: Path) -> List[Tuple[str, str]]:
+    def scan_file(self, file_path: Path) -> list[tuple[str, str]]:
         """Scan a file for links and check validity."""
         try:
             content = file_path.read_text(encoding='utf-8')
@@ -101,7 +100,7 @@ class LinkChecker:
 
         return broken
 
-    def categorize_broken_links(self) -> Dict[str, List[Tuple[Path, str, str]]]:
+    def categorize_broken_links(self) -> dict[str, list[tuple[Path, str, str]]]:
         """Categorize broken links by type."""
         categories = defaultdict(list)
 

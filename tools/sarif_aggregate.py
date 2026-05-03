@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Sequence
 from pathlib import Path
-from typing import List, Sequence
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -30,7 +30,7 @@ def load_sarif(path: Path) -> dict:
         return {}
 
 
-def aggregate_sarif(paths: List[Path]) -> dict:
+def aggregate_sarif(paths: list[Path]) -> dict:
     aggregated: dict = {"version": "2.1.0", "runs": []}
     version_set = False
     for p in paths:

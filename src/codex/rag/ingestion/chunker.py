@@ -12,9 +12,10 @@ import hashlib
 import logging
 import re
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional, Sequence
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

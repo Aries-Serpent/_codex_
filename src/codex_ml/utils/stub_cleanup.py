@@ -14,7 +14,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["StubInfo", "StubAnalyzer", "find_stubs", "prioritize_stubs"]
+__all__ = ["StubAnalyzer", "StubInfo", "find_stubs", "prioritize_stubs"]
 
 
 @dataclass

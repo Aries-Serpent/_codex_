@@ -13,7 +13,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ class SelfHealingValidator:
         self.history_file = history_file or Path(".codex/monitoring/state/self_healing_history.json")
         self.history_file.parent.mkdir(parents=True, exist_ok=True)
 
-    def validate_action_outcome(self, action: Dict[str, any], outcome: Dict[str, any]) -> Dict[str, any]:
+    def validate_action_outcome(self, action: dict[str, any], outcome: dict[str, any]) -> dict[str, any]:
         """
         Validate outcome of an autonomous action.
 
@@ -87,7 +87,7 @@ class SelfHealingValidator:
         return sum(h.get("new_confidence", 0.7) for h in recent) / len(recent)
 
 
-    def _load_history(self) -> List[Dict[str, any]]:
+    def _load_history(self) -> list[dict[str, any]]:
         """Load self-healing history from file."""
         try:
             if self.history_file.exists():
@@ -98,7 +98,7 @@ class SelfHealingValidator:
             logger.error(f"Error loading history: {e}")
             return []
 
-    def _save_to_history(self, result: Dict[str, any]):
+    def _save_to_history(self, result: dict[str, any]):
         """Save validation result to history."""
         try:
             history = self._load_history()

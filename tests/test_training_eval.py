@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import Dict
 
 import pytest
 
@@ -26,7 +25,7 @@ def test_training_eval_fallback_metrics(monkeypatch: pytest.MonkeyPatch) -> None
             if not attr.startswith("__"):
                 delattr(module, attr)
 
-    cfg: Dict[str, object] = {
+    cfg: dict[str, object] = {
         "seed": 123,
         "max_epochs": 3,
         "dataset": {"train_texts": ["a b c", "d e f"], "format": "inline"},

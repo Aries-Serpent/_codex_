@@ -35,28 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""Offline Codex repository audit orchestrator.
-
-This script executes a deterministic, offline audit pipeline composed of eight
-phases.  It stitches together existing helper modules inside the repository to
-generate structured artifacts that capture repository structure, capability
-signals, reproducibility metadata, and smoke-test results.
-
-The implementation follows the plan provided in the task prompt.  Every phase
-attempts to emit its expected artifacts even when intermediate steps fail.
-Errors are captured in a canonical "Error Capture Block" format and persisted
-to both ``errors_log.md`` and ``errors.json``.
-
-Usage
------
-
-```
-python scripts/codex_offline_audit.py --repo-root . --output-dir _codex_reports/$(date +%F)
-```
-
-The script is intentionally offline: it does not perform any network calls and
-avoids touching CI workflows.
-"""
 
 import argparse
 import datetime as _dt

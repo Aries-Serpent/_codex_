@@ -19,18 +19,18 @@ Merged test script combining:
 - Robust multi-strategy invocation of build_query
 """
 
-import ast  # noqa: E402
-import importlib.util  # noqa: E402
-import inspect  # noqa: E402
-import json  # noqa: E402
-import os  # noqa: E402
-import pathlib  # noqa: E402
-import re  # noqa: E402
-import textwrap  # noqa: E402
-import types  # noqa: E402
-from typing import List, Optional, Tuple  # noqa: E402
+import ast
+import importlib.util
+import inspect
+import json
+import os
+import pathlib
+import re
+import textwrap
+import types
+from typing import Optional
 
-import pytest  # noqa: E402
+import pytest
 
 # --------------------------------------------------------------------------------------
 # Configuration & Metrics
@@ -39,7 +39,7 @@ import pytest  # noqa: E402
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 # Dynamic population; will fallback to static list if empty after discovery.
-CANDIDATES: List[str] = []
+CANDIDATES: list[str] = []
 
 # Depth knob for nested dict scanning (env override).
 MAX_DICT_DEPTH = int(os.getenv("CODEX_MAX_DICT_DEPTH", "5"))
@@ -83,7 +83,7 @@ def _metrics_visit(label: str, src: str):
         v.visit(tree)
         file_entry = _AST_METRICS["files"].setdefault(label, {})
         file_entry["nodes_visited"] = v.count
-    except Exception:  # noqa: BLE001
+    except Exception:
         # silent best-effort
         pass
 
@@ -121,25 +121,25 @@ def _load_module_from_path(rel_path: str):
     return mod
 
 
-def _discover_candidates() -> List[str]:
-    out: List[str] = []
+def _discover_candidates() -> list[str]:
+    out: list[str] = []
     for p in ROOT.rglob("*.py"):
         if ".git" in p.parts:
             continue
         try:
             txt = p.read_text(encoding="utf-8", errors="ignore")
-        except Exception:  # noqa: BLE001
+        except Exception:
             continue
         if re.search(r"\bdef\s+build_query\s*\(", txt):
             try:
                 rel = str(p.relative_to(ROOT))
-            except Exception:  # noqa: BLE001
+            except Exception:
                 rel = str(p)
             out.append(rel)
     return sorted(set(out), key=lambda s: (len(s.split("/")), s))
 
 
-def _resolve_candidates() -> List[str]:
+def _resolve_candidates() -> list[str]:
     discovered = _discover_candidates()
     if discovered:
         return discovered
@@ -181,10 +181,10 @@ def _const_str(node: ast.AST) -> Optional[str]:
     return None
 
 
-def _collect_str_list(node: ast.AST) -> List[str]:
+def _collect_str_list(node: ast.AST) -> list[str]:
     if not isinstance(node, (ast.List, ast.Tuple)):
         return []
-    out: List[str] = []
+    out: list[str] = []
     for e in node.elts:
         s = _const_str(e)
         if s is not None:
@@ -192,7 +192,7 @@ def _collect_str_list(node: ast.AST) -> List[str]:
     return out
 
 
-def _dfs_dict(node: ast.AST, depth: int, cols_acc: set, ts_acc: List[str]):
+def _dfs_dict(node: ast.AST, depth: int, cols_acc: set, ts_acc: list[str]):
     if depth > MAX_DICT_DEPTH or not isinstance(node, ast.Dict):
         return
     for k_node, v_node in zip(node.keys, node.values):
@@ -214,7 +214,7 @@ def _dfs_dict(node: ast.AST, depth: int, cols_acc: set, ts_acc: List[str]):
                     _dfs_dict(inner, depth + 1, cols_acc, ts_acc)
 
 
-def _extract_literal_columns_from_source(src: str) -> List[str]:
+def _extract_literal_columns_from_source(src: str) -> list[str]:
     _metrics_visit("columns_source", src)
     cols = set()
     try:
@@ -240,7 +240,7 @@ def _extract_literal_columns_from_source(src: str) -> List[str]:
                 if c and all(x not in c.lower() for x in ["*", "case ", "count(", "sum(", "avg("]):
                     if re.match(r"[A-Za-z_][A-Za-z0-9_]*$", c):
                         cols.add(c)
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     return sorted(cols)
 
@@ -250,7 +250,7 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
     m = re.search(r"ORDER\s+BY\s+([A-Za-z_][A-Za-z0-9_]*)\s+(ASC|DESC)", src, flags=re.I)
     if m:
         return m.group(1)
-    ts_acc: List[str] = []
+    ts_acc: list[str] = []
     try:
         tree = ast.parse(src)
         for node in ast.walk(tree):
@@ -271,17 +271,17 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
                     _dfs_dict(node.value, 1, set(), ts_acc)
             elif isinstance(node, ast.Dict):
                 _dfs_dict(node, 1, set(), ts_acc)
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     return ts_acc[0] if ts_acc else None
 
 
-def _infer_expectations(build_query) -> Tuple[List[str], str]:
+def _infer_expectations(build_query) -> tuple[list[str], str]:
     """
     Infer (expected_cols, timestamp) by combining source introspection,
     param hints, and defaults.
     """
-    expected_cols: List[str] = []
+    expected_cols: list[str] = []
     ts: Optional[str] = None
     try:
         src = inspect.getsource(build_query)
@@ -291,7 +291,7 @@ def _infer_expectations(build_query) -> Tuple[List[str], str]:
             expected_cols = inferred_cols
         if inferred_ts:
             ts = inferred_ts
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     try:
         sig = inspect.signature(build_query)
@@ -303,7 +303,7 @@ def _infer_expectations(build_query) -> Tuple[List[str], str]:
                 ts = "order_by"
         if not expected_cols and ("columns" in params or "select" in params):
             expected_cols = ["event_time", "user_id", "message"]
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     if not expected_cols:
         expected_cols = ["event_time", "user_id", "message"]
@@ -312,7 +312,7 @@ def _infer_expectations(build_query) -> Tuple[List[str], str]:
     return expected_cols, ts
 
 
-def _extract_select_cols(sql: str) -> List[str]:
+def _extract_select_cols(sql: str) -> list[str]:
     m = re.search(r"select\s+(.*?)\s+from", sql, flags=re.I | re.S)
     if not m:
         return []
@@ -405,7 +405,7 @@ def test_build_query_selects_columns_and_orders():
         sig = None
 
     mapcol = {"timestamp": ts, "select": exp_cols}
-    attempts: List[Tuple[Tuple, dict]] = []
+    attempts: list[tuple[tuple, dict]] = []
     if sig:
         params = list(sig.parameters)
         if "mapcol" in params:

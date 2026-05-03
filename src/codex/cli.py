@@ -1700,7 +1700,7 @@ _cli_auth = None
 
 def _get_auth():
     """Return a (lazily initialised) singleton Authenticator for CLI use."""
-    global _cli_user_store, _cli_auth  # noqa: PLW0603
+    global _cli_user_store, _cli_auth
     if _cli_auth is None:
         from codex.auth.authenticator import Authenticator
         from codex.auth.token_manager import TokenManager
@@ -1885,7 +1885,7 @@ def _clear_cached_credentials() -> None:
 
 # Expose CLI groups as module attributes for testing and dynamic imports
 # These are already defined above and don't need reassignment
-__all__ = ["cli", "logs", "tokenizer_group", "repro_group", "auth_group"]
+__all__ = ["auth_group", "cli", "logs", "repro_group", "tokenizer_group"]
 
 
 if __name__ == "__main__":

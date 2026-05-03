@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Optional
 
 from ..security_utils import sanitize_log_message
 from .exceptions import (
@@ -52,7 +52,7 @@ class LoginResult:
     session_token: str
     session_id: str
     mfa_verified: bool = False
-    roles: List[str] = field(default_factory=list)
+    roles: list[str] = field(default_factory=list)
 
 
 class Authenticator:
@@ -89,7 +89,7 @@ class Authenticator:
         username: str,
         email: str,
         password: str,
-        roles: Optional[List[str]] = None,
+        roles: Optional[list[str]] = None,
         display_name: Optional[str] = None,
     ) -> User:
         """

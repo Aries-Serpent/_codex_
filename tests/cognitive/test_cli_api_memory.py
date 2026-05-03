@@ -56,7 +56,7 @@ def server_app(tmp_path: Path):
             if "cli_api_server" in mod_key:
                 del sys.modules[mod_key]
 
-        import cognitive_app.src.server.cli_api_server as srv  # noqa: PLC0415
+        import cognitive_app.src.server.cli_api_server as srv
 
         importlib.reload(srv)
 
@@ -65,7 +65,7 @@ def server_app(tmp_path: Path):
 
 @pytest.fixture()
 def client(server_app):
-    from fastapi.testclient import TestClient  # noqa: PLC0415
+    from fastapi.testclient import TestClient
 
     srv, master_key, _db_path = server_app
     return TestClient(srv.app), master_key, srv

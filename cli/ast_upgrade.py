@@ -31,9 +31,10 @@ import re
 import shutil
 import textwrap
 import zipfile
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Optional
 
 
 def TS() -> str:
@@ -1255,7 +1256,7 @@ CHANGELOG_ENTRY = _template(
 )
 
 
-FILE_TEMPLATES: Dict[Path, str] = {
+FILE_TEMPLATES: dict[Path, str] = {
     Path("src/codex_ml/analysis/__init__.py"): ANALYSIS_INIT,
     Path("src/codex_ml/analysis/parsers.py"): ANALYSIS_PARSERS,
     Path("src/codex_ml/analysis/extractors.py"): ANALYSIS_EXTRACTORS,
@@ -1265,17 +1266,17 @@ FILE_TEMPLATES: Dict[Path, str] = {
     Path("src/codex_ml/cli/audit_pipeline.py"): AUDIT_PIPELINE,
 }
 
-TEST_TEMPLATES: Dict[Path, str] = {
+TEST_TEMPLATES: dict[Path, str] = {
     Path("tests/analysis/test_audit_pipeline.py"): TEST_AUDIT_PIPELINE,
     Path("tests/analysis/test_providers.py"): TEST_PROVIDERS,
     Path("tests/analysis/test_external_web_search.py"): TEST_EXTERNAL_WEB_SEARCH,
 }
 
-DOC_TEMPLATES: Dict[Path, str] = {
+DOC_TEMPLATES: dict[Path, str] = {
     Path("docs/analysis/audit_pipeline.md"): DOC_ANALYSIS_OVERVIEW,
 }
 
-METRIC_TARGETS: List[Path] = [
+METRIC_TARGETS: list[Path] = [
     Path("src/codex_ml/analysis/registry.py"),
     Path("src/codex_ml/analysis/extractors.py"),
     Path("src/codex_ml/analysis/parsers.py"),
@@ -1288,10 +1289,10 @@ METRIC_TARGETS: List[Path] = [
 @dataclass
 class UpgradeContext:
     root: Path
-    errors: List[str] = field(default_factory=list)
-    patches: Dict[str, str] = field(default_factory=dict)
-    created: List[str] = field(default_factory=list)
-    updated: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    patches: dict[str, str] = field(default_factory=dict)
+    created: list[str] = field(default_factory=list)
+    updated: list[str] = field(default_factory=list)
 
 
 # --------- helpers ----------
@@ -1382,7 +1383,7 @@ def write_docs(ctx: UpgradeContext) -> None:
 
 
 def write_metrics(ctx: UpgradeContext) -> None:
-    records: List[Dict[str, Any]] = []
+    records: list[dict[str, Any]] = []
     branches = (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.Try, ast.With, ast.BoolOp)
     for rel_path in METRIC_TARGETS:
         abs_path = ctx.root / rel_path
@@ -1435,7 +1436,7 @@ def append_errors(ctx: UpgradeContext) -> None:
         a(log_path, block)
 
 
-def summarise(ctx: UpgradeContext) -> Dict[str, Any]:
+def summarise(ctx: UpgradeContext) -> dict[str, Any]:
     return {
         "root": str(ctx.root),
         "created": sorted(ctx.created),
@@ -1464,7 +1465,7 @@ def resolve_root(args) -> Path:
     return detect_root(root)
 
 
-def run_upgrade(args) -> Dict[str, Any]:
+def run_upgrade(args) -> dict[str, Any]:
     root = resolve_root(args)
     ctx = UpgradeContext(root=root)
 

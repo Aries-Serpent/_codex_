@@ -10,7 +10,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["health_check", "readiness_check", "get_health_router"]
+__all__ = ["get_health_router", "health_check", "readiness_check"]
 
 
 def health_check() -> dict[str, Any]:

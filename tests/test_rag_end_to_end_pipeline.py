@@ -9,7 +9,6 @@ import sys
 import types
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple
 
 import pytest
 
@@ -35,7 +34,7 @@ class FakeFaissIndex:
     """In-memory FAISS-like index for deterministic tests."""
 
     dimension: int
-    vectors: List[np.ndarray]
+    vectors: list[np.ndarray]
 
     def add(self, vectors: np.ndarray) -> None:
         for vec in vectors:
@@ -85,13 +84,13 @@ class FakeFaissModule:
 class SentenceTransformerSpy:
     """Capture SentenceTransformer initialization and encode calls."""
 
-    calls: List[Tuple[str, dict]]
+    calls: list[tuple[str, dict]]
 
 
 @pytest.fixture()
 def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransformerSpy:
     """Provide a fake SentenceTransformer for embedding generation."""
-    calls: List[Tuple[str, dict]] = []
+    calls: list[tuple[str, dict]] = []
 
     class FakeSentenceTransformer:
         def __init__(self, model_name: str, **kwargs):

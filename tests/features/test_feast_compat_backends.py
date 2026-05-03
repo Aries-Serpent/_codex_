@@ -444,7 +444,7 @@ class TestDuckDBBackend:
             for i in range(start, start + 5):
                 try:
                     b.write("v", f"key_{i}", {"val": i})
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     errors.append(exc)
 
         threads = [threading.Thread(target=write_batch, args=(i * 5,)) for i in range(4)]

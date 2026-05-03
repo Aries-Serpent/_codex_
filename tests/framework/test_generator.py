@@ -13,7 +13,6 @@ Usage:
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
 
 
 @dataclass
@@ -26,19 +25,19 @@ class OrchestrationFlowSpec:
     method_name: str  # e.g., "orchestrate"
 
     # Flow characteristics
-    stages: List[str]  # e.g., ["ASSESS", "DELIBERATE", "OPTIMIZE", "ACT"]
-    decision_points: List[str]  # Points where flow can branch
-    inputs: Dict[str, str]  # Required inputs and their type names
-    outputs: Dict[str, str]  # Expected outputs and their type names
+    stages: list[str]  # e.g., ["ASSESS", "DELIBERATE", "OPTIMIZE", "ACT"]
+    decision_points: list[str]  # Points where flow can branch
+    inputs: dict[str, str]  # Required inputs and their type names
+    outputs: dict[str, str]  # Expected outputs and their type names
 
     # Coverage targets
-    line_range: Tuple[int, int]  # Lines to cover
-    branch_paths: List[str]  # Branch paths to test
-    edge_cases: List[str]  # Edge cases to verify
+    line_range: tuple[int, int]  # Lines to cover
+    branch_paths: list[str]  # Branch paths to test
+    edge_cases: list[str]  # Edge cases to verify
 
     # Dependencies
-    fixtures_needed: List[str] = field(default_factory=list)
-    mocks_needed: List[str] = field(default_factory=list)
+    fixtures_needed: list[str] = field(default_factory=list)
+    mocks_needed: list[str] = field(default_factory=list)
 
 
 class UnitTestGenerator:

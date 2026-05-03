@@ -26,7 +26,6 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List
 
 
 def windows_safe_timestamp(fmt: str = 'iso') -> str:
@@ -351,7 +350,7 @@ def main() -> int:
     print("=" * 70)
     print()
 
-    results: List[bool] = []
+    results: list[bool] = []
 
     # Process each artifact type
     if args.all or args.coverage:

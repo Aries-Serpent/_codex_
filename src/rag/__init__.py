@@ -15,7 +15,7 @@ from .pipelines import (
 __all__ = [
     "ChunkingPipeline",
     "EmbeddingPipeline",
-    "RetrievalPipeline",
     "QuantumEnhancedRetrieval",
     "QuantumRelevanceScorer",
+    "RetrievalPipeline",
 ]

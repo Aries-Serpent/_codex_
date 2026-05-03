@@ -63,7 +63,7 @@ def dummy_model() -> MagicMock:
 def dummy_load_from_pretrained(dummy_tokenizer, dummy_model, monkeypatch):
     """Patch ``load_from_pretrained`` in legacy_api to return dummy stubs."""
     try:
-        from codex_ml.training import legacy_api  # noqa: PLC0415
+        from codex_ml.training import legacy_api
 
         monkeypatch.setattr(
             legacy_api,

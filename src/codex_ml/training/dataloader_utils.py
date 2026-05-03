@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Reproducible DataLoader helpers."""
 
 
 import random
@@ -36,7 +35,7 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover - torch may be absent
     torch = None  # type: ignore[assignment]
 
-__all__ = ["seed_worker", "make_generator"]
+__all__ = ["make_generator", "seed_worker"]
 
 
 def seed_worker(worker_id: int) -> None:  # pragma: no cover - thin wrapper

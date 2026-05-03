@@ -23,7 +23,7 @@ import os
 import sys
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from cognitive_brain.experiments.complex_scenarios import (
     generate_complex_scenarios,
@@ -53,10 +53,10 @@ class EXP1BResults:
     error_rate: float  # Fraction of incorrect predictions
     classical_baseline_ms: float  # Classical assessment time baseline
     total_scenarios: int  # Number of scenarios evaluated
-    scenario_stats: Dict  # Statistics about scenario complexity
+    scenario_stats: dict  # Statistics about scenario complexity
     verified_count: int = 0  # Scenarios retained after verified-label filter
     k1_verified: float = 0.0  # k₁ computed on verified-label subset (0 if not applicable)
-    mismatches: List[Dict] = field(default_factory=list)  # Per-scenario mismatches
+    mismatches: list[dict] = field(default_factory=list)  # Per-scenario mismatches
 
 
 # Ambiguity threshold below which a scenario label is considered "verified"
@@ -420,10 +420,10 @@ def calculate_k1(
 
 def run_scalability_test(
     scenarios_per_seed: int = 1000,
-    seeds: List[int] = None,  # type: ignore[assignment]
+    seeds: list[int] = None,  # type: ignore[assignment]
     use_verified_labels: bool = True,
     save_json: Optional[str] = None,
-) -> Dict:
+) -> dict:
     """
     Run scalability validation across multiple seeds (Phase 3).
 
@@ -452,7 +452,7 @@ def run_scalability_test(
     )
     print("=" * 60)
 
-    per_seed: List[EXP1BResults] = []
+    per_seed: list[EXP1BResults] = []
     for seed in seeds:
         print(f"\n--- Seed {seed} ---")
         result = run_exp1b_revalidation(

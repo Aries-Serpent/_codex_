@@ -12,8 +12,9 @@ Part of PS-06 Enhancement: Index Sharding - Priority 4
 
 import asyncio
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -37,7 +38,7 @@ except ImportError:
 # consistent sharding otherwise.  Future enhancement: add online re-clustering
 # when centroid drift exceeds a configurable threshold.
 try:
-    from sklearn.cluster import KMeans  # noqa: F401
+    from sklearn.cluster import KMeans
 
     HAS_SKLEARN = True
 except ImportError:
@@ -53,7 +54,7 @@ class SearchResult:
     document_id: str
     content: str
     score: float
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
     shard_id: int
 
 
@@ -187,8 +188,8 @@ class PGVectorStore:
         self,
         query_vector: np.ndarray,
         top_k: int = 5,
-        target_shards: Optional[List[int]] = None,
-    ) -> List[SearchResult]:
+        target_shards: Optional[list[int]] = None,
+    ) -> list[SearchResult]:
         """Scatter-gather search across shards.
 
         Args:
@@ -235,7 +236,7 @@ class PGVectorStore:
         shard_id: int,
         query_vector: np.ndarray,
         limit: int,
-    ) -> List[SearchResult]:
+    ) -> list[SearchResult]:
         """Query a single shard.
 
         Args:
@@ -279,7 +280,7 @@ class PGVectorStore:
 
     async def insert_batch(
         self,
-        documents: List[Dict[str, Any]],
+        documents: list[dict[str, Any]],
         embeddings: np.ndarray,
         shard_mapper: Optional[Callable[..., Any]] = None,
     ) -> None:
@@ -297,7 +298,7 @@ class PGVectorStore:
             raise RuntimeError("Call initialize() first")
 
         # Group documents by shard
-        shard_groups: Dict[int, List[tuple]] = {i: [] for i in range(self.num_shards)}
+        shard_groups: dict[int, list[tuple]] = {i: [] for i in range(self.num_shards)}
 
         for doc, emb in zip(documents, embeddings, strict=False):
             if shard_mapper:
@@ -344,7 +345,7 @@ class PGVectorStore:
     async def _insert_to_shard(
         self,
         shard_id: int,
-        documents: List[tuple],
+        documents: list[tuple],
     ) -> None:
         """Insert documents to a single shard using pipeline."""
         if not self.pool:

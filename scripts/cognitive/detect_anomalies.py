@@ -33,10 +33,10 @@ import argparse
 import json
 import statistics
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def detect_anomalies(input_dir: str, output_path: str, agent5_integration: bool = False) -> Dict[str, Any]:
+def detect_anomalies(input_dir: str, output_path: str, agent5_integration: bool = False) -> dict[str, Any]:
     """
     Detect anomalies in collected data using Agent 5 integration.
 

@@ -14,9 +14,9 @@ pytest.importorskip("typer")
 
 # Skip entire module if torch is not available or unloadable
 torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")
-from typer.testing import CliRunner  # noqa: E402
+from typer.testing import CliRunner
 
-from codex_ml.evaluation import cli as eval_cli  # noqa: E402
+from codex_ml.evaluation import cli as eval_cli
 
 
 class DummyModel(torch.nn.Module):
@@ -33,7 +33,7 @@ class DummyLogger:
 
     def __init__(self, path: Path):
         self.path = path
-        self.fh = open(self.path, "a", encoding="utf-8")  # noqa: SIM115
+        self.fh = open(self.path, "a", encoding="utf-8")
 
     def __enter__(self):
         return self

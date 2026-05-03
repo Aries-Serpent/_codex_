@@ -15,7 +15,7 @@ Phase: 20.2 Advanced Automation
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -24,7 +24,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def service_request_config() -> Dict[str, Any]:
+def service_request_config() -> dict[str, Any]:
     """Fixture for service request configuration."""
     return {
         "request_id": "REQ-2026-001",
@@ -43,7 +43,7 @@ def service_request_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def provisioning_config() -> Dict[str, Any]:
+def provisioning_config() -> dict[str, Any]:
     """Fixture for provisioning configuration."""
     return {
         "auto_provision": True,
@@ -59,7 +59,7 @@ def provisioning_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def access_policy() -> Dict[str, Any]:
+def access_policy() -> dict[str, Any]:
     """Fixture for access policy configuration."""
     return {
         "roles": {
@@ -82,24 +82,24 @@ def access_policy() -> Dict[str, Any]:
 class TestServiceRequests:
     """Tests for service request processing."""
 
-    def test_request_has_required_fields(self, service_request_config: Dict[str, Any]):
+    def test_request_has_required_fields(self, service_request_config: dict[str, Any]):
         """Test service request has all required fields."""
         required_fields = ["request_id", "requester", "service_type", "specifications"]
         for field in required_fields:
             assert field in service_request_config
 
-    def test_request_id_format(self, service_request_config: Dict[str, Any]):
+    def test_request_id_format(self, service_request_config: dict[str, Any]):
         """Test request ID follows expected format."""
         request_id = service_request_config["request_id"]
         assert request_id.startswith("REQ-")
         assert len(request_id) > 8
 
-    def test_request_priority_valid(self, service_request_config: Dict[str, Any]):
+    def test_request_priority_valid(self, service_request_config: dict[str, Any]):
         """Test request priority is valid."""
         valid_priorities = ["low", "normal", "high", "critical"]
         assert service_request_config["priority"] in valid_priorities
 
-    def test_request_specifications_complete(self, service_request_config: Dict[str, Any]):
+    def test_request_specifications_complete(self, service_request_config: dict[str, Any]):
         """Test request specifications are complete."""
         specs = service_request_config["specifications"]
         assert "cpu_cores" in specs
@@ -107,7 +107,7 @@ class TestServiceRequests:
         assert specs["cpu_cores"] > 0
         assert specs["memory_gb"] > 0
 
-    def test_request_validation_success(self, service_request_config: Dict[str, Any]):
+    def test_request_validation_success(self, service_request_config: dict[str, Any]):
         """Test request validation passes for valid request."""
         is_valid = bool(
             service_request_config.get("requester")
@@ -116,7 +116,7 @@ class TestServiceRequests:
         )
         assert is_valid is True
 
-    def test_request_validation_missing_requester(self, service_request_config: Dict[str, Any]):
+    def test_request_validation_missing_requester(self, service_request_config: dict[str, Any]):
         """Test request validation fails without requester."""
         config = service_request_config.copy()
         config["requester"] = ""
@@ -131,11 +131,11 @@ class TestServiceRequests:
 class TestProvisioning:
     """Tests for service provisioning."""
 
-    def test_auto_provision_enabled(self, provisioning_config: Dict[str, Any]):
+    def test_auto_provision_enabled(self, provisioning_config: dict[str, Any]):
         """Test auto-provisioning is enabled."""
         assert provisioning_config["auto_provision"] is True
 
-    def test_max_resources_defined(self, provisioning_config: Dict[str, Any]):
+    def test_max_resources_defined(self, provisioning_config: dict[str, Any]):
         """Test maximum resources are defined."""
         max_res = provisioning_config["max_resources"]
         assert max_res["cpu_cores"] > 0
@@ -143,7 +143,7 @@ class TestProvisioning:
         assert max_res["storage_gb"] > 0
 
     def test_resource_within_limits(
-        self, service_request_config: Dict[str, Any], provisioning_config: Dict[str, Any]
+        self, service_request_config: dict[str, Any], provisioning_config: dict[str, Any]
     ):
         """Test requested resources are within limits."""
         specs = service_request_config["specifications"]
@@ -156,11 +156,11 @@ class TestProvisioning:
         )
         assert within_limits is True
 
-    def test_default_ttl_set(self, provisioning_config: Dict[str, Any]):
+    def test_default_ttl_set(self, provisioning_config: dict[str, Any]):
         """Test default TTL is set."""
         assert provisioning_config["default_ttl_days"] > 0
 
-    def test_notification_channels_configured(self, provisioning_config: Dict[str, Any]):
+    def test_notification_channels_configured(self, provisioning_config: dict[str, Any]):
         """Test notification channels are configured."""
         channels = provisioning_config["notification_channels"]
         assert len(channels) > 0
@@ -174,30 +174,30 @@ class TestProvisioning:
 class TestAccessManagement:
     """Tests for access management."""
 
-    def test_roles_defined(self, access_policy: Dict[str, Any]):
+    def test_roles_defined(self, access_policy: dict[str, Any]):
         """Test roles are defined."""
         roles = access_policy["roles"]
         assert len(roles) > 0
         assert "developer" in roles
 
-    def test_role_permissions(self, access_policy: Dict[str, Any]):
+    def test_role_permissions(self, access_policy: dict[str, Any]):
         """Test role permissions are set."""
         dev_role = access_policy["roles"]["developer"]
         assert "can_request" in dev_role
         assert "max_instances" in dev_role
 
-    def test_admin_has_more_permissions(self, access_policy: Dict[str, Any]):
+    def test_admin_has_more_permissions(self, access_policy: dict[str, Any]):
         """Test admin has more permissions than developer."""
         dev_services = access_policy["roles"]["developer"]["can_request"]
         admin_services = access_policy["roles"]["admin"]["can_request"]
         assert len(admin_services) >= len(dev_services)
 
-    def test_approval_matrix_exists(self, access_policy: Dict[str, Any]):
+    def test_approval_matrix_exists(self, access_policy: dict[str, Any]):
         """Test approval matrix is defined."""
         assert "approval_matrix" in access_policy
         assert len(access_policy["approval_matrix"]) > 0
 
-    def test_approval_thresholds_set(self, access_policy: Dict[str, Any]):
+    def test_approval_thresholds_set(self, access_policy: dict[str, Any]):
         """Test approval thresholds are set."""
         compute_approval = access_policy["approval_matrix"]["compute"]
         assert "threshold_cost" in compute_approval
@@ -211,7 +211,7 @@ class TestAccessManagement:
 class TestSelfServicePortal:
     """Tests for self-service portal functionality."""
 
-    def test_portal_request_submission(self, service_request_config: Dict[str, Any]):
+    def test_portal_request_submission(self, service_request_config: dict[str, Any]):
         """Test portal request submission."""
         # Simulate portal submission
         submitted = {
@@ -221,7 +221,7 @@ class TestSelfServicePortal:
         }
         assert submitted["status"] == "submitted"
 
-    def test_portal_request_tracking(self, service_request_config: Dict[str, Any]):
+    def test_portal_request_tracking(self, service_request_config: dict[str, Any]):
         """Test portal request tracking."""
         tracking = {
             "request_id": service_request_config["request_id"],
@@ -246,7 +246,7 @@ class TestSelfServicePortal:
         assert len(catalog) > 0
         assert catalog[0]["type"] == "compute"
 
-    def test_portal_cost_estimation(self, service_request_config: Dict[str, Any]):
+    def test_portal_cost_estimation(self, service_request_config: dict[str, Any]):
         """Test portal provides cost estimation."""
         specs = service_request_config["specifications"]
         # Simple cost calculation

@@ -18,18 +18,19 @@ All helpers raise ``AssertionError`` with a descriptive message on failure.
 
 from __future__ import annotations
 
-from typing import Any, Callable, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 __all__ = [
-    "assert_non_empty_list",
-    "assert_collection",
-    "assert_non_negative_count",
-    "assert_no_exception",
-    "assert_dict_has_keys",
-    "assert_positive",
     "assert_callable_returns",
-    "assert_string_non_empty",
+    "assert_collection",
+    "assert_dict_has_keys",
     "assert_instance",
+    "assert_no_exception",
+    "assert_non_empty_list",
+    "assert_non_negative_count",
+    "assert_positive",
+    "assert_string_non_empty",
 ]
 
 T = TypeVar("T")
@@ -115,7 +116,7 @@ def assert_no_exception(callable_: Callable[..., Any], *args: Any, **kwargs: Any
     """
     try:
         return callable_(*args, **kwargs)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise AssertionError(
             f"{callable_.__name__!r} raised {type(exc).__name__}: {exc}"
         ) from exc

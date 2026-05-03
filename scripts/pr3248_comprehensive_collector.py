@@ -12,7 +12,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Configure logging
 LOG_DIR = Path("logs")
@@ -97,7 +97,7 @@ class GitHubActionsCollector:
         })
         self.base_url = "https://api.github.com"
 
-    def get_commit_check_runs(self, sha: str) -> List[Dict[str, Any]]:
+    def get_commit_check_runs(self, sha: str) -> list[dict[str, Any]]:
         """Get check runs for a commit."""
         url = f"{self.base_url}/repos/{OWNER}/{REPO}/commits/{sha}/check-runs"
         try:
@@ -109,7 +109,7 @@ class GitHubActionsCollector:
             logger.error(f"Failed to get check runs for {sha[:7]}: {e}")
             return []
 
-    def get_workflow_runs(self, sha: str) -> List[Dict[str, Any]]:
+    def get_workflow_runs(self, sha: str) -> list[dict[str, Any]]:
         """Get workflow runs for a commit."""
         url = f"{self.base_url}/repos/{OWNER}/{REPO}/actions/runs"
         params = {"head_sha": sha, "per_page": 100}
@@ -122,7 +122,7 @@ class GitHubActionsCollector:
             logger.error(f"Failed to get workflow runs for {sha[:7]}: {e}")
             return []
 
-    def get_run_artifacts(self, run_id: int) -> List[Dict[str, Any]]:
+    def get_run_artifacts(self, run_id: int) -> list[dict[str, Any]]:
         """Get artifacts for a workflow run."""
         url = f"{self.base_url}/repos/{OWNER}/{REPO}/actions/runs/{run_id}/artifacts"
         try:
@@ -134,14 +134,14 @@ class GitHubActionsCollector:
             logger.error(f"Failed to get artifacts for run {run_id}: {e}")
             return []
 
-    def is_check_failing(self, check: Dict[str, Any]) -> bool:
+    def is_check_failing(self, check: dict[str, Any]) -> bool:
         """Determine if a check is failing."""
         status = check.get("status", "")
         conclusion = check.get("conclusion", "")
         failing = ["failure", "timed_out", "cancelled", "action_required"]
         return (status != "completed") or (conclusion in failing)
 
-    def process_commit(self, sha: str) -> Dict[str, Any]:
+    def process_commit(self, sha: str) -> dict[str, Any]:
         """Process a single commit."""
         logger.info(f"Processing commit {sha[:7]}...")
 
@@ -185,7 +185,7 @@ class GitHubActionsCollector:
         }
 
 
-def generate_markdown_table(results: List[Dict[str, Any]]) -> str:
+def generate_markdown_table(results: list[dict[str, Any]]) -> str:
     """Generate the markdown table."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
 

@@ -39,7 +39,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -50,17 +50,17 @@ class RepoAnalysis:
     repo_url: str
     repo_name: str
     clone_path: Path
-    languages: Dict[str, int] = field(default_factory=dict)  # language -> line count
+    languages: dict[str, int] = field(default_factory=dict)  # language -> line count
     total_files: int = 0
     total_lines: int = 0
     license_type: Optional[str] = None
-    capabilities: List[str] = field(default_factory=list)
-    dependencies: List[str] = field(default_factory=list)
+    capabilities: list[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     integration_strategy: str = ""
     plugin_adapter_needed: bool = False
     conversion_required: bool = False
-    key_components: List[Dict[str, Any]] = field(default_factory=list)
-    lessons_learned: List[str] = field(default_factory=list)
+    key_components: list[dict[str, Any]] = field(default_factory=list)
+    lessons_learned: list[str] = field(default_factory=list)
     meta_learning_applicable: bool = False
 
 
@@ -123,9 +123,9 @@ class ExternalRepoIngestor:
             print(f"❌ Error cloning repository: {e}")
             return False
 
-    def analyze_languages(self, repo_path: Path) -> Dict[str, int]:
+    def analyze_languages(self, repo_path: Path) -> dict[str, int]:
         """Analyze language distribution by counting lines of code"""
-        lang_counts: Dict[str, int] = {}
+        lang_counts: dict[str, int] = {}
 
         for lang, extensions in self.LANGUAGE_EXTENSIONS.items():
             line_count = 0
@@ -167,9 +167,9 @@ class ExternalRepoIngestor:
                     logger.debug("Suppressed exception in handler", exc_info=True)
         return None
 
-    def detect_capabilities(self, repo_path: Path) -> List[str]:
+    def detect_capabilities(self, repo_path: Path) -> list[str]:
         """Detect key capabilities from code content"""
-        capabilities: Set[str] = set()
+        capabilities: set[str] = set()
 
         # Search through source files for capability indicators
         for file_path in repo_path.rglob("*"):
@@ -190,7 +190,7 @@ class ExternalRepoIngestor:
 
         return sorted(list(capabilities))
 
-    def extract_key_components(self, repo_path: Path, max_files: int = 10) -> List[Dict[str, Any]]:
+    def extract_key_components(self, repo_path: Path, max_files: int = 10) -> list[dict[str, Any]]:
         """Extract key source files and their metadata"""
         components = []
 
@@ -259,7 +259,7 @@ class ExternalRepoIngestor:
 
         return " | ".join(strategy_parts)
 
-    def generate_lessons_learned(self, analysis: RepoAnalysis) -> List[str]:
+    def generate_lessons_learned(self, analysis: RepoAnalysis) -> list[str]:
         """Extract lessons learned from ingestion process"""
         lessons = []
 

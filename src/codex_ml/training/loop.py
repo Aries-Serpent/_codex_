@@ -8,7 +8,8 @@ import logging
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from codex_ml.interfaces.contracts import TrainingContractError
 from codex_ml.logging.metrics import MetricLogger

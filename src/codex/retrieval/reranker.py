@@ -10,9 +10,10 @@ Provides production-grade re-ranking capabilities:
 
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional, Sequence
+from typing import Any, Optional
 
 import numpy as np
 

@@ -10,11 +10,12 @@ import csv  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import uuid  # noqa: E402
+from collections.abc import Callable, Sequence  # noqa: E402
 from contextlib import ExitStack  # noqa: E402
 from dataclasses import asdict, is_dataclass  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Optional, Sequence, TypeVar  # noqa: E402
+from typing import Any, Optional, TypeVar  # noqa: E402
 
 from codex_ml.config import DataConfig, EvaluationConfig  # noqa: E402
 from codex_ml.data.loader import CacheManifest  # noqa: E402

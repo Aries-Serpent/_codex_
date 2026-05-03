@@ -37,7 +37,7 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -48,11 +48,11 @@ class ResearchPaper:
     """Research paper metadata"""
     arxiv_id: str
     title: str
-    authors: List[str]
+    authors: list[str]
     abstract: str
     published_date: str
     pdf_url: str
-    categories: List[str]
+    categories: list[str]
     relevance_score: float
     feasibility_score: float
     implementation_effort: str  # "low", "medium", "high"
@@ -65,8 +65,8 @@ class IntegrationRoadmap:
     paper: ResearchPaper
     integration_plan: str
     estimated_timeline: str
-    required_resources: List[str]
-    dependencies: List[str]
+    required_resources: list[str]
+    dependencies: list[str]
     expected_benefits: str
 
 
@@ -116,8 +116,8 @@ class ResearchIntegrationPipeline:
             ]
         }
 
-        self.discovered_papers: List[ResearchPaper] = []
-        self.integration_roadmap: List[IntegrationRoadmap] = []
+        self.discovered_papers: list[ResearchPaper] = []
+        self.integration_roadmap: list[IntegrationRoadmap] = []
 
         self._load_discovered_papers()
 
@@ -145,7 +145,7 @@ class ResearchIntegrationPipeline:
         self,
         lookback_days: int = 14,
         max_results: int = 50
-    ) -> List[ResearchPaper]:
+    ) -> list[ResearchPaper]:
         """
         Discover relevant papers from ArXiv
 
@@ -182,7 +182,7 @@ class ResearchIntegrationPipeline:
         self,
         cutoff_date: datetime,
         max_results: int
-    ) -> List[ResearchPaper]:
+    ) -> list[ResearchPaper]:
         """
         Simulate ArXiv API search
         In production, this would use the actual ArXiv API
@@ -285,7 +285,7 @@ class ResearchIntegrationPipeline:
 
         return min(1.0, max_score * 2.0)  # Scale up but cap at 1.0
 
-    def assess_feasibility(self, paper: ResearchPaper) -> Dict[str, Any]:
+    def assess_feasibility(self, paper: ResearchPaper) -> dict[str, Any]:
         """
         Assess implementation feasibility for a paper
 
@@ -394,8 +394,8 @@ class ResearchIntegrationPipeline:
 
     def prioritize_papers(
         self,
-        papers: Optional[List[ResearchPaper]] = None
-    ) -> List[ResearchPaper]:
+        papers: Optional[list[ResearchPaper]] = None
+    ) -> list[ResearchPaper]:
         """
         Prioritize papers for integration
 
@@ -423,7 +423,7 @@ class ResearchIntegrationPipeline:
     def generate_integration_report(
         self,
         top_n: int = 10
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Generate comprehensive integration report
 
@@ -486,7 +486,7 @@ class ResearchIntegrationPipeline:
 
     def _estimate_annual_integrations(
         self,
-        roadmaps: List[IntegrationRoadmap]
+        roadmaps: list[IntegrationRoadmap]
     ) -> int:
         """Estimate number of papers that can be integrated annually"""
         # Assuming 50 weeks per year (accounting for holidays)
@@ -511,7 +511,7 @@ class ResearchIntegrationPipeline:
         return int(weeks_per_year / avg_weeks_per_integration)
 
 
-    def _generate_markdown_report(self, report: Dict[str, Any]):
+    def _generate_markdown_report(self, report: dict[str, Any]):
         """Generate markdown version of integration report"""
         md_content = f"""# Research Integration Report
 

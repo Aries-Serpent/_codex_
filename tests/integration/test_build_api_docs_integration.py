@@ -33,7 +33,7 @@ class TestBuildAPIDocsIntegration:
         env = os.environ.copy()
         env_pythonpath = env.get("PYTHONPATH", "")
         env["PYTHONPATH"] = (
-            f"{str(tmp_path)}{os.pathsep}{env_pythonpath}" if env_pythonpath else str(tmp_path)
+            f"{tmp_path!s}{os.pathsep}{env_pythonpath}" if env_pythonpath else str(tmp_path)
         )
 
         # Run the script

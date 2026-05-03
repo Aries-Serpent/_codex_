@@ -14,7 +14,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["CheckpointIntegrity", "validate_checkpoint", "add_integrity_hash"]
+__all__ = ["CheckpointIntegrity", "add_integrity_hash", "validate_checkpoint"]
 
 
 class CheckpointIntegrity:

@@ -71,7 +71,7 @@ def test_main_exits_non_zero_on_step_failure(tmp_path, monkeypatch):
 
     _patch_output_roots(tmp_path)
 
-    def failing_step(ctx):  # noqa: ARG001
+    def failing_step(ctx):
         return None
 
     failing_wrapped = orchestrator.phase_step(1, "1.1", "Test step")(failing_step)

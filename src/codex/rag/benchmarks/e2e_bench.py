@@ -5,16 +5,16 @@ Measures complete workflow performance from indexing to retrieval.
 """
 
 import tempfile
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .runner import BenchmarkRunner
 
 
 def benchmark_e2e_pipeline(
-    corpus_sizes: Optional[List[int]] = None,
-    query_counts: Optional[List[int]] = None,
+    corpus_sizes: Optional[list[int]] = None,
+    query_counts: Optional[list[int]] = None,
     runs: int = 3,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Benchmark complete RAG pipeline end-to-end.
 
@@ -55,7 +55,7 @@ def benchmark_e2e_pipeline(
     }
 
 
-def _run_complete_pipeline(corpus_size: int, query_count: int) -> Dict[str, Any]:
+def _run_complete_pipeline(corpus_size: int, query_count: int) -> dict[str, Any]:
     """
     Run complete RAG pipeline: build index + queries.
 
@@ -127,7 +127,7 @@ def _run_complete_pipeline(corpus_size: int, query_count: int) -> Dict[str, Any]
         }
 
 
-def benchmark_multi_query_types(index_size: int = 1000, runs: int = 5) -> Dict[str, Any]:
+def benchmark_multi_query_types(index_size: int = 1000, runs: int = 5) -> dict[str, Any]:
     """
     Benchmark different query types (simple, complex, multi-term).
 
@@ -201,7 +201,7 @@ def _build_e2e_index(size: int, tmpdir: str) -> None:
     )
 
 
-def _execute_query(query: str, index_name: str, tmpdir: str) -> List:
+def _execute_query(query: str, index_name: str, tmpdir: str) -> list:
     """Execute a single query."""
     from codex.rag.retriever import Retriever
 

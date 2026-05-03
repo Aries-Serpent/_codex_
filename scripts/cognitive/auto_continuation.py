@@ -29,7 +29,7 @@ import json
 import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -57,7 +57,7 @@ def load_action_log(
     log_path: Path,
     since: Optional[datetime] = None,
     hours: Optional[int] = None
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Load and filter action log entries."""
     if not log_path.exists():
         logger.warning(f"Action log not found: {log_path}")
@@ -91,7 +91,7 @@ def load_action_log(
     return entries
 
 
-def load_pattern_store(store_path: Path) -> Dict[str, Any]:
+def load_pattern_store(store_path: Path) -> dict[str, Any]:
     """Load the pattern learning store."""
     if not store_path.exists():
         return {"patterns": {}, "statistics": {}}
@@ -103,7 +103,7 @@ def load_pattern_store(store_path: Path) -> Dict[str, Any]:
         return {"patterns": {}, "statistics": {}}
 
 
-def load_objectives(objectives_path: Path) -> Dict[str, Any]:
+def load_objectives(objectives_path: Path) -> dict[str, Any]:
     """Load objectives tracker and extract status."""
     if not objectives_path.exists():
         return {"primary": None, "status": "unknown"}
@@ -125,9 +125,9 @@ def load_objectives(objectives_path: Path) -> Dict[str, Any]:
 
 
 def extract_session_context(
-    action_entries: List[Dict[str, Any]],
-    pattern_store: Dict[str, Any]
-) -> Dict[str, Any]:
+    action_entries: list[dict[str, Any]],
+    pattern_store: dict[str, Any]
+) -> dict[str, Any]:
     """Extract session context from action log and pattern store."""
     context = {
         "session_id": None,
@@ -194,9 +194,9 @@ def extract_session_context(
 
 
 def generate_recommended_actions(
-    context: Dict[str, Any],
-    pattern_store: Dict[str, Any]
-) -> List[str]:
+    context: dict[str, Any],
+    pattern_store: dict[str, Any]
+) -> list[str]:
     """Generate recommended next actions based on context."""
     actions = []
 
@@ -226,9 +226,9 @@ def generate_recommended_actions(
 
 
 def generate_references(
-    context: Dict[str, Any],
+    context: dict[str, Any],
     repo_root: Path
-) -> List[Dict[str, str]]:
+) -> list[dict[str, str]]:
     """Generate key reference links."""
     references = []
 
@@ -254,7 +254,7 @@ def generate_references(
 
 def render_template(
     template_path: Path,
-    context: Dict[str, Any]
+    context: dict[str, Any]
 ) -> str:
     """Render a Jinja2-style template with context."""
     if not template_path.exists():
@@ -281,7 +281,7 @@ def render_template(
     return result
 
 
-def generate_markdown_prompt(context: Dict[str, Any]) -> str:
+def generate_markdown_prompt(context: dict[str, Any]) -> str:
     """Generate a markdown continuation prompt."""
     timestamp = datetime.now(timezone.utc).isoformat()
 
@@ -376,7 +376,7 @@ def generate_markdown_prompt(context: Dict[str, Any]) -> str:
     return prompt
 
 
-def generate_pr_comment_prompt(context: Dict[str, Any]) -> str:
+def generate_pr_comment_prompt(context: dict[str, Any]) -> str:
     """Generate a PR comment format prompt."""
     timestamp = datetime.now(timezone.utc).isoformat()
 
@@ -428,7 +428,7 @@ def generate_pr_comment_prompt(context: Dict[str, Any]) -> str:
     return prompt
 
 
-def generate_json_prompt(context: Dict[str, Any]) -> str:
+def generate_json_prompt(context: dict[str, Any]) -> str:
     """Generate a JSON format prompt."""
     timestamp = datetime.now(timezone.utc).isoformat()
 

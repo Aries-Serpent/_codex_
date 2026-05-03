@@ -37,7 +37,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from codex.utils.path_utils import windows_safe_timestamp
 
@@ -69,13 +69,13 @@ class CacheConfig:
     """Configuration for a specific cache."""
 
     cache_type: CacheType
-    paths: List[str]
-    key_components: List[str]
-    restore_keys: List[str] = field(default_factory=list)
+    paths: list[str]
+    key_components: list[str]
+    restore_keys: list[str] = field(default_factory=list)
     max_size_mb: Optional[int] = None
     ttl_days: Optional[int] = None
 
-    def to_github_actions(self) -> Dict[str, Any]:
+    def to_github_actions(self) -> dict[str, Any]:
         """Convert to GitHub Actions cache format."""
         return {
             "path": "\n".join(self.paths),
@@ -94,8 +94,8 @@ class CacheHealth:
     oldest_cache_days: Optional[int] = None
     unused_caches: int = 0
     is_critical: bool = False
-    warnings: List[str] = field(default_factory=list)
-    recommendations: List[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
 
 
 class CacheManager:
@@ -136,7 +136,7 @@ class CacheManager:
     def __init__(
         self,
         repo_root: Optional[Path] = None,
-        github_context: Optional[Dict[str, Any]] = None,
+        github_context: Optional[dict[str, Any]] = None,
     ):
         """Initialize cache manager."""
         self.repo_root = repo_root or self._detect_repo_root()
@@ -164,7 +164,7 @@ class CacheManager:
 
         return Path.cwd()
 
-    def _load_github_context(self) -> Dict[str, Any]:
+    def _load_github_context(self) -> dict[str, Any]:
         """Load GitHub Actions context from environment."""
         return {
             "runner_os": os.environ.get("RUNNER_OS", platform.system()),
@@ -179,7 +179,7 @@ class CacheManager:
         self,
         cache_type: CacheType,
         workflow_name: Optional[str] = None,
-        extra_identifiers: Optional[Dict[str, str]] = None,
+        extra_identifiers: Optional[dict[str, str]] = None,
         include_timestamp: bool = False,
     ) -> str:
         """Generate consistent cache key."""
@@ -212,7 +212,7 @@ class CacheManager:
         self,
         cache_key: str,
         fallback_levels: int = 2,
-    ) -> List[str]:
+    ) -> list[str]:
         """Generate restore keys for cache fallback."""
         parts = cache_key.split("-")
         restore_keys = []
@@ -247,8 +247,8 @@ class CacheManager:
         self,
         cache_type: CacheType,
         workflow_name: Optional[str] = None,
-        extra_identifiers: Optional[Dict[str, str]] = None,
-        additional_paths: Optional[List[str]] = None,
+        extra_identifiers: Optional[dict[str, str]] = None,
+        additional_paths: Optional[list[str]] = None,
     ) -> CacheConfig:
         """Create complete cache configuration."""
         cache_key = self.generate_cache_key(

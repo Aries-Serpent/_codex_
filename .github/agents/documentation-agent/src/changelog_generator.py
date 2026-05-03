@@ -6,7 +6,7 @@ import random
 import re
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 RANDOM_SEED = 48
 
@@ -26,7 +26,7 @@ class ChangelogGenerator:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.entries: List[ChangelogEntry] = []
+        self.entries: list[ChangelogEntry] = []
         self.initialized = True
 
     def parse_commit(self, commit_sha: str, message: str, date: str) -> Optional[ChangelogEntry]:
@@ -106,7 +106,7 @@ class ChangelogGenerator:
 
         return changelog
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get generator metrics"""
         return {
             "seed": self.seed,

@@ -32,9 +32,10 @@ import os
 import subprocess
 import sys
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -49,14 +50,14 @@ _DEFAULT_REPORT = _REPO_ROOT / ".codex" / "security" / "alert_analysis.md"
 _DEFAULT_PLAYWRIGHT_OUT = _REPO_ROOT / ".codex" / "security" / "playwright_alerts.json"
 
 # Codemods available for automated fixing
-_CODEMODS: Dict[str, Path] = {
+_CODEMODS: dict[str, Path] = {
     "sql_injection": _SCRIPTS_DIR / "codemods" / "fix_sql_injection.py",
     "subprocess_shell": _SCRIPTS_DIR / "codemods" / "fix_subprocess.py",
     "hardcoded_secrets": _SCRIPTS_DIR / "codemods" / "fix_hardcoded_secrets.py",
 }
 
 # Severity → priority mapping
-SEVERITY_PRIORITY: Dict[str, str] = {
+SEVERITY_PRIORITY: dict[str, str] = {
     "critical": "P0",
     "high": "P1",
     "medium": "P2",
@@ -78,10 +79,10 @@ class PipelineResult:
     codemods_failed: int = 0
     alerts_closed: int = 0
     validation_passed: bool = False
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
     elapsed_s: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "stage": self.stage,
             "alerts_collected": self.alerts_collected,
@@ -198,7 +199,7 @@ class ResolutionPipeline:
     # Stage 2 – Analyse
     # ------------------------------------------------------------------
 
-    def analyse(self) -> Dict[str, Any]:
+    def analyse(self) -> dict[str, Any]:
         """
         Run analyze_alerts.py to produce a prioritised Markdown report.
 
@@ -226,7 +227,7 @@ class ResolutionPipeline:
         ]
 
         ret = self._run(cmd, label="Analysis")
-        summary: Dict[str, Any] = {}
+        summary: dict[str, Any] = {}
         if ret == 0:
             summary = self._load_analysis_summary()
             self.result.alerts_analysed = self._count_alerts(self.inventory_path)
@@ -237,13 +238,13 @@ class ResolutionPipeline:
         logger.info("Analysis complete in %.1fs", time.monotonic() - t0)
         return summary
 
-    def _load_analysis_summary(self) -> Dict[str, Any]:
+    def _load_analysis_summary(self) -> dict[str, Any]:
         """Parse the inventory JSON to build a severity summary dict."""
         try:
             data = json.loads(self.inventory_path.read_text())
             alerts = data.get("alerts", [])
-            severity_counts: Dict[str, int] = {}
-            priority_counts: Dict[str, int] = {"P0": 0, "P1": 0, "P2": 0, "P3": 0, "P4": 0}
+            severity_counts: dict[str, int] = {}
+            priority_counts: dict[str, int] = {"P0": 0, "P1": 0, "P2": 0, "P3": 0, "P4": 0}
             for a in alerts:
                 sev = a.get("severity", "unknown")
                 severity_counts[sev] = severity_counts.get(sev, 0) + 1
@@ -404,7 +405,7 @@ class ResolutionPipeline:
         logger.info("Closed %d alerts", closed)
         return closed
 
-    def _resolve_p0_p1_alerts(self) -> List[int]:
+    def _resolve_p0_p1_alerts(self) -> list[int]:
         """Return alert numbers that are P0/P1 severity from the inventory."""
         try:
             data = json.loads(self.inventory_path.read_text())
@@ -421,7 +422,7 @@ class ResolutionPipeline:
     # Helpers
     # ------------------------------------------------------------------
 
-    def _run(self, cmd: List[str], label: str = "") -> int:
+    def _run(self, cmd: list[str], label: str = "") -> int:
         """Run a subprocess, streaming output to the logger. Returns exit code."""
         logger.debug("Running [%s]: %s", label, " ".join(str(c) for c in cmd))
         try:

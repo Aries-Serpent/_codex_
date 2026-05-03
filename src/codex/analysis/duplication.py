@@ -20,14 +20,14 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Lightweight duplication analysis utilities used across Codex tools."""
 
 
 import hashlib  # noqa: E402
 from collections import defaultdict  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable  # noqa: E402
+from typing import Any  # noqa: E402
 
 DEFAULT_EXTENSIONS = (".py", ".md", ".yaml", ".yml", ".json", ".txt")
 
@@ -158,4 +158,4 @@ def analyze_duplication(
     )
 
 
-__all__ = ["DuplicationReport", "analyze_duplication", "DEFAULT_EXTENSIONS"]
+__all__ = ["DEFAULT_EXTENSIONS", "DuplicationReport", "analyze_duplication"]

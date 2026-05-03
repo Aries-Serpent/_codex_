@@ -16,13 +16,12 @@ import ast
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SRC_DIRS = [REPO_ROOT / "src", REPO_ROOT / "scripts"]
 
 
-def _extract_module_info(filepath: Path) -> Dict:
+def _extract_module_info(filepath: Path) -> dict:
     """Extract documentation info from a Python module."""
     try:
         source = filepath.read_text(encoding="utf-8", errors="ignore")
@@ -59,7 +58,7 @@ def _extract_module_info(filepath: Path) -> Dict:
     }
 
 
-def scan_directory(directory: Path) -> List[Dict]:
+def scan_directory(directory: Path) -> list[dict]:
     """Scan a directory for Python files and extract doc info."""
     if not directory.exists():
         return []
@@ -73,7 +72,7 @@ def scan_directory(directory: Path) -> List[Dict]:
     return results
 
 
-def calculate_coverage(results: List[Dict]) -> Tuple[int, int, float]:
+def calculate_coverage(results: list[dict]) -> tuple[int, int, float]:
     """Calculate overall documentation coverage."""
     total_items = sum(r.get("total", 0) for r in results)
     documented_items = sum(r.get("documented", 0) for r in results)

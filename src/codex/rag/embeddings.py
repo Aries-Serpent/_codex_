@@ -8,7 +8,7 @@ import logging
 import os
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Protocol
+from typing import Any, Optional, Protocol
 
 import numpy as np
 
@@ -23,7 +23,7 @@ except ImportError:  # pragma: no cover - optional dependency
 class EmbeddingProvider(Protocol):
     """Protocol for embedding providers."""
 
-    def encode(self, texts: List[str], **kwargs) -> np.ndarray:
+    def encode(self, texts: list[str], **kwargs) -> np.ndarray:
         """Encode texts to embeddings."""
         ...
 
@@ -79,7 +79,7 @@ class LocalSentenceTransformerProvider:
             raise
 
     def encode(
-        self, texts: List[str], batch_size: int = 32, show_progress: bool = False
+        self, texts: list[str], batch_size: int = 32, show_progress: bool = False
     ) -> np.ndarray:
         """
         Encode texts to embeddings.
@@ -155,7 +155,7 @@ class OpenAIEmbeddingProvider:
         self.client = OpenAI(api_key=api_key)
         logger.info(f"Initialized OpenAI client with model: {self.model_name}")
 
-    def encode(self, texts: List[str], batch_size: int = 100, **kwargs) -> np.ndarray:
+    def encode(self, texts: list[str], batch_size: int = 100, **kwargs) -> np.ndarray:
         """
         Encode texts to embeddings using OpenAI API.
 
@@ -230,9 +230,9 @@ class CachedEmbeddingProvider:
 
     def encode(
         self,
-        texts: List[str],
+        texts: list[str],
         cache_key: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
         **kwargs,
     ) -> np.ndarray:
         """
@@ -296,7 +296,7 @@ class CachedEmbeddingProvider:
         return embeddings
 
     def _is_cache_valid(
-        self, metadata_file: Path, provided_metadata: Optional[Dict[str, Any]]
+        self, metadata_file: Path, provided_metadata: Optional[dict[str, Any]]
     ) -> bool:
         """
         Check if cached embeddings are still valid.
@@ -330,7 +330,7 @@ class CachedEmbeddingProvider:
         """Get embedding dimension from provider."""
         return self.provider.get_dimension()
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         total = self.cache_hits + self.cache_misses
         hit_rate = self.cache_hits / total if total > 0 else 0.0
@@ -569,7 +569,7 @@ class TfidfEmbeddingProvider:
         self.is_fitted = False
         logger.info(f"Initialized TF-IDF provider (dimension={max_features}, offline-capable=True)")
 
-    def encode(self, texts: List[str], **kwargs) -> np.ndarray:
+    def encode(self, texts: list[str], **kwargs) -> np.ndarray:
         """
         Encode texts using TF-IDF.
 
@@ -650,7 +650,7 @@ class EmbeddingModel:
         return self._provider
 
     def encode(
-        self, texts: List[str], batch_size: int = 32, show_progress: bool = False
+        self, texts: list[str], batch_size: int = 32, show_progress: bool = False
     ) -> "np.ndarray":
         return self._ensure_loaded().encode(
             texts, batch_size=batch_size, show_progress=show_progress

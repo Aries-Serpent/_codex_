@@ -17,7 +17,7 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 import random
 import re
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 # =============================================================================
 # PRE-COMMIT 4: DOCUMENTATION AGENT
@@ -74,7 +74,7 @@ class DocMetrics:
     avg_length: float = 0.0
     missing_sections: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "total_items": self.total_items,
@@ -106,10 +106,10 @@ class DocumentationAgent:
         self.seed = seed
         self._rng = random.Random(seed)  # nosec B311 - deterministic
         self.agent_id = "documentation-agent"
-        self.doc_items: List[DocItem] = []
+        self.doc_items: list[DocItem] = []
         self.metrics = DocMetrics()
 
-    def analyze_file(self, file_path: str, content: str) -> List[DocItem]:
+    def analyze_file(self, file_path: str, content: str) -> list[DocItem]:
         """Analyze file for documentation opportunities.
 
         Args:
@@ -280,7 +280,7 @@ class CodeSmell:
     description: str
     suggestion: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "file_path": self.file_path,
@@ -309,7 +309,7 @@ class RefactoringMetrics:
     low_severity: int = 0
     refactoring_score: float = 100.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "total_smells": self.total_smells,
@@ -341,10 +341,10 @@ class RefactoringAgent:
         self.seed = seed
         self._rng = random.Random(seed)  # nosec B311 - deterministic
         self.agent_id = "refactoring-agent"
-        self.smells: List[CodeSmell] = []
+        self.smells: list[CodeSmell] = []
         self.metrics = RefactoringMetrics()
 
-    def analyze_code(self, file_path: str, content: str) -> List[CodeSmell]:
+    def analyze_code(self, file_path: str, content: str) -> list[CodeSmell]:
         """Analyze code for smells.
 
         Args:
@@ -433,7 +433,7 @@ class RefactoringAgent:
         self.metrics = metrics
         return metrics
 
-    def suggest_refactoring(self, smell: CodeSmell) -> Dict[str, Any]:
+    def suggest_refactoring(self, smell: CodeSmell) -> dict[str, Any]:
         """Generate detailed refactoring suggestion.
 
         Args:
@@ -472,7 +472,7 @@ class PerformanceProfile:
     avg_time: float
     bottleneck_score: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "function_name": self.function_name,
@@ -498,7 +498,7 @@ class PerformanceMetrics:
     total_time: float = 0.0
     optimization_potential: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "total_functions": self.total_functions,
@@ -529,13 +529,13 @@ class PerformanceAgent:
         self.seed = seed
         self._rng = random.Random(seed)  # nosec B311 - deterministic
         self.agent_id = "performance-agent"
-        self.profiles: List[PerformanceProfile] = []
+        self.profiles: list[PerformanceProfile] = []
         self.metrics = PerformanceMetrics()
 
     def profile_function(
         self,
         function_name: str,
-        execution_times: List[float]
+        execution_times: list[float]
     ) -> PerformanceProfile:
         """Profile function execution.
 
@@ -573,7 +573,7 @@ class PerformanceAgent:
         self.profiles.append(profile)
         return profile
 
-    def detect_bottlenecks(self, threshold: float = 50.0) -> List[PerformanceProfile]:
+    def detect_bottlenecks(self, threshold: float = 50.0) -> list[PerformanceProfile]:
         """Detect performance bottlenecks.
 
         Args:
@@ -609,7 +609,7 @@ class PerformanceAgent:
         self.metrics = metrics
         return metrics
 
-    def suggest_optimization(self, profile: PerformanceProfile) -> Dict[str, Any]:
+    def suggest_optimization(self, profile: PerformanceProfile) -> dict[str, Any]:
         """Generate optimization suggestion.
 
         Args:
@@ -647,7 +647,7 @@ def coordinate_agents(
     refactor_agent: RefactoringAgent,
     perf_agent: PerformanceAgent,
     message_bus: Any,  # AgentMessageBus from phase8_8_meta_learning
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Coordinate agents via message bus.
 
     Args:

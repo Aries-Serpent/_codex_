@@ -8,7 +8,6 @@ This script identifies and fixes broken internal links in documentation files.
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -29,7 +28,7 @@ class BrokenLink:
         return f"{self.file_path.relative_to(REPO_ROOT)}:{self.line_num} -> {self.link_target} ({self.reason})"
 
 
-def find_markdown_links(content: str) -> List[Tuple[str, str, int]]:
+def find_markdown_links(content: str) -> list[tuple[str, str, int]]:
     """Extract all markdown links from content.
 
     Returns: List of (link_text, link_target, line_number)
@@ -68,7 +67,7 @@ def resolve_relative_path(base_file: Path, link_target: str) -> Path:
 
 
 
-def check_file_exists(file_path: Path, link_target: str) -> Tuple[bool, str]:
+def check_file_exists(file_path: Path, link_target: str) -> tuple[bool, str]:
     """Check if the target of a relative link exists.
 
     Returns: (exists, reason)
@@ -83,7 +82,7 @@ def check_file_exists(file_path: Path, link_target: str) -> Tuple[bool, str]:
     return (False, f"File not found: {target_path.relative_to(REPO_ROOT)}")
 
 
-def scan_file(file_path: Path) -> List[BrokenLink]:
+def scan_file(file_path: Path) -> list[BrokenLink]:
     """Scan a markdown file for broken links."""
     broken_links = []
 
@@ -107,7 +106,7 @@ def scan_file(file_path: Path) -> List[BrokenLink]:
     return broken_links
 
 
-def scan_documentation() -> Dict[str, List[BrokenLink]]:
+def scan_documentation() -> dict[str, list[BrokenLink]]:
     """Scan all documentation for broken links.
 
     Returns: Dictionary mapping file paths to lists of broken links
@@ -124,7 +123,7 @@ def scan_documentation() -> Dict[str, List[BrokenLink]]:
     return all_broken_links
 
 
-def generate_report(broken_links: Dict[str, List[BrokenLink]]) -> str:
+def generate_report(broken_links: dict[str, list[BrokenLink]]) -> str:
     """Generate a report of broken links."""
     report_lines = [
         "# Broken Documentation Links Report",

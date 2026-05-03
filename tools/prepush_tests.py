@@ -8,7 +8,7 @@ import shlex
 import shutil
 import subprocess
 import sys
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 
 os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 

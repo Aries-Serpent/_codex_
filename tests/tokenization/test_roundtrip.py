@@ -4,8 +4,9 @@ Test Roundtrip
 Test module for roundtrip.
 """
 
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any
 
 import pytest
 

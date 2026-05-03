@@ -23,7 +23,6 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List
 
 # ISO 8601 date format patterns
 ISO_8601_PATTERNS = [
@@ -66,12 +65,12 @@ class ValidationResult:
 
     def __init__(self, file_path: Path):
         self.file_path = file_path
-        self.errors: List[str] = []
-        self.warnings: List[str] = []
-        self.missing_sections: List[str] = []
-        self.found_sections: List[str] = []
-        self.date_issues: List[Dict] = []
-        self.calendar_language: List[Dict] = []
+        self.errors: list[str] = []
+        self.warnings: list[str] = []
+        self.missing_sections: list[str] = []
+        self.found_sections: list[str] = []
+        self.date_issues: list[dict] = []
+        self.calendar_language: list[dict] = []
 
     @property
     def is_valid(self) -> bool:

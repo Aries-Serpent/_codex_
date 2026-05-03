@@ -11,7 +11,7 @@ PDA: Active - Continuous outcome analysis and pattern extraction
 import logging
 from collections import defaultdict
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from cognitive_brain.models.learning_outcome import (
     DecisionContext,
@@ -45,9 +45,9 @@ class OutcomeAnalyzer:
 
     def __init__(self):
         """Initialize outcome analyzer."""
-        self.outcomes: Dict[str, LearningOutcome] = {}
-        self.patterns: Dict[str, Pattern] = {}
-        self.reward_history: List[float] = []
+        self.outcomes: dict[str, LearningOutcome] = {}
+        self.patterns: dict[str, Pattern] = {}
+        self.reward_history: list[float] = []
         self.pattern_extraction_count = 0
 
         logger.info("OutcomeAnalyzer initialized")
@@ -56,7 +56,7 @@ class OutcomeAnalyzer:
         self,
         decision_id: str,
         outcome_type: OutcomeType,
-        result_metrics: Dict[str, float],
+        result_metrics: dict[str, float],
         context: DecisionContext,
         outcome_id: Optional[str] = None,
     ) -> LearningOutcome:
@@ -117,7 +117,7 @@ class OutcomeAnalyzer:
     def _calculate_reward(
         self,
         outcome_type: OutcomeType,
-        result_metrics: Dict[str, float],
+        result_metrics: dict[str, float],
         context: DecisionContext,
     ) -> float:
         """
@@ -170,9 +170,9 @@ class OutcomeAnalyzer:
     def _identify_patterns(
         self,
         outcome_type: OutcomeType,
-        result_metrics: Dict[str, float],
+        result_metrics: dict[str, float],
         context: DecisionContext,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Identify patterns in the outcome.
 
@@ -249,10 +249,10 @@ class OutcomeAnalyzer:
     def _extract_lessons(
         self,
         outcome_type: OutcomeType,
-        result_metrics: Dict[str, float],
+        result_metrics: dict[str, float],
         context: DecisionContext,
-        patterns: List[str],
-    ) -> List[str]:
+        patterns: list[str],
+    ) -> list[str]:
         """
         Extract actionable lessons from the outcome.
 
@@ -357,7 +357,7 @@ class OutcomeAnalyzer:
 
         return pattern_set
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get analyzer statistics.
 

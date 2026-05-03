@@ -34,10 +34,10 @@ import json
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def collect_pr_metrics(lookback_days: int, output_path: str) -> Dict[str, Any]:
+def collect_pr_metrics(lookback_days: int, output_path: str) -> dict[str, Any]:
     """
     Collect Pull Request metrics using GitHub CLI.
 

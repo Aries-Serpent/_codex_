@@ -35,19 +35,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""Initialize a sample `session_events` table for development.
-
-This script creates a `session_events` table alongside existing Codex logging
-usage. By default it uses `.codex/session_logs.db` but a custom path can be
-provided via `--db-path`.
-"""
 
 import argparse
 import json
 import pathlib
 import sqlite3
 import time
-from typing import Iterable
+from collections.abc import Iterable
 
 DEFAULT_DB = pathlib.Path(".codex/session_logs.db")
 

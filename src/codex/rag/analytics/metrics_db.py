@@ -8,7 +8,7 @@ import json
 import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -114,7 +114,7 @@ class MetricsDatabase:
             )
             conn.commit()
 
-    def get_stats(self, index_name: Optional[str] = None, hours: int = 24) -> Dict[str, Any]:
+    def get_stats(self, index_name: Optional[str] = None, hours: int = 24) -> dict[str, Any]:
         """
         Get aggregate statistics.
 
@@ -159,7 +159,7 @@ class MetricsDatabase:
 
     def get_percentiles(
         self, index_name: Optional[str] = None, hours: int = 24
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Calculate latency percentiles.
 

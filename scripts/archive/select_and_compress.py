@@ -34,14 +34,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Archive & Pointer (P2) with Knob Normalization
-
-- Honors ARCHIVE_POINTER_STYLE: embedded | sidecar | both
-- Skips already compressed files (.gz/.zip/.tar) in raw aggregation
-- Respects AUTO_ARCHIVE_DISABLE
-- Uses scripts.config.parse_knobs for normalization
-"""
 
 import hashlib
 import json

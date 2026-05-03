@@ -21,8 +21,9 @@ logger = logging.getLogger(__name__)
 import json  # noqa: E402
 import numbers  # noqa: E402
 import os  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Iterable, Optional, Sequence  # noqa: E402
+from typing import Optional  # noqa: E402
 
 spm = None
 

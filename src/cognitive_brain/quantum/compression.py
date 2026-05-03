@@ -18,7 +18,7 @@ Compression Techniques:
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -52,8 +52,8 @@ class CompressedPattern:
     compressed_features: np.ndarray  # Reduced dimensionality vector
     decision: str
     confidence: float
-    feature_keys: List[str]
-    compression_metadata: Dict[str, Any]
+    feature_keys: list[str]
+    compression_metadata: dict[str, Any]
 
     def get_size_bytes(self) -> int:
         """
@@ -121,9 +121,9 @@ class PatternCompressor:
         # Statistics
         self.total_compressed = 0
         self.total_decompressed = 0
-        self.compression_ratios: List[float] = []
+        self.compression_ratios: list[float] = []
 
-    def fit(self, patterns: List[Dict[str, float]]) -> None:
+    def fit(self, patterns: list[dict[str, float]]) -> None:
         """
         Fit compression model to pattern data.
 
@@ -220,7 +220,7 @@ class PatternCompressor:
 
         self.is_fitted = True
 
-    def get_importance_scores(self) -> Dict[str, float]:
+    def get_importance_scores(self) -> dict[str, float]:
         """
         Get feature importance scores after fitting.
 
@@ -240,7 +240,7 @@ class PatternCompressor:
 
     def compress(
         self,
-        pattern: Dict[str, float],
+        pattern: dict[str, float],
         pattern_id: str = "",
         decision: str = "",
         confidence: float = 0.0,
@@ -347,7 +347,7 @@ class PatternCompressor:
 
         return compressed
 
-    def decompress(self, compressed: CompressedPattern) -> Dict[str, float]:
+    def decompress(self, compressed: CompressedPattern) -> dict[str, float]:
         """
         Reconstruct pattern from compressed form.
 
@@ -400,7 +400,7 @@ class PatternCompressor:
             return 1.0
         return float(np.mean(self.compression_ratios))
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get compression statistics.
 

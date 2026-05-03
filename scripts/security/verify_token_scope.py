@@ -34,7 +34,7 @@ import logging
 import os
 import sys
 from datetime import UTC, datetime
-from typing import Dict, Optional
+from typing import Optional
 
 # Configure logging (token values are NEVER logged)
 logging.basicConfig(
@@ -88,12 +88,12 @@ class TokenScopeVerifier:
                    Token is NEVER logged or decoded
         """
         self.token = token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
-        self.verification_results: Optional[Dict] = None
+        self.verification_results: Optional[dict] = None
 
         if not self.token:
             logger.error("No GitHub token found in environment (GITHUB_TOKEN or GH_TOKEN)")
 
-    def verify_scopes(self) -> Dict:
+    def verify_scopes(self) -> dict:
         """
         Verify token scopes WITHOUT decoding the token.
 
@@ -270,7 +270,7 @@ class TokenScopeVerifier:
         return scope in scopes
 
 
-def verify_github_token() -> Dict:
+def verify_github_token() -> dict:
     """
     Convenience function to verify GitHub token from environment.
 

@@ -28,7 +28,7 @@ import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 # ============================================================================
 # Core Data Structures
@@ -69,7 +69,7 @@ class HunkData:
     new_start: int
     new_count: int
     context: str  # The @@ ... @@ line context
-    lines: List[PatchLine] = field(default_factory=list)
+    lines: list[PatchLine] = field(default_factory=list)
 
     def validate(self) -> bool:
         """Validate hunk line counts match actual lines"""
@@ -107,7 +107,7 @@ class SessionMetadata:
     session_id: Optional[str] = None
     timestamp: Optional[str] = None
     operation: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -120,7 +120,7 @@ class PatchFile:
     old_mode: Optional[str] = None
     new_mode: Optional[str] = None
     index_line: Optional[str] = None
-    hunks: List[HunkData] = field(default_factory=list)
+    hunks: list[HunkData] = field(default_factory=list)
     binary_patch: Optional[BinaryPatch] = None
     session_data: Optional[SessionMetadata] = field(default_factory=SessionMetadata)
 
@@ -135,7 +135,7 @@ class PatchFile:
             return self.old_path
         return self.new_path or self.old_path
 
-    def validate(self) -> Tuple[bool, List[str]]:
+    def validate(self) -> tuple[bool, list[str]]:
         """Validate file patch completeness and consistency"""
         errors = []
 
@@ -197,12 +197,12 @@ class GitPatchParser:
         self.current_file: Optional[PatchFile] = None
         self.current_hunk: Optional[HunkData] = None
         self.current_binary: Optional[BinaryPatch] = None
-        self.binary_buffer: List[str] = []
-        self.files: List[PatchFile] = []
-        self.errors: List[str] = []
+        self.binary_buffer: list[str] = []
+        self.files: list[PatchFile] = []
+        self.errors: list[str] = []
         self.line_number = 0
 
-    def parse(self, patch_content: str) -> Tuple[List[PatchFile], List[str]]:
+    def parse(self, patch_content: str) -> tuple[list[PatchFile], list[str]]:
         """Parse complete patch content"""
         self.reset()
         lines = patch_content.splitlines()
@@ -464,10 +464,10 @@ class PatchApplier:
     def __init__(self, workspace_root: Path, dry_run: bool = False):
         self.workspace_root = workspace_root
         self.dry_run = dry_run
-        self.applied_files: List[str] = []
-        self.failed_files: List[Tuple[str, str]] = []
+        self.applied_files: list[str] = []
+        self.failed_files: list[tuple[str, str]] = []
 
-    def apply_patches(self, patch_files: List[PatchFile]) -> Dict[str, Any]:
+    def apply_patches(self, patch_files: list[PatchFile]) -> dict[str, Any]:
         """Apply all patches and return results"""
         results = {
             "applied": [],
@@ -505,7 +505,7 @@ class PatchApplier:
 
         return results
 
-    def _apply_single_patch(self, patch_file: PatchFile) -> Dict[str, Any]:
+    def _apply_single_patch(self, patch_file: PatchFile) -> dict[str, Any]:
         """Apply a single patch file"""
         target_path = patch_file.target_path
         if not target_path:
@@ -537,7 +537,7 @@ class PatchApplier:
                 "success": False,
             }
 
-    def _delete_file(self, full_path: Path, target_path: str) -> Dict[str, Any]:
+    def _delete_file(self, full_path: Path, target_path: str) -> dict[str, Any]:
         """Delete a file"""
         if not self.dry_run:
             if full_path.exists():
@@ -546,7 +546,7 @@ class PatchApplier:
 
     def _create_file(
         self, patch_file: PatchFile, full_path: Path, target_path: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create a new file"""
         if not self.dry_run:
             full_path.parent.mkdir(parents=True, exist_ok=True)
@@ -570,7 +570,7 @@ class PatchApplier:
 
     def _apply_binary_patch(
         self, patch_file: PatchFile, full_path: Path, target_path: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Apply binary patch"""
         if not self.dry_run:
             full_path.parent.mkdir(parents=True, exist_ok=True)
@@ -590,7 +590,7 @@ class PatchApplier:
 
     def _apply_text_patch(
         self, patch_file: PatchFile, full_path: Path, target_path: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Apply text hunks to existing file"""
         # Read current file content
         if full_path.exists():
@@ -624,7 +624,7 @@ class PatchApplier:
 
         return {"file": target_path, "operation": "modify", "success": True}
 
-    def _apply_hunk(self, lines: List[str], hunk: HunkData, offset: int) -> Tuple[List[str], int]:
+    def _apply_hunk(self, lines: list[str], hunk: HunkData, offset: int) -> tuple[list[str], int]:
         """Apply a single hunk to lines"""
         # Find hunk position (accounting for offset)
         start_pos = hunk.old_start - 1 + offset

@@ -19,12 +19,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 from .io_text import detect_encoding
 
 
-def load_json(path: Union[str, Path], *, encoding: str = "utf-8") -> Any:
+def load_json(path: str | Path, *, encoding: str = "utf-8") -> Any:
     """Load JSON data from ``path``.
 
     Parameters

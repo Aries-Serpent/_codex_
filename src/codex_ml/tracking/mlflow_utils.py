@@ -26,9 +26,10 @@ import contextlib  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
+from collections.abc import Iterable, Mapping  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, ContextManager, Iterable, Mapping, Optional, Union  # noqa: E402
+from typing import Any, ContextManager, Optional  # noqa: E402
 
 from codex_ml.tracking import mlflow_guard  # noqa: E402
 from codex_ml.utils.optional_dependencies import (  # noqa: E402
@@ -92,16 +93,16 @@ class MlflowConfig:
 
 __all__ = [
     "MlflowConfig",
-    "start_run",
-    "log_params",
-    "log_metrics",
-    "log_artifacts",
-    "seed_snapshot",
-    "ensure_local_artifacts",
     "_ensure_mlflow_available",
     "bootstrap_offline_tracking",
     "current_commit_hash",
+    "ensure_local_artifacts",
     "init_run",
+    "log_artifacts",
+    "log_metrics",
+    "log_params",
+    "seed_snapshot",
+    "start_run",
 ]
 
 
@@ -135,7 +136,7 @@ def bootstrap_offline_tracking(force: bool = False, requested_uri: str | None = 
 
 
 def _coerce_config(
-    cfg_or_experiment: Union[MlflowConfig, str, None],
+    cfg_or_experiment: MlflowConfig | str | None,
     *,
     tracking_uri: Optional[str] = None,
     experiment: Optional[str] = None,
@@ -184,7 +185,7 @@ def _coerce_config(
 
 
 def start_run(
-    cfg_or_experiment: Union[MlflowConfig, str, None] = None,
+    cfg_or_experiment: MlflowConfig | str | None = None,
     *,
     tracking_uri: Optional[str] = None,
     experiment: Optional[str] = None,
@@ -314,7 +315,7 @@ def log_metrics(
 
 
 def log_artifacts(
-    path: Union[str, Path, Iterable[Union[str, Path]]],
+    path: str | Path | Iterable[str | Path],
     *,
     enabled: Optional[bool] = None,
 ) -> None:
@@ -335,7 +336,7 @@ def log_artifacts(
     if ml is None:
         return
 
-    def _log_single(p: Union[str, Path]) -> None:
+    def _log_single(p: str | Path) -> None:
         p = Path(p)
         try:
             if p.is_dir():

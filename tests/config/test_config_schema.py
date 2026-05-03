@@ -7,7 +7,7 @@ Test module for config schema.
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -26,7 +26,7 @@ except ImportError:
         seed: int = 42
         epochs: int = 1
         batch_size: int = 8
-        extra: Dict[str, Any] = dataclasses.field(default_factory=dict)
+        extra: dict[str, Any] = dataclasses.field(default_factory=dict)
 
 
 _STRUCTURED = OmegaConf.structured(_Cfg)

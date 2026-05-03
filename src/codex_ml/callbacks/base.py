@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Minimal callback primitives shared by the training loops."""
 
 
 from datetime import UTC, datetime  # noqa: E402
@@ -91,7 +90,7 @@ class EvaluationCallback(Callback):
         try:
             eval_metrics = self.eval_fn(epoch, state)
             return {"eval": eval_metrics} if isinstance(eval_metrics, dict) else None
-        except Exception as exc:  # noqa: BLE001 - propagate via error bucket
+        except Exception as exc:
             self.record_error("on_epoch_end", exc, state)
             return {"eval_error": str(exc)}
 

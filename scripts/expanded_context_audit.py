@@ -34,7 +34,7 @@ import argparse
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class ExpandedContextAuditor:
@@ -88,9 +88,9 @@ class ExpandedContextAuditor:
             "cache": [r"embeddings.*cache", r"cache.*embed", r"\.codex/.*cache"],
         }
 
-    def scan_file(self, filepath: Path) -> Dict[str, List[str]]:
+    def scan_file(self, filepath: Path) -> dict[str, list[str]]:
         """Scan a single file for features"""
-        matches: Dict[str, List[str]] = {key: [] for key in self.features}
+        matches: dict[str, list[str]] = {key: [] for key in self.features}
 
         if not filepath.is_file():
             return matches
@@ -127,14 +127,14 @@ class ExpandedContextAuditor:
 
         return matches
 
-    def scan_repository(self) -> Dict[str, Any]:
+    def scan_repository(self) -> dict[str, Any]:
         """Scan the entire repository"""
         print(f"Scanning repository: {self.root_dir}")
 
         # Define directories to scan
         scan_dirs = ["src", "scripts", "agents", "tests", ".codex"]
 
-        python_files: List[Path] = []
+        python_files: list[Path] = []
         for scan_dir in scan_dirs:
             dir_path = self.root_dir / scan_dir
             if dir_path.exists():
@@ -198,7 +198,7 @@ class ExpandedContextAuditor:
             "missing_areas": self._identify_missing_areas(),
         }
 
-    def _identify_missing_areas(self) -> Dict[str, List[str]]:
+    def _identify_missing_areas(self) -> dict[str, list[str]]:
         """Identify missing or incomplete areas by priority"""
         missing = {"P0": [], "P1": [], "P2": []}
 
@@ -215,7 +215,7 @@ class ExpandedContextAuditor:
 
         return missing
 
-    def generate_summary(self, report: Dict[str, Any]) -> str:
+    def generate_summary(self, report: dict[str, Any]) -> str:
         """Generate a markdown summary of the audit"""
         summary = "# Expanded Context Audit Summary\n\n"
 

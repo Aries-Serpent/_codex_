@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     pass
 
 __all__ = [
-    "OllamaEmbeddingProvider",
-    "LlamaCppEmbeddingProvider",
     "GPT4AllEmbeddingProvider",
+    "LlamaCppEmbeddingProvider",
+    "OllamaEmbeddingProvider",
 ]

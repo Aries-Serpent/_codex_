@@ -7,13 +7,13 @@ Test module for helm chart schema basic.
 from __future__ import annotations
 
 import pathlib
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 import yaml
 
 
-def _safe_load_yaml(path: pathlib.Path) -> Dict[str, Any]:
+def _safe_load_yaml(path: pathlib.Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         data = yaml.safe_load(handle)
     assert isinstance(data, dict), f"{path} should parse to a mapping"
@@ -26,7 +26,7 @@ def test_chart_yaml_has_minimal_fields():
         pytest.skip("deploy/helm/Chart.yaml not present")
     data = _safe_load_yaml(chart)
     for key in ("apiVersion", "name", "version"):
-        assert key in data and data[key], f"Chart.yaml missing required key: {key}"
+        assert data.get(key), f"Chart.yaml missing required key: {key}"
 
 
 def test_values_yaml_is_mapping_and_stable_types():

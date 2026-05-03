@@ -9,9 +9,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from collections.abc import Mapping, Sequence  # noqa: E402
 from dataclasses import asdict, dataclass, field  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Mapping, Optional, Sequence, Union  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 from pydantic import (  # noqa: E402
     BaseModel,
@@ -235,7 +236,7 @@ class TrainingSettings:
 
 
 def validate_config(
-    cfg: Union[str, Path, Mapping[str, Any]], *args: Any, **kwargs: Any
+    cfg: str | Path | Mapping[str, Any], *args: Any, **kwargs: Any
 ) -> TrainConfig:
     """Backward-compatible wrapper around the new validators."""
     if isinstance(cfg, Mapping):
@@ -246,13 +247,13 @@ def validate_config(
 
 __all__ = [
     "LoraConfig",
-    "TrainConfig",
-    "ValidationError",
-    "TokenizerSettings",
     "LoraSettings",
+    "TokenizerSettings",
+    "TrainConfig",
     "TrainingSettings",
+    "ValidationError",
     "load_yaml",
-    "validate_config_file",
-    "validate_config_dict",
     "validate_config",
+    "validate_config_dict",
+    "validate_config_file",
 ]

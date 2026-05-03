@@ -9,7 +9,7 @@ import json
 import os
 import sys
 import urllib.parse
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from tools.security.net import safe_request
 
@@ -23,7 +23,7 @@ API = "https://api.github.com"
 POLICY_PATH = "tools/label_policy.json"
 
 
-def _request(url: str, token: str, method: str = "GET") -> Dict[str, Any]:
+def _request(url: str, token: str, method: str = "GET") -> dict[str, Any]:
     status, _headers, body = safe_request(
         url,
         timeout=30,
@@ -39,14 +39,14 @@ def _request(url: str, token: str, method: str = "GET") -> Dict[str, Any]:
     return json.loads(body.decode("utf-8"))
 
 
-def list_queued_runs(owner: str, repo: str, branch: str, token: str) -> List[Dict[str, Any]]:
+def list_queued_runs(owner: str, repo: str, branch: str, token: str) -> list[dict[str, Any]]:
     qs = urllib.parse.urlencode({"status": "queued", "branch": branch, "per_page": 100})
     url = f"{API}/repos/{owner}/{repo}/actions/runs?{qs}"
     data = _request(url, token)
     return data.get("workflow_runs", [])
 
 
-def get_workflow(owner: str, repo: str, workflow_id: int, token: str) -> Dict[str, Any]:
+def get_workflow(owner: str, repo: str, workflow_id: int, token: str) -> dict[str, Any]:
     url = f"{API}/repos/{owner}/{repo}/actions/workflows/{workflow_id}"
     return _request(url, token)
 
@@ -64,8 +64,8 @@ def minimal_labels_from_yaml(
     yaml_text: str,
     allowed: set[str],
     required_base: set[str],
-    defaults_for_string: List[str],
-) -> Optional[List[str]]:
+    defaults_for_string: list[str],
+) -> Optional[list[str]]:
     doc = yaml.safe_load(yaml_text) or {}
     jobs = doc.get("jobs", {})
     for job in (jobs or {}).values():

@@ -6,7 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 import os  # noqa: E402
-from typing import Any, Mapping  # noqa: E402
+from collections.abc import Mapping  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional import
     import mlflow
@@ -95,7 +96,7 @@ def log_artifact_safe(path: str) -> None:
 
 __all__ = [
     "init_mlflow_safe",
+    "log_artifact_safe",
     "log_metric_safe",
     "log_params_safe",
-    "log_artifact_safe",
 ]

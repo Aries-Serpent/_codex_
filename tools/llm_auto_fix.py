@@ -7,7 +7,6 @@ import shlex
 import subprocess
 import sys
 from pathlib import Path
-from typing import List
 
 from tools import ledger
 from tools.llm_bridge import BridgeResponse, request_patch
@@ -50,7 +49,7 @@ def _tail_errors(limit: int = 20) -> str:
     return "\n".join(lines[-limit:])
 
 
-def _run_checks(files: List[str]) -> tuple[int, str]:
+def _run_checks(files: list[str]) -> tuple[int, str]:
     override = os.environ.get("CODEX_AUTO_FIX_CHECK_CMD")
     if override:
         if "{files}" in override:

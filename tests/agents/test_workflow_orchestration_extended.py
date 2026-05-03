@@ -10,12 +10,12 @@ Test suite for agents/workflow_navigator.py
 Comprehensive tests for workflow orchestration and state management
 """
 
-import tempfile  # noqa: E402
+import tempfile
 
-import pytest  # noqa: E402
+import pytest
 
-from agents.mental_mapping import reset_clock, set_clock  # noqa: E402
-from agents.workflow_navigator import (  # noqa: E402
+from agents.mental_mapping import reset_clock, set_clock
+from agents.workflow_navigator import (
     StepStatus,
     Workflow,
     WorkflowFrequency,

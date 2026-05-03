@@ -5,8 +5,8 @@ from __future__ import annotations
 import os
 import re
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 ALLOWED_TYPES = (
     "build",

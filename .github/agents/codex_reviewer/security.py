@@ -6,7 +6,7 @@ This module contains security vulnerability detection and validation logic.
 
 import logging
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 from .secret_patterns import SecretPatterns, has_high_entropy
 
@@ -61,7 +61,7 @@ class SecurityValidator:
             (re.compile(r'Path\s*\([^,]*\+'), "Path construction with concatenation"),
         ]
 
-    async def scan(self, context) -> List[Dict[str, Any]]:
+    async def scan(self, context) -> list[dict[str, Any]]:
         """
         Perform comprehensive security scan.
 
@@ -100,7 +100,7 @@ class SecurityValidator:
         logger.info(f"Found {len(vulnerabilities)} security vulnerabilities")
         return vulnerabilities
 
-    async def _detect_secrets(self, diff: str, files: List[str]) -> List[Dict[str, Any]]:
+    async def _detect_secrets(self, diff: str, files: list[str]) -> list[dict[str, Any]]:
         """
         Detect hardcoded secrets in diff using pattern matching and entropy analysis.
 
@@ -152,7 +152,7 @@ class SecurityValidator:
 
         return secrets
 
-    async def _check_sql_injection(self, files: List[str], diff: str) -> List[Dict[str, Any]]:
+    async def _check_sql_injection(self, files: list[str], diff: str) -> list[dict[str, Any]]:
         """Check for SQL injection vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
 
@@ -169,7 +169,7 @@ class SecurityValidator:
 
         return vulnerabilities
 
-    async def _check_xss(self, files: List[str], diff: str) -> List[Dict[str, Any]]:
+    async def _check_xss(self, files: list[str], diff: str) -> list[dict[str, Any]]:
         """Check for XSS vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
 
@@ -186,7 +186,7 @@ class SecurityValidator:
 
         return vulnerabilities
 
-    async def _check_dependencies(self, files: List[str]) -> List[Dict[str, Any]]:
+    async def _check_dependencies(self, files: list[str]) -> list[dict[str, Any]]:
         """Check for insecure dependencies."""
         vulnerabilities = []
 
@@ -222,7 +222,7 @@ class SecurityValidator:
 
         return vulnerabilities
 
-    async def _check_command_injection(self, diff: str) -> List[Dict[str, Any]]:
+    async def _check_command_injection(self, diff: str) -> list[dict[str, Any]]:
         """Check for potential command injection vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
 
@@ -238,7 +238,7 @@ class SecurityValidator:
 
         return vulnerabilities
 
-    async def _check_path_traversal(self, diff: str) -> List[Dict[str, Any]]:
+    async def _check_path_traversal(self, diff: str) -> list[dict[str, Any]]:
         """Check for potential path traversal vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
 

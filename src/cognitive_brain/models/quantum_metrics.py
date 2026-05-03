@@ -10,7 +10,7 @@ import sqlite3
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
 
 # Hardcoded migration columns — NEVER derived from user input.
 # Each tuple is (column_name: str, sql_type: str).
@@ -44,7 +44,7 @@ class QuantumMetric:
     metric_name: str
     metric_value: float
     agent_id: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
     timestamp: Optional[datetime] = None
     id: Optional[int] = None
 
@@ -63,7 +63,7 @@ class QuantumMetric:
         if self.timestamp is None:
             self.timestamp = datetime.now(UTC)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert model to dictionary representation."""
         return {
             "id": self.id,
@@ -76,7 +76,7 @@ class QuantumMetric:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "QuantumMetric":
+    def from_dict(cls, data: dict[str, Any]) -> "QuantumMetric":
         """Create model from dictionary representation."""
         import dataclasses as _dc
 
@@ -99,7 +99,7 @@ class QuantumMetricRepository:
     a full ORM framework like SQLAlchemy.
     """
 
-    def __init__(self, db_path: Union[str, Path] = None, connection=None):  # type: ignore[assignment]
+    def __init__(self, db_path: str | Path = None, connection=None):  # type: ignore[assignment]
         """
         Initialize repository.
 
@@ -233,7 +233,7 @@ class QuantumMetricRepository:
 
     def find_by_feature(
         self, feature: str, limit: int = 100, offset: int = 0
-    ) -> List[QuantumMetric]:
+    ) -> list[QuantumMetric]:
         """
         Find metrics by feature name.
 
@@ -267,7 +267,7 @@ class QuantumMetricRepository:
 
     def find_by_metric_name(
         self, metric_name: str, feature: Optional[str] = None, limit: int = 100
-    ) -> List[QuantumMetric]:
+    ) -> list[QuantumMetric]:
         """
         Find metrics by metric name, optionally filtered by feature.
 
@@ -310,7 +310,7 @@ class QuantumMetricRepository:
 
         return [QuantumMetric.from_dict(dict(row)) for row in rows]
 
-    def get_coherence_stats(self, feature: str, hours: int = 24) -> Dict[str, float]:
+    def get_coherence_stats(self, feature: str, hours: int = 24) -> dict[str, float]:
         """
         Get coherence statistics for a feature over time window.
 
@@ -406,7 +406,7 @@ class QuantumMetricRepository:
 
         return deleted
 
-    def batch_insert(self, metrics: List[QuantumMetric]) -> List[QuantumMetric]:
+    def batch_insert(self, metrics: list[QuantumMetric]) -> list[QuantumMetric]:
         """
         Insert multiple metrics in a single transaction for improved performance.
 
@@ -497,7 +497,7 @@ class QuantumMetricRepository:
             metric_name = "value"  # type: ignore[assignment]
 
         # Store the full kwargs dict in metadata for later retrieval
-        metadata: Dict[str, Any] = {k: v for k, v in kwargs.items() if k not in ("feature",)}
+        metadata: dict[str, Any] = {k: v for k, v in kwargs.items() if k not in ("feature",)}
 
         raw_ts = kwargs.get("timestamp")
         if isinstance(raw_ts, (int, float)):
@@ -524,7 +524,7 @@ class QuantumMetricRepository:
         feature: str,
         limit: int = 100,
         hours: int = 24,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Return recent metrics for ``feature`` as a list of dicts.
 
         Args:

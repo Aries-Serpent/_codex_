@@ -36,7 +36,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 # ANSI color codes
 GREEN = "\033[92m"
@@ -59,7 +59,7 @@ class QAWalkthroughSimulator:
             raise ValueError(f"Target path is not a directory: {target_dir}")
 
         self.target_dir = target_dir
-        self.results: Dict[str, Any] = {
+        self.results: dict[str, Any] = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "target": str(target_dir),
             "checks": {},
@@ -72,7 +72,7 @@ class QAWalkthroughSimulator:
             }
         }
 
-    def run_security_scan(self) -> Dict[str, Any]:
+    def run_security_scan(self) -> dict[str, Any]:
         """Run security scanning with Bandit."""
         print(f"{CYAN}🔒 Running security scan (Bandit)...{RESET}")
 
@@ -142,7 +142,7 @@ class QAWalkthroughSimulator:
 
         return result
 
-    def run_code_quality_check(self) -> Dict[str, Any]:
+    def run_code_quality_check(self) -> dict[str, Any]:
         """Run code quality checks with Pylint."""
         print(f"{CYAN}📊 Running code quality check (Pylint)...{RESET}")
 
@@ -215,7 +215,7 @@ class QAWalkthroughSimulator:
 
         return result
 
-    def run_type_checking(self) -> Dict[str, Any]:
+    def run_type_checking(self) -> dict[str, Any]:
         """Run type checking with MyPy."""
         print(f"{CYAN}🔍 Running type checking (MyPy)...{RESET}")
 
@@ -276,7 +276,7 @@ class QAWalkthroughSimulator:
 
         return result
 
-    def run_test_suite(self) -> Dict[str, Any]:
+    def run_test_suite(self) -> dict[str, Any]:
         """Run test suite with pytest."""
         print(f"{CYAN}🧪 Running test suite (Pytest)...{RESET}")
 

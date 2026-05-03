@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 import sys
-from typing import Iterable, List
+from collections.abc import Iterable
 
 BEGIN_MARKER = "[BEGIN CONTENT]"
 END_MARKER = "[END CONTENT]"
@@ -15,10 +15,10 @@ def _collapse_fences(text: str) -> str:
     return re.sub(r"`{3,}", "```", text)
 
 
-def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
+def _wrap_content_blocks(lines: Iterable[str]) -> list[str]:
     """Replace marker pairs with ```text fenced blocks."""
-    output: List[str] = []
-    buffer: List[str] = []
+    output: list[str] = []
+    buffer: list[str] = []
     inside = False
 
     for raw in lines:
@@ -49,7 +49,7 @@ def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
     return output
 
 
-def _render_buffer(buffer: List[str]) -> List[str]:
+def _render_buffer(buffer: list[str]) -> list[str]:
     block = ["```text"]
     block.extend(buffer)
     block.append("```")

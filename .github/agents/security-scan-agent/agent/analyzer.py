@@ -9,7 +9,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Add core to path for CognitiveBrain access (acceptable for agent isolation)
 # Alternative: Use proper packaging with __init__.py exports
@@ -50,8 +50,8 @@ class SecurityAnalysis:
     remediation_strategy: str
     auto_fixable: bool
     estimated_effort: str
-    compliance_impact: List[str]
-    metadata: Dict[str, Any]
+    compliance_impact: list[str]
+    metadata: dict[str, Any]
 
 
 class SecurityAnalyzer:
@@ -71,9 +71,9 @@ class SecurityAnalyzer:
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
-        self.analyses: List[SecurityAnalysis] = []
+        self.analyses: list[SecurityAnalysis] = []
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         DECIDE: Analyze findings and determine remediation priorities.
 
@@ -300,7 +300,7 @@ class SecurityAnalyzer:
             return "medium (requires code changes)"
         return "high (requires investigation)"
 
-    def _assess_compliance_impact(self, finding: Any) -> List[str]:
+    def _assess_compliance_impact(self, finding: Any) -> list[str]:
         """Assess compliance framework impacts."""
         impacts = []
 
@@ -318,7 +318,7 @@ class SecurityAnalyzer:
 
         return impacts
 
-    def _query_historical_data(self) -> List[Dict[str, Any]]:
+    def _query_historical_data(self) -> list[dict[str, Any]]:
         """Query cognitive brain for historical vulnerability patterns."""
         try:
             patterns = self.brain.query_patterns(
@@ -329,11 +329,11 @@ class SecurityAnalyzer:
         except Exception:
             return []
 
-    def _prioritize_by_risk(self, analyses: List[SecurityAnalysis]) -> List[SecurityAnalysis]:
+    def _prioritize_by_risk(self, analyses: list[SecurityAnalysis]) -> list[SecurityAnalysis]:
         """Sort analyses by risk score (highest first)."""
         return sorted(analyses, key=lambda a: a.risk_score, reverse=True)
 
-    def _generate_recommendations(self, prioritized: List[SecurityAnalysis]) -> List[str]:
+    def _generate_recommendations(self, prioritized: list[SecurityAnalysis]) -> list[str]:
         """Generate high-level recommendations."""
         recommendations = []
 

@@ -10,7 +10,6 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # ---------------------------
 # Config / Constraints
@@ -72,7 +71,7 @@ def now_iso() -> str:
     )
 
 
-def sh(cmd: List[str]) -> Tuple[int, str, str]:
+def sh(cmd: list[str]) -> tuple[int, str, str]:
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     out, err = p.communicate()
     return p.returncode, out, err
@@ -154,7 +153,7 @@ def load_readmes() -> None:
                 append_error("1.2", f"Read {p.name}", str(e), str(p))
 
 
-def build_inventory() -> List[Path]:
+def build_inventory() -> list[Path]:
     collected = []
     for root, dirs, files in os.walk(REPO_ROOT):
         root_p = Path(root)
@@ -199,7 +198,7 @@ def make_wrapper(path: Path, target_module: str) -> None:
     )
 
 
-def normalize_file_text(path: Path) -> Tuple[bool, str, str]:
+def normalize_file_text(path: Path) -> tuple[bool, str, str]:
     try:
         txt = path.read_text(encoding="utf-8")
     except Exception as e:
@@ -228,7 +227,7 @@ def normalize_file_text(path: Path) -> Tuple[bool, str, str]:
     return changed, before, txt
 
 
-def normalize_imports_across_repo(inventory: List[Path]) -> int:
+def normalize_imports_across_repo(inventory: list[Path]) -> int:
     changes = 0
     for p in inventory:
         if p.suffix.lower() not in {".py", ".md", ".rst", ".txt", ".sh"}:
@@ -259,7 +258,7 @@ def smoke_checks() -> None:
         try_import(sub, "3.4")
 
 
-def write_results_summary(changed_count: int, wrappers: Dict[str, str]) -> None:
+def write_results_summary(changed_count: int, wrappers: dict[str, str]) -> None:
     lines = []
     lines.append("# Results Summary")
     lines.append("")

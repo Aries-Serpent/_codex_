@@ -38,12 +38,12 @@ import pytest
 # BEGIN: CODEX_TEST_TRAIN_LOOP
 
 __all__ = [
-    "test_record_metrics_writes_json",
-    "test_record_metrics_error_path",
-    "test_record_metrics_unserializable",
-    "test_ts_format",
     "test_cli_parsing_smoke",
     "test_empty_dataset_path",
+    "test_record_metrics_error_path",
+    "test_record_metrics_unserializable",
+    "test_record_metrics_writes_json",
+    "test_ts_format",
 ]
 
 
@@ -89,7 +89,7 @@ def test_record_metrics_writes_json(tmp_path, artifacts, monkeypatch):
     assert last_entry["phase"] == "eval", "phase should be preserved"
     assert last_entry["epoch"] == 1, "epoch should be preserved"
     assert last_entry["cfg_hash"] == "deadbeef", "cfg_hash should be preserved"
-    assert "run_id" in last_entry and last_entry["run_id"], "run_id should be recorded"
+    assert last_entry.get("run_id"), "run_id should be recorded"
 
 
 def test_record_metrics_error_path(tmp_path, monkeypatch):

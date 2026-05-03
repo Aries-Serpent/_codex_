@@ -17,7 +17,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -73,7 +73,7 @@ def registry(tmp_path: Path):
 # ---------------------------------------------------------------------------
 
 
-def _read_row(db_path: str, tenant_id: str) -> Dict[str, Any]:
+def _read_row(db_path: str, tenant_id: str) -> dict[str, Any]:
     """Directly read the SQLite row for *tenant_id*."""
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
@@ -153,7 +153,7 @@ class TestUpdateTenantSQLPath:
             {"name": "Batch C", "active": True, "quota": {"r": 5}},
         ],
     )
-    def test_multi_field_update(self, registry, updates: Dict[str, Any]) -> None:
+    def test_multi_field_update(self, registry, updates: dict[str, Any]) -> None:
         """Multiple fields can be updated in a single call."""
         reg, _ = registry
         result = reg.update_tenant("t1", **updates)

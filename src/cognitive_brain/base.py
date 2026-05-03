@@ -12,7 +12,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -21,18 +21,18 @@ class ObservationData:
 
     timestamp: datetime
     source: str
-    data: Dict[str, Any]
-    metadata: Optional[Dict[str, Any]] = None
+    data: dict[str, Any]
+    metadata: Optional[dict[str, Any]] = None
 
 
 @dataclass
 class OrientationResult:
     """Result from the Orient step of OODA loop."""
 
-    context: Dict[str, Any]
+    context: dict[str, Any]
     analysis: str
     confidence: float
-    alternatives: List[Dict[str, Any]]
+    alternatives: list[dict[str, Any]]
 
 
 @dataclass
@@ -40,7 +40,7 @@ class Decision:
     """Decision from the Decide step of OODA loop."""
 
     action: str
-    parameters: Dict[str, Any]
+    parameters: dict[str, Any]
     reasoning: str
     confidence: float
     timestamp: datetime
@@ -52,8 +52,8 @@ class ActionResult:
 
     success: bool
     output: Any
-    metrics: Dict[str, float]
-    errors: List[str]
+    metrics: dict[str, float]
+    errors: list[str]
 
 
 class Planner(ABC):
@@ -65,7 +65,7 @@ class Planner(ABC):
     """
 
     @abstractmethod
-    def observe(self, input_data: Dict[str, Any]) -> ObservationData:
+    def observe(self, input_data: dict[str, Any]) -> ObservationData:
         """
         Observe: Gather and structure raw input data.
 
@@ -112,7 +112,7 @@ class Planner(ABC):
             Action result with success status and metrics
         """
 
-    def ooda_loop(self, input_data: Dict[str, Any]) -> ActionResult:
+    def ooda_loop(self, input_data: dict[str, Any]) -> ActionResult:
         """
         Execute complete OODA loop: Observe -> Orient -> Decide -> Act.
 
@@ -139,7 +139,7 @@ class MemoryInterface(ABC):
     """
 
     @abstractmethod
-    def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
+    def store(self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None) -> bool:
         """
         Store a value in memory.
 
@@ -165,7 +165,7 @@ class MemoryInterface(ABC):
         """
 
     @abstractmethod
-    def search(self, query: Dict[str, Any], limit: int = 10) -> List[tuple[str, Any]]:
+    def search(self, query: dict[str, Any], limit: int = 10) -> list[tuple[str, Any]]:
         """
         Search memory based on query criteria.
 
@@ -199,7 +199,7 @@ class MemoryInterface(ABC):
         """
 
     @abstractmethod
-    def get_history(self, key: str, limit: int = 10) -> List[tuple[datetime, Any]]:
+    def get_history(self, key: str, limit: int = 10) -> list[tuple[datetime, Any]]:
         """
         Get historical versions of a value.
 
@@ -232,7 +232,7 @@ class PhysicsOfThought:
         self.planner = planner
         self.memory = memory
 
-    def reason(self, input_data: Dict[str, Any]) -> ActionResult:
+    def reason(self, input_data: dict[str, Any]) -> ActionResult:
         """
         Execute unified reasoning process.
 

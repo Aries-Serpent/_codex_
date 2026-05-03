@@ -15,7 +15,7 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
-from codex.cli import cli  # noqa: E402
+from codex.cli import cli
 
 
 def test_cli_train_engine_option():

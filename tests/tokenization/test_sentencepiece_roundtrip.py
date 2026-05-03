@@ -26,7 +26,7 @@ def _find_tokenizer_cls():
     for module_name, attr in candidates:
         try:
             module = importlib.import_module(module_name)
-        except Exception:  # noqa: BLE001
+        except Exception:
             continue
         candidate = getattr(module, attr, None)
         if candidate is None:

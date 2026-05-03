@@ -21,8 +21,9 @@ logger = logging.getLogger(__name__)
 
 import importlib  # noqa: E402
 import json  # noqa: E402
+from collections.abc import Callable, Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Iterable, Optional, Sequence  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 import typer  # noqa: E402
 

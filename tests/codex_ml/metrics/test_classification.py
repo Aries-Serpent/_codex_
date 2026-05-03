@@ -16,7 +16,7 @@ pytest.importorskip("numpy")
 # Skip if torch not available
 torch = pytest.importorskip("torch")
 
-from codex_ml.metrics.classification import (  # noqa: E402
+from codex_ml.metrics.classification import (
     StreamingAccuracy,
     _to_numpy,
     accuracy,

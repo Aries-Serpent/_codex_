@@ -14,15 +14,6 @@ import pytest
 
 try:
     from codex_ml.safety.sanitizers import (
-        DEFAULT_JAILBREAK_PATTERNS as DEFAULT_JAILBREAK_PATTERNS,
-    )
-    from codex_ml.safety.sanitizers import (
-        DEFAULT_PII_PATTERNS as DEFAULT_PII_PATTERNS,
-    )
-    from codex_ml.safety.sanitizers import (
-        DEFAULT_SECRET_PATTERNS as DEFAULT_SECRET_PATTERNS,
-    )
-    from codex_ml.safety.sanitizers import (
         SafetyConfig,
         sanitize_output,
         sanitize_prompt,

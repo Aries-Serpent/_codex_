@@ -11,12 +11,12 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import yaml
 
 
-def load_capability_map(path: Path) -> Dict[str, Any]:
+def load_capability_map(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(path)
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -25,7 +25,7 @@ def load_capability_map(path: Path) -> Dict[str, Any]:
     return data
 
 
-def _ensure_list_or_missing(cap: Dict[str, Any], key: str) -> None:
+def _ensure_list_or_missing(cap: dict[str, Any], key: str) -> None:
     value = cap.get(key)
     if value is None:
         return
@@ -33,7 +33,7 @@ def _ensure_list_or_missing(cap: Dict[str, Any], key: str) -> None:
         raise ValueError(f"capabilities.<cap>.{key} must be a list if present")
 
 
-def validate_structure(data: Dict[str, Any]) -> None:
+def validate_structure(data: dict[str, Any]) -> None:
     caps = data.get("capabilities")
     if not isinstance(caps, dict):
         raise ValueError("capabilities must be a mapping of capability -> metadata")
@@ -46,7 +46,7 @@ def validate_structure(data: Dict[str, Any]) -> None:
         _ensure_list_or_missing(meta, "docs")
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Validate codex_capability_map.yaml.")
     parser.add_argument(
         "--path",

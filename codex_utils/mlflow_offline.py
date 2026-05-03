@@ -2,8 +2,9 @@
 # > Generated: 2025-08-26 20:36:12 | Author: mbaetiong
 import importlib
 import os
+from collections.abc import Generator
 from contextlib import contextmanager, nullcontext
-from typing import Any, Generator, Optional
+from typing import Any, Optional
 
 try:
     from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking

@@ -11,7 +11,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 _core_path = str(Path(__file__).parent.parent.parent / "core")
 if _core_path not in sys.path:
@@ -31,11 +31,11 @@ class ReleaseAssessment:
     """Release risk assessment."""
     decision: ReleaseDecision
     risk_score: float  # 0.0 (low risk) - 1.0 (high risk)
-    blockers: List[str]
-    warnings: List[str]
+    blockers: list[str]
+    warnings: list[str]
     confidence: float  # 0.0 - 1.0
     reasoning: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class ReleaseGatekeeper:
@@ -50,7 +50,7 @@ class ReleaseGatekeeper:
     def __init__(self):
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
 
-    def decide(self, validation_results: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, validation_results: dict[str, Any]) -> dict[str, Any]:
         """
         DECIDE: Make release decision based on validations.
 
@@ -103,7 +103,7 @@ class ReleaseGatekeeper:
             "metadata": assessment.metadata
         }
 
-    def _calculate_release_risk(self, validation_results: Dict[str, Any]) -> float:
+    def _calculate_release_risk(self, validation_results: dict[str, Any]) -> float:
         """Calculate overall release risk score."""
         pass_rate = validation_results.get("pass_rate", 0.0)
 
@@ -146,7 +146,7 @@ class ReleaseGatekeeper:
             # Best-effort: if brain query fails, return default success rate
             return 0.7
 
-    def _identify_blockers(self, validation_results: Dict[str, Any]) -> List[str]:
+    def _identify_blockers(self, validation_results: dict[str, Any]) -> list[str]:
         """Identify release blockers."""
         blockers = []
         validations = validation_results.get("validations", [])
@@ -163,7 +163,7 @@ class ReleaseGatekeeper:
 
         return blockers
 
-    def _identify_warnings(self, validation_results: Dict[str, Any]) -> List[str]:
+    def _identify_warnings(self, validation_results: dict[str, Any]) -> list[str]:
         """Identify release warnings."""
         warnings = []
         validations = validation_results.get("validations", [])
@@ -179,7 +179,7 @@ class ReleaseGatekeeper:
         return warnings
 
     def _make_decision(
-        self, risk_score: float, blockers: List[str], warnings: List[str]
+        self, risk_score: float, blockers: list[str], warnings: list[str]
     ) -> ReleaseDecision:
         """Make final release decision."""
         # Block if any blockers exist
@@ -212,7 +212,7 @@ class ReleaseGatekeeper:
 
     def _generate_reasoning(
         self, decision: ReleaseDecision, risk_score: float,
-        blockers: List[str], warnings: List[str]
+        blockers: list[str], warnings: list[str]
     ) -> str:
         """Generate human-readable reasoning."""
         if decision == ReleaseDecision.BLOCK:

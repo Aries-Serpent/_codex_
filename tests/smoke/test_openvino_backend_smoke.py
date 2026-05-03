@@ -75,7 +75,7 @@ class TestOpenVINOBackendUnavailable:
         fake_model.write_text("<model/>")
         try:
             self.backend.infer(str(fake_model), {}, device="GPU")
-            assert False, "Expected RuntimeError"  # noqa: B011
+            assert False, "Expected RuntimeError"
         except RuntimeError as exc:
             assert "GPU" in str(exc)
             assert "unavailable" in str(exc).lower()
@@ -135,7 +135,7 @@ class TestOpenVINOPhaseC:
 
     def setup_method(self):
         """Import the real (non-mocked) backend."""
-        from codex_ml.backends import openvino_backend  # noqa: PLC0415
+        from codex_ml.backends import openvino_backend
         self.backend = openvino_backend
 
     def test_gpu_is_available_live(self):
@@ -154,7 +154,7 @@ class TestOpenVINOPhaseC:
         the model would be compiled on the Arc iGPU; the output tensor dict
         must be non-empty.
         """
-        import numpy as np  # noqa: PLC0415 — optional dep inside live test
+        import numpy as np
 
         # Create minimal OpenVINO IR XML + BIN pair
         xml_path = tmp_path / "model.xml"

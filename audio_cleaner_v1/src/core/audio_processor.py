@@ -3,8 +3,9 @@
 
 import logging
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class AudioConfig:
 
 class ProcessingProfile:
     """Audio processing profile."""
-    def __init__(self, name: str, parameters: Dict[str, Any]):
+    def __init__(self, name: str, parameters: dict[str, Any]):
         self.name = name
         self.parameters = parameters
 

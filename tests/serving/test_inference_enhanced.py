@@ -9,7 +9,7 @@ import pytest
 pytest.importorskip("fastapi")
 pytest.importorskip("starlette")
 
-from src.codex_ml.serving.inference_server import (  # noqa: E402
+from src.codex_ml.serving.inference_server import (
     AuthManager,
     ModelConfig,
     create_app,

@@ -22,7 +22,7 @@ Integration point (behind feature flag):
 
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, Tuple
+from typing import Any
 
 
 def _fuzzy_mode_enabled() -> bool:
@@ -235,7 +235,7 @@ class FuzzyEngine:
             confidence=confidence,
         )
 
-    def apply_membership_tuning(self, tuning_rules: Dict[str, Any]) -> "FuzzyEngine":
+    def apply_membership_tuning(self, tuning_rules: dict[str, Any]) -> "FuzzyEngine":
         """
         Apply membership-function parameter tuning and return a NEW FuzzyEngine.
 
@@ -260,7 +260,7 @@ class FuzzyEngine:
         if not _fuzzy_mode_enabled():
             return self
 
-        def _t(key: str, default: Tuple) -> Tuple:
+        def _t(key: str, default: tuple) -> tuple:
             raw = tuning_rules.get(key)
             if raw is None:
                 return default

@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Utilities for semantic versioning of Codex artifacts."""
 
 
 import datetime  # noqa: E402

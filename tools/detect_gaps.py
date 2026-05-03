@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Iterable, List, Sequence
 
 
 @dataclass
@@ -46,10 +46,10 @@ DEFAULT_GAPS: Sequence[Gap] = (
 )
 
 
-def discover_gaps(repo_root: Path) -> List[Gap]:
+def discover_gaps(repo_root: Path) -> list[Gap]:
     """Return gaps that are currently present in the repository."""
 
-    results: List[Gap] = []
+    results: list[Gap] = []
 
     codex_plans = repo_root / "src" / "codex_plans" / "__init__.py"
     if not codex_plans.exists():

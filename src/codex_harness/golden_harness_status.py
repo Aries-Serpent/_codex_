@@ -242,4 +242,4 @@ def compute_golden_harness_status(
     return payload
 
 
-__all__ = ["compute_golden_harness_status", "HarnessSignal"]
+__all__ = ["HarnessSignal", "compute_golden_harness_status"]

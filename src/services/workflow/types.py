@@ -3,7 +3,7 @@
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -49,7 +49,7 @@ class WorkflowInput(BaseModel):
     description: Optional[str] = Field(None, description="Input description")
     required: bool = Field(False, description="Whether input is required")
     type: InputType = Field(InputType.STRING, description="Input type")
-    default: Optional[Union[str, bool, int]] = Field(None, description="Default value")
+    default: Optional[str | bool | int] = Field(None, description="Default value")
     options: Optional[list[str]] = Field(None, description="Choice options")
 
     class Config:
@@ -75,7 +75,7 @@ class WorkflowJob(BaseModel):
 
     id: str = Field(..., description="Job ID")
     name: Optional[str] = Field(None, description="Job display name")
-    runs_on: Union[str, list[str]] = Field(..., description="Runner labels")
+    runs_on: str | list[str] = Field(..., description="Runner labels")
     needs: Optional[list[str]] = Field(None, description="Job dependencies")
     if_condition: Optional[str] = Field(None, alias="if", description="Conditional expression")
     steps: int = Field(0, description="Number of steps")
@@ -113,7 +113,7 @@ class WorkflowMetadata(BaseModel):
         default_factory=list, description="Workflow dependencies"
     )
     permissions: dict[str, str] = Field(default_factory=dict, description="Permission settings")
-    env: dict[str, Union[str, int, bool]] = Field(
+    env: dict[str, str | int | bool] = Field(
         default_factory=dict, description="Environment variables"
     )
     concurrency: Optional[dict[str, Any]] = Field(None, description="Concurrency settings")

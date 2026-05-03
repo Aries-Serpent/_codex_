@@ -13,7 +13,7 @@ import logging
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     from .analyzers import IssueAnalyzer, PRAnalyzer, WorkflowAnalyzer
@@ -56,8 +56,8 @@ __all__ = ["GitHubGuruAgent", "SweepReport"]
 class ReviewResult:
     """Result from PR analysis capability."""
     def __init__(self, pr_number: int, summary_md: str, health_score: float,
-                 pattern_matches: List[PatternMatch], signals: List[str],
-                 routing_suggestions: List[str]) -> None:
+                 pattern_matches: list[PatternMatch], signals: list[str],
+                 routing_suggestions: list[str]) -> None:
         self.pr_number = pr_number
         self.summary_md = summary_md
         self.health_score = health_score
@@ -73,15 +73,15 @@ class SweepReport:
     """Full daily sweep report across all capabilities."""
     def __init__(self) -> None:
         self.session_id: str = ""
-        self.pr_results: List[ReviewResult] = []
-        self.triage_results: List[TriageResult] = []
+        self.pr_results: list[ReviewResult] = []
+        self.triage_results: list[TriageResult] = []
         self.workflow_summary_md: str = ""
         self.hygiene_report: Optional[HygieneReport] = None
         self.branch_governance_md: str = ""
         self.contributor_summary_md: str = ""
         self.dependency_drift_md: str = ""
         self.stale_resources_md: str = ""
-        self.label_compliance: Dict[str, Any] = {}
+        self.label_compliance: dict[str, Any] = {}
         self.navigation_hint_md: str = ""
         self.started_at: datetime = datetime.now(tz=timezone.utc)
         self.finished_at: Optional[datetime] = None
@@ -294,7 +294,7 @@ class GitHubGuruAgent:
                 return "Unable to fetch commit history."
 
             # Tally commits per author
-            author_counts: Dict[str, int] = {}
+            author_counts: dict[str, int] = {}
             for commit in resp.data:
                 author = (
                     (commit.get("commit") or {})
@@ -378,7 +378,7 @@ class GitHubGuruAgent:
                 "rag": ["rag-index-manager", "rag-meta-tensor-regression-agent"],
             }
 
-            matched_agents: List[str] = []
+            matched_agents: list[str] = []
             q_lower = query.lower()
             for keyword, agents in keyword_map.items():
                 if keyword in q_lower:
@@ -444,7 +444,7 @@ class GitHubGuruAgent:
 
             # Stale PRs
             pr_resp = self.client.list_pull_requests(state="open", per_page=50)
-            stale_prs: List[str] = []
+            stale_prs: list[str] = []
             if pr_resp.ok and isinstance(pr_resp.data, list):
                 from datetime import timedelta
                 cutoff = datetime.now(tz=timezone.utc) - timedelta(days=pr_stale_days)
@@ -487,12 +487,12 @@ class GitHubGuruAgent:
     # C-10: label_taxonomy_enforcement
     # -----------------------------------------------------------------------
 
-    def label_taxonomy_enforcement(self) -> Dict[str, Any]:
+    def label_taxonomy_enforcement(self) -> dict[str, Any]:
         """C-10: Check that all repo labels match the taxonomy in triage.py."""
         self._metrics.start_capability("label_taxonomy_enforcement")
         try:
             resp = self.client.list_labels()
-            repo_labels: List[str] = []
+            repo_labels: list[str] = []
             if resp.ok and isinstance(resp.data, list):
                 repo_labels = [lbl.get("name", "") for lbl in resp.data]
 
@@ -550,7 +550,7 @@ class GitHubGuruAgent:
 
         return report
 
-    def handle_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_event(self, event: dict[str, Any]) -> dict[str, Any]:
         """
         Route a GitHub webhook event to the appropriate capability.
 

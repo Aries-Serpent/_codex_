@@ -73,8 +73,7 @@ class TestRAGCacheEntanglement:
             return cache.get(key)
 
         def cache_invalidate(key):
-            if key in cache:
-                del cache[key]
+            cache.pop(key, None)
 
         # Set up cache
         cache_set("query1", ["doc1", "doc2"])
@@ -180,7 +179,7 @@ class TestEmbeddingSecurity:
         def embed_with_fallback(text, primary, fallback):
             try:
                 return primary.embed(text)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 return fallback.embed(text)
 
         result = embed_with_fallback("test", primary, fallback)

@@ -8,8 +8,8 @@ import pytest
 
 pytest.importorskip("torch")
 
-import torch  # noqa: E402
-from codex_ml.utils.checkpointing import (  # noqa: E402
+import torch
+from codex_ml.utils.checkpointing import (
     CheckpointLoadError,
     load_training_checkpoint,
     save_checkpoint,

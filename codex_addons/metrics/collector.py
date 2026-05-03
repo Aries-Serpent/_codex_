@@ -30,7 +30,6 @@ import sys
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Set, Tuple
 
 
 # ---------- logging (JSON) ----------
@@ -133,7 +132,7 @@ def _count_loc(p: Path) -> int:
     )
 
 
-def _scan_repo(root: Path) -> Tuple[Snapshot, Dict[str, int]]:
+def _scan_repo(root: Path) -> tuple[Snapshot, dict[str, int]]:
     src = root / "src"
     tests = root / "tests"
     py_files = list(src.rglob("*.py")) if src.exists() else []
@@ -151,7 +150,7 @@ def _scan_repo(root: Path) -> Tuple[Snapshot, Dict[str, int]]:
         module_map[f] = mod
 
     # import graph (internal)
-    nodes: Set[str] = set(module_map.values())
+    nodes: set[str] = set(module_map.values())
     graph = collections.defaultdict(set)  # mod -> {dep_mod}
     for f, mod in module_map.items():
         try:
@@ -356,14 +355,14 @@ def _insert_run(db: Path, run: RunInfo) -> int:
         return run_id
 
 
-def _insert_metrics(db: Path, run_id: int, metrics: Dict[str, float]):
+def _insert_metrics(db: Path, run_id: int, metrics: dict[str, float]):
     rows = [(run_id, k, float(v)) for k, v in metrics.items()]
     with sqlite3.connect(db) as con:
         con.executemany("INSERT INTO codex_metrics(run_id, key, value) VALUES (?, ?, ?)", rows)
         con.commit()
 
 
-def _get_prev_S(db: Path, session_id: str) -> Tuple[float, float] | None:
+def _get_prev_S(db: Path, session_id: str) -> tuple[float, float] | None:
     # returns (ts, S) of the most recent prior run in same session
     with sqlite3.connect(db) as con:
         cur = con.cursor()

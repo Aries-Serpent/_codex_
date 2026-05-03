@@ -2,21 +2,20 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Dict, List
 
 
 @dataclass
 class Intent:
     name: str
     confidence: float
-    slots: Dict[str, str]
+    slots: dict[str, str]
 
 
 @dataclass
 class ParseResult:
-    intents: List[Intent]
-    key_entities: List[str]
-    meta: Dict[str, str]
+    intents: list[Intent]
+    key_entities: list[str]
+    meta: dict[str, str]
 
 
 class SemParser:
@@ -35,8 +34,8 @@ class SemParser:
     ]
 
     def parse(self, text: str) -> ParseResult:
-        intents: List[Intent] = []
-        entities: List[str] = []
+        intents: list[Intent] = []
+        entities: list[str] = []
 
         for name, pats, slots in self.RULES:
             score = 0

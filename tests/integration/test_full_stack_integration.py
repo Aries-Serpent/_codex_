@@ -13,7 +13,7 @@ Phase: 20.4 Full Stack Integration & Cross-Phase Validation
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -22,7 +22,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def system_config() -> Dict[str, Any]:
+def system_config() -> dict[str, Any]:
     """Full system configuration fixture."""
     return {
         "services": {
@@ -43,7 +43,7 @@ def system_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def mock_services() -> Dict[str, Any]:
+def mock_services() -> dict[str, Any]:
     """Mock services for integration testing."""
     return {
         "api": {"status": "running", "health": "healthy"},

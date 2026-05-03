@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 try:
     import yaml  # type: ignore
@@ -27,7 +27,7 @@ def load_any(p: Path) -> Any:
     return json.loads(text)
 
 
-def classify_changes(old: Dict, new: Dict) -> Dict[str, Any]:
+def classify_changes(old: dict, new: dict) -> dict[str, Any]:
     changes = {"added_keys": [], "removed_keys": [], "type_changes": []}
 
     def walk(o: Any, n: Any, path: str = ""):

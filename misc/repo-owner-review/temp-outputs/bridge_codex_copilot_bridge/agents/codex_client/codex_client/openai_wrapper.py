@@ -3,7 +3,8 @@ from __future__ import annotations
 import asyncio
 import os
 import random
-from typing import Any, AsyncIterator, Dict, Optional
+from collections.abc import AsyncIterator
+from typing import Any, Optional
 
 from openai import OpenAI
 
@@ -23,7 +24,7 @@ def _jitter_delay(attempt: int) -> float:
 
 
 async def stream(
-    messages: list[dict], extra: Optional[Dict[str, Any]] = None
+    messages: list[dict], extra: Optional[dict[str, Any]] = None
 ) -> AsyncIterator[str]:
     extra = extra or {}
     attempt = 0

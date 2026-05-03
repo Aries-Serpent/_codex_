@@ -30,7 +30,7 @@ import datetime as _dt
 import json
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import yaml
 
@@ -53,7 +53,7 @@ def _load_yaml(path: Path) -> Any:
         return None
 
 
-def _summarize_env(snapshot: Any) -> Dict[str, Any]:
+def _summarize_env(snapshot: Any) -> dict[str, Any]:
     if not snapshot or not isinstance(snapshot, dict):
         return {"available": False}
 
@@ -73,7 +73,7 @@ def _summarize_env(snapshot: Any) -> Dict[str, Any]:
     }
 
 
-def _summarize_deps(report: Any) -> Dict[str, Any]:
+def _summarize_deps(report: Any) -> dict[str, Any]:
     if not report or not isinstance(report, dict):
         return {"available": False}
 
@@ -88,7 +88,7 @@ def _summarize_deps(report: Any) -> Dict[str, Any]:
     }
 
 
-def _summarize_gaps(registry: Any) -> Dict[str, Any]:
+def _summarize_gaps(registry: Any) -> dict[str, Any]:
     if not registry or not isinstance(registry, dict):
         return {"available": False}
 
@@ -107,7 +107,7 @@ def _summarize_gaps(registry: Any) -> Dict[str, Any]:
     }
 
 
-def _summarize_experiments(index: Any) -> Dict[str, Any]:
+def _summarize_experiments(index: Any) -> dict[str, Any]:
     if not index or not isinstance(index, dict):
         return {"available": False}
 
@@ -128,7 +128,7 @@ def _summarize_experiments(index: Any) -> Dict[str, Any]:
     }
 
 
-def _summarize_local_gate(gate: Any) -> Dict[str, Any]:
+def _summarize_local_gate(gate: Any) -> dict[str, Any]:
     if not gate or not isinstance(gate, dict):
         return {"available": False}
 
@@ -150,7 +150,7 @@ def build_manifest(
     gap_registry_path: Path,
     exp_index_path: Path,
     local_gate_path: Path,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     env_snapshot = _load_json(env_snapshot_path)
     dep_report = _load_json(dep_report_path)
     gap_registry = _load_yaml(gap_registry_path)
@@ -179,11 +179,11 @@ def build_manifest(
     }
 
 
-def _write_json(path: Path, manifest: Dict[str, Any]) -> None:
+def _write_json(path: Path, manifest: dict[str, Any]) -> None:
     path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, manifest: Dict[str, Any]) -> None:
+def _write_markdown(path: Path, manifest: dict[str, Any]) -> None:
     s = manifest.get("summary", {}) or {}
     env = s.get("environment", {})
     deps = s.get("dependencies", {})
@@ -191,7 +191,7 @@ def _write_markdown(path: Path, manifest: Dict[str, Any]) -> None:
     exps = s.get("experiments", {})
     gate = s.get("local_gate", {})
 
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# `_codex_` Reproducibility Manifest\n")
     lines.append(f"- Generated at: `{manifest.get('generated_at', '')}`")
     lines.append(f"- Repo root   : `{manifest.get('repo_root', '.')}`\n")
@@ -268,7 +268,7 @@ def _write_markdown(path: Path, manifest: Dict[str, Any]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Generate `_codex_` reproducibility manifest.")
     parser.add_argument(
         "--repo-root",

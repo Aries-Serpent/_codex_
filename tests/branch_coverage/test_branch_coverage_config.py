@@ -11,7 +11,7 @@ Target: 100% branch coverage for config modules
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -129,7 +129,7 @@ class TestConfigValidationBranches:
 
     def test_config_required_field_missing_branch(self) -> None:
         """Test required field missing branch."""
-        config: Dict[str, Any] = {}
+        config: dict[str, Any] = {}
         status = "valid" if "required_field" in config else "invalid"
         assert status == "invalid"
 
@@ -154,7 +154,7 @@ class TestConfigValidationBranches:
     def test_config_type_invalid_branch(self) -> None:
         """Test invalid type validation branch."""
         value = branch_input([])  # List not expected
-        if isinstance(value, str) or isinstance(value, int) and not isinstance(value, bool) or isinstance(value, bool):
+        if isinstance(value, str) or (isinstance(value, int) and not isinstance(value, bool)) or isinstance(value, bool):
             type_valid = True
         else:
             type_valid = False
@@ -206,7 +206,7 @@ class TestConfigMergingBranches:
     def test_config_merge_override_absent_branch(self) -> None:
         """Test configuration merge with override absent branch."""
         base_config = {"key": "base_value"}
-        override_config: Dict[str, Any] = {}
+        override_config: dict[str, Any] = {}
         if "key" in override_config:
             merged_value = override_config["key"]
         else:
@@ -215,8 +215,8 @@ class TestConfigMergingBranches:
 
     def test_config_merge_both_absent_branch(self) -> None:
         """Test configuration merge with both absent branch."""
-        base_config: Dict[str, Any] = {}
-        override_config: Dict[str, Any] = {}
+        base_config: dict[str, Any] = {}
+        override_config: dict[str, Any] = {}
         if "key" in override_config:
             merged_value = override_config["key"]
         else:
@@ -258,14 +258,14 @@ class TestConfigCachingBranches:
 
     def test_config_cache_hit_branch(self) -> None:
         """Test configuration cache hit branch."""
-        cache: Dict[str, Any] = {"config.yaml": {"key": "cached"}}
+        cache: dict[str, Any] = {"config.yaml": {"key": "cached"}}
         config_path = "config.yaml"
         source = "cache" if config_path in cache else "load"
         assert source == "cache"
 
     def test_config_cache_miss_branch(self) -> None:
         """Test configuration cache miss branch."""
-        cache: Dict[str, Any] = {}
+        cache: dict[str, Any] = {}
         config_path = "config.yaml"
         source = "cache" if config_path in cache else "load"
         assert source == "load"
@@ -382,7 +382,7 @@ class TestHydraConfigBranches:
 
     def test_hydra_compose_without_overrides_branch(self) -> None:
         """Test Hydra compose without overrides branch."""
-        overrides: List[str] = []
+        overrides: list[str] = []
         mode = "with_overrides" if len(overrides) > 0 else "default"
         assert mode == "default"
 
@@ -485,7 +485,7 @@ class TestConfigSchemaBranches:
     def test_schema_no_unknown_fields_branch(self) -> None:
         """Test schema with no unknown fields branch."""
         strict = True
-        unknown_fields: List[str] = []
+        unknown_fields: list[str] = []
         action = "reject" if strict and len(unknown_fields) > 0 else "accept"
         assert action == "accept"
 
@@ -500,7 +500,7 @@ class TestDefaultValueBranches:
 
     def test_default_value_used_branch(self) -> None:
         """Test default value used branch."""
-        config: Dict[str, Any] = {}
+        config: dict[str, Any] = {}
         if "timeout" in config:
             timeout = config["timeout"]
         else:

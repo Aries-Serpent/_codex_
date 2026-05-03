@@ -34,13 +34,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python3
-"""Codex-ready sequential task runner derived from the 2025-09-16 status update."""
 
 import argparse
 import json
 import subprocess
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Iterable, Sequence
 
 CHANGE_LOG = Path("logs/codex_task_change_log.md")
 ERROR_LOG = Path("logs/codex_task_error_log.md")
@@ -72,11 +71,9 @@ def log_error(step: str, error: Exception, context: str) -> None:
     _ensure_log_files()
     with ERROR_LOG.open("a", encoding="utf-8") as fh:
         fh.write(
-            "Question for ChatGPT-5 {timestamp}:\n"
-            "While performing {step}, encountered the following error: {error}\n"
-            "Context: {context}\n\n".format(
-                timestamp=_timestamp(), step=step, error=error, context=context
-            )
+            f"Question for ChatGPT-5 {_timestamp()}:\n"
+            f"While performing {step}, encountered the following error: {error}\n"
+            f"Context: {context}\n\n"
         )
 
 

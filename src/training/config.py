@@ -9,13 +9,12 @@ files.
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass, fields
 from pathlib import Path
 from types import UnionType
 from typing import (
     Any,
-    Mapping,
-    MutableMapping,
     Union,
     get_args,
     get_origin,

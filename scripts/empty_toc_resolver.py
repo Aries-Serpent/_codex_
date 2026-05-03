@@ -16,13 +16,12 @@ import json
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
 
 
-def find_toc_entries(content: str) -> List[Dict]:
+def find_toc_entries(content: str) -> list[dict]:
     """
     Find all TOC entries in content.
     Returns list of entries with their patterns.
@@ -61,14 +60,14 @@ def find_toc_entries(content: str) -> List[Dict]:
     return entries
 
 
-def get_context(lines: List[str], line_idx: int) -> str:
+def get_context(lines: list[str], line_idx: int) -> str:
     """Get 3 lines before and after for context."""
     start = max(0, line_idx - 3)
     end = min(len(lines), line_idx + 4)
     return '\n'.join(lines[start:end])
 
 
-def categorize_entry(entry: Dict, file_path: Path) -> str:
+def categorize_entry(entry: dict, file_path: Path) -> str:
     """
     Categorize a TOC entry to determine action.
     Returns: 'future_content', 'deprecated', 'error', or 'intentional'
@@ -103,7 +102,7 @@ def categorize_entry(entry: Dict, file_path: Path) -> str:
     return 'future_content'
 
 
-def scan_repository(directories: List[str] = None) -> Dict:
+def scan_repository(directories: list[str] = None) -> dict:
     """
     Scan repository for empty TOC entries.
     Returns comprehensive analysis.
@@ -181,7 +180,7 @@ def get_recommended_action(category: str) -> str:
     return actions.get(category, 'Manual review required')
 
 
-def generate_action_plan(analysis: Dict) -> Dict:
+def generate_action_plan(analysis: dict) -> dict:
     """
     Generate an action plan for resolving entries.
     Returns plan with prioritized actions.

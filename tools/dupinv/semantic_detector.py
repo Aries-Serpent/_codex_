@@ -4,7 +4,6 @@ import hashlib
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
 
 from .schema import DuplicateGroup, MemberFile
 
@@ -18,7 +17,7 @@ class MinHashDetector:
         threshold: float = 0.75,
         num_perm: int = 128,
         shingle_size: int = 5,
-        exclude_patterns: List[str] = None,
+        exclude_patterns: list[str] = None,
         respect_gitignore: bool = True,
     ):
         """
@@ -39,7 +38,7 @@ class MinHashDetector:
         self.exclude_patterns = exclude_patterns or []
         self.respect_gitignore = respect_gitignore
 
-    def tokenize(self, code: str) -> List[str]:
+    def tokenize(self, code: str) -> list[str]:
         """
         Tokenize code into meaningful tokens.
 
@@ -62,7 +61,7 @@ class MinHashDetector:
         return re.findall(r"\w+", code.lower())
 
 
-    def create_shingles(self, tokens: List[str]) -> Set[str]:
+    def create_shingles(self, tokens: list[str]) -> set[str]:
         """
         Create shingles (n-grams) from tokens.
 
@@ -78,7 +77,7 @@ class MinHashDetector:
             shingles.add(shingle)
         return shingles
 
-    def compute_minhash(self, shingles: Set[str]) -> List[int]:
+    def compute_minhash(self, shingles: set[str]) -> list[int]:
         """
         Compute MinHash signature.
 
@@ -105,7 +104,7 @@ class MinHashDetector:
 
         return signature
 
-    def jaccard_similarity(self, sig1: List[int], sig2: List[int]) -> float:
+    def jaccard_similarity(self, sig1: list[int], sig2: list[int]) -> float:
         """
         Estimate Jaccard similarity from MinHash signatures.
 
@@ -122,7 +121,7 @@ class MinHashDetector:
         matches = sum(1 for a, b in zip(sig1, sig2) if a == b)
         return matches / len(sig1)
 
-    def scan(self) -> List[DuplicateGroup]:
+    def scan(self) -> list[DuplicateGroup]:
         """
         Scan repository for semantically similar code.
 
@@ -133,8 +132,8 @@ class MinHashDetector:
         files = self._find_source_files()
 
         # Compute MinHash signatures for all files
-        signatures: Dict[str, List[int]] = {}
-        file_content: Dict[str, str] = {}
+        signatures: dict[str, list[int]] = {}
+        file_content: dict[str, str] = {}
 
         for file_path in files:
             try:
@@ -205,7 +204,7 @@ class MinHashDetector:
 
         return duplicate_groups
 
-    def _find_similar_pairs(self, signatures: Dict[str, List[int]]) -> List[Tuple[str, str, float]]:
+    def _find_similar_pairs(self, signatures: dict[str, list[int]]) -> list[tuple[str, str, float]]:
         """Find pairs of files with similarity above threshold."""
         similar_pairs = []
         paths = list(signatures.keys())
@@ -221,8 +220,8 @@ class MinHashDetector:
         return similar_pairs
 
     def _cluster_similar(
-        self, pairs: List[Tuple[str, str, float]]
-    ) -> List[Tuple[List[str], float]]:
+        self, pairs: list[tuple[str, str, float]]
+    ) -> list[tuple[list[str], float]]:
         """
         Cluster similar files using union-find.
 
@@ -233,8 +232,8 @@ class MinHashDetector:
             return []
 
         # Build adjacency list
-        graph: Dict[str, Set[str]] = defaultdict(set)
-        similarities: Dict[Tuple[str, str], float] = {}
+        graph: dict[str, set[str]] = defaultdict(set)
+        similarities: dict[tuple[str, str], float] = {}
 
         for path1, path2, sim in pairs:
             graph[path1].add(path2)
@@ -278,7 +277,7 @@ class MinHashDetector:
 
         return clusters
 
-    def _find_source_files(self) -> List[Path]:
+    def _find_source_files(self) -> list[Path]:
         """Find all source files in repository."""
         source_files = []
 

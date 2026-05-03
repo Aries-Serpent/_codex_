@@ -15,9 +15,10 @@ from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Callable
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional
 
 import torch
 
@@ -171,7 +172,7 @@ class DistributedManager:
             self._initialized = False
             logger.info("Distributed training cleaned up")
 
-    def wrap_model(self, model: torch.nn.Module) -> Union[torch.nn.Module, DDP]:
+    def wrap_model(self, model: torch.nn.Module) -> torch.nn.Module | DDP:
         """Wrap model for distributed training.
 
         Args:

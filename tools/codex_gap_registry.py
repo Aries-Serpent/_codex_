@@ -22,7 +22,7 @@ import hashlib
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import yaml
 
@@ -31,12 +31,12 @@ import yaml
 class Gap:
     id: str
     capability: str
-    location: List[str]
+    location: list[str]
     description: str
     status: str  # missing|stubbed|partial|implemented
     risk_level: Optional[str] = None
     yaml_phase_step: Optional[str] = None
-    ml_test_categories: Optional[List[str]] = None
+    ml_test_categories: Optional[list[str]] = None
     last_seen_in_audit: Optional[str] = None
     notes: Optional[str] = None
 
@@ -81,12 +81,12 @@ def _infer_capability_from_text(text: str) -> str:
     return "general"
 
 
-def _parse_audit(audit_path: Path) -> List[Gap]:
+def _parse_audit(audit_path: Path) -> list[Gap]:
     if not audit_path.exists():
         return []
 
     lines = audit_path.read_text(encoding="utf-8", errors="ignore").splitlines()
-    gaps: List[Gap] = []
+    gaps: list[Gap] = []
 
     in_high_signal = False
     last_date: Optional[str] = None
@@ -128,10 +128,10 @@ def _parse_audit(audit_path: Path) -> List[Gap]:
     return gaps
 
 
-def _parse_change_log(change_log_path: Path) -> Dict[str, Dict[str, Any]]:
+def _parse_change_log(change_log_path: Path) -> dict[str, dict[str, Any]]:
     if not change_log_path or not change_log_path.exists():
         return {}
-    rows: Dict[str, Dict[str, Any]] = {}
+    rows: dict[str, dict[str, Any]] = {}
     lines = change_log_path.read_text(encoding="utf-8", errors="ignore").splitlines()
     for line in lines:
         if not line.startswith("|"):
@@ -149,8 +149,8 @@ def _parse_change_log(change_log_path: Path) -> Dict[str, Dict[str, Any]]:
     return rows
 
 
-def _merge_status_from_change_log(gaps: List[Gap], change_log: Dict[str, Dict[str, Any]]) -> None:
-    index_by_phase: Dict[str, Gap] = {}
+def _merge_status_from_change_log(gaps: list[Gap], change_log: dict[str, dict[str, Any]]) -> None:
+    index_by_phase: dict[str, Gap] = {}
     for gap in gaps:
         if gap.yaml_phase_step:
             index_by_phase[gap.yaml_phase_step] = gap
@@ -168,7 +168,7 @@ def _merge_status_from_change_log(gaps: List[Gap], change_log: Dict[str, Dict[st
                 gap.status = "partial"
 
 
-def _load_hardship(hardship_path: Optional[Path]) -> Dict[str, Dict[str, Any]]:
+def _load_hardship(hardship_path: Optional[Path]) -> dict[str, dict[str, Any]]:
     if not hardship_path or not hardship_path.exists():
         return {}
     data = yaml.safe_load(hardship_path.read_text(encoding="utf-8")) or {}
@@ -178,7 +178,7 @@ def _load_hardship(hardship_path: Optional[Path]) -> Dict[str, Dict[str, Any]]:
     return gaps if isinstance(gaps, dict) else {}
 
 
-def _apply_hardship(gaps: List[Gap], hardship: Dict[str, Dict[str, Any]]) -> None:
+def _apply_hardship(gaps: list[Gap], hardship: dict[str, dict[str, Any]]) -> None:
     for gap in gaps:
         meta = hardship.get(gap.id)
         if not meta:
@@ -191,7 +191,7 @@ def _apply_hardship(gaps: List[Gap], hardship: Dict[str, Dict[str, Any]]) -> Non
             gap.notes = (gap.notes or "") + f" | Hardship: {extra}"
 
 
-def _load_capability_map(cap_map_path: Optional[Path]) -> Dict[str, Any]:
+def _load_capability_map(cap_map_path: Optional[Path]) -> dict[str, Any]:
     if not cap_map_path or not cap_map_path.exists():
         return {}
     data = yaml.safe_load(cap_map_path.read_text(encoding="utf-8")) or {}
@@ -201,12 +201,12 @@ def _load_capability_map(cap_map_path: Optional[Path]) -> Dict[str, Any]:
     return caps if isinstance(caps, dict) else {}
 
 
-def _apply_capability_locations(gaps: List[Gap], cap_map: Dict[str, Any]) -> None:
+def _apply_capability_locations(gaps: list[Gap], cap_map: dict[str, Any]) -> None:
     for gap in gaps:
         meta = cap_map.get(gap.capability)
         if not isinstance(meta, dict):
             continue
-        locations: List[str] = []
+        locations: list[str] = []
         for key in ("code", "tests", "docs"):
             paths = meta.get(key)
             if isinstance(paths, list):
@@ -221,7 +221,7 @@ def build_registry(
     errors: Optional[Path],
     hardship: Optional[Path],
     cap_map: Optional[Path] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     gaps = _parse_audit(audit) if audit else []
     change_rows = _parse_change_log(change_log) if change_log else {}
     _merge_status_from_change_log(gaps, change_rows)

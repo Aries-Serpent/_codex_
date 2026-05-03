@@ -51,9 +51,10 @@ import json
 import os
 import random
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 import numpy as np
 import yaml

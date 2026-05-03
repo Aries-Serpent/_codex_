@@ -50,7 +50,7 @@ class TestPoolingBehavior:
         # Cause an error (invalid SQL)
         try:
             conn.execute("INVALID SQL SYNTAX")
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass  # Expected error
 
         # Return connection to pool

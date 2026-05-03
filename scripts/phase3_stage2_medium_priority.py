@@ -7,7 +7,6 @@ Removes or updates references to deleted files in medium-priority documentation.
 import json
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -18,7 +17,7 @@ def load_categorization() -> dict:
     with open(cat_file) as f:
         return json.load(f)
 
-def get_medium_priority_files(cat_data: dict) -> List[Tuple[str, dict]]:
+def get_medium_priority_files(cat_data: dict) -> list[tuple[str, dict]]:
     """Get list of medium-priority files with broken links."""
     medium_priority = []
 

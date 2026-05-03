@@ -20,16 +20,16 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""Minimal inference CLI for loading a model and generating text."""
 
 
 import json
 import os
 import sys
+from collections.abc import Sequence
 from datetime import UTC, datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Any, Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

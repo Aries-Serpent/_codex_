@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -25,7 +25,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def health_check_config() -> Dict[str, Any]:
+def health_check_config() -> dict[str, Any]:
     """Configuration for health checks."""
     return {
         "liveness": {
@@ -53,7 +53,7 @@ def health_check_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def mock_service_dependencies() -> Dict[str, Dict[str, Any]]:
+def mock_service_dependencies() -> dict[str, dict[str, Any]]:
     """Mock service dependencies for health checks."""
     return {
         "database": {

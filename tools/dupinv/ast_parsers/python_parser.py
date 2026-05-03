@@ -4,7 +4,7 @@ import ast
 import hashlib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -15,7 +15,7 @@ class FunctionSignature:
     file_path: str
     start_line: int
     end_line: int
-    parameters: List[str]
+    parameters: list[str]
     return_type: Optional[str]
     ast_hash: str
     body_hash: str
@@ -26,7 +26,7 @@ class FunctionSignature:
 class PythonASTParser:
     """Parses Python files to extract functions and classes."""
 
-    def parse_file(self, file_path: Path) -> List[FunctionSignature]:
+    def parse_file(self, file_path: Path) -> list[FunctionSignature]:
         """
         Extract all functions from Python file.
 

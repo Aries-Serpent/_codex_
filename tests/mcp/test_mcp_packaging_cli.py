@@ -17,7 +17,7 @@ import pytest
 scripts_mcp = Path(__file__).resolve().parents[2] / "scripts" / "mcp"
 sys.path.insert(0, str(scripts_mcp))
 
-import select_components  # noqa: E402
+import select_components
 
 
 def _load_mcp_package_module():

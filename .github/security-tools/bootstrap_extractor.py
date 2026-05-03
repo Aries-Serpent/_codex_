@@ -8,7 +8,7 @@ import base64
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 class BootstrapExtractor:
@@ -27,7 +27,7 @@ class BootstrapExtractor:
         self.output_dir = Path(output_dir)
         self.manifest = self._load_manifest()
 
-    def _load_manifest(self) -> Dict[str, Any]:
+    def _load_manifest(self) -> dict[str, Any]:
         """Load manifest from environment or use defaults"""
         manifest_json = os.getenv(self.ENV_VARS['manifest'])
 

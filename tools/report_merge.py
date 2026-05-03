@@ -10,10 +10,10 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def deep_set(root: Dict[str, Any], dotted: str, value: Any) -> None:
+def deep_set(root: dict[str, Any], dotted: str, value: Any) -> None:
     keys = dotted.split(".")
     cur = root
     for k in keys[:-1]:

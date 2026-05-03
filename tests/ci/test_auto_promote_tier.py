@@ -13,7 +13,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
-import auto_promote_tier  # noqa: E402,I001
+import auto_promote_tier  # noqa: I001
 
 
 # ---------------------------------------------------------------------------

@@ -9,10 +9,10 @@ import pytest
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
-import torch  # noqa: E402
-from codex_ml.utils.repro import set_reproducible  # noqa: E402
+import torch
+from codex_ml.utils.repro import set_reproducible
 
 
 def model():

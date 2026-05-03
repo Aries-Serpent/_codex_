@@ -25,9 +25,10 @@ import argparse
 import json
 import os
 import sys
+from collections.abc import Mapping
 from dataclasses import asdict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Mapping
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from codex_ml.training.unified_training import UnifiedTrainingConfig

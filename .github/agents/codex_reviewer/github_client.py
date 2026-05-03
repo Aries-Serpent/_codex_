@@ -11,7 +11,7 @@ import asyncio
 import logging
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     import httpx
@@ -62,7 +62,7 @@ class GitHubAPIClient:
         if not self.config.token:
             logger.warning("No GitHub token configured - API requests will fail")
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get headers for API requests."""
         headers = {
             "Accept": "application/vnd.github.v3+json",
@@ -80,8 +80,8 @@ class GitHubAPIClient:
         pr_number: int,
         body: str,
         event: str = "COMMENT",
-        comments: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
+        comments: Optional[list[dict[str, Any]]] = None,
+    ) -> dict[str, Any]:
         """
         Post a review to a pull request.
 
@@ -114,7 +114,7 @@ class GitHubAPIClient:
             return await self._post_with_httpx(url, payload)
         return await self._post_with_urllib(url, payload)
 
-    async def _post_with_httpx(self, url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    async def _post_with_httpx(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Post request using httpx library."""
         async with httpx.AsyncClient() as client:
             for attempt in range(self.config.max_retries):
@@ -146,7 +146,7 @@ class GitHubAPIClient:
                     logger.error(f"Unexpected error posting review: {e}")
                     raise
 
-    async def _post_with_urllib(self, url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    async def _post_with_urllib(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Fallback: Post request using urllib (synchronous)."""
         request = urllib.request.Request(
             url,
@@ -181,7 +181,7 @@ class GitHubAPIClient:
         repo: str,
         pr_number: int,
         body: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Add a comment to a pull request.
 
@@ -203,7 +203,7 @@ class GitHubAPIClient:
             return await self._post_with_httpx(url, payload)
         return await self._post_with_urllib(url, payload)
 
-    async def get_pr_details(self, repo: str, pr_number: int) -> Dict[str, Any]:
+    async def get_pr_details(self, repo: str, pr_number: int) -> dict[str, Any]:
         """
         Get pull request details.
 
@@ -228,7 +228,7 @@ class GitHubAPIClient:
             with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
                 return json.loads(response.read().decode('utf-8'))
 
-    async def get_pr_files(self, repo: str, pr_number: int) -> List[Dict[str, Any]]:
+    async def get_pr_files(self, repo: str, pr_number: int) -> list[dict[str, Any]]:
         """
         Get list of files changed in a pull request.
 

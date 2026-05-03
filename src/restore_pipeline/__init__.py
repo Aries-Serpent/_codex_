@@ -11,5 +11,5 @@ Public API::
 from restore_pipeline.config import PipelineConfig
 from restore_pipeline.pipeline import process
 
-__all__ = ["process", "PipelineConfig"]
+__all__ = ["PipelineConfig", "process"]
 __version__ = "0.1.0"

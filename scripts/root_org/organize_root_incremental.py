@@ -19,7 +19,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Optional
 
 # Import other scripts
 try:
@@ -34,13 +34,13 @@ except ImportError:
     def assess_risk(count): return "HIGH" if count > 5 else "MEDIUM" if count > 0 else "LOW"
 
 
-def load_relocation_plan(plan_file: Path) -> Dict:
+def load_relocation_plan(plan_file: Path) -> dict:
     """Load the relocation plan from JSON file."""
     with open(plan_file) as f:
         return json.load(f)
 
 
-def validate_move(source: Path, target: Path, dry_run: bool = False) -> Tuple[bool, str, int]:
+def validate_move(source: Path, target: Path, dry_run: bool = False) -> tuple[bool, str, int]:
     """
     Validate if a move is safe.
     Returns: (safe, risk_level, reference_count)
@@ -206,7 +206,7 @@ def organize_by_plan(
     return failures == 0
 
 
-def log_to_ndjson(operation: str, details: Dict):
+def log_to_ndjson(operation: str, details: dict):
     """Log operation to .codex/action_log.ndjson."""
     log_entry = {
         'timestamp': datetime.now().isoformat(),

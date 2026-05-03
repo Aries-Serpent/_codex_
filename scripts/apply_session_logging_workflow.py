@@ -35,13 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-End-to-end workflow to add session logging context manager, helper, CLI query,
-tests, and docs to the _codex_ repository (branch 0B_base_).
-Respects the guardrail: DO NOT ACTIVATE ANY GitHub Actions files.
-
-Phases implemented: 1..6 (see top-level plan).
-"""
 
 import difflib
 import json
@@ -89,9 +82,7 @@ def require_clean_worktree() -> None:
     except FileNotFoundError as e:
         logger.debug(f"FileNotFoundError: {e}")
         sys.stderr.write(
-            "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(
-                str(e)
-            )
+            f"WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {str(e)}\n"
         )
         sys.exit(2)
 

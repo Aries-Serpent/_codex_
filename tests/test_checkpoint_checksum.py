@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
 pytest.importorskip("torch")
 
-import torch  # noqa: E402
-from codex_ml.utils.checkpointing import (  # noqa: E402
+import torch
+from codex_ml.utils.checkpointing import (
     CheckpointLoadError,
     CheckpointManager,
     load_training_checkpoint,
@@ -24,7 +24,7 @@ from codex_ml.utils.checkpointing import (  # noqa: E402
 class MockModel:
     """Mock model for testing checkpoint functionality."""
 
-    def __init__(self, weights: Dict[str, Any] | None = None):
+    def __init__(self, weights: dict[str, Any] | None = None):
         self.weights = weights or {"layer.weight": torch.tensor([1.0, 2.0, 3.0])}
 
     def state_dict(self):

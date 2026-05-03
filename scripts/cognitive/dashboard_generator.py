@@ -21,7 +21,7 @@ import json
 import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -41,7 +41,7 @@ def get_repo_root() -> Path:
     return Path.cwd()
 
 
-def load_metrics(metrics_path: Path) -> Optional[Dict[str, Any]]:
+def load_metrics(metrics_path: Path) -> Optional[dict[str, Any]]:
     """Load metrics from JSON file."""
     if not metrics_path.exists():
         return None
@@ -83,7 +83,7 @@ def generate_trend_indicator(trend: str) -> str:
 
 
 def generate_ascii_chart(
-    data: List[Tuple[str, float]],
+    data: list[tuple[str, float]],
     width: int = 30,
     title: str = ""
 ) -> str:
@@ -109,7 +109,7 @@ def generate_ascii_chart(
     return "\n".join(lines)
 
 
-def generate_sparkline(values: List[float], width: int = 10) -> str:
+def generate_sparkline(values: list[float], width: int = 10) -> str:
     """Generate a simple sparkline from values."""
     if not values:
         return "▁" * width
@@ -187,7 +187,7 @@ def _generate_ci_pattern_trend_section(days: int = 7) -> str:
 
 
 def generate_dashboard(
-    metrics: Dict[str, Any],
+    metrics: dict[str, Any],
     include_charts: bool = True
 ) -> str:
     """Generate the markdown dashboard."""
@@ -349,7 +349,7 @@ python scripts/cognitive/dashboard_generator.py --hours 48
     return dashboard
 
 
-def calculate_health_score(metrics: Dict[str, Any]) -> float:
+def calculate_health_score(metrics: dict[str, Any]) -> float:
     """Calculate overall health score (0-100)."""
     scores = []
 
@@ -380,7 +380,7 @@ def calculate_health_score(metrics: Dict[str, Any]) -> float:
     return sum(scores)
 
 
-def get_health_status(score: float) -> Dict[str, str]:
+def get_health_status(score: float) -> dict[str, str]:
     """Get health status based on score."""
     if score >= 90:
         return {"emoji": "🌟", "label": "Excellent", "color": "green"}

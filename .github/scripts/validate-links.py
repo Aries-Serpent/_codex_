@@ -15,7 +15,6 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import List, Set, Tuple
 
 # Patterns to detect GitHub context variables
 GITHUB_CONTEXT_PATTERN = re.compile(r'\$\{\{[^}]+\}\}')
@@ -77,9 +76,9 @@ SKIP_LINK_PATTERNS = [
 class LinkValidator:
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
-        self.errors: List[Tuple[str, str, str]] = []
-        self.warnings: List[Tuple[str, str, str]] = []
-        self.checked_files: Set[Path] = set()
+        self.errors: list[tuple[str, str, str]] = []
+        self.warnings: list[tuple[str, str, str]] = []
+        self.checked_files: set[Path] = set()
 
     def is_external_url(self, link: str) -> bool:
         """Check if link is external URL"""

@@ -44,7 +44,7 @@ class TestCoreImports:
 
     def test_bridge_manager_import(self):
         """bridge_manager must import on Linux AND Windows (fcntl guard)."""
-        import bridge_manager  # noqa: F401
+        import bridge_manager
 
         assert hasattr(bridge_manager, "BridgeLock")
 
@@ -131,7 +131,7 @@ class TestBatchScanRunnerAPI:
 
     def test_batch_scan_runner_importable(self):
         """BatchScanRunner must be importable."""
-        from scripts.ci.batch_scan_integration import (  # noqa: F401
+        from scripts.ci.batch_scan_integration import (
             BatchScanResult,
             BatchScanRunner,
         )

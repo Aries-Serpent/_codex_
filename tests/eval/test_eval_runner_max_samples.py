@@ -11,7 +11,7 @@ import pytest
 
 pytest.importorskip("datasets")
 
-from codex_ml.eval.eval_runner import evaluate_datasets  # noqa: E402
+from codex_ml.eval.eval_runner import evaluate_datasets
 
 
 def test_evaluate_datasets_max_samples(tmp_path: Path):

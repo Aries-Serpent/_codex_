@@ -15,7 +15,7 @@ Phase: 20.1 Production Monitoring & Alerting
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
@@ -25,7 +25,7 @@ import pytest
 
 
 @pytest.fixture
-def dashboard_config() -> Dict[str, Any]:
+def dashboard_config() -> dict[str, Any]:
     """Fixture for dashboard configuration."""
     return {
         "id": "dashboard-001",
@@ -40,7 +40,7 @@ def dashboard_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def widget_configs() -> List[Dict[str, Any]]:
+def widget_configs() -> list[dict[str, Any]]:
     """Fixture for dashboard widget configurations."""
     return [
         {
@@ -83,7 +83,7 @@ def widget_configs() -> List[Dict[str, Any]]:
 
 
 @pytest.fixture
-def data_sources() -> List[Dict[str, Any]]:
+def data_sources() -> list[dict[str, Any]]:
     """Fixture for data source configurations."""
     return [
         {
@@ -111,25 +111,25 @@ def data_sources() -> List[Dict[str, Any]]:
 class TestDashboardConfiguration:
     """Tests for dashboard configuration validation."""
 
-    def test_dashboard_has_required_fields(self, dashboard_config: Dict[str, Any]):
+    def test_dashboard_has_required_fields(self, dashboard_config: dict[str, Any]):
         """Test dashboard has all required fields."""
         required_fields = ["id", "title", "version"]
         for field in required_fields:
             assert field in dashboard_config
 
-    def test_dashboard_id_format(self, dashboard_config: Dict[str, Any]):
+    def test_dashboard_id_format(self, dashboard_config: dict[str, Any]):
         """Test dashboard ID format is valid."""
         dashboard_id = dashboard_config["id"]
         assert isinstance(dashboard_id, str)
         assert len(dashboard_id) > 0
 
-    def test_dashboard_version_numeric(self, dashboard_config: Dict[str, Any]):
+    def test_dashboard_version_numeric(self, dashboard_config: dict[str, Any]):
         """Test dashboard version is numeric."""
         version = dashboard_config["version"]
         assert isinstance(version, int)
         assert version > 0
 
-    def test_refresh_interval_format(self, dashboard_config: Dict[str, Any]):
+    def test_refresh_interval_format(self, dashboard_config: dict[str, Any]):
         """Test refresh interval format parsing."""
         interval = dashboard_config["refresh_interval"]
 
@@ -140,19 +140,19 @@ class TestDashboardConfiguration:
         assert value > 0
         assert unit in ["s", "m", "h"]
 
-    def test_time_range_configuration(self, dashboard_config: Dict[str, Any]):
+    def test_time_range_configuration(self, dashboard_config: dict[str, Any]):
         """Test time range configuration."""
         time_range = dashboard_config["time_range"]
         assert "from" in time_range
         assert "to" in time_range
 
-    def test_dashboard_tags_list(self, dashboard_config: Dict[str, Any]):
+    def test_dashboard_tags_list(self, dashboard_config: dict[str, Any]):
         """Test dashboard tags is a list."""
         tags = dashboard_config["tags"]
         assert isinstance(tags, list)
         assert len(tags) > 0
 
-    def test_dashboard_editable_flag(self, dashboard_config: Dict[str, Any]):
+    def test_dashboard_editable_flag(self, dashboard_config: dict[str, Any]):
         """Test dashboard editable flag."""
         assert isinstance(dashboard_config["editable"], bool)
 
@@ -165,14 +165,14 @@ class TestDashboardConfiguration:
 class TestWidgetConfiguration:
     """Tests for widget configuration validation."""
 
-    def test_widget_has_required_fields(self, widget_configs: List[Dict[str, Any]]):
+    def test_widget_has_required_fields(self, widget_configs: list[dict[str, Any]]):
         """Test each widget has required fields."""
         required_fields = ["id", "type", "title", "position"]
         for widget in widget_configs:
             for field in required_fields:
                 assert field in widget
 
-    def test_widget_types_valid(self, widget_configs: List[Dict[str, Any]]):
+    def test_widget_types_valid(self, widget_configs: list[dict[str, Any]]):
         """Test widget types are valid."""
         valid_types = [
             "graph",
@@ -186,7 +186,7 @@ class TestWidgetConfiguration:
         for widget in widget_configs:
             assert widget["type"] in valid_types
 
-    def test_widget_position_coordinates(self, widget_configs: List[Dict[str, Any]]):
+    def test_widget_position_coordinates(self, widget_configs: list[dict[str, Any]]):
         """Test widget position has all coordinates."""
         for widget in widget_configs:
             pos = widget["position"]
@@ -195,7 +195,7 @@ class TestWidgetConfiguration:
             assert "w" in pos
             assert "h" in pos
 
-    def test_widget_position_non_negative(self, widget_configs: List[Dict[str, Any]]):
+    def test_widget_position_non_negative(self, widget_configs: list[dict[str, Any]]):
         """Test widget position values are non-negative."""
         for widget in widget_configs:
             pos = widget["position"]
@@ -204,25 +204,25 @@ class TestWidgetConfiguration:
             assert pos["w"] > 0
             assert pos["h"] > 0
 
-    def test_widget_no_overlapping(self, widget_configs: List[Dict[str, Any]]):
+    def test_widget_no_overlapping(self, widget_configs: list[dict[str, Any]]):
         """Test widgets don't overlap (simplified check)."""
         # For now, just verify each widget has unique ID
         ids = [w["id"] for w in widget_configs]
         assert len(ids) == len(set(ids))
 
-    def test_widget_datasource_specified(self, widget_configs: List[Dict[str, Any]]):
+    def test_widget_datasource_specified(self, widget_configs: list[dict[str, Any]]):
         """Test widgets have datasource specified."""
         for widget in widget_configs:
             assert "datasource" in widget
             assert len(widget["datasource"]) > 0
 
-    def test_widget_query_specified(self, widget_configs: List[Dict[str, Any]]):
+    def test_widget_query_specified(self, widget_configs: list[dict[str, Any]]):
         """Test widgets have query specified."""
         for widget in widget_configs:
             assert "query" in widget
             assert len(widget["query"]) > 0
 
-    def test_gauge_widget_thresholds(self, widget_configs: List[Dict[str, Any]]):
+    def test_gauge_widget_thresholds(self, widget_configs: list[dict[str, Any]]):
         """Test gauge widget has thresholds configured."""
         gauge = next(w for w in widget_configs if w["type"] == "gauge")
         assert "thresholds" in gauge
@@ -237,31 +237,31 @@ class TestWidgetConfiguration:
 class TestDataSources:
     """Tests for data source configuration."""
 
-    def test_datasource_has_required_fields(self, data_sources: List[Dict[str, Any]]):
+    def test_datasource_has_required_fields(self, data_sources: list[dict[str, Any]]):
         """Test data sources have required fields."""
         required_fields = ["name", "type", "url"]
         for ds in data_sources:
             for field in required_fields:
                 assert field in ds
 
-    def test_datasource_url_format(self, data_sources: List[Dict[str, Any]]):
+    def test_datasource_url_format(self, data_sources: list[dict[str, Any]]):
         """Test data source URL format."""
         for ds in data_sources:
             url = ds["url"]
             assert url.startswith("http://") or url.startswith("https://")
 
-    def test_datasource_type_valid(self, data_sources: List[Dict[str, Any]]):
+    def test_datasource_type_valid(self, data_sources: list[dict[str, Any]]):
         """Test data source types are valid."""
         valid_types = ["prometheus", "influxdb", "elasticsearch", "mysql", "postgres"]
         for ds in data_sources:
             assert ds["type"] in valid_types
 
-    def test_default_datasource_exists(self, data_sources: List[Dict[str, Any]]):
+    def test_default_datasource_exists(self, data_sources: list[dict[str, Any]]):
         """Test at least one default data source exists."""
         default_count = sum(1 for ds in data_sources if ds.get("is_default", False))
         assert default_count >= 1
 
-    def test_datasource_names_unique(self, data_sources: List[Dict[str, Any]]):
+    def test_datasource_names_unique(self, data_sources: list[dict[str, Any]]):
         """Test data source names are unique."""
         names = [ds["name"] for ds in data_sources]
         assert len(names) == len(set(names))

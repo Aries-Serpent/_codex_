@@ -12,7 +12,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Configure logging
 LOG_DIR = Path("logs")
@@ -118,7 +118,7 @@ OWNER = "Aries-Serpent"
 REPO = "_codex_"
 
 
-def run_gh_cli(args: List[str]) -> Optional[str]:
+def run_gh_cli(args: list[str]) -> Optional[str]:
     """Run GitHub CLI command and return output.
 
     Args:
@@ -144,7 +144,7 @@ def run_gh_cli(args: List[str]) -> Optional[str]:
         return None
 
 
-def fetch_commit_check_runs(sha: str) -> List[Dict[str, Any]]:
+def fetch_commit_check_runs(sha: str) -> list[dict[str, Any]]:
     """Fetch check runs for a commit using gh CLI.
 
     Args:
@@ -173,7 +173,7 @@ def fetch_commit_check_runs(sha: str) -> List[Dict[str, Any]]:
         return []
 
 
-def fetch_workflow_runs_for_commit(sha: str) -> List[Dict[str, Any]]:
+def fetch_workflow_runs_for_commit(sha: str) -> list[dict[str, Any]]:
     """Fetch workflow runs for a commit.
 
     Args:
@@ -202,7 +202,7 @@ def fetch_workflow_runs_for_commit(sha: str) -> List[Dict[str, Any]]:
         return []
 
 
-def fetch_artifacts_for_run(run_id: int) -> List[Dict[str, Any]]:
+def fetch_artifacts_for_run(run_id: int) -> list[dict[str, Any]]:
     """Fetch artifacts for a workflow run.
 
     Args:
@@ -228,7 +228,7 @@ def fetch_artifacts_for_run(run_id: int) -> List[Dict[str, Any]]:
         return []
 
 
-def is_check_failing(check_run: Dict[str, Any]) -> bool:
+def is_check_failing(check_run: dict[str, Any]) -> bool:
     """Determine if a check run is failing.
 
     Args:
@@ -245,7 +245,7 @@ def is_check_failing(check_run: Dict[str, Any]) -> bool:
     return (status != "completed") or (conclusion in failing_conclusions)
 
 
-def process_commit(sha: str) -> Dict[str, Any]:
+def process_commit(sha: str) -> dict[str, Any]:
     """Process a single commit to extract failing checks and artifacts.
 
     Args:
@@ -295,7 +295,7 @@ def process_commit(sha: str) -> Dict[str, Any]:
     }
 
 
-def generate_markdown_table(results: List[Dict[str, Any]], output_path: Path) -> None:
+def generate_markdown_table(results: list[dict[str, Any]], output_path: Path) -> None:
     """Generate markdown report with failing checks table.
 
     Args:

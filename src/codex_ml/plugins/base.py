@@ -51,7 +51,7 @@ class ModelPlugin(BasePlugin):
 
 __all__ = [
     "BasePlugin",
-    "TokenizerPlugin",
     "MetricsPlugin",
     "ModelPlugin",
+    "TokenizerPlugin",
 ]

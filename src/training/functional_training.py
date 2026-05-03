@@ -24,7 +24,8 @@ import logging
 import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional, Sequence
+from typing import Any, Optional
+from collections.abc import Callable, Mapping, Sequence
 
 import numpy as np
 
@@ -533,7 +534,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
 
     def _safe_len(data: Any) -> int | None:
         try:
-            return int(len(data))
+            return len(data)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             return None
@@ -962,9 +963,9 @@ __all__ = [
     "TrainCfg",
     "evaluate_batches",
     "evaluate_dataloader",
-    "run_custom_trainer",
-    "main",
     "get_hf_revision",
-    "run_hf_trainer",
     "get_model",
+    "main",
+    "run_custom_trainer",
+    "run_hf_trainer",
 ]

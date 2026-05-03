@@ -8,7 +8,7 @@ import time
 import pytest
 
 pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi.testclient import TestClient
 
 # Try to import FastAPI components
 try:

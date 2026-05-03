@@ -400,7 +400,7 @@ __all__ = [
     "ConfigLoader",
     "ErrorConfig",
     "MissingConfigException",
+    "get_loader",
     "load_config",
     "load_error_config",
-    "get_loader",
 ]

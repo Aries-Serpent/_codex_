@@ -95,19 +95,19 @@ def _stub_transformers(monkeypatch):
 # affect test execution.
 
 __all__ = [
-    "_write_corpus",
     "_stub_sp",
-    "test_train_and_reload_roundtrip",
-    "test_train_or_load_trains_and_loads",
-    "test_train_or_load_loads_existing_model",
-    "test_train_or_load_requires_sentencepiece",
-    "test_load_requires_sentencepiece",
-    "test_add_special_tokens_returns_mapping",
+    "_write_corpus",
     "test_add_special_tokens_migrates_legacy_sidecar",
-    "test_persisted_special_tokens_are_loaded",
+    "test_add_special_tokens_returns_mapping",
     "test_add_special_tokens_sidecar",
     "test_assert_vocab_size",
+    "test_load_requires_sentencepiece",
     "test_missing_sentencepiece_branch",
+    "test_persisted_special_tokens_are_loaded",
+    "test_train_and_reload_roundtrip",
+    "test_train_or_load_loads_existing_model",
+    "test_train_or_load_requires_sentencepiece",
+    "test_train_or_load_trains_and_loads",
 ]
 
 
@@ -173,7 +173,7 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
         def DecodeIds(self, ids):
             try:
                 return "".join(chr(int(i) % 256) for i in ids)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 return ""
 
         # Convenience aliases common in lightweight adapters
@@ -205,7 +205,7 @@ def _get_adapter_module():
     """Import and return the sentencepiece_adapter module, skipping tests when unavailable."""
     try:
         return importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    except Exception:  # noqa: BLE001
+    except Exception:
         # If the module cannot be imported for reasons unrelated to sentencepiece, raise so tests fail loudly.
         raise
 

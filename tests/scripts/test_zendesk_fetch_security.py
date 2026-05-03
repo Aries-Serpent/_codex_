@@ -12,7 +12,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from zendesk_docs_fetch import _fetch  # noqa: E402
+from zendesk_docs_fetch import _fetch
 
 
 class TestURLValidation:

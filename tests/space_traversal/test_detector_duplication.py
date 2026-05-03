@@ -8,8 +8,9 @@ from __future__ import annotations
 
 import importlib.util
 import types
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Dict, Iterable
+from typing import Any
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:
@@ -23,7 +24,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
     return module
 
 
-def _context_index_for(paths: Iterable[Path]) -> Dict[str, Any]:
+def _context_index_for(paths: Iterable[Path]) -> dict[str, Any]:
     return {
         "files": [
             {

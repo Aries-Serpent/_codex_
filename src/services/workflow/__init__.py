@@ -14,11 +14,11 @@ from .types import (
 )
 
 __all__ = [
-    "WorkflowInventory",
-    "WorkflowParser",
-    "WorkflowMetadata",
-    "WorkflowTrigger",
-    "WorkflowInput",
-    "WorkflowJob",
     "WorkflowDependency",
+    "WorkflowInput",
+    "WorkflowInventory",
+    "WorkflowJob",
+    "WorkflowMetadata",
+    "WorkflowParser",
+    "WorkflowTrigger",
 ]

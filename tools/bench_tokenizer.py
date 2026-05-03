@@ -5,8 +5,8 @@ from __future__ import annotations
 import argparse
 import statistics
 import time
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List
 
 from codex_ml.tokenization.api import WhitespaceTokenizer
 
@@ -17,7 +17,7 @@ _SAMPLE_TEXT = [
 ]
 
 
-def _load_corpus(path: Path | None) -> List[str]:
+def _load_corpus(path: Path | None) -> list[str]:
     if path is None:
         return list(_SAMPLE_TEXT)
     try:
@@ -29,7 +29,7 @@ def _load_corpus(path: Path | None) -> List[str]:
 
 
 def bench(tokenizer: WhitespaceTokenizer, texts: Iterable[str], rounds: int) -> dict[str, float]:
-    durations: List[float] = []
+    durations: list[float] = []
     texts = list(texts)
     if not texts:
         raise SystemExit("corpus is empty")

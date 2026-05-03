@@ -35,7 +35,7 @@ import logging
 import os
 import subprocess
 import sys
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -117,7 +117,7 @@ class GitHubSecretsManager:
             logger.error("❌ OpenSSL not found. Install openssl.")
             raise
 
-    def get_public_key_api(self) -> Tuple[str, str]:
+    def get_public_key_api(self) -> tuple[str, str]:
         """
         Get repository public key for secret encryption (API method).
 
@@ -331,7 +331,7 @@ class GitHubSecretsManager:
             logger.warning(f"⚠️  CLI verification failed: {e}")
             return False
 
-    def list_secrets(self) -> List[str]:
+    def list_secrets(self) -> list[str]:
         """
         List all secrets in the repository.
 
@@ -375,7 +375,7 @@ class GitHubSecretsManager:
             logger.error(f"❌ Failed to list secrets: {e}")
             return []
 
-    def setup_phase10_secrets(self, force: bool = False) -> Dict[str, bool]:
+    def setup_phase10_secrets(self, force: bool = False) -> dict[str, bool]:
         """
         Automated setup of all Phase 10 required secrets.
 

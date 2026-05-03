@@ -21,7 +21,7 @@ import sys
 import traceback
 from functools import wraps
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from codex_audit.errors import ErrorRecord, attach_ra_references, capture_error
 from codex_audit.gates import run_gates
@@ -85,7 +85,7 @@ def find_repo_root(start: Path | None = None) -> Path:
         current = current.parent
 
 
-def run_cmd(cmd: List[str], cwd: Optional[Path] = None) -> Tuple[int, str, str]:
+def run_cmd(cmd: list[str], cwd: Optional[Path] = None) -> tuple[int, str, str]:
     proc = subprocess.Popen(
         cmd,
         cwd=str(cwd) if cwd is not None else None,
@@ -140,7 +140,7 @@ def error_capture(exc: BaseException, ctx: StepContext, brief_context: str) -> N
         print(f"[CRITICAL] Error capture write failed: {write_exc}", file=sys.stderr)
 
 
-def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[List[str]] = None):
+def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[list[str]] = None):
     """
     Decorator for phase steps. On exception: log, record capture, and return None.
     On success: return True. If function returns None, treat as failure.
@@ -180,7 +180,7 @@ def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[
 
 
 @phase_step(1, "1.1", "Resolve repo root and detect branches")
-def step_1_1_resolve_repo_root_and_branches(ctx: StepContext) -> Dict[str, Any]:
+def step_1_1_resolve_repo_root_and_branches(ctx: StepContext) -> dict[str, Any]:
     repo_root = find_repo_root()
     branch = None
     try:
@@ -205,7 +205,7 @@ def step_1_2_create_output_dirs(ctx: StepContext) -> bool:
 
 
 @phase_step(2, "2.1", "Enumerate top-level directories and classify archived vs active")
-def step_2_1_list_top_level(ctx: StepContext) -> Dict[str, Any]:
+def step_2_1_list_top_level(ctx: StepContext) -> dict[str, Any]:
     repo_root = find_repo_root()
     top_entries = []
     for entry in sorted(repo_root.iterdir(), key=lambda p: p.name):
@@ -259,7 +259,7 @@ def step_2_2_stub_scan(ctx: StepContext) -> bool:
 @phase_step(2, "2.3", "Map artifacts to capabilities (high-level)")
 def step_2_3_capability_mapping(ctx: StepContext) -> bool:
     repo_root = find_repo_root()
-    capability_map: Dict[str, Dict[str, Any]] = {}
+    capability_map: dict[str, dict[str, Any]] = {}
 
     def record(cap: str, artifact: str) -> None:
         capability_map.setdefault(cap, {"artifacts": [], "inferred_gaps": [], "status": "Unknown"})
@@ -489,7 +489,7 @@ PHASE_FUNCTIONS = [
 # --------------------------
 # Main orchestration
 # --------------------------
-def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Offline audit orchestrator for Aries-Serpent/_codex_."
     )
@@ -505,7 +505,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     args = parse_args(argv)
     if args.list_steps:
         print("Available steps:")
@@ -525,7 +525,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         requested_labels = requested_labels & available_labels
         log(f"Executing only requested steps: {sorted(requested_labels)}")
 
-    failed_steps: List[str] = []
+    failed_steps: list[str] = []
     for fn in PHASE_FUNCTIONS:
         label = getattr(fn, "step_label", fn.__name__)
         if requested_labels and label not in requested_labels:

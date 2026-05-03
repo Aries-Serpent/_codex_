@@ -20,11 +20,11 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Dataset registry utilities for Codex data loaders."""
 
 
 import importlib  # noqa: E402
-from typing import Any, Callable  # noqa: E402
+from collections.abc import Callable  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - torch is optional
     import torch

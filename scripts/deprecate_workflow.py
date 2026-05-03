@@ -26,7 +26,7 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class WorkflowDeprecator:
@@ -84,7 +84,7 @@ class WorkflowDeprecator:
 
         return True
 
-    def find_references(self) -> List[Dict[str, str]]:
+    def find_references(self) -> list[dict[str, str]]:
         """Find references to this workflow in documentation and other files."""
         references = []
         workflow_name = self.workflow_file.replace('.yml', '').replace('.yaml', '')
@@ -127,7 +127,7 @@ class WorkflowDeprecator:
 
         return references
 
-    def check_recent_runs(self) -> Dict[str, Any]:
+    def check_recent_runs(self) -> dict[str, Any]:
         """Check if workflow has recent runs (requires GitHub API).
 
         Note: This is a placeholder for future implementation.
@@ -199,7 +199,7 @@ class WorkflowDeprecator:
             print(f"❌ Failed to archive workflow: {e}")
             return False
 
-    def create_deprecation_record(self, suite_file: str, references: List[Dict[str, str]]) -> bool:
+    def create_deprecation_record(self, suite_file: str, references: list[dict[str, str]]) -> bool:
         """Create a record of the deprecation in the log."""
         record = f"""
 ## {self.workflow_file}

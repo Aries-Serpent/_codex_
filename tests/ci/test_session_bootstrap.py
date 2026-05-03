@@ -182,7 +182,7 @@ class TestGitHubClient:
         with patch("session_bootstrap.urlopen", side_effect=fake_urlopen):
             try:
                 client._request("/repos/x/y/issues/1")
-            except Exception:  # noqa: BLE001 — network call deliberately aborted; we only inspect captured["headers"]
+            except Exception:
                 pass
         auth = captured.get("headers", {}).get("Authorization", "")
         assert "Bearer mytoken" in auth
@@ -199,7 +199,7 @@ class TestGitHubClient:
         with patch("session_bootstrap.urlopen", side_effect=fake_urlopen):
             try:
                 client._request("/repos/x/y/issues/1")
-            except Exception:  # noqa: BLE001 — network call deliberately aborted; we only inspect captured["headers"]
+            except Exception:
                 pass
         auth = captured.get("headers", {}).get("Authorization", "")
         assert auth == ""

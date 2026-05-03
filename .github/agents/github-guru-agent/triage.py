@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any
 
 try:
     from .analyzers import IssueAnalysisResult, IssueAnalyzer
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # --- Label taxonomy (mirrors .github/labels.yml) ---------------------------------
 
-LABEL_TAXONOMY: Dict[str, str] = {
+LABEL_TAXONOMY: dict[str, str] = {
     "bug": "d73a4a",
     "documentation": "0075ca",
     "enhancement": "a2eeef",
@@ -58,10 +58,10 @@ class TriageResult:
 
     issue_number: int
     analysis: IssueAnalysisResult
-    labels_to_apply: List[str] = field(default_factory=list)
+    labels_to_apply: list[str] = field(default_factory=list)
     priority_label: str = ""
     is_compliant: bool = True
-    compliance_gaps: List[str] = field(default_factory=list)
+    compliance_gaps: list[str] = field(default_factory=list)
     summary_md: str = ""
 
 
@@ -88,8 +88,8 @@ class IssueTriage:
         analysis = self._analyzer.analyze(issue_number)
 
         # Map suggested labels to taxonomy
-        labels_to_apply: List[str] = []
-        compliance_gaps: List[str] = []
+        labels_to_apply: list[str] = []
+        compliance_gaps: list[str] = []
 
         for label in analysis.suggested_labels:
             if label in LABEL_TAXONOMY:
@@ -124,7 +124,7 @@ class IssueTriage:
             summary_md=summary,
         )
 
-    def check_label_compliance(self, repo_labels: List[str]) -> Dict[str, Any]:
+    def check_label_compliance(self, repo_labels: list[str]) -> dict[str, Any]:
         """
         Check that all labels in the repository match the taxonomy.
 

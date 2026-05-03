@@ -17,7 +17,7 @@ import pytest
 
 pytest.importorskip("fastapi")
 pytest.importorskip("slowapi")
-from fastapi import HTTPException  # noqa: E402
+from fastapi import HTTPException
 from pydantic import ValidationError
 
 from codex.api.rag_api import MergeIndicesRequest, _ensure_subpath

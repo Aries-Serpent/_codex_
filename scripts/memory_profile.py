@@ -33,7 +33,6 @@ Last Updated: 2026-01-16
 import sys
 import time
 from pathlib import Path
-from typing import Tuple
 
 # Add project to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -62,7 +61,7 @@ def profile_baseline_memory() -> int:
         return current
 
 
-def profile_swarm_memory_stub(agent_count: int = 1000) -> Tuple[bool, dict]:
+def profile_swarm_memory_stub(agent_count: int = 1000) -> tuple[bool, dict]:
     """
     Profile memory usage of swarm (stub for now).
 
@@ -113,7 +112,7 @@ def profile_swarm_memory_stub(agent_count: int = 1000) -> Tuple[bool, dict]:
     return passed, results
 
 
-def profile_memory_leaks_stub(duration_seconds: int = 30) -> Tuple[bool, dict]:
+def profile_memory_leaks_stub(duration_seconds: int = 30) -> tuple[bool, dict]:
     """Profile for memory leaks over time (stub)."""
     print(f"\n{'='*60}")
     print(f"🔍 Memory Leak Detection ({duration_seconds}s)")

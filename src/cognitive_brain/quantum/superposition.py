@@ -9,10 +9,11 @@ probabilities.
 import math
 import random
 import time
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from functools import lru_cache, wraps
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
@@ -33,7 +34,7 @@ class Decision:
     id: str
     name: str
     evaluation_fn: Callable[[], float]
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def evaluate(self) -> float:
         """
@@ -61,9 +62,9 @@ class SuperpositionState:
         evaluated: Whether parallel evaluation has been performed
     """
 
-    decisions: List[Decision]
-    amplitudes: List[float] = field(default_factory=list)
-    probabilities: List[float] = field(default_factory=list)
+    decisions: list[Decision]
+    amplitudes: list[float] = field(default_factory=list)
+    probabilities: list[float] = field(default_factory=list)
     coherence: float = 1.0
     evaluated: bool = False
 
@@ -85,7 +86,7 @@ class SuperpositionState:
                 return decision
         return None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "num_decisions": len(self.decisions),
@@ -143,9 +144,9 @@ class SuperpositionEngine:
         self.max_workers = max_workers
         self.lightweight = getattr(config, "lightweight_mode", False)
 
-        self._evaluation_times: List[float] = []
+        self._evaluation_times: list[float] = []
 
-    def create_superposition(self, decisions: List[Decision]) -> SuperpositionState:
+    def create_superposition(self, decisions: list[Decision]) -> SuperpositionState:
         """
         Create quantum superposition of decision paths.
 
@@ -174,7 +175,7 @@ class SuperpositionEngine:
 
         return state
 
-    def evaluate_parallel(self, state: SuperpositionState) -> List[float]:
+    def evaluate_parallel(self, state: SuperpositionState) -> list[float]:
         """
         Evaluate all decision paths in parallel.
 
@@ -347,9 +348,9 @@ class SuperpositionEngine:
 
     def evaluate_superposition(
         self,
-        decisions: List[tuple[str, Callable[..., Any]]],
-        context: Dict[str, Any] = None,  # type: ignore[assignment]
-    ) -> Dict[str, Any]:
+        decisions: list[tuple[str, Callable[..., Any]]],
+        context: dict[str, Any] = None,  # type: ignore[assignment]
+    ) -> dict[str, Any]:
         """
         Convenience method to evaluate decisions in superposition.
 
@@ -500,10 +501,10 @@ class SuperpositionEngine:
 
     def _apply_noise(
         self,
-        scores: List[float],
+        scores: list[float],
         gate_error_rate: float,
         measurement_error_rate: float,
-    ) -> List[float]:
+    ) -> list[float]:
         """
         Apply quantum noise to evaluation scores (Phase 3).
 
@@ -524,7 +525,7 @@ class SuperpositionEngine:
             Noise-perturbed scores clamped to [0.0, 1.0].
         """
         uniform = 1.0 / len(scores) if scores else 0.25
-        noisy: List[float] = []
+        noisy: list[float] = []
         for s in scores:
             # Gate depolarization: lerp toward uniform
             ns = s * (1.0 - gate_error_rate) + uniform * gate_error_rate
@@ -534,7 +535,7 @@ class SuperpositionEngine:
             noisy.append(max(0.0, min(1.0, ns)))
         return noisy
 
-    def _calculate_coherence(self, probabilities: List[float]) -> float:
+    def _calculate_coherence(self, probabilities: list[float]) -> float:
         """
         Calculate coherence from probability distribution.
 
@@ -579,7 +580,7 @@ class SuperpositionEngine:
 
         return max(0.0, min(1.0, coherence))
 
-    def get_performance_metrics(self) -> Dict[str, float]:
+    def get_performance_metrics(self) -> dict[str, float]:
         """
         Get engine performance metrics.
 
@@ -687,7 +688,7 @@ def quantum_superposition(
                 # Return that result directly — no second invocation of func.
                 return _captured[0] if _captured else func(*args, **kwargs)
 
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # Quantum infrastructure unavailable or raised → classical fallback.
                 # If _classical_decision already ran, reuse its captured result to
                 # avoid a second invocation of func (prevents duplicate side effects).

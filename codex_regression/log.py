@@ -4,14 +4,15 @@ import dataclasses
 import datetime as _dt
 import json
 import pathlib
-from typing import Any, Dict, Iterable, List
+from collections.abc import Iterable
+from typing import Any
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ARTIFACTS.mkdir(exist_ok=True)
 REGRESSION_LOG = ARTIFACTS / "model_regression_log.ndjson"
 
-REGRESSION_CATEGORIES: Dict[str, str] = {
+REGRESSION_CATEGORIES: dict[str, str] = {
     "R1": "Data integrity and determinism",
     "R2": "Model initialization and adapters",
     "R3": "Infrastructure and training loops",
@@ -30,9 +31,9 @@ class RegressionRun:
     timestamp: str = dataclasses.field(
         default_factory=lambda: _dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     )
-    metadata: Dict[str, Any] = dataclasses.field(default_factory=dict)
+    metadata: dict[str, Any] = dataclasses.field(default_factory=dict)
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "category": self.category,
             "name": self.name,
@@ -53,10 +54,10 @@ def record_regression(run: RegressionRun) -> None:
         fh.write(json.dumps(payload) + "\n")
 
 
-def load_regression_log() -> List[Dict[str, Any]]:
+def load_regression_log() -> list[dict[str, Any]]:
     if not REGRESSION_LOG.exists():
         return []
-    entries: List[Dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
     for line in REGRESSION_LOG.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
@@ -68,8 +69,8 @@ def load_regression_log() -> List[Dict[str, Any]]:
     return entries
 
 
-def summarize_by_category(entries: Iterable[Dict[str, Any]]) -> Dict[str, Dict[str, int]]:
-    summary: Dict[str, Dict[str, int]] = {k: {} for k in REGRESSION_CATEGORIES}
+def summarize_by_category(entries: Iterable[dict[str, Any]]) -> dict[str, dict[str, int]]:
+    summary: dict[str, dict[str, int]] = {k: {} for k in REGRESSION_CATEGORIES}
     for entry in entries:
         category = entry.get("category")
         status = entry.get("status", "unknown")
@@ -80,7 +81,7 @@ def summarize_by_category(entries: Iterable[Dict[str, Any]]) -> Dict[str, Dict[s
     return summary
 
 
-def write_coverage_report(entries: Iterable[Dict[str, Any]]) -> pathlib.Path:
+def write_coverage_report(entries: Iterable[dict[str, Any]]) -> pathlib.Path:
     summary = summarize_by_category(entries)
     lines = [
         "# Model Regression Coverage",

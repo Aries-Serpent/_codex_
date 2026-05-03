@@ -5,7 +5,7 @@ Predicts resource usage patterns and capacity needs
 import random
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 RANDOM_SEED = 47
 
@@ -24,7 +24,7 @@ class ResourcePredictor:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.history: List[ResourceUsage] = []
+        self.history: list[ResourceUsage] = []
         self.initialized = True
 
     def record_usage(
@@ -74,7 +74,7 @@ class ResourcePredictor:
         return recent_avg * 1.2
 
 
-    def check_capacity(self) -> Dict[str, bool]:
+    def check_capacity(self) -> dict[str, bool]:
         """Check if approaching capacity limits"""
         cpu_limit = 80.0  # 80% CPU
         memory_limit = 8192.0  # 8GB
@@ -88,7 +88,7 @@ class ResourcePredictor:
             "capacity_adequate": cpu_peak < cpu_limit and mem_peak < memory_limit
         }
 
-    def recommend_scaling(self) -> List[str]:
+    def recommend_scaling(self) -> list[str]:
         """Recommend scaling actions"""
         recommendations = []
         capacity = self.check_capacity()
@@ -103,7 +103,7 @@ class ResourcePredictor:
 
         return recommendations
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get predictor metrics"""
         return {
             "seed": self.seed,

@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import logging
 from collections import deque
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Mapping, Optional, Union
+from typing import Any, Optional
 
 import torch
 from codex_ml.config import ReasoningConfig, ReasoningHeadConfig, ToolAdapterConfig
@@ -277,7 +278,7 @@ class ReasoningHarness:
 
 def attach_reasoning_adapters(
     model: Any,
-    config: Union[ReasoningConfig, Mapping[str, Any]],
+    config: ReasoningConfig | Mapping[str, Any],
 ) -> ReasoningHarness:
     if not isinstance(config, ReasoningConfig):
         config = ReasoningConfig.from_mapping(dict(config))
@@ -292,8 +293,8 @@ def attach_reasoning_adapters(
 
 
 __all__ = [
+    "ReasoningHarness",
     "ReasoningHead",
     "ToolUseAdapter",
-    "ReasoningHarness",
     "attach_reasoning_adapters",
 ]

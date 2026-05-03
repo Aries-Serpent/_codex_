@@ -14,7 +14,6 @@ import json
 import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Dict, List
 
 import numpy as np
 
@@ -23,8 +22,8 @@ import numpy as np
 class AgentCapability:
     """Represents an agent capability"""
     name: str
-    input_types: List[str]
-    output_types: List[str]
+    input_types: list[str]
+    output_types: list[str]
     cost: float  # Execution cost (time/resources)
 
 
@@ -33,20 +32,20 @@ class Agent:
     """Represents a specialized agent"""
     name: str
     file_path: str
-    capabilities: List[AgentCapability]
-    prerequisites: List[str] = field(default_factory=list)
+    capabilities: list[AgentCapability]
+    prerequisites: list[str] = field(default_factory=list)
     quantum_state: str = 'idle'  # idle, ready, active, complete
-    entangled_with: List[str] = field(default_factory=list)
+    entangled_with: list[str] = field(default_factory=list)
 
 
 class AgentQuantumState:
     """Represents agent in quantum superposition"""
 
-    def __init__(self, agent_name: str, capabilities: List[str]):
+    def __init__(self, agent_name: str, capabilities: list[str]):
         self.agent_name = agent_name
         self.capabilities = capabilities
         self.state = 'idle'  # idle, active, waiting, complete
-        self.entangled_agents: List[AgentQuantumState] = []
+        self.entangled_agents: list[AgentQuantumState] = []
         self.coherence = 1.0  # Measure of agent coordination
 
     def entangle(self, other_agent: 'AgentQuantumState'):
@@ -85,7 +84,7 @@ class QuantumAgentOrchestrator:
         self.agents = self._load_agents()
         self.entanglements = self._calculate_entanglements()
 
-    def _load_agents(self) -> Dict[str, Agent]:
+    def _load_agents(self) -> dict[str, Agent]:
         """Load all available agents"""
         agents = {}
 
@@ -169,7 +168,7 @@ class QuantumAgentOrchestrator:
 
         return agents
 
-    def _calculate_entanglements(self) -> Dict[str, List[str]]:
+    def _calculate_entanglements(self) -> dict[str, list[str]]:
         """Calculate which agents are entangled (share data dependencies)"""
         entanglements = {}
 
@@ -207,7 +206,7 @@ class QuantumAgentOrchestrator:
         primary_agent: str,
         max_depth: int = 3,
         quantum_optimize: bool = True
-    ) -> List[str]:
+    ) -> list[str]:
         """Create agent execution chain starting from primary agent"""
 
         if primary_agent not in self.agents:
@@ -245,11 +244,11 @@ class QuantumAgentOrchestrator:
 
         return chain
 
-    def _quantum_optimize_chain(self, chain: List[str]) -> List[str]:
+    def _quantum_optimize_chain(self, chain: list[str]) -> list[str]:
         """Optimize chain using quantum-inspired annealing"""
 
         # Calculate total cost for current order
-        def calculate_cost(order: List[str]) -> float:
+        def calculate_cost(order: list[str]) -> float:
             total = 0
             for agent_name in order:
                 agent = self.agents[agent_name]
@@ -287,7 +286,7 @@ class QuantumAgentOrchestrator:
 
         return current_order
 
-    def _prerequisites_satisfied(self, order: List[str]) -> bool:
+    def _prerequisites_satisfied(self, order: list[str]) -> bool:
         """Check if prerequisites are satisfied in given order"""
         seen = set()
         for agent_name in order:
@@ -299,9 +298,9 @@ class QuantumAgentOrchestrator:
 
     def generate_chain_plan(
         self,
-        chain: List[str],
+        chain: list[str],
         output_file: Path
-    ) -> Dict:
+    ) -> dict:
         """Generate execution plan for agent chain"""
 
         plan = {

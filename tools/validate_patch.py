@@ -6,9 +6,9 @@ import ast
 import os
 import subprocess
 import tempfile
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, List
 
 MAX_FILES = int(os.environ.get("CODEX_LLM_MAX_FILES", "10"))
 MAX_LINE_CHANGES = int(os.environ.get("CODEX_LLM_MAX_LINE_CHANGES", "500"))
@@ -18,8 +18,8 @@ REJECT_PREFIXES = (".github/workflows/",)
 @dataclass
 class ValidationResult:
     ok: bool
-    errors: List[str] = field(default_factory=list)
-    files: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    files: list[str] = field(default_factory=list)
     added_lines: int = 0
     removed_lines: int = 0
 

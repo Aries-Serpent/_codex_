@@ -26,8 +26,9 @@ logger = logging.getLogger(__name__)
 import argparse
 import json
 import sys
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Any, Iterable, Optional, Sequence
+from typing import Any, Optional
 
 from codex_ml.analysis.extractors import (
     extract_ast,

@@ -6,9 +6,10 @@ consistent AST usage across the codebase.
 """
 
 import ast
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -31,7 +32,7 @@ class ASTPatternLibrary:
     """Library of common AST patterns for code analysis."""
 
     def __init__(self):
-        self.patterns: Dict[str, ASTPattern] = {}
+        self.patterns: dict[str, ASTPattern] = {}
         self._register_default_patterns()
 
     def _register_default_patterns(self) -> None:
@@ -163,7 +164,7 @@ class ASTPatternLibrary:
         """Get a pattern by name."""
         return self.patterns.get(name)
 
-    def find_matches(self, tree: ast.AST, pattern_name: str) -> List[ast.AST]:
+    def find_matches(self, tree: ast.AST, pattern_name: str) -> list[ast.AST]:
         """Find all nodes matching a pattern."""
         pattern = self.get(pattern_name)
         if not pattern:
@@ -175,7 +176,7 @@ class ASTPatternLibrary:
                 matches.append(node)
         return matches
 
-    def analyze_file(self, file_path: Path) -> Dict[str, List[Dict[str, Any]]]:
+    def analyze_file(self, file_path: Path) -> dict[str, list[dict[str, Any]]]:
         """Analyze a file for all patterns."""
         with open(file_path, "r", encoding="utf-8") as f:
             source = f.read()

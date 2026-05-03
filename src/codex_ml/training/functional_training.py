@@ -249,7 +249,7 @@ def train(
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             try:
-                return int(len(tensor))
+                return len(tensor)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 shape = getattr(tensor, "shape", None)

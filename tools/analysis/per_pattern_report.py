@@ -14,7 +14,6 @@ Example:
 
 import json
 import sys
-from typing import Dict, List
 
 
 def load_results(path: str) -> dict:
@@ -32,14 +31,14 @@ def extract_pattern(audit_id: str) -> str:
 
 
 def compute_per_pattern_stats(
-    per_seed_results: List[dict],
-) -> Dict[str, dict]:
+    per_seed_results: list[dict],
+) -> dict[str, dict]:
     """
     Aggregate mismatch data across all seeds by scenario pattern.
 
     Returns a dict mapping pattern_letter -> {total, failures, accuracy, examples}.
     """
-    pattern_failures: Dict[str, List[dict]] = {}
+    pattern_failures: dict[str, list[dict]] = {}
 
     for seed_result in per_seed_results:
         seed = seed_result.get("seed", "?")
@@ -61,7 +60,7 @@ def compute_per_pattern_stats(
 
     total_scenarios_all_seeds = sum(r.get("total_scenarios", 0) for r in per_seed_results)
 
-    stats: Dict[str, dict] = {}
+    stats: dict[str, dict] = {}
     all_patterns = set(pattern_failures.keys()) | set(pattern_proportions.keys())
     for pattern in sorted(all_patterns):
         proportion = pattern_proportions.get(pattern, 0.0)
@@ -79,7 +78,7 @@ def compute_per_pattern_stats(
     return stats
 
 
-def print_report(stats: Dict[str, dict], min_accuracy: float = 0.95) -> bool:
+def print_report(stats: dict[str, dict], min_accuracy: float = 0.95) -> bool:
     """Print per-pattern accuracy report. Returns True if all patterns pass."""
     print("\n" + "=" * 70)
     print("Per-Pattern Accuracy Report")

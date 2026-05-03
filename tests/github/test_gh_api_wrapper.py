@@ -14,7 +14,7 @@ from pathlib import Path
 
 def test_print_curl_redacts_token() -> None:
     env = os.environ.copy()
-    env["GH_TOKEN"] = "example-value"  # noqa: S105 - placeholder token for CLI test
+    env["GH_TOKEN"] = "example-value"
     repo_root = Path(__file__).resolve().parents[2]
     proc = subprocess.run(
         [

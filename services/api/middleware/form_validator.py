@@ -5,7 +5,7 @@ This module provides middleware to mitigate CVE-2024-XXXXX (Starlette DoS
 via multipart/form-data) by enforcing size limits and field count restrictions.
 """
 import logging
-from typing import Callable
+from collections.abc import Callable
 
 try:
     from starlette.middleware.base import BaseHTTPMiddleware

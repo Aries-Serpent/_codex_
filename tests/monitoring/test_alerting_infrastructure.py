@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
@@ -27,7 +27,7 @@ import pytest
 
 
 @pytest.fixture
-def alert_rule_config() -> Dict[str, Any]:
+def alert_rule_config() -> dict[str, Any]:
     """Fixture for alert rule configuration."""
     return {
         "name": "high_cpu_usage",
@@ -51,7 +51,7 @@ def alert_rule_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def notification_channels() -> List[Dict[str, Any]]:
+def notification_channels() -> list[dict[str, Any]]:
     """Fixture for notification channel configurations."""
     return [
         {
@@ -85,7 +85,7 @@ def notification_channels() -> List[Dict[str, Any]]:
 
 
 @pytest.fixture
-def escalation_policy() -> Dict[str, Any]:
+def escalation_policy() -> dict[str, Any]:
     """Fixture for alert escalation policy."""
     return {
         "name": "default_escalation",
@@ -108,7 +108,7 @@ def escalation_policy() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def sample_alert() -> Dict[str, Any]:
+def sample_alert() -> dict[str, Any]:
     """Sample alert instance."""
     return {
         "id": "alert-123",
@@ -130,18 +130,18 @@ def sample_alert() -> Dict[str, Any]:
 class TestAlertRules:
     """Tests for alert rule configuration and validation."""
 
-    def test_alert_rule_has_required_fields(self, alert_rule_config: Dict[str, Any]):
+    def test_alert_rule_has_required_fields(self, alert_rule_config: dict[str, Any]):
         """Test that alert rule has all required fields."""
         required_fields = ["name", "description", "severity", "condition"]
         for field in required_fields:
             assert field in alert_rule_config
 
-    def test_alert_rule_severity_valid(self, alert_rule_config: Dict[str, Any]):
+    def test_alert_rule_severity_valid(self, alert_rule_config: dict[str, Any]):
         """Test that alert severity is valid."""
         valid_severities = ["info", "warning", "error", "critical"]
         assert alert_rule_config["severity"] in valid_severities
 
-    def test_alert_condition_structure(self, alert_rule_config: Dict[str, Any]):
+    def test_alert_condition_structure(self, alert_rule_config: dict[str, Any]):
         """Test alert condition has correct structure."""
         condition = alert_rule_config["condition"]
         assert "metric" in condition
@@ -154,19 +154,19 @@ class TestAlertRules:
         test_operator = ">="
         assert test_operator in valid_operators
 
-    def test_alert_rule_labels(self, alert_rule_config: Dict[str, Any]):
+    def test_alert_rule_labels(self, alert_rule_config: dict[str, Any]):
         """Test alert rule labels configuration."""
         labels = alert_rule_config["labels"]
         assert "team" in labels
         assert "service" in labels
 
-    def test_alert_rule_annotations(self, alert_rule_config: Dict[str, Any]):
+    def test_alert_rule_annotations(self, alert_rule_config: dict[str, Any]):
         """Test alert rule annotations configuration."""
         annotations = alert_rule_config["annotations"]
         assert "summary" in annotations
         assert "runbook_url" in annotations
 
-    def test_alert_duration_parsing(self, alert_rule_config: Dict[str, Any]):
+    def test_alert_duration_parsing(self, alert_rule_config: dict[str, Any]):
         """Test parsing of alert duration strings."""
         duration_str = alert_rule_config["condition"]["duration"]
 
@@ -179,7 +179,7 @@ class TestAlertRules:
 
         assert duration_seconds == 300
 
-    def test_alert_threshold_validation(self, alert_rule_config: Dict[str, Any]):
+    def test_alert_threshold_validation(self, alert_rule_config: dict[str, Any]):
         """Test alert threshold is numeric and valid."""
         threshold = alert_rule_config["condition"]["threshold"]
         assert isinstance(threshold, (int, float))
@@ -194,7 +194,7 @@ class TestAlertRules:
 class TestAlertTriggers:
     """Tests for alert trigger conditions."""
 
-    def test_threshold_exceeded_triggers_alert(self, alert_rule_config: Dict[str, Any]):
+    def test_threshold_exceeded_triggers_alert(self, alert_rule_config: dict[str, Any]):
         """Test that exceeding threshold triggers alert."""
         threshold = alert_rule_config["condition"]["threshold"]
         current_value = 85.5
@@ -202,7 +202,7 @@ class TestAlertTriggers:
         should_trigger = current_value >= threshold
         assert should_trigger is True
 
-    def test_threshold_not_exceeded_no_alert(self, alert_rule_config: Dict[str, Any]):
+    def test_threshold_not_exceeded_no_alert(self, alert_rule_config: dict[str, Any]):
         """Test that staying below threshold doesn't trigger alert."""
         threshold = alert_rule_config["condition"]["threshold"]
         current_value = 75.0
@@ -273,7 +273,7 @@ class TestAlertTriggers:
 class TestNotificationChannels:
     """Tests for notification channel configuration."""
 
-    def test_slack_channel_config(self, notification_channels: List[Dict[str, Any]]):
+    def test_slack_channel_config(self, notification_channels: list[dict[str, Any]]):
         """Test Slack notification channel configuration."""
         slack = next(c for c in notification_channels if c["type"] == "slack")
         assert slack["name"] == "slack_ops"
@@ -281,26 +281,26 @@ class TestNotificationChannels:
         assert "channel" in slack["config"]
 
     def test_pagerduty_channel_config(
-        self, notification_channels: List[Dict[str, Any]]
+        self, notification_channels: list[dict[str, Any]]
     ):
         """Test PagerDuty notification channel configuration."""
         pd = next(c for c in notification_channels if c["type"] == "pagerduty")
         assert "integration_key" in pd["config"]
         assert "severity_mapping" in pd["config"]
 
-    def test_email_channel_config(self, notification_channels: List[Dict[str, Any]]):
+    def test_email_channel_config(self, notification_channels: list[dict[str, Any]]):
         """Test email notification channel configuration."""
         email = next(c for c in notification_channels if c["type"] == "email")
         assert "recipients" in email["config"]
         assert len(email["config"]["recipients"]) > 0
 
-    def test_channel_enabled_status(self, notification_channels: List[Dict[str, Any]]):
+    def test_channel_enabled_status(self, notification_channels: list[dict[str, Any]]):
         """Test notification channel enabled status."""
         for channel in notification_channels:
             assert "enabled" in channel
             assert isinstance(channel["enabled"], bool)
 
-    def test_notification_payload_format(self, sample_alert: Dict[str, Any]):
+    def test_notification_payload_format(self, sample_alert: dict[str, Any]):
         """Test notification payload formatting."""
         payload = {
             "title": f"Alert: {sample_alert['rule_name']}",
@@ -334,32 +334,32 @@ class TestNotificationChannels:
 class TestEscalationPolicies:
     """Tests for alert escalation policies."""
 
-    def test_escalation_steps_order(self, escalation_policy: Dict[str, Any]):
+    def test_escalation_steps_order(self, escalation_policy: dict[str, Any]):
         """Test escalation steps are in correct order."""
         steps = escalation_policy["steps"]
         delays = [s["delay_minutes"] for s in steps]
 
         assert delays == sorted(delays)
 
-    def test_initial_notification_immediate(self, escalation_policy: Dict[str, Any]):
+    def test_initial_notification_immediate(self, escalation_policy: dict[str, Any]):
         """Test first escalation step is immediate."""
         first_step = escalation_policy["steps"][0]
         assert first_step["delay_minutes"] == 0
 
     def test_escalation_includes_notify_targets(
-        self, escalation_policy: Dict[str, Any]
+        self, escalation_policy: dict[str, Any]
     ):
         """Test each escalation step has notify targets."""
         for step in escalation_policy["steps"]:
             assert "notify" in step
             assert len(step["notify"]) > 0
 
-    def test_escalation_repeat_interval(self, escalation_policy: Dict[str, Any]):
+    def test_escalation_repeat_interval(self, escalation_policy: dict[str, Any]):
         """Test escalation repeat interval configuration."""
         assert "repeat_interval_minutes" in escalation_policy
         assert escalation_policy["repeat_interval_minutes"] > 0
 
-    def test_get_current_escalation_step(self, escalation_policy: Dict[str, Any]):
+    def test_get_current_escalation_step(self, escalation_policy: dict[str, Any]):
         """Test determining current escalation step based on time."""
         alert_age_minutes = 20
         steps = escalation_policy["steps"]
@@ -397,7 +397,7 @@ class TestAlertSilencing:
         assert "starts_at" in silence
         assert "ends_at" in silence
 
-    def test_silence_matcher_evaluation(self, sample_alert: Dict[str, Any]):
+    def test_silence_matcher_evaluation(self, sample_alert: dict[str, Any]):
         """Test silence matcher evaluation against alert."""
         matcher = {"label": "service", "value": "api"}
         alert_labels = sample_alert["labels"]
@@ -432,7 +432,7 @@ class TestAlertSilencing:
 class TestAlertAcknowledgment:
     """Tests for alert acknowledgment functionality."""
 
-    def test_acknowledge_alert(self, sample_alert: Dict[str, Any]):
+    def test_acknowledge_alert(self, sample_alert: dict[str, Any]):
         """Test acknowledging an alert."""
         alert = sample_alert.copy()
         alert["acknowledged"] = True
@@ -449,7 +449,7 @@ class TestAlertAcknowledgment:
 
         assert should_escalate is False
 
-    def test_acknowledged_alert_still_visible(self, sample_alert: Dict[str, Any]):
+    def test_acknowledged_alert_still_visible(self, sample_alert: dict[str, Any]):
         """Test acknowledged alerts remain visible."""
         alert = sample_alert.copy()
         alert["acknowledged"] = True

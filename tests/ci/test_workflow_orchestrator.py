@@ -55,7 +55,7 @@ class TestWorkflowOrchestrator:
         return WorkflowOrchestrator(
             pr_size="large",
             telemetry_data=sample_telemetry,
-            changed_files=["file{}.py".format(i) for i in range(200)],
+            changed_files=[f"file{i}.py" for i in range(200)],
         )
 
     def test_initialization(self, orchestrator_small):

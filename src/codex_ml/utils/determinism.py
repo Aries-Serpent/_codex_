@@ -18,9 +18,9 @@ except Exception:  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
 __all__ = [
-    "set_deterministic",
-    "set_cudnn_deterministic",
     "enable_determinism",
+    "set_cudnn_deterministic",
+    "set_deterministic",
     "set_global_determinism",
 ]
 

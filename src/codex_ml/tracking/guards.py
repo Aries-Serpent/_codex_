@@ -21,9 +21,10 @@ References:
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
@@ -244,6 +245,6 @@ def enforce_offline_posture(
 __all__ = [
     "TrackingDecision",
     "decide_mlflow_tracking_uri",
-    "normalize_mlflow_uri",
     "enforce_offline_posture",
+    "normalize_mlflow_uri",
 ]

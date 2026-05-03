@@ -18,7 +18,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "core"))
 from concurrency_patterns import ConcurrencyPatternMatcher
@@ -80,7 +80,7 @@ class FlakyTestDetector:
 
         #AFTERMATH_METRIC: detector_initialized
 
-    def perceive(self, workflow_runs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def perceive(self, workflow_runs: list[dict[str, Any]]) -> dict[str, Any]:
         """
         PERCEIVE phase - analyze test data.
 
@@ -118,7 +118,7 @@ class FlakyTestDetector:
 
         return context
 
-    def _parse_test_results(self, workflow_runs: List[Dict[str, Any]]) -> List[TestResult]:
+    def _parse_test_results(self, workflow_runs: list[dict[str, Any]]) -> list[TestResult]:
         """
         Parse test results from workflow runs.
 
@@ -135,7 +135,7 @@ class FlakyTestDetector:
         #AFTERMATH_METRIC: workflow_runs_parsed = len(workflow_runs)
         return results
 
-    def _extract_test_results_from_run(self, run: Dict[str, Any]) -> List[TestResult]:
+    def _extract_test_results_from_run(self, run: dict[str, Any]) -> list[TestResult]:
         """
         Extract test results from a single workflow run.
 
@@ -154,7 +154,7 @@ class FlakyTestDetector:
 
         #AFTERMATH_PATTERN_IDENTIFIED: pytest_log_parsing
 
-    def _group_by_test_name(self, results: List[TestResult]) -> Dict[str, List[TestResult]]:
+    def _group_by_test_name(self, results: list[TestResult]) -> dict[str, list[TestResult]]:
         """Group test results by test name."""
         grouped = {}
         for result in results:
@@ -163,7 +163,7 @@ class FlakyTestDetector:
             grouped[result.name].append(result)
         return grouped
 
-    def _calculate_statistics(self, results: List[TestResult]) -> TestStatistics:
+    def _calculate_statistics(self, results: list[TestResult]) -> TestStatistics:
         """
         Calculate statistics for a test.
 
@@ -209,7 +209,7 @@ class FlakyTestDetector:
             duration_variance=variance
         )
 
-    def _analyze_test_code(self) -> Dict[str, List]:
+    def _analyze_test_code(self) -> dict[str, list]:
         """
         Analyze test code with pattern matchers.
 
@@ -236,7 +236,7 @@ class FlakyTestDetector:
         #AFTERMATH_METRIC: test_files_analyzed = len(test_files[:10])
         return patterns
 
-    def _detect_timing_anomalies(self, statistics: Dict[str, TestStatistics]) -> List[Dict]:
+    def _detect_timing_anomalies(self, statistics: dict[str, TestStatistics]) -> list[dict]:
         """
         Detect tests with timing anomalies (indicator of flakiness).
 
@@ -268,7 +268,7 @@ class FlakyTestDetector:
         #AFTERMATH_METRIC: timing_anomalies_detected = len(anomalies)
         return anomalies
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Generate detector summary.
 

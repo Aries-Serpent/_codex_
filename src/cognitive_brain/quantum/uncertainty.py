@@ -20,7 +20,7 @@ Usage:
 
 import math
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 from .base import QuantumFeature
 from .coherence_monitor import CoherenceMonitor
@@ -89,7 +89,7 @@ class UncertaintyOptimizer:
         self.monitor = monitor
         self.h_bar = h_bar
         self.uncertainty_threshold = uncertainty_threshold
-        self.test_history: Dict[str, ExecutionMetrics] = {}
+        self.test_history: dict[str, ExecutionMetrics] = {}
 
     def update_test_metrics(self, metrics: ExecutionMetrics) -> None:
         """
@@ -200,8 +200,8 @@ class UncertaintyOptimizer:
         )
 
     def optimize_test_schedule(
-        self, test_ids: List[str], time_budget: float, current_time: float
-    ) -> Tuple[List[str], Dict[str, ExecutionPriority]]:
+        self, test_ids: list[str], time_budget: float, current_time: float
+    ) -> tuple[list[str], dict[str, ExecutionPriority]]:
         """
         Optimize test schedule given a time budget.
 
@@ -277,7 +277,7 @@ class UncertaintyOptimizer:
         """
         return energy_uncertainty * time_uncertainty
 
-    def get_statistics(self) -> Dict[str, float]:
+    def get_statistics(self) -> dict[str, float]:
         """
         Get statistics about the optimizer.
 

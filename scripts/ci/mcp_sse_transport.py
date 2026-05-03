@@ -34,17 +34,17 @@ import logging
 import os
 import sys
 import urllib.request
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 
 def http_post_json_streaming(
     url: str,
-    payload: Dict[str, Any],
+    payload: dict[str, Any],
     auth_token: Optional[str] = None,
     timeout: int = 30,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """POST *payload* as JSON and read the response as SSE or plain JSON.
 
     If the server responds with ``Content-Type: text/event-stream``, each
@@ -84,7 +84,7 @@ def http_post_json_streaming(
         )
 
     data = json.dumps(payload).encode("utf-8")
-    headers: Dict[str, str] = {
+    headers: dict[str, str] = {
         "Content-Type": "application/json",
         "Accept": "text/event-stream, application/json",
     }
@@ -101,7 +101,7 @@ def http_post_json_streaming(
         return json.loads(raw)
 
     # Parse SSE stream: collect all `data:` frames, return the final one.
-    chunks: List[Dict[str, Any]] = []
+    chunks: list[dict[str, Any]] = []
     for line in raw.decode("utf-8").splitlines():
         line = line.strip()
         if line.startswith("data:"):

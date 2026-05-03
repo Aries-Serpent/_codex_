@@ -20,10 +20,10 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Optional PEFT/LoRA integration helpers."""
 
 
-from typing import TYPE_CHECKING, Any, Iterable, Optional, Sequence, Union  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
+from typing import TYPE_CHECKING, Any, Optional  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from peft import TaskType
@@ -37,7 +37,7 @@ def apply_lora_if_available(
     r: int = 8,
     alpha: int = 16,
     dropout: float = 0.05,
-    task_type: Optional[Union[TaskType, str]] = None,
+    task_type: Optional[TaskType | str] = None,
     target_modules: Optional[Iterable[str]] = None,
 ) -> Any:
     """Wrap ``model`` with LoRA adapters when ``peft`` is installed.
@@ -53,7 +53,7 @@ def apply_lora_if_available(
     except Exception:  # pragma: no cover - dependency missing
         return model
 
-    selected_task_type: Union[TaskType, str] = task_type or DEFAULT_TASK_TYPE
+    selected_task_type: TaskType | str = task_type or DEFAULT_TASK_TYPE
     if isinstance(selected_task_type, str):
         try:
             selected_task_type = TaskType[selected_task_type]

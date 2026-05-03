@@ -7,7 +7,6 @@ Fixes or removes broken GitHub URLs to deleted files.
 import json
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -18,12 +17,12 @@ def load_categorization() -> dict:
     with open(cat_file) as f:
         return json.load(f)
 
-def get_github_references(cat_data: dict) -> List[dict]:
+def get_github_references(cat_data: dict) -> list[dict]:
     """Get list of broken GitHub references."""
     detailed = cat_data['analysis']['detailed']
     return detailed.get('github_reference', [])
 
-def fix_github_reference(file_path: Path, link_url: str, link_text: str) -> Tuple[bool, str]:
+def fix_github_reference(file_path: Path, link_url: str, link_text: str) -> tuple[bool, str]:
     """
     Fix a broken GitHub reference.
     Returns (success, action_taken).

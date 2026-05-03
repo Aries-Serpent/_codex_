@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Optional
 
 # Canonical key groups extracted from the specification.
 SUMMARY_KEYS = {
@@ -46,7 +47,7 @@ KNOWN_KEYS = SUMMARY_KEYS | OPEN_KEYS | NEXT_KEYS | TEST_KEYS | DOC_KEYS | AUX_K
 IGNORED_PREFIX = "@codex implement plan"
 
 
-CATEGORY_KEYWORDS: List[Tuple[str, Tuple[str, ...]]] = [
+CATEGORY_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
     ("Tracking/Guardrails", ("guard", "mlflow", "policy", "track", "safety", "manifest")),
     ("Writers/Logging", ("writer", "logging", "log", "ndjson", "telemetry")),
     ("Rotation/Summarizer", ("rotate", "rotation", "summarizer", "summary stream")),
@@ -63,7 +64,7 @@ LABEL_FIELDS = ("label", "name", "title", "option")
 DESC_FIELDS = ("description", "details", "text", "summary")
 STATUS_FIELDS = ("status", "state", "flag", "tag")
 
-OPTION_PRIORITY_KEYWORDS: List[Tuple[str, Tuple[str, ...]]] = [
+OPTION_PRIORITY_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
     ("offline-safety", ("offline", "file://", "local", "no network", "airgap", "air-gapped")),
     ("determinism", ("deterministic", "seed", "idempotent", "repro", "stable")),
     ("schema-parity", ("schema", "parity", "consistent", "align", "sync")),
@@ -77,9 +78,9 @@ class Option:
     text: str
     status: Optional[str] = None
 
-    def weight(self) -> Tuple[int, int, int, int, str]:
+    def weight(self) -> tuple[int, int, int, int, str]:
         label_lower = f"{self.label} {self.text}".lower()
-        priority_scores: List[int] = []
+        priority_scores: list[int] = []
         for idx, (_, keywords) in enumerate(OPTION_PRIORITY_KEYWORDS):
             priority_scores.append(1 if any(keyword in label_lower for keyword in keywords) else 0)
         return (*priority_scores, self.label.lower())
@@ -98,7 +99,7 @@ class Option:
 @dataclass
 class OpenQuestion:
     prompt: str
-    options: List[Option]
+    options: list[Option]
 
 
 def normalize_key(key: str) -> str:
@@ -107,7 +108,7 @@ def normalize_key(key: str) -> str:
     return re.sub(r"[\s\-_]+", "_", key.strip().lower())
 
 
-def _coerce_lines(value: Any) -> List[str]:
+def _coerce_lines(value: Any) -> list[str]:
     if value is None:
         return []
     if isinstance(value, str):
@@ -119,12 +120,12 @@ def _coerce_lines(value: Any) -> List[str]:
         cleaned = [ln for ln in lines if ln]
         return cleaned or [stripped]
     if isinstance(value, Mapping):
-        result_lines: List[str] = []
+        result_lines: list[str] = []
         for v in value.values():
             result_lines.extend(_coerce_lines(v))
         return result_lines
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        seq_lines: List[str] = []
+        seq_lines: list[str] = []
         for item in value:
             seq_lines.extend(_coerce_lines(item))
         return seq_lines
@@ -141,8 +142,8 @@ def _is_version_candidate(obj: Mapping[str, Any]) -> bool:
     return bool(normalized_keys & KNOWN_KEYS)
 
 
-def _collect_versions(obj: Any) -> List[Mapping[str, Any]]:
-    versions: List[Mapping[str, Any]] = []
+def _collect_versions(obj: Any) -> list[Mapping[str, Any]]:
+    versions: list[Mapping[str, Any]] = []
     if isinstance(obj, Mapping):
         if _is_version_candidate(obj):
             versions.append(obj)
@@ -154,12 +155,12 @@ def _collect_versions(obj: Any) -> List[Mapping[str, Any]]:
     return versions
 
 
-def _extract_summary(version: Mapping[str, Any]) -> List[str]:
+def _extract_summary(version: Mapping[str, Any]) -> list[str]:
     for key, value in version.items():
         if normalize_key(key) in SUMMARY_KEYS:
             return _coerce_lines(value)
     # fallback: synthesize from imperative phrases across entries
-    candidate_lines: List[str] = []
+    candidate_lines: list[str] = []
     for value in version.values():
         for line in _coerce_lines(value):
             if _looks_actionable(line):
@@ -191,44 +192,44 @@ def _looks_actionable(line: str) -> bool:
     return any(lowered.startswith(verb) or f" {verb} " in lowered for verb in verbs)
 
 
-def _extract_tests(version: Mapping[str, Any]) -> List[str]:
-    tests: List[str] = []
+def _extract_tests(version: Mapping[str, Any]) -> list[str]:
+    tests: list[str] = []
     for key, value in version.items():
         if normalize_key(key) in TEST_KEYS:
             tests.extend(_coerce_lines(value))
     return tests
 
 
-def _extract_docs(version: Mapping[str, Any]) -> List[str]:
-    docs: List[str] = []
+def _extract_docs(version: Mapping[str, Any]) -> list[str]:
+    docs: list[str] = []
     for key, value in version.items():
         if normalize_key(key) in DOC_KEYS:
             docs.extend(_coerce_lines(value))
     return docs
 
 
-def _extract_next(version: Mapping[str, Any]) -> List[str]:
-    next_items: List[str] = []
+def _extract_next(version: Mapping[str, Any]) -> list[str]:
+    next_items: list[str] = []
     for key, value in version.items():
         if normalize_key(key) in NEXT_KEYS:
             next_items.extend(_coerce_lines(value))
     return next_items
 
 
-def _extract_open_questions(version: Mapping[str, Any]) -> List[OpenQuestion]:
-    questions: List[OpenQuestion] = []
+def _extract_open_questions(version: Mapping[str, Any]) -> list[OpenQuestion]:
+    questions: list[OpenQuestion] = []
     for key, value in version.items():
         if normalize_key(key) in OPEN_KEYS:
             questions.extend(_coerce_open_questions(value))
     return questions
 
 
-def _coerce_open_questions(value: Any) -> List[OpenQuestion]:
-    results: List[OpenQuestion] = []
+def _coerce_open_questions(value: Any) -> list[OpenQuestion]:
+    results: list[OpenQuestion] = []
     if value is None:
         return results
     if isinstance(value, Mapping):
-        questions: List[Any] = []
+        questions: list[Any] = []
         if any(normalize_key(k) in OPTION_FIELDS for k in value):
             questions.append(value)
         else:
@@ -265,8 +266,8 @@ def _extract_question_text(entry: Mapping[str, Any]) -> str:
     return ""
 
 
-def _extract_options(entry: Mapping[str, Any]) -> List[Option]:
-    options: List[Option] = []
+def _extract_options(entry: Mapping[str, Any]) -> list[Option]:
+    options: list[Option] = []
     for field in OPTION_FIELDS:
         field_key = next((k for k in entry if normalize_key(k) == normalize_key(field)), None)
         if field_key is None:
@@ -318,8 +319,8 @@ def _parse_option(value: Any) -> Optional[Option]:
     return None
 
 
-def _dedupe_preserve_order(items: Iterable[str]) -> List[str]:
-    seen: Dict[str, None] = {}
+def _dedupe_preserve_order(items: Iterable[str]) -> list[str]:
+    seen: dict[str, None] = {}
     for item in items:
         normalized = item.strip()
         if not normalized:
@@ -329,8 +330,8 @@ def _dedupe_preserve_order(items: Iterable[str]) -> List[str]:
     return list(seen.keys())
 
 
-def _categorize_summary(summary_items: Sequence[str]) -> List[str]:
-    categorized: Dict[str, List[str]] = {cat: [] for cat in CATEGORY_ORDER}
+def _categorize_summary(summary_items: Sequence[str]) -> list[str]:
+    categorized: dict[str, list[str]] = {cat: [] for cat in CATEGORY_ORDER}
     for item in summary_items:
         lowered = item.lower()
         category = "Misc"
@@ -339,7 +340,7 @@ def _categorize_summary(summary_items: Sequence[str]) -> List[str]:
                 category = cat
                 break
         categorized[category].append(item)
-    ordered_items: List[str] = []
+    ordered_items: list[str] = []
     for category in CATEGORY_ORDER:
         entries = categorized[category]
         if not entries:
@@ -352,14 +353,14 @@ def _categorize_summary(summary_items: Sequence[str]) -> List[str]:
 PATH_REGEX = re.compile(r"([\w./-]+\.[\w\d]+(?:[#:L]\d+(?:-\d+)?)?)")
 
 
-def _summary_sort_key(item: str) -> Tuple[str, str]:
+def _summary_sort_key(item: str) -> tuple[str, str]:
     match = PATH_REGEX.search(item)
     if match:
         return match.group(1), item.lower()
     return item.lower(), item.lower()
 
 
-def _decide_open_question(question: OpenQuestion) -> Tuple[List[str], str]:
+def _decide_open_question(question: OpenQuestion) -> tuple[list[str], str]:
     if not question.options:
         return [], "Needs Decision"
     preferred = [
@@ -399,8 +400,8 @@ def _rationale_for_weight(option: Option) -> str:
     return "Needs Decision"
 
 
-def _format_open_question(question: OpenQuestion) -> Tuple[str, List[str], List[str], str]:
-    options_lines: List[str] = []
+def _format_open_question(question: OpenQuestion) -> tuple[str, list[str], list[str], str]:
+    options_lines: list[str] = []
     for option in sorted(question.options, key=lambda opt: opt.label.lower()):
         descriptor = option.text
         if option.status:
@@ -415,11 +416,11 @@ def _format_open_question(question: OpenQuestion) -> Tuple[str, List[str], List[
 
 def _compose_next_prompt(
     summaries: Sequence[str],
-    decisions: Sequence[Tuple[str, List[str]]],
+    decisions: Sequence[tuple[str, list[str]]],
     tests: Sequence[str],
     docs: Sequence[str],
     next_steps: Sequence[str],
-) -> List[str]:
+) -> list[str]:
     scope_focus = next_steps or summaries
     scope_text = ", ".join(scope_focus[:2]) if scope_focus else "Address outstanding summary items."
     decision_text = "; ".join(
@@ -450,7 +451,7 @@ def _compose_next_prompt(
     ]
 
 
-def _collect_citations(entries: Sequence[str]) -> List[str]:
+def _collect_citations(entries: Sequence[str]) -> list[str]:
     return sorted({entry.strip() for entry in entries if entry.strip()})
 
 
@@ -460,12 +461,12 @@ def generate_report(payload: Mapping[str, Any]) -> str:
     versions = _collect_versions(payload)
     if not versions:
         consolidated = ["No summary details provided."]
-        open_questions: List[OpenQuestion] = []
-        tests: List[str] = []
-        docs: List[str] = []
-        next_items: List[str] = []
+        open_questions: list[OpenQuestion] = []
+        tests: list[str] = []
+        docs: list[str] = []
+        next_items: list[str] = []
     else:
-        summaries: List[str] = []
+        summaries: list[str] = []
         open_questions = []
         tests = []
         docs = []
@@ -481,7 +482,7 @@ def generate_report(payload: Mapping[str, Any]) -> str:
         docs = _dedupe_preserve_order(docs)
         next_items = _dedupe_preserve_order(next_items)
 
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("### 1) Consolidated Summary")
     if consolidated:
         for item in consolidated:

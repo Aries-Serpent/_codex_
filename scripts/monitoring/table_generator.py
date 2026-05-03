@@ -11,7 +11,7 @@ Created: 2026-01-22
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,7 @@ class TableGenerator:
 | **Rerun** | [Rerun Failed Jobs]({rerun_url}) |"""
 
 
-    def generate_metrics_table(self, metrics: Dict[str, Any]) -> str:
+    def generate_metrics_table(self, metrics: dict[str, Any]) -> str:
         """
         Generate table with failure metrics and statistics.
 
@@ -104,7 +104,7 @@ class TableGenerator:
 | **Flakiness Score** | {metrics.get('flakiness_score', 0):.2f} |"""
 
 
-    def generate_pattern_table(self, patterns: List[Dict[str, Any]]) -> str:
+    def generate_pattern_table(self, patterns: list[dict[str, Any]]) -> str:
         """
         Generate table with matched error patterns.
 
@@ -131,7 +131,7 @@ class TableGenerator:
 
         return table
 
-    def generate_agent_recommendations_table(self, recommendations: List[Dict[str, Any]]) -> str:
+    def generate_agent_recommendations_table(self, recommendations: list[dict[str, Any]]) -> str:
         """
         Generate table with agent recommendations.
 
@@ -157,7 +157,7 @@ class TableGenerator:
 
         return table
 
-    def generate_run_history_table(self, runs: List[Any], limit: int = 10) -> str:
+    def generate_run_history_table(self, runs: list[Any], limit: int = 10) -> str:
         """
         Generate table with recent run history.
 

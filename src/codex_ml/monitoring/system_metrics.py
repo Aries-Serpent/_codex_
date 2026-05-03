@@ -9,9 +9,10 @@ import os
 import sys
 import threading
 import time
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 _IS_DARWIN = sys.platform.startswith("darwin")
@@ -600,18 +601,18 @@ class SamplerStatus:
 
 
 __all__ = [
-    "HAS_PSUTIL",
     "HAS_NVML",
+    "HAS_PSUTIL",
     "SYSTEM_METRICS_DEGRADED",
     "SystemMetricsConfig",
+    "SystemMetricsLogger",
     "configure_system_metrics",
     "current_system_metrics_config",
-    "SystemMetricsLogger",
     "log_system_metrics",
     "sample_system_metrics",
+    "sampler_status",
     "start_metrics_logger",
     "system_metrics_scalars",
-    "sampler_status",
 ]
 
 

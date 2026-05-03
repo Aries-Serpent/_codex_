@@ -7,7 +7,6 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
 
 
 class StaleMarkerChecker:
@@ -35,7 +34,7 @@ class StaleMarkerChecker:
             print(f"❌ Failed to load registry: {e}")
             return False
 
-    def check_staleness(self, max_age_days: int = 90) -> List[Dict]:
+    def check_staleness(self, max_age_days: int = 90) -> list[dict]:
         """
         Check for markers that might be stale based on suspicious indicators.
 
@@ -130,7 +129,7 @@ class StaleMarkerChecker:
         print("")
 
         # Group by file
-        by_file: Dict[str, int] = {}
+        by_file: dict[str, int] = {}
         for marker in self.stale_markers:
             file = marker['file']
             by_file[file] = by_file.get(file, 0) + 1

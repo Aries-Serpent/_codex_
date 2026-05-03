@@ -11,19 +11,20 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Sequence, Tuple
+from typing import Any
 
 from codex_ml.metrics import core as metrics_core
 
-LabelPred = Tuple[float, float]
+LabelPred = tuple[float, float]
 
 
 @dataclass
 class EvalStats:
     count: int
-    metrics: Dict[str, float | None]
+    metrics: dict[str, float | None]
 
 
 def _is_ndjson_like(path: Path) -> bool:
@@ -34,8 +35,8 @@ def _is_csv_like(path: Path) -> bool:
     return path.suffix.lower() == ".csv"
 
 
-def _load_ndjson(path: Path) -> List[Dict[str, Any]]:
-    records: List[Dict[str, Any]] = []
+def _load_ndjson(path: Path) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
@@ -44,13 +45,13 @@ def _load_ndjson(path: Path) -> List[Dict[str, Any]]:
     return records
 
 
-def _load_csv(path: Path) -> List[Dict[str, Any]]:
+def _load_csv(path: Path) -> list[dict[str, Any]]:
     text = path.read_text(encoding="utf-8").splitlines()
     reader = csv.DictReader(text)
     return [dict(row) for row in reader]
 
 
-def _load_records(path: Path) -> List[Dict[str, Any]]:
+def _load_records(path: Path) -> list[dict[str, Any]]:
     if _is_ndjson_like(path):
         return _load_ndjson(path)
     if _is_csv_like(path):
@@ -58,7 +59,7 @@ def _load_records(path: Path) -> List[Dict[str, Any]]:
     raise ValueError(f"Unsupported file type: {path.suffix}")
 
 
-def _get_first_key(record: Dict[str, Any], keys: Sequence[str]) -> Any:
+def _get_first_key(record: dict[str, Any], keys: Sequence[str]) -> Any:
     for key in keys:
         if key in record:
             return record.get(key)
@@ -66,10 +67,10 @@ def _get_first_key(record: Dict[str, Any], keys: Sequence[str]) -> Any:
 
 
 def _extract_labels_and_predictions(
-    records: Iterable[Dict[str, Any]],
-) -> Tuple[List[float], List[float]]:
-    labels: List[float] = []
-    predictions: List[float] = []
+    records: Iterable[dict[str, Any]],
+) -> tuple[list[float], list[float]]:
+    labels: list[float] = []
+    predictions: list[float] = []
     for record in records:
         label = _get_first_key(record, ["label", "target", "truth"])
         pred = _get_first_key(record, ["prediction", "pred", "output"])

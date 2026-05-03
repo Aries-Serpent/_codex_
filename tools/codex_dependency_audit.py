@@ -11,11 +11,11 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
-def _parse_requirements(path: Path) -> List[Dict[str, str]]:
-    deps: List[Dict[str, str]] = []
+def _parse_requirements(path: Path) -> list[dict[str, str]]:
+    deps: list[dict[str, str]] = []
     if not path.exists():
         return deps
     for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
@@ -31,7 +31,7 @@ def _parse_requirements(path: Path) -> List[Dict[str, str]]:
     return deps
 
 
-def build_report(repo_root: Path, requirements_file: str = "requirements.txt") -> Dict[str, Any]:
+def build_report(repo_root: Path, requirements_file: str = "requirements.txt") -> dict[str, Any]:
     req_path = repo_root / requirements_file
     deps = _parse_requirements(req_path)
     summary = {"total_dependencies": len(deps)}
@@ -42,13 +42,13 @@ def build_report(repo_root: Path, requirements_file: str = "requirements.txt") -
     }
 
 
-def _write_json(path: Path, report: Dict[str, Any]) -> None:
+def _write_json(path: Path, report: dict[str, Any]) -> None:
     path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, report: Dict[str, Any]) -> None:
+def _write_markdown(path: Path, report: dict[str, Any]) -> None:
     deps = report.get("dependencies", []) or []
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# `_codex_` Dependency Audit\n")
     lines.append(
         f"- Total dependencies: **{report.get('summary', {}).get('total_dependencies', 0)}**\n"

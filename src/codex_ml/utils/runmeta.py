@@ -94,4 +94,4 @@ def collect_run_meta(extra: Mapping[str, Any] | None = None) -> dict[str, Any]:
     return payload
 
 
-__all__ = ["python_version", "git_sha", "lock_digest", "collect_run_meta"]
+__all__ = ["collect_run_meta", "git_sha", "lock_digest", "python_version"]

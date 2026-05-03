@@ -10,13 +10,13 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from collections.abc import Iterator, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Iterator, List, Sequence
 
 # Patterns are intentionally conservative to minimize false positives while still
 # catching common credential formats.
-SECRET_PATTERNS: Dict[str, re.Pattern[str]] = {
+SECRET_PATTERNS: dict[str, re.Pattern[str]] = {
     "aws_access_key": re.compile(r"AKIA[0-9A-Z]{16}"),
     "aws_secret_key": re.compile(r"(?i)aws(.{0,20})?(secret|access).{0,3}([0-9a-zA-Z/+]{40})"),
     "generic_api_key": re.compile(r"(?i)(api_key|apikey|api-key)[\s:=\"]{0,5}([0-9a-zA-Z]{16,})"),
@@ -48,8 +48,8 @@ def _iter_files(root: Path) -> Iterator[Path]:
         yield path
 
 
-def _scan_file(path: Path, patterns: Dict[str, re.Pattern[str]]) -> List[SecretHit]:
-    hits: List[SecretHit] = []
+def _scan_file(path: Path, patterns: dict[str, re.Pattern[str]]) -> list[SecretHit]:
+    hits: list[SecretHit] = []
     try:
         content = path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
@@ -69,10 +69,10 @@ def _scan_file(path: Path, patterns: Dict[str, re.Pattern[str]]) -> List[SecretH
 
 
 def run_scan(
-    repo_root: Path, patterns: Dict[str, re.Pattern[str]] | None = None
-) -> Dict[str, object]:
+    repo_root: Path, patterns: dict[str, re.Pattern[str]] | None = None
+) -> dict[str, object]:
     active_patterns = patterns or SECRET_PATTERNS
-    all_hits: List[SecretHit] = []
+    all_hits: list[SecretHit] = []
     for file_path in _iter_files(repo_root):
         all_hits.extend(_scan_file(file_path, active_patterns))
 
@@ -85,11 +85,11 @@ def run_scan(
     return {"summary": summary, "hits": hits_payload}
 
 
-def _write_json(payload: Dict[str, object], out_path: Path) -> None:
+def _write_json(payload: dict[str, object], out_path: Path) -> None:
     out_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(payload: Dict[str, object], out_path: Path) -> None:
+def _write_markdown(payload: dict[str, object], out_path: Path) -> None:
     lines = ["# Codex Secret Scan", "", f"Scanned root: `{payload['summary']['scanned_root']}`", ""]
     lines.append(f"Total hits: {payload['summary']['total_hits']}")
     lines.append("")

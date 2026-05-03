@@ -26,11 +26,12 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from collections import OrderedDict
+from collections.abc import Iterable
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -1187,14 +1188,14 @@ def create_mlflow_tracker(
 
 __all__ = [
     "BaseWriter",
-    "NdjsonWriter",
-    "TensorBoardWriter",
-    "MLflowWriter",
-    "WandbWriter",
     "CompositeWriter",
+    "MLflowArtifactWriter",
     "MLflowMetricWriter",
     "MLflowParamWriter",
-    "MLflowArtifactWriter",
     "MLflowRunManager",
+    "MLflowWriter",
+    "NdjsonWriter",
+    "TensorBoardWriter",
+    "WandbWriter",
     "create_mlflow_tracker",
 ]

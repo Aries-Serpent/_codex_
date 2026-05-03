@@ -24,7 +24,7 @@ from dataclasses import dataclass, field  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional, Union  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 
 class ActionType(Enum):
@@ -51,7 +51,7 @@ class ForceVector:
 
     name: str = ""
     magnitude: float = 0.0  # 0.0 to 1.0
-    direction: Union[float, list[float]] = 0.0  # angle in radians or 3D vector
+    direction: float | list[float] = 0.0  # angle in radians or 3D vector
     priority: float = 1.0  # weight factor
     x: float = 0.0  # x component for 3D vector representation
     y: float = 0.0  # y component for 3D vector representation
@@ -189,8 +189,8 @@ class ActionPath:
 class DecisionState:
     """Current state of the system for decision making"""
 
-    current_position: Union[str, Any] = ""  # Where we are now (string or array)
-    goal_position: Union[str, Any] = ""  # Where we want to be (string or array)
+    current_position: str | Any = ""  # Where we are now (string or array)
+    goal_position: str | Any = ""  # Where we want to be (string or array)
     available_resources: float = 1.0  # 0-1 scale
     time_available: float = 1.0  # 0-1 scale
     current_velocity: float = 0.5  # Progress rate 0-1

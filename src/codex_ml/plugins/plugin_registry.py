@@ -14,7 +14,7 @@ import logging
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +22,9 @@ __all__ = [
     "Plugin",
     "PluginMetadata",
     "PluginRegistry",
+    "load_plugins",
     "plugin_registry",
     "register_plugin",
-    "load_plugins",
 ]
 
 
@@ -118,11 +118,11 @@ class PluginRegistry:
         if self._initialized:
             return
 
-        self._plugins: dict[str, Type[Plugin]] = {}
+        self._plugins: dict[str, type[Plugin]] = {}
         self._instances: dict[str, Plugin] = {}
         self._initialized = True
 
-    def register(self, plugin_class: Type[Plugin], override: bool = False) -> None:
+    def register(self, plugin_class: type[Plugin], override: bool = False) -> None:
         """Register a plugin class.
 
         Args:
@@ -239,7 +239,7 @@ class PluginRegistry:
 plugin_registry = PluginRegistry()
 
 
-def register_plugin(plugin_class: Type[Plugin]) -> Type[Plugin]:
+def register_plugin(plugin_class: type[Plugin]) -> type[Plugin]:
     """Decorator to register a plugin.
 
     Example:

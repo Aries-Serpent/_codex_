@@ -17,7 +17,6 @@ import argparse
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, List
 
 
 @dataclass
@@ -41,8 +40,8 @@ def _walk_root(root: Path) -> RootSummary:
     return RootSummary(root=str(root), num_files=num_files, total_bytes=total_bytes)
 
 
-def build_report(roots: List[Path]) -> Dict[str, object]:
-    summaries: List[RootSummary] = []
+def build_report(roots: list[Path]) -> dict[str, object]:
+    summaries: list[RootSummary] = []
     for r in roots:
         summaries.append(_walk_root(r))
     return {
@@ -53,16 +52,16 @@ def build_report(roots: List[Path]) -> Dict[str, object]:
     }
 
 
-def _write_json(path: Path, report: Dict[str, object]) -> None:
+def _write_json(path: Path, report: dict[str, object]) -> None:
     path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, report: Dict[str, object]) -> None:
+def _write_markdown(path: Path, report: dict[str, object]) -> None:
     roots = report.get("roots", []) or []
     total_files = report.get("total_files", 0)
     total_bytes = report.get("total_bytes", 0)
 
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# `_codex_` Data Audit Report\n")
     lines.append(f"- Total roots : **{report.get('total_roots', 0)}**")
     lines.append(f"- Total files : **{total_files}**")
@@ -83,7 +82,7 @@ def _write_markdown(path: Path, report: Dict[str, object]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Data audit tool for `_codex_`.")
     parser.add_argument(
         "--root",

@@ -8,11 +8,10 @@ from typing import TYPE_CHECKING
 logger = logging.getLogger(__name__)
 
 import warnings  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import (  # noqa: E402
-    Iterable,
     Optional,
-    Sequence,
     cast,
 )
 
@@ -216,13 +215,13 @@ __all__ = [
     "EOS_TOKEN",
     "PAD_TOKEN",
     "UNK_TOKEN",
-    "TokenizerAdapter",
-    "WhitespaceTokenizer",
     "HFTokenizer",
     "HFTokenizerAdapter",
     "SPTokenizer",
-    "load_tokenizer",
-    "get_tokenizer",
+    "TokenizerAdapter",
+    "WhitespaceTokenizer",
     "deprecated_legacy_access",
+    "get_tokenizer",
+    "load_tokenizer",
     "pad_sequences",
 ]

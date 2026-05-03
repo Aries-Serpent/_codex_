@@ -18,10 +18,10 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 
-def find_markdown_links(content: str) -> List[Tuple[str, str]]:
+def find_markdown_links(content: str) -> list[tuple[str, str]]:
     """Find all markdown links in content.
 
     Args:
@@ -42,7 +42,7 @@ def find_markdown_links(content: str) -> List[Tuple[str, str]]:
     return links
 
 
-def validate_local_link(link: str, base_path: Path) -> Tuple[bool, Optional[str]]:
+def validate_local_link(link: str, base_path: Path) -> tuple[bool, Optional[str]]:
     """Validate a local file link.
 
     Args:
@@ -84,7 +84,7 @@ def validate_workflow_links(verbose: bool = False) -> int:
     # Scan workflow documentation
     workflow_dir = Path('.github/workflows')
 
-    broken_links: Dict[str, List[Dict[str, str]]] = defaultdict(list)
+    broken_links: dict[str, list[dict[str, str]]] = defaultdict(list)
     total_links = 0
 
     # Check workflow markdown files

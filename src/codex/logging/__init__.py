@@ -16,4 +16,4 @@ def fetch_messages(session_id: str, db_path: Optional[Path] = None):
     return _fetch_messages(session_id, db_path=path)
 
 
-__all__ = ["fetch_messages", "DEFAULT_LOG_DB"]
+__all__ = ["DEFAULT_LOG_DB", "fetch_messages"]

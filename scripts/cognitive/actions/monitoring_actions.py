@@ -12,7 +12,7 @@ Version: 1.0.0
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class ActionProposer:
         self.config_file = config_file or Path(".codex/config/monitoring.yaml")
         self.confidence_threshold = 0.8  # From config
 
-    def propose_actions(self, failures: List[Dict[str, any]]) -> List[Dict[str, any]]:
+    def propose_actions(self, failures: list[dict[str, any]]) -> list[dict[str, any]]:
         """
         Propose actions for workflow failures.
 
@@ -77,7 +77,7 @@ class ActionProposer:
 
         return actions
 
-    def execute_action(self, action: Dict[str, any], dry_run: bool = True) -> Dict[str, any]:
+    def execute_action(self, action: dict[str, any], dry_run: bool = True) -> dict[str, any]:
         """
         Execute proposed action (with safety checks).
 

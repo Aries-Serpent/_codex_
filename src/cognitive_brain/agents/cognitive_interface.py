@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # ---------------------------------------------------------------------------
 # Public dataclasses
@@ -47,9 +47,9 @@ class CognitiveDecision:
     reasoning: str  # Human/agent-readable explanation
     coherence: float  # Quantum state quality (≥0.650 = good)
     used_superposition: bool  # Whether quantum path was taken
-    alternatives: List[Dict[str, Any]] = field(default_factory=list)
-    cognitive_state: Dict[str, Any] = field(default_factory=dict)
-    agent_hints: Dict[str, str] = field(default_factory=dict)
+    alternatives: list[dict[str, Any]] = field(default_factory=list)
+    cognitive_state: dict[str, Any] = field(default_factory=dict)
+    agent_hints: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -92,8 +92,8 @@ class CognitiveBrain:
     def __init__(self, assessor: Any, enable_memory: bool = True) -> None:
         self._assessor = assessor
         self._enable_memory = enable_memory
-        self._memory: Dict[str, CognitiveDecision] = {}
-        self._history: List[CognitiveDecision] = []
+        self._memory: dict[str, CognitiveDecision] = {}
+        self._history: list[CognitiveDecision] = []
         self._error_count: int = 0
 
     # ------------------------------------------------------------------
@@ -136,7 +136,7 @@ class CognitiveBrain:
     def decide(
         self,
         context: str,
-        inputs: Dict[str, Any],
+        inputs: dict[str, Any],
         session_id: Optional[str] = None,
     ) -> CognitiveDecision:
         """
@@ -199,7 +199,7 @@ class CognitiveBrain:
     # Memory / state
     # ------------------------------------------------------------------
 
-    def get_cognitive_state(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_cognitive_state(self, session_id: str) -> Optional[dict[str, Any]]:
         """
         Retrieve persisted cognitive state for an agent session.
 
@@ -262,7 +262,7 @@ class CognitiveBrain:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _inputs_to_audit(inputs: Dict[str, Any], audit_id: str) -> Any:
+    def _inputs_to_audit(inputs: dict[str, Any], audit_id: str) -> Any:
         from cognitive_brain.integrations.compliance_integration import AuditResult
 
         return AuditResult(
@@ -277,7 +277,7 @@ class CognitiveBrain:
         )
 
     @staticmethod
-    def _extract_alternatives(assessment: Any) -> List[Dict[str, Any]]:
+    def _extract_alternatives(assessment: Any) -> list[dict[str, Any]]:
         """Build an alternatives list from the assessment (stub for future use)."""
         # SuperpositionEngine does not currently expose per-decision probabilities
         # publicly. We return a single entry with the winning decision as a
@@ -291,7 +291,7 @@ class CognitiveBrain:
         ]
 
     @staticmethod
-    def _generate_agent_hints(assessment: Any, context: str) -> Dict[str, str]:
+    def _generate_agent_hints(assessment: Any, context: str) -> dict[str, str]:
         """
         Generate actionable hints for follow-up agent actions.
 
@@ -299,7 +299,7 @@ class CognitiveBrain:
         DETERMINISTIC: Same assessment + context → same hints.
         """
         decision_val = assessment.decision.value
-        hints: Dict[str, str] = {"context": context}
+        hints: dict[str, str] = {"context": context}
 
         if decision_val == "reject":
             hints["next_action"] = "escalate_to_human_reviewer"
@@ -324,7 +324,7 @@ class CognitiveBrain:
         return hints
 
     @staticmethod
-    def _detect_pattern_from_inputs(inputs: Dict[str, Any]) -> Optional[str]:
+    def _detect_pattern_from_inputs(inputs: dict[str, Any]) -> Optional[str]:
         score = float(inputs.get("score", 0.0))
         risk = inputs.get("risk_level", "medium")
         violation_count = int(inputs.get("violation_count", 0))
@@ -342,7 +342,7 @@ class CognitiveBrain:
     @staticmethod
     def _fallback_decision(
         context: str,
-        inputs: Dict[str, Any],
+        inputs: dict[str, Any],
         session_id: Optional[str],
         exc: Exception,
     ) -> CognitiveDecision:

@@ -16,7 +16,7 @@ import argparse
 import ast
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 
 class MetaTensorPatternChecker(ast.NodeVisitor):
@@ -24,7 +24,7 @@ class MetaTensorPatternChecker(ast.NodeVisitor):
 
     def __init__(self, filename: str):
         self.filename = filename
-        self.issues: List[Tuple[int, str]] = []
+        self.issues: list[tuple[int, str]] = []
         self.has_torch_import = False
         self.has_sentence_transformers = False
         self.has_transformers = False
@@ -168,7 +168,7 @@ class MetaTensorPatternChecker(ast.NodeVisitor):
         # (but don't fail - verification might be elsewhere)
 
 
-def check_file(filepath: Path) -> List[Tuple[int, str]]:
+def check_file(filepath: Path) -> list[tuple[int, str]]:
     """
     Check a Python file for meta tensor anti-patterns.
 
@@ -193,7 +193,7 @@ def check_file(filepath: Path) -> List[Tuple[int, str]]:
     return checker.issues
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     """
     Main entry point for pre-commit hook.
 
@@ -221,7 +221,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = parser.parse_args(argv)
 
     # Load allowlist if exists
-    allowlist: List[str] = []
+    allowlist: list[str] = []
     if args.allowlist.exists():
         allowlist = [
             line.strip()

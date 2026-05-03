@@ -496,7 +496,7 @@ def _coerce_model_sequence(
         raise typer.BadParameter(
             f"Expected a list of {resource} definitions in {source}.",
         )
-    if isinstance(payload, (str, bytes, bytearray)):  # noqa: UP038
+    if isinstance(payload, (str, bytes, bytearray)):
         raise typer.BadParameter(
             f"Expected a list of {resource} definitions in {source}.",
         )

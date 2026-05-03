@@ -7,8 +7,8 @@ import types
 
 import pytest
 
-fastapi = pytest.importorskip("fastapi")  # noqa: F401  # ensure FastAPI is available
-from fastapi.testclient import TestClient  # noqa: E402
+fastapi = pytest.importorskip("fastapi")  # ensure FastAPI is available
+from fastapi.testclient import TestClient
 
 
 class _StubTokenizer:
@@ -18,7 +18,7 @@ class _StubTokenizer:
         self.model_max_length = vocab_size
         self._last_prompt = ""
 
-    def encode(self, text: str) -> list[int]:  # noqa: D401 - simple passthrough
+    def encode(self, text: str) -> list[int]:
         self._last_prompt = text
         return list(range(self._token_count))
 
@@ -32,10 +32,10 @@ class _StubModel:
         self.config = types.SimpleNamespace(max_position_embeddings=limit, vocab_size=vocab_size)
         self._vocab_size = vocab_size
 
-    def eval(self) -> "_StubModel":  # noqa: D401 - returns self for chaining
+    def eval(self) -> "_StubModel":
         return self
 
-    def __call__(self, input_ids):  # noqa: D401 - deterministic logits
+    def __call__(self, input_ids):
         logits = [[[0 for _ in range(self._vocab_size)] for _ in range(self._vocab_size)]]
         logits[0][-1][0] = 1
         from services.api import main as api_main

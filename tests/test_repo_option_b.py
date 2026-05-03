@@ -7,10 +7,10 @@ Test module for repo option b.
 import pytest
 
 pytest.importorskip("duckdb")
-import duckdb  # noqa: E402
+import duckdb
 
-from tools.build_sqlite_snapshot import build_snapshot  # noqa: E402
-from tools.export_to_parquet import export_to_parquet  # noqa: E402
+from tools.build_sqlite_snapshot import build_snapshot
+from tools.export_to_parquet import export_to_parquet
 
 
 def test_export_and_query_parquet():

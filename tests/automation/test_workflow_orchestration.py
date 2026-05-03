@@ -16,7 +16,7 @@ Phase: 20.2 Advanced Automation
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -25,7 +25,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def workflow_definition() -> Dict[str, Any]:
+def workflow_definition() -> dict[str, Any]:
     """Fixture for workflow definition."""
     return {
         "id": "wf-deploy-001",
@@ -44,7 +44,7 @@ def workflow_definition() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def task_config() -> Dict[str, Any]:
+def task_config() -> dict[str, Any]:
     """Fixture for task configuration."""
     return {
         "id": "task-001",
@@ -59,7 +59,7 @@ def task_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def execution_context() -> Dict[str, Any]:
+def execution_context() -> dict[str, Any]:
     """Fixture for execution context."""
     return {
         "run_id": "run-2026-001",
@@ -78,29 +78,29 @@ def execution_context() -> Dict[str, Any]:
 class TestWorkflowDefinition:
     """Tests for workflow definition and validation."""
 
-    def test_workflow_has_required_fields(self, workflow_definition: Dict[str, Any]):
+    def test_workflow_has_required_fields(self, workflow_definition: dict[str, Any]):
         """Test workflow has all required fields."""
         required_fields = ["id", "name", "version", "tasks"]
         for field in required_fields:
             assert field in workflow_definition
 
-    def test_workflow_id_format(self, workflow_definition: Dict[str, Any]):
+    def test_workflow_id_format(self, workflow_definition: dict[str, Any]):
         """Test workflow ID follows expected format."""
         workflow_id = workflow_definition["id"]
         assert workflow_id.startswith("wf-")
 
-    def test_workflow_has_tasks(self, workflow_definition: Dict[str, Any]):
+    def test_workflow_has_tasks(self, workflow_definition: dict[str, Any]):
         """Test workflow has at least one task."""
         assert len(workflow_definition["tasks"]) > 0
 
-    def test_workflow_version_format(self, workflow_definition: Dict[str, Any]):
+    def test_workflow_version_format(self, workflow_definition: dict[str, Any]):
         """Test workflow version follows semver format."""
         version = workflow_definition["version"]
         parts = version.split(".")
         assert len(parts) == 3
         assert all(p.isdigit() for p in parts)
 
-    def test_workflow_timeout_set(self, workflow_definition: Dict[str, Any]):
+    def test_workflow_timeout_set(self, workflow_definition: dict[str, Any]):
         """Test workflow timeout is set."""
         assert workflow_definition["timeout_minutes"] > 0
 
@@ -112,28 +112,28 @@ class TestWorkflowDefinition:
 class TestTaskScheduling:
     """Tests for task scheduling."""
 
-    def test_task_has_required_fields(self, task_config: Dict[str, Any]):
+    def test_task_has_required_fields(self, task_config: dict[str, Any]):
         """Test task has required fields."""
         required_fields = ["id", "name", "type"]
         for field in required_fields:
             assert field in task_config
 
-    def test_task_timeout_set(self, task_config: Dict[str, Any]):
+    def test_task_timeout_set(self, task_config: dict[str, Any]):
         """Test task timeout is configured."""
         assert task_config["timeout_seconds"] > 0
 
-    def test_task_retry_configuration(self, task_config: Dict[str, Any]):
+    def test_task_retry_configuration(self, task_config: dict[str, Any]):
         """Test task retry is configured."""
         assert task_config["retry_count"] >= 0
         assert task_config["retry_delay_seconds"] > 0
 
-    def test_task_environment_variables(self, task_config: Dict[str, Any]):
+    def test_task_environment_variables(self, task_config: dict[str, Any]):
         """Test task environment variables are set."""
         env = task_config["environment"]
         assert isinstance(env, dict)
         assert "NODE_ENV" in env
 
-    def test_task_artifacts_defined(self, task_config: Dict[str, Any]):
+    def test_task_artifacts_defined(self, task_config: dict[str, Any]):
         """Test task artifacts are defined."""
         artifacts = task_config["artifacts"]
         assert len(artifacts) > 0
@@ -146,24 +146,24 @@ class TestTaskScheduling:
 class TestDependencyManagement:
     """Tests for task dependency management."""
 
-    def test_first_task_no_dependencies(self, workflow_definition: Dict[str, Any]):
+    def test_first_task_no_dependencies(self, workflow_definition: dict[str, Any]):
         """Test first task has no dependencies."""
         first_task = workflow_definition["tasks"][0]
         assert len(first_task["depends_on"]) == 0
 
-    def test_subsequent_tasks_have_dependencies(self, workflow_definition: Dict[str, Any]):
+    def test_subsequent_tasks_have_dependencies(self, workflow_definition: dict[str, Any]):
         """Test subsequent tasks have dependencies."""
         for task in workflow_definition["tasks"][1:]:
             assert len(task["depends_on"]) > 0
 
-    def test_dependency_exists_in_workflow(self, workflow_definition: Dict[str, Any]):
+    def test_dependency_exists_in_workflow(self, workflow_definition: dict[str, Any]):
         """Test all dependencies reference existing tasks."""
         task_ids = {t["id"] for t in workflow_definition["tasks"]}
         for task in workflow_definition["tasks"]:
             for dep in task["depends_on"]:
                 assert dep in task_ids
 
-    def test_no_circular_dependencies(self, workflow_definition: Dict[str, Any]):
+    def test_no_circular_dependencies(self, workflow_definition: dict[str, Any]):
         """Test no circular dependencies exist."""
         # Build dependency graph
         deps = {t["id"]: set(t["depends_on"]) for t in workflow_definition["tasks"]}
@@ -176,7 +176,7 @@ class TestDependencyManagement:
                 assert task_id not in deps[task_id]
                 visited.add(task_id)
 
-    def test_topological_order_possible(self, workflow_definition: Dict[str, Any]):
+    def test_topological_order_possible(self, workflow_definition: dict[str, Any]):
         """Test tasks can be ordered topologically."""
         tasks = workflow_definition["tasks"]
         [t["id"] for t in tasks]
@@ -239,7 +239,7 @@ class TestErrorHandling:
         is_failed = task_result["status"] == "failed"
         assert is_failed is True
 
-    def test_retry_on_failure(self, task_config: Dict[str, Any]):
+    def test_retry_on_failure(self, task_config: dict[str, Any]):
         """Test retry logic on failure."""
         max_retries = task_config["retry_count"]
         current_attempt = 1
@@ -275,7 +275,7 @@ class TestErrorHandling:
 class TestWorkflowMonitoring:
     """Tests for workflow monitoring."""
 
-    def test_execution_status_tracking(self, execution_context: Dict[str, Any]):
+    def test_execution_status_tracking(self, execution_context: dict[str, Any]):
         """Test execution status is tracked."""
         status = {
             "run_id": execution_context["run_id"],

@@ -6,17 +6,17 @@ Test module for prompt sanitizer.
 
 #!/usr/bin/env python3
 """Tests for PromptSanitizer."""
-import sys  # noqa: E402
-from pathlib import Path  # noqa: E402
+import sys
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
 # Import directly from the module file
-from codex_ml.safety.prompt_sanitizer import PromptSanitizer  # noqa: E402
+from codex_ml.safety.prompt_sanitizer import PromptSanitizer
 
 
 def test_prompt_sanitizer_strict_blocks_script():

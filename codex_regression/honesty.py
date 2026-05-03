@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Iterable, List, Tuple
+from collections.abc import Iterable
 
 VALID_POLICY_LABELS = {"verified", "inferred", "planned"}
 STATUS_MAP = {
@@ -12,8 +12,8 @@ STATUS_MAP = {
 }
 
 
-def validate_honesty_metadata(entries: Iterable[Dict[str, str]]) -> List[str]:
-    issues: List[str] = []
+def validate_honesty_metadata(entries: Iterable[dict[str, str]]) -> list[str]:
+    issues: list[str] = []
     seen = set()
     for idx, entry in enumerate(entries, start=1):
         statement_id = entry.get("statement_id")
@@ -34,10 +34,10 @@ def validate_honesty_metadata(entries: Iterable[Dict[str, str]]) -> List[str]:
 
 
 def validate_tool_trace_against_ra(
-    tool_traces: Iterable[Dict[str, str]], ra_results: Iterable[Dict[str, str]]
-) -> List[str]:
+    tool_traces: Iterable[dict[str, str]], ra_results: Iterable[dict[str, str]]
+) -> list[str]:
     trace_map = {trace.get("trace_id"): trace for trace in tool_traces if trace.get("trace_id")}
-    issues: List[str] = []
+    issues: list[str] = []
     for result in ra_results:
         trace_id = result.get("trace_id")
         if not trace_id:
@@ -55,9 +55,9 @@ def validate_tool_trace_against_ra(
 
 
 def derive_ra_status_from_artifacts(
-    artifacts: Iterable[Dict[str, str]], *, allow_missing: bool = False
-) -> Tuple[str, Dict[str, int]]:
-    counts: Dict[str, int] = {"pass": 0, "fail": 0, "unknown": 0}
+    artifacts: Iterable[dict[str, str]], *, allow_missing: bool = False
+) -> tuple[str, dict[str, int]]:
+    counts: dict[str, int] = {"pass": 0, "fail": 0, "unknown": 0}
     for artifact in artifacts:
         status = STATUS_MAP.get(artifact.get("status", "").lower(), "unknown")
         counts[status] = counts.get(status, 0) + 1

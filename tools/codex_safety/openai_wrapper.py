@@ -6,7 +6,7 @@ import asyncio
 import os
 import random
 from collections.abc import AsyncIterator
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from openai import AsyncOpenAI
 
@@ -28,8 +28,8 @@ def _jitter_delay(attempt: int) -> float:
 
 
 async def call_openai_stream(
-    prompt_messages: list[Dict[str, Any]],
-    extra: Optional[Dict[str, Any]] = None,
+    prompt_messages: list[dict[str, Any]],
+    extra: Optional[dict[str, Any]] = None,
 ) -> AsyncIterator[str]:
     """Stream text deltas from the OpenAI Responses API with retries."""
 
@@ -63,9 +63,9 @@ async def call_openai_stream(
 
 
 async def call_openai_json(
-    prompt_messages: list[Dict[str, Any]],
-    extra: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    prompt_messages: list[dict[str, Any]],
+    extra: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """Request a non-streaming response and return the JSON payload."""
 
     extra = extra or {}

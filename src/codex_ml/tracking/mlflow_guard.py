@@ -13,10 +13,10 @@ DEFAULT_LITERAL_LOCAL_URI = "file:./artifacts/mlruns"
 
 __all__ = [
     "GuardDecision",
-    "ensure_file_backend",
-    "ensure_file_backend_decision",
     "bootstrap_offline_tracking",
     "bootstrap_offline_tracking_decision",
+    "ensure_file_backend",
+    "ensure_file_backend_decision",
     "last_decision",
 ]
 

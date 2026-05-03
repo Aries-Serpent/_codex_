@@ -11,7 +11,7 @@ Use Cases:
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
@@ -35,7 +35,7 @@ class EntangledAssessmentResult:
     """
 
     compliance: ComplianceAssessment
-    security: Dict[str, Any]  # Mock security result
+    security: dict[str, Any]  # Mock security result
     correlation: float
     redundancy_avoided: bool
     pair_id: str
@@ -46,7 +46,7 @@ class EntangledAssessmentResult:
         return self.compliance.decision if self.compliance else None
 
     @property
-    def security_assessment(self) -> Dict[str, Any]:
+    def security_assessment(self) -> dict[str, Any]:
         """Alias for security for backward compatibility."""
         return self.security
 
@@ -54,7 +54,7 @@ class EntangledAssessmentResult:
 class MockSecurityScanner:
     """Mock security scanner for testing entangled assessments."""
 
-    def scan_for_secrets(self, audit: AuditResult) -> Dict[str, Any]:
+    def scan_for_secrets(self, audit: AuditResult) -> dict[str, Any]:
         """
         Mock security scan.
 
@@ -232,7 +232,7 @@ class EntangledComplianceSecurityAssessor:
             return 0.0
         return self.redundant_actions_avoided / self.total_assessments
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get assessment statistics.
 

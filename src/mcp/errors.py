@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 
 class MCPError(Exception):
@@ -67,9 +68,9 @@ def validate_error_response(code: str, message: str) -> bool:
 
 __all__ = [
     "MCPError",
-    "ToolNotFound",
-    "ValidationError",
     "RateLimitExceeded",
+    "ToolNotFound",
     "Unauthorized",
+    "ValidationError",
     "validate_error_response",
 ]

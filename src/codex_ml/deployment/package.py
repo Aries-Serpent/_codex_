@@ -10,8 +10,9 @@ import json  # noqa: E402
 import shutil  # noqa: E402
 import tarfile  # noqa: E402
 import tempfile  # noqa: E402
+from collections.abc import Iterable, Mapping  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable, Mapping  # noqa: E402
+from typing import Any  # noqa: E402
 from uuid import uuid4  # noqa: E402
 
 from codex_ml.plugins.registry import Registry  # noqa: E402

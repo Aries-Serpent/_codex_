@@ -6,7 +6,7 @@ import random
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 RANDOM_SEED = 47
 
@@ -25,7 +25,7 @@ class PerformanceAlert:
     message: str
     current_value: float
     threshold: float
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 class AlertManager:
     """Manage performance alerts"""
@@ -33,8 +33,8 @@ class AlertManager:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.alerts: List[PerformanceAlert] = []
-        self.alert_rules: Dict[str, Dict[str, Any]] = {
+        self.alerts: list[PerformanceAlert] = []
+        self.alert_rules: dict[str, dict[str, Any]] = {
             "latency_p95": {"threshold": 100.0, "severity": AlertSeverity.WARNING},
             "latency_p99": {"threshold": 200.0, "severity": AlertSeverity.CRITICAL},
             "throughput": {"threshold": 1000.0, "severity": AlertSeverity.WARNING},
@@ -49,7 +49,7 @@ class AlertManager:
         current_value: float,
         message: str,
         severity: Optional[AlertSeverity] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[dict[str, Any]] = None
     ) -> PerformanceAlert:
         """Create a new alert"""
         # Determine severity from rules if not provided
@@ -94,13 +94,13 @@ class AlertManager:
 
         return None
 
-    def get_active_alerts(self, severity: Optional[AlertSeverity] = None) -> List[PerformanceAlert]:
+    def get_active_alerts(self, severity: Optional[AlertSeverity] = None) -> list[PerformanceAlert]:
         """Get active alerts, optionally filtered by severity"""
         if severity:
             return [a for a in self.alerts if a.severity == severity]
         return self.alerts
 
-    def get_alert_summary(self) -> Dict[str, int]:
+    def get_alert_summary(self) -> dict[str, int]:
         """Get summary of alerts by severity"""
         summary = {
             "info": 0,
@@ -124,7 +124,7 @@ class AlertManager:
         self.alerts = []
         return count
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get alert manager metrics"""
         return {
             "seed": self.seed,

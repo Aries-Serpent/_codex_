@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Standalone evaluation runner emitting NDJSON/CSV metrics with optional CLI."""
 
 
 import csv  # noqa: E402
@@ -70,7 +69,7 @@ def _bootstrap(
         return None if val is None else float(val), None, None
     if n <= 0 or len(preds) == 0:
         return float(val), None, None
-    rng = random.Random(seed)  # noqa: S311 - deterministic sampling for evaluation
+    rng = random.Random(seed)
     vals: list[float] = []
     for _ in range(n):
         idx = [rng.randrange(len(preds)) for _ in preds]

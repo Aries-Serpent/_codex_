@@ -39,7 +39,7 @@ def _make_stub_processor():
             reverse = {i: t for i, t in enumerate(self._vocab)}
             return " ".join(reverse.get(int(i), "<unk>") for i in ids)
 
-        def GetPieceSize(self):  # noqa: N802 – mimic SP casing
+        def GetPieceSize(self):
             return len(self._vocab)
 
         def get_piece_size(self):

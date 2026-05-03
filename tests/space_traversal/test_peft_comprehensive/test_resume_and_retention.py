@@ -89,7 +89,7 @@ class _DummyStrategy:
         for cb in callbacks:
             try:
                 cb.on_epoch_end(0, {}, {})
-            except Exception:  # noqa: BLE001
+            except Exception:
                 pass
         return _DummyResult()
 

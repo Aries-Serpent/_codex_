@@ -17,7 +17,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -31,8 +31,8 @@ class CapabilityGap:
     frequency: int
     impact_score: float
     current_workaround: Optional[str]
-    proposed_tool: Optional[Dict[str, Any]]
-    examples: List[Dict[str, Any]] = field(default_factory=list)
+    proposed_tool: Optional[dict[str, Any]]
+    examples: list[dict[str, Any]] = field(default_factory=list)
     detected_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
@@ -46,7 +46,7 @@ class ToolOpportunity:
     potential_impact: float  # 0.0 to 1.0
     reusability_score: float  # 0.0 to 1.0
     implementation_sketch: str
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     priority_score: float = 0.0  # Calculated from impact and complexity
 
 
@@ -62,15 +62,15 @@ class CapabilityGapAnalyzer:
         self.storage_path = storage_path or Path(".github/ai-evolution/data")
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.interaction_log: List[Dict[str, Any]] = []
-        self.pattern_memory: Dict[str, List[Dict]] = defaultdict(list)
-        self.gap_registry: Dict[str, CapabilityGap] = {}
-        self.tool_opportunities: List[ToolOpportunity] = []
+        self.interaction_log: list[dict[str, Any]] = []
+        self.pattern_memory: dict[str, list[dict]] = defaultdict(list)
+        self.gap_registry: dict[str, CapabilityGap] = {}
+        self.tool_opportunities: list[ToolOpportunity] = []
 
         # Load existing data
         self._load_state()
 
-    def analyze_interaction(self, interaction: Dict[str, Any]) -> List[CapabilityGap]:
+    def analyze_interaction(self, interaction: dict[str, Any]) -> list[CapabilityGap]:
         """Analyze a single interaction for capability gaps.
 
         Args:
@@ -158,12 +158,12 @@ class CapabilityGapAnalyzer:
 
         return gaps
 
-    def _generate_gap_id(self, gap_type: str, interaction: Dict) -> str:
+    def _generate_gap_id(self, gap_type: str, interaction: dict) -> str:
         """Generate unique ID for a gap."""
         content = f"{gap_type}_{interaction.get('action', '')}_{interaction.get('pattern_type', '')}"
         return f"gap_{gap_type}_{hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()[:8]}"  # nosec B324 - Not for security, gap ID generation only
 
-    def _detect_repetition(self, interaction: Dict) -> bool:
+    def _detect_repetition(self, interaction: dict) -> bool:
         """Detect if interaction shows repetitive pattern."""
         action = interaction.get("action", "")
         pattern_type = interaction.get("pattern_type", "")
@@ -176,7 +176,7 @@ class CapabilityGapAnalyzer:
 
         return len(similar_actions) >= 3
 
-    def _detect_complex_sequence(self, interaction: Dict) -> bool:
+    def _detect_complex_sequence(self, interaction: dict) -> bool:
         """Detect if interaction represents complex multi-step operation."""
         # Consider it complex if:
         # - Duration is high
@@ -193,7 +193,7 @@ class CapabilityGapAnalyzer:
             "multi" in operation_type.lower()
         )
 
-    def _detect_knowledge_gap(self, interaction: Dict) -> bool:
+    def _detect_knowledge_gap(self, interaction: dict) -> bool:
         """Detect if interaction shows missing knowledge."""
         # Indicators of knowledge gaps:
         # - Requires external lookup
@@ -205,7 +205,7 @@ class CapabilityGapAnalyzer:
             interaction.get("retry_count", 0) > 2
         )
 
-    def _count_pattern_frequency(self, interaction: Dict) -> int:
+    def _count_pattern_frequency(self, interaction: dict) -> int:
         """Count how often this pattern has occurred."""
         pattern_type = interaction.get("pattern_type", "")
         if not pattern_type:
@@ -213,7 +213,7 @@ class CapabilityGapAnalyzer:
 
         return len(self.pattern_memory.get(pattern_type, [])) + 1
 
-    def _calculate_impact(self, interaction: Dict) -> float:
+    def _calculate_impact(self, interaction: dict) -> float:
         """Calculate impact score for a gap (0.0 to 1.0)."""
         # Factors: duration, frequency, complexity
         duration_score = min(interaction.get("duration", 0) / 300, 1.0)  # Normalize to 5 minutes
@@ -223,7 +223,7 @@ class CapabilityGapAnalyzer:
         # Weight: 40% duration, 60% frequency
         return (duration_score * 0.4) + (frequency_score * 0.6)
 
-    def _extract_template_params(self, interaction: Dict) -> Dict[str, Any]:
+    def _extract_template_params(self, interaction: dict) -> dict[str, Any]:
         """Extract parameters that could be used in a template."""
         return {
             "pattern_type": interaction.get("pattern_type", ""),
@@ -231,19 +231,19 @@ class CapabilityGapAnalyzer:
             "output_format": interaction.get("output_format", ""),
         }
 
-    def _extract_operation_steps(self, interaction: Dict) -> List[str]:
+    def _extract_operation_steps(self, interaction: dict) -> list[str]:
         """Extract steps from a complex operation."""
         return interaction.get("steps", [])
 
-    def _count_knowledge_requests(self, interaction: Dict) -> int:
+    def _count_knowledge_requests(self, interaction: dict) -> int:
         """Count knowledge lookup requests."""
         return interaction.get("lookup_count", 1)
 
-    def _identify_knowledge_sources(self, interaction: Dict) -> List[str]:
+    def _identify_knowledge_sources(self, interaction: dict) -> list[str]:
         """Identify sources of knowledge that were needed."""
         return interaction.get("knowledge_sources", ["documentation", "codebase"])
 
-    def synthesize_tool_opportunities(self) -> List[ToolOpportunity]:
+    def synthesize_tool_opportunities(self) -> list[ToolOpportunity]:
         """Synthesize tool opportunities from detected gaps.
 
         Returns:
@@ -272,9 +272,9 @@ class CapabilityGapAnalyzer:
 
         return opportunities
 
-    def _cluster_gaps(self) -> Dict[str, List[CapabilityGap]]:
+    def _cluster_gaps(self) -> dict[str, list[CapabilityGap]]:
         """Cluster similar gaps together."""
-        clusters: Dict[str, List[CapabilityGap]] = defaultdict(list)
+        clusters: dict[str, list[CapabilityGap]] = defaultdict(list)
 
         for gap in self.gap_registry.values():
             # Cluster by category
@@ -285,7 +285,7 @@ class CapabilityGapAnalyzer:
     def _create_tool_opportunity(
         self,
         cluster_id: str,
-        gaps: List[CapabilityGap],
+        gaps: list[CapabilityGap],
     ) -> ToolOpportunity:
         """Create a tool opportunity from a cluster of gaps."""
         # Determine tool type based on gap categories
@@ -320,7 +320,7 @@ class CapabilityGapAnalyzer:
             dependencies=self._identify_dependencies(sketch),
         )
 
-    def _estimate_complexity(self, gaps: List[CapabilityGap]) -> float:
+    def _estimate_complexity(self, gaps: list[CapabilityGap]) -> float:
         """Estimate implementation complexity (0.0 to 1.0)."""
         # More gaps = more complex to unify
         # More examples = more edge cases
@@ -330,7 +330,7 @@ class CapabilityGapAnalyzer:
 
         return (gap_count_factor * 0.5) + (example_factor * 0.5)
 
-    def _calculate_reusability(self, gaps: List[CapabilityGap]) -> float:
+    def _calculate_reusability(self, gaps: list[CapabilityGap]) -> float:
         """Calculate reusability score (0.0 to 1.0)."""
         # Higher frequency = more reusable
         # More examples = more generalizable
@@ -344,7 +344,7 @@ class CapabilityGapAnalyzer:
 
     def _generate_implementation_sketch(
         self,
-        gaps: List[CapabilityGap],
+        gaps: list[CapabilityGap],
         tool_type: str,
     ) -> str:
         """Generate initial implementation sketch for a tool."""
@@ -378,7 +378,7 @@ class {tool_type.title()}Tool:
         pass
 """
 
-    def _identify_dependencies(self, sketch: str) -> List[str]:
+    def _identify_dependencies(self, sketch: str) -> list[str]:
         """Identify dependencies from implementation sketch."""
         # Simple heuristic: look for common imports that would be needed
         dependencies = []
@@ -392,7 +392,7 @@ class {tool_type.title()}Tool:
 
         return dependencies
 
-    def get_status_summary(self) -> Dict[str, Any]:
+    def get_status_summary(self) -> dict[str, Any]:
         """Get summary of analyzer status."""
         return {
             "total_interactions": len(self.interaction_log),

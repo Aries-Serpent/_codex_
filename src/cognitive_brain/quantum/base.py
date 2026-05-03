@@ -6,7 +6,7 @@ Provides base classes and enums for quantum-inspired features.
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict
+from typing import Any
 
 
 class QuantumFeature(Enum):
@@ -37,7 +37,7 @@ class QuantumState:
 
     feature: QuantumFeature
     coherence: float = 1.0
-    metadata: Dict[str, Any] = None  # type: ignore[assignment]
+    metadata: dict[str, Any] = None  # type: ignore[assignment]
 
     def __post_init__(self):
         """Validate state after initialization."""
@@ -73,7 +73,7 @@ class QuantumState:
             raise ValueError(f"Coherence must be between 0.0 and 1.0, got {new_coherence}")
         self.coherence = new_coherence
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Convert state to dictionary representation.
 

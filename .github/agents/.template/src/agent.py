@@ -9,7 +9,7 @@ Usage:
 """
 
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 import click
 import yaml
@@ -22,14 +22,14 @@ class AgentClass:
         """Initialize agent with optional config."""
         self.config = self._load_config(config_path)
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load agent configuration."""
         if config_path and config_path.exists():
             with open(config_path) as f:
                 return yaml.safe_load(f)
         return self._default_config()
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration."""
         return {
             'version': '1.0.0',
@@ -39,7 +39,7 @@ class AgentClass:
             'log_level': 'INFO',
         }
 
-    def execute(self, task: Dict) -> Dict:
+    def execute(self, task: dict) -> dict:
         """
         Execute agent task.
 

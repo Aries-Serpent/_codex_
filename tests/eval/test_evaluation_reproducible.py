@@ -19,9 +19,9 @@ try:  # optional dependency for RNG disturbance
 except ImportError:  # pragma: no cover - numpy unavailable
     np = None
 
-from codex_ml.config import EvaluationConfig  # noqa: E402
-from codex_ml.eval.runner import run_evaluation  # noqa: E402
-from codex_ml.utils.provenance import load_environment_summary  # noqa: E402
+from codex_ml.config import EvaluationConfig
+from codex_ml.eval.runner import run_evaluation
+from codex_ml.utils.provenance import load_environment_summary
 
 # Note: SerializableModelConfig, MockSerializableModel, and serializable_mock_model
 # fixture are now defined in tests/conftest.py as shared fixtures for reuse across

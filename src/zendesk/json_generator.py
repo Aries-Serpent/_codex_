@@ -749,8 +749,8 @@ class ZendeskJSONGenerator:
 
 
 __all__ = [
-    "ZendeskJSONGenerator",
+    "PLACEHOLDER_PATTERN",
     "ScriptTemplate",
     "TemplateVariable",
-    "PLACEHOLDER_PATTERN",
+    "ZendeskJSONGenerator",
 ]

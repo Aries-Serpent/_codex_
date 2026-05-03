@@ -7,9 +7,10 @@ Test module for unified training parity and resume.
 from __future__ import annotations
 
 import types
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any
 
 from codex_ml.training import unified_training
 from codex_ml.training.strategies import TrainingCallback, TrainingResult
@@ -18,16 +19,16 @@ from codex_ml.utils import checkpoint_core
 
 @dataclass
 class _RecordingCallback:
-    checkpoints: List[Dict[str, Any]]
+    checkpoints: list[dict[str, Any]]
 
-    def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None:
+    def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
         pass
 
-    def on_epoch_end(self, epoch: int, metrics: Dict[str, float], state: Dict[str, Any]) -> None:
+    def on_epoch_end(self, epoch: int, metrics: dict[str, float], state: dict[str, Any]) -> None:
         pass
 
     def on_step(
-        self, batch_index: int, global_step: int, loss: float, state: Dict[str, Any]
+        self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
     ) -> None:
         pass
 
@@ -35,8 +36,8 @@ class _RecordingCallback:
         self,
         epoch: int,
         path: str,
-        metrics: Dict[str, float],
-        state: Dict[str, Any],
+        metrics: dict[str, float],
+        state: dict[str, Any],
     ) -> None:
         payload = {
             "epoch": epoch,
@@ -75,7 +76,7 @@ class _StubStrategy:
 
 
 def test_unified_training_resume_flow(monkeypatch, tmp_path) -> None:
-    saved: Dict[str, Any] = {}
+    saved: dict[str, Any] = {}
 
     def fake_save(out_dir: str | Path, *, state=None, payload=None, metadata, **kwargs):
         saved["out_dir"] = Path(out_dir)

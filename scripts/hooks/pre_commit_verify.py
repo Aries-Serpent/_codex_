@@ -28,7 +28,7 @@ import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Optional
 
 # Setup logging
 logging.basicConfig(
@@ -75,7 +75,7 @@ def get_repo_root() -> Path:
         return Path.cwd()
 
 
-def get_staged_files() -> Set[str]:
+def get_staged_files() -> set[str]:
     """Get the list of files staged for commit."""
     try:
         result = subprocess.run(
@@ -90,7 +90,7 @@ def get_staged_files() -> Set[str]:
         return set()
 
 
-def get_modified_files() -> Set[str]:
+def get_modified_files() -> set[str]:
     """Get the list of modified but unstaged files."""
     try:
         result = subprocess.run(
@@ -104,7 +104,7 @@ def get_modified_files() -> Set[str]:
         return set()
 
 
-def get_untracked_files() -> Set[str]:
+def get_untracked_files() -> set[str]:
     """Get the list of untracked files."""
     try:
         result = subprocess.run(
@@ -118,7 +118,7 @@ def get_untracked_files() -> Set[str]:
         return set()
 
 
-def load_gitignore_patterns(repo_root: Path) -> List[str]:
+def load_gitignore_patterns(repo_root: Path) -> list[str]:
     """Load patterns from .gitignore file."""
     gitignore_path = repo_root / '.gitignore'
     patterns = []
@@ -137,7 +137,7 @@ def load_gitignore_patterns(repo_root: Path) -> List[str]:
     return patterns
 
 
-def should_ignore_file(filepath: str, extra_patterns: Optional[List[str]] = None) -> bool:
+def should_ignore_file(filepath: str, extra_patterns: Optional[list[str]] = None) -> bool:
     """Check if a file should be ignored based on patterns."""
     all_patterns = IGNORE_PATTERNS + (extra_patterns or [])
 
@@ -148,7 +148,7 @@ def parse_action_log(
     log_path: Path,
     since: Optional[datetime] = None,
     session_id: Optional[str] = None
-) -> List[Dict]:
+) -> list[dict]:
     """Parse the action log and extract file operations."""
     if not log_path.exists():
         logger.warning(f"Action log not found: {log_path}")
@@ -188,7 +188,7 @@ def parse_action_log(
     return operations
 
 
-def extract_expected_files(operations: List[Dict], repo_root: Path) -> Set[str]:
+def extract_expected_files(operations: list[dict], repo_root: Path) -> set[str]:
     """Extract expected files from operations list."""
     expected = set()
 
@@ -220,11 +220,11 @@ def extract_expected_files(operations: List[Dict], repo_root: Path) -> Set[str]:
 
 
 def verify_staged_files(
-    expected: Set[str],
-    staged: Set[str],
-    modified: Set[str],
-    untracked: Set[str]
-) -> Tuple[Set[str], Set[str], Set[str]]:
+    expected: set[str],
+    staged: set[str],
+    modified: set[str],
+    untracked: set[str]
+) -> tuple[set[str], set[str], set[str]]:
     """
     Verify that expected files are staged.
 
@@ -241,10 +241,10 @@ def verify_staged_files(
 
 
 def generate_report(
-    expected: Set[str],
-    staged_expected: Set[str],
-    missing_modified: Set[str],
-    missing_untracked: Set[str]
+    expected: set[str],
+    staged_expected: set[str],
+    missing_modified: set[str],
+    missing_untracked: set[str]
 ) -> str:
     """Generate a verification report."""
     lines = []

@@ -18,7 +18,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 import numpy as np
 
@@ -29,10 +29,10 @@ logger = logging.getLogger(__name__)
 class QuantumPattern:
     """Represents a quantum-superposed pattern."""
     pattern_id: str
-    domains: Set[str]
+    domains: set[str]
     amplitude: complex
     phase: float
-    entangled_patterns: List[str] = field(default_factory=list)
+    entangled_patterns: list[str] = field(default_factory=list)
     coherence: float = 1.0
     source_file: Optional[str] = None
 
@@ -40,7 +40,7 @@ class QuantumPattern:
 @dataclass
 class PatternCorrelation:
     """Correlation between patterns."""
-    pattern_ids: Tuple[str, str]
+    pattern_ids: tuple[str, str]
     entanglement_strength: float
     emergent_capability: str
     integration_suggestion: str
@@ -52,8 +52,8 @@ class QuantumPatternCorrelator:
     def __init__(self, repo_path: str = "."):
         """Initialize correlator with repository path."""
         self.repo_path = Path(repo_path)
-        self.patterns: Dict[str, QuantumPattern] = {}
-        self.correlations: List[PatternCorrelation] = []
+        self.patterns: dict[str, QuantumPattern] = {}
+        self.correlations: list[PatternCorrelation] = []
         self.quantum_state = self._initialize_quantum_state()
 
     def _initialize_quantum_state(self) -> np.ndarray:
@@ -64,7 +64,7 @@ class QuantumPatternCorrelator:
         state[0] = 1.0  # Ground state
         return state
 
-    async def extract_codex_patterns(self, target_files: List[str]) -> Dict[str, List[Dict]]:
+    async def extract_codex_patterns(self, target_files: list[str]) -> dict[str, list[dict]]:
         """Extract patterns from _codex_ repository files."""
         extracted = defaultdict(list)
 
@@ -81,7 +81,7 @@ class QuantumPatternCorrelator:
 
         return dict(extracted)
 
-    async def _extract_python_patterns(self, file_path: Path) -> List[Dict]:
+    async def _extract_python_patterns(self, file_path: Path) -> list[dict]:
         """Extract patterns from Python file using AST analysis."""
         patterns = []
 
@@ -112,7 +112,7 @@ class QuantumPatternCorrelator:
 
         return patterns
 
-    def _extract_import_patterns(self, content: str) -> Optional[Dict]:
+    def _extract_import_patterns(self, content: str) -> Optional[dict]:
         """Extract import usage patterns."""
         import_lines = [line for line in content.split('\n') if line.strip().startswith('import ') or line.strip().startswith('from ')]
 
@@ -127,7 +127,7 @@ class QuantumPatternCorrelator:
             "numpy_usage": any("numpy" in line or "np" in line for line in import_lines)
         }
 
-    def _extract_class_patterns(self, content: str) -> List[Dict]:
+    def _extract_class_patterns(self, content: str) -> list[dict]:
         """Extract class design patterns."""
         patterns = []
         lines = content.split('\n')
@@ -160,7 +160,7 @@ class QuantumPatternCorrelator:
 
         return patterns
 
-    def _extract_function_patterns(self, content: str) -> List[Dict]:
+    def _extract_function_patterns(self, content: str) -> list[dict]:
         """Extract function design patterns."""
         patterns = []
         lines = content.split('\n')
@@ -191,7 +191,7 @@ class QuantumPatternCorrelator:
 
         return patterns
 
-    def _extract_documentation_pattern(self, content: str) -> Optional[Dict]:
+    def _extract_documentation_pattern(self, content: str) -> Optional[dict]:
         """Extract documentation patterns."""
         # Count docstrings
         docstring_count = content.count('"""') // 2 + content.count("'''") // 2
@@ -222,7 +222,7 @@ class QuantumPatternCorrelator:
             return 'ai_agents'
         return 'general'
 
-    async def correlate_patterns(self, patterns_by_domain: Dict[str, List[Dict]]) -> List[PatternCorrelation]:
+    async def correlate_patterns(self, patterns_by_domain: dict[str, list[dict]]) -> list[PatternCorrelation]:
         """Correlate patterns across domains to find emergent capabilities."""
         correlations = []
 
@@ -251,7 +251,7 @@ class QuantumPatternCorrelator:
         self.correlations = correlations
         return correlations
 
-    def _to_quantum_patterns(self, patterns_by_domain: Dict[str, List[Dict]]) -> List[QuantumPattern]:
+    def _to_quantum_patterns(self, patterns_by_domain: dict[str, list[dict]]) -> list[QuantumPattern]:
         """Convert extracted patterns to quantum representation."""
         quantum_patterns = []
 
@@ -314,7 +314,7 @@ class QuantumPatternCorrelator:
         """Suggest how to integrate patterns."""
         return f"Create {capability} by combining {list(p1.domains)[0]} patterns with {list(p2.domains)[0]} techniques"
 
-    def generate_report(self) -> Dict[str, Any]:
+    def generate_report(self) -> dict[str, Any]:
         """Generate correlation report."""
         return {
             "total_patterns": len(self.patterns),

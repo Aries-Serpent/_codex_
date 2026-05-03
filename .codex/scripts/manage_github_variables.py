@@ -17,7 +17,7 @@ import math
 import os
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import requests
 
@@ -91,7 +91,7 @@ class GitHubVariableManager:
             print(f"❌ Request failed: {e}")
             return False
 
-    def list_all(self) -> List[Dict[str, Any]]:
+    def list_all(self) -> list[dict[str, Any]]:
         """List all variables"""
         try:
             response = requests.get(self.base_url, headers=self.headers, timeout=30)

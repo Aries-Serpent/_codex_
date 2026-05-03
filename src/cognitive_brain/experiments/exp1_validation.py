@@ -18,7 +18,6 @@ import os
 import random
 import tempfile
 from datetime import UTC, datetime
-from typing import Dict, List, Tuple
 
 from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
@@ -56,7 +55,7 @@ def get_ground_truth(audit: AuditResult) -> ComplianceDecision:
 
 def generate_audit_scenarios(
     count: int,
-) -> List[Tuple[AuditResult, ComplianceDecision]]:
+) -> list[tuple[AuditResult, ComplianceDecision]]:
     """
     Generate diverse audit scenarios with ground truth labels.
 
@@ -96,7 +95,7 @@ def generate_audit_scenarios(
     return scenarios
 
 
-def run_exp1_validation() -> Dict:
+def run_exp1_validation() -> dict:
     """
     Run EXP-1 validation experiment.
 

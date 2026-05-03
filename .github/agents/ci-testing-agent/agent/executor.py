@@ -6,7 +6,7 @@ import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class SandboxExecutor:
@@ -23,7 +23,7 @@ class SandboxExecutor:
         self.workspace = workspace
         self.timeout = timeout
 
-    def execute(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def execute(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Execute test command in sandbox.
 
@@ -101,8 +101,8 @@ class SandboxExecutor:
             }
 
     def execute_parallel(
-        self, tasks: List[Dict[str, Any]], max_workers: int = 4
-    ) -> List[Dict[str, Any]]:
+        self, tasks: list[dict[str, Any]], max_workers: int = 4
+    ) -> list[dict[str, Any]]:
         """
         Execute multiple test commands in parallel.
 
@@ -165,7 +165,7 @@ class SandboxExecutor:
         # Check if command is in allowed list
         return command in allowed_commands
 
-    def execute_with_validation(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def execute_with_validation(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Execute command with safety validation.
 

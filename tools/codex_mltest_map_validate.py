@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import yaml
 
 
-def load_ml_test_map(path: Path) -> Dict[str, Any]:
+def load_ml_test_map(path: Path) -> dict[str, Any]:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
-def validate_structure(data: Dict[str, Any]) -> None:
+def validate_structure(data: dict[str, Any]) -> None:
     if not isinstance(data, dict):
         raise ValueError("ML test map must be a mapping")
     categories = data.get("categories")

@@ -19,7 +19,7 @@ import os
 import warnings
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 
@@ -132,7 +132,7 @@ def _numpy_fft_psd(
 
 def compute_psd(
     times: Optional[np.ndarray], values: np.ndarray, fs: Optional[float] = None
-) -> Tuple[np.ndarray, np.ndarray, PSDSummary]:
+) -> tuple[np.ndarray, np.ndarray, PSDSummary]:
     """Compute PSD with automatic fallback.
     - If times is None or evenly sampled and fs is provided -> Welch
     - Else try Astropy LombScargle, then SciPy lombscargle

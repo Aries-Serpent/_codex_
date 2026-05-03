@@ -7,9 +7,9 @@ Test module for inference integration.
 import pytest
 
 fastapi = pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient  # noqa: E402  # isort: skip
+from fastapi.testclient import TestClient  # isort: skip
 
-from codex_ml.serving.inference_server import ModelConfig, create_app  # noqa: E402
+from codex_ml.serving.inference_server import ModelConfig, create_app
 
 
 def _build_client():

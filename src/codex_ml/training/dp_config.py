@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Differential privacy configuration helpers."""
 
 
 from dataclasses import dataclass, field

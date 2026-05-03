@@ -20,10 +20,10 @@ pytest.importorskip(
     "hypothesis", reason="Hypothesis required for NDJSON property tests"
 )
 
-from hypothesis import given  # noqa: E402
-from hypothesis import strategies as st  # noqa: E402
+from hypothesis import given
+from hypothesis import strategies as st
 
-from codex_ml.cli.ndjson_summary import NdjsonSummarizer  # noqa: E402
+from codex_ml.cli.ndjson_summary import NdjsonSummarizer
 
 
 @given(

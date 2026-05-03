@@ -6,8 +6,8 @@ Kept for backward compatibility with older invocations.
 from __future__ import annotations
 
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 
 def _ensure_repo_root_on_path() -> None:

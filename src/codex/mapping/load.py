@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""CSV mapping loaders with typed validation and evidence logging."""
 
 
 import csv  # noqa: E402

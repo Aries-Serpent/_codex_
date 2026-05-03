@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Union
+from typing import Optional
 
 import numpy as np
 
@@ -36,13 +36,13 @@ class AttentionAnalysis:
     attention_flow: np.ndarray
 
     # Layer names
-    layer_names: List[str]
+    layer_names: list[str]
 
     # Token IDs
-    token_ids: Optional[List[int]] = None
+    token_ids: Optional[list[int]] = None
 
     # Token strings (if provided)
-    tokens: Optional[List[str]] = None
+    tokens: Optional[list[str]] = None
 
 
 class AttentionScorer:
@@ -75,7 +75,7 @@ class AttentionScorer:
         self,
         model: torch.nn.Module,
         normalize: bool = True,
-        device: Optional[Union[str, torch.device]] = None,
+        device: Optional[str | torch.device] = None,
         epsilon: float = 1e-10,
     ):
         """
@@ -101,7 +101,7 @@ class AttentionScorer:
         self,
         input_ids: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
-    ) -> Tuple[List[torch.Tensor], List[str]]:
+    ) -> tuple[list[torch.Tensor], list[str]]:
         """
         Extract attention weights from all layers of the model.
 
@@ -165,7 +165,7 @@ class AttentionScorer:
         return attention_weights, layer_names
 
     def compute_token_importance(
-        self, attention_weights: List[torch.Tensor], method: str = "mean"
+        self, attention_weights: list[torch.Tensor], method: str = "mean"
     ) -> np.ndarray:
         """
         Compute importance score for each token based on attention patterns.
@@ -204,7 +204,7 @@ class AttentionScorer:
         return importance
 
     def compute_attention_flow(
-        self, attention_weights: List[torch.Tensor], layer_aggregation: str = "mean"
+        self, attention_weights: list[torch.Tensor], layer_aggregation: str = "mean"
     ) -> np.ndarray:
         """
         Compute attention flow matrix between tokens.
@@ -241,7 +241,7 @@ class AttentionScorer:
         self,
         input_ids: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
-        tokens: Optional[List[str]] = None,
+        tokens: Optional[list[str]] = None,
         importance_method: str = "mean",
         flow_aggregation: str = "mean",
     ) -> AttentionAnalysis:
@@ -285,7 +285,7 @@ class AttentionScorer:
 
     def get_top_attended_tokens(
         self, analysis: AttentionAnalysis, top_k: int = 5
-    ) -> List[Tuple[int, float, Optional[str]]]:
+    ) -> list[tuple[int, float, Optional[str]]]:
         """
         Get the top-k most attended tokens.
 

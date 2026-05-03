@@ -14,9 +14,9 @@ Note: These tests are designed to work once the Rust library is built with matur
 For now, they serve as documentation and will be executed in CI.
 """
 
-import sys  # noqa: E402
-import unittest  # noqa: E402
-from pathlib import Path  # noqa: E402
+import sys
+import unittest
+from pathlib import Path
 
 # Add project to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))

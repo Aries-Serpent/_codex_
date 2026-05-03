@@ -18,7 +18,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "src"))
 
-from codex.cognitive.brain_interface import (  # noqa: E402
+from codex.cognitive.brain_interface import (
     AgentBrainInterface,
     AgentCategory,
     AgentContext,

@@ -6,9 +6,9 @@ Test module for metrics registry alias.
 
 import pytest
 
-pytest.importorskip("torch")  # noqa: F401
+pytest.importorskip("torch")
 
-from codex_ml.metrics.registry import get_metric  # noqa: E402
+from codex_ml.metrics.registry import get_metric
 
 
 def test_token_accuracy_alias() -> None:

@@ -7,7 +7,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from agent.executor import SandboxExecutor
 from agent.generator import TestGenerator
@@ -15,7 +15,7 @@ from agent.reporter import ArtifactReporter
 from agent.validator import CoverageValidator
 
 
-def load_manifest(path: Path) -> Dict[str, Any]:
+def load_manifest(path: Path) -> dict[str, Any]:
     """
     Load task manifest from YAML file.
 

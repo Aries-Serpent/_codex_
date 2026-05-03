@@ -19,7 +19,6 @@ import ast
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Set
 
 
 @dataclass
@@ -42,21 +41,21 @@ class ModuleAnalysis:
     module_path: str
     total_statements: int
     current_coverage: float
-    uncovered_lines: Set[int] = field(default_factory=set)
-    classes: List[str] = field(default_factory=list)
-    functions: List[str] = field(default_factory=list)
-    enums: List[str] = field(default_factory=list)
-    properties: List[str] = field(default_factory=list)
-    imports: List[str] = field(default_factory=list)
-    initialization_patterns: List[str] = field(default_factory=list)
-    recommended_strategies: List[CoverageStrategy] = field(default_factory=list)
+    uncovered_lines: set[int] = field(default_factory=set)
+    classes: list[str] = field(default_factory=list)
+    functions: list[str] = field(default_factory=list)
+    enums: list[str] = field(default_factory=list)
+    properties: list[str] = field(default_factory=list)
+    imports: list[str] = field(default_factory=list)
+    initialization_patterns: list[str] = field(default_factory=list)
+    recommended_strategies: list[CoverageStrategy] = field(default_factory=list)
 
 
 class PhysicsTable1_TimeConstraints:
     """Table 1: Time Constraints - 62 equations for efficient testing."""
 
     @staticmethod
-    def get_strategies() -> List[CoverageStrategy]:
+    def get_strategies() -> list[CoverageStrategy]:
         return [
             CoverageStrategy(
                 equation_id=1,
@@ -113,7 +112,7 @@ class PhysicsTable2_ImportMonitoring:
     """Table 2: Import Monitoring - 62 equations for robust imports."""
 
     @staticmethod
-    def get_strategies() -> List[CoverageStrategy]:
+    def get_strategies() -> list[CoverageStrategy]:
         return [
             CoverageStrategy(
                 equation_id=1,
@@ -154,7 +153,7 @@ class PhysicsTable3_MultiOrchestrator:
     """Table 3: Multi-Orchestrator Patterns - 60 equations for integration."""
 
     @staticmethod
-    def get_strategies() -> List[CoverageStrategy]:
+    def get_strategies() -> list[CoverageStrategy]:
         return [
             CoverageStrategy(
                 equation_id=4,
@@ -193,7 +192,7 @@ class PhysicsTable4_CoverageUplift:
     """Table 4: Coverage Uplift Paths - 53 equations for targeted gains."""
 
     @staticmethod
-    def get_strategies() -> List[CoverageStrategy]:
+    def get_strategies() -> list[CoverageStrategy]:
         return [
             CoverageStrategy(
                 equation_id=2,
@@ -250,7 +249,7 @@ class CoveragePhysicsAnalyzer:
         self.project_root = project_root
         self.strategies = self._load_all_strategies()
 
-    def _load_all_strategies(self) -> List[CoverageStrategy]:
+    def _load_all_strategies(self) -> list[CoverageStrategy]:
         """Load strategies from all 4 physics tables."""
         all_strategies = []
         all_strategies.extend(PhysicsTable1_TimeConstraints.get_strategies())
@@ -312,7 +311,7 @@ class CoveragePhysicsAnalyzer:
 
         return analysis
 
-    def _recommend_strategies(self, analysis: ModuleAnalysis) -> List[CoverageStrategy]:
+    def _recommend_strategies(self, analysis: ModuleAnalysis) -> list[CoverageStrategy]:
         """Recommend strategies based on module analysis."""
         recommended = []
 
@@ -406,8 +405,8 @@ import pytest
         return test_code
 
     def calculate_coverage_velocity(
-        self, strategies: List[CoverageStrategy], current_coverage: float = 27.57
-    ) -> Dict[str, float]:
+        self, strategies: list[CoverageStrategy], current_coverage: float = 27.57
+    ) -> dict[str, float]:
         """Calculate expected coverage velocity using Eq #49 (J = Coverage/Runtime)."""
         total_gain = sum(s.expected_coverage_gain for s in strategies)
         total_time = sum(s.implementation_time_minutes for s in strategies)
@@ -432,7 +431,7 @@ import pytest
             "estimated_to_70pct": (70 - current_coverage) / velocity if velocity > 0 else 0,
         }
 
-    def validate_tables_implementation(self) -> Dict[str, bool]:
+    def validate_tables_implementation(self) -> dict[str, bool]:
         """Validate that all 4 physics tables are properly implemented."""
         validation = {
             "table1_time_constraints": False,

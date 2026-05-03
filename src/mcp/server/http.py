@@ -10,7 +10,8 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import Any, Iterable, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -39,7 +40,7 @@ class QueryRequest(BaseModel):
     filters: Optional[dict[str, Any]] = None
 
     @validator("query")
-    def _ensure_query(self, value: str) -> str:  # noqa: D401
+    def _ensure_query(self, value: str) -> str:
         """Require non-empty query strings."""
         if not value or not value.strip():
             raise ValueError("query cannot be empty")
@@ -52,7 +53,7 @@ class ContextUpsertRequest(BaseModel):
     items: list[ContextItem]
 
     @validator("items")
-    def _ensure_items(self, value: list[ContextItem]) -> list[ContextItem]:  # noqa: D401
+    def _ensure_items(self, value: list[ContextItem]) -> list[ContextItem]:
         if not value:
             raise ValueError("at least one item is required")
         return value

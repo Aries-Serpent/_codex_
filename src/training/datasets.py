@@ -20,13 +20,12 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Dataset utilities for training."""
 
 
 import hashlib  # noqa: E402
 import json  # noqa: E402
+from collections.abc import Iterable, Iterator, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Iterable, Iterator, Sequence  # noqa: E402
 
 import numpy as np  # noqa: E402
 

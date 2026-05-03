@@ -16,7 +16,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-import torch  # noqa: E402
+import torch
 
 
 def _stub_trainer_components(monkeypatch) -> None:

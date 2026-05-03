@@ -11,7 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from run_sweep import _validate_override  # noqa: E402
+from run_sweep import _validate_override
 
 
 class TestOverrideValidation:

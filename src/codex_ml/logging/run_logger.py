@@ -8,11 +8,12 @@ logger = logging.getLogger(__name__)
 
 import json  # noqa: E402
 import os  # noqa: E402
+from collections.abc import Mapping  # noqa: E402
 from collections.abc import Mapping as MappingABC  # noqa: E402
 from collections.abc import Sequence as SequenceABC  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Mapping, Optional  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 from codex_ml.logging.ndjson_logger import is_legacy_mode  # noqa: E402
 from codex_ml.tracking.writers import BaseWriter, NdjsonWriter  # type: ignore  # noqa: E402
@@ -224,9 +225,9 @@ class RunLogger:
 
 
 __all__ = [
-    "RunLogger",
-    "PARAMS_SCHEMA_URI",
-    "METRICS_SCHEMA_URI",
-    "METRICS_MANIFEST_SCHEMA_URI",
     "DEFAULT_SCHEMA_VERSION",
+    "METRICS_MANIFEST_SCHEMA_URI",
+    "METRICS_SCHEMA_URI",
+    "PARAMS_SCHEMA_URI",
+    "RunLogger",
 ]

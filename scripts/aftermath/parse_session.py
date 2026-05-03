@@ -35,7 +35,7 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import yaml
 
@@ -53,7 +53,7 @@ class AftermathParser:
             re.MULTILINE
         )
 
-    def parse_fenced_block(self, content: str) -> Optional[Dict]:
+    def parse_fenced_block(self, content: str) -> Optional[dict]:
         """Extract YAML from fenced aftermath block."""
         match = self.fenced_pattern.search(content)
         if not match:
@@ -65,7 +65,7 @@ class AftermathParser:
             print(f"YAML parse error: {e}", file=sys.stderr)
             return None
 
-    def parse_inline_tags(self, content: str) -> Optional[Dict]:
+    def parse_inline_tags(self, content: str) -> Optional[dict]:
         """Extract data from inline aftermath tags."""
         matches = self.inline_pattern.findall(content)
         if not matches:
@@ -107,7 +107,7 @@ class AftermathParser:
 
         return data if data['meta'] else None
 
-    def parse_file(self, file_path: Path) -> Optional[Dict]:
+    def parse_file(self, file_path: Path) -> Optional[dict]:
         """Parse aftermath data from a file."""
         try:
             content = file_path.read_text(encoding='utf-8')
@@ -129,7 +129,7 @@ class AftermathParser:
             print(f"Error reading {file_path}: {e}", file=sys.stderr)
             return None
 
-    def validate_schema(self, data: Dict) -> List[str]:
+    def validate_schema(self, data: dict) -> list[str]:
         """Validate aftermath data schema."""
         errors = []
 
@@ -148,7 +148,7 @@ class AftermathParser:
 
         return errors
 
-    def save_lessons_learned(self, data: Dict, output_dir: Path):
+    def save_lessons_learned(self, data: dict, output_dir: Path):
         """Save lessons learned to cumulative file."""
         output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -192,7 +192,7 @@ class AftermathParser:
 
         print(f"Updated cumulative lessons: {cumulative_file}")
 
-    def generate_checkpoint(self, data: Dict, output_dir: Path):
+    def generate_checkpoint(self, data: dict, output_dir: Path):
         """Generate checkpoint file for session resume."""
         output_dir.mkdir(parents=True, exist_ok=True)
 

@@ -1,6 +1,5 @@
 """Tests for the metric registry utilities."""
 
-# ruff: noqa: E402
 
 from __future__ import annotations
 
@@ -58,9 +57,9 @@ def _install_pydantic_stubs() -> None:
 
 _install_pydantic_stubs()
 
-from codex_ml.eval.runner import _compute_metrics  # noqa: E402
-from codex_ml.metrics import registry  # noqa: E402
-from codex_ml.registry.base import RegistryConflictError  # noqa: E402
+from codex_ml.eval.runner import _compute_metrics
+from codex_ml.metrics import registry
+from codex_ml.registry.base import RegistryConflictError
 
 
 def _read_error_log(base_dir: Path) -> str:
@@ -73,7 +72,7 @@ def test_register_and_get_metric_roundtrip(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
     metric_name = f"test-metric-{uuid.uuid4().hex}"
 
-    def metric(predictions, targets):  # noqa: ANN001 - simple test helper
+    def metric(predictions, targets):
         return float(len(predictions))
 
     registry.register(metric_name, metric)
@@ -86,9 +85,9 @@ def test_register_duplicate_logs_error(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
     metric_name = f"duplicate-metric-{uuid.uuid4().hex}"
 
-    registry.register(metric_name, lambda preds, targs: 1.0)  # noqa: ARG001
+    registry.register(metric_name, lambda preds, targs: 1.0)
     with pytest.raises(RegistryConflictError):
-        registry.register(metric_name, lambda preds, targs: 0.0)  # noqa: ARG001
+        registry.register(metric_name, lambda preds, targs: 0.0)
 
     log_contents = _read_error_log(tmp_path)
     assert metric_name in log_contents
@@ -99,7 +98,7 @@ def test_compute_metrics_uses_registry_metric(monkeypatch, tmp_path: Path) -> No
     monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
     metric_name = f"integration-metric-{uuid.uuid4().hex}"
 
-    def integration_metric(predictions, targets):  # noqa: ANN001
+    def integration_metric(predictions, targets):
         return {
             "total": float(len(predictions)),
             "matches": float(sum(int(p == t) for p, t in zip(predictions, targets))),

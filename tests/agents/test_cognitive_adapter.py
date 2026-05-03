@@ -8,7 +8,7 @@ to the new cognitive architecture.
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from unittest.mock import MagicMock, patch
 
 # We need to mock the cognitive_brain imports since they require specific setup
@@ -25,8 +25,8 @@ with patch.dict(
             self,
             timestamp: datetime,
             source: str,
-            data: Dict[str, Any],
-            metadata: Optional[Dict[str, Any]] = None,
+            data: dict[str, Any],
+            metadata: Optional[dict[str, Any]] = None,
         ):
             self.timestamp = timestamp
             self.source = source
@@ -36,7 +36,7 @@ with patch.dict(
     class MockOrientationResult:
         def __init__(
             self,
-            context: Dict[str, Any],
+            context: dict[str, Any],
             analysis: str,
             confidence: float,
             alternatives: list,
@@ -50,7 +50,7 @@ with patch.dict(
         def __init__(
             self,
             action: str,
-            parameters: Dict[str, Any],
+            parameters: dict[str, Any],
             reasoning: str,
             confidence: float,
             timestamp: datetime,
@@ -67,7 +67,7 @@ with patch.dict(
             success: bool,
             result: Any,
             error: Optional[str] = None,
-            metadata: Optional[Dict[str, Any]] = None,
+            metadata: Optional[dict[str, Any]] = None,
         ):
             self.success = success
             self.result = result
@@ -81,7 +81,7 @@ class TestSimpleDictMemory:
     def test_store_and_retrieve(self) -> None:
         """Test storing and retrieving values."""
         # Create a simple memory implementation
-        memory: Dict[str, Any] = {}
+        memory: dict[str, Any] = {}
 
         # Store
         memory["key1"] = "value1"
@@ -91,8 +91,8 @@ class TestSimpleDictMemory:
 
     def test_store_with_metadata(self) -> None:
         """Test storing with metadata."""
-        storage: Dict[str, Any] = {}
-        metadata: Dict[str, Dict[str, Any]] = {}
+        storage: dict[str, Any] = {}
+        metadata: dict[str, dict[str, Any]] = {}
 
         key = "test_key"
         value = "test_value"
@@ -137,7 +137,7 @@ class TestSimpleDictMemory:
 
     def test_history_tracking(self) -> None:
         """Test history tracking."""
-        history: Dict[str, list] = {}
+        history: dict[str, list] = {}
 
         key = "test_key"
 
@@ -300,7 +300,7 @@ class TestMemoryInterface:
 
     def test_memory_store_retrieve_pattern(self) -> None:
         """Test standard memory store/retrieve pattern."""
-        memory: Dict[str, Any] = {}
+        memory: dict[str, Any] = {}
 
         # Store multiple items
         items = [

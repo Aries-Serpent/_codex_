@@ -51,22 +51,22 @@ except Exception:  # pragma: no cover - optional dependency guard
     load_adapter_for_inference = None  # type: ignore[assignment]
 
 __all__ = [
-    "TokenizerAdapter",
+    "BanditRLAgent",
     "HFTokenizer",
     "HFTokenizerAdapter",
-    "WhitespaceTokenizer",
-    "RewardModel",
     "HeuristicRewardModel",
     "RLAgent",
-    "BanditRLAgent",
-    "register",
-    "get",
-    "load_component",
-    "get_component",
+    "RewardModel",
+    "TokenizerAdapter",
+    "WhitespaceTokenizer",
     "apply_config",
     "build_peft_config",
     "enable_peft",
+    "get",
+    "get_component",
     "load_adapter_for_inference",
+    "load_component",
+    "register",
 ]
 
 

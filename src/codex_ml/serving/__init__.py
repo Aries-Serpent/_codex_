@@ -18,7 +18,6 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""Serving package for ML inference"""
 
 from .inference_server import (
     AuthManager,
@@ -40,8 +39,8 @@ __all__ = [
     "AuthManager",
     "ModelConfig",
     "ModelLoadError",
-    "ModelServer",
     "ModelLoader",
+    "ModelServer",
     "RateLimiter",
     "create_app",
 ]

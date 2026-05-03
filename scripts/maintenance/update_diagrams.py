@@ -36,7 +36,6 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 @dataclass
@@ -55,10 +54,10 @@ class DiagramInfo:
 class DiagramUpdateReport:
     """Report of diagram scanning and updates."""
     total_diagrams: int = 0
-    diagrams_by_type: Dict[str, int] = field(default_factory=dict)
-    diagrams_needing_update: List[DiagramInfo] = field(default_factory=list)
-    diagrams_updated: List[DiagramInfo] = field(default_factory=list)
-    validation_errors: List[Tuple[Path, str]] = field(default_factory=list)
+    diagrams_by_type: dict[str, int] = field(default_factory=dict)
+    diagrams_needing_update: list[DiagramInfo] = field(default_factory=list)
+    diagrams_updated: list[DiagramInfo] = field(default_factory=list)
+    validation_errors: list[tuple[Path, str]] = field(default_factory=list)
 
 
 class DiagramUpdater:
@@ -97,7 +96,7 @@ class DiagramUpdater:
 
         return self.report
 
-    def _find_markdown_files(self) -> List[Path]:
+    def _find_markdown_files(self) -> list[Path]:
         """Find all markdown files in repository."""
         md_files = []
         for md_file in self.repo_root.rglob("*.md"):
@@ -344,7 +343,7 @@ graph LR
 
         return "\n".join(report_lines)
 
-    def validate_mermaid_syntax(self, content: str) -> Tuple[bool, str]:
+    def validate_mermaid_syntax(self, content: str) -> tuple[bool, str]:
         """Validate Mermaid diagram syntax (basic check)."""
         # Basic syntax validation
         if not content.strip():

@@ -35,16 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-check_dependency_evidence.py — Minimal schema validation for dependency_ops.jsonl
-
-Validates that each non-empty JSON line contains required keys:
-  - ts, action, tool
-
-Exit codes:
-  0 = OK
-  2 = Malformed or missing required keys
-"""
 
 import json
 import sys

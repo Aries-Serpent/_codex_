@@ -15,7 +15,7 @@ from unittest.mock import Mock, patch
 training_dir = Path(__file__).parent.parent.parent / "training"
 sys.path.insert(0, str(training_dir))
 
-import accelerate_init_guard  # noqa: E402
+import accelerate_init_guard
 
 
 class TestAccelerateAvailability:

@@ -14,7 +14,7 @@ import math
 import random
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 __all__ = [
     "Weights",
@@ -34,12 +34,12 @@ __all__ = [
 TOKEN_RE = re.compile(r"\w+|[^\w\s]")
 
 
-def tokenize(text: str) -> List[str]:
+def tokenize(text: str) -> list[str]:
     """Simple deterministic tokenizer used for the toy pipeline."""
     return TOKEN_RE.findall(text.lower())
 
 
-def _normalize(probs: Dict[str, float]) -> Dict[str, float]:
+def _normalize(probs: dict[str, float]) -> dict[str, float]:
     total = sum(probs.values())
     if total <= 0:
         raise ValueError("probabilities must sum to a positive value")
@@ -110,25 +110,25 @@ class RLHFCfg:
 class ModelHandle:
     name: str
     stage: str
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class RewardModelHandle:
     name: str
     base_model: str
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
 
 EPS = 1e-8
 DANGEROUS_TOKENS = {"rm", "drop", "delete"}
 
 
-def safety_penalty(token_probs: Dict[str, float]) -> float:
+def safety_penalty(token_probs: dict[str, float]) -> float:
     return sum(token_probs.get(tok, 0.0) for tok in DANGEROUS_TOKENS)
 
 
-def kl_divergence(p: Dict[str, float], q: Dict[str, float]) -> float:
+def kl_divergence(p: dict[str, float], q: dict[str, float]) -> float:
     """Kullback–Leibler divergence KL(p||q) for discrete distributions."""
     return sum(p[t] * math.log(p[t] / (q.get(t, EPS))) for t in p)
 
@@ -136,12 +136,12 @@ def kl_divergence(p: Dict[str, float], q: Dict[str, float]) -> float:
 # --------------------------- Primitives ---------------------------
 
 
-def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
+def pretrain(corpus: list[str], cfg: PretrainCfg) -> ModelHandle:
     """Train unigram model on corpus and return a model handle."""
     if not corpus:
         raise ValueError("corpus must not be empty")
     rng = random.Random(cfg.seed)
-    vocab: Dict[str, int] = {}
+    vocab: dict[str, int] = {}
     for doc in corpus:
         for tok in tokenize(doc)[: cfg.context_len]:
             vocab[tok] = vocab.get(tok, 0) + 1
@@ -160,21 +160,21 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
     return ModelHandle("Codex-Base", "M0.Pretrained", meta)
 
 
-def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
+def sft(model: ModelHandle, demos: list[dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
     """Supervised fine-tuning using completion demonstrations."""
     if not demos:
         raise ValueError("demos must not be empty")
     rng = random.Random(cfg.seed)
     token_probs = model.meta["token_probs"].copy()
     vocab = model.meta["vocab"].copy()
-    losses: List[float] = []
+    losses: list[float] = []
     tokens_seen = 0
     for _ in range(cfg.epochs):
         shuffled = demos[:]
         rng.shuffle(shuffled)
         for i in range(0, len(shuffled), cfg.batch_size):
             batch = shuffled[i : i + cfg.batch_size]
-            tokens: List[str] = []
+            tokens: list[str] = []
             for ex in batch:
                 tokens.extend(tokenize(ex["completion"]))
             if not tokens:
@@ -199,7 +199,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
 
 
 def train_reward_model(
-    prefs: List[Tuple[str, str, str, int]],
+    prefs: list[tuple[str, str, str, int]],
     base: ModelHandle,
     cfg: RewardModelCfg = RewardModelCfg(),
 ) -> RewardModelHandle:
@@ -213,7 +213,7 @@ def train_reward_model(
     weights = [0.0] * len(token_index)
     rng = random.Random(cfg.seed)
 
-    def featurise(text: str) -> List[float]:
+    def featurise(text: str) -> list[float]:
         vec = [0.0] * len(token_index)
         for tok in tokenize(text):
             if tok in token_index:
@@ -259,12 +259,12 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
     base_probs = model.meta["token_probs"].copy()
     rng = random.Random(cfg.seed)
 
-    def sample_completion(length: int = 4) -> List[str]:
+    def sample_completion(length: int = 4) -> list[str]:
         tokens = list(token_probs.keys())
         probs = list(token_probs.values())
         return rng.choices(tokens, probs, k=length) if tokens else []
 
-    def reward_of(tokens: List[str]) -> float:
+    def reward_of(tokens: list[str]) -> float:
         idx = rm.meta["token_index"]
         weights = rm.meta["weights"]
         score = 0.0
@@ -275,7 +275,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
 
     avg_reward = 0.0
     for _ in range(cfg.epochs):
-        rewards: List[float] = []
+        rewards: list[float] = []
         for prompt, _, _, _ in prefs:
             completion = sample_completion()
             if not completion:

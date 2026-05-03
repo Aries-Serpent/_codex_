@@ -15,9 +15,10 @@ import json  # noqa: E402
 import os  # noqa: E402
 import sys  # noqa: E402
 import warnings  # noqa: E402
+from collections.abc import Callable  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.utils.yaml_support import (  # noqa: E402
     MissingPyYAMLError,

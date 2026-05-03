@@ -14,7 +14,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import List
 
 
 def _load_json(path: str):
@@ -39,7 +38,7 @@ def _validate_pair(data_path: str, schema_path: str) -> bool:
         return False
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Validate JSON data with JSON Schema")
     p.add_argument(
         "--data",

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import csv
+import csv as _csv
 import hashlib
 import json
 import random
@@ -71,7 +71,7 @@ def load_csv_dataset(
         delimiter = "\t" if dataset_path.suffix.lower() == ".tsv" else ","
     records: list[dict[str, str]] = []
     with dataset_path.open("r", encoding="utf-8", newline="") as fh:
-        reader = csv.DictReader(fh, delimiter=delimiter)
+        reader = _csv.DictReader(fh, delimiter=delimiter)
         for row in reader:
             if not row:
                 continue

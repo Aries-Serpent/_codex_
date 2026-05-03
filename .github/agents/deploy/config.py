@@ -7,7 +7,7 @@ to various cloud platforms.
 
 import os
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -24,11 +24,11 @@ class DeploymentConfig:
 
     # Networking
     vpc_enabled: bool = False
-    vpc_subnet_ids: List[str] = field(default_factory=list)
-    security_group_ids: List[str] = field(default_factory=list)
+    vpc_subnet_ids: list[str] = field(default_factory=list)
+    security_group_ids: list[str] = field(default_factory=list)
 
     # Environment
-    environment_variables: Dict[str, str] = field(default_factory=dict)
+    environment_variables: dict[str, str] = field(default_factory=dict)
 
     # Scaling
     min_instances: int = 0
@@ -58,7 +58,7 @@ class DeploymentConfig:
             github_webhook_secret=os.environ.get("CODEX_WEBHOOK_SECRET"),
         )
 
-    def to_terraform_vars(self) -> Dict[str, any]:
+    def to_terraform_vars(self) -> dict[str, any]:
         """Convert to Terraform variables format."""
         return {
             "function_name": "codex-quantum-reviewer",
@@ -68,7 +68,7 @@ class DeploymentConfig:
             "environment_variables": self.environment_variables or {},
         }
 
-    def to_cloudformation_params(self) -> List[Dict[str, str]]:
+    def to_cloudformation_params(self) -> list[dict[str, str]]:
         """Convert to CloudFormation parameters format."""
         return [
             {"ParameterKey": "FunctionName", "ParameterValue": "codex-quantum-reviewer"},

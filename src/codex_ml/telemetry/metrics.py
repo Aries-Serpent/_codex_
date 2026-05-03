@@ -22,8 +22,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 import time  # noqa: E402
+from collections.abc import Callable  # noqa: E402
 from functools import wraps  # noqa: E402
-from typing import Any, Callable  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:  # optional dependency
     from prometheus_client import Counter, Histogram

@@ -18,9 +18,9 @@ except ImportError:
     _TORCH_312_BUG = False
 
 fastapi = pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient  # noqa
+from fastapi.testclient import TestClient
 
-from services.api.main import app  # noqa
+from services.api.main import app
 
 client = TestClient(app)
 

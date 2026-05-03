@@ -10,7 +10,7 @@ import pytest
 
 torch = pytest.importorskip("torch", reason="Torch required for resume / optimizer tests")
 
-from codex_ml.train_loop import run_training  # noqa: E402
+from codex_ml.train_loop import run_training
 
 
 @pytest.fixture()

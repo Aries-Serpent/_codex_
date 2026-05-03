@@ -17,7 +17,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 try:
     import tomllib
@@ -53,9 +53,9 @@ class MultiLanguageValidator:
 
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
-        self.issues: List[ConfigIssue] = []
+        self.issues: list[ConfigIssue] = []
 
-    def validate_all(self) -> Tuple[bool, List[ConfigIssue]]:
+    def validate_all(self) -> tuple[bool, list[ConfigIssue]]:
         """Validate all detected language configurations."""
         validators = {
             Language.RUST: self._validate_rust,

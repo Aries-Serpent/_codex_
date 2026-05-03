@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 try:
     import yaml  # type: ignore
@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover
     yaml = None
 
 
-def load_registry(path: Path) -> Dict[str, Any]:
+def load_registry(path: Path) -> dict[str, Any]:
     if yaml is None:
         raise RuntimeError("PyYAML is required. Install with `pip install pyyaml`.")
     if not path.exists():
@@ -31,7 +31,7 @@ def load_registry(path: Path) -> Dict[str, Any]:
     return data
 
 
-def find_gap(registry: Dict[str, Any], gap_id: str) -> Optional[Dict[str, Any]]:
+def find_gap(registry: dict[str, Any], gap_id: str) -> Optional[dict[str, Any]]:
     for item in registry.get("gaps", []):
         if not isinstance(item, dict):
             continue
@@ -40,7 +40,7 @@ def find_gap(registry: Dict[str, Any], gap_id: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-def ensure_docs_stub(repo_root: Path, gap_id: str, gap: Dict[str, Any]) -> Path:
+def ensure_docs_stub(repo_root: Path, gap_id: str, gap: dict[str, Any]) -> Path:
     docs_root = repo_root / "docs" / "gaps"
     docs_root.mkdir(parents=True, exist_ok=True)
     doc_path = docs_root / f"{gap_id}.md"
@@ -65,9 +65,9 @@ def ensure_docs_stub(repo_root: Path, gap_id: str, gap: Dict[str, Any]) -> Path:
     return doc_path
 
 
-def suggest_paths_for_gap(gap: Dict[str, Any]) -> Dict[str, str]:
+def suggest_paths_for_gap(gap: dict[str, Any]) -> dict[str, str]:
     capability = str(gap.get("capability", "general")).lower()
-    suggestions: Dict[str, str] = {}
+    suggestions: dict[str, str] = {}
     if "token" in capability:
         suggestions["code"] = "src/codex_ml/tokenization/"
         suggestions["tests"] = "tests/codex_ml/test_tokenization_*.py"

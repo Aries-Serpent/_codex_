@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import argparse
 import math
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List, Tuple
 
 DEFAULT_EXTENSIONS = (".py", ".md", ".yaml", ".yml")
 
@@ -32,8 +32,8 @@ def iter_files(base_dir: Path, extensions: Iterable[str]) -> Iterable[Path]:
             yield path
 
 
-def analyze_paths(paths: Iterable[Path]) -> List[Tuple[Path, float, int]]:
-    results: List[Tuple[Path, float, int]] = []
+def analyze_paths(paths: Iterable[Path]) -> list[tuple[Path, float, int]]:
+    results: list[tuple[Path, float, int]] = []
     for path in paths:
         try:
             content = path.read_text(encoding="utf-8")

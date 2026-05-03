@@ -10,7 +10,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -36,12 +36,12 @@ class AggregateMetrics:
     average_review_time: float = 0.0
     average_confidence: float = 0.0
     average_suggestions: float = 0.0
-    status_distribution: Dict[str, int] = field(default_factory=dict)
+    status_distribution: dict[str, int] = field(default_factory=dict)
     review_accuracy_rate: float = 0.0
     suggestion_acceptance_rate: float = 0.0
     knowledge_gaps_identified: int = 0
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert to dictionary for serialization."""
         return {
             "total_reviews": self.total_reviews,
@@ -81,8 +81,8 @@ class MetricsCollector:
 
         # Buffering for performance
         self.buffer_size = buffer_size
-        self._metrics_buffer: List[Dict] = []
-        self._feedback_buffer: List[Dict] = []
+        self._metrics_buffer: list[dict] = []
+        self._feedback_buffer: list[dict] = []
 
     def _flush_metrics(self):
         """Flush metrics buffer to disk."""
@@ -135,7 +135,7 @@ class MetricsCollector:
 
         logger.info(f"Recorded metrics for PR #{metrics.pr_number}")
 
-    def record_feedback(self, pr_number: int, feedback: Dict, flush_immediately: bool = False):
+    def record_feedback(self, pr_number: int, feedback: dict, flush_immediately: bool = False):
         """
         Record feedback for a review.
 
@@ -169,7 +169,7 @@ class MetricsCollector:
         except Exception:
             pass  # Ignore errors during cleanup
 
-    def get_recent_metrics(self, days: int = 30) -> List[ReviewMetrics]:
+    def get_recent_metrics(self, days: int = 30) -> list[ReviewMetrics]:
         """
         Get metrics for recent reviews.
 

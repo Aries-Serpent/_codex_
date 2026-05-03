@@ -6,7 +6,7 @@ Test module for token cache.
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -19,7 +19,7 @@ class _SpyTokenizer:
     name_or_path = "spy"
 
     def __init__(self) -> None:
-        self.calls: Dict[str, int] = {}
+        self.calls: dict[str, int] = {}
 
     def __call__(
         self,
@@ -30,7 +30,7 @@ class _SpyTokenizer:
         max_length: int | None = None,
         add_special_tokens: bool | None = True,
         return_attention_mask: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         self.calls[text] = self.calls.get(text, 0) + 1
         tokens = [ord(ch) % 257 for ch in text]
         if add_special_tokens:
@@ -42,7 +42,7 @@ class _SpyTokenizer:
             while len(tokens) < max_length:
                 tokens.append(self.pad_token_id)
                 mask.append(0)
-        payload: Dict[str, Any] = {"input_ids": tokens}
+        payload: dict[str, Any] = {"input_ids": tokens}
         if return_attention_mask:
             payload["attention_mask"] = mask
         return payload

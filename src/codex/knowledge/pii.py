@@ -250,8 +250,8 @@ def scrub_for_embedding(text: str) -> str:
 
 
 __all__ = [
+    "PIIFlags",
+    "RedactionMode",
     "scrub",
     "scrub_for_embedding",
-    "RedactionMode",
-    "PIIFlags",
 ]

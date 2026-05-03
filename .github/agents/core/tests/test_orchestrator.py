@@ -1,7 +1,7 @@
 """
 Tests for AgentOrchestrator.
 """
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -17,18 +17,18 @@ class MockAgent(CognitiveAgent):
         self.delay = delay
         self.executed_tasks = []
 
-    def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, task: dict[str, Any]) -> dict[str, Any]:
         return {"parsed": task}
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         return {"strategy": "execute"}
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         import time
         time.sleep(self.delay)
         return {"status": "success", "outputs": {}}
 
-    def aftermath(self, result, context, decision) -> Dict[str, Any]:
+    def aftermath(self, result, context, decision) -> dict[str, Any]:
         self.executed_tasks.append(result)
         return {"metrics": {}, "lessons": [], "patterns": []}
 

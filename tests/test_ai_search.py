@@ -7,8 +7,8 @@ import pytest
 # Add scripts to path for importing
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from ai_search import AIRepositorySearch  # noqa: E402
-from generate_ai_index import CodeEntity, RepositoryIndexer  # noqa: E402
+from ai_search import AIRepositorySearch
+from generate_ai_index import CodeEntity, RepositoryIndexer
 
 
 @pytest.fixture

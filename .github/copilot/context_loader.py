@@ -4,7 +4,6 @@ Loads relevant context based on current task.
 """
 
 from pathlib import Path
-from typing import Dict, List
 
 import yaml
 
@@ -17,7 +16,7 @@ class AgentContextLoader:
         self.config_path = Path(".github/copilot/agent-brain-config.yml")
         self.config = self._load_config()
 
-    def _load_config(self) -> Dict:
+    def _load_config(self) -> dict:
         """Load agent configuration."""
         if self.config_path.exists():
             with open(self.config_path) as f:
@@ -28,11 +27,11 @@ class AgentContextLoader:
         """Get current operating mode."""
         return self.config.get("agent_operating_mode", {}).get("mode", "guided")
 
-    def get_quantum_patterns(self) -> Dict:
+    def get_quantum_patterns(self) -> dict:
         """Get quantum reasoning patterns to apply."""
         return self.config.get("quantum_patterns", {})
 
-    def get_decision_framework(self) -> Dict:
+    def get_decision_framework(self) -> dict:
         """Get decision-making framework."""
         return self.config.get("decision_framework", {})
 
@@ -41,11 +40,11 @@ class AgentContextLoader:
         autonomous = self.config.get("capabilities", {}).get("autonomous_actions", [])
         return action in autonomous
 
-    def get_execution_directives(self) -> Dict:
+    def get_execution_directives(self) -> dict:
         """Get execution directives (no placeholders, etc)."""
         return self.config.get("execution_directives", {})
 
-    def get_relevant_context(self, task_type: str) -> List[str]:
+    def get_relevant_context(self, task_type: str) -> list[str]:
         """Get relevant context files/directories for task type that exist on disk."""
         context_map = {
             "ast_implementation": [
@@ -60,14 +59,14 @@ class AgentContextLoader:
             ],
         }
         configured_paths = context_map.get(task_type, [])
-        existing_paths: List[str] = []
+        existing_paths: list[str] = []
         for path_str in configured_paths:
             path_obj = Path(path_str)
             if path_obj.exists():
                 existing_paths.append(str(path_obj))
         return existing_paths
 
-    def generate_continuation_prompt(self, session_state: Dict) -> str:
+    def generate_continuation_prompt(self, session_state: dict) -> str:
         """Generate continuation prompt with full context."""
         template = self.config.get("continuation_protocol", {}).get(
             "continuation_prompt_format", ""

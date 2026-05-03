@@ -13,11 +13,11 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-from tests.helpers.optional_dependencies import import_optional_dependency  # noqa: E402
+from tests.helpers.optional_dependencies import import_optional_dependency
 
 torch = import_optional_dependency("torch", allow_stub=False)
-from codex_ml.model_registry import LoraRequest, ModelRequest, get_model  # noqa: E402
-from codex_ml.models.registry import model_registry  # noqa: E402
+from codex_ml.model_registry import LoraRequest, ModelRequest, get_model
+from codex_ml.models.registry import model_registry
 
 
 class _TrackableModule:

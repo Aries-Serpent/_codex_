@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from deploy.deploy_codex_pipeline import main  # noqa: E402
+from deploy.deploy_codex_pipeline import main
 
 
 def _write_jsonl(path: Path, rows):

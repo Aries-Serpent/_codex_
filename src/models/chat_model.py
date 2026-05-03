@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from importlib import import_module, util
-from typing import Any, Mapping
+from typing import Any
 
 _VALID_DTYPES = {"fp32", "fp16", "bf16"}
 

@@ -2,7 +2,6 @@
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
 
 from .ast_parsers.python_parser import FunctionSignature, PythonASTParser
 from .schema import DuplicateGroup, MemberFile
@@ -15,7 +14,7 @@ class ASTDetector:
         self,
         root_path: Path,
         similarity_threshold: float = 0.85,
-        exclude_patterns: List[str] = None,
+        exclude_patterns: list[str] = None,
         respect_gitignore: bool = True,
     ):
         """
@@ -34,7 +33,7 @@ class ASTDetector:
 
         self.python_parser = PythonASTParser()
 
-    def scan(self) -> List[DuplicateGroup]:
+    def scan(self) -> list[DuplicateGroup]:
         """
         Scan repository for AST-level duplicates.
 
@@ -57,7 +56,7 @@ class ASTDetector:
 
         return duplicate_groups
 
-    def find_identical_functions(self, signatures: List[FunctionSignature]) -> List[DuplicateGroup]:
+    def find_identical_functions(self, signatures: list[FunctionSignature]) -> list[DuplicateGroup]:
         """
         Find functions with identical AST.
 
@@ -68,7 +67,7 @@ class ASTDetector:
             List of duplicate groups for identical functions
         """
         # Group by AST hash
-        hash_groups: Dict[str, List[FunctionSignature]] = defaultdict(list)
+        hash_groups: dict[str, list[FunctionSignature]] = defaultdict(list)
         for sig in signatures:
             hash_groups[sig.ast_hash].append(sig)
 
@@ -136,7 +135,7 @@ class ASTDetector:
 
         return duplicate_groups
 
-    def find_similar_functions(self, signatures: List[FunctionSignature]) -> List[DuplicateGroup]:
+    def find_similar_functions(self, signatures: list[FunctionSignature]) -> list[DuplicateGroup]:
         """
         Find functions with similar AST (above threshold).
 
@@ -150,7 +149,7 @@ class ASTDetector:
         # For now, we'll use a simpler approach: group by function name
         # and then check similarity within same-named functions
 
-        name_groups: Dict[str, List[FunctionSignature]] = defaultdict(list)
+        name_groups: dict[str, list[FunctionSignature]] = defaultdict(list)
         for sig in signatures:
             name_groups[sig.name].append(sig)
 
@@ -168,7 +167,7 @@ class ASTDetector:
 
             # For now, consider same-named functions with same parameter count
             # as potentially similar (simplified approach)
-            param_groups: Dict[int, List[FunctionSignature]] = defaultdict(list)
+            param_groups: dict[int, list[FunctionSignature]] = defaultdict(list)
             for sig in sigs:
                 param_groups[len(sig.parameters)].append(sig)
 
@@ -221,7 +220,7 @@ class ASTDetector:
 
         return duplicate_groups
 
-    def _find_python_files(self) -> List[Path]:
+    def _find_python_files(self) -> list[Path]:
         """Find all Python files in repository."""
         python_files = []
 

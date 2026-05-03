@@ -7,7 +7,8 @@ Provides common test patterns, mocks, and assertions.
 
 import hashlib
 import random
-from typing import Any, Callable, Dict, List, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal
 from mcp.errors import MCPError, ToolNotFound
@@ -21,16 +22,16 @@ def create_test_principal(principal_id: str = "test-user-123") -> Principal:
     return Principal(principal_id=principal_id)
 
 
-def _make_registry_handler(tool_name: str) -> Callable[[Dict[str, Any]], Dict[str, Any]]:
+def _make_registry_handler(tool_name: str) -> Callable[[dict[str, Any]], dict[str, Any]]:
     """Create a handler that captures the tool name at definition time."""
 
-    def _handler(params: Dict[str, Any]) -> Dict[str, Any]:
+    def _handler(params: dict[str, Any]) -> dict[str, Any]:
         return {"tool": tool_name, "params": params}
 
     return _handler
 
 
-def create_test_registry(tools: Optional[List[str]] = None) -> MCPToolRegistry:
+def create_test_registry(tools: Optional[list[str]] = None) -> MCPToolRegistry:
     """
     Create a test registry with optional pre-registered tools.
 
@@ -62,12 +63,12 @@ def create_test_rate_limiter(
 
 
 # Mock Tool Handlers
-def mock_echo_handler(params: Dict[str, Any]) -> Dict[str, Any]:
+def mock_echo_handler(params: dict[str, Any]) -> dict[str, Any]:
     """Mock echo tool - returns input params."""
     return {"echo": params}
 
 
-def mock_error_handler(params: Dict[str, Any]) -> Dict[str, Any]:
+def mock_error_handler(params: dict[str, Any]) -> dict[str, Any]:
     """Mock tool that raises errors based on params."""
     if params.get("raise_error"):
         error_type = params.get("error_type", "generic")
@@ -77,7 +78,7 @@ def mock_error_handler(params: Dict[str, Any]) -> Dict[str, Any]:
     return {"success": True}
 
 
-def mock_async_handler(params: Dict[str, Any]) -> Dict[str, Any]:
+def mock_async_handler(params: dict[str, Any]) -> dict[str, Any]:
     """Mock async tool - simulates delayed operation."""
     # In real async, would use asyncio
     return {"status": "completed", "params": params}
@@ -121,7 +122,7 @@ def assert_rate_limit_allows(
 class MockRequest:
     """Mock request object for testing authentication."""
 
-    def __init__(self, headers: Optional[Dict[str, str]] = None):
+    def __init__(self, headers: Optional[dict[str, str]] = None):
         self.headers = headers or {}
 
     def get_header(self, name: str) -> Optional[str]:
@@ -134,9 +135,9 @@ class ToolHandlerHelper:
     def __init__(self, return_value: Any = None):
         self.return_value = return_value or {"status": "ok"}
         self.call_count = 0
-        self.call_history: List[Dict[str, Any]] = []
+        self.call_history: list[dict[str, Any]] = []
 
-    def __call__(self, params: Dict[str, Any]) -> Any:
+    def __call__(self, params: dict[str, Any]) -> Any:
         self.call_count += 1
         self.call_history.append(params)
         return self.return_value
@@ -153,7 +154,7 @@ def get_deterministic_rng(seed: int = 42) -> random.Random:
     return random.Random(seed)
 
 
-def generate_test_data(count: int = 10, seed: int = 42) -> List[Dict[str, Any]]:
+def generate_test_data(count: int = 10, seed: int = 42) -> list[dict[str, Any]]:
     """Generate deterministic test data."""
     rng = get_deterministic_rng(seed)
     data = []
@@ -178,7 +179,7 @@ def verify_test_checksum(data: Any, expected: str) -> bool:
 
 
 # Integration Test Helpers
-def setup_test_environment() -> Dict[str, Any]:
+def setup_test_environment() -> dict[str, Any]:
     """
     Setup complete test environment with all MCP components.
 
@@ -194,7 +195,7 @@ def setup_test_environment() -> Dict[str, Any]:
     }
 
 
-def teardown_test_environment(env: Dict[str, Any]) -> None:
+def teardown_test_environment(env: dict[str, Any]) -> None:
     """Teardown test environment and clean up resources."""
     # Reset rate limiter
     if "limiter" in env:
@@ -233,7 +234,7 @@ class PerformanceTimer:
 
 def benchmark_operation(
     operation: Callable, iterations: int = 100, *args, **kwargs
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Benchmark an operation over multiple iterations.
 
@@ -258,13 +259,13 @@ def benchmark_operation(
 
 
 # Test Data Validation
-def validate_tool_metadata(metadata: Dict[str, Any]) -> bool:
+def validate_tool_metadata(metadata: dict[str, Any]) -> bool:
     """Validate tool metadata structure."""
     required_fields = ["description"]
     return all(field in metadata for field in required_fields)
 
 
-def validate_tool_schema(schema: Dict[str, Any]) -> bool:
+def validate_tool_schema(schema: dict[str, Any]) -> bool:
     """Validate tool schema structure."""
     return "type" in schema
 
@@ -330,7 +331,7 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     for file in files:
         try:
             os.remove(file)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass  # Ignore errors if file cannot be removed (e.g., permission denied)
 
 

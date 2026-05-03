@@ -11,7 +11,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from codex_ml.utils.checkpointing import save_checkpoint  # noqa: E402
+from codex_ml.utils.checkpointing import save_checkpoint
 
 
 @pytest.mark.ml

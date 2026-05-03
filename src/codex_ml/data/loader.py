@@ -12,16 +12,12 @@ import io  # noqa: E402
 import json  # noqa: E402
 import pickle  # noqa: E402
 import time  # noqa: E402
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import (  # noqa: E402
     Any,
-    Callable,
-    Iterable,
-    Iterator,
-    Mapping,
     Optional,
-    Sequence,
     TypeVar,
 )
 

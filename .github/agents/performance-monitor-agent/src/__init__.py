@@ -71,7 +71,7 @@ class PerformanceMonitorAgent:
 
     # PDA Loop Implementation
 
-    def perceive(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         Perception Phase: Gather performance metrics and analyze patterns
         """
@@ -88,7 +88,7 @@ class PerformanceMonitorAgent:
         self.pda_state["perception"].append(perception)
         return perception
 
-    def decide(self, perception: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, perception: dict[str, Any]) -> dict[str, Any]:
         """
         Decision Phase: Determine actions based on performance analysis
         """
@@ -125,7 +125,7 @@ class PerformanceMonitorAgent:
         self.pda_state["decision"].append(decision)
         return decision
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """
         Action Phase: Execute performance monitoring and optimization
         """
@@ -168,7 +168,7 @@ class PerformanceMonitorAgent:
         self.pda_state["action"].append(result)
         return result
 
-    def aftermath(self, action_result: Dict[str, Any]) -> Dict[str, Any]:
+    def aftermath(self, action_result: dict[str, Any]) -> dict[str, Any]:
         """
         AfterMath Phase: Learn from action outcomes and improve
         """
@@ -231,7 +231,7 @@ class PerformanceMonitorAgent:
         """Measure performance metric"""
         self.regression_detector.measure(metric_name, value, commit_sha)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get comprehensive agent metrics"""
         return {
             "agent_name": "performance-monitor",

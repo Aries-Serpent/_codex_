@@ -10,7 +10,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Add core to path for CognitiveBrain access
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "core"))
@@ -29,14 +29,14 @@ class SecurityReport:
     low_count: int
     auto_fixed_count: int
     remediations_applied: int
-    cvss_scores: List[float]
+    cvss_scores: list[float]
     average_cvss: float
     risk_score: float
-    compliance_status: Dict[str, bool]
-    top_issues: List[Dict[str, Any]]
-    recommendations: List[str]
-    lessons_learned: List[str]
-    metadata: Dict[str, Any]
+    compliance_status: dict[str, bool]
+    top_issues: list[dict[str, Any]]
+    recommendations: list[str]
+    lessons_learned: list[str]
+    metadata: dict[str, Any]
 
 
 class SecurityReporter:
@@ -57,8 +57,8 @@ class SecurityReporter:
         self.repo_path = repo_path
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
 
-    def aftermath(self, result: Dict[str, Any], context: Dict[str, Any],
-                  decision: Dict[str, Any]) -> None:
+    def aftermath(self, result: dict[str, Any], context: dict[str, Any],
+                  decision: dict[str, Any]) -> None:
         """
         AFTERMATH: Generate reports, record metrics, and learn.
 
@@ -101,8 +101,8 @@ class SecurityReporter:
         print(f"   Critical: {report.critical_count}, High: {report.high_count}")
         print(f"   Auto-fixed: {report.auto_fixed_count}")
 
-    def _generate_report(self, result: Dict[str, Any], context: Dict[str, Any],
-                        decision: Dict[str, Any]) -> SecurityReport:
+    def _generate_report(self, result: dict[str, Any], context: dict[str, Any],
+                        decision: dict[str, Any]) -> SecurityReport:
         """
         Generate comprehensive security report.
 
@@ -191,7 +191,7 @@ class SecurityReporter:
         except Exception as e:
             print(f"Warning: Failed to record metrics: {e}")
 
-    def _store_patterns(self, context: Dict[str, Any], decision: Dict[str, Any]) -> None:
+    def _store_patterns(self, context: dict[str, Any], decision: dict[str, Any]) -> None:
         """
         Store security patterns in cognitive brain.
 
@@ -218,8 +218,8 @@ class SecurityReporter:
         except Exception as e:
             print(f"Warning: Failed to store patterns: {e}")
 
-    def _generate_lessons(self, result: Dict[str, Any], context: Dict[str, Any],
-                         decision: Dict[str, Any]) -> List[str]:
+    def _generate_lessons(self, result: dict[str, Any], context: dict[str, Any],
+                         decision: dict[str, Any]) -> list[str]:
         """
         Generate lessons learned from security scan.
 
@@ -275,7 +275,7 @@ class SecurityReporter:
         except Exception as e:
             print(f"Warning: Failed to store lesson: {e}")
 
-    def _calculate_risk_score(self, analyses: List[Any]) -> float:
+    def _calculate_risk_score(self, analyses: list[Any]) -> float:
         """Calculate overall risk score (0.0-10.0)."""
         if not analyses:
             return 0.0
@@ -284,7 +284,7 @@ class SecurityReporter:
         total_risk = sum(a.risk_score for a in analyses)
         return min(10.0, total_risk / len(analyses))
 
-    def _assess_compliance(self, analyses: List[Any]) -> Dict[str, bool]:
+    def _assess_compliance(self, analyses: list[Any]) -> dict[str, bool]:
         """Assess compliance with security frameworks."""
         compliance = {
             "OWASP_TOP_10": True,
@@ -312,7 +312,7 @@ class SecurityReporter:
 
         return compliance
 
-    def _get_top_issues(self, analyses: List[Any], limit: int = 5) -> List[Dict[str, Any]]:
+    def _get_top_issues(self, analyses: list[Any], limit: int = 5) -> list[dict[str, Any]]:
         """Get top security issues by risk score."""
         sorted_analyses = sorted(analyses, key=lambda a: a.risk_score, reverse=True)
 
@@ -328,7 +328,7 @@ class SecurityReporter:
             for a in sorted_analyses[:limit]
         ]
 
-    def _generate_recommendations(self, report: SecurityReport) -> List[str]:
+    def _generate_recommendations(self, report: SecurityReport) -> list[str]:
         """Generate actionable recommendations."""
         recommendations = []
 
@@ -393,7 +393,7 @@ class SecurityReporter:
 
         report_path.write_text(json.dumps(report_dict, indent=2))
 
-    def _save_report_markdown(self, report: SecurityReport, recommendations: List[str]) -> None:
+    def _save_report_markdown(self, report: SecurityReport, recommendations: list[str]) -> None:
         """Save report as Markdown."""
         report_path = self.repo_path / ".codex" / "SECURITY_SCAN_REPORT.md"
 

@@ -5,9 +5,9 @@ from __future__ import annotations
 import importlib
 import json
 import sys
+from collections.abc import Iterable
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Iterable
 
 import pytest
 
@@ -23,7 +23,7 @@ class _StubProcessor:
         self.model_file: str | None = None
 
     # The adapter prefers ``Load`` but some environments expose ``load`` instead.
-    def Load(self, model_file: str) -> None:  # noqa: N802 - mimic third-party casing
+    def Load(self, model_file: str) -> None:
         self.model_file = model_file
 
     def load(self, model_file: str) -> None:
@@ -44,7 +44,7 @@ class _StubProcessor:
     def encode(self, text: str, out_type=int) -> Iterable[int]:  # type: ignore[override]
         return [out_type(ord(ch)) for ch in text]
 
-    def EncodeAsIds(self, text: str) -> list[int]:  # noqa: N802 - third-party casing
+    def EncodeAsIds(self, text: str) -> list[int]:
         return [ord(ch) for ch in text]
 
     def decode(self, ids: Iterable[int]) -> str:
@@ -52,7 +52,7 @@ class _StubProcessor:
         ids_list = list(ids) if not isinstance(ids, list) else ids
         return "".join(chr(int(i)) for i in ids_list)
 
-    def DecodeIds(self, ids: Iterable[int]) -> str:  # noqa: N802
+    def DecodeIds(self, ids: Iterable[int]) -> str:
         return self.decode(ids)
 
 

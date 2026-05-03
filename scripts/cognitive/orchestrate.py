@@ -51,7 +51,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Allow running from repo root without installing the package
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -110,7 +110,7 @@ _FOOTER_SENTINEL = "🔬 QuantumPlansetEngine Integration"
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _parse_context(ctx_str: str) -> Dict[str, Any]:
+def _parse_context(ctx_str: str) -> dict[str, Any]:
     """Parse a JSON string into a context dict."""
     try:
         return json.loads(ctx_str)
@@ -421,7 +421,7 @@ def _build_parser() -> argparse.ArgumentParser:
 # Entry point
 # ---------------------------------------------------------------------------
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
 

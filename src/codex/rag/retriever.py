@@ -8,7 +8,7 @@ import logging
 from collections import OrderedDict
 from datetime import UTC, datetime
 from time import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -104,7 +104,7 @@ class Retriever:
 
     def query(
         self, q: str, top_k: int = 5, min_score: Optional[float] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Query the index with a text query and return top-k results.
 
@@ -217,7 +217,7 @@ class Retriever:
             return 1
         return max(1, (char_pos // chars_per_line) + 1)
 
-    def _extract_file_from_metadata(self, chunk: Dict[str, Any]) -> str:
+    def _extract_file_from_metadata(self, chunk: dict[str, Any]) -> str:
         """
         Extract source file path from chunk or index metadata.
 
@@ -241,7 +241,7 @@ class Retriever:
 
         return "unknown"
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get statistics about the loaded index.
 
@@ -271,7 +271,7 @@ class MultiIndexRetriever:
 
     def __init__(
         self,
-        indices: List[Dict[str, str]],
+        indices: list[dict[str, str]],
         index_dir: str = ".codex/tenants",
         model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
     ):
@@ -307,7 +307,7 @@ class MultiIndexRetriever:
 
     def query(
         self, q: str, top_k: int = 5, min_score: Optional[float] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Query all indices and merge results by score.
 
@@ -339,7 +339,7 @@ class MultiIndexRetriever:
         # Return top_k
         return all_results[:top_k]
 
-    def get_stats(self) -> List[Dict[str, Any]]:
+    def get_stats(self) -> list[dict[str, Any]]:
         """Get statistics for all loaded indices."""
         return [r.get_stats() for r in self.retrievers]
 
@@ -418,7 +418,7 @@ class LRUCache:
         self.hits = 0
         self.misses = 0
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         total = self.hits + self.misses
         hit_rate = self.hits / total if total > 0 else 0.0
@@ -551,7 +551,7 @@ class CachedRetriever(Retriever):
 
     def query_with_cache(
         self, q: str, top_k: int = 5, min_score: Optional[float] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Query with caching support.
 
@@ -599,7 +599,7 @@ class CachedRetriever(Retriever):
         self.cache_timestamps.clear()
         logger.info("Query cache cleared")
 
-    def get_cache_stats(self) -> Dict[str, Any]:
+    def get_cache_stats(self) -> dict[str, Any]:
         """
         Get cache statistics.
 

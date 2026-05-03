@@ -19,11 +19,11 @@ __all__ = [
     "AgentBrainInterface",
     "AgentCategory",
     "AgentContext",
-    "PatternMatch",
     "BaseBrainAdapter",
     "CICDAdapter",
-    "TestingAdapter",
+    "PatternMatch",
     "SecurityAdapter",
+    "TestingAdapter",
 ]
 
 

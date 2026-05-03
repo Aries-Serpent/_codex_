@@ -14,9 +14,9 @@ pytest.importorskip("typer")
 
 # Skip entire module if torch is not available or unloadable
 torch = pytest.importorskip("torch", reason="PyTorch required for logging integration tests")
-from typer.testing import CliRunner  # noqa: E402
+from typer.testing import CliRunner
 
-from codex_ml.evaluation import cli as eval_cli  # noqa: E402
+from codex_ml.evaluation import cli as eval_cli
 
 
 class NoopLogger:

@@ -20,15 +20,15 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Session-scoped structured logging utilities."""
 
 
 import json  # noqa: E402
 import os  # noqa: E402
 import uuid  # noqa: E402
+from collections.abc import Iterable, Mapping  # noqa: E402
 from datetime import datetime, timedelta, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable, Mapping  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.safety.redaction import SecretRedactor  # noqa: E402
 
@@ -155,4 +155,4 @@ class SessionLogger:
                     continue
 
 
-__all__ = ["SessionLogger", "DEFAULT_LOG_DIR"]
+__all__ = ["DEFAULT_LOG_DIR", "SessionLogger"]

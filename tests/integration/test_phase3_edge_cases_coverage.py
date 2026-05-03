@@ -432,8 +432,7 @@ class TestConcurrentAccessAndLocking:
             return True
 
         def release_lock(resource_id):
-            if resource_id in locks:
-                del locks[resource_id]
+            locks.pop(resource_id, None)
 
         # First thread acquires lock
         assert acquire_lock("file1") is True
@@ -531,7 +530,7 @@ class TestConcurrentAccessAndLocking:
                     locks[name].acquire()
                     acquired.append(name)
                 return True
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # Release in reverse order on failure
                 for name in reversed(acquired):
                     locks[name].release()
@@ -675,7 +674,7 @@ class TestPartialFailuresAndRollback:
 
             # Error occurs — COMMIT is intentionally never reached
             raise ValueError("Constraint violation")
-        except Exception:  # noqa: BLE001
+        except Exception:
             transaction_log.append("ROLLBACK")
 
         assert "ROLLBACK" in transaction_log
@@ -722,7 +721,7 @@ class TestPartialFailuresAndRollback:
             # Operation 3 fails
             raise RuntimeError("Operation 3 failed")
 
-        except Exception:  # noqa: BLE001
+        except Exception:
             # Execute compensations in reverse
             for compensation in reversed(compensations):
                 operations.append(compensation)
@@ -802,7 +801,7 @@ class TestPartialFailuresAndRollback:
             # Step 3 fails
             raise Exception("Shipping service unavailable")
 
-        except Exception:  # noqa: BLE001
+        except Exception:
             # Execute compensations
             for comp_action, comp_data in reversed(compensations):
                 saga_steps.append((comp_action, comp_data))
@@ -924,7 +923,7 @@ class TestPartialFailuresAndRollback:
             # Partial failure at change 4
             raise Exception("Change 4 failed")
 
-        except Exception:  # noqa: BLE001
+        except Exception:
             # Rollback only applied changes
             rollback_sequence = []
             for change in reversed(applied_changes):

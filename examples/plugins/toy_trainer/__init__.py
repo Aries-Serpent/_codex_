@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
-from typing import Iterable, List
+from collections.abc import Iterable
+from typing import List
 
 
 def build():
     def train(
         model, data: Iterable[object]
-    ) -> List[dict[str, object]]:  # pragma: no cover - illustrative
-        history: List[dict[str, object]] = []
+    ) -> list[dict[str, object]]:  # pragma: no cover - illustrative
+        history: list[dict[str, object]] = []
         for step, batch in enumerate(data):
             history.append({"step": step, "batch": batch, "loss": 0.0})
         return history

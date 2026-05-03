@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import importlib
 import sys
+from collections.abc import Iterable, Mapping
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Iterable, Mapping
+from typing import Any
 
 __all__: list[str]
 

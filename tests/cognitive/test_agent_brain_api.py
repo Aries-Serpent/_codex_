@@ -367,30 +367,30 @@ class TestCognitiveBrain:
 
 class TestBrainSingleton:
     def test_brain_importable(self):
-        from codex.cognitive import brain  # noqa: PLC0415
+        from codex.cognitive import brain
         assert isinstance(brain, CognitiveBrain)
 
     def test_brain_has_help(self):
-        from codex.cognitive import brain  # noqa: PLC0415
+        from codex.cognitive import brain
         assert callable(brain.help)
 
     def test_brain_has_discover(self):
-        from codex.cognitive import brain  # noqa: PLC0415
+        from codex.cognitive import brain
         d = brain.discover()
         assert "improvement_areas" in d
 
     def test_brain_has_health(self):
-        from codex.cognitive import brain  # noqa: PLC0415
+        from codex.cognitive import brain
         h = brain.health()
         assert "status" in h
 
     def test_brain_for_agent_works(self):
-        from codex.cognitive import brain  # noqa: PLC0415
+        from codex.cognitive import brain
         api = brain.for_agent("copilot-coding-agent")
         assert isinstance(api, AgentBrainAPI)
 
     def test_all_exports_importable(self):
-        from codex.cognitive import (  # noqa: PLC0415
+        from codex.cognitive import (
             CognitiveBrain,
             brain,
         )

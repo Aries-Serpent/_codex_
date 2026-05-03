@@ -17,7 +17,7 @@ import ast
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -27,12 +27,12 @@ class ResourcePattern:
     name: str
     pattern_type: str  # "memory_leak", "file_leak", "connection_leak", "resource_exhaustion"
     description: str
-    locations: List[str]
+    locations: list[str]
     confidence: float  # 0.0 to 1.0
     severity: str  # "critical", "high", "medium", "low"
     leak_risk: str  # Description of leak risk
     fix: str  # Suggested fix
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class ResourcePatternMatcher:
@@ -50,10 +50,10 @@ class ResourcePatternMatcher:
 
     def __init__(self):
         """Initialize resource pattern matcher."""
-        self.detected_patterns: List[ResourcePattern] = []
+        self.detected_patterns: list[ResourcePattern] = []
         #AFTERMATH_METRIC: resource_matcher_initialized
 
-    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> List[ResourcePattern]:
+    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> list[ResourcePattern]:
         """
         Analyze a file for resource management issues.
 
@@ -72,7 +72,7 @@ class ResourcePatternMatcher:
             except (IOError, UnicodeDecodeError):
                 return []
 
-        detected: List[ResourcePattern] = []
+        detected: list[ResourcePattern] = []
 
         # PERCEIVE: Multi-layer resource scanning
         if file_path.suffix == ".py":
@@ -97,7 +97,7 @@ class ResourcePatternMatcher:
 
         return detected
 
-    def _detect_unclosed_files(self, tree: ast.AST, file_path: Path) -> List[ResourcePattern]:
+    def _detect_unclosed_files(self, tree: ast.AST, file_path: Path) -> list[ResourcePattern]:
         """
         Detect unclosed file handles.
 
@@ -149,7 +149,7 @@ class ResourcePatternMatcher:
 
         return detected
 
-    def _detect_connection_leaks(self, tree: ast.AST, file_path: Path) -> List[ResourcePattern]:
+    def _detect_connection_leaks(self, tree: ast.AST, file_path: Path) -> list[ResourcePattern]:
         """
         Detect unclosed database/network connections.
 
@@ -187,7 +187,7 @@ class ResourcePatternMatcher:
 
         return detected
 
-    def _detect_memory_leaks(self, tree: ast.AST, file_path: Path) -> List[ResourcePattern]:
+    def _detect_memory_leaks(self, tree: ast.AST, file_path: Path) -> list[ResourcePattern]:
         """
         Detect potential memory leaks.
 
@@ -246,7 +246,7 @@ class ResourcePatternMatcher:
 
         return detected
 
-    def _detect_resource_exhaustion(self, tree: ast.AST, file_path: Path) -> List[ResourcePattern]:
+    def _detect_resource_exhaustion(self, tree: ast.AST, file_path: Path) -> list[ResourcePattern]:
         """
         Detect patterns that may exhaust system resources.
 
@@ -325,7 +325,7 @@ class ResourcePatternMatcher:
 
         return detected
 
-    def _detect_regex_patterns(self, content: str, file_path: Path) -> List[ResourcePattern]:
+    def _detect_regex_patterns(self, content: str, file_path: Path) -> list[ResourcePattern]:
         """
         Detect resource issues using regex patterns.
 
@@ -374,7 +374,7 @@ class ResourcePatternMatcher:
             return '.'.join(reversed(parts))
         return "unknown"
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Generate summary of detected resource issues.
 

@@ -17,12 +17,12 @@ def test_system_snapshot_resilient(monkeypatch):
         system_metrics, "_CONFIG", SimpleNamespace(use_psutil=False), raising=False
     )
     snap = system_metrics.system_snapshot()
-    assert "cpu" in snap and snap["cpu"]
+    assert snap.get("cpu")
     assert snap["errors"] == []
 
 
 def test_system_snapshot_handles_failures(monkeypatch):
-    def boom(*args, **kwargs):  # noqa: ARG001
+    def boom(*args, **kwargs):
         raise RuntimeError("boom")
 
     monkeypatch.setattr(system_metrics, "_sample_cpu_psutil", boom, raising=False)

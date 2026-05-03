@@ -10,7 +10,7 @@ import pytest
 
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
 
-from codex.auth.exceptions import (  # noqa: E402
+from codex.auth.exceptions import (
     APIKeyError,
     APIKeyRevokedError,
     AuthenticationError,

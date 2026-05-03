@@ -2,7 +2,6 @@
 """Rust Error Handling Validator - Scans for panic risks"""
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
 
 import click
 
@@ -15,7 +14,7 @@ class Finding:
     issue: str
 
 class RustErrorScanner:
-    def scan_file(self, filepath: Path) -> List[Finding]:
+    def scan_file(self, filepath: Path) -> list[Finding]:
         findings = []
         try:
             lines = filepath.read_text().splitlines()

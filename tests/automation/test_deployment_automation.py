@@ -16,7 +16,7 @@ Phase: 20.2 Advanced Automation
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -25,7 +25,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def deployment_config() -> Dict[str, Any]:
+def deployment_config() -> dict[str, Any]:
     """Fixture for deployment configuration."""
     return {
         "id": "deploy-2026-001",
@@ -47,7 +47,7 @@ def deployment_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def rollback_config() -> Dict[str, Any]:
+def rollback_config() -> dict[str, Any]:
     """Fixture for rollback configuration."""
     return {
         "auto_rollback": True,
@@ -65,7 +65,7 @@ def rollback_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def canary_config() -> Dict[str, Any]:
+def canary_config() -> dict[str, Any]:
     """Fixture for canary deployment configuration."""
     return {
         "strategy": "canary",
@@ -82,7 +82,7 @@ def canary_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def infrastructure_config() -> Dict[str, Any]:
+def infrastructure_config() -> dict[str, Any]:
     """Fixture for infrastructure configuration."""
     return {
         "provider": "kubernetes",
@@ -109,13 +109,13 @@ def infrastructure_config() -> Dict[str, Any]:
 class TestDeploymentStrategies:
     """Tests for deployment strategies."""
 
-    def test_rolling_deployment_config(self, deployment_config: Dict[str, Any]):
+    def test_rolling_deployment_config(self, deployment_config: dict[str, Any]):
         """Test rolling deployment configuration."""
         assert deployment_config["strategy"] == "rolling"
         assert deployment_config["max_surge"] > 0
         assert deployment_config["max_unavailable"] >= 0
 
-    def test_rolling_maintains_availability(self, deployment_config: Dict[str, Any]):
+    def test_rolling_maintains_availability(self, deployment_config: dict[str, Any]):
         """Test rolling deployment maintains availability."""
         replicas = deployment_config["replicas"]
         max_unavailable = deployment_config["max_unavailable"]
@@ -123,12 +123,12 @@ class TestDeploymentStrategies:
         min_available = replicas - max_unavailable
         assert min_available > 0
 
-    def test_canary_percentage_valid(self, canary_config: Dict[str, Any]):
+    def test_canary_percentage_valid(self, canary_config: dict[str, Any]):
         """Test canary percentage is valid."""
         percentage = canary_config["canary_percentage"]
         assert 0 < percentage <= 100
 
-    def test_canary_promotion_steps_ordered(self, canary_config: Dict[str, Any]):
+    def test_canary_promotion_steps_ordered(self, canary_config: dict[str, Any]):
         """Test canary promotion steps are ordered."""
         steps = canary_config["promotion_steps"]
         assert steps == sorted(steps)
@@ -154,25 +154,25 @@ class TestDeploymentStrategies:
 class TestRollback:
     """Tests for rollback procedures."""
 
-    def test_auto_rollback_enabled(self, rollback_config: Dict[str, Any]):
+    def test_auto_rollback_enabled(self, rollback_config: dict[str, Any]):
         """Test auto-rollback is enabled."""
         assert rollback_config["auto_rollback"] is True
 
-    def test_rollback_triggers_defined(self, rollback_config: Dict[str, Any]):
+    def test_rollback_triggers_defined(self, rollback_config: dict[str, Any]):
         """Test rollback triggers are defined."""
         assert rollback_config["rollback_on_failure"] is True
         assert rollback_config["rollback_on_timeout"] is True
 
-    def test_rollback_timeout_set(self, rollback_config: Dict[str, Any]):
+    def test_rollback_timeout_set(self, rollback_config: dict[str, Any]):
         """Test rollback timeout is set."""
         assert rollback_config["timeout_minutes"] > 0
 
-    def test_previous_version_available(self, rollback_config: Dict[str, Any]):
+    def test_previous_version_available(self, rollback_config: dict[str, Any]):
         """Test previous version is available for rollback."""
         assert rollback_config["previous_version"] is not None
         assert len(rollback_config["previous_version"]) > 0
 
-    def test_rollback_steps_defined(self, rollback_config: Dict[str, Any]):
+    def test_rollback_steps_defined(self, rollback_config: dict[str, Any]):
         """Test rollback steps are defined."""
         steps = rollback_config["rollback_steps"]
         assert len(steps) > 0
@@ -187,24 +187,24 @@ class TestRollback:
 class TestDeploymentHealthChecks:
     """Tests for health checks during deployment."""
 
-    def test_health_check_configured(self, deployment_config: Dict[str, Any]):
+    def test_health_check_configured(self, deployment_config: dict[str, Any]):
         """Test health check is configured."""
         health = deployment_config["health_check"]
         assert "path" in health
         assert "interval_seconds" in health
 
-    def test_health_check_path_valid(self, deployment_config: Dict[str, Any]):
+    def test_health_check_path_valid(self, deployment_config: dict[str, Any]):
         """Test health check path is valid."""
         path = deployment_config["health_check"]["path"]
         assert path.startswith("/")
 
-    def test_health_thresholds_reasonable(self, deployment_config: Dict[str, Any]):
+    def test_health_thresholds_reasonable(self, deployment_config: dict[str, Any]):
         """Test health thresholds are reasonable."""
         health = deployment_config["health_check"]
         assert health["healthy_threshold"] > 0
         assert health["unhealthy_threshold"] > 0
 
-    def test_health_timeout_less_than_interval(self, deployment_config: Dict[str, Any]):
+    def test_health_timeout_less_than_interval(self, deployment_config: dict[str, Any]):
         """Test health timeout is less than interval."""
         health = deployment_config["health_check"]
         assert health["timeout_seconds"] < health["interval_seconds"]
@@ -225,30 +225,30 @@ class TestDeploymentHealthChecks:
 class TestDeploymentValidation:
     """Tests for deployment validation."""
 
-    def test_version_format_valid(self, deployment_config: Dict[str, Any]):
+    def test_version_format_valid(self, deployment_config: dict[str, Any]):
         """Test version format is valid."""
         version = deployment_config["version"]
         parts = version.split(".")
         assert len(parts) >= 2
         assert all(p.isdigit() for p in parts)
 
-    def test_environment_valid(self, deployment_config: Dict[str, Any]):
+    def test_environment_valid(self, deployment_config: dict[str, Any]):
         """Test environment is valid."""
         valid_envs = ["development", "staging", "production"]
         assert deployment_config["environment"] in valid_envs
 
-    def test_replicas_positive(self, deployment_config: Dict[str, Any]):
+    def test_replicas_positive(self, deployment_config: dict[str, Any]):
         """Test replicas count is positive."""
         assert deployment_config["replicas"] > 0
 
-    def test_canary_criteria_complete(self, canary_config: Dict[str, Any]):
+    def test_canary_criteria_complete(self, canary_config: dict[str, Any]):
         """Test canary success criteria are complete."""
         criteria = canary_config["success_criteria"]
         assert "error_rate_threshold" in criteria
         assert "latency_p99_threshold_ms" in criteria
         assert "success_rate_threshold" in criteria
 
-    def test_canary_analysis_duration_set(self, canary_config: Dict[str, Any]):
+    def test_canary_analysis_duration_set(self, canary_config: dict[str, Any]):
         """Test canary analysis duration is set."""
         assert canary_config["analysis_duration_minutes"] > 0
 
@@ -260,23 +260,23 @@ class TestDeploymentValidation:
 class TestInfrastructureProvisioning:
     """Tests for infrastructure provisioning."""
 
-    def test_provider_configured(self, infrastructure_config: Dict[str, Any]):
+    def test_provider_configured(self, infrastructure_config: dict[str, Any]):
         """Test provider is configured."""
         valid_providers = ["kubernetes", "ecs", "docker", "vm"]
         assert infrastructure_config["provider"] in valid_providers
 
-    def test_cluster_specified(self, infrastructure_config: Dict[str, Any]):
+    def test_cluster_specified(self, infrastructure_config: dict[str, Any]):
         """Test cluster is specified."""
         assert infrastructure_config["cluster"] is not None
         assert len(infrastructure_config["cluster"]) > 0
 
-    def test_resources_defined(self, infrastructure_config: Dict[str, Any]):
+    def test_resources_defined(self, infrastructure_config: dict[str, Any]):
         """Test resources are defined."""
         resources = infrastructure_config["resources"]
         assert "cpu_request" in resources
         assert "memory_request" in resources
 
-    def test_resource_limits_greater_than_requests(self, infrastructure_config: Dict[str, Any]):
+    def test_resource_limits_greater_than_requests(self, infrastructure_config: dict[str, Any]):
         """Test resource limits are greater than or equal to requests."""
         resources = infrastructure_config["resources"]
 
@@ -286,7 +286,7 @@ class TestInfrastructureProvisioning:
 
         assert cpu_limit >= cpu_request
 
-    def test_scaling_config_valid(self, infrastructure_config: Dict[str, Any]):
+    def test_scaling_config_valid(self, infrastructure_config: dict[str, Any]):
         """Test scaling configuration is valid."""
         scaling = infrastructure_config["scaling"]
         assert scaling["min_replicas"] > 0

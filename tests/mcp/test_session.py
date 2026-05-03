@@ -9,7 +9,7 @@ Coverage Target: src/mcp 32% → 45%+
 
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pytest
 
@@ -28,8 +28,8 @@ class SessionInfo:
     """Session information."""
     session_id: str
     state: SessionState
-    server_info: Optional[Dict[str, Any]] = None
-    capabilities: Optional[Dict[str, Any]] = None
+    server_info: Optional[dict[str, Any]] = None
+    capabilities: Optional[dict[str, Any]] = None
 
 
 class TestSessionLifecycle:

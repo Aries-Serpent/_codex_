@@ -23,13 +23,13 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import yaml
 
 
-def _iter_run_dirs(base: Path) -> List[tuple[str, Path]]:
-    run_dirs: List[tuple[str, Path]] = []
+def _iter_run_dirs(base: Path) -> list[tuple[str, Path]]:
+    run_dirs: list[tuple[str, Path]] = []
     for mode in ("train", "eval"):
         root = base / mode
         if not root.exists():
@@ -40,14 +40,14 @@ def _iter_run_dirs(base: Path) -> List[tuple[str, Path]]:
     return run_dirs
 
 
-def _load_manifest(run_dir: Path) -> Dict[str, Any]:
+def _load_manifest(run_dir: Path) -> dict[str, Any]:
     p = run_dir / "run_manifest.yaml"
     if not p.exists():
         return {}
     return yaml.safe_load(p.read_text(encoding="utf-8")) or {}
 
 
-def _load_experiment_meta(run_dir: Path) -> Dict[str, Any]:
+def _load_experiment_meta(run_dir: Path) -> dict[str, Any]:
     p = run_dir / "experiment_meta.json"
     if not p.exists():
         return {}
@@ -57,7 +57,7 @@ def _load_experiment_meta(run_dir: Path) -> Dict[str, Any]:
         return {}
 
 
-def _load_last_metric(run_dir: Path) -> Optional[Dict[str, Any]]:
+def _load_last_metric(run_dir: Path) -> Optional[dict[str, Any]]:
     p = run_dir / "metrics.ndjson"
     if not p.exists():
         return None
@@ -76,8 +76,8 @@ def _load_last_metric(run_dir: Path) -> Optional[Dict[str, Any]]:
         return {"raw": last}
 
 
-def build_summary(runs_dir: Path) -> Dict[str, Any]:
-    experiments: Dict[str, List[Dict[str, Any]]] = {}
+def build_summary(runs_dir: Path) -> dict[str, Any]:
+    experiments: dict[str, list[dict[str, Any]]] = {}
     for mode, run_dir in _iter_run_dirs(runs_dir):
         manifest = _load_manifest(run_dir)
         meta = _load_experiment_meta(run_dir)
@@ -102,13 +102,13 @@ def build_summary(runs_dir: Path) -> Dict[str, Any]:
     return {"runs_dir": str(runs_dir), "experiments": experiments}
 
 
-def _write_json(path: Path, summary: Dict[str, Any]) -> None:
+def _write_json(path: Path, summary: dict[str, Any]) -> None:
     path.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, summary: Dict[str, Any]) -> None:
+def _write_markdown(path: Path, summary: dict[str, Any]) -> None:
     experiments = summary.get("experiments", {}) or {}
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# `_codex_` Experiment Summary\n")
     lines.append(f"- Base dir: `{summary.get('runs_dir', '.')}`")
     lines.append(f"- Total experiment groups: **{len(experiments)}**\n")

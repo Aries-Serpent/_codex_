@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ingestion import Ingestor, ingest  # noqa: E402
+from ingestion import Ingestor, ingest
 
 
 def _call_ingest(p, **kwargs):

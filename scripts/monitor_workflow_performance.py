@@ -26,7 +26,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     import requests
@@ -100,7 +100,7 @@ class WorkflowMonitor:
             ]
         }
 
-    def fetch_workflow_runs(self, since: Optional[datetime] = None) -> List[Dict[str, Any]]:
+    def fetch_workflow_runs(self, since: Optional[datetime] = None) -> list[dict[str, Any]]:
         """Fetch workflow runs from GitHub API."""
         if since is None:
             since = datetime.now(timezone.utc) - timedelta(days=self.days)
@@ -143,7 +143,7 @@ class WorkflowMonitor:
 
         return all_runs
 
-    def calculate_duration(self, run: Dict[str, Any]) -> Optional[float]:
+    def calculate_duration(self, run: dict[str, Any]) -> Optional[float]:
         """Calculate workflow run duration in minutes."""
         created = run.get('created_at')
         updated = run.get('updated_at')
@@ -158,7 +158,7 @@ class WorkflowMonitor:
         except Exception:
             return None
 
-    def analyze_workflows(self, runs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def analyze_workflows(self, runs: list[dict[str, Any]]) -> dict[str, Any]:
         """Analyze workflow performance metrics."""
         metrics = defaultdict(lambda: {
             'total_runs': 0,
@@ -207,7 +207,7 @@ class WorkflowMonitor:
 
         return dict(metrics)
 
-    def compare_consolidated_vs_original(self, metrics: Dict[str, Any]) -> Dict[str, Any]:
+    def compare_consolidated_vs_original(self, metrics: dict[str, Any]) -> dict[str, Any]:
         """Compare performance of consolidated vs original workflows."""
         comparisons = {}
 
@@ -261,7 +261,7 @@ class WorkflowMonitor:
 
         return comparisons
 
-    def generate_report(self, metrics: Dict[str, Any], comparisons: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def generate_report(self, metrics: dict[str, Any], comparisons: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Generate comprehensive performance report."""
         report = {
             'generated_at': datetime.now(timezone.utc).isoformat() + 'Z',
@@ -291,7 +291,7 @@ class WorkflowMonitor:
 
         return report
 
-    def format_markdown(self, report: Dict[str, Any]) -> str:
+    def format_markdown(self, report: dict[str, Any]) -> str:
         """Format report as Markdown."""
         md = f"""# Workflow Performance Report
 

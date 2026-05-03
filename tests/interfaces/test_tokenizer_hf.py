@@ -19,7 +19,7 @@ import pytest
 
 pytest.importorskip("transformers")
 
-from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
+from codex_ml.interfaces.tokenizer import HFTokenizer
 
 
 class DummyTokenizer:
@@ -75,7 +75,7 @@ class DummyTokenizer:
 
 class DummyAutoTokenizer:
     @staticmethod
-    def from_pretrained(*args, **kwargs):  # noqa: D401
+    def from_pretrained(*args, **kwargs):
         """Return a dummy tokenizer."""
         return DummyTokenizer()
 
@@ -136,7 +136,7 @@ def test_decode_cache_returns_canonical_form(monkeypatch) -> None:
 
     class NormalizingAutoTokenizer:
         @staticmethod
-        def from_pretrained(*args, **kwargs):  # noqa: D401
+        def from_pretrained(*args, **kwargs):
             """Return a normalising tokenizer stub."""
 
             _ = args, kwargs

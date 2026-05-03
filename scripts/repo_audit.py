@@ -35,24 +35,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Repo audit scanner for Codex Environment. Run locally in your Codex environment.
-
-Usage:
-  python3 scripts/repo_audit.py --format markdown --output audit.md
-
-Outputs:
-  - machine-readable JSON summary (audit.json)
-  - human-readable markdown (audit.md)
-"""
 
 import argparse
 import fnmatch
 import json
 import os
 import re
+from collections.abc import Iterable, Iterator
 from pathlib import Path
-from typing import Any, Iterable, Iterator
+from typing import Any
 
 ROOT = Path(".").resolve()
 STUB_PATTERNS = [

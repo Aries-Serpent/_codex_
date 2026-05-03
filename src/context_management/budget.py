@@ -6,10 +6,11 @@ Implements hard ceiling (64k), soft cap (56k), and auto-summarization triggers.
 """
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import IntEnum
-from typing import Callable, Optional
+from typing import Optional
 
 # Token limits per Global Policies
 

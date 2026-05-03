@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 # scripts/tools is on the path directly so `import variable_manager` works
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts", "tools"))
 
-from variable_manager import (  # noqa: E402
+from variable_manager import (
     GitHubAPIError,
     VariableManager,
     _resolve_token,

@@ -9,4 +9,4 @@ from codex_ml.metrics.registry import (
     register_metric,
 )
 
-__all__ = ["metric_registry", "register_metric", "get_metric", "list_metrics"]
+__all__ = ["get_metric", "list_metrics", "metric_registry", "register_metric"]

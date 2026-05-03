@@ -10,9 +10,9 @@ import pytest
 
 pytest.importorskip("numpy")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
-from codex_ml.utils import set_reproducible  # noqa: E402
+from codex_ml.utils import set_reproducible
 
 
 def test_set_reproducible_consistency():

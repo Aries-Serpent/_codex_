@@ -28,4 +28,4 @@ _legacy = _load_legacy_module()
 append_evidence = _legacy.append_evidence
 utc_now = _legacy.utc_now
 
-__all__ = ["evidence_append", "append_evidence", "utc_now"]
+__all__ = ["append_evidence", "evidence_append", "utc_now"]

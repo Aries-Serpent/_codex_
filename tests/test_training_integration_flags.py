@@ -7,8 +7,8 @@ Test module for training integration flags.
 import contextlib
 import sys
 import types
+from collections.abc import Iterator
 from types import SimpleNamespace
-from typing import Dict, Iterator, List
 
 import pytest
 
@@ -32,13 +32,13 @@ class _TinyTokenizer:
 
     def __call__(
         self,
-        texts: List[str],
+        texts: list[str],
         *,
         padding: str = "max_length",
         truncation: bool = True,
         max_length: int = 4,
         return_tensors: str = "pt",
-    ) -> Dict[str, torch.Tensor]:
+    ) -> dict[str, torch.Tensor]:
         batch = list(texts)
         size = len(batch)
         length = max_length or self.seq_len
@@ -66,7 +66,7 @@ class _TinyModel(torch.nn.Module):
         return SimpleNamespace(loss=loss, logits=logits)
 
 
-def _dummy_batch(seq_len: int = 4) -> Dict[str, torch.Tensor]:
+def _dummy_batch(seq_len: int = 4) -> dict[str, torch.Tensor]:
     ids = torch.arange(seq_len, dtype=torch.long) % seq_len
     mask = torch.ones(seq_len, dtype=torch.long)
     return {
@@ -194,7 +194,7 @@ def test_evaluate_model_uses_autocast(monkeypatch):
 def test_run_functional_training_uses_mlflow(monkeypatch, tmp_path):
     import codex_ml.training.__init__ as tr
 
-    entered: List[str] = []
+    entered: list[str] = []
 
     @contextlib.contextmanager
     def fake_mlflow_run(*_args, **_kwargs):
@@ -257,13 +257,13 @@ def test_run_functional_training_uses_mlflow(monkeypatch, tmp_path):
 
         def __call__(
             self,
-            texts: List[str],
+            texts: list[str],
             *,
             padding: str = "max_length",
             truncation: bool = True,
             max_length: int = 4,
             return_tensors: str = "pt",
-        ) -> Dict[str, np.ndarray]:
+        ) -> dict[str, np.ndarray]:
             length = max_length or 4
             data = []
             for idx, _ in enumerate(list(texts)):
@@ -349,7 +349,7 @@ def test_run_functional_training_uses_mlflow(monkeypatch, tmp_path):
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
-    run_calls: List[SimpleNamespace] = []
+    run_calls: list[SimpleNamespace] = []
 
     def fake_run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg):
         run_calls.append(SimpleNamespace(model=model, tokenizer=tokenizer, cfg=cfg))

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 ART = Path("artifacts")
 
@@ -35,7 +35,7 @@ def main() -> None:
     bandit_path = ART / "bandit_report.txt"
     gitleaks_path = ART / "gitleaks_report.json"
 
-    summary: Dict[str, Any] = {}
+    summary: dict[str, Any] = {}
     if pip_path.exists():
         try:
             raw = json.loads(pip_path.read_text(encoding="utf-8"))

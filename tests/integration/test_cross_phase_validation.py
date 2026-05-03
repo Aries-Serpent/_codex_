@@ -13,7 +13,7 @@ Phase: 20.4 Full Stack Integration & Cross-Phase Validation
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -22,7 +22,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def phase_registry() -> Dict[str, Any]:
+def phase_registry() -> dict[str, Any]:
     """Registry of all completed phases."""
     return {
         "phase_14": {"tests": 545, "status": "complete"},
@@ -38,7 +38,7 @@ def phase_registry() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def quality_thresholds() -> Dict[str, Any]:
+def quality_thresholds() -> dict[str, Any]:
     """Quality thresholds for validation."""
     return {
         "test_coverage": 0.0,  # Temporarily 0%

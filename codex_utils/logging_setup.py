@@ -3,8 +3,9 @@
 import os
 import sys
 import time
+from collections.abc import Iterable
 from contextlib import AbstractContextManager
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Optional
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -40,7 +41,7 @@ class OfflineTB(AbstractContextManager["OfflineTB"]):
         self.writer.add_scalar(tag, value, step)
 
     def log_scalars(
-        self, scalars: Iterable[tuple[str, float]] | Dict[str, float], step: int
+        self, scalars: Iterable[tuple[str, float]] | dict[str, float], step: int
     ) -> None:
         if isinstance(scalars, dict):
             items = scalars.items()
@@ -65,7 +66,7 @@ class OfflineTB(AbstractContextManager["OfflineTB"]):
         return False
 
 
-def _fallback_process_payload() -> Optional[Dict[str, float]]:
+def _fallback_process_payload() -> Optional[dict[str, float]]:
     """Return lightweight process metrics without psutil."""
 
     if resource is None:  # pragma: no cover - depends on platform
@@ -80,10 +81,10 @@ def _fallback_process_payload() -> Optional[Dict[str, float]]:
         return None
 
 
-def sample_system_metrics() -> Dict[str, Any]:
+def sample_system_metrics() -> dict[str, Any]:
     """Return a consistent metrics payload even when psutil is missing."""
 
-    payload: Dict[str, Any] = {"time_unix": time.time()}
+    payload: dict[str, Any] = {"time_unix": time.time()}
     if psutil is not None:
         try:
             virt = psutil.virtual_memory()

@@ -5,10 +5,9 @@ Analyze broken internal links in documentation.
 
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 
-def extract_links(content: str, filepath: Path) -> List[Tuple[str, str, int]]:
+def extract_links(content: str, filepath: Path) -> list[tuple[str, str, int]]:
     """Extract markdown links from content."""
     links = []
     for line_num, line in enumerate(content.split('\n'), 1):
@@ -20,7 +19,7 @@ def extract_links(content: str, filepath: Path) -> List[Tuple[str, str, int]]:
     return links
 
 
-def check_link(link_url: str, source_file: Path, docs_root: Path) -> Tuple[bool, str]:
+def check_link(link_url: str, source_file: Path, docs_root: Path) -> tuple[bool, str]:
     """Check if a link is valid."""
     # Skip external links
     if link_url.startswith(('http://', 'https://', 'mailto:', '#')):

@@ -27,7 +27,7 @@ import logging
 from collections import deque
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -78,7 +78,7 @@ class MemoryPattern:
     """
 
     pattern_id: str
-    features: Dict[str, float]
+    features: dict[str, float]
     decision: str
     confidence: float
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
@@ -145,7 +145,7 @@ class QuantumMemoryManager:
         self.stm: deque = deque(maxlen=stm_capacity)
 
         # Long-term memory (dict for fast lookup)
-        self.ltm: Dict[str, MemoryPattern] = {}
+        self.ltm: dict[str, MemoryPattern] = {}
 
         # Statistics
         self.total_patterns_stored = 0
@@ -214,11 +214,11 @@ class QuantumMemoryManager:
 
     def retrieve_similar(
         self,
-        query: Dict[str, float],
+        query: dict[str, float],
         k: int = 5,
         search_ltm: bool = True,
         count_retrieval: bool = True,
-    ) -> List[MemoryPattern]:
+    ) -> list[MemoryPattern]:
         """
         Retrieve k most similar patterns.
 
@@ -272,7 +272,7 @@ class QuantumMemoryManager:
         return top_k
 
     def memory_guided_decision(
-        self, query: Dict[str, float], confidence_threshold: float = 0.85
+        self, query: dict[str, float], confidence_threshold: float = 0.85
     ) -> Optional[str]:
         """
         Make decision based on memory (cached pattern).
@@ -325,7 +325,7 @@ class QuantumMemoryManager:
             return 0.0
         return self.cache_hits / self.total_retrievals
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get memory statistics.
 
@@ -409,7 +409,7 @@ class QuantumMemoryManager:
             del self.ltm[pattern_id]
 
     @staticmethod
-    def _cosine_similarity(features1: Dict[str, float], features2: Dict[str, float]) -> float:
+    def _cosine_similarity(features1: dict[str, float], features2: dict[str, float]) -> float:
         """
         Calculate cosine similarity between two feature vectors.
 
@@ -538,7 +538,7 @@ class QuantumMemoryManager:
 
         return pruned_count
 
-    def get_cache_health(self) -> Dict[str, Any]:
+    def get_cache_health(self) -> dict[str, Any]:
         """
         Get comprehensive cache health metrics for monitoring.
 

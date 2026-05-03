@@ -32,7 +32,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class RigidityDetection:
     severity: float  # 0.0 (low) to 1.0 (high)
     description: str
     context: str  # Code snippet showing the issue
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
         return (
@@ -107,9 +107,9 @@ class RigidityDetector:
         self.max_nesting = max_nesting
         self.max_method_lines = max_method_lines
         self.max_class_methods = max_class_methods
-        self.detections: List[RigidityDetection] = []
+        self.detections: list[RigidityDetection] = []
 
-    def analyze_file(self, file_path: Path) -> List[RigidityDetection]:
+    def analyze_file(self, file_path: Path) -> list[RigidityDetection]:
         """
         Analyze a Python file for rigidity.
 
@@ -250,11 +250,11 @@ class DeterritorializationEngine:
 
     def __init__(self) -> None:
         self.detector = RigidityDetector()
-        self.rigidities: List[RigidityDetection] = []
-        self.lines_of_flight: List[LineOfFlight] = []
+        self.rigidities: list[RigidityDetection] = []
+        self.lines_of_flight: list[LineOfFlight] = []
         LOGGER.info("DeterritorializationEngine initialized")
 
-    def detect_rigidity(self, path: str | Path) -> List[RigidityDetection]:
+    def detect_rigidity(self, path: str | Path) -> list[RigidityDetection]:
         """
         Detect rigidity in code at the given path.
 
@@ -276,7 +276,7 @@ class DeterritorializationEngine:
         LOGGER.info(f"Detected {len(self.rigidities)} rigidities in {path}")
         return self.rigidities
 
-    def propose_lines_of_flight(self, min_severity: float = 0.5) -> List[LineOfFlight]:
+    def propose_lines_of_flight(self, min_severity: float = 0.5) -> list[LineOfFlight]:
         """
         Propose lines of flight for detected rigidities.
 
@@ -433,7 +433,7 @@ class DeterritorializationEngine:
         )
         return force
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about detected rigidities and lines of flight."""
         rigidity_counts: dict[str, Any] = {}
         for rigidity in self.rigidities:
@@ -454,7 +454,7 @@ class DeterritorializationEngine:
             "high_priority_rigidities": sum(1 for r in self.rigidities if r.severity >= 0.7),
         }
 
-    def export_report(self) -> Dict[str, Any]:
+    def export_report(self) -> dict[str, Any]:
         """
         Export a comprehensive deterritorialization report.
 

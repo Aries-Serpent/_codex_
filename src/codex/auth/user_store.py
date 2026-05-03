@@ -24,7 +24,7 @@ import os
 import secrets
 import threading
 import time
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 
 from ..security_utils import sanitize_log_message
 from .exceptions import (
@@ -76,12 +76,12 @@ class UserStore:
         else:
             backend = os.environ.get("CODEX_USERSTORE_BACKEND", "memory").lower()
             if backend == "sqlite":
-                from .sqlite_user_repository import SQLiteUserRepository  # noqa: PLC0415
+                from .sqlite_user_repository import SQLiteUserRepository
 
                 db_path = os.environ.get("CODEX_USERSTORE_DB_PATH", "codex_users.db")
                 self._repository = SQLiteUserRepository(db_path)
             else:
-                from .in_memory_user_repository import InMemoryUserRepository  # noqa: PLC0415
+                from .in_memory_user_repository import InMemoryUserRepository
 
                 self._repository = InMemoryUserRepository()
         # Backward-compatibility shim: expose _lock even though it is no longer
@@ -97,7 +97,7 @@ class UserStore:
         username: str,
         email: str,
         password: str,
-        roles: Optional[List[str]] = None,
+        roles: Optional[list[str]] = None,
         display_name: Optional[str] = None,
     ) -> User:
         """
@@ -210,7 +210,7 @@ class UserStore:
         """Return the :class:`User` with *email*, or ``None``."""
         return self._repository.get_by_email(email)
 
-    def list_users(self, include_inactive: bool = False) -> List[User]:
+    def list_users(self, include_inactive: bool = False) -> list[User]:
         """
         Return all users.
 

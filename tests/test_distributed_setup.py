@@ -9,11 +9,11 @@ pytest.importorskip("torch")
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-from unittest.mock import patch  # noqa: E402
+from unittest.mock import patch
 
-import torch  # noqa: E402
-import torch.nn as nn  # noqa: E402
-from codex_ml.training.distributed_setup import (  # noqa: E402
+import torch
+import torch.nn as nn
+from codex_ml.training.distributed_setup import (
     cleanup_distributed,
     get_distributed_sampler,
     get_rank,
@@ -167,7 +167,7 @@ def test_setup_distributed_with_cuda_env():
     try:
         # This will likely fail to init but shouldn't crash
         setup_distributed(backend="nccl")
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass  # Expected to fail in test environment
     finally:
         # Cleanup env vars

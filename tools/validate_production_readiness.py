@@ -8,7 +8,6 @@ import os
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
@@ -26,7 +25,7 @@ from tools.find_untested_modules import find_missing_tests  # noqa: E402
 class ValidationResult:
     name: str
     status: str
-    details: Dict[str, object]
+    details: dict[str, object]
 
 
 def validate_configs(repo_root: Path) -> ValidationResult:
@@ -93,7 +92,7 @@ def main() -> None:
         validate_coupling,
     ]
 
-    results: List[ValidationResult] = [check(args.repo_root) for check in checks]
+    results: list[ValidationResult] = [check(args.repo_root) for check in checks]
 
     if args.json:
         print(json.dumps([asdict(result) for result in results], indent=2))

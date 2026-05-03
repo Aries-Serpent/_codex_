@@ -8,10 +8,11 @@ RAG integration, map-reduce summarization, and streaming support.
 import hashlib
 import json
 import logging
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Callable, Iterator, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

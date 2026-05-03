@@ -23,7 +23,7 @@ sys.modules["check_py312_deps"] = check_py312_deps
 spec.loader.exec_module(check_py312_deps)
 
 # Import functions from the loaded module
-from check_py312_deps import (  # noqa: E402
+from check_py312_deps import (
     check_package_py312_support,
     load_dependencies_from_pyproject,
     parse_dependency_spec,

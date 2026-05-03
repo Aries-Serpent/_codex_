@@ -10,7 +10,7 @@ Target: 100% branch coverage for utility modules
 """
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -30,7 +30,7 @@ class TestErrorHandlingBranches:
         error_occurred = False
         try:
             pass
-        except Exception:  # noqa: BLE001
+        except Exception:
             error_occurred = True
         assert error_occurred is False
 
@@ -39,7 +39,7 @@ class TestErrorHandlingBranches:
         error_occurred = False
         try:
             raise RuntimeError("test error")
-        except Exception:  # noqa: BLE001
+        except Exception:
             error_occurred = True
         assert error_occurred is True
 
@@ -51,7 +51,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception:  # noqa: BLE001
+        except Exception:
             error_type = "generic"
         assert error_type == "value_error"
 
@@ -63,7 +63,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception:  # noqa: BLE001
+        except Exception:
             error_type = "generic"
         assert error_type == "type_error"
 
@@ -75,7 +75,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception:  # noqa: BLE001
+        except Exception:
             error_type = "generic"
         assert error_type == "generic"
 
@@ -84,7 +84,7 @@ class TestErrorHandlingBranches:
         finally_executed = False
         try:
             pass
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
         finally:
             finally_executed = True
@@ -95,7 +95,7 @@ class TestErrorHandlingBranches:
         finally_executed = False
         try:
             pass
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
         finally:
             finally_executed = True
@@ -428,7 +428,7 @@ class TestCollectionOperationBranches:
 
     def test_list_empty_check_true_branch(self) -> None:
         """Test list empty check - true branch."""
-        items: List[Any] = []
+        items: list[Any] = []
         status = "empty" if not items else "non_empty"
         assert status == "empty"
 
@@ -446,7 +446,7 @@ class TestCollectionOperationBranches:
 
     def test_dict_key_missing_branch(self) -> None:
         """Test dictionary key missing branch."""
-        data: Dict[str, Any] = {}
+        data: dict[str, Any] = {}
         result = data.get("key", "default")
         assert result == "default"
 

@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 pytest.importorskip("jsonschema")
 
-from tools import validate_configs  # noqa: E402
+from tools import validate_configs
 
 
 def test_validate_pair_for_training_profile():

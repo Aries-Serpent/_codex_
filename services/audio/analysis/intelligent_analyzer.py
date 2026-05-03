@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -21,10 +21,10 @@ class AudioQualityMetrics:
 class AnalysisResult:
     """Result of audio analysis."""
     quality_metrics: AudioQualityMetrics = field(default_factory=AudioQualityMetrics)
-    recommendations: List[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
     confidence: float = 0.0
-    issues_detected: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    issues_detected: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -32,7 +32,7 @@ class AudioProfile:
     """Audio profile configuration."""
     name: str
     description: str = ""
-    settings: Dict[str, Any] = field(default_factory=dict)
+    settings: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -42,8 +42,8 @@ class AudioAnalysis:
     content_type: str  # 'speech', 'music', 'ambient', 'mixed'
     quality_score: float = 0.0  # 0-10 scale
     quality_metrics: AudioQualityMetrics = field(default_factory=AudioQualityMetrics)
-    recommendations: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    recommendations: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -52,13 +52,13 @@ class ProfileMatch:
     profile: AudioProfile
     confidence: float = 0.0  # 0-1 scale
     reason: str = ""
-    recommended_settings: Dict[str, Any] = field(default_factory=dict)
+    recommended_settings: dict[str, Any] = field(default_factory=dict)
 
 
 class IntelligentAudioAnalyzer:
     """Intelligent audio analyzer with ML-based recommendations."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """Initialize analyzer with optional config."""
         self.config = config or {}
         self._initialized = True
@@ -104,11 +104,11 @@ class IntelligentAudioAnalyzer:
             recommendations=["Consider noise reduction", "Audio quality is good"],
         )
 
-    def get_recommendations(self, result: AnalysisResult) -> List[str]:
+    def get_recommendations(self, result: AnalysisResult) -> list[str]:
         """Get actionable recommendations from analysis result."""
         return result.recommendations if result else []
 
-    def batch_analyze(self, audio_files: List[Any]) -> List[AnalysisResult]:
+    def batch_analyze(self, audio_files: list[Any]) -> list[AnalysisResult]:
         """Analyze multiple audio files."""
         return [self.analyze(f) for f in audio_files]
 

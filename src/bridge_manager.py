@@ -41,7 +41,7 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 # Import Bridge Protocol v2 for enhanced features
 try:
@@ -96,8 +96,8 @@ class ContextMessage:
     timestamp: str  # ISO 8601 format
     source: str  # "cognitive_brain" or "copilot"
     message_type: str  # "context_update", "query", "response", etc.
-    context: Dict[str, Any]
-    metadata: Optional[Dict[str, Any]] = None
+    context: dict[str, Any]
+    metadata: Optional[dict[str, Any]] = None
     auth_token: Optional[str] = None  # Authentication token (PS-02)
 
     def to_json(self) -> str:
@@ -472,7 +472,7 @@ class BridgeManager:
             check_hostname=False,  # Internal bridge, no hostname verification
         )
 
-    def _audit_log(self, event: str, details: Dict[str, Any]) -> None:
+    def _audit_log(self, event: str, details: dict[str, Any]) -> None:
         """
         Write security audit log entry (PS-02).
 
@@ -693,7 +693,7 @@ class BridgeManager:
             self._audit_log("CLIENT_UNREGISTERED", {"client_id": client_id})
         return result
 
-    def get_bridge_stats(self) -> Dict[str, Any]:
+    def get_bridge_stats(self) -> dict[str, Any]:
         """Get bridge statistics including multi-client info."""
         stats = {
             "mode": self.mode.value,
@@ -875,7 +875,7 @@ class BridgeManager:
 
 
 def share_context_with_copilot(
-    context: Dict[str, Any], bridge: Optional[BridgeManager] = None
+    context: dict[str, Any], bridge: Optional[BridgeManager] = None
 ) -> bool:
     """
     Share cognitive context with Copilot watcher via secure bridge.

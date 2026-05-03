@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import List, Sequence
 
 from .models import RepoHygieneIssue, RepoHygieneRequest
 
@@ -23,8 +23,8 @@ class HygieneCheckResult:
     issues: Sequence[RepoHygieneIssue]
 
 
-def _check_format(lines: List[str]) -> Sequence[RepoHygieneIssue]:
-    issues: List[RepoHygieneIssue] = []
+def _check_format(lines: list[str]) -> Sequence[RepoHygieneIssue]:
+    issues: list[RepoHygieneIssue] = []
     for line_no, line in enumerate(lines, start=1):
         if line.rstrip("\n").endswith(" "):
             issues.append(
@@ -38,8 +38,8 @@ def _check_format(lines: List[str]) -> Sequence[RepoHygieneIssue]:
     return issues
 
 
-def _check_lint(lines: List[str]) -> Sequence[RepoHygieneIssue]:
-    issues: List[RepoHygieneIssue] = []
+def _check_lint(lines: list[str]) -> Sequence[RepoHygieneIssue]:
+    issues: list[RepoHygieneIssue] = []
     for line_no, line in enumerate(lines, start=1):
         if "print(" in line and "TODO" in line:
             issues.append(
@@ -53,8 +53,8 @@ def _check_lint(lines: List[str]) -> Sequence[RepoHygieneIssue]:
     return issues
 
 
-def _check_secrets(lines: List[str]) -> Sequence[RepoHygieneIssue]:
-    issues: List[RepoHygieneIssue] = []
+def _check_secrets(lines: list[str]) -> Sequence[RepoHygieneIssue]:
+    issues: list[RepoHygieneIssue] = []
     for line_no, line in enumerate(lines, start=1):
         for pattern in _SECRET_PATTERNS:
             if pattern.search(line):
@@ -70,8 +70,8 @@ def _check_secrets(lines: List[str]) -> Sequence[RepoHygieneIssue]:
     return issues
 
 
-def _check_license(lines: List[str]) -> Sequence[RepoHygieneIssue]:
-    issues: List[RepoHygieneIssue] = []
+def _check_license(lines: list[str]) -> Sequence[RepoHygieneIssue]:
+    issues: list[RepoHygieneIssue] = []
     if any(line.startswith("+++") for line in lines):
         added_files = [line for line in lines if line.startswith("+++ ")]
         for entry in added_files:
@@ -95,14 +95,14 @@ _AVAILABLE_CHECKS = {
 }
 
 
-def run_hygiene_checks(request: RepoHygieneRequest) -> List[RepoHygieneIssue]:
+def run_hygiene_checks(request: RepoHygieneRequest) -> list[RepoHygieneIssue]:
     requested = request.checks or list(_AVAILABLE_CHECKS.keys())
     unknown = sorted(set(requested) - set(_AVAILABLE_CHECKS.keys()))
     if unknown:
         raise ValueError(f"Unsupported hygiene checks requested: {', '.join(unknown)}")
 
     lines = request.diff.splitlines()
-    issues: List[RepoHygieneIssue] = []
+    issues: list[RepoHygieneIssue] = []
     for check in requested:
         issues.extend(_AVAILABLE_CHECKS[check](lines))
     return issues

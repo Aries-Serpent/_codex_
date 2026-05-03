@@ -18,7 +18,6 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""Evaluation utilities and runners."""
 
 from . import metrics
 from .fallback import synthetic_alignment

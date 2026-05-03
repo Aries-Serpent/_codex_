@@ -9,7 +9,7 @@ import logging
 import os
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +39,8 @@ class Notification:
     message: str
     channel: NotificationChannel
     priority: NotificationPriority
-    recipients: Optional[List[str]] = None
-    metadata: Optional[Dict[str, Any]] = None
+    recipients: Optional[list[str]] = None
+    metadata: Optional[dict[str, Any]] = None
 
     def __post_init__(self):
         if self.recipients is None:
@@ -81,13 +81,13 @@ class Notifier:
         self.github_enabled = github_enabled
         self.dry_run = dry_run
 
-        self.notifications_sent: List[Notification] = []
+        self.notifications_sent: list[Notification] = []
 
     def notify_batch_triage_complete(
         self,
         total_failures: int,
-        groups: List[Dict[str, Any]],
-        metrics: Dict[str, Any],
+        groups: list[dict[str, Any]],
+        metrics: dict[str, Any],
         report_url: Optional[str] = None,
     ) -> None:
         """
@@ -135,7 +135,7 @@ class Notifier:
 
     def notify_remediation_available(
         self,
-        actions: List[Dict[str, Any]],
+        actions: list[dict[str, Any]],
         auto_appliable: int,
         requires_approval: int,
     ) -> None:
@@ -199,8 +199,8 @@ Review and approve actions in the GitHub Actions workflow.
     def notify_escalation(
         self,
         reason: str,
-        failures: List[Dict[str, Any]],
-        recommended_actions: List[str],
+        failures: list[dict[str, Any]],
+        recommended_actions: list[str],
     ) -> None:
         """
         Escalate critical issues to engineering leads.
@@ -241,8 +241,8 @@ Immediate attention required from engineering leads.
     def _build_triage_summary_message(
         self,
         total_failures: int,
-        groups: List[Dict[str, Any]],
-        metrics: Dict[str, Any],
+        groups: list[dict[str, Any]],
+        metrics: dict[str, Any],
         report_url: Optional[str] = None,
     ) -> str:
         """Build summary message for triage results."""
@@ -363,7 +363,7 @@ Immediate attention required from engineering leads.
 
         logger.info(f"GitHub notification prepared: {title}")
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get notification statistics.
 

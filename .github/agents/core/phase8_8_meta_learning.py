@@ -26,7 +26,7 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 # =============================================================================
 # CONSTANTS FOR PHASE 8.8
@@ -72,14 +72,14 @@ class OptimizerState:
         loss_history: Historical loss values
         meta_params: Meta-learned hyperparameters
     """
-    parameters: Dict[str, float]
-    gradients: Dict[str, float] = field(default_factory=dict)
+    parameters: dict[str, float]
+    gradients: dict[str, float] = field(default_factory=dict)
     learning_rate: float = L2O_LEARNING_RATE
     iteration: int = 0
-    loss_history: List[float] = field(default_factory=list)
-    meta_params: Dict[str, float] = field(default_factory=dict)
+    loss_history: list[float] = field(default_factory=list)
+    meta_params: dict[str, float] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "parameters": self.parameters,
@@ -123,15 +123,15 @@ class LearnedOptimizer:
         self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
 
         # Neural optimizer weights (simulated)
-        self.weights: Dict[str, List[float]] = {
+        self.weights: dict[str, list[float]] = {
             "update_gate": [self._rng.gauss(0, 0.1) for _ in range(hidden_dim)],
             "reset_gate": [self._rng.gauss(0, 0.1) for _ in range(hidden_dim)],
             "output": [self._rng.gauss(0, 0.1) for _ in range(hidden_dim)],
         }
 
-        self.state_history: List[OptimizerState] = []
+        self.state_history: list[OptimizerState] = []
 
-    def compute_update(self, state: OptimizerState, loss: float) -> Dict[str, float]:
+    def compute_update(self, state: OptimizerState, loss: float) -> dict[str, float]:
         """Compute parameter update using learned optimizer.
 
         Args:
@@ -190,7 +190,7 @@ class LearnedOptimizer:
         self.state_history.append(new_state)
         return new_state
 
-    def meta_learn(self, tasks: List[Tuple[str, List[float]]]) -> Dict[str, float]:
+    def meta_learn(self, tasks: list[tuple[str, list[float]]]) -> dict[str, float]:
         """Meta-learn optimizer parameters from multiple tasks.
 
         Args:
@@ -250,12 +250,12 @@ class Architecture:
         hyperparams: Architecture hyperparameters
         performance: Validation performance score
     """
-    layers: List[Dict[str, Any]]
-    connections: List[List[int]] = field(default_factory=list)
-    hyperparams: Dict[str, Any] = field(default_factory=dict)
+    layers: list[dict[str, Any]]
+    connections: list[list[int]] = field(default_factory=list)
+    hyperparams: dict[str, Any] = field(default_factory=dict)
     performance: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "layers": self.layers,
@@ -280,7 +280,7 @@ class ArchitectureSpace:
         max_layers: Maximum number of layers
         allow_skip_connections: Whether skip connections allowed
     """
-    layer_types: List[str] = field(default_factory=lambda: ["dense", "conv", "recurrent"])
+    layer_types: list[str] = field(default_factory=lambda: ["dense", "conv", "recurrent"])
     min_layers: int = 2
     max_layers: int = 10
     allow_skip_connections: bool = True
@@ -354,7 +354,7 @@ class NASController:
         self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
 
         # Initialize population
-        self.population: List[Architecture] = []
+        self.population: list[Architecture] = []
         for _ in range(population_size):
             self.population.append(search_space.sample_architecture(self._rng))
 
@@ -455,7 +455,7 @@ class NASController:
 
         return self.best_architecture if self.best_architecture else self.population[0]
 
-    def get_top_k_architectures(self, k: int = 5) -> List[Architecture]:
+    def get_top_k_architectures(self, k: int = 5) -> list[Architecture]:
         """Get top-k performing architectures.
 
         Args:
@@ -483,12 +483,12 @@ class FastWeightsState:
         adaptation_steps: Number of adaptation steps taken
         task_id: Current task identifier
     """
-    slow_weights: Dict[str, float]
-    fast_weights: Dict[str, float]
+    slow_weights: dict[str, float]
+    fast_weights: dict[str, float]
     adaptation_steps: int = 0
     task_id: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "slow_weights": self.slow_weights,
@@ -534,16 +534,16 @@ class FastWeights:
         self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
 
         # Initialize slow weights (meta-learned)
-        self.slow_weights: Dict[str, float] = {
+        self.slow_weights: dict[str, float] = {
             f"w_{i}": self._rng.gauss(0, 0.1) for i in range(10)
         }
 
-        self.task_history: Dict[str, FastWeightsState] = {}
+        self.task_history: dict[str, FastWeightsState] = {}
 
     def adapt_to_task(
         self,
         task_id: str,
-        task_data: List[Tuple[Any, Any]],
+        task_data: list[tuple[Any, Any]],
         steps: Optional[int] = None
     ) -> FastWeightsState:
         """Adapt fast weights to specific task.
@@ -585,7 +585,7 @@ class FastWeights:
         self.task_history[task_id] = state
         return state
 
-    def outer_loop_update(self, task_states: List[FastWeightsState]) -> None:
+    def outer_loop_update(self, task_states: list[FastWeightsState]) -> None:
         """Outer loop: update slow weights based on task adaptations.
 
         Args:
@@ -645,12 +645,12 @@ class AgentMessage:
     """
     sender_id: str
     recipient_id: str
-    content: Dict[str, Any]
+    content: dict[str, Any]
     timestamp: float
     message_type: str = "info"
     priority: int = 5
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "sender_id": self.sender_id,
@@ -691,16 +691,16 @@ class AgentMessageBus:
         self.seed = seed
 
         # Agent message queues
-        self.queues: Dict[str, List[AgentMessage]] = defaultdict(list)
+        self.queues: dict[str, list[AgentMessage]] = defaultdict(list)
 
         # Topic subscriptions
-        self.subscriptions: Dict[str, Set[str]] = defaultdict(set)
+        self.subscriptions: dict[str, set[str]] = defaultdict(set)
 
         # Shared knowledge base
-        self.knowledge_base: Dict[str, Any] = {}
+        self.knowledge_base: dict[str, Any] = {}
 
         # Message history (for debugging/analysis)
-        self.message_history: List[AgentMessage] = []
+        self.message_history: list[AgentMessage] = []
 
         # Statistics
         self.stats = {
@@ -738,7 +738,7 @@ class AgentMessageBus:
 
         return True
 
-    def receive_messages(self, agent_id: str, max_count: int = 10) -> List[AgentMessage]:
+    def receive_messages(self, agent_id: str, max_count: int = 10) -> list[AgentMessage]:
         """Receive messages for agent.
 
         Args:
@@ -861,7 +861,7 @@ class AgentMessageBus:
 
         return removed
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get bus statistics.
 
         Returns:
@@ -885,7 +885,7 @@ def integrate_with_meta_policy_router(
     router: Any,  # MetaPolicyRouter from Phase 8.7
     learned_optimizer: LearnedOptimizer,
     fast_weights: FastWeights,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Integrate Phase 8.8 components with Phase 8.7 MetaPolicyRouter.
 
     Args:

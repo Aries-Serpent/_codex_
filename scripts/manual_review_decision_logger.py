@@ -12,7 +12,6 @@ Part of: PR #3248 Sprint 1 Part 3
 
 import json
 from pathlib import Path
-from typing import Dict, List
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -99,13 +98,13 @@ DECISIONS = {
 }
 
 
-def load_review_queue(queue_file: Path) -> List[Dict]:
+def load_review_queue(queue_file: Path) -> list[dict]:
     """Load the review queue JSON file."""
     with open(queue_file, encoding='utf-8') as f:
         return json.load(f)
 
 
-def apply_decisions(queue: List[Dict]) -> Dict:
+def apply_decisions(queue: list[dict]) -> dict:
     """
     Apply manual review decisions to queue items.
     Returns summary of actions taken.
@@ -150,7 +149,7 @@ def apply_decisions(queue: List[Dict]) -> Dict:
     return summary
 
 
-def generate_completion_report(summary: Dict) -> Dict:
+def generate_completion_report(summary: dict) -> dict:
     """Generate Sprint 1 completion report."""
     return {
         'timestamp': '2026-02-14T00:00:00Z',

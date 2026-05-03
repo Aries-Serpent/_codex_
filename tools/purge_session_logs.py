@@ -6,7 +6,6 @@ import os
 import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Tuple
 
 DEFAULT_RETENTION_DAYS = 30
 
@@ -16,7 +15,7 @@ def purge(
     dry_run: bool = False,
     log_dir: Path | None = None,
     db_path: Path | None = None,
-) -> Tuple[int, int]:
+) -> tuple[int, int]:
     """Delete NDJSON files and session_events rows older than ``days``.
 
     Returns a tuple ``(files_deleted, rows_deleted)``.  In ``dry_run`` mode no

@@ -12,7 +12,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from copilot_session_log_retriever import (  # noqa: E402
+from copilot_session_log_retriever import (
     CopilotSessionRetriever,
     ExpectedFile,
     SessionLogEntry,

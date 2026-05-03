@@ -35,16 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""Root-level Markdown File Review and Archival Tool.
-
-Implements: R10, R11 - Review root-level markdown files and archive superseded reports.
-
-This script analyzes root-level markdown files and provides recommendations
-for archival based on:
-- Age (last modified date)
-- Content analysis (superseded, historical, active)
-- Reference analysis (are files referenced elsewhere)
-"""
 
 import argparse
 import json

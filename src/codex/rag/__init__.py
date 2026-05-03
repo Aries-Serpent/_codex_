@@ -68,12 +68,12 @@ except ImportError:
     _ingestion_available = False
 
 __all__ = [
-    "build_prompt",
-    "PromptTemplate",
-    "PromptConfig",
-    "TokenizerFn",
-    "postprocess_output",
     "OutputProcessor",
+    "PromptConfig",
+    "PromptTemplate",
+    "TokenizerFn",
+    "build_prompt",
+    "postprocess_output",
 ]
 
 if _expanded_context_available:

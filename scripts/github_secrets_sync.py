@@ -38,7 +38,6 @@ import secrets
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict, List
 
 try:
     from github import Github
@@ -66,7 +65,7 @@ class GitHubSecretsManager:
         self.backup_dir = Path('.codex') / 'secrets' / 'github_backups'
         self.backup_dir.mkdir(parents=True, exist_ok=True)
 
-    def backup_secrets(self) -> Dict[str, str]:
+    def backup_secrets(self) -> dict[str, str]:
         """Backup current GitHub Secrets."""
         print("Backing up GitHub Secrets...")
 
@@ -98,7 +97,7 @@ class GitHubSecretsManager:
         print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")
         return {'backup_file': str(backup_file), 'count': len(backup_data['secrets'])}
 
-    def rotate_secrets(self, secret_names: List[str]) -> Dict[str, str]:
+    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:
         """Rotate specified secrets."""
         print(f"Rotating {len(secret_names)} secrets...")
 

@@ -5,7 +5,7 @@ This module contains various analyzer classes for different aspects of code revi
 """
 
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ class QuantumPatternAnalyzer:
     - Tunneling (optimization through intermediate states)
     """
 
-    async def analyze(self, context) -> List[Dict[str, Any]]:
+    async def analyze(self, context) -> list[dict[str, Any]]:
         """
         Analyze PR for quantum patterns.
 
@@ -47,7 +47,7 @@ class QuantumPatternAnalyzer:
         logger.info(f"Found {len(patterns)} quantum pattern opportunities")
         return patterns
 
-    def _find_superposition_opportunities(self, diff: str) -> List[Dict[str, Any]]:
+    def _find_superposition_opportunities(self, diff: str) -> list[dict[str, Any]]:
         """
         Find where superposition pattern could improve code.
 
@@ -71,7 +71,7 @@ class QuantumPatternAnalyzer:
 
         return opportunities
 
-    def _find_entanglement_candidates(self, files: List[str]) -> List[Dict[str, Any]]:
+    def _find_entanglement_candidates(self, files: list[str]) -> list[dict[str, Any]]:
         """
         Find components that could benefit from entanglement.
 
@@ -84,7 +84,7 @@ class QuantumPatternAnalyzer:
         # This would require analyzing git history to find co-changing files
 
 
-    def _find_tunneling_opportunities(self, diff: str) -> List[Dict[str, Any]]:
+    def _find_tunneling_opportunities(self, diff: str) -> list[dict[str, Any]]:
         """
         Find where quantum tunneling could optimize execution.
 

@@ -5,7 +5,7 @@ Defines the interface for all AST analyzers in the framework.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import Any
 
 from codex_ml.ast.core.node import Finding, StandardizedASTNode
 
@@ -40,7 +40,7 @@ class ASTAnalyzer(ABC):
     """
 
     @abstractmethod
-    def analyze(self, node: StandardizedASTNode) -> List[Finding]:
+    def analyze(self, node: StandardizedASTNode) -> list[Finding]:
         """Analyze a node and return findings.
 
         Args:
@@ -80,7 +80,7 @@ class ASTAnalyzer(ABC):
         """
         return f"{self.get_analyzer_type()} analyzer"
 
-    def get_supported_languages(self) -> List[str]:
+    def get_supported_languages(self) -> list[str]:
         """Get list of languages this analyzer supports.
 
         Override to restrict to specific languages.
@@ -106,7 +106,7 @@ class ComplexityAnalyzer(ASTAnalyzer):
         """
         self.threshold = threshold
 
-    def analyze(self, node: StandardizedASTNode) -> List[Finding]:
+    def analyze(self, node: StandardizedASTNode) -> list[Finding]:
         """Analyze function complexity."""
         if node.type != "function":
             return []
@@ -172,7 +172,7 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
         """Initialize unused code analyzer."""
         # Stateless - no instance variables needed
 
-    def analyze(self, node: StandardizedASTNode) -> List[Finding]:
+    def analyze(self, node: StandardizedASTNode) -> list[Finding]:
         """Analyze for unused code.
 
         This method is thread-safe as it uses local variables only.
@@ -230,7 +230,7 @@ class LongFunctionAnalyzer(ASTAnalyzer):
         """Initialize with max lines threshold."""
         self.max_lines = max_lines
 
-    def analyze(self, node: StandardizedASTNode) -> List[Finding]:
+    def analyze(self, node: StandardizedASTNode) -> list[Finding]:
         """Check function length."""
         if node.type != "function":
             return []
@@ -262,7 +262,7 @@ class ParameterCountAnalyzer(ASTAnalyzer):
         """Initialize with max parameters threshold."""
         self.max_parameters = max_parameters
 
-    def analyze(self, node: StandardizedASTNode) -> List[Finding]:
+    def analyze(self, node: StandardizedASTNode) -> list[Finding]:
         """Check parameter count."""
         if node.type != "function":
             return []

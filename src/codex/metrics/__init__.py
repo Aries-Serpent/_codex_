@@ -14,10 +14,10 @@ from .duplication import (
 from .storage import MetricStorage
 
 __all__ = [
+    "DuplicateBlock",
     "DuplicationDetector",
     "DuplicationRatio",
-    "DuplicateBlock",
-    "detect_duplicates",
-    "calculate_duplication_ratio",
     "MetricStorage",
+    "calculate_duplication_ratio",
+    "detect_duplicates",
 ]

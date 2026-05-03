@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "ClusterConfig",
-    "MultiNodeCoordinator",
     "ElasticTrainingConfig",
+    "MultiNodeCoordinator",
     "setup_multi_node_training",
 ]
 

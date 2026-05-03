@@ -6,7 +6,7 @@ allowing for customization and extension without modifying core code.
 """
 
 import re
-from typing import Dict, List, Pattern
+from re import Pattern
 
 # Entropy threshold for high-entropy string detection
 ENTROPY_THRESHOLD = 4.5
@@ -27,7 +27,7 @@ class SecretPatterns:
     """
 
     # Core secret patterns with flexible matching and placeholder filtering
-    PATTERNS: Dict[str, str] = {
+    PATTERNS: dict[str, str] = {
         # API key with negative lookahead for placeholders
         "api_key": r'(?i)(?:api[_-]?key|apikey)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|example|test|REPLACE|dummy|placeholder))([a-zA-Z0-9_\-]{16,})["\']?',
         "password": r'(?i)(?:password|passwd|pwd)["\']?\s*[:=]\s*["\'](?!(?:YOUR_|your_|example|test|password))([^"\']{8,})["\']',
@@ -45,7 +45,7 @@ class SecretPatterns:
     }
 
     # Placeholder patterns that should NOT be flagged as secrets
-    PLACEHOLDER_PATTERNS: List[str] = [
+    PLACEHOLDER_PATTERNS: list[str] = [
         r'(?i)example',
         r'(?i)placeholder',
         r'(?i)your[_-]?',
@@ -63,7 +63,7 @@ class SecretPatterns:
     ]
 
     # File extensions that commonly contain secrets (prioritize these)
-    HIGH_RISK_EXTENSIONS: List[str] = [
+    HIGH_RISK_EXTENSIONS: list[str] = [
         '.env', '.env.local', '.env.production', '.env.development',
         '.key', '.pem', '.p12', '.pfx', '.pkcs12',
         '.credentials', '.secret', '.secrets',
@@ -71,7 +71,7 @@ class SecretPatterns:
     ]
 
     # File patterns to exclude from secret scanning
-    EXCLUDED_FILE_PATTERNS: List[str] = [
+    EXCLUDED_FILE_PATTERNS: list[str] = [
         r'\.git/',
         r'node_modules/',
         r'__pycache__/',
@@ -86,7 +86,7 @@ class SecretPatterns:
     ]
 
     @classmethod
-    def get_compiled_patterns(cls) -> Dict[str, Pattern]:
+    def get_compiled_patterns(cls) -> dict[str, Pattern]:
         """Get compiled regex patterns for secret detection."""
         return {
             name: re.compile(pattern)
@@ -94,7 +94,7 @@ class SecretPatterns:
         }
 
     @classmethod
-    def get_compiled_placeholder_patterns(cls) -> List[Pattern]:
+    def get_compiled_placeholder_patterns(cls) -> list[Pattern]:
         """Get compiled regex patterns for placeholder detection."""
         return [re.compile(pattern) for pattern in cls.PLACEHOLDER_PATTERNS]
 

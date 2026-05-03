@@ -14,7 +14,7 @@ Metrics:
 
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
@@ -38,7 +38,7 @@ class ExperimentConfig:
     name: str
     description: str
     sample_size: int
-    success_criteria: Dict[str, float]
+    success_criteria: dict[str, float]
 
 
 # EXP-2 Configuration
@@ -55,7 +55,7 @@ EXP_2_CONFIG = ExperimentConfig(
 )
 
 
-def generate_test_audits(count: int, seed: int = 42) -> List[AuditResult]:
+def generate_test_audits(count: int, seed: int = 42) -> list[AuditResult]:
     """
     Generate diverse test audit scenarios.
 
@@ -104,7 +104,7 @@ def generate_test_audits(count: int, seed: int = 42) -> List[AuditResult]:
     return audits
 
 
-def run_exp2(sample_size: int = 500, seed: int = 42) -> Dict[str, Any]:
+def run_exp2(sample_size: int = 500, seed: int = 42) -> dict[str, Any]:
     """
     Run EXP-2 validation experiment.
 

@@ -30,7 +30,7 @@ except ImportError:
     class AnalysisResult:
         """Stub for analysis result."""
         quality_metrics: AudioQualityMetrics = None
-        recommendations: List[str] = None
+        recommendations: list[str] = None
         confidence: float = 0.0
 
         def __post_init__(self):
@@ -42,13 +42,13 @@ except ImportError:
     class IntelligentAudioAnalyzer:
         """Stub for intelligent audio analyzer."""
 
-        def __init__(self, config: Optional[Dict[str, Any]] = None):
+        def __init__(self, config: Optional[dict[str, Any]] = None):
             self.config = config or {}
 
         def analyze(self, audio_data: Any) -> AnalysisResult:
             """Analyze audio data."""
             return AnalysisResult()
 
-        def get_recommendations(self, result: AnalysisResult) -> List[str]:
+        def get_recommendations(self, result: AnalysisResult) -> list[str]:
             """Get recommendations based on analysis."""
             return result.recommendations if result else []

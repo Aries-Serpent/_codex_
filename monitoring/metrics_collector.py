@@ -4,7 +4,7 @@ import json
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 
@@ -24,7 +24,7 @@ class MetricsCollector:
         }
         self.base_url = f"https://api.github.com/repos/{repo}"
 
-    def collect_ci_metrics(self) -> Dict[str, Any]:
+    def collect_ci_metrics(self) -> dict[str, Any]:
         """Collect CI/CD workflow metrics."""
         return {
             "timestamp": datetime.now().isoformat(),
@@ -36,7 +36,7 @@ class MetricsCollector:
             "failed_workflows": self._get_failed_workflows(),
         }
 
-    def collect_security_metrics(self) -> Dict[str, Any]:
+    def collect_security_metrics(self) -> dict[str, Any]:
         """Collect security scan metrics."""
         return {
             "timestamp": datetime.now().isoformat(),
@@ -48,7 +48,7 @@ class MetricsCollector:
             "last_security_scan": self._get_last_scan_time(),
         }
 
-    def collect_agent_metrics(self) -> Dict[str, Any]:
+    def collect_agent_metrics(self) -> dict[str, Any]:
         """Collect custom agent performance metrics."""
         return {
             "timestamp": datetime.now().isoformat(),
@@ -58,7 +58,7 @@ class MetricsCollector:
             "pattern_recognition_accuracy": 0.87,  # Would calculate from results
         }
 
-    def save_metrics(self, metrics_type: str, metrics: Dict[str, Any]) -> None:
+    def save_metrics(self, metrics_type: str, metrics: dict[str, Any]) -> None:
         """Save metrics to JSON file."""
         filename = f"{metrics_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         filepath = self.output_dir / filename
@@ -68,7 +68,7 @@ class MetricsCollector:
 
         print(f"✅ Metrics saved to {filepath}")
 
-    def collect_all(self) -> Dict[str, Any]:
+    def collect_all(self) -> dict[str, Any]:
         """Collect all metrics at once."""
         return {
             "ci": self.collect_ci_metrics(),
@@ -138,7 +138,7 @@ class MetricsCollector:
             print(f"Warning: Could not get builds per day: {e}")
         return 0
 
-    def _get_failed_workflows(self) -> List[str]:
+    def _get_failed_workflows(self) -> list[str]:
         """Get list of recently failed workflows."""
         try:
             url = f"{self.base_url}/actions/runs"
@@ -155,7 +155,7 @@ class MetricsCollector:
         """Get total vulnerability count."""
         return self._get_codeql_count() + self._get_dependabot_count()
 
-    def _get_vuln_breakdown(self) -> Dict[str, int]:
+    def _get_vuln_breakdown(self) -> dict[str, int]:
         """Get vulnerabilities by severity."""
         # Simplified - would aggregate from actual alerts
         return {

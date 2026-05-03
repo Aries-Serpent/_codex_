@@ -6,10 +6,11 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from collections.abc import Iterable, Iterator, Sequence
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Sequence, Tuple
+from typing import Any
 
-Record = Dict[str, Any]
+Record = dict[str, Any]
 
 
 def iter_records(path: Path) -> Iterator[Record]:
@@ -26,16 +27,16 @@ def iter_records(path: Path) -> Iterator[Record]:
             yield payload
 
 
-def merge_fieldnames(records: Iterable[Record]) -> List[str]:
+def merge_fieldnames(records: Iterable[Record]) -> list[str]:
     fields: set[str] = set()
     for record in records:
         fields.update(str(key) for key in record.keys())
     return sorted(fields)
 
 
-def convert_records(records: Sequence[Record]) -> Tuple[List[str], List[Record]]:
+def convert_records(records: Sequence[Record]) -> tuple[list[str], list[Record]]:
     fieldnames = merge_fieldnames(records)
-    normalised: List[Record] = []
+    normalised: list[Record] = []
     for record in records:
         row = {name: record.get(name, "") for name in fieldnames}
         normalised.append(row)
@@ -51,7 +52,7 @@ def write_csv(fieldnames: Sequence[str], rows: Sequence[Record], dest: Path) -> 
             writer.writerow(row)
 
 
-def convert_file(ndjson_path: Path, csv_path: Path) -> Tuple[int, List[str]]:
+def convert_file(ndjson_path: Path, csv_path: Path) -> tuple[int, list[str]]:
     records = list(iter_records(ndjson_path))
     if not records:
         write_csv([], [], csv_path)

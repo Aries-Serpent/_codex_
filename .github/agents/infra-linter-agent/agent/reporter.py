@@ -13,7 +13,7 @@ import os
 from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Cognitive brain integration
 try:
@@ -30,7 +30,7 @@ except ImportError:
             pattern_name: str,
             pattern_type: str,
             description: Optional[str] = None,
-            context: Optional[Dict[str, Any]] = None
+            context: Optional[dict[str, Any]] = None
         ) -> int:
             return 0
 
@@ -46,11 +46,11 @@ class AftermathReport:
     medium_count: int
     low_count: int
     security_score: int
-    most_common_issues: List[Dict[str, Any]]
-    lessons_learned: Dict[str, str]
+    most_common_issues: list[dict[str, Any]]
+    lessons_learned: dict[str, str]
     pattern_recorded: bool
     timestamp: str
-    tools_detected: List[str] = field(default_factory=list)
+    tools_detected: list[str] = field(default_factory=list)
     blocking_issues: int = 0
     warning_issues: int = 0
 
@@ -82,7 +82,7 @@ class IaCReporter:
         # #AFTERMATH_METRIC: outcomes_tracked
         self.outcomes_tracked = 0
 
-    def _calculate_total_issues(self, validation_results: Dict[str, Any]) -> int:
+    def _calculate_total_issues(self, validation_results: dict[str, Any]) -> int:
         """
         Helper method to calculate total issues count
 
@@ -101,9 +101,9 @@ class IaCReporter:
 
     def generate_aftermath_report(
         self,
-        scan_results: Dict[str, Any],
-        validation_results: Dict[str, Any],
-        enforcement_results: Dict[str, Any]
+        scan_results: dict[str, Any],
+        validation_results: dict[str, Any],
+        enforcement_results: dict[str, Any]
     ) -> AftermathReport:
         """
         Generate comprehensive aftermath report from all PDA Loop phases
@@ -171,8 +171,8 @@ class IaCReporter:
 
     def _determine_outcome(
         self,
-        enforcement_results: Dict[str, Any],
-        validation_results: Dict[str, Any]
+        enforcement_results: dict[str, Any],
+        validation_results: dict[str, Any]
     ) -> str:
         """
         Determine final outcome of IaC scanning cycle
@@ -194,10 +194,10 @@ class IaCReporter:
 
     def _extract_lessons(
         self,
-        scan_results: Dict[str, Any],
-        validation_results: Dict[str, Any],
-        enforcement_results: Dict[str, Any]
-    ) -> Dict[str, str]:
+        scan_results: dict[str, Any],
+        validation_results: dict[str, Any],
+        enforcement_results: dict[str, Any]
+    ) -> dict[str, str]:
         """
         Extract lessons learned from this scanning cycle
 
@@ -254,7 +254,7 @@ class IaCReporter:
 
         return lessons
 
-    def _identify_common_issues(self, scan_results: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _identify_common_issues(self, scan_results: dict[str, Any]) -> list[dict[str, Any]]:
         """
         Identify most frequently occurring issues across all scanned files
 
@@ -277,9 +277,9 @@ class IaCReporter:
 
     def _record_pattern(
         self,
-        scan_results: Dict[str, Any],
-        validation_results: Dict[str, Any],
-        enforcement_results: Dict[str, Any],
+        scan_results: dict[str, Any],
+        validation_results: dict[str, Any],
+        enforcement_results: dict[str, Any],
         outcome: str
     ) -> bool:
         """

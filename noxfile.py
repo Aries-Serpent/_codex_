@@ -53,13 +53,12 @@ import os
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 import nox
 import tomllib
 
 # Canonical Python version for all nox sessions (matches .python-version and pyproject.toml)
-PY_VERSIONS: List[str] = ["3.12"]
+PY_VERSIONS: list[str] = ["3.12"]
 
 # Segmented requirement files
 REQ_DEV = Path("requirements-dev.txt")

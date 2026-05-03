@@ -21,7 +21,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 from classifier import FlakyTestClassification, RemediationAction
@@ -65,7 +65,7 @@ class FlakyTestQuarantine:
 
         #AFTERMATH_METRIC: quarantine_initialized
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """
         ACT phase - execute remediation actions.
 
@@ -118,7 +118,7 @@ class FlakyTestQuarantine:
 
         return result
 
-    def _create_flake_index(self, classifications: List[FlakyTestClassification]) -> bool:
+    def _create_flake_index(self, classifications: list[FlakyTestClassification]) -> bool:
         """
         Create flake index JSON file.
 
@@ -159,8 +159,8 @@ class FlakyTestQuarantine:
             print(f"Failed to create flake index: {e}")
             return False
 
-    def _create_quarantine_list(self, classifications: List[FlakyTestClassification],
-                                actions: Dict[str, Any]) -> bool:
+    def _create_quarantine_list(self, classifications: list[FlakyTestClassification],
+                                actions: dict[str, Any]) -> bool:
         """
         Create quarantine list Markdown file.
 
@@ -228,7 +228,7 @@ This list contains tests that have been quarantined due to flakiness. These test
             return False
 
     def _quarantine_test(self, classification: FlakyTestClassification,
-                        result: Dict[str, Any]) -> None:
+                        result: dict[str, Any]) -> None:
         """
         Quarantine a test by adding skip marker.
 
@@ -245,7 +245,7 @@ This list contains tests that have been quarantined due to flakiness. These test
         #AFTERMATH_METRIC: test_quarantined
 
     def _mark_test_flaky(self, classification: FlakyTestClassification,
-                        result: Dict[str, Any]) -> None:
+                        result: dict[str, Any]) -> None:
         """
         Mark test as flaky with rerun decorator.
 
@@ -262,7 +262,7 @@ This list contains tests that have been quarantined due to flakiness. These test
         #AFTERMATH_METRIC: test_marked_flaky
 
     def _create_investigation_issue(self, classification: FlakyTestClassification,
-                                   result: Dict[str, Any]) -> None:
+                                   result: dict[str, Any]) -> None:
         """
         Create GitHub issue for test investigation.
 
@@ -324,7 +324,7 @@ This list contains tests that have been quarantined due to flakiness. These test
 """
         return body
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Generate quarantine summary.
 

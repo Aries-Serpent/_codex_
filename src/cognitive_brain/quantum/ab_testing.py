@@ -10,7 +10,7 @@ import hashlib
 import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from cognitive_brain.models.quantum_metrics import (
     QuantumMetric,
@@ -48,7 +48,7 @@ class ExperimentConfig:
     control_description: str
     treatment_description: str
     success_metric: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate configuration."""
@@ -85,11 +85,11 @@ class ExperimentResult:
     control_n: int
     treatment_n: int
     p_value: float
-    confidence_interval: Tuple[float, float]
+    confidence_interval: tuple[float, float]
     is_significant: bool
     effect_size: float
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "experiment_id": self.experiment_id,
@@ -144,8 +144,8 @@ class ABTestFramework:
             repository: Database repository for metrics
         """
         self.repository = repository
-        self._experiments: Dict[str, ExperimentConfig] = {}
-        self._assignments: Dict[Tuple[str, str], Variant] = {}  # (exp_id, user_id) -> variant
+        self._experiments: dict[str, ExperimentConfig] = {}
+        self._assignments: dict[tuple[str, str], Variant] = {}  # (exp_id, user_id) -> variant
 
     def create_experiment(self, config: ExperimentConfig) -> None:
         """
@@ -231,7 +231,7 @@ class ABTestFramework:
         experiment_id: str,
         user_id: str,
         metric_value: float,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> QuantumMetric:
         """
         Record metric for a user in an experiment.
@@ -277,7 +277,7 @@ class ABTestFramework:
 
         return self.repository.create(metric)
 
-    def get_variant_metrics(self, experiment_id: str, variant: Variant) -> List[float]:
+    def get_variant_metrics(self, experiment_id: str, variant: Variant) -> list[float]:
         """
         Get all metric values for a variant.
 
@@ -384,7 +384,7 @@ class ABTestFramework:
             effect_size=effect_size,
         )
 
-    def _calculate_std(self, values: List[float], mean: float) -> float:
+    def _calculate_std(self, values: list[float], mean: float) -> float:
         """Calculate standard deviation."""
         if len(values) < 2:
             return 0.0
@@ -394,13 +394,13 @@ class ABTestFramework:
 
     def _two_sample_ttest(
         self,
-        control: List[float],
-        treatment: List[float],
+        control: list[float],
+        treatment: list[float],
         control_mean: float,
         treatment_mean: float,
         control_std: float,
         treatment_std: float,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """
         Perform two-sample t-test.
 
@@ -470,7 +470,7 @@ class ABTestFramework:
         n1: int,
         n2: int,
         alpha: float,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """
         Calculate 95% confidence interval for difference of means.
 
@@ -489,7 +489,7 @@ class ABTestFramework:
 
     def get_variant_distribution(
         self, experiment_id: str, n_samples: int = 1000
-    ) -> Dict[Variant, int]:
+    ) -> dict[Variant, int]:
         """
         Get distribution of variant assignments over n_samples users.
 

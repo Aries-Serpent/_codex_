@@ -12,9 +12,10 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+from collections.abc import Generator
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 
 import pytest
 

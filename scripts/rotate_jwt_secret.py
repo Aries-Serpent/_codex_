@@ -40,7 +40,7 @@ import secrets
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Optional
 
 try:
     from github import Github
@@ -86,7 +86,7 @@ class JWTSecretRotator:
         )
         return base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
-    def encrypt_secret(self, secret: str) -> Tuple[bytes, bytes]:
+    def encrypt_secret(self, secret: str) -> tuple[bytes, bytes]:
         """Encrypt secret using master key."""
         salt = os.urandom(16)
         key = self.derive_encryption_key(self.master_key, salt)
@@ -124,7 +124,7 @@ class JWTSecretRotator:
         print(f"✓ Backed up current secret to: {backup_file}")
         return str(backup_file)
 
-    def rotate_secret(self) -> Dict[str, str]:
+    def rotate_secret(self) -> dict[str, str]:
         """Rotate JWT secret and update GitHub Secrets."""
         print("Starting JWT secret rotation...")
 
@@ -272,7 +272,7 @@ class JWTSecretRotator:
         print("✓ Rotation verification passed")
         return True
 
-    def rollback_to_backup(self, backup_file: Optional[str] = None) -> Dict[str, str]:
+    def rollback_to_backup(self, backup_file: Optional[str] = None) -> dict[str, str]:
         """Rollback to a previous backup."""
         print("Starting rollback to backup...")
 

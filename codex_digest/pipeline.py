@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 from .mapper import map_intents
 from .semparser import SemParser
@@ -13,9 +13,9 @@ from .workflow import compose_workflow, execute_step
 @dataclass
 class PipelineOutput:
     tasks_md: str
-    plan_json: Dict[str, Any]
+    plan_json: dict[str, Any]
     convergence: float
-    opportunity_areas: List[str]
+    opportunity_areas: list[str]
 
 
 class CodexPipeline:
@@ -57,7 +57,7 @@ class CodexPipeline:
             lines.append(f"- {nm}: {sc:.2f}")
 
         conv = min(1.0, 0.5 * best_score + 0.1 * len(actions))
-        opp: List[str] = []
+        opp: list[str] = []
         if conv < 0.7:
             opp = five_whys("Low convergence between detected intents and actions")
 

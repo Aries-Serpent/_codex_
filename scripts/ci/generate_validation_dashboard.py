@@ -11,7 +11,7 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass
@@ -33,7 +33,7 @@ class MetricsDashboard:
 
     def __init__(self, metrics_file: Path):
         self.metrics_file = metrics_file
-        self.metrics: List[ValidationMetric] = []
+        self.metrics: list[ValidationMetric] = []
         self._load_metrics()
 
     def _load_metrics(self):
@@ -58,7 +58,7 @@ class MetricsDashboard:
         with open(self.metrics_file, 'a') as f:
             f.write(json.dumps(asdict(metric)) + '\n')
 
-    def calculate_statistics(self) -> Dict[str, Any]:
+    def calculate_statistics(self) -> dict[str, Any]:
         """Calculate aggregate statistics."""
         if not self.metrics:
             return {}

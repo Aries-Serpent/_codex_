@@ -32,7 +32,7 @@ import logging
 import time
 from collections import deque
 from dataclasses import dataclass, field
-from typing import Any, Deque, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +115,7 @@ class AgentHealthMetrics:
     error_rate_per_min: float  # Errors per minute (≤0.1 = healthy)
     latency_p99_ms: float  # p99 latency (≤50ms = healthy)
     decisions_per_min: float  # Throughput
-    pattern_distribution: Dict[str, int]  # (not tracked here; reserved)
+    pattern_distribution: dict[str, int]  # (not tracked here; reserved)
     health_status: str  # "healthy" | "degraded" | "critical"
     prometheus_available: bool  # Whether Prometheus metrics are exported
     active_learning_queries_today: int = 0  # AL queries used today
@@ -158,8 +158,8 @@ class AgentDashboard:
         Args:
             window_size: Maximum number of decision records to retain in memory.
         """
-        self._records: Deque[DecisionRecord] = deque(maxlen=window_size)
-        self._self_correction_log: List[Dict[str, Any]] = []
+        self._records: deque[DecisionRecord] = deque(maxlen=window_size)
+        self._self_correction_log: list[dict[str, Any]] = []
         self._classical_fallback_active: bool = False
         self._lightweight_mode_active: bool = False
 
@@ -318,7 +318,7 @@ class AgentDashboard:
     # Self-correction
     # ------------------------------------------------------------------
 
-    def trigger_self_correction(self, health: AgentHealthMetrics) -> List[str]:
+    def trigger_self_correction(self, health: AgentHealthMetrics) -> list[str]:
         """
         Apply autonomous self-correction based on health metrics.
 
@@ -328,7 +328,7 @@ class AgentDashboard:
         Returns:
             List of correction actions applied (for audit trail).
         """
-        actions: List[str] = []
+        actions: list[str] = []
 
         if health.coherence_current < self.COHERENCE_DEGRADED:
             self._classical_fallback_active = True
@@ -364,7 +364,7 @@ class AgentDashboard:
         return self._lightweight_mode_active
 
     @property
-    def self_correction_log(self) -> List[Dict[str, Any]]:
+    def self_correction_log(self) -> list[dict[str, Any]]:
         """Read-only copy of self-correction actions taken."""
         return list(self._self_correction_log)
 
@@ -380,7 +380,7 @@ class AgentDashboard:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _percentile(data: List[float], pct: int) -> float:
+    def _percentile(data: list[float], pct: int) -> float:
         if not data:
             return 0.0
         sorted_data = sorted(data)
@@ -388,7 +388,7 @@ class AgentDashboard:
         return sorted_data[min(idx, len(sorted_data) - 1)]
 
     @staticmethod
-    def _compute_trend(values: List[float], window: int = 10) -> str:
+    def _compute_trend(values: list[float], window: int = 10) -> str:
         if len(values) < 2:
             return "stable"
         recent = values[-window:]

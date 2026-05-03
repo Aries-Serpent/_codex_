@@ -13,7 +13,6 @@ import json
 import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-from typing import Dict, List
 
 
 @dataclass
@@ -36,8 +35,8 @@ class ModelMetrics:
 class ModelPerformanceTracker:
     """Track and compare model performance over time."""
 
-    history: List[ModelMetrics] = field(default_factory=list)
-    thresholds: Dict[str, float] = field(
+    history: list[ModelMetrics] = field(default_factory=list)
+    thresholds: dict[str, float] = field(
         default_factory=lambda: {
             "accuracy_min": 0.85,
             "latency_max_ms": 100.0,
@@ -49,7 +48,7 @@ class ModelPerformanceTracker:
         """Record a new set of metrics."""
         self.history.append(metrics)
 
-    def check_regression(self, current: ModelMetrics) -> Dict:
+    def check_regression(self, current: ModelMetrics) -> dict:
         """Check if current metrics show regression vs thresholds."""
         issues = []
         if current.accuracy < self.thresholds["accuracy_min"]:
@@ -74,7 +73,7 @@ class ModelPerformanceTracker:
             "metrics": asdict(current),
         }
 
-    def get_summary(self) -> Dict:
+    def get_summary(self) -> dict:
         """Get performance summary."""
         if not self.history:
             return {"status": "no_data", "models": 0}

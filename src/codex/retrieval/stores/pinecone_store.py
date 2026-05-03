@@ -4,7 +4,7 @@ Disabled by default in local mode
 """
 
 import logging
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import numpy as np
 
@@ -60,13 +60,13 @@ class PineconeStore(VectorStore):
             "PineconeStore is not available in offline mode. Use FAISSStore instead."
         )
 
-    def delete(self, ids: Union[str, list[str]]) -> int:
+    def delete(self, ids: str | list[str]) -> int:
         """Delete vectors (stub)"""
         raise RuntimeError(
             "PineconeStore is not available in offline mode. Use FAISSStore instead."
         )
 
-    def get(self, ids: Union[str, list[str]]) -> list[dict[str, Any]]:
+    def get(self, ids: str | list[str]) -> list[dict[str, Any]]:
         """Get vectors (stub)"""
         raise RuntimeError(
             "PineconeStore is not available in offline mode. Use FAISSStore instead."

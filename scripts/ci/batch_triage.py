@@ -47,7 +47,7 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -89,11 +89,11 @@ class FailureRecord:
     root_cause: Optional[str] = None
     severity: str = "medium"
     logs: Optional[str] = None
-    detected_issues: List[Dict[str, Any]] = field(default_factory=list)
-    suggested_actions: List[Dict[str, Any]] = field(default_factory=list)
-    grouped_with: List[int] = field(default_factory=list)
+    detected_issues: list[dict[str, Any]] = field(default_factory=list)
+    suggested_actions: list[dict[str, Any]] = field(default_factory=list)
+    grouped_with: list[int] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary"""
         return asdict(self)
 
@@ -105,11 +105,11 @@ class TriageGroup:
     root_cause: str
     severity: str
     failure_count: int
-    failures: List[FailureRecord] = field(default_factory=list)
-    common_patterns: List[str] = field(default_factory=list)
-    remediation_suggestions: List[str] = field(default_factory=list)
+    failures: list[FailureRecord] = field(default_factory=list)
+    common_patterns: list[str] = field(default_factory=list)
+    remediation_suggestions: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary"""
         return {
             'group_id': self.group_id,
@@ -128,8 +128,8 @@ class BatchTriageEngine:
     def __init__(self, repo: str = "Aries-Serpent/_codex_"):
         self.repo = repo
         self.owner, self.repo_name = repo.split('/')
-        self.failures: List[FailureRecord] = []
-        self.groups: List[TriageGroup] = []
+        self.failures: list[FailureRecord] = []
+        self.groups: list[TriageGroup] = []
         self.gh_token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
 
         # Initialize self-healing engine if available
@@ -166,7 +166,7 @@ class BatchTriageEngine:
             logger.error(f"Error fetching logs for run {run_id}: {e}")
             return None
 
-    def fetch_issue_data(self, issue_num: int) -> Optional[Dict[str, Any]]:
+    def fetch_issue_data(self, issue_num: int) -> Optional[dict[str, Any]]:
         """Fetch GitHub issue data using GitHub CLI"""
         try:
             cmd = ['gh', 'issue', 'view', str(issue_num), '--json',
@@ -323,7 +323,7 @@ class BatchTriageEngine:
             for failure in failures:
                 failure.grouped_with = [n for n in issue_nums if n != failure.issue_number]
 
-    def _extract_common_patterns(self, failures: List[FailureRecord]) -> List[str]:
+    def _extract_common_patterns(self, failures: list[FailureRecord]) -> list[str]:
         """Extract common patterns across failures"""
         patterns = set()
 
@@ -336,7 +336,7 @@ class BatchTriageEngine:
 
         return sorted(patterns)[:5]  # Top 5 patterns
 
-    def _generate_group_remediations(self, failures: List[FailureRecord]) -> List[str]:
+    def _generate_group_remediations(self, failures: list[FailureRecord]) -> list[str]:
         """Generate remediation suggestions for a group"""
         suggestions = []
 
@@ -380,7 +380,7 @@ class BatchTriageEngine:
 
         logger.info(f"Loaded {len(self.failures)} failure records")
 
-    def load_from_issues(self, issue_numbers: List[int]) -> None:
+    def load_from_issues(self, issue_numbers: list[int]) -> None:
         """Load failure records from GitHub issues"""
         logger.info(f"Loading failures from {len(issue_numbers)} issues")
 

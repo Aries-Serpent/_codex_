@@ -9,7 +9,7 @@ but this is a false positive. See .github/CODE_REVIEW_EXCEPTIONS.md for details.
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Optional
 
 
 class GitMetadataCollector:
@@ -40,7 +40,7 @@ class GitMetadataCollector:
         except Exception:
             return False
 
-    def get_blame_top_author(self, file_path: Path) -> Tuple[Optional[str], Optional[str]]:
+    def get_blame_top_author(self, file_path: Path) -> tuple[Optional[str], Optional[str]]:
         """
         Get top contributor for file using git blame.
 
@@ -68,8 +68,8 @@ class GitMetadataCollector:
                 return None, None
 
             # Count contributions by author
-            author_counts: Dict[str, int] = {}
-            author_emails: Dict[str, str] = {}
+            author_counts: dict[str, int] = {}
+            author_emails: dict[str, str] = {}
             current_author = None
             current_email = None
 

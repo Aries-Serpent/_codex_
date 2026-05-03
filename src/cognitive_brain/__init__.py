@@ -37,14 +37,14 @@ __version__ = "0.1.0"
 
 if _base_available:
     __all__ = [
-        "quantum",
-        "Planner",
+        "ActionResult",
+        "Decision",
         "MemoryInterface",
-        "PhysicsOfThought",
         "ObservationData",
         "OrientationResult",
-        "Decision",
-        "ActionResult",
+        "PhysicsOfThought",
+        "Planner",
+        "quantum",
     ]
 else:
     __all__ = ["quantum"]

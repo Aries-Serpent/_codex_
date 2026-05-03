@@ -13,11 +13,11 @@ pytest.importorskip("torch")
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch  # noqa: E402
+import torch
 
 pytest.skip("PEFT registry not available in this build", allow_module_level=True)
 
-from codex_ml.peft.peft_registry import get_peft_registry  # noqa: E402
+from codex_ml.peft.peft_registry import get_peft_registry
 
 
 def test_peft_registry_lists_expected_adapters():

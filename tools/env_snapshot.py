@@ -6,8 +6,9 @@ import argparse
 import json
 import os
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 from codex_ml.utils import environment_summary
 

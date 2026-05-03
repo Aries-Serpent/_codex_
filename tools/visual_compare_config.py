@@ -6,16 +6,16 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any
 
 
-def load_config(p: Path) -> Dict[str, Any]:
+def load_config(p: Path) -> dict[str, Any]:
     if not p.exists():
         return {"default_metric": "ssim", "default_threshold": 0.98, "templates": {}}
     return json.loads(p.read_text(encoding="utf-8"))
 
 
-def resolve_threshold(cfg: Dict[str, Any], template_name: str) -> Tuple[str, float]:
+def resolve_threshold(cfg: dict[str, Any], template_name: str) -> tuple[str, float]:
     tcfg = (cfg.get("templates") or {}).get(template_name, {})
     metric = tcfg.get("metric", cfg.get("default_metric", "ssim"))
     thr = float(tcfg.get("threshold", cfg.get("default_threshold", 0.98)))

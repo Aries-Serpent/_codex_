@@ -15,8 +15,9 @@ Pattern alignment:
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Sequence
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

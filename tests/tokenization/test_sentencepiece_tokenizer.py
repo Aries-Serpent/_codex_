@@ -61,7 +61,7 @@ if "transformers" not in sys.modules:
         IS_CODEX_STUB=True,
     )
 
-from codex_ml.tokenization.adapter import (  # noqa: E402
+from codex_ml.tokenization.adapter import (
     SentencePieceTokenizer,
     TokenizerAdapter,
 )
@@ -105,7 +105,7 @@ def test_sentencepiece_tokenizer_roundtrip(tmp_path: Path) -> None:
     tokenizer = SentencePieceTokenizer(model_file)
     text = "hello world"
     ids = tokenizer.encode(text)
-    assert isinstance(ids, list) and ids  # noqa: S101
+    assert isinstance(ids, list) and ids
     decoded = tokenizer.decode(ids)
     assert decoded.replace(" ", "").lower().startswith("hello")
 

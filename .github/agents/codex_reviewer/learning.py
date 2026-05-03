@@ -7,7 +7,7 @@ over time based on feedback and review outcomes.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ class SelfEvolutionSystem:
 
         logger.info(f"Learned from review #{context.pr_number}")
 
-    async def integrate_feedback(self, feedback: Dict[str, Any]):
+    async def integrate_feedback(self, feedback: dict[str, Any]):
         """
         Integrate human feedback into learning system.
 
@@ -105,7 +105,7 @@ class SelfEvolutionSystem:
         if len(self.review_history) > 100:
             self.review_history = self.review_history[-100:]
 
-    async def _extract_patterns(self, suggestions: List[Dict[str, Any]]):
+    async def _extract_patterns(self, suggestions: list[dict[str, Any]]):
         """Extract patterns from suggestions."""
         for suggestion in suggestions:
             category = suggestion.get("category", "unknown")
@@ -132,7 +132,7 @@ class SelfEvolutionSystem:
         # This would track prediction accuracy vs actual outcomes
         pass
 
-    async def _track_suggestion_outcomes(self, feedback: Dict[str, Any]):
+    async def _track_suggestion_outcomes(self, feedback: dict[str, Any]):
         """Track which suggestions were accepted or rejected."""
         accepted = feedback.get("suggestions_accepted", [])
         rejected = feedback.get("suggestions_rejected", [])
@@ -153,13 +153,13 @@ class SelfEvolutionSystem:
                 acceptance_rate = total_accepted / total
                 logger.info(f"Suggestion acceptance rate: {acceptance_rate:.1%}")
 
-    async def _adjust_criteria_weights(self, feedback: Dict[str, Any]):
+    async def _adjust_criteria_weights(self, feedback: dict[str, Any]):
         """Adjust criteria weights based on feedback."""
         # TODO: Implement adaptive weight adjustment
         # This would increase weights for categories with high acceptance
         pass
 
-    async def _learn_from_feedback_patterns(self, feedback: Dict[str, Any]):
+    async def _learn_from_feedback_patterns(self, feedback: dict[str, Any]):
         """Learn new patterns from feedback."""
         # TODO: Implement pattern learning from feedback
         # This would identify what types of suggestions are most valued

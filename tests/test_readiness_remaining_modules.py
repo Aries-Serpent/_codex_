@@ -10,8 +10,8 @@ from __future__ import annotations
 import importlib
 import sys
 import types
+from collections.abc import Iterable
 from types import SimpleNamespace
-from typing import Iterable
 
 import pytest
 

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from difflib import SequenceMatcher
-from typing import Iterable, List
 
 from .models import KnowledgeSearchRequest, KnowledgeSearchResult
 
@@ -22,7 +22,7 @@ class KnowledgeBaseEntry:
         return round((baseline + keyword_boost) / 2, 4)
 
 
-_DEFAULT_ENTRIES: List[KnowledgeBaseEntry] = [
+_DEFAULT_ENTRIES: list[KnowledgeBaseEntry] = [
     KnowledgeBaseEntry(
         snippet="Use the Internal Tools API to consolidate Codex and Copilot automation via a single audited backend.",
         source="docs/bridge/overview.md",
@@ -48,7 +48,7 @@ _DEFAULT_ENTRIES: List[KnowledgeBaseEntry] = [
 
 def search_knowledge(
     request: KnowledgeSearchRequest, *, entries: Iterable[KnowledgeBaseEntry] | None = None
-) -> List[KnowledgeSearchResult]:
+) -> list[KnowledgeSearchResult]:
     dataset = list(entries or _DEFAULT_ENTRIES)
     scored = [(entry.score(request.query), entry) for entry in dataset]
     scored.sort(key=lambda item: item[0], reverse=True)
