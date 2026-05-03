@@ -238,6 +238,13 @@ class BatchScanRunner:
         extra_flags: List[str],
         report: Optional[Path],
     ) -> dict:
+        if not isinstance(self.batch_size, int) or not (1 <= self.batch_size <= 1000):
+            raise ValueError("batch_size must be an integer between 1 and 1000")
+        if self.workers is not None and (
+            not isinstance(self.workers, int) or not (1 <= self.workers <= 256)
+        ):
+            raise ValueError("workers must be an integer between 1 and 256 when provided")
+
         cmd = [
             sys.executable,
             str(_PREFLIGHT),

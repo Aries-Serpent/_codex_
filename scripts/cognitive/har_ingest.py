@@ -318,7 +318,7 @@ def main():
     args = parser.parse_args()
 
     # Handle apply flag
-    dry_run = not args.apply if args.apply else args.dry_run
+    dry_run = not args.apply
 
     context = IngestContext(
         src_path=args.har_file,

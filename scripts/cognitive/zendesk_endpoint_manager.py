@@ -36,7 +36,8 @@ import json
 import logging
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -180,7 +181,25 @@ class ZendeskEndpointManager:
 
                 # Handle rate limiting
                 if response.status_code == 429:
-                    retry_after = int(response.headers.get('Retry-After', BASE_WAIT_TIME * (2 ** attempt)))
+                    retry_after_header = response.headers.get('Retry-After')
+                    default_retry_after = BASE_WAIT_TIME * (2 ** attempt)
+                    retry_after = default_retry_after
+
+                    if retry_after_header is not None:
+                        try:
+                            retry_after = max(0, int(retry_after_header))
+                        except (TypeError, ValueError):
+                            try:
+                                retry_at = parsedate_to_datetime(retry_after_header)
+                                if retry_at.tzinfo is None:
+                                    retry_at = retry_at.replace(tzinfo=timezone.utc)
+                                retry_after = max(
+                                    0,
+                                    int((retry_at - datetime.now(timezone.utc)).total_seconds())
+                                )
+                            except (TypeError, ValueError, OverflowError):
+                                retry_after = default_retry_after
+
                     logger.warning(f"Rate limited, waiting {retry_after}s")
                     time.sleep(retry_after)
                     continue

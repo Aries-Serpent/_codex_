@@ -58,11 +58,14 @@ def _build_user_from_record(record: dict) -> User:
         username=record["username"],
         email=record["email"],
         password_hash=record["password_hash"],
-        is_active=record.get("is_active", True),
+        is_active=record.get("is_active"),
         roles=record.get("roles", ["user"]),
         display_name=record.get("display_name"),
-        created_at=record.get("created_at", time.time()),
-        updated_at=record.get("updated_at", time.time()),
+        # Preserve data integrity during migration: if source timestamps are
+        # missing, use an explicit "unknown" sentinel (Unix epoch 1970-01-01 00:00:00 UTC)
+        # instead of fabricating the current time. Consumers should treat 0.0 as unknown.
+        created_at=record.get("created_at", 0.0),
+        updated_at=record.get("updated_at", 0.0),
     )
 
 
@@ -121,6 +124,26 @@ def import_snapshot_to_sqlite(snapshot_path: Path, db_path: str) -> int:
         # Check if already migrated (idempotent)
         existing = repo.get_by_id(user.user_id)
         if existing is not None:
+            compared_fields = [
+                "username",
+                "email",
+                "password_hash",
+                "is_active",
+                "roles",
+                "display_name",
+            ]
+            differing_fields = [
+                field
+                for field in compared_fields
+                if getattr(existing, field, None) != getattr(user, field, None)
+            ]
+            if differing_fields:
+                print(
+                    "  ⚠️  ID collision for "
+                    f"user_id '{user.user_id}' (username '{user.username}'): "
+                    f"existing record differs in fields: {', '.join(differing_fields)}",
+                    file=sys.stderr,
+                )
             skipped += 1
             continue
         try:
