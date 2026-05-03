@@ -439,7 +439,7 @@ def main():
         "explicit_warning": "DO NOT ACTIVATE ANY GitHub Actions files.",
         "next_steps": [
             "Run pytest to validate imports/tests: `pytest -q`",
-            "If Windows with no symlink support, use --mode proxy " "(already attempted in auto).",
+            "If Windows with no symlink support, use --mode proxy (already attempted in auto).",
             "Review .codex/change_log.md and .codex/errors.ndjson",
         ],
     }

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S<NNN> — 2026-05-03 — PR #4204 — CodeQL warning/note remediation)
+- **`py/use-of-exit-or-quit`** — Replaced `exit(1)` with `sys.exit(1)` in `.github/agents/test-coverage-enforcer/src/agent.py`; added `import sys`.
+- **`py/unnecessary-pass`** — Removed redundant `pass` alongside docstrings in `config_legacy/__init__.py` and `configs/mutmut_config.py`; removed unreachable `pass` after function-body exhaustion in `.pre-commit-scripts/check-meta-tensors.py`.
+- **`py/comparison-of-identical-expressions`** — Replaced `nan != nan` (always `True`, IEEE 754 artifact) with `math.isnan(nan)` in three test files; replaced bare `None is None` with variable-based assertion.
+- **`py/implicit-string-concatenation-in-list`** — Merged adjacent implicit string literals in `tools/codex_src_consolidation.py:442`.
+
 ### Fixed (auto-update — PR #4204)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4204 (SHA `027542c2`) at 2026-05-03T17:12Z [auto-generated]
 

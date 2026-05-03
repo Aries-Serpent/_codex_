@@ -85,7 +85,7 @@ class TestNumericEdgeCases:
         nan_value = float("nan")
 
         assert math.isnan(nan_value)
-        assert nan_value != nan_value  # NaN is not equal to itself
+        assert not (nan_value == nan_value)  # NaN is not equal to itself (IEEE 754)
 
     def test_division_edge_cases(self):
         """Test division edge cases."""

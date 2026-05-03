@@ -20,11 +20,11 @@
 | 🔴 Error | `py/call/wrong-arguments` | 2 | ⬜ Open |
 | 🔴 Error | `py/call/wrong-named-argument` | 18 | ⬜ Open |
 | 🟡 Warning | `py/missing-equals` | 1 | ⬜ Open |
-| 🟡 Warning | `py/use-of-exit-or-quit` | 2 | ⬜ Open |
+| 🟡 Warning | `py/use-of-exit-or-quit` | 2 | ✅ 1/2 fixed — 1 TBD |
 | 🟡 Warning | `py/comparison-of-constants` | 1 | ⬜ Open |
-| 🟡 Warning | `py/comparison-of-identical-expressions` | 5 | ⬜ Open |
-| 🟡 Warning | `py/implicit-string-concatenation-in-list` | 5 | ⬜ Open |
-| 🟡 Warning | `py/unnecessary-pass` | 1 | ⬜ Open |
+| 🟡 Warning | `py/comparison-of-identical-expressions` | 5 | ✅ 4/5 fixed in tests |
+| 🟡 Warning | `py/implicit-string-concatenation-in-list` | 5 | ✅ 1 fixed (tools/), 4 TBD |
+| 🟡 Warning | `py/unnecessary-pass` | 1 | ✅ Fixed (3 removed) |
 | 🟡 Warning | `py/unreachable-statement` | 33 | ⬜ Open |
 | 🔵 Note | `js/unused-local-variable` | 4 | ⬜ Open |
 | | **TOTAL** | **76** | |

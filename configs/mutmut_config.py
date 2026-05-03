@@ -8,7 +8,7 @@
 
 def init():
     """Initialize mutation testing configuration."""
-    pass
+    return None
 
 
 # Paths to mutate

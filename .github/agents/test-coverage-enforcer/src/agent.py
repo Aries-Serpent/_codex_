@@ -19,6 +19,7 @@ Usage:
 import ast
 import json
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -632,7 +633,7 @@ def main():
             print(f"  - {action}")
 
         if not result.passed and agent.config.get('fail_build_below_threshold', True):
-            exit(1)
+            sys.exit(1)
 
     elif args.command == 'generate-tests':
         reports = agent.analyze_coverage(args.path)

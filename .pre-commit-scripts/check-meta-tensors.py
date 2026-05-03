@@ -166,7 +166,6 @@ class MetaTensorPatternChecker(ast.NodeVisitor):
 
         # If file initializes models but has no verification, warn
         # (but don't fail - verification might be elsewhere)
-        pass
 
 
 def check_file(filepath: Path) -> List[Tuple[int, str]]:

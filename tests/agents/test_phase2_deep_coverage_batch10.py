@@ -13,6 +13,8 @@ Target: +3-4% coverage gain (66% → 70%)
 """
 
 
+import math
+
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -458,7 +460,7 @@ class TestPhase2_EdgeCases_ComparativeOperations:
     def test_nan_comparison(self):
         """Test NaN comparisons"""
         nan = float("nan")
-        assert nan != nan  # NaN is not equal to itself (IEEE 754)
+        assert math.isnan(nan)  # NaN is not equal to itself (IEEE 754)
 
     def test_infinity_comparison(self):
         """Test infinity comparisons"""
@@ -473,10 +475,11 @@ class TestPhase2_EdgeCases_ComparativeOperations:
 
     def test_none_comparison(self):
         """Test None comparisons"""
-        assert None is None  # None is a singleton
+        none_val = None
+        assert none_val is None  # None is a singleton
         # Note: None < None raises TypeError in Python 3
         # Just verify None comparisons work correctly
-        assert (None is None) is True
+        assert (none_val is None) is True
 
 
 if __name__ == "__main__":
