@@ -24280,3 +24280,17 @@ before applying changes. Blocking CI rescue comments addressed via `reply_to_com
 - Workflow YAML parsed successfully ✅
 - Added targeted unit coverage for visible-signature fallback and duplicate rescue-comment consolidation ✅
 - Targeted local checks re-run before commit ✅
+
+## SESSION SUMMARY — 2026-05-03T02:32Z SESSION S183-PR4193-comment-upsert-final [copilot] (Pattern 25 Finalization — PR #4193)
+
+**PR:** #4193 | **Branch:** copilot/reorganize-observability-section | **Session:** S183-PR4193-comment-upsert-final
+
+### What Was Finalized
+- Finalized same-session auto-comment consolidation changes after validation review feedback.
+- Confirmed `post_rescue_comment.py` duplicate consolidation uses named constants and precise digest markers.
+- Confirmed `copilot-agent-session-done.yml` uses readable PR-head SHA fallback and a named comment length constant.
+
+### Verification
+- `ruff check src/ tests/ scripts/` → 0 violations ✅
+- `pytest tests/ci/test_post_rescue_comment.py tests/ci/test_telemetry_collection.py -q` → 53 passed ✅
+- `sync_tracked_files.py --check` → all consistent ✅
