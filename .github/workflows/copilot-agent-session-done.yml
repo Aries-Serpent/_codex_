@@ -603,6 +603,7 @@ jobs:
             const prs   = context.payload.workflow_run.pull_requests;
             if (!prs || prs.length === 0) return;
             const prNumber = prs[0].number;
+            const MAX_COMMENT_LENGTH = 65536;
             // Branch-head SHA used for a SHA-scoped upsert marker.
             //
             // Use the PR head SHA (not workflow_run.head_sha) because pull_request
@@ -618,7 +619,8 @@ jobs:
               const { data: prInfo } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
               if (prInfo.state !== 'open') { console.log(`PR #${prNumber} is closed — skipping.`); return; }
               wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prInfo.body || '');
-              headSha = (((prInfo.head || {}).sha) || context.payload.workflow_run.head_sha || '').slice(0, 12);
+              const prHeadSha = (prInfo.head && prInfo.head.sha) ? prInfo.head.sha : '';
+              headSha = (prHeadSha || context.payload.workflow_run.head_sha || '').slice(0, 12);
             } catch (e) {
               console.log(`Cannot fetch PR for gate check: ${e.message}`); return;
             }
@@ -795,7 +797,7 @@ jobs:
                 `> _Appended by \`copilot-agent-session-done.yml\` · compile-bot-feedback job_`,
               ].join('\n');
               await github.rest.issues.updateComment({
-                owner, repo, comment_id: existingCommentId, body: appendBody.slice(0, 65536),
+                owner, repo, comment_id: existingCommentId, body: appendBody.slice(0, MAX_COMMENT_LENGTH),
               });
               console.log(`Appended ${findings.length} bot finding(s) to existing @copilot continue comment #${existingCommentId} for PR #${prNumber}.`);
               return;

@@ -79,6 +79,8 @@ import urllib.error
 import urllib.request
 
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit
+CONSOLIDATION_DELAY_SECONDS = 3
+DUPLICATE_DIGEST_LENGTH = 16
 
 
 def _gh(
@@ -101,7 +103,9 @@ def _gh(
             raw = resp.read()
             if raw:
                 return resp.status, json.loads(raw)
-            return resp.status, [] if method == "GET" else {}
+            # Successful GitHub GET requests used by this script return JSON.
+            # Empty bodies are expected for 204-style mutation responses.
+            return resp.status, {}
     except urllib.error.HTTPError as exc:
         try:
             err_body = json.loads(exc.read())
@@ -130,7 +134,11 @@ def _find_rescue_comment(
             f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
             token,
         )
-        if status != 200 or not isinstance(comments, list) or not comments:
+        if status != 200:
+            break
+        if not isinstance(comments, list):
+            break
+        if not comments:
             break
         for c in comments:
             body = c.get("body") or ""
@@ -158,7 +166,11 @@ def _matching_rescue_comments(
             f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
             token,
         )
-        if status != 200 or not isinstance(comments, list) or not comments:
+        if status != 200:
+            break
+        if not isinstance(comments, list):
+            break
+        if not comments:
             break
         for c in comments:
             body = c.get("body") or ""
@@ -179,7 +191,7 @@ def _consolidate_duplicate_rescue_comments(
     created_id: int,
 ) -> None:
     """Collapse same-SHA rescue-comment races into one appended thread."""
-    time.sleep(3)
+    time.sleep(CONSOLIDATION_DELAY_SECONDS)
     matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
     if len(matches) <= 1:
         return
@@ -201,7 +213,9 @@ def _consolidate_duplicate_rescue_comments(
 
     for duplicate in duplicates:
         duplicate_body = (duplicate.get("body") or "").replace(marker, "").strip()
-        duplicate_digest = hashlib.sha256(duplicate_body.encode()).hexdigest()[:16]
+        duplicate_digest = hashlib.sha256(duplicate_body.encode()).hexdigest()[
+            :DUPLICATE_DIGEST_LENGTH
+        ]
         duplicate_marker = f"<!-- rescue-duplicate:{duplicate_digest} -->"
         if duplicate_body and duplicate_marker not in canonical_body:
             canonical_body = (
