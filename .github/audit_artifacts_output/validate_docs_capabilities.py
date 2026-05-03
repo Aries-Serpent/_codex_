@@ -5,8 +5,8 @@ Validate docs/capabilities files for required structure.
 import json
 import os
 import re
-from pathlib import Path
 import sys
+from pathlib import Path
 
 ROOT = Path(os.environ.get("CODEX_ROOT", Path(__file__).resolve().parents[3]))
 CAPS_DIR = ROOT / "docs" / "capabilities"
