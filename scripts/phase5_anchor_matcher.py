@@ -7,12 +7,12 @@ Fixes anchor links that don't match actual section headers.
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
 
-def extract_headers(content: str) -> Dict[str, str]:
+def extract_headers(content: str) -> dict[str, str]:
     """Extract all headers and their anchors from content."""
     headers = {}
     lines = content.split('\n')
@@ -30,13 +30,13 @@ def extract_headers(content: str) -> Dict[str, str]:
 
     return headers
 
-def find_anchor_links(content: str) -> List[Tuple[str, str, str]]:
+def find_anchor_links(content: str) -> list[tuple[str, str, str]]:
     """Find all anchor links in content. Returns (full_match, text, anchor)."""
     pattern = r'\[([^\]]+)\]\((#[^\)]+)\)'
     matches = re.finditer(pattern, content)
     return [(m.group(0), m.group(1), m.group(2)) for m in matches]
 
-def find_best_match(anchor: str, available_anchors: List[str]) -> Optional[str]:
+def find_best_match(anchor: str, available_anchors: list[str]) -> Optional[str]:
     """Find the best matching anchor from available options."""
     # Remove # for comparison
     anchor_clean = anchor.lstrip('#').lower()
@@ -58,7 +58,7 @@ def find_best_match(anchor: str, available_anchors: List[str]) -> Optional[str]:
 
     return None
 
-def fix_anchor_mismatches(file_path: Path) -> Tuple[int, List[dict]]:
+def fix_anchor_mismatches(file_path: Path) -> tuple[int, list[dict]]:
     """
     Fix anchor mismatches in a file.
     Returns (fixes_applied, fix_details).

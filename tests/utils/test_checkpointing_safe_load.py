@@ -7,8 +7,9 @@ Test module for checkpointing safe load.
 from __future__ import annotations
 
 import inspect
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 import pytest
 

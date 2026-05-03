@@ -34,7 +34,7 @@ except Exception:  # pragma: no cover - torch may be unavailable in minimal envs
 else:
     _HAS_TORCH = True
 
-__all__ = ["token_accuracy", "perplexity"]
+__all__ = ["perplexity", "token_accuracy"]
 
 
 def token_accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:

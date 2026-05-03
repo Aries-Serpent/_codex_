@@ -24,7 +24,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +43,9 @@ class ValidationResult:
         self.passed = False
         self.message = ""
         self.severity = "info"  # info, warning, error
-        self.details: Dict[str, Any] = {}
+        self.details: dict[str, Any] = {}
 
-    def pass_check(self, message: str = "", details: Optional[Dict] = None):
+    def pass_check(self, message: str = "", details: Optional[dict] = None):
         """Mark check as passed."""
         self.passed = True
         self.message = message or f"{self.name} passed"
@@ -53,7 +53,7 @@ class ValidationResult:
         if details:
             self.details = details
 
-    def warn(self, message: str, details: Optional[Dict] = None):
+    def warn(self, message: str, details: Optional[dict] = None):
         """Mark check as passed with warning."""
         self.passed = True
         self.message = message
@@ -61,7 +61,7 @@ class ValidationResult:
         if details:
             self.details = details
 
-    def fail(self, message: str, details: Optional[Dict] = None):
+    def fail(self, message: str, details: Optional[dict] = None):
         """Mark check as failed."""
         self.passed = False
         self.message = message
@@ -69,7 +69,7 @@ class ValidationResult:
         if details:
             self.details = details
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "name": self.name,
@@ -86,8 +86,8 @@ class ValidationReport:
     def __init__(self, title: str = "Handoff Validation Report"):
         self.title = title
         self.timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-        self.results: List[ValidationResult] = []
-        self.summary: Dict[str, int] = {
+        self.results: list[ValidationResult] = []
+        self.summary: dict[str, int] = {
             "total": 0,
             "passed": 0,
             "warnings": 0,
@@ -166,7 +166,7 @@ class ValidationReport:
 """
         return report
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "title": self.title,
@@ -183,7 +183,7 @@ class HandoffValidator:
     def __init__(self):
         self.tracking_data = self._load_tracking_data()
 
-    def _load_tracking_data(self) -> Dict[str, Any]:
+    def _load_tracking_data(self) -> dict[str, Any]:
         """Load handoff tracking data."""
         if TRACKING_FILE.exists():
             try:
@@ -193,14 +193,14 @@ class HandoffValidator:
                 logger.debug("Suppressed exception in handler", exc_info=True)
         return {"handoffs": [], "metrics": {}}
 
-    def _save_tracking_data(self, data: Dict[str, Any]):
+    def _save_tracking_data(self, data: dict[str, Any]):
         """Save handoff tracking data."""
         data["last_updated"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         TRACKING_FILE.parent.mkdir(parents=True, exist_ok=True)
         with open(TRACKING_FILE, 'w') as f:
             json.dump(data, f, indent=2)
 
-    def get_handoff(self, handoff_id: str) -> Optional[Dict[str, Any]]:
+    def get_handoff(self, handoff_id: str) -> Optional[dict[str, Any]]:
         """Get a handoff by ID."""
         for handoff in self.tracking_data.get("handoffs", []):
             if handoff["id"] == handoff_id:
@@ -209,7 +209,7 @@ class HandoffValidator:
 
     def validate_context_completeness(
         self,
-        handoff: Dict[str, Any]
+        handoff: dict[str, Any]
     ) -> ValidationResult:
         """Validate that handoff context is complete."""
         result = ValidationResult("Context Completeness")
@@ -232,7 +232,7 @@ class HandoffValidator:
 
     def validate_context_summary(
         self,
-        handoff: Dict[str, Any]
+        handoff: dict[str, Any]
     ) -> ValidationResult:
         """Validate context summary has meaningful data."""
         result = ValidationResult("Context Summary")
@@ -264,7 +264,7 @@ class HandoffValidator:
 
     def validate_deliverables_exist(
         self,
-        deliverable_paths: List[str]
+        deliverable_paths: list[str]
     ) -> ValidationResult:
         """Validate that deliverable files exist."""
         result = ValidationResult("Deliverables Exist")
@@ -344,7 +344,7 @@ class HandoffValidator:
 
     def validate_timeout(
         self,
-        handoff: Dict[str, Any],
+        handoff: dict[str, Any],
         timeout_minutes: int = 60
     ) -> ValidationResult:
         """Check if handoff has timed out."""
@@ -523,7 +523,7 @@ class HandoffValidator:
         self,
         handoff_id: str,
         max_retries: int = 3
-    ) -> Tuple[bool, str]:
+    ) -> tuple[bool, str]:
         """Mark a failed handoff for retry."""
         handoff = self.get_handoff(handoff_id)
 

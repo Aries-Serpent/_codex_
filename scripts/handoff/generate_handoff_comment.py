@@ -14,7 +14,6 @@ import argparse
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
 
 # Template paths
 TEMPLATE_DIR = Path(".codex/templates/handoff")
@@ -44,7 +43,7 @@ def load_template(template_name: str) -> str:
         return f.read()
 
 
-def substitute_variables(template: str, variables: Dict[str, str]) -> str:
+def substitute_variables(template: str, variables: dict[str, str]) -> str:
     """Substitute variables in template."""
     result = template
 
@@ -59,10 +58,10 @@ def generate_copilot_to_codex_comment(
     phase: str,
     plan_file: str,
     status: str = "Complete",
-    deliverables: List[str] = None,
-    metrics: Dict[str, str] = None,
+    deliverables: list[str] = None,
+    metrics: dict[str, str] = None,
     review_focus: str = "",
-    validation_items: List[str] = None,
+    validation_items: list[str] = None,
     next_action: str = "",
     handoff_id: str = ""
 ) -> str:
@@ -126,9 +125,9 @@ def generate_codex_to_copilot_comment(
     decision_explanation: str = "",
     next_phase: str = "",
     next_plan: str = "",
-    strengths: List[str] = None,
-    improvements: List[str] = None,
-    issues: List[str] = None,
+    strengths: list[str] = None,
+    improvements: list[str] = None,
+    issues: list[str] = None,
     handoff_id: str = ""
 ) -> str:
     """Generate Codex → Copilot hand-off response."""

@@ -4,13 +4,12 @@ Test Ndjson Disable Env
 Test module for ndjson disable env.
 """
 
-# ruff: noqa: E402
 from pathlib import Path
 
 import pytest
 
 pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
-from src.codex_ml import train_loop as train_loop_module  # noqa: E402
+from src.codex_ml import train_loop as train_loop_module
 
 if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
     pytest.skip("model registry unavailable", allow_module_level=True)

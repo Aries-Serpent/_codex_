@@ -7,10 +7,11 @@ import argparse
 import json
 import re
 import textwrap
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CODEX_DIR = REPO_ROOT / ".codex"
@@ -41,7 +42,7 @@ class ErrorCaptureRecorder:
         self.path = path
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
-    def record(self, step: str, error: str, context: Optional[Dict[str, str]] = None) -> None:
+    def record(self, step: str, error: str, context: Optional[dict[str, str]] = None) -> None:
         timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
         prompt = textwrap.dedent(
             f""":::
@@ -64,13 +65,13 @@ What are the possible causes, and how can this be resolved while preserving inte
             handle.write(json.dumps(payload, sort_keys=True) + "\n")
 
 
-def normalise_readme_links(*, write: bool) -> Dict[str, Sequence[str]]:
+def normalise_readme_links(*, write: bool) -> dict[str, Sequence[str]]:
     """Normalise README doc links and report adjustments."""
 
     readme_path = REPO_ROOT / "README.md"
     original_text = readme_path.read_text(encoding="utf-8")
     pattern = re.compile(r"\]\((\.\/?docs\/[^)]+)\)")
-    replacements: List[str] = []
+    replacements: list[str] = []
 
     def _replace(match: re.Match[str]) -> str:
         target = match.group(1)
@@ -83,7 +84,7 @@ def normalise_readme_links(*, write: bool) -> Dict[str, Sequence[str]]:
         return match.group(0)
 
     new_text = pattern.sub(_replace, original_text)
-    missing: List[str] = []
+    missing: list[str] = []
     for link in re.findall(r"\]\((docs/[^)]+)\)", new_text):
         link_path = REPO_ROOT / link
         if not link_path.exists():
@@ -95,10 +96,10 @@ def normalise_readme_links(*, write: bool) -> Dict[str, Sequence[str]]:
     return {"updated": replacements, "missing": missing}
 
 
-def build_repo_map() -> Dict[str, Sequence[str]]:
+def build_repo_map() -> dict[str, Sequence[str]]:
     """Summarise the repository layout for downstream embedding."""
 
-    directories: Dict[str, List[str]] = {}
+    directories: dict[str, list[str]] = {}
     for child in sorted(REPO_ROOT.iterdir()):
         if child.name.startswith("."):
             continue
@@ -116,12 +117,12 @@ def build_repo_map() -> Dict[str, Sequence[str]]:
     return {"directories": directories, "key_files": present_files}
 
 
-def scan_placeholders() -> List[Dict[str, object]]:
+def scan_placeholders() -> list[dict[str, object]]:
     """Locate sentinel placeholders that should feed the change log."""
 
     targets = [REPO_ROOT / "src", REPO_ROOT / "tools", REPO_ROOT / "scripts"]
     keywords = ("NotImplementedError", "TODO", "FIXME", "pass  # stub")
-    findings: List[Dict[str, object]] = []
+    findings: list[dict[str, object]] = []
     for base in targets:
         if not base.exists():
             continue
@@ -156,7 +157,7 @@ def synthesise_change_log(
 
 
 def write_json_snapshot(
-    payload: Dict[str, object], *, write: bool, path: Path = DEFAULT_JSON
+    payload: dict[str, object], *, write: bool, path: Path = DEFAULT_JSON
 ) -> None:
     """Persist the automation snapshot to JSON for reproducibility."""
 
@@ -170,12 +171,12 @@ def run(
     *,
     write: bool = False,
     error_recorder: Optional[ErrorCaptureRecorder] = None,
-) -> Dict[str, object]:
+) -> dict[str, object]:
     """Execute the automation workflow and return collected artefacts."""
 
     del work_dir  # Present for parity with other runners.
 
-    results: Dict[str, object] = {}
+    results: dict[str, object] = {}
 
     try:
         readme_info = normalise_readme_links(write=write)
@@ -201,7 +202,7 @@ def run(
             error_recorder.record("STEP_3:PLACEHOLDER_SCAN", repr(exc))
         results["placeholders_error"] = repr(exc)
 
-    changelog_entries: List[ChangeLogEntry] = []
+    changelog_entries: list[ChangeLogEntry] = []
 
     readme_updates = results.get("readme_links", {})
     if isinstance(readme_updates, dict):

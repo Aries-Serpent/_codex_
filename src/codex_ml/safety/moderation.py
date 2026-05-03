@@ -20,10 +20,11 @@ from __future__ import annotations
 import importlib
 import json
 import logging
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any
 
 from codex_ml.safety.filters import SafetyFilters
 from codex_ml.utils.error_log import log_error

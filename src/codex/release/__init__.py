@@ -3,6 +3,6 @@
 from . import api, manifest
 
 __all__ = [
-    "manifest",
     "api",
+    "manifest",
 ]

@@ -29,8 +29,8 @@ def test_collect_without_nvml(monkeypatch):
     # CPU-only fallback should provide stable GPU keys with numeric values.
     assert "gpu0_util" in metrics
     assert "gpu0_mem" in metrics
-    assert isinstance(metrics["gpu0_util"], (int, float))  # noqa: UP038
-    assert isinstance(metrics["gpu0_mem"], (int, float))  # noqa: UP038
+    assert isinstance(metrics["gpu0_util"], (int, float))
+    assert isinstance(metrics["gpu0_mem"], (int, float))
 
 
 def test_runtime_nvml_failure_advisory(monkeypatch):
@@ -41,10 +41,10 @@ def test_runtime_nvml_failure_advisory(monkeypatch):
     class _FakeNVML:
         class NVMLError(Exception): ...
 
-        def nvmlInit(self):  # type: ignore  # noqa: N802
+        def nvmlInit(self):  # type: ignore
             raise RuntimeError("NVML init failed")
 
-        def nvmlDeviceGetCount(self):  # type: ignore  # noqa: N802
+        def nvmlDeviceGetCount(self):  # type: ignore
             return 0
 
     monkeypatch.setattr(mod, "pynvml", _FakeNVML(), raising=True)

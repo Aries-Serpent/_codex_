@@ -15,7 +15,7 @@ Phase: 20.3 Self-Healing Infrastructure
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -24,7 +24,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def recovery_config() -> Dict[str, Any]:
+def recovery_config() -> dict[str, Any]:
     """Configuration for recovery procedures."""
     return {
         "checkpoint_interval_seconds": 300,
@@ -36,7 +36,7 @@ def recovery_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def mock_system_state() -> Dict[str, Any]:
+def mock_system_state() -> dict[str, Any]:
     """Mock system state for recovery testing."""
     return {
         "version": "1.0.0",
@@ -57,7 +57,7 @@ def mock_system_state() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def mock_checkpoint_data() -> Dict[str, Any]:
+def mock_checkpoint_data() -> dict[str, Any]:
     """Mock checkpoint data."""
     return {
         "checkpoint_id": "ckpt_001",

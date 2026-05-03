@@ -11,9 +11,10 @@ import platform
 import subprocess
 import sys
 import textwrap
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence
+from typing import Any, Optional
 
 RUN_TIMESTAMP = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
@@ -31,7 +32,7 @@ class ChangeLogEntry:
 class GapRecord:
     feature: str
     reason: str
-    explored_paths: List[str]
+    explored_paths: list[str]
     notes: str
 
 
@@ -45,14 +46,14 @@ class CodexTaskExecutor:
         self.logs_dir = logs_dir
         self.reports_dir = reports_dir
         self.dry_run = dry_run
-        self.change_log: List[ChangeLogEntry] = []
-        self.gap_records: List[GapRecord] = []
-        self.errors: List[Dict[str, str]] = []
-        self.pending_pruning: Dict[str, GapRecord] = {}
-        self.readme_audit: Dict[str, Any] = {}
-        self.mapping: Dict[str, Any] = {}
-        self.adaptation_notes: Dict[str, Any] = {}
-        self.artifacts: Dict[str, Any] = {}
+        self.change_log: list[ChangeLogEntry] = []
+        self.gap_records: list[GapRecord] = []
+        self.errors: list[dict[str, str]] = []
+        self.pending_pruning: dict[str, GapRecord] = {}
+        self.readme_audit: dict[str, Any] = {}
+        self.mapping: dict[str, Any] = {}
+        self.adaptation_notes: dict[str, Any] = {}
+        self.artifacts: dict[str, Any] = {}
         self._ensure_directories()
 
     # ------------------------------------------------------------------
@@ -105,7 +106,7 @@ class CodexTaskExecutor:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
-    def _append_ndjson(self, path: Path, payload: Dict[str, Any]) -> None:
+    def _append_ndjson(self, path: Path, payload: dict[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, sort_keys=True))
@@ -147,14 +148,14 @@ class CodexTaskExecutor:
             "1.4", "assert_no_cost_incurring_actions", self._assert_no_cost_incurring_actions
         )
 
-    def _establish_directories(self) -> Dict[str, str]:
+    def _establish_directories(self) -> dict[str, str]:
         return {
             "logs_dir": str(self.logs_dir),
             "reports_dir": str(self.reports_dir),
             "run_id": RUN_TIMESTAMP,
         }
 
-    def _parse_and_update_readme(self) -> Dict[str, Any]:
+    def _parse_and_update_readme(self) -> dict[str, Any]:
         readme_path = self.repo_root / "README.md"
         text = self._read_file(readme_path)
         if text is None:
@@ -163,7 +164,7 @@ class CodexTaskExecutor:
             )
             return {"status": "missing"}
         keywords = ["LoRA", "metrics", "secret", "Docker", "reproducibility"]
-        summary: Dict[str, List[str]] = {}
+        summary: dict[str, list[str]] = {}
         for keyword in keywords:
             lines = [line.strip() for line in text.splitlines() if keyword.lower() in line.lower()]
             summary[keyword] = lines
@@ -175,7 +176,7 @@ class CodexTaskExecutor:
             "{{TODO_REPRO}}": "Environment manifests are written to `.codex/runs/<timestamp>/manifest.json`.",
         }
         updated_text = text
-        replacements: Dict[str, str] = {}
+        replacements: dict[str, str] = {}
         for marker, replacement in placeholders.items():
             if marker in updated_text:
                 replacements[marker] = replacement
@@ -186,7 +187,7 @@ class CodexTaskExecutor:
         self._write_json(self.logs_dir / "readme_audit.json", self.readme_audit)
         return self.readme_audit
 
-    def _capture_environment(self) -> Dict[str, Any]:
+    def _capture_environment(self) -> dict[str, Any]:
         provenance = {
             "timestamp": RUN_TIMESTAMP,
             "python": sys.version,
@@ -210,7 +211,7 @@ class CodexTaskExecutor:
         self._write_json(self.logs_dir / "provenance.json", provenance)
         return provenance
 
-    def _assert_no_cost_incurring_actions(self) -> Dict[str, Any]:
+    def _assert_no_cost_incurring_actions(self) -> dict[str, Any]:
         workflows_path = self.repo_root / ".github" / "workflows"
         return {
             "workflows_present": workflows_path.exists(),
@@ -225,7 +226,7 @@ class CodexTaskExecutor:
         self._run_step("2.2", "compare_purposes", self._compare_purposes)
         self._run_step("2.3", "identify_related_tooling", self._identify_related_tooling)
 
-    def _enumerate_candidates(self) -> Dict[str, Any]:
+    def _enumerate_candidates(self) -> dict[str, Any]:
         categories = {
             "lora": ["src/codex_cli", "training", "docs", "tests"],
             "metrics": ["src/codex_ml/metrics", "analysis", "tools", "scripts"],
@@ -233,9 +234,9 @@ class CodexTaskExecutor:
             "packaging": ["pyproject.toml", "setup.cfg", "Dockerfile"],
             "reproducibility": ["docs", "training", "codex_utils"],
         }
-        mapping: Dict[str, List[str]] = {}
+        mapping: dict[str, list[str]] = {}
         for key, targets in categories.items():
-            collected: List[str] = []
+            collected: list[str] = []
             for target in targets:
                 for match in self.repo_root.glob(f"**/{Path(target).name}"):
                     try:
@@ -247,10 +248,10 @@ class CodexTaskExecutor:
         self._write_json(self.logs_dir / "mapping.json", mapping)
         return mapping
 
-    def _compare_purposes(self) -> Dict[str, Any]:
-        notes: Dict[str, Any] = {}
+    def _compare_purposes(self) -> dict[str, Any]:
+        notes: dict[str, Any] = {}
         for key, paths in self.mapping.items():
-            comparisons: List[Dict[str, Any]] = []
+            comparisons: list[dict[str, Any]] = []
             for rel_path in paths:
                 full = self.repo_root / rel_path
                 snippet = None
@@ -263,7 +264,7 @@ class CodexTaskExecutor:
         self._write_json(self.logs_dir / "adaptation_notes.json", notes)
         return notes
 
-    def _identify_related_tooling(self) -> Dict[str, Any]:
+    def _identify_related_tooling(self) -> dict[str, Any]:
         tooling = {
             "hydra_configs": [
                 str(path.relative_to(self.repo_root))
@@ -295,8 +296,8 @@ class CodexTaskExecutor:
             "3.5", "reproducibility_improvements", self._ensure_reproducibility_improvements
         )
 
-    def _ensure_lora_cli_docs_tests(self) -> Dict[str, Any]:
-        results: Dict[str, Any] = {}
+    def _ensure_lora_cli_docs_tests(self) -> dict[str, Any]:
+        results: dict[str, Any] = {}
         cli_path = self.repo_root / "src" / "codex_cli" / "app.py"
         if not cli_path.exists():
             self._record_gap(
@@ -386,8 +387,8 @@ class CodexTaskExecutor:
             results["test_created"] = False
         return results
 
-    def _ensure_metrics_registry_and_aggregator(self) -> Dict[str, Any]:
-        results: Dict[str, Any] = {}
+    def _ensure_metrics_registry_and_aggregator(self) -> dict[str, Any]:
+        results: dict[str, Any] = {}
         registry_path = self.repo_root / "src" / "codex_ml" / "metrics" / "registry.py"
         registry_text = self._read_file(registry_path)
         if registry_text is None:
@@ -559,8 +560,8 @@ class CodexTaskExecutor:
             results["metrics_docs_added"] = False
         return results
 
-    def _ensure_secret_scanning_gates(self) -> Dict[str, Any]:
-        results: Dict[str, Any] = {}
+    def _ensure_secret_scanning_gates(self) -> dict[str, Any]:
+        results: dict[str, Any] = {}
         nox_path = self.repo_root / "noxfile.py"
         nox_text = self._read_file(nox_path)
         if nox_text is None:
@@ -618,8 +619,8 @@ class CodexTaskExecutor:
             results["baseline_created"] = False
         return results
 
-    def _ensure_packaging_and_docker(self) -> Dict[str, Any]:
-        results: Dict[str, Any] = {}
+    def _ensure_packaging_and_docker(self) -> dict[str, Any]:
+        results: dict[str, Any] = {}
         pyproject_path = self.repo_root / "pyproject.toml"
         pyproject_text = self._read_file(pyproject_path)
         if pyproject_text is None:
@@ -718,8 +719,8 @@ class CodexTaskExecutor:
             results["runbook_updated"] = False
         return results
 
-    def _ensure_reproducibility_improvements(self) -> Dict[str, Any]:
-        results: Dict[str, Any] = {}
+    def _ensure_reproducibility_improvements(self) -> dict[str, Any]:
+        results: dict[str, Any] = {}
         repro_doc = self.repo_root / "docs" / "reproducibility.md"
         if not repro_doc.exists():
             repro_doc = self.repo_root / "docs" / "repro.md"
@@ -799,7 +800,7 @@ class CodexTaskExecutor:
         self._run_step("4.2", "cross_reference_pruning", self._cross_reference_pruning)
         self._run_step("4.3", "tag_deferred_work", self._tag_deferred_work)
 
-    def _document_pruning(self) -> Dict[str, Any]:
+    def _document_pruning(self) -> dict[str, Any]:
         report_path = self.reports_dir / "pruning_report.md"
         if not self.pending_pruning:
             content = "# Pruning Report\n\nNo items pruned; all tasks attempted.\n"
@@ -815,7 +816,7 @@ class CodexTaskExecutor:
         self._write_file(report_path, content)
         return {"report": str(report_path)}
 
-    def _cross_reference_pruning(self) -> Dict[str, Any]:
+    def _cross_reference_pruning(self) -> dict[str, Any]:
         refs = {
             feature: {
                 "reason": record.reason,
@@ -826,7 +827,7 @@ class CodexTaskExecutor:
         self._write_json(self.logs_dir / "pruning_cross_reference.json", refs)
         return refs
 
-    def _tag_deferred_work(self) -> Dict[str, Any]:
+    def _tag_deferred_work(self) -> dict[str, Any]:
         return {feature: record.notes for feature, record in self.pending_pruning.items()}
 
     # ------------------------------------------------------------------

@@ -6,7 +6,7 @@ Provides YAML parsing capabilities with standardized node representation.
 
 import uuid
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import yaml
 
@@ -151,7 +151,7 @@ class YAMLASTAdapter(BaseASTAdapter):
             parent=parent,
         )
 
-    def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
+    def traverse(self, node: Optional[StandardizedASTNode] = None) -> list[StandardizedASTNode]:
         """
         Traverse AST depth-first, yielding all nodes.
 
@@ -172,7 +172,7 @@ class YAMLASTAdapter(BaseASTAdapter):
             nodes.extend(self.traverse(child))
         return nodes
 
-    def find_nodes_by_type(self, node_type: str) -> List[StandardizedASTNode]:
+    def find_nodes_by_type(self, node_type: str) -> list[StandardizedASTNode]:
         """
         Find all nodes of a specific type.
 
@@ -229,7 +229,7 @@ class YAMLASTAdapter(BaseASTAdapter):
 
         return None
 
-    def get_keys(self, node: Optional[StandardizedASTNode] = None) -> List[str]:
+    def get_keys(self, node: Optional[StandardizedASTNode] = None) -> list[str]:
         """
         Get all keys from a mapping node.
 
@@ -247,7 +247,7 @@ class YAMLASTAdapter(BaseASTAdapter):
 
         return node.metadata.get("keys", [])
 
-    def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
+    def extract_metadata(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Extract metadata from YAML node.
 

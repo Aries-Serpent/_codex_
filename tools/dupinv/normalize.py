@@ -10,7 +10,6 @@ This module identifies duplicates after normalizing code by:
 import hashlib
 import re
 from pathlib import Path
-from typing import Dict, List
 
 from .exact_detector import ExactDetector
 from .schema import DuplicateGroup, MemberFile
@@ -119,7 +118,7 @@ class NormalizedDetector:
     def __init__(
         self,
         root_path: Path,
-        exclude_patterns: List[str] = None,
+        exclude_patterns: list[str] = None,
         respect_gitignore: bool = True,
         normalize_identifiers: bool = False,
     ):
@@ -174,7 +173,7 @@ class NormalizedDetector:
         """
         return hashlib.sha256(normalized_content.encode("utf-8")).hexdigest()
 
-    def scan(self) -> List[DuplicateGroup]:
+    def scan(self) -> list[DuplicateGroup]:
         """
         Scan repository and return normalized duplicate groups.
 
@@ -182,7 +181,7 @@ class NormalizedDetector:
             List of duplicate groups
         """
         # Build normalized_hash -> (file_path, original_hash, language) mapping
-        hash_to_files: Dict[str, List[tuple]] = {}
+        hash_to_files: dict[str, list[tuple]] = {}
 
         # Scan all files
         for file_path in self.root_path.rglob("*"):

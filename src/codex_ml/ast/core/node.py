@@ -9,7 +9,7 @@ import uuid
 import weakref
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -64,7 +64,7 @@ class SourceLocation:
             column_end=col,
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "file_path": str(self.file_path),
@@ -75,7 +75,7 @@ class SourceLocation:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SourceLocation":
+    def from_dict(cls, data: dict[str, Any]) -> "SourceLocation":
         """Create from dictionary."""
         return cls(
             file_path=Path(data["file_path"]),
@@ -109,9 +109,9 @@ class StandardizedASTNode:
     node_id: str
     type: str
     name: str
-    children: List["StandardizedASTNode"] = field(default_factory=list)
+    children: list["StandardizedASTNode"] = field(default_factory=list)
     location: Optional[SourceLocation] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     # Private weakref to parent node - prevents circular reference memory leaks
     # and allows garbage collection when node is removed from tree
     _parent_ref: Optional[weakref.ref] = field(default=None, repr=False, compare=False)
@@ -166,7 +166,7 @@ class StandardizedASTNode:
             return True
         return False
 
-    def find_by_type(self, node_type: str) -> List["StandardizedASTNode"]:
+    def find_by_type(self, node_type: str) -> list["StandardizedASTNode"]:
         """Find all descendant nodes of a given type."""
         results = []
         if self.type == node_type:
@@ -175,7 +175,7 @@ class StandardizedASTNode:
             results.extend(child.find_by_type(node_type))
         return results
 
-    def find_by_name(self, name: str) -> List["StandardizedASTNode"]:
+    def find_by_name(self, name: str) -> list["StandardizedASTNode"]:
         """Find all descendant nodes with a given name."""
         results = []
         if self.name == name:
@@ -184,14 +184,14 @@ class StandardizedASTNode:
             results.extend(child.find_by_name(name))
         return results
 
-    def walk(self) -> List["StandardizedASTNode"]:
+    def walk(self) -> list["StandardizedASTNode"]:
         """Iterate over all nodes in the tree (pre-order traversal)."""
         nodes = [self]
         for child in self.children:
             nodes.extend(child.walk())
         return nodes
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "node_id": self.node_id,
@@ -204,7 +204,7 @@ class StandardizedASTNode:
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any], parent: Optional["StandardizedASTNode"] = None
+        cls, data: dict[str, Any], parent: Optional["StandardizedASTNode"] = None
     ) -> "StandardizedASTNode":
         """Create from dictionary."""
         location = SourceLocation.from_dict(data["location"]) if data.get("location") else None
@@ -249,7 +249,7 @@ class Finding:
     message: str = ""
     location: Optional[SourceLocation] = None
     analyzer: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate severity level."""
@@ -257,7 +257,7 @@ class Finding:
         if self.severity not in valid_severities:
             self.severity = "info"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "finding_id": self.finding_id,
@@ -270,7 +270,7 @@ class Finding:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Finding":
+    def from_dict(cls, data: dict[str, Any]) -> "Finding":
         """Create from dictionary."""
         location = SourceLocation.from_dict(data["location"]) if data.get("location") else None
         return cls(

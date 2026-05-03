@@ -6,9 +6,9 @@ Test module for logging config.
 
 #!/usr/bin/env python3
 """Tests for codex.logging.config module."""
-from pathlib import Path  # noqa: E402
+from pathlib import Path
 
-from codex.logging.config import DEFAULT_LOG_DB  # noqa: E402
+from codex.logging.config import DEFAULT_LOG_DB
 
 
 def test_default_log_db_is_path():

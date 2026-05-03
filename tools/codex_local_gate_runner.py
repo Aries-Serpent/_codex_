@@ -13,9 +13,9 @@ import json
 import os
 import shlex
 import subprocess
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Sequence
 
 import yaml
 
@@ -35,13 +35,13 @@ class GateResult:
     stderr: str
 
 
-def _load_gate_config(path: Path) -> List[GateCommand]:
+def _load_gate_config(path: Path) -> list[GateCommand]:
     if not path.exists():
         return [GateCommand(name="echo-smoke", cmd=["python", "-c", "print('local gate ok')"])]
 
     raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     gate_entries = raw.get("gates", []) if isinstance(raw, dict) else []
-    commands: List[GateCommand] = []
+    commands: list[GateCommand] = []
     for entry in gate_entries:
         name = entry.get("name") or entry.get("id") or "gate"
         cmd = entry.get("cmd") or entry.get("command") or entry.get("run")
@@ -75,8 +75,8 @@ def _run_command(command: Sequence[str], repo_root: Path) -> subprocess.Complete
         return subprocess.run(command, check=False)  # type: ignore[arg-type]
 
 
-def run_gates(repo_root: Path, commands: List[GateCommand]) -> Dict[str, object]:
-    results: List[GateResult] = []
+def run_gates(repo_root: Path, commands: list[GateCommand]) -> dict[str, object]:
+    results: list[GateResult] = []
     overall_rc = 0
     for command in commands:
         proc = _run_command(command.cmd, repo_root)
@@ -97,7 +97,7 @@ def run_gates(repo_root: Path, commands: List[GateCommand]) -> Dict[str, object]
     return {"overall_returncode": overall_rc, "results": [r.__dict__ for r in results]}
 
 
-def _write_markdown(summary: Dict[str, object], path: Path) -> None:
+def _write_markdown(summary: dict[str, object], path: Path) -> None:
     lines = ["# Local Gate Report", "", "| Gate | Return Code |", "| --- | --- |"]
     for result in summary.get("results", []):
         name = result.get("name", "")

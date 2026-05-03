@@ -24,7 +24,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "scripts" / "mcp"))
 
-from select_components import (  # noqa: E402
+from select_components import (
     expand_globs,
     filter_by_globs,
     filter_by_topic,

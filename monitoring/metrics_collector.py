@@ -4,7 +4,7 @@ import json
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 
@@ -24,9 +24,9 @@ class MetricsCollector:
         }
         self.base_url = f"https://api.github.com/repos/{repo}"
 
-    def collect_ci_metrics(self) -> Dict[str, Any]:
+    def collect_ci_metrics(self) -> dict[str, Any]:
         """Collect CI/CD workflow metrics."""
-        metrics = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "workflow_runs_total": self._get_workflow_count(),
             "workflow_success_rate": self._get_success_rate(),
@@ -35,11 +35,10 @@ class MetricsCollector:
             "cache_hit_rate": 0.85,  # Placeholder - would query cache stats
             "failed_workflows": self._get_failed_workflows(),
         }
-        return metrics
 
-    def collect_security_metrics(self) -> Dict[str, Any]:
+    def collect_security_metrics(self) -> dict[str, Any]:
         """Collect security scan metrics."""
-        metrics = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "vulnerabilities_total": self._get_vuln_count(),
             "vulnerabilities_by_severity": self._get_vuln_breakdown(),
@@ -48,20 +47,18 @@ class MetricsCollector:
             "codeql_alerts": self._get_codeql_count(),
             "last_security_scan": self._get_last_scan_time(),
         }
-        return metrics
 
-    def collect_agent_metrics(self) -> Dict[str, Any]:
+    def collect_agent_metrics(self) -> dict[str, Any]:
         """Collect custom agent performance metrics."""
-        metrics = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "ml_threat_detections": 0,  # Would query ML model logs
             "ci_diagnostic_runs": self._count_diagnostic_runs(),
             "auto_fixes_applied": 0,  # Would track from cognitive brain
             "pattern_recognition_accuracy": 0.87,  # Would calculate from results
         }
-        return metrics
 
-    def save_metrics(self, metrics_type: str, metrics: Dict[str, Any]) -> None:
+    def save_metrics(self, metrics_type: str, metrics: dict[str, Any]) -> None:
         """Save metrics to JSON file."""
         filename = f"{metrics_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         filepath = self.output_dir / filename
@@ -71,7 +68,7 @@ class MetricsCollector:
 
         print(f"✅ Metrics saved to {filepath}")
 
-    def collect_all(self) -> Dict[str, Any]:
+    def collect_all(self) -> dict[str, Any]:
         """Collect all metrics at once."""
         return {
             "ci": self.collect_ci_metrics(),
@@ -141,7 +138,7 @@ class MetricsCollector:
             print(f"Warning: Could not get builds per day: {e}")
         return 0
 
-    def _get_failed_workflows(self) -> List[str]:
+    def _get_failed_workflows(self) -> list[str]:
         """Get list of recently failed workflows."""
         try:
             url = f"{self.base_url}/actions/runs"
@@ -158,7 +155,7 @@ class MetricsCollector:
         """Get total vulnerability count."""
         return self._get_codeql_count() + self._get_dependabot_count()
 
-    def _get_vuln_breakdown(self) -> Dict[str, int]:
+    def _get_vuln_breakdown(self) -> dict[str, int]:
         """Get vulnerabilities by severity."""
         # Simplified - would aggregate from actual alerts
         return {

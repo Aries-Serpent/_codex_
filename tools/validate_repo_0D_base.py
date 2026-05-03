@@ -52,12 +52,10 @@ RIPGREP_PATTERNS = [
 
 def run(cmd, check=False, capture=True):
     if capture:
-        res = subprocess.run(
+        return subprocess.run(
             cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
-        return res
-    else:
-        return subprocess.run(cmd, shell=False)
+    return subprocess.run(cmd, shell=False)
 
 
 def git_head_sha():

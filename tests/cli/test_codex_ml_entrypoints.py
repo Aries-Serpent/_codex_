@@ -6,8 +6,8 @@ import importlib
 import importlib.util
 import sys
 import types
+from collections.abc import Callable
 from types import SimpleNamespace
-from typing import Callable
 
 import pytest
 

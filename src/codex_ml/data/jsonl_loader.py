@@ -20,13 +20,12 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Deterministic JSONL loader with optional validation split."""
 
 
 import json  # noqa: E402
 import random  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Iterable, Sequence  # noqa: E402
 
 __all__ = ["load_jsonl"]
 

@@ -14,7 +14,7 @@ import logging
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 repo_root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(repo_root / "src"))
@@ -41,11 +41,11 @@ class SimpleDictMemory(MemoryInterface):
 
     def __init__(self):
         """Initialize the simple dictionary memory."""
-        self._storage: Dict[str, Any] = {}
-        self._metadata: Dict[str, Dict[str, Any]] = {}
-        self._history: Dict[str, list[tuple[datetime, Any]]] = {}
+        self._storage: dict[str, Any] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
+        self._history: dict[str, list[tuple[datetime, Any]]] = {}
 
-    def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
+    def store(self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None) -> bool:
         """Store a value in memory."""
         try:
             self._storage[key] = value
@@ -66,7 +66,7 @@ class SimpleDictMemory(MemoryInterface):
         """Retrieve a value from memory."""
         return self._storage.get(key)
 
-    def search(self, query: Dict[str, Any], limit: int = 10) -> list[tuple[str, Any]]:
+    def search(self, query: dict[str, Any], limit: int = 10) -> list[tuple[str, Any]]:
         """Search memory based on query criteria."""
         results = []
 
@@ -144,7 +144,7 @@ class LegacyAgentAdapter(Planner):
         self.memory = memory or SimpleDictMemory()
         logger.info(f"Wrapped legacy agent: {type(legacy_agent).__name__}")
 
-    def observe(self, input_data: Dict[str, Any]) -> ObservationData:
+    def observe(self, input_data: dict[str, Any]) -> ObservationData:
         """
         Observe: Wrap input data in ObservationData structure.
 

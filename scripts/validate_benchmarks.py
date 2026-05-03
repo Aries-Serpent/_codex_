@@ -33,7 +33,7 @@ Last Updated: 2026-01-16
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any
 
 # Performance Targets
 TARGETS = {
@@ -60,7 +60,7 @@ TARGETS = {
 }
 
 
-def load_criterion_results(criterion_dir: Path) -> Dict[str, Any]:
+def load_criterion_results(criterion_dir: Path) -> dict[str, Any]:
     """Load benchmark results from Criterion output."""
     results = {}
 
@@ -84,7 +84,7 @@ def load_criterion_results(criterion_dir: Path) -> Dict[str, Any]:
     return results
 
 
-def validate_task_latency(results: Dict[str, Any]) -> Tuple[bool, str]:
+def validate_task_latency(results: dict[str, Any]) -> tuple[bool, str]:
     """Validate task latency benchmarks."""
     latency_results = {k: v for k, v in results.items() if k.startswith("task_latency")}
 
@@ -115,7 +115,7 @@ def validate_task_latency(results: Dict[str, Any]) -> Tuple[bool, str]:
     return all_passed, "\n".join(details)
 
 
-def validate_throughput(results: Dict[str, Any]) -> Tuple[bool, str]:
+def validate_throughput(results: dict[str, Any]) -> tuple[bool, str]:
     """Validate throughput benchmarks."""
     throughput_results = {k: v for k, v in results.items() if "throughput" in k}
 
@@ -144,7 +144,7 @@ def validate_throughput(results: Dict[str, Any]) -> Tuple[bool, str]:
     return all_passed, "\n".join(details)
 
 
-def validate_compression(results: Dict[str, Any]) -> Tuple[bool, str]:
+def validate_compression(results: dict[str, Any]) -> tuple[bool, str]:
     """Validate compression benchmarks."""
     compression_results = {k: v for k, v in results.items() if "compression" in k}
 
@@ -183,7 +183,7 @@ def validate_compression(results: Dict[str, Any]) -> Tuple[bool, str]:
     return all_passed, "\n".join(details)
 
 
-def validate_concurrent_agents(results: Dict[str, Any]) -> Tuple[bool, str]:
+def validate_concurrent_agents(results: dict[str, Any]) -> tuple[bool, str]:
     """Validate concurrent agents benchmarks."""
     agent_results = {k: v for k, v in results.items() if "concurrent_agents" in k}
 
@@ -213,7 +213,7 @@ def validate_concurrent_agents(results: Dict[str, Any]) -> Tuple[bool, str]:
     return all_passed, "\n".join(details)
 
 
-def generate_summary_report(results: Dict[str, Any], validations: Dict[str, Tuple[bool, str]]) -> str:
+def generate_summary_report(results: dict[str, Any], validations: dict[str, tuple[bool, str]]) -> str:
     """Generate a summary report of all validations."""
     report = []
     report.append("=" * 80)

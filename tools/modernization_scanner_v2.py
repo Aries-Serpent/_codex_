@@ -15,7 +15,6 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List
 
 
 class Severity(Enum):
@@ -44,9 +43,9 @@ class ModernizationChecker(ast.NodeVisitor):
 
     def __init__(self, filename: str, check_walrus: bool = False):
         self.filename = filename
-        self.issues: List[Issue] = []
+        self.issues: list[Issue] = []
         self.check_walrus = check_walrus
-        self.class_candidates: List[ast.ClassDef] = []
+        self.class_candidates: list[ast.ClassDef] = []
 
     def visit_ImportFrom(self, node: ast.ImportFrom):
         """Check for old typing imports."""
@@ -188,7 +187,7 @@ class ModernizationChecker(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def scan_file(filepath: Path, check_walrus: bool = False) -> List[Issue]:
+def scan_file(filepath: Path, check_walrus: bool = False) -> list[Issue]:
     """Scan a single Python file for modernization opportunities."""
     try:
         content = filepath.read_text(encoding="utf-8")
@@ -202,11 +201,11 @@ def scan_file(filepath: Path, check_walrus: bool = False) -> List[Issue]:
     return checker.issues
 
 
-def generate_report(issues: List[Issue], output_json: str = None, output_md: str = None):
+def generate_report(issues: list[Issue], output_json: str = None, output_md: str = None):
     """Generate reports from scan results."""
     # Group by category and severity
-    by_category: Dict[str, List[Issue]] = {}
-    by_severity: Dict[Severity, List[Issue]] = {}
+    by_category: dict[str, list[Issue]] = {}
+    by_severity: dict[Severity, list[Issue]] = {}
 
     for issue in issues:
         by_category.setdefault(issue.category, []).append(issue)
@@ -296,7 +295,7 @@ def main():
         return 1
 
     total_files = 0
-    all_issues: List[Issue] = []
+    all_issues: list[Issue] = []
 
     # Find all Python files
     for py_file in root_path.rglob("*.py"):

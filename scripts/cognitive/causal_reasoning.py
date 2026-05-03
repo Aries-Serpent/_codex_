@@ -33,10 +33,10 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_integration: bool = False) -> Dict[str, Any]:
+def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_integration: bool = False) -> dict[str, Any]:
     """
     Perform causal analysis on perception data.
 

@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("libcst", reason="libcst optional dependency — PythonASTAdapter unavailable")
 
-from codex.ast_adapters import (  # noqa: E402
+from codex.ast_adapters import (
     JSONASTAdapter,
     PythonASTAdapter,
     StandardizedASTNode,

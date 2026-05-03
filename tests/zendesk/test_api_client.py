@@ -15,9 +15,9 @@ from __future__ import annotations
 import pytest
 
 responses = pytest.importorskip("responses")
-from responses import matchers  # noqa: E402
+from responses import matchers
 
-from zendesk.api_client import ZendeskAPIClient, ZendeskConfig  # noqa: E402
+from zendesk.api_client import ZendeskAPIClient, ZendeskConfig
 
 # ==============================================================================
 # FIXTURES

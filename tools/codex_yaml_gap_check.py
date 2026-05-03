@@ -14,7 +14,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List, Optional, Set
+from typing import Any, Optional
 
 try:
     import yaml  # type: ignore
@@ -36,10 +36,10 @@ def _load_yaml(path: Path) -> Any:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
 
-def _collect_gaps(registry_path: Path) -> List[GapRef]:
+def _collect_gaps(registry_path: Path) -> list[GapRef]:
     data = _load_yaml(registry_path) or {}
     gaps_data = data.get("gaps", []) if isinstance(data, dict) else []
-    gaps: List[GapRef] = []
+    gaps: list[GapRef] = []
 
     for item in gaps_data:
         if not isinstance(item, dict):
@@ -53,14 +53,14 @@ def _collect_gaps(registry_path: Path) -> List[GapRef]:
     return gaps
 
 
-def _collect_yaml_steps(sequence_path: Path) -> Set[str]:
+def _collect_yaml_steps(sequence_path: Path) -> set[str]:
     data = _load_yaml(sequence_path) or {}
     seq = data.get("codex_task_sequence") if isinstance(data, dict) else None
     if not isinstance(seq, dict):
         raise KeyError("YAML missing 'codex_task_sequence' root object")
 
     phases = seq.get("phases", []) or []
-    steps_ids: Set[str] = set()
+    steps_ids: set[str] = set()
 
     for phase in phases:
         if not isinstance(phase, dict):
@@ -80,11 +80,11 @@ def _collect_yaml_steps(sequence_path: Path) -> Set[str]:
 
 def _write_report(
     report_path: Path,
-    gaps_without_step: List[GapRef],
-    yaml_steps_without_gap: List[str],
+    gaps_without_step: list[GapRef],
+    yaml_steps_without_gap: list[str],
 ) -> None:
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# codex_yaml_gap_report\n")
     lines.append("## Gaps without mapped YAML step\n")
     if not gaps_without_step:
@@ -110,7 +110,7 @@ def _write_report(
     report_path.write_text("".join(lines), encoding="utf-8")
 
 
-def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="Check coverage between gap registry and codex_task_sequence YAML."
     )
@@ -120,7 +120,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     args = parse_args(argv)
 
     registry_path = Path(args.gaps).expanduser().resolve()
@@ -130,8 +130,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     gaps = _collect_gaps(registry_path)
     yaml_steps = _collect_yaml_steps(yaml_path)
 
-    gaps_without_step: List[GapRef] = []
-    used_steps: Set[str] = set()
+    gaps_without_step: list[GapRef] = []
+    used_steps: set[str] = set()
 
     for g in gaps:
         if not g.yaml_phase_step or g.yaml_phase_step not in yaml_steps:

@@ -2,4 +2,4 @@
 
 from .analyzer import FileAnalysis, StaticReport, analyze
 
-__all__ = ["analyze", "StaticReport", "FileAnalysis"]
+__all__ = ["FileAnalysis", "StaticReport", "analyze"]

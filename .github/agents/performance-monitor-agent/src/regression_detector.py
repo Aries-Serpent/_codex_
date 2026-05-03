@@ -5,7 +5,7 @@ Detects performance regressions automatically
 import random
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 RANDOM_SEED = 47
 
@@ -23,8 +23,8 @@ class RegressionDetector:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.baselines: Dict[str, PerformanceBaseline] = {}
-        self.measurements: List[PerformanceBaseline] = []
+        self.baselines: dict[str, PerformanceBaseline] = {}
+        self.measurements: list[PerformanceBaseline] = []
         self.regression_threshold = 0.10  # 10% degradation
         self.initialized = True
 
@@ -58,7 +58,7 @@ class RegressionDetector:
         )
         self.measurements.append(measurement)
 
-    def detect_regression(self, metric_name: str) -> Optional[Dict[str, Any]]:
+    def detect_regression(self, metric_name: str) -> Optional[dict[str, Any]]:
         """Detect if metric has regressed"""
         if metric_name not in self.baselines:
             return None
@@ -96,7 +96,7 @@ class RegressionDetector:
 
         return None
 
-    def check_all_metrics(self) -> List[Dict[str, Any]]:
+    def check_all_metrics(self) -> list[dict[str, Any]]:
         """Check all metrics for regressions"""
         regressions = []
         for metric_name in self.baselines.keys():
@@ -105,7 +105,7 @@ class RegressionDetector:
                 regressions.append(regression)
         return regressions
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get detector metrics"""
         return {
             "seed": self.seed,

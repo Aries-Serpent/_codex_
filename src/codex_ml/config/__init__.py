@@ -803,7 +803,7 @@ class ValidationThresholds:
 
 
 try:  # pragma: no cover - optional dependency
-    from .settings import (  # noqa: E402,F401
+    from .settings import (
         AppSettings,
         EvalRow,
         eval_row_schema,

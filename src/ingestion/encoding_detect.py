@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 # Optional backends
 
@@ -40,7 +40,7 @@ try:
 except Exception:  # pragma: no cover - optional dependency
     _cn_from_path = None
 
-__all__ = ["detect_encoding", "autodetect_encoding"]
+__all__ = ["autodetect_encoding", "detect_encoding"]
 
 # A conservative set of encodings we consider "safe" to return directly.
 _SAFE_ENCODINGS = {
@@ -63,9 +63,7 @@ def _norm_encoding(name: Optional[str]) -> Optional[str]:
         return None
 
 
-def detect_encoding(
-    path: Union[str, Path], default: str = "utf-8", sample_size: int = 131072
-) -> str:
+def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int = 131072) -> str:
     """Return best-effort text encoding for a file at *path*.
 
     Resolution order (deterministic):
@@ -158,8 +156,6 @@ def detect_encoding(
 
 
 # Backwards compatibility alias (older code used autodetect_encoding)
-def autodetect_encoding(
-    path: Union[str, Path], default: str = "utf-8", sample_size: int = 131072
-) -> str:
+def autodetect_encoding(path: str | Path, default: str = "utf-8", sample_size: int = 131072) -> str:
     """Alias for detect_encoding to preserve older API name."""
     return detect_encoding(path, default=default, sample_size=sample_size)

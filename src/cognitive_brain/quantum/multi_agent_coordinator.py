@@ -13,7 +13,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class AgentDecision:
     decision: str
     confidence: float
     timestamp: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate agent decision."""
@@ -90,8 +90,8 @@ class MultiAgentCoordinator:
 
         PDA Loop: [INIT] Initialize coordinator with voting strategy
         """
-        self.agents: Dict[str, AgentInfo] = {}
-        self.decision_history: List[Dict[str, Any]] = []
+        self.agents: dict[str, AgentInfo] = {}
+        self.decision_history: list[dict[str, Any]] = []
         self.voting_strategy = voting_strategy
         self._lock = False  # Simple lock for concurrent operations
 
@@ -150,7 +150,7 @@ class MultiAgentCoordinator:
         del self.agents[agent_id]
         logger.info(f"Unregistered agent: {agent_id}")
 
-    def broadcast_update(self, agent_id: str, state: Dict[str, Any]) -> None:
+    def broadcast_update(self, agent_id: str, state: dict[str, Any]) -> None:
         """
         Broadcast a state update from one agent to all others.
 
@@ -174,7 +174,7 @@ class MultiAgentCoordinator:
         # For now, we log it
         logger.debug(f"Broadcasting update from {agent_id}: {state}")
 
-    def coordinate_decision(self, context: Dict[str, Any]) -> str:
+    def coordinate_decision(self, context: dict[str, Any]) -> str:
         """
         Coordinate a decision across all active agents.
 
@@ -195,7 +195,7 @@ class MultiAgentCoordinator:
 
         # Simulate collecting decisions from all active agents
         # In a real implementation, this would query each agent
-        decisions: List[AgentDecision] = []
+        decisions: list[AgentDecision] = []
 
         for agent_id, agent_info in self.agents.items():
             if agent_info.active:
@@ -225,7 +225,7 @@ class MultiAgentCoordinator:
         logger.info(f"Consensus reached: {consensus} from {len(decisions)} agents")
         return consensus
 
-    def _simulate_agent_decision(self, agent_id: str, context: Dict[str, Any]) -> AgentDecision:
+    def _simulate_agent_decision(self, agent_id: str, context: dict[str, Any]) -> AgentDecision:
         """
         Simulate an agent making a decision.
 
@@ -257,7 +257,7 @@ class MultiAgentCoordinator:
             metadata={"simulated": True},
         )
 
-    def reach_consensus(self, decisions: List[AgentDecision]) -> str:
+    def reach_consensus(self, decisions: list[AgentDecision]) -> str:
         """
         Reach consensus from multiple agent decisions.
 
@@ -286,7 +286,7 @@ class MultiAgentCoordinator:
             return self._confidence_based_vote(decisions)
         raise ValueError(f"Unknown voting strategy: {self.voting_strategy}")
 
-    def _majority_vote(self, decisions: List[AgentDecision]) -> str:
+    def _majority_vote(self, decisions: list[AgentDecision]) -> str:
         """
         Simple majority voting.
 
@@ -298,7 +298,7 @@ class MultiAgentCoordinator:
 
         PDA Loop: [CALCULATE] Count votes and select majority
         """
-        vote_counts: Dict[str, int] = {}
+        vote_counts: dict[str, int] = {}
 
         for decision in decisions:
             vote_counts[decision.decision] = vote_counts.get(decision.decision, 0) + 1
@@ -314,7 +314,7 @@ class MultiAgentCoordinator:
 
         return candidates[0]
 
-    def _weighted_vote(self, decisions: List[AgentDecision]) -> str:
+    def _weighted_vote(self, decisions: list[AgentDecision]) -> str:
         """
         Weighted voting based on agent weights.
 
@@ -326,7 +326,7 @@ class MultiAgentCoordinator:
 
         PDA Loop: [CALCULATE] Apply agent weights to votes
         """
-        weighted_votes: Dict[str, float] = {}
+        weighted_votes: dict[str, float] = {}
 
         for decision in decisions:
             agent_info = self.agents.get(decision.agent_id)
@@ -345,7 +345,7 @@ class MultiAgentCoordinator:
 
         return candidates[0]
 
-    def _confidence_based_vote(self, decisions: List[AgentDecision]) -> str:
+    def _confidence_based_vote(self, decisions: list[AgentDecision]) -> str:
         """
         Voting based on agent confidence levels.
 
@@ -357,7 +357,7 @@ class MultiAgentCoordinator:
 
         PDA Loop: [CALCULATE] Sum confidence scores per decision
         """
-        confidence_sums: Dict[str, float] = {}
+        confidence_sums: dict[str, float] = {}
 
         for decision in decisions:
             confidence_sums[decision.decision] = (
@@ -375,7 +375,7 @@ class MultiAgentCoordinator:
 
         return candidates[0]
 
-    def get_agent_statistics(self) -> Dict[str, Any]:
+    def get_agent_statistics(self) -> dict[str, Any]:
         """
         Get statistics about registered agents.
 

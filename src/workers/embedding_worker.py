@@ -14,7 +14,8 @@ from __future__ import annotations
 import json
 import logging
 import os
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from mcp.embeddings.batcher import batch_iterable, compute_checksum
 from mcp.embeddings.chunking import chunk_texts

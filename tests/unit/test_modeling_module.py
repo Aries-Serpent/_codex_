@@ -31,7 +31,7 @@ class FakeModel:
 class FakeTokenizer:
     def __init__(self) -> None:
         self.pad_token = None
-        self.eos_token = "</s>"  # noqa: S105 - static tokenizer token
+        self.eos_token = "</s>"
         self.padding_side = "left"
 
 

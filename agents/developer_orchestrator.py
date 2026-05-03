@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 from enum import Enum  # noqa: E402
-from typing import Any, Optional, Union  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:
     import numpy as np
@@ -591,7 +591,7 @@ class PhysicsGuidedDeveloperOrchestrator:
 
     def generate_code(
         self,
-        component_id: Union[str, dict[str, Any], None] = None,
+        component_id: str | dict[str, Any] | None = None,
         specifications: Optional[dict[str, Any]] = None,
     ) -> str:
         """

@@ -84,7 +84,7 @@ import threading
 import time
 from collections import deque
 from datetime import datetime, timezone
-from typing import Any, Deque, Dict, Optional
+from typing import Any, Optional
 
 import httpx
 from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
@@ -412,7 +412,7 @@ _db: sqlite3.Connection = _init_history_db()
 _db_lock = threading.Lock()  # SQLite single-writer guard for async/multi-thread safety
 
 # In-memory mirror for O(1) recent-N access (still capped at MAX_HISTORY)
-_history: Deque[Dict[str, Any]] = deque(maxlen=MAX_HISTORY)
+_history: deque[dict[str, Any]] = deque(maxlen=MAX_HISTORY)
 
 # Pre-load last MAX_HISTORY records from DB so history survives server restarts
 try:
@@ -446,14 +446,14 @@ class CliRunRequest(BaseModel):
     command: str
     cwd: Optional[str] = None
     timeout: Optional[int] = 30
-    env: Optional[Dict[str, str]] = None
+    env: Optional[dict[str, str]] = None
 
 
 class ApiProxyRequest(BaseModel):
     method: str           # GET POST PUT PATCH DELETE HEAD OPTIONS
     url: str              # full URL or path (resolved against base_url if relative)
-    headers: Optional[Dict[str, str]] = None
-    params:  Optional[Dict[str, str]] = None
+    headers: Optional[dict[str, str]] = None
+    params:  Optional[dict[str, str]] = None
     body:    Optional[Any] = None
     base_url: Optional[str] = None
     timeout: Optional[int] = 30
@@ -471,7 +471,7 @@ class CliRunResponse(BaseModel):
 
 class ApiProxyResponse(BaseModel):
     status_code: int
-    headers:     Dict[str, str]
+    headers:     dict[str, str]
     body:        Any
     duration_ms: float
     url:         str
@@ -497,7 +497,7 @@ async def health():
 # when the cognitive_brain.base deps are not installed (CI environment).
 
 @app.post("/api/ooda/process")
-async def ooda_process(req: Dict[str, Any]):
+async def ooda_process(req: dict[str, Any]):
     """
     Route input through the real CognitiveAppMain.process() OODA loop.
     Sprint 3: replaces mock-api-client in AgentOrchestrationPanel.
@@ -571,7 +571,7 @@ class SQLiteMemory:
             _db.commit()
         return json.loads(row["value"])
 
-    def search(self, query: Dict[str, Any], limit: int = 10) -> list:
+    def search(self, query: dict[str, Any], limit: int = 10) -> list:
         q = next(iter(query.values()), "") if query else ""
         rows = _db.execute(
             "SELECT key, value FROM stm_entries WHERE value LIKE ? LIMIT ?",
@@ -816,7 +816,7 @@ async def cli_run(req: CliRunRequest):
         raise HTTPException(status_code=500, detail=str(exc))
 
     duration_ms = (time.monotonic() - t0) * 1000
-    record: Dict[str, Any] = {
+    record: dict[str, Any] = {
         "command":     req.command,
         "stdout":      stdout.decode(errors="replace"),
         "stderr":      stderr.decode(errors="replace"),

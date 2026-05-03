@@ -33,7 +33,7 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 def allocate_tasks(
@@ -41,7 +41,7 @@ def allocate_tasks(
     causal_analysis_path: str,
     output_path: str,
     agents: str = "all"
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Allocate tasks to agents based on analysis and agent capabilities.
 

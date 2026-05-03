@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class PatternCategory(str, Enum):
@@ -51,11 +51,11 @@ class Pattern:
     category: PatternCategory
     severity: PatternSeverity
     description: str
-    indicators: List[str]
+    indicators: list[str]
     remediation: str
     routing_agent: Optional[str] = None
     confidence_weight: float = 1.0
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -64,8 +64,8 @@ class PatternMatch:
 
     pattern: Pattern
     confidence: float
-    evidence: List[str]
-    context: Dict[str, Any] = field(default_factory=dict)
+    evidence: list[str]
+    context: dict[str, Any] = field(default_factory=dict)
 
     @property
     def score(self) -> float:
@@ -82,7 +82,7 @@ class PatternMatch:
 
 # --- Pattern Registry -----------------------------------------------------------
 
-PATTERNS: List[Pattern] = [
+PATTERNS: list[Pattern] = [
     # CI/CD patterns
     Pattern(
         id="CI-001",
@@ -303,8 +303,8 @@ PATTERNS: List[Pattern] = [
 ]
 
 # Build lookup index
-_PATTERN_BY_ID: Dict[str, Pattern] = {p.id: p for p in PATTERNS}
-_PATTERNS_BY_CATEGORY: Dict[PatternCategory, List[Pattern]] = {}
+_PATTERN_BY_ID: dict[str, Pattern] = {p.id: p for p in PATTERNS}
+_PATTERNS_BY_CATEGORY: dict[PatternCategory, list[Pattern]] = {}
 for _p in PATTERNS:
     _PATTERNS_BY_CATEGORY.setdefault(_p.category, []).append(_p)
 
@@ -314,12 +314,12 @@ def get_pattern(pattern_id: str) -> Optional[Pattern]:
     return _PATTERN_BY_ID.get(pattern_id)
 
 
-def get_patterns_by_category(category: PatternCategory) -> List[Pattern]:
+def get_patterns_by_category(category: PatternCategory) -> list[Pattern]:
     """Retrieve all patterns for a given category."""
     return _PATTERNS_BY_CATEGORY.get(category, [])
 
 
-def get_patterns_by_severity(severity: PatternSeverity) -> List[Pattern]:
+def get_patterns_by_severity(severity: PatternSeverity) -> list[Pattern]:
     """Retrieve all patterns at or above a given severity."""
     order = [
         PatternSeverity.CRITICAL,
@@ -332,7 +332,7 @@ def get_patterns_by_severity(severity: PatternSeverity) -> List[Pattern]:
     return [p for p in PATTERNS if order.index(p.severity) <= threshold]
 
 
-def match_patterns(context: Dict[str, Any]) -> List[PatternMatch]:
+def match_patterns(context: dict[str, Any]) -> list[PatternMatch]:
     """
     Run all patterns against a context dict and return matches.
 
@@ -342,7 +342,7 @@ def match_patterns(context: Dict[str, Any]) -> List[PatternMatch]:
     Returns:
         List of PatternMatch sorted by descending score
     """
-    matches: List[PatternMatch] = []
+    matches: list[PatternMatch] = []
     for pattern in PATTERNS:
         evidence = []
         hit_count = 0

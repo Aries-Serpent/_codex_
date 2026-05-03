@@ -1,6 +1,6 @@
 """High level archive orchestration utilities."""
 
-# ruff: noqa: I001  # import-order handled by isort configuration
+# import-order handled by isort configuration
 
 from __future__ import annotations
 

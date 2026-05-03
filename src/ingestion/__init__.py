@@ -20,8 +20,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator, Optional, Union
+from typing import Optional, Union
 
 # Local utility imports (optional modules handled gracefully)
 try:
@@ -62,19 +63,20 @@ except Exception:
     _utils_read_text_file = None  # type: ignore[assignment]
 
 __all__ = [
+    "Ingestor",
+    "_detect_encoding",  # Backward compatibility alias
+    "detect_encoding",
+    "deterministic_shuffle",
+    "ingest",
     "read_text",
     "read_text_file",
-    "ingest",
-    "Ingestor",
-    "deterministic_shuffle",
-    "detect_encoding",
-    "_detect_encoding",  # Backward compatibility alias
 ]
 
 # Expose deterministic_shuffle when available, otherwise provide a local fallback.
 if _deterministic_shuffle is None:
     import random
-    from typing import Sequence, TypeVar
+    from collections.abc import Sequence
+    from typing import TypeVar
 
     T = TypeVar("T")
 
@@ -90,7 +92,7 @@ else:
 
 
 # Provide a detect_encoding wrapper that uses repo detector, io_text helper, or a conservative fallback.  # noqa: E501
-def detect_encoding(path: Union[str, Path]) -> str:
+def detect_encoding(path: str | Path) -> str:
     """Best-effort detect the file encoding.
 
     Priority:
@@ -240,7 +242,7 @@ def _manual_read_text(
     return text, str(enc)
 
 
-def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict") -> str:
+def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict") -> str:
     """Read text from a path, handling multiple historical helper signatures.
 
     Behavior:
@@ -269,17 +271,17 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
     return txt
 
 
-def read_text_file(path: Union[str, Path], *, encoding: str = "utf-8") -> str:
+def read_text_file(path: str | Path, *, encoding: str = "utf-8") -> str:
     """Backward-compatible alias for read_text (older callers may call this)."""
     return read_text(path, encoding=encoding)
 
 
 def ingest(
-    path: Union[str, Path],
+    path: str | Path,
     *,
     encoding: str = "utf-8",
     chunk_size: Optional[int] = None,
-) -> Union[str, Iterator[str]]:
+) -> str | Iterator[str]:
     """Read or stream text content from ``path``.
 
     Parameters
@@ -342,9 +344,9 @@ class Ingestor:
 
     @staticmethod
     def ingest(
-        path: Union[str, Path],
+        path: str | Path,
         *,
         encoding: str = "utf-8",
         chunk_size: Optional[int] = None,
-    ) -> Union[str, Iterator[str]]:
+    ) -> str | Iterator[str]:
         return ingest(path, encoding=encoding, chunk_size=chunk_size)

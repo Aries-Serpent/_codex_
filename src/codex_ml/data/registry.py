@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Dataset registry with entry-point discovery for ``codex_ml``."""
 
 
 import hashlib  # noqa: E402
@@ -30,8 +29,9 @@ import json  # noqa: E402
 import os  # noqa: E402
 import random  # noqa: E402
 import sys  # noqa: E402
+from collections.abc import Callable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Sequence  # noqa: E402
+from typing import Any  # noqa: E402
 
 
 def _load_loader_attr(module: str, attr: str) -> Any:

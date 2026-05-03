@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, HttpUrl, field_validator
 
@@ -34,19 +34,19 @@ class KnowledgeSearchResult(_StrictBaseModel):
 
 
 class KnowledgeSearchResponse(_StrictBaseModel):
-    results: List[KnowledgeSearchResult]
+    results: list[KnowledgeSearchResult]
 
 
 class RepoHygieneRequest(_StrictBaseModel):
     diff: str = Field(..., description="Unified diff that should be scanned")
-    checks: Optional[List[str]] = Field(
+    checks: Optional[list[str]] = Field(
         default=None,
         description="Subset of checks to run (lint, format, secrets, license)",
     )
 
     @field_validator("checks", mode="before")
     @classmethod
-    def _ensure_unique_checks(cls, value: Optional[List[str]]) -> Optional[List[str]]:
+    def _ensure_unique_checks(cls, value: Optional[list[str]]) -> Optional[list[str]]:
         if value is None:
             return value
         normalized = [item.lower() for item in value]
@@ -63,11 +63,11 @@ class RepoHygieneIssue(_StrictBaseModel):
 
 
 class RepoHygieneResponse(_StrictBaseModel):
-    issues: List[RepoHygieneIssue]
+    issues: list[RepoHygieneIssue]
 
 
 class TestsRunRequest(_StrictBaseModel):
-    targets: List[str] = Field(..., min_length=1, description="Test targets to execute")
+    targets: list[str] = Field(..., min_length=1, description="Test targets to execute")
     timeout_s: int = Field(300, ge=30, le=3600, description="Timeout for the run in seconds")
 
 
@@ -85,7 +85,7 @@ class TestsRunSummary(_StrictBaseModel):
 
 class TestsRunResponse(_StrictBaseModel):
     summary: TestsRunSummary
-    failures: List[TestFailure] = Field(default_factory=list)
+    failures: list[TestFailure] = Field(default_factory=list)
 
 
 class GitCreatePullRequestBody(_StrictBaseModel):
@@ -94,7 +94,7 @@ class GitCreatePullRequestBody(_StrictBaseModel):
     body: str
     base: str
     head: str
-    labels: Optional[List[str]] = None
+    labels: Optional[list[str]] = None
 
 
 class GitCreatePullRequestResponse(_StrictBaseModel):

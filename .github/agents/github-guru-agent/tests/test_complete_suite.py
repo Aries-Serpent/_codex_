@@ -19,7 +19,7 @@ import json
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock
 
 # ---------------------------------------------------------------------------
@@ -63,7 +63,7 @@ def _offline_client(owner: str = "test-owner", repo: str = "test-repo") -> GitHu
     return GitHubAPIClient(owner=owner, repo=repo, token="", offline_mode=True)
 
 
-def _pr_payload(**overrides: Any) -> Dict[str, Any]:
+def _pr_payload(**overrides: Any) -> dict[str, Any]:
     """Minimal valid PR API response."""
     base = {
         "number": 42,
@@ -79,7 +79,7 @@ def _pr_payload(**overrides: Any) -> Dict[str, Any]:
     return base
 
 
-def _issue_payload(**overrides: Any) -> Dict[str, Any]:
+def _issue_payload(**overrides: Any) -> dict[str, Any]:
     base = {
         "number": 7,
         "title": "CI pipeline keeps failing on import error",
@@ -89,7 +89,7 @@ def _issue_payload(**overrides: Any) -> Dict[str, Any]:
     return base
 
 
-def _workflow_runs_payload(count: int = 5, failure_rate: float = 0.2) -> Dict[str, Any]:
+def _workflow_runs_payload(count: int = 5, failure_rate: float = 0.2) -> dict[str, Any]:
     runs = []
     now = datetime.now(tz=timezone.utc)
     for i in range(count):

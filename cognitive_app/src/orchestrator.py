@@ -15,7 +15,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Add src to path for imports
 repo_root = Path(__file__).resolve().parents[3]
@@ -51,14 +51,14 @@ class OODAOrchestrator:
         self.planner = planner
         self.memory = memory
         self.physics_of_thought = PhysicsOfThought(planner, memory)
-        self._execution_history: List[Dict[str, Any]] = []
+        self._execution_history: list[dict[str, Any]] = []
 
         logger.info("OODA Orchestrator initialized")
 
     def execute(
         self,
-        input_data: Dict[str, Any],
-        context: Optional[Dict[str, Any]] = None
+        input_data: dict[str, Any],
+        context: Optional[dict[str, Any]] = None
     ) -> ActionResult:
         """
         Execute the complete OODA loop with orchestration.
@@ -118,7 +118,7 @@ class OODAOrchestrator:
                 errors=[str(e)]
             )
 
-    def get_execution_history(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def get_execution_history(self, limit: int = 10) -> list[dict[str, Any]]:
         """
         Get recent execution history.
 
@@ -130,7 +130,7 @@ class OODAOrchestrator:
         """
         return self._execution_history[-limit:]
 
-    def get_execution_metrics(self) -> Dict[str, Any]:
+    def get_execution_metrics(self) -> dict[str, Any]:
         """
         Get aggregated execution metrics.
 
@@ -183,8 +183,8 @@ class CognitiveAppMain:
 
     def process(
         self,
-        input_data: Dict[str, Any],
-        context: Optional[Dict[str, Any]] = None
+        input_data: dict[str, Any],
+        context: Optional[dict[str, Any]] = None
     ) -> ActionResult:
         """
         Process input through the cognitive architecture.
@@ -201,7 +201,7 @@ class CognitiveAppMain:
 
         return self._orchestrator.execute(input_data, context)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """
         Get application metrics.
 
@@ -244,8 +244,8 @@ def initialize_cognitive_app(planner: Planner, memory: MemoryInterface) -> None:
 
 
 def process_through_cognitive_app(
-    input_data: Dict[str, Any],
-    context: Optional[Dict[str, Any]] = None
+    input_data: dict[str, Any],
+    context: Optional[dict[str, Any]] = None
 ) -> ActionResult:
     """
     Process input through the cognitive app.

@@ -24,9 +24,9 @@ except ImportError:  # pragma: no cover — sqlparse optional dependency
 
 __all__ = [
     "BaseASTAdapter",
+    "JSONASTAdapter",
     "StandardizedASTNode",
     "YAMLASTAdapter",
-    "JSONASTAdapter",
 ]
 
 if _PYTHON_ADAPTER_AVAILABLE:

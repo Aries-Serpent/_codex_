@@ -12,14 +12,14 @@ from .retrieval_bench import benchmark_cache_effectiveness, benchmark_retrieval
 from .runner import BenchmarkResult, BenchmarkRunner
 
 __all__ = [
-    "BenchmarkRunner",
     "BenchmarkResult",
+    "BenchmarkRunner",
+    "benchmark_cache_effectiveness",
+    "benchmark_e2e_pipeline",
     "benchmark_embedding_providers",
     "benchmark_embedding_quality",
     "benchmark_indexing",
+    "benchmark_multi_query_types",
     "benchmark_parallel_vs_sequential",
     "benchmark_retrieval",
-    "benchmark_cache_effectiveness",
-    "benchmark_e2e_pipeline",
-    "benchmark_multi_query_types",
 ]

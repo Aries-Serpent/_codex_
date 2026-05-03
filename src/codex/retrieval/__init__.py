@@ -5,12 +5,12 @@ from .search import RetrievalEngine, search_knowledge_base
 from .stores import FAISSStore, PGVectorStore, WeaviateStore
 
 __all__ = [
-    "build_embeddings",
     "EmbeddingModel",
-    "KnowledgeBaseLoader",
-    "RetrievalEngine",
-    "search_knowledge_base",
     "FAISSStore",
+    "KnowledgeBaseLoader",
     "PGVectorStore",
+    "RetrievalEngine",
     "WeaviateStore",
+    "build_embeddings",
+    "search_knowledge_base",
 ]

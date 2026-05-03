@@ -9,12 +9,12 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def load_config(config_path: Path) -> Dict[str, Any]:
+def load_config(config_path: Path) -> dict[str, Any]:
     """
     Load connector configuration from JSON file.
 
@@ -31,7 +31,7 @@ def load_config(config_path: Path) -> Dict[str, Any]:
         return json.load(f)
 
 
-def check_connector(config: Dict[str, Any]) -> bool:
+def check_connector(config: dict[str, Any]) -> bool:
     """
     Check GitHub connector configuration and connectivity.
 
@@ -85,9 +85,8 @@ def main() -> int:
         if check_connector(config):
             logger.info("Connector check passed")
             return 0
-        else:
-            logger.error("Connector check failed")
-            return 1
+        logger.error("Connector check failed")
+        return 1
 
     except Exception as e:
         logger.error(f"Error checking connector: {e}")

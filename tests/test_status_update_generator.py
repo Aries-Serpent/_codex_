@@ -14,12 +14,12 @@ Tests that the generated status update:
 3. Produces valid, well-formed output
 """
 
-import json  # noqa: E402
-import subprocess  # noqa: E402
-import sys  # noqa: E402
-from pathlib import Path  # noqa: E402
+import json
+import subprocess
+import sys
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 # Paths
 REPO_ROOT = Path(__file__).resolve().parents[1]

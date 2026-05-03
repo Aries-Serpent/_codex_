@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from ._protocols import TokenizerAdapter
 from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
 from .adapter import WhitespaceTokenizer
-from .api import _load_export as _lazy_load_export  # noqa: PLC2701
+from .api import _load_export as _lazy_load_export
 from .api import load_tokenizer, pad_sequences
 
 try:
@@ -23,7 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .sp_trainer import SPTokenizer
 
 
-def __getattr__(name: str) -> Any:  # noqa: ANN401
+def __getattr__(name: str) -> Any:
     """Lazy-load optional attributes with deprecation shim for `get_tokenizer`."""
     if name == "get_tokenizer":
         import warnings as _warnings
@@ -41,15 +41,15 @@ def __getattr__(name: str) -> Any:  # noqa: ANN401
 
 
 __all__ = [
-    "load_tokenizer",
-    "WhitespaceTokenizer",
-    "HFTokenizer",
-    "TokenizerAdapter",
-    "HFTokenizerAdapter",
-    "SPTokenizer",
     "BOS_TOKEN",
     "EOS_TOKEN",
     "PAD_TOKEN",
     "UNK_TOKEN",
+    "HFTokenizer",
+    "HFTokenizerAdapter",
+    "SPTokenizer",
+    "TokenizerAdapter",
+    "WhitespaceTokenizer",
+    "load_tokenizer",
     "pad_sequences",
 ]

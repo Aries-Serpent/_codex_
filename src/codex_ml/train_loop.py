@@ -41,11 +41,11 @@ import os
 import random
 import sys
 import time
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING, Any, Optional
 from uuid import uuid4
 
 __version__ = "0.1.0"
@@ -65,7 +65,7 @@ try:
     from codex_ml.models.reasoning import attach_reasoning_adapters
 
     _HAS_REASONING_ADAPTERS = True
-except Exception:  # noqa: BLE001
+except Exception:
     attach_reasoning_adapters = None
     _HAS_REASONING_ADAPTERS = False
 from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
@@ -75,7 +75,7 @@ from codex_ml.utils.checksum import sha256sum
 
 try:
     from codex_ml.utils.repro import record_dataset_checksums
-except Exception:  # noqa: BLE001
+except Exception:
 
     def record_dataset_checksums(*_, **__) -> dict[str, Any]:
         return {}
@@ -83,7 +83,7 @@ except Exception:  # noqa: BLE001
 
 try:
     from codex_ml.utils.seeding import set_reproducible
-except Exception:  # noqa: BLE001
+except Exception:
 
     def set_reproducible(*_, **__) -> None:
         return None
@@ -91,7 +91,7 @@ except Exception:  # noqa: BLE001
 
 try:
     from codex_ml.telemetry import start_metrics_server
-except Exception:  # noqa: BLE001
+except Exception:
 
     def start_metrics_server(*_, **__) -> None:
         return None
@@ -101,7 +101,7 @@ try:
     import mlflow
 
     _HAS_MLFLOW = True
-except Exception:  # noqa: BLE001
+except Exception:
     mlflow = None
     _HAS_MLFLOW = False
 
@@ -119,7 +119,7 @@ try:
     # Verify torch is functional
     _ = torch.Tensor
     _HAS_TORCH = True
-except Exception:  # noqa: BLE001
+except Exception:
     torch = None  # type: ignore[assignment]
     optim = None
     StepLR = None
@@ -129,17 +129,17 @@ except Exception:  # noqa: BLE001
 
 try:
     from codex_ml.models.registry import get_model as instantiate_model
-except Exception:  # noqa: BLE001
+except Exception:
     instantiate_model = None
 
 try:
     from codex_ml.lora import apply_lora
-except Exception:  # noqa: BLE001
+except Exception:
     apply_lora = None
 
 try:
     from codex_ml.data import loaders as data_loaders  # type: ignore[attr-defined]
-except Exception:  # noqa: BLE001
+except Exception:
     data_loaders = None
 
 try:
@@ -149,7 +149,7 @@ try:
         LoggingCallback,
         merge_callback_results,
     )
-except Exception:  # noqa: BLE001
+except Exception:
     # fmt: off
     class Callback:  # type: ignore
         def on_train_start(self, state: dict[str, Any]) -> None:
@@ -182,7 +182,7 @@ except Exception:  # noqa: BLE001
 
 try:
     from codex_ml.utils.determinism import set_cudnn_deterministic
-except Exception:  # noqa: BLE001
+except Exception:
 
     def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
         return
@@ -190,7 +190,7 @@ except Exception:  # noqa: BLE001
 
 try:
     from codex_ml.utils.retention import prune_checkpoints
-except Exception:  # noqa: BLE001
+except Exception:
 
     def prune_checkpoints(*args, **kwargs):
         return {"dry_run": True}
@@ -411,7 +411,7 @@ def _write_json_report(output_dir: Path | None, name: str, payload: Mapping[str,
         (output_dir / name).write_text(
             json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except Exception as exc:  # noqa: BLE001 - best-effort report generation
+    except Exception as exc:
         logger.warning("Failed to write %s: %s", name, exc)
 
 
@@ -433,10 +433,10 @@ def _set_seed(seed: Optional[int]) -> int:
     resolved_seed = int(seed)  # type: ignore[arg-type]
     random.seed(resolved_seed)
     try:
-        import numpy as np  # noqa
+        import numpy as np
 
         np.random.seed(resolved_seed)
-    except Exception:  # noqa: BLE001
+    except Exception:
         logger.debug("Suppressed exception in handler", exc_info=True)
     if _HAS_TORCH:
         torch.manual_seed(resolved_seed)
@@ -689,13 +689,13 @@ def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
             if sha:
                 resume_meta["previous_checkpoint_sha256"] = sha
             return last_epoch + 1, resume_meta
-        except Exception as e:  # noqa
+        except Exception as e:
             resume_meta["model_state_loaded"] = False
             resume_meta["optimizer_state_loaded"] = False
             resume_meta["scheduler_state_loaded"] = False
             resume_meta["model_state_error"] = str(e)
             return 1, resume_meta
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         resume_meta["resume_error"] = f"latest.json parse failure: {e}"
         return 1, resume_meta
 
@@ -738,10 +738,6 @@ def _log_dtype_mismatch_if_any(requested: Any, model) -> None:
     """Log a clear message if requested dtype differs from effective param dtype."""
     if requested is None or model is None:
         return
-    try:
-        import torch as _torch  # noqa: F401
-    except Exception:
-        return
     eff = _first_param_dtype(model)
     req = str(requested)
     if eff is not None and eff != req:
@@ -761,10 +757,6 @@ def _dataset_dtype_gate(dataset, desired: Any) -> None:
     so operators are aware of potential casts.
     """
     if dataset is None or not _HAS_TORCH:
-        return
-    try:
-        import torch as _torch  # noqa: F401
-    except Exception:
         return
     try:
         sample = dataset[0]
@@ -793,7 +785,7 @@ def _append_metrics_event(art_dir_path: Path | None, record: dict[str, Any]) -> 
         if _telemetry_should_sample(record):
             _append_telemetry_ndjson(base, record)
             _append_telemetry_json_rollover(base, record)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.debug("Failed to append telemetry event: %s", exc)
 
 
@@ -802,7 +794,7 @@ def _persist_reasoning_trace(path: Path, payload: dict[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(payload, sort_keys=True) + "\n")
-    except Exception as exc:  # noqa: BLE001 - tracing is best effort
+    except Exception as exc:
         logger.debug("Failed to persist reasoning trace: %s", exc)
 
 
@@ -846,7 +838,7 @@ def _append_telemetry_json_rollover(base_dir: Path, record: dict[str, Any]) -> N
                 history = []
         history.append(dict(record))
         path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.debug("Failed to append telemetry.json: %s", exc)
 
 
@@ -978,7 +970,7 @@ def _cast_batch_for_policy(
             status = "cast"
         else:
             reason = "no_to_method"
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("Dataset cast policy '%s' failed: %s", policy_norm, exc)
         reason = f"cast_failed:{exc.__class__.__name__}"
     if reason is not None:
@@ -996,10 +988,6 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
 
     def _collate(batch):
         if policy is None:
-            return batch
-        try:
-            import torch as _torch  # noqa: F401
-        except Exception:
             return batch
         try:
             return [_cast_batch_for_policy(x, policy, desired, device, art_dir_path) for x in batch]
@@ -1069,7 +1057,7 @@ def _scheduler_current_lr(scheduler, optimizer):
         return None
     try:
         return [pg["lr"] for pg in optimizer.param_groups]
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -1078,13 +1066,13 @@ def _checkpoint_digest(ckpt_dir: Path) -> str | None:
     if sha_file.exists():
         try:
             return sha_file.read_text(encoding="utf-8").strip() or None
-        except Exception:  # noqa: BLE001
+        except Exception:
             return None
     model_file = ckpt_dir / "model.pt"
     if model_file.exists():
         try:
             return sha256sum(model_file)
-        except Exception:  # noqa: BLE001
+        except Exception:
             return None
     return None
 
@@ -1165,7 +1153,7 @@ def run_training(
     resolved_seed = _set_seed(seed)
     try:
         set_reproducible(resolved_seed, deterministic=bool(deterministic_cudnn))
-    except Exception:  # noqa: BLE001 - seeding best effort
+    except Exception:
         logger.debug("Suppressed exception in handler", exc_info=True)
     if deterministic_cudnn:
         set_cudnn_deterministic(True, benchmark=False)
@@ -1188,7 +1176,7 @@ def run_training(
         metrics_json = art_dir_path / "metrics.json"  # type: ignore[operator]
         if not metrics_json.exists():
             metrics_json.write_text("[]\n", encoding="utf-8")
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("Failed to prepare artifacts directory '%s': %s", default_art_dir, exc)
         art_dir_path = None
 
@@ -1348,14 +1336,14 @@ def run_training(
             model.to(device_obj)
             if dtype_obj is not None:
                 model = model.to(dtype=dtype_obj)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("Failed to move model to device/dtype: %s", exc)
         else:
             # Verify effective dtype and surface implicit downcasts (e.g., bf16->fp32)
             _log_dtype_mismatch_if_any(dtype_obj, model)
             # Emit telemetry event when bf16 was requested but effective dtype differs
             try:
-                import torch as _torch  # noqa: F401
+                import torch as _torch
             except Exception as e:
                 logger.debug("Torch import failed for dtype telemetry: %s", e)
             else:
@@ -1437,14 +1425,14 @@ def run_training(
     if model is not None and lora and apply_lora is not None:
         try:
             apply_lora(model, **(lora_cfg or {}))
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning("Failed to apply LoRA: %s", e)
 
     model_params_count = None
     if model is not None and _HAS_TORCH:
         try:
             model_params_count = sum(p.numel() for p in model.parameters())
-        except Exception:  # noqa: BLE001
+        except Exception:
             model_params_count = None
 
     optimizer = None
@@ -1551,7 +1539,7 @@ def run_training(
     for cb in cb_list:
         try:
             cb.on_train_start(state)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             cb.record_error("on_train_start", e, state)
             logger.warning("Callback on_train_start error: %s", e)
 
@@ -1563,7 +1551,7 @@ def run_training(
             (ckpt_root / "config.snapshot.json").write_text(
                 json.dumps(run_config, indent=2, sort_keys=True)
             )
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning("Failed to write config snapshot: %s", e)
 
     start_epoch = 1
@@ -1611,7 +1599,7 @@ def run_training(
 
         try:
             (art_dir_path / "metrics.json").write_text(json.dumps(metrics_entries, indent=2))
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("Failed to write metrics.json: %s", exc)
 
         env_payload: dict[str, Any] = {
@@ -1646,7 +1634,7 @@ def run_training(
 
         try:
             (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("Failed to write environment.json: %s", exc)
 
         if reasoning_runtime is not None:
@@ -1659,14 +1647,14 @@ def run_training(
                     (art_dir_path / "reasoning_traces.json").write_text(
                         json.dumps(reasoning_history, indent=2)
                     )
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     logger.warning("Failed to write reasoning_traces.json: %s", exc)
 
         try:
             (art_dir_path / "dataset_checksums.json").write_text(
                 json.dumps(dataset_checksum_map, indent=2)
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("Failed to write dataset_checksums.json: %s", exc)
 
     def _persist_control_surface_artifacts() -> None:
@@ -1675,7 +1663,7 @@ def run_training(
 
         try:
             art_dir_path.mkdir(parents=True, exist_ok=True)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("Failed to prepare metadata directory '%s': %s", art_dir_path, exc)
             return
 
@@ -1757,7 +1745,7 @@ def run_training(
                 json.dumps(_json_ready(meta_payload), indent=2),
                 encoding="utf-8",
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("Failed to write run_metadata.json: %s", exc)
 
         reasoning_payload: dict[str, Any] = {}
@@ -1775,7 +1763,7 @@ def run_training(
             reasoning_payload["runtime"] = _json_ready(runtime_details)
             try:
                 reasoning_payload["harness"] = _json_ready(reasoning_runtime.harness.describe())
-            except Exception:  # noqa: BLE001
+            except Exception:
                 logger.debug("Suppressed exception in handler", exc_info=True)
         if reasoning_payload:
             try:
@@ -1783,7 +1771,7 @@ def run_training(
                     json.dumps(_json_ready(reasoning_payload), indent=2),
                     encoding="utf-8",
                 )
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.warning("Failed to write reasoning.json: %s", exc)
 
         if isinstance(evaluation_cfg, Mapping):
@@ -1792,7 +1780,7 @@ def run_training(
                     json.dumps(_json_ready(evaluation_cfg), indent=2),
                     encoding="utf-8",
                 )
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.warning("Failed to write evaluation.json: %s", exc)
 
     target_epochs = int(epochs)
@@ -1842,7 +1830,7 @@ def run_training(
         for cb in cb_list:
             try:
                 cb.on_epoch_start(epoch, state)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 cb.record_error("on_epoch_start", e, state)
                 logger.warning("Callback on_epoch_start error: %s", e)
 
@@ -1857,7 +1845,7 @@ def run_training(
             if dtype_obj is not None:
                 try:
                     model.to(dtype=dtype_obj)
-                except Exception:  # noqa: BLE001
+                except Exception:
                     logger.debug("Suppressed exception in handler", exc_info=True)
             model.to(device_obj)
             model.train()
@@ -1887,7 +1875,7 @@ def run_training(
                     hidden_states = None
                     try:
                         hidden_states = getattr(model, "hidden_states", None)
-                    except Exception:  # noqa: BLE001 - defensive
+                    except Exception:
                         hidden_states = None
                     step_ctx = (
                         {"hidden_states": hidden_states} if hidden_states is not None else None
@@ -1906,7 +1894,7 @@ def run_training(
                         optimizer.zero_grad(set_to_none=True)
                         optimizer_steps_this_epoch += 1
                         total_optimizer_steps += 1
-                    except Exception as e:  # noqa: BLE001
+                    except Exception as e:
                         logger.warning("Optimizer step failed: %s", e)
 
             if steps_per_epoch % grad_accum != 0:
@@ -1915,7 +1903,7 @@ def run_training(
                     optimizer.zero_grad(set_to_none=True)
                     optimizer_steps_this_epoch += 1
                     total_optimizer_steps += 1
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning("Final optimizer step failed: %s", e)
         else:
             steps_this_epoch = steps_per_epoch
@@ -1928,7 +1916,7 @@ def run_training(
         if scheduler is not None and optimizer is not None:
             try:
                 scheduler.step()
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning("Scheduler step failed: %s", e)
             current_lrs = _scheduler_current_lr(scheduler, optimizer)
         else:
@@ -1956,7 +1944,7 @@ def run_training(
                 logger.debug(f"TypeError: {merge_exc}")
                 cb.record_error("merge_callback_results", merge_exc, state)
                 logger.warning("Callback merge error: %s", merge_exc)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 cb.record_error("on_epoch_end", e, state)
                 logger.warning("Callback on_epoch_end error: %s", e)
 
@@ -2010,7 +1998,7 @@ def run_training(
                         metric_value=avg_loss,
                         best_k=best_k_index,
                     )
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     msg = "Failed to save checkpoint for epoch %d: %s"
                     logger.warning(msg, epoch, e)
             epoch_checkpoint_sha = _checkpoint_digest(epoch_dir)
@@ -2030,7 +2018,7 @@ def run_training(
                 (Path(checkpoint_dir) / "latest.json").write_text(
                     json.dumps(latest_payload, indent=2)
                 )
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning("Failed to write latest.json: %s", e)
 
             # Retention pruning
@@ -2038,7 +2026,7 @@ def run_training(
                 try:
                     prune_result = prune_checkpoints(checkpoint_dir, **retention_policy)
                     state["retention_last"] = prune_result
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning("Retention pruning failed: %s", e)
         else:
             latest_payload = {
@@ -2068,7 +2056,7 @@ def run_training(
     for cb in cb_list:
         try:
             cb.on_train_end(state)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             cb.record_error("on_train_end", e, state)
             logger.warning("Callback on_train_end error: %s", e)
 

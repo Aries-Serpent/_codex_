@@ -10,11 +10,12 @@ Phase 1.4 of Long-term Cognitive Brain Planset.
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 # Default paths
 DEFAULT_PATTERN_STORE = Path(".codex/cognitive_brain/pattern_learning_store.json")

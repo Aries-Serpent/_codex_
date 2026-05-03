@@ -598,4 +598,4 @@ if __name__ == "__main__":  # pragma: no cover - manual execution hook
     app()
 
 
-__all__ = ["app", "vocab", "inspect", "encode", "decode", "export"]
+__all__ = ["app", "decode", "encode", "export", "inspect", "vocab"]

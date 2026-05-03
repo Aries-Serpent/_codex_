@@ -16,7 +16,7 @@ Phase: 20.2 Advanced Automation
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -25,7 +25,7 @@ import pytest
 # ============================================================================
 
 @pytest.fixture
-def config_definition() -> Dict[str, Any]:
+def config_definition() -> dict[str, Any]:
     """Fixture for configuration definition."""
     return {
         "id": "config-app-001",
@@ -53,7 +53,7 @@ def config_definition() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def environment_configs() -> Dict[str, Dict[str, Any]]:
+def environment_configs() -> dict[str, dict[str, Any]]:
     """Fixture for environment-specific configurations."""
     return {
         "development": {
@@ -75,7 +75,7 @@ def environment_configs() -> Dict[str, Dict[str, Any]]:
 
 
 @pytest.fixture
-def secret_config() -> Dict[str, Any]:
+def secret_config() -> dict[str, Any]:
     """Fixture for secret configuration."""
     return {
         "secrets": {
@@ -98,12 +98,12 @@ def secret_config() -> Dict[str, Any]:
 class TestConfigVersioning:
     """Tests for configuration versioning."""
 
-    def test_config_has_version(self, config_definition: Dict[str, Any]):
+    def test_config_has_version(self, config_definition: dict[str, Any]):
         """Test configuration has version."""
         assert "version" in config_definition
         assert config_definition["version"]
 
-    def test_version_follows_semver(self, config_definition: Dict[str, Any]):
+    def test_version_follows_semver(self, config_definition: dict[str, Any]):
         """Test version follows semantic versioning."""
         version = config_definition["version"]
         parts = version.split(".")
@@ -147,29 +147,29 @@ class TestConfigVersioning:
 class TestEnvironmentConfigs:
     """Tests for environment-specific configurations."""
 
-    def test_all_environments_defined(self, environment_configs: Dict[str, Dict[str, Any]]):
+    def test_all_environments_defined(self, environment_configs: dict[str, dict[str, Any]]):
         """Test all environments are defined."""
         required_envs = ["development", "staging", "production"]
         for env in required_envs:
             assert env in environment_configs
 
-    def test_production_has_higher_pool_size(self, environment_configs: Dict[str, Dict[str, Any]]):
+    def test_production_has_higher_pool_size(self, environment_configs: dict[str, dict[str, Any]]):
         """Test production has higher pool size than development."""
         dev_pool = environment_configs["development"]["database"]["pool_size"]
         prod_pool = environment_configs["production"]["database"]["pool_size"]
         assert prod_pool > dev_pool
 
-    def test_development_cache_disabled(self, environment_configs: Dict[str, Dict[str, Any]]):
+    def test_development_cache_disabled(self, environment_configs: dict[str, dict[str, Any]]):
         """Test development cache is disabled by default."""
         dev_cache = environment_configs["development"]["cache"]["enabled"]
         assert dev_cache is False
 
-    def test_production_logging_level(self, environment_configs: Dict[str, Dict[str, Any]]):
+    def test_production_logging_level(self, environment_configs: dict[str, dict[str, Any]]):
         """Test production has appropriate logging level."""
         prod_level = environment_configs["production"]["logging"]["level"]
         assert prod_level in ["INFO", "WARNING", "ERROR"]
 
-    def test_environment_isolation(self, environment_configs: Dict[str, Dict[str, Any]]):
+    def test_environment_isolation(self, environment_configs: dict[str, dict[str, Any]]):
         """Test environments have different database hosts."""
         hosts = set()
         for env_config in environment_configs.values():
@@ -186,24 +186,24 @@ class TestEnvironmentConfigs:
 class TestSecretManagement:
     """Tests for secret management."""
 
-    def test_secrets_defined(self, secret_config: Dict[str, Any]):
+    def test_secrets_defined(self, secret_config: dict[str, Any]):
         """Test secrets are defined."""
         assert "secrets" in secret_config
         assert len(secret_config["secrets"]) > 0
 
-    def test_secret_types_valid(self, secret_config: Dict[str, Any]):
+    def test_secret_types_valid(self, secret_config: dict[str, Any]):
         """Test secret types are valid."""
         valid_types = ["vault", "env", "file", "kms"]
         for secret in secret_config["secrets"].values():
             assert secret["type"] in valid_types
 
-    def test_rotation_policy_configured(self, secret_config: Dict[str, Any]):
+    def test_rotation_policy_configured(self, secret_config: dict[str, Any]):
         """Test rotation policy is configured."""
         policy = secret_config["rotation_policy"]
         assert policy["enabled"] is True
         assert policy["interval_days"] > 0
 
-    def test_rotation_notification(self, secret_config: Dict[str, Any]):
+    def test_rotation_notification(self, secret_config: dict[str, Any]):
         """Test rotation notification is configured."""
         policy = secret_config["rotation_policy"]
         notify_days = policy["notify_before_days"]
@@ -212,7 +212,7 @@ class TestSecretManagement:
         assert notify_days < interval_days
         assert notify_days > 0
 
-    def test_vault_secret_path(self, secret_config: Dict[str, Any]):
+    def test_vault_secret_path(self, secret_config: dict[str, Any]):
         """Test Vault secret has valid path."""
         db_secret = secret_config["secrets"]["database_password"]
         assert db_secret["type"] == "vault"
@@ -226,29 +226,29 @@ class TestSecretManagement:
 class TestConfigValidation:
     """Tests for configuration validation."""
 
-    def test_required_fields_present(self, config_definition: Dict[str, Any]):
+    def test_required_fields_present(self, config_definition: dict[str, Any]):
         """Test required fields are present."""
         required_fields = ["id", "name", "version", "settings"]
         for field in required_fields:
             assert field in config_definition
 
-    def test_settings_structure_valid(self, config_definition: Dict[str, Any]):
+    def test_settings_structure_valid(self, config_definition: dict[str, Any]):
         """Test settings structure is valid."""
         settings = config_definition["settings"]
         assert isinstance(settings, dict)
         assert "database" in settings
 
-    def test_port_number_valid(self, config_definition: Dict[str, Any]):
+    def test_port_number_valid(self, config_definition: dict[str, Any]):
         """Test port number is valid."""
         port = config_definition["settings"]["database"]["port"]
         assert 1 <= port <= 65535
 
-    def test_boolean_values_correct_type(self, config_definition: Dict[str, Any]):
+    def test_boolean_values_correct_type(self, config_definition: dict[str, Any]):
         """Test boolean values are correct type."""
         cache_enabled = config_definition["settings"]["cache"]["enabled"]
         assert isinstance(cache_enabled, bool)
 
-    def test_log_level_valid(self, config_definition: Dict[str, Any]):
+    def test_log_level_valid(self, config_definition: dict[str, Any]):
         """Test log level is valid."""
         valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         level = config_definition["settings"]["logging"]["level"]
@@ -262,7 +262,7 @@ class TestConfigValidation:
 class TestChangeTracking:
     """Tests for configuration change tracking."""
 
-    def test_timestamps_present(self, config_definition: Dict[str, Any]):
+    def test_timestamps_present(self, config_definition: dict[str, Any]):
         """Test timestamps are present."""
         assert "created_at" in config_definition
         assert "updated_at" in config_definition

@@ -15,11 +15,12 @@ import hashlib
 import json
 import logging
 import secrets
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -397,11 +398,11 @@ def check_token_rotation_needed(
 
 
 __all__ = [
-    "TokenRotationManager",
-    "RotationPolicy",
     "RotationEvent",
+    "RotationPolicy",
     "RotationTrigger",
     "TokenMetadata",
+    "TokenRotationManager",
     "TokenState",
     "check_token_rotation_needed",
 ]

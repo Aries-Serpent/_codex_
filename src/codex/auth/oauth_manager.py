@@ -10,7 +10,7 @@ import hashlib
 import secrets
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Optional
 from urllib.parse import urlencode
 
 import httpx
@@ -87,8 +87,8 @@ class OAuthManager:
             config: Optional OAuth configuration. If not provided, will use GitHub defaults.
         """
         self.config = config
-        self._state_store: Dict[str, Dict] = {}  # In-memory state storage (use Redis in production)
-        self._token_store: Dict[
+        self._state_store: dict[str, dict] = {}  # In-memory state storage (use Redis in production)
+        self._token_store: dict[
             str, OAuthToken
         ] = {}  # In-memory token storage (use database in production)
 
@@ -140,7 +140,7 @@ class OAuthManager:
         # Base64 URL-safe encoding without padding
         return base64.urlsafe_b64encode(digest).decode().rstrip("=")
 
-    def initiate_flow(self, config: Optional[OAuthConfig] = None) -> Dict[str, str]:
+    def initiate_flow(self, config: Optional[OAuthConfig] = None) -> dict[str, str]:
         """
         Initiate OAuth2 authorization flow.
 
@@ -356,7 +356,7 @@ class OAuthManager:
             scope=token_response.get("scope"),
         )
 
-    def get_github_user(self, access_token: str) -> Dict:
+    def get_github_user(self, access_token: str) -> dict:
         """
         Get GitHub user information using access token.
 

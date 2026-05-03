@@ -4,7 +4,7 @@ Tests interaction between components.
 """
 import tempfile
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -24,7 +24,7 @@ class TestAgent(CognitiveAgent):
         self.action_calls = []
         self.aftermath_calls = []
 
-    def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, task: dict[str, Any]) -> dict[str, Any]:
         self.perception_calls.append(task)
 
         # Query cognitive brain if available
@@ -43,7 +43,7 @@ class TestAgent(CognitiveAgent):
             "opportunities": []
         }
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         self.decision_calls.append(context)
         return {
             "strategy": "test_strategy",
@@ -53,7 +53,7 @@ class TestAgent(CognitiveAgent):
             "estimated_time": 10
         }
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         self.action_calls.append(decision)
         return {
             "status": "success",
@@ -64,10 +64,10 @@ class TestAgent(CognitiveAgent):
 
     def aftermath(
         self,
-        result: Dict[str, Any],
-        context: Dict[str, Any],
-        decision: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        result: dict[str, Any],
+        context: dict[str, Any],
+        decision: dict[str, Any]
+    ) -> dict[str, Any]:
         self.aftermath_calls.append((result, context, decision))
 
         # Record in cognitive brain if available

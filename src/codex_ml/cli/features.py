@@ -18,7 +18,6 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""CLI for feature store management."""
 
 import json
 from pathlib import Path

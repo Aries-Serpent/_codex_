@@ -32,10 +32,10 @@ Last Updated: 2026-01-16
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def detect_patterns(input_dir: str, output_path: str, agent1_integration: bool = False) -> Dict[str, Any]:
+def detect_patterns(input_dir: str, output_path: str, agent1_integration: bool = False) -> dict[str, Any]:
     """
     Detect patterns in collected data using Agent 1 integration.
 

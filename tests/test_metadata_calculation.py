@@ -17,18 +17,15 @@ Tests:
 - JSON structure integrity
 """
 
-import json  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import List  # noqa: E402
+import json
+from pathlib import Path
+from typing import List
 
-import pytest  # noqa: E402
+import pytest
 
 # Try to import hypothesis, make tests optional if not available
 try:
-    from hypothesis import (  # noqa: F401 - Testing optional dependency availability
-        assume,
-        given,
-    )
+    from hypothesis import given
     from hypothesis import strategies as st
 
     HYP_AVAILABLE = True

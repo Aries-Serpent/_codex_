@@ -25,8 +25,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 import re  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
-from typing import Iterable, Pattern  # noqa: E402
+from re import Pattern  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import yaml

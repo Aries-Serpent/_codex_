@@ -25,15 +25,13 @@ _log = logger  # avoid shadowing by the `logger` parameter accepted by evaluate_
 import inspect  # noqa: E402
 import os  # noqa: E402
 import time  # noqa: E402
+from collections.abc import Callable, Iterable, Sequence  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import (  # noqa: E402
     Any,
-    Callable,
-    Iterable,
     Optional,
     Protocol,
-    Sequence,
     runtime_checkable,
 )
 from uuid import uuid4  # noqa: E402

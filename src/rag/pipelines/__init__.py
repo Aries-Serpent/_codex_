@@ -10,7 +10,7 @@ from .retrieval import RetrievalPipeline
 __all__ = [
     "ChunkingPipeline",
     "EmbeddingPipeline",
-    "RetrievalPipeline",
     "QuantumEnhancedRetrieval",
     "QuantumRelevanceScorer",
+    "RetrievalPipeline",
 ]

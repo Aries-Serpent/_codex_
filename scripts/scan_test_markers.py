@@ -8,7 +8,6 @@ import ast
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
 
 
 class MarkerScanner:
@@ -18,9 +17,9 @@ class MarkerScanner:
 
     def __init__(self, test_dir: Path = Path('tests')):
         self.test_dir = test_dir
-        self.markers: List[Dict] = []
+        self.markers: list[dict] = []
 
-    def scan_file(self, filepath: Path) -> List[Dict]:
+    def scan_file(self, filepath: Path) -> list[dict]:
         """
         Scan a single Python file for markers.
 
@@ -60,7 +59,7 @@ class MarkerScanner:
 
         return markers_found
 
-    def _extract_markers(self, node: ast.FunctionDef) -> List[Dict]:
+    def _extract_markers(self, node: ast.FunctionDef) -> list[dict]:
         """Extract pytest markers from function decorators."""
         markers = []
 
@@ -71,7 +70,7 @@ class MarkerScanner:
 
         return markers
 
-    def _parse_decorator(self, decorator: ast.expr) -> Dict:
+    def _parse_decorator(self, decorator: ast.expr) -> dict:
         """Parse a decorator AST node to extract marker info."""
         # Handle @pytest.mark.skip
         if isinstance(decorator, ast.Attribute) and (hasattr(decorator.value, 'attr') and
@@ -98,7 +97,7 @@ class MarkerScanner:
 
         return None
 
-    def scan_all(self) -> List[Dict]:
+    def scan_all(self) -> list[dict]:
         """Scan all test files in test directory."""
         print(f"🔍 Scanning {self.test_dir} for test markers...")
 
@@ -126,7 +125,7 @@ class MarkerScanner:
             return "No marked tests found."
 
         # Group by marker type
-        by_type: Dict[str, List[Dict]] = {}
+        by_type: dict[str, list[dict]] = {}
         for marker in self.markers:
             marker_type = marker['marker']
             if marker_type not in by_type:

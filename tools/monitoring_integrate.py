@@ -23,9 +23,10 @@ import sys
 import threading
 import time
 import traceback
+from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Optional
 
 # ---------------- Codex bookkeeping ----------------
 REPO = Path(__file__).resolve().parents[1]
@@ -108,7 +109,7 @@ pynvml = try_import("pynvml")
 
 # ---------------- System metrics thread ----------------
 class SystemMetrics(threading.Thread):
-    def __init__(self, interval_s: float, log_fn: Callable[[Dict[str, Any]], None]):
+    def __init__(self, interval_s: float, log_fn: Callable[[dict[str, Any]], None]):
         super().__init__(daemon=True)
         self.interval_s = interval_s
         self.log_fn = log_fn
@@ -124,7 +125,7 @@ class SystemMetrics(threading.Thread):
     def run(self) -> None:
         while not self._stop_event.is_set():
             try:
-                payload: Dict[str, Any] = {"ts": ts()}
+                payload: dict[str, Any] = {"ts": ts()}
                 if psutil:
                     vm = psutil.virtual_memory()
                     payload.update(

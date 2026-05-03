@@ -10,7 +10,7 @@ Coverage Target: Training workflow completion
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
@@ -29,10 +29,10 @@ class WorkflowState(Enum):
 class TrainingRun:
     """Training run configuration and state."""
     run_id: str
-    config: Dict[str, Any]
+    config: dict[str, Any]
     state: WorkflowState = WorkflowState.PENDING
-    metrics: Dict[str, float] = field(default_factory=dict)
-    checkpoints: List[str] = field(default_factory=list)
+    metrics: dict[str, float] = field(default_factory=dict)
+    checkpoints: list[str] = field(default_factory=list)
 
 
 class TestDataPreparation:
@@ -348,7 +348,7 @@ class TestWorkflowOrchestration:
                 while self.attempts < self.max_attempts:
                     try:
                         return operation()
-                    except Exception:  # noqa: BLE001
+                    except Exception:
                         self.attempts += 1
                 raise RuntimeError("Max attempts exceeded")
 

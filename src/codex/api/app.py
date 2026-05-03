@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""FastAPI application exposing health and text generation endpoints."""
 
 
 import os  # noqa: E402
@@ -47,7 +46,7 @@ from transformers import (  # noqa: E402
 app = FastAPI(title="codex", version="0.2.0")
 
 try:
-    from codex.api.auth_routes import create_auth_router  # noqa: E402
+    from codex.api.auth_routes import create_auth_router
 
     # Pass prefix="" to override the router's own default "/auth" prefix —
     # the include_router prefix="/api/auth" supplies the full mount point.
@@ -186,7 +185,7 @@ def health() -> dict:
         result["cognitive_brain"] = {
             "available": client.is_available(),
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         result["cognitive_brain"] = {"available": False, "note": "import failed"}
 
     # -- PatternCompressor metrics (CB-003) ---------------------------------
@@ -198,7 +197,7 @@ def health() -> dict:
             "available": True,
             "n_components": getattr(pc, "n_components", None),
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         result["pattern_compressor"] = {"available": False}
 
     return result

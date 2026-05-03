@@ -8,9 +8,10 @@ import json
 import os
 import re
 import subprocess
+from collections.abc import Iterable, Sequence
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 STATUS_DIR = ROOT / ".codex" / "status"
@@ -29,7 +30,7 @@ def run(
     check: bool = False,
     env: Optional[dict] = None,
     cwd: Optional[Path] = ROOT,
-) -> Tuple[int, str, str]:
+) -> tuple[int, str, str]:
     if cwd is not None:
         cwd = Path(cwd)
     process = subprocess.Popen(
@@ -119,13 +120,13 @@ def apply_patch_file(patch: Path) -> bool:
     return False
 
 
-def run_nox(session: str) -> Tuple[int, str, str]:
+def run_nox(session: str) -> tuple[int, str, str]:
     env = os.environ.copy()
     env.setdefault("NOX_OFFLINE", "1")
     return run(["nox", "-s", session], env=env)
 
 
-def summarise_pytest(output: str) -> Dict[str, float]:
+def summarise_pytest(output: str) -> dict[str, float]:
     total = passed = skipped = failed = 0
     match = re.search(r"collected\s+(\d+)\s+items", output)
     if match:
@@ -144,7 +145,7 @@ def summarise_pytest(output: str) -> Dict[str, float]:
     return {"total": total, "passed": passed, "skipped": skipped, "failed": failed, "rate": rate}
 
 
-def emit_status(metrics: Dict[str, float], applied: Sequence[str], failed: Sequence[str]) -> None:
+def emit_status(metrics: dict[str, float], applied: Sequence[str], failed: Sequence[str]) -> None:
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
     status_path = STATUS_DIR / "_codex_status_update-2025-09-21.md"
     lines = ["\n## Automation Summary (codex_patch_runner)\n"]
@@ -184,7 +185,7 @@ def write_manifest(paths: Iterable[Path]) -> None:
     write(manifest_path, json.dumps(entries, indent=2))
 
 
-def gather_targets() -> List[Path]:
+def gather_targets() -> list[Path]:
     targets = [
         ROOT / "cli" / "patch_runner.py",
         ROOT / "cli" / "task_sequence.py",
@@ -196,9 +197,9 @@ def gather_targets() -> List[Path]:
     return targets
 
 
-def run_sequence(dry_run: bool = False) -> Dict[str, object]:
-    applied: List[str] = []
-    failed: List[str] = []
+def run_sequence(dry_run: bool = False) -> dict[str, object]:
+    applied: list[str] = []
+    failed: list[str] = []
     if PATCHES_DIR.exists():
         for patch in sorted(PATCHES_DIR.glob("*.patch")):
             if dry_run:

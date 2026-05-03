@@ -6,7 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from typing import Any, Callable, Iterable, Optional  # noqa: E402
+from collections.abc import Callable, Iterable  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:
     from importlib import metadata

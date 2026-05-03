@@ -188,6 +188,10 @@ EXEMPTION_PATTERNS: list[str] = [
     # correctly left subject to normal deferral scanning.
     # Example: "- **Priority 3 (future)**: SAR-G03 resolution requires ..."
     r"\*\*Priority\s+\d+\s*\(future\)\*\*\s*[:—]?\s*SAR-G0\d",
+    # Session-handoff documentation: "future session knows to load/read/consult"
+    # describes WHO should use a tracking document, not a deferral of actual work.
+    # Example: "Session Handoff Protocol section so any future session knows to load this file"
+    r"future\s+session\s+knows\s+to\b",
 ]
 
 # Pre-compiled pattern to strip inline code spans before scanning.

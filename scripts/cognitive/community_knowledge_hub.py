@@ -37,7 +37,7 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,8 +56,8 @@ class Pattern:
     status: str  # "pending", "approved", "rejected"
     rating: float
     review_count: int
-    reviews: List[Dict[str, Any]]
-    tags: List[str]
+    reviews: list[dict[str, Any]]
+    tags: list[str]
     effectiveness: Optional[float] = None
     use_count: int = 0
 
@@ -70,8 +70,8 @@ class Review:
     reviewer: str
     rating: float  # 1.0 to 5.0
     feedback: str
-    strengths: List[str]
-    weaknesses: List[str]
+    strengths: list[str]
+    weaknesses: list[str]
     recommendation: str  # "approve", "revise", "reject"
     submitted_date: str
 
@@ -95,8 +95,8 @@ class CommunityKnowledgeHub:
         (self.data_path / "reviews").mkdir(exist_ok=True)
         (self.data_path / "public").mkdir(exist_ok=True)
 
-        self.patterns: Dict[str, Pattern] = {}
-        self.reviews: Dict[str, List[Review]] = defaultdict(list)
+        self.patterns: dict[str, Pattern] = {}
+        self.reviews: dict[str, list[Review]] = defaultdict(list)
 
         self._load_patterns()
         self._load_reviews()
@@ -132,7 +132,7 @@ class CommunityKnowledgeHub:
         category: str,
         code_example: str,
         author: str,
-        tags: Optional[List[str]] = None
+        tags: Optional[list[str]] = None
     ) -> Pattern:
         """
         Submit a new pattern to the community
@@ -192,8 +192,8 @@ class CommunityKnowledgeHub:
         reviewer: str,
         rating: float,
         feedback: str,
-        strengths: List[str],
-        weaknesses: List[str],
+        strengths: list[str],
+        weaknesses: list[str],
         recommendation: str
     ) -> Review:
         """
@@ -339,7 +339,7 @@ class CommunityKnowledgeHub:
         status: Optional[str] = None,
         category: Optional[str] = None,
         min_rating: Optional[float] = None
-    ) -> List[Pattern]:
+    ) -> list[Pattern]:
         """
         List patterns with optional filters
 
@@ -368,7 +368,7 @@ class CommunityKnowledgeHub:
 
         return patterns
 
-    def get_top_patterns(self, n: int = 10) -> List[Pattern]:
+    def get_top_patterns(self, n: int = 10) -> list[Pattern]:
         """Get top N patterns by rating"""
         approved = self.list_patterns(status="approved")
         return approved[:n]
@@ -407,7 +407,7 @@ class CommunityKnowledgeHub:
 
             logger.info(f"Updated effectiveness for pattern {pattern_id}: {effectiveness:.2%}")
 
-    def generate_community_report(self) -> Dict[str, Any]:
+    def generate_community_report(self) -> dict[str, Any]:
         """Generate comprehensive community report"""
         total_patterns = len(self.patterns)
 
@@ -473,7 +473,7 @@ class CommunityKnowledgeHub:
 
         return report
 
-    def _generate_markdown_report(self, report: Dict[str, Any]):
+    def _generate_markdown_report(self, report: dict[str, Any]):
         """Generate markdown version of community report"""
         md_content = f"""# Community Knowledge Hub Report
 

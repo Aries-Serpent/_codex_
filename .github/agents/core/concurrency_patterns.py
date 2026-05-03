@@ -17,7 +17,7 @@ import ast
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -27,12 +27,12 @@ class ConcurrencyPattern:
     name: str
     pattern_type: str  # "race_condition", "deadlock", "thread_unsafe", "blocking"
     description: str
-    locations: List[str]
+    locations: list[str]
     confidence: float  # 0.0 to 1.0
     severity: str  # "critical", "high", "medium", "low"
     risk_assessment: str  # Description of the risk
     mitigation: str  # Suggested fix
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class ConcurrencyPatternMatcher:
@@ -50,10 +50,10 @@ class ConcurrencyPatternMatcher:
 
     def __init__(self):
         """Initialize concurrency pattern matcher."""
-        self.detected_patterns: List[ConcurrencyPattern] = []
+        self.detected_patterns: list[ConcurrencyPattern] = []
         #AFTERMATH_METRIC: concurrency_matcher_initialized
 
-    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> List[ConcurrencyPattern]:
+    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> list[ConcurrencyPattern]:
         """
         Analyze a file for concurrency issues.
 
@@ -72,7 +72,7 @@ class ConcurrencyPatternMatcher:
             except (IOError, UnicodeDecodeError):
                 return []
 
-        detected: List[ConcurrencyPattern] = []
+        detected: list[ConcurrencyPattern] = []
 
         # PERCEIVE: Multi-layer concurrency scanning
         if file_path.suffix == ".py":
@@ -97,7 +97,7 @@ class ConcurrencyPatternMatcher:
 
         return detected
 
-    def _detect_race_conditions(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
+    def _detect_race_conditions(self, tree: ast.AST, file_path: Path) -> list[ConcurrencyPattern]:
         """
         Detect potential race conditions.
 
@@ -167,7 +167,7 @@ class ConcurrencyPatternMatcher:
 
         return detected
 
-    def _detect_deadlock_risks(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
+    def _detect_deadlock_risks(self, tree: ast.AST, file_path: Path) -> list[ConcurrencyPattern]:
         """
         Detect potential deadlock scenarios.
 
@@ -235,7 +235,7 @@ class ConcurrencyPatternMatcher:
 
         return detected
 
-    def _detect_thread_unsafe(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
+    def _detect_thread_unsafe(self, tree: ast.AST, file_path: Path) -> list[ConcurrencyPattern]:
         """
         Detect thread-unsafe operations.
 
@@ -291,7 +291,7 @@ class ConcurrencyPatternMatcher:
 
         return detected
 
-    def _detect_blocking_operations(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
+    def _detect_blocking_operations(self, tree: ast.AST, file_path: Path) -> list[ConcurrencyPattern]:
         """
         Detect blocking operations in async/concurrent code.
 
@@ -327,7 +327,7 @@ class ConcurrencyPatternMatcher:
 
         return detected
 
-    def _detect_regex_patterns(self, content: str, file_path: Path) -> List[ConcurrencyPattern]:
+    def _detect_regex_patterns(self, content: str, file_path: Path) -> list[ConcurrencyPattern]:
         """
         Detect concurrency issues using regex patterns.
 
@@ -383,7 +383,7 @@ class ConcurrencyPatternMatcher:
         """Extract function name from Call node."""
         if isinstance(node.func, ast.Name):
             return node.func.id
-        elif isinstance(node.func, ast.Attribute):
+        if isinstance(node.func, ast.Attribute):
             parts = []
             current = node.func
             while isinstance(current, ast.Attribute):
@@ -394,7 +394,7 @@ class ConcurrencyPatternMatcher:
             return '.'.join(reversed(parts))
         return "unknown"
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Generate summary of detected concurrency issues.
 

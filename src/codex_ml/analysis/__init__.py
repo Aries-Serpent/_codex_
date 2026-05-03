@@ -3,9 +3,9 @@
 from . import extractors, metrics, parsers, providers, registry
 
 __all__ = [
-    "parsers",
     "extractors",
-    "registry",
-    "providers",
     "metrics",
+    "parsers",
+    "providers",
+    "registry",
 ]

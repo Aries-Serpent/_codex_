@@ -10,7 +10,7 @@ import pytest
 np = pytest.importorskip("numpy")
 
 pytest.importorskip("faiss", reason="faiss-cpu not installed (pip install faiss-cpu)")
-from codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore  # noqa: E402
+from codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore
 
 
 @pytest.fixture

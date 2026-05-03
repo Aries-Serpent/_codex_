@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import json
 import time
+from collections.abc import Iterable
 from contextlib import contextmanager
 from statistics import mean, median
-from typing import Iterable
 
 
 class PerformanceProfiler:

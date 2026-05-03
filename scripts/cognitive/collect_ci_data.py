@@ -34,10 +34,10 @@ import json
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def collect_ci_data(max_runs: int, output_path: str) -> Dict[str, Any]:
+def collect_ci_data(max_runs: int, output_path: str) -> dict[str, Any]:
     """
     Collect CI/CD workflow run data using GitHub CLI.
 

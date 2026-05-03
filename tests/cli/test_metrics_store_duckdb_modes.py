@@ -9,11 +9,11 @@ from pathlib import Path
 
 import pytest
 
-duckdb = pytest.importorskip("duckdb")  # noqa: F841  # skip if dependency missing
+duckdb = pytest.importorskip("duckdb")  # skip if dependency missing
 
 
 def run_cli(args: list[str]) -> tuple[int, str, str]:
-    proc = subprocess.Popen(  # noqa: S603,S607 - CLI invocation
+    proc = subprocess.Popen(
         [sys.executable, "-m", "codex_ml.cli", "metrics", *args],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

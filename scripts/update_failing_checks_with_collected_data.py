@@ -10,7 +10,6 @@ This script:
 
 import re
 from pathlib import Path
-from typing import Dict, List
 
 # Paths
 REPO_ROOT = Path(__file__).parent.parent
@@ -18,7 +17,7 @@ CONTINUATION_SUMMARY = REPO_ROOT / "PR3248_SESSION_CONTINUATION_SUMMARY.md"
 FAILING_CHECKS = REPO_ROOT / "failing_checks.md"
 ACCOUNTABILITY = REPO_ROOT / "ACCOUNTABILITY_REPORT_DRAFT.md"
 
-def parse_job_data(summary_file: Path) -> Dict[str, Dict]:
+def parse_job_data(summary_file: Path) -> dict[str, dict]:
     """
     Parse job data from continuation summary.
 
@@ -92,7 +91,7 @@ def parse_job_data(summary_file: Path) -> Dict[str, Dict]:
 
     return job_data
 
-def parse_artifact_data(accountability_file: Path) -> Dict[str, List[str]]:
+def parse_artifact_data(accountability_file: Path) -> dict[str, list[str]]:
     """
     Parse artifact data from accountability report.
 
@@ -115,7 +114,7 @@ def parse_artifact_data(accountability_file: Path) -> Dict[str, List[str]]:
 
     return {}
 
-def update_failing_checks(failing_checks_file: Path, job_data: Dict, artifact_data: Dict):
+def update_failing_checks(failing_checks_file: Path, job_data: dict, artifact_data: dict):
     """
     Update failing_checks.md with collected data.
     """

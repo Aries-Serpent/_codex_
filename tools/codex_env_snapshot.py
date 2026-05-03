@@ -14,13 +14,14 @@ import json
 import os
 import platform
 import sys
+from collections.abc import Iterable
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any
 
 
-def _installed_packages() -> List[Dict[str, str]]:
-    packages: List[Dict[str, str]] = []
+def _installed_packages() -> list[dict[str, str]]:
+    packages: list[dict[str, str]] = []
     for dist in metadata.distributions():  # pragma: no cover (ordering)
         packages.append({"name": dist.metadata["Name"], "version": dist.version})
     packages.sort(key=lambda d: d["name"].lower())
@@ -68,8 +69,8 @@ def _is_safe(key: str) -> bool:
     return key.startswith(_SAFE_PREFIXES)
 
 
-def _redact_environment(env: Iterable[tuple[str, str]]) -> Dict[str, str]:
-    captured: Dict[str, str] = {}
+def _redact_environment(env: Iterable[tuple[str, str]]) -> dict[str, str]:
+    captured: dict[str, str] = {}
     for key, value in sorted(env):
         if _is_sensitive(key):
             captured[key] = "<redacted>"
@@ -81,7 +82,7 @@ def _redact_environment(env: Iterable[tuple[str, str]]) -> Dict[str, str]:
     return captured
 
 
-def build_snapshot() -> Dict[str, Any]:
+def build_snapshot() -> dict[str, Any]:
     return {
         "python": {
             "version": sys.version,

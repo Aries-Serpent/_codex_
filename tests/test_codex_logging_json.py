@@ -25,4 +25,4 @@ def test_nvml_disabled(monkeypatch):
     import importlib
 
     mod = importlib.reload(importlib.import_module("codex_ml.monitoring.codex_logging"))
-    assert getattr(mod, "pynvml") is None
+    assert mod.pynvml is None

@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("numpy")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
 try:
     import torch

@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Minimal metrics logging utilities for `_codex_`."""
 
 
 import json  # noqa: E402

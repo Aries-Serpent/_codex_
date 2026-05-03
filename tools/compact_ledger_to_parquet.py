@@ -6,14 +6,13 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 import pandas as pd
 
 from . import ledger
 
 
-def compact(path: Path = Path(".codex/ledger.jsonl")) -> List[Path]:
+def compact(path: Path = Path(".codex/ledger.jsonl")) -> list[Path]:
     """Validate the ledger and write monthly Parquet files.
 
     Returns a list of written Parquet paths.
@@ -30,7 +29,7 @@ def compact(path: Path = Path(".codex/ledger.jsonl")) -> List[Path]:
         r["ts"] = ts
         month = ts.strftime("%Y%m")
         buckets.setdefault(month, []).append(r)
-    out_paths: List[Path] = []
+    out_paths: list[Path] = []
     for month, entries in buckets.items():
         out_path = out_dir / f"ledger-{month}.parquet"
         pd.DataFrame(entries).to_parquet(out_path, index=False)

@@ -14,7 +14,7 @@ import os
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import click
 import requests
@@ -32,17 +32,17 @@ class NotebookLMSource:
     title: str
     content: str
     source_type: str  # 'markdown', 'pdf', 'audio', 'video', 'url'
-    metadata: Dict[str, Any]
-    citations: List[str]
+    metadata: dict[str, Any]
+    citations: list[str]
 
 @dataclass
 class NotebookLMNotebook:
     """Represents a NotebookLM notebook (PRO feature)."""
     notebook_id: str
     title: str
-    sources: List[NotebookLMSource]
+    sources: list[NotebookLMSource]
     audio_overview: Optional[str]  # PRO: Generated audio URL
-    shared_links: List[str]  # PRO: Shared notebook URLs
+    shared_links: list[str]  # PRO: Shared notebook URLs
 
 
 class NotebookLMAPI:
@@ -97,7 +97,7 @@ class NotebookLMAPI:
                 self._api_available = True
                 data = response.json()
                 return data.get('subscription_tier') == 'pro'
-            elif response.status_code == 404:
+            if response.status_code == 404:
                 click.echo("ℹ️  NotebookLM API not yet available. Use manual upload.", err=True)
                 self._api_available = False
                 return False
@@ -144,8 +144,7 @@ class NotebookLMAPI:
             notebook_id = response.json()['notebook_id']
             click.echo(f"✅ Created notebook: {notebook_id}")
             return notebook_id
-        else:
-            raise Exception(f"Failed to create notebook: {response.text}")
+        raise Exception(f"Failed to create notebook: {response.text}")
 
     def upload_source(self, notebook_id: str, source: NotebookLMSource) -> str:
         """Upload a source to NotebookLM notebook.
@@ -174,8 +173,7 @@ class NotebookLMAPI:
             source_id = response.json()['source_id']
             click.echo(f"✅ Uploaded source: {source.title}")
             return source_id
-        else:
-            raise Exception(f"Failed to upload source: {response.text}")
+        raise Exception(f"Failed to upload source: {response.text}")
 
     def generate_audio_overview(self, notebook_id: str,
                                 duration: str = "medium") -> str:
@@ -210,8 +208,7 @@ class NotebookLMAPI:
             audio_url = response.json()['audio_url']
             click.echo(f"🎙️ Generated audio overview: {audio_url}")
             return audio_url
-        else:
-            raise Exception(f"Failed to generate audio: {response.text}")
+        raise Exception(f"Failed to generate audio: {response.text}")
 
     def create_shared_link(self, notebook_id: str,
                           permissions: str = "view") -> str:
@@ -245,11 +242,10 @@ class NotebookLMAPI:
             share_url = response.json()['share_url']
             click.echo(f"🔗 Created shareable link: {share_url}")
             return share_url
-        else:
-            raise Exception(f"Failed to create share link: {response.text}")
+        raise Exception(f"Failed to create share link: {response.text}")
 
     def add_inline_citations(self, notebook_id: str,
-                            source_ids: List[str]) -> Dict:
+                            source_ids: list[str]) -> dict:
         """
         Enable inline citations (PRO feature).
 
@@ -275,8 +271,7 @@ class NotebookLMAPI:
         if response.status_code == 200:
             click.echo(f"✅ Enabled inline citations for {len(source_ids)} sources")
             return response.json()
-        else:
-            raise Exception(f"Failed to enable citations: {response.text}")
+        raise Exception(f"Failed to enable citations: {response.text}")
 
     def export_notebook(self, notebook_id: str,
                        format: str = "pdf") -> str:
@@ -304,8 +299,7 @@ class NotebookLMAPI:
             download_url = response.json()['download_url']
             click.echo(f"📥 Export ready: {download_url}")
             return download_url
-        else:
-            raise Exception(f"Failed to export: {response.text}")
+        raise Exception(f"Failed to export: {response.text}")
 
 
 class ProjectArchitect:
@@ -315,7 +309,7 @@ class ProjectArchitect:
         self.nlm_api = NotebookLMAPI(notebooklm_api_key) if notebooklm_api_key else None
 
     def generate_notebooklm_sources(self, project_yaml: Path,
-                                    output_dir: Path) -> List[NotebookLMSource]:
+                                    output_dir: Path) -> list[NotebookLMSource]:
         """Generate NotebookLM source documents from project plan."""
         with open(project_yaml) as f:
             project = yaml.safe_load(f)
@@ -357,7 +351,7 @@ class ProjectArchitect:
         click.echo(f"✅ Generated {len(sources)} NotebookLM sources in {output_dir}")
         return sources
 
-    def _create_overview_source(self, project: Dict) -> NotebookLMSource:
+    def _create_overview_source(self, project: dict) -> NotebookLMSource:
         """Create project overview source for NotebookLM."""
         content = f"""---
 title: {project.get('name', 'Project')}
@@ -396,7 +390,7 @@ last_updated: {datetime.now(datetime.timezone.utc).date().isoformat()}
             citations=[]
         )
 
-    def _create_architecture_source(self, project: Dict) -> NotebookLMSource:
+    def _create_architecture_source(self, project: dict) -> NotebookLMSource:
         """Create architecture source for NotebookLM."""
         content = f"""# Architecture: {project.get('name')}
 
@@ -416,7 +410,7 @@ last_updated: {datetime.now(datetime.timezone.utc).date().isoformat()}
             citations=[]
         )
 
-    def _create_phase_source(self, phase: Dict, phase_num: int) -> NotebookLMSource:
+    def _create_phase_source(self, phase: dict, phase_num: int) -> NotebookLMSource:
         """Create phase-specific source for NotebookLM."""
         content = f"""# Phase {phase_num}: {phase.get('name')}
 

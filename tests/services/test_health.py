@@ -221,7 +221,7 @@ class TestDependencyHealth:
             try:
                 cache_client.ping()
                 return {"status": HealthStatus.HEALTHY}
-            except Exception:  # noqa: BLE001
+            except Exception:
                 return {"status": HealthStatus.UNHEALTHY}
 
         mock_cache = MagicMock()

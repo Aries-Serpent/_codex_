@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from importlib import util
-from typing import Any, Iterator, Mapping
+from typing import Any
 
 from codex_ml.tracking.mlflow_guard import (
     DEFAULT_LITERAL_LOCAL_URI,  # Always starts with "file:" — assumed safe for get_tracking_uri()
@@ -148,8 +149,8 @@ def maybe_mlflow(
         yield _NoOpLogger()
         return
 
-    with run_context as _run:  # noqa: F841 - ensure context
+    with run_context as _run:
         yield mlflow
 
 
-__all__ = ["ensure_local_tracking", "maybe_mlflow", "_as_flat_params"]
+__all__ = ["_as_flat_params", "ensure_local_tracking", "maybe_mlflow"]

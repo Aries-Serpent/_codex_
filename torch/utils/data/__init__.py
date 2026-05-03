@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
-from typing import Any, Generic, Iterable, Sized, TypeVar
+from collections.abc import Iterable, Iterator, Sized
+from typing import Any, Generic, TypeVar
 
 __all__ = ["Dataset", "DataLoader", "TensorDataset", "random_split", "Subset"]
 

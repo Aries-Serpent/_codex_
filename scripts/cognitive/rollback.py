@@ -33,10 +33,10 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def rollback(results_dir: str, state_backup_dir: str, output_path: str) -> Dict[str, Any]:
+def rollback(results_dir: str, state_backup_dir: str, output_path: str) -> dict[str, Any]:
     """
     Rollback to safe state after failures.
 

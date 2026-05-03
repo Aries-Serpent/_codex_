@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -25,8 +25,8 @@ class TuneResult:
     success: bool = True
     corrections_applied: int = 0
     output_path: Optional[str] = None
-    metrics: Dict[str, float] = field(default_factory=dict)
-    warnings: List[str] = field(default_factory=list)
+    metrics: dict[str, float] = field(default_factory=dict)
+    warnings: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -35,9 +35,9 @@ class WorkflowResult:
     success: bool = True
     files_processed: int = 0
     files_failed: int = 0
-    output_paths: List[str] = field(default_factory=list)
+    output_paths: list[str] = field(default_factory=list)
     error: Optional[str] = None
-    metrics: Dict[str, Any] = field(default_factory=dict)
+    metrics: dict[str, Any] = field(default_factory=dict)
 
     @property
     def total_files(self) -> int:
@@ -88,7 +88,7 @@ class AutoTuneWorkflow:
             },
         )
 
-    def batch_process(self, audio_paths: List[str]) -> List[TuneResult]:
+    def batch_process(self, audio_paths: list[str]) -> list[TuneResult]:
         """Process multiple audio files."""
         return [self.process(p) for p in audio_paths]
 

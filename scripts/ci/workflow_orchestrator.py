@@ -17,7 +17,6 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Set
 
 
 class WorkflowOrchestrator:
@@ -56,7 +55,7 @@ class WorkflowOrchestrator:
         "pre-merge-cascade": ["integration-tests", "dependency-graph"],
     }
 
-    def __init__(self, pr_size: str, telemetry_data: Dict, changed_files: List[str]):
+    def __init__(self, pr_size: str, telemetry_data: dict, changed_files: list[str]):
         self.pr_size = pr_size
         self.telemetry = telemetry_data
         self.changed_files = changed_files
@@ -68,7 +67,7 @@ class WorkflowOrchestrator:
             "reasons": {},
         }
 
-    def analyze_patterns(self) -> Dict[str, int]:
+    def analyze_patterns(self) -> dict[str, int]:
         """Analyze telemetry for failure patterns.
 
         Returns:
@@ -105,7 +104,7 @@ class WorkflowOrchestrator:
         allowed_sizes = trigger.split("|")
         return self.pr_size in allowed_sizes
 
-    def get_pattern_workflows(self, patterns: Dict[str, int]) -> Set[str]:
+    def get_pattern_workflows(self, patterns: dict[str, int]) -> set[str]:
         """Get additional workflows based on detected patterns.
 
         Args:
@@ -122,7 +121,7 @@ class WorkflowOrchestrator:
 
         return additional_workflows
 
-    def analyze_changed_files(self) -> Set[str]:
+    def analyze_changed_files(self) -> set[str]:
         """Analyze changed files to determine relevant workflows.
 
         Returns:
@@ -150,7 +149,7 @@ class WorkflowOrchestrator:
 
         return workflows
 
-    def generate_plan(self) -> Dict:
+    def generate_plan(self) -> dict:
         """Generate workflow execution plan.
 
         Returns:
@@ -197,7 +196,7 @@ class WorkflowOrchestrator:
 
         return self.workflow_plan
 
-    def estimate_duration(self) -> Dict[str, int]:
+    def estimate_duration(self) -> dict[str, int]:
         """Estimate execution duration for planned workflows.
 
         Returns:

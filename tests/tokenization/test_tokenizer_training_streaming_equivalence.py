@@ -12,13 +12,13 @@ pytest.importorskip("tokenizers")
 
 pytest.importorskip("tokenizers")
 try:
-    from tokenizers import Tokenizer  # noqa: E402
+    from tokenizers import Tokenizer
 except ImportError:
     pytest.skip("tokenizers not available")
 
 
 pytest.importorskip("sentencepiece")
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_bpe_streaming_equivalence(tmp_path):

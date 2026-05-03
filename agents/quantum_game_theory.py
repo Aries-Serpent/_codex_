@@ -27,7 +27,7 @@ import logging
 import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 # Initialize logger before use in exception handlers
 logger = logging.getLogger(__name__)
@@ -132,8 +132,8 @@ class StrategyState:
         wavefunction: Quantum amplitude vector (optional)
     """
 
-    team: Union[TeamType, str]
-    strategies: Union[list[str], Any]  # Can be list of names or np.array
+    team: TeamType | str
+    strategies: list[str] | Any  # Can be list of names or np.array
     probabilities: Optional[Any] = None  # np.ndarray when numpy available
     wavefunction: Optional[Any] = None  # np.ndarray when numpy available
 
@@ -298,7 +298,7 @@ class PayoffOperator:
     """
 
     payoff_matrix: np.ndarray
-    team: Union[TeamType, list[str]] = TeamType.BLUE
+    team: TeamType | list[str] = TeamType.BLUE
     players: list[str] = field(default_factory=list)  # Alias for team
 
     def __post_init__(self):

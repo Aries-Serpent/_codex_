@@ -20,12 +20,12 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Minimal text-generation CLI for local smoke testing."""
 
 
 import argparse
 import sys
-from typing import Any, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any, Optional
 
 from codex_ml import __version__  # type: ignore[attr-defined]
 from codex_ml.codex_structured_logging import (

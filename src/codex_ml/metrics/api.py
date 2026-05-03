@@ -18,8 +18,9 @@ logger = logging.getLogger(__name__)
 import csv  # noqa: E402
 import json  # noqa: E402
 import re as _re  # noqa: E402
+from collections.abc import Callable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Optional, Sequence  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # SQL identifier validation helper (eliminates B608 SQL injection vector)

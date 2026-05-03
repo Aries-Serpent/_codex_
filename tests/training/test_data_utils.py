@@ -251,7 +251,6 @@ class TestRequireTorch:
     def test_require_torch_when_available(self):
         """Test _require_torch passes when torch is available."""
         try:
-            import torch  # noqa: F401 - Testing optional dependency
             from training.data_utils import _require_torch
 
             # Should not raise

@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
 from codex_ml.utils.optional import optional_import

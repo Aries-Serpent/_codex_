@@ -17,7 +17,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # #AFTERMATH_PATTERN_IDENTIFIED: iac_enforcement_actions
 # #AFTERMATH_METRIC: reports_generated
@@ -32,8 +32,8 @@ class EnforcementResult:
     report_path: str
     ci_blocked: bool
     exit_code: int
-    github_annotations: List[Dict[str, Any]]
-    suggested_fixes: List[Dict[str, Any]]
+    github_annotations: list[dict[str, Any]]
+    suggested_fixes: list[dict[str, Any]]
 
 
 class IaCEnforcer:
@@ -53,9 +53,9 @@ class IaCEnforcer:
 
     def enforce(
         self,
-        validation_results: Dict[str, Any],
-        scan_results: Dict[str, Any],
-        config: Optional[Dict[str, Any]] = None
+        validation_results: dict[str, Any],
+        scan_results: dict[str, Any],
+        config: Optional[dict[str, Any]] = None
     ) -> EnforcementResult:
         """
         Generate reports and enforce policies based on validation results.
@@ -106,8 +106,8 @@ class IaCEnforcer:
 
     def _generate_report(
         self,
-        validation: Dict[str, Any],
-        scan: Dict[str, Any],
+        validation: dict[str, Any],
+        scan: dict[str, Any],
         format: str,
         output_dir: str
     ) -> str:
@@ -147,8 +147,8 @@ class IaCEnforcer:
 
     def _generate_markdown_report(
         self,
-        validation: Dict[str, Any],
-        scan: Dict[str, Any]
+        validation: dict[str, Any],
+        scan: dict[str, Any]
     ) -> str:
         """Generate Markdown report (human-readable, PR-friendly)"""
         lines = [
@@ -233,8 +233,8 @@ class IaCEnforcer:
 
     def _generate_json_report(
         self,
-        validation: Dict[str, Any],
-        scan: Dict[str, Any]
+        validation: dict[str, Any],
+        scan: dict[str, Any]
     ) -> str:
         """Generate JSON report (machine-readable, CI integration)"""
         report = {
@@ -265,8 +265,8 @@ class IaCEnforcer:
 
     def _generate_html_report(
         self,
-        validation: Dict[str, Any],
-        scan: Dict[str, Any]
+        validation: dict[str, Any],
+        scan: dict[str, Any]
     ) -> str:
         """Generate HTML report (dashboard-ready)"""
         recommendation = validation.get("recommendation", "UNKNOWN")
@@ -354,8 +354,8 @@ class IaCEnforcer:
 
     def _create_github_annotations(
         self,
-        validation: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        validation: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Create GitHub PR annotations for code review.
 
@@ -410,8 +410,8 @@ class IaCEnforcer:
 
     def _suggest_fixes(
         self,
-        scan_results: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        scan_results: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Generate automated fix suggestions for common issues.
 

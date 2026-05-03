@@ -10,7 +10,6 @@ Tests: 25+
 """
 
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -94,7 +93,7 @@ class TestTestDiscovery:
 class TestModuleCoverage:
     """Tests for module-level coverage."""
 
-    def _get_source_modules(self) -> List[Path]:
+    def _get_source_modules(self) -> list[Path]:
         """Get all source Python modules."""
         if not SRC_DIR.exists():
             return []
@@ -106,7 +105,7 @@ class TestModuleCoverage:
             modules.append(py_file)
         return modules
 
-    def _get_test_modules(self) -> List[Path]:
+    def _get_test_modules(self) -> list[Path]:
         """Get all test Python modules."""
         test_files = []
         for py_file in TESTS_DIR.rglob("test_*.py"):

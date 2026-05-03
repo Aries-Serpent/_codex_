@@ -20,12 +20,12 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""CLI utilities for inspecting plugin registries."""
 
 
 import inspect
 import sys
-from typing import Optional, Sequence
+from collections.abc import Sequence
+from typing import Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -95,6 +95,8 @@ def _explain_group(group: str, name: str, *, echo, exit_exc, bad_param_exc) -> N
         echo(str(sig))
     except ValueError:  # pragma: no cover - builtins may not have signature
         logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 if typer is not None:  # pragma: no cover - Typer CLI
     app = typer.Typer(help="Inspect codex_ml plugin registries")
 

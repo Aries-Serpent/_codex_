@@ -21,16 +21,16 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 
-import pytest  # noqa: E402
+import pytest
 
 try:
     import torch
 except Exception as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
-import training.trainer as trainer_mod  # noqa: E402
+import training.trainer as trainer_mod
 
-from logging_utils import LoggingConfig  # noqa: E402
+from logging_utils import LoggingConfig
 
 torch_data = getattr(torch, "utils", None)
 if torch_data is None or not hasattr(torch_data, "data"):
@@ -125,7 +125,7 @@ def test_trainer_seed_calls_repro(monkeypatch: pytest.MonkeyPatch) -> None:
     optimizer = RecordingOptimizer(model.parameters(), lr=0.01)
     recorded: dict[str, int] = {}
 
-    def _record_seed(seed: int, *, deterministic: bool | None = None) -> None:  # noqa: ANN001
+    def _record_seed(seed: int, *, deterministic: bool | None = None) -> None:
         recorded["seed"] = seed
 
     monkeypatch.setattr(trainer_mod, "_set_seed", _record_seed)

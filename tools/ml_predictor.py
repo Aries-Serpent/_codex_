@@ -11,7 +11,7 @@ When enabled, uses character n-gram features with a linear classifier.
 import pickle
 import warnings
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 
 class LanguageClassifier:
@@ -41,7 +41,7 @@ class LanguageClassifier:
             except Exception as e:
                 warnings.warn(f"Failed to load ML model: {e}")
 
-    def predict(self, code: str, filename: Optional[str] = None) -> Tuple[str, float]:
+    def predict(self, code: str, filename: Optional[str] = None) -> tuple[str, float]:
         """
         Predict language label and confidence.
 

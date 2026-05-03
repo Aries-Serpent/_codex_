@@ -22,7 +22,7 @@ Created: 2026-01-22
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from github import Github
 from github.Issue import Issue
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 class IssueManager:
     """Manages GitHub Issues for workflow failures."""
 
-    def __init__(self, github: Github, repo: Repository, config: Dict[str, Any], dry_run: bool = False):
+    def __init__(self, github: Github, repo: Repository, config: dict[str, Any], dry_run: bool = False):
         """
         Initialize issue manager.
 
@@ -84,7 +84,7 @@ class IssueManager:
         template = self.config['monitoring']['issue_management']['title_template']
         return template.format(workflow_name=workflow_name)
 
-    def _generate_labels(self, failure_data: Dict[str, Any]) -> List[str]:
+    def _generate_labels(self, failure_data: dict[str, Any]) -> list[str]:
         """Generate appropriate labels for the issue."""
         labels = list(self.config['monitoring']['issue_management']['labels'])
 
@@ -109,7 +109,7 @@ class IssueManager:
 
         return labels
 
-    def _generate_issue_body(self, failure_data: Dict[str, Any]) -> str:
+    def _generate_issue_body(self, failure_data: dict[str, Any]) -> str:
         """Generate comprehensive issue body with rich formatting."""
         workflow_name = failure_data['workflow_name']
         run = failure_data['run']
@@ -198,7 +198,7 @@ _This issue will be automatically updated with new information and closed when t
 
         return body
 
-    def _find_last_success_time(self, runs: List[Any]) -> Optional[str]:
+    def _find_last_success_time(self, runs: list[Any]) -> Optional[str]:
         """Find the timestamp of the last successful run."""
         for run in runs:
             if run.conclusion == 'success':
@@ -215,7 +215,7 @@ _This issue will be automatically updated with new information and closed when t
         minutes = (seconds % 3600) // 60
         return f"{hours:.0f}h {minutes:.0f}m"
 
-    def create_failure_issue(self, failure_data: Dict[str, Any]) -> Optional[Issue]:
+    def create_failure_issue(self, failure_data: dict[str, Any]) -> Optional[Issue]:
         """
         Create a new issue for a workflow failure.
 
@@ -259,7 +259,7 @@ _This issue will be automatically updated with new information and closed when t
             logger.error(f"Failed to create issue for {workflow_name}: {e}")
             return None
 
-    def update_failure_issue(self, issue: Issue, failure_data: Dict[str, Any]) -> Issue:
+    def update_failure_issue(self, issue: Issue, failure_data: dict[str, Any]) -> Issue:
         """
         Update an existing issue with new failure information.
 
@@ -300,7 +300,7 @@ _This is an automated update from the Artifact Monitor Agent._
             logger.error(f"Failed to update issue #{issue.number}: {e}")
             return issue
 
-    def close_recovery_issue(self, workflow_name: str, recovery_data: Dict[str, Any]) -> bool:
+    def close_recovery_issue(self, workflow_name: str, recovery_data: dict[str, Any]) -> bool:
         """
         Close an issue when workflow recovers.
 

@@ -5,7 +5,6 @@ from __future__ import annotations
 import random
 import time
 from dataclasses import dataclass
-from typing import List
 
 from .models import TestFailure, TestsRunRequest, TestsRunResponse, TestsRunSummary
 
@@ -38,7 +37,7 @@ def simulate_test_execution(request: TestsRunRequest) -> TestsRunResponse:
     non-deterministic behaviour for advanced keywords (e.g. integration tests).
     """
 
-    results: List[SyntheticTestResult] = []
+    results: list[SyntheticTestResult] = []
     start = time.perf_counter()
     rng = random.Random()
 

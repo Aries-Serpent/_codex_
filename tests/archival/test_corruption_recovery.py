@@ -246,7 +246,7 @@ class TestCorruptionRecovery:
 
         try:
             safe_extract_tarfile(archive_path, extract_dir)
-        except Exception:  # noqa: BLE001
+        except Exception:
             # Some files might still be extracted
             pass
 

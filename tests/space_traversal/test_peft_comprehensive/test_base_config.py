@@ -16,7 +16,7 @@ pytest.importorskip("omegaconf")
 pytest.importorskip("yaml")
 
 
-from training.engine_hf_trainer import load_training_arguments  # noqa: E402
+from training.engine_hf_trainer import load_training_arguments
 
 
 def test_base_config_load(tmp_path):

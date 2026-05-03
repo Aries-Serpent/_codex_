@@ -12,7 +12,6 @@ from __future__ import annotations
 import json
 import pathlib
 import sys
-from typing import List
 
 try:
     import yaml
@@ -24,7 +23,7 @@ POLICY_PATH = pathlib.Path("tools/label_policy.json")
 WF_DIR = pathlib.Path(".github/workflows")
 
 
-def as_list(value: object) -> List[str]:
+def as_list(value: object) -> list[str]:
     if value is None:
         return []
     if isinstance(value, str):
@@ -44,8 +43,8 @@ def load_policy() -> tuple[set[str], set[str], set[str]]:
 
 def lint_file(
     path: pathlib.Path, allowed: set[str], required: set[str], defaults: set[str]
-) -> List[str]:
-    errors: List[str] = []
+) -> list[str]:
+    errors: list[str] = []
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     jobs = (data or {}).get("jobs", {})
     for job_name, job in (jobs or {}).items():
@@ -70,7 +69,7 @@ def main() -> int:
         print("No .github/workflows directory; nothing to lint.")
         return 0
     allowed, required, defaults = load_policy()
-    problems: List[str] = []
+    problems: list[str] = []
     for file in sorted(WF_DIR.glob("*.y*ml")):
         problems.extend(lint_file(file, allowed, required, defaults))
     if problems:

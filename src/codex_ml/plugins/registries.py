@@ -115,10 +115,8 @@ def _resolve_offline_model_path(
             if not local_only:
                 return str(value)
             raise FileNotFoundError(
-                "Checkpoint for '{alias}' expected at {candidate}. Provide a valid path or set "
-                "`local_files_only=false` to allow fetching '{remote}'.".format(
-                    alias=alias, candidate=candidate, remote=default_remote
-                )
+                f"Checkpoint for '{alias}' expected at {candidate}. Provide a valid path or set "
+                f"`local_files_only=false` to allow fetching '{default_remote}'."
             )
 
     checked: list[str] = []
@@ -152,11 +150,9 @@ def _resolve_offline_model_path(
     if local_only:
         details = ", ".join(checked) if checked else "<no candidates>"
         raise FileNotFoundError(
-            "Local checkpoint for '{alias}' not found. Checked: {details}. Provide `model.local_path` or "  # noqa: E501
+            f"Local checkpoint for '{alias}' not found. Checked: {details}. Provide `model.local_path` or "  # noqa: E501
             "set CODEX_ML_OFFLINE_MODELS_DIR to point at the weights, or disable offline mode with "
-            "`local_files_only=false` to fallback to '{remote}'.".format(
-                alias=alias, details=details, remote=default_remote
-            )
+            f"`local_files_only=false` to fallback to '{default_remote}'."
         )
 
     return default_remote
@@ -527,8 +523,8 @@ def _model_tiny_sequence_offline(cfg: Any = None, **kwargs: Any):
         payload_path = payload_path / "model.json"
     if not payload_path.exists():
         raise FileNotFoundError(
-            "Model fixture for 'offline:tiny-sequence' expected at {path}. Provide `model.local_path` or set "  # noqa: E501
-            "CODEX_ML_TINY_SEQUENCE_PATH to point at the JSON file.".format(path=payload_path)
+            f"Model fixture for 'offline:tiny-sequence' expected at {payload_path}. Provide `model.local_path` or set "  # noqa: E501
+            "CODEX_ML_TINY_SEQUENCE_PATH to point at the JSON file."
         )
     return TinySequenceModel.from_file(payload_path)
 
@@ -561,32 +557,32 @@ def _dataset_tiny_corpus(**kwargs: Any):
 
 
 @metrics.register("accuracy@token", backend="codex_ml.metrics.registry")
-def _metric_token_accuracy(**kwargs: Any):  # noqa: D401 - simple proxy
+def _metric_token_accuracy(**kwargs: Any):
     return _instantiate_metric("accuracy@token", **kwargs)
 
 
 @metrics.register("ppl", backend="codex_ml.metrics.registry")
-def _metric_perplexity(**kwargs: Any):  # noqa: D401 - simple proxy
+def _metric_perplexity(**kwargs: Any):
     return _instantiate_metric("ppl", **kwargs)
 
 
 @metrics.register("exact_match", backend="codex_ml.metrics.registry")
-def _metric_exact_match(**kwargs: Any):  # noqa: D401 - simple proxy
+def _metric_exact_match(**kwargs: Any):
     return _instantiate_metric("exact_match", **kwargs)
 
 
 @metrics.register("f1", backend="codex_ml.metrics.registry")
-def _metric_f1(**kwargs: Any):  # noqa: D401 - simple proxy
+def _metric_f1(**kwargs: Any):
     return _instantiate_metric("f1", **kwargs)
 
 
 @metrics.register("dist-1", backend="codex_ml.metrics.registry")
-def _metric_dist_1(**kwargs: Any):  # noqa: D401 - simple proxy
+def _metric_dist_1(**kwargs: Any):
     return _instantiate_metric("dist-1", **kwargs)
 
 
 @metrics.register("dist-2", backend="codex_ml.metrics.registry")
-def _metric_dist_2(**kwargs: Any):  # noqa: D401 - simple proxy
+def _metric_dist_2(**kwargs: Any):
     return _instantiate_metric("dist-2", **kwargs)
 
 
@@ -700,9 +696,7 @@ def _reward_model_length_offline(**kwargs: Any):
     offset = float(kwargs.pop("offset", offset))
     if kwargs:
         raise TypeError(
-            "Unsupported keyword arguments for 'offline:length': {keys}".format(
-                keys=sorted(kwargs.keys())
-            )
+            f"Unsupported keyword arguments for 'offline:length': {sorted(kwargs.keys())}"
         )
     return LengthRewardModel(scale=scale, offset=offset)
 
@@ -721,9 +715,7 @@ def _rl_agent_scripted_offline(**kwargs: Any):
     policy_path = kwargs.pop("policy_path", None)
     if kwargs:
         raise TypeError(
-            "Unsupported keyword arguments for 'offline:scripted': {keys}".format(
-                keys=sorted(kwargs.keys())
-            )
+            f"Unsupported keyword arguments for 'offline:scripted': {sorted(kwargs.keys())}"
         )
 
     resolved = _resolve_offline_support_file(

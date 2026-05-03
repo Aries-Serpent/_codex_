@@ -138,6 +138,66 @@ jobs:
       - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
         run: python3 .github/scripts/session_preload.py
 
+      # ============================================================================
+      # 🔌 SESSION ACCESS PROBE — runs immediately after context preload
+      # Discovers every available connection method (REST, GraphQL, gh CLI,
+      # CodeQL, Playwright, MCP) and their current rate-limit status.
+      # Writes ACCESS_* env vars for the whole session and a machine-readable
+      # manifest at .codex/session_access_manifest.json.
+      # The agent MUST read this manifest before making any API call so it
+      # knows the live trickle-down order: REST → GraphQL → gh CLI → CodeQL → FS.
+      # ============================================================================
+      - name: "🔌 Session Access Probe (token inventory + rate limits)"
+        id: access_probe
+        continue-on-error: true        # never block agent startup on probe failure
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_TOKEN:     ${{ github.token }}
+        run: |
+          echo "::group::Session Access Probe"
+          python3 scripts/ci/session_access_probe.py || {
+            echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
+            # Emit safe defaults so downstream steps have the vars even if probe fails
+            echo "ACCESS_REST=unknown"          >> "$GITHUB_ENV"
+            echo "ACCESS_GRAPHQL=unknown"       >> "$GITHUB_ENV"
+            echo "ACCESS_GH_CLI=unknown"        >> "$GITHUB_ENV"
+            echo "ACCESS_CODEQL_CLI=unknown"    >> "$GITHUB_ENV"
+            echo "ACCESS_RECOMMENDED_METHOD=local_fs" >> "$GITHUB_ENV"
+          }
+          echo "::endgroup::"
+
+      # ============================================================================
+      # 🧠 AUTONOMOUS RAG CONTEXT BUILD — runs after access probe
+      # Uses the access manifest to pull the freshest available GitHub context
+      # (PR details, failing checks, review threads, recent commits) via the
+      # trickle-down chain, queries the FAISS RAG index for relevant patterns,
+      # and re-embeds only files changed since last session (incremental update).
+      # Writes .codex/session_context_latest.md for agent pickup and exports
+      # ACCESS_STRATEGY + SESSION_PR_NUMBER to GITHUB_ENV.
+      # ============================================================================
+      - name: "🧠 Autonomous RAG Context Build (PR context + RAG query + incremental index)"
+        id: rag_context
+        continue-on-error: true        # never block agent startup on RAG failure
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_TOKEN:     ${{ github.token }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "::group::Autonomous RAG Context Build"
+          python3 scripts/ci/autonomous_rag_context.py \
+            ${{ github.event.pull_request.number != '' && format('--pr {0}', github.event.pull_request.number) || '' }} \
+            || {
+              echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
+            }
+          # Print access strategy for agent log
+          if [ -f .codex/session_access_strategy.json ]; then
+            echo "--- Access Strategy ---"
+            cat .codex/session_access_strategy.json
+          fi
+          echo "::endgroup::"
+
       # Configure git for non-interactive operation in the CI agent environment.
       # core.editor=true: prevents 'git rebase --continue' and similar commands
       # from opening an interactive editor (e.g. nano) and hanging the runner.

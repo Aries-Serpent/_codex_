@@ -20,11 +20,11 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Trainer registry built on the shared registry infrastructure."""
 
 
 import inspect  # noqa: E402
-from typing import Any, Callable  # noqa: E402
+from collections.abc import Callable  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.registry.base import Registry  # noqa: E402
 
@@ -64,4 +64,4 @@ def list_trainers() -> list[str]:
     return trainer_registry.list()
 
 
-__all__ = ["trainer_registry", "register_trainer", "get_trainer", "list_trainers"]
+__all__ = ["get_trainer", "list_trainers", "register_trainer", "trainer_registry"]

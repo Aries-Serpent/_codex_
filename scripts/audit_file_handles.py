@@ -20,7 +20,6 @@ Output:
 import ast
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 
 class FileHandleAuditor(ast.NodeVisitor):
@@ -28,7 +27,7 @@ class FileHandleAuditor(ast.NodeVisitor):
 
     def __init__(self, filepath: Path):
         self.filepath = filepath
-        self.issues: List[Dict] = []
+        self.issues: list[dict] = []
         self.in_with_statement = False
         self.with_depth = 0
         self.in_context_manager_method = False
@@ -101,7 +100,7 @@ class FileHandleAuditor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def audit_file(filepath: Path) -> List[Dict]:
+def audit_file(filepath: Path) -> list[dict]:
     """Audit a single Python file for file handle issues."""
     try:
         with open(filepath) as f:
@@ -132,7 +131,7 @@ def audit_file(filepath: Path) -> List[Dict]:
         }]
 
 
-def audit_directory(directory: Path) -> Dict[Path, List[Dict]]:
+def audit_directory(directory: Path) -> dict[Path, list[dict]]:
     """Audit all Python files in a directory."""
     results = {}
 
@@ -148,7 +147,7 @@ def audit_directory(directory: Path) -> Dict[Path, List[Dict]]:
     return results
 
 
-def print_report(results: Dict[Path, List[Dict]], base_dir: Path):
+def print_report(results: dict[Path, list[dict]], base_dir: Path):
     """Print a formatted audit report."""
     print("=" * 80)
     print("FILE HANDLE AUDIT REPORT")

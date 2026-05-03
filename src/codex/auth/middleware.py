@@ -20,10 +20,11 @@ import hashlib
 import logging
 import os
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Optional
 
 from ..security_utils import sanitize_log_message
 from .token_manager import TokenClaims, TokenManager
@@ -48,10 +49,10 @@ class AuthConfig:
     default_method: AuthMethod = AuthMethod.JWT
     api_key_header: str = "X-API-Key"
     bearer_header: str = "Authorization"
-    allowed_methods: Set[AuthMethod] = field(
+    allowed_methods: set[AuthMethod] = field(
         default_factory=lambda: {AuthMethod.JWT, AuthMethod.API_KEY}
     )
-    exempt_paths: Set[str] = field(default_factory=lambda: {"/health", "/ready", "/metrics"})
+    exempt_paths: set[str] = field(default_factory=lambda: {"/health", "/ready", "/metrics"})
     exempt_prefixes: list[str] = field(default_factory=list)
     rate_limit_requests: int = 100  # per minute
     rate_limit_window: int = 60  # seconds
@@ -65,7 +66,7 @@ class AuthResult:
     method: AuthMethod
     user_id: Optional[str] = None
     claims: Optional[TokenClaims] = None
-    scopes: Set[str] = field(default_factory=set)
+    scopes: set[str] = field(default_factory=set)
     error: Optional[str] = None
 
 
@@ -82,7 +83,7 @@ class APIKeyValidator:
         Raises:
             ValueError: If AUTH_SECRET_KEY is not set in production environment.
         """
-        self._keys: Dict[str, Dict[str, Any]] = {}  # hash -> key_info
+        self._keys: dict[str, dict[str, Any]] = {}  # hash -> key_info
 
         # Get secret key from parameter, environment, or raise error in production
         if secret_key:
@@ -125,7 +126,7 @@ class APIKeyValidator:
         self,
         key_hash: str,
         user_id: str,
-        scopes: Optional[List[str]] = None,
+        scopes: Optional[list[str]] = None,
         name: str = "default",
     ) -> None:
         """
@@ -145,7 +146,7 @@ class APIKeyValidator:
             "last_used": None,
         }
 
-    def validate_key(self, api_key: str) -> Optional[Dict[str, Any]]:
+    def validate_key(self, api_key: str) -> Optional[dict[str, Any]]:
         """
         Validate an API key using secure HMAC-SHA256 hashing.
 
@@ -207,7 +208,7 @@ class RateLimiter:
         """
         self._requests_per_window = requests_per_window
         self._window_seconds = window_seconds
-        self._counters: Dict[str, List[float]] = {}
+        self._counters: dict[str, list[float]] = {}
 
     def is_allowed(self, key: str) -> bool:
         """
@@ -355,7 +356,7 @@ class AuthMiddleware:
         # Continue to app
         await self.app(scope, receive, send)
 
-    def _authenticate(self, headers: Dict[bytes, bytes]) -> AuthResult:
+    def _authenticate(self, headers: dict[bytes, bytes]) -> AuthResult:
         """
         Authenticate request from headers.
 
@@ -474,7 +475,7 @@ class AuthMiddleware:
         )
 
 
-def require_auth(scopes: Optional[List[str]] = None, methods: Optional[List[AuthMethod]] = None):
+def require_auth(scopes: Optional[list[str]] = None, methods: Optional[list[AuthMethod]] = None):
     """
     Decorator to require authentication on endpoint.
 
@@ -540,7 +541,7 @@ def get_current_user(request) -> Optional[str]:
     return None
 
 
-def get_current_scopes(request) -> Set[str]:
+def get_current_scopes(request) -> set[str]:
     """
     Get current user's scopes from request.
 

@@ -12,17 +12,17 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
-    "PluginStatus",
-    "PluginHealth",
-    "PluginContract",
     "Plugin",
-    "PluginSandbox",
+    "PluginContract",
+    "PluginHealth",
     "PluginManager",
+    "PluginSandbox",
+    "PluginStatus",
 ]
 
 
@@ -117,8 +117,8 @@ class PluginContract:
     """
 
     required_methods: list[str] = field(default_factory=list)
-    input_schema: Optional[dict[str, Type]] = None
-    output_schema: Optional[dict[str, Type]] = None
+    input_schema: Optional[dict[str, type]] = None
+    output_schema: Optional[dict[str, type]] = None
     max_execution_time: float = 30.0
     required_config_keys: list[str] = field(default_factory=list)
 

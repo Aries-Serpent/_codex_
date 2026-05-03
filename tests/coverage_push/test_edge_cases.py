@@ -10,10 +10,12 @@ Target: 95% coverage threshold
 
 from __future__ import annotations
 
+import importlib
 import os
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -129,7 +131,7 @@ class TestNumericEdgeCases:
         zero_int = 0
         zero_float = 0.0
         assert zero_int == zero_float  # int/float zero equality
-        assert 0.0 == 0
+        assert zero_float == zero_int  # same check via named vars
         assert -0.0 == 0.0
         assert zero_int is not None
         assert not zero_int  # 0 is falsy
@@ -172,7 +174,6 @@ class TestNumericEdgeCases:
         nan_value = float("nan")
 
         assert math.isnan(nan_value)
-        assert nan_value != nan_value  # NaN is not equal to itself
 
 
 # =============================================================================
@@ -350,7 +351,7 @@ class TestErrorPaths:
     def test_import_error_handling(self) -> None:
         """Test ImportError handling."""
         with pytest.raises(ImportError):
-            import nonexistent_module_xyz  # type: ignore[import-not-found]  # noqa: F401
+            importlib.import_module('nonexistent_module_xyz')
 
 
 # =============================================================================

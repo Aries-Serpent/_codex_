@@ -33,9 +33,10 @@ import argparse
 import json
 import re
 import sys
+from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable, Optional, Sequence
+from typing import Any, Optional
 
 try:  # pragma: no cover - handled in tests via importorskip
     import yaml

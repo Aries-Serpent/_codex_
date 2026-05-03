@@ -7,7 +7,7 @@ import logging
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
@@ -29,7 +29,7 @@ class TenantRegistry:
 
     def __init__(self, backend: str = "sqlite"):
         self.backend = backend
-        self.tenants: Dict[str, Dict[str, Any]] = {}  # In-memory cache
+        self.tenants: dict[str, dict[str, Any]] = {}  # In-memory cache
 
         if backend == "sqlite":
             self._init_sqlite()
@@ -69,10 +69,10 @@ class TenantRegistry:
         tenant_id: str,
         name: str,
         api_key: str,
-        quota: Optional[Dict[str, int]] = None,
+        quota: Optional[dict[str, int]] = None,
         policies: Optional[list] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        metadata: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """Create a new tenant"""
         import json
 
@@ -134,7 +134,7 @@ class TenantRegistry:
         logger.info(f"Created tenant: {sanitize_log_input(tenant_id)}")
         return tenant_data
 
-    def get_tenant(self, tenant_id: str) -> Optional[Dict[str, Any]]:
+    def get_tenant(self, tenant_id: str) -> Optional[dict[str, Any]]:
         """Get tenant by ID"""
         # Check cache first
         if tenant_id in self.tenants:
@@ -177,7 +177,7 @@ class TenantRegistry:
 
         return None
 
-    def get_tenant_by_api_key(self, api_key: str) -> Optional[Dict[str, Any]]:
+    def get_tenant_by_api_key(self, api_key: str) -> Optional[dict[str, Any]]:
         """Get tenant by API key"""
         tenant_id = auth_manager.verify_api_key(api_key)
         if tenant_id:
@@ -222,7 +222,7 @@ class TenantRegistry:
 
         return None
 
-    def list_tenants(self) -> list[Dict[str, Any]]:
+    def list_tenants(self) -> list[dict[str, Any]]:
         """List all tenants"""
         if self.backend == "sqlite":
             import json
@@ -311,18 +311,18 @@ class TenantRegistry:
         tenant_id: str,
         *,
         name: Optional[str] = None,
-        quota: Optional[Dict[str, int]] = None,
+        quota: Optional[dict[str, int]] = None,
         policies: Optional[list] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
         active: Optional[bool] = None,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict[str, Any]]:
         """Update an existing tenant and persist changes"""
 
         tenant = self.get_tenant(tenant_id)
         if not tenant:
             return None
 
-        updated_fields: Dict[str, Any] = {}
+        updated_fields: dict[str, Any] = {}
         if name is not None:
             updated_fields["name"] = name
         if quota is not None:

@@ -10,7 +10,6 @@ import ast
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
 
 
 @dataclass
@@ -24,7 +23,7 @@ class TestMetrics:
     imports_count: int
     assertions_count: int
     try_except_blocks: int
-    targeted_classes: List[str]
+    targeted_classes: list[str]
     expected_coverage_gain: float
 
 
@@ -96,7 +95,7 @@ class TestSuiteAnalyzer:
             expected_coverage_gain=expected_gain,
         )
 
-    def analyze_all_tests(self) -> Dict[str, TestMetrics]:
+    def analyze_all_tests(self) -> dict[str, TestMetrics]:
         """Analyze all test files."""
         results = {}
 
@@ -112,7 +111,7 @@ class TestSuiteAnalyzer:
 
         return results
 
-    def generate_report(self, metrics: Dict[str, TestMetrics]) -> str:
+    def generate_report(self, metrics: dict[str, TestMetrics]) -> str:
         """Generate comprehensive validation report."""
         report = []
         report.append("=" * 80)

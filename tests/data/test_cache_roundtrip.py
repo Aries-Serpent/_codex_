@@ -9,9 +9,9 @@ import pytest
 np = pytest.importorskip("numpy")
 pytest.importorskip("transformers")
 
-from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
-from src.training.cache import TokenCache  # noqa: E402
-from src.training.datasets import TextDataset  # noqa: E402
+from codex_ml.utils.hf_pinning import load_from_pretrained
+from src.training.cache import TokenCache
+from src.training.datasets import TextDataset
 
 
 def test_cache_roundtrip(tmp_path):

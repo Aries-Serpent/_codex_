@@ -51,6 +51,7 @@ Options:
 
 import argparse
 import ast
+import importlib.util
 import json
 import logging
 import os
@@ -59,7 +60,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -191,8 +192,8 @@ class CommonIssueFixer:
         # `--check-only` must never mutate the working tree. Treat it as an
         # implied dry-run so every pattern fixer shares the same guard.
         self.dry_run = dry_run or check_only
-        self.issues_found: Dict[str, List[str]] = {}
-        self.fixes_applied: Dict[str, int] = {}
+        self.issues_found: dict[str, list[str]] = {}
+        self.fixes_applied: dict[str, int] = {}
 
         # Define which patterns are auto-fixable vs manual-review
         self.auto_fixable_patterns = {
@@ -477,7 +478,7 @@ class CommonIssueFixer:
 
         return any_issues
 
-    def fix_unused_imports(self) -> List[str]:
+    def fix_unused_imports(self) -> list[str]:
         """Pattern 1: Remove unused imports using ruff."""
         issues = []
 
@@ -516,7 +517,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_unused_variables(self) -> List[str]:
+    def fix_unused_variables(self) -> list[str]:
         """Pattern 2: Detect unused variables using ruff."""
         issues = []
 
@@ -545,7 +546,7 @@ class CommonIssueFixer:
             logger.debug("Suppressed exception in handler", exc_info=True)
         return issues
 
-    def fix_yaml_indentation(self) -> List[str]:
+    def fix_yaml_indentation(self) -> list[str]:
         """Pattern 3: Validate YAML files for indentation errors."""
         issues = []
 
@@ -568,10 +569,10 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_coverage_thresholds(self) -> List[str]:
+    def fix_coverage_thresholds(self) -> list[str]:
         """Pattern 4: Check for inconsistent coverage thresholds."""
         issues = []
-        thresholds: Dict[str, int] = {}
+        thresholds: dict[str, int] = {}
 
         # Check workflow files
         workflow_dir = self.repo_root / ".github" / "workflows"
@@ -608,7 +609,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_tokenizer_fallbacks(self) -> List[str]:
+    def fix_tokenizer_fallbacks(self) -> list[str]:
         """Pattern 5: Check for missing tokenizer pad_token fallbacks.
 
         Only flags files where AutoTokenizer.from_pretrained appears in actual
@@ -649,7 +650,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_test_assertions(self) -> List[str]:
+    def fix_test_assertions(self) -> list[str]:
         """Pattern 6: Detect vague test assertions."""
         issues = []
 
@@ -682,7 +683,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_redundant_imports(self) -> List[str]:
+    def fix_redundant_imports(self) -> list[str]:
         """Pattern 7: Detect redundant imports (module + function level).
 
         Uses ``_advance_triple_quote_state`` to skip imports that appear inside
@@ -740,7 +741,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_codeql_alerts(self) -> List[str]:
+    def fix_codeql_alerts(self) -> list[str]:
         """Pattern 8: Fix CodeQL-equivalent alerts — auto-removes unused imports (F401),
         reports unused variables (F841) as informational only.
 
@@ -799,7 +800,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_unsorted_imports(self) -> List[str]:
+    def fix_unsorted_imports(self) -> list[str]:
         """Pattern 9: Fix unsorted/unformatted import blocks (ruff I001)."""
         issues = []
 
@@ -836,7 +837,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_bandit_security(self) -> List[str]:
+    def fix_bandit_security(self) -> list[str]:
         """Pattern 10: Detect medium/high bandit security issues lacking # nosec."""
         issues = []
 
@@ -872,7 +873,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_fstring_placeholders(self) -> List[str]:
+    def fix_fstring_placeholders(self) -> list[str]:
         """Pattern 11: Fix f-strings missing placeholders (ruff F541)."""
         issues = []
 
@@ -909,7 +910,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_line_length(self) -> List[str]:
+    def fix_line_length(self) -> list[str]:
         """Pattern 12: Fix E501 line-too-long violations via ruff format."""
         issues = []
 
@@ -955,7 +956,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_w_series_warnings(self) -> List[str]:
+    def fix_w_series_warnings(self) -> list[str]:
         """Pattern 13: Fix W-series ruff warnings (whitespace, deprecation) via ruff --fix."""
         issues = []
 
@@ -995,7 +996,7 @@ class CommonIssueFixer:
         return issues
 
 
-    def fix_link_checker_config(self) -> List[str]:
+    def fix_link_checker_config(self) -> list[str]:
         """Pattern 14: Ensure .markdown-link-check.json has safe ignore patterns.
 
         Adds GitHub repository pages (issues, discussions, pulls) that frequently
@@ -1051,7 +1052,7 @@ class CommonIssueFixer:
 
         return issues
 
-    def fix_mypy_baseline_freshness(self) -> List[str]:
+    def fix_mypy_baseline_freshness(self) -> list[str]:
         """Pattern 15: Detect when live mypy count dropped below stored baseline.
 
         This is a DETECTION-ONLY pattern (manual_review, not auto_fixable).
@@ -1114,7 +1115,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 16 — Stub duplicate method definitions (F811 in stubs)
     # ------------------------------------------------------------------
-    def fix_stub_duplicate_defs(self) -> List[str]:
+    def fix_stub_duplicate_defs(self) -> list[str]:
         """Pattern 16: Detect F811 duplicate method/attribute definitions in stub packages.
 
         Stub shim files (torch/__init__.py, transformers/__init__.py, etc.) are
@@ -1126,7 +1127,7 @@ class CommonIssueFixer:
         Auto-fix strategy: the duplicate lines (second occurrence) are removed
         by ruff --fix after the user confirms (check-only skips the fix step).
         """
-        issues: List[str] = []
+        issues: list[str] = []
         stub_dirs = [
             self.repo_root / "torch",
             self.repo_root / "transformers",
@@ -1177,7 +1178,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 17 — CI SHA drift detector (informational)
     # ------------------------------------------------------------------
-    def check_ci_sha_drift(self) -> List[str]:
+    def check_ci_sha_drift(self) -> list[str]:
         """Pattern 17: Detect when CI runs on a different commit SHA than expected.
 
         GitHub Actions creates an internal *merge commit* for pull-request runs
@@ -1197,7 +1198,7 @@ class CommonIssueFixer:
         (``github.sha``) and the actual checked-out SHA (``git log -1``) to the
         step summary, making the drift visible on every run.
         """
-        issues: List[str] = []
+        issues: list[str] = []
         import os
 
         github_sha = os.environ.get("GITHUB_SHA", "")
@@ -1283,7 +1284,7 @@ class CommonIssueFixer:
 
         return (remove_start, remove_end)
 
-    def fix_duplicate_kwargs(self) -> List[str]:
+    def fix_duplicate_kwargs(self) -> list[str]:
         """Pattern 18: Detect and remove duplicate keyword arguments in Python function calls.
 
         Duplicate kwargs such as ``f(a=1, a=2)`` are rejected by Python's
@@ -1308,9 +1309,9 @@ class CommonIssueFixer:
 
         This pattern is **auto-fixable** (``auto_fix_available=True``).
         """
-        issues: List[str] = []
+        issues: list[str] = []
         src_dirs = [self.repo_root / "src", self.repo_root / "tests"]
-        py_files: List[Path] = []
+        py_files: list[Path] = []
         for src_dir in src_dirs:
             if src_dir.exists():
                 py_files.extend(sorted(src_dir.rglob("*.py")))
@@ -1329,11 +1330,11 @@ class CommonIssueFixer:
 
             # Collect duplicate keyword nodes (second occurrence only, to remove).
             # dup_kws is a list of ast.keyword nodes whose .arg is a duplicate.
-            dup_kws: List[ast.keyword] = []
+            dup_kws: list[ast.keyword] = []
             for node in ast.walk(tree):
                 if not isinstance(node, ast.Call):
                     continue
-                seen: Dict[str, int] = {}
+                seen: dict[str, int] = {}
                 for kw in node.keywords:
                     if kw.arg is None:
                         continue  # **kwargs expansion
@@ -1529,7 +1530,7 @@ class CommonIssueFixer:
 
         return report
 
-    def check_src_absolute_imports(self) -> List[str]:
+    def check_src_absolute_imports(self) -> list[str]:
         """Pattern 19: Detect ``from src.`` absolute imports in Python source files.
 
         These imports rely on ``src/`` being a package (``src/__init__.py`` exists)
@@ -1557,7 +1558,7 @@ class CommonIssueFixer:
         Auto-fix: ❌ (manual) — requires verifying each import target exists without
         the ``src.`` prefix in the installed package.
         """
-        issues: List[str] = []
+        issues: list[str] = []
         # Only scan src/ — tests/ use pytest.ini pythonpath (intentional, bulk-rename
         # tracked separately); the zendesk agent.py exemption is handled below.
         search_dirs = [self.repo_root / "src"]
@@ -1600,7 +1601,7 @@ class CommonIssueFixer:
         return issues
 
 
-    def check_yaml_multiline_strings(self) -> List[str]:
+    def check_yaml_multiline_strings(self) -> list[str]:
         """Pattern 20: Detect multi-line bash string assignments in YAML ``run:`` blocks.
 
         Multi-line bash assignments of the form::
@@ -1622,7 +1623,7 @@ class CommonIssueFixer:
         Auto-fix: ❌ (manual) — requires understanding the YAML block structure and
         choosing the correct printf / heredoc transformation.
         """
-        issues: List[str] = []
+        issues: list[str] = []
         # Detect bash variable assignments whose opening quote is NOT closed on the same line
         # (i.e., the value spans multiple lines).  We look for lines of the form:
         #   VARNAME="text that does NOT contain a closing quote
@@ -1664,7 +1665,7 @@ class CommonIssueFixer:
             print("✅ Pattern 20 (YAML Multiline Strings): no multi-line bash string issues found")
         return issues
 
-    def check_nodejs20_actions(self) -> List[str]:
+    def check_nodejs20_actions(self) -> list[str]:
         """Pattern 21: Detect GitHub Actions pinned to Node.js 20 (deadline: 2026-06-02).
 
         GitHub will force all actions to Node.js 24 starting 2026-06-02.  Workflows
@@ -1689,7 +1690,7 @@ class CommonIssueFixer:
 
         Track: https://github.blog/changelog/2025-09-19-deprecation-of-node-20
         """
-        issues: List[str] = []
+        issues: list[str] = []
         # Three-tier detection: different Node.js 20 cutoff per action family.
         # Group A: v5+ is Node.js 24-safe → flag only v1–v4
         nodejs20_group_a_re = re.compile(
@@ -1716,7 +1717,7 @@ class CommonIssueFixer:
         if not workflow_dir.exists():
             print("✅ Pattern 21 (Node.js 20 Actions): no .github/workflows directory")
             return issues
-        affected: dict[str, List[str]] = {}
+        affected: dict[str, list[str]] = {}
         for wf in sorted(workflow_dir.glob("*.yml")):
             try:
                 content = wf.read_text(encoding="utf-8", errors="replace")
@@ -1756,7 +1757,7 @@ class CommonIssueFixer:
             print("✅ Pattern 21 (Node.js 20 Actions): no Node.js 20 action refs found")
         return issues
 
-    def check_tracked_file_sync(self) -> List[str]:
+    def check_tracked_file_sync(self) -> list[str]:
         """Pattern 22: Verify all frequently-drifting repo files are consistent.
 
         Delegates to ``scripts/ci/sync_tracked_files.py --check`` for the authoritative
@@ -1774,7 +1775,7 @@ class CommonIssueFixer:
 
         Auto-fix: ✅ — run ``python scripts/ci/sync_tracked_files.py --fix``
         """
-        issues: List[str] = []
+        issues: list[str] = []
         sync_script = self.repo_root / "scripts" / "ci" / "sync_tracked_files.py"
         if not sync_script.exists():
             print("⚠  Pattern 22 (Tracked File Sync): sync_tracked_files.py not found — skip")
@@ -1827,7 +1828,7 @@ class CommonIssueFixer:
                     print(f"   ❌ Auto-fix failed: {fix_result.stderr[:200]}")
         return issues
 
-    def check_secrets_baseline_plugins(self) -> List[str]:
+    def check_secrets_baseline_plugins(self) -> list[str]:
         """Pattern 23: Detect incompatible plugins in ``.secrets.baseline``.
 
         Root-cause (first observed: S145, run 23694943811, commit ``a836919``):
@@ -1851,7 +1852,7 @@ class CommonIssueFixer:
 
         Auto-fix: ✅  — rewrites ``.secrets.baseline`` to drop unknown plugins.
         """
-        issues: List[str] = []
+        issues: list[str] = []
         baseline_path = self.repo_root / ".secrets.baseline"
         if not baseline_path.exists():
             print("✅ Pattern 23 (Secrets Baseline Plugins): .secrets.baseline not found — skip")
@@ -1865,8 +1866,8 @@ class CommonIssueFixer:
             self.issues_found["Secrets Baseline Plugins"] = issues
             return issues
 
-        plugins_used: List[dict] = baseline.get("plugins_used", [])
-        unknown_plugins: List[str] = []
+        plugins_used: list[dict] = baseline.get("plugins_used", [])
+        unknown_plugins: list[str] = []
 
         # First, verify detect-secrets is installed in the running Python.
         # If it is not installed at all, skip this check — we cannot determine
@@ -1966,7 +1967,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 24 — Codecov Token Missing (informational)
     # ------------------------------------------------------------------
-    def check_codecov_token_missing(self) -> List[str]:
+    def check_codecov_token_missing(self) -> list[str]:
         """Pattern 24: Detect ``codecov/codecov-action`` steps missing **both** ``token:``
         and ``continue-on-error: true``.
 
@@ -1990,7 +1991,7 @@ class CommonIssueFixer:
         - Option B: add ``continue-on-error: true`` to the step if the upload is
           non-critical (allows the codecov error without blocking CI).
         """
-        issues: List[str] = []
+        issues: list[str] = []
         workflow_dir = self.repo_root / ".github" / "workflows"
         if not workflow_dir.exists():
             return issues
@@ -2058,7 +2059,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 25 — Last-Commit Accountability (auto-fixable)
     # ------------------------------------------------------------------
-    def fix_last_commit_accountability(self) -> List[str]:
+    def fix_last_commit_accountability(self) -> list[str]:
         """Pattern 25: Detect and auto-fix when the most recent *agent* git commit
         omits ``docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md``.
 
@@ -2083,7 +2084,7 @@ class CommonIssueFixer:
         ``sync_tracked_files.py --fix``.  The file is updated on disk; the caller
         is responsible for staging and committing it.
         """
-        issues: List[str] = []
+        issues: list[str] = []
         report_path = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
 
         # Skip when not inside a git repository (e.g. in a bare export).
@@ -2224,7 +2225,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 26 — Auto-Post Rebase Race (auto-fixable)
     # ------------------------------------------------------------------
-    def check_autopost_rebase_race(self) -> List[str]:
+    def check_autopost_rebase_race(self) -> list[str]:
         """Pattern 26: Detect ``git pull --rebase`` without ``--autostash`` in workflow files.
 
         Root cause (CI Triage #3911 — 🔄 Auto-Post After Agent Session: 16 failures;
@@ -2247,13 +2248,13 @@ class CommonIssueFixer:
         **Auto-fix:** ✅ — insert ``--autostash`` immediately after
         ``git pull --rebase`` in-place, preserving all other flags and arguments.
         """
-        issues: List[str] = []
+        issues: list[str] = []
         workflow_dir = self.repo_root / ".github" / "workflows"
         if not workflow_dir.exists():
             print("✅ Pattern 26 (Auto-Post Rebase Race): no .github/workflows directory")
             return issues
 
-        affected: List[Tuple[Path, int, str]] = []  # (workflow, line_idx_0based, original_line_with_newline)
+        affected: list[tuple[Path, int, str]] = []  # (workflow, line_idx_0based, original_line_with_newline)
 
         for wf in sorted(workflow_dir.glob("*.yml")):
             try:
@@ -2315,7 +2316,7 @@ class CommonIssueFixer:
 
     # Pattern 27 — Targeted detect-secrets false-positive baseline update (auto-fixable)
     # ------------------------------------------------------------------
-    def fix_secrets_baseline_false_positives(self) -> List[str]:
+    def fix_secrets_baseline_false_positives(self) -> list[str]:
         """Pattern 27: Detect and auto-add false-positive secrets to ``.secrets.baseline``.
 
         Root-cause (first observed: PR #3958, commit ``d9f2bcd``):
@@ -2342,7 +2343,7 @@ class CommonIssueFixer:
         PDA pattern-id: PR3958-P3-AUTOFIX-P27-TARGETED-SCAN
         """
         import json as _json
-        issues: List[str] = []
+        issues: list[str] = []
         baseline_path = self.repo_root / ".secrets.baseline"
 
         # 1. Get list of changed files via git diff (staged + unstaged + HEAD)
@@ -2373,9 +2374,7 @@ class CommonIssueFixer:
             return issues
 
         # 2. Verify detect-secrets is available
-        try:
-            import detect_secrets  # noqa: F401
-        except ImportError:
+        if importlib.util.find_spec('detect_secrets') is None:
             print(
                 "✅ Pattern 27 (Secrets FP Scan): detect-secrets not installed — skip"
             )
@@ -2468,7 +2467,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 28 — Copilot Cloud Agent Sandbox Guard (informational)
     # ------------------------------------------------------------------
-    def check_copilot_sandbox_env(self) -> List[str]:
+    def check_copilot_sandbox_env(self) -> list[str]:
         """Pattern 28: Detect Copilot cloud agent sandbox environment characteristics.
 
         The Copilot cloud agent sandbox always sets ``GITHUB_SHA`` to the PR's
@@ -2490,7 +2489,7 @@ class CommonIssueFixer:
         awareness that Pattern 17 is a known false positive in the sandbox.
         """
         import os as _os
-        issues: List[str] = []
+        issues: list[str] = []
 
         github_sha = _os.environ.get("GITHUB_SHA", "")
         if not github_sha:
@@ -2548,7 +2547,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 29 — PR Comment Auto-Triage (auto-fixable)
     # ------------------------------------------------------------------
-    def fix_pr_comment_triage(self) -> List[str]:
+    def fix_pr_comment_triage(self) -> list[str]:
         """Pattern 29: Auto-triage known blocking bot comment patterns.
 
         Scans for known bot-posted blocking comment patterns from CI workflows
@@ -2569,7 +2568,7 @@ class CommonIssueFixer:
         replies require the ``reply_to_comment`` MCP tool and are reported as
         instructions only.
         """
-        issues: List[str] = []
+        issues: list[str] = []
 
         # Known bot comment patterns and their remediations.
         KNOWN_PATTERNS: dict = {
@@ -2722,7 +2721,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 30 — Merge Readiness Dimension Auto-Fix (auto-fixable)
     # ------------------------------------------------------------------
-    def fix_merge_readiness_dims(self) -> List[str]:
+    def fix_merge_readiness_dims(self) -> list[str]:
         """Pattern 30: Run the merge-readiness scorecard and auto-fix failing dimensions.
 
         Imports ``_compute_merge_readiness_score()`` from
@@ -2746,7 +2745,7 @@ class CommonIssueFixer:
         """
         import importlib.util as _ilu
         import sys as _sys
-        issues: List[str] = []
+        issues: list[str] = []
 
         swa_path = self.repo_root / "scripts" / "ci" / "session_wrapup_autofix.py"
         if not swa_path.exists():
@@ -2872,7 +2871,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     # Pattern 31 — Stale # type: ignore comments (RP-MYPY-UNUSED-IGNORE)
     # ------------------------------------------------------------------
-    def fix_stale_type_ignore(self) -> List[str]:
+    def fix_stale_type_ignore(self) -> list[str]:
         """Pattern 31: Remove stale ``# type: ignore`` comments flagged by mypy
         ``--warn-unused-ignores``.
 
@@ -2891,7 +2890,7 @@ class CommonIssueFixer:
         import re as _re
         import subprocess as _sub
 
-        issues: List[str] = []
+        issues: list[str] = []
         src = self.repo_root / "src"
         if not src.is_dir():
             return issues
@@ -2973,7 +2972,7 @@ class CommonIssueFixer:
     # Pattern 32 — Bare # type: ignore on optional-fallback assignments
     #               (RP-MYPY-OPT-IMPORT)
     # ------------------------------------------------------------------
-    def fix_bare_type_ignore_assign(self) -> List[str]:
+    def fix_bare_type_ignore_assign(self) -> list[str]:
         """Pattern 32: Normalize bare optional-import fallback ignores to
         ``# type: ignore[assignment]``.
 
@@ -2998,7 +2997,7 @@ class CommonIssueFixer:
         """
         import re as _re
 
-        issues: List[str] = []
+        issues: list[str] = []
         src = self.repo_root / "src"
         if not src.is_dir():
             return issues

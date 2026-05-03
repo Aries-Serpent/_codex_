@@ -56,7 +56,7 @@ def test_load_hf_dataset() -> None:
         assert len(data.dataset_hash) == 64
         assert all(isinstance(item, Example) for item in data)
         assert data[0].input == data[0].target
-        assert getattr(data, "dataset_hash") == _expected_hash(list(data))
+        assert data.dataset_hash == _expected_hash(list(data))
         assert data.metadata["hf_revision"] == "rev-123"
         assert data.metadata["num_examples"] == 2
 

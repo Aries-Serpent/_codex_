@@ -11,11 +11,11 @@ Tests for scripts/remediation/verify_conflicts.py
 Validates that the whitelist parsing logic correctly handles
 duplicate module paths according to SHIM_INVENTORY.yaml.
 """
-import importlib.util  # noqa: E402
-from contextlib import contextmanager  # noqa: E402
-from pathlib import Path  # noqa: E402
+import importlib.util
+from contextlib import contextmanager
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 # Constants
 SHIM_INVENTORY_FILENAME = "SHIM_INVENTORY.yaml"

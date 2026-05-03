@@ -1,7 +1,7 @@
 """Schema definitions for supplemental duplicate inventory."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -19,7 +19,7 @@ class MemberFile:
     churn_last_90_days: Optional[int] = None
     test_coverage: Optional[float] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary, excluding None values."""
         result = {}
         for key, value in self.__dict__.items():
@@ -36,20 +36,20 @@ class DuplicateGroup:
     type: str  # exact-file, normalized-file, function-ast, semantic-cluster
     language: Optional[str]
     representative_path: str
-    member_files: List[MemberFile]
+    member_files: list[MemberFile]
     reason: str
     suggested_action: str  # refactor, consolidate, vendorize, ignore, whitelist
     confidence: str  # low, medium, high
-    tags: List[str]
-    meta: Dict[str, Any]
+    tags: list[str]
+    meta: dict[str, Any]
     summary: str
     # SHIM integration fields (added in Phase 7)
     in_shim_inventory: bool = False
     shim_status: Optional[str] = None
     is_whitelisted: bool = False
-    shim_recommendations: List[str] = field(default_factory=list)
+    shim_recommendations: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -69,7 +69,7 @@ class DuplicateGroup:
             "shim_recommendations": self.shim_recommendations,
         }
 
-    def validate(self) -> List[str]:
+    def validate(self) -> list[str]:
         """Validate the duplicate group, return list of errors."""
         errors = []
 
@@ -112,13 +112,13 @@ class InventoryMetadata:
     generated_at: str  # ISO8601
     scanner_version: str
     repository_root: str
-    detection_modes: List[str]
+    detection_modes: list[str]
     total_files_scanned: int
     total_groups: int
     total_violations: int
     scan_duration_seconds: float
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return self.__dict__.copy()
 
@@ -128,10 +128,10 @@ class SupplementalInventory:
     """Complete supplemental duplicate inventory."""
 
     metadata: InventoryMetadata
-    duplicate_groups: List[DuplicateGroup]
-    intentional_duplicates: List[DuplicateGroup] = field(default_factory=list)
+    duplicate_groups: list[DuplicateGroup]
+    intentional_duplicates: list[DuplicateGroup] = field(default_factory=list)
 
-    def validate(self) -> List[str]:
+    def validate(self) -> list[str]:
         """Validate the entire inventory, return list of errors."""
         errors = []
 
@@ -149,7 +149,7 @@ class SupplementalInventory:
 
         return errors
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "metadata": self.metadata.to_dict(),

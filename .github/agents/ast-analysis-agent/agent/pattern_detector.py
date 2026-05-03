@@ -6,7 +6,7 @@ with Cognitive Brain for pattern learning.
 """
 import ast
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass
@@ -24,11 +24,11 @@ class Pattern:
     name: str
     category: str  # structural, behavioral, antipattern
     description: str
-    locations: List[Dict[str, Any]] = field(default_factory=list)
+    locations: list[dict[str, Any]] = field(default_factory=list)
     confidence: float = 1.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             'name': self.name,
@@ -69,8 +69,8 @@ class PatternDetector:
             god_class_method_threshold: Max methods before flagging as god class
             god_class_attr_threshold: Max attributes before flagging as god class
         """
-        self.patterns: Dict[str, callable] = {}
-        self.detected: List[Pattern] = []
+        self.patterns: dict[str, callable] = {}
+        self.detected: list[Pattern] = []
         self.long_param_threshold = long_param_threshold
         self.god_class_method_threshold = god_class_method_threshold
         self.god_class_attr_threshold = god_class_attr_threshold
@@ -90,7 +90,7 @@ class PatternDetector:
         self,
         source_code: str,
         file_path: str = "<unknown>",
-    ) -> List[Pattern]:
+    ) -> list[Pattern]:
         """Detect all patterns in source code.
 
         Args:
@@ -113,7 +113,7 @@ class PatternDetector:
 
         return self.detected
 
-    def _detect_singleton(self, tree: ast.AST, file_path: str) -> List[Pattern]:
+    def _detect_singleton(self, tree: ast.AST, file_path: str) -> list[Pattern]:
         """Detect singleton pattern."""
         patterns = []
 
@@ -150,7 +150,7 @@ class PatternDetector:
 
         return patterns
 
-    def _detect_factory(self, tree: ast.AST, file_path: str) -> List[Pattern]:
+    def _detect_factory(self, tree: ast.AST, file_path: str) -> list[Pattern]:
         """Detect factory pattern."""
         patterns = []
 
@@ -177,7 +177,7 @@ class PatternDetector:
 
         return patterns
 
-    def _detect_god_class(self, tree: ast.AST, file_path: str) -> List[Pattern]:
+    def _detect_god_class(self, tree: ast.AST, file_path: str) -> list[Pattern]:
         """Detect god class anti-pattern."""
         patterns = []
 
@@ -207,7 +207,7 @@ class PatternDetector:
 
         return patterns
 
-    def _detect_long_params(self, tree: ast.AST, file_path: str) -> List[Pattern]:
+    def _detect_long_params(self, tree: ast.AST, file_path: str) -> list[Pattern]:
         """Detect long parameter list anti-pattern."""
         patterns = []
         threshold = self.long_param_threshold
@@ -239,7 +239,7 @@ class PatternDetector:
 
         return patterns
 
-    def _detect_decorator_pattern(self, tree: ast.AST, file_path: str) -> List[Pattern]:
+    def _detect_decorator_pattern(self, tree: ast.AST, file_path: str) -> list[Pattern]:
         """Detect decorator pattern usage."""
         patterns = []
 
@@ -268,7 +268,7 @@ class PatternDetector:
 
         return patterns
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get detection statistics."""
         by_category = {}
         by_name = {}

@@ -212,9 +212,8 @@ def validate_report(report_path: Path) -> int:
     if not missing and has_valid_title and canonical_version and is_supported:
         print("✓ Report validation PASSED")
         return 0
-    else:
-        print("✗ Report validation FAILED")
-        return 1
+    print("✗ Report validation FAILED")
+    return 1
 
 
 def main() -> int:

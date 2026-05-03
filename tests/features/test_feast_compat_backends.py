@@ -5,6 +5,7 @@ FeastBackend Protocol conformance, and create_backend() factory.
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 from unittest.mock import MagicMock, patch
 
@@ -325,9 +326,10 @@ class TestCreateBackend:
 
 def _import_duckdb():
     """Skip the test if duckdb is not installed."""
-    try:
-        import duckdb  # noqa: F401
+    if importlib.util.find_spec('duckdb') is None:
+        pytest.skip("duckdb or feast_compat not importable")
 
+    try:
         from codex_ml.features import feast_compat
         return feast_compat
     except ImportError:
@@ -442,7 +444,7 @@ class TestDuckDBBackend:
             for i in range(start, start + 5):
                 try:
                     b.write("v", f"key_{i}", {"val": i})
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     errors.append(exc)
 
         threads = [threading.Thread(target=write_batch, args=(i * 5,)) for i in range(4)]

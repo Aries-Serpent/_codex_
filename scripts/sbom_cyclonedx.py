@@ -38,10 +38,10 @@ import argparse
 import json
 import sys
 import uuid
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, Sequence
 
 from packaging.version import parse as parse_version
 

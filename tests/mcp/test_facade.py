@@ -11,9 +11,9 @@ import pytest
 
 pytest.importorskip("fastapi")
 
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi.testclient import TestClient
 
-from mcp.server.facade_fastapi import APP  # noqa: E402
+from mcp.server.facade_fastapi import APP
 
 client = TestClient(APP)
 

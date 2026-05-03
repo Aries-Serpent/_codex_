@@ -11,8 +11,8 @@ import csv
 import json
 import logging
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 

@@ -6,7 +6,7 @@ import re
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 import click
 
@@ -16,7 +16,7 @@ class FailureAnalysis:
     """Analysis result for a CI failure"""
     fix_available: bool
     fix_type: str
-    fix_params: Dict
+    fix_params: dict
     confidence: int
     failure_type: str
     failure_description: str
@@ -118,7 +118,7 @@ class CIFailureAnalyzer:
             timestamp=datetime.now(timezone.utc).isoformat()
         )
 
-    def _extract_params(self, log: str, pattern: Dict) -> Dict:
+    def _extract_params(self, log: str, pattern: dict) -> dict:
         """Extract fix parameters from log based on fix type"""
         params = {}
 

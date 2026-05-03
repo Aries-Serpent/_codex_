@@ -14,7 +14,6 @@ import json
 import os
 import sys
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List
 
 import requests
 
@@ -224,7 +223,7 @@ class TelemetryCollector:
 
     def collect_workflow_runs(
         self, branch: str, days: int = 7, max_pages: int = 10
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Collect workflow runs from specified branch.
 
         Args:
@@ -255,7 +254,7 @@ class TelemetryCollector:
 
         return runs
 
-    def collect_job_details(self, run_id: int) -> List[Dict]:
+    def collect_job_details(self, run_id: int) -> list[dict]:
         """Collect job details for a workflow run.
 
         Args:
@@ -269,7 +268,7 @@ class TelemetryCollector:
         response.raise_for_status()
         return response.json()["jobs"]
 
-    def collect_artifacts(self, run_id: int) -> List[Dict]:
+    def collect_artifacts(self, run_id: int) -> list[dict]:
         """Collect artifacts for a workflow run.
 
         Args:
@@ -283,7 +282,7 @@ class TelemetryCollector:
         response.raise_for_status()
         return response.json()["artifacts"]
 
-    def classify_failure(self, run: Dict, jobs: List[Dict]) -> str:
+    def classify_failure(self, run: dict, jobs: list[dict]) -> str:
         """Classify failure into predefined pattern categories.
 
         Args:
@@ -315,7 +314,7 @@ class TelemetryCollector:
 
     def generate_report(
         self, branch: str, days: int = 7, output: str = "telemetry_report.json"
-    ) -> Dict:
+    ) -> dict:
         """Generate comprehensive telemetry report.
 
         Args:
@@ -427,7 +426,7 @@ class TelemetryCollector:
 
         return telemetry_data
 
-    def analyze_multi_job_cascade(self, telemetry_data: Dict) -> Dict:
+    def analyze_multi_job_cascade(self, telemetry_data: dict) -> dict:
         """Identify self-healing cascade patterns across multiple jobs in a workflow run.
 
         A cascade occurs when the dominant failure pattern is 'self-healing', meaning

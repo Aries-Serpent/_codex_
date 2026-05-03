@@ -8,9 +8,10 @@ Prevents infinite loops and repeated action patterns.
 import hashlib
 import json
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 
 @dataclass

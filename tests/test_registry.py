@@ -20,11 +20,11 @@ if "omegaconf" not in sys.modules:  # pragma: no cover - only used when optional
 
     class _OmegaConf:
         @staticmethod
-        def create(*args, **kwargs):  # noqa: ARG002
+        def create(*args, **kwargs):
             return {}
 
         @staticmethod
-        def from_dotlist(items):  # noqa: ARG002
+        def from_dotlist(items):
             return {}
 
         @staticmethod
@@ -32,15 +32,15 @@ if "omegaconf" not in sys.modules:  # pragma: no cover - only used when optional
             return cfg_cls
 
         @staticmethod
-        def set_struct(schema, flag):  # noqa: ARG002
+        def set_struct(schema, flag):
             return schema
 
         @staticmethod
-        def load(path):  # noqa: ARG002
+        def load(path):
             return {}
 
         @staticmethod
-        def merge(*configs):  # noqa: ARG002
+        def merge(*configs):
             return {}
 
         @staticmethod
@@ -55,22 +55,22 @@ if "torch" not in sys.modules:  # pragma: no cover - only used when torch is una
     torch = types.ModuleType("torch")
 
     class _Tensor:
-        def __init__(self, data=None):  # noqa: D401, ARG002
+        def __init__(self, data=None):
             self._data = data
 
-        def argmax(self, dim=-1):  # noqa: D401, ARG002
+        def argmax(self, dim=-1):
             return self
 
-        def float(self):  # noqa: D401
+        def float(self):
             return self
 
-        def sum(self):  # noqa: D401
+        def sum(self):
             return self
 
-        def item(self):  # noqa: D401
+        def item(self):
             return 0.0
 
-        def numel(self):  # noqa: D401
+        def numel(self):
             return 0
 
     torch.Tensor = _Tensor
@@ -83,12 +83,12 @@ if (
     transformers = types.ModuleType("transformers")
 
     class _DummyModel:
-        def to(self, *args, **kwargs):  # noqa: ARG002
+        def to(self, *args, **kwargs):
             return self
 
     class AutoModelForCausalLM:
         @staticmethod
-        def from_pretrained(name, local_files_only=True):  # noqa: ARG002
+        def from_pretrained(name, local_files_only=True):
             return _DummyModel()
 
     class PreTrainedModel(_DummyModel):

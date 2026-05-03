@@ -14,7 +14,7 @@ from pathlib import Path
 def run(cmd: list[str]) -> int:
     try:
         return subprocess.run(cmd, check=False).returncode
-    except Exception:  # noqa: BLE001
+    except Exception:
         return 127
 
 

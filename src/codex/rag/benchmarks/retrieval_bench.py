@@ -5,16 +5,16 @@ Measures query latency and accuracy for semantic search.
 """
 
 import tempfile
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .runner import BenchmarkRunner
 
 
 def benchmark_retrieval(
-    index_sizes: Optional[List[int]] = None,
-    top_k_values: Optional[List[int]] = None,
+    index_sizes: Optional[list[int]] = None,
+    top_k_values: Optional[list[int]] = None,
     runs: int = 10,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Benchmark retrieval performance with various index sizes.
 
@@ -108,7 +108,7 @@ def _build_test_index(size: int, index_name: str, tmpdir: str) -> None:
     )
 
 
-def _query_index(query: str, index_name: str, top_k: int, tmpdir: str) -> List[Dict[str, Any]]:
+def _query_index(query: str, index_name: str, top_k: int, tmpdir: str) -> list[dict[str, Any]]:
     """Query the index and return results."""
     from codex.rag.retriever import Retriever
 
@@ -117,7 +117,7 @@ def _query_index(query: str, index_name: str, top_k: int, tmpdir: str) -> List[D
     return retriever.query(query, top_k=top_k)
 
 
-def _calculate_percentiles(results: List) -> None:
+def _calculate_percentiles(results: list) -> None:
     """Calculate and add percentile information to results."""
     import statistics
 
@@ -137,14 +137,14 @@ def _calculate_percentiles(results: List) -> None:
             result.metadata["p99_ms"] = p99
 
 
-def _percentile(data: List[float], percentile: float) -> float:
+def _percentile(data: list[float], percentile: float) -> float:
     """Calculate percentile."""
     sorted_data = sorted(data)
     index = int(len(sorted_data) * percentile)
     return sorted_data[min(index, len(sorted_data) - 1)]
 
 
-def _get_latency_percentiles(results: List) -> Dict[str, float]:
+def _get_latency_percentiles(results: list) -> dict[str, float]:
     """Get latency percentiles from results."""
     import statistics
 
@@ -163,7 +163,7 @@ def _get_latency_percentiles(results: List) -> Dict[str, float]:
     }
 
 
-def benchmark_cache_effectiveness(index_size: int = 1000, runs: int = 20) -> Dict[str, Any]:
+def benchmark_cache_effectiveness(index_size: int = 1000, runs: int = 20) -> dict[str, Any]:
     """
     Benchmark cache hit rates and effectiveness.
 

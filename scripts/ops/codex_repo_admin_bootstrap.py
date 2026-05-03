@@ -35,7 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""Harden a GitHub repository without touching workflows."""
 
 import argparse
 import base64
@@ -44,9 +43,10 @@ import json
 import os
 import sys
 import types
+from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, MutableMapping, Optional, Sequence
+from typing import Any, Optional
 from urllib.parse import quote as _url_quote
 
 from integrations.github_app_auth import (

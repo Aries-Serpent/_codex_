@@ -15,7 +15,7 @@ import pytest
 
 pytest.importorskip("numpy")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
 
 class TestEmbeddingAccuracy:
@@ -125,7 +125,7 @@ class TestRetrievalAccuracy:
                     results = retriever.retrieve("test query", top_k=k)
                     if results is not None:
                         assert len(results) <= k, f"Should return at most {k} results"
-                except Exception:  # noqa: BLE001
+                except Exception:
                     # May not have documents indexed
                     pass
         except ImportError:
@@ -149,7 +149,7 @@ class TestRetrievalAccuracy:
                         # Scores should be in descending order (higher is better)
                         for i in range(len(scores) - 1):
                             assert scores[i] >= scores[i+1], "Results should be ranked by score"
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # May not have documents indexed
                 pass
         except ImportError:
@@ -348,7 +348,7 @@ class TestRAGPerformance:
                 for i in range(100):
                     try:
                         retriever.indexer.add_document(f"doc_{i}", f"Content {i}")
-                    except Exception:  # Best-effort document insertion for perf test  # noqa: BLE001
+                    except Exception:  # Best-effort document insertion for perf test
                         pass
 
             # Test retrieval speed

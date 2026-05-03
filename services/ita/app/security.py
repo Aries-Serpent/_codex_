@@ -6,10 +6,11 @@ import json
 import os
 import secrets
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
-from typing import Iterable, Optional, Set
+from typing import Optional
 
 from fastapi import HTTPException, status
 
@@ -41,7 +42,7 @@ class ApiKeyStore:
         self.path = Path(path or os.environ.get(_KEY_FILE_ENV, _DEFAULT_RUNTIME_PATH))
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
-    def _load(self) -> Set[ApiKeyRecord]:
+    def _load(self) -> set[ApiKeyRecord]:
         if not self.path.exists():
             return set()
         with self.path.open("r", encoding="utf-8") as handle:
@@ -63,7 +64,7 @@ class ApiKeyStore:
         self._dump(records)
         return token
 
-    def hashed_keys(self) -> Set[str]:
+    def hashed_keys(self) -> set[str]:
         return {record.key_hash for record in self._load()}
 
 
@@ -86,8 +87,8 @@ def hash_key(value: str) -> str:
     return sha256(value.encode("utf-8")).hexdigest()
 
 
-def _keys_from_environment() -> Set[str]:
-    keys: Set[str] = set()
+def _keys_from_environment() -> set[str]:
+    keys: set[str] = set()
     single = os.environ.get(_SINGLE_KEY_ENV)
     if single:
         keys.add(single.strip())

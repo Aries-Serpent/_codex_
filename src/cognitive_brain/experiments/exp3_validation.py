@@ -14,7 +14,6 @@ Methodology:
 
 import random
 from dataclasses import dataclass
-from typing import List, Tuple
 
 from cognitive_brain.quantum import TestExecutionMetrics
 from cognitive_brain.quantum.config import QuantumConfig
@@ -34,7 +33,7 @@ class TestCase:
     complexity_score: float
 
 
-def generate_test_suite(num_tests: int = 100, seed: int = 42) -> List[TestCase]:
+def generate_test_suite(num_tests: int = 100, seed: int = 42) -> list[TestCase]:
     """
     Generate synthetic test suite for validation.
 
@@ -90,7 +89,7 @@ def generate_test_suite(num_tests: int = 100, seed: int = 42) -> List[TestCase]:
     return tests
 
 
-def run_traditional_approach(test_suite: List[TestCase]) -> Tuple[float, int, int]:
+def run_traditional_approach(test_suite: list[TestCase]) -> tuple[float, int, int]:
     """
     Run all tests (traditional approach).
 
@@ -108,8 +107,8 @@ def run_traditional_approach(test_suite: List[TestCase]) -> Tuple[float, int, in
 
 
 def run_uncertainty_approach(
-    test_suite: List[TestCase], time_budget_factor: float = 0.75
-) -> Tuple[float, int, int]:
+    test_suite: list[TestCase], time_budget_factor: float = 0.75
+) -> tuple[float, int, int]:
     """
     Run uncertainty-optimized test selection.
 

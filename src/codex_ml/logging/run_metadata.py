@@ -20,11 +20,11 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Helpers for recording run-level metadata alongside metric logs."""
 
 
+from collections.abc import Callable, Mapping, MutableMapping, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Mapping, MutableMapping, Sequence  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.tracking.git_tag import current_commit  # noqa: E402
 
@@ -155,4 +155,4 @@ def log_run_metadata(
     return payload
 
 
-__all__ = ["build_run_metadata", "log_run_metadata", "CommitLookup"]
+__all__ = ["CommitLookup", "build_run_metadata", "log_run_metadata"]

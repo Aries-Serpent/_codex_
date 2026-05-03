@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, List, Sequence
 
 import tomllib
 import yaml
@@ -30,8 +30,8 @@ def _is_pinned(req: str) -> bool:
     return any(op in req for op in PINNED_OPERATORS)
 
 
-def _scan_requirements(path: Path) -> List[DepIssue]:
-    issues: List[DepIssue] = []
+def _scan_requirements(path: Path) -> list[DepIssue]:
+    issues: list[DepIssue] = []
     if not path.exists():
         return issues
     for idx, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
@@ -43,8 +43,8 @@ def _scan_requirements(path: Path) -> List[DepIssue]:
     return issues
 
 
-def _scan_pyproject(path: Path) -> List[DepIssue]:
-    issues: List[DepIssue] = []
+def _scan_pyproject(path: Path) -> list[DepIssue]:
+    issues: list[DepIssue] = []
     if not path.exists():
         return issues
     data = tomllib.loads(path.read_text(encoding="utf-8"))
@@ -55,8 +55,8 @@ def _scan_pyproject(path: Path) -> List[DepIssue]:
     return issues
 
 
-def _scan_env_yml(path: Path) -> List[DepIssue]:
-    issues: List[DepIssue] = []
+def _scan_env_yml(path: Path) -> list[DepIssue]:
+    issues: list[DepIssue] = []
     if not path.exists():
         return issues
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -79,7 +79,7 @@ def _scan_env_yml(path: Path) -> List[DepIssue]:
     return issues
 
 
-def run_check(repo_root: Path) -> Dict[str, object]:
+def run_check(repo_root: Path) -> dict[str, object]:
     manifests = [
         repo_root / "requirements.txt",
         repo_root / "requirements-dev.txt",
@@ -87,7 +87,7 @@ def run_check(repo_root: Path) -> Dict[str, object]:
         repo_root / "environment.yml",
     ]
 
-    issues: List[DepIssue] = []
+    issues: list[DepIssue] = []
     for manifest in manifests:
         if manifest.name.startswith("requirements"):
             issues.extend(_scan_requirements(manifest))
@@ -96,19 +96,18 @@ def run_check(repo_root: Path) -> Dict[str, object]:
         elif manifest.name == "environment.yml":
             issues.extend(_scan_env_yml(manifest))
 
-    payload = {
+    return {
         "scanned_root": str(repo_root),
         "issue_count": len(issues),
         "issues": [asdict(i) for i in issues],
     }
-    return payload
 
 
-def _write_json(payload: Dict[str, object], out_path: Path) -> None:
+def _write_json(payload: dict[str, object], out_path: Path) -> None:
     out_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(payload: Dict[str, object], out_path: Path) -> None:
+def _write_markdown(payload: dict[str, object], out_path: Path) -> None:
     lines = [
         "# Codex Dependency Pinning Report",
         "",

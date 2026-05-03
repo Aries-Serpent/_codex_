@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 import yaml
 
@@ -69,22 +69,22 @@ class DependencyConflict:
     """Represents a detected dependency conflict"""
     conflict_type: ConflictType
     package_name: str
-    conflicting_versions: List[str]
-    dependencies: List[DependencyInfo]
+    conflicting_versions: list[str]
+    dependencies: list[DependencyInfo]
     severity: str  # 'low', 'medium', 'high', 'critical'
     description: str
     suggested_resolution: Optional[str] = None
     has_vulnerability: bool = False
-    vulnerability_details: Optional[Dict] = None
+    vulnerability_details: Optional[dict] = None
 
 
 @dataclass
 class ResolutionPlan:
     """Plan for resolving dependency conflicts"""
     conflicts_detected: int
-    conflicts_to_resolve: List[DependencyConflict]
+    conflicts_to_resolve: list[DependencyConflict]
     strategy: ResolutionStrategy
-    actions: List[Dict[str, Any]] = field(default_factory=list)
+    actions: list[dict[str, Any]] = field(default_factory=list)
     estimated_risk: str = "low"  # 'low', 'medium', 'high'
     requires_manual_review: bool = False
 
@@ -96,9 +96,9 @@ class ConflictReport:
     timestamp: datetime
     total_dependencies: int
     conflicts_found: int
-    conflicts: List[DependencyConflict]
-    dependency_graph: Dict[str, List[str]] = field(default_factory=dict)
-    circular_dependencies: List[List[str]] = field(default_factory=list)
+    conflicts: list[DependencyConflict]
+    dependency_graph: dict[str, list[str]] = field(default_factory=dict)
+    circular_dependencies: list[list[str]] = field(default_factory=list)
     resolution_plan: Optional[ResolutionPlan] = None
 
 
@@ -111,11 +111,11 @@ class DependencyConflictResolver:
         self.max_graph_depth = self.config.get('conflict_detection', {}).get('max_depth', 10)
         self.check_transitive = self.config.get('conflict_detection', {}).get('check_transitive', True)
         self.vulnerability_checking_enabled = self.config.get('vulnerability_integration', {}).get('enabled', True)
-        self.dependencies: Dict[str, DependencyInfo] = {}
-        self.dependency_graph: Dict[str, Set[str]] = {}
-        self.conflicts: List[DependencyConflict] = []
+        self.dependencies: dict[str, DependencyInfo] = {}
+        self.dependency_graph: dict[str, set[str]] = {}
+        self.conflicts: list[DependencyConflict] = []
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load agent configuration from YAML file"""
         if config_path is None:
             config_path = Path(__file__).parent.parent / "config" / "agent_config.yaml"
@@ -126,7 +126,7 @@ class DependencyConflictResolver:
         with open(config_path) as f:
             return yaml.safe_load(f)
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration"""
         return {
             'agent_name': 'dependency-conflict-resolver',
@@ -147,7 +147,7 @@ class DependencyConflictResolver:
             }
         }
 
-    def parse_dependency_file(self, file_path: Path) -> List[DependencyInfo]:
+    def parse_dependency_file(self, file_path: Path) -> list[DependencyInfo]:
         """Parse a dependency file and return list of dependencies"""
         if not file_path.exists():
             raise FileNotFoundError(f"Dependency file not found: {file_path}")
@@ -157,14 +157,13 @@ class DependencyConflictResolver:
 
         if ecosystem == Ecosystem.PYTHON:
             return self._parse_python_requirements(file_path)
-        elif ecosystem == Ecosystem.JAVASCRIPT:
+        if ecosystem == Ecosystem.JAVASCRIPT:
             return self._parse_package_json(file_path)
-        elif ecosystem == Ecosystem.RUST:
+        if ecosystem == Ecosystem.RUST:
             return self._parse_cargo_toml(file_path)
-        elif ecosystem == Ecosystem.GO:
+        if ecosystem == Ecosystem.GO:
             return self._parse_go_mod(file_path)
-        else:
-            raise ValueError(f"Unsupported dependency file: {file_path}")
+        raise ValueError(f"Unsupported dependency file: {file_path}")
 
     def _detect_ecosystem(self, file_path: Path) -> Ecosystem:
         """Detect ecosystem from file name/extension"""
@@ -173,21 +172,20 @@ class DependencyConflictResolver:
         # Check for Python files
         if 'requirements' in name and name.endswith('.txt'):
             return Ecosystem.PYTHON
-        elif name in ('pyproject.toml',):
+        if name in ('pyproject.toml',):
             return Ecosystem.PYTHON
         # Check for JavaScript files
-        elif name in ('package.json', 'package-lock.json') or 'package' in name and name.endswith('.json'):
+        if name in ('package.json', 'package-lock.json') or 'package' in name and name.endswith('.json'):
             return Ecosystem.JAVASCRIPT
         # Check for Rust files
-        elif 'cargo' in name and name.endswith('.toml'):
+        if 'cargo' in name and name.endswith('.toml'):
             return Ecosystem.RUST
         # Check for Go files
-        elif 'go.mod' in name or name == 'go.mod':
+        if 'go.mod' in name or name == 'go.mod':
             return Ecosystem.GO
-        else:
-            raise ValueError(f"Cannot detect ecosystem for file: {file_path}")
+        raise ValueError(f"Cannot detect ecosystem for file: {file_path}")
 
-    def _parse_python_requirements(self, file_path: Path) -> List[DependencyInfo]:
+    def _parse_python_requirements(self, file_path: Path) -> list[DependencyInfo]:
         """Parse Python requirements.txt file"""
         dependencies = []
 
@@ -217,7 +215,7 @@ class DependencyConflictResolver:
 
         return dependencies
 
-    def _parse_package_json(self, file_path: Path) -> List[DependencyInfo]:
+    def _parse_package_json(self, file_path: Path) -> list[DependencyInfo]:
         """Parse JavaScript package.json file"""
         dependencies = []
 
@@ -243,7 +241,7 @@ class DependencyConflictResolver:
 
         return dependencies
 
-    def _parse_cargo_toml(self, file_path: Path) -> List[DependencyInfo]:
+    def _parse_cargo_toml(self, file_path: Path) -> list[DependencyInfo]:
         """Parse Rust Cargo.toml file"""
         dependencies = []
 
@@ -281,7 +279,7 @@ class DependencyConflictResolver:
 
         return dependencies
 
-    def _parse_go_mod(self, file_path: Path) -> List[DependencyInfo]:
+    def _parse_go_mod(self, file_path: Path) -> list[DependencyInfo]:
         """Parse Go go.mod file"""
         dependencies = []
 
@@ -295,7 +293,7 @@ class DependencyConflictResolver:
                 if line.startswith('require ('):
                     in_require = True
                     continue
-                elif in_require and line == ')':
+                if in_require and line == ')':
                     in_require = False
                     continue
 
@@ -332,12 +330,12 @@ class DependencyConflictResolver:
 
         return constraint.lstrip('>=<~^!= ')
 
-    def build_dependency_graph(self, dependencies: List[DependencyInfo]) -> Dict[str, List[str]]:
+    def build_dependency_graph(self, dependencies: list[DependencyInfo]) -> dict[str, list[str]]:
         """Build a dependency graph from list of dependencies"""
-        graph: Dict[str, List[str]] = {}
+        graph: dict[str, list[str]] = {}
 
         # Store dependencies with unique keys to handle duplicates
-        dep_counter: Dict[str, int] = {}
+        dep_counter: dict[str, int] = {}
 
         for dep in dependencies:
             # Create unique key for storage
@@ -360,13 +358,13 @@ class DependencyConflictResolver:
         self.dependency_graph = {k: set(v) for k, v in graph.items()}
         return graph
 
-    def detect_conflicts(self) -> List[DependencyConflict]:
+    def detect_conflicts(self) -> list[DependencyConflict]:
         """Detect version conflicts in dependencies"""
         conflicts = []
 
         # Group dependencies by name (track all instances, even from same source)
-        dep_groups: Dict[str, List[DependencyInfo]] = {}
-        dep_counter: Dict[str, int] = {}
+        dep_groups: dict[str, list[DependencyInfo]] = {}
+        dep_counter: dict[str, int] = {}
 
         for dep in self.dependencies.values():
             f"{dep.name}_{dep_counter.get(dep.name, 0)}"
@@ -414,7 +412,7 @@ class DependencyConflictResolver:
         self.conflicts = conflicts
         return conflicts
 
-    def _are_versions_compatible(self, versions: List[str], ecosystem: Ecosystem) -> bool:
+    def _are_versions_compatible(self, versions: list[str], ecosystem: Ecosystem) -> bool:
         """Check if version list is compatible
 
         Versions are considered compatible if they only differ in patch version
@@ -453,7 +451,7 @@ class DependencyConflictResolver:
         except (ValueError, AttributeError):
             return False
 
-    def _assess_conflict_severity(self, deps: List[DependencyInfo]) -> str:
+    def _assess_conflict_severity(self, deps: list[DependencyInfo]) -> str:
         """Assess severity of a conflict"""
         versions = [d.version for d in deps]
 
@@ -469,10 +467,9 @@ class DependencyConflictResolver:
                 version_range = max(parsed) - min(parsed)
                 if version_range >= 2:
                     return "critical"
-                elif version_range == 1:
+                if version_range == 1:
                     return "high"
-                else:
-                    return "medium"
+                return "medium"
         except (ValueError, AttributeError):
             pass
 
@@ -492,13 +489,13 @@ class DependencyConflictResolver:
         except (ValueError, TypeError):
             return "Manual review required to resolve version conflict"
 
-    def _detect_circular_dependencies(self) -> List[List[str]]:
+    def _detect_circular_dependencies(self) -> list[list[str]]:
         """Detect circular dependencies in the graph"""
         cycles = []
         visited = set()
         rec_stack = set()
 
-        def dfs(node: str, path: List[str]) -> None:
+        def dfs(node: str, path: list[str]) -> None:
             visited.add(node)
             rec_stack.add(node)
             path.append(node)
@@ -555,7 +552,7 @@ class DependencyConflictResolver:
 
         return plan
 
-    def _create_resolution_action(self, conflict: DependencyConflict, strategy: ResolutionStrategy) -> Dict[str, Any]:
+    def _create_resolution_action(self, conflict: DependencyConflict, strategy: ResolutionStrategy) -> dict[str, Any]:
         """Create a resolution action for a conflict"""
         versions = conflict.conflicting_versions
 
@@ -619,17 +616,16 @@ class DependencyConflictResolver:
 
         if major_changes > 2:
             return "high"
-        elif major_changes > 0:
+        if major_changes > 0:
             return "medium"
-        else:
-            return "low"
+        return "low"
 
-    def check_vulnerabilities(self) -> Dict[str, List[Dict]]:
+    def check_vulnerabilities(self) -> dict[str, list[dict]]:
         """Check dependencies for known vulnerabilities"""
         if not self.vulnerability_checking_enabled:
             return {}
 
-        vulnerabilities: Dict[str, List[Dict]] = {}
+        vulnerabilities: dict[str, list[dict]] = {}
 
         # Mock vulnerability check (would integrate with actual scanner)
         for dep in self.dependencies.values():
@@ -693,7 +689,7 @@ class DependencyConflictResolver:
 
         return success
 
-    def _update_dependency_file(self, package: str, version: str, files: List[str]) -> None:
+    def _update_dependency_file(self, package: str, version: str, files: list[str]) -> None:
         """Update dependency version in file"""
         for file_path in files:
             path = Path(file_path)
@@ -716,7 +712,7 @@ class DependencyConflictResolver:
             with open(path, 'w') as f:
                 f.write(updated)
 
-    def validate_resolution(self) -> Tuple[bool, List[str]]:
+    def validate_resolution(self) -> tuple[bool, list[str]]:
         """Validate that resolution doesn't introduce new conflicts"""
         errors = []
 

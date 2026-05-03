@@ -19,7 +19,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -33,9 +33,9 @@ class PhilosophicalMetrics:
     rate_of_becoming: float = 0.0  # events per hour
     deterritorialization_force: float = 0.0  # can be negative
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert metrics to dictionary."""
         return {
             "rhizomaticity": self.rhizomaticity,
@@ -122,8 +122,7 @@ class PhilosophicalMetricsCalculator:
         if not 0.0 <= definiteness <= 1.0:
             raise ValueError(f"Definiteness must be 0.0-1.0, got {definiteness}")
 
-        satisfaction = (prehensions + realizations) * definiteness
-        return satisfaction
+        return (prehensions + realizations) * definiteness
 
     @staticmethod
     def calculate_becoming_rate(events: int, time_hours: float) -> float:
@@ -152,8 +151,7 @@ class PhilosophicalMetricsCalculator:
         if time_hours <= 0:
             raise ValueError(f"Time must be positive, got {time_hours}")
 
-        rate = events / time_hours
-        return rate
+        return events / time_hours
 
     @staticmethod
     def classify_becoming_rate(rate: float) -> str:
@@ -168,12 +166,11 @@ class PhilosophicalMetricsCalculator:
         """
         if rate > 20:
             return "INTENSE BECOMING"
-        elif rate >= 10:
+        if rate >= 10:
             return "ACTIVE BECOMING"
-        elif rate >= 5:
+        if rate >= 5:
             return "MODERATE BECOMING"
-        else:
-            return "SLOW BECOMING"
+        return "SLOW BECOMING"
 
     @staticmethod
     def calculate_deterritorialization_force(
@@ -203,8 +200,7 @@ class PhilosophicalMetricsCalculator:
         if not 0.0 <= innovation <= 1.0:
             raise ValueError(f"Innovation must be 0.0-1.0, got {innovation}")
 
-        force = innovation - rigidity
-        return force
+        return innovation - rigidity
 
     @staticmethod
     def interpret_deterr_force(force: float) -> str:
@@ -219,14 +215,13 @@ class PhilosophicalMetricsCalculator:
         """
         if force > 0.3:
             return "HIGH deterritorialization needed - break rigid patterns"
-        elif force > 0.1:
+        if force > 0.1:
             return "MODERATE deterritorialization - some flexibility needed"
-        elif force > -0.1:
+        if force > -0.1:
             return "EQUILIBRIUM - balanced state"
-        elif force > -0.3:
+        if force > -0.3:
             return "MODERATE reterritorialization - forming new patterns"
-        else:
-            return "HIGH reterritorialization - strong pattern formation"
+        return "HIGH reterritorialization - strong pattern formation"
 
 
 class PhilosophicalMetricsDashboard:
@@ -248,7 +243,7 @@ class PhilosophicalMetricsDashboard:
 
     def __init__(self) -> None:
         self.calculator = PhilosophicalMetricsCalculator()
-        self.metrics_history: List[PhilosophicalMetrics] = []
+        self.metrics_history: list[PhilosophicalMetrics] = []
         LOGGER.info("PhilosophicalMetricsDashboard initialized")
 
     def calculate_current_metrics(
@@ -262,7 +257,7 @@ class PhilosophicalMetricsDashboard:
         time_hours: float = 1.0,
         rigidity: float = 0.0,
         innovation: float = 0.0,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> PhilosophicalMetrics:
         """
         Calculate all current philosophical metrics.
@@ -323,7 +318,7 @@ class PhilosophicalMetricsDashboard:
         """Get the most recent metrics."""
         return self.metrics_history[-1] if self.metrics_history else None
 
-    def get_metrics_trend(self, metric_name: str, count: int = 10) -> List[float]:
+    def get_metrics_trend(self, metric_name: str, count: int = 10) -> list[float]:
         """
         Get trend data for a specific metric.
 
@@ -419,7 +414,7 @@ class PhilosophicalMetricsDashboard:
 
         return "\n".join(report_lines)
 
-    def export_metrics(self, output_path: Optional[Path] = None) -> Dict[str, Any]:
+    def export_metrics(self, output_path: Optional[Path] = None) -> dict[str, Any]:
         """
         Export metrics history to a dictionary (or file).
 
@@ -444,7 +439,7 @@ class PhilosophicalMetricsDashboard:
 
         return data
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about the metrics dashboard."""
         if not self.metrics_history:
             return {"total_measurements": 0}

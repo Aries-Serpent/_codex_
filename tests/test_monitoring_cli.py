@@ -3,15 +3,15 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 import pytest
 
 pytest.importorskip("typer")
-from typer.testing import CliRunner  # noqa: E402
+from typer.testing import CliRunner
 
-from codex_ml.monitoring import cli as monitoring_cli  # noqa: E402
+from codex_ml.monitoring import cli as monitoring_cli
 
 pytestmark = pytest.mark.not_slow
 

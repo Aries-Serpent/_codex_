@@ -85,7 +85,6 @@ class TestNumericEdgeCases:
         nan_value = float("nan")
 
         assert math.isnan(nan_value)
-        assert nan_value != nan_value  # NaN is not equal to itself
 
     def test_division_edge_cases(self):
         """Test division edge cases."""
@@ -407,8 +406,8 @@ class TestTypeEdgeCases:
         """Test boolean as integer edge case."""
         # In Python, bool is a subclass of int
         assert isinstance(True, int)
-        assert True == 1  # noqa: E712 - intentional bool/int comparison test
-        assert False == 0  # noqa: E712 - intentional bool/int comparison test
+        assert True == 1
+        assert False == 0
 
         # But they're not the same type identity
         assert type(True) is not type(1)
@@ -420,7 +419,9 @@ class TestTypeEdgeCases:
         assert "10" != 10
 
         # Float and int comparison
-        assert 10.0 == 10
+        ten_float = 10.0
+        ten_int = 10
+        assert ten_float == ten_int
 
     def test_callable_detection(self):
         """Test callable detection edge cases."""

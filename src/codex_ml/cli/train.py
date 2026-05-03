@@ -7,8 +7,9 @@ import logging
 logger = logging.getLogger(__name__)
 import os
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Optional, Sequence, Union
+from typing import Any, Optional
 
 try:
     import hydra
@@ -51,7 +52,7 @@ _ = (ArgparseJSONParser, run_cmd)
 LOGGER = logging.getLogger(__name__)
 
 
-def _to_path(value: Optional[Union[str, Path]]) -> Optional[Path]:
+def _to_path(value: Optional[str | Path]) -> Optional[Path]:
     if value is None:
         return None
     return Path(to_absolute_path(str(value)))
@@ -220,7 +221,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
     entry_cfg = _cfg_to_dict(plugin_cfg.get("entry_points"))
     entry_enable = bool(plugin_cfg.get("enable_entry_points", entry_cfg.get("enable", False)))
     entry_groups = entry_cfg.get("groups") or plugin_cfg.get("entry_point_groups")
-    groups_spec: Optional[Union[dict[str, str], list[str]]] = None
+    groups_spec: Optional[dict[str, str] | list[str]] = None
     if isinstance(entry_groups, dict):
         groups_spec = {str(k): str(v) for k, v in entry_groups.items()}
     elif isinstance(entry_groups, (list, tuple, set)):

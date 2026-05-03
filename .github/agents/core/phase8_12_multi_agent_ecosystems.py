@@ -36,7 +36,7 @@ import time
 from collections import defaultdict, deque
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 # Deterministic random seed for Phase 8.12
 RANDOM_SEED_8_12 = 45
@@ -84,7 +84,7 @@ class NegotiationOffer:
 class Coalition:
     """Represents a coalition of agents."""
     coalition_id: str
-    member_ids: List[str]
+    member_ids: list[str]
     synergy_score: float
     stability_score: float
     formation_time: float
@@ -98,7 +98,7 @@ class AgentMessage:
     sender_id: str
     receiver_id: str
     message_type: MessageType
-    content: Dict[str, Any]
+    content: dict[str, Any]
     timestamp: float
     conversation_id: Optional[str] = None
 
@@ -138,9 +138,9 @@ class AgentNegotiationProtocol:
 
     def __init__(self, max_negotiation_rounds: int = 10, seed: int = RANDOM_SEED_8_12):
         self.max_negotiation_rounds = max_negotiation_rounds
-        self.active_negotiations: Dict[str, List[NegotiationOffer]] = {}
-        self.completed_negotiations: List[Dict[str, Any]] = []
-        self.trust_levels: Dict[Tuple[str, str], float] = {}  # (agent1, agent2) -> trust
+        self.active_negotiations: dict[str, list[NegotiationOffer]] = {}
+        self.completed_negotiations: list[dict[str, Any]] = []
+        self.trust_levels: dict[tuple[str, str], float] = {}  # (agent1, agent2) -> trust
         self.random = random.Random(seed)
 
         # Metrics
@@ -278,7 +278,7 @@ class AgentNegotiationProtocol:
 
         return convergence
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get negotiation metrics."""
         return {
             "total_negotiations": self.total_negotiations,
@@ -317,8 +317,8 @@ class CoalitionFormation:
                  seed: int = RANDOM_SEED_8_12):
         self.max_coalition_size = max_coalition_size
         self.stability_threshold = stability_threshold
-        self.coalitions: Dict[str, Coalition] = {}
-        self.agent_capabilities: Dict[str, List[str]] = {}
+        self.coalitions: dict[str, Coalition] = {}
+        self.agent_capabilities: dict[str, list[str]] = {}
         self.random = random.Random(seed)
 
         # Metrics
@@ -326,11 +326,11 @@ class CoalitionFormation:
         self.total_coalitions_dissolved = 0
         self.average_synergy = 0.0
 
-    def register_agent(self, agent_id: str, capabilities: List[str]):
+    def register_agent(self, agent_id: str, capabilities: list[str]):
         """Register an agent with their capabilities."""
         self.agent_capabilities[agent_id] = capabilities
 
-    def calculate_synergy(self, agent_ids: List[str]) -> float:
+    def calculate_synergy(self, agent_ids: list[str]) -> float:
         """
         Calculate synergy score for a group of agents.
 
@@ -361,7 +361,7 @@ class CoalitionFormation:
 
         return min(coverage_synergy + diversity_bonus, 1.0)
 
-    def form_coalition(self, member_ids: List[str]) -> Optional[str]:
+    def form_coalition(self, member_ids: list[str]) -> Optional[str]:
         """
         Form a new coalition.
 
@@ -393,7 +393,7 @@ class CoalitionFormation:
 
         return coalition_id
 
-    def analyze_stability(self, coalition_id: str) -> Dict[str, Any]:
+    def analyze_stability(self, coalition_id: str) -> dict[str, Any]:
         """
         Analyze coalition stability.
 
@@ -441,7 +441,7 @@ class CoalitionFormation:
             self.coalitions[coalition_id].dissolved = True
             self.total_coalitions_dissolved += 1
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get coalition formation metrics."""
         active_coalitions = sum(1 for c in self.coalitions.values() if not c.dissolved)
 
@@ -482,9 +482,9 @@ class FederatedLearning:
                  seed: int = RANDOM_SEED_8_12):
         self.convergence_threshold = convergence_threshold
         self.max_rounds = max_rounds
-        self.global_model: Dict[str, float] = {}
-        self.local_models: Dict[str, Dict[str, float]] = {}
-        self.training_history: List[Dict[str, Any]] = []
+        self.global_model: dict[str, float] = {}
+        self.local_models: dict[str, dict[str, float]] = {}
+        self.training_history: list[dict[str, Any]] = []
         self.random = random.Random(seed)
 
         # Metrics
@@ -492,11 +492,11 @@ class FederatedLearning:
         self.converged = False
         self.convergence_round = -1
 
-    def initialize_global_model(self, model_params: Dict[str, float]):
+    def initialize_global_model(self, model_params: dict[str, float]):
         """Initialize the global model."""
         self.global_model = model_params.copy()
 
-    def submit_local_update(self, agent_id: str, local_params: Dict[str, float]):
+    def submit_local_update(self, agent_id: str, local_params: dict[str, float]):
         """
         Submit local model update from an agent.
 
@@ -504,7 +504,7 @@ class FederatedLearning:
         """
         self.local_models[agent_id] = local_params.copy()
 
-    def aggregate_models(self, aggregation_method: str = "fedavg") -> Dict[str, float]:
+    def aggregate_models(self, aggregation_method: str = "fedavg") -> dict[str, float]:
         """
         Aggregate local models with privacy-preserving techniques.
 
@@ -575,7 +575,7 @@ class FederatedLearning:
 
         return self.converged
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get federated learning metrics."""
         return {
             "current_round": self.current_round,
@@ -612,9 +612,9 @@ class AgentCommunicationProtocol:
     def __init__(self, max_message_queue: int = 1000, seed: int = RANDOM_SEED_8_12):
         self.max_message_queue = max_message_queue
         self.message_queue: deque = deque(maxlen=max_message_queue)
-        self.agent_registry: Set[str] = set()
-        self.routing_table: Dict[str, str] = {}  # agent_id -> address
-        self.conversation_history: Dict[str, List[AgentMessage]] = defaultdict(list)
+        self.agent_registry: set[str] = set()
+        self.routing_table: dict[str, str] = {}  # agent_id -> address
+        self.conversation_history: dict[str, list[AgentMessage]] = defaultdict(list)
         self.random = random.Random(seed)
 
         # Metrics
@@ -636,7 +636,7 @@ class AgentCommunicationProtocol:
         sender_id: str,
         receiver_id: str,
         message_type: MessageType,
-        content: Dict[str, Any],
+        content: dict[str, Any],
         conversation_id: Optional[str] = None
     ) -> str:
         """
@@ -707,11 +707,11 @@ class AgentCommunicationProtocol:
 
         return processed
 
-    def get_conversation(self, conversation_id: str) -> List[AgentMessage]:
+    def get_conversation(self, conversation_id: str) -> list[AgentMessage]:
         """Retrieve a conversation history."""
         return self.conversation_history.get(conversation_id, [])
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get communication metrics."""
         return {
             "total_messages_sent": self.total_messages_sent,
@@ -751,9 +751,9 @@ class CompetitiveCoevolution:
                  seed: int = RANDOM_SEED_8_12):
         self.population_size = population_size
         self.selection_pressure = selection_pressure
-        self.agent_fitness: Dict[str, float] = {}
-        self.rivalry_matrix: Dict[Tuple[str, str], float] = {}
-        self.competition_history: List[Dict[str, Any]] = []
+        self.agent_fitness: dict[str, float] = {}
+        self.rivalry_matrix: dict[tuple[str, str], float] = {}
+        self.competition_history: list[dict[str, Any]] = []
         self.random = random.Random(seed)
 
         # Metrics
@@ -812,7 +812,7 @@ class CompetitiveCoevolution:
 
         return winner
 
-    def fitness_based_selection(self, num_selected: int) -> List[str]:
+    def fitness_based_selection(self, num_selected: int) -> list[str]:
         """
         Select top agents based on fitness (survival of the fittest).
 
@@ -826,11 +826,10 @@ class CompetitiveCoevolution:
 
         # Select top agents
         num_to_select = min(num_selected, len(sorted_agents))
-        selected = [agent_id for agent_id, _ in sorted_agents[:num_to_select]]
+        return [agent_id for agent_id, _ in sorted_agents[:num_to_select]]
 
-        return selected
 
-    def detect_rivalries(self, threshold: float = 0.5) -> List[Tuple[str, str, float]]:
+    def detect_rivalries(self, threshold: float = 0.5) -> list[tuple[str, str, float]]:
         """
         Detect strong rivalries between agents.
 
@@ -853,7 +852,7 @@ class CompetitiveCoevolution:
         if self.agent_fitness:
             self.average_fitness = sum(self.agent_fitness.values()) / len(self.agent_fitness)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get competitive co-evolution metrics."""
         return {
             "total_competitions": self.total_competitions,
@@ -893,8 +892,8 @@ class ReputationSystem:
                  seed: int = RANDOM_SEED_8_12):
         self.initial_trust = initial_trust
         self.decay_rate = decay_rate
-        self.reputation_scores: Dict[str, ReputationScore] = {}
-        self.interaction_history: List[Dict[str, Any]] = []
+        self.reputation_scores: dict[str, ReputationScore] = {}
+        self.interaction_history: list[dict[str, Any]] = []
         self.random = random.Random(seed)
 
         # Metrics
@@ -991,7 +990,7 @@ class ReputationSystem:
                 rep.trust_score for rep in self.reputation_scores.values()
             ) / len(self.reputation_scores)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get reputation system metrics."""
         return {
             "total_interactions": self.total_interactions,
@@ -1032,10 +1031,10 @@ class MarketplaceMechanisms:
     """
 
     def __init__(self, seed: int = RANDOM_SEED_8_12):
-        self.services: Dict[str, Dict[str, Any]] = {}
-        self.active_auctions: Dict[str, Dict[str, Any]] = {}
-        self.completed_trades: List[Dict[str, Any]] = []
-        self.market_prices: Dict[str, float] = {}
+        self.services: dict[str, dict[str, Any]] = {}
+        self.active_auctions: dict[str, dict[str, Any]] = {}
+        self.completed_trades: list[dict[str, Any]] = []
+        self.market_prices: dict[str, float] = {}
         self.random = random.Random(seed)
 
         # Metrics
@@ -1104,7 +1103,7 @@ class MarketplaceMechanisms:
             "timestamp": time.time()
         })
 
-    def close_auction(self, auction_id: str) -> Dict[str, Any]:
+    def close_auction(self, auction_id: str) -> dict[str, Any]:
         """
         Close an auction and determine the winner.
 
@@ -1173,7 +1172,7 @@ class MarketplaceMechanisms:
         """Get the current market price for a service."""
         return self.market_prices.get(service_id)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get marketplace metrics."""
         return {
             "total_trades": self.total_trades,
@@ -1189,7 +1188,7 @@ class MarketplaceMechanisms:
 # Module-level exports and utility functions
 # ============================================================================
 
-def get_phase8_12_summary() -> Dict[str, Any]:
+def get_phase8_12_summary() -> dict[str, Any]:
     """
     Get a summary of Phase 8.12 Multi-Agent Ecosystems implementation.
 

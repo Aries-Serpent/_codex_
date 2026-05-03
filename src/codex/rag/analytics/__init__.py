@@ -3,4 +3,4 @@
 from .dashboard import AnalyticsDashboard
 from .metrics_db import MetricsDatabase, QueryMetric
 
-__all__ = ["MetricsDatabase", "QueryMetric", "AnalyticsDashboard"]
+__all__ = ["AnalyticsDashboard", "MetricsDatabase", "QueryMetric"]

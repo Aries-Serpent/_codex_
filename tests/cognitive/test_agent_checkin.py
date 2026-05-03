@@ -17,7 +17,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(_REPO_ROOT / "scripts" / "cognitive"))
 sys.path.insert(0, str(_REPO_ROOT / "src"))
 
-import agent_checkin as _mod  # noqa: E402  (after sys.path setup)
+import agent_checkin as _mod
 
 # ---------------------------------------------------------------------------
 # Helpers

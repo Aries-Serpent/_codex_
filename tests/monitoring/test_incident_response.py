@@ -16,7 +16,7 @@ Phase: 20.1 Production Monitoring & Alerting
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
@@ -26,7 +26,7 @@ import pytest
 
 
 @pytest.fixture
-def incident_config() -> Dict[str, Any]:
+def incident_config() -> dict[str, Any]:
     """Fixture for incident configuration."""
     return {
         "id": "INC-2026-001",
@@ -42,7 +42,7 @@ def incident_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def escalation_matrix() -> Dict[str, Any]:
+def escalation_matrix() -> dict[str, Any]:
     """Fixture for incident escalation matrix."""
     return {
         "P1": {
@@ -77,7 +77,7 @@ def escalation_matrix() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def incident_timeline() -> List[Dict[str, Any]]:
+def incident_timeline() -> list[dict[str, Any]]:
     """Fixture for incident timeline events."""
     now = datetime.utcnow()
     return [
@@ -121,7 +121,7 @@ def incident_timeline() -> List[Dict[str, Any]]:
 
 
 @pytest.fixture
-def runbook_config() -> Dict[str, Any]:
+def runbook_config() -> dict[str, Any]:
     """Fixture for runbook configuration."""
     return {
         "id": "runbook-db-connection",
@@ -166,22 +166,22 @@ def runbook_config() -> Dict[str, Any]:
 class TestIncidentDetection:
     """Tests for incident detection functionality."""
 
-    def test_incident_created_from_alert(self, incident_config: Dict[str, Any]):
+    def test_incident_created_from_alert(self, incident_config: dict[str, Any]):
         """Test incident is created from alert."""
         assert incident_config["detected_by"].startswith("alert_rule:")
 
-    def test_incident_has_required_fields(self, incident_config: Dict[str, Any]):
+    def test_incident_has_required_fields(self, incident_config: dict[str, Any]):
         """Test incident has all required fields."""
         required_fields = ["id", "title", "severity", "status", "created_at"]
         for field in required_fields:
             assert field in incident_config
 
-    def test_incident_severity_valid(self, incident_config: Dict[str, Any]):
+    def test_incident_severity_valid(self, incident_config: dict[str, Any]):
         """Test incident severity is valid."""
         valid_severities = ["P1", "P2", "P3", "P4"]
         assert incident_config["severity"] in valid_severities
 
-    def test_incident_status_valid(self, incident_config: Dict[str, Any]):
+    def test_incident_status_valid(self, incident_config: dict[str, Any]):
         """Test incident status is valid."""
         valid_statuses = [
             "detected",
@@ -192,7 +192,7 @@ class TestIncidentDetection:
         ]
         assert incident_config["status"] in valid_statuses
 
-    def test_affected_services_listed(self, incident_config: Dict[str, Any]):
+    def test_affected_services_listed(self, incident_config: dict[str, Any]):
         """Test affected services are listed."""
         assert "affected_services" in incident_config
         assert len(incident_config["affected_services"]) > 0
@@ -256,23 +256,23 @@ class TestIncidentClassification:
 class TestIncidentEscalation:
     """Tests for incident escalation."""
 
-    def test_p1_response_time(self, escalation_matrix: Dict[str, Any]):
+    def test_p1_response_time(self, escalation_matrix: dict[str, Any]):
         """Test P1 response time requirement."""
         p1_config = escalation_matrix["P1"]
         assert p1_config["response_time_minutes"] == 5
 
-    def test_p1_resolution_target(self, escalation_matrix: Dict[str, Any]):
+    def test_p1_resolution_target(self, escalation_matrix: dict[str, Any]):
         """Test P1 resolution target."""
         p1_config = escalation_matrix["P1"]
         assert p1_config["resolution_target_hours"] == 1
 
-    def test_escalation_notifications(self, escalation_matrix: Dict[str, Any]):
+    def test_escalation_notifications(self, escalation_matrix: dict[str, Any]):
         """Test escalation includes appropriate notifications."""
         p1_config = escalation_matrix["P1"]
         assert "pagerduty" in p1_config["notify"]
         assert len(p1_config["notify"]) >= 2
 
-    def test_on_call_team_assignment(self, escalation_matrix: Dict[str, Any]):
+    def test_on_call_team_assignment(self, escalation_matrix: dict[str, Any]):
         """Test on-call team is assigned by severity."""
         p1_config = escalation_matrix["P1"]
         p4_config = escalation_matrix["P4"]
@@ -280,7 +280,7 @@ class TestIncidentEscalation:
         assert p1_config["on_call_team"] == "sre"
         assert p4_config["on_call_team"] == "platform"
 
-    def test_escalation_timer(self, escalation_matrix: Dict[str, Any]):
+    def test_escalation_timer(self, escalation_matrix: dict[str, Any]):
         """Test escalation timer configuration."""
         p1_config = escalation_matrix["P1"]
         assert p1_config["escalate_after_minutes"] == 15
@@ -294,7 +294,7 @@ class TestIncidentEscalation:
 class TestIncidentCommunication:
     """Tests for incident communication."""
 
-    def test_status_page_update_format(self, incident_config: Dict[str, Any]):
+    def test_status_page_update_format(self, incident_config: dict[str, Any]):
         """Test status page update format."""
         status_update = {
             "incident_id": incident_config["id"],
@@ -307,7 +307,7 @@ class TestIncidentCommunication:
         assert "status" in status_update
         assert "message" in status_update
 
-    def test_notification_template(self, incident_config: Dict[str, Any]):
+    def test_notification_template(self, incident_config: dict[str, Any]):
         """Test notification message template."""
         template = f"""
         🚨 Incident Alert: {incident_config["severity"]}
@@ -320,7 +320,7 @@ class TestIncidentCommunication:
         assert incident_config["severity"] in template
         assert incident_config["title"] in template
 
-    def test_stakeholder_notification_routing(self, escalation_matrix: Dict[str, Any]):
+    def test_stakeholder_notification_routing(self, escalation_matrix: dict[str, Any]):
         """Test stakeholder notifications by severity."""
         p1_notify = escalation_matrix["P1"]["notify"]
         p4_notify = escalation_matrix["P4"]["notify"]
@@ -339,26 +339,26 @@ class TestIncidentCommunication:
 class TestIncidentTimeline:
     """Tests for incident timeline tracking."""
 
-    def test_timeline_events_ordered(self, incident_timeline: List[Dict[str, Any]]):
+    def test_timeline_events_ordered(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline events are in chronological order."""
         timestamps = [event["timestamp"] for event in incident_timeline]
         assert timestamps == sorted(timestamps)
 
     def test_timeline_has_detection_event(
-        self, incident_timeline: List[Dict[str, Any]]
+        self, incident_timeline: list[dict[str, Any]]
     ):
         """Test timeline includes detection event."""
         detection_events = [e for e in incident_timeline if e["type"] == "detection"]
         assert len(detection_events) == 1
 
     def test_timeline_has_resolution_event(
-        self, incident_timeline: List[Dict[str, Any]]
+        self, incident_timeline: list[dict[str, Any]]
     ):
         """Test timeline includes resolution event."""
         resolution_events = [e for e in incident_timeline if e["type"] == "resolution"]
         assert len(resolution_events) == 1
 
-    def test_timeline_event_structure(self, incident_timeline: List[Dict[str, Any]]):
+    def test_timeline_event_structure(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline event has required fields."""
         required_fields = ["timestamp", "type", "description", "actor"]
         for event in incident_timeline:
@@ -366,7 +366,7 @@ class TestIncidentTimeline:
                 assert field in event
 
     def test_calculate_time_to_acknowledge(
-        self, incident_timeline: List[Dict[str, Any]]
+        self, incident_timeline: list[dict[str, Any]]
     ):
         """Test calculating time to acknowledge."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")
@@ -378,7 +378,7 @@ class TestIncidentTimeline:
         tta_minutes = (ack_time - detect_time).total_seconds() / 60
         assert tta_minutes > 0
 
-    def test_calculate_time_to_resolve(self, incident_timeline: List[Dict[str, Any]]):
+    def test_calculate_time_to_resolve(self, incident_timeline: list[dict[str, Any]]):
         """Test calculating time to resolve."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")
         resolution = next(e for e in incident_timeline if e["type"] == "resolution")
@@ -398,29 +398,29 @@ class TestIncidentTimeline:
 class TestRunbookAutomation:
     """Tests for runbook automation."""
 
-    def test_runbook_has_steps(self, runbook_config: Dict[str, Any]):
+    def test_runbook_has_steps(self, runbook_config: dict[str, Any]):
         """Test runbook has defined steps."""
         assert "steps" in runbook_config
         assert len(runbook_config["steps"]) > 0
 
-    def test_runbook_steps_ordered(self, runbook_config: Dict[str, Any]):
+    def test_runbook_steps_ordered(self, runbook_config: dict[str, Any]):
         """Test runbook steps are numbered sequentially."""
         step_numbers = [s["step"] for s in runbook_config["steps"]]
         assert step_numbers == sorted(step_numbers)
 
-    def test_automated_steps_identified(self, runbook_config: Dict[str, Any]):
+    def test_automated_steps_identified(self, runbook_config: dict[str, Any]):
         """Test automated steps are identified."""
         automated_steps = [s for s in runbook_config["steps"] if s.get("automated")]
         assert len(automated_steps) > 0
 
-    def test_approval_required_steps(self, runbook_config: Dict[str, Any]):
+    def test_approval_required_steps(self, runbook_config: dict[str, Any]):
         """Test approval-required steps are identified."""
         approval_steps = [
             s for s in runbook_config["steps"] if s.get("requires_approval")
         ]
         assert len(approval_steps) > 0
 
-    def test_runbook_trigger_specified(self, runbook_config: Dict[str, Any]):
+    def test_runbook_trigger_specified(self, runbook_config: dict[str, Any]):
         """Test runbook has trigger specified."""
         assert "trigger" in runbook_config
         assert runbook_config["trigger"].startswith("alert:")
@@ -492,7 +492,7 @@ class TestPostIncidentReview:
             datetime.fromisoformat(item["due"])
 
     def test_incident_metrics_calculation(
-        self, incident_timeline: List[Dict[str, Any]]
+        self, incident_timeline: list[dict[str, Any]]
     ):
         """Test incident metrics calculation."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")

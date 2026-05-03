@@ -13,7 +13,7 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass
@@ -22,8 +22,8 @@ class PreFixSnapshot:
 
     file_hash: str
     file_content: str
-    test_results: Dict[str, Any]
-    metrics: Dict[str, float]
+    test_results: dict[str, Any]
+    metrics: dict[str, float]
     timestamp: str
 
 
@@ -33,8 +33,8 @@ class PostFixSnapshot:
 
     file_hash: str
     file_content: str
-    test_results: Dict[str, Any]
-    metrics: Dict[str, float]
+    test_results: dict[str, Any]
+    metrics: dict[str, float]
     timestamp: str
 
 
@@ -45,8 +45,8 @@ class VerificationResult:
     success: bool
     pre_snapshot: PreFixSnapshot
     post_snapshot: PostFixSnapshot
-    regressions_detected: List[str]
-    improvements: List[str]
+    regressions_detected: list[str]
+    improvements: list[str]
     confidence_score: float
     explanation: str
 
@@ -64,7 +64,7 @@ class FixVerifier:
 
     def __init__(self, test_command: str = "pytest -x"):
         self.test_command = test_command
-        self.verification_history: List[VerificationResult] = []
+        self.verification_history: list[VerificationResult] = []
 
     def verify_fix(self, file_path: str, original_code: str, fixed_code: str) -> VerificationResult:
         """
@@ -158,7 +158,7 @@ class FixVerifier:
             with open(path, "w", encoding="utf-8") as f:
                 f.write(fixed_code)
 
-    def _run_tests(self) -> Dict[str, Any]:
+    def _run_tests(self) -> dict[str, Any]:
         """Run test suite and collect results."""
         try:
             result = subprocess.run(
@@ -180,7 +180,7 @@ class FixVerifier:
         except Exception as e:
             return {"passed": False, "error": str(e)}
 
-    def _collect_metrics(self, code: str) -> Dict[str, float]:
+    def _collect_metrics(self, code: str) -> dict[str, float]:
         """Collect code quality metrics."""
         metrics = {}
 
@@ -230,7 +230,7 @@ class FixVerifier:
 
         return max(0.0, score)
 
-    def _detect_regressions(self, pre: PreFixSnapshot, post: PostFixSnapshot) -> List[str]:
+    def _detect_regressions(self, pre: PreFixSnapshot, post: PostFixSnapshot) -> list[str]:
         """Detect any regressions introduced by fix."""
         regressions = []
 
@@ -252,7 +252,7 @@ class FixVerifier:
 
         return regressions
 
-    def _detect_improvements(self, pre: PreFixSnapshot, post: PostFixSnapshot) -> List[str]:
+    def _detect_improvements(self, pre: PreFixSnapshot, post: PostFixSnapshot) -> list[str]:
         """Detect improvements made by fix."""
         improvements = []
 
@@ -275,7 +275,7 @@ class FixVerifier:
         return improvements
 
     def _calculate_confidence(
-        self, pre: PreFixSnapshot, post: PostFixSnapshot, regressions: List[str]
+        self, pre: PreFixSnapshot, post: PostFixSnapshot, regressions: list[str]
     ) -> float:
         """Calculate confidence score for fix (0-1)."""
         confidence = 1.0
@@ -295,7 +295,7 @@ class FixVerifier:
 
         return max(0.0, min(1.0, confidence))
 
-    def _generate_explanation(self, regressions: List[str], improvements: List[str], success: bool) -> str:
+    def _generate_explanation(self, regressions: list[str], improvements: list[str], success: bool) -> str:
         """Generate human-readable explanation of verification."""
         if success:
             explanation = "✅ Fix verified successfully\n\n"

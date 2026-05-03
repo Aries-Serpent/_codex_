@@ -16,11 +16,12 @@ The mental map represents the agent's understanding of:
 
 import json
 import uuid
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
 # =============================================================================
 # CLOCK ABSTRACTION

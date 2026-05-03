@@ -21,7 +21,6 @@ Memory-guided decisions reduce computation time by 15% while maintaining
 import logging
 import time
 from dataclasses import dataclass
-from typing import Dict
 
 import numpy as np
 
@@ -62,7 +61,7 @@ class EXP5Results:
     avg_time_with_memory_ms: float
     avg_time_without_memory_ms: float
     total_scenarios: int
-    memory_stats: Dict
+    memory_stats: dict
 
 
 def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:

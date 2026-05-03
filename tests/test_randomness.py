@@ -6,11 +6,11 @@ Test module for randomness.
 
 #!/usr/bin/env python3
 """Tests for common.randomness module."""
-import os  # noqa: E402
-import random  # noqa: E402
-from unittest.mock import Mock, patch  # noqa: E402
+import os
+import random
+from unittest.mock import Mock, patch
 
-from src.common.randomness import set_seed  # noqa: E402
+from src.common.randomness import set_seed
 
 
 def test_set_seed_with_explicit_value():

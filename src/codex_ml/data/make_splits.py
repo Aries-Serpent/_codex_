@@ -5,8 +5,8 @@ from __future__ import annotations
 import hashlib
 import json
 import random
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Iterable, Sequence
 
 
 def _validate_ratios(ratios: tuple[float, float, float]) -> None:

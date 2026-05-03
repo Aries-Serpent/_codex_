@@ -7,8 +7,9 @@ and determinism following the High Maturity Achievement Plan.
 
 import importlib.util
 import types
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Dict, Iterable
+from typing import Any
 
 # Constants for consistent test configuration
 DETECTOR_PATH = Path("scripts/space_traversal/detectors/detector_duplication.py")
@@ -26,7 +27,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
     return module
 
 
-def _context_index_for(paths: Iterable[Path]) -> Dict[str, Any]:
+def _context_index_for(paths: Iterable[Path]) -> dict[str, Any]:
     """Create context index from file paths."""
     return {
         "files": [{"path": str(path.resolve())} for path in paths],

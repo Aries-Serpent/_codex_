@@ -60,7 +60,7 @@ import logging
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from codex.cognitive.brain_interface import AgentBrainInterface, LearningFeedback
 from codex.cognitive.planset_orchestrator import PlansetOrchestrator, PromptSet
@@ -74,7 +74,7 @@ logger = logging.getLogger(__name__)
 # When an agent calls get_session_context(), results are pre-filtered to
 # show only the areas that agent is responsible for.
 # ---------------------------------------------------------------------------
-AGENT_CAPABILITIES: Dict[str, List[ImprovementArea]] = {
+AGENT_CAPABILITIES: dict[str, list[ImprovementArea]] = {
     # Security
     "codeql-alert-resolution-agent": [ImprovementArea.SECURITY_REMEDIATION],
     "code-scanning-remediation-agent": [ImprovementArea.SECURITY_REMEDIATION],
@@ -162,14 +162,14 @@ class AgentSessionContext:
 
     session_id: str
     agent_id: str
-    next_actions: List[PromptSet]
+    next_actions: list[PromptSet]
     continuation_from: str
-    active_patterns: List[Dict[str, Any]]
-    capabilities: List[str]
+    active_patterns: list[dict[str, Any]]
+    capabilities: list[str]
     continuation_prompt: str
     generated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["next_actions"] = [a.to_dict() for a in self.next_actions]
         return d
@@ -187,10 +187,10 @@ class CompletionReport:
     step_id: str
     outcome: str  # "success" | "failure" | "partial"
     notes: str = ""
-    artifacts: List[str] = field(default_factory=list)
+    artifacts: list[str] = field(default_factory=list)
     reported_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -284,7 +284,7 @@ class AgentBrainAPI:
 
     def get_session_context(
         self,
-        session_context: Optional[Dict[str, Any]] = None,
+        session_context: Optional[dict[str, Any]] = None,
         max_actions: Optional[int] = None,
     ) -> AgentSessionContext:
         """
@@ -360,7 +360,7 @@ class AgentBrainAPI:
         step_id: str,
         outcome: str = "success",
         notes: str = "",
-        artifacts: Optional[List[str]] = None,
+        artifacts: Optional[list[str]] = None,
     ) -> CompletionReport:
         """
         Mark a planset step as complete and feed the outcome into the brain.
@@ -419,7 +419,7 @@ class AgentBrainAPI:
 
     def get_continuation_prompt(
         self,
-        session_context: Optional[Dict[str, Any]] = None,
+        session_context: Optional[dict[str, Any]] = None,
     ) -> str:
         """
         Return the ready-to-paste ``@copilot`` PR comment body for the next session.
@@ -444,7 +444,7 @@ class AgentBrainAPI:
             prompts, ctx, datetime.now(timezone.utc).strftime("session-%Y%m%d")
         )
 
-    def get_agent_capabilities(self) -> List[ImprovementArea]:
+    def get_agent_capabilities(self) -> list[ImprovementArea]:
         """Return the ``ImprovementArea`` values this agent is responsible for."""
         return list(self._capabilities)
 
@@ -462,8 +462,8 @@ class AgentBrainAPI:
 
     def _build_continuation_prompt(
         self,
-        actions: List[PromptSet],
-        ctx: Dict[str, Any],
+        actions: list[PromptSet],
+        ctx: dict[str, Any],
         session_id: str,
     ) -> str:
         completed = self._orch._state.completed_steps
@@ -507,7 +507,7 @@ class AgentBrainAPI:
         ]
         return "\n".join(lines)
 
-    def _safe_query_patterns(self, query: str) -> List[Dict[str, Any]]:
+    def _safe_query_patterns(self, query: str) -> list[dict[str, Any]]:
         try:
             matches = self._brain.query_patterns(query, limit=5)
             return [
@@ -521,7 +521,7 @@ class AgentBrainAPI:
                 }
                 for m in matches
             ]
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.debug("Pattern query skipped: %s", exc)
             return []
 
@@ -532,7 +532,7 @@ class AgentBrainAPI:
                 outcome=feedback.outcome,
                 context=feedback.context,
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.debug("Learning submission skipped: %s", exc)
 
     def __repr__(self) -> str:  # pragma: no cover
@@ -627,7 +627,7 @@ class CognitiveBrain:
         self._plans = _plans
         self._state = _state
         self._bdir = _bdir
-        self._api_cache: Dict[str, AgentBrainAPI] = {}
+        self._api_cache: dict[str, AgentBrainAPI] = {}
 
     # ------------------------------------------------------------------
     # Primary API — intuitive, short names
@@ -658,7 +658,7 @@ class CognitiveBrain:
     def session(
         self,
         agent_id: str = "copilot-coding-agent",
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
         max_actions: int = 10,
     ) -> AgentSessionContext:
         """
@@ -687,7 +687,7 @@ class CognitiveBrain:
     def next(
         self,
         agent_id: str = "copilot-coding-agent",
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
     ) -> Optional[PromptSet]:
         """
         Return the single highest-priority next action across ALL plansets.
@@ -807,7 +807,7 @@ CODEBASE AGENCY POLICY
   The next agent inherits your progress automatically.
 """.strip()
 
-    def discover(self) -> Dict[str, Any]:
+    def discover(self) -> dict[str, Any]:
         """
         Return a complete JSON-serialisable capability map of the brain.
 
@@ -858,7 +858,7 @@ CODEBASE AGENCY POLICY
             },
         }
 
-    def health(self) -> Dict[str, Any]:
+    def health(self) -> dict[str, Any]:
         """
         Return a live health status dict for the cognitive brain.
 
@@ -871,7 +871,7 @@ CODEBASE AGENCY POLICY
             ``unfinished_plansets``, ``completed_steps``, ``areas_active``,
             ``engine_ok``, ``issues``.
         """
-        issues: List[str] = []
+        issues: list[str] = []
 
         planset_exists = self._plans.exists()
         if not planset_exists:
@@ -886,7 +886,7 @@ CODEBASE AGENCY POLICY
         try:
             test_ps = self.engine.generate(ImprovementArea.CI_SELF_HEALING)
             engine_ok = len(test_ps.steps) > 0
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             engine_ok = False
             issues.append(f"engine error: {exc}")
 
@@ -906,7 +906,7 @@ CODEBASE AGENCY POLICY
         }
 
     @property
-    def capabilities(self) -> Dict[str, List[str]]:
+    def capabilities(self) -> dict[str, list[str]]:
         """Return the full agent→capabilities mapping as a plain dict."""
         return {aid: [c.value for c in caps] for aid, caps in AGENT_CAPABILITIES.items()}
 
@@ -919,5 +919,5 @@ CODEBASE AGENCY POLICY
                 f"unfinished={h['unfinished_plansets']}, "
                 f"areas={h['areas_active']})"
             )
-        except Exception:  # noqa: BLE001
+        except Exception:
             return f"CognitiveBrain(v{self._VERSION})"

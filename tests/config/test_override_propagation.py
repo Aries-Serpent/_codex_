@@ -19,7 +19,7 @@ pytest.importorskip("hydra")
 # Hydra-backed CLI path.  When typer is installed, codex_ml.cli.main uses the
 # Typer app which does not accept this flag.
 try:
-    import codex_ml.cli.main as _cli_main  # noqa: F401
+    import codex_ml.cli.main as _cli_main
 
     if hasattr(_cli_main, "_typer_cli_wrapper"):
         pytest.skip(

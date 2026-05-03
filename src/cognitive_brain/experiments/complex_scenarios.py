@@ -13,7 +13,6 @@ PDA Loop + AfterMath:
 
 import random
 from dataclasses import dataclass
-from typing import List, Tuple
 
 from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
@@ -32,7 +31,7 @@ class ScenarioComplexity:
 
 def generate_complex_scenarios(
     count: int, seed: int = 42
-) -> List[Tuple[AuditResult, ComplianceDecision, ScenarioComplexity]]:
+) -> list[tuple[AuditResult, ComplianceDecision, ScenarioComplexity]]:
     """
     Generate complex, ambiguous compliance scenarios.
 
@@ -315,7 +314,7 @@ def generate_complex_scenarios(
 
 
 def get_scenario_statistics(
-    scenarios: List[Tuple[AuditResult, ComplianceDecision, ScenarioComplexity]],
+    scenarios: list[tuple[AuditResult, ComplianceDecision, ScenarioComplexity]],
 ) -> dict:
     """
     Compute statistics about generated scenarios.

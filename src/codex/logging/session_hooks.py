@@ -29,8 +29,9 @@ import pathlib
 import sys
 import time
 import uuid
+from collections.abc import Iterable
 from datetime import UTC, datetime
-from typing import Any, Iterable, Literal, Optional
+from typing import Any, Literal, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -49,10 +50,10 @@ except Exception:  # pragma: no cover - best effort fallback
 
 
 __all__ = [
-    "session",
     "LOG_DIR",
-    "_session_id",
     "_log_path",
+    "_session_id",
+    "session",
 ]
 
 # ---------------------------------------------------------------------------

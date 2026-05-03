@@ -11,20 +11,22 @@ Provides:
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import logging
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
     "Feature",
     "FeatureGroup",
-    "FeatureStore",
     "FeatureMetadata",
+    "FeatureStore",
     "FeatureVersion",
 ]
 
@@ -151,7 +153,7 @@ class FeatureStore:
     - Efficient caching
     """
 
-    def __init__(self, store_path: Union[Path, str], enable_versioning: bool = True):
+    def __init__(self, store_path: Path | str, enable_versioning: bool = True):
         """Initialize feature store.
 
         Args:
@@ -327,7 +329,7 @@ class FeatureStore:
     def get_features_at_time(
         self,
         feature_names: list[str],
-        timestamp: Union[str, datetime],
+        timestamp: str | datetime,
         lookback_days: int = 30,
     ) -> dict[str, Any]:
         """Get point-in-time features.
@@ -396,8 +398,9 @@ class FeatureStore:
         """
         try:
             import pandas as pd
-            import pyarrow as pa  # noqa: F401 - Testing optional dependency availability
-            import pyarrow.parquet as pq  # noqa: F401 - Testing optional dependency availability
+
+            if importlib.util.find_spec("pyarrow") is None:
+                raise ImportError("pyarrow is required for parquet support")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)

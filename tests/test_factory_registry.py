@@ -9,8 +9,8 @@ _ADDONS_DIR = _REPO_ROOT / "codex_addons"
 if str(_ADDONS_DIR) not in sys.path:
     sys.path.insert(0, str(_ADDONS_DIR))
 
-from registry import Registry, create_registry  # noqa: E402
-from registry_names import (  # noqa: E402
+from registry import Registry, create_registry
+from registry_names import (
     ALL_REGISTRY_NAMES,
     METRIC_NAMES,
     get_all_stable_names,

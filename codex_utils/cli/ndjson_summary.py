@@ -5,9 +5,10 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any
 
 FIELDNAMES: Sequence[str] = (
     "run_id",

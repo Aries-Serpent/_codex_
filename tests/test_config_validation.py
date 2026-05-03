@@ -14,7 +14,7 @@ import pytest
 pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")
 
-from codex_ml.config import ConfigError, load_app_config  # noqa: E402
+from codex_ml.config import ConfigError, load_app_config
 
 
 def _write(tmp_path: Path, content: str) -> Path:

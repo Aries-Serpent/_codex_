@@ -12,7 +12,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class SessionMetrics:
     session_id: str
     started_at: datetime = field(default_factory=lambda: datetime.now(tz=timezone.utc))
     ended_at: Optional[datetime] = None
-    capabilities_invoked: List[CapabilityMetric] = field(default_factory=list)
+    capabilities_invoked: list[CapabilityMetric] = field(default_factory=list)
     total_prs_analyzed: int = 0
     total_issues_triaged: int = 0
     total_workflows_checked: int = 0
@@ -56,7 +56,7 @@ class SessionMetrics:
             self.capabilities_invoked
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["started_at"] = self.started_at.isoformat()
         d["ended_at"] = self.ended_at.isoformat() if self.ended_at else None
@@ -79,7 +79,7 @@ class MetricsCollector:
     ):
         self._session = SessionMetrics(session_id=session_id)
         self._baselines_dir = baselines_dir or Path("audit_artifacts/baselines")
-        self._capability_start_times: Dict[str, float] = {}
+        self._capability_start_times: dict[str, float] = {}
 
     def start_capability(self, capability: str) -> None:
         """Record start time for a capability invocation."""

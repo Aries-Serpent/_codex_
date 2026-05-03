@@ -5,7 +5,7 @@ Coordinates the 4-layer cognitive system: Perception → Decision → Action →
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 class CognitiveBrain:
@@ -31,7 +31,7 @@ class CognitiveBrain:
             "total_cycles": 0
         }
 
-    def run_pda_cycle(self) -> Dict[str, Any]:
+    def run_pda_cycle(self) -> dict[str, Any]:
         """
         Execute one complete PDA Loop + AfterMath cycle.
 
@@ -133,7 +133,7 @@ class PerceptionLayer:
         self.workspace = workspace
         self.workspace.mkdir(parents=True, exist_ok=True)
 
-    def perceive(self) -> Dict[str, Any]:
+    def perceive(self) -> dict[str, Any]:
         """Collect and analyze environmental data."""
         print("Collecting data from multiple sources...")
 
@@ -153,7 +153,7 @@ class DecisionEngine:
         self.workspace = workspace
         self.workspace.mkdir(parents=True, exist_ok=True)
 
-    def make_decisions(self, perception_data: Dict[str, Any]) -> Dict[str, Any]:
+    def make_decisions(self, perception_data: dict[str, Any]) -> dict[str, Any]:
         """Analyze perceptions and make decisions."""
         print("Analyzing data and making decisions...")
 
@@ -176,7 +176,7 @@ class ActionExecutor:
         self.workspace = workspace
         self.workspace.mkdir(parents=True, exist_ok=True)
 
-    def execute(self, decisions: Dict[str, Any]) -> Dict[str, Any]:
+    def execute(self, decisions: dict[str, Any]) -> dict[str, Any]:
         """Execute decisions by dispatching to agents."""
         print("Executing actions across agent ecosystem...")
 
@@ -198,10 +198,10 @@ class AfterMathEvaluator:
 
     def evaluate_and_learn(
         self,
-        perception_data: Dict[str, Any],
-        decisions: Dict[str, Any],
-        action_results: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        perception_data: dict[str, Any],
+        decisions: dict[str, Any],
+        action_results: dict[str, Any]
+    ) -> dict[str, Any]:
         """Evaluate outcomes and extract learnings."""
         print("Evaluating outcomes and extracting learnings...")
 

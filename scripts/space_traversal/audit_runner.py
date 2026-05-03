@@ -39,7 +39,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +109,7 @@ class AuditRunner:
         self.quality_checker = CodeQualityChecker(self.config) if CodeQualityChecker else None
         self.vuln_db = VulnerabilityDatabase(self.config) if VulnerabilityDatabase else None
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict[str, Any]:
+    def _load_config(self, config_path: Optional[Path]) -> dict[str, Any]:
         """Load configuration from file or use defaults"""
         try:
             if config_path and config_path.exists():
@@ -129,7 +129,7 @@ class AuditRunner:
             "output_format": "json",
         }
 
-    def run_full_audit(self, target_path: Path) -> Dict[str, Any]:
+    def run_full_audit(self, target_path: Path) -> dict[str, Any]:
         """
         Run complete security audit suite
 
@@ -183,7 +183,7 @@ class AuditRunner:
         logger.info("Audit complete")
         return results
 
-    def _generate_summary(self, audits: Dict[str, Any]) -> Dict[str, Any]:
+    def _generate_summary(self, audits: dict[str, Any]) -> dict[str, Any]:
         """Generate summary statistics from audit results"""
         summary = {
             "total_issues": 0,
@@ -207,7 +207,7 @@ class AuditRunner:
 
         return summary
 
-    def save_results(self, results: Dict[str, Any], output_path: Path) -> None:
+    def save_results(self, results: dict[str, Any], output_path: Path) -> None:
         """Save audit results to file"""
         try:
             output_format = self.config.get("output_format", "json")
@@ -727,7 +727,7 @@ def run_stage(cfg: dict, stage: str) -> None:
         cutoff = time.time() - lookback_days * 86400
 
         # Collect historical scored-caps files
-        historical: list[Dict[str, Any]] = []
+        historical: list[dict[str, Any]] = []
         for hist_file in sorted(artifacts_dir.glob("capabilities_scored*.json")):
             try:
                 hist_data = json.loads(hist_file.read_text())
@@ -766,7 +766,7 @@ def run_stage(cfg: dict, stage: str) -> None:
         raise ValueError(f"Unknown stage: {stage!r}")
 
 
-def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> list[Dict[str, Any]]:
+def apply_overrides(capabilities: list[dict[str, Any]], cfg: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Apply capability overrides by merging alias IDs into canonical IDs.
 
@@ -868,7 +868,7 @@ def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> 
     return result
 
 
-def validate_detector_output(detector: Dict[str, Any], detector_name: str) -> bool:
+def validate_detector_output(detector: dict[str, Any], detector_name: str) -> bool:
     """
     Validate that a detector output has the required structure and fields.
 

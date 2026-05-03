@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import Iterable
+from collections.abc import Iterable
 
 from .bridge import CodexBridgeClient
 from .config import ClientConfig

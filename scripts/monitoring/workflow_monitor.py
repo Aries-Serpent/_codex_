@@ -13,7 +13,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class WorkflowMonitor:
@@ -26,16 +26,16 @@ class WorkflowMonitor:
         self.duration_minutes = duration_minutes
         self.check_interval_minutes = check_interval_minutes
         self.start_time = datetime.now(timezone.utc)
-        self.monitoring_log: List[Dict[str, Any]] = []
+        self.monitoring_log: list[dict[str, Any]] = []
 
-    def get_workflow_runs(self) -> List[Dict[str, Any]]:
+    def get_workflow_runs(self) -> list[dict[str, Any]]:
         """Get current workflow runs for the branch."""
         # Use GitHub API (would need gh CLI or API token in production).
         # For now, return empty list as placeholder; no remote calls are made,
         # so no exception handling is required at this level.
         return []
 
-    def analyze_workflow_status(self, run: Dict[str, Any]) -> Dict[str, Any]:
+    def analyze_workflow_status(self, run: dict[str, Any]) -> dict[str, Any]:
         """Analyze a workflow run and categorize its status."""
         status = run.get('status', 'unknown')
         conclusion = run.get('conclusion', 'N/A')
@@ -73,7 +73,7 @@ class WorkflowMonitor:
             return 'QUEUED'
         return 'UNKNOWN'
 
-    def check_workflows(self) -> Dict[str, Any]:
+    def check_workflows(self) -> dict[str, Any]:
         """Perform a workflow status check."""
         timestamp = datetime.now(timezone.utc)
         elapsed_minutes = (timestamp - self.start_time).total_seconds() / 60
@@ -96,7 +96,7 @@ class WorkflowMonitor:
         self.monitoring_log.append(summary)
         return summary
 
-    def display_summary(self, summary: Dict[str, Any]) -> None:
+    def display_summary(self, summary: dict[str, Any]) -> None:
         """Display a formatted summary of the check."""
         print("\n" + "="*80)
         print(f"Workflow Status Check - {summary['timestamp']}")
@@ -148,7 +148,7 @@ class WorkflowMonitor:
 
         print(f"\n📊 Report saved to: {output_path}")
 
-    def _generate_final_summary(self) -> Dict[str, Any]:
+    def _generate_final_summary(self) -> dict[str, Any]:
         """Generate final summary statistics."""
         if not self.monitoring_log:
             return {}

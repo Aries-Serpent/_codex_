@@ -11,17 +11,17 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 LEDGER_PATH = Path(".codex/ledger.jsonl")
 
 
-def _canonical(obj: Dict[str, Any]) -> bytes:
+def _canonical(obj: dict[str, Any]) -> bytes:
     """Return canonical JSON bytes for hashing."""
     return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
-def append_event(event: Dict[str, Any], path: Path = LEDGER_PATH) -> Dict[str, Any]:
+def append_event(event: dict[str, Any], path: Path = LEDGER_PATH) -> dict[str, Any]:
     """Append an event to the ledger and return the full record.
 
     Parameters
@@ -76,8 +76,8 @@ def verify_chain(path: Path = LEDGER_PATH) -> Optional[str]:
     return last_hash
 
 
-def _parse_kv(items: list[str]) -> Dict[str, str]:
-    out: Dict[str, str] = {}
+def _parse_kv(items: list[str]) -> dict[str, str]:
+    out: dict[str, str] = {}
     for item in items:
         if "=" in item:
             k, v = item.split("=", 1)
@@ -111,10 +111,10 @@ def _main() -> int:
         )
         print(json.dumps(rec, indent=2))
         return 0
-    else:  # verify
-        last = verify_chain(Path(ns.path))
-        print(last or "")
-        return 0
+    # verify
+    last = verify_chain(Path(ns.path))
+    print(last or "")
+    return 0
 
 
 if __name__ == "__main__":  # pragma: no cover

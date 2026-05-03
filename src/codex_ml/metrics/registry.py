@@ -21,9 +21,10 @@ import os  # noqa: E402
 import re  # noqa: E402
 import threading  # noqa: E402
 from collections import Counter  # noqa: E402
+from collections.abc import Callable, Sequence  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Callable, Optional, Sequence  # noqa: E402
+from typing import Optional  # noqa: E402
 
 from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
@@ -39,7 +40,7 @@ _REWARD_METRICS_LOCK = threading.Lock()
 # Ensure built-in generative metrics are registered on import.
 # Imported AFTER metric_registry is defined to avoid a circular-import at
 # module load time (generative.py calls register_metric from this module).
-from . import generative as _generative  # noqa: F401, E402
+from . import generative as _generative  # noqa: E402
 
 # Mark as explicitly used for side effects (metric registration)
 _ = _generative
@@ -541,12 +542,12 @@ def _distinct_ngrams(preds: Sequence[str], n: int) -> float:
 
 
 @register_metric("dist-1")
-def dist_1(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:  # noqa: ARG001
+def dist_1(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:
     return _distinct_ngrams(preds, 1)
 
 
 @register_metric("dist-2")
-def dist_2(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:  # noqa: ARG001
+def dist_2(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:
     return _distinct_ngrams(preds, 2)
 
 
@@ -638,14 +639,14 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
 
 
 __all__ = [
-    "metric_registry",
     "_METRIC_REGISTRY",
-    "register",
-    "register_metric",
+    "alias_metric",
+    "append_error_entry",
     "get",
     "get_metric",
-    "list_metrics",
-    "alias_metric",
     "init_metric_plugins",
-    "append_error_entry",
+    "list_metrics",
+    "metric_registry",
+    "register",
+    "register_metric",
 ]

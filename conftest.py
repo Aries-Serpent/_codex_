@@ -14,8 +14,9 @@ import pytest
 
 # Import determinism bootstrap early to ensure deterministic test execution
 try:
-    import tests._bootstrap_determinism  # noqa: F401
-except ImportError:
+    import importlib as _importlib
+    _importlib.import_module('tests._bootstrap_determinism')
+except (ImportError, ModuleNotFoundError):
     pass  # Bootstrap may not be available in all test environments
 
 # Respect existing user setting; default to disabling plugin autoload for determinism.
@@ -220,7 +221,7 @@ if not _pydantic_available():
 def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[override]
     if not _pydantic_available() and _path_requires_pydantic(file_path):
         pytest.skip("Optional dependency 'pydantic' not installed", allow_module_level=True)
-    return None
+    return
 
 
 def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignore[override]

@@ -7,14 +7,13 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Dict, List
 
 import pytest
 
 pytestmark = [pytest.mark.security]
 
 
-EXPECTED_SUPPRESSION_FILES: Dict[str, int] = {
+EXPECTED_SUPPRESSION_FILES: dict[str, int] = {
     "scripts/maintenance/fix_github_broken_links.py": 1,
     "scripts/maintenance/fix_all_broken_links.py": 1,
     "scripts/maintenance/fix_specific_links.py": 1,
@@ -52,13 +51,13 @@ def suppression_config(repo_root: Path) -> dict:
     return yaml.safe_load(config_path.read_text(encoding="utf-8"))
 
 
-def _find_suppression_lines(content: str) -> List[int]:
+def _find_suppression_lines(content: str) -> list[int]:
     return [
         i for i, line in enumerate(content.splitlines()) if "nosemgrep: url-substring-check" in line
     ]
 
 
-def _find_nearby_url_line(lines: List[str], start_index: int, window: int = 20) -> str:
+def _find_nearby_url_line(lines: list[str], start_index: int, window: int = 20) -> str:
     for offset in range(1, window + 1):
         if start_index + offset < len(lines) and URL_LITERAL_REGEX.search(
             lines[start_index + offset]

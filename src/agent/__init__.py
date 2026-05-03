@@ -6,4 +6,4 @@ from .core import AgentConfig, AgentCore
 from .phase10 import Phase10Validator
 from .secrets import GitHubSecretsManager
 
-__all__ = ["AgentCore", "AgentConfig", "Phase10Validator", "GitHubSecretsManager"]
+__all__ = ["AgentConfig", "AgentCore", "GitHubSecretsManager", "Phase10Validator"]

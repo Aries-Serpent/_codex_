@@ -19,7 +19,7 @@ import re
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 # Try to import scribe tools if available
 try:
@@ -43,7 +43,7 @@ class WorkflowAnalyticsScribe:
         self.error_patterns = self._load_error_patterns()
         self.pattern_cache = {}
 
-    def _load_error_patterns(self) -> Dict[str, str]:
+    def _load_error_patterns(self) -> dict[str, str]:
         """Load error pattern definitions."""
         return {
             "import_error": r"(?:ModuleNotFoundError|ImportError|NameError):\s*(.+)",
@@ -62,8 +62,8 @@ class WorkflowAnalyticsScribe:
     def analyze_with_semantic_context(
         self,
         log_content: str,
-        workflow_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        workflow_context: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         Analyze workflow logs with semantic understanding.
 
@@ -72,10 +72,9 @@ class WorkflowAnalyticsScribe:
         """
         if self.use_scribe:
             return self._analyze_semantic(log_content, workflow_context)
-        else:
-            return self._analyze_regex(log_content)
+        return self._analyze_regex(log_content)
 
-    def _analyze_regex(self, log_content: str) -> Dict[str, Any]:
+    def _analyze_regex(self, log_content: str) -> dict[str, Any]:
         """Basic regex-based pattern detection."""
         results = defaultdict(list)
 
@@ -94,8 +93,8 @@ class WorkflowAnalyticsScribe:
     def _analyze_semantic(
         self,
         log_content: str,
-        workflow_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        workflow_context: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         Semantic analysis using TF-IDF from doc-test-scribe.
 
@@ -122,7 +121,7 @@ class WorkflowAnalyticsScribe:
             "similar_issues": similar_issues,
         }
 
-    def _tokenize_log(self, log_content: str) -> List[str]:
+    def _tokenize_log(self, log_content: str) -> list[str]:
         """Tokenize log content for semantic analysis."""
         if self.use_scribe:
             try:
@@ -136,9 +135,9 @@ class WorkflowAnalyticsScribe:
 
     def _extract_semantic_features(
         self,
-        tokens: List[str],
-        context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        tokens: list[str],
+        context: dict[str, Any]
+    ) -> dict[str, Any]:
         """Extract semantic features from tokens and context."""
         # Count token frequencies
         token_freq = Counter(tokens)
@@ -165,22 +164,21 @@ class WorkflowAnalyticsScribe:
             "workflow_type": self._infer_workflow_type(context),
         }
 
-    def _infer_workflow_type(self, context: Dict[str, Any]) -> str:
+    def _infer_workflow_type(self, context: dict[str, Any]) -> str:
         """Infer workflow type from context."""
         name = context.get("name", "").lower()
 
         if "test" in name:
             return "testing"
-        elif "build" in name or "compile" in name:
+        if "build" in name or "compile" in name:
             return "build"
-        elif "deploy" in name or "release" in name:
+        if "deploy" in name or "release" in name:
             return "deployment"
-        elif "security" in name or "scan" in name:
+        if "security" in name or "scan" in name:
             return "security"
-        else:
-            return "general"
+        return "general"
 
-    def _match_patterns_semantic(self, features: Dict[str, Any]) -> Dict[str, List[str]]:
+    def _match_patterns_semantic(self, features: dict[str, Any]) -> dict[str, list[str]]:
         """Match patterns using semantic similarity."""
         matches = defaultdict(list)
 
@@ -202,7 +200,7 @@ class WorkflowAnalyticsScribe:
 
         return dict(matches)
 
-    def _find_similar_issues(self, features: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _find_similar_issues(self, features: dict[str, Any]) -> list[dict[str, Any]]:
         """Find similar historical issues using semantic search."""
         # In a full implementation, this would use TF-IDF to find similar
         # patterns in the error pattern database
@@ -211,10 +209,10 @@ class WorkflowAnalyticsScribe:
 
     def generate_comprehensive_artifact(
         self,
-        analysis_results: Dict[str, Any],
-        workflow_runs: List[Dict[str, Any]],
-        statistics: Dict[str, Any],
-    ) -> Tuple[str, str, str]:
+        analysis_results: dict[str, Any],
+        workflow_runs: list[dict[str, Any]],
+        statistics: dict[str, Any],
+    ) -> tuple[str, str, str]:
         """
         Generate comprehensive artifacts:
         1. Detailed markdown report
@@ -242,9 +240,9 @@ class WorkflowAnalyticsScribe:
 
     def _generate_markdown_report(
         self,
-        analysis: Dict[str, Any],
-        runs: List[Dict[str, Any]],
-        stats: Dict[str, Any],
+        analysis: dict[str, Any],
+        runs: list[dict[str, Any]],
+        stats: dict[str, Any],
         timestamp: str,
     ) -> str:
         """Generate comprehensive markdown report."""
@@ -311,9 +309,9 @@ class WorkflowAnalyticsScribe:
 
     def _generate_json_artifact(
         self,
-        analysis: Dict[str, Any],
-        runs: List[Dict[str, Any]],
-        stats: Dict[str, Any],
+        analysis: dict[str, Any],
+        runs: list[dict[str, Any]],
+        stats: dict[str, Any],
         timestamp: str,
     ) -> str:
         """Generate JSON artifact."""
@@ -342,8 +340,8 @@ class WorkflowAnalyticsScribe:
 
     def _generate_runbook(
         self,
-        analysis: Dict[str, Any],
-        stats: Dict[str, Any],
+        analysis: dict[str, Any],
+        stats: dict[str, Any],
     ) -> str:
         """Generate remediation runbook."""
         lines = [
@@ -396,7 +394,7 @@ class WorkflowAnalyticsScribe:
 
         return "\n".join(lines)
 
-    def _get_remediation_steps(self, category: str) -> List[str]:
+    def _get_remediation_steps(self, category: str) -> list[str]:
         """Get remediation steps for error category."""
         remediation_map = {
             "import_error": [

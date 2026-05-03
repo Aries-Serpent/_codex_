@@ -61,6 +61,6 @@ def get_last_seed_snapshot() -> dict[str, Any]:
 
 
 __all__ = [
-    "register_seed_snapshot",
     "get_last_seed_snapshot",
+    "register_seed_snapshot",
 ]

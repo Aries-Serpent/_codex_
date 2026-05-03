@@ -33,7 +33,6 @@ Last Updated: 2026-01-16
 import subprocess
 import sys
 from pathlib import Path
-from typing import List
 
 import yaml
 
@@ -50,9 +49,9 @@ class QAWalkthroughValidator:
 
     def __init__(self):
         self.repo_root = Path(__file__).parent.parent
-        self.errors: List[str] = []
-        self.warnings: List[str] = []
-        self.successes: List[str] = []
+        self.errors: list[str] = []
+        self.warnings: list[str] = []
+        self.successes: list[str] = []
 
     def validate_agent_definition(self) -> bool:
         """Validate agent definition file."""

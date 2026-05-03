@@ -35,7 +35,7 @@ import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal, Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 _PREFLIGHT = REPO_ROOT / "scripts" / "ci" / "rvs_preflight.py"
@@ -127,10 +127,10 @@ class BatchScanResult:
     errors: int
     skipped: int
     duration_s: float
-    failures: List[str]                    # list of FAILED test node-ids
+    failures: list[str]                    # list of FAILED test node-ids
     batches_run: int
     report_path: Optional[Path] = None     # path to JSON report if requested
-    raw: Dict = field(default_factory=dict)
+    raw: dict = field(default_factory=dict)
 
     @property
     def summary_line(self) -> str:
@@ -210,7 +210,7 @@ class BatchScanRunner:
             fail_fast=str(fail_fast),
         ):
             try:
-                extra: List[str] = []
+                extra: list[str] = []
                 if changed_only:
                     extra.append("--changed-only")
                 if fail_fast:
@@ -235,9 +235,16 @@ class BatchScanRunner:
     def _run(
         self,
         group: Group,
-        extra_flags: List[str],
+        extra_flags: list[str],
         report: Optional[Path],
     ) -> dict:
+        if not isinstance(self.batch_size, int) or not (1 <= self.batch_size <= 1000):
+            raise ValueError("batch_size must be an integer between 1 and 1000")
+        if self.workers is not None and (
+            not isinstance(self.workers, int) or not (1 <= self.workers <= 256)
+        ):
+            raise ValueError("workers must be an integer between 1 and 256 when provided")
+
         cmd = [
             sys.executable,
             str(_PREFLIGHT),

@@ -900,7 +900,7 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 
     # Patch parse_args so args.command is None (no subcommand given)
 
-    def patched_parse(self, args=None, namespace=None):  # noqa: ARG001
+    def patched_parse(self, args=None, namespace=None):
         # Simulate a parse result where no recognised subcommand was provided.
         # args and namespace are part of the ArgumentParser.parse_args signature
         # but are intentionally ignored here — we always return a fixed Namespace.
@@ -1321,7 +1321,7 @@ class TestCheckTokenHealth:
         from codex.github.mcp_poster import GitHubMCPPoster
         poster = GitHubMCPPoster()
 
-        def fake_urlopen(req, timeout=None):  # noqa: ARG001
+        def fake_urlopen(req, timeout=None):
             raise urllib.error.HTTPError(
                 url="https://api.github.com/user",
                 code=401,

@@ -7,9 +7,10 @@ for different content types.
 
 import logging
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import IntEnum
-from typing import Callable, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 

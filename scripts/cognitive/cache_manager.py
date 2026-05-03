@@ -13,7 +13,7 @@ AAIS Contribution: +7.0 points (Discovery +1.2, Introspection +1.8, Patterns +0.
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from codex.utils.path_utils import windows_safe_timestamp
 
@@ -37,7 +37,7 @@ class CacheMetrics:
             return 0.0
         return self.hit_count / total
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert to dictionary."""
         return {
             "hit_count": self.hit_count,
@@ -61,9 +61,9 @@ class CacheInfo:
     size_limit_bytes: Optional[int] = None
     ttl_seconds: Optional[int] = None
     metrics: CacheMetrics = field(default_factory=CacheMetrics)
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert to dictionary."""
         return {
             "name": self.name,
@@ -77,7 +77,7 @@ class CacheInfo:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict) -> "CacheInfo":
+    def from_dict(cls, data: dict) -> "CacheInfo":
         """Create from dictionary."""
         metrics_data = data.pop("metrics", {})
         metrics = CacheMetrics(**{k: v for k, v in metrics_data.items() if k != "hit_rate"})
@@ -129,7 +129,7 @@ class CacheIntelligence:
         self.cache_dir = self.repo_root / ".codex" / "cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-        self.caches: Dict[str, CacheInfo] = {}
+        self.caches: dict[str, CacheInfo] = {}
         self._discover_caches()
 
     def _discover_caches(self) -> None:
@@ -259,7 +259,7 @@ class CacheIntelligence:
         self,
         cache_name: Optional[str] = None,
         layer: Optional[str] = None
-    ) -> Dict[str, CacheMetrics]:
+    ) -> dict[str, CacheMetrics]:
         """
         Get cache metrics.
 
@@ -284,7 +284,7 @@ class CacheIntelligence:
 
         return {name: cache.metrics for name, cache in self.caches.items()}
 
-    def analyze_usage_patterns(self) -> Dict:
+    def analyze_usage_patterns(self) -> dict:
         """
         Analyze cache usage patterns and identify opportunities.
 
@@ -329,7 +329,7 @@ class CacheIntelligence:
 
         return analysis
 
-    def suggest_improvements(self) -> List[Dict]:
+    def suggest_improvements(self) -> list[dict]:
         """
         Suggest cache optimization improvements.
 
@@ -372,7 +372,7 @@ class CacheIntelligence:
 
         return suggestions
 
-    def get_topology_info(self) -> Dict:
+    def get_topology_info(self) -> dict:
         """
         Get cache topology information for Topology Manager integration.
 
@@ -411,7 +411,7 @@ class CacheIntelligence:
 
         return topology
 
-    def get_aais_contribution(self) -> Dict[str, float]:
+    def get_aais_contribution(self) -> dict[str, float]:
         """
         Calculate AAIS score contribution from cache intelligence.
 
@@ -458,7 +458,7 @@ class CacheIntelligence:
             "metrics_tracked": total_metrics,
         }
 
-    def export_state(self) -> Dict:
+    def export_state(self) -> dict:
         """Export complete cache state."""
         return {
             "timestamp": windows_safe_timestamp(),

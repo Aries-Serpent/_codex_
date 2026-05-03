@@ -33,10 +33,10 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def assess_risks(decisions_dir: str, output_path: str, confidence_threshold: float = 0.8) -> Dict[str, Any]:
+def assess_risks(decisions_dir: str, output_path: str, confidence_threshold: float = 0.8) -> dict[str, Any]:
     """
     Assess risks associated with decisions.
 

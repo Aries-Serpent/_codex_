@@ -101,7 +101,7 @@ try:  # pragma: no cover - numpy is optional for deployments
 except Exception:  # pragma: no cover - gracefully handle absence
     _np = None
 
-__all__ = ["save_checkpoint", "load_checkpoint", "restore_into", "prune_best_k"]
+__all__ = ["load_checkpoint", "prune_best_k", "restore_into", "save_checkpoint"]
 
 
 def _sha256_file(path: str, chunk_size: int = 1 << 20) -> str:
@@ -378,11 +378,8 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
 
     candidates: list[tuple[float, Path]] = []
     for item in root.iterdir():
-        if (
-            (item.is_dir()
-            and (item / "model.pt").exists())
-            or (item.is_file()
-            and item.suffix == ".pt")
+        if (item.is_dir() and (item / "model.pt").exists()) or (
+            item.is_file() and item.suffix == ".pt"
         ):
             candidates.append((item.stat().st_mtime, item))
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Analyze coverage gaps in tokenization module and generate detailed report."""
 import json
-from typing import Any, Dict, List
+from typing import Any
 
 
-def analyze_coverage_gaps(coverage_file: str = 'coverage_reports/coverage_tokenization.json') -> List[Dict[str, Any]]:
+def analyze_coverage_gaps(coverage_file: str = 'coverage_reports/coverage_tokenization.json') -> list[dict[str, Any]]:
     """Analyze coverage gaps and generate detailed report."""
     with open(coverage_file) as f:
         data = json.load(f)

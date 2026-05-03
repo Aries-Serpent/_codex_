@@ -25,7 +25,7 @@ def test_tokenizer_cli_train_force(tmp_path, monkeypatch, force):
 
     calls: dict[str, object] = {}
 
-    def fake_train(cfg):  # noqa: ANN001 - trainer signature
+    def fake_train(cfg):
         calls["cfg"] = cfg
         return tmp_path / "artifacts"
 

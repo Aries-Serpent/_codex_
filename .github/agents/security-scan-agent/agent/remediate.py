@@ -9,7 +9,7 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class RemediationType(Enum):
@@ -29,12 +29,12 @@ class SecurityRemediation:
     remediation_type: RemediationType
     description: str
     auto_applied: bool
-    changes: List[Dict[str, Any]]
+    changes: list[dict[str, Any]]
     pr_created: bool
     pr_url: Optional[str]
     advisory_generated: bool
-    compliance_notes: List[str]
-    metadata: Dict[str, Any]
+    compliance_notes: list[str]
+    metadata: dict[str, Any]
 
 
 class SecurityRemediator:
@@ -53,9 +53,9 @@ class SecurityRemediator:
 
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
-        self.remediations: List[SecurityRemediation] = []
+        self.remediations: list[SecurityRemediation] = []
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """
         ACT: Apply security remediations.
 
@@ -85,7 +85,7 @@ class SecurityRemediator:
         # Generate advisory if critical vulnerabilities
         advisory_path = self._generate_advisory(decision) if decision.get("critical_count", 0) > 0 else None
 
-        result = {
+        return {
             "remediations": self.remediations,
             "auto_fixed_count": sum(1 for r in self.remediations if r.auto_applied),
             "pr_created_count": sum(1 for r in self.remediations if r.pr_created),
@@ -97,7 +97,6 @@ class SecurityRemediator:
         #AFTERMATH_METRIC: remediations_applied = len(self.remediations)
         #AFTERMATH_METRIC: auto_fixes = result["auto_fixed_count"]
 
-        return result
 
     def _apply_auto_fix(self, analysis: Any) -> SecurityRemediation:
         """
@@ -148,7 +147,7 @@ class SecurityRemediator:
             metadata={"analysis": analysis, "estimated_effort": analysis.estimated_effort}
         )
 
-    def _upgrade_dependency(self, analysis: Any) -> List[Dict[str, Any]]:
+    def _upgrade_dependency(self, analysis: Any) -> list[dict[str, Any]]:
         """
         Upgrade vulnerable dependency.
 
@@ -176,7 +175,7 @@ class SecurityRemediator:
 
         return changes
 
-    def _remove_credentials(self, analysis: Any) -> List[Dict[str, Any]]:
+    def _remove_credentials(self, analysis: Any) -> list[dict[str, Any]]:
         """
         Remove hardcoded credentials.
 
@@ -202,7 +201,7 @@ class SecurityRemediator:
 
         return changes
 
-    def _upgrade_crypto(self, analysis: Any) -> List[Dict[str, Any]]:
+    def _upgrade_crypto(self, analysis: Any) -> list[dict[str, Any]]:
         """
         Upgrade insecure cryptography.
 
@@ -228,7 +227,7 @@ class SecurityRemediator:
 
         return changes
 
-    def _generate_security_report(self, decision: Dict[str, Any]) -> Path:
+    def _generate_security_report(self, decision: dict[str, Any]) -> Path:
         """
         Generate comprehensive security report.
 
@@ -264,7 +263,7 @@ class SecurityRemediator:
         report_path.write_text(json.dumps(report, indent=2))
         return report_path
 
-    def _generate_advisory(self, decision: Dict[str, Any]) -> Path:
+    def _generate_advisory(self, decision: dict[str, Any]) -> Path:
         """
         Generate security advisory for critical vulnerabilities.
 
@@ -311,7 +310,7 @@ class SecurityRemediator:
         advisory_path.write_text(content)
         return advisory_path
 
-    def _generate_summary(self) -> Dict[str, Any]:
+    def _generate_summary(self) -> dict[str, Any]:
         """Generate remediation summary."""
         return {
             "total_remediations": len(self.remediations),

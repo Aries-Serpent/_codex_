@@ -128,6 +128,6 @@ def fallback_status() -> tuple[bool, Optional[Path], Optional[str]]:
     return _FALLBACK_ACTIVE, _FALLBACK_PATH, _FALLBACK_REASON
 
 
-__all__ = ["maybe_export_metrics", "fallback_status"]
+__all__ = ["fallback_status", "maybe_export_metrics"]
 
 # END: CODEX_PROMETHEUS

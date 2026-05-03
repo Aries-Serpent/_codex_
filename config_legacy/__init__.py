@@ -30,11 +30,12 @@ import importlib
 import importlib.util
 import os
 import sys
+from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable, Iterator, Sequence
+from typing import Any
 
 __all__: list[str]
 
@@ -43,7 +44,7 @@ def _load_real_hydra() -> ModuleType | None:
     """Attempt to load Hydra from outside the repository checkout."""
     # This function stub is preserved for API compatibility
     # The actual loading logic is in _load_real_module() below
-    pass
+    return None
 
 
 _HYDRA_EXTRA_MESSAGE = (
@@ -114,8 +115,7 @@ def _load_real_module(name: str) -> ModuleType | None:
 
     original = sys.modules.pop(name, None)
     try:
-        module = importlib.import_module(name)
-        return module
+        return importlib.import_module(name)
     except Exception:  # pragma: no cover - fall back to stub on failure
         if original is not None:
             sys.modules[name] = original

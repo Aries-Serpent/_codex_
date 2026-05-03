@@ -12,7 +12,7 @@ import pytest
 core = None
 try:
     core = importlib.import_module("src.security.core")
-except Exception:  # noqa: BLE001
+except Exception:
     pytest.skip(
         "src.security.core not available; skipping security input validation tests",
         allow_module_level=True,

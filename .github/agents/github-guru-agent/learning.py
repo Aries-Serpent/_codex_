@@ -13,7 +13,7 @@ import logging
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -31,10 +31,10 @@ class LessonEntry:
     outcome: str  # result of the action
     pattern_id: Optional[str] = None  # related pattern if applicable
     confidence: float = 0.5
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     created_at: datetime = field(default_factory=lambda: datetime.now(tz=timezone.utc))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["created_at"] = self.created_at.isoformat()
         return d
@@ -57,7 +57,7 @@ class LearningEngine:
         self._lessons_file = lessons_file or Path(
             "audit_artifacts/baselines/guru_lessons.jsonl"
         )
-        self._lessons: List[LessonEntry] = []
+        self._lessons: list[LessonEntry] = []
         self._lesson_counter = 0
 
     def record_lesson(
@@ -69,7 +69,7 @@ class LearningEngine:
         outcome: str,
         pattern_id: Optional[str] = None,
         confidence: float = 0.5,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
     ) -> LessonEntry:
         """Record a lesson learned during a capability run."""
         self._lesson_counter += 1
@@ -89,7 +89,7 @@ class LearningEngine:
         logger.debug("Lesson recorded: %s", lesson.lesson_id)
         return lesson
 
-    def get_lessons(self) -> List[LessonEntry]:
+    def get_lessons(self) -> list[LessonEntry]:
         """Return lessons from this session."""
         return list(self._lessons)
 
@@ -108,11 +108,11 @@ class LearningEngine:
             logger.warning("Could not persist lessons: %s", exc)
             return 0
 
-    def load_all_lessons(self) -> List[Dict[str, Any]]:
+    def load_all_lessons(self) -> list[dict[str, Any]]:
         """Load all historically persisted lessons for reflection."""
         if not self._lessons_file.exists():
             return []
-        lessons: List[Dict[str, Any]] = []
+        lessons: list[dict[str, Any]] = []
         try:
             with self._lessons_file.open(encoding="utf-8") as fh:
                 for line in fh:
@@ -123,14 +123,14 @@ class LearningEngine:
             logger.warning("Could not load lessons: %s", exc)
         return lessons
 
-    def get_pattern_refinements(self) -> List[Dict[str, Any]]:
+    def get_pattern_refinements(self) -> list[dict[str, Any]]:
         """
         Analyze lessons to suggest pattern refinements.
 
         Returns list of dicts with pattern_id and suggested improvement.
         """
         all_lessons = self.load_all_lessons()
-        refinements: Dict[str, int] = {}
+        refinements: dict[str, int] = {}
 
         for lesson in all_lessons:
             pid = lesson.get("pattern_id")

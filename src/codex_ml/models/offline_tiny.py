@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence, Union
+from typing import Any
 
 
 @dataclass
@@ -31,7 +32,7 @@ class TinySequenceModel:
         return cls(responses, default_completion=default)
 
     @classmethod
-    def from_file(cls, path: Union[str, Path]) -> TinySequenceModel:
+    def from_file(cls, path: str | Path) -> TinySequenceModel:
         candidate = Path(path)
         if candidate.is_dir():
             candidate = candidate / "model.json"
@@ -50,4 +51,4 @@ class TinySequenceModel:
         return [self.generate(prompt) for prompt in prompts]
 
 
-__all__ = ["TinySequenceModel", "ResponseRule"]
+__all__ = ["ResponseRule", "TinySequenceModel"]

@@ -20,7 +20,6 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""Offline-friendly NDJSON metrics summarization helpers and CLI shims."""
 
 
 import argparse
@@ -29,7 +28,7 @@ import json
 from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 FIELDNAMES: Sequence[str] = (
     "run_id",
@@ -267,7 +266,7 @@ class NdjsonSummarizer:
 
     fieldnames: Sequence[str] = FIELDNAMES
 
-    def __init__(self, run_dir: Union[str, Path], *, pattern: Optional[str] = None) -> None:
+    def __init__(self, run_dir: str | Path, *, pattern: Optional[str] = None) -> None:
         self.run_dir = Path(run_dir).expanduser().resolve()
         self.pattern = pattern
 
@@ -278,7 +277,7 @@ class NdjsonSummarizer:
         rows = self.collect()
         return _summarise_rows(rows)
 
-    def write(self, fmt: str, destination: Optional[Union[str, Path]] = None) -> Path:
+    def write(self, fmt: str, destination: Optional[str | Path] = None) -> Path:
         summary = self.summarise()
         suffix = fmt.lower()
         dest_path = (
@@ -294,7 +293,7 @@ class NdjsonSummarizer:
 
 
 def summarize_directory(
-    run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None
+    run_dir: str | Path, fmt: str, destination: Optional[str | Path] = None
 ) -> Path:
     """Summarize metrics from a run directory to a specific format.
 
@@ -311,9 +310,7 @@ def summarize_directory(
 
 
 # Convenience wrapper for backward compatibility with tests
-def summarize(
-    run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None
-) -> Path:
+def summarize(run_dir: str | Path, fmt: str, destination: Optional[str | Path] = None) -> Path:
     """Convenience wrapper for summarize_directory.
 
     This function provides a simpler interface compatible with existing tests.

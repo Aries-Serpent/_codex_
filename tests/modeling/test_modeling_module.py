@@ -13,10 +13,10 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-import pytest  # noqa: E402
+import pytest
 
-torch = pytest.importorskip("torch")  # noqa: E402
-import modeling  # noqa: E402
+torch = pytest.importorskip("torch")
+import modeling
 
 TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
 
@@ -127,7 +127,7 @@ def test_load_tokenizer_prefers_configured_name(monkeypatch: pytest.MonkeyPatch)
 
     class DummyTokenizer:
         pad_token = None
-        eos_token = "</s>"  # noqa: S105
+        eos_token = "</s>"
 
     def fake_from_pretrained(name: str) -> DummyTokenizer:
         captured["name"] = name
@@ -142,4 +142,4 @@ def test_load_tokenizer_prefers_configured_name(monkeypatch: pytest.MonkeyPatch)
 
     assert isinstance(tok, DummyTokenizer)
     assert captured["name"] == "tokenizer"
-    assert tok.pad_token == "</s>"  # noqa: S105
+    assert tok.pad_token == "</s>"

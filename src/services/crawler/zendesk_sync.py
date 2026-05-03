@@ -220,7 +220,7 @@ class ZendeskKnowledgeSyncService:
         if parsed.scheme not in {"https"}:
             raise ValueError(f"Unsupported URL scheme for {url!r}")
 
-        req = urllib.request.Request(  # noqa: S310 - curated domains
+        req = urllib.request.Request(  # noqa: S310  # scheme validated above (https only)
             url,
             headers={"User-Agent": self.user_agent},
             method="GET",
@@ -229,7 +229,7 @@ class ZendeskKnowledgeSyncService:
         last_exc: Exception | None = None
         for attempt in range(self.retries):
             try:
-                with urllib.request.urlopen(req) as response:  # noqa: S310 - curated domains  # nosec B310
+                with urllib.request.urlopen(req) as response:  # noqa: S310  # nosec: B310  # scheme validated at line 220 (https only)
                     content = response.read()
                     headers = dict(response.headers)
                     return content, headers

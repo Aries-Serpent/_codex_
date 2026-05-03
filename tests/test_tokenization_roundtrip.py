@@ -6,7 +6,7 @@ Test module for tokenization roundtrip.
 
 from __future__ import annotations
 
-from typing import Dict, Iterable, List
+from collections.abc import Iterable
 
 from codex_ml.registry.tokenizers import encode_cached
 
@@ -17,9 +17,9 @@ class _RoundTripTokenizer:
     name_or_path = "roundtrip"
 
     def __init__(self) -> None:
-        self._vocab: Dict[str, int] = {"<pad>": self.pad_token_id, "<eos>": self.eos_token_id}
-        self._inv: Dict[int, str] = {self.pad_token_id: "<pad>", self.eos_token_id: "<eos>"}
-        self.calls: Dict[str, int] = {}
+        self._vocab: dict[str, int] = {"<pad>": self.pad_token_id, "<eos>": self.eos_token_id}
+        self._inv: dict[int, str] = {self.pad_token_id: "<pad>", self.eos_token_id: "<eos>"}
+        self.calls: dict[str, int] = {}
 
     def _lookup(self, token: str) -> int:
         if token not in self._vocab:
@@ -37,7 +37,7 @@ class _RoundTripTokenizer:
         max_length: int | None = None,
         add_special_tokens: bool | None = True,
         return_attention_mask: bool = True,
-    ) -> Dict[str, List[int]]:
+    ) -> dict[str, list[int]]:
         self.calls[text] = self.calls.get(text, 0) + 1
         parts = text.split()
         tokens = [self._lookup(p) for p in parts]
@@ -50,13 +50,13 @@ class _RoundTripTokenizer:
             while len(tokens) < max_length:
                 tokens.append(self.pad_token_id)
                 mask.append(0)
-        payload: Dict[str, List[int]] = {"input_ids": tokens}
+        payload: dict[str, list[int]] = {"input_ids": tokens}
         if return_attention_mask:
             payload["attention_mask"] = mask
         return payload
 
     def decode(self, token_ids: Iterable[int], skip_special_tokens: bool = True) -> str:
-        pieces: List[str] = []
+        pieces: list[str] = []
         for tid in token_ids:
             if skip_special_tokens and tid in {self.pad_token_id, self.eos_token_id}:
                 continue

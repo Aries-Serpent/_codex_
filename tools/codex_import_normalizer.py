@@ -24,7 +24,6 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Tuple
 
 # ---------------------------
 # Helpers & logging
@@ -82,7 +81,7 @@ def log_error(step: str, err: Exception | str, context: str = ""):
     append_results(rq)
 
 
-def record_inventory(paths: List[Path]):
+def record_inventory(paths: list[Path]):
     items = []
     for p in paths:
         if not p.exists():
@@ -147,7 +146,7 @@ def split_and_alpha_imports(src_text: str) -> str:
         raise RuntimeError(f"Syntax error pre-transform: {e}")
 
     lines = src_text.splitlines(keepends=True)
-    out: List[str] = []
+    out: list[str] = []
     for line in lines:
         stripped = line.lstrip()
         indent = line[: len(line) - len(stripped)]
@@ -183,13 +182,13 @@ def split_and_alpha_imports(src_text: str) -> str:
 # ---------------------------
 # Ruff runners
 # ---------------------------
-def run_cmd(cmd: List[str]) -> Tuple[int, str]:
+def run_cmd(cmd: list[str]) -> tuple[int, str]:
     p = subprocess.run(cmd, capture_output=True, text=True)
     out = (p.stdout or "") + (p.stderr or "")
     return p.returncode, out
 
 
-def ruff_fix_and_converge(target: Path) -> Tuple[int, List[str]]:
+def ruff_fix_and_converge(target: Path) -> tuple[int, list[str]]:
     logs = []
     code, out = run_cmd(["ruff", "check", "--fix", str(target)])
     logs.append(f"$ ruff check --fix {target}\n{out}")

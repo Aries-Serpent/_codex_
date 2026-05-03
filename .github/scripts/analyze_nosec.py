@@ -7,10 +7,9 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
-def parse_nosec_comments(root_dir: Path) -> Dict[str, List[Tuple[int, str, str, bool]]]:
+def parse_nosec_comments(root_dir: Path) -> dict[str, list[tuple[int, str, str, bool]]]:
     """
     Parse all nosec comments from Python files.
 
@@ -41,7 +40,7 @@ def parse_nosec_comments(root_dir: Path) -> Dict[str, List[Tuple[int, str, str, 
     return results
 
 
-def generate_report(nosec_data: Dict[str, List[Tuple[int, str, str, bool]]]) -> str:
+def generate_report(nosec_data: dict[str, list[tuple[int, str, str, bool]]]) -> str:
     """Generate comprehensive audit report."""
     total_nosec = sum(len(v) for v in nosec_data.values())
     files_with_nosec = len(nosec_data)

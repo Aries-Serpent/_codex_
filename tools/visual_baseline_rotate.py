@@ -3,10 +3,9 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import List
 
 
-def rotate(dir_path: Path, keep: int) -> List[str]:
+def rotate(dir_path: Path, keep: int) -> list[str]:
     files = sorted([p for p in dir_path.glob("*.png") if p.is_file()])
     to_delete = files[:-keep] if keep > 0 else files
     for p in to_delete:

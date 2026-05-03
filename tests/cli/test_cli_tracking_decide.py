@@ -15,9 +15,9 @@ pytest.importorskip("typer")
 
 
 typer = pytest.importorskip("typer", reason="typer not installed")
-from typer.testing import CliRunner  # type: ignore  # noqa: E402
+from typer.testing import CliRunner  # type: ignore
 
-from codex_ml.cli import tracking_decide  # noqa: E402
+from codex_ml.cli import tracking_decide
 
 
 @pytest.fixture(autouse=True)

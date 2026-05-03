@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -18,7 +18,7 @@ from codex_ml.analysis.providers import ExternalWebSearch
 class _DummyResponse:
     def __init__(
         self,
-        payload: Dict[str, Any],
+        payload: dict[str, Any],
         *,
         content_type: str = "application/json",
         status_code: int = 200,
@@ -29,7 +29,7 @@ class _DummyResponse:
         self.status_code = status_code
         self._raise_error = raise_error
 
-    def json(self) -> Dict[str, Any]:
+    def json(self) -> dict[str, Any]:
         return self._payload
 
     def raise_for_status(self) -> None:
@@ -52,10 +52,10 @@ def test_external_search_uses_default_endpoint(monkeypatch: pytest.MonkeyPatch) 
         ]
     }
     response = _DummyResponse(payload)
-    captured: Dict[str, Any] = {}
+    captured: dict[str, Any] = {}
 
     def fake_get(
-        endpoint: str, params: Dict[str, Any], timeout: float
+        endpoint: str, params: dict[str, Any], timeout: float
     ) -> _DummyResponse:
         captured["endpoint"] = endpoint
         captured["params"] = params
@@ -100,7 +100,7 @@ def test_external_search_captures_http_errors() -> None:
 
 
 def test_external_search_handles_http_status_errors() -> None:
-    payload: Dict[str, Any] = {}
+    payload: dict[str, Any] = {}
     response = _DummyResponse(
         payload, raise_error=RuntimeError("bad response"), status_code=503
     )
@@ -138,7 +138,7 @@ def test_external_search_success_normalises_payload(
     response = _DummyResponse(payload)
 
     def fake_get(
-        endpoint: str, params: Dict[str, Any], timeout: float
+        endpoint: str, params: dict[str, Any], timeout: float
     ) -> _DummyResponse:
         assert endpoint == "https://search.example/api"
         assert params["q"] == "python"

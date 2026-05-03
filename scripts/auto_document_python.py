@@ -33,10 +33,9 @@ Last Updated: 2026-01-16
 import ast
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 
-def analyze_module(file_path: Path) -> Tuple[bool, List[str]]:
+def analyze_module(file_path: Path) -> tuple[bool, list[str]]:
     """
     Analyze a Python module for missing documentation.
 

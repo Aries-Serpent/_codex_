@@ -7,7 +7,6 @@ Quick cleanup of low-priority and archived content broken links.
 import json
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -18,7 +17,7 @@ def load_categorization() -> dict:
     with open(cat_file) as f:
         return json.load(f)
 
-def get_low_priority_files(cat_data: dict) -> List[Tuple[str, dict]]:
+def get_low_priority_files(cat_data: dict) -> list[tuple[str, dict]]:
     """Get list of low-priority files with broken links."""
     low_priority = []
 
@@ -28,7 +27,7 @@ def get_low_priority_files(cat_data: dict) -> List[Tuple[str, dict]]:
 
     return sorted(low_priority, key=lambda x: x[1]['broken_count'], reverse=True)
 
-def bulk_clean_file(file_path: Path) -> Tuple[int, str]:
+def bulk_clean_file(file_path: Path) -> tuple[int, str]:
     """
     Bulk clean broken links from low-priority/archive files.
     Returns (links_cleaned, action).

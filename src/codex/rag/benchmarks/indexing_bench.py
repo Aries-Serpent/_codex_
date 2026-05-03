@@ -6,14 +6,14 @@ Measures indexing throughput and build times for different corpus sizes.
 
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .runner import BenchmarkRunner
 
 
 def benchmark_indexing(
-    corpus_sizes: Optional[List[int]] = None, chunk_sizes: Optional[List[int]] = None, runs: int = 3
-) -> Dict[str, Any]:
+    corpus_sizes: Optional[list[int]] = None, chunk_sizes: Optional[list[int]] = None, runs: int = 3
+) -> dict[str, Any]:
     """
     Benchmark indexing performance with various corpus sizes.
 
@@ -69,7 +69,7 @@ def benchmark_indexing(
     }
 
 
-def _generate_test_corpus(size: int) -> List[str]:
+def _generate_test_corpus(size: int) -> list[str]:
     """Generate synthetic test corpus."""
     return [
         f"Document {i}: This is a test document with some content about topic {i % 10}. "
@@ -81,7 +81,7 @@ def _generate_test_corpus(size: int) -> List[str]:
     ]
 
 
-def _build_index(documents: List[str], index_name: str, chunk_size: int, tmpdir: str) -> None:
+def _build_index(documents: list[str], index_name: str, chunk_size: int, tmpdir: str) -> None:
     """Build RAG index from documents."""
     from codex.rag.embeddings import create_embedding_provider
     from codex.rag.indexer import chunk_text, persist_index
@@ -112,7 +112,7 @@ def _build_index(documents: List[str], index_name: str, chunk_size: int, tmpdir:
     )
 
 
-def benchmark_parallel_vs_sequential(corpus_size: int = 1000, runs: int = 3) -> Dict[str, Any]:
+def benchmark_parallel_vs_sequential(corpus_size: int = 1000, runs: int = 3) -> dict[str, Any]:
     """
     Compare parallel vs sequential indexing.
 

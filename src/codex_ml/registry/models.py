@@ -9,4 +9,4 @@ from codex_ml.models.registry import (
     register_model,
 )
 
-__all__ = ["model_registry", "register_model", "get_model", "list_models"]
+__all__ = ["get_model", "list_models", "model_registry", "register_model"]

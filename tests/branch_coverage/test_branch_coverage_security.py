@@ -10,7 +10,6 @@ Target: 100% branch coverage for security modules
 """
 
 import os
-from typing import Dict
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -270,7 +269,7 @@ class TestAuthMethodBranches:
 
     def test_auth_method_api_key_header_branch(self) -> None:
         """Test API key from X-API-Key header branch."""
-        headers: Dict[str, str] = {"X-API-Key": "key123"}
+        headers: dict[str, str] = {"X-API-Key": "key123"}
         if "Authorization" in headers:
             auth_type = "bearer"
         elif "X-API-Key" in headers:
@@ -281,7 +280,7 @@ class TestAuthMethodBranches:
 
     def test_auth_method_no_headers_branch(self) -> None:
         """Test no authentication headers branch."""
-        headers: Dict[str, str] = {}
+        headers: dict[str, str] = {}
         if "Authorization" in headers:
             auth_type = "bearer"
         elif "X-API-Key" in headers:

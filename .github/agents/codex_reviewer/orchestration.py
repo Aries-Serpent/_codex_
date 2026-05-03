@@ -5,7 +5,7 @@ This module contains workflow orchestration and planning logic.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class WorkflowOrchestrator:
     - Resource requirements
     """
 
-    async def create_plan(self, context, result) -> Dict[str, Any]:
+    async def create_plan(self, context, result) -> dict[str, Any]:
         """
         Create orchestration plan based on review results.
 

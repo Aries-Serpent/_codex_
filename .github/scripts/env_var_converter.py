@@ -24,7 +24,7 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Optional
 
 # Configuration
 MAX_ENV_SIZE = 48 * 1024  # 48KB GitHub limit
@@ -101,7 +101,7 @@ class EnvVarConverter:
         self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
         self.metadata = self._load_metadata()
 
-    def _load_metadata(self) -> Dict[str, EnvVarMetadata]:
+    def _load_metadata(self) -> dict[str, EnvVarMetadata]:
         """Load metadata from JSON file"""
         if not self.metadata_file.exists():
             return {}
@@ -142,7 +142,7 @@ class EnvVarConverter:
         """Calculate SHA256 hash of content"""
         return hashlib.sha256(content).hexdigest()
 
-    def encode_file(self, file_path: Path) -> Tuple[str, EnvVarMetadata]:
+    def encode_file(self, file_path: Path) -> tuple[str, EnvVarMetadata]:
         """
         Encode file to base64 and return encoded string with metadata.
 
@@ -228,7 +228,7 @@ class EnvVarConverter:
                 return config
         return None
 
-    def verify_file(self, file_path: Path, env_var: str) -> Tuple[bool, str]:
+    def verify_file(self, file_path: Path, env_var: str) -> tuple[bool, str]:
         """
         Verify if file needs updating based on hash comparison.
 

@@ -6,7 +6,7 @@ import fnmatch
 import hashlib
 import json
 import pathlib
-from typing import Dict, List, Optional
+from typing import Optional
 
 DEFAULT_EXCLUDES = [
     "*__pycache__/*",
@@ -33,9 +33,9 @@ def sha256(p: pathlib.Path) -> str:
 
 
 def walk_manifest(
-    root: pathlib.Path, excludes: List[str] | None = None
-) -> Dict[str, Dict[str, int]]:
-    out: Dict[str, Dict[str, int]] = {}
+    root: pathlib.Path, excludes: list[str] | None = None
+) -> dict[str, dict[str, int]]:
+    out: dict[str, dict[str, int]] = {}
     excludes = excludes or []
     for p in root.rglob("*"):
         if p.is_file() and ".git" not in p.parts:
@@ -46,15 +46,15 @@ def walk_manifest(
     return out
 
 
-def save(path: str, obj: Dict[str, Dict[str, int]]) -> None:
+def save(path: str, obj: dict[str, dict[str, int]]) -> None:
     pathlib.Path(path).write_text(json.dumps(obj, indent=2), encoding="utf-8")
 
 
-def load(path: str) -> Dict[str, Dict[str, int]]:
+def load(path: str) -> dict[str, dict[str, int]]:
     return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
 
 
-def match_any(path: str, patterns: List[str]) -> bool:
+def match_any(path: str, patterns: list[str]) -> bool:
     return any(fnmatch.fnmatch(path, pat) for pat in patterns)
 
 
@@ -66,12 +66,12 @@ def _map_known_rename(path: str) -> Optional[str]:
 
 
 def compare(
-    pre: str, post: str, allow_removed: List[str], allow_added: List[str], allow_changed: List[str]
+    pre: str, post: str, allow_removed: list[str], allow_added: list[str], allow_changed: list[str]
 ) -> bool:
     pre_map = load(pre)
     post_map = load(post)
-    pre_hash_to_paths: Dict[str, set] = {}
-    post_hash_to_paths: Dict[str, set] = {}
+    pre_hash_to_paths: dict[str, set] = {}
+    post_hash_to_paths: dict[str, set] = {}
     for p, meta in pre_map.items():
         pre_hash_to_paths.setdefault(meta["sha256"], set()).add(p)
     for p, meta in post_map.items():
@@ -81,7 +81,7 @@ def compare(
     changed = [
         p for p in pre_map if p in post_map and pre_map[p]["sha256"] != post_map[p]["sha256"]
     ]
-    moves: List[Dict[str, str]] = []
+    moves: list[dict[str, str]] = []
     rem_left = []
     for p in removed:
         targets = sorted(post_hash_to_paths.get(pre_map[p]["sha256"], set()))

@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 
 class MessageType(Enum):
@@ -44,7 +44,7 @@ class BaseMessage:
     message_type: str
     message_id: Optional[str] = None  # For request-response correlation
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
 
@@ -58,10 +58,10 @@ class ContextUpdate(BaseMessage):
     decision-making information.
     """
 
-    context: Dict[str, Any]
+    context: dict[str, Any]
     execution_state: Optional[str] = None  # "observing", "orienting", "deciding", "acting"
     confidence: Optional[float] = None
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
 
 
 @dataclass(kw_only=True)
@@ -72,7 +72,7 @@ class QueryMessage(BaseMessage):
 
     query: str
     query_type: str  # "info", "action", "validation"
-    parameters: Optional[Dict[str, Any]] = None
+    parameters: Optional[dict[str, Any]] = None
     requires_response: bool = True
 
 
@@ -96,7 +96,7 @@ class StatusMessage(BaseMessage):
 
     component: str  # "cognitive_brain", "orchestrator", "agent"
     status: str  # "running", "idle", "error", "stopped"
-    metrics: Optional[Dict[str, Any]] = None
+    metrics: Optional[dict[str, Any]] = None
 
 
 @dataclass(kw_only=True)
@@ -134,7 +134,7 @@ BridgeMessage = Union[
 
 def create_context_update(
     source: str,
-    context: Dict[str, Any],
+    context: dict[str, Any],
     execution_state: Optional[str] = None,
     confidence: Optional[float] = None,
 ) -> ContextUpdate:
@@ -164,7 +164,7 @@ def create_query(
     source: str,
     query: str,
     query_type: str = "info",
-    parameters: Optional[Dict[str, Any]] = None,
+    parameters: Optional[dict[str, Any]] = None,
     message_id: Optional[str] = None,
 ) -> QueryMessage:
     """
@@ -223,7 +223,7 @@ def create_response(
 
 
 def create_status(
-    source: str, component: str, status: str, metrics: Optional[Dict[str, Any]] = None
+    source: str, component: str, status: str, metrics: Optional[dict[str, Any]] = None
 ) -> StatusMessage:
     """
     Factory function to create status message.

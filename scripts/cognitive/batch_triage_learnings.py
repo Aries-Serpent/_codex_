@@ -17,7 +17,7 @@ from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -30,7 +30,7 @@ class FailurePattern:
     first_seen: str
     last_seen: str
     success_rate: float  # Remediation success rate
-    common_remediations: List[str]
+    common_remediations: list[str]
     confidence_score: float
 
 
@@ -63,13 +63,13 @@ class BatchTriageLearningEngine:
         self.metrics_file.parent.mkdir(parents=True, exist_ok=True)
 
         # Cache for performance
-        self._patterns_cache: Optional[Dict[str, FailurePattern]] = None
-        self._remediations_cache: Optional[List[Dict]] = None
+        self._patterns_cache: Optional[dict[str, FailurePattern]] = None
+        self._remediations_cache: Optional[list[dict]] = None
 
     def record_triage_outcome(
         self,
         batch_id: str,
-        outcomes: List[TriageOutcome]
+        outcomes: list[TriageOutcome]
     ) -> None:
         """
         Store triage results in cognitive brain KB
@@ -103,8 +103,8 @@ class BatchTriageLearningEngine:
 
     def extract_patterns(
         self,
-        failure_descriptions: List[str]
-    ) -> List[FailurePattern]:
+        failure_descriptions: list[str]
+    ) -> list[FailurePattern]:
         """
         Extract recurring failure patterns using signature matching
 
@@ -194,7 +194,7 @@ class BatchTriageLearningEngine:
         # Invalidate cache
         self._remediations_cache = None
 
-    def get_historical_context(self, failure_type: str) -> Dict[str, Any]:
+    def get_historical_context(self, failure_type: str) -> dict[str, Any]:
         """
         Retrieve past similar failures for better context
 
@@ -245,7 +245,7 @@ class BatchTriageLearningEngine:
         self,
         failure_type: str,
         failure_description: str
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict[str, Any]]:
         """
         Use historical success rates to recommend best fix
 
@@ -348,7 +348,7 @@ class BatchTriageLearningEngine:
             return "network_error"
         return "unknown"
 
-    def _load_historical_patterns(self) -> Dict[str, FailurePattern]:
+    def _load_historical_patterns(self) -> dict[str, FailurePattern]:
         """Load all historical patterns from storage"""
         if self._patterns_cache is not None:
             return self._patterns_cache
@@ -365,7 +365,7 @@ class BatchTriageLearningEngine:
         self._patterns_cache = patterns
         return patterns
 
-    def _save_patterns(self, patterns: List[FailurePattern]) -> None:
+    def _save_patterns(self, patterns: list[FailurePattern]) -> None:
         """Save patterns to storage"""
         patterns_file = self.patterns_dir / "patterns.json"
 
@@ -381,28 +381,28 @@ class BatchTriageLearningEngine:
         # Invalidate cache
         self._patterns_cache = None
 
-    def _load_patterns_by_type(self, failure_type: str) -> List[FailurePattern]:
+    def _load_patterns_by_type(self, failure_type: str) -> list[FailurePattern]:
         """Load patterns matching a specific failure type"""
         all_patterns = self._load_historical_patterns()
         return [p for p in all_patterns.values() if p.pattern_type == failure_type]
 
-    def _extract_patterns_from_outcomes(self, outcomes: List[TriageOutcome]) -> List[str]:
+    def _extract_patterns_from_outcomes(self, outcomes: list[TriageOutcome]) -> list[str]:
         """Extract pattern IDs from triage outcomes"""
         return [o.pattern_matched for o in outcomes if o.pattern_matched]
 
-    def _calculate_success_rate(self, outcomes: List[TriageOutcome]) -> float:
+    def _calculate_success_rate(self, outcomes: list[TriageOutcome]) -> float:
         """Calculate overall success rate for outcomes"""
         if not outcomes:
             return 0.0
         successful = sum(1 for o in outcomes if o.success)
         return successful / len(outcomes)
 
-    def _calculate_avg_resolution_time(self, outcomes: List[TriageOutcome]) -> Optional[float]:
+    def _calculate_avg_resolution_time(self, outcomes: list[TriageOutcome]) -> Optional[float]:
         """Calculate average resolution time in seconds"""
         times = [o.resolution_time_seconds for o in outcomes if o.resolution_time_seconds]
         return statistics.mean(times) if times else None
 
-    def _update_metrics(self, data: Dict) -> None:
+    def _update_metrics(self, data: dict) -> None:
         """Update aggregated metrics file"""
         import yaml
 
@@ -484,7 +484,7 @@ class BatchTriageLearningEngine:
         # Save updated patterns
         self._save_patterns(list(patterns.values()))
 
-    def _get_remediation_success_rates(self, failure_type: str) -> Dict[str, float]:
+    def _get_remediation_success_rates(self, failure_type: str) -> dict[str, float]:
         """Get success rates for remediations by failure type"""
         remediations_db = self.patterns_dir / "remediations.jsonl"
 
@@ -511,7 +511,7 @@ class BatchTriageLearningEngine:
 
         return success_rates
 
-    def _get_resolution_times(self, failure_type: str) -> List[int]:
+    def _get_resolution_times(self, failure_type: str) -> list[int]:
         """Get resolution times for a failure type"""
         remediations_db = self.patterns_dir / "remediations.jsonl"
 

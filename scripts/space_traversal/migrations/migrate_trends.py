@@ -51,8 +51,8 @@ logger = logging.getLogger(__name__)
 #     print(f"Applied migrations: {applied}")
 
 import sqlite3
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 __all__ = ["MIGRATIONS", "migration", "run_migrations"]
 

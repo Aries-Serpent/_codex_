@@ -5,7 +5,7 @@ Covers Pydantic models, JSON Schema validation, OpenAPI integration,
 and data validation patterns used across MCP.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pytest
 from pydantic import BaseModel
@@ -17,7 +17,7 @@ class MCPToolRequest(BaseModel):
     """MCP tool invocation request schema."""
 
     tool_name: str
-    params: Dict[str, Any]
+    params: dict[str, Any]
     principal_id: Optional[str] = None
     request_id: Optional[str] = None
 
@@ -36,7 +36,7 @@ class MCPToolMetadata(BaseModel):
 
     name: str
     description: str
-    schema: Dict[str, Any]
+    schema: dict[str, Any]
     version: str = "1.0"
 
 
@@ -117,7 +117,7 @@ def test_nested_model_validation():
 
     class NestedParams(BaseModel):
         query: str
-        filters: Dict[str, Any] = {}
+        filters: dict[str, Any] = {}
 
     class RequestWithNested(BaseModel):
         tool_name: str
@@ -181,9 +181,9 @@ def test_complex_schema_validation():
 
     class ComplexSchema(BaseModel):
         id: str
-        metadata: Dict[str, Any]
+        metadata: dict[str, Any]
         tags: list[str] = []
-        config: Optional[Dict[str, Any]] = None
+        config: Optional[dict[str, Any]] = None
 
     obj = ComplexSchema(id="obj-123", metadata={"key": "value"}, tags=["tag1", "tag2"])
     assert obj.id == "obj-123"

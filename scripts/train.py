@@ -34,7 +34,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python
-"""CLI wrapper around :func:`src.training.engine_hf_trainer.run_hf_trainer`."""
 
 
 import argparse
@@ -42,9 +41,9 @@ import importlib
 import importlib.util
 import json
 import random
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from src.training.config import TrainingConfig
 from src.training.engine_hf_trainer import run_hf_trainer

@@ -560,7 +560,7 @@ class DuckDBBackend:
         table_prefix: str = "_feast_",
     ) -> None:
         try:
-            import duckdb  # noqa: PLC0415
+            import duckdb
         except ImportError as exc:
             raise ImportError(
                 "DuckDBBackend requires the 'duckdb' package: pip install duckdb"
@@ -707,8 +707,8 @@ class DuckDBBackend:
             ImportError: if ``pyarrow`` is not installed.
         """
         try:
-            import pyarrow as pa  # noqa: PLC0415
-            import pyarrow.ipc as pa_ipc  # noqa: PLC0415
+            import pyarrow as pa
+            import pyarrow.ipc as pa_ipc
         except ImportError as exc:
             raise ImportError(
                 "materialize_to_arrow_ipc() requires pyarrow: pip install pyarrow"

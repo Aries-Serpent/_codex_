@@ -4,7 +4,7 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -18,10 +18,10 @@ class AudioAnalysis:
     duration: float
     sample_rate: int
     content_type: str
-    features: Dict[str, Any]
-    problems: List[str]
+    features: dict[str, Any]
+    problems: list[str]
     quality_score: float
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 @dataclass
@@ -34,7 +34,7 @@ class ProfileMatch:
 
 class ProcessingProfile:
     """Audio processing profile."""
-    def __init__(self, name: str, parameters: Dict[str, Any]):
+    def __init__(self, name: str, parameters: dict[str, Any]):
         self.name = name
         self.parameters = parameters
 
@@ -88,7 +88,7 @@ class IntelligentAudioAnalyzer:
         self,
         audio: Optional[np.ndarray],
         sr: int,
-        features: Dict[str, Any]
+        features: dict[str, Any]
     ) -> str:
         """Classify audio content type."""
         zcr_mean = np.mean(features['zcr'])
@@ -98,19 +98,18 @@ class IntelligentAudioAnalyzer:
         # Decision tree classification
         if zcr_mean > 0.15 and spectral_centroid_mean > 3000:
             return "speech"
-        elif tempo > 80 and features.get('has_strong_beat'):
+        if tempo > 80 and features.get('has_strong_beat'):
             return "music"
-        elif zcr_mean < 0.05:
+        if zcr_mean < 0.05:
             return "ambient"
-        else:
-            return "mixed"
+        return "mixed"
 
     def _detect_problems(
         self,
         audio: Optional[np.ndarray],
         sr: int,
-        features: Dict[str, Any]
-    ) -> List[str]:
+        features: dict[str, Any]
+    ) -> list[str]:
         """Detect audio problems."""
         problems = []
 
@@ -124,8 +123,8 @@ class IntelligentAudioAnalyzer:
 
     def _calculate_quality_score(
         self,
-        features: Dict[str, Any],
-        problems: List[str]
+        features: dict[str, Any],
+        problems: list[str]
     ) -> float:
         """Calculate quality score 0-10."""
         base_score = 8.0
@@ -133,7 +132,7 @@ class IntelligentAudioAnalyzer:
         score = base_score - (len(problems) * 1.5)
         return max(0.0, min(10.0, score))
 
-    def _extract_metadata(self, file_path: Path) -> Dict[str, Any]:
+    def _extract_metadata(self, file_path: Path) -> dict[str, Any]:
         """Extract file metadata."""
         return {
             'filename': file_path.name,
@@ -141,7 +140,7 @@ class IntelligentAudioAnalyzer:
             'format': file_path.suffix[1:] if file_path.suffix else 'unknown'
         }
 
-    def _load_profiles(self) -> List[ProcessingProfile]:
+    def _load_profiles(self) -> list[ProcessingProfile]:
         """Load processing profiles."""
         return [
             ProcessingProfile('speech', {'noise_reduction': 0.8, 'eq': 'vocal'}),

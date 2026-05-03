@@ -35,7 +35,8 @@ from __future__ import annotations
 import contextvars
 import logging
 import uuid
-from typing import Any, Iterable, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
 from codex.zendesk.model.trigger import _ZendeskBaseModel
 from quantum.orchestrator import ThermodynamicOrchestrator, ThermodynamicTask

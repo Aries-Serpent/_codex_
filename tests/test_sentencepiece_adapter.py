@@ -95,19 +95,19 @@ def _stub_transformers(monkeypatch):
 # affect test execution.
 
 __all__ = [
-    "_write_corpus",
     "_stub_sp",
-    "test_train_and_reload_roundtrip",
-    "test_train_or_load_trains_and_loads",
-    "test_train_or_load_loads_existing_model",
-    "test_train_or_load_requires_sentencepiece",
-    "test_load_requires_sentencepiece",
-    "test_add_special_tokens_returns_mapping",
+    "_write_corpus",
     "test_add_special_tokens_migrates_legacy_sidecar",
-    "test_persisted_special_tokens_are_loaded",
+    "test_add_special_tokens_returns_mapping",
     "test_add_special_tokens_sidecar",
     "test_assert_vocab_size",
+    "test_load_requires_sentencepiece",
     "test_missing_sentencepiece_branch",
+    "test_persisted_special_tokens_are_loaded",
+    "test_train_and_reload_roundtrip",
+    "test_train_or_load_loads_existing_model",
+    "test_train_or_load_requires_sentencepiece",
+    "test_train_or_load_trains_and_loads",
 ]
 
 
@@ -173,7 +173,7 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
         def DecodeIds(self, ids):
             try:
                 return "".join(chr(int(i) % 256) for i in ids)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 return ""
 
         # Convenience aliases common in lightweight adapters
@@ -205,7 +205,7 @@ def _get_adapter_module():
     """Import and return the sentencepiece_adapter module, skipping tests when unavailable."""
     try:
         return importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    except Exception:  # noqa: BLE001
+    except Exception:
         # If the module cannot be imported for reasons unrelated to sentencepiece, raise so tests fail loudly.
         raise
 
@@ -260,7 +260,7 @@ def test_train_or_load_trains_and_loads(tmp_path, monkeypatch):
 
     # Import adapter module/class after installing stub ensures adapter uses the stub.
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
 
     adapter = SentencePieceAdapter(model)
     # Some adapters allow overriding model_prefix attribute; be tolerant.
@@ -287,7 +287,7 @@ def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
 
     calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=7)
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
 
     adapter = SentencePieceAdapter(model)
     if hasattr(adapter, "model_prefix"):
@@ -314,7 +314,7 @@ def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
     # Remove or None out the spm symbol to emulate missing sentencepiece at runtime
     monkeypatch.setattr(mod, "spm", None, raising=False)
 
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
     with pytest.raises(AttributeError):
         adapter.train_or_load(corpus)
@@ -333,7 +333,7 @@ def test_load_requires_sentencepiece(tmp_path, monkeypatch):
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     monkeypatch.setattr(mod, "spm", None, raising=False)
 
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
     with pytest.raises(AttributeError):
         adapter.load()
@@ -348,7 +348,7 @@ def test_add_special_tokens_returns_mapping(tmp_path, monkeypatch):
     _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=11)
     monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
 
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
 
     mapping_first = adapter.add_special_tokens(["<S1>", "<S2>"])
@@ -389,7 +389,7 @@ def test_add_special_tokens_migrates_legacy_sidecar(tmp_path, monkeypatch):
     legacy_payload = {"pad_token": "<pad>", "bos_token": "<bos>"}
     sidecar.write_text(json.dumps(legacy_payload, indent=2), encoding="utf-8")
 
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
 
     mapping = adapter.add_special_tokens(["<extra>"], existing={"eos_token": "<eos>"})
@@ -426,7 +426,7 @@ def test_add_special_tokens_offsets_from_vocab_size(tmp_path, monkeypatch):
     _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=17)
     monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
 
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
 
     mapping = adapter.add_special_tokens(["<extra>"], existing={"<pad>": 0, "<bos>": 1})
@@ -456,7 +456,7 @@ def test_persisted_special_tokens_are_loaded(tmp_path, monkeypatch):
     sidecar = model.with_suffix(".special_tokens.json")
     sidecar.write_text(json.dumps({"<OLD>": 101}, indent=2), encoding="utf-8")
 
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
     merged = adapter.add_special_tokens(["<NEW>"], existing={"<OLD>": 4096})
 
@@ -505,7 +505,7 @@ def test_assert_vocab_size(tmp_path, monkeypatch):
     model.write_text("model", encoding="utf-8")
     calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=7)
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    SentencePieceAdapter = mod.SentencePieceAdapter
 
     adapter = SentencePieceAdapter(model)
     if hasattr(adapter, "model_prefix"):
@@ -527,4 +527,4 @@ def test_missing_sentencepiece_branch(monkeypatch, tmp_path):
     """Adapter functions should raise ImportError when sentencepiece is absent."""
     monkeypatch.setitem(sys.modules, "sentencepiece", None)
     mod = importlib.reload(importlib.import_module("codex_ml.tokenization.sentencepiece_adapter"))
-    assert getattr(mod, "spm") is None
+    assert mod.spm is None

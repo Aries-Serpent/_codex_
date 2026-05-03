@@ -18,9 +18,10 @@ Author: Codex Team
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping, Sequence
 from datetime import date
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 from .policy import build_policy_mapping
 from .scorecard import render_scorecard

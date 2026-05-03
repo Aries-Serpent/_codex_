@@ -15,13 +15,13 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 class FailurePattern:
     """Represents a known failure pattern with detection and remediation."""
 
-    def __init__(self, name: str, description: str, detection_patterns: List[str],
+    def __init__(self, name: str, description: str, detection_patterns: list[str],
                  root_cause: str, solution: str, risk_level: str = "MEDIUM"):
         self.name = name
         self.description = description
@@ -155,7 +155,7 @@ class WorkflowTriageAnalyzer:
         self.patterns = FAILURE_PATTERNS
 
     def analyze_failure(self, run_id: str, workflow_name: str,
-                       logs: Optional[str] = None) -> Dict:
+                       logs: Optional[str] = None) -> dict:
         """Analyze a workflow failure and provide diagnosis."""
         analysis = {
             'run_id': run_id,
@@ -214,7 +214,7 @@ class WorkflowTriageAnalyzer:
 
         return analysis
 
-    def generate_report(self, analysis: Dict) -> str:
+    def generate_report(self, analysis: dict) -> str:
         """Generate human-readable triage report."""
         lines = []
         lines.append("=" * 80)
@@ -244,7 +244,7 @@ class WorkflowTriageAnalyzer:
         lines.append("\n" + "=" * 80)
         return '\n'.join(lines)
 
-    def batch_analyze(self, workflow_runs: List[Dict]) -> List[Dict]:
+    def batch_analyze(self, workflow_runs: list[dict]) -> list[dict]:
         """Analyze multiple workflow runs."""
         results = []
         for run in workflow_runs:

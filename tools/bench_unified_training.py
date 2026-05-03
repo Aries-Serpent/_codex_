@@ -11,8 +11,8 @@ from __future__ import annotations
 import argparse
 import statistics
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable, List
 
 try:
     import torch
@@ -63,7 +63,7 @@ def _train_once(cfg: UnifiedTrainingConfig) -> float:
 
 
 def bench(rounds: int, epochs: int, batch_size: int, grad_clip: float | None) -> BenchmarkResult:
-    durations: List[float] = []
+    durations: list[float] = []
     for _ in range(rounds):
         cfg = UnifiedTrainingConfig(
             model_name="bench",

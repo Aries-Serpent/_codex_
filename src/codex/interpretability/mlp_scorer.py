@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional
 
 import numpy as np
 
@@ -33,13 +33,13 @@ class MLPAnalysis:
     neuron_importance: np.ndarray
 
     # Layer-wise activation statistics
-    layer_stats: Dict[str, np.ndarray]
+    layer_stats: dict[str, np.ndarray]
 
     # Layer names
-    layer_names: List[str]
+    layer_names: list[str]
 
     # Input shape
-    input_shape: Tuple[int, ...]
+    input_shape: tuple[int, ...]
 
 
 class MLPScorer:
@@ -73,7 +73,7 @@ class MLPScorer:
         self,
         model: torch.nn.Module,
         normalize: bool = True,
-        device: Optional[Union[str, torch.device]] = None,
+        device: Optional[str | torch.device] = None,
         epsilon: float = 1e-10,
     ):
         """
@@ -120,7 +120,7 @@ class MLPScorer:
         self,
         input_ids: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
-    ) -> Tuple[List[torch.Tensor], List[str]]:
+    ) -> tuple[list[torch.Tensor], list[str]]:
         """
         Extract MLP activations from all layers of the model.
 
@@ -174,7 +174,7 @@ class MLPScorer:
         return mlp_activations, layer_names
 
     def compute_neuron_importance(
-        self, mlp_activations: List[torch.Tensor], method: str = "mean_abs"
+        self, mlp_activations: list[torch.Tensor], method: str = "mean_abs"
     ) -> np.ndarray:
         """
         Compute importance score for each neuron based on activation patterns.
@@ -227,8 +227,8 @@ class MLPScorer:
         return np.stack(importance_per_layer)
 
     def compute_activation_statistics(
-        self, mlp_activations: List[torch.Tensor]
-    ) -> Dict[str, np.ndarray]:
+        self, mlp_activations: list[torch.Tensor]
+    ) -> dict[str, np.ndarray]:
         """
         Compute activation statistics across layers.
 
@@ -315,7 +315,7 @@ class MLPScorer:
 
     def get_top_neurons(
         self, analysis: MLPAnalysis, top_k: int = 10
-    ) -> Dict[int, List[Tuple[int, float]]]:
+    ) -> dict[int, list[tuple[int, float]]]:
         """
         Get the top-k most important neurons in each layer.
 
@@ -340,7 +340,7 @@ class MLPScorer:
 
     def get_dead_neurons(
         self, analysis: MLPAnalysis, threshold: float = 0.99
-    ) -> Dict[int, List[int]]:
+    ) -> dict[int, list[int]]:
         """
         Identify "dead" neurons with very sparse activations.
 
@@ -367,7 +367,7 @@ class MLPScorer:
         input_ids_2: torch.Tensor,
         attention_mask_1: Optional[torch.Tensor] = None,
         attention_mask_2: Optional[torch.Tensor] = None,
-    ) -> Dict[str, np.ndarray]:
+    ) -> dict[str, np.ndarray]:
         """
         Compare MLP activations between two different inputs.
 

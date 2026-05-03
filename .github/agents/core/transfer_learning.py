@@ -16,7 +16,7 @@ import json
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 
 @dataclass
@@ -30,9 +30,9 @@ class DomainInfo:
         knowledge_base: Stored domain knowledge
     """
     name: str
-    features: List[str] = field(default_factory=list)
-    action_space: List[str] = field(default_factory=list)
-    knowledge_base: Dict[str, Any] = field(default_factory=dict)
+    features: list[str] = field(default_factory=list)
+    action_space: list[str] = field(default_factory=list)
+    knowledge_base: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -48,8 +48,8 @@ class TransferableKnowledge:
     """
     source_domain: str
     target_domain: str
-    patterns: List[Dict[str, Any]] = field(default_factory=list)
-    weights: Dict[str, float] = field(default_factory=dict)
+    patterns: list[dict[str, Any]] = field(default_factory=list)
+    weights: dict[str, float] = field(default_factory=dict)
     compatibility_score: float = 0.0
 
 
@@ -65,10 +65,10 @@ class DomainAdapter(ABC):
     @abstractmethod
     def adapt_features(
         self,
-        source_features: Dict[str, Any],
+        source_features: dict[str, Any],
         source_domain: DomainInfo,
         target_domain: DomainInfo,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Adapt features from source to target domain.
 
         Args:
@@ -127,10 +127,10 @@ class SimpleDomainAdapter(DomainAdapter):
 
     def adapt_features(
         self,
-        source_features: Dict[str, Any],
+        source_features: dict[str, Any],
         source_domain: DomainInfo,
         target_domain: DomainInfo,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Adapt features using name matching."""
         adapted = {}
 
@@ -225,13 +225,13 @@ class KnowledgeDistiller:
         """
         self.min_confidence = min_confidence
         self.max_patterns = max_patterns
-        self.distilled_knowledge: Dict[str, List[Dict[str, Any]]] = {}
+        self.distilled_knowledge: dict[str, list[dict[str, Any]]] = {}
 
     def distill(
         self,
-        q_table: Dict[str, Dict[str, float]],
+        q_table: dict[str, dict[str, float]],
         domain: DomainInfo,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Distill transferable knowledge from Q-table.
 
         Args:
@@ -277,7 +277,7 @@ class KnowledgeDistiller:
         self,
         state_signature: str,
         domain_name: str,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Get patterns applicable to a state.
 
         Args:
@@ -325,10 +325,10 @@ class TransferLearningEngine:
             adapter: Domain adapter (uses SimpleDomainAdapter if None)
             distiller: Knowledge distiller (creates new if None)
         """
-        self.domains: Dict[str, DomainInfo] = {}
+        self.domains: dict[str, DomainInfo] = {}
         self.adapter = adapter or SimpleDomainAdapter()
         self.distiller = distiller or KnowledgeDistiller()
-        self.transfer_history: List[Dict[str, Any]] = []
+        self.transfer_history: list[dict[str, Any]] = []
 
     def register_domain(self, domain: DomainInfo) -> None:
         """Register a learning domain.
@@ -342,7 +342,7 @@ class TransferLearningEngine:
         self,
         source_domain: str,
         target_domain: str,
-        source_q_table: Dict[str, Dict[str, float]],
+        source_q_table: dict[str, dict[str, float]],
     ) -> TransferableKnowledge:
         """Prepare knowledge for transfer.
 
@@ -369,21 +369,20 @@ class TransferLearningEngine:
         patterns = self.distiller.distill(source_q_table, src_info)
 
         # Create transferable knowledge
-        knowledge = TransferableKnowledge(
+        return TransferableKnowledge(
             source_domain=source_domain,
             target_domain=target_domain,
             patterns=patterns,
             compatibility_score=compatibility,
         )
 
-        return knowledge
 
     def apply_transfer(
         self,
         knowledge: TransferableKnowledge,
-        target_q_table: Dict[str, Dict[str, float]],
+        target_q_table: dict[str, dict[str, float]],
         transfer_rate: float = 0.5,
-    ) -> Dict[str, Dict[str, float]]:
+    ) -> dict[str, dict[str, float]]:
         """Apply transferred knowledge to target Q-table.
 
         Args:
@@ -437,7 +436,7 @@ class TransferLearningEngine:
 
         return target_q_table
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get transfer learning statistics.
 
         Returns:
@@ -494,21 +493,21 @@ class MetaLearningFramework:
             config: Meta-learning configuration
         """
         self.config = config or MetaLearningConfig()
-        self.meta_parameters: Dict[str, float] = {
+        self.meta_parameters: dict[str, float] = {
             'transfer_rate': 0.5,
             'confidence_threshold': 0.7,
             'exploration_bonus': 0.1,
             'adaptation_speed': 0.2,
         }
-        self.domain_specific_params: Dict[str, Dict[str, float]] = {}
-        self.adaptation_history: List[Dict[str, Any]] = []
-        self.task_gradients: Dict[str, Dict[str, float]] = defaultdict(dict)
+        self.domain_specific_params: dict[str, dict[str, float]] = {}
+        self.adaptation_history: list[dict[str, Any]] = []
+        self.task_gradients: dict[str, dict[str, float]] = defaultdict(dict)
 
     def adapt_to_domain(
         self,
         domain_name: str,
-        sample_experiences: List[Dict[str, Any]],
-    ) -> Dict[str, float]:
+        sample_experiences: list[dict[str, Any]],
+    ) -> dict[str, float]:
         """Adapt meta-parameters to a specific domain.
 
         Performs rapid adaptation using a few sample experiences
@@ -553,9 +552,9 @@ class MetaLearningFramework:
 
     def _estimate_gradient(
         self,
-        params: Dict[str, float],
-        experiences: List[Dict[str, Any]],
-    ) -> Dict[str, float]:
+        params: dict[str, float],
+        experiences: list[dict[str, Any]],
+    ) -> dict[str, float]:
         """Estimate gradient from experiences.
 
         Uses performance of experiences to estimate parameter gradients.
@@ -598,7 +597,7 @@ class MetaLearningFramework:
 
     def update_meta_parameters(
         self,
-        domain_results: Dict[str, Dict[str, Any]],
+        domain_results: dict[str, dict[str, Any]],
     ) -> None:
         """Update meta-parameters based on multiple domain results.
 
@@ -612,7 +611,7 @@ class MetaLearningFramework:
             return
 
         # Aggregate gradients across domains
-        meta_gradient: Dict[str, float] = defaultdict(float)
+        meta_gradient: dict[str, float] = defaultdict(float)
 
         for domain_name, results in domain_results.items():
             # Get domain-specific params if available
@@ -647,7 +646,7 @@ class MetaLearningFramework:
                     min(1.0, self.meta_parameters[param])
                 )
 
-    def get_domain_parameters(self, domain_name: str) -> Dict[str, float]:
+    def get_domain_parameters(self, domain_name: str) -> dict[str, float]:
         """Get parameters for a specific domain.
 
         Returns domain-specific parameters if available,
@@ -661,7 +660,7 @@ class MetaLearningFramework:
         """
         return self.domain_specific_params.get(domain_name, dict(self.meta_parameters))
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get meta-learning statistics.
 
         Returns:
@@ -708,13 +707,13 @@ class DynamicDomainDetector:
         """
         self.detection_threshold = detection_threshold
         self.fingerprint_size = fingerprint_size
-        self.known_domains: Dict[str, Dict[str, Any]] = {}
-        self.detection_history: List[Dict[str, Any]] = []
+        self.known_domains: dict[str, dict[str, Any]] = {}
+        self.detection_history: list[dict[str, Any]] = []
 
     def extract_fingerprint(
         self,
-        q_table: Dict[str, Dict[str, float]],
-    ) -> Dict[str, Any]:
+        q_table: dict[str, dict[str, float]],
+    ) -> dict[str, Any]:
         """Extract domain fingerprint from Q-table.
 
         Creates a characteristic fingerprint based on Q-table
@@ -739,7 +738,7 @@ class DynamicDomainDetector:
 
         # Collect statistics
         all_q_values = []
-        all_actions: Set[str] = set()
+        all_actions: set[str] = set()
         state_signatures = []
 
         for state, actions in q_table.items():
@@ -787,8 +786,8 @@ class DynamicDomainDetector:
 
     def compute_similarity(
         self,
-        fp1: Dict[str, Any],
-        fp2: Dict[str, Any],
+        fp1: dict[str, Any],
+        fp2: dict[str, Any],
     ) -> float:
         """Compute similarity between two domain fingerprints.
 
@@ -823,8 +822,8 @@ class DynamicDomainDetector:
 
     def detect_domain(
         self,
-        q_table: Dict[str, Dict[str, float]],
-    ) -> Tuple[Optional[str], float]:
+        q_table: dict[str, dict[str, float]],
+    ) -> tuple[Optional[str], float]:
         """Detect domain from Q-table.
 
         Analyzes Q-table and matches against known domains.
@@ -861,8 +860,8 @@ class DynamicDomainDetector:
     def register_domain(
         self,
         domain_name: str,
-        q_table: Dict[str, Dict[str, float]],
-    ) -> Dict[str, Any]:
+        q_table: dict[str, dict[str, float]],
+    ) -> dict[str, Any]:
         """Register a new domain from Q-table.
 
         Extracts fingerprint and registers as known domain.
@@ -878,7 +877,7 @@ class DynamicDomainDetector:
         self.known_domains[domain_name] = fingerprint
         return fingerprint
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get detection statistics.
 
         Returns:
@@ -914,7 +913,7 @@ class KnowledgePackage:
     target_agent: Optional[str]
     domain_info: DomainInfo
     knowledge_type: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     timestamp: str = ""
     priority: int = 0
     signature: str = ""
@@ -964,17 +963,17 @@ class CrossAgentKnowledgeSharing:
             agent_id: This agent's identifier
         """
         self.agent_id = agent_id
-        self.agent_registry: Dict[str, Dict[str, Any]] = {}
-        self.message_queue: List[KnowledgePackage] = []
-        self.sharing_history: List[Dict[str, Any]] = []
-        self.trust_scores: Dict[str, float] = defaultdict(lambda: 0.5)
-        self.received_packages: List[KnowledgePackage] = []
+        self.agent_registry: dict[str, dict[str, Any]] = {}
+        self.message_queue: list[KnowledgePackage] = []
+        self.sharing_history: list[dict[str, Any]] = []
+        self.trust_scores: dict[str, float] = defaultdict(lambda: 0.5)
+        self.received_packages: list[KnowledgePackage] = []
 
     def register_agent(
         self,
         agent_id: str,
-        capabilities: List[str],
-        domains: List[str],
+        capabilities: list[str],
+        domains: list[str],
     ) -> None:
         """Register an agent for knowledge sharing.
 
@@ -996,7 +995,7 @@ class CrossAgentKnowledgeSharing:
         target_agent: Optional[str],
         domain: DomainInfo,
         knowledge_type: str,
-        payload: Dict[str, Any],
+        payload: dict[str, Any],
         priority: int = 0,
     ) -> KnowledgePackage:
         """Create a knowledge package for sharing.
@@ -1098,7 +1097,7 @@ class CrossAgentKnowledgeSharing:
     def get_pending_packages(
         self,
         target_agent: Optional[str] = None,
-    ) -> List[KnowledgePackage]:
+    ) -> list[KnowledgePackage]:
         """Get pending packages for a target agent.
 
         Args:
@@ -1118,7 +1117,7 @@ class CrossAgentKnowledgeSharing:
     def get_received_by_type(
         self,
         knowledge_type: str,
-    ) -> List[KnowledgePackage]:
+    ) -> list[KnowledgePackage]:
         """Get received packages by knowledge type.
 
         Args:
@@ -1146,7 +1145,7 @@ class CrossAgentKnowledgeSharing:
     def get_compatible_agents(
         self,
         domain_name: str,
-    ) -> List[str]:
+    ) -> list[str]:
         """Get agents compatible with a domain.
 
         Args:
@@ -1187,7 +1186,7 @@ class CrossAgentKnowledgeSharing:
         else:
             self.trust_scores[agent_id] = max(0.0, current - 0.1)
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get sharing statistics.
 
         Returns:

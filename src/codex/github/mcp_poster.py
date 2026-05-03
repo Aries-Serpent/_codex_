@@ -1799,7 +1799,7 @@ class GitHubMCPPoster:
             context,
         )
         try:
-            from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory  # noqa: PGH003
+            from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory
 
             features: dict[str, float] = {
                 "success": success_rate,
@@ -1817,7 +1817,7 @@ class GitHubMCPPoster:
             mem = SQLiteMemory()
             mem.store_pattern(pattern)
             logger.debug("CB pattern stored: %s", pattern_id)
-        except Exception as _cb_exc:  # noqa: BLE001 — fail-open
+        except Exception as _cb_exc:
             logger.debug(
                 "CB pattern storage skipped (%s: %s)",
                 type(_cb_exc).__name__,
@@ -1854,7 +1854,7 @@ class GitHubMCPPoster:
             Markdown block of recent CB patterns, or ``""`` on failure/empty.
         """
         try:
-            from cognitive_brain.quantum.memory import SQLiteMemory  # noqa: PGH003
+            from cognitive_brain.quantum.memory import SQLiteMemory
 
             mem = SQLiteMemory()
             all_patterns = mem.get_recent_patterns(limit=limit * 4)
@@ -1882,7 +1882,7 @@ class GitHubMCPPoster:
 
             return "\n".join(lines) + "\n"
 
-        except Exception as _exc:  # noqa: BLE001 — fail-open
+        except Exception as _exc:
             logger.debug("CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc)
             return ""
 
@@ -2526,12 +2526,12 @@ def main(argv: list[str] | None = None) -> int:
                     print(
                         f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC",
                         file=sys.stderr,
-                    )  # noqa: E501
+                    )
                     return 1
                 files[dest] = Path(src).read_text(encoding="utf-8")
             commit_sha = poster.commit_files(
                 args.repo, args.branch, files, args.message, args.force
-            )  # noqa: E501
+            )
             print(f"✅ Committed {len(files)} file(s) to {args.branch}: {commit_sha[:8]}")
 
         elif args.command == "add-discussion-comment":

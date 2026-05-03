@@ -33,10 +33,10 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def optimize_resources(perception_data_dir: str, output_path: str, r12_integration: bool = False) -> Dict[str, Any]:
+def optimize_resources(perception_data_dir: str, output_path: str, r12_integration: bool = False) -> dict[str, Any]:
     """
     Optimize resource allocation across agents and workflows.
 

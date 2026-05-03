@@ -19,7 +19,8 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Iterable, Optional
+from collections.abc import Iterable
+from typing import Optional
 
 from ..detectors.aggregate import scorecard
 from ..detectors.experiment_summary import detector_experiment_summary

@@ -21,7 +21,7 @@ import csv
 import json
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 class _NdjsonWriter:
@@ -29,7 +29,7 @@ class _NdjsonWriter:
         self.path = path
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
-    def write(self, row: Dict[str, Any]) -> None:
+    def write(self, row: dict[str, Any]) -> None:
         with self.path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True))
             handle.write("\n")
@@ -42,7 +42,7 @@ class _CsvWriter:
         self._header_written = False
         self._field_order: Optional[list[str]] = None
 
-    def write(self, row: Dict[str, Any]) -> None:
+    def write(self, row: dict[str, Any]) -> None:
         if self._field_order is None:
             self._field_order = sorted(row.keys())
 
@@ -77,7 +77,7 @@ def _ensure_default_output_dir() -> None:
         set_output_dir(Path("artifacts/telemetry"))
 
 
-def log_metrics(step: int, metrics: Dict[str, Any], run_id: str) -> None:
+def log_metrics(step: int, metrics: dict[str, Any], run_id: str) -> None:
     _ensure_default_output_dir()
     payload = dict(metrics)
     payload["_ts"] = float(time.time())
@@ -88,7 +88,7 @@ def log_metrics(step: int, metrics: Dict[str, Any], run_id: str) -> None:
     _csv.write(payload)
 
 
-def get_paths() -> Dict[str, str]:
+def get_paths() -> dict[str, str]:
     _ensure_default_output_dir()
     assert _output_dir is not None
     return {

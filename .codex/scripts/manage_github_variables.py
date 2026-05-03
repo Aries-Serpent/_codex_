@@ -17,7 +17,7 @@ import math
 import os
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import requests
 
@@ -47,10 +47,9 @@ class GitHubVariableManager:
             if response.status_code in [201, 204]:
                 print(f"✅ Variable '{name}' created/updated successfully")
                 return True
-            else:
-                print(f"❌ Failed to create/update '{name}': {response.status_code}")
-                print(f"Response: {response.text}")
-                return False
+            print(f"❌ Failed to create/update '{name}': {response.status_code}")
+            print(f"Response: {response.text}")
+            return False
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return False
@@ -64,12 +63,11 @@ class GitHubVariableManager:
 
             if response.status_code == 200:
                 return response.json().get("value")
-            elif response.status_code == 404:
+            if response.status_code == 404:
                 print(f"❌ Variable '{name}' not found")
                 return None
-            else:
-                print(f"❌ Failed to get '{name}': {response.status_code}")
-                return None
+            print(f"❌ Failed to get '{name}': {response.status_code}")
+            return None
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return None
@@ -84,26 +82,24 @@ class GitHubVariableManager:
             if response.status_code == 204:
                 print(f"✅ Variable '{name}' deleted successfully")
                 return True
-            elif response.status_code == 404:
+            if response.status_code == 404:
                 print(f"⚠️  Variable '{name}' not found")
                 return False
-            else:
-                print(f"❌ Failed to delete '{name}': {response.status_code}")
-                return False
+            print(f"❌ Failed to delete '{name}': {response.status_code}")
+            return False
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return False
 
-    def list_all(self) -> List[Dict[str, Any]]:
+    def list_all(self) -> list[dict[str, Any]]:
         """List all variables"""
         try:
             response = requests.get(self.base_url, headers=self.headers, timeout=30)
 
             if response.status_code == 200:
                 return response.json().get("variables", [])
-            else:
-                print(f"❌ Failed to list variables: {response.status_code}")
-                return []
+            print(f"❌ Failed to list variables: {response.status_code}")
+            return []
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return []

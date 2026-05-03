@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Helpers to configure offline tracking providers locally."""
 
 
 import os  # noqa: E402

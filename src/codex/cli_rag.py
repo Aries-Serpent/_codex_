@@ -13,7 +13,7 @@ Integrates with the core RAG pipeline in src/codex/rag/
 import json
 import logging
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 import typer
 from rich.console import Console
@@ -51,7 +51,7 @@ except ImportError:  # pragma: no cover - optional dependency
             )
 
 
-__all__ = ["app", "RAGIndexer", "RAGRetriever"]
+__all__ = ["RAGIndexer", "RAGRetriever", "app"]
 
 # Create Typer app for RAG commands
 app = typer.Typer(
@@ -63,7 +63,7 @@ app = typer.Typer(
 console = Console()
 
 
-def _validate_files(files: List[str]) -> List[Path]:
+def _validate_files(files: list[str]) -> list[Path]:
     """
     Validate and resolve file patterns to actual paths.
 
@@ -103,7 +103,7 @@ def _format_bytes(size_bytes: int) -> str:
 
 @app.command("build")
 def build(
-    files: List[str] = typer.Option(
+    files: list[str] = typer.Option(
         ...,
         "--files",
         "-f",
@@ -486,7 +486,7 @@ def delete(
 
 @app.command("merge")
 def merge(
-    source_indices: List[str] = typer.Option(
+    source_indices: list[str] = typer.Option(
         ...,
         "--source",
         "-s",

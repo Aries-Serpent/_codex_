@@ -11,7 +11,7 @@ PDA: Active - Continuous strategy improvement
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import numpy as np
 
@@ -96,7 +96,7 @@ class StrategyOptimizer:
         self.metrics: Optional[StrategyMetrics] = None
 
         # Training statistics
-        self.training_history: List[float] = []
+        self.training_history: list[float] = []
         self.episode_count = 0
         self.convergence_threshold = 0.01  # For detecting convergence
         self.convergence_window = 100  # Episodes to check for convergence
@@ -137,7 +137,7 @@ class StrategyOptimizer:
         else:
             raise ValueError(f"Unknown algorithm type: {self.algorithm_type}")
 
-    def select_algorithm(self, outcomes: List[LearningOutcome]) -> AlgorithmType:
+    def select_algorithm(self, outcomes: list[LearningOutcome]) -> AlgorithmType:
         """
         Select best RL algorithm based on problem characteristics.
 
@@ -168,10 +168,10 @@ class StrategyOptimizer:
 
     def optimize_strategy(
         self,
-        outcomes: List[LearningOutcome],
+        outcomes: list[LearningOutcome],
         max_episodes: int = 1000,
         target_improvement: float = 0.2,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Optimize strategy from historical outcomes.
 
@@ -241,8 +241,8 @@ class StrategyOptimizer:
         return self._get_results()
 
     def _prepare_training_data(
-        self, outcomes: List[LearningOutcome]
-    ) -> Tuple[List[Any], List[Any], List[float]]:
+        self, outcomes: list[LearningOutcome]
+    ) -> tuple[list[Any], list[Any], list[float]]:
         """
         Convert outcomes to RL training data.
 
@@ -286,7 +286,7 @@ class StrategyOptimizer:
 
         return f"state_c{complexity_bin}_p{pressure_bin}"
 
-    def _train_episode(self, states: List[Any], actions: List[Any], rewards: List[float]) -> float:
+    def _train_episode(self, states: list[Any], actions: list[Any], rewards: list[float]) -> float:
         """
         Train one episode.
 
@@ -386,7 +386,7 @@ class StrategyOptimizer:
             performance_stability=stability,
         )
 
-    def _get_results(self) -> Dict[str, Any]:
+    def _get_results(self) -> dict[str, Any]:
         """
         Get optimization results.
 
@@ -407,7 +407,7 @@ class StrategyOptimizer:
             "policy": self.algorithm.get_policy() if self.algorithm else None,
         }
 
-    def get_strategy(self) -> Dict[str, Any]:
+    def get_strategy(self) -> dict[str, Any]:
         """
         Get current optimized strategy.
 

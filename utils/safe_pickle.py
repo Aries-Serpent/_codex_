@@ -141,9 +141,8 @@ def safe_pickle_load(
     if use_restricted_unpickler:
         logger.debug(f"Loading pickle with RestrictedUnpickler: {file_path}")
         return RestrictedUnpickler(io.BytesIO(data)).load()
-    else:
-        logger.warning(f"Loading pickle WITHOUT restriction (potential security risk): {file_path}")
-        return pickle.loads(data)  # nosec B301 - explicitly allowed by caller
+    logger.warning(f"Loading pickle WITHOUT restriction (potential security risk): {file_path}")
+    return pickle.loads(data)  # nosec B301 - explicitly allowed by caller
 
 
 def safe_pickle_dump(

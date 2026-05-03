@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Mapping, MutableMapping, Optional, Tuple
+from collections.abc import Mapping, MutableMapping
+from typing import Optional
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
@@ -38,7 +39,7 @@ def safe_request(
     headers: Optional[Mapping[str, str]] = None,
     method: str = "GET",
     data: Optional[bytes] = None,
-) -> Tuple[int, Mapping[str, str], bytes]:
+) -> tuple[int, Mapping[str, str], bytes]:
     _validate_url(url)
     request_headers: MutableMapping[str, str] = {"User-Agent": "codex-fetch/1.0"}
     if headers:

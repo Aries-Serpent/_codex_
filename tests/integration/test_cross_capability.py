@@ -15,8 +15,8 @@ pytest.importorskip("hypothesis")
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import assume, given, settings  # noqa: E402
-from hypothesis import strategies as st  # noqa: E402
+from hypothesis import assume, given, settings
+from hypothesis import strategies as st
 
 # =============================================================================
 # Configuration + Logging Integration

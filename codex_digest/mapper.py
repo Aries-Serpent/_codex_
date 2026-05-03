@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List
 
 
 @dataclass
 class Action:
     kind: str
-    params: Dict[str, str]
+    params: dict[str, str]
     rationale: str
     priority: int  # 1(high) .. 5(low)
 
@@ -21,8 +20,8 @@ PRIORITY = {
 }
 
 
-def map_intents(intents) -> List[Action]:
-    out: List[Action] = []
+def map_intents(intents) -> list[Action]:
+    out: list[Action] = []
     for it in intents:
         prio = PRIORITY.get(it.name, 3)
         if it.name == "FIX_PRECOMMIT":

@@ -9,7 +9,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Add core to path for CognitiveBrain access (acceptable for agent isolation)
 # Alternative: Use proper packaging with __init__.py exports
@@ -49,10 +49,10 @@ class UpgradeEvaluation:
     auto_upgradeable: bool
     requires_testing: bool
     estimated_effort: str
-    breaking_changes: List[str]
-    migration_steps: List[str]
+    breaking_changes: list[str]
+    migration_steps: list[str]
     rollback_plan: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class DependencyEvaluator:
@@ -72,9 +72,9 @@ class DependencyEvaluator:
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
-        self.evaluations: List[UpgradeEvaluation] = []
+        self.evaluations: list[UpgradeEvaluation] = []
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         DECIDE: Evaluate updates and determine upgrade strategy.
 
@@ -100,7 +100,7 @@ class DependencyEvaluator:
         auto_upgrades = [e for e in self.evaluations if e.auto_upgradeable]
         manual_upgrades = [e for e in self.evaluations if not e.auto_upgradeable]
 
-        decision = {
+        return {
             "evaluations": self.evaluations,
             "prioritized": prioritized,
             "auto_upgrades": auto_upgrades,
@@ -114,9 +114,8 @@ class DependencyEvaluator:
         #AFTERMATH_METRIC: auto_upgradeable = len(auto_upgrades)
         #AFTERMATH_METRIC: security_critical = len(decision["security_critical"])
 
-        return decision
 
-    def _evaluate_update(self, update: Any, context: Dict[str, Any]) -> UpgradeEvaluation:
+    def _evaluate_update(self, update: Any, context: dict[str, Any]) -> UpgradeEvaluation:
         """
         Evaluate individual dependency update.
 
@@ -164,7 +163,7 @@ class DependencyEvaluator:
         )
 
     def _assess_breaking_change_risk(self, update: Any,
-                                     context: Dict[str, Any]) -> BreakingChangeRisk:
+                                     context: dict[str, Any]) -> BreakingChangeRisk:
         """
         Assess risk of breaking changes.
 
@@ -191,7 +190,7 @@ class DependencyEvaluator:
         # Patch version
         return BreakingChangeRisk.NONE
 
-    def _calculate_compatibility(self, update: Any, context: Dict[str, Any]) -> float:
+    def _calculate_compatibility(self, update: Any, context: dict[str, Any]) -> float:
         """
         Calculate compatibility score (0.0-1.0).
 
@@ -282,7 +281,7 @@ class DependencyEvaluator:
         return False
 
     def _identify_breaking_changes(self, update: Any,
-                                   context: Dict[str, Any]) -> List[str]:
+                                   context: dict[str, Any]) -> list[str]:
         """Identify specific breaking changes."""
         changes = []
 
@@ -297,7 +296,7 @@ class DependencyEvaluator:
         return changes
 
     def _generate_migration_steps(self, update: Any,
-                                  breaking_changes: List[str]) -> List[str]:
+                                  breaking_changes: list[str]) -> list[str]:
         """Generate migration steps."""
         steps = []
 
@@ -317,16 +316,15 @@ class DependencyEvaluator:
         return f"Revert to {update.current_version} if issues found"
 
     def _estimate_effort(self, breaking_risk: BreakingChangeRisk,
-                        breaking_changes: List[str]) -> str:
+                        breaking_changes: list[str]) -> str:
         """Estimate upgrade effort."""
         if breaking_risk == BreakingChangeRisk.CRITICAL:
             return "high (4-8 hours)"
-        elif breaking_risk == BreakingChangeRisk.HIGH:
+        if breaking_risk == BreakingChangeRisk.HIGH:
             return "medium (2-4 hours)"
-        elif breaking_risk == BreakingChangeRisk.MEDIUM:
+        if breaking_risk == BreakingChangeRisk.MEDIUM:
             return "low (1-2 hours)"
-        else:
-            return "minimal (<1 hour)"
+        return "minimal (<1 hour)"
 
     def _query_historical_success(self, package: str) -> float:
         """Query historical upgrade success rate."""
@@ -340,7 +338,7 @@ class DependencyEvaluator:
         except Exception:
             return 0.85
 
-    def _prioritize_updates(self, evaluations: List[UpgradeEvaluation]) -> List[UpgradeEvaluation]:
+    def _prioritize_updates(self, evaluations: list[UpgradeEvaluation]) -> list[UpgradeEvaluation]:
         """Sort evaluations by priority."""
         priority_order = {
             UpgradePriority.P0: 0,
@@ -350,7 +348,7 @@ class DependencyEvaluator:
         }
         return sorted(evaluations, key=lambda e: (priority_order[e.priority], e.risk_score))
 
-    def _generate_recommendations(self, prioritized: List[UpgradeEvaluation]) -> List[str]:
+    def _generate_recommendations(self, prioritized: list[UpgradeEvaluation]) -> list[str]:
         """Generate high-level recommendations."""
         recs = []
 

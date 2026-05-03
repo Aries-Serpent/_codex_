@@ -8,7 +8,7 @@ import pytest
 
 # Check if PEFT is available for proper testing
 try:
-    from peft import get_peft_model  # noqa: F401 - availability check
+    from peft import get_peft_model
     HAS_PEFT = bool(get_peft_model)
 except ImportError:
     HAS_PEFT = False

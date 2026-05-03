@@ -12,7 +12,6 @@ Tests: 20+
 import ast
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 import pytest
 
@@ -73,7 +72,7 @@ class TestMarkdownQuality:
     """Tests for Markdown documentation quality."""
 
     @pytest.fixture
-    def markdown_files(self) -> List[Path]:
+    def markdown_files(self) -> list[Path]:
         """Return all markdown files in docs/."""
         return list(DOCS_DIR.rglob("*.md"))
 
@@ -123,7 +122,7 @@ class TestMarkdownQuality:
 class TestCodeExamplesInDocs:
     """Tests for code examples in documentation."""
 
-    def _extract_code_blocks(self, content: str) -> List[Tuple[str, str]]:
+    def _extract_code_blocks(self, content: str) -> list[tuple[str, str]]:
         """Extract fenced code blocks from markdown."""
         pattern = re.compile(r"```(\w*)\n(.*?)```", re.DOTALL)
         return pattern.findall(content)
@@ -180,7 +179,7 @@ class TestCodeExamplesInDocs:
 class TestDocstringCoverage:
     """Tests for docstring coverage in source code."""
 
-    def _get_python_files(self, directory: Path, limit: int = 20) -> List[Path]:
+    def _get_python_files(self, directory: Path, limit: int = 20) -> list[Path]:
         """Get Python files from directory (limited for performance)."""
         files = []
         for py_file in directory.rglob("*.py"):

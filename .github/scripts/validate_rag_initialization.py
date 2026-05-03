@@ -94,9 +94,8 @@ def main() -> int:
     if success:
         print("\n✅ All checks passed - RAG module is healthy")
         return 0
-    else:
-        print("\n❌ Validation failed - meta tensor issues detected")
-        return 1
+    print("\n❌ Validation failed - meta tensor issues detected")
+    return 1
 
 
 if __name__ == "__main__":

@@ -14,9 +14,10 @@ Version: 1.0.0
 
 import functools
 import logging
+from collections.abc import Callable
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -330,7 +331,7 @@ class FSDPCheckpointManager:
         self,
         fsdp_model: "FSDP",
         optimizer: Optional["torch.optim.Optimizer"] = None,
-        checkpoint_path: Union[str, Path] = "checkpoint.pt",
+        checkpoint_path: str | Path = "checkpoint.pt",
         epoch: Optional[int] = None,
         metadata: Optional[dict[str, Any]] = None,
         rank: int = 0,
@@ -423,7 +424,7 @@ class FSDPCheckpointManager:
 
     def load_checkpoint(
         self,
-        checkpoint_path: Union[str, Path],
+        checkpoint_path: str | Path,
         fsdp_model: "FSDP",
         optimizer: Optional["torch.optim.Optimizer"] = None,
         rank: int = 0,

@@ -18,12 +18,11 @@ Author: Codex Team
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
 
 from .io_text import detect_encoding
 
 
-def read_file(path: Union[str, Path], *, encoding: str = "utf-8") -> str:
+def read_file(path: str | Path, *, encoding: str = "utf-8") -> str:
     """Return the contents of ``path`` decoded as text.
 
     Parameters

@@ -13,7 +13,7 @@ import pytest
 
 pytest.importorskip("jsonschema")
 
-from codex_ml.cli import metrics_cli  # noqa: E402
+from codex_ml.cli import metrics_cli
 
 
 def _write_ndjson(path: Path, rows: list[dict]) -> None:

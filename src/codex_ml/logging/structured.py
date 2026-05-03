@@ -47,4 +47,4 @@ def capture_exceptions(
         raise SystemExit(exit_code) from None
 
 
-__all__ = ["init_logger", "capture_exceptions"]
+__all__ = ["capture_exceptions", "init_logger"]

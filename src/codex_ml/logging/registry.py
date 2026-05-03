@@ -9,8 +9,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from collections.abc import Callable, Iterable, Mapping  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Iterable, Mapping  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.logging.ndjson_logger import (  # noqa: E402
     NDJSONLogger as _RawNDJSONLogger,
@@ -104,15 +105,15 @@ def build_loggers(opts: Mapping[str, Any]) -> list[_NDJSONMetricsLogger]:
 
 
 __all__ = [
+    "NDJSONLogger",  # Public alias: metrics-aware wrapper (accepts sys_metrics kwarg)
+    "NDJSONMetricsLogger",  # Export the metrics logger for tests
     "build_loggers",
     "get_logger",
     "register_logger",
-    "NDJSONMetricsLogger",  # Export the metrics logger for tests
-    "NDJSONLogger",  # Public alias: metrics-aware wrapper (accepts sys_metrics kwarg)
 ]
 
 # Export _NDJSONMetricsLogger as NDJSONMetricsLogger for backward compatibility with tests
 NDJSONMetricsLogger = _NDJSONMetricsLogger
 # Export NDJSONLogger as the metrics-aware wrapper so `registry.NDJSONLogger(path, sys_metrics=True)`  # noqa: E501
 # works as expected by tests. Uses a distinct public name to avoid shadowing the internal import.
-NDJSONLogger = _NDJSONMetricsLogger  # noqa: F811  # intentional alias so registry.NDJSONLogger works
+NDJSONLogger = _NDJSONMetricsLogger  # intentional alias so registry.NDJSONLogger works

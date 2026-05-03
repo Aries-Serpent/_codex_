@@ -6,4 +6,4 @@ from .noise_reduction import (
     ReverbReducer,
 )
 
-__all__ = ["NoiseReducer", "HumRemover", "ReverbReducer"]
+__all__ = ["HumRemover", "NoiseReducer", "ReverbReducer"]

@@ -108,7 +108,7 @@ class TestListGroup:
         # This may or may not have items depending on registered plugins
         try:
             _list_group('tokenizers', echo=mock_echo, bad_param_exc=MockException)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass  # Registry might be empty
 
         # echo_calls may be empty if no plugins registered
@@ -145,7 +145,7 @@ class TestDiagnoseGroup:
                 echo=mock_echo,
                 bad_param_exc=MockException
             )
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass  # May fail if registry not fully initialized
 
         # Should have called echo with registered count
@@ -168,7 +168,7 @@ class TestDiagnoseGroup:
                 echo=mock_echo,
                 bad_param_exc=MockException
             )
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass  # Entry points may not be available
 
 

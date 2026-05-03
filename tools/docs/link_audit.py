@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 DOCS_ROOT = Path("docs")
 OUTPUT_PATH = Path("artifacts/docs/link_audit/report.json")
@@ -19,8 +19,7 @@ def _iter_markdown(root: Path) -> Iterator[Path]:
 
 
 def _resolve(target: str, base: Path) -> Path:
-    candidate = (base.parent / target).resolve()
-    return candidate
+    return (base.parent / target).resolve()
 
 
 def audit() -> dict[str, list[str]]:

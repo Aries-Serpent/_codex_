@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 from unittest.mock import MagicMock
 
 import pytest
@@ -14,9 +14,9 @@ class DummyMLFlowBackend:
     """Comprehensive mock MLflow backend for testing."""
 
     def __init__(self):
-        self.logged_metrics: List[Tuple[str, float, Optional[int]]] = []
-        self.logged_params: List[Dict[str, Any]] = []
-        self.logged_artifacts: List[str] = []
+        self.logged_metrics: list[tuple[str, float, Optional[int]]] = []
+        self.logged_params: list[dict[str, Any]] = []
+        self.logged_artifacts: list[str] = []
         self.run_started = False
         self.tracking_uri: Optional[str] = None
         self.experiment: Optional[str] = None
@@ -27,12 +27,12 @@ class DummyMLFlowBackend:
         """Mock log_metric that records calls for verification."""
         self.logged_metrics.append((key, value, step))
 
-    def log_metrics(self, metrics: Dict[str, float], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None):
         """Mock log_metrics for batch logging."""
         for key, value in metrics.items():
             self.log_metric(key, value, step)
 
-    def log_params(self, params: Dict[str, Any]):
+    def log_params(self, params: dict[str, Any]):
         """Mock log_params for parameter logging."""
         self.logged_params.append(dict(params))
 

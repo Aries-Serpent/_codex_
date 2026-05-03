@@ -6,10 +6,9 @@ Maps test files to source code for gap identification
 
 import os
 import re
-from typing import Set
 
 
-def extract_test_patterns(test_file: str) -> Set[str]:
+def extract_test_patterns(test_file: str) -> set[str]:
     """Extract what's being tested from test file."""
     tested_items = set()
 

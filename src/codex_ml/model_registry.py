@@ -13,9 +13,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from collections.abc import Mapping, MutableMapping, Sequence  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Mapping, MutableMapping, Optional, Sequence, Union  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 import torch  # noqa: E402
 from codex_ml.models import registry as _registry  # noqa: E402
@@ -54,8 +55,8 @@ class ModelRequest:
     """Capture parameters passed to :func:`get_model` for introspection."""
 
     name: str
-    device: Optional[Union[str, torch.device]] = None
-    dtype: Optional[Union[str, torch.dtype]] = None
+    device: Optional[str | torch.device] = None
+    dtype: Optional[str | torch.dtype] = None
     lora_adapter: Optional[str] = None
     # Use the new immutable LoRA request container
     lora: Optional[LoraRequest] = None
@@ -90,7 +91,7 @@ class ModelRequest:
         return payload
 
 
-def _normalise_device(device: Union[str, object, None]) -> Union[str, None]:
+def _normalise_device(device: str | object | None) -> str | None:
     if device is None:
         return None
     if isinstance(device, str):
@@ -104,7 +105,7 @@ def _normalise_device(device: Union[str, object, None]) -> Union[str, None]:
     return str(device)
 
 
-def _normalise_dtype(dtype: Union[str, object, None]) -> Union[str, None]:
+def _normalise_dtype(dtype: str | object | None) -> str | None:
     if dtype is None:
         return None
     if isinstance(dtype, str):
@@ -249,8 +250,8 @@ def _extract_lora_request(config: Mapping[str, Any] | None) -> LoraRequest | Non
 def _prepare_config(
     name: str,
     config: Mapping[str, Any] | None,
-    device: Union[str, torch.device, None],
-    dtype: Union[str, torch.dtype, None],
+    device: str | torch.device | None,
+    dtype: str | torch.dtype | None,
 ) -> dict[str, Any]:
     cfg: dict[str, Any]
     if isinstance(config, MutableMapping):
@@ -272,8 +273,8 @@ def get_model(
     name: str,
     config: Mapping[str, Any] | None = None,
     *,
-    device: Union[str, torch.device, None] = "cpu",
-    dtype: Union[str, torch.dtype, None] = torch.float32,
+    device: str | torch.device | None = "cpu",
+    dtype: str | torch.dtype | None = torch.float32,
     lora_adapter: str | None = None,
 ) -> Any:
     """Instantiate a model registered under ``name``.

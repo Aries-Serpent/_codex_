@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
 
 from .checksums import manifest_for_paths
 
@@ -14,9 +14,9 @@ __all__ = [
     "CorpusValidationResult",
     "ReasoningCorpus",
     "ReasoningCorpusError",
+    "available_corpora",
     "build_corpus_selection",
     "get_reasoning_corpus",
-    "available_corpora",
     "list_reasoning_corpora",
 ]
 

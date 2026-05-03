@@ -12,6 +12,7 @@ Comprehensive test coverage for:
 """
 
 
+import importlib.util
 import json
 from unittest.mock import MagicMock, patch
 
@@ -615,9 +616,7 @@ class TestIntegration:
     def test_build_and_query_integration(self, runner, sample_docs, tmp_path):
         """Test full build and query workflow."""
         # Skip if sentence-transformers not available
-        try:
-            import sentence_transformers  # noqa: F401 - Testing optional dependency availability
-        except ImportError:
+        if importlib.util.find_spec('sentence_transformers') is None:
             pytest.skip("sentence-transformers not installed")
 
         index_dir = tmp_path / "indices"

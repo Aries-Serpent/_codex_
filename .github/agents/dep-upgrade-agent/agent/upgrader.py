@@ -11,7 +11,7 @@ import subprocess
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class UpgradeStrategy(Enum):
@@ -36,7 +36,7 @@ class UpgradeResult:
     rollback_performed: bool
     error_message: Optional[str]
     duration_seconds: float
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class DependencyUpgrader:
@@ -55,9 +55,9 @@ class DependencyUpgrader:
 
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
-        self.results: List[UpgradeResult] = []
+        self.results: list[UpgradeResult] = []
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """
         ACT: Execute dependency upgrades.
 
@@ -85,7 +85,7 @@ class DependencyUpgrader:
         # Generate upgrade report
         report_path = self._generate_upgrade_report(decision)
 
-        result = {
+        return {
             "results": self.results,
             "successful_upgrades": sum(1 for r in self.results if r.success),
             "failed_upgrades": sum(1 for r in self.results if not r.success),
@@ -99,7 +99,6 @@ class DependencyUpgrader:
         #AFTERMATH_METRIC: successful = result["successful_upgrades"]
         #AFTERMATH_METRIC: prs_created = result["prs_created"]
 
-        return result
 
     def _apply_upgrade(self, evaluation: Any, strategy: UpgradeStrategy) -> UpgradeResult:
         """
@@ -353,7 +352,7 @@ class DependencyUpgrader:
         except (OSError, ValueError):
             return False
 
-    def _generate_upgrade_report(self, decision: Dict[str, Any]) -> Path:
+    def _generate_upgrade_report(self, decision: dict[str, Any]) -> Path:
         """
         Generate upgrade report.
 
@@ -388,7 +387,7 @@ class DependencyUpgrader:
         report_path.write_text(json.dumps(report, indent=2))
         return report_path
 
-    def _generate_summary(self) -> Dict[str, Any]:
+    def _generate_summary(self) -> dict[str, Any]:
         """Generate upgrade summary."""
         return {
             "total": len(self.results),

@@ -4,7 +4,7 @@ import ast
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import joblib
 import numpy as np
@@ -66,14 +66,14 @@ class MLThreatDetector:
     def __init__(self, model_path: Optional[Path] = None):
         """Initialize detector."""
         self.model: Optional[VotingClassifier] = None
-        self.feature_names: Optional[List[str]] = None
+        self.feature_names: Optional[list[str]] = None
         self.threshold_high = 0.7  # High risk threshold
         self.threshold_medium = 0.4  # Medium risk threshold
 
         if model_path and model_path.exists():
             self.load_model(model_path)
 
-    def extract_features(self, code: str, metadata: Optional[Dict[str, Any]] = None) -> ThreatFeatures:
+    def extract_features(self, code: str, metadata: Optional[dict[str, Any]] = None) -> ThreatFeatures:
         """Extract threat features from code."""
         try:
             tree = ast.parse(code)
@@ -170,8 +170,8 @@ class MLThreatDetector:
         return depth(tree)
 
     def train(
-        self, training_data: List[Tuple[str, int, Dict[str, Any]]], model_path: Optional[Path] = None
-    ) -> Dict[str, Any]:
+        self, training_data: list[tuple[str, int, dict[str, Any]]], model_path: Optional[Path] = None
+    ) -> dict[str, Any]:
         """
         Train ML model on historical data.
 
@@ -262,7 +262,7 @@ class MLThreatDetector:
 
         return metrics
 
-    def predict_risk(self, code: str, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def predict_risk(self, code: str, metadata: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """
         Predict security risk for new code.
 

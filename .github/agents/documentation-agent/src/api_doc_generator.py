@@ -6,7 +6,7 @@ import ast
 import random
 import re
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 RANDOM_SEED = 48  # Documentation Agent seed
 
@@ -16,9 +16,9 @@ class FunctionDoc:
     name: str
     signature: str
     docstring: str
-    parameters: List[Dict[str, str]]
+    parameters: list[dict[str, str]]
     returns: Optional[str]
-    examples: List[str]
+    examples: list[str]
 
 class APIDocGenerator:
     """Generate API documentation from Python code"""
@@ -26,10 +26,10 @@ class APIDocGenerator:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.documented_functions: List[FunctionDoc] = []
+        self.documented_functions: list[FunctionDoc] = []
         self.initialized = True
 
-    def extract_function_docs(self, source_code: str) -> List[FunctionDoc]:
+    def extract_function_docs(self, source_code: str) -> list[FunctionDoc]:
         """Extract documentation from Python source code"""
         try:
             tree = ast.parse(source_code)
@@ -82,7 +82,7 @@ class APIDocGenerator:
             examples=examples
         )
 
-    def _parse_parameters(self, docstring: str) -> List[Dict[str, str]]:
+    def _parse_parameters(self, docstring: str) -> list[dict[str, str]]:
         """Parse parameter documentation from docstring"""
         params = []
         param_pattern = r'(?:Args?|Parameters?):\s*\n((?:\s+\w+.*\n?)+)'
@@ -102,7 +102,7 @@ class APIDocGenerator:
 
         return params
 
-    def _extract_examples(self, docstring: str) -> List[str]:
+    def _extract_examples(self, docstring: str) -> list[str]:
         """Extract code examples from docstring"""
         examples = []
         example_pattern = r'(?:Examples?|Usage):\s*\n```python\n(.*?)\n```'
@@ -110,7 +110,7 @@ class APIDocGenerator:
         examples.extend(matches)
         return examples
 
-    def generate_markdown(self, function_docs: Optional[List[FunctionDoc]] = None) -> str:
+    def generate_markdown(self, function_docs: Optional[list[FunctionDoc]] = None) -> str:
         """Generate Markdown documentation"""
         if function_docs is None:
             function_docs = self.documented_functions
@@ -145,7 +145,7 @@ class APIDocGenerator:
 
         return md
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get generator metrics"""
         return {
             "seed": self.seed,

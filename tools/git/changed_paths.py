@@ -9,5 +9,4 @@ def git_out(args):
 
 
 def changed_since(ref="HEAD~1"):
-    diff = git_out(["diff", "--name-status", ref, "HEAD"])
-    return diff
+    return git_out(["diff", "--name-status", ref, "HEAD"])

@@ -20,7 +20,6 @@ Author: Codex Team
 import logging
 
 logger = logging.getLogger(__name__)
-"""Validate Codex checkpoint directories and metadata."""
 
 
 import json

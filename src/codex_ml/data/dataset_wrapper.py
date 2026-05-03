@@ -20,18 +20,17 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Deterministic dataset helpers built on Hugging Face :mod:`datasets`."""
 
 
 import random  # noqa: E402
-from typing import Iterable  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from datasets import Dataset  # type: ignore[attr-defined]
 except Exception:  # pragma: no cover - datasets missing
     Dataset = None
 
-__all__ = ["train_val_test_split", "DATASETS_AVAILABLE"]
+__all__ = ["DATASETS_AVAILABLE", "train_val_test_split"]
 
 DATASETS_AVAILABLE = Dataset is not None
 

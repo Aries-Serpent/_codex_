@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Iterable, List
 from unittest.mock import patch
 
 import pytest
@@ -25,7 +25,7 @@ class _DummyTokenizer:
     def from_file(cls, path: str):
         return cls(path)
 
-    def encode_batch(self, texts: List[str]):
+    def encode_batch(self, texts: list[str]):
         return [_DummyEncoding(range(len(text))) for text in texts]
 
     def encode(self, text: str):

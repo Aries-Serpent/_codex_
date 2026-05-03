@@ -26,11 +26,12 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from collections import OrderedDict
+from collections.abc import Iterable
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -522,6 +523,8 @@ class NdjsonWriter(BaseWriter):
             self._logger.close()
         except Exception:  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 class TensorBoardWriter(BaseWriter):
     def __init__(self, logdir: str | Path, *, summary_path: str | Path | None = None) -> None:
         self._disabled_reason: str | None = None
@@ -569,6 +572,7 @@ class TensorBoardWriter(BaseWriter):
                 self._writer.close()
             except Exception:  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -662,6 +666,7 @@ class MLflowWriter(BaseWriter):
                 self._mlflow.end_run()
             except Exception:  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -732,6 +737,7 @@ class WandbWriter(BaseWriter):
                 self._run.finish()
             except Exception:  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -1187,14 +1193,14 @@ def create_mlflow_tracker(
 
 __all__ = [
     "BaseWriter",
-    "NdjsonWriter",
-    "TensorBoardWriter",
-    "MLflowWriter",
-    "WandbWriter",
     "CompositeWriter",
+    "MLflowArtifactWriter",
     "MLflowMetricWriter",
     "MLflowParamWriter",
-    "MLflowArtifactWriter",
     "MLflowRunManager",
+    "MLflowWriter",
+    "NdjsonWriter",
+    "TensorBoardWriter",
+    "WandbWriter",
     "create_mlflow_tracker",
 ]

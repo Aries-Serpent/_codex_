@@ -698,7 +698,7 @@ class TestCLIToCoreFlow:
             result = core_operation(should_fail=True)
         except CoreError as e:
             # CLI catches and displays error
-            error_message = f"Error: {str(e)}"
+            error_message = f"Error: {e!s}"
             result = {"status": "error", "message": error_message}
 
         assert result["status"] == "error"

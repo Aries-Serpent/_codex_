@@ -7,7 +7,7 @@ Provides JSON parsing capabilities with standardized node representation.
 import json
 import uuid
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -150,7 +150,7 @@ class JSONASTAdapter(BaseASTAdapter):
             parent=parent,
         )
 
-    def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
+    def extract_metadata(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Extract JSON-specific metadata from a node.
 

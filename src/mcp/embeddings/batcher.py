@@ -17,7 +17,8 @@ Author: Codex Team
 
 import hashlib
 import json
-from typing import Any, Generator, Iterable
+from collections.abc import Generator, Iterable
+from typing import Any
 
 
 def compute_checksum(item: dict) -> str:

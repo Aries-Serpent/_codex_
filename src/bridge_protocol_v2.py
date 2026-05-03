@@ -480,16 +480,16 @@ def decode_message(data: bytes) -> tuple[bytes, ProtocolHeader]:
 
 
 __all__ = [
-    "PROTOCOL_VERSION",
     "COMPRESSION_THRESHOLD",
     "MIN_COMPRESSION_SAVINGS",
-    "MessageFlags",
-    "ProtocolHeader",
+    "PROTOCOL_VERSION",
     "ClientInfo",
+    "MessageFlags",
     "MultiClientBridge",
+    "ProtocolHeader",
     "compress_message",
-    "decompress_message",
     "compute_checksum",
-    "encode_message",
     "decode_message",
+    "decompress_message",
+    "encode_message",
 ]

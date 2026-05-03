@@ -9,7 +9,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Add core to path for CognitiveBrain access (acceptable for agent isolation)
 # Alternative: Use proper packaging with __init__.py exports
@@ -50,8 +50,8 @@ class SecurityAnalysis:
     remediation_strategy: str
     auto_fixable: bool
     estimated_effort: str
-    compliance_impact: List[str]
-    metadata: Dict[str, Any]
+    compliance_impact: list[str]
+    metadata: dict[str, Any]
 
 
 class SecurityAnalyzer:
@@ -71,9 +71,9 @@ class SecurityAnalyzer:
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
-        self.analyses: List[SecurityAnalysis] = []
+        self.analyses: list[SecurityAnalysis] = []
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         DECIDE: Analyze findings and determine remediation priorities.
 
@@ -98,7 +98,7 @@ class SecurityAnalyzer:
         # Prioritize by risk
         prioritized = self._prioritize_by_risk(self.analyses)
 
-        decision = {
+        return {
             "analyses": self.analyses,
             "prioritized_findings": prioritized,
             "critical_count": sum(1 for a in self.analyses if a.severity == VulnerabilitySeverity.CRITICAL),
@@ -111,7 +111,6 @@ class SecurityAnalyzer:
         #AFTERMATH_METRIC: critical_vulnerabilities = decision["critical_count"]
         #AFTERMATH_METRIC: auto_fixable = decision["auto_fixable_count"]
 
-        return decision
 
     def _analyze_finding(self, finding: Any) -> SecurityAnalysis:
         """
@@ -244,45 +243,42 @@ class SecurityAnalyzer:
         """Map CVSS score to severity enum."""
         if cvss_score >= 9.0:
             return VulnerabilitySeverity.CRITICAL
-        elif cvss_score >= 7.0:
+        if cvss_score >= 7.0:
             return VulnerabilitySeverity.HIGH
-        elif cvss_score >= 4.0:
+        if cvss_score >= 4.0:
             return VulnerabilitySeverity.MEDIUM
-        elif cvss_score >= 0.1:
+        if cvss_score >= 0.1:
             return VulnerabilitySeverity.LOW
-        else:
-            return VulnerabilitySeverity.INFO
+        return VulnerabilitySeverity.INFO
 
     def _calculate_priority(self, severity: VulnerabilitySeverity,
                           exploitability: float, impact: float) -> RemediationPriority:
         """Calculate remediation priority."""
         if severity == VulnerabilitySeverity.CRITICAL:
             return RemediationPriority.P0
-        elif severity == VulnerabilitySeverity.HIGH:
+        if severity == VulnerabilitySeverity.HIGH:
             if exploitability > 0.7:
                 return RemediationPriority.P0
             return RemediationPriority.P1
-        elif severity == VulnerabilitySeverity.MEDIUM:
+        if severity == VulnerabilitySeverity.MEDIUM:
             if exploitability > 0.8:
                 return RemediationPriority.P1
             return RemediationPriority.P2
-        elif severity == VulnerabilitySeverity.LOW:
+        if severity == VulnerabilitySeverity.LOW:
             return RemediationPriority.P3
-        else:
-            return RemediationPriority.P4
+        return RemediationPriority.P4
 
     def _select_remediation_strategy(self, finding: Any) -> str:
         """Select appropriate remediation strategy."""
         if finding.tool in ["Safety", "pip-audit"]:
             return "dependency_upgrade"
-        elif finding.cwe_id in ["CWE-89", "CWE-79"]:
+        if finding.cwe_id in ["CWE-89", "CWE-79"]:
             return "input_sanitization"
-        elif finding.cwe_id == "CWE-798":
+        if finding.cwe_id == "CWE-798":
             return "credential_removal"
-        elif finding.cwe_id == "CWE-327":
+        if finding.cwe_id == "CWE-327":
             return "crypto_upgrade"
-        else:
-            return "code_review"
+        return "code_review"
 
     def _is_auto_fixable(self, finding: Any) -> bool:
         """Determine if vulnerability can be auto-fixed."""
@@ -300,12 +296,11 @@ class SecurityAnalyzer:
         """Estimate remediation effort."""
         if auto_fixable:
             return "low (automated)"
-        elif finding.cwe_id in ["CWE-89", "CWE-79"]:
+        if finding.cwe_id in ["CWE-89", "CWE-79"]:
             return "medium (requires code changes)"
-        else:
-            return "high (requires investigation)"
+        return "high (requires investigation)"
 
-    def _assess_compliance_impact(self, finding: Any) -> List[str]:
+    def _assess_compliance_impact(self, finding: Any) -> list[str]:
         """Assess compliance framework impacts."""
         impacts = []
 
@@ -323,7 +318,7 @@ class SecurityAnalyzer:
 
         return impacts
 
-    def _query_historical_data(self) -> List[Dict[str, Any]]:
+    def _query_historical_data(self) -> list[dict[str, Any]]:
         """Query cognitive brain for historical vulnerability patterns."""
         try:
             patterns = self.brain.query_patterns(
@@ -334,11 +329,11 @@ class SecurityAnalyzer:
         except Exception:
             return []
 
-    def _prioritize_by_risk(self, analyses: List[SecurityAnalysis]) -> List[SecurityAnalysis]:
+    def _prioritize_by_risk(self, analyses: list[SecurityAnalysis]) -> list[SecurityAnalysis]:
         """Sort analyses by risk score (highest first)."""
         return sorted(analyses, key=lambda a: a.risk_score, reverse=True)
 
-    def _generate_recommendations(self, prioritized: List[SecurityAnalysis]) -> List[str]:
+    def _generate_recommendations(self, prioritized: list[SecurityAnalysis]) -> list[str]:
         """Generate high-level recommendations."""
         recommendations = []
 

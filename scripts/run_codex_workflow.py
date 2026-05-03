@@ -33,8 +33,8 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Iterable, Sequence
 
 from codex_ml.workflow import DEFAULT_ROUTER, run_capability
 from codex_ml.workflow.track_c_workflow import SIX_PHASES, WorkflowContext

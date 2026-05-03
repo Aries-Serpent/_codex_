@@ -13,7 +13,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 _core_path = str(Path(__file__).parent.parent.parent / "core")
 if _core_path not in sys.path:
@@ -40,7 +40,7 @@ class ReleaseResult:
     health_status: str
     error_message: str = ""
     duration_seconds: float = 0.0
-    metadata: Dict[str, Any] = None
+    metadata: dict[str, Any] = None
 
     def __post_init__(self):
         if self.metadata is None:
@@ -66,7 +66,7 @@ class ReleaseExecutor:
         self.repo_name = repo_name
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
 
-    def act(self, decision_result: Dict[str, Any], release_info: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision_result: dict[str, Any], release_info: dict[str, Any]) -> dict[str, Any]:
         """
         ACT: Execute release based on decision.
 
@@ -133,7 +133,7 @@ class ReleaseExecutor:
                 "metadata": {}
             }
 
-    def _create_blocking_result(self, decision_result: Dict[str, Any], start_time: float) -> Dict[str, Any]:
+    def _create_blocking_result(self, decision_result: dict[str, Any], start_time: float) -> dict[str, Any]:
         """Create result for blocked release."""
         return {
             "status": ReleaseStatus.BLOCKED.value,
@@ -155,7 +155,7 @@ class ReleaseExecutor:
         # Placeholder: would integrate with monitoring systems
         pass
 
-    def _create_git_tag(self, release_info: Dict[str, Any]) -> str:
+    def _create_git_tag(self, release_info: dict[str, Any]) -> str:
         """Create git tag for release."""
         version = release_info.get("version", "v0.0.0")
 
@@ -173,7 +173,7 @@ class ReleaseExecutor:
             # Best-effort: if tagging fails, return version anyway
             return version
 
-    def _create_github_release(self, release_info: Dict[str, Any], git_tag: str) -> str:
+    def _create_github_release(self, release_info: dict[str, Any], git_tag: str) -> str:
         """Create GitHub release."""
         version = release_info.get("version", "v0.0.0")
         notes = release_info.get("release_notes", f"Release {version}")
@@ -190,8 +190,7 @@ class ReleaseExecutor:
 
             # Parse release URL from output
             if result.stdout:
-                release_url = result.stdout.decode().strip()
-                return release_url
+                return result.stdout.decode().strip()
 
             return f"https://github.com/{self.repo_owner}/{self.repo_name}/releases/tag/{git_tag}"
 
@@ -199,7 +198,7 @@ class ReleaseExecutor:
             # Best-effort: return constructed URL if gh CLI fails
             return f"https://github.com/{self.repo_owner}/{self.repo_name}/releases/tag/{git_tag}"
 
-    def _trigger_deployment(self, release_info: Dict[str, Any]) -> str:
+    def _trigger_deployment(self, release_info: dict[str, Any]) -> str:
         """Trigger deployment pipeline."""
         # Placeholder: would trigger actual deployment
         # In real implementation, would call deployment API or trigger workflow

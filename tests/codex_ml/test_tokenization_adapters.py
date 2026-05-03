@@ -6,24 +6,21 @@ the required dependencies (transformers, sentencepiece) are not installed.
 
 from __future__ import annotations
 
+import importlib.util
+
 import pytest
 
 # Try to import transformers - skip tests if not available
 transformers = pytest.importorskip("transformers", reason="transformers not installed")
 
 # Try to import tokenizers package - skip tests if not available
-try:
-    import tokenizers  # noqa: F401
-
-    HAS_TOKENIZERS = True
-except ImportError:
-    HAS_TOKENIZERS = False
+HAS_TOKENIZERS = importlib.util.find_spec('tokenizers') is not None
 
 # Try to import sentencepiece - skip tests if not available.
 # Also verify the module has real functionality (not a stub/type-hint-only package).
 # IS_CODEX_STUB=True means the in-repo shim is active rather than the real C extension.
 try:
-    import sentencepiece as _spm  # noqa: F401
+    import sentencepiece as _spm
 
     HAS_SENTENCEPIECE = hasattr(_spm, "SentencePieceTrainer") and not getattr(
         _spm, "IS_CODEX_STUB", False

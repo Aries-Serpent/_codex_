@@ -19,15 +19,14 @@ import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List
 
 
-def load_scored(path: Path) -> List[Dict]:
+def load_scored(path: Path) -> list[dict]:
     data = json.loads(path.read_text(encoding="utf-8"))
     return data.get("capabilities", [])
 
 
-def analyze(caps: List[Dict], maturity_threshold: float, severity_threshold: int) -> Dict:
+def analyze(caps: list[dict], maturity_threshold: float, severity_threshold: int) -> dict:
     items = []
     for i, c in enumerate(caps, start=1):
         name = c.get("name", f"unknown-{i}")

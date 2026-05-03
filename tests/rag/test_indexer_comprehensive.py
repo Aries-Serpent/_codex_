@@ -17,7 +17,7 @@ except ImportError:
     HAS_NUMPY = False
 
 try:
-    import sentence_transformers  # noqa: F401 - availability check
+    import sentence_transformers
 
     HAS_SENTENCE_TRANSFORMERS = bool(sentence_transformers)
 except ImportError:

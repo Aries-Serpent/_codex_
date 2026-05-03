@@ -11,7 +11,6 @@ Scans Python files for legacy patterns and suggests modernization:
 import ast
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 
 class ModernizationChecker(ast.NodeVisitor):
@@ -19,7 +18,7 @@ class ModernizationChecker(ast.NodeVisitor):
 
     def __init__(self, filename: str):
         self.filename = filename
-        self.issues: List[Tuple[int, str, str]] = []
+        self.issues: list[tuple[int, str, str]] = []
 
     def visit_ImportFrom(self, node: ast.ImportFrom):
         """Check for old typing imports."""
@@ -55,7 +54,7 @@ class ModernizationChecker(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def scan_file(filepath: Path) -> List[Tuple[int, str, str]]:
+def scan_file(filepath: Path) -> list[tuple[int, str, str]]:
     """Scan a single Python file for modernization opportunities."""
     try:
         content = filepath.read_text(encoding="utf-8")

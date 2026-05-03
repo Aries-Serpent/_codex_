@@ -9,9 +9,9 @@ import pytest
 pytest.importorskip("torch")
 pytest.importorskip("opacus")
 
-import torch  # noqa: E402
-import torch.nn.functional as F  # noqa: E402
-from codex.training import TrainCfg, run_custom_trainer  # noqa: E402
+import torch
+import torch.nn.functional as F
+from codex.training import TrainCfg, run_custom_trainer
 
 
 def test_dp_training_runs(monkeypatch, tmp_path):
@@ -72,6 +72,6 @@ def test_dp_training_runs(monkeypatch, tmp_path):
 
     result = run_custom_trainer(DummyModel(), None, dataset, None, cfg)
 
-    assert "history" in result and result["history"]
+    assert result.get("history")
     assert engine.calls["noise_multiplier"] == pytest.approx(1.0)
     assert engine.calls["max_grad_norm"] == pytest.approx(1.0)

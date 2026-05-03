@@ -3,15 +3,15 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Iterable, Mapping
+from collections.abc import Iterable, Mapping
 
 from .split import train_val_test_split as _train_val_test_split
 
 __all__ = [
-    "stable_fold",
-    "assign_split",
     "SPLITS",
     "SplitDistribution",
+    "assign_split",
+    "stable_fold",
     "train_val_test_split",
 ]
 

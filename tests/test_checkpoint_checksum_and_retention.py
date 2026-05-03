@@ -10,7 +10,7 @@ import pytest
 
 torch = pytest.importorskip("torch", reason="Requires torch for checkpoint hashing test")
 
-from codex_ml.train_loop import run_training  # noqa
+from codex_ml.train_loop import run_training
 
 
 def test_checkpoint_sha256_and_retention(tmp_path):

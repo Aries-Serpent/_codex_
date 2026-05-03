@@ -18,9 +18,9 @@ Author: Codex Team
 from __future__ import annotations
 
 import json
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Iterable
 
 GateCheck = Callable[[Path], tuple[str, str]]
 

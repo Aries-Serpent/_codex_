@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import yaml
 
@@ -85,7 +85,7 @@ class TestResult:
     status_code: Optional[int] = None
     response_time_ms: Optional[float] = None
     error: Optional[str] = None
-    validation_errors: List[str] = field(default_factory=list)
+    validation_errors: list[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -94,7 +94,7 @@ class ServiceContract:
     """API contract definition for a service"""
     service_name: str
     base_url: str
-    endpoints: List[Endpoint] = field(default_factory=list)
+    endpoints: list[Endpoint] = field(default_factory=list)
     auth_type: Optional[str] = None  # 'bearer', 'api_key', 'basic', None
     version: str = "1.0"
 
@@ -104,9 +104,9 @@ class IntegrationTestSuite:
     """A suite of integration tests"""
     name: str
     description: str
-    contracts: List[ServiceContract] = field(default_factory=list)
-    setup_commands: List[str] = field(default_factory=list)
-    teardown_commands: List[str] = field(default_factory=list)
+    contracts: list[ServiceContract] = field(default_factory=list)
+    setup_commands: list[str] = field(default_factory=list)
+    teardown_commands: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -129,10 +129,10 @@ class ServiceIntegrationTester:
     def __init__(self, config_path: Optional[Path] = None):
         """Initialize the agent with optional configuration"""
         self.config = self._load_config(config_path) if config_path else {}
-        self.test_results: List[TestResult] = []
+        self.test_results: list[TestResult] = []
         self.metrics = TestMetrics()
-        self.mock_data_cache: Dict[str, Any] = {}
-        self.discovered_endpoints: Dict[str, List[Endpoint]] = {}
+        self.mock_data_cache: dict[str, Any] = {}
+        self.discovered_endpoints: dict[str, list[Endpoint]] = {}
 
         # PII scrubbing patterns (from pii-scrubber component)
         self.pii_patterns = {
@@ -144,7 +144,7 @@ class ServiceIntegrationTester:
             'aws_key': re.compile(r'AKIA[0-9A-Z]{16}'),
         }
 
-    def _load_config(self, config_path: Path) -> Dict[str, Any]:
+    def _load_config(self, config_path: Path) -> dict[str, Any]:
         """Load agent configuration from YAML file"""
         if not config_path.exists():
             raise FileNotFoundError(f"Config file not found: {config_path}")
@@ -186,7 +186,7 @@ class ServiceIntegrationTester:
 
         return result
 
-    def generate_mock_data(self, schema: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+    def generate_mock_data(self, schema: Optional[dict[str, str]] = None) -> dict[str, Any]:
         """
         Generate privacy-safe mock data for testing (using pii-scrubber patterns)
 
@@ -229,7 +229,7 @@ class ServiceIntegrationTester:
         self,
         base_url: str,
         spec_source: Optional[Any] = None
-    ) -> List[Endpoint]:
+    ) -> list[Endpoint]:
         """
         Discover service endpoints (from rag-index-manager component)
 
@@ -299,8 +299,8 @@ class ServiceIntegrationTester:
     def test_endpoint_sync(
         self,
         endpoint: Endpoint,
-        headers: Optional[Dict[str, str]] = None,
-        payload: Optional[Dict[str, Any]] = None,
+        headers: Optional[dict[str, str]] = None,
+        payload: Optional[dict[str, Any]] = None,
         expected_status: Optional[int] = None
     ) -> TestResult:
         """
@@ -377,7 +377,7 @@ class ServiceIntegrationTester:
         self,
         contract: ServiceContract,
         auth_token: Optional[str] = None
-    ) -> List[TestResult]:
+    ) -> list[TestResult]:
         """
         Test all endpoints in a service contract
 
@@ -406,7 +406,7 @@ class ServiceIntegrationTester:
         self,
         suite: IntegrationTestSuite,
         verbose: bool = False
-    ) -> Tuple[bool, TestMetrics]:
+    ) -> tuple[bool, TestMetrics]:
         """
         Run a complete integration test suite
 
@@ -470,7 +470,7 @@ class ServiceIntegrationTester:
         self,
         spec_path: Path,
         base_url: str
-    ) -> Tuple[bool, List[str]]:
+    ) -> tuple[bool, list[str]]:
         """
         Validate that service implementation matches OpenAPI contract
 
@@ -506,7 +506,7 @@ class ServiceIntegrationTester:
         compliant = len(violations) == 0
         return compliant, violations
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get current test metrics"""
         return {
             'total_tests': self.metrics.total_tests,
@@ -560,7 +560,7 @@ class ServiceIntegrationTester:
         lines.append("")
 
         # Group results by service
-        by_service: Dict[str, List[TestResult]] = {}
+        by_service: dict[str, list[TestResult]] = {}
         for result in self.test_results:
             service = result.endpoint.base_url
             if service not in by_service:
@@ -706,11 +706,10 @@ def main():
         if compliant:
             print("✅ Service is compliant with contract")
             return 0
-        else:
-            print("❌ Contract violations found:")
-            for violation in violations:
-                print(f"  - {violation}")
-            return 1
+        print("❌ Contract violations found:")
+        for violation in violations:
+            print(f"  - {violation}")
+        return 1
 
     elif args.command == 'generate-report':
         report = tester.generate_report(args.output)

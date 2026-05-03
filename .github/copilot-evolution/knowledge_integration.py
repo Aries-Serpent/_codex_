@@ -23,7 +23,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +54,8 @@ class ConceptNode:
     name: str
     description: str
     domain: str
-    related_concepts: List[str]
-    source_references: List[str]
+    related_concepts: list[str]
+    source_references: list[str]
     confidence: float
     created_at: str
     updated_at: str
@@ -70,7 +70,7 @@ class ConceptRelation:
     target_concept: str
     relation_type: str  # is_a, has_a, uses, extends, depends_on
     strength: float
-    evidence: List[str]
+    evidence: list[str]
 
 
 @dataclass
@@ -81,8 +81,8 @@ class ResearchTask:
     concept: str
     research_question: str
     status: str  # pending, in_progress, completed, failed
-    sources_to_query: List[str]
-    findings: List[Dict[str, Any]]
+    sources_to_query: list[str]
+    findings: list[dict[str, Any]]
     created_at: str
     completed_at: Optional[str]
 
@@ -95,7 +95,7 @@ class GeneratedTest:
     concept: str
     test_type: str  # unit, integration, property
     test_code: str
-    assertions: List[str]
+    assertions: list[str]
     validation_status: str  # pending, passed, failed
     created_at: str
 
@@ -123,8 +123,8 @@ class ExternalKnowledgeIntegrator:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.sources: Dict[str, KnowledgeSource] = {}
-        self.cached_results: Dict[str, Dict[str, Any]] = {}
+        self.sources: dict[str, KnowledgeSource] = {}
+        self.cached_results: dict[str, dict[str, Any]] = {}
 
         self._initialize_sources()
 
@@ -180,9 +180,9 @@ class ExternalKnowledgeIntegrator:
     def search_knowledge(
         self,
         query: str,
-        source_types: Optional[List[str]] = None,
+        source_types: Optional[list[str]] = None,
         max_results: int = 10,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Search for knowledge across external sources.
 
@@ -210,7 +210,7 @@ class ExternalKnowledgeIntegrator:
             "implementation or use a mock/stub adapter in tests."
         )
 
-    def _generate_quantum_results(self, query: str) -> List[Dict[str, Any]]:
+    def _generate_quantum_results(self, query: str) -> list[dict[str, Any]]:
         """
         Generate quantum computing related results.
 
@@ -246,7 +246,7 @@ class ExternalKnowledgeIntegrator:
             },
         ]
 
-    def _generate_security_results(self, query: str) -> List[Dict[str, Any]]:
+    def _generate_security_results(self, query: str) -> list[dict[str, Any]]:
         """
         Generate security related results.
 
@@ -271,7 +271,7 @@ class ExternalKnowledgeIntegrator:
             },
         ]
 
-    def _generate_ml_results(self, query: str) -> List[Dict[str, Any]]:
+    def _generate_ml_results(self, query: str) -> list[dict[str, Any]]:
         """
         Generate machine learning related results.
 
@@ -296,7 +296,7 @@ class ExternalKnowledgeIntegrator:
             },
         ]
 
-    def _generate_python_results(self, query: str) -> List[Dict[str, Any]]:
+    def _generate_python_results(self, query: str) -> list[dict[str, Any]]:
         """
         Generate Python related results.
 
@@ -320,7 +320,7 @@ class ExternalKnowledgeIntegrator:
             },
         ]
 
-    def _generate_general_results(self, query: str) -> List[Dict[str, Any]]:
+    def _generate_general_results(self, query: str) -> list[dict[str, Any]]:
         """
         Generate general results for any query.
 
@@ -357,8 +357,8 @@ class ConceptGraph:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.nodes: Dict[str, ConceptNode] = {}
-        self.relations: Dict[str, ConceptRelation] = {}
+        self.nodes: dict[str, ConceptNode] = {}
+        self.relations: dict[str, ConceptRelation] = {}
 
         self._load_graph()
         self._initialize_base_concepts()
@@ -524,8 +524,8 @@ class ConceptGraph:
         name: str,
         description: str,
         domain: str,
-        related_concepts: Optional[List[str]] = None,
-        source_references: Optional[List[str]] = None,
+        related_concepts: Optional[list[str]] = None,
+        source_references: Optional[list[str]] = None,
     ) -> ConceptNode:
         """
         Add a new concept to the graph.
@@ -568,7 +568,7 @@ class ConceptGraph:
         target_concept: str,
         relation_type: str,
         strength: float = 0.5,
-        evidence: Optional[List[str]] = None,
+        evidence: Optional[list[str]] = None,
     ) -> Optional[ConceptRelation]:
         """
         Add a relation between concepts.
@@ -612,7 +612,7 @@ class ConceptGraph:
 
     def find_related(
         self, concept_id: str, max_depth: int = 2
-    ) -> List[Tuple[ConceptNode, int]]:
+    ) -> list[tuple[ConceptNode, int]]:
         """
         Find concepts related to the given concept.
 
@@ -626,9 +626,9 @@ class ConceptGraph:
         if concept_id not in self.nodes:
             return []
 
-        visited: Set[str] = {concept_id}
-        result: List[Tuple[ConceptNode, int]] = []
-        queue: List[Tuple[str, int]] = [(concept_id, 0)]
+        visited: set[str] = {concept_id}
+        result: list[tuple[ConceptNode, int]] = []
+        queue: list[tuple[str, int]] = [(concept_id, 0)]
 
         while queue:
             current_id, depth = queue.pop(0)
@@ -654,7 +654,7 @@ class ConceptGraph:
 
         return result
 
-    def get_graph_statistics(self) -> Dict[str, Any]:
+    def get_graph_statistics(self) -> dict[str, Any]:
         """Get statistics about the concept graph."""
         domain_counts = defaultdict(int)
         for node in self.nodes.values():
@@ -706,7 +706,7 @@ class AutomatedResearcher:
         self.knowledge_integrator = knowledge_integrator or ExternalKnowledgeIntegrator()
         self.concept_graph = concept_graph or ConceptGraph()
 
-        self.research_tasks: Dict[str, ResearchTask] = {}
+        self.research_tasks: dict[str, ResearchTask] = {}
         self._load_tasks()
 
         logger.info(
@@ -752,7 +752,7 @@ class AutomatedResearcher:
         self,
         concept: str,
         research_question: str,
-        sources: Optional[List[str]] = None,
+        sources: Optional[list[str]] = None,
     ) -> ResearchTask:
         """
         Create a new research task.
@@ -916,7 +916,7 @@ class TestGenerator:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.generated_tests: Dict[str, GeneratedTest] = {}
+        self.generated_tests: dict[str, GeneratedTest] = {}
         self._load_tests()
 
         logger.info(
@@ -1037,7 +1037,7 @@ def test_{func_name}_edge_cases():
     def generate_property_test(
         self,
         concept: str,
-        properties: List[str],
+        properties: list[str],
     ) -> GeneratedTest:
         """
         Generate a property-based test.
@@ -1096,7 +1096,7 @@ class Test{concept.replace(" ", "")}Properties:
 
         return test
 
-    def get_test_statistics(self) -> Dict[str, Any]:
+    def get_test_statistics(self) -> dict[str, Any]:
         """Get statistics about generated tests."""
         by_type = defaultdict(int)
         by_status = defaultdict(int)

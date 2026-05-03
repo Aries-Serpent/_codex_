@@ -14,7 +14,6 @@ import argparse
 import re
 import sys
 from pathlib import Path
-from typing import List
 
 
 class CheckResult:
@@ -33,7 +32,7 @@ class PreFlightValidator:
     def __init__(self, repo_root: Path, auto_fix: bool = False):
         self.repo_root = repo_root
         self.auto_fix = auto_fix
-        self.results: List[CheckResult] = []
+        self.results: list[CheckResult] = []
 
     def add_result(self, result: CheckResult):
         """Add a check result."""

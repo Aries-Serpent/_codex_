@@ -18,7 +18,6 @@ import ast
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
 
 from .pattern_recognizer import Pattern, PatternMatcher
 
@@ -105,7 +104,7 @@ class SecurityPatternMatcher(PatternMatcher):
             (r'file_path\s*=\s*request', "Direct file path from request", "high"),
         ]
 
-    def detect(self, file_path: Path) -> List[Pattern]:
+    def detect(self, file_path: Path) -> list[Pattern]:
         """
         #AFTERMATH_PATTERN_IDENTIFIED: security_detection_pda_loop
 
@@ -114,7 +113,7 @@ class SecurityPatternMatcher(PatternMatcher):
         ACT: Return detected patterns
         AFTERMATH: Patterns stored in cognitive brain for learning
         """
-        detected: List[SecurityPattern] = []
+        detected: list[SecurityPattern] = []
 
         if not file_path.exists():
             return detected
@@ -152,7 +151,7 @@ class SecurityPatternMatcher(PatternMatcher):
 
         return detected
 
-    def _detect_sql_injection(self, content: str, file_path: Path) -> List[SecurityPattern]:
+    def _detect_sql_injection(self, content: str, file_path: Path) -> list[SecurityPattern]:
         """Detect SQL injection vulnerabilities"""
         findings = []
         for pattern, description, severity in self.sql_injection_patterns:
@@ -175,7 +174,7 @@ class SecurityPatternMatcher(PatternMatcher):
                 ))
         return findings
 
-    def _detect_xss(self, content: str, file_path: Path) -> List[SecurityPattern]:
+    def _detect_xss(self, content: str, file_path: Path) -> list[SecurityPattern]:
         """Detect XSS vulnerabilities"""
         findings = []
         for pattern, description, severity in self.xss_patterns:
@@ -198,7 +197,7 @@ class SecurityPatternMatcher(PatternMatcher):
                 ))
         return findings
 
-    def _detect_secrets(self, content: str, file_path: Path) -> List[SecurityPattern]:
+    def _detect_secrets(self, content: str, file_path: Path) -> list[SecurityPattern]:
         """Detect hardcoded secrets and credentials"""
         findings = []
         for pattern, description, severity in self.secret_patterns:
@@ -221,7 +220,7 @@ class SecurityPatternMatcher(PatternMatcher):
                 ))
         return findings
 
-    def _detect_crypto_issues(self, content: str, file_path: Path) -> List[SecurityPattern]:
+    def _detect_crypto_issues(self, content: str, file_path: Path) -> list[SecurityPattern]:
         """Detect insecure cryptographic practices"""
         findings = []
         for pattern, description, severity in self.crypto_patterns:
@@ -244,7 +243,7 @@ class SecurityPatternMatcher(PatternMatcher):
                 ))
         return findings
 
-    def _detect_command_injection(self, content: str, file_path: Path) -> List[SecurityPattern]:
+    def _detect_command_injection(self, content: str, file_path: Path) -> list[SecurityPattern]:
         """Detect command injection vulnerabilities"""
         findings = []
         for pattern, description, severity in self.command_injection_patterns:
@@ -267,7 +266,7 @@ class SecurityPatternMatcher(PatternMatcher):
                 ))
         return findings
 
-    def _detect_path_traversal(self, content: str, file_path: Path) -> List[SecurityPattern]:
+    def _detect_path_traversal(self, content: str, file_path: Path) -> list[SecurityPattern]:
         """Detect path traversal vulnerabilities"""
         findings = []
         for pattern, description, severity in self.path_traversal_patterns:
@@ -290,7 +289,7 @@ class SecurityPatternMatcher(PatternMatcher):
                 ))
         return findings
 
-    def _ast_security_analysis(self, content: str, file_path: Path) -> List[SecurityPattern]:
+    def _ast_security_analysis(self, content: str, file_path: Path) -> list[SecurityPattern]:
         """
         Deep AST-based security analysis for Python code
 
@@ -353,7 +352,7 @@ class SecurityPatternMatcher(PatternMatcher):
         """Return pattern type for cognitive brain categorization"""
         return "security"
 
-    def get_severity_stats(self, patterns: List[SecurityPattern]) -> Dict[str, int]:
+    def get_severity_stats(self, patterns: list[SecurityPattern]) -> dict[str, int]:
         """
         Calculate severity distribution for metrics
 

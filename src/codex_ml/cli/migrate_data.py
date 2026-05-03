@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""CLI tool for migrating assignment mapping files between versions."""
 
 
 import json

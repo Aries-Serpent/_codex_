@@ -4,7 +4,7 @@ Optimizes test execution order for faster feedback
 """
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 RANDOM_SEED = 49
 
@@ -23,8 +23,8 @@ class TestPrioritizer:
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
-        self.tests: List[TestInfo] = []
-        self.execution_history: List[Dict[str, Any]] = []
+        self.tests: list[TestInfo] = []
+        self.execution_history: list[dict[str, Any]] = []
         self.initialized = True
 
     def add_test(self, name: str, duration_ms: float, failure_rate: float,
@@ -49,11 +49,11 @@ class TestPrioritizer:
         speed_score = (1.0 - min(test.duration_ms / 10000, 1.0)) * 0.3
         return failure_score + recency_score + speed_score
 
-    def get_prioritized_order(self) -> List[TestInfo]:
+    def get_prioritized_order(self) -> list[TestInfo]:
         """Get tests in prioritized order"""
         return sorted(self.tests, key=lambda t: t.priority_score, reverse=True)
 
-    def optimize_for_time(self, max_time_ms: float) -> List[TestInfo]:
+    def optimize_for_time(self, max_time_ms: float) -> list[TestInfo]:
         """Select tests that fit within time budget"""
         prioritized = self.get_prioritized_order()
         selected = []
@@ -82,7 +82,7 @@ class TestPrioritizer:
                     test.failure_rate = min(test.failure_rate + 0.1, 1.0)
                 test.priority_score = self._calculate_priority(test)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get prioritizer metrics"""
         return {
             "seed": self.seed,

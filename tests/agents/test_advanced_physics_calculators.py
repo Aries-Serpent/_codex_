@@ -15,7 +15,7 @@ import pytest
 # Skip entire module if numpy is not available (optional dependency)
 np = pytest.importorskip("numpy", reason="numpy required for advanced physics calculations")
 
-from agents.advanced_physics_calculators import (  # noqa: E402
+from agents.advanced_physics_calculators import (
     AdvancedPhysicsOrchestrator,
     ChaoticAttractor,
     ChaoticNeuralNetwork,

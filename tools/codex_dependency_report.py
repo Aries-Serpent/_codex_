@@ -11,18 +11,18 @@ import json
 import sys
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
-def _collect_packages() -> List[Dict[str, str]]:
-    packages: List[Dict[str, str]] = []
+def _collect_packages() -> list[dict[str, str]]:
+    packages: list[dict[str, str]] = []
     for dist in metadata.distributions():  # pragma: no cover (ordering)
         packages.append({"name": dist.metadata["Name"], "version": dist.version})
     packages.sort(key=lambda item: item["name"].lower())
     return packages
 
 
-def build_report() -> Dict[str, Any]:
+def build_report() -> dict[str, Any]:
     packages = _collect_packages()
     return {
         "python_version": sys.version,

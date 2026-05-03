@@ -6,7 +6,6 @@ would improve review quality.
 """
 
 import logging
-from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ class KnowledgeGapDetector:
     - Custom patterns and conventions
     """
 
-    async def detect_gaps(self, context) -> List[str]:
+    async def detect_gaps(self, context) -> list[str]:
         """
         Detect knowledge gaps based on context.
 
@@ -56,7 +55,7 @@ class KnowledgeGapDetector:
         logger.info(f"Detected {len(gaps)} knowledge gaps")
         return gaps
 
-    def _find_unknown_extensions(self, files: List[str]) -> List[str]:
+    def _find_unknown_extensions(self, files: list[str]) -> list[str]:
         """Find file extensions that are uncommon."""
         # Known extensions
         known = {
@@ -73,7 +72,7 @@ class KnowledgeGapDetector:
 
         return list(unknown)
 
-    def _extract_domain_terms(self, description: str) -> List[str]:
+    def _extract_domain_terms(self, description: str) -> list[str]:
         """Extract domain-specific terms from description."""
         # TODO: Implement NLP-based domain term extraction
         # For now, look for capitalized words that might be domain terms
@@ -81,7 +80,7 @@ class KnowledgeGapDetector:
         words = re.findall(r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b', description)
         return list(set(words))[:5]
 
-    def _find_external_references(self, diff: str) -> List[str]:
+    def _find_external_references(self, diff: str) -> list[str]:
         """Find references to external systems or services."""
         # Look for common external service patterns
         import re
@@ -97,7 +96,7 @@ class KnowledgeGapDetector:
 
         return list(refs)[:5]
 
-    def _has_custom_patterns(self, files: List[str]) -> bool:
+    def _has_custom_patterns(self, files: list[str]) -> bool:
         """Check if files suggest custom patterns."""
         # Check for custom configuration or pattern files
         pattern_indicators = [

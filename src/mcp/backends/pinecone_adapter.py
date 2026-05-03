@@ -23,7 +23,8 @@ import importlib.util
 import logging
 import os
 import sys
-from typing import Any, Iterable, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
 from mcp.observability.metrics import Timer, increment
 

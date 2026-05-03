@@ -8,7 +8,6 @@ import os
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # Repository configuration - can be overridden via environment variables
 REPO_OWNER = os.getenv("GITHUB_REPOSITORY_OWNER", "Aries-Serpent")
@@ -24,11 +23,11 @@ class LinkFixer:
         self.errors = []
         self.stats = defaultdict(int)
 
-    def find_markdown_files(self) -> List[Path]:
+    def find_markdown_files(self) -> list[Path]:
         """Find all markdown files in docs/"""
         return list(DOCS_ROOT.rglob("*.md"))
 
-    def extract_links(self, content: str) -> List[Tuple[str, str, str]]:
+    def extract_links(self, content: str) -> list[tuple[str, str, str]]:
         """Extract all markdown links [text](url)"""
         # Match [text](url) pattern
         pattern = r'\[([^\]]+)\]\(([^\)]+)\)'
@@ -73,7 +72,7 @@ class LinkFixer:
         """Check if target file exists"""
         return target_path.exists()
 
-    def fix_link(self, current_file: Path, link_text: str, link_url: str, full_link: str) -> Tuple[str, str]:
+    def fix_link(self, current_file: Path, link_text: str, link_url: str, full_link: str) -> tuple[str, str]:
         """
         Fix a single link if needed
         Returns: (new_full_link, reason) or (None, None) if no fix needed
@@ -123,7 +122,7 @@ class LinkFixer:
         self.stats['valid_internal'] += 1
         return None, None
 
-    def process_file(self, file_path: Path) -> Dict[str, any]:
+    def process_file(self, file_path: Path) -> dict[str, any]:
         """Process a single markdown file"""
         try:
             content = file_path.read_text(encoding='utf-8')
@@ -160,7 +159,7 @@ class LinkFixer:
 
         return None
 
-    def run(self, dry_run: bool = True) -> Dict[str, any]:
+    def run(self, dry_run: bool = True) -> dict[str, any]:
         """Run the link fixer on all markdown files"""
         print(f"🔍 Scanning markdown files in {DOCS_ROOT.relative_to(REPO_ROOT)}/...")
         files = self.find_markdown_files()

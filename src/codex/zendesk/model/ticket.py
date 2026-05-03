@@ -296,9 +296,9 @@ class TicketListResponse(_ZendeskBaseModel):
 __all__ = [
     "Ticket",
     "TicketComment",
-    "TicketVia",
     "TicketCustomField",
+    "TicketListResponse",
     "TicketRequest",
     "TicketResponse",
-    "TicketListResponse",
+    "TicketVia",
 ]

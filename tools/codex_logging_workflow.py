@@ -25,7 +25,6 @@ import traceback
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # ----------------------------- Config & Paths -----------------------------
 REPO_ROOT = Path(os.getenv("CODEX_REPO_ROOT", Path.cwd()))
@@ -110,7 +109,7 @@ def record_error(step_number_desc: str, err_msg: str, context: str):
         fh.write(json.dumps(rec) + "\n")
 
 
-def sh(cmd: List[str]) -> Tuple[int, str, str]:
+def sh(cmd: list[str]) -> tuple[int, str, str]:
     try:
         proc = subprocess.run(
             cmd, capture_output=True, text=True, cwd=REPO_ROOT, check=True
@@ -202,9 +201,9 @@ class Candidate:
     rationale: str
 
 
-def discover_conversation_handlers(inv: List[Dict]) -> List[Candidate]:
+def discover_conversation_handlers(inv: list[dict]) -> list[Candidate]:
     py_files = [REPO_ROOT / f["path"] for f in inv if f["path"].endswith(".py")]
-    candidates: List[Candidate] = []
+    candidates: list[Candidate] = []
     kw = re.compile(
         r"(openai|ChatCompletion|client\.chat|assistant|conversation|respond|handle)",
         re.I,
@@ -221,7 +220,7 @@ def discover_conversation_handlers(inv: List[Dict]) -> List[Candidate]:
     return sorted(candidates, key=lambda c: c.score, reverse=True)
 
 
-def phase2(inv: List[Dict]):
+def phase2(inv: list[dict]):
     mapping = []
     candidates = discover_conversation_handlers(inv)
     mapping.append(
@@ -393,8 +392,8 @@ def try_instrument_file(p: Path) -> bool:
     return changed
 
 
-def phase3(candidates: List[Candidate]):
-    created: Dict[str, str] = {}
+def phase3(candidates: list[Candidate]):
+    created: dict[str, str] = {}
     # Always create logger module and tests (safe & additive)
     logger_py = create_logger_module()
     created["logger"] = logger_py.as_posix()
@@ -420,7 +419,7 @@ def phase3(candidates: List[Candidate]):
 # ----------------------------- Phase 4: Pruning -----------------------------
 
 
-def phase4(candidates: List[Candidate], instrumented: List[str]):
+def phase4(candidates: list[Candidate], instrumented: list[str]):
     if candidates and not instrumented:
         prune_note = (
             "## Pruning\n"
@@ -447,7 +446,7 @@ def phase4(candidates: List[Candidate], instrumented: List[str]):
 # ----------------------------- Phase 5 & 6: Finalization -----------------------------
 
 
-def phase6(created: Dict[str, str], candidates: List[Candidate], instrumented: List[str]):
+def phase6(created: dict[str, str], candidates: list[Candidate], instrumented: list[str]):
     unresolved = []
     if not (REPO_ROOT / "codex" / "logging" / "session_logger.py").exists():
         unresolved.append("logging module missing")

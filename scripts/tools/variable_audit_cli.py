@@ -34,7 +34,7 @@ import textwrap
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # ---------------------------------------------------------------------------
 # Re-use the existing VariableManager transport layer.
@@ -114,8 +114,8 @@ class AuditReport:
     timestamp: str
     owner: str
     repo: str
-    results: List[AuditResult] = field(default_factory=list)
-    extra_vars: List[str] = field(default_factory=list)  # in live but not expected
+    results: list[AuditResult] = field(default_factory=list)
+    extra_vars: list[str] = field(default_factory=list)  # in live but not expected
     auth_ok: bool = True
 
 
@@ -124,7 +124,7 @@ class AuditReport:
 # Built from GITHUB_VARIABLES_MASTER_GUIDE.md — keep in sync with §3–§9.
 # ---------------------------------------------------------------------------
 
-_REGISTRY: List[ExpectedEntry] = [
+_REGISTRY: list[ExpectedEntry] = [
     # ── §3 Organisation Secrets ──────────────────────────────────────────
     ExpectedEntry("CODECOV_TOKEN",              LAYER_ORG_SECRETS, True,  "CI/CD", "Code coverage upload to codecov.io"),
     ExpectedEntry("CODEX_ADMIN_KEY",            LAYER_ORG_SECRETS, True,  "Auth",  "Fine-grained PAT (Webhooks:write)"),
@@ -251,7 +251,7 @@ _REGISTRY: List[ExpectedEntry] = [
 # Live-state fetchers
 # ---------------------------------------------------------------------------
 
-def _fetch_repo_vars(vm: VariableManager) -> Dict[str, Any]:
+def _fetch_repo_vars(vm: VariableManager) -> dict[str, Any]:
     """Return {name: entry} for all live repo variables."""
     try:
         rows = vm.list_repo_vars(_OWNER, _REPO)
@@ -260,7 +260,7 @@ def _fetch_repo_vars(vm: VariableManager) -> Dict[str, Any]:
         return {"_error": str(exc)}
 
 
-def _fetch_repo_secrets(token: str) -> Dict[str, Any]:
+def _fetch_repo_secrets(token: str) -> dict[str, Any]:
     """Return {name: {}} for repo secrets (names only — values never exposed)."""
     try:
         status, body = _gh_request(
@@ -274,7 +274,7 @@ def _fetch_repo_secrets(token: str) -> Dict[str, Any]:
         return {"_error": str(exc)}
 
 
-def _fetch_org_secrets(token: str) -> Dict[str, Any]:
+def _fetch_org_secrets(token: str) -> dict[str, Any]:
     """Return {name: {}} for org secrets the repo can access."""
     try:
         status, body = _gh_request(
@@ -288,7 +288,7 @@ def _fetch_org_secrets(token: str) -> Dict[str, Any]:
         return {"_error": str(exc)}
 
 
-def _fetch_env_secrets(token: str) -> Dict[str, Any]:
+def _fetch_env_secrets(token: str) -> dict[str, Any]:
     """Return {name: {}} for environment secrets."""
     try:
         status, body = _gh_request(
@@ -302,7 +302,7 @@ def _fetch_env_secrets(token: str) -> Dict[str, Any]:
         return {"_error": str(exc)}
 
 
-def _fetch_env_vars(token: str) -> Dict[str, Any]:
+def _fetch_env_vars(token: str) -> dict[str, Any]:
     """Return {name: entry} for environment variables."""
     try:
         status, body = _gh_request(
@@ -316,7 +316,7 @@ def _fetch_env_vars(token: str) -> Dict[str, Any]:
         return {"_error": str(exc)}
 
 
-def _fetch_codespace_secrets(token: str) -> Dict[str, Any]:
+def _fetch_codespace_secrets(token: str) -> dict[str, Any]:
     """
     Codespace secrets cannot be listed via API by a bot token — only org admins
     can enumerate them.  We return a sentinel dict so the audit can flag these
@@ -359,7 +359,7 @@ def run_audit(
             report.auth_ok = False
 
     # ── fetch live state ───────────────────────────────────────────────
-    live: Dict[str, Dict[str, Any]] = {
+    live: dict[str, dict[str, Any]] = {
         LAYER_ORG_SECRETS:  {},
         LAYER_REPO_SECRETS: {},
         LAYER_ENV_SECRETS:  {},
@@ -410,7 +410,7 @@ def run_audit(
         report.results.append(AuditResult(entry=entry, live_status=status, note=note))
 
     # ── detect extra variables (present in live but not in expected) ───
-    expected_names_per_layer: Dict[str, set] = {lyr: set() for lyr in layers}
+    expected_names_per_layer: dict[str, set] = {lyr: set() for lyr in layers}
     for entry in _REGISTRY:
         if entry.layer in layers:
             expected_names_per_layer[entry.layer].add(entry.name)
@@ -429,14 +429,14 @@ def run_audit(
 # Formatters
 # ---------------------------------------------------------------------------
 
-_STATUS_ICON: Dict[str, str] = {
+_STATUS_ICON: dict[str, str] = {
     "present": "✅",
     "absent":  "❌",
     "unknown": "❓",
     "extra":   "➕",
 }
 
-_STATUS_COLOUR: Dict[str, str] = {
+_STATUS_COLOUR: dict[str, str] = {
     "present": _GREEN,
     "absent":  _RED,
     "unknown": _YELLOW,
@@ -450,7 +450,7 @@ def _icon(status: str) -> str:
 
 def format_table(report: AuditReport) -> str:
     """Render a human-readable terminal table."""
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append(_c(_BOLD, f"\n{'─'*72}"))
     lines.append(_c(_BOLD, "  Variable / Secret Audit Report"))
     lines.append(f"  Repo   : {report.owner}/{report.repo}")
@@ -520,7 +520,7 @@ def format_json(report: AuditReport) -> str:
 
 def format_markdown(report: AuditReport) -> str:
     """Render a Markdown audit report."""
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# Variable / Secret Audit Report\n")
     lines.append(f"**Repository:** `{report.owner}/{report.repo}`  ")
     lines.append(f"**Generated:** `{report.timestamp}`  ")
@@ -564,7 +564,7 @@ def format_markdown(report: AuditReport) -> str:
 
 def format_expected_table(layer: str = "all") -> str:
     """List all expected entries without live check."""
-    lines: List[str] = [
+    lines: list[str] = [
         _c(_BOLD, "\nExpected Variables/Secrets Registry  (source: GITHUB_VARIABLES_MASTER_GUIDE.md)\n"),
         f"  {'NAME':<50} {'LAYER':<20} {'CAT':<20} {'REQ':<5}",
         f"  {'─'*50} {'─'*20} {'─'*20} {'─'*5}",
@@ -705,7 +705,7 @@ def _write(content: str, path: Optional[str]) -> None:
         print(content)
 
 
-def main(argv: Optional[List[str]] = None) -> int:  # noqa: C901
+def main(argv: Optional[list[str]] = None) -> int:  # noqa: C901
     parser = _build_parser()
     args   = parser.parse_args(argv)
 
@@ -743,7 +743,7 @@ def main(argv: Optional[List[str]] = None) -> int:  # noqa: C901
         absent_req   = [r for r in report.results if r.live_status == "absent" and r.entry.required]
         absent_opt   = [r for r in report.results if r.live_status == "absent" and not r.entry.required]
         unknown      = [r for r in report.results if r.live_status == "unknown"]
-        lines: List[str] = [
+        lines: list[str] = [
             _c(_BOLD, f"\nAudit Diff  [{report.timestamp}]"),
             f"Auth: {'✅ token active' if report.auth_ok else '❌ offline mode'}\n",
         ]
@@ -772,7 +772,7 @@ def main(argv: Optional[List[str]] = None) -> int:  # noqa: C901
 
     if args.command == "rotate-check":
         # We can only check updated_at timestamps returned by the Secrets API.
-        lines: List[str] = [
+        lines: list[str] = [
             _c(_BOLD, f"\nRotation Check  (threshold: {args.days} days)"),
             "Note: GitHub only exposes updated_at for secrets (not variables).\n",
         ]

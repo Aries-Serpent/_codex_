@@ -22,7 +22,7 @@ Integration point (behind feature flag):
 import json
 import os
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any
 
 
 def _bayesian_mode_enabled() -> bool:
@@ -247,10 +247,10 @@ class BayesianAssessor:
 
     def apply_tuning_rules(
         self,
-        rules: List[Dict[str, Any]],
-        evidence: Dict[str, str],
+        rules: list[dict[str, Any]],
+        evidence: dict[str, str],
         target_node: str = "decision",
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Apply targeted tuning rules to amplify specific posterior decisions.
 
@@ -284,7 +284,7 @@ class BayesianAssessor:
             if rule.get("target_node", "decision") != target_node:
                 continue
 
-            rule_evidence: Dict[str, str] = rule.get("evidence", {})
+            rule_evidence: dict[str, str] = rule.get("evidence", {})
             # All rule evidence key-value pairs must match observed evidence
             if not all(evidence.get(k) == v for k, v in rule_evidence.items()):
                 continue

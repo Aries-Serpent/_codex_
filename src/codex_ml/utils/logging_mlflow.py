@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterator, Mapping
 from contextlib import ExitStack, contextmanager
-from typing import Any, Iterator, Mapping, Optional
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 

@@ -46,10 +46,11 @@ import subprocess  # nosec B404
 import sys
 import tempfile
 import threading
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Iterable, Optional, Sequence
+from typing import Any, Optional
 
 from ingestion import ingest
 

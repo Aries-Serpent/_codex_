@@ -25,7 +25,7 @@ import logging
 import math
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +53,11 @@ class GHZState:
     """
 
     state_id: str
-    agent_ids: List[str]
-    correlation_matrix: Dict[tuple, float] = field(default_factory=dict)
+    agent_ids: list[str]
+    correlation_matrix: dict[tuple, float] = field(default_factory=dict)
     fidelity: float = 1.0
     created_at: datetime = field(default_factory=datetime.now)
-    measurement_history: List[Dict] = field(default_factory=list)
+    measurement_history: list[dict] = field(default_factory=list)
     is_measured: bool = False
 
     def __post_init__(self):
@@ -101,13 +101,13 @@ class GHZStateManager:
 
     def __init__(self):
         """Initialize GHZ state manager."""
-        self.states: Dict[str, GHZState] = {}
+        self.states: dict[str, GHZState] = {}
         self.measurement_count = 0
         self.total_states_created = 0
 
         logger.info("GHZStateManager initialized")
 
-    def create_ghz_state(self, agent_ids: List[str], state_id: Optional[str] = None) -> GHZState:
+    def create_ghz_state(self, agent_ids: list[str], state_id: Optional[str] = None) -> GHZState:
         """
         Create new GHZ state for N agents.
 
@@ -360,11 +360,11 @@ class GHZStateManager:
 
         return self.states[state_id]
 
-    def list_states(self) -> List[str]:
+    def list_states(self) -> list[str]:
         """Return list of all active GHZ state IDs."""
         return list(self.states.keys())
 
-    def get_statistics(self) -> Dict:
+    def get_statistics(self) -> dict:
         """
         Get manager statistics.
 

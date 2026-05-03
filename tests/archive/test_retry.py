@@ -10,7 +10,6 @@ from collections import deque
 
 import pytest
 
-import codex.archive  # noqa: F401 — ensures codex.archive is registered as attr of codex for monkeypatch
 from codex.archive.retry import RetryConfig, calculate_backoff, retry_with_backoff
 
 

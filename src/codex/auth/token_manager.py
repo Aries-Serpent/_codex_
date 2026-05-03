@@ -12,7 +12,7 @@ import secrets
 import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 from ..security_utils import sanitize_log_message
 
@@ -38,7 +38,7 @@ class TokenClaims:
     iss: str = "codex"  # Issuer
     aud: str = "codex-api"  # Audience
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert claims to dictionary."""
         return {
             "sub": self.sub,
@@ -52,7 +52,7 @@ class TokenClaims:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "TokenClaims":
+    def from_dict(cls, data: dict[str, Any]) -> "TokenClaims":
         """Create claims from dictionary."""
         return cls(
             sub=data["sub"],
@@ -127,8 +127,8 @@ class TokenManager:
             secret_key = secrets.token_urlsafe(64)
 
         self._secret_key = secret_key
-        self._revoked_tokens: Set[str] = set()  # Use Redis in production
-        self._sessions: Dict[str, SessionInfo] = {}  # Use database in production
+        self._revoked_tokens: set[str] = set()  # Use Redis in production
+        self._sessions: dict[str, SessionInfo] = {}  # Use database in production
 
     def _encode_token(self, claims: TokenClaims) -> str:
         """
@@ -275,7 +275,7 @@ class TokenManager:
         mfa_verified: bool = False,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """
         Generate session token and create session.
 
@@ -438,7 +438,7 @@ class TokenManager:
         """
         return self._sessions.get(session_id)
 
-    def get_user_sessions(self, user_id: str) -> List[SessionInfo]:
+    def get_user_sessions(self, user_id: str) -> list[SessionInfo]:
         """
         Get all active sessions for a user.
 

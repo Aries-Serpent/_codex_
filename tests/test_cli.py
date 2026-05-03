@@ -19,7 +19,7 @@ from click.testing import CliRunner
 from typer.testing import CliRunner as TyperCliRunner
 
 cli_module = importlib.import_module("codex.cli")
-from codex_cli.app import app as codex_cli_app  # noqa: E402
+from codex_cli.app import app as codex_cli_app
 
 
 @pytest.mark.parametrize(
@@ -126,7 +126,7 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
     mlflow.set_tracking_uri(f"file:{mlruns_dir}")
     try:
         mlflow.create_experiment("default", artifact_location=str(mlruns_dir))
-    except Exception:  # noqa: BLE001
+    except Exception:
         # Experiment might already exist
         pass
 

@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
 
 # ---------------------------------------------------------------------------
 # Standalone SSE transport helper (single source of truth: scripts/ci/).
@@ -101,8 +101,8 @@ class CapabilitySpec:
 
     name: str
     description: str = ""
-    input_schema: Dict[str, Any] = field(default_factory=dict)
-    output_schema: Dict[str, Any] = field(default_factory=dict)
+    input_schema: dict[str, Any] = field(default_factory=dict)
+    output_schema: dict[str, Any] = field(default_factory=dict)
 
     def __eq__(self, other: object) -> bool:  # noqa: D105
         if isinstance(other, str):
@@ -114,7 +114,7 @@ class CapabilitySpec:
     def __hash__(self) -> int:  # noqa: D105
         return hash(self.name)
 
-    def validate_input(self, payload: Dict[str, Any]) -> Optional[str]:
+    def validate_input(self, payload: dict[str, Any]) -> Optional[str]:
         """Validate *payload* against :attr:`input_schema`.
 
         Returns ``None`` when the payload is valid (or no schema is defined),
@@ -146,7 +146,7 @@ class MCPServer:
 
     name: str
     url: str
-    capabilities: List[Union[str, CapabilitySpec]]
+    capabilities: list[str | CapabilitySpec]
     auth_token: Optional[str] = None
     timeout: int = 30
     enabled: bool = True
@@ -175,7 +175,7 @@ class MCPRequest:
 
     server_name: str
     capability: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     request_id: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
@@ -186,7 +186,7 @@ class MCPResponse:
     request_id: str
     server_name: str
     status: str  # success, error, timeout
-    data: Optional[Dict[str, Any]] = None
+    data: Optional[dict[str, Any]] = None
     error: Optional[str] = None
     timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
@@ -229,10 +229,10 @@ class MCPIntegration:
         Args:
             mode: Connection mode. If None, determined from MCP_REAL_MODE env var.
         """
-        self.servers: Dict[str, MCPServer] = {}
-        self.active_connections: Dict[str, Any] = {}
-        self.request_history: List[MCPRequest] = []
-        self.response_cache: Dict[str, MCPResponse] = {}
+        self.servers: dict[str, MCPServer] = {}
+        self.active_connections: dict[str, Any] = {}
+        self.request_history: list[MCPRequest] = []
+        self.response_cache: dict[str, MCPResponse] = {}
 
         # Determine mode from environment or parameter
         if mode is None:
@@ -293,27 +293,26 @@ class MCPIntegration:
             logger.info(f"Mock connection to {server_name} established")
             return True
 
-        else:
-            # Real connection logic (requires aiohttp or similar)
-            try:
-                # Placeholder for real connection logic
-                # In production, this would use actual MCP client library
-                logger.info(f"Attempting real connection to {server.url}")
+        # Real connection logic (requires aiohttp or similar)
+        try:
+            # Placeholder for real connection logic
+            # In production, this would use actual MCP client library
+            logger.info(f"Attempting real connection to {server.url}")
 
-                # Simulated connection attempt
-                await asyncio.sleep(0.1)  # Simulated network delay
+            # Simulated connection attempt
+            await asyncio.sleep(0.1)  # Simulated network delay
 
-                self.active_connections[server_name] = {
-                    "status": "connected_real",
-                    "url": server.url,
-                    "timestamp": datetime.now(timezone.utc),
-                }
-                logger.info(f"Real connection to {server_name} established")
-                return True
+            self.active_connections[server_name] = {
+                "status": "connected_real",
+                "url": server.url,
+                "timestamp": datetime.now(timezone.utc),
+            }
+            logger.info(f"Real connection to {server_name} established")
+            return True
 
-            except Exception as e:
-                logger.error(f"Failed to connect to {server_name}: {e}")
-                return False
+        except Exception as e:
+            logger.error(f"Failed to connect to {server_name}: {e}")
+            return False
 
     async def execute(self, request: MCPRequest) -> MCPResponse:
         """
@@ -450,7 +449,7 @@ class MCPIntegration:
                 error=f"Unsupported endpoint scheme: {endpoint!r}",
             )
 
-        rpc_payload: Dict[str, Any] = {
+        rpc_payload: dict[str, Any] = {
             "jsonrpc": "2.0",
             "id": request.request_id,
             "method": f"tools/{request.capability}",
@@ -515,10 +514,10 @@ class MCPIntegration:
     @staticmethod
     def _http_post_json(
         url: str,
-        payload: Dict[str, Any],
+        payload: dict[str, Any],
         auth_token: Optional[str] = None,
         timeout: int = 30,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Send a synchronous HTTP POST with a JSON body and return the decoded response.
 
         Parameters
@@ -547,7 +546,7 @@ class MCPIntegration:
         if not url.startswith(("http://", "https://")):
             raise ValueError(f"_http_post_json: URL must start with http:// or https://, got: {url!r}")
         data = json.dumps(payload).encode("utf-8")
-        headers: Dict[str, str] = {"Content-Type": "application/json"}
+        headers: dict[str, str] = {"Content-Type": "application/json"}
         if auth_token:
             headers["Authorization"] = f"Bearer {auth_token}"
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
@@ -591,7 +590,7 @@ class MCPIntegration:
                 error=f"Unsupported endpoint scheme for streaming: {endpoint!r}",
             )
 
-        rpc_payload: Dict[str, Any] = {
+        rpc_payload: dict[str, Any] = {
             "jsonrpc": "2.0",
             "id": request.request_id,
             "method": f"tools/{request.capability}",
@@ -663,11 +662,11 @@ class MCPIntegration:
             )
 
     def _http_post_json_streaming(
-        url: str,
-        payload: Dict[str, Any],
+        self: str,
+        payload: dict[str, Any],
         auth_token: Optional[str] = None,
         timeout: int = 30,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """POST JSON and read the response as SSE or plain JSON.
 
         Delegates to :func:`scripts.ci.mcp_sse_transport.http_post_json_streaming`
@@ -678,7 +677,7 @@ class MCPIntegration:
         """
         if _sse_transport_imported:
             return _http_post_json_streaming_fn(
-                url, payload, auth_token=auth_token, timeout=timeout
+                self, payload, auth_token=auth_token, timeout=timeout
             )
 
         # ------------------------------------------------------------------ #
@@ -686,20 +685,20 @@ class MCPIntegration:
         # where the repo root is not available, e.g. a bare checkout of the  #
         # .github/copilot-cascade/ sub-tree only).                            #
         # ------------------------------------------------------------------ #
-        if not url.startswith(("http://", "https://")):
+        if not self.startswith(("http://", "https://")):
             raise ValueError(
                 f"_http_post_json_streaming: URL must start with "
-                f"http:// or https://, got: {url!r}"
+                f"http:// or https://, got: {self!r}"
             )
         data = json.dumps(payload).encode("utf-8")
-        headers: Dict[str, str] = {
+        headers: dict[str, str] = {
             "Content-Type": "application/json",
             "Accept": "text/event-stream, application/json",
         }
         if auth_token:
             headers["Authorization"] = f"Bearer {auth_token}"
 
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        req = urllib.request.Request(self, data=data, headers=headers, method="POST")
         with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
             content_type = resp.headers.get("Content-Type", "")
             raw = resp.read()
@@ -707,7 +706,7 @@ class MCPIntegration:
         if "text/event-stream" not in content_type:
             return json.loads(raw)
 
-        chunks: List[Dict[str, Any]] = []
+        chunks: list[dict[str, Any]] = []
         for line in raw.decode("utf-8").splitlines():
             line = line.strip()
             if line.startswith("data:"):
@@ -734,7 +733,7 @@ class MCPIntegration:
         final["_streaming_chunks"] = len(chunks)
         return final
 
-    def _generate_mock_data(self, capability: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def _generate_mock_data(self, capability: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Generate mock response data based on capability."""
 
         if capability == "repository_access":
@@ -745,7 +744,7 @@ class MCPIntegration:
                 "recent_commits": 42,
             }
 
-        elif capability == "quantum_analysis":
+        if capability == "quantum_analysis":
             return {
                 "quantum_state": "superposition",
                 "entanglement_score": 0.85,
@@ -753,7 +752,7 @@ class MCPIntegration:
                 "analysis": "System exhibits strong quantum characteristics",
             }
 
-        elif capability == "entanglement_detection":
+        if capability == "entanglement_detection":
             return {
                 "entangled_pairs": [
                     {"task_a": "task_1", "task_b": "task_3", "strength": 0.78},
@@ -762,7 +761,7 @@ class MCPIntegration:
                 "total_detected": 2,
             }
 
-        elif capability == "code_search":
+        if capability == "code_search":
             return {
                 "query": payload.get("query", ""),
                 "results": [
@@ -772,7 +771,7 @@ class MCPIntegration:
                 "total_matches": 2,
             }
 
-        elif capability == "issue_management":
+        if capability == "issue_management":
             return {
                 "operation": payload.get("operation", "list"),
                 "issues": [
@@ -782,13 +781,12 @@ class MCPIntegration:
                 "count": 2,
             }
 
-        else:
-            return {
-                "capability": capability,
-                "status": "executed",
-                "mock": True,
-                "payload_received": payload,
-            }
+        return {
+            "capability": capability,
+            "status": "executed",
+            "mock": True,
+            "payload_received": payload,
+        }
 
     async def disconnect(self, server_name: str):
         """Disconnect from an MCP server."""
@@ -802,7 +800,7 @@ class MCPIntegration:
         for server_name in server_names:
             await self.disconnect(server_name)
 
-    def get_available_capabilities(self) -> Dict[str, List[str]]:
+    def get_available_capabilities(self) -> dict[str, list[str]]:
         """Get all available capability names from registered servers."""
         capabilities = {}
         for name, server in self.servers.items():
@@ -814,7 +812,7 @@ class MCPIntegration:
                 ]
         return capabilities
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get statistics about MCP usage."""
         return {
             "mode": self.mode.value,
@@ -846,7 +844,7 @@ def get_mcp_integration() -> MCPIntegration:
 
 
 # Convenience functions
-async def mcp_execute(server_name: str, capability: str, payload: Dict[str, Any]) -> MCPResponse:
+async def mcp_execute(server_name: str, capability: str, payload: dict[str, Any]) -> MCPResponse:
     """
     Execute an MCP request (convenience function).
 

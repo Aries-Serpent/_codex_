@@ -33,7 +33,7 @@ Last Updated: 2026-01-16
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class TokenConverterAnalyzer:
@@ -45,7 +45,7 @@ class TokenConverterAnalyzer:
         self.unified_capabilities = []
         self.integration_recommendations = []
 
-    def analyze_streamlit_version(self) -> Dict[str, Any]:
+    def analyze_streamlit_version(self) -> dict[str, Any]:
         """Analyze Streamlit implementation (Note_v2.py)"""
         return {
             "framework": "Streamlit",
@@ -92,7 +92,7 @@ class TokenConverterAnalyzer:
             ]
         }
 
-    def analyze_tkinter_version(self) -> Dict[str, Any]:
+    def analyze_tkinter_version(self) -> dict[str, Any]:
         """Analyze Tkinter implementation (Notes.py)"""
         return {
             "framework": "Tkinter",
@@ -141,7 +141,7 @@ class TokenConverterAnalyzer:
             ]
         }
 
-    def extract_unified_capabilities(self) -> List[str]:
+    def extract_unified_capabilities(self) -> list[str]:
         """Extract common capabilities from both implementations"""
         streamlit_caps = set(self.streamlit_analysis["capabilities"])
         tkinter_caps = set(self.tkinter_analysis["capabilities"])
@@ -157,7 +157,7 @@ class TokenConverterAnalyzer:
             "total_unique": len(streamlit_caps | tkinter_caps)
         }
 
-    def generate_integration_strategy(self) -> Dict[str, Any]:
+    def generate_integration_strategy(self) -> dict[str, Any]:
         """Generate deterministic integration strategy"""
 
         return {
@@ -198,7 +198,7 @@ class TokenConverterAnalyzer:
         }
 
 
-    def generate_cognitive_brain_integration(self) -> Dict[str, Any]:
+    def generate_cognitive_brain_integration(self) -> dict[str, Any]:
         """Generate integration plan for cognitive brain system"""
 
         return {
@@ -491,7 +491,7 @@ class CognitiveBrainAdapter:
         }
 '''
 
-    def run_analysis(self) -> Dict[str, Any]:
+    def run_analysis(self) -> dict[str, Any]:
         """Run complete analysis"""
         print("🔍 Analyzing Token-Friendly Query Converter implementations...")
 

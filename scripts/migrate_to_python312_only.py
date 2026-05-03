@@ -19,7 +19,6 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List
 
 # ANSI color codes
 GREEN = "\033[92m"
@@ -37,8 +36,8 @@ class Python312MigrationTool:
         self.repo_root = repo_root
         self.dry_run = dry_run
         self.verbose = verbose
-        self.changes: List[Dict] = []
-        self.errors: List[str] = []
+        self.changes: list[dict] = []
+        self.errors: list[str] = []
 
     def log(self, message: str, level: str = "INFO"):
         """Log messages with color coding."""
@@ -291,7 +290,7 @@ class Python312MigrationTool:
 
         return False
 
-    def generate_report(self) -> Dict:
+    def generate_report(self) -> dict:
         """Generate migration report."""
         report = {
             "migration_strategy": "A - Immediate Full Migration",

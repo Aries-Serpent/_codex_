@@ -23,8 +23,9 @@ import logging
 import os
 import sys
 import time
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Optional
 
 # Graceful import — Playwright is optional; fall back to API fetcher if absent
 try:
@@ -118,7 +119,7 @@ class PlaywrightScraper:
 
         return True
 
-    def _extract_row_data(self, page: Page, row: Any) -> Optional[Dict[str, Any]]:
+    def _extract_row_data(self, page: Page, row: Any) -> Optional[dict[str, Any]]:
         """Extract alert data from a single table row element."""
         try:
             title_elem = row.query_selector(_TITLE_SELECTOR)
@@ -163,7 +164,7 @@ class PlaywrightScraper:
                 return rows
         return []
 
-    def _iter_pages(self, page: Page) -> Iterator[List[Dict[str, Any]]]:
+    def _iter_pages(self, page: Page) -> Iterator[list[dict[str, Any]]]:
         """Navigate the alerts table page by page, yielding lists of alert dicts."""
         page.goto(self._security_url, wait_until="networkidle", timeout=self.timeout_ms)
         page.wait_for_selector(_LOAD_SELECTOR, timeout=self.timeout_ms)
@@ -218,12 +219,12 @@ class PlaywrightScraper:
             page.wait_for_load_state("networkidle", timeout=self.timeout_ms)
             page_num += 1
 
-    def scrape(self) -> List[Dict[str, Any]]:
+    def scrape(self) -> list[dict[str, Any]]:
         """
         Launch a headless browser, navigate the security page, and return
         all scraped alerts as a list of dicts.
         """
-        alerts: List[Dict[str, Any]] = []
+        alerts: list[dict[str, Any]] = []
 
         with sync_playwright() as pw:
             # CB-INV-001: pass --disable-extensions so any content-blocker
@@ -252,7 +253,7 @@ class PlaywrightScraper:
         return alerts
 
 
-def export_json(alerts: List[Dict[str, Any]], output_path: Path) -> None:
+def export_json(alerts: list[dict[str, Any]], output_path: Path) -> None:
     """Write alerts to a JSON file compatible with analyze_alerts.py inventory format."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
@@ -265,7 +266,7 @@ def export_json(alerts: List[Dict[str, Any]], output_path: Path) -> None:
     logger.info("Exported %d alerts → %s", len(alerts), output_path)
 
 
-def export_csv(alerts: List[Dict[str, Any]], output_path: Path) -> None:
+def export_csv(alerts: list[dict[str, Any]], output_path: Path) -> None:
     """Write alerts to a CSV file."""
     import csv
 
@@ -385,12 +386,12 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _filter_alerts(
-    alerts: List[Dict[str, Any]],
+    alerts: list[dict[str, Any]],
     severity: Optional[str],
     state: Optional[str],
     since: Optional[str],
     alert_number: Optional[int],
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Apply post-scrape filters to the alert list."""
     from datetime import datetime, timezone
 
@@ -417,7 +418,7 @@ def _filter_alerts(
     return filtered
 
 
-def _print_markdown_table(alerts: List[Dict[str, Any]]) -> None:
+def _print_markdown_table(alerts: list[dict[str, Any]]) -> None:
     """Print alerts as a Markdown table to stdout."""
     if not alerts:
         print("*(no alerts matching filters)*")
@@ -434,7 +435,7 @@ def _print_markdown_table(alerts: List[Dict[str, Any]]) -> None:
         print(f"| {num} | {sev} | {title} | {st} | {url} |")
 
 
-def _print_ascii_table(alerts: List[Dict[str, Any]]) -> None:
+def _print_ascii_table(alerts: list[dict[str, Any]]) -> None:
     """Print alerts as a plain ASCII table to stdout."""
     if not alerts:
         print("(no alerts matching filters)")

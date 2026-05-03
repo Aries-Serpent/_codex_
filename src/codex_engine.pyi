@@ -3,7 +3,7 @@
 # This file provides type hints for the Rust-implemented codex_engine module
 # to enable proper IDE support and type checking for Python code.
 
-from typing import List, Optional, Tuple
+from typing import Optional
 
 __version__: str
 __doc__: str  # type: ignore[no-redef]
@@ -40,7 +40,7 @@ class SwarmState:
             message: Optional message (required for "working" and "failed")
         """
 
-    def get_agent_status(self, agent_id: str) -> Tuple[str, str]:
+    def get_agent_status(self, agent_id: str) -> tuple[str, str]:
         """
         Get an agent's current status.
 
@@ -54,7 +54,7 @@ class SwarmState:
     def unregister_agent(self, agent_id: str) -> None:
         """Remove an agent from the swarm."""
 
-    def list_agents(self) -> List[str]:
+    def list_agents(self) -> list[str]:
         """Get all agent IDs currently registered."""
 
 class Orchestrator:

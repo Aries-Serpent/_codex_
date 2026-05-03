@@ -11,8 +11,9 @@ import argparse
 import logging
 import os
 import sqlite3
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 from . import session_logger
 from .session_logger import _default_db_path

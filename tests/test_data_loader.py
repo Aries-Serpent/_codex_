@@ -10,8 +10,8 @@ import pytest
 
 pytest.importorskip("omegaconf")
 
-from codex_ml.config import DataConfig, ShardConfig  # noqa: E402
-from codex_ml.data.loader import (  # noqa: E402
+from codex_ml.config import DataConfig, ShardConfig
+from codex_ml.data.loader import (
     CacheManifest,
     load_dataset,
     prepare_data_from_config,

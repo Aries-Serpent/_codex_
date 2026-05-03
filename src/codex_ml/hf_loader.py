@@ -17,8 +17,9 @@ Author: Codex Team
 
 import logging
 import os
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Optional, Union, cast
 from urllib.parse import unquote, urlparse
 
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -189,7 +190,7 @@ def load_model(
     *,
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
-    peft_path: Optional[Union[str, os.PathLike[str]]] = None,
+    peft_path: Optional[str | os.PathLike[str]] = None,
 ) -> PreTrainedModel:  # type: ignore[valid-type]
     """Load a base transformer model and optionally attach a PEFT adapter."""
 
@@ -234,7 +235,7 @@ def load_causal_lm(
     device: Optional[str] = None,
     dtype: Optional[str] = None,
     peft_cfg: Optional[dict[str, Any]] = None,
-    peft_path: Optional[Union[str, os.PathLike[str]]] = None,
+    peft_path: Optional[str | os.PathLike[str]] = None,
 ) -> PreTrainedModel:  # type: ignore[valid-type]
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load causal language models")
@@ -324,10 +325,10 @@ def load_causal_lm(
 
 
 __all__ = [
+    "get_registered_causal_lm",
+    "load_causal_lm",
+    "load_model",
+    "load_tokenizer",
     "register_causal_lm",
     "unregister_causal_lm",
-    "get_registered_causal_lm",
-    "load_tokenizer",
-    "load_model",
-    "load_causal_lm",
 ]

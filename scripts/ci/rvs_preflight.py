@@ -52,7 +52,7 @@ from concurrent.futures import Future, ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 # Use importlib to avoid triggering the check-unsafe-xml pre-commit hook
 # which greps for literal stdlib XML imports.
@@ -98,7 +98,7 @@ class GroupConfig:
     description: str
 
 
-GROUPS: Dict[str, GroupConfig] = {
+GROUPS: dict[str, GroupConfig] = {
     "quick": GroupConfig(
         name="quick",
         marker="not slow and not integration",
@@ -129,13 +129,13 @@ GROUPS: Dict[str, GroupConfig] = {
 @dataclass
 class BatchResult:
     batch_index: int
-    files: List[Path]
+    files: list[Path]
     passed: int = 0
     failed: int = 0
     errors: int = 0
     skipped: int = 0
     duration: float = 0.0
-    failed_tests: List[str] = field(default_factory=list)
+    failed_tests: list[str] = field(default_factory=list)
     exit_code: int = 0
     stdout: str = ""
     stderr: str = ""
@@ -144,7 +144,7 @@ class BatchResult:
 @dataclass
 class GroupResult:
     group: str
-    batches: List[BatchResult] = field(default_factory=list)
+    batches: list[BatchResult] = field(default_factory=list)
     started_at: float = field(default_factory=time.time)
     finished_at: float = 0.0
 
@@ -173,8 +173,8 @@ class GroupResult:
         return self.failed == 0 and self.errors == 0
 
     @property
-    def all_failed_tests(self) -> List[str]:
-        out: List[str] = []
+    def all_failed_tests(self) -> list[str]:
+        out: list[str] = []
         for b in self.batches:
             out.extend(b.failed_tests)
         return out
@@ -184,7 +184,7 @@ class GroupResult:
 # Test discovery
 # ---------------------------------------------------------------------------
 
-def _git_changed_files() -> List[Path]:
+def _git_changed_files() -> list[Path]:
     """Return Python test files changed since the last commit."""
     try:
         # Files changed but not yet staged
@@ -207,7 +207,7 @@ def _git_changed_files() -> List[Path]:
 def discover_tests(
     cfg: GroupConfig,
     changed_only: bool = False,
-) -> List[Path]:
+) -> list[Path]:
     """Return test files that match the group's marker, optionally filtered to
     files changed since the last commit.
 
@@ -252,7 +252,7 @@ def discover_tests(
     return list(seen)
 
 
-def batch_files(files: List[Path], batch_size: int) -> List[List[Path]]:
+def batch_files(files: list[Path], batch_size: int) -> list[list[Path]]:
     """Split *files* into batches of at most *batch_size* files each."""
     return [files[i: i + batch_size] for i in range(0, len(files), batch_size)]
 
@@ -261,7 +261,7 @@ def batch_files(files: List[Path], batch_size: int) -> List[List[Path]]:
 # JUnit XML parser
 # ---------------------------------------------------------------------------
 
-def _parse_junit(xml_path: Path, allowed_parent: Optional[Path] = None) -> Tuple[int, int, int, int, List[str]]:
+def _parse_junit(xml_path: Path, allowed_parent: Optional[Path] = None) -> tuple[int, int, int, int, list[str]]:
     """Return (passed, failed, errors, skipped, failed_names) from a JUnit XML.
 
     ``allowed_parent`` — when provided, validates that ``xml_path`` resolves
@@ -283,7 +283,7 @@ def _parse_junit(xml_path: Path, allowed_parent: Optional[Path] = None) -> Tuple
         if not isinstance(suites, list):
             suites = [suites]
         passed = failed = errors = skipped = 0
-        failed_names: List[str] = []
+        failed_names: list[str] = []
         for ts in suites:
             tests = int(ts.attrib.get("tests", 0))
             f = int(ts.attrib.get("failures", 0))
@@ -308,7 +308,7 @@ def _parse_junit(xml_path: Path, allowed_parent: Optional[Path] = None) -> Tuple
 
 def _run_batch(
     batch_index: int,
-    files: List[str],       # serialisable strings
+    files: list[str],       # serialisable strings
     cfg_name: str,
     timeout: int,
     maxfail: int,
@@ -359,7 +359,7 @@ def _run_batch(
 
 def run_group_parallel(
     cfg: GroupConfig,
-    files: List[Path],
+    files: list[Path],
     workers: int = 4,
     batch_size: int = 30,
     fail_fast: bool = False,
@@ -535,7 +535,7 @@ def _print_box(title: str, width: int = 70) -> None:
     print(f"{_bold(_cyan('╚' + bar + '╝'))}")
 
 
-def _render_summary(results: Dict[str, GroupResult]) -> str:
+def _render_summary(results: dict[str, GroupResult]) -> str:
     lines = ["\n" + _bold(_cyan("═" * 72))]
     lines.append(_bold("  RVS PRE-FLIGHT SUMMARY"))
     lines.append(_bold(_cyan("═" * 72)))
@@ -565,7 +565,7 @@ def _render_summary(results: Dict[str, GroupResult]) -> str:
     return "\n".join(lines)
 
 
-def _to_json(results: Dict[str, GroupResult], args: argparse.Namespace) -> dict:
+def _to_json(results: dict[str, GroupResult], args: argparse.Namespace) -> dict:
     return {
         "generated": datetime.now(timezone.utc).isoformat(),
         "invocation": vars(args),
@@ -644,14 +644,14 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     global _IS_TTY
     args = _build_parser().parse_args(argv)
 
     if args.no_color:
         _IS_TTY = False
 
-    groups_to_run: List[str] = (
+    groups_to_run: list[str] = (
         list(GROUPS.keys()) + ["docs"] if args.group == "all"
         else [args.group]
     )
@@ -663,7 +663,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     print(_dim(f"  Workers: {args.workers}  Batch-size: {args.batch_size}"
                f"  Changed-only: {args.changed_only}  Preview: {args.preview}"))
 
-    all_results: Dict[str, GroupResult] = {}
+    all_results: dict[str, GroupResult] = {}
 
     for group_name in groups_to_run:
         if group_name == "docs":

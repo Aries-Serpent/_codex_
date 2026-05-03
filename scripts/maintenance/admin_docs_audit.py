@@ -9,7 +9,7 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 # ISO 8601 date pattern
 ISO_8601_PATTERN = r'\d{4}-\d{2}-\d{2}'
@@ -24,7 +24,7 @@ CALENDAR_PATTERNS = [
     r'\b(yesterday|tomorrow)\b',
 ]
 
-def extract_last_updated_date(content: str, file_path: str) -> Optional[Tuple[str, bool, int]]:
+def extract_last_updated_date(content: str, file_path: str) -> Optional[tuple[str, bool, int]]:
     """
     Extract last updated date from file content.
     Returns: (date_string, is_iso_8601, line_number) or None
@@ -86,7 +86,7 @@ def parse_date(date_str: str) -> Optional[datetime]:
 
     return None
 
-def check_calendar_language(content: str) -> List[Dict]:
+def check_calendar_language(content: str) -> list[dict]:
     """Check for calendar-based language in content."""
     findings = []
     lines = content.split('\n')
@@ -114,7 +114,7 @@ def get_staleness_level(date_obj: datetime) -> str:
         return 'Aging'
     return 'Stale'
 
-def audit_file(file_path: Path, repo_root: Path) -> Dict:
+def audit_file(file_path: Path, repo_root: Path) -> dict:
     """Audit a single markdown file.
 
     Args:
@@ -172,7 +172,7 @@ def audit_file(file_path: Path, repo_root: Path) -> Dict:
 
     return result
 
-def generate_audit_report(docs_dir: Path) -> Dict:
+def generate_audit_report(docs_dir: Path) -> dict:
     """Generate comprehensive audit report."""
     # Get repo root for relative paths - scripts/maintenance/ is 2 levels deep
     repo_root = Path(__file__).resolve().parent.parent.parent

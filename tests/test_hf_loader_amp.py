@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("transformers")
 
-from codex_ml.hf_loader import _map_amp_dtype  # noqa: E402
+from codex_ml.hf_loader import _map_amp_dtype
 
 
 def test_map_amp_dtype_handles_common_aliases():

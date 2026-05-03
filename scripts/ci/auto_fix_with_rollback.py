@@ -26,7 +26,6 @@ import time
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 
 class PreFlightError(Exception):
@@ -359,7 +358,7 @@ class AutoFixWithRollback:
 
         return self.apply_fix_with_retry("unused imports", _fix)
 
-    def commit_and_push_fixes(self, changed_files: List[Path]) -> bool:
+    def commit_and_push_fixes(self, changed_files: list[Path]) -> bool:
         """Commit and push fixes with retry logic.
 
         Args:

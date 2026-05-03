@@ -17,7 +17,7 @@ import ast
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -27,12 +27,12 @@ class PerformancePattern:
     name: str
     pattern_type: str  # "n+1_query", "inefficient_loop", "memory", "complexity", "caching"
     description: str
-    locations: List[str]
+    locations: list[str]
     confidence: float  # 0.0 to 1.0
     severity: str  # "critical", "high", "medium", "low"
     optimization: str  # Suggested optimization
-    impact_assessment: Dict[str, str]  # execution_time, memory_usage, etc.
-    metadata: Dict[str, Any]
+    impact_assessment: dict[str, str]  # execution_time, memory_usage, etc.
+    metadata: dict[str, Any]
 
 
 class PerformancePatternMatcher:
@@ -50,10 +50,10 @@ class PerformancePatternMatcher:
 
     def __init__(self):
         """Initialize performance pattern matcher."""
-        self.detected_patterns: List[PerformancePattern] = []
+        self.detected_patterns: list[PerformancePattern] = []
         #AFTERMATH_METRIC: performance_matcher_initialized
 
-    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> List[PerformancePattern]:
+    def analyze_file(self, file_path: Path, content: Optional[str] = None) -> list[PerformancePattern]:
         """
         Analyze a file for performance issues.
 
@@ -72,7 +72,7 @@ class PerformancePatternMatcher:
             except (IOError, UnicodeDecodeError):
                 return []
 
-        detected: List[PerformancePattern] = []
+        detected: list[PerformancePattern] = []
 
         # PERCEIVE: Multi-layer performance scanning
         if file_path.suffix == ".py":
@@ -98,7 +98,7 @@ class PerformancePatternMatcher:
 
         return detected
 
-    def _detect_n_plus_one(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
+    def _detect_n_plus_one(self, tree: ast.AST, file_path: Path) -> list[PerformancePattern]:
         """
         Detect N+1 query problems.
 
@@ -136,7 +136,7 @@ class PerformancePatternMatcher:
 
         return detected
 
-    def _detect_inefficient_loops(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
+    def _detect_inefficient_loops(self, tree: ast.AST, file_path: Path) -> list[PerformancePattern]:
         """
         Detect inefficient loop patterns.
 
@@ -193,7 +193,7 @@ class PerformancePatternMatcher:
 
         return detected
 
-    def _detect_memory_issues(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
+    def _detect_memory_issues(self, tree: ast.AST, file_path: Path) -> list[PerformancePattern]:
         """
         Detect memory-inefficient operations.
 
@@ -250,7 +250,7 @@ class PerformancePatternMatcher:
 
         return detected
 
-    def _detect_complexity(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
+    def _detect_complexity(self, tree: ast.AST, file_path: Path) -> list[PerformancePattern]:
         """
         Detect high-complexity algorithms.
 
@@ -286,7 +286,7 @@ class PerformancePatternMatcher:
 
         return detected
 
-    def _detect_caching_opportunities(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
+    def _detect_caching_opportunities(self, tree: ast.AST, file_path: Path) -> list[PerformancePattern]:
         """
         Detect opportunities for caching/memoization.
 
@@ -324,7 +324,7 @@ class PerformancePatternMatcher:
 
         return detected
 
-    def _detect_regex_patterns(self, content: str, file_path: Path) -> List[PerformancePattern]:
+    def _detect_regex_patterns(self, content: str, file_path: Path) -> list[PerformancePattern]:
         """
         Detect performance issues using regex patterns.
 
@@ -355,7 +355,7 @@ class PerformancePatternMatcher:
         """Extract function name from Call node."""
         if isinstance(node.func, ast.Name):
             return node.func.id
-        elif isinstance(node.func, ast.Attribute):
+        if isinstance(node.func, ast.Attribute):
             parts = []
             current = node.func
             while isinstance(current, ast.Attribute):
@@ -366,7 +366,7 @@ class PerformancePatternMatcher:
             return '.'.join(reversed(parts))
         return "unknown"
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Generate summary of detected performance issues.
 

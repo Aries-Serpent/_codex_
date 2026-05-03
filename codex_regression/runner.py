@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import time
-from typing import Dict, Iterable, List, Tuple
+from collections.abc import Iterable
 
 from .log import (
     REGRESSION_CATEGORIES,
@@ -13,7 +13,7 @@ from .log import (
     write_coverage_report,
 )
 
-REGRESSION_MARKERS: Dict[str, str] = {
+REGRESSION_MARKERS: dict[str, str] = {
     "R1": "regression_R1",
     "R2": "regression_R2",
     "R3": "regression_R3",
@@ -22,7 +22,7 @@ REGRESSION_MARKERS: Dict[str, str] = {
 }
 
 
-def _run_pytest(marker: str, extra_args: Iterable[str] | None = None) -> Tuple[int, str]:
+def _run_pytest(marker: str, extra_args: Iterable[str] | None = None) -> tuple[int, str]:
     args = ["pytest", "-q", "--disable-warnings", "-m", marker]
     if extra_args:
         args.extend(extra_args)
@@ -31,8 +31,8 @@ def _run_pytest(marker: str, extra_args: Iterable[str] | None = None) -> Tuple[i
     return proc.returncode, output
 
 
-def _parse_summary(output: str) -> Dict[str, int]:
-    summary: Dict[str, int] = {"passed": 0, "failed": 0, "skipped": 0}
+def _parse_summary(output: str) -> dict[str, int]:
+    summary: dict[str, int] = {"passed": 0, "failed": 0, "skipped": 0}
     for line in output.splitlines():
         line = line.strip()
         if "passed" in line or "failed" in line or "skipped" in line:
@@ -57,9 +57,9 @@ def _extract_count(line: str, token: str) -> int | None:
 
 def run_regression(
     categories: Iterable[str] | None = None, extra_pytest_args: Iterable[str] | None = None
-) -> List[Dict[str, str | int]]:
+) -> list[dict[str, str | int]]:
     selected = list(categories) if categories else list(REGRESSION_MARKERS)
-    results: List[Dict[str, str | int]] = []
+    results: list[dict[str, str | int]] = []
     for category in selected:
         if category not in REGRESSION_CATEGORIES:
             raise ValueError(f"Unknown regression category: {category}")

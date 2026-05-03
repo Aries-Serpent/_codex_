@@ -18,10 +18,11 @@ import subprocess
 import sys
 import textwrap
 import zipfile
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Optional
 
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
@@ -38,7 +39,7 @@ except Exception:  # pragma: no cover - torch might be unavailable
     DataLoader = None  # type: ignore
 
 
-CAPABILITY_BUCKETS: Dict[str, Sequence[str]] = {
+CAPABILITY_BUCKETS: dict[str, Sequence[str]] = {
     "tokenization": ("token", "bpe", "spm", "sentencepiece"),
     "modeling": ("model", "encoder", "decoder", "transformer"),
     "training": ("train", "optimizer", "scheduler"),
@@ -55,7 +56,7 @@ CAPABILITY_BUCKETS: Dict[str, Sequence[str]] = {
     "extensibility": ("plugin", "registry", "adapter"),
 }
 
-COST_INCURRING_PATTERNS: Dict[str, re.Pattern[str]] = {
+COST_INCURRING_PATTERNS: dict[str, re.Pattern[str]] = {
     "http_url": re.compile(r"https?://", re.I),
     "requests": re.compile(r"\brequests\.(get|post|put|delete|head|options|patch)\b"),
     "httpx": re.compile(r"\bhttpx\.(get|post|put|delete|head|options|patch)\b"),
@@ -182,7 +183,7 @@ def _capture_environment(ctx: TaskContext) -> None:
     except Exception:
         commit = "(no git repository)"
 
-    gpu_info: List[str] = []
+    gpu_info: list[str] = []
     if torch is not None and torch.cuda.is_available():  # pragma: no cover - GPU optional
         for idx in range(torch.cuda.device_count()):
             gpu_info.append(torch.cuda.get_device_name(idx))
@@ -217,8 +218,8 @@ def _iter_python_files(root: Path) -> Iterable[Path]:
         yield path
 
 
-def _scan_stubs(ctx: TaskContext) -> List[Dict[str, Any]]:
-    entries: List[Dict[str, Any]] = []
+def _scan_stubs(ctx: TaskContext) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
     patterns = ["TODO", "NotImplementedError"]
     for file_path in _iter_python_files(ctx.root):
         try:
@@ -247,8 +248,8 @@ def _scan_stubs(ctx: TaskContext) -> List[Dict[str, Any]]:
     return entries
 
 
-def _detect_cost_incurring_refs(ctx: TaskContext) -> Dict[str, Any]:
-    matches: List[Dict[str, Any]] = []
+def _detect_cost_incurring_refs(ctx: TaskContext) -> dict[str, Any]:
+    matches: list[dict[str, Any]] = []
     for file_path in _iter_python_files(ctx.root):
         try:
             text = file_path.read_text(encoding="utf-8")
@@ -277,10 +278,10 @@ def _detect_cost_incurring_refs(ctx: TaskContext) -> Dict[str, Any]:
     return {"matches": matches, "log_path": str(output_path)}
 
 
-def _capabilities_for_entry(entry: Dict[str, Any]) -> List[str]:
+def _capabilities_for_entry(entry: dict[str, Any]) -> list[str]:
     path_lower = entry["file"].lower()
     text_lower = entry["text"].lower()
-    matched: List[str] = []
+    matched: list[str] = []
     for capability, hints in CAPABILITY_BUCKETS.items():
         if any(hint in path_lower or hint in text_lower for hint in hints):
             matched.append(capability)
@@ -289,7 +290,7 @@ def _capabilities_for_entry(entry: Dict[str, Any]) -> List[str]:
     return sorted(set(matched))
 
 
-def phase_search_and_mapping(ctx: TaskContext) -> Dict[str, Any]:
+def phase_search_and_mapping(ctx: TaskContext) -> dict[str, Any]:
     entries = _scan_stubs(ctx)
     for entry in entries:
         entry["capabilities"] = _capabilities_for_entry(entry)
@@ -552,7 +553,7 @@ def _configure_mlflow(ctx: TaskContext) -> Optional[str]:
     return None
 
 
-def phase_best_effort(ctx: TaskContext) -> Dict[str, Any]:
+def phase_best_effort(ctx: TaskContext) -> dict[str, Any]:
     created = {
         "base_config": _ensure_base_config(ctx),
         "evaluation_loop": _ensure_evaluation_loop(ctx),
@@ -587,8 +588,8 @@ def _ensure_deferred_docs(ctx: TaskContext) -> bool:
     return True
 
 
-def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
-    updated: List[str] = []
+def _ensure_deferred_modules(ctx: TaskContext) -> list[str]:
+    updated: list[str] = []
     remote_connector = ctx.root / "src" / "codex_ml" / "connectors" / "remote.py"
     if not remote_connector.exists() and not ctx.dry_run:
         _write_text(
@@ -788,7 +789,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
     return updated
 
 
-def phase_controlled_pruning(ctx: TaskContext) -> Dict[str, Any]:
+def phase_controlled_pruning(ctx: TaskContext) -> dict[str, Any]:
     docs_updated = _ensure_deferred_docs(ctx)
     modules = _ensure_deferred_modules(ctx)
     return {"deferred_docs_updated": docs_updated, "modules": modules}
@@ -810,7 +811,7 @@ def _update_changelog(ctx: TaskContext, summary_lines: Iterable[str]) -> bool:
     return True
 
 
-def _run_pytest(ctx: TaskContext) -> Dict[str, Any]:
+def _run_pytest(ctx: TaskContext) -> dict[str, Any]:
     try:
         result = subprocess.run(
             [sys.executable, "-m", "pytest", "-q"],
@@ -922,7 +923,7 @@ def _quality_test_mlflow(ctx: TaskContext) -> tuple[str, str]:
         return ("mlflow_local", "SKIP")
 
 
-def run_quality_tests(ctx: TaskContext) -> List[tuple[str, str]]:
+def run_quality_tests(ctx: TaskContext) -> list[tuple[str, str]]:
     return [
         _quality_test_stub_mapping(ctx),
         _quality_test_evaluation_loop(ctx),
@@ -932,7 +933,7 @@ def run_quality_tests(ctx: TaskContext) -> List[tuple[str, str]]:
     ]
 
 
-def phase_finalization(ctx: TaskContext, mapping_count: int) -> Dict[str, Any]:
+def phase_finalization(ctx: TaskContext, mapping_count: int) -> dict[str, Any]:
     summary_lines = [
         "- Added offline automation helpers, reproducibility artefacts, and cost scans.",
         "- Ensured evaluation loop, gradient accumulation, and regression tests exist.",

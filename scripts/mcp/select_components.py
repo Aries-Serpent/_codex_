@@ -34,7 +34,6 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import List, Set
 
 
 def load_topics(topics_file: Path) -> dict:
@@ -43,12 +42,12 @@ def load_topics(topics_file: Path) -> dict:
         return json.load(f)
 
 
-def _resolve_patterns(patterns: List[str], base_dir: Path) -> Set[Path]:
+def _resolve_patterns(patterns: list[str], base_dir: Path) -> set[Path]:
     """Resolve a list of glob patterns to relative file paths.
 
     Handles both simple and ``**`` recursive patterns.
     """
-    result: Set[Path] = set()
+    result: set[Path] = set()
 
     for pattern in patterns:
         if '**' in pattern:
@@ -81,10 +80,10 @@ def _resolve_patterns(patterns: List[str], base_dir: Path) -> Set[Path]:
 
 
 def expand_globs(
-    patterns: List[str],
+    patterns: list[str],
     base_dir: Path,
-    exclude_patterns: List[str] | None = None,
-) -> Set[Path]:
+    exclude_patterns: list[str] | None = None,
+) -> set[Path]:
     """Expand glob patterns to actual file paths.
 
     Args:
@@ -109,8 +108,8 @@ def filter_by_topic(
     topic: str,
     topics_map: dict,
     base_dir: Path,
-    exclude_patterns: List[str] | None = None,
-) -> Set[Path]:
+    exclude_patterns: list[str] | None = None,
+) -> set[Path]:
     """Filter files by topic using the topics map"""
     if topic not in topics_map:
         raise ValueError(f"Unknown topic: {topic}. Available topics: {', '.join(topics_map.keys())}")
@@ -122,8 +121,8 @@ def filter_by_topic(
 def filter_by_globs(
     glob_patterns: str,
     base_dir: Path,
-    exclude_patterns: List[str] | None = None,
-) -> Set[Path]:
+    exclude_patterns: list[str] | None = None,
+) -> set[Path]:
     """Filter files by custom glob patterns (comma-separated)"""
     patterns = [p.strip() for p in glob_patterns.split(',') if p.strip()]
     return expand_globs(patterns, base_dir, exclude_patterns=exclude_patterns)

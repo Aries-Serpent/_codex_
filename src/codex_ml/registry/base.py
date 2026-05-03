@@ -21,9 +21,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from collections.abc import Iterator, Mapping  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from importlib import metadata  # noqa: E402
-from typing import Any, Iterator, Mapping, Optional  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 
 class RegistryError(RuntimeError):
@@ -222,8 +223,8 @@ class Registry:
 
 __all__ = [
     "Registry",
-    "RegistryError",
     "RegistryConflictError",
-    "RegistryNotFoundError",
+    "RegistryError",
     "RegistryLoadError",
+    "RegistryNotFoundError",
 ]

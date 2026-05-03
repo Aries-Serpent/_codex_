@@ -9,8 +9,9 @@ This module provides the JSON-RPC handling layer for MCP:
 
 import asyncio
 import logging
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any, Awaitable, Callable, Optional, Union
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class JsonRpcRequest:
 
     method: str
     params: Optional[dict[str, Any]] = None
-    id: Optional[Union[str, int]] = None
+    id: Optional[str | int] = None
     jsonrpc: str = "2.0"
 
     @property
@@ -42,7 +43,7 @@ class JsonRpcRequest:
 class JsonRpcResponse:
     """JSON-RPC response."""
 
-    id: Optional[Union[str, int]]
+    id: Optional[str | int]
     result: Optional[Any] = None
     error: Optional[dict[str, Any]] = None
     jsonrpc: str = "2.0"
@@ -132,7 +133,7 @@ class JsonRpcHandler:
 
         return decorator
 
-    def _parse_request(self, data: dict[str, Any]) -> Union[JsonRpcRequest, JsonRpcError]:
+    def _parse_request(self, data: dict[str, Any]) -> JsonRpcRequest | JsonRpcError:
         """Parse and validate a JSON-RPC request.
 
         Args:
@@ -283,8 +284,8 @@ class JsonRpcHandler:
         return responses
 
     async def handle(
-        self, data: Union[dict[str, Any], list[dict[str, Any]]]
-    ) -> Optional[Union[dict[str, Any], list[dict[str, Any]]]]:
+        self, data: dict[str, Any] | list[dict[str, Any]]
+    ) -> Optional[dict[str, Any] | list[dict[str, Any]]]:
         """Handle a JSON-RPC request or batch.
 
         Args:

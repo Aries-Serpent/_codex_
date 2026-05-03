@@ -8,7 +8,7 @@ This pattern ensures consistent cognitive processing across all agents.
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 class CognitiveAgent(ABC):
@@ -40,7 +40,7 @@ class CognitiveAgent(ABC):
         self.session_id = None
         self.cognitive_brain = None
 
-    def execute_pda_loop(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def execute_pda_loop(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Execute one complete PDA cycle with AfterMath learning.
 
@@ -117,7 +117,7 @@ class CognitiveAgent(ABC):
             }
 
     @abstractmethod
-    def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         PERCEPTION Phase: Gather and analyze context.
 
@@ -145,7 +145,7 @@ class CognitiveAgent(ABC):
         pass
 
     @abstractmethod
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         """
         DECISION Phase: Determine optimal action based on context.
 
@@ -174,7 +174,7 @@ class CognitiveAgent(ABC):
         pass
 
     @abstractmethod
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """
         ACTION Phase: Execute the decision with guardrails.
 
@@ -206,10 +206,10 @@ class CognitiveAgent(ABC):
     @abstractmethod
     def aftermath(
         self,
-        result: Dict[str, Any],
-        context: Dict[str, Any],
-        decision: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        result: dict[str, Any],
+        context: dict[str, Any],
+        decision: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         AFTERMATH Phase: Learn from execution and persist insights.
 
@@ -261,7 +261,7 @@ class CognitiveAgent(ABC):
         """
         self.session_id = session_id
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """
         Get agent metadata.
 

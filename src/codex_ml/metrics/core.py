@@ -13,8 +13,8 @@ keep tooling runnable in constrained environments.
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass
-from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
 
 Number = float | int
 

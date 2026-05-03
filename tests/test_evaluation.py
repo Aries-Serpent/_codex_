@@ -14,8 +14,8 @@ import pytest
 
 pytest.importorskip("omegaconf")
 
-from codex_ml.config import EvaluationConfig  # noqa: E402
-from codex_ml.eval.runner import EvaluationError, run_evaluation  # noqa: E402
+from codex_ml.config import EvaluationConfig
+from codex_ml.eval.runner import EvaluationError, run_evaluation
 
 
 def _write_dataset(tmp_path: Path, records: list[dict[str, object]]) -> Path:

@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "handoff"))
 
-from auto_handoff import (  # noqa: E402
+from auto_handoff import (
     ACTION_LOG_PATH,
     AutoHandoff,
     HandoffContext,

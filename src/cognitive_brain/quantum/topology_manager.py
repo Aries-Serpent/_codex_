@@ -11,7 +11,7 @@ AfterMath Tags: Phase 8.2 - Multi-Agent Orchestration
 
 import logging
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -54,7 +54,7 @@ class TopologyManager:
         self.topology_type: Optional[NetworkTopology] = None
         self.num_agents: int = 0
         self.adjacency_matrix: Optional[np.ndarray] = None
-        self.agent_ids: List[str] = []
+        self.agent_ids: list[str] = []
         self.correlation_matrix: Optional[np.ndarray] = None
 
         logger.info("TopologyManager initialized")
@@ -63,7 +63,7 @@ class TopologyManager:
         self,
         topology_type: NetworkTopology,
         num_agents: int,
-        agent_ids: Optional[List[str]] = None,
+        agent_ids: Optional[list[str]] = None,
     ) -> np.ndarray:
         """
         Configure the network topology.
@@ -226,7 +226,7 @@ class TopologyManager:
 
         return adj
 
-    def get_neighbors(self, agent_id: str) -> List[str]:
+    def get_neighbors(self, agent_id: str) -> list[str]:
         """
         Get the list of neighboring agents for a given agent.
 
@@ -356,7 +356,7 @@ class TopologyManager:
         )
         return modifications
 
-    def get_topology_statistics(self) -> Dict[str, Any]:
+    def get_topology_statistics(self) -> dict[str, Any]:
         """
         Get statistics about the current topology.
 

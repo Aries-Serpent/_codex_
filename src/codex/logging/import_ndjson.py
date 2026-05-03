@@ -38,9 +38,10 @@ import json  # noqa: E402
 import os  # noqa: E402
 import sqlite3  # noqa: E402
 import sys  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable, Optional  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - platform dependent
     import fcntl
@@ -55,6 +56,8 @@ try:
     _codex_sqlite_auto()
 except Exception:  # pragma: no cover
     logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 def _default_log_dir() -> Path:
     return Path(os.getenv("CODEX_SESSION_LOG_DIR", ".codex/sessions")).expanduser()
 

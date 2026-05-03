@@ -18,7 +18,7 @@ np = pytest.importorskip("numpy")
 import pytest
 
 # Skip entire module if torch is not available or unloadable
-import torch  # noqa: E402
+import torch
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive

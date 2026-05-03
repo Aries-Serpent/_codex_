@@ -10,7 +10,7 @@ import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 
 @dataclass
@@ -19,16 +19,16 @@ class Pattern:
     name: str
     pattern_type: str
     description: str
-    locations: List[str]
+    locations: list[str]
     confidence: float
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class PatternMatcher(ABC):
     """Abstract base class for pattern matchers."""
 
     @abstractmethod
-    def match(self, content: str, file_path: Path) -> List[Pattern]:
+    def match(self, content: str, file_path: Path) -> list[Pattern]:
         """
         Match patterns in content.
 
@@ -58,7 +58,7 @@ class ExceptionPatternMatcher(PatternMatcher):
             "specific_exception": r"except\s+\w+Error:",
         }
 
-    def match(self, content: str, file_path: Path) -> List[Pattern]:
+    def match(self, content: str, file_path: Path) -> list[Pattern]:
         """Detect exception handling patterns."""
         detected = []
 
@@ -98,7 +98,7 @@ class ImportPatternMatcher(PatternMatcher):
             "duplicate_import": None,  # Requires tracking
         }
 
-    def match(self, content: str, file_path: Path) -> List[Pattern]:
+    def match(self, content: str, file_path: Path) -> list[Pattern]:
         """Detect import patterns."""
         detected = []
 
@@ -160,7 +160,7 @@ class ImportPatternMatcher(PatternMatcher):
 
         return detected
 
-    def _extract_imports(self, tree: ast.AST) -> List[Dict[str, Any]]:
+    def _extract_imports(self, tree: ast.AST) -> list[dict[str, Any]]:
         """Extract all imports from AST."""
         imports = []
         for node in ast.walk(tree):
@@ -180,7 +180,7 @@ class ImportPatternMatcher(PatternMatcher):
                     })
         return imports
 
-    def _extract_used_names(self, tree: ast.AST) -> Set[str]:
+    def _extract_used_names(self, tree: ast.AST) -> set[str]:
         """Extract all used names from AST."""
         used = set()
         for node in ast.walk(tree):
@@ -213,7 +213,7 @@ class TestPatternMatcher(PatternMatcher):
             "missing_assert": r"def\s+test_\w+\s*\([^)]*\):(?:(?!assert).)*$",
         }
 
-    def match(self, content: str, file_path: Path) -> List[Pattern]:
+    def match(self, content: str, file_path: Path) -> list[Pattern]:
         """Detect test patterns."""
         detected = []
 
@@ -248,7 +248,7 @@ class TestPatternMatcher(PatternMatcher):
 class DocstringPatternMatcher(PatternMatcher):
     """Detects docstring patterns and issues."""
 
-    def match(self, content: str, file_path: Path) -> List[Pattern]:
+    def match(self, content: str, file_path: Path) -> list[Pattern]:
         """Detect docstring patterns."""
         detected = []
 
@@ -313,14 +313,14 @@ class PatternRecognizer:
     """
 
     def __init__(self):
-        self.matchers: List[PatternMatcher] = [
+        self.matchers: list[PatternMatcher] = [
             ExceptionPatternMatcher(),
             ImportPatternMatcher(),
             TestPatternMatcher(),
             DocstringPatternMatcher(),
         ]
 
-    def analyze_file(self, file_path: Path) -> List[Pattern]:
+    def analyze_file(self, file_path: Path) -> list[Pattern]:
         """
         Analyze a single file for patterns.
 
@@ -353,8 +353,8 @@ class PatternRecognizer:
         self,
         directory: Path,
         recursive: bool = True,
-        exclude_patterns: Optional[List[str]] = None
-    ) -> Dict[str, List[Pattern]]:
+        exclude_patterns: Optional[list[str]] = None
+    ) -> dict[str, list[Pattern]]:
         """
         Analyze all Python files in a directory.
 
@@ -396,8 +396,8 @@ class PatternRecognizer:
 
     def get_pattern_summary(
         self,
-        results: Dict[str, List[Pattern]]
-    ) -> Dict[str, Any]:
+        results: dict[str, list[Pattern]]
+    ) -> dict[str, Any]:
         """
         Generate summary statistics from pattern analysis.
 

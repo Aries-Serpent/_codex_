@@ -91,7 +91,7 @@ def _find_skill_dir(skill_id: str) -> Path | None:
             data = yaml.safe_load(manifest.read_text(encoding="utf-8")) or {}
             if data.get("id") == skill_id:
                 return candidate
-        except Exception:  # noqa: BLE001 — malformed or unreadable manifest; skip to next candidate
+        except Exception:
             continue
     candidates = [d for d in base.iterdir() if d.is_dir() and d.name == slug]
     return candidates[0] if candidates else None
@@ -143,7 +143,7 @@ def compress_skill(
         try:
             data = yaml.safe_load(manifest_file.read_text(encoding="utf-8")) or {}
             version = data.get("version", "1.0.0")
-        except Exception:  # noqa: BLE001 — version default on any parse error; non-fatal
+        except Exception:
             logger.debug("Suppressed exception in handler", exc_info=True)
     size_before = _dir_size(skill_dir)
     archive_name = f"{skill_id.replace('.', '-')}-{version}"

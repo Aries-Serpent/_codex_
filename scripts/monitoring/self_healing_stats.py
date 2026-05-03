@@ -33,13 +33,12 @@ Last Updated: 2026-01-16
 import glob
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List
 
 import click
 import yaml
 
 
-def load_attempts(lookback_hours: int = None) -> List[Dict]:
+def load_attempts(lookback_hours: int = None) -> list[dict]:
     """Load self-healing attempt records"""
     attempts = []
     attempt_files = glob.glob('.codex/self_healing/attempt_*.yaml')
@@ -66,7 +65,7 @@ def load_attempts(lookback_hours: int = None) -> List[Dict]:
     return sorted(attempts, key=lambda x: x['timestamp'], reverse=True)
 
 
-def calculate_overall_stats(attempts: List[Dict]) -> Dict:
+def calculate_overall_stats(attempts: list[dict]) -> dict:
     """Calculate overall statistics"""
     if not attempts:
         return {
@@ -88,7 +87,7 @@ def calculate_overall_stats(attempts: List[Dict]) -> Dict:
     }
 
 
-def calculate_by_fix_type(attempts: List[Dict]) -> Dict:
+def calculate_by_fix_type(attempts: list[dict]) -> dict:
     """Calculate statistics by fix type"""
     by_type = defaultdict(lambda: {'total': 0, 'success': 0, 'failure': 0})
 
@@ -111,7 +110,7 @@ def calculate_by_fix_type(attempts: List[Dict]) -> Dict:
     return dict(by_type)
 
 
-def format_table(headers: List[str], rows: List[List], col_widths: List[int] = None):
+def format_table(headers: list[str], rows: list[list], col_widths: list[int] = None):
     """Format data as ASCII table"""
     if not col_widths:
         col_widths = [max(len(str(row[i])) for row in [headers] + rows) + 2

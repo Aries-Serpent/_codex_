@@ -9,7 +9,7 @@ import io
 import json
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -28,8 +28,8 @@ class ReportConfig:
     include_summary: bool = True
     include_details: bool = True
     format: str = "markdown"
-    severity_filter: Optional[List[str]] = None
-    category_filter: Optional[List[str]] = None
+    severity_filter: Optional[list[str]] = None
+    category_filter: Optional[list[str]] = None
 
 
 class ReportGenerator:
@@ -55,8 +55,8 @@ class ReportGenerator:
 
     def generate(
         self,
-        findings: List[Dict[str, Any]],
-        metadata: Optional[Dict[str, Any]] = None,
+        findings: list[dict[str, Any]],
+        metadata: Optional[dict[str, Any]] = None,
     ) -> str:
         """Generate report from findings.
 
@@ -73,14 +73,13 @@ class ReportGenerator:
         # Generate based on format
         if self.config.format == "json":
             return self._generate_json(filtered, metadata)
-        elif self.config.format == "csv":
+        if self.config.format == "csv":
             return self._generate_csv(filtered)
-        elif self.config.format == "html":
+        if self.config.format == "html":
             return self._generate_html(filtered, metadata)
-        else:
-            return self._generate_markdown(filtered, metadata)
+        return self._generate_markdown(filtered, metadata)
 
-    def _filter_findings(self, findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _filter_findings(self, findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Filter findings based on config."""
         filtered = findings
 
@@ -98,7 +97,7 @@ class ReportGenerator:
 
         return filtered
 
-    def _generate_summary(self, findings: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _generate_summary(self, findings: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate summary statistics."""
         by_severity = {}
         by_category = {}
@@ -127,8 +126,8 @@ class ReportGenerator:
 
     def _generate_markdown(
         self,
-        findings: List[Dict[str, Any]],
-        metadata: Optional[Dict[str, Any]],
+        findings: list[dict[str, Any]],
+        metadata: Optional[dict[str, Any]],
     ) -> str:
         """Generate Markdown report."""
         lines = []
@@ -190,8 +189,8 @@ class ReportGenerator:
 
     def _generate_json(
         self,
-        findings: List[Dict[str, Any]],
-        metadata: Optional[Dict[str, Any]],
+        findings: list[dict[str, Any]],
+        metadata: Optional[dict[str, Any]],
     ) -> str:
         """Generate JSON report."""
         report = {
@@ -203,7 +202,7 @@ class ReportGenerator:
         }
         return json.dumps(report, indent=2)
 
-    def _generate_csv(self, findings: List[Dict[str, Any]]) -> str:
+    def _generate_csv(self, findings: list[dict[str, Any]]) -> str:
         """Generate CSV report."""
         output = io.StringIO()
 
@@ -223,8 +222,8 @@ class ReportGenerator:
 
     def _generate_html(
         self,
-        findings: List[Dict[str, Any]],
-        metadata: Optional[Dict[str, Any]],
+        findings: list[dict[str, Any]],
+        metadata: Optional[dict[str, Any]],
     ) -> str:
         """Generate HTML report."""
         summary = self._generate_summary(findings)

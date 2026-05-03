@@ -24,14 +24,14 @@ import os
 import re
 import sys
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 log = logging.getLogger(__name__)
 
 _OPTIONAL_PACKAGES = ["pydantic", "typer"]
 
-MISSING_OPTIONALS: List[Tuple[str, str]] = []
-OPTIONAL_STATUS: Dict[str, bool] = {}
+MISSING_OPTIONALS: list[tuple[str, str]] = []
+OPTIONAL_STATUS: dict[str, bool] = {}
 SOFT_FAIL = os.getenv("CODEX_OPTIONAL_SOFTFAIL", "1") == "1"
 
 
@@ -71,12 +71,12 @@ def has_all_optional() -> bool:
 @dataclass
 class EvalResult:
     hard_fail: bool
-    hard_fail_reasons: List[str]
+    hard_fail_reasons: list[str]
     score: int
-    details: Dict[str, Any]
+    details: dict[str, Any]
 
 
-def load_rules(path: str) -> Dict[str, Any]:
+def load_rules(path: str) -> dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -95,7 +95,7 @@ def load_input_text(path: str) -> str:
     return data
 
 
-def find_any(patterns: List[str], text: str) -> List[str]:
+def find_any(patterns: list[str], text: str) -> list[str]:
     found = []
     for pat in patterns:
         if re.search(pat, text):
@@ -103,7 +103,7 @@ def find_any(patterns: List[str], text: str) -> List[str]:
     return found
 
 
-def evaluate_text(text: str, rules: Dict[str, Any]) -> EvalResult:
+def evaluate_text(text: str, rules: dict[str, Any]) -> EvalResult:
     rubric = rules.get("rubric", {})
     scoring = rules.get("scoring", {})
 
@@ -111,7 +111,7 @@ def evaluate_text(text: str, rules: Dict[str, Any]) -> EvalResult:
     forbidden_cues = rubric.get("forbidden_cues", [])
     env_guard_re = rubric.get("env_guard_regex")
 
-    hard_fail_reasons: List[str] = []
+    hard_fail_reasons: list[str] = []
 
     # Hard fail: activated CI cues
     activated_ci = False
@@ -142,7 +142,7 @@ def evaluate_text(text: str, rules: Dict[str, Any]) -> EvalResult:
     return EvalResult(False, hard_fail_reasons, score, {"notes": "ok"})
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Codex local evaluator")
     p.add_argument("--rules", required=True, help="Path to rules JSON")
     p.add_argument("--input", required=True, help="Path to message text or JSON summary")

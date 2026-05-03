@@ -9,12 +9,8 @@ import pytest
 
 # Skip if PyTorch-dependent modules cannot be imported
 try:
-    from codex.training import (  # noqa: F401 - Testing optional dependency availability
-        _build_safe_ckpt_payload,
-        _codex_config_hash,
-        _safe_perplexity,
-        _safe_token_accuracy,
-    )
+    import codex.training  # noqa: F401 -- availability check only; functions imported locally in each test
+
     TRAINING_AVAILABLE = True
 except (ImportError, AttributeError):
     TRAINING_AVAILABLE = False
@@ -26,7 +22,7 @@ def test_safe_token_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
     stub_tokenization = types.SimpleNamespace(TokenizerAdapter=type("TokenizerAdapter", (), {}))
     monkeypatch.setitem(sys.modules, "src.tokenization", stub_tokenization)
 
-    from codex.training import _safe_perplexity, _safe_token_accuracy  # noqa: F811
+    from codex.training import _safe_perplexity, _safe_token_accuracy
 
     assert _safe_token_accuracy([1, 2], [1, 3]) == 0.5
     assert _safe_token_accuracy([], []) == 0.0
@@ -35,7 +31,7 @@ def test_safe_token_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")
 def test_config_hash_stable() -> None:
-    from codex.training import _codex_config_hash  # noqa: F811
+    from codex.training import _codex_config_hash
 
     cfg = {"a": 1, "b": {"c": 2}}
     first = _codex_config_hash(cfg)
@@ -54,7 +50,7 @@ class _Dummy:
 @pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")
 @pytest.mark.parametrize("extra", [None, {"note": "ok"}])
 def test_build_safe_ckpt_payload(extra):
-    from codex.training import _build_safe_ckpt_payload  # noqa: F811
+    from codex.training import _build_safe_ckpt_payload
 
     payload = _build_safe_ckpt_payload(_Dummy(), _Dummy(), epoch=3, extra=extra)
     assert payload["meta"].get("saved_at")

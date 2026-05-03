@@ -11,7 +11,7 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import click
 import yaml
@@ -22,10 +22,10 @@ class DiagnosticReport:
     """Comprehensive diagnostic report"""
     timestamp: str
     workflow_run_id: str
-    root_cause: Dict
-    evidence: List[str]
-    manual_steps: List[str]
-    similar_past_failures: List[Dict]
+    root_cause: dict
+    evidence: list[str]
+    manual_steps: list[str]
+    similar_past_failures: list[dict]
     estimated_fix_time: str
     confidence: int
 
@@ -38,7 +38,7 @@ class CIFailureDiagnostician:
         self.config = self._load_config(config_path)
         self.cognitive_brain_path = Path('.codex/self_healing')
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load configuration"""
         if config_path and config_path.exists():
             with open(config_path) as f:
@@ -100,7 +100,7 @@ class CIFailureDiagnostician:
             confidence=confidence
         )
 
-    def _extract_error_patterns(self, logs: str) -> List[Dict]:
+    def _extract_error_patterns(self, logs: str) -> list[dict]:
         """Extract error patterns from logs"""
         patterns = []
         error_regex = [
@@ -124,7 +124,7 @@ class CIFailureDiagnostician:
 
         return patterns
 
-    def _extract_stack_traces(self, logs: str) -> List[Dict]:
+    def _extract_stack_traces(self, logs: str) -> list[dict]:
         """Extract stack traces from logs"""
         traces = []
         lines = logs.split('\n')
@@ -147,7 +147,7 @@ class CIFailureDiagnostician:
 
         return traces
 
-    def _analyze_dependencies(self, logs: str) -> Dict:
+    def _analyze_dependencies(self, logs: str) -> dict:
         """Analyze dependency-related issues"""
         dep_issues = {
             'version_conflicts': [],
@@ -181,10 +181,10 @@ class CIFailureDiagnostician:
 
     def _determine_root_cause(
         self,
-        error_patterns: List[Dict],
-        stack_traces: List[Dict],
-        dependency_info: Dict
-    ) -> Tuple[Dict, int]:
+        error_patterns: list[dict],
+        stack_traces: list[dict],
+        dependency_info: dict
+    ) -> tuple[dict, int]:
         """Determine the root cause of the failure"""
 
         # Check for dependency issues first (often root cause)
@@ -235,10 +235,10 @@ class CIFailureDiagnostician:
 
     def _build_evidence_chain(
         self,
-        error_patterns: List[Dict],
-        stack_traces: List[Dict],
-        root_cause: Dict
-    ) -> List[str]:
+        error_patterns: list[dict],
+        stack_traces: list[dict],
+        root_cause: dict
+    ) -> list[str]:
         """Build evidence chain supporting the root cause"""
         evidence = []
 
@@ -254,7 +254,7 @@ class CIFailureDiagnostician:
 
         return evidence
 
-    def _generate_manual_steps(self, root_cause: Dict, evidence: List[str]) -> List[str]:
+    def _generate_manual_steps(self, root_cause: dict, evidence: list[str]) -> list[str]:
         """Generate manual fix steps based on root cause"""
         steps = []
 
@@ -290,7 +290,7 @@ class CIFailureDiagnostician:
 
         return steps
 
-    def _query_similar_failures(self, root_cause: Dict) -> List[Dict]:
+    def _query_similar_failures(self, root_cause: dict) -> list[dict]:
         """Query cognitive brain for similar past failures"""
         similar = []
 
@@ -319,7 +319,7 @@ class CIFailureDiagnostician:
 
         return similar[:5]  # Return top 5
 
-    def _estimate_fix_time(self, root_cause: Dict, similar_failures: List[Dict]) -> str:
+    def _estimate_fix_time(self, root_cause: dict, similar_failures: list[dict]) -> str:
         """Estimate time to fix based on root cause and history"""
         # Calculate average from similar failures
         if similar_failures:

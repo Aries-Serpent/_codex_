@@ -8,7 +8,8 @@ across the codex_addons plugin system.
 from __future__ import annotations
 
 import logging
-from typing import Callable, Generic, TypeVar
+from collections.abc import Callable
+from typing import Generic, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -93,9 +94,8 @@ class Registry(Generic[T]):
         if item is not None:
             # Direct call: register(name, item)
             return _register(item)
-        else:
-            # Decorator: @register(name)
-            return _register
+        # Decorator: @register(name)
+        return _register
 
     def get(self, name: str, default: T | None = None) -> T | None:
         """Get a registered item by name.

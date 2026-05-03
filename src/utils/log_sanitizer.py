@@ -107,4 +107,4 @@ safe_log = sanitize_log_input
 sanitize_log = sanitize_log_input
 
 # Ensure it's in __all__ if defined
-__all__ = ["sanitize_log_input", "safe_log", "sanitize_log", "sanitize_dict_for_log"]
+__all__ = ["safe_log", "sanitize_dict_for_log", "sanitize_log", "sanitize_log_input"]

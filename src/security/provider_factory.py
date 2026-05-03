@@ -127,7 +127,7 @@ class ProviderFactory:
         # Check GitHub
         try:
             from security.providers.github_provider import (
-                GitHubTokenProvider,  # noqa: F401 - Testing optional dependency availability
+                GitHubTokenProvider as GitHubTokenProvider,
             )
 
             available.append(ProviderType.GITHUB)
@@ -138,7 +138,7 @@ class ProviderFactory:
         # Check AWS
         try:
             from security.providers.aws_provider import (
-                AWSSecretsManagerProvider,  # noqa: F401 - Testing optional dependency availability
+                AWSSecretsManagerProvider as AWSSecretsManagerProvider,
             )
 
             available.append(ProviderType.AWS_SECRETS_MANAGER)

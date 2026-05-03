@@ -11,7 +11,7 @@ PDA: Active - Outcome tracking and pattern extraction
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any
 
 
 class OutcomeType(Enum):
@@ -49,10 +49,10 @@ class DecisionContext:
 
     task_type: str
     complexity: float
-    resource_constraints: Dict[str, float]
+    resource_constraints: dict[str, float]
     time_pressure: float = 0.5
-    agent_ids: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    agent_ids: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate decision context."""
@@ -86,9 +86,9 @@ class LearningOutcome:
     outcome_type: OutcomeType
     reward: float
     context: DecisionContext
-    result_metrics: Dict[str, float] = field(default_factory=dict)
-    patterns_identified: List[str] = field(default_factory=list)
-    lessons_learned: List[str] = field(default_factory=list)
+    result_metrics: dict[str, float] = field(default_factory=dict)
+    patterns_identified: list[str] = field(default_factory=list)
+    lessons_learned: list[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
 
     def __post_init__(self):
@@ -121,8 +121,8 @@ class Pattern:
     description: str
     confidence: float
     support_count: int = 0
-    examples: List[str] = field(default_factory=list)
-    applicability: Dict[str, Any] = field(default_factory=dict)
+    examples: list[str] = field(default_factory=list)
+    applicability: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate pattern."""
@@ -144,15 +144,15 @@ class PatternSet:
         statistics: Pattern set statistics
     """
 
-    patterns: List[Pattern]
+    patterns: list[Pattern]
     domain: str
     extraction_date: datetime = field(default_factory=datetime.now)
-    statistics: Dict[str, Any] = field(default_factory=dict)
+    statistics: dict[str, Any] = field(default_factory=dict)
 
-    def get_by_category(self, category: PatternCategory) -> List[Pattern]:
+    def get_by_category(self, category: PatternCategory) -> list[Pattern]:
         """Get patterns by category."""
         return [p for p in self.patterns if p.category == category]
 
-    def get_high_confidence(self, threshold: float = 0.8) -> List[Pattern]:
+    def get_high_confidence(self, threshold: float = 0.8) -> list[Pattern]:
         """Get high-confidence patterns."""
         return [p for p in self.patterns if p.confidence >= threshold]

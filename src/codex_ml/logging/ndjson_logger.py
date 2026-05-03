@@ -15,9 +15,10 @@ import os  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
 from collections import OrderedDict  # noqa: E402
+from collections.abc import Iterable, Mapping, MutableMapping  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Iterable, Mapping, MutableMapping  # noqa: E402
+from typing import Any  # noqa: E402
 from uuid import uuid4  # noqa: E402
 
 from codex_ml.logging.permissions import get_log_file_mode  # noqa: E402
@@ -261,4 +262,4 @@ def timestamped_record(**data: Any) -> dict[str, Any]:
     return payload  # type: ignore[return-value]
 
 
-__all__ = ["NDJSONLogger", "timestamped_record", "is_legacy_mode"]
+__all__ = ["NDJSONLogger", "is_legacy_mode", "timestamped_record"]

@@ -35,12 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Pre-flight checklist generator for Codex operations.
-
-Purpose: Automate pre-flight planning to address CODEX-005.
-Usage: python scripts/generate_preflight.py --task "Apply security patch" --files "src/auth.py tests/test_auth.py"
-"""
 
 import argparse
 import subprocess

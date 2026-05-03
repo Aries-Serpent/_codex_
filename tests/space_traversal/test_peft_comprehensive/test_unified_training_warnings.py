@@ -16,7 +16,7 @@ def test_legacy_wrappers_emit_deprecation():
         warnings.simplefilter("always", DeprecationWarning)
         try:
             ut.train_loop(cfg=None, model=None, optimizer=None, loss_fn=None, train_loader=[])
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
         assert any(isinstance(w.message, DeprecationWarning) for w in rec)
 
@@ -25,6 +25,6 @@ def test_legacy_wrappers_emit_deprecation():
             ut.functional_training(
                 cfg=None, model=None, optimizer=None, loss_fn=None, train_loader=[]
             )
-        except Exception:  # noqa: BLE001
+        except Exception:
             # allow failure due to missing torch in minimal env
             pass

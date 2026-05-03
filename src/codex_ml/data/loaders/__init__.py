@@ -17,9 +17,10 @@ Generated: 2025-11-19 04:02:05
 import inspect
 import logging
 import sys
+from collections.abc import Callable
 from importlib import util
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -150,19 +151,19 @@ register_loader([".arrow", ".ipc"], _lazy_load_arrow)
 register_loader([".h5", ".hdf5"], _lazy_load_hdf5)
 
 __all__ = [
-    "load_dataset",
-    "register_loader",
-    "stream_paths",
+    "Sample",
+    "_materialize_connector_uri",
+    "_resolve_connector_cache_root",
+    "_run_connector_coro",  # For tests
+    "collect_stats",
+    "compute_file_checksum",
+    "get_connector",  # For tests
     "iter_jsonl",
     "iter_txt",
-    "collect_stats",
-    "split_indices",
-    "load_jsonl",
     "load_csv",
-    "compute_file_checksum",
-    "Sample",
-    "_resolve_connector_cache_root",
-    "_materialize_connector_uri",
-    "_run_connector_coro",  # For tests
-    "get_connector",  # For tests
+    "load_dataset",
+    "load_jsonl",
+    "register_loader",
+    "split_indices",
+    "stream_paths",
 ]

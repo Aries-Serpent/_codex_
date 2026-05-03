@@ -23,25 +23,25 @@ class EcosystemCoordinatorAgent:
         self.performance_metrics = {"tasks_coordinated": 0}
         self.initialized = True
 
-    def perceive(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, context: dict[str, Any]) -> dict[str, Any]:
         perception = {"timestamp": self._get_timestamp(), "context": context,
                      "decomposer_metrics": self.task_decomposer.get_metrics()}
         self.pda_state["perception"].append(perception)
         return perception
 
-    def decide(self, perception: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, perception: dict[str, Any]) -> dict[str, Any]:
         decision = {"timestamp": self._get_timestamp(), "action_type": "coordinate",
                    "confidence": 0.9, "reasoning": ["Coordinate multi-agent tasks"]}
         self.pda_state["decision"].append(decision)
         return decision
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         result = {"timestamp": self._get_timestamp(), "action": decision["action_type"],
                  "status": "success", "outputs": ["Coordination complete"]}
         self.pda_state["action"].append(result)
         return result
 
-    def aftermath(self, action_result: Dict[str, Any]) -> Dict[str, Any]:
+    def aftermath(self, action_result: dict[str, Any]) -> dict[str, Any]:
         aftermath = {"timestamp": self._get_timestamp(), "success": action_result["status"] == "success",
                     "lessons_learned": ["Coordination improved"], "improvements_applied": []}
         self.pda_state["aftermath"].append(aftermath)
@@ -52,7 +52,7 @@ class EcosystemCoordinatorAgent:
         self.performance_metrics["tasks_coordinated"] += 1
         return subtasks
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         return {"agent_name": "ecosystem-coordinator", "seed": self.seed,
                 "pda_cycles": {k: len(v) for k, v in self.pda_state.items()},
                 "components": {"task_decomposer": self.task_decomposer.get_metrics()},

@@ -7,7 +7,6 @@ Fixes empty TOC links by either creating anchor targets or removing entries.
 import json
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -18,7 +17,7 @@ def load_audit_data() -> dict:
     with open(audit_file) as f:
         return json.load(f)
 
-def find_empty_toc_links(content: str) -> List[Tuple[str, str]]:
+def find_empty_toc_links(content: str) -> list[tuple[str, str]]:
     """Find empty TOC links like [Text]()."""
     # Pattern: [text]() - link with empty URL
     pattern = r'\[([^\]]+)\]\(\)'
@@ -46,7 +45,7 @@ def check_if_section_exists(content: str, text: str) -> str:
                 return create_anchor_from_text(header_text)
     return None
 
-def fix_empty_toc_placeholder(file_path: Path) -> Tuple[int, List[dict]]:
+def fix_empty_toc_placeholder(file_path: Path) -> tuple[int, list[dict]]:
     """
     Fix empty TOC placeholders in a file.
     Returns (fixes_applied, fix_details).

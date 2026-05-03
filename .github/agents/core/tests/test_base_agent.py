@@ -2,7 +2,7 @@
 Tests for CognitiveAgent base class.
 """
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from ..base_agent import CognitiveAgent
 
@@ -10,7 +10,7 @@ from ..base_agent import CognitiveAgent
 class MockAgent(CognitiveAgent):
     """Mock agent for testing."""
 
-    def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, task: dict[str, Any]) -> dict[str, Any]:
         return {
             "parsed_inputs": task.get("parameters", {}),
             "patterns": ["test_pattern"],
@@ -18,7 +18,7 @@ class MockAgent(CognitiveAgent):
             "opportunities": []
         }
 
-    def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         return {
             "strategy": "test_strategy",
             "steps": ["step1", "step2"],
@@ -27,7 +27,7 @@ class MockAgent(CognitiveAgent):
             "estimated_time": 10
         }
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         return {
             "status": "success",
             "outputs": {"result": "test"},
@@ -37,10 +37,10 @@ class MockAgent(CognitiveAgent):
 
     def aftermath(
         self,
-        result: Dict[str, Any],
-        context: Dict[str, Any],
-        decision: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        result: dict[str, Any],
+        context: dict[str, Any],
+        decision: dict[str, Any]
+    ) -> dict[str, Any]:
         return {
             "metrics": {"test_metric": 1},
             "patterns": ["aftermath_pattern"],

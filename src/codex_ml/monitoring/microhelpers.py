@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 import datetime as _dt  # noqa: E402
 from typing import Any  # noqa: E402
 
-__all__ = ["sample", "get_proc_stats", "get_sys_stats", "get_gpu_stats"]
+__all__ = ["get_gpu_stats", "get_proc_stats", "get_sys_stats", "sample"]
 
 # ----- optional deps (never hard-crash) ---------------------------------------
 try:  # psutil for CPU/RAM (process + system)

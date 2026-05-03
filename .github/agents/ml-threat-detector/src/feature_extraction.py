@@ -3,7 +3,7 @@
 import ast
 import re
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -59,7 +59,7 @@ class FeatureExtractor:
             r"sha1\(",
         ]
 
-    def extract(self, code: str, metadata: Optional[Dict[str, Any]] = None) -> SecurityFeatures:
+    def extract(self, code: str, metadata: Optional[dict[str, Any]] = None) -> SecurityFeatures:
         """
         Extract all 20 security features from code.
 
@@ -133,12 +133,12 @@ class FeatureExtractor:
             author_security_score=author_score,
         )
 
-    def extract_as_dict(self, code: str, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def extract_as_dict(self, code: str, metadata: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Extract features and return as dictionary."""
         features = self.extract(code, metadata)
         return asdict(features)
 
-    def extract_as_vector(self, code: str, metadata: Optional[Dict[str, Any]] = None) -> list:
+    def extract_as_vector(self, code: str, metadata: Optional[dict[str, Any]] = None) -> list:
         """Extract features and return as list for ML model."""
         features = self.extract(code, metadata)
         return list(asdict(features).values())

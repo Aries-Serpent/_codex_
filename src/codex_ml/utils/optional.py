@@ -56,4 +56,4 @@ def optional_dependency_error(
     return ImportError(message)
 
 
-__all__ = ["optional_import", "optional_dependency_error"]
+__all__ = ["optional_dependency_error", "optional_import"]

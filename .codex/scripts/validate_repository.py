@@ -11,7 +11,6 @@ import argparse
 import subprocess
 import sys
 from pathlib import Path
-from typing import Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent.parent
@@ -37,7 +36,7 @@ class ValidationResult:
         self.warnings.append((check, message))
         print(f"⚠️  {check}: {message}")
 
-    def summary(self) -> Tuple[int, int, int]:
+    def summary(self) -> tuple[int, int, int]:
         """Returns (passed, failed, warnings) counts."""
         return len(self.passed), len(self.failed), len(self.warnings)
 
@@ -359,9 +358,8 @@ def main():
     if results.is_success():
         print("\n✅ All validations passed!")
         return 0
-    else:
-        print("\n❌ Some validations failed. Please review the errors above.")
-        return 1
+    print("\n❌ Some validations failed. Please review the errors above.")
+    return 1
 
 
 if __name__ == "__main__":

@@ -19,7 +19,6 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 from codex_ml.utils.subproc import run_argv
 
@@ -60,7 +59,7 @@ def log_error(step: str, err: Exception | str, ctx: str) -> None:
     )
 
 
-def _run(cmd: List[str], *, allow_failure: bool = True) -> subprocess.CompletedProcess[str]:
+def _run(cmd: list[str], *, allow_failure: bool = True) -> subprocess.CompletedProcess[str]:
     """Execute *cmd* relative to the repo root using the hardened wrapper."""
 
     try:
@@ -74,7 +73,7 @@ def have(cmd: str) -> bool:
     return shutil.which(cmd) is not None
 
 
-def list_candidates() -> List[Path]:
+def list_candidates() -> list[Path]:
     """
     Find all candidate workflow scripts: *codex_workflow*.py anywhere in repo, excluding venvs/build.
     """
@@ -88,7 +87,7 @@ def list_candidates() -> List[Path]:
         ".mypy_cache",
         ".pytest_cache",
     }
-    candidates: List[Path] = []
+    candidates: list[Path] = []
     for p in REPO.rglob("codex_workflow*.py"):
         if any(part in ignore_dirs for part in p.parts):
             continue
@@ -142,7 +141,7 @@ class Choice:
     mtime: float
 
 
-def choose_authoritative(candidates: List[Path]) -> Path:
+def choose_authoritative(candidates: list[Path]) -> Path:
     """
     Prefer cli/workflow.py if present; else prefer highest
     reference count; tie-breaker newest mtime.
@@ -192,7 +191,7 @@ def ensure_at_root(authoritative: Path) -> Path:
     return target
 
 
-def build_replacements(non_auth_files: List[Path]) -> Dict[str, str]:
+def build_replacements(non_auth_files: list[Path]) -> dict[str, str]:
     """
     Map old import forms to 'codex_workflow'.
     """
@@ -214,7 +213,7 @@ def build_replacements(non_auth_files: List[Path]) -> Dict[str, str]:
     return mapping
 
 
-def replace_in_file(path: Path, mapping: Dict[str, str]) -> int:
+def replace_in_file(path: Path, mapping: dict[str, str]) -> int:
     try:
         text = path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
@@ -229,7 +228,7 @@ def replace_in_file(path: Path, mapping: Dict[str, str]) -> int:
     return 0
 
 
-def update_references(mapping: Dict[str, str]) -> Tuple[int, int]:
+def update_references(mapping: dict[str, str]) -> tuple[int, int]:
     changed, scanned = 0, 0
     for p in REPO.rglob("*"):
         if not p.is_file():
@@ -264,7 +263,7 @@ def update_references(mapping: Dict[str, str]) -> Tuple[int, int]:
     return changed, scanned
 
 
-def delete_or_shim(non_auth: List[Path], keep_shim: bool) -> None:
+def delete_or_shim(non_auth: list[Path], keep_shim: bool) -> None:
     for f in non_auth:
         rel = f.relative_to(REPO)
         if keep_shim:

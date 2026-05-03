@@ -13,7 +13,7 @@ AAIS Contribution: +2.5 points (Discovery & Navigation)
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 from codex.utils.path_utils import windows_safe_timestamp
 
@@ -28,10 +28,10 @@ class CodeLocation:
     concept: str
     module: str
     category: str
-    metadata: Dict = field(default_factory=dict)
-    related_locations: List[str] = field(default_factory=list)
+    metadata: dict = field(default_factory=dict)
+    related_locations: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert to dictionary for serialization."""
         return {
             "path": self.path,
@@ -45,7 +45,7 @@ class CodeLocation:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict) -> "CodeLocation":
+    def from_dict(cls, data: dict) -> "CodeLocation":
         """Create from dictionary."""
         return cls(**data)
 
@@ -56,9 +56,9 @@ class NavigationMap:
 
     name: str
     description: str
-    locations: List[CodeLocation] = field(default_factory=list)
-    relationships: Dict[str, List[str]] = field(default_factory=dict)
-    metadata: Dict = field(default_factory=dict)
+    locations: list[CodeLocation] = field(default_factory=list)
+    relationships: dict[str, list[str]] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     def add_location(self, location: CodeLocation) -> None:
         """Add a code location to the map."""
@@ -71,7 +71,7 @@ class NavigationMap:
         if to_concept not in self.relationships[from_concept]:
             self.relationships[from_concept].append(to_concept)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert to dictionary for serialization."""
         return {
             "name": self.name,
@@ -82,7 +82,7 @@ class NavigationMap:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict) -> "NavigationMap":
+    def from_dict(cls, data: dict) -> "NavigationMap":
         """Create from dictionary."""
         locations = [CodeLocation.from_dict(loc) for loc in data.get("locations", [])]
         return cls(
@@ -133,7 +133,7 @@ class TopologyManager:
         self.topology_dir = self.repo_root / ".codex" / "topology"
         self.topology_dir.mkdir(parents=True, exist_ok=True)
 
-        self.maps: Dict[str, NavigationMap] = {}
+        self.maps: dict[str, NavigationMap] = {}
         self._load_maps()
 
     def _load_maps(self) -> None:
@@ -165,7 +165,7 @@ class TopologyManager:
         category: Optional[str] = None,
         module: Optional[str] = None,
         limit: int = 10
-    ) -> List[CodeLocation]:
+    ) -> list[CodeLocation]:
         """
         Find code locations by concept (not path).
 
@@ -210,7 +210,7 @@ class TopologyManager:
         self,
         from_concept: str,
         to_concept: str
-    ) -> Optional[List[str]]:
+    ) -> Optional[list[str]]:
         """
         Find optimal navigation path between two concepts.
 
@@ -230,7 +230,7 @@ class TopologyManager:
             >>> # Returns: ["CI failure", "test execution", "test fix"]
         """
         # Build unified relationship graph
-        graph: Dict[str, List[str]] = {}
+        graph: dict[str, list[str]] = {}
         for nav_map in self.maps.values():
             for concept, related in nav_map.relationships.items():
                 if concept not in graph:
@@ -262,7 +262,7 @@ class TopologyManager:
         concept: str,
         max_depth: int = 2,
         limit: int = 20
-    ) -> List[Tuple[str, int]]:
+    ) -> list[tuple[str, int]]:
         """
         Discover related concepts (auto-discovery feature).
 
@@ -283,7 +283,7 @@ class TopologyManager:
             >>> # Returns: [("test setup", 1), ("mock objects", 1), ...]
         """
         # Build relationship graph
-        graph: Dict[str, List[str]] = {}
+        graph: dict[str, list[str]] = {}
         for nav_map in self.maps.values():
             for from_concept, to_concepts in nav_map.relationships.items():
                 if from_concept not in graph:
@@ -314,7 +314,7 @@ class TopologyManager:
         results.sort(key=lambda x: x[1])
         return results[:limit]
 
-    def get_maps(self) -> Dict[str, NavigationMap]:
+    def get_maps(self) -> dict[str, NavigationMap]:
         """
         Get all topology maps.
 
@@ -327,7 +327,7 @@ class TopologyManager:
         self,
         name: str,
         description: str,
-        metadata: Optional[Dict] = None
+        metadata: Optional[dict] = None
     ) -> NavigationMap:
         """
         Create a new topology map.
@@ -357,8 +357,8 @@ class TopologyManager:
         concept: str,
         module: str,
         category: str,
-        metadata: Optional[Dict] = None,
-        related_locations: Optional[List[str]] = None
+        metadata: Optional[dict] = None,
+        related_locations: Optional[list[str]] = None
     ) -> CodeLocation:
         """
         Add a code location to a topology map.
@@ -413,7 +413,7 @@ class TopologyManager:
 
         self.maps[map_name].add_relationship(from_concept, to_concept)
 
-    def get_aais_contribution(self) -> Dict[str, float]:
+    def get_aais_contribution(self) -> dict[str, float]:
         """
         Calculate AAIS score contribution from topology management.
 

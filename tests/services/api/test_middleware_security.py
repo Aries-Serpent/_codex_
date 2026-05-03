@@ -6,8 +6,8 @@ import importlib
 
 import pytest
 
-fastapi = pytest.importorskip("fastapi")  # noqa: F401  # ensure FastAPI is available
-from fastapi.testclient import TestClient  # noqa: E402
+fastapi = pytest.importorskip("fastapi")  # ensure FastAPI is available
+from fastapi.testclient import TestClient
 
 
 def test_api_key_required(monkeypatch: pytest.MonkeyPatch) -> None:

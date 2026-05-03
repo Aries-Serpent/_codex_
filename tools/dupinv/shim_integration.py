@@ -6,7 +6,7 @@ to identify whitelisted duplicates and flag unknowns.
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Optional
 
 import yaml
 
@@ -22,7 +22,7 @@ class ShimEntry:
     status: str
     rationale: str
     deprecation_date: Optional[str]
-    whitelist_duplicates: List[str]
+    whitelist_duplicates: list[str]
     notes: str
 
 
@@ -33,7 +33,7 @@ class CrossReferenceResult:
     in_shim_inventory: bool
     is_whitelisted: bool
     shim_status: Optional[str]
-    recommendations: List[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
 
 
 class ShimInventoryReader:
@@ -47,9 +47,9 @@ class ShimInventoryReader:
         """
         self.repo_root = repo_root
         self.shim_path = repo_root / ".github" / "SHIM_INVENTORY.yaml"
-        self._entries: Optional[List[ShimEntry]] = None
+        self._entries: Optional[list[ShimEntry]] = None
 
-    def load(self) -> List[ShimEntry]:
+    def load(self) -> list[ShimEntry]:
         """Load and parse SHIM inventory.
 
         Returns:
@@ -83,7 +83,7 @@ class ShimInventoryReader:
         self._entries = entries
         return entries
 
-    def get_whitelisted_paths(self) -> Set[Tuple[str, str]]:
+    def get_whitelisted_paths(self) -> set[tuple[str, str]]:
         """Get set of whitelisted (module, path) pairs.
 
         Returns:
@@ -104,7 +104,7 @@ class ShimInventoryReader:
 
         return whitelisted
 
-    def get_entries_dict(self) -> Dict[str, ShimEntry]:
+    def get_entries_dict(self) -> dict[str, ShimEntry]:
         """Get entries indexed by module name.
 
         Returns:
@@ -119,7 +119,7 @@ class ShimInventoryReader:
 class CrossReference:
     """Cross-references duplicates with SHIM inventory."""
 
-    def __init__(self, shim_entries: List[ShimEntry]):
+    def __init__(self, shim_entries: list[ShimEntry]):
         """Initialize with SHIM inventory.
 
         Args:
@@ -129,7 +129,7 @@ class CrossReference:
         self.entries_dict = {entry.module: entry for entry in shim_entries}
         self.whitelisted_paths = self._build_whitelist()
 
-    def _build_whitelist(self) -> Set[Tuple[str, str]]:
+    def _build_whitelist(self) -> set[tuple[str, str]]:
         """Build set of whitelisted (module, path) pairs."""
         whitelisted = set()
         for entry in self.shim_entries:
@@ -154,7 +154,7 @@ class CrossReference:
         """
         return (module, path) in self.whitelisted_paths
 
-    def check_paths(self, paths: List[str], derive_module: bool = True) -> CrossReferenceResult:
+    def check_paths(self, paths: list[str], derive_module: bool = True) -> CrossReferenceResult:
         """Check if paths are in SHIM inventory.
 
         Args:
@@ -222,7 +222,7 @@ class CrossReference:
             recommendations=recommendations,
         )
 
-    def get_recommendations(self, paths: List[str]) -> List[str]:
+    def get_recommendations(self, paths: list[str]) -> list[str]:
         """Get recommendations for duplicate paths.
 
         Args:

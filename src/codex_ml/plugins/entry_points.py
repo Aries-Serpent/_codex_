@@ -15,16 +15,16 @@ import importlib
 import importlib.metadata
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 from packaging import version as pkg_version
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
+    "EntryPointPluginRegistry",
     "PluginInfo",
     "PluginValidator",
-    "EntryPointPluginRegistry",
     "discover_plugins",
     "validate_plugin",
 ]
@@ -42,7 +42,7 @@ class PluginInfo:
     description: Optional[str] = None
     dependencies: list[str] = field(default_factory=list)
     required_codex_version: Optional[str] = None
-    plugin_class: Optional[Type] = None
+    plugin_class: Optional[type] = None
     loaded: bool = False
     error: Optional[str] = None
 

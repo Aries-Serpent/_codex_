@@ -61,4 +61,4 @@ def f1_score(preds: Iterable[int], labels: Iterable[int]) -> float:
     return 2 * prec * rec / denom
 
 
-__all__ = ["accuracy", "perplexity", "precision", "recall", "f1_score"]
+__all__ = ["accuracy", "f1_score", "perplexity", "precision", "recall"]

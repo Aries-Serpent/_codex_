@@ -27,7 +27,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
@@ -56,14 +56,14 @@ class AuditResult:
     remediation_cost: float  # Estimated cost to fix issues
     score: float = None  # type: ignore[assignment]  # 0.0 to 1.0
     business_impact: float = 0.0  # Business value if approved (0-1)
-    violations: List[str] = field(default_factory=list)  # List of violation descriptions
+    violations: list[str] = field(default_factory=list)  # List of violation descriptions
     repo_name: str = ""  # Optional repository name
     compliance_score: float = None  # type: ignore[assignment]  # Alias for score
     # Phase 1: Advanced accuracy features (Pattern E & F requirements)
     violation_count: int = 0  # Number of violations (Pattern F severity formula)
     pii_indicators: int = 0  # Number of PII indicators (Pattern E logic)
     # Phase 3: Fairness / bias detection
-    protected_attributes: Dict[str, str] = field(default_factory=dict)
+    protected_attributes: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self):
         # Support compliance_score as alias for score
@@ -138,7 +138,7 @@ class ComplianceAssessment:
     used_superposition: bool
     evaluation_time_ms: float
     # Phase 3: bias detection flags (empty list when no protected attributes present)
-    bias_flags: List[str] = field(default_factory=list)
+    bias_flags: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -159,7 +159,7 @@ class AuditTrailEntry:
     reasoning: str  # Human-readable rationale
     input_hash: str  # SHA-256 prefix of serialised input (tamper detection)
     quantum_mode: bool  # Whether superposition was used
-    bias_flags: List[str]  # Empty list when no bias detected
+    bias_flags: list[str]  # Empty list when no bias detected
     chain_hash: str = ""  # HMAC-chained link to previous entry (tamper-evidence)
 
 
@@ -188,7 +188,7 @@ class QuantumAuditTrail:
                 chain hash + entry input hash, giving cryptographic tamper-evidence.
                 Must be rotated via KMS before production rollout.
         """
-        self._entries: List[AuditTrailEntry] = []
+        self._entries: list[AuditTrailEntry] = []
         self.retention_days = retention_days
         self._hmac_key: bytes = hmac_key.encode() if hmac_key else b""
         self._prev_chain_hash: str = ""
@@ -241,7 +241,7 @@ class QuantumAuditTrail:
         self,
         audit_id: Optional[str] = None,
         decision: Optional[str] = None,
-    ) -> List[AuditTrailEntry]:
+    ) -> list[AuditTrailEntry]:
         """Query audit trail entries.
 
         Returns copies of matching entries to preserve immutability.
@@ -253,7 +253,7 @@ class QuantumAuditTrail:
         Returns:
             List of matching ``AuditTrailEntry`` objects.
         """
-        results: List[AuditTrailEntry] = list(self._entries)
+        results: list[AuditTrailEntry] = list(self._entries)
         if audit_id is not None:
             results = [e for e in results if e.audit_id == audit_id]
         if decision is not None:
@@ -284,7 +284,7 @@ class BiasDetector:
     # Decisions that trigger mandatory review when protected attributes present
     _ADVERSE = frozenset({ComplianceDecision.REJECT, ComplianceDecision.CONDITIONAL_APPROVAL})
 
-    def detect(self, audit: AuditResult, decision: ComplianceDecision) -> List[str]:
+    def detect(self, audit: AuditResult, decision: ComplianceDecision) -> list[str]:
         """Check for potential bias in a compliance decision.
 
         For each protected attribute present on the audit, this method:
@@ -300,7 +300,7 @@ class BiasDetector:
             List of bias-flag strings; empty list when no protected
             attributes are present or no bias signal found.
         """
-        flags: List[str] = []
+        flags: list[str] = []
         attrs = getattr(audit, "protected_attributes", None)
         if not attrs:
             return flags
@@ -365,7 +365,7 @@ class QuantumComplianceAssessor:
         self.audit_trail = QuantumAuditTrail()
 
         # Phase 4.5: PoC tuning rules cache (loaded lazily from target_patterns.json)
-        self._tuning_rules_cache: Optional[Dict[str, Any]] = None
+        self._tuning_rules_cache: Optional[dict[str, Any]] = None
 
     def assess_compliance(self, audit_result: AuditResult) -> ComplianceAssessment:
         """
@@ -566,7 +566,7 @@ class QuantumComplianceAssessor:
             "yes",
         ) or os.getenv("CODEX_FUZZY_MODE", "false").lower() in ("true", "1", "yes")
 
-    def _load_tuning_rules(self) -> Dict[str, Any]:
+    def _load_tuning_rules(self) -> dict[str, Any]:
         """
         Load PoC tuning rules from ``audit_artifacts/poctune/target_patterns.json``.
 
@@ -627,7 +627,7 @@ class QuantumComplianceAssessor:
             return "C"
         return None
 
-    def _extract_bayesian_evidence(self, audit: AuditResult) -> Dict[str, str]:
+    def _extract_bayesian_evidence(self, audit: AuditResult) -> dict[str, str]:
         """
         Extract a string-keyed evidence dict for Bayesian tuning rule matching.
 
@@ -646,10 +646,10 @@ class QuantumComplianceAssessor:
 
     def _apply_poc_tuning(
         self,
-        probabilities: List[float],
+        probabilities: list[float],
         audit: AuditResult,
-        decision_names: List[str],
-    ) -> List[float]:
+        decision_names: list[str],
+    ) -> list[float]:
         """
         Apply Bayesian and/or Fuzzy tuning to a copy of *probabilities* in place.
 
@@ -685,7 +685,7 @@ class QuantumComplianceAssessor:
             ):
                 evidence = self._extract_bayesian_evidence(audit)
                 for rule in pattern_rules.get("bayesian", []):
-                    rule_ev: Dict[str, str] = rule.get("evidence", {})
+                    rule_ev: dict[str, str] = rule.get("evidence", {})
                     # All rule evidence key-value pairs must match
                     if not all(evidence.get(k) == v for k, v in rule_ev.items()):
                         continue
@@ -697,7 +697,7 @@ class QuantumComplianceAssessor:
 
             # --- Fuzzy boundary adjustment ---
             if os.getenv("CODEX_FUZZY_MODE", "false").lower() in ("true", "1", "yes"):
-                fuzzy_rules: Dict[str, Any] = pattern_rules.get("fuzzy", {})
+                fuzzy_rules: dict[str, Any] = pattern_rules.get("fuzzy", {})
                 if fuzzy_rules:
                     try:
                         from cognitive_brain.analytics.fuzzy import FuzzyEngine

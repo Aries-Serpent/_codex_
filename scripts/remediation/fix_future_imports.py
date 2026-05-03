@@ -10,10 +10,9 @@ from __future__ import annotations
 import ast
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 
-def extract_module_docstring(lines: List[str]) -> Tuple[List[str], int]:
+def extract_module_docstring(lines: list[str]) -> tuple[list[str], int]:
     """Extract the module docstring and return it with the end index."""
     docstring_lines = []
     i = 0

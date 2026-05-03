@@ -14,9 +14,10 @@ import logging
 import logging.handlers
 import sys
 import traceback
+from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 
 class CodexErrorHandler:

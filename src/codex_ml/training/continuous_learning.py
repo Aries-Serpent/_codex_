@@ -8,14 +8,15 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["ModelVersion", "ContinuousLearningPipeline", "ModelRegistry"]
+__all__ = ["ContinuousLearningPipeline", "ModelRegistry", "ModelVersion"]
 
 
 @dataclass

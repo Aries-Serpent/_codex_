@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
-from typing import Any, Iterable, Iterator, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -106,4 +107,4 @@ def get_amp_scaler(enabled: bool):
         return _FakeScaler()
 
 
-__all__ = ["maybe_autocast", "clip_gradients", "get_amp_scaler"]
+__all__ = ["clip_gradients", "get_amp_scaler", "maybe_autocast"]

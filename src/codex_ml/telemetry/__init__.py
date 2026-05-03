@@ -12,6 +12,6 @@ __all__ = [
     "EXAMPLES_PROCESSED",
     "REQUEST_LATENCY",
     "TRAIN_STEP_DURATION",
-    "track_time",
     "start_metrics_server",
+    "track_time",
 ]

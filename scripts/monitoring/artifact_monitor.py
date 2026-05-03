@@ -27,7 +27,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 try:
     import yaml
@@ -54,7 +54,7 @@ class MonitorState:
         self.state_file = state_file
         self.state = self._load_state()
 
-    def _load_state(self) -> Dict[str, Any]:
+    def _load_state(self) -> dict[str, Any]:
         """Load state from file or create new state."""
         if self.state_file.exists():
             try:
@@ -82,11 +82,11 @@ class MonitorState:
             json.dump(self.state, f, indent=2)
         logger.debug(f"State saved to {self.state_file}")
 
-    def get_workflow_state(self, workflow_name: str) -> Dict[str, Any]:
+    def get_workflow_state(self, workflow_name: str) -> dict[str, Any]:
         """Get state for specific workflow."""
         return self.state['workflows'].get(workflow_name, {})
 
-    def update_workflow_state(self, workflow_name: str, data: Dict[str, Any]) -> None:
+    def update_workflow_state(self, workflow_name: str, data: dict[str, Any]) -> None:
         """Update state for specific workflow."""
         if workflow_name not in self.state['workflows']:
             self.state['workflows'][workflow_name] = {}
@@ -128,7 +128,7 @@ class ArtifactMonitor:
         logger.info(f"Initialized monitor for repository: {self.repo_name}")
         logger.info(f"Dry run mode: {self.dry_run}")
 
-    def _load_config(self, config_path: Path) -> Dict[str, Any]:
+    def _load_config(self, config_path: Path) -> dict[str, Any]:
         """Load monitoring configuration from YAML."""
         if not config_path.exists():
             raise FileNotFoundError(f"Config file not found: {config_path}")
@@ -137,7 +137,7 @@ class ArtifactMonitor:
             return yaml.safe_load(f)
 
 
-    def _matches_pattern(self, workflow_name: str, patterns: List[str]) -> bool:
+    def _matches_pattern(self, workflow_name: str, patterns: list[str]) -> bool:
         """Check if workflow name matches any pattern."""
         for pattern in patterns:
             # Convert glob-style pattern to regex
@@ -177,7 +177,7 @@ class ArtifactMonitor:
         self,
         workflow_name: str,
         limit: int = 20
-    ) -> List[WorkflowRun]:
+    ) -> list[WorkflowRun]:
         """Get recent runs for a workflow."""
         try:
             workflow = self.repo.get_workflow(workflow_name)
@@ -191,7 +191,7 @@ class ArtifactMonitor:
         self,
         workflow_name: str,
         current_run: WorkflowRun
-    ) -> Tuple[bool, str, str]:
+    ) -> tuple[bool, str, str]:
         """
         Detect if workflow status has changed.
 
@@ -207,8 +207,8 @@ class ArtifactMonitor:
 
     def _calculate_failure_metrics(
         self,
-        runs: List[WorkflowRun]
-    ) -> Dict[str, Any]:
+        runs: list[WorkflowRun]
+    ) -> dict[str, Any]:
         """Calculate failure rate and flakiness metrics."""
         if not runs:
             return {'failure_rate': 0.0, 'flakiness_score': 0.0, 'consecutive_failures': 0}
@@ -248,7 +248,7 @@ class ArtifactMonitor:
     def _should_create_issue(
         self,
         workflow_name: str,
-        metrics: Dict[str, Any]
+        metrics: dict[str, Any]
     ) -> bool:
         """Determine if an issue should be created for this failure."""
         threshold = self.config['monitoring']['failure_detection']['consecutive_failures_threshold']
@@ -269,7 +269,7 @@ class ArtifactMonitor:
 
         return True
 
-    def check_workflow(self, workflow_name: str) -> Optional[Dict[str, Any]]:
+    def check_workflow(self, workflow_name: str) -> Optional[dict[str, Any]]:
         """
         Check a single workflow for failures.
 
@@ -339,7 +339,7 @@ class ArtifactMonitor:
 
         return None
 
-    def check_all_workflows(self) -> List[Dict[str, Any]]:
+    def check_all_workflows(self) -> list[dict[str, Any]]:
         """
         Check all monitored workflows.
 

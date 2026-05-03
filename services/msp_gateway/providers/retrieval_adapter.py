@@ -4,7 +4,7 @@ Provides abstraction for vector store retrieval
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from codex.retrieval import RetrievalEngine
 from src.utils.log_sanitizer import sanitize_log_input
@@ -33,8 +33,8 @@ class RetrievalAdapter:
         query: str,
         top_k: int = 5,
         index_name: str = "default",
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> List[Dict[str, Any]]:
+        filters: Optional[dict[str, Any]] = None,
+    ) -> list[dict[str, Any]]:
         """Query the knowledge base
 
         Args:
@@ -64,7 +64,7 @@ class RetrievalAdapter:
     def build_index(
         self,
         tenant_id: str,
-        documents: List[Dict[str, Any]],
+        documents: list[dict[str, Any]],
         index_name: str = "default",
         text_field: str = "content",
     ):

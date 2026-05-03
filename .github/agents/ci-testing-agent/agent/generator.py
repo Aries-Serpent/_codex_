@@ -4,7 +4,7 @@ Generates test files based on coverage gaps and templates.
 """
 import ast
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class TestGenerator:
@@ -21,7 +21,7 @@ class TestGenerator:
         self.workspace = workspace or Path(".")
         self.src_dir = self.workspace / "src"
 
-    def generate(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def generate(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Generate test files based on task specification.
 
@@ -116,12 +116,11 @@ class TestGenerator:
         # Check if it's a directory or file
         if module_path.is_dir():
             return module_path
-        elif module_path.with_suffix(".py").exists():
+        if module_path.with_suffix(".py").exists():
             return module_path.with_suffix(".py")
-        else:
-            return module_path
+        return module_path
 
-    def _extract_functions(self, module_path: Path) -> List[Dict[str, Any]]:
+    def _extract_functions(self, module_path: Path) -> list[dict[str, Any]]:
         """
         Extract function definitions from module.
 
@@ -164,7 +163,7 @@ class TestGenerator:
 
         return functions
 
-    def _has_test_coverage(self, func: Dict[str, Any], output_dir: str) -> bool:
+    def _has_test_coverage(self, func: dict[str, Any], output_dir: str) -> bool:
         """
         Check if function has existing test coverage.
 
@@ -193,7 +192,7 @@ class TestGenerator:
 
         return False
 
-    def _scaffold_test(self, func: Dict[str, Any], module: str) -> str:
+    def _scaffold_test(self, func: dict[str, Any], module: str) -> str:
         """
         Generate test scaffold for function.
 
@@ -242,7 +241,7 @@ class Test{class_name}:
 '''
 
     def _determine_test_path(
-        self, func: Dict[str, Any], module: str, output_dir: str
+        self, func: dict[str, Any], module: str, output_dir: str
     ) -> Path:
         """
         Determine output path for test file.

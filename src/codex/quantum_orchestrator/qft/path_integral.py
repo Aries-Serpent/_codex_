@@ -5,8 +5,9 @@ Implements path integral formulation for finding optimal task execution paths.
 """
 
 import copy
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 import numpy as np
 

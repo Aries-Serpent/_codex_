@@ -13,8 +13,9 @@ import re
 import sqlite3
 import sys
 import time
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable, Optional
+from typing import Any, Optional
 
 Row = dict[str, Any]
 
@@ -389,9 +390,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
             try:
                 record = json.loads(stripped)
             except json.JSONDecodeError as exc:
-                errors.append(
-                    "record {}: invalid JSON ({} at column {})".format(idx, exc.msg, exc.colno)
-                )
+                errors.append(f"record {idx}: invalid JSON ({exc.msg} at column {exc.colno})")
                 continue
             for err in validator.iter_errors(record):
                 errors.append(f"record {idx}: {err.message}")

@@ -23,7 +23,8 @@ import importlib.util
 import logging
 import os
 import uuid
-from typing import Any, Generator
+from collections.abc import Generator
+from typing import Any
 
 from starlette.requests import Request
 
@@ -146,7 +147,7 @@ def drift_span(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         tracer = trace_mod.get_tracer(tracer_name)
-    except Exception:  # noqa: BLE001
+    except Exception:
         yield None
         return
 
@@ -211,7 +212,7 @@ def record_drift_event(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         span = trace_mod.get_current_span()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return
 
     attrs: dict[str, Any] = {
@@ -230,5 +231,5 @@ def record_drift_event(
 
     try:
         span.add_event("drift.detected", attributes=attrs)
-    except Exception:  # noqa: BLE001
+    except Exception:
         logger.debug("Suppressed exception in handler", exc_info=True)

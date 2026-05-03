@@ -37,103 +37,31 @@
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [x] Fix mypy baseline regression (issue #3842) ✅
-- [x] Run S214 health sweep (issue #3841) ✅
-- [x] Update cognitive brain with new patterns ✅
+- [x] Verify PR was successfully merged to target branch
+- [x] Confirm CI checks on target branch are green post-merge
+- [ ] Run `python scripts/ci/auto_fix_common_issues.py --check-only` to verify no regressions
+- [ ] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` if any gaps found
 
 **Validation**:
 ```bash
-# Re-run mypy check in isolated venv
-python -m venv /tmp/mypy-venv --clear
-pip install "mypy>=1.8.0" types-PyYAML types-requests
+python scripts/ci/auto_fix_common_issues.py --check-only
+python -m ruff check src/ tests/ --output-format=concise
 python scripts/ci/mypy_baseline.py --require-baseline
-# Expected: ✅ PASS — 331 errors (= vs baseline 331)
-
-# Ruff clean check
-python3 -m ruff check .
-# Expected: All checks passed!
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [x] Verify `src/training/functional_training.py` still passes existing tests ✅
-- [x] Confirm no ruff regressions ✅
-- [ ] Future: Consider annotating `app` in `src/codex/api/__init__.py` with explicit `Optional` type to avoid needing `type: ignore` in full-package environments
+- [ ] Confirm no CodeQL alerts were introduced by this PR (check GitHub Security tab)
+- [ ] Verify `CHANGELOG.md` has an entry for this PR under `## [Unreleased]`
+- [ ] Check that all review comments were addressed before merge
+- [ ] Validate `sync_tracked_files.py --fix` passes cleanly on current main
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] Add codebase policy note: "When importing from src/ packages within src/, always use relative imports to avoid shim star-import resolution issues with mypy"
-- [ ] Reduce mypy baseline below 331 by addressing pre-existing `unused-ignore` errors in `src/training/functional_training.py` and related modules
-
----
-
-## ✅ EXECUTION CHECKLIST
-
-- [x] All Priority 1 tasks completed and validated ✅
-- [x] All Priority 2 tasks completed or documented ✅
-- [x] Priority 3 tasks reviewed and prioritized ✅
-- [x] All validation checks passed ✅
-- [x] Documentation updated (accountability report, CHANGELOG, cognitive brain) ✅
-- [x] Self-review completed ✅
-
----
-
-## 🔍 SELF-REVIEW RESULTS (5-Pass Protocol)
-
-### Pass 1: Code Quality & Correctness ✅
-- Relative import `from .engine_hf_trainer import` is semantically equivalent at runtime
-- No linting warnings introduced (ruff: all checks passed)
-- Type change is correct: `.engine_hf_trainer` is directly resolved by mypy
-- Edge case: tests that monkeypatch `training.engine_hf_trainer.*` are unaffected (imports already bound at module load time)
-
-### Pass 2: Testing & Validation ✅
-- mypy isolated venv: 331 ≤ 331 baseline ✅
-- Ruff: all checks passed ✅
-- No test changes required (behavior unchanged)
-
-### Pass 3: Documentation & Communication ✅
-- `AGENT_ACCOUNTABILITY_REPORT.md` updated with full session entry
-- `CHANGELOG.md` updated with S216/S214 entries
-- Cognitive brain: new pattern `mypy_shim_star_import_attr_not_found` catalogued
-- Follow-up prompt (this file) populated with actionable items
-
-### Pass 4: Security & Safety ✅
-- No secrets, credentials, or sensitive data in changes
-- No new dependencies added
-- No security implications from import path change
-
-### Pass 5: Integration & Dependencies ✅
-- Relative import resolves to same module as before (no behavior change at runtime)
-- Baseline lowered (ratchet down, not up) — no regression risk
-- Issues #3841 and #3842 resolved
-
----
-
-**Generated**: 2026-04-01
-**Template Version**: 2.0.0
-**Last Updated**: 2026-04-01T05:41Z
-
----
-
-## 📋 PREVIOUS SESSION SUMMARY
-
-### Completed Work
-- [`7742b113`] Initial plan (copilot-swe-agent[bot], 2026-04-01)
-- [`3d59ff6d`] Merge pull request #3840 from Aries-Serpent/0D_base_ (Statix, 2026-04-01)
-- [`84793e1d`] fix: fix import sort order in training shims and use globals() for _make_accelerator (copilot-swe-agent[bot], 2026-04-01)
-
-### Files Modified
-No files modified
-
----
-
-## 🎯 NEXT PHASE OBJECTIVES
-
-### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Archive this follow-up file once all Priority 1 & 2 tasks are confirmed complete
+- [ ] Add any unresolved items as new issues in the repository
+- [ ] Update `CODEQL-QUALITY-REMEDIATION.md` if this PR introduced or fixed CodeQL findings
 
 **Validation**:
-```bash
-echo "Add validation commands"
-```
+
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
 - [ ] No tasks specified

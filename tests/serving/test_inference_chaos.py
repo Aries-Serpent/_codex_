@@ -10,7 +10,7 @@ from unittest.mock import patch
 import pytest
 
 pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi.testclient import TestClient
 
 # Reusable stub prediction result returned by mocked ModelServer.predict calls.
 # Using descriptive values so assertion failures are immediately legible in CI logs.
@@ -137,7 +137,7 @@ class TestNetworkFailures:
                     "/infer",
                     json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
                 )
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # Should handle connection errors gracefully
                 pass
 

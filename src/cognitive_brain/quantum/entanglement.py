@@ -20,7 +20,7 @@ import math
 import time
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from cognitive_brain.quantum.base import QuantumFeature
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
@@ -46,7 +46,7 @@ class EntangledPair:
     agent1_id: str
     agent2_id: str
     correlation_strength: float
-    observed_states: List[Tuple[Any, Any]] = field(default_factory=list)
+    observed_states: list[tuple[Any, Any]] = field(default_factory=list)
     created_at: float = field(default_factory=time.time)
     last_measurement: Optional[float] = None
 
@@ -141,8 +141,8 @@ class EntanglementManager:
         """
         self.config = config
         self.monitor = monitor
-        self.entangled_pairs: Dict[str, EntangledPair] = {}
-        self.correlation_history: List[CorrelationMeasurement] = []
+        self.entangled_pairs: dict[str, EntangledPair] = {}
+        self.correlation_history: list[CorrelationMeasurement] = []
 
     def create_entanglement(
         self, agent1_id: str, agent2_id: str, correlation_strength: float = 1.0
@@ -504,7 +504,7 @@ class EntanglementManager:
 
     # Private helper methods
 
-    def _states_to_numeric(self, states: Tuple[Any, ...]) -> List[float]:
+    def _states_to_numeric(self, states: tuple[Any, ...]) -> list[float]:
         """Convert states to numeric values for correlation calculation."""
         # Create mapping from unique states to integers
         unique_states = sorted(set(states), key=str)
@@ -512,7 +512,7 @@ class EntanglementManager:
 
         return [float(state_to_int[state]) for state in states]
 
-    def _pearson_correlation(self, x: List[float], y: List[float]) -> float:
+    def _pearson_correlation(self, x: list[float], y: list[float]) -> float:
         """Compute Pearson correlation coefficient."""
         if len(x) != len(y) or len(x) < 2:
             return 0.0
@@ -545,7 +545,7 @@ class EntanglementManager:
             return state.lower() in ("approve", "accept", "pass", "true", "1", "yes")
         return bool(state)
 
-    def _mutual_information(self, states_a: Tuple[Any, ...], states_b: Tuple[Any, ...]) -> float:
+    def _mutual_information(self, states_a: tuple[Any, ...], states_b: tuple[Any, ...]) -> float:
         """Compute mutual information in bits."""
         if len(states_a) != len(states_b) or len(states_a) < 2:
             return 0.0

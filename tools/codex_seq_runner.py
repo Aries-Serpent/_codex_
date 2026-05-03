@@ -18,7 +18,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 ROOT = Path.cwd()
 SESSION_DIR = ROOT / ".codex" / f"session_{datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}"
@@ -51,7 +51,7 @@ def append_file(p: Path, content: str):
         f.write(content)
 
 
-def sh(cmd: List[str], log_name: str, allow_fail=True) -> Tuple[int, str]:
+def sh(cmd: list[str], log_name: str, allow_fail=True) -> tuple[int, str]:
     try:
         proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
         out = (proc.stdout or "") + ("\n" + (proc.stderr or "") if proc.stderr else "")
@@ -103,7 +103,7 @@ def safe_load(path: Path) -> Optional[str]:
         return None
 
 
-def replace_readme_refs(readme: Path) -> Tuple[bool, str]:
+def replace_readme_refs(readme: Path) -> tuple[bool, str]:
     s = safe_load(readme)
     if s is None:
         return False, "README not found or unreadable"
@@ -120,7 +120,7 @@ def replace_readme_refs(readme: Path) -> Tuple[bool, str]:
     return changed, "OK"
 
 
-def apply_unified_patch(file_path: Path, patch_blocks: List[Tuple[str, str]]) -> Tuple[bool, str]:
+def apply_unified_patch(file_path: Path, patch_blocks: list[tuple[str, str]]) -> tuple[bool, str]:
     s = safe_load(file_path)
     if s is None:
         return False, f"{file_path} unreadable"

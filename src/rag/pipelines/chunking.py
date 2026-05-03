@@ -16,8 +16,8 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Iterator
 
 # Configure logging
 logger = logging.getLogger(__name__)

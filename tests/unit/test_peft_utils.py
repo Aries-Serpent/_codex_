@@ -6,15 +6,13 @@ Test module for peft utils.
 
 from __future__ import annotations
 
+import importlib.util
+
 import pytest
 
 
 def test_imports_exist():
-    try:
-        import peft  # noqa: F401
-
-        import transformers  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('peft') is None or importlib.util.find_spec('transformers') is None:
         pytest.skip("transformers/peft not installed in this environment")
 
 
@@ -29,7 +27,7 @@ def test_freeze_counts():
         pytest.skip("transformers/peft not installed")
     try:
         bundle = load_hf_llm("sshleifer/tiny-gpt2")
-    except Exception:  # noqa: BLE001
+    except Exception:
         pytest.skip("model weights not available offline")
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)

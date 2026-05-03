@@ -20,7 +20,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class DelegationTask:
 
     task_id: str
     task_type: TaskType
-    context: Dict[str, Any]
+    context: dict[str, Any]
     model: ModelType = ModelType.GPT_4O_MINI
     priority: int = 2  # 1=high, 3=low
     max_tokens: int = 4000
@@ -75,7 +75,7 @@ class CLIResponse:
     model_used: str = ""
     tokens_used: int = 0
     execution_time: float = 0.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 # ============================================================================
@@ -97,7 +97,7 @@ class ContextCompressor:
             "documentation": "docs",
         }
 
-    def compress(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def compress(self, context: dict[str, Any]) -> dict[str, Any]:
         """Compress context dictionary."""
         compressed = {}
 
@@ -154,7 +154,7 @@ class ContextCompressor:
 
         return "\n".join(compressed)
 
-    def _compress_list(self, items: List[Any]) -> List[Any]:
+    def _compress_list(self, items: list[Any]) -> list[Any]:
         """Compress list values."""
         if len(items) <= self.max_list_items:
             return items
@@ -285,25 +285,25 @@ This is a complete implementation that falls back gracefully when CLI is unavail
         generator = prompts.get(task.task_type, self._prompt_generic)
         return generator(task.context)
 
-    def _prompt_review(self, ctx: Dict) -> str:
+    def _prompt_review(self, ctx: dict) -> str:
         return f"Review this code:\n```{ctx.get('lang', 'python')}\n{ctx.get('code', '')}\n```\nFocus on quality and best practices."
 
-    def _prompt_generation(self, ctx: Dict) -> str:
+    def _prompt_generation(self, ctx: dict) -> str:
         return f"Generate code: {ctx.get('desc', '')}\nRequirements: {ctx.get('reqs', [])}"
 
-    def _prompt_debug(self, ctx: Dict) -> str:
+    def _prompt_debug(self, ctx: dict) -> str:
         return f"Debug error: {ctx.get('err', '')}\nCode: {ctx.get('code', '')}"
 
-    def _prompt_refactor(self, ctx: Dict) -> str:
+    def _prompt_refactor(self, ctx: dict) -> str:
         return f"Refactor for {ctx.get('goal', 'maintainability')}:\n{ctx.get('code', '')}"
 
-    def _prompt_tests(self, ctx: Dict) -> str:
+    def _prompt_tests(self, ctx: dict) -> str:
         return f"Generate tests:\n{ctx.get('code', '')}"
 
-    def _prompt_security(self, ctx: Dict) -> str:
+    def _prompt_security(self, ctx: dict) -> str:
         return f"Security scan:\n{ctx.get('code', '')}"
 
-    def _prompt_generic(self, ctx: Dict) -> str:
+    def _prompt_generic(self, ctx: dict) -> str:
         return ctx.get("prompt", "Please assist with this task.")
 
 
@@ -322,16 +322,15 @@ class SmartDelegationRouter:
             "complex": 10,
         }
 
-    def route(self, task: DelegationTask) -> Tuple[str, ModelType]:
+    def route(self, task: DelegationTask) -> tuple[str, ModelType]:
         """Determine agent and model for task."""
         complexity = self._assess_complexity(task)
 
         if complexity < self.complexity_thresholds["simple"]:
             return ("cli", ModelType.GPT_4O_MINI)
-        elif complexity < self.complexity_thresholds["medium"]:
+        if complexity < self.complexity_thresholds["medium"]:
             return ("cli", ModelType.CLAUDE_SONNET)
-        else:
-            return ("primary", ModelType.DEFAULT)
+        return ("primary", ModelType.DEFAULT)
 
     def _assess_complexity(self, task: DelegationTask) -> int:
         """Assess task complexity (1-10 scale)."""
@@ -368,7 +367,7 @@ class TokenBudgetManager:
     def __init__(self, monthly_budget: int = 10000):
         self.monthly_budget = monthly_budget
         self.used_tokens = 0
-        self.usage_log: List[Dict] = []
+        self.usage_log: list[dict] = []
 
     def allocate(self, task: DelegationTask) -> int:
         """Allocate token budget for task."""
@@ -377,10 +376,10 @@ class TokenBudgetManager:
         # Priority-based allocation
         if task.priority == 1:  # High
             return min(4000, remaining // 5)
-        elif task.priority == 2:  # Medium
+        if task.priority == 2:  # Medium
             return min(2000, remaining // 10)
-        else:  # Low
-            return min(1000, remaining // 20)
+        # Low
+        return min(1000, remaining // 20)
 
     def record_usage(self, task_id: str, tokens: int):
         """Record token usage."""
@@ -393,7 +392,7 @@ class TokenBudgetManager:
             }
         )
 
-    def get_budget_status(self) -> Dict[str, Any]:
+    def get_budget_status(self) -> dict[str, Any]:
         """Get current budget status."""
         return {
             "total": self.monthly_budget,
@@ -417,7 +416,7 @@ class CascadeOrchestrator:
         self.router = SmartDelegationRouter()
         self.budget_manager = TokenBudgetManager()
 
-    async def cascade(self, main_task: Dict[str, Any]) -> Dict[str, Any]:
+    async def cascade(self, main_task: dict[str, Any]) -> dict[str, Any]:
         """Execute cascade delegation for complex task."""
         logger.info(f"Starting cascade for task: {main_task.get('id', 'unknown')}")
 
@@ -469,7 +468,7 @@ class CascadeOrchestrator:
             "budget_status": self.budget_manager.get_budget_status(),
         }
 
-    def _decompose(self, task: Dict[str, Any]) -> List[DelegationTask]:
+    def _decompose(self, task: dict[str, Any]) -> list[DelegationTask]:
         """Decompose complex task into subtasks."""
         subtasks = []
         task_id = task.get("id", "unknown")
@@ -500,7 +499,7 @@ class CascadeOrchestrator:
 
         return subtasks
 
-    def _aggregate(self, results: List[Dict]) -> Dict[str, Any]:
+    def _aggregate(self, results: list[dict]) -> dict[str, Any]:
         """Aggregate results from subtasks."""
         aggregated = {}
         for result in results:
@@ -511,7 +510,7 @@ class CascadeOrchestrator:
             }
         return aggregated
 
-    def _verify(self, results: Dict, original_task: Dict) -> Dict[str, Any]:
+    def _verify(self, results: dict, original_task: dict) -> dict[str, Any]:
         """Verify aggregated results."""
         total_subtasks = len(results)
         successful = sum(1 for r in results.values() if r["status"] == "success")
@@ -548,12 +547,12 @@ def get_orchestrator() -> CascadeOrchestrator:
     return _orchestrator
 
 
-async def cascade_task(task: Dict[str, Any]) -> Dict[str, Any]:
+async def cascade_task(task: dict[str, Any]) -> dict[str, Any]:
     """Main entry point for cascade delegation."""
     orchestrator = get_orchestrator()
     return await orchestrator.cascade(task)
 
 
-def delegate_sync(task: Dict[str, Any]) -> Dict[str, Any]:
+def delegate_sync(task: dict[str, Any]) -> dict[str, Any]:
     """Synchronous wrapper for cascade delegation."""
     return asyncio.run(cascade_task(task))

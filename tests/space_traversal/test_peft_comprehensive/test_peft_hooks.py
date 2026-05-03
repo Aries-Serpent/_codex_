@@ -7,8 +7,9 @@ and edge cases following the High Maturity Achievement Plan.
 
 import importlib.util
 import types
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Dict, Iterable
+from typing import Any
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:
@@ -23,7 +24,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
     return module
 
 
-def _context_index_for(paths: Iterable[Path]) -> Dict[str, Any]:
+def _context_index_for(paths: Iterable[Path]) -> dict[str, Any]:
     """Create context index from file paths using absolute paths."""
     return {
         "files": [{"path": str(path.resolve())} for path in paths],

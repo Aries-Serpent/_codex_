@@ -15,7 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
-from prevent_sync_commit_conflict import (  # noqa: E402
+from prevent_sync_commit_conflict import (
     AUTO_GENERATED_FILES,
     check_auto_generated_files,
     check_changelog_diff,

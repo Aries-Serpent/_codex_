@@ -24,7 +24,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -346,7 +346,7 @@ class AgentMemory:
 
             conn.commit()
 
-    def store_memory(self, entry: Union[MemoryEntry, dict, None] = None, **kwargs: Any) -> None:
+    def store_memory(self, entry: MemoryEntry | dict | None = None, **kwargs: Any) -> None:
         """
         Store a memory entry.
 
@@ -425,7 +425,7 @@ class AgentMemory:
             conn.commit()
 
     def add_memory(
-        self, entry: Union[MemoryEntry, dict, None] = None, **kwargs: Any
+        self, entry: MemoryEntry | dict | None = None, **kwargs: Any
     ) -> None:
         """
         Add a memory entry (alias for store_memory for API consistency).
@@ -453,7 +453,7 @@ class AgentMemory:
 
     def retrieve_memory(
         self, memory_id: str = None, key: str = None
-    ) -> Optional[Union[MemoryEntry, str]]:
+    ) -> Optional[MemoryEntry | str]:
         """
         Retrieve a memory by ID or key.
 

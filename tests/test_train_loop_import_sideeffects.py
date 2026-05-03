@@ -22,7 +22,6 @@ def test_import_has_no_artifact_side_effects(tmp_path, monkeypatch):
 
 
 def test_run_training_creates_artifacts_on_demand(tmp_path):
-    import codex_ml  # noqa: F401 — ensure parent package is in sys.modules before reload
     module = importlib.import_module("codex_ml.train_loop")
     module = importlib.reload(module)
 

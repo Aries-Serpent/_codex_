@@ -6,16 +6,16 @@ Test module for prometheus metrics.
 
 #!/usr/bin/env python3
 """Tests for Prometheus metrics collection."""
-import sys  # noqa: E402
-from pathlib import Path  # noqa: E402
+import sys
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from codex_ml.monitoring.metrics import (  # noqa: E402
+from codex_ml.monitoring.metrics import (
     MetricsCollector,
     get_metrics_collector,
     record_latency,
@@ -39,7 +39,7 @@ def clear_prometheus_registry():
         if collector not in collectors_before:
             try:
                 REGISTRY.unregister(collector)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 pass  # Already unregistered
 
 

@@ -5,7 +5,7 @@ Provides embeddings using llama.cpp inference engine.
 """
 
 import logging
-from typing import List, Optional, Union
+from typing import Optional
 
 import numpy as np
 
@@ -96,7 +96,7 @@ class LlamaCppEmbeddingProvider:
 
     def encode(
         self,
-        texts: Union[str, List[str]],
+        texts: str | list[str],
         batch_size: int = 32,
         show_progress: bool = False,
     ) -> np.ndarray:

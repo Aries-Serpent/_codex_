@@ -15,8 +15,8 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
-import torch  # noqa: E402
-from training.engine_hf_trainer import run_hf_trainer  # noqa: E402
+import torch
+from training.engine_hf_trainer import run_hf_trainer
 
 
 def test_hf_trainer_hydra_lora_cfg(monkeypatch, tmp_path):

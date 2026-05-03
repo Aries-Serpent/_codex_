@@ -9,7 +9,7 @@ import logging
 import os
 import time
 from datetime import datetime, timezone
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import httpx
 
@@ -254,7 +254,7 @@ class GitHubClient:
         self,
         owner: str,
         repo: str,
-        workflow_id: Union[int, str],
+        workflow_id: int | str,
     ) -> WorkflowInfo:
         """Get workflow by ID or filename.
 
@@ -273,7 +273,7 @@ class GitHubClient:
         self,
         owner: str,
         repo: str,
-        workflow_id: Union[int, str],
+        workflow_id: int | str,
         ref: str = "main",
         inputs: Optional[dict[str, Any]] = None,
     ) -> Optional[int]:
@@ -324,7 +324,7 @@ class GitHubClient:
         self,
         owner: str,
         repo: str,
-        workflow_id: Optional[Union[int, str]] = None,
+        workflow_id: Optional[int | str] = None,
         branch: Optional[str] = None,
         event: Optional[str] = None,
         status: Optional[RunStatus] = None,

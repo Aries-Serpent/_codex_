@@ -18,8 +18,8 @@ Author: Codex Team
 from __future__ import annotations
 
 import importlib.util
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 import pytest
 
@@ -81,7 +81,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     for item in items:
         try:
             path = Path(item.fspath).resolve()
-        except Exception:  # pragma: no cover - defensive  # noqa: BLE001
+        except Exception:  # pragma: no cover - defensive
             continue
         if not path.is_relative_to(_TRAINING_DIR):
             continue

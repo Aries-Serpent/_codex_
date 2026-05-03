@@ -4,9 +4,10 @@ Parallel AST parsing for improved performance.
 
 import logging
 import threading
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Optional
 
 from .node import StandardizedASTNode
 from .parser import parse_python

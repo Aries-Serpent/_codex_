@@ -12,7 +12,7 @@ Provides Python-specific AST analysis with metadata extraction for:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 try:
     import libcst as cst
@@ -241,7 +241,7 @@ class PythonASTAdapter(BaseASTAdapter):
                 )
                 parent.children.append(assign_node)
 
-    def _extract_function_metadata(self, func: cst.FunctionDef) -> Dict[str, Any]:
+    def _extract_function_metadata(self, func: cst.FunctionDef) -> dict[str, Any]:
         """Extract metadata from function definition."""
         metadata = {}
 
@@ -278,7 +278,7 @@ class PythonASTAdapter(BaseASTAdapter):
 
         return metadata
 
-    def _extract_class_metadata(self, cls: cst.ClassDef) -> Dict[str, Any]:
+    def _extract_class_metadata(self, cls: cst.ClassDef) -> dict[str, Any]:
         """Extract metadata from class definition."""
         metadata = {}
 
@@ -307,7 +307,7 @@ class PythonASTAdapter(BaseASTAdapter):
 
         return metadata
 
-    def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
+    def extract_metadata(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Extract Python-specific metadata from a standardized node.
 

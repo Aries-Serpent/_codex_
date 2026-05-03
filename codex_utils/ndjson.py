@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Mapping
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping
+from typing import Any
 
 try:
     # re-exported for backwards compat
@@ -47,7 +48,7 @@ class NDJSONLogger(_CoreNDJSONLogger):
         ensure_ascii: bool = False,
         run_id: str | None = None,
     ) -> None:
-        rotation: Dict[str, Any] = {}
+        rotation: dict[str, Any] = {}
         if max_bytes is not None:
             rotation["max_bytes"] = max_bytes
         if max_age_s is not None:

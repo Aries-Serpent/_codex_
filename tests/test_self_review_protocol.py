@@ -6,7 +6,7 @@ from pathlib import Path
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from ai_self_review_protocol import (  # noqa: E402
+from ai_self_review_protocol import (
     Issue,
     IssueType,
     Priority,
@@ -14,7 +14,7 @@ from ai_self_review_protocol import (  # noqa: E402
     ReviewStatus,
     SelfReviewProtocol,
 )
-from code_change_reviewer import CodeChangeReviewer  # noqa: E402
+from code_change_reviewer import CodeChangeReviewer
 
 
 def test_issue_creation():

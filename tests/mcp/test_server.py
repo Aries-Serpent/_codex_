@@ -1,7 +1,7 @@
 """Unit tests for MCP server behavior."""
 
 import asyncio
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pytest
 
@@ -34,13 +34,13 @@ def test_server_listtools_request() -> None:
     server = MCPServer(tool_registry=registry)
 
     # Act: JSON-RPC request (not notification) for mcp.listTools
-    request: Dict[str, Any] = {
+    request: dict[str, Any] = {
         "jsonrpc": "2.0",
         "id": "abc",
         "method": "mcp.listTools",
         "params": {},
     }
-    response: Optional[Dict[str, Any]] = _run(server.handle_request(request))
+    response: Optional[dict[str, Any]] = _run(server.handle_request(request))
 
     # Assert: JSON-RPC response structure
     assert response is not None
@@ -67,7 +67,7 @@ def test_server_notification_handling() -> None:
     server = MCPServer(tool_registry=registry)
 
     # Notification: no "id" field
-    request: Dict[str, Any] = {
+    request: dict[str, Any] = {
         "jsonrpc": "2.0",
         "method": "mcp.listTools",
         "params": {},
@@ -91,13 +91,13 @@ def test_server_negotiate_version() -> None:
     server = MCPServer(tool_registry=registry)
 
     # Act: JSON-RPC request for mcp.negotiateVersion with client supporting multiple versions
-    request: Dict[str, Any] = {
+    request: dict[str, Any] = {
         "jsonrpc": "2.0",
         "id": "vneg",
         "method": "mcp.negotiateVersion",
         "params": {"supported": ["0.9", "1.0"]},
     }
-    response: Optional[Dict[str, Any]] = _run(server.handle_request(request))
+    response: Optional[dict[str, Any]] = _run(server.handle_request(request))
 
     # Assert: JSON-RPC response structure
     assert response is not None
@@ -121,13 +121,13 @@ def test_server_negotiate_version_no_overlap() -> None:
     server = MCPServer(tool_registry=registry)
 
     # Act: JSON-RPC request with no overlapping versions
-    request: Dict[str, Any] = {
+    request: dict[str, Any] = {
         "jsonrpc": "2.0",
         "id": "vneg-no-overlap",
         "method": "mcp.negotiateVersion",
         "params": {"supported": ["0.8", "0.9"]},
     }
-    response: Optional[Dict[str, Any]] = _run(server.handle_request(request))
+    response: Optional[dict[str, Any]] = _run(server.handle_request(request))
 
     # Assert: JSON-RPC error response
     assert response is not None

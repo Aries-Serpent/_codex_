@@ -13,6 +13,7 @@ Stages (all CPU-safe):
 
 from __future__ import annotations
 
+import importlib.util
 import logging
 import time
 from typing import TYPE_CHECKING, Any
@@ -155,12 +156,8 @@ def _denoise(img: np.ndarray, cfg: PipelineConfig, sigma: float = 0.1) -> np.nda
 
 def _pick_algorithm() -> str:
     """Return the best available denoising algorithm."""
-    try:
-        import bm3d as _  # noqa: F401
-
+    if importlib.util.find_spec("bm3d") is not None:
         return "bm3d"
-    except ImportError:
-        logger.debug("Suppressed exception in handler", exc_info=True)
     return "nl_means"
 
 

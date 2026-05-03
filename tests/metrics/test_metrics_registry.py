@@ -8,16 +8,16 @@ np = pytest.importorskip("numpy")
 import pytest
 
 # Skip entire module if torch is not available or unloadable
-import torch  # noqa: E402
-from codex_ml.metrics.base import BaseMetric  # noqa: E402
-from codex_ml.metrics.classification import (  # noqa: E402
+import torch
+from codex_ml.metrics.base import BaseMetric
+from codex_ml.metrics.classification import (
     StreamingAccuracy,
     accuracy,
     f1,
     precision,
     recall,
 )
-from codex_ml.metrics.streaming import StreamingLoss  # noqa: E402
+from codex_ml.metrics.streaming import StreamingLoss
 
 
 class TestBaseMetricInterface:

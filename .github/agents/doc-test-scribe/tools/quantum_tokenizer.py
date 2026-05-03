@@ -26,7 +26,7 @@ import math
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any
 
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -52,10 +52,10 @@ class QuantumToken:
     """
     value: str
     type: str
-    amplitudes: Dict[str, float] = field(default_factory=dict)
-    semantic_states: List[str] = field(default_factory=list)
-    entangled_with: Set[str] = field(default_factory=set)
-    position: Tuple[int, int] = (0, 0)
+    amplitudes: dict[str, float] = field(default_factory=dict)
+    semantic_states: list[str] = field(default_factory=list)
+    entangled_with: set[str] = field(default_factory=set)
+    position: tuple[int, int] = (0, 0)
     context: str = ""
 
     def __post_init__(self):
@@ -66,7 +66,7 @@ class QuantumToken:
             self.amplitudes = {state: amplitude for state in self.semantic_states}
 
     @property
-    def probabilities(self) -> Dict[str, float]:
+    def probabilities(self) -> dict[str, float]:
         """Get probability distribution (|α|²)."""
         return {state: abs(amp)**2 for state, amp in self.amplitudes.items()}
 
@@ -100,7 +100,7 @@ class QuantumToken:
 
         return -sum(p * math.log2(p) if p > 0 else 0 for p in probs)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             'value': self.value,
@@ -133,7 +133,7 @@ class EntangledPair:
     relationship: str  # "defines", "uses", "returns", "param_of"
     confidence: float  # Confidence in entanglement (0 to 1)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             'token1': self.token1,
             'token2': self.token2,
@@ -176,7 +176,7 @@ class QuantumTokenizer:
         self.tfidf = TfidfVectorizer(ngram_range=(1, 2))
         self._fitted = False
 
-    def tokenize(self, source_code: str) -> List[QuantumToken]:
+    def tokenize(self, source_code: str) -> list[QuantumToken]:
         """
         Tokenize source code into quantum tokens.
 
@@ -324,7 +324,7 @@ class QuantumTokenizer:
             context=""
         )
 
-    def _infer_semantic_states_from_name(self, name: str) -> List[str]:
+    def _infer_semantic_states_from_name(self, name: str) -> list[str]:
         """
         Infer semantic states from variable/function name.
 
@@ -413,7 +413,7 @@ class QuantumTokenizer:
 
         return '\n'.join(context_parts)
 
-    def _tokenize_fallback(self, source_code: str) -> List[QuantumToken]:
+    def _tokenize_fallback(self, source_code: str) -> list[QuantumToken]:
         """Fallback tokenization using regex."""
         tokens = []
 
@@ -432,8 +432,8 @@ class QuantumTokenizer:
 
     def find_entanglements(
         self,
-        tokens: List[QuantumToken]
-    ) -> List[EntangledPair]:
+        tokens: list[QuantumToken]
+    ) -> list[EntangledPair]:
         """
         Find entangled token pairs.
 
@@ -452,7 +452,7 @@ class QuantumTokenizer:
         entanglements = []
 
         # Build position index
-        by_line: Dict[int, List[QuantumToken]] = defaultdict(list)
+        by_line: dict[int, list[QuantumToken]] = defaultdict(list)
         for token in tokens:
             by_line[token.position[0]].append(token)
 
@@ -516,9 +516,8 @@ class QuantumTokenizer:
             context_sim = 0.0
 
         # Weighted average
-        correlation = 0.6 * semantic_overlap + 0.4 * context_sim
+        return 0.6 * semantic_overlap + 0.4 * context_sim
 
-        return correlation
 
     def _infer_relationship(
         self,
@@ -546,9 +545,9 @@ class QuantumTokenizer:
 
     def build_semantic_map(
         self,
-        tokens: List[QuantumToken],
-        entanglements: List[EntangledPair]
-    ) -> Dict[str, Any]:
+        tokens: list[QuantumToken],
+        entanglements: list[EntangledPair]
+    ) -> dict[str, Any]:
         """
         Build semantic map of tokenized code.
 
@@ -584,7 +583,7 @@ class QuantumTokenizer:
             entanglement_network[pair.token2].append(pair.token1)
 
         # Build map
-        semantic_map = {
+        return {
             'total_tokens': total_tokens,
             'token_types': dict(by_type),
             'semantic_distribution': dict(by_semantic),
@@ -597,13 +596,12 @@ class QuantumTokenizer:
             'entanglements': [pair.to_dict() for pair in entanglements],
         }
 
-        return semantic_map
 
     def _find_most_entangled(
         self,
-        network: Dict[str, List[str]],
+        network: dict[str, list[str]],
         k: int = 5
-    ) -> List[Tuple[str, int]]:
+    ) -> list[tuple[str, int]]:
         """Find tokens with most entanglements."""
         counts = [(token, len(partners)) for token, partners in network.items()]
         counts.sort(key=lambda x: x[1], reverse=True)
@@ -611,9 +609,9 @@ class QuantumTokenizer:
 
     def collapse_ambiguity(
         self,
-        tokens: List[QuantumToken],
+        tokens: list[QuantumToken],
         context_code: str
-    ) -> List[QuantumToken]:
+    ) -> list[QuantumToken]:
         """
         Collapse wave functions to resolve semantic ambiguity.
 
@@ -649,7 +647,7 @@ class QuantumTokenizer:
 
         return collapsed
 
-    def _extract_type_annotations(self, tree: ast.AST) -> Dict[str, str]:
+    def _extract_type_annotations(self, tree: ast.AST) -> dict[str, str]:
         """Extract type annotations from AST."""
         annotations = {}
 

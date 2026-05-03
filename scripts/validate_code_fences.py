@@ -11,10 +11,10 @@ Detects:
 import argparse
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
-def check_code_fences(file_path: Path) -> List[Dict[str, Any]]:
+def check_code_fences(file_path: Path) -> list[dict[str, Any]]:
     """
     Check for malformed code fences in markdown file.
 
@@ -73,7 +73,7 @@ def check_code_fences(file_path: Path) -> List[Dict[str, Any]]:
     return issues
 
 
-def fix_code_fences(file_path: Path, issues: List[Dict[str, Any]], dry_run: bool = False) -> bool:
+def fix_code_fences(file_path: Path, issues: list[dict[str, Any]], dry_run: bool = False) -> bool:
     """
     Fix code fence issues.
 

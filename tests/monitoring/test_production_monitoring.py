@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pytest
 
@@ -27,7 +27,7 @@ import pytest
 
 
 @pytest.fixture
-def mock_health_check_config() -> Dict[str, Any]:
+def mock_health_check_config() -> dict[str, Any]:
     """Fixture for health check configuration."""
     return {
         "liveness": {
@@ -52,7 +52,7 @@ def mock_health_check_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def mock_metrics_config() -> Dict[str, Any]:
+def mock_metrics_config() -> dict[str, Any]:
     """Fixture for metrics collection configuration."""
     return {
         "collection_interval": 15,
@@ -67,7 +67,7 @@ def mock_metrics_config() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def mock_resource_thresholds() -> Dict[str, Any]:
+def mock_resource_thresholds() -> dict[str, Any]:
     """Fixture for resource monitoring thresholds."""
     return {
         "cpu": {"warning": 70, "critical": 90},
@@ -78,7 +78,7 @@ def mock_resource_thresholds() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def sample_health_response() -> Dict[str, Any]:
+def sample_health_response() -> dict[str, Any]:
     """Sample health check response."""
     return {
         "status": "healthy",
@@ -100,7 +100,7 @@ class TestHealthChecks:
     """Tests for health check functionality."""
 
     def test_liveness_probe_returns_success(
-        self, mock_health_check_config: Dict[str, Any]
+        self, mock_health_check_config: dict[str, Any]
     ):
         """Test that liveness probe returns success when service is alive."""
         config = mock_health_check_config["liveness"]
@@ -110,7 +110,7 @@ class TestHealthChecks:
         assert is_alive is True
 
     def test_liveness_probe_failure_threshold(
-        self, mock_health_check_config: Dict[str, Any]
+        self, mock_health_check_config: dict[str, Any]
     ):
         """Test that liveness probe respects failure threshold."""
         config = mock_health_check_config["liveness"]
@@ -129,7 +129,7 @@ class TestHealthChecks:
         assert failure_count == threshold
 
     def test_readiness_probe_returns_ready(
-        self, mock_health_check_config: Dict[str, Any]
+        self, mock_health_check_config: dict[str, Any]
     ):
         """Test that readiness probe returns ready when dependencies are available."""
         config = mock_health_check_config["readiness"]
@@ -139,14 +139,14 @@ class TestHealthChecks:
         is_ready = all(dependencies.values())
         assert is_ready is True
 
-    def test_readiness_probe_not_ready(self, mock_health_check_config: Dict[str, Any]):
+    def test_readiness_probe_not_ready(self, mock_health_check_config: dict[str, Any]):
         """Test that readiness probe returns not ready when dependencies unavailable."""
         dependencies = {"database": True, "cache": False}
         is_ready = all(dependencies.values())
         assert is_ready is False
 
     def test_startup_probe_initial_delay(
-        self, mock_health_check_config: Dict[str, Any]
+        self, mock_health_check_config: dict[str, Any]
     ):
         """Test that startup probe respects initial delay."""
         config = mock_health_check_config["startup"]
@@ -154,13 +154,13 @@ class TestHealthChecks:
         assert initial_delay == 30
 
     def test_startup_probe_failure_threshold(
-        self, mock_health_check_config: Dict[str, Any]
+        self, mock_health_check_config: dict[str, Any]
     ):
         """Test startup probe failure threshold configuration."""
         config = mock_health_check_config["startup"]
         assert config["failure_threshold"] == 5
 
-    def test_health_check_timeout(self, mock_health_check_config: Dict[str, Any]):
+    def test_health_check_timeout(self, mock_health_check_config: dict[str, Any]):
         """Test health check timeout configuration."""
         liveness_timeout = mock_health_check_config["liveness"]["timeout_seconds"]
         readiness_timeout = mock_health_check_config["readiness"]["timeout_seconds"]
@@ -168,14 +168,14 @@ class TestHealthChecks:
         assert liveness_timeout == 5
         assert readiness_timeout == 3
 
-    def test_health_response_structure(self, sample_health_response: Dict[str, Any]):
+    def test_health_response_structure(self, sample_health_response: dict[str, Any]):
         """Test health response has correct structure."""
         assert "status" in sample_health_response
         assert "timestamp" in sample_health_response
         assert "checks" in sample_health_response
         assert sample_health_response["status"] == "healthy"
 
-    def test_component_health_checks(self, sample_health_response: Dict[str, Any]):
+    def test_component_health_checks(self, sample_health_response: dict[str, Any]):
         """Test individual component health checks."""
         checks = sample_health_response["checks"]
 
@@ -184,7 +184,7 @@ class TestHealthChecks:
             assert "latency_ms" in status
             assert status["status"] == "up"
 
-    def test_aggregated_health_status(self, sample_health_response: Dict[str, Any]):
+    def test_aggregated_health_status(self, sample_health_response: dict[str, Any]):
         """Test aggregated health status calculation."""
         checks = sample_health_response["checks"]
         all_healthy = all(c["status"] == "up" for c in checks.values())
@@ -201,31 +201,31 @@ class TestHealthChecks:
 class TestMetricsCollection:
     """Tests for metrics collection and aggregation."""
 
-    def test_metrics_collection_interval(self, mock_metrics_config: Dict[str, Any]):
+    def test_metrics_collection_interval(self, mock_metrics_config: dict[str, Any]):
         """Test metrics collection interval configuration."""
         assert mock_metrics_config["collection_interval"] == 15
 
-    def test_metrics_retention_period(self, mock_metrics_config: Dict[str, Any]):
+    def test_metrics_retention_period(self, mock_metrics_config: dict[str, Any]):
         """Test metrics retention period configuration."""
         assert mock_metrics_config["retention_days"] == 30
 
-    def test_metrics_aggregation_window(self, mock_metrics_config: Dict[str, Any]):
+    def test_metrics_aggregation_window(self, mock_metrics_config: dict[str, Any]):
         """Test metrics aggregation window configuration."""
         assert mock_metrics_config["aggregation_window"] == 60
 
-    def test_metrics_exporters_configured(self, mock_metrics_config: Dict[str, Any]):
+    def test_metrics_exporters_configured(self, mock_metrics_config: dict[str, Any]):
         """Test that metrics exporters are properly configured."""
         exporters = mock_metrics_config["exporters"]
         assert "prometheus" in exporters
         assert "json" in exporters
 
-    def test_custom_metrics_histogram_type(self, mock_metrics_config: Dict[str, Any]):
+    def test_custom_metrics_histogram_type(self, mock_metrics_config: dict[str, Any]):
         """Test custom histogram metric configuration."""
         latency_metric = mock_metrics_config["custom_metrics"]["request_latency"]
         assert latency_metric["type"] == "histogram"
         assert len(latency_metric["buckets"]) == 4
 
-    def test_custom_metrics_gauge_type(self, mock_metrics_config: Dict[str, Any]):
+    def test_custom_metrics_gauge_type(self, mock_metrics_config: dict[str, Any]):
         """Test custom gauge metric configuration."""
         error_metric = mock_metrics_config["custom_metrics"]["error_rate"]
         assert error_metric["type"] == "gauge"
@@ -235,7 +235,7 @@ class TestMetricsCollection:
         """Test recording metric values."""
         metrics = {}
 
-        def record_metric(name: str, value: float, labels: Optional[Dict] = None):
+        def record_metric(name: str, value: float, labels: Optional[dict] = None):
             key = f"{name}:{json.dumps(labels or {})}"
             if key not in metrics:
                 metrics[key] = []
@@ -274,38 +274,38 @@ class TestMetricsCollection:
 class TestResourceMonitoring:
     """Tests for resource monitoring capabilities."""
 
-    def test_cpu_threshold_warning(self, mock_resource_thresholds: Dict[str, Any]):
+    def test_cpu_threshold_warning(self, mock_resource_thresholds: dict[str, Any]):
         """Test CPU warning threshold configuration."""
         assert mock_resource_thresholds["cpu"]["warning"] == 70
 
-    def test_cpu_threshold_critical(self, mock_resource_thresholds: Dict[str, Any]):
+    def test_cpu_threshold_critical(self, mock_resource_thresholds: dict[str, Any]):
         """Test CPU critical threshold configuration."""
         assert mock_resource_thresholds["cpu"]["critical"] == 90
 
-    def test_memory_threshold_warning(self, mock_resource_thresholds: Dict[str, Any]):
+    def test_memory_threshold_warning(self, mock_resource_thresholds: dict[str, Any]):
         """Test memory warning threshold configuration."""
         assert mock_resource_thresholds["memory"]["warning"] == 75
 
-    def test_memory_threshold_critical(self, mock_resource_thresholds: Dict[str, Any]):
+    def test_memory_threshold_critical(self, mock_resource_thresholds: dict[str, Any]):
         """Test memory critical threshold configuration."""
         assert mock_resource_thresholds["memory"]["critical"] == 95
 
-    def test_disk_threshold_warning(self, mock_resource_thresholds: Dict[str, Any]):
+    def test_disk_threshold_warning(self, mock_resource_thresholds: dict[str, Any]):
         """Test disk warning threshold configuration."""
         assert mock_resource_thresholds["disk"]["warning"] == 80
 
-    def test_disk_threshold_critical(self, mock_resource_thresholds: Dict[str, Any]):
+    def test_disk_threshold_critical(self, mock_resource_thresholds: dict[str, Any]):
         """Test disk critical threshold configuration."""
         assert mock_resource_thresholds["disk"]["critical"] == 95
 
-    def test_network_latency_thresholds(self, mock_resource_thresholds: Dict[str, Any]):
+    def test_network_latency_thresholds(self, mock_resource_thresholds: dict[str, Any]):
         """Test network latency threshold configuration."""
         network = mock_resource_thresholds["network"]
         assert network["latency_warning_ms"] == 100
         assert network["latency_critical_ms"] == 500
 
     def test_threshold_violation_detection(
-        self, mock_resource_thresholds: Dict[str, Any]
+        self, mock_resource_thresholds: dict[str, Any]
     ):
         """Test detection of threshold violations."""
         cpu_usage = 85

@@ -51,7 +51,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ def _load_recorder():
     return mod
 
 
-def _get_staged_py_files() -> List[str]:
+def _get_staged_py_files() -> list[str]:
     """Return list of staged (added/modified) Python file paths."""
     try:
         result = subprocess.run(
@@ -117,14 +117,14 @@ def _get_staged_blob(path: str) -> Optional[str]:
     return None
 
 
-def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
+def _detect_patterns_in_source(source: str, filename: str) -> set[str]:
     """Run pattern detection on *source* text and return pattern names found.
 
     Uses a lightweight subset of the checks from ``auto_fix_common_issues.py``
     that can operate on a string buffer without file I/O — specifically the
     patterns that are both auto-fixable and historically high-recurrence.
     """
-    detected: Set[str] = set()
+    detected: set[str] = set()
 
     # Pattern 18: Duplicate Kwargs — use AST directly
     try:
@@ -132,7 +132,7 @@ def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
         tree = _ast.parse(source, filename=filename)
         for node in _ast.walk(tree):
             if isinstance(node, _ast.Call):
-                seen: Dict[str, int] = {}
+                seen: dict[str, int] = {}
                 for kw in node.keywords:
                     if kw.arg is None:
                         continue
@@ -192,7 +192,7 @@ def run_check() -> int:
         return 0
 
     conn = recorder._open_db(_DB_PATH)
-    high_rec: List[Dict[str, Any]] = recorder.high_recurrence(
+    high_rec: list[dict[str, Any]] = recorder.high_recurrence(
         conn,
         min_occurrences=_MIN_OCC,
         min_fix_rate=_MIN_RATE,
@@ -202,13 +202,13 @@ def run_check() -> int:
     if not high_rec:
         return 0  # no high-recurrence patterns in history — nothing to warn about
 
-    high_rec_names: Set[str] = {r["pattern_name"] for r in high_rec}
+    high_rec_names: set[str] = {r["pattern_name"] for r in high_rec}
     staged_files = _get_staged_py_files()
 
     if not staged_files:
         return 0
 
-    warnings: List[str] = []
+    warnings: list[str] = []
     for fpath in staged_files:
         blob = _get_staged_blob(fpath)
         if blob is None:

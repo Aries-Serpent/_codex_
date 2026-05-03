@@ -13,7 +13,7 @@ Run: python examples/physics_nlp_standalone.py
 def generate_physics_statement_classical_mechanics():
     """Generate logical physics statement for classical mechanics"""
 
-    statement = """
+    return """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║  LOGICAL PHYSICS STATEMENT #1: Newton's Laws and Conservation Principles  ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -94,13 +94,12 @@ from atomic collisions to planetary motion.
 
 ═══════════════════════════════════════════════════════════════════════════╝
 """
-    return statement
 
 
 def generate_physics_statement_thermodynamics():
     """Generate logical physics statement for thermodynamics"""
 
-    statement = """
+    return """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║   LOGICAL PHYSICS STATEMENT #2: Entropy and the Arrow of Time            ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -232,13 +231,12 @@ requires energy dissipation.
 
 ═══════════════════════════════════════════════════════════════════════════╝
 """
-    return statement
 
 
 def generate_physics_statement_quantum_mechanics():
     """Generate logical physics statement for quantum mechanics"""
 
-    statement = """
+    return """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║  LOGICAL PHYSICS STATEMENT #3: Measurement and Quantum Uncertainty        ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -395,13 +393,12 @@ Conclusion:
 
 ═══════════════════════════════════════════════════════════════════════════╝
 """
-    return statement
 
 
 def generate_physics_statement_relativity():
     """Generate logical physics statement for relativity"""
 
-    statement = """
+    return """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║  LOGICAL PHYSICS STATEMENT #4: Spacetime Geometry and Mass-Energy        ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -590,7 +587,6 @@ Conclusion:
 
 ═══════════════════════════════════════════════════════════════════════════╝
 """
-    return statement
 
 
 def main():

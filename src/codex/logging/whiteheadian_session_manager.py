@@ -23,7 +23,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class Prehension:
     prehending_session_id: str  # The current session doing the prehending
     intensity: float  # 0.0 (weak) to 1.0 (strong)
     positive: bool  # True = positive prehension, False = negative prehension
-    datum: Dict[str, Any]  # The content being prehended
+    datum: dict[str, Any]  # The content being prehended
     prehended_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
     def __post_init__(self) -> None:
@@ -78,13 +78,13 @@ class ActualOccasion:
 
     session_id: str
     phase: SessionPhase = SessionPhase.INITIAL
-    prehensions: List[Prehension] = field(default_factory=list)
+    prehensions: list[Prehension] = field(default_factory=list)
     subjective_aim: str = ""  # The goal/purpose of this session
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     satisfied_at: Optional[datetime] = None
     definiteness: float = 0.0  # 0.0 (vague) to 1.0 (definite)
     novelty_contribution: float = 0.0  # How much new reality was created
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.definiteness <= 1.0:
@@ -115,15 +115,15 @@ class WhiteheadianSessionManager:
     """
 
     def __init__(self) -> None:
-        self.occasions: Dict[str, ActualOccasion] = {}
-        self.prehension_network: Dict[str, List[str]] = {}  # session_id -> prehended sessions
+        self.occasions: dict[str, ActualOccasion] = {}
+        self.prehension_network: dict[str, list[str]] = {}  # session_id -> prehended sessions
         LOGGER.info("WhiteheadianSessionManager initialized")
 
     def create_session(
         self,
         session_id: str,
         subjective_aim: str,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> ActualOccasion:
         """
         Create a new actual occasion (session).
@@ -151,9 +151,9 @@ class WhiteheadianSessionManager:
     def prehend(
         self,
         occasion: ActualOccasion,
-        past_session_ids: List[str],
+        past_session_ids: list[str],
         positive: bool = True,
-    ) -> List[Prehension]:
+    ) -> list[Prehension]:
         """
         Prehend (incorporate) past sessions into the current session.
 
@@ -170,7 +170,7 @@ class WhiteheadianSessionManager:
             List of created prehensions
         """
         occasion.phase = SessionPhase.PREHENDING
-        created_prehensions: List[Prehension] = []
+        created_prehensions: list[Prehension] = []
 
         for past_id in past_session_ids:
             # Check if past session exists
@@ -345,7 +345,7 @@ class WhiteheadianSessionManager:
 
         return (prehensions + realizations) * definiteness
 
-    def get_prehension_history(self, session_id: str) -> List[str]:
+    def get_prehension_history(self, session_id: str) -> list[str]:
         """
         Get the prehension history of a session.
 
@@ -380,7 +380,7 @@ class WhiteheadianSessionManager:
         LOGGER.debug(f"Creative advance rate: {rate:.2f} sessions/hour")
         return rate
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about sessions and prehensions."""
         satisfied = sum(1 for occ in self.occasions.values() if occ.phase == SessionPhase.SATISFIED)
         total_prehensions = sum(len(occ.prehensions) for occ in self.occasions.values())

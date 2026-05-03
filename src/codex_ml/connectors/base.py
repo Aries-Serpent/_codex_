@@ -29,11 +29,11 @@ logger = logging.getLogger(__name__)
 import asyncio  # noqa: E402
 import os  # noqa: E402
 from abc import ABC, abstractmethod  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Iterable  # noqa: E402
 
-__all__ = ["Connector", "LocalConnector", "ConnectorError"]
+__all__ = ["Connector", "ConnectorError", "LocalConnector"]
 
 
 class ConnectorError(RuntimeError):

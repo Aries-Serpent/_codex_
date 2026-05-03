@@ -94,14 +94,14 @@ except Exception:  # pragma: no cover - degrade gracefully when metrics extras m
 
 if MetricRegistry.__class__.__name__ != "_MissingMetric":
     __all__ += [
-        "MetricRegistry",
-        "F1Score",
-        "RecallScore",
         "BLEUScore",
+        "F1Score",
+        "MetricRegistry",
+        "RecallScore",
         "TokenAccuracy",
         "get_metric",
-        "register_metric",
         "list_metrics",
+        "register_metric",
         "summarize_ndjson_logs",
     ]
 

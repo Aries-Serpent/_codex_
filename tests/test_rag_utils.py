@@ -62,10 +62,10 @@ class TestCheckForMetaTensors:
         causes in PyTorch >=2.0 (see conftest.py for details).
         """
         try:
-            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
 
     def teardown_method(self, method: object) -> None:
@@ -78,10 +78,10 @@ class TestCheckForMetaTensors:
         interferes with meta tensor handling in PyTorch >=2.0.
         """
         try:
-            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
 
     def test_model_without_meta_tensors(self):
@@ -144,19 +144,19 @@ class TestSafeModelLoadV2:
     def setup_method(self, method: object) -> None:
         """Clear default device before each test to prevent meta-device leakage."""
         try:
-            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
 
     def teardown_method(self, method: object) -> None:
         """Clear default device after each test to prevent meta-device leakage."""
         try:
-            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
 
     def test_model_without_meta_tensors(self):

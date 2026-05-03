@@ -13,7 +13,7 @@ import pytest
 
 pytest.importorskip("omegaconf")
 
-from codex_ml.pipeline import run_codex_pipeline_from_config  # noqa: E402
+from codex_ml.pipeline import run_codex_pipeline_from_config
 
 
 @pytest.fixture()

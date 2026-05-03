@@ -20,7 +20,6 @@ from __future__ import annotations
 import importlib
 import json
 from pathlib import Path
-from typing import Dict
 
 import pytest
 
@@ -93,7 +92,7 @@ def test_seed_snapshot_logs_artifact(tmp_path: Path, monkeypatch) -> None:
     tests accept a flexible fake that captures the path via args/kwargs.
     """
     mfu = importlib.import_module("codex_ml.tracking.mlflow_utils")
-    logged: Dict[str, str] = {}
+    logged: dict[str, str] = {}
 
     # Flexible fake that accepts either Path|str and arbitrary args/kwargs
     def fake_log(p: Path | str, *_, **__) -> None:  # pragma: no cover - monkeypatched test helper

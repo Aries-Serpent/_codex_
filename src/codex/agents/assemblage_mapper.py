@@ -24,7 +24,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -63,10 +63,10 @@ class Agent:
 
     agent_id: str
     agent_type: str  # e.g., "github_copilot", "custom_agent", "ci_bot"
-    capabilities: Set[AgentCapability]
+    capabilities: set[AgentCapability]
     active: bool = True
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __hash__(self) -> int:
         return hash(self.agent_id)
@@ -94,22 +94,22 @@ class Assemblage:
     """
 
     assemblage_id: str
-    agents: Set[Agent]
+    agents: set[Agent]
     purpose: str
     state: AssemblageState = AssemblageState.FORMING
     territorialization: float = 0.5  # 0.0 (fluid) to 1.0 (rigid)
     formed_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     dissolved_at: Optional[datetime] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def get_collective_capabilities(self) -> Set[AgentCapability]:
+    def get_collective_capabilities(self) -> set[AgentCapability]:
         """Get all capabilities available in this assemblage."""
-        capabilities: Set[AgentCapability] = set()
+        capabilities: set[AgentCapability] = set()
         for agent in self.agents:
             capabilities.update(agent.capabilities)
         return capabilities
 
-    def can_accomplish(self, required_capabilities: Set[AgentCapability]) -> bool:
+    def can_accomplish(self, required_capabilities: set[AgentCapability]) -> bool:
         """Check if assemblage has all required capabilities."""
         collective = self.get_collective_capabilities()
         return required_capabilities.issubset(collective)
@@ -170,9 +170,9 @@ class AssemblageMapper:
     """
 
     def __init__(self) -> None:
-        self.agents: Dict[str, Agent] = {}
-        self.assemblages: Dict[str, Assemblage] = {}
-        self.assemblage_history: List[Assemblage] = []
+        self.agents: dict[str, Agent] = {}
+        self.assemblages: dict[str, Assemblage] = {}
+        self.assemblage_history: list[Assemblage] = []
         LOGGER.info("AssemblageMapper initialized")
 
     def register_agent(self, agent: Agent) -> None:
@@ -191,7 +191,7 @@ class AssemblageMapper:
             del self.agents[agent_id]
             LOGGER.info(f"Unregistered agent {agent_id}")
 
-    def find_agents_with_capability(self, capability: AgentCapability) -> List[Agent]:
+    def find_agents_with_capability(self, capability: AgentCapability) -> list[Agent]:
         """Find all agents with a specific capability."""
         return [
             agent
@@ -202,9 +202,9 @@ class AssemblageMapper:
     def form_assemblage(
         self,
         assemblage_id: str,
-        required_capabilities: Set[AgentCapability],
+        required_capabilities: set[AgentCapability],
         purpose: str,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> Optional[Assemblage]:
         """
         Form an assemblage with agents that collectively have required capabilities.
@@ -219,8 +219,8 @@ class AssemblageMapper:
             Formed assemblage, or None if capabilities cannot be met
         """
         # Find agents that can contribute
-        selected_agents: Set[Agent] = set()
-        covered_capabilities: Set[AgentCapability] = set()
+        selected_agents: set[Agent] = set()
+        covered_capabilities: set[AgentCapability] = set()
 
         # Greedy selection: add agents until all capabilities are covered
         for capability in required_capabilities:
@@ -274,11 +274,11 @@ class AssemblageMapper:
 
             LOGGER.info(f"Dissolved assemblage {assemblage_id}")
 
-    def get_active_assemblages(self) -> List[Assemblage]:
+    def get_active_assemblages(self) -> list[Assemblage]:
         """Get all active assemblages."""
         return [a for a in self.assemblages.values() if a.state == AssemblageState.ACTIVE]
 
-    def get_agent_assemblages(self, agent_id: str) -> List[Assemblage]:
+    def get_agent_assemblages(self, agent_id: str) -> list[Assemblage]:
         """Get all assemblages that include a specific agent."""
         agent = self.agents.get(agent_id)
         if not agent:
@@ -315,7 +315,7 @@ class AssemblageMapper:
         return active_agents * avg_capabilities * (0.5 + 0.5 * fluidity)
 
     def optimize_assemblage(
-        self, assemblage_id: str, target_capabilities: Set[AgentCapability]
+        self, assemblage_id: str, target_capabilities: set[AgentCapability]
     ) -> None:
         """
         Optimize an assemblage by adding/removing agents.
@@ -351,7 +351,7 @@ class AssemblageMapper:
         # Remove agents with redundant capabilities (if assemblage is over-staffed)
         # This would be a more complex algorithm - skipped for brevity
 
-    def export_assemblage_map(self) -> Dict[str, Any]:
+    def export_assemblage_map(self) -> dict[str, Any]:
         """
         Export the current assemblage map for visualization.
 
@@ -391,7 +391,7 @@ class AssemblageMapper:
             },
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about agents and assemblages."""
         return {
             "total_agents": len(self.agents),

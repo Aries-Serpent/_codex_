@@ -7,13 +7,13 @@ Test module for yaml under configs parse.
 from __future__ import annotations
 
 import pathlib
-from typing import Iterable, List
+from collections.abc import Iterable
 
 import pytest
 import yaml
 
 
-def _iter_yaml_files(root: pathlib.Path) -> List[pathlib.Path]:
+def _iter_yaml_files(root: pathlib.Path) -> list[pathlib.Path]:
     if not root.exists():
         return []
     files: Iterable[pathlib.Path] = root.rglob("*")

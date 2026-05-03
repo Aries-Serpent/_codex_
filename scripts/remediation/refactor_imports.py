@@ -34,21 +34,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Refactor Import Tool (safe AST-based import rewrites)
-
-Usage:
-  # Dry-run showing proposed changes
-  python scripts/remediation/refactor_imports.py --mapping '{"training":"src.training","tokenization":"src.tokenization"}' --dry-run
-
-  # Apply in small batches (commit-per-batch)
-  python scripts/remediation/refactor_imports.py --mapping mappings.json --apply --batch-size 20
-
-Notes:
-- The tool updates Import and ImportFrom AST nodes to replace base module names.
-- Uses ast for correctness; preserves formatting by writing back source (best-effort).
-- Recommended workflow: run --dry-run, review diffs, run with --apply --batch-size.
-"""
 import argparse
 import ast
 import json

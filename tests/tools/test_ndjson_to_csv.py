@@ -10,7 +10,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-from tools import ndjson_to_csv  # noqa: E402
+from tools import ndjson_to_csv
 
 
 def test_convert_file(tmp_path):

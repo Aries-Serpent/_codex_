@@ -20,8 +20,8 @@ import re
 import subprocess
 import sys
 import uuid
+from collections.abc import Sequence
 from pathlib import Path
-from typing import List, Sequence, Tuple
 
 from codex.utils.subprocess import run as safe_run
 
@@ -123,7 +123,7 @@ def now_iso() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat()
 
 
-def run(cmd: List[str]) -> Tuple[int, str, str]:
+def run(cmd: list[str]) -> tuple[int, str, str]:
     try:
         proc = safe_run(cmd, capture_output=True)
         return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
@@ -365,7 +365,7 @@ def insert_import(src: str, name: str) -> str:
     return prefix + insertion + suffix
 
 
-def py_compile_file(py_path: Path) -> Tuple[bool, str]:
+def py_compile_file(py_path: Path) -> tuple[bool, str]:
     code, out, err = run([sys.executable, "-m", "py_compile", str(py_path)])
     ok = code == 0
     return ok, (err or out)

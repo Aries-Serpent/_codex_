@@ -6,9 +6,9 @@ import os
 import shlex
 import subprocess
 import sys
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Iterable, Mapping, Sequence
 
 
 @dataclass(frozen=True)

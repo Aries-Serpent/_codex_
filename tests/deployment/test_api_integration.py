@@ -8,9 +8,9 @@ import pytest
 
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
 
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi.testclient import TestClient
 
-from services.api.main import app  # noqa: E402
+from services.api.main import app
 
 client = TestClient(app)
 

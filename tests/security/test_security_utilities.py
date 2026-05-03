@@ -26,12 +26,12 @@ pytestmark = pytest.mark.skipif(
 )
 
 # Import security utilities
-import sys  # noqa: E402
+import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load  # noqa: E402
-from utils.safe_torch_loader import safe_load  # noqa: E402
+from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load
+from utils.safe_torch_loader import safe_load
 
 
 class TestSafeTorchLoader:

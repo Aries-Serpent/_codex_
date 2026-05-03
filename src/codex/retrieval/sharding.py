@@ -12,8 +12,9 @@ from __future__ import annotations
 import bisect
 import hashlib
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +28,9 @@ class ShardInfo:
     total_documents: int = 0
     size_bytes: int = 0
     last_updated: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "shard_id": self.shard_id,
@@ -81,8 +82,8 @@ class ConsistentHashRing:
         self.hash_function = hash_function or self._default_hash
 
         # Ring structure: sorted list of (hash_value, shard_id)
-        self._ring: List[int] = []
-        self._ring_map: Dict[int, int] = {}
+        self._ring: list[int] = []
+        self._ring_map: dict[int, int] = {}
 
         # Build the ring
         self._build_ring()
@@ -164,7 +165,7 @@ class ConsistentHashRing:
         ring_hash = self._ring[idx]
         return self._ring_map[ring_hash]
 
-    def get_shard_distribution(self, keys: List[str]) -> Dict[int, int]:
+    def get_shard_distribution(self, keys: list[str]) -> dict[int, int]:
         """Analyze shard distribution for a list of keys.
 
         Useful for understanding load distribution and
@@ -176,7 +177,7 @@ class ConsistentHashRing:
         Returns:
             Dictionary mapping shard_id to count
         """
-        distribution: Dict[int, int] = {i: 0 for i in range(self.num_shards)}
+        distribution: dict[int, int] = {i: 0 for i in range(self.num_shards)}
 
         for key in keys:
             shard_id = self.get_shard(key)
@@ -288,7 +289,7 @@ class ShardManager:
         self.hash_ring = ConsistentHashRing(num_shards=num_shards, virtual_nodes=virtual_nodes)
 
         # Initialize shard info
-        self.shards: Dict[int, ShardInfo] = {}
+        self.shards: dict[int, ShardInfo] = {}
         for shard_id in range(num_shards):
             self.shards[shard_id] = ShardInfo(
                 shard_id=shard_id, shard_name=f"{shard_name_prefix}_{shard_id:02d}"
@@ -355,7 +356,7 @@ class ShardManager:
         if size_bytes is not None:
             self.shards[shard_id].size_bytes = size_bytes
 
-    def get_all_shards(self) -> List[ShardInfo]:
+    def get_all_shards(self) -> list[ShardInfo]:
         """Get information about all shards.
 
         Returns:
@@ -363,7 +364,7 @@ class ShardManager:
         """
         return list(self.shards.values())
 
-    def get_load_distribution(self) -> Dict[int, Dict[str, Any]]:
+    def get_load_distribution(self) -> dict[int, dict[str, Any]]:
         """Get load distribution across shards.
 
         Returns:
@@ -391,8 +392,8 @@ class ShardManager:
 
 
 __all__ = [
-    "ShardInfo",
     "ConsistentHashRing",
+    "ShardInfo",
     "ShardManager",
     "get_shard_for_id",
 ]

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 __all__ = [
-    "format_optional_dependency_error",
     "build_optional_dependency_error",
+    "format_optional_dependency_error",
     "raise_optional_dependency_error",
 ]
 

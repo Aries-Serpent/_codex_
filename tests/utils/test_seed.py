@@ -17,7 +17,7 @@ from codex_ml.utils.seed import set_seed
 def _optional_import(module: str):
     try:
         return importlib.import_module(module)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 

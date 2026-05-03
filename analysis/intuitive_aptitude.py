@@ -12,7 +12,7 @@ from __future__ import annotations
 import ast
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
 
 __all__ = [
     "intuitive_aptitude",
@@ -34,25 +34,25 @@ class ImportInfo:
 @dataclass
 class FunctionInfo:
     name: str
-    args: List[str]
+    args: list[str]
     defaults: int
-    kwonlyargs: List[str]
-    decorators: List[str]
+    kwonlyargs: list[str]
+    decorators: list[str]
     returns: Optional[str]
     docstring: Optional[str]
     lineno: int
     end_lineno: Optional[int]
     complexity: int = 1
-    calls: List[str] = field(default_factory=list)
+    calls: list[str] = field(default_factory=list)
 
 
 @dataclass
 class ClassInfo:
     name: str
-    bases: List[str]
-    decorators: List[str]
+    bases: list[str]
+    decorators: list[str]
     docstring: Optional[str]
-    methods: Dict[str, FunctionInfo]
+    methods: dict[str, FunctionInfo]
     lineno: int
     end_lineno: Optional[int]
 
@@ -81,7 +81,7 @@ def _unparse(node: ast.AST) -> str:
 class _NameRenamer(ast.NodeTransformer):
     """AST transformer that renames identifiers according to *mapping*."""
 
-    def __init__(self, mapping: Dict[str, str]):
+    def __init__(self, mapping: dict[str, str]):
         super().__init__()
         self.mapping = mapping or {}
 
@@ -128,17 +128,17 @@ class intuitive_aptitude:
     """Code ingestion, analysis & pattern replication system."""
 
     def __init__(self) -> None:
-        self.functions: Dict[str, FunctionInfo] = {}
-        self.classes: Dict[str, ClassInfo] = {}
-        self.imports: List[ImportInfo] = []
-        self.variables: Dict[str, Any] = {}
-        self.patterns: Dict[str, List[Dict[str, Any]]] = {
+        self.functions: dict[str, FunctionInfo] = {}
+        self.classes: dict[str, ClassInfo] = {}
+        self.imports: list[ImportInfo] = []
+        self.variables: dict[str, Any] = {}
+        self.patterns: dict[str, list[dict[str, Any]]] = {
             "error_handling": [],
             "iteration": [],
             "conditional": [],
             "function_calls": [],
         }
-        self.metrics: Dict[str, float] = {
+        self.metrics: dict[str, float] = {
             "loc": 0,
             "comment_ratio": 0.0,
             "complexity": 0.0,
@@ -170,7 +170,7 @@ class intuitive_aptitude:
             self.last_error = f"{type(exc).__name__}: {exc}"
             return False
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Return a high level summary of discovered artefacts."""
 
         return {
@@ -181,7 +181,7 @@ class intuitive_aptitude:
             "metrics": dict(self.metrics),
         }
 
-    def get_detailed_structure(self) -> Dict[str, Any]:
+    def get_detailed_structure(self) -> dict[str, Any]:
         """Return the detailed structure extracted from the AST."""
 
         return {
@@ -197,7 +197,7 @@ class intuitive_aptitude:
             "variables": dict(self.variables),
         }
 
-    def clone_structure(self, mappings: Dict[str, str]) -> str:
+    def clone_structure(self, mappings: dict[str, str]) -> str:
         """Replicate code using the provided *mappings* for identifiers."""
 
         if not self.ast_tree:
@@ -215,10 +215,10 @@ class intuitive_aptitude:
                 code = re.sub(rf"(\.){re.escape(old)}\b", rf"\1{new}", code)
             return code
 
-    def extract_patterns(self) -> Dict[str, List[Dict[str, Any]]]:
+    def extract_patterns(self) -> dict[str, list[dict[str, Any]]]:
         return self.patterns
 
-    def analyze_code_style(self) -> Dict[str, Any]:
+    def analyze_code_style(self) -> dict[str, Any]:
         return {
             "naming": self._analyze_naming_conventions(),
             "indentation": self._analyze_indentation(),
@@ -301,7 +301,7 @@ class intuitive_aptitude:
                 bases = [b for b in (self._expr_to_str(b) for b in node.bases) if b]
                 decorators = [d for d in (self._expr_to_str(d) for d in node.decorator_list) if d]
                 doc = ast.get_docstring(node)
-                methods: Dict[str, FunctionInfo] = {}
+                methods: dict[str, FunctionInfo] = {}
                 for body_node in node.body:
                     if isinstance(body_node, ast.FunctionDef):
                         args = [a.arg for a in body_node.args.args]
@@ -385,7 +385,7 @@ class intuitive_aptitude:
             comments = sum(1 for ln in lines if re.match(r"^\s*#", ln))
             self.metrics["comment_ratio"] = round(comments / len(lines), 4)
 
-        complexities: List[int] = [fi.complexity for fi in self.functions.values()]
+        complexities: list[int] = [fi.complexity for fi in self.functions.values()]
         for cls in self.classes.values():
             complexities.extend(m.complexity for m in cls.methods.values())
         if complexities:
@@ -398,7 +398,7 @@ class intuitive_aptitude:
     # Style analysis helpers
     # ------------------------------------------------------------------
 
-    def _analyze_naming_conventions(self) -> Dict[str, Any]:
+    def _analyze_naming_conventions(self) -> dict[str, Any]:
         snake = camel = pascal = other = 0
 
         def classify(name: str) -> str:
@@ -410,7 +410,7 @@ class intuitive_aptitude:
                 return "pascal"
             return "other"
 
-        names: List[str] = []
+        names: list[str] = []
         names.extend(self.functions.keys())
         names.extend(self.classes.keys())
         names.extend(self.variables.keys())
@@ -435,7 +435,7 @@ class intuitive_aptitude:
             "other": other,
         }
 
-    def _analyze_indentation(self) -> Dict[str, Any]:
+    def _analyze_indentation(self) -> dict[str, Any]:
         spaces2 = spaces4 = tabs = 0
         lines = self._source.splitlines()
         for ln in lines:
@@ -455,7 +455,7 @@ class intuitive_aptitude:
                     spaces2 += 1
         return {"2space": spaces2, "4space": spaces4, "tabs": tabs}
 
-    def _analyze_docstring_style(self) -> Dict[str, Any]:
+    def _analyze_docstring_style(self) -> dict[str, Any]:
         styles = {"Google": 0, "NumPy": 0, "Sphinx": 0, "Simple": 0, "None": 0}
 
         def classify(doc: Optional[str]) -> None:
@@ -493,7 +493,7 @@ class intuitive_aptitude:
                 classify(method.docstring)
         return styles
 
-    def _analyze_functional_style(self) -> Dict[str, Any]:
+    def _analyze_functional_style(self) -> dict[str, Any]:
         func_indicators = 0
         oop_indicators = 0
         comp_count = 0
@@ -560,8 +560,8 @@ class intuitive_aptitude:
         return count
 
     @staticmethod
-    def _find_calls(fn_node: Union[ast.FunctionDef, ast.AsyncFunctionDef]) -> List[str]:
-        calls: List[str] = []
+    def _find_calls(fn_node: ast.FunctionDef | ast.AsyncFunctionDef) -> list[str]:
+        calls: list[str] = []
         for node in ast.walk(fn_node):
             if isinstance(node, ast.Call):
                 callee = intuitive_aptitude._expr_to_str(node.func)
@@ -570,7 +570,7 @@ class intuitive_aptitude:
         return calls
 
     @staticmethod
-    def _cyclomatic_complexity(fn_node: Union[ast.FunctionDef, ast.AsyncFunctionDef]) -> int:
+    def _cyclomatic_complexity(fn_node: ast.FunctionDef | ast.AsyncFunctionDef) -> int:
         cc = 1
         for node in ast.walk(fn_node):
             if isinstance(
@@ -601,7 +601,7 @@ class intuitive_aptitude:
     # ------------------------------------------------------------------
 
     def _generate_imports(self) -> str:
-        lines: List[str] = []
+        lines: list[str] = []
         for imp in self.imports:
             if imp.module is None and imp.name:
                 if imp.alias:
@@ -621,7 +621,7 @@ class intuitive_aptitude:
         return "\n".join(lines)
 
     def _generate_functions(self) -> str:
-        parts: List[str] = []
+        parts: list[str] = []
         for fn in self.functions.values():
             decos = "".join(f"@{decorator}\n" for decorator in fn.decorators if decorator)
             args = ", ".join(fn.args)
@@ -633,12 +633,12 @@ class intuitive_aptitude:
         return "\n\n".join(parts)
 
     def _generate_classes(self) -> str:
-        parts: List[str] = []
+        parts: list[str] = []
         for cls in self.classes.values():
             decos = "".join(f"@{decorator}\n" for decorator in cls.decorators if decorator)
             bases = f"({', '.join(base for base in cls.bases if base)})" if cls.bases else ""
             doc = f'    """{cls.docstring}"""\n' if cls.docstring else "    pass\n"
-            body: List[str] = [doc]
+            body: list[str] = [doc]
             for method in cls.methods.values():
                 m_decos = "".join(
                     f"    @{decorator}\n" for decorator in method.decorators if decorator
@@ -670,7 +670,7 @@ class intuitive_aptitude:
         )
 
 
-def analyze_and_suggest(user_code: str) -> Dict[str, Any]:
+def analyze_and_suggest(user_code: str) -> dict[str, Any]:
     """High level helper used in integration tests.
 
     The function orchestrates ingesting ``user_code`` with
@@ -680,7 +680,7 @@ def analyze_and_suggest(user_code: str) -> Dict[str, Any]:
 
     analyzer = intuitive_aptitude()
     ok = analyzer.ingest(user_code)
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "success": ok,
         "error": analyzer.last_error,
         "summary": analyzer.get_summary() if ok else {},
@@ -692,7 +692,7 @@ def analyze_and_suggest(user_code: str) -> Dict[str, Any]:
     if not ok:
         return result
 
-    suggestions: Dict[str, Any] = {}
+    suggestions: dict[str, Any] = {}
     naming = result["style"].get("naming", {})
     if naming.get("other", 0) > 0:
         suggestions["naming_conventions"] = (

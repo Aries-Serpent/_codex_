@@ -28,7 +28,8 @@ import os
 import re
 import sqlite3
 import sys
-from typing import Any, Iterable, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

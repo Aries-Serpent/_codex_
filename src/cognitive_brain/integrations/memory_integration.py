@@ -22,7 +22,7 @@ import logging
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Dict, Optional
+from typing import Optional
 
 from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
@@ -257,7 +257,7 @@ class MemoryAugmentedComplianceAssessor:
         # Use quantum baseline constant from Phase 8.0
         return avg_time_saved / QUANTUM_FULL_ASSESSMENT_TIME_MS
 
-    def get_statistics(self) -> Dict:
+    def get_statistics(self) -> dict:
         """
         Get comprehensive statistics.
 
@@ -278,7 +278,7 @@ class MemoryAugmentedComplianceAssessor:
         }
 
     @staticmethod
-    def _extract_features(audit: AuditResult) -> Dict[str, float]:
+    def _extract_features(audit: AuditResult) -> dict[str, float]:
         """
         Extract normalized feature vector from audit result.
 

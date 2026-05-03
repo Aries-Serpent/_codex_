@@ -15,7 +15,7 @@ import re
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -151,7 +151,7 @@ class DocumentValidator:
         """Initialize validator with configuration."""
         self.config = config or ValidationConfig()
 
-    def validate_file(self, file_path: Union[str, Path]) -> ValidationResult:
+    def validate_file(self, file_path: str | Path) -> ValidationResult:
         """
         Validate a document file.
 
@@ -377,7 +377,7 @@ class DocumentValidator:
 
 
 def validate_document(
-    source: Union[str, Path, bytes],
+    source: str | Path | bytes,
     filename: Optional[str] = None,
     config: Optional[ValidationConfig] = None,
 ) -> ValidationResult:

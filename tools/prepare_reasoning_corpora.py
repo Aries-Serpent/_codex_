@@ -6,8 +6,9 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from collections.abc import Iterable, Iterator, Mapping
 from pathlib import Path
-from typing import Any, Iterable, Iterator, Mapping
+from typing import Any
 
 from codex_ml.data.checksums import manifest_for_paths
 from codex_ml.data.reasoning_manifest import (

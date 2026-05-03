@@ -21,18 +21,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 # BEGIN: CODEX_IFACE_RL
-"""Reinforcement-learning agent interfaces with a default bandit agent."""
 
 
 import json  # noqa: E402
 from abc import ABC, abstractmethod  # noqa: E402
+from collections.abc import Mapping, MutableMapping, Sequence  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Mapping, MutableMapping, Sequence  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.plugins import rl_agents  # noqa: E402
 
-__all__ = ["RLAgent", "BanditRLAgent", "RLAgentError"]
+__all__ = ["BanditRLAgent", "RLAgent", "RLAgentError"]
 
 
 class RLAgentError(RuntimeError):

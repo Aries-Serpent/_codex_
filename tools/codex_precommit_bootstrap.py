@@ -284,7 +284,7 @@ def upsert_pyproject():
 
 
 def ensure_smoke_test():
-    content = (
+    return (
         textwrap.dedent(
             """
         import pathlib
@@ -298,7 +298,6 @@ def ensure_smoke_test():
         ).strip()
         + "\n"
     )
-    return content
 
 
 def main():

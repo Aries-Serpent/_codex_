@@ -34,4 +34,4 @@ def print_error_json(
     print_json(output)
 
 
-__all__ = ["print_json", "print_error_json"]
+__all__ = ["print_error_json", "print_json"]

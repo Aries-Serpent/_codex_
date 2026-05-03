@@ -20,11 +20,11 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Lightweight registry for model loader callables."""
 
 
 import os  # noqa: E402
-from typing import Any, Callable, Mapping  # noqa: E402
+from collections.abc import Callable, Mapping  # noqa: E402
+from typing import Any  # noqa: E402
 
 _ModelFactory = Callable[..., Any]
 
@@ -76,4 +76,4 @@ def _registry_disabled() -> bool:
     return value.lower() in {"1", "true", "yes", "on"}
 
 
-__all__ = ["register_model", "unregister_model", "get_model", "list_models"]
+__all__ = ["get_model", "list_models", "register_model", "unregister_model"]

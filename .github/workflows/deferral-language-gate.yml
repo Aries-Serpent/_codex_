@@ -115,12 +115,19 @@ jobs:
           DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
         run: |
           if [ -s "${RUNNER_TEMP}/pr_comments.jsonl" ]; then
-            # Only scan comments created within the last 72 hours (S229-CONT-2 fix:
-            # prevents stale historical session comments from permanently blocking
-            # CI on long-lived integration PRs like the 0D_base_ → main PR).
-            SINCE_DATE=$(date -u -d "72 hours ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-                         date -u -v-72H +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-                         echo "2000-01-01T00:00:00Z")
+            # Compute SINCE_DATE as the HEAD commit's authored timestamp so that only
+            # @copilot comments posted AFTER the most-recent push are re-scanned.
+            # This prevents an old "future session" handoff note in a previous commit's
+            # comment from permanently blocking every subsequent push on a long-lived PR.
+            # Fall back to 8 hours ago if git log is unavailable (shallow clone edge-case).
+            HEAD_COMMIT_TIME=$(git log -1 --format="%aI" HEAD 2>/dev/null || echo "")
+            if [ -n "${HEAD_COMMIT_TIME}" ]; then
+              SINCE_DATE="${HEAD_COMMIT_TIME}"
+            else
+              SINCE_DATE=$(date -u -d "8 hours ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
+                           date -u -v-8H +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
+                           echo "2000-01-01T00:00:00Z")
+            fi
             echo "Scanning comments created after: ${SINCE_DATE}"
             python scripts/ci/check_deferral_language.py \
               --pr-comments "${RUNNER_TEMP}/pr_comments.jsonl" \

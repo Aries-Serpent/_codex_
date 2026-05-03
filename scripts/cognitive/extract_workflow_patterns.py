@@ -19,7 +19,6 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict, List
 
 import numpy as np
 import requests
@@ -53,8 +52,8 @@ class WorkflowPattern:
     occurrences: int
 
     # Context
-    related_patterns: List[str]
-    example_workflow_ids: List[int]
+    related_patterns: list[str]
+    example_workflow_ids: list[int]
 
 
 class PatternWave:
@@ -162,7 +161,7 @@ class WorkflowPatternExtractor:
         }
         self.classifier = QuantumPatternClassifier()
 
-    def extract_patterns(self, days_back: int = 30) -> List[WorkflowPattern]:
+    def extract_patterns(self, days_back: int = 30) -> list[WorkflowPattern]:
         """Extract patterns from recent workflow history"""
         print(f"\n🔍 Extracting patterns from last {days_back} days...")
 
@@ -189,7 +188,7 @@ class WorkflowPatternExtractor:
 
         return patterns
 
-    def _fetch_workflows_since(self, since: datetime) -> List[Dict]:
+    def _fetch_workflows_since(self, since: datetime) -> list[dict]:
         """Fetch all workflow runs since given date"""
         url = f"{self.base_url}/actions/runs"
         params = {
@@ -223,7 +222,7 @@ class WorkflowPatternExtractor:
 
         return all_runs
 
-    def _group_by_workflow(self, workflows: List[Dict]) -> Dict[str, List[Dict]]:
+    def _group_by_workflow(self, workflows: list[dict]) -> dict[str, list[dict]]:
         """Group workflows by name"""
         by_name = {}
         for wf in workflows:
@@ -233,7 +232,7 @@ class WorkflowPatternExtractor:
             by_name[name].append(wf)
         return by_name
 
-    def _analyze_workflow(self, name: str, runs: List[Dict]) -> List[WorkflowPattern]:
+    def _analyze_workflow(self, name: str, runs: list[dict]) -> list[WorkflowPattern]:
         """Analyze a single workflow for patterns"""
         patterns = []
 
@@ -333,7 +332,7 @@ class WorkflowPatternExtractor:
 
         return patterns
 
-    def _calculate_flakiness(self, runs: List[Dict]) -> float:
+    def _calculate_flakiness(self, runs: list[dict]) -> float:
         """Calculate flakiness score (0-1) based on result alternation"""
         if len(runs) < 2:
             return 0.0
@@ -351,8 +350,8 @@ class WorkflowPatternExtractor:
         return alternations / max_alternations if max_alternations > 0 else 0.0
 
     def _apply_pattern_interference(
-        self, patterns: List[WorkflowPattern]
-    ) -> List[WorkflowPattern]:
+        self, patterns: list[WorkflowPattern]
+    ) -> list[WorkflowPattern]:
         """Apply quantum interference to find related patterns"""
         print("🌊 Applying quantum interference...")
 
@@ -399,7 +398,7 @@ class CognitiveBrainFeeder:
         self.patterns_db = self.brain_dir / "workflow_patterns.jsonl"
         self.brain_dir.mkdir(parents=True, exist_ok=True)
 
-    def feed_patterns(self, patterns: List[WorkflowPattern]) -> Dict:
+    def feed_patterns(self, patterns: list[WorkflowPattern]) -> dict:
         """Feed patterns to cognitive brain"""
         print(f"\n🧠 Feeding {len(patterns)} patterns to cognitive brain...")
 
@@ -445,7 +444,7 @@ class CognitiveBrainFeeder:
 
         return metadata
 
-    def _load_existing_patterns(self) -> List[WorkflowPattern]:
+    def _load_existing_patterns(self) -> list[WorkflowPattern]:
         """Load existing patterns from database"""
         if not self.patterns_db.exists():
             return []
@@ -464,7 +463,7 @@ class CognitiveBrainFeeder:
 
         return patterns
 
-    def _save_patterns(self, patterns: List[WorkflowPattern]):
+    def _save_patterns(self, patterns: list[WorkflowPattern]):
         """Save patterns to database (atomic write)"""
         temp_file = self.patterns_db.with_suffix(".tmp")
 
@@ -475,14 +474,14 @@ class CognitiveBrainFeeder:
         # Atomic rename
         temp_file.replace(self.patterns_db)
 
-    def _save_metadata(self, metadata: Dict):
+    def _save_metadata(self, metadata: dict):
         """Save cognitive brain metadata"""
         metadata_file = self.brain_dir / "metadata.json"
         with open(metadata_file, "w") as f:
             json.dump(metadata, f, indent=2)
             f.write("\n")
 
-    def _count_pattern_types(self, patterns: List[WorkflowPattern]) -> Dict[str, int]:
+    def _count_pattern_types(self, patterns: list[WorkflowPattern]) -> dict[str, int]:
         """Count patterns by type"""
         counts = {}
         for pattern in patterns:

@@ -10,8 +10,9 @@ from __future__ import annotations
 
 import functools
 import logging
+from collections.abc import Callable
 from contextvars import ContextVar
-from typing import Any, Callable, List, Optional
+from typing import Any, Optional
 
 from security.scope_validator import (
     ScopeValidator,
@@ -206,18 +207,18 @@ def optional_scope(*scopes: str) -> Callable:
 
 # FastAPI dependency injection helpers
 try:
-    from fastapi import (  # noqa: F401 - Optional FastAPI integration
+    from fastapi import (
         Depends,
         HTTPException,
         status,
     )
-    from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer  # noqa: F401
+    from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
     security = HTTPBearer()
 
     async def get_token_scopes(
         credentials: HTTPAuthorizationCredentials = Depends(security),
-    ) -> List[str]:
+    ) -> list[str]:
         """FastAPI dependency that extracts OAuth2/JWT scopes from a Bearer token.
 
         Uses ``TokenManager.validate_token()`` to verify the Bearer credential
@@ -288,7 +289,7 @@ try:
         return [s for s in scope_str.split() if s]
 
     async def scope_validator_dependency(
-        scopes: List[str] = Depends(get_token_scopes),
+        scopes: list[str] = Depends(get_token_scopes),
     ) -> ScopeValidator:
         """FastAPI dependency to create and set scope validator.
 
@@ -310,6 +311,8 @@ try:
 except ImportError:
     # FastAPI not installed, skip dependency helpers
     logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 def scope_metadata(func: Callable) -> dict:
     """Extract scope metadata from decorated function.
 

@@ -15,7 +15,7 @@ AAIS Contribution: +3.5 points (Pattern Consistency +2.0, Runtime Introspection 
 
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import numpy as np
 
@@ -48,13 +48,13 @@ class Decision:
     confidence: float
     quantum_fidelity: float
     error_corrected: bool
-    metadata: Dict
+    metadata: dict
 
 
 class QECEncoder:
     """Shor 9-qubit encoder: 1 logical → 9 physical qubits."""
 
-    def encode_logical_qubit(self, state: QuantumState) -> List[QuantumState]:
+    def encode_logical_qubit(self, state: QuantumState) -> list[QuantumState]:
         """Encode logical qubit into 9 physical qubits."""
         physical_qubits = []
         for triplet in range(3):
@@ -65,7 +65,7 @@ class QECEncoder:
                 ))
         return physical_qubits
 
-    def decode_physical_qubits(self, physical_qubits: List[QuantumState]) -> QuantumState:
+    def decode_physical_qubits(self, physical_qubits: list[QuantumState]) -> QuantumState:
         """Decode 9 physical qubits back to 1 logical qubit."""
         if len(physical_qubits) != 9:
             raise ValueError("Expected 9 physical qubits")
@@ -77,7 +77,7 @@ class QECEncoder:
 class ErrorSyndromeDetector:
     """Detects errors using syndrome measurements."""
 
-    def detect_bit_flip_errors(self, physical_qubits: List[QuantumState]) -> str:
+    def detect_bit_flip_errors(self, physical_qubits: list[QuantumState]) -> str:
         """Detect bit-flip errors."""
         syndromes = []
         for triplet_idx in range(3):
@@ -88,7 +88,7 @@ class ErrorSyndromeDetector:
             syndromes.append(f"{parity1}{parity2}")
         return "".join(syndromes)
 
-    def detect_phase_flip_errors(self, physical_qubits: List[QuantumState]) -> str:
+    def detect_phase_flip_errors(self, physical_qubits: list[QuantumState]) -> str:
         """Detect phase-flip errors."""
         triplet_phases = []
         for triplet_idx in range(3):
@@ -100,7 +100,7 @@ class ErrorSyndromeDetector:
         parity2 = int(abs(triplet_phases[1] - triplet_phases[2]) > 0.1)
         return f"{parity1}{parity2}"
 
-    def get_error_location(self, bit_syndrome: str, phase_syndrome: str) -> Tuple[int, str]:
+    def get_error_location(self, bit_syndrome: str, phase_syndrome: str) -> tuple[int, str]:
         """Determine error location and type."""
         bit_syndrome_map = {"00": -1, "01": 2, "10": 1, "11": 0}
         triplet_with_error = -1
@@ -148,10 +148,10 @@ class ErrorCorrector:
 
     def correct_errors(
         self,
-        physical_qubits: List[QuantumState],
+        physical_qubits: list[QuantumState],
         error_location: int,
         error_type: str
-    ) -> List[QuantumState]:
+    ) -> list[QuantumState]:
         """Correct errors in physical qubits."""
         if error_location == -1 or error_type == "":
             return physical_qubits
@@ -186,7 +186,7 @@ class QECQuantumDecisionEngine:
         self.total_errors_corrected = 0
         self.avg_fidelity = 0.0
 
-    def make_decision(self, options: List[Any], context: Optional[Dict] = None) -> Decision:
+    def make_decision(self, options: list[Any], context: Optional[dict] = None) -> Decision:
         """Make error-corrected quantum decision."""
         if not options:
             raise ValueError("No options provided")
@@ -232,7 +232,7 @@ class QECQuantumDecisionEngine:
             metadata={"k1": self.k1, "qec_enabled": self.enable_qec, "error_rate": self.get_error_rate()}
         )
 
-    def _quantum_score_options(self, options: List[Any], context: Dict) -> List[float]:
+    def _quantum_score_options(self, options: list[Any], context: dict) -> list[float]:
         """Score options using quantum interference (k₁ parameter)."""
         scores = []
         for option in options:
@@ -244,7 +244,7 @@ class QECQuantumDecisionEngine:
         total = sum(scores)
         return [s / total for s in scores] if total > 0 else scores
 
-    def _simulate_quantum_noise(self, physical_qubits: List[QuantumState], error_rate: float = 0.05) -> List[QuantumState]:
+    def _simulate_quantum_noise(self, physical_qubits: list[QuantumState], error_rate: float = 0.05) -> list[QuantumState]:
         """Simulate quantum noise."""
         noisy_qubits = []
         for qubit in physical_qubits:
@@ -264,7 +264,7 @@ class QECQuantumDecisionEngine:
         """Get error detection rate."""
         return self.total_errors_detected / max(1, self.total_decisions)
 
-    def get_metrics(self) -> Dict:
+    def get_metrics(self) -> dict:
         """Get comprehensive QEC metrics."""
         return {
             "total_decisions": self.total_decisions,
@@ -276,7 +276,7 @@ class QECQuantumDecisionEngine:
             "qec_enabled": self.enable_qec,
         }
 
-    def get_aais_contribution(self) -> Dict[str, float]:
+    def get_aais_contribution(self) -> dict[str, float]:
         """Calculate AAIS contribution."""
         pattern_contribution = 2.0 if self.avg_fidelity > 0.99 else 1.0
         introspection_contribution = 1.5
@@ -290,7 +290,7 @@ class QECQuantumDecisionEngine:
 class QuantumAdvantageVerifier:
     """Verifies quantum advantage through comparative testing."""
 
-    def verify_advantage(self, quantum_engine: QECQuantumDecisionEngine, test_cases: int = 1000) -> Dict:
+    def verify_advantage(self, quantum_engine: QECQuantumDecisionEngine, test_cases: int = 1000) -> dict:
         """Verify quantum advantage over classical."""
         quantum_qec_results = []
         quantum_no_qec_results = []

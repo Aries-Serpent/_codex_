@@ -22,7 +22,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class RhizomaticNode:
     module_path: str
     node_type: str  # e.g., "cognitive_module", "rag_component", "cli_handler"
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     active: bool = True
 
     def __hash__(self) -> int:
@@ -81,12 +81,12 @@ class RhizomaticConnection:
 
     source: RhizomaticNode
     target: RhizomaticNode
-    connection_types: Set[ConnectionType]
+    connection_types: set[ConnectionType]
     strength: float = 1.0  # 0.0 to 1.0
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     last_used: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     use_count: int = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.strength <= 1.0:
@@ -138,9 +138,9 @@ class RhizomeConnector:
     """
 
     def __init__(self) -> None:
-        self.nodes: Dict[str, RhizomaticNode] = {}
-        self.connections: List[RhizomaticConnection] = []
-        self.ruptures: List[Rupture] = []
+        self.nodes: dict[str, RhizomaticNode] = {}
+        self.connections: list[RhizomaticConnection] = []
+        self.ruptures: list[Rupture] = []
         LOGGER.info("RhizomeConnector initialized")
 
     def add_node(self, node: RhizomaticNode) -> None:
@@ -156,9 +156,9 @@ class RhizomeConnector:
         self,
         source: RhizomaticNode,
         target: RhizomaticNode,
-        connection_types: Set[ConnectionType],
+        connection_types: set[ConnectionType],
         strength: float = 1.0,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> RhizomaticConnection:
         """
         Create a connection between two nodes.
@@ -252,7 +252,7 @@ class RhizomeConnector:
         )
         return score
 
-    def find_assemblages(self, min_nodes: int = 3) -> List[Set[RhizomaticNode]]:
+    def find_assemblages(self, min_nodes: int = 3) -> list[set[RhizomaticNode]]:
         """
         Find assemblages (clusters of interconnected nodes).
 
@@ -265,17 +265,17 @@ class RhizomeConnector:
         Returns:
             List of assemblages (sets of connected nodes)
         """
-        assemblages: List[Set[RhizomaticNode]] = []
+        assemblages: list[set[RhizomaticNode]] = []
 
         # Build adjacency map
-        adjacency: Dict[str, Set[str]] = {path: set() for path in self.nodes}
+        adjacency: dict[str, set[str]] = {path: set() for path in self.nodes}
         for conn in self.connections:
             adjacency[conn.source.module_path].add(conn.target.module_path)
             adjacency[conn.target.module_path].add(conn.source.module_path)
 
-        visited: Set[str] = set()
+        visited: set[str] = set()
 
-        def dfs(node_path: str, current_assemblage: Set[str]) -> None:
+        def dfs(node_path: str, current_assemblage: set[str]) -> None:
             """Depth-first search to find connected components."""
             if node_path in visited:
                 return
@@ -288,7 +288,7 @@ class RhizomeConnector:
         # Find connected components (assemblages)
         for node_path in self.nodes:
             if node_path not in visited:
-                assemblage_paths: Set[str] = set()
+                assemblage_paths: set[str] = set()
                 dfs(node_path, assemblage_paths)
 
                 if len(assemblage_paths) >= min_nodes:
@@ -298,14 +298,14 @@ class RhizomeConnector:
         LOGGER.info(f"Found {len(assemblages)} assemblages (min_nodes={min_nodes})")
         return assemblages
 
-    def get_connection_strength_matrix(self) -> Dict[Tuple[str, str], float]:
+    def get_connection_strength_matrix(self) -> dict[tuple[str, str], float]:
         """
         Get a matrix of connection strengths between nodes.
 
         Returns:
             Dictionary mapping (source_path, target_path) to strength
         """
-        matrix: Dict[Tuple[str, str], float] = {}
+        matrix: dict[tuple[str, str], float] = {}
 
         for conn in self.connections:
             key = (conn.source.module_path, conn.target.module_path)
@@ -313,7 +313,7 @@ class RhizomeConnector:
 
         return matrix
 
-    def export_graph_data(self) -> Dict[str, Any]:
+    def export_graph_data(self) -> dict[str, Any]:
         """
         Export rhizome data for visualization.
 
@@ -352,7 +352,7 @@ class RhizomeConnector:
             },
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about the rhizome."""
         return {
             "nodes": len(self.nodes),

@@ -103,13 +103,13 @@ def is_tensorboard_available() -> bool:
     """
     try:
         try:
-            from torch.utils.tensorboard import SummaryWriter  # noqa: F401
+            from torch.utils.tensorboard import SummaryWriter as SummaryWriter
 
             return True
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
-            from tensorboardX import SummaryWriter  # noqa: F401
+            from tensorboardX import SummaryWriter as SummaryWriter
 
             return True
     except ImportError as e:

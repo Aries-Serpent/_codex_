@@ -16,8 +16,8 @@ PDA Loop + AfterMath Pattern:
 - AfterMath: Track k₁ reduction, coherence trends
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable, Dict, List
 
 
 @dataclass
@@ -43,7 +43,7 @@ class ScoringWeights:
             impact_weight=self.impact_weight / total,
         )
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> dict[str, float]:
         """Convert to dictionary"""
         return {
             "compliance_score_weight": self.compliance_score_weight,
@@ -61,7 +61,7 @@ class FeedbackRecord:
     predicted_decision: str
     actual_decision: str
     is_correct: bool
-    audit_features: Dict[str, float]  # Normalized features
+    audit_features: dict[str, float]  # Normalized features
     timestamp: float
 
 
@@ -94,16 +94,16 @@ class AdaptiveScoringOptimizer:
         self.learning_rate = learning_rate
         self.momentum = momentum
         self.weights = ScoringWeights().normalize()
-        self.feedback_history: List[FeedbackRecord] = []
-        self.velocity: Dict[str, float] = {
+        self.feedback_history: list[FeedbackRecord] = []
+        self.velocity: dict[str, float] = {
             "compliance_score_weight": 0.0,
             "risk_weight": 0.0,
             "cost_weight": 0.0,
             "impact_weight": 0.0,
         }
-        self.k1_history: List[float] = [0.40]  # Track k₁ reduction
+        self.k1_history: list[float] = [0.40]  # Track k₁ reduction
 
-    def compute_score(self, features: Dict[str, float]) -> float:
+    def compute_score(self, features: dict[str, float]) -> float:
         """
         Compute weighted score for decision.
 
@@ -134,7 +134,7 @@ class AdaptiveScoringOptimizer:
         """
         self.feedback_history.append(feedback)
 
-    def update_weights(self) -> Dict[str, float]:
+    def update_weights(self) -> dict[str, float]:
         """
         Update weights based on accumulated feedback.
 
@@ -183,7 +183,7 @@ class AdaptiveScoringOptimizer:
 
         return changes
 
-    def _compute_gradients(self, feedback_batch: List[FeedbackRecord]) -> Dict[str, float]:
+    def _compute_gradients(self, feedback_batch: list[FeedbackRecord]) -> dict[str, float]:
         """
         Compute gradients from feedback batch.
 
@@ -256,7 +256,7 @@ class AdaptiveScoringOptimizer:
 
 def create_scoring_function(
     optimizer: AdaptiveScoringOptimizer,
-) -> Callable[[Dict[str, float]], float]:
+) -> Callable[[dict[str, float]], float]:
     """
     Create a scoring function using the optimizer's current weights.
 
@@ -267,7 +267,7 @@ def create_scoring_function(
         Scoring function that takes feature dict and returns score
     """
 
-    def scoring_fn(features: Dict[str, float]) -> float:
+    def scoring_fn(features: dict[str, float]) -> float:
         return optimizer.compute_score(features)
 
     return scoring_fn

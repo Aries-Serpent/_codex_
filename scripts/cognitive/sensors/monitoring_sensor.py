@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ class MonitoringSensor:
     def __init__(self, state_file: Optional[Path] = None):
         self.state_file = state_file or Path(".codex/monitoring/state/monitor_state.json")
 
-    def get_system_health(self) -> Dict[str, any]:
+    def get_system_health(self) -> dict[str, any]:
         """Get overall monitoring system health status."""
         try:
             state = self._load_state()
@@ -47,7 +47,7 @@ class MonitoringSensor:
             logger.error(f"Error getting system health: {e}")
             return {"status": "unknown", "error": str(e)}
 
-    def get_active_failures(self) -> List[Dict[str, any]]:
+    def get_active_failures(self) -> list[dict[str, any]]:
         """Get list of currently active workflow failures."""
         try:
             state = self._load_state()
@@ -71,7 +71,7 @@ class MonitoringSensor:
             logger.error(f"Error getting active failures: {e}")
             return []
 
-    def should_propose_action(self) -> Tuple[bool, str, float]:
+    def should_propose_action(self) -> tuple[bool, str, float]:
         """Determine if Cognitive Brain should propose an autonomous action."""
         try:
             health = self.get_system_health()
@@ -91,7 +91,7 @@ class MonitoringSensor:
             logger.error(f"Error in action decision: {e}")
             return False, f"Error: {e}", 0.0
 
-    def export_state_for_cognitive_brain(self) -> Dict[str, any]:
+    def export_state_for_cognitive_brain(self) -> dict[str, any]:
         """Export complete monitoring state for Cognitive Brain."""
         return {
             "sensor_type": "artifact_monitoring",
@@ -101,7 +101,7 @@ class MonitoringSensor:
             "action_recommendation": self.should_propose_action()
         }
 
-    def _load_state(self) -> Dict[str, any]:
+    def _load_state(self) -> dict[str, any]:
         """Load monitoring state from JSON file."""
         try:
             if self.state_file.exists():
@@ -112,7 +112,7 @@ class MonitoringSensor:
             logger.error(f"Error loading state: {e}")
             return {}
 
-    def _calculate_severity(self, workflow_data: Dict[str, any]) -> float:
+    def _calculate_severity(self, workflow_data: dict[str, any]) -> float:
         """Calculate failure severity (0.0-1.0)."""
         consecutive = workflow_data.get("consecutive_failures", 0)
         failure_rate = workflow_data.get("failure_rate", 0)

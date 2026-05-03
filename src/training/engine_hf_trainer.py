@@ -124,7 +124,8 @@ import warnings
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Optional, cast
+from typing import Any, Optional, cast
+from collections.abc import Iterable, Mapping
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
@@ -187,7 +188,7 @@ except Exception:  # pragma: no cover - transformers missing
     _hf_version = "0.0.0-offline"
 
     class _MissingTransformersObject:
-        def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: D401 - compatibility
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers dependency not available in offline mode")
 
     AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment, misc]
@@ -495,18 +496,18 @@ def build_trainer(
 
 
 __all__ = [
-    "run_hf_trainer",
+    "CSVMetricsWriter",
     "HFTrainerConfig",
-    "build_training_args",
-    "build_trainer",
-    "load_training_arguments",
-    "prepare_dataset",
+    "NDJSONMetricsWriter",
+    "_compute_metrics",
     "_seed_everything",
     "_worker_init_fn",
-    "_compute_metrics",
-    "CSVMetricsWriter",
-    "NDJSONMetricsWriter",
     "build_parser",
+    "build_trainer",
+    "build_training_args",
+    "load_training_arguments",
+    "prepare_dataset",
+    "run_hf_trainer",
 ]
 
 

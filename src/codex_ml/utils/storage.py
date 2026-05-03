@@ -20,12 +20,12 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Optional storage backends for synchronising checkpoints to remote targets."""
 
 
+from collections.abc import Iterable, Iterator  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Iterable, Iterator, Protocol, runtime_checkable  # noqa: E402
+from typing import Protocol, runtime_checkable  # noqa: E402
 
 
 @runtime_checkable
@@ -134,4 +134,4 @@ class FSSpecStorage(StorageProvider):
         return entries
 
 
-__all__ = ["StorageProvider", "FSSpecStorage"]
+__all__ = ["FSSpecStorage", "StorageProvider"]

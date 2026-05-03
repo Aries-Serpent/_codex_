@@ -254,8 +254,7 @@ def patch_ingestion_module(dry_run: bool):
             new = add_header + "\n"
         elif add_header:
             new = add_header + "\n" + new
-        new = new.rstrip() + "\n" + INGEST_FUNCTION.strip() + "\n" + INGESTOR_SHIM.strip() + "\n"
-        return new
+        return new.rstrip() + "\n" + INGEST_FUNCTION.strip() + "\n" + INGESTOR_SHIM.strip() + "\n"
 
     rationale = "Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent."
     patch_file_transform(target, transform, dry_run, rationale)

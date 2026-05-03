@@ -14,7 +14,7 @@ import ast
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import yaml
 
@@ -48,7 +48,7 @@ class TestAssertionUpdater:
         self.config = self._load_config(config_path)
         self.patterns = self._load_patterns()
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load agent configuration from YAML file"""
         if config_path is None:
             config_path = Path(__file__).parent.parent / "config" / "agent_config.yaml"
@@ -59,7 +59,7 @@ class TestAssertionUpdater:
         with open(config_path) as f:
             return yaml.safe_load(f)
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration"""
         return {
             'version': '1.0.0',
@@ -73,7 +73,7 @@ class TestAssertionUpdater:
             }
         }
 
-    def _load_patterns(self) -> Dict[str, List[Dict]]:
+    def _load_patterns(self) -> dict[str, list[dict]]:
         """Load known assertion evolution patterns"""
         return {
             'string_format': [
@@ -99,7 +99,7 @@ class TestAssertionUpdater:
             ]
         }
 
-    def parse_pytest_output(self, pytest_output: str) -> List[AssertionMismatch]:
+    def parse_pytest_output(self, pytest_output: str) -> list[AssertionMismatch]:
         """Parse pytest failure output to identify assertion errors"""
         mismatches = []
 
@@ -131,7 +131,7 @@ class TestAssertionUpdater:
 
         return mismatches
 
-    def _extract_values(self, assertion: str) -> Tuple[str, str]:
+    def _extract_values(self, assertion: str) -> tuple[str, str]:
         """Extract expected and actual values from assertion"""
         # Simple extraction - would be more sophisticated in production
         parts = assertion.split('==')
@@ -154,12 +154,11 @@ class TestAssertionUpdater:
         """Generate a proposed fix for the assertion mismatch"""
         if mismatch.mismatch_type == 'string_format':
             return self._fix_string_format(mismatch)
-        elif mismatch.mismatch_type == 'data_structure':
+        if mismatch.mismatch_type == 'data_structure':
             return self._fix_data_structure(mismatch)
-        elif mismatch.mismatch_type == 'type_change':
+        if mismatch.mismatch_type == 'type_change':
             return self._fix_type_change(mismatch)
-        else:
-            raise ValueError(f"Unknown mismatch type: {mismatch.mismatch_type}")
+        raise ValueError(f"Unknown mismatch type: {mismatch.mismatch_type}")
 
     def _fix_string_format(self, mismatch: AssertionMismatch) -> FixProposal:
         """Generate fix for string format changes"""

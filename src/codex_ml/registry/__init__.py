@@ -35,31 +35,31 @@ from .base import (
 
 __all__ = [
     "Registry",
-    "RegistryError",
     "RegistryConflictError",
+    "RegistryError",
     "RegistryLoadError",
     "RegistryNotFoundError",
-    "tokenizer_registry",
-    "register_tokenizer",
-    "get_tokenizer",
-    "list_tokenizers",
-    "model_registry",
-    "register_model",
-    "get_model",
-    "list_models",
-    "metric_registry",
-    "register_metric",
-    "get_metric",
-    "list_metrics",
     "data_loader_registry",
-    "register_data_loader",
     "get_data_loader",
-    "list_data_loaders",
-    "trainer_registry",
-    "register_trainer",
+    "get_metric",
+    "get_model",
+    "get_tokenizer",
     "get_trainer",
+    "list_data_loaders",
+    "list_metrics",
+    "list_models",
+    "list_tokenizers",
     "list_trainers",
+    "metric_registry",
+    "model_registry",
+    "register_data_loader",
+    "register_metric",
+    "register_model",
+    "register_tokenizer",
+    "register_trainer",
     "reload_entry_points",
+    "tokenizer_registry",
+    "trainer_registry",
 ]
 
 _LAZY_ATTRS = {
@@ -89,31 +89,31 @@ _LAZY_ATTRS = {
 # import time (satisfies static analysis).  __getattr__ below remains as a
 # fallback for any attribute that wasn't resolved during the eager phase.
 try:
-    from .data_loaders import (  # noqa: E402
+    from .data_loaders import (
         data_loader_registry,
         get_data_loader,
         list_data_loaders,
         register_data_loader,
     )
-    from .metrics import (  # noqa: E402
+    from .metrics import (
         get_metric,
         list_metrics,
         metric_registry,
         register_metric,
     )
-    from .models import (  # noqa: E402
+    from .models import (
         get_model,
         list_models,
         model_registry,
         register_model,
     )
-    from .tokenizers import (  # noqa: E402
+    from .tokenizers import (
         get_tokenizer,
         list_tokenizers,
         register_tokenizer,
         tokenizer_registry,
     )
-    from .trainers import (  # noqa: E402
+    from .trainers import (
         get_trainer,
         list_trainers,
         register_trainer,

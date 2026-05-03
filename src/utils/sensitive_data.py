@@ -250,11 +250,11 @@ def hash_sensitive_value(value: str) -> str:
 
 
 __all__ = [
-    "mask_token",
+    "hash_for_logging",
+    "hash_sensitive_value",
     "mask_email",
     "mask_password",
-    "hash_for_logging",
-    "mask_sensitive_dict",
     "mask_sensitive_data",
-    "hash_sensitive_value",
+    "mask_sensitive_dict",
+    "mask_token",
 ]

@@ -135,7 +135,7 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
-            import pickle as _stdlib_pickle  # noqa: PLC0415 - local to keep top-level light
+            import pickle as _stdlib_pickle
 
             buffer = io.BytesIO()
             try:

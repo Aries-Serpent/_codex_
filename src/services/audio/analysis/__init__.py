@@ -8,8 +8,8 @@ from .intelligent_analyzer import (
 )
 
 __all__ = [
-    "IntelligentAudioAnalyzer",
     "AudioAnalysis",
-    "ProfileMatch",
+    "IntelligentAudioAnalyzer",
     "ProcessingProfile",
+    "ProfileMatch",
 ]

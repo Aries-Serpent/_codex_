@@ -35,24 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-General maintenance script for executing Codex tasks across multiple capabilities.
-
-This script performs a sequence of generic operations useful across the
-Codex-ready tasks, including:
-
-1. Parsing and updating the README.md to fix outdated references.
-2. Scanning the repository for TODOs, stubs, and missing implementations.
-3. Running quality gates via pre‑commit and nox.
-4. Appending a summary entry to the docs/CHANGELOG.md.
-5. Capturing and logging errors in the prescribed format.
-
-Note: This script does not execute GitHub Actions or any external CI services.
-Run it locally via:
-
-    python scripts/run_codex_tasks.py
-
-"""
 
 import re
 import subprocess

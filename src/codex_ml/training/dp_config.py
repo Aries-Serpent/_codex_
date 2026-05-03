@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Differential privacy configuration helpers."""
 
 
 from dataclasses import dataclass, field
@@ -47,7 +46,7 @@ class DifferentialPrivacyConfig:
         if self._dependency_checked:
             return
         try:
-            import opacus  # noqa: F401
+            __import__("opacus")
         except ImportError as exc:  # pragma: no cover - optional dependency path
             raise ImportError(
                 "Opacus is required for differential privacy; install with 'pip install opacus'."

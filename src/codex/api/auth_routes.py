@@ -25,7 +25,7 @@ import logging
 import os
 import re
 import time
-from typing import Dict, List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
@@ -55,7 +55,7 @@ class _EndpointRateLimiter:
     ) -> None:
         self._max = requests_per_window
         self._window = window_seconds
-        self._counters: Dict[str, List[float]] = {}
+        self._counters: dict[str, list[float]] = {}
 
     def check(self, key: str) -> bool:
         """Return *True* if the request is allowed, *False* otherwise."""
@@ -93,7 +93,7 @@ class RegisterRequest(BaseModel):
     username: str = Field(..., min_length=1, max_length=150)
     email: str = Field(..., min_length=3, max_length=254)
     password: str = Field(..., min_length=8, max_length=128)
-    roles: Optional[List[str]] = None
+    roles: Optional[list[str]] = None
     display_name: Optional[str] = None
 
     @field_validator("email")
@@ -110,7 +110,7 @@ class RegisterResponse(BaseModel):
     user_id: str
     username: str
     email: str
-    roles: List[str]
+    roles: list[str]
 
 
 class LoginRequest(BaseModel):
@@ -140,7 +140,7 @@ class LoginResponse(BaseModel):
     session_token: str
     session_id: str
     mfa_verified: bool
-    roles: List[str]
+    roles: list[str]
 
 
 class LogoutRequest(BaseModel):

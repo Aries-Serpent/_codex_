@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class HealingResult:
     strategy_applied: str
     resolution: str
     confidence: float
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat())
 
 
@@ -62,7 +62,7 @@ class SelfHealingEngine:
     def __init__(
         self,
         repo_path: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
+        config: Optional[dict[str, Any]] = None,
         enable_auto_heal: bool = True,
     ):
         """
@@ -78,10 +78,10 @@ class SelfHealingEngine:
         self.enable_auto_heal = enable_auto_heal
 
         # State tracking
-        self.healing_history: List[HealingResult] = []
-        self.pattern_cache: Dict[str, Any] = {}
-        self.diagnostics: Dict[str, Any] = {}
-        self.failure_signatures: Dict[str, str] = {}
+        self.healing_history: list[HealingResult] = []
+        self.pattern_cache: dict[str, Any] = {}
+        self.diagnostics: dict[str, Any] = {}
+        self.failure_signatures: dict[str, str] = {}
 
         # Initialize healing strategies
         self._initialize_strategies()
@@ -91,7 +91,7 @@ class SelfHealingEngine:
             f"   Auto-heal: {self.enable_auto_heal} | Strategies: {len(self.strategies)}"
         )
 
-    def _default_config(self) -> Dict[str, Any]:
+    def _default_config(self) -> dict[str, Any]:
         """
         Default configuration for healing engine.
 
@@ -128,7 +128,7 @@ class SelfHealingEngine:
             HealingStrategy.GENERIC.value: self._heal_generic,
         }
 
-    def heal_failure(self, error_context: Dict[str, Any]) -> HealingResult:
+    def heal_failure(self, error_context: dict[str, Any]) -> HealingResult:
         """
         Apply healing strategies to detected failures.
 
@@ -204,13 +204,13 @@ class SelfHealingEngine:
                 self.strategies[HealingStrategy.DOCKER_TAG_ERROR.value],
             )
 
-        elif "no modules were targeted" in error_lower or "target_modules" in error_lower:
+        if "no modules were targeted" in error_lower or "target_modules" in error_lower:
             return (
                 HealingStrategy.PEFT_TARGET_ERROR.value,
                 self.strategies[HealingStrategy.PEFT_TARGET_ERROR.value],
             )
 
-        elif (
+        if (
             "not in defaults list" in error_lower
             or "configcompositionexception" in error_lower
         ):
@@ -219,7 +219,7 @@ class SelfHealingEngine:
                 self.strategies[HealingStrategy.HYDRA_COMPOSITION.value],
             )
 
-        elif ("no attribute" in error_lower or "attributeerror" in error_type.lower()) and (
+        if ("no attribute" in error_lower or "attributeerror" in error_type.lower()) and (
             "bleuscore" in error_lower or "_pred_length" in error_lower
         ):
             return (
@@ -227,25 +227,25 @@ class SelfHealingEngine:
                 self.strategies[HealingStrategy.METRIC_COMPATIBILITY.value],
             )
 
-        elif "assert" in error_lower and "boltzmann" in component.lower():
+        if "assert" in error_lower and "boltzmann" in component.lower():
             return (
                 HealingStrategy.ASSERTION_ERROR.value,
                 self.strategies[HealingStrategy.ASSERTION_ERROR.value],
             )
 
-        elif "--timeout" in error_lower and "unrecognized" in error_lower:
+        if "--timeout" in error_lower and "unrecognized" in error_lower:
             return (
                 HealingStrategy.IMPORT_ERROR.value,
                 self.strategies[HealingStrategy.IMPORT_ERROR.value],
             )
 
-        elif "no patterns extracted" in error_lower or "empty" in error_lower:
+        if "no patterns extracted" in error_lower or "empty" in error_lower:
             return (
                 HealingStrategy.EMPTY_RESULT.value,
                 self.strategies[HealingStrategy.EMPTY_RESULT.value],
             )
 
-        elif "version" in error_lower or "compatibility" in error_lower:
+        if "version" in error_lower or "compatibility" in error_lower:
             return (
                 HealingStrategy.VERSION_MISMATCH.value,
                 self.strategies[HealingStrategy.VERSION_MISMATCH.value],
@@ -268,7 +268,7 @@ class SelfHealingEngine:
             self.strategies[HealingStrategy.GENERIC.value],
         )
 
-    def _heal_docker_tag(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_docker_tag(self, context: dict[str, Any]) -> HealingResult:
         """Heal Docker tag format errors."""
         return HealingResult(
             success=True,
@@ -288,7 +288,7 @@ class SelfHealingEngine:
             },
         )
 
-    def _heal_peft_targets(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_peft_targets(self, context: dict[str, Any]) -> HealingResult:
         """Heal PEFT target_modules configuration errors."""
         return HealingResult(
             success=True,
@@ -308,7 +308,7 @@ class SelfHealingEngine:
             },
         )
 
-    def _heal_hydra_config(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_hydra_config(self, context: dict[str, Any]) -> HealingResult:
         """Heal Hydra configuration composition errors."""
         return HealingResult(
             success=True,
@@ -328,7 +328,7 @@ class SelfHealingEngine:
             },
         )
 
-    def _heal_metric_api(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_metric_api(self, context: dict[str, Any]) -> HealingResult:
         """Heal torchmetrics API compatibility issues."""
         return HealingResult(
             success=True,
@@ -348,7 +348,7 @@ class SelfHealingEngine:
             },
         )
 
-    def _heal_assertion(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_assertion(self, context: dict[str, Any]) -> HealingResult:
         """Heal assertion errors (e.g., Boltzmann probability)."""
         error_message = context.get("message", "")
 
@@ -382,7 +382,7 @@ class SelfHealingEngine:
             confidence=0.3,
         )
 
-    def _heal_type_error(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_type_error(self, context: dict[str, Any]) -> HealingResult:
         """Heal type errors."""
         return HealingResult(
             success=True,
@@ -391,7 +391,7 @@ class SelfHealingEngine:
             confidence=0.85,
         )
 
-    def _heal_attribute_error(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_attribute_error(self, context: dict[str, Any]) -> HealingResult:
         """Heal attribute errors."""
         return HealingResult(
             success=True,
@@ -400,7 +400,7 @@ class SelfHealingEngine:
             confidence=0.8,
         )
 
-    def _heal_import_error(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_import_error(self, context: dict[str, Any]) -> HealingResult:
         """Heal import errors."""
         error_message = context.get("message", "")
 
@@ -423,7 +423,7 @@ class SelfHealingEngine:
             confidence=0.9,
         )
 
-    def _heal_empty_result(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_empty_result(self, context: dict[str, Any]) -> HealingResult:
         """Heal empty result errors."""
         return HealingResult(
             success=True,
@@ -432,7 +432,7 @@ class SelfHealingEngine:
             confidence=0.75,
         )
 
-    def _heal_version_mismatch(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_version_mismatch(self, context: dict[str, Any]) -> HealingResult:
         """Heal version mismatch errors."""
         error_message = context.get("message", "")
 
@@ -466,7 +466,7 @@ class SelfHealingEngine:
             confidence=0.95,
         )
 
-    def _heal_generic(self, context: Dict[str, Any]) -> HealingResult:
+    def _heal_generic(self, context: dict[str, Any]) -> HealingResult:
         """Generic fallback healing strategy."""
         return HealingResult(
             success=False,
@@ -488,7 +488,7 @@ class SelfHealingEngine:
                 f"   Learned signature: {signature} → {result.strategy_applied}"
             )
 
-    def get_healing_stats(self) -> Dict[str, Any]:
+    def get_healing_stats(self) -> dict[str, Any]:
         """Get statistics about healing operations."""
         if not self.healing_history:
             return {
@@ -503,7 +503,7 @@ class SelfHealingEngine:
         total = len(self.healing_history)
         successful = sum(1 for h in self.healing_history if h.success)
 
-        strategy_usage: Dict[str, int] = {}
+        strategy_usage: dict[str, int] = {}
         for h in self.healing_history:
             strategy_usage[h.strategy_applied] = (
                 strategy_usage.get(h.strategy_applied, 0) + 1

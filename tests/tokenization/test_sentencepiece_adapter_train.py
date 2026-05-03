@@ -26,7 +26,7 @@ def _install_stub(monkeypatch, tmp_path: Path):
         def __init__(self, model_file: str | None = None):
             self._model_file = model_file
 
-        def Load(self, model_file: str) -> None:  # noqa: N802 - external API
+        def Load(self, model_file: str) -> None:
             self._model_file = model_file
 
         def encode(self, text: str, out_type=int):

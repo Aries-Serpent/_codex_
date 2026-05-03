@@ -64,6 +64,6 @@ def test_render_summary_smoke():
     mod = _load_module()
     step = mod.Step("demo", ("echo", "demo"))
     _, results = mod.run_steps([step], runner=lambda _: 0)
-    summary_fn = getattr(mod, "_render_summary")
+    summary_fn = mod._render_summary
     summary = summary_fn(results)
     assert "demo" in summary and "ok" in summary.lower()

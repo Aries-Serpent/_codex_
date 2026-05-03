@@ -6,6 +6,7 @@ and provide graceful fallbacks when W&B is unavailable.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import logging
 import os
@@ -56,16 +57,11 @@ class WandBLogger:
 
     def _check_wandb(self) -> bool:
         """Check if W&B is available and not disabled."""
-        try:
-            import wandb  # noqa: F401 - imported to check availability
-
-            mode = os.getenv("WANDB_MODE", "offline")
-            return mode != "disabled"
-        except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+        if importlib.util.find_spec("wandb") is None:
             logger.info("W&B not installed, using fallback logging")
             return False
+        mode = os.getenv("WANDB_MODE", "offline")
+        return mode != "disabled"
 
     def _init_wandb(self):
         """Initialize W&B with offline-first defaults."""

@@ -6,10 +6,9 @@ Provides detailed diagnostics if failures persist.
 """
 import subprocess
 import sys
-from typing import Dict, Tuple
 
 
-def run_test(test_path: str) -> Tuple[bool, str]:
+def run_test(test_path: str) -> tuple[bool, str]:
     """
     Run a specific test and capture result.
 
@@ -42,7 +41,7 @@ def run_test(test_path: str) -> Tuple[bool, str]:
         return False, f"Failed to run test: {e}"
 
 
-def verify_scheduler_fixes() -> Dict[str, bool]:
+def verify_scheduler_fixes() -> dict[str, bool]:
     """Verify scheduler registry tests pass."""
     print("\n🔍 Verifying Scheduler Registry Fixes...")
 
@@ -66,7 +65,7 @@ def verify_scheduler_fixes() -> Dict[str, bool]:
     return results
 
 
-def verify_security_fixes() -> Dict[str, bool]:
+def verify_security_fixes() -> dict[str, bool]:
     """Verify security validation tests pass."""
     print("\n🔍 Verifying Security Validation Fixes...")
 

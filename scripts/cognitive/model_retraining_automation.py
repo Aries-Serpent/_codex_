@@ -35,7 +35,7 @@ import logging
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -48,8 +48,8 @@ logger = logging.getLogger(__name__)
 class RetrainingResult:
     """Result of a model retraining operation"""
     model_name: str
-    current_performance: Dict[str, float]
-    new_performance: Dict[str, float]
+    current_performance: dict[str, float]
+    new_performance: dict[str, float]
     improvement: float
     should_deploy: bool
     timestamp: str
@@ -69,8 +69,8 @@ class ModelRetrainingAutomation:
         self.models_registry_path = Path(models_registry_path)
         self.data_path = Path(data_path)
         self.improvement_threshold = improvement_threshold
-        self.retraining_history: List[RetrainingResult] = []
-        self.performance_baseline: Dict[str, Dict[str, float]] = {}
+        self.retraining_history: list[RetrainingResult] = []
+        self.performance_baseline: dict[str, dict[str, float]] = {}
 
         # Ensure directories exist
         self.models_registry_path.parent.mkdir(parents=True, exist_ok=True)
@@ -79,7 +79,7 @@ class ModelRetrainingAutomation:
         # Load or initialize models registry
         self.models_registry = self._load_models_registry()
 
-    def _load_models_registry(self) -> Dict[str, Any]:
+    def _load_models_registry(self) -> dict[str, Any]:
         """Load models registry from disk"""
         if self.models_registry_path.exists():
             with open(self.models_registry_path) as f:
@@ -110,7 +110,7 @@ class ModelRetrainingAutomation:
     def collect_training_data(
         self,
         lookback_days: int = 30
-    ) -> Dict[str, pd.DataFrame]:
+    ) -> dict[str, pd.DataFrame]:
         """
         Collect data from last N days for retraining
 
@@ -303,7 +303,7 @@ class ModelRetrainingAutomation:
         self,
         data: pd.DataFrame,
         validation_split: float
-    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    ) -> tuple[pd.DataFrame, pd.DataFrame]:
         """Split data into training and validation sets"""
         # Shuffle data
         shuffled = data.sample(frac=1.0, random_state=42).reset_index(drop=True)
@@ -321,7 +321,7 @@ class ModelRetrainingAutomation:
         model_name: str,
         train_data: pd.DataFrame,
         val_data: pd.DataFrame
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Simulate model training and evaluation
         In production, this would train actual models
@@ -344,8 +344,8 @@ class ModelRetrainingAutomation:
 
     def _calculate_improvement(
         self,
-        current_performance: Dict[str, float],
-        new_performance: Dict[str, float]
+        current_performance: dict[str, float],
+        new_performance: dict[str, float]
     ) -> float:
         """Calculate overall performance improvement"""
         if not current_performance:
@@ -364,7 +364,7 @@ class ModelRetrainingAutomation:
         self,
         model_name: str,
         retraining_result: RetrainingResult
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Deploy new model only if it performs better
 
@@ -426,7 +426,7 @@ class ModelRetrainingAutomation:
             return f"{major}.{minor}.{int(patch) + 1}"
         return version
 
-    def rollback_model(self, model_name: str, version: str) -> Dict[str, Any]:
+    def rollback_model(self, model_name: str, version: str) -> dict[str, Any]:
         """
         Rollback to a previous model version
 
@@ -463,7 +463,7 @@ class ModelRetrainingAutomation:
             "reason": "backup_not_found"
         }
 
-    def generate_retraining_report(self) -> Dict[str, Any]:
+    def generate_retraining_report(self) -> dict[str, Any]:
         """Generate comprehensive retraining report"""
         if not self.retraining_history:
             return {

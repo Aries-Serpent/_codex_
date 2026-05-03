@@ -497,6 +497,6 @@ class TestGetTokenizerPipeline:
             assert pipeline1 is pipeline2
         except ImportError:
             pytest.skip("tokenizer pipeline not available")
-        except Exception:  # noqa: BLE001 – catch-all for missing tokenizer deps
+        except Exception:
             # May fail due to missing dependencies
             pytest.skip("tokenizer dependencies not available")

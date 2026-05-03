@@ -42,9 +42,9 @@ import argparse
 import logging
 import re
 import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -66,16 +66,10 @@ class Rule:
 
     id: str
     files: list[str]
-    """Relative-to-repo-root file paths (no globs — exact paths for precision)."""
     pattern: str
-    """Regex that matches the stale text.  Must contain exactly one capture group
-    whose content is the *current* (possibly stale) value."""
     replacement: str
-    """Template string using ``{metric_name}`` placeholders drawn from the
-    dict returned by ``gather_metrics()``."""
     description: str = ""
     flags: int = 0
-    """Optional re flags, e.g. ``re.IGNORECASE``."""
 
 
 # ---------------------------------------------------------------------------

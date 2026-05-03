@@ -119,7 +119,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": "peft_hooks",
         "evidence": dict(sorted(evidence.items())),
-        "files_with_peft": int(len(evidence)),
+        "files_with_peft": len(evidence),
         "total_peft_tokens": total_tokens,
         "metrics": {
             "files_with_peft": len(evidence),

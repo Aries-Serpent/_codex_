@@ -81,21 +81,21 @@ if cli is not None:
         viewer_cmd = getattr(_cli_module, "viewer_cmd", None)
 
 __all__ = [
-    "app",
-    "main",
-    "cli",
-    "logs",
-    "tokenizer_group",
-    "repro_group",
-    "auth_group",
     "_fix_pool",
-    "init_db_cmd",
-    "export_env_cmd",
+    "app",
+    "auth_group",
     "clean_logs_cmd",
-    "session_logger_cmd",
-    "query_logs_cmd",
-    "validate_env_cmd",
+    "cli",
+    "export_env_cmd",
+    "init_db_cmd",
     "list_sessions_cmd",
+    "logs",
+    "main",
+    "query_logs_cmd",
+    "repro_group",
+    "session_logger_cmd",
+    "tokenizer_group",
+    "validate_env_cmd",
     "viewer_cmd",
 ]
 

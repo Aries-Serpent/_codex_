@@ -8,8 +8,8 @@ import pytest
 
 pytest.importorskip("omegaconf")
 
-from codex import __version__  # noqa: E402
-from codex_ml.cli.main import cli  # noqa: E402
+from codex import __version__
+from codex_ml.cli.main import cli
 
 
 def test_cli_reports_package_version(capsys):

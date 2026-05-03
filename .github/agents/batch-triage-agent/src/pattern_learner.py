@@ -13,7 +13,7 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Any, NamedTuple, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -25,14 +25,14 @@ class FailurePattern:
     pattern_id: str
     failure_type: str
     root_cause: str
-    common_symptoms: List[str]
-    legacy_ids: List[str] = None
+    common_symptoms: list[str]
+    legacy_ids: list[str] = None
     occurrences: int = 1
     first_seen: str = ""
     last_seen: str = ""
     success_rate: float = 0.0
     avg_resolution_time_hours: Optional[float] = None
-    recommended_actions: List[str] = None
+    recommended_actions: list[str] = None
 
     def __post_init__(self):
         if not self.first_seen:
@@ -44,7 +44,7 @@ class FailurePattern:
         if self.legacy_ids is None:
             self.legacy_ids = []
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
 
@@ -100,9 +100,9 @@ class PatternLearner:
         self.metrics_dir.mkdir(parents=True, exist_ok=True)
 
         # In-memory cache
-        self.patterns: Dict[str, FailurePattern] = {}
-        self._pattern_id_cache: Dict[str, str] = {}
-        self._legacy_id_map: Dict[str, str] = {}
+        self.patterns: dict[str, FailurePattern] = {}
+        self._pattern_id_cache: dict[str, str] = {}
+        self._legacy_id_map: dict[str, str] = {}
         self._migration_map_path = self.patterns_dir / "pattern_id_migration.json"
         self._load_id_migration_map()
         self._load_patterns()
@@ -144,8 +144,8 @@ class PatternLearner:
     def record_triage_outcome(
         self,
         batch_id: str,
-        failures: List[Dict[str, Any]],
-        outcomes: Optional[List[Dict[str, Any]]] = None,
+        failures: list[dict[str, Any]],
+        outcomes: Optional[list[dict[str, Any]]] = None,
     ) -> None:
         """
         Record triage outcomes for learning.
@@ -177,7 +177,7 @@ class PatternLearner:
 
         logger.info(f"Recorded triage outcome for batch {batch_id}")
 
-    def _extract_patterns_from_batch(self, failures: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _extract_patterns_from_batch(self, failures: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Extract patterns from a batch of failures."""
         pattern_groups = defaultdict(list)
 
@@ -291,16 +291,16 @@ class PatternLearner:
                 return pattern
         return None
 
-    def migrate_existing_patterns(self) -> Dict[str, str]:
+    def migrate_existing_patterns(self) -> dict[str, str]:
         """Migrate existing patterns to SHA-256 IDs with legacy alias support.
 
         The migration is performed in two phases to avoid data loss:
         1. Compute migrations and write all new pattern files.
         2. Only after successful writes, update in-memory mappings and delete legacy files.
         """
-        migrations: Dict[str, str] = {}
+        migrations: dict[str, str] = {}
         # Phase 0: build migration plan without modifying original pattern objects
-        migration_plan: List[MigrationEntry] = []
+        migration_plan: list[MigrationEntry] = []
         for legacy_id, original_pattern in list(self.patterns.items()):
             # Generate new ID without registering to avoid side effects during planning
             content_id = self._generate_pattern_id(
@@ -370,7 +370,7 @@ class PatternLearner:
                 json.dump(payload, f, indent=2)
         return migrations
 
-    def _update_or_create_pattern(self, pattern_data: Dict[str, Any]) -> None:
+    def _update_or_create_pattern(self, pattern_data: dict[str, Any]) -> None:
         """Update existing pattern or create new one."""
         pattern_id = pattern_data["pattern_id"]
         resolved_id = self._resolve_pattern_id(pattern_id)
@@ -488,7 +488,7 @@ class PatternLearner:
             return pattern
         return self._find_pattern_by_signature(failure_type, root_cause)
 
-    def get_best_remediation(self, failure_type: str, root_cause: str) -> Optional[Dict[str, Any]]:
+    def get_best_remediation(self, failure_type: str, root_cause: str) -> Optional[dict[str, Any]]:
         """
         Get best remediation based on historical success rates.
 
@@ -537,7 +537,7 @@ class PatternLearner:
         logger.info(f"Cleaned up {removed} expired patterns")
         return removed
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get learning statistics.
 
@@ -555,7 +555,7 @@ class PatternLearner:
             "most_common_failure_types": self._get_top_failure_types(),
         }
 
-    def _get_top_failure_types(self, limit: int = 5) -> List[Dict[str, Any]]:
+    def _get_top_failure_types(self, limit: int = 5) -> list[dict[str, Any]]:
         """Get most common failure types."""
         type_counts = defaultdict(int)
 

@@ -121,6 +121,7 @@ def train(
                 fh.write(json.dumps(record) + "\n")
         except Exception:  # pragma: no cover - best-effort logging
             logger.debug("Suppressed exception in handler", exc_info=True)
+
     # Load tokenizer and model
     tokenizer = load_from_pretrained(
         AutoTokenizer,
@@ -249,7 +250,7 @@ def train(
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             try:
-                return int(len(tensor))
+                return len(tensor)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 shape = getattr(tensor, "shape", None)

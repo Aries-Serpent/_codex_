@@ -65,7 +65,7 @@ class DocumentationAgent:
 
     # PDA Loop Implementation
 
-    def perceive(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, context: dict[str, Any]) -> dict[str, Any]:
         """Perception Phase: Analyze documentation needs"""
         perception = {
             "timestamp": self._get_timestamp(),
@@ -79,7 +79,7 @@ class DocumentationAgent:
         self.pda_state["perception"].append(perception)
         return perception
 
-    def decide(self, perception: Dict[str, Any]) -> Dict[str, Any]:
+    def decide(self, perception: dict[str, Any]) -> dict[str, Any]:
         """Decision Phase: Determine documentation actions"""
         decision = {
             "timestamp": self._get_timestamp(),
@@ -110,7 +110,7 @@ class DocumentationAgent:
         self.pda_state["decision"].append(decision)
         return decision
 
-    def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
+    def act(self, decision: dict[str, Any]) -> dict[str, Any]:
         """Action Phase: Generate documentation"""
         result = {
             "timestamp": self._get_timestamp(),
@@ -136,7 +136,7 @@ class DocumentationAgent:
         self.pda_state["action"].append(result)
         return result
 
-    def aftermath(self, action_result: Dict[str, Any]) -> Dict[str, Any]:
+    def aftermath(self, action_result: dict[str, Any]) -> dict[str, Any]:
         """AfterMath Phase: Learn and improve"""
         aftermath = {
             "timestamp": self._get_timestamp(),
@@ -166,7 +166,7 @@ class DocumentationAgent:
         self.performance_metrics["docs_generated"] += 1
         return markdown
 
-    def generate_changelog(self, commits: List[Dict[str, str]], version: str = "1.0.0") -> str:
+    def generate_changelog(self, commits: list[dict[str, str]], version: str = "1.0.0") -> str:
         """Generate changelog from commits"""
         for commit in commits:
             self.changelog_generator.parse_commit(
@@ -178,7 +178,7 @@ class DocumentationAgent:
         self.performance_metrics["changelogs_created"] += 1
         return changelog
 
-    def create_tutorial(self, topic: str, sections: List[Dict[str, Any]]) -> str:
+    def create_tutorial(self, topic: str, sections: list[dict[str, Any]]) -> str:
         """Create tutorial from sections"""
         for section in sections:
             self.tutorial_generator.add_section(
@@ -191,7 +191,7 @@ class DocumentationAgent:
         self.performance_metrics["tutorials_created"] += 1
         return tutorial
 
-    def create_diagram(self, nodes: List[Dict[str, str]], edges: List[Dict[str, str]]) -> str:
+    def create_diagram(self, nodes: list[dict[str, str]], edges: list[dict[str, str]]) -> str:
         """Create architecture diagram"""
         for node in nodes:
             self.diagram_generator.add_node(node["id"], node["label"], node.get("type", "component"))
@@ -201,7 +201,7 @@ class DocumentationAgent:
         self.performance_metrics["diagrams_generated"] += 1
         return diagram
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get comprehensive metrics"""
         return {
             "agent_name": "documentation",

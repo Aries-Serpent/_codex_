@@ -19,9 +19,9 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "BenchmarkResult",
     "PerformanceBenchmark",
-    "benchmark_training_step",
-    "benchmark_inference",
     "benchmark_data_loading",
+    "benchmark_inference",
+    "benchmark_training_step",
 ]
 
 

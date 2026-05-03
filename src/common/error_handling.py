@@ -3,15 +3,16 @@ Standardized error handling utilities for _codex_ project.
 """
 
 import logging
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable, Optional, Tuple, Type
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 
 def safe_execute(
     operation_name: str,
-    exception_types: Tuple[Type[Exception], ...] = (Exception,),
+    exception_types: tuple[type[Exception], ...] = (Exception,),
     default_return: Optional[Any] = None,
     log_level: str = "warning",
 ):
@@ -44,7 +45,7 @@ def safe_call(
     func: Callable,
     *args,
     operation_name: str = "Operation",
-    exception_types: Tuple[Type[Exception], ...] = (Exception,),
+    exception_types: tuple[type[Exception], ...] = (Exception,),
     default_return: Optional[Any] = None,
     log_level: str = "warning",
     **kwargs,

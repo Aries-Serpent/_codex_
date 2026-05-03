@@ -12,7 +12,7 @@ Tests performance characteristics to detect regressions:
 import gc
 import statistics
 import time
-from typing import Callable, Dict
+from collections.abc import Callable
 
 import pytest
 
@@ -49,7 +49,7 @@ class PerformanceBaseline:
         return True
 
 
-def measure_time(func: Callable, iterations: int = 100) -> Dict[str, float]:
+def measure_time(func: Callable, iterations: int = 100) -> dict[str, float]:
     """Measure execution time statistics for a function."""
     times = []
 

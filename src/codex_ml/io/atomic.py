@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Atomic file-system helpers for sidecar persistence."""
 
 
 import json  # noqa: E402
@@ -29,7 +28,7 @@ import tempfile  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402
 
-__all__ = ["canonical_json_dumps", "atomic_write_text", "atomic_write_json"]
+__all__ = ["atomic_write_json", "atomic_write_text", "canonical_json_dumps"]
 
 
 def canonical_json_dumps(obj: Any) -> str:

@@ -59,11 +59,12 @@ from __future__ import annotations
 
 import json
 import math
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Optional
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -190,7 +191,7 @@ class PlanStep:
     description: str
     physics: PhysicsParams = field(default_factory=PhysicsParams)
     decoherence_sessions: int = 0
-    entangled_with: List[str] = field(default_factory=list)
+    entangled_with: list[str] = field(default_factory=list)
     status: StepStatus = StepStatus.PENDING
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
@@ -215,7 +216,7 @@ class PlanStep:
     # Serialisation helpers
     # ------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["status"] = self.status.value
         d["effective_amplitude"] = self.effective_amplitude()
@@ -223,7 +224,7 @@ class PlanStep:
         return d
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> PlanStep:
+    def from_dict(cls, data: dict[str, Any]) -> PlanStep:
         data = dict(data)
         data.pop("effective_amplitude", None)
         data.pop("physics_score", None)
@@ -262,9 +263,9 @@ class QuantumPlanset:
 
     planset_id: str
     area: str
-    steps: List[PlanStep] = field(default_factory=list)
-    entanglement_bonds: List[EntanglementBond] = field(default_factory=list)
-    context: Dict[str, Any] = field(default_factory=dict)
+    steps: list[PlanStep] = field(default_factory=list)
+    entanglement_bonds: list[EntanglementBond] = field(default_factory=list)
+    context: dict[str, Any] = field(default_factory=dict)
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     collapsed_at: Optional[str] = None
 
@@ -272,7 +273,7 @@ class QuantumPlanset:
     # Convenience properties
     # ------------------------------------------------------------------
 
-    def viable_steps(self) -> List[PlanStep]:
+    def viable_steps(self) -> list[PlanStep]:
         """Return steps that are above the decoherence threshold."""
         return [s for s in self.steps if s.is_viable()]
 
@@ -291,7 +292,7 @@ class QuantumPlanset:
     # Serialisation
     # ------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "planset_id": self.planset_id,
             "area": self.area,
@@ -303,7 +304,7 @@ class QuantumPlanset:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> QuantumPlanset:
+    def from_dict(cls, data: dict[str, Any]) -> QuantumPlanset:
         data = dict(data)
         data["steps"] = [PlanStep.from_dict(s) for s in data.get("steps", [])]
         data["entanglement_bonds"] = [
@@ -321,7 +322,7 @@ def _ts() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-_TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
+_TEMPLATES: dict[str, list[dict[str, Any]]] = {
     ImprovementArea.COVERAGE_IMPROVEMENT: [
         {
             "step_id": "COV-01",
@@ -1226,7 +1227,7 @@ class QuantumPlansetEngine:
     def generate(
         self,
         area: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
         extra_steps: Optional[Sequence[PlanStep]] = None,
     ) -> QuantumPlanset:
         """
@@ -1252,7 +1253,7 @@ class QuantumPlansetEngine:
 
         # Build steps from template + extras
         template_defs = _TEMPLATES.get(area, [])
-        steps: List[PlanStep] = []
+        steps: list[PlanStep] = []
         for defn in template_defs:
             defn = dict(defn)
             physics_kw = defn.pop("physics", {})
@@ -1265,7 +1266,7 @@ class QuantumPlansetEngine:
             steps.extend(list(extra_steps))
 
         # Build entanglement bonds from step declarations
-        bonds: List[EntanglementBond] = []
+        bonds: list[EntanglementBond] = []
         seen_bonds: set = set()
         for step in steps:
             for partner_id in step.entangled_with:
@@ -1296,7 +1297,7 @@ class QuantumPlansetEngine:
         """Return the effective amplitude of a single step."""
         return step.effective_amplitude()
 
-    def collapse(self, planset: QuantumPlanset) -> List[PlanStep]:
+    def collapse(self, planset: QuantumPlanset) -> list[PlanStep]:
         """
         "Measure" the planset and return a concrete ordered execution path.
 
@@ -1322,10 +1323,10 @@ class QuantumPlansetEngine:
 
         # Build ordered path respecting entanglement
         seen_ids: set = set()
-        path: List[PlanStep] = []
+        path: list[PlanStep] = []
 
         # Index for fast lookup
-        step_by_id: Dict[str, PlanStep] = {s.step_id: s for s in planset.steps}
+        step_by_id: dict[str, PlanStep] = {s.step_id: s for s in planset.steps}
 
         for step in viable:
             if step.step_id in seen_ids:
@@ -1382,9 +1383,9 @@ class QuantumPlansetEngine:
         merged_area = f"{planset_a.area}+{planset_b.area}"
 
         # Index B steps by action (semantic key)
-        b_by_action: Dict[str, PlanStep] = {s.action: s for s in planset_b.steps}
+        b_by_action: dict[str, PlanStep] = {s.action: s for s in planset_b.steps}
 
-        result_steps: List[PlanStep] = []
+        result_steps: list[PlanStep] = []
         used_b_actions: set = set()
 
         for step_a in planset_a.steps:
@@ -1477,8 +1478,8 @@ class QuantumPlansetEngine:
 
     @staticmethod
     def _apply_context_momentum(
-        steps: List[PlanStep],
-        context: Dict[str, Any],
+        steps: list[PlanStep],
+        context: dict[str, Any],
         area: str,
     ) -> None:
         """
@@ -1491,7 +1492,7 @@ class QuantumPlansetEngine:
         * ``failing_checks > 5`` → CI-01, CI-02 momentum × 1.6
         * ``stale_deps > 10`` → DEP-01, DEP-02 momentum × 1.3
         """
-        boosts: Dict[str, float] = {}
+        boosts: dict[str, float] = {}
 
         if area == ImprovementArea.SECURITY_REMEDIATION:
             if context.get("open_alerts", 0) > 50:

@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "handoff"))
 
-from validate_handoff import (  # noqa: E402
+from validate_handoff import (
     HandoffValidator,
     ValidationReport,
     ValidationResult,

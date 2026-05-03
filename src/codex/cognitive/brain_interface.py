@@ -41,7 +41,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -111,9 +111,9 @@ class AgentContext:
     agent_category: AgentCategory = AgentCategory.UNKNOWN
     session_id: Optional[str] = None
     pr_number: Optional[int] = None
-    symptoms: List[str] = field(default_factory=list)
+    symptoms: list[str] = field(default_factory=list)
     current_phase: str = "initial"
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -137,12 +137,12 @@ class PatternMatch:
     category: str
     confidence: PatternConfidence
     match_score: float
-    symptoms: List[str]
-    solutions: List[str]
+    symptoms: list[str]
+    solutions: list[str]
     success_rate: float
     times_applied: int
-    related_prs: List[str] = field(default_factory=list)
-    diagnosis_steps: List[str] = field(default_factory=list)
+    related_prs: list[str] = field(default_factory=list)
+    diagnosis_steps: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -163,10 +163,10 @@ class LearningFeedback:
     pattern_id: str
     outcome: str  # "success", "failure", "partial"
     agent_id: str
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
     resolution_details: str = ""
-    new_symptoms: List[str] = field(default_factory=list)
-    suggested_improvements: List[str] = field(default_factory=list)
+    new_symptoms: list[str] = field(default_factory=list)
+    suggested_improvements: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -186,11 +186,11 @@ class BrainResponse:
 
     success: bool
     message: str
-    patterns: List[PatternMatch] = field(default_factory=list)
-    objectives: List[str] = field(default_factory=list)
-    session_state: Dict[str, Any] = field(default_factory=dict)
-    recommendations: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    patterns: list[PatternMatch] = field(default_factory=list)
+    objectives: list[str] = field(default_factory=list)
+    session_state: dict[str, Any] = field(default_factory=dict)
+    recommendations: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class AgentBrainInterface:
@@ -272,7 +272,7 @@ class AgentBrainInterface:
     DEFAULT_OBJECTIVES_TRACKER = "objectives_tracker.md"
 
     # Agent category mappings
-    AGENT_CATEGORY_MAP: Dict[str, AgentCategory] = {
+    AGENT_CATEGORY_MAP: dict[str, AgentCategory] = {
         "ci-testing-agent": AgentCategory.CI_CD,
         "ci-log-retrieval-agent": AgentCategory.CI_CD,
         "workflow-ci-fixer": AgentCategory.CI_CD,
@@ -301,7 +301,7 @@ class AgentBrainInterface:
     def __init__(
         self,
         agent_id: str,
-        repo_root: Optional[Union[str, Path]] = None,
+        repo_root: Optional[str | Path] = None,
         auto_register: bool = True,
     ):
         """
@@ -323,9 +323,9 @@ class AgentBrainInterface:
         self.objectives_path = self.cognitive_brain_dir / self.DEFAULT_OBJECTIVES_TRACKER
 
         # Internal state
-        self._patterns: Dict[str, Dict[str, Any]] = {}
-        self._session_state: Dict[str, Any] = {}
-        self._objectives: List[str] = []
+        self._patterns: dict[str, dict[str, Any]] = {}
+        self._session_state: dict[str, Any] = {}
+        self._objectives: list[str] = []
         self._registered = False
 
         # Load data
@@ -415,7 +415,7 @@ class AgentBrainInterface:
         self._registered = True
         logger.debug(f"Agent {self.agent_id} registered with cognitive brain")
 
-    def _calculate_match_score(self, symptoms: List[str], pattern_symptoms: List[str]) -> float:
+    def _calculate_match_score(self, symptoms: list[str], pattern_symptoms: list[str]) -> float:
         """
         Calculate match score between query symptoms and pattern symptoms.
 
@@ -470,11 +470,11 @@ class AgentBrainInterface:
 
     def query_patterns(
         self,
-        symptoms: Union[str, List[str]],
+        symptoms: str | list[str],
         category: Optional[str] = None,
         min_confidence: PatternConfidence = PatternConfidence.LOW,
         limit: int = 5,
-    ) -> List[PatternMatch]:
+    ) -> list[PatternMatch]:
         """
         Query the pattern store for matching patterns.
 
@@ -495,7 +495,7 @@ class AgentBrainInterface:
         if isinstance(symptoms, str):
             symptoms = [symptoms]
 
-        matches: List[PatternMatch] = []
+        matches: list[PatternMatch] = []
         min_score = {
             PatternConfidence.LOW: _MIN_CONFIDENCE,
             PatternConfidence.MEDIUM: 0.60,
@@ -566,9 +566,9 @@ class AgentBrainInterface:
         self,
         pattern_id: str,
         category: str,
-        symptoms: List[str],
-        solutions: List[str],
-        diagnosis_steps: Optional[List[str]] = None,
+        symptoms: list[str],
+        solutions: list[str],
+        diagnosis_steps: Optional[list[str]] = None,
     ) -> bool:
         """
         Submit a new pattern to the pattern store.
@@ -715,7 +715,7 @@ class AgentBrainInterface:
         # Default to partially aligned if we can't determine
         return ObjectiveAlignment.PARTIALLY_ALIGNED
 
-    def get_objectives(self, include_completed: bool = False) -> List[str]:
+    def get_objectives(self, include_completed: bool = False) -> list[str]:
         """
         Get current objectives.
 
@@ -764,7 +764,7 @@ class AgentBrainInterface:
     # Session State
     # =========================================================================
 
-    def get_session_state(self) -> Dict[str, Any]:
+    def get_session_state(self) -> dict[str, Any]:
         """
         Get the current session state.
 
@@ -773,7 +773,7 @@ class AgentBrainInterface:
         """
         return self._session_state.copy()
 
-    def update_session_state(self, updates: Dict[str, Any], merge: bool = True) -> bool:
+    def update_session_state(self, updates: dict[str, Any], merge: bool = True) -> bool:
         """
         Update the session state.
 
@@ -803,10 +803,10 @@ class AgentBrainInterface:
         self,
         pattern_id: str,
         outcome: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
         resolution_details: str = "",
-        new_symptoms: Optional[List[str]] = None,
-        suggested_improvements: Optional[List[str]] = None,
+        new_symptoms: Optional[list[str]] = None,
+        suggested_improvements: Optional[list[str]] = None,
     ) -> bool:
         """
         Submit learning feedback after applying a pattern.
@@ -883,7 +883,7 @@ class AgentBrainInterface:
     # =========================================================================
 
     def diagnose(
-        self, symptoms: Union[str, List[str]], auto_apply_patterns: bool = False
+        self, symptoms: str | list[str], auto_apply_patterns: bool = False
     ) -> BrainResponse:
         """
         Perform a full diagnosis based on symptoms.

@@ -14,11 +14,12 @@ from __future__ import annotations
 
 import json
 import random  # nosec B311 - used for ML hyperparameter search, not security
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 
 class MetricType(Enum):

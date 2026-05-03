@@ -12,7 +12,6 @@ Handles various types of broken links including:
 import re
 import sys
 from pathlib import Path
-from typing import Tuple
 
 # Get repository root dynamically - can be overridden via CLI argument
 if len(sys.argv) > 1 and sys.argv[1] not in ['--apply']:
@@ -35,7 +34,7 @@ class ComprehensiveLinkFixer:
             'broken_blob_urls_removed': 0
         }
 
-    def fix_file(self, file_path: Path) -> Tuple[str, bool]:
+    def fix_file(self, file_path: Path) -> tuple[str, bool]:
         """Fix all broken links in a single file"""
         # Initialize variables before try-except to avoid uninitialized variable errors
         content = ""

@@ -9,7 +9,7 @@ and filters it to our 81 target commits.
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Target commits
 TARGET_COMMITS = [
@@ -59,7 +59,7 @@ TARGET_COMMITS = [
 OWNER = "Aries-Serpent"
 REPO = "_codex_"
 
-def process_workflow_runs_file(filepath: str) -> Dict[str, List[Any]]:
+def process_workflow_runs_file(filepath: str) -> dict[str, list[Any]]:
     """Process workflow runs JSON and filter to target commits."""
 
     print(f"📂 Reading {filepath}...")
@@ -91,7 +91,7 @@ def process_workflow_runs_file(filepath: str) -> Dict[str, List[Any]]:
 
     return by_commit
 
-def generate_markdown_table(by_commit: Dict[str, List[Any]]) -> str:
+def generate_markdown_table(by_commit: dict[str, list[Any]]) -> str:
     """Generate markdown table from grouped data."""
 
     lines = [

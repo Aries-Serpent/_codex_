@@ -7,10 +7,10 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def _load_metadata(path: Path) -> Dict[str, Any]:
+def _load_metadata(path: Path) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
@@ -30,7 +30,7 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def validate_checkpoint_dir(directory: Path, expect_schema: str | None = None) -> Dict[str, Any]:
+def validate_checkpoint_dir(directory: Path, expect_schema: str | None = None) -> dict[str, Any]:
     if not directory.is_dir():
         raise SystemExit(f"not a directory: {directory}")
     state_file = directory / "state.pt"

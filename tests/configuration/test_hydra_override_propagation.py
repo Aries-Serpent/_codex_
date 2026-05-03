@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import importlib
+from collections.abc import Callable
 from contextlib import suppress
 from pathlib import Path
-from typing import Callable
 
 import pytest
 
@@ -17,7 +17,7 @@ def _hydrate_hydra() -> tuple[Callable[..., object], Callable[..., object], type
     compose, initialize = _import_hydra_compose()
     module_root = compose.__module__.split(".")[0]
     global_module = importlib.import_module(f"{module_root}.core.global_hydra")
-    return compose, initialize, getattr(global_module, "GlobalHydra")
+    return compose, initialize, global_module.GlobalHydra
 
 
 @pytest.fixture(scope="module")

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Tuple
 
 try:
     from PIL import Image
@@ -28,8 +27,7 @@ MAX_PIXEL_VALUE = 255.0
 def load_gray(path: Path):
     if Image is None:
         raise RuntimeError("Pillow not installed; pip install pillow")
-    img = Image.open(path).convert("L")
-    return img
+    return Image.open(path).convert("L")
 
 
 def to_array(img) -> "np.ndarray":
@@ -38,7 +36,7 @@ def to_array(img) -> "np.ndarray":
     return np.asarray(img, dtype=np.float32)
 
 
-def resize_to_match(a, b) -> Tuple["np.ndarray", "np.ndarray"]:
+def resize_to_match(a, b) -> tuple["np.ndarray", "np.ndarray"]:
     # Resize b to a's size if different
     if a.shape == b.shape:
         return a, b
@@ -64,13 +62,12 @@ def compare(baseline: Path, candidate: Path, metric: str = "ssim") -> float:
     a, b = resize_to_match(a, b)
     if metric.lower() == "ssim":
         return metric_ssim(a, b)
-    elif metric.lower() == "mse":
+    if metric.lower() == "mse":
         # Return similarity-like score from MSE
         mse = float(((a - b) ** 2).mean())
         nmse = min(1.0, mse / (MAX_PIXEL_VALUE**2))
         return max(0.0, 1.0 - nmse)
-    else:
-        raise ValueError(f"Unknown metric: {metric}")
+    raise ValueError(f"Unknown metric: {metric}")
 
 
 def main(argv=None) -> int:

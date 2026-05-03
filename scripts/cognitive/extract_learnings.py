@@ -33,14 +33,14 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 def extract_learnings(
     evaluation_path: str,
     output_path: str,
     patterns: str = "success,failure,optimization"
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Extract learnings from evaluation results.
 

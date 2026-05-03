@@ -9,7 +9,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 # Compiled regex patterns for snake_case conversion (performance optimization)
 _SNAKE_CASE_PATTERN1 = re.compile(r'(.)([A-Z][a-z]+)')
@@ -39,7 +39,7 @@ class CodeFinding:
     suggestion: Optional[str] = None
     confidence: float = 1.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             'file_path': self.file_path,
@@ -67,8 +67,8 @@ class AnalysisContext:
     file_path: str
     source_code: str = ""
     ast_tree: Optional[ast.AST] = None
-    patterns: List[Dict[str, Any]] = field(default_factory=list)
-    findings: List[CodeFinding] = field(default_factory=list)
+    patterns: list[dict[str, Any]] = field(default_factory=list)
+    findings: list[CodeFinding] = field(default_factory=list)
 
 
 class ASTAnalysisAgent:
@@ -102,13 +102,13 @@ class ASTAnalysisAgent:
         self.name = name
         self.max_complexity = max_complexity
         self.max_function_length = max_function_length
-        self.analyzers: Dict[str, callable] = {}
+        self.analyzers: dict[str, callable] = {}
         self._register_default_analyzers()
 
         # Analysis statistics
         self.files_analyzed: int = 0
         self.findings_count: int = 0
-        self.analysis_history: List[Dict[str, Any]] = []
+        self.analysis_history: list[dict[str, Any]] = []
 
     def _register_default_analyzers(self) -> None:
         """Register built-in analyzers."""
@@ -152,7 +152,7 @@ class ASTAnalysisAgent:
 
         return context
 
-    def decide(self, context: AnalysisContext) -> List[str]:
+    def decide(self, context: AnalysisContext) -> list[str]:
         """Decide phase: Select analysis strategies.
 
         Args:
@@ -168,7 +168,7 @@ class ASTAnalysisAgent:
         # Select all available analyzers
         return list(self.analyzers.keys())
 
-    def act(self, context: AnalysisContext, analyzers: List[str]) -> List[CodeFinding]:
+    def act(self, context: AnalysisContext, analyzers: list[str]) -> list[CodeFinding]:
         """Act phase: Apply analyzers and generate findings.
 
         Args:
@@ -186,7 +186,7 @@ class ASTAnalysisAgent:
 
         return context.findings
 
-    def aftermath(self, context: AnalysisContext, findings: List[CodeFinding]) -> Dict[str, Any]:
+    def aftermath(self, context: AnalysisContext, findings: list[CodeFinding]) -> dict[str, Any]:
         """AfterMath phase: Process results and learn.
 
         Args:
@@ -223,7 +223,7 @@ class ASTAnalysisAgent:
 
     # === Main Analysis Method ===
 
-    def analyze_file(self, file_path: str) -> Tuple[List[CodeFinding], Dict[str, Any]]:
+    def analyze_file(self, file_path: str) -> tuple[list[CodeFinding], dict[str, Any]]:
         """Analyze a single file using PDA loop.
 
         Args:
@@ -246,7 +246,7 @@ class ASTAnalysisAgent:
 
         return findings, summary
 
-    def analyze_directory(self, directory: str, pattern: str = "*.py") -> Dict[str, Any]:
+    def analyze_directory(self, directory: str, pattern: str = "*.py") -> dict[str, Any]:
         """Analyze all matching files in a directory.
 
         Args:
@@ -275,7 +275,7 @@ class ASTAnalysisAgent:
 
     # === Built-in Analyzers ===
 
-    def _analyze_complexity(self, context: AnalysisContext) -> List[CodeFinding]:
+    def _analyze_complexity(self, context: AnalysisContext) -> list[CodeFinding]:
         """Analyze cyclomatic complexity."""
         findings = []
 
@@ -310,7 +310,7 @@ class ASTAnalysisAgent:
                 complexity += len(child.values) - 1
         return complexity
 
-    def _analyze_function_length(self, context: AnalysisContext) -> List[CodeFinding]:
+    def _analyze_function_length(self, context: AnalysisContext) -> list[CodeFinding]:
         """Analyze function length."""
         findings = []
 
@@ -335,7 +335,7 @@ class ASTAnalysisAgent:
 
         return findings
 
-    def _analyze_unused_variables(self, context: AnalysisContext) -> List[CodeFinding]:
+    def _analyze_unused_variables(self, context: AnalysisContext) -> list[CodeFinding]:
         """Analyze unused variables (basic implementation)."""
         findings = []
 
@@ -355,7 +355,7 @@ class ASTAnalysisAgent:
 
         return findings
 
-    def _analyze_naming(self, context: AnalysisContext) -> List[CodeFinding]:
+    def _analyze_naming(self, context: AnalysisContext) -> list[CodeFinding]:
         """Analyze naming conventions."""
         findings = []
 
@@ -400,7 +400,7 @@ class ASTAnalysisAgent:
 
     # === Statistics ===
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get agent statistics."""
         return {
             'agent_name': self.name,

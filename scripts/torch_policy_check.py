@@ -35,13 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""Torch CPU policy checker.
-
-OK when:
-- torch imports and reports a real version (not "0.0.0-offline"),
-- CUDA is absent (CPU-only posture),
-- and either the version has "+cpu" OR the environment enforces the PyTorch CPU index.
-"""
 
 import json
 import os

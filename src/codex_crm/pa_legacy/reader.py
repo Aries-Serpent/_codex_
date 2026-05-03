@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Readers for legacy Power Automate export packages."""
 
 
 import json  # noqa: E402

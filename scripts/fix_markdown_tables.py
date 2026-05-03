@@ -16,7 +16,6 @@ import argparse
 import re
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 
 class MarkdownTableFixer:
@@ -26,10 +25,10 @@ class MarkdownTableFixer:
         self.root_dir = root_dir
         self.docs_dir = root_dir / "docs"
         self.check_only = check_only
-        self.issues_found: List[dict] = []
-        self.fixes_applied: List[dict] = []
+        self.issues_found: list[dict] = []
+        self.fixes_applied: list[dict] = []
 
-    def fix_all(self) -> Tuple[int, int]:
+    def fix_all(self) -> tuple[int, int]:
         """Fix all markdown files. Returns (issues_found, fixes_applied)."""
         print("🔧 GitHub Pages Manager - Markdown Table Formatter\n")
         print(f"📂 Root: {self.root_dir}")
@@ -48,7 +47,7 @@ class MarkdownTableFixer:
 
         return len(self.issues_found), len(self.fixes_applied)
 
-    def fix_file(self, file_path: Path) -> Tuple[int, int]:
+    def fix_file(self, file_path: Path) -> tuple[int, int]:
         """Fix a single file. Returns (issues_found, fixes_applied)."""
         print(f"🔧 Processing: {file_path}\n")
         self._process_file(file_path)

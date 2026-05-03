@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "MetricsCollector",
     "get_metrics_router",
-    "record_request",
     "record_latency",
+    "record_request",
 ]
 
 # Global metrics collector instance

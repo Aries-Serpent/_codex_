@@ -10,7 +10,7 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 
 class FixStrategy(Enum):
@@ -36,8 +36,8 @@ class FixContext:
     code: str
     vulnerability_type: str
     risk_score: float
-    line_numbers: List[int]
-    metadata: Dict[str, Any]
+    line_numbers: list[int]
+    metadata: dict[str, Any]
 
 
 @dataclass
@@ -50,7 +50,7 @@ class GeneratedFix:
     explanation: str
     confidence: float
     file_path: str
-    line_numbers: List[int]
+    line_numbers: list[int]
     validation_passed: bool = False
 
 
@@ -121,7 +121,7 @@ class IntelligentFixGenerator:
             print(f"Error generating fix: {e}")
             return None
 
-    def generate_multiple_fixes(self, context: FixContext) -> List[GeneratedFix]:
+    def generate_multiple_fixes(self, context: FixContext) -> list[GeneratedFix]:
         """
         Generate multiple fix options for the same vulnerability.
 
@@ -188,7 +188,7 @@ class IntelligentFixGenerator:
 
         return None
 
-    def _get_applicable_strategies(self, context: FixContext) -> List[FixStrategy]:
+    def _get_applicable_strategies(self, context: FixContext) -> list[FixStrategy]:
         """Get all applicable strategies for the context."""
         strategies = []
         vuln_type = context.vulnerability_type.lower()
@@ -208,7 +208,7 @@ class IntelligentFixGenerator:
 
         return strategies
 
-    def _fix_shell_injection(self, context: FixContext) -> Tuple[str, str, float]:
+    def _fix_shell_injection(self, context: FixContext) -> tuple[str, str, float]:
         """Fix shell injection vulnerabilities."""
         code = context.code
 
@@ -243,7 +243,7 @@ class IntelligentFixGenerator:
 
         return code, "No changes needed", 0.50
 
-    def _fix_eval_exec(self, context: FixContext) -> Tuple[str, str, float]:
+    def _fix_eval_exec(self, context: FixContext) -> tuple[str, str, float]:
         """Fix eval/exec usage."""
         code = context.code
 
@@ -266,7 +266,7 @@ class IntelligentFixGenerator:
 
         return code, "No changes needed", 0.50
 
-    def _fix_pickle_usage(self, context: FixContext) -> Tuple[str, str, float]:
+    def _fix_pickle_usage(self, context: FixContext) -> tuple[str, str, float]:
         """Fix unsafe pickle usage."""
         code = context.code
 
@@ -281,7 +281,7 @@ class IntelligentFixGenerator:
 
         return code, "Manual review required for pickle usage", 0.60
 
-    def _fix_xml_parser(self, context: FixContext) -> Tuple[str, str, float]:
+    def _fix_xml_parser(self, context: FixContext) -> tuple[str, str, float]:
         """Fix XML parser vulnerabilities."""
         code = context.code
 
@@ -295,7 +295,7 @@ class IntelligentFixGenerator:
 
         return code, "No changes needed", 0.50
 
-    def _add_input_validation(self, context: FixContext) -> Tuple[str, str, float]:
+    def _add_input_validation(self, context: FixContext) -> tuple[str, str, float]:
         """Add input validation."""
         code = context.code
 
@@ -317,7 +317,7 @@ def validate_input(data, max_length=1000):
 
         return code, "No validation added", 0.50
 
-    def _fix_weak_crypto(self, context: FixContext) -> Tuple[str, str, float]:
+    def _fix_weak_crypto(self, context: FixContext) -> tuple[str, str, float]:
         """Fix weak cryptography."""
         code = context.code
 
@@ -330,7 +330,7 @@ def validate_input(data, max_length=1000):
 
         return code, "No changes needed", 0.50
 
-    def _fix_file_permissions(self, context: FixContext) -> Tuple[str, str, float]:
+    def _fix_file_permissions(self, context: FixContext) -> tuple[str, str, float]:
         """Fix file permission issues."""
         code = context.code
 
@@ -375,7 +375,7 @@ def validate_input(data, max_length=1000):
             if occurrences == 0:
                 print(f"Warning: Original code not found in {fix.file_path}")
                 return False
-            elif occurrences > 1:
+            if occurrences > 1:
                 print(f"Warning: Ambiguous replacement - code appears {occurrences} times in {fix.file_path}")
                 print("Consider using AST-based or line-number-specific replacement")
                 # Only replace first occurrence to avoid unintended changes

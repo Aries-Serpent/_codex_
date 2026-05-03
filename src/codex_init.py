@@ -15,7 +15,7 @@ import os
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class ConfigLoader:
         self.config_dir = config_dir or CONFIG_DIRS["primary"]
         self.allow_deprecated = allow_deprecated
         self.strict_mode = strict_mode
-        self._cache: Dict[str, Any] = {}
+        self._cache: dict[str, Any] = {}
 
         # Ensure primary config directory exists
         if not self.config_dir.exists():
@@ -83,8 +83,8 @@ class ConfigLoader:
         self,
         config_name: str,
         config_path: Optional[str] = None,
-        overrides: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        overrides: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """
         Load configuration file.
 
@@ -136,7 +136,7 @@ class ConfigLoader:
         logger.debug(f"Loaded config: {cache_key}")
         return config
 
-    def _load_file(self, file_path: Path) -> Dict[str, Any]:
+    def _load_file(self, file_path: Path) -> dict[str, Any]:
         """Load configuration file based on extension."""
         import json
 
@@ -158,7 +158,7 @@ class ConfigLoader:
             logger.error(f"Failed to load {file_path}: {e}")
             raise
 
-    def _load_yaml(self, file_path: Path) -> Dict[str, Any]:
+    def _load_yaml(self, file_path: Path) -> dict[str, Any]:
         """Load YAML file."""
         try:
             import yaml
@@ -169,7 +169,7 @@ class ConfigLoader:
             logger.error("PyYAML not installed. Install with: pip install pyyaml")
             raise
 
-    def _load_toml(self, file_path: Path) -> Dict[str, Any]:
+    def _load_toml(self, file_path: Path) -> dict[str, Any]:
         """Load TOML file."""
         try:
             import tomli
@@ -180,7 +180,7 @@ class ConfigLoader:
             logger.error("tomli not installed. Install with: pip install tomli")
             raise
 
-    def _apply_overrides(self, config: Dict[str, Any], overrides: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_overrides(self, config: dict[str, Any], overrides: dict[str, Any]) -> dict[str, Any]:
         """Apply override values to configuration."""
         result = config.copy()
 
@@ -193,13 +193,13 @@ class ConfigLoader:
 
         return result
 
-    def _set_nested(self, d: Dict[str, Any], keys: List[str], value: Any) -> None:
+    def _set_nested(self, d: dict[str, Any], keys: list[str], value: Any) -> None:
         """Set nested dictionary value using list of keys."""
         for key in keys[:-1]:
             d = d.setdefault(key, {})
         d[keys[-1]] = value
 
-    def load_from_deprecated(self, directory: str, config_name: str) -> Dict[str, Any]:
+    def load_from_deprecated(self, directory: str, config_name: str) -> dict[str, Any]:
         """
         Load from deprecated directory with warning.
 
@@ -284,8 +284,8 @@ def get_config_loader(
 def load_config(
     config_name: str,
     config_path: Optional[str] = None,
-    overrides: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    overrides: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """
     Convenience function to load configuration.
 
@@ -310,7 +310,7 @@ def reset_config_loader() -> None:
 # Migration helpers
 
 
-def detect_config_sprawl() -> Dict[str, List[str]]:
+def detect_config_sprawl() -> dict[str, list[str]]:
     """
     Detect configuration files across all directories.
 

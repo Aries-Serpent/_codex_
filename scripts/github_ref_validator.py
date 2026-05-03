@@ -14,13 +14,12 @@ import json
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
 
 
-def extract_github_refs(content: str, file_path: Path) -> List[Dict]:
+def extract_github_refs(content: str, file_path: Path) -> list[dict]:
     """
     Extract all GitHub references from content.
     Returns list of references with context.
@@ -69,7 +68,7 @@ def extract_github_refs(content: str, file_path: Path) -> List[Dict]:
     return refs
 
 
-def categorize_reference(ref: Dict) -> str:
+def categorize_reference(ref: dict) -> str:
     """
     Categorize a reference based on patterns.
     Returns: 'likely_valid', 'uncertain', or 'needs_check'
@@ -97,7 +96,7 @@ def categorize_reference(ref: Dict) -> str:
     return 'needs_check'
 
 
-def scan_repository(directories: List[str] = None) -> Dict:
+def scan_repository(directories: list[str] = None) -> dict:
     """
     Scan repository for GitHub references.
     Returns comprehensive analysis.
@@ -163,7 +162,7 @@ def scan_repository(directories: List[str] = None) -> Dict:
     return results
 
 
-def generate_validation_plan(analysis: Dict) -> Dict:
+def generate_validation_plan(analysis: dict) -> dict:
     """
     Generate a validation plan for GitHub references.
     Returns plan with recommendations.

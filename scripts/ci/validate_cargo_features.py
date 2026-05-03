@@ -14,7 +14,6 @@ import logging
 import re
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,7 @@ except ImportError:
         tomllib = None  # Will use regex fallback
 
 
-def validate_cargo_features(cargo_toml_path: Path) -> Tuple[bool, List[str]]:
+def validate_cargo_features(cargo_toml_path: Path) -> tuple[bool, list[str]]:
     """
     Validate Cargo.toml features configuration.
 

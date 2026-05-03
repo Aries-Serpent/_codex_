@@ -26,12 +26,13 @@ import os  # noqa: E402
 import socket  # noqa: E402
 import subprocess  # noqa: E402
 import uuid  # noqa: E402
+from collections.abc import Mapping  # noqa: E402
 from collections.abc import Mapping as MappingABC  # noqa: E402
 from collections.abc import Sequence as SequenceABC  # noqa: E402
 from dataclasses import asdict, dataclass, is_dataclass  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import TYPE_CHECKING, Any, Mapping, Optional  # noqa: E402
+from typing import TYPE_CHECKING, Any, Optional  # noqa: E402
 
 from codex_ml.logging.ndjson_logger import (  # noqa: E402
     NDJSONLogger,

@@ -7,7 +7,6 @@ and suggests improvements for failing patterns.
 
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 # Add agents directory to path
 AGENTS_DIR = Path(__file__).resolve().parents[1]
@@ -62,7 +61,7 @@ class PatternValidator:
             ],
         }
 
-    def validate_all_patterns(self) -> Dict[str, List[Tuple[str, bool, bool, str]]]:
+    def validate_all_patterns(self) -> dict[str, list[tuple[str, bool, bool, str]]]:
         """
         Test all patterns against test cases.
 
@@ -95,7 +94,7 @@ class PatternValidator:
 
         return results
 
-    def generate_report(self, results: Dict[str, List[Tuple[str, bool, bool, str]]]) -> None:
+    def generate_report(self, results: dict[str, list[tuple[str, bool, bool, str]]]) -> None:
         """Generate summary report of validation results."""
         print("\n" + "=" * 70)
         print("📊 PATTERN VALIDATION SUMMARY")
@@ -138,7 +137,7 @@ class PatternValidator:
                     print(f"   - {desc}: expected={expected}, got={actual}")
                     print(f"     Test: {test_str[:60]}...")
 
-    def suggest_pattern_fixes(self, results: Dict[str, List[Tuple]]) -> None:
+    def suggest_pattern_fixes(self, results: dict[str, list[tuple]]) -> None:
         """Suggest improvements for failing patterns."""
         print("\n" + "=" * 70)
         print("💡 SUGGESTED PATTERN FIXES")
@@ -181,11 +180,10 @@ def main():
         print("✅ ALL PATTERNS VALIDATED SUCCESSFULLY")
         print("=" * 70)
         return 0
-    else:
-        print("\n" + "=" * 70)
-        print("❌ SOME PATTERNS FAILED VALIDATION")
-        print("=" * 70)
-        return 1
+    print("\n" + "=" * 70)
+    print("❌ SOME PATTERNS FAILED VALIDATION")
+    print("=" * 70)
+    return 1
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ Usage:
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import click
 import yaml
@@ -24,7 +24,7 @@ class Binding:
     type: str  # 'function' or 'class'
     name: str
     return_type: str
-    parameters: List[Dict]
+    parameters: list[dict]
     file: str
     line: int
     is_async: bool = False
@@ -134,16 +134,16 @@ class PyO3IntegrationTester:
         """Initialize tester with optional config."""
         self.config = self._load_config(config_path)
         self.patterns = self._compile_patterns()
-        self.discovered_bindings: List[Binding] = []
+        self.discovered_bindings: list[Binding] = []
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load tester configuration."""
         if config_path and config_path.exists():
             with open(config_path) as f:
                 return yaml.safe_load(f)
         return self._default_config()
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration."""
         return {
             'version': '1.0.0',
@@ -161,7 +161,7 @@ class PyO3IntegrationTester:
             'file_patterns': ['*.rs'],
         }
 
-    def _compile_patterns(self) -> Dict:
+    def _compile_patterns(self) -> dict:
         """Compile regex patterns for detection."""
         return {
             'pyfunction': re.compile(
@@ -182,7 +182,7 @@ class PyO3IntegrationTester:
             ),
         }
 
-    def parse_rust_file(self, filepath: Path) -> List[Binding]:
+    def parse_rust_file(self, filepath: Path) -> list[Binding]:
         """
         Parse a Rust file and extract PyO3 bindings.
 
@@ -241,7 +241,7 @@ class PyO3IntegrationTester:
 
         return bindings
 
-    def scan_directory(self, directory: Path, recursive: bool = None) -> List[Binding]:
+    def scan_directory(self, directory: Path, recursive: bool = None) -> list[Binding]:
         """
         Scan a directory for Rust files and extract bindings.
 
@@ -267,10 +267,10 @@ class PyO3IntegrationTester:
 
     def generate_tests(
         self,
-        bindings: List[Binding],
+        bindings: list[Binding],
         output_dir: Path,
         overwrite: bool = False
-    ) -> Dict[str, Path]:
+    ) -> dict[str, Path]:
         """
         Generate test files for bindings.
 
@@ -301,7 +301,7 @@ class PyO3IntegrationTester:
 
         return generated_files
 
-    def generate_report(self, bindings: List[Binding]) -> Dict:
+    def generate_report(self, bindings: list[Binding]) -> dict:
         """
         Generate a summary report of discovered bindings.
 

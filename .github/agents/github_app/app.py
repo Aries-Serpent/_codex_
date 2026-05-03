@@ -7,7 +7,7 @@ import hmac
 import logging
 import os
 from datetime import datetime, timedelta
-from typing import Any, Dict
+from typing import Any
 
 import jwt
 import requests
@@ -66,7 +66,7 @@ class CodexReviewerApp:
 
         return hmac.compare_digest(signature, expected)
 
-    def _handle_pr_event(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def _handle_pr_event(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Handle pull request events."""
         action = payload.get("action")
         pr = payload.get("pull_request", {})
@@ -80,12 +80,12 @@ class CodexReviewerApp:
 
         return {"status": "ignored", "action": action}
 
-    def _handle_review_event(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def _handle_review_event(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Handle pull request review events."""
         logger.info("Review event received")
         return {"status": "review_event_received"}
 
-    def _handle_comment_event(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def _handle_comment_event(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Handle issue comment events."""
         logger.info("Comment event received")
         return {"status": "comment_event_received"}

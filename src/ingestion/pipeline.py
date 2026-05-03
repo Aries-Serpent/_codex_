@@ -30,9 +30,10 @@ import csv
 import json
 import logging
 import time
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Iterator, Optional, Union
+from typing import Any, Optional
 
 from . import detect_encoding, deterministic_shuffle, read_text
 
@@ -49,8 +50,8 @@ __all__ = [
     "IngestionPipeline",
     "PipelineConfig",
     "PipelineResult",
-    "ingest_file",
     "ingest_directory",
+    "ingest_file",
     "transform_records",
 ]
 
@@ -347,8 +348,8 @@ class IngestionPipeline:
 
     def process(
         self,
-        input_path: Union[str, Path],
-        output_path: Optional[Union[str, Path]] = None,
+        input_path: str | Path,
+        output_path: Optional[str | Path] = None,
         format_override: Optional[str] = None,
     ) -> PipelineResult:
         """Process an input file through the pipeline.
@@ -487,7 +488,7 @@ class IngestionPipeline:
 
     def stream(
         self,
-        input_path: Union[str, Path],
+        input_path: str | Path,
         format_override: Optional[str] = None,
     ) -> Iterator[dict[str, Any]]:
         """Stream records from input file.
@@ -523,7 +524,7 @@ class IngestionPipeline:
 
 
 def ingest_file(
-    path: Union[str, Path],
+    path: str | Path,
     config: Optional[PipelineConfig] = None,
 ) -> list[dict[str, Any]]:
     """Convenience function to ingest a single file.
@@ -540,7 +541,7 @@ def ingest_file(
 
 
 def ingest_directory(
-    directory: Union[str, Path],
+    directory: str | Path,
     pattern: str = "*",
     config: Optional[PipelineConfig] = None,
     recursive: bool = False,

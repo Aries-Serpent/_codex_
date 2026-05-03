@@ -42,7 +42,7 @@ import os
 import pathlib
 import re
 from collections import defaultdict
-from typing import Iterable
+from collections.abc import Iterable
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 ART_DIR = ROOT / "artifacts"

@@ -3,6 +3,7 @@ Unit tests for edge cases across all modules.
 
 Tests boundary conditions, invalid inputs, and error handling.
 """
+import importlib.util
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -262,8 +263,4 @@ class TestConfigEdgeCases:
 # Helper
 def _torch_available():
     """Check if PyTorch is available."""
-    try:
-        import torch  # noqa: F401 - Testing optional dependency availability
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec('torch') is not None

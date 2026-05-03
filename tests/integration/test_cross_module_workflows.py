@@ -157,8 +157,8 @@ class TestTokenizationTrainingPipeline:
     def test_tokenizer_initialization(self, temp_workspace):
         """Verify tokenizer initialization."""
         try:
-            from codex_ml.tokenization import (  # noqa: F401
-                load_tokenizer,  # noqa: F401 - Testing optional dependency availability
+            from codex_ml.tokenization import (
+                load_tokenizer as load_tokenizer,
             )
 
             # Should be able to initialize tokenizer
@@ -259,7 +259,7 @@ class TestMonitoringLoggingIntegration:
         try:
             raise ValueError("Test error")
         except ValueError as e:
-            error_log.write_text(f"Error: {str(e)}\n")
+            error_log.write_text(f"Error: {e!s}\n")
 
         assert error_log.exists()
         assert "Test error" in error_log.read_text()
@@ -465,7 +465,7 @@ class TestErrorPropagation:
         try:
             raise ValueError("Test error for logging")
         except ValueError as e:
-            error_log.write_text(f"ERROR: {str(e)}\n")
+            error_log.write_text(f"ERROR: {e!s}\n")
 
         assert error_log.exists()
 

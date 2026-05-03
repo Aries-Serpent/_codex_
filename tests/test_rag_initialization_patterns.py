@@ -10,30 +10,29 @@ import sys
 import types
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple
 
 import pytest
 
 np = pytest.importorskip("numpy")
 
-from codex.rag.embeddings import LocalSentenceTransformerProvider  # noqa: E402
-from codex.rag.indexer import embed_chunks  # noqa: E402
-from codex.rag.retriever import Retriever  # noqa: E402
+from codex.rag.embeddings import LocalSentenceTransformerProvider
+from codex.rag.indexer import embed_chunks
+from codex.rag.retriever import Retriever
 
 
 @dataclass
 class SentenceTransformerSpy:
     """Capture SentenceTransformer initialization for validation."""
 
-    calls: List[Tuple[str, dict]]
-    instances: List[object]
+    calls: list[tuple[str, dict]]
+    instances: list[object]
 
 
 @pytest.fixture()
 def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransformerSpy:
     """Install a fake sentence_transformers module that records init kwargs."""
-    calls: List[Tuple[str, dict]] = []
-    instances: List[object] = []
+    calls: list[tuple[str, dict]] = []
+    instances: list[object] = []
 
     class FakeSentenceTransformer:
         def __init__(self, model_name: str, **kwargs):

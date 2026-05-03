@@ -22,7 +22,7 @@ import sqlite3  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional, Union  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 from .graph import DependencyGraph  # noqa: E402
 from .metrics import MetricsAggregator  # noqa: E402
@@ -99,7 +99,7 @@ class KnowledgeGraphExporter:
     def export(
         self,
         format: ExportFormat,
-        output_path: Optional[Union[str, Path]] = None,
+        output_path: Optional[str | Path] = None,
     ) -> ExportResult:
         """Export to specified format.
 
@@ -555,7 +555,7 @@ def _escape_xml(text: str) -> str:
 def export_knowledge_graph(
     nodes: list[StandardizedASTNode],
     format: ExportFormat = ExportFormat.JSON,
-    output_path: Optional[Union[str, Path]] = None,
+    output_path: Optional[str | Path] = None,
     graph: Optional[DependencyGraph] = None,
     metrics: Optional[MetricsAggregator] = None,
 ) -> ExportResult:

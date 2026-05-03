@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import os
 from collections import OrderedDict
-from typing import Any, Hashable
+from collections.abc import Hashable
+from typing import Any
 
-__all__ = ["TokenLRU", "GLOBAL_TOKEN_LRU", "cache_key", "is_cache_disabled"]
+__all__ = ["GLOBAL_TOKEN_LRU", "TokenLRU", "cache_key", "is_cache_disabled"]
 
 
 class TokenLRU:

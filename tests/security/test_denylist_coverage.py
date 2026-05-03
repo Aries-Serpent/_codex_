@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import tempfile
-from typing import Pattern
+from re import Pattern
 
 import pytest
 

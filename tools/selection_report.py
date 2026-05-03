@@ -14,8 +14,9 @@ import json
 import re
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Tuple
+from typing import Any
 
 VERSION = "0.1.0"
 
@@ -24,7 +25,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-def _run(cmd: List[str]) -> Tuple[int, str, str]:
+def _run(cmd: list[str]) -> tuple[int, str, str]:
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     out, err = process.communicate()
     return process.returncode, out, err
@@ -34,7 +35,7 @@ def _bullets(items: Iterable[str]) -> str:
     return "\n".join(f"- {s}" for s in items)
 
 
-def _read_json(path: Path) -> Dict[str, object]:
+def _read_json(path: Path) -> dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -57,8 +58,8 @@ def _run_config_mode(args: argparse.Namespace) -> int:
         sys.stderr.write(f"[selection] config not found: {config_path}\n")
         return 1
 
-    payload: Dict[str, Any] | None = None
-    parse_errors: List[Exception] = []
+    payload: dict[str, Any] | None = None
+    parse_errors: list[Exception] = []
 
     try:
         from omegaconf import OmegaConf  # type: ignore
@@ -109,7 +110,7 @@ def _run_config_mode(args: argparse.Namespace) -> int:
     else:
         note_items = []
 
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append(f"# Deployment Dry-Run — {name}")
     lines.append("")
     lines.append("## Overview")
@@ -151,7 +152,7 @@ def _run_config_mode(args: argparse.Namespace) -> int:
         _ensure_parent(target)
         target.write_text(report_text, encoding="utf-8")
 
-    json_payload: Dict[str, Any] = {
+    json_payload: dict[str, Any] = {
         "mode": "dry-run",
         "generated": _timestamp(),
         "config_path": str(config_path),
@@ -178,7 +179,7 @@ def _run_config_mode(args: argparse.Namespace) -> int:
     return 0
 
 
-def _extract_assistant_keys(turn_mapping: Dict[str, object]) -> List[str]:
+def _extract_assistant_keys(turn_mapping: dict[str, object]) -> list[str]:
     return sorted([k for k in turn_mapping.keys() if "~assttrn_" in k and k.startswith("task_e_")])
 
 
@@ -218,15 +219,15 @@ WEIGHTS = {
 }
 
 
-def _score_blob(text_blob: str) -> Tuple[int, Dict[str, bool], List[str]]:
+def _score_blob(text_blob: str) -> tuple[int, dict[str, bool], list[str]]:
     score = 0
-    found: Dict[str, bool] = {}
+    found: dict[str, bool] = {}
     for name, pattern in SIGNALS.items():
         hit = re.search(pattern, text_blob, re.IGNORECASE) is not None
         found[name] = hit
         if hit:
             score += WEIGHTS[name]
-    penalties: List[str] = []
+    penalties: list[str] = []
     if not found.get("selection_guard", False):
         score -= 3
         penalties.append("missing selection_guard signal")
@@ -236,8 +237,8 @@ def _score_blob(text_blob: str) -> Tuple[int, Dict[str, bool], List[str]]:
     return score, found, penalties
 
 
-def _collect_text(turn: Dict[str, object]) -> str:
-    texts: List[str] = []
+def _collect_text(turn: dict[str, object]) -> str:
+    texts: list[str] = []
     worklog = turn.get("worklog") or {}
     messages = worklog.get("messages") or []
     if isinstance(messages, list):
@@ -261,7 +262,7 @@ def _collect_text(turn: Dict[str, object]) -> str:
     return "\n\n".join(texts)
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Generate a local SELECTION_REPORT.md or deploy dry-run report"
     )
@@ -345,7 +346,7 @@ def main(argv: List[str] | None = None) -> int:
     winner = rows_sorted[0]
 
     # 3) Render markdown
-    md: List[str] = []
+    md: list[str] = []
     md.append(f"# Selection Report — *codex* (v{VERSION})")
     md.append("")
     md.append("## Recommendation")

@@ -30,13 +30,13 @@ from .dal import ArchiveDAL  # noqa: E402
 from .util import sha256_hex, utcnow_iso, zlib_compress  # noqa: E402
 
 __all__ = [
-    "store",
-    "restore",
-    "insert_referent",
-    "refer_dup_to_canonical",
     "db_check",
-    "summarize",
+    "insert_referent",
     "recent_tombstones",
+    "refer_dup_to_canonical",
+    "restore",
+    "store",
+    "summarize",
 ]
 
 EVIDENCE_DIR = Path(os.getenv("CODEX_EVIDENCE_DIR", ".codex/evidence")).resolve()

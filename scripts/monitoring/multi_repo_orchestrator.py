@@ -15,7 +15,7 @@ import json
 import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -45,14 +45,14 @@ class TaskResult:
 class MultiRepoOrchestrator:
     """Coordinate agent tasks across multiple repositories."""
 
-    repos: List[RepoConfig] = field(default_factory=list)
-    results: List[TaskResult] = field(default_factory=list)
+    repos: list[RepoConfig] = field(default_factory=list)
+    results: list[TaskResult] = field(default_factory=list)
 
     def add_repo(self, name: str, owner: str, **kwargs) -> None:
         """Register a repository for orchestration."""
         self.repos.append(RepoConfig(name=name, owner=owner, **kwargs))
 
-    def get_health_summary(self) -> Dict:
+    def get_health_summary(self) -> dict:
         """Aggregate health across all repos."""
         if not self.repos:
             return {"status": "no_repos", "repos": 0, "avg_health": 0.0}
@@ -68,7 +68,7 @@ class MultiRepoOrchestrator:
             ],
         }
 
-    def dispatch_task(self, task: str, repos: Optional[List[str]] = None) -> List[TaskResult]:
+    def dispatch_task(self, task: str, repos: Optional[list[str]] = None) -> list[TaskResult]:
         """Dispatch a task to specified repos (or all)."""
         targets = self.repos
         if repos:

@@ -12,8 +12,8 @@ import pytest
 
 pytest.importorskip("torch")
 
-import torch  # noqa: E402
-from codex_ml.models import registry  # noqa: E402
+import torch
+from codex_ml.models import registry
 
 
 class DummyModel:

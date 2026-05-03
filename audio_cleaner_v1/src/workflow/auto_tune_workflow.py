@@ -3,7 +3,7 @@
 
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ class AutoTuneWorkflow:
             output_dir=output_dir or str(Path(input_path).parent)
         )
 
-    def _discover_audio_files(self, input_path: str) -> List[Path]:
+    def _discover_audio_files(self, input_path: str) -> list[Path]:
         """Discover audio files."""
         path = Path(input_path).resolve()
         if not path.exists():
@@ -74,7 +74,7 @@ class AutoTuneWorkflow:
             if path.suffix.lower() in supported_formats:
                 return [path]
             raise ValueError(f"Unsupported format: {path.suffix}")
-        elif path.is_dir():
+        if path.is_dir():
             files = []
             for ext in supported_formats:
                 files.extend(path.rglob(f"*{ext}"))

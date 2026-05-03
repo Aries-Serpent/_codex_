@@ -17,7 +17,7 @@ import json
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -56,7 +56,7 @@ def generate_github_anchor(heading_text: str) -> str:
 
 
 
-def extract_headers_with_line_numbers(content: str) -> List[Tuple[str, str, int]]:
+def extract_headers_with_line_numbers(content: str) -> list[tuple[str, str, int]]:
     """
     Extract all headers from content with their line numbers.
     Returns list of (header_text, anchor_id, line_number).
@@ -81,7 +81,7 @@ def extract_headers_with_line_numbers(content: str) -> List[Tuple[str, str, int]
     return headers
 
 
-def find_anchor_links_with_context(content: str) -> List[Dict]:
+def find_anchor_links_with_context(content: str) -> list[dict]:
     """
     Find all anchor links in content with surrounding context.
     Returns list of dicts with link details and context.
@@ -115,7 +115,7 @@ def find_anchor_links_with_context(content: str) -> List[Dict]:
     return links
 
 
-def analyze_file_anchors(file_path: Path) -> Dict:
+def analyze_file_anchors(file_path: Path) -> dict:
     """
     Analyze a file for complex anchor references.
     Returns analysis results.
@@ -171,7 +171,7 @@ def analyze_file_anchors(file_path: Path) -> Dict:
     }
 
 
-def categorize_anchor_issue(anchor: str, valid_anchors: Dict[str, str], link_text: str) -> str:
+def categorize_anchor_issue(anchor: str, valid_anchors: dict[str, str], link_text: str) -> str:
     """
     Categorize the type of anchor issue.
     Returns issue type string.
@@ -215,7 +215,7 @@ def categorize_anchor_issue(anchor: str, valid_anchors: Dict[str, str], link_tex
     return 'no_match_found'
 
 
-def find_best_match(anchor: str, valid_anchors: List[str]) -> Optional[str]:
+def find_best_match(anchor: str, valid_anchors: list[str]) -> Optional[str]:
     """
     Find the best matching anchor from valid options.
     Returns best match or None.
@@ -255,7 +255,7 @@ def find_best_match(anchor: str, valid_anchors: List[str]) -> Optional[str]:
     return best_match if best_score > 0.5 else None
 
 
-def scan_repository(directories: List[str] = None) -> Dict:
+def scan_repository(directories: list[str] = None) -> dict:
     """
     Scan repository for complex anchor issues.
     Returns comprehensive analysis.
@@ -304,7 +304,7 @@ def scan_repository(directories: List[str] = None) -> Dict:
     return results
 
 
-def generate_review_queue(analysis: Dict) -> List[Dict]:
+def generate_review_queue(analysis: dict) -> list[dict]:
     """
     Generate a review queue for manual inspection.
     Returns list of items needing review, sorted by priority.
@@ -333,7 +333,7 @@ def generate_review_queue(analysis: Dict) -> List[Dict]:
     return queue
 
 
-def calculate_priority(issue: Dict) -> int:
+def calculate_priority(issue: dict) -> int:
     """
     Calculate priority score for an issue (0-10).
     Higher score = higher priority.

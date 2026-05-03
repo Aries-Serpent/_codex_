@@ -13,7 +13,7 @@ import json
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import click
 import yaml
@@ -25,8 +25,8 @@ class NotebookLMSource:
     title: str
     content: str
     source_type: str  # 'markdown', 'text', 'json'
-    metadata: Dict[str, Any]
-    citations: List[str]
+    metadata: dict[str, Any]
+    citations: list[str]
     created_at: str
 
 
@@ -35,9 +35,9 @@ class ResearchArtifact:
     """Represents a complete research artifact."""
     artifact_id: str
     title: str
-    sources: List[NotebookLMSource]
+    sources: list[NotebookLMSource]
     summary: str
-    tags: List[str]
+    tags: list[str]
     created_at: str
 
 
@@ -56,16 +56,16 @@ class ProjectArchitectResearcher:
     def __init__(self, config_path: Optional[Path] = None):
         """Initialize researcher with optional config."""
         self.config = self._load_config(config_path)
-        self.artifacts: List[ResearchArtifact] = []
+        self.artifacts: list[ResearchArtifact] = []
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load researcher configuration."""
         if config_path and config_path.exists():
             with open(config_path) as f:
                 return yaml.safe_load(f)
         return self._default_config()
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration."""
         return {
             'version': '1.0.0',
@@ -120,7 +120,7 @@ class ProjectArchitectResearcher:
             # Extract citations (basic implementation)
             citations = self._extract_citations(content)
 
-            source = NotebookLMSource(
+            return NotebookLMSource(
                 title=filepath.name,
                 content=content,
                 source_type=source_type,
@@ -129,13 +129,12 @@ class ProjectArchitectResearcher:
                 created_at=datetime.now(timezone.utc).isoformat()
             )
 
-            return source
 
         except Exception as e:
             click.echo(f"Error parsing {filepath}: {e}", err=True)
             return None
 
-    def _extract_citations(self, content: str) -> List[str]:
+    def _extract_citations(self, content: str) -> list[str]:
         """Extract citations/references from content."""
         citations = []
 
@@ -151,7 +150,7 @@ class ProjectArchitectResearcher:
         self,
         directory: Path,
         recursive: bool = True
-    ) -> List[NotebookLMSource]:
+    ) -> list[NotebookLMSource]:
         """
         Scan a directory for documentation files.
 
@@ -179,8 +178,8 @@ class ProjectArchitectResearcher:
     def create_artifact(
         self,
         title: str,
-        sources: List[NotebookLMSource],
-        tags: Optional[List[str]] = None
+        sources: list[NotebookLMSource],
+        tags: Optional[list[str]] = None
     ) -> ResearchArtifact:
         """
         Create a research artifact from sources.
@@ -269,7 +268,7 @@ class ProjectArchitectResearcher:
 
         return output_path
 
-    def generate_report(self, artifacts: List[ResearchArtifact]) -> Dict:
+    def generate_report(self, artifacts: list[ResearchArtifact]) -> dict:
         """Generate summary report of artifacts."""
         total_sources = sum(len(a.sources) for a in artifacts)
         total_content = sum(
@@ -285,7 +284,7 @@ class ProjectArchitectResearcher:
             'artifacts_by_tag': self._count_by_tags(artifacts),
         }
 
-    def _count_by_tags(self, artifacts: List[ResearchArtifact]) -> Dict[str, int]:
+    def _count_by_tags(self, artifacts: list[ResearchArtifact]) -> dict[str, int]:
         """Count artifacts by tag."""
         tag_counts = {}
         for artifact in artifacts:

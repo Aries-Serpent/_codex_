@@ -9,7 +9,7 @@ import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -67,7 +67,7 @@ class ModuleStats:
 @dataclass
 class AuditResults:
     """Overall audit results."""
-    modules: Dict[str, ModuleStats] = field(default_factory=dict)
+    modules: dict[str, ModuleStats] = field(default_factory=dict)
     total_files: int = 0
     total_lines: int = 0
 
@@ -218,7 +218,7 @@ def analyze_python_file(filepath: Path) -> Optional[ModuleStats]:
         return None
 
 
-def find_python_files(root_dir: Path, exclude_patterns: List[str] = None) -> List[Path]:
+def find_python_files(root_dir: Path, exclude_patterns: list[str] = None) -> list[Path]:
     """Find all Python files in the directory tree."""
     if exclude_patterns is None:
         exclude_patterns = [
@@ -243,7 +243,7 @@ def find_python_files(root_dir: Path, exclude_patterns: List[str] = None) -> Lis
     return python_files
 
 
-def analyze_markdown_docs(root_dir: Path) -> Dict[str, any]:
+def analyze_markdown_docs(root_dir: Path) -> dict[str, any]:
     """Analyze markdown documentation files."""
     docs_dir = root_dir / 'docs'
 
@@ -290,7 +290,7 @@ def analyze_markdown_docs(root_dir: Path) -> Dict[str, any]:
     return stats
 
 
-def check_cli_documentation(root_dir: Path) -> Dict[str, any]:
+def check_cli_documentation(root_dir: Path) -> dict[str, any]:
     """Check CLI command documentation."""
     cli_stats = {
         'cli_files_found': 0,
@@ -325,7 +325,7 @@ def check_cli_documentation(root_dir: Path) -> Dict[str, any]:
     return cli_stats
 
 
-def generate_report(results: AuditResults, md_stats: Dict, cli_stats: Dict, root_dir: Path) -> str:
+def generate_report(results: AuditResults, md_stats: dict, cli_stats: dict, root_dir: Path) -> str:
     """Generate comprehensive documentation quality report."""
 
     report = []

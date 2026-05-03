@@ -5,7 +5,6 @@ Provides functions to sanitize user input and prevent XSS, injection attacks.
 
 import logging
 import re
-from typing import Union
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +66,7 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
 
 
 def sanitize_integer(
-    value: Union[str, int, float],
+    value: str | int | float,
     default: int = 0,
     min_value: int | None = None,
     max_value: int | None = None,

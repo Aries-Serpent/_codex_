@@ -68,7 +68,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -101,7 +101,7 @@ class FetchedItem:
     kind:    str          # "issue" | "pr" | "run" | "review"
     title:   str = ""
     summary: str = ""
-    details: List[str] = field(default_factory=list)
+    details: list[str] = field(default_factory=list)
     error:   Optional[str] = None
 
 @dataclass
@@ -114,10 +114,10 @@ class TriageResult:
 class BootstrapReport:
     timestamp:    str
     repo:         str
-    fetched:      List[FetchedItem]  = field(default_factory=list)
-    triage:       List[TriageResult] = field(default_factory=list)
-    blocking:     List[str]          = field(default_factory=list)
-    warnings:     List[str]          = field(default_factory=list)
+    fetched:      list[FetchedItem]  = field(default_factory=list)
+    triage:       list[TriageResult] = field(default_factory=list)
+    blocking:     list[str]          = field(default_factory=list)
+    warnings:     list[str]          = field(default_factory=list)
     baseline_ok:  Optional[bool]      = None   # None=not run, True=passed, False=failed
 
 
@@ -144,11 +144,11 @@ class GitHubClient:
         except URLError as exc:
             raise RuntimeError(f"Network error: {exc.reason} — {url}") from exc
 
-    def get_issue(self, repo: str, number: int) -> Dict:
+    def get_issue(self, repo: str, number: int) -> dict:
         return self._request(f"/repos/{repo}/issues/{number}")
 
-    def get_issue_comments(self, repo: str, number: int) -> List[Dict]:
-        items: List[Dict] = []
+    def get_issue_comments(self, repo: str, number: int) -> list[dict]:
+        items: list[dict] = []
         page = 1
         while True:
             batch = self._request(
@@ -162,17 +162,17 @@ class GitHubClient:
             page += 1
         return items
 
-    def get_pr(self, repo: str, number: int) -> Dict:
+    def get_pr(self, repo: str, number: int) -> dict:
         return self._request(f"/repos/{repo}/pulls/{number}")
 
-    def get_pr_check_runs(self, repo: str, sha: str) -> List[Dict]:
+    def get_pr_check_runs(self, repo: str, sha: str) -> list[dict]:
         data = self._request(
             f"/repos/{repo}/commits/{sha}/check-runs?per_page=100"
         )
         return data.get("check_runs", [])
 
-    def get_pr_reviews(self, repo: str, number: int) -> List[Dict]:
-        items: List[Dict] = []
+    def get_pr_reviews(self, repo: str, number: int) -> list[dict]:
+        items: list[dict] = []
         page = 1
         while True:
             batch = self._request(
@@ -186,8 +186,8 @@ class GitHubClient:
             page += 1
         return items
 
-    def get_pr_review_comments(self, repo: str, number: int) -> List[Dict]:
-        items: List[Dict] = []
+    def get_pr_review_comments(self, repo: str, number: int) -> list[dict]:
+        items: list[dict] = []
         page = 1
         while True:
             batch = self._request(
@@ -201,10 +201,10 @@ class GitHubClient:
             page += 1
         return items
 
-    def get_workflow_run(self, repo: str, run_id: int) -> Dict:
+    def get_workflow_run(self, repo: str, run_id: int) -> dict:
         return self._request(f"/repos/{repo}/actions/runs/{run_id}")
 
-    def get_workflow_run_jobs(self, repo: str, run_id: int) -> List[Dict]:
+    def get_workflow_run_jobs(self, repo: str, run_id: int) -> list[dict]:
         data = self._request(
             f"/repos/{repo}/actions/runs/{run_id}/jobs?per_page=100&filter=latest"
         )
@@ -230,14 +230,14 @@ class GitHubClient:
 
 
 # ── URL extraction ────────────────────────────────────────────────────────────
-def extract_urls(text: str) -> List[Tuple[str, str, str, str]]:
+def extract_urls(text: str) -> list[tuple[str, str, str, str]]:
     """
     Return list of (url, kind, repo, id_or_ids) tuples, deduplicated.
     kind ∈ {"review", "pr", "issue", "run"}
     Reviews must be checked before PRs (more specific pattern).
     """
     seen: set = set()
-    results: List[Tuple[str, str, str, str]] = []
+    results: list[tuple[str, str, str, str]] = []
 
     for m in _RE_REVIEW.finditer(text):
         url = m.group(0)
@@ -386,10 +386,10 @@ def fetch_review(client: GitHubClient, repo: str,
 
 
 # ── Triage checks runner ──────────────────────────────────────────────────────
-def run_triage(verbose: bool = False) -> List[TriageResult]:
+def run_triage(verbose: bool = False) -> list[TriageResult]:
     """Run ci_triage_repro.sh --json and parse results."""
     script = REPO_ROOT / "scripts" / "ci" / "ci_triage_repro.sh"
-    results: List[TriageResult] = []
+    results: list[TriageResult] = []
 
     if not script.exists():
         return [TriageResult("triage_script", "skip", "ci_triage_repro.sh not found")]

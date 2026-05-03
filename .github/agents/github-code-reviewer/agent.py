@@ -29,7 +29,7 @@ class GitHubCodeReviewerAgent:
         print(f"[Code Reviewer] Running {action}")
         if action == 'analyze-pr':
             return {'pr': self.pr_number, 'findings': 0, 'status': 'success'}
-        elif action == 'analyze-file':
+        if action == 'analyze-file':
             return {'file': kwargs.get('file_path'), 'findings': 0, 'status': 'success'}
         return {'error': 'Unknown action'}
 

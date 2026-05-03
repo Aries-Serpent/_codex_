@@ -11,7 +11,7 @@ import time
 from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pytest
 
@@ -29,7 +29,7 @@ class JobStatus(Enum):
 class Job:
     """Job for queue processing."""
     job_id: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     status: JobStatus = JobStatus.PENDING
     result: Optional[Any] = None
     error: Optional[str] = None
@@ -170,7 +170,7 @@ class TestJobProcessing:
                         self.job.result = processor(self.job.payload)
                         self.job.status = JobStatus.COMPLETED
                         return True
-                    except Exception:  # noqa: BLE001
+                    except Exception:
                         if self.attempts >= self.max_retries:
                             self.job.status = JobStatus.FAILED
                             return False

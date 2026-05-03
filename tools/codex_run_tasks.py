@@ -24,13 +24,14 @@ import json
 import os
 import subprocess
 import time
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Optional, Tuple, Union
+from typing import Optional, Union
 
 from tools.security.net import safe_request
 
 PathLike = Union[Path, str]
-CommitResult = Tuple[bool, str]
+CommitResult = tuple[bool, str]
 
 # Repository root (two levels up from this file)
 REPO = Path(__file__).resolve().parents[1]
@@ -293,7 +294,7 @@ def _update_changelog(
     append(project_root / CHANGELOG, entry)
 
 
-def _normalize_run_task_args(args: tuple) -> Tuple[str, Path]:
+def _normalize_run_task_args(args: tuple) -> tuple[str, Path]:
     """Support multiple historical signatures for run_task.
 
     Parameters

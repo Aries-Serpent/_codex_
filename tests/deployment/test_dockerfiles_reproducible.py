@@ -8,14 +8,14 @@ from __future__ import annotations
 
 import pathlib
 import re
-from typing import Iterable, List
+from collections.abc import Iterable
 
 import pytest
 
 FROM_RE = re.compile(r"^\s*FROM\s+([^\s]+)(?:\s+AS\s+(\w+))?", re.IGNORECASE)
 
 
-def _iter_dockerfiles() -> List[pathlib.Path]:
+def _iter_dockerfiles() -> list[pathlib.Path]:
     candidates: Iterable[pathlib.Path] = [
         pathlib.Path("Dockerfile"),
         pathlib.Path("Dockerfile.gpu"),
@@ -23,7 +23,7 @@ def _iter_dockerfiles() -> List[pathlib.Path]:
     return [path for path in candidates if path.exists()]
 
 
-def _read_lines(path: pathlib.Path) -> List[str]:
+def _read_lines(path: pathlib.Path) -> list[str]:
     with path.open("r", encoding="utf-8") as handle:
         return [line.rstrip("\n") for line in handle]
 
@@ -38,7 +38,7 @@ def test_base_images_are_pinned_and_not_latest():
 
         # Collect stage aliases first so we can skip them as "base images"
         stage_names: set[str] = set()
-        base_images: List[str] = []
+        base_images: list[str] = []
         for line in lines:
             match = FROM_RE.match(line)
             if match:

@@ -5,14 +5,13 @@ from __future__ import annotations
 import importlib.util
 import site
 from pathlib import Path
-from typing import Tuple
 
 import pytest
 
 from codex_ml.cli.config import register_configs
 
 
-def _import_hydra_compose() -> Tuple[object, object]:
+def _import_hydra_compose() -> tuple[object, object]:
     """Import Hydra compose/initialize without clashing with the local package."""
 
     module = pytest.importorskip("hydra")

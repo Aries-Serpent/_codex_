@@ -18,7 +18,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -53,20 +53,20 @@ except ImportError:
     class ObservationData:  # type: ignore[no-redef]
         timestamp: datetime
         source: str
-        data: Dict[str, Any]
-        metadata: Optional[Dict[str, Any]] = None
+        data: dict[str, Any]
+        metadata: Optional[dict[str, Any]] = None
 
     @dataclass
     class OrientationResult:  # type: ignore[no-redef]
-        context: Dict[str, Any]
+        context: dict[str, Any]
         analysis: str
         confidence: float
-        alternatives: List[Dict[str, Any]]
+        alternatives: list[dict[str, Any]]
 
     @dataclass
     class Decision:  # type: ignore[no-redef]
         action: str
-        parameters: Dict[str, Any]
+        parameters: dict[str, Any]
         reasoning: str
         confidence: float
         timestamp: datetime
@@ -75,12 +75,12 @@ except ImportError:
     class ActionResult:  # type: ignore[no-redef]
         success: bool
         output: Any
-        metrics: Dict[str, float]
-        errors: List[str]
+        metrics: dict[str, float]
+        errors: list[str]
 
     class Planner(ABC):  # type: ignore[no-redef]
         @abstractmethod
-        def observe(self, input_data: Dict[str, Any]) -> "ObservationData":
+        def observe(self, input_data: dict[str, Any]) -> "ObservationData":
             raise NotImplementedError
         @abstractmethod
         def orient(self, observation: "ObservationData") -> "OrientationResult":
@@ -94,7 +94,7 @@ except ImportError:
 
     class SimpleDictMemory:  # type: ignore[no-redef]
         def __init__(self) -> None:
-            self._storage: Dict[str, Any] = {}
+            self._storage: dict[str, Any] = {}
 
         def store(self, key: str, value: Any, **_kw: Any) -> bool:
             self._storage[key] = value
@@ -103,7 +103,7 @@ except ImportError:
         def retrieve(self, key: str) -> Optional[Any]:
             return self._storage.get(key)
 
-        def search(self, query: Dict[str, Any], limit: int = 10) -> List[Any]:
+        def search(self, query: dict[str, Any], limit: int = 10) -> list[Any]:
             return []
 
 
@@ -137,7 +137,7 @@ class GitHubGuruAdapter(Planner):
     """
 
     # Capability physics parameters (used for routing score)
-    _CAPABILITY_PHYSICS: Dict[str, Dict[str, float]] = {
+    _CAPABILITY_PHYSICS: dict[str, dict[str, float]] = {
         "pr_analysis":                 {"impact": 0.9, "energy": 20, "risk": 0.1, "friction": 2},
         "issue_triage":                {"impact": 0.8, "energy": 15, "risk": 0.1, "friction": 1},
         "workflow_health_monitoring":  {"impact": 0.85, "energy": 25, "risk": 0.15, "friction": 3},
@@ -154,11 +154,11 @@ class GitHubGuruAdapter(Planner):
     def __init__(self, guru_agent: Any):
         self.guru_agent = guru_agent
         self.memory = SimpleDictMemory()
-        self._reflection_log: List[Dict[str, Any]] = []
+        self._reflection_log: list[dict[str, Any]] = []
 
     # ---- OODA loop implementation ----------------------------------------------
 
-    def observe(self, input_data: Dict[str, Any]) -> ObservationData:
+    def observe(self, input_data: dict[str, Any]) -> ObservationData:
         """
         Observe: Wrap GitHub event payload in ObservationData.
 
@@ -186,7 +186,7 @@ class GitHubGuruAdapter(Planner):
         momentum = observation.data.get("urgency", 5.0)  # 1–10
 
         # Score each capability
-        scored: List[Dict[str, Any]] = []
+        scored: list[dict[str, Any]] = []
         for cap, params in self._CAPABILITY_PHYSICS.items():
             # Confidence from event→capability alignment
             confidence = self._event_capability_confidence(event_type, cap)
@@ -248,7 +248,7 @@ class GitHubGuruAdapter(Planner):
         """
         capability = decision.action
         params = decision.parameters
-        errors: List[str] = []
+        errors: list[str] = []
         output: Any = None
 
         try:
@@ -290,7 +290,7 @@ class GitHubGuruAdapter(Planner):
         if not result.success:
             logger.warning("Reflection: action failed — %s", result.errors)
 
-    def ooda_loop(self, input_data: Dict[str, Any]) -> ActionResult:
+    def ooda_loop(self, input_data: dict[str, Any]) -> ActionResult:
         """Execute the full OODA + Reflect loop."""
         obs = self.observe(input_data)
         ori = self.orient(obs)
@@ -299,7 +299,7 @@ class GitHubGuruAdapter(Planner):
         self.reflect(res)
         return res
 
-    def get_reflection_log(self) -> List[Dict[str, Any]]:
+    def get_reflection_log(self) -> list[dict[str, Any]]:
         """Return the accumulated reflection log."""
         return list(self._reflection_log)
 
@@ -329,7 +329,7 @@ class GitHubGuruAdapter(Planner):
         owner: str = "Aries-Serpent",
         repo: str = "_codex_",
         github_token: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Create a GitHub Pull Request whose body starts with ``@copilot <task>``
         to trigger a GitHub Copilot autonomous agent session.
@@ -352,7 +352,7 @@ class GitHubGuruAdapter(Planner):
             Dict with keys: pr_url, pr_number, copilot_triggered (bool), errors.
         """
         token = github_token or os.environ.get("GITHUB_TOKEN", "")
-        errors: List[str] = []
+        errors: list[str] = []
 
         # Build @copilot-triggered body
         copilot_line = f"@copilot {copilot_task}".strip()
@@ -407,7 +407,7 @@ class GitHubGuruAdapter(Planner):
     @staticmethod
     def _event_capability_confidence(event_type: str, capability: str) -> float:
         """Return confidence that event_type maps to capability."""
-        _EVENT_MAP: Dict[str, List[str]] = {
+        _EVENT_MAP: dict[str, list[str]] = {
             "pull_request": ["pr_analysis", "label_taxonomy_enforcement"],
             "issues": ["issue_triage", "label_taxonomy_enforcement"],
             "workflow_run": ["workflow_health_monitoring"],

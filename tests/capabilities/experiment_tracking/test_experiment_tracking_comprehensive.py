@@ -287,7 +287,7 @@ class RunComparison:
         """Compare metric across runs."""
         values = {}
         for run in self.runs:
-            if metric in run.metrics and run.metrics[metric]:
+            if run.metrics.get(metric):
                 values[run.run_id] = {
                     "min": min(run.metrics[metric]),
                     "max": max(run.metrics[metric]),

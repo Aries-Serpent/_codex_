@@ -11,10 +11,10 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("defusedxml", reason="defusedxml required for XML security tests")
-from defusedxml import ElementTree  # noqa: E402
+from defusedxml import ElementTree
 
 pytest.importorskip("codex.dynamics.solution_xml", reason="codex.dynamics not installed")
-from codex.dynamics.solution_xml import (  # noqa: E402
+from codex.dynamics.solution_xml import (
     emit_solution_xml,
     load_solution_manifest,
 )

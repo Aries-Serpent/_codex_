@@ -5,7 +5,7 @@ Provides registration and execution of multiple analyzers on AST trees.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from codex_ml.ast.analysis.base_analyzer import (
     ASTAnalyzer,
@@ -41,7 +41,7 @@ class AnalyzerRegistry:
         Args:
             register_defaults: Whether to register built-in analyzers
         """
-        self.analyzers: Dict[str, ASTAnalyzer] = {}
+        self.analyzers: dict[str, ASTAnalyzer] = {}
 
         if register_defaults:
             self._register_defaults()
@@ -86,7 +86,7 @@ class AnalyzerRegistry:
         """
         return self.analyzers.get(analyzer_type)
 
-    def list_analyzers(self) -> List[str]:
+    def list_analyzers(self) -> list[str]:
         """Get list of registered analyzer types.
 
         Returns:
@@ -94,7 +94,7 @@ class AnalyzerRegistry:
         """
         return list(self.analyzers.keys())
 
-    def analyze_node(self, node: StandardizedASTNode) -> List[Finding]:
+    def analyze_node(self, node: StandardizedASTNode) -> list[Finding]:
         """Run all applicable analyzers on a single node.
 
         Args:
@@ -128,7 +128,7 @@ class AnalyzerRegistry:
 
         return findings
 
-    def analyze_all(self, tree: StandardizedASTNode) -> List[Finding]:
+    def analyze_all(self, tree: StandardizedASTNode) -> list[Finding]:
         """Run all analyzers on an entire AST tree.
 
         Args:
@@ -147,10 +147,10 @@ class AnalyzerRegistry:
     def analyze_with_filter(
         self,
         tree: StandardizedASTNode,
-        analyzer_types: Optional[List[str]] = None,
-        node_types: Optional[List[str]] = None,
+        analyzer_types: Optional[list[str]] = None,
+        node_types: Optional[list[str]] = None,
         min_severity: Optional[str] = None,
-    ) -> List[Finding]:
+    ) -> list[Finding]:
         """Run analysis with filters.
 
         Args:
@@ -191,7 +191,7 @@ class AnalyzerRegistry:
 
         return findings
 
-    def get_statistics(self, findings: List[Finding]) -> Dict:
+    def get_statistics(self, findings: list[Finding]) -> dict:
         """Get statistics about findings.
 
         Args:

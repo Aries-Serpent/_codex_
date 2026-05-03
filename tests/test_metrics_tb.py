@@ -10,7 +10,7 @@ pytest.importorskip("omegaconf")
 pytest.importorskip("transformers")
 pytest.importorskip("torch")
 
-from codex.training import run_functional_training  # noqa: E402
+from codex.training import run_functional_training
 
 
 def test_tb_writer_guard(monkeypatch, tmp_path):

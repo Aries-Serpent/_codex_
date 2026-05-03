@@ -5,7 +5,7 @@ Provides abstraction for local model inference
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class ModelAdapter(ABC):
         temperature: float = 0.7,
         top_p: float = 0.9,
         **kwargs,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate text from prompt
 
         Returns:
@@ -29,7 +29,7 @@ class ModelAdapter(ABC):
         """
 
     @abstractmethod
-    def get_model_info(self) -> Dict[str, str]:
+    def get_model_info(self) -> dict[str, str]:
         """Get model information"""
 
 
@@ -83,7 +83,7 @@ class LocalTransformersAdapter(ModelAdapter):
         temperature: float = 0.7,
         top_p: float = 0.9,
         **kwargs,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate text from prompt"""
         if not self.model or not self.tokenizer:
             raise RuntimeError("Model not loaded")
@@ -127,7 +127,7 @@ class LocalTransformersAdapter(ModelAdapter):
             "model": self.model_path,
         }
 
-    def get_model_info(self) -> Dict[str, str]:
+    def get_model_info(self) -> dict[str, str]:
         """Get model information"""
         return {
             "model_path": self.model_path,
@@ -149,7 +149,7 @@ class MockModelAdapter(ModelAdapter):
         temperature: float = 0.7,
         top_p: float = 0.9,
         **kwargs,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate mock response"""
         mock_response = (
             f"This is a mock response to your query. "
@@ -163,7 +163,7 @@ class MockModelAdapter(ModelAdapter):
             "model": "mock-model",
         }
 
-    def get_model_info(self) -> Dict[str, str]:
+    def get_model_info(self) -> dict[str, str]:
         """Get model information"""
         return {
             "model_path": "mock",

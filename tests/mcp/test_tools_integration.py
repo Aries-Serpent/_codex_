@@ -5,7 +5,7 @@ Covers tool discovery, registration, execution, ITA endpoint integration,
 and end-to-end tool invocation workflows.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -52,7 +52,7 @@ def test_tool_execution():
     """Test tool execution via registry."""
     registry = MCPToolRegistry()
 
-    def echo_tool(params: Dict[str, Any]) -> Dict[str, Any]:
+    def echo_tool(params: dict[str, Any]) -> dict[str, Any]:
         return {"echo": params.get("message", "")}
 
     registry.register_tool("echo", echo_tool)

@@ -6,9 +6,10 @@ Test module for mid epoch resume equivalence.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any
 
 from codex_ml.training import unified_training
 from codex_ml.training.strategies import TrainingCallback, TrainingResult
@@ -17,25 +18,25 @@ from codex_ml.utils import checkpoint_core
 
 @dataclass
 class _CaptureCallback:
-    checkpoints: List[Dict[str, Any]]
+    checkpoints: list[dict[str, Any]]
 
     def on_epoch_start(
-        self, epoch: int, state: Dict[str, Any]
+        self, epoch: int, state: dict[str, Any]
     ) -> None:  # pragma: no cover - unused
         pass
 
     def on_epoch_end(
-        self, epoch: int, metrics: Dict[str, float], state: Dict[str, Any]
+        self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
     ) -> None:  # pragma: no cover - unused
         pass
 
     def on_step(
-        self, batch_index: int, global_step: int, loss: float, state: Dict[str, Any]
+        self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
     ) -> None:  # pragma: no cover
         pass
 
     def on_checkpoint(
-        self, epoch: int, path: str, metrics: Dict[str, float], state: Dict[str, Any]
+        self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None:
         self.checkpoints.append({"metrics": dict(metrics), "state": dict(state)})
 

@@ -34,20 +34,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Schema Validation (P4)
-
-Validates:
-- workflow.yaml essential keys & weight structure
-- knob normalization schema completeness (DEFAULT_SCHEMA)
-- Detector meta fields (if present) conform to expected enums
-
-Outputs schema_validation_report.json
-
-Exit Codes:
- 0 success
- 2 structural issues
-"""
 
 import json
 import sys

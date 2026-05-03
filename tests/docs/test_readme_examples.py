@@ -12,7 +12,6 @@ Tests: 10+
 import ast
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]
@@ -46,7 +45,7 @@ class TestREADMEExistence:
 class TestREADMECodeBlocks:
     """Tests for code blocks in README."""
 
-    def _extract_code_blocks(self, content: str) -> List[Tuple[str, str]]:
+    def _extract_code_blocks(self, content: str) -> list[tuple[str, str]]:
         """Extract fenced code blocks from markdown."""
         pattern = re.compile(r"```(\w*)\n(.*?)```", re.DOTALL)
         return pattern.findall(content)

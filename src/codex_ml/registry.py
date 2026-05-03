@@ -15,7 +15,7 @@ Functions:
 Author: Codex Team
 """
 
-from typing import Callable
+from collections.abc import Callable
 
 _REG: dict[str, Callable] = {}
 

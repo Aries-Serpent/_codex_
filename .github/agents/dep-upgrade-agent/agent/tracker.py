@@ -10,7 +10,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Add core to path for CognitiveBrain access (acceptable for agent isolation)
 # Alternative: Use proper packaging with __init__.py exports
@@ -34,7 +34,7 @@ class UpgradeMetrics:
     rollbacks_performed: int
     auto_upgrade_rate: float
     manual_review_rate: float
-    lessons_learned: List[str]
+    lessons_learned: list[str]
 
 
 class DependencyTracker:
@@ -55,8 +55,8 @@ class DependencyTracker:
         self.repo_path = repo_path
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
 
-    def aftermath(self, result: Dict[str, Any], context: Dict[str, Any],
-                  decision: Dict[str, Any]) -> None:
+    def aftermath(self, result: dict[str, Any], context: dict[str, Any],
+                  decision: dict[str, Any]) -> None:
         """
         AFTERMATH: Track metrics and learn from upgrades.
 
@@ -99,8 +99,8 @@ class DependencyTracker:
         print(f"   Success rate: {metrics.success_rate:.1%}")
         print(f"   Security updates: {metrics.security_updates}")
 
-    def _generate_metrics(self, result: Dict[str, Any], context: Dict[str, Any],
-                         decision: Dict[str, Any]) -> UpgradeMetrics:
+    def _generate_metrics(self, result: dict[str, Any], context: dict[str, Any],
+                         decision: dict[str, Any]) -> UpgradeMetrics:
         """
         Generate comprehensive upgrade metrics.
 
@@ -187,7 +187,7 @@ class DependencyTracker:
         except Exception as e:
             print(f"Warning: Failed to record metrics: {e}")
 
-    def _store_patterns(self, result: Dict[str, Any], decision: Dict[str, Any]) -> None:
+    def _store_patterns(self, result: dict[str, Any], decision: dict[str, Any]) -> None:
         """
         Store upgrade patterns in cognitive brain.
 
@@ -218,8 +218,8 @@ class DependencyTracker:
         except Exception as e:
             print(f"Warning: Failed to store patterns: {e}")
 
-    def _generate_lessons(self, result: Dict[str, Any], context: Dict[str, Any],
-                         decision: Dict[str, Any]) -> List[str]:
+    def _generate_lessons(self, result: dict[str, Any], context: dict[str, Any],
+                         decision: dict[str, Any]) -> list[str]:
         """
         Generate lessons learned from upgrades.
 
@@ -269,7 +269,7 @@ class DependencyTracker:
             print(f"Warning: Failed to store lesson: {e}")
 
     def _generate_recommendations(self, metrics: UpgradeMetrics,
-                                 lessons: List[str]) -> List[str]:
+                                 lessons: list[str]) -> list[str]:
         """Generate actionable recommendations."""
         recommendations = []
 
@@ -313,7 +313,7 @@ class DependencyTracker:
         return recommendations
 
     def _save_metrics_report(self, metrics: UpgradeMetrics,
-                            recommendations: List[str]) -> None:
+                            recommendations: list[str]) -> None:
         """Save metrics as JSON report."""
         report_path = self.repo_path / ".codex" / "dependency_metrics.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
@@ -340,8 +340,8 @@ class DependencyTracker:
 
         report_path.write_text(json.dumps(report, indent=2))
 
-    def _save_markdown_report(self, metrics: UpgradeMetrics, lessons: List[str],
-                             recommendations: List[str]) -> None:
+    def _save_markdown_report(self, metrics: UpgradeMetrics, lessons: list[str],
+                             recommendations: list[str]) -> None:
         """Save report as Markdown."""
         report_path = self.repo_path / ".codex" / "DEPENDENCY_UPGRADE_REPORT.md"
 

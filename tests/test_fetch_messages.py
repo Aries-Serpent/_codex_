@@ -1,7 +1,7 @@
 """Tests for fetch_messages covering custom and default DB paths."""
 
-# ruff: noqa: E501
 import importlib
+import importlib.util
 import inspect
 import os
 import sqlite3
@@ -19,7 +19,8 @@ from tests._codex_introspect import (
 )
 
 try:  # pragma: no cover - optional dependency
-    import yaml  # noqa: F401
+    if importlib.util.find_spec('yaml') is None:  # pragma: no cover - used in minimal CI envs
+        raise ModuleNotFoundError("yaml not found")
 except ModuleNotFoundError:  # pragma: no cover - used in minimal CI envs
     _yaml_stub = types.ModuleType("yaml")
     _yaml_stub.safe_load = lambda *args, **kwargs: {}  # type: ignore[assignment]

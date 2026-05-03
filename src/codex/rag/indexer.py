@@ -4,13 +4,14 @@ Provides text chunking, embedding, and FAISS index persistence for expanded cont
 """
 
 import hashlib
+import importlib.util
 import json
 import logging
 import shutil
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import numpy as np
 
@@ -22,7 +23,7 @@ except ImportError:  # pragma: no cover - exercised when optional dependency mis
     faiss = None
 
 
-def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> List[Tuple[int, int, str]]:
+def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> list[tuple[int, int, str]]:
     """
     Split text into overlapping chunks for embedding.
 
@@ -83,8 +84,8 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> List[Tu
 
 
 def embed_chunks(
-    chunks: List[Tuple[int, int, str]],
-    model_profile: Optional[Dict[str, Any]] = None,
+    chunks: list[tuple[int, int, str]],
+    model_profile: Optional[dict[str, Any]] = None,
 ) -> np.ndarray:
     """
     Generate embeddings for text chunks using specified model.
@@ -100,13 +101,11 @@ def embed_chunks(
         return np.array([])
 
     # Import here to avoid hard dependency
-    try:
-        import sentence_transformers  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec("sentence_transformers") is None:
         logger.error(
             "sentence-transformers not installed. Install with: pip install sentence-transformers"
         )
-        raise
+        raise ImportError("sentence-transformers not installed")
 
     # Extract model configuration
     model_profile = model_profile or {}
@@ -168,8 +167,8 @@ def embed_chunks(
 def persist_index(
     index_name: str,
     embeddings: np.ndarray,
-    chunks: List[Tuple[int, int, str]],
-    metadata: Optional[Dict[str, Any]] = None,
+    chunks: list[tuple[int, int, str]],
+    metadata: Optional[dict[str, Any]] = None,
     tenant_id: str = "default",
     index_dir: str = ".codex/tenants",
 ) -> Path:
@@ -259,7 +258,7 @@ def persist_index(
 
 def load_index(
     index_name: str, tenant_id: str = "default", index_dir: str = ".codex/tenants"
-) -> Tuple[Any, List[Dict[str, Any]], Dict[str, Any]]:
+) -> tuple[Any, list[dict[str, Any]], dict[str, Any]]:
     """
     Load a persisted FAISS index and its metadata.
 
@@ -309,7 +308,7 @@ def load_index(
 
 
 def build_index_from_files(
-    files: List[Path],
+    files: list[Path],
     index_name: str,
     tenant_id: str = "default",
     index_dir: str = ".codex/tenants",
@@ -431,15 +430,15 @@ class TenantOperationResult:
     success: bool
     operation: IndexOperation
     tenant_id: str
-    index_names: List[str]
+    index_names: list[str]
     message: str
-    details: Optional[Dict[str, Any]] = None
+    details: Optional[dict[str, Any]] = None
 
 
 def manage_tenant_indices(
     tenant_id: str,
     operation: str,
-    index_names: List[str],
+    index_names: list[str],
     index_dir: str = ".codex/tenants",
     **kwargs,
 ) -> TenantOperationResult:
@@ -804,7 +803,7 @@ class RAGIndexer:
 
     def build_index(
         self,
-        files: List[str],
+        files: list[str],
         index_name: str = "default",
         chunk_size: int = 1000,
         overlap: int = 128,
@@ -818,7 +817,7 @@ class RAGIndexer:
             overlap=overlap,
         )
 
-    def list_tenants(self) -> List[str]:
+    def list_tenants(self) -> list[str]:
         """List available tenant directories."""
         if not self.index_dir.exists():
             return []
@@ -844,6 +843,7 @@ class RAGIndexer:
         except Exception:
             # Model unavailable (offline, missing dep, etc.) — leave as None.
             logger.debug("Suppressed exception in handler", exc_info=True)
+
     def move_to_device(self, device: str) -> None:
         """Move the loaded embedding model to *device* and update ``self.device``."""
         self.device = device

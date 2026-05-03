@@ -7,7 +7,7 @@ import pytest
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from autonomous_agent import (  # noqa: E402
+from autonomous_agent import (
     ActionProposer,
     ActionType,
     AutonomousAgent,

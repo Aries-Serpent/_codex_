@@ -59,21 +59,21 @@ class TestPython312Integration:
             optional_imports = []
 
             try:
-                from codex_ml import evaluation  # noqa: F401
+                from codex_ml import evaluation as evaluation
                 optional_imports.append("evaluation")
             except ImportError:
                 # Optional module not available, skip
                 pass
 
             try:
-                from codex_ml import data  # noqa: F401
+                from codex_ml import data as data
                 optional_imports.append("data")
             except ImportError:
                 # Optional module not available, skip
                 pass
 
             try:
-                from codex_ml import models  # noqa: F401
+                from codex_ml import models as models
                 optional_imports.append("models")
             except ImportError:
                 # Optional module not available, skip

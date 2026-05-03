@@ -24,7 +24,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "cognitive"))
 
-from extract_workflow_patterns import (  # noqa: E402
+from extract_workflow_patterns import (
     CognitiveBrainFeeder,
     PatternWave,
     QuantumPatternClassifier,

@@ -8,7 +8,7 @@ import pytest
 
 pytest.importorskip("fastapi")
 
-from services.api import main  # noqa: E402
+from services.api import main
 
 
 class _DummyModel:

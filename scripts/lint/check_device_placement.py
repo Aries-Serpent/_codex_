@@ -19,7 +19,6 @@ import ast
 import logging
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +28,7 @@ class DevicePlacementChecker(ast.NodeVisitor):
 
     def __init__(self, filename: str):
         self.filename = filename
-        self.issues: List[Tuple[int, str]] = []
+        self.issues: list[tuple[int, str]] = []
         self.in_model_class = False
         self.model_var_names = set()
 
@@ -119,7 +118,7 @@ class DevicePlacementChecker(ast.NodeVisitor):
         return False
 
 
-def check_file(filepath: Path) -> List[Tuple[int, str]]:
+def check_file(filepath: Path) -> list[tuple[int, str]]:
     """
     Check a Python file for unsafe device placement patterns.
 
@@ -149,7 +148,7 @@ def check_file(filepath: Path) -> List[Tuple[int, str]]:
         return []
 
 
-def main(files: List[str]) -> int:
+def main(files: list[str]) -> int:
     """
     Main entry point for linter.
 

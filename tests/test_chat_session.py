@@ -58,7 +58,7 @@ def _load_chatsession():
     for p in root.rglob("*.py"):
         try:
             t = p.read_text(encoding="utf-8", errors="ignore")
-        except Exception:  # noqa: BLE001
+        except Exception:
             continue
         if re.search(r"\bclass\s+ChatSession\b", t):
             spec = importlib.util.spec_from_file_location("cs_mod", str(p))
@@ -66,8 +66,8 @@ def _load_chatsession():
             try:
                 spec.loader.exec_module(mod)  # type: ignore
                 if hasattr(mod, "ChatSession"):
-                    return getattr(mod, "ChatSession")
-            except Exception:  # noqa: BLE001
+                    return mod.ChatSession
+            except Exception:
                 continue
     return None
 

@@ -12,7 +12,7 @@ Usage:
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import click
 import yaml
@@ -43,14 +43,14 @@ class RustErrorValidator:
         self.config = self._load_config(config_path)
         self.patterns = self._compile_patterns()
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load validator configuration."""
         if config_path and config_path.exists():
             with open(config_path) as f:
                 return yaml.safe_load(f)
         return self._default_config()
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration."""
         return {
             'version': '1.0.0',
@@ -68,7 +68,7 @@ class RustErrorValidator:
             }
         }
 
-    def _compile_patterns(self) -> Dict:
+    def _compile_patterns(self) -> dict:
         """Compile regex patterns for detection."""
         return {
             'unwrap': re.compile(r'\.unwrap\(\)'),
@@ -79,7 +79,7 @@ class RustErrorValidator:
             'test_marker': re.compile(r'#\[test\]|#\[cfg\(test\)\]'),
         }
 
-    def scan_file(self, filepath: Path) -> List[Finding]:
+    def scan_file(self, filepath: Path) -> list[Finding]:
         """
         Scan a single Rust file for error handling issues.
 
@@ -156,7 +156,7 @@ class RustErrorValidator:
 
         return findings
 
-    def scan_directory(self, directory: Path, recursive: bool = True) -> List[Finding]:
+    def scan_directory(self, directory: Path, recursive: bool = True) -> list[Finding]:
         """
         Scan a directory for Rust files and validate error handling.
 
@@ -176,7 +176,7 @@ class RustErrorValidator:
 
         return all_findings
 
-    def generate_report(self, findings: List[Finding]) -> Dict:
+    def generate_report(self, findings: list[Finding]) -> dict:
         """
         Generate a summary report of all findings.
 

@@ -10,7 +10,7 @@ import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 # Add agents to path for imports
 agents_path = Path(__file__).resolve().parents[2] / "agents"
@@ -60,7 +60,7 @@ class QuantumState:
 
     amplitude: complex
     phase: float
-    entangled_tasks: List[str]
+    entangled_tasks: list[str]
     probability: float = 0.0
 
     def __post_init__(self):
@@ -87,7 +87,7 @@ class QuantumOptimizer:
             superposition_threshold: Minimum probability for superposition states
         """
         self.superposition_threshold = superposition_threshold
-        self.entanglement_map: Dict[str, List[str]] = {}
+        self.entanglement_map: dict[str, list[str]] = {}
         self.chaos_attractor: Optional[Any] = None
 
         # Initialize chaos attractor if physics available
@@ -100,7 +100,7 @@ class QuantumOptimizer:
             except Exception as e:
                 logger.warning(f"Failed to initialize chaos attractor: {e}")
 
-    def create_superposition(self, tasks: List[Any]) -> List[Tuple[Any, float]]:
+    def create_superposition(self, tasks: list[Any]) -> list[tuple[Any, float]]:
         """
         Create superposition of tasks for parallel execution.
 
@@ -257,7 +257,7 @@ class QuantumOptimizer:
 
         return None
 
-    def apply_chaos_exploration(self, current_state: Dict[str, Any]) -> Dict[str, Any]:
+    def apply_chaos_exploration(self, current_state: dict[str, Any]) -> dict[str, Any]:
         """
         Apply chaotic dynamics for exploration.
 
@@ -371,7 +371,7 @@ class QuantumOptimizer:
 
         return min(barriers, 5.0)
 
-    def _reduce_context(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def _reduce_context(self, context: dict[str, Any]) -> dict[str, Any]:
         """Reduce context complexity for tunneled task."""
         reduced = {}
 
@@ -398,7 +398,7 @@ class QuantumOptimizer:
 
         return reduced
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get quantum optimizer statistics."""
         return {
             "superposition_threshold": self.superposition_threshold,

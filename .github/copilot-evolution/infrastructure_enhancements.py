@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class DockerTag:
     commit_sha: str
     branch: str
     created_at: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -78,7 +78,7 @@ class Artifact:
     created_at: str
     expires_at: Optional[str]
     retention_days: int
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -86,11 +86,11 @@ class BuildConfiguration:
     """Multi-architecture build configuration."""
 
     build_id: str
-    platforms: List[str]
+    platforms: list[str]
     base_image: str
-    build_args: Dict[str, str]
-    cache_from: List[str]
-    labels: Dict[str, str]
+    build_args: dict[str, str]
+    cache_from: list[str]
+    labels: dict[str, str]
     created_at: str
 
 
@@ -100,7 +100,7 @@ class DeploymentStage:
 
     stage_id: str
     name: str
-    gates: List[DeploymentGate]
+    gates: list[DeploymentGate]
     traffic_percentage: int
     duration_minutes: int
     rollback_on_failure: bool
@@ -131,8 +131,8 @@ class DockerTagManager:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.tags: Dict[str, DockerTag] = {}
-        self.current_version: Tuple[int, int, int] = (0, 1, 0)
+        self.tags: dict[str, DockerTag] = {}
+        self.current_version: tuple[int, int, int] = (0, 1, 0)
 
         self._load_state()
 
@@ -296,7 +296,7 @@ class DockerTagManager:
 
         return docker_tag
 
-    def get_latest_tags(self, count: int = 5) -> List[DockerTag]:
+    def get_latest_tags(self, count: int = 5) -> list[DockerTag]:
         """Get most recent tags."""
         sorted_tags = sorted(
             self.tags.values(),
@@ -305,7 +305,7 @@ class DockerTagManager:
         )
         return sorted_tags[:count]
 
-    def get_tag_statistics(self) -> Dict[str, Any]:
+    def get_tag_statistics(self) -> dict[str, Any]:
         """Get tag statistics."""
         by_strategy = {}
         for tag in self.tags.values():
@@ -338,7 +338,7 @@ class ArtifactLifecycleManager:
     def __init__(
         self,
         storage_path: Optional[Path] = None,
-        retention_policies: Optional[Dict[str, int]] = None,
+        retention_policies: Optional[dict[str, int]] = None,
     ):
         """
         Initialize artifact lifecycle manager.
@@ -359,7 +359,7 @@ class ArtifactLifecycleManager:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.artifacts: Dict[str, Artifact] = {}
+        self.artifacts: dict[str, Artifact] = {}
 
         # Default retention policies (days)
         # Rationale:
@@ -379,8 +379,8 @@ class ArtifactLifecycleManager:
         )
 
     def _load_retention_policies(
-        self, custom_policies: Optional[Dict[str, int]]
-    ) -> Dict[str, int]:
+        self, custom_policies: Optional[dict[str, int]]
+    ) -> dict[str, int]:
         """
         Load retention policies from custom config or environment variables.
 
@@ -457,7 +457,7 @@ class ArtifactLifecycleManager:
         artifact_type: str,
         version: str,
         size_bytes: int,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
         retention_days: Optional[int] = None,
     ) -> Artifact:
         """
@@ -504,7 +504,7 @@ class ArtifactLifecycleManager:
 
         return artifact
 
-    def get_expired_artifacts(self) -> List[Artifact]:
+    def get_expired_artifacts(self) -> list[Artifact]:
         """Get list of expired artifacts."""
         now = datetime.utcnow()
         expired = []
@@ -517,7 +517,7 @@ class ArtifactLifecycleManager:
 
         return expired
 
-    def cleanup_expired(self) -> List[str]:
+    def cleanup_expired(self) -> list[str]:
         """
         Remove expired artifacts.
 
@@ -537,7 +537,7 @@ class ArtifactLifecycleManager:
 
         return removed
 
-    def get_artifacts_by_type(self, artifact_type: str) -> List[Artifact]:
+    def get_artifacts_by_type(self, artifact_type: str) -> list[Artifact]:
         """Get artifacts of a specific type."""
         return [a for a in self.artifacts.values() if a.artifact_type == artifact_type]
 
@@ -545,7 +545,7 @@ class ArtifactLifecycleManager:
         """Get total size of all artifacts in bytes."""
         return sum(a.size_bytes for a in self.artifacts.values())
 
-    def get_lifecycle_statistics(self) -> Dict[str, Any]:
+    def get_lifecycle_statistics(self) -> dict[str, Any]:
         """Get lifecycle statistics."""
         by_type = {}
         for artifact in self.artifacts.values():
@@ -588,7 +588,7 @@ class MultiArchBuilder:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.builds: Dict[str, BuildConfiguration] = {}
+        self.builds: dict[str, BuildConfiguration] = {}
 
         # Supported platforms
         self.supported_platforms = [
@@ -646,10 +646,10 @@ class MultiArchBuilder:
     def create_build_config(
         self,
         base_image: str,
-        platforms: Optional[List[str]] = None,
-        build_args: Optional[Dict[str, str]] = None,
-        cache_from: Optional[List[str]] = None,
-        labels: Optional[Dict[str, str]] = None,
+        platforms: Optional[list[str]] = None,
+        build_args: Optional[dict[str, str]] = None,
+        cache_from: Optional[list[str]] = None,
+        labels: Optional[dict[str, str]] = None,
     ) -> BuildConfiguration:
         """
         Create a multi-architecture build configuration.
@@ -732,7 +732,7 @@ class MultiArchBuilder:
 
     def generate_github_action_step(
         self, config: BuildConfiguration, image_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Generate GitHub Actions step for multi-arch build.
 
@@ -762,7 +762,7 @@ class MultiArchBuilder:
             },
         }
 
-    def get_build_statistics(self) -> Dict[str, Any]:
+    def get_build_statistics(self) -> dict[str, Any]:
         """Get build statistics."""
         platform_usage = {}
         for build in self.builds.values():
@@ -800,8 +800,8 @@ class ProgressiveDeployment:
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.stages: Dict[str, DeploymentStage] = {}
-        self.deployment_history: List[Dict[str, Any]] = []
+        self.stages: dict[str, DeploymentStage] = {}
+        self.deployment_history: list[dict[str, Any]] = []
 
         self._initialize_default_stages()
 
@@ -855,8 +855,8 @@ class ProgressiveDeployment:
             self.stages[stage.stage_id] = stage
 
     def check_gate(
-        self, gate: DeploymentGate, context: Dict[str, Any]
-    ) -> Tuple[bool, str]:
+        self, gate: DeploymentGate, context: dict[str, Any]
+    ) -> tuple[bool, str]:
         """
         Check if a deployment gate passes.
 
@@ -874,7 +874,7 @@ class ProgressiveDeployment:
                 "All tests passed" if test_passed else "Tests failed",
             )
 
-        elif gate == DeploymentGate.SECURITY_SCAN:
+        if gate == DeploymentGate.SECURITY_SCAN:
             vulnerabilities = context.get("vulnerabilities", 0)
             passed = vulnerabilities == 0
             return (
@@ -884,7 +884,7 @@ class ProgressiveDeployment:
                 else f"Found {vulnerabilities} vulnerabilities",
             )
 
-        elif gate == DeploymentGate.CODE_REVIEW:
+        if gate == DeploymentGate.CODE_REVIEW:
             approvals = context.get("approvals", 0)
             required = context.get("required_approvals", 1)
             passed = approvals >= required
@@ -895,7 +895,7 @@ class ProgressiveDeployment:
                 else f"Need {required - approvals} more approvals",
             )
 
-        elif gate == DeploymentGate.PERFORMANCE:
+        if gate == DeploymentGate.PERFORMANCE:
             latency = context.get("latency_ms", 1000)
             threshold = context.get("latency_threshold_ms", 200)
             passed = latency <= threshold
@@ -906,7 +906,7 @@ class ProgressiveDeployment:
                 else f"Latency {latency}ms exceeds {threshold}ms",
             )
 
-        elif gate == DeploymentGate.MANUAL_APPROVAL:
+        if gate == DeploymentGate.MANUAL_APPROVAL:
             approved = context.get("manually_approved", False)
             return (
                 approved,
@@ -918,8 +918,8 @@ class ProgressiveDeployment:
     def advance_stage(
         self,
         stage_id: str,
-        context: Dict[str, Any],
-    ) -> Tuple[bool, List[str]]:
+        context: dict[str, Any],
+    ) -> tuple[bool, list[str]]:
         """
         Attempt to advance to the next deployment stage.
 
@@ -965,7 +965,7 @@ class ProgressiveDeployment:
 
         return (all_passed, messages)
 
-    def get_deployment_plan(self) -> List[Dict[str, Any]]:
+    def get_deployment_plan(self) -> list[dict[str, Any]]:
         """
         Get the full deployment plan.
 
@@ -985,7 +985,7 @@ class ProgressiveDeployment:
             for s in self.stages.values()
         ]
 
-    def generate_github_workflow(self) -> Dict[str, Any]:
+    def generate_github_workflow(self) -> dict[str, Any]:
         """
         Generate GitHub Actions workflow for progressive deployment.
 
@@ -1060,7 +1060,7 @@ class ProgressiveDeployment:
             "jobs": jobs,
         }
 
-    def get_deployment_statistics(self) -> Dict[str, Any]:
+    def get_deployment_statistics(self) -> dict[str, Any]:
         """Get deployment statistics."""
         status_counts = {}
         for stage in self.stages.values():

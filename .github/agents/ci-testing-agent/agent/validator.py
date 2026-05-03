@@ -5,7 +5,7 @@ Validates coverage improvements and identifies gaps.
 import json
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class CoverageValidator:
@@ -20,7 +20,7 @@ class CoverageValidator:
         """
         self.workspace = workspace
 
-    def validate(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def validate(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Validate coverage meets target threshold.
 
@@ -83,7 +83,7 @@ class CoverageValidator:
                 "gaps": [],
             }
 
-    def _parse_baseline(self, baseline_file: str) -> Dict[str, Any]:
+    def _parse_baseline(self, baseline_file: str) -> dict[str, Any]:
         """
         Parse baseline coverage report file.
 
@@ -122,7 +122,7 @@ class CoverageValidator:
 
         return {"total": 0.0, "modules": {}}
 
-    def _run_coverage(self, modules: List[str]) -> Dict[str, Any]:
+    def _run_coverage(self, modules: list[str]) -> dict[str, Any]:
         """
         Run coverage analysis on current codebase.
 
@@ -188,7 +188,7 @@ class CoverageValidator:
 
         return {"total": 0.0, "modules": {}}
 
-    def _compute_delta(self, baseline: Dict[str, Any], current: Dict[str, Any]) -> float:
+    def _compute_delta(self, baseline: dict[str, Any], current: dict[str, Any]) -> float:
         """
         Compute coverage delta.
 
@@ -202,8 +202,8 @@ class CoverageValidator:
         return current["total"] - baseline["total"]
 
     def _identify_gaps(
-        self, current: Dict[str, Any], threshold: float
-    ) -> List[str]:
+        self, current: dict[str, Any], threshold: float
+    ) -> list[str]:
         """
         Identify modules below coverage threshold.
 

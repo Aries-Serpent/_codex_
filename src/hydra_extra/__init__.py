@@ -13,7 +13,7 @@ import types
 from dataclasses import dataclass
 from typing import Optional
 
-__all__ = ["HydraExtraStatus", "ensure", "ensure_registered", "status", "__version__"]
+__all__ = ["HydraExtraStatus", "__version__", "ensure", "ensure_registered", "status"]
 
 __version__ = "0.1.0.dev0"
 

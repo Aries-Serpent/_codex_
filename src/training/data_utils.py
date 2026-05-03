@@ -402,10 +402,10 @@ def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
 
 
 __all__ = [
-    "deterministic_shuffle",
-    "split_dataset",
-    "split_texts",
     "TextDataset",
     "cache_dataset",
+    "deterministic_shuffle",
     "load_cached",
+    "split_dataset",
+    "split_texts",
 ]

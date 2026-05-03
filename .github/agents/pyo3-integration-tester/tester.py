@@ -2,13 +2,12 @@
 """PyO3 Integration Tester"""
 import re
 from pathlib import Path
-from typing import Dict, List
 
 import click
 
 
 class PyO3Parser:
-    def parse_rust_file(self, filepath: Path) -> List[Dict]:
+    def parse_rust_file(self, filepath: Path) -> list[dict]:
         """Extract PyO3 bindings from Rust file"""
         bindings = []
         try:
@@ -28,7 +27,7 @@ class PyO3Parser:
             click.echo(f"Error parsing {filepath}: {e}", err=True)
         return bindings
 
-    def generate_test(self, binding: Dict) -> str:
+    def generate_test(self, binding: dict) -> str:
         """Generate Python test code for a binding"""
         name = binding['name']
 

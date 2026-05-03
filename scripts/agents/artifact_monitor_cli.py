@@ -32,7 +32,7 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -111,7 +111,7 @@ class ArtifactMonitorCLI:
         """Print info message."""
         print(f"{Colors.OKCYAN}ℹ {text}{Colors.ENDC}")
 
-    def print_table(self, headers: List[str], rows: List[List[str]]) -> None:
+    def print_table(self, headers: list[str], rows: list[list[str]]) -> None:
         """Print formatted table."""
         # Calculate column widths
         col_widths = [len(h) for h in headers]
@@ -183,7 +183,7 @@ class ArtifactMonitorCLI:
 
         return 0
 
-    def _print_failure_details(self, event: Dict[str, Any]) -> None:
+    def _print_failure_details(self, event: dict[str, Any]) -> None:
         """Print detailed failure information."""
         metrics = event.get('metrics', {})
         run = event.get('run')

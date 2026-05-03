@@ -6,7 +6,7 @@ import pytest
 
 pytest.importorskip("libcst", reason="libcst optional dependency not installed")
 
-from codex.ast_adapters.python_adapter import PythonASTAdapter  # noqa: E402
+from codex.ast_adapters.python_adapter import PythonASTAdapter
 
 
 def test_python_adapter_initialization():

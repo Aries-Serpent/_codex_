@@ -13,7 +13,7 @@ from pathlib import Path
 # Add scripts/cognitive to path for import
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'scripts' / 'cognitive'))
 
-from auto_continuation import (  # noqa: E402
+from auto_continuation import (
     extract_session_context,
     generate_json_prompt,
     generate_markdown_prompt,

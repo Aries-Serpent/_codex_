@@ -22,9 +22,10 @@ import math
 import os
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
 
 REPO_ROOT = Path(__file__).parent.parent
 BUDGET_DIR = REPO_ROOT / "memory" / "budget"

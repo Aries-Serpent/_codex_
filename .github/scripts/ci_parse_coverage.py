@@ -69,8 +69,7 @@ def parse_coverage_xml(path: Path) -> float:
         v = _as_float(lr)
         if v is None:
             raise ValueError(f"cannot parse line-rate value '{lr}'")
-        percent = interpret_value_as_percent(v)
-        return percent
+        return interpret_value_as_percent(v)
 
     # 2) Some variants provide 'percentage' or 'percent' attribute on root or <coverage> node
     pct = root.attrib.get("percentage") or root.attrib.get("percent")
@@ -148,9 +147,8 @@ def main(argv: list[str]) -> int:
             pct = max(0.0, min(100.0, pct))
             print(f"{pct:.2f}")
             return 0
-        else:
-            print("ERROR: parsed non-finite coverage value", file=sys.stderr)
-            return 6
+        print("ERROR: parsed non-finite coverage value", file=sys.stderr)
+        return 6
     except FileNotFoundError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 3

@@ -35,7 +35,7 @@ import argparse
 import pathlib
 import re
 import sys
-from typing import Iterable
+from collections.abc import Iterable
 
 OPEN_OR_CLOSE_RE = re.compile(r"^(\s*)(`{3,})(.*)$")
 

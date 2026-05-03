@@ -18,7 +18,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -33,10 +33,10 @@ class KnowledgeGap:
     gap_id: str
     domain: str
     concept: str
-    context: Dict[str, Any]
+    context: dict[str, Any]
     confidence: float  # 0-1: How sure we are this is a gap
     impact: float  # 0-1: How much this knowledge would help
-    question_hints: List[str] = field(default_factory=list)
+    question_hints: list[str] = field(default_factory=list)
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
@@ -46,11 +46,11 @@ class IntelligentQuestion:
     question_id: str
     question_text: str
     question_type: str
-    research_hints: List[str]
+    research_hints: list[str]
     expected_format: str
     impact_description: str
     urgency: float  # 0-1
-    follow_ups: List[str] = field(default_factory=list)
+    follow_ups: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -58,8 +58,8 @@ class EvolutionState:
     """Tracks current evolution state."""
     generation: int = 1
     fitness: float = 0.5
-    capabilities: Set[str] = field(default_factory=set)
-    knowledge_domains: Set[str] = field(default_factory=set)
+    capabilities: set[str] = field(default_factory=set)
+    knowledge_domains: set[str] = field(default_factory=set)
     patterns_learned: int = 0
     questions_answered: int = 0
 
@@ -76,11 +76,11 @@ class KnowledgeHungerEngine:
         self.storage_path = storage_path or Path("data")
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.knowledge_gaps: Dict[str, KnowledgeGap] = {}
-        self.questions_generated: List[IntelligentQuestion] = []
-        self.answered_questions: Dict[str, Any] = {}
+        self.knowledge_gaps: dict[str, KnowledgeGap] = {}
+        self.questions_generated: list[IntelligentQuestion] = []
+        self.answered_questions: dict[str, Any] = {}
 
-    async def detect_gaps(self, context: Dict[str, Any]) -> List[KnowledgeGap]:
+    async def detect_gaps(self, context: dict[str, Any]) -> list[KnowledgeGap]:
         """Detect knowledge gaps from context."""
         gaps = []
 
@@ -132,7 +132,7 @@ class KnowledgeHungerEngine:
         self._save_state()
         return gaps
 
-    async def generate_questions(self, gaps: List[KnowledgeGap]) -> List[IntelligentQuestion]:
+    async def generate_questions(self, gaps: list[KnowledgeGap]) -> list[IntelligentQuestion]:
         """Generate intelligent questions from gaps."""
         questions = []
 
@@ -189,7 +189,7 @@ class KnowledgeHungerEngine:
             follow_ups=follow_ups[:3]
         )
 
-    def _generate_curiosity_question(self, gaps: List[KnowledgeGap]) -> IntelligentQuestion:
+    def _generate_curiosity_question(self, gaps: list[KnowledgeGap]) -> IntelligentQuestion:
         """Generate a curiosity-driven cross-domain question."""
         domains = list(set(gap.domain for gap in gaps))[:2]
 
@@ -217,7 +217,7 @@ class KnowledgeHungerEngine:
         """Generate unique gap ID."""
         return f"gap_{gap_type}_{hashlib.md5(str(content).encode(), usedforsecurity=False).hexdigest()[:8]}"  # nosec B324 - Not for security, ID generation only
 
-    def _estimate_impact(self, concept: str, context: Dict) -> float:
+    def _estimate_impact(self, concept: str, context: dict) -> float:
         """Estimate impact of learning this concept."""
         # Higher impact for core concepts
         core_keywords = ["security", "quantum", "optimization", "integration"]
@@ -229,16 +229,15 @@ class KnowledgeHungerEngine:
 
         return min(impact, 1.0)
 
-    def _generate_question_hints(self, concept: str, context: Dict) -> List[str]:
+    def _generate_question_hints(self, concept: str, context: dict) -> list[str]:
         """Generate research hints for a concept."""
-        hints = [
+        return [
             f"Keywords: {concept}, {context.get('domain', 'general')}",
             "Focus on 2023-2024 materials for latest insights",
             "Look for practical implementations and examples"
         ]
-        return hints
 
-    def _get_domain_hints(self, domain: str) -> List[str]:
+    def _get_domain_hints(self, domain: str) -> list[str]:
         """Get domain-specific research hints."""
         domain_hints = {
             "security": ["Check OWASP guidelines", "Review CVE database"],
@@ -251,21 +250,19 @@ class KnowledgeHungerEngine:
         """Determine type of question to ask."""
         if gap.domain == "integration":
             return "integration"
-        elif gap.confidence < 0.5:
+        if gap.confidence < 0.5:
             return "conceptual"
-        elif "implementation" in gap.context.get("need", ""):
+        if "implementation" in gap.context.get("need", ""):
             return "technical"
-        else:
-            return "practical"
+        return "practical"
 
-    def _generate_follow_ups(self, gap: KnowledgeGap) -> List[str]:
+    def _generate_follow_ups(self, gap: KnowledgeGap) -> list[str]:
         """Generate follow-up questions."""
-        follow_ups = [
+        return [
             f"How does {gap.concept} scale to large systems?",
             f"What are limitations of {gap.concept}?",
             f"Are there alternatives to {gap.concept}?"
         ]
-        return follow_ups
 
     def _save_state(self):
         """Save state to disk."""
@@ -295,7 +292,7 @@ class KnowledgeHungerEngine:
 class QuestionPresenter:
     """Formats questions for human research."""
 
-    def present(self, questions: List[IntelligentQuestion], context: Dict) -> str:
+    def present(self, questions: list[IntelligentQuestion], context: dict) -> str:
         """Present questions in research-friendly format."""
         sections = []
 
@@ -392,7 +389,7 @@ class KnowledgeIntegrator:
         self.evolution_state = evolution_state
         self.integration_history = []
 
-    async def integrate(self, answer: Any) -> Dict[str, Any]:
+    async def integrate(self, answer: Any) -> dict[str, Any]:
         """Integrate answer into knowledge base."""
         result = {
             "status": "processing",
@@ -426,16 +423,15 @@ class KnowledgeIntegrator:
         self.integration_history.append(result)
         return result
 
-    def _parse_answer(self, answer: Any) -> Dict:
+    def _parse_answer(self, answer: Any) -> dict:
         """Parse answer in flexible format."""
         if isinstance(answer, dict):
             return answer
-        elif isinstance(answer, str):
+        if isinstance(answer, str):
             return {"answer": answer}
-        else:
-            return {"answer": str(answer)}
+        return {"answer": str(answer)}
 
-    def _extract_knowledge(self, parsed: Dict) -> List[str]:
+    def _extract_knowledge(self, parsed: dict) -> list[str]:
         """Extract knowledge components."""
         knowledge = []
 
@@ -455,7 +451,7 @@ class KnowledgeIntegrator:
 
         return knowledge
 
-    def _update_evolution_state(self, knowledge: List[str]):
+    def _update_evolution_state(self, knowledge: list[str]):
         """Update evolution state with new knowledge."""
         self.evolution_state.patterns_learned += len(knowledge)
         self.evolution_state.questions_answered += 1
@@ -463,7 +459,7 @@ class KnowledgeIntegrator:
         # Increase fitness slightly
         self.evolution_state.fitness = min(1.0, self.evolution_state.fitness + 0.01)
 
-    def _identify_capabilities(self, knowledge: List[str]) -> List[str]:
+    def _identify_capabilities(self, knowledge: list[str]) -> list[str]:
         """Identify new capabilities from knowledge."""
         capabilities = []
 
@@ -484,7 +480,7 @@ class KnowledgeIntegrator:
 
         return capabilities
 
-    def _generate_new_questions(self, knowledge: List[str]) -> List[str]:
+    def _generate_new_questions(self, knowledge: list[str]) -> list[str]:
         """Generate new questions from integrated knowledge."""
         questions = []
 
@@ -496,7 +492,7 @@ class KnowledgeIntegrator:
 
         return questions[:3]
 
-    def _generate_summary(self, result: Dict) -> str:
+    def _generate_summary(self, result: dict) -> str:
         """Generate integration summary."""
         summary = []
         summary.append("✅ Knowledge integrated successfully!")
@@ -525,7 +521,7 @@ class IntegratedEvolutionSystem:
         self.presenter = QuestionPresenter()
         self.integrator = KnowledgeIntegrator(self.evolution_state)
 
-    async def process_task_with_learning(self, task: Dict) -> Dict:
+    async def process_task_with_learning(self, task: dict) -> dict:
         """Process task with integrated learning."""
         result = {
             "task_result": "processing",
@@ -562,7 +558,7 @@ class IntegratedEvolutionSystem:
 
         return result
 
-    async def receive_knowledge(self, knowledge: Any) -> Dict:
+    async def receive_knowledge(self, knowledge: Any) -> dict:
         """Receive and integrate knowledge from human."""
         integration_result = await self.integrator.integrate(knowledge)
 
@@ -575,7 +571,7 @@ class IntegratedEvolutionSystem:
             "evolution_status": self._get_evolution_status()
         }
 
-    def _generate_continuation(self, task: Dict, gaps: List[KnowledgeGap], formatted_questions: str) -> str:
+    def _generate_continuation(self, task: dict, gaps: list[KnowledgeGap], formatted_questions: str) -> str:
         """Generate continuation prompt."""
         sections = []
 
@@ -604,7 +600,7 @@ class IntegratedEvolutionSystem:
 
         return "\n".join(sections)
 
-    def _generate_error_continuation(self, error: Exception, task: Dict) -> str:
+    def _generate_error_continuation(self, error: Exception, task: dict) -> str:
         """Generate continuation with actionable recovery suggestions on error."""
         error_type = type(error).__name__
         domain = task.get("domain", "this domain")
@@ -659,11 +655,11 @@ class IntegratedEvolutionSystem:
             f"3. If the error persists, escalate via `@copilot fix` with this error context"
         )
 
-    def _generate_learning_response(self, integration: Dict) -> str:
+    def _generate_learning_response(self, integration: dict) -> str:
         """Generate response to knowledge integration."""
         return integration.get("summary", "Thank you for the knowledge!")
 
-    def _get_evolution_status(self) -> Dict:
+    def _get_evolution_status(self) -> dict:
         """Get current evolution status."""
         return {
             "generation": self.evolution_state.generation,

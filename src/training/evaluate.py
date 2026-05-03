@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Simple evaluation helpers for language-model datasets."""
 
 
 import contextlib  # noqa: E402

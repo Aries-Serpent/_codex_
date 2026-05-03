@@ -8,7 +8,7 @@ import os
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 
@@ -25,7 +25,7 @@ class TrainingDataCollector:
         }
         self.base_url = f"https://api.github.com/repos/{repo}"
 
-    def collect_workflow_runs(self, days_back: int = 90) -> List[Dict[str, Any]]:
+    def collect_workflow_runs(self, days_back: int = 90) -> list[dict[str, Any]]:
         """Collect workflow runs from last N days"""
         since = (datetime.now() - timedelta(days=days_back)).isoformat()
 
@@ -51,7 +51,7 @@ class TrainingDataCollector:
 
         return runs
 
-    def collect_security_alerts(self) -> Dict[str, List[Any]]:
+    def collect_security_alerts(self) -> dict[str, list[Any]]:
         """Collect historical security alerts"""
         # CodeQL alerts
         codeql_alerts = []
@@ -75,7 +75,7 @@ class TrainingDataCollector:
 
         return {"codeql": codeql_alerts, "dependabot": dependabot_alerts}
 
-    def extract_features(self, file_path: str) -> Dict[str, Any]:
+    def extract_features(self, file_path: str) -> dict[str, Any]:
         """Extract security-relevant features from code"""
         try:
             with open(file_path, encoding="utf-8") as f:
@@ -84,7 +84,7 @@ class TrainingDataCollector:
             print(f"Warning: Could not read {file_path}: {e}")
             return {}
 
-        features = {
+        return {
             # Code complexity
             "lines_of_code": len(code.split("\n")),
             "complexity": self._calculate_complexity(code),
@@ -115,7 +115,6 @@ class TrainingDataCollector:
             "author_security_score": self._get_author_score(file_path),
         }
 
-        return features
 
     def save_training_data(self, output_dir: str) -> None:
         """Save collected data for model training"""
@@ -138,7 +137,7 @@ class TrainingDataCollector:
         print(f"   CodeQL alerts: {len(security_data['codeql'])}")
         print(f"   Dependabot alerts: {len(security_data['dependabot'])}")
 
-    def _calculate_duration(self, run: Dict[str, Any]) -> float:
+    def _calculate_duration(self, run: dict[str, Any]) -> float:
         """Calculate workflow run duration in seconds"""
         try:
             created = datetime.fromisoformat(run["created_at"].replace("Z", "+00:00"))
@@ -183,8 +182,7 @@ class TrainingDataCollector:
         try:
             stat = os.stat(file_path)
             created = datetime.fromtimestamp(stat.st_ctime)
-            age = (datetime.now() - created).days
-            return age
+            return (datetime.now() - created).days
         except Exception:
             return 0
 

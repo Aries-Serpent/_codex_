@@ -12,8 +12,8 @@ import pytest
 pytest.importorskip("transformers")
 pytest.importorskip("torch")
 
-from codex_ml.eval.evaluator import run_evaluator  # noqa: E402
-from codex_ml.safety.filters import SafetyFilters  # noqa: E402
+from codex_ml.eval.evaluator import run_evaluator
+from codex_ml.safety.filters import SafetyFilters
 
 
 def test_eval_and_error_logging(monkeypatch):

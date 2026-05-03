@@ -12,9 +12,9 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-import pytest  # noqa: E402
+import pytest
 
-import logging_utils  # noqa: E402
+import logging_utils
 
 
 def test_init_tensorboard_returns_writer(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -11,7 +11,7 @@ from .rules import (
 
 __all__ = [
     "ConversionFidelity",
-    "compute_fidelity",
     "automation_to_d365",
+    "compute_fidelity",
     "trigger_to_d365",
 ]

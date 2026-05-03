@@ -6,7 +6,7 @@ Handles authentication, authorization, policy enforcement, and redaction
 import logging
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import yaml
 
@@ -71,7 +71,7 @@ class PolicyEnforcer:
         blocked_actions = self.denylist.get("blocked_actions", [])
         return action in blocked_actions
 
-    def redact_sensitive_content(self, text: str) -> tuple[str, List[str]]:
+    def redact_sensitive_content(self, text: str) -> tuple[str, list[str]]:
         """Redact sensitive information from text
 
         Returns:
@@ -111,7 +111,7 @@ class AuthManager:
     """Handles authentication and authorization"""
 
     def __init__(self):
-        self.api_keys: Dict[str, str] = {}  # api_key -> tenant_id mapping
+        self.api_keys: dict[str, str] = {}  # api_key -> tenant_id mapping
 
     def register_api_key(self, api_key: str, tenant_id: str):
         """Register an API key for a tenant"""
@@ -183,7 +183,7 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     return True, None
 
 
-def redact_content(text: str, tenant_id: str) -> tuple[str, List[str]]:
+def redact_content(text: str, tenant_id: str) -> tuple[str, list[str]]:
     """Redact sensitive content from text
 
     Returns:

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 # Exported at module level so tests can patch via
 # patch("src.training.accelerate_init_guard.Accelerator", ...)
 try:
-    from accelerate import Accelerator  # noqa: F401
+    from accelerate import Accelerator
 
     _ACCELERATOR_AVAILABLE = True
 except ImportError:
@@ -33,28 +33,20 @@ class AccelerateInitResult:
     """Result of safe_accelerate_init with structured diagnostics."""
 
     success: bool
-    """True if accelerate is available and initialized successfully."""
 
     accelerate_available: bool
-    """True if accelerate package is importable."""
 
     gpu_available: bool
-    """True if GPU/CUDA is available."""
 
     backend: Optional[str]
-    """Distributed backend used (gloo, nccl, mpi, etc.) or None."""
 
     world_size: int
-    """Number of processes in distributed setup (1 if not distributed)."""
 
     rank: int
-    """Current process rank (0 if not distributed)."""
 
     error: Optional[str]
-    """Error message if initialization failed, None otherwise."""
 
     skip_reason: Optional[str]
-    """Reason for skipping initialization (e.g., 'cpu_only', 'no_accelerate')."""
 
     def __str__(self) -> str:
         """Human-readable summary."""
@@ -246,8 +238,8 @@ def get_distributed_env_info() -> dict[str, str]:
 
 
 __all__ = [
-    "Accelerator",
     "AccelerateInitResult",
+    "Accelerator",
     "is_accelerate_available",
     "is_gpu_available",
     "safe_accelerate_init",

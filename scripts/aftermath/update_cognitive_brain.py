@@ -34,7 +34,6 @@ import argparse
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List
 
 import yaml
 
@@ -46,7 +45,7 @@ class CognitiveBrainUpdater:
         self.lessons_dir = lessons_dir
         self.dashboard_path = dashboard_path
 
-    def load_recent_sessions(self, limit: int = 5) -> List[Dict]:
+    def load_recent_sessions(self, limit: int = 5) -> list[dict]:
         """Load most recent session files."""
         session_files = sorted(
             self.lessons_dir.glob('session_*.yaml'),
@@ -65,7 +64,7 @@ class CognitiveBrainUpdater:
 
         return sessions
 
-    def aggregate_metrics(self, sessions: List[Dict]) -> Dict:
+    def aggregate_metrics(self, sessions: list[dict]) -> dict:
         """Aggregate metrics across sessions."""
         totals = {
             'sessions': len(sessions),
@@ -92,7 +91,7 @@ class CognitiveBrainUpdater:
 
         return totals
 
-    def extract_key_patterns(self, sessions: List[Dict]) -> List[str]:
+    def extract_key_patterns(self, sessions: list[dict]) -> list[str]:
         """Extract recurring patterns from lessons learned."""
         patterns = {}
 
@@ -108,7 +107,7 @@ class CognitiveBrainUpdater:
 
         return [f"{cause} ({count}x)" for cause, count in recurring[:5]]
 
-    def update_dashboard(self, sessions: List[Dict]):
+    def update_dashboard(self, sessions: list[dict]):
         """Update dashboard with AfterMath insights."""
         if not self.dashboard_path.exists():
             print(f"Dashboard not found: {self.dashboard_path}", file=sys.stderr)

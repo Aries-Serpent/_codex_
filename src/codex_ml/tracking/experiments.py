@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Offline-first experiment tracking helpers."""
 
 
 import json  # noqa: E402

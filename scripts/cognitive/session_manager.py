@@ -24,7 +24,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -42,14 +42,14 @@ class SessionState:
     phase: str
     started: str
     status: str
-    objectives: List[str] = field(default_factory=list)
-    completed_tasks: List[str] = field(default_factory=list)
-    pending_tasks: List[str] = field(default_factory=list)
-    patterns_applied: List[str] = field(default_factory=list)
-    patterns_learned: List[str] = field(default_factory=list)
-    checkpoints: List[Dict[str, Any]] = field(default_factory=list)
-    files_created: List[str] = field(default_factory=list)
-    files_modified: List[str] = field(default_factory=list)
+    objectives: list[str] = field(default_factory=list)
+    completed_tasks: list[str] = field(default_factory=list)
+    pending_tasks: list[str] = field(default_factory=list)
+    patterns_applied: list[str] = field(default_factory=list)
+    patterns_learned: list[str] = field(default_factory=list)
+    checkpoints: list[dict[str, Any]] = field(default_factory=list)
+    files_created: list[str] = field(default_factory=list)
+    files_modified: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -57,8 +57,8 @@ class Pattern:
     """Represents a learned pattern."""
     id: str
     category: str
-    symptoms: List[str]
-    solutions: List[str]
+    symptoms: list[str]
+    solutions: list[str]
     success_rate: float
     times_applied: int
     last_used: str
@@ -79,7 +79,7 @@ class CognitiveBrainSessionManager:
         self.cognitive_brain_dir.mkdir(parents=True, exist_ok=True)
 
         self.current_session: Optional[SessionState] = None
-        self.patterns: Dict[str, Pattern] = {}
+        self.patterns: dict[str, Pattern] = {}
 
         self._load_patterns()
 
@@ -124,7 +124,7 @@ class CognitiveBrainSessionManager:
         self,
         session_id: str,
         pr_number: Optional[int] = None,
-        objectives: Optional[List[str]] = None
+        objectives: Optional[list[str]] = None
     ) -> SessionState:
         """Start a new session."""
         timestamp = datetime.now(timezone.utc).isoformat()
@@ -144,10 +144,10 @@ class CognitiveBrainSessionManager:
     def checkpoint(
         self,
         phase: str,
-        completed: Optional[List[str]] = None,
-        pending: Optional[List[str]] = None,
+        completed: Optional[list[str]] = None,
+        pending: Optional[list[str]] = None,
         notes: Optional[str] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create a session checkpoint."""
         if not self.current_session:
             raise ValueError("No active session")
@@ -200,8 +200,8 @@ class CognitiveBrainSessionManager:
         self,
         name: str,
         category: str,
-        symptoms: List[str],
-        solutions: List[str]
+        symptoms: list[str],
+        solutions: list[str]
     ) -> Pattern:
         """Learn a new pattern."""
         pattern_id = f"{category.upper()[:2]}-{len(self.patterns) + 1:03d}"
@@ -225,7 +225,7 @@ class CognitiveBrainSessionManager:
         logger.info(f"Learned new pattern: {name}")
         return pattern
 
-    def find_applicable_patterns(self, symptoms: List[str]) -> List[Pattern]:
+    def find_applicable_patterns(self, symptoms: list[str]) -> list[Pattern]:
         """Find patterns that match given symptoms."""
         applicable = []
 
@@ -245,7 +245,7 @@ class CognitiveBrainSessionManager:
         applicable.sort(key=lambda p: p.success_rate, reverse=True)
         return applicable
 
-    def end_session(self, outcome: str = "success") -> Dict[str, Any]:
+    def end_session(self, outcome: str = "success") -> dict[str, Any]:
         """End the current session."""
         if not self.current_session:
             raise ValueError("No active session")

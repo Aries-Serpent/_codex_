@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class UpdateType(Enum):
@@ -31,11 +31,11 @@ class DependencyUpdate:
     latest_version: str
     update_type: UpdateType
     has_vulnerability: bool
-    vulnerability_ids: List[str]
+    vulnerability_ids: list[str]
     changelog_url: Optional[str]
     release_date: str
     download_count: int
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class DependencyMonitor:
@@ -53,9 +53,9 @@ class DependencyMonitor:
 
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
-        self.updates: List[DependencyUpdate] = []
+        self.updates: list[DependencyUpdate] = []
 
-    def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def perceive(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         PERCEIVE: Monitor dependencies for updates and vulnerabilities.
 
@@ -67,7 +67,7 @@ class DependencyMonitor:
         Returns:
             Context with update information
         """
-        context = {
+        return {
             "current_dependencies": self._read_current_dependencies(),
             "available_updates": self._check_for_updates(),
             "vulnerabilities": self._scan_vulnerabilities(),
@@ -81,9 +81,8 @@ class DependencyMonitor:
         #AFTERMATH_METRIC: total_dependencies = len(context["current_dependencies"])
         #AFTERMATH_METRIC: updates_available = len(self.updates)
 
-        return context
 
-    def _read_current_dependencies(self) -> Dict[str, str]:
+    def _read_current_dependencies(self) -> dict[str, str]:
         """
         Read current dependencies from lock files.
 
@@ -153,7 +152,7 @@ class DependencyMonitor:
         except (OSError, ValueError):
             return False
 
-    def _check_for_updates(self) -> List[DependencyUpdate]:
+    def _check_for_updates(self) -> list[DependencyUpdate]:
         """
         Check for available updates using pip-outdated or npm outdated.
 
@@ -253,16 +252,15 @@ class DependencyMonitor:
 
             if latest_parts[0] > curr_parts[0]:
                 return UpdateType.MAJOR
-            elif latest_parts[1] > curr_parts[1]:
+            if latest_parts[1] > curr_parts[1]:
                 return UpdateType.MINOR
-            elif latest_parts[2] > curr_parts[2]:
+            if latest_parts[2] > curr_parts[2]:
                 return UpdateType.PATCH
-            else:
-                return UpdateType.PATCH
+            return UpdateType.PATCH
         except (ValueError, IndexError):
             return UpdateType.MINOR
 
-    def _scan_vulnerabilities(self) -> List[Dict[str, Any]]:
+    def _scan_vulnerabilities(self) -> list[dict[str, Any]]:
         """
         Scan dependencies for known vulnerabilities.
 
@@ -309,7 +307,7 @@ class DependencyMonitor:
 
         return vulnerabilities
 
-    def _analyze_changelogs(self) -> Dict[str, Dict[str, Any]]:
+    def _analyze_changelogs(self) -> dict[str, dict[str, Any]]:
         """
         Analyze changelogs for breaking changes.
 
@@ -335,7 +333,7 @@ class DependencyMonitor:
         # Could also parse changelog for keywords
         return False
 
-    def _assess_package_health(self) -> Dict[str, Dict[str, Any]]:
+    def _assess_package_health(self) -> dict[str, dict[str, Any]]:
         """
         Assess health of packages.
 
@@ -353,7 +351,7 @@ class DependencyMonitor:
 
         return health
 
-    def _query_brain_patterns(self) -> List[Dict[str, Any]]:
+    def _query_brain_patterns(self) -> list[dict[str, Any]]:
         """Query cognitive brain for historical update patterns."""
         try:
             import sys
@@ -375,6 +373,6 @@ class DependencyMonitor:
         """Get changelog URL for package."""
         if ecosystem == "python":
             return f"https://pypi.org/project/{package}/#history"
-        elif ecosystem == "javascript":
+        if ecosystem == "javascript":
             return f"https://www.npmjs.com/package/{package}?activeTab=versions"
         return None

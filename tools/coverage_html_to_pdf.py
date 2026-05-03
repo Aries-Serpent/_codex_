@@ -21,7 +21,7 @@ import re
 import sys
 import tempfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 # Repository root
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,7 +42,7 @@ FALLBACK_LINE_LENGTH = 100
 FALLBACK_MAX_LINES = 50
 
 
-def find_function_index_files(search_dirs: Optional[List[Path]] = None) -> List[Path]:
+def find_function_index_files(search_dirs: Optional[list[Path]] = None) -> list[Path]:
     """
     Find all function_index.html files in the specified directories.
 
@@ -133,7 +133,7 @@ def convert_html_to_grayscale_css() -> str:
     """
 
 
-def create_combined_html(html_files: List[Path], output_path: Path) -> None:
+def create_combined_html(html_files: list[Path], output_path: Path) -> None:
     """
     Create a combined HTML file from multiple function_index.html files.
 
@@ -278,7 +278,7 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
     return False
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     """
     Main entry point for coverage HTML to PDF conversion.
 
@@ -348,9 +348,8 @@ def main(argv: Optional[List[str]] = None) -> int:
             if not args.persistent:
                 print("     (ephemeral - can be cleaned up after use)")
             return 0
-        else:
-            print("[FAIL] PDF generation failed", file=sys.stderr)
-            return 1
+        print("[FAIL] PDF generation failed", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

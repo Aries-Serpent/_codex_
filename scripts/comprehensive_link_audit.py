@@ -7,7 +7,6 @@ Focus on relocated files from Phase 2
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 class ComprehensiveLinkAuditor:
@@ -28,7 +27,7 @@ class ComprehensiveLinkAuditor:
             'OPERATIONAL_GUIDELINES.md': 'docs/agent/OPERATIONAL_GUIDELINES.md',
         }
 
-    def _is_link_valid(self, source_file: Path, link_url: str) -> Tuple[bool, str]:
+    def _is_link_valid(self, source_file: Path, link_url: str) -> tuple[bool, str]:
         """Check if a link is valid, return (is_valid, reason)"""
         # Skip anchors
         if link_url.startswith('#'):
@@ -60,7 +59,7 @@ class ComprehensiveLinkAuditor:
         except (ValueError, OSError):
             return False, f"path_error:{link_path}"
 
-    def _extract_links(self, content: str) -> List[Tuple[str, str, str]]:
+    def _extract_links(self, content: str) -> list[tuple[str, str, str]]:
         """Extract markdown links"""
         pattern = r'\[([^\]]+)\]\(([^)]+)\)'
         links = []
@@ -71,7 +70,7 @@ class ComprehensiveLinkAuditor:
             links.append((full_match, link_text, link_url))
         return links
 
-    def audit_file(self, file_path: Path) -> Dict:
+    def audit_file(self, file_path: Path) -> dict:
         """Audit a single markdown file"""
         result = {
             'file': str(file_path.relative_to(self.repo_root)),
@@ -103,7 +102,7 @@ class ComprehensiveLinkAuditor:
 
         return result
 
-    def audit_repository(self, directories: List[str] = None) -> Dict:
+    def audit_repository(self, directories: list[str] = None) -> dict:
         """Audit all markdown files"""
         if directories is None:
             directories = ['docs', '.github', '.codex', 'agents']

@@ -52,7 +52,7 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .exceptions import AuthenticationError
 
@@ -121,7 +121,7 @@ class InstallationToken:
     token: str  # nosec B105 — not a hardcoded secret
     expires_at: float  # Unix timestamp
     installation_id: int
-    permissions: Dict[str, str] = field(default_factory=dict)
+    permissions: dict[str, str] = field(default_factory=dict)
     repository_selection: str = "all"
 
     def is_expired(self, buffer_seconds: int = 60) -> bool:
@@ -150,7 +150,7 @@ class GitHubApp:
 
     def __init__(self, config: GitHubAppConfig) -> None:
         self._config = config
-        self._token_cache: Dict[int, InstallationToken] = {}
+        self._token_cache: dict[int, InstallationToken] = {}
 
     # ------------------------------------------------------------------ #
     # JWT                                                                  #
@@ -222,8 +222,8 @@ class GitHubApp:
     def get_installation_token(
         self,
         installation_id: int,
-        permissions: Optional[Dict[str, str]] = None,
-        repositories: Optional[List[str]] = None,
+        permissions: Optional[dict[str, str]] = None,
+        repositories: Optional[list[str]] = None,
         force_refresh: bool = False,
     ) -> InstallationToken:
         """
@@ -252,14 +252,14 @@ class GitHubApp:
     def _fetch_installation_token(
         self,
         installation_id: int,
-        permissions: Optional[Dict[str, str]],
-        repositories: Optional[List[str]],
+        permissions: Optional[dict[str, str]],
+        repositories: Optional[list[str]],
     ) -> InstallationToken:
         """Call the GitHub API to create an installation access token."""
         jwt = self.generate_jwt()
         url = f"{self._config.api_base_url}/app/installations/{installation_id}/access_tokens"
 
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         if permissions:
             body["permissions"] = permissions
         if repositories:
@@ -307,7 +307,7 @@ class GitHubApp:
     # App metadata                                                         #
     # ------------------------------------------------------------------ #
 
-    def get_app_info(self) -> Dict[str, Any]:
+    def get_app_info(self) -> dict[str, Any]:
         """
         Fetch the authenticated GitHub App's metadata (``GET /app``).
 
@@ -320,7 +320,7 @@ class GitHubApp:
         jwt = self.generate_jwt()
         return self._api_get("/app", bearer=jwt)
 
-    def list_installations(self) -> List[Dict[str, Any]]:
+    def list_installations(self) -> list[dict[str, Any]]:
         """
         List all installations of this GitHub App (``GET /app/installations``).
 
@@ -498,13 +498,13 @@ def build_app_manifest(
     url: str,
     webhook_url: str,
     description: str = "",
-    callback_urls: Optional[List[str]] = None,
+    callback_urls: Optional[list[str]] = None,
     request_oauth_on_install: bool = False,
     setup_url: Optional[str] = None,
     public: bool = False,
-    default_events: Optional[List[str]] = None,
-    default_permissions: Optional[Dict[str, str]] = None,
-) -> Dict[str, Any]:
+    default_events: Optional[list[str]] = None,
+    default_permissions: Optional[dict[str, str]] = None,
+) -> dict[str, Any]:
     """
     Build a GitHub App manifest dictionary.
 
@@ -563,7 +563,7 @@ def build_app_manifest(
             "issues": "write",
         }
 
-    manifest: Dict[str, Any] = {
+    manifest: dict[str, Any] = {
         "name": name,
         "url": url,
         "hook_attributes": {
@@ -591,7 +591,7 @@ def build_app_manifest(
 # ---------------------------------------------------------------------------
 
 
-def _resolve_github_token() -> List[tuple]:
+def _resolve_github_token() -> list[tuple]:
     """
     Resolve GitHub PAT tokens from the environment in priority order.
 

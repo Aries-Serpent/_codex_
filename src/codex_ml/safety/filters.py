@@ -31,17 +31,14 @@ import json
 import logging
 import os
 import re
+from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from typing import (
     Any,
-    Iterable,
-    Iterator,
-    Mapping,
     Optional,
-    Sequence,
 )
 
 try:  # pragma: no cover - optional dependency
@@ -1030,12 +1027,12 @@ DEFAULT_POLICY_DATA: dict[str, Any] = {
 
 
 __all__ = [
+    "PolicyRule",
+    "RuleMatch",
     "SafetyFilters",
     "SafetyPolicy",
-    "PolicyRule",
     "SafetyResult",
     "SafetyViolation",
-    "sanitize_prompt",
     "sanitize_output",
-    "RuleMatch",
+    "sanitize_prompt",
 ]

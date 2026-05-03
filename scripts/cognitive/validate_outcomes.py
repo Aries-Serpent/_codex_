@@ -33,10 +33,10 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def validate_outcomes(results_dir: str, expectations_path: str, output_path: str) -> Dict[str, Any]:
+def validate_outcomes(results_dir: str, expectations_path: str, output_path: str) -> dict[str, Any]:
     """
     Validate execution outcomes against expected results.
 

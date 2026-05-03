@@ -14,7 +14,7 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class CodebaseAnalyzer:
@@ -31,7 +31,7 @@ class CodebaseAnalyzer:
         }
         self.root_path = Path(__file__).parent.parent.parent
 
-    def count_lines_by_extension(self) -> Dict[str, int]:
+    def count_lines_by_extension(self) -> dict[str, int]:
         """Count lines of code by file extension"""
         exts = {
             ".py": 0,
@@ -62,7 +62,7 @@ class CodebaseAnalyzer:
 
         return exts
 
-    def analyze_code_patterns(self, files: List[str]) -> Dict[str, List[str]]:
+    def analyze_code_patterns(self, files: list[str]) -> dict[str, list[str]]:
         """Analyze code patterns for quality and security issues"""
         patterns = {
             "security_keywords": [],
@@ -107,10 +107,10 @@ class CodebaseAnalyzer:
 
         return patterns
 
-    def generate_capability_matrix(self) -> Dict[str, Any]:
+    def generate_capability_matrix(self) -> dict[str, Any]:
         """Generate capability matrix based on traversal workflow"""
 
-        def calculate_score(components: Dict[str, float]) -> float:
+        def calculate_score(components: dict[str, float]) -> float:
             """Calculate overall score from components"""
             return sum(components.values()) / len(components) if components else 0.0
 
@@ -163,10 +163,10 @@ class CodebaseAnalyzer:
 
         return capabilities
 
-    def analyze_pr_changes(self) -> Dict[str, Any]:
+    def analyze_pr_changes(self) -> dict[str, Any]:
         """Analyze specific changes in the PR"""
 
-        changes = {
+        return {
             "summary": {
                 "total_commits": 3,
                 "total_changes": 1437,
@@ -218,17 +218,16 @@ class CodebaseAnalyzer:
             },
         }
 
-        return changes
 
-    def calculate_integrity_hash(self, data: Dict) -> str:
+    def calculate_integrity_hash(self, data: dict) -> str:
         """Calculate SHA256 integrity hash for audit trail"""
         json_str = json.dumps(data, sort_keys=True)
         return hashlib.sha256(json_str.encode()).hexdigest()
 
-    def generate_action_items(self) -> List[Dict[str, str]]:
+    def generate_action_items(self) -> list[dict[str, str]]:
         """Generate actionable items for PR completion"""
 
-        actions = [
+        return [
             {
                 "id": "codeql_resolution",
                 "task": "Resolve remaining CodeQL security alerts",
@@ -295,9 +294,8 @@ class CodebaseAnalyzer:
             },
         ]
 
-        return actions
 
-    def calculate_metrics(self) -> Dict[str, Any]:
+    def calculate_metrics(self) -> dict[str, Any]:
         """Calculate quality metrics"""
 
         return {
@@ -322,7 +320,7 @@ class CodebaseAnalyzer:
             "repository_health": 92,
         }
 
-    def generate_report(self) -> Dict[str, Any]:
+    def generate_report(self) -> dict[str, Any]:
         """Generate comprehensive status report"""
 
         # Analyze code
@@ -367,7 +365,7 @@ class CodebaseAnalyzer:
         return report
 
     def save_report(
-        self, report: Dict[str, Any], filename: str = "pr_2685_status.json"
+        self, report: dict[str, Any], filename: str = "pr_2685_status.json"
     ):
         """Save report to file"""
 
@@ -383,7 +381,7 @@ class CodebaseAnalyzer:
         print(f"✅ Report saved to: {report_path}")
         return report_path
 
-    def print_summary(self, report: Dict[str, Any]):
+    def print_summary(self, report: dict[str, Any]):
         """Print summary to console"""
 
         print("\n" + "=" * 80)

@@ -34,13 +34,13 @@ import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 def archive_knowledge(
     learnings_path: str,
     output_path: str
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Archive learnings to knowledge base.
 

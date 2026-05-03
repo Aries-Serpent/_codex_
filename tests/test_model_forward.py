@@ -8,7 +8,7 @@ torch = pytest.importorskip("torch", reason="torch not installed")
 
 _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
 
-from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402
+from codex_ml.models import MiniLM, MiniLMConfig
 
 
 @pytest.mark.ml

@@ -18,7 +18,7 @@ SCRIPTS_CI = Path(__file__).resolve().parents[2] / "scripts" / "ci"
 if str(SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_CI))
 
-import post_rescue_comment as prc  # noqa: E402  (after sys.path fix)
+import post_rescue_comment as prc
 
 
 class TestGetBranchHeadSha:

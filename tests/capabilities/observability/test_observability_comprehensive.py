@@ -11,8 +11,9 @@ Tests cover:
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
 import pytest
 

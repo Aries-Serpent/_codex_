@@ -12,7 +12,7 @@ import pytest
 
 pytest.importorskip("datasets")
 
-from codex_ml.metrics.registry import get_metric  # noqa: E402
+from codex_ml.metrics.registry import get_metric
 
 
 def test_bleu_rouge_fallbacks(monkeypatch, tmp_path: Path):

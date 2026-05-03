@@ -38,8 +38,9 @@ import json
 import os
 import sys
 import time
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Mapping
+from typing import Any
 from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency installed via [ops]

@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -14,7 +15,7 @@ class LocaleSyncResult:
     locale: str = ""  # Alias for locale_code
     success: bool = True
     articles_synced: int = 0
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
     error_message: str = ""
 
     def __post_init__(self):
@@ -28,7 +29,7 @@ class LocaleSyncResult:
 @dataclass
 class SyncConfig:
     """Configuration for multi-locale sync."""
-    locales: List[str] = field(default_factory=lambda: ["en"])
+    locales: list[str] = field(default_factory=lambda: ["en"])
     source_locale: str = "en"
     auto_translate: bool = False
     dry_run: bool = False
@@ -64,7 +65,7 @@ class MultiLocaleSyncResult:
     successful_locales: int = 0
     failed_locales: int = 0
     total_articles_synced: int = 0
-    results: List[LocaleSyncResult] = field(default_factory=list)
+    results: list[LocaleSyncResult] = field(default_factory=list)
 
 
 class MultiLocaleSync:
@@ -77,7 +78,7 @@ class MultiLocaleSync:
 
     def __init__(
         self,
-        locales: Optional[List[str]] = None,
+        locales: Optional[list[str]] = None,
         config: Optional[SyncConfig] = None
     ):
         """Initialize sync with locales and config."""
@@ -101,7 +102,7 @@ class MultiLocaleSync:
             articles_synced=10,
         )
 
-    def sync_all(self) -> Dict[str, LocaleSyncResult]:
+    def sync_all(self) -> dict[str, LocaleSyncResult]:
         """
         Sync content for all configured locales.
 
@@ -110,7 +111,7 @@ class MultiLocaleSync:
         """
         return {locale: self.sync_locale(locale) for locale in self.locales}
 
-    def get_supported_locales(self) -> List[str]:
+    def get_supported_locales(self) -> list[str]:
         """Get list of supported locales."""
         return self.locales.copy()
 
@@ -126,11 +127,11 @@ class MultiLocaleSyncManager:
     def __init__(
         self,
         max_workers: int = 4,
-        locales: Optional[List["LocaleConfig"]] = None,
+        locales: Optional[list["LocaleConfig"]] = None,
     ):
         """Initialize sync manager with worker pool."""
         self.max_workers = max_workers
-        self.locales: Dict[str, LocaleConfig] = {}
+        self.locales: dict[str, LocaleConfig] = {}
 
         if locales is not None:
             for loc in locales:
@@ -160,7 +161,7 @@ class MultiLocaleSyncManager:
             return True
         return False
 
-    def get_sync_schedule(self) -> List[Dict[str, Any]]:
+    def get_sync_schedule(self) -> list[dict[str, Any]]:
         """Get synchronization schedule sorted by priority."""
         schedule = []
         for locale_code, config in self.locales.items():

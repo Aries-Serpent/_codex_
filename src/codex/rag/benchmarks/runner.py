@@ -10,9 +10,10 @@ import logging
 import statistics
 import time
 import tracemalloc
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +27,9 @@ class BenchmarkResult:
     memory_mb: float
     success: bool
     error: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
 
@@ -44,7 +45,7 @@ class BenchmarkRunner:
             warmup_runs: Number of warmup runs before timing
         """
         self.warmup_runs = warmup_runs
-        self.results: List[BenchmarkResult] = []
+        self.results: list[BenchmarkResult] = []
 
     def run_benchmark(
         self, name: str, func: Callable, *args, runs: int = 5, **kwargs
@@ -118,13 +119,13 @@ class BenchmarkRunner:
         self.results.append(result)
         return result
 
-    def _percentile(self, data: List[float], percentile: float) -> float:
+    def _percentile(self, data: list[float], percentile: float) -> float:
         """Calculate percentile of data."""
         sorted_data = sorted(data)
         index = int(len(sorted_data) * percentile)
         return sorted_data[min(index, len(sorted_data) - 1)]
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get summary statistics of all benchmarks."""
         if not self.results:
             return {}
@@ -164,7 +165,7 @@ class BenchmarkRunner:
 
     def compare_with_baseline(
         self, baseline_file: str, threshold_percent: float = 10.0
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Compare current results with baseline file.
 

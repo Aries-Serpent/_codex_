@@ -25,9 +25,10 @@ from __future__ import annotations
 import logging
 import random  # non-cryptographic; used for deterministic shuffles
 import subprocess  # nosec B404 - subprocess is needed for VCS metadata; controlled call
+from collections.abc import Sequence
 from pathlib import Path
 from shutil import which
-from typing import Sequence, TypeVar, Union
+from typing import TypeVar
 
 from codex_ml.data.cache import SimpleCache
 
@@ -55,14 +56,14 @@ except Exception:
 
 
 __all__ = [
+    "REPO_READ_TEXT_AVAILABLE",
+    "_detect_encoding",
     "deterministic_shuffle",
-    "seeded_shuffle",
     "read_text",
     "read_text_file",
-    "_detect_encoding",
-    "REPO_READ_TEXT_AVAILABLE",
-    "write_manifest",
+    "seeded_shuffle",
     "split_dataset",
+    "write_manifest",
 ]
 
 
@@ -134,7 +135,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     return "utf-8"
 
 
-def _detect_encoding(path: Union[str, Path]) -> str:
+def _detect_encoding(path: str | Path) -> str:
     """Expose encoding detection (thin wrapper).
 
     Uses repository-provided detect_encoding if available; otherwise falls back
@@ -244,7 +245,7 @@ def write_manifest(
 
 
 def _manual_read_text(
-    path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict"
+    path: str | Path, encoding: str = "utf-8", errors: str = "strict"
 ) -> tuple[str, str]:
     """Read bytes and decode using provided encoding (or detect when 'auto').
 
@@ -286,7 +287,7 @@ def _manual_read_text(
     return text, str(enc)
 
 
-def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict") -> str:
+def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict") -> str:
     """Read text from ``path`` using optional encoding detection.
 
     This wrapper attempts to call into a repository-provided ``io_text.read_text``
@@ -351,7 +352,7 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
     return text
 
 
-def read_text_file(path: Union[str, Path], *, encoding: str = "utf-8") -> str:
+def read_text_file(path: str | Path, *, encoding: str = "utf-8") -> str:
     """Backward-compatible alias for :func:`read_text`.
 
     Some older callers used the name `read_text_file` and passed encoding; keep
@@ -362,7 +363,7 @@ def read_text_file(path: Union[str, Path], *, encoding: str = "utf-8") -> str:
 
 # Provide internal alias for legacy callers expecting a top-level _detect_encoding
 # function name.
-def _detect_encoding_wrapper(path: Union[str, Path]) -> str:
+def _detect_encoding_wrapper(path: str | Path) -> str:
     return _detect_encoding(path)
 
 

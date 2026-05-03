@@ -9,7 +9,7 @@ Coverage Target: End-to-end RAG pipeline
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -19,7 +19,7 @@ class Document:
     """Document for RAG indexing."""
     id: str
     content: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 @dataclass
@@ -28,7 +28,7 @@ class RetrievalResult:
     document_id: str
     content: str
     score: float
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class TestDocumentIngestion:

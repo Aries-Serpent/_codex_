@@ -172,7 +172,7 @@ def prune_checkpoints(
             path = epoch_to_path[e]
             try:
                 shutil.rmtree(path)
-            except Exception as ex:  # noqa: BLE001
+            except Exception as ex:
                 logger.warning("Failed to delete checkpoint dir %s: %s", path, ex)
 
     return {

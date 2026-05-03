@@ -7,7 +7,7 @@ from typing import Any
 
 from codex.diagram.flows import Edge, flow_to_mermaid, intake_to_mermaid, sanitize_id
 
-__all__ = ["Edge", "flow_to_mermaid", "intake_to_mermaid", "sanitize_id", "build_flow_edges"]
+__all__ = ["Edge", "build_flow_edges", "flow_to_mermaid", "intake_to_mermaid", "sanitize_id"]
 
 
 def build_flow_edges(steps: Iterable[Any]) -> tuple[list[tuple[str, str]], str]:

@@ -35,12 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""Minimal end-to-end logging demonstration.
-
-This script simulates a small chat session. It writes start, user, assistant
-and end events via ``conversation_logger`` and then queries the transcript using
-the ``query_logs`` CLI. The script exits non-zero if any step fails.
-"""
 
 import subprocess
 import sys

@@ -18,7 +18,7 @@ import random
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Optional
 
 import requests
 
@@ -42,7 +42,7 @@ class QuantumWorkflowState:
     # Quantum properties
     health_amplitude: complex  # Wave function amplitude
     phase: float  # Quantum phase
-    entangled_with: List[int]  # Entangled workflow IDs
+    entangled_with: list[int]  # Entangled workflow IDs
 
     # Measured properties
     measured_health: Optional[str] = None
@@ -85,7 +85,7 @@ class QuantumWorkflowState:
         self.measurement_time = datetime.now(timezone.utc).isoformat()
         return self.measured_health
 
-    def apply_entanglement(self, other_states: List['QuantumWorkflowState']):
+    def apply_entanglement(self, other_states: list['QuantumWorkflowState']):
         """Apply entanglement effects from related workflows"""
         amplitude_updated = False
         for other in other_states:
@@ -118,7 +118,7 @@ class QuantumWorkflowHealthAnalyzer:
             'Accept': 'application/vnd.github+json'
         }
 
-    def fetch_workflows(self, commit_sha: str) -> List[Dict]:
+    def fetch_workflows(self, commit_sha: str) -> list[dict]:
         """Fetch all workflows for a commit"""
         url = f'{self.base_url}/actions/runs'
         params = {'per_page': 100}
@@ -131,7 +131,7 @@ class QuantumWorkflowHealthAnalyzer:
         # Filter by commit SHA
         return [run for run in all_runs if run['head_sha'].startswith(commit_sha[:7])]
 
-    def create_quantum_states(self, workflows: List[Dict]) -> List[QuantumWorkflowState]:
+    def create_quantum_states(self, workflows: list[dict]) -> list[QuantumWorkflowState]:
         """Convert workflows to quantum states"""
         states = []
 
@@ -154,7 +154,7 @@ class QuantumWorkflowHealthAnalyzer:
 
         return states
 
-    def _identify_entanglements(self, workflows: List[Dict]) -> Dict[int, List[int]]:
+    def _identify_entanglements(self, workflows: list[dict]) -> dict[int, list[int]]:
         """Identify which workflows are entangled (share dependencies)"""
         entanglements = {}
 
@@ -173,7 +173,7 @@ class QuantumWorkflowHealthAnalyzer:
 
         return entanglements
 
-    def analyze_health(self, states: List[QuantumWorkflowState]) -> Dict:
+    def analyze_health(self, states: list[QuantumWorkflowState]) -> dict:
         """Perform quantum health analysis"""
 
         # Phase 1: Measure all states (collapse wave functions)
@@ -208,7 +208,7 @@ class QuantumWorkflowHealthAnalyzer:
             'tunneling_details': tunneling_events
         }
 
-    def _detect_tunneling(self, states: List[QuantumWorkflowState]) -> List[Dict]:
+    def _detect_tunneling(self, states: list[QuantumWorkflowState]) -> list[dict]:
         """Detect quantum tunneling events (unexpected recoveries)"""
         tunneling = []
 
@@ -224,7 +224,7 @@ class QuantumWorkflowHealthAnalyzer:
 
         return tunneling
 
-    def _calculate_overall_health(self, health_counts: Dict[str, int]) -> str:
+    def _calculate_overall_health(self, health_counts: dict[str, int]) -> str:
         """Calculate overall system health"""
         total = sum(health_counts.values())
         if total == 0:
@@ -238,7 +238,7 @@ class QuantumWorkflowHealthAnalyzer:
             return 'degraded'
         return 'critical'
 
-    def _calculate_coherence(self, states: List[QuantumWorkflowState]) -> float:
+    def _calculate_coherence(self, states: list[QuantumWorkflowState]) -> float:
         """Calculate quantum coherence (system stability)"""
         if not states:
             return 0.0

@@ -17,14 +17,14 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 # Constants
 TRACKING_FILE = Path(".codex/handoff_tracking.json")
 PR_NUMBER = 3145
 
 
-def init_tracking_file() -> Dict:
+def init_tracking_file() -> dict:
     """Initialize empty tracking file with structure."""
     data = {
         "pr_number": PR_NUMBER,
@@ -219,7 +219,7 @@ def init_tracking_file() -> Dict:
     return data
 
 
-def load_tracking_data() -> Dict:
+def load_tracking_data() -> dict:
     """Load tracking data from JSON file."""
     if not TRACKING_FILE.exists():
         print("⚠️  Tracking file not found. Initializing...")
@@ -229,14 +229,14 @@ def load_tracking_data() -> Dict:
         return json.load(f)
 
 
-def save_tracking_data(data: Dict):
+def save_tracking_data(data: dict):
     """Save tracking data to JSON file."""
     data["last_updated"] = datetime.utcnow().isoformat() + "Z"
     with open(TRACKING_FILE, 'w') as f:
         json.dump(data, f, indent=2)
 
 
-def calculate_metrics(data: Dict) -> Dict:
+def calculate_metrics(data: dict) -> dict:
     """Calculate metrics from hand-off data."""
     handoffs = data["handoffs"]
 
@@ -274,7 +274,7 @@ def calculate_metrics(data: Dict) -> Dict:
     return metrics
 
 
-def show_tracking_table(data: Dict):
+def show_tracking_table(data: dict):
     """Display tracking table in markdown format."""
     print("\n## 📊 Hand-off Tracking Table\n")
     print("| **HO-ID** | **From** | **To** | **Phase** | **Status** | **Comment Link** | **Timestamp** | **Response Time** |")
@@ -310,7 +310,7 @@ def show_tracking_table(data: Dict):
     print()
 
 
-def show_metrics(data: Dict):
+def show_metrics(data: dict):
     """Display metrics summary."""
     metrics = calculate_metrics(data)
     save_tracking_data(data)
@@ -329,11 +329,11 @@ def show_metrics(data: Dict):
     print()
 
 
-def update_handoff(data: Dict, handoff_id: str, status: str,
+def update_handoff(data: dict, handoff_id: str, status: str,
                    comment_link: Optional[str] = None,
                    timestamp: Optional[str] = None,
                    response_time: Optional[str] = None,
-                   deliverables: Optional[List[str]] = None):
+                   deliverables: Optional[list[str]] = None):
     """Update a specific hand-off."""
     handoff = next((h for h in data["handoffs"] if h["id"] == handoff_id), None)
 

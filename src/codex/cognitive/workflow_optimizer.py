@@ -563,6 +563,7 @@ class ImmutableRegistry:
                         self._components[comp.component_id] = comp
             except (json.JSONDecodeError, KeyError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def save(self) -> None:
         """Save registry to disk."""
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
@@ -639,6 +640,7 @@ class CheckpointManager:
                         self._checkpoints[cp.checkpoint_id] = cp
             except (json.JSONDecodeError, KeyError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def save(self) -> None:
         """Save checkpoints to disk."""
         self.checkpoint_path.parent.mkdir(parents=True, exist_ok=True)

@@ -7,15 +7,16 @@ remediate common training failures.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
     "FailureType",
-    "SelfHealingContext",
     "OOMHandler",
+    "SelfHealingContext",
     "auto_remediate",
 ]
 

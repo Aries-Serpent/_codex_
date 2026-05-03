@@ -13,14 +13,13 @@ from __future__ import annotations
 import io
 import json
 from pathlib import Path
-from typing import Dict
 
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def _write_ndjson(records: list[Dict], fp: io.TextIOBase) -> None:
+def _write_ndjson(records: list[dict], fp: io.TextIOBase) -> None:
     for rec in records:
         fp.write(json.dumps(rec, sort_keys=True) + "\n")
 

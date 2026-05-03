@@ -19,12 +19,11 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
-from typing import Union
 
 from .io_text import detect_encoding
 
 
-def load_csv(path: Union[str, Path], *, encoding: str = "utf-8", **kwargs) -> list[list[str]]:
+def load_csv(path: str | Path, *, encoding: str = "utf-8", **kwargs) -> list[list[str]]:
     """Load CSV rows from ``path`` into a list.
 
     Parameters

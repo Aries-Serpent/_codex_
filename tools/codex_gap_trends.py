@@ -12,7 +12,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 try:
     import yaml  # type: ignore
@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover
     yaml = None
 
 
-def load_registry(path: Path) -> Dict[str, Any]:
+def load_registry(path: Path) -> dict[str, Any]:
     if yaml is None:
         raise RuntimeError("PyYAML is required. Install with `pip install pyyaml`.")
     if not path.exists():
@@ -31,7 +31,7 @@ def load_registry(path: Path) -> Dict[str, Any]:
     return data
 
 
-def compute_snapshot_stats(registry: Dict[str, Any]) -> Dict[str, Any]:
+def compute_snapshot_stats(registry: dict[str, Any]) -> dict[str, Any]:
     gaps = registry.get("gaps", []) or []
     status_counter: Counter[str] = Counter()
     capability_counter: Counter[str] = Counter()
@@ -51,7 +51,7 @@ def compute_snapshot_stats(registry: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def write_markdown_report(path: Path, stats: Dict[str, Any]) -> None:
+def write_markdown_report(path: Path, stats: dict[str, Any]) -> None:
     lines = []
     lines.append("# codex_gap_trends snapshot\n\n")
     lines.append(f"Total gaps: {stats.get('total_gaps', 0)}\n\n")

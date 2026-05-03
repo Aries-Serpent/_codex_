@@ -22,7 +22,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from typing import Callable  # noqa: E402
+from collections.abc import Callable  # noqa: E402
 
 try:
     import torch

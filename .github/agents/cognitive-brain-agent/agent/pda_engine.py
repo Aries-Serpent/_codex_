@@ -4,9 +4,10 @@ PDA Engine - Perceive-Decide-Act Loop Implementation.
 Provides the core PDA loop pattern for cognitive processing tasks.
 """
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Optional
 
 
 class PDAPhase(Enum):
@@ -27,9 +28,9 @@ class PerceptionResult:
         context: Additional context information
         confidence: Perception confidence score
     """
-    features: Dict[str, Any] = field(default_factory=dict)
-    patterns: List[str] = field(default_factory=list)
-    context: Dict[str, Any] = field(default_factory=dict)
+    features: dict[str, Any] = field(default_factory=dict)
+    patterns: list[str] = field(default_factory=list)
+    context: dict[str, Any] = field(default_factory=dict)
     confidence: float = 1.0
 
 
@@ -44,7 +45,7 @@ class DecisionResult:
         reasoning: Explanation for decision
     """
     action: str
-    alternatives: List[str] = field(default_factory=list)
+    alternatives: list[str] = field(default_factory=list)
     confidence: float = 1.0
     reasoning: str = ""
 
@@ -62,7 +63,7 @@ class ActionResult:
     success: bool
     output: Any = None
     duration_ms: float = 0.0
-    side_effects: List[str] = field(default_factory=list)
+    side_effects: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -76,9 +77,9 @@ class AfterMathResult:
         metrics: Performance metrics
     """
     reward: float = 0.0
-    patterns_extracted: List[str] = field(default_factory=list)
+    patterns_extracted: list[str] = field(default_factory=list)
     learning_updates: int = 0
-    metrics: Dict[str, float] = field(default_factory=dict)
+    metrics: dict[str, float] = field(default_factory=dict)
 
 
 class PDAEngine:
@@ -113,7 +114,7 @@ class PDAEngine:
         self._aftermath_handler: Optional[Callable] = None
 
         self.current_phase: Optional[PDAPhase] = None
-        self.run_history: List[Dict[str, Any]] = []
+        self.run_history: list[dict[str, Any]] = []
 
     def perceiver(self, func: Callable) -> Callable:
         """Decorator to register perceiver function.
@@ -163,7 +164,7 @@ class PDAEngine:
         self._aftermath_handler = func
         return func
 
-    def run(self, input_data: Any, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def run(self, input_data: Any, context: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Run the full PDA loop.
 
         Args:
@@ -231,7 +232,7 @@ class PDAEngine:
         self.run_history.append(results)
         return results
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get engine statistics.
 
         Returns:

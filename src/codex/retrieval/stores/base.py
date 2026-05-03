@@ -8,7 +8,7 @@ import logging
 from abc import ABC, abstractmethod
 
 logger = logging.getLogger(__name__)
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import numpy as np
 
@@ -69,7 +69,7 @@ class VectorStore(ABC):
         """
 
     @abstractmethod
-    def delete(self, ids: Union[str, list[str]]) -> int:
+    def delete(self, ids: str | list[str]) -> int:
         """Delete vectors by ID
 
         Args:
@@ -83,7 +83,7 @@ class VectorStore(ABC):
         """
 
     @abstractmethod
-    def get(self, ids: Union[str, list[str]]) -> list[dict[str, Any]]:
+    def get(self, ids: str | list[str]) -> list[dict[str, Any]]:
         """Retrieve vectors by ID
 
         Args:

@@ -16,7 +16,7 @@ import json
 import pathlib
 import re
 import sys
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 try:
     from markdown_it import MarkdownIt
@@ -142,7 +142,7 @@ class LanguageDetector:
         self.config = config
         self.ml_classifier = None  # Placeholder for future ML integration
 
-    def detect_heuristic(self, code: str, filename: Optional[str] = None) -> Tuple[str, float]:
+    def detect_heuristic(self, code: str, filename: Optional[str] = None) -> tuple[str, float]:
         """Heuristic-based language detection."""
         # Check for shebang
         first_line = code.split("\n")[0] if code else ""
@@ -182,7 +182,7 @@ class LanguageDetector:
 
         return ("text", 0.2)
 
-    def validate_parse(self, code: str, lang: str) -> Tuple[bool, float]:
+    def validate_parse(self, code: str, lang: str) -> tuple[bool, float]:
         """Structural validation using Tree-sitter."""
         if not TREE_SITTER_AVAILABLE:
             return (True, 0.0)  # Soft pass without tree-sitter
@@ -213,7 +213,7 @@ class LanguageDetector:
         except Exception:
             return (True, 0.0)  # Soft pass on parser error
 
-    def detect(self, code: str, filename: Optional[str] = None) -> Tuple[str, float, Dict]:
+    def detect(self, code: str, filename: Optional[str] = None) -> tuple[str, float, dict]:
         """
         Combined detection using weighted scoring.
 
@@ -265,10 +265,10 @@ class FenceFixer:
         self.dry_run = dry_run
         self.verbose = verbose
         self.detector = LanguageDetector(config)
-        self.log_entries: List[Dict] = []
+        self.log_entries: list[dict] = []
         self.md_parser = MarkdownIt()
 
-    def fix_file(self, path: pathlib.Path) -> Tuple[bool, int]:
+    def fix_file(self, path: pathlib.Path) -> tuple[bool, int]:
         """Fix fences in a single file."""
         try:
             text = path.read_text(encoding="utf-8")
@@ -323,7 +323,7 @@ class FenceFixer:
 
         return (text != original_text, fixes_made)
 
-    def fix_paths(self, paths: List[pathlib.Path]) -> Dict:
+    def fix_paths(self, paths: list[pathlib.Path]) -> dict:
         """Fix all markdown files in given paths."""
         stats = {
             "files_scanned": 0,

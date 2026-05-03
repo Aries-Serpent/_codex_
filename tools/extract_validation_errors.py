@@ -8,7 +8,6 @@ in the same directory containing all the incomplete or incorrect aspects.
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Import validation functions from the existing script
 from validate_status_report import (
@@ -19,7 +18,7 @@ from validate_status_report import (
 )
 
 
-def collect_validation_errors(report_path: Path) -> Tuple[bool, List[str]]:
+def collect_validation_errors(report_path: Path) -> tuple[bool, list[str]]:
     """Collect all validation errors for a report."""
     errors = []
 
@@ -68,7 +67,7 @@ def collect_validation_errors(report_path: Path) -> Tuple[bool, List[str]]:
     return is_valid, errors
 
 
-def create_error_file(report_path: Path, errors: List[str]) -> Path:
+def create_error_file(report_path: Path, errors: list[str]) -> Path:
     """Create error-*.md file in the same directory as the report."""
     # Get directory and filename
     report_dir = report_path.parent

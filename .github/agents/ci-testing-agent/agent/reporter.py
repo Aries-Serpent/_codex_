@@ -5,7 +5,7 @@ Reports results and manages GitHub integration.
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 class ArtifactReporter:
@@ -22,7 +22,7 @@ class ArtifactReporter:
         self.reports_dir = workspace / ".reports"
         self.reports_dir.mkdir(exist_ok=True)
 
-    def report(self, result: Dict[str, Any]) -> None:
+    def report(self, result: dict[str, Any]) -> None:
         """
         Generate and save test report.
 
@@ -56,7 +56,7 @@ class ArtifactReporter:
         with open(latest_summary, "w") as f:
             f.write(summary)
 
-    def _generate_summary(self, result: Dict[str, Any]) -> str:
+    def _generate_summary(self, result: dict[str, Any]) -> str:
         """
         Generate markdown summary of results.
 
@@ -100,7 +100,7 @@ class ArtifactReporter:
 
         return summary
 
-    def _summary_generate_tests(self, result: Dict[str, Any]) -> str:
+    def _summary_generate_tests(self, result: dict[str, Any]) -> str:
         """Generate summary for test generation task."""
         summary = "## Test Generation Results\n\n"
 
@@ -116,7 +116,7 @@ class ArtifactReporter:
 
         return summary
 
-    def _summary_validate_coverage(self, result: Dict[str, Any]) -> str:
+    def _summary_validate_coverage(self, result: dict[str, Any]) -> str:
         """Generate summary for coverage validation task."""
         summary = "## Coverage Validation Results\n\n"
 
@@ -150,7 +150,7 @@ class ArtifactReporter:
 
         return summary
 
-    def _summary_execute_tests(self, result: Dict[str, Any]) -> str:
+    def _summary_execute_tests(self, result: dict[str, Any]) -> str:
         """Generate summary for test execution task."""
         summary = "## Test Execution Results\n\n"
 
@@ -178,13 +178,13 @@ class ArtifactReporter:
 
         return summary
 
-    def _summary_debug_ci(self, result: Dict[str, Any]) -> str:
+    def _summary_debug_ci(self, result: dict[str, Any]) -> str:
         """Generate summary for CI debugging task."""
         summary = "## CI Debugging Results\n\n"
         summary += self._summary_execute_tests(result)
         return summary
 
-    def _summary_generic(self, result: Dict[str, Any]) -> str:
+    def _summary_generic(self, result: dict[str, Any]) -> str:
         """Generate generic summary for unknown task types."""
         summary = "## Results\n\n"
 

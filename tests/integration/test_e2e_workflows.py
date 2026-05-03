@@ -13,7 +13,7 @@ pytest.importorskip("torch")
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch  # noqa: E402
+import torch
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 

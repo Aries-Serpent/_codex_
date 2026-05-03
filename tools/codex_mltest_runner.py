@@ -6,9 +6,10 @@ import argparse
 import json
 import os
 import subprocess
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, List, Mapping
+from typing import Any
 
 import yaml
 
@@ -16,7 +17,7 @@ import yaml
 @dataclass
 class CategoryResult:
     category: str
-    tests: List[str]
+    tests: list[str]
     returncode: int
 
 
@@ -38,8 +39,8 @@ def _normalize_categories(data: Mapping[str, Any]) -> Mapping[str, Any]:
     return normalized
 
 
-def _collect_tests(categories: Mapping[str, Any], selected: Iterable[str]) -> List[str]:
-    ordered: List[str] = []
+def _collect_tests(categories: Mapping[str, Any], selected: Iterable[str]) -> list[str]:
+    ordered: list[str] = []
     for category in selected:
         info = categories.get(category) or {}
         for test_target in info.get("tests", []):
@@ -48,7 +49,7 @@ def _collect_tests(categories: Mapping[str, Any], selected: Iterable[str]) -> Li
     return ordered
 
 
-def _run_pytest(targets: List[str], repo_root: Path) -> subprocess.CompletedProcess:
+def _run_pytest(targets: list[str], repo_root: Path) -> subprocess.CompletedProcess:
     env = dict(os.environ)
     env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
     if not targets:

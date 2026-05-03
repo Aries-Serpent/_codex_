@@ -35,21 +35,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""Validate 3.5% coverage gate enforcement across all test contexts.
-
-This script ensures ``--cov-fail-under=3.5`` is present in the key surfaces that
-document or execute our test suite:
-
-* ``README.md``
-* ``docs/governance/CONTRIBUTING.md``
-* ``configs/development/pytest.ini``
-* ``configs/development/Makefile``
-* ``configs/development/noxfile.py``
-* ``.github/workflows/*.yml`` and ``.github/workflows/*.yaml``
-
-When a location is missing the flag the script prints a clear failure message
-and exits with status ``1`` so CI can gate the change.
-"""
 
 import re
 import sys

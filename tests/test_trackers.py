@@ -6,7 +6,7 @@ Test module for trackers.
 
 #!/usr/bin/env python3
 """Tests for trackers utility - basic integration tests."""
-from src.utils.trackers import init_mlflow_local, init_wandb_offline  # noqa: E402
+from src.utils.trackers import init_mlflow_local, init_wandb_offline
 
 
 def test_init_wandb_offline_returns_value_or_none():

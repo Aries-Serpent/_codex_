@@ -14,7 +14,7 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-from unittest.mock import Mock  # noqa: E402
+from unittest.mock import Mock
 
 # Test availability flags
 try:
@@ -24,7 +24,7 @@ except ImportError:
     CONFIG_AVAILABLE = False
 
 try:
-    import torch  # noqa: F401 - Testing optional dependency availability
+    import torch
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False

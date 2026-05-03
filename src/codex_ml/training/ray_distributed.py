@@ -7,14 +7,15 @@ Requires: pip install "ray[train]"
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
     "RAY_AVAILABLE",
-    "check_ray_available",
     "RayDistributedTrainer",
+    "check_ray_available",
     "ray_train_loop",
 ]
 

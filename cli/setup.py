@@ -25,9 +25,9 @@ import os
 import subprocess
 import sys
 import uuid
+from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
-from typing import Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CODEX_DIR = REPO_ROOT / ".codex"

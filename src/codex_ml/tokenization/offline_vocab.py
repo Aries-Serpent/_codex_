@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable, Mapping
 from pathlib import Path
-from typing import Iterable, Mapping
 
 from .adapter import TokenizerAdapter
 
@@ -33,16 +33,16 @@ class TinyVocabTokenizer(TokenizerAdapter):
         vocab = {str(token): int(index) for token, index in data.items()}
         return cls(vocab)
 
-    def encode(self, text: str, **kwargs: object) -> list[int]:  # noqa: D401
+    def encode(self, text: str, **kwargs: object) -> list[int]:
         return [self.vocab.get(token, self.unk_id) for token in text.split()]
 
-    def decode(self, tokens: Iterable[int], **kwargs: object) -> str:  # noqa: D401
+    def decode(self, tokens: Iterable[int], **kwargs: object) -> str:
         return " ".join(self.reverse_vocab.get(int(token), self.unk_token) for token in tokens)
 
-    def batch_encode(self, texts: Iterable[str], **kwargs: object) -> list[list[int]]:  # noqa: D401
+    def batch_encode(self, texts: Iterable[str], **kwargs: object) -> list[list[int]]:
         return [self.encode(text) for text in texts]
 
-    def save_pretrained(self, output_dir: str) -> None:  # noqa: D401 - trivial persistence
+    def save_pretrained(self, output_dir: str) -> None:
         target = Path(output_dir)
         target.mkdir(parents=True, exist_ok=True)
         (target / "vocab.json").write_text(json.dumps(self.vocab, indent=2), encoding="utf-8")

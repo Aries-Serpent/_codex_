@@ -11,19 +11,18 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import List, Tuple
 
 OK, WARN, FAIL = 0, 1, 2
 
 
 def run(
-    cmd: List[str],
+    cmd: list[str],
     *,
     cwd: Path | None = None,
     timeout: int | None = None,
     env: dict | None = None,
     log: Path | None = None,
-) -> Tuple[int, str]:
+) -> tuple[int, str]:
     proc = subprocess.Popen(
         cmd,
         cwd=str(cwd) if cwd else None,
@@ -47,7 +46,7 @@ def run(
     return rc, out
 
 
-def rewrite_readme_cli(readme: Path) -> Tuple[bool, str]:
+def rewrite_readme_cli(readme: Path) -> tuple[bool, str]:
     if not readme.exists():
         return False, "README not found; skipped"
     text = readme.read_text(encoding="utf-8", errors="ignore")
@@ -58,7 +57,7 @@ def rewrite_readme_cli(readme: Path) -> Tuple[bool, str]:
     return False, "no changes"
 
 
-def run_audit(prompt: Path, artifacts: Path) -> Tuple[int, str]:
+def run_audit(prompt: Path, artifacts: Path) -> tuple[int, str]:
     artifacts.mkdir(parents=True, exist_ok=True)
     if Path("tools/audit_builder.py").exists():
         rc, out = run(
@@ -72,7 +71,7 @@ def run_audit(prompt: Path, artifacts: Path) -> Tuple[int, str]:
     return WARN, "audit script missing"
 
 
-def precommit_run(timeout: int, artifacts: Path, skip_hooks: str | None = None) -> Tuple[int, str]:
+def precommit_run(timeout: int, artifacts: Path, skip_hooks: str | None = None) -> tuple[int, str]:
     env = os.environ.copy()
     if skip_hooks:
         env["SKIP"] = skip_hooks
@@ -93,7 +92,7 @@ def has_pytest_cov() -> bool:
     return "pytest-cov" in out
 
 
-def run_tests(cov_target: str, cov_threshold: int, artifacts: Path) -> Tuple[int, str]:
+def run_tests(cov_target: str, cov_threshold: int, artifacts: Path) -> tuple[int, str]:
     if has_pytest_cov():
         cmd = [
             "pytest",
@@ -111,7 +110,7 @@ def run_tests(cov_target: str, cov_threshold: int, artifacts: Path) -> Tuple[int
     return WARN, "tests passed without coverage"
 
 
-def append_changelog(msgs: List[str]) -> None:
+def append_changelog(msgs: list[str]) -> None:
     path = Path("CHANGELOG_codex.md")
     stamp = time.strftime("%Y-%m-%d %H:%M:%S")
     entry = [f"## {stamp} – Codex run"] + [f"- {m}" for m in msgs]
@@ -133,7 +132,7 @@ def main() -> int:
     args = ap.parse_args()
 
     artifacts = Path(args.artifacts)
-    msgs: List[str] = []
+    msgs: list[str] = []
 
     changed, note = rewrite_readme_cli(Path(args.readme))
     msgs.append(f"README rewrite: {note}")

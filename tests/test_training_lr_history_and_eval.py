@@ -8,7 +8,7 @@ import pytest
 
 torch = pytest.importorskip("torch", reason="Requires torch for optimizer / scheduler tests")
 
-from codex_ml.train_loop import run_training  # noqa
+from codex_ml.train_loop import run_training
 
 
 def dummy_eval_fn(epoch: int, state):

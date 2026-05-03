@@ -235,4 +235,4 @@ class DecoderOnlyLM(nn.Module):
         }
 
 
-__all__ = ["ModelConfig", "DecoderOnlyLM"]
+__all__ = ["DecoderOnlyLM", "ModelConfig"]

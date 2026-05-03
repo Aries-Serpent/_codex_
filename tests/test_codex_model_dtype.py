@@ -8,7 +8,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from codex_ml.codex_model import ModelConfig, build_codex_model  # noqa: E402
+from codex_ml.codex_model import ModelConfig, build_codex_model
 
 
 def test_build_codex_model_accepts_torch_dtype():

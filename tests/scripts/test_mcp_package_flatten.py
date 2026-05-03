@@ -10,12 +10,12 @@ Test suite for scripts/mcp/package_flatten.sh
 Tests bash script logic for flattening and packaging
 """
 
-import json  # noqa: E402
-import subprocess  # Using stdlib subprocess.run which supports timeout parameter  # noqa: E402
-import tempfile  # noqa: E402
-from pathlib import Path  # noqa: E402
+import json
+import subprocess  # Using stdlib subprocess.run which supports timeout parameter
+import tempfile
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 
 @pytest.fixture

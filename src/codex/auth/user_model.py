@@ -17,7 +17,7 @@ import hmac as _hmac
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Optional
 
 # PBKDF2 parameters — increasing ITERATIONS raises cost for attackers.
 _PBKDF2_HASH = "sha256"
@@ -37,7 +37,7 @@ class User:
     created_at: float = field(default_factory=time.time)
     updated_at: float = field(default_factory=time.time)
     is_active: bool = True
-    roles: List[str] = field(default_factory=lambda: ["user"])
+    roles: list[str] = field(default_factory=lambda: ["user"])
     display_name: Optional[str] = None
 
     # ------------------------------------------------------------------ #
@@ -48,7 +48,7 @@ class User:
         """Return True if the user has *role*."""
         return role in self.roles
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Serialise to a dict, omitting the password hash."""
         return {
             "user_id": self.user_id,

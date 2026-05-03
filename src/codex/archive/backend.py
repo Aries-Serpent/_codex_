@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Database access layer for the Codex archive."""
 
 
 import json  # noqa: E402

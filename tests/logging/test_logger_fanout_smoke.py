@@ -6,16 +6,16 @@ Test module for logger fanout smoke.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from codex_ml.logging.unified_logger import LoggerBackend, LoggerRegistry
 
 
 class DummyBackend(LoggerBackend):
     def __init__(self) -> None:
-        self.events: List[str] = []
-        self.metrics: List[Dict[str, Any]] = []
-        self.params: List[Dict[str, Any]] = []
+        self.events: list[str] = []
+        self.metrics: list[dict[str, Any]] = []
+        self.params: list[dict[str, Any]] = []
 
     def start_run(self, run_name: Optional[str] = None):
         self.events.append(f"start:{run_name}")
@@ -23,10 +23,10 @@ class DummyBackend(LoggerBackend):
     def end_run(self):
         self.events.append("end")
 
-    def log_metrics(self, metrics: Dict[str, Any], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, Any], step: Optional[int] = None):
         self.metrics.append({"metrics": dict(metrics), "step": step})
 
-    def log_params(self, params: Dict[str, Any]):
+    def log_params(self, params: dict[str, Any]):
         self.params.append(dict(params))
 
 

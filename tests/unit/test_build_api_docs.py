@@ -10,7 +10,7 @@ import pytest
 tools_dir = Path(__file__).parent.parent.parent / "tools"
 sys.path.insert(0, str(tools_dir))
 
-import build_api_docs  # noqa: E402
+import build_api_docs
 
 
 class TestFilterModules:

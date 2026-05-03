@@ -12,7 +12,6 @@ Tests: 25+
 import json
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 import pytest
 
@@ -25,7 +24,7 @@ SCHEMAS_DIR = REPO_ROOT / "schemas"
 class TestAPIContractDiscovery:
     """Tests for discovering API contracts in the codebase."""
 
-    def _find_pydantic_models(self) -> List[Tuple[Path, str]]:
+    def _find_pydantic_models(self) -> list[tuple[Path, str]]:
         """Find Pydantic model definitions."""
         if not SRC_DIR.exists():
             return []
@@ -150,7 +149,7 @@ class TestSchemaValidation:
 class TestRequestResponseContracts:
     """Tests for request/response contract validation."""
 
-    def _find_endpoint_handlers(self) -> List[Tuple[Path, str]]:
+    def _find_endpoint_handlers(self) -> list[tuple[Path, str]]:
         """Find FastAPI endpoint handler functions."""
         if not SRC_DIR.exists():
             return []

@@ -19,7 +19,7 @@ import struct
 import time
 from base64 import b32encode
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Optional
 from urllib.parse import quote
 
 
@@ -101,10 +101,10 @@ class MFAProvider:
             - Proper encryption at rest for all sensitive data
         """
         # DEVELOPMENT ONLY - Replace with encrypted database in production
-        self._secret_store: Dict[str, MFASecret] = {}
-        self._backup_codes: Dict[str, List[BackupCode]] = {}
-        self._attempts: Dict[str, List[MFAAttempt]] = {}
-        self._locked_users: Dict[str, float] = {}
+        self._secret_store: dict[str, MFASecret] = {}
+        self._backup_codes: dict[str, list[BackupCode]] = {}
+        self._attempts: dict[str, list[MFAAttempt]] = {}
+        self._locked_users: dict[str, float] = {}
 
     def generate_totp_secret(self, user_id: str, issuer: str = "Codex") -> MFASecret:
         """
@@ -286,7 +286,7 @@ class MFAProvider:
                 # Lock out user
                 self._locked_users[user_id] = time.time() + self.LOCKOUT_DURATION
 
-    def generate_backup_codes(self, user_id: str, count: int = 10) -> List[str]:
+    def generate_backup_codes(self, user_id: str, count: int = 10) -> list[str]:
         """
         Generate backup codes for account recovery.
 

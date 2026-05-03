@@ -20,8 +20,8 @@ from __future__ import annotations
 import logging
 import os
 import time
+from collections.abc import Mapping, MutableMapping
 from pathlib import Path
-from typing import Mapping, MutableMapping
 from urllib.parse import urlparse
 
 import requests

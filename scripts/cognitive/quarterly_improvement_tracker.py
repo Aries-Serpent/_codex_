@@ -36,7 +36,7 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -50,9 +50,9 @@ class QuarterlyMetrics:
     quarter: str  # e.g., "2024-Q1"
     start_date: str
     end_date: str
-    metrics: Dict[str, float]
-    improvement_vs_previous: Dict[str, float]
-    targets_met: Dict[str, bool]
+    metrics: dict[str, float]
+    improvement_vs_previous: dict[str, float]
+    targets_met: dict[str, bool]
     overall_score: float
 
 
@@ -73,7 +73,7 @@ class QuarterlyImprovementTracker:
         self.data_path.mkdir(parents=True, exist_ok=True)
         self.reports_path.mkdir(parents=True, exist_ok=True)
 
-        self.history: List[QuarterlyMetrics] = []
+        self.history: list[QuarterlyMetrics] = []
         self._load_history()
 
     def _load_history(self):
@@ -96,7 +96,7 @@ class QuarterlyImprovementTracker:
                 indent=2
             )
 
-    def get_quarter_dates(self, quarter: str) -> Tuple[datetime, datetime]:
+    def get_quarter_dates(self, quarter: str) -> tuple[datetime, datetime]:
         """
         Get start and end dates for a quarter
 
@@ -366,7 +366,7 @@ class QuarterlyImprovementTracker:
 
         return baselines.get(metric_name, 0.70)
 
-    def analyze_trends(self, lookback_quarters: int = 4) -> Dict[str, Any]:
+    def analyze_trends(self, lookback_quarters: int = 4) -> dict[str, Any]:
         """
         Analyze trends across recent quarters
 
@@ -448,7 +448,7 @@ class QuarterlyImprovementTracker:
         self,
         quarter: str,
         include_visualizations: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Generate comprehensive quarterly report
 
@@ -515,7 +515,7 @@ class QuarterlyImprovementTracker:
 
         return report
 
-    def _generate_visualization_data(self) -> Dict[str, Any]:
+    def _generate_visualization_data(self) -> dict[str, Any]:
         """Generate data for visualizations"""
         if len(self.history) < 2:
             return {}
@@ -545,7 +545,7 @@ class QuarterlyImprovementTracker:
 
         return visualization_data
 
-    def _generate_markdown_report(self, report: Dict[str, Any], quarter: str):
+    def _generate_markdown_report(self, report: dict[str, Any], quarter: str):
         """Generate markdown version of quarterly report"""
         md_content = f"""# Quarterly Improvement Report: {quarter}
 

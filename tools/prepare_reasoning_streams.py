@@ -6,8 +6,9 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from collections.abc import Iterable, Iterator, Mapping, MutableMapping, Sequence
 from pathlib import Path
-from typing import Any, Iterable, Iterator, List, Mapping, MutableMapping, Sequence
+from typing import Any
 
 # Ensure the repo's ``src`` directory is importable when running as a script.
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -23,12 +24,12 @@ from codex_ml.data.checksums import manifest_for_paths  # noqa: E402
 SUPPORTED_TASKS = {"proof_logs", "math_word_problems", "tool_traces"}
 
 
-def _load_records(path: Path, input_format: str | None = None) -> List[Mapping[str, Any]]:
+def _load_records(path: Path, input_format: str | None = None) -> list[Mapping[str, Any]]:
     if not path.exists():
         raise FileNotFoundError(path)
     fmt = (input_format or path.suffix.lstrip(".")).lower()
     if fmt in {"jsonl", "ndjson"}:
-        records: List[Mapping[str, Any]] = []
+        records: list[Mapping[str, Any]] = []
         for raw in path.read_text(encoding="utf-8").splitlines():
             if not raw.strip():
                 continue
@@ -41,7 +42,7 @@ def _load_records(path: Path, input_format: str | None = None) -> List[Mapping[s
     if fmt == "json":
         data = json.loads(path.read_text(encoding="utf-8"))
         if isinstance(data, list):
-            normalised: List[Mapping[str, Any]] = []
+            normalised: list[Mapping[str, Any]] = []
             for entry in data:
                 if isinstance(entry, Mapping):
                     normalised.append(dict(entry))
@@ -76,7 +77,7 @@ def _coerce_steps(record: Mapping[str, Any]) -> Sequence[str]:
     return []
 
 
-def _transform_proof_logs(records: List[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
+def _transform_proof_logs(records: list[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
     for index, record in enumerate(records):
         prompt = record.get("problem") or record.get("statement") or record.get("prompt")
         completion = record.get("result") or record.get("answer") or record.get("conclusion")
@@ -94,7 +95,7 @@ def _transform_proof_logs(records: List[Mapping[str, Any]]) -> Iterator[Mapping[
         }
 
 
-def _transform_math_word_problems(records: List[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
+def _transform_math_word_problems(records: list[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
     for index, record in enumerate(records):
         question = record.get("question") or record.get("prompt")
         answer = record.get("answer") or record.get("solution")
@@ -113,7 +114,7 @@ def _transform_math_word_problems(records: List[Mapping[str, Any]]) -> Iterator[
         }
 
 
-def _transform_tool_traces(records: List[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
+def _transform_tool_traces(records: list[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
     for index, record in enumerate(records):
         calls = record.get("tool_calls") or record.get("calls") or record.get("trace")
         if isinstance(calls, Mapping):
@@ -164,7 +165,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _transform(task: str, records: List[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
+def _transform(task: str, records: list[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
     if task == "proof_logs":
         return _transform_proof_logs(records)
     if task == "math_word_problems":

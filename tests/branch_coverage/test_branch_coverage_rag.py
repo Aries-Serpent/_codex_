@@ -11,7 +11,7 @@ Target: Real code coverage improvement for RAG modules
 
 import hashlib
 import os
-from typing import Any, Dict, List
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 from tests.branch_coverage import branch_input
@@ -308,7 +308,7 @@ class TestIndexerModuleBranches:
     def test_indexer_chunk_non_empty_added_branch(self) -> None:
         """Test non-empty chunk added branch."""
         chunk = branch_input("Sample chunk")
-        chunks: List[str] = []
+        chunks: list[str] = []
 
         if chunk:
             chunks.append(chunk)
@@ -318,7 +318,7 @@ class TestIndexerModuleBranches:
     def test_indexer_chunk_empty_skipped_branch(self) -> None:
         """Test empty chunk skipped branch."""
         chunk = branch_input("")
-        chunks: List[str] = []
+        chunks: list[str] = []
 
         if chunk:
             chunks.append(chunk)
@@ -327,9 +327,9 @@ class TestIndexerModuleBranches:
 
     def test_indexer_embed_chunks_empty_branch(self) -> None:
         """Test embed chunks empty input branch."""
-        chunks: List[Any] = []
+        chunks: list[Any] = []
         if not chunks:
-            embeddings: List[Any] = []
+            embeddings: list[Any] = []
         else:
             embeddings = [[0.1, 0.2]]
         assert len(embeddings) == 0
@@ -338,7 +338,7 @@ class TestIndexerModuleBranches:
         """Test embed chunks non-empty input branch."""
         chunks = branch_input([(0, 10, "text")])
         if not chunks:
-            embeddings: List[Any] = []
+            embeddings: list[Any] = []
         else:
             embeddings = [[0.1, 0.2]]
         assert len(embeddings) > 0
@@ -365,7 +365,7 @@ class TestIndexerModuleBranches:
 
     def test_indexer_model_name_default_branch(self) -> None:
         """Test model name default branch."""
-        model_profile: Dict[str, Any] = {}
+        model_profile: dict[str, Any] = {}
         model_name = model_profile.get(
             "model_name", "sentence-transformers/all-MiniLM-L6-v2"
         )
@@ -379,13 +379,13 @@ class TestIndexerModuleBranches:
 
     def test_indexer_cache_dir_default_branch(self) -> None:
         """Test cache dir default branch."""
-        model_profile: Dict[str, Any] = {}
+        model_profile: dict[str, Any] = {}
         cache_dir = model_profile.get("cache_dir")
         assert cache_dir is None
 
     def test_indexer_persist_empty_embeddings_branch(self) -> None:
         """Test persist empty embeddings error branch."""
-        embeddings: List[Any] = []
+        embeddings: list[Any] = []
         error = "empty_embeddings" if len(embeddings) == 0 else None
         assert error == "empty_embeddings"
 
@@ -457,7 +457,7 @@ class TestRetrieverModuleBranches:
 
     def test_retriever_results_empty_branch(self) -> None:
         """Test empty search results branch."""
-        results: List[Any] = []
+        results: list[Any] = []
         status = "no_results" if not results else "has_results"
         assert status == "no_results"
 

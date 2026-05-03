@@ -8,8 +8,8 @@ from .providers import (
 )
 
 __all__ = [
-    "SearchProvider",
-    "InternalRepoSearch",
     "ExternalWebSearch",
+    "InternalRepoSearch",
+    "SearchProvider",
     "SearchRegistry",
 ]

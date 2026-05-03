@@ -192,7 +192,7 @@ class SecureStorage:
         if self.algorithm in ("aes-gcm", "chacha20"):
             # Generate random nonce
             nonce = os.urandom(12)  # 96-bit nonce for GCM/ChaCha20
-            aead_cipher = cast(Union[AESGCM, ChaCha20Poly1305], self.cipher)
+            aead_cipher = cast(AESGCM | ChaCha20Poly1305, self.cipher)
             ciphertext = aead_cipher.encrypt(nonce, data_bytes, None)
             # Prepend nonce to ciphertext
             return nonce + ciphertext
@@ -219,7 +219,7 @@ class SecureStorage:
             # Extract nonce (first 12 bytes)
             nonce = encrypted[:12]
             ciphertext = encrypted[12:]
-            aead_cipher = cast(Union[AESGCM, ChaCha20Poly1305], self.cipher)
+            aead_cipher = cast(AESGCM | ChaCha20Poly1305, self.cipher)
             plaintext = aead_cipher.decrypt(nonce, ciphertext, None)
             return plaintext.decode("utf-8")
         # Should never reach here due to validation in __init__
@@ -340,6 +340,6 @@ def derive_key_from_password(password: str, salt: Optional[bytes] = None) -> tup
 
 __all__ = [
     "SecureStorage",
-    "generate_key",
     "derive_key_from_password",
+    "generate_key",
 ]

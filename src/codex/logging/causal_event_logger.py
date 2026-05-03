@@ -25,7 +25,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,8 +51,8 @@ class Event:
     event_id: str
     event_type: str
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    data: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    data: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __hash__(self) -> int:
         return hash(self.event_id)
@@ -77,7 +77,7 @@ class CausalLink:
     strength: float = 1.0  # 0.0 (weak) to 1.0 (strong)
     confidence: float = 1.0  # 0.0 (uncertain) to 1.0 (certain)
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.strength <= 1.0:
@@ -94,8 +94,8 @@ class CausalChain:
     Represents a process: event_1 → event_2 → event_3 → ...
     """
 
-    events: List[Event]
-    links: List[CausalLink]
+    events: list[Event]
+    links: list[CausalLink]
 
     def __len__(self) -> int:
         return len(self.events)
@@ -126,19 +126,19 @@ class CausalEventLogger:
     """
 
     def __init__(self) -> None:
-        self.events: Dict[str, Event] = {}
-        self.causal_links: List[CausalLink] = []
-        self.causation_graph: Dict[str, List[str]] = {}  # event_id -> caused_events
-        self.reverse_graph: Dict[str, List[str]] = {}  # event_id -> causing_events
+        self.events: dict[str, Event] = {}
+        self.causal_links: list[CausalLink] = []
+        self.causation_graph: dict[str, list[str]] = {}  # event_id -> caused_events
+        self.reverse_graph: dict[str, list[str]] = {}  # event_id -> causing_events
         LOGGER.info("CausalEventLogger initialized")
 
     def log_event(
         self,
         event_type: str,
-        data: Optional[Dict[str, Any]] = None,
+        data: Optional[dict[str, Any]] = None,
         event_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        caused_by: Optional[List[str]] = None,
+        metadata: Optional[dict[str, Any]] = None,
+        caused_by: Optional[list[str]] = None,
     ) -> Event:
         """
         Log an event with optional causal information.
@@ -193,7 +193,7 @@ class CausalEventLogger:
         relation_type: CausalRelationType,
         strength: float = 1.0,
         confidence: float = 1.0,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> CausalLink:
         """
         Create a causal link between two events.
@@ -260,9 +260,9 @@ class CausalEventLogger:
             return CausalChain(events=[], links=[])
 
         # Trace back to root causes
-        chain_events: List[Event] = []
-        chain_links: List[CausalLink] = []
-        visited: Set[str] = set()
+        chain_events: list[Event] = []
+        chain_links: list[CausalLink] = []
+        visited: set[str] = set()
 
         def trace_back(current_id: str, depth: int) -> None:
             if depth > max_depth or current_id in visited:
@@ -296,7 +296,7 @@ class CausalEventLogger:
 
         return CausalChain(events=chain_events, links=chain_links)
 
-    def get_effects(self, event_id: str) -> List[Event]:
+    def get_effects(self, event_id: str) -> list[Event]:
         """
         Get all events that were caused by the given event.
 
@@ -309,7 +309,7 @@ class CausalEventLogger:
         effect_ids = self.causation_graph.get(event_id, [])
         return [self.events[eid] for eid in effect_ids if eid in self.events]
 
-    def get_causes(self, event_id: str) -> List[Event]:
+    def get_causes(self, event_id: str) -> list[Event]:
         """
         Get all events that caused the given event.
 
@@ -329,7 +329,7 @@ class CausalEventLogger:
                 return link
         return None
 
-    def get_root_causes(self) -> List[Event]:
+    def get_root_causes(self) -> list[Event]:
         """
         Get all events that have no causes (root causes).
 
@@ -342,7 +342,7 @@ class CausalEventLogger:
                 root_causes.append(event)
         return root_causes
 
-    def get_terminal_effects(self) -> List[Event]:
+    def get_terminal_effects(self) -> list[Event]:
         """
         Get all events that caused no other events (terminal effects).
 
@@ -355,7 +355,7 @@ class CausalEventLogger:
                 terminal_effects.append(event)
         return terminal_effects
 
-    def export_causation_graph(self) -> Dict[str, Any]:
+    def export_causation_graph(self) -> dict[str, Any]:
         """
         Export the causation graph for visualization.
 
@@ -393,7 +393,7 @@ class CausalEventLogger:
             },
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about events and causal links."""
         return {
             "total_events": len(self.events),

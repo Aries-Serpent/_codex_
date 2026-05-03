@@ -15,7 +15,7 @@ import os
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from urllib import request as urllib_request
 from urllib.error import HTTPError, URLError
 
@@ -33,7 +33,7 @@ class GitHubAPIResponse:
 
     status: int
     data: Any
-    headers: Dict[str, str] = field(default_factory=dict)
+    headers: dict[str, str] = field(default_factory=dict)
     rate_limit_remaining: int = 5000
     error: Optional[str] = None
 
@@ -85,8 +85,8 @@ class GitHubAPIClient:
     def _base_url(self) -> str:
         return f"{_GITHUB_API_BASE}/repos/{self.owner}/{self.repo}"
 
-    def _headers(self) -> Dict[str, str]:
-        headers: Dict[str, str] = {
+    def _headers(self) -> dict[str, str]:
+        headers: dict[str, str] = {
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
@@ -94,7 +94,7 @@ class GitHubAPIClient:
             headers["Authorization"] = f"Bearer {self._token}"
         return headers
 
-    def _get(self, path: str, params: Optional[Dict[str, Any]] = None) -> GitHubAPIResponse:
+    def _get(self, path: str, params: Optional[dict[str, Any]] = None) -> GitHubAPIResponse:
         """Issue a GET request with retry + backoff."""
         if self.offline_mode:
             return GitHubAPIResponse(status=200, data={})
@@ -138,7 +138,7 @@ class GitHubAPIClient:
 
         return GitHubAPIResponse(status=0, data={}, error="Max retries exceeded")
 
-    def _post(self, path: str, body: Dict[str, Any]) -> "GitHubAPIResponse":
+    def _post(self, path: str, body: dict[str, Any]) -> "GitHubAPIResponse":
         """Issue a POST request with retry + backoff.
 
         In SAFE_MODE, the call is short-circuited and a 403 stub is returned
@@ -208,7 +208,7 @@ class GitHubAPIClient:
         Returns:
             GitHubAPIResponse with the created review data.
         """
-        payload: Dict[str, Any] = {"body": body, "event": event}
+        payload: dict[str, Any] = {"body": body, "event": event}
         if comments:
             payload["comments"] = comments
         return self._post(f"/pulls/{pr_number}/reviews", payload)
@@ -270,7 +270,7 @@ class GitHubAPIClient:
         return self._get("")
 
     def list_commits(self, since: Optional[str] = None, per_page: int = 30) -> GitHubAPIResponse:
-        params: Dict[str, Any] = {"per_page": str(per_page)}
+        params: dict[str, Any] = {"per_page": str(per_page)}
         if since:
             params["since"] = since
         return self._get("/commits", params)

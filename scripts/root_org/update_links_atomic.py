@@ -22,7 +22,6 @@ import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import List, Tuple
 
 # Import the reference validator
 try:
@@ -42,8 +41,8 @@ class UpdateTransaction:
         self.new_path = new_path
         self.dry_run = dry_run
         self.backup_dir = None
-        self.files_to_update: List[Tuple[Path, str, str]] = []
-        self.updated_files: List[Path] = []
+        self.files_to_update: list[tuple[Path, str, str]] = []
+        self.updated_files: list[Path] = []
 
     def __enter__(self):
         """Enter transaction context."""
@@ -106,7 +105,7 @@ class UpdateTransaction:
                 print(f"  ✓ Restored: {file_path}")
 
 
-def find_files_to_update(old_path: str, root_dir: Path) -> List[Path]:
+def find_files_to_update(old_path: str, root_dir: Path) -> list[Path]:
     """Find all files that might contain references to the old path."""
     files_to_check = []
 
@@ -129,7 +128,7 @@ def update_references_in_file(
     file_path: Path,
     old_path: str,
     new_path: str
-) -> Tuple[bool, str, str]:
+) -> tuple[bool, str, str]:
     """
     Update references in a single file.
     Returns: (modified, old_content, new_content)

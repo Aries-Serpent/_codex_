@@ -34,11 +34,13 @@ import argparse
 import csv
 import json
 import logging
+import os
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from requests import Session as _Session
 from requests.exceptions import RequestException
@@ -107,7 +109,7 @@ class ZendeskEndpointManager:
         # Cache setup
         self.cache_dir = self.output_dir / CACHE_SUBDIR_NAME
         self.cache_file = self.cache_dir / CACHE_FILE_NAME
-        self.cache: Dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
         if self.enable_cache:
             self._load_cache()
@@ -160,9 +162,9 @@ class ZendeskEndpointManager:
         self,
         endpoint: str,
         method: str = "GET",
-        params: Optional[Dict] = None,
-        data: Optional[Dict] = None
-    ) -> Optional[Dict]:
+        params: Optional[dict] = None,
+        data: Optional[dict] = None
+    ) -> Optional[dict]:
         """Make API request with retry logic"""
         url = f"{self.base_url}/{endpoint}"
 
@@ -176,15 +178,41 @@ class ZendeskEndpointManager:
                     logger.error(f"Unsupported method: {method}")
                     return None
 
-                response.raise_for_status()
-
-                # Handle rate limiting
+                # Handle rate limiting before raise_for_status (which raises for 429)
                 if response.status_code == 429:
-                    retry_after = int(response.headers.get('Retry-After', BASE_WAIT_TIME * (2 ** attempt)))
+                    retry_after_header = response.headers.get('Retry-After')
+                    default_retry_after = BASE_WAIT_TIME * (2 ** attempt)
+                    retry_after = default_retry_after
+
+                    if retry_after_header is not None:
+                        try:
+                            retry_after = max(0, int(retry_after_header))
+                        except (TypeError, ValueError):
+                            try:
+                                retry_at = parsedate_to_datetime(retry_after_header)
+                                if retry_at.tzinfo is None:
+                                    retry_at = retry_at.replace(tzinfo=timezone.utc)
+                                retry_after = max(
+                                    0,
+                                    int((retry_at - datetime.now(timezone.utc)).total_seconds())
+                                )
+                            except (TypeError, ValueError, OverflowError):
+                                retry_after = default_retry_after
+
+                    max_retry_after = int(
+                        os.environ.get("ZENDESK_MAX_RETRY_AFTER", "300")
+                    )  # configurable cap (default 300s / 5 min); set env var to override
+                    if retry_after > max_retry_after:
+                        logger.warning(
+                            "Retry-After %ss exceeds cap %ss (ZENDESK_MAX_RETRY_AFTER); capping",
+                            retry_after, max_retry_after,
+                        )
+                        retry_after = max_retry_after
                     logger.warning(f"Rate limited, waiting {retry_after}s")
                     time.sleep(retry_after)
                     continue
 
+                response.raise_for_status()
                 return response.json()
 
             except RequestException as e:
@@ -202,7 +230,7 @@ class ZendeskEndpointManager:
         self,
         endpoint: str,
         use_cache: bool = True
-    ) -> Optional[List[Dict]]:
+    ) -> Optional[list[dict]]:
         """Fetch data from a Zendesk endpoint"""
         cache_key = f"endpoint_{endpoint}"
 
@@ -248,7 +276,7 @@ class ZendeskEndpointManager:
 
         return all_items
 
-    def export_to_json(self, endpoint: str, data: List[Dict]) -> Path:
+    def export_to_json(self, endpoint: str, data: list[dict]) -> Path:
         """Export endpoint data to JSON file"""
         output_file = self.output_dir / f"{endpoint}.json"
         output_file.parent.mkdir(parents=True, exist_ok=True)
@@ -259,7 +287,7 @@ class ZendeskEndpointManager:
         logger.info(f"Exported {len(data)} items to {output_file}")
         return output_file
 
-    def export_to_csv(self, endpoint: str, data: List[Dict]) -> Path:
+    def export_to_csv(self, endpoint: str, data: list[dict]) -> Path:
         """Export endpoint data to CSV file"""
         if not data:
             logger.warning(f"No data to export for {endpoint}")
@@ -283,7 +311,7 @@ class ZendeskEndpointManager:
         logger.info(f"Exported {len(data)} items to {output_file}")
         return output_file
 
-    def fetch_all_endpoints(self, export_format: str = "json") -> Dict[str, Any]:
+    def fetch_all_endpoints(self, export_format: str = "json") -> dict[str, Any]:
         """Fetch data from all known endpoints"""
         results = {}
 
@@ -318,7 +346,7 @@ class ZendeskEndpointManager:
 
         return results
 
-    def generate_summary_report(self, results: Dict[str, Any]) -> Path:
+    def generate_summary_report(self, results: dict[str, Any]) -> Path:
         """Generate summary report of all fetched endpoints"""
         report_file = self.output_dir / "summary_report.txt"
 

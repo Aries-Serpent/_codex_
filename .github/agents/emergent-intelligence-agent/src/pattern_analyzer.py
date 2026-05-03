@@ -19,7 +19,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Try imports from cognitive brain core
 try:
@@ -78,12 +78,12 @@ class EmergentPattern:
     """
     pattern_id: str
     emergence_type: EmergenceType
-    repositories: List[str]
+    repositories: list[str]
     confidence: float
     first_seen: datetime
     last_seen: datetime
     occurrences: int = 1
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -103,7 +103,7 @@ class BehaviorPrediction:
     probability: float
     time_horizon: str
     confidence: float
-    factors: List[str]
+    factors: list[str]
 
 
 # =============================================================================
@@ -148,10 +148,10 @@ class EmergentIntelligenceAgent:
         self.improvement_engine: Optional[Any] = None
 
         # State tracking
-        self.detected_patterns: Dict[str, EmergentPattern] = {}
-        self.pattern_history: List[EmergentPattern] = []
-        self.predictions: List[BehaviorPrediction] = []
-        self.last_notification: Dict[str, float] = {}
+        self.detected_patterns: dict[str, EmergentPattern] = {}
+        self.pattern_history: list[EmergentPattern] = []
+        self.predictions: list[BehaviorPrediction] = []
+        self.last_notification: dict[str, float] = {}
 
         # PDA Loop state
         self.pda_state = {
@@ -197,9 +197,9 @@ class EmergentIntelligenceAgent:
 
     def detect_cross_repo_patterns(
         self,
-        repositories: List[str],
-        context: Optional[Dict[str, Any]] = None
-    ) -> List[EmergentPattern]:
+        repositories: list[str],
+        context: Optional[dict[str, Any]] = None
+    ) -> list[EmergentPattern]:
         """Detect patterns across multiple repositories.
 
         Args:
@@ -251,8 +251,8 @@ class EmergentIntelligenceAgent:
     def track_code_smells(
         self,
         repository: str,
-        code_changes: List[Dict[str, Any]]
-    ) -> List[EmergentPattern]:
+        code_changes: list[dict[str, Any]]
+    ) -> list[EmergentPattern]:
         """Track emerging code smells in repository.
 
         Args:
@@ -295,8 +295,8 @@ class EmergentIntelligenceAgent:
 
     def predict_behavior(
         self,
-        context: Dict[str, Any]
-    ) -> List[BehaviorPrediction]:
+        context: dict[str, Any]
+    ) -> list[BehaviorPrediction]:
         """Predict system behavior based on historical patterns.
 
         Args:
@@ -323,7 +323,7 @@ class EmergentIntelligenceAgent:
     def send_notification(
         self,
         pattern: EmergentPattern,
-        recipients: List[str]
+        recipients: list[str]
     ) -> bool:
         """Send real-time notification about detected pattern.
 
@@ -347,7 +347,7 @@ class EmergentIntelligenceAgent:
 
         return True
 
-    def improve_accuracy(self, feedback: Dict[str, Any]) -> None:
+    def improve_accuracy(self, feedback: dict[str, Any]) -> None:
         """Improve pattern recognition accuracy based on feedback.
 
         Args:
@@ -373,7 +373,7 @@ class EmergentIntelligenceAgent:
             # Exponential moving average
             self.metrics["accuracy"] = 0.9 * current_acc + 0.1 * new_acc
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get agent metrics.
 
         Returns:
@@ -396,9 +396,9 @@ class EmergentIntelligenceAgent:
 
     def _fallback_pattern_detection(
         self,
-        repositories: List[str],
-        context: Optional[Dict[str, Any]]
-    ) -> List[EmergentPattern]:
+        repositories: list[str],
+        context: Optional[dict[str, Any]]
+    ) -> list[EmergentPattern]:
         """Fallback pattern detection when core not available.
 
         Args:
@@ -427,9 +427,9 @@ class EmergentIntelligenceAgent:
 
     def _detect_with_core(
         self,
-        repositories: List[str],
-        context: Optional[Dict[str, Any]]
-    ) -> List[EmergentPattern]:
+        repositories: list[str],
+        context: Optional[dict[str, Any]]
+    ) -> list[EmergentPattern]:
         """Detect patterns using core components.
 
         Args:
@@ -443,7 +443,7 @@ class EmergentIntelligenceAgent:
         # For now, return empty list as placeholder
         return []
 
-    def _analyze_code_smells(self, change: Dict[str, Any]) -> List[str]:
+    def _analyze_code_smells(self, change: dict[str, Any]) -> list[str]:
         """Analyze code change for smells.
 
         Args:
@@ -481,8 +481,8 @@ class EmergentIntelligenceAgent:
 
     def _predict_from_history(
         self,
-        context: Dict[str, Any]
-    ) -> List[BehaviorPrediction]:
+        context: dict[str, Any]
+    ) -> list[BehaviorPrediction]:
         """Make predictions from historical patterns.
 
         Args:
@@ -512,8 +512,8 @@ class EmergentIntelligenceAgent:
 
     def _conservative_predictions(
         self,
-        context: Dict[str, Any]
-    ) -> List[BehaviorPrediction]:
+        context: dict[str, Any]
+    ) -> list[BehaviorPrediction]:
         """Make conservative predictions with insufficient data.
 
         Args:

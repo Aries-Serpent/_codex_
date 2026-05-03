@@ -42,4 +42,4 @@ class ZendeskAgentCore:
         return self.tool_registry.get_tool_names()
 
 
-__all__ = ["ZendeskAgentCore", "AgentCore", "AgentConfig"]
+__all__ = ["AgentConfig", "AgentCore", "ZendeskAgentCore"]

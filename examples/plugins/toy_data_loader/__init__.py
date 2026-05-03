@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Iterable, List
+from collections.abc import Iterable
+from typing import List
 
 
-def build(data: Iterable[str] | None = None) -> List[str]:
+def build(data: Iterable[str] | None = None) -> list[str]:
     default = ("hello", "codex", "plugins")
     return list(data or default)
 

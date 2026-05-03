@@ -34,19 +34,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-"""
-Content Filter (P2 Full Implementation with Knob Normalization)
-
-- Allowlist filtering (profiles A/B/C with combinable syntax e.g. A+B+C)
-- PII redaction (minimal / extended / custom) with merge modes:
-    PII_MODE=union-minimal | union-extended | replace
-- Deterministic masking tokens <REDACT:n>
-- Combined mode: allowlist filtering then PII redaction
-- Invalid regex patterns skipped & recorded as warnings
-- Report JSON: audit_artifacts/content_filter_report.json
-
-Knobs normalized via scripts.config.parse_knobs.normalize_from_env()
-"""
 
 import json
 import re

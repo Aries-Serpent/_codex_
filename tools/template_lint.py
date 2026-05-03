@@ -4,15 +4,14 @@ from __future__ import annotations
 import argparse
 import re
 from pathlib import Path
-from typing import List
 
 RE_THEME = re.compile(r'href=["\'][^"\']*theme\.css["\']', re.IGNORECASE)
 RE_PRINT = re.compile(r'href=["\'][^"\']*print\.css["\']', re.IGNORECASE)
 
 
-def lint_file(p: Path) -> List[str]:
+def lint_file(p: Path) -> list[str]:
     text = p.read_text(encoding="utf-8", errors="ignore")
-    errs: List[str] = []
+    errs: list[str] = []
     if not RE_THEME.search(text):
         errs.append("missing.theme.css")
     if not RE_PRINT.search(text):

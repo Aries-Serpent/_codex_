@@ -9,8 +9,8 @@ import importlib
 
 def test_resolve_dtype_and_device_no_crash():
     mod = importlib.import_module("src.codex_ml.train_loop")
-    resolve_dtype = getattr(mod, "_resolve_dtype")
-    resolve_device = getattr(mod, "_resolve_device")
+    resolve_dtype = mod._resolve_dtype
+    resolve_device = mod._resolve_device
 
     # dtype resolution should tolerate missing torch and unknown values
     assert resolve_dtype(None) is None

@@ -37,7 +37,7 @@ import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class Phase10Validator:
         }
         self.repo_root = Path("/home/runner/work/_codex_/_codex_")
 
-    def log_test(self, name: str, status: str, message: str, details: Optional[Dict] = None):
+    def log_test(self, name: str, status: str, message: str, details: Optional[dict] = None):
         """Log test result."""
         test = {
             "name": name,
@@ -84,7 +84,7 @@ class Phase10Validator:
             self.results["summary"]["skipped"] += 1
             print(f"⏸️  {name}: {message}")
 
-    def run_command(self, cmd: List[str], cwd: Optional[Path] = None) -> Tuple[int, str, str]:
+    def run_command(self, cmd: list[str], cwd: Optional[Path] = None) -> tuple[int, str, str]:
         """Execute shell command and return (returncode, stdout, stderr)."""
         try:
             result = subprocess.run(

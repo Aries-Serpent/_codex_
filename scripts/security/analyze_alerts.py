@@ -16,37 +16,37 @@ import json
 import sys
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
-def load_alert_inventory(file_path: Path) -> Dict[str, Any]:
+def load_alert_inventory(file_path: Path) -> dict[str, Any]:
     """Load alert inventory from JSON file."""
     with open(file_path) as f:
         return json.load(f)
 
-def analyze_by_severity(alerts: List[Dict]) -> Dict[str, int]:
+def analyze_by_severity(alerts: list[dict]) -> dict[str, int]:
     """Count alerts by severity level."""
     severity_counts = Counter(alert['severity'] for alert in alerts)
     return dict(severity_counts)
 
-def analyze_by_category(alerts: List[Dict]) -> Dict[str, int]:
+def analyze_by_category(alerts: list[dict]) -> dict[str, int]:
     """Count alerts by vulnerability category."""
     category_counts = Counter(alert['category'] for alert in alerts)
     return dict(category_counts)
 
-def analyze_by_file(alerts: List[Dict]) -> List[tuple]:
+def analyze_by_file(alerts: list[dict]) -> list[tuple]:
     """Find files with most alerts."""
     file_counts = Counter(alert['file_path'] for alert in alerts)
     return file_counts.most_common(20)
 
-def analyze_by_cwe(alerts: List[Dict]) -> Dict[str, int]:
+def analyze_by_cwe(alerts: list[dict]) -> dict[str, int]:
     """Count alerts by CWE identifier."""
     cwe_counts = Counter(
         alert.get('cwe_id', 'Unknown') for alert in alerts
     )
     return dict(cwe_counts)
 
-def prioritize_alerts(alerts: List[Dict]) -> Dict[str, List[Dict]]:
+def prioritize_alerts(alerts: list[dict]) -> dict[str, list[dict]]:
     """Prioritize alerts by P0-P4 matrix."""
     priority_map = {
         'P0': [],
@@ -74,7 +74,7 @@ def prioritize_alerts(alerts: List[Dict]) -> Dict[str, List[Dict]]:
 
     return priority_map
 
-def generate_report(inventory: Dict[str, Any], output_path: Path) -> None:
+def generate_report(inventory: dict[str, Any], output_path: Path) -> None:
     """Generate comprehensive analysis report."""
     alerts = inventory.get('alerts', [])
     total = len(alerts)

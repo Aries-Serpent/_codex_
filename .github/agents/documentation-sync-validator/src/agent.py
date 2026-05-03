@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import yaml
 
@@ -61,7 +61,7 @@ class FreshnessReport:
     last_modified: datetime
     age_days: int
     status: FreshnessStatus
-    related_code_files: List[Path] = field(default_factory=list)
+    related_code_files: list[Path] = field(default_factory=list)
 
 
 @dataclass
@@ -71,7 +71,7 @@ class SemanticDriftReport:
     code_file: Path
     similarity_score: float  # 0.0 to 1.0
     drift_severity: DriftSeverity
-    mismatched_concepts: List[str] = field(default_factory=list)
+    mismatched_concepts: list[str] = field(default_factory=list)
 
 
 class DocumentationSyncValidator:
@@ -83,9 +83,9 @@ class DocumentationSyncValidator:
         self.freshness_threshold_days = self.config.get('freshness_threshold_days', 90)
         self.semantic_drift_threshold = self.config.get('semantic_drift_threshold', 0.7)
         self.link_check_timeout = self.config.get('link_check_timeout', 10)
-        self.issues: List[DocumentationIssue] = []
+        self.issues: list[DocumentationIssue] = []
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load agent configuration from YAML file"""
         if config_path is None:
             config_path = Path(__file__).parent.parent / "config" / "agent_config.yaml"
@@ -96,7 +96,7 @@ class DocumentationSyncValidator:
         with open(config_path) as f:
             return yaml.safe_load(f)
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> dict:
         """Return default configuration"""
         return {
             'version': '1.0.0',
@@ -118,7 +118,7 @@ class DocumentationSyncValidator:
             }
         }
 
-    def validate_all(self, root_dir: Path) -> List[DocumentationIssue]:
+    def validate_all(self, root_dir: Path) -> list[DocumentationIssue]:
         """
         Perform comprehensive validation of all documentation.
 
@@ -172,7 +172,7 @@ class DocumentationSyncValidator:
 
         return self.issues
 
-    def _find_documentation_files(self, root_dir: Path) -> List[Path]:
+    def _find_documentation_files(self, root_dir: Path) -> list[Path]:
         """
         Find all documentation files in the directory tree.
 
@@ -231,7 +231,7 @@ class DocumentationSyncValidator:
             status=status
         )
 
-    def validate_links(self, doc_file: Path) -> List[Tuple[str, str]]:
+    def validate_links(self, doc_file: Path) -> list[tuple[str, str]]:
         """
         Validate all links in a documentation file.
 
@@ -279,7 +279,7 @@ class DocumentationSyncValidator:
         self,
         doc_file: Path,
         code_dir: Path
-    ) -> List[SemanticDriftReport]:
+    ) -> list[SemanticDriftReport]:
         """
         Detect semantic drift between documentation and code.
 
@@ -348,7 +348,7 @@ class DocumentationSyncValidator:
 
         return drift_reports
 
-    def validate_schema(self, doc_file: Path, schema: Dict) -> List[DocumentationIssue]:
+    def validate_schema(self, doc_file: Path, schema: dict) -> list[DocumentationIssue]:
         """
         Validate documentation against a schema.
 
@@ -436,7 +436,7 @@ class DocumentationSyncValidator:
                 for issue in self.issues
             ], indent=2)
 
-        elif output_format == 'markdown':
+        if output_format == 'markdown':
             lines = ['# Documentation Validation Report\n']
             lines.append(f'**Total Issues**: {len(self.issues)}\n')
 
@@ -453,20 +453,20 @@ class DocumentationSyncValidator:
 
             return '\n'.join(lines)
 
-        else:  # text
-            lines = ['Documentation Validation Report']
-            lines.append('=' * 50)
-            lines.append(f'Total Issues: {len(self.issues)}\n')
+        # text
+        lines = ['Documentation Validation Report']
+        lines.append('=' * 50)
+        lines.append(f'Total Issues: {len(self.issues)}\n')
 
-            for issue in self.issues:
-                lines.append(f'[{issue.severity.value.upper()}] {issue.file_path}')
-                lines.append(f'  Type: {issue.issue_type}')
-                lines.append(f'  {issue.description}')
-                if issue.suggested_fix:
-                    lines.append(f'  Fix: {issue.suggested_fix}')
-                lines.append('')
+        for issue in self.issues:
+            lines.append(f'[{issue.severity.value.upper()}] {issue.file_path}')
+            lines.append(f'  Type: {issue.issue_type}')
+            lines.append(f'  {issue.description}')
+            if issue.suggested_fix:
+                lines.append(f'  Fix: {issue.suggested_fix}')
+            lines.append('')
 
-            return '\n'.join(lines)
+        return '\n'.join(lines)
 
 
 def main():

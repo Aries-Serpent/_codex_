@@ -9,7 +9,7 @@ import contextlib
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -33,7 +33,7 @@ class ASTConfig:
     # Parser configuration
     parser_backend: str = "libcst"
     parse_timeout: int = 30
-    supported_languages: List[str] = field(default_factory=lambda: ["python", "yaml", "json"])
+    supported_languages: list[str] = field(default_factory=lambda: ["python", "yaml", "json"])
 
     # Analysis thresholds
     complexity_threshold: int = 10
@@ -151,7 +151,7 @@ class ASTConfig:
             db_path=Path(data["db_path"]) if data.get("db_path") else None,
         )
 
-    def validate(self) -> List[str]:
+    def validate(self) -> list[str]:
         """Validate configuration and return list of errors."""
         errors = []
 

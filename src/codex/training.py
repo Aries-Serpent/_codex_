@@ -17,7 +17,8 @@ import sys  # noqa: E402
 import time  # noqa: E402
 from datetime import datetime, UTC  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional, Sequence, Union  # noqa: E402
+from typing import Any, Optional  # noqa: E402
+from collections.abc import Sequence  # noqa: E402
 
 try:
     import torch
@@ -267,7 +268,7 @@ def run_functional_training(
     # Accept both legacy boolean and new string-based scheduler identifiers:
     # - True behaves like "steplr"
     # - None/False disables scheduler
-    scheduler: Optional[Union[bool, str]] = None,
+    scheduler: Optional[bool | str] = None,
     checkpoint_dir: Optional[str] = None,
     resume_from: Optional[str] = None,
     keep_last: int = 5,
@@ -474,7 +475,7 @@ def _run_minilm_training(
     keep_last: int = 5,
     keep_best: int = 1,
     # New flexible scheduler selector: None/False->off, True->"steplr", "steplr"->StepLR
-    scheduler: Optional[Union[bool, str]] = None,
+    scheduler: Optional[bool | str] = None,
     tensorboard: bool = False,
     val_split: float = 0.10,
     test_split: float = 0.0,
@@ -583,7 +584,7 @@ def _run_minilm_training(
     opt = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
     # Normalize scheduler selection (string selector takes precedence over legacy bool)
-    _sched_selector: Optional[Union[bool, str]] = scheduler
+    _sched_selector: Optional[bool | str] = scheduler
     if _sched_selector is None and use_scheduler:
         _sched_selector = True
 
@@ -805,12 +806,12 @@ def _run_minilm_training(
 
 
 __all__ = [
-    "run_functional_training",
-    "build_parser",
-    "main",
-    "emit_validation_metric_record",
     "TrainCfg",
+    "build_parser",
+    "emit_validation_metric_record",
+    "main",
     "run_custom_trainer",
+    "run_functional_training",
 ]
 
 
@@ -974,7 +975,7 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
     args = parser.parse_args(argv)
 
     # Determine scheduler preference with backward compatibility
-    scheduler_opt: Optional[Union[bool, str]] = args.scheduler
+    scheduler_opt: Optional[bool | str] = args.scheduler
     if scheduler_opt is None and getattr(args, "use_scheduler", False):
         scheduler_opt = True  # legacy flag behaves like enabling default "steplr"
 

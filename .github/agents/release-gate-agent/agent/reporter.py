@@ -12,7 +12,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 _core_path = str(Path(__file__).parent.parent.parent / "core")
 if _core_path not in sys.path:
@@ -31,9 +31,9 @@ class ReleaseReport:
     warnings_count: int
     duration_seconds: float
     health_status: str
-    lessons_learned: Dict[str, Any]
+    lessons_learned: dict[str, Any]
     timestamp: datetime
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class ReleaseReporter:
@@ -51,11 +51,11 @@ class ReleaseReporter:
 
     def generate_aftermath_report(
         self,
-        validation_results: Dict[str, Any],
-        decision_result: Dict[str, Any],
-        execution_result: Dict[str, Any],
-        release_info: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        validation_results: dict[str, Any],
+        decision_result: dict[str, Any],
+        execution_result: dict[str, Any],
+        release_info: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         AFTERMATH: Generate comprehensive release report and record patterns.
 
@@ -116,24 +116,23 @@ class ReleaseReporter:
             "metadata": report.metadata
         }
 
-    def _determine_outcome(self, execution_result: Dict[str, Any]) -> str:
+    def _determine_outcome(self, execution_result: dict[str, Any]) -> str:
         """Determine overall release outcome."""
         status = execution_result.get("status", "unknown")
         health = execution_result.get("health_status", "unknown")
 
         if status == "success" and health == "healthy":
             return "success"
-        elif status == "blocked":
+        if status == "blocked":
             return "blocked"
-        else:
-            return "failed"
+        return "failed"
 
     def _extract_lessons(
         self,
-        validation_results: Dict[str, Any],
-        decision_result: Dict[str, Any],
-        execution_result: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        validation_results: dict[str, Any],
+        decision_result: dict[str, Any],
+        execution_result: dict[str, Any]
+    ) -> dict[str, Any]:
         """Extract lessons learned from release process."""
         lessons = {}
 
@@ -169,9 +168,9 @@ class ReleaseReporter:
 
     def _record_pattern(
         self,
-        validation_results: Dict[str, Any],
-        decision_result: Dict[str, Any],
-        execution_result: Dict[str, Any],
+        validation_results: dict[str, Any],
+        decision_result: dict[str, Any],
+        execution_result: dict[str, Any],
         outcome: str
     ) -> None:
         """Record release pattern in cognitive brain."""

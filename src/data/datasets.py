@@ -478,6 +478,6 @@ __all__ = [
     "TextClassificationDataset",
     "build_dataloaders",
     "deterministic_split",
-    "tiny_tensor_dataset",
     "parse_tsv_dataset",  # Added for test compatibility
+    "tiny_tensor_dataset",
 ]

@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Dataset manifest helpers used by the modular training stack."""
 
 
 import hashlib  # noqa: E402

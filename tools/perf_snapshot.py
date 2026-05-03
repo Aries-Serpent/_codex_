@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Mapping, MutableMapping, Sequence
 from pathlib import Path
-from typing import Any, Dict, Mapping, MutableMapping, Sequence, Tuple
+from typing import Any
 
-MetricSpec = Tuple[str, str]
+MetricSpec = tuple[str, str]
 
 # Mapping from raw metric keys to (section, normalized_key).
 METRIC_MAP: Mapping[str, MetricSpec] = {
@@ -41,9 +42,9 @@ def _ensure_section(
     return store[section]
 
 
-def parse_perf_log(text: str) -> Dict[str, Any]:
-    structured: Dict[str, MutableMapping[str, float]] = {}
-    raw: Dict[str, float] = {}
+def parse_perf_log(text: str) -> dict[str, Any]:
+    structured: dict[str, MutableMapping[str, float]] = {}
+    raw: dict[str, float] = {}
     for raw_line in text.splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):

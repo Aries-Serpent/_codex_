@@ -26,8 +26,9 @@ import os
 import re
 import sys
 import warnings
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Optional
+from typing import Optional
 
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
@@ -90,9 +91,9 @@ class FileFinding:
 
 @dataclass
 class PyStructure:
-    imports: List[str] = field(default_factory=list)
-    functions: List[str] = field(default_factory=list)
-    classes: List[str] = field(default_factory=list)
+    imports: list[str] = field(default_factory=list)
+    functions: list[str] = field(default_factory=list)
+    classes: list[str] = field(default_factory=list)
     docstrings: int = 0
     loc: int = 0
     comments: int = 0
@@ -100,13 +101,13 @@ class PyStructure:
 
 @dataclass
 class RepoSummary:
-    top_dirs: List[str] = field(default_factory=list)
-    top_files: List[str] = field(default_factory=list)
-    stubs: List[FileFinding] = field(default_factory=list)
-    py_structs: Dict[str, PyStructure] = field(default_factory=dict)
-    notebooks: List[str] = field(default_factory=list)
-    configs: List[str] = field(default_factory=list)
-    tests: List[str] = field(default_factory=list)
+    top_dirs: list[str] = field(default_factory=list)
+    top_files: list[str] = field(default_factory=list)
+    stubs: list[FileFinding] = field(default_factory=list)
+    py_structs: dict[str, PyStructure] = field(default_factory=dict)
+    notebooks: list[str] = field(default_factory=list)
+    configs: list[str] = field(default_factory=list)
+    tests: list[str] = field(default_factory=list)
 
 
 # -------------------------
@@ -138,8 +139,8 @@ class IntuitiveAptitude:
         ext = os.path.splitext(path)[1].lower()
         return ext in TEXT_EXTS
 
-    def scan_stubs(self, path: str, content: str) -> List[FileFinding]:
-        findings: List[FileFinding] = []
+    def scan_stubs(self, path: str, content: str) -> list[FileFinding]:
+        findings: list[FileFinding] = []
         lines = content.splitlines()
         for i, line in enumerate(lines, start=1):
             for pattern in STUB_PATTERNS:
@@ -155,8 +156,8 @@ class IntuitiveAptitude:
                     break
         return findings
 
-    def stub_histogram(self) -> Dict[str, int]:
-        counts: Dict[str, int] = {}
+    def stub_histogram(self) -> dict[str, int]:
+        counts: dict[str, int] = {}
         for finding in self.summary.stubs:
             counts[finding.kind] = counts.get(finding.kind, 0) + 1
         return dict(sorted(counts.items(), key=lambda item: (-item[1], item[0])))
@@ -246,8 +247,8 @@ class IntuitiveAptitude:
         return self.summary
 
     # Heuristic checks for capabilities (based on filenames, imports, symbols)
-    def guess_capabilities(self, summary: RepoSummary) -> Dict[str, str]:
-        caps: Dict[str, str] = {}
+    def guess_capabilities(self, summary: RepoSummary) -> dict[str, str]:
+        caps: dict[str, str] = {}
 
         def seen_import(prefix: str) -> bool:
             for st in summary.py_structs.values():

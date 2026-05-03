@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from glob import glob
-from typing import Iterator
 
 from ingestion import ingest
 

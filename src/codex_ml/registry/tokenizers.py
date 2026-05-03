@@ -20,13 +20,12 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Tokenizer registry and helpers."""
 
 
 import os  # noqa: E402
-from collections.abc import Mapping, Sequence  # noqa: E402
+from collections.abc import Callable, Hashable, Mapping, Sequence  # noqa: E402  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Hashable  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.registry.base import Registry  # noqa: E402
 from codex_ml.registry.token_cache import (  # noqa: E402
@@ -356,10 +355,10 @@ def encode_cached(
 
 
 __all__ = [
-    "tokenizer_registry",
-    "register_tokenizer",
-    "get_tokenizer",
-    "list_tokenizers",
-    "init_tokenizer_plugins",
     "encode_cached",
+    "get_tokenizer",
+    "init_tokenizer_plugins",
+    "list_tokenizers",
+    "register_tokenizer",
+    "tokenizer_registry",
 ]

@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import importlib
 import sys
+from collections.abc import Iterable, Mapping
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Iterable, Mapping
+from typing import Any
 
 __all__: list[str]
 
@@ -27,8 +28,7 @@ def _load_real_module(name: str) -> ModuleType | None:
 
     original = sys.modules.pop(name, None)
     try:
-        module = importlib.import_module(name)
-        return module
+        return importlib.import_module(name)
     except Exception:  # pragma: no cover - fall back to stub on failure
         if original is not None:
             sys.modules[name] = original

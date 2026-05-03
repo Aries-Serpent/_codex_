@@ -13,10 +13,7 @@ from __future__ import annotations
 import pytest
 
 try:
-    from codex_ml.safety.sanitizers import (  # noqa: F401
-        DEFAULT_JAILBREAK_PATTERNS,
-        DEFAULT_PII_PATTERNS,
-        DEFAULT_SECRET_PATTERNS,
+    from codex_ml.safety.sanitizers import (
         SafetyConfig,
         sanitize_output,
         sanitize_prompt,

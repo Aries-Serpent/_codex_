@@ -17,8 +17,8 @@ from .adapter import Snapshot, ingest
 from .manifest import IngestManifest, parse_manifest
 
 __all__ = [
+    "IngestManifest",
     "Snapshot",
     "ingest",
-    "IngestManifest",
     "parse_manifest",
 ]

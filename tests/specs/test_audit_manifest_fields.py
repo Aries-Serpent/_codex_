@@ -6,6 +6,7 @@ Test module for audit manifest fields.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import subprocess
 import sys
@@ -30,10 +31,7 @@ def test_manifest_contains_integrity_chain_and_weights(tmp_path):
     if not runner.exists():
         pytest.skip("audit runner missing")
     # Dependencies are optional
-    try:
-        import jinja2  # noqa: F401
-        import yaml  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('jinja2') is None or importlib.util.find_spec('yaml') is None:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # Run S1..S7

@@ -1,13 +1,13 @@
 """Integration tests for MCP server."""
 
 import asyncio
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from mcp.auth import AllowAllAuthorizer, BasicAuthenticator, Principal
 from mcp.server import MCPServer, Tool, ToolRegistry
 
 
-async def _call_server(server: MCPServer, request: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+async def _call_server(server: MCPServer, request: dict[str, Any]) -> Optional[dict[str, Any]]:
     """Helper to call the server asynchronously."""
     return await server.handle_request(request)
 
@@ -40,7 +40,7 @@ def test_end_to_end_tool_call() -> None:
     assert authorizer.authorize(principal, tool_name="echo")
 
     # Act: send a JSON-RPC request to list tools
-    request: Dict[str, Any] = {
+    request: dict[str, Any] = {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "mcp.listTools",

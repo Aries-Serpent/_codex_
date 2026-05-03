@@ -10,7 +10,7 @@ Target: 40-50 tests for robust error handling
 """
 
 import sys
-from typing import Any, Dict, List
+from typing import Any
 
 from tests.branch_coverage import branch_input
 
@@ -44,14 +44,14 @@ class TestNullEmptyInputBranches:
         """Test null list input handling."""
         items = branch_input(None)
         if items is None:
-            result: List[Any] = []
+            result: list[Any] = []
         else:
             result = items
         assert len(result) == 0
 
     def test_empty_list_input_branch(self) -> None:
         """Test empty list input handling."""
-        items: List[Any] = []
+        items: list[Any] = []
         result = "no_items" if not items else "has_items"
         assert result == "no_items"
 
@@ -59,14 +59,14 @@ class TestNullEmptyInputBranches:
         """Test null dict input handling."""
         config = branch_input(None)
         if config is None:
-            result: Dict[str, Any] = {}
+            result: dict[str, Any] = {}
         else:
             result = config
         assert len(result) == 0
 
     def test_empty_dict_input_branch(self) -> None:
         """Test empty dict input handling."""
-        config: Dict[str, Any] = {}
+        config: dict[str, Any] = {}
         result = "no_config" if not config else "has_config"
         assert result == "no_config"
 
@@ -190,7 +190,7 @@ class TestBoundaryValueBranches:
 
     def test_list_size_min_boundary_branch(self) -> None:
         """Test list size minimum boundary."""
-        items: List[Any] = []
+        items: list[Any] = []
         min_size = 1
         result = "too_small" if len(items) < min_size else "valid"
         assert result == "too_small"

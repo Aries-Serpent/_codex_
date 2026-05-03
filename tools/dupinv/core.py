@@ -7,7 +7,7 @@ This module coordinates all detection engines and manages the scanning process.
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from .exact_detector import ExactDetector
 from .schema import DuplicateGroup, InventoryMetadata, SupplementalInventory
@@ -22,7 +22,7 @@ class DuplicateScanner:
     supplemental inventory.
     """
 
-    def __init__(self, root_path: Path, config: Optional[Dict] = None):
+    def __init__(self, root_path: Path, config: Optional[dict] = None):
         """
         Initialize scanner with repository root and configuration.
 
@@ -116,7 +116,7 @@ class DuplicateScanner:
 
         # Other detectors will be added in later phases
 
-    def _apply_shim_cross_reference(self, groups: List[DuplicateGroup]) -> List[DuplicateGroup]:
+    def _apply_shim_cross_reference(self, groups: list[DuplicateGroup]) -> list[DuplicateGroup]:
         """
         Apply SHIM inventory cross-reference to duplicate groups.
 
@@ -141,7 +141,7 @@ class DuplicateScanner:
 
         return groups
 
-    def _apply_git_metadata(self, groups: List[DuplicateGroup]) -> List[DuplicateGroup]:
+    def _apply_git_metadata(self, groups: list[DuplicateGroup]) -> list[DuplicateGroup]:
         """
         Enrich duplicate groups with git metadata.
 
@@ -162,7 +162,7 @@ class DuplicateScanner:
 
         return groups
 
-    def scan(self, modes: List[str] = None) -> SupplementalInventory:
+    def scan(self, modes: list[str] = None) -> SupplementalInventory:
         """
         Scan repository for duplicates using specified detection modes.
 
@@ -225,16 +225,15 @@ class DuplicateScanner:
         )
 
         # Create inventory
-        inventory = SupplementalInventory(
+        return SupplementalInventory(
             metadata=metadata,
             duplicate_groups=all_groups,
             intentional_duplicates=[],  # Will be populated in Phase 6
         )
 
-        return inventory
 
     def write_outputs(
-        self, inventory: SupplementalInventory, output_dir: Path, formats: List[str] = None
+        self, inventory: SupplementalInventory, output_dir: Path, formats: list[str] = None
     ):
         """
         Write inventory to output files.

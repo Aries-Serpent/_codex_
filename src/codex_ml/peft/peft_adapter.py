@@ -39,7 +39,7 @@ except Exception:  # pragma: no cover - `peft` not installed
     LoraConfig = None
     get_peft_model = None
 
-__all__ = ["apply_lora", "LoraConfig", "get_peft_model", "DEFAULT_CFG"]
+__all__ = ["DEFAULT_CFG", "LoraConfig", "apply_lora", "get_peft_model"]
 
 # Baseline defaults; can be overridden via cfg or kwargs
 DEFAULT_CFG: dict[str, Any] = {

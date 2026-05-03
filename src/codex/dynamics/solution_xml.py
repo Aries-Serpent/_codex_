@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Emit unmanaged Dynamics 365 Solution XML from config-as-data."""
 
 
 import json  # noqa: E402

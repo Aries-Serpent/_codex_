@@ -33,7 +33,7 @@ except ImportError:
         success: bool = True
         corrections_applied: int = 0
         output_path: Optional[str] = None
-        metrics: Dict[str, float] = field(default_factory=dict)
+        metrics: dict[str, float] = field(default_factory=dict)
 
     class AutoTuneWorkflow:
         """Auto-tune workflow for audio processing."""
@@ -45,7 +45,7 @@ except ImportError:
             """Process audio file with auto-tune."""
             return TuneResult(success=True, corrections_applied=0, output_path=output_path)
 
-        def batch_process(self, audio_paths: List[str]) -> List[TuneResult]:
+        def batch_process(self, audio_paths: list[str]) -> list[TuneResult]:
             """Process multiple audio files."""
             return [self.process(p) for p in audio_paths]
 

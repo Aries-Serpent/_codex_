@@ -12,7 +12,7 @@ import pytest
 
 pytest.importorskip("zstandard")
 
-from tools import bundle_run  # noqa: E402
+from tools import bundle_run
 
 
 def test_bundle_smoke(tmp_path: Path) -> None:

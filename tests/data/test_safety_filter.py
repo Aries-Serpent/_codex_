@@ -8,7 +8,7 @@ import pytest
 
 pytest.importorskip("omegaconf")
 
-from codex_ml.data.loader import apply_safety_filter  # noqa: E402
+from codex_ml.data.loader import apply_safety_filter
 
 
 def test_safety_filter():

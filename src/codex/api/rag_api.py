@@ -11,7 +11,7 @@ Provides RESTful API endpoints for RAG operations:
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response
@@ -76,7 +76,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 class BuildIndexRequest(BaseModel):
     """Request to build an index."""
 
-    files: List[str] = Field(..., description="Concrete file paths to index")
+    files: list[str] = Field(..., description="Concrete file paths to index")
     index_name: str = Field(..., description="Name for the index")
     tenant_id: str = Field(default="default", description="Tenant ID")
     chunk_size: int = Field(default=1000, ge=100, le=10000, description="Chunk size")
@@ -118,14 +118,14 @@ class QueryResult(BaseModel):
     text: str
     file: str
     score: float
-    metadata: Optional[Dict] = None
+    metadata: Optional[dict] = None
 
 
 class QueryResponse(BaseModel):
     """Response from querying an index."""
 
     query: str
-    results: List[QueryResult]
+    results: list[QueryResult]
     count: int
     elapsed_ms: float
 
@@ -144,7 +144,7 @@ class IndexInfo(BaseModel):
 class ListIndicesResponse(BaseModel):
     """Response listing indices."""
 
-    indices: List[IndexInfo]
+    indices: list[IndexInfo]
     count: int
 
 
@@ -168,7 +168,7 @@ class DeleteIndexResponse(BaseModel):
 class MergeIndicesRequest(BaseModel):
     """Request to merge indices."""
 
-    source_indices: List[str] = Field(..., min_length=2)
+    source_indices: list[str] = Field(..., min_length=2)
     target_index: str
     tenant_id: str = "default"
 
@@ -192,13 +192,13 @@ class StatsResponse(BaseModel):
     embedding_dim: int
     created_at: str
     size_mb: float
-    metadata: Dict
+    metadata: dict
 
 
 class MetricsResponse(BaseModel):
     """Metrics response."""
 
-    metrics: Dict
+    metrics: dict
     timestamp: str
 
 
@@ -208,7 +208,7 @@ class HealthResponse(BaseModel):
     status: str
     version: str
     timestamp: str
-    components: Dict[str, str]
+    components: dict[str, str]
 
 
 # === API Endpoints ===

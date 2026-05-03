@@ -11,7 +11,7 @@ import urllib.request
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 PATCH_DIR = Path(".codex/patches")
 DEFAULT_TIMEOUT = float(os.environ.get("CODEX_LLM_TIMEOUT", "60"))
@@ -22,7 +22,7 @@ DEFAULT_MODEL = os.environ.get("CODEX_LLM_MODEL", "")
 class BridgeResponse:
     patch: str
     artifact_path: Optional[Path]
-    raw_response: Optional[Dict[str, Any]]
+    raw_response: Optional[dict[str, Any]]
 
 
 def _build_prompt(diff: str, errors: str) -> str:
@@ -71,7 +71,7 @@ def _normalize_patch(text: str) -> str:
     return cleaned
 
 
-def _extract_patch(payload: Dict[str, Any]) -> Optional[str]:
+def _extract_patch(payload: dict[str, Any]) -> Optional[str]:
     if "patch" in payload and isinstance(payload["patch"], str):
         return _normalize_patch(payload["patch"])
     choices = payload.get("choices")
@@ -98,7 +98,7 @@ def _store_patch(patch: str) -> Path:
 
 
 def request_patch(
-    diff: str, errors: str, metadata: Optional[Dict[str, Any]] = None
+    diff: str, errors: str, metadata: Optional[dict[str, Any]] = None
 ) -> Optional[BridgeResponse]:
     endpoint = os.environ.get("CODEX_LLM_ENDPOINT")
     if not endpoint:

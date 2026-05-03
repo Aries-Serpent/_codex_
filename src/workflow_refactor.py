@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class WorkflowRefactorer:
 
         logger.info(f"WorkflowRefactorer initialized: {self.workflows_dir}")
 
-    def list_workflows(self) -> List[Path]:
+    def list_workflows(self) -> list[Path]:
         """
         List all workflow files.
 
@@ -114,7 +114,7 @@ class WorkflowRefactorer:
         logger.info(f"Added workflow_dispatch: {workflow_path.name}")
         return True
 
-    def ensure_self_hosted_runner(self, workflow_path: Path) -> Dict[str, Any]:
+    def ensure_self_hosted_runner(self, workflow_path: Path) -> dict[str, Any]:
         """
         Ensure all jobs use [self-hosted, linux] runner.
 
@@ -248,7 +248,7 @@ class WorkflowRefactorer:
         add_dispatch: bool = True,
         ensure_self_hosted: bool = True,
         add_digest: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Refactor all workflows in directory.
 
@@ -289,7 +289,7 @@ class WorkflowRefactorer:
 
         return results
 
-    def validate_workflow(self, workflow_path: Path) -> Dict[str, Any]:
+    def validate_workflow(self, workflow_path: Path) -> dict[str, Any]:
         """
         Validate workflow file.
 
@@ -348,7 +348,7 @@ class WorkflowRefactorer:
 
 def refactor_workflows(
     add_dispatch: bool = True, ensure_self_hosted: bool = True, add_digest: bool = False
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Convenience function to refactor all workflows.
 

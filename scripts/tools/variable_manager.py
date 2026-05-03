@@ -76,7 +76,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +96,7 @@ _GH_API_VERSION = "2022-11-28"
 # Token resolution
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _resolve_token() -> Tuple[str, str]:
+def _resolve_token() -> tuple[str, str]:
     """Return (token, source_name) for the best available GitHub auth token.
 
     Priority:
@@ -128,10 +128,10 @@ class GitHubAPIError(Exception):
 def _gh_request(
     method: str,
     path: str,
-    body: Optional[Dict[str, Any]] = None,
+    body: Optional[dict[str, Any]] = None,
     token: Optional[str] = None,
     brain: Optional[Any] = None,
-) -> Tuple[int, Any]:
+) -> tuple[int, Any]:
     """Make a GitHub API request.
 
     Uses BrainClient (secondary) when available and server is up; falls back
@@ -156,7 +156,7 @@ def _gh_request(
         except BrainClientError:
             logger.debug("Suppressed exception in handler", exc_info=True)
     # ── Fallback: direct urllib ────────────────────────────────────────────
-    headers: Dict[str, str] = {
+    headers: dict[str, str] = {
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": _GH_API_VERSION,
     }
@@ -224,7 +224,7 @@ class VariableManager:
 
     # ── Repo variables ─────────────────────────────────────────────────────
 
-    def list_repo_vars(self, owner: str, repo: str) -> List[Dict[str, Any]]:
+    def list_repo_vars(self, owner: str, repo: str) -> list[dict[str, Any]]:
         """List all repository variables. Returns list of variable dicts."""
         status, body = _gh_request(
             "GET", f"/repos/{owner}/{repo}/actions/variables",
@@ -233,7 +233,7 @@ class VariableManager:
         _check(status, body, expected=(200,))
         return body.get("variables", [])  # type: ignore[union-attr]
 
-    def get_repo_var(self, owner: str, repo: str, name: str) -> Dict[str, Any]:
+    def get_repo_var(self, owner: str, repo: str, name: str) -> dict[str, Any]:
         """Get a single repository variable by name."""
         status, body = _gh_request(
             "GET", f"/repos/{owner}/{repo}/actions/variables/{name}",
@@ -279,7 +279,7 @@ class VariableManager:
 
     def list_env_vars(
         self, owner: str, repo: str, environment: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """List all variables for a repository environment."""
         status, body = _gh_request(
             "GET",
@@ -329,7 +329,7 @@ class VariableManager:
 
     # ── Organization variables ─────────────────────────────────────────────
 
-    def list_org_vars(self, org: str) -> List[Dict[str, Any]]:
+    def list_org_vars(self, org: str) -> list[dict[str, Any]]:
         """List all organization variables visible to the authenticated token."""
         status, body = _gh_request(
             "GET", f"/orgs/{org}/actions/variables",
@@ -344,7 +344,7 @@ class VariableManager:
         name: str,
         value: str,
         visibility: str = "all",
-        selected_repository_ids: Optional[List[int]] = None,
+        selected_repository_ids: Optional[list[int]] = None,
     ) -> int:
         """Create an organization variable.
 
@@ -352,7 +352,7 @@ class VariableManager:
         ----------
         visibility: "all" | "private" | "selected"
         """
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "name": name,
             "value": value,
             "visibility": visibility,
@@ -412,7 +412,7 @@ class VariableManager:
         print(f" Variable     : {var_name}")
         print(f"{'═'*60}\n")
 
-        results: List[Tuple[str, str, str]] = []
+        results: list[tuple[str, str, str]] = []
 
         def record(op: str, ok: bool, detail: str = "") -> None:
             status = "✅" if ok else "❌"
@@ -495,13 +495,13 @@ class VariableManager:
 # Helpers
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _check(status: int, body: Any, expected: Tuple[int, ...]) -> None:
+def _check(status: int, body: Any, expected: tuple[int, ...]) -> None:
     if status not in expected:
         msg = body.get("message", str(body)) if isinstance(body, dict) else str(body)
         raise GitHubAPIError(status, msg)
 
 
-def _print_summary(results: List[Tuple[str, str, str]]) -> None:
+def _print_summary(results: list[tuple[str, str, str]]) -> None:
     passed = sum(1 for _, s, _ in results if s == "✅")
     total = len(results)
     print(f"\n{'─'*60}")
@@ -579,7 +579,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: Optional[List[str]] = None) -> int:  # noqa: C901
+def main(argv: Optional[list[str]] = None) -> int:  # noqa: C901
     parser = _build_parser()
     args = parser.parse_args(argv)
     vm = VariableManager()

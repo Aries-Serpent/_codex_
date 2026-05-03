@@ -22,7 +22,7 @@ import re
 import subprocess  # nosec B404
 import sys
 from datetime import datetime, timezone
-from typing import List, Optional, Tuple
+from typing import Optional
 
 REPO_ROOT = (
     subprocess.run(
@@ -82,7 +82,7 @@ def append(path: str, text: str) -> None:
         f.write(text)
 
 
-def run_ok(cmd: List[str]) -> Tuple[bool, str]:
+def run_ok(cmd: list[str]) -> tuple[bool, str]:
     try:
         cp = subprocess.run(
             cmd,
@@ -136,7 +136,7 @@ def add_change(file_path: str, action: str, rationale: str, before: str, after: 
     )
 
 
-def ensure_import(module: str, src: str) -> Tuple[str, bool]:
+def ensure_import(module: str, src: str) -> tuple[str, bool]:
     """Idempotently ensure `import module` exists; insert below top shebang/future/comments."""
     if re.search(rf"^\s*import\s+{re.escape(module)}\b", src, re.M):
         return src, False
@@ -181,8 +181,8 @@ REPLACEMENT_TEMPLATE = """{indent}except Exception as e:
 
 
 def patch_except_pass(
-    src: str, prefer_range: Optional[Tuple[int, int]] = None
-) -> Tuple[str, bool, str]:
+    src: str, prefer_range: Optional[tuple[int, int]] = None
+) -> tuple[str, bool, str]:
     matches = list(EXC_PASS_PATTERN.finditer(src))
     if not matches:
         return src, False, "No `except Exception: pass` pattern found."
@@ -222,7 +222,7 @@ def patch_except_pass(
 
 @dataclasses.dataclass
 class Outcome:
-    errors: List[str] = dataclasses.field(default_factory=list)
+    errors: list[str] = dataclasses.field(default_factory=list)
     changes: int = 0
 
 

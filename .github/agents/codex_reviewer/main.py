@@ -10,7 +10,7 @@ import asyncio
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -27,14 +27,14 @@ class ReviewContext:
     """
     pr_number: int
     repo: str
-    files_changed: List[str]
+    files_changed: list[str]
     diff: str
     base_branch: str
     head_branch: str
     author: str
     description: str
-    labels: List[str] = field(default_factory=list)
-    reviewers: List[str] = field(default_factory=list)
+    labels: list[str] = field(default_factory=list)
+    reviewers: list[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=lambda: datetime.utcnow())
 
 
@@ -48,12 +48,12 @@ class ReviewResult:
     """
     status: str  # approved, changes_requested, commented
     confidence: float  # 0.0 to 1.0
-    suggestions: List[Dict[str, Any]]
-    orchestration_plan: Dict[str, Any]
-    next_steps: List[str]
-    knowledge_gaps: List[str]
+    suggestions: list[dict[str, Any]]
+    orchestration_plan: dict[str, Any]
+    next_steps: list[str]
+    knowledge_gaps: list[str]
     review_time_seconds: float = 0.0
-    analysis_summary: Dict[str, Any] = field(default_factory=dict)
+    analysis_summary: dict[str, Any] = field(default_factory=dict)
 
 
 class CodexQuantumReviewer:
@@ -65,7 +65,7 @@ class CodexQuantumReviewer:
     and learning from feedback.
     """
 
-    def __init__(self, github_config: Optional[Dict[str, str]] = None):
+    def __init__(self, github_config: Optional[dict[str, str]] = None):
         """
         Initialize the reviewer with all analysis components.
 
@@ -94,7 +94,7 @@ class CodexQuantumReviewer:
 
         logger.info("CodexQuantumReviewer initialized successfully")
 
-    async def handle_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
+    async def handle_event(self, event: dict[str, Any]) -> dict[str, Any]:
         """
         Main event handler for all triggers.
 
@@ -112,17 +112,16 @@ class CodexQuantumReviewer:
 
         if event_type == "initial_review":
             return await self.perform_initial_review(event)
-        elif event_type == "incremental_review":
+        if event_type == "incremental_review":
             return await self.perform_incremental_review(event)
-        elif event_type == "analyze_human_feedback":
+        if event_type == "analyze_human_feedback":
             return await self.integrate_feedback(event)
-        elif event_type == "respond_to_mention":
+        if event_type == "respond_to_mention":
             return await self.respond_to_mention(event)
-        else:
-            logger.warning(f"Unhandled event type: {event_type}")
-            return {"status": "unhandled_event", "event": event_type}
+        logger.warning(f"Unhandled event type: {event_type}")
+        return {"status": "unhandled_event", "event": event_type}
 
-    async def perform_initial_review(self, event: Dict[str, Any]) -> Dict[str, Any]:
+    async def perform_initial_review(self, event: dict[str, Any]) -> dict[str, Any]:
         """
         Perform comprehensive initial PR review.
 
@@ -198,7 +197,7 @@ class CodexQuantumReviewer:
             "review_time_seconds": review_result.review_time_seconds
         }
 
-    async def perform_incremental_review(self, event: Dict[str, Any]) -> Dict[str, Any]:
+    async def perform_incremental_review(self, event: dict[str, Any]) -> dict[str, Any]:
         """
         Perform incremental review for PR updates.
 
@@ -216,7 +215,7 @@ class CodexQuantumReviewer:
         # For now, delegate to full review
         return await self.perform_initial_review(event)
 
-    async def integrate_feedback(self, event: Dict[str, Any]) -> Dict[str, Any]:
+    async def integrate_feedback(self, event: dict[str, Any]) -> dict[str, Any]:
         """
         Integrate human feedback into learning system.
 
@@ -238,7 +237,7 @@ class CodexQuantumReviewer:
             "feedback_items": len(feedback.get("comments", []))
         }
 
-    async def respond_to_mention(self, event: Dict[str, Any]) -> Dict[str, Any]:
+    async def respond_to_mention(self, event: dict[str, Any]) -> dict[str, Any]:
         """
         Respond to @codex-reviewer mentions in comments.
 
@@ -263,15 +262,14 @@ class CodexQuantumReviewer:
             await self.learning_system.learn_from_user_input(learning_content)
             return {"status": "learned", "content": learning_content}
 
-        elif "analyze" in body.lower():
+        if "analyze" in body.lower():
             # Trigger specific analysis
             return await self.perform_initial_review(event)
 
-        else:
-            # Generic re-review request
-            return await self.perform_initial_review(event)
+        # Generic re-review request
+        return await self.perform_initial_review(event)
 
-    def _extract_review_context(self, event: Dict[str, Any]) -> ReviewContext:
+    def _extract_review_context(self, event: dict[str, Any]) -> ReviewContext:
         """
         Extract ReviewContext from event data.
 
@@ -301,7 +299,7 @@ class CodexQuantumReviewer:
             reviewers=[r.get("login", "") for r in pr.get("requested_reviewers", [])]
         )
 
-    async def _analyze_code_quality(self, context: ReviewContext) -> Dict[str, Any]:
+    async def _analyze_code_quality(self, context: ReviewContext) -> dict[str, Any]:
         """
         Analyze code quality aspects.
 
@@ -334,17 +332,17 @@ class CodexQuantumReviewer:
             "file_count": len(context.files_changed)
         }
 
-    async def _analyze_python_quality(self, file_path: str, diff: str) -> List[Dict[str, Any]]:
+    async def _analyze_python_quality(self, file_path: str, diff: str) -> list[dict[str, Any]]:
         """Analyze Python-specific quality issues."""
         # TODO: Implement Python-specific analysis
         return []
 
-    async def _analyze_yaml_quality(self, file_path: str, diff: str) -> List[Dict[str, Any]]:
+    async def _analyze_yaml_quality(self, file_path: str, diff: str) -> list[dict[str, Any]]:
         """Analyze YAML-specific quality issues."""
         # TODO: Implement YAML-specific analysis
         return []
 
-    def _calculate_quality_score(self, issues: List[Dict[str, Any]]) -> float:
+    def _calculate_quality_score(self, issues: list[dict[str, Any]]) -> float:
         """Calculate overall quality score from issues."""
         if not issues:
             return 1.0
@@ -354,10 +352,9 @@ class CodexQuantumReviewer:
         total_weight = sum(severity_weights.get(issue.get("severity", "medium"), 0.3) for issue in issues)
 
         # Normalize to 0-1 range (assuming 10 issues = 0 score)
-        score = max(0.0, 1.0 - (total_weight / 10.0))
-        return score
+        return max(0.0, 1.0 - (total_weight / 10.0))
 
-    async def _analyze_security(self, context: ReviewContext) -> Dict[str, Any]:
+    async def _analyze_security(self, context: ReviewContext) -> dict[str, Any]:
         """Analyze security vulnerabilities."""
         logger.debug("Analyzing security")
 
@@ -369,7 +366,7 @@ class CodexQuantumReviewer:
             "severity_counts": self._count_by_severity(vulnerabilities)
         }
 
-    async def _analyze_performance(self, context: ReviewContext) -> Dict[str, Any]:
+    async def _analyze_performance(self, context: ReviewContext) -> dict[str, Any]:
         """Analyze performance implications."""
         logger.debug("Analyzing performance")
 
@@ -380,7 +377,7 @@ class CodexQuantumReviewer:
             "impact_score": 1.0
         }
 
-    async def _analyze_documentation(self, context: ReviewContext) -> Dict[str, Any]:
+    async def _analyze_documentation(self, context: ReviewContext) -> dict[str, Any]:
         """Analyze documentation completeness."""
         logger.debug("Analyzing documentation")
 
@@ -391,7 +388,7 @@ class CodexQuantumReviewer:
             "completeness_score": 0.8
         }
 
-    async def _analyze_quantum_patterns(self, context: ReviewContext) -> Dict[str, Any]:
+    async def _analyze_quantum_patterns(self, context: ReviewContext) -> dict[str, Any]:
         """Analyze quantum-inspired patterns."""
         logger.debug("Analyzing quantum patterns")
 
@@ -403,7 +400,7 @@ class CodexQuantumReviewer:
             "opportunities_count": len(patterns)
         }
 
-    async def _detect_knowledge_gaps(self, context: ReviewContext) -> Dict[str, Any]:
+    async def _detect_knowledge_gaps(self, context: ReviewContext) -> dict[str, Any]:
         """Detect knowledge gaps."""
         logger.debug("Detecting knowledge gaps")
 
@@ -415,7 +412,7 @@ class CodexQuantumReviewer:
             "gap_count": len(gaps)
         }
 
-    def _aggregate_results(self, results: List[Dict[str, Any]]) -> ReviewResult:
+    def _aggregate_results(self, results: list[dict[str, Any]]) -> ReviewResult:
         """
         Aggregate analysis results into ReviewResult.
 
@@ -477,8 +474,8 @@ class CodexQuantumReviewer:
 
     def _calculate_confidence(
         self,
-        suggestions: List[Dict[str, Any]],
-        summary: Dict[str, Any]
+        suggestions: list[dict[str, Any]],
+        summary: dict[str, Any]
     ) -> float:
         """Calculate overall confidence in review."""
         # Base confidence
@@ -495,7 +492,7 @@ class CodexQuantumReviewer:
 
         return max(0.0, min(1.0, confidence))
 
-    def _count_by_severity(self, items: List[Dict[str, Any]]) -> Dict[str, int]:
+    def _count_by_severity(self, items: list[dict[str, Any]]) -> dict[str, int]:
         """Count items by severity level."""
         counts = {"low": 0, "medium": 0, "high": 0, "critical": 0}
         for item in items:
@@ -507,7 +504,7 @@ class CodexQuantumReviewer:
         self,
         result: ReviewResult,
         context: ReviewContext
-    ) -> List[str]:
+    ) -> list[str]:
         """Generate actionable next steps."""
         steps = []
 
@@ -638,7 +635,7 @@ class CodexQuantumReviewer:
         pr_number: int,
         body: str,
         action: str,
-        suggestions: List[Dict[str, Any]]
+        suggestions: list[dict[str, Any]]
     ):
         """
         Post review via GitHub API client.

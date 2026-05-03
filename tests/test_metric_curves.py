@@ -11,7 +11,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from codex_ml.metrics.curves import append_curve, summarize  # noqa: E402
+from codex_ml.metrics.curves import append_curve, summarize
 
 
 def test_curves_roundtrip(tmp_path: Path):

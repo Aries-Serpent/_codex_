@@ -5,7 +5,7 @@ Provides directed graph operations for tracking code dependencies,
 including cycle detection using Tarjan's algorithm and topological sorting.
 """
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 from codex_ml.ast.core.exceptions import CycleDetectedError
 
@@ -29,15 +29,15 @@ class DependencyGraph:
 
     def __init__(self):
         """Initialize empty dependency graph."""
-        self.nodes: Dict[str, Set[str]] = {}
-        self.reverse_edges: Dict[str, Set[str]] = {}  # Track reverse dependencies
-        self.node_data: Dict[str, Dict[str, Any]] = {}  # Store arbitrary node data
+        self.nodes: dict[str, set[str]] = {}
+        self.reverse_edges: dict[str, set[str]] = {}  # Track reverse dependencies
+        self.node_data: dict[str, dict[str, Any]] = {}  # Store arbitrary node data
 
     def add_node(
         self,
         node_id: str,
-        dependencies: Optional[List[str]] = None,
-        data: Optional[Dict[str, Any]] = None,
+        dependencies: Optional[list[str]] = None,
+        data: Optional[dict[str, Any]] = None,
     ) -> None:
         """Add a node with its dependencies and optional data.
 
@@ -141,7 +141,7 @@ class DependencyGraph:
 
         return True
 
-    def get_dependencies(self, node_id: str) -> Set[str]:
+    def get_dependencies(self, node_id: str) -> set[str]:
         """Get direct dependencies of a node.
 
         Args:
@@ -152,7 +152,7 @@ class DependencyGraph:
         """
         return self.nodes.get(node_id, set()).copy()
 
-    def get_dependents(self, node_id: str) -> Set[str]:
+    def get_dependents(self, node_id: str) -> set[str]:
         """Get nodes that depend on the given node.
 
         Args:
@@ -163,7 +163,7 @@ class DependencyGraph:
         """
         return self.reverse_edges.get(node_id, set()).copy()
 
-    def get_node_data(self, node_id: str) -> Dict[str, Any]:
+    def get_node_data(self, node_id: str) -> dict[str, Any]:
         """Get data associated with a node.
 
         Args:
@@ -174,7 +174,7 @@ class DependencyGraph:
         """
         return self.node_data.get(node_id, {}).copy()
 
-    def set_node_data(self, node_id: str, data: Dict[str, Any]) -> None:
+    def set_node_data(self, node_id: str, data: dict[str, Any]) -> None:
         """Set or update data for a node.
 
         Args:
@@ -190,7 +190,7 @@ class DependencyGraph:
             self.node_data[node_id] = {}
         self.node_data[node_id].update(data)
 
-    def get_all_dependencies(self, node_id: str) -> Set[str]:
+    def get_all_dependencies(self, node_id: str) -> set[str]:
         """Get all transitive dependencies of a node.
 
         Args:
@@ -238,7 +238,7 @@ class DependencyGraph:
 
         return any(node not in visited and dfs(node) for node in self.nodes)
 
-    def find_cycle(self) -> Optional[List[str]]:
+    def find_cycle(self) -> Optional[list[str]]:
         """Find a cycle in the graph if one exists.
 
         Returns:
@@ -248,7 +248,7 @@ class DependencyGraph:
         rec_stack = set()
         path = []
 
-        def dfs(node: str) -> Optional[List[str]]:
+        def dfs(node: str) -> Optional[list[str]]:
             visited.add(node)
             rec_stack.add(node)
             path.append(node)
@@ -275,7 +275,7 @@ class DependencyGraph:
 
         return None
 
-    def topological_sort(self) -> List[str]:
+    def topological_sort(self) -> list[str]:
         """Return nodes in topological order (dependencies first).
 
         Returns:
@@ -307,7 +307,7 @@ class DependencyGraph:
 
         return order
 
-    def reverse_topological_sort(self) -> List[str]:
+    def reverse_topological_sort(self) -> list[str]:
         """Return nodes in reverse topological order (dependents first).
 
         Returns:
@@ -318,7 +318,7 @@ class DependencyGraph:
         """
         return list(reversed(self.topological_sort()))
 
-    def get_strongly_connected_components(self) -> List[Set[str]]:
+    def get_strongly_connected_components(self) -> list[set[str]]:
         """Find all strongly connected components using Tarjan's algorithm.
 
         Returns:
@@ -361,7 +361,7 @@ class DependencyGraph:
 
         return sccs
 
-    def get_roots(self) -> Set[str]:
+    def get_roots(self) -> set[str]:
         """Get nodes with no dependencies (roots of the DAG).
 
         Returns:
@@ -369,7 +369,7 @@ class DependencyGraph:
         """
         return {node for node, deps in self.nodes.items() if not deps}
 
-    def get_leaves(self) -> Set[str]:
+    def get_leaves(self) -> set[str]:
         """Get nodes with no dependents (leaves of the DAG).
 
         Returns:

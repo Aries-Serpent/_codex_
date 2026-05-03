@@ -121,7 +121,7 @@ def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any
         trace_mod = importlib.import_module("opentelemetry.trace")
         _configure_otlp_if_needed(trace_mod)
         tracer = trace_mod.get_tracer("codex.skills")
-    except Exception:  # noqa: BLE001
+    except Exception:
         yield None
         return
 
@@ -297,7 +297,7 @@ def skill_invocation_span(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         tracer = trace_mod.get_tracer(tracer_name)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.debug("OTel tracer unavailable: %s", exc)
         yield None
         return
@@ -306,7 +306,7 @@ def skill_invocation_span(
         outcome = {"skill.outcome": "success"}
         try:
             yield span
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             outcome = {"skill.outcome": "error", "skill.error": str(exc)}
             raise
         finally:
@@ -316,7 +316,7 @@ def skill_invocation_span(
                 for k, v in outcome.items():
                     try:
                         span.set_attribute(k, v)
-                    except Exception:  # noqa: BLE001
+                    except Exception:
                         logger.debug("Suppressed exception in handler", exc_info=True)
             logger.info(
                 "Skill '%s' completed (%s) in %.1f ms",
@@ -352,7 +352,7 @@ def push_to_app(events: list[TelemetryEvent], endpoint: str) -> bool:
             resp.raise_for_status()
             logger.info("Telemetry: pushed %d events to %s", len(events), endpoint)
             return True
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.error("Telemetry: push to app failed: %s", exc)
             return False
 

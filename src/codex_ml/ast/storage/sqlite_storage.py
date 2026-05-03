@@ -7,10 +7,11 @@ incremental analysis and historical comparison.
 
 import json
 import sqlite3
+from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Optional
+from typing import Any, Optional
 
 from codex_ml.ast.core.exceptions import StorageError
 from codex_ml.ast.core.node import Finding, SourceLocation
@@ -154,8 +155,8 @@ class ASTStorage:
         self,
         analysis_id: str,
         file_path: str,
-        findings: List[Finding],
-        metrics: Optional[Dict[str, Any]] = None,
+        findings: list[Finding],
+        metrics: Optional[dict[str, Any]] = None,
         language: str = "python",
         node_count: int = 0,
     ) -> None:
@@ -221,7 +222,7 @@ class ASTStorage:
                     ),
                 )
 
-    def get_analysis(self, analysis_id: str) -> Optional[Dict[str, Any]]:
+    def get_analysis(self, analysis_id: str) -> Optional[dict[str, Any]]:
         """Get analysis record by ID.
 
         Args:
@@ -254,7 +255,7 @@ class ASTStorage:
         finding_type: Optional[str] = None,
         severity: Optional[str] = None,
         limit: int = 100,
-    ) -> List[Finding]:
+    ) -> list[Finding]:
         """Get findings with optional filters.
 
         Args:
@@ -317,7 +318,7 @@ class ASTStorage:
 
             return findings
 
-    def list_analyses(self, limit: int = 50) -> List[Dict[str, Any]]:
+    def list_analyses(self, limit: int = 50) -> list[dict[str, Any]]:
         """List recent analyses.
 
         Args:
@@ -371,7 +372,7 @@ class ASTStorage:
 
             return True
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get overall storage statistics.
 
         Returns:
@@ -415,7 +416,7 @@ class ASTStorage:
         analysis_id: str,
         metric_name: str,
         metric_value: float,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
     ) -> None:
         """Save a metric value.
 
@@ -437,7 +438,7 @@ class ASTStorage:
 
     def get_metrics(
         self, analysis_id: str, metric_name: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Get metrics for an analysis.
 
         Args:

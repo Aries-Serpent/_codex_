@@ -4,7 +4,7 @@ Embedding provider benchmarks.
 Measures latency and throughput of different embedding providers.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -12,8 +12,8 @@ from .runner import BenchmarkResult, BenchmarkRunner
 
 
 def benchmark_embedding_providers(
-    providers: Optional[List[str]] = None, corpus_sizes: Optional[List[int]] = None, runs: int = 5
-) -> Dict[str, Any]:
+    providers: Optional[list[str]] = None, corpus_sizes: Optional[list[int]] = None, runs: int = 5
+) -> dict[str, Any]:
     """
     Benchmark all available embedding providers.
 
@@ -99,8 +99,8 @@ def _get_provider(name: str):
 
 
 def benchmark_embedding_quality(
-    providers: Optional[List[str]] = None, test_queries: Optional[List[str]] = None
-) -> Dict[str, Any]:
+    providers: Optional[list[str]] = None, test_queries: Optional[list[str]] = None
+) -> dict[str, Any]:
     """
     Benchmark embedding quality using similarity tests.
 

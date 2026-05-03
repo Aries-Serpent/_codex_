@@ -8,11 +8,11 @@ import pytest
 
 pytest.importorskip("numpy")
 
-from src.training.cache import TokenCache  # noqa: E402
+from src.training.cache import TokenCache
 
 
 def test_cache_flush_threshold(tmp_path):
-    import numpy as np  # noqa: WPS433 - optional import guarded above
+    import numpy as np
 
     cache = TokenCache(tmp_path, rows_per_shard=3)
     batch = {

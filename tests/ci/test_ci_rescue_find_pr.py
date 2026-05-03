@@ -21,7 +21,7 @@ SCRIPTS_CI = Path(__file__).resolve().parents[2] / "scripts" / "ci"
 if str(SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_CI))
 
-import ci_rescue  # noqa: E402  (after sys.path manipulation)
+import ci_rescue
 
 # ---------------------------------------------------------------------------
 # Helpers

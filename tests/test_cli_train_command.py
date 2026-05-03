@@ -10,10 +10,10 @@ pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")
 pytest.importorskip("torch")
 
-import yaml  # noqa: E402
-from click.testing import CliRunner  # noqa: E402
+import yaml
+from click.testing import CliRunner
 
-from codex_ml.cli.codex_cli import codex  # noqa: E402
+from codex_ml.cli.codex_cli import codex
 
 
 def test_cli_train_creates_checkpoint(tmp_path):

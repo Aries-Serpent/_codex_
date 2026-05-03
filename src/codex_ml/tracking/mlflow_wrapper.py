@@ -12,7 +12,7 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["MLflowTracker", "log_metric", "log_param", "log_artifact"]
+__all__ = ["MLflowTracker", "log_artifact", "log_metric", "log_param"]
 
 
 class MLflowTracker:

@@ -9,6 +9,7 @@ Phase: 14.4 - Final Gaps & Branch Coverage
 Target: 100% coverage of exception handlers
 """
 
+import importlib
 import json
 import tempfile
 from typing import Any
@@ -233,7 +234,7 @@ class TestImportExceptions:
         """Test ImportError handling."""
         result = None
         try:
-            import nonexistent_module_xyz  # type: ignore  # noqa: F401 - Testing import error
+            importlib.import_module('nonexistent_module_xyz')
         except ImportError:
             result = "import_failed"
         assert result == "import_failed"
@@ -242,7 +243,7 @@ class TestImportExceptions:
         """Test ModuleNotFoundError handling."""
         result = None
         try:
-            import another_nonexistent_module  # type: ignore  # noqa: F401 - Testing error
+            importlib.import_module('another_nonexistent_module')
         except ModuleNotFoundError:
             result = "module_not_found"
         assert result == "module_not_found"
@@ -250,7 +251,7 @@ class TestImportExceptions:
     def test_optional_dependency_handler(self) -> None:
         """Test optional dependency handling pattern."""
         try:
-            import nonexistent_optional  # type: ignore  # noqa: F401 - Testing pattern
+            importlib.import_module('nonexistent_optional')
             has_optional = True
         except ImportError:
             has_optional = False

@@ -12,10 +12,9 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, Set
 
 
-def collect_ids(report: Dict) -> Dict[str, Set[str]]:
+def collect_ids(report: dict) -> dict[str, set[str]]:
     ids = {"CAP": set(), "FIND": set(), "PATCH": set(), "REPRO": set()}
 
     for cap in report.get("snapshot", {}).get("capabilities", []):
@@ -37,7 +36,7 @@ def collect_ids(report: Dict) -> Dict[str, Set[str]]:
     return ids
 
 
-def validate_links(report: Dict, ids: Dict[str, Set[str]]) -> Dict[str, list]:
+def validate_links(report: dict, ids: dict[str, set[str]]) -> dict[str, list]:
     errors = {"missing": [], "dangling": []}
 
     # Patches -> capability_ids, repro_ids, finding_ids

@@ -12,9 +12,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Optional
 
 DEFAULT_LOG_PATH = Path(".codex/errors.ndjson")
 
@@ -26,12 +27,12 @@ def parse_ts(ts: str) -> datetime:
     return datetime.fromisoformat(ts)
 
 
-def load_entries(path: Path) -> List[dict]:
+def load_entries(path: Path) -> list[dict]:
     """Load NDJSON entries from ``path``.
 
     Malformed lines are ignored.
     """
-    entries: List[dict] = []
+    entries: list[dict] = []
     if not path.exists():
         return entries
     with path.open(encoding="utf-8") as fh:
@@ -50,7 +51,7 @@ def group_errors(
     entries: Iterable[dict],
     since: Optional[datetime] = None,
     unanswered_only: bool = False,
-) -> List[Dict[str, object]]:
+) -> list[dict[str, object]]:
     """Group error entries by message.
 
     Parameters
@@ -63,7 +64,7 @@ def group_errors(
     unanswered_only:
         When ``True``, exclude groups containing any ``answer_id`` field.
     """
-    grouped: Dict[str, List[dict]] = {}
+    grouped: dict[str, list[dict]] = {}
     for entry in entries:
         ts_str = entry.get("ts")
         if since and ts_str:
@@ -77,7 +78,7 @@ def group_errors(
             continue
         grouped.setdefault(message, []).append(entry)
 
-    results: List[Dict[str, object]] = []
+    results: list[dict[str, object]] = []
     for message, items in grouped.items():
         if unanswered_only and any("answer_id" in item for item in items):
             continue

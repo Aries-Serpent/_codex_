@@ -23,7 +23,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     import requests
@@ -57,9 +57,9 @@ class CodeScanningAlert:
     category: str = "security"
     dismissed_reason: Optional[str] = None
     dismissed_comment: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary, excluding metadata if empty."""
         data = asdict(self)
         if not data.get("metadata"):
@@ -111,7 +111,7 @@ class CodeQLAlertFetcher:
         state: str = "open",
         severity: Optional[str] = None,
         ref: Optional[str] = None,
-    ) -> List[CodeScanningAlert]:
+    ) -> list[CodeScanningAlert]:
         """
         Fetch all code scanning alerts with pagination.
 
@@ -197,7 +197,7 @@ class CodeQLAlertFetcher:
         logger.info(f"Total alerts fetched: {len(all_alerts)}")
         return all_alerts
 
-    def _parse_alert(self, data: Dict[str, Any]) -> Optional[CodeScanningAlert]:
+    def _parse_alert(self, data: dict[str, Any]) -> Optional[CodeScanningAlert]:
         """Parse GitHub API alert data into CodeScanningAlert."""
         try:
             # Extract rule information
@@ -251,7 +251,7 @@ class CodeQLAlertFetcher:
             logger.warning(f"Error parsing alert: {e}")
             return None
 
-    def _extract_cwe_id(self, rule: Dict[str, Any]) -> Optional[str]:
+    def _extract_cwe_id(self, rule: dict[str, Any]) -> Optional[str]:
         """Extract CWE ID from rule tags."""
         tags = rule.get("tags", [])
         for tag in tags:
@@ -294,7 +294,7 @@ class AlertExporter:
     """Export alerts to various formats."""
 
     @staticmethod
-    def export_json(alerts: List[CodeScanningAlert], output_path: Path) -> None:
+    def export_json(alerts: list[CodeScanningAlert], output_path: Path) -> None:
         """Export alerts to JSON format."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -310,7 +310,7 @@ class AlertExporter:
         logger.info(f"Exported {len(alerts)} alerts to JSON: {output_path}")
 
     @staticmethod
-    def export_csv(alerts: List[CodeScanningAlert], output_path: Path) -> None:
+    def export_csv(alerts: list[CodeScanningAlert], output_path: Path) -> None:
         """Export alerts to CSV format."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -337,7 +337,7 @@ class AlertExporter:
         logger.info(f"Exported {len(alerts)} alerts to CSV: {output_path}")
 
     @staticmethod
-    def export_markdown(alerts: List[CodeScanningAlert], output_path: Path) -> None:
+    def export_markdown(alerts: list[CodeScanningAlert], output_path: Path) -> None:
         """Export alerts to Markdown format with summary statistics."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
 

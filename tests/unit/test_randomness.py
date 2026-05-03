@@ -17,9 +17,9 @@ except ImportError:
 def test_set_seed_python_random():
     s = set_seed(1234)
     assert s == 1234
-    a = [random.random() for _ in range(5)]  # noqa: S311
+    a = [random.random() for _ in range(5)]
     set_seed(1234)
-    b = [random.random() for _ in range(5)]  # noqa: S311
+    b = [random.random() for _ in range(5)]
     assert a == b
 
 

@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import logging
 from types import ModuleType
-from typing import IO, Any, Optional, Type
+from typing import IO, Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class MissingPyYAMLError(ModuleNotFoundError):
         )
 
 
-YAMLErrorType: Type[Exception]
+YAMLErrorType: type[Exception]
 if _yaml_module is not None:  # pragma: no cover - executed when PyYAML present
     YAMLErrorType = _yaml_module.YAMLError
 else:  # pragma: no cover - avoids attribute errors when PyYAML missing

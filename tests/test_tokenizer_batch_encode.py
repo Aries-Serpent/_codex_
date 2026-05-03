@@ -7,7 +7,7 @@ import pytest
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
 
-from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter  # noqa: E402
+from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
 
 class DummyTokenizer:
@@ -57,7 +57,7 @@ def hf_tok():
     """Session-scoped fixture for a real HF tokenizer adapter, if available."""
     try:
         return HFTokenizerAdapter.load()
-    except Exception:  # noqa: BLE001
+    except Exception:
         pytest.skip("HuggingFace tokenizer not available")
 
 
@@ -184,14 +184,14 @@ def test_batch_encode_padding_and_truncation(hf_tok):
 
 __all__ = [
     "DummyTokenizer",
-    "test_batch_encode_shapes",
-    "test_batch_encode_masks_and_lengths",
-    "test_batch_encode_truncation",
-    "test_batch_encode_respects_string_padding",
-    "test_batch_encode_empty_input",
-    "test_batch_encode_different_lengths",
-    "test_batch_encode_no_max_length",
-    "test_batch_encode_parametrized_lengths",
     "test_batch_encode_consistency",
+    "test_batch_encode_different_lengths",
+    "test_batch_encode_empty_input",
+    "test_batch_encode_masks_and_lengths",
+    "test_batch_encode_no_max_length",
     "test_batch_encode_padding_and_truncation",
+    "test_batch_encode_parametrized_lengths",
+    "test_batch_encode_respects_string_padding",
+    "test_batch_encode_shapes",
+    "test_batch_encode_truncation",
 ]

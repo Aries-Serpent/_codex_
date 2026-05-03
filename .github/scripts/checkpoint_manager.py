@@ -127,13 +127,12 @@ def main() -> int:
             return 1
         return save_checkpoint(sys.argv[2], sys.argv[3])
 
-    elif command == "load":
+    if command == "load":
         return load_checkpoint()
 
-    else:
-        print(f"Unknown command: {command}")
-        show_usage()
-        return 1
+    print(f"Unknown command: {command}")
+    show_usage()
+    return 1
 
 
 if __name__ == "__main__":

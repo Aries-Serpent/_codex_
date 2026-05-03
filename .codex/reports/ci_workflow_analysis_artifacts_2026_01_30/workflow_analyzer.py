@@ -8,7 +8,7 @@ import json
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import yaml
 
@@ -18,9 +18,9 @@ WORKFLOWS_DIR = REPO_ROOT / ".github" / "workflows"
 
 class WorkflowAnalyzer:
     def __init__(self):
-        self.workflows: Dict[str, Dict[str, Any]] = {}
-        self.disabled_workflows: List[str] = []
-        self.errors: Dict[str, str] = {}
+        self.workflows: dict[str, dict[str, Any]] = {}
+        self.disabled_workflows: list[str] = []
+        self.errors: dict[str, str] = {}
 
     def analyze_all_workflows(self):
         """Analyze all workflow files."""
@@ -92,7 +92,7 @@ class WorkflowAnalyzer:
         except Exception as e:
             self.errors[workflow_name] = f"Analysis error: {e}"
 
-    def _check_guards(self, content: str, data: Dict) -> bool:
+    def _check_guards(self, content: str, data: dict) -> bool:
         """Check if workflow has guards (if: false, etc.)."""
         # Check for global if: false
         if "on" in data:
@@ -124,7 +124,7 @@ class WorkflowAnalyzer:
 
         return False
 
-    def _extract_triggers(self, data: Dict) -> List[str]:
+    def _extract_triggers(self, data: dict) -> list[str]:
         """Extract workflow triggers."""
         triggers = []
         if "on" in data:
@@ -137,7 +137,7 @@ class WorkflowAnalyzer:
                 triggers.extend(on_triggers.keys())
         return triggers
 
-    def _extract_jobs(self, data: Dict) -> Dict[str, Dict]:
+    def _extract_jobs(self, data: dict) -> dict[str, dict]:
         """Extract job information."""
         jobs_info = {}
         if "jobs" in data:
@@ -152,7 +152,7 @@ class WorkflowAnalyzer:
                     }
         return jobs_info
 
-    def _extract_secrets(self, content: str) -> List[str]:
+    def _extract_secrets(self, content: str) -> list[str]:
         """Extract secret references."""
         secrets = set()
         # Pattern: secrets.SECRET_NAME or ${{ secrets.SECRET_NAME }}
@@ -165,14 +165,14 @@ class WorkflowAnalyzer:
             secrets.update(matches)
         return sorted(list(secrets))
 
-    def _extract_env_vars(self, data: Dict) -> List[str]:
+    def _extract_env_vars(self, data: dict) -> list[str]:
         """Extract environment variables."""
         env_vars = []
         if "env" in data:
             env_vars.extend(data["env"].keys())
         return env_vars
 
-    def _extract_runners(self, data: Dict) -> List[str]:
+    def _extract_runners(self, data: dict) -> list[str]:
         """Extract runner types."""
         runners = set()
         if "jobs" in data:
@@ -186,7 +186,7 @@ class WorkflowAnalyzer:
                             runners.update(runner)
         return sorted(list(runners))
 
-    def _extract_actions(self, data: Dict) -> List[str]:
+    def _extract_actions(self, data: dict) -> list[str]:
         """Extract GitHub Actions used."""
         actions = set()
         if "jobs" in data:
@@ -201,7 +201,7 @@ class WorkflowAnalyzer:
                                 actions.add(action_name)
         return sorted(list(actions))
 
-    def _extract_python_versions(self, data: Dict) -> List[str]:
+    def _extract_python_versions(self, data: dict) -> list[str]:
         """Extract Python versions from matrix."""
         versions = set()
         if "jobs" in data:
@@ -218,7 +218,7 @@ class WorkflowAnalyzer:
                                 versions.add(str(python_versions))
         return sorted(list(versions))
 
-    def _extract_dependencies(self, content: str) -> Dict[str, bool]:
+    def _extract_dependencies(self, content: str) -> dict[str, bool]:
         """Extract dependency information."""
         return {
             "docker": bool(
@@ -234,7 +234,7 @@ class WorkflowAnalyzer:
             "cargo": "cargo build" in content or "cargo install" in content,
         }
 
-    def generate_summary(self) -> Dict[str, Any]:
+    def generate_summary(self) -> dict[str, Any]:
         """Generate summary statistics."""
         active_count = len(self.workflows)
         guarded_count = sum(1 for w in self.workflows.values() if w["guarded"])
@@ -378,7 +378,7 @@ class WorkflowAnalyzer:
         # aggregate statistics about secret usage rather than listing names.
         total_workflows = len(self.workflows)
         workflows_with_secrets = 0
-        secrets_per_workflow: List[int] = []
+        secrets_per_workflow: list[int] = []
         for info in self.workflows.values():
             count = len(info["secrets"])
             if count > 0:
@@ -414,7 +414,7 @@ class WorkflowAnalyzer:
 
         return "\n".join(md)
 
-    def _determine_priority(self, workflow_name: str, info: Dict) -> str:
+    def _determine_priority(self, workflow_name: str, info: dict) -> str:
         """Determine workflow priority level."""
         # Critical: CI/test workflows
         if any(
@@ -442,7 +442,7 @@ class WorkflowAnalyzer:
 
         return "⚪ Unknown"
 
-    def _categorize_workflows(self) -> Dict[str, List[str]]:
+    def _categorize_workflows(self) -> dict[str, list[str]]:
         """Categorize workflows by function."""
         categories = defaultdict(list)
 

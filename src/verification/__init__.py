@@ -4,4 +4,4 @@ from __future__ import annotations
 
 from .cove import ClaimExtractor, CoVeEngine, VerificationResult
 
-__all__ = ["CoVeEngine", "VerificationResult", "ClaimExtractor"]
+__all__ = ["ClaimExtractor", "CoVeEngine", "VerificationResult"]

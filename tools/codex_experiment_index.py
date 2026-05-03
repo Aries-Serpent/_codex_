@@ -7,7 +7,6 @@ import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
 
 import yaml
 
@@ -16,19 +15,19 @@ import yaml
 class RunRecord:
     run_id: str
     meta_path: str
-    meta: Dict[str, object]
+    meta: dict[str, object]
     mode: str = ""
 
 
-def _load_meta(path: Path) -> Dict[str, object]:
+def _load_meta(path: Path) -> dict[str, object]:
     text = path.read_text(encoding="utf-8")
     if path.suffix in (".yaml", ".yml"):
         return yaml.safe_load(text) or {}
     return json.loads(text)
 
 
-def build_index(runs_root: Path) -> Dict[str, object]:
-    runs: List[RunRecord] = []
+def build_index(runs_root: Path) -> dict[str, object]:
+    runs: list[RunRecord] = []
     for meta_file in sorted(
         list(runs_root.rglob("meta.json"))
         + list(runs_root.rglob("experiment_meta.json"))
@@ -57,7 +56,7 @@ def build_index(runs_root: Path) -> Dict[str, object]:
     return {"runs_root": str(runs_root), "runs": runs}
 
 
-def _write_json(index: Dict[str, object], path: Path) -> None:
+def _write_json(index: dict[str, object], path: Path) -> None:
     records = [record.__dict__ for record in index["runs"]]
     payload = {
         "runs_root": index["runs_root"],
@@ -67,7 +66,7 @@ def _write_json(index: Dict[str, object], path: Path) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(index: Dict[str, object], path: Path) -> None:
+def _write_markdown(index: dict[str, object], path: Path) -> None:
     lines = [
         "# Experiment Index",
         "",

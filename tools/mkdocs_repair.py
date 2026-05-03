@@ -18,8 +18,7 @@ if data.get("strict", None) is not False:
 def fix_path(p: str) -> str:
     p = re.sub(r"(?:^|/)(ops/)?docs/ops/", "docs/ops/", p)
     p = re.sub(r"(?:^|/)(guides/)?docs/guides/", "docs/guides/", p)
-    p = re.sub(r"(?:^|/)(changelog/)?docs/changelog/", "docs/changelog/", p)
-    return p
+    return re.sub(r"(?:^|/)(changelog/)?docs/changelog/", "docs/changelog/", p)
 
 
 def walk_nav(x):

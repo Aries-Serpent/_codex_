@@ -22,11 +22,11 @@ except Exception:  # pragma: no cover - optional mlflow dependency
     METRICS_SCHEMA_URI: str = ""
 
 __all__ = [
-    "RunLogger",
-    "PARAMS_SCHEMA_URI",
     "METRICS_SCHEMA_URI",
+    "PARAMS_SCHEMA_URI",
     "FileLogger",
     "JsonLogFmt",
+    "RunLogger",
     "SessionLogger",
 ]
 

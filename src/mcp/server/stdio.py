@@ -11,8 +11,9 @@ import asyncio
 import json
 import logging
 import sys
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
-from typing import Any, AsyncIterator, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

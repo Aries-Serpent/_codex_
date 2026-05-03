@@ -28,14 +28,14 @@ load_checkpoint = checkpointing.load_checkpoint
 pytest.importorskip("torch")
 pytest.importorskip("peft")
 
-from peft import (  # noqa: E402
+from peft import (
     LoraConfig,
     TaskType,
     get_peft_model,
     get_peft_model_state_dict,
 )
 
-import torch  # noqa: E402  (import after skip checks)
+import torch
 
 # PyTorch 2.x + Python 3.12: torch.FloatStorage PicklingError in torch.save
 _TORCH_312_BUG = sys.version_info >= (3, 12) and tuple(

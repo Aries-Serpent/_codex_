@@ -30,7 +30,7 @@ import shlex
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 try:
     import yaml  # type: ignore
@@ -50,7 +50,7 @@ class StepResult:
     details: str
 
 
-def _load_yaml(path: Path) -> Dict[str, Any]:
+def _load_yaml(path: Path) -> dict[str, Any]:
     if yaml is None:
         raise RuntimeError("PyYAML is required. Install with `pip install pyyaml`.")
     if not path.exists():

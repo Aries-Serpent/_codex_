@@ -255,7 +255,7 @@ def log_event(
                     meta=adapter_meta_json,
                     db_path=db_path,
                 )
-                return None
+                return
             except TypeError as e:
                 logger.warning("monkeypatch adapter call failed (trying minimal): %s", e)
                 try:
@@ -266,15 +266,15 @@ def log_event(
                         e,
                         exc_info=True,
                     )
-            return None
+            return
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
         except TypeError as e:
             logger.warning("shared log_event keyword call failed (retrying without meta): %s", e)
             _shared_log_event(session_id, role, message, db_path=db_path)
-        return None
+        return
     _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
-    return None
+    return
 
 
 _ALLOWED_ROLES = {"system", "user", "assistant", "tool", "INFO", "WARN"}

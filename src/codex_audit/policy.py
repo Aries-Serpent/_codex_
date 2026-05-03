@@ -18,9 +18,9 @@ Author: Codex Team
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, MutableMapping, Sequence
 
 RA_RULES: Mapping[str, str] = {
     "RA-1": "No fabrication: every assertion must be grounded in repository evidence.",

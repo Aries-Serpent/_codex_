@@ -6,6 +6,7 @@ for local-only LoRA testing.
 
 from __future__ import annotations
 
+import importlib.util
 import os
 from typing import Any
 
@@ -25,12 +26,7 @@ def is_peft_available() -> bool:
     Returns:
         True if peft can be imported, False otherwise
     """
-    try:
-        import peft  # noqa: F401
-
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec('peft') is not None
 
 
 def create_mock_lora_config(**kwargs) -> Any:

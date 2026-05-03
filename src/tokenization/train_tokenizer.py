@@ -23,10 +23,11 @@ import logging
 import random
 import sys
 import warnings
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
+from typing import Optional
 
 from ingestion import ingest
 
@@ -107,7 +108,7 @@ def _resolve_streaming_options(cfg: TrainTokenizerConfig) -> tuple[bool, Optiona
     return streaming, chunk_size
 
 
-def _yield_lines(source: Union[str, Iterable[str]]) -> Iterator[str]:
+def _yield_lines(source: str | Iterable[str]) -> Iterator[str]:
     if isinstance(source, str):
         yield source
         return
@@ -274,4 +275,4 @@ else:  # pragma: no cover - fallback when hydra missing
         train(cfg)
 
 
-__all__ = ["TrainTokenizerConfig", "train", "main"]
+__all__ = ["TrainTokenizerConfig", "main", "train"]

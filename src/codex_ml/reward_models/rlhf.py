@@ -12,8 +12,9 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from collections.abc import Iterable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Mapping, MutableMapping, Optional, Sequence
+from typing import Any, Optional
 
 from codex_ml.interfaces.reward_model import RewardModel as RewardModelBase
 from codex_ml.interfaces.rl import RLAgent
@@ -107,7 +108,7 @@ class RewardModel(RewardModelBase):
 
         return self.evaluate(prompt, completion, metadata=metadata)
 
-    def learn(self, data: Iterable[Any]) -> dict[str, float]:  # noqa: D401 - interface method
+    def learn(self, data: Iterable[Any]) -> dict[str, float]:
         # Materialise the iterable so that we can feed it both to the wrapped
         # model and to the calibration logic without exhausting generators.
         materialised = list(data)

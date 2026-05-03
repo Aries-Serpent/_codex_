@@ -13,7 +13,7 @@ import hashlib
 import random
 from collections import deque
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 @dataclass
@@ -105,7 +105,7 @@ class ExperienceReplayBuffer:
         self.buffer.append(experience)
         self.priorities.append(max_priority)
 
-    def sample(self, batch_size: int = 64) -> Tuple[List[Experience], List[float]]:
+    def sample(self, batch_size: int = 64) -> tuple[list[Experience], list[float]]:
         """Sample a batch of experiences with prioritization.
 
         Args:
@@ -146,7 +146,7 @@ class ExperienceReplayBuffer:
         experiences = [self.buffer[i] for i in indices]
         return experiences, weights
 
-    def update_priorities(self, indices: List[int], td_errors: List[float]) -> None:
+    def update_priorities(self, indices: list[int], td_errors: list[float]) -> None:
         """Update priorities based on TD errors.
 
         Args:
@@ -207,8 +207,8 @@ class RewardShaper:
             'error_penalty': error_penalty_weight,
         }
         self.adaptive_weights = adaptive_weights
-        self.component_history: Dict[str, List[float]] = {k: [] for k in self.weights}
-        self.reward_history: List[float] = []
+        self.component_history: dict[str, list[float]] = {k: [] for k in self.weights}
+        self.reward_history: list[float] = []
 
     def compute_reward(
         self,
@@ -217,7 +217,7 @@ class RewardShaper:
         confidence: float,
         coherence: float,
         error_count: int = 0,
-    ) -> Tuple[float, Dict[str, float]]:
+    ) -> tuple[float, dict[str, float]]:
         """Compute shaped reward from components.
 
         Args:
@@ -255,7 +255,7 @@ class RewardShaper:
 
         return total_reward, components
 
-    def compute_potential(self, state: Dict[str, float]) -> float:
+    def compute_potential(self, state: dict[str, float]) -> float:
         """Compute potential function for shaping.
 
         Potential-based shaping: F(s, s') = γΦ(s') - Φ(s)
@@ -297,7 +297,7 @@ class RewardShaper:
                           'coherence': 0.1, 'error_penalty': 0.05}[key]
                 self.weights[key] += 0.01 * (default - self.weights[key])
 
-    def get_statistics(self) -> Dict[str, float]:
+    def get_statistics(self) -> dict[str, float]:
         """Get reward statistics.
 
         Returns:
@@ -362,7 +362,7 @@ class AdaptiveLearningEngine:
         self.batch_size = batch_size
 
         # Q-table (state -> action -> value)
-        self.q_table: Dict[str, Dict[str, float]] = {}
+        self.q_table: dict[str, dict[str, float]] = {}
 
         # Experience replay
         self.replay_buffer = ExperienceReplayBuffer(capacity=buffer_capacity)
@@ -374,15 +374,15 @@ class AdaptiveLearningEngine:
         self.state = LearningState(learning_rate=learning_rate, epsilon=epsilon)
 
         # Action space
-        self.actions: List[str] = []
+        self.actions: list[str] = []
 
         # Q-value history for convergence
-        self.q_history: List[float] = []
+        self.q_history: list[float] = []
 
         # Random generator
         self._rng = random.Random()  # nosec B311 - Not for crypto
 
-    def register_actions(self, actions: List[str]) -> None:
+    def register_actions(self, actions: list[str]) -> None:
         """Register available actions.
 
         Args:
@@ -390,7 +390,7 @@ class AdaptiveLearningEngine:
         """
         self.actions = actions
 
-    def _get_state_key(self, state: Dict[str, Any]) -> str:
+    def _get_state_key(self, state: dict[str, Any]) -> str:
         """Convert state dictionary to hashable key.
 
         Args:
@@ -432,7 +432,7 @@ class AdaptiveLearningEngine:
             return 0.0
         return max(self.q_table[state].values())
 
-    def select_action(self, state: Dict[str, Any]) -> str:
+    def select_action(self, state: dict[str, Any]) -> str:
         """Select action using ε-greedy policy.
 
         Args:
@@ -465,10 +465,10 @@ class AdaptiveLearningEngine:
 
     def update(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         reward: float,
-        next_state: Dict[str, Any],
+        next_state: dict[str, Any],
         done: bool = False,
     ) -> float:
         """Update Q-value based on experience.
@@ -621,7 +621,7 @@ class AdaptiveLearningEngine:
         # Lower variance = higher convergence
         self.state.q_value_convergence = 1.0 / (1.0 + variance)
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get learning statistics.
 
         Returns:
@@ -641,7 +641,7 @@ class AdaptiveLearningEngine:
             'reward_stats': self.reward_shaper.get_statistics(),
         }
 
-    def save_policy(self) -> Dict[str, Any]:
+    def save_policy(self) -> dict[str, Any]:
         """Save current policy for persistence.
 
         Returns:
@@ -667,7 +667,7 @@ class AdaptiveLearningEngine:
             },
         }
 
-    def load_policy(self, policy_data: Dict[str, Any]) -> None:
+    def load_policy(self, policy_data: dict[str, Any]) -> None:
         """Load saved policy.
 
         Args:

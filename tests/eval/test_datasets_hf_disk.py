@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("datasets")
 
-from codex_ml.eval.datasets import DatasetBundle, Example, load_dataset  # noqa: E402
+from codex_ml.eval.datasets import DatasetBundle, Example, load_dataset
 
 
 def test_load_dataset_from_datasetdict(tmp_path: Path):

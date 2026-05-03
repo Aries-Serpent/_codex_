@@ -43,7 +43,7 @@ from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
-    resolve_strategy,  # noqa: F401  (re-exported for monkeypatching)
+    resolve_strategy,
 )
 from codex_ml.utils import checkpoint_core as _ckpt_core
 from codex_ml.utils.checkpoint_core import CheckpointMeta
@@ -52,8 +52,8 @@ from codex_ml.utils.repro import capture_environment, set_seed
 # Re-export checkpoint_core functions under patchable module-level names so
 # that tests can monkeypatch `codex_ml.training.unified_training.save_checkpoint`
 # and `codex_ml.training.unified_training.load_checkpoint`.
-save_checkpoint = _ckpt_core.save_checkpoint  # noqa: F401
-load_checkpoint = _ckpt_core.load_checkpoint  # noqa: F401
+save_checkpoint = _ckpt_core.save_checkpoint
+load_checkpoint = _ckpt_core.load_checkpoint
 
 logger = logging.getLogger(__name__)
 
@@ -639,10 +639,10 @@ def functional_training(*args: Any, **kwargs: Any) -> Any:
 __all__ = [
     "ContinualConfig",
     "ContinualPhase",
-    "distributed_context",
     "UnifiedTrainingConfig",
-    "run_unified_training",
-    "train_loop",
+    "distributed_context",
     "functional_training",
     "resolve_strategy",  # re-exported for monkeypatching
+    "run_unified_training",
+    "train_loop",
 ]

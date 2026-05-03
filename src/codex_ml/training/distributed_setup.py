@@ -18,13 +18,13 @@ import torch
 logger = logging.getLogger(__name__)
 
 __all__ = [
-    "setup_distributed",
+    "barrier",
     "cleanup_distributed",
-    "is_distributed",
     "get_rank",
     "get_world_size",
+    "is_distributed",
     "is_main_process",
-    "barrier",
+    "setup_distributed",
 ]
 
 

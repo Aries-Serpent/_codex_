@@ -21,8 +21,9 @@ import argparse
 import fnmatch
 import json
 import sys
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Optional
 
 
 @dataclass
@@ -30,16 +31,16 @@ class Candidate:
     idx: int
     turn_id: str
     payload: str
-    hits: List[str]
-    missing: List[str]
+    hits: list[str]
+    missing: list[str]
 
 
-def _read_json(path: str) -> Dict[str, Any]:
+def _read_json(path: str) -> dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def _read_rules(path: str) -> Dict[str, Any]:
+def _read_rules(path: str) -> dict[str, Any]:
     obj = _read_json(path)
     if "required_signals" not in obj or not isinstance(obj["required_signals"], list):
         raise ValueError("rules file missing 'required_signals' list")
@@ -48,12 +49,12 @@ def _read_rules(path: str) -> Dict[str, Any]:
     return obj
 
 
-def _path_variants(path: Iterable[str]) -> List[str]:
+def _path_variants(path: Iterable[str]) -> list[str]:
     parts = list(path)
     if not parts:
         return [""]
     variants = [".".join(parts)]
-    merged: List[str] = []
+    merged: list[str] = []
     for component in parts:
         if component.isdigit() and merged:
             merged[-1] = f"{merged[-1]}[{component}]"
@@ -69,10 +70,10 @@ def _normalize_pattern(pattern: str) -> str:
     return pattern.replace("[*]", ".*")
 
 
-def _glob_first(d: Dict[str, Any], pattern: str) -> Optional[Tuple[str, Any]]:
+def _glob_first(d: dict[str, Any], pattern: str) -> Optional[tuple[str, Any]]:
     """Depth-first search over nested structures returning first key path matching pattern."""
     pattern = _normalize_pattern(pattern)
-    stack: List[Tuple[List[str], Any]] = [([], d)]
+    stack: list[tuple[list[str], Any]] = [([], d)]
     while stack:
         path, cur = stack.pop()
         if isinstance(cur, dict):
@@ -92,12 +93,12 @@ def _glob_first(d: Dict[str, Any], pattern: str) -> Optional[Tuple[str, Any]]:
     return None
 
 
-def _glob_all(d: Dict[str, Any], pattern: str) -> List[Tuple[str, Any]]:
+def _glob_all(d: dict[str, Any], pattern: str) -> list[tuple[str, Any]]:
     """Return all key paths matching pattern in traversal order."""
     pattern = _normalize_pattern(pattern)
-    matches: List[Tuple[str, Any]] = []
+    matches: list[tuple[str, Any]] = []
 
-    def _visit(path: List[str], cur: Any) -> None:
+    def _visit(path: list[str], cur: Any) -> None:
         for candidate in _path_variants(path):
             if candidate and fnmatch.fnmatch(candidate, pattern):
                 matches.append((candidate, cur))
@@ -113,7 +114,7 @@ def _glob_all(d: Dict[str, Any], pattern: str) -> List[Tuple[str, Any]]:
     return matches
 
 
-def _extract_siblings(tm: Dict[str, Any]) -> List[str]:
+def _extract_siblings(tm: dict[str, Any]) -> list[str]:
     owners = [key for key in tm if key.startswith("task_e_") and "~" in key]
     if not owners:
         owners = [
@@ -144,7 +145,7 @@ def _resolve_turn_id(node: Any) -> Optional[str]:
     return None
 
 
-def _extract_turn_obj(entry: Any) -> Dict[str, Any]:
+def _extract_turn_obj(entry: Any) -> dict[str, Any]:
     if isinstance(entry, dict):
         turn = entry.get("turn")
         if isinstance(turn, dict):
@@ -153,12 +154,12 @@ def _extract_turn_obj(entry: Any) -> Dict[str, Any]:
     return {}
 
 
-def _extract_payload(turn_obj: Dict[str, Any], path_hints: List[str]) -> str:
+def _extract_payload(turn_obj: dict[str, Any], path_hints: list[str]) -> str:
     for hint in path_hints:
         hit = _glob_first(turn_obj, hint)
         if hit and isinstance(hit[1], str):
             return hit[1]
-    payloads: List[str] = []
+    payloads: list[str] = []
     for hint in ("diff", "pr_message", "message_text"):
         hit = _glob_first(turn_obj, f"*{hint}")
         if hit and isinstance(hit[1], str):
@@ -166,9 +167,9 @@ def _extract_payload(turn_obj: Dict[str, Any], path_hints: List[str]) -> str:
     return "\n\n".join(payloads)
 
 
-def _scan_payload(payload: str, required: List[str]) -> Tuple[List[str], List[str]]:
-    hits: List[str] = []
-    missing: List[str] = []
+def _scan_payload(payload: str, required: list[str]) -> tuple[list[str], list[str]]:
+    hits: list[str] = []
+    missing: list[str] = []
     lowered = payload.lower()
     for signal in required:
         if signal.lower() in lowered:
@@ -178,11 +179,11 @@ def _scan_payload(payload: str, required: List[str]) -> Tuple[List[str], List[st
     return hits, missing
 
 
-def _iter_candidates(data: Dict[str, Any], rules: Dict[str, Any]) -> List[Candidate]:
+def _iter_candidates(data: dict[str, Any], rules: dict[str, Any]) -> list[Candidate]:
     tm = data.get("turn_mapping", {})
     selection_hint = rules.get("selection_path_hint")
-    candidate_ids: List[str] = []
-    candidate_turns: List[Dict[str, Any]] = []
+    candidate_ids: list[str] = []
+    candidate_turns: list[dict[str, Any]] = []
 
     if selection_hint:
         for path, node in _glob_all(data, selection_hint):
@@ -204,7 +205,7 @@ def _iter_candidates(data: Dict[str, Any], rules: Dict[str, Any]) -> List[Candid
             candidate_ids.append(turn_id)
             candidate_turns.append(turn_obj)
 
-    candidates: List[Candidate] = []
+    candidates: list[Candidate] = []
     seen: set[str] = set()
     display_idx = 1
     for turn_id, turn_obj in zip(candidate_ids, candidate_turns):
@@ -218,7 +219,7 @@ def _iter_candidates(data: Dict[str, Any], rules: Dict[str, Any]) -> List[Candid
     return candidates
 
 
-def _print_table(candidates: List[Candidate], optional: List[str]) -> None:
+def _print_table(candidates: list[Candidate], optional: list[str]) -> None:
     print("== Selection Guard Report ==")
     print("idx | req_hits/total | opt_hits | status")
     print("----+---------------+----------+--------")
@@ -232,7 +233,7 @@ def _print_table(candidates: List[Candidate], optional: List[str]) -> None:
             print(f"     missing: {', '.join(cand.missing)}")
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Verify docs surface + guardrails on selected assistant message."
     )

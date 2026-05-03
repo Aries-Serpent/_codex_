@@ -10,12 +10,12 @@ Test suite for scripts/mcp/mcp-package CLI
 Tests command-line interface and integration
 """
 
-import json  # noqa: E402
-import subprocess  # Using stdlib subprocess.run which supports timeout parameter  # noqa: E402
-import sys  # noqa: E402
-from pathlib import Path  # noqa: E402
+import json
+import subprocess  # Using stdlib subprocess.run which supports timeout parameter
+import sys
+from pathlib import Path
 
-import pytest  # noqa: E402
+import pytest
 
 
 @pytest.fixture

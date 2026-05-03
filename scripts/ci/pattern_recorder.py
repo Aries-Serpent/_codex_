@@ -51,7 +51,7 @@ import sqlite3
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # ---------------------------------------------------------------------------
 # DB helpers
@@ -143,7 +143,7 @@ def _insert_pattern(
 #     (scripts/ci/auto_fix_common_issues.py)
 #   - generate_json_report pattern_map (same file)
 
-_PATTERN_META: Dict[str, Dict[str, Any]] = {
+_PATTERN_META: dict[str, dict[str, Any]] = {
     "Unused Imports":          {"id": 1,  "auto_fixable": True},
     "Unused Variables":        {"id": 2,  "auto_fixable": False},
     "YAML Indentation":        {"id": 3,  "auto_fixable": False},
@@ -198,20 +198,20 @@ def record_from_report(
     Returns the number of rows inserted (0 on error).
     """
     try:
-        data: Dict[str, Any] = json.loads(report_path.read_text(encoding="utf-8"))
+        data: dict[str, Any] = json.loads(report_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         print(f"ERROR: cannot read report {report_path}: {exc}", file=sys.stderr)
         return 0
 
-    issues: List[Dict[str, Any]] = data.get("issues", [])
-    fixes_applied: Dict[str, int] = data.get("fixes_applied", {})
+    issues: list[dict[str, Any]] = data.get("issues", [])
+    fixes_applied: dict[str, int] = data.get("fixes_applied", {})
     timestamp = data.get("timestamp")
 
     # Track remaining fix credits per pattern name so that only the first N
     # occurrences of each pattern are marked as fixed (where N is
     # fixes_applied[name]).  This prevents inflating fix_rate when only some
     # occurrences were auto-fixed.
-    fix_credits: Dict[str, int] = fixes_applied.copy()
+    fix_credits: dict[str, int] = fixes_applied.copy()
 
     inserted = 0
     for issue in issues:
@@ -309,7 +309,7 @@ def summary(conn: sqlite3.Connection) -> None:
 
 def high_recurrence(
     conn: sqlite3.Connection, min_occurrences: int = 3, min_fix_rate: float = 0.5
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Return patterns whose total occurrences >= *min_occurrences* **and**
     fix-rate >= *min_fix_rate*.
 
@@ -345,7 +345,7 @@ def high_recurrence(
 def cross_pr_correlation(
     conn: sqlite3.Connection,
     min_prs: int = 3,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Return patterns that have recurred across at least *min_prs* distinct PRs.
 
     A "PR" is identified by a distinct ``git_sha`` value recorded in the
@@ -393,7 +393,7 @@ def cross_pr_correlation(
 def pattern_trend(
     conn: sqlite3.Connection,
     days: int = 7,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Return a 7-day rolling window of daily pattern occurrence counts.
 
     Each entry in the returned list represents one calendar day (UTC) within
@@ -421,11 +421,11 @@ def pattern_trend(
         """,
         (f"-{days - 1} days",),
     ).fetchall()
-    counts: Dict[str, int] = {r["day"]: r["cnt"] for r in rows}
+    counts: dict[str, int] = {r["day"]: r["cnt"] for r in rows}
     return [{"date": d, "count": counts.get(d, 0)} for d in date_range]
 
 
-def export_json(conn: sqlite3.Connection, output_path: Optional[Path] = None) -> Dict[str, Any]:
+def export_json(conn: sqlite3.Connection, output_path: Optional[Path] = None) -> dict[str, Any]:
     """Serialise the full patterns table (and summary) as a JSON dict.
 
     If *output_path* is given, also writes the file.  Always returns the dict.
@@ -435,7 +435,7 @@ def export_json(conn: sqlite3.Connection, output_path: Optional[Path] = None) ->
         "       auto_fixable, fixed, session, git_sha, timestamp "
         "FROM patterns ORDER BY id ASC"
     ).fetchall()
-    data: Dict[str, Any] = {
+    data: dict[str, Any] = {
         "exported_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "total": len(rows),
         "occurrences": [dict(r) for r in rows],
@@ -581,7 +581,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
 

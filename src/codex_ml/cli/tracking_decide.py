@@ -20,7 +20,6 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-"""Inspect the MLflow tracking guard decision from the command line."""
 
 
 import json

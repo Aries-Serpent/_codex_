@@ -609,7 +609,7 @@ def generate_status_update() -> dict[str, Any]:
         if status_files:
             previous_report = str(status_files[-1].relative_to(REPO_ROOT))
 
-    status_update = {
+    return {
         "metadata": {
             "title": f"📍 `_codex_` : Status Update {datetime.now(timezone.utc).strftime('%Y-%m-%d')}",
             "timestamp_utc": timestamp,
@@ -756,7 +756,6 @@ def generate_status_update() -> dict[str, Any]:
         ],
     }
 
-    return status_update
 
 
 def validate_report(report: dict[str, Any]) -> tuple[bool, list[str]]:

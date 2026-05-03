@@ -6,12 +6,11 @@ Test module for mlflow offline guard.
 
 import os
 
-# ruff: noqa: E402 - pytest.importorskip must precede optional mlflow import.
 import pytest
 
 mlflow = pytest.importorskip("mlflow")
 
-from src.codex_ml.utils import experiment_tracking_mlflow as etm  # noqa: E402
+from src.codex_ml.utils import experiment_tracking_mlflow as etm
 
 
 def _reset_mlflow_uri() -> None:

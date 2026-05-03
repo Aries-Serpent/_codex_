@@ -34,11 +34,11 @@ def test_rng_snapshot_restore_consistency() -> None:
 
     state = checkpoint_core.capture_rng_state()
 
-    baseline_rand = [random.random() for _ in range(3)]  # noqa: S311
+    baseline_rand = [random.random() for _ in range(3)]
     baseline_np = np.random.random(3) if np is not None else None
     baseline_torch = torch.rand(3) if torch is not None and _torch_has_rand else None
 
-    _ = [random.random() for _ in range(5)]  # noqa: S311
+    _ = [random.random() for _ in range(5)]
     if np is not None:
         _ = np.random.random(5)
     if torch is not None and _torch_has_rand:
@@ -46,7 +46,7 @@ def test_rng_snapshot_restore_consistency() -> None:
 
     checkpoint_core.restore_rng_state(state)
 
-    assert [random.random() for _ in range(3)] == baseline_rand  # noqa: S311
+    assert [random.random() for _ in range(3)] == baseline_rand
     if np is not None and baseline_np is not None:
         assert np.allclose(np.random.random(3), baseline_np)
     if torch is not None and _torch_has_rand and baseline_torch is not None:

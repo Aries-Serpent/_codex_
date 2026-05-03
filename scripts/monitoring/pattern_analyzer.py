@@ -22,7 +22,7 @@ Created: 2026-01-22
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import yaml
 
@@ -45,7 +45,7 @@ class PatternAnalyzer:
 
         logger.info(f"Loaded {len(self.patterns)} patterns from {pattern_db_path}")
 
-    def _load_patterns(self) -> List[Dict[str, Any]]:
+    def _load_patterns(self) -> list[dict[str, Any]]:
         """Load error patterns from YAML database."""
         if not self.pattern_db_path.exists():
             logger.warning(f"Pattern database not found: {self.pattern_db_path}")
@@ -56,7 +56,7 @@ class PatternAnalyzer:
 
         return data.get('patterns', [])
 
-    def _load_statistical_patterns(self) -> List[Dict[str, Any]]:
+    def _load_statistical_patterns(self) -> list[dict[str, Any]]:
         """Load statistical patterns from YAML database."""
         if not self.pattern_db_path.exists():
             return []
@@ -70,7 +70,7 @@ class PatternAnalyzer:
         self,
         log_content: str,
         confidence_threshold: float = 0.6
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Analyze log content for error patterns.
 
@@ -97,9 +97,9 @@ class PatternAnalyzer:
 
     def _match_pattern(
         self,
-        pattern: Dict[str, Any],
+        pattern: dict[str, Any],
         log_content: str
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict[str, Any]]:
         """
         Match a single pattern against log content.
 
@@ -146,7 +146,7 @@ class PatternAnalyzer:
 
         return None
 
-    def _format_suggestion(self, suggestion: str, match_groups: Tuple) -> str:
+    def _format_suggestion(self, suggestion: str, match_groups: tuple) -> str:
         """
         Format suggestion string with captured groups.
 
@@ -170,8 +170,8 @@ class PatternAnalyzer:
 
     def analyze_statistical_patterns(
         self,
-        metrics: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        metrics: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Analyze metrics for statistical patterns (flakiness, degradation).
 
@@ -192,9 +192,9 @@ class PatternAnalyzer:
 
     def _match_statistical_pattern(
         self,
-        pattern: Dict[str, Any],
-        metrics: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
+        pattern: dict[str, Any],
+        metrics: dict[str, Any]
+    ) -> Optional[dict[str, Any]]:
         """
         Match a statistical pattern against metrics.
 
@@ -242,8 +242,8 @@ class PatternAnalyzer:
 
     def categorize_failure(
         self,
-        matches: List[Dict[str, Any]]
-    ) -> Tuple[str, str]:
+        matches: list[dict[str, Any]]
+    ) -> tuple[str, str]:
         """
         Determine overall category and severity from matches.
 
@@ -265,7 +265,7 @@ class PatternAnalyzer:
 
     def get_agent_recommendation(
         self,
-        matches: List[Dict[str, Any]]
+        matches: list[dict[str, Any]]
     ) -> Optional[str]:
         """
         Get recommended agent based on pattern matches.
@@ -284,7 +284,7 @@ class PatternAnalyzer:
 
     def generate_pattern_report(
         self,
-        matches: List[Dict[str, Any]],
+        matches: list[dict[str, Any]],
         max_patterns: int = 5
     ) -> str:
         """
@@ -333,7 +333,7 @@ class PatternAnalyzer:
 
     def calculate_overall_confidence(
         self,
-        matches: List[Dict[str, Any]]
+        matches: list[dict[str, Any]]
     ) -> float:
         """
         Calculate overall confidence score from all matches.

@@ -46,8 +46,7 @@ async def enforce_request_size_limits(request: Request, call_next):
         except ValueError:
             pass  # Invalid Content-Length header, let request proceed
 
-    response = await call_next(request)
-    return response
+    return await call_next(request)
 
 
 # Example endpoint with file upload

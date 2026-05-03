@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, List
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "audit_artifacts" / "capabilities_raw.json"
@@ -31,10 +30,10 @@ HINTS = [
 ]
 
 
-def discover() -> List[Dict]:
-    results: List[Dict] = []
+def discover() -> list[dict]:
+    results: list[dict] = []
     for name, keywords, tags in HINTS:
-        evidence: List[str] = []
+        evidence: list[str] = []
         for kw in keywords:
             for p in REPO.rglob(f"*{kw}*"):
                 if p.is_file() and len(evidence) < 25:

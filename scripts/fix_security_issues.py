@@ -16,7 +16,6 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict
 
 
 def fix_hardcoded_password_false(file_path: Path, dry_run: bool = False) -> int:
@@ -160,7 +159,7 @@ def add_subprocess_import_nosec(file_path: Path, dry_run: bool = False) -> int:
     return fixes
 
 
-def run_bandit_verification() -> Dict[str, int]:
+def run_bandit_verification() -> dict[str, int]:
     """
     Run Bandit to verify security issues.
 

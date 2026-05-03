@@ -11,7 +11,7 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import yaml
 
@@ -33,8 +33,8 @@ class DiagnosticReport:
     timestamp: str
     status: str
     root_cause: Optional[str]
-    findings: List[Finding]
-    remediation: List[str]
+    findings: list[Finding]
+    remediation: list[str]
     auto_fixable: bool
     confidence: float
 
@@ -52,14 +52,14 @@ class CIDiagnosticAgent:
 
         self.patterns = self._compile_patterns()
 
-    def _compile_patterns(self) -> Dict[str, re.Pattern]:
+    def _compile_patterns(self) -> dict[str, re.Pattern]:
         """Compile regex patterns from config"""
         patterns = {}
         for name, config in self.config['failure_patterns'].items():
             patterns[name] = re.compile(config['pattern'])
         return patterns
 
-    def analyze_logs(self, logs: str) -> List[Finding]:
+    def analyze_logs(self, logs: str) -> list[Finding]:
         """Analyze logs for known failure patterns"""
         findings = []
 
@@ -86,7 +86,7 @@ class CIDiagnosticAgent:
 
         return findings
 
-    def determine_root_cause(self, findings: List[Finding]) -> Tuple[Optional[str], float]:
+    def determine_root_cause(self, findings: list[Finding]) -> tuple[Optional[str], float]:
         """Determine most likely root cause with confidence score"""
         if not findings:
             return None, 0.0
@@ -121,7 +121,7 @@ class CIDiagnosticAgent:
         confidence = min(pattern_counts[most_common] / len(findings), 1.0)
         return most_common, confidence * 0.70
 
-    def suggest_fixes(self, root_cause: Optional[str]) -> List[str]:
+    def suggest_fixes(self, root_cause: Optional[str]) -> list[str]:
         """Suggest remediation steps"""
         if not root_cause:
             return ["No specific root cause identified. Review logs manually."]

@@ -58,7 +58,7 @@ import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -115,7 +115,7 @@ def _run_auto_fix(
     return subprocess.run(cmd, capture_output=True, text=True, cwd=_REPO_ROOT)
 
 
-def _print_report(report: Dict[str, Any], *, check_only: bool) -> None:
+def _print_report(report: dict[str, Any], *, check_only: bool) -> None:
     """Print a human-readable pipeline summary."""
     total = report.get("total_issues", 0)
     auto_fix = report.get("auto_fixable", 0)
@@ -152,13 +152,13 @@ def _print_report(report: Dict[str, Any], *, check_only: bool) -> None:
 
 def _write_artefact(
     path: str,
-    report: Dict[str, Any],
+    report: dict[str, Any],
     *,
     recorded: int,
     pipeline_status: str,
 ) -> None:
     """Write the structured pipeline artefact JSON."""
-    artefact: Dict[str, Any] = {
+    artefact: dict[str, Any] = {
         "pipeline_timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "pipeline_status": pipeline_status,
         "git_sha": _GIT_SHA,
@@ -176,7 +176,7 @@ def _write_artefact(
 # Main
 # ---------------------------------------------------------------------------
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Run the full CI pattern pipeline: detect → fix → record → report",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -260,7 +260,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 print(f"    {line}")
 
         try:
-            report: Dict[str, Any] = json.loads(Path(tmp_path).read_text())
+            report: dict[str, Any] = json.loads(Path(tmp_path).read_text())
         except (json.JSONDecodeError, OSError):
             report = {"total_issues": 0, "auto_fixable": 0, "issues": [], "fixes_applied": {}}
 

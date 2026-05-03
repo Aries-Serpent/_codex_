@@ -15,7 +15,7 @@ try:  # pragma: no cover - optional torch dependency
 except Exception:  # pragma: no cover - torch missing
     torch = None  # type: ignore[assignment]
 
-__all__ = ["save_checkpoint", "load_checkpoint"]
+__all__ = ["load_checkpoint", "save_checkpoint"]
 
 
 def save_checkpoint(

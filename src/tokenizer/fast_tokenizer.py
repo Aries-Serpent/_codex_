@@ -18,8 +18,8 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Iterable, Sequence
 
 logger = logging.getLogger(__name__)
 

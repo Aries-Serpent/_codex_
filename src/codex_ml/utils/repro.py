@@ -313,11 +313,11 @@ def capture_environment(
 
 
 __all__ = [
+    "DatasetManifest",
+    "_dataset_version",
     "capture_environment",
     "compute_directory_hash",
     "compute_file_hash",
-    "DatasetManifest",
-    "_dataset_version",
     "record_dataset_checksums",
     "restore_rng_state",
     "set_deterministic",

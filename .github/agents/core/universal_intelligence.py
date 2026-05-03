@@ -29,10 +29,11 @@ import math
 import os
 import random
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 # =============================================================================
 # CONSTANTS
@@ -101,7 +102,7 @@ class TaskComplexity(Enum):
     VERY_HIGH = "very_high"
 
 
-def estimate_task_complexity(spec: "TaskSpec") -> Tuple[float, TaskComplexity]:
+def estimate_task_complexity(spec: "TaskSpec") -> tuple[float, TaskComplexity]:
     """Estimate computational complexity of a task.
 
     Complexity is estimated based on:
@@ -146,7 +147,7 @@ def estimate_task_complexity(spec: "TaskSpec") -> Tuple[float, TaskComplexity]:
     return complexity_score, level
 
 
-def validate_task_spec_schema(spec: "TaskSpec") -> Tuple[bool, List[str]]:
+def validate_task_spec_schema(spec: "TaskSpec") -> tuple[bool, list[str]]:
     """Validate task specification against JSON schema.
 
     Performs structural validation beyond basic field presence checks.
@@ -205,10 +206,10 @@ class EnvironmentAdapter:
 
     def execute_step(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         step: int,
-    ) -> Tuple[Dict[str, Any], float, bool]:
+    ) -> tuple[dict[str, Any], float, bool]:
         """Execute one step in the environment.
 
         Args:
@@ -227,10 +228,10 @@ class GridWorldAdapter(EnvironmentAdapter):
 
     def execute_step(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         step: int,
-    ) -> Tuple[Dict[str, Any], float, bool]:
+    ) -> tuple[dict[str, Any], float, bool]:
         """Execute gridworld step.
 
         State format: {"x": int, "y": int, "goal": {"x": int, "y": int}}
@@ -270,10 +271,10 @@ class BanditAdapter(EnvironmentAdapter):
 
     def execute_step(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         step: int,
-    ) -> Tuple[Dict[str, Any], float, bool]:
+    ) -> tuple[dict[str, Any], float, bool]:
         """Execute bandit step.
 
         State format: {"arm_means": [float, ...], "pulls": int}
@@ -312,10 +313,10 @@ class ClassificationAdapter(EnvironmentAdapter):
 
     def execute_step(
         self,
-        state: Dict[str, Any],
+        state: dict[str, Any],
         action: str,
         step: int,
-    ) -> Tuple[Dict[str, Any], float, bool]:
+    ) -> tuple[dict[str, Any], float, bool]:
         """Execute classification step.
 
         State format: {"features": [float, ...], "true_label": int, "num_classes": int}
@@ -378,9 +379,9 @@ class TaskSpec:
         seed: Random seed for deterministic execution
     """
     environment: str
-    initial_state: Dict[str, Any]
-    reward_spec: Dict[str, Any]
-    termination: Dict[str, Any]
+    initial_state: dict[str, Any]
+    reward_spec: dict[str, Any]
+    termination: dict[str, Any]
     seed: int = 12345
 
     def to_json(self) -> str:
@@ -415,10 +416,10 @@ class TaskResult:
         v_mu_pi: Value function estimate V(μ, π)
         metrics: Additional metrics dict
     """
-    action_sequence: List[str]
+    action_sequence: list[str]
     cumulative_reward: float
     v_mu_pi: float
-    metrics: Dict[str, float]
+    metrics: dict[str, float]
 
     def to_json(self) -> str:
         """Serialize to JSON."""
@@ -457,8 +458,8 @@ class UniversalTaskInterface:
         """
         self.seed = seed
         self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
-        self.task_history: List[Tuple[TaskSpec, TaskResult]] = []
-        self.adapters: Dict[str, EnvironmentAdapter] = {}
+        self.task_history: list[tuple[TaskSpec, TaskResult]] = []
+        self.adapters: dict[str, EnvironmentAdapter] = {}
         self._initialize_adapters()
 
     def _initialize_adapters(self) -> None:
@@ -466,7 +467,7 @@ class UniversalTaskInterface:
         for env_name, adapter_class in ENVIRONMENT_ADAPTERS.items():
             self.adapters[env_name] = adapter_class(seed=self.seed)
 
-    def validate_task_spec(self, spec: TaskSpec) -> Tuple[bool, List[str]]:
+    def validate_task_spec(self, spec: TaskSpec) -> tuple[bool, list[str]]:
         """Validate task specification using JSON schema validation.
 
         Args:
@@ -478,7 +479,7 @@ class UniversalTaskInterface:
         # Use enhanced schema validation
         return validate_task_spec_schema(spec)
 
-    def estimate_complexity(self, spec: TaskSpec) -> Tuple[float, TaskComplexity]:
+    def estimate_complexity(self, spec: TaskSpec) -> tuple[float, TaskComplexity]:
         """Estimate task computational complexity.
 
         Args:
@@ -637,11 +638,11 @@ class TaskFeatures:
         risk: Risk assessment
     """
     domain_signature: str
-    complexity: Dict[str, int]
-    similarity_topk: List[Dict[str, Any]]
-    risk: Dict[str, float]
+    complexity: dict[str, int]
+    similarity_topk: list[dict[str, Any]]
+    risk: dict[str, float]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "domain_signature": self.domain_signature,
@@ -667,7 +668,7 @@ class MetaPolicyRouter:
     - Strategy performance tracking
     """
 
-    def __init__(self, seed: int = 12345, strategies: Optional[List[str]] = None):
+    def __init__(self, seed: int = 12345, strategies: Optional[list[str]] = None):
         """Initialize router.
 
         Args:
@@ -682,7 +683,7 @@ class MetaPolicyRouter:
         self.amplitudes = self._initialize_superposition()
 
         # Tracking
-        self.selection_history: List[Dict[str, Any]] = []
+        self.selection_history: list[dict[str, Any]] = []
 
         # PRE-COMMIT 2: Meta-learning algorithm states
         self.maml_state = MAMLState(
@@ -698,7 +699,7 @@ class MetaPolicyRouter:
         )
 
         # Performance tracking
-        self.performance_tracker: Dict[str, StrategyPerformance] = {
+        self.performance_tracker: dict[str, StrategyPerformance] = {
             strategy: StrategyPerformance(strategy_name=strategy)
             for strategy in self.strategies
         }
@@ -706,7 +707,7 @@ class MetaPolicyRouter:
         # Hyperparameter tuner
         self.hyperparam_tuner = DynamicHyperparamTuner(seed=seed)
 
-    def _initialize_superposition(self) -> List[StrategyAmplitude]:
+    def _initialize_superposition(self) -> list[StrategyAmplitude]:
         """Initialize uniform superposition over strategies."""
         n = len(self.strategies)
         amplitude = 1.0 / math.sqrt(n)
@@ -725,7 +726,7 @@ class MetaPolicyRouter:
                 a.real /= norm
                 a.imag /= norm
 
-    def get_probability_distribution(self) -> Dict[str, float]:
+    def get_probability_distribution(self) -> dict[str, float]:
         """Get probability distribution over strategies."""
         return {a.strategy: a.probability for a in self.amplitudes}
 
@@ -792,7 +793,7 @@ class MetaPolicyRouter:
 
         return f"action_{rng.randint(0, 9)}"
 
-    def get_hyperparams(self, strategy: str) -> Dict[str, float]:
+    def get_hyperparams(self, strategy: str) -> dict[str, float]:
         """Get hyperparameters for selected strategy."""
         base_params = {
             "meta_lr": 0.001,
@@ -818,7 +819,7 @@ class MetaPolicyRouter:
 
         return base_params
 
-    def adapt_with_maml(self, task_id: str, task_data: List[Tuple[Any, Any]]) -> Dict[str, float]:
+    def adapt_with_maml(self, task_id: str, task_data: list[tuple[Any, Any]]) -> dict[str, float]:
         """Adapt using MAML algorithm.
 
         Args:
@@ -830,7 +831,7 @@ class MetaPolicyRouter:
         """
         return self.maml_state.adapt_to_task(task_id, task_data)
 
-    def adapt_with_reptile(self, task_id: str, task_data: List[Tuple[Any, Any]]) -> Dict[str, float]:
+    def adapt_with_reptile(self, task_id: str, task_data: list[tuple[Any, Any]]) -> dict[str, float]:
         """Adapt using Reptile algorithm.
 
         Args:
@@ -853,7 +854,7 @@ class MetaPolicyRouter:
         if strategy in self.performance_tracker:
             self.performance_tracker[strategy].update(score, success)
 
-    def get_performance_stats(self) -> Dict[str, Dict[str, Any]]:
+    def get_performance_stats(self) -> dict[str, dict[str, Any]]:
         """Get performance statistics for all strategies.
 
         Returns:
@@ -893,13 +894,13 @@ class MAMLState:
         inner_lr: Inner loop learning rate
         inner_steps: Number of inner optimization steps
     """
-    meta_params: Dict[str, float] = field(default_factory=dict)
-    task_params: Dict[str, Dict[str, float]] = field(default_factory=dict)
+    meta_params: dict[str, float] = field(default_factory=dict)
+    task_params: dict[str, dict[str, float]] = field(default_factory=dict)
     meta_lr: float = 0.001
     inner_lr: float = 0.01
     inner_steps: int = 5
 
-    def adapt_to_task(self, task_id: str, task_data: List[Tuple[Any, Any]]) -> Dict[str, float]:
+    def adapt_to_task(self, task_id: str, task_data: list[tuple[Any, Any]]) -> dict[str, float]:
         """Adapt meta-parameters to a specific task.
 
         Args:
@@ -923,7 +924,7 @@ class MAMLState:
         self.task_params[task_id] = adapted
         return adapted
 
-    def meta_update(self, task_results: Dict[str, float]) -> None:
+    def meta_update(self, task_results: dict[str, float]) -> None:
         """Update meta-parameters based on task performance.
 
         Args:
@@ -953,11 +954,11 @@ class ReptileState:
         step_size: Step size for meta-updates
         inner_steps: Number of SGD steps per task
     """
-    init_params: Dict[str, float] = field(default_factory=dict)
+    init_params: dict[str, float] = field(default_factory=dict)
     step_size: float = 0.01
     inner_steps: int = 10
 
-    def adapt_to_task(self, task_id: str, task_data: List[Tuple[Any, Any]]) -> Dict[str, float]:
+    def adapt_to_task(self, task_id: str, task_data: list[tuple[Any, Any]]) -> dict[str, float]:
         """Adapt to a specific task using SGD.
 
         Args:
@@ -978,7 +979,7 @@ class ReptileState:
 
         return adapted
 
-    def meta_update(self, task_params: Dict[str, float]) -> None:
+    def meta_update(self, task_params: dict[str, float]) -> None:
         """Update initialization toward task-adapted parameters.
 
         Reptile update: θ ← θ + ε(φ - θ)
@@ -1007,7 +1008,7 @@ class StrategyPerformance:
         failure_count: Number of failed adaptations
     """
     strategy_name: str
-    task_scores: List[float] = field(default_factory=list)
+    task_scores: list[float] = field(default_factory=list)
     avg_score: float = 0.0
     success_count: int = 0
     failure_count: int = 0
@@ -1033,7 +1034,7 @@ class StrategyPerformance:
         total = self.success_count + self.failure_count
         return self.success_count / total if total > 0 else 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "strategy": self.strategy_name,
@@ -1057,14 +1058,14 @@ class DynamicHyperparamTuner:
         """
         self.seed = seed
         self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
-        self.param_history: Dict[str, List[Dict[str, float]]] = {}
+        self.param_history: dict[str, list[dict[str, float]]] = {}
 
     def tune_hyperparams(
         self,
         strategy: str,
-        current_params: Dict[str, float],
+        current_params: dict[str, float],
         performance: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Tune hyperparameters based on performance.
 
         Args:
@@ -1103,7 +1104,7 @@ class DynamicHyperparamTuner:
 
         return tuned
 
-    def get_best_params(self, strategy: str) -> Optional[Dict[str, float]]:
+    def get_best_params(self, strategy: str) -> Optional[dict[str, float]]:
         """Get historically best parameters for a strategy.
 
         Args:
@@ -1130,9 +1131,9 @@ class StrategyBenchmark:
         """
         self.seed = seed
         self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
-        self.results: Dict[str, StrategyPerformance] = {}
+        self.results: dict[str, StrategyPerformance] = {}
 
-    def create_benchmark_task(self, task_id: str, difficulty: float = 0.5) -> List[Tuple[Any, Any]]:
+    def create_benchmark_task(self, task_id: str, difficulty: float = 0.5) -> list[tuple[Any, Any]]:
         """Create a synthetic benchmark task.
 
         Args:
@@ -1159,9 +1160,9 @@ class StrategyBenchmark:
 
     def run_benchmark(
         self,
-        strategies: List[str],
+        strategies: list[str],
         num_tasks: int = 10,
-    ) -> Dict[str, StrategyPerformance]:
+    ) -> dict[str, StrategyPerformance]:
         """Run benchmark across strategies.
 
         Args:
@@ -1205,7 +1206,7 @@ class StrategyBenchmark:
 
         return self.results
 
-    def get_rankings(self) -> List[Tuple[str, float]]:
+    def get_rankings(self) -> list[tuple[str, float]]:
         """Get strategy rankings by average score.
 
         Returns:
@@ -1252,11 +1253,11 @@ class Concept:
         level: Hierarchical level (leaf, intermediate, root)
     """
     id: str
-    props: Dict[str, Any]
+    props: dict[str, Any]
     support: int = 0
     level: ConceptLevel = ConceptLevel.LEAF
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -1283,11 +1284,11 @@ class Relation:
     target: str
     confidence: float = 1.0
 
-    def to_tuple(self) -> Tuple[str, str, str]:
+    def to_tuple(self) -> tuple[str, str, str]:
         """Convert to tuple format."""
         return (self.source, self.relation_type.value, self.target)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "source": self.source,
@@ -1312,11 +1313,11 @@ class Analogy:
     """
     source_domain: str
     target_domain: str
-    mapping: Dict[str, str]
+    mapping: dict[str, str]
     confidence: float = 0.0
     quality_score: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "src": self.source_domain,
@@ -1336,11 +1337,11 @@ class AbstractionEngine:
 
     def __init__(self):
         """Initialize abstraction engine."""
-        self.concepts: Dict[str, Concept] = {}
-        self.relations: List[Relation] = []
-        self.analogies: List[Analogy] = []
+        self.concepts: dict[str, Concept] = {}
+        self.relations: list[Relation] = []
+        self.analogies: list[Analogy] = []
 
-    def extract_concepts(self, observations: List[Dict[str, Any]]) -> List[Concept]:
+    def extract_concepts(self, observations: list[dict[str, Any]]) -> list[Concept]:
         """Extract concepts from observations.
 
         Args:
@@ -1371,9 +1372,9 @@ class AbstractionEngine:
 
     def map_relations(
         self,
-        concepts: List[Concept],
-        observations: List[Dict[str, Any]],
-    ) -> List[Relation]:
+        concepts: list[Concept],
+        observations: list[dict[str, Any]],
+    ) -> list[Relation]:
         """Map relations between concepts.
 
         Args:
@@ -1411,9 +1412,9 @@ class AbstractionEngine:
         self,
         source_domain: str,
         target_domain: str,
-        source_concepts: List[str],
-        target_concepts: List[str],
-    ) -> List[Analogy]:
+        source_concepts: list[str],
+        target_concepts: list[str],
+    ) -> list[Analogy]:
         """Find analogies between domains.
 
         Args:
@@ -1462,7 +1463,7 @@ class AbstractionEngine:
 
         return found
 
-    def get_abstraction_output(self) -> Dict[str, Any]:
+    def get_abstraction_output(self) -> dict[str, Any]:
         """Get full abstraction output as JSON-serializable dict."""
         return {
             "abstractions": [c.to_dict() for c in self.concepts.values()],
@@ -1489,9 +1490,9 @@ class AbstractionEngine:
 
     def hierarchical_concept_extraction(
         self,
-        observations: List[Dict[str, Any]],
+        observations: list[dict[str, Any]],
         max_depth: int = 3,
-    ) -> Dict[ConceptLevel, List[Concept]]:
+    ) -> dict[ConceptLevel, list[Concept]]:
         """Extract concepts hierarchically with level detection.
 
         PRE-COMMIT 3: Implements hierarchical abstraction with leaf,
@@ -1504,7 +1505,7 @@ class AbstractionEngine:
         Returns:
             Dictionary mapping ConceptLevel to list of concepts
         """
-        hierarchy: Dict[ConceptLevel, List[Concept]] = {
+        hierarchy: dict[ConceptLevel, list[Concept]] = {
             ConceptLevel.LEAF: [],
             ConceptLevel.INTERMEDIATE: [],
             ConceptLevel.ROOT: [],
@@ -1530,7 +1531,7 @@ class AbstractionEngine:
         leaf_concepts = hierarchy[ConceptLevel.LEAF]
         if len(leaf_concepts) >= 2:
             # Group by property type
-            type_groups: Dict[str, List[Concept]] = {}
+            type_groups: dict[str, list[Concept]] = {}
             for concept in leaf_concepts:
                 prop_type = concept.props.get("type", "unknown")
                 if prop_type not in type_groups:
@@ -1567,7 +1568,7 @@ class AbstractionEngine:
         self,
         source: Concept,
         target: Concept,
-        observations: List[Dict[str, Any]],
+        observations: list[dict[str, Any]],
     ) -> RelationType:
         """Detect semantic relation type between concepts.
 
@@ -1610,9 +1611,9 @@ class AbstractionEngine:
 
     def map_relations_typed(
         self,
-        concepts: List[Concept],
-        observations: List[Dict[str, Any]],
-    ) -> List[Relation]:
+        concepts: list[Concept],
+        observations: list[dict[str, Any]],
+    ) -> list[Relation]:
         """Map typed relations between concepts.
 
         PRE-COMMIT 3: Enhanced version with relation type detection.
@@ -1655,8 +1656,8 @@ class AbstractionEngine:
     def analogy_quality_score(
         self,
         analogy: Analogy,
-        source_relations: List[Relation],
-        target_relations: List[Relation],
+        source_relations: list[Relation],
+        target_relations: list[Relation],
     ) -> float:
         """Calculate structural similarity quality score for analogy.
 
@@ -1785,9 +1786,9 @@ class AbstractStep:
     """
     op: str
     target: str
-    params: Dict[str, Any] = field(default_factory=dict)
+    params: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {"op": self.op, "target": self.target, **self.params}
 
@@ -1803,9 +1804,9 @@ class GroundedAction:
     """
     adapter: str
     op: str
-    args: Dict[str, Any]
+    args: dict[str, Any]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "adapter": self.adapter,
@@ -1825,9 +1826,9 @@ class ExecutionTrace:
     """
     timestamp: str
     status: str
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "t": self.timestamp,
@@ -1849,7 +1850,7 @@ class GroundingLayer:
             "github_api_mock": self._github_adapter,
             "generic_mock": self._generic_adapter,
         }
-        self.execution_traces: List[ExecutionTrace] = []
+        self.execution_traces: list[ExecutionTrace] = []
 
     def _github_adapter(self, step: AbstractStep) -> Optional[GroundedAction]:
         """Ground step using GitHub API adapter."""
@@ -1879,8 +1880,8 @@ class GroundingLayer:
 
     def ground_plan(
         self,
-        abstract_steps: List[AbstractStep],
-    ) -> Tuple[List[GroundedAction], float]:
+        abstract_steps: list[AbstractStep],
+    ) -> tuple[list[GroundedAction], float]:
         """Ground abstract plan into feasible actions.
 
         Args:
@@ -1915,9 +1916,9 @@ class GroundingLayer:
 
     def execute_actions(
         self,
-        actions: List[GroundedAction],
+        actions: list[GroundedAction],
         dry_run: bool = True,
-    ) -> List[ExecutionTrace]:
+    ) -> list[ExecutionTrace]:
         """Execute grounded actions.
 
         Args:
@@ -1949,8 +1950,8 @@ class GroundingLayer:
 
     def get_grounding_output(
         self,
-        abstract_plan: List[AbstractStep],
-    ) -> Dict[str, Any]:
+        abstract_plan: list[AbstractStep],
+    ) -> dict[str, Any]:
         """Get full grounding output as JSON-serializable dict."""
         actions, feasibility = self.ground_plan(abstract_plan)
         traces = self.execute_actions(actions, dry_run=True)
@@ -2004,10 +2005,9 @@ class GroundingLayer:
         """
         if score < 0.3:
             return "infeasible"
-        elif score < 0.7:
+        if score < 0.7:
             return "risky"
-        else:
-            return "feasible"
+        return "feasible"
 
 
 class GitHubAPIAdapter:
@@ -2023,9 +2023,9 @@ class GitHubAPIAdapter:
             mock: If True, use mocked operations
         """
         self.mock = mock
-        self.operation_log: List[Dict[str, Any]] = []
+        self.operation_log: list[dict[str, Any]] = []
 
-    def create_issue(self, repo: str, title: str, body: str) -> Dict[str, Any]:
+    def create_issue(self, repo: str, title: str, body: str) -> dict[str, Any]:
         """Create a GitHub issue.
 
         Args:
@@ -2047,7 +2047,7 @@ class GitHubAPIAdapter:
         self.operation_log.append(result)
         return result
 
-    def close_issue(self, repo: str, issue_number: int, comment: str = "") -> Dict[str, Any]:
+    def close_issue(self, repo: str, issue_number: int, comment: str = "") -> dict[str, Any]:
         """Close a GitHub issue.
 
         Args:
@@ -2068,7 +2068,7 @@ class GitHubAPIAdapter:
         self.operation_log.append(result)
         return result
 
-    def merge_pr(self, repo: str, pr_number: int, merge_method: str = "merge") -> Dict[str, Any]:
+    def merge_pr(self, repo: str, pr_number: int, merge_method: str = "merge") -> dict[str, Any]:
         """Merge a pull request.
 
         Args:
@@ -2089,7 +2089,7 @@ class GitHubAPIAdapter:
         self.operation_log.append(result)
         return result
 
-    def get_operation_log(self) -> List[Dict[str, Any]]:
+    def get_operation_log(self) -> list[dict[str, Any]]:
         """Get log of all operations.
 
         Returns:
@@ -2106,7 +2106,7 @@ class ActionValidator:
 
     def __init__(self):
         """Initialize action validator."""
-        self.validation_rules: Dict[str, Dict[str, Callable]] = {
+        self.validation_rules: dict[str, dict[str, Callable]] = {
             "create_issue": {
                 "precondition": lambda args: "title" in args and len(args["title"]) > 0,
                 "postcondition": lambda result: result.get("status") == "success",
@@ -2121,7 +2121,7 @@ class ActionValidator:
             },
         }
 
-    def validate_precondition(self, action: GroundedAction) -> Tuple[bool, str]:
+    def validate_precondition(self, action: GroundedAction) -> tuple[bool, str]:
         """Validate action preconditions.
 
         Args:
@@ -2140,16 +2140,15 @@ class ActionValidator:
         try:
             if precondition(action.args):
                 return True, ""
-            else:
-                return False, f"Precondition failed for {action.op}"
+            return False, f"Precondition failed for {action.op}"
         except Exception as e:
             return False, f"Precondition check error: {str(e)}"
 
     def validate_postcondition(
         self,
         action: GroundedAction,
-        result: Dict[str, Any],
-    ) -> Tuple[bool, str]:
+        result: dict[str, Any],
+    ) -> tuple[bool, str]:
         """Validate action postconditions.
 
         Args:
@@ -2169,16 +2168,15 @@ class ActionValidator:
         try:
             if postcondition(result):
                 return True, ""
-            else:
-                return False, f"Postcondition failed for {action.op}"
+            return False, f"Postcondition failed for {action.op}"
         except Exception as e:
             return False, f"Postcondition check error: {str(e)}"
 
     def validate_pipeline(
         self,
-        actions: List[GroundedAction],
-        results: Optional[List[Dict[str, Any]]] = None,
-    ) -> Tuple[bool, List[str]]:
+        actions: list[GroundedAction],
+        results: Optional[list[dict[str, Any]]] = None,
+    ) -> tuple[bool, list[str]]:
         """Validate complete action pipeline.
 
         Args:
@@ -2222,7 +2220,7 @@ class SelfAssessment:
     known_domains: int = 0
     unknown_domains: int = 0
 
-    def to_dict(self) -> Dict[str, int]:
+    def to_dict(self) -> dict[str, int]:
         """Convert to dictionary."""
         return {
             "known_domains": self.known_domains,
@@ -2243,7 +2241,7 @@ class RecommendedAction:
     budget: int = 0
     priority: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "type": self.action_type,
@@ -2261,8 +2259,8 @@ class MetaCognition:
 
     def __init__(self):
         """Initialize meta-cognition."""
-        self.confidence_history: List[Dict[str, float]] = []
-        self.domain_knowledge: Dict[str, float] = {}
+        self.confidence_history: list[dict[str, float]] = []
+        self.domain_knowledge: dict[str, float] = {}
 
     def update_domain_knowledge(self, domain: str, confidence: float) -> None:
         """Update knowledge about a domain.
@@ -2288,7 +2286,7 @@ class MetaCognition:
         router_confidence: float = 0.5,
         analogy_confidence: float = 0.5,
         grounding_confidence: float = 0.5,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Get confidence levels for different components.
 
         Args:
@@ -2308,7 +2306,7 @@ class MetaCognition:
         self.confidence_history.append(levels)
         return levels
 
-    def get_recommendations(self) -> List[RecommendedAction]:
+    def get_recommendations(self) -> list[RecommendedAction]:
         """Get recommended meta-actions based on current state."""
         recommendations = []
 
@@ -2336,7 +2334,7 @@ class MetaCognition:
 
         return recommendations
 
-    def get_metacognition_output(self) -> Dict[str, Any]:
+    def get_metacognition_output(self) -> dict[str, Any]:
         """Get full meta-cognition output as JSON-serializable dict."""
         return {
             "self_assessment": self.get_self_assessment().to_dict(),
@@ -2370,14 +2368,14 @@ class Pattern:
         embedding: Pattern embedding for similarity-based retrieval
     """
     id: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     domain: str = "unknown"
     version: int = 1
     deprecated: bool = False
-    domain_tags: Set[str] = field(default_factory=set)
-    embedding: Optional[List[float]] = None
+    domain_tags: set[str] = field(default_factory=set)
+    embedding: Optional[list[float]] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -2389,7 +2387,7 @@ class Pattern:
             "embedding": self.embedding,
         }
 
-    def compute_embedding(self, seed: int = 12345) -> List[float]:
+    def compute_embedding(self, seed: int = 12345) -> list[float]:
         """Compute pattern embedding.
 
         PRE-COMMIT 5: Simple deterministic embedding based on pattern content.
@@ -2434,12 +2432,12 @@ class UniversalPatternStore:
             seed: Random seed for deterministic embeddings
         """
         self.seed = seed
-        self.patterns: Dict[str, Pattern] = {}
-        self.retrieval_history: List[Dict[str, Any]] = []
-        self.retrieval_times: List[float] = []
+        self.patterns: dict[str, Pattern] = {}
+        self.retrieval_history: list[dict[str, Any]] = []
+        self.retrieval_times: list[float] = []
         self.cache_hits: int = 0
         self.cache_misses: int = 0
-        self._query_cache: Dict[str, Tuple[List[Pattern], List[float]]] = {}
+        self._query_cache: dict[str, tuple[list[Pattern], list[float]]] = {}
 
     def store_pattern(self, pattern: Pattern) -> str:
         """Store a pattern.
@@ -2462,7 +2460,7 @@ class UniversalPatternStore:
         self,
         query: str,
         top_k: int = 5,
-    ) -> Tuple[List[Pattern], List[float]]:
+    ) -> tuple[list[Pattern], list[float]]:
         """Retrieve patterns matching query.
 
         Args:
@@ -2527,7 +2525,7 @@ class UniversalPatternStore:
         query_pattern: Pattern,
         top_k: int = 5,
         exclude_deprecated: bool = True,
-    ) -> Tuple[List[Pattern], List[float]]:
+    ) -> tuple[list[Pattern], list[float]]:
         """Retrieve patterns using cosine similarity on embeddings.
 
         PRE-COMMIT 5: Similarity-based retrieval.
@@ -2586,7 +2584,7 @@ class UniversalPatternStore:
 
         return patterns, scores
 
-    def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+    def _cosine_similarity(self, vec1: list[float], vec2: list[float]) -> float:
         """Compute cosine similarity between two vectors.
 
         Args:
@@ -2631,7 +2629,7 @@ class UniversalPatternStore:
         source_domain: str,
         target_domain: str,
         min_overlap: float = 0.3,
-    ) -> List[Tuple[Pattern, Pattern, float]]:
+    ) -> list[tuple[Pattern, Pattern, float]]:
         """Match patterns across domains using domain tags.
 
         PRE-COMMIT 5: Cross-domain pattern matching.
@@ -2665,7 +2663,7 @@ class UniversalPatternStore:
 
         return matches
 
-    def get_storage_metrics(self) -> Dict[str, Any]:
+    def get_storage_metrics(self) -> dict[str, Any]:
         """Get storage efficiency metrics.
 
         PRE-COMMIT 5: Storage metrics tracking.
@@ -2699,7 +2697,7 @@ class UniversalPatternStore:
         self,
         query: str,
         top_k: int = 5,
-    ) -> Tuple[List[Pattern], List[float]]:
+    ) -> tuple[list[Pattern], list[float]]:
         """Retrieve patterns with caching.
 
         PRE-COMMIT 5: Cached retrieval for efficiency.
@@ -2723,7 +2721,7 @@ class UniversalPatternStore:
 
         return result
 
-    def get_store_output(self, query: str) -> Dict[str, Any]:
+    def get_store_output(self, query: str) -> dict[str, Any]:
         """Get retrieval output as JSON-serializable dict."""
         patterns, scores = self.retrieve_patterns(query)
 
@@ -2755,8 +2753,8 @@ class DomainIsolation:
         """
         self.failure_threshold = failure_threshold
         self.quarantine_duration = quarantine_duration
-        self.quarantined_domains: Dict[str, int] = {}  # domain -> remaining steps
-        self.domain_performance: Dict[str, List[float]] = {}
+        self.quarantined_domains: dict[str, int] = {}  # domain -> remaining steps
+        self.domain_performance: dict[str, list[float]] = {}
 
     def update_performance(self, domain: str, score: float) -> None:
         """Update performance tracking for a domain.
@@ -2806,7 +2804,7 @@ class DomainIsolation:
         for domain in domains_to_remove:
             del self.quarantined_domains[domain]
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get isolation status.
 
         Returns:
@@ -2832,11 +2830,11 @@ class RollbackTrigger:
             neg_transfer_threshold: Threshold for triggering rollback
         """
         self.neg_transfer_threshold = neg_transfer_threshold
-        self.baseline_params: Dict[str, Any] = {}
-        self.current_params: Dict[str, Any] = {}
-        self.rollback_history: List[Dict[str, Any]] = []
+        self.baseline_params: dict[str, Any] = {}
+        self.current_params: dict[str, Any] = {}
+        self.rollback_history: list[dict[str, Any]] = []
 
-    def save_baseline(self, params: Dict[str, Any]) -> None:
+    def save_baseline(self, params: dict[str, Any]) -> None:
         """Save baseline parameters.
 
         Args:
@@ -2844,7 +2842,7 @@ class RollbackTrigger:
         """
         self.baseline_params = params.copy()
 
-    def update_current(self, params: Dict[str, Any]) -> None:
+    def update_current(self, params: dict[str, Any]) -> None:
         """Update current parameters.
 
         Args:
@@ -2863,7 +2861,7 @@ class RollbackTrigger:
         """
         return neg_transfer_score > self.neg_transfer_threshold
 
-    def trigger_rollback(self, reason: str = "") -> Dict[str, Any]:
+    def trigger_rollback(self, reason: str = "") -> dict[str, Any]:
         """Trigger rollback to baseline.
 
         Args:
@@ -2906,9 +2904,9 @@ class ForgettingDetector:
             forgetting_threshold: Threshold for detecting forgetting
         """
         self.forgetting_threshold = forgetting_threshold
-        self.baseline_performance: Dict[str, float] = {}
-        self.current_performance: Dict[str, float] = {}
-        self.forgetting_events: List[Dict[str, Any]] = []
+        self.baseline_performance: dict[str, float] = {}
+        self.current_performance: dict[str, float] = {}
+        self.forgetting_events: list[dict[str, Any]] = []
 
     def set_baseline(self, task_id: str, score: float) -> None:
         """Set baseline performance for a task.
@@ -2928,7 +2926,7 @@ class ForgettingDetector:
         """
         self.current_performance[task_id] = score
 
-    def detect_forgetting(self, task_id: str) -> Tuple[bool, float]:
+    def detect_forgetting(self, task_id: str) -> tuple[bool, float]:
         """Detect if forgetting has occurred for a task.
 
         Args:
@@ -2958,7 +2956,7 @@ class ForgettingDetector:
 
         return is_forgetting, degradation
 
-    def get_forgetting_report(self) -> Dict[str, Any]:
+    def get_forgetting_report(self) -> dict[str, Any]:
         """Get forgetting detection report.
 
         Returns:
@@ -2996,7 +2994,7 @@ class SafetyConstraintEnforcer:
         self.isolation = DomainIsolation()
         self.rollback = RollbackTrigger()
         self.forgetting = ForgettingDetector()
-        self.safety_violations: List[Dict[str, Any]] = []
+        self.safety_violations: list[dict[str, Any]] = []
 
     def check_safety(
         self,
@@ -3004,7 +3002,7 @@ class SafetyConstraintEnforcer:
         task_id: str,
         score: float,
         neg_transfer_score: float = 0.0,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Check all safety constraints.
 
         Args:
@@ -3092,9 +3090,9 @@ class UniversalController:
         self.store = UniversalPatternStore(seed=seed)
 
         # Metrics tracking
-        self.metrics_history: List[Dict[str, Any]] = []
+        self.metrics_history: list[dict[str, Any]] = []
 
-    def process_task(self, spec: TaskSpec) -> Dict[str, Any]:
+    def process_task(self, spec: TaskSpec) -> dict[str, Any]:
         """Process a task through the full pipeline.
 
         Args:
@@ -3186,7 +3184,7 @@ class UniversalController:
         lines = [json.dumps(m) for m in self.metrics_history]
         return "\n".join(lines)
 
-    def check_safety_constraints(self) -> Dict[str, bool]:
+    def check_safety_constraints(self) -> dict[str, bool]:
         """Check all safety constraints.
 
         Returns:
@@ -3253,12 +3251,11 @@ class AdiabaticScheduler:
 
         if self.schedule == "linear":
             return progress
-        elif self.schedule == "exponential":
+        if self.schedule == "exponential":
             return 1.0 - math.exp(-3.0 * progress)
-        elif self.schedule == "cosine":
+        if self.schedule == "cosine":
             return 0.5 * (1.0 - math.cos(math.pi * progress))
-        else:
-            return progress
+        return progress
 
     def step(self) -> float:
         """Advance one step and return new β.
@@ -3269,7 +3266,7 @@ class AdiabaticScheduler:
         self.current_step = min(self.current_step + 1, self.total_steps)
         return self.get_beta()
 
-    def get_energy_weights(self) -> Dict[str, float]:
+    def get_energy_weights(self) -> dict[str, float]:
         """Get energy function weights based on current β.
 
         Returns:
@@ -3305,7 +3302,7 @@ class DecoherenceModel:
             threshold: Negative transfer threshold
         """
         self.threshold = threshold
-        self.decoherence_events: List[Dict[str, Any]] = []
+        self.decoherence_events: list[dict[str, Any]] = []
 
     def measure_decoherence(
         self,
@@ -3355,7 +3352,7 @@ class DecoherenceModel:
             return True
         return False
 
-    def get_decoherence_report(self) -> Dict[str, Any]:
+    def get_decoherence_report(self) -> dict[str, Any]:
         """Get decoherence report."""
         return {
             "threshold": self.threshold,
@@ -3383,9 +3380,9 @@ class EXP10BenchmarkHarness:
         """
         self.seed = seed
         self.tasks = self._create_benchmark_tasks()
-        self.results: List[Dict[str, Any]] = []
+        self.results: list[dict[str, Any]] = []
 
-    def _create_benchmark_tasks(self) -> List[TaskSpec]:
+    def _create_benchmark_tasks(self) -> list[TaskSpec]:
         """Create 10 diverse benchmark tasks.
 
         Returns:
@@ -3489,7 +3486,7 @@ class EXP10BenchmarkHarness:
         self,
         controller: UniversalController,
         metrics_output_dir: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run complete benchmark suite.
 
         Args:
@@ -3539,7 +3536,7 @@ class EXP10BenchmarkHarness:
 
         return benchmark_result
 
-    def _save_metrics_jsonl(self, results: Dict[str, Any], output_dir: str) -> None:
+    def _save_metrics_jsonl(self, results: dict[str, Any], output_dir: str) -> None:
         """Save metrics to JSONL file.
 
         Args:
@@ -3583,9 +3580,9 @@ class K1ValidationFramework:
         """
         self.target_k1 = target_k1
         self.stretch_k1 = stretch_k1
-        self.validation_results: List[Dict[str, Any]] = []
+        self.validation_results: list[dict[str, Any]] = []
 
-    def validate_k1(self, k1_value: float, context: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_k1(self, k1_value: float, context: dict[str, Any]) -> dict[str, Any]:
         """Validate a k₁ measurement.
 
         Args:
@@ -3609,7 +3606,7 @@ class K1ValidationFramework:
         self.validation_results.append(result)
         return result
 
-    def validate_batch(self, k1_values: List[float]) -> Dict[str, Any]:
+    def validate_batch(self, k1_values: list[float]) -> dict[str, Any]:
         """Validate a batch of k₁ measurements.
 
         Args:
@@ -3634,7 +3631,7 @@ class K1ValidationFramework:
             "passes_avg_stretch": avg_k1 <= self.stretch_k1,
         }
 
-    def get_validation_report(self) -> Dict[str, Any]:
+    def get_validation_report(self) -> dict[str, Any]:
         """Get comprehensive validation report.
 
         Returns:
@@ -3666,14 +3663,14 @@ class TransferTestSuite:
             seed: Random seed
         """
         self.seed = seed
-        self.test_results: List[Dict[str, Any]] = []
+        self.test_results: list[dict[str, Any]] = []
 
     def test_zero_shot(
         self,
         controller: UniversalController,
         source_task: TaskSpec,
         target_task: TaskSpec,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Test zero-shot transfer.
 
         Args:
@@ -3703,10 +3700,10 @@ class TransferTestSuite:
     def test_few_shot(
         self,
         controller: UniversalController,
-        source_tasks: List[TaskSpec],
+        source_tasks: list[TaskSpec],
         target_task: TaskSpec,
         K: int = 10,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Test few-shot transfer with K examples.
 
         Args:
@@ -3740,7 +3737,7 @@ class TransferTestSuite:
         self.test_results.append(result)
         return result
 
-    def get_transfer_report(self) -> Dict[str, Any]:
+    def get_transfer_report(self) -> dict[str, Any]:
         """Get transfer learning report.
 
         Returns:

@@ -19,9 +19,9 @@ import argparse
 import os
 import re
 import sys
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List, Sequence, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -70,7 +70,7 @@ class FenceState:
     max_inner_line: int | None = None
 
 
-def _prepare_line(line: str) -> Tuple[int, str]:
+def _prepare_line(line: str) -> tuple[int, str]:
     """Return ``(indent, trimmed)`` handling unified diff prefixes when present."""
 
     raw = line.rstrip("\n")
@@ -131,11 +131,11 @@ def _scan_file(
     strict_inner: bool,
     warn_inner: bool,
     check_language: bool,
-) -> Tuple[List[FenceError], List[FenceError]]:
+) -> tuple[list[FenceError], list[FenceError]]:
     """Return ``(errors, warnings)`` discovered while scanning ``path``."""
 
-    errors: List[FenceError] = []
-    warnings: List[FenceError] = []
+    errors: list[FenceError] = []
+    warnings: list[FenceError] = []
 
     try:
         text = Path(path).read_text(encoding="utf-8", errors="ignore")
@@ -324,11 +324,11 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _gather_targets(paths: Sequence[str]) -> List[str]:
+def _gather_targets(paths: Sequence[str]) -> list[str]:
     if not paths:
         return list(iter_files(REPO_ROOT))
 
-    targets: List[str] = []
+    targets: list[str] = []
     for entry in paths:
         expanded = Path(entry).expanduser()
         if not expanded.is_absolute():

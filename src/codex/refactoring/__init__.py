@@ -13,7 +13,7 @@ from .deterritorialization_engine import (
 
 __all__ = [
     "DeterritorializationEngine",
+    "LineOfFlight",
     "RigidityDetector",
     "RigidityType",
-    "LineOfFlight",
 ]
