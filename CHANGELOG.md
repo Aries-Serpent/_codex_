@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S183 — 2026-05-03 — PR #4193 — PR comment upsert follow-up)
+- **`copilot-agent-session-done.yml`** — Switch compiled bot-feedback comments to a PR-scoped marker and scan all PR comment pages so repeated same-session bot findings append to one thread even after `[skip ci]` follow-up commits change the branch head SHA.
+- **`secrets-baseline-enforcer.yml`** — Upsert and append Secrets Baseline Enforcer rescue notices using a stable marker instead of creating a new PR comment for each failed run.
+
 ### Fixed (S183 — 2026-05-03 — PR #4193 — same-session feedback comment upsert)
 - **`copilot-agent-session-done.yml`** — Use the PR branch head SHA (not ephemeral merge-preview SHA) for compiled bot-feedback markers and append same-session bot feedback updates to the existing `@mbaetiong`/`@copilot continue` thread instead of creating duplicate request comments.
 - **`scripts/ci/post_rescue_comment.py`** — Add visible-signature fallback matching and post-create duplicate consolidation so concurrent rescue posters for the same commit collapse into one appended thread.

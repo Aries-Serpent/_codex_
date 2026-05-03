@@ -24301,3 +24301,20 @@ before applying changes. Blocking CI rescue comments addressed via `reply_to_com
 - `ruff check src/ tests/ scripts/` → 0 violations ✅
 - `pytest tests/ci/test_post_rescue_comment.py tests/ci/test_telemetry_collection.py -q` → 53 passed ✅
 - `sync_tracked_files.py --check` → all consistent ✅
+
+
+## SESSION SUMMARY — 2026-05-03T02:44Z SESSION S183-PR4193-comment-upsert-followup [copilot] (PR Comment Upsert Follow-up — PR #4193)
+
+**PR:** #4193 | **Branch:** copilot/reorganize-observability-section | **Session:** S183-PR4193-comment-upsert-followup
+
+### What Was Fixed
+- Addressed new maintainer comments #4365205369, #4365221977, #4365229179, and #4365229317.
+- Verified the reported Secrets Baseline and RP-004 failures were from older commit `84a7ffc`; current HEAD `caa3253` passes local sync and auto-fix checks.
+- Strengthened compiled bot-feedback upsert logic to use a PR-scoped marker and scan every PR comment page, preventing duplicate same-session `@copilot continue` comments when branch-head SHA changes.
+- Updated Secrets Baseline Enforcer rescue comments to upsert/append to a single stable PR thread instead of creating a new comment per failed run.
+
+### Verification
+- Workflow YAML parse for changed workflows → OK ✅
+- `ruff check src/ tests/ scripts/` → 0 violations ✅
+- `pytest tests/ci/test_post_rescue_comment.py tests/ci/test_telemetry_collection.py -q` → 53 passed ✅
+- `sync_tracked_files.py --check` and `auto_fix_common_issues.py --check-only` → all actionable patterns green ✅
