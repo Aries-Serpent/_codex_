@@ -33,6 +33,9 @@ import json
 from pathlib import Path
 
 
+DEFAULT_WEAKEST_COMPONENT = ("unknown", 0.0)
+
+
 def load_capabilities() -> list[dict]:
     """Load capability scores from audit artifacts."""
     # Check multiple possible locations for capabilities_scored.json
@@ -120,7 +123,9 @@ def print_progress_report(caps: list[dict]):
         for i, cap in enumerate(low_sorted[:8], 1):
             components = cap.get("components", {})
             weakest = (
-                min(components.items(), key=lambda x: x[1]) if components else ("unknown", 0.0)
+                min(components.items(), key=lambda x: x[1])
+                if components
+                else DEFAULT_WEAKEST_COMPONENT
             )
             print(
                 f"  {i}. {cap['id']:30s}  Score: {cap['score']:.4f}  Weakest: {weakest[0]} ({weakest[1]:.2f})"
