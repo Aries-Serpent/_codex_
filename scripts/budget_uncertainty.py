@@ -20,6 +20,7 @@ import json
 import logging
 import math
 import os
+import signal
 import sys
 import time
 from collections.abc import Callable
@@ -43,13 +44,10 @@ class BudgetExceeded(RuntimeError):
 
 
 def budget_cap(max_seconds: float = 10.0, label: str = ""):
-    """Decorator: raise BudgetExceeded if function wall-time exceeds max_seconds."""
+    """Decorator: enforce/verify per-call wall-time budget."""
     def decorator(func: F) -> F:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            start = time.monotonic()
-            result = func(*args, **kwargs)
-            elapsed = time.monotonic() - start
             try:
                 env_max_seconds = float(
                     os.environ.get("UNCERTAINTY_BUDGET_SECONDS", max_seconds)
@@ -62,6 +60,31 @@ def budget_cap(max_seconds: float = 10.0, label: str = ""):
                 )
                 env_max_seconds = max_seconds
             cap = min(max_seconds, env_max_seconds)
+
+            start = time.monotonic()
+            timeout_supported = (
+                hasattr(signal, "SIGALRM")
+                and hasattr(signal, "setitimer")
+                and cap > 0
+            )
+            if timeout_supported:
+                def _handle_timeout(signum, frame):
+                    raise BudgetExceeded(
+                        f"{label or func.__name__} exceeded {cap}s cap"
+                    )
+
+                previous_handler = signal.getsignal(signal.SIGALRM)
+                signal.signal(signal.SIGALRM, _handle_timeout)
+                signal.setitimer(signal.ITIMER_REAL, cap)
+                try:
+                    result = func(*args, **kwargs)
+                finally:
+                    signal.setitimer(signal.ITIMER_REAL, 0)
+                    signal.signal(signal.SIGALRM, previous_handler)
+            else:
+                result = func(*args, **kwargs)
+
+            elapsed = time.monotonic() - start
             if elapsed > cap:
                 raise BudgetExceeded(
                     f"{label or func.__name__} took {elapsed:.2f}s, exceeded {cap}s cap"
@@ -94,6 +117,10 @@ class DirichletBeliefs:
 
     def observe(self, option: str, weight: float = 1.0) -> None:
         """Update beliefs on observing evidence for an option."""
+        if option not in self.options:
+            raise ValueError(
+                f"Unknown option {option!r}; expected one of {self.options!r}"
+            )
         idx = self.options.index(option)
         self.alphas[idx] += weight
 

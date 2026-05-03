@@ -9,7 +9,7 @@ def test_mask_sensitive_data_email():
     text = "Contact me at user@example.com"
     result = mask_sensitive_data(text)
     assert "user@example.com" not in result
-    assert "***" in result or "@" not in result # pragma: allowlist secret # pragma: allowlist secret
+    assert "***" in result or "@" not in result # pragma: allowlist secret
 
 
 def test_mask_sensitive_data_phone():
@@ -17,6 +17,7 @@ def test_mask_sensitive_data_phone():
     text = "Call 555-123-4567"
     result = mask_sensitive_data(text)
     assert "555-123-4567" not in result
+    assert "***" in result or "-" not in result # pragma: allowlist secret
 
 
 def test_mask_sensitive_data_ssn():
@@ -24,6 +25,8 @@ def test_mask_sensitive_data_ssn():
     text = "SSN: 123-45-6789"
     result = mask_sensitive_data(text)
     assert "123-45-6789" not in result
+    assert "SSN:" in result
+    assert "***" in result
 
 
 def test_mask_sensitive_data_credit_card():
@@ -31,6 +34,7 @@ def test_mask_sensitive_data_credit_card():
     text = "Card: 4532-1234-5678-9010"
     result = mask_sensitive_data(text)
     assert "4532-1234-5678-9010" not in result
+    assert "Card:" in result and "***" in result
 
 
 def test_mask_sensitive_data_api_key():
@@ -38,6 +42,9 @@ def test_mask_sensitive_data_api_key():
     text = "API_KEY=" + "sk_test_" + "1234567890abcdef"
     result = mask_sensitive_data(text)
     assert "sk_test_" + "1234567890abcdef" not in result
+    assert "API_KEY=" in result
+    assert result != text
+    assert "***" in result
 
 
 def test_mask_sensitive_data_password():

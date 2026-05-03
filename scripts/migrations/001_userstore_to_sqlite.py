@@ -58,7 +58,7 @@ def _build_user_from_record(record: dict) -> User:
         username=record["username"],
         email=record["email"],
         password_hash=record["password_hash"],
-        is_active=bool(record.get("is_active", True)),
+        is_active=record.get("is_active"),
         roles=record.get("roles", ["user"]),
         display_name=record.get("display_name"),
         # Preserve data integrity during migration: if source timestamps are
