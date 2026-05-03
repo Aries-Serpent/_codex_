@@ -101,7 +101,7 @@ def embed_chunks(
         return np.array([])
 
     # Import here to avoid hard dependency
-    if importlib.util.find_spec('sentence_transformers') is None:
+    if importlib.util.find_spec("sentence_transformers") is None:
         logger.error(
             "sentence-transformers not installed. Install with: pip install sentence-transformers"
         )
@@ -843,6 +843,7 @@ class RAGIndexer:
         except Exception:
             # Model unavailable (offline, missing dep, etc.) — leave as None.
             logger.debug("Suppressed exception in handler", exc_info=True)
+
     def move_to_device(self, device: str) -> None:
         """Move the loaded embedding model to *device* and update ``self.device``."""
         self.device = device

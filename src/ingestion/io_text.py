@@ -104,9 +104,7 @@ if detect_encoding is None:
 __all__ = ["read_text"]
 
 
-def read_text(
-    path: Path | str, encoding: str = "utf-8", errors: str = "strict"
-) -> tuple[str, str]:
+def read_text(path: Path | str, encoding: str = "utf-8", errors: str = "strict") -> tuple[str, str]:
     """Read text from ``path`` normalising newlines and stripping BOMs.
 
     Returns a tuple (text, used_encoding).

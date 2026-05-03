@@ -48,13 +48,11 @@ def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     sys.stderr.write(
-
-            f"Question for ChatGPT @codex {ts}:\n"
-            f"While performing [{step_no}:{step_desc}], encountered the following error:\n"
-            f"{err_msg}\n"
-            f"Context: {ctx}\n"
-            "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"  # noqa: E501
-
+        f"Question for ChatGPT @codex {ts}:\n"
+        f"While performing [{step_no}:{step_desc}], encountered the following error:\n"
+        f"{err_msg}\n"
+        f"Context: {ctx}\n"
+        "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"  # noqa: E501
     )
 
 

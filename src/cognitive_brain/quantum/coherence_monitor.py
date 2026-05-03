@@ -195,6 +195,7 @@ class CoherenceMonitor:
             self._otel_gauge.set(value, {"feature": feature, "metric": metric_name})
         except Exception:
             logger.debug("Suppressed exception in handler", exc_info=True)
+
     # ------------------------------------------------------------------
     # Metric recording
     # ------------------------------------------------------------------

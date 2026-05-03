@@ -31,8 +31,6 @@ def run(cfg: TrainTokenizerConfig) -> Path:
     return train(cfg)
 
 
-
-
 # ``main`` is provided for ``python -m codex_ml.tokenization.train_tokenizer``
 # entry points and Hydra integration.  The legacy module handles both cases,
 # so we simply re-export the callable.

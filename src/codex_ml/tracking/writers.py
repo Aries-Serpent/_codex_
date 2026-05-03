@@ -523,6 +523,8 @@ class NdjsonWriter(BaseWriter):
             self._logger.close()
         except Exception:  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 class TensorBoardWriter(BaseWriter):
     def __init__(self, logdir: str | Path, *, summary_path: str | Path | None = None) -> None:
         self._disabled_reason: str | None = None
@@ -570,6 +572,7 @@ class TensorBoardWriter(BaseWriter):
                 self._writer.close()
             except Exception:  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -663,6 +666,7 @@ class MLflowWriter(BaseWriter):
                 self._mlflow.end_run()
             except Exception:  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -733,6 +737,7 @@ class WandbWriter(BaseWriter):
                 self._run.finish()
             except Exception:  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def status(self) -> Optional[str]:
         return self._disabled_reason
 

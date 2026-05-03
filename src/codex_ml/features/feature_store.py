@@ -398,7 +398,8 @@ class FeatureStore:
         """
         try:
             import pandas as pd
-            if importlib.util.find_spec('pyarrow') is None:
+
+            if importlib.util.find_spec("pyarrow") is None:
                 raise ImportError("pyarrow is required for parquet support")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")

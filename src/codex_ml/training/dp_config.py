@@ -46,7 +46,7 @@ class DifferentialPrivacyConfig:
         if self._dependency_checked:
             return
         try:
-            __import__('opacus')
+            __import__("opacus")
         except ImportError as exc:  # pragma: no cover - optional dependency path
             raise ImportError(
                 "Opacus is required for differential privacy; install with 'pip install opacus'."

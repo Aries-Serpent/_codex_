@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 
 try:
     import pyarrow.parquet as pq
-    PARQUET_AVAILABLE = importlib.util.find_spec('pandas') is not None
+
+    PARQUET_AVAILABLE = importlib.util.find_spec("pandas") is not None
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

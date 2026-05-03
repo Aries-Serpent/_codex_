@@ -310,9 +310,7 @@ def summarize_directory(
 
 
 # Convenience wrapper for backward compatibility with tests
-def summarize(
-    run_dir: str | Path, fmt: str, destination: Optional[str | Path] = None
-) -> Path:
+def summarize(run_dir: str | Path, fmt: str, destination: Optional[str | Path] = None) -> Path:
     """Convenience wrapper for summarize_directory.
 
     This function provides a simpler interface compatible with existing tests.

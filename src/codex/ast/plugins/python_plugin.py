@@ -52,4 +52,4 @@ class PythonPlugin(ASTPlugin):
 
     def validate(self) -> bool:
         """Validate plugin is ready."""
-        return importlib.util.find_spec('libcst') is not None
+        return importlib.util.find_spec("libcst") is not None

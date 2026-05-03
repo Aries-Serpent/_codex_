@@ -303,6 +303,7 @@ class ContextIndex:
             except (json.JSONDecodeError, KeyError):
                 # Index file is corrupted - will reinitialize
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
     def _index_context(self, ctx: CompressedContext) -> None:
         """Add context to indexes."""
         # Type index

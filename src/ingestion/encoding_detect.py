@@ -63,9 +63,7 @@ def _norm_encoding(name: Optional[str]) -> Optional[str]:
         return None
 
 
-def detect_encoding(
-    path: str | Path, default: str = "utf-8", sample_size: int = 131072
-) -> str:
+def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int = 131072) -> str:
     """Return best-effort text encoding for a file at *path*.
 
     Resolution order (deterministic):
@@ -158,8 +156,6 @@ def detect_encoding(
 
 
 # Backwards compatibility alias (older code used autodetect_encoding)
-def autodetect_encoding(
-    path: str | Path, default: str = "utf-8", sample_size: int = 131072
-) -> str:
+def autodetect_encoding(path: str | Path, default: str = "utf-8", sample_size: int = 131072) -> str:
     """Alias for detect_encoding to preserve older API name."""
     return detect_encoding(path, default=default, sample_size=sample_size)

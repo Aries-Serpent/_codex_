@@ -57,7 +57,7 @@ class WandBLogger:
 
     def _check_wandb(self) -> bool:
         """Check if W&B is available and not disabled."""
-        if importlib.util.find_spec('wandb') is None:
+        if importlib.util.find_spec("wandb") is None:
             logger.info("W&B not installed, using fallback logging")
             return False
         mode = os.getenv("WANDB_MODE", "offline")

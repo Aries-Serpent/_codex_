@@ -121,6 +121,7 @@ def train(
                 fh.write(json.dumps(record) + "\n")
         except Exception:  # pragma: no cover - best-effort logging
             logger.debug("Suppressed exception in handler", exc_info=True)
+
     # Load tokenizer and model
     tokenizer = load_from_pretrained(
         AutoTokenizer,

@@ -73,4 +73,6 @@ def set_seed(seed: int) -> None:
                 torch.cuda.manual_seed_all(seed)  # pragma: no cover - GPU path
         except Exception:  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 __all__ = ["RNGState", "set_seed"]

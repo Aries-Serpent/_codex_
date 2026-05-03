@@ -311,6 +311,8 @@ try:
 except ImportError:
     # FastAPI not installed, skip dependency helpers
     logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 def scope_metadata(func: Callable) -> dict:
     """Extract scope metadata from decorated function.
 

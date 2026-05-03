@@ -382,7 +382,7 @@ class IVFPQIndex:
             self._create_index()
 
         try:
-            __import__('numpy')
+            __import__("numpy")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
@@ -416,7 +416,7 @@ class IVFPQIndex:
             raise RuntimeError("Index must be trained before adding vectors. Call train() first.")
 
         try:
-            __import__('numpy')
+            __import__("numpy")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
@@ -449,7 +449,7 @@ class IVFPQIndex:
             raise RuntimeError("Index is empty. Add vectors before searching.")
 
         try:
-            __import__('numpy')
+            __import__("numpy")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)

@@ -40,6 +40,8 @@ def _set_numpy_seed(seed: int) -> None:
     except (AttributeError, RuntimeError):
         # numpy can raise when compiled without RNG support
         logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
     torch_info: dict[str, Any] = {"available": False}
     try:

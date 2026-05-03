@@ -173,12 +173,8 @@ class ContextDistiller:
             for match in re.finditer(import_pattern, content, re.MULTILINE):
                 module, names = match.groups()
                 # Skip relative imports (from . import) and star imports
-                if (
-                    (module
-                    and not module.startswith(".")
-                    and "*" not in names)
-                    or (not module
-                    and "*" not in names)
+                if (module and not module.startswith(".") and "*" not in names) or (
+                    not module and "*" not in names
                 ):
                     imports.extend([n.strip() for n in names.split(",")])
             structure["imports"] = imports[:20]  # Limit to first 20 for brevity

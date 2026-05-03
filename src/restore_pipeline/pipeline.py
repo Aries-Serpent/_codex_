@@ -156,7 +156,7 @@ def _denoise(img: np.ndarray, cfg: PipelineConfig, sigma: float = 0.1) -> np.nda
 
 def _pick_algorithm() -> str:
     """Return the best available denoising algorithm."""
-    if importlib.util.find_spec('bm3d') is not None:
+    if importlib.util.find_spec("bm3d") is not None:
         return "bm3d"
     return "nl_means"
 

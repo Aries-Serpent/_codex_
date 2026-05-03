@@ -48,6 +48,7 @@ class TBWriter:
             self._writer.add_scalar(tag, value, step)
         except Exception:  # pragma: no cover - tensorboard runtime errors
             logger.debug("Suppressed exception in handler", exc_info=True)
+
     def close(self) -> None:
         if self._writer is None:
             return
@@ -59,4 +60,6 @@ class TBWriter:
             self._writer.close()
         except Exception:  # pragma: no cover - closing is best-effort
             logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 __all__ = ["TBWriter"]

@@ -390,9 +390,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
             try:
                 record = json.loads(stripped)
             except json.JSONDecodeError as exc:
-                errors.append(
-                    f"record {idx}: invalid JSON ({exc.msg} at column {exc.colno})"
-                )
+                errors.append(f"record {idx}: invalid JSON ({exc.msg} at column {exc.colno})")
                 continue
             for err in validator.iter_errors(record):
                 errors.append(f"record {idx}: {err.message}")

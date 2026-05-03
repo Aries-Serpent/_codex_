@@ -1119,6 +1119,8 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                         )
             except Exception:  # pragma: no cover - cuda optional
                 logger.debug("Suppressed exception in handler", exc_info=True)
+
+
 def dump_rng_state() -> dict[str, Any]:
     """Public wrapper around internal RNG snapshot."""
     return _rng_dump()

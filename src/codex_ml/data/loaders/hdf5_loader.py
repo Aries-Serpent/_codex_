@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 try:
     import h5py
-    HDF5_AVAILABLE = importlib.util.find_spec('numpy') is not None
+
+    HDF5_AVAILABLE = importlib.util.find_spec("numpy") is not None
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

@@ -235,9 +235,7 @@ class TrainingSettings:
 # Existing callers import `validate_config` and may pass either a mapping or a path.
 
 
-def validate_config(
-    cfg: str | Path | Mapping[str, Any], *args: Any, **kwargs: Any
-) -> TrainConfig:
+def validate_config(cfg: str | Path | Mapping[str, Any], *args: Any, **kwargs: Any) -> TrainConfig:
     """Backward-compatible wrapper around the new validators."""
     if isinstance(cfg, Mapping):
         return validate_config_dict(cfg)
