@@ -24,7 +24,7 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:
 
     def fake_apply_lora(model, cfg):
         seen["cfg"] = cfg
-        setattr(model, "peft_config", dict(cfg))
+        model.peft_config = dict(cfg)
         return model
 
     monkeypatch.setattr(hf, "apply_lora", fake_apply_lora)
@@ -85,7 +85,7 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:
     )
 
     assert seen["cfg"] == {"r": 4, "lora_alpha": 32, "lora_dropout": 0.2}
-    assert getattr(model, "peft_config") == seen["cfg"]
+    assert model.peft_config == seen["cfg"]
 
 
 def test_run_hf_trainer_warns_on_grad_accum(monkeypatch, tmp_path: Path) -> None:

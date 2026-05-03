@@ -13,7 +13,7 @@ import pytest
 
 def test_bf16_require_flag_private_guard(monkeypatch):
     tl = importlib.import_module("src.codex_ml.train_loop")
-    guard = getattr(tl, "_assert_bf16_capability")
+    guard = tl._assert_bf16_capability
 
     # No requirement -> no error
     guard("bf16", None, False)

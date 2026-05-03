@@ -159,7 +159,7 @@ def _load_build_query():
         try:
             mod = _load_module_from_path(rel)
             if hasattr(mod, "build_query"):
-                return getattr(mod, "build_query"), mod, rel
+                return mod.build_query, mod, rel
         except Exception as e:
             last_err = e
             continue

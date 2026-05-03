@@ -66,7 +66,7 @@ def _load_chatsession():
             try:
                 spec.loader.exec_module(mod)  # type: ignore
                 if hasattr(mod, "ChatSession"):
-                    return getattr(mod, "ChatSession")
+                    return mod.ChatSession
             except Exception:
                 continue
     return None

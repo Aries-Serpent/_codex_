@@ -13,7 +13,7 @@ pytest.importorskip("torch", reason="PyTorch required for amp dtype map")
 
 def test_amp_dtype_map_behavior():
     mod = importlib.import_module("src.codex_ml.hf_loader")
-    mapper = getattr(mod, "_map_amp_dtype")
+    mapper = mod._map_amp_dtype
     out_bf16 = mapper("bf16")
     out_fp16 = mapper("fp16")
     # When torch is present, outputs are torch.dtype instances; otherwise None.

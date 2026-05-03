@@ -67,7 +67,7 @@ def resolve_fetch_messages():
             errors[mod] = f"import error: {e}"
             continue
         if hasattr(m, "fetch_messages"):
-            fn = getattr(m, "fetch_messages")
+            fn = m.fetch_messages
             try:
                 sig = inspect.signature(fn)
             except ImportError:

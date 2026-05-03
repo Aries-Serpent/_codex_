@@ -21,5 +21,5 @@ def test_tokenization_compat_emits_deprecation_and_forwards_attributes():
     with warnings.catch_warnings(record=True) as rec:
         warnings.simplefilter("always", DeprecationWarning)
         with pytest.raises(AttributeError):
-            getattr(compat, "__definitely_not_a_symbol__")  # triggers __getattr__
+            compat.__definitely_not_a_symbol__  # triggers __getattr__
     assert any(w.category is DeprecationWarning for w in rec), "no DeprecationWarning emitted"

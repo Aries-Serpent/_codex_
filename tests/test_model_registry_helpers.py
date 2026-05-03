@@ -51,7 +51,7 @@ def test_get_model_applies_device_and_dtype(dummy_registration: types.SimpleName
     assert model.to_calls[-1][1]["device"] == "cpu"
     dtype_calls = [kwargs["dtype"] for _, kwargs in model.to_calls if "dtype" in kwargs]
     assert dtype_calls and dtype_calls[-1] == torch.float16
-    metadata = getattr(model, "request_metadata")
+    metadata = model.request_metadata
     assert isinstance(metadata, ModelRequest)
     assert metadata.lora is None
 
@@ -111,7 +111,7 @@ def test_get_model_applies_lora_config(
     assert captured["task_type"] == "CAUSAL_LM"
     assert captured["target_modules"] == ("q_proj", "v_proj")
 
-    metadata = getattr(model, "request_metadata")
+    metadata = model.request_metadata
     assert isinstance(metadata.lora, LoraRequest)
     assert metadata.lora.enabled is True
     assert metadata.lora.rank == 4

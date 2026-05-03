@@ -13,7 +13,7 @@ import pytest
 
 def test_bf16_matmul_guard_raises_on_runtime_error(monkeypatch):
     tl = importlib.import_module("src.codex_ml.train_loop")
-    guard = getattr(tl, "_assert_bf16_capability")
+    guard = tl._assert_bf16_capability
 
     # Fake a torch module with bfloat16 but matmul fails
     class FakeTensor:

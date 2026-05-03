@@ -25,6 +25,6 @@ def test_load_model_with_lora():
         lora_rank=4,
     )
     assert getattr(model, "_lora_applied", False) is True
-    applied = getattr(model, "_lora_settings")
+    applied = model._lora_settings
     assert applied.rank == 4
     assert applied.adapter_path == settings.adapter_path

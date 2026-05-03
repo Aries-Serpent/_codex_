@@ -50,7 +50,7 @@ def test_structured_config_merge_ok() -> None:
     merged = OmegaConf.merge(base, override)
     result = OmegaConf.to_object(merged)
     # Handle both dict and dataclass results
-    epochs = result["epochs"] if isinstance(result, dict) else getattr(result, "epochs")
+    epochs = result["epochs"] if isinstance(result, dict) else result.epochs
     assert epochs == 2
 
 
