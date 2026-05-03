@@ -24,13 +24,28 @@
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [x] Verify PR was successfully merged to target branch
+- [x] Confirm CI checks on target branch are green post-merge
+- [ ] Run `python scripts/ci/auto_fix_common_issues.py --check-only` to verify no regressions
+- [ ] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` if any gaps found
+
+**Validation**:
+```bash
+python scripts/ci/auto_fix_common_issues.py --check-only
+python -m ruff check src/ tests/ --output-format=concise
+python scripts/ci/mypy_baseline.py --require-baseline
+```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Confirm no CodeQL alerts were introduced by this PR (check GitHub Security tab)
+- [ ] Verify `CHANGELOG.md` has an entry for this PR under `## [Unreleased]`
+- [ ] Check that all review comments were addressed before merge
+- [ ] Validate `sync_tracked_files.py --fix` passes cleanly on current main
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Archive this follow-up file once all Priority 1 & 2 tasks are confirmed complete
+- [ ] Add any unresolved items as new issues in the repository
+- [ ] Update `CODEQL-QUALITY-REMEDIATION.md` if this PR introduced or fixed CodeQL findings
 
 ---
 

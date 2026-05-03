@@ -24,18 +24,44 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Fix 24 CodeQL error-level findings — `py/call-to-non-callable` ×4, `py/call/wrong-arguments` ×2, `py/call/wrong-named-argument` ×18
+  - Requires CodeQL CLI: `codeql database analyze db-python --format=csv --output=/tmp/errors.csv`
+  - Locations documented in `CODEQL-QUALITY-REMEDIATION.md`
+- [ ] Fix `py/missing-equals` ×1 — class missing `__eq__` while having `__hash__`
+  - Search: `grep -rn "__hash__" src/ --include="*.py" | grep -v "__eq__"`
+- [ ] Fix `py/comparison-of-constants` ×1 — literal vs literal comparison always True/False
+  - Search: `ruff check src/ --select=F632 --output-format=concise`
+- [ ] Fix `py/unreachable-statement` ×33 — statements after unconditional return/raise/continue
+  - Search: `ruff check src/ tests/ --select=F401,E501 --output-format=concise`
 
 **Validation**:
 ```bash
-echo "Add validation commands"
+python -m py_compile scripts/ci/batch_scan_integration.py scripts/ci/scan_failing_workflows.py scripts/cognitive/har_ingest.py scripts/cognitive/zendesk_endpoint_manager.py scripts/migrations/001_userstore_to_sqlite.py
+python -m ruff check src/ tests/ --output-format=concise
+python scripts/ci/mypy_baseline.py --require-baseline
+python scripts/ci/auto_fix_common_issues.py --check-only
+python scripts/ci/sync_tracked_files.py --fix
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Fix `py/unnecessary-lambda` ×5 — replace `lambda x: f(x)` with direct `f` reference
+  - Search: `grep -rn "lambda.*:" src/ scripts/ --include="*.py" | grep -v "#"`
+- [ ] Fix `py/unused-global-variable` ×118 — module-level variables never read outside the module
+  - Run: `ruff check src/ scripts/ --select=F841 --output-format=concise`
+- [ ] Fix `py/unused-import` ×36 — dead imports not caught by previous ruff pass
+  - Run: `ruff check src/ scripts/ --select=F401 --output-format=concise`
+- [ ] Fix `py/unused-local-variable` ×62 — local variables assigned but never used
+  - Run: `ruff check src/ tests/ --select=F841 --output-format=concise`
+- [ ] Fix `js/unused-local-variable` ×4 — JavaScript variables never read
+  - Search: `grep -rn "var \|let \|const " src/ --include="*.js"`
+- [ ] Update `CHANGELOG.md` `## [Unreleased]` section with PR #4204 entry
+- [ ] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session S294 completion
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Run full `pytest tests/ -v` suite and confirm 0 failures
+- [ ] Confirm mypy baseline still ≤ 169 after all fixes: `python scripts/ci/mypy_baseline.py --require-baseline`
+- [ ] Update `CODEQL-QUALITY-REMEDIATION.md` per-section Progress fields with commit SHAs
+- [ ] Move this file to `.github/copilot-prompts/archive/` once all items are checked
 
 ---
 

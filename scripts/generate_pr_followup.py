@@ -35,6 +35,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -191,6 +192,75 @@ class PromptGenerator:
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }
 
+    # Sentinel strings that indicate a section has only placeholder content.
+    _PLACEHOLDER_MARKERS: tuple[str, ...] = (
+        '- [ ] No tasks specified',
+        'echo "Add validation commands"',
+        '# No commands specified',
+    )
+
+    def _section_is_placeholder(self, text: str) -> bool:
+        """Return True when *text* consists entirely of placeholder content."""
+        stripped = text.strip()
+        return any(marker in stripped for marker in self._PLACEHOLDER_MARKERS)
+
+    def _extract_existing_tasks(self, existing_path: Path) -> dict[str, str]:
+        """
+        Parse *existing_path* and return the raw text of each task section
+        keyed by ``'immediate'``, ``'validation'``, ``'future'``, and
+        ``'validation_commands_p1'``.
+
+        Returns an empty dict when the file does not exist or every section is
+        still at its placeholder default.
+        """
+        if not existing_path.exists():
+            return {}
+
+        content = existing_path.read_text()
+        preserved: dict[str, str] = {}
+
+        # ── Priority 1 (immediate tasks + inline validation block) ────────────
+        p1_match = re.search(
+            r'### Priority 1: Immediate Tasks.*?\n(.*?)(?=\n### Priority 2:|\Z)',
+            content, re.DOTALL,
+        )
+        if p1_match:
+            p1_body = p1_match.group(1)
+            # Split off the ```bash … ``` validation sub-block
+            cmd_match = re.search(r'```bash\n(.*?)```', p1_body, re.DOTALL)
+            if cmd_match:
+                commands = cmd_match.group(1).strip()
+                tasks_only = p1_body[:p1_body.index('**Validation**')].strip() if '**Validation**' in p1_body else p1_body.strip()
+                if not self._section_is_placeholder(tasks_only):
+                    preserved['immediate'] = tasks_only
+                if not self._section_is_placeholder(commands):
+                    preserved['validation_commands_p1'] = commands
+            else:
+                if not self._section_is_placeholder(p1_body.strip()):
+                    preserved['immediate'] = p1_body.strip()
+
+        # ── Priority 2 ────────────────────────────────────────────────────────
+        p2_match = re.search(
+            r'### Priority 2: Follow-Up Validation.*?\n(.*?)(?=\n### Priority 3:|\Z)',
+            content, re.DOTALL,
+        )
+        if p2_match:
+            body = p2_match.group(1).strip()
+            if not self._section_is_placeholder(body):
+                preserved['validation'] = body
+
+        # ── Priority 3 ────────────────────────────────────────────────────────
+        p3_match = re.search(
+            r'### Priority 3: Future Enhancements.*?\n(.*?)(?=\n---|\Z)',
+            content, re.DOTALL,
+        )
+        if p3_match:
+            body = p3_match.group(1).strip()
+            if not self._section_is_placeholder(body):
+                preserved['future'] = body
+
+        return preserved
+
     def format_task_list(self, tasks: list[str] | None) -> str:
         if not tasks:
             return '- [ ] No tasks specified'
@@ -220,6 +290,7 @@ class PromptGenerator:
         commands: str = '',
         expected_outcomes: str = '',
         related_issues: str = '',
+        output_dir: Path | None = None,
         **kwargs
     ) -> str:
         template = self.load_template(template_name)
@@ -228,9 +299,34 @@ class PromptGenerator:
         modified_files = self.git.get_modified_files()
         commit_count = self.git.get_commit_count()
 
-        immediate = self.format_task_list(immediate_tasks)
-        validation = self.format_task_list(validation_tasks)
-        future = self.format_task_list(future_tasks)
+        # ── Preserve real task content written by agents/humans ──────────────
+        # If the existing follow-up file already contains non-placeholder task
+        # sections (Priority 1/2/3), keep them.  Only fall back to the
+        # caller-supplied tasks (or the default placeholder) when the sections
+        # are still at their generated default.
+        resolved_dir = output_dir or Path('.github/copilot-prompts/active')
+        existing_path = resolved_dir / f'PR-{pr_number}-followup.md'
+        preserved = self._extract_existing_tasks(existing_path)
+
+        immediate = preserved.get('immediate') or self.format_task_list(immediate_tasks)
+        validation = preserved.get('validation') or self.format_task_list(validation_tasks)
+        future = preserved.get('future') or self.format_task_list(future_tasks)
+        validation_cmds = (
+            preserved.get('validation_commands_p1')
+            or commands
+            or (
+                'python -m ruff check src/ tests/ --output-format=concise\n'
+                'python scripts/ci/mypy_baseline.py --require-baseline\n'
+                'python scripts/ci/auto_fix_common_issues.py --check-only\n'
+                'python scripts/ci/sync_tracked_files.py --fix'
+            )
+        )
+
+        if preserved:
+            logger.info(
+                "Preserved existing task sections in PR-%s follow-up "
+                "(sections: %s)", pr_number, ', '.join(preserved)
+            )
 
         replacements = {
             **metadata,
@@ -245,7 +341,7 @@ class PromptGenerator:
             'commit_count': str(commit_count),
             'completed_summary': self.format_commits(commits[:3]),
             'modified_files': self.format_files(modified_files),
-            'validation_commands_p1': commands or 'echo "Add validation commands"',
+            'validation_commands_p1': validation_cmds,
             **kwargs
         }
 
@@ -295,6 +391,9 @@ def main():
         if args.phase_name:
             custom_vars['current_phase_name'] = args.phase_name
 
+        output_path = args.output or Path(f'.github/copilot-prompts/active/PR-{args.pr_number}-followup.md')
+        resolved_output_dir = output_path.parent if args.output else None
+
         prompt = generator.generate(
             pr_number=args.pr_number,
             template_name=args.template,
@@ -305,11 +404,11 @@ def main():
             commands=args.commands,
             expected_outcomes=args.outcomes,
             related_issues=args.issues,
+            output_dir=resolved_output_dir,
             **custom_vars
         )
 
-        output_path = args.output or Path(f'.github/copilot-prompts/active/PR-{args.pr_number}-followup.md')
-        saved_path = generator.save(prompt, args.pr_number, output_path.parent if args.output else None)
+        saved_path = generator.save(prompt, args.pr_number, resolved_output_dir)
 
         print("✅ Follow-up prompt generated successfully")
         print(f"📄 Saved to: {saved_path}")
