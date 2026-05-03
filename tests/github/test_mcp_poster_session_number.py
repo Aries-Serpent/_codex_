@@ -20,7 +20,6 @@ import pytest
 # sets X as an attribute on its parent only after the submodule is imported;
 # the explicit import below guarantees the attribute is present even if test
 # collection order changes.
-import codex.github  # noqa: F401
 from codex.github.mcp_poster import GitHubMCPPoster, main
 
 # ---------------------------------------------------------------------------

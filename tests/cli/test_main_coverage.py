@@ -314,9 +314,6 @@ class TestTyperAppRegistration:
         original = os.environ.get("CODEX_ENABLE_TOKENIZER_CLI")
         try:
             os.environ["CODEX_ENABLE_TOKENIZER_CLI"] = "1"
-            # Re-import to trigger registration
-            import importlib  # noqa: F401 - Testing optional dependency availability
-
             import codex_ml.cli.main as cli_main
             # Verify app exists
             assert hasattr(cli_main, "app") or hasattr(cli_main, "typer")

@@ -35,11 +35,7 @@ except ImportError:
     SENTENCE_TRANSFORMERS_AVAILABLE = False
 
 # Check if openai is available
-try:
-    import openai  # noqa: F401
-    OPENAI_AVAILABLE = True
-except ImportError:
-    OPENAI_AVAILABLE = False
+OPENAI_AVAILABLE = importlib.util.find_spec('openai') is not None
 
 pytestmark = pytest.mark.skipif(
     not RAG_EMBEDDINGS_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,

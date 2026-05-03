@@ -120,9 +120,11 @@ class TestMentalMapNode:
     def MentalMapNode(self):
         """Import MentalMapNode class."""
         try:
-            from agents.mental_mapping import (  # noqa: F401 - Testing optional dependency availability
+            from agents.mental_mapping import (
                 MentalMapNode,
-                NodeType,
+            )
+            from agents.mental_mapping import (
+                NodeType as NodeType,
             )
 
             return MentalMapNode

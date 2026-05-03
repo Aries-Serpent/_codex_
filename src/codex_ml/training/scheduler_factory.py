@@ -194,8 +194,6 @@ def _create_pytorch_scheduler(
     """
     try:
         from torch.optim import lr_scheduler
-
-        import torch  # noqa: F401 - Testing optional dependency availability
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         raise ImportError(

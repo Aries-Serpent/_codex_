@@ -6,6 +6,7 @@ Test module for cli prompt sanitisation.
 
 from __future__ import annotations
 
+import importlib.util
 import os
 from typing import Dict
 
@@ -17,7 +18,8 @@ pytest.importorskip("omegaconf")
 os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
 
 try:  # pragma: no cover - hydra stub may omit utils
-    import hydra  # type: ignore[attr-defined]  # noqa: F401 - Testing availability
+    if importlib.util.find_spec('hydra') is None:
+        raise ModuleNotFoundError("hydra not found")
 except ModuleNotFoundError:
     pytest.skip("Hydra utilities unavailable", allow_module_level=True)
 

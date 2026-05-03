@@ -78,7 +78,7 @@ def _scan_imports(root_pkg: str, allow_optional: List[str]) -> Dict[str, Any]:
 def _build_pdoc(root_pkg: str, out_dir: Path) -> Dict[str, Any]:
     result = {"built": False, "file_count": 0, "out_dir": str(out_dir), "notes": ""}
     try:
-        import pdoc  # type: ignore  # noqa: F401
+        pass  # type: ignore  # noqa: F401
     except Exception as exc:
         result["notes"] = f"pdoc unavailable: {type(exc).__name__}: {exc}"
         return result

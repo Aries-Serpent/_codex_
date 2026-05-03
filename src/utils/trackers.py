@@ -17,6 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import importlib.util
 import logging
 import os
 
@@ -46,15 +47,14 @@ def init_wandb_offline(project: str = "codex"):
 
 def init_mlflow_local():
     """Ensure MLflow logs locally (default mlruns/) unless a tracking URI is set."""
-    try:
-        import mlflow  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('mlflow') is None:
         logger.warning("mlflow not installed; skipping MLflow init (pip install mlflow)")
         return None
+    try:
+        from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
     except Exception:
         logger.warning("Unexpected error importing mlflow", exc_info=True)
         return None
-    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
     requested = os.environ.get("MLFLOW_TRACKING_URI")
     bootstrap_offline_tracking(requested_uri=requested)

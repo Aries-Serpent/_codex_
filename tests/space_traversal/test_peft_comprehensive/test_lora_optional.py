@@ -3,6 +3,8 @@ Test Lora Optional
 
 Test module for lora optional.
 """
+import importlib.util
+
 import pytest
 
 pytest.importorskip("numpy", reason="numpy required")
@@ -22,13 +24,8 @@ class _Tok:
         return [self.vocab[t] for t in txt.split()]
 
 
-def _has_peft() -> bool:
-    try:  # pragma: no cover - optional dependency
-        import peft  # noqa: F401
-
-        return True
-    except ImportError:
-        return False
+def _has_peft() -> bool:  # pragma: no cover - optional dependency
+    return importlib.util.find_spec('peft') is not None
 
 
 @pytest.mark.skipif(not _has_peft(), reason="peft not installed")

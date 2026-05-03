@@ -6,6 +6,7 @@ This script checks that all required pytest plugins are installed and
 accessible before running the test suite.
 """
 
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -82,16 +83,14 @@ def check_pytest_args(args: List[str]) -> Tuple[bool, str]:
         return True, f"✓ pytest supports all required arguments: {', '.join(args)}"
     except subprocess.TimeoutExpired:
         # Fallback: Check if plugins are importable directly
-        try:
-            import pytest  # noqa: F401
-            import pytest_cov  # noqa: F401
-            import pytest_randomly  # noqa: F401
-            import pytest_rerunfailures  # noqa: F401
-            import pytest_timeout  # noqa: F401
-            import xdist  # noqa: F401
-            return True, "✓ pytest and all plugins are importable (--help timed out, but plugins verified)"
-        except ImportError as e:
-            return False, f"✗ pytest --help timed out and plugin import failed: {e}"
+        missing = [
+            name for name in ['pytest', 'pytest_cov', 'pytest_randomly',
+                               'pytest_rerunfailures', 'pytest_timeout', 'xdist']
+            if importlib.util.find_spec(name) is None
+        ]
+        if missing:
+            return False, f"✗ pytest --help timed out and plugin import failed: {', '.join(missing)} not found"
+        return True, "✓ pytest and all plugins are importable (--help timed out, but plugins verified)"
     except Exception as e:
         return False, f"✗ Error checking pytest args: {e}"
 

@@ -230,7 +230,7 @@ class TestQuantumRetrievalWithQuantumGameTheory:
         # Could use quantum game theory to evaluate strategies
         try:
             # Import check: verify quantum_game_theory module is available for integration
-            from agents.quantum_game_theory import QuantumGame  # noqa: F401
+            from agents.quantum_game_theory import QuantumGame as QuantumGame
 
             # Game would use retrieval scores as inputs
             # game = QuantumGame(...)

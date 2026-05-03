@@ -1,16 +1,16 @@
 """Integration tests for metadata filtering with FAISS store"""
 
 
+import importlib.util
+
 import pytest
 
 np = pytest.importorskip("numpy")
 import pytest
 
 try:
-    import faiss  # noqa: F401  # Check faiss is importable before testing the store
-
     from src.codex.retrieval.stores.faiss_store import FAISSStore
-    FAISS_AVAILABLE = True
+    FAISS_AVAILABLE = importlib.util.find_spec('faiss') is not None
 except ImportError:
     FAISS_AVAILABLE = False
 

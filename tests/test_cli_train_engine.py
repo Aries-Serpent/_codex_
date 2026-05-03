@@ -15,7 +15,6 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
-import codex.training  # noqa: F401, E402 — ensures codex.training is registered as attr of codex
 from codex.cli import cli  # noqa: E402
 
 

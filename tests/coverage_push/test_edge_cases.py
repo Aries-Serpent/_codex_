@@ -350,7 +350,7 @@ class TestErrorPaths:
     def test_import_error_handling(self) -> None:
         """Test ImportError handling."""
         with pytest.raises(ImportError):
-            import nonexistent_module_xyz  # type: ignore[import-not-found]  # noqa: F401
+            pass  # type: ignore[import-not-found]  # noqa: F401
 
 
 # =============================================================================

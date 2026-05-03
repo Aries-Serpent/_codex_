@@ -3,6 +3,7 @@ Integration tests for error paths and exception handling.
 
 Tests exception propagation, graceful degradation, and recovery mechanisms.
 """
+import importlib.util
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -281,8 +282,4 @@ class TestEvaluationErrorPaths:
 # Helper
 def _torch_available():
     """Check if PyTorch is available."""
-    try:
-        import torch  # noqa: F401 - Testing optional dependency availability
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec('torch') is not None

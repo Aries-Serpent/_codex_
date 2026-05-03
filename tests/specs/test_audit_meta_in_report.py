@@ -6,6 +6,7 @@ Test module for audit meta in report.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import subprocess
 import sys
@@ -36,10 +37,7 @@ def test_meta_propagates_and_renders(tmp_path):
         pytest.skip("audit runner missing")
 
     # Optional deps for S6 template
-    try:
-        import jinja2  # noqa: F401
-        import yaml  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('jinja2') is None or importlib.util.find_spec('yaml') is None:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # Ensure audit_artifacts directory exists

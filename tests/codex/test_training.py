@@ -9,11 +9,17 @@ import pytest
 
 # Skip if PyTorch-dependent modules cannot be imported
 try:
-    from codex.training import (  # noqa: F401 - Testing optional dependency availability
-        _build_safe_ckpt_payload,
-        _codex_config_hash,
-        _safe_perplexity,
-        _safe_token_accuracy,
+    from codex.training import (
+        _build_safe_ckpt_payload as _build_safe_ckpt_payload,
+    )
+    from codex.training import (
+        _codex_config_hash as _codex_config_hash,
+    )
+    from codex.training import (
+        _safe_perplexity as _safe_perplexity,
+    )
+    from codex.training import (
+        _safe_token_accuracy as _safe_token_accuracy,
     )
     TRAINING_AVAILABLE = True
 except (ImportError, AttributeError):

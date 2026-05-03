@@ -6,6 +6,7 @@ These tests validate that:
 3. Deterministic behavior on trivial examples
 """
 
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -19,19 +20,9 @@ if str(_SRC_DIR) not in sys.path:
 
 
 # Check if optional dependencies are available
-try:
-    import nltk  # noqa: F401
+NLTK_AVAILABLE = importlib.util.find_spec('nltk') is not None
 
-    NLTK_AVAILABLE = True
-except ImportError:
-    NLTK_AVAILABLE = False
-
-try:
-    import rouge_score  # noqa: F401
-
-    ROUGE_AVAILABLE = True
-except ImportError:
-    ROUGE_AVAILABLE = False
+ROUGE_AVAILABLE = importlib.util.find_spec('rouge_score') is not None
 
 
 class TestBLEUMetric:

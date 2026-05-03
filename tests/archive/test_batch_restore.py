@@ -67,7 +67,6 @@ def test_batch_restore_results(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     )
 
     service = DummyService(failures={"fail"})
-    import codex.archive.retry  # noqa: F401 — ensure submodule is set as attr on parent before monkeypatching
     monkeypatch.setattr("codex.archive.retry.time.sleep", lambda _: None)
     runner = batch.BatchRestore(
         service,

@@ -6,6 +6,7 @@ Test module for audit diff cli.
 
 from __future__ import annotations
 
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -28,10 +29,7 @@ def test_audit_diff_cli_with_self(tmp_path):
     runner = Path("scripts/space_traversal/audit_runner.py")
     if not runner.exists():
         pytest.skip("audit runner missing")
-    try:
-        import jinja2  # noqa: F401
-        import yaml  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('jinja2') is None or importlib.util.find_spec('yaml') is None:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # Ensure at least one scoring file exists

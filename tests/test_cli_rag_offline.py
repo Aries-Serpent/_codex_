@@ -5,6 +5,8 @@ Tests the complete RAG pipeline using TF-IDF embeddings (no network required).
 """
 
 
+import importlib.util
+
 import pytest
 
 pytest.importorskip("typer")
@@ -52,9 +54,7 @@ class TestTfidfIntegration:
     def test_build_with_tfidf(self, runner, sample_docs, tmp_path):
         """Test building index with TF-IDF provider."""
         # Note: This test requires scikit-learn
-        try:
-            import sklearn  # noqa: F401 - Testing optional dependency availability
-        except ImportError:
+        if importlib.util.find_spec('sklearn') is None:
             pytest.skip("scikit-learn not installed")
 
         result = runner.invoke(

@@ -22,7 +22,6 @@ def test_accelerate_shim_prints_path(capsys, monkeypatch):
     monkeypatch.delitem(sys.modules, "training.engine_hf_trainer", raising=False)
     eng = importlib.import_module("training.engine_hf_trainer")
     import accelerate
-    from accelerate import Accelerator  # noqa: F401
 
     has_dlc = hasattr(getattr(accelerate, "utils", object()), "DataLoaderConfiguration")
 

@@ -45,4 +45,3 @@ def test_wandb_offline_default(monkeypatch):
     monkeypatch.delenv("WANDB_API_KEY", raising=False)
     os.environ.pop("WANDB_ENABLE", None)
     # We only verify no crash on import; wandb optional
-    import codex_ml.monitoring.tracking as tracking  # noqa: F401

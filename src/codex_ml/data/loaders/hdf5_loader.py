@@ -15,6 +15,7 @@ Generated: 2025-11-19 04:02:05
 
 from __future__ import annotations
 
+import importlib.util
 import logging
 from pathlib import Path
 from typing import Any, Optional
@@ -23,9 +24,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import h5py
-    import numpy as np  # noqa: F401 - imported to check availability
-
-    HDF5_AVAILABLE = True
+    HDF5_AVAILABLE = importlib.util.find_spec('numpy') is not None
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

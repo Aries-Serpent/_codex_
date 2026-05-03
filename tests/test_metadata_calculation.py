@@ -25,8 +25,10 @@ import pytest  # noqa: E402
 
 # Try to import hypothesis, make tests optional if not available
 try:
-    from hypothesis import (  # noqa: F401 - Testing optional dependency availability
-        assume,
+    from hypothesis import (
+        assume as assume,
+    )
+    from hypothesis import (
         given,
     )
     from hypothesis import strategies as st

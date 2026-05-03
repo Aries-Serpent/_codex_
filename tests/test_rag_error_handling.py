@@ -3,6 +3,7 @@ Comprehensive error handling tests for RAG modules.
 Tests all exception paths, edge cases, and failure scenarios.
 """
 
+import importlib.util
 import os
 import tempfile
 import threading
@@ -16,11 +17,7 @@ pytest.importorskip("numpy")
 import numpy as np  # noqa: E402
 
 # Check for FAISS specifically
-try:
-    import faiss  # noqa: F401
-    FAISS_AVAILABLE = True
-except ImportError:
-    FAISS_AVAILABLE = False
+FAISS_AVAILABLE = importlib.util.find_spec('faiss') is not None
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
@@ -41,11 +38,7 @@ except ImportError:
     RAG_ERROR_HANDLING_AVAILABLE = False
 
 # Check if openai is available
-try:
-    import openai  # noqa: F401
-    OPENAI_AVAILABLE = True
-except ImportError:
-    OPENAI_AVAILABLE = False
+OPENAI_AVAILABLE = importlib.util.find_spec('openai') is not None
 
 pytestmark = pytest.mark.skipif(
     not RAG_ERROR_HANDLING_AVAILABLE or not FAISS_AVAILABLE,

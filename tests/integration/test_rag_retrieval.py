@@ -11,11 +11,7 @@ import pytest
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
 # Check if required dependencies are available
-try:
-    import numpy as _  # noqa: F401 - Testing dependency availability
-    NUMPY_AVAILABLE = True
-except ImportError:
-    NUMPY_AVAILABLE = False
+NUMPY_AVAILABLE = importlib.util.find_spec('numpy') is not None
 
 try:
     if importlib.util.find_spec("sentence_transformers") is None:

@@ -3,6 +3,7 @@ Unit tests for codex_ml.checkpointing module.
 
 Tests checkpoint save/load, versioning, and metadata handling.
 """
+import importlib.util
 import json
 import tempfile
 from pathlib import Path
@@ -13,11 +14,7 @@ import pytest
 # Helper function
 def _torch_available():
     """Check if PyTorch is available."""
-    try:
-        import torch  # noqa: F401 - Testing optional dependency availability
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec('torch') is not None
 
 
 class TestCheckpointCore:

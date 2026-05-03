@@ -33,7 +33,7 @@ def run(cfg: TrainTokenizerConfig) -> Path:
 
 
 if TYPE_CHECKING:  # pragma: no cover - Hydra entry point only used at runtime
-    from omegaconf import DictConfig  # noqa: F401
+    pass  # noqa: F401
 
 
 # ``main`` is provided for ``python -m codex_ml.tokenization.train_tokenizer``

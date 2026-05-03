@@ -15,6 +15,7 @@ Generated: 2025-11-19 04:02:05
 
 from __future__ import annotations
 
+import importlib.util
 import logging
 from pathlib import Path
 from typing import Any, Iterator, Optional
@@ -22,10 +23,8 @@ from typing import Any, Iterator, Optional
 logger = logging.getLogger(__name__)
 
 try:
-    import pandas as pd  # noqa: F401 - imported to check availability
     import pyarrow.parquet as pq
-
-    PARQUET_AVAILABLE = True
+    PARQUET_AVAILABLE = importlib.util.find_spec('pandas') is not None
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

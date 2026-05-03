@@ -6,6 +6,7 @@ Test module for audit explain cli.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import subprocess
 import sys
@@ -30,10 +31,7 @@ def test_audit_explain_cli_smoke(tmp_path, monkeypatch):
     if not runner.exists():
         pytest.skip("audit runner missing")
     # Ensure YAML/template deps are installed in the environment running tests
-    try:
-        import jinja2  # noqa: F401
-        import yaml  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('jinja2') is None or importlib.util.find_spec('yaml') is None:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # S1..S4 minimal path

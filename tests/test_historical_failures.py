@@ -18,9 +18,11 @@ agent_path = Path(__file__).parent.parent / ".github" / "agents" / "ci-diagnosti
 sys.path.insert(0, str(agent_path))
 
 try:
-    from agent import (  # noqa: F401 - Testing optional dependency availability
+    from agent import (
         CIDiagnosticAgent,
-        DiagnosticReport,
+    )
+    from agent import (
+        DiagnosticReport as DiagnosticReport,
     )
 except ImportError:
     pytest.skip("CI Diagnostic Agent not available", allow_module_level=True)

@@ -14,8 +14,9 @@ import pytest
 
 # Import determinism bootstrap early to ensure deterministic test execution
 try:
-    import tests._bootstrap_determinism  # noqa: F401
-except ImportError:
+    import importlib as _importlib
+    _importlib.import_module('tests._bootstrap_determinism')
+except (ImportError, ModuleNotFoundError):
     pass  # Bootstrap may not be available in all test environments
 
 # Respect existing user setting; default to disabling plugin autoload for determinism.

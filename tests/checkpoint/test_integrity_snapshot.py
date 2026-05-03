@@ -7,6 +7,7 @@ Test module for integrity snapshot.
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -58,12 +59,7 @@ def test_snapshot_config_prunes_reserved_keys() -> None:
 
 
 def _has_omegaconf() -> bool:
-    try:
-        import omegaconf  # type: ignore # noqa: F401
-
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec('omegaconf') is not None
 
 
 @pytest.mark.skipif(not _has_omegaconf(), reason="OmegaConf not available")

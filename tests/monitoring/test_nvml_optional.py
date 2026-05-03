@@ -6,15 +6,12 @@ Test module for nvml optional.
 
 from __future__ import annotations
 
+import importlib.util
 from numbers import Number
 
 import pytest
 
-try:
-    import pynvml  # noqa: F401
-    _HAS_NVML = True
-except ImportError:
-    _HAS_NVML = False
+_HAS_NVML = importlib.util.find_spec('pynvml') is not None
 
 from codex_ml.monitoring.microhelpers import get_gpu_stats
 

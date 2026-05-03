@@ -1531,23 +1531,13 @@ def serializable_mock_model():
 @pytest.fixture(scope="session")
 def sentence_transformers_available():
     """Check if sentence_transformers is available (session-scoped for performance)."""
-    try:
-        import sentence_transformers  # noqa: F401
-
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec('sentence_transformers') is not None
 
 
 @pytest.fixture(scope="session")
 def faiss_available():
     """Check if faiss is available (session-scoped for performance)."""
-    try:
-        import faiss  # noqa: F401
-
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec('faiss') is not None
 
 
 @pytest.fixture(scope="session")
@@ -1680,7 +1670,8 @@ def mock_sentence_transformer(monkeypatch):
             return iter([])
 
     try:
-        import sentence_transformers  # noqa: F401 - Testing optional dependency availability
+        if importlib.util.find_spec('sentence_transformers') is None:
+            raise ImportError("sentence_transformers not available")
 
         # Patch multiple import paths for comprehensive coverage
         monkeypatch.setattr(

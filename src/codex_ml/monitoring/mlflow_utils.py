@@ -16,18 +16,6 @@ from typing import Optional  # noqa: E402
 
 from ..tracking import mlflow_utils as _tracking_mlflow_utils  # noqa: E402
 from ..tracking.mlflow_guard import bootstrap_offline_tracking  # noqa: E402, F401
-from ..tracking.mlflow_utils import (  # noqa: E402, F401
-    MlflowConfig,
-    _ensure_mlflow_available,
-    current_commit_hash,
-    ensure_local_artifacts,
-    init_run,
-    log_artifacts,
-    log_metrics,
-    log_params,
-    seed_snapshot,
-    start_run,
-)
 
 # Expose the underlying ``mlflow`` module so older call sites and tests that
 # patch ``mlflow_utils.mlflow`` continue to work.

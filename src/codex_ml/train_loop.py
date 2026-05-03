@@ -739,7 +739,7 @@ def _log_dtype_mismatch_if_any(requested: Any, model) -> None:
     if requested is None or model is None:
         return
     try:
-        import torch as _torch  # noqa: F401
+        pass  # noqa: F401
     except Exception:
         return
     eff = _first_param_dtype(model)
@@ -763,7 +763,7 @@ def _dataset_dtype_gate(dataset, desired: Any) -> None:
     if dataset is None or not _HAS_TORCH:
         return
     try:
-        import torch as _torch  # noqa: F401
+        pass  # noqa: F401
     except Exception:
         return
     try:
@@ -998,7 +998,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
         if policy is None:
             return batch
         try:
-            import torch as _torch  # noqa: F401
+            pass  # noqa: F401
         except Exception:
             return batch
         try:

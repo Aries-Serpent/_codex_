@@ -9,6 +9,7 @@ Phase: 4.3 Part 2 - Integration & Cross-Module Tests
 Target: 30-40 tests for integration scenarios
 """
 
+import importlib.util
 import os
 import sys
 from pathlib import Path
@@ -324,22 +325,12 @@ class TestRealModuleImportBranches:
 
     def test_import_success_branch(self) -> None:
         """Test successful import branch."""
-        try:
-            import json  # noqa: F401 - Testing optional dependency availability
-            import_success = True
-        except ImportError:
-            import_success = False
-
+        import_success = importlib.util.find_spec('json') is not None
         assert import_success is True
 
     def test_import_optional_module_branch(self) -> None:
         """Test optional module import."""
-        try:
-            import nonexistent_module_xyz  # noqa: F401 - Testing optional dependency availability
-            available = True
-        except ImportError:
-            available = False
-
+        available = importlib.util.find_spec('nonexistent_module_xyz') is not None
         assert available is False
 
 

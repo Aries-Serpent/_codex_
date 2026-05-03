@@ -4,6 +4,7 @@ Provides text chunking, embedding, and FAISS index persistence for expanded cont
 """
 
 import hashlib
+import importlib.util
 import json
 import logging
 import shutil
@@ -100,13 +101,11 @@ def embed_chunks(
         return np.array([])
 
     # Import here to avoid hard dependency
-    try:
-        import sentence_transformers  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('sentence_transformers') is None:
         logger.error(
             "sentence-transformers not installed. Install with: pip install sentence-transformers"
         )
-        raise
+        raise ImportError("sentence-transformers not installed")
 
     # Extract model configuration
     model_profile = model_profile or {}

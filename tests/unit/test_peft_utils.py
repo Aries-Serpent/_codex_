@@ -6,15 +6,13 @@ Test module for peft utils.
 
 from __future__ import annotations
 
+import importlib.util
+
 import pytest
 
 
 def test_imports_exist():
-    try:
-        import peft  # noqa: F401
-
-        import transformers  # noqa: F401
-    except ImportError:
+    if importlib.util.find_spec('peft') is None or importlib.util.find_spec('transformers') is None:
         pytest.skip("transformers/peft not installed in this environment")
 
 

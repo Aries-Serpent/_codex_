@@ -269,7 +269,7 @@ class TestCircuitBreakerIntegration:
         """Test circuit breaker is called during prediction"""
         # Skip if circuit breaker not available
         try:
-            from codex_ml.serving.resilience import CircuitBreaker  # noqa: F401
+            from codex_ml.serving.resilience import CircuitBreaker as CircuitBreaker
         except ImportError:
             pytest.skip("CircuitBreaker not available")
 

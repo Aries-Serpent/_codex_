@@ -51,6 +51,7 @@ Options:
 
 import argparse
 import ast
+import importlib.util
 import json
 import logging
 import os
@@ -2373,9 +2374,7 @@ class CommonIssueFixer:
             return issues
 
         # 2. Verify detect-secrets is available
-        try:
-            import detect_secrets  # noqa: F401
-        except ImportError:
+        if importlib.util.find_spec('detect_secrets') is None:
             print(
                 "✅ Pattern 27 (Secrets FP Scan): detect-secrets not installed — skip"
             )

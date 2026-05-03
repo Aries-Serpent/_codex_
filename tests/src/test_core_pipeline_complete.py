@@ -757,7 +757,7 @@ class TestErrorPaths:
     def test_error_import_error(self):
         """Test ImportError"""
         with pytest.raises(ImportError):
-            import nonexistent_module_xyz_12345  # noqa: F401
+            pass  # noqa: F401
 
     def test_error_runtime_error(self):
         """Test RuntimeError"""

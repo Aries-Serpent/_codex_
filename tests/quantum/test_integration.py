@@ -19,7 +19,6 @@ from src.quantum import (
     ThermodynamicOrchestrator,
     ThermodynamicTask,
 )
-from tests.utils.quantum_helpers import quantum_plugin_fixture  # noqa: F401, F811
 
 
 @pytest.mark.integration
