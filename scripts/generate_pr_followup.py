@@ -427,9 +427,8 @@ def main():
             if generator.has_real_content(args.pr_number, resolved_output_dir):
                 print(f"SKIP: PR-{args.pr_number}-followup.md already has real task content — workflow will NOT overwrite.")
                 return 0  # 0 = skip regeneration
-            else:
-                print(f"REGENERATE: PR-{args.pr_number}-followup.md is missing or placeholder-only.")
-                return 2  # 2 = needs regeneration
+            print(f"REGENERATE: PR-{args.pr_number}-followup.md is missing or placeholder-only.")
+            return 2  # 2 = needs regeneration
 
         custom_vars = {}
         if args.phase:
