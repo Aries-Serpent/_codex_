@@ -287,4 +287,3 @@ class TableGenerator:
 | **Commit** | {current_run.head_sha[:7] if current_run.head_sha else 'N/A'} | {previous_success.head_sha[:7] if previous_success.head_sha else 'N/A'} | [Compare](https://github.com/{current_run.repository.full_name}/compare/{previous_success.head_sha}...{current_run.head_sha}) |
 | **Time** | {current_run.created_at.strftime('%Y-%m-%d %H:%M') if current_run.created_at else 'N/A'} | {previous_success.created_at.strftime('%Y-%m-%d %H:%M') if previous_success.created_at else 'N/A'} | - |
 """
-

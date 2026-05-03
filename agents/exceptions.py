@@ -110,4 +110,3 @@ class InvariantViolationError(PhysicsError):
 
 class CausalityViolationError(PhysicsError):
     """Raised when causality constraints are violated (e.g., v > c)."""
-
