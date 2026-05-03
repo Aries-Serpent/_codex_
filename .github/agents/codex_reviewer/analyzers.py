@@ -97,4 +97,3 @@ class QuantumPatternAnalyzer:
 
         # TODO: Implement tunneling detection
         # Look for nested loops, sequential operations
-

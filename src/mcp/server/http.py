@@ -15,7 +15,7 @@ from typing import Any, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +39,9 @@ class QueryRequest(BaseModel):
     top_k: int = Field(default=DEFAULT_TOP_K, ge=1, le=MAX_TOP_K)
     filters: Optional[dict[str, Any]] = None
 
-    @validator("query")
-    def _ensure_query(self, value: str) -> str:
+    @field_validator("query")
+    @classmethod
+    def _ensure_query(cls, value: str) -> str:
         """Require non-empty query strings."""
         if not value or not value.strip():
             raise ValueError("query cannot be empty")
@@ -52,8 +53,9 @@ class ContextUpsertRequest(BaseModel):
 
     items: list[ContextItem]
 
-    @validator("items")
-    def _ensure_items(self, value: list[ContextItem]) -> list[ContextItem]:
+    @field_validator("items")
+    @classmethod
+    def _ensure_items(cls, value: list[ContextItem]) -> list[ContextItem]:
         if not value:
             raise ValueError("at least one item is required")
         return value

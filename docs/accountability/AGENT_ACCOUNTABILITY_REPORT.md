@@ -24710,3 +24710,26 @@ and the CI gate requirement.
 ### Lessons Learned
 - Pattern 25 fires on EVERY commit that doesn't touch this file. Each agent session MUST update it.
 - CodeQL error-level findings (call-to-non-callable, wrong-args, wrong-named-arg) require CodeQL CLI to locate; cannot be found by ruff or mypy.
+
+## SESSION SUMMARY — 2026-05-03T20:14Z — PR #4204 — CI Healing (validation/fast-validation)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All new comments reviewed: #4367031698 (validation quick failure), #4367044527 (Fast Validation failure), #4367049717 (continue P1-P4 tasks + bot findings)
+- [x] **0b.** Failing CI runs reviewed via GitHub MCP: run 25288915517 (validation quick), run 25289034057 (Fast Validation)
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+
+### Work Completed
+1. **`validation (quick)` CI failure resolved** — root cause: `@validator` in `src/mcp/server/http.py` applied to instance methods, which pydantic v2 forbids. Fixed by replacing `@validator` + `def _ensure_query(self, ...)` with `@field_validator` + `@classmethod` + `def _ensure_query(cls, ...)` for both validators. All 5 tests in `tests/mcp/test_http_server.py` now pass.
+2. **`Fast Validation` CI failure resolved** — pre-commit `end-of-file-fixer` hook modified two files making the tree dirty:
+   - `.codex/webhook_config.json` — added missing trailing newline
+   - `.github/agents/codex_reviewer/analyzers.py` — removed extra trailing blank line
+3. **sync_tracked_files** — passes clean ✅ (all 6 checks)
+
+### Unresolved
+- `py/call-to-non-callable` (×4), `py/call/wrong-arguments` (×2), `py/call/wrong-named-argument` (×18) — require CodeQL CLI for exact locations
+- `py/missing-equals` (×1), `js/unused-local-variable` (×4) — require live CodeQL scan
+- Rate-limit 403s on agent-auth-delegation / deferral-language-gate / issue-resolution-gate — transient; covered by existing `continue-on-error: true` guards
+
+### Lessons Learned
+- pydantic v2 `@validator` requires `@classmethod` + `cls` parameter; use `@field_validator` instead.
+- `end-of-file-fixer` pre-commit hook will fail Fast Validation if any file ends without exactly one trailing newline.
