@@ -65,7 +65,7 @@ def load_action_log(
         return []
 
     entries = []
-    with open(log_path, 'r') as f:
+    with open(log_path) as f:
         for line in f:
             line = line.strip()
             if not line:
@@ -89,7 +89,7 @@ def load_pattern_store(store_path: Path) -> Dict[str, Any]:
         return {"patterns": {}, "statistics": {}, "learning_log": []}
 
     try:
-        with open(store_path, 'r') as f:
+        with open(store_path) as f:
             return json.load(f)
     except json.JSONDecodeError:
         return {"patterns": {}, "statistics": {}, "learning_log": []}

@@ -183,7 +183,7 @@ class EnvironmentManager:
                 errors.append(f"Invalid value for {var_name}: {value}")
 
         if errors:
-            raise EnvironmentError("\n".join(errors))
+            raise OSError("\n".join(errors))
 
     def get(self, var_name: str, default: Optional[str] = None) -> str:
         """Get environment variable with fallback to configured default.

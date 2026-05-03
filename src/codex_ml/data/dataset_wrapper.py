@@ -57,11 +57,11 @@ def _validate_splits(splits: Iterable[float]) -> tuple[float, float, float]:
 
 
 def train_val_test_split(
-    dataset: "Dataset",
+    dataset: Dataset,
     *,
     seed: int = 42,
     splits: tuple[float, float, float] = (0.8, 0.1, 0.1),
-) -> tuple["Dataset", "Dataset", "Dataset"]:
+) -> tuple[Dataset, Dataset, Dataset]:
     """Split a Hugging Face dataset deterministically."""
 
     _require_datasets()

@@ -36,7 +36,7 @@ except ImportError:
 
 def load_relocation_plan(plan_file: Path) -> Dict:
     """Load the relocation plan from JSON file."""
-    with open(plan_file, 'r') as f:
+    with open(plan_file) as f:
         return json.load(f)
 
 

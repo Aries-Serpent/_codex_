@@ -87,7 +87,7 @@ class CognitiveBrainSessionManager:
         """Load patterns from the pattern store."""
         if self.pattern_store_path.exists():
             try:
-                with open(self.pattern_store_path, 'r') as f:
+                with open(self.pattern_store_path) as f:
                     data = json.load(f)
                     for name, pattern_data in data.get("patterns", {}).items():
                         self.patterns[name] = Pattern(
@@ -108,7 +108,7 @@ class CognitiveBrainSessionManager:
         if not self.pattern_store_path.exists():
             return
 
-        with open(self.pattern_store_path, 'r') as f:
+        with open(self.pattern_store_path) as f:
             data = json.load(f)
 
         for name, pattern in self.patterns.items():

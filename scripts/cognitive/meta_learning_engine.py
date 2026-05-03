@@ -100,7 +100,7 @@ class SharedMemory:
     def _load_index(self) -> Dict[str, Dict[str, Any]]:
         """Load memory index from disk"""
         if self.index_file.exists():
-            with open(self.index_file, 'r') as f:
+            with open(self.index_file) as f:
                 return json.load(f)
         return {}
 
@@ -146,7 +146,7 @@ class SharedMemory:
         if not data_file.exists():
             return None
 
-        with open(data_file, 'r') as f:
+        with open(data_file) as f:
             return json.load(f)
 
     def get_metadata(self, data_id: str) -> Optional[Dict[str, Any]]:
@@ -158,7 +158,7 @@ class SharedMemory:
         if not metadata_file.exists():
             return None
 
-        with open(metadata_file, 'r') as f:
+        with open(metadata_file) as f:
             return json.load(f)
 
     def search(self, query: Dict[str, Any]) -> List[str]:
@@ -191,7 +191,7 @@ class PatternLibrary:
     def _load_patterns(self) -> Dict[str, Pattern]:
         """Load patterns from disk"""
         if self.patterns_file.exists():
-            with open(self.patterns_file, 'r') as f:
+            with open(self.patterns_file) as f:
                 data = json.load(f)
                 return {pid: Pattern.from_dict(p) for pid, p in data.items()}
         return {}
@@ -293,7 +293,7 @@ class MetaLearningEngine:
     def _load_transfers(self) -> List[KnowledgeTransfer]:
         """Load transfer history"""
         if self.transfers_log.exists():
-            with open(self.transfers_log, 'r') as f:
+            with open(self.transfers_log) as f:
                 data = json.load(f)
                 return [KnowledgeTransfer(**t) for t in data]
         return []
@@ -553,7 +553,7 @@ def main():
             print("Error: --lessons-file required for apply mode")
             return 1
 
-        with open(args.lessons_file, 'r') as f:
+        with open(args.lessons_file) as f:
             data = json.load(f)
 
         lessons = data.get("lessons_learned", [])

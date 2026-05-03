@@ -67,7 +67,7 @@ def load_action_log(
         since = datetime.now(timezone.utc) - timedelta(hours=hours)
 
     entries = []
-    with open(log_path, 'r') as f:
+    with open(log_path) as f:
         for line in f:
             line = line.strip()
             if not line:
@@ -97,7 +97,7 @@ def load_pattern_store(store_path: Path) -> Dict[str, Any]:
         return {"patterns": {}, "statistics": {}}
 
     try:
-        with open(store_path, 'r') as f:
+        with open(store_path) as f:
             return json.load(f)
     except json.JSONDecodeError:
         return {"patterns": {}, "statistics": {}}

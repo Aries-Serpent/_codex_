@@ -187,7 +187,7 @@ class HandoffValidator:
         """Load handoff tracking data."""
         if TRACKING_FILE.exists():
             try:
-                with open(TRACKING_FILE, 'r') as f:
+                with open(TRACKING_FILE) as f:
                     return json.load(f)
             except json.JSONDecodeError:
                 logger.debug("Suppressed exception in handler", exc_info=True)

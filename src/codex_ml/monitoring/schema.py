@@ -39,7 +39,7 @@ class LogRecord:
     dataset: Optional[str] = None
     meta: dict[str, Any] = field(default_factory=dict)
 
-    def redacted(self) -> "LogRecord":
+    def redacted(self) -> LogRecord:
         """Return a copy with secrets redacted and string sizes capped."""
 
         new_meta: dict[str, Any] = {}

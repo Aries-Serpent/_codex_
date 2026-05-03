@@ -327,10 +327,10 @@ class IngestionPipeline:
 
             # Read file content
             try:
-                with open(path, "r", encoding="utf-8") as f:
+                with open(path, encoding="utf-8") as f:
                     text = f.read()
             except UnicodeDecodeError:
-                with open(path, "r", encoding="latin-1") as f:
+                with open(path, encoding="latin-1") as f:
                     text = f.read()
 
             # Deduplication check

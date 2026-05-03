@@ -214,7 +214,7 @@ class MetricStore:
             try:
                 with open(self.store_path) as f:
                     self._metrics = json.load(f)
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 self._metrics = {}
 
     def _save(self) -> None:

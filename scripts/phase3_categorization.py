@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).parent.parent
 def load_audit_data() -> dict:
     """Load comprehensive link audit data."""
     audit_file = REPO_ROOT / "COMPREHENSIVE_LINK_AUDIT.json"
-    with open(audit_file, 'r') as f:
+    with open(audit_file) as f:
         return json.load(f)
 
 def categorize_broken_link(url: str, reason: str) -> str:

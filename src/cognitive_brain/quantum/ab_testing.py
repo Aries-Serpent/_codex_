@@ -201,7 +201,7 @@ class ABTestFramework:
             return self._assignments[key]
 
         # Deterministic hash-based assignment
-        hash_input = f"{experiment_id}:{user_id}".encode("utf-8")
+        hash_input = f"{experiment_id}:{user_id}".encode()
         hash_value = hashlib.sha256(hash_input).hexdigest()
         hash_int = int(hash_value, 16)
 

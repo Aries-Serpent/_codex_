@@ -19,7 +19,7 @@ def check_table_spacing(file_path: Path) -> List[Dict[str, Any]]:
     Returns list of issues found: [{line, text, next, line_index}]
     """
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
         print(f"Error reading {file_path}: {e}", file=sys.stderr)
@@ -70,7 +70,7 @@ def fix_table_spacing(
         return False
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
         print(f"Error reading {file_path}: {e}", file=sys.stderr)

@@ -110,7 +110,7 @@ def maybe_mlflow(
         def log_artifact(self, path: str) -> None:  # pragma: no cover - trivial
             return None
 
-        def __enter__(self) -> "_NoOpLogger":  # pragma: no cover - trivial
+        def __enter__(self) -> _NoOpLogger:  # pragma: no cover - trivial
             return self
 
         def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - trivial

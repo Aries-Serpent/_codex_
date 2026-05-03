@@ -7,7 +7,7 @@ from pathlib import Path
 
 def fix_test_file(filepath: Path) -> tuple[int, list[str]]:
     """Fix a single test file. Returns (num_changes, list_of_changes)."""
-    with open(filepath, 'r') as f:
+    with open(filepath) as f:
         content = f.read()
 
     original_content = content

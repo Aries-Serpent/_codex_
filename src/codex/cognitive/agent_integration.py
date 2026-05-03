@@ -58,7 +58,7 @@ class IntegratedAgent:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "IntegratedAgent":
+    def from_dict(cls, data: dict[str, Any]) -> IntegratedAgent:
         """Create from dictionary."""
         return cls(
             agent_id=data["agent_id"],

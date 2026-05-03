@@ -230,7 +230,7 @@ def _load_training_config(path: str) -> dict[str, Any]:
         raise FileNotFoundError(f"Training config not found: {path}")
     if not _HAS_YAML:
         return {}
-    with open(path, "r", encoding="utf-8") as fh:
+    with open(path, encoding="utf-8") as fh:
         return yaml.safe_load(fh) or {}
 
 

@@ -21,7 +21,7 @@ from typing import Any, Dict, List
 
 def load_alert_inventory(file_path: Path) -> Dict[str, Any]:
     """Load alert inventory from JSON file."""
-    with open(file_path, 'r') as f:
+    with open(file_path) as f:
         return json.load(f)
 
 def analyze_by_severity(alerts: List[Dict]) -> Dict[str, int]:

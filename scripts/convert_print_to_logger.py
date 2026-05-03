@@ -116,7 +116,7 @@ def analyze_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
         return False, []
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source = f.read()
 
         tree = ast.parse(source, filename=str(file_path))
@@ -144,7 +144,7 @@ def convert_print_to_logger(
         return False
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
 
         changes_made = False
@@ -249,7 +249,7 @@ def convert_print_statement(line: str, level: str) -> str:
 def add_logging_import(file_path: Path, dry_run: bool = True) -> bool:
     """Add logging import if not present."""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
 
         # Find where to insert import

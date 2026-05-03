@@ -64,7 +64,7 @@ def fix_anchor_mismatches(file_path: Path) -> Tuple[int, List[dict]]:
     Returns (fixes_applied, fix_details).
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
     except Exception:
         return 0, []

@@ -555,7 +555,7 @@ def main() -> None:
         log_error("4.x prune analysis", e, context="duplication scan")
 
     # Phase 6: results
-    with open(ERRORS, "r", encoding="utf-8") as _err_fh:
+    with open(ERRORS, encoding="utf-8") as _err_fh:
         unresolved = sum(1 for _ in _err_fh) > 0
     results = {
         "implemented": [

@@ -308,7 +308,7 @@ class PluginSandbox:
         except Exception as e:
             logger.debug(f"Exception: {e}")
             # Record failure
-            error_msg = f"{type(e).__name__}: {str(e)}"
+            error_msg = f"{type(e).__name__}: {e!s}"
             health.record_failure(error_msg)
 
             logger.error(

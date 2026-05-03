@@ -126,7 +126,7 @@ def format_table(headers: List[str], rows: List[List], col_widths: List[int] = N
 
     # Rows
     for row in rows:
-        click.echo(''.join(f"{str(cell):<{w}}" for cell, w in zip(row, col_widths)))
+        click.echo(''.join(f"{cell!s:<{w}}" for cell, w in zip(row, col_widths)))
 
 
 @click.command()

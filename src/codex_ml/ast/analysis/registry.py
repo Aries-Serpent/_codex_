@@ -116,7 +116,7 @@ class AnalyzerRegistry:
                         Finding(
                             type="analyzer_error",
                             severity="error",
-                            message=f"Analyzer '{analyzer.get_analyzer_type()}' failed: {str(e)}",
+                            message=f"Analyzer '{analyzer.get_analyzer_type()}' failed: {e!s}",
                             location=node.location,
                             analyzer="registry",
                             metadata={

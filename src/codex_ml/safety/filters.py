@@ -443,7 +443,7 @@ class SafetyPolicy:
     source_path: Optional[Path] = field(default=None, repr=False, compare=False)
 
     @classmethod
-    def load(cls, path: Optional[Path | str] = None) -> "SafetyPolicy":
+    def load(cls, path: Optional[Path | str] = None) -> SafetyPolicy:
         candidates: list[Path] = []
         if path:
             candidates.append(Path(path))
@@ -476,7 +476,7 @@ class SafetyPolicy:
         return fallback
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "SafetyPolicy":
+    def from_dict(cls, data: dict[str, Any]) -> SafetyPolicy:
         enabled = bool(data.get("enabled", True))
         bypass = bool(data.get("bypass", False))
         redaction_token = str(data.get("redaction_token", REDACT_TOKEN))
@@ -650,11 +650,11 @@ class SafetyFilters:
             self.log_path = DEFAULT_LOG_PATH
 
     @classmethod
-    def from_defaults(cls) -> "SafetyFilters":
+    def from_defaults(cls) -> SafetyFilters:
         return cls(SafetyPolicy.from_dict(dict(DEFAULT_POLICY_DATA)))
 
     @classmethod
-    def from_policy_file(cls, path: Optional[Path | str]) -> "SafetyFilters":
+    def from_policy_file(cls, path: Optional[Path | str]) -> SafetyFilters:
         return cls(SafetyPolicy.load(path))
 
     # --- Public API --------------------------------------------------------

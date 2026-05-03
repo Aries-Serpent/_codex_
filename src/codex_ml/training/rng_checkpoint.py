@@ -46,7 +46,7 @@ class RNGState:
         return path
 
     @classmethod
-    def load_from_file(cls, path: Path) -> "RNGState":
+    def load_from_file(cls, path: Path) -> RNGState:
         data = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(data, dict):
             raise ValueError("RNG state file must contain a JSON object")

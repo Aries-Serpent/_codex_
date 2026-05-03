@@ -86,7 +86,7 @@ class CVEDatabase:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "CVEDatabase":
+    def from_dict(cls, data: dict[str, Any]) -> CVEDatabase:
         """Create from dictionary."""
         db = cls()
         for pkg, cves in data.get("entries", {}).items():

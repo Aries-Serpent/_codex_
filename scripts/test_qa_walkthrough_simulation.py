@@ -417,7 +417,7 @@ class QAWalkthroughSimulator:
             if "message" in check_result:
                 lines.append(f"   {check_result['message']}")
 
-            if "issues" in check_result and check_result["issues"]:
+            if check_result.get("issues"):
                 issue_count = len(check_result["issues"])
                 lines.append(f"   Found {issue_count} issue(s)")
 

@@ -13,7 +13,7 @@ from pathlib import Path
 def parse_diagnostic_report(json_path: str) -> dict:
     """Load and parse diagnostic JSON report."""
     try:
-        with open(json_path, 'r') as f:
+        with open(json_path) as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"❌ Error reading diagnostic report: {e}")

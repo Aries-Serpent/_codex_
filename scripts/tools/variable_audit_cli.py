@@ -251,7 +251,7 @@ _REGISTRY: List[ExpectedEntry] = [
 # Live-state fetchers
 # ---------------------------------------------------------------------------
 
-def _fetch_repo_vars(vm: "VariableManager") -> Dict[str, Any]:
+def _fetch_repo_vars(vm: VariableManager) -> Dict[str, Any]:
     """Return {name: entry} for all live repo variables."""
     try:
         rows = vm.list_repo_vars(_OWNER, _REPO)

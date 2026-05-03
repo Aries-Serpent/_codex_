@@ -69,7 +69,7 @@ class InMemoryVectorStore:
         self._items: list[ContextItem] = items or []
 
     @classmethod
-    def seeded(cls) -> "InMemoryVectorStore":
+    def seeded(cls) -> InMemoryVectorStore:
         """Create a store with seed data for smoke tests."""
         seed_items = [
             ContextItem(id="demo-1", content="codex mcp prototype", metadata={"scope": "repo"}),

@@ -175,7 +175,7 @@ class BenchmarkRunner:
         Returns:
             Comparison results with regressions
         """
-        with open(baseline_file, "r") as f:
+        with open(baseline_file) as f:
             baseline_data = json.load(f)
 
         baseline_results = {r["name"]: r for r in baseline_data.get("results", [])}

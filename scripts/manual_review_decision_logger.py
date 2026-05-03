@@ -101,7 +101,7 @@ DECISIONS = {
 
 def load_review_queue(queue_file: Path) -> List[Dict]:
     """Load the review queue JSON file."""
-    with open(queue_file, 'r', encoding='utf-8') as f:
+    with open(queue_file, encoding='utf-8') as f:
         return json.load(f)
 
 

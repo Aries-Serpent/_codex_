@@ -34,7 +34,7 @@ class CodexLoggers:
     mlflow_active: bool = False
     gpu: bool = False
     degradations: tuple[TelemetryComponentStatus, ...] = ()
-    system_status: "SamplerStatus | None" = None
+    system_status: SamplerStatus | None = None
     prometheus: tuple[bool, Optional[Path], Optional[str]] | None = None
 
     # Back-compat convenience: allow dict-like access for common keys.

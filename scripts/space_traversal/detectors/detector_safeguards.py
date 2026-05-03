@@ -102,7 +102,7 @@ def _read_text(path: Path) -> str:
             return ""
         # Safeguard: Bounded read to prevent memory issues
         return path.read_text(encoding="utf-8", errors="ignore")[:MAX_READ_BYTES]
-    except (OSError, IOError, UnicodeDecodeError):
+    except (OSError, UnicodeDecodeError):
         # Defensive error handling: Catch specific exceptions and provide fallback
         return ""
 

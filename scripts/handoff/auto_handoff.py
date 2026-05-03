@@ -105,7 +105,7 @@ class AutoHandoff:
             "commits": []
         }
 
-        with open(ACTION_LOG_PATH, 'r') as f:
+        with open(ACTION_LOG_PATH) as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -161,7 +161,7 @@ class AutoHandoff:
             return patterns
 
         try:
-            with open(PATTERN_STORE, 'r') as f:
+            with open(PATTERN_STORE) as f:
                 data = json.load(f)
 
             for pattern_id, pattern in data.get("patterns", {}).items():
@@ -177,7 +177,7 @@ class AutoHandoff:
         """Load or initialize handoff tracking data."""
         if TRACKING_FILE.exists():
             try:
-                with open(TRACKING_FILE, 'r') as f:
+                with open(TRACKING_FILE) as f:
                     return json.load(f)
             except json.JSONDecodeError:
                 # File is corrupted - will reinitialize

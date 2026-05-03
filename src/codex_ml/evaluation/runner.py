@@ -119,7 +119,7 @@ class EvaluationRunner:
     def __init__(
         self,
         model: Any,
-        dataset: Union[Any, "DataLoader"],
+        dataset: Union[Any, DataLoader],
         metrics: list[Union[MetricAdapter, Callable]],
         config: Optional[EvaluationConfig] = None,
         tracking_writer: Optional[Any] = None,

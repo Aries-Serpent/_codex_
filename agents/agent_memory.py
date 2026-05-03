@@ -80,7 +80,7 @@ class MemoryEntry:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "MemoryEntry":
+    def from_dict(cls, data: dict[str, Any]) -> MemoryEntry:
         return cls(**data)
 
 
@@ -240,7 +240,7 @@ class PatternLibrary:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "PatternLibrary":
+    def from_dict(cls, data: dict[str, Any]) -> PatternLibrary:
         lib = cls()
         lib.patterns = data.get("patterns", {})
         lib.pattern_index = data.get("pattern_index", {})
@@ -346,7 +346,7 @@ class AgentMemory:
 
             conn.commit()
 
-    def store_memory(self, entry: Union["MemoryEntry", dict, None] = None, **kwargs: Any) -> None:
+    def store_memory(self, entry: Union[MemoryEntry, dict, None] = None, **kwargs: Any) -> None:
         """
         Store a memory entry.
 
@@ -425,7 +425,7 @@ class AgentMemory:
             conn.commit()
 
     def add_memory(
-        self, entry: Union["MemoryEntry", dict, None] = None, **kwargs: Any
+        self, entry: Union[MemoryEntry, dict, None] = None, **kwargs: Any
     ) -> None:
         """
         Add a memory entry (alias for store_memory for API consistency).

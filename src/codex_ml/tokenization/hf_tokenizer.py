@@ -210,7 +210,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     @classmethod
     def load(
         cls, name_or_path: Optional[str] = None, *, use_fast: bool = True
-    ) -> "HFTokenizerAdapter":
+    ) -> HFTokenizerAdapter:
         """Instantiate the adapter from a pretrained tokenizer.
 
         Parameters

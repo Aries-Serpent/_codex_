@@ -49,7 +49,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(_REPO_ROOT / "src"))
 
 
-def _build_user_from_record(record: dict) -> "User":
+def _build_user_from_record(record: dict) -> User:
     """Reconstruct a :class:`User` from a snapshot record."""
     from codex.auth.user_store import User  # noqa: PLC0415
 
@@ -66,7 +66,7 @@ def _build_user_from_record(record: dict) -> "User":
     )
 
 
-def export_userstore_snapshot(store: "UserStore", output_path: Path) -> int:
+def export_userstore_snapshot(store: UserStore, output_path: Path) -> int:
     """Export all users from *store* to a JSON snapshot file.
 
     Args:

@@ -87,7 +87,7 @@ class LinkChecker:
         """Scan a file for links and check validity."""
         try:
             content = file_path.read_text(encoding='utf-8')
-        except (IOError, UnicodeDecodeError) as e:
+        except (OSError, UnicodeDecodeError) as e:
             print(f"⚠️  Warning: Could not read {file_path}: {e}")
             return []
 

@@ -156,7 +156,7 @@ def apply_fix_group(
 
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            results["errors"].append(f"Error processing {file_path}: {str(e)}")
+            results["errors"].append(f"Error processing {file_path}: {e!s}")
 
     return results
 

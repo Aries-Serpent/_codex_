@@ -65,7 +65,7 @@ class CorpusArtifact:
 class CorpusValidationResult:
     """Result of validating corpus artifacts against recorded checksums."""
 
-    corpus: "ReasoningCorpus"
+    corpus: ReasoningCorpus
     root: Path
     expected_paths: list[Path]
     present_paths: list[Path]

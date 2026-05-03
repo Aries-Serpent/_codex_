@@ -220,7 +220,7 @@ def stage_i1_load_model(cfg: InferenceConfig) -> dict[str, Any]:
     if not model_path.exists():
         raise ValueError(f"Model path not found: {model_path}")
     model_hash = sha256_path(model_path)
-    cache_key = f"{str(model_path)}:{model_hash}"
+    cache_key = f"{model_path!s}:{model_hash}"
     if cache_key in MODEL_CACHE:
         model, tokenizer, _ = MODEL_CACHE[cache_key]
         return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash}

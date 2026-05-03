@@ -633,7 +633,7 @@ class CognitiveBrain:
     # Primary API — intuitive, short names
     # ------------------------------------------------------------------
 
-    def for_agent(self, agent_id: str) -> "AgentBrainAPI":
+    def for_agent(self, agent_id: str) -> AgentBrainAPI:
         """
         Return a pre-configured ``AgentBrainAPI`` scoped to ``agent_id``.
 
@@ -660,7 +660,7 @@ class CognitiveBrain:
         agent_id: str = "copilot-coding-agent",
         context: Optional[Dict[str, Any]] = None,
         max_actions: int = 10,
-    ) -> "AgentSessionContext":
+    ) -> AgentSessionContext:
         """
         One-call session start — returns everything needed to begin a Copilot session.
 
@@ -688,7 +688,7 @@ class CognitiveBrain:
         self,
         agent_id: str = "copilot-coding-agent",
         context: Optional[Dict[str, Any]] = None,
-    ) -> Optional["PromptSet"]:
+    ) -> Optional[PromptSet]:
         """
         Return the single highest-priority next action across ALL plansets.
 
@@ -707,12 +707,12 @@ class CognitiveBrain:
 
     def advance(
         self,
-        area: "str | ImprovementArea",
+        area: str | ImprovementArea,
         step_id: str,
         agent_id: str = "copilot-coding-agent",
         outcome: str = "success",
         notes: str = "",
-    ) -> "CompletionReport":
+    ) -> CompletionReport:
         """
         Mark a step complete, persist state, and feed learning back into the brain.
 

@@ -46,7 +46,7 @@ class AgentQuantumState:
         self.agent_name = agent_name
         self.capabilities = capabilities
         self.state = 'idle'  # idle, active, waiting, complete
-        self.entangled_agents: List['AgentQuantumState'] = []
+        self.entangled_agents: List[AgentQuantumState] = []
         self.coherence = 1.0  # Measure of agent coordination
 
     def entangle(self, other_agent: 'AgentQuantumState'):

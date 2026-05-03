@@ -122,12 +122,12 @@ def audit_file(file_path: Path, repo_root: Path) -> Dict:
         repo_root: Repository root path for relative path calculation
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
     except Exception as e:
         return {
             'file': str(file_path),
-            'error': f"Could not read file: {str(e)}"
+            'error': f"Could not read file: {e!s}"
         }
 
     result = {

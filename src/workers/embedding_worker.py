@@ -95,7 +95,7 @@ def run_worker(
     logger.info("Using adapter: %s", adapter_path)
 
     # Read input (JSON array)
-    with open(input_path, "r", encoding="utf-8") as fh:
+    with open(input_path, encoding="utf-8") as fh:
         items = json.load(fh)
 
     # Load checkpoint if provided

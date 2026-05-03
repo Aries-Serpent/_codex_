@@ -21,7 +21,7 @@ class RandomAgent(RLAgent):
             fh.write("RANDOM_AGENT")
 
     def load(self, path: str) -> None:  # noqa: D401
-        with open(path, "r", encoding="utf-8") as fh:
+        with open(path, encoding="utf-8") as fh:
             fh.read()
 
 

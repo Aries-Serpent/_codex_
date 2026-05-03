@@ -346,7 +346,7 @@ Dismissal reasons:
         if not args.alerts_file.exists():
             logger.error(f"Alerts file not found: {args.alerts_file}")
             return 1
-        with open(args.alerts_file, "r") as f:
+        with open(args.alerts_file) as f:
             alert_numbers = [int(line.strip()) for line in f if line.strip().isdigit()]
 
     if not alert_numbers:

@@ -451,7 +451,7 @@ class CognitiveBrainFeeder:
             return []
 
         patterns = []
-        with open(self.patterns_db, "r") as f:
+        with open(self.patterns_db) as f:
             for line in f:
                 if line.strip():
                     try:

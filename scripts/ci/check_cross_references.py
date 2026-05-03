@@ -86,7 +86,7 @@ def _should_skip(path: Path) -> bool:
     return rel in SKIP_FILES
 
 
-def _resolve_ref(raw: str, source_file: Path) -> "Path | None":
+def _resolve_ref(raw: str, source_file: Path) -> Path | None:
     raw = raw.strip()
     if not raw:
         return None
@@ -178,7 +178,7 @@ def get_all_files(scan_dirs: list[str]) -> list[Path]:
     return sorted(set(files))
 
 
-def main(argv: "list[str] | None" = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Hard gate: verify no commit introduces new broken internal references. "

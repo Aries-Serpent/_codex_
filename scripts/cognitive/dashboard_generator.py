@@ -46,7 +46,7 @@ def load_metrics(metrics_path: Path) -> Optional[Dict[str, Any]]:
     if not metrics_path.exists():
         return None
     try:
-        with open(metrics_path, 'r') as f:
+        with open(metrics_path) as f:
             return json.load(f)
     except json.JSONDecodeError:
         return None

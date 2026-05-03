@@ -106,7 +106,7 @@ class CommunityKnowledgeHub:
         patterns_dir = self.data_path / "patterns"
         for pattern_file in patterns_dir.glob("*.json"):
             try:
-                with open(pattern_file, 'r') as f:
+                with open(pattern_file) as f:
                     data = json.load(f)
                     pattern = Pattern(**data)
                     self.patterns[pattern.pattern_id] = pattern
@@ -118,7 +118,7 @@ class CommunityKnowledgeHub:
         reviews_dir = self.data_path / "reviews"
         for review_file in reviews_dir.glob("*.json"):
             try:
-                with open(review_file, 'r') as f:
+                with open(review_file) as f:
                     data = json.load(f)
                     review = Review(**data)
                     self.reviews[review.pattern_id].append(review)
@@ -551,7 +551,7 @@ def main():
     # Execute command
     if args.command == "submit":
         # Read code example from file
-        with open(args.code, 'r') as f:
+        with open(args.code) as f:
             code_example = f.read()
 
         pattern = hub.submit_pattern(

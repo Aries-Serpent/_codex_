@@ -122,7 +122,7 @@ import shutil
 import time
 import warnings
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Optional, cast
 
@@ -146,13 +146,13 @@ except Exception:  # pragma: no cover - datasets missing
             self._data = data or {}
 
         @classmethod
-        def from_dict(cls, data: dict[str, Any]) -> "Dataset":
+        def from_dict(cls, data: dict[str, Any]) -> Dataset:
             return cls(data)
 
         def to_dict(self) -> dict[str, Any]:
             return dict(self._data)
 
-        def map(self, *args: Any, **kwargs: Any) -> "Dataset":
+        def map(self, *args: Any, **kwargs: Any) -> Dataset:
             # No-op map for offline environments
             return self
 
@@ -384,7 +384,7 @@ def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
         return False
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_hf_revision(identifier: os.PathLike[str] | str) -> str:
     """Resolve a pinned Hugging Face revision for ``identifier``.
 

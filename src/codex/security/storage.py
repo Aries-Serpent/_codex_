@@ -124,7 +124,7 @@ class SecureStorage:
             )
 
         self.algorithm = algorithm
-        self.cipher: "_CipherType"
+        self.cipher: _CipherType
 
         if algorithm == "fernet":
             self.cipher = Fernet(key.encode() if isinstance(key, str) else key)

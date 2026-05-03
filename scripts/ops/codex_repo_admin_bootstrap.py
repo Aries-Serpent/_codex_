@@ -105,7 +105,7 @@ class GitHubSession:
         session_factory = getattr(requests, "Session", None)
         self._session = session_factory() if callable(session_factory) else None
 
-    def __enter__(self) -> "GitHubSession":  # pragma: no cover - trivial
+    def __enter__(self) -> GitHubSession:  # pragma: no cover - trivial
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - trivial

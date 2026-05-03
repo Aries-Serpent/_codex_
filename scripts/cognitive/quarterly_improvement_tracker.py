@@ -80,7 +80,7 @@ class QuarterlyImprovementTracker:
         """Load historical quarterly metrics"""
         history_file = self.reports_path / "quarterly_history.json"
         if history_file.exists():
-            with open(history_file, 'r') as f:
+            with open(history_file) as f:
                 data = json.load(f)
                 self.history = [
                     QuarterlyMetrics(**item) for item in data
@@ -323,7 +323,7 @@ class QuarterlyImprovementTracker:
         values = []
         for file in metric_files:
             try:
-                with open(file, 'r') as f:
+                with open(file) as f:
                     data = json.load(f)
 
                     # Handle different data formats

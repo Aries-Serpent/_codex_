@@ -63,7 +63,7 @@ class ExperimentContext:
     run_id: str
     experiment_name: str
     tags: dict[str, Any]
-    run_logger: "RunLogger"
+    run_logger: RunLogger
     writer: CompositeWriter
     run_dir: Path
     params_logger: NDJSONLogger

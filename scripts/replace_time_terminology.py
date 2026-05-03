@@ -89,7 +89,7 @@ class TimeTerminologyReplacer:
     def process_file(self, filepath: Path) -> Tuple[bool, List[str]]:
         """Process a single file and return (changed, change_descriptions)."""
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, encoding='utf-8') as f:
                 content = f.read()
         except Exception as e:
             return False, [f"Error reading file: {e}"]
@@ -136,7 +136,7 @@ class TimeTerminologyReplacer:
 
     def process_files(self, file_list_path: str):
         """Process all files from the list."""
-        with open(file_list_path, 'r') as f:
+        with open(file_list_path) as f:
             files = [line.strip() for line in f if line.strip()]
 
         print(f"Processing {len(files)} files...")

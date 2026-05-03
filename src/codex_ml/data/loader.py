@@ -83,7 +83,7 @@ class CacheManifest:
         path.write_text(json.dumps(self.to_dict(), indent=2, sort_keys=True), encoding="utf-8")
 
     @classmethod
-    def load(cls, path: Path) -> Optional["CacheManifest"]:
+    def load(cls, path: Path) -> Optional[CacheManifest]:
         if not path.exists():
             return None
         try:
@@ -236,7 +236,7 @@ def _cache_key(path: Path, **params: Any) -> str:
     h = hashlib.sha256()
     h.update(str(path.resolve()).encode("utf-8"))
     for key in sorted(params):
-        h.update(f"{key}={params[key]}".encode("utf-8"))
+        h.update(f"{key}={params[key]}".encode())
     try:
         stat = path.stat()
         h.update(str(stat.st_mtime_ns).encode("utf-8"))

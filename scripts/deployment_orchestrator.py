@@ -364,7 +364,7 @@ class DeploymentOrchestrator:
         except Exception as e:
             self.logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
-            result.errors.append(f"Phase exception: {str(e)}")
+            result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
 
         result.end_time = datetime.now(timezone.utc)
@@ -429,7 +429,7 @@ class DeploymentOrchestrator:
         except Exception as e:
             self.logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
-            result.errors.append(f"Phase exception: {str(e)}")
+            result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
 
         result.end_time = datetime.now(timezone.utc)
@@ -604,7 +604,7 @@ class DeploymentOrchestrator:
         except Exception as e:
             self.logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
-            result.errors.append(f"Phase exception: {str(e)}")
+            result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
 
         result.end_time = datetime.now(timezone.utc)
@@ -753,7 +753,7 @@ class DeploymentOrchestrator:
         except Exception as e:
             self.logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
-            result.errors.append(f"Phase exception: {str(e)}")
+            result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
 
         result.end_time = datetime.now(timezone.utc)
@@ -815,7 +815,7 @@ class DeploymentOrchestrator:
         except Exception as e:
             self.logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
-            result.errors.append(f"Phase exception: {str(e)}")
+            result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
 
         result.end_time = datetime.now(timezone.utc)

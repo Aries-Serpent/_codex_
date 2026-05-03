@@ -145,7 +145,7 @@ def analyze_file(file_path: Path) -> dict[str, Any]:
         return {"error": "Not a Python file or doesn't exist"}
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source = f.read()
 
         tree = ast.parse(source, filename=str(file_path))
@@ -185,7 +185,7 @@ def fix_imports(file_path: Path, analysis: dict, dry_run: bool = True) -> bool:
         return False
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
 
         # Find where to insert the import

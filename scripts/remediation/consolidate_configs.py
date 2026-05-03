@@ -90,7 +90,7 @@ class ConfigConsolidator:
         if not src.exists() or not tgt.exists():
             return False
 
-        with open(src, "r") as f1, open(tgt, "r") as f2:
+        with open(src) as f1, open(tgt) as f2:
             return f1.read() == f2.read()
 
     def consolidate(self):

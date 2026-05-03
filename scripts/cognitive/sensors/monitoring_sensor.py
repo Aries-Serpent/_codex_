@@ -105,7 +105,7 @@ class MonitoringSensor:
         """Load monitoring state from JSON file."""
         try:
             if self.state_file.exists():
-                with open(self.state_file, 'r') as f:
+                with open(self.state_file) as f:
                     return json.load(f)
             return {}
         except Exception as e:

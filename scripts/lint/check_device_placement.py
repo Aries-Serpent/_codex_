@@ -113,7 +113,7 @@ class DevicePlacementChecker(ast.NodeVisitor):
                 if 0 < lineno <= len(lines):
                     line = lines[lineno - 1]
                     return 'safe-device-placement:' in line
-        except (OSError, IOError, UnicodeDecodeError):
+        except (OSError, UnicodeDecodeError):
             # If the file cannot be read for any reason, treat as no annotation present.
             logger.debug("Suppressed exception in handler", exc_info=True)
         return False
@@ -134,7 +134,7 @@ def check_file(filepath: Path) -> List[Tuple[int, str]]:
         List of (line_number, issue_description) tuples
     """
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, encoding='utf-8') as f:
             tree = ast.parse(f.read(), filename=str(filepath))
 
         checker = DevicePlacementChecker(str(filepath))

@@ -135,7 +135,7 @@ def update_references_in_file(
     Returns: (modified, old_content, new_content)
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             old_content = f.read()
     except Exception:
         return False, "", ""

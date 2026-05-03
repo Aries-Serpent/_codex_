@@ -92,7 +92,7 @@ def train(
     *,
     config: TrainConfig,
     val_texts: Iterable[str] | None = None,
-    model: "torch.nn.Module | None" = None,  # type: ignore[name-defined]
+    model: torch.nn.Module | None = None,  # type: ignore[name-defined]
 ) -> dict[str, float]:
     """Train a causal language model on raw ``texts``.
 

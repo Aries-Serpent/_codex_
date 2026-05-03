@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).parent.parent
 def load_categorization() -> dict:
     """Load Phase 3 categorization data."""
     cat_file = REPO_ROOT / "PHASE_3_CATEGORIZATION_REPORT.json"
-    with open(cat_file, 'r') as f:
+    with open(cat_file) as f:
         return json.load(f)
 
 def get_high_priority_files(cat_data: dict) -> List[Tuple[str, dict]]:
@@ -31,7 +31,7 @@ def get_high_priority_files(cat_data: dict) -> List[Tuple[str, dict]]:
 def analyze_link_context(file_path: Path, link_url: str) -> dict:
     """Analyze context around a broken link to determine best action."""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
     except Exception as e:
         return {'action': 'skip', 'reason': f'Cannot read file: {e}'}
@@ -70,7 +70,7 @@ def analyze_link_context(file_path: Path, link_url: str) -> dict:
 def fix_deleted_file_reference(file_path: Path, link_url: str, action: str) -> bool:
     """Apply fix to a file based on determined action."""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
     except Exception:
         return False

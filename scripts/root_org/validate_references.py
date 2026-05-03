@@ -115,7 +115,7 @@ def scan_file_for_references(
     references = []
 
     try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(file_path, encoding='utf-8', errors='ignore') as f:
             content = f.read()
 
         for pattern in patterns:

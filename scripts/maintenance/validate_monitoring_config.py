@@ -17,7 +17,7 @@ def validate_config():
     print(f"Loading config from: {config_path}")
 
     try:
-        with open(config_path, 'r') as f:
+        with open(config_path) as f:
             config = yaml.safe_load(f)
 
         print("✓ Config file loaded successfully\n")

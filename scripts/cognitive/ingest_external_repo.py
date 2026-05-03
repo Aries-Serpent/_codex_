@@ -132,7 +132,7 @@ class ExternalRepoIngestor:
             for ext in extensions:
                 for file_path in repo_path.rglob(f"*{ext}"):
                     try:
-                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        with open(file_path, encoding='utf-8', errors='ignore') as f:
                             line_count += sum(1 for _ in f)
                     except Exception:
                         # Skip files that can't be read
@@ -151,7 +151,7 @@ class ExternalRepoIngestor:
             license_path = repo_path / license_file
             if license_path.exists():
                 try:
-                    with open(license_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    with open(license_path, encoding='utf-8', errors='ignore') as f:
                         content = f.read(500).lower()
 
                     if "gpl" in content:
@@ -175,7 +175,7 @@ class ExternalRepoIngestor:
         for file_path in repo_path.rglob("*"):
             if file_path.is_file() and file_path.suffix in ['.c', '.cpp', '.h', '.py', '.js']:
                 try:
-                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    with open(file_path, encoding='utf-8', errors='ignore') as f:
                         content = f.read().lower()
 
                     for capability, patterns in self.CAPABILITY_PATTERNS.items():
@@ -200,7 +200,7 @@ class ExternalRepoIngestor:
             for file_path in repo_path.rglob(pattern):
                 if file_path.is_file() and file_path.suffix in ['.c', '.cpp', '.py', '.js']:
                     try:
-                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        with open(file_path, encoding='utf-8', errors='ignore') as f:
                             lines = f.readlines()
 
                         # Extract classes, functions

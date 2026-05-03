@@ -376,7 +376,7 @@ class CircuitBreaker:
                 logger.debug("No persisted state found, starting fresh")
                 return
 
-            with open(state_file, "r") as f:
+            with open(state_file) as f:
                 state_data = json.load(f)
 
             # Restore state

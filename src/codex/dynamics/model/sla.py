@@ -533,7 +533,7 @@ class SLAPolicyRegistry(BaseModel):
             for row in reader:
                 # Parse pause conditions from CSV format
                 pause_conditions = []
-                if "pause_conditions" in row and row["pause_conditions"]:
+                if row.get("pause_conditions"):
                     # Expected format: "field:operator:value"
                     for condition_str in row["pause_conditions"].split(";"):
                         if ":" in condition_str:

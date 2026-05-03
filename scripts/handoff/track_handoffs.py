@@ -225,7 +225,7 @@ def load_tracking_data() -> Dict:
         print("⚠️  Tracking file not found. Initializing...")
         return init_tracking_file()
 
-    with open(TRACKING_FILE, 'r') as f:
+    with open(TRACKING_FILE) as f:
         return json.load(f)
 
 

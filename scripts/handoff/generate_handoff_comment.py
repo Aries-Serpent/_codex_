@@ -40,7 +40,7 @@ def load_template(template_name: str) -> str:
         print(f"   Expected at: {template_path}")
         sys.exit(1)
 
-    with open(template_path, 'r') as f:
+    with open(template_path) as f:
         return f.read()
 
 

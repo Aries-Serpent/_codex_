@@ -72,7 +72,7 @@ class ConfigDrift:
         return path
 
     @classmethod
-    def load_baseline(cls, path: Path | str) -> "ConfigDrift":
+    def load_baseline(cls, path: Path | str) -> ConfigDrift:
         """Load configuration baseline from file.
 
         Args:
@@ -89,7 +89,7 @@ class ConfigDrift:
         if not path.exists():
             raise FileNotFoundError(f"Baseline not found: {path}")
 
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             baseline = json.load(f)
 
         if "config" not in baseline:
@@ -97,7 +97,7 @@ class ConfigDrift:
 
         return cls(baseline["config"])
 
-    def compare(self, other: "ConfigDrift") -> dict[str, list[str]]:
+    def compare(self, other: ConfigDrift) -> dict[str, list[str]]:
         """Compare this config with another for drift.
 
         Args:

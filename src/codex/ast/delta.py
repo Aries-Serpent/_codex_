@@ -42,7 +42,7 @@ class DeltaResult:
 class DeltaAnalyzer:
     """Analyzes differences between AST baselines and current state."""
 
-    def __init__(self, baseline_manager: "BaselineManager") -> None:
+    def __init__(self, baseline_manager: BaselineManager) -> None:
         """Initialize delta analyzer.
 
         Args:

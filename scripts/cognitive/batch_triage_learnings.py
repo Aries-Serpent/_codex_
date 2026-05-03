@@ -456,7 +456,7 @@ class BatchTriageLearningEngine:
 
         # Load all remediations for this pattern
         remediation_results = []
-        with open(remediations_db, 'r') as f:
+        with open(remediations_db) as f:
             for line in f:
                 entry = json.loads(line)
                 if entry.get("pattern_id") == pattern_id:
@@ -497,7 +497,7 @@ class BatchTriageLearningEngine:
 
         # Load remediations for these patterns
         remediation_outcomes = defaultdict(list)
-        with open(remediations_db, 'r') as f:
+        with open(remediations_db) as f:
             for line in f:
                 entry = json.loads(line)
                 if entry.get("pattern_id") in pattern_ids:
@@ -522,7 +522,7 @@ class BatchTriageLearningEngine:
         pattern_ids = {p.pattern_id for p in patterns}
 
         resolution_times = []
-        with open(remediations_db, 'r') as f:
+        with open(remediations_db) as f:
             for line in f:
                 entry = json.loads(line)
                 if entry.get("pattern_id") in pattern_ids:

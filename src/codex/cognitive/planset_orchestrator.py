@@ -192,7 +192,7 @@ class OrchestrationState:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrchestrationState":
+    def from_dict(cls, data: Dict[str, Any]) -> OrchestrationState:
         return cls(
             session_id=data.get("session_id", ""),
             active_areas=data.get("active_areas", []),

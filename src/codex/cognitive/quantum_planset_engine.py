@@ -223,7 +223,7 @@ class PlanStep:
         return d
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "PlanStep":
+    def from_dict(cls, data: Dict[str, Any]) -> PlanStep:
         data = dict(data)
         data.pop("effective_amplitude", None)
         data.pop("physics_score", None)
@@ -303,7 +303,7 @@ class QuantumPlanset:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "QuantumPlanset":
+    def from_dict(cls, data: Dict[str, Any]) -> QuantumPlanset:
         data = dict(data)
         data["steps"] = [PlanStep.from_dict(s) for s in data.get("steps", [])]
         data["entanglement_bonds"] = [

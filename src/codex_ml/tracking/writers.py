@@ -68,7 +68,7 @@ _SUMMARY_EXTRA_ORDER = (
     "system_metrics_enabled",
 )
 
-_SUMMARY_ROTATORS: dict[Path, "_SummaryRotator"] = {}
+_SUMMARY_ROTATORS: dict[Path, _SummaryRotator] = {}
 _SUMMARY_ROTATOR_LOCK = threading.Lock()
 
 
@@ -103,8 +103,8 @@ def _parse_reason(reason: str) -> tuple[str, str]:
 
 def _ordered_payload(
     record: MappingABC[str, Any], canonical_order: SequenceABC[str]
-) -> "OrderedDict[str, Any]":
-    ordered: "OrderedDict[str, Any]" = OrderedDict()
+) -> OrderedDict[str, Any]:
+    ordered: OrderedDict[str, Any] = OrderedDict()
     for key in canonical_order:
         if key in record:
             ordered[key] = record[key]
@@ -121,8 +121,8 @@ def _normalise_nested(value: Any) -> Any:
     return value
 
 
-def _normalise_summary_extra(extra: MappingABC[str, Any]) -> "OrderedDict[str, Any]":
-    ordered: "OrderedDict[str, Any]" = OrderedDict()
+def _normalise_summary_extra(extra: MappingABC[str, Any]) -> OrderedDict[str, Any]:
+    ordered: OrderedDict[str, Any] = OrderedDict()
     for key in _SUMMARY_EXTRA_ORDER:
         if key in extra:
             ordered[key] = _normalise_nested(extra[key])

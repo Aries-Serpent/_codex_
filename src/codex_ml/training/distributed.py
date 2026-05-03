@@ -57,7 +57,7 @@ class DistributedConfig:
     gradient_as_bucket_view: bool = True
 
     @classmethod
-    def from_env(cls) -> "DistributedConfig":
+    def from_env(cls) -> DistributedConfig:
         """Create config from environment variables."""
         # Check if distributed is explicitly enabled
         enabled = os.environ.get("DISTRIBUTED_ENABLED", "false").lower() == "true"

@@ -268,7 +268,7 @@ class FAISSStore(VectorStore):
         import json
 
         if meta_path.exists():
-            with open(meta_path, "r", encoding="utf-8") as f:
+            with open(meta_path, encoding="utf-8") as f:
                 metadata = json.load(f)
 
             # Validate metadata
@@ -300,7 +300,7 @@ class FAISSStore(VectorStore):
         if docs_path.exists():
             self.documents = []
             self.vector_ids = []
-            with open(docs_path, "r", encoding="utf-8") as f:
+            with open(docs_path, encoding="utf-8") as f:
                 for line_no, line in enumerate(f, 1):
                     line = line.strip()
                     if line:

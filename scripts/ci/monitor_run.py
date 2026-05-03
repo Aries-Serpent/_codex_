@@ -184,7 +184,7 @@ class PollSnapshot:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, d: Dict) -> "PollSnapshot":
+    def from_dict(cls, d: Dict) -> PollSnapshot:
         known = {f for f in cls.__dataclass_fields__}   # type: ignore[attr-defined]
         return cls(**{k: v for k, v in d.items() if k in known})
 
@@ -479,7 +479,7 @@ def _poll_loop(
     do_triage: bool,
     session_started_at:  str = "",   # ISO from _resolve_session_start()
     session_started_ns:  int = 0,    # ns from _resolve_session_start()
-    on_complete: Optional[Callable[["PollSnapshot"], None]] = None,
+    on_complete: Optional[Callable[[PollSnapshot], None]] = None,
     verbose:   bool = False,
 ) -> PollSnapshot:
     # Resolve session start once — used for every poll's elapsed computation

@@ -192,7 +192,7 @@ class NDJSONLogger:
 
         self._closed = True
 
-    def __enter__(self) -> "NDJSONLogger":  # pragma: no cover - convenience
+    def __enter__(self) -> NDJSONLogger:  # pragma: no cover - convenience
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - convenience

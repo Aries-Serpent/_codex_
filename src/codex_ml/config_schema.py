@@ -86,7 +86,7 @@ class TrainConfig(BaseModel):
 
 def load_yaml(path: str | Path) -> dict:
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             return safe_load(f) or {}
     except MissingPyYAMLError as exc:
         logger.debug(f"MissingPyYAMLError: {exc}")
@@ -157,7 +157,7 @@ class LoraSettings:
         return payload
 
     @classmethod
-    def from_model(cls, cfg: LoraConfig | None) -> "LoraSettings":
+    def from_model(cls, cfg: LoraConfig | None) -> LoraSettings:
         if cfg is None:
             return cls()
         return cls(
@@ -211,7 +211,7 @@ class TrainingSettings:
         return TrainConfig.model_validate(payload)
 
     @classmethod
-    def from_train_config(cls, cfg: TrainConfig) -> "TrainingSettings":
+    def from_train_config(cls, cfg: TrainConfig) -> TrainingSettings:
         data = cfg.model_dump()
         lora_settings = (
             LoraSettings.from_model(cfg.lora) if cfg.lora is not None else LoraSettings()

@@ -563,7 +563,7 @@ class CommonIssueFixer:
             try:
                 yaml.safe_load(yaml_file.read_text())
             except yaml.YAMLError as e:
-                issues.append(f"{yaml_file.name}: {str(e)}")
+                issues.append(f"{yaml_file.name}: {e!s}")
                 print(f"  ✗ {yaml_file.name}: YAML parse error")
 
         return issues

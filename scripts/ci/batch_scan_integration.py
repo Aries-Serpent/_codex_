@@ -108,7 +108,7 @@ class _NoOpSpan:
         return self
 
 
-def _span(name: str, **attrs) -> "_NoOpSpan | Any":
+def _span(name: str, **attrs) -> _NoOpSpan | Any:
     """Create an OTel span context manager, or a no-op if OTel unavailable."""
     tracer = _get_tracer()
     if tracer is None:

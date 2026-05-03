@@ -146,7 +146,7 @@ class ConfigLoader:
             if suffix in [".yaml", ".yml"]:
                 return self._load_yaml(file_path)
             if suffix == ".json":
-                with open(file_path, "r") as f:
+                with open(file_path) as f:
                     return json.load(f)
             elif suffix == ".toml":
                 return self._load_toml(file_path)
@@ -163,7 +163,7 @@ class ConfigLoader:
         try:
             import yaml
 
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 return yaml.safe_load(f) or {}
         except ImportError:
             logger.error("PyYAML not installed. Install with: pip install pyyaml")

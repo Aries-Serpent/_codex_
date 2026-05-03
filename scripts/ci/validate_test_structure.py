@@ -32,7 +32,7 @@ def check_syntax(tests_dir: Path) -> list[tuple[str, str]]:
     errors = []
     for test_file in tests_dir.rglob("test_*.py"):
         try:
-            with open(test_file, "r", encoding="utf-8") as f:
+            with open(test_file, encoding="utf-8") as f:
                 ast.parse(f.read(), filename=str(test_file))
         except SyntaxError as e:
             errors.append((str(test_file.relative_to(tests_dir)), str(e)))
@@ -51,7 +51,7 @@ def check_conftest(tests_dir: Path) -> tuple[bool, str]:
         sys.path.insert(0, str(tests_dir.parent / "src"))
 
         # Try to compile it
-        with open(conftest, "r", encoding="utf-8") as f:
+        with open(conftest, encoding="utf-8") as f:
             compile(f.read(), str(conftest), "exec")
         return True, "conftest.py syntax valid"
     except Exception as e:

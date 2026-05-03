@@ -111,7 +111,7 @@ def analyze_python_file(file_path: Path) -> dict[str, Any]:
         return {}
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source = f.read()
 
         tree = ast.parse(source, filename=str(file_path))
@@ -153,7 +153,7 @@ def find_references_to_file(
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 # Simple text search
@@ -238,7 +238,7 @@ def check_config_file_references(target_file: Path, root_directory: Path) -> lis
             continue
 
         try:
-            with open(config_path, "r", encoding="utf-8") as f:
+            with open(config_path, encoding="utf-8") as f:
                 content = f.read()
 
             if target_name in content or str(target_file) in content:

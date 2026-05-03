@@ -90,7 +90,7 @@ class DenylistEnforcer:
         self.rules = rules
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "DenylistEnforcer":
+    def from_yaml(cls, path: str | Path) -> DenylistEnforcer:
         return cls(load_denylist(path))
 
     def is_prompt_allowed(self, prompt: str) -> bool:

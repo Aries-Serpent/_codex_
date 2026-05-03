@@ -185,7 +185,7 @@ def summarize_gap_value(key: str, value: Any) -> str:
     if key == "missing_files":
         if isinstance(value, list):
             return f"{len(value)} missing files"
-        return f"missing_files: {repr(value)}"
+        return f"missing_files: {value!r}"
     if key == "gaps":
         if isinstance(value, list):
             return f"{len(value)} gap records"

@@ -34,7 +34,7 @@ def load_jsonl(path: str | Path) -> list[dict[str, Any]]:
     """
     records = []
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line:  # Skip empty lines
@@ -62,7 +62,7 @@ def load_json(path: str | Path) -> dict[str, Any] | list[Any]:
     >>> config["model_name"]
     'gpt2'
     """
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -95,7 +95,7 @@ def load_csv(
     """
     records = []
 
-    with open(path, "r", encoding=encoding, newline="") as f:
+    with open(path, encoding=encoding, newline="") as f:
         reader = csv.DictReader(f, delimiter=delimiter)
         for row in reader:
             records.append(dict(row))

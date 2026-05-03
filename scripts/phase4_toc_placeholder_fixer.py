@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).parent.parent
 def load_audit_data() -> dict:
     """Load comprehensive link audit data."""
     audit_file = REPO_ROOT / "COMPREHENSIVE_LINK_AUDIT.json"
-    with open(audit_file, 'r') as f:
+    with open(audit_file) as f:
         return json.load(f)
 
 def find_empty_toc_links(content: str) -> List[Tuple[str, str]]:
@@ -52,7 +52,7 @@ def fix_empty_toc_placeholder(file_path: Path) -> Tuple[int, List[dict]]:
     Returns (fixes_applied, fix_details).
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
     except Exception:
         return 0, []

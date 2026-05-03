@@ -25,7 +25,7 @@ def check_code_fences(file_path: Path) -> List[Dict[str, Any]]:
     - nested_fence: Fence inside another fence
     """
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
         print(f"Error reading {file_path}: {e}", file=sys.stderr)
@@ -83,7 +83,7 @@ def fix_code_fences(file_path: Path, issues: List[Dict[str, Any]], dry_run: bool
         return False
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
         print(f"Error reading {file_path}: {e}", file=sys.stderr)

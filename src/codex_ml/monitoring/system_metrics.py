@@ -565,7 +565,7 @@ class SystemMetricsLogger:
             self._thread.join(timeout=self._interval + 1.0)
         self._thread = None
 
-    def __enter__(self) -> "SystemMetricsLogger":  # pragma: no cover - convenience
+    def __enter__(self) -> SystemMetricsLogger:  # pragma: no cover - convenience
         self.start()
         return self
 

@@ -116,7 +116,7 @@ class BaseAdapter(ABC):
             QueryResult indicating success or failure.
         """
 
-    async def __aenter__(self) -> "BaseAdapter":
+    async def __aenter__(self) -> BaseAdapter:
         """Async context manager entry."""
         await self.connect()
         return self

@@ -393,7 +393,7 @@ _NEGATION_BEFORE_FUTURE = re.compile(
 def scan(
     text: str,
     source_label: str = "<input>",
-    ml_classifier: "DeferralMLClassifier | None" = None,
+    ml_classifier: DeferralMLClassifier | None = None,
 ) -> list[dict]:
     """
     Scan *text* for deferral language.

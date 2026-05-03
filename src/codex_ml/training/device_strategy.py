@@ -85,7 +85,7 @@ class DeviceConfig:
     @classmethod
     def auto_detect(
         cls, *, prefer_mps: bool = True, allow_mixed_precision: bool = True
-    ) -> "DeviceConfig":
+    ) -> DeviceConfig:
         """Infer an appropriate DeviceConfig for the current host.
 
         Detection logic:

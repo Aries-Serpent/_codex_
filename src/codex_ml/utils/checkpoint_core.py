@@ -444,7 +444,7 @@ def _torch_supports_weights_only() -> bool:
 
 
 def _deserialize_payload(
-    b: bytes, *, map_location: str | "torch.device" | None = "cpu"
+    b: bytes, *, map_location: str | torch.device | None = "cpu"
 ) -> dict[str, Any]:
     buf = io.BytesIO(b)
     torch_load = getattr(torch, "load", None) if torch is not None else None
@@ -813,7 +813,7 @@ def load_checkpoint(
     path: str | Path,
     *,
     restore_rng: bool = False,
-    map_location: str | "torch.device" | None = "cpu",
+    map_location: str | torch.device | None = "cpu",
 ) -> tuple[dict[str, Any], CheckpointMeta]:
     """
     Load a checkpoint file and optionally restore RNG state from metadata.

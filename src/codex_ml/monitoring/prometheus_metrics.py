@@ -53,7 +53,7 @@ class _NoopMetric:
     def observe(self, value: float) -> None:  # pragma: no cover - trivial
         self._value = float(value)
 
-    def labels(self, **_: str) -> "_NoopMetric":  # pragma: no cover - trivial
+    def labels(self, **_: str) -> _NoopMetric:  # pragma: no cover - trivial
         return self
 
     @contextmanager  # type: ignore[arg-type]

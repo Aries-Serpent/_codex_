@@ -342,11 +342,11 @@ class AgentBrainInterface:
         """Load patterns from the pattern store."""
         if self.pattern_store_path.exists():
             try:
-                with open(self.pattern_store_path, "r", encoding="utf-8") as f:
+                with open(self.pattern_store_path, encoding="utf-8") as f:
                     data = json.load(f)
                     self._patterns = data.get("patterns", {})
                     logger.debug(f"Loaded {len(self._patterns)} patterns")
-            except (json.JSONDecodeError, IOError) as e:
+            except (OSError, json.JSONDecodeError) as e:
                 logger.warning(f"Failed to load patterns: {e}")
                 self._patterns = {}
         else:
@@ -374,7 +374,7 @@ class AgentBrainInterface:
                     elif line.startswith("**Phase:**"):
                         self._session_state["phase"] = line.split("**")[-1].strip()
 
-            except IOError as e:
+            except OSError as e:
                 logger.warning(f"Failed to load session state: {e}")
                 self._session_state = {}
         else:
@@ -404,7 +404,7 @@ class AgentBrainInterface:
                     elif in_objectives and line.startswith("#"):
                         in_objectives = False
 
-            except IOError as e:
+            except OSError as e:
                 logger.warning(f"Failed to load objectives: {e}")
                 self._objectives = []
         else:
@@ -612,7 +612,7 @@ class AgentBrainInterface:
             # Load existing data to preserve metadata
             existing_data = {}
             if self.pattern_store_path.exists():
-                with open(self.pattern_store_path, "r", encoding="utf-8") as f:
+                with open(self.pattern_store_path, encoding="utf-8") as f:
                     existing_data = json.load(f)
 
             # Update patterns
@@ -636,7 +636,7 @@ class AgentBrainInterface:
                 json.dump(existing_data, f, indent=2)
 
             logger.debug("Patterns saved successfully")
-        except IOError as e:
+        except OSError as e:
             logger.error(f"Failed to save patterns: {e}")
 
     # =========================================================================

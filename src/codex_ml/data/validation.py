@@ -355,7 +355,7 @@ class RangeCheckRule(ValidationRule):
 class UniqueCheckRule(ValidationRule):
     """Check for duplicate values in specified columns."""
 
-    def __init__(self, columns: "str | list[str]"):
+    def __init__(self, columns: str | list[str]):
         """Initialize rule.
 
         Args:
@@ -490,7 +490,7 @@ class DataValidator:
         self.rules.append(rule)
         logger.debug(f"Added validation rule: {rule.name}")
 
-    def validate(self, data: Any, sample_size: Optional[int] = None) -> "ValidationSummary":
+    def validate(self, data: Any, sample_size: Optional[int] = None) -> ValidationSummary:
         """Run all validation rules.
 
         Args:

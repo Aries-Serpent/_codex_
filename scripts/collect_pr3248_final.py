@@ -17,11 +17,11 @@ COLLECTION_DATA_FILE = REPO_ROOT / "pr3248_collection_final.json"
 
 def load_commits():
     """Load target commits"""
-    with open(TARGET_COMMITS_FILE, 'r') as f:
+    with open(TARGET_COMMITS_FILE) as f:
         all_targets = json.load(f)
 
     try:
-        with open(FOUND_COMMITS_FILE, 'r') as f:
+        with open(FOUND_COMMITS_FILE) as f:
             found = json.load(f)
         found_shas = [c['sha'] for c in found]
     except FileNotFoundError:
@@ -151,7 +151,7 @@ def main():
 
     # Try to load existing collection data
     try:
-        with open(COLLECTION_DATA_FILE, 'r') as f:
+        with open(COLLECTION_DATA_FILE) as f:
             collection_data = json.load(f)
         print(f"✅ Loaded existing collection data ({len(collection_data)} commits)")
     except FileNotFoundError:
