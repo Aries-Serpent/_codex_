@@ -174,14 +174,14 @@ def rest_get(
     Returns (data, error_message) — one of them is None.
     """
     tokens = tokens or TOKENS
-    for _tok_slot, token in enumerate(tokens, 1):
+    for tok_slot, token in enumerate(tokens, 1):
         limits = check_rate_limits(token)
         _polite_sleep()
         core = limits.get("core", {})
         remaining = core.get("remaining", 0)
 
         if remaining < MIN_REMAINING:
-            logger.info("token[slot-%d] core=%d — trying next token", _tok_slot, remaining)
+            logger.info("token[slot-%d] core=%d — trying next token", tok_slot, remaining)
             continue
 
         for attempt in range(retries):
@@ -260,12 +260,12 @@ def graphql(
     tokens = tokens or TOKENS
     payload = json.dumps({"query": query, **({"variables": variables} if variables else {})}).encode()
 
-    for _tok_slot, token in enumerate(tokens, 1):
+    for tok_slot, token in enumerate(tokens, 1):
         limits = check_rate_limits(token)
         _polite_sleep()
         gql_remaining = limits.get("graphql", {}).get("remaining", 0)
         if gql_remaining < MIN_REMAINING:
-            logger.info("token[slot-%d] graphql=%d — trying next", _tok_slot, gql_remaining)
+            logger.info("token[slot-%d] graphql=%d — trying next", tok_slot, gql_remaining)
             continue
 
         for attempt in range(MAX_RETRIES):
@@ -533,12 +533,12 @@ def wait_for_rate_limit_reset(resource: str = "core") -> None:
     Block until the specified rate-limit resource has capacity.
     Implements trickle-down: tries each token before waiting.
     """
-    for _tok_slot, token in enumerate(TOKENS, 1):
+    for tok_slot, token in enumerate(TOKENS, 1):
         limits = check_rate_limits(token)
         _polite_sleep(0.3)
         r = limits.get(resource, {})
         if r.get("remaining", 0) >= MIN_REMAINING:
-            logger.info("Token[slot-%d] %s remaining=%d — ready", _tok_slot, resource, r["remaining"])
+            logger.info("Token[slot-%d] %s remaining=%d — ready", tok_slot, resource, r["remaining"])
             return
     # All tokens exhausted — wait for first reset
     earliest_reset = min(
@@ -565,10 +565,10 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.resource == "rate-limits":
-        for _tok_slot, token in enumerate(TOKENS, 1):
+        for tok_slot, token in enumerate(TOKENS, 1):
             limits = check_rate_limits(token)
             _polite_sleep()
-            print(f"\nToken[slot-{_tok_slot}]:")
+            print(f"\nToken[slot-{tok_slot}]:")
             for name, info in limits.items():
                 if info.get("limit", 0) > 0:
                     reset_dt = datetime.fromtimestamp(info["reset"], tz=timezone.utc).strftime("%H:%M:%S UTC")
