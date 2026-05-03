@@ -124,6 +124,20 @@ jobs:
               // Runner & cache config (performance)
               'COPILOT_RUNNER_PROFILE',
               'CODEX_CACHE_VERSION',
+              // Access probe & trickle-down tuning (session_access_probe.py / github_api_trickle.py)
+              'GH_TRICKLE_POLITE_SLEEP',
+              'GH_TRICKLE_MIN_REMAINING',
+              'GH_TRICKLE_RETRIES',
+              'GH_TRICKLE_MAX_WAIT',
+              // RAG context builder session state
+              'CODEX_RAG_LAST_REBUILD',
+              'CODEX_RAG_INDEX_VERSION',
+              'CODEX_SESSION_ACCESS_STRATEGY',
+              // Webhook receiver endpoint (cognitive brain)
+              'WEBHOOK_RECEIVER_URL',
+              // Session number and access audit
+              'CODEX_ACCESS_PROBE_LAST_RUN',
+              'COPILOT_AGENT_SESSION_NUMBER',
             ];
 
             const pendingFile = '.codex/pending_var_updates.json';
