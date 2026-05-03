@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4201)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4201 (SHA `7aa47a33`) at 2026-05-03T05:09Z [auto-generated]
+
 ### Fixed (S183 — 2026-05-03 — PR #4193 — bot findings validation follow-up)
 - **PR bot findings follow-up** — Revalidated the current branch head after the PR continuation comment, confirmed ruff, tracked-file sync, targeted CI tests, and mypy baseline remain green locally, and recorded the final accountability/PDA entries for Pattern 25.
 
