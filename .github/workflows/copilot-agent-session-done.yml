@@ -774,9 +774,13 @@ jobs:
                 console.log(`compile-bot-feedback already appended run ${context.runId} for SHA ${headSha} on PR #${prNumber} — skipping duplicate.`);
                 return;
               }
-              const appendBody = [
+              const appendParts = [
                 existingCommentBody.includes(PR_MARKER) ? existingCommentBody.trimEnd() : `${PR_MARKER}\n${existingCommentBody.trimEnd()}`,
-                existingCommentBody.includes(HEAD_MARKER) ? `` : HEAD_MARKER,
+              ];
+              if (!existingCommentBody.includes(HEAD_MARKER)) {
+                appendParts.push(HEAD_MARKER);
+              }
+              appendParts.push(
                 ``,
                 `---`,
                 RUN_MARKER,
@@ -787,7 +791,8 @@ jobs:
                 findingsList,
                 ``,
                 `> _Appended by \`copilot-agent-session-done.yml\` · compile-bot-feedback job_`,
-              ].join('\n');
+              );
+              const appendBody = appendParts.join('\n');
               await github.rest.issues.updateComment({
                 owner, repo, comment_id: existingCommentId, body: appendBody.slice(0, MAX_COMMENT_LENGTH),
               });
