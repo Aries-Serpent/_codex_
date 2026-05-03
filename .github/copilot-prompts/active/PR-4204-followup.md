@@ -1,103 +1,112 @@
 # 🎯 PR Follow-Up Tasks - #4204
 
-**PR**: #4204 — Fix subprocess validation, return None indentation, dry_run logic, Retry-After parsing, migration defaults  
+**PR**: #4204 - PR #4204  
 **Branch**: `copilot/add-validation-for-batch-size`  
 **Author**: @mbaetiong  
 **Date**: 2026-05-03  
-**Status**: 🔄 ACTIVE — CodeQL remediation in progress
-
-> ⚠️ **Session Handoff Protocol:** Load `.github/copilot-prompts/active/CODEQL-QUALITY-REMEDIATION.md` FIRST before working on any CodeQL fixes. It is the canonical tracker for all 76 findings.
+**Commit**: `6c7b69f4a61fbd88ea2021a4b14dce9fe4da07b2`  
+**Status**: 🔄 ACTIVE
 
 ---
 
 ## 📋 PREVIOUS SESSION SUMMARY
 
-### Completed Work (2026-05-03 — Session S<NNN>)
+### Completed Work
+- [`6c7b69f4`] fix(codeql): resolve py/use-of-exit-or-quit, py/unnecessary-pass, py/comparison-of-identical-expressions, py/implicit-string-concatenation-in-list" (copilot-swe-agent[bot], 2026-05-03)
+- [`8d2a8068`] fix(ci): universal baseline sweep — sync+auto_fix [skip ci] (github-actions[bot], 2026-05-03)
+- [`b1449d81`] chore(d00): update session context digest [skip ci] (github-actions[bot], 2026-05-03)
 
-| Commit | What was done |
-|--------|---------------|
-| `af4ff97` | Bot-generated empty follow-up (overrode manually populated version — see note below) |
-| `9dd1e77` | Created static CODEQL-QUALITY-REMEDIATION.md tracker + real followup tasks |
-| `cb27221` | Session context digest update |
-| `ee105d4` | Follow-up prompt auto-generation |
-| `027542c` | Seven correctness fixes: subprocess validation, return None indent, dry_run, Retry-After, migration defaults |
-
-### Phase 1 Fixes Applied This Session
-- ✅ `py/use-of-exit-or-quit` — Fixed `.github/agents/test-coverage-enforcer/src/agent.py`: `exit(1)` → `sys.exit(1)` + `import sys`
-- ✅ `py/unnecessary-pass` — Removed unnecessary `pass` from `config_legacy/__init__.py`, `configs/mutmut_config.py`, `.pre-commit-scripts/check-meta-tensors.py`
-- ✅ `py/comparison-of-identical-expressions` — Fixed `nan != nan` in 3 test files using `math.isnan()`; fixed `None is None` with variable-based assertion
-- ✅ `py/implicit-string-concatenation-in-list` — Fixed implicit concat in `tools/codex_src_consolidation.py:442`
-
-### ⚠️ Note on Auto-Generation Override
-The `Generate PR Follow-Up Prompt` bot workflow auto-regenerates this file from a template after each push, wiping real content. Every session MUST re-populate this file before finishing. **This is the file to update.** See rule: "the file string typically is static."
+### Files Modified
+No files modified
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
-### Priority 1: CodeQL Error-Level Fixes 🔴 CRITICAL (blocking CI quality gate)
+### Priority 1: Immediate Tasks 🔴 CRITICAL
+- [ ] No tasks specified
 
-> These require CodeQL CLI or browser access to `https://github.com/Aries-Serpent/_codex_/security/quality`
-
-- [ ] **`py/call-to-non-callable` (×4)** — Get file+line from CodeQL security page; fix non-callable object being invoked with `()`
-- [ ] **`py/call/wrong-arguments` (×2)** — Get file+line from CodeQL security page; fix wrong positional arg count
-- [ ] **`py/call/wrong-named-argument` (×18)** — ⚠️ Requires CodeQL interprocedural analysis (ruff/mypy return 0 results per stored memory). Get locations from GitHub security page.
-
-**Start commands:**
+**Validation**:
 ```bash
-# If CodeQL CLI is available at /opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql:
-codeql database create db-python --language=python --source-root=.
-codeql database analyze db-python --format=sarif-latest --output=results.sarif \
-  codeql/python-queries:Expressions/CallToNonCallable.ql \
-  codeql/python-queries:Statements/WrongArguments.ql \
-  codeql/python-queries:Expressions/WrongNameForArgumentInCall.ql
+echo "Add validation commands"
 ```
 
-### Priority 2: CodeQL Warning-Level Fixes 🟡 HIGH
+### Priority 2: Follow-Up Validation 🟡 HIGH
+- [ ] No tasks specified
 
-**Partially complete:**
-- ✅ `py/use-of-exit-or-quit` (2 findings — 1 fixed, 1 TBD if another exists)
-- ✅ `py/unnecessary-pass` (resolved)
-- ✅ `py/comparison-of-identical-expressions` (4/5 fixed in tests; 1 more may be elsewhere)
-- ✅ `py/implicit-string-concatenation-in-list` (1 fixed in tools/)
-
-**Still open (need CodeQL locations):**
-- [ ] `py/missing-equals` (×1) — Class with `__init__` attributes but no `__eq__`
-- [ ] `py/comparison-of-constants` (×1) — Constant vs constant comparison
-- [ ] `py/unreachable-statement` (×33) — Code after `return`/`raise` — CodeQL knows exact locations; local AST scan found 0
-
-### Priority 3: JavaScript Note-Level Fixes 🟢 MEDIUM
-- [ ] `js/unused-local-variable` (×4) — Find in JS files. Files to check:
-  - `copilot/extension/server/index.js`
-  - `.codex/copilot_bridge/bridge/server.js`
-  - `misc/repo-owner-review/temp-outputs/bridge_codex_copilot_bridge/copilot/extension/server/index.js`
-  - `cognitive_app/tailwind.config.js`
-
-### Priority 4: Validation Gate 🟢 MEDIUM
-- [ ] Run `pre-commit run --all-files` → 0 failures
-- [ ] Run `pytest tests/ -v --tb=short -q` → no regressions
-- [ ] Run `python scripts/ci/auto_fix_common_issues.py --check-only` → 0 issues
-- [ ] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Pattern 25)
-- [ ] Update this file before session end
+### Priority 3: Future Enhancements 🟢 MEDIUM
+- [ ] No tasks specified
 
 ---
 
 ## ✅ EXECUTION CHECKLIST
 
-- [x] Fast Validation CI failure addressed (was on old commit; current HEAD passes PR Comment Review Gate)
-- [x] Phase 2 partial fixes applied (exit/quit, unnecessary-pass, identical-expressions, implicit-concat)
-- [ ] Phase 1 error-level fixes (need CodeQL access)
-- [ ] Phase 2 remaining: missing-equals, comparison-of-constants, unreachable-statement
-- [ ] Phase 3 JS fixes
-- [ ] Session Completion Attestation posted on PR
-- [ ] This file updated before session end ✅
+- [ ] All Priority 1 tasks completed and validated
+- [ ] All Priority 2 tasks completed or documented
+- [ ] Priority 3 tasks reviewed and prioritized
+- [ ] All validation checks passed
+- [ ] Documentation updated
+- [ ] Self-review completed (5 passes, 0 concerns)
 
 ---
 
-## 🔗 Related Files
+## 🔍 MANDATORY SELF-REVIEW PROTOCOL
 
-| File | Purpose |
-|------|---------|
-| `.github/copilot-prompts/active/CODEQL-QUALITY-REMEDIATION.md` | Canonical tracker — load FIRST every session |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Must update every session (Pattern 25) |
-| `CHANGELOG.md` | Add entries for each fix phase |
+**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
+
+### Pass 1: Code Quality & Correctness
+- [ ] All syntax errors resolved
+- [ ] No linting warnings introduced
+- [ ] Type hints correct
+- [ ] Error handling comprehensive
+- [ ] Edge cases covered
+
+### Pass 2: Testing & Validation
+- [ ] All tests passing locally
+- [ ] New tests added for new functionality
+- [ ] Test coverage maintained or improved
+- [ ] CI/CD checks passing
+
+### Pass 3: Documentation & Communication
+- [ ] Code comments added for complex logic
+- [ ] Docstrings updated
+- [ ] README reflects changes
+- [ ] CHANGELOG updated
+- [ ] Commit messages descriptive
+
+### Pass 4: Security & Safety
+- [ ] No hardcoded secrets or credentials
+- [ ] Input validation added
+- [ ] Dependencies reviewed (no vulnerabilities)
+- [ ] Security implications documented
+
+### Pass 5: Integration & Dependencies
+- [ ] No breaking changes (or properly documented)
+- [ ] Backward compatibility maintained
+- [ ] Cross-PR dependencies resolved
+- [ ] No regressions introduced
+
+**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
+
+---
+
+## 🤖 COPILOT AGENT INSTRUCTIONS
+
+**When you see `@copilot continue` in PR #4204:**
+
+1. Load this prompt from `.github/copilot-prompts/active/PR-4204-followup.md`
+2. Execute Priority 1 tasks in order, validating each
+3. Then execute Priority 2 tasks
+4. Review Priority 3 tasks
+5. Update this file after each task (add ✅ for completed)
+6. Perform mandatory 5-pass self-review
+7. Post comprehensive status as PR comment
+8. Generate new continuation if work remains
+
+**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
+
+---
+
+**Generated**: 2026-05-03  
+**Template Version**: 2.0.0  
+**Last Updated**: 2026-05-03 17:56:49
