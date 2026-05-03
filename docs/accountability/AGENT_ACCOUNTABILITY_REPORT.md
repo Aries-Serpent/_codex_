@@ -20,6 +20,12 @@
 
 
 
+## SESSION SUMMARY — 2026-05-03T11:33Z [copilot-swe-agent]
+
+**Session:** copilot-pr4201-ci-rescue-rp004-pattern22 | **PR:** #4201 | **Date:** 2026-05-03
+
+CI rescue on commit 15c87d4a53d4: RP-004 (Pattern 22) — sync_tracked_files check ran on CI's merge-preview SHA. Current HEAD d4a05e93 already has the fix applied. Local checks: sync_tracked_files --check → all 6 checks ✅; ruff check src/ tests/ → 0 errors. CI rescue comment was for an older commit; current branch HEAD is clean. Pattern 17 SHA-drift is informational only.
+
 ## SESSION SUMMARY — 2026-05-03T10:57Z [copilot-swe-agent]
 
 **Session:** copilot-pr4201-ci-rescue-p30-fix | **PR:** #4201 | **Date:** 2026-05-03
