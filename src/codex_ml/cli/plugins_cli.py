@@ -94,10 +94,7 @@ def _explain_group(group: str, name: str, *, echo, exit_exc, bad_param_exc) -> N
         sig = inspect.signature(obj, eval_str=True)
         echo(str(sig))
     except ValueError:  # pragma: no cover - builtins may not have signature
-        pass
-        _ = None  # noqa: BLE001
-
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
 if typer is not None:  # pragma: no cover - Typer CLI
     app = typer.Typer(help="Inspect codex_ml plugin registries")
 

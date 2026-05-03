@@ -20,6 +20,7 @@ Phase 3 additions:
 import hashlib
 import hmac as _hmac_lib
 import json
+import logging
 import os
 import time
 import uuid
@@ -33,6 +34,8 @@ from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.superposition import Decision as SuperpositionDecision
 from cognitive_brain.quantum.superposition import SuperpositionEngine
+
+logger = logging.getLogger(__name__)
 
 
 class ComplianceDecision(Enum):
@@ -593,8 +596,7 @@ class QuantumComplianceAssessor:
                         self._tuning_rules_cache = json.load(fh)
                     return self._tuning_rules_cache
                 except Exception:
-                    pass
-                    _ = None  # noqa: BLE001
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         self._tuning_rules_cache = {}
         return self._tuning_rules_cache
 
@@ -720,9 +722,7 @@ class QuantumComplianceAssessor:
                                 idx = decision_names.index(fuzzy_norm)
                                 tuned[idx] = min(1.0, tuned[idx] * 1.15)
                     except Exception:
-                        pass  # Fuzzy module unavailable — skip
-                        _ = None  # noqa: BLE001
-
+                        logger.debug("Suppressed exception in handler", exc_info=True)
             # Renormalise so probabilities sum to 1
             total = sum(tuned)
             if total > 0:

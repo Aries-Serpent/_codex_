@@ -30,9 +30,12 @@ Last Updated: 2026-01-16
 
 
 
+import logging
 import sys
 from datetime import datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
@@ -205,9 +208,7 @@ class DocumentationChecker:
                         )
                 except Exception:
                     # README.md check is best-effort; ignore errors reading this optional file.
-                    pass
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         return issues
 
     def generate_update_summary(self) -> str:

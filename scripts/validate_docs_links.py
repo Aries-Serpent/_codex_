@@ -55,6 +55,7 @@ Performance:
 import argparse
 import difflib
 import json
+import logging
 import re
 import sys
 import time
@@ -62,6 +63,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 # Cache file location
 CACHE_FILE = Path('.codex/.validation_cache.json')
@@ -165,9 +168,7 @@ class HeadingParser:
 
         except Exception:
             # Silently skip files with read errors
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         self.headings_by_file[rel_path] = headings
         self.anchors_by_file[rel_path] = anchors
 

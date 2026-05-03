@@ -169,8 +169,7 @@ def get_branch_last_commit_date(repo: str, token: str, branch: str) -> datetime 
             try:
                 return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
             except ValueError:
-                pass
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
     return None
 
 
@@ -446,7 +445,10 @@ def write_json_report(
 # ---------------------------------------------------------------------------
 
 # Lazy import — only needed for URL-encoding branch names with slashes
+import logging
 import urllib.parse  # noqa: E402
+
+logger = logging.getLogger(__name__)
 
 
 def main() -> int:

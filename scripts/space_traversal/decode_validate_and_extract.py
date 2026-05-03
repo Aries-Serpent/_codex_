@@ -476,12 +476,9 @@ def main(argv: Optional[list[str]] = None) -> int:
                 if not args.quiet:
                     print(f"Wrote stable manifest to: {manifest_path}")
             except Exception:
-                pass
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
         except Exception:
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     if not args.quiet:
         print(f"Wrote outputs to: {out_dir}")
         print(f"Validated against schema: {'yes' if schema_validated else 'no'}")

@@ -25,6 +25,8 @@ from codex.cognitive.ml.data_pipeline import (
 from codex.cognitive.ml.recommender import ResolutionRecommender, SuccessPredictor
 from codex.cognitive.ml.symptom_classifier import SymptomClassifier
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class MLEnhancedQueryResult:
@@ -186,9 +188,7 @@ class BrainMLBridge:
                     confidence = result.confidence
                 except (RuntimeError, Exception):
                     # ML classifier failed - fall back to default category
-                    pass
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             # Get recommended agents based on category
             recommended_agents = self._get_agents_for_category(ml_category or "general")
 

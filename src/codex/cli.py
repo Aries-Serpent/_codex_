@@ -27,15 +27,13 @@ import click  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import typer as _typer
 except Exception:  # pragma: no cover - degrade gracefully when Typer missing
-    pass
-    _ = None  # noqa: BLE001
+    logger.debug("Suppressed exception in handler", exc_info=True)
 else:  # pragma: no cover - exercised in Typer-enabled environments
     try:
         from codex.cli_knowledge import app as knowledge_typer_app
         from codex.cli_release import app as release_typer_app
     except Exception:  # pragma: no cover - Typer sub-app import guard
-        pass
-        _ = None  # noqa: BLE001
+        logger.debug("Suppressed exception in handler", exc_info=True)
     else:
         app = _typer.Typer(help="Codex Typer CLI (release + knowledge)")
         app.add_typer(release_typer_app, name="release")

@@ -208,9 +208,7 @@ class RunLogger:
         try:
             self._metrics_writer.close()
         except Exception:  # pragma: no cover - best effort
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     @staticmethod
     def _timestamp() -> float:
         """Return a UNIX timestamp with millisecond precision."""

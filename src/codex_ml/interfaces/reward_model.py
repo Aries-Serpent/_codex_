@@ -171,8 +171,7 @@ class HeuristicRewardModel(RewardModel):
             try:
                 avg_label += float(label)
             except Exception:  # pragma: no cover - defensive fallback
-                pass
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
             count += 1
 
         if count == 0:

@@ -167,18 +167,14 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
         if isinstance(data, Mapping):
             return data
     except json.JSONDecodeError:
-        pass
-        _ = None  # noqa: BLE001
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     # Minimal fallback parser (best effort)
     try:
         data = _minimal_yaml_load(text)
         if isinstance(data, Mapping):
             return data
     except Exception:  # pragma: no cover - defensive
-        pass
-        _ = None  # noqa: BLE001
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     logger.warning("Policy file %s is not valid YAML or JSON", path)
     return None
 

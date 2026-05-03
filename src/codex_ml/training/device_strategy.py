@@ -281,8 +281,5 @@ if _HAS_TORCH:  # pragma: no branch - simple guard
     try:
         DeviceMapper.register_strategy("auto", DeviceConfig.auto_detect())
     except RuntimeError:  # pragma: no cover - guard when torch import works but usage fails
-        pass
-        _ = None  # noqa: BLE001
-
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
 __all__ = ["DeviceConfig", "DeviceMapper", "get_device_config"]

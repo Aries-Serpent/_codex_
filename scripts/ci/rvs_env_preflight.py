@@ -32,12 +32,15 @@ import argparse
 import importlib.metadata
 import importlib.util
 import json
+import logging
 import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Package inventory — every group required for a green RVS run
@@ -171,13 +174,11 @@ def _get_version(import_name: str) -> str | None:
     try:
         return importlib.metadata.version(import_name.replace("_", "-"))
     except importlib.metadata.PackageNotFoundError:
-        pass
-        _ = None  # noqa: BLE001
+        logger.debug("Suppressed exception in handler", exc_info=True)
     try:
         return importlib.metadata.version(import_name)
     except importlib.metadata.PackageNotFoundError:
-        pass
-        _ = None  # noqa: BLE001
+        logger.debug("Suppressed exception in handler", exc_info=True)
     # Fall back to checking importability (for namespace packages)
     if importlib.util.find_spec(import_name) is not None:
         return "installed (no metadata)"

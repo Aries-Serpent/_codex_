@@ -280,8 +280,7 @@ class PluginSandbox:
                         # If quarantine timestamp is invalid or missing, default to zero elapsed time.  # noqa: E501
                         # Security note: This keeps the plugin quarantined for the full duration,
                         # which is the safe default behavior when timestamp parsing fails.
-                        pass
-                        _ = None  # noqa: BLE001
+                        logger.debug("Suppressed exception in handler", exc_info=True)
                 remaining = self.quarantine_duration - elapsed
                 logger.warning(
                     f"Plugin {plugin_name} is quarantined, "

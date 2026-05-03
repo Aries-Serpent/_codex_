@@ -2,7 +2,10 @@
 """Analyze test suite for potential mock-related issues."""
 
 import ast
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 class MockPatternAnalyzer(ast.NodeVisitor):
@@ -70,10 +73,7 @@ class MockPatternAnalyzer(ast.NodeVisitor):
                 })
         except Exception:
             # If analysis fails, skip this check
-            pass
-            _ = None  # noqa: BLE001
-
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
 def analyze_test_directory(test_dir='tests'):
     """Scan test directory for problematic patterns."""
     analyzer = MockPatternAnalyzer()

@@ -6,12 +6,15 @@ This module provides utilities for running, timing, and analyzing RAG pipeline b
 
 import csv
 import json
+import logging
 import statistics
 import time
 import tracemalloc
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -64,9 +67,7 @@ class BenchmarkRunner:
             try:
                 func(*args, **kwargs)
             except Exception:
-                pass  # Ignore warmup errors
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         durations = []
         memory_usage = []
         last_error = None

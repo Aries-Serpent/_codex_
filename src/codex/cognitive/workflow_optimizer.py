@@ -12,6 +12,7 @@ This module provides workflow analysis and optimization capabilities for:
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -20,6 +21,8 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 
 class WorkflowStatus(Enum):
@@ -294,9 +297,7 @@ class WorkflowAnalyzer:
                     workflows.append(info)
                     self._workflows[info.name] = info
             except (OSError, yaml.YAMLError):
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         return workflows
 
     def _parse_workflow_file(self, path: Path) -> WorkflowInfo | None:
@@ -561,9 +562,7 @@ class ImmutableRegistry:
                         )
                         self._components[comp.component_id] = comp
             except (json.JSONDecodeError, KeyError):
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     def save(self) -> None:
         """Save registry to disk."""
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
@@ -639,9 +638,7 @@ class CheckpointManager:
                         )
                         self._checkpoints[cp.checkpoint_id] = cp
             except (json.JSONDecodeError, KeyError):
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     def save(self) -> None:
         """Save checkpoints to disk."""
         self.checkpoint_path.parent.mkdir(parents=True, exist_ok=True)

@@ -317,8 +317,7 @@ def skill_invocation_span(
                     try:
                         span.set_attribute(k, v)
                     except Exception:  # noqa: BLE001
-                        pass
-                        _ = None  # noqa: BLE001
+                        logger.debug("Suppressed exception in handler", exc_info=True)
             logger.info(
                 "Skill '%s' completed (%s) in %.1f ms",
                 skill_name,

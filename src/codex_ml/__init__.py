@@ -177,8 +177,7 @@ def __getattr__(name: str):
         try:
             return import_module(f"codex_ml.{name}")
         except ImportError:
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None
 
     module_name, attr_name = _EXPORT_MAP[name]

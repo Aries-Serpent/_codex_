@@ -31,12 +31,15 @@ Last Updated: 2026-01-16
 
 
 import json
+import logging
 import os
 import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 
 class Phase10Validator:
@@ -478,9 +481,7 @@ class Phase10Validator:
                             name = parts[0].strip('*- ')
                             metrics[name] = score
                         except (ValueError, IndexError):
-                            pass
-                            _ = None  # noqa: BLE001
-
+                            logger.debug("Suppressed exception in handler", exc_info=True)
             if metrics:
                 metrics.get("Overall Health", 0)
                 metrics.get("Knowledge Synthesis", 0)

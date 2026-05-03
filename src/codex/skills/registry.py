@@ -54,8 +54,7 @@ def _version_key(version: str) -> tuple:
         try:
             return (_PkgVersion(version),)
         except Exception:
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     # Naive integer-tuple fallback (handles "X.Y.Z" correctly)
     try:
         return tuple(int(x) for x in version.split("."))

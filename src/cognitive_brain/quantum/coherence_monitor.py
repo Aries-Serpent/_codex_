@@ -5,6 +5,7 @@ Monitors quantum feature metrics, detects degradation, and triggers
 automatic rollbacks when coherence falls below acceptable thresholds.
 """
 
+import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from enum import Enum
@@ -15,6 +16,8 @@ from cognitive_brain.models.quantum_metrics import (
     QuantumMetricRepository,
 )
 from cognitive_brain.quantum.config import QuantumConfig
+
+logger = logging.getLogger(__name__)
 
 
 class AlertLevel(Enum):
@@ -190,9 +193,7 @@ class CoherenceMonitor:
         try:
             self._otel_gauge.set(value, {"feature": feature, "metric": metric_name})
         except Exception:  # noqa: BLE001
-            pass  # never break the recording path
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     # ------------------------------------------------------------------
     # Metric recording
     # ------------------------------------------------------------------

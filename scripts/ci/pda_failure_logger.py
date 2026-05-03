@@ -60,12 +60,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -101,8 +104,7 @@ def _read_log() -> list[dict[str, Any]]:
         try:
             entries.append(json.loads(line))
         except json.JSONDecodeError:
-            pass  # malformed JSONL line – skip silently
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     return entries
 
 
@@ -138,10 +140,7 @@ def _record_to_sqlite(pattern_id: str, pattern_name: str, description: str,
     try:
         subprocess.run(args, capture_output=True, timeout=10)
     except Exception:
-        pass  # SQLite record is best-effort; never fail the main flow
-        _ = None  # noqa: BLE001
-
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
 # ---------------------------------------------------------------------------
 # Commands
 # ---------------------------------------------------------------------------

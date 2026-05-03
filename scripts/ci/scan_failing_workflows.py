@@ -26,12 +26,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import sys
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 _OWNER = "Aries-Serpent"
 _REPO = "_codex_"
@@ -112,8 +115,7 @@ def _median_duration_seconds(runs: list[dict]) -> float | None:
                 t1 = datetime.fromisoformat(updated.replace("Z", "+00:00"))
                 durations.append((t1 - t0).total_seconds())
             except ValueError:
-                pass  # malformed ISO timestamp — skip this run's duration
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
         return None
     durations.sort()
     mid = len(durations) // 2
@@ -189,9 +191,7 @@ def scan(
                 try:
                     eta_minutes = int(eta_str.replace("~", "").replace(" min", ""))
                 except ValueError:
-                    pass  # eta_str didn't match "~N min" pattern — leave eta_minutes as None
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             entry = {
                 "name": name,
                 "status": status,

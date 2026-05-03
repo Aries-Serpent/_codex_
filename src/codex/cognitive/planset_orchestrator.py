@@ -33,6 +33,7 @@ See ``.codex/plans/QUANTUM_PLANSETS_CODEBASE_IMPROVEMENT.md`` for full diagram.
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -44,6 +45,8 @@ from codex.cognitive.quantum_planset_engine import (
     PlanStep,
     QuantumPlansetEngine,
 )
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Planset-filename → ImprovementArea mapping
@@ -273,9 +276,7 @@ class PlansetOrchestrator:
                         status_line = line.strip()[:80]
                         break
             except OSError:
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
             records.append(
                 PlansetRecord(
                     path=p,
@@ -530,8 +531,7 @@ class PlansetOrchestrator:
                 data = json.loads(self._state_path.read_text(encoding="utf-8"))
                 return OrchestrationState.from_dict(data)
             except (json.JSONDecodeError, KeyError):
-                pass
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
         return OrchestrationState(
             session_id=datetime.now(timezone.utc).strftime("session-%Y%m%d"),
         )

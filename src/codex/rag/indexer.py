@@ -843,9 +843,7 @@ class RAGIndexer:
             self.model = safe_model_to_device(self.model, self.device)
         except Exception:
             # Model unavailable (offline, missing dep, etc.) — leave as None.
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     def move_to_device(self, device: str) -> None:
         """Move the loaded embedding model to *device* and update ``self.device``."""
         self.device = device

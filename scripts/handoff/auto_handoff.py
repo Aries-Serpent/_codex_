@@ -20,9 +20,12 @@ Usage:
 
 import argparse
 import json
+import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 # Constants
 REPO_ROOT = Path(__file__).parent.parent.parent
@@ -124,9 +127,7 @@ class AutoHandoff:
                             continue
                 except (ValueError, AttributeError):
                     # Timestamp parsing failed - include entry anyway
-                    pass
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
                 # Extract file operations
                 action = entry.get("action", "")
                 path = entry.get("path", "")
@@ -169,9 +170,7 @@ class AutoHandoff:
                     patterns.append(f"{pattern_id}: {pattern.get('name', 'Unknown')}")
         except (json.JSONDecodeError, KeyError):
             # Pattern store is corrupted or empty - return empty list
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         return patterns[:5]  # Top 5
 
     def load_tracking_data(self) -> Dict[str, Any]:
@@ -182,9 +181,7 @@ class AutoHandoff:
                     return json.load(f)
             except json.JSONDecodeError:
                 # File is corrupted - will reinitialize
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Initialize new tracking data
         return self._init_tracking_data()
 

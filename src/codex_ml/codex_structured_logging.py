@@ -215,8 +215,7 @@ def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
         try:
             session_logger.log_event(event, _prepare_session_payload(rec))
         except Exception:  # pragma: no cover - defensive
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     logger.info(rec)
 
 

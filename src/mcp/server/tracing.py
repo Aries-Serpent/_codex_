@@ -20,11 +20,14 @@ from __future__ import annotations
 import contextlib
 import importlib
 import importlib.util
+import logging
 import os
 import uuid
 from typing import Any, Generator
 
 from starlette.requests import Request
+
+logger = logging.getLogger(__name__)
 
 
 def init_tracing(service_name: str = "mcp"):
@@ -228,5 +231,4 @@ def record_drift_event(
     try:
         span.add_event("drift.detected", attributes=attrs)
     except Exception:  # noqa: BLE001
-        pass
-        _ = None  # noqa: BLE001
+        logger.debug("Suppressed exception in handler", exc_info=True)

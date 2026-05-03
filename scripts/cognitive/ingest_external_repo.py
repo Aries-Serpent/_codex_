@@ -32,6 +32,7 @@ Last Updated: 2026-01-16
 
 import argparse
 import json
+import logging
 import re
 import subprocess
 import sys
@@ -39,6 +40,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -161,9 +164,7 @@ class ExternalRepoIngestor:
                         return "BSD License"
                     return "Custom/Other License"
                 except Exception:
-                    pass
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         return None
 
     def detect_capabilities(self, repo_path: Path) -> List[str]:

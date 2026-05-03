@@ -256,9 +256,7 @@ def evaluate_epoch(
                         lg.log(record)
                     except Exception:  # pragma: no cover (rare)
                         # Gracefully continue; avoid breaking evaluation on logger failure
-                        pass
-                        _ = None  # noqa: BLE001
-
+                        logger.debug("Suppressed exception in handler", exc_info=True)
     avg_loss = running_loss / max(total, 1)
 
     metric_results: dict[str, float] = {}
@@ -304,9 +302,7 @@ def evaluate_epoch(
                 lg.log(epoch_record)
                 lg.close()
             except Exception:  # pragma: no cover
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     return result
 
 

@@ -30,10 +30,13 @@ Usage:
     storage.store_secret("secret.enc", data)
 """
 
+import logging
 import os
 import stat
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, Optional, Union, cast
+
+logger = logging.getLogger(__name__)
 
 try:
     from cryptography.fernet import Fernet
@@ -155,9 +158,7 @@ class SecureStorage:
                 return key_bytes
         except (binascii.Error, ValueError):
             # Expected when key is not base64-encoded
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         # Try hex decode
         try:
             key_bytes = bytes.fromhex(key)
@@ -165,9 +166,7 @@ class SecureStorage:
                 return key_bytes
         except (ValueError, AttributeError):
             # Expected when key is not hex-encoded
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         # Hash the key to get required length
         if isinstance(key, str):
             key = key.encode("utf-8")  # type: ignore[assignment]

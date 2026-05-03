@@ -175,9 +175,7 @@ def parse_action_log(
                     if entry_time < since:
                         continue
                 except (ValueError, TypeError):
-                    pass
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             # Filter by session if specified
             if session_id and entry.get('session_id') != session_id:
                 continue

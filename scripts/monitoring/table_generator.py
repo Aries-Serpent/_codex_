@@ -10,7 +10,10 @@ Version: 1.0.0
 Created: 2026-01-22
 """
 
+import logging
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class TableGenerator:
@@ -223,9 +226,7 @@ class TableGenerator:
                         job_links.append(f"[{status_emoji} {job.name}]({job.html_url})")
                     table += f"| **Jobs** | {' · '.join(job_links)} |\n"
             except Exception:
-                pass  # Skip if jobs can't be retrieved
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Artifacts (if requested)
         if include_artifacts:
             artifacts_url = f"{repo_url}/actions/runs/{run_id}#artifacts"

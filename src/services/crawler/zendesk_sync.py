@@ -295,9 +295,7 @@ class ZendeskKnowledgeSyncService:
                     logger.debug(f"Not modified since last fetch: {url}")
                     return False
             except (ValueError, TypeError):
-                pass  # If comparison fails, fetch to be safe
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Default to fetching if we can't determine
         logger.debug(f"No cache hit or stale, will fetch: {url}")
         return True

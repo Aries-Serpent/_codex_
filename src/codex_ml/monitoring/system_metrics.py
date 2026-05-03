@@ -190,9 +190,7 @@ def _minimal_process_sample(ts: float) -> Optional[dict[str, Any]]:
                 rss *= 1024.0
             payload["memory_info"] = {"rss": rss}
         except Exception:  # pragma: no cover - platform specific
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     return payload or None
 
 
@@ -449,16 +447,14 @@ def start_metrics_logger(
             try:
                 write_fn(record)
             except Exception:  # pragma: no cover - sink errors are non-fatal
-                pass
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
             if scalar_sink is not None:
                 try:
                     scalars = system_metrics_scalars(record)
                     if scalars:
                         scalar_sink(scalars)
                 except Exception:  # pragma: no cover - sink errors are non-fatal
-                    pass
-                    _ = None  # noqa: BLE001
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             event.wait(interval)
 
     thread = threading.Thread(target=_loop, name="codex-system-metrics", daemon=True)

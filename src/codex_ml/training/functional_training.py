@@ -120,9 +120,7 @@ def train(
             with path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record) + "\n")
         except Exception:  # pragma: no cover - best-effort logging
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     # Load tokenizer and model
     tokenizer = load_from_pretrained(
         AutoTokenizer,

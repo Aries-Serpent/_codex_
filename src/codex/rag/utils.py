@@ -304,9 +304,7 @@ def _try_model_to(
             try:
                 return model.to(device)  # safe-device-placement: internal implementation
             except Exception:
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     # Model doesn't have .to() method
     logger.warning("No device transfer method available, returning model as-is")
     return model

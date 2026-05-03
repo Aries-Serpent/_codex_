@@ -31,11 +31,14 @@ Last Updated: 2026-01-16
 
 
 import json
+import logging
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
+
+logger = logging.getLogger(__name__)
 
 
 class LinkChecker:
@@ -135,9 +138,7 @@ class LinkChecker:
                         # If we cannot compute a reasonable relative path from this
                         # heuristic common root, just skip this candidate and continue.
                         # Suggestion generation is best-effort and should not fail hard.
-                        pass
-                        _ = None  # noqa: BLE001
-
+                        logger.debug("Suppressed exception in handler", exc_info=True)
         if candidates:
             return f"Possible: {candidates[0]}"
         return "No suggestion"

@@ -720,8 +720,7 @@ def main(argv: list[str] | None = None) -> int:
                                 skipped += 1
                                 continue
                         except ValueError:
-                            pass  # malformed timestamp — include comment to be safe
-                            _ = None  # noqa: BLE001
+                            logger.debug("Suppressed exception in handler", exc_info=True)
                 body = obj.get("body", "")
                 user = obj.get("user", {}).get("login", f"comment-{i}")
                 if body:

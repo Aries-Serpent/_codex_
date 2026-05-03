@@ -83,8 +83,7 @@ def load_action_log(
                             continue
                     except (ValueError, TypeError):
                         # Timestamp parsing failed - include entry anyway
-                        pass
-                        _ = None  # noqa: BLE001
+                        logger.debug("Suppressed exception in handler", exc_info=True)
                 entries.append(entry)
             except json.JSONDecodeError:
                 continue

@@ -101,6 +101,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import re
 import signal
@@ -114,6 +115,8 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Paths & constants
@@ -298,8 +301,7 @@ def _resolve_repo() -> str:
         if m:
             return m.group(1)
     except Exception:  # noqa: BLE001
-        pass
-        _ = None  # noqa: BLE001
+        logger.debug("Suppressed exception in handler", exc_info=True)
     return "Aries-Serpent/_codex_"
 
 
@@ -391,9 +393,7 @@ def _log(msg: str, *, to_file: bool = True, to_stdout: bool = True) -> None:
             with _log_path.open("a", encoding="utf-8") as fh:
                 fh.write(line + "\n")
         except Exception:  # noqa: BLE001
-            pass
-            _ = None  # noqa: BLE001
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
 def _now() -> str:
     return datetime.now(tz=timezone.utc).isoformat()
 
@@ -424,8 +424,7 @@ def _resolve_session_start(
             ns = int(dt.timestamp() * 1_000_000_000)
             return src, ns
         except Exception:  # noqa: BLE001
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     # Fallback: capture current nanosecond-precision time
     ns  = time.time_ns()
     iso = datetime.now(tz=timezone.utc).isoformat()

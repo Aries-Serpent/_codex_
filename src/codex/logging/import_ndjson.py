@@ -54,10 +54,7 @@ try:
 
     _codex_sqlite_auto()
 except Exception:  # pragma: no cover
-    pass
-    _ = None  # noqa: BLE001
-
-
+    logger.debug("Suppressed exception in handler", exc_info=True)
 def _default_log_dir() -> Path:
     return Path(os.getenv("CODEX_SESSION_LOG_DIR", ".codex/sessions")).expanduser()
 

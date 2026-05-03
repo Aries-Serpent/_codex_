@@ -24465,3 +24465,9 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## 2026-05-03 07:17 UTC — PR #4201 BLE001 stub cleanup
+- Replaced 171 `_ = None  # noqa: BLE001` placeholders with `logger.debug(...)` calls across 99 files
+- Added module-level loggers to 51 files that lacked one
+- Fixed PR-4201-followup.md placeholder content per copilot-pull-request-reviewer feedback
+- Verified `ruff check src/ scripts/ training/` passes with 0 errors

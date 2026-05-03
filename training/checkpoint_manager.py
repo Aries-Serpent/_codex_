@@ -8,10 +8,13 @@ from __future__ import annotations
 
 import contextlib
 import json
+import logging
 import os
 import warnings as _warnings
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 _warnings.warn(
     "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
@@ -26,10 +29,7 @@ try:
     )
 except Exception:
     # fall back to existing local implementation below (if present)
-    pass
-    _ = None  # noqa: BLE001
-
-
+    logger.debug("Suppressed exception in handler", exc_info=True)
 if "CheckpointManager" not in globals():
     import io
     import json
@@ -77,9 +77,7 @@ if "CheckpointManager" not in globals():
                 try:
                     state["numpy"] = _numpy_state_payload(_np.random.get_state())
                 except Exception:  # pragma: no cover - defensive
-                    pass
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if _torch is not None:
                 torch_state: dict[str, Any] = {}
                 try:
@@ -92,8 +90,7 @@ if "CheckpointManager" not in globals():
                     if cpu_state is not None and hasattr(cpu_state, "tolist"):
                         torch_state["cpu"] = cpu_state.tolist()
                 except Exception:  # pragma: no cover - torch optional
-                    pass
-                    _ = None  # noqa: BLE001
+                    logger.debug("Suppressed exception in handler", exc_info=True)
                 try:
                     if (
                         hasattr(_torch, "cuda")
@@ -106,8 +103,7 @@ if "CheckpointManager" not in globals():
                             for tensor in _torch.cuda.get_rng_state_all()
                         ]
                 except Exception:  # pragma: no cover - cuda optional
-                    pass
-                    _ = None  # noqa: BLE001
+                    logger.debug("Suppressed exception in handler", exc_info=True)
                 if torch_state:
                     state["torch"] = torch_state
             return state
@@ -398,8 +394,7 @@ class CheckpointManager:
                 if link.exists() or link.is_symlink():
                     link.unlink()
             except FileNotFoundError:
-                pass
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
@@ -411,14 +406,12 @@ class CheckpointManager:
                     if child.is_symlink() or child.is_file():
                         child.unlink()
                 except FileNotFoundError:
-                    pass
-                    _ = None  # noqa: BLE001
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError:
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:

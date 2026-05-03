@@ -42,11 +42,14 @@ Design principles
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -239,8 +242,7 @@ def _auth_enabled_in_env() -> bool:
             data = _json.loads(ctx_path.read_text())
             return str(data.get("COPILOT_AGENT_AUTH_ENABLED", "")).lower() == "true"
         except Exception:
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     return False
 
 
@@ -1296,9 +1298,7 @@ def select_merge_required_workflows(
                         + "\n"
                     )
             except OSError:
-                pass  # step summary write is best-effort
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     if not activated and _WEC_MARKER in pr_body:
         n_checked = sum(1 for v in updated_state.values() if v)
         print(

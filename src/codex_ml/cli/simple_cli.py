@@ -51,8 +51,7 @@ def _seed_everything(seed: int) -> None:
 
         _np.random.seed(seed)
     except Exception:  # pragma: no cover - numpy missing
-        pass
-        _ = None  # noqa: BLE001
+        logger.debug("Suppressed exception in handler", exc_info=True)
     try:  # pragma: no cover - torch optional in minimal installs
         import torch
 

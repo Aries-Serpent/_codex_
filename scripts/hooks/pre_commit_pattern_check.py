@@ -45,12 +45,15 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import logging
 import os
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -141,9 +144,7 @@ def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
         # Ignore files that are not syntactically valid Python — they cannot
         # be parsed for duplicate-kwargs detection and are likely intentional
         # test fixtures or work-in-progress code.
-        pass
-        _ = None  # noqa: BLE001
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     # Pattern 1: Unused imports — lightweight heuristic via ruff if available
     tmp_path: Optional[str] = None
     try:
@@ -165,16 +166,13 @@ def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
     except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
         # The ruff F401 check is optional; if ruff is unavailable or times out,
         # skip this detection step rather than failing the whole hook.
-        pass
-        _ = None  # noqa: BLE001
+        logger.debug("Suppressed exception in handler", exc_info=True)
     finally:
         if tmp_path is not None:
             try:
                 os.unlink(tmp_path)
             except OSError:
-                pass  # Temp file already removed or unlink failed — not fatal.
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     return detected
 
 

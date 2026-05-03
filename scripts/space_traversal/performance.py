@@ -237,8 +237,7 @@ def batch_file_read(
                 results[str(path)] = path.read_text(encoding=encoding, errors="ignore")
         except (OSError, IOError):
             # Intentionally ignore file read errors; skip unreadable files.
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     return results
 
 

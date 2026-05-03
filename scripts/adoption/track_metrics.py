@@ -164,9 +164,7 @@ class AdoptionTracker:
                                 artifact_count += file_count
                             except Exception:
                                 # If there's an error reading artifacts, skip counting for this run
-                                pass
-                                _ = None  # noqa: BLE001
-
+                                logger.debug("Suppressed exception in handler", exc_info=True)
                 mlflow_metrics["runs_logged"] = run_count
                 mlflow_metrics["artifacts_stored"] = artifact_count
                 logger.info(

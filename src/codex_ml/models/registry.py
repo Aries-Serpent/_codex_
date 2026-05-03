@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import warnings
 from pathlib import Path
@@ -11,6 +12,8 @@ from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
 from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrained
 from codex_ml.utils.optional import optional_import
+
+logger = logging.getLogger(__name__)
 
 _torch_module, _HAS_TORCH = optional_import("torch")
 torch = cast(Any, _torch_module) if _HAS_TORCH else None
@@ -314,22 +317,19 @@ def get_model(
         try:
             model = adapter(model, validated_lora)
         except Exception:  # pragma: no cover - adapter failure should not crash load
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     dtype_value = _resolve_torch_dtype(config.get("dtype"))
     if dtype_value is not None and hasattr(model, "to"):
         try:
             model = model.to(dtype_value)
         except Exception:  # pragma: no cover - invalid dtype/device combination
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     device_value = _normalise_device(config.get("device"))
     if device_value is not None:
         try:
             model = model.to(device_value)
         except Exception:  # pragma: no cover - invalid device
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     return model
 
 

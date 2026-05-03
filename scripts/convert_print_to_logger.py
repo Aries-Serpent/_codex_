@@ -94,9 +94,7 @@ class PrintDetector(ast.NodeVisitor):
                 else:
                     args_str += str(arg).lower()
             except Exception:  # Catch errors when converting AST node to string
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Check for error/warning indicators
         if any(word in args_str for word in ["error", "fail", "exception", "fatal"]):
             return "error"
@@ -226,9 +224,7 @@ def convert_print_statement(line: str, level: str) -> str:
                     break
     except Exception:
         # If AST parsing fails, fallback to regex patterns
-        pass
-        _ = None  # noqa: BLE001
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     # Fallback: Use regex patterns (with documented limitations)
     # These patterns may not correctly handle nested quotes or escaped quotes
     patterns = [

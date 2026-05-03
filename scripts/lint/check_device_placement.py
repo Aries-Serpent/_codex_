@@ -16,9 +16,12 @@ Exit codes:
 """
 
 import ast
+import logging
 import sys
 from pathlib import Path
 from typing import List, Tuple
+
+logger = logging.getLogger(__name__)
 
 
 class DevicePlacementChecker(ast.NodeVisitor):
@@ -112,8 +115,7 @@ class DevicePlacementChecker(ast.NodeVisitor):
                     return 'safe-device-placement:' in line
         except (OSError, IOError, UnicodeDecodeError):
             # If the file cannot be read for any reason, treat as no annotation present.
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
         return False
 
 

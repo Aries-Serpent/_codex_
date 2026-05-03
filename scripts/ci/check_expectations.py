@@ -49,10 +49,13 @@ Exit codes
 from __future__ import annotations
 
 import argparse
+import logging
 import shlex
 import subprocess
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 try:
     import yaml  # type: ignore[import]
@@ -250,8 +253,7 @@ def main(argv: list[str] | None = None) -> int:
                 target = str(Path(target).relative_to(REPO_ROOT))
             except ValueError:
                 # Path is outside the repo root; keep the original target string for registry lookup.
-                pass
-                _ = None  # noqa: BLE001
+                logger.debug("Suppressed exception in handler", exc_info=True)
             info = docs.get(target)
             if info is None:
                 print(f"ℹ️  {target} — not in registry. Safe to archive (no expectations tracked).")

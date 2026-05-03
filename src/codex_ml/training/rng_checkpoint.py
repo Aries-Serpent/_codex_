@@ -65,16 +65,12 @@ def set_seed(seed: int) -> None:
         try:
             np.random.seed(seed)
         except Exception:  # pragma: no cover
-            pass
-            _ = None  # noqa: BLE001
+            logger.debug("Suppressed exception in handler", exc_info=True)
     if torch is not None:
         try:
             torch.manual_seed(seed)
             if hasattr(torch.cuda, "manual_seed_all"):
                 torch.cuda.manual_seed_all(seed)  # pragma: no cover - GPU path
         except Exception:  # pragma: no cover
-            pass
-            _ = None  # noqa: BLE001
-
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
 __all__ = ["RNGState", "set_seed"]

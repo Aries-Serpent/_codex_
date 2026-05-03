@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import sys
 import time
@@ -46,6 +47,8 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from typing import Any, Optional
+
+logger = logging.getLogger(__name__)
 
 # ── OTel coherence wiring (S144) ─────────────────────────────────────────────
 # Emit a coherence observation each time the consolidator records workflow
@@ -528,9 +531,7 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
                     freshness_score  = 0.0
                     freshness_detail = f"last update {age_hours:.1f}h ago (>72h, stale)"
             except ValueError:  # ignore malformed timestamp; keep default freshness values
-                pass
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     # ── weighted composite ────────────────────────────────────────────────────
     score = round(100 * (
         0.35 * ci_score
@@ -809,9 +810,7 @@ def consolidate(
             try:
                 readiness = compute_readiness(pr_number, token, sections)
             except Exception:  # noqa: BLE001
-                pass  # score is best-effort; dashboard renders without it
-                _ = None  # noqa: BLE001
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
             # ── OTel coherence emission ─────────────────────────────────────
             if _OTEL_AVAILABLE and sections:
                 actual_outcomes   = {n: "success" if v.get("status") == "success" else "failure"
@@ -821,9 +820,7 @@ def consolidate(
                     coherence = compute_coherence(actual_outcomes, expected_outcomes)
                     workflow_coherence_score.observe(coherence)
                 except Exception:  # noqa: BLE001
-                    pass
-                    _ = None  # noqa: BLE001
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             visible = _build_body(sections, run_url=run_url, readiness=readiness)
             hidden_blobs = "\n".join(
                 _encode_section(name, info["status"], info["summary"], info["details"])
