@@ -133,8 +133,8 @@ def _headers(token: str) -> dict[str, str]:
 def check_rate_limits(token: str) -> dict[str, dict[str, int]]:
     """Return rate-limit info for all resource types for a given token."""
     try:
-        req = urllib.request.Request(f"{_BASE}/rate_limit", headers=_headers(token))
-        with urllib.request.urlopen(req, timeout=10) as r:
+        req = urllib.request.Request(f"{_BASE}/rate_limit", headers=_headers(token))  # noqa: S310
+        with urllib.request.urlopen(req, timeout=10) as r:  # noqa: S310
             data = json.load(r)
         return data.get("resources", {})
     except Exception as exc:
@@ -186,8 +186,8 @@ def rest_get(
 
         for attempt in range(retries):
             try:
-                req = urllib.request.Request(f"{_BASE}{path}", headers=_headers(token))
-                with urllib.request.urlopen(req, timeout=20) as r:
+                req = urllib.request.Request(f"{_BASE}{path}", headers=_headers(token))  # noqa: S310
+                with urllib.request.urlopen(req, timeout=20) as r:  # noqa: S310
                     data = json.load(r)
                     logger.debug("REST OK: %s", path[:80])
                     return data, None
@@ -276,7 +276,7 @@ def graphql(
                     headers={**_headers(token), "Content-Type": "application/json"},
                     method="POST",
                 )
-                with urllib.request.urlopen(req, timeout=20) as r:
+                with urllib.request.urlopen(req, timeout=20) as r:  # noqa: S310
                     result = json.load(r)
                 if "errors" in result:
                     errs = result["errors"]
@@ -348,8 +348,8 @@ def download_artifact(artifact_id: int, dest: Path, tokens: list[str] | None = N
     for token in tokens:
         try:
             url = f"{_BASE}/repos/{_OWNER}/{_REPO}/actions/artifacts/{artifact_id}/zip"
-            req = urllib.request.Request(url, headers=_headers(token))
-            with urllib.request.urlopen(req, timeout=60) as r:
+            req = urllib.request.Request(url, headers=_headers(token))  # noqa: S310
+            with urllib.request.urlopen(req, timeout=60) as r:  # noqa: S310
                 dest.write_bytes(r.read())
             logger.info("Downloaded artifact %d → %s", artifact_id, dest)
             return True

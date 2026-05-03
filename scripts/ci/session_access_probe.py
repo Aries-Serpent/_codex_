@@ -162,8 +162,8 @@ def _headers(token: str) -> dict[str, str]:
 def _http_get(url: str, token: str, timeout: int = 10) -> tuple[Any, int, dict]:
     """Return (parsed_body, http_status_code, response_headers)."""
     try:
-        req = urllib.request.Request(url, headers=_headers(token))
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        req = urllib.request.Request(url, headers=_headers(token))  # noqa: S310
+        with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310
             return json.load(r), r.status, dict(r.headers)
     except urllib.error.HTTPError as exc:
         try:
@@ -306,13 +306,13 @@ def probe_graphql(tokens: list[tuple[str, str, bool]]) -> tuple[MethodStatus, in
         _polite()
         try:
             payload = json.dumps({"query": "{ viewer { login } }"}).encode()
-            req = urllib.request.Request(
+            req = urllib.request.Request(  # noqa: S310
                 f"{_BASE}/graphql",
                 data=payload,
                 headers={**_headers(token), "Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as r:
+            with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as r:  # noqa: S310
                 result = json.load(r)
             if "data" in result and "viewer" in result["data"]:
                 schema_ok = True
@@ -436,11 +436,11 @@ def probe_scanning_api(tokens: list[tuple[str, str, bool]]) -> MethodStatus:
     token = tokens[0][0]
     _polite()
     try:
-        req = urllib.request.Request(
+        req = urllib.request.Request(  # noqa: S310
             f"{_SCAN_API}/rate_limit",
             headers=_headers(token),
         )
-        with urllib.request.urlopen(req, timeout=8) as r:
+        with urllib.request.urlopen(req, timeout=8) as r:  # noqa: S310
             body = json.load(r)
         core = body.get("resources", {}).get("core", {})
         return MethodStatus(
