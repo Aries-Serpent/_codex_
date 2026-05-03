@@ -529,8 +529,7 @@ def run_probe(owner: str = "Aries-Serpent", repo: str = "_codex_", verbose: bool
             print(
                 f"  [{var_name}] core={core.remaining if core else 'N/A'}"
                 f"  graphql={gql.remaining if gql else 'N/A'}"
-                f"  elevated={is_elevated}"
-                f"  scopes={info.scopes[:3]}",
+                f"  elevated={is_elevated}",
                 file=sys.stderr,
             )
 
