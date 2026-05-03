@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import importlib
+import importlib.util
 import json
 import os
 import pkgutil
@@ -77,10 +78,8 @@ def _scan_imports(root_pkg: str, allow_optional: List[str]) -> Dict[str, Any]:
 
 def _build_pdoc(root_pkg: str, out_dir: Path) -> Dict[str, Any]:
     result = {"built": False, "file_count": 0, "out_dir": str(out_dir), "notes": ""}
-    try:
-        pass  # type: ignore  # noqa: F401
-    except Exception as exc:
-        result["notes"] = f"pdoc unavailable: {type(exc).__name__}: {exc}"
+    if importlib.util.find_spec('pdoc') is None:
+        result["notes"] = "pdoc unavailable"
         return result
 
     try:

@@ -10,6 +10,7 @@ Target: 95% coverage threshold
 
 from __future__ import annotations
 
+import importlib
 import os
 import tempfile
 from pathlib import Path
@@ -350,7 +351,7 @@ class TestErrorPaths:
     def test_import_error_handling(self) -> None:
         """Test ImportError handling."""
         with pytest.raises(ImportError):
-            pass  # type: ignore[import-not-found]  # noqa: F401
+            importlib.import_module('nonexistent_module_xyz')
 
 
 # =============================================================================

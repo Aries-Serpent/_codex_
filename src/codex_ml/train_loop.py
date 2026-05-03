@@ -738,10 +738,6 @@ def _log_dtype_mismatch_if_any(requested: Any, model) -> None:
     """Log a clear message if requested dtype differs from effective param dtype."""
     if requested is None or model is None:
         return
-    try:
-        pass  # noqa: F401
-    except Exception:
-        return
     eff = _first_param_dtype(model)
     req = str(requested)
     if eff is not None and eff != req:
@@ -761,10 +757,6 @@ def _dataset_dtype_gate(dataset, desired: Any) -> None:
     so operators are aware of potential casts.
     """
     if dataset is None or not _HAS_TORCH:
-        return
-    try:
-        pass  # noqa: F401
-    except Exception:
         return
     try:
         sample = dataset[0]
@@ -996,10 +988,6 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
 
     def _collate(batch):
         if policy is None:
-            return batch
-        try:
-            pass  # noqa: F401
-        except Exception:
             return batch
         try:
             return [_cast_batch_for_policy(x, policy, desired, device, art_dir_path) for x in batch]

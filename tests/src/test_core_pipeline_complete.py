@@ -10,6 +10,7 @@ Test suite for core pipeline: code ingestion, AST transformation, RAG retrieval,
 Complete test coverage for Phase 9.1 - 100 comprehensive tests
 """
 
+import importlib
 import json  # noqa: E402
 import tempfile  # noqa: E402
 from pathlib import Path  # noqa: E402
@@ -757,7 +758,7 @@ class TestErrorPaths:
     def test_error_import_error(self):
         """Test ImportError"""
         with pytest.raises(ImportError):
-            pass  # noqa: F401
+            importlib.import_module('nonexistent_module_xyz_12345')
 
     def test_error_runtime_error(self):
         """Test RuntimeError"""

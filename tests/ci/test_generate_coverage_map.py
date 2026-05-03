@@ -291,7 +291,8 @@ class TestPrDelta:
     """Thread [4] + general regression: pr_delta must flag covered→uncovered transitions."""
 
     def test_pr_delta_import(self):
-        pass  # noqa: F401
+        from generate_coverage_map import pr_delta
+        assert callable(pr_delta)
 
     def _make_map_json(self, tmp_path: Path, subdir: str, xml_content: str) -> Path:
         """Build a coverage_map.json from XML content and return its path."""
