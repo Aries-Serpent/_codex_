@@ -14,7 +14,6 @@ Tests that physical laws are correctly implemented and maintained:
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 from codex.quantum_orchestrator.orchestrator import (
     DiracSpinor,

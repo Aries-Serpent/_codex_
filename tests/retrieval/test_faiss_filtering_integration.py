@@ -6,7 +6,6 @@ import importlib.util
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 try:
     from src.codex.retrieval.stores.faiss_store import FAISSStore

@@ -18,7 +18,6 @@ from __future__ import annotations
 import logging
 import warnings
 from collections.abc import Iterable
-from collections.abc import Iterable as IterableABC
 from contextlib import suppress
 from copy import deepcopy
 from dataclasses import asdict, dataclass, is_dataclass, replace
@@ -29,8 +28,6 @@ from typing import Any, Optional, Protocol, runtime_checkable
 from codex_ml.data.jsonl_loader import load_jsonl
 
 logger = logging.getLogger(__name__)
-
-
 @runtime_checkable
 class TrainingCallback(Protocol):
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
@@ -46,8 +43,6 @@ class TrainingCallback(Protocol):
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
-
-
 class NoOpCallback:
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
 
@@ -62,8 +57,6 @@ class NoOpCallback:
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
-
-
 @dataclass
 class TrainingResult:
     status: str
@@ -71,8 +64,6 @@ class TrainingResult:
     final_epoch: int
     output_dir: str
     extra: dict[str, Any]
-
-
 @runtime_checkable
 class BackendStrategy(Protocol):
     backend_name: str
@@ -83,15 +74,9 @@ class BackendStrategy(Protocol):
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult: ...
-
-
 def _safe_callbacks(callbacks: Iterable[TrainingCallback]) -> list[TrainingCallback]:
     return list(callbacks) if callbacks else [NoOpCallback()]
-
-
 # ---- Strategy Implementations ------------------------------------------------
-
-
 class FunctionalStrategy:
     """Adapter around existing functional_training module."""
 
@@ -132,7 +117,7 @@ class FunctionalStrategy:
             train_texts = functional_overrides.pop("texts", [])
         if isinstance(train_texts, str):
             train_texts = [train_texts]
-        elif isinstance(train_texts, IterableABC):
+        elif isinstance(train_texts, Iterable):
             train_texts = list(train_texts)
         elif train_texts and not isinstance(train_texts, bool):
             train_texts = [train_texts]
@@ -171,7 +156,7 @@ class FunctionalStrategy:
                 val_arg = None if val_texts is None else val_texts
             elif isinstance(val_texts, str):
                 val_arg = [val_texts]
-            elif isinstance(val_texts, IterableABC):
+            elif isinstance(val_texts, Iterable):
                 val_arg = list(val_texts)
             else:
                 val_arg = val_texts
@@ -217,8 +202,6 @@ class FunctionalStrategy:
             output_dir=config.output_dir,
             extra={"resume_from": resume_from, **extra_payload},
         )
-
-
 class LegacyStrategy:
     """Adapter wrapping legacy train_loop entry point."""
 
@@ -267,8 +250,6 @@ class LegacyStrategy:
             output_dir=config.output_dir,
             extra={"resume_from": resume_from},
         )
-
-
 class ContinualReplayStrategy:
     """Phase-by-phase continual-learning wrapper around the functional strategy."""
 
@@ -282,7 +263,7 @@ class ContinualReplayStrategy:
             return []
         if isinstance(value, str):
             return [value]
-        if isinstance(value, IterableABC):
+        if isinstance(value, Iterable):
             return [str(item) for item in value if item]
         return [str(value)]
 
@@ -483,15 +464,11 @@ class ContinualReplayStrategy:
                 "resume_from": resume_from,
             },
         )
-
-
 STRATEGY_REGISTRY = {
     "functional": FunctionalStrategy(),
     "legacy": LegacyStrategy(),
     "continual_replay": ContinualReplayStrategy(),
 }
-
-
 def resolve_strategy(name: str | None) -> BackendStrategy:
     """Return the BackendStrategy for *name*.
 

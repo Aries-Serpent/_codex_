@@ -142,7 +142,7 @@ class TestMetricsAggregation:
                 start_time = time.time()
                 for i in range(100):
                     metrics.record_query_latency(f"query_{i}", 50)
-                time.time() - start_time
+                _elapsed = time.time() - start_time
 
                 # Calculate throughput
                 if hasattr(metrics, 'get_throughput'):

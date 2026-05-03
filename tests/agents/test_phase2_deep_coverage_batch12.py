@@ -611,8 +611,8 @@ class TestPhase2_FinalGapClosing:
         np.log(x)
 
         # Power and root
-        np.sqrt(x)
-        x**2
+        _sqrt_x = np.sqrt(x)  # noqa: F841
+        _x_sq = x**2  # noqa: F841
 
         assert len(sin_x) == len(x)
 

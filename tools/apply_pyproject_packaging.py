@@ -509,7 +509,7 @@ def main():
     )
 
     canonical_license_block = (
-        "[project.license-files]\n" "paths = [\n" '  "LICENSE",\n' '  "LICENSES/*"\n' "]\n"
+        "[project.license-files]\npaths = [\n  \"LICENSE\",\n  \"LICENSES/*\"\n]\n"
     )
     license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
     text, license_replacements = re.subn(license_pattern, canonical_license_block, text)

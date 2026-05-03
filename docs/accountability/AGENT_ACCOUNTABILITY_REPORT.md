@@ -24829,3 +24829,56 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-05-04T00:00Z SESSION codeql-alert-resolution-agent (CodeQL Alert Remediation — branch copilot/refactor-budget-check-logic)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — none requiring action at session start ✅
+- [x] **0b.** Failing CI checks reviewed — CodeQL alerts targeted for systematic remediation ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `CHANGELOG.md` — no user-facing changes; internal code quality work ✅
+- [x] **3.** `.gitignore` — unchanged ✅
+- [x] **4.** Priority: CodeQL static-analysis alerts across 25 rule categories ✅
+- [x] **5.** `python -m ruff check src/ tests/ scripts/` — passes clean (0 errors) ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+
+| Rule Category | Alerts Fixed | Strategy |
+|---|---|---|
+| `py/unused-import` (F401) | 14 | ruff --fix |
+| `py/repeated-import` (F811) | 38+ | ruff --fix + AST deduplicate script |
+| `py/import-and-import-from` | 4 | Removed duplicate `from re import Pattern`, `from collections.abc import Iterable/Mapping` |
+| `py/polluting-import` (F403) | 2 | Replaced `from X import *` with explicit named imports |
+| `py/unused-global-variable` | 3 | Removed unneeded `global` declarations |
+| `py/use-of-exit-or-quit` | 1 | Replaced `exit()` with `sys.exit()` |
+| `py/print-during-import` | 1 | Removed module-level `print()` from importable module |
+| `py/catch-base-exception` | 2 | Changed `except BaseException` → `except Exception` in test files |
+| `py/unexpected-raise-in-special-method` | 1 | Added `@abc.abstractmethod` to `Dataset.__getitem__` |
+| `py/ineffectual-statement` | ~30 | Assigned to `_x` locals, converted to `if/else`, removed bare exprs |
+| `ISC001/ISC002` | 3 | Manual fix of implicit string concatenation |
+
+**Total files modified:** 88
+**Ruff status:** `All checks passed!` on src/ tests/ scripts/
+**Sync check:** All tracked files consistent
+
+### Files With Notable Changes
+- `src/mcp/observability.py` — removed unused `_metrics_registry, _tracer` from global decl
+- `src/codex/rag/monitoring.py` — removed unused `global _global_metrics`
+- `src/codex/security/log_sanitizer.py`, `src/codex_ml/safety/sanitizers.py` — removed `from re import Pattern`
+- `src/codex_ml/training/strategies.py`, `src/codex_ml/logging/run_logger.py`, `src/codex_ml/tracking/init_experiment.py` — removed duplicate alias imports
+- `tokenization/api.py`, `tokenization/sentencepiece_adapter.py` — replaced star imports with explicit
+- `torch/utils/data/__init__.py` — made Dataset abstract with `@abc.abstractmethod`
+- `.github/copilot-evolution/test_integrated_system.py` — `exit()` → `sys.exit()`
+- `tests/_bootstrap_determinism.py` — removed module-level print
+- `tests/_codex_introspect.py` — `except BaseException` → `except Exception`
+- 35+ test files — removed duplicate `import pytest` and `from pathlib import Path`
+- 15+ test files — fixed bare expression ineffectual statements
+
+### Lessons Learned
+- Many test files accumulated duplicate imports through generation/merging; AST-based dedup script is effective
+- `except BaseException` in structured logging (codex_structured_logging.py) is intentional for `SystemExit`/`KeyboardInterrupt` — do not change
+- `object().missing` and `"str" + int` inside `pytest.raises()/try:` blocks are intentional — not ineffectual
+- CodeQL's `py/unreachable-statement` uses interprocedural analysis; AST-only tools cannot find these
+
+---

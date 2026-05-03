@@ -22,11 +22,10 @@ Usage:
 """
 
 import re
-from re import Pattern
 from typing import Any
 
 # Patterns for detecting sensitive data
-SENSITIVE_PATTERNS: list[tuple[Pattern[str], str]] = [
+SENSITIVE_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     # API keys and tokens
     (
         re.compile(r'(api[_-]?key|token|secret|password)\s*[=:]\s*["\']?(\S+)', re.IGNORECASE),

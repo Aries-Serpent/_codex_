@@ -434,7 +434,7 @@ def get_mcp_metrics() -> MCPMetrics:
 
 def reset_observability() -> None:
     """Reset all observability state (for testing)."""
-    global _metrics_registry, _tracer, _mcp_metrics
+    global _mcp_metrics
     if _metrics_registry:
         _metrics_registry.reset()
     if _tracer:

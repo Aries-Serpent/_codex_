@@ -12,7 +12,6 @@ from unittest.mock import MagicMock
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:

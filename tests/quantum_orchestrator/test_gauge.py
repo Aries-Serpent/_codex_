@@ -16,7 +16,6 @@ from unittest.mock import Mock
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 from codex.quantum_orchestrator.orchestrator import (
     DiracSpinor,
@@ -413,7 +412,7 @@ def test_conservation_enforcer_no_auto_repair(simple_state):
     enforcer = ConservationEnforcer(auto_repair=False)
 
     # Violate conservation
-    simple_state.tasks["task_1"].spinor.total_probability
+    _prob = simple_state.tasks["task_1"].spinor.total_probability  # noqa: F841
     simple_state.tasks["task_1"].spinor.components *= 2.0
 
     repaired, was_repaired = enforcer.enforce_probability_conservation(

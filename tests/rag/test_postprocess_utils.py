@@ -438,7 +438,8 @@ class TestSafeModelLoad:
         mock_model.to_empty.return_value = mock_model
 
         # Remove named_modules to test device attribute path
-        delattr(mock_model, "named_modules") if hasattr(mock_model, "named_modules") else None
+        if hasattr(mock_model, "named_modules"):
+            delattr(mock_model, "named_modules")
 
         result = safe_model_load(mock_model, device="cuda")
 

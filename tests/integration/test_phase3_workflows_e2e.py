@@ -202,7 +202,7 @@ class TestCompleteTrainingWorkflow:
             # Update weights after accumulation
             if (step + 1) % accumulation_steps == 0:
                 # Average accumulated gradients
-                sum(g["grad"] for g in accumulated_gradients) / len(accumulated_gradients)
+                _avg_grad = sum(g["grad"] for g in accumulated_gradients) / len(accumulated_gradients)  # noqa: F841
                 accumulated_gradients = []
 
         # Verify effective batch size

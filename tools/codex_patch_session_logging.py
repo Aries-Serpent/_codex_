@@ -169,7 +169,7 @@ def ensure_import(module: str, src: str) -> tuple[str, bool]:
 # ---------- patch logic ----------
 
 EXC_PASS_PATTERN = re.compile(
-    r"(^[ \t]*)except\s+Exception(?:\s+as\s+\w+)?\s*:\s*\n" r"([ \t]*)pass\b",
+    r"(^[ \t]*)except\s+Exception(?:\s+as\s+\w+)?\s*:\s*\n([ \t]*)pass\b",
     flags=re.M,
 )
 

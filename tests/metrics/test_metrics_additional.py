@@ -8,7 +8,6 @@ from types import SimpleNamespace
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 
 @pytest.fixture(autouse=True)

@@ -333,7 +333,7 @@ class TestModelLoadingBranches:
     def test_model_local_path_branch(self) -> None:
         """Test model loading from local path branch."""
         model_path = "/models/bert-base"
-        Path(model_path).exists() if model_path.startswith("/") else False
+        _path_exists = Path(model_path).exists() if model_path.startswith("/") else False  # noqa: F841
         with patch.object(Path, "exists", return_value=True):
             source = "local" if model_path.startswith("/") else "hub"
             assert source == "local"

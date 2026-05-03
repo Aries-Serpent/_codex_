@@ -12,8 +12,6 @@ pytest.importorskip("numpy", reason="numpy required")
 
 import os
 
-import pytest
-
 from training.offline_wandb import force_offline
 
 

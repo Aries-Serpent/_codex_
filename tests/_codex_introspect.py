@@ -63,7 +63,7 @@ def resolve_fetch_messages():
     for mod in _iter_module_names():
         try:
             m = importlib.import_module(mod)
-        except BaseException as e:
+        except Exception as e:
             errors[mod] = f"import error: {e}"
             continue
         if hasattr(m, "fetch_messages"):
@@ -91,7 +91,7 @@ def resolve_writer():
     for mod in _iter_module_names():
         try:
             m = importlib.import_module(mod)
-        except BaseException as e:
+        except Exception as e:
             errors[mod] = f"import error: {e}"
             continue
         for name in WRITER_NAMES:

@@ -132,8 +132,6 @@ class VectorizedEvolution:
         Returns:
             Currents of shape (N, 3) for 3D current vectors
         """
-        spinors.shape[0]
-
         # ψ† (conjugate transpose)
         psi_dagger = np.conj(spinors)  # (N, 4)
 
@@ -198,8 +196,6 @@ class VectorizedEvolution:
         Returns:
             Helicity values of shape (N,)
         """
-        spinors.shape[0]
-
         # Compute spin expectation values
         # For Dirac spinors, spin = (ℏ/2) Σ where Σ = diag(σ, σ)
         # with σ = Pauli matrices

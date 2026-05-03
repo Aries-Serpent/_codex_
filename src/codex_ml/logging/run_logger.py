@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 import json  # noqa: E402
 import os  # noqa: E402
 from collections.abc import Mapping  # noqa: E402
-from collections.abc import Mapping as MappingABC  # noqa: E402
 from collections.abc import Sequence as SequenceABC  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
@@ -33,7 +32,7 @@ _ROTATION_ENV = {
 def _jsonify(value: Any) -> Any:
     if isinstance(value, Path):
         return str(value)
-    if isinstance(value, MappingABC):
+    if isinstance(value, Mapping):
         return {str(k): _jsonify(v) for k, v in value.items()}
     if isinstance(value, SequenceABC) and not isinstance(value, (str, bytes, bytearray)):
         return [_jsonify(v) for v in value]
@@ -53,7 +52,7 @@ def _normalize_cli(cli: Any) -> dict[str, Any]:
         return {"argv": []}
     if isinstance(cli, SequenceABC) and not isinstance(cli, (str, bytes, bytearray)):
         return {"argv": [str(item) for item in cli]}
-    if isinstance(cli, MappingABC):
+    if isinstance(cli, Mapping):
         argv = cli.get("argv", [])
         if isinstance(argv, SequenceABC) and not isinstance(argv, (str, bytes, bytearray)):
             argv_list = [str(item) for item in argv]
@@ -63,7 +62,7 @@ def _normalize_cli(cli: Any) -> dict[str, Any]:
             argv_list = [str(argv)]
         payload: dict[str, Any] = {"argv": argv_list}
         options = cli.get("options")
-        if isinstance(options, MappingABC):
+        if isinstance(options, Mapping):
             payload["options"] = _normalize_mapping(options)
         for key, value in cli.items():
             if key in {"argv", "options"}:
@@ -182,7 +181,7 @@ class RunLogger:
         """Persist a single metric event and return the structured payload."""
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
         raw_tags: dict[str, Any]
-        raw_tags = {str(k): tags[k] for k in tags} if isinstance(tags, MappingABC) else {}
+        raw_tags = {str(k): tags[k] for k in tags} if isinstance(tags, Mapping) else {}
 
         record: dict[str, Any] = {
             "step": int(step),

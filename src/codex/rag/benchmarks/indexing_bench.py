@@ -5,7 +5,6 @@ Measures indexing throughput and build times for different corpus sizes.
 """
 
 import tempfile
-from pathlib import Path
 from typing import Any, Optional
 
 from .runner import BenchmarkRunner
@@ -102,7 +101,6 @@ def _build_index(documents: list[str], index_name: str, chunk_size: int, tmpdir:
     embeddings = provider.encode(texts)
 
     # Persist index to tmpdir
-    Path(tmpdir) / index_name
     persist_index(
         index_name=index_name,
         embeddings=embeddings,

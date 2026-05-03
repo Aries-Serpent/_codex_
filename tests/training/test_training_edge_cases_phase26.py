@@ -323,7 +323,8 @@ class TestTrainingEdgeCases:
 
             except MemoryError:
                 # Recovery strategy
-                torch.cuda.empty_cache() if torch.cuda.is_available() else None
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
                 reduced_batch_size = 8
                 assert reduced_batch_size == 8
 

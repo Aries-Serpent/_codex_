@@ -10,7 +10,6 @@ from pathlib import Path
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 from codex.rag.cache.embedding_cache import (
     EmbeddingCache,

@@ -228,7 +228,7 @@ def demo_electromagnetic_fields():
 
     for i, region in enumerate(regions):
         print(
-            f"  Region {i+1}: position={region['position']}, " f"priority={region['priority']:.2f}"
+            f"  Region {i+1}: position={region['position']}, priority={region['priority']:.2f}"
         )
 
 
@@ -261,7 +261,7 @@ def demo_wave_propagation():
 
     for i, source in enumerate(sources):
         wave.add_source(**source)
-        print(f"  Source {i+1}: position={source['position']}, " f"amplitude={source['amplitude']}")
+        print(f"  Source {i+1}: position={source['position']}, amplitude={source['amplitude']}")
 
     # Propagate signals
     print("\nPropagating signals through network...")

@@ -6,7 +6,6 @@ Tests for performance-optimized vectorized quantum orchestrator.
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 from codex.quantum_orchestrator.optimized import (
     BatchGradientComputer,

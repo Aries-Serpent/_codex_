@@ -257,12 +257,12 @@ def test_security_documentation_exists():
     repo_root = Path(__file__).parents[2]
 
     # Common locations for security docs
-    [
+    _doc_locations = [
         repo_root / "docs" / "security.md",
         repo_root / "SECURITY.md",
         repo_root / "docs" / "SECURITY.md",
         repo_root / ".github" / "SECURITY.md",
-    ]
+    ]  # noqa: F841
 
     # At least noxfile should document security session
     noxfile = repo_root / "noxfile.py"

@@ -442,7 +442,7 @@ class TestRAGToAgentFlow:
 
     def test_rag_caches_embeddings(self, tmp_path):
         """Test RAG caches embeddings for reuse."""
-        tmp_path / "embedding_cache.json"
+        _cache_path = tmp_path / "embedding_cache.json"  # noqa: F841
 
         cache = {}
 

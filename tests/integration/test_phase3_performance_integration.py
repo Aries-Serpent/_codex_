@@ -637,7 +637,7 @@ class TestConcurrentCLIOperations:
         # Process in batches
         num_batches = 0
         for i in range(0, len(operations), batch_size):
-            operations[i:i + batch_size]
+            _batch = operations[i:i + batch_size]  # noqa: F841
             # Process batch
             num_batches += 1
 

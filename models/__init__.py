@@ -9,7 +9,7 @@ from __future__ import annotations
 import warnings as _warnings
 
 _warnings.warn(
-    "Importing from 'models' is deprecated. " "Use 'src.models' instead.",
+    "Importing from 'models' is deprecated. Use 'src.models' instead.",
     DeprecationWarning,
     stacklevel=2,
 )

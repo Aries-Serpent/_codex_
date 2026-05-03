@@ -85,7 +85,7 @@ def phase1_prep():
             repo_root = pathlib.Path(cp.stdout.strip())
             if repo_root.resolve() != ROOT.resolve():
                 append_change(
-                    "Repo root from git differs from script ROOT: " f"{repo_root} vs {ROOT}"
+                    f"Repo root from git differs from script ROOT: {repo_root} vs {ROOT}"
                 )
         cp2 = run(
             ["git", "status", "--porcelain"],
