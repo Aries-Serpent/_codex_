@@ -24509,3 +24509,9 @@ and the CI gate requirement.
 - Updated `.github/copilot-prompts/active/PR-4201-followup.md` with latest session state and hardened CQL-001 iteration protocol
 - Verified: `ruff check src/ tests/` → 0 errors; `sync_tracked_files --check` → consistent
 - CQL-001 status: Reliability/Maintainability/AI Suggestions findings tracked for next iteration
+
+## 2026-05-03 10:09 UTC — PR #4201 CI rescue RP-004 pattern 22 follow-up
+- CI rescue comment 4365909790 on commit f5335c46e73a flagged RP-004 (tracked-file sync drift, pattern 22)
+- Verified current HEAD (680d8fec): `sync_tracked_files --check` → ✅ all 6 checks pass; `ruff check src/ tests/` → ✅ 0 errors; `auto_fix_common_issues --check-only` → ✅ no issues
+- The RP-004 fix was applied in commit f5335c46 (previous session); current HEAD is 3 commits ahead and fully aligned
+- Pattern 25 (Last-Commit Accountability): this file updated in this commit
