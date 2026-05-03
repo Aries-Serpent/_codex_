@@ -7,7 +7,7 @@
 **Scan Reference:** commit `fd258fb786ef5df3b5ab1d89cf166fb4fc432f4e` (main, 2026-05-03)
 **Scanner:** CodeQL GitHub Advanced Security
 **Security Page:** https://github.com/Aries-Serpent/_codex_/security/quality
-**Last Updated:** 2026-05-03 (PR #4204 — commits `b9d38b6`, `7067d62`, HEAD — unused imports in `tests/` resolved per bot review)
+**Last Updated:** 2026-05-03 (PR #4204 — commits `b9d38b6`, `7067d62`, `e323450`, `add01ac`, `00b3b34`, `68356505`, `13e749f8`, `7a3ad4b1` — full sweep; pydantic v2 migration; S310 noqa; zendesk 429 fix; Progress lines synced per reviewer feedback)
 **Tracking PR:** #4204 (branch `copilot/add-validation-for-batch-size`)
 
 ---
@@ -26,12 +26,23 @@
 | 🟡 Warning | `py/implicit-string-concatenation-in-list` | 5 | ✅ Fixed — `6c7b69f` |
 | 🟡 Warning | `py/unnecessary-pass` | 1 | ✅ Fixed — `6c7b69f` |
 | 🟡 Warning | `py/unreachable-statement` | 33 | ✅ Fixed — ruff RET505/RET506/RET507/RET508 sweep `7067d62` |
+| 🟡 Warning | `py/mixed-returns` | 25 | ✅ Fixed — ruff RET sweep `e323450` |
+| 🟡 Warning | `py/not-named-self` | 4 | ✅ Fixed — ruff N804/N805 sweep `e323450` |
+| 🟡 Warning | `py/should-use-with` | 1 | ✅ Fixed — ruff SIM115 sweep `e323450` |
+| 🟡 Warning | `py/catch-base-exception` | 3 | ✅ Fixed — BLE001 replacements `e323450` |
+| 🟡 Warning | `py/empty-except` | 56 | ✅ Fixed — BLE001 stub replacements with logger.debug `e323450` |
+| 🟡 Warning | `py/print-during-import` | 7 | ✅ Fixed — T201 sweep `e323450` |
+| 🟡 Warning | `py/commented-out-code` | 1 | ✅ Fixed — removed `e323450` |
+| 🟡 Warning | `py/repeated-import` | 25 | ✅ Fixed — ruff F811 sweep `7067d62` |
+| 🟡 Warning | `py/import-and-import-from` | 18 | ✅ Fixed — ruff F401/F811 sweep `7067d62` |
+| 🟡 Warning | `py/polluting-import` | 2 | ✅ Fixed — ruff PLC0415 sweep `7067d62` |
 | 🔵 Note | `js/unused-local-variable` | 4 | ⬜ Open — needs JS/ESLint pass |
 | 🔵 Note | `py/unnecessary-lambda` | 5 | ✅ Fixed — ruff E731 sweep `7067d62` |
 | 🔵 Note | `py/unused-global-variable` | 118 | ✅ Fixed — ruff F841 sweep `7067d62` |
-| 🔵 Note | `py/unused-import` | 42+ | ✅ Fixed — ruff F401 sweep `7067d62`; bot-flagged imports `tests/` fixed `HEAD` |
+| 🔵 Note | `py/unused-import` | 42+ | ✅ Fixed — ruff F401 sweep `7067d62`; bot-flagged imports `tests/` fixed `e323450` |
 | 🔵 Note | `py/unused-local-variable` | 62 | ✅ Fixed — ruff F841 sweep `7067d62` |
-| | **TOTAL** | **76+221** | 10/15 rule groups fully resolved ✅ |
+| 🔵 Note | `py/ineffectual-statement` | bulk | ✅ Fixed — ruff F811/B018 sweep `7067d62` |
+| | **TOTAL** | **76+221+** | 22/26 rule groups fully resolved ✅ |
 
 ---
 
@@ -355,6 +366,14 @@ pre-commit run --all-files
 | Date | Rule | Files Changed | Commit | Session/PR |
 |------|------|---------------|--------|-----------|
 | 2026-05-03 | (pre-remediation baseline established) | — | `fd258fb` | PR #4204 |
+| 2026-05-03 | `py/use-of-exit-or-quit` ×2 | `scripts/ci/`, agents/ | `b9d38b6` | PR #4204 S294 |
+| 2026-05-03 | `py/comparison-of-identical-expressions` ×5, `py/comparison-of-constants` ×1 | tests/ | `b9d38b6` | PR #4204 S294 |
+| 2026-05-03 | `py/implicit-string-concatenation-in-list` ×5, `py/unnecessary-pass` ×1 | multiple | `6c7b69f` | PR #4204 S294 |
+| 2026-05-03 | `py/unreachable-statement` ×33, `py/unnecessary-lambda` ×5, `py/unused-local-variable`+`py/unused-global-variable` ×180, `py/unused-import` ×42+, `py/repeated-import` ×25, `py/import-and-import-from` ×18, `py/polluting-import` ×2 | 400+ files ruff sweep | `7067d62` | PR #4204 S294 |
+| 2026-05-03 | `py/not-named-self` ×4, `py/mixed-returns` ×25, `py/should-use-with` ×1, `py/catch-base-exception` ×3, `py/empty-except` ×56, `py/print-during-import` ×7, `py/commented-out-code` ×1, B009/B010 ×40, RET505 | 200+ files sweep | `e323450` | PR #4204 S294 |
+| 2026-05-03 | Bot-review unused imports in tests/ (`assume`, `DEFAULT_*_PATTERNS`, `_build_safe_ckpt_payload` etc.) | tests/ | `e323450` | PR #4204 S294 |
+| 2026-05-03 | pydantic v2 `@validator` → `@field_validator` + `@classmethod` (PydanticUserError fix) | `src/mcp/server/http.py` | `7a3ad4b1` | PR #4204 S294 |
+| 2026-05-03 | S310 noqa rationale, secrets.baseline FP, zendesk 429 ordering fix | 4 scripts, 1 service file | `68356505`, `13e749f8`, HEAD | PR #4204 S294 |
 
 ---
 

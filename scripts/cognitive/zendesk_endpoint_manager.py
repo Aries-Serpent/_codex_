@@ -34,6 +34,7 @@ import argparse
 import csv
 import json
 import logging
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -177,9 +178,7 @@ class ZendeskEndpointManager:
                     logger.error(f"Unsupported method: {method}")
                     return None
 
-                response.raise_for_status()
-
-                # Handle rate limiting
+                # Handle rate limiting before raise_for_status (which raises for 429)
                 if response.status_code == 429:
                     retry_after_header = response.headers.get('Retry-After')
                     default_retry_after = BASE_WAIT_TIME * (2 ** attempt)
@@ -213,6 +212,7 @@ class ZendeskEndpointManager:
                     time.sleep(retry_after)
                     continue
 
+                response.raise_for_status()
                 return response.json()
 
             except RequestException as e:
