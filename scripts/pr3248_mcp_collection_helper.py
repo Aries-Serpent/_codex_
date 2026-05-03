@@ -149,7 +149,6 @@ def main() -> None:
     ]
 
     for result in results:
-        sha = result["sha"]
         short_sha = result["short_sha"]
         commit_url = result["commit_url"]
 

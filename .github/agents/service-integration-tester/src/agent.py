@@ -21,6 +21,7 @@ import json
 import re
 import shlex
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -720,4 +721,4 @@ def main():
 
 
 if __name__ == '__main__':
-    import sys; sys.exit(main())
+    sys.exit(main())
