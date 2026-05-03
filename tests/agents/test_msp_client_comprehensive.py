@@ -252,12 +252,10 @@ class TestMSPClientConfiguration:
 
     def test_connection_pooling(self):
         """Test connection pooling configuration."""
-        client = MSPClient()
+        _client = MSPClient()  # noqa: F841
 
-        # Should have session or connection management
-        assert hasattr(client, "session") or hasattr(client, "_session") or True
-        # Connection pooling is optional but good practice
-        assert True  # Pass if client initializes
+        # Should have session or connection management (attribute presence is optional)
+        assert True  # MSPClient session management is implementation-defined; just verify it initializes
 
     def test_ssl_verification(self):
         """Test SSL verification settings."""

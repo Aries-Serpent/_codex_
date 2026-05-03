@@ -488,10 +488,7 @@ def test_strategy_improvement_target():
 
     # Check improvement
     assert "improvement_percentage" in results
-
-    # Note: Due to simple linear data, improvement may vary
-    # Test that optimization ran and tracked improvement
-    assert "improvement_percentage" in results
+    assert results["improvement_percentage"] is not None
     assert results["episodes_trained"] > 0
 
 
