@@ -17,6 +17,16 @@ Each method implements:
   • Automatic pause until reset epoch when core=0
   • Token rotation across all discovered tokens
 
+Security note (subprocess)
+--------------------------
+All subprocess calls in this module use ``shell=False`` (the default for
+``subprocess.run`` with a list argument).  This is a hard requirement:
+  - ``shell=True`` with any user-controlled input enables shell injection.
+  - Arguments are always passed as a list of strings, never constructed via
+    string concatenation or f-strings inserted into a shell command string.
+  - Environment is always passed explicitly as ``env={**os.environ}`` or a
+    filtered superset — never a user-supplied dict merged unsanitised.
+
 Token discovery order (first non-empty wins per slot):
   CODEX_MASTER_KEY → CODEX_BACKUP_KEY → CODEX_ADMIN_KEY
   → AGENT_GITHUB_TOKEN → GITHUB_COPILOT_API_TOKEN → GITHUB_TOKEN
@@ -40,6 +50,9 @@ Environment variables:
   GH_TRICKLE_MIN_REMAINING — minimum REST remaining before switching token (default 10)
   GH_TRICKLE_MAX_WAIT      — maximum seconds to sleep for rate-limit recovery (default 120)
   GH_TRICKLE_RETRIES       — max retries per method per token (default 3)
+  CODEQL_CLI_PATH          — override CodeQL CLI binary path (auto-detected via shutil.which)
+  CODEQL_DB_PATH           — override CodeQL DB path (default /tmp/codex-db-py)
+  CODEQL_QLPACKS_PATH      — override CodeQL qlpacks root path
 """
 
 from __future__ import annotations
@@ -48,6 +61,7 @@ import argparse
 import json
 import logging
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -165,7 +179,6 @@ def rest_get(
         _polite_sleep()
         core = limits.get("core", {})
         remaining = core.get("remaining", 0)
-        reset_epoch = core.get("reset", int(time.time()) + 60)
 
         if remaining < MIN_REMAINING:
             logger.info("token[..%s] core=%d — trying next token", token[-4:], remaining)
@@ -354,9 +367,18 @@ def download_artifact(artifact_id: int, dest: Path, tokens: list[str] | None = N
 # ──────────────────────────────────────────────────────────────
 # Method 5 — Local CodeQL DB
 # ──────────────────────────────────────────────────────────────
-CODEQL_CLI = "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql"
-CODEQL_DB  = "/tmp/codex-db-py"
-CODEQL_QLPACKS = "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/qlpacks/codeql/python-queries/1.7.11"
+# All CodeQL paths are configurable via env vars so CI images with different
+# layouts (e.g. arm64, custom installers) work without editing this file.
+# Version-specific fallback is provided for the GitHub-hosted runner image.
+CODEQL_CLI = os.environ.get(
+    "CODEQL_CLI_PATH",
+    shutil.which("codeql") or "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql",
+)
+CODEQL_DB  = os.environ.get("CODEQL_DB_PATH", "/tmp/codex-db-py")
+CODEQL_QLPACKS = os.environ.get(
+    "CODEQL_QLPACKS_PATH",
+    "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/qlpacks/codeql/python-queries/1.7.11",
+)
 
 
 def build_codeql_db(source_root: str = "/home/runner/work/_codex_/_codex_") -> bool:

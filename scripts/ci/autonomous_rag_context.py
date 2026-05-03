@@ -117,6 +117,14 @@ OWNER = "Aries-Serpent"
 REPO  = "_codex_"
 BASE  = "https://api.github.com"
 
+# Tuning — all overridable via env / repo variables set by pending_var_updates.json.
+#: Max .py files to re-embed per session in incremental RAG update.
+MAX_FILES_PER_RAG_UPDATE: int = int(os.environ.get("CODEX_RAG_MAX_FILES_PER_SESSION", "20"))
+#: Max file size in bytes to pass to the RAG indexer (skip huge generated files).
+MAX_FILE_SIZE_FOR_RAG: int   = int(os.environ.get("CODEX_RAG_MAX_FILE_BYTES", "500000"))
+#: Polite sleep between GitHub API calls (seconds) — mirrors GH_TRICKLE_POLITE_SLEEP.
+POLITE_SLEEP: float          = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP", "0.4"))
+
 # ── Token discovery (mirrors session_access_probe.py) ─────────────────────────
 def _tokens() -> list[tuple[str, str]]:
     """Return [(value, var_name)] for all available tokens."""
@@ -231,7 +239,7 @@ class AccessStrategy:
 class TrickleDownFetcher:
     """Fetch GitHub context using the priority chain from the access strategy."""
 
-    POLITE = 0.4  # seconds between calls
+    POLITE = POLITE_SLEEP  # mirrors GH_TRICKLE_POLITE_SLEEP env var
 
     def __init__(self, strategy: AccessStrategy, pr_number: int | None = None) -> None:
         self.strategy = strategy
@@ -546,9 +554,9 @@ def _incremental_rag_update(changed_files: list[str]) -> dict:
         sys.path.insert(0, str(REPO_ROOT / "src"))
         from codex.rag.indexer import RAGIndexer  # type: ignore[import]
         indexer = RAGIndexer()
-        for rel_path in changed_files[:20]:   # cap at 20 files per session
+        for rel_path in changed_files[:MAX_FILES_PER_RAG_UPDATE]:
             abs_path = REPO_ROOT / rel_path
-            if abs_path.exists() and abs_path.stat().st_size < 500_000:
+            if abs_path.exists() and abs_path.stat().st_size < MAX_FILE_SIZE_FOR_RAG:
                 try:
                     indexer.index_file(abs_path)
                     result["updated"] += 1

@@ -65,10 +65,19 @@ _BASE     = "https://api.github.com"
 _SCAN_API = "https://scanning-api.github.com"
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 MANIFEST_PATH = REPO_ROOT / ".codex" / "session_access_manifest.json"
-CODEQL_CLI_PATH = "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql"
-CODEQL_DB_PATH  = "/tmp/codex-db-py"
 
-POLITE_SLEEP = 0.4   # seconds between API calls
+# CodeQL paths — configurable via env so CI images with different layouts work.
+# Fallback: auto-detect with shutil.which("codeql") in _probe_codeql().
+CODEQL_CLI_PATH = os.environ.get(
+    "CODEQL_CLI_PATH",
+    "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql",
+)
+CODEQL_DB_PATH = os.environ.get("CODEQL_DB_PATH", "/tmp/codex-db-py")
+
+# Tuning — all overridable via env (applied by session_access_probe.py at startup).
+POLITE_SLEEP    = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP",  "0.4"))
+HTTP_TIMEOUT    = int(os.environ.get("GH_PROBE_HTTP_TIMEOUT",      "10"))
+MIN_REMAINING   = int(os.environ.get("GH_TRICKLE_MIN_REMAINING",   "50"))
 
 
 # ── Data model ─────────────────────────────────────────────────────────────────
@@ -303,7 +312,7 @@ def probe_graphql(tokens: list[tuple[str, str, bool]]) -> tuple[MethodStatus, in
                 headers={**_headers(token), "Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=10) as r:
+            with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as r:
                 result = json.load(r)
             if "data" in result and "viewer" in result["data"]:
                 schema_ok = True
@@ -326,7 +335,7 @@ def probe_gh_cli() -> MethodStatus:
         ver = subprocess.run([gh, "version"], capture_output=True, text=True, timeout=5, shell=False)
         version_line = ver.stdout.splitlines()[0] if ver.stdout else "unknown"
 
-        auth = subprocess.run([gh, "auth", "status"], capture_output=True, text=True, timeout=10, shell=False)
+        auth = subprocess.run([gh, "auth", "status"], capture_output=True, text=True, timeout=HTTP_TIMEOUT, shell=False)
         auth_ok = auth.returncode == 0
         _ = (auth.stdout + auth.stderr).strip()[:200]  # kept for debug logging
 
@@ -335,7 +344,7 @@ def probe_gh_cli() -> MethodStatus:
         _polite()
         api_test = subprocess.run(
             [gh, "api", "/rate_limit", "--jq", ".resources.core.remaining"],
-            capture_output=True, text=True, timeout=10, shell=False,
+            capture_output=True, text=True, timeout=HTTP_TIMEOUT, shell=False,
         )
         if api_test.returncode == 0:
             try:
@@ -394,7 +403,7 @@ def probe_playwright() -> MethodStatus:
     try:
         result = subprocess.run(
             [sys.executable, "-c", "import playwright; print(playwright.__version__)"],
-            capture_output=True, text=True, timeout=10, shell=False,
+            capture_output=True, text=True, timeout=HTTP_TIMEOUT, shell=False,
         )
         if result.returncode != 0:
             return MethodStatus(False, "playwright package not installed")
@@ -405,7 +414,7 @@ def probe_playwright() -> MethodStatus:
         for browser in ("chromium", "firefox", "webkit"):
             check = subprocess.run(
                 [sys.executable, "-m", "playwright", "install", "--dry-run", browser],
-                capture_output=True, text=True, timeout=10, shell=False,
+                capture_output=True, text=True, timeout=HTTP_TIMEOUT, shell=False,
             )
             if check.returncode == 0 or "already installed" in (check.stdout + check.stderr).lower():
                 browsers.append(browser)
