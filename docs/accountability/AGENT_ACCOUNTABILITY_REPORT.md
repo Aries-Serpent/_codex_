@@ -24918,3 +24918,34 @@ and the CI gate requirement.
 - `ruff check --select=F401,F811,F841,E731,F403,ISC001,ISC002 --fix` handles the bulk of CodeQL note-level alerts
 - `py/unused-global-variable` requires grep for `global VAR` + AST check that VAR is never assigned after the declaration
 - Pattern 25 fires on every commit; always update this file in the final commit of every session
+
+## SESSION SUMMARY — 2026-05-03T23:24Z — PR #4206 — Code Review Fixes (Round 2)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] New comments reviewed: #4367345854 (RP-004 sync drift), #4367352497 (comment gate), #4367353857 (Pattern 30), #4367405203 (Fast Validation), #4367405584 (continue + code quality concerns)
+- [x] All `comment_new` items replied to
+- [x] `ruff check src/ tests/ scripts/` — clean ✅
+- [x] `sync_tracked_files --check` — clean ✅
+- [x] All 38 affected tests passing ✅
+
+### Work Completed
+1. **`_build_user_from_record` — validation error instead of TypeError** — When `is_active` is absent from a migration record, now raises `ValueError` with a clear message naming the user/field. The migration loop's `except ValueError` handler cleanly skips the record with a warning instead of crashing with `TypeError` from `int(None)`.
+
+2. **`budget_cap` SIGALRM — main-thread guard** — Added `threading.current_thread() is threading.main_thread()` to the `timeout_supported` predicate. Worker threads now fall through to the post-execution elapsed-time check instead of raising `ValueError` immediately from `signal.signal()`.
+
+3. **Phone number masking test** — Strengthened assertion: now checks both `"555-123-4567" not in result` AND `"5551234567" not in result` (normalized form) plus `"***" in result`. Prevents false passes where normalization (dash removal) bypasses masking detection.
+
+4. **DirichletBeliefs.observe() regression tests** — Added two new tests:
+   - `test_observe_unknown_option_raises_clear_error` — verifies `ValueError` raised with "Unknown option" match
+   - `test_observe_unknown_option_message_names_expected_set` — verifies the option name appears in the error message
+
+### Patterns Resolved
+- Pattern 22 (RP-004 tracked-file sync drift) — `sync_tracked_files --fix` confirms clean
+- Pattern 25 (accountability not updated) — updated in this commit
+- Pattern 30 (merge readiness dims) — sync clean
+
+### Files Modified
+- `scripts/migrations/001_userstore_to_sqlite.py` — validate `is_active` before constructing `User`
+- `scripts/budget_uncertainty.py` — add `threading` import + main-thread guard
+- `tests/unit/utils/test_sensitive_data_utils.py` — strengthen phone masking assertion
+- `tests/autonomy/test_budget_uncertainty.py` — add 2 regression tests for `observe()` unknown option

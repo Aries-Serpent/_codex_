@@ -53,12 +53,19 @@ def _build_user_from_record(record: dict) -> User:
     """Reconstruct a :class:`User` from a snapshot record."""
     from codex.auth.user_store import User  # noqa: PLC0415
 
+    is_active_raw = record.get("is_active")
+    if is_active_raw is None:
+        raise ValueError(
+            f"record for user '{record.get('username', record.get('user_id', '?'))}'"
+            " is missing required field 'is_active'; cannot migrate without an"
+            " explicit value — update the source record and retry"
+        )
     return User(
         user_id=record["user_id"],
         username=record["username"],
         email=record["email"],
         password_hash=record["password_hash"],
-        is_active=record.get("is_active"),
+        is_active=bool(is_active_raw),
         roles=record.get("roles", ["user"]),
         display_name=record.get("display_name"),
         # Preserve data integrity during migration: if source timestamps are

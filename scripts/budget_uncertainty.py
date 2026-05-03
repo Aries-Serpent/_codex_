@@ -22,6 +22,7 @@ import math
 import os
 import signal
 import sys
+import threading
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -66,6 +67,7 @@ def budget_cap(max_seconds: float = 10.0, label: str = ""):
                 hasattr(signal, "SIGALRM")
                 and hasattr(signal, "setitimer")
                 and cap > 0
+                and threading.current_thread() is threading.main_thread()
             )
             if timeout_supported:
                 def _handle_timeout(signum, frame):

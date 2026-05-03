@@ -1,32 +1,32 @@
-# Session Context — 2026-05-03T22:36:43Z
+# Session Context — 2026-05-03T23:19:21Z
 **Branch:** `copilot/refactor-budget-check-logic`  **PR:** #4206  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4374` (✅)  
-- GraphQL remaining: `4958` (✅)  
+- REST remaining: `5000` (✅)  
+- GraphQL remaining: `5000` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4206 — fix: enforce real SIGALRM timeout in budget_cap, validate DirichletBeliefs.observe(), fix is_active migration default, strengthen test assertions
-State: `open`  Draft: `True`  Branch: `copilot/refactor-budget-check-logic` → `main`
+## 📋 PR #4206 — fix: enforce real SIGALRM timeout in budget_cap, validate DirichletBeliefs.observe(), fix is_active migration default, strengthen test assertions, remediate CodeQL quality alerts
+State: `open`  Draft: `False`  Branch: `copilot/refactor-budget-check-logic` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-03)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-03)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-03)
-- **PR Comment Review Gate** — `failure` on `copilot/refactor-budget-check-logic` (2026-05-03)
-- **PR Auto-Fix Check** — `failure` on `copilot/refactor-budget-check-logic` (2026-05-03)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-03)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-03)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-03)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-03)
 
 ## 📝 Recent Commits
+- `7e2e6f85` fix(codeql): remediate static-analysis alerts + restore diagnostic print in boot — copilot-swe-agent[bot] (2026-05-03)
+- `ed37269b` fix(review): address code review feedback on CodeQL remediation — copilot-swe-agent[bot] (2026-05-03)
+- `a1c7a03b` fix(codeql): remediate static-analysis alerts across 88 files — copilot-swe-agent[bot] (2026-05-03)
+- `a33f152a` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-03)
+- `d3c11c32` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-03)
+- `8f4add6b` chore: plan CodeQL alert remediation across 24 rule types — copilot-swe-agent[bot] (2026-05-03)
 - `93bc94f4` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-03)
 - `2e34004f` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-03)
-- `2d021c89` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-03)
-- `115b07db` fix(ci): update accountability report, resolve Pattern 25 and Pattern 30 — copilot-swe-agent[bot] (2026-05-03)
-- `e2cee051` fix(ci): update accountability report, resolve Pattern 25 and Pattern 30 — copilot-swe-agent[bot] (2026-05-03)
-- `40f166d5` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-03)
-- `1d4ae1bf` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-03)
-- `6b669721` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-03)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

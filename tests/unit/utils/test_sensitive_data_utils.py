@@ -17,7 +17,8 @@ def test_mask_sensitive_data_phone():
     text = "Call 555-123-4567"
     result = mask_sensitive_data(text)
     assert "555-123-4567" not in result
-    assert "***" in result or "-" not in result # pragma: allowlist secret
+    assert "5551234567" not in result  # normalized (dash-stripped) form also absent
+    assert "***" in result  # masking marker must be present
 
 
 def test_mask_sensitive_data_ssn():

@@ -103,6 +103,20 @@ class TestDirichletBeliefs:
         pm = b.posterior_means
         assert abs(pm["b"] - 5 / 7) < 1e-9
 
+    def test_observe_unknown_option_raises_clear_error(self):
+        """observe() must raise ValueError with a clear message for unknown options."""
+        mod = _import()
+        b = mod.DirichletBeliefs(options=["pass", "fail"])
+        with pytest.raises(ValueError, match="Unknown option"):
+            b.observe("skip")
+
+    def test_observe_unknown_option_message_names_expected_set(self):
+        """Error message must name both the bad option and the valid options."""
+        mod = _import()
+        b = mod.DirichletBeliefs(options=["yes", "no"])
+        with pytest.raises(ValueError, match="'maybe'"):
+            b.observe("maybe")
+
 
 # ── budget_cap decorator ─────────────────────────────────────────────────────
 
