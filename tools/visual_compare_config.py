@@ -60,7 +60,7 @@ def main(argv=None) -> int:
         threshold = float(args.threshold)
 
     # Delegate to visual_compare.py
-    code = subprocess.call(
+    return subprocess.call(
         [
             sys.executable,
             "tools/visual_compare.py",
@@ -74,7 +74,6 @@ def main(argv=None) -> int:
             str(threshold),
         ]
     )
-    return code
 
 
 if __name__ == "__main__":

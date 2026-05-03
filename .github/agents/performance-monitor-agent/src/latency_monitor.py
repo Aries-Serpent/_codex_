@@ -90,8 +90,7 @@ class LatencyMonitor:
 
         threshold = mean + (3 * stdev)  # 3 sigma
 
-        anomalies = [m for m in recent if m.latency_ms > threshold]
-        return anomalies
+        return [m for m in recent if m.latency_ms > threshold]
 
     def get_metrics(self) -> Dict[str, Any]:
         """Get monitoring metrics"""

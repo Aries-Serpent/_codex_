@@ -662,7 +662,7 @@ class MCPIntegration:
             )
 
     def _http_post_json_streaming(
-        url: str,
+        self: str,
         payload: Dict[str, Any],
         auth_token: Optional[str] = None,
         timeout: int = 30,
@@ -677,7 +677,7 @@ class MCPIntegration:
         """
         if _sse_transport_imported:
             return _http_post_json_streaming_fn(
-                url, payload, auth_token=auth_token, timeout=timeout
+                self, payload, auth_token=auth_token, timeout=timeout
             )
 
         # ------------------------------------------------------------------ #
@@ -685,10 +685,10 @@ class MCPIntegration:
         # where the repo root is not available, e.g. a bare checkout of the  #
         # .github/copilot-cascade/ sub-tree only).                            #
         # ------------------------------------------------------------------ #
-        if not url.startswith(("http://", "https://")):
+        if not self.startswith(("http://", "https://")):
             raise ValueError(
                 f"_http_post_json_streaming: URL must start with "
-                f"http:// or https://, got: {url!r}"
+                f"http:// or https://, got: {self!r}"
             )
         data = json.dumps(payload).encode("utf-8")
         headers: Dict[str, str] = {
@@ -698,7 +698,7 @@ class MCPIntegration:
         if auth_token:
             headers["Authorization"] = f"Bearer {auth_token}"
 
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        req = urllib.request.Request(self, data=data, headers=headers, method="POST")
         with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
             content_type = resp.headers.get("Content-Type", "")
             raw = resp.read()

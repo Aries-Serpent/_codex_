@@ -67,7 +67,7 @@ class DependencyMonitor:
         Returns:
             Context with update information
         """
-        context = {
+        return {
             "current_dependencies": self._read_current_dependencies(),
             "available_updates": self._check_for_updates(),
             "vulnerabilities": self._scan_vulnerabilities(),
@@ -81,7 +81,6 @@ class DependencyMonitor:
         #AFTERMATH_METRIC: total_dependencies = len(context["current_dependencies"])
         #AFTERMATH_METRIC: updates_available = len(self.updates)
 
-        return context
 
     def _read_current_dependencies(self) -> Dict[str, str]:
         """

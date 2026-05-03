@@ -147,13 +147,12 @@ class FlakyTestDetector:
         """
         # Simulate test result extraction
         # In production, would parse actual GitHub Actions logs
-        results = []
+        return []
 
         # Example: Parse pytest output, unittest output, etc.
         # Pattern: "test_name ... PASSED/FAILED [duration]"
 
         #AFTERMATH_PATTERN_IDENTIFIED: pytest_log_parsing
-        return results
 
     def _group_by_test_name(self, results: List[TestResult]) -> Dict[str, List[TestResult]]:
         """Group test results by test name."""
@@ -278,11 +277,10 @@ class FlakyTestDetector:
         Returns:
             Summary dictionary
         """
-        summary = {
+        return {
             "repo_path": str(self.repo_path),
             "lookback_days": self.lookback_days,
             "pattern_matchers": ["performance", "concurrency"]
         }
 
         #AFTERMATH_LESSON_LEARNED: detector_patterns_identified
-        return summary

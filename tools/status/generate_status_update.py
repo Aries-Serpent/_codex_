@@ -858,7 +858,7 @@ def build_summary_counts(data: Dict[str, object]) -> Dict[str, object]:
         status = entry["status"]
         registry_status_counts[status] = registry_status_counts.get(status, 0) + 1
 
-    summary = {
+    return {
         "stubs_total": len(stubs),
         "stubs_by_kind": kind_counts,
         "todo_files": len(todo_counts),
@@ -871,7 +871,6 @@ def build_summary_counts(data: Dict[str, object]) -> Dict[str, object]:
         "modules_scanned": tests.get("total_modules", 0),
         "modules_without_tests": tests.get("modules_without_tests_count", 0),
     }
-    return summary
 
 
 def render_table_rows(rows: List[str]) -> List[str]:
@@ -1126,8 +1125,7 @@ def generate(author: str, date: str, write: bool) -> Path:
 
     if write:
         write_status_snapshot(data)
-    report_path = write_report(author=author, date=date, data=data, write=write)
-    return report_path
+    return write_report(author=author, date=date, data=data, write=write)
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:

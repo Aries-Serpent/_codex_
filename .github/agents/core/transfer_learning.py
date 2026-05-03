@@ -369,14 +369,13 @@ class TransferLearningEngine:
         patterns = self.distiller.distill(source_q_table, src_info)
 
         # Create transferable knowledge
-        knowledge = TransferableKnowledge(
+        return TransferableKnowledge(
             source_domain=source_domain,
             target_domain=target_domain,
             patterns=patterns,
             compatibility_score=compatibility,
         )
 
-        return knowledge
 
     def apply_transfer(
         self,

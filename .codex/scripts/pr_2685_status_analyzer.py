@@ -166,7 +166,7 @@ class CodebaseAnalyzer:
     def analyze_pr_changes(self) -> Dict[str, Any]:
         """Analyze specific changes in the PR"""
 
-        changes = {
+        return {
             "summary": {
                 "total_commits": 3,
                 "total_changes": 1437,
@@ -218,7 +218,6 @@ class CodebaseAnalyzer:
             },
         }
 
-        return changes
 
     def calculate_integrity_hash(self, data: Dict) -> str:
         """Calculate SHA256 integrity hash for audit trail"""
@@ -228,7 +227,7 @@ class CodebaseAnalyzer:
     def generate_action_items(self) -> List[Dict[str, str]]:
         """Generate actionable items for PR completion"""
 
-        actions = [
+        return [
             {
                 "id": "codeql_resolution",
                 "task": "Resolve remaining CodeQL security alerts",
@@ -295,7 +294,6 @@ class CodebaseAnalyzer:
             },
         ]
 
-        return actions
 
     def calculate_metrics(self) -> Dict[str, Any]:
         """Calculate quality metrics"""

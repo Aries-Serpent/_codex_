@@ -134,8 +134,7 @@ class GitMetadataCollector:
                 return None
 
             # Count lines (each line is a commit)
-            commits = len(result.stdout.strip().splitlines())
-            return commits
+            return len(result.stdout.strip().splitlines())
 
         except Exception:
             return None
@@ -191,8 +190,7 @@ class GitMetadataCollector:
                 except Exception:
                     return None
 
-            age = (datetime.now(first_commit.tzinfo) - first_commit).days
-            return age
+            return (datetime.now(first_commit.tzinfo) - first_commit).days
 
         except Exception:
             return None

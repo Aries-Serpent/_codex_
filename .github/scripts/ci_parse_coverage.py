@@ -69,8 +69,7 @@ def parse_coverage_xml(path: Path) -> float:
         v = _as_float(lr)
         if v is None:
             raise ValueError(f"cannot parse line-rate value '{lr}'")
-        percent = interpret_value_as_percent(v)
-        return percent
+        return interpret_value_as_percent(v)
 
     # 2) Some variants provide 'percentage' or 'percent' attribute on root or <coverage> node
     pct = root.attrib.get("percentage") or root.attrib.get("percent")

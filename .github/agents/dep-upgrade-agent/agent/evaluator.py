@@ -100,7 +100,7 @@ class DependencyEvaluator:
         auto_upgrades = [e for e in self.evaluations if e.auto_upgradeable]
         manual_upgrades = [e for e in self.evaluations if not e.auto_upgradeable]
 
-        decision = {
+        return {
             "evaluations": self.evaluations,
             "prioritized": prioritized,
             "auto_upgrades": auto_upgrades,
@@ -114,7 +114,6 @@ class DependencyEvaluator:
         #AFTERMATH_METRIC: auto_upgradeable = len(auto_upgrades)
         #AFTERMATH_METRIC: security_critical = len(decision["security_critical"])
 
-        return decision
 
     def _evaluate_update(self, update: Any, context: Dict[str, Any]) -> UpgradeEvaluation:
         """

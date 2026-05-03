@@ -26,7 +26,7 @@ class MetricsCollector:
 
     def collect_ci_metrics(self) -> Dict[str, Any]:
         """Collect CI/CD workflow metrics."""
-        metrics = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "workflow_runs_total": self._get_workflow_count(),
             "workflow_success_rate": self._get_success_rate(),
@@ -35,11 +35,10 @@ class MetricsCollector:
             "cache_hit_rate": 0.85,  # Placeholder - would query cache stats
             "failed_workflows": self._get_failed_workflows(),
         }
-        return metrics
 
     def collect_security_metrics(self) -> Dict[str, Any]:
         """Collect security scan metrics."""
-        metrics = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "vulnerabilities_total": self._get_vuln_count(),
             "vulnerabilities_by_severity": self._get_vuln_breakdown(),
@@ -48,18 +47,16 @@ class MetricsCollector:
             "codeql_alerts": self._get_codeql_count(),
             "last_security_scan": self._get_last_scan_time(),
         }
-        return metrics
 
     def collect_agent_metrics(self) -> Dict[str, Any]:
         """Collect custom agent performance metrics."""
-        metrics = {
+        return {
             "timestamp": datetime.now().isoformat(),
             "ml_threat_detections": 0,  # Would query ML model logs
             "ci_diagnostic_runs": self._count_diagnostic_runs(),
             "auto_fixes_applied": 0,  # Would track from cognitive brain
             "pattern_recognition_accuracy": 0.87,  # Would calculate from results
         }
-        return metrics
 
     def save_metrics(self, metrics_type: str, metrics: Dict[str, Any]) -> None:
         """Save metrics to JSON file."""

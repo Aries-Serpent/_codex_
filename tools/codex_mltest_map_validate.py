@@ -9,8 +9,7 @@ import yaml
 
 
 def load_ml_test_map(path: Path) -> Dict[str, Any]:
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    return data
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
 def validate_structure(data: Dict[str, Any]) -> None:

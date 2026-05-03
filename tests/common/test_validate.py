@@ -60,7 +60,7 @@ class _StubContext:
 
     def add_or_update_checkpoint(self, name: str, validator: _StubValidator):
         class _Checkpoint:
-            def run(self_inner):
+            def run(self):
                 return SimpleNamespace(success=True)
 
         return _Checkpoint()

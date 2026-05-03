@@ -19,8 +19,7 @@ def _iter_markdown(root: Path) -> Iterator[Path]:
 
 
 def _resolve(target: str, base: Path) -> Path:
-    candidate = (base.parent / target).resolve()
-    return candidate
+    return (base.parent / target).resolve()
 
 
 def audit() -> dict[str, list[str]]:

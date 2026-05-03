@@ -231,12 +231,11 @@ class KnowledgeHungerEngine:
 
     def _generate_question_hints(self, concept: str, context: Dict) -> List[str]:
         """Generate research hints for a concept."""
-        hints = [
+        return [
             f"Keywords: {concept}, {context.get('domain', 'general')}",
             "Focus on 2023-2024 materials for latest insights",
             "Look for practical implementations and examples"
         ]
-        return hints
 
     def _get_domain_hints(self, domain: str) -> List[str]:
         """Get domain-specific research hints."""
@@ -259,12 +258,11 @@ class KnowledgeHungerEngine:
 
     def _generate_follow_ups(self, gap: KnowledgeGap) -> List[str]:
         """Generate follow-up questions."""
-        follow_ups = [
+        return [
             f"How does {gap.concept} scale to large systems?",
             f"What are limitations of {gap.concept}?",
             f"Are there alternatives to {gap.concept}?"
         ]
-        return follow_ups
 
     def _save_state(self):
         """Save state to disk."""

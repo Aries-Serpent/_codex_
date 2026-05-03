@@ -85,7 +85,7 @@ class DependencyUpgrader:
         # Generate upgrade report
         report_path = self._generate_upgrade_report(decision)
 
-        result = {
+        return {
             "results": self.results,
             "successful_upgrades": sum(1 for r in self.results if r.success),
             "failed_upgrades": sum(1 for r in self.results if not r.success),
@@ -99,7 +99,6 @@ class DependencyUpgrader:
         #AFTERMATH_METRIC: successful = result["successful_upgrades"]
         #AFTERMATH_METRIC: prs_created = result["prs_created"]
 
-        return result
 
     def _apply_upgrade(self, evaluation: Any, strategy: UpgradeStrategy) -> UpgradeResult:
         """

@@ -122,8 +122,7 @@ class PhilosophicalMetricsCalculator:
         if not 0.0 <= definiteness <= 1.0:
             raise ValueError(f"Definiteness must be 0.0-1.0, got {definiteness}")
 
-        satisfaction = (prehensions + realizations) * definiteness
-        return satisfaction
+        return (prehensions + realizations) * definiteness
 
     @staticmethod
     def calculate_becoming_rate(events: int, time_hours: float) -> float:
@@ -152,8 +151,7 @@ class PhilosophicalMetricsCalculator:
         if time_hours <= 0:
             raise ValueError(f"Time must be positive, got {time_hours}")
 
-        rate = events / time_hours
-        return rate
+        return events / time_hours
 
     @staticmethod
     def classify_becoming_rate(rate: float) -> str:
@@ -202,8 +200,7 @@ class PhilosophicalMetricsCalculator:
         if not 0.0 <= innovation <= 1.0:
             raise ValueError(f"Innovation must be 0.0-1.0, got {innovation}")
 
-        force = innovation - rigidity
-        return force
+        return innovation - rigidity
 
     @staticmethod
     def interpret_deterr_force(force: float) -> str:

@@ -104,8 +104,7 @@ class OpenQuestion:
 def normalize_key(key: str) -> str:
     """Normalize keys by collapsing whitespace, dashes, and underscores."""
 
-    collapsed = re.sub(r"[\s\-_]+", "_", key.strip().lower())
-    return collapsed
+    return re.sub(r"[\s\-_]+", "_", key.strip().lower())
 
 
 def _coerce_lines(value: Any) -> List[str]:
@@ -452,8 +451,7 @@ def _compose_next_prompt(
 
 
 def _collect_citations(entries: Sequence[str]) -> List[str]:
-    citations = sorted({entry.strip() for entry in entries if entry.strip()})
-    return citations
+    return sorted({entry.strip() for entry in entries if entry.strip()})
 
 
 def generate_report(payload: Mapping[str, Any]) -> str:

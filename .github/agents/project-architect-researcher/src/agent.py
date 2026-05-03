@@ -120,7 +120,7 @@ class ProjectArchitectResearcher:
             # Extract citations (basic implementation)
             citations = self._extract_citations(content)
 
-            source = NotebookLMSource(
+            return NotebookLMSource(
                 title=filepath.name,
                 content=content,
                 source_type=source_type,
@@ -129,7 +129,6 @@ class ProjectArchitectResearcher:
                 created_at=datetime.now(timezone.utc).isoformat()
             )
 
-            return source
 
         except Exception as e:
             click.echo(f"Error parsing {filepath}: {e}", err=True)

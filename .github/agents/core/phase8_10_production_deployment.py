@@ -439,7 +439,7 @@ class RealWorldTestingInfrastructure:
         rps = base_rps * (1.0 + complexity)
 
         # PDA: Decision - Configure workload
-        workload = TestWorkload(
+        return TestWorkload(
             workload_id=f"workload_{self.total_workloads_generated}",
             workload_type=workload_type,
             duration_seconds=self.workload_duration,
@@ -447,7 +447,6 @@ class RealWorldTestingInfrastructure:
             complexity=complexity,
         )
 
-        return workload
 
     def execute_test(
         self,

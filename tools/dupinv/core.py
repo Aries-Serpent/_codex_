@@ -225,13 +225,12 @@ class DuplicateScanner:
         )
 
         # Create inventory
-        inventory = SupplementalInventory(
+        return SupplementalInventory(
             metadata=metadata,
             duplicate_groups=all_groups,
             intentional_duplicates=[],  # Will be populated in Phase 6
         )
 
-        return inventory
 
     def write_outputs(
         self, inventory: SupplementalInventory, output_dir: Path, formats: List[str] = None

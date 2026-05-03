@@ -84,7 +84,7 @@ class TrainingDataCollector:
             print(f"Warning: Could not read {file_path}: {e}")
             return {}
 
-        features = {
+        return {
             # Code complexity
             "lines_of_code": len(code.split("\n")),
             "complexity": self._calculate_complexity(code),
@@ -115,7 +115,6 @@ class TrainingDataCollector:
             "author_security_score": self._get_author_score(file_path),
         }
 
-        return features
 
     def save_training_data(self, output_dir: str) -> None:
         """Save collected data for model training"""
@@ -183,8 +182,7 @@ class TrainingDataCollector:
         try:
             stat = os.stat(file_path)
             created = datetime.fromtimestamp(stat.st_ctime)
-            age = (datetime.now() - created).days
-            return age
+            return (datetime.now() - created).days
         except Exception:
             return 0
 

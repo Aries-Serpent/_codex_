@@ -190,8 +190,7 @@ class ReleaseExecutor:
 
             # Parse release URL from output
             if result.stdout:
-                release_url = result.stdout.decode().strip()
-                return release_url
+                return result.stdout.decode().strip()
 
             return f"https://github.com/{self.repo_owner}/{self.repo_name}/releases/tag/{git_tag}"
 

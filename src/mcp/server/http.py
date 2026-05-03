@@ -39,7 +39,7 @@ class QueryRequest(BaseModel):
     filters: Optional[dict[str, Any]] = None
 
     @validator("query")
-    def _ensure_query(cls, value: str) -> str:  # noqa: D401
+    def _ensure_query(self, value: str) -> str:  # noqa: D401
         """Require non-empty query strings."""
         if not value or not value.strip():
             raise ValueError("query cannot be empty")
@@ -52,7 +52,7 @@ class ContextUpsertRequest(BaseModel):
     items: list[ContextItem]
 
     @validator("items")
-    def _ensure_items(cls, value: list[ContextItem]) -> list[ContextItem]:  # noqa: D401
+    def _ensure_items(self, value: list[ContextItem]) -> list[ContextItem]:  # noqa: D401
         if not value:
             raise ValueError("at least one item is required")
         return value

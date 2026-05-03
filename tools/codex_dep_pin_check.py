@@ -96,12 +96,11 @@ def run_check(repo_root: Path) -> Dict[str, object]:
         elif manifest.name == "environment.yml":
             issues.extend(_scan_env_yml(manifest))
 
-    payload = {
+    return {
         "scanned_root": str(repo_root),
         "issue_count": len(issues),
         "issues": [asdict(i) for i in issues],
     }
-    return payload
 
 
 def _write_json(payload: Dict[str, object], out_path: Path) -> None:

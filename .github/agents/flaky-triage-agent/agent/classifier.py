@@ -322,10 +322,9 @@ class FlakyTestClassifier:
             reverse=True
         )
 
-        priorities = [c.test_name for c in sorted_tests]
+        return [c.test_name for c in sorted_tests]
 
         #AFTERMATH_METRIC: tests_prioritized = len(priorities)
-        return priorities
 
     def get_summary(self) -> Dict[str, Any]:
         """

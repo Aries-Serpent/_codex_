@@ -28,8 +28,7 @@ MAX_PIXEL_VALUE = 255.0
 def load_gray(path: Path):
     if Image is None:
         raise RuntimeError("Pillow not installed; pip install pillow")
-    img = Image.open(path).convert("L")
-    return img
+    return Image.open(path).convert("L")
 
 
 def to_array(img) -> "np.ndarray":

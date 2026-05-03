@@ -85,7 +85,7 @@ class SecurityRemediator:
         # Generate advisory if critical vulnerabilities
         advisory_path = self._generate_advisory(decision) if decision.get("critical_count", 0) > 0 else None
 
-        result = {
+        return {
             "remediations": self.remediations,
             "auto_fixed_count": sum(1 for r in self.remediations if r.auto_applied),
             "pr_created_count": sum(1 for r in self.remediations if r.pr_created),
@@ -97,7 +97,6 @@ class SecurityRemediator:
         #AFTERMATH_METRIC: remediations_applied = len(self.remediations)
         #AFTERMATH_METRIC: auto_fixes = result["auto_fixed_count"]
 
-        return result
 
     def _apply_auto_fix(self, analysis: Any) -> SecurityRemediation:
         """

@@ -826,9 +826,8 @@ class CompetitiveCoevolution:
 
         # Select top agents
         num_to_select = min(num_selected, len(sorted_agents))
-        selected = [agent_id for agent_id, _ in sorted_agents[:num_to_select]]
+        return [agent_id for agent_id, _ in sorted_agents[:num_to_select]]
 
-        return selected
 
     def detect_rivalries(self, threshold: float = 0.5) -> List[Tuple[str, str, float]]:
         """

@@ -208,9 +208,8 @@ class CopilotSecurityAgent:
             self.vulnerability_cache[vuln.id] = vuln
 
         # Prioritize by severity
-        vulnerabilities = self._prioritize_vulnerabilities(vulnerabilities)
+        return self._prioritize_vulnerabilities(vulnerabilities)
 
-        return vulnerabilities
 
     async def _fetch_github_security_alerts(
         self,

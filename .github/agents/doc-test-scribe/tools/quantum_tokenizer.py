@@ -516,9 +516,8 @@ class QuantumTokenizer:
             context_sim = 0.0
 
         # Weighted average
-        correlation = 0.6 * semantic_overlap + 0.4 * context_sim
+        return 0.6 * semantic_overlap + 0.4 * context_sim
 
-        return correlation
 
     def _infer_relationship(
         self,
@@ -584,7 +583,7 @@ class QuantumTokenizer:
             entanglement_network[pair.token2].append(pair.token1)
 
         # Build map
-        semantic_map = {
+        return {
             'total_tokens': total_tokens,
             'token_types': dict(by_type),
             'semantic_distribution': dict(by_semantic),
@@ -597,7 +596,6 @@ class QuantumTokenizer:
             'entanglements': [pair.to_dict() for pair in entanglements],
         }
 
-        return semantic_map
 
     def _find_most_entangled(
         self,

@@ -98,7 +98,7 @@ class SecurityAnalyzer:
         # Prioritize by risk
         prioritized = self._prioritize_by_risk(self.analyses)
 
-        decision = {
+        return {
             "analyses": self.analyses,
             "prioritized_findings": prioritized,
             "critical_count": sum(1 for a in self.analyses if a.severity == VulnerabilitySeverity.CRITICAL),
@@ -111,7 +111,6 @@ class SecurityAnalyzer:
         #AFTERMATH_METRIC: critical_vulnerabilities = decision["critical_count"]
         #AFTERMATH_METRIC: auto_fixable = decision["auto_fixable_count"]
 
-        return decision
 
     def _analyze_finding(self, finding: Any) -> SecurityAnalysis:
         """

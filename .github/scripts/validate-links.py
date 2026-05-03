@@ -169,8 +169,7 @@ class LinkValidator:
             return re.sub(r'[^\n]', ' ', m.group(0))
 
         content = HTML_COMMENT_PATTERN.sub(blank_match, content)
-        content = INLINE_CODE_PATTERN.sub(blank_match, content)
-        return content
+        return INLINE_CODE_PATTERN.sub(blank_match, content)
 
     def validate_file(self, file_path: Path) -> None:
         """Validate all links in a single markdown file"""

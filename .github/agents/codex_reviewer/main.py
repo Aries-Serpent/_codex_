@@ -352,8 +352,7 @@ class CodexQuantumReviewer:
         total_weight = sum(severity_weights.get(issue.get("severity", "medium"), 0.3) for issue in issues)
 
         # Normalize to 0-1 range (assuming 10 issues = 0 score)
-        score = max(0.0, 1.0 - (total_weight / 10.0))
-        return score
+        return max(0.0, 1.0 - (total_weight / 10.0))
 
     async def _analyze_security(self, context: ReviewContext) -> Dict[str, Any]:
         """Analyze security vulnerabilities."""

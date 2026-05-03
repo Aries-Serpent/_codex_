@@ -350,7 +350,7 @@ class CapabilityGapAnalyzer:
         """Generate initial implementation sketch for a tool."""
         primary_gap = gaps[0]
 
-        sketch = f"""
+        return f"""
 # Tool Implementation Sketch: {tool_type.title()}Tool
 # Purpose: {primary_gap.description}
 # Addresses {len(gaps)} capability gap(s)
@@ -377,7 +377,6 @@ class {tool_type.title()}Tool:
         # Update internal state based on success/failure
         pass
 """
-        return sketch
 
     def _identify_dependencies(self, sketch: str) -> List[str]:
         """Identify dependencies from implementation sketch."""

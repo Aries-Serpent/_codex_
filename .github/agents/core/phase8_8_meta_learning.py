@@ -896,7 +896,7 @@ def integrate_with_meta_policy_router(
     Returns:
         Integration metrics
     """
-    metrics = {
+    return {
         "l2o_integrated": True,
         "fast_weights_integrated": True,
         "quantum_advantage_target": QUANTUM_ADVANTAGE_8_8_TARGET,
@@ -908,7 +908,6 @@ def integrate_with_meta_policy_router(
     # 2. Fast weights can accelerate task adaptation
     # 3. Both respect quantum determinism with fixed seeds
 
-    return metrics
 
 
 # =============================================================================

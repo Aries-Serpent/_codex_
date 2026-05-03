@@ -342,14 +342,13 @@ def run_audit(repo_root: Path, *, docs_dir: str = "docs") -> dict:
 
     coverage_report = _validate_coverage_gate(repo_root)
 
-    payload = {
+    return {
         "pytest_ini": pytest_hint,
         "pytest_cov": coverage_report,
         "mkdocs_nav": nav_paths,
         "broken_links": [item.to_dict() for item in broken_links],
         "missing_tests": missing_tests,
     }
-    return payload
 
 
 def _write_output(path: Path, payload: dict) -> None:

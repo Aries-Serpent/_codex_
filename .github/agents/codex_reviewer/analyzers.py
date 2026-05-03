@@ -78,12 +78,11 @@ class QuantumPatternAnalyzer:
         Identifies files that are frequently modified together and might
         benefit from tighter coupling or shared state management.
         """
-        candidates = []
+        return []
 
         # TODO: Implement entanglement detection
         # This would require analyzing git history to find co-changing files
 
-        return candidates
 
     def _find_tunneling_opportunities(self, diff: str) -> List[Dict[str, Any]]:
         """
@@ -94,9 +93,8 @@ class QuantumPatternAnalyzer:
         - Sequential operations with intermediate states
         - Iterative refinement patterns
         """
-        opportunities = []
+        return []
 
         # TODO: Implement tunneling detection
         # Look for nested loops, sequential operations
 
-        return opportunities

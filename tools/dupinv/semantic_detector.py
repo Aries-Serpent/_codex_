@@ -59,9 +59,8 @@ class MinHashDetector:
         code = re.sub(r"'[^']*'", "STRING", code)
 
         # Tokenize by splitting on non-alphanumeric
-        tokens = re.findall(r"\w+", code.lower())
+        return re.findall(r"\w+", code.lower())
 
-        return tokens
 
     def create_shingles(self, tokens: List[str]) -> Set[str]:
         """

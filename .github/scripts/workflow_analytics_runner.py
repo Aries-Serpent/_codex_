@@ -92,8 +92,7 @@ def get_workflow_runs(
 
 def get_workflow_logs(run_id: int) -> str:
     """Get logs for a specific workflow run."""
-    output = run_gh_command(["run", "view", str(run_id), "--log"])
-    return output
+    return run_gh_command(["run", "view", str(run_id), "--log"])
 
 
 def analyze_log_for_patterns(log_content: str) -> Dict[str, List[str]]:

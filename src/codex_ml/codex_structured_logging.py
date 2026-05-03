@@ -403,7 +403,7 @@ def capture_exceptions(
             log = logger or logging.getLogger(target.__module__)
             try:
                 result = target(*args, **kwargs)
-            except BaseException as exc:  # pragma: no cover - exercised in tests
+            except BaseException as exc:  # noqa: BLE001  # intentional: must catch SystemExit/KeyboardInterrupt to log them
                 if _is_successful_system_exit(exc):
                     log.info("exited successfully (SystemExit(0))")
                     return 0

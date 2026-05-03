@@ -71,9 +71,8 @@ class ResourcePredictor:
         recent_avg = sum(values[-10:]) / min(10, len(values))
 
         # Predict peak as recent trend + 20% buffer
-        predicted = recent_avg * 1.2
+        return recent_avg * 1.2
 
-        return predicted
 
     def check_capacity(self) -> Dict[str, bool]:
         """Check if approaching capacity limits"""

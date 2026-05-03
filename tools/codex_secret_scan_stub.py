@@ -26,10 +26,9 @@ def _redact_snippet(snippet: str) -> str:
     # Redact long base64-like strings, hex strings, and key-like patterns
     redacted = re.sub(r'[A-Za-z0-9+/]{20,}', '[REDACTED]', snippet)
     redacted = re.sub(r'[0-9a-fA-F]{32,}', '[REDACTED]', redacted)
-    redacted = re.sub(r'(?:secret|key|password|token)["\s:=]+[^\s"]{8,}',
+    return re.sub(r'(?:secret|key|password|token)["\s:=]+[^\s"]{8,}',
                       lambda m: m.group()[:20] + '[REDACTED]',
                       redacted, flags=re.IGNORECASE)
-    return redacted
 
 
 def _iter_text_files(root: Path) -> List[Path]:

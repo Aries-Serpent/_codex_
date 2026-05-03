@@ -221,7 +221,7 @@ if not _pydantic_available():
 def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[override]
     if not _pydantic_available() and _path_requires_pydantic(file_path):
         pytest.skip("Optional dependency 'pydantic' not installed", allow_module_level=True)
-    return None
+    return
 
 
 def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignore[override]

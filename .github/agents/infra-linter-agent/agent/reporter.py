@@ -150,7 +150,7 @@ class IaCReporter:
         self.outcomes_tracked += 1
 
         # #AFTERMATH_PATTERN_IDENTIFIED: iac_outcome_tracking
-        report = AftermathReport(
+        return AftermathReport(
             outcome=outcome,
             files_scanned=scan_results.get("files_scanned", 0),
             issues_found=total_issues,
@@ -168,7 +168,6 @@ class IaCReporter:
             warning_issues=warning_issues
         )
 
-        return report
 
     def _determine_outcome(
         self,
@@ -270,12 +269,11 @@ class IaCReporter:
                 issue_counter[rule_id] += 1
 
         # Return top 5 most common issues
-        most_common = [
+        return [
             {"rule_id": rule_id, "count": count}
             for rule_id, count in issue_counter.most_common(5)
         ]
 
-        return most_common
 
     def _record_pattern(
         self,
