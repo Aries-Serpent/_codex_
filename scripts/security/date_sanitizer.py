@@ -207,7 +207,7 @@ def main():
     import sys
 
     if len(sys.argv) > 1:
-        with open(sys.argv[1], "r", encoding="utf-8") as f:
+        with open(sys.argv[1], encoding="utf-8") as f:
             content = f.read()
     else:
         content = sys.stdin.read()

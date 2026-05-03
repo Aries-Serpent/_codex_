@@ -104,7 +104,7 @@ class HARRequest:
         return result
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "HARRequest":
+    def from_dict(cls, data: dict[str, Any]) -> HARRequest:
         return cls(
             method=data["method"],
             url=data["url"],
@@ -146,7 +146,7 @@ class HARResponse:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "HARResponse":
+    def from_dict(cls, data: dict[str, Any]) -> HARResponse:
         return cls(
             status=data["status"],
             status_text=data["statusText"],
@@ -188,7 +188,7 @@ class HAREntry:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "HAREntry":
+    def from_dict(cls, data: dict[str, Any]) -> HAREntry:
         return cls(
             started_datetime=data["startedDateTime"],
             time=data.get("time", 0),
@@ -241,7 +241,7 @@ class HARLog:
         return result
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "HARLog":
+    def from_dict(cls, data: dict[str, Any]) -> HARLog:
         log_data = data.get("log", data)
         return cls(
             version=log_data.get("version", "1.2"),
@@ -267,12 +267,12 @@ class HARLog:
         logger.info(f"Saved HAR log to {path} ({len(self.entries)} entries)")
 
     @classmethod
-    def load(cls, path: Path) -> "HARLog":
+    def load(cls, path: Path) -> HARLog:
         if str(path).endswith(".gz"):
             with gzip.open(path, "rt", encoding="utf-8") as f:
                 data = json.load(f)
         else:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 data = json.load(f)
         return cls.from_dict(data)
 
@@ -292,7 +292,7 @@ class HARRecorder:
         self.save_path = save_path
         self._recording = False
 
-    def __enter__(self) -> "HARRecorder":
+    def __enter__(self) -> HARRecorder:
         self.start()
         return self
 
@@ -429,7 +429,7 @@ class HARReplayer:
             self._index[key] = entry
 
     @classmethod
-    def from_file(cls, path: Path) -> "HARReplayer":
+    def from_file(cls, path: Path) -> HARReplayer:
         har_log = HARLog.load(path)
         return cls(har_log)
 

@@ -32,6 +32,7 @@ Last Updated: 2026-01-16
 
 import argparse
 import json
+import logging
 import re
 import subprocess
 import sys
@@ -39,6 +40,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -129,7 +132,7 @@ class ExternalRepoIngestor:
             for ext in extensions:
                 for file_path in repo_path.rglob(f"*{ext}"):
                     try:
-                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        with open(file_path, encoding='utf-8', errors='ignore') as f:
                             line_count += sum(1 for _ in f)
                     except Exception:
                         # Skip files that can't be read
@@ -148,7 +151,7 @@ class ExternalRepoIngestor:
             license_path = repo_path / license_file
             if license_path.exists():
                 try:
-                    with open(license_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    with open(license_path, encoding='utf-8', errors='ignore') as f:
                         content = f.read(500).lower()
 
                     if "gpl" in content:
@@ -161,8 +164,7 @@ class ExternalRepoIngestor:
                         return "BSD License"
                     return "Custom/Other License"
                 except Exception:
-                    pass
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         return None
 
     def detect_capabilities(self, repo_path: Path) -> List[str]:
@@ -173,7 +175,7 @@ class ExternalRepoIngestor:
         for file_path in repo_path.rglob("*"):
             if file_path.is_file() and file_path.suffix in ['.c', '.cpp', '.h', '.py', '.js']:
                 try:
-                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    with open(file_path, encoding='utf-8', errors='ignore') as f:
                         content = f.read().lower()
 
                     for capability, patterns in self.CAPABILITY_PATTERNS.items():
@@ -198,7 +200,7 @@ class ExternalRepoIngestor:
             for file_path in repo_path.rglob(pattern):
                 if file_path.is_file() and file_path.suffix in ['.c', '.cpp', '.py', '.js']:
                     try:
-                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        with open(file_path, encoding='utf-8', errors='ignore') as f:
                             lines = f.readlines()
 
                         # Extract classes, functions

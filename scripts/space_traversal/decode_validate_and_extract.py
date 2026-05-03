@@ -185,7 +185,7 @@ def summarize_gap_value(key: str, value: Any) -> str:
     if key == "missing_files":
         if isinstance(value, list):
             return f"{len(value)} missing files"
-        return f"missing_files: {repr(value)}"
+        return f"missing_files: {value!r}"
     if key == "gaps":
         if isinstance(value, list):
             return f"{len(value)} gap records"
@@ -476,10 +476,9 @@ def main(argv: Optional[list[str]] = None) -> int:
                 if not args.quiet:
                     print(f"Wrote stable manifest to: {manifest_path}")
             except Exception:
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         except Exception:
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     if not args.quiet:
         print(f"Wrote outputs to: {out_dir}")
         print(f"Validated against schema: {'yes' if schema_validated else 'no'}")

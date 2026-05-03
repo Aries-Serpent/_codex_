@@ -108,7 +108,7 @@ class ExpandedContextAuditor:
             return matches
 
         try:
-            with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+            with open(filepath, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
             # Check each feature pattern

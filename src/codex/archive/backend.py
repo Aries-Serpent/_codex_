@@ -68,7 +68,7 @@ class ArchiveConfig:
     def from_settings(
         cls,
         settings: Any,  # ArchiveAppConfig from .config — omitted to break cyclic import
-    ) -> "ArchiveConfig":
+    ) -> ArchiveConfig:
         """Create a runtime backend config from archive settings."""
 
         return cls(url=settings.backend.url, backend=settings.backend.backend)

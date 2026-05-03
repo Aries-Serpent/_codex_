@@ -22,7 +22,7 @@ class Principal:
     principal_id: str
 
     @classmethod
-    def from_credential(cls, credential: str | bytes) -> "Principal":
+    def from_credential(cls, credential: str | bytes) -> Principal:
         """Create a principal based on a hashed credential."""
 
         hashed = hash_credential(credential)
@@ -81,7 +81,7 @@ class MCPAuthorizer:
     def compute_permission_hash(self, principal_id: str, tool_name: str) -> str:
         """Compute a stable hash for principal/tool combinations."""
 
-        payload = f"{principal_id}:{tool_name}".encode("utf-8")
+        payload = f"{principal_id}:{tool_name}".encode()
         return hashlib.sha256(payload).hexdigest()
 
 

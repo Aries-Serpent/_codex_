@@ -73,7 +73,7 @@ class AsyncLogFile:
         self.rotate_bytes = int(rotate_bytes)
         self.fsync = fsync
         self.fsync_interval = float(fsync_interval)
-        self.q: "queue.Queue[LogLine]" = queue.Queue(maxsize=max_queue)
+        self.q: queue.Queue[LogLine] = queue.Queue(maxsize=max_queue)
         self._stop = threading.Event()
         self._dropped = 0
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -110,7 +110,7 @@ class AsyncLogFile:
         self._thread.join(timeout)
 
     # Context manager helpers ------------------------------------------------
-    def __enter__(self) -> "AsyncLogFile":
+    def __enter__(self) -> AsyncLogFile:
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - trivial

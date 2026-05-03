@@ -94,8 +94,7 @@ class PrintDetector(ast.NodeVisitor):
                 else:
                     args_str += str(arg).lower()
             except Exception:  # Catch errors when converting AST node to string
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Check for error/warning indicators
         if any(word in args_str for word in ["error", "fail", "exception", "fatal"]):
             return "error"
@@ -117,7 +116,7 @@ def analyze_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
         return False, []
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source = f.read()
 
         tree = ast.parse(source, filename=str(file_path))
@@ -145,7 +144,7 @@ def convert_print_to_logger(
         return False
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
 
         changes_made = False
@@ -225,8 +224,7 @@ def convert_print_statement(line: str, level: str) -> str:
                     break
     except Exception:
         # If AST parsing fails, fallback to regex patterns
-        pass
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     # Fallback: Use regex patterns (with documented limitations)
     # These patterns may not correctly handle nested quotes or escaped quotes
     patterns = [
@@ -251,7 +249,7 @@ def convert_print_statement(line: str, level: str) -> str:
 def add_logging_import(file_path: Path, dry_run: bool = True) -> bool:
     """Add logging import if not present."""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
 
         # Find where to insert import

@@ -98,7 +98,7 @@ def _safe_write_text(path: pathlib.Path, text: str, mode: str = "w") -> None:
             with path.open(mode, encoding="utf-8", buffering=1) as f:
                 f.write(text)
             return
-        except (OSError, IOError) as err:
+        except OSError as err:
             if attempt == 0:
                 logger.debug("write attempt 1 failed for %s: %s — retrying", path, err)
             else:
@@ -114,7 +114,7 @@ def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
             with path.open("a", encoding="utf-8", buffering=1) as f:
                 f.write(line)
             return
-        except (OSError, IOError, json.JSONDecodeError) as err:
+        except (OSError, json.JSONDecodeError) as err:
             if attempt == 0:
                 logger.debug("append attempt 1 failed for %s: %s — retrying", path, err)
             else:
@@ -150,7 +150,7 @@ class session:
         self._ended = False
 
     # --- context protocol -------------------------------------------------
-    def __enter__(self) -> "session":
+    def __enter__(self) -> session:
         # Write quick meta file and record start event
         meta = _log_path(f"{self.sid}.meta")
         _safe_write_text(meta, f"{_now()} session_start {self.sid}\n")

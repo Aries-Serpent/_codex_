@@ -22,7 +22,7 @@ class TinySequenceModel:
         self.default_completion = default_completion
 
     @classmethod
-    def from_payload(cls, payload: Mapping[str, Any]) -> "TinySequenceModel":
+    def from_payload(cls, payload: Mapping[str, Any]) -> TinySequenceModel:
         responses = [
             ResponseRule(prefix=str(entry["prefix"]), completion=str(entry["completion"]))
             for entry in payload.get("responses", [])
@@ -31,7 +31,7 @@ class TinySequenceModel:
         return cls(responses, default_completion=default)
 
     @classmethod
-    def from_file(cls, path: Union[str, Path]) -> "TinySequenceModel":
+    def from_file(cls, path: Union[str, Path]) -> TinySequenceModel:
         candidate = Path(path)
         if candidate.is_dir():
             candidate = candidate / "model.json"

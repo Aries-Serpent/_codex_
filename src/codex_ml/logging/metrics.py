@@ -88,7 +88,7 @@ class MetricLogger:
             self._fh.close()
             self._fh = None
 
-    def __enter__(self) -> "MetricLogger":
+    def __enter__(self) -> MetricLogger:
         self._ensure_open()
         return self
 

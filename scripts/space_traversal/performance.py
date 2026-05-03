@@ -134,7 +134,7 @@ class FileCache:
                         return data.get("value")
                     # Expired - remove file
                     path.unlink(missing_ok=True)
-            except (json.JSONDecodeError, IOError) as e:
+            except (OSError, json.JSONDecodeError) as e:
                 logger.debug(f"Exception: {e}")
                 # Corrupt or unreadable cache file; log and treat as cache miss.
                 logger.debug(f"Cache read error for key '{key}': {e}")
@@ -207,7 +207,7 @@ class FileCache:
                     if expires_at is not None and expires_at <= now:
                         path.unlink()
                         count += 1
-            except (json.JSONDecodeError, IOError) as e:
+            except (OSError, json.JSONDecodeError) as e:
                 logger.debug(f"Exception: {e}")
                 # Corrupt or unreadable cache file during cleanup; log for manual intervention.
                 logger.warning(f"Unable to clean cache file '{path}': {e}")
@@ -235,9 +235,9 @@ def batch_file_read(
         try:
             if path.exists() and path.stat().st_size <= max_size:
                 results[str(path)] = path.read_text(encoding=encoding, errors="ignore")
-        except (OSError, IOError):
+        except OSError:
             # Intentionally ignore file read errors; skip unreadable files.
-            pass
+            logger.debug("Suppressed exception in handler", exc_info=True)
     return results
 
 
@@ -352,7 +352,7 @@ class profile_stage:
         self.extra = extra
         self.start_time: float = 0
 
-    def __enter__(self) -> "profile_stage":
+    def __enter__(self) -> profile_stage:
         self.start_time = time.perf_counter()
         return self
 

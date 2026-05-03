@@ -87,7 +87,7 @@ class JSONLMemoryBackend(MemoryProtocol):
             return []
 
         matches = []
-        with open(self.storage_path, "r", encoding="utf-8") as f:
+        with open(self.storage_path, encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
@@ -129,7 +129,7 @@ class JSONLMemoryBackend(MemoryProtocol):
         found = False
 
         # Read with shared lock
-        with open(self.storage_path, "r", encoding="utf-8") as f:
+        with open(self.storage_path, encoding="utf-8") as f:
             _flock(f.fileno(), "sh")
             try:
                 for line in f:
@@ -167,7 +167,7 @@ class JSONLMemoryBackend(MemoryProtocol):
         deleted_count = 0
 
         # Read with shared lock
-        with open(self.storage_path, "r", encoding="utf-8") as f:
+        with open(self.storage_path, encoding="utf-8") as f:
             _flock(f.fileno(), "sh")
             try:
                 for line in f:
@@ -202,7 +202,7 @@ class JSONLMemoryBackend(MemoryProtocol):
             return {"entry_count": 0, "size_bytes": 0}
 
         entry_count = 0
-        with open(self.storage_path, "r", encoding="utf-8") as f:
+        with open(self.storage_path, encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     entry_count += 1

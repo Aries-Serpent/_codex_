@@ -50,7 +50,7 @@ class FileCache:
             return False
 
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 content = f.read()
 
             stat = path.stat()
@@ -149,7 +149,7 @@ class SearchCache:
 
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
-            key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
+            key = f"{func.__name__}:{args!s}:{kwargs!s}"
             if key in self._cache:
                 logger.debug(f"Search cache hit: {func.__name__}")
                 return self._cache[key]

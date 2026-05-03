@@ -15,7 +15,6 @@ import time
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 
 class TestComplexWorkflows:

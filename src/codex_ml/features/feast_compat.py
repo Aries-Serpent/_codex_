@@ -168,7 +168,7 @@ class FeastCompatibleStore:
         self,
         features: list[str],
         entity_rows: list[dict[str, Any]],
-    ) -> "FeatureServiceResult":
+    ) -> FeatureServiceResult:
         """Retrieve the latest feature values for a list of entity rows.
 
         Args:

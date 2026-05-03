@@ -324,7 +324,7 @@ class SelfHealingEngine:
                 continue
 
             try:
-                with open(py_file, "r", encoding="utf-8") as f:
+                with open(py_file, encoding="utf-8") as f:
                     compile(f.read(), py_file, "exec")
             except SyntaxError as e:
                 logger.debug(f"SyntaxError: {e}")

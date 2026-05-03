@@ -309,7 +309,7 @@ class CachedEmbeddingProvider:
             True if cache is valid, False otherwise
         """
         try:
-            with open(metadata_file, "r") as f:
+            with open(metadata_file) as f:
                 cache_metadata = json.load(f)
 
             # If file mtime is provided, check if it matches

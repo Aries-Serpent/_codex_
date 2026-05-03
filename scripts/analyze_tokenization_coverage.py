@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 
 def analyze_coverage_gaps(coverage_file: str = 'coverage_reports/coverage_tokenization.json') -> List[Dict[str, Any]]:
     """Analyze coverage gaps and generate detailed report."""
-    with open(coverage_file, 'r') as f:
+    with open(coverage_file) as f:
         data = json.load(f)
 
     gaps = []

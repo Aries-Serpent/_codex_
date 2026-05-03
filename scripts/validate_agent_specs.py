@@ -44,7 +44,7 @@ def load_schema() -> dict[str, Any]:
         logger.error(f"Schema not found: {SCHEMA_PATH}")
         return {}
 
-    with open(SCHEMA_PATH, 'r', encoding='utf-8') as f:
+    with open(SCHEMA_PATH, encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -77,14 +77,14 @@ def parse_agent_spec(path: Path) -> dict[str, Any] | None:
             if not HAS_YAML:
                 logger.warning(f"PyYAML not installed, skipping: {path}")
                 return None
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, encoding='utf-8') as f:
                 return yaml.safe_load(f) or {}
         elif path.suffix == '.json':
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, encoding='utf-8') as f:
                 return json.load(f)
         elif path.suffix == '.md':
             # Extract YAML frontmatter from markdown
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, encoding='utf-8') as f:
                 content = f.read()
             if content.startswith('---'):
                 parts = content.split('---', 2)

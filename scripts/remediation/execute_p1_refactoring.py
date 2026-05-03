@@ -52,7 +52,7 @@ class RefactoringExecutor:
                 continue
 
             try:
-                with open(py_file, "r", encoding="utf-8") as f:
+                with open(py_file, encoding="utf-8") as f:
                     content = f.read()
                     tree = ast.parse(content, filename=str(py_file))
 
@@ -132,7 +132,7 @@ class DictSerializable:
                 continue
 
             try:
-                with open(py_file, "r", encoding="utf-8") as f:
+                with open(py_file, encoding="utf-8") as f:
                     content = f.read()
                     tree = ast.parse(content, filename=str(py_file))
 
@@ -177,7 +177,7 @@ class DictSerializable:
         loop_files = []
         for f in training_files:
             try:
-                with open(f, "r") as file:
+                with open(f) as file:
                     content = file.read()
                     if "for epoch" in content.lower() or "training loop" in content.lower():
                         loop_files.append(f)

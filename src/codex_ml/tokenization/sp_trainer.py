@@ -27,7 +27,7 @@ except Exception:  # pragma: no cover - optional dependency
 __all__ = ["SPTokenizer"]
 
 
-def _require_sentencepiece() -> "spm":  # type: ignore[valid-type]
+def _require_sentencepiece() -> spm:  # type: ignore[valid-type]
     if spm is None:  # pragma: no cover - runtime guard
         raise ImportError(
             "sentencepiece is required for SPTokenizer; install 'sentencepiece' to use the trainer"
@@ -114,7 +114,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         pointer.write_text(str(model_copy))
 
     @classmethod
-    def load(cls, path: str) -> "SPTokenizer":
+    def load(cls, path: str) -> SPTokenizer:
         pointer = Path(path)
         if not pointer.exists():
             raise FileNotFoundError(f"tokenizer pointer not found: {pointer}")
@@ -143,7 +143,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         character_coverage: float = 0.9995,
         seed: int = 17,
         output_dir: str = "artifacts/tokenizer",
-    ) -> "SPTokenizer":
+    ) -> SPTokenizer:
         module = _require_sentencepiece()
         if not input_files:
             raise ValueError("input_files must contain at least one corpus file")

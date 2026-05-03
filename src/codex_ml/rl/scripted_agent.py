@@ -26,7 +26,7 @@ class ScriptedAgent(RLAgent):
         self._index = 0
 
     @classmethod
-    def from_file(cls, path: str | Path) -> "ScriptedAgent":
+    def from_file(cls, path: str | Path) -> ScriptedAgent:
         candidate = Path(path)
         if candidate.is_dir():
             candidate = candidate / "policy.json"

@@ -105,7 +105,7 @@ class CognitiveBrain:
         cls,
         enable_memory: bool = True,
         enable_superposition: bool = True,
-    ) -> "CognitiveBrain":
+    ) -> CognitiveBrain:
         """
         Build a CognitiveBrain with default production configuration.
 

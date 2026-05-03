@@ -90,8 +90,7 @@ def build_service_package(
     try:
         shutil.rmtree(staging)
     except Exception:  # pragma: no cover - best effort cleanup
-        pass
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     return {
         "run_id": run_id,
         "package": str(output),

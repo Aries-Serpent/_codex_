@@ -1084,7 +1084,7 @@ def test_main_imports():
 
             except Exception as e:
                 logger.debug(f"Exception: {e}")
-                results["steps_failed"].append(f"{step}: {str(e)}")
+                results["steps_failed"].append(f"{step}: {e!s}")
                 self._log("system", f"Workflow step {step} failed: {e}")
 
         results["success"] = len(results["steps_failed"]) == 0

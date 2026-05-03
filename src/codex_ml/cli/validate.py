@@ -58,7 +58,7 @@ else:  # pragma: no cover - namespace stub without Typer attributes
         typer = None
 
 
-def _format_validation_error(exc: ValidationError) -> str:
+def _format_validation_error(exc: ValidationError | None) -> str:
     """Return a human-friendly message for schema validation errors."""
 
     if ValidationError is None or exc is None:  # pragma: no cover - defensive fallback

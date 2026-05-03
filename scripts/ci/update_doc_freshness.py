@@ -38,10 +38,13 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import logging
 import re
 import sys
 from datetime import date, datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # ── Date patterns found in repo doc headers ───────────────────────────────────
 _DATE_PATTERNS: list[re.Pattern[str]] = [
@@ -73,7 +76,7 @@ def _parse_date(s: str) -> date | None:
         try:
             return datetime.strptime(m.group(), "%Y-%m-%d").date()
         except ValueError:
-            pass
+            logger.debug("Suppressed exception in handler", exc_info=True)
     return None
 
 

@@ -28,10 +28,13 @@ Research basis:
 
 from __future__ import annotations
 
+import logging
 import time
 from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Deque, Dict, List
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Optional Prometheus instrumentation
@@ -296,8 +299,7 @@ class AgentDashboard:
             _al_queries_today = _al_hook._daily_counts.get(today, 0)
             _al_budget = _al_hook.query_budget_per_day
         except Exception:  # pragma: no cover - optional AL module
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         return AgentHealthMetrics(
             coherence_current=coherence_current,
             coherence_avg=round(coherence_avg, 4),

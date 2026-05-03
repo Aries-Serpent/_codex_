@@ -4,10 +4,13 @@ Phase 2D - Targeted Link Fixes
 Fix high-priority relocated file references and actual broken links
 """
 
+import logging
 import os
 import re
 from pathlib import Path
 from typing import Dict, Tuple
+
+logger = logging.getLogger(__name__)
 
 
 class TargetedLinkFixer:
@@ -89,8 +92,7 @@ class TargetedLinkFixer:
                         return new_url, True
             except Exception:
                 # Best-effort heuristic: if anything goes wrong, leave link unchanged
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Pattern: Wrong relative path to .github/
         if link_url.startswith('.github/') or link_url.startswith('../.github/'):
             link_clean = link_url.replace('../', '').split('#')[0]

@@ -64,7 +64,7 @@ class SQLiteUserRepository(UserRepository):
             purely in-process database (useful for testing).
     """
 
-    def __init__(self, db_path: "str | Path" = ":memory:") -> None:
+    def __init__(self, db_path: str | Path = ":memory:") -> None:
         self._db_path: str = str(db_path)
         self._lock: threading.RLock = threading.RLock()
         # Cache a single connection so that :memory: databases are shared

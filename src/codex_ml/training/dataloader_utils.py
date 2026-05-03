@@ -50,7 +50,7 @@ def seed_worker(worker_id: int) -> None:  # pragma: no cover - thin wrapper
         torch.manual_seed(base_seed)
 
 
-def make_generator(seed: int) -> Optional["torch.Generator"]:
+def make_generator(seed: int) -> Optional[torch.Generator]:
     """Create a PyTorch ``Generator`` seeded with ``seed`` when available."""
 
     if torch is None or not hasattr(torch, "Generator"):

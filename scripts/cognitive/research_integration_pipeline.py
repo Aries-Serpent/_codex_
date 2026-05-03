@@ -125,7 +125,7 @@ class ResearchIntegrationPipeline:
         """Load previously discovered papers"""
         papers_file = self.data_path / "discovered_papers.json"
         if papers_file.exists():
-            with open(papers_file, 'r') as f:
+            with open(papers_file) as f:
                 data = json.load(f)
                 self.discovered_papers = [
                     ResearchPaper(**item) for item in data

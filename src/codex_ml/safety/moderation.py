@@ -105,7 +105,7 @@ class ModerationAdapter:
     @classmethod
     def from_settings(
         cls, settings: ModerationSettings, *, default_policy: str | None = None
-    ) -> "ModerationAdapter":
+    ) -> ModerationAdapter:
         return cls(settings=settings, default_policy=default_policy)
 
     @property

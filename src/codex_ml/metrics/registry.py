@@ -269,7 +269,7 @@ def _ensure_metric_plugins_loaded() -> None:
                 # Register built-in reward metrics alongside generative
                 # defaults without creating import cycles at module import
                 # time.
-                from . import reward as _reward  # noqa: WPS433
+                from . import reward as _reward
 
                 _ = _reward
                 _REWARD_METRICS_LOADED = True

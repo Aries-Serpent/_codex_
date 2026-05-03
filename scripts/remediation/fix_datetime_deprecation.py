@@ -37,7 +37,7 @@ def fix_datetime_file(filepath: Path) -> bool:
             has_timezone = False
 
             # Check various import patterns
-            if re.search(r'from datetime import.*timezone', content) or re.search(r'import datetime as _dt', content) and 'timezone.utc' in content:
+            if re.search(r'from datetime import.*timezone', content) or (re.search(r'import datetime as _dt', content) and 'timezone.utc' in content):
                 has_timezone = True
 
             if not has_timezone:

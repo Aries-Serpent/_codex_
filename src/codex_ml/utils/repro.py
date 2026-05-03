@@ -225,7 +225,7 @@ class DatasetManifest:
         if not manifest_path.exists():
             raise FileNotFoundError(f"Manifest file not found: {manifest_path}")
 
-        with open(manifest_path, "r", encoding="utf-8") as f:
+        with open(manifest_path, encoding="utf-8") as f:
             data = json.load(f)
 
         if not isinstance(data, dict) or "dataset_path" not in data:

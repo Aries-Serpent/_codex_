@@ -379,10 +379,10 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
     candidates: list[tuple[float, Path]] = []
     for item in root.iterdir():
         if (
-            item.is_dir()
-            and (item / "model.pt").exists()
-            or item.is_file()
-            and item.suffix == ".pt"
+            (item.is_dir()
+            and (item / "model.pt").exists())
+            or (item.is_file()
+            and item.suffix == ".pt")
         ):
             candidates.append((item.stat().st_mtime, item))
 
@@ -401,17 +401,17 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
 
 def save_checkpoint(
     state_or_model: Any = None,
-    path: "Path | str | None" = None,
+    path: Path | str | None = None,
     *,
     model: Any = None,
     optimizer: Any | None = None,
     scheduler: Any | None = None,
-    out_dir: "Path | str | None" = None,
-    metadata: "dict[str, Any] | None" = None,
+    out_dir: Path | str | None = None,
+    metadata: dict[str, Any] | None = None,
     metric_name: str = "eval_loss",
-    metric_value: "float | None" = None,
-    metric: "float | None" = None,
-    best_k: "int | None" = None,
+    metric_value: float | None = None,
+    metric: float | None = None,
+    best_k: int | None = None,
 ) -> Path:
     """Persist training state and emit checksum information.
 
@@ -526,15 +526,15 @@ def restore_into(
 
 
 def load_checkpoint(
-    path_or_ckpt_dir: "Path | str | None" = None,
+    path_or_ckpt_dir: Path | str | None = None,
     *,
     model: Any = None,
-    optimizer: "Any | None" = None,
-    scheduler: "Any | None" = None,
-    ckpt_dir: "Path | str | None" = None,
-    map_location: "str | None" = "cpu",
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    ckpt_dir: Path | str | None = None,
+    map_location: str | None = "cpu",
     strict: bool = False,
-) -> "dict[str, Any]":
+) -> dict[str, Any]:
     """Load training state.
 
     Supports two calling conventions:

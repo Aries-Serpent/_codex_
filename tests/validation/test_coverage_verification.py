@@ -208,7 +208,7 @@ class TestCoverageThresholdEnforcement:
         content = pyproject.read_text()
         assert "fail_under" in content, "fail_under threshold should be configured"
 
-    def test_coverage_threshold_value_is_90(self) -> None:
+    def test_coverage_threshold_value_is_80(self) -> None:
         """Test that coverage threshold is at least 80%."""
         pyproject = Path("pyproject.toml")
         if pyproject.exists():

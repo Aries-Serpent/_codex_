@@ -406,8 +406,7 @@ class Phase6Deployer:
             if config.get("tracking", {}).get("mlflow", {}).get("enabled"):
                 opt_in_features.append("tracking (enabled)")
         except Exception:  # Catch YAML loading or file access errors
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         logger.info(
             f"  ✓ Production features are explicit: {len(opt_in_features)} features enabled"
         )

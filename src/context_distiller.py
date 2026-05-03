@@ -140,7 +140,7 @@ class ContextDistiller:
             Dictionary with structure information
         """
         try:
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
         except Exception as e:
             logger.error(f"Failed to read {file_path}: {e}")
@@ -174,11 +174,11 @@ class ContextDistiller:
                 module, names = match.groups()
                 # Skip relative imports (from . import) and star imports
                 if (
-                    module
+                    (module
                     and not module.startswith(".")
-                    and "*" not in names
-                    or not module
-                    and "*" not in names
+                    and "*" not in names)
+                    or (not module
+                    and "*" not in names)
                 ):
                     imports.extend([n.strip() for n in names.split(",")])
             structure["imports"] = imports[:20]  # Limit to first 20 for brevity

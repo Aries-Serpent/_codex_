@@ -57,7 +57,7 @@ class CognitiveBrainUpdater:
         sessions = []
         for file in session_files:
             try:
-                with open(file, 'r', encoding='utf-8') as f:
+                with open(file, encoding='utf-8') as f:
                     data = yaml.safe_load(f)
                     sessions.append(data)
             except (OSError, yaml.YAMLError) as e:

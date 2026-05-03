@@ -123,7 +123,7 @@ def ingest_code(code_path: str, output_path: str, project_name: str = "unknown")
         return {"error": f"File not found: {code_path}"}
 
     # Read code
-    with open(code_file, 'r', encoding='utf-8') as f:
+    with open(code_file, encoding='utf-8') as f:
         code_content = f.read()
 
     # Generate fingerprint

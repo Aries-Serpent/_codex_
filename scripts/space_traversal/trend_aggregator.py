@@ -66,7 +66,7 @@ def _load_manifest_or_scored(path: Path) -> Optional[dict[str, Any]]:
     Returns dict with timestamp and capabilities list.
     """
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             data = json.load(f)
 
         # Extract timestamp
@@ -85,7 +85,7 @@ def _load_manifest_or_scored(path: Path) -> Optional[dict[str, Any]]:
         capabilities = data.get("capabilities", [])
 
         return {"timestamp": timestamp, "capabilities": capabilities, "source": str(path)}
-    except (IOError, json.JSONDecodeError) as e:
+    except (OSError, json.JSONDecodeError) as e:
         logger.debug(f"Exception: {e}")
         print(f"Failed to load {path}: {e}", file=sys.stderr)
         return None

@@ -216,7 +216,7 @@ class DocumentValidator:
                 if result.is_valid and text_content:
                     self._validate_text_content(text_content, result)
 
-        except IOError as e:
+        except OSError as e:
             result.add_error(f"Failed to read file: {e}")
 
         # Store metadata

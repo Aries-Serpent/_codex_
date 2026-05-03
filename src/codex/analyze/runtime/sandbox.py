@@ -338,7 +338,7 @@ tracer = trace.Trace(
 sys.argv = {[str(script)] + (args or [])}
 
 try:
-    tracer.runfunc(exec, open({repr(str(script))}).read(), {{'__name__': '__main__'}})
+    tracer.runfunc(exec, open({str(script)!r}).read(), {{'__name__': '__main__'}})
 except SystemExit:
     pass
 """

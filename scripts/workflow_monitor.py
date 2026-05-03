@@ -192,7 +192,7 @@ def parse_workflow_data(workflow_data: Dict[str, Any]) -> WorkflowRun:
 
 def load_workflow_runs(json_file: str) -> List[WorkflowRun]:
     """Load workflow runs from JSON file."""
-    with open(json_file, 'r') as f:
+    with open(json_file) as f:
         data = json.load(f)
 
     workflows = []

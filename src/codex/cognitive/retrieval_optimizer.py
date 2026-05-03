@@ -9,11 +9,14 @@ retrieval based on task type.
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class RetrievalStrategy(Enum):
@@ -237,8 +240,7 @@ class RelevanceScorer:
                 recency_factor = max(0, 1 - days_old / 30)  # Decay over 30 days
                 score += recency_factor * 0.2
             except (TypeError, ValueError):
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         return min(score, 1.0)
 
     def score_batch(
@@ -285,8 +287,7 @@ class ProactiveLoader:
                 if created.timestamp() > cutoff:
                     results.append(item)
             except (TypeError, ValueError):
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         return results
 
     def get_task_relevant_knowledge(self, task_type: TaskType) -> list[dict[str, Any]]:

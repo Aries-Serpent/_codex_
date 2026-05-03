@@ -53,7 +53,7 @@ except ImportError:  # pragma: no cover
 
 @runtime_checkable
 class Criterion(Protocol):
-    def __call__(self, outputs, targets) -> "torch.Tensor": ...
+    def __call__(self, outputs, targets) -> torch.Tensor: ...
 
 
 @runtime_checkable
@@ -256,8 +256,7 @@ def evaluate_epoch(
                         lg.log(record)
                     except Exception:  # pragma: no cover (rare)
                         # Gracefully continue; avoid breaking evaluation on logger failure
-                        pass
-
+                        logger.debug("Suppressed exception in handler", exc_info=True)
     avg_loss = running_loss / max(total, 1)
 
     metric_results: dict[str, float] = {}
@@ -303,8 +302,7 @@ def evaluate_epoch(
                 lg.log(epoch_record)
                 lg.close()
             except Exception:  # pragma: no cover
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     return result
 
 

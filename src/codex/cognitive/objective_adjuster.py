@@ -200,7 +200,7 @@ class ObjectiveStore:
                     data = json.load(f)
                     self._objectives = data.get("objectives", {})
                     self._adjustments = data.get("adjustments", [])
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 self._objectives = {}
                 self._adjustments = []
 

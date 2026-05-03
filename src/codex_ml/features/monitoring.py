@@ -91,7 +91,7 @@ class FeatureHealthMonitor:
 
     def __init__(
         self,
-        feature_store: Optional["FeatureStore"] = None,
+        feature_store: Optional[FeatureStore] = None,
         freshness_threshold_minutes: int = 60,
     ):
         """Initialize feature health monitor.

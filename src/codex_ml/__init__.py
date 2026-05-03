@@ -32,7 +32,7 @@ except Exception:  # pragma: no cover - degrade gracefully when config deps are 
             self._name = name
 
         def __getattr__(self, item: str):  # pragma: no cover - defensive
-            raise RuntimeError(
+            raise AttributeError(
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[configs]"
             )
 
@@ -126,7 +126,7 @@ except Exception:  # pragma: no cover - degrade gracefully when symbolic deps mi
             self._name = name
 
         def __getattr__(self, item: str):  # pragma: no cover - defensive
-            raise RuntimeError(
+            raise AttributeError(
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
             )
 
@@ -177,7 +177,7 @@ def __getattr__(name: str):
         try:
             return import_module(f"codex_ml.{name}")
         except ImportError:
-            pass
+            logger.debug("Suppressed exception in handler", exc_info=True)
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None
 
     module_name, attr_name = _EXPORT_MAP[name]

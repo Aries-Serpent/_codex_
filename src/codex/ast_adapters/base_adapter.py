@@ -137,7 +137,7 @@ class BaseASTAdapter(ABC):
             Root node of the standardized AST
         """
         self.file_path = file_path
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source_code = f.read()
         return self.parse(source_code)
 

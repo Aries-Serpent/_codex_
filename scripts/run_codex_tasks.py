@@ -72,7 +72,7 @@ def log_error(step: str, error: Exception) -> None:
         fh.write(
             f"Question for ChatGPT-5 {timestamp}:\n"
             f"While performing [{step}], encountered the following error:\n"
-            f"{repr(error)}\n"
+            f"{error!r}\n"
             f"Context: See run_codex_tasks.py for details.\n"
             "What are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"
         )

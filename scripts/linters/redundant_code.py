@@ -151,7 +151,7 @@ def analyze_file(file_path: Path) -> list[tuple[int, str, str]]:
         return []
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source = f.read()
 
         tree = ast.parse(source, filename=str(file_path))
@@ -179,7 +179,7 @@ def fix_redundant_pass(
         return False
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
 
         # Filter for redundant_pass issues

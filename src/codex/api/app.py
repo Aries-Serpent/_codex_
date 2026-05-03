@@ -53,7 +53,7 @@ try:
     # the include_router prefix="/api/auth" supplies the full mount point.
     app.include_router(create_auth_router(prefix=""), prefix="/api/auth", tags=["auth"])
 except ImportError:  # pragma: no cover – auth module not installed
-    pass
+    logger.debug("Suppressed exception in handler", exc_info=True)
 except Exception as _auth_exc:  # pragma: no cover – unexpected init error
     import logging as _logging
 

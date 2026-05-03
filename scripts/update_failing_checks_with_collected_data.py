@@ -25,7 +25,7 @@ def parse_job_data(summary_file: Path) -> Dict[str, Dict]:
     Returns:
         Dict mapping run_id to job info
     """
-    with open(summary_file, 'r') as f:
+    with open(summary_file) as f:
         content = f.read()
 
     job_data = {}
@@ -100,7 +100,7 @@ def parse_artifact_data(accountability_file: Path) -> Dict[str, List[str]]:
         Dict mapping run_id to list of artifacts
     """
     try:
-        with open(accountability_file, 'r') as f:
+        with open(accountability_file) as f:
             content = f.read()
 
         # Look for artifact summary section
@@ -119,7 +119,7 @@ def update_failing_checks(failing_checks_file: Path, job_data: Dict, artifact_da
     """
     Update failing_checks.md with collected data.
     """
-    with open(failing_checks_file, 'r') as f:
+    with open(failing_checks_file) as f:
         content = f.read()
 
     # Track updates

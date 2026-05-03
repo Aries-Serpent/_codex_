@@ -15,12 +15,15 @@ Physics Model: Fields🔄 - Track all references with metadata
 
 import argparse
 import json
+import logging
 import os
 import re
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+logger = logging.getLogger(__name__)
 
 # Reference patterns to search for
 REFERENCE_PATTERNS = [
@@ -112,7 +115,7 @@ def scan_file_for_references(
     references = []
 
     try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(file_path, encoding='utf-8', errors='ignore') as f:
             content = f.read()
 
         for pattern in patterns:
@@ -134,8 +137,7 @@ def scan_file_for_references(
 
     except Exception:
         # Skip files that can't be read
-        pass
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     return references
 
 

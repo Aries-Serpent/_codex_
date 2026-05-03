@@ -302,7 +302,7 @@ class ComplexFileDisambiguator:
             self.stats['links_found'] += result['links_found']
 
         except Exception as e:
-            self.stats['errors'].append(f"{file_path}: {str(e)}")
+            self.stats['errors'].append(f"{file_path}: {e!s}")
             result['error'] = str(e)
 
         return result

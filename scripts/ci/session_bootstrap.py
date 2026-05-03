@@ -60,6 +60,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import re
 import subprocess
@@ -70,6 +71,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+logger = logging.getLogger(__name__)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 REPO_ROOT   = Path(__file__).resolve().parent.parent.parent
@@ -638,7 +641,7 @@ def _resolve_repo() -> str:
         if m:
             return m.group(1)
     except Exception:  # noqa: BLE001
-        pass
+        logger.debug("Suppressed exception in handler", exc_info=True)
     return "unknown/unknown"
 
 

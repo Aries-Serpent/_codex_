@@ -53,7 +53,7 @@ class InternalRepoSearch(SearchProvider):
         pattern = re.compile(re.escape(query), re.I)
         for path in glob.glob(str(self.root / "**/*.py"), recursive=True):
             try:
-                with open(path, "r", encoding="utf-8", errors="ignore") as handle:
+                with open(path, encoding="utf-8", errors="ignore") as handle:
                     for lineno, line in enumerate(handle, 1):
                         if pattern.search(line):
                             results.append(

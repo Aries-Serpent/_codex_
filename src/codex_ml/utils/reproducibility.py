@@ -62,8 +62,7 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
         try:
             _np.random.seed(seed)
         except Exception:  # pragma: no cover
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     if _torch is not None:  # pragma: no cover - optional dep
         try:
             _torch.manual_seed(seed)
@@ -71,10 +70,9 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
                 try:
                     _torch.cuda.manual_seed_all(seed)
                 except Exception:  # pragma: no cover
-                    pass
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         except Exception:  # pragma: no cover
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     if set_env:
         os.environ["CODEX_GLOBAL_SEED"] = str(seed)
 

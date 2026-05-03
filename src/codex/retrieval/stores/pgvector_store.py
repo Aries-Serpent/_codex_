@@ -102,7 +102,7 @@ class PGVectorStore:
         self.pool_size = pool_size
         self.shard_id = shard_id  # None = operate on all shards
         self.pool: Optional[AsyncConnectionPool] = None
-        self._kmeans: Optional["KMeans"] = None
+        self._kmeans: Optional[KMeans] = None
         self._shard_centroids: Optional[np.ndarray] = None
 
         if not HAS_PSYCOPG3:

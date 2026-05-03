@@ -61,7 +61,7 @@ def merge_sarif_files(input_dir: Path, output_file: Path) -> dict[str, Any]:
     total_results = 0
     for sarif_file in sorted(sarif_files):
         try:
-            with open(sarif_file, "r", encoding="utf-8") as f:
+            with open(sarif_file, encoding="utf-8") as f:
                 data = json.load(f)
 
             if "runs" in data:

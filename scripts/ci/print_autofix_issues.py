@@ -22,7 +22,7 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        with open(args.report, "r", encoding="utf-8") as f:
+        with open(args.report, encoding="utf-8") as f:
             report = json.load(f)
     except FileNotFoundError:
         print(f"Report not found: {args.report}")

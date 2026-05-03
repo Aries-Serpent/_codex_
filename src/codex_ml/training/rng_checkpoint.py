@@ -46,7 +46,7 @@ class RNGState:
         return path
 
     @classmethod
-    def load_from_file(cls, path: Path) -> "RNGState":
+    def load_from_file(cls, path: Path) -> RNGState:
         data = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(data, dict):
             raise ValueError("RNG state file must contain a JSON object")
@@ -65,14 +65,12 @@ def set_seed(seed: int) -> None:
         try:
             np.random.seed(seed)
         except Exception:  # pragma: no cover
-            pass
+            logger.debug("Suppressed exception in handler", exc_info=True)
     if torch is not None:
         try:
             torch.manual_seed(seed)
             if hasattr(torch.cuda, "manual_seed_all"):
                 torch.cuda.manual_seed_all(seed)  # pragma: no cover - GPU path
         except Exception:  # pragma: no cover
-            pass
-
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
 __all__ = ["RNGState", "set_seed"]

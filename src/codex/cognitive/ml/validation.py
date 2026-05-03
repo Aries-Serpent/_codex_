@@ -54,7 +54,7 @@ class ValidationMetrics:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ValidationMetrics":
+    def from_dict(cls, data: dict[str, Any]) -> ValidationMetrics:
         """Create from dictionary."""
         return cls(
             accuracy=data.get("accuracy", 0.0),
@@ -110,7 +110,7 @@ class ModelVersion:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ModelVersion":
+    def from_dict(cls, data: dict[str, Any]) -> ModelVersion:
         """Create from dictionary."""
         return cls(
             version=data["version"],
@@ -457,7 +457,7 @@ class PerformanceRecord:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "PerformanceRecord":
+    def from_dict(cls, data: dict[str, Any]) -> PerformanceRecord:
         """Create from dictionary."""
         return cls(
             timestamp=data["timestamp"],
@@ -598,7 +598,7 @@ class PerformanceTracker:
         path.write_text(json.dumps(data, indent=2))
 
     @classmethod
-    def load(cls, path: Path) -> "PerformanceTracker":
+    def load(cls, path: Path) -> PerformanceTracker:
         """Load tracker from file."""
         data = json.loads(path.read_text())
         tracker = cls(alert_threshold=data.get("alert_threshold", 0.1))
@@ -786,7 +786,7 @@ class ModelRegistry:
         self.storage_path.write_text(json.dumps(data, indent=2))
 
     @classmethod
-    def load(cls, path: Path) -> "ModelRegistry":
+    def load(cls, path: Path) -> ModelRegistry:
         """Load registry from storage."""
         data = json.loads(path.read_text())
         registry = cls(storage_path=path)

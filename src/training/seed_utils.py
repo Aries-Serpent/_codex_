@@ -40,9 +40,7 @@ def _set_numpy_seed(seed: int) -> None:
         np.random.seed(seed)
     except (AttributeError, RuntimeError):
         # numpy can raise when compiled without RNG support
-        pass
-
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
 def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
     torch_info: dict[str, Any] = {"available": False}
     try:
@@ -53,8 +51,7 @@ def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
             torch.cuda.manual_seed_all(seed)
         except (RuntimeError, AttributeError):
             # CUDA might be unavailable; ignore in that case
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         torch_info["available"] = True
         torch_info["deterministic"] = bool(deterministic)
 

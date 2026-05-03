@@ -72,7 +72,7 @@ class UserStore:
     ) -> None:
         self._hasher = hasher or PasswordHasher()
         if repository is not None:
-            self._repository: "UserRepository" = repository
+            self._repository: UserRepository = repository
         else:
             backend = os.environ.get("CODEX_USERSTORE_BACKEND", "memory").lower()
             if backend == "sqlite":

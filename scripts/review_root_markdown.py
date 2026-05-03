@@ -193,8 +193,7 @@ class MarkdownAnalyzer:
                             str(md_file.relative_to(self.repo_path))
                         )
                     except (ValueError, OSError):
-                        pass  # Skip invalid paths during reference building
-
+                        logger.debug("Suppressed exception in handler", exc_info=True)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 # Skip files that cannot be processed

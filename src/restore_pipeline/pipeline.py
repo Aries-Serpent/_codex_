@@ -160,7 +160,7 @@ def _pick_algorithm() -> str:
 
         return "bm3d"
     except ImportError:
-        pass
+        logger.debug("Suppressed exception in handler", exc_info=True)
     return "nl_means"
 
 

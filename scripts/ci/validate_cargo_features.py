@@ -10,10 +10,13 @@ This script should be run in CI/CD pipelines and by Dependabot PRs.
 """
 
 import json
+import logging
 import re
 import sys
 from pathlib import Path
 from typing import List, Tuple
+
+logger = logging.getLogger(__name__)
 
 try:
     import tomllib  # Python 3.11+
@@ -50,8 +53,7 @@ def validate_cargo_features(cargo_toml_path: Path) -> Tuple[bool, List[str]]:
                 features_section = cargo_data["features"]
         except Exception:
             # Fallback to regex if TOML parsing fails
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     # Fallback: regex-based parsing
     if features_section is None:
         if "[features]" not in content:

@@ -921,7 +921,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
             except (OSError, UnicodeDecodeError) as e:
                 logger.debug(f"Exception: {e}")
                 results["migrations_failed"] += len(file_migrations)
-                results["errors"].append(f"{file_path}: {str(e)}")
+                results["errors"].append(f"{file_path}: {e!s}")
 
         results["files_modified"] = list(results["files_modified"])
 

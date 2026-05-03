@@ -435,8 +435,7 @@ def scan(
                     if (now - run_dt).total_seconds() > age_cutoff_s:
                         continue
                 except ValueError:  # malformed timestamp — skip age-filtering for this run
-                    pass
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             report["failed_runs"] += 1
             run_id: int = run["id"]
             workflow_name: str = run.get("name", "")

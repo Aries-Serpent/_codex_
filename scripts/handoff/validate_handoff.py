@@ -21,9 +21,12 @@ Usage:
 
 import argparse
 import json
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 # Constants
 REPO_ROOT = Path(__file__).parent.parent.parent
@@ -184,10 +187,10 @@ class HandoffValidator:
         """Load handoff tracking data."""
         if TRACKING_FILE.exists():
             try:
-                with open(TRACKING_FILE, 'r') as f:
+                with open(TRACKING_FILE) as f:
                     return json.load(f)
             except json.JSONDecodeError:
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         return {"handoffs": [], "metrics": {}}
 
     def _save_tracking_data(self, data: Dict[str, Any]):

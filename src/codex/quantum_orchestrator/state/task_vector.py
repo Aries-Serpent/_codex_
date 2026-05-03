@@ -99,7 +99,7 @@ class TaskVector:
             return self.to_array() - other.to_array()
         if isinstance(other, np.ndarray):
             return self.to_array() - other
-        raise TypeError(f"Cannot subtract {type(other)} from TaskVector")
+        return NotImplemented
 
     def __mul__(self, scalar: float) -> "TaskVector":
         """Scalar multiplication."""

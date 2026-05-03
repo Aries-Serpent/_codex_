@@ -291,7 +291,7 @@ def load_index(
     # Load chunks metadata
     chunks_file = index_path / "chunks.json"
     if chunks_file.exists():
-        with open(chunks_file, "r", encoding="utf-8") as f:
+        with open(chunks_file, encoding="utf-8") as f:
             chunks_metadata = json.load(f)
     else:
         chunks_metadata = []
@@ -299,7 +299,7 @@ def load_index(
     # Load index metadata
     metadata_file = index_path / "metadata.json"
     if metadata_file.exists():
-        with open(metadata_file, "r", encoding="utf-8") as f:
+        with open(metadata_file, encoding="utf-8") as f:
             index_metadata = json.load(f)
     else:
         index_metadata = {}
@@ -341,7 +341,7 @@ def build_index_from_files(
             continue
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 text = f.read()
 
             chunks = chunk_text(text, chunk_size=chunk_size, overlap=overlap)
@@ -714,7 +714,7 @@ def manage_tenant_indices(
                 operation=op_enum,
                 tenant_id=tenant_id,
                 index_names=index_names,
-                message=f"Failed to merge indices: {str(e)}",
+                message=f"Failed to merge indices: {e!s}",
             )
 
     # LIST: List all indices for tenant
@@ -736,7 +736,7 @@ def manage_tenant_indices(
                     # Load metadata for summary
                     metadata_file = item / "metadata.json"
                     if metadata_file.exists():
-                        with open(metadata_file, "r") as f:
+                        with open(metadata_file) as f:
                             metadata = json.load(f)
                         indices.append(
                             {
@@ -772,7 +772,7 @@ def manage_tenant_indices(
                 operation=op_enum,
                 tenant_id=tenant_id,
                 index_names=[],
-                message=f"Failed to list indices: {str(e)}",
+                message=f"Failed to list indices: {e!s}",
             )
 
     # Fallback for unknown operations
@@ -843,8 +843,7 @@ class RAGIndexer:
             self.model = safe_model_to_device(self.model, self.device)
         except Exception:
             # Model unavailable (offline, missing dep, etc.) — leave as None.
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     def move_to_device(self, device: str) -> None:
         """Move the loaded embedding model to *device* and update ``self.device``."""
         self.device = device

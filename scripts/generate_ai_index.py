@@ -261,8 +261,7 @@ class RepositoryIndexer:
             except (UnicodeDecodeError, ValueError):
                 # If the file cannot be decoded or parsed for __all__/keywords,
                 # skip these optional enrichments but still index the file itself.
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Add semantic tags based on path
         path_parts = Path(relative_path).parts
         file_index.semantic_tags = [

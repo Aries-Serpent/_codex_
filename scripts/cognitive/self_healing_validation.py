@@ -91,7 +91,7 @@ class SelfHealingValidator:
         """Load self-healing history from file."""
         try:
             if self.history_file.exists():
-                with open(self.history_file, 'r') as f:
+                with open(self.history_file) as f:
                     return json.load(f)
             return []
         except Exception as e:

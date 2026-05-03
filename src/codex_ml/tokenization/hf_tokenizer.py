@@ -195,7 +195,7 @@ class _WhitespaceFallbackTokenizer:
             try:
                 import torch
             except Exception:  # pragma: no cover - torch optional
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
             else:
                 return {"input_ids": torch.tensor(sequences, dtype=torch.long)}
         return {"input_ids": sequences}
@@ -210,7 +210,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     @classmethod
     def load(
         cls, name_or_path: Optional[str] = None, *, use_fast: bool = True
-    ) -> "HFTokenizerAdapter":
+    ) -> HFTokenizerAdapter:
         """Instantiate the adapter from a pretrained tokenizer.
 
         Parameters

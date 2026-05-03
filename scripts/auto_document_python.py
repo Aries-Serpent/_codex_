@@ -110,7 +110,7 @@ def add_module_docstring(file_path: Path) -> bool:
     Returns:
         True if docstring was added, False otherwise
     """
-    with open(file_path, 'r') as f:
+    with open(file_path) as f:
         content = f.read()
 
     # Skip if already has triple quotes at start

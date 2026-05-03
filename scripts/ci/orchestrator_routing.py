@@ -16,10 +16,13 @@ Usage (CLI):
 
 from __future__ import annotations
 
+import logging
 import pathlib
 from typing import Any
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 REGISTRY_PATH = REPO_ROOT / ".github" / "agents" / "AGENT_REGISTRY.yaml"
@@ -69,8 +72,7 @@ def select_specialist(task_description: str, top_k: int = 1) -> str:
                 r["source"].split("/")[-1].replace(".md", "") for r in agent_results[:top_k]
             )
     except Exception:  # noqa: BLE001
-        pass  # fall through to keyword match
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     # Strategy 2: Keyword match against capability_tags in registry
     agents = _load_registry()
     query_words = set(task_description.lower().split())

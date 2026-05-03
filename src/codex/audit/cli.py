@@ -1,11 +1,14 @@
 """Code audit CLI - Phase 1 implementation stub."""
 
 import json
+import logging
 import subprocess
 import sys
 from pathlib import Path
 
 import click
+
+logger = logging.getLogger(__name__)
 
 
 @click.command()
@@ -34,8 +37,7 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
         if proc.returncode == 0 and proc.stdout:
             pip_audit_result = json.loads(proc.stdout)
     except Exception:
-        pass
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     if pip_audit_result is not None:
         vulns = pip_audit_result.get("vulnerabilities", [])
         result["vulnerabilities"] = vulns
@@ -59,7 +61,7 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
                     if line and not line.startswith("#"):
                         packages.append(line.split("==")[0].split(">=")[0].split("<=")[0].strip())
             except Exception:
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         result["summary"]["scanned_requirements_files"] = len(req_files)
         result["summary"]["total_packages"] = len(packages)
         result["summary"]["note"] = "pip-audit not available; manual review recommended"

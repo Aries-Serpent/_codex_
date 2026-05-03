@@ -29,11 +29,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import sys
 from datetime import datetime, timezone
 from typing import Any
 from urllib import error, request
+
+logger = logging.getLogger(__name__)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -729,8 +732,7 @@ def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
                     f'repo="{report["repo"]}",author="{author}",type="{ctype}"}} {pending_secs:.3f}'
                 )
             except (ValueError, TypeError):  # skip comments with unparseable timestamps
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     if latency_lines:
         lines += [
             "# HELP comment_review_gate_response_latency_seconds Seconds from comment creation to first Copilot reply",

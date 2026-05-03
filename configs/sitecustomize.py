@@ -21,7 +21,7 @@ class _StubObject:
         )
 
     def __getattr__(self, name: str):  # pragma: no cover - defensive
-        raise ImportError(
+        raise AttributeError(
             f"Optional dependency '{self._target}' is not installed; "
             "install it to enable this functionality."
         )

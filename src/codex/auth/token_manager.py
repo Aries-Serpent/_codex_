@@ -218,7 +218,7 @@ class TokenManager:
             return TokenClaims.from_dict(payload)
 
         except Exception as e:
-            error_msg = sanitize_log_message(f"Token decode failed: {str(e)}")
+            error_msg = sanitize_log_message(f"Token decode failed: {e!s}")
             raise ValueError(error_msg) from e
 
     def generate_access_token(self, user_id: str, scope: Optional[str] = None) -> str:

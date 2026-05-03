@@ -68,7 +68,7 @@ class WorkflowValidator:
                 }
 
             except Exception as e:
-                print(f"❌ {workflow_file}: {str(e)}")
+                print(f"❌ {workflow_file}: {e!s}")
                 all_valid = False
                 self.results[workflow_file] = {
                     'syntax': 'invalid',
@@ -122,7 +122,7 @@ class WorkflowValidator:
                 print(f"✅ {workflow_file}: Structure valid")
 
             except Exception as e:
-                print(f"❌ {workflow_file}: {str(e)}")
+                print(f"❌ {workflow_file}: {e!s}")
                 all_valid = False
 
         return all_valid
@@ -154,7 +154,7 @@ class WorkflowValidator:
                     all_supported = False
 
             except Exception as e:
-                print(f"❌ {workflow_file}: {str(e)}")
+                print(f"❌ {workflow_file}: {e!s}")
                 all_supported = False
 
         return all_supported

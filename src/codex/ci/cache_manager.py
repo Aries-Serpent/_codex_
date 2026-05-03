@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import platform
 import subprocess
@@ -39,6 +40,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from codex.utils.path_utils import windows_safe_timestamp
+
+logger = logging.getLogger(__name__)
 
 
 class CacheType(Enum):
@@ -305,8 +308,7 @@ class CacheManager:
             ):
                 # Swallow errors when gh CLI is unavailable or times out
                 # Health metrics will remain at default values (0)
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         if health.total_size_gb > size_threshold_gb:
             health.is_critical = True
             health.warnings.append(

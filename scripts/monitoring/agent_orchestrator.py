@@ -164,7 +164,7 @@ class AgentOrchestrator:
 
         # Read agent definition
         try:
-            with open(agent_path, 'r') as f:
+            with open(agent_path) as f:
                 agent_definition = f.read()
             logger.debug(
                 "Loaded agent definition for %s from %s (length=%d)",
@@ -652,7 +652,7 @@ def main():
     args = parser.parse_args()
 
     # Load config
-    with open(args.config, 'r') as f:
+    with open(args.config) as f:
         config = yaml.safe_load(f)
 
     # Initialize orchestrator

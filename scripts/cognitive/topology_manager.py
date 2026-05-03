@@ -143,7 +143,7 @@ class TopologyManager:
 
         for map_file in self.topology_dir.glob("*.json"):
             try:
-                with open(map_file, "r") as f:
+                with open(map_file) as f:
                     data = json.load(f)
                     nav_map = NavigationMap.from_dict(data)
                     self.maps[nav_map.name] = nav_map

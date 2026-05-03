@@ -12,7 +12,7 @@ from typing import Union
 import torch
 
 
-def accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> "torch.Tensor":
+def accuracy(logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
     """
     Compute classification accuracy from logits and integer targets.
     """
@@ -20,7 +20,7 @@ def accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> "torch.Tensor":
     return (preds == targets).float().mean()
 
 
-def precision(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Tensor"]) -> float:
+def precision(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tensor]) -> float:
     """
     Compute binary classification precision.
     """
@@ -37,7 +37,7 @@ def precision(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Te
     return true_positives / predicted_positives
 
 
-def recall(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Tensor"]) -> float:
+def recall(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tensor]) -> float:
     """
     Compute binary classification recall.
     """
@@ -54,7 +54,7 @@ def recall(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Tenso
     return true_positives / actual_positives
 
 
-def f1_score(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Tensor"]) -> float:
+def f1_score(preds: Union[list, torch.Tensor], targets: Union[list, torch.Tensor]) -> float:
     """
     Compute binary classification F1 score.
     """
@@ -66,7 +66,7 @@ def f1_score(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Ten
     return 2 * (prec * rec) / (prec + rec)
 
 
-def perplexity(logits: "torch.Tensor", targets: "torch.Tensor") -> float:
+def perplexity(logits: torch.Tensor, targets: torch.Tensor) -> float:
     """
     Compute perplexity from logits and targets.
     """
@@ -76,7 +76,7 @@ def perplexity(logits: "torch.Tensor", targets: "torch.Tensor") -> float:
     return torch.exp(loss).item()
 
 
-def token_accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> float:
+def token_accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:
     """
     Compute token-level accuracy.
     """

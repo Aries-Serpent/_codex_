@@ -104,7 +104,7 @@ class CheckpointIntegrity:
             return False
 
         # Load saved hash
-        with open(self.hash_path, "r", encoding="utf-8") as f:
+        with open(self.hash_path, encoding="utf-8") as f:
             integrity_data = json.load(f)
 
         saved_hash = integrity_data.get("sha256")
@@ -143,7 +143,7 @@ class CheckpointIntegrity:
         if not self.hash_path.exists():
             return None
 
-        with open(self.hash_path, "r", encoding="utf-8") as f:
+        with open(self.hash_path, encoding="utf-8") as f:
             return json.load(f)
 
 

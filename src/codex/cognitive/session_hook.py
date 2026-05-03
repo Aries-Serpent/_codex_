@@ -454,8 +454,7 @@ class SessionContextInjector:
         try:
             self._api.store_memory(lesson, tags=["api-failure", "reconstruction"])
         except Exception:  # noqa: BLE001
-            pass  # best-effort; cannot fail the session for a memory write
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         return SessionContextPayload(
             session_id=(f"reconstructed-{hashlib.sha256(str(meta).encode()).hexdigest()[:8]}"),
             injected_patterns=reconstructed_patterns[:5],

@@ -214,7 +214,7 @@ class AuditLog:
                     data = json.load(f)
                     self._events = data.get("events", [])
                     self._event_counter = data.get("counter", 0)
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 self._events = []
 
     def _save(self) -> None:

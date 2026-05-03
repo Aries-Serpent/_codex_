@@ -89,7 +89,7 @@ class TokenizerAdapter(abc.ABC):
         """Persist tokenizer to ``output_dir``."""
 
     @staticmethod
-    def from_config(cfg: dict[str, Any]) -> "TokenizerAdapter":
+    def from_config(cfg: dict[str, Any]) -> TokenizerAdapter:
         """Instantiate a tokenizer adapter from configuration mapping.
 
         Expected keys include ``type`` (``"hf"`` or ``"whitespace"``) and
@@ -253,7 +253,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     def __init__(
         self,
-        model_or_processor: str | Path | "spm.SentencePieceProcessor",  # type: ignore[name-defined]
+        model_or_processor: str | Path | spm.SentencePieceProcessor,  # type: ignore[name-defined]
         *,
         special_tokens: Optional[Sequence[str] | Mapping[str, int]] = None,
     ) -> None:
@@ -269,7 +269,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         self.special_tokens: list[str] = []
         self.special_tokens_map: dict[str, int] = {}
         self._adapter: Optional[SentencePieceAdapter] = None
-        self._processor: "spm.SentencePieceProcessor"  # type: ignore[name-defined]
+        self._processor: spm.SentencePieceProcessor  # type: ignore[name-defined]
         self.model_path: Optional[Path] = None
         self._special_tokens_path: Optional[Path] = None
 
@@ -307,7 +307,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
             )
 
     @classmethod
-    def from_pretrained(cls, path_or_folder: str | Path) -> "SentencePieceTokenizer":
+    def from_pretrained(cls, path_or_folder: str | Path) -> SentencePieceTokenizer:
         path = Path(path_or_folder)
         model_file = cls._resolve_model_path(path)
         special_tokens = cls._discover_special_tokens(model_file)
@@ -354,7 +354,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         return ordered
 
     def _prepare_special_tokens_state(
-        self, adapter: "_SentencePieceAdapter"
+        self, adapter: _SentencePieceAdapter
     ) -> tuple[dict[str, int], list[str], Path]:
         default_path = adapter.model_prefix.with_suffix(".special_tokens.json")
         existing_map: dict[str, int] = {}
@@ -416,7 +416,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     def _init_from_processor(
         self,
-        processor: "spm.SentencePieceProcessor",  # type: ignore[name-defined]
+        processor: spm.SentencePieceProcessor,  # type: ignore[name-defined]
         tokens_to_add: Sequence[str],
         provided_map: Optional[dict[str, int]],
     ) -> None:
@@ -446,7 +446,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         return [token for token, _ in sorted(mapping.items(), key=lambda item: item[1])]
 
     @staticmethod
-    def _processor_vocab_size(processor: "spm.SentencePieceProcessor") -> int:  # type: ignore[name-defined]
+    def _processor_vocab_size(processor: spm.SentencePieceProcessor) -> int:  # type: ignore[name-defined]
         for attr in ("get_piece_size", "piece_size", "vocab_size"):
             getter = getattr(processor, attr, None)
             if callable(getter):

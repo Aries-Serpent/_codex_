@@ -77,7 +77,7 @@ class WorkflowRefactorer:
             return False
 
         # Read workflow
-        with open(workflow_path, "r") as f:
+        with open(workflow_path) as f:
             content = f.read()
 
         # Check if workflow_dispatch already exists
@@ -131,7 +131,7 @@ class WorkflowRefactorer:
             return {"modified": False, "error": "PyYAML not installed"}
 
         # Read workflow
-        with open(workflow_path, "r") as f:
+        with open(workflow_path) as f:
             content = f.read()
 
         # Parse YAML
@@ -200,7 +200,7 @@ class WorkflowRefactorer:
             return False
 
         # Read workflow
-        with open(workflow_path, "r") as f:
+        with open(workflow_path) as f:
             content = f.read()
 
         # Check if codex_digest already present
@@ -305,7 +305,7 @@ class WorkflowRefactorer:
             return {"valid": False, "error": "PyYAML not installed"}
 
         try:
-            with open(workflow_path, "r") as f:
+            with open(workflow_path) as f:
                 data = yaml.safe_load(f)
 
             # Basic validation

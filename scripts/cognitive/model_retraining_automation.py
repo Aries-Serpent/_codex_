@@ -82,7 +82,7 @@ class ModelRetrainingAutomation:
     def _load_models_registry(self) -> Dict[str, Any]:
         """Load models registry from disk"""
         if self.models_registry_path.exists():
-            with open(self.models_registry_path, 'r') as f:
+            with open(self.models_registry_path) as f:
                 return json.load(f)
         return {
             "pattern_detector": {
@@ -147,7 +147,7 @@ class ModelRetrainingAutomation:
                 file_date = datetime.fromisoformat(file_date_str)
 
                 if file_date >= cutoff_date:
-                    with open(file, 'r') as f:
+                    with open(file) as f:
                         data = json.load(f)
                         if isinstance(data, list):
                             data_list.extend(data)
@@ -168,7 +168,7 @@ class ModelRetrainingAutomation:
         data_list = []
         for file in decision_files:
             try:
-                with open(file, 'r') as f:
+                with open(file) as f:
                     data = json.load(f)
                     if isinstance(data, list):
                         data_list.extend(data)
@@ -189,7 +189,7 @@ class ModelRetrainingAutomation:
         data_list = []
         for file in action_files:
             try:
-                with open(file, 'r') as f:
+                with open(file) as f:
                     data = json.load(f)
                     if isinstance(data, list):
                         data_list.extend(data)
@@ -210,7 +210,7 @@ class ModelRetrainingAutomation:
         data_list = []
         for file in outcome_files:
             try:
-                with open(file, 'r') as f:
+                with open(file) as f:
                     data = json.load(f)
                     if isinstance(data, list):
                         data_list.extend(data)
@@ -443,7 +443,7 @@ class ModelRetrainingAutomation:
         backup_files = list(backup_dir.glob(f"{model_name}_*.json"))
 
         for backup_file in sorted(backup_files, reverse=True):
-            with open(backup_file, 'r') as f:
+            with open(backup_file) as f:
                 backup_data = json.load(f)
                 if backup_data.get("version") == version:
                     # Restore from backup

@@ -1554,8 +1554,7 @@ def _evaluate_model(
         if len(dataset) == 0:
             return {}
     except Exception:  # pragma: no cover - len may not be defined
-        pass
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
     torch_dataset = dataset
     if hasattr(dataset, "with_format"):
         try:
@@ -1563,8 +1562,7 @@ def _evaluate_model(
             if formatted is not None:
                 torch_dataset = formatted
         except Exception:  # pragma: no cover - fallback to raw dataset
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     loader = DataLoader(torch_dataset, batch_size=batch_size)
 
     device = getattr(model, "device", None)

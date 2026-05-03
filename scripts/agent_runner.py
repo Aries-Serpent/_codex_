@@ -40,6 +40,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
+
 REPO_ROOT = Path(__file__).parent.parent
 # Emergency stop: set AGENT_KILL_SWITCH=1 to immediately halt all agent loops
 _KILL_SWITCH = os.environ.get("AGENT_KILL_SWITCH", "0") == "1"
@@ -147,7 +149,7 @@ def _handle_kill_switch(run_id: str, audit_dir: Path) -> int:
         _write_kill_switch_audit(run_id=run_id, audit_dir=audit_dir)
         log.info("Kill-switch audit record written: kill_switch_%s.json", run_id)
     except Exception:  # noqa: BLE001
-        pass
+        logger.debug("Suppressed exception in handler", exc_info=True)
     return 1
 
 
@@ -158,9 +160,7 @@ def _resume_session(session_file: Path) -> None:
             current = json.loads(session_file.read_text(encoding="utf-8"))
             log.info("Resuming from session: %s", current.get("session_id", "?")[:12])
         except Exception:  # noqa: BLE001
-            pass
-
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
 def _run_autonomy_loop(
     iterations: int,
     deadline: float,

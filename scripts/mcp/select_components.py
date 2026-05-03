@@ -39,7 +39,7 @@ from typing import List, Set
 
 def load_topics(topics_file: Path) -> dict:
     """Load topic-to-path mappings from JSON file"""
-    with open(topics_file, 'r') as f:
+    with open(topics_file) as f:
         return json.load(f)
 
 
@@ -209,7 +209,7 @@ def main():
         print(f"File list written to: {args.output}")
         return 0
 
-    except (ValueError, OSError, IOError) as e:
+    except (ValueError, OSError) as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:

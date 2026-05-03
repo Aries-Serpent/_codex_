@@ -122,7 +122,7 @@ class ZendeskQuantumOrchestrator:
             f"ZendeskQuantumOrchestrator initialized (scope enforcement: {self.enforce_scopes})"
         )
 
-    def set_scope_validator(self, validator: "ScopeValidator") -> None:
+    def set_scope_validator(self, validator: ScopeValidator) -> None:
         """Set scope validator for this context.
 
         Args:
@@ -130,7 +130,7 @@ class ZendeskQuantumOrchestrator:
         """
         _scope_validator_ctx.set(validator)
 
-    def _check_scope(self, required_scopes: "TokenScope") -> None:
+    def _check_scope(self, required_scopes: TokenScope) -> None:
         """Check if current context has required scopes.
 
         Args:

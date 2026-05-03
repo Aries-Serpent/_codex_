@@ -156,7 +156,7 @@ class ReasoningHeadConfig:
             raise ConfigError(f"{path}.dropout", "must be in [0, 1)", self.dropout)
 
     @classmethod
-    def from_mapping(cls, payload: Mapping[str, Any]) -> "ReasoningHeadConfig":
+    def from_mapping(cls, payload: Mapping[str, Any]) -> ReasoningHeadConfig:
         allowed = {"hidden_size", "projection_size", "trace_vocab_size", "dropout"}
         filtered = {k: payload[k] for k in allowed if k in payload}
         return cls(**filtered)
@@ -182,7 +182,7 @@ class ToolAdapterConfig:
             raise ConfigError(f"{path}.tools", "must list at least one tool when enabled")
 
     @classmethod
-    def from_mapping(cls, payload: Mapping[str, Any]) -> "ToolAdapterConfig":
+    def from_mapping(cls, payload: Mapping[str, Any]) -> ToolAdapterConfig:
         allowed = {"enabled", "tools", "temperature", "pooling", "hidden_size"}
         filtered = {k: payload[k] for k in allowed if k in payload}
         tools = filtered.get("tools")
@@ -224,7 +224,7 @@ class ReasoningObjectiveConfig:
             raise ConfigError(f"{path}.trace_store", "cannot be empty when provided")
 
     @classmethod
-    def from_mapping(cls, payload: Mapping[str, Any]) -> "ReasoningObjectiveConfig":
+    def from_mapping(cls, payload: Mapping[str, Any]) -> ReasoningObjectiveConfig:
         allowed = {
             "mode",
             "weight",
@@ -273,7 +273,7 @@ class ReasoningConfig:
             )
 
     @classmethod
-    def from_mapping(cls, payload: Mapping[str, Any]) -> "ReasoningConfig":
+    def from_mapping(cls, payload: Mapping[str, Any]) -> ReasoningConfig:
         data = dict(payload)
         trace_capture = data.get("trace_capture")
         if isinstance(trace_capture, Mapping):

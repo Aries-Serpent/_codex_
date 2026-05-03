@@ -91,7 +91,7 @@ class HARIngestor:
     def validate_schema(self) -> bool:
         """Phase 2: JSON schema check"""
         try:
-            with open(self.context.src_path, 'r', encoding='utf-8') as f:
+            with open(self.context.src_path, encoding='utf-8') as f:
                 self.context.raw_har = json.load(f)
 
             # Validate minimal HAR structure

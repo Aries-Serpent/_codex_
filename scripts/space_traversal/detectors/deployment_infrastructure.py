@@ -62,7 +62,7 @@ def detect(file_index: dict) -> dict:
             service_files.append(path)
 
         # Deployment scripts
-        if path.startswith("scripts/deploy/") or "deploy" in path.lower() and path.endswith(".sh"):
+        if path.startswith("scripts/deploy/") or ("deploy" in path.lower() and path.endswith(".sh")):
             deploy_scripts.append(path)
 
     # Pattern detection

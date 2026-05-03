@@ -70,12 +70,15 @@ except Exception:  # pragma: no cover
         here because the stdlib :func:`json.loads` does not support it.
         """
         return json.loads(text, **kwargs)
+import logging
 import os
 import sys
 import urllib.error
 import urllib.parse
 import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 # ── Optional BrainClient import (secondary mechanism) ─────────────────────────
 try:
@@ -151,8 +154,7 @@ def _gh_request(
             )
             return resp.get("status_code", 0), resp.get("body")
         except BrainClientError:
-            pass  # fall through to urllib
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     # ── Fallback: direct urllib ────────────────────────────────────────────
     headers: Dict[str, str] = {
         "Accept": "application/vnd.github+json",
@@ -434,8 +436,7 @@ class VariableManager:
                 self.delete_repo_var(owner, repo, var_name)
                 record("DELETE stale test var (pre-cleanup)", True, "")
             except GitHubAPIError:
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # 2 ── Create
         try:
             self.create_repo_var(owner, repo, var_name, initial_value)

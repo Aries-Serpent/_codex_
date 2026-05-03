@@ -52,6 +52,7 @@ Options:
 import argparse
 import ast
 import json
+import logging
 import os
 import re
 import subprocess
@@ -59,6 +60,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Shared utility: triple-quoted string tracker
@@ -495,8 +498,7 @@ class CommonIssueFixer:
                     for item in ruff_output:
                         issues.append(f"{item['filename']}:{item['location']['row']} - {item['message']}")
                 except json.JSONDecodeError:
-                    pass
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if issues and not self.check_only:
                 if not self.dry_run:
                     # Auto-fix with ruff
@@ -538,11 +540,9 @@ class CommonIssueFixer:
                     if issues:
                         print("  ℹ️ Unused variables require manual review")
                 except json.JSONDecodeError:
-                    pass
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         except FileNotFoundError:
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         return issues
 
     def fix_yaml_indentation(self) -> List[str]:
@@ -563,7 +563,7 @@ class CommonIssueFixer:
             try:
                 yaml.safe_load(yaml_file.read_text())
             except yaml.YAMLError as e:
-                issues.append(f"{yaml_file.name}: {str(e)}")
+                issues.append(f"{yaml_file.name}: {e!s}")
                 print(f"  ✗ {yaml_file.name}: YAML parse error")
 
         return issues
@@ -820,8 +820,7 @@ class CommonIssueFixer:
                             f"{item['filename']}:{item['location']['row']} - {item['message']}"
                         )
                 except json.JSONDecodeError:
-                    pass  # ruff JSON output malformed – skip unsorted-import detection
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if issues and not self.check_only:
                 if not self.dry_run:
                     subprocess.run(
@@ -862,8 +861,7 @@ class CommonIssueFixer:
                             text = item.get("issue_text", "")[:60]
                             issues.append(f"{fname}:{line} - [{tid}] {text}")
                 except json.JSONDecodeError:
-                    pass  # bandit JSON output malformed – skip security detection
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if issues:
                 print(
                     "  ℹ️ Bandit medium/high issues require manual # nosec annotation review"
@@ -895,8 +893,7 @@ class CommonIssueFixer:
                             f"{item['filename']}:{item['location']['row']} - {item['message']}"
                         )
                 except json.JSONDecodeError:
-                    pass  # ruff JSON output malformed – skip f-string placeholder detection
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if issues and not self.check_only:
                 if not self.dry_run:
                     subprocess.run(
@@ -933,8 +930,7 @@ class CommonIssueFixer:
                             f"{item['filename']}:{item['location']['row']} - {item['message']}"
                         )
                 except json.JSONDecodeError:
-                    pass  # malformed output – skip
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if issues and not self.check_only:
                 if not self.dry_run:
                     # ruff format rewraps lines to fit line-length
@@ -980,8 +976,7 @@ class CommonIssueFixer:
                             f"{item['filename']}:{item['location']['row']} - {item['message']}"
                         )
                 except json.JSONDecodeError:
-                    pass  # malformed output – skip
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if issues and not self.check_only:
                 if not self.dry_run:
                     subprocess.run(
@@ -1161,8 +1156,7 @@ class CommonIssueFixer:
                         msg = item["message"]
                         issues.append(f"{fname}:{row} — {msg}")
                 except json.JSONDecodeError:
-                    pass
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             if issues and not self.check_only:
                 if not self.dry_run:
                     subprocess.run(
@@ -2648,15 +2642,13 @@ class CommonIssueFixer:
                 try:
                     candidate_texts.append(fpath.read_text(encoding="utf-8", errors="replace"))
                 except OSError:
-                    pass  # Best-effort read; skip unreadable context files
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
         pr_body_path = self.repo_root / ".codex" / "pr_body.txt"
         if pr_body_path.exists():
             try:
                 candidate_texts.append(pr_body_path.read_text(encoding="utf-8", errors="replace"))
             except OSError:
-                pass  # Best-effort read; skip unreadable pr_body.txt
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         if not candidate_texts:
             print(
                 "✅ Pattern 29 (PR Comment Triage): no context files found "

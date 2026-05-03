@@ -60,7 +60,7 @@ class RecursionGuard:
     def depth(self) -> int:
         return _REFLECT_DEPTH.get()
 
-    def __enter__(self) -> "RecursionGuard":
+    def __enter__(self) -> RecursionGuard:
         current = _REFLECT_DEPTH.get()
         if current >= self.max_depth:
             raise RecursionError(f"RecursionGuard: max depth {self.max_depth} exceeded")
@@ -81,7 +81,7 @@ class ReflectionReport:
     depth: int
     summary: str
     metrics: dict[str, Any] = field(default_factory=dict)
-    sub_reports: list["ReflectionReport"] = field(default_factory=list)
+    sub_reports: list[ReflectionReport] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:

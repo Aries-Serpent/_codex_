@@ -814,7 +814,7 @@ __all__ = [
 ]
 
 
-def build_parser() -> "argparse.ArgumentParser":
+def build_parser() -> argparse.ArgumentParser:
     """Build an argument parser for the functional training demo."""
     p = argparse.ArgumentParser(description="Run functional training demo")
     p.add_argument("--use-deeplearning", action="store_true", help="use MiniLM training")

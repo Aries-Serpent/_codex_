@@ -145,7 +145,7 @@ class ModelConfig:
     device: str = "cpu"
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ModelConfig":
+    def from_dict(cls, data: dict[str, Any]) -> ModelConfig:
         return cls(
             model_name=data.get("model_name"),
             model_type=data.get("model_type", "stub"),
@@ -154,7 +154,7 @@ class ModelConfig:
         )
 
     @classmethod
-    def from_env(cls) -> "ModelConfig":
+    def from_env(cls) -> ModelConfig:
         return cls(
             model_name=os.getenv("CODEX_MODEL_NAME", "codex-default"),
             model_type=os.getenv("CODEX_MODEL_TYPE", "stub"),

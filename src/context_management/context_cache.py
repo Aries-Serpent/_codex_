@@ -373,7 +373,7 @@ class ContextCache:
             return
 
         try:
-            with open(self.persist_path, "r") as f:
+            with open(self.persist_path) as f:
                 data = json.load(f)
 
             for key, entry_data in data.items():

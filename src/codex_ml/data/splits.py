@@ -51,7 +51,7 @@ class SplitDistribution(dict):
                 self[split] = int(count)
 
     @classmethod
-    def from_ids(cls, example_ids: Iterable[str]) -> "SplitDistribution":
+    def from_ids(cls, example_ids: Iterable[str]) -> SplitDistribution:
         counts = {split: 0 for split in SPLITS}
         for example_id in example_ids:
             split = assign_split(example_id)

@@ -30,7 +30,7 @@ def get_last_operation() -> Optional[Dict]:
         return None
 
     last_op = None
-    with open(log_file, 'r') as f:
+    with open(log_file) as f:
         for line in f:
             try:
                 entry = json.loads(line)
@@ -168,7 +168,7 @@ def rollback_batch_from_file(commits_file: Path, dry_run: bool = False) -> bool:
         print(f"Error: File not found: {commits_file}")
         return False
 
-    with open(commits_file, 'r') as f:
+    with open(commits_file) as f:
         commits = [line.strip() for line in f if line.strip()]
 
     print(f"Rolling back {len(commits)} commits...")

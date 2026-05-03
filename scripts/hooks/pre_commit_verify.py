@@ -124,7 +124,7 @@ def load_gitignore_patterns(repo_root: Path) -> List[str]:
     patterns = []
 
     if gitignore_path.exists():
-        with open(gitignore_path, 'r') as f:
+        with open(gitignore_path) as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith('#'):
@@ -156,7 +156,7 @@ def parse_action_log(
 
     operations = []
 
-    with open(log_path, 'r') as f:
+    with open(log_path) as f:
         for line_num, line in enumerate(f, 1):
             line = line.strip()
             if not line:
@@ -175,8 +175,7 @@ def parse_action_log(
                     if entry_time < since:
                         continue
                 except (ValueError, TypeError):
-                    pass
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             # Filter by session if specified
             if session_id and entry.get('session_id') != session_id:
                 continue

@@ -10,7 +10,10 @@ Version: 1.0.0
 Created: 2026-01-22
 """
 
+import logging
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class TableGenerator:
@@ -223,8 +226,7 @@ class TableGenerator:
                         job_links.append(f"[{status_emoji} {job.name}]({job.html_url})")
                     table += f"| **Jobs** | {' · '.join(job_links)} |\n"
             except Exception:
-                pass  # Skip if jobs can't be retrieved
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Artifacts (if requested)
         if include_artifacts:
             artifacts_url = f"{repo_url}/actions/runs/{run_id}#artifacts"
@@ -285,4 +287,3 @@ class TableGenerator:
 | **Commit** | {current_run.head_sha[:7] if current_run.head_sha else 'N/A'} | {previous_success.head_sha[:7] if previous_success.head_sha else 'N/A'} | [Compare](https://github.com/{current_run.repository.full_name}/compare/{previous_success.head_sha}...{current_run.head_sha}) |
 | **Time** | {current_run.created_at.strftime('%Y-%m-%d %H:%M') if current_run.created_at else 'N/A'} | {previous_success.created_at.strftime('%Y-%m-%d %H:%M') if previous_success.created_at else 'N/A'} | - |
 """
-

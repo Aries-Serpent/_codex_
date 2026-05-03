@@ -134,8 +134,7 @@ class ProviderFactory:
         except ImportError:
             # GitHub provider dependencies not available (e.g., requests library)
             # This is expected in minimal installations; gracefully skip
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         # Check AWS
         try:
             from security.providers.aws_provider import (
@@ -146,8 +145,7 @@ class ProviderFactory:
         except ImportError:
             # AWS provider dependencies not available (e.g., boto3 library)
             # This is expected when AWS features are not needed; gracefully skip
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         # Environment always available
         available.append(ProviderType.ENVIRONMENT)
 

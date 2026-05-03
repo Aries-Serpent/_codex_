@@ -168,7 +168,7 @@ class SentencePieceAdapter:
         vocab_size: int = 32000,
         character_coverage: float = 0.9995,
         model_type: str = "bpe",
-    ) -> "SentencePieceAdapter":
+    ) -> SentencePieceAdapter:
         """Train a new model or load an existing one."""
         module = _get_sentencepiece()
         if self.model_path.exists():
@@ -187,7 +187,7 @@ class SentencePieceAdapter:
         self._trained_vocab_size = vocab_size
         return self.load()
 
-    def load(self) -> "SentencePieceAdapter":
+    def load(self) -> SentencePieceAdapter:
         # Check if model file exists before attempting to load
         if not self.model_path.exists():
             raise FileNotFoundError(f"Model file not found: {self.model_path}")

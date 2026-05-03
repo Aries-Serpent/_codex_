@@ -57,7 +57,7 @@ def cache_get(key: str, ttl: int) -> Any | None:
     p = _cache_path(key)
     if not os.path.exists(p):
         return None
-    with open(p, "r", encoding="utf-8") as f:
+    with open(p, encoding="utf-8") as f:
         obj = json.load(f)
     if time.time() - obj.get("ts", 0) <= ttl:
         return obj.get("data")

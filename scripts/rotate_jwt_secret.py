@@ -210,7 +210,7 @@ class JWTSecretRotator:
 
         try:
             if rotation_log.exists():
-                with open(rotation_log, 'r') as f:
+                with open(rotation_log) as f:
                     log_data = json.load(f)
             else:
                 log_data = {'rotations': []}
@@ -237,7 +237,7 @@ class JWTSecretRotator:
             return None
 
         try:
-            with open(rotation_log, 'r') as f:
+            with open(rotation_log) as f:
                 log_data = json.load(f)
 
             if log_data['rotations']:
@@ -285,7 +285,7 @@ class JWTSecretRotator:
 
         print(f"Using backup: {backup_file}")
 
-        with open(backup_file, 'r') as f:
+        with open(backup_file) as f:
             backup_data = json.load(f)
 
         encrypted = base64.b64decode(backup_data['encrypted_secret'])

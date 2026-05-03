@@ -79,7 +79,7 @@ class ArtifactMonitorCLI:
         self.dry_run = dry_run
 
         # Load configuration
-        with open(config_path, 'r') as f:
+        with open(config_path) as f:
             self.config = yaml.safe_load(f)
 
         # Initialize components
@@ -129,7 +129,7 @@ class ArtifactMonitorCLI:
         # Print rows
         for row in rows:
             print(" | ".join(
-                f"{str(cell):<{col_widths[i]}}" for i, cell in enumerate(row)
+                f"{cell!s:<{col_widths[i]}}" for i, cell in enumerate(row)
             ))
 
     def cmd_check(self, workflow: Optional[str] = None) -> int:
@@ -213,7 +213,7 @@ class ArtifactMonitorCLI:
             self.print_error("No state file found. Run 'check' first.")
             return 1
 
-        with open(self.state_path, 'r') as f:
+        with open(self.state_path) as f:
             state = json.load(f)
 
         # Generate report
@@ -297,7 +297,7 @@ class ArtifactMonitorCLI:
                 self.print_error(f"Log file not found: {log_file}")
                 return 1
 
-            with open(log_file, 'r') as f:
+            with open(log_file) as f:
                 log_content = f.read()
 
             self.print_info(f"Analyzing log file: {log_file}")
@@ -400,7 +400,7 @@ class ArtifactMonitorCLI:
             self.print_warning("No state file found")
             return
 
-        with open(self.state_path, 'r') as f:
+        with open(self.state_path) as f:
             state = json.load(f)
 
         print(f"\n{Colors.BOLD}Monitoring State:{Colors.ENDC}")

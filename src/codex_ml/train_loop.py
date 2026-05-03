@@ -230,7 +230,7 @@ else:
             return 0
 
         def __getitem__(self, index: int):  # pragma: no cover - defensive
-            raise RuntimeError("Torch is required to construct ToyDataset")
+            raise IndexError("Torch is required to construct ToyDataset")
 
 
 @dataclass
@@ -302,7 +302,7 @@ class ReasoningRuntime:
         try:
             self.harness.record(payload)
         except Exception:  # pragma: no cover - history append best effort
-            pass
+            logger.debug("Suppressed exception in handler", exc_info=True)
         self.traces_written += 1
 
 
@@ -437,7 +437,7 @@ def _set_seed(seed: Optional[int]) -> int:
 
         np.random.seed(resolved_seed)
     except Exception:  # noqa: BLE001
-        pass
+        logger.debug("Suppressed exception in handler", exc_info=True)
     if _HAS_TORCH:
         torch.manual_seed(resolved_seed)
         if torch.cuda.is_available():
@@ -633,7 +633,7 @@ def _assert_bf16_capability(
                 b = b.to(device)
             except Exception:
                 # If placement fails, let the matmul attempt occur on default device.
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         _ = a @ b
     except Exception as exc:  # pragma: no cover - runtime check
         raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
@@ -1166,7 +1166,7 @@ def run_training(
     try:
         set_reproducible(resolved_seed, deterministic=bool(deterministic_cudnn))
     except Exception:  # noqa: BLE001 - seeding best effort
-        pass
+        logger.debug("Suppressed exception in handler", exc_info=True)
     if deterministic_cudnn:
         set_cudnn_deterministic(True, benchmark=False)
 
@@ -1276,8 +1276,7 @@ def run_training(
                 },
             )
         except Exception:  # pragma: no cover - best effort logging
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     metrics_registry: CodexMetricsRegistry | None = None
     metrics_port_value: int | None = None
     metrics_env_port = os.getenv("CODEX_METRICS_PORT")
@@ -1777,7 +1776,7 @@ def run_training(
             try:
                 reasoning_payload["harness"] = _json_ready(reasoning_runtime.harness.describe())
             except Exception:  # noqa: BLE001
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         if reasoning_payload:
             try:
                 (art_dir_path / "reasoning.json").write_text(
@@ -1859,7 +1858,7 @@ def run_training(
                 try:
                     model.to(dtype=dtype_obj)
                 except Exception:  # noqa: BLE001
-                    pass
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             model.to(device_obj)
             model.train()
             optimizer.zero_grad(set_to_none=True)
@@ -2077,8 +2076,7 @@ def run_training(
         try:
             metrics_registry.active_sessions.set(0)
         except Exception:  # pragma: no cover - defensive
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     wall = time.time() - t_start
     result = {
         "resumed": bool(resume_meta),
@@ -2134,8 +2132,7 @@ def run_training(
                 },
             )
         except Exception:  # pragma: no cover - best effort logging
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     if return_state:
         result["model"] = model
         result["optimizer"] = optimizer

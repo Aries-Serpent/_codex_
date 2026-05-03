@@ -22,7 +22,7 @@ REPO_ROOT = Path(__file__).parent.parent
 
 def load_review_queue(queue_file: Path) -> List[Dict]:
     """Load the review queue JSON file."""
-    with open(queue_file, 'r', encoding='utf-8') as f:
+    with open(queue_file, encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -32,7 +32,7 @@ def apply_anchor_fix(file_path: Path, line_num: int, old_anchor: str, new_anchor
     Returns True if fix was applied successfully.
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
     except Exception as e:
         print(f"   ❌ Error reading {file_path}: {e}")
@@ -73,7 +73,7 @@ def validate_file_syntax(file_path: Path) -> bool:
     Basic check: file is readable and has balanced brackets.
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
 
         # Check for balanced brackets

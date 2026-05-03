@@ -21,6 +21,8 @@ from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallbac
 from codex_ml.monitoring.system_metrics import sampler_status
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
+logger = logging.getLogger(__name__)
+
 if TYPE_CHECKING:  # pragma: no cover - typing only
     pass
 
@@ -72,9 +74,7 @@ try:  # pragma: no cover - optional
     if torch is not None:
         SummaryWriter = torch.utils.tensorboard.SummaryWriter
 except Exception:  # pragma: no cover - tensorboard not installed
-    pass
-
-
+    logger.debug("Suppressed exception in handler", exc_info=True)
 _ensure_local_mlflow_tracking_uri_default()
 
 
@@ -151,9 +151,6 @@ def _start_mlflow_offline(
         return True, None
     except Exception as exc:  # pragma: no cover - optional
         return False, f"error:{exc.__class__.__name__}"
-
-
-logger = logging.getLogger(__name__)
 
 
 def init_logger(name: str = __name__) -> logging.Logger:

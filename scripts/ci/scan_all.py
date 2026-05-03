@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import subprocess
 import sys
@@ -32,6 +33,8 @@ import textwrap
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -117,7 +120,7 @@ def check_ruff_stubs() -> CheckResult:
             msg   = it["message"]
             lines.append(f"  {fname}:{row}  [F811] {msg}")
     except (json.JSONDecodeError, KeyError):
-        pass
+        logger.debug("Suppressed exception in handler", exc_info=True)
     return CheckResult(
         name="ruff F811 (stub duplicates)",
         category="ruff",
@@ -189,7 +192,7 @@ def check_ruff_e402_tests() -> CheckResult:
             msg   = it["message"]
             lines.append(f"  {fname}:{row}  [E402] {msg}")
     except (json.JSONDecodeError, KeyError):
-        pass
+        logger.debug("Suppressed exception in handler", exc_info=True)
     # E402 in tests/ is suppressed by per-file-ignores — report is informational only
     return CheckResult(
         name="ruff E402 (tests/importorskip — informational)",

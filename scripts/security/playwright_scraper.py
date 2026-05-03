@@ -77,7 +77,7 @@ class PlaywrightScraper:
         self.timeout_ms = timeout_ms
         self._security_url = f"{self.repo_url}/security/code-scanning"
 
-    def _authenticate(self, page: "Page") -> bool:
+    def _authenticate(self, page: Page) -> bool:
         """Inject GitHub auth token into all requests via Playwright route interception.
 
         IMP-008: Uses CDP ``page.route()`` to add an ``Authorization`` header to
@@ -118,7 +118,7 @@ class PlaywrightScraper:
 
         return True
 
-    def _extract_row_data(self, page: "Page", row: Any) -> Optional[Dict[str, Any]]:
+    def _extract_row_data(self, page: Page, row: Any) -> Optional[Dict[str, Any]]:
         """Extract alert data from a single table row element."""
         try:
             title_elem = row.query_selector(_TITLE_SELECTOR)
@@ -149,7 +149,7 @@ class PlaywrightScraper:
             logger.debug("Failed to extract row: %s", exc)
             return None
 
-    def _find_alert_rows(self, page: "Page") -> list:
+    def _find_alert_rows(self, page: Page) -> list:
         """Return alert row elements using a resilient multi-selector strategy.
 
         Iterates through :data:`_ALERT_SELECTORS` in order and returns the
@@ -163,7 +163,7 @@ class PlaywrightScraper:
                 return rows
         return []
 
-    def _iter_pages(self, page: "Page") -> Iterator[List[Dict[str, Any]]]:
+    def _iter_pages(self, page: Page) -> Iterator[List[Dict[str, Any]]]:
         """Navigate the alerts table page by page, yielding lists of alert dicts."""
         page.goto(self._security_url, wait_until="networkidle", timeout=self.timeout_ms)
         page.wait_for_selector(_LOAD_SELECTOR, timeout=self.timeout_ms)

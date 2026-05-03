@@ -38,7 +38,7 @@ class AIRepositorySearch:
     def load_indices(self):
         """Load all indices from disk."""
         try:
-            with open(self.index_dir / "content_index.json", 'r') as f:
+            with open(self.index_dir / "content_index.json") as f:
                 self.content_index = json.load(f)
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
@@ -46,7 +46,7 @@ class AIRepositorySearch:
             print("⚠ Warning: content_index.json not found", file=sys.stderr)
 
         try:
-            with open(self.index_dir / "semantic_index.json", 'r') as f:
+            with open(self.index_dir / "semantic_index.json") as f:
                 self.semantic_index = json.load(f)
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
@@ -54,7 +54,7 @@ class AIRepositorySearch:
             print("⚠ Warning: semantic_index.json not found", file=sys.stderr)
 
         try:
-            with open(self.index_dir / "structural_index.json", 'r') as f:
+            with open(self.index_dir / "structural_index.json") as f:
                 self.structural_index = json.load(f)
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
@@ -62,7 +62,7 @@ class AIRepositorySearch:
             print("⚠ Warning: structural_index.json not found", file=sys.stderr)
 
         try:
-            with open(self.index_dir / "entity_index.json", 'r') as f:
+            with open(self.index_dir / "entity_index.json") as f:
                 self.entity_index = json.load(f)
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
@@ -70,7 +70,7 @@ class AIRepositorySearch:
             print("⚠ Warning: entity_index.json not found", file=sys.stderr)
 
         try:
-            with open(self.index_dir / "metadata_index.json", 'r') as f:
+            with open(self.index_dir / "metadata_index.json") as f:
                 self.metadata_index = json.load(f)
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")

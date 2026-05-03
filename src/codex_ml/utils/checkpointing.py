@@ -578,7 +578,7 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
                     if torch.cuda.is_available():
                         cuda_version = torch.version.cuda
                 except Exception:  # noqa: BLE001 — CUDA version detection is best-effort
-                    pass
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             info["cuda"] = _safe_str_value(cuda_version)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
@@ -1036,7 +1036,7 @@ def _rng_dump() -> dict[str, Any]:
                 ):
                     torch_state["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
             except Exception:  # pragma: no cover - cuda optional
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
             return torch_state
 
         torch_state_current = _capture_torch_state()
@@ -1118,9 +1118,7 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                             [tensor_ctor(s, dtype=torch.uint8) for s in torch_payload["cuda"]]
                         )
             except Exception:  # pragma: no cover - cuda optional
-                pass
-
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
 def dump_rng_state() -> dict[str, Any]:
     """Public wrapper around internal RNG snapshot."""
     return _rng_dump()

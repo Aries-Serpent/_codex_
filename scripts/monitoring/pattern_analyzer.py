@@ -51,7 +51,7 @@ class PatternAnalyzer:
             logger.warning(f"Pattern database not found: {self.pattern_db_path}")
             return []
 
-        with open(self.pattern_db_path, 'r') as f:
+        with open(self.pattern_db_path) as f:
             data = yaml.safe_load(f)
 
         return data.get('patterns', [])
@@ -61,7 +61,7 @@ class PatternAnalyzer:
         if not self.pattern_db_path.exists():
             return []
 
-        with open(self.pattern_db_path, 'r') as f:
+        with open(self.pattern_db_path) as f:
             data = yaml.safe_load(f)
 
         return data.get('statistical_patterns', [])
@@ -389,7 +389,7 @@ def main():
 
     # Get log content
     if args.log_file:
-        with open(args.log_file, 'r') as f:
+        with open(args.log_file) as f:
             log_content = f.read()
     elif args.test_string:
         log_content = args.test_string

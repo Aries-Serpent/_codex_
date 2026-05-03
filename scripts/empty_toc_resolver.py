@@ -135,7 +135,7 @@ def scan_repository(directories: List[str] = None) -> Dict:
             results['files_scanned'] += 1
 
             try:
-                with open(md_file, 'r', encoding='utf-8') as f:
+                with open(md_file, encoding='utf-8') as f:
                     content = f.read()
             except Exception:
                 continue

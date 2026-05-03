@@ -144,8 +144,7 @@ def compress_skill(
             data = yaml.safe_load(manifest_file.read_text(encoding="utf-8")) or {}
             version = data.get("version", "1.0.0")
         except Exception:  # noqa: BLE001 — version default on any parse error; non-fatal
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     size_before = _dir_size(skill_dir)
     archive_name = f"{skill_id.replace('.', '-')}-{version}"
 

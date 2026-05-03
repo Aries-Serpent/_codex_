@@ -124,7 +124,7 @@ class CodexBridgeClient:
     def close(self) -> None:
         self._client.close()
 
-    def __enter__(self) -> "CodexBridgeClient":
+    def __enter__(self) -> CodexBridgeClient:
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]

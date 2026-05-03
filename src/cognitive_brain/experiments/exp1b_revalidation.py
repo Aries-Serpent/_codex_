@@ -18,6 +18,7 @@ Success Criteria:
 """
 
 import json
+import logging
 import os
 import sys
 import time
@@ -37,6 +38,8 @@ from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.adaptive_scoring import AdaptiveScoringOptimizer
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -546,7 +549,7 @@ if __name__ == "__main__":
             try:
                 scenarios_arg = int(sys.argv[i + 1])
             except ValueError:  # ignore non-integer --scenarios argument; keep default
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         if arg == "--save-json" and i + 1 < len(sys.argv):
             save_json_arg = sys.argv[i + 1]
 

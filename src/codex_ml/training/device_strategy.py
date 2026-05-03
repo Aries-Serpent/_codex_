@@ -85,7 +85,7 @@ class DeviceConfig:
     @classmethod
     def auto_detect(
         cls, *, prefer_mps: bool = True, allow_mixed_precision: bool = True
-    ) -> "DeviceConfig":
+    ) -> DeviceConfig:
         """Infer an appropriate DeviceConfig for the current host.
 
         Detection logic:
@@ -281,7 +281,5 @@ if _HAS_TORCH:  # pragma: no branch - simple guard
     try:
         DeviceMapper.register_strategy("auto", DeviceConfig.auto_detect())
     except RuntimeError:  # pragma: no cover - guard when torch import works but usage fails
-        pass
-
-
+        logger.debug("Suppressed exception in handler", exc_info=True)
 __all__ = ["DeviceConfig", "DeviceMapper", "get_device_config"]

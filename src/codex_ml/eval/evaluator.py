@@ -244,7 +244,7 @@ def evaluate_dataloader(
                     output_mapping = {
                         name: value
                         for name in (n for n in dir(outputs) if not n.startswith("_"))
-                        if not callable((value := getattr(outputs, name)))
+                        if not callable(value := getattr(outputs, name))
                     }
 
             loss_val = output_mapping.get("loss")

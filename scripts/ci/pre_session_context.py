@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import re
 import sys
@@ -46,6 +47,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 _OWNER = "Aries-Serpent"
 _REPO = "_codex_"
@@ -216,8 +219,7 @@ def section_a_workflow_status(
                 try:
                     eta_mins = int(eta.replace("~", "").replace(" min", ""))
                 except ValueError:
-                    pass  # not a plain "~N min" string — leave as None
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
             entry = {
                 "name": name, "status": status, "url": url,
                 "id": run_id, "eta": eta, "eta_minutes": eta_mins,

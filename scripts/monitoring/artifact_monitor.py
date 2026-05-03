@@ -58,7 +58,7 @@ class MonitorState:
         """Load state from file or create new state."""
         if self.state_file.exists():
             try:
-                with open(self.state_file, 'r') as f:
+                with open(self.state_file) as f:
                     return json.load(f)
             except Exception as e:
                 logger.warning(f"Failed to load state file: {e}. Creating new state.")
@@ -133,7 +133,7 @@ class ArtifactMonitor:
         if not config_path.exists():
             raise FileNotFoundError(f"Config file not found: {config_path}")
 
-        with open(config_path, 'r') as f:
+        with open(config_path) as f:
             return yaml.safe_load(f)
 
 
@@ -357,7 +357,7 @@ class ArtifactMonitor:
             logger.error("Workflow inventory not found. Run discovery first.")
             return []
 
-        with open(inventory_path, 'r') as f:
+        with open(inventory_path) as f:
             inventory = json.load(f)
 
         events = []

@@ -121,7 +121,7 @@ class ZendeskEndpointManager:
             return
 
         try:
-            with open(self.cache_file, 'r') as f:
+            with open(self.cache_file) as f:
                 self.cache = json.load(f)
 
             # Check cache expiry

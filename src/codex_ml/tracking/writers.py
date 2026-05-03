@@ -68,7 +68,7 @@ _SUMMARY_EXTRA_ORDER = (
     "system_metrics_enabled",
 )
 
-_SUMMARY_ROTATORS: dict[Path, "_SummaryRotator"] = {}
+_SUMMARY_ROTATORS: dict[Path, _SummaryRotator] = {}
 _SUMMARY_ROTATOR_LOCK = threading.Lock()
 
 
@@ -103,8 +103,8 @@ def _parse_reason(reason: str) -> tuple[str, str]:
 
 def _ordered_payload(
     record: MappingABC[str, Any], canonical_order: SequenceABC[str]
-) -> "OrderedDict[str, Any]":
-    ordered: "OrderedDict[str, Any]" = OrderedDict()
+) -> OrderedDict[str, Any]:
+    ordered: OrderedDict[str, Any] = OrderedDict()
     for key in canonical_order:
         if key in record:
             ordered[key] = record[key]
@@ -121,8 +121,8 @@ def _normalise_nested(value: Any) -> Any:
     return value
 
 
-def _normalise_summary_extra(extra: MappingABC[str, Any]) -> "OrderedDict[str, Any]":
-    ordered: "OrderedDict[str, Any]" = OrderedDict()
+def _normalise_summary_extra(extra: MappingABC[str, Any]) -> OrderedDict[str, Any]:
+    ordered: OrderedDict[str, Any] = OrderedDict()
     for key in _SUMMARY_EXTRA_ORDER:
         if key in extra:
             ordered[key] = _normalise_nested(extra[key])
@@ -517,13 +517,11 @@ class NdjsonWriter(BaseWriter):
             try:
                 self._manifest_logger.close()  # type: ignore[union-attr]
             except Exception:  # pragma: no cover
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         try:
             self._logger.close()
         except Exception:  # pragma: no cover
-            pass
-
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
 class TensorBoardWriter(BaseWriter):
     def __init__(self, logdir: str | Path, *, summary_path: str | Path | None = None) -> None:
         self._disabled_reason: str | None = None
@@ -570,8 +568,7 @@ class TensorBoardWriter(BaseWriter):
                 self._writer.flush()
                 self._writer.close()
             except Exception:  # pragma: no cover
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -664,8 +661,7 @@ class MLflowWriter(BaseWriter):
             try:
                 self._mlflow.end_run()
             except Exception:  # pragma: no cover
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -735,8 +731,7 @@ class WandbWriter(BaseWriter):
             try:
                 self._run.finish()
             except Exception:  # pragma: no cover
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
     def status(self) -> Optional[str]:
         return self._disabled_reason
 
@@ -1152,7 +1147,7 @@ class MLflowRunManager:
             try:
                 return self._run.info.run_id
             except Exception:
-                pass
+                logger.debug("Suppressed exception in handler", exc_info=True)
         return None
 
     def log_metrics(self, metrics: dict[str, float], step: int = 0) -> bool:

@@ -297,7 +297,7 @@ class MonitoringDashboard:
 
             triggered = False
 
-            if rule.operator == "gt" and snapshot.value > rule.threshold or rule.operator == "lt" and snapshot.value < rule.threshold or rule.operator == "eq" and snapshot.value == rule.threshold:
+            if (rule.operator == "gt" and snapshot.value > rule.threshold) or (rule.operator == "lt" and snapshot.value < rule.threshold) or (rule.operator == "eq" and snapshot.value == rule.threshold):
                 triggered = True
 
             if triggered:

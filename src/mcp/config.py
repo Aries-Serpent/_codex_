@@ -34,7 +34,7 @@ class ToolDefinition:
     metadata: Optional[dict[str, Any]] = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ToolDefinition":
+    def from_dict(cls, data: dict[str, Any]) -> ToolDefinition:
         """Create ToolDefinition from dictionary.
 
         Args:
@@ -74,7 +74,7 @@ class MCPConfig:
     metadata: Optional[dict[str, Any]] = None
 
     @classmethod
-    def load(cls, config_path: Optional[Path] = None) -> "MCPConfig":
+    def load(cls, config_path: Optional[Path] = None) -> MCPConfig:
         """Load MCP configuration from file.
 
         Configuration Resolution Strategy:

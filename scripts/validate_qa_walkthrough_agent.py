@@ -63,7 +63,7 @@ class QAWalkthroughValidator:
             return False
 
         try:
-            with open(agent_file, 'r') as f:
+            with open(agent_file) as f:
                 config = yaml.safe_load(f)
 
             # Check required fields
@@ -100,7 +100,7 @@ class QAWalkthroughValidator:
         try:
             # Load YAML with proper handling of 'on' keyword
             # PyYAML converts 'on:' to boolean True, so we handle both cases
-            with open(workflow_file, 'r') as f:
+            with open(workflow_file) as f:
                 content = f.read()
                 # Check if file contains 'on:' trigger definition
                 if '\non:' not in content and '\non :' not in content:

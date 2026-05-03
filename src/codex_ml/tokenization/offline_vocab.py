@@ -21,7 +21,7 @@ class TinyVocabTokenizer(TokenizerAdapter):
         self.unk_id = self.vocab[unk_token]
 
     @classmethod
-    def from_vocab_file(cls, path: str | Path) -> "TinyVocabTokenizer":
+    def from_vocab_file(cls, path: str | Path) -> TinyVocabTokenizer:
         candidate = Path(path)
         if candidate.is_dir():
             candidate = candidate / "vocab.json"

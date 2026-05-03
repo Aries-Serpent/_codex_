@@ -441,7 +441,7 @@ class QuantumGameState:
         """Check if state is entangled (non-zero entanglement strength)"""
         return self.entanglement_strength > 0.0
 
-    def break_entanglement(self) -> "QuantumGameState":
+    def break_entanglement(self) -> QuantumGameState:
         """Break entanglement and return product state.
 
         Returns:
@@ -741,8 +741,8 @@ class QuantumInspiredGameEngine:
         self,
         blue_strategies: list[str] | None = None,
         red_strategies: list[str] | None = None,
-        payoff_blue: "np.ndarray | None" = None,
-        payoff_red: "np.ndarray | None" = None,
+        payoff_blue: np.ndarray | None = None,
+        payoff_red: np.ndarray | None = None,
         entanglement: float = 0.0,
         *,
         num_players: int | None = None,
@@ -1062,8 +1062,8 @@ class BlueRedTeamSimulator:
         self,
         blue_strategies: list[str] | None = None,
         red_strategies: list[str] | None = None,
-        payoff_blue: "np.ndarray | None" = None,
-        payoff_red: "np.ndarray | None" = None,
+        payoff_blue: np.ndarray | None = None,
+        payoff_red: np.ndarray | None = None,
         mode: str = "quantum",
         entanglement: float = 0.0,
         noise_level: float = 0.0,

@@ -1,9 +1,12 @@
 """Reporting CLI - Phase 3 implementation stub."""
 
 import json
+import logging
 from pathlib import Path
 
 import click
+
+logger = logging.getLogger(__name__)
 
 _METRICS_FILE = Path(".codex/metrics.ndjson")
 
@@ -20,7 +23,7 @@ def _load_metrics(n: int = 10) -> list[dict]:
                     try:
                         entries.append(json.loads(line))
                     except Exception:  # noqa: BLE001 — skip individual malformed lines
-                        pass
+                        logger.debug("Suppressed exception in handler", exc_info=True)
         except Exception as exc:  # noqa: BLE001 — best-effort; no metrics available
             click.echo(f"Warning: could not read metrics file: {exc}", err=True)
     return entries

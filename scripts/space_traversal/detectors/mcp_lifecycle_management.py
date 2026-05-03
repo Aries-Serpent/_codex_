@@ -32,7 +32,7 @@ def _read_text(path_input) -> str:
 
         # Bounded read safeguard
         return path.read_text(encoding="utf-8", errors="ignore")[:MAX_READ_BYTES]
-    except (OSError, IOError, UnicodeDecodeError):
+    except (OSError, UnicodeDecodeError):
         return ""
 
 

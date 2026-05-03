@@ -365,7 +365,7 @@ class BatchTriageEngine:
         """Load failure records from CSV file"""
         logger.info(f"Loading failures from {csv_file}")
 
-        with open(csv_file, 'r') as f:
+        with open(csv_file) as f:
             reader = csv.DictReader(f)
             for row in reader:
                 issue_num = int(row.get('Issue #', row.get('issue_num', 0)))

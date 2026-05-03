@@ -104,7 +104,7 @@ class MiniLM(nn.Module):
         torch.save(self.state_dict(), path / "pytorch_model.bin")
 
     @classmethod
-    def from_pretrained(cls, path: Union[str, Path], *, device: Optional[str] = None) -> "MiniLM":
+    def from_pretrained(cls, path: Union[str, Path], *, device: Optional[str] = None) -> MiniLM:
         path = Path(path)
         with (path / "config.json").open() as f:
             cfg = MiniLMConfig(**json.load(f))

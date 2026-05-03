@@ -13,7 +13,7 @@ class ClientConfig:
     request_timeout: float = 30.0
 
     @classmethod
-    def from_environment(cls) -> "ClientConfig":
+    def from_environment(cls) -> ClientConfig:
         ita_url = os.environ.get("ITA_URL")
         api_key = os.environ.get("ITA_API_KEY")
         if not ita_url or not api_key:

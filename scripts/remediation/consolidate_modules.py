@@ -52,11 +52,11 @@ class ModuleConsolidator:
             # Use pathlib to safely search for Python files
             for py_file in self.root.rglob("*.py"):
                 try:
-                    with open(py_file, "r", encoding="utf-8") as f:
+                    with open(py_file, encoding="utf-8") as f:
                         content = f.read()
                         if old_module in content:
                             files_with_refs.append(py_file)
-                except (IOError, UnicodeDecodeError):
+                except (OSError, UnicodeDecodeError):
                     continue
 
             return files_with_refs
@@ -68,7 +68,7 @@ class ModuleConsolidator:
     def update_imports_in_file(self, file_path: Path, old_module: str, new_module: str):
         """Update imports in a single file."""
         try:
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 content = f.read()
 
             original_content = content

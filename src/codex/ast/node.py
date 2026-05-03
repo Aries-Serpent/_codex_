@@ -78,6 +78,12 @@ class StandardizedASTNode:
         child.parent = self
         self.children.append(child)
 
+    def __eq__(self, other: object) -> bool:
+        """Equality by node_id, consistent with __hash__."""
+        if not isinstance(other, StandardizedASTNode):
+            return NotImplemented
+        return self.node_id == other.node_id
+
     def __hash__(self) -> int:
         """Hash by node_id so StandardizedASTNode can be used in sets/dict keys."""
         return hash(self.node_id)

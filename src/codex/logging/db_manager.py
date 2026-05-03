@@ -186,8 +186,7 @@ class DBManager:
                         return conn
                     except sqlite3.Error:
                         # Connection is stale, create new one
-                        pass
-
+                        logger.debug("Suppressed exception in handler", exc_info=True)
         # Create new connection
         conn = sqlite3.connect(str(self.db_path))
         conn.execute("PRAGMA journal_mode=WAL;")

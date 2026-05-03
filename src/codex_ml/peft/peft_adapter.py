@@ -133,8 +133,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
                 valid_keys = set(sig.parameters)
                 config_kwargs = {k: v for k, v in config_kwargs.items() if k in valid_keys}
         except (TypeError, ValueError):  # pragma: no cover - signature unavailable
-            pass  # Keep all config_kwargs if inspection fails
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
     try:
         config = LoraConfig(task_type=task_type, **config_kwargs)
         adapted = get_peft_model(model, config)

@@ -164,7 +164,7 @@ class TrainingConfig:
 
         return {field.name: getattr(self, field.name) for field in fields(self)}
 
-    def replace(self, **updates: Any) -> "TrainingConfig":
+    def replace(self, **updates: Any) -> TrainingConfig:
         """Return a new config with ``updates`` applied."""
 
         data = self.as_dict()
@@ -174,7 +174,7 @@ class TrainingConfig:
         return cfg
 
     @classmethod
-    def from_mapping(cls, mapping: Mapping[str, Any]) -> "TrainingConfig":
+    def from_mapping(cls, mapping: Mapping[str, Any]) -> TrainingConfig:
         """Build a config from a mapping, coercing values when possible."""
 
         base = cls()
@@ -193,7 +193,7 @@ class TrainingConfig:
         return cfg
 
     @classmethod
-    def from_env(cls, prefix: str = "TRAIN_") -> "TrainingConfig":
+    def from_env(cls, prefix: str = "TRAIN_") -> TrainingConfig:
         """Construct a config from environment variables."""
 
         base = cls()

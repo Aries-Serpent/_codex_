@@ -20,9 +20,12 @@ Usage:
 
 import argparse
 import json
+import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 # Constants
 REPO_ROOT = Path(__file__).parent.parent.parent
@@ -102,7 +105,7 @@ class AutoHandoff:
             "commits": []
         }
 
-        with open(ACTION_LOG_PATH, 'r') as f:
+        with open(ACTION_LOG_PATH) as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -124,8 +127,7 @@ class AutoHandoff:
                             continue
                 except (ValueError, AttributeError):
                     # Timestamp parsing failed - include entry anyway
-                    pass
-
+                    logger.debug("Suppressed exception in handler", exc_info=True)
                 # Extract file operations
                 action = entry.get("action", "")
                 path = entry.get("path", "")
@@ -159,7 +161,7 @@ class AutoHandoff:
             return patterns
 
         try:
-            with open(PATTERN_STORE, 'r') as f:
+            with open(PATTERN_STORE) as f:
                 data = json.load(f)
 
             for pattern_id, pattern in data.get("patterns", {}).items():
@@ -168,20 +170,18 @@ class AutoHandoff:
                     patterns.append(f"{pattern_id}: {pattern.get('name', 'Unknown')}")
         except (json.JSONDecodeError, KeyError):
             # Pattern store is corrupted or empty - return empty list
-            pass
-
+            logger.debug("Suppressed exception in handler", exc_info=True)
         return patterns[:5]  # Top 5
 
     def load_tracking_data(self) -> Dict[str, Any]:
         """Load or initialize handoff tracking data."""
         if TRACKING_FILE.exists():
             try:
-                with open(TRACKING_FILE, 'r') as f:
+                with open(TRACKING_FILE) as f:
                     return json.load(f)
             except json.JSONDecodeError:
                 # File is corrupted - will reinitialize
-                pass
-
+                logger.debug("Suppressed exception in handler", exc_info=True)
         # Initialize new tracking data
         return self._init_tracking_data()
 

@@ -4,6 +4,7 @@ Registry for AST analyzers.
 Provides registration and execution of multiple analyzers on AST trees.
 """
 
+import logging
 from typing import Any, Dict, List, Optional
 
 from codex_ml.ast.analysis.base_analyzer import (
@@ -14,6 +15,8 @@ from codex_ml.ast.analysis.base_analyzer import (
     UnusedCodeAnalyzer,
 )
 from codex_ml.ast.core.node import Finding, StandardizedASTNode
+
+logger = logging.getLogger(__name__)
 
 
 class AnalyzerRegistry:
@@ -113,7 +116,7 @@ class AnalyzerRegistry:
                         Finding(
                             type="analyzer_error",
                             severity="error",
-                            message=f"Analyzer '{analyzer.get_analyzer_type()}' failed: {str(e)}",
+                            message=f"Analyzer '{analyzer.get_analyzer_type()}' failed: {e!s}",
                             location=node.location,
                             analyzer="registry",
                             metadata={
@@ -179,8 +182,7 @@ class AnalyzerRegistry:
                         node_findings = analyzer.analyze(node)
                         findings.extend(node_findings)
                     except Exception:
-                        pass  # Skip errors in filtered mode
-
+                        logger.debug("Suppressed exception in handler", exc_info=True)
         # Filter by severity
         if min_severity:
             findings = [
