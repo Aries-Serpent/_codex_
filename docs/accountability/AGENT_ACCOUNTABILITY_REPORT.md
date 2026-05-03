@@ -24740,3 +24740,26 @@ and the CI gate requirement.
 ### Lessons Learned
 - pydantic v2 `@validator` requires `@classmethod` + `cls` parameter; use `@field_validator` instead.
 - `end-of-file-fixer` pre-commit hook will fail Fast Validation if any file ends without exactly one trailing newline.
+
+## SESSION SUMMARY — 2026-05-03T22:32Z — PR #4206 — Code Quality Fixes (budget_cap / DirichletBeliefs / migration / tests)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All new comments reviewed: #4367325935 (continue iterative self-healing, run 25292464650), #4367326094 (CI Rescue — Fast Validation failure on 8b81d90)
+- [x] **0b.** Failing CI run 25292464650 reviewed via GitHub MCP: Pattern 25 (accountability not updated) + Pattern 30 (ruff lint violations). Both resolved in this commit.
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** `ruff check src/ tests/ scripts/` — clean ✅
+- [x] **3.** `sync_tracked_files --check` — clean ✅
+
+### Work Completed
+1. **`budget_cap` decorator** — Added `import signal`; replaced post-execution-only budget check with SIGALRM-based pre-emptive timeout on POSIX platforms (`signal.setitimer(ITIMER_REAL, cap)`). Previous implementation allowed expensive functions to complete fully before raising BudgetExceeded.
+2. **`DirichletBeliefs.observe()`** — Added explicit `if option not in self.options: raise ValueError(...)` guard before `list.index()` call to surface unknown options clearly.
+3. **Migration `is_active` default** — Changed `bool(record.get("is_active", True))` → `record.get("is_active")` to surface missing field as `None` rather than silently defaulting to `True`.
+4. **`test_sensitive_data_utils.py`** — Removed duplicate `# pragma: allowlist secret`; added positive masking assertions (`"***" in result`, prefix preservation) to phone, SSN, credit card, and API key tests.
+5. **Fast Validation CI failure** — Root cause was stale commit `8b81d90` (planning-only commit with no code changes); actual fixes landed in `011adf1`. Pattern 30 ruff violations and Pattern 25 accountability both now resolved.
+
+### Unresolved
+- Pre-existing `py/call-to-non-callable`, `py/call/wrong-arguments`, `py/call/wrong-named-argument` findings — require CodeQL CLI interprocedural analysis; not addressable without CodeQL database.
+
+### Lessons Learned
+- Pattern 25 fires on every commit that doesn't update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`. Always update this file in the final commit of each session.
+- The CI failure on commit `8b81d90` was a transient artifact of the planning commit; actual code fixes in `011adf1` already resolved the ruff violations.
