@@ -32,7 +32,6 @@ Last Updated: 2026-01-16
 import json
 from pathlib import Path
 
-
 DEFAULT_WEAKEST_COMPONENT = ("unknown", 0.0)
 
 
