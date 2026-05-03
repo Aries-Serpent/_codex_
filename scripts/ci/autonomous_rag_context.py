@@ -207,10 +207,10 @@ class AccessStrategy:
         best_var = ""
         for token, var in TOKENS:
             try:
-                req = urllib.request.Request(f"{BASE}/rate_limit",  # noqa: S310
+                req = urllib.request.Request(f"{BASE}/rate_limit",  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                     headers={"Authorization": f"Bearer {token}",
                              "Accept": "application/vnd.github+json"})
-                with urllib.request.urlopen(req, timeout=8) as r:  # noqa: S310
+                with urllib.request.urlopen(req, timeout=8) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                     d = json.load(r)
                 core = d.get("resources", {}).get("core", {})
                 gql  = d.get("resources", {}).get("graphql", {})
@@ -268,8 +268,8 @@ class TrickleDownFetcher:
             return None
         time.sleep(self.POLITE)
         try:
-            req = urllib.request.Request(f"{BASE}{path}", headers=self._headers(token))  # noqa: S310
-            with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310
+            req = urllib.request.Request(f"{BASE}{path}", headers=self._headers(token))  # noqa: S310  # BASE = https://api.github.com (https-only constant)
+            with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                 return json.load(r)
         except urllib.error.HTTPError as exc:
             if exc.code == 403:
@@ -293,12 +293,12 @@ class TrickleDownFetcher:
         time.sleep(self.POLITE)
         try:
             payload = json.dumps({"query": query, **({"variables": variables} if variables else {})}).encode()
-            req = urllib.request.Request(  # noqa: S310
+            req = urllib.request.Request(  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                 f"{BASE}/graphql", data=payload,
                 headers={**self._headers(token), "Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310
+            with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                 result = json.load(r)
             return result.get("data", {})
         except Exception as exc:
