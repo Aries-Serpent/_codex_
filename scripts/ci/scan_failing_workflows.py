@@ -116,7 +116,8 @@ def _median_duration_seconds(runs: list[dict]) -> float | None:
                 durations.append((t1 - t0).total_seconds())
             except ValueError:
                 logger.debug("Suppressed exception in handler", exc_info=True)
-                return None
+    if not durations:
+        return None
     durations.sort()
     mid = len(durations) // 2
     return durations[mid]

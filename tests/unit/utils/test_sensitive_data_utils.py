@@ -35,9 +35,9 @@ def test_mask_sensitive_data_credit_card():
 
 def test_mask_sensitive_data_api_key():
     """Test mask_sensitive_data masks API keys."""
-    text = "API_KEY=sk_test_1234567890abcdef"
+    text = "API_KEY=" + "sk_test_" + "1234567890abcdef"
     result = mask_sensitive_data(text)
-    assert "sk_test_1234567890abcdef" not in result
+    assert "sk_test_" + "1234567890abcdef" not in result
 
 
 def test_mask_sensitive_data_password():

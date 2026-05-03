@@ -317,8 +317,12 @@ def main():
 
     args = parser.parse_args()
 
-    # Handle apply flag
-    dry_run = not args.apply
+    # --apply overrides --dry-run; if neither is explicitly set, default to dry-run.
+    # This honours both flags: --dry-run keeps dry_run=True, --apply sets dry_run=False.
+    if args.apply:
+        dry_run = False
+    else:
+        dry_run = args.dry_run
 
     context = IngestContext(
         src_path=args.har_file,

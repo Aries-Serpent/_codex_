@@ -200,6 +200,12 @@ class ZendeskEndpointManager:
                             except (TypeError, ValueError, OverflowError):
                                 retry_after = default_retry_after
 
+                    max_retry_after = 300  # cap at 5 minutes to prevent indefinite hang
+                    if retry_after > max_retry_after:
+                        logger.warning(
+                            f"Retry-After {retry_after}s exceeds cap {max_retry_after}s; capping"
+                        )
+                        retry_after = max_retry_after
                     logger.warning(f"Rate limited, waiting {retry_after}s")
                     time.sleep(retry_after)
                     continue
