@@ -217,6 +217,7 @@ def section_a_workflow_status(
                     eta_mins = int(eta.replace("~", "").replace(" min", ""))
                 except ValueError:
                     pass  # not a plain "~N min" string — leave as None
+                    _ = None  # noqa: BLE001
 
             entry = {
                 "name": name, "status": status, "url": url,

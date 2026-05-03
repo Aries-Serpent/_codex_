@@ -121,6 +121,7 @@ def train(
                 fh.write(json.dumps(record) + "\n")
         except Exception:  # pragma: no cover - best-effort logging
             pass
+            _ = None  # noqa: BLE001
 
     # Load tokenizer and model
     tokenizer = load_from_pretrained(

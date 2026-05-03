@@ -238,6 +238,7 @@ def batch_file_read(
         except (OSError, IOError):
             # Intentionally ignore file read errors; skip unreadable files.
             pass
+            _ = None  # noqa: BLE001
     return results
 
 

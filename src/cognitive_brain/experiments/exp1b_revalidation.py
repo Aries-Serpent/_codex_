@@ -547,6 +547,7 @@ if __name__ == "__main__":
                 scenarios_arg = int(sys.argv[i + 1])
             except ValueError:  # ignore non-integer --scenarios argument; keep default
                 pass
+                _ = None  # noqa: BLE001
         if arg == "--save-json" and i + 1 < len(sys.argv):
             save_json_arg = sys.argv[i + 1]
 

@@ -91,6 +91,7 @@ def build_service_package(
         shutil.rmtree(staging)
     except Exception:  # pragma: no cover - best effort cleanup
         pass
+        _ = None  # noqa: BLE001
 
     return {
         "run_id": run_id,

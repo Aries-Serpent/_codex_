@@ -63,6 +63,7 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
             _np.random.seed(seed)
         except Exception:  # pragma: no cover
             pass
+            _ = None  # noqa: BLE001
 
     if _torch is not None:  # pragma: no cover - optional dep
         try:
@@ -72,8 +73,10 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
                     _torch.cuda.manual_seed_all(seed)
                 except Exception:  # pragma: no cover
                     pass
+                    _ = None  # noqa: BLE001
         except Exception:  # pragma: no cover
             pass
+            _ = None  # noqa: BLE001
 
     if set_env:
         os.environ["CODEX_GLOBAL_SEED"] = str(seed)

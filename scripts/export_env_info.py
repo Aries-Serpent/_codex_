@@ -37,18 +37,24 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-info: dict[str, Any] = {
-    "python": sys.version.split()[0],
-    "platform": platform.platform(),
-    "env": {k: v for k, v in os.environ.items() if k.startswith("CODEX_")},
-}
-try:
-    import torch  # type: ignore
 
-    info["torch"] = torch.__version__
-    info["cuda"] = torch.version.cuda if torch.cuda.is_available() else None
-except Exception:
-    logger.warning("Exception occurred", exc_info=True)
-    info["torch"] = None
-    info["cuda"] = None
-print(json.dumps(info, indent=2))
+def collect_env_info() -> dict[str, Any]:
+    info: dict[str, Any] = {
+        "python": sys.version.split()[0],
+        "platform": platform.platform(),
+        "env": {k: v for k, v in os.environ.items() if k.startswith("CODEX_")},
+    }
+    try:
+        import torch  # type: ignore
+
+        info["torch"] = torch.__version__
+        info["cuda"] = torch.version.cuda if torch.cuda.is_available() else None
+    except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        info["torch"] = None
+        info["cuda"] = None
+    return info
+
+
+if __name__ == "__main__":
+    print(json.dumps(collect_env_info(), indent=2))

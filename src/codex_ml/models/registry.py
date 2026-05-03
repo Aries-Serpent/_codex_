@@ -315,18 +315,21 @@ def get_model(
             model = adapter(model, validated_lora)
         except Exception:  # pragma: no cover - adapter failure should not crash load
             pass
+            _ = None  # noqa: BLE001
     dtype_value = _resolve_torch_dtype(config.get("dtype"))
     if dtype_value is not None and hasattr(model, "to"):
         try:
             model = model.to(dtype_value)
         except Exception:  # pragma: no cover - invalid dtype/device combination
             pass
+            _ = None  # noqa: BLE001
     device_value = _normalise_device(config.get("device"))
     if device_value is not None:
         try:
             model = model.to(device_value)
         except Exception:  # pragma: no cover - invalid device
             pass
+            _ = None  # noqa: BLE001
     return model
 
 

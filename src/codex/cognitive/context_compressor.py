@@ -300,6 +300,7 @@ class ContextIndex:
             except (json.JSONDecodeError, KeyError):
                 # Index file is corrupted - will reinitialize
                 pass
+                _ = None  # noqa: BLE001
 
     def _index_context(self, ctx: CompressedContext) -> None:
         """Add context to indexes."""

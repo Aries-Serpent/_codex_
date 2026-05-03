@@ -187,6 +187,7 @@ class DBManager:
                     except sqlite3.Error:
                         # Connection is stale, create new one
                         pass
+                        _ = None  # noqa: BLE001
 
         # Create new connection
         conn = sqlite3.connect(str(self.db_path))

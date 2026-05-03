@@ -41,6 +41,7 @@ def _set_numpy_seed(seed: int) -> None:
     except (AttributeError, RuntimeError):
         # numpy can raise when compiled without RNG support
         pass
+        _ = None  # noqa: BLE001
 
 
 def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
@@ -54,6 +55,7 @@ def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
         except (RuntimeError, AttributeError):
             # CUDA might be unavailable; ignore in that case
             pass
+            _ = None  # noqa: BLE001
 
         torch_info["available"] = True
         torch_info["deterministic"] = bool(deterministic)

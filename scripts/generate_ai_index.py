@@ -262,6 +262,7 @@ class RepositoryIndexer:
                 # If the file cannot be decoded or parsed for __all__/keywords,
                 # skip these optional enrichments but still index the file itself.
                 pass
+                _ = None  # noqa: BLE001
 
         # Add semantic tags based on path
         path_parts = Path(relative_path).parts

@@ -407,6 +407,7 @@ class Phase6Deployer:
                 opt_in_features.append("tracking (enabled)")
         except Exception:  # Catch YAML loading or file access errors
             pass
+            _ = None  # noqa: BLE001
 
         logger.info(
             f"  ✓ Production features are explicit: {len(opt_in_features)} features enabled"

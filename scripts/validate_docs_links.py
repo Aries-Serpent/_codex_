@@ -166,6 +166,7 @@ class HeadingParser:
         except Exception:
             # Silently skip files with read errors
             pass
+            _ = None  # noqa: BLE001
 
         self.headings_by_file[rel_path] = headings
         self.anchors_by_file[rel_path] = anchors

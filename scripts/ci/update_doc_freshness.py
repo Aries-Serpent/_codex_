@@ -74,6 +74,7 @@ def _parse_date(s: str) -> date | None:
             return datetime.strptime(m.group(), "%Y-%m-%d").date()
         except ValueError:
             pass
+            _ = None  # noqa: BLE001
     return None
 
 

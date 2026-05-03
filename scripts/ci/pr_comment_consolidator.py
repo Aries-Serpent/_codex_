@@ -529,6 +529,7 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
                     freshness_detail = f"last update {age_hours:.1f}h ago (>72h, stale)"
             except ValueError:  # ignore malformed timestamp; keep default freshness values
                 pass
+                _ = None  # noqa: BLE001
 
     # ── weighted composite ────────────────────────────────────────────────────
     score = round(100 * (
@@ -809,6 +810,7 @@ def consolidate(
                 readiness = compute_readiness(pr_number, token, sections)
             except Exception:  # noqa: BLE001
                 pass  # score is best-effort; dashboard renders without it
+                _ = None  # noqa: BLE001
 
             # ── OTel coherence emission ─────────────────────────────────────
             if _OTEL_AVAILABLE and sections:
@@ -820,6 +822,7 @@ def consolidate(
                     workflow_coherence_score.observe(coherence)
                 except Exception:  # noqa: BLE001
                     pass
+                    _ = None  # noqa: BLE001
 
             visible = _build_body(sections, run_url=run_url, readiness=readiness)
             hidden_blobs = "\n".join(

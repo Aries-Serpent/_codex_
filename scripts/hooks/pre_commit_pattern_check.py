@@ -142,6 +142,7 @@ def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
         # be parsed for duplicate-kwargs detection and are likely intentional
         # test fixtures or work-in-progress code.
         pass
+        _ = None  # noqa: BLE001
 
     # Pattern 1: Unused imports — lightweight heuristic via ruff if available
     tmp_path: Optional[str] = None
@@ -165,12 +166,14 @@ def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
         # The ruff F401 check is optional; if ruff is unavailable or times out,
         # skip this detection step rather than failing the whole hook.
         pass
+        _ = None  # noqa: BLE001
     finally:
         if tmp_path is not None:
             try:
                 os.unlink(tmp_path)
             except OSError:
                 pass  # Temp file already removed or unlink failed — not fatal.
+                _ = None  # noqa: BLE001
 
     return detected
 

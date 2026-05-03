@@ -1555,6 +1555,7 @@ def _evaluate_model(
             return {}
     except Exception:  # pragma: no cover - len may not be defined
         pass
+        _ = None  # noqa: BLE001
 
     torch_dataset = dataset
     if hasattr(dataset, "with_format"):
@@ -1564,6 +1565,7 @@ def _evaluate_model(
                 torch_dataset = formatted
         except Exception:  # pragma: no cover - fallback to raw dataset
             pass
+            _ = None  # noqa: BLE001
 
     loader = DataLoader(torch_dataset, batch_size=batch_size)
 

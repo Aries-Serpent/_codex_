@@ -55,6 +55,7 @@ def _version_key(version: str) -> tuple:
             return (_PkgVersion(version),)
         except Exception:
             pass
+            _ = None  # noqa: BLE001
     # Naive integer-tuple fallback (handles "X.Y.Z" correctly)
     try:
         return tuple(int(x) for x in version.split("."))

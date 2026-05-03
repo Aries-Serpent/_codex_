@@ -84,6 +84,7 @@ def load_action_log(
                     except (ValueError, TypeError):
                         # Timestamp parsing failed - include entry anyway
                         pass
+                        _ = None  # noqa: BLE001
                 entries.append(entry)
             except json.JSONDecodeError:
                 continue

@@ -188,6 +188,7 @@ class HandoffValidator:
                     return json.load(f)
             except json.JSONDecodeError:
                 pass
+                _ = None  # noqa: BLE001
         return {"handoffs": [], "metrics": {}}
 
     def _save_tracking_data(self, data: Dict[str, Any]):

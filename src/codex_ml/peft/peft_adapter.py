@@ -134,6 +134,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
                 config_kwargs = {k: v for k, v in config_kwargs.items() if k in valid_keys}
         except (TypeError, ValueError):  # pragma: no cover - signature unavailable
             pass  # Keep all config_kwargs if inspection fails
+            _ = None  # noqa: BLE001
 
     try:
         config = LoraConfig(task_type=task_type, **config_kwargs)

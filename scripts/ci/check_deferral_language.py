@@ -721,6 +721,7 @@ def main(argv: list[str] | None = None) -> int:
                                 continue
                         except ValueError:
                             pass  # malformed timestamp — include comment to be safe
+                            _ = None  # noqa: BLE001
                 body = obj.get("body", "")
                 user = obj.get("user", {}).get("login", f"comment-{i}")
                 if body:

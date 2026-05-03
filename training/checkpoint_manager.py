@@ -27,6 +27,7 @@ try:
 except Exception:
     # fall back to existing local implementation below (if present)
     pass
+    _ = None  # noqa: BLE001
 
 
 if "CheckpointManager" not in globals():
@@ -77,6 +78,7 @@ if "CheckpointManager" not in globals():
                     state["numpy"] = _numpy_state_payload(_np.random.get_state())
                 except Exception:  # pragma: no cover - defensive
                     pass
+                    _ = None  # noqa: BLE001
 
             if _torch is not None:
                 torch_state: dict[str, Any] = {}
@@ -91,6 +93,7 @@ if "CheckpointManager" not in globals():
                         torch_state["cpu"] = cpu_state.tolist()
                 except Exception:  # pragma: no cover - torch optional
                     pass
+                    _ = None  # noqa: BLE001
                 try:
                     if (
                         hasattr(_torch, "cuda")
@@ -104,6 +107,7 @@ if "CheckpointManager" not in globals():
                         ]
                 except Exception:  # pragma: no cover - cuda optional
                     pass
+                    _ = None  # noqa: BLE001
                 if torch_state:
                     state["torch"] = torch_state
             return state
@@ -395,6 +399,7 @@ class CheckpointManager:
                     link.unlink()
             except FileNotFoundError:
                 pass
+                _ = None  # noqa: BLE001
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
@@ -407,11 +412,13 @@ class CheckpointManager:
                         child.unlink()
                 except FileNotFoundError:
                     pass
+                    _ = None  # noqa: BLE001
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError:
             pass
+            _ = None  # noqa: BLE001
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:

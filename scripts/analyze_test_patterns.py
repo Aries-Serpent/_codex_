@@ -71,6 +71,7 @@ class MockPatternAnalyzer(ast.NodeVisitor):
         except Exception:
             # If analysis fails, skip this check
             pass
+            _ = None  # noqa: BLE001
 
 
 def analyze_test_directory(test_dir='tests'):

@@ -168,6 +168,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
             return data
     except json.JSONDecodeError:
         pass
+        _ = None  # noqa: BLE001
 
     # Minimal fallback parser (best effort)
     try:
@@ -176,6 +177,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
             return data
     except Exception:  # pragma: no cover - defensive
         pass
+        _ = None  # noqa: BLE001
 
     logger.warning("Policy file %s is not valid YAML or JSON", path)
     return None

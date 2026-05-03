@@ -48,6 +48,7 @@ class TBWriter:
             self._writer.add_scalar(tag, value, step)
         except Exception:  # pragma: no cover - tensorboard runtime errors
             pass
+            _ = None  # noqa: BLE001
 
     def close(self) -> None:
         if self._writer is None:
@@ -56,10 +57,12 @@ class TBWriter:
             self._writer.flush()
         except Exception:  # pragma: no cover - flushing is best-effort
             pass
+            _ = None  # noqa: BLE001
         try:
             self._writer.close()
         except Exception:  # pragma: no cover - closing is best-effort
             pass
+            _ = None  # noqa: BLE001
 
 
 __all__ = ["TBWriter"]

@@ -295,6 +295,7 @@ class WorkflowAnalyzer:
                     self._workflows[info.name] = info
             except (OSError, yaml.YAMLError):
                 pass
+                _ = None  # noqa: BLE001
 
         return workflows
 
@@ -561,6 +562,7 @@ class ImmutableRegistry:
                         self._components[comp.component_id] = comp
             except (json.JSONDecodeError, KeyError):
                 pass
+                _ = None  # noqa: BLE001
 
     def save(self) -> None:
         """Save registry to disk."""
@@ -638,6 +640,7 @@ class CheckpointManager:
                         self._checkpoints[cp.checkpoint_id] = cp
             except (json.JSONDecodeError, KeyError):
                 pass
+                _ = None  # noqa: BLE001
 
     def save(self) -> None:
         """Save checkpoints to disk."""

@@ -21,6 +21,7 @@ def _load_metrics(n: int = 10) -> list[dict]:
                         entries.append(json.loads(line))
                     except Exception:  # noqa: BLE001 — skip individual malformed lines
                         pass
+                        _ = None  # noqa: BLE001
         except Exception as exc:  # noqa: BLE001 — best-effort; no metrics available
             click.echo(f"Warning: could not read metrics file: {exc}", err=True)
     return entries

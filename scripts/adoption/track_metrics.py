@@ -165,6 +165,7 @@ class AdoptionTracker:
                             except Exception:
                                 # If there's an error reading artifacts, skip counting for this run
                                 pass
+                                _ = None  # noqa: BLE001
 
                 mlflow_metrics["runs_logged"] = run_count
                 mlflow_metrics["artifacts_stored"] = artifact_count

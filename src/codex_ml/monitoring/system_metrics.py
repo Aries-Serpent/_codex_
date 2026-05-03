@@ -191,6 +191,7 @@ def _minimal_process_sample(ts: float) -> Optional[dict[str, Any]]:
             payload["memory_info"] = {"rss": rss}
         except Exception:  # pragma: no cover - platform specific
             pass
+            _ = None  # noqa: BLE001
 
     return payload or None
 
@@ -449,6 +450,7 @@ def start_metrics_logger(
                 write_fn(record)
             except Exception:  # pragma: no cover - sink errors are non-fatal
                 pass
+                _ = None  # noqa: BLE001
             if scalar_sink is not None:
                 try:
                     scalars = system_metrics_scalars(record)
@@ -456,6 +458,7 @@ def start_metrics_logger(
                         scalar_sink(scalars)
                 except Exception:  # pragma: no cover - sink errors are non-fatal
                     pass
+                    _ = None  # noqa: BLE001
             event.wait(interval)
 
     thread = threading.Thread(target=_loop, name="codex-system-metrics", daemon=True)

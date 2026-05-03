@@ -194,6 +194,7 @@ class MarkdownAnalyzer:
                         )
                     except (ValueError, OSError):
                         pass  # Skip invalid paths during reference building
+                        _ = None  # noqa: BLE001
 
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)

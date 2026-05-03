@@ -305,6 +305,7 @@ def _try_model_to(
                 return model.to(device)  # safe-device-placement: internal implementation
             except Exception:
                 pass
+                _ = None  # noqa: BLE001
 
     # Model doesn't have .to() method
     logger.warning("No device transfer method available, returning model as-is")

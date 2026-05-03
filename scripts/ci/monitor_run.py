@@ -299,6 +299,7 @@ def _resolve_repo() -> str:
             return m.group(1)
     except Exception:  # noqa: BLE001
         pass
+        _ = None  # noqa: BLE001
     return "Aries-Serpent/_codex_"
 
 
@@ -391,6 +392,7 @@ def _log(msg: str, *, to_file: bool = True, to_stdout: bool = True) -> None:
                 fh.write(line + "\n")
         except Exception:  # noqa: BLE001
             pass
+            _ = None  # noqa: BLE001
 
 def _now() -> str:
     return datetime.now(tz=timezone.utc).isoformat()
@@ -423,6 +425,7 @@ def _resolve_session_start(
             return src, ns
         except Exception:  # noqa: BLE001
             pass
+            _ = None  # noqa: BLE001
     # Fallback: capture current nanosecond-precision time
     ns  = time.time_ns()
     iso = datetime.now(tz=timezone.utc).isoformat()

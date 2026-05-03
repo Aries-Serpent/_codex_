@@ -18,8 +18,11 @@ run_ids = [
     22007189326, 22007189304, 22004882338, 21997453266
 ]
 
-print(f"Total run IDs to process: {len(run_ids)}")
-print(f"Run IDs: {run_ids[:5]}... (showing first 5)")
-print("\nTo collect jobs and artifacts, use:")
-print("github-mcp-server-actions_list(method='list_workflow_jobs', owner='Aries-Serpent', repo='_codex_', resource_id=RUN_ID)")
-print("github-mcp-server-actions_list(method='list_workflow_run_artifacts', owner='Aries-Serpent', repo='_codex_', resource_id=RUN_ID)")
+
+if __name__ == "__main__":
+    print(f"Total run IDs to process: {len(run_ids)}")
+    print(f"Run IDs: {run_ids[:5]}... (showing first 5)")
+    print("\nTo collect jobs and artifacts, use:")
+    print("github-mcp-server-actions_list(method='list_workflow_jobs', owner='Aries-Serpent', repo='_codex_', resource_id=RUN_ID)")
+    print("github-mcp-server-actions_list(method='list_workflow_run_artifacts', owner='Aries-Serpent', repo='_codex_', resource_id=RUN_ID)")
+

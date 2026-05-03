@@ -125,6 +125,7 @@ class AutoHandoff:
                 except (ValueError, AttributeError):
                     # Timestamp parsing failed - include entry anyway
                     pass
+                    _ = None  # noqa: BLE001
 
                 # Extract file operations
                 action = entry.get("action", "")
@@ -169,6 +170,7 @@ class AutoHandoff:
         except (json.JSONDecodeError, KeyError):
             # Pattern store is corrupted or empty - return empty list
             pass
+            _ = None  # noqa: BLE001
 
         return patterns[:5]  # Top 5
 
@@ -181,6 +183,7 @@ class AutoHandoff:
             except json.JSONDecodeError:
                 # File is corrupted - will reinitialize
                 pass
+                _ = None  # noqa: BLE001
 
         # Initialize new tracking data
         return self._init_tracking_data()

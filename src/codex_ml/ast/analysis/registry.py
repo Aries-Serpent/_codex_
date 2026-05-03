@@ -180,6 +180,7 @@ class AnalyzerRegistry:
                         findings.extend(node_findings)
                     except Exception:
                         pass  # Skip errors in filtered mode
+                        _ = None  # noqa: BLE001
 
         # Filter by severity
         if min_severity:

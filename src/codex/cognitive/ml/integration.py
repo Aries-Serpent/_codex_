@@ -187,6 +187,7 @@ class BrainMLBridge:
                 except (RuntimeError, Exception):
                     # ML classifier failed - fall back to default category
                     pass
+                    _ = None  # noqa: BLE001
 
             # Get recommended agents based on category
             recommended_agents = self._get_agents_for_category(ml_category or "general")

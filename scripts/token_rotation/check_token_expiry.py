@@ -33,6 +33,12 @@ Last Updated: 2026-01-16
 
 import sys
 
-print("Token rotation automation - Phase 2 implementation")
-print("See: docs/admin/CONTINUATION_ROADMAP.md")
-sys.exit(0)
+
+def main() -> None:
+    print("Token rotation automation - Phase 2 implementation")
+    print("See: docs/admin/CONTINUATION_ROADMAP.md")
+
+
+if __name__ == "__main__":
+    main()
+    sys.exit(0)

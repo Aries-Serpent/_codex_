@@ -172,10 +172,12 @@ def _get_version(import_name: str) -> str | None:
         return importlib.metadata.version(import_name.replace("_", "-"))
     except importlib.metadata.PackageNotFoundError:
         pass
+        _ = None  # noqa: BLE001
     try:
         return importlib.metadata.version(import_name)
     except importlib.metadata.PackageNotFoundError:
         pass
+        _ = None  # noqa: BLE001
     # Fall back to checking importability (for namespace packages)
     if importlib.util.find_spec(import_name) is not None:
         return "installed (no metadata)"

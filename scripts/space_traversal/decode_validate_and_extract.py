@@ -477,8 +477,10 @@ def main(argv: Optional[list[str]] = None) -> int:
                     print(f"Wrote stable manifest to: {manifest_path}")
             except Exception:
                 pass
+                _ = None  # noqa: BLE001
         except Exception:
             pass
+            _ = None  # noqa: BLE001
 
     if not args.quiet:
         print(f"Wrote outputs to: {out_dir}")

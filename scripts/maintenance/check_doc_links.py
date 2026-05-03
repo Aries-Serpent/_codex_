@@ -136,6 +136,7 @@ class LinkChecker:
                         # heuristic common root, just skip this candidate and continue.
                         # Suggestion generation is best-effort and should not fail hard.
                         pass
+                        _ = None  # noqa: BLE001
 
         if candidates:
             return f"Possible: {candidates[0]}"

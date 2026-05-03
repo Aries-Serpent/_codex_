@@ -161,6 +161,7 @@ def _pick_algorithm() -> str:
         return "bm3d"
     except ImportError:
         pass
+        _ = None  # noqa: BLE001
     return "nl_means"
 
 

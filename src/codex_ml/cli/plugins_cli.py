@@ -95,6 +95,7 @@ def _explain_group(group: str, name: str, *, echo, exit_exc, bad_param_exc) -> N
         echo(str(sig))
     except ValueError:  # pragma: no cover - builtins may not have signature
         pass
+        _ = None  # noqa: BLE001
 
 
 if typer is not None:  # pragma: no cover - Typer CLI

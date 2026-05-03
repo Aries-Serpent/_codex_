@@ -176,6 +176,7 @@ def parse_action_log(
                         continue
                 except (ValueError, TypeError):
                     pass
+                    _ = None  # noqa: BLE001
 
             # Filter by session if specified
             if session_id and entry.get('session_id') != session_id:

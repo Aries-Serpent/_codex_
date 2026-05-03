@@ -455,6 +455,7 @@ class SessionContextInjector:
             self._api.store_memory(lesson, tags=["api-failure", "reconstruction"])
         except Exception:  # noqa: BLE001
             pass  # best-effort; cannot fail the session for a memory write
+            _ = None  # noqa: BLE001
 
         return SessionContextPayload(
             session_id=(f"reconstructed-{hashlib.sha256(str(meta).encode()).hexdigest()[:8]}"),

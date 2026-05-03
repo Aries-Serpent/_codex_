@@ -113,6 +113,7 @@ def _median_duration_seconds(runs: list[dict]) -> float | None:
                 durations.append((t1 - t0).total_seconds())
             except ValueError:
                 pass  # malformed ISO timestamp — skip this run's duration
+                _ = None  # noqa: BLE001
         return None
     durations.sort()
     mid = len(durations) // 2
@@ -189,6 +190,7 @@ def scan(
                     eta_minutes = int(eta_str.replace("~", "").replace(" min", ""))
                 except ValueError:
                     pass  # eta_str didn't match "~N min" pattern — leave eta_minutes as None
+                    _ = None  # noqa: BLE001
 
             entry = {
                 "name": name,

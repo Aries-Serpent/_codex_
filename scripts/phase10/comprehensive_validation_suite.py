@@ -479,6 +479,7 @@ class Phase10Validator:
                             metrics[name] = score
                         except (ValueError, IndexError):
                             pass
+                            _ = None  # noqa: BLE001
 
             if metrics:
                 metrics.get("Overall Health", 0)

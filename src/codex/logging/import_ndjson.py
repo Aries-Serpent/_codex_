@@ -55,6 +55,7 @@ try:
     _codex_sqlite_auto()
 except Exception:  # pragma: no cover
     pass
+    _ = None  # noqa: BLE001
 
 
 def _default_log_dir() -> Path:

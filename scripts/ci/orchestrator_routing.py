@@ -70,6 +70,7 @@ def select_specialist(task_description: str, top_k: int = 1) -> str:
             )
     except Exception:  # noqa: BLE001
         pass  # fall through to keyword match
+        _ = None  # noqa: BLE001
 
     # Strategy 2: Keyword match against capability_tags in registry
     agents = _load_registry()

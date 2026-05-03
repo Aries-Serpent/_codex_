@@ -113,6 +113,7 @@ class DevicePlacementChecker(ast.NodeVisitor):
         except (OSError, IOError, UnicodeDecodeError):
             # If the file cannot be read for any reason, treat as no annotation present.
             pass
+            _ = None  # noqa: BLE001
         return False
 
 

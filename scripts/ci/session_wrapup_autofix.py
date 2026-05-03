@@ -240,6 +240,7 @@ def _auth_enabled_in_env() -> bool:
             return str(data.get("COPILOT_AGENT_AUTH_ENABLED", "")).lower() == "true"
         except Exception:
             pass
+            _ = None  # noqa: BLE001
     return False
 
 
@@ -1296,6 +1297,7 @@ def select_merge_required_workflows(
                     )
             except OSError:
                 pass  # step summary write is best-effort
+                _ = None  # noqa: BLE001
 
     if not activated and _WEC_MARKER in pr_body:
         n_checked = sum(1 for v in updated_state.values() if v)

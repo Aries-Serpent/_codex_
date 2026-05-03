@@ -196,6 +196,7 @@ class _WhitespaceFallbackTokenizer:
                 import torch
             except Exception:  # pragma: no cover - torch optional
                 pass
+                _ = None  # noqa: BLE001
             else:
                 return {"input_ids": torch.tensor(sequences, dtype=torch.long)}
         return {"input_ids": sequences}

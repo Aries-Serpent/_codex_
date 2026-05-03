@@ -518,10 +518,12 @@ class NdjsonWriter(BaseWriter):
                 self._manifest_logger.close()  # type: ignore[union-attr]
             except Exception:  # pragma: no cover
                 pass
+                _ = None  # noqa: BLE001
         try:
             self._logger.close()
         except Exception:  # pragma: no cover
             pass
+            _ = None  # noqa: BLE001
 
 
 class TensorBoardWriter(BaseWriter):
@@ -571,6 +573,7 @@ class TensorBoardWriter(BaseWriter):
                 self._writer.close()
             except Exception:  # pragma: no cover
                 pass
+                _ = None  # noqa: BLE001
 
     def status(self) -> Optional[str]:
         return self._disabled_reason
@@ -665,6 +668,7 @@ class MLflowWriter(BaseWriter):
                 self._mlflow.end_run()
             except Exception:  # pragma: no cover
                 pass
+                _ = None  # noqa: BLE001
 
     def status(self) -> Optional[str]:
         return self._disabled_reason
@@ -736,6 +740,7 @@ class WandbWriter(BaseWriter):
                 self._run.finish()
             except Exception:  # pragma: no cover
                 pass
+                _ = None  # noqa: BLE001
 
     def status(self) -> Optional[str]:
         return self._disabled_reason
@@ -1153,6 +1158,7 @@ class MLflowRunManager:
                 return self._run.info.run_id
             except Exception:
                 pass
+                _ = None  # noqa: BLE001
         return None
 
     def log_metrics(self, metrics: dict[str, float], step: int = 0) -> bool:

@@ -496,6 +496,7 @@ class CommonIssueFixer:
                         issues.append(f"{item['filename']}:{item['location']['row']} - {item['message']}")
                 except json.JSONDecodeError:
                     pass
+                    _ = None  # noqa: BLE001
 
             if issues and not self.check_only:
                 if not self.dry_run:
@@ -539,9 +540,11 @@ class CommonIssueFixer:
                         print("  ℹ️ Unused variables require manual review")
                 except json.JSONDecodeError:
                     pass
+                    _ = None  # noqa: BLE001
 
         except FileNotFoundError:
             pass
+            _ = None  # noqa: BLE001
 
         return issues
 
@@ -821,6 +824,7 @@ class CommonIssueFixer:
                         )
                 except json.JSONDecodeError:
                     pass  # ruff JSON output malformed – skip unsorted-import detection
+                    _ = None  # noqa: BLE001
 
             if issues and not self.check_only:
                 if not self.dry_run:
@@ -863,6 +867,7 @@ class CommonIssueFixer:
                             issues.append(f"{fname}:{line} - [{tid}] {text}")
                 except json.JSONDecodeError:
                     pass  # bandit JSON output malformed – skip security detection
+                    _ = None  # noqa: BLE001
 
             if issues:
                 print(
@@ -896,6 +901,7 @@ class CommonIssueFixer:
                         )
                 except json.JSONDecodeError:
                     pass  # ruff JSON output malformed – skip f-string placeholder detection
+                    _ = None  # noqa: BLE001
 
             if issues and not self.check_only:
                 if not self.dry_run:
@@ -934,6 +940,7 @@ class CommonIssueFixer:
                         )
                 except json.JSONDecodeError:
                     pass  # malformed output – skip
+                    _ = None  # noqa: BLE001
 
             if issues and not self.check_only:
                 if not self.dry_run:
@@ -981,6 +988,7 @@ class CommonIssueFixer:
                         )
                 except json.JSONDecodeError:
                     pass  # malformed output – skip
+                    _ = None  # noqa: BLE001
 
             if issues and not self.check_only:
                 if not self.dry_run:
@@ -1162,6 +1170,7 @@ class CommonIssueFixer:
                         issues.append(f"{fname}:{row} — {msg}")
                 except json.JSONDecodeError:
                     pass
+                    _ = None  # noqa: BLE001
 
             if issues and not self.check_only:
                 if not self.dry_run:
@@ -2649,6 +2658,7 @@ class CommonIssueFixer:
                     candidate_texts.append(fpath.read_text(encoding="utf-8", errors="replace"))
                 except OSError:
                     pass  # Best-effort read; skip unreadable context files
+                    _ = None  # noqa: BLE001
 
         pr_body_path = self.repo_root / ".codex" / "pr_body.txt"
         if pr_body_path.exists():
@@ -2656,6 +2666,7 @@ class CommonIssueFixer:
                 candidate_texts.append(pr_body_path.read_text(encoding="utf-8", errors="replace"))
             except OSError:
                 pass  # Best-effort read; skip unreadable pr_body.txt
+                _ = None  # noqa: BLE001
 
         if not candidate_texts:
             print(

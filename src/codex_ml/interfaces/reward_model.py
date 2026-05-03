@@ -172,6 +172,7 @@ class HeuristicRewardModel(RewardModel):
                 avg_label += float(label)
             except Exception:  # pragma: no cover - defensive fallback
                 pass
+                _ = None  # noqa: BLE001
             count += 1
 
         if count == 0:

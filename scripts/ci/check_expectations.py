@@ -251,6 +251,7 @@ def main(argv: list[str] | None = None) -> int:
             except ValueError:
                 # Path is outside the repo root; keep the original target string for registry lookup.
                 pass
+                _ = None  # noqa: BLE001
             info = docs.get(target)
             if info is None:
                 print(f"ℹ️  {target} — not in registry. Safe to archive (no expectations tracked).")

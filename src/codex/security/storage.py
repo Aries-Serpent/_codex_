@@ -156,6 +156,7 @@ class SecureStorage:
         except (binascii.Error, ValueError):
             # Expected when key is not base64-encoded
             pass
+            _ = None  # noqa: BLE001
 
         # Try hex decode
         try:
@@ -165,6 +166,7 @@ class SecureStorage:
         except (ValueError, AttributeError):
             # Expected when key is not hex-encoded
             pass
+            _ = None  # noqa: BLE001
 
         # Hash the key to get required length
         if isinstance(key, str):

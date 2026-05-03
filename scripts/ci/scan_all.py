@@ -118,6 +118,7 @@ def check_ruff_stubs() -> CheckResult:
             lines.append(f"  {fname}:{row}  [F811] {msg}")
     except (json.JSONDecodeError, KeyError):
         pass
+        _ = None  # noqa: BLE001
     return CheckResult(
         name="ruff F811 (stub duplicates)",
         category="ruff",
@@ -190,6 +191,7 @@ def check_ruff_e402_tests() -> CheckResult:
             lines.append(f"  {fname}:{row}  [E402] {msg}")
     except (json.JSONDecodeError, KeyError):
         pass
+        _ = None  # noqa: BLE001
     # E402 in tests/ is suppressed by per-file-ignores — report is informational only
     return CheckResult(
         name="ruff E402 (tests/importorskip — informational)",

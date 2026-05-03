@@ -135,6 +135,7 @@ class ProviderFactory:
             # GitHub provider dependencies not available (e.g., requests library)
             # This is expected in minimal installations; gracefully skip
             pass
+            _ = None  # noqa: BLE001
 
         # Check AWS
         try:
@@ -147,6 +148,7 @@ class ProviderFactory:
             # AWS provider dependencies not available (e.g., boto3 library)
             # This is expected when AWS features are not needed; gracefully skip
             pass
+            _ = None  # noqa: BLE001
 
         # Environment always available
         available.append(ProviderType.ENVIRONMENT)

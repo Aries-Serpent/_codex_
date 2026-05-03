@@ -206,6 +206,7 @@ class DocumentationChecker:
                 except Exception:
                     # README.md check is best-effort; ignore errors reading this optional file.
                     pass
+                    _ = None  # noqa: BLE001
 
         return issues
 

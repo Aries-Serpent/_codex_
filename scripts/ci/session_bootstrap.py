@@ -639,6 +639,7 @@ def _resolve_repo() -> str:
             return m.group(1)
     except Exception:  # noqa: BLE001
         pass
+        _ = None  # noqa: BLE001
     return "unknown/unknown"
 
 

@@ -209,16 +209,18 @@ Execute this workflow:
 Use the workflow specification in scripts/pr3248_agent_task_spec.py as your guide.
 """
 
-print(__doc__)
-print(f"\n📋 PR #{PR_NUMBER} Data Collection Task Specification")
-print(f"📊 Target Commits: {len(TARGET_COMMITS)}")
-print(f"🎯 HEAD SHA: {HEAD_SHA}")
-print(f"\n{WORKFLOW}")
-print("\n📁 Expected Output Files:")
-for f in EXPECTED_FILES:
-    print(f"  - {f}")
-print("\n✅ Verification Criteria:")
-for key, value in VERIFICATION.items():
-    print(f"  - {key}: {value}")
-print("\n🚀 Activation Command:")
-print(ACTIVATION)
+
+if __name__ == "__main__":
+    print(__doc__)
+    print(f"\n📋 PR #{PR_NUMBER} Data Collection Task Specification")
+    print(f"📊 Target Commits: {len(TARGET_COMMITS)}")
+    print(f"🎯 HEAD SHA: {HEAD_SHA}")
+    print(f"\n{WORKFLOW}")
+    print("\n📁 Expected Output Files:")
+    for f in EXPECTED_FILES:
+        print(f"  - {f}")
+    print("\n✅ Verification Criteria:")
+    for key, value in VERIFICATION.items():
+        print(f"  - {key}: {value}")
+    print("\n🚀 Activation Command:")
+    print(ACTIVATION)

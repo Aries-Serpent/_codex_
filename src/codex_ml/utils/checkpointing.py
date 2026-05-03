@@ -579,6 +579,7 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
                         cuda_version = torch.version.cuda
                 except Exception:  # noqa: BLE001 — CUDA version detection is best-effort
                     pass
+                    _ = None  # noqa: BLE001
             info["cuda"] = _safe_str_value(cuda_version)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
@@ -1037,6 +1038,7 @@ def _rng_dump() -> dict[str, Any]:
                     torch_state["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
             except Exception:  # pragma: no cover - cuda optional
                 pass
+                _ = None  # noqa: BLE001
             return torch_state
 
         torch_state_current = _capture_torch_state()
@@ -1119,6 +1121,7 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                         )
             except Exception:  # pragma: no cover - cuda optional
                 pass
+                _ = None  # noqa: BLE001
 
 
 def dump_rng_state() -> dict[str, Any]:

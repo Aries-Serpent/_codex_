@@ -281,6 +281,7 @@ class PluginSandbox:
                         # Security note: This keeps the plugin quarantined for the full duration,
                         # which is the safe default behavior when timestamp parsing fails.
                         pass
+                        _ = None  # noqa: BLE001
                 remaining = self.quarantine_duration - elapsed
                 logger.warning(
                     f"Plugin {plugin_name} is quarantined, "

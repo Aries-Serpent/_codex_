@@ -66,6 +66,7 @@ def set_seed(seed: int) -> None:
             np.random.seed(seed)
         except Exception:  # pragma: no cover
             pass
+            _ = None  # noqa: BLE001
     if torch is not None:
         try:
             torch.manual_seed(seed)
@@ -73,6 +74,7 @@ def set_seed(seed: int) -> None:
                 torch.cuda.manual_seed_all(seed)  # pragma: no cover - GPU path
         except Exception:  # pragma: no cover
             pass
+            _ = None  # noqa: BLE001
 
 
 __all__ = ["RNGState", "set_seed"]

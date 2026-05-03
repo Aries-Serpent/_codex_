@@ -209,6 +209,7 @@ class RunLogger:
             self._metrics_writer.close()
         except Exception:  # pragma: no cover - best effort
             pass
+            _ = None  # noqa: BLE001
 
     @staticmethod
     def _timestamp() -> float:

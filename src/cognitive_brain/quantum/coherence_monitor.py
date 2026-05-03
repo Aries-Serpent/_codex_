@@ -191,6 +191,7 @@ class CoherenceMonitor:
             self._otel_gauge.set(value, {"feature": feature, "metric": metric_name})
         except Exception:  # noqa: BLE001
             pass  # never break the recording path
+            _ = None  # noqa: BLE001
 
     # ------------------------------------------------------------------
     # Metric recording

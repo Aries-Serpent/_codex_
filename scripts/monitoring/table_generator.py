@@ -224,6 +224,7 @@ class TableGenerator:
                     table += f"| **Jobs** | {' · '.join(job_links)} |\n"
             except Exception:
                 pass  # Skip if jobs can't be retrieved
+                _ = None  # noqa: BLE001
 
         # Artifacts (if requested)
         if include_artifacts:

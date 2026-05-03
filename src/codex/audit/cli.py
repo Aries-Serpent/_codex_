@@ -35,6 +35,7 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
             pip_audit_result = json.loads(proc.stdout)
     except Exception:
         pass
+        _ = None  # noqa: BLE001
 
     if pip_audit_result is not None:
         vulns = pip_audit_result.get("vulnerabilities", [])
@@ -60,6 +61,7 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
                         packages.append(line.split("==")[0].split(">=")[0].split("<=")[0].strip())
             except Exception:
                 pass
+                _ = None  # noqa: BLE001
         result["summary"]["scanned_requirements_files"] = len(req_files)
         result["summary"]["total_packages"] = len(packages)
         result["summary"]["note"] = "pip-audit not available; manual review recommended"

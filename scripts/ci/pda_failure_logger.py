@@ -102,6 +102,7 @@ def _read_log() -> list[dict[str, Any]]:
             entries.append(json.loads(line))
         except json.JSONDecodeError:
             pass  # malformed JSONL line – skip silently
+            _ = None  # noqa: BLE001
     return entries
 
 
@@ -138,6 +139,7 @@ def _record_to_sqlite(pattern_id: str, pattern_name: str, description: str,
         subprocess.run(args, capture_output=True, timeout=10)
     except Exception:
         pass  # SQLite record is best-effort; never fail the main flow
+        _ = None  # noqa: BLE001
 
 
 # ---------------------------------------------------------------------------

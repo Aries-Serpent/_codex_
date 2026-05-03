@@ -730,6 +730,7 @@ def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
                 )
             except (ValueError, TypeError):  # skip comments with unparseable timestamps
                 pass
+                _ = None  # noqa: BLE001
 
     if latency_lines:
         lines += [

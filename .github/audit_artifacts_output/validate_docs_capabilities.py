@@ -6,6 +6,7 @@ import json
 import os
 import re
 from pathlib import Path
+import sys
 
 ROOT = Path(os.environ.get("CODEX_ROOT", Path(__file__).resolve().parents[3]))
 CAPS_DIR = ROOT / "docs" / "capabilities"
@@ -23,7 +24,7 @@ validation_results = []
 
 if not CAPS_DIR.exists():
     print(f"ERROR: {CAPS_DIR} does not exist")
-    exit(1)
+    sys.exit(1)
 
 cap_files = sorted(CAPS_DIR.glob("*.md"))
 print(f"Validating {len(cap_files)} capability files...")

@@ -145,6 +145,7 @@ def compress_skill(
             version = data.get("version", "1.0.0")
         except Exception:  # noqa: BLE001 — version default on any parse error; non-fatal
             pass
+            _ = None  # noqa: BLE001
 
     size_before = _dir_size(skill_dir)
     archive_name = f"{skill_id.replace('.', '-')}-{version}"

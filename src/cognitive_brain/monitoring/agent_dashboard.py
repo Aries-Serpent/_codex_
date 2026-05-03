@@ -297,6 +297,7 @@ class AgentDashboard:
             _al_budget = _al_hook.query_budget_per_day
         except Exception:  # pragma: no cover - optional AL module
             pass
+            _ = None  # noqa: BLE001
 
         return AgentHealthMetrics(
             coherence_current=coherence_current,

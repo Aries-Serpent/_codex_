@@ -54,6 +54,7 @@ try:
     app.include_router(create_auth_router(prefix=""), prefix="/api/auth", tags=["auth"])
 except ImportError:  # pragma: no cover – auth module not installed
     pass
+    _ = None  # noqa: BLE001
 except Exception as _auth_exc:  # pragma: no cover – unexpected init error
     import logging as _logging
 

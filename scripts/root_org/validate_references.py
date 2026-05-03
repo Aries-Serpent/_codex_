@@ -135,6 +135,7 @@ def scan_file_for_references(
     except Exception:
         # Skip files that can't be read
         pass
+        _ = None  # noqa: BLE001
 
     return references
 

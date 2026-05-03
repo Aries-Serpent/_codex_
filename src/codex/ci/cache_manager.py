@@ -306,6 +306,7 @@ class CacheManager:
                 # Swallow errors when gh CLI is unavailable or times out
                 # Health metrics will remain at default values (0)
                 pass
+                _ = None  # noqa: BLE001
 
         if health.total_size_gb > size_threshold_gb:
             health.is_critical = True

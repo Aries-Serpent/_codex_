@@ -216,6 +216,7 @@ def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
             session_logger.log_event(event, _prepare_session_payload(rec))
         except Exception:  # pragma: no cover - defensive
             pass
+            _ = None  # noqa: BLE001
     logger.info(rec)
 
 

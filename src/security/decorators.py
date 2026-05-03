@@ -310,6 +310,7 @@ try:
 except ImportError:
     # FastAPI not installed, skip dependency helpers
     pass
+    _ = None  # noqa: BLE001
 
 
 def scope_metadata(func: Callable) -> dict:

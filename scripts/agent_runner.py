@@ -148,6 +148,7 @@ def _handle_kill_switch(run_id: str, audit_dir: Path) -> int:
         log.info("Kill-switch audit record written: kill_switch_%s.json", run_id)
     except Exception:  # noqa: BLE001
         pass
+        _ = None  # noqa: BLE001
     return 1
 
 
@@ -159,6 +160,7 @@ def _resume_session(session_file: Path) -> None:
             log.info("Resuming from session: %s", current.get("session_id", "?")[:12])
         except Exception:  # noqa: BLE001
             pass
+            _ = None  # noqa: BLE001
 
 
 def _run_autonomy_loop(

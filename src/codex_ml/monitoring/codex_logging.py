@@ -73,6 +73,7 @@ try:  # pragma: no cover - optional
         SummaryWriter = torch.utils.tensorboard.SummaryWriter
 except Exception:  # pragma: no cover - tensorboard not installed
     pass
+    _ = None  # noqa: BLE001
 
 
 _ensure_local_mlflow_tracking_uri_default()

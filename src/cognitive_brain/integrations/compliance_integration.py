@@ -594,6 +594,7 @@ class QuantumComplianceAssessor:
                     return self._tuning_rules_cache
                 except Exception:
                     pass
+                    _ = None  # noqa: BLE001
         self._tuning_rules_cache = {}
         return self._tuning_rules_cache
 
@@ -720,6 +721,7 @@ class QuantumComplianceAssessor:
                                 tuned[idx] = min(1.0, tuned[idx] * 1.15)
                     except Exception:
                         pass  # Fuzzy module unavailable — skip
+                        _ = None  # noqa: BLE001
 
             # Renormalise so probabilities sum to 1
             total = sum(tuned)

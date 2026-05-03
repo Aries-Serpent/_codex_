@@ -844,6 +844,7 @@ class RAGIndexer:
         except Exception:
             # Model unavailable (offline, missing dep, etc.) — leave as None.
             pass
+            _ = None  # noqa: BLE001
 
     def move_to_device(self, device: str) -> None:
         """Move the loaded embedding model to *device* and update ``self.device``."""

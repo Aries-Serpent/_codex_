@@ -51,6 +51,7 @@ def validate_cargo_features(cargo_toml_path: Path) -> Tuple[bool, List[str]]:
         except Exception:
             # Fallback to regex if TOML parsing fails
             pass
+            _ = None  # noqa: BLE001
 
     # Fallback: regex-based parsing
     if features_section is None:

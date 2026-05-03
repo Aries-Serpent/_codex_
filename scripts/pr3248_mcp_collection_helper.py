@@ -63,139 +63,146 @@ PR_NUMBER = 3248
 # HEAD SHA from PR (as identified by GitHub MCP tool)
 HEAD_SHA = "95bcc8abc008d588e86e8283e2eba669dee556cf"
 
-print(f"📋 PR #{PR_NUMBER} Failing Checks Collection Tool")
-print(f"📊 Target: {len(COMMIT_SHAS)} commits")
-print(f"🎯 HEAD SHA: {HEAD_SHA[:7]}")
-print("⚠️  Note: API access limitations detected - generating template structure")
-print()
 
-# Since API calls are blocked, create template with proper structure
-results = []
+def main() -> None:
+    print(f"📋 PR #{PR_NUMBER} Failing Checks Collection Tool")
+    print(f"📊 Target: {len(COMMIT_SHAS)} commits")
+    print(f"🎯 HEAD SHA: {HEAD_SHA[:7]}")
+    print("⚠️  Note: API access limitations detected - generating template structure")
+    print()
 
-for sha in COMMIT_SHAS:
-    results.append({
-        "sha": sha,
-        "short_sha": sha[:7],
-        "commit_url": f"https://github.com/{OWNER}/{REPO}/commit/{sha}",
-        "check_runs_total": 0,
-        "failing_checks": [],
-        "workflow_runs_total": 0,
-        "artifacts": [],
-        "note": "Data collection blocked by API access restrictions (403 Forbidden)",
-        "collection_method": "template_generation",
-        "requires_manual_collection": True
-    })
+    # Since API calls are blocked, create template with proper structure
+    results = []
 
-# Generate comprehensive JSON
-json_output = {
-    "pr_number": PR_NUMBER,
-    "repository": f"{OWNER}/{REPO}",
-    "head_sha": HEAD_SHA,
-    "total_commits": len(results),
-    "generated_at": datetime.utcnow().isoformat() + "Z",
-    "collection_status": "partial_template",
-    "api_access_issue": "403 Forbidden - DNS monitoring proxy or token scope limitation",
-    "required_token_scopes": ["repo", "actions:read", "checks:read"],
-    "commits": results,
-    "next_steps": [
-        "Verify GITHUB_TOKEN has required scopes: repo, actions:read, checks:read",
-        "Check if DNS monitoring proxy is blocking api.github.com",
-        "Consider using GitHub CLI (gh) with authenticated session",
-        "Alternative: Use Playwright browser automation to scrape workflow pages"
+    for sha in COMMIT_SHAS:
+        results.append({
+            "sha": sha,
+            "short_sha": sha[:7],
+            "commit_url": f"https://github.com/{OWNER}/{REPO}/commit/{sha}",
+            "check_runs_total": 0,
+            "failing_checks": [],
+            "workflow_runs_total": 0,
+            "artifacts": [],
+            "note": "Data collection blocked by API access restrictions (403 Forbidden)",
+            "collection_method": "template_generation",
+            "requires_manual_collection": True
+        })
+
+    # Generate comprehensive JSON
+    json_output = {
+        "pr_number": PR_NUMBER,
+        "repository": f"{OWNER}/{REPO}",
+        "head_sha": HEAD_SHA,
+        "total_commits": len(results),
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "collection_status": "partial_template",
+        "api_access_issue": "403 Forbidden - DNS monitoring proxy or token scope limitation",
+        "required_token_scopes": ["repo", "actions:read", "checks:read"],
+        "commits": results,
+        "next_steps": [
+            "Verify GITHUB_TOKEN has required scopes: repo, actions:read, checks:read",
+            "Check if DNS monitoring proxy is blocking api.github.com",
+            "Consider using GitHub CLI (gh) with authenticated session",
+            "Alternative: Use Playwright browser automation to scrape workflow pages"
+        ]
+    }
+
+    json_path = Path("pr3248_final_collection_template.json")
+    with open(json_path, "w") as f:
+        json.dump(json_output, f, indent=2)
+
+    print(f"✅ JSON template created: {json_path}")
+
+    # Generate markdown table
+    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    md_lines = [
+        "# [Investigation Request]: Failing Checks per Commit",
+        f"> Generated: {timestamp}",
+        f"> Pull Request: #{PR_NUMBER}",
+        f"> Repository: {OWNER}/{REPO}",
+        f"> HEAD SHA: {HEAD_SHA}",
+        "",
+        "## ⚠️ Collection Status",
+        "",
+        "**API Access Issue Detected:** All API calls returned `403 Forbidden`.",
+        "",
+        "**Possible Causes:**",
+        "- DNS monitoring proxy blocking `api.github.com`",
+        "- GITHUB_TOKEN missing required scopes (`repo`, `actions:read`, `checks:read`)",
+        "- Rate limiting or authentication issues",
+        "",
+        "**Required Actions:**",
+        "1. Verify token has `repo` + `actions:read` + `checks:read` scopes",
+        "2. Check network/proxy configuration",
+        "3. Consider alternative data collection methods (see below)",
+        "",
+        "## Summary",
+        "",
+        f"This report is a **template** for {len(results)} commits in PR #{PR_NUMBER}.",
+        "Actual check run and artifact data requires API access resolution.",
+        "",
+        "## Template Table Structure",
+        "",
+        "| Commit SHA | Failing Check Workflows (explicit links to failing runs) | Artifacts (download links) |",
+        "|---|---|---|"
     ]
-}
 
-json_path = Path("pr3248_final_collection_template.json")
-with open(json_path, "w") as f:
-    json.dump(json_output, f, indent=2)
+    for result in results:
+        sha = result["sha"]
+        short_sha = result["short_sha"]
+        commit_url = result["commit_url"]
 
-print(f"✅ JSON template created: {json_path}")
+        md_lines.append(
+            f"| [{short_sha}]({commit_url}) | "
+            f"⚠️ Pending API access | "
+            f"⚠️ Pending API access |"
+        )
 
-# Generate markdown table
-timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    md_lines.extend([
+        "",
+        "---",
+        "",
+        "## Alternative Collection Methods",
+        "",
+        "### Method 1: GitHub CLI with Authenticated Session",
+        "```bash",
+        "# For each commit SHA",
+        f"gh api /repos/{OWNER}/{REPO}/commits/{{SHA}}/check-runs",
+        f"gh api /repos/{OWNER}/{REPO}/actions/runs?head_sha={{SHA}}",
+        "```",
+        "",
+        "### Method 2: Playwright Browser Automation",
+        "Navigate to workflow run pages and scrape artifact links:",
+        f"- https://github.com/{OWNER}/{REPO}/actions/runs/{{RUN_ID}}",
+        "",
+        "### Method 3: Manual UI Collection",
+        f"Visit PR directly: https://github.com/{OWNER}/{REPO}/pull/{PR_NUMBER}",
+        "- Check 'Checks' tab for failing workflows",
+        "- Click each workflow run to view artifacts",
+        "",
+        "---",
+        "",
+        "**Generated by:** `scripts/pr3248_mcp_collection_helper.py`",
+        f"**Last Updated:** {timestamp}",
+        "**Status:** Template generated - requires API access for actual data"
+    ])
 
-md_lines = [
-    "# [Investigation Request]: Failing Checks per Commit",
-    f"> Generated: {timestamp}",
-    f"> Pull Request: #{PR_NUMBER}",
-    f"> Repository: {OWNER}/{REPO}",
-    f"> HEAD SHA: {HEAD_SHA}",
-    "",
-    "## ⚠️ Collection Status",
-    "",
-    "**API Access Issue Detected:** All API calls returned `403 Forbidden`.",
-    "",
-    "**Possible Causes:**",
-    "- DNS monitoring proxy blocking `api.github.com`",
-    "- GITHUB_TOKEN missing required scopes (`repo`, `actions:read`, `checks:read`)",
-    "- Rate limiting or authentication issues",
-    "",
-    "**Required Actions:**",
-    "1. Verify token has `repo` + `actions:read` + `checks:read` scopes",
-    "2. Check network/proxy configuration",
-    "3. Consider alternative data collection methods (see below)",
-    "",
-    "## Summary",
-    "",
-    f"This report is a **template** for {len(results)} commits in PR #{PR_NUMBER}.",
-    "Actual check run and artifact data requires API access resolution.",
-    "",
-    "## Template Table Structure",
-    "",
-    "| Commit SHA | Failing Check Workflows (explicit links to failing runs) | Artifacts (download links) |",
-    "|---|---|---|"
-]
+    md_content = "\n".join(md_lines)
+    md_path = Path("failing_checks.md")
+    md_path.write_text(md_content, encoding="utf-8")
 
-for result in results:
-    sha = result["sha"]
-    short_sha = result["short_sha"]
-    commit_url = result["commit_url"]
+    print(f"✅ Markdown template created: {md_path}")
+    print()
+    print("📝 Next Steps:")
+    print("1. Review API access configuration")
+    print("2. Verify GITHUB_TOKEN scopes")
+    print("3. Consider using ci-log-retrieval-agent for authenticated collection")
+    print("4. Alternative: Manual data entry from GitHub UI")
 
-    md_lines.append(
-        f"| [{short_sha}]({commit_url}) | "
-        f"⚠️ Pending API access | "
-        f"⚠️ Pending API access |"
-    )
+    sys.exit(0)
 
-md_lines.extend([
-    "",
-    "---",
-    "",
-    "## Alternative Collection Methods",
-    "",
-    "### Method 1: GitHub CLI with Authenticated Session",
-    "```bash",
-    "# For each commit SHA",
-    f"gh api /repos/{OWNER}/{REPO}/commits/{{SHA}}/check-runs",
-    f"gh api /repos/{OWNER}/{REPO}/actions/runs?head_sha={{SHA}}",
-    "```",
-    "",
-    "### Method 2: Playwright Browser Automation",
-    "Navigate to workflow run pages and scrape artifact links:",
-    f"- https://github.com/{OWNER}/{REPO}/actions/runs/{{RUN_ID}}",
-    "",
-    "### Method 3: Manual UI Collection",
-    f"Visit PR directly: https://github.com/{OWNER}/{REPO}/pull/{PR_NUMBER}",
-    "- Check 'Checks' tab for failing workflows",
-    "- Click each workflow run to view artifacts",
-    "",
-    "---",
-    "",
-    "**Generated by:** `scripts/pr3248_mcp_collection_helper.py`",
-    f"**Last Updated:** {timestamp}",
-    "**Status:** Template generated - requires API access for actual data"
-])
 
-md_content = "\n".join(md_lines)
-md_path = Path("failing_checks.md")
-md_path.write_text(md_content, encoding="utf-8")
 
-print(f"✅ Markdown template created: {md_path}")
-print()
-print("📝 Next Steps:")
-print("1. Review API access configuration")
-print("2. Verify GITHUB_TOKEN scopes")
-print("3. Consider using ci-log-retrieval-agent for authenticated collection")
-print("4. Alternative: Manual data entry from GitHub UI")
-
-sys.exit(0)
+if __name__ == "__main__":
+    main()

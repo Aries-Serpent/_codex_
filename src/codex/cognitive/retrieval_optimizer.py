@@ -238,6 +238,7 @@ class RelevanceScorer:
                 score += recency_factor * 0.2
             except (TypeError, ValueError):
                 pass
+                _ = None  # noqa: BLE001
 
         return min(score, 1.0)
 
@@ -286,6 +287,7 @@ class ProactiveLoader:
                     results.append(item)
             except (TypeError, ValueError):
                 pass
+                _ = None  # noqa: BLE001
 
         return results
 

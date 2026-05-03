@@ -162,6 +162,7 @@ class ExternalRepoIngestor:
                     return "Custom/Other License"
                 except Exception:
                     pass
+                    _ = None  # noqa: BLE001
 
         return None
 

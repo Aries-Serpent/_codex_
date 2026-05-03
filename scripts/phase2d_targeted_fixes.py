@@ -90,6 +90,7 @@ class TargetedLinkFixer:
             except Exception:
                 # Best-effort heuristic: if anything goes wrong, leave link unchanged
                 pass
+                _ = None  # noqa: BLE001
 
         # Pattern: Wrong relative path to .github/
         if link_url.startswith('.github/') or link_url.startswith('../.github/'):

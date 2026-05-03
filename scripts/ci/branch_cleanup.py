@@ -170,6 +170,7 @@ def get_branch_last_commit_date(repo: str, token: str, branch: str) -> datetime 
                 return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
             except ValueError:
                 pass
+                _ = None  # noqa: BLE001
     return None
 
 

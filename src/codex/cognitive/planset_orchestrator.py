@@ -274,6 +274,7 @@ class PlansetOrchestrator:
                         break
             except OSError:
                 pass
+                _ = None  # noqa: BLE001
 
             records.append(
                 PlansetRecord(
@@ -530,6 +531,7 @@ class PlansetOrchestrator:
                 return OrchestrationState.from_dict(data)
             except (json.JSONDecodeError, KeyError):
                 pass
+                _ = None  # noqa: BLE001
         return OrchestrationState(
             session_id=datetime.now(timezone.utc).strftime("session-%Y%m%d"),
         )

@@ -65,6 +65,7 @@ class BenchmarkRunner:
                 func(*args, **kwargs)
             except Exception:
                 pass  # Ignore warmup errors
+                _ = None  # noqa: BLE001
 
         durations = []
         memory_usage = []

@@ -436,6 +436,7 @@ def scan(
                         continue
                 except ValueError:  # malformed timestamp — skip age-filtering for this run
                     pass
+                    _ = None  # noqa: BLE001
 
             report["failed_runs"] += 1
             run_id: int = run["id"]

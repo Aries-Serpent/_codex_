@@ -257,6 +257,7 @@ def evaluate_epoch(
                     except Exception:  # pragma: no cover (rare)
                         # Gracefully continue; avoid breaking evaluation on logger failure
                         pass
+                        _ = None  # noqa: BLE001
 
     avg_loss = running_loss / max(total, 1)
 
@@ -304,6 +305,7 @@ def evaluate_epoch(
                 lg.close()
             except Exception:  # pragma: no cover
                 pass
+                _ = None  # noqa: BLE001
 
     return result
 

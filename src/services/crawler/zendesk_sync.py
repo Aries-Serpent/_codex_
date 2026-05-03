@@ -296,6 +296,7 @@ class ZendeskKnowledgeSyncService:
                     return False
             except (ValueError, TypeError):
                 pass  # If comparison fails, fetch to be safe
+                _ = None  # noqa: BLE001
 
         # Default to fetching if we can't determine
         logger.debug(f"No cache hit or stale, will fetch: {url}")

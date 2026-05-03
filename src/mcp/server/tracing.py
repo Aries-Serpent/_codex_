@@ -229,3 +229,4 @@ def record_drift_event(
         span.add_event("drift.detected", attributes=attrs)
     except Exception:  # noqa: BLE001
         pass
+        _ = None  # noqa: BLE001

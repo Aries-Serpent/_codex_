@@ -152,6 +152,7 @@ def _gh_request(
             return resp.get("status_code", 0), resp.get("body")
         except BrainClientError:
             pass  # fall through to urllib
+            _ = None  # noqa: BLE001
 
     # ── Fallback: direct urllib ────────────────────────────────────────────
     headers: Dict[str, str] = {
@@ -435,6 +436,7 @@ class VariableManager:
                 record("DELETE stale test var (pre-cleanup)", True, "")
             except GitHubAPIError:
                 pass
+                _ = None  # noqa: BLE001
 
         # 2 ── Create
         try:
