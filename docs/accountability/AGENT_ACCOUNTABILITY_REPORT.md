@@ -24331,3 +24331,14 @@ before applying changes. Blocking CI rescue comments addressed via `reply_to_com
 ### Verification
 - Workflow YAML parse re-run after edits ✅
 - Targeted CI validation re-run after edits ✅
+
+## SESSION SUMMARY — 2026-05-03T02:58Z SESSION S183-PR4193-comment-upsert-final-polish [copilot] (Final Review Polish — PR #4193)
+
+**PR:** #4193 | **Branch:** copilot/reorganize-observability-section | **Session:** S183-PR4193-comment-upsert-final-polish
+
+### What Was Polished
+- Kept compiled bot-feedback PR/HEAD marker ordering consistent for migrated legacy comments.
+- Removed an unnecessary blank line before the Secrets Baseline Enforcer append separator.
+
+### Verification
+- Workflow YAML parse and targeted sync checks re-run after final polish ✅

@@ -774,12 +774,14 @@ jobs:
                 console.log(`compile-bot-feedback already appended run ${context.runId} for SHA ${headSha} on PR #${prNumber} — skipping duplicate.`);
                 return;
               }
-              const appendParts = [
-                existingCommentBody.includes(PR_MARKER) ? existingCommentBody.trimEnd() : `${PR_MARKER}\n${existingCommentBody.trimEnd()}`,
-              ];
-              if (!existingCommentBody.includes(HEAD_MARKER)) {
-                appendParts.push(HEAD_MARKER);
+              let normalizedExistingBody = existingCommentBody.trimEnd();
+              if (!normalizedExistingBody.includes(PR_MARKER)) {
+                normalizedExistingBody = `${PR_MARKER}\n${normalizedExistingBody}`;
               }
+              if (!normalizedExistingBody.includes(HEAD_MARKER)) {
+                normalizedExistingBody = normalizedExistingBody.replace(PR_MARKER, `${PR_MARKER}\n${HEAD_MARKER}`);
+              }
+              const appendParts = [normalizedExistingBody];
               appendParts.push(
                 ``,
                 `---`,
