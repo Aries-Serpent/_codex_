@@ -70,9 +70,11 @@ Usage — push-triggered workflow step
 from __future__ import annotations
 
 import datetime
+import hashlib
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -97,7 +99,9 @@ def _gh(
     try:
         with urllib.request.urlopen(req, timeout=20) as resp:
             raw = resp.read()
-            return resp.status, json.loads(raw) if raw else {}
+            if raw:
+                return resp.status, json.loads(raw)
+            return resp.status, [] if method == "GET" else {}
     except urllib.error.HTTPError as exc:
         try:
             err_body = json.loads(exc.read())
@@ -175,8 +179,6 @@ def _consolidate_duplicate_rescue_comments(
     created_id: int,
 ) -> None:
     """Collapse same-SHA rescue-comment races into one appended thread."""
-    import time
-
     time.sleep(3)
     matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
     if len(matches) <= 1:
@@ -199,10 +201,14 @@ def _consolidate_duplicate_rescue_comments(
 
     for duplicate in duplicates:
         duplicate_body = (duplicate.get("body") or "").replace(marker, "").strip()
-        if duplicate_body and duplicate_body not in canonical_body:
+        duplicate_digest = hashlib.sha256(duplicate_body.encode()).hexdigest()[:16]
+        duplicate_marker = f"<!-- rescue-duplicate:{duplicate_digest} -->"
+        if duplicate_body and duplicate_marker not in canonical_body:
             canonical_body = (
                 canonical_body
                 + "\n\n---\n\n"
+                + duplicate_marker
+                + "\n"
                 + "<details><summary>🔁 Consolidated duplicate rescue update</summary>\n\n"
                 + duplicate_body
                 + "\n\n</details>"

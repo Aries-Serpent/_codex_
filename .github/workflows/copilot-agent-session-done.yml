@@ -618,7 +618,7 @@ jobs:
               const { data: prInfo } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
               if (prInfo.state !== 'open') { console.log(`PR #${prNumber} is closed — skipping.`); return; }
               wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prInfo.body || '');
-              headSha = (prInfo.head?.sha || context.payload.workflow_run.head_sha || '').slice(0, 12);
+              headSha = (((prInfo.head || {}).sha) || context.payload.workflow_run.head_sha || '').slice(0, 12);
             } catch (e) {
               console.log(`Cannot fetch PR for gate check: ${e.message}`); return;
             }
