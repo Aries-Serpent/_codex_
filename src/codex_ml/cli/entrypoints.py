@@ -181,7 +181,6 @@ def _eval_dispatch(_namespace: argparse.Namespace) -> int:
 
     detail = "; ".join(failures) if failures else "no candidate modules resolved"
     _die(f"[codex-eval] no evaluation entrypoint found or failed to run ({detail}).")
-    return 2
 
 
 def _probe_payload() -> dict[str, Any]:
