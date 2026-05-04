@@ -137,3 +137,133 @@ prompts:
       - SAFE_AUTO
       - ELEVATED_AUTO
     description: "Mandatory agency policy — all agents must load this at session start"
+
+  # ── CI / rescue prompts ───────────────────────────────────────────────────
+
+  - prompt_id: task-ci-rescue
+    path: scripts/ci/ci_rescue.py
+    type: task
+    risk_class: ADVISORY_WRITE
+    consumers:
+      - AUT-005  # ci-health-monitor.yml / check_pr_comments.py
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "CI rescue engine — classifies failures and posts rescue comments to PRs"
+
+  - prompt_id: task-sync-tracked-files
+    path: scripts/ci/sync_tracked_files.py
+    type: task
+    risk_class: REPO_STATE_WRITE
+    consumers:
+      - AUT-015  # validate.yml
+      - AUT-006  # auto_fix_common_issues.py
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+    description: "Sync tracked files (CODEX_MANIFEST, .secrets.baseline) on every push"
+
+  - prompt_id: task-accountability-report
+    path: scripts/ci/auto_append_accountability.py
+    type: task
+    risk_class: REPO_STATE_WRITE
+    consumers:
+      - AUT-017  # auto_append_accountability.py direct invocation
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+    description: "Append session accountability entry to AGENT_ACCOUNTABILITY_REPORT.md"
+
+  - prompt_id: task-autonomy-gate-check
+    path: scripts/ci/autonomy_gate_check.py
+    type: task
+    risk_class: READ_ONLY
+    consumers:
+      - AUT-007  # chatops_copilot_trigger.yml
+      - AUT-008  # agent_infrastructure_manager.yml
+      - AUT-009  # workflow-expiry-enforcer.yml
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - OBSERVE
+      - DRY_RUN
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "CLI gate check — enforces AutonomyRegistry policy before actuation steps"
+
+  - prompt_id: task-post-rescue-comment
+    path: scripts/ci/post_rescue_comment.py
+    type: task
+    risk_class: ADVISORY_WRITE
+    consumers:
+      - AUT-016  # post_rescue_comment.py direct invocation in rescue jobs
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "Post or update the CI rescue comment on failing PRs"
+
+  # ── Infrastructure management prompts ─────────────────────────────────────
+
+  - prompt_id: task-infra-var-writer
+    path: scripts/ci/github_var_writer.py
+    type: task
+    risk_class: INFRA_WRITE
+    consumers:
+      - AUT-008  # agent_infrastructure_manager.yml apply-vars job
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ELEVATED_AUTO
+    description: "Write GitHub repository variables via REST API"
+
+  - prompt_id: task-workflow-expiry-enforce
+    path: scripts/ci/workflow_expiry_enforcer.sh
+    type: task
+    risk_class: REPO_STATE_WRITE
+    consumers:
+      - AUT-009  # workflow-expiry-enforcer.yml enforce job
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "Archive/disable workflows that have exceeded their approval window"
+
+  # ── Chatops / continuation prompts ────────────────────────────────────────
+
+  - prompt_id: continuation-pr-followup-4254
+    path: .github/copilot-prompts/active/PR-4254-followup.md
+    type: continuation
+    risk_class: ADVISORY_WRITE
+    consumers:
+      - AUT-007  # chatops_copilot_trigger.yml /copilot continue dispatch
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+    description: "PR #4254 continuation prompt — PyTorch consolidation + blueprint phases"
+
+  - prompt_id: continuation-codeql-remediation
+    path: .github/copilot-prompts/active/CODEQL-QUALITY-REMEDIATION.md
+    type: continuation
+    risk_class: ADVISORY_WRITE
+    consumers:
+      - AUT-007  # chatops_copilot_trigger.yml
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+    description: "CodeQL quality remediation continuation prompt"

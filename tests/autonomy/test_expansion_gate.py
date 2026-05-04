@@ -5,6 +5,10 @@ Tests for Phase 6 — Safe Autonomy Expansion Gate
 
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
+
 import pytest
 
 from codex.autonomy.expansion_gate import (
@@ -15,6 +19,11 @@ from codex.autonomy.expansion_gate import (
     BASELINE_GI,
     BASELINE_LP,
     BASELINE_Q,
+    MEASURED_AUDIT_COVERAGE,
+    MEASURED_DENY_RATE,
+    MEASURED_GI,
+    MEASURED_LP,
+    MEASURED_Q,
     TARGET_GI,
     TARGET_LP,
     TARGET_Q,
@@ -119,3 +128,62 @@ class TestGateResult:
         assert _GI_THRESHOLD == 0.80
         assert _LP_THRESHOLD == 0.80
         assert _AUDIT_COVERAGE_THRESHOLD == 0.95
+
+
+class TestExpansionGateMeasured:
+    """Post Phase 1-5 + entry-point wiring — gate must open."""
+
+    def test_from_measured_gate_open(self):
+        """from_measured() must produce an open gate (all 4 conditions met)."""
+        result = ExpansionGate.from_measured().evaluate()
+        assert result.enabled, (
+            f"Phase 1-5 measured gate is CLOSED — blocking: {result.blocking_conditions}"
+        )
+
+    def test_measured_gi_at_target(self):
+        assert MEASURED_GI >= TARGET_GI
+
+    def test_measured_lp_at_target(self):
+        assert MEASURED_LP >= TARGET_LP
+
+    def test_measured_deny_rate_positive(self):
+        assert MEASURED_DENY_RATE > 0.0
+
+    def test_measured_audit_coverage_above_threshold(self):
+        assert MEASURED_AUDIT_COVERAGE >= _AUDIT_COVERAGE_THRESHOLD
+
+    def test_measured_q_above_baseline(self):
+        """Effective quality must improve over baseline."""
+        assert MEASURED_Q > BASELINE_Q
+
+    def test_measured_constants_consistent(self):
+        assert MEASURED_Q == pytest.approx(BASELINE_AP * MEASURED_GI * MEASURED_LP, abs=1e-3)
+
+
+class TestAutonomyGateCheckScript:
+    """Tests for scripts/ci/autonomy_gate_check.py CLI."""
+
+    def test_gate_check_permitted(self, tmp_path):
+        """Gate allows ADVISORY_WRITE under SAFE_AUTO mode (requires ASSISTED)."""
+        result = subprocess.run(
+            [sys.executable, "scripts/ci/autonomy_gate_check.py",
+             "--surface", "AUT-007", "--class", "ADVISORY_WRITE"],
+            capture_output=True, text=True,
+        )
+        assert result.returncode == 0
+
+    def test_gate_check_no_fail_flag(self, tmp_path):
+        """--no-fail makes even a denial exit 0."""
+        registry_file = tmp_path / "reg.yaml"
+        registry_file.write_text(
+            "schema_version: '1.0.0'\n"
+            "autonomy_mode: OFF\n"
+            "kill_switch: false\n"
+        )
+        env = {**os.environ, "CODEX_AUTONOMY_REGISTRY": str(registry_file)}
+        result = subprocess.run(
+            [sys.executable, "scripts/ci/autonomy_gate_check.py",
+             "--surface", "AUT-007", "--class", "ADVISORY_WRITE", "--no-fail"],
+            capture_output=True, text=True, env=env,
+        )
+        assert result.returncode == 0

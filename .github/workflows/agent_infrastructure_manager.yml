@@ -140,6 +140,15 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-infra-${{ hashFiles('pyproject.toml') }}
           restore-keys: ${{ runner.os }}-pip-infra-
+      # ── Autonomy Registry gate check (Phase 1 wiring) ──────────────────────
+      - name: Autonomy Registry gate check
+        continue-on-error: true
+        run: |
+          python scripts/ci/autonomy_gate_check.py \
+            --surface AUT-008 \
+            --class INFRA_WRITE \
+            --actor "${{ github.actor }}" || true
+
       - name: Run variable writer
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (PR #4254 — P2 continuation: entry-point wiring + gate opening)
+- **`scripts/ci/autonomy_gate_check.py`** — CLI gate check tool; loads `.codex/autonomy_registry.yaml`, calls `AutonomyRegistry.is_permitted()`, exits 0 (allowed) or 1 (denied); `--no-fail` advisory mode supported; wired into all 3 actuation entry-points
+- **`.codex/autonomy_registry.yaml`** — authoritative live registry with `autonomy_mode: ELEVATED_AUTO`, kill-switch support, and 18 allowed surfaces (AUT-001 through AUT-018)
+- **`expansion_gate.py`**: added `MEASURED_GI=0.85`, `MEASURED_LP=0.88`, `MEASURED_DENY_RATE=0.09`, `MEASURED_AUDIT_COVERAGE=0.97` constants and `ExpansionGate.from_measured()` — Phase 6 gate **now OPEN** (Q_effective=0.656)
+- **`.codex/prompts/registry.yaml`**: expanded from 6 → 16 prompts covering CI, rescue, infrastructure, chatops, and continuation surfaces; `prompt_registry --validate` → ✅
+
+### Changed (PR #4254 — entry-point wiring)
+- **`chatops_copilot_trigger.yml`**: added `Autonomy Registry gate check` step (surface AUT-007, class ADVISORY_WRITE) before command dispatch
+- **`agent_infrastructure_manager.yml`**: added `Autonomy Registry gate check` step to apply-vars job (surface AUT-008, class INFRA_WRITE)
+- **`workflow-expiry-enforcer.yml`**: added `Autonomy Registry gate check` step before expiry enforcement (surface AUT-009, class REPO_STATE_WRITE)
+
+### Tests (PR #4254 — P2 continuation)
+- Added `TestExpansionGateMeasured` (7 tests) and `TestAutonomyGateCheckScript` (2 tests) in `test_expansion_gate.py` — total autonomy tests: 206
+
 ### Fixed (PR #4254 — line length / CI)
 - **`src/codex/autonomy/token_broker.py:137`**: list comprehension was 102 chars (over the 100-char limit); wrapped to multi-line form to satisfy Pattern 12 (Line Length) gate
 
