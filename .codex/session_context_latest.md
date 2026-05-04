@@ -1,10 +1,10 @@
-# Session Context — 2026-05-04T12:18:17Z
+# Session Context — 2026-05-04T12:50:01Z
 **Branch:** `dependabot/pip/voluptuous-0.16.0`  **PR:** #4242  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3365` (✅)  
-- GraphQL remaining: `4891` (✅)  
+- REST remaining: `4427` (✅)  
+- GraphQL remaining: `4989` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
@@ -19,14 +19,14 @@ State: `open`  Draft: `False`  Branch: `dependabot/pip/werkzeug-3.1.8` → `main
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `35574937` fix(ci): improve post_rescue_comment rate-limit handling — check status 403/429, — copilot-swe-agent[bot] (2026-05-04)
+- `bbfe70e8` fix(ci): address Pattern 25 (accountability report), fix post_rescue_comment rat — copilot-swe-agent[bot] (2026-05-04)
 - `d0460db5` fix(context): prevent policy excerpt truncation mid-heading in autonomous_rag_co — copilot-swe-agent[bot] (2026-05-04)
 - `f43a00f5` chore: plan CI fix for Fast Validation and Post rescue failures — copilot-swe-agent[bot] (2026-05-04)
 - `73ebb9f6` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `5a65d358` chore: Generate follow-up prompt for PR #4240 — github-actions[bot] (2026-05-04)
 - `e122fc95` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 - `0d06c693` deps(deps): bump voluptuous from 0.15.2 to 0.16.0 — dependabot[bot] (2026-05-04)
-- `040ad07e` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-04)
-- `67f68ed8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
