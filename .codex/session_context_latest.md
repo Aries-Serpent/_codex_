@@ -1,32 +1,29 @@
-# Session Context — 2026-05-04T04:33:23Z
-**Branch:** `copilot/add-docstring-to-unknown-timestamp`  **PR:** #4219  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-04T05:15:35Z
+**Branch:** `copilot/fix-codeql-configuration-error`  **PR:** none  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4621` (✅)  
-- GraphQL remaining: `4935` (✅)  
+- REST remaining: `3967` (✅)  
+- GraphQL remaining: `5000` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4219 — fix: code quality sweep — docstrings, logger exc_info, percentile interpolation, 17× P0 CodeQL wrong-named-args, ruff B018/F401/F841 bulk fix, CodeQL Rust build-mode, CWE-1427 path injection
-State: `open`  Draft: `False`  Branch: `copilot/add-docstring-to-unknown-timestamp` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Pre-Merge Validation** — `failure` on `copilot/add-docstring-to-unknown-timestamp` (2026-05-04)
+- **Graph Update: uv in /., /.github, /.github/agents, /.github/agents/ci-testing-agent, /.github/agents/ml-threat-detector, /.github/agents/project-architect-researcher, /.github/agents/pyo3-integration-tester, /.github/agents/rust-error-validator, /.github/agents/security-scan-agent, /.github/agents/utf8-safety-linter, /.github/ai-evolution, /.github/copilot-cascade, /.github/copilot-evolution, /.github/copilot-knowledge-hunger, /.github/copilot-security, /agents/codex_client, /audio_cleaner_v1, /cli, /cod...** — `failure` on `main` (2026-05-04)
+- **Agent Token Delegation** — `failure` on `copilot/add-docstring-to-unknown-timestamp` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **Validation Pipeline** — `failure` on `main` (2026-05-04)
-- **Validation Pipeline** — `failure` on `copilot/add-docstring-to-unknown-timestamp` (2026-05-04)
-- **Auto-Fix Common CI Issues** — `failure` on `copilot/add-docstring-to-unknown-timestamp` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `4f2fc379` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
+- `6daada1c` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-04)
+- `d7ba426e` Merge pull request #4219 from Aries-Serpent/copilot/add-docstring-to-unknown-tim — Statix (2026-05-04)
+- `f3ce898b` fix: code quality sweep — docstrings, logger exc_info, percentile interpolation, — copilot-swe-agent[bot] (2026-05-04)
+- `de8084e9` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `66e1f3c8` fix(review): move json import to top-level; remove duplicate comment in UNKNOWN_ — copilot-swe-agent[bot] (2026-05-04)
 - `77194993` Merge remote-tracking branch 'origin/copilot/add-docstring-to-unknown-timestamp' — copilot-swe-agent[bot] (2026-05-04)
 - `f94a48e4` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
-- `6311787d` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
-- `c4da1ad5` Merge remote-tracking branch 'origin/copilot/add-docstring-to-unknown-timestamp' — copilot-swe-agent[bot] (2026-05-04)
-- `1b01bd39` fix(review): convert UNKNOWN_TIMESTAMP docstring to comment (B018); import Remed — copilot-swe-agent[bot] (2026-05-04)
-- `cb868c89` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
-- `756a51e3` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
