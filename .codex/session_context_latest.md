@@ -1,10 +1,10 @@
-# Session Context — 2026-05-04T11:47:35Z
+# Session Context — 2026-05-04T12:19:59Z
 **Branch:** `dependabot/pip/mypy-1.20.2`  **PR:** #4242  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4153` (✅)  
-- GraphQL remaining: `4964` (✅)  
+- REST remaining: `3346` (✅)  
+- GraphQL remaining: `4877` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `dependabot/pip/werkzeug-3.1.8` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **Automatic Dependency Submission (Python)** — `failure` on `copilot/consolidate-logging-calls` (2026-05-04)
-- **Automatic Dependency Submission (Python)** — `failure` on `dependabot/pip/radon-gte-6.0.1` (2026-05-04)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `b3e99f57` fix(ci): improve rate-limit detection in post_rescue_comment.py — copilot-swe-agent[bot] (2026-05-04)
+- `0a996372` fix(ci): handle rate-limit 403 gracefully in post_rescue_comment.py — copilot-swe-agent[bot] (2026-05-04)
 - `d79fa4ed` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `9e8f6cd7` chore: Generate follow-up prompt for PR #4239 — github-actions[bot] (2026-05-04)
 - `60bb46c6` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 - `92b6030b` deps(deps): bump mypy from 1.19.1 to 1.20.2 — dependabot[bot] (2026-05-04)
 - `040ad07e` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-04)
 - `67f68ed8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
-- `427589a7` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-04)
-- `6538a798` Merge pull request #4223 from Aries-Serpent:copilot/fix-codeql-configuration-err — Statix (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
