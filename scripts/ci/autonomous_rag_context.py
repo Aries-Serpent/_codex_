@@ -700,10 +700,11 @@ def _render_context_md(
 
     pol = local_ctx.get("policy_excerpt")
     if pol:
-        # Truncate at the last newline before 600 chars to avoid splitting words/headings
+        # Truncate at the last newline before 600 chars to avoid splitting words/headings.
+        # Require the last newline to be at position > 50 to ensure meaningful content.
         pol_trunc = pol[:600]
         last_nl = pol_trunc.rfind("\n")
-        pol_trunc = pol_trunc[:last_nl] if last_nl > 0 else pol_trunc
+        pol_trunc = pol_trunc[:last_nl] if last_nl > 50 else pol_trunc
         lines += ["## 📜 Codebase Agency Policy (excerpt)", "```", pol_trunc, "```", ""]
 
     return "\n".join(lines)
