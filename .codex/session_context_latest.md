@@ -1,42 +1,42 @@
-# Session Context — 2026-05-04T14:50:16Z
+# Session Context — 2026-05-04T15:52:48Z
 **Branch:** `copilot/consolidate-pytorch-versions`  **PR:** #4254  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4537` (✅)  
+- REST remaining: `3849` (✅)  
 - GraphQL remaining: `4994` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4254 — fix: consolidate PyTorch version, deduplicate pragma comment, add phone/hash edge case tests, fix CI gates
+## 📋 PR #4254 — fix: consolidate PyTorch version across all requirement files, deduplicate pragma comment, add phone/hash edge case tests, fix CI validation failures
 State: `open`  Draft: `False`  Branch: `copilot/consolidate-pytorch-versions` → `main`
 
 ### ❌ 13 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-- `Post rescue comment on pre-merge failure` (cancelled)
+- `Activate token delegation` (cancelled)
 - `⚡ Approve action_required runs (post-delegation)` (cancelled)
 - `Post rescue comment on failure` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
 - `Post rescue comment on failure` (cancelled)
-- `💰 PR Cost Check` (cancelled)
+- `Activate token delegation` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Workflow Execution Gate** — `failure` on `copilot/consolidate-pytorch-versions` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **Batch CI Failure Triage** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `fc0a6376` fix(tests): correct ValueError guard semantics in conftest fixtures (code review — copilot-swe-agent[bot] (2026-05-04)
+- `8c75d94f` fix(ci): resolve Resilient Validation failures + complete torch pin consolidatio — copilot-swe-agent[bot] (2026-05-04)
+- `77837ec1` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
+- `83471551` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
+- `ed378a18` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
+- `6c844329` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
+- `27580746` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 - `801347f6` fix(ci): update accountability report and sync tracked files — unblock pre-merge — copilot-swe-agent[bot] (2026-05-04)
-- `0ef46ecb` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
-- `752ffef6` fix: correct CHANGELOG entry and follow-up prompt for PR #4254 review feedback — copilot-swe-agent[bot] (2026-05-04)
-- `fc47ba48` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
-- `c66607fb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
-- `a123fd41` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
-- `cb2be981` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
-- `deff918c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
