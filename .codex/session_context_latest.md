@@ -1,39 +1,42 @@
-# Session Context — 2026-05-04T06:40:33Z
+# Session Context — 2026-05-04T06:53:23Z
 **Branch:** `copilot/consolidate-logging-calls`  **PR:** #4225  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4202` (✅)  
-- GraphQL remaining: `4971` (✅)  
+- REST remaining: `3910` (✅)  
+- GraphQL remaining: `4945` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
 ## 📋 PR #4225 — fix: consolidate duplicate logging calls and add defensive validation to test helpers across training and test files
 State: `open`  Draft: `False`  Branch: `copilot/consolidate-logging-calls` → `main`
 
-### ❌ 5 Failing CI Check(s)
+### ❌ 14 Failing CI Check(s)
 - `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Activate token delegation` (cancelled)
 - `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
 - `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Cancel Runs for Unchecked Workflows` (cancelled)
+- `Dispatch Newly-Checked Workflows` (cancelled)
+- `Post rescue comment on failure` (cancelled)
 - `Post rescue comment on failure` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Auto-Fix Common CI Issues** — `failure` on `copilot/consolidate-logging-calls` (2026-05-04)
-- **PR Auto-Fix Check** — `failure` on `copilot/consolidate-logging-calls` (2026-05-04)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/consolidate-logging-calls` (2026-05-04)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **🔍 Issue Resolution Gate** — `failure` on `copilot/consolidate-logging-calls` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `00d92ad4` fix(ci): update accountability report and resync tracked files [pattern 25] — copilot-swe-agent[bot] (2026-05-04)
+- `09a0c394` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `1a016684` chore(ci): reply to all blocking comments and confirm CI fixes at HEAD — copilot-swe-agent[bot] (2026-05-04)
 - `d47d457d` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `de82d8dd` fix: add percentile bounds check with tests and use semantically distinct hash u — copilot-swe-agent[bot] (2026-05-04)
 - `91b4e0a8` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
 - `c3d74def` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 - `b986ecb8` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
-- `c471e0f8` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-04)
-- `474c7b6b` fix: consolidate duplicate logging calls and improve code quality across multipl — copilot-swe-agent[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
