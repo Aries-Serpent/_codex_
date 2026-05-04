@@ -17,14 +17,17 @@
 - [`533471e4`] fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci] (copilot-swe-agent[bot], 2026-05-04)
 
 ### Files Modified
-No files modified
+- `requirements/lock-ml.txt` — torch version pin updated (2.9.1+cpu → 2.11.0+cpu)
+- `tests/unit/utils/test_sensitive_data_utils.py` — pragma deduplication, new phone test, hash uniqueness edge cases
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Verify `requirements/lock-ml.txt` torch pin (`2.11.0+cpu`) is reachable from `https://download.pytorch.org/whl/cpu`
+- [ ] Confirm all existing tests in `tests/unit/utils/test_sensitive_data_utils.py` pass (including new `test_mask_sensitive_data_phone_unformatted`)
+- [ ] Run `python scripts/ci/sync_tracked_files.py --fix` if `.secrets.baseline` is stale after bot commits
 
 **Validation**:
 ```bash
@@ -35,10 +38,12 @@ python scripts/ci/sync_tracked_files.py --fix
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Ensure `requirements/base.txt` and `requirements/lock.txt` torch pins remain consistent with `lock-ml.txt` across future dependency updates
+- [ ] Consider adding Unicode normalization test (precomposed vs. decomposed `é`) to `test_hash_sensitive_value_uniqueness` as a future enhancement (flagged by code reviewer)
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Add Unicode normalization edge-case test (`\u00e9` precomposed vs `e\u0301` decomposed) to verify security-relevant hash distinctness
+- [ ] Document intentional CPU-only vs full-CUDA torch pin split in requirements README if multiple deployment targets are maintained
 
 ---
 

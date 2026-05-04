@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4254)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4254 (SHA `542a88e7`) at 2026-05-04T13:42Z [auto-generated]
+### Fixed (PR #4254 — consolidate PyTorch version, test improvements)
+- **requirements/lock-ml.txt**: `torch==2.9.1+cpu` → `torch==2.11.0+cpu` to align with `base.txt` and `lock.txt` and eliminate the three-way version split
+- **tests/unit/utils/test_sensitive_data_utils.py**: Deduplicated triple `# pragma: allowlist secret` comment to single instance
+- **tests/unit/utils/test_sensitive_data_utils.py**: Added `test_mask_sensitive_data_phone_unformatted` to verify masking of dash-free phone numbers (e.g. `5551234567`)
+- **tests/unit/utils/test_sensitive_data_utils.py**: Extended `test_hash_sensitive_value_uniqueness` with case-variant (`Alpha`, `ALPHA`) and Unicode (`café`, `CAFÉ`, `こんにちは`, `emoji_😀`) edge cases
 
 ### Fixed (S-PR4225 consolidation — PRs #4233–#4242)
 - **autonomous_rag_context.py**: Truncate policy excerpt at last newline before 600 chars to prevent splitting mid-word/heading (consolidated from PRs #4234, #4236, #4240)
