@@ -1,6 +1,10 @@
 # Agent Accountability Report
 
+## SESSION SUMMARY — 2026-05-04T11:31Z [auto-generated]
 
+**Session:** auto-20260504T1131-ci-rescue | **Run:** 25314389010 | **Date:** 2026-05-04
+
+CI rescue for PR #4237: Fixed stale `.secrets.baseline` hashes (CODEX_MANIFEST.json and agent_context.json entries) via `sync_tracked_files.py --fix`. Resolves `sync_tracked_files` ❌ stale dimension in merge-readiness scorecard. Ruff violations in src/ confirmed clean.
 
 
 

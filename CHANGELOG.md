@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (CI rescue — PR #4237)
+- **sync_tracked_files**: Updated stale `.secrets.baseline` hashes for `CODEX_MANIFEST.json` and `agent_context.json` entries via `sync_tracked_files.py --fix`. Resolves `sync_tracked_files` failing dimension in merge-readiness scorecard.
+
 ### Fixed (auto-update — PR #4237)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4237 (SHA `54506c31`) at 2026-05-04T10:44Z [auto-generated]
 
