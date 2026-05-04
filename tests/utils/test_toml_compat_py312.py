@@ -84,14 +84,14 @@ testpaths = ["tests"]
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
-            return  # pragma: no cover - pytest.skip always raises; helps static analysis
-        with open(toml_file, "rb") as f:
-            data = tomllib.load(f)
-        assert data["section"]["key"] == "value"
+        else:
+            with open(toml_file, "rb") as f:
+                data = tomllib.load(f)
+            assert data["section"]["key"] == "value"
 
-        # Text mode should raise TypeError
-        with pytest.raises(TypeError), open(toml_file, "r") as f:
-            tomllib.load(f)
+            # Text mode should raise TypeError
+            with pytest.raises(TypeError), open(toml_file, "r") as f:
+                tomllib.load(f)
 
     def test_complex_toml_structure(self, tmp_path):
         """Test loading complex TOML structures."""
@@ -255,15 +255,14 @@ key4 = true
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
-            return  # pragma: no cover - pytest.skip always raises; helps static analysis
+        else:
+            start = time.time()
+            with open(toml_file, "rb") as f:
+                data = tomllib.load(f)
+            elapsed = time.time() - start
 
-        start = time.time()
-        with open(toml_file, "rb") as f:
-            data = tomllib.load(f)
-        elapsed = time.time() - start
-
-        assert len(data) == 100
-        assert elapsed < 1.0  # Should be fast
+            assert len(data) == 100
+            assert elapsed < 1.0  # Should be fast
 
     def test_unicode_handling(self, tmp_path):
         """Test Unicode handling in TOML files."""
@@ -283,7 +282,6 @@ author = "José García"
                 data = tomllib.load(f)
         except ImportError:
             pytest.skip("tomllib not available")
-            return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
         assert data["project"]["name"] == "测试项目"
         assert "🚀" in data["project"]["description"]

@@ -17,16 +17,11 @@ import pytest
 
 def _import():
     """Import budget_uncertainty, skipping if unavailable."""
-    try:
-        repo_root = Path(__file__).parent.parent.parent
-        scripts_dir = str(repo_root / "scripts")
-        if scripts_dir not in sys.path:
-            sys.path.insert(0, scripts_dir)
-        import budget_uncertainty
-        return budget_uncertainty
-    except ImportError as exc:
-        pytest.skip(f"budget_uncertainty not importable: {exc}")
-        return None  # pragma: no cover — pytest.skip() always raises
+    repo_root = Path(__file__).parent.parent.parent
+    scripts_dir = str(repo_root / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    return pytest.importorskip("budget_uncertainty", reason="budget_uncertainty not importable")
 
 
 # ── DirichletBeliefs ─────────────────────────────────────────────────────────

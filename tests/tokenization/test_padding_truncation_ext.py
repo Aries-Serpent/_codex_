@@ -19,11 +19,9 @@ def _maybe_get_cli():
     Tests skip cleanly if optional deps (e.g., sentencepiece) are absent.
     """
 
-    try:
-        mod = importlib.import_module("codex_ml.tokenization.cli")
-    except Exception as exc:  # pragma: no cover - environment dependent
-        pytest.skip(f"tokenization CLI unavailable: {exc}")
-        return None
+    mod = pytest.importorskip(
+        "codex_ml.tokenization.cli", reason="tokenization CLI unavailable"
+    )
     if importlib.util.find_spec("sentencepiece") is None:
         pytest.skip("sentencepiece not installed; skipping tokenization CLI tests")
     root = pathlib.Path(__file__).resolve().parents[1]

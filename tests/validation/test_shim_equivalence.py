@@ -45,21 +45,20 @@ def test_shim_public_api_equivalence(pair, min_overlap):
         b = importlib.import_module(canonical)
     except ImportError as e:
         pytest.skip(f"Module import failed (expected in minimal env): {e}")
-        return
+    else:
+        a_api = public_api(a)
+        b_api = public_api(b)
 
-    a_api = public_api(a)
-    b_api = public_api(b)
+        assert a_api, f"{legacy} exposes no public API"
+        assert b_api, f"{canonical} exposes no public API"
 
-    assert a_api, f"{legacy} exposes no public API"
-    assert b_api, f"{canonical} exposes no public API"
-
-    overlap = [k for k in a_api if k in b_api]
-    assert len(overlap) >= min_overlap, (
-        f"Insufficient API overlap for {legacy} vs {canonical}: "
-        f"{len(overlap)} < {min_overlap}\n"
-        f"Legacy API: {a_api[:10]}...\n"
-        f"Canonical API: {b_api[:10]}..."
-    )
+        overlap = [k for k in a_api if k in b_api]
+        assert len(overlap) >= min_overlap, (
+            f"Insufficient API overlap for {legacy} vs {canonical}: "
+            f"{len(overlap)} < {min_overlap}\n"
+            f"Legacy API: {a_api[:10]}...\n"
+            f"Canonical API: {b_api[:10]}..."
+        )
 
 
 def test_shim_module_identity():

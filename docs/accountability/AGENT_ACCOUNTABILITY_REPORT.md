@@ -25075,3 +25075,59 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-05-04T01:30Z SESSION copilot-swe-agent (Wave 2 + codeql.yml + Wave 3-7 groundwork — PR #4211)
+
+**PR:** #4211 | **Branch:** copilot/add-unknown-timestamp-constant | **Session:** S-PR4211-wave2-codeql-groundwork
+
+### Objectives Completed
+
+1. **Wave 2 — `py/unreachable-statement` (38 sites)** — Converted all unreachable `return`/`return None` lines after `pytest.skip()` calls to proper `try/except/else` structures or `pytest.importorskip()` helpers across 29 files. Removed unused `importlib` imports (auto-fixed via ruff F401).
+2. **`py/multiple-definition`** — Removed duplicate `_codex_config_hash` function body from `src/codex/training.py` (second definition shadowed the first).
+3. **`.github/workflows/codeql.yml`** — Created CodeQL Advanced workflow: `actions`, `go`, `javascript-typescript`, `python`, `rust`; ubuntu-latest only (no swift/macos); `security-extended,security-and-quality` queries; Saturday 18:44 UTC schedule; `post-codeql-auto-approve` and `rescue-comment` jobs included.
+4. **Wave 3–7 groundwork** — Pre-scanned all remaining 22 rules; populated `.github/copilot-prompts/active/PR-4211-followup.md` with per-wave PR titles, fix strategies, triage commands, and pre-identified finding samples.
+
+### Files Modified (this session)
+
+- `.github/workflows/codeql.yml` (new)
+- `.github/copilot-prompts/active/PR-4211-followup.md` (updated with Wave 3-7 roadmap)
+- `tests/autonomy/test_agent_runner.py`
+- `tests/autonomy/test_autonomy_scheduler.py`
+- `tests/autonomy/test_budget_uncertainty.py`
+- `tests/autonomy/test_integration_budget_exhaustion.py`
+- `tests/autonomy/test_philosophy_parser.py`
+- `tests/autonomy/test_session_tracker.py`
+- `tests/features/test_feast_compat_store.py`
+- `tests/features/test_feast_compat_backends.py`
+- `tests/tokenization/test_padding_truncation_ext.py`
+- `tests/peft/test_peft_smoke.py`
+- `src/codex/training.py`
+- `tests/smoke/test_config_validate_cli.py`
+- `tests/asyncio/test_py312_compatibility.py`
+- `tests/checkpointing/test_checkpointing_compat.py`
+- `tests/tokenization/test_tokenization_compat.py`
+- `tests/test_callbacks.py`
+- `tests/train_loop/test_telemetry_rollover.py`
+- `tests/data/test_cache_roundtrip.py`
+- `tests/data/test_hf_factory_compat.py`
+- `tests/test_cli_hydra_validation.py`
+- `tests/integration/test_py312_e2e.py`
+- `tests/utils/test_toml_compat_py312.py`
+- `tests/tokenization/test_adapter.py`
+- `tests/repro/test_determinism.py`
+- `tests/codex/test_cli_roles.py`
+- `tests/validation/test_shadowing.py`
+- `tests/validation/test_shim_equivalence.py`
+- `tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py`
+- `tests/test_training_resume.py`
+
+### Validation Results
+
+- `ruff check` — 0 violations across all modified files
+- `sync_tracked_files --fix` — all consistent
+
+### §0 Compliance
+
+Per CODEBASE_AGENCY_POLICY.md §0: reviewed all new comment_new threads (comment_id 4367612211, 4367612471, 4367616955) before making any changes.
+
+---

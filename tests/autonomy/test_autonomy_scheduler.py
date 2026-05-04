@@ -8,7 +8,6 @@ Covers:
 """
 from __future__ import annotations
 
-import importlib
 import json
 import os
 import sys
@@ -25,12 +24,7 @@ def _import_scheduler():
     """Import autonomy_scheduler, skipping if unavailable."""
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
-    try:
-        mod = importlib.import_module("autonomy_scheduler")
-    except ImportError:
-        pytest.skip("autonomy_scheduler not importable")
-        return None  # pragma: no cover — pytest.skip() always raises
-    return mod
+    return pytest.importorskip("autonomy_scheduler", reason="autonomy_scheduler not importable")
 
 
 class TestBudgetCap:

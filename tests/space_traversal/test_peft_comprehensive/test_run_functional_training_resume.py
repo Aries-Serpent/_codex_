@@ -174,7 +174,6 @@ def test_run_functional_training_resume(monkeypatch, tmp_path):
         result = run_functional_training(config, resume=True)
     except HFModelUnavailableError as exc:
         pytest.skip(f"HF model unavailable in CI (no cache/network): {exc}")
-        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     # With full HF mock, result is whatever legacy_api returns after calling _ft_train.
     assert isinstance(result, dict)
@@ -233,7 +232,6 @@ def test_run_functional_training_repeatable(monkeypatch, tmp_path):
         first = run_functional_training(base_config, resume=False)
     except HFModelUnavailableError as exc:
         pytest.skip(f"HF model unavailable in CI (no cache/network): {exc}")
-        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     random.random()
     np.random.rand()

@@ -26,28 +26,27 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
     except Exception as e:
         # If import fails, skip tests rather than erroring the entire suite.
         pytest.skip(f"EarlyStopping import failed: {e}")
-        return  # pragma: no cover - pytest.skip always raises; helps static analysis
-
-    try:
-        # Prefer constructor with mode if available.
-        return EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)
-    except TypeError:
-        # Constructor didn't accept `mode` — fall back to old behavior.
+    else:
         try:
-            es = EarlyStopping(patience=patience, min_delta=min_delta)
+            # Prefer constructor with mode if available.
+            return EarlyStopping(patience=patience, min_delta=min_delta, mode=mode)
+        except TypeError:
+            # Constructor didn't accept `mode` — fall back to old behavior.
+            try:
+                es = EarlyStopping(patience=patience, min_delta=min_delta)
+            except Exception as e:
+                pytest.fail(f"Failed to instantiate EarlyStopping without 'mode': {e}")
+
+            # Try to set the mode attribute in a backward-compatible manner.
+            try:
+                es.mode = mode
+            except Exception:
+                # If we can't set mode, skip the tests because we can't ensure expected behavior.
+                pytest.skip("EarlyStopping does not accept or expose 'mode' parameter/attribute")
+
+            return es
         except Exception as e:
-            pytest.fail(f"Failed to instantiate EarlyStopping without 'mode': {e}")
-
-        # Try to set the mode attribute in a backward-compatible manner.
-        try:
-            es.mode = mode
-        except Exception:
-            # If we can't set mode, skip the tests because we can't ensure expected behavior.
-            pytest.skip("EarlyStopping does not accept or expose 'mode' parameter/attribute")
-
-        return es
-    except Exception as e:
-        pytest.fail(f"Unexpected error constructing EarlyStopping: {e}")
+            pytest.fail(f"Unexpected error constructing EarlyStopping: {e}")
 
 
 def _assert_step_bool(es: Any, value: float, expected: bool):

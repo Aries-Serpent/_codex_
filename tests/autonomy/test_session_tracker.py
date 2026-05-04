@@ -8,7 +8,6 @@ Covers:
 """
 from __future__ import annotations
 
-import importlib
 import json
 import sys
 from pathlib import Path
@@ -22,12 +21,7 @@ SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 def _import_tracker():
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
-    try:
-        mod = importlib.import_module("session_tracker")
-    except ImportError:
-        pytest.skip("session_tracker not importable")
-        return None  # pragma: no cover — pytest.skip() always raises
-    return mod
+    return pytest.importorskip("session_tracker", reason="session_tracker not importable")
 
 
 class TestSessionStart:

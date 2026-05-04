@@ -13,12 +13,10 @@ import pytest
 # ── Import helpers ──────────────────────────────────────────────────────────
 
 def _import():
-    try:
-        from codex_ml.features import feast_compat
-        return feast_compat
-    except ImportError:
-        pytest.skip("codex_ml.features.feast_compat not importable")
-        return None  # pragma: no cover — pytest.skip() always raises
+    return pytest.importorskip(
+        "codex_ml.features.feast_compat",
+        reason="codex_ml.features.feast_compat not importable",
+    )
 
 
 # ── Entity ──────────────────────────────────────────────────────────────────

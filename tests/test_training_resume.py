@@ -37,7 +37,6 @@ def test_run_functional_training_resume(tmp_path):
         # ValueError: remote HF identifier used without an explicit commit-hash
         #   revision (CODEX_HF_REVISION / HF_REVISION env var not set in CI).
         pytest.skip(f"HuggingFace model unavailable (no network/revision in CI): {exc}")
-        return  # unreachable: pytest.skip raises; satisfies static analysis
     assert first is not None
     assert first["resumed_from"] is None
     if first.get("checkpoint_dir") is None:

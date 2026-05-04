@@ -20,18 +20,17 @@ def test_validate_ok(tmp_path: Path):
         from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
-        return  # pragma: no cover - pytest.skip always raises; helps static analysis
-
-    cfg = tmp_path / "ok.yaml"
-    cfg.write_text(
-        "model_name: tiny\nlearning_rate: 0.001\nepochs: 1\nmax_samples: 8\n",
-        encoding="utf-8",
-    )
-    runner = CliRunner()
-    r = runner.invoke(app, ["file", str(cfg)])
-    if "Path 'file' does not exist" in r.output:
-        r = runner.invoke(app, [str(cfg)])
-    assert r.exit_code == 0, r.output
+    else:
+        cfg = tmp_path / "ok.yaml"
+        cfg.write_text(
+            "model_name: tiny\nlearning_rate: 0.001\nepochs: 1\nmax_samples: 8\n",
+            encoding="utf-8",
+        )
+        runner = CliRunner()
+        r = runner.invoke(app, ["file", str(cfg)])
+        if "Path 'file' does not exist" in r.output:
+            r = runner.invoke(app, [str(cfg)])
+        assert r.exit_code == 0, r.output
 
 
 def test_validate_bad(tmp_path: Path):
@@ -43,13 +42,12 @@ def test_validate_bad(tmp_path: Path):
         from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
-        return  # pragma: no cover - pytest.skip always raises; helps static analysis
-
-    cfg = tmp_path / "bad.yaml"
-    cfg.write_text("learning_rate: -1\nepochs: 0\n", encoding="utf-8")
-    runner = CliRunner()
-    r = runner.invoke(app, ["file", str(cfg)])
-    if "Path 'file' does not exist" in r.output:
-        r = runner.invoke(app, [str(cfg)])
-    assert r.exit_code != 0
-    assert "Invalid configuration" in r.output
+    else:
+        cfg = tmp_path / "bad.yaml"
+        cfg.write_text("learning_rate: -1\nepochs: 0\n", encoding="utf-8")
+        runner = CliRunner()
+        r = runner.invoke(app, ["file", str(cfg)])
+        if "Path 'file' does not exist" in r.output:
+            r = runner.invoke(app, [str(cfg)])
+        assert r.exit_code != 0
+        assert "Invalid configuration" in r.output

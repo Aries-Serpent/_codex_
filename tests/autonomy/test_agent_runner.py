@@ -9,7 +9,6 @@ Covers:
 """
 from __future__ import annotations
 
-import importlib
 import json
 import os
 import sys
@@ -25,12 +24,7 @@ def _import_runner():
     """Import agent_runner, skipping if unavailable."""
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
-    try:
-        mod = importlib.import_module("agent_runner")
-    except ImportError:
-        pytest.skip("agent_runner not importable")
-        return None  # pragma: no cover — pytest.skip() always raises
-    return mod
+    return pytest.importorskip("agent_runner", reason="agent_runner not importable")
 
 
 class TestKillSwitchHalt:
