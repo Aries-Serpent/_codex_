@@ -1,32 +1,32 @@
-# Session Context — 2026-05-04T17:59:24Z
+# Session Context — 2026-05-04T18:13:04Z
 **Branch:** `copilot/consolidate-pytorch-versions`  **PR:** #4254  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4676` (✅)  
-- GraphQL remaining: `5000` (✅)  
+- REST remaining: `4614` (✅)  
+- GraphQL remaining: `4995` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4254 — feat: consolidate PyTorch versions (CVE-2025-32434), fix CodeQL injection + checkout alerts, fix Python 3.12 ValueError guards, restore RAG coverage, add Unicode/phone/hash tests, implement Safe Autonomy Blueprint (all 6 phases), fix code-quality unuse...
+## 📋 PR #4254 — feat: consolidate PyTorch versions (CVE-2025-32434), fix CodeQL injection + checkout alerts, fix Python 3.12 ValueError guards, restore RAG coverage, add Unicode/phone/hash tests, implement Safe Autonomy Blueprint (all 6 phases), fix code-quality issue...
 State: `open`  Draft: `False`  Branch: `copilot/consolidate-pytorch-versions` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Automatic Dependency Submission (Python)** — `failure` on `copilot/consolidate-pytorch-versions` (2026-05-04)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 - **Agent Token Delegation** — `failure` on `copilot/consolidate-pytorch-versions` (2026-05-04)
-- **Pre-Merge Validation** — `failure` on `copilot/consolidate-pytorch-versions` (2026-05-04)
 
 ## 📝 Recent Commits
+- `ccc94096` fix(changelog): correct 'line-comprehension' to 'list comprehension' — copilot-swe-agent[bot] (2026-05-04)
+- `951e32e7` fix(ci): fix line-too-long in token_broker.py, update accountability report + CH — copilot-swe-agent[bot] (2026-05-04)
+- `60f66b4f` merge: incorporate remote baseline-sweep bot commit — copilot-swe-agent[bot] (2026-05-04)
+- `9edc4cae` chore: initial plan for CI fixes — copilot-swe-agent[bot] (2026-05-04)
 - `1c26d85d` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `9181d3aa` fix(audit): wire _DEFAULT_AUDIT_PATH/_DEFAULT_METRICS_PATH into AuditLogger init — copilot-swe-agent[bot] (2026-05-04)
 - `9c904cfb` chore: initial session plan for CI fixes and Blueprint implementation — copilot-swe-agent[bot] (2026-05-04)
 - `0f958ed7` feat(autonomy): implement all 6 blueprint phases — registry, token broker, ingre — copilot-swe-agent[bot] (2026-05-04)
-- `ea264ebb` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
-- `609d75ed` chore: initial plan for RAG coverage + blueprint ingestion tasks — copilot-swe-agent[bot] (2026-05-04)
-- `d38841db` fix(rag): use explicit bool for find_spec sentinel (code review feedback) — copilot-swe-agent[bot] (2026-05-04)
-- `bd55f213` fix(rag): guard find_spec ValueError in embed_chunks (Python 3.12), ingest Auton — copilot-swe-agent[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
