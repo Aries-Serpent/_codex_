@@ -8,6 +8,7 @@ Comprehensive testing for RAG caching layer:
 - Cache persistence
 """
 
+import json
 import tempfile
 import time
 
@@ -227,8 +228,6 @@ class TestQueryCache:
             query = "test query"
             filters = {"source": "docs", "date": "2024-01-01"}
             results = [{"doc_id": "1"}]
-
-            import json
 
             # Cache with filters (encoded into query key deterministically)
             cache_key = f"{query}:{json.dumps(filters, sort_keys=True)}"
