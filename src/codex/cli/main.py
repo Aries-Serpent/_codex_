@@ -243,13 +243,11 @@ if TYPER_AVAILABLE:
         ] = False,
     ) -> None:
         """Generate HTML AST visualization report."""
-        import pathlib
-
         from codex.ast.graph import ASTGraph
         from codex.ast.parser import UniversalParser
         from codex.ast.visualize import HTMLVisualizer
 
-        source_path = pathlib.Path(source)
+        source_path = Path(source)
         if not source_path.exists():
             typer.echo(f"Error: source file not found: {source}", err=True)
             raise typer.Exit(code=1)
