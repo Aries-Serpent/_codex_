@@ -1,10 +1,10 @@
-# Session Context — 2026-05-04T07:33:24Z
+# Session Context — 2026-05-04T07:42:49Z
 **Branch:** `copilot/consolidate-logging-calls`  **PR:** #4225  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4906` (✅)  
-- GraphQL remaining: `4983` (✅)  
+- REST remaining: `4863` (✅)  
+- GraphQL remaining: `4978` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
@@ -19,6 +19,7 @@ State: `open`  Draft: `False`  Branch: `copilot/consolidate-logging-calls` → `
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `e25c3ed2` fix(ci): pattern 25 — update accountability report in last commit — copilot-swe-agent[bot] (2026-05-04)
 - `2c25126a` fix: consolidate duplicate logging calls, add defensive validation to test helpe — copilot-swe-agent[bot] (2026-05-04)
 - `7778a0e9` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
 - `f79a8913` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/consolidate-logging-calls` → `
 - `5a5de559` fix: consolidate duplicate logging calls, add defensive validation to test helpe — copilot-swe-agent[bot] (2026-05-04)
 - `00d92ad4` fix(ci): update accountability report and resync tracked files [pattern 25] — copilot-swe-agent[bot] (2026-05-04)
 - `09a0c394` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
-- `1a016684` chore(ci): reply to all blocking comments and confirm CI fixes at HEAD — copilot-swe-agent[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
