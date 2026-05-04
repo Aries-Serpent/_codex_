@@ -2,7 +2,7 @@
 
 **PR**: #4211 — `fix: UNKNOWN_TIMESTAMP, RunLogger import, docstring caps, duplicate pragma, malformed ISO timestamp + CodeQL Waves 1–2`  
 **Branch**: `copilot/add-unknown-timestamp-constant`  
-**Author**: @Copilot  
+**Original Author**: @mbaetiong | **Recovery by**: @Copilot  
 **Last Updated**: 2026-05-04T02:32Z  
 **Status**: ✅ Merge-ready — 100/100 merge readiness — Waves 3–7 queued for separate PRs
 
@@ -43,7 +43,7 @@
 | Approve DURING session (bot-generated workflows) | ⚠️ Risky — if the bot-generate step writes files, the session's local tree diverges from remote → rebase crash (exactly what caused this session to crash) |
 | Approve file changes DURING session | ⚠️ Risky — same divergence problem |
 
-**Root cause of this crash:** A workflow (`pr-followup-generator.yml`) pushed a new commit while the Copilot session was working on its own commit. Git rebase failed because both commits touched `PR-4211-followup.md`.
+**Root cause of this crash:** `pr-followup-generator.yml` auto-generates and pushes `PR-4211-followup.md` on every PR push event. Because the Copilot session was also editing that same file, the two concurrent commits created a rebase conflict on `PR-4211-followup.md` specifically. Git rebase could not automatically resolve it and the session was terminated.
 
 ### How to improve the approval process → full autonomy
 
