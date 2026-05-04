@@ -1,10 +1,10 @@
-# Session Context — 2026-05-04T07:21:32Z
+# Session Context — 2026-05-04T07:33:24Z
 **Branch:** `copilot/consolidate-logging-calls`  **PR:** #4225  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `5000` (✅)  
-- GraphQL remaining: `4989` (✅)  
+- REST remaining: `4906` (✅)  
+- GraphQL remaining: `4983` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `copilot/consolidate-logging-calls` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `2c25126a` fix: consolidate duplicate logging calls, add defensive validation to test helpe — copilot-swe-agent[bot] (2026-05-04)
 - `7778a0e9` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
 - `f79a8913` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 - `7b915d61` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/consolidate-logging-calls` → `
 - `00d92ad4` fix(ci): update accountability report and resync tracked files [pattern 25] — copilot-swe-agent[bot] (2026-05-04)
 - `09a0c394` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `1a016684` chore(ci): reply to all blocking comments and confirm CI fixes at HEAD — copilot-swe-agent[bot] (2026-05-04)
-- `d47d457d` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
