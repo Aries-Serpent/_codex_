@@ -99,9 +99,10 @@ def _load_hash_pepper() -> bytes:
         _DEFAULT_PEPPER_PATH.write_bytes(pepper)
         _DEFAULT_PEPPER_PATH.chmod(0o600)
         return pepper
-    except OSError:
-        # Fail-safe fallback for restricted environments.
-        return b"ita-pepper-fallback"
+    except OSError as exc:
+        raise RuntimeError(
+            f"Unable to load or initialize API key pepper at {_DEFAULT_PEPPER_PATH}"
+        ) from exc
 
 
 def _legacy_hash_key(value: str) -> str:
