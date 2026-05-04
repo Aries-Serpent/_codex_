@@ -150,8 +150,12 @@ class AuditLogger:
         registry: Optional[AutonomyRegistry] = None,
     ) -> None:
         reg = registry or AutonomyRegistry.load()
-        self._audit_path = audit_path or Path(reg.audit_log_path)
-        self._metrics_path = metrics_path or Path(reg.metrics_log_path)
+        self._audit_path = audit_path or (
+            Path(reg.audit_log_path) if reg.audit_log_path else _DEFAULT_AUDIT_PATH
+        )
+        self._metrics_path = metrics_path or (
+            Path(reg.metrics_log_path) if reg.metrics_log_path else _DEFAULT_METRICS_PATH
+        )
         self._metrics = MetricsSnapshot()
 
     @classmethod

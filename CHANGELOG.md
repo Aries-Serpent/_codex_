@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4254 — code quality)
+- **`src/codex/autonomy/audit.py`**: `_DEFAULT_AUDIT_PATH` and `_DEFAULT_METRICS_PATH` were module-level constants defined but never referenced; wired them into `AuditLogger.__init__` as fallbacks when registry path is empty, resolving the `github-code-quality` "unused global variable" alerts
+
 ### Added (PR #4254 — Safe Full Copilot Cloud Agent Autonomy — all 6 phases)
 - **`src/codex/autonomy/` package** — new control-plane OS for autonomous agent governance (197 tests, 0 ruff errors)
 - **Phase 1** `src/codex/autonomy/registry.py` + `.codex/autonomy_registry.yaml` — single authoritative autonomy state registry with kill-switch, dry-run, mode enum (OFF/OBSERVE/DRY_RUN/ASSISTED/SAFE_AUTO/ELEVATED_AUTO), runtime budgets, surface allowlist, and policy enforcement via `assert_permitted()`
