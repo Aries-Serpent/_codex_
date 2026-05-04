@@ -25654,3 +25654,42 @@ New requirements: complete Wave 7 (Unicode normalization edge-case tests), verif
 All bot-posted and @mbaetiong comments reviewed before making changes. No deferral language used.
 
 ---
+---
+
+## Session S668 — RAG Coverage Regression Fix + Autonomy Blueprint Ingestion
+
+**Branch:** `copilot/consolidate-pytorch-versions`
+**Date:** 2026-05-04
+**Triggered by:** Comment #4372827671 — fix RAG Module Tests coverage regression (run 25329390481); new requirement to ingest Autonomy Blueprint.
+
+### Root Cause Analysis
+
+**20 failing tests in RAG Module Tests** (run 25329390481):
+
+1. **15 tests in `tests/test_rag_tenant_management.py`** — all returned `success=False` when expecting `True`. Root cause: `embed_chunks()` in `src/codex/rag/indexer.py` calls `importlib.util.find_spec("sentence_transformers")`. In Python 3.12, when a test double (MagicMock or SimpleNamespace) is injected into `sys.modules["sentence_transformers"]`, `find_spec` raises `ValueError: sentence_transformers.__spec__ is not set` (because the mock has `__spec__ = None` / no `__spec__`). This `ValueError` propagated through the `except Exception` guard in `build_index_from_files`, causing it to return `success=False` silently.
+
+2. **5 tests in `test_rag_end_to_end_pipeline.py` and `test_indexer_comprehensive.py`** — same `ValueError` propagating uncaught.
+
+**Coverage before fix:** 93.61% (with 20 tests failing). Target: ≥ 95%.
+
+### Fix Applied
+
+**`src/codex/rag/indexer.py`** (line 104): wrapped `importlib.util.find_spec("sentence_transformers")` in `try/except ValueError`. When `ValueError` is raised, the module is in `sys.modules` (just with broken `__spec__`), so it IS present — treat as installed. This matches the existing fix in `tests/conftest.py` (applied in S667 Wave 4).
+
+### Blueprint Ingestion
+
+Ingested and stored `[Blueprint]: Safe Full Copilot Cloud Agent Autonomy` from mbaetiong:
+- Document stored at `.codex/docs/AUTONOMY_BLUEPRINT.md`
+- Key insight: repo has Ap=0.877 (high power) but Gi=0.5405 (fragmented governance), Δ=0.3365 (significant fragmentation). Effective Q=0.270. Target Q=0.656 via 6-phase hardening plan.
+- Phase order: (1) Unify control state → (2) Reduce privilege → (3) Harden ingress → (4) Prompt governance → (5) Observability → (6) Expand safely
+- Phase 3 partially complete: 15 CodeQL alerts remediated (PR #4254)
+
+### Files Modified
+
+- `src/codex/rag/indexer.py` — ValueError guard for find_spec (Python 3.12 fix)
+- `.codex/docs/AUTONOMY_BLUEPRINT.md` — blueprint document (new)
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+
+### §0 Compliance
+All `@mbaetiong` and bot-posted comments reviewed. Blocking comment #4372827671 addressed. No deferral language used.
+
