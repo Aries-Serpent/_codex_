@@ -1,10 +1,6 @@
 {
   "schema_version": "1.0",
-<<<<<<< copilot/consolidate-pytorch-versions
-  "generated_at": "2026-05-04T13:42:33Z",
-=======
   "generated_at": "2026-05-04T18:33:19Z",
->>>>>>> main
   "agents": [
     {
       "name": "github-app-manager",
@@ -2064,9 +2060,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-<<<<<<< copilot/consolidate-pytorch-versions
-  "integrity_sha256": "a9d8b239812f782e2752c76d9464f9556c8b3d69f76ea4cf97dd917690841696"
-=======
   "integrity_sha256": "b7b9ee6007ca9477b5325fc1a0a8a4c49f27395dda74cb6869e4f2b73278cf38"
->>>>>>> main
 }
