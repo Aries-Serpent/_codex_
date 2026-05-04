@@ -70,7 +70,7 @@ def test_ndjson_writer_injects_defaults(tmp_path: Path, monkeypatch: pytest.Monk
 
     # Use object-based patching to avoid string-path resolution issues across
     # pytest versions that may fail to traverse package hierarchies.
-    import sys as _sys
+    _sys = sys
     _writers_mod = _sys.modules["codex_ml.tracking.writers"]  # already imported above
     monkeypatch.setattr(_writers_mod, "datetime", _FakeDateTime)
     writer._logger.run_id = "auto-run"

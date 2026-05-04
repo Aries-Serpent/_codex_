@@ -124,6 +124,9 @@ MAX_FILES_PER_RAG_UPDATE: int = int(os.environ.get("CODEX_RAG_MAX_FILES_PER_SESS
 MAX_FILE_SIZE_FOR_RAG: int   = int(os.environ.get("CODEX_RAG_MAX_FILE_BYTES", "500000"))
 #: Polite sleep between GitHub API calls (seconds) — mirrors GH_TRICKLE_POLITE_SLEEP.
 POLITE_SLEEP: float          = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP", "0.4"))
+#: Minimum newline position required when truncating the policy excerpt;
+#: ensures at least one full line of policy text is shown rather than a tiny stub.
+_MIN_POLICY_EXCERPT_NL_POS: int = 50
 
 # ── Token discovery (mirrors session_access_probe.py) ─────────────────────────
 def _tokens() -> list[tuple[str, str]]:
@@ -700,7 +703,12 @@ def _render_context_md(
 
     pol = local_ctx.get("policy_excerpt")
     if pol:
-        lines += ["## 📜 Codebase Agency Policy (excerpt)", "```", pol[:600], "```", ""]
+        # Truncate at the last newline before 600 chars to avoid splitting words/headings.
+        # Require the last newline to be at position > 50 to ensure meaningful content.
+        pol_trunc = pol[:600]
+        last_nl = pol_trunc.rfind("\n")
+        pol_trunc = pol_trunc[:last_nl] if last_nl > _MIN_POLICY_EXCERPT_NL_POS else pol_trunc
+        lines += ["## 📜 Codebase Agency Policy (excerpt)", "```", pol_trunc, "```", ""]
 
     return "\n".join(lines)
 

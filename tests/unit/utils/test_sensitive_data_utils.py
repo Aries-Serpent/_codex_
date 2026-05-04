@@ -84,10 +84,18 @@ def test_hash_sensitive_value_consistency():
 
 
 def test_hash_sensitive_value_uniqueness():
-    """Test hash_sensitive_value produces unique hashes."""
-    hash1 = hash_sensitive_value("value1")
-    hash2 = hash_sensitive_value("value2")
-    assert hash1 != hash2
+    """Test hash_sensitive_value produces unique hashes for distinct inputs."""
+    values = [
+        "alpha",
+        "beta",
+        "gamma",
+        "1234567890",
+        "special_chars_!@#$%^&*()",
+        "much longer value with more content",
+        "another_completely_different_string",
+    ]
+    hashes = [hash_sensitive_value(value) for value in values]
+    assert len(set(hashes)) == len(values)
 
 
 def test_hash_sensitive_value_length():

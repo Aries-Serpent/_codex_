@@ -10,6 +10,8 @@ import os
 
 import pytest
 
+DEFAULT_MIN_OVERLAP = 3
+
 
 def public_api(module):
     """Extract public API members (non-underscore prefixed) from a module."""
@@ -19,11 +21,11 @@ def public_api(module):
 @pytest.mark.parametrize(
     "pair, min_overlap",
     [
-        (("training.engine_hf_trainer", "src.training.engine_hf_trainer"), 3),
-        (("training.functional_training", "src.training.functional_training"), 3),
-        (("training.data_utils", "src.training.data_utils"), 3),
-        (("training.checkpoint_manager", "src.training.checkpoint_manager"), 3),
-        (("training.config", "src.training.config"), 3),
+        (("training.engine_hf_trainer", "src.training.engine_hf_trainer"), DEFAULT_MIN_OVERLAP),
+        (("training.functional_training", "src.training.functional_training"), DEFAULT_MIN_OVERLAP),
+        (("training.data_utils", "src.training.data_utils"), DEFAULT_MIN_OVERLAP),
+        (("training.checkpoint_manager", "src.training.checkpoint_manager"), DEFAULT_MIN_OVERLAP),
+        (("training.config", "src.training.config"), DEFAULT_MIN_OVERLAP),
         (("tokenization.train_tokenizer", "src.tokenization.train_tokenizer"), 1),
     ],
 )

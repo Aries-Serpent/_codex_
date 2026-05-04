@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S-PR4225 consolidation — PRs #4233–#4242)
+- **autonomous_rag_context.py**: Truncate policy excerpt at last newline before 600 chars to prevent splitting mid-word/heading (consolidated from PRs #4234, #4236, #4240)
+- **post_rescue_comment.py**: Handle HTTP 429/403 rate-limit responses with `sys.exit(0)` to keep rescue-comment CI non-blocking on transient GitHub rate limits (consolidated from PRs #4233, #4239, #4240)
+- **werkzeug**: 3.1.6 → 3.1.8 (consolidated from PR #4242)
+
+### Changed (deps — PRs #4232–#4242)
+- **werkzeug**: 3.1.6 → 3.1.8 (requirements/lock.txt) — security/bug-fix release; no advisories
+- **transformers**: 5.6.2 → 5.7.0 (pyproject.toml, requirements/base.txt, requirements/lock.txt, requirements/lock-ml.txt, requirements-ml-cpu.txt, requirements-ml-lite.txt, requirements-optional.txt, requirements.txt)
+- **datasets**: 4.8.4 → 4.8.5 (pyproject.toml lower-bound >=2.19→>=4.8.5, requirements/base.txt, requirements/lock.txt); pyproject all/ml/test/train extras updated
+- **mypy**: 1.19.1 → 1.20.2 (requirements/lock.txt); pyproject.toml dev/all extras: >=1.8.0→>=1.20.2; requirements-minimal.txt, requirements/agent.txt: >=1.10→>=1.20.2
+- **dulwich**: 1.1.0 → 1.2.1 (requirements/lock.txt)
+- **py-spy**: 0.4.1 → 0.4.2 (requirements/lock.txt)
+- **fonttools**: 4.61.1 → 4.62.1 (requirements/lock.txt)
+- **antlr4-python3-runtime**: 4.9.3 → 4.13.2 (requirements/lock.txt)
+- **voluptuous**: 0.15.2 → 0.16.0 (requirements/lock.txt)
+- **myst-parser**: >=0.18.0 → >=5.0.0 (docs/requirements.txt)
+- **tree-sitter**: >=0.20.0 → >=0.25.2 (pyproject.toml ast extra)
+- **radon**: >=6.0.0 → >=6.0.1 (pyproject.toml)
+
+### Fixed (auto-update — PR #4225)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4225 (SHA `6d3b4d8c`) at 2026-05-04T05:57Z [auto-generated]
+
 ### Fixed (S295 — PR #4223)
 - **CodeQL Rust build-mode**: Changed `build-mode: autobuild` → `build-mode: none` for the Rust leg in `.github/workflows/codeql.yml`. CodeQL's Rust extractor does not support `autobuild`; using `none` causes direct source analysis. All 5 CodeQL matrix legs (actions, go, javascript-typescript, python, rust) now pass.
 - **secrets baseline**: Updated stale CODEX_MANIFEST entry in `.secrets.baseline` via `sync_tracked_files.py --fix`.

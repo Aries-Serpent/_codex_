@@ -111,7 +111,6 @@ class FunctionalStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except Exception as e:
-                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
 
         functional_overrides: dict[str, Any] = {}
@@ -190,7 +189,6 @@ class FunctionalStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except Exception as e:
-                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
         else:
             for cb in callbacks:
@@ -201,7 +199,6 @@ class FunctionalStrategy:
                         {"metrics": metrics or {}, "trained": bool(train_texts)},
                     )
                 except Exception as e:
-                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
 
         if functional_overrides:
@@ -238,7 +235,6 @@ class LegacyStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except Exception as e:
-                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         try:
             _legacy(
@@ -255,7 +251,6 @@ class LegacyStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except Exception as e:
-                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
         return TrainingResult(
             status=status,
