@@ -1097,7 +1097,7 @@ def _restore_torch_tensor():
     torch.Tensor with a fake class; restores the original after every test.
     """
     try:
-        import sys as _sys
+        _sys = sys
 
         _torch = _sys.modules.get(
             "torch"
@@ -1125,7 +1125,7 @@ def _isolate_rng_state():
     Methodology report Fix 3: prevents RNG state leakage between tests that
     call set_seed/set_reproducible, ensuring repeatable results.
     """
-    import random as _random
+    _random = random
 
     py_state = _random.getstate()
 
