@@ -1802,6 +1802,11 @@ jobs:
             const TTL_SECONDS = 3600; // 1 hour
             const now = Math.floor(Date.now() / 1000);
 
+            function isRateLimit(e) {
+              const msg = String(e.message || e.response?.data?.message || '').toLowerCase();
+              return (e.status === 403 || e.status === 429) && msg.includes('rate limit');
+            }
+
             // Helper: get repo variable (returns null if not found)
             async function getVar(name) {
               try {
@@ -1811,6 +1816,10 @@ jobs:
                 return data.value || '';
               } catch (e) {
                 if (e.status === 404) return '';
+                if (isRateLimit(e)) {
+                  core.warning(`Rate limit while reading ${name}; continuing without queue mutation.`);
+                  return '';
+                }
                 throw e;
               }
             }
@@ -1826,6 +1835,8 @@ jobs:
                   await github.request('POST /repos/{owner}/{repo}/actions/variables', {
                     owner: context.repo.owner, repo: context.repo.repo, name, value,
                   });
+                } else if (isRateLimit(e)) {
+                  core.warning(`Rate limit while writing ${name}; continuing without queue mutation.`);
                 } else { throw e; }
               }
             }
@@ -1836,6 +1847,10 @@ jobs:
                   owner: context.repo.owner, repo: context.repo.repo, name,
                 });
               } catch (e) {
+                if (isRateLimit(e)) {
+                  core.warning(`Rate limit while clearing ${name}; continuing without queue mutation.`);
+                  return;
+                }
                 if (e.status !== 404) throw e;
               }
             }
@@ -2195,6 +2210,11 @@ jobs:
             }
 
             // Helper: get repo variable
+            function isRateLimit(e) {
+              const msg = String(e.message || e.response?.data?.message || '').toLowerCase();
+              return (e.status === 403 || e.status === 429) && msg.includes('rate limit');
+            }
+
             async function getVar(name) {
               try {
                 const { data } = await github.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
@@ -2203,6 +2223,10 @@ jobs:
                 return data.value || '';
               } catch (e) {
                 if (e.status === 404) return '';
+                if (isRateLimit(e)) {
+                  core.warning(`Rate limit while reading ${name}; continuing without releasing session lock.`);
+                  return '';
+                }
                 throw e;
               }
             }
@@ -2218,6 +2242,8 @@ jobs:
                   await github.request('POST /repos/{owner}/{repo}/actions/variables', {
                     owner: context.repo.owner, repo: context.repo.repo, name, value,
                   });
+                } else if (isRateLimit(e)) {
+                  core.warning(`Rate limit while writing ${name}; continuing without releasing session lock.`);
                 } else { throw e; }
               }
             }
@@ -2228,6 +2254,10 @@ jobs:
                   owner: context.repo.owner, repo: context.repo.repo, name,
                 });
               } catch (e) {
+                if (isRateLimit(e)) {
+                  core.warning(`Rate limit while clearing ${name}; continuing without releasing session lock.`);
+                  return;
+                }
                 if (e.status !== 404) throw e;
               }
             }
