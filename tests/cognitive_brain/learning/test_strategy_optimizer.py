@@ -11,7 +11,6 @@ AfterMath: Phase 8.3 Pre-commit 3-4 - Strategy Optimizer Testing
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 from cognitive_brain.learning.outcome_analyzer import OutcomeAnalyzer
 from cognitive_brain.learning.rl_algorithms import (
@@ -488,11 +487,8 @@ def test_strategy_improvement_target():
     )
 
     # Check improvement
-    results["improvement_percentage"]
-
-    # Note: Due to simple linear data, improvement may vary
-    # Test that optimization ran and tracked improvement
     assert "improvement_percentage" in results
+    assert results["improvement_percentage"] is not None
     assert results["episodes_trained"] > 0
 
 

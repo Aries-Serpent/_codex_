@@ -140,7 +140,7 @@ class TestMultiGPUWorkflow:
         """Test distributed training coordination"""
 
         # Step 1: Check GPU availability
-        torch.cuda.device_count() if torch.cuda.is_available() else 0
+        _device_count = torch.cuda.device_count() if torch.cuda.is_available() else 0  # noqa: F841
 
         # Step 2: Mock distributed setup
         mock_dist = Mock()

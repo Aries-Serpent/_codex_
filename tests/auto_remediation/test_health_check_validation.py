@@ -92,7 +92,7 @@ class TestLivenessProbes:
 
     def test_liveness_probe_basic_success(self, health_check_config):
         """Test basic liveness probe returns healthy."""
-        health_check_config["liveness"]
+        _liveness_cfg = health_check_config["liveness"]  # noqa: F841
 
         # Simulate liveness check
         result = {
@@ -164,7 +164,7 @@ class TestReadinessProbes:
 
     def test_readiness_probe_basic_success(self, health_check_config):
         """Test basic readiness probe returns ready."""
-        health_check_config["readiness"]
+        _readiness_cfg = health_check_config["readiness"]  # noqa: F841
 
         result = {
             "ready": True,

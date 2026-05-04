@@ -6,7 +6,6 @@ Tests for Reranker Module.
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 from codex.retrieval.reranker import (
     MMRReranker,

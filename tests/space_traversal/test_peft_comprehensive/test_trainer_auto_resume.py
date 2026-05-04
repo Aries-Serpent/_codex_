@@ -8,7 +8,6 @@ import pytest
 pytest.importorskip("numpy", reason="numpy required")
 
 
-import pytest
 
 from training.checkpointing import save_checkpoint
 from training.trainer import CheckpointConfig, Trainer, TrainerConfig

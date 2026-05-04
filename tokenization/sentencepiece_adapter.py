@@ -10,6 +10,6 @@ _warnings.warn(
 
 # Re-export canonical implementation
 try:
-    from codex_ml.tokenization.sentencepiece_adapter import *  # noqa: F401,F403
+    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter  # noqa: F401
 except Exception:  # pragma: no cover
     raise

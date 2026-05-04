@@ -27,7 +27,6 @@ import socket  # noqa: E402
 import subprocess  # noqa: E402
 import uuid  # noqa: E402
 from collections.abc import Mapping  # noqa: E402
-from collections.abc import Mapping as MappingABC  # noqa: E402
 from collections.abc import Sequence as SequenceABC  # noqa: E402
 from dataclasses import asdict, dataclass, is_dataclass  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
@@ -278,7 +277,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     else:
         argv = []
     cli_options = getattr(cfg, "cli_options", None)
-    if isinstance(cli_options, MappingABC):
+    if isinstance(cli_options, Mapping):
         cli_payload: Any = {"argv": argv, "options": dict(cli_options)}
     elif cli_options is not None:
         cli_payload = {"argv": argv, "options": {"raw": cli_options}}
@@ -288,7 +287,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     config_snapshot: dict[str, Any] = {}
     for attr in ("config_snapshot", "config_dict", "config"):
         maybe = getattr(cfg, attr, None)
-        if isinstance(maybe, MappingABC):
+        if isinstance(maybe, Mapping):
             config_snapshot = {str(k): maybe[k] for k in maybe}
             break
         getter = getattr(maybe, "to_dict", None)
@@ -298,13 +297,13 @@ def init_experiment(cfg: Any) -> ExperimentContext:
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 continue
-            if isinstance(converted, MappingABC):
+            if isinstance(converted, Mapping):
                 config_snapshot = {str(k): converted[k] for k in converted}
                 break
 
     derived: dict[str, Any] = {}
     provided = getattr(cfg, "derived_params", None)
-    if isinstance(provided, MappingABC):
+    if isinstance(provided, Mapping):
         derived.update({str(k): provided[k] for k in provided})
     seed_val = getattr(cfg, "seed", None)
     if seed_val is not None and "seed" not in derived:

@@ -135,8 +135,6 @@ def detect_patterns(input_dir: str, output_path: str, agent1_integration: bool =
 
     # CI/CD patterns
     if ci_data.get("runs"):
-        ci_data["runs"]
-
         # Pattern: Workflow success patterns
         workflow_stats = ci_data.get("workflow_statistics", {})
         problematic_workflows = [

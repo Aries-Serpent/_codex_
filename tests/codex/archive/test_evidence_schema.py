@@ -1,6 +1,5 @@
 """Tests for codex/archive/evidence_schema.py module."""
 
-from datetime import datetime
 
 import pytest
 
@@ -41,12 +40,7 @@ class TestEvidenceSchemaValidation:
 
     def test_valid_evidence_structure(self):
         """Test validation of valid evidence structure."""
-        {
-            "type": "file",
-            "path": "/test/path",
-            "hash": "abc123",
-            "timestamp": datetime.now().isoformat()
-        }
+        # Evidence structure (unused - only format reference)
         try:
             from src.codex.archive import evidence_schema
             if hasattr(evidence_schema, 'EvidenceSchema'):

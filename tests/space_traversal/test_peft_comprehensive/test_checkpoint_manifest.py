@@ -13,8 +13,6 @@ pytest.importorskip("numpy", reason="numpy required")
 import json
 from pathlib import Path
 
-import pytest
-
 from training import checkpointing
 
 

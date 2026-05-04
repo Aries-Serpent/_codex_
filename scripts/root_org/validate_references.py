@@ -294,7 +294,6 @@ Examples:
 
     # Validate file exists
     root_dir = Path.cwd()
-    root_dir / args.file_path
 
     if args.dry_run:
         print(f"[DRY RUN] Validating references for: {args.file_path}")

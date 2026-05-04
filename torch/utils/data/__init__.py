@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import abc
 from collections.abc import Iterable, Iterator, Sized
 from typing import Any, Generic, TypeVar
 
@@ -10,14 +11,14 @@ __all__ = ["Dataset", "DataLoader", "TensorDataset", "random_split", "Subset"]
 _T_co = TypeVar("_T_co", covariant=True)
 
 
-class Dataset(Generic[_T_co]):  # pragma: no cover - convenience stub
+class Dataset(abc.ABC, Generic[_T_co]):  # pragma: no cover - convenience stub
     """Stub for torch.utils.data.Dataset."""
 
     def __len__(self) -> int:
         return 0
 
-    def __getitem__(self, index: int) -> Any:
-        raise NotImplementedError
+    @abc.abstractmethod
+    def __getitem__(self, index: int) -> Any: ...
 
 
 class DataLoader(Iterable[Any], Sized):  # pragma: no cover - convenience stub

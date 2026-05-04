@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -437,4 +438,4 @@ if __name__ == "__main__":
     results = asyncio.run(main())
 
     # Exit with appropriate code
-    exit(0 if results["failed"] == 0 else 1)
+    sys.exit(0 if results["failed"] == 0 else 1)

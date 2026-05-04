@@ -194,7 +194,7 @@ class TestRollbackProcedures:
         ]
 
         # Operation 3 failed, should rollback 2 and 3
-        operations[2]
+        _op = operations[2]  # noqa: F841
         to_rollback = [2, 3]  # Reverse order
 
         assert len(to_rollback) == 2
@@ -329,7 +329,7 @@ class TestTransactionRecovery:
         ]
 
         # Can only commit tx_003 if dependencies are committed
-        transactions[2]
+        _tx = transactions[2]  # noqa: F841
         dependency = transactions[1]
 
         can_commit = dependency["status"] == "committed"

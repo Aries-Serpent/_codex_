@@ -53,7 +53,7 @@ def log_change(
     if not CHANGE_LOG.exists():
         CHANGE_LOG.write_text("# .codex/change_log.md\n\n", encoding="utf-8")
     entry = (
-        f"## {now_iso()} — {action}\n" f"**File:** {path.as_posix()}\n" f"**Why:** {rationale}\n"
+        f"## {now_iso()} — {action}\n**File:** {path.as_posix()}\n**Why:** {rationale}\n"
     )
     if before or after:
         entry += "```diff\n"

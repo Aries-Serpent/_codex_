@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4206)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4206 (SHA `17041ed8`) at 2026-05-03T22:41Z [auto-generated]
+
 ### Added (S294 — 2026-05-03 — PR #4204 — Autonomous session access + RAG context system)
 - **`scripts/ci/session_access_probe.py`** — New startup script that probes ALL available connection methods (REST API, GraphQL, gh CLI, CodeQL CLI, Playwright, MCP GitHub, Scanning API) at session start. Discovers all tokens, measures rate-limit headroom per resource, computes the live trickle-down priority chain, and writes: (1) `.codex/session_access_manifest.json` machine-readable manifest; (2) `GITHUB_ENV` with `ACCESS_REST`, `ACCESS_GRAPHQL`, `ACCESS_GH_CLI`, `ACCESS_CODEQL_CLI`, `ACCESS_RECOMMENDED_METHOD`, etc.; (3) `GITHUB_STEP_SUMMARY` Markdown access table. The agent knows its connection capabilities before the first line of code runs.
 - **`scripts/ci/autonomous_rag_context.py`** — New startup script that builds a fresh session context using the trickle-down chain from the access manifest: fetches PR details + failing checks + unresolved review threads (REST → GraphQL → gh CLI), queries the FAISS RAG index for patterns relevant to the session, performs incremental re-embedding of files changed since last session, compresses to token budget, and injects into `.codex/session_context_latest.md` + `GITHUB_STEP_SUMMARY` + `GITHUB_ENV`.

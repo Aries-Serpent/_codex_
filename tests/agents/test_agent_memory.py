@@ -221,7 +221,7 @@ class TestPatternLibrary:
             tags=[],
         )
 
-        library.patterns["p1"]["success_rate"]
+        _sr = library.patterns["p1"]["success_rate"]  # noqa: F841
         library.record_pattern_usage("p1", success=True)
 
         # Success should increase rate slightly

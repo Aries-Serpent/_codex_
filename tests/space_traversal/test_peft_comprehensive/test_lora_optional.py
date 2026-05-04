@@ -10,7 +10,6 @@ import pytest
 pytest.importorskip("numpy", reason="numpy required")
 
 
-import pytest
 
 from codex.training import TrainCfg, run_custom_trainer
 from codex_ml.models import MiniLM, MiniLMConfig

@@ -15,7 +15,6 @@ from unittest.mock import Mock, patch
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 
 class TestTFIDFProvider:

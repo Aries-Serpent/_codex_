@@ -169,7 +169,7 @@ class TestChunkSize:
 
         expected_dirs = ["src/codex", "agents", "training", "scripts"]
         for dir_path in expected_dirs:
-            repo_root / dir_path
+            _dir = repo_root / dir_path  # noqa: F841
             # Note: Some dirs may not exist in all environments
             # This is a structural test, not a file existence test
             assert isinstance(dir_path, str)

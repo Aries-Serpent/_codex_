@@ -12,8 +12,6 @@ pytest.importorskip("numpy", reason="numpy required")
 
 import random
 
-import pytest
-
 from training.seed import ensure_global_seed
 
 

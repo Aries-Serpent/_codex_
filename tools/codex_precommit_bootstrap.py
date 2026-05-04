@@ -76,7 +76,7 @@ def log_change(path: Path, action: str, rationale: str, before: str, after: str)
         diff = "\n".join(diff_lines[:200])  # avoid overlong logs
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(
-            f"\n### {ts}\n- **File**: {path}\n- **Action**: {action}\n- " f"**Why**: {rationale}\n"
+            f"\n### {ts}\n- **File**: {path}\n- **Action**: {action}\n- **Why**: {rationale}\n"
         )
         f.write("```diff\n" + (diff or "(no textual diff)") + "\n```\n")
 
@@ -182,14 +182,14 @@ def render_precommit_yaml(existing: str | None) -> str:
     if "astral-sh/ruff-pre-commit" not in existing:
         needed.append(
             re.findall(
-                r"(?s)- repo: https://github.com/astral-sh/ruff-pre-commit.*?" r"(?=\n\n- repo:|$)",
+                r"(?s)- repo: https://github.com/astral-sh/ruff-pre-commit.*?(?=\n\n- repo:|$)",
                 base,
             )[0]
         )
     if "https://github.com/psf/black" not in existing:
         needed.append(
             re.findall(
-                r"(?s)- repo: https://github.com/psf/black.*?" r"(?=\n\n- repo:|$)",
+                r"(?s)- repo: https://github.com/psf/black.*?(?=\n\n- repo:|$)",
                 base,
             )[0]
         )

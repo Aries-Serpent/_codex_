@@ -12,8 +12,6 @@ pytest.importorskip("numpy", reason="numpy required")
 
 from pathlib import Path
 
-import pytest
-
 from training.config import TrainingConfig
 
 

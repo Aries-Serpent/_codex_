@@ -33,12 +33,8 @@ def test_checkpoint_manager_lists_empty(temp_dir: Path) -> None:
 def test_checkpoint_manager_best_metadata_roundtrip(temp_dir: Path) -> None:
     from src.training.checkpoint_manager import CheckpointManager
 
-    {
-        "items": [
-            {"path": str(temp_dir / "checkpoint-1"), "value": 0.5, "step": 1},
-            {"path": str(temp_dir / "checkpoint-2"), "value": 0.3, "step": 2},
-        ]
-    }
+    # metadata structure format reference:
+    # {"items": [{"path": str(dir / "checkpoint-N"), "value": float, "step": int}]}
     best_meta = temp_dir / "best.json"
     best_meta.write_text("""{"items": [{"path": "checkpoint-2", "value": 0.3, "step": 2}]}""")
 

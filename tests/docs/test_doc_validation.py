@@ -113,9 +113,9 @@ class TestMarkdownQuality:
                     continue
                 # Relative path resolution
                 if not link_target.startswith("/"):
-                    doc.parent / link_target.split("#")[0]
+                    _resolved = doc.parent / link_target.split("#")[0]  # noqa: F841
                 else:
-                    REPO_ROOT / link_target.lstrip("/").split("#")[0]
+                    _resolved = REPO_ROOT / link_target.lstrip("/").split("#")[0]  # noqa: F841
                 # Just log, don't fail (MkDocs has known link issues)
 
 

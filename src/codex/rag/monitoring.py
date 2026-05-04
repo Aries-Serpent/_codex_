@@ -541,6 +541,5 @@ def get_metrics() -> RAGMetrics:
 
 def reset_metrics():
     """Reset global metrics instance."""
-    global _global_metrics
     if _global_metrics:
         _global_metrics.reset()

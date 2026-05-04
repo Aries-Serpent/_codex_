@@ -1303,7 +1303,6 @@ def set_deterministic_seed():
 import contextlib
 import tempfile
 from collections.abc import Generator
-from pathlib import Path
 
 
 @pytest.fixture
