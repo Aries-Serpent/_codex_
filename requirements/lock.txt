@@ -176,7 +176,7 @@ dataproperty==1.1.0
     # via
     #   pytablewriter
     #   tabledata
-datasets==4.8.4
+datasets==4.8.5
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -225,7 +225,7 @@ duckdb==1.5.2
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-dulwich==1.1.0
+dulwich==1.2.1
     # via
     #   dvc-studio-client
     #   scmrepo
@@ -558,7 +558,7 @@ multiprocess==0.70.19
     # via
     #   datasets
     #   evaluate
-mypy==1.19.1
+mypy==1.20.2
     # via codex-ml (pyproject.toml)
 mypy-extensions==1.1.0
     # via
@@ -821,7 +821,7 @@ ptyprocess==0.7.0
     #   terminado
 pure-eval==0.2.3
     # via stack-data
-py-spy==0.4.1
+py-spy==0.4.2
     # via ray
 pyarrow==23.0.0
     # via
@@ -1171,7 +1171,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.6.2
+transformers==5.7.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1268,7 +1268,7 @@ virtualenv==21.2.4
     # via
     #   pre-commit
     #   ray
-voluptuous==0.15.2
+voluptuous==0.16.0
     # via
     #   dvc
     #   dvc-studio-client
