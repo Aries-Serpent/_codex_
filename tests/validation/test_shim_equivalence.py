@@ -10,7 +10,6 @@ import os
 
 import pytest
 
-
 DEFAULT_MIN_OVERLAP = 3
 
 
