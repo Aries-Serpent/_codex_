@@ -1038,9 +1038,7 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     lines.append(
         f"| Duplicate license candidates | {compliance.get('duplicate_license_candidates', [])} |"
     )
-    lines.append(
-        f"| .secrets.baseline present | {compliance.get('detect_secrets_baseline', False)} |"
-    )
+    lines.append("| .secrets.baseline present | [redacted] |")
     lines.append(
         f"| .pre-commit-config.yaml present | {compliance.get('pre_commit_config', False)} |"
     )
