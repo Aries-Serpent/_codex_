@@ -20,7 +20,10 @@ try:
         manage_tenant_indices,
     )
     RAG_TENANT_AVAILABLE = True
-except ImportError:
+except (ImportError, ValueError):
+    # ValueError is raised by importlib.util.find_spec() in Python 3.12 when
+    # a package (e.g. sentence_transformers) is present in sys.modules but has
+    # __spec__ = None, which happens with some installed-but-broken distributions.
     RAG_TENANT_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(

@@ -237,7 +237,11 @@ def _is_stub_module(
     if getattr(module, "IS_CODEX_STUB", False):
         return True
 
-    spec = spec or importlib.util.find_spec(name)
+    try:
+        spec = spec or importlib.util.find_spec(name)
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
+        return False
     if spec is None:
         return False
 
@@ -1530,13 +1534,21 @@ def serializable_mock_model():
 @pytest.fixture(scope="session")
 def sentence_transformers_available():
     """Check if sentence_transformers is available (session-scoped for performance)."""
-    return importlib.util.find_spec('sentence_transformers') is not None
+    try:
+        return importlib.util.find_spec('sentence_transformers') is not None
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
+        return True  # module is present but __spec__ unset — treat as available
 
 
 @pytest.fixture(scope="session")
 def faiss_available():
     """Check if faiss is available (session-scoped for performance)."""
-    return importlib.util.find_spec('faiss') is not None
+    try:
+        return importlib.util.find_spec('faiss') is not None
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
+        return True  # module is present but __spec__ unset — treat as available
 
 
 @pytest.fixture(scope="session")
@@ -1669,7 +1681,12 @@ def mock_sentence_transformer(monkeypatch):
             return iter([])
 
     try:
-        if importlib.util.find_spec('sentence_transformers') is None:
+        _st_spec = importlib.util.find_spec('sentence_transformers')
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
+        _st_spec = True  # treat as available so patching proceeds
+    try:
+        if _st_spec is None:
             raise ImportError("sentence_transformers not available")
 
         # Patch multiple import paths for comprehensive coverage

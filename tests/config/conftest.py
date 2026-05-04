@@ -28,5 +28,16 @@ _SRC = str(_REPO_ROOT / "src")
 sys.path[:] = [p for p in sys.path if p != _SRC]
 sys.path.insert(0, _SRC)
 
+# If a different 'config' module is already cached in sys.modules (e.g. from an
+# installed 'python-config' or similar package that was imported before this
+# conftest ran), evict it so the next 'import config' re-resolves to src/config/.
+_cached_config = sys.modules.get("config")
+if _cached_config is not None:
+    _cached_origin = getattr(_cached_config, "__file__", None) or ""
+    if not _cached_origin.startswith(_SRC):
+        for _key in list(sys.modules.keys()):
+            if _key == "config" or _key.startswith("config."):
+                del sys.modules[_key]
+
 pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")

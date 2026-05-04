@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (PR #4254 — consolidate PyTorch version, test improvements)
 - **requirements/lock-ml.txt**: `torch==2.9.1+cpu` → `torch==2.11.0+cpu` to align with `base.txt` and `lock.txt` and eliminate the three-way version split
+- **requirements-ml-cpu.txt**: `torch==2.9.1+cpu` → `torch==2.11.0+cpu` — completes the full multi-file torch consolidation (lock-ml.txt was Wave 1; this is Wave 2)
 - **tests/unit/utils/test_sensitive_data_utils.py**: Deduplicated triple `# pragma: allowlist secret` comment to single instance
 - **tests/unit/utils/test_sensitive_data_utils.py**: Added `test_mask_sensitive_data_phone_unformatted` to verify masking of dash-free phone numbers (e.g. `5551234567`)
 - **tests/unit/utils/test_sensitive_data_utils.py**: Extended `test_hash_sensitive_value_uniqueness` with case-variant (`Alpha`, `ALPHA`) and Unicode (`café`, `CAFÉ`, `こんにちは`, `emoji_😀`) edge cases
+- **tests/conftest.py**: `find_spec` calls now handle `ValueError` (Python 3.12 raises `ValueError` when a module is in `sys.modules` with `__spec__ = None`); `sentence_transformers_available` and `faiss_available` session fixtures no longer propagate the exception
+- **tests/test_rag_tenant_management.py**: `except ImportError` → `except (ImportError, ValueError)` so the `RAG_TENANT_AVAILABLE` skipif guard correctly skips when `sentence_transformers.__spec__` is `None`
+- **tests/config/conftest.py**: Added `sys.modules` eviction for a stale/foreign `config` package so `from config.openai_client import …` always resolves to `src/config/openai_client.py` in CI environments that install a conflicting `config` package
 
 ### Fixed (S-PR4225 consolidation — PRs #4233–#4242)
 - **autonomous_rag_context.py**: Truncate policy excerpt at last newline before 600 chars to prevent splitting mid-word/heading (consolidated from PRs #4234, #4236, #4240)
