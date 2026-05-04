@@ -318,7 +318,7 @@ class TrickleDownFetcher:
                 except json.JSONDecodeError:
                     return r.stdout.strip()
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
         return None
 
     # ── Fetch methods ──────────────────────────────────────────────────────
@@ -478,7 +478,7 @@ def _harvest_local_context() -> dict:
         try:
             ctx["repo_variables"] = json.loads(agent_ctx.read_text())
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
 
     # PDA loop state
     pda = CODEX_DIR / "aftermath" / "pda_iterations.jsonl"
@@ -488,14 +488,14 @@ def _harvest_local_context() -> dict:
             last_5 = [json.loads(line) for line in lines[-5:] if line.strip()]
             ctx["pda_last_5"] = last_5
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
 
     # Recent session context
     if CTX_OUT.exists():
         try:
             ctx["prev_session_context"] = CTX_OUT.read_text()[:2000]
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
 
     # Git log
     ctx["recent_commits"] = _local_git_log(8)
@@ -507,7 +507,7 @@ def _harvest_local_context() -> dict:
         try:
             ctx["policy_excerpt"] = policy.read_text()[:800]
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
 
     # AGENTIC_REPO_STATE
     state = CODEX_DIR / "AGENTIC_REPO_STATE.md"
@@ -515,7 +515,7 @@ def _harvest_local_context() -> dict:
         try:
             ctx["agentic_state"] = state.read_text()[:600]
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
 
     return ctx
 
@@ -590,7 +590,7 @@ def _compress_context(text: str, max_tokens: int = 3000) -> str:
         compressed = compressor.compress(text, max_tokens=max_tokens)
         return compressed.summary + "\n\nKey points:\n" + "\n".join(f"- {p}" for p in compressed.key_points)
     except Exception:
-        pass
+        logger.debug("Suppressed exception", exc_info=True)
     # Simple truncation with sentinel
     return text[:max_chars] + f"\n\n[TRUNCATED — original {len(text)} chars > {max_chars} limit]"
 
@@ -792,7 +792,7 @@ def build_context(
             try:
                 pr_num = int(pr_num_env)
             except ValueError:
-                pass
+                logger.debug("Suppressed exception", exc_info=True)
 
     # 2. Fetch GitHub context
     fetcher = TrickleDownFetcher(strategy, pr_number=pr_num)

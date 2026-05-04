@@ -199,7 +199,9 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
     strict_resume = bool(cfg.get("strict_resume", False))
 
     if cfg.get("codex_resume_checkpoint"):
-        Path(cfg["codex_resume_checkpoint"]).parent
+        checkpoint_parent = Path(cfg["codex_resume_checkpoint"]).parent
+        if not checkpoint_parent.exists():
+            raise FileNotFoundError(f"Checkpoint directory not found: {checkpoint_parent}")
 
         # Validate and restore RNG state if resuming
         if strict_resume:
