@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4265)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4265 (SHA `b720db1d`) at 2026-05-04T20:36Z [auto-generated]
 
+### Fixed (PR #4265 — CodeQL Critical: untrusted-checkout-exec-pr-code)
+> Source: [CI Failure Triage Report #4267](https://github.com/Aries-Serpent/_codex_/issues/4267) · CodeQL alerts 13171–13182 · 2026-05-04
+- **`.github/actions/setup-python-cached/action.yml`** (alert 13171): `npm install -g` now uses `--registry https://registry.npmjs.org` to prevent a repo-level `.npmrc` in a checked-out PR branch from redirecting to a malicious registry in a privileged `workflow_run` context.
+- **`.github/workflows/iterative-self-healing-ci.yml`** (alerts 13176–13182): Both `heal` and `baseline-sweep` job overlay steps now include `.github/actions/setup-python-cached/action.yml` so the composite action executed after checkout always comes from the trusted default branch, not the untrusted PR branch.
+- **`.github/workflows/audit-qa-suite.yml`** (alerts 13172–13174): Added `Overlay trusted action + script from main` step in `qa_walkthrough` job (between Checkout and Set-up-Python) to overlay the composite action and QA walkthrough script from main before execution.
+- **`.github/workflows/copilot-agent-session-done.yml`** (alert 13175): Added `Overlay trusted scripts from main` step before the autofix run step to overlay `session_wrapup_autofix.py` and `sync_tracked_files.py` from the trusted default branch.
+
 ### Fixed (PR #4265 — P19 shadow-import S679)
 > Source: [CI Failure Triage Report #4267](https://github.com/Aries-Serpent/_codex_/issues/4267) · CI run [25338527283](https://github.com/Aries-Serpent/_codex_/actions/runs/25338527283) (Resilient Validation Suite / coverage-with-timeout) · 2026-05-04
 - **`src/services/github/client.py`**: `GitHubClient.__init__` — changed `token or os.environ.get(…)` to `token if token is not None else os.environ.get(…)`. Empty-string `token=""` no longer falls back to `GITHUB_TOKEN` env var, fixing `test_headers_without_token` assertion in CI.

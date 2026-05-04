@@ -319,7 +319,12 @@ runs:
     - name: Install npm tools
       if: inputs.install-npm-tools == 'true'
       shell: bash
-      run: npm install -g markdown-link-check
+      run: |
+        # Pin to the official npm registry to prevent a repo-level .npmrc in the
+        # checked-out code from redirecting to a malicious registry when this action
+        # is called in a privileged workflow_run context.
+        # CodeQL: untrusted-checkout-exec-pr-code mitigation (alert 13171).
+        npm install -g --registry https://registry.npmjs.org markdown-link-check
 
     # ─────────────────────────────────────────────────────────────────
     # 10. Expose venv on PATH and emit outputs

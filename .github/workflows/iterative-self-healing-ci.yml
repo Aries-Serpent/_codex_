@@ -363,24 +363,26 @@ jobs:
 
       - name: Overlay trusted fix scripts from main (security)
         # SECURITY: workflow_run-triggered workflows must NEVER execute untrusted
-        # PR code with elevated permissions. We overwrite the CI fix scripts with
-        # verified main-branch versions after checking out the target branch, so
-        # the working tree content is from the target branch but the scripts used
-        # for fixing are always from the trusted default branch.
+        # PR code with elevated permissions. We overwrite the CI fix scripts AND the
+        # composite action definition with verified main-branch versions after checking
+        # out the target branch, so every script/action called below is always from the
+        # trusted default branch.
+        # CodeQL: untrusted-checkout-exec-pr-code mitigation (alerts 13176–13180).
         run: |
           git fetch origin main --depth=5 --no-tags 2>/dev/null || true
           git restore --source=origin/main -- \
+            .github/actions/setup-python-cached/action.yml \
             scripts/ci/auto_fix_common_issues.py \
             scripts/ci/branch_rebase_check.py \
             scripts/ci/ci_triage_repro.sh \
             scripts/ci/session_wrapup_autofix.py \
             2>/dev/null \
             || echo "⚠️ Some scripts not found on origin/main — using target-branch versions"
-          echo "✅ Trusted fix scripts overlaid from origin/main"
-          # Record which scripts were overlaid so we can restore them before staging.
+          echo "✅ Trusted fix scripts + composite action overlaid from origin/main"
+          # Record which files were overlaid so we can restore them before staging.
           # This prevents accidentally committing the trusted-main versions back into
           # the target branch when only fix outputs should be staged.
-          echo "scripts/ci/auto_fix_common_issues.py scripts/ci/branch_rebase_check.py scripts/ci/ci_triage_repro.sh scripts/ci/session_wrapup_autofix.py" > /tmp/overlaid_scripts.txt
+          echo ".github/actions/setup-python-cached/action.yml scripts/ci/auto_fix_common_issues.py scripts/ci/branch_rebase_check.py scripts/ci/ci_triage_repro.sh scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_scripts.txt"
 
       - name: Set up Python (cached)
         uses: ./.github/actions/setup-python-cached
@@ -468,9 +470,9 @@ jobs:
           fi
 
           # Restore overlaid trusted scripts — only actual fix outputs should be staged
-          if [ -f /tmp/overlaid_scripts.txt ]; then
+          if [ -f "$RUNNER_TEMP/overlaid_scripts.txt" ]; then
             # shellcheck disable=SC2046
-            git restore -- $(cat /tmp/overlaid_scripts.txt) 2>/dev/null || true
+            git restore -- $(cat "$RUNNER_TEMP/overlaid_scripts.txt") 2>/dev/null || true
           fi
           if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -740,16 +742,18 @@ jobs:
           persist-credentials: false
 
       - name: Overlay trusted scripts from main (security)
-        # SECURITY: always overlay CI scripts from main so untrusted PR branches
-        # cannot inject code into the privileged sweep job.
+        # SECURITY: always overlay CI scripts AND the composite action definition from
+        # main so untrusted PR branches cannot inject code into the privileged sweep job.
+        # CodeQL: untrusted-checkout-exec-pr-code mitigation (alerts 13181–13182).
         run: |
           git fetch origin main --depth=3 --no-tags 2>/dev/null || true
           git restore --source=origin/main -- \
+            .github/actions/setup-python-cached/action.yml \
             scripts/ci/auto_fix_common_issues.py \
             scripts/ci/sync_tracked_files.py \
             scripts/ci/session_wrapup_autofix.py \
             2>/dev/null || true
-          echo "scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py scripts/ci/session_wrapup_autofix.py" > /tmp/overlaid_sweep.txt
+          echo "scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_sweep.txt"
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -782,9 +786,9 @@ jobs:
           cat /tmp/sweep_fix.txt >> "$GITHUB_STEP_SUMMARY"
 
           # Restore trusted scripts so they're not staged as branch changes
-          if [ -f /tmp/overlaid_sweep.txt ]; then
+          if [ -f "$RUNNER_TEMP/overlaid_sweep.txt" ]; then
             # shellcheck disable=SC2046
-            git restore -- $(cat /tmp/overlaid_sweep.txt) 2>/dev/null || true
+            git restore -- $(cat "$RUNNER_TEMP/overlaid_sweep.txt") 2>/dev/null || true
           fi
 
           if git diff --quiet; then

@@ -85,6 +85,19 @@ jobs:
           # untrusted fork/PR) code from accessing the elevated token via git credential helper.
           persist-credentials: false
 
+      - name: Overlay trusted scripts from main (security)
+        # SECURITY: workflow_run events run with write permissions. Overlay the fix
+        # scripts from the trusted default branch so the autofix step cannot execute
+        # untrusted code from the checked-out PR branch.
+        # CodeQL: untrusted-checkout-exec-pr-code mitigation (alert 13175).
+        run: |
+          git fetch origin main --depth=3 --no-tags 2>/dev/null || true
+          git restore --source=origin/main -- \
+            scripts/ci/session_wrapup_autofix.py \
+            scripts/ci/sync_tracked_files.py \
+            2>/dev/null || echo "⚠️ Some scripts not on origin/main — using checkout versions"
+          echo "✅ Trusted scripts overlaid from origin/main"
+
       - name: "Auto-fix pre-flight REQ-4/5 when 🔄 Auto-Post checkbox is checked"
         id: autofix
         env:

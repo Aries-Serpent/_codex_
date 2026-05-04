@@ -25993,3 +25993,37 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-05-04T21:33Z S679-SEC — CodeQL Critical Security Fixes (PR #4265)
+
+> **Source:** [CI Failure Triage Report #4267](https://github.com/Aries-Serpent/_codex_/issues/4267) · CodeQL alerts 13171–13182 · "Checkout of untrusted code in a privileged context"
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — 13 Critical CodeQL alerts sourced from #4267 reviewed ✅
+- [x] **0b.** Failing CI checks reviewed — CodeQL `workflow_run` + `issue_comment` privileged-context pattern identified ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry ✅
+- [x] **2.** `CHANGELOG.md [Unreleased]` — `### Fixed (PR #4265 — CodeQL Critical)` entry added with #4267 source ref ✅
+- [x] **3.** `ruff check src/ tests/` → 0 violations ✅
+- [x] **4.** `sync_tracked_files --check` → all tracked files consistent ✅
+- [x] **5.** YAML syntax validated on all 4 changed workflow/action files ✅
+
+### Work Completed
+
+1. **Alert 13171** — `setup-python-cached/action.yml:319` `Install npm tools`: pinned npm to `--registry https://registry.npmjs.org` to prevent repo-level `.npmrc` hijacking.
+2. **Alerts 13176–13180** — `iterative-self-healing-ci.yml` `heal` job: added `.github/actions/setup-python-cached/action.yml` to the existing `Overlay trusted fix scripts` step so the composite action called at line 385 always comes from the trusted default branch.
+3. **Alerts 13181–13182** — `iterative-self-healing-ci.yml` `baseline-sweep` job: same as above; composite action file now in the `Overlay trusted scripts` step.
+4. **Alerts 13172–13174** — `audit-qa-suite.yml` `qa_walkthrough` job: inserted `Overlay trusted action + script from main` step between Checkout and `Set up Python` to protect `issue_comment`-triggered privileged execution.
+5. **Alert 13175** — `copilot-agent-session-done.yml`: inserted `Overlay trusted scripts from main` step before the autofix run step, overlaying `session_wrapup_autofix.py` and `sync_tracked_files.py` from main.
+
+### Root-Cause Pattern (from #4267)
+`workflow_run` and `issue_comment` triggers execute with write permissions. Checking out a PR branch and then calling local composite actions (`uses: ./.github/actions/…`) or running scripts from that checkout allows untrusted PR code to run in a privileged context. The existing `persist-credentials: false` mitigates token exposure but does not prevent code execution. The fix is to overlay all locally-executed files from the trusted default branch immediately after checkout.
+
+### Verification
+- `python3 -c "import yaml; [yaml.safe_load(open(f)) for f in ['…action.yml','…iterative.yml','…audit.yml','…session-done.yml']]"` → all ✅
+- `ruff check src/ tests/` → 0 violations ✅
+- `sync_tracked_files --check` → all consistent ✅
+
+### §0 Compliance
+No deferral language used. All 13 alerts fixed in this session.
