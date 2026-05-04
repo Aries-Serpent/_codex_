@@ -323,11 +323,14 @@ jobs:
         # main→branch differences along with the fix.
         # Phase 5: COPILOT_AGENT_AUTH_ENABLED=true delegates the token so that
         # autonomous push succeeds without manual approval.
+        # Security: persist-credentials: false prevents checked-out (potentially
+        # untrusted PR) code from accessing the token via git credential helper.
         uses: actions/checkout@v5
         with:
           fetch-depth: 50
           ref: ${{ needs.triage.outputs.head_branch || 'main' }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          persist-credentials: false
 
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target
@@ -639,6 +642,10 @@ jobs:
           fi
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
+          # Reconfigure remote with token since persist-credentials: false was used on checkout.
+          # This ensures git push uses the token without persisting it in the working tree
+          # where untrusted checked-out code could read it.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           # Stage only the files explicitly changed by the fix scripts
           # (plus the healing-attempts record). Avoid git add -A which would
           # stage every difference between HEAD and the remote.
@@ -728,6 +735,9 @@ jobs:
           fetch-depth: 5
           ref: ${{ needs.triage.outputs.head_branch || 'main' }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          # Security: persist-credentials: false prevents checked-out (potentially
+          # untrusted PR) code from accessing the token via git credential helper.
+          persist-credentials: false
 
       - name: Overlay trusted scripts from main (security)
         # SECURITY: always overlay CI scripts from main so untrusted PR branches
@@ -846,6 +856,8 @@ jobs:
 
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Reconfigure remote with token since persist-credentials: false was used on checkout.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git add -A
           git diff --cached --stat
           # [skip ci] prevents push-triggered workflows from re-triggering the healer

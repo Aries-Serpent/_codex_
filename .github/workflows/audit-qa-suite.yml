@@ -201,6 +201,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
           # For pull_request events, use the PR head (with write permission gated to PRs
           # from the same repo only via the pull_request trigger). For issue_comment and
           # schedule/workflow_dispatch events, fall back to the default branch HEAD (trusted).
@@ -305,8 +306,11 @@ jobs:
         if: |
           inputs.fail_on_critical == 'true' &&
           steps.qa.outputs.critical_issues != '0'
+        env:
+          # Security: use env var instead of inline ${{ }} interpolation to prevent code injection
+          CRITICAL_ISSUES: ${{ steps.qa.outputs.critical_issues }}
         run: |
-          echo "❌ Critical issues found: ${{ steps.qa.outputs.critical_issues }}"
+          echo "❌ Critical issues found: ${CRITICAL_ISSUES}"
           exit 1
 
   create_improvement_pr:
@@ -322,14 +326,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Generate improvement PR
+        env:
+          # Security: use env vars instead of inline ${{ }} interpolation to prevent code injection
+          AUDIT_GAP_COUNT: ${{ needs.audit_gap_analysis.outputs.gap_count }}
+          QA_ISSUES_FOUND: ${{ needs.qa_walkthrough.outputs.issues_found }}
         run: |
           echo "## 🔧 Automated Improvements" > improvement_pr_body.md
           echo "" >> improvement_pr_body.md
           echo "This PR contains automated improvements based on:" >> improvement_pr_body.md
-          echo "- Audit gaps: ${{ needs.audit_gap_analysis.outputs.gap_count }}" >> improvement_pr_body.md
-          echo "- QA issues: ${{ needs.qa_walkthrough.outputs.issues_found }}" >> improvement_pr_body.md
+          echo "- Audit gaps: ${AUDIT_GAP_COUNT}" >> improvement_pr_body.md
+          echo "- QA issues: ${QA_ISSUES_FOUND}" >> improvement_pr_body.md
 
           # Note: Actual PR creation would be done via gh CLI or GitHub API
 

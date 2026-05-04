@@ -232,9 +232,11 @@ jobs:
 
       - name: Append PDA AfterMath entry — main
         if: steps.rate.outputs.skip != 'true'
+        env:
+          # Security: use env vars instead of inline ${{ }} interpolation to prevent code injection
+          CHANGED: ${{ steps.sweep.outputs.changed }}
+          CHANGED_FILES: ${{ steps.sweep.outputs.changed_files }}
         run: |
-          CHANGED="${{ steps.sweep.outputs.changed }}"
-          CHANGED_FILES="${{ steps.sweep.outputs.changed_files }}"
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%MZ")
           STATUS=$( [ "$CHANGED" = "true" ] && echo "resolved" || echo "clean" )
           python3 - <<PYEOF
