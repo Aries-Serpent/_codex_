@@ -1268,7 +1268,7 @@ virtualenv==21.2.4
     # via
     #   pre-commit
     #   ray
-voluptuous==0.15.2
+voluptuous==0.16.0
     # via
     #   dvc
     #   dvc-studio-client
