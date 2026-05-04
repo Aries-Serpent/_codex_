@@ -120,7 +120,9 @@ def evaluate(
     path = Path(output_path) if output_path is not None else None
     if path is not None:
         path.parent.mkdir(parents=True, exist_ok=True)
-    writer_ctx = path.open("w", encoding="utf-8") if path is not None else contextlib.nullcontext(None)
+    writer_ctx = (
+        path.open("w", encoding="utf-8") if path is not None else contextlib.nullcontext(None)
+    )
 
     losses: list[float] = []
     with writer_ctx as writer:

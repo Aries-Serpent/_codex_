@@ -28,6 +28,8 @@ from typing import Any, Optional, Protocol, runtime_checkable
 from codex_ml.data.jsonl_loader import load_jsonl
 
 logger = logging.getLogger(__name__)
+
+
 @runtime_checkable
 class TrainingCallback(Protocol):
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
@@ -43,6 +45,8 @@ class TrainingCallback(Protocol):
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
+
+
 class NoOpCallback:
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
 
@@ -57,6 +61,8 @@ class NoOpCallback:
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
+
+
 @dataclass
 class TrainingResult:
     status: str
@@ -64,6 +70,8 @@ class TrainingResult:
     final_epoch: int
     output_dir: str
     extra: dict[str, Any]
+
+
 @runtime_checkable
 class BackendStrategy(Protocol):
     backend_name: str
@@ -74,8 +82,12 @@ class BackendStrategy(Protocol):
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult: ...
+
+
 def _safe_callbacks(callbacks: Iterable[TrainingCallback]) -> list[TrainingCallback]:
     return list(callbacks) if callbacks else [NoOpCallback()]
+
+
 # ---- Strategy Implementations ------------------------------------------------
 class FunctionalStrategy:
     """Adapter around existing functional_training module."""
@@ -202,6 +214,8 @@ class FunctionalStrategy:
             output_dir=config.output_dir,
             extra={"resume_from": resume_from, **extra_payload},
         )
+
+
 class LegacyStrategy:
     """Adapter wrapping legacy train_loop entry point."""
 
@@ -250,6 +264,8 @@ class LegacyStrategy:
             output_dir=config.output_dir,
             extra={"resume_from": resume_from},
         )
+
+
 class ContinualReplayStrategy:
     """Phase-by-phase continual-learning wrapper around the functional strategy."""
 
@@ -464,11 +480,15 @@ class ContinualReplayStrategy:
                 "resume_from": resume_from,
             },
         )
+
+
 STRATEGY_REGISTRY = {
     "functional": FunctionalStrategy(),
     "legacy": LegacyStrategy(),
     "continual_replay": ContinualReplayStrategy(),
 }
+
+
 def resolve_strategy(name: str | None) -> BackendStrategy:
     """Return the BackendStrategy for *name*.
 
