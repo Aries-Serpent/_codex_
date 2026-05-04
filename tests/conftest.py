@@ -1537,8 +1537,9 @@ def sentence_transformers_available():
     try:
         return importlib.util.find_spec('sentence_transformers') is not None
     except ValueError:
-        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
-        return True  # module is present but __spec__ unset — treat as available
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
+        # Module is in sys.modules but its spec is broken — treat as not importable.
+        return False
 
 
 @pytest.fixture(scope="session")
@@ -1547,8 +1548,9 @@ def faiss_available():
     try:
         return importlib.util.find_spec('faiss') is not None
     except ValueError:
-        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
-        return True  # module is present but __spec__ unset — treat as available
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
+        # Module is in sys.modules but its spec is broken — treat as not importable.
+        return False
 
 
 @pytest.fixture(scope="session")
@@ -1680,13 +1682,15 @@ def mock_sentence_transformer(monkeypatch):
             # Return empty generator for meta tensor compatibility
             return iter([])
 
+    _st_present: bool
     try:
-        _st_spec = importlib.util.find_spec('sentence_transformers')
+        _st_present = importlib.util.find_spec('sentence_transformers') is not None
     except ValueError:
-        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
-        _st_spec = True  # treat as available so patching proceeds
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
+        # Module is in sys.modules but spec is broken — attempt to patch anyway.
+        _st_present = True
     try:
-        if _st_spec is None:
+        if not _st_present:
             raise ImportError("sentence_transformers not available")
 
         # Patch multiple import paths for comprehensive coverage
