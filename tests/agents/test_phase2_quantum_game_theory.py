@@ -440,7 +440,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
 
             # Test with asymmetric matrix if supported
             try:
-                PayoffOperator(matrix=[[1, 2, 3], [4, 5, 6]])
+                PayoffOperator(payoff_matrix=[[1, 2, 3], [4, 5, 6]])
             except (TypeError, ValueError):
                 pass
         except ImportError:

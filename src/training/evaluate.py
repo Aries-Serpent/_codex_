@@ -118,13 +118,14 @@ def evaluate(
     device = _infer_device(model)
 
     path = Path(output_path) if output_path is not None else None
-    writer = None
     if path is not None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        writer = path.open("w", encoding="utf-8")
+    writer_ctx = (
+        path.open("w", encoding="utf-8") if path is not None else contextlib.nullcontext(None)
+    )
 
     losses: list[float] = []
-    try:
+    with writer_ctx as writer:
         for sample in dataset:
             text = _resolve_text(sample, text_key)
             if not text:
@@ -146,9 +147,6 @@ def evaluate(
             if writer is not None:
                 json.dump({"text": text, "loss": loss_value}, writer)
                 writer.write("\n")
-    finally:
-        if writer is not None:
-            writer.close()
 
     count = len(losses)
     if count == 0:

@@ -112,11 +112,12 @@ class TestQuantumGameTheoryExpanded:
 
     def test_quantum_game_state_creation(self):
         """Test QuantumGameState can be created."""
-        from agents.quantum_game_theory import QuantumGameState
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         try:
             state = QuantumGameState(
-                blue_strategies=["defend"], red_strategies=["attack"]
+                blue_state=StrategyState(team="blue", strategies=["defend"]),
+                red_state=StrategyState(team="red", strategies=["attack"]),
             )
             assert state is not None
         except (ImportError, AttributeError, TypeError):

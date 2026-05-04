@@ -149,7 +149,7 @@ class TestAgentMemoryModule:
         try:
             from agents.agent_memory import MemoryEntry
 
-            entry = MemoryEntry(content="Test memory", memory_type="episodic")
+            entry = MemoryEntry(memory_id="test_entry", category="episodic", content="Test memory", context={})
             assert entry.content == "Test memory"
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"MemoryEntry not available: {e}")

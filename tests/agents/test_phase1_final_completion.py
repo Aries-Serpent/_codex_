@@ -119,7 +119,7 @@ class TestQuantumGameTheoryGettersProperties:
         try:
             import numpy as np
 
-            state = StrategyState(state_vector=np.array([1.0, 0.0]))
+            state = StrategyState(team="blue", strategies=np.array([1.0, 0.0]))
             assert len(state.state_vector) == 2
         except (TypeError, AttributeError):
             pytest.skip("StrategyState interface differs")
@@ -132,7 +132,7 @@ class TestQuantumGameTheoryGettersProperties:
         try:
             import numpy as np
 
-            payoff = PayoffOperator(matrix=np.array([[1, 0], [0, 1]]))
+            payoff = PayoffOperator(payoff_matrix=np.array([[1, 0], [0, 1]]))
             assert payoff.matrix.shape == (2, 2)
         except (TypeError, AttributeError):
             pytest.skip("PayoffOperator interface differs")

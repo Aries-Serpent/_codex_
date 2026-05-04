@@ -662,7 +662,7 @@ class TestErrorPaths:
     def test_error_attribute_error(self):
         """Test AttributeError"""
         with pytest.raises(AttributeError):
-            object().missing
+            object().missing  # noqa: B018
 
     def test_error_zero_division(self):
         """Test ZeroDivisionError"""

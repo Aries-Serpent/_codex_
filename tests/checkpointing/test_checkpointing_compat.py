@@ -21,5 +21,5 @@ def test_checkpointing_compat_emits_deprecation_and_forwards_attributes():
         with warnings.catch_warnings(record=True) as rec:
             warnings.simplefilter("always", DeprecationWarning)
             with pytest.raises(AttributeError):
-                compat.__not_a_real_symbol__  # ensures __getattr__ path executed
+                compat.__not_a_real_symbol__  # ensures __getattr__ path executed  # noqa: B018
         assert any(w.category is DeprecationWarning for w in rec), "no DeprecationWarning emitted"

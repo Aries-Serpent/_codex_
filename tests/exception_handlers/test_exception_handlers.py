@@ -186,7 +186,7 @@ class TestValueExceptions:
         """Test TypeError handling."""
         result = None
         try:
-            "string" + 123  # type: ignore
+            "string" + 123  # type: ignore  # noqa: B018
         except TypeError:
             result = "type_error"
         assert result == "type_error"

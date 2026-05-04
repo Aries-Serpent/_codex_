@@ -48,6 +48,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import shutil
 import subprocess
@@ -59,6 +60,8 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 _BASE     = "https://api.github.com"
@@ -317,7 +320,7 @@ def probe_graphql(tokens: list[tuple[str, str, bool]]) -> tuple[MethodStatus, in
             if "data" in result and "viewer" in result["data"]:
                 schema_ok = True
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
 
     if best > 0 and schema_ok:
         return MethodStatus(True, f"{best} pts remaining via {best_var}", {"remaining": best}), best
@@ -466,7 +469,7 @@ def probe_repo_context(tokens: list[tuple[str, str, bool]], owner: str, repo: st
             r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5, shell=False)
             head_sha = r.stdout.strip()[:40]
         except Exception:
-            pass
+            logger.debug("Suppressed exception", exc_info=True)
 
     open_prs: list[int] = []
     if not tokens:

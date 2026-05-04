@@ -9,7 +9,7 @@ def test_mask_sensitive_data_email():
     text = "Contact me at user@example.com"
     result = mask_sensitive_data(text)
     assert "user@example.com" not in result
-    assert "***" in result or "@" not in result  # pragma: allowlist secret # pragma: allowlist secret
+    assert "***" in result or "@" not in result  # pragma: allowlist secret
 
 
 def test_mask_sensitive_data_phone():
@@ -40,9 +40,10 @@ def test_mask_sensitive_data_credit_card():
 
 def test_mask_sensitive_data_api_key():
     """Test mask_sensitive_data masks API keys."""
-    text = "API_KEY=" + "sk_test_" + "1234567890abcdef"
+    api_key = "sk_test_1234567890abcdef"
+    text = f"API_KEY={api_key}"
     result = mask_sensitive_data(text)
-    assert "sk_test_" + "1234567890abcdef" not in result
+    assert api_key not in result
     assert "API_KEY=" in result
     assert result != text
     assert "***" in result
@@ -63,6 +64,7 @@ def test_mask_sensitive_data_mixed():
     assert "user@example.com" not in result
     assert "555-1234" not in result
     assert "123-45-6789" not in result
+    assert "***" in result
 
 
 def test_mask_sensitive_data_preserves_structure():

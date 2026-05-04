@@ -27,7 +27,7 @@ def public_api(module):
         (("tokenization.train_tokenizer", "src.tokenization.train_tokenizer"), 1),
     ],
 )
-def test_shim_public_api_equivalence(pair, min_overlap):
+def test_shim_public_api_equivalence(pair, min_overlap, monkeypatch):
     """
     Test that shim modules expose equivalent public APIs to legacy modules.
 
@@ -37,8 +37,8 @@ def test_shim_public_api_equivalence(pair, min_overlap):
     """
     legacy, canonical = pair
 
-    # Enforce CI identity assertions if env says so (future enhancement)
-    os.environ.setdefault("SHIM_IDENTITY_STRICT", "0")
+    # Enforce default behavior for this test without leaking env changes
+    monkeypatch.setenv("SHIM_IDENTITY_STRICT", "0")
 
     try:
         a = importlib.import_module(legacy)
@@ -53,11 +53,15 @@ def test_shim_public_api_equivalence(pair, min_overlap):
         assert b_api, f"{canonical} exposes no public API"
 
         overlap = [k for k in a_api if k in b_api]
+        legacy_only = sorted(set(a_api) - set(b_api))
+        canonical_only = sorted(set(b_api) - set(a_api))
+        symmetric_diff = sorted(set(a_api) ^ set(b_api))
         assert len(overlap) >= min_overlap, (
             f"Insufficient API overlap for {legacy} vs {canonical}: "
             f"{len(overlap)} < {min_overlap}\n"
-            f"Legacy API: {a_api[:10]}...\n"
-            f"Canonical API: {b_api[:10]}..."
+            f"Legacy-only symbols: {legacy_only}\n"
+            f"Canonical-only symbols: {canonical_only}\n"
+            f"Symmetric difference: {symmetric_diff}"
         )
 
 

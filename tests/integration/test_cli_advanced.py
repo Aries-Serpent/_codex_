@@ -278,7 +278,7 @@ class TestCLIUtilities:
         """Test error handling in CLI."""
         try:
             # Simulate invalid operation
-            10 / 0
+            10 / 0  # noqa: B018
         except ZeroDivisionError as e:
             error_msg = str(e)
 

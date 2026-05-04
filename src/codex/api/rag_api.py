@@ -400,7 +400,8 @@ async def delete_index(
         from pathlib import Path
 
         index_dir = Path.home() / ".codex" / "rag_indices"
-        index_path = index_dir / tenant_id / index_name
+        tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
+        index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
 
         if not index_path.exists():
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
@@ -462,7 +463,8 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         from pathlib import Path
 
         index_dir = Path.home() / ".codex" / "rag_indices"
-        index_path = index_dir / tenant_id / index_name
+        tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
+        index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
 
         if not index_path.exists():
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")

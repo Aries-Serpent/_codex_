@@ -261,7 +261,7 @@ class TestMentalMappingGraphOperations:
 
         try:
             edge = MentalEdge(
-                source="node1", target="node2", edge_type=EdgeType.SUPPORTS, weight=0.8
+                edge_id="edge1", source_id="node1", target_id="node2", edge_type=EdgeType.SUPPORTS, weight=0.8
             )
 
             model.add_edge(edge)
