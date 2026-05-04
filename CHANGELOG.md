@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4265)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4265 (SHA `b720db1d`) at 2026-05-04T20:36Z [auto-generated]
+
+### Fixed (PR #4265 — CodeQL Critical: untrusted-checkout-exec-pr-code)
+> Source: [CI Failure Triage Report #4267](https://github.com/Aries-Serpent/_codex_/issues/4267) · CodeQL alerts 13171–13182 · 2026-05-04
+- **`.github/actions/setup-python-cached/action.yml`** (alert 13171): `npm install -g` now uses `--registry https://registry.npmjs.org` to prevent a repo-level `.npmrc` in a checked-out PR branch from redirecting to a malicious registry in a privileged `workflow_run` context.
+- **`.github/workflows/iterative-self-healing-ci.yml`** (alerts 13176–13182): Both `heal` and `baseline-sweep` job overlay steps now include `.github/actions/setup-python-cached/action.yml` so the composite action executed after checkout always comes from the trusted default branch, not the untrusted PR branch.
+- **`.github/workflows/audit-qa-suite.yml`** (alerts 13172–13174): Added `Overlay trusted action + script from main` step in `qa_walkthrough` job (between Checkout and Set-up-Python) to overlay the composite action and QA walkthrough script from main before execution.
+- **`.github/workflows/copilot-agent-session-done.yml`** (alert 13175): Added `Overlay trusted scripts from main` step before the autofix run step to overlay `session_wrapup_autofix.py` and `sync_tracked_files.py` from the trusted default branch.
+
+### Fixed (PR #4265 — P19 shadow-import S679)
+> Source: [CI Failure Triage Report #4267](https://github.com/Aries-Serpent/_codex_/issues/4267) · CI run [25338527283](https://github.com/Aries-Serpent/_codex_/actions/runs/25338527283) (Resilient Validation Suite / coverage-with-timeout) · 2026-05-04
+- **`src/services/github/client.py`**: `GitHubClient.__init__` — changed `token or os.environ.get(…)` to `token if token is not None else os.environ.get(…)`. Empty-string `token=""` no longer falls back to `GITHUB_TOKEN` env var, fixing `test_headers_without_token` assertion in CI.
+- **`tests/config/test_openai_client.py`**: Changed all `from config.openai_client import` → `from src.config.openai_client import` to avoid shadow-import failure when a non-src `config` namespace package is cached before `src/` is pinned first on `sys.path` in pytest-split shards.
+- **`tests/config/conftest.py`**: Added `REPO_ROOT` append to `sys.path` so `src.config.*` form also resolves correctly; added P19 fix documentation note.
+- **`tests/services/github/conftest.py`** (new): Belt-and-suspenders guard — pins `src/` at `sys.path[0]` and evicts stale root-level `services.*` placeholder cache entries before tests run.
+- **`tests/test_import_smoke.py`** (new): 8 regression tests covering import timing, path-resolution validation, no-network-at-import enforcement, and `GitHubClient` token edge cases (`token=""`, `token=None`, explicit token).
+- **`tests/test_import_smoke.py`** (CodeQL): Initialized `spec = None` before `try` blocks + added `return  # pragma: no cover` after `pytest.skip()` calls to eliminate "potentially uninitialized local variable" alerts at lines 87 and 107.
+
 ### Added (PR #4254 — P2 continuation: entry-point wiring + gate opening)
 - **`scripts/ci/autonomy_gate_check.py`** — CLI gate check tool; loads `.codex/autonomy_registry.yaml`, calls `AutonomyRegistry.is_permitted()`, exits 0 (allowed) or 1 (denied); `--no-fail` advisory mode supported; wired into all 3 actuation entry-points
 - **`.codex/autonomy_registry.yaml`** — authoritative live registry with `autonomy_mode: ELEVATED_AUTO`, kill-switch support, and 18 allowed surfaces (AUT-001 through AUT-018)

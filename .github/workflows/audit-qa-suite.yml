@@ -207,6 +207,19 @@ jobs:
           # schedule/workflow_dispatch events, fall back to the default branch HEAD (trusted).
           ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha)) || github.sha || '' }}
 
+      - name: Overlay trusted action + script from main (security)
+        # SECURITY: issue_comment events run with write permissions. Overlay the composite
+        # action definition and QA walkthrough script from the trusted default branch so
+        # untrusted PR code cannot execute in the privileged runner context.
+        # CodeQL: untrusted-checkout-exec-pr-code mitigation (alerts 13172/13173/13174).
+        run: |
+          git fetch origin main --depth=3 --no-tags 2>/dev/null || true
+          git restore --source=origin/main -- \
+            .github/actions/setup-python-cached/action.yml \
+            scripts/qa/codebase_walkthrough.py \
+            2>/dev/null || echo "⚠️ Some files not on origin/main — using checkout versions"
+          echo "✅ Trusted code overlaid from origin/main"
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

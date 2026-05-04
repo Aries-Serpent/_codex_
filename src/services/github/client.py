@@ -88,7 +88,7 @@ class GitHubClient:
             timeout: Request timeout in seconds.
             max_retries: Maximum number of retry attempts.
         """
-        self.token = token or os.environ.get("GITHUB_TOKEN", "")
+        self.token = token if token is not None else os.environ.get("GITHUB_TOKEN", "")
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.max_retries = max_retries
