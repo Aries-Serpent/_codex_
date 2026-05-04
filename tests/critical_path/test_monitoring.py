@@ -179,27 +179,32 @@ class TestMetricsCollection:
         """Test summary metric calculates percentiles."""
         values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-        # Calculate percentiles using proper indexing
-        # For percentiles, we want the value at or below the percentile rank
         sorted_values = sorted(values)
-        # p50 means 50% of values are below or equal
-        # For 10 values, p50 should be between index 4 and 5 (values 5 and 6)
-        # Common approach: use int(percentile * (n-1))
-        p50_idx = int(0.5 * (len(sorted_values) - 1))  # int(0.5 * 9) = 4 -> value 5
-        p95_idx = int(0.95 * (len(sorted_values) - 1))  # int(0.95 * 9) = 8 -> value 9
-        p99_idx = int(0.99 * (len(sorted_values) - 1))  # int(0.99 * 9) = 8 -> value 9
+
+        def interpolated_percentile(sorted_data, percentile):
+            """Calculate percentile using linear interpolation between adjacent ranks."""
+            n = len(sorted_data)
+            if n == 0:
+                raise ValueError("Cannot compute percentile of empty data")
+            rank = percentile * (n - 1)
+            lower_idx = int(rank)
+            upper_idx = min(lower_idx + 1, n - 1)
+            weight = rank - lower_idx
+            return sorted_data[lower_idx] + weight * (sorted_data[upper_idx] - sorted_data[lower_idx])
 
         summary = {
             "count": len(values),
             "sum": sum(values),
-            "p50": sorted_values[p50_idx],
-            "p95": sorted_values[p95_idx],
-            "p99": sorted_values[p99_idx],
+            "p50": interpolated_percentile(sorted_values, 0.50),
+            "p95": interpolated_percentile(sorted_values, 0.95),
+            "p99": interpolated_percentile(sorted_values, 0.99),
         }
 
         assert summary["count"] == 10
         assert summary["sum"] == 55
-        assert summary["p50"] == 5
+        assert abs(summary["p50"] - 5.5) < 1e-9
+        assert abs(summary["p95"] - 9.55) < 1e-9
+        assert abs(summary["p99"] - 9.91) < 1e-9
 
     def test_metrics_labels(self):
         """Test metrics with labels."""

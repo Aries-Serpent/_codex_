@@ -285,7 +285,7 @@ class Tracer:
             yield span
             self.finish_span(span, status="ok")
         except Exception as e:
-            logger.debug(f"Exception: {e}")
+            logger.debug("Exception in trace context", exc_info=True)
             span.tags["error"] = True
             span.tags["error.message"] = str(e)
             self.finish_span(span, status="error")
