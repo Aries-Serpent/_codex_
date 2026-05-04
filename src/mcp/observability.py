@@ -81,7 +81,7 @@ class MetricsRegistry:
                 self._labels[key] = labels
 
     def set_gauge(self, name: str, value: float, labels: Optional[dict[str, str]] = None) -> None:
-        """set a gauge metric value.
+        """Set a gauge metric value.
 
         Args:
             name: Metric name.
@@ -348,7 +348,7 @@ class MCPMetrics:
         )
 
     def set_active_connections(self, count: int) -> None:
-        """set the number of active connections.
+        """Set the number of active connections.
 
         Args:
             count: Number of active connections.

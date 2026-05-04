@@ -37,10 +37,11 @@ from codex_ml.logging.ndjson_logger import (  # noqa: E402
     NDJSONLogger,
     timestamped_record,
 )
+from codex_ml.logging.run_logger import RunLogger  # noqa: E402
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover
-    from codex_ml.logging.run_logger import RunLogger
+    pass
 
 from .writers import (  # noqa: E402
     BaseWriter,
@@ -258,8 +259,6 @@ def init_experiment(cfg: Any) -> ExperimentContext:
                 candidate = output_dir / f"{base_name}-{short_id}-{suffix}"
                 suffix += 1
         run_dir = candidate
-
-    from codex_ml.logging.run_logger import RunLogger
 
     run_logger = RunLogger(
         run_dir,
