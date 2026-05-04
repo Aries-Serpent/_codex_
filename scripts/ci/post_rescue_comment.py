@@ -457,8 +457,13 @@ def main() -> None:
             )
     else:
         msg = resp.get("message", "") if isinstance(resp, dict) else str(resp)
-        if status in (403, 429) and "rate limit" in msg.lower():
-            # API rate limit exceeded — rescue comment is best-effort; don't fail CI.
+        # 429 is always a rate limit; 403 is a rate limit when the message says so.
+        # (GitHub uses 403 for installation-token rate limits, 429 for secondary limits.)
+        is_rate_limit = status == 429 or (
+            status == 403 and "rate limit" in msg.lower()
+        )
+        if is_rate_limit:
+            # Rescue comment is best-effort; transient rate limits must not fail CI.
             print(
                 f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
                 "Rescue comment will be posted on the next run."
