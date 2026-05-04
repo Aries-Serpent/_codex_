@@ -1,18 +1,32 @@
-# Session Context — 2026-05-04T11:24:13Z
-**Branch:** `dependabot/pip/ml-dependencies-db4a43b16f`  **PR:** none  **Access:** `graphql, codeql_local`
+# Session Context — 2026-05-04T11:37:45Z
+**Branch:** `dependabot/pip/ml-dependencies-db4a43b16f`  **PR:** #4242  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `graphql → codeql_local`
-- REST remaining: `0` (❌)  
-- GraphQL remaining: `4825` (✅)  
-- gh CLI: ❌  
+- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
+- REST remaining: `4459` (✅)  
+- GraphQL remaining: `4803` (✅)  
+- gh CLI: ✅  
 - CodeQL CLI: ✅
 
+## 📋 PR #4242 — deps(deps): bump werkzeug from 3.1.6 to 3.1.8
+State: `open`  Draft: `False`  Branch: `dependabot/pip/werkzeug-3.1.8` → `main`
+
+## 🚨 Recent CI Failures (last 5 runs)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+
 ## 📝 Recent Commits
+- `ed01e2f0` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
+- `4374dd9a` fix(ci): fix sync_tracked_files stale .secrets.baseline entries (Pattern 30) — copilot-swe-agent[bot] (2026-05-04)
 - `46f2e738` chore: Generate follow-up prompt for PR #4232 — github-actions[bot] (2026-05-04)
 - `929d87b9` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 - `28d2eebb` deps(deps): bump the ml-dependencies group with 2 updates — dependabot[bot] (2026-05-04)
 - `040ad07e` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-04)
+- `67f68ed8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
+- `427589a7` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
