@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4254)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4254 (SHA `542a88e7`) at 2026-05-04T13:42Z [auto-generated]
+
 ### Fixed (S-PR4225 consolidation — PRs #4233–#4242)
 - **autonomous_rag_context.py**: Truncate policy excerpt at last newline before 600 chars to prevent splitting mid-word/heading (consolidated from PRs #4234, #4236, #4240)
 - **post_rescue_comment.py**: Handle HTTP 429/403 rate-limit responses with `sys.exit(0)` to keep rescue-comment CI non-blocking on transient GitHub rate limits (consolidated from PRs #4233, #4239, #4240)
