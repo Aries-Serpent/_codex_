@@ -85,7 +85,6 @@ class TestImportSmoke:
             spec = importlib.util.find_spec("config.openai_client")
         except (ModuleNotFoundError, ValueError):
             pytest.skip("config.openai_client not importable via 'config' namespace")
-            return  # pragma: no cover
         if spec is None:
             pytest.skip("config.openai_client spec not found")
         origin = spec.origin or ""
@@ -107,7 +106,6 @@ class TestImportSmoke:
             spec = importlib.util.find_spec("services.github.client")
         except (ModuleNotFoundError, ValueError):
             pytest.skip("services.github.client not importable after path fix")
-            return  # pragma: no cover
         if spec is None:
             pytest.skip("services.github.client spec not found after path fix")
         origin = spec.origin or ""
