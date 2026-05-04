@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4232)
+### Fixed (S295 — PR #4232)
+- **sync_tracked_files / Pattern 30**: Refreshed stale SHA256 hashes in `.secrets.baseline` after dependabot bot commits regenerated `CODEX_MANIFEST.json` and `agent_context.json` (commit `4374dd9`).
+- **mypy baseline**: Lowered from 169 → 168 errors, locking in 1-error improvement from dependency bump.
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4232 (SHA `ea2c4c10`) at 2026-05-04T10:37Z [auto-generated]
 
 ### Fixed (S295 — PR #4223)
