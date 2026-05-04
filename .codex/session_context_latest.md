@@ -1,18 +1,32 @@
-# Session Context — 2026-05-04T11:24:46Z
-**Branch:** `dependabot/pip/py-spy-0.4.2`  **PR:** none  **Access:** `graphql, codeql_local`
+# Session Context — 2026-05-04T11:43:31Z
+**Branch:** `dependabot/pip/py-spy-0.4.2`  **PR:** #4242  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `graphql → codeql_local`
-- REST remaining: `0` (❌)  
-- GraphQL remaining: `4818` (✅)  
-- gh CLI: ❌  
+- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
+- REST remaining: `4332` (✅)  
+- GraphQL remaining: `4987` (✅)  
+- gh CLI: ✅  
 - CodeQL CLI: ✅
 
+## 📋 PR #4242 — deps(deps): bump werkzeug from 3.1.6 to 3.1.8
+State: `open`  Draft: `False`  Branch: `dependabot/pip/werkzeug-3.1.8` → `main`
+
+## 🚨 Recent CI Failures (last 5 runs)
+- **Automatic Dependency Submission (Python)** — `failure` on `dependabot/pip/radon-gte-6.0.1` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+
 ## 📝 Recent Commits
+- `713edff6` fix(docs): complete truncated heading in session_context_latest.md — copilot-swe-agent[bot] (2026-05-04)
+- `759afdb8` fix(ci): update .secrets.baseline to fix sync_tracked_files dimension — copilot-swe-agent[bot] (2026-05-04)
+- `79108d47` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `a5738d7b` chore: Generate follow-up prompt for PR #4236 — github-actions[bot] (2026-05-04)
 - `1fc269d1` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 - `b7ea15bc` deps(deps): bump py-spy from 0.4.1 to 0.4.2 — dependabot[bot] (2026-05-04)
 - `040ad07e` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-04)
+- `67f68ed8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -50,5 +64,5 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 
 ---
 
-## Table of Contents
+## Table of Cont
 ```
