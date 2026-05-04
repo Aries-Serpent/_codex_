@@ -164,7 +164,6 @@ class TestRemediationAction:
                 description="Fix dependency conflicts",
                 command="pip install -r requirements.txt",
                 auto_apply=False,
-                estimated_time=120,
             )
             assert action.auto_apply is False
             assert action.estimated_time == 120
@@ -186,9 +185,14 @@ class TestDiagnosticResult:
 
         try:
             result = DiagnosticResult(
-                diagnosis="Missing dependency",
-                confidence=0.9,
-                recommended_actions=["pip install numpy"],
+                suggested_actions=[
+                    RemediationAction(
+                        action_type="install",
+                        description="pip install numpy",
+                        command="pip install numpy",
+                    )
+                ],
+                health_score=0.9,
             )
             assert result.diagnosis == "Missing dependency"
             assert result.confidence == 0.9

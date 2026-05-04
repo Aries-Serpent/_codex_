@@ -85,7 +85,7 @@ class TestVectorTypes:
     def test_force_vector_init(self):
         """Test ForceVector initialization."""
         try:
-            vec = ForceVector(force_x=1.0, force_y=2.0, force_z=3.0)
+            vec = ForceVector(x=1.0, y=2.0, z=3.0)
             assert vec is not None
         except TypeError:
             # Try different constructor
@@ -94,7 +94,7 @@ class TestVectorTypes:
     def test_flow_vector_init(self):
         """Test FlowVector initialization."""
         try:
-            vec = FlowVector(x=1.0, y=2.0, z=3.0)
+            vec = FlowVector(position=(1.0, 2.0), velocity=(0.0, 0.0), gradient=(0.0, 0.0))
             assert vec is not None
         except (TypeError, NameError):
             pytest.skip("FlowVector constructor differs")
@@ -119,7 +119,7 @@ class TestAdvancedPhysicsInit:
     def test_fluid_channel_init(self):
         """Test FluidChannel initialization."""
         try:
-            channel = FluidChannel(diameter=1.0, length=10.0, viscosity=0.001)
+            channel = FluidChannel(length=10.0, viscosity=0.001)
             assert channel is not None
         except TypeError:
             pytest.skip("FluidChannel requires different parameters")
@@ -159,7 +159,7 @@ class TestFluidChannelProperties:
     def test_fluid_channel_reynolds_number(self):
         """Test reynolds_number property (Table Eq #23)."""
         try:
-            channel = FluidChannel(diameter=0.1, length=1.0, viscosity=0.001)
+            channel = FluidChannel(length=1.0, viscosity=0.001)
             if hasattr(channel, "reynolds_number"):
                 # Call the property/method
                 re = (
@@ -174,7 +174,7 @@ class TestFluidChannelProperties:
     def test_fluid_channel_is_turbulent(self):
         """Test is_turbulent property."""
         try:
-            channel = FluidChannel(diameter=0.1, length=1.0, viscosity=0.001)
+            channel = FluidChannel(length=1.0, viscosity=0.001)
             if hasattr(channel, "is_turbulent"):
                 result = (
                     channel.is_turbulent()
@@ -254,7 +254,7 @@ class TestFluidFlowSchedulerMethods:
         scheduler = FluidFlowScheduler()
         if hasattr(scheduler, "add_channel"):
             try:
-                channel = FluidChannel(diameter=0.1, length=1.0, viscosity=0.001)
+                channel = FluidChannel(length=1.0, viscosity=0.001)
                 scheduler.add_channel("ch1", channel)
             except (TypeError, AttributeError):
                 pass  # Method exists

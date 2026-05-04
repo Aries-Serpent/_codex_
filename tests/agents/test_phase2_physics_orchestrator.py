@@ -233,9 +233,8 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
         try:
             state = DecisionState(
-                context="test_context",
-                options=["option1", "option2", "option3"],
-                constraints={"max_cost": 100},
+                context={"label": "test_context"},
+                constraints=[],
             )
             assert state is not None
             assert len(state.options) == 3

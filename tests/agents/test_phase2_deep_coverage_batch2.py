@@ -425,7 +425,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
         if hasattr(orchestrator, "execute_workflow"):
             try:
-                result = orchestrator.execute_workflow(workflow_name="simple_build")
+                result = orchestrator.execute_workflow(workflow_steps=["simple_build"])
                 assert result is not None
             except TypeError:
                 # Method may have different signature

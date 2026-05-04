@@ -228,18 +228,18 @@ class TestQueryCache:
             filters = {"source": "docs", "date": "2024-01-01"}
             results = [{"doc_id": "1"}]
 
-            # Cache with filters
-            cache.set(query, results, filters=filters)
+            # Cache with filters (encoded into query key)
+            cache.put(f"{query}:{filters}", results)
 
             # Retrieve with same filters
-            cached_results = cache.get(query, filters=filters)
+            cached_results = cache.get(f"{query}:{filters}")
 
             if cached_results is not None:
                 assert cached_results == results
 
             # Different filters should miss
             different_filters = {"source": "other"}
-            other_results = cache.get(query, filters=different_filters)
+            other_results = cache.get(f"{query}:{different_filters}")
             # Should be None or different
             assert other_results != results or other_results is None
         except (ImportError, AttributeError, TypeError):

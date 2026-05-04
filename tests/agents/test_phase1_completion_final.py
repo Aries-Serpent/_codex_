@@ -135,11 +135,19 @@ class TestPhase1Completion_Table1_Eq49:
 
     def test_mental_mapping_add_node(self):
         """Test basic node addition."""
-        from agents.mental_mapping import MentalMapping
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         mapping = MentalMapping()
         try:
-            mapping.add_node("test_node", data={"value": 1})
+            import datetime
+
+            node = MentalNode(
+                node_id="test_node",
+                node_type=NodeType.OBSERVATION,
+                content="test",
+                timestamp=datetime.datetime.now().isoformat(),
+            )
+            mapping.add_node(node)
             # If method exists and works, assert success
             assert True
         except (AttributeError, TypeError):
@@ -205,7 +213,7 @@ class TestPhase1Completion_EdgeCases:
         from agents.physics_orchestrator import DecisionState
 
         try:
-            state = DecisionState(context="", options=[], constraints={})
+            state = DecisionState(context={}, constraints=[])
             assert state is not None
         except (ValueError, TypeError):
             # Constructor may validate inputs
@@ -226,7 +234,7 @@ class TestPhase1Completion_EdgeCases:
         from agents.physics_orchestrator import ActionPath
 
         try:
-            path = ActionPath(steps=[])
+            path = ActionPath(trajectory=[])
             assert path is not None
         except (ValueError, TypeError):
             pass
