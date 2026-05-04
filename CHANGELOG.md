@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4265)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4265 (SHA `b720db1d`) at 2026-05-04T20:36Z [auto-generated]
+
 ### Added (PR #4254 — P2 continuation: entry-point wiring + gate opening)
 - **`scripts/ci/autonomy_gate_check.py`** — CLI gate check tool; loads `.codex/autonomy_registry.yaml`, calls `AutonomyRegistry.is_permitted()`, exits 0 (allowed) or 1 (denied); `--no-fail` advisory mode supported; wired into all 3 actuation entry-points
 - **`.codex/autonomy_registry.yaml`** — authoritative live registry with `autonomy_mode: ELEVATED_AUTO`, kill-switch support, and 18 allowed surfaces (AUT-001 through AUT-018)
