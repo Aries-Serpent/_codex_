@@ -74,7 +74,11 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
         with:
-          category: "/language:${{ matrix.language }}"
+          # Use an "/advanced" suffix to avoid SARIF category collisions with
+          # codeql-analysis.yml, which uploads to "/language:<lang>" for python/go/javascript.
+          # Distinct categories let both workflows coexist on the Security tab without
+          # one overwriting the other's results.
+          category: "/language:${{ matrix.language }}/advanced"
 
       - name: Cache health report
         if: always()

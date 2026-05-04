@@ -3,7 +3,7 @@
 **PR**: #4211 — `fix: UNKNOWN_TIMESTAMP, RunLogger import, docstring caps, duplicate pragma, malformed ISO timestamp + CodeQL Waves 1–2`
 **Branch**: `copilot/add-unknown-timestamp-constant`
 **Author**: @Copilot
-**Last Updated**: 2026-05-04T01:30Z
+**Last Updated**: 2026-05-04T02:00Z
 **Status**: 🔄 Wave 2 complete — Wave 3–7 queued
 
 ---
@@ -14,10 +14,12 @@
 |------|-------|-------------|--------|
 | 0 — micro-fixes | UNKNOWN_TIMESTAMP, docstrings, pragma, ISO Z | 7 | `03c19be7` |
 | 1 — Errors | `py/call-to-non-callable`, `py/call/wrong-arguments`, `py/call/wrong-named-argument`, `py/uninitialized-variable` | 38 | `82b95be` |
-| 2 — Warnings | `py/unreachable-statement`, `py/multiple-definition` | 41 | (this session) |
+| 2 — Warnings | `py/unreachable-statement`, `py/multiple-definition` | 41 | `f385b6c` |
 
-**Also added this session:**
+**Also completed this session:**
 - `.github/workflows/codeql.yml` — CodeQL Advanced workflow (actions/go/javascript-typescript/python/rust, ubuntu-latest only, `security-extended,security-and-quality` queries)
+  - Fixed SARIF category to `/language:<lang>/advanced` to avoid collision with `codeql-analysis.yml` (which uses `/language:<lang>`)
+- `PR-4211-followup.md` — Fixed invalid `mypy --select` triage command; removed duplicate timestamp
 
 ---
 
@@ -122,7 +124,8 @@ def get_result():
 
 **Triage command:**
 ```bash
-python -m mypy --strict --select=return-value src/ 2>&1 | head -50
+# mypy does not support --select for error filtering; use grep to filter output by keyword
+python -m mypy src/ --ignore-missing-imports 2>&1 | grep -i "return"
 ```
 
 ---
@@ -240,7 +243,7 @@ actionlint .github/workflows/codeql.yml
 - [x] Wave 0 — micro-fixes (7 quality items)
 - [x] Wave 1 — 38 Error-level CodeQL alerts
 - [x] Wave 2 — `py/unreachable-statement` (38), `py/multiple-definition` (1) — **41 total**
-- [x] `.github/workflows/codeql.yml` — CodeQL Advanced (ubuntu-latest, all 5 languages)
+- [x] `.github/workflows/codeql.yml` — CodeQL Advanced (ubuntu-latest, all 5 languages, distinct `/advanced` SARIF categories)
 - [ ] Wave 3 — exception hygiene (~90 findings) — PR: `chore(quality): Wave 3`
 - [ ] Wave 4 — control flow (~29 findings) — PR: `chore(quality): Wave 4`
 - [ ] Wave 5 — import hygiene (~72 findings) — PR: `chore(quality): Wave 5`
@@ -332,5 +335,4 @@ python3 scripts/ci/session_wrapup_autofix.py --pr-number 4211
 ---
 
 **Generated**: 2026-05-04  
-**Template Version**: 2.0.0  
-**Last Updated**: 2026-05-04 00:46:30
+**Template Version**: 2.0.0
