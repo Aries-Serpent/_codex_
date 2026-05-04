@@ -73,7 +73,7 @@ version = "0.9.0"
 [project.optional-dependencies]
 analysis = ["libcst>=1.0", "parso>=0.8.0"]
 ast = [
-  "tree-sitter>=0.20.0",
+  "tree-sitter>=0.25.2",
   "tree-sitter-python>=0.20.0",
   "tree-sitter-yaml>=0.7.0",
   "sqlparse>=0.5.5",
