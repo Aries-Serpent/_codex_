@@ -1,0 +1,139 @@
+# Prompt Registry
+# Central inventory of all system, task, continuation, and domain prompts.
+#
+# Blueprint: .codex/docs/AUTONOMY_BLUEPRINT.md — Phase 4
+# Schema version: 1.0.0
+#
+# Fields per entry:
+#   prompt_id         — unique identifier  (kebab-case)
+#   path              — source file relative to repo root
+#   type              — system | task | continuation | domain
+#   risk_class        — READ_ONLY | ADVISORY_WRITE | REPO_STATE_WRITE | INFRA_WRITE
+#   consumers         — list of surface IDs / workflow files that use this prompt
+#   owner             — accountable maintainer
+#   version           — semantic or date version string
+#   approved_for_modes — list of autonomy modes in which this prompt may run
+#   description       — one-line human summary
+#
+# CI validation: python -m codex.autonomy.prompt_registry --validate
+
+schema_version: "1.0.0"
+
+prompts:
+
+  # ── System prompts ───────────────────────────────────────────────────────
+
+  - prompt_id: system-copilot-agent
+    path: .github/copilot-prompts/system/copilot_agent_system_prompt.md
+    type: system
+    risk_class: ADVISORY_WRITE
+    consumers:
+      - AUT-007  # chatops_copilot_trigger.yml
+      - AUT-012  # cli_api_server.py
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - DRY_RUN
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "Primary Copilot coding-agent system prompt injected at session start"
+
+  - prompt_id: system-cognitive-brain
+    path: src/codex/cognitive/prompts/system.txt
+    type: system
+    risk_class: READ_ONLY
+    consumers:
+      - AUT-003  # src/agents/autonomous_runner.py
+      - AUT-004  # src/config/openai_client.py
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - OBSERVE
+      - DRY_RUN
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "Cognitive Brain LLM system prompt — read-only reasoning surface"
+
+  # ── Task prompts ─────────────────────────────────────────────────────────
+
+  - prompt_id: task-ci-auto-fix
+    path: scripts/ci/auto_fix_common_issues.py
+    type: task
+    risk_class: REPO_STATE_WRITE
+    consumers:
+      - AUT-009  # ci-health-monitor.yml
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+    description: "CI auto-fix task prompt — applies ruff, sync, and pattern fixes to PR"
+
+  - prompt_id: task-rag-prompt-assembly
+    path: src/codex/rag/prompt.py
+    type: task
+    risk_class: READ_ONLY
+    consumers:
+      - AUT-018  # src/codex/rag/prompt.py
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - DRY_RUN
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "RAG prompt assembly — builds retrieval-augmented context"
+
+  # ── Continuation prompts ─────────────────────────────────────────────────
+
+  - prompt_id: continuation-pr-followup
+    path: .github/copilot-prompts/active/
+    type: continuation
+    risk_class: ADVISORY_WRITE
+    consumers:
+      - AUT-007  # chatops_copilot_trigger.yml
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - ASSISTED
+      - SAFE_AUTO
+    description: "Per-PR continuation prompts posted after each agent session"
+
+  # ── Domain prompts ───────────────────────────────────────────────────────
+
+  - prompt_id: domain-autonomy-blueprint
+    path: .codex/docs/AUTONOMY_BLUEPRINT.md
+    type: domain
+    risk_class: READ_ONLY
+    consumers:
+      - AUT-002  # scripts/autonomous_agent.py
+      - AUT-003  # src/agents/autonomous_runner.py
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - OBSERVE
+      - DRY_RUN
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "Safe Full Copilot Cloud Agent Autonomy blueprint — domain context"
+
+  - prompt_id: domain-codebase-agency-policy
+    path: .codex/CODEBASE_AGENCY_POLICY.md
+    type: domain
+    risk_class: READ_ONLY
+    consumers:
+      - AUT-002
+      - AUT-003
+      - AUT-007
+    owner: mbaetiong
+    version: "2026-05-04"
+    approved_for_modes:
+      - OBSERVE
+      - DRY_RUN
+      - ASSISTED
+      - SAFE_AUTO
+      - ELEVATED_AUTO
+    description: "Mandatory agency policy — all agents must load this at session start"

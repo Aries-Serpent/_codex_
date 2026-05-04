@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (PR #4254 — Safe Full Copilot Cloud Agent Autonomy — all 6 phases)
+- **`src/codex/autonomy/` package** — new control-plane OS for autonomous agent governance (197 tests, 0 ruff errors)
+- **Phase 1** `src/codex/autonomy/registry.py` + `.codex/autonomy_registry.yaml` — single authoritative autonomy state registry with kill-switch, dry-run, mode enum (OFF/OBSERVE/DRY_RUN/ASSISTED/SAFE_AUTO/ELEVATED_AUTO), runtime budgets, surface allowlist, and policy enforcement via `assert_permitted()`
+- **Phase 2** `src/codex/autonomy/token_broker.py` — scoped token broker resolving least-privilege credential per mutation class (GitHub App → OIDC → scoped PAT → CODEX_MASTER admin-only); never escalates beyond what the class requires
+- **Phase 3** `src/codex/autonomy/ingress.py` — ingress gateway normalising all event-driven triggers (issue_comment, repository_dispatch, workflow_dispatch, webhook, CLI); enforces actor allowlist, anti-replay nonce window, schema validation, and policy-mode check
+- **Phase 4** `src/codex/autonomy/prompt_registry.py` + `.codex/prompts/registry.yaml` — central prompt registry with risk tags (READ_ONLY→INFRA_WRITE), owner tracking, surface inventory, approved-mode list, and CI `validate_all()` check
+- **Phase 5** `src/codex/autonomy/audit.py` — NDJSON audit logger emitting the 13-field minimum record per blueprint Phase 5; in-memory metrics accumulator (mode counts, surface counts, deny-rate, dry-run ratio, approval-bypass attempts) flushed to separate metrics NDJSON
+- **Phase 6** `src/codex/autonomy/expansion_gate.py` — expansion gate implementing Gi≥0.80 ∧ Lp≥0.80 ∧ DenyRate>0 ∧ AuditCoverage≥0.95; `from_baseline()` confirms gate currently closed (Gi=0.54), `from_target()` confirms gate opens post-implementation
+- **`.codex/docs/AUTONOMY_BLUEPRINT.md`** — implementation status table updated; all 6 phases marked ✅ Complete; post-implementation metrics and remaining adoption roadmap added
+
 ### Fixed (PR #4254 — consolidate PyTorch version, test improvements)
 - **requirements/lock-ml.txt**: `torch==2.9.1+cpu` → `torch==2.11.0+cpu` to align with `base.txt` and `lock.txt` and eliminate the three-way version split
 - **requirements-ml-cpu.txt**: `torch==2.9.1+cpu` → `torch==2.11.0+cpu` — completes the full multi-file torch consolidation (lock-ml.txt was Wave 1; this is Wave 2)

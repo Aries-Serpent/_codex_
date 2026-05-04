@@ -25700,3 +25700,50 @@ Ingested and stored `[Blueprint]: Safe Full Copilot Cloud Agent Autonomy` from m
 ### §0 Compliance
 All `@mbaetiong` and bot-posted comments reviewed. Blocking comment #4372827671 addressed. No deferral language used.
 
+
+## Session S669 — Safe Full Copilot Cloud Agent Autonomy — All 6 Phases Implemented
+
+**Branch:** `copilot/consolidate-pytorch-versions`
+**Date:** 2026-05-04
+**Triggered by:** New requirement comment — implement all improvements as outlined via the blueprint; mbaetiong comment #4373016607 — continue with all priority 1-4 tasks and address all code quality/security concerns.
+
+### Work Completed
+
+Implemented the complete control-plane OS for autonomous agent governance as specified in `.codex/docs/AUTONOMY_BLUEPRINT.md`. All 6 phases delivered in one session.
+
+#### Phase 1 — Unify Control State
+- Created `.codex/autonomy_registry.yaml` — single authoritative YAML source for autonomy mode, kill-switch, dry-run, runtime budgets, surface allowlist, runner allowlist, approval-required classes, token resolution order, and audit paths.
+- Created `src/codex/autonomy/registry.py` — `AutonomyRegistry.load()` + `assert_permitted()` + `is_permitted()` policy enforcement. `AutonomyMode` enum ordered OFF→OBSERVE→DRY_RUN→ASSISTED→SAFE_AUTO→ELEVATED_AUTO. `ControlClass` normalised enum with minimum-mode floor table. `AutonomyPolicyError` raised on deny.
+
+#### Phase 2 — Reduce Privilege Breadth
+- Created `src/codex/autonomy/token_broker.py` — `TokenBroker.resolve(control_class)` follows registry `token_resolution_order` and returns the lowest-privilege source whose ceiling covers the requested class. GitHub App → OIDC → scoped PAT → CODEX_MASTER (admin-only). Dry-run returns sentinel (no real credentials read). `require=True` raises `TokenBrokerError` when nothing available.
+
+#### Phase 3 — Harden Ingress
+- Created `src/codex/autonomy/ingress.py` — `IngressGateway.evaluate(event)` gates all inbound events through: kill-switch check → mode check → actor allowlist → anti-replay nonce (5-minute window) → schema validation → registry policy check → dry-run flag. Returns `IngressDecision(result=ALLOW|DENY|DRY_RUN, reason=...)`.
+
+#### Phase 4 — Centralize Prompt Governance
+- Created `.codex/prompts/registry.yaml` — 7 prompt entries (system, task, continuation, domain) each with prompt_id, path, type, risk_class, consumers (surface IDs), owner, version, approved_for_modes.
+- Created `src/codex/autonomy/prompt_registry.py` — `PromptRegistry.load()`, `validate_for_mode()`, `validate_all()` (CI validation), `by_surface()`, `by_risk_class()`. CLI: `python -m codex.autonomy.prompt_registry --validate`.
+
+#### Phase 5 — Instrument Observability
+- Created `src/codex/autonomy/audit.py` — `AuditLogger.record(AuditRecord)` appends 13-field NDJSON record to `.codex/autonomy_audit.ndjson`. `MetricsSnapshot` accumulates autonomy_mode_count, surface_invocation_count, mutation_count_by_class, token_source_count, deny_count_by_policy, dry_run_ratio, approval_bypass_attempts. `flush_metrics()` appends snapshot to `.codex/autonomy_metrics.ndjson`. `audit_coverage(total_runs)` used by Phase 6 gate.
+
+#### Phase 6 — Expansion Gate
+- Created `src/codex/autonomy/expansion_gate.py` — `ExpansionGate.evaluate()` implements the blueprint gate equation: `Gi≥0.80 ∧ Lp≥0.80 ∧ DenyRate>0 ∧ AuditCoverage≥0.95`. `from_baseline()` confirms gate currently CLOSED (Gi=0.5405). `from_target()` confirms gate OPENS after Phases 1-5 adoption. `GateResult.summary` human-readable status string.
+
+#### Package + Tests
+- Created `src/codex/autonomy/__init__.py` — exports all six phases' public API.
+- Created 5 test files in `tests/autonomy/` (test_registry, test_token_broker, test_ingress, test_prompt_registry, test_audit, test_expansion_gate) — 197 total tests in `tests/autonomy/`, all passing.
+- Updated `.codex/docs/AUTONOMY_BLUEPRINT.md` implementation status table (all 6 phases ✅ Complete).
+- Updated `CHANGELOG.md` — Added section for all 6 phases under PR #4254.
+
+### Verification
+
+- `python3 -m ruff check src/codex/autonomy/ tests/autonomy/` → All checks passed (0 errors)
+- `python3 -m pytest tests/autonomy/ -v` → 197 passed, 0 failed
+- `python3 scripts/ci/sync_tracked_files.py` → All tracked files consistent ✅
+
+### §0 Compliance
+
+All `@mbaetiong` and bot-posted comments reviewed. Blocking comment #4373016607 addressed. No deferral language used. Codebase left better than found.
+
