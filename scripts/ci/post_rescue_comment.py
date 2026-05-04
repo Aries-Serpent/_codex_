@@ -456,6 +456,13 @@ def main() -> None:
                 int(resp["id"]),
             )
     else:
+        msg = resp.get("message", "") if isinstance(resp, dict) else ""
+        if status == 403 and "api rate limit exceeded" in msg.lower():
+            print(
+                "⚠️  POST skipped: GitHub API rate limit exceeded (HTTP 403). "
+                "Rescue comment will be posted on the next run."
+            )
+            sys.exit(0)
         print(f"❌ POST failed: HTTP {status} — {resp}")
         sys.exit(1)
 
