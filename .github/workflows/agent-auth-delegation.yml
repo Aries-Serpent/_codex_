@@ -1801,17 +1801,7 @@ jobs:
             const multiSession = '${{ needs.detect-checkbox.outputs.multi_session }}' === 'true';
             const TTL_SECONDS = 3600; // 1 hour
             const now = Math.floor(Date.now() / 1000);
-
-            function isRateLimit(e) {
-              const msg = [
-                e.message,
-                e.response?.data?.message,
-                e.response?.data?.error,
-                e.data?.message,
-                e.data?.error,
-              ].filter(Boolean).join(' ').toLowerCase();
-              return (e.status === 403 || e.status === 429) && msg.includes('rate limit');
-            }
+            const { isRateLimit } = require('./scripts/ci/github_rate_limit_helper.js');
 
             // Helper: get repo variable (returns null if not found)
             async function getVar(name) {
@@ -2204,6 +2194,12 @@ jobs:
     if: github.event.action == 'closed'
 
     steps:
+      - name: "Checkout repository for shared helpers"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
       - name: "Release COPILOT_ACTIVE_SESSION and trigger next queued PR"
         uses: actions/github-script@v9
         with:
@@ -2215,17 +2211,7 @@ jobs:
               return;
             }
 
-            // Helper: get repo variable
-            function isRateLimit(e) {
-              const msg = [
-                e.message,
-                e.response?.data?.message,
-                e.response?.data?.error,
-                e.data?.message,
-                e.data?.error,
-              ].filter(Boolean).join(' ').toLowerCase();
-              return (e.status === 403 || e.status === 429) && msg.includes('rate limit');
-            }
+            const { isRateLimit } = require('./scripts/ci/github_rate_limit_helper.js');
 
             async function getVar(name) {
               try {
