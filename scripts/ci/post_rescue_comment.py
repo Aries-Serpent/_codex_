@@ -456,6 +456,10 @@ def main() -> None:
                 int(resp["id"]),
             )
     else:
+        msg = resp.get("message", "") if isinstance(resp, dict) else str(resp)
+        if "api rate limit exceeded" in msg.lower():
+            print(f"⚠️  POST skipped: HTTP {status} — rate limit exceeded (transient). Exiting 0.")
+            return
         print(f"❌ POST failed: HTTP {status} — {resp}")
         sys.exit(1)
 

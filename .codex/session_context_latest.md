@@ -1,10 +1,10 @@
-# Session Context — 2026-05-04T11:58:00Z
+# Session Context — 2026-05-04T12:18:17Z
 **Branch:** `dependabot/pip/voluptuous-0.16.0`  **PR:** #4242  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3708` (✅)  
-- GraphQL remaining: `4934` (✅)  
+- REST remaining: `3365` (✅)  
+- GraphQL remaining: `4891` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `dependabot/pip/werkzeug-3.1.8` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **Validation Pipeline** — `failure` on `dependabot/pip/ml-dependencies-db4a43b16f` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `d0460db5` fix(context): prevent policy excerpt truncation mid-heading in autonomous_rag_co — copilot-swe-agent[bot] (2026-05-04)
+- `f43a00f5` chore: plan CI fix for Fast Validation and Post rescue failures — copilot-swe-agent[bot] (2026-05-04)
 - `73ebb9f6` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `5a65d358` chore: Generate follow-up prompt for PR #4240 — github-actions[bot] (2026-05-04)
 - `e122fc95` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 - `0d06c693` deps(deps): bump voluptuous from 0.15.2 to 0.16.0 — dependabot[bot] (2026-05-04)
 - `040ad07e` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-04)
 - `67f68ed8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
-- `427589a7` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-04)
-- `6538a798` Merge pull request #4223 from Aries-Serpent:copilot/fix-codeql-configuration-err — Statix (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -64,5 +64,4 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 
 ---
 
-## Table of Contents
 ```
