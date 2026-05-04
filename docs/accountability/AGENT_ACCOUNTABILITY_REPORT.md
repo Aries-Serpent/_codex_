@@ -102,6 +102,27 @@
 
 
 
+## SESSION SUMMARY — 2026-05-04T20:26Z
+
+**Session:** copilot-swe-agent | **Issue:** S679 (#4267 CI Failure Triage) | **Date:** 2026-05-04
+
+**Pattern resolved:** P19 shadow-import / coverage-timeout
+
+**Root causes identified (via CI run 25338527283, Resilient Validation Suite):**
+1. `ModuleNotFoundError: No module named 'config.openai_client'` — `tests/config/test_openai_client.py` fixtures used `from config.openai_client import …` which fails when the wrong `config` namespace package is cached (e.g. root-level `config/` namespace or installed `config` PyPI package) before `src/` is first on `sys.path` in sharded CI workers.
+2. `AssertionError` in `test_headers_without_token` — `GitHubClient(token="")` used `token or os.environ.get("GITHUB_TOKEN", "")`, treating `""` as falsy and silently inheriting the CI runner's `GITHUB_TOKEN`, causing the assertion `"Authorization" not in headers` to fail.
+
+**Fixes applied:**
+- `src/services/github/client.py`: Changed `self.token = token or os.environ.get(…)` → `self.token = token if token is not None else os.environ.get(…)` — empty-string token now means no auth header; `None` still falls back to env.
+- `tests/config/test_openai_client.py`: Changed all `from config.openai_client import …` → `from src.config.openai_client import …` — explicit `src.` prefix avoids shadow-import ambiguity entirely, consistent with `tests/services/github/test_client.py` pattern.
+- `tests/config/conftest.py`: Added repo-root append to `sys.path` so `src.config.*` imports also work; added P19 fix note.
+- `tests/services/github/conftest.py`: New file — belt-and-suspenders guard that pins `src/` at `sys.path[0]` and evicts stale root-level `services.*` cache entries before tests run.
+- `tests/test_import_smoke.py`: New regression guardrail — 8 tests covering: fast import timing, path resolution checks, no-network-at-import enforcement, and `GitHubClient` token-handling edge cases (`token=""`, `token=None`, explicit token).
+
+**Verification:** `pytest -q tests/config/test_openai_client.py tests/services/github/test_client.py tests/services/test_github_client_phase9_1.py tests/test_import_smoke.py` → 73 passed, 13 skipped, 0 failed.
+
+**CI Failure Triage Report #4267:** Sourced — additional failures (Validation Pipeline, CodeQL, RAG Module Tests) are on branch `copilot/consolidate-pytorch-versions`, not `main`; fixes above target the `main` branch root cause.
+
 ## SESSION SUMMARY — 2026-05-04T19:06Z [auto-generated]
 
 **Session:** auto-20260504T1906-run126768 | **Run:** 25337669194 | **Date:** 2026-05-04

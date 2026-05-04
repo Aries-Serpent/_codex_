@@ -25,7 +25,7 @@ class TestCodexOpenAIClient:
     @pytest.fixture
     def client(self):
         """Create a client instance for testing."""
-        from config.openai_client import CodexOpenAIClient
+        from src.config.openai_client import CodexOpenAIClient
 
         # Ensure dry-run mode for testing
         with patch.dict(os.environ, {"OPENAI_API_KEY": "", "GITHUB_CODEX": ""}):
@@ -34,7 +34,7 @@ class TestCodexOpenAIClient:
     @pytest.fixture
     def client_with_key(self):
         """Create a client with a mock API key."""
-        from config.openai_client import CodexOpenAIClient
+        from src.config.openai_client import CodexOpenAIClient
 
         with patch.dict(
             os.environ, {"OPENAI_API_KEY": "sk-test-fake-key-for-unit-testing-only"}
@@ -129,7 +129,7 @@ class TestCodexOpenAIClient:
 
     def test_log_execution_max_entries(self, client):
         """Test that audit log is bounded."""
-        from config.openai_client import MAX_AUDIT_LOG_SIZE
+        from src.config.openai_client import MAX_AUDIT_LOG_SIZE
 
         # Fill beyond max
         for i in range(MAX_AUDIT_LOG_SIZE + 100):
@@ -213,7 +213,7 @@ class TestModelSelection:
     @pytest.fixture
     def client(self):
         """Create a client instance for testing."""
-        from config.openai_client import CodexOpenAIClient
+        from src.config.openai_client import CodexOpenAIClient
 
         with patch.dict(os.environ, {"OPENAI_API_KEY": "", "GITHUB_CODEX": ""}):
             return CodexOpenAIClient()
@@ -243,7 +243,7 @@ class TestExecutionResult:
 
     def test_execution_result_creation(self):
         """Test creating ExecutionResult."""
-        from config.openai_client import ExecutionResult
+        from src.config.openai_client import ExecutionResult
 
         result = ExecutionResult(
             success=True,
@@ -261,7 +261,7 @@ class TestExecutionResult:
 
     def test_execution_result_failure(self):
         """Test creating failed ExecutionResult."""
-        from config.openai_client import ExecutionResult
+        from src.config.openai_client import ExecutionResult
 
         result = ExecutionResult(
             success=False,
@@ -279,7 +279,7 @@ class TestAPIKeyValidation:
 
     def test_validate_api_key_valid(self):
         """Test validation of valid API key format."""
-        from config.openai_client import _validate_api_key
+        from src.config.openai_client import _validate_api_key
 
         # Valid format: sk- followed by 32+ alphanumeric chars
         assert _validate_api_key("sk-test-fake-key-for-unit-testing-only") is True
@@ -287,7 +287,7 @@ class TestAPIKeyValidation:
 
     def test_validate_api_key_invalid(self):
         """Test validation of invalid API key formats."""
-        from config.openai_client import _validate_api_key
+        from src.config.openai_client import _validate_api_key
 
         assert _validate_api_key("") is False
         assert _validate_api_key(None) is False
@@ -299,7 +299,7 @@ class TestAPIKeyValidation:
 
     def test_validate_api_key_too_long(self):
         """Test validation rejects excessively long keys."""
-        from config.openai_client import MAX_API_KEY_LENGTH, _validate_api_key
+        from src.config.openai_client import MAX_API_KEY_LENGTH, _validate_api_key
 
         long_key = "sk-" + "a" * (MAX_API_KEY_LENGTH + 1)
         assert _validate_api_key(long_key) is False
