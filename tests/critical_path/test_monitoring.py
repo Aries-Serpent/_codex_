@@ -17,6 +17,8 @@ import time
 
 def interpolated_percentile(sorted_data, percentile):
     """Calculate percentile using linear interpolation between adjacent ranks."""
+    if not 0.0 <= percentile <= 1.0:
+        raise ValueError(f"percentile must be between 0.0 and 1.0, got {percentile}")
     n = len(sorted_data)
     if n == 0:
         raise ValueError("Cannot compute percentile of empty data")
@@ -25,6 +27,20 @@ def interpolated_percentile(sorted_data, percentile):
     upper_idx = min(lower_idx + 1, n - 1)
     weight = rank - lower_idx
     return sorted_data[lower_idx] + weight * (sorted_data[upper_idx] - sorted_data[lower_idx])
+
+
+def test_interpolated_percentile_bounds():
+    """Test interpolated_percentile raises ValueError for out-of-bounds percentile values."""
+    import pytest
+
+    data = [1, 2, 3, 4, 5]
+    with pytest.raises(ValueError, match="percentile must be between"):
+        interpolated_percentile(data, -0.1)
+    with pytest.raises(ValueError, match="percentile must be between"):
+        interpolated_percentile(data, 1.5)
+    # Boundary values are valid
+    assert interpolated_percentile(data, 0.0) == 1
+    assert interpolated_percentile(data, 1.0) == 5
 
 
 class TestHealthCheckEndpoints:
