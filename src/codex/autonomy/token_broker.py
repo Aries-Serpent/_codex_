@@ -78,7 +78,7 @@ class TokenResolution:
     """Result of a token broker lookup."""
 
     source: TokenSource
-    token: Optional[str]          # None when dry_run=True or no creds available
+    token: Optional[str]  # None when dry_run=True or no creds available
     control_class: ControlClass
     is_dry_run: bool = False
     denial_reason: Optional[str] = None
@@ -134,7 +134,9 @@ class TokenBroker:
             )
 
         resolution_order: list[str] = self._registry.token_resolution_order
-        candidates = [TokenSource(s) for s in resolution_order if s in TokenSource._value2member_map_]
+        candidates = [
+            TokenSource(s) for s in resolution_order if s in TokenSource._value2member_map_
+        ]
 
         for source in candidates:
             ceiling = _SOURCE_CEILING.get(source, ControlClass.READ_ONLY)

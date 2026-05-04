@@ -40,14 +40,14 @@ logger = logging.getLogger(__name__)
 # ── Thresholds from the blueprint expansion gate equation ─────────────────────
 _GI_THRESHOLD = 0.80
 _LP_THRESHOLD = 0.80
-_DENY_RATE_THRESHOLD = 0.0   # strictly > 0
+_DENY_RATE_THRESHOLD = 0.0  # strictly > 0
 _AUDIT_COVERAGE_THRESHOLD = 0.95
 
 # ── Current baseline metrics from the blueprint (2026-05-04) ─────────────────
-BASELINE_AP = 0.877    # Autonomy Power
-BASELINE_GI = 0.5405   # Governance Integrity
-BASELINE_LP = 0.57     # Least-Privilege Quality
-BASELINE_Q = 0.270     # Effective Safe Autonomy Quality
+BASELINE_AP = 0.877  # Autonomy Power
+BASELINE_GI = 0.5405  # Governance Integrity
+BASELINE_LP = 0.57  # Least-Privilege Quality
+BASELINE_Q = 0.270  # Effective Safe Autonomy Quality
 
 # ── Target metrics (post Phases 1–5) ─────────────────────────────────────────
 TARGET_GI = 0.85
@@ -145,9 +145,7 @@ class ExpansionGate:
             )
 
         if self.deny_rate_guarded <= _DENY_RATE_THRESHOLD:
-            blocking.append(
-                "DenyRate_guarded = 0 — guards are not demonstrably active"
-            )
+            blocking.append("DenyRate_guarded = 0 — guards are not demonstrably active")
 
         if self.audit_coverage < _AUDIT_COVERAGE_THRESHOLD:
             blocking.append(
@@ -179,8 +177,8 @@ class ExpansionGate:
         return cls(
             governance_integrity=BASELINE_GI,
             least_privilege=BASELINE_LP,
-            deny_rate_guarded=0.0,   # guards not yet instrumented
-            audit_coverage=0.0,      # audit not yet deployed
+            deny_rate_guarded=0.0,  # guards not yet instrumented
+            audit_coverage=0.0,  # audit not yet deployed
         )
 
     @classmethod
@@ -193,5 +191,5 @@ class ExpansionGate:
             governance_integrity=TARGET_GI,
             least_privilege=TARGET_LP,
             deny_rate_guarded=0.12,  # example: 12 % of guarded events denied
-            audit_coverage=0.97,     # 97 % coverage after full deployment
+            audit_coverage=0.97,  # 97 % coverage after full deployment
         )
