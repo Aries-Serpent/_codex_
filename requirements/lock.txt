@@ -558,7 +558,7 @@ multiprocess==0.70.19
     # via
     #   datasets
     #   evaluate
-mypy==1.19.1
+mypy==1.20.2
     # via codex-ml (pyproject.toml)
 mypy-extensions==1.1.0
     # via
