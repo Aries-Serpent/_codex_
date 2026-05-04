@@ -1,34 +1,35 @@
-# Session Context — 2026-05-04T20:49:15Z
+# Session Context — 2026-05-04T20:57:37Z
 **Branch:** `copilot/fix-self-healing-ci-main`  **PR:** #4265  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4652` (✅)  
-- GraphQL remaining: `4974` (✅)  
+- REST remaining: `4439` (✅)  
+- GraphQL remaining: `4938` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
 ## 📋 PR #4265 — fix(P19): shadow-import fixes for config.openai_client + GitHubClient token fallback + import smoke tests
-State: `open`  Draft: `True`  Branch: `copilot/fix-self-healing-ci-main` → `main`
+State: `open`  Draft: `False`  Branch: `copilot/fix-self-healing-ci-main` → `main`
 
-### ❌ 12 Failing CI Check(s)
+### ❌ 17 Failing CI Check(s)
 - `Post rescue comment on failure` (cancelled)
 - `⚡ Approve action_required runs (post-delegation)` (cancelled)
 - `Activate token delegation` (cancelled)
 - `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `🧠 Cognitive Pre-flight Check` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Cancel Runs for Unchecked Workflows` (cancelled)
+- `Dispatch Newly-Checked Workflows` (cancelled)
+- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
+- `Post Execution Plan` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **PR Comment Review Gate** — `failure` on `copilot/fix-self-healing-ci-main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `copilot/fix-self-healing-ci-main` (2026-05-04)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **Batch CI Failure Triage** — `failure` on `main` (2026-05-04)
-- **Agent Token Delegation** — `failure` on `copilot/fix-self-healing-ci-main` (2026-05-04)
-- **Iterative Self-Healing CI** — `failure` on `main` (2026-05-04)
+- **Auto-Fix Common CI Issues** — `failure` on `copilot/fix-self-healing-ci-main` (2026-05-04)
+- **PR Auto-Fix Check** — `failure` on `copilot/fix-self-healing-ci-main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `6922f35e` fix(ci): sync_tracked_files .secrets.baseline + CHANGELOG P19 entry — copilot-swe-agent[bot] (2026-05-04)
 - `580d8a67` fix: address code review — use patch.object for socket, parents[3], simplify evi — copilot-swe-agent[bot] (2026-05-04)
 - `157ebaf2` fix(P19): fix shadow imports + GitHubClient token fallback + add import smoke te — copilot-swe-agent[bot] (2026-05-04)
 - `17ba79bc` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
@@ -36,7 +37,6 @@ State: `open`  Draft: `True`  Branch: `copilot/fix-self-healing-ci-main` → `ma
 - `1196d809` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-04)
 - `9344d322` chore: Generate follow-up prompt for PR #4265 — github-actions[bot] (2026-05-04)
 - `89d9372a` chore: initial plan for P19 shadow-import and test fixes — copilot-swe-agent[bot] (2026-05-04)
-- `df87a545` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

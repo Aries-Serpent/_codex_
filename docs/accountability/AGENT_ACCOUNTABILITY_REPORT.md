@@ -25932,8 +25932,8 @@ No deferral language used. Codebase left better than found.
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/25341438472
-3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/25342167993
-4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/25342167993
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
 ### Root-Cause Note

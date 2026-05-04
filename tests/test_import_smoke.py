@@ -80,10 +80,12 @@ class TestImportSmoke:
 
     def test_config_openai_client_resolves_to_src(self) -> None:
         """config.openai_client (if importable) resolves to src/, not a shadow."""
+        spec = None
         try:
             spec = importlib.util.find_spec("config.openai_client")
         except (ModuleNotFoundError, ValueError):
             pytest.skip("config.openai_client not importable via 'config' namespace")
+            return  # pragma: no cover
         if spec is None:
             pytest.skip("config.openai_client spec not found")
         origin = spec.origin or ""
@@ -100,10 +102,12 @@ class TestImportSmoke:
         if sys.path[0] != _SRC:
             sys.path.insert(0, _SRC)
 
+        spec = None
         try:
             spec = importlib.util.find_spec("services.github.client")
         except (ModuleNotFoundError, ValueError):
             pytest.skip("services.github.client not importable after path fix")
+            return  # pragma: no cover
         if spec is None:
             pytest.skip("services.github.client spec not found after path fix")
         origin = spec.origin or ""
