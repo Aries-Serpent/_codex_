@@ -134,7 +134,9 @@ class TokenBroker:
             )
 
         resolution_order: list[str] = self._registry.token_resolution_order
-        candidates = [TokenSource(s) for s in resolution_order if s in TokenSource._value2member_map_]
+        candidates = [
+            TokenSource(s) for s in resolution_order if s in TokenSource._value2member_map_
+        ]
 
         for source in candidates:
             ceiling = _SOURCE_CEILING.get(source, ControlClass.READ_ONLY)
