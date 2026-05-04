@@ -15,6 +15,18 @@ import json
 import time
 
 
+def interpolated_percentile(sorted_data, percentile):
+    """Calculate percentile using linear interpolation between adjacent ranks."""
+    n = len(sorted_data)
+    if n == 0:
+        raise ValueError("Cannot compute percentile of empty data")
+    rank = percentile * (n - 1)
+    lower_idx = int(rank)
+    upper_idx = min(lower_idx + 1, n - 1)
+    weight = rank - lower_idx
+    return sorted_data[lower_idx] + weight * (sorted_data[upper_idx] - sorted_data[lower_idx])
+
+
 class TestHealthCheckEndpoints:
     """Tests for health check endpoints."""
 
@@ -180,17 +192,6 @@ class TestMetricsCollection:
         values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
         sorted_values = sorted(values)
-
-        def interpolated_percentile(sorted_data, percentile):
-            """Calculate percentile using linear interpolation between adjacent ranks."""
-            n = len(sorted_data)
-            if n == 0:
-                raise ValueError("Cannot compute percentile of empty data")
-            rank = percentile * (n - 1)
-            lower_idx = int(rank)
-            upper_idx = min(lower_idx + 1, n - 1)
-            weight = rank - lower_idx
-            return sorted_data[lower_idx] + weight * (sorted_data[upper_idx] - sorted_data[lower_idx])
 
         summary = {
             "count": len(values),

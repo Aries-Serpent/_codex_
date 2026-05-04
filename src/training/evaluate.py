@@ -155,7 +155,6 @@ def evaluate(
     try:
         perplexity = math.exp(mean_loss)
     except OverflowError as e:
-        logger.debug(f"OverflowError: {e}")
         logger.warning(f"OverflowError: {e}", exc_info=True)
         perplexity = float("inf")
     return {"loss": mean_loss, "perplexity": perplexity, "count": count}

@@ -9,7 +9,7 @@ def test_mask_sensitive_data_email():
     text = "Contact me at user@example.com"
     result = mask_sensitive_data(text)
     assert "user@example.com" not in result
-    assert "***" in result or "@" not in result  # pragma: allowlist secret # pragma: allowlist secret
+    assert "***" in result or "@" not in result  # pragma: allowlist secret
 
 
 def test_mask_sensitive_data_phone():
@@ -84,10 +84,18 @@ def test_hash_sensitive_value_consistency():
 
 
 def test_hash_sensitive_value_uniqueness():
-    """Test hash_sensitive_value produces unique hashes."""
-    hash1 = hash_sensitive_value("value1")
-    hash2 = hash_sensitive_value("value2")
-    assert hash1 != hash2
+    """Test hash_sensitive_value produces unique hashes across varied inputs."""
+    values = [
+        "value1",
+        "value2",
+        "VALUE1",
+        "value1 ",
+        "1234567890",
+        "special_chars_!@#$%^&*()",
+        "much longer value with more content",
+    ]
+    hashes = [hash_sensitive_value(value) for value in values]
+    assert len(set(hashes)) == len(values)
 
 
 def test_hash_sensitive_value_length():
