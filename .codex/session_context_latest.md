@@ -1,18 +1,32 @@
-# Session Context — 2026-05-04T11:26:37Z
-**Branch:** `dependabot/pip/myst-parser-gte-5.0.0`  **PR:** none  **Access:** `graphql, codeql_local`
+# Session Context — 2026-05-04T11:44:51Z
+**Branch:** `dependabot/pip/myst-parser-gte-5.0.0`  **PR:** #4242  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `graphql → codeql_local`
-- REST remaining: `0` (❌)  
-- GraphQL remaining: `4811` (✅)  
-- gh CLI: ❌  
+- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
+- REST remaining: `4323` (✅)  
+- GraphQL remaining: `4980` (✅)  
+- gh CLI: ✅  
 - CodeQL CLI: ✅
 
+## 📋 PR #4242 — deps(deps): bump werkzeug from 3.1.6 to 3.1.8
+State: `open`  Draft: `False`  Branch: `dependabot/pip/werkzeug-3.1.8` → `main`
+
+## 🚨 Recent CI Failures (last 5 runs)
+- **Automatic Dependency Submission (Python)** — `failure` on `dependabot/pip/radon-gte-6.0.1` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+
 ## 📝 Recent Commits
+- `5603970a` fix(ci): repair stale .secrets.baseline hashes for sync_tracked_files — copilot-swe-agent[bot] (2026-05-04)
+- `58c0a320` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `4a41355e` chore: Generate follow-up prompt for PR #4237 — github-actions[bot] (2026-05-04)
 - `9974af8a` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
 - `72d97e77` deps(deps): update myst-parser requirement from >=0.18.0 to >=5.0.0 — dependabot[bot] (2026-05-04)
 - `040ad07e` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-04)
+- `67f68ed8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
+- `427589a7` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
