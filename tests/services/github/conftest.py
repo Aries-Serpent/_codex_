@@ -14,7 +14,7 @@ from __future__ import annotations
 import pathlib
 import sys
 
-_REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
+_REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
 _SRC = str(_REPO_ROOT / "src")
 
 # Ensure src/ is first on sys.path.

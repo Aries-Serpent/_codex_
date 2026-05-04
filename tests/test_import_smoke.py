@@ -116,10 +116,8 @@ class TestImportSmoke:
     def test_no_network_call_on_config_openai_client_import(self) -> None:
         """Importing src.config.openai_client must not trigger any network I/O."""
         # Evict cached module so the import actually executes.
-        for key in [k for k in sys.modules if k in (
-            "config.openai_client", "src.config.openai_client"
-        )]:
-            del sys.modules[key]
+        for key in ("config.openai_client", "src.config.openai_client"):
+            sys.modules.pop(key, None)
 
         network_called: list[str] = []
 
@@ -132,13 +130,9 @@ class TestImportSmoke:
                 )
 
         import socket as _socket
-        orig_socket = _socket.socket
-        _socket.socket = _BlockingSocket  # type: ignore[assignment]
-        try:
+        with patch.object(_socket, "socket", _BlockingSocket):
             import importlib as _il
             _il.import_module("src.config.openai_client")
-        finally:
-            _socket.socket = orig_socket
 
         assert not network_called, (
             f"Network I/O detected during import: {network_called}"
