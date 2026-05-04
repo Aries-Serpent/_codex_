@@ -133,11 +133,11 @@ class TestEnsureSubpath:
 class TestValidatePathSegment:
     """Unit tests for tenant/index path segment validation."""
 
-    @pytest.mark.parametrize("value", ["default", "tenant-42", "index_1", "release.v1"])
+    @pytest.mark.parametrize("value", ["default", "tenant-42", "index_1", "release.v1", "a" * 128])
     def test_valid_segments_pass(self, value: str) -> None:
         assert _validate_path_segment(value, "segment") == value
 
-    @pytest.mark.parametrize("value", ["../etc", "a/b", r"a\\b", " ", "", "🔥"])
+    @pytest.mark.parametrize("value", ["../etc", "a/b", r"a\\b", " ", "", "🔥", "a" * 129])
     def test_invalid_segments_raise_400(self, value: str) -> None:
         with pytest.raises(HTTPException) as exc_info:
             _validate_path_segment(value, "segment")

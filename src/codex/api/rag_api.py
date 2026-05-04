@@ -46,7 +46,13 @@ logger = logging.getLogger(__name__)
 def _validate_path_segment(value: str, field_name: str) -> str:
     """Validate a user-controlled path segment."""
     if not _SAFE_PATH_SEGMENT.fullmatch(value):
-        raise HTTPException(status_code=400, detail=f"Invalid {field_name}")
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Invalid {field_name}: must use only letters, digits, dot, underscore, "
+                "or hyphen (1-128 chars)"
+            ),
+        )
     return value
 
 

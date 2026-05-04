@@ -96,9 +96,14 @@ def _load_hash_pepper() -> bytes:
         if _DEFAULT_PEPPER_PATH.exists():
             return _DEFAULT_PEPPER_PATH.read_bytes()
         pepper = secrets.token_bytes(32)
-        _DEFAULT_PEPPER_PATH.write_bytes(pepper)
-        _DEFAULT_PEPPER_PATH.chmod(0o600)
-        return pepper
+        try:
+            with _DEFAULT_PEPPER_PATH.open("xb") as handle:
+                handle.write(pepper)
+            _DEFAULT_PEPPER_PATH.chmod(0o600)
+            return pepper
+        except FileExistsError:
+            # Another process initialized the pepper first; use that value.
+            return _DEFAULT_PEPPER_PATH.read_bytes()
     except OSError as exc:
         raise RuntimeError(
             f"Unable to load or initialize API key pepper at {_DEFAULT_PEPPER_PATH}"
