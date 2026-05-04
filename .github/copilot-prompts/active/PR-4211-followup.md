@@ -1,274 +1,53 @@
-# 🎯 PR Follow-Up Tasks — #4211
+# 🎯 PR Follow-Up Tasks - #4211
 
-**PR**: #4211 — `fix: UNKNOWN_TIMESTAMP, RunLogger import, docstring caps, duplicate pragma, malformed ISO timestamp + CodeQL Waves 1–2`
-**Branch**: `copilot/add-unknown-timestamp-constant`
-**Author**: @Copilot
-**Last Updated**: 2026-05-04T01:30Z
-**Status**: 🔄 Wave 2 complete — Wave 3–7 queued
-
----
-
-## ✅ COMPLETED WORK (this PR)
-
-| Wave | Rules | Alerts Fixed | Commit |
-|------|-------|-------------|--------|
-| 0 — micro-fixes | UNKNOWN_TIMESTAMP, docstrings, pragma, ISO Z | 7 | `03c19be7` |
-| 1 — Errors | `py/call-to-non-callable`, `py/call/wrong-arguments`, `py/call/wrong-named-argument`, `py/uninitialized-variable` | 38 | `82b95be` |
-| 2 — Warnings | `py/unreachable-statement`, `py/multiple-definition` | 41 | (this session) |
-
-**Also added this session:**
-- `.github/workflows/codeql.yml` — CodeQL Advanced workflow (actions/go/javascript-typescript/python/rust, ubuntu-latest only, `security-extended,security-and-quality` queries)
+**PR**: #4211 - PR #4211  
+**Branch**: `copilot/add-unknown-timestamp-constant`  
+**Author**: @mbaetiong  
+**Date**: 2026-05-04  
+**Commit**: `f385b6cda073f6f20fb29bce814284a1ce4507f7`  
+**Status**: 🔄 ACTIVE
 
 ---
 
-## 🌊 REMAINING WAVES — sprint backlog
+## 📋 PREVIOUS SESSION SUMMARY
 
-> **Rule:** Merge each wave's PR and wait for CodeQL re-scan to confirm 0 new findings before starting the next wave.
+### Completed Work
+- [`f385b6cd`] feat(wave2+codeql): Wave 2 unreachable-stmt fixes, CodeQL Advanced workflow, Wave 3-7 groundwork (copilot-swe-agent[bot], 2026-05-04)
+- [`2435199b`] chore(wave2): initial plan — Wave 2 + codeql.yml + Wave 3-7 groundwork (copilot-swe-agent[bot], 2026-05-04)
+- [`d0e646ad`] chore(d00): update session context digest [skip ci] (github-actions[bot], 2026-05-04)
+
+### Files Modified
+No files modified
 
 ---
 
-### 🌊 Wave 3 — Exception Hygiene (Reliability) ← NEXT
+## 🎯 NEXT PHASE OBJECTIVES
 
-**Target rules:** `py/empty-except` (87), `py/unexpected-raise-in-special-method` (2), `py/catch-base-exception` (1) — **Total: ~90 findings**
+### Priority 1: Immediate Tasks 🔴 CRITICAL
+- [ ] No tasks specified
 
-**PR title:** `chore(quality): Wave 3 — exception hygiene [py/empty-except, py/catch-base-exception, py/unexpected-raise-in-special-method]`
-
-#### Pre-scanned findings (top-10 by file)
-
-| File | Line | Pattern |
-|------|------|---------|
-| `conftest.py` | 19 | empty except: pass |
-| `conftest.py` | 342 | empty except: pass |
-| `tests/test_rag_utils.py` | 68, 84, 150, 159, 237 | empty except: pass |
-| `tests/test_mlflow_utils.py` | 100 | empty except: pass |
-| (+ 82 more files) | | |
-
-**Fix strategy:**
-```python
-# BEFORE (py/empty-except):
-try:
-    risky_operation()
-except Exception:
-    pass
-
-# AFTER — use existing module logger:
-try:
-    risky_operation()
-except Exception:
-    logger.debug("Suppressed exception in handler", exc_info=True)
-```
-
-- For `except BaseException`: replace with `except Exception` unless `KeyboardInterrupt`/`SystemExit` handling is intentional (document with inline comment).
-- For `__special__` methods raising non-standard exceptions: convert to `TypeError`, `ValueError`, `AttributeError`, `StopIteration`, or `NotImplementedError`.
-- Use `ruff check --select=BLE001 --fix` to flag bare `except` clauses first.
-
-**DO NOT** log sensitive data — cross-check against `services/ita/app/security.py` patterns.
-
-**Bulk-fix command (generate targets):**
+**Validation**:
 ```bash
-python -m ruff check --select=BLE001,E722 --output-format=json . > /tmp/wave3_targets.json
+python -m ruff check src/ tests/ --output-format=concise
+python scripts/ci/mypy_baseline.py --require-baseline
+python scripts/ci/auto_fix_common_issues.py --check-only
+python scripts/ci/sync_tracked_files.py --fix
 ```
 
----
+### Priority 2: Follow-Up Validation 🟡 HIGH
+- [ ] No tasks specified
 
-### 🌊 Wave 4 — Control Flow (Reliability)
-
-**Target rules:** `py/mixed-returns` (25), `py/mixed-tuple-returns` (4) — **Total: ~29 findings**
-
-**PR title:** `chore(quality): Wave 4 — control flow normalization [py/mixed-returns, py/mixed-tuple-returns]`
-
-#### Pre-scanned findings (top-10 by file)
-
-| File | Line | Function | Pattern |
-|------|------|----------|---------|
-| `tests/test_cli_hydra_validation.py` | 22 | `test_hydra_main_offline_compose` | mixed returns |
-| `tests/test_sentencepiece_adapter.py` | 29 | `_stub_transformers` | mixed returns |
-| `tools/codex_ingestion_workflow.py` | 353 | `patch_deep_research_script` | mixed returns |
-| `agents/developer_orchestrator.py` | 563 | `_determine_implementation_order` | mixed returns |
-| `agents/mental_mapping.py` | 1168 | `dfs` | mixed returns |
-| `analysis/intuitive_aptitude.py` | 458 | `_analyze_docstring_style` | mixed returns |
-| `training/checkpoint_manager.py` | 349 | `_update_best` | mixed returns |
-| (+ 18 more) | | | |
-
-**Fix strategy:**
-```python
-# BEFORE (py/mixed-returns): some paths return value, some fall off end
-def process(x):
-    if x:
-        return x * 2
-    # implicit None return here — CodeQL flags this
-
-# AFTER: explicit return on every path
-def process(x):
-    if x:
-        return x * 2
-    return None
-```
-
-For tuple returns:
-```python
-# BEFORE (py/mixed-tuple-returns):
-def get_result():
-    if success:
-        return value, error_code  # tuple
-    return None                   # not a tuple
-
-# AFTER — consistent shape:
-def get_result():
-    if success:
-        return value, error_code
-    return None, -1               # same tuple shape
-```
-
-**Triage command:**
-```bash
-python -m mypy --strict --select=return-value src/ 2>&1 | head -50
-```
-
----
-
-### 🌊 Wave 5 — Import Hygiene (Maintainability)
-
-**Target rules:** `py/import-and-import-from` (31), `py/repeated-import` (22), `py/unused-import` (16), `py/polluting-import` (2), `py/import-own-module` (1) — **Total: 72 findings**
-
-**PR title:** `chore(quality): Wave 5 — import hygiene [py/import-and-import-from, py/repeated-import, py/unused-import, py/polluting-import, py/import-own-module]`
-
-**Fix strategy:**
-```bash
-# Step 1: triage with ruff
-python -m ruff check --select=F401,F811,F403,I --statistics . 2>&1 | head -30
-
-# Step 2: auto-fix safe subsets (only commit diffs you've reasoned about)
-python -m ruff check --select=F401,F811 --fix .
-
-# Step 3: replace `from X import *` with explicit imports
-grep -rn "import \*" src/ tests/ --include="*.py" | head -20
-```
-
-- `py/import-own-module`: search for `from codex_ml import codex_ml` or `import codex_ml.codex_ml` patterns.
-- `py/polluting-import` (`from X import *`): resolve via explicit named imports; use `__all__` in the source module to limit exposure.
-
----
-
-### 🌊 Wave 6 — Dead Code Sweep (Maintainability)
-
-**Target rules:** `py/unused-global-variable` (118), `py/unused-local-variable` (92), `py/ineffectual-statement` (63), `js/unused-local-variable` (4), `py/commented-out-code` (1) — **Total: ~278 findings**
-
-**PR title:** `chore(quality): Wave 6 — dead code sweep [py/unused-global-variable, py/unused-local-variable, py/ineffectual-statement, js/unused-local-variable]`
-
-> ⚠️ **Split into sub-PRs if > 50 files touched.** Suggested split: `src/` then `tests/` then `scripts/`.
-
-**Pre-deletion search protocol (per `CODEBASE_AGENCY_POLICY.md`):**
-
-Before removing ANY global variable or function:
-```bash
-# Search for string-based references (getattr, importlib, templates)
-grep -rn "\"VARIABLE_NAME\"\|'VARIABLE_NAME'\|getattr.*VARIABLE_NAME" . --include="*.py"
-rg -l "VARIABLE_NAME" . --type=py
-```
-Document the search query in the PR description.
-
-**Fix strategy:**
-- `py/unused-global-variable`: check `__all__` first; if exported, add to `__all__` instead of deleting.
-- `py/unused-local-variable`: rename to `_` if intentional discard; delete if dead.
-- `py/ineffectual-statement`: docstring-like strings not assigned → either convert to docstring or delete.
-- `js/unused-local-variable` (4 findings): run ESLint with `--rule 'no-unused-vars: error'`.
-- `py/commented-out-code` (1 finding): move to ADR if historically valuable; otherwise delete.
-
-**Triage commands:**
-```bash
-python -m ruff check --select=F841,F841 --statistics . | head -20
-python -m vulture --min-confidence 80 src/ | head -40
-```
-
----
-
-### 🌊 Wave 7 — Style Polish (Maintainability/Reliability)
-
-**Target rules:** `py/unnecessary-lambda` (5), `py/print-during-import` (1), `py/should-use-with` (1) — **Total: 7 findings**
-
-**PR title:** `chore(quality): Wave 7 — style polish [py/unnecessary-lambda, py/print-during-import, py/should-use-with]`
-
-**Fix strategy:**
-```python
-# py/unnecessary-lambda
-sorted(items, key=lambda x: x.value)  →  sorted(items, key=attrgetter('value'))
-callbacks.append(lambda: f(x))        →  callbacks.append(partial(f, x))
-
-# py/print-during-import — move to guarded block or convert to logger.debug
-print("module loaded")  →  logger.debug("module loaded")  # or if __name__ == "__main__"
-
-# py/should-use-with
-f = open("file")
-data = f.read()
-f.close()
-→
-with open("file") as f:
-    data = f.read()
-```
-
-**Triage command:**
-```bash
-python -m ruff check --select=E731 --statistics .
-grep -rn "^print(" src/ --include="*.py" | grep -v "if __name__"
-grep -rn "\.open\|open(" src/ --include="*.py" | grep -v "with open"
-```
-
----
-
-## 🔧 CodeQL Advanced Workflow (`.github/workflows/codeql.yml`)
-
-Added in this session. Covers:
-- Languages: `actions`, `go`, `javascript-typescript`, `python`, `rust`
-- Runner: `ubuntu-latest` (no swift/macos)
-- Queries: `security-extended,security-and-quality`
-- Schedule: Saturday 18:44 UTC (offset from `codeql-analysis.yml` Sunday 03:00)
-- Jobs: `analyze`, `post-codeql-auto-approve`, `rescue-comment`
-
-Validation after merge:
-```bash
-# Confirm workflow file is valid YAML
-python -c "import yaml; yaml.safe_load(open('.github/workflows/codeql.yml'))"
-# Check actionlint (if available)
-actionlint .github/workflows/codeql.yml
-```
+### Priority 3: Future Enhancements 🟢 MEDIUM
+- [ ] No tasks specified
 
 ---
 
 ## ✅ EXECUTION CHECKLIST
 
-- [x] Wave 0 — micro-fixes (7 quality items)
-- [x] Wave 1 — 38 Error-level CodeQL alerts
-- [x] Wave 2 — `py/unreachable-statement` (38), `py/multiple-definition` (1) — **41 total**
-- [x] `.github/workflows/codeql.yml` — CodeQL Advanced (ubuntu-latest, all 5 languages)
-- [ ] Wave 3 — exception hygiene (~90 findings) — PR: `chore(quality): Wave 3`
-- [ ] Wave 4 — control flow (~29 findings) — PR: `chore(quality): Wave 4`
-- [ ] Wave 5 — import hygiene (~72 findings) — PR: `chore(quality): Wave 5`
-- [ ] Wave 6 — dead code sweep (~278 findings) — PR: `chore(quality): Wave 6` (split if > 50 files)
-- [ ] Wave 7 — style polish (~7 findings) — PR: `chore(quality): Wave 7`
-- [ ] Final: 0 open findings on Code Quality dashboard (Maintainability ≥ Good, Reliability ≥ Good)
-
----
-
-## 🔍 Validation Commands (run after each session)
-
-```bash
-# Lint all modified files
-python -m ruff check src/ tests/ scripts/ --output-format=concise
-
-# Tracked file consistency
-python3 scripts/ci/sync_tracked_files.py --fix
-
-# Type check (after touching src/)
-python3 scripts/ci/mypy_baseline.py --require-baseline
-
-# Auto-fix check
-python scripts/ci/auto_fix_common_issues.py --check-only --json-output .codex/diagnostic-report.json
-
-# Session wrapup
-python3 scripts/ci/session_wrapup_autofix.py --pr-number 4211
-```
-
+- [ ] All Priority 1 tasks completed and validated
+- [ ] All Priority 2 tasks completed or documented
+- [ ] Priority 3 tasks reviewed and prioritized
+- [ ] All validation checks passed
 - [ ] Documentation updated
 - [ ] Self-review completed (5 passes, 0 concerns)
 
@@ -333,4 +112,4 @@ python3 scripts/ci/session_wrapup_autofix.py --pr-number 4211
 
 **Generated**: 2026-05-04  
 **Template Version**: 2.0.0  
-**Last Updated**: 2026-05-04 00:46:30
+**Last Updated**: 2026-05-04 01:51:51
