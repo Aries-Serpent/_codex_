@@ -1803,7 +1803,13 @@ jobs:
             const now = Math.floor(Date.now() / 1000);
 
             function isRateLimit(e) {
-              const msg = String(e.message || e.response?.data?.message || '').toLowerCase();
+              const msg = [
+                e.message,
+                e.response?.data?.message,
+                e.response?.data?.error,
+                e.data?.message,
+                e.data?.error,
+              ].filter(Boolean).join(' ').toLowerCase();
               return (e.status === 403 || e.status === 429) && msg.includes('rate limit');
             }
 
@@ -2211,7 +2217,13 @@ jobs:
 
             // Helper: get repo variable
             function isRateLimit(e) {
-              const msg = String(e.message || e.response?.data?.message || '').toLowerCase();
+              const msg = [
+                e.message,
+                e.response?.data?.message,
+                e.response?.data?.error,
+                e.data?.message,
+                e.data?.error,
+              ].filter(Boolean).join(' ').toLowerCase();
               return (e.status === 403 || e.status === 429) && msg.includes('rate limit');
             }
 
