@@ -53,7 +53,7 @@ dependencies = [
   "typer>=0.12",
   # AST Analysis Core Dependencies
   "libcst>=1.0.0",
-  "radon>=6.0.0",
+  "radon>=6.0.1",
   "parso>=0.8.0",
   # Security: IP-005 dependency updates - addressing 26 known vulnerabilities
   "jinja2>=3.1.6",  # Security: Fixes CVE-2024-56326, CVE-2024-56201 (RCE via sandbox escape)
