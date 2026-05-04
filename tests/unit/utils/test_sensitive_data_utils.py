@@ -9,6 +9,8 @@ def test_mask_sensitive_data_email():
     text = "Contact me at user@example.com"
     result = mask_sensitive_data(text)
     assert "user@example.com" not in result
+    # Accept either masking marker insertion ("***") or full token removal by
+    # the redaction implementation; both indicate the sensitive token is not exposed.
     assert "***" in result or "@" not in result  # pragma: allowlist secret
 
 

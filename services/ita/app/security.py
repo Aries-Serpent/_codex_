@@ -93,8 +93,10 @@ def _load_hash_pepper() -> bytes:
 
     try:
         _DEFAULT_PEPPER_PATH.parent.mkdir(parents=True, exist_ok=True)
-        if _DEFAULT_PEPPER_PATH.exists():
+        try:
             return _DEFAULT_PEPPER_PATH.read_bytes()
+        except FileNotFoundError:
+            pass
         pepper = secrets.token_bytes(32)
         try:
             with _DEFAULT_PEPPER_PATH.open("xb") as handle:
