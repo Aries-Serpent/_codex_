@@ -155,6 +155,8 @@ manifests/k8s/*/secret.yaml
 !.codex/embeddings/
 .codex/embeddings/*
 !.codex/embeddings/codex_index_meta.json
+!.codex/agentic-enablement/
+!.codex/agentic-enablement/**
 !.codex/archive/
 !.codex/archive/**
 !.codex/automation_out/
