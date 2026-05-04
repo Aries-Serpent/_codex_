@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
+import hmac
 import json
 import os
 import secrets
 import time
 from collections.abc import Iterable
 from dataclasses import dataclass
-from hashlib import sha256
 from pathlib import Path
 from typing import Optional
 
@@ -17,7 +18,9 @@ from fastapi import HTTPException, status
 _KEY_FILE_ENV = "ITA_API_KEYS_PATH"
 _SINGLE_KEY_ENV = "ITA_API_KEY"
 _ADDITIONAL_KEYS_ENV = "ITA_ADDITIONAL_API_KEYS"
+_PEPPER_ENV = "ITA_API_KEY_PEPPER"
 _DEFAULT_RUNTIME_PATH = Path(__file__).resolve().parent.parent / "runtime" / "api_keys.json"
+_DEFAULT_PEPPER_PATH = Path(__file__).resolve().parent.parent / "runtime" / "api_key_pepper.bin"
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,24 +70,49 @@ class ApiKeyStore:
     def hashed_keys(self) -> set[str]:
         return {record.key_hash for record in self._load()}
 
+    def upgrade_hash(self, old_hash: str, new_hash: str) -> None:
+        """Replace a legacy hash with a stronger hash while preserving metadata."""
+        records = self._load()
+        upgraded = set()
+        changed = False
+        for record in records:
+            if record.key_hash == old_hash:
+                upgraded.add(ApiKeyRecord(key_hash=new_hash, created_at=record.created_at))
+                changed = True
+            else:
+                upgraded.add(record)
+        if changed:
+            self._dump(upgraded)
+
+
+def _load_hash_pepper() -> bytes:
+    """Load or create the server-side pepper used for keyed API-key hashing."""
+    configured = os.environ.get(_PEPPER_ENV, "").strip()
+    if configured:
+        return configured.encode("utf-8")
+
+    try:
+        _DEFAULT_PEPPER_PATH.parent.mkdir(parents=True, exist_ok=True)
+        if _DEFAULT_PEPPER_PATH.exists():
+            return _DEFAULT_PEPPER_PATH.read_bytes()
+        pepper = secrets.token_bytes(32)
+        _DEFAULT_PEPPER_PATH.write_bytes(pepper)
+        _DEFAULT_PEPPER_PATH.chmod(0o600)
+        return pepper
+    except OSError:
+        # Fail-safe fallback for restricted environments.
+        return b"ita-pepper-fallback"
+
+
+def _legacy_hash_key(value: str) -> str:
+    """Legacy non-keyed hash used by older deployments."""
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
 
 def hash_key(value: str) -> str:
-    """Hash API key for storage and lookup.
-
-    Security Note: SHA-256 is appropriate here for API key hashing because:
-    1. API keys are high-entropy random tokens (not user passwords)
-    2. Speed is beneficial for authentication lookups
-    3. Keys are already unique (no salt needed)
-    4. Not vulnerable to brute-force (unlike password hashing)
-
-    For password hashing, use bcrypt, argon2, or scrypt instead.
-
-    CodeQL Suppression: This is NOT password hashing - it's for high-entropy API tokens.
-    The 'value' parameter contains cryptographically random API keys (24+ bytes of entropy),
-    not user-chosen passwords. SHA-256 is appropriate for this use case.
-    """
-    # lgtm[py/weak-cryptographic-algorithm] - High-entropy API tokens, not passwords
-    return sha256(value.encode("utf-8")).hexdigest()
+    """Hash API key for storage and lookup using a keyed digest."""
+    pepper = _load_hash_pepper()
+    return hmac.new(pepper, value.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
 def _keys_from_environment() -> set[str]:
@@ -111,8 +139,15 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
 
     store = store or ApiKeyStore()
     hashed_candidate = hash_key(candidate)
+    legacy_hashed_candidate = _legacy_hash_key(candidate)
+    stored_hashes = store.hashed_keys()
 
-    if hashed_candidate in store.hashed_keys():
+    if hashed_candidate in stored_hashes:
+        return hashed_candidate
+
+    # Backward compatibility: transparently migrate legacy hashes on successful auth.
+    if legacy_hashed_candidate in stored_hashes:
+        store.upgrade_hash(legacy_hashed_candidate, hashed_candidate)
         return hashed_candidate
 
     if candidate in _keys_from_environment():

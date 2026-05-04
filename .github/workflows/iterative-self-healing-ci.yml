@@ -972,8 +972,12 @@ jobs:
         uses: actions/checkout@v5
         continue-on-error: true
         with:
-          ref: ${{ needs.triage.outputs.head_branch }}
+          # SECURITY: this escalation job runs in a trusted context; it only needs
+          # repository metadata/scripts, not untrusted PR branch code.
+          # Check out trusted main to avoid trusted-context checkout alerts.
+          ref: refs/heads/main
           fetch-depth: 1
+          persist-credentials: false
 
       - name: "Query high-recurrence + cross-PR patterns"
         id: high_rec

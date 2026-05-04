@@ -15,8 +15,8 @@ Usage::
     python tools/status/generate_status_update.py --author "<name>" \
         --date YYYY-MM-DD --write
 
-If ``--write`` is omitted the report is printed to stdout and no files are
-created.
+If ``--write`` is omitted, a redacted preview is printed to stdout and no files
+are created.
 """
 
 from __future__ import annotations
@@ -73,10 +73,22 @@ DOC_TOPICS = (
 )
 
 COMPLIANCE_LICENSE_PATTERN = re.compile(r"^LICENSE", re.IGNORECASE)
+SENSITIVE_OUTPUT_PATTERNS: tuple[re.Pattern[str], ...] = (
+    re.compile(r"(?i)(token|secret|password|api[-_]?key)\s*[:=]\s*[^\s|]+"),
+    re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"),
+)
 
 
 def utc_timestamp() -> str:
     return dt.datetime.now(UTC).isoformat(timespec="seconds")
+
+
+def sanitize_for_logging(text: str) -> str:
+    """Redact sensitive-looking key/value fragments before console output."""
+    sanitized = text
+    for pattern in SENSITIVE_OUTPUT_PATTERNS:
+        sanitized = pattern.sub("[redacted]", sanitized)
+    return sanitized
 
 
 @dataclass
@@ -1071,7 +1083,7 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     if write:
         out_path.write_text(markdown, encoding="utf-8")
     else:
-        print(markdown)
+        print(sanitize_for_logging(markdown))
     return out_path
 
 
