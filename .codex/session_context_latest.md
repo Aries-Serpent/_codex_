@@ -64,5 +64,5 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 
 ---
 
-## Table of Cont
+## Table of Contents
 ```
