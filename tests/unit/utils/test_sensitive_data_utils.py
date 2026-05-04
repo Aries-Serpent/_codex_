@@ -9,7 +9,7 @@ def test_mask_sensitive_data_email():
     text = "Contact me at user@example.com"
     result = mask_sensitive_data(text)
     assert "user@example.com" not in result
-    assert "***" in result or "@" not in result  # pragma: allowlist secret # pragma: allowlist secret
+    assert "***" in result or "@" not in result  # pragma: allowlist secret
 
 
 def test_mask_sensitive_data_phone():
@@ -93,7 +93,12 @@ def test_hash_sensitive_value_consistency():
 
 
 def test_hash_sensitive_value_uniqueness():
-    """Test hash_sensitive_value produces unique hashes for distinct inputs."""
+    """Test hash_sensitive_value yields distinct hashes for this representative sample.
+
+    Note: Hash collisions are theoretically possible for any hash function.
+    This test is a practical sanity check for these specific inputs, not a
+    mathematical proof of collision-freedom.
+    """
     values = [
         "alpha",
         "Alpha",  # case-variant edge case
@@ -110,6 +115,7 @@ def test_hash_sensitive_value_uniqueness():
         "emoji_😀",  # Unicode emoji
     ]
     hashes = [hash_sensitive_value(value) for value in values]
+    # Expect no collisions within this small, fixed representative input set.
     assert len(set(hashes)) == len(values)
 
 
