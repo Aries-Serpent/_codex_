@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (PR #4254 — line length / CI)
-- **`src/codex/autonomy/token_broker.py:137`**: line-comprehension was 102 chars (over the 100-char limit); wrapped to multi-line form to satisfy Pattern 12 (Line Length) gate
+- **`src/codex/autonomy/token_broker.py:137`**: list comprehension was 102 chars (over the 100-char limit); wrapped to multi-line form to satisfy Pattern 12 (Line Length) gate
 
 ### Fixed (PR #4254 — code quality)
 - **`src/codex/autonomy/audit.py`**: `_DEFAULT_AUDIT_PATH` and `_DEFAULT_METRICS_PATH` were module-level constants defined but never referenced; wired them into `AuditLogger.__init__` as fallbacks when registry path is empty, resolving the `github-code-quality` "unused global variable" alerts
