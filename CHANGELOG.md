@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4223)
+### Fixed (S295 — PR #4223)
+- **CodeQL Rust build-mode**: Changed `build-mode: autobuild` → `build-mode: none` for the Rust leg in `.github/workflows/codeql.yml`. CodeQL's Rust extractor does not support `autobuild`; using `none` causes direct source analysis. All 5 CodeQL matrix legs (actions, go, javascript-typescript, python, rust) now pass.
+- **secrets baseline**: Updated stale CODEX_MANIFEST entry in `.secrets.baseline` via `sync_tracked_files.py --fix`.
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4223 (SHA `29ef30b9`) at 2026-05-04T05:27Z [auto-generated]
 
 ### Fixed (auto-update — PR #4219)
