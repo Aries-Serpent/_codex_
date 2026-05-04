@@ -17,6 +17,7 @@ def test_tokenization_compat_emits_deprecation_and_forwards_attributes():
         compat = importlib.import_module("codex_ml.tokenization.compat")
     except Exception as exc:  # pragma: no cover - optional deps missing
         pytest.skip(f"compat module unavailable: {exc}")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
     # Accessing a non-existent symbol should still emit a deprecation warning.
     with warnings.catch_warnings(record=True) as rec:
         warnings.simplefilter("always", DeprecationWarning)

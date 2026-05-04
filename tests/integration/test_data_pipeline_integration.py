@@ -525,6 +525,7 @@ class TestErrorHandling:
                 raise ConnectionError("Temporary failure")
             return "success"
 
+        result: str | None = None
         for retry in range(max_retries):
             try:
                 result = flaky_operation()

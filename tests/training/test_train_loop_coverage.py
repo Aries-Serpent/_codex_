@@ -81,7 +81,9 @@ else:
         pass
 
     class SimpleModel:
-        pass
+        def __call__(self, *args: object, **kwargs: object) -> object:
+            """Raise at runtime since PyTorch is unavailable; quiets static analysis."""
+            raise NotImplementedError("PyTorch is not available")
 
 
 @pytest.fixture

@@ -16,6 +16,7 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
     except ImportError as e:
         import pytest
         pytest.skip(f"run_training not available: {e}")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     outdir = tmp_path / "artifacts"
     # Two runs -> two telemetry events

@@ -262,8 +262,7 @@ class TestDataProcessingWorkflow:
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
-
-        # Create TOML file
+            return  # pragma: no cover - pytest.skip always raises; helps static analysis
         toml_file = tmp_path / "config.toml"
         toml_content = """
 [project]

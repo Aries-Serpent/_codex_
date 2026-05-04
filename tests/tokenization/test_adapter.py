@@ -25,6 +25,7 @@ def test_hf_tokenizer_roundtrip():
         tok = HFTokenizerAdapter("gpt2")
     except HFModelUnavailableError:
         pytest.skip("HF model unavailable in CI (no network access)")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
     text = "hello world"
     ids = tok.encode(text)
     assert isinstance(ids, list)

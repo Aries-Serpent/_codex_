@@ -29,6 +29,7 @@ def test_hf_dataset_factory():
         tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
     except HFModelUnavailableError as exc:
         pytest.skip(f"Model unavailable (cache miss + network unreachable): {exc}")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token

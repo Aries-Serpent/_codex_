@@ -23,6 +23,7 @@ def test_cache_roundtrip(tmp_path):
         tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
     except HFModelUnavailableError:
         pytest.skip("HF model unavailable in CI (no network access)")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     texts = ["hello world", "goodbye"]

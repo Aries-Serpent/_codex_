@@ -354,6 +354,7 @@ class TestVisualization:
 
         # Format value
         value = stat_config["value"]
+        formatted = str(value)
         if stat_config["format"] == "short":
             if value >= 1000000:
                 formatted = f"{value / 1000000:.1f}M"

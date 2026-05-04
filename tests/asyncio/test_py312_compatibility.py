@@ -122,6 +122,7 @@ class TestRequestBatcherAsyncContext:
             from codex_ml.serving.optimizations import BatchConfig, RequestBatcher
         except ImportError:
             pytest.skip("RequestBatcher not available")
+            return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
         # Create RequestBatcher with correct parameters
         config = BatchConfig(max_batch_size=10, max_wait_ms=100)

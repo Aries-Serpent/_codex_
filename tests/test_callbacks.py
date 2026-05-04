@@ -26,6 +26,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
     except Exception as e:
         # If import fails, skip tests rather than erroring the entire suite.
         pytest.skip(f"EarlyStopping import failed: {e}")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     try:
         # Prefer constructor with mode if available.

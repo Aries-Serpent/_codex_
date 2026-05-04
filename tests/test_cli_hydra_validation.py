@@ -59,6 +59,7 @@ def test_hydra_main_offline_compose(monkeypatch, tmp_path) -> None:
         # Hydra raises SystemExit when config resolution fails (e.g.
         # working directory doesn't contain configs/training/sweeps).
         pytest.skip(f"Hydra config resolution failed (SystemExit {exc.code})")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     assert result == {"status": "ok"}
     assert captured["training"]["max_epochs"] == 1

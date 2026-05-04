@@ -167,6 +167,7 @@ class TestRetryExecution:
         """Test no retries needed on first success."""
         max_retries = 3
         attempts = 0
+        result = ""
 
         for retry in range(max_retries + 1):
             attempts += 1

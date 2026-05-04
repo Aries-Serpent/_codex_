@@ -111,17 +111,17 @@ def main():
     print(f"Link Health Score:        {((internal_links - len(broken_links)) / max(1, internal_links)) * 100:.1f}%")
     print()
 
+    # Group by file (used both for console output and report writing below)
+    by_file: dict[str, list] = {}
+    for link in broken_links:
+        if link['file'] not in by_file:
+            by_file[link['file']] = []
+        by_file[link['file']].append(link)
+
     if broken_links:
         print("=" * 80)
         print(f"BROKEN LINKS ({len(broken_links)} total)")
         print("=" * 80)
-
-        # Group by file
-        by_file = {}
-        for link in broken_links:
-            if link['file'] not in by_file:
-                by_file[link['file']] = []
-            by_file[link['file']].append(link)
 
         for filepath in sorted(by_file.keys()):
             print(f"\n{filepath}:")

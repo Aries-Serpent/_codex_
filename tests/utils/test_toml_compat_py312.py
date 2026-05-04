@@ -53,6 +53,7 @@ testpaths = ["tests"]
         toml_file.write_text(toml_content)
 
         # Load with tomllib (Python 3.11+) or tomli
+        data: dict = {}
         try:
             import tomllib
             with open(toml_file, "rb") as f:
@@ -83,8 +84,7 @@ testpaths = ["tests"]
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
-
-        # Binary mode should work
+            return  # pragma: no cover - pytest.skip always raises; helps static analysis
         with open(toml_file, "rb") as f:
             data = tomllib.load(f)
         assert data["section"]["key"] == "value"
@@ -130,6 +130,7 @@ addopts = "-v --strict-markers"
 """
         toml_file.write_text(toml_content)
 
+        data: dict = {}
         try:
             import tomllib
             with open(toml_file, "rb") as f:
@@ -161,6 +162,7 @@ class TestPyprojectTomlParsing:
         if not pyproject_path.exists():
             pytest.skip("pyproject.toml not found")
 
+        data: dict = {}
         try:
             import tomllib
             with open(pyproject_path, "rb") as f:
@@ -202,6 +204,7 @@ class TestPyprojectTomlParsing:
         if not pyproject_path.exists():
             pytest.skip("pyproject.toml not found")
 
+        data: dict = {}
         try:
             import tomllib
             with open(pyproject_path, "rb") as f:
@@ -252,6 +255,7 @@ key4 = true
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
+            return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
         start = time.time()
         with open(toml_file, "rb") as f:
@@ -272,12 +276,14 @@ author = "José García"
 """
         toml_file.write_text(toml_content, encoding="utf-8")
 
+        data: dict = {}
         try:
             import tomllib
             with open(toml_file, "rb") as f:
                 data = tomllib.load(f)
         except ImportError:
             pytest.skip("tomllib not available")
+            return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
         assert data["project"]["name"] == "测试项目"
         assert "🚀" in data["project"]["description"]

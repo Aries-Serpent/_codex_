@@ -20,6 +20,7 @@ def test_validate_ok(tmp_path: Path):
         from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     cfg = tmp_path / "ok.yaml"
     cfg.write_text(
@@ -42,6 +43,7 @@ def test_validate_bad(tmp_path: Path):
         from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
+        return  # pragma: no cover - pytest.skip always raises; helps static analysis
 
     cfg = tmp_path / "bad.yaml"
     cfg.write_text("learning_rate: -1\nepochs: 0\n", encoding="utf-8")
