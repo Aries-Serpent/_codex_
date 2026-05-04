@@ -50,8 +50,8 @@ sys.path.insert(0, str(_REPO_ROOT / "src"))
 
 # Sentinel used when source records omit timestamps during migration.
 # `0.0` (Unix epoch) is treated by consumers as "unknown timestamp".
+# Unknown timestamp sentinel (Unix epoch, 0.0) used during migration when source timestamps are missing.
 UNKNOWN_TIMESTAMP = 0.0
-"""Unknown timestamp sentinel (Unix epoch, 0.0) used during migration when source timestamps are missing."""
 
 
 def _build_user_from_record(record: dict) -> User:

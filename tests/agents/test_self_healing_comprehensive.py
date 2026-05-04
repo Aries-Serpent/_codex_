@@ -10,6 +10,11 @@ from pathlib import Path
 
 import pytest
 
+try:
+    from agents.self_healing import RemediationAction
+except ImportError:
+    RemediationAction = None  # type: ignore[assignment,misc]
+
 # ============================================================================
 # ISSUE TYPE AND SEVERITY ENUMS
 # ============================================================================

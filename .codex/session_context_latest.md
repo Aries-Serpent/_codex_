@@ -1,32 +1,42 @@
-# Session Context — 2026-05-04T04:12:54Z
+# Session Context — 2026-05-04T04:23:27Z
 **Branch:** `copilot/add-docstring-to-unknown-timestamp`  **PR:** #4219  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4273` (✅)  
-- GraphQL remaining: `4973` (✅)  
+- REST remaining: `4831` (✅)  
+- GraphQL remaining: `4954` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4219 — fix: code quality sweep — docstrings, logger exc_info, percentile interpolation, 17× P0 CodeQL wrong-named-args, ruff B018/F401/F841 bulk fix, CodeQL Rust build-mode
-State: `open`  Draft: `True`  Branch: `copilot/add-docstring-to-unknown-timestamp` → `main`
+## 📋 PR #4219 — fix: code quality sweep — docstrings, logger exc_info, percentile interpolation, 17× P0 CodeQL wrong-named-args, ruff B018/F401/F841 bulk fix, CodeQL Rust build-mode, CWE-1427 path injection
+State: `open`  Draft: `False`  Branch: `copilot/add-docstring-to-unknown-timestamp` → `main`
+
+### ❌ 13 Failing CI Check(s)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Post rescue comment on pre-merge failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Activate token delegation` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Validation Pipeline** — `failure` on `main` (2026-05-04)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **Workflow Execution Gate** — `failure` on `copilot/add-docstring-to-unknown-timestamp` (2026-05-04)
 
 ## 📝 Recent Commits
+- `ebbaf303` fix(security): add _ensure_subpath guard to get_stats and delete_index (CWE-1427 — copilot-swe-agent[bot] (2026-05-04)
+- `9b6f1ef9` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `733a969c` fix(ci): add missing `import re` in denylist.py (ruff F821); set rust CodeQL bui — copilot-swe-agent[bot] (2026-05-04)
 - `c32bb842` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
 - `16cb08ba` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 - `a65d49d7` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `871ce604` fix(codeql): resolve P0 wrong-named-argument errors + ruff bulk-fix B018/F401/F8 — copilot-swe-agent[bot] (2026-05-04)
 - `90c26b1a` fix(review): address code review feedback — check checkpoint file existence, dro — copilot-swe-agent[bot] (2026-05-04)
-- `f3d863c5` fix(imports): remove redundant 'import pathlib' shadowing top-level 'from pathli — copilot-swe-agent[bot] (2026-05-04)
-- `7e5616ad` refactor(dead-code/style): remove unreachable code, redundant import, use-with f — copilot-swe-agent[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
