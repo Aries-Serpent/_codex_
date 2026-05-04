@@ -237,7 +237,11 @@ def _is_stub_module(
     if getattr(module, "IS_CODEX_STUB", False):
         return True
 
-    spec = spec or importlib.util.find_spec(name)
+    try:
+        spec = spec or importlib.util.find_spec(name)
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None
+        return False
     if spec is None:
         return False
 
@@ -1530,13 +1534,23 @@ def serializable_mock_model():
 @pytest.fixture(scope="session")
 def sentence_transformers_available():
     """Check if sentence_transformers is available (session-scoped for performance)."""
-    return importlib.util.find_spec('sentence_transformers') is not None
+    try:
+        return importlib.util.find_spec('sentence_transformers') is not None
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
+        # Module is in sys.modules but its spec is broken — treat as not importable.
+        return False
 
 
 @pytest.fixture(scope="session")
 def faiss_available():
     """Check if faiss is available (session-scoped for performance)."""
-    return importlib.util.find_spec('faiss') is not None
+    try:
+        return importlib.util.find_spec('faiss') is not None
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
+        # Module is in sys.modules but its spec is broken — treat as not importable.
+        return False
 
 
 @pytest.fixture(scope="session")
@@ -1668,8 +1682,15 @@ def mock_sentence_transformer(monkeypatch):
             # Return empty generator for meta tensor compatibility
             return iter([])
 
+    _st_present: bool
     try:
-        if importlib.util.find_spec('sentence_transformers') is None:
+        _st_present = importlib.util.find_spec('sentence_transformers') is not None
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
+        # Module is in sys.modules but spec is broken — attempt to patch anyway.
+        _st_present = True
+    try:
+        if not _st_present:
             raise ImportError("sentence_transformers not available")
 
         # Patch multiple import paths for comprehensive coverage

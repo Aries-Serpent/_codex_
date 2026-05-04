@@ -81,6 +81,9 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 2
+          # Security: persist-credentials: false prevents checked-out (potentially
+          # untrusted fork/PR) code from accessing the elevated token via git credential helper.
+          persist-credentials: false
 
       - name: "Auto-fix pre-flight REQ-4/5 when 🔄 Auto-Post checkbox is checked"
         id: autofix
@@ -163,6 +166,8 @@ jobs:
             echo "⚠️  sync_tracked_files non-zero (non-blocking)"
 
           # Commit and push the auto-fixed files back to the branch
+          # Reconfigure remote with token since persist-credentials: false was used on checkout.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md .secrets.baseline 2>/dev/null || true

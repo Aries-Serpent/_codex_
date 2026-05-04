@@ -115,6 +115,67 @@ class TestDocumentPreprocessor:
         result = pp.preprocess("The \ufb01le")
         assert isinstance(result.text, str)
 
+    def test_unicode_nfc_nfd_cafe_equivalence(self):
+        """NFC precomposed and NFD decomposed café produce identical output under NFKC."""
+        import unicodedata
+
+        cfg = PreprocessingConfig(normalize_unicode=True, unicode_form="NFKC", lowercase=False)
+        pp = DocumentPreprocessor(cfg)
+
+        # NFC: é as single precomposed code point U+00E9
+        nfc_text = "Visit the caf\u00e9 today."
+        # NFD: e followed by combining acute accent U+0301 (decomposed)
+        nfd_text = "Visit the cafe\u0301 today."
+
+        assert nfc_text != nfd_text  # raw strings differ
+
+        result_nfc = pp.preprocess(nfc_text)
+        result_nfd = pp.preprocess(nfd_text)
+
+        # Both forms must produce the same normalized text
+        assert result_nfc.text == result_nfd.text, (
+            f"NFC and NFD café produced different output: "
+            f"{repr(result_nfc.text)} vs {repr(result_nfd.text)}"
+        )
+        # Output must be in NFC (NFKC is a superset of NFC)
+        assert unicodedata.is_normalized("NFC", result_nfc.text)
+
+    def test_unicode_nfd_change_tracked(self):
+        """Preprocessing records unicode_normalized change for NFD input under NFKC."""
+        cfg = PreprocessingConfig(normalize_unicode=True, unicode_form="NFKC")
+        pp = DocumentPreprocessor(cfg)
+
+        # NFD decomposed form will differ from NFKC — change must be recorded
+        nfd_text = "cafe\u0301"  # decomposed é
+        result = pp.preprocess(nfd_text)
+
+        assert any("unicode_normalized" in c for c in result.changes), (
+            f"Expected 'unicode_normalized_NFKC' in changes, got: {result.changes}"
+        )
+
+    def test_unicode_nfc_no_change_when_already_normalized(self):
+        """NFC input with NFKC form records no change when text is already NFKC."""
+        import unicodedata
+
+        cfg = PreprocessingConfig(
+            normalize_unicode=True,
+            unicode_form="NFKC",
+            normalize_whitespace=False,
+            remove_extra_newlines=False,
+            strip_leading_trailing=False,
+            remove_control_chars=False,
+            remove_html_tags=False,
+            compute_fingerprint=False,
+        )
+        pp = DocumentPreprocessor(cfg)
+
+        # Already-NFKC ASCII text — normalization is a no-op
+        text = "hello world"
+        assert unicodedata.is_normalized("NFKC", text)
+        result = pp.preprocess(text)
+
+        assert "unicode_normalized_NFKC" not in result.changes
+
     def test_control_chars_removed(self):
         cfg = PreprocessingConfig(remove_control_chars=True)
         pp = DocumentPreprocessor(cfg)

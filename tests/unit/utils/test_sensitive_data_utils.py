@@ -9,7 +9,7 @@ def test_mask_sensitive_data_email():
     text = "Contact me at user@example.com"
     result = mask_sensitive_data(text)
     assert "user@example.com" not in result
-    assert "***" in result or "@" not in result  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    assert "***" in result or "@" not in result  # pragma: allowlist secret
 
 
 def test_mask_sensitive_data_phone():
@@ -19,6 +19,15 @@ def test_mask_sensitive_data_phone():
     assert "555-123-4567" not in result
     assert "5551234567" not in result  # normalized (dash-stripped) form also absent
     assert "***" in result  # masking marker must be present
+
+
+def test_mask_sensitive_data_phone_unformatted():
+    """Test mask_sensitive_data masks unformatted phone numbers."""
+    text = "Call 5551234567"
+    result = mask_sensitive_data(text)
+    assert "5551234567" not in result
+    assert "Call" in result
+    assert "***" in result
 
 
 def test_mask_sensitive_data_ssn():
@@ -87,12 +96,18 @@ def test_hash_sensitive_value_uniqueness():
     """Test hash_sensitive_value produces unique hashes for distinct inputs."""
     values = [
         "alpha",
+        "Alpha",  # case-variant edge case
+        "ALPHA",  # additional case-variant edge case
         "beta",
         "gamma",
         "1234567890",
         "special_chars_!@#$%^&*()",
         "much longer value with more content",
         "another_completely_different_string",
+        "café",  # Unicode accented Latin
+        "CAFÉ",  # Unicode + case variant
+        "こんにちは",  # non-Latin Unicode
+        "emoji_😀",  # Unicode emoji
     ]
     hashes = [hash_sensitive_value(value) for value in values]
     assert len(set(hashes)) == len(values)

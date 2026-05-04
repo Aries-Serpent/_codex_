@@ -39,6 +39,86 @@ class TestContextNormalizer:
         result = normalizer.normalize("café")
         assert result is not None
 
+    def test_unicode_nfc_nfd_cafe_equivalence(self):
+        """NFC precomposed and NFD decomposed forms of café normalize to the same output."""
+        import unicodedata
+
+        from context_management.normalizer import ContextNormalizer
+
+        # NFC: é as single precomposed code point U+00E9
+        nfc_cafe = "caf\u00e9"
+        # NFD: e followed by combining acute accent U+0301 (decomposed)
+        nfd_cafe = "cafe\u0301"
+
+        # Confirm raw strings differ
+        assert nfc_cafe != nfd_cafe
+        assert unicodedata.is_normalized("NFC", nfc_cafe)
+        assert not unicodedata.is_normalized("NFC", nfd_cafe)
+
+        normalizer = ContextNormalizer(normalize_unicode=True, lowercase=False)
+        result_nfc = normalizer.normalize(nfc_cafe)
+        result_nfd = normalizer.normalize(nfd_cafe)
+
+        # Both forms must produce identical output after NFC normalization
+        assert result_nfc == result_nfd, (
+            f"NFC '{repr(nfc_cafe)}' and NFD '{repr(nfd_cafe)}' "
+            f"normalized to different values: {repr(result_nfc)} vs {repr(result_nfd)}"
+        )
+        # Output must be in NFC form
+        assert unicodedata.is_normalized("NFC", result_nfc)
+
+    def test_unicode_nfd_input_becomes_nfc(self):
+        """NFD decomposed input is explicitly converted to NFC form."""
+        import unicodedata
+
+        from context_management.normalizer import ContextNormalizer
+
+        # String with multiple decomposed accented characters:
+        # "naïve résumé" in NFD form
+        # ï = i + combining diaeresis (U+0308)
+        # é = e + combining acute accent (U+0301)
+        nfd_text = "nai\u0308ve re\u0301sume\u0301"
+        assert not unicodedata.is_normalized("NFC", nfd_text)
+
+        normalizer = ContextNormalizer(normalize_unicode=True, lowercase=False)
+        result = normalizer.normalize(nfd_text)
+
+        # Output must be NFC
+        assert unicodedata.is_normalized("NFC", result)
+        # Composed codepoints: ï = U+00EF, é = U+00E9
+        assert "\u00ef" in result  # ï
+        assert "\u00e9" in result  # é
+
+    def test_unicode_multiple_combining_marks(self):
+        """Strings with stacked combining diacritical marks are handled."""
+        import unicodedata
+
+        from context_management.normalizer import ContextNormalizer
+
+        # U+006F (o) + U+0302 (combining circumflex) + U+0308 (combining umlaut)
+        text_with_marks = "o\u0302\u0308"
+        normalizer = ContextNormalizer(normalize_unicode=True, lowercase=False)
+        result = normalizer.normalize(text_with_marks)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        # Result should be NFC normalized
+        assert unicodedata.is_normalized("NFC", result)
+
+    def test_unicode_normalize_disabled_preserves_nfd(self):
+        """When normalize_unicode=False, NFD and NFC forms are NOT equated."""
+        from context_management.normalizer import ContextNormalizer
+
+        nfc_cafe = "caf\u00e9"   # precomposed NFC
+        nfd_cafe = "cafe\u0301"  # decomposed NFD
+
+        normalizer = ContextNormalizer(normalize_unicode=False, lowercase=False)
+        result_nfc = normalizer.normalize(nfc_cafe)
+        result_nfd = normalizer.normalize(nfd_cafe)
+
+        # Without normalization the forms remain distinct
+        assert result_nfc != result_nfd
+
     def test_strip_ansi(self):
         """Test ANSI code stripping."""
         from context_management.normalizer import ContextNormalizer

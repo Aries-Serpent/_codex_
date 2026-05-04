@@ -45,7 +45,17 @@ jobs:
           git reset --hard "${GITHUB_SHA}"
           git clean -fdx
 
+      # ── Autonomy Registry gate check (Phase 1 wiring) ──────────────────────
+      - name: Autonomy Registry gate check
+        continue-on-error: true
+        run: |
+          python scripts/ci/autonomy_gate_check.py \
+            --surface AUT-009 \
+            --class REPO_STATE_WRITE \
+            --actor "${{ github.actor }}" || true
+
       - name: Enforce expiry (move workflows if expired)
+        # Autonomy gate: REPO_STATE_WRITE (archives/moves workflow files via git)
         env:
           GIT_AUTHOR_NAME: "codex-bot"
           GIT_AUTHOR_EMAIL: "codex-bot@users.noreply.github.com"

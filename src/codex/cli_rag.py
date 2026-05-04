@@ -285,7 +285,7 @@ def query(
             progress.update(task, description="Searching...")
 
             results = retriever.query(
-                q=query_text,
+                query_text=query_text,
                 top_k=top_k,
                 min_score=min_score,
             )

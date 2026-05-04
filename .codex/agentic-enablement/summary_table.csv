@@ -1,0 +1,20 @@
+category,term,files_hit,severity,remediation,notes
+Dangerous triggers,pull_request_target,1,critical,FIX,labeler.yml — runs with CODEX_MASTER_KEY rescue job on fork PRs
+Auth bypass,COPILOT_AGENT_AUTH_ENABLED bypass,113+,critical,FIX,COPILOT_AGENT_AUTH_ENABLED=true permanently bypasses owner_approval_guard for all tool keys when COPILOT_AGENT_AUTH_BYPASS_TOOLS is unset
+Tracked credential metadata,agent_auth_session.json (git-tracked),1,critical,FIX,Git-tracked file exposes provenance-chain bypass token metadata and TTL
+Scheduled autonomous execution,autonomous-agent.yml cron every 6h,1,critical,FIX,contents/PR/issues write; monitor mode bypasses approval check entirely
+Self-hosted runners + PAT,self-hosted + CODEX_MASTER_KEY,4,critical,MIGRATE,docker-build-push + workflow-expiry-enforcer on self-hosted with CODEX_MASTER_KEY
+Autonomous agent config,autonomous_actions_enabled=true,1,high,FIX,.codex/autonomous_agent.yaml — flag supposed to be false until Genesis complete
+Agent orchestration chain,workflow_run → agent-orchestration-unified,14,high,FIX,health-check completion auto-triggers orchestration with contents/PR/issues write — no human gate
+ChatOps dispatch,issue_comment /copilot commands,10,high,FIX,chatops_copilot_trigger dispatches arbitrary agent commands from issue comments
+Programmatic infra mutations,repository_dispatch apply-vars/webhooks,3,high,FIX,agent_infrastructure_manager accepts dispatch to write repo vars and configure webhooks
+Kill-switch durability,AGENT_KILL_SWITCH (env-var only),1,high,FIX,agent_runner.py halt only via env var — not durable; no GitHub variable kill-switch
+Dynamic runner injection,fromJSON(vars.RUNS_ON),1,high,FIX,runner-diagnostics.yml runner label set by repo variable — actor controlling vars can redirect to attacker runner
+Autonomy level D,COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D,1,high,FIX,D_CAPABLE = full operational autonomy; AUTO_PROMOTE_TIER_ENABLED=true means automated tier promos
+Supply-chain (action pins),tag-pinned actions @v* (not SHA),576 lines,medium,FIX,576 action invocations use mutable tags — supply-chain attack affects all 150 workflows
+Encoded token,setup-secure-token base64 decode,1,medium,MIGRATE,CODEX_GHP_TOKEN_BASE64 decoded at runtime — base64 is obfuscation not encryption
+Missing permissions blocks,36 workflows without permissions:,36,medium,FIX,Inherit default GITHUB_TOKEN permissions; should declare contents:read minimum
+Self-hosted runner bootstrap,bootstrap_self_hosted_runner.py exec,1,medium,MIGRATE,Automates runner registration via subprocess; online mode check relies on env vars
+Autonomy CI matrix,autonomy-phase-ci-matrix.yml,1,review,FIX,Runs and validates all 7 autonomy phases on every PR push without per-run human review
+CODEX_MASTER_KEY density,CODEX_MASTER_KEY in 113 workflow files,113,high,MIGRATE,PAT with Actions+Contents+PR+Workflows write used in 113 of 150 workflow files — broad blast radius
+OIDC under-adoption,id-token:write in only 6 workflows,6,medium,MIGRATE,Only 6 workflows use OIDC ephemeral tokens; majority rely on long-lived PAT (CODEX_MASTER_KEY)

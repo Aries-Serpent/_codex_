@@ -1,5 +1,5 @@
 # Segmented ML (CPU-only) install surface — Generated: 2025-11-12 16:24:19 UTC | Author: mbaetiong
-torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
+torch==2.11.0+cpu --index-url https://download.pytorch.org/whl/cpu
 transformers==5.7.0
 tokenizers==0.22.1
 safetensors==0.6.2

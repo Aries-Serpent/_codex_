@@ -101,7 +101,15 @@ def embed_chunks(
         return np.array([])
 
     # Import here to avoid hard dependency
-    if importlib.util.find_spec("sentence_transformers") is None:
+    try:
+        _st_installed: bool = importlib.util.find_spec("sentence_transformers") is not None
+    except ValueError:
+        # Python 3.12: find_spec raises ValueError when the module is in sys.modules
+        # but module.__spec__ is None (happens with test doubles such as MagicMock or
+        # SimpleNamespace injected via monkeypatch/patch.dict).  The module IS present
+        # in sys.modules, so treat as installed.
+        _st_installed = True
+    if not _st_installed:
         logger.error(
             "sentence-transformers not installed. Install with: pip install sentence-transformers"
         )

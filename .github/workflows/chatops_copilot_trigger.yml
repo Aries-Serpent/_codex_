@@ -56,6 +56,19 @@ jobs:
           key: ${{ runner.os }}-pip-chatops-${{ hashFiles('pyproject.toml') }}
           restore-keys: ${{ runner.os }}-pip-chatops-
 
+      # ── Autonomy Registry gate check (Phase 1 wiring) ──────────────────────
+      # Consults .codex/autonomy_registry.yaml before allowing command dispatch.
+      # continue-on-error: the gate is advisory until mode = ELEVATED_AUTO enforces hard denial.
+      - name: Autonomy Registry gate check
+        continue-on-error: true
+        env:
+          ACTOR: ${{ github.event.comment.user.login }}
+        run: |
+          python scripts/ci/autonomy_gate_check.py \
+            --surface AUT-007 \
+            --class ADVISORY_WRITE \
+            --actor "${ACTOR}" || true
+
       - name: Parse command and actor
         id: parse
         env:
