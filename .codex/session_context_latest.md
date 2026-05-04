@@ -1,42 +1,35 @@
-# Session Context — 2026-05-04T13:54:19Z
+# Session Context — 2026-05-04T14:05:55Z
 **Branch:** `copilot/consolidate-pytorch-versions`  **PR:** #4254  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3537` (✅)  
-- GraphQL remaining: `4987` (✅)  
+- REST remaining: `3207` (✅)  
+- GraphQL remaining: `4966` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
 ## 📋 PR #4254 — fix: consolidate PyTorch version, deduplicate pragma comment, add phone/hash edge case tests
 State: `open`  Draft: `False`  Branch: `copilot/consolidate-pytorch-versions` → `main`
 
-### ❌ 22 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Cancel Runs for Unchecked Workflows` (cancelled)
-- `Dispatch Newly-Checked Workflows` (cancelled)
-- `Detect WEC Checkbox Changes` (cancelled)
-- `💰 PR Cost Check` (cancelled)
-- `🛡️ Restore required PR checkboxes` (cancelled)
+### ❌ 1 Failing CI Check(s)
+- `submit-pypi` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Automatic Dependency Submission (Python)** — `failure` on `copilot/consolidate-pytorch-versions` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
 - **Workflow Execution Gate** — `failure` on `copilot/consolidate-pytorch-versions` (2026-05-04)
-- **Batch CI Failure Triage** — `failure` on `main` (2026-05-04)
-- **Iterative Self-Healing CI** — `failure` on `main` (2026-05-04)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-04)
-- **Iterative Self-Healing CI** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `752ffef6` fix: correct CHANGELOG entry and follow-up prompt for PR #4254 review feedback — copilot-swe-agent[bot] (2026-05-04)
+- `fc47ba48` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
+- `c66607fb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
+- `a123fd41` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
+- `cb2be981` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
+- `deff918c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 - `b19f51f8` fix: consolidate torch version, deduplicate pragma, add phone/hash edge case tes — copilot-swe-agent[bot] (2026-05-04)
 - `cbeab1df` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
-- `d8191bb2` chore: Generate follow-up prompt for PR #4254 — github-actions[bot] (2026-05-04)
-- `f026e673` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-04)
-- `a1d3502f` Initial plan — copilot-swe-agent[bot] (2026-05-04)
-- `533471e4` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-04)
-- `f483de33` Merge pull request #4225 from Aries-Serpent/copilot/consolidate-logging-calls — Statix (2026-05-04)
-- `adccef41` Merge branch 'main' into copilot/consolidate-logging-calls — Statix (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
