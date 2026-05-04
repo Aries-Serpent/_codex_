@@ -130,6 +130,12 @@
 **Session:** auto-20260504T2340-run3259 | **Run:** 25349339511 | **Date:** 2026-05-04
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## SESSION SUMMARY — 2026-05-04T23:44Z [auto-generated]
+
+**Session:** auto-20260504T2344-pr4270-rescue | **Date:** 2026-05-04
+
+Updated during PR #4270 CI rescue continuation to keep last-commit accountability current after follow-up prompt/changelog consistency fixes and re-verified Pattern 25/30 + sync-tracked checks.
+
 ## SESSION SUMMARY — 2026-05-04T23:14Z [auto-generated]
 
 **Session:** auto-20260504T2314-run3257 | **Run:** 25347393578 | **Date:** 2026-05-04

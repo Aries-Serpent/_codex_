@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (SN)
-- PR #4270 CI rescue continuation: refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to satisfy Pattern 25 last-commit accountability and re-verified sync-tracked + merge-readiness hygiene checks.
+### Fixed (session notes)
+- PR #4270 CI rescue continuation: refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to satisfy Pattern 25 (last-commit accountability) and re-verified sync-tracked + merge-readiness hygiene checks.
 
 ### Fixed (auto-update — PR #4270)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4270 (SHA `b360193c`) at 2026-05-04T23:09Z [auto-generated]

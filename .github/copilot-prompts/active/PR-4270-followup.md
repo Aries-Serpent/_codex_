@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4270
 
-**PR**: #4270 - PR #4270  
+**PR**: #4270  
 **Branch**: `copilot/s679-sec-update-agent-accountability-report`  
 **Author**: @mbaetiong  
 **Date**: 2026-05-04  
@@ -17,14 +17,19 @@
 - [`e5c5bb5a`] chore(auth): write provenance session token [skip ci] (github-actions[bot], 2026-05-04)
 
 ### Files Modified
-No files modified
+- `CHANGELOG.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `.github/copilot-prompts/active/PR-4270-followup.md`
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Monitor non-copilot in-progress/queued workflows and capture run id/name/branch/SHA/status/conclusion
+- [ ] Source issue #4269 and re-triage latest failure-like runs for PR #4270
+- [ ] Pull failed-job logs/artifacts for runs `25345286952`, `25348407786`, `25348672259`, `25347991517`; record 403/404 limits explicitly
+- [ ] Keep branch hygiene green: `sync_tracked_files --check`, Pattern 25 check, Pattern 30 check
 
 **Validation**:
 ```bash
@@ -35,10 +40,12 @@ python scripts/ci/sync_tracked_files.py --fix
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Re-run focused validation after each fix (`ruff` + targeted `pytest`)
+- [ ] Keep `.github/copilot-prompts/active/S679-SEC-continuation.md` and this follow-up file current
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Preserve shared `isRateLimit` helper usage via `scripts/ci/github_rate_limit_helper.js`
+- [ ] Re-run tracked-file sync checks whenever bot commits update tracked manifests/context files
 
 ---
 

@@ -11,7 +11,7 @@
 ## 📋 PR #4270 — S679-SEC continuation: security hardening, CI rate-limit helper consolidation, and hardened follow-up triage
 State: `open`  Draft: `True`  Branch: `copilot/s679-sec-update-agent-accountability-report` → `main`
 
-### ❌ 28 Failing CI Check(s)
+### ❌ 8 Failing CI Check(s)
 - `Post rescue comment on failure` (cancelled)
 - `⚡ Approve action_required runs (post-delegation)` (cancelled)
 - `Post rescue comment on failure` (cancelled)
