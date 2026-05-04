@@ -1,32 +1,42 @@
-# Session Context — 2026-05-04T16:58:38Z
+# Session Context — 2026-05-04T17:21:20Z
 **Branch:** `copilot/consolidate-pytorch-versions`  **PR:** #4254  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4926` (✅)  
-- GraphQL remaining: `5000` (✅)  
+- REST remaining: `4444` (✅)  
+- GraphQL remaining: `4958` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4254 — fix: consolidate PyTorch versions across all requirement files (CVE-2025-32434 security floor), fix CodeQL wrong-named-argument runtime bug, fix Python 3.12 ValueError guards, add Unicode normalization + phone/hash edge-case tests, remediate 15 critica...
+## 📋 PR #4254 — fix: consolidate PyTorch versions (CVE-2025-32434), fix CodeQL injection + checkout alerts, fix Python 3.12 ValueError guards, restore RAG coverage, add Unicode/phone/hash tests, ingest Safe Autonomy Blueprint
 State: `open`  Draft: `False`  Branch: `copilot/consolidate-pytorch-versions` → `main`
 
+### ❌ 13 Failing CI Check(s)
+- `Post gate failure notice` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `🚦 Comment review gate` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Auto-approve pending runs after CodeQL (WEC pre-approval)` (cancelled)
+- `Post rescue comment on CodeQL failure` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **Workflow Execution Gate** — `failure` on `copilot/consolidate-pytorch-versions` (2026-05-04)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
 
 ## 📝 Recent Commits
+- `d38841db` fix(rag): use explicit bool for find_spec sentinel (code review feedback) — copilot-swe-agent[bot] (2026-05-04)
+- `bd55f213` fix(rag): guard find_spec ValueError in embed_chunks (Python 3.12), ingest Auton — copilot-swe-agent[bot] (2026-05-04)
+- `1a827d17` chore: initial plan for RAG coverage regression fix — copilot-swe-agent[bot] (2026-05-04)
 - `fd0512e1` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `45f9a574` docs(security): commit agentic-enablement investigation artifacts to .codex/ — copilot-swe-agent[bot] (2026-05-04)
 - `d2f84955` fix(security): remediate 15 critical CodeQL alerts — code injection + checkout o — copilot-swe-agent[bot] (2026-05-04)
 - `a141a9f5` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
 - `94b97a01` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
-- `78b90e30` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
-- `6113ffc9` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
-- `e0ff6b18` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
