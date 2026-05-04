@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4265 (SHA `b720db1d`) at 2026-05-04T20:36Z [auto-generated]
 
 ### Fixed (PR #4265 — P19 shadow-import S679)
+> Source: [CI Failure Triage Report #4267](https://github.com/Aries-Serpent/_codex_/issues/4267) · CI run [25338527283](https://github.com/Aries-Serpent/_codex_/actions/runs/25338527283) (Resilient Validation Suite / coverage-with-timeout) · 2026-05-04
 - **`src/services/github/client.py`**: `GitHubClient.__init__` — changed `token or os.environ.get(…)` to `token if token is not None else os.environ.get(…)`. Empty-string `token=""` no longer falls back to `GITHUB_TOKEN` env var, fixing `test_headers_without_token` assertion in CI.
 - **`tests/config/test_openai_client.py`**: Changed all `from config.openai_client import` → `from src.config.openai_client import` to avoid shadow-import failure when a non-src `config` namespace package is cached before `src/` is pinned first on `sys.path` in pytest-split shards.
 - **`tests/config/conftest.py`**: Added `REPO_ROOT` append to `sys.path` so `src.config.*` form also resolves correctly; added P19 fix documentation note.
 - **`tests/services/github/conftest.py`** (new): Belt-and-suspenders guard — pins `src/` at `sys.path[0]` and evicts stale root-level `services.*` placeholder cache entries before tests run.
 - **`tests/test_import_smoke.py`** (new): 8 regression tests covering import timing, path-resolution validation, no-network-at-import enforcement, and `GitHubClient` token edge cases (`token=""`, `token=None`, explicit token).
+- **`tests/test_import_smoke.py`** (CodeQL): Initialized `spec = None` before `try` blocks + added `return  # pragma: no cover` after `pytest.skip()` calls to eliminate "potentially uninitialized local variable" alerts at lines 87 and 107.
 
 ### Added (PR #4254 — P2 continuation: entry-point wiring + gate opening)
 - **`scripts/ci/autonomy_gate_check.py`** — CLI gate check tool; loads `.codex/autonomy_registry.yaml`, calls `AutonomyRegistry.is_permitted()`, exits 0 (allowed) or 1 (denied); `--no-fail` advisory mode supported; wired into all 3 actuation entry-points
