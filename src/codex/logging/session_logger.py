@@ -259,7 +259,7 @@ def log_event(
             except TypeError as e:
                 logger.warning("monkeypatch adapter call failed (trying minimal): %s", e)
                 try:
-                    _shared_log_event(role, message)
+                    _shared_log_event(session_id, role, message)
                 except TypeError as e:
                     logger.debug(
                         "shared log_event compatibility fallback failed: %s",

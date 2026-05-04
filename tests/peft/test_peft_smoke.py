@@ -8,16 +8,15 @@ from __future__ import annotations
 
 import pytest
 
-pytest.importorskip("torch")
-
-
-# Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch
 
-pytest.skip("PEFT registry not available in this build", allow_module_level=True)
+try:
+    from codex_ml.peft.peft_registry import get_peft_registry
+except ImportError:
+    get_peft_registry = None  # type: ignore[assignment]
 
-from codex_ml.peft.peft_registry import get_peft_registry
+pytest.skip("PEFT registry not available in this build", allow_module_level=True)
 
 
 def test_peft_registry_lists_expected_adapters():

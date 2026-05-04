@@ -1102,12 +1102,6 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
 
 if __name__ == "__main__":
     main()
-# BEGIN: CODEX_FUNCTR_DEEPNN
-# Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
-
-
-def _codex_config_hash(cfg: dict) -> str:  # type: ignore[no-redef]
-    return hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16]
 
 
 def _codex_autodevice(cli_device: str | None = None) -> str:

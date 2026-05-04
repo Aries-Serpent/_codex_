@@ -16,16 +16,11 @@ import pytest
 
 def _import():
     """Import philosophy_parser, skipping if unavailable."""
-    try:
-        repo_root = Path(__file__).parent.parent.parent
-        scripts_dir = str(repo_root / "scripts")
-        if scripts_dir not in sys.path:
-            sys.path.insert(0, scripts_dir)
-        import philosophy_parser
-        return philosophy_parser
-    except ImportError as exc:
-        pytest.skip(f"philosophy_parser not importable: {exc}")
-        return None  # pragma: no cover — pytest.skip() always raises
+    repo_root = Path(__file__).parent.parent.parent
+    scripts_dir = str(repo_root / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    return pytest.importorskip("philosophy_parser", reason="philosophy_parser not importable")
 
 
 # ── _extract_headings ────────────────────────────────────────────────────────

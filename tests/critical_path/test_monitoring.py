@@ -572,6 +572,7 @@ class TestErrorTracking:
         """Test capturing stack trace."""
         import traceback
 
+        stack_trace = ""
         try:
             def inner_function():
                 raise RuntimeError("Inner error")

@@ -304,15 +304,17 @@ def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
             os.setgid(nobody.pw_gid)
             os.setuid(nobody.pw_uid)
 
-        cp = subprocess.run(
+        with subprocess.Popen(
             ["bash", "--noprofile", "--norc", "-c", cmd],
             cwd=str(tmp_path),  # CHANGED: Use tmp_path
             text=True,
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             preexec_fn=demote,
-        )
+        ) as proc:
+            _out, _err = proc.communicate()
         # UPDATED: More flexible error matching
-        assert cp.returncode != 0 or "failed" in cp.stderr.lower() or "permission" in cp.stderr.lower()
+        assert proc.returncode != 0 or "failed" in (_err or "").lower() or "permission" in (_err or "").lower()
     finally:
         sessions_dir.chmod(0o755)
         shutil.rmtree(sessions_dir, ignore_errors=True)

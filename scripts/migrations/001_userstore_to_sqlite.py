@@ -48,6 +48,10 @@ if TYPE_CHECKING:
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(_REPO_ROOT / "src"))
 
+# Sentinel used when source records omit timestamps during migration.
+# `0.0` (Unix epoch) is treated by consumers as "unknown timestamp".
+UNKNOWN_TIMESTAMP = 0.0
+
 
 def _build_user_from_record(record: dict) -> User:
     """Reconstruct a :class:`User` from a snapshot record."""
@@ -70,9 +74,9 @@ def _build_user_from_record(record: dict) -> User:
         display_name=record.get("display_name"),
         # Preserve data integrity during migration: if source timestamps are
         # missing, use an explicit "unknown" sentinel (Unix epoch 1970-01-01 00:00:00 UTC)
-        # instead of fabricating the current time. Consumers should treat 0.0 as unknown.
-        created_at=record.get("created_at", 0.0),
-        updated_at=record.get("updated_at", 0.0),
+        # instead of fabricating the current time.
+        created_at=record.get("created_at", UNKNOWN_TIMESTAMP),
+        updated_at=record.get("updated_at", UNKNOWN_TIMESTAMP),
     )
 
 

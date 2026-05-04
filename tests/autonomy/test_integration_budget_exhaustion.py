@@ -9,7 +9,6 @@ All filesystem writes are redirected to tmp_path, so no repo state is mutated.
 """
 from __future__ import annotations
 
-import importlib
 import json
 import sys
 import threading
@@ -27,12 +26,7 @@ def _import(name: str):
         sys.path.insert(0, str(SCRIPTS_DIR))
     # Always re-import with cleared cache to pick up patched env
     sys.modules.pop(name, None)
-    try:
-        mod = importlib.import_module(name)
-    except ImportError:
-        pytest.skip(f"{name} not importable")
-        return None  # pragma: no cover — pytest.skip() always raises
-    return mod
+    return pytest.importorskip(name, reason=f"{name} not importable")
 
 
 # ── budget_uncertainty (Phase 4/5) ──────────────────────────────────────────

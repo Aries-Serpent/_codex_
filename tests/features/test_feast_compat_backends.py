@@ -14,12 +14,10 @@ import pytest
 # ── Import helpers ──────────────────────────────────────────────────────────
 
 def _import_feast():
-    try:
-        from codex_ml.features import feast_compat
-        return feast_compat
-    except ImportError:
-        pytest.skip("codex_ml.features.feast_compat not importable")
-        return None  # pragma: no cover — pytest.skip() always raises
+    return pytest.importorskip(
+        "codex_ml.features.feast_compat",
+        reason="codex_ml.features.feast_compat not importable",
+    )
 
 
 # ── FeastBackend Protocol ───────────────────────────────────────────────────
@@ -329,12 +327,10 @@ def _import_duckdb():
     if importlib.util.find_spec('duckdb') is None:
         pytest.skip("duckdb or feast_compat not importable")
 
-    try:
-        from codex_ml.features import feast_compat
-        return feast_compat
-    except ImportError:
-        pytest.skip("duckdb or feast_compat not importable")
-        return None  # pragma: no cover — pytest.skip() always raises
+    return pytest.importorskip(
+        "codex_ml.features.feast_compat",
+        reason="duckdb or feast_compat not importable",
+    )
 
 
 # ── DuckDB Backend ──────────────────────────────────────────────────────────

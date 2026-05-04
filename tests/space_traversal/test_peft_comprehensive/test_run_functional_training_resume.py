@@ -169,6 +169,7 @@ def test_run_functional_training_resume(monkeypatch, tmp_path):
         }
     }
 
+    result: dict | None = None
     try:
         result = run_functional_training(config, resume=True)
     except HFModelUnavailableError as exc:
@@ -226,6 +227,7 @@ def test_run_functional_training_repeatable(monkeypatch, tmp_path):
         "dataset": {"train_texts": ["alpha", "beta"]},
     }
 
+    first: dict | None = None
     try:
         first = run_functional_training(base_config, resume=False)
     except HFModelUnavailableError as exc:

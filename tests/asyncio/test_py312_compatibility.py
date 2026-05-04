@@ -122,14 +122,14 @@ class TestRequestBatcherAsyncContext:
             from codex_ml.serving.optimizations import BatchConfig, RequestBatcher
         except ImportError:
             pytest.skip("RequestBatcher not available")
+        else:
+            # Create RequestBatcher with correct parameters
+            config = BatchConfig(max_batch_size=10, max_wait_ms=100)
+            batcher = RequestBatcher(config=config)
 
-        # Create RequestBatcher with correct parameters
-        config = BatchConfig(max_batch_size=10, max_wait_ms=100)
-        batcher = RequestBatcher(config=config)
-
-        # This should work without deprecated asyncio.get_event_loop() calls
-        assert batcher is not None
-        assert batcher.config.max_batch_size == 10
+            # This should work without deprecated asyncio.get_event_loop() calls
+            assert batcher is not None
+            assert batcher.config.max_batch_size == 10
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ only")

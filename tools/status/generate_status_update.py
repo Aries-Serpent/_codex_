@@ -1097,7 +1097,7 @@ def generate(author: str, date: str, write: bool) -> Path:
     reproducibility = reproducibility_summary(src_python_files)
 
     data: dict[str, object] = {
-        "generated_at": utc_timestamp() + "Z",
+        "generated_at": utc_timestamp(),
         "author": author,
         "date": date,
         "stubs": stubs,

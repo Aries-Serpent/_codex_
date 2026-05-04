@@ -986,6 +986,7 @@ class TestCompleteCLIWorkflow:
                 return {"status": "error", "message": "Unknown command"}
             return {"status": "success"}
 
+        error_output = ""
         result = execute_command("invalid")
 
         # Format error message

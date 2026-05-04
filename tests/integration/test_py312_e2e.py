@@ -262,10 +262,9 @@ class TestDataProcessingWorkflow:
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
-
-        # Create TOML file
-        toml_file = tmp_path / "config.toml"
-        toml_content = """
+        else:
+            toml_file = tmp_path / "config.toml"
+            toml_content = """
 [project]
 name = "test-project"
 version = "1.0.0"
@@ -278,15 +277,15 @@ torch = ">=2.0"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 """
-        toml_file.write_text(toml_content)
+            toml_file.write_text(toml_content)
 
-        # Parse TOML
-        with open(toml_file, "rb") as f:
-            config = tomllib.load(f)
+            # Parse TOML
+            with open(toml_file, "rb") as f:
+                config = tomllib.load(f)
 
-        assert config["project"]["name"] == "test-project"
-        assert "numpy" in config["project"]["dependencies"]
-        assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
+            assert config["project"]["name"] == "test-project"
+            assert "numpy" in config["project"]["dependencies"]
+            assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
 
     def test_text_processing_workflow(self, tmp_path):
         """Test text processing workflow."""

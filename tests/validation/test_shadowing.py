@@ -19,20 +19,19 @@ def test_hydra_resolves_to_site_packages():
         import hydra
     except ImportError:
         pytest.skip("hydra-core not installed; skipping shadowing test.")
-        return
+    else:
+        hydra_file = getattr(hydra, "__file__", "")
 
-    hydra_file = getattr(hydra, "__file__", "")
+        # Accept both site-packages and dist-packages (common on Debian-based systems)
+        is_from_package_manager = "site-packages" in hydra_file or "dist-packages" in hydra_file
 
-    # Accept both site-packages and dist-packages (common on Debian-based systems)
-    is_from_package_manager = "site-packages" in hydra_file or "dist-packages" in hydra_file
-
-    assert is_from_package_manager, (
-        f"CRITICAL: Local 'hydra/' directory is shadowing the installed hydra-core package!\n"
-        f"  Expected: hydra to be loaded from site-packages or dist-packages\n"
-        f"  Actual location: {hydra_file}\n"
-        f"  Remediation: Ensure no 'hydra/' directory exists at repository root.\n"
-        f"               The legacy shim has been moved to 'config_legacy/'."
-    )
+        assert is_from_package_manager, (
+            f"CRITICAL: Local 'hydra/' directory is shadowing the installed hydra-core package!\n"
+            f"  Expected: hydra to be loaded from site-packages or dist-packages\n"
+            f"  Actual location: {hydra_file}\n"
+            f"  Remediation: Ensure no 'hydra/' directory exists at repository root.\n"
+            f"               The legacy shim has been moved to 'config_legacy/'."
+        )
 
 
 def test_yaml_resolves_to_site_packages():
@@ -44,17 +43,16 @@ def test_yaml_resolves_to_site_packages():
         import yaml
     except ImportError:
         pytest.skip("PyYAML not installed; skipping yaml shadowing test.")
-        return
+    else:
+        yaml_file = getattr(yaml, "__file__", "")
 
-    yaml_file = getattr(yaml, "__file__", "")
+        # Accept both site-packages and dist-packages
+        is_from_package_manager = "site-packages" in yaml_file or "dist-packages" in yaml_file
 
-    # Accept both site-packages and dist-packages
-    is_from_package_manager = "site-packages" in yaml_file or "dist-packages" in yaml_file
-
-    assert is_from_package_manager, (
-        f"CRITICAL: Local 'yaml/' directory is shadowing the installed PyYAML package!\n"
-        f"  Expected: yaml to be loaded from site-packages or dist-packages\n"
-        f"  Actual location: {yaml_file}\n"
-        f"  Remediation: Ensure no 'yaml/' directory exists at repository root.\n"
-        f"               Any legacy yaml module should be moved to 'yaml_legacy/'."
-    )
+        assert is_from_package_manager, (
+            f"CRITICAL: Local 'yaml/' directory is shadowing the installed PyYAML package!\n"
+            f"  Expected: yaml to be loaded from site-packages or dist-packages\n"
+            f"  Actual location: {yaml_file}\n"
+            f"  Remediation: Ensure no 'yaml/' directory exists at repository root.\n"
+            f"               Any legacy yaml module should be moved to 'yaml_legacy/'."
+        )

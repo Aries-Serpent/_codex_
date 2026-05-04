@@ -1,0 +1,204 @@
+# CodeQL Advanced — security-extended + security-and-quality queries
+#
+# Complements codeql-analysis.yml (python/javascript/go basic).
+# This workflow adds: actions, javascript-typescript, rust analysis,
+# and enables the full security-and-quality query suite used to track
+# the 25-rule code-quality sprint (see .github/copilot-prompts/).
+#
+# Runner: ubuntu-latest for ALL languages (no macos/swift matrix leg).
+
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    # Saturday 18:44 UTC — offset from codeql-analysis.yml (Sunday 03:00) to
+    # avoid concurrent GHAS upload contention.
+    - cron: '44 18 * * 6'
+  workflow_dispatch:
+
+concurrency:
+  group: codeql-advanced-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: go
+            build-mode: autobuild
+          - language: javascript-typescript
+            build-mode: none
+          - language: python
+            build-mode: none
+          - language: rust
+            build-mode: autobuild
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # security-extended: adds extra security queries beyond the default pack
+          # security-and-quality: adds the 25 code-quality rules tracked in the sprint
+          queries: security-extended,security-and-quality
+
+      - name: Run manual build steps
+        if: matrix.build-mode == 'manual'
+        shell: bash
+        run: |
+          echo "No manual build configured; switch build-mode to 'autobuild' or add build commands here."
+          exit 1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          # Use an "/advanced" suffix to avoid SARIF category collisions with
+          # codeql-analysis.yml, which uploads to "/language:<lang>" for python/go/javascript.
+          # Distinct categories let both workflows coexist on the Security tab without
+          # one overwriting the other's results.
+          category: "/language:${{ matrix.language }}/advanced"
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py \
+            --type pip --workflow codeql-advanced --health 2>/dev/null \
+            || echo '{"status": "cache health check skipped"}'
+
+  # ── Post-CodeQL auto-approve (mirrors codeql-analysis.yml) ────────────────
+  # Approves action_required workflow runs when WEC checkboxes are pre-checked,
+  # preventing the "awaiting maintainer approval" loop on Copilot agent pushes.
+  post-codeql-auto-approve:
+    name: "⚡ Auto-approve pending runs after CodeQL Advanced"
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      actions: write
+      pull-requests: read
+    timeout-minutes: 5
+    steps:
+      - name: Approve pending runs when WEC pre-approval checkbox is checked
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${PR_NUMBER}" ]; then
+            echo "No PR number — skipping post-CodeQL auto-approve."
+            exit 0
+          fi
+
+          if ! gh api "repos/${REPO}/actions/runs?per_page=1" --silent 2>/dev/null; then
+            echo "⚠️  GH_TOKEN lacks actions:read/write — skipping."
+            exit 0
+          fi
+
+          PR_BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" \
+            --json body -q '.body // ""' 2>/dev/null || echo "")
+
+          SESSION_DONE_CHECKED=0
+          AUTO_APPROVE_CHECKED=0
+          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*copilot-agent-session-done\.yml' \
+            && SESSION_DONE_CHECKED=1 || true
+          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows' \
+            && AUTO_APPROVE_CHECKED=1 || true
+
+          if [ "$SESSION_DONE_CHECKED" = "0" ] && [ "$AUTO_APPROVE_CHECKED" = "0" ]; then
+            echo "No WEC pre-approval checkbox checked — skipping."
+            exit 0
+          fi
+
+          echo "⚡ WEC pre-approval detected — approving action_required runs for SHA ${HEAD_SHA:0:12}..."
+
+          PENDING_BY_SHA=$(gh api \
+            "repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100" \
+            --jq '.workflow_runs[].id' 2>/dev/null || echo "")
+
+          PENDING_BY_WFR=$(gh api \
+            "repos/${REPO}/actions/runs?event=workflow_run&status=action_required&per_page=100" \
+            --jq '.workflow_runs[] | select(.created_at | fromdateiso8601 > (now - 3600)) | .id' \
+            2>/dev/null || echo "")
+
+          PENDING_RUNS=$(printf "%s\n%s\n" "$PENDING_BY_SHA" "$PENDING_BY_WFR" \
+            | sort -u | grep -v '^[[:space:]]*$' || echo "")
+
+          if [ -z "$PENDING_RUNS" ]; then
+            echo "✅ No pending runs requiring approval."
+            exit 0
+          fi
+
+          APPROVED=0
+          while IFS= read -r RUN_ID; do
+            [ -z "$RUN_ID" ] && continue
+            if gh api --method POST "repos/${REPO}/actions/runs/${RUN_ID}/approve" \
+              --silent 2>/dev/null; then
+              echo "  ✅ Approved run #${RUN_ID}"
+              APPROVED=$((APPROVED + 1))
+            else
+              echo "  ⚠️  Could not approve run #${RUN_ID} (may already be approved)"
+            fi
+          done <<< "$PENDING_RUNS"
+
+          echo "✅ Approved ${APPROVED} pending run(s)."
+
+  # ── Rescue comment on CodeQL failure ──────────────────────────────────────
+  rescue-comment:
+    name: Post rescue comment on CodeQL Advanced failure
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: |
+      failure() &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      pull-requests: write
+      issues: write
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Post or update rescue comment
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: "CodeQL Advanced"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.head_ref }}
+        run: python scripts/ci/post_rescue_comment.py

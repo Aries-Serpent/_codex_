@@ -53,6 +53,7 @@ testpaths = ["tests"]
         toml_file.write_text(toml_content)
 
         # Load with tomllib (Python 3.11+) or tomli
+        data: dict = {}
         try:
             import tomllib
             with open(toml_file, "rb") as f:
@@ -83,15 +84,14 @@ testpaths = ["tests"]
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
+        else:
+            with open(toml_file, "rb") as f:
+                data = tomllib.load(f)
+            assert data["section"]["key"] == "value"
 
-        # Binary mode should work
-        with open(toml_file, "rb") as f:
-            data = tomllib.load(f)
-        assert data["section"]["key"] == "value"
-
-        # Text mode should raise TypeError
-        with pytest.raises(TypeError), open(toml_file, "r") as f:
-            tomllib.load(f)
+            # Text mode should raise TypeError
+            with pytest.raises(TypeError), open(toml_file, "r") as f:
+                tomllib.load(f)
 
     def test_complex_toml_structure(self, tmp_path):
         """Test loading complex TOML structures."""
@@ -130,6 +130,7 @@ addopts = "-v --strict-markers"
 """
         toml_file.write_text(toml_content)
 
+        data: dict = {}
         try:
             import tomllib
             with open(toml_file, "rb") as f:
@@ -161,6 +162,7 @@ class TestPyprojectTomlParsing:
         if not pyproject_path.exists():
             pytest.skip("pyproject.toml not found")
 
+        data: dict = {}
         try:
             import tomllib
             with open(pyproject_path, "rb") as f:
@@ -202,6 +204,7 @@ class TestPyprojectTomlParsing:
         if not pyproject_path.exists():
             pytest.skip("pyproject.toml not found")
 
+        data: dict = {}
         try:
             import tomllib
             with open(pyproject_path, "rb") as f:
@@ -252,14 +255,14 @@ key4 = true
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
+        else:
+            start = time.time()
+            with open(toml_file, "rb") as f:
+                data = tomllib.load(f)
+            elapsed = time.time() - start
 
-        start = time.time()
-        with open(toml_file, "rb") as f:
-            data = tomllib.load(f)
-        elapsed = time.time() - start
-
-        assert len(data) == 100
-        assert elapsed < 1.0  # Should be fast
+            assert len(data) == 100
+            assert elapsed < 1.0  # Should be fast
 
     def test_unicode_handling(self, tmp_path):
         """Test Unicode handling in TOML files."""
@@ -272,6 +275,7 @@ author = "José García"
 """
         toml_file.write_text(toml_content, encoding="utf-8")
 
+        data: dict = {}
         try:
             import tomllib
             with open(toml_file, "rb") as f:

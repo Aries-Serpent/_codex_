@@ -146,6 +146,7 @@ class TestConfigToTrainingFlow:
         model_path = tmp_path / "model.pt"
         model_path.write_text("mock_model_data")
 
+        eval_path = results_dir / "eval_results.json"
         # Run evaluation when training complete
         if training_complete and model_path.exists():
             eval_results = {
@@ -154,7 +155,6 @@ class TestConfigToTrainingFlow:
                 "predictions_count": 1000
             }
 
-            eval_path = results_dir / "eval_results.json"
             eval_path.write_text(json.dumps(eval_results))
 
         assert eval_path.exists()
@@ -545,6 +545,7 @@ class TestRAGToAgentFlow:
                 raise RAGError("Empty query")
             return ["result1", "result2"]
 
+        error_message = ""
         try:
             results = rag_retrieve("")
         except RAGError as e:
