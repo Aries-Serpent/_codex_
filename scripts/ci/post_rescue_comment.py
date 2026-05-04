@@ -456,6 +456,14 @@ def main() -> None:
                 int(resp["id"]),
             )
     else:
+        msg = resp.get("message", "") if isinstance(resp, dict) else str(resp)
+        if status in (403, 429) and "rate limit" in msg.lower():
+            # API rate limit exceeded — rescue comment is best-effort; don't fail CI.
+            print(
+                f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
+                "Rescue comment will be posted on the next run."
+            )
+            sys.exit(0)
         print(f"❌ POST failed: HTTP {status} — {resp}")
         sys.exit(1)
 
