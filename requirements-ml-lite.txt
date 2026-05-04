@@ -6,7 +6,9 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 
 # CPU-only PyTorch (much smaller than CUDA version)
-torch>=2.1
+# Minimum 2.6.0: fixes torch.load RCE with weights_only=True (CVE-2025-32434)
+# Must stay consistent with pyproject.toml torch>=2.6.0,<3.0.0
+torch>=2.6.0
 
 # Transformers (without model downloads)
 transformers>=5.7.0
