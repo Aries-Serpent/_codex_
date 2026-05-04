@@ -1,0 +1,39 @@
+schema_version: "1.0.0"
+policy_version: "blueprint-v1"
+autonomy_mode: ELEVATED_AUTO
+kill_switch: false
+dry_run: false
+max_iterations: 50
+budget_seconds: 3600
+allowed_surfaces:
+  - AUT-001
+  - AUT-002
+  - AUT-003
+  - AUT-004
+  - AUT-005
+  - AUT-006
+  - AUT-007
+  - AUT-008
+  - AUT-009
+  - AUT-010
+  - AUT-011
+  - AUT-012
+  - AUT-013
+  - AUT-014
+  - AUT-015
+  - AUT-016
+  - AUT-017
+  - AUT-018
+allowed_runners:
+  - ubuntu-latest
+  - ubuntu-latest-m
+  - ubuntu-8-core
+approval_required_classes: []
+token_resolution_order:
+  - github_app
+  - oidc
+  - scoped_pat
+  - codex_master
+audit_log_path: .codex/autonomy_audit.ndjson
+metrics_log_path: .codex/autonomy_metrics.ndjson
+audit_coverage_target: 0.95
