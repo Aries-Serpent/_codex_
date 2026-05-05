@@ -25,7 +25,9 @@ from src.training.accelerate_init_guard import (  # noqa: E402
 
 # Re-export Accelerator for tests that mock it
 try:
-    from accelerate import Accelerator  # noqa: E402
+    import accelerate as _accelerate_mod  # noqa: E402
+
+    Accelerator = _accelerate_mod.Accelerator
 except ImportError:
     Accelerator = None  # type: ignore[misc,assignment]
 

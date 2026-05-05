@@ -428,27 +428,39 @@ class TestChainedExceptions:
 
     def test_exception_chaining_from(self) -> None:
         """Test exception chaining with 'from'."""
-        with pytest.raises(RuntimeError) as exc_info:
+
+        def _chained_raise() -> None:
             try:
                 raise ValueError("Original error")
             except ValueError as e:
                 raise RuntimeError("Wrapped error") from e
+
+        with pytest.raises(RuntimeError) as exc_info:
+            _chained_raise()
         assert exc_info.value.__cause__ is not None
 
     def test_exception_chaining_implicit(self) -> None:
         """Test implicit exception chaining."""
-        with pytest.raises(RuntimeError) as exc_info:
+
+        def _implicit_raise() -> None:
             try:
                 raise ValueError("Original error")
             except ValueError:
                 raise RuntimeError("New error during handling")
+
+        with pytest.raises(RuntimeError) as exc_info:
+            _implicit_raise()
         assert exc_info.value.__context__ is not None
 
     def test_suppress_exception_chain(self) -> None:
         """Test suppressing exception chain."""
-        with pytest.raises(RuntimeError) as exc_info:
+
+        def _suppressed_raise() -> None:
             try:
                 raise ValueError("Original error")
             except ValueError:
                 raise RuntimeError("New error") from None
+
+        with pytest.raises(RuntimeError) as exc_info:
+            _suppressed_raise()
         assert exc_info.value.__cause__ is None

@@ -237,7 +237,7 @@ class TestPhysicsCalculations:
             total_y += y
 
         # Result should be sqrt(2) at 45 degrees
-        result_mag = math.sqrt(total_x**2 + total_y**2)
+        result_mag = math.hypot(total_x, total_y)
         assert abs(result_mag - math.sqrt(2)) < 0.01
 
     def test_opposing_forces_cancel(self) -> None:
@@ -256,7 +256,7 @@ class TestPhysicsCalculations:
             total_y += y
 
         # Should nearly cancel
-        result_mag = math.sqrt(total_x**2 + total_y**2)
+        result_mag = math.hypot(total_x, total_y)
         assert result_mag < 0.01
 
     def test_energy_conservation(self) -> None:

@@ -20,11 +20,12 @@ logger = logging.getLogger(__name__)
 # Exported at module level so tests can patch via
 # patch("src.training.accelerate_init_guard.Accelerator", ...)
 try:
-    from accelerate import Accelerator
+    import accelerate as _accelerate_mod
 
+    Accelerator = _accelerate_mod.Accelerator
     _ACCELERATOR_AVAILABLE = True
 except ImportError:
-    Accelerator = None
+    Accelerator = None  # type: ignore[assignment,misc]
     _ACCELERATOR_AVAILABLE = False
 
 

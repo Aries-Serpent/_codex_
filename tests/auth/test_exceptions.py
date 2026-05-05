@@ -344,8 +344,15 @@ class TestExceptionHierarchy:
 
     def test_can_raise_and_catch(self):
         """Test that exceptions can be raised and caught."""
-        with pytest.raises(AuthenticationError):
+
+        def _raise_authentication() -> None:
             raise AuthenticationError("Test error")
 
-        with pytest.raises(AuthError):
+        def _raise_invalid_token() -> None:
             raise InvalidTokenError("Bad token")
+
+        with pytest.raises(AuthenticationError):
+            _raise_authentication()
+
+        with pytest.raises(AuthError):
+            _raise_invalid_token()

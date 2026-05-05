@@ -393,8 +393,7 @@ class TestGracefulShutdown:
             }
         )
 
-        # No explicit cleanup needed, but should be safe to delete
-        del orch
+        # No explicit cleanup needed (object is garbage-collected at end of scope)
 
         # Test passes if no exception
 

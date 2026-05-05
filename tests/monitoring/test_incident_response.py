@@ -221,18 +221,20 @@ class TestIncidentClassification:
 
     def test_classify_by_affected_users(self):
         """Test classifying incident by affected user count."""
-        affected_users = 5000
 
-        if affected_users > 1000:
-            severity = "P1"
-        elif affected_users > 100:
-            severity = "P2"
-        elif affected_users > 10:
-            severity = "P3"
-        else:
-            severity = "P4"
+        def _classify(users: int) -> str:
+            if users > 1000:
+                return "P1"
+            if users > 100:
+                return "P2"
+            if users > 10:
+                return "P3"
+            return "P4"
 
-        assert severity == "P1"
+        assert _classify(5000) == "P1"
+        assert _classify(500) == "P2"
+        assert _classify(50) == "P3"
+        assert _classify(5) == "P4"
 
     def test_auto_upgrade_severity(self):
         """Test automatic severity upgrade based on duration."""

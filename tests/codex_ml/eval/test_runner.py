@@ -40,8 +40,12 @@ class TestEvaluationError:
 
     def test_raise_and_catch(self) -> None:
         """Test raising and catching the error."""
-        with pytest.raises(EvaluationError) as exc_info:
+
+        def _do_raise() -> None:
             raise EvaluationError("evaluation failed")
+
+        with pytest.raises(EvaluationError) as exc_info:
+            _do_raise()
         assert "evaluation failed" in str(exc_info.value)
 
 

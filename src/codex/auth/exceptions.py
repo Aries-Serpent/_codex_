@@ -135,16 +135,15 @@ class CodeExchangeError(OAuthError):
 class APIKeyError(AuthError):
     """API key error."""
 
-    def __init__(self, message: str = "Invalid API key"):
-        super().__init__(message, "invalid_api_key")
+    def __init__(self, message: str = "Invalid API key", code: str = "invalid_api_key"):
+        super().__init__(message, code)
 
 
 class APIKeyRevokedError(APIKeyError):
     """API key has been revoked."""
 
     def __init__(self, message: str = "API key revoked"):
-        super().__init__(message)
-        self.code = "api_key_revoked"
+        super().__init__(message, "api_key_revoked")
 
 
 class SessionError(AuthError):

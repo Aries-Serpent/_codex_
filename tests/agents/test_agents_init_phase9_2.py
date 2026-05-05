@@ -458,11 +458,8 @@ class TestAgentsImportSafety:
 
     def test_import_does_not_raise(self) -> None:
         """Test importing agents does not raise."""
-        # Arrange & Act & Assert
-        try:
-            assert True
-        except Exception as e:
-            pytest.fail(f"Import raised: {e}")
+        # Arrange & Act & Assert — import already happened at module load.
+        assert True
 
     def test_package_in_sys_modules(self) -> None:
         """Test package is in sys.modules."""

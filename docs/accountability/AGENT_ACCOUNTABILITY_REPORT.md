@@ -27412,3 +27412,25 @@ and the CI gate requirement.
 
 ### §0 Compliance
 Reviewed all new comments (#4382616898, #4382534398, #4382454346) before applying changes. No deferral language used.
+
+---
+
+## Session Entry — 2026-05-05T20:45Z
+
+### Work Completed
+1. **40 CodeQL Warning alerts remediated** across 20 files:
+   - `src/codex/auth/exceptions.py` — pass code through chain instead of overwriting `self.code` in subclass
+   - `src/training/accelerate_init_guard.py`, `training/accelerate_init_guard.py` — `import module; attr = module.Attr` instead of `from module import Attr`
+   - `scripts/cognitive/extract_workflow_patterns.py`, `tests/cognitive/test_pattern_extraction.py`, `tests/agents/test_physics_orchestrator.py` — `math.hypot()` instead of `math.sqrt(x**2+y**2)`
+   - `scripts/ci/ci_rescue.py` — explicit `+` concatenation instead of implicit adjacent string literals
+   - `tests/coverage_push/test_edge_cases.py`, `tests/agents/test_agent_lifecycle.py` — removed unnecessary `del` statements
+   - `.codex/smoke/import_check.py` — replaced empty `try: pass except` with meaningful import check
+   - `tests/docs/test_doc_validation.py` — removed dead `_resolved` assignments never read
+   - `tests/src/test_codex_init_phase9_2.py`, `tests/agents/test_agents_init_phase9_2.py` — removed unreachable try/except wrappers around `assert True`
+   - `tests/branch_coverage/test_branch_coverage_utils.py` — removed unreachable except clauses; error-branch test now actually raises
+   - `tests/reliability/test_reliability_metrics.py`, `tests/reliability/test_stability_dashboard.py`, `tests/monitoring/test_incident_response.py` — refactored dead literal-value branches into helper functions
+   - `tests/integration/test_phase14_edge_cases_coverage.py` — extracted `raise` calls into helper functions; removed always-true `if` guard
+   - `tests/exception_handlers/test_exception_handlers.py`, `tests/auth/test_exceptions.py`, `tests/safety/test_moderation_comprehensive.py`, `tests/security/test_providers.py`, `tests/exceptions/test_exception_groups.py`, `tests/codex_ml/eval/test_runner.py` — extracted bare `raise` inside `with pytest.raises` into named helper functions so post-block code is reachable per CodeQL
+
+### §0 Compliance
+All 40 alerts addressed in this session. No deferral language used.

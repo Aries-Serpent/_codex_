@@ -529,10 +529,7 @@ class TestResourceManagement:
         weak_ref = weakref.ref(obj)
 
         assert weak_ref() is obj
-
-        del obj
-        # After deletion, weak reference should return None
-        # (depending on garbage collection)
+        # obj goes out of scope at end of block; weak reference will return None
 
 
 # =============================================================================

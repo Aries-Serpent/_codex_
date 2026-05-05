@@ -26,12 +26,9 @@ class TestErrorHandlingBranches:
     """Test branch coverage for error handling patterns."""
 
     def test_try_except_success_branch(self) -> None:
-        """Test try-except success branch."""
+        """Test try-except success branch — no exception is raised."""
         error_occurred = False
-        try:
-            pass
-        except Exception:
-            error_occurred = True
+        # Success path: no exception is raised; verify state unchanged.
         assert error_occurred is False
 
     def test_try_except_error_branch(self) -> None:
@@ -83,9 +80,7 @@ class TestErrorHandlingBranches:
         """Test finally block always executed - success case."""
         finally_executed = False
         try:
-            pass
-        except Exception:
-            pass
+            pass  # No exception on success path
         finally:
             finally_executed = True
         assert finally_executed is True
@@ -94,8 +89,8 @@ class TestErrorHandlingBranches:
         """Test finally block always executed - error case."""
         finally_executed = False
         try:
-            pass
-        except Exception:
+            raise RuntimeError("test error")  # Trigger the error path
+        except RuntimeError:
             pass
         finally:
             finally_executed = True

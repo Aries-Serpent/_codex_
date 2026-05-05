@@ -347,18 +347,20 @@ class TestMetricAlerts:
 
     def test_severity_levels(self):
         """Test alert severity level assignment."""
-        pass_rate = 85.0
 
-        if pass_rate >= 95:
-            severity = "info"
-        elif pass_rate >= 90:
-            severity = "warning"
-        elif pass_rate >= 85:
-            severity = "error"
-        else:
-            severity = "critical"
+        def _get_severity(rate: float) -> str:
+            if rate >= 95:
+                return "info"
+            if rate >= 90:
+                return "warning"
+            if rate >= 85:
+                return "error"
+            return "critical"
 
-        assert severity == "error"
+        assert _get_severity(85.0) == "error"
+        assert _get_severity(90.0) == "warning"
+        assert _get_severity(95.0) == "info"
+        assert _get_severity(80.0) == "critical"
 
     def test_alert_acknowledgment(self):
         """Test alert acknowledgment workflow."""

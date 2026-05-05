@@ -82,7 +82,7 @@ class PatternWave:
             # Destructive interference (patterns anti-correlate)
             return abs(self.amplitude - other.amplitude)
         # Partial interference
-        return math.sqrt(self.amplitude**2 + other.amplitude**2)
+        return math.hypot(self.amplitude, other.amplitude)
 
 
 class QuantumPatternClassifier:

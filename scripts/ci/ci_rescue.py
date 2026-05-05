@@ -1563,13 +1563,13 @@ def _format_env_setup_section(
     lines += [
         "",
         "**Outcome key:** ✅ Fixed · ❌ Not fixed · ⏳ In progress · "
-        "🔁 Flaky (needs reruns) · 🏗️ Infrastructure (not code-fixable)",
+        + "🔁 Flaky (needs reruns) · 🏗️ Infrastructure (not code-fixable)",
         "",
         f"**AfterMath categories for this profile:** "
-        f"`{'`, `'.join(categories)}`",
+        + f"`{'`, `'.join(categories)}`",
         "",
         "> After completing all fixes, update the table above and store "
-        "> key lessons with `store_memory` so future agents benefit.",
+        + "> key lessons with `store_memory` so future agents benefit.",
     ]
 
     return "\n".join(lines)
@@ -1698,9 +1698,9 @@ def _format_deep_rca_comment(
         "",
         "2. **Investigate new failures** — verify they are not caused by recent commits",
         "3. **Mark confirmed-flaky tests** with `@pytest.mark.flaky(reruns=2)` "
-        "+ add to `.codex/permanent_facts.md`",
+        + "+ add to `.codex/permanent_facts.md`",
         "4. **Update `.secrets.baseline`** if `CODEX_MANIFEST.json` changed: "
-        "`python3 scripts/ci/sync_tracked_files.py --fix`",
+        + "`python3 scripts/ci/sync_tracked_files.py --fix`",
         "5. **Follow** `.codex/CODEBASE_AGENCY_POLICY.md` §0 — fix ALL issues, never defer",
         "",
         "_Posted by: ci-rescue.yml → deep-rescue step (`COPILOT_AGENT_AUTH_ENABLED` mode)_",
