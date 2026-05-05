@@ -1,32 +1,32 @@
-# Session Context — 2026-05-05T21:09:28Z
+# Session Context — 2026-05-05T21:38:01Z
 **Branch:** `copilot/add-reference-to-redis-function`  **PR:** #4289  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4530` (✅)  
-- GraphQL remaining: `5000` (✅)  
+- REST remaining: `3452` (✅)  
+- GraphQL remaining: `4910` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4289 — docs+deps+security: fix docs clarity, consolidate 10 dependabot PRs, remediate CodeQL alerts (path-injection, weak-hashing, 40 warnings), address code review feedback, fix CI gates
+## 📋 PR #4289 — docs+deps+security: fix docs clarity, consolidate 10 dependabot PRs, remediate CodeQL alerts (path-injection, weak-hashing, 40 warnings), address all review feedback, clear all CI gates
 State: `open`  Draft: `False`  Branch: `copilot/add-reference-to-redis-function` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
 - **Agent Token Delegation** — `failure` on `copilot/add-reference-to-redis-function` (2026-05-05)
-- **Pre-Merge Validation** — `failure` on `copilot/add-reference-to-redis-function` (2026-05-05)
+- **🔍 Issue Resolution Gate** — `failure` on `copilot/add-reference-to-redis-function` (2026-05-05)
+- **🚨 Deferral Language Gate** — `failure` on `copilot/add-reference-to-redis-function` (2026-05-05)
 
 ## 📝 Recent Commits
-- `10ca4e21` fix(ci): clear deferral-language-gate — clean PR description, reply to 4 blockin — copilot-swe-agent[bot] (2026-05-05)
-- `ed75364a` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-05)
-- `67039c5c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-05)
-- `1f00c067` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-05)
-- `320fe87b` fix(review): address all 3+2 comments from review #4231454045 — security length  — copilot-swe-agent[bot] (2026-05-05)
-- `055ee8cf` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-05)
-- `00321164` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-05)
-- `87288f47` chore: begin applying review #4231454045 — security.py taint-break, ci_rescue im — copilot-swe-agent[bot] (2026-05-05)
+- `2815ba85` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-05)
+- `80b406a6` Potential fix for pull request finding 'CodeQL / Uncontrolled data used in path  — Statix (2026-05-05)
+- `69b9eff6` Potential fix for pull request finding 'CodeQL / Uncontrolled data used in path  — Statix (2026-05-05)
+- `ff754216` Potential fix for pull request finding 'CodeQL / Uncontrolled data used in path  — Statix (2026-05-05)
+- `6f28e4c7` Potential fix for pull request finding 'CodeQL / Uncontrolled data used in path  — Statix (2026-05-05)
+- `31935f49` Potential fix for pull request finding 'CodeQL / Uncontrolled data used in path  — Statix (2026-05-05)
+- `3aab1def` Potential fix for pull request finding 'CodeQL / Use of a broken or weak cryptog — Statix (2026-05-05)
+- `5e4f8583` Potential fix for pull request finding 'CodeQL / Use of a broken or weak cryptog — Statix (2026-05-05)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
