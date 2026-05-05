@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4282)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4282 (SHA `77d89911`) at 2026-05-05T19:24Z [auto-generated]
+
 ### Fixed (session notes)
 - PR #4270 S679-SEC follow-up: merged `main` into PR branch (merge commit `ef0389119`) to eliminate merge conflicts against `main` (`rev-list HEAD...origin/main` now `101 0`; merge-tree conflict markers absent).
 - PR #4270 S679-SEC follow-up: addressed new GHAS review alerts 13323/13324 by placing `# lgtm[py/weak-sensitive-data-hashing]` directly on the `h.update(...)` data-flow lines in migration-only `_hmac_sha256_hash_key()` and `_blake2b_hash_key()` paths.
