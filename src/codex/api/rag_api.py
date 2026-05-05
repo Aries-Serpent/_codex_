@@ -497,7 +497,9 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         if not index_path.exists():  # lgtm[py/path-injection]
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
 
-        metadata_file = _ensure_subpath(index_path, index_path / "metadata.json")  # lgtm[py/path-injection]
+        metadata_file = _ensure_subpath(
+            index_path, index_path / "metadata.json"
+        )  # lgtm[py/path-injection]
         if not metadata_file.exists():  # lgtm[py/path-injection]
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
@@ -507,7 +509,9 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
             metadata = json.load(f)
 
         # Calculate size
-        size_bytes = sum(f.stat().st_size for f in index_path.rglob("*") if f.is_file())  # lgtm[py/path-injection]
+        size_bytes = sum(
+            f.stat().st_size for f in index_path.rglob("*") if f.is_file()
+        )  # lgtm[py/path-injection]
 
         return StatsResponse(
             index_name=index_name,
