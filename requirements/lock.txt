@@ -66,7 +66,7 @@ asyncssh==2.22.0
     # via scmrepo
 atpublic==7.0.0
     # via flufl-lock
-attrs==25.4.0
+attrs==26.1.0
     # via
     #   aiohttp
     #   dvc-data
@@ -255,7 +255,7 @@ evidently==0.7.21
     # via codex-ml (pyproject.toml)
 executing==2.2.1
     # via stack-data
-faker==40.11.0
+faker==40.15.0
     # via polyfactory
 fastapi==0.135.3
     # via
@@ -266,7 +266,7 @@ fastapi-cli==0.0.24
     # via fastapi
 fastjsonschema==2.21.2
     # via nbformat
-filelock==3.25.2
+filelock==3.29.0
     # via
     #   datasets
     #   huggingface-hub
@@ -289,7 +289,7 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2026.2.0
+fsspec==2026.4.0
     # via
     #   datasets
     #   dvc-http
@@ -369,7 +369,7 @@ hydra-core==1.3.2
     # via
     #   codex-ml (pyproject.toml)
     #   dvc
-hypothesis==6.151.10
+hypothesis==6.152.4
     # via codex-ml (pyproject.toml)
 identify==2.6.14
     # via pre-commit
@@ -545,7 +545,7 @@ mpmath==1.4.1
     # via sympy
 msgpack==1.1.2
     # via ray
-msgspec==0.19.0
+msgspec==0.21.1
     # via litestar
 multidict==6.7.0
     # via
@@ -677,7 +677,7 @@ opentelemetry-api==1.37.0
     #   opentelemetry-exporter-prometheus
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
-opentelemetry-exporter-prometheus==0.58b0
+opentelemetry-exporter-prometheus==0.62b1
     # via ray
 opentelemetry-proto==1.39.1
     # via ray
@@ -1171,7 +1171,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.7.0
+transformers==5.8.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)

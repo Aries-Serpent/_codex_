@@ -287,7 +287,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
-| 1 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **SAR-G02.** |
+| 1 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. Implementation reference: see the backend factory/integration module where `create_backend` is defined and invoked for provider selection. **SAR-G02.** |
 
 > ⚠️ **Security note (REDIS_URL):** If authentication is required, do **not** store credentials in a repository variable. Set `REDIS_URL` from a **GitHub Actions Secret** or **Codespaces Secret** containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.
 
@@ -300,7 +300,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 
 | # | Variable | Status | Recommended Value | Script Default | Purpose |
 |---|---|---|---|---|---|
-| 1 | `AGENT_KILL_SWITCH` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | ⚠️ **Human governance flag** — set to `"1"` to immediately halt all agent loops (Phases 1 & 7). Checked at loop entry before any work runs. **If the variable is unset, the scripts explicitly fall back to coded default `"0"`, so CI passes by default.** Any workflow step that calls `autonomy_scheduler.py` or `agent_runner.py` with `AGENT_KILL_SWITCH=1` will receive exit code 1 — ensure such steps use `continue-on-error: true` if non-blocking is required. |
+| 1 | `AGENT_KILL_SWITCH` | ✅ **Set** `0` (2026-03-07) | `0` *(intentional; matches default)* | `0` | ⚠️ **Human governance flag** — set to `"1"` to immediately halt all agent loops (Phases 1 & 7). Checked at loop entry before any work runs. **If the variable is unset, the scripts explicitly fall back to coded default `"0"`, so CI passes by default.** Any workflow step that calls `autonomy_scheduler.py` or `agent_runner.py` with `AGENT_KILL_SWITCH=1` will receive exit code 1 — ensure such steps use `continue-on-error: true` if non-blocking is required. |
 | 2 | `AUTONOMY_BUDGET_SECONDS` | ✅ **Set** `90` (2026-03-07) | `60` | `300` | Max wall-clock seconds per `autonomy_scheduler.py` run (Phase 1). Admin chose 90s (between recommended CI=60 and script default=300). |
 | 3 | `AUTONOMY_MAX_ITERATIONS` | ✅ **Set** `3` (2026-03-07) | `3` | `10` | Max health-sense/decide/act iterations per scheduler run (Phase 1). |
 | 4 | `AUTONOMY_DRY_RUN` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | Set to `"1"` to disable all mutating filesystem writes in `autonomy_scheduler.py` (Phase 1). |
@@ -608,7 +608,7 @@ All previously-blocked items are now **resolved**. This section is retained as a
 
 **Resolution:** `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by
 `.devcontainer/scripts/post-start.sh`. The URL format is:
-`https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github`
+`https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github`
 
 The `POST /webhook/github` endpoint is implemented in `cognitive_app/src/server/cli_api_server.py`.
 For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace Ports panel.

@@ -108,7 +108,7 @@ def log_error(step: str, error_message: str, context: Optional[dict[str, str]] =
 
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     record = {
-        "timestamp": utc_timestamp() + "Z",
+        "timestamp": utc_timestamp(),
         "step": step,
         "error": error_message,
         "context": context or {},
