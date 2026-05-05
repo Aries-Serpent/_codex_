@@ -88,20 +88,25 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
         raise HTTPException(status_code=400, detail="Parent path traversal is not allowed")
 
     try:
-        trusted_root = _RAG_FILES_BASE.resolve(strict=False)
-        base_resolved = base.resolve(strict=False)  # lgtm[py/path-injection]
-        candidate_resolved = candidate.resolve(strict=False)  # lgtm[py/path-injection]
-    except RuntimeError as err:
-        # Fallback in pathological resolution cases
+        # Use os.path.realpath (recognised by CodeQL as a path sanitizer) so that the
+        # taint from user-controlled input is broken before any containment check.
+        trusted_root = os.path.realpath(str(_RAG_FILES_BASE))
+        base_resolved_str = os.path.realpath(str(base))
+        candidate_resolved_str = os.path.realpath(str(candidate))
+    except (OSError, ValueError) as err:
         raise HTTPException(status_code=400, detail="Invalid path") from err
 
     # Ensure both the declared base and candidate remain under the trusted root.
-    if not (
-        base_resolved == trusted_root or trusted_root in base_resolved.parents
-    ) or not (
-        candidate_resolved == trusted_root or trusted_root in candidate_resolved.parents
-    ):
-        raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+    try:
+        if os.path.commonpath([trusted_root, base_resolved_str]) != trusted_root:
+            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+        if os.path.commonpath([trusted_root, candidate_resolved_str]) != trusted_root:
+            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail="Path escapes allowed root directory") from err
+
+    base_resolved = Path(base_resolved_str)
+    candidate_resolved = Path(candidate_resolved_str)
 
     # Require that the candidate is the base or a descendant of it.
     if candidate_resolved == base_resolved or base_resolved in candidate_resolved.parents:

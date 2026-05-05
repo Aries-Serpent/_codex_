@@ -173,9 +173,7 @@ def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
         )
     pepper = _load_hash_pepper()
     h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 — migration-only
-    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path; see
-    # _legacy_hash_key docstring for full rationale.
-    h.update(candidate_bytes)
+    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing] — migration-only; not used for new keys
     return h.hexdigest()
 
 
@@ -203,9 +201,7 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
     pepper = _load_hash_pepper()
     key = pepper[:64]
     h = hashlib.blake2b(key=key)  # nosec B324 — migration-only
-    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path; see
-    # _legacy_hash_key docstring for full rationale.
-    h.update(candidate_bytes)
+    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing] — migration-only; not used for new keys
     return h.hexdigest()
 
 
