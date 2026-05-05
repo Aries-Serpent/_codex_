@@ -141,16 +141,19 @@ def _legacy_hash_key(candidate_bytes: bytes) -> str:
     Do **not** use for new hashes.  Retained only for transparent migration in
     :func:`verify_api_key` so that existing stored hashes can be upgraded on
     first successful authentication.
+
+    A strict 512-byte cap is enforced on ``candidate_bytes`` to prevent
+    pathological input from causing a denial-of-service on this legacy path.
     """
+    if len(candidate_bytes) > 512:
+        raise ValueError(
+            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
+        )
     h = hashlib.sha256()  # nosec B324 — migration-only; not used for new hashes
-    # Convert bytes → list[int] → bytes to break static-analysis (CodeQL) taint chains.
-    # ``bytes(list(b))`` is bit-for-bit identical to ``b``; the round-trip through a
-    # plain Python list of integers is not tracked as sensitive data by CodeQL's
-    # ``py/weak-sensitive-data-hashing`` taint analysis.  This does **not** change the
-    # cryptographic output.  Migration to Argon2/PBKDF2 for new hashes is already
-    # handled by :func:`hash_key`; these legacy functions exist only for comparing
-    # old stored hashes during transparent login-time migration.
-    h.update(bytes(list(candidate_bytes)))
+    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path that must
+    # reproduce the exact stored hash format for transparent login-time upgrade.
+    # New hashes use hash_key() (PBKDF2-HMAC-SHA256, 100 000 iterations).
+    h.update(candidate_bytes)
     return h.hexdigest()
 
 
@@ -164,11 +167,15 @@ def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
     Retained only for transparent migration in :func:`verify_api_key`.
     New hashes use :func:`hash_key` (PBKDF2-HMAC-SHA256).
     """
+    if len(candidate_bytes) > 512:
+        raise ValueError(
+            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
+        )
     pepper = _load_hash_pepper()
     h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 — migration-only
-    # Convert bytes → list[int] → bytes to break static-analysis (CodeQL) taint chains.
-    # See ``_legacy_hash_key`` docstring for rationale; does not change cryptographic output.
-    h.update(bytes(list(candidate_bytes)))
+    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path; see
+    # _legacy_hash_key docstring for full rationale.
+    h.update(candidate_bytes)
     return h.hexdigest()
 
 
@@ -189,12 +196,16 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
         DeprecationWarning,
         stacklevel=2,
     )
+    if len(candidate_bytes) > 512:
+        raise ValueError(
+            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
+        )
     pepper = _load_hash_pepper()
     key = pepper[:64]
     h = hashlib.blake2b(key=key)  # nosec B324 — migration-only
-    # Convert bytes → list[int] → bytes to break static-analysis (CodeQL) taint chains.
-    # See ``_legacy_hash_key`` docstring for rationale; does not change cryptographic output.
-    h.update(bytes(list(candidate_bytes)))
+    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path; see
+    # _legacy_hash_key docstring for full rationale.
+    h.update(candidate_bytes)
     return h.hexdigest()
 
 
@@ -244,8 +255,16 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
         )
 
     store = store or ApiKeyStore()
-    hashed_candidate = hash_key(candidate)
     candidate_bytes = candidate.encode("utf-8")
+    if len(candidate_bytes) > 512:
+        # No stored hash can be derived from a key this long; reject with a clear
+        # 400 so the error surfaces as a bad-request rather than a 500 from the
+        # length guard inside the legacy hash helpers.
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="API key exceeds maximum allowed length",
+        )
+    hashed_candidate = hash_key(candidate)
     # Suppress DeprecationWarning: _blake2b_hash_key is intentionally called here
     # for migration-path detection only, not for creating new hashes.
     with warnings.catch_warnings():

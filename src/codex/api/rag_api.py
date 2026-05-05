@@ -53,11 +53,15 @@ def _validate_path_segment(value: str, field_name: str) -> str:
     The allow-list regex ``^[A-Za-z0-9._-]{1,128}$`` only permits ASCII alphanumerics,
     dot, underscore, and hyphen — this implicitly rejects null bytes, path separators,
     and any other special characters before the ``os.path.basename`` result is returned.
+
+    Additionally, the special dot-only names ``.`` and ``..`` are explicitly rejected so
+    that callers receive a clear 400 error rather than relying solely on the downstream
+    ``_ensure_subpath`` check to catch traversal attempts.
     """
     # os.path.basename removes any leading path components (e.g. '../../etc/passwd'
     # becomes 'passwd'), breaking CodeQL's path-injection taint chain.
     safe = os.path.basename(value)
-    if safe != value or not _SAFE_PATH_SEGMENT.fullmatch(safe):
+    if safe != value or not _SAFE_PATH_SEGMENT.fullmatch(safe) or safe in {".", ".."}:
         raise HTTPException(
             status_code=400,
             detail=(
