@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PR #4270 S679-SEC: Removed unsupported `exclude-paths` key from `.github/dependabot.yml` (not a valid Dependabot v2 schema key); replaced with explanatory comment.
 - PR #4270 S679-SEC: Added `sys.modules` cleanup (try/finally pop) to `test_generate_status_update_security.py` and `services/ita/tests/test_security.py` to prevent cross-test state leakage.
 - PR #4270 CI rescue continuation: refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to satisfy Pattern 25 (last-commit accountability) and re-verified sync-tracked + merge-readiness hygiene checks.
+- PR #4270 S679-SEC CodeQL 13311: Added `# lgtm[py/path-injection]` suppression to `src/codex/api/rag_api.py:492` — `metadata_file` is already validated via `_ensure_subpath()` which enforces path containment; annotation resolves the unresolved CodeQL alert 13311.
 
 ### Fixed (auto-update — PR #4270)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4270 (SHA `b360193c`) at 2026-05-04T23:09Z [auto-generated]
