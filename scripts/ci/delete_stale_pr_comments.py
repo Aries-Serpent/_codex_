@@ -289,6 +289,10 @@ def classify_comments(
 
 
 def main() -> int:
+    # Allow owner/repo override from CLI — declared first so all uses below
+    # are unambiguously global references (Python 3.12+ SyntaxWarning fix).
+    global OWNER, REPO, API_BASE  # noqa: PLW0603
+
     parser = argparse.ArgumentParser(
         description="Delete stale github-actions[bot] comments from a PR.",
     )
@@ -320,8 +324,6 @@ def main() -> int:
         print("ERROR: GITHUB_TOKEN (or GH_TOKEN) must be set.", file=sys.stderr)
         return 1
 
-    # Allow owner/repo override from CLI
-    global OWNER, REPO, API_BASE  # noqa: PLW0603
     OWNER = args.owner
     REPO = args.repo
     API_BASE = f"https://api.github.com/repos/{OWNER}/{REPO}"

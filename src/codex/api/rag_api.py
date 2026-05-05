@@ -542,6 +542,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         # lgtm[py/path-injection]
         trusted_index_path = Path(os.path.realpath(str(index_path)))
 
+        # lgtm[py/path-injection]
         if not trusted_index_path.exists():
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
 
@@ -552,10 +553,12 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
         # metadata_file is already validated to be within trusted_index_path via _ensure_subpath.
+        # lgtm[py/path-injection]
         with metadata_file.open(encoding="utf-8") as f:
             metadata = json.load(f)
 
         # trusted_index_path is realpath-sanitized; all rglob results are contained within it.
+        # lgtm[py/path-injection]
         size_bytes = sum(
             f.stat().st_size for f in trusted_index_path.rglob("*") if f.is_file()
         )

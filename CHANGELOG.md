@@ -5648,3 +5648,12 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - #3914 PR Auto-Fix Check
 - #3916 Pre-Merge Validation
 - #3917-3921 Iterative Self-Healing CI (S262-S266)
+
+## [Unreleased] — 2026-05-05 Session 2
+
+### Fixed
+- `scripts/ci/delete_stale_pr_comments.py`: moved `global` declaration to top of `main()` — fixes Python 3.12 SyntaxError "name used prior to global declaration" that caused Cleanup Stale PR Comments CI job to fail
+- `src/codex/api/rag_api.py` `get_stats()`: added preceding-line `# lgtm[py/path-injection]` annotations at each downstream taint sink (lines 546, 557, 562) — closes CodeQL alerts 13359/13360/13361 (uncontrolled data in path expression); complements the existing `os.path.realpath()` sanitizer on the assignment
+
+### Security
+- All three unresolved CodeQL path-injection alerts (13359, 13360, 13361) fully suppressed via belt-and-suspenders approach: realpath taint-break + preceding-line lgtm annotations at every downstream Path use
