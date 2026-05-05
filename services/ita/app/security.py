@@ -86,9 +86,27 @@ class ApiKeyStore:
 
 
 def _load_hash_pepper() -> bytes:
-    """Load or create the server-side pepper used for keyed API-key hashing."""
+    """Load or create the server-side pepper used for keyed API-key hashing.
+
+    The ``ITA_API_KEY_PEPPER`` environment variable may hold either:
+
+    * A **file path** — if the value refers to an existing file the raw bytes
+      of that file are used as the pepper.  This is the recommended approach
+      for production deployments (e.g. a path to a Kubernetes-mounted secret).
+    * A **literal string** — if the value is not an existing file path the
+      string is encoded as UTF-8 and used directly.  Convenient for
+      development/testing; not recommended for production.
+
+    If the variable is unset the pepper is loaded from (or generated at)
+    ``_DEFAULT_PEPPER_PATH``.
+    """
     configured = os.environ.get(_PEPPER_ENV, "").strip()
     if configured:
+        try:
+            return Path(configured).read_bytes()
+        except (OSError, IsADirectoryError):
+            # Not an existing regular file — treat the value as a literal string.
+            pass
         return configured.encode("utf-8")
 
     try:

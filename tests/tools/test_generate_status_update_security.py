@@ -20,8 +20,11 @@ def _load_module():
 
 def test_sanitize_for_logging_redacts_secret_patterns() -> None:
     module = _load_module()
-    sample = "token=abc123 SECRET: ghp_abcdefghijklmnopqrstuvwxyz"
-    sanitized = module.sanitize_for_logging(sample)
-    assert "abc123" not in sanitized
-    assert "ghp_" not in sanitized
-    assert "[redacted]" in sanitized
+    try:
+        sample = "token=abc123 SECRET: ghp_abcdefghijklmnopqrstuvwxyz"
+        sanitized = module.sanitize_for_logging(sample)
+        assert "abc123" not in sanitized
+        assert "ghp_" not in sanitized
+        assert "[redacted]" in sanitized
+    finally:
+        sys.modules.pop("status_gen", None)

@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (session notes)
+- PR #4270 S679-SEC: Resolved `ITA_API_KEY_PEPPER` env-var ambiguity — `_load_hash_pepper()` now treats the value as a file path when it points to an existing file, otherwise falls back to literal UTF-8 string; updated `_DEFAULT_PEPPER_PATH` docstring accordingly.
+- PR #4270 S679-SEC: Removed unsupported `exclude-paths` key from `.github/dependabot.yml` (not a valid Dependabot v2 schema key); replaced with explanatory comment.
+- PR #4270 S679-SEC: Added `sys.modules` cleanup (try/finally pop) to `test_generate_status_update_security.py` and `services/ita/tests/test_security.py` to prevent cross-test state leakage.
 - PR #4270 CI rescue continuation: refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to satisfy Pattern 25 (last-commit accountability) and re-verified sync-tracked + merge-readiness hygiene checks.
 
 ### Fixed (auto-update — PR #4270)

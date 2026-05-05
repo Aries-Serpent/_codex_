@@ -23,13 +23,10 @@ updates:
   # Python - Monitor pip dependencies
   - package-ecosystem: "pip"
     directory: "/"
-    # Exclude archived/generated/test fixture pyproject.toml files from graph scans.
-    # The GitHub-managed dynamic uv graph updater runs `uv tree` from each detected
-    # manifest directory; fixture/archive locations without a local uv.lock can fail
-    # with "No uv.lock or pyproject.toml present" during dependency graph generation.
-    exclude-paths:
-      - "misc/**"
-      - "tests/**"
+    # Note: Dependabot v2 does not support an `exclude-paths` key for pip.
+    # Fixture/archive directories (misc/, tests/) without a matching uv.lock
+    # may trigger "No uv.lock or pyproject.toml present" warnings during
+    # dependency graph generation, but Dependabot will still function correctly.
     schedule:
       interval: "weekly"
       day: "monday"
