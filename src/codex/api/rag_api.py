@@ -427,14 +427,14 @@ async def delete_index(
         import shutil
         from pathlib import Path
 
-        tenant_id = _validate_path_segment(tenant_id, "tenant_id")
-        index_name = _validate_path_segment(index_name, "index_name")
-        index_dir = Path.home() / ".codex" / "rag_indices"
-        tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
-        index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
+        safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
+        safe_index_name = _validate_path_segment(index_name, "index_name")
+        index_root = (Path.home() / ".codex" / "rag_indices").resolve()
+        tenant_path = _ensure_subpath(index_root, index_root / safe_tenant_id)
+        index_path = _ensure_subpath(tenant_path, tenant_path / safe_index_name)
 
         if not index_path.exists():  # lgtm[py/path-injection]
-            raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
+            raise HTTPException(status_code=404, detail=f"Index '{safe_index_name}' not found")
 
         if not force:
             raise HTTPException(status_code=400, detail="Set force=true to confirm deletion")
@@ -443,9 +443,9 @@ async def delete_index(
 
         return DeleteIndexResponse(
             success=True,
-            index_name=index_name,
-            tenant_id=tenant_id,
-            message=f"Index '{index_name}' deleted successfully",
+            index_name=safe_index_name,
+            tenant_id=safe_tenant_id,
+            message=f"Index '{safe_index_name}' deleted successfully",
         )
 
     except HTTPException:
