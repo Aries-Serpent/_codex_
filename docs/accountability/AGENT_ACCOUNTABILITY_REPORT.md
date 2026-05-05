@@ -26552,3 +26552,25 @@ Commits `0b39c901`, `cff17c16`, `201b0d9b` all carried `[skip ci]` tags, so CI n
 ### Impact Score
 - Security: CodeQL 13321 and 13322 remediated — migration-only paths refactored to use .update() to break taint flow
 - Merge: branch divergence from main resolved; clean merge commit
+
+## Session Entry — 2026-05-05T14:55Z (S679-SEC — CI Rescue #4380211715 + WEC Template Fix)
+
+**Branch:** `copilot/s679-sec-update-agent-accountability-report`
+**Triggered by:** Comments #4380180867 and #4380211715 — CI rescue + WEC Template Integrity failures due to missing WEC block in PR body
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `sync_tracked_files --check` — green (all tracked files consistent) ✅
+- [x] **3.** `ruff check src/ tests/` — clean (0 violations) ✅
+- [x] **4.** `auto_fix_common_issues --check-only` — 0 auto-fixable, Pattern 30 100/100 ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` read and followed ✅
+- [x] **6.** WEC Template included in `report_progress` `prDescription` ✅
+
+### Work Completed
+1. **WEC Template hardened**: Canonical WEC block (from `_build_wec_block()`) is now included in every `report_progress` call. All approved workflows marked `[x]`. Omitting this block causes `Validate WEC Template Integrity` CI failure.
+2. **CI re-trigger**: Pushing non-[skip ci] rescue commit to trigger clean CI run on latest HEAD.
+3. **All code-level fixes confirmed**: CodeQL 13320–13324 addressed in prior commits. ruff ✅, sync_tracked_files ✅.
+
+### Impact Score
+- CI: WEC Template Integrity failure root cause fixed; canonical block now present in PR body
+- Pattern 25 gate: Accountability entry refreshed ✅
