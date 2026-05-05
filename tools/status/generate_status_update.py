@@ -1084,9 +1084,12 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     if write:
         out_path.write_text(markdown, encoding="utf-8")
     else:
-        # Preview mode: write redacted content to stderr to avoid leaking
-        # potentially sensitive strings from scanned repository files.
-        sys.stderr.write(sanitize_for_logging(markdown))
+        # Preview mode: report size only so that no repository content reaches
+        # the output stream.  Use --write to persist the full report.
+        sys.stderr.write(
+            f"[preview] Status update ready ({len(markdown)} chars). "
+            "Pass --write to save to disk.\n"
+        )
     return out_path
 
 

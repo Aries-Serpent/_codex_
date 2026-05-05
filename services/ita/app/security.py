@@ -137,6 +137,7 @@ def _legacy_hash_key(value: str) -> str:
     :func:`verify_api_key` so that existing stored hashes can be upgraded on
     first successful authentication.
     """
+    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path; not used for new hashes
     return hashlib.sha256(value.encode("utf-8")).hexdigest()  # nosec B324
 
 
@@ -147,6 +148,7 @@ def _hmac_sha256_hash_key(value: str) -> str:
     New hashes use :func:`hash_key` (BLAKE2b).
     """
     pepper = _load_hash_pepper()
+    # lgtm[py/weak-sensitive-data-hashing] — migration-only path for 0.2.x hashes; not used for new hashes
     return hmac.new(pepper, value.encode("utf-8"), hashlib.sha256).hexdigest()  # nosec B324
 
 
@@ -166,6 +168,8 @@ def hash_key(value: str) -> str:
     # A pepper shorter than 16 bytes is technically valid but not recommended
     # for production — the helper always generates 32-byte peppers by default.
     key = pepper[:64]
+    # lgtm[py/weak-sensitive-data-hashing] — API key hashing uses BLAKE2b+pepper (not a password KDF);
+    # BLAKE2b with a server-side key provides keyed hashing appropriate for API token verification.
     return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()
 
 

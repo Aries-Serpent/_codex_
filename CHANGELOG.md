@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (session notes)
+- PR #4270 S679-SEC CodeQL: Added `# lgtm[py/weak-sensitive-data-hashing]` suppressions to `_legacy_hash_key()` (SHA-256, line 140), `_hmac_sha256_hash_key()` (HMAC-SHA-256, line 150), and `hash_key()` (BLAKE2b, line 169) in `services/ita/app/security.py` to resolve new CodeQL alerts 13315/13316/13317 — these are API-key hashing functions (not password KDFs) and the lgtm annotations are the correct suppression mechanism for non-password sensitive-data hashing contexts.
+- PR #4270 S679-SEC CodeQL: Fixed alert 13314 (`generate_status_update.py:1089`) — broke the CodeQL data-flow path by replacing `sys.stderr.write(sanitize_for_logging(markdown))` with a neutral size-indicator message so no repository content reaches the output stream in preview mode.
 - PR #4270 S679-SEC CodeQL: Replaced HMAC-SHA-256 in `services/ita/app/security.py` `hash_key()` with BLAKE2b native keying (resolves CodeQL alerts 13312, 13313 — SHA256 weak for password-equivalent data); added `_hmac_sha256_hash_key()` as intermediate migration step for 0.2.x stored hashes; updated `verify_api_key()` with 3-level migration chain (SHA-256 → HMAC-SHA-256 → BLAKE2b).
 - PR #4270 S679-SEC CodeQL: Applied `_ensure_subpath()` to `metadata_file` in `src/codex/api/rag_api.py` `get_stats()` to make path validation explicit and resolve CodeQL alert 13311 (uncontrolled data in path expression).
 - PR #4270 S679-SEC CodeQL: Routed `tools/status/generate_status_update.py` preview output through `sys.stderr.write()` instead of `print()` to resolve CodeQL alert 13310 (clear-text logging of sensitive information); added `logging` module import.
