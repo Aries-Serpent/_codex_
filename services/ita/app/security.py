@@ -221,8 +221,7 @@ def _keys_from_environment() -> set[str]:
 def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None) -> str:
     """Validate the provided API key.
 
-    Transparently migrates legacy hashes (bare SHA-256, HMAC-SHA-256, BLAKE2b) to the
-    current PBKDF2-HMAC-SHA256 scheme on the first successful authentication.
+    Uses PBKDF2-HMAC-SHA256 for verification of stored API key hashes.
 
     Returns the hashed key when validation succeeds.
     """
@@ -234,35 +233,9 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
 
     store = store or ApiKeyStore()
     hashed_candidate = hash_key(candidate)
-    # Pre-encode once so the raw string does not flow into the legacy migration
-    # helpers — this breaks CodeQL taint from the 'candidate' parameter through
-    # py/weak-sensitive-data-hashing sinks in those functions.
-    candidate_bytes: bytes = candidate.encode("utf-8")
-    # Suppress DeprecationWarning: _blake2b_hash_key is intentionally called here
-    # for migration-path detection only, not for creating new hashes.
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", DeprecationWarning)
-        blake2b_candidate = _blake2b_hash_key(candidate_bytes)
-    hmac_sha256_candidate = _hmac_sha256_hash_key(candidate_bytes)
-    legacy_hashed_candidate = _legacy_hash_key(candidate_bytes)
     stored_hashes = store.hashed_keys()
 
     if hashed_candidate in stored_hashes:
-        return hashed_candidate
-
-    # Migration: BLAKE2b (0.3.x) → PBKDF2 (current)
-    if blake2b_candidate in stored_hashes:
-        store.upgrade_hash(blake2b_candidate, hashed_candidate)
-        return hashed_candidate
-
-    # Migration: HMAC-SHA-256 (0.2.x) → PBKDF2 (current)
-    if hmac_sha256_candidate in stored_hashes:
-        store.upgrade_hash(hmac_sha256_candidate, hashed_candidate)
-        return hashed_candidate
-
-    # Migration: bare SHA-256 (pre-0.2) → PBKDF2 (current)
-    if legacy_hashed_candidate in stored_hashes:
-        store.upgrade_hash(legacy_hashed_candidate, hashed_candidate)
         return hashed_candidate
 
     if candidate in _keys_from_environment():
