@@ -27158,7 +27158,13 @@ Commits `0b39c901`, `cff17c16`, `201b0d9b` all carried `[skip ci]` tags, so CI n
 
 **Agent:** copilot-swe-agent  
 **PR:** #4270 — S679-SEC continuation  
-**Commit:** pending push  
+**Commit:** pending push
+
+### Cherry-Pick Work
+- Cherry-picked dependency bump from PR #4278 (uv group): jupyter-server 2.17.0 → 2.18.0 in requirements/lock.txt
+- Cherry-picked dependency bump from PR #4277: same jupyter-server 2.17.0 → 2.18.0
+- Added .github/copilot-prompts/active/PR-4277-followup.md and PR-4278-followup.md from respective branches
+- Added PDA entry from PR #4278 to .codex/aftermath/pda_iterations.jsonl  
 **Pattern:** 25
 
 ### Actions Taken
@@ -27173,7 +27179,13 @@ Commits `0b39c901`, `cff17c16`, `201b0d9b` all carried `[skip ci]` tags, so CI n
 
 **Agent:** copilot-swe-agent  
 **PR:** #4270 — S679-SEC continuation  
-**Commit:** pending push  
+**Commit:** pending push
+
+### Cherry-Pick Work
+- Cherry-picked dependency bump from PR #4278 (uv group): jupyter-server 2.17.0 → 2.18.0 in requirements/lock.txt
+- Cherry-picked dependency bump from PR #4277: same jupyter-server 2.17.0 → 2.18.0
+- Added .github/copilot-prompts/active/PR-4277-followup.md and PR-4278-followup.md from respective branches
+- Added PDA entry from PR #4278 to .codex/aftermath/pda_iterations.jsonl  
 **Pattern:** 25
 
 ### Actions Taken
@@ -27186,7 +27198,13 @@ Commits `0b39c901`, `cff17c16`, `201b0d9b` all carried `[skip ci]` tags, so CI n
 
 **Agent:** copilot-swe-agent  
 **PR:** #4270 — S679-SEC continuation  
-**Commit:** pending push  
+**Commit:** pending push
+
+### Cherry-Pick Work
+- Cherry-picked dependency bump from PR #4278 (uv group): jupyter-server 2.17.0 → 2.18.0 in requirements/lock.txt
+- Cherry-picked dependency bump from PR #4277: same jupyter-server 2.17.0 → 2.18.0
+- Added .github/copilot-prompts/active/PR-4277-followup.md and PR-4278-followup.md from respective branches
+- Added PDA entry from PR #4278 to .codex/aftermath/pda_iterations.jsonl  
 **Pattern:** 25
 
 ### Actions Taken
@@ -27208,4 +27226,24 @@ Commits `0b39c901`, `cff17c16`, `201b0d9b` all carried `[skip ci]` tags, so CI n
 - ruff src/ tests/ ✅ clean on current HEAD (`ceed2917`)
 - sync_tracked_files ✅ all consistent
 - Replied to blocking comments #4381574007 and #4381574101
+## Session Entry — 2026-05-05T17:45Z (S679-SEC — CI Rescue Fast Validation ruff failure)
+
+**Agent:** copilot-swe-agent  
+**PR:** #4270 — S679-SEC continuation  
+**Commit:** pending push
+
+### Cherry-Pick Work
+- Cherry-picked dependency bump from PR #4278 (uv group): jupyter-server 2.17.0 → 2.18.0 in requirements/lock.txt
+- Cherry-picked dependency bump from PR #4277: same jupyter-server 2.17.0 → 2.18.0
+- Added .github/copilot-prompts/active/PR-4277-followup.md and PR-4278-followup.md from respective branches
+- Added PDA entry from PR #4278 to .codex/aftermath/pda_iterations.jsonl  
+**Pattern:** 25
+
+### Actions Taken
+- Fast Validation failed on `07ad153ca4c0` (run 25390327369): Pattern 30 `ruff (src/ clean)` was failing with lint violations
+- Root cause: ruff lint violations were present in the auto-merge from main (`4666d77c`) but all subsequent commits had `[skip ci]`, so CI never re-ran on the clean HEAD
+- Verified locally: `ruff check src/ tests/` ✅ clean, `sync_tracked_files --check` ✅ all consistent
+- Replied to blocking comments #4381574007 and #4381574101
+- Cherry-picked all changes from PR #4277 (jupyter-server 2.17.0→2.18.0) and PR #4278 (uv group bump) into current branch
+- Updated requirements/lock.txt, .codex/aftermath/pda_iterations.jsonl, and .github/copilot-prompts/active/ files
 - Pushing fresh non-`[skip ci]` rescue commit to re-trigger CI verification on clean HEAD
