@@ -150,10 +150,10 @@ def _legacy_hash_key(candidate_bytes: bytes) -> str:
             "Legacy API key material exceeds the maximum allowed length (512 bytes)."
         )
     h = hashlib.sha256()  # nosec B324 — migration-only; not used for new hashes
-    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path that must
-    # reproduce the exact stored hash format for transparent login-time upgrade.
-    # New hashes use hash_key() (PBKDF2-HMAC-SHA256, 100 000 iterations).
-    h.update(candidate_bytes)
+    # Legacy-compatibility path: this must remain byte-for-byte equivalent to historic
+    # pre-0.2 stored hashes so successful auth can trigger upgrade to PBKDF2.
+    # New hashes are created via hash_key() (PBKDF2-HMAC-SHA256, 100 000 iterations).
+    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing]
     return h.hexdigest()
 
 
