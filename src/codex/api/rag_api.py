@@ -490,11 +490,10 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
     """Get statistics for an index."""
     try:
         import json
-        from pathlib import Path
 
         tenant_id = _validate_path_segment(tenant_id, "tenant_id")
         index_name = _validate_path_segment(index_name, "index_name")
-        index_dir = Path.home() / ".codex" / "rag_indices"
+        index_dir = _RAG_FILES_BASE
         tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
         index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
         trusted_index_path = Path(index_path)
