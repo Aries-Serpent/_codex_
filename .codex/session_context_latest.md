@@ -1,40 +1,32 @@
-# Session Context — 2026-05-04T21:20:18Z
-**Branch:** `copilot/fix-self-healing-ci-main`  **PR:** #4265  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-05T00:42:39Z
+**Branch:** `dependabot/npm_and_yarn/copilot/extension/npm_and_yarn-a23bb7f983`  **PR:** #4271  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3989` (✅)  
-- GraphQL remaining: `4903` (✅)  
+- REST remaining: `4998` (✅)  
+- GraphQL remaining: `4939` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4265 — fix(P19): shadow-import fixes for config.openai_client + GitHubClient token fallback + import smoke tests + CodeQL spec fix
-State: `open`  Draft: `False`  Branch: `copilot/fix-self-healing-ci-main` → `main`
-
-### ❌ 6 Failing CI Check(s)
-- `Post gate failure notice` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `💰 PR Cost Check` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `🚦 Comment review gate` (cancelled)
+## 📋 PR #4271 — Bump axios from 1.15.0 to 1.15.2 in /copilot/extension in the npm_and_yarn group across 1 directory
+State: `open`  Draft: `False`  Branch: `dependabot/npm_and_yarn/copilot/extension/npm_and_yarn-a23bb7f983` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **🔍 Issue Resolution Gate** — `failure` on `copilot/fix-self-healing-ci-main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-04)
+- **Validation Pipeline** — `failure` on `dependabot/npm_and_yarn/copilot/extension/npm_and_yarn-a23bb7f983` (2026-05-05)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
 
 ## 📝 Recent Commits
-- `59ce0dfb` fix(S679-pt2): remove dead return-after-skip; spec=None init sufficient for Code — copilot-swe-agent[bot] (2026-05-04)
-- `fe18c804` fix(S679-pt2): merge bot commits + CodeQL spec fixes + CHANGELOG/accountability  — copilot-swe-agent[bot] (2026-05-04)
-- `c8054ce8` fix(review): CodeQL spec uninitialized + accountability numbering + followup pro — copilot-swe-agent[bot] (2026-05-04)
-- `2200a3b3` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-04)
-- `6705d124` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-04)
-- `41699ac7` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-04)
-- `6922f35e` fix(ci): sync_tracked_files .secrets.baseline + CHANGELOG P19 entry — copilot-swe-agent[bot] (2026-05-04)
-- `580d8a67` fix: address code review — use patch.object for socket, parents[3], simplify evi — copilot-swe-agent[bot] (2026-05-04)
+- `0b46d416` chore: Generate follow-up prompt for PR #4271 — github-actions[bot] (2026-05-05)
+- `39f5afa4` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-05)
+- `ceef7804` Bump axios — dependabot[bot] (2026-05-05)
+- `bd600aa8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-05)
+- `8c79d2d6` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-05-05)
+- `6b51c86f` Merge pull request #4265 from Aries-Serpent/copilot/fix-self-healing-ci-main — Statix (2026-05-04)
+- `e8cbdc5c` fix(security): remediate 13 critical CodeQL alerts — untrusted checkout in privi — copilot-swe-agent[bot] (2026-05-04)
+- `9e80cb22` plan: address 13 critical CodeQL alerts — untrusted checkout in privileged conte — copilot-swe-agent[bot] (2026-05-04)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
