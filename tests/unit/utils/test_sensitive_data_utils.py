@@ -51,7 +51,7 @@ def test_mask_sensitive_data_credit_card():
 
 def test_mask_sensitive_data_api_key():
     """Test mask_sensitive_data masks API keys."""
-    api_key = "sk_test_1234567890abcdef"
+    api_key = "sk_test_1234567890abcdef"  # pragma: allowlist secret
     text = f"API_KEY={api_key}"
     result = mask_sensitive_data(text)
     assert api_key not in result
@@ -62,7 +62,7 @@ def test_mask_sensitive_data_api_key():
 
 def test_mask_sensitive_data_password():
     """Test mask_sensitive_data masks password fields."""
-    text = 'password="secret123"'
+    text = 'password="secret123"'  # pragma: allowlist secret
     result = mask_sensitive_data(text)
     assert "secret123" not in result
     assert "***" in result

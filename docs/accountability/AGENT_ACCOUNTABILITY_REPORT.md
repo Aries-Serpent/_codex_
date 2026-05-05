@@ -26262,3 +26262,27 @@ CI rescue comments #4375798438 and #4375780125 report RP-004 sync drift and dete
 - CI dimensions unblocked: `sync_tracked_files`, `ruff (src/ clean)`, `PDA entry today`, `accountability report today`
 - Security issues resolved: `ITA_API_KEY_PEPPER` path ambiguity, `exclude-paths` unsupported key, `sys.modules` test state leak
 - Deferral Language Gate: 0 violations
+
+---
+
+## Session: 2026-05-05 (CI Rescue — detect-secrets baseline fix)
+
+**Branch:** `copilot/s679-sec-update-agent-accountability-report`
+**Triggered by:** Comment #4376080596 — Fast Validation CI failure on commit `eaee836`
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** detect-secrets false positives in `tests/unit/utils/test_sensitive_data_utils.py` — added `# pragma: allowlist secret` to lines 54 and 65 ✅
+- [x] **3.** `sync_tracked_files --check` — green ✅
+- [x] **4.** `ruff check src/ tests/` — clean ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **detect-secrets fix** — Lines 54 and 65 in `tests/unit/utils/test_sensitive_data_utils.py` contain test-fixture strings (`sk_test_...` and `password="secret123"`) flagged as "Secret Keyword". Added `# pragma: allowlist secret` to both lines; ran `sync_tracked_files.py --fix` to confirm baseline is consistent.
+
+### Root-Cause Note
+Fast Validation failure on run 25352844915/commit `eaee836` — `Auto-Fix Common CI Issues` hook exited 1 because Pattern 30 (ruff merge readiness dimension) detected a ruff violation. Additionally, detect-secrets flagged `test_sensitive_data_utils.py:54`. Both resolved by this commit.
+
+### Impact Score
+- CI dimensions unblocked: secrets baseline enforcer, Fast Validation
+- Security: 0 real credentials — test fixtures annotated with pragma
