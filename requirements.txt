@@ -21,7 +21,7 @@ pyyaml>=6.0
 # Security: IP-005 dependency updates - addressing 26 known vulnerabilities
 jinja2>=3.1.6  # Security: Fixes CVE-2024-56326, CVE-2024-56201 (RCE via sandbox escape)
 certifi>=2024.7.4  # Security: Fixes CVE-2024-39689 (root cert trust issue)
-filelock>=3.20.3  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
+filelock>=3.29.0  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
 idna>=3.7  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
 urllib3>=2.6.3  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
 requests>=2.32.4  # Security: Fixes CVE-2024-35195, CVE-2024-47081 (TLS bypass, credential leak)
