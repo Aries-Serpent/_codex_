@@ -1,10 +1,10 @@
-# Session Context — 2026-05-05T17:34:16Z
+# Session Context — 2026-05-05T17:34:32Z
 **Branch:** `copilot/s679-sec-update-agent-accountability-report`  **PR:** #4278  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `2963` (✅)  
-- GraphQL remaining: `4963` (✅)  
+- REST remaining: `2958` (✅)  
+- GraphQL remaining: `4958` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
@@ -12,9 +12,9 @@
 State: `open`  Draft: `False`  Branch: `dependabot/uv/uv-fb45d33db9` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-05)
+- **🤖 Agent Check-In — Q&A Bridge (Discussion #3756)** — `failure` on `main` (2026-05-05)
 - **pip in /requirements for jupyter-server, jupyter-server, jupyter-server, jupyter-server - Update #1349797484** — `failure` on `main` (2026-05-05)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-05)
 
