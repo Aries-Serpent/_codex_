@@ -16,8 +16,6 @@ from __future__ import annotations
 
 import sys
 
-import pytest
-
 
 class TestCodexPackageVersion:
     """Test version information and metadata."""

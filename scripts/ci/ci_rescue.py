@@ -1565,7 +1565,7 @@ def _format_env_setup_section(
         "**Outcome key:** ✅ Fixed · ❌ Not fixed · ⏳ In progress · "
         + "🔁 Flaky (needs reruns) · 🏗️ Infrastructure (not code-fixable)",
         "",
-        f"**AfterMath categories for this profile:** "
+        "**AfterMath categories for this profile:** "
         + f"`{'`, `'.join(categories)}`",
         "",
         "> After completing all fixes, update the table above and store "

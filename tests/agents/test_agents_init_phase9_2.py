@@ -18,8 +18,6 @@ from __future__ import annotations
 
 import sys
 
-import pytest
-
 
 class TestAgentsPackageVersion:
     """Test agents package version information."""
