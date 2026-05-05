@@ -110,6 +110,22 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
     raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
 
+def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
+    """Join user-controlled path segments under *base_dir* and enforce containment."""
+    if any("\x00" in segment for segment in segments):
+        raise HTTPException(status_code=400, detail="Invalid path")
+
+    try:
+        base_real = os.path.realpath(str(base_dir))
+        candidate_real = os.path.realpath(os.path.join(base_real, *segments))
+        if os.path.commonpath([base_real, candidate_real]) != base_real:
+            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail="Invalid path") from err
+
+    return Path(candidate_real)
+
+
 # NOTE: _rate_limit_exceeded_handler is typed as (Request, RateLimitExceeded) -> Response  # noqa: E501
 # but add_exception_handler expects (Request, Exception) -> Response.
 # The wrapper below widens the signature to satisfy mypy without losing runtime behaviour.
@@ -449,7 +465,7 @@ async def delete_index(
         safe_index_name = _validate_path_segment(index_name, "index_name")
         index_root = (Path.home() / ".codex" / "rag_indices").resolve()
         tenant_path = _ensure_subpath(index_root, index_root / safe_tenant_id)
-        index_path = _ensure_subpath(tenant_path, tenant_path / safe_index_name)
+        index_path = _safe_join_under_base(tenant_path, safe_index_name)
 
         if not index_path.exists():  # lgtm[py/path-injection]
             raise HTTPException(status_code=404, detail=f"Index '{safe_index_name}' not found")
