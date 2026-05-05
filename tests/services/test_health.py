@@ -221,7 +221,7 @@ class TestDependencyHealth:
             try:
                 cache_client.ping()
                 return {"status": HealthStatus.HEALTHY}
-            except Exception:
+            except Exception as _err:
                 return {"status": HealthStatus.UNHEALTHY}
 
         mock_cache = MagicMock()

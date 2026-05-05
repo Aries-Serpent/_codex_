@@ -207,7 +207,7 @@ if _TOKENIZERS_STUB_FLAG or _tokenizers_spec is None:
             data = {}
             try:
                 data = json.loads(Path(path).read_text(encoding="utf-8"))
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
             inst = cls()
             vocab = data.get("vocab", {}) if isinstance(data, dict) else {}
@@ -276,7 +276,7 @@ if _SPM_STUB_FLAG:
                     continue
                 try:
                     data = Path(path).read_text(encoding="utf-8")
-                except Exception:
+                except Exception as _err:
                     continue
                 tokens.extend(data.split())
         elif "sentence_iterator" in kwargs:
@@ -284,7 +284,7 @@ if _SPM_STUB_FLAG:
             try:
                 for sentence in iterator:
                     tokens.extend(str(sentence).split())
-            except Exception:
+            except Exception as _err:
                 tokens.extend(str(iterator).split())
         vocab = sorted({tok for tok in tokens if tok})
         model_data = {
@@ -311,7 +311,7 @@ if _SPM_STUB_FLAG:
             self.model_file = path
             try:
                 data = json.loads(Path(path).read_text(encoding="utf-8"))
-            except Exception:
+            except Exception as _err:
                 data = {"tokens": []}
             self._tokens = list(data.get("tokens", []))
             self._token_to_id = {

@@ -65,7 +65,7 @@ class TestCheckForMetaTensors:
             import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:
+        except (ImportError, AttributeError, ModuleNotFoundError):
             pass
 
     def teardown_method(self, method: object) -> None:
@@ -81,7 +81,7 @@ class TestCheckForMetaTensors:
             import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:
+        except (ImportError, AttributeError, ModuleNotFoundError):
             pass
 
     def test_model_without_meta_tensors(self):
@@ -147,7 +147,7 @@ class TestSafeModelLoadV2:
             import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:
+        except (ImportError, AttributeError, ModuleNotFoundError):
             pass
 
     def teardown_method(self, method: object) -> None:
@@ -156,7 +156,7 @@ class TestSafeModelLoadV2:
             import torch as _torch  # type: ignore[import-untyped]
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
-        except Exception:
+        except (ImportError, AttributeError, ModuleNotFoundError):
             pass
 
     def test_model_without_meta_tensors(self):

@@ -133,8 +133,7 @@ class TestImportSmoke:
 
         import socket as _socket
         with patch.object(_socket, "socket", _BlockingSocket):
-            import importlib as _il
-            _il.import_module("src.config.openai_client")
+            importlib.import_module("src.config.openai_client")
 
         assert not network_called, (
             f"Network I/O detected during import: {network_called}"

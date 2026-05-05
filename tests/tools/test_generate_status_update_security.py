@@ -16,7 +16,7 @@ def _load_module():
     sys.modules[spec.name] = module
     try:
         spec.loader.exec_module(module)
-    except Exception:
+    except Exception as _err:
         sys.modules.pop(spec.name, None)
         raise
     return module

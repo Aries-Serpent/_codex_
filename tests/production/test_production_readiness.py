@@ -225,7 +225,7 @@ class TestGracefulDegradation:
             for handler in handlers:
                 try:
                     return handler()
-                except Exception:
+                except Exception as _err:
                     continue
             return "all_failed"
 

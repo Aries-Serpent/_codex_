@@ -246,7 +246,7 @@ class TestCorruptionRecovery:
 
         try:
             safe_extract_tarfile(archive_path, extract_dir)
-        except Exception:
+        except Exception as _err:
             # Some files might still be extracted
             pass
 

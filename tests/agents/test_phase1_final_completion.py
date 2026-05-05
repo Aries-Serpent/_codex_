@@ -274,13 +274,13 @@ class TestCoverageUpliftQuickWins:
         if hasattr(orch, "get_state"):
             try:
                 orch.get_state()
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
         if hasattr(orch, "get_config"):
             try:
                 orch.get_config()
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     def test_decision_state_default_values(self):

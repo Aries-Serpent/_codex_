@@ -126,7 +126,7 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
     mlflow.set_tracking_uri(f"file:{mlruns_dir}")
     try:
         mlflow.create_experiment("default", artifact_location=str(mlruns_dir))
-    except Exception:
+    except Exception as _err:
         # Experiment might already exist
         pass
 

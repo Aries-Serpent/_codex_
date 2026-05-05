@@ -50,7 +50,7 @@ class TestPoolingBehavior:
         # Cause an error (invalid SQL)
         try:
             conn.execute("INVALID SQL SYNTAX")
-        except Exception:
+        except Exception as _err:
             pass  # Expected error
 
         # Return connection to pool

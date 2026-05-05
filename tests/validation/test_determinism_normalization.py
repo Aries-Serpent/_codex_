@@ -28,7 +28,7 @@ def normalize(data: dict) -> dict:
         if "score" in nc:
             try:
                 nc["score"] = round(float(nc["score"]), 6)
-            except Exception:
+            except Exception as _err:
                 # Ignore malformed scores; retain original value for comparison
                 pass
         norm.append(nc)

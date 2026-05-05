@@ -83,7 +83,7 @@ def _metrics_visit(label: str, src: str):
         v.visit(tree)
         file_entry = _AST_METRICS["files"].setdefault(label, {})
         file_entry["nodes_visited"] = v.count
-    except Exception:
+    except Exception as _err:
         # silent best-effort
         pass
 
@@ -128,12 +128,12 @@ def _discover_candidates() -> list[str]:
             continue
         try:
             txt = p.read_text(encoding="utf-8", errors="ignore")
-        except Exception:
+        except Exception as _err:
             continue
         if re.search(r"\bdef\s+build_query\s*\(", txt):
             try:
                 rel = str(p.relative_to(ROOT))
-            except Exception:
+            except Exception as _err:
                 rel = str(p)
             out.append(rel)
     return sorted(set(out), key=lambda s: (len(s.split("/")), s))
@@ -240,7 +240,7 @@ def _extract_literal_columns_from_source(src: str) -> list[str]:
                 if c and all(x not in c.lower() for x in ["*", "case ", "count(", "sum(", "avg("]):
                     if re.match(r"[A-Za-z_][A-Za-z0-9_]*$", c):
                         cols.add(c)
-    except Exception:
+    except (AttributeError, OSError, RuntimeError):
         pass
     return sorted(cols)
 
@@ -271,7 +271,7 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
                     _dfs_dict(node.value, 1, set(), ts_acc)
             elif isinstance(node, ast.Dict):
                 _dfs_dict(node, 1, set(), ts_acc)
-    except Exception:
+    except (AttributeError, OSError, RuntimeError):
         pass
     return ts_acc[0] if ts_acc else None
 
@@ -291,7 +291,7 @@ def _infer_expectations(build_query) -> tuple[list[str], str]:
             expected_cols = inferred_cols
         if inferred_ts:
             ts = inferred_ts
-    except Exception:
+    except (AttributeError, OSError, RuntimeError):
         pass
     try:
         sig = inspect.signature(build_query)
@@ -303,7 +303,7 @@ def _infer_expectations(build_query) -> tuple[list[str], str]:
                 ts = "order_by"
         if not expected_cols and ("columns" in params or "select" in params):
             expected_cols = ["event_time", "user_id", "message"]
-    except Exception:
+    except (AttributeError, OSError, RuntimeError):
         pass
     if not expected_cols:
         expected_cols = ["event_time", "user_id", "message"]

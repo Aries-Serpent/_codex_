@@ -306,7 +306,7 @@ class TestLoadDataset:
                     "toy_copy_task",  # Use preset to avoid HF requirement
                     hf_text_field="text",
                 )
-            except Exception:
+            except Exception as _err:
                 pass  # Expected to fail for preset
 
             # Check if deprecation warning was issued

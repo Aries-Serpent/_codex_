@@ -30,7 +30,7 @@ class TestServiceHealthConcepts:
                 content = file_path.read_text(errors="ignore")
                 if "health" in content.lower() or "probe" in content.lower():
                     health_mentions += 1
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
         assert health_mentions > 0, "No health check patterns found in codebase"
@@ -73,7 +73,7 @@ class TestServiceHealthConcepts:
                 if "readiness" in content.lower() or "liveness" in content.lower():
                     probe_found = True
                     break
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
         # Soft assertion - just verify concept exists

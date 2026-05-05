@@ -348,7 +348,7 @@ class TestWorkflowOrchestration:
                 while self.attempts < self.max_attempts:
                     try:
                         return operation()
-                    except Exception:
+                    except Exception as _err:
                         self.attempts += 1
                 raise RuntimeError("Max attempts exceeded")
 

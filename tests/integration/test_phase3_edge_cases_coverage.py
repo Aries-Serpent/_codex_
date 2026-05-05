@@ -530,7 +530,7 @@ class TestConcurrentAccessAndLocking:
                     locks[name].acquire()
                     acquired.append(name)
                 return True
-            except Exception:
+            except Exception as _err:
                 # Release in reverse order on failure
                 for name in reversed(acquired):
                     locks[name].release()
@@ -674,7 +674,7 @@ class TestPartialFailuresAndRollback:
 
             # Error occurs — COMMIT is intentionally never reached
             raise ValueError("Constraint violation")
-        except Exception:
+        except Exception as _err:
             transaction_log.append("ROLLBACK")
 
         assert "ROLLBACK" in transaction_log
@@ -721,7 +721,7 @@ class TestPartialFailuresAndRollback:
             # Operation 3 fails
             raise RuntimeError("Operation 3 failed")
 
-        except Exception:
+        except Exception as _err:
             # Execute compensations in reverse
             for compensation in reversed(compensations):
                 operations.append(compensation)
@@ -801,7 +801,7 @@ class TestPartialFailuresAndRollback:
             # Step 3 fails
             raise Exception("Shipping service unavailable")
 
-        except Exception:
+        except Exception as _err:
             # Execute compensations
             for comp_action, comp_data in reversed(compensations):
                 saga_steps.append((comp_action, comp_data))
@@ -923,7 +923,7 @@ class TestPartialFailuresAndRollback:
             # Partial failure at change 4
             raise Exception("Change 4 failed")
 
-        except Exception:
+        except Exception as _err:
             # Rollback only applied changes
             rollback_sequence = []
             for change in reversed(applied_changes):

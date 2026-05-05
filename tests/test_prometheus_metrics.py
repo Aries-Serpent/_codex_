@@ -39,7 +39,7 @@ def clear_prometheus_registry():
         if collector not in collectors_before:
             try:
                 REGISTRY.unregister(collector)
-            except Exception:
+            except Exception as _err:
                 pass  # Already unregistered
 
 

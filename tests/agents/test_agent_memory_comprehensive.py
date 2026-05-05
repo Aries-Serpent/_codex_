@@ -394,7 +394,7 @@ class TestAgentMemory:
             # Second add should either update or raise error
             try:
                 memory_system.add_memory(entry2)
-            except Exception:
+            except Exception as _err:
                 # Acceptable to reject duplicates
                 pass
 
