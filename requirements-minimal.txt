@@ -36,7 +36,7 @@ requests>=2.32.4  # Security: Updated from 2.31.0 to fix CVE-2024-35195, CVE-202
 PyYAML>=6.0
 
 # Hypothesis for property-based testing
-hypothesis>=6.100
+hypothesis>=6.152.4
 
 # Security: IP-005 dependency updates
 certifi>=2024.7.4  # Security: Fixes CVE-2024-39689

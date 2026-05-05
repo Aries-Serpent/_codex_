@@ -369,7 +369,7 @@ hydra-core==1.3.2
     # via
     #   codex-ml (pyproject.toml)
     #   dvc
-hypothesis==6.151.10
+hypothesis==6.152.4
     # via codex-ml (pyproject.toml)
 identify==2.6.14
     # via pre-commit
