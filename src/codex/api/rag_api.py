@@ -78,6 +78,15 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
 
     Raises HTTPException(400) if the resolved path escapes the base directory.
     """
+    # Pre-validate untrusted input before any filesystem-aware resolution.
+    candidate_str = str(candidate)
+    if "\x00" in candidate_str:
+        raise HTTPException(status_code=400, detail="Invalid path")
+    if candidate.is_absolute():
+        raise HTTPException(status_code=400, detail="Absolute paths are not allowed")
+    if any(part == ".." for part in candidate.parts):
+        raise HTTPException(status_code=400, detail="Parent path traversal is not allowed")
+
     try:
         base_resolved = base.resolve(strict=False)  # lgtm[py/path-injection]
         candidate_resolved = candidate.resolve(strict=False)  # lgtm[py/path-injection]
