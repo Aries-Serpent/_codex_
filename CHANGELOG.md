@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (session notes)
+- PR #4270 S679-SEC follow-up: merged `main` into PR branch (merge commit `ef0389119`) to eliminate merge conflicts against `main` (`rev-list HEAD...origin/main` now `101 0`; merge-tree conflict markers absent).
+- PR #4270 S679-SEC follow-up: addressed new GHAS review alerts 13323/13324 by placing `# lgtm[py/weak-sensitive-data-hashing]` directly on the `h.update(...)` data-flow lines in migration-only `_hmac_sha256_hash_key()` and `_blake2b_hash_key()` paths.
+- PR #4270 S679-SEC follow-up: reinforced GHAS alert 13311 suppression on `src/codex/api/rag_api.py` by adding inline `# lgtm[py/path-injection]` on the guarded `metadata_file.open(...)` call after `_ensure_subpath` containment validation.
+- PR #4270 dependency security follow-up: upgraded `copilot/extension` axios from `^1.15.2` to `^1.16.0` (`package.json` + `package-lock.json`) to remediate open Dependabot advisories listed in issue #4276 / PR #4271 context.
 - PR #4270 S679-SEC CodeQL 13320: Replaced BLAKE2b with PBKDF2-HMAC-SHA256 (100 000 iterations) in `services/ita/app/security.py` `hash_key()` — PBKDF2 is computationally expensive and resolves the CodeQL `py/weak-sensitive-data-hashing` alert; renamed old BLAKE2b function to `_blake2b_hash_key()` (migration-only); added BLAKE2b→PBKDF2 migration path in `verify_api_key()`; updated `test_security.py` accordingly.
 - PR #4270 S679-SEC CI rescue #4377044594: Re-triggered CI on clean HEAD after addressing CodeQL 13320; Pattern 30 100/100 ✅, ruff ✅, sync_tracked_files ✅.
 - PR #4270 S679-SEC CI rescue #4376975383: Re-triggered CI on clean HEAD; all 6 Copilot AI review items confirmed resolved (output redaction, path validation, BLAKE2b hashing, structured logging, sys.modules cleanup, dependabot.yml fix); CodeQL 13315/13316/13317 lgtm annotations verified correct; Pattern 30 100/100 ✅.
