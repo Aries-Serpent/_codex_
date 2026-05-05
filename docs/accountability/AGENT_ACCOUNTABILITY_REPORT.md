@@ -26456,3 +26456,25 @@ Commits `0b39c901`, `cff17c16`, `201b0d9b` all carried `[skip ci]` tags, so CI n
 ### Impact Score
 - CI unblocked: new push clears stale orchestration failures
 - Security: CodeQL lgtm suppression placement corrected for alert 13317
+
+## Session Entry — 2026-05-05T06:50Z (S679-SEC — CI Rescue #4377044594)
+
+**Branch:** `copilot/s679-sec-update-agent-accountability-report`
+**Triggered by:** CI rescue comments #4377044594 / #4377044718 — 4 failing checks on commit `84494093bbbc`; CodeQL alert 13320 (BLAKE2b weak for password hashing)
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `sync_tracked_files --check` — green (all tracked files consistent) ✅
+- [x] **3.** `ruff check src/ tests/ services/` — clean (0 violations) ✅
+- [x] **4.** `auto_fix_common_issues --check-only` — Pattern 30 100/100 ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **CodeQL 13320 fix** — Replaced BLAKE2b with PBKDF2-HMAC-SHA256 (100 000 iterations) in `hash_key()` in `services/ita/app/security.py`. PBKDF2 is a computationally expensive KDF that satisfies CodeQL `py/weak-sensitive-data-hashing`. Renamed old BLAKE2b function to `_blake2b_hash_key()` (migration-only). Added BLAKE2b→PBKDF2 migration step in `verify_api_key()` for transparent upgrade on first successful auth.
+2. **Test updates** — Updated `services/ita/tests/test_security.py`: renamed `test_hash_key_uses_blake2b` → `test_hash_key_uses_pbkdf2`; updated expected hex length (64 chars for SHA-256 vs 128 for BLAKE2b); updated migration test docstrings; added `test_verify_api_key_migrates_blake2b_hash` to cover the new BLAKE2b→PBKDF2 migration path. All 5 tests pass.
+3. **CHANGELOG.md updated** with CodeQL 13320 fix entry under `## [Unreleased]`.
+4. **Clean state verified**: ruff ✅, sync_tracked_files ✅, Pattern 30 100/100 ✅.
+
+### Impact Score
+- Security: CodeQL 13320 resolved — PBKDF2 replaces BLAKE2b for API key hashing
+- Migration: transparent upgrade path for all 3 legacy schemes (SHA-256, HMAC-SHA-256, BLAKE2b)

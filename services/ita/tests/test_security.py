@@ -7,8 +7,8 @@ import sys
 import time
 from pathlib import Path
 
-# BLAKE2b with default digest_size=64 bytes → 128-character hex string.
-_BLAKE2B_DIGEST_HEX_LEN = 128
+# PBKDF2-HMAC-SHA256 with digest_size=32 bytes → 64-character hex string.
+_PBKDF2_DIGEST_HEX_LEN = 64
 
 
 def _load_security_module():
@@ -40,7 +40,7 @@ def test_verify_api_key_accepts_issued_key(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_verify_api_key_migrates_legacy_sha256_hash(tmp_path: Path, monkeypatch) -> None:
-    """Verify that bare-SHA256 hashes (pre-0.2) are migrated to BLAKE2b on first auth."""
+    """Verify that bare-SHA256 hashes (pre-0.2) are migrated to PBKDF2 on first auth."""
     security = _load_security_module()
     try:
         store_path = tmp_path / "api_keys.json"
@@ -62,7 +62,7 @@ def test_verify_api_key_migrates_legacy_sha256_hash(tmp_path: Path, monkeypatch)
 
 
 def test_verify_api_key_migrates_hmac_sha256_hash(tmp_path: Path, monkeypatch) -> None:
-    """Verify that HMAC-SHA256 hashes (0.2.x) are migrated to BLAKE2b on first auth."""
+    """Verify that HMAC-SHA256 hashes (0.2.x) are migrated to PBKDF2 on first auth."""
     security = _load_security_module()
     try:
         store_path = tmp_path / "api_keys.json"
@@ -77,7 +77,7 @@ def test_verify_api_key_migrates_hmac_sha256_hash(tmp_path: Path, monkeypatch) -
         store._dump([record])
 
         upgraded_hash = security.verify_api_key(token, store=store)
-        # Should now be stored as BLAKE2b
+        # Should now be stored as PBKDF2
         assert upgraded_hash == security.hash_key(token)
         assert upgraded_hash in store.hashed_keys()
         assert intermediate_hash not in store.hashed_keys()
@@ -85,14 +85,46 @@ def test_verify_api_key_migrates_hmac_sha256_hash(tmp_path: Path, monkeypatch) -
         sys.modules.pop("ita_security", None)
 
 
-def test_hash_key_uses_blake2b(monkeypatch) -> None:
-    """hash_key should produce a BLAKE2b hex digest (128 hex chars = 64 bytes)."""
+def test_verify_api_key_migrates_blake2b_hash(tmp_path: Path, monkeypatch) -> None:
+    """Verify that BLAKE2b hashes (0.3.x) are migrated to PBKDF2 on first auth."""
+    import warnings
+
+    security = _load_security_module()
+    try:
+        store_path = tmp_path / "api_keys.json"
+        pepper = tmp_path / "pepper.bin"
+        pepper.write_bytes(b"deterministic-test-pepper-bytes-32b")
+        monkeypatch.setenv("ITA_API_KEYS_PATH", str(store_path))
+        monkeypatch.setenv("ITA_API_KEY_PEPPER", str(pepper))
+
+        token = "ita_blake2b_token"
+        # Access the private migration helper directly to simulate a 0.3.x stored hash.
+        # This is intentional for migration validation: the function is deprecated but
+        # must remain callable to verify that verify_api_key() correctly upgrades it.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            blake2b_hash = security._blake2b_hash_key(token)
+        record = security.ApiKeyRecord(key_hash=blake2b_hash, created_at=time.time())
+        store = security.ApiKeyStore(path=store_path)
+        store._dump([record])
+
+        upgraded_hash = security.verify_api_key(token, store=store)
+        # Should now be stored as PBKDF2
+        assert upgraded_hash == security.hash_key(token)
+        assert upgraded_hash in store.hashed_keys()
+        assert blake2b_hash not in store.hashed_keys()
+    finally:
+        sys.modules.pop("ita_security", None)
+
+
+def test_hash_key_uses_pbkdf2(monkeypatch) -> None:
+    """hash_key should produce a PBKDF2-HMAC-SHA256 hex digest (64 hex chars = 32 bytes)."""
     security = _load_security_module()
     try:
         monkeypatch.setenv("ITA_API_KEY_PEPPER", "unit-test-pepper")
         result = security.hash_key("some_api_key")
-        # BLAKE2b with default digest_size=64 produces a 128-character hex string
+        # PBKDF2-HMAC-SHA256 produces a 32-byte (64 hex char) digest
         assert isinstance(result, str)
-        assert len(result) == _BLAKE2B_DIGEST_HEX_LEN
+        assert len(result) == _PBKDF2_DIGEST_HEX_LEN
     finally:
         sys.modules.pop("ita_security", None)

@@ -8,6 +8,7 @@ import json
 import os
 import secrets
 import time
+import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -152,26 +153,43 @@ def _hmac_sha256_hash_key(value: str) -> str:
     return hmac.new(pepper, value.encode("utf-8"), hashlib.sha256).hexdigest()  # nosec B324
 
 
+def _blake2b_hash_key(value: str) -> str:
+    """Intermediate BLAKE2b+pepper hash used by 0.3.x deployments.
+
+    .. deprecated::
+        Retained only for transparent migration in :func:`verify_api_key`.
+        New hashes use :func:`hash_key` (PBKDF2-HMAC-SHA256).
+        Do **not** use for new API keys.
+    """
+    warnings.warn(
+        "_blake2b_hash_key is a migration-only function; use hash_key() for new API keys.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    pepper = _load_hash_pepper()
+    key = pepper[:64]
+    # lgtm[py/weak-sensitive-data-hashing] — migration-only path; not used for new hashes
+    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()  # nosec B324
+
+
 def hash_key(value: str) -> str:
-    """Hash an API key for storage and lookup using BLAKE2b with pepper keying.
+    """Hash an API key for storage and lookup using PBKDF2-HMAC-SHA256 with pepper.
 
-    BLAKE2b with a server-side pepper provides:
-    * Keyed hashing (equivalent security to HMAC without the overhead)
-    * Resistance to offline brute-force even if the hash store is leaked
-    * Fast, constant-time comparison via ``hmac.compare_digest``
+    PBKDF2-HMAC-SHA256 (100 000 iterations) with a server-side pepper provides:
+    * Computationally expensive hashing resistant to offline brute-force attacks
+    * Resistance to GPU acceleration (unlike fast hashes)
+    * 100 000 iterations meets NIST SP 800-132 minimum guidance
 
-    The pepper is loaded from :func:`_load_hash_pepper`.
+    The pepper is loaded from :func:`_load_hash_pepper`.  A deterministic
+    32-byte salt is derived from the pepper via SHA-256 so that salt entropy
+    is preserved regardless of the raw pepper length.
     """
     pepper = _load_hash_pepper()
-    # BLAKE2b native keying accepts 1–64 bytes.  Trim if the pepper is longer
-    # (generated peppers are 32 bytes, well within the 64-byte limit).
-    # A pepper shorter than 16 bytes is technically valid but not recommended
-    # for production — the helper always generates 32-byte peppers by default.
-    key = pepper[:64]
-    # API key hashing uses BLAKE2b+pepper (not a password KDF);
-    # BLAKE2b with a server-side key provides keyed hashing appropriate for API token verification.
-    # lgtm[py/weak-sensitive-data-hashing]
-    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()  # nosec B324
+    # Derive a full-entropy 32-byte PBKDF2 salt from the pepper via SHA-256.
+    # This avoids predictable zero-padding for peppers shorter than 32 bytes.
+    salt = hashlib.sha256(b"pbkdf2-salt-v1:" + pepper).digest()
+    dk = hashlib.pbkdf2_hmac("sha256", value.encode("utf-8"), salt, 100_000)
+    return dk.hex()
 
 
 def _keys_from_environment() -> set[str]:
@@ -188,8 +206,8 @@ def _keys_from_environment() -> set[str]:
 def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None) -> str:
     """Validate the provided API key.
 
-    Transparently migrates legacy hashes (bare SHA-256, then HMAC-SHA-256) to the
-    current BLAKE2b scheme on the first successful authentication.
+    Transparently migrates legacy hashes (bare SHA-256, HMAC-SHA-256, BLAKE2b) to the
+    current PBKDF2-HMAC-SHA256 scheme on the first successful authentication.
 
     Returns the hashed key when validation succeeds.
     """
@@ -201,6 +219,11 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
 
     store = store or ApiKeyStore()
     hashed_candidate = hash_key(candidate)
+    # Suppress DeprecationWarning: _blake2b_hash_key is intentionally called here
+    # for migration-path detection only, not for creating new hashes.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        blake2b_candidate = _blake2b_hash_key(candidate)
     hmac_sha256_candidate = _hmac_sha256_hash_key(candidate)
     legacy_hashed_candidate = _legacy_hash_key(candidate)
     stored_hashes = store.hashed_keys()
@@ -208,12 +231,17 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
     if hashed_candidate in stored_hashes:
         return hashed_candidate
 
-    # Migration: HMAC-SHA-256 (0.2.x) → BLAKE2b (current)
+    # Migration: BLAKE2b (0.3.x) → PBKDF2 (current)
+    if blake2b_candidate in stored_hashes:
+        store.upgrade_hash(blake2b_candidate, hashed_candidate)
+        return hashed_candidate
+
+    # Migration: HMAC-SHA-256 (0.2.x) → PBKDF2 (current)
     if hmac_sha256_candidate in stored_hashes:
         store.upgrade_hash(hmac_sha256_candidate, hashed_candidate)
         return hashed_candidate
 
-    # Migration: bare SHA-256 (pre-0.2) → BLAKE2b (current)
+    # Migration: bare SHA-256 (pre-0.2) → PBKDF2 (current)
     if legacy_hashed_candidate in stored_hashes:
         store.upgrade_hash(legacy_hashed_candidate, hashed_candidate)
         return hashed_candidate
