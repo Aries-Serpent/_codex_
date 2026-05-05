@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4278
 
-**PR**: #4278 - PR #4278  
+**PR**: #4278 - Bump the uv group across 2 directories with 1 update  
 **Branch**: `dependabot/uv/uv-fb45d33db9`  
 **Author**: @dependabot[bot]  
 **Date**: 2026-05-05  

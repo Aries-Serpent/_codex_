@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4277
 
-**PR**: #4277 - PR #4277  
+**PR**: #4277 - deps(deps): bump jupyter-server from 2.17.0 to 2.18.0  
 **Branch**: `dependabot/pip/jupyter-server-2.18.0`  
 **Author**: @dependabot[bot]  
 **Date**: 2026-05-05  
