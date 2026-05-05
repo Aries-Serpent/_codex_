@@ -20,7 +20,7 @@ pytest.importorskip("slowapi")
 from fastapi import HTTPException
 from pydantic import ValidationError
 
-from codex.api.rag_api import MergeIndicesRequest, _ensure_subpath
+from codex.api.rag_api import MergeIndicesRequest, _ensure_subpath, _validate_path_segment
 
 # ---------------------------------------------------------------------------
 # MergeIndicesRequest.source_indices — min_length=2 (Pydantic v2)
@@ -127,4 +127,18 @@ class TestEnsureSubpath:
         outside = Path("/etc/passwd")
         with pytest.raises(HTTPException) as exc_info:
             _ensure_subpath(tmp_path, outside)
+        assert exc_info.value.status_code == 400
+
+
+class TestValidatePathSegment:
+    """Unit tests for tenant/index path segment validation."""
+
+    @pytest.mark.parametrize("value", ["default", "tenant-42", "index_1", "release.v1", "a" * 128])
+    def test_valid_segments_pass(self, value: str) -> None:
+        assert _validate_path_segment(value, "segment") == value
+
+    @pytest.mark.parametrize("value", ["../etc", "a/b", r"a\\b", " ", "", "🔥", "a" * 129])
+    def test_invalid_segments_raise_400(self, value: str) -> None:
+        with pytest.raises(HTTPException) as exc_info:
+            _validate_path_segment(value, "segment")
         assert exc_info.value.status_code == 400

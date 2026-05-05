@@ -78,7 +78,7 @@ class TokenResolution:
     """Result of a token broker lookup."""
 
     source: TokenSource
-    token: Optional[str]          # None when dry_run=True or no creds available
+    token: Optional[str]  # None when dry_run=True or no creds available
     control_class: ControlClass
     is_dry_run: bool = False
     denial_reason: Optional[str] = None

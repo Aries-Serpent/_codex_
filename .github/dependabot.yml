@@ -23,6 +23,10 @@ updates:
   # Python - Monitor pip dependencies
   - package-ecosystem: "pip"
     directory: "/"
+    # Note: Dependabot v2 does not support an `exclude-paths` key for pip.
+    # Fixture/archive directories (misc/, tests/) without a matching uv.lock
+    # may trigger "No uv.lock or pyproject.toml present" warnings during
+    # dependency graph generation, but Dependabot will still function correctly.
     schedule:
       interval: "weekly"
       day: "monday"

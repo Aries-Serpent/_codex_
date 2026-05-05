@@ -43,8 +43,8 @@ class PromptMetadata:
 
     prompt_id: str
     path: str
-    type: str                        # system | task | continuation | domain
-    risk_class: str                  # ControlClass value
+    type: str  # system | task | continuation | domain
+    risk_class: str  # ControlClass value
     consumers: list[str] = field(default_factory=list)
     owner: str = ""
     version: str = ""
@@ -74,9 +74,7 @@ class PromptRegistry:
     """
 
     def __init__(self, prompts: Optional[list[PromptMetadata]] = None) -> None:
-        self._prompts: dict[str, PromptMetadata] = {
-            p.prompt_id: p for p in (prompts or [])
-        }
+        self._prompts: dict[str, PromptMetadata] = {p.prompt_id: p for p in (prompts or [])}
 
     @classmethod
     def load(cls, path: Optional[Path] = None) -> "PromptRegistry":
@@ -192,6 +190,7 @@ class PromptRegistry:
 
 
 # ── CLI entry-point ───────────────────────────────────────────────────────────
+
 
 def _main() -> None:
     import argparse  # noqa: PLC0415

@@ -40,14 +40,14 @@ logger = logging.getLogger(__name__)
 # ── Thresholds from the blueprint expansion gate equation ─────────────────────
 _GI_THRESHOLD = 0.80
 _LP_THRESHOLD = 0.80
-_DENY_RATE_THRESHOLD = 0.0   # strictly > 0
+_DENY_RATE_THRESHOLD = 0.0  # strictly > 0
 _AUDIT_COVERAGE_THRESHOLD = 0.95
 
 # ── Current baseline metrics from the blueprint (2026-05-04) ─────────────────
-BASELINE_AP = 0.877    # Autonomy Power
-BASELINE_GI = 0.5405   # Governance Integrity  (pre Phase 1-5)
-BASELINE_LP = 0.57     # Least-Privilege Quality  (pre Phase 1-5)
-BASELINE_Q = 0.270     # Effective Safe Autonomy Quality  (pre Phase 1-5)
+BASELINE_AP = 0.877  # Autonomy Power
+BASELINE_GI = 0.5405  # Governance Integrity  (pre Phase 1-5)
+BASELINE_LP = 0.57  # Least-Privilege Quality  (pre Phase 1-5)
+BASELINE_Q = 0.270  # Effective Safe Autonomy Quality  (pre Phase 1-5)
 
 # ── Target metrics (post Phases 1–5) ─────────────────────────────────────────
 TARGET_GI = 0.85
@@ -62,9 +62,9 @@ TARGET_Q = BASELINE_AP * TARGET_GI * TARGET_LP  # ≈ 0.656
 #   Phase 4: PromptRegistry — centralized prompt governance catalogue
 #   Phase 5: AuditLogger — 197 test-verified observability records
 #   Wiring:  chatops (AUT-007), infra-manager (AUT-008), expiry-enforcer (AUT-009)
-MEASURED_GI = 0.85    # governance integrity — at target ≥ 0.80 ✅
-MEASURED_LP = 0.88    # least-privilege quality — at target ≥ 0.80 ✅
-MEASURED_DENY_RATE = 0.09   # 9 % of guarded events denied (ingress + kill-switch tests)
+MEASURED_GI = 0.85  # governance integrity — at target ≥ 0.80 ✅
+MEASURED_LP = 0.88  # least-privilege quality — at target ≥ 0.80 ✅
+MEASURED_DENY_RATE = 0.09  # 9 % of guarded events denied (ingress + kill-switch tests)
 MEASURED_AUDIT_COVERAGE = 0.97  # 197 autonomy-module tests / 197 deployed = 97 %
 MEASURED_Q = BASELINE_AP * MEASURED_GI * MEASURED_LP  # ≈ 0.656
 
@@ -159,9 +159,7 @@ class ExpansionGate:
             )
 
         if self.deny_rate_guarded <= _DENY_RATE_THRESHOLD:
-            blocking.append(
-                "DenyRate_guarded = 0 — guards are not demonstrably active"
-            )
+            blocking.append("DenyRate_guarded = 0 — guards are not demonstrably active")
 
         if self.audit_coverage < _AUDIT_COVERAGE_THRESHOLD:
             blocking.append(
@@ -193,8 +191,8 @@ class ExpansionGate:
         return cls(
             governance_integrity=BASELINE_GI,
             least_privilege=BASELINE_LP,
-            deny_rate_guarded=0.0,   # guards not yet instrumented
-            audit_coverage=0.0,      # audit not yet deployed
+            deny_rate_guarded=0.0,  # guards not yet instrumented
+            audit_coverage=0.0,  # audit not yet deployed
         )
 
     @classmethod
@@ -207,7 +205,7 @@ class ExpansionGate:
             governance_integrity=TARGET_GI,
             least_privilege=TARGET_LP,
             deny_rate_guarded=0.12,  # example: 12 % of guarded events denied
-            audit_coverage=0.97,     # 97 % coverage after full deployment
+            audit_coverage=0.97,  # 97 % coverage after full deployment
         )
 
     @classmethod

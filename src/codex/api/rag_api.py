@@ -8,7 +8,9 @@ Provides RESTful API endpoints for RAG operations:
 - Get statistics and metrics
 """
 
+import logging
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -36,6 +38,22 @@ app = FastAPI(
 # Base directory that all client-supplied file paths must reside under.
 # Set RAG_FILES_BASE_DIR to restrict to a specific directory; defaults to CWD.
 _RAG_FILES_BASE: Path = Path(os.environ.get("RAG_FILES_BASE_DIR", str(Path.cwd()))).resolve()
+_SAFE_PATH_SEGMENT = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
+
+logger = logging.getLogger(__name__)
+
+
+def _validate_path_segment(value: str, field_name: str) -> str:
+    """Validate a user-controlled path segment."""
+    if not _SAFE_PATH_SEGMENT.fullmatch(value):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Invalid {field_name}: must use only letters, digits, dot, underscore, "
+                "or hyphen (1-128 chars)"
+            ),
+        )
+    return value
 
 
 def _ensure_subpath(base: Path, candidate: Path) -> Path:
@@ -333,10 +351,7 @@ async def list_indices(
         import json
         from pathlib import Path
 
-        # Basic tenant_id validation to avoid traversal or weird characters.
-        # Allow simple identifiers composed of letters, digits, underscore and dash.
-        if not tenant_id.replace("-", "").replace("_", "").isalnum():
-            raise HTTPException(status_code=400, detail="Invalid tenant_id")
+        tenant_id = _validate_path_segment(tenant_id, "tenant_id")
 
         # Establish a fixed root directory for all indices
         base_index_root = Path.home() / ".codex" / "rag_indices"
@@ -344,10 +359,7 @@ async def list_indices(
         # If index_dir is provided, treat it only as a subdirectory name under the base root,
         # not as an arbitrary filesystem path.
         if index_dir:
-            # Prevent path separators in index_dir to keep it a single path segment.
-            if any(sep in index_dir for sep in ("/", "\\")):
-                raise HTTPException(status_code=400, detail="Invalid index_dir")
-            requested_root = base_index_root / index_dir
+            requested_root = base_index_root / _validate_path_segment(index_dir, "index_dir")
         else:
             requested_root = base_index_root
 
@@ -366,7 +378,7 @@ async def list_indices(
             if not metadata_file.exists():
                 continue
 
-            with open(metadata_file) as f:
+            with metadata_file.open("r", encoding="utf-8") as f:
                 metadata = json.load(f)
 
             # Calculate size
@@ -399,6 +411,8 @@ async def delete_index(
         import shutil
         from pathlib import Path
 
+        tenant_id = _validate_path_segment(tenant_id, "tenant_id")
+        index_name = _validate_path_segment(index_name, "index_name")
         index_dir = Path.home() / ".codex" / "rag_indices"
         tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
         index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
@@ -462,6 +476,8 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         import json
         from pathlib import Path
 
+        tenant_id = _validate_path_segment(tenant_id, "tenant_id")
+        index_name = _validate_path_segment(index_name, "index_name")
         index_dir = Path.home() / ".codex" / "rag_indices"
         tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
         index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
@@ -469,11 +485,13 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         if not index_path.exists():
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
 
-        metadata_file = index_path / "metadata.json"
+        metadata_file = _ensure_subpath(index_path, index_path / "metadata.json")
         if not metadata_file.exists():
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
-        with open(metadata_file) as f:
+        # metadata_file is already validated to be within index_path via _ensure_subpath.
+        # Open the validated Path directly to avoid re-materializing an untrusted string path.
+        with metadata_file.open(encoding="utf-8") as f:  # lgtm[py/path-injection]
             metadata = json.load(f)
 
         # Calculate size
@@ -534,8 +552,8 @@ async def internal_error_handler(request: Request, exc: HTTPException):
 @app.on_event("startup")
 async def startup_event():
     """Initialize on startup."""
-    print("🚀 RAG API Server starting...")
-    print("📚 Documentation: http://localhost:8000/docs")
+    logger.info("RAG API Server starting")
+    logger.info("Documentation available at /docs")
 
 
 @app.on_event("shutdown")

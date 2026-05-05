@@ -69,7 +69,7 @@ class AuditRecord:
     runner_class: str = "hosted"
     mutation_class: str = "READ_ONLY"
     prompt_id: str = ""
-    decision: str = "allow"      # allow | deny | dry_run
+    decision: str = "allow"  # allow | deny | dry_run
     policy_reason: str = ""
     target: str = ""
     run_id: str = ""

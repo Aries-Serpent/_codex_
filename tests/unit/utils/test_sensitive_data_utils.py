@@ -9,7 +9,9 @@ def test_mask_sensitive_data_email():
     text = "Contact me at user@example.com"
     result = mask_sensitive_data(text)
     assert "user@example.com" not in result
-    assert "***" in result or "@" not in result  # pragma: allowlist secret # pragma: allowlist secret
+    # Accept either masking marker insertion ("***") or full token removal by
+    # the redaction implementation; both indicate the sensitive token is not exposed.
+    assert "***" in result or "@" not in result  # pragma: allowlist secret
 
 
 def test_mask_sensitive_data_phone():
@@ -49,7 +51,7 @@ def test_mask_sensitive_data_credit_card():
 
 def test_mask_sensitive_data_api_key():
     """Test mask_sensitive_data masks API keys."""
-    api_key = "sk_test_1234567890abcdef"
+    api_key = "sk_test_1234567890abcdef"  # pragma: allowlist secret
     text = f"API_KEY={api_key}"
     result = mask_sensitive_data(text)
     assert api_key not in result
@@ -60,7 +62,7 @@ def test_mask_sensitive_data_api_key():
 
 def test_mask_sensitive_data_password():
     """Test mask_sensitive_data masks password fields."""
-    text = 'password="secret123"'
+    text = 'password="secret123"'  # pragma: allowlist secret
     result = mask_sensitive_data(text)
     assert "secret123" not in result
     assert "***" in result
@@ -93,7 +95,12 @@ def test_hash_sensitive_value_consistency():
 
 
 def test_hash_sensitive_value_uniqueness():
-    """Test hash_sensitive_value produces unique hashes for distinct inputs."""
+    """Test hash_sensitive_value yields distinct hashes for this representative sample.
+
+    Note: Hash collisions are theoretically possible for any hash function.
+    This test is a practical sanity check for these specific inputs, not a
+    mathematical proof of collision-freedom.
+    """
     values = [
         "alpha",
         "Alpha",  # case-variant edge case
@@ -110,6 +117,7 @@ def test_hash_sensitive_value_uniqueness():
         "emoji_😀",  # Unicode emoji
     ]
     hashes = [hash_sensitive_value(value) for value in values]
+    # Expect no collisions within this small, fixed representative input set.
     assert len(set(hashes)) == len(values)
 
 
