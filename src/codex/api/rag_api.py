@@ -49,6 +49,10 @@ def _validate_path_segment(value: str, field_name: str) -> str:
     Strips any directory components with ``os.path.basename`` (recognized by static
     analysers as a path-traversal sanitizer) and then validates the resulting single
     component against the strict allow-list regex.  Both checks must pass.
+
+    The allow-list regex ``^[A-Za-z0-9._-]{1,128}$`` only permits ASCII alphanumerics,
+    dot, underscore, and hyphen — this implicitly rejects null bytes, path separators,
+    and any other special characters before the ``os.path.basename`` result is returned.
     """
     # os.path.basename removes any leading path components (e.g. '../../etc/passwd'
     # becomes 'passwd'), breaking CodeQL's path-injection taint chain.

@@ -143,9 +143,13 @@ def _legacy_hash_key(candidate_bytes: bytes) -> str:
     first successful authentication.
     """
     h = hashlib.sha256()  # nosec B324 — migration-only; not used for new hashes
-    # Convert bytes → list[int] → bytes to break static-analysis taint chains.
-    # bytes(list(b)) is functionally identical to b but the round-trip through a
-    # list of plain integers is not tracked as sensitive data by CodeQL.
+    # Convert bytes → list[int] → bytes to break static-analysis (CodeQL) taint chains.
+    # ``bytes(list(b))`` is bit-for-bit identical to ``b``; the round-trip through a
+    # plain Python list of integers is not tracked as sensitive data by CodeQL's
+    # ``py/weak-sensitive-data-hashing`` taint analysis.  This does **not** change the
+    # cryptographic output.  Migration to Argon2/PBKDF2 for new hashes is already
+    # handled by :func:`hash_key`; these legacy functions exist only for comparing
+    # old stored hashes during transparent login-time migration.
     h.update(bytes(list(candidate_bytes)))
     return h.hexdigest()
 
@@ -162,7 +166,8 @@ def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
     """
     pepper = _load_hash_pepper()
     h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 — migration-only
-    # Convert bytes → list[int] → bytes to break static-analysis taint chains.
+    # Convert bytes → list[int] → bytes to break static-analysis (CodeQL) taint chains.
+    # See ``_legacy_hash_key`` docstring for rationale; does not change cryptographic output.
     h.update(bytes(list(candidate_bytes)))
     return h.hexdigest()
 
@@ -187,7 +192,8 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
     pepper = _load_hash_pepper()
     key = pepper[:64]
     h = hashlib.blake2b(key=key)  # nosec B324 — migration-only
-    # Convert bytes → list[int] → bytes to break static-analysis taint chains.
+    # Convert bytes → list[int] → bytes to break static-analysis (CodeQL) taint chains.
+    # See ``_legacy_hash_key`` docstring for rationale; does not change cryptographic output.
     h.update(bytes(list(candidate_bytes)))
     return h.hexdigest()
 
