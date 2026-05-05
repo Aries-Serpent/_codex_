@@ -15,6 +15,8 @@ name: 🧹 Cleanup Stale PR Comments
 # 1. workflow_dispatch — manual run from Actions UI or via `gh workflow run`
 # 2. issue_comment     — triggered when someone posts "/cleanup-comments" on a PR
 # 3. pull_request      — auto-run on PR open / synchronize (dry-run by default)
+# 4. workflow_run      — fires automatically after every Copilot agent session ends
+#                        (non-dry-run, resolves the open PR on the triggering branch)
 
 on:
   workflow_dispatch:
@@ -40,6 +42,14 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+  # Auto-fire after every Copilot coding agent session completes —
+  # same pattern used by copilot-agent-session-done.yml and auto-approve-workflows.yml
+  workflow_run:
+    workflows:
+      - "🔄 Auto-Post @copilot review After Agent Session"
+      - "✅ Agent Auth Delegation"
+    types: [completed]
+
 permissions:
   # issues: write is the key permission that allows comment deletion via REST API.
   # Without this explicit declaration the GITHUB_TOKEN is read-only for issues.
@@ -59,6 +69,7 @@ jobs:
     # Only run issue_comment trigger when the comment is on a PR and contains the slash command
     if: |
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'workflow_run' ||
       (github.event_name == 'issue_comment' &&
        github.event.issue.pull_request != null &&
        contains(github.event.comment.body, '/cleanup-comments')) ||
@@ -66,10 +77,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -103,7 +114,7 @@ jobs:
       # -----------------------------------------------------------------------
       - name: React to slash command
         if: github.event_name == 'issue_comment'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.reactions.createForIssueComment({
@@ -141,7 +152,7 @@ jobs:
         if: |
           github.event_name != 'pull_request' &&
           always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
