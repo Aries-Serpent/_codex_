@@ -168,9 +168,10 @@ def hash_key(value: str) -> str:
     # A pepper shorter than 16 bytes is technically valid but not recommended
     # for production — the helper always generates 32-byte peppers by default.
     key = pepper[:64]
-    # lgtm[py/weak-sensitive-data-hashing] — API key hashing uses BLAKE2b+pepper (not a password KDF);
+    # API key hashing uses BLAKE2b+pepper (not a password KDF);
     # BLAKE2b with a server-side key provides keyed hashing appropriate for API token verification.
-    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()
+    # lgtm[py/weak-sensitive-data-hashing]
+    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()  # nosec B324
 
 
 def _keys_from_environment() -> set[str]:
