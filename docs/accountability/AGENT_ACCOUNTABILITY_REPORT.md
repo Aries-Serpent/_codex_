@@ -154,6 +154,14 @@
 
 
 
+## SESSION SUMMARY — 2026-05-05T16:29Z CI rescue: Final Pre-Merge Checks sync_tracked_files stale fix
+
+**Session:** copilot-swe-agent | **PR:** #4270 — S679-SEC continuation | **Date:** 2026-05-05
+
+1. **Final Pre-Merge Checks** (run 25386791264): Root cause — `sync_tracked_files: ❌ stale` on commit `6df8b6a9`. Prior fix commits `e60fd0f` and `e60b243` corrected this but used `[skip ci]` so CI was never re-triggered.
+2. **Fix**: Fresh non-`[skip ci]` commit with Pattern 25 accountability entry + `sync_tracked_files.py --fix` ✅ (Pattern 30 = 100/100 confirmed) + WEC block intact.
+3. **Reply to comment 4381105987**: Acknowledged and addressed the unrecognised `Final Pre-Merge Checks` failure.
+
 ## SESSION SUMMARY — 2026-05-05T16:27Z [auto-generated]
 
 **Session:** auto-20260505T1627-run135706 | **Run:** 25387436587 | **Date:** 2026-05-05
