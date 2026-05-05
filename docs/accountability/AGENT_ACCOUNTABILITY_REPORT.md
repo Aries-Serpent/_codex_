@@ -27181,3 +27181,16 @@ Commits `0b39c901`, `cff17c16`, `201b0d9b` all carried `[skip ci]` tags, so CI n
 - Comment review gate was failing due to 1 unaddressed blocking comment from @mbaetiong
 - ruff src/ ✅ clean, sync_tracked_files ✅ all consistent, Pattern 30 = 100/100
 - Pushed fresh non-[skip ci] rescue commit to re-trigger CI verification
+
+## Session Entry — 2026-05-05T16:56Z (S679-SEC — CI Rescue RP-004 Pattern 22 sync drift)
+
+**Agent:** copilot-swe-agent  
+**PR:** #4270 — S679-SEC continuation  
+**Commit:** pending push  
+**Pattern:** 25
+
+### Actions Taken
+- RP-004 (Pattern 22 — tracked-file sync drift) on `08ac366146ca`: root cause was two downstream `[skip ci]` automation commits (session context digest + provenance token) modifying tracked files without re-triggering CI
+- Ran `sync_tracked_files.py --fix` — confirmed ✅ all tracked files consistent (CODEX_MANIFEST sha256 ✅, .secrets.baseline ✅, CHANGELOG.md ✅)
+- Replied to blocking comment #4381271176
+- Pushing fresh non-`[skip ci]` rescue commit to re-trigger CI verification on clean HEAD
