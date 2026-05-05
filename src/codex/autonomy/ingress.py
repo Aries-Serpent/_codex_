@@ -85,12 +85,12 @@ class IngressResult(str, Enum):
 class IngressEvent:
     """Normalised representation of an inbound event."""
 
-    event_type: str                          # e.g. "issue_comment"
-    actor: str                               # triggering GitHub user/bot
+    event_type: str  # e.g. "issue_comment"
+    actor: str  # triggering GitHub user/bot
     payload: dict[str, Any] = field(default_factory=dict)
-    source_surface: str = ""                 # e.g. "AUT-007"
-    control_class: Optional[str] = None      # override auto-derived class
-    nonce: str = ""                          # anti-replay token
+    source_surface: str = ""  # e.g. "AUT-007"
+    control_class: Optional[str] = None  # override auto-derived class
+    nonce: str = ""  # anti-replay token
     timestamp: float = field(default_factory=time.time)
 
     def __post_init__(self) -> None:
