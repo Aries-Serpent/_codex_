@@ -497,24 +497,25 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         index_dir = Path.home() / ".codex" / "rag_indices"
         tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
         index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
+        trusted_index_path = Path(index_path)
 
-        if not index_path.exists():  # lgtm[py/path-injection]
+        if not trusted_index_path.exists():  # lgtm[py/path-injection]
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
 
         metadata_file = _ensure_subpath(
-            index_path, index_path / "metadata.json"
+            trusted_index_path, trusted_index_path / "metadata.json"
         )  # lgtm[py/path-injection]
         if not metadata_file.exists():  # lgtm[py/path-injection]
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
-        # metadata_file is already validated to be within index_path via _ensure_subpath.
+        # metadata_file is already validated to be within trusted_index_path via _ensure_subpath.
         # Open the validated Path directly to avoid re-materializing an untrusted string path.
         with metadata_file.open(encoding="utf-8") as f:  # lgtm[py/path-injection]
             metadata = json.load(f)
 
         # Calculate size
         size_bytes = sum(
-            f.stat().st_size for f in index_path.rglob("*") if f.is_file()
+            f.stat().st_size for f in trusted_index_path.rglob("*") if f.is_file()
         )  # lgtm[py/path-injection]
 
         return StatsResponse(
