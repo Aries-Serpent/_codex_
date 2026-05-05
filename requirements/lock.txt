@@ -255,7 +255,7 @@ evidently==0.7.21
     # via codex-ml (pyproject.toml)
 executing==2.2.1
     # via stack-data
-faker==40.11.0
+faker==40.15.0
     # via polyfactory
 fastapi==0.135.3
     # via
