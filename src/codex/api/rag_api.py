@@ -489,8 +489,8 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         if not metadata_file.exists():
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
-        # lgtm[py/path-injection] — metadata_file resolved via _ensure_subpath which validates it stays under index_path  # noqa: E501
-        with metadata_file.open("r", encoding="utf-8") as f:
+        # lgtm[py/path-injection] — metadata_file resolved via _ensure_subpath which validates it stays under index_path
+        with metadata_file.open("r", encoding="utf-8") as f:  # lgtm[py/path-injection]
             metadata = json.load(f)
 
         # Calculate size
