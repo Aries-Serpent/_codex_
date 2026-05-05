@@ -7,6 +7,9 @@ import sys
 import time
 from pathlib import Path
 
+# BLAKE2b with default digest_size=64 bytes → 128-character hex string.
+_BLAKE2B_DIGEST_HEX_LEN = 128
+
 
 def _load_security_module():
     module_path = Path(__file__).resolve().parents[1] / "app" / "security.py"
@@ -36,7 +39,8 @@ def test_verify_api_key_accepts_issued_key(tmp_path: Path, monkeypatch) -> None:
         sys.modules.pop("ita_security", None)
 
 
-def test_verify_api_key_migrates_legacy_hash(tmp_path: Path, monkeypatch) -> None:
+def test_verify_api_key_migrates_legacy_sha256_hash(tmp_path: Path, monkeypatch) -> None:
+    """Verify that bare-SHA256 hashes (pre-0.2) are migrated to BLAKE2b on first auth."""
     security = _load_security_module()
     try:
         store_path = tmp_path / "api_keys.json"
@@ -53,5 +57,42 @@ def test_verify_api_key_migrates_legacy_hash(tmp_path: Path, monkeypatch) -> Non
         assert upgraded_hash == security.hash_key(legacy_token)
         assert upgraded_hash in store.hashed_keys()
         assert legacy_hash not in store.hashed_keys()
+    finally:
+        sys.modules.pop("ita_security", None)
+
+
+def test_verify_api_key_migrates_hmac_sha256_hash(tmp_path: Path, monkeypatch) -> None:
+    """Verify that HMAC-SHA256 hashes (0.2.x) are migrated to BLAKE2b on first auth."""
+    security = _load_security_module()
+    try:
+        store_path = tmp_path / "api_keys.json"
+        monkeypatch.setenv("ITA_API_KEYS_PATH", str(store_path))
+        monkeypatch.setenv("ITA_API_KEY_PEPPER", "test-pepper")
+
+        token = "ita_hmac_sha256_token"
+        # Store the token using the intermediate HMAC-SHA256 scheme
+        intermediate_hash = security._hmac_sha256_hash_key(token)
+        record = security.ApiKeyRecord(key_hash=intermediate_hash, created_at=time.time())
+        store = security.ApiKeyStore(path=store_path)
+        store._dump([record])
+
+        upgraded_hash = security.verify_api_key(token, store=store)
+        # Should now be stored as BLAKE2b
+        assert upgraded_hash == security.hash_key(token)
+        assert upgraded_hash in store.hashed_keys()
+        assert intermediate_hash not in store.hashed_keys()
+    finally:
+        sys.modules.pop("ita_security", None)
+
+
+def test_hash_key_uses_blake2b(monkeypatch) -> None:
+    """hash_key should produce a BLAKE2b hex digest (128 hex chars = 64 bytes)."""
+    security = _load_security_module()
+    try:
+        monkeypatch.setenv("ITA_API_KEY_PEPPER", "unit-test-pepper")
+        result = security.hash_key("some_api_key")
+        # BLAKE2b with default digest_size=64 produces a 128-character hex string
+        assert isinstance(result, str)
+        assert len(result) == _BLAKE2B_DIGEST_HEX_LEN
     finally:
         sys.modules.pop("ita_security", None)

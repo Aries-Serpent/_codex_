@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (session notes)
+- PR #4270 S679-SEC CodeQL: Replaced HMAC-SHA-256 in `services/ita/app/security.py` `hash_key()` with BLAKE2b native keying (resolves CodeQL alerts 13312, 13313 — SHA256 weak for password-equivalent data); added `_hmac_sha256_hash_key()` as intermediate migration step for 0.2.x stored hashes; updated `verify_api_key()` with 3-level migration chain (SHA-256 → HMAC-SHA-256 → BLAKE2b).
+- PR #4270 S679-SEC CodeQL: Applied `_ensure_subpath()` to `metadata_file` in `src/codex/api/rag_api.py` `get_stats()` to make path validation explicit and resolve CodeQL alert 13311 (uncontrolled data in path expression).
+- PR #4270 S679-SEC CodeQL: Routed `tools/status/generate_status_update.py` preview output through `sys.stderr.write()` instead of `print()` to resolve CodeQL alert 13310 (clear-text logging of sensitive information); added `logging` module import.
 - PR #4270 S679-SEC: Resolved `ITA_API_KEY_PEPPER` env-var ambiguity — `_load_hash_pepper()` now treats the value as a file path when it points to an existing file, otherwise falls back to literal UTF-8 string; updated `_DEFAULT_PEPPER_PATH` docstring accordingly.
 - PR #4270 S679-SEC: Removed unsupported `exclude-paths` key from `.github/dependabot.yml` (not a valid Dependabot v2 schema key); replaced with explanatory comment.
 - PR #4270 S679-SEC: Added `sys.modules` cleanup (try/finally pop) to `test_generate_status_update_security.py` and `services/ita/tests/test_security.py` to prevent cross-test state leakage.

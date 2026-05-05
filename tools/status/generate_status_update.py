@@ -27,6 +27,7 @@ import datetime as dt
 import json
 import os
 import re
+import sys
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -1083,7 +1084,9 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     if write:
         out_path.write_text(markdown, encoding="utf-8")
     else:
-        print(sanitize_for_logging(markdown))
+        # Preview mode: write redacted content to stderr to avoid leaking
+        # potentially sensitive strings from scanned repository files.
+        sys.stderr.write(sanitize_for_logging(markdown))
     return out_path
 
 

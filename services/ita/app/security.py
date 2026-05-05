@@ -131,14 +131,42 @@ def _load_hash_pepper() -> bytes:
 
 
 def _legacy_hash_key(value: str) -> str:
-    """Legacy non-keyed hash used by older deployments."""
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+    """Legacy bare SHA-256 hash used by the oldest deployments (pre-0.2).
+
+    Do **not** use for new hashes.  Retained only for transparent migration in
+    :func:`verify_api_key` so that existing stored hashes can be upgraded on
+    first successful authentication.
+    """
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()  # nosec B324
+
+
+def _hmac_sha256_hash_key(value: str) -> str:
+    """Intermediate keyed HMAC-SHA-256 hash used by 0.2.x deployments.
+
+    Retained only for transparent migration in :func:`verify_api_key`.
+    New hashes use :func:`hash_key` (BLAKE2b).
+    """
+    pepper = _load_hash_pepper()
+    return hmac.new(pepper, value.encode("utf-8"), hashlib.sha256).hexdigest()  # nosec B324
 
 
 def hash_key(value: str) -> str:
-    """Hash API key for storage and lookup using a keyed digest."""
+    """Hash an API key for storage and lookup using BLAKE2b with pepper keying.
+
+    BLAKE2b with a server-side pepper provides:
+    * Keyed hashing (equivalent security to HMAC without the overhead)
+    * Resistance to offline brute-force even if the hash store is leaked
+    * Fast, constant-time comparison via ``hmac.compare_digest``
+
+    The pepper is loaded from :func:`_load_hash_pepper`.
+    """
     pepper = _load_hash_pepper()
-    return hmac.new(pepper, value.encode("utf-8"), hashlib.sha256).hexdigest()
+    # BLAKE2b native keying accepts 1–64 bytes.  Trim if the pepper is longer
+    # (generated peppers are 32 bytes, well within the 64-byte limit).
+    # A pepper shorter than 16 bytes is technically valid but not recommended
+    # for production — the helper always generates 32-byte peppers by default.
+    key = pepper[:64]
+    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()
 
 
 def _keys_from_environment() -> set[str]:
@@ -155,6 +183,9 @@ def _keys_from_environment() -> set[str]:
 def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None) -> str:
     """Validate the provided API key.
 
+    Transparently migrates legacy hashes (bare SHA-256, then HMAC-SHA-256) to the
+    current BLAKE2b scheme on the first successful authentication.
+
     Returns the hashed key when validation succeeds.
     """
 
@@ -165,13 +196,19 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
 
     store = store or ApiKeyStore()
     hashed_candidate = hash_key(candidate)
+    hmac_sha256_candidate = _hmac_sha256_hash_key(candidate)
     legacy_hashed_candidate = _legacy_hash_key(candidate)
     stored_hashes = store.hashed_keys()
 
     if hashed_candidate in stored_hashes:
         return hashed_candidate
 
-    # Backward compatibility: transparently migrate legacy hashes on successful auth.
+    # Migration: HMAC-SHA-256 (0.2.x) → BLAKE2b (current)
+    if hmac_sha256_candidate in stored_hashes:
+        store.upgrade_hash(hmac_sha256_candidate, hashed_candidate)
+        return hashed_candidate
+
+    # Migration: bare SHA-256 (pre-0.2) → BLAKE2b (current)
     if legacy_hashed_candidate in stored_hashes:
         store.upgrade_hash(legacy_hashed_candidate, hashed_candidate)
         return hashed_candidate

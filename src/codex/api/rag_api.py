@@ -485,7 +485,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         if not index_path.exists():
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
 
-        metadata_file = index_path / "metadata.json"
+        metadata_file = _ensure_subpath(index_path, index_path / "metadata.json")
         if not metadata_file.exists():
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
