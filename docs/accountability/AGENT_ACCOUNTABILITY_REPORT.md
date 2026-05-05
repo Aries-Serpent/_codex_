@@ -27402,3 +27402,13 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## Session Entry — 2026-05-05T20:11Z
+
+### Work Completed
+1. **Merge-conflict resolution** — Merged `origin/main` into PR branch. Conflicts in `.secrets.baseline` (competing CODEX_MANIFEST hash) and `requirements/lock.txt` (overlapping dep-version lines) were resolved using our version (`-X ours`), preserving all dep bumps from the consolidation commit. Reran `sync_tracked_files.py --fix` to confirm `.secrets.baseline` is consistent.
+
+### §0 Compliance
+Reviewed all new comments (#4382616898, #4382534398, #4382454346) before applying changes. No deferral language used.
