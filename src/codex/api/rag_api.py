@@ -489,14 +489,9 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         if not metadata_file.exists():
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
-        # Break CodeQL py/path-injection taint chain: os.path.abspath() materialises
-        # the fully-resolved path as a plain str, decoupling it from the user-supplied
-        # index_name taint source.  _ensure_subpath() above has already confirmed the
-        # path stays within index_path, so we re-validate after abspath for belt-and-
-        # suspenders safety.
-        safe_metadata_path = os.path.abspath(str(metadata_file))
-        _ensure_subpath(index_path, Path(safe_metadata_path))
-        with open(safe_metadata_path, encoding="utf-8") as f:
+        # metadata_file is already validated to be within index_path via _ensure_subpath.
+        # Open the validated Path directly to avoid re-materializing an untrusted string path.
+        with metadata_file.open(encoding="utf-8") as f:
             metadata = json.load(f)
 
         # Calculate size
