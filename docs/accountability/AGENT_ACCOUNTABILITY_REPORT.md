@@ -26180,3 +26180,29 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-05-05T00:06Z SESSION S679-PR4270 (CI Rescue — RP-004 sync_tracked_files fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — comment #4375462059 (RP-004 sync drift) addressed ✅
+- [x] **0b.** Failing CI checks reviewed — Pattern 22/25/30 dims fixed ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed — RP-004 (tracked-file sync drift) root-caused and fixed ✅
+- [x] **3.** `ruff check src/` — clean ✅
+- [x] **4.** `sync_tracked_files --check` — green ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **RP-004 / Pattern 22 (sync_tracked_files drift)** — Ran `sync_tracked_files.py --fix`; all tracked hashes consistent (CODEX_MANIFEST sha256=d7ddd6e8, .secrets.baseline entries all correct).
+2. **ruff src/ clean** — No violations found after automated fix pass.
+3. **Pattern 25/30** — Updated this accountability entry (today = 2026-05-05) and added PDA entry to clear both failing dimensions.
+4. **Comment #4375462059** — Replied with fix commit hash.
+
+### Root-Cause Note
+Bot-pushed merge commits (e.g. `dc7fa8d`, `b341fa6`) can shift file hashes after a session ends, causing the next session's Pattern 30 scorecard to show `sync_tracked_files: ❌ stale`. Fix: re-run `sync_tracked_files.py --fix` at the start of any follow-up session and include this accountability entry in the final commit.
+
+### Impact Score
+- CI dimensions unblocked: `sync_tracked_files`, `ruff (src/ clean)`, `PDA entry today`, `accountability report today`
+- Deferral Language Gate: 0 violations
+
+---
