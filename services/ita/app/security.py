@@ -149,8 +149,8 @@ def _hmac_sha256_hash_key(value: str) -> str:
     New hashes use :func:`hash_key` (PBKDF2-HMAC-SHA256).
     """
     pepper = _load_hash_pepper()
-    h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 - migration-only legacy verifier path
-    h.update(value.encode("utf-8"))  # lgtm[py/weak-sensitive-data-hashing]  # migration-only path for 0.2.x hashes
+    h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 - migration-only legacy verifier path; lgtm on sink line below
+    h.update(value.encode("utf-8"))  # lgtm[py/weak-sensitive-data-hashing]
     return h.hexdigest()
 
 
@@ -169,8 +169,8 @@ def _blake2b_hash_key(value: str) -> str:
     )
     pepper = _load_hash_pepper()
     key = pepper[:64]
-    h = hashlib.blake2b(key=key)  # nosec B324 - migration-only legacy verifier path
-    h.update(value.encode("utf-8"))  # lgtm[py/weak-sensitive-data-hashing]  # migration-only path; not used for new hashes
+    h = hashlib.blake2b(key=key)  # nosec B324 - migration-only legacy verifier path; lgtm on sink line below
+    h.update(value.encode("utf-8"))  # lgtm[py/weak-sensitive-data-hashing]
     return h.hexdigest()
 
 
