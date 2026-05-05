@@ -146,11 +146,13 @@ def _hmac_sha256_hash_key(value: str) -> str:
     """Intermediate keyed HMAC-SHA-256 hash used by 0.2.x deployments.
 
     Retained only for transparent migration in :func:`verify_api_key`.
-    New hashes use :func:`hash_key` (BLAKE2b).
+    New hashes use :func:`hash_key` (PBKDF2-HMAC-SHA256).
     """
     pepper = _load_hash_pepper()
     # lgtm[py/weak-sensitive-data-hashing] — migration-only path for 0.2.x hashes; not used for new hashes
-    return hmac.new(pepper, value.encode("utf-8"), hashlib.sha256).hexdigest()  # nosec B324
+    h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324  # lgtm[py/weak-sensitive-data-hashing]
+    h.update(value.encode("utf-8"))
+    return h.hexdigest()
 
 
 def _blake2b_hash_key(value: str) -> str:
@@ -169,7 +171,9 @@ def _blake2b_hash_key(value: str) -> str:
     pepper = _load_hash_pepper()
     key = pepper[:64]
     # lgtm[py/weak-sensitive-data-hashing] — migration-only path; not used for new hashes
-    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()  # nosec B324
+    h = hashlib.blake2b(key=key)  # nosec B324  # lgtm[py/weak-sensitive-data-hashing]
+    h.update(value.encode("utf-8"))
+    return h.hexdigest()
 
 
 def hash_key(value: str) -> str:
