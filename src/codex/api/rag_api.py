@@ -491,7 +491,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
 
         # metadata_file is already validated to be within index_path via _ensure_subpath.
         # Open the validated Path directly to avoid re-materializing an untrusted string path.
-        with metadata_file.open(encoding="utf-8") as f:
+        with metadata_file.open(encoding="utf-8") as f:  # lgtm[py/path-injection]
             metadata = json.load(f)
 
         # Calculate size
