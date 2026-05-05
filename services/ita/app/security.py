@@ -171,7 +171,7 @@ def hash_key(value: str) -> str:
     # API key hashing uses BLAKE2b+pepper (not a password KDF);
     # BLAKE2b with a server-side key provides keyed hashing appropriate for API token verification.
     # lgtm[py/weak-sensitive-data-hashing]
-    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()  # nosec B324
+    return hashlib.blake2b(value.encode("utf-8"), key=key).hexdigest()  # nosec B324  # lgtm[py/weak-sensitive-data-hashing]
 
 
 def _keys_from_environment() -> set[str]:

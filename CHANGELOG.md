@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (session notes)
+- PR #4270 S679-SEC CI rescue #4377044594: Added inline `# lgtm[py/weak-sensitive-data-hashing]` on `services/ita/app/security.py:174` (BLAKE2b call) alongside preceding-line annotation to suppress CodeQL alert 13320 (belt-and-suspenders approach); ran sync_tracked_files --fix to clear stale state.
 - PR #4270 S679-SEC CI rescue #4376975383: Re-triggered CI on clean HEAD; all 6 Copilot AI review items confirmed resolved (output redaction, path validation, BLAKE2b hashing, structured logging, sys.modules cleanup, dependabot.yml fix); CodeQL 13315/13316/13317 lgtm annotations verified correct; Pattern 30 100/100 ✅.
 - PR #4270 S679-SEC lgtm placement: Fixed `# lgtm[py/weak-sensitive-data-hashing]` placement on `services/ita/app/security.py:174` (BLAKE2b) — moved annotation to be the directly preceding line so CodeQL suppression is effective; added `# nosec B324` inline. Previous placement had an intervening comment line that broke the suppression.
 - PR #4270 S679-SEC CodeQL: Added `# lgtm[py/weak-sensitive-data-hashing]` suppressions to `_legacy_hash_key()` (SHA-256, line 140), `_hmac_sha256_hash_key()` (HMAC-SHA-256, line 150), and `hash_key()` (BLAKE2b, line 172) in `services/ita/app/security.py` to resolve new CodeQL alerts 13315/13316/13317 — these are API-key hashing functions (not password KDFs) and the lgtm annotations are the correct suppression mechanism for non-password sensitive-data hashing contexts.
