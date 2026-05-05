@@ -1,6 +1,10 @@
 {
   "schema_version": "1.0",
+<<<<<<< copilot/s679-sec-update-agent-accountability-report
   "generated_at": "2026-05-04T23:09:39Z",
+=======
+  "generated_at": "2026-05-05T00:33:55Z",
+>>>>>>> main
   "agents": [
     {
       "name": "github-app-manager",
@@ -2064,5 +2068,9 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
+<<<<<<< copilot/s679-sec-update-agent-accountability-report
   "integrity_sha256": "d7ddd6e8fbf58462c951c99ccd6c50b9cb35194a66162ceff6a6aecf7b9fe261"
+=======
+  "integrity_sha256": "4e43ceb60b8d74acc1868a05cb678d90e3b9c542782687d6263471d1b98ede8f"
+>>>>>>> main
 }
