@@ -1,32 +1,32 @@
-# Session Context — 2026-05-05T04:16:43Z
+# Session Context — 2026-05-05T04:35:20Z
 **Branch:** `copilot/s679-sec-update-agent-accountability-report`  **PR:** #4270  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4996` (✅)  
-- GraphQL remaining: `4972` (✅)  
+- REST remaining: `4799` (✅)  
+- GraphQL remaining: `4956` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4270 — S679-SEC continuation: cherry-picked axios 1.15.2, security hardening fixes, CodeQL remediation, and CI rescue sync fixes
+## 📋 PR #4270 — S679-SEC continuation: cherry-picked axios 1.15.2, security hardening fixes, CodeQL remediation (13310–13317), and CI rescue sync fixes
 State: `open`  Draft: `False`  Branch: `copilot/s679-sec-update-agent-accountability-report` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-05)
-- **Validation Pipeline** — `failure` on `main` (2026-05-05)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-05)
-- **PR Comment Review Gate** — `failure` on `copilot/s679-sec-update-agent-accountability-report` (2026-05-05)
-- **Agent Token Delegation** — `failure` on `copilot/s679-sec-update-agent-accountability-report` (2026-05-05)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/s679-sec-update-agent-accountability-report` (2026-05-05)
+- **Auto-Fix Common CI Issues** — `failure` on `copilot/s679-sec-update-agent-accountability-report` (2026-05-05)
+- **PR Auto-Fix Check** — `failure` on `copilot/s679-sec-update-agent-accountability-report` (2026-05-05)
+- **Validation Pipeline** — `failure` on `copilot/s679-sec-update-agent-accountability-report` (2026-05-05)
 
 ## 📝 Recent Commits
+- `e613ea90` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-05)
+- `8a3508e8` fix(security): suppress CodeQL alerts 13314-13317 with lgtm annotations and data — copilot-swe-agent[bot] (2026-05-05)
+- `bd127ba5` chore: initial plan for CI rescue and CodeQL fixes — copilot-swe-agent[bot] (2026-05-05)
 - `f9019289` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-05)
 - `d301335c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-05)
 - `1efb4a55` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-05)
 - `76e6c5d1` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-05)
 - `9a7c47e5` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-05)
-- `0f35e2f8` fix(security): resolve 4 CodeQL alerts — BLAKE2b hash, path validation, clear-te — copilot-swe-agent[bot] (2026-05-05)
-- `22d314b1` chore: begin CI rescue and CodeQL security fix session — copilot-swe-agent[bot] (2026-05-05)
-- `327dfb78` fix(ci): add pragma allowlist secret to test fixtures in test_sensitive_data_uti — copilot-swe-agent[bot] (2026-05-05)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
