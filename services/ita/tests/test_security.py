@@ -48,7 +48,7 @@ def test_verify_api_key_migrates_legacy_sha256_hash(tmp_path: Path, monkeypatch)
         monkeypatch.setenv("ITA_API_KEY_PEPPER", "test-pepper")
 
         legacy_token = "ita_legacy_token"
-        legacy_hash = security._legacy_hash_key(legacy_token)
+        legacy_hash = security._legacy_hash_key(legacy_token.encode("utf-8"))
         record = security.ApiKeyRecord(key_hash=legacy_hash, created_at=time.time())
         store = security.ApiKeyStore(path=store_path)
         store._dump([record])
@@ -71,7 +71,7 @@ def test_verify_api_key_migrates_hmac_sha256_hash(tmp_path: Path, monkeypatch) -
 
         token = "ita_hmac_sha256_token"
         # Store the token using the intermediate HMAC-SHA256 scheme
-        intermediate_hash = security._hmac_sha256_hash_key(token)
+        intermediate_hash = security._hmac_sha256_hash_key(token.encode("utf-8"))
         record = security.ApiKeyRecord(key_hash=intermediate_hash, created_at=time.time())
         store = security.ApiKeyStore(path=store_path)
         store._dump([record])
@@ -103,7 +103,7 @@ def test_verify_api_key_migrates_blake2b_hash(tmp_path: Path, monkeypatch) -> No
         # must remain callable to verify that verify_api_key() correctly upgrades it.
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            blake2b_hash = security._blake2b_hash_key(token)
+            blake2b_hash = security._blake2b_hash_key(token.encode("utf-8"))
         record = security.ApiKeyRecord(key_hash=blake2b_hash, created_at=time.time())
         store = security.ApiKeyStore(path=store_path)
         store._dump([record])

@@ -14,6 +14,7 @@ from __future__ import annotations
 import re
 import sys
 import textwrap
+import unittest.mock
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -121,7 +122,11 @@ class TestBuildWecBlock:
             assert f"- [x] {fname}" in block
 
     def test_optional_items_unchecked_by_default(self):
-        block = swa._build_wec_block(existing_state={})
+        # Patch _auth_enabled_in_env to False for determinism: we want to verify
+        # genuinely-optional items (not autonomous-auto-check items) default to [ ].
+        mock = unittest.mock
+        with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
+            block = swa._build_wec_block(existing_state={})
         optional = [
             "resilient_validation.yml",
             "nox_gates.yml",
@@ -129,10 +134,43 @@ class TestBuildWecBlock:
             "test-rag.yml",
             "security-scanning-suite.yml",
             "documentation-link-checker.yml",
-            "auto-approve-workflows",
+            # NOTE: auto-approve-workflows is in _WEC_AUTONOMOUS_AUTO_CHECK —
+            # it is auto-checked when COPILOT_AGENT_AUTH_ENABLED=true (full autonomy).
+            # See test_autonomous_auto_check_items_checked_when_auth_enabled below.
         ]
         for fname in optional:
             assert f"- [ ] {fname}" in block, f"{fname} should be unchecked by default"
+
+    def test_autonomous_auto_check_items_checked_when_auth_enabled(self):
+        """Items in _WEC_AUTONOMOUS_AUTO_CHECK are [x] when COPILOT_AGENT_AUTH_ENABLED=true."""
+        mock = unittest.mock
+        with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
+            block = swa._build_wec_block(existing_state={})
+        for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
+            assert f"- [x] {fname}" in block, (
+                f"{fname} should be [x] when COPILOT_AGENT_AUTH_ENABLED=true"
+            )
+
+    def test_autonomous_auto_check_items_unchecked_when_auth_disabled(self):
+        """Items in _WEC_AUTONOMOUS_AUTO_CHECK stay [ ] when auth is disabled + state empty."""
+        mock = unittest.mock
+        with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
+            block = swa._build_wec_block(existing_state={})
+        for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
+            assert f"- [ ] {fname}" in block, (
+                f"{fname} should be [ ] when auth disabled and no existing state"
+            )
+
+    def test_autonomous_auto_check_respects_explicit_uncheck(self):
+        """Explicit maintainer uncheck (state[fname]=False) is respected even when auth is on."""
+        mock = unittest.mock
+        with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
+            block = swa._build_wec_block(
+                existing_state={"auto-approve-workflows": False}
+            )
+        assert "- [ ] auto-approve-workflows" in block, (
+            "explicit [ ] uncheck by maintainer must be preserved even with auth enabled"
+        )
 
     def test_never_check_items_are_unchecked_by_default(self):
         block = swa._build_wec_block(existing_state={})
@@ -171,7 +209,8 @@ class TestBuildWecBlock:
         block = swa._build_wec_block()
         assert "HARDENED AGENT INSTRUCTION" in block
         assert "report_progress" in block
-        assert "never reset a maintainer selection" in block.lower()
+        # New instruction directs agents to use --print-wec-block CLI
+        assert "print-wec-block" in block.lower() or "never reconstruct" in block.lower()
 
     def test_heading_marker_present(self):
         block = swa._build_wec_block()
@@ -683,3 +722,95 @@ class TestWecNeverCheckTelemetry:
         if summary_file.exists():
             content = summary_file.read_text(encoding="utf-8")
             assert "WEC Never-Check Guard" not in content
+
+
+class TestHumanGrantTracking:
+    """Tests for the human-vs-agent WEC checkbox tracking system."""
+
+    def test_detect_human_grant_when_agent_had_unchecked(self, tmp_path, monkeypatch):
+        """A box that is [x] NOW but was [ ] in agent's last write → human grant."""
+        state_file = tmp_path / "wec_state.json"
+        state_data = {
+            "schema_version": "2",
+            "pr_entries": {
+                "1234": {
+                    "last_agent_write": {"auto-approve-workflows": False},
+                    "human_grants": {},
+                }
+            },
+        }
+        import json
+        state_file.write_text(json.dumps(state_data))
+        monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
+
+        grants = swa._detect_human_grants("1234", {"auto-approve-workflows": True})
+        assert "auto-approve-workflows" in grants
+        assert grants["auto-approve-workflows"]["status"] == "active"
+
+    def test_detect_human_revoke_when_agent_had_checked(self, tmp_path, monkeypatch):
+        """A box the agent wrote [x] but is now [ ] → human revoke."""
+        state_file = tmp_path / "wec_state.json"
+        state_data = {
+            "schema_version": "2",
+            "pr_entries": {
+                "1234": {
+                    "last_agent_write": {"auto-approve-workflows": True},
+                    "human_grants": {
+                        "auto-approve-workflows": {"status": "active", "granted_at": "...", "granted_sha": "abc"},
+                    },
+                }
+            },
+        }
+        import json
+        state_file.write_text(json.dumps(state_data))
+        monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
+
+        grants = swa._detect_human_grants("1234", {"auto-approve-workflows": False})
+        assert grants["auto-approve-workflows"]["status"] == "revoked"
+
+    def test_human_grant_overrides_never_check(self):
+        """A human grant must render [x] even for _WEC_NEVER_CHECK items."""
+        mock = unittest.mock
+        never_check_item = next(iter(swa._WEC_NEVER_CHECK))
+        grants = {never_check_item: {"status": "active", "granted_at": "...", "granted_sha": "x"}}
+        with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
+            block = swa._build_wec_block(
+                existing_state={never_check_item: False},
+                human_grants=grants,
+            )
+        assert f"- [x] {never_check_item}" in block, (
+            "human grant must override _WEC_NEVER_CHECK and render [x]"
+        )
+
+    def test_revoked_grant_does_not_force_checked(self):
+        """A revoked human grant must NOT force [x]."""
+        mock = unittest.mock
+        grants = {"auto-approve-workflows": {"status": "revoked", "granted_at": "...", "granted_sha": "x"}}
+        with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
+            block = swa._build_wec_block(
+                existing_state={"auto-approve-workflows": False},
+                human_grants=grants,
+            )
+        assert "- [ ] auto-approve-workflows" in block, (
+            "revoked grant should result in [ ] when state is False"
+        )
+
+    def test_no_grant_for_unchanged_state(self, tmp_path, monkeypatch):
+        """No grant should be recorded when agent last wrote [x] and it's still [x]."""
+        state_file = tmp_path / "wec_state.json"
+        state_data = {
+            "schema_version": "2",
+            "pr_entries": {
+                "1234": {
+                    "last_agent_write": {"auto-approve-workflows": True},
+                    "human_grants": {},
+                }
+            },
+        }
+        import json
+        state_file.write_text(json.dumps(state_data))
+        monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
+
+        grants = swa._detect_human_grants("1234", {"auto-approve-workflows": True})
+        # No new grant — agent already had it as [x]
+        assert "auto-approve-workflows" not in grants

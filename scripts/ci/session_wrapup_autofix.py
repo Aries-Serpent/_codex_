@@ -63,6 +63,10 @@ SECRETS_BASELINE = REPO_ROOT / ".secrets.baseline"
 _OWNER = "Aries-Serpent"
 _REPO  = "_codex_"
 
+# Per-PR WEC state file — records exactly what the agent last wrote so the next
+# session can diff it against the live PR body and identify human-granted overrides.
+_WEC_STATE_FILE = REPO_ROOT / ".codex" / "wec_state.json"
+
 # Sentinel that marks auto-generated entries so we can detect duplicates.
 _AUTO_ENTRY_SENTINEL = "[auto-generated]"
 
@@ -155,12 +159,23 @@ _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(
 #       treats as a new unaddressed comment, firing another Copilot session.
 #   copilot-iterative-self-healing.yml — fires on workflow_run; schedules a new
 #       self-healing CI loop that posts rescue comments and re-triggers Copilot.
-#   auto-approve-workflows — approves ALL pending workflow runs on the latest SHA;
-#       approving copilot-agent-session-done and copilot-iterative-self-healing
-#       immediately re-enters the continuation loop from the previous two items.
+#
+# NOTE: auto-approve-workflows is intentionally NOT in _WEC_NEVER_CHECK.
+# When COPILOT_AGENT_AUTH_ENABLED=true (full maintainer autonomy granted), the
+# system MUST maintain [x] auto-approve-workflows automatically so that ALL
+# pending action_required workflow runs are approved without human interaction.
+# This is controlled by _WEC_AUTONOMOUS_AUTO_CHECK below.
 _WEC_NEVER_CHECK: frozenset[str] = frozenset({
     "copilot-agent-session-done.yml",
     "copilot-iterative-self-healing.yml",
+})
+
+# Workflows that are auto-checked when COPILOT_AGENT_AUTH_ENABLED=true.
+# These represent full-autonomy capabilities that the maintainer has explicitly
+# granted by setting the repo variable.  Unlike _WEC_ALWAYS_REQUIRED (which
+# cannot be overridden), a maintainer CAN explicitly uncheck these to withdraw
+# the autonomy grant; the agent will then respect the [ ] state.
+_WEC_AUTONOMOUS_AUTO_CHECK: frozenset[str] = frozenset({
     "auto-approve-workflows",
 })
 
@@ -187,9 +202,12 @@ _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
     "security-scanning-suite.yml",
     # Opt-in: infrastructure (reference integrity gate)
     "reference-integrity.yml",
-    # NOTE: copilot-agent-session-done.yml, copilot-iterative-self-healing.yml,
-    # and auto-approve-workflows are in _WEC_NEVER_CHECK and must never be activated
-    # automatically — they cause unbounded Copilot continuation loops.
+    # Auto-approve: activated when COPILOT_AGENT_AUTH_ENABLED=true so that all
+    # pending workflow runs are cleared without human interaction (full autonomy).
+    "auto-approve-workflows",
+    # NOTE: copilot-agent-session-done.yml and copilot-iterative-self-healing.yml
+    # are in _WEC_NEVER_CHECK and must never be activated automatically —
+    # they cause unbounded Copilot continuation loops.
 })
 
 # ── Module-load invariant (S178 hardening) ────────────────────────────────
@@ -225,6 +243,201 @@ def _extract_wec_state(pr_body: str) -> dict[str, bool]:
     return checked
 
 
+# ---------------------------------------------------------------------------
+# WEC agent-vs-human tracking
+# ---------------------------------------------------------------------------
+
+def _read_wec_state_file() -> dict:
+    """Read .codex/wec_state.json; return empty structure if missing/corrupt."""
+    import json as _json
+    if _WEC_STATE_FILE.exists():
+        try:
+            return _json.loads(_WEC_STATE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            logger.debug("wec_state.json corrupt — starting fresh", exc_info=True)
+    return {"schema_version": "2", "pr_entries": {}}
+
+
+def _write_wec_state_file(data: dict) -> None:
+    """Write data to .codex/wec_state.json (pretty-printed for readability)."""
+    import json as _json
+    _WEC_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    _WEC_STATE_FILE.write_text(
+        _json.dumps(data, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _detect_human_grants(
+    pr_number: str,
+    live_state: dict[str, bool],
+) -> dict[str, dict]:
+    """Compare *live_state* (current PR body) against the last agent-written state.
+
+    Algorithm
+    ---------
+    For every workflow filename in *live_state*:
+
+    * If the box is ``[x]`` NOW **and** the agent's last recorded write had it as
+      ``[ ]`` (or absent) → the change was not made by the agent → **human grant**.
+      We record it as a sticky maintainer selection that must never be cleared.
+
+    * If the box is ``[ ]`` NOW **and** the agent's last recorded write had it as
+      ``[x]`` → the human explicitly **unchecked** it → honour the uncheck (record
+      as ``revoked``).
+
+    * If the states match, no inference is needed.
+
+    The function merges newly-detected grants with any existing ``human_grants``
+    already recorded for this PR, so grants accumulate across sessions rather than
+    being reset on every call.
+
+    Returns the merged ``human_grants`` dict for the PR (may be empty ``{}``).
+    """
+    data = _read_wec_state_file()
+    pr_entry: dict = data.get("pr_entries", {}).get(str(pr_number), {})
+    last_agent_write: dict[str, bool] = pr_entry.get("last_agent_write", {})
+    human_grants: dict[str, dict] = dict(pr_entry.get("human_grants", {}))
+
+    now_ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    head_sha = _short_sha()
+
+    for fname, is_checked in live_state.items():
+        agent_had = last_agent_write.get(fname)  # None = never written by agent
+        if is_checked and not agent_had:
+            # Box is [x] now but agent never set it OR agent last wrote [ ]
+            if fname not in human_grants:
+                human_grants[fname] = {
+                    "granted_at": now_ts,
+                    "granted_sha": head_sha,
+                    "status": "active",
+                    "note": (
+                        f"agent last wrote [{agent_had}]; live PR shows [x] "
+                        "— treated as human/maintainer grant"
+                    ),
+                }
+                logger.info(
+                    "🔒 WEC human grant detected: [x] %s (agent had %s)", fname, agent_had
+                )
+        elif not is_checked and fname in human_grants:
+            # Human explicitly unchecked something they previously granted → revoke
+            if human_grants[fname].get("status") == "active":
+                human_grants[fname]["status"] = "revoked"
+                human_grants[fname]["revoked_at"] = now_ts
+                human_grants[fname]["revoked_sha"] = head_sha
+                logger.info("🔓 WEC human grant revoked: [ ] %s", fname)
+
+    return human_grants
+
+
+def _get_pr_human_grants(pr_number: str) -> dict[str, dict]:
+    """Return currently-active human grants for *pr_number* from wec_state.json."""
+    data = _read_wec_state_file()
+    return data.get("pr_entries", {}).get(str(pr_number), {}).get("human_grants", {})
+
+
+def _record_agent_wec_write(
+    pr_number: str,
+    agent_state: dict[str, bool],
+    live_body: str | None = None,
+) -> dict[str, dict]:
+    """Record the state the agent is about to write, detect any human grants first.
+
+    Call this IMMEDIATELY BEFORE writing the new PR body.  Pass *live_body* (the
+    current PR body text before the agent's write) so human grants can be detected
+    by comparing *live_body* vs the previous ``last_agent_write``.
+
+    Returns the merged ``human_grants`` dict so the caller can apply them to the
+    new WEC block before writing.
+    """
+    human_grants: dict[str, dict] = {}
+    if live_body is not None:
+        live_state = _extract_wec_state(live_body)
+        human_grants = _detect_human_grants(pr_number, live_state)
+
+    now_ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    head_sha = _short_sha()
+
+    data = _read_wec_state_file()
+    entries = data.setdefault("pr_entries", {})
+    pr_entry = entries.setdefault(str(pr_number), {})
+    pr_entry["last_agent_write"] = {k: v for k, v in agent_state.items()}
+    pr_entry["last_write_ts"] = now_ts
+    pr_entry["last_write_sha"] = head_sha
+    if human_grants:
+        pr_entry["human_grants"] = human_grants
+    _write_wec_state_file(data)
+
+    n_grants = sum(1 for g in human_grants.values() if g.get("status") == "active")
+    if n_grants:
+        _log_human_grants_to_accountability(pr_number, human_grants)
+
+    return human_grants
+
+
+def _log_human_grants_to_accountability(
+    pr_number: str,
+    human_grants: dict[str, dict],
+) -> None:
+    """Append a one-line note to AGENT_ACCOUNTABILITY_REPORT for each new human grant."""
+    active = {k: v for k, v in human_grants.items() if v.get("status") == "active"}
+    if not active:
+        return
+    note_lines = [
+        "\n<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->\n",
+    ]
+    for fname, info in active.items():
+        note_lines.append(
+            f"- **WEC human grant** `{fname}` — detected {info.get('granted_at', '?')} "
+            f"@ {info.get('granted_sha', '?')} — sticky [x] maintained by all future agent sessions\n"
+        )
+    try:
+        with open(ACCOUNTABILITY_REPORT, "a", encoding="utf-8") as fh:
+            fh.writelines(note_lines)
+    except OSError:
+        logger.debug("Could not append human-grant note to accountability report", exc_info=True)
+
+
+def build_wec_for_report_progress(pr_number: str) -> str:
+    """Return the complete WEC block ready to embed in a ``report_progress`` call.
+
+    This is the **one function agents MUST call** before every ``report_progress``
+    invocation to get the correct WEC block.  It performs the full pipeline:
+
+    1. Fetches the live PR body via ``gh pr view`` (requires GH_TOKEN / gh CLI).
+    2. Calls ``_extract_wec_state()`` to read current checkbox states.
+    3. Calls ``_detect_human_grants()`` to identify human-vs-agent changes.
+    4. Calls ``_build_wec_block()`` with the live state and human grants applied.
+    5. Returns the WEC block as a string.
+
+    Falls back to ``_REQUIRED_PR_CHECKBOXES`` (default state) when the PR body
+    cannot be fetched (e.g., GH_TOKEN not available in local dev).
+
+    Usage::
+
+        from scripts.ci import session_wrapup_autofix as swa
+        wec = swa.build_wec_for_report_progress("4270")
+        # append `wec` at the end of your prDescription string
+
+    CLI equivalent::
+
+        python scripts/ci/session_wrapup_autofix.py --print-wec-block --pr-number 4270
+    """
+    try:
+        result = subprocess.run(
+            ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"],
+            capture_output=True, text=True, check=True,
+        )
+        pr_body = result.stdout.strip()
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        logger.debug("build_wec_for_report_progress: gh fetch failed — using default", exc_info=True)
+        return _REQUIRED_PR_CHECKBOXES
+
+    live_state = _extract_wec_state(pr_body)
+    human_grants = _detect_human_grants(pr_number, live_state)
+    return _build_wec_block(existing_state=live_state, human_grants=human_grants)
+
+
 def _auth_enabled_in_env() -> bool:
     """Return True if COPILOT_AGENT_AUTH_ENABLED is 'true' in the current environment.
 
@@ -246,7 +459,10 @@ def _auth_enabled_in_env() -> bool:
     return False
 
 
-def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
+def _build_wec_block(
+    existing_state: dict[str, bool] | None = None,
+    human_grants: dict[str, dict] | None = None,
+) -> str:
     """Build the canonical WEC block, preserving any maintainer-selected items.
 
     *existing_state* is the dict returned by ``_extract_wec_state``.  Items
@@ -254,27 +470,55 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
     (per ``_WEC_ALWAYS_REQUIRED``) are unconditionally ``[x]`` regardless of
     existing state.
 
+    *human_grants* is the dict returned by ``_detect_human_grants`` / loaded from
+    ``.codex/wec_state.json``.  Items present in *human_grants* with status
+    ``"active"`` are ALWAYS rendered as ``[x]``, even if they appear in
+    ``_WEC_NEVER_CHECK``.  This ensures that when a human maintainer explicitly
+    checks a box, the agent never clears it — even across sessions.
+
     Items in ``_WEC_NEVER_CHECK`` are never *auto-enabled* by this function, but
-    any existing maintainer ``[x]`` selection is preserved.  This prevents the
-    agent from triggering unbounded Copilot continuation loops while still
-    respecting an intentional maintainer override.
+    any existing maintainer ``[x]`` selection is preserved.  Items with an active
+    ``human_grant`` entry override this restriction.
+
+    Items in ``_WEC_AUTONOMOUS_AUTO_CHECK`` (e.g. ``auto-approve-workflows``) are
+    auto-forced to ``[x]`` when ``COPILOT_AGENT_AUTH_ENABLED=true`` so that every
+    Copilot Cloud Agent session inherits full-autonomy approval without any human
+    needing to re-check the box.  The maintainer CAN revoke by explicitly
+    unchecking — the revoked state is then persisted in ``wec_state.json``.
 
     When ``COPILOT_AGENT_AUTH_ENABLED`` is already ``true`` (repo variable or env),
-    the ``agent-auth-delegation.yml`` checkbox is auto-forced to ``[x]`` so the
-    workflow fires on every PR without a human needing to check the box manually.
+    the ``agent-auth-delegation.yml`` and ``auto-approve-workflows`` checkboxes are
+    auto-forced to ``[x]`` so both the delegation workflow and the approval sweep
+    fire on every PR without manual intervention.
     """
     state = existing_state or {}
     auth_already_active = _auth_enabled_in_env()
+    # Build a fast lookup: filename → True if human actively granted this item.
+    active_human_grants: frozenset[str] = frozenset(
+        fname for fname, info in (human_grants or {}).items()
+        if isinstance(info, dict) and info.get("status") == "active"
+    )
 
     def _checked(filename: str) -> str:
+        # 1. Human grants always win — sticky regardless of any other rule.
+        if filename in active_human_grants:
+            return "x"
+        # 2. Never auto-enable loop-trigger workflows; preserve existing [x].
         if filename in _WEC_NEVER_CHECK:
-            # Never auto-enable; preserve maintainer's explicit [x] if already set.
             return "x" if state.get(filename, False) else " "
+        # 3. Always-required gates are unconditionally [x].
         if filename in _WEC_ALWAYS_REQUIRED:
             return "x"
-        # Auto-check agent-auth-delegation when repo var already says true
+        # 4. Full-autonomy items: auto-check when COPILOT_AGENT_AUTH_ENABLED=true.
+        #    Respect an explicit maintainer uncheck stored in state (False > auto-check).
+        if filename in _WEC_AUTONOMOUS_AUTO_CHECK:
+            if filename in state:
+                return "x" if state[filename] else " "
+            return "x" if auth_already_active else " "
+        # 5. Auto-check agent-auth-delegation when repo var already says true.
         if filename == "agent-auth-delegation.yml" and auth_already_active:
             return "x"
+        # 6. Preserve any other existing selection.
         return "x" if state.get(filename, False) else " "
 
     lines: list[str] = [
@@ -325,9 +569,14 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
         "",
         "> **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be",
         "> appended verbatim to **every** PR body update — including every `report_progress` call.",
-        "> Copy the WEC block from the current PR body into the `prDescription` parameter, keeping",
-        "> **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.",
-        "> Only 'always required' items may be auto-checked. All other items preserve their current state.",
+        "> **ALWAYS generate the WEC block via the CLI** before calling `report_progress`:",
+        ">",
+        ">     python scripts/ci/session_wrapup_autofix.py --print-wec-block --pr-number <N>",
+        ">",
+        "> This command fetches the live PR body, detects human-vs-agent checkbox changes,",
+        "> and returns the correct WEC block with ALL human grants preserved as sticky `[x]`.",
+        "> Never reconstruct the block manually — human grants recorded in `.codex/wec_state.json`",
+        "> MUST be applied or the maintainer's autonomy grants will be silently lost.",
         "",
     ]
     return "\n".join(lines)
@@ -914,12 +1163,14 @@ def fix_pr_body_checkboxes(
 
     # ALWAYS extract existing maintainer selections (hardened — never skip this step)
     existing_state = _extract_wec_state(pr_body)
+    # Detect human grants: compare live state vs what agent last wrote
+    human_grants = _detect_human_grants(pr_number, existing_state)
 
     has_wec = _WEC_MARKER in pr_body
     has_wec_legacy = _WEC_MARKER_LEGACY in pr_body
 
     if has_wec:
-        canonical_block = _build_wec_block(existing_state)
+        canonical_block = _build_wec_block(existing_state, human_grants=human_grants)
         if _WEC_MARKER not in canonical_block:  # pragma: no cover
             print(f"⚠  PR #{pr_number} _build_wec_block() returned block without marker — forcing rebuild")
         else:
@@ -927,9 +1178,10 @@ def fix_pr_body_checkboxes(
             body_from_marker  = pr_body[pr_body.index(_WEC_MARKER):]
             if canon_from_marker.strip() == body_from_marker.strip():
                 n_checked = sum(1 for v in existing_state.values() if v)
+                n_grants  = sum(1 for g in human_grants.values() if g.get("status") == "active")
                 print(
                     f"✅ PR #{pr_number} WEC is already canonical "
-                    f"({n_checked} item(s) checked) — no repair needed"
+                    f"({n_checked} item(s) checked, {n_grants} human grant(s)) — no repair needed"
                 )
                 return False
         n_checked = sum(1 for v in existing_state.values() if v)
@@ -958,9 +1210,11 @@ def fix_pr_body_checkboxes(
                 idx -= 1
             stripped_body = stripped_body[:idx]
 
-    new_body = stripped_body.rstrip() + (
-        _build_wec_block(existing_state) if existing_state else _REQUIRED_PR_CHECKBOXES
+    new_wec = (
+        _build_wec_block(existing_state, human_grants=human_grants)
+        if existing_state else _REQUIRED_PR_CHECKBOXES
     )
+    new_body = stripped_body.rstrip() + new_wec
 
     if dry_run:
         n_checked = sum(1 for v in existing_state.values() if v)
@@ -970,15 +1224,20 @@ def fix_pr_body_checkboxes(
         )
         return True
 
+    # Determine the agent_state we're about to write so it can be recorded.
+    new_state = _extract_wec_state(new_wec)
+    _record_agent_wec_write(pr_number, new_state, live_body=pr_body)
+
     try:
         subprocess.run(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
             check=True, capture_output=True, text=True,
         )
         n_checked = sum(1 for v in existing_state.values() if v)
+        n_grants  = sum(1 for g in human_grants.values() if g.get("status") == "active")
         print(
             f"✅ Rebuilt WEC for PR #{pr_number} "
-            f"(preserved {n_checked} maintainer selection(s))"
+            f"(preserved {n_checked} selection(s), {n_grants} human grant(s))"
         )
         return True
     except subprocess.CalledProcessError as exc:
@@ -1257,8 +1516,9 @@ def select_merge_required_workflows(
         )
         return False
 
-    # Extract current state, then activate all merge-required workflows
+    # Extract current state, detect human grants, then activate all merge-required workflows
     existing_state = _extract_wec_state(pr_body)
+    human_grants = _detect_human_grants(pr_number, existing_state)
     updated_state = dict(existing_state)
 
     activated: list[str] = []
@@ -1307,7 +1567,7 @@ def select_merge_required_workflows(
         )
         return False
 
-    new_wec_block = _build_wec_block(updated_state)
+    new_wec_block = _build_wec_block(updated_state, human_grants=human_grants)
 
     # Strip existing WEC block and replace with updated one
     stripped_body = pr_body
@@ -1329,6 +1589,10 @@ def select_merge_required_workflows(
         )
         return True
 
+    # Record agent write before pushing so the next session can detect human changes.
+    new_state = _extract_wec_state(new_wec_block)
+    _record_agent_wec_write(pr_number, new_state, live_body=pr_body)
+
     try:
         subprocess.run(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
@@ -1341,10 +1605,12 @@ def select_merge_required_workflows(
         )
         return False
 
+    n_grants = sum(1 for g in human_grants.values() if g.get("status") == "active")
     total_checked = sum(1 for v in updated_state.values() if v)
     print(
         f"✅ PR #{pr_number} WEC updated — activated {len(activated)} merge-required "
-        f"workflow(s) ({total_checked} total checked): {', '.join(activated)}"
+        f"workflow(s) ({total_checked} total checked, {n_grants} human grant(s)): "
+        f"{', '.join(activated)}"
     )
     return True
 
@@ -1625,8 +1891,31 @@ def main(argv: list[str] | None = None) -> int:
             "adds new test/fixture files with hash-like strings."
         ),
     )
+    parser.add_argument(
+        "--print-wec-block",
+        action="store_true",
+        default=False,
+        dest="print_wec_block",
+        help=(
+            "Print the canonical WEC block for this PR to stdout, with human grants "
+            "applied.  Use this output as the WEC section in every report_progress "
+            "prDescription call.  Requires --pr-number.  Reads .codex/wec_state.json "
+            "to detect human-vs-agent checkbox history; if wec_state.json is absent "
+            "(first call for this PR) a default block is printed."
+        ),
+    )
 
     args = parser.parse_args(argv)
+
+    # --print-wec-block: one-shot WEC generator for agents before report_progress
+    if getattr(args, "print_wec_block", False):
+        if args.pr_number == "unknown":
+            # No PR number — emit default block so the caller always gets something usable.
+            print(_REQUIRED_PR_CHECKBOXES)
+            return 0
+        wec = build_wec_for_report_progress(args.pr_number)
+        print(wec)
+        return 0
 
     sha = args.sha or _short_sha()
 

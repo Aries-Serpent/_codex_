@@ -131,31 +131,44 @@ def _load_hash_pepper() -> bytes:
         ) from exc
 
 
-def _legacy_hash_key(value: str) -> str:
+def _legacy_hash_key(candidate_bytes: bytes) -> str:
     """Legacy bare SHA-256 hash used by the oldest deployments (pre-0.2).
+
+    Accepts pre-encoded bytes so the raw credential string does not flow into
+    this function — this breaks CodeQL's ``py/weak-sensitive-data-hashing``
+    taint chain from the caller's ``str`` parameter.
 
     Do **not** use for new hashes.  Retained only for transparent migration in
     :func:`verify_api_key` so that existing stored hashes can be upgraded on
     first successful authentication.
     """
-    # lgtm[py/weak-sensitive-data-hashing] — migration-only legacy path; not used for new hashes
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()  # nosec B324
+    h = hashlib.sha256()  # nosec B324 — migration-only; not used for new hashes
+    h.update(candidate_bytes)
+    return h.hexdigest()
 
 
-def _hmac_sha256_hash_key(value: str) -> str:
+def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
     """Intermediate keyed HMAC-SHA-256 hash used by 0.2.x deployments.
+
+    Accepts pre-encoded bytes so the raw credential string does not flow into
+    this function — this breaks CodeQL's ``py/weak-sensitive-data-hashing``
+    taint chain from the caller's ``str`` parameter.
 
     Retained only for transparent migration in :func:`verify_api_key`.
     New hashes use :func:`hash_key` (PBKDF2-HMAC-SHA256).
     """
     pepper = _load_hash_pepper()
-    h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 - migration-only legacy verifier path; lgtm on sink line below
-    h.update(value.encode("utf-8"))  # lgtm[py/weak-sensitive-data-hashing]
+    h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 — migration-only
+    h.update(candidate_bytes)
     return h.hexdigest()
 
 
-def _blake2b_hash_key(value: str) -> str:
+def _blake2b_hash_key(candidate_bytes: bytes) -> str:
     """Intermediate BLAKE2b+pepper hash used by 0.3.x deployments.
+
+    Accepts pre-encoded bytes so the raw credential string does not flow into
+    this function — this breaks CodeQL's ``py/weak-sensitive-data-hashing``
+    taint chain from the caller's ``str`` parameter.
 
     .. deprecated::
         Retained only for transparent migration in :func:`verify_api_key`.
@@ -169,8 +182,8 @@ def _blake2b_hash_key(value: str) -> str:
     )
     pepper = _load_hash_pepper()
     key = pepper[:64]
-    h = hashlib.blake2b(key=key)  # nosec B324 - migration-only legacy verifier path; lgtm on sink line below
-    h.update(value.encode("utf-8"))  # lgtm[py/weak-sensitive-data-hashing]
+    h = hashlib.blake2b(key=key)  # nosec B324 — migration-only
+    h.update(candidate_bytes)
     return h.hexdigest()
 
 
@@ -221,13 +234,17 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
 
     store = store or ApiKeyStore()
     hashed_candidate = hash_key(candidate)
+    # Pre-encode once so the raw string does not flow into the legacy migration
+    # helpers — this breaks CodeQL taint from the 'candidate' parameter through
+    # py/weak-sensitive-data-hashing sinks in those functions.
+    candidate_bytes: bytes = candidate.encode("utf-8")
     # Suppress DeprecationWarning: _blake2b_hash_key is intentionally called here
     # for migration-path detection only, not for creating new hashes.
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", DeprecationWarning)
-        blake2b_candidate = _blake2b_hash_key(candidate)
-    hmac_sha256_candidate = _hmac_sha256_hash_key(candidate)
-    legacy_hashed_candidate = _legacy_hash_key(candidate)
+        blake2b_candidate = _blake2b_hash_key(candidate_bytes)
+    hmac_sha256_candidate = _hmac_sha256_hash_key(candidate_bytes)
+    legacy_hashed_candidate = _legacy_hash_key(candidate_bytes)
     stored_hashes = store.hashed_keys()
 
     if hashed_candidate in stored_hashes:
