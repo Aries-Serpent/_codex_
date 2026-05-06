@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4330)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4330 (SHA `52d75a00`) at 2026-05-06T22:07Z [auto-generated]
+
 ### Fixed (session 2026-05-06T22:00Z — PR #4317 S313 security hardening)
 - `services/ita/app/security.py:224`: PBKDF2-HMAC-SHA256 iterations bumped **100 000 → 600 000** (OWASP 2024 SHA-256 recommended minimum).
 - `scripts/ci/mypy_baseline.py`: baseline updated **170 → 126** — locks in 44-error improvement from prior sessions.
