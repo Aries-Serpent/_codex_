@@ -1,32 +1,32 @@
-# Session Context — 2026-05-06T22:35:16Z
-**Branch:** `copilot/fix-timeline-structure`  **PR:** #4330  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-06T23:18:59Z
+**Branch:** `copilot/fix-timeline-structure`  **PR:** #4323  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `2033` (✅)
-- GraphQL remaining: `4966` (✅)
+- REST remaining: `4610` (✅)
+- GraphQL remaining: `4896` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4330 — deps(deps): bump python-multipart from 0.0.26 to 0.0.27
-State: `open`  Draft: `False`  Branch: `dependabot/pip/python-multipart-0.0.27` → `main`
+## 📋 PR #4323 — Fix timeline clarity, stale review date, CVE comment, Semgrep expansion, dependency security sweep (Mako, GitPython, python-multipart), and CodeQL Python quality fixes
+State: `open`  Draft: `False`  Branch: `copilot/fix-timeline-structure` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Copilot code review** — `failure` on `refs/pull/4323/head` (2026-05-06)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
+- **Auto-Fix Common CI Issues** — `failure` on `copilot/fix-timeline-structure` (2026-05-06)
+- **PR Auto-Fix Check** — `failure` on `copilot/fix-timeline-structure` (2026-05-06)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
 
 ## 📝 Recent Commits
+- `14e84972` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
+- `f7d44c72` fix(codeql): py/unexpected-raise-in-special-method — __getattr__ ImportError→Att — copilot-swe-agent[bot] (2026-05-06)
+- `c4b37f00` fix(codeql+security): Wave 10 verification + CodeQL py/empty-except×55, catch-ba — copilot-swe-agent[bot] (2026-05-06)
+- `896f95ea` chore(deps+security): Wave 10 — Dependabot alerts #244,#245,#246 investigation r — copilot-swe-agent[bot] (2026-05-06)
 - `49923e65` chore(session-close): final CI 10/10 green — living docs close, CHANGELOG + acco — copilot-swe-agent[bot] (2026-05-06)
 - `c9905824` Merge branch 'main' into copilot/fix-timeline-structure — Statix (2026-05-06)
 - `583d6dde` chore(wrap-up): fix .secrets.baseline, finalize Wave 9 CI status, CHANGELOG + AG — copilot-swe-agent[bot] (2026-05-06)
 - `7a989c6b` chore(deps+security): Dependabot sweep (Mako→1.3.12, GitPython→3.1.50), cherry-p — copilot-swe-agent[bot] (2026-05-06)
-- `f8d6bea0` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
-- `5fdff8d9` Bump the uv group across 2 directories with 1 update — dependabot[bot] (2026-05-06)
-- `2d534584` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-06)
-- `3fc589bb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

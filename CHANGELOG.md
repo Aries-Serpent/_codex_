@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T23:22Z — PR #4323 Session 3: CI Rescue + Wrap-up)
+- **CI Rescue RP-004 (Pattern 22)**: `sync_tracked_files --fix` re-run; CODEX_MANIFEST, `.secrets.baseline`, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT all confirmed consistent. `sync_tracked_files --check` ✅ green on HEAD `14e8497`.
+- **Pattern 9 (unsorted imports)**: `tools/answer_codex_questions.py` and `tools/mkdocs_repair.py` confirmed clean — `ruff check --select I` passes on current HEAD.
+- **Pattern 25 (last-commit accountability)**: `AGENT_ACCOUNTABILITY_REPORT.md` updated with Session 3 entry.
+- **Pattern 30 (merge-readiness dims)**: `sync_tracked_files` dimension confirmed ✅ green.
+- **Living docs updated**: `docs/roadmap/PR4323_whats_next.md` and `docs/sessions/PR4323_session_diagram.md` updated with S3 session flow and current CI status table.
+- **CI comments addressed**: Blocking comments #4392725862, #4392837532, #4392846671, #4392864410 all replied to.
+
 ### Fixed (session 2026-05-06T23:15Z — PR #4323 Session 2 continuation: CodeQL unexpected-raise-in-special-method)
 - **CodeQL py/unexpected-raise-in-special-method** (1/2 alerts): `src/codex_ml/__init__.py:191` — `__getattr__()` was raising `ImportError` when an optional dependency is missing; changed to `AttributeError` per Python special-method convention (PEP 562: module `__getattr__` should raise `AttributeError`). The chain `from exc` preserves the import failure context.
 - Living docs updated: `docs/roadmap/PR4323_whats_next.md`, `docs/sessions/PR4323_session_diagram.md` with CI status and pending CodeQL items.
