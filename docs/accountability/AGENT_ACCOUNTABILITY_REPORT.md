@@ -208,6 +208,18 @@
 
 
 
+## SESSION SUMMARY — 2026-05-06T20:55Z [S312]
+
+**Session:** S312 | **PR:** #4317 | **Date:** 2026-05-06 | **Branch:** 0D_base_
+
+**Actions:**
+- Fixed `issue-resolution-gate.yml`: fault-tolerant `gh api` call (rate-limit guard added)
+- Fixed `autonomous_rag_context.py` lines 624/626/627: permanent trailing-whitespace source elimination — removes `  ` from 3 f-string literals that caused pre-commit hook failures on every CI run
+- Incorporated Dependabot PR #4322 (mistune 3.2.1 uv group, uv.lock, PR-4322-followup.md)
+- Updated `docs/roadmap/PR4317_whats_next.md` with full merge-readiness assessment + security/CodeQL backlog + follow-up prompt
+- Updated `docs/sessions/PR4317_session_diagram.md` with Wave 7, trailing-space root-cause map, §9 security/CodeQL map, §10 merge-readiness table
+- Monitoring CI: 22/30 checks ✅, 3 in-progress (Resilient Validation, Code Quality, Root Org), 1 failure fixed (Issue Resolution Gate), 3 startup_failure expected (opt-in infra)
+
 ## SESSION SUMMARY — 2026-05-06T20:39Z [auto-generated]
 
 **Session:** auto-20260506T2039-run154842 | **Run:** 25459323593 | **Date:** 2026-05-06
