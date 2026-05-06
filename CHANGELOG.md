@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4311)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4311 (SHA `5b6e380b`) at 2026-05-06T06:46Z [auto-generated]
+
 ### Fixed (session 2026-05-05T22:45Z — PR #4289)
 - CodeQL alerts 13344/13356/13357 in `rag_api.py` `get_stats()`: added explicit `os.path.realpath()` taint-break at path assignment + moved `# lgtm[py/path-injection]` to preceding lines per GitHub Advanced Security best practice.
 - CI: transient Agent Token Delegation + Secrets Baseline failures diagnosed as API rate-limit (user 91555439 hit 5000/hr) — self-heals on next push.
