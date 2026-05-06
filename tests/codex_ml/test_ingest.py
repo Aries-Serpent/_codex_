@@ -85,7 +85,7 @@ class TestExtractConfig:
         config = _extract_config({})
 
         assert config.sample_mode is True
-        assert config.sample_size == 16  # Default value from _DataConfig
+        assert config.sample_size == 16  # Default propagated via _default_config()
         assert config.dataset_name == "local_sample"
 
     def test_full_config(self) -> None:
@@ -235,6 +235,7 @@ class TestReadJsonl:
 
         assert len(records) == 2
         assert records[0] == {"text": "valid"}
+        # Malformed JSON lines should fall back to raw-text records.
         assert records[1] == {"text": "not json"}
 
 
