@@ -876,7 +876,7 @@ class MariaDbDAL(BaseDAL):
     def __init__(self, dsn: str):
         self.dsn = dsn
         try:
-            import pymysql  # type: ignore
+            import pymysql
         except Exception as e:  # pragma: no cover - import guard
             raise RuntimeError("pymysql is required for mariadb backend") from e
         self.mysql = pymysql

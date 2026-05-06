@@ -28305,3 +28305,26 @@ and the CI gate requirement.
 - All tracked files consistent ✅
 
 ---
+
+## Session Entry — 2026-05-06T19:30Z (PR #4317 — S221 rescue `4391214431`)
+
+### Session Metadata
+- **Session ID:** S-PR4317-rescue-s221
+- **PR:** #4317 · branch `0D_base_`
+- **Triggered by:** S221 Missed-Trigger Recovery comment `4391214431` (rescue on `ead1411496ff`)
+- **Policy:** §0 CODEBASE_AGENCY_POLICY.md — all issues fixed, no deferrals
+
+### Work Performed
+1. **Verified current HEAD** (`dfba71a`) — sync_tracked_files ✅ consistent, ruff src/ tests/ ✅ clean.
+2. **Pattern 31 fix** — removed 1 stale `type: ignore` comment from `src/codex/archive/dal.py` (auto_fix_common_issues pattern 31).
+3. **Pattern 25** — AGENT_ACCOUNTABILITY_REPORT.md included in this commit.
+4. **sync_tracked_files --fix** — all entries consistent.
+
+### Outcome
+- Pattern 22 (sync_tracked_files): ✅ consistent
+- Pattern 25 (last-commit accountability): ✅ report updated
+- Pattern 31 (stale type ignore): ✅ 1 removed
+- ruff src/ tests/: ✅ 0 violations
+- auto_fix_common_issues --check-only: ✅ 0 issues
+
+---
