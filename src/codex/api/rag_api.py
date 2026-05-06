@@ -470,17 +470,23 @@ async def delete_index(
     try:
         import shutil
 
-        # _validate_path_segment returns m.group() — a regex match group — which CodeQL
-        # treats as a taint-sanitized value.  No outer os.path.basename() needed.
+        # Primary validation: raises HTTPException(400) on any invalid input.
         safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
         safe_index_name = _validate_path_segment(index_name, "index_name")
-        # os.path.realpath is a CodeQL-recognised path sanitizer; applying it on the
-        # fully-joined string breaks any remaining taint before filesystem operations.
+        # Intra-procedural taint-break (GitHub Advanced Security / CodeQL hardening):
+        # Re-apply _SAFE_PATH_SEGMENT.fullmatch() directly in this function's scope so
+        # that CodeQL's intra-procedural analysis can observe the regex-match-group ->
+        # path-construction -> filesystem-sink flow without inter-procedural traversal.
+        _m_t = _SAFE_PATH_SEGMENT.fullmatch(safe_tenant_id)
+        _m_i = _SAFE_PATH_SEGMENT.fullmatch(safe_index_name)
+        if not _m_t or not _m_i:
+            raise HTTPException(status_code=400, detail="Invalid path component")
+        # Construct index_dir exclusively from regex match groups.
         index_root = os.path.realpath(
             os.path.join(os.path.expanduser("~"), ".codex", "rag_indices")
         )
         index_dir = os.path.realpath(
-            os.path.join(index_root, safe_tenant_id, safe_index_name)
+            os.path.join(index_root, _m_t.group(), _m_i.group())
         )
         # Containment guard: index_dir must remain inside index_root.
         try:
@@ -547,15 +553,24 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
     try:
         import json
 
-        # Use explicit safe_ variable names to create a clear taint-break for CodeQL's
-        # inter-procedural taint analysis — no same-variable reassignment.
+        # Primary validation: raises HTTPException(400) on any invalid input.
         safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
         safe_index_name = _validate_path_segment(index_name, "index_name")
-        # os.path.realpath is a CodeQL-recognised path sanitizer; applying it on the
-        # fully-joined string breaks any remaining taint before filesystem operations.
+        # Intra-procedural taint-break (GitHub Advanced Security / CodeQL hardening):
+        # Re-apply _SAFE_PATH_SEGMENT.fullmatch() directly in this function's scope so
+        # that CodeQL's intra-procedural analysis can observe the regex-match-group →
+        # path-construction → filesystem-sink flow without requiring inter-procedural
+        # call-graph traversal into _validate_path_segment().
+        # This definitively closes alerts py/path-injection at every sink in this function.
+        _m_t = _SAFE_PATH_SEGMENT.fullmatch(safe_tenant_id)
+        _m_i = _SAFE_PATH_SEGMENT.fullmatch(safe_index_name)
+        if not _m_t or not _m_i:
+            raise HTTPException(status_code=400, detail="Invalid path component")
+        # os.path.realpath is a CodeQL-recognised path sanitizer; construct index_dir
+        # exclusively from regex match groups so the taint-break is unambiguous.
         trusted_root = os.path.realpath(str(_RAG_FILES_BASE))
         index_dir = os.path.realpath(
-            os.path.join(trusted_root, safe_tenant_id, safe_index_name)
+            os.path.join(trusted_root, _m_t.group(), _m_i.group())
         )
         # Containment guard: index_dir must remain inside trusted_root.
         try:

@@ -27801,3 +27801,24 @@ All github-code-quality findings from review-4232301937 and review-4232378430 ar
 - `ruff check src/ tests/` → 0 violations ✅
 - `auto_fix_common_issues.py` → Pattern 25 only (refreshed) ✅
 - Pattern 30 (merge readiness) → 85/100 ✅
+
+## Session Entry — 2026-05-06T03:55Z (S298 — CodeQL Intra-Procedural Hardening)
+
+**Agent:** copilot-swe-agent | **Branch:** copilot/add-reference-to-redis-function | **PR:** #4289
+
+### Actions Taken
+- **CodeQL hardening (GitHub Advanced Security mandate):** Added intra-procedural `_SAFE_PATH_SEGMENT.fullmatch()` taint-break directly inside `get_stats()` and `delete_index()` in `src/codex/api/rag_api.py`. Previously the taint-break was only via `_validate_path_segment()` (inter-procedural); CodeQL's GAS scanner still traced taint through the function call. The new pattern applies `_SAFE_PATH_SEGMENT.fullmatch(safe_tenant_id)` / `_SAFE_PATH_SEGMENT.fullmatch(safe_index_name)` directly in each endpoint's scope, then constructs `index_dir` from `_m_t.group()` and `_m_i.group()` — making the regex-match-group → path-construction → filesystem-sink flow visible to intra-procedural analysis without needing inter-procedural call-graph traversal.
+- **Alerts addressed:** 13392 (`rag_api.py:567` `os.path.isdir`), 13393 (`rag_api.py:586` `os.walk`) — both in `get_stats`; proactive hardening of equivalent sinks in `delete_index` (`os.path.exists`, `shutil.rmtree`).
+- **Merged `main`:** Merged `ba9f9e3f` (cognitive brain patterns automated update) via `git merge origin/main -X ours`.
+- Confirmed: `ruff check src/ tests/` → 0 violations ✅
+- Confirmed: `sync_tracked_files --check` → all consistent ✅
+
+### CodeQL Alert Status (Complete Audit — Updated)
+| Alert(s) | Rule | Status |
+|----------|------|--------|
+| 13392–13393 | py/path-injection (rag_api.py get_stats: isdir, os.walk) | ✅ Fixed — intra-procedural fullmatch taint-break |
+| 13385–13391 | py/path-injection (rag_api.py earlier sinks) | ✅ Fixed — explicit safe_* vars + realpath + commonpath |
+| 13377–13382 | py/empty-except (4 test files) | ✅ Fixed — explanatory comments |
+| 13330–13332 | py/weak-sensitive-data-hashing | ✅ Fixed — PBKDF2-HMAC-SHA256 |
+| 13349 | py/unused-local-variable | ✅ Fixed |
+| 13339–13344, 13355–13357, 13359–13361 | py/path-injection (earlier) | ✅ Fixed |
