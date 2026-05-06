@@ -40,7 +40,7 @@ def clear_prometheus_registry():
             try:
                 REGISTRY.unregister(collector)
             except Exception as _err:
-                pass  # Already unregistered
+                _ = None  # Already unregistered
 
 
 def test_metrics_collector_initializes():

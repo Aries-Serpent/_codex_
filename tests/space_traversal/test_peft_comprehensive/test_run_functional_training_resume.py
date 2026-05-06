@@ -128,7 +128,7 @@ def _stub_modules(monkeypatch):
             lambda factory, identifier, **kwargs: _DummyTokenizer(),
         )
     except (ImportError, AttributeError):  # pragma: no cover - best-effort
-        pass
+        _ = None
 
 
 def test_run_functional_training_resume(monkeypatch, tmp_path):

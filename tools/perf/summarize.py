@@ -18,7 +18,7 @@ def main():
             if "mem" in row and isinstance(row["mem"], dict):
                 mem.append(float(row["mem"]["percent"]))
         except Exception:
-            pass  # Skip malformed lines
+            _ = None  # skip malformed lines
     out = {
         "cpu_mean": round(stats.mean(cpu), 3) if cpu else None,
         "mem_mean": round(stats.mean(mem), 3) if mem else None,

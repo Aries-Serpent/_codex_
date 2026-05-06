@@ -79,7 +79,7 @@ def test_append_error_to_file_permission_denied(tmp_path):
     try:
         append_error_to_file("Should fail", str(log_file))
     except PermissionError:
-        pass  # Expected
+        _ = None  # Expected
     finally:
         log_file.chmod(0o644)  # Restore permissions
 

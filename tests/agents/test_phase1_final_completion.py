@@ -276,14 +276,14 @@ class TestCoverageUpliftQuickWins:
                 orch.get_state()
             except (AttributeError, OSError, RuntimeError):
                 # Method may not be fully implemented in stub — exercise the path only.
-                pass
+                _ = None  # suppressed: no action needed
 
         if hasattr(orch, "get_config"):
             try:
                 orch.get_config()
             except (AttributeError, OSError, RuntimeError):
                 # Method may not be fully implemented in stub — exercise the path only.
-                pass
+                _ = None  # suppressed: no action needed
 
     def test_decision_state_default_values(self):
         """Test DecisionState with minimal parameters."""

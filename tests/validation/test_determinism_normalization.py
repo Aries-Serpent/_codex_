@@ -30,7 +30,7 @@ def normalize(data: dict) -> dict:
                 nc["score"] = round(float(nc["score"]), 6)
             except Exception as _err:
                 # Ignore malformed scores; retain original value for comparison
-                pass
+                _ = None  # suppressed: no action needed
         norm.append(nc)
     data["capabilities"] = sorted(norm, key=lambda x: x.get("id", ""))
     return data

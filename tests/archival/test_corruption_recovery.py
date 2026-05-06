@@ -248,7 +248,7 @@ class TestCorruptionRecovery:
             safe_extract_tarfile(archive_path, extract_dir)
         except Exception as _err:
             # Some files might still be extracted
-            pass
+            _ = None  # suppressed: no action needed
 
         # Files with no data (size=10, fileobj=None) may not extract properly,
         # but the test verifies the extraction attempt completes without crashing

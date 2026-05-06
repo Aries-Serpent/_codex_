@@ -116,7 +116,7 @@ class TestAdvancedPhysicsExhaustive:
                 assert attractor.attractor_type == attractor_type
             except (ValueError, KeyError):
                 # Some types might not be implemented
-                pass
+                _ = None  # suppressed: no action needed
 
     def test_fluid_channel_capacities(self):
         """Test fluid channels with various capacities."""

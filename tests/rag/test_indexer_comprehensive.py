@@ -475,7 +475,7 @@ class TestLoadIndex:
                 load_index(index_name="test_index", tenant_id="tenant1", index_dir=str(tmp_path))
             except (FileNotFoundError, json.JSONDecodeError):
                 # Expected behavior
-                pass
+                _ = None  # suppressed: no action needed
 
     def test_load_index_missing_metadata_file(self, tmp_path):
         """Test loading index with missing metadata file."""
@@ -496,7 +496,7 @@ class TestLoadIndex:
                 load_index(index_name="test_index", tenant_id="tenant1", index_dir=str(tmp_path))
             except (FileNotFoundError, json.JSONDecodeError):
                 # Expected behavior
-                pass
+                _ = None  # suppressed: no action needed
 
 
 class TestRAGIndexer:

@@ -334,7 +334,7 @@ class TestStrategyResolution:
             pytest.skip("resolve_strategy not available")
         except ValueError:
             # Backend may not be implemented yet
-            pass
+            _ = None  # suppressed: no action needed
 
 
 # =============================================================================
@@ -526,7 +526,7 @@ class TestErrorHandling:
             config = UnifiedTrainingConfig(model_name="")
             assert config.model_name == ""
         except (ImportError, ValueError):
-            pass  # Either is acceptable
+            _ = None  # Either is acceptable
 
     def test_config_validation_negative_batch_size(self) -> None:
         """Test config rejects negative batch size."""

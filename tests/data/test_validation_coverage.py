@@ -123,7 +123,7 @@ class TestSchemaValidation:
                     validation.validate_record(record)
                     # If no exception, result might be False or error dict
                 except (ValueError, TypeError):
-                    pass  # Expected for invalid data
+                    _ = None  # Expected for invalid data
         except ImportError:
             pytest.skip("validation not available")
 
@@ -347,4 +347,4 @@ class TestErrorHandling:
                 # Should return False or raise
                 assert result in (False, None) or isinstance(result, dict)
         except (ImportError, TypeError):
-            pass  # Expected behavior
+            _ = None  # Expected behavior

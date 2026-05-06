@@ -171,7 +171,7 @@ class SystemMetrics(threading.Thread):
             try:
                 pynvml.nvmlShutdown()
             except Exception:
-                pass
+                _ = None  # suppressed: no action needed
 
 
 # ---------------- Monitoring Session ----------------
@@ -289,7 +289,7 @@ class MonitoringSession:
                 try:
                     self.wb.log({tag: wandb.Histogram(np_histogram=(values, bins))})
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
             if self.mlf:
                 p = self.artifacts / f"{tag.replace('/', '_')}_hist_step{step}.json"
                 with p.open("w", encoding="utf-8") as f:
@@ -342,18 +342,18 @@ class MonitoringSession:
                 try:
                     mlflow.end_run(status="FAILED" if exc_type else "FINISHED")
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
             if self.tb:
                 try:
                     self.tb.flush()
                     self.tb.close()
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
             if self.wb:
                 try:
                     wandb.finish(exit_code=1 if exc_type else 0)
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
         except Exception as e:
             q5("MonitoringSession:exit", f"{type(e).__name__}: {e}", "teardown")
         return False

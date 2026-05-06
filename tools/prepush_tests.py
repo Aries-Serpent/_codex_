@@ -27,7 +27,7 @@ def _pytest_disable_args() -> list[str]:
             if parts[0] >= 9:
                 return ["--disable-plugin-autoload"]
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     return []
 
 

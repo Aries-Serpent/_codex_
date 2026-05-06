@@ -51,7 +51,7 @@ class TestPoolingBehavior:
         try:
             conn.execute("INVALID SQL SYNTAX")
         except Exception as _err:
-            pass  # Expected error
+            _ = None  # Expected error
 
         # Return connection to pool
         pooling_db_manager.close_connection(conn)

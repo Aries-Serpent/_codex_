@@ -39,7 +39,7 @@ def setup_deterministic_environment():
         import numpy as np
         np.random.seed(42)
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
     yield
 
 

@@ -129,7 +129,7 @@ class TestEmbedChunks:
             assert result is not None
         except (ImportError, RuntimeError):
             # Expected if dependencies missing
-            pass
+            _ = None  # suppressed: no action needed
 
 
 class TestIndexerMetadata:

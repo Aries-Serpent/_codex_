@@ -93,7 +93,7 @@ class TestSinglePassMode:
             try:
                 mod.run_once(budget_seconds=5, dry_run=True)
             except (RuntimeError, OSError, KeyError, ValueError):
-                pass  # session may not be written in every code path
+                _ = None  # session may not be written in every code path
         # Session files are JSON if written
         for f in session_dir.glob("*.json"):
             data = json.loads(f.read_text())

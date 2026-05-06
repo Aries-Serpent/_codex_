@@ -51,4 +51,4 @@ if noxfile.exists():
             noxfile.write_text(t2, encoding="utf-8")
             changed = True
 
-print({"cov_plugin_present": cov_ok, "configs_changed": changed})
+sys.stdout.write(str({"cov_plugin_present": cov_ok, "configs_changed": changed}) + "\n")

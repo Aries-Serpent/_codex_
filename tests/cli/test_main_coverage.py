@@ -235,7 +235,7 @@ class TestConfigurationLoading:
             # Should return empty config or raise FileNotFoundError
             assert result == {} or result is None
         except (ImportError, FileNotFoundError):
-            pass  # Expected behavior
+            _ = None  # Expected behavior
 
     def test_config_loading_with_empty_file(self, tmp_path: Path) -> None:
         """Test configuration loading with empty file."""

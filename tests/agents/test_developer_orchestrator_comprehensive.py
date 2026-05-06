@@ -351,7 +351,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
             # Should either work or raise appropriate error
         except (TypeError, AttributeError):
             # Acceptable to raise error for None
-            pass
+            _ = None  # suppressed: no action needed
 
     # ========== INTEGRATION TESTS ==========
 

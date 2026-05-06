@@ -142,7 +142,7 @@ class TestTrainingEdgeCases:
             assert output.shape == single_sample.shape
         except (ValueError, RuntimeError):
             # Expected for some configurations
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_training_uneven_batch_sizes(self):
         """Test training with uneven batch sizes (last batch smaller)"""

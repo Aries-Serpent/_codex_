@@ -226,7 +226,7 @@ class TestAdaptiveScoringEdgeCases:
             assert isinstance(score, (int, float))
         except AttributeError:
             # Expected if no fallback mechanism
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_nan_in_scenario_features(self):
         """Test handling of NaN values in features."""

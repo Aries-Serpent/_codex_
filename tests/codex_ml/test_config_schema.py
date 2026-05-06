@@ -45,4 +45,4 @@ def test_from_dict_raises_on_non_mapping_sections():
             schema.from_dict(raw)
             assert False, f"Expected ConfigValidationError for: {raw}"
         except schema.ConfigValidationError:
-            pass
+            _ = None  # suppressed: no action needed

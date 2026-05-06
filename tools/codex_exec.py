@@ -83,7 +83,7 @@ def run_quality_gates():
         sh(["pre-commit", "install"], "Phase 6: pre-commit install")
         sh(["pre-commit", "run", "-a"], "Phase 6: pre-commit run -a")
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def find_todos():

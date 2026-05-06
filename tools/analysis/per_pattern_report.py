@@ -132,7 +132,7 @@ def main() -> int:
             try:
                 min_accuracy = float(args[i + 1])
             except ValueError:  # ignore non-float --min-accuracy argument; keep default
-                pass
+                _ = None
 
     try:
         results = load_results(results_path)

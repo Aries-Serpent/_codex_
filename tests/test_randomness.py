@@ -49,7 +49,7 @@ def test_set_seed_sets_numpy_seed_when_available():
         assert val1 == val2, "Same seed should produce same numpy random values"
     except ImportError:
         # Skip if numpy not available
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def test_set_seed_handles_missing_numpy_gracefully():

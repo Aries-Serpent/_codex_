@@ -366,7 +366,7 @@ class TestLoadDataset:
             pytest.skip("load_dataset not available")
         except TypeError:
             # split parameter may not be supported
-            pass
+            _ = None  # suppressed: no action needed
 
 
 # =============================================================================
@@ -469,7 +469,7 @@ class TestApplySafetyFilter:
             pytest.skip("apply_safety_filter not available")
         except TypeError:
             # May require additional parameters
-            pass
+            _ = None  # suppressed: no action needed
 
 
 # =============================================================================

@@ -177,7 +177,7 @@ class TestPathValidation:
         try:
             _validate_path(nonexistent)
         except ValueError:
-            pass  # May raise, depending on implementation
+            _ = None  # May raise, depending on implementation
 
 
 class TestSizeBounds:

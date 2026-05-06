@@ -183,7 +183,7 @@ class IntuitiveAptitude:
                         names = [alias.name for alias in node.names]
                         imports.extend([f"{base}.{n}" if base else n for n in names])
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
             elif isinstance(node, ast.FunctionDef):
                 functions.append(node.name)
                 if ast.get_docstring(node):

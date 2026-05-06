@@ -128,7 +128,7 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
         mlflow.create_experiment("default", artifact_location=str(mlruns_dir))
     except Exception as _err:
         # Experiment might already exist
-        pass
+        _ = None  # suppressed: no action needed
 
     env = os.environ.copy()
     env["PYTHONPATH"] = str(Path(__file__).resolve().parent.parent / "src")

@@ -330,20 +330,20 @@ class QAWalkthroughSimulator:
                         result["tests_passed"] = int(line.split()[0])
                     except (ValueError, IndexError):
                         # Ignore lines that do not match the expected "<int> passed" format
-                        pass
+                        _ = None  # suppressed: no action needed
                 elif " failed" in line:
                     try:
                         result["tests_failed"] = int(line.split()[0])
                         self.results["summary"]["high"] += result["tests_failed"]
                     except (ValueError, IndexError):
                         # Ignore lines that do not match the expected "<int> failed" format
-                        pass
+                        _ = None  # suppressed: no action needed
                 elif " skipped" in line:
                     try:
                         result["tests_skipped"] = int(line.split()[0])
                     except (ValueError, IndexError):
                         # Ignore lines that do not match the expected "<int> skipped" format
-                        pass
+                        _ = None  # suppressed: no action needed
 
             total_tests = result["tests_passed"] + result["tests_failed"] + result["tests_skipped"]
 

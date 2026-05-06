@@ -42,7 +42,7 @@ def test_agent_spawning_capacity():
             try:
                 manager.spawn_agent(f"agent_{i}", "{}")
             except RuntimeError:
-                pass  # Expected when limit reached
+                _ = None  # Expected when limit reached
 
         time.sleep(0.1)
         # Should not exceed max
@@ -98,7 +98,7 @@ def test_agent_manager_concurrent_access():
                     # during concurrent spawning from multiple threads.
                     # This is intentional behavior to test concurrent access limits.
                     # We catch and ignore this error to continue testing other agents.
-                    pass
+                    _ = None  # suppressed: no action needed
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             futures = [

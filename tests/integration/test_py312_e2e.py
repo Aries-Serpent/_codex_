@@ -63,21 +63,21 @@ class TestPython312Integration:
                 optional_imports.append("evaluation")
             except ImportError:
                 # Optional module not available, skip
-                pass
+                _ = None  # suppressed: no action needed
 
             try:
                 from codex_ml import data as data
                 optional_imports.append("data")
             except ImportError:
                 # Optional module not available, skip
-                pass
+                _ = None  # suppressed: no action needed
 
             try:
                 from codex_ml import models as models
                 optional_imports.append("models")
             except ImportError:
                 # Optional module not available, skip
-                pass
+                _ = None  # suppressed: no action needed
 
             # At least the main package should import
             assert codex_ml is not None

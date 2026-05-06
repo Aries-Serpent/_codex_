@@ -296,7 +296,7 @@ def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
 
         monkeypatch.setattr(urllib.request, "urlopen", _block_urlopen)
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
 
     try:
         import requests
@@ -308,7 +308,7 @@ def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(requests, "get", _block_requests)
         monkeypatch.setattr(requests, "post", _block_requests)
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
 
 
 # =============================================================================

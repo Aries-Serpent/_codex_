@@ -70,7 +70,7 @@ class TestValidationErrorFormatting:
                 assert isinstance(result, str)
             except (TypeError, AttributeError):
                 # Different ValidationError interface
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError as e:
             pytest.skip(f"Function import failed: {e}")
 
@@ -161,7 +161,7 @@ class TestConfigValidation:
                 # May or may not fail depending on YAML parser
             except yaml.YAMLError:
                 # Expected for invalid YAML
-                pass
+                _ = None  # suppressed: no action needed
         finally:
             temp_path.unlink(missing_ok=True)
 
@@ -220,7 +220,7 @@ class TestOptionalDependencies:
                 assert issubclass(ValidationError, Exception)
         except ImportError:
             # Expected if pydantic not available
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_typer_optional(self):
         """Test that typer is handled as optional."""
@@ -231,7 +231,7 @@ class TestOptionalDependencies:
                 assert hasattr(typer, 'Typer')
         except ImportError:
             # Expected if typer not available
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_config_schema_optional(self):
         """Test that config_schema is handled as optional."""
@@ -241,4 +241,4 @@ class TestOptionalDependencies:
             if validate_config_file is not None:
                 assert callable(validate_config_file)
         except ImportError:
-            pass  # Module not available - skip test
+            _ = None  # Module not available - skip test

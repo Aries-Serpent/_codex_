@@ -199,7 +199,7 @@ class TestEdgeCases:
             assert len(val) == 0
             assert len(test) == 0
         except (ImportError, ValueError):
-            pass  # Empty dataset handling varies
+            _ = None  # Empty dataset handling varies
 
     def test_single_element_dataset(self) -> None:
         """Test splitting single element dataset."""
@@ -209,7 +209,7 @@ class TestEdgeCases:
             total = len(train) + len(val) + len(test)
             assert total == 1
         except (ImportError, ValueError):
-            pass  # Single element handling varies
+            _ = None  # Single element handling varies
 
     def test_invalid_ratios(self, sample_dataset: list[dict]) -> None:
         """Test that invalid ratios are rejected."""

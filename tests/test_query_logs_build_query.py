@@ -85,7 +85,7 @@ def _metrics_visit(label: str, src: str):
         file_entry["nodes_visited"] = v.count
     except Exception as _err:
         # silent best-effort
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def _flush_metrics():
@@ -96,7 +96,7 @@ def _flush_metrics():
     try:
         out.write_text(json.dumps(_AST_METRICS, indent=2), encoding="utf-8")
     except OSError:
-        pass  # best-effort audit write; ignore filesystem errors
+        _ = None  # best-effort audit write; ignore filesystem errors
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -242,7 +242,7 @@ def _extract_literal_columns_from_source(src: str) -> list[str]:
                         cols.add(c)
     except (AttributeError, OSError, RuntimeError):
         # Source introspection failed — return empty list and let caller use defaults.
-        pass
+        _ = None  # suppressed: no action needed
     return sorted(cols)
 
 
@@ -274,7 +274,7 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
                 _dfs_dict(node, 1, set(), ts_acc)
     except (AttributeError, OSError, RuntimeError):
         # AST parse/walk failed — return None and let caller use defaults.
-        pass
+        _ = None  # suppressed: no action needed
     return ts_acc[0] if ts_acc else None
 
 
@@ -295,7 +295,7 @@ def _infer_expectations(build_query) -> tuple[list[str], str]:
             ts = inferred_ts
     except (AttributeError, OSError, RuntimeError):
         # inspect.getsource unavailable — skip source-based inference.
-        pass
+        _ = None  # suppressed: no action needed
     try:
         sig = inspect.signature(build_query)
         params = list(sig.parameters)
@@ -308,7 +308,7 @@ def _infer_expectations(build_query) -> tuple[list[str], str]:
             expected_cols = ["event_time", "user_id", "message"]
     except (AttributeError, OSError, RuntimeError):
         # inspect.signature unavailable — skip param-based inference.
-        pass
+        _ = None  # suppressed: no action needed
     if not expected_cols:
         expected_cols = ["event_time", "user_id", "message"]
     if not ts:

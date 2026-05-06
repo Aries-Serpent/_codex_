@@ -71,5 +71,5 @@ def dummy_load_from_pretrained(dummy_tokenizer, dummy_model, monkeypatch):
             lambda *a, **k: (dummy_model, dummy_tokenizer),
         )
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
     return dummy_model, dummy_tokenizer

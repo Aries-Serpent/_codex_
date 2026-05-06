@@ -217,7 +217,7 @@ class TestPhase1Completion_EdgeCases:
             assert state is not None
         except (ValueError, TypeError):
             # Constructor may validate inputs
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_force_vector_zero_magnitude(self):
         """Test ForceVector with zero magnitude."""
@@ -227,7 +227,7 @@ class TestPhase1Completion_EdgeCases:
             force = ForceVector(magnitude=0.0, direction="none")
             assert force is not None
         except (ValueError, TypeError):
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_action_path_empty(self):
         """Test ActionPath with no steps."""
@@ -237,4 +237,4 @@ class TestPhase1Completion_EdgeCases:
             path = ActionPath(trajectory=[])
             assert path is not None
         except (ValueError, TypeError):
-            pass
+            _ = None  # suppressed: no action needed

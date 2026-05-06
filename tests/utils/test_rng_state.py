@@ -21,7 +21,7 @@ try:
 except (ValueError, AttributeError, ImportError):
     # torch.__spec__ may be unset, malformed, or torch may not be installed
     # This is acceptable as torch is an optional dependency
-    pass
+    _ = None  # suppressed: no action needed
 
 
 def test_rng_snapshot_restore_consistency() -> None:

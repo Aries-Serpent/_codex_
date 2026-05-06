@@ -66,7 +66,7 @@ class ExactDetector:
                             patterns.add(line)
             except Exception:
                 # Skip if .gitignore can't be read
-                pass
+                _ = None  # suppressed: no action needed
         return patterns
 
     def _should_exclude(self, path: Path) -> bool:

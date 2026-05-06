@@ -307,7 +307,7 @@ class TestLoadDataset:
                     hf_text_field="text",
                 )
             except Exception as _err:
-                pass  # Expected to fail for preset
+                _ = None  # Expected to fail for preset
 
             # Check if deprecation warning was issued
             # (may not be for preset, but validates parameter handling)

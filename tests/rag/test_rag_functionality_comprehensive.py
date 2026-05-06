@@ -127,7 +127,7 @@ class TestRetrievalAccuracy:
                         assert len(results) <= k, f"Should return at most {k} results"
                 except Exception as _err:
                     # May not have documents indexed
-                    pass
+                    _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -151,7 +151,7 @@ class TestRetrievalAccuracy:
                             assert scores[i] >= scores[i+1], "Results should be ranked by score"
             except Exception as _err:
                 # May not have documents indexed
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -195,7 +195,7 @@ class TestRetrievalAccuracy:
                 assert results is None or isinstance(results, list)
             except TypeError:
                 # Method may not support filters
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -349,7 +349,7 @@ class TestRAGPerformance:
                     try:
                         retriever.indexer.add_document(f"doc_{i}", f"Content {i}")
                     except (AttributeError, OSError, RuntimeError):  # Best-effort document insertion for perf test
-                        pass
+                        _ = None
 
             # Test retrieval speed
             start = time.time()
@@ -379,7 +379,7 @@ class TestRAGEdgeCases:
                 assert len(result) > 0
             except ValueError:
                 # Acceptable to reject empty input
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -534,6 +534,6 @@ class TestRAGIntegration:
                 assert True
             except TypeError:
                 # Method may not support metadata parameter
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")

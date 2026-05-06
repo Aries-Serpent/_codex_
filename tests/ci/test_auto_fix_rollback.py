@@ -203,7 +203,7 @@ class TestAutoFixWithRollback:
                 # Simulate failure
                 raise Exception("Simulated failure")
         except FixApplicationError:
-            pass
+            _ = None  # suppressed: no action needed
 
         # File should be rolled back to original
         assert test_file.read_text() == original_content
@@ -288,7 +288,7 @@ class TestAutoFixWithRollback:
                 # Trigger validation (which will fail)
                 fixer._validate_python_syntax(test_file)
         except FixApplicationError:
-            pass
+            _ = None  # suppressed: no action needed
 
         # Should have rolled back
         assert test_file.read_text() == original_content

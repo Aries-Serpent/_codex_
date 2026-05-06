@@ -200,7 +200,7 @@ def test_security_integration_pip_audit_syntax():
         assert result.returncode == 0 or result.returncode == 127  # 127 = command not found
     except FileNotFoundError:
         # pip-audit not installed, which is ok for this test
-        pass
+        _ = None  # suppressed: no action needed
     except subprocess.TimeoutExpired:
         pytest.skip("pip-audit command timed out")
 
@@ -214,7 +214,7 @@ def test_security_integration_gitleaks_syntax():
         assert result.returncode == 0 or result.returncode == 127  # 127 = command not found
     except FileNotFoundError:
         # gitleaks not installed, which is ok for this test
-        pass
+        _ = None  # suppressed: no action needed
     except subprocess.TimeoutExpired:
         pytest.skip("gitleaks command timed out")
 

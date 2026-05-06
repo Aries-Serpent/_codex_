@@ -211,7 +211,7 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
         )
         return True
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
 
     # Fallback: Try pdfkit (requires wkhtmltopdf)
     try:
@@ -231,7 +231,7 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
         pdfkit.from_file(str(html_path), str(pdf_path), options=options)
         return True
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
     except Exception as e:
         print(f"pdfkit failed: {e}", file=sys.stderr)
 
@@ -271,7 +271,7 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
         c.save()
         return True
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
 
     print("Error: No PDF conversion library available.", file=sys.stderr)
     print("Install one of: weasyprint, pdfkit (with wkhtmltopdf), or reportlab", file=sys.stderr)

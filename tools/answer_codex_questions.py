@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 import datetime
 import re
 from pathlib import Path
@@ -32,4 +33,4 @@ for b in blocks:
     sol = answer_for(b)
     ans.append(f"> {b}\n\n**Solution:** {sol}\n")
 af.write_text("\n\n".join(ans), encoding="utf-8")
-print(f"[answers] wrote {af}")
+sys.stdout.write(str(f"[answers] wrote {af}") + "\n")

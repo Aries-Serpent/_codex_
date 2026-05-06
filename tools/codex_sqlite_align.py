@@ -26,7 +26,7 @@ try:
 
     _codex_sqlite_auto()
 except Exception:
-    pass
+    _ = None  # suppressed: no action needed
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone

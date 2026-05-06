@@ -110,9 +110,9 @@ class TestForwardToCli:
         try:
             _forward_to_cli(["--", "subcommand"])
         except SystemExit:
-            pass  # Expected when CLI is unavailable
+            _ = None  # Expected when CLI is unavailable
         except Exception as _err:
-            pass  # May fail but we're testing the stripping logic
+            _ = None  # May fail but we're testing the stripping logic
 
     def test_missing_cli_raises_system_exit(self) -> None:
         """Test missing CLI module raises SystemExit."""
@@ -128,7 +128,7 @@ class TestForwardToCli:
             _forward_to_cli(["help"])
             # May succeed or fail depending on import
         except (SystemExit, Exception):
-            pass  # Expected in test environment
+            _ = None  # Expected in test environment
 
 
 class TestMain:
@@ -270,4 +270,4 @@ class TestForwardToCliEdgeCases:
             try:
                 _forward_to_cli(args)
             except (SystemExit, Exception):
-                pass  # Expected in test environment
+                _ = None  # Expected in test environment

@@ -300,7 +300,7 @@ class TestSessionLoggerClass:
                 with SessionLogger(session_id="test-exc", db_path=db_path):
                     raise ValueError("Test exception")
             except ValueError:
-                pass
+                _ = None  # suppressed: no action needed
 
             messages = fetch_messages("test-exc", db_path=db_path)
             # Should contain exception info in session_end

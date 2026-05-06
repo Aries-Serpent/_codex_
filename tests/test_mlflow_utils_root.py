@@ -74,7 +74,7 @@ def test_start_run_string_experiment_flexible_behavior(tmp_path: Path) -> None:
             assert run is not None or run in (None, False)
     except RuntimeError:
         # Accept raising RuntimeError as a valid backward-compatible outcome.
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def test_seed_snapshot(tmp_path: Path) -> None:

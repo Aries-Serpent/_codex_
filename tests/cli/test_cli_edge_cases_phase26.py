@@ -462,7 +462,7 @@ class TestCLIEdgeCases:
                 sys.stdout.write("test output")
             except BrokenPipeError:
                 # Should handle gracefully, not crash
-                pass
+                _ = None  # suppressed: no action needed
 
             mock_stdout.write.assert_called_once_with("test output")
 
@@ -577,7 +577,7 @@ class TestCLIEdgeCases:
                 pathlib.Path(dangerous_path).resolve()
                 # Should reject paths outside allowed directories
             except (ValueError, OSError):
-                pass  # Expected for malicious paths
+                _ = None  # Expected for malicious paths
 
     def test_cli_resource_cleanup_on_error(self):
         """Test CLI properly cleans up resources on error"""

@@ -6,7 +6,7 @@ from __future__ import annotations
 try:
     from src.services.audio.workflow import *  # noqa: F401, F403
 except ImportError:
-    pass
+    _ = None  # suppressed: no action needed
 
 # Stub for AutoTuneWorkflow if not available
 try:

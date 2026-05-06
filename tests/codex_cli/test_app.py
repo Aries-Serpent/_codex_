@@ -92,7 +92,7 @@ class TestSplitSmokeImpl:
                 assert mock_echo.called
             except SystemExit:
                 # May exit if neither torch nor random available
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -120,7 +120,7 @@ class TestCheckpointSmokeImpl:
                 # Should create stub file or real checkpoint
                 assert out_dir.exists()
             except (SystemExit, Exception):
-                pass  # May fail without torch
+                _ = None  # May fail without torch
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 

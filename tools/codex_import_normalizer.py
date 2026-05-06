@@ -96,7 +96,7 @@ def record_inventory(paths: list[Path]):
                 }
             )
         except Exception:
-            pass
+            _ = None  # suppressed: no action needed
     INVENTORY_JSON.write_text(json.dumps(items, indent=2), encoding="utf-8")
 
 

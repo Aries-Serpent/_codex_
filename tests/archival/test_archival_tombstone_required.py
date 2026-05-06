@@ -79,7 +79,7 @@ def test_missing_tombstone_fails():
             try:
                 stub_path.parent.rmdir()  # Only succeeds if directory is empty
             except OSError:
-                pass  # directory not empty or doesn't exist
+                _ = None  # directory not empty or doesn't exist
         if backup:
             EVIDENCE_FILE.write_text(backup)
 

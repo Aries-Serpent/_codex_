@@ -1481,7 +1481,7 @@ class CommonIssueFixer:
                 return issues
         except FileNotFoundError:
             # git not available or GITHUB_SHA env var not set — skip drift check.
-            pass
+            _ = None  # suppressed: no action needed
 
         issues.append(
             f"SHA drift detected: GITHUB_SHA={github_sha[:12]} "

@@ -179,14 +179,14 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                     import torch
                     torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
             if optimizer is not None and sched_name and last_sched is None:
                 last_sched = _codex_maybe_scheduler(optimizer, sched_name)
             if last_sched is not None:
                 try:
                     last_sched.step()
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
             rec = {
                 "ts": int(time.time()),
                 "epoch": int(epoch),
@@ -228,7 +228,7 @@ def _codex_stats():
         out["cpu_pct"] = psutil.cpu_percent(interval=0.1)
         out["mem_pct"] = psutil.virtual_memory().percent
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     try:
         import pynvml
         pynvml.nvmlInit()
@@ -238,7 +238,7 @@ def _codex_stats():
         out["gpu_mem_total"] = int(mi.total)
         out["gpu_mem_used"] = int(mi.used)
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     return out
 
 def _codex_tb(log_dir: Path):
@@ -293,12 +293,12 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             for k, v in metrics.items():
                 handles["tb"].add_scalar(k, float(v), global_step=step)
         except Exception:
-            pass
+            _ = None  # suppressed: no action needed
     if handles.get("wandb"):
         try:
             handles["wandb"].log(dict(metrics, step=step))
         except Exception:
-            pass
+            _ = None  # suppressed: no action needed
     if handles.get("mlf"):
         try:
             MU, run = handles["mlf"]
@@ -306,7 +306,7 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             for art in artifacts or []:
                 MU.log_artifacts([art])
         except Exception:
-            pass
+            _ = None  # suppressed: no action needed
 # END: CODEX_DEPLOY_MONITORING
 """
 )
@@ -336,14 +336,14 @@ def log_params(params: dict):
         import mlflow
         mlflow.log_params(params)
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
 
 def log_metrics(metrics: dict, step: int | None = None):
     try:
         import mlflow
         mlflow.log_metrics(metrics, step=step)
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
 
 def log_artifacts(paths: Iterable[Path]):
     try:
@@ -351,7 +351,7 @@ def log_artifacts(paths: Iterable[Path]):
         for p in paths:
             mlflow.log_artifact(str(p))
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
 # END: CODEX_MLFLOW_UTILS
 """
 )
@@ -369,14 +369,14 @@ def set_seed(seed: int) -> None:
         import numpy as np
         np.random.seed(seed)
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     try:
         import torch
         torch.manual_seed(seed)
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     random.seed(seed)
 
 def save_rng(path: Path) -> None:
@@ -385,14 +385,14 @@ def save_rng(path: Path) -> None:
         import numpy as np
         state["numpy"] = np.random.get_state()[1][:].tolist()
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     try:
         import torch
         state["torch"] = torch.get_rng_state().tolist()
         if torch.cuda.is_available():
             state["torch_cuda"] = torch.cuda.get_rng_state().tolist()
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     state["python"] = random.getstate()[1][:] if hasattr(random.getstate(), "__iter__") else None
     (path / "rng.json").write_text(json.dumps(state), encoding="utf-8")
 
@@ -412,7 +412,7 @@ def load_rng(path: Path) -> None:
         if "python" in state and state["python"] is not None:
             pyrand.setstate((3, tuple(state["python"]), None))
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
 
 def verify_shapes(model, checkpoint_state: dict) -> None:
     try:

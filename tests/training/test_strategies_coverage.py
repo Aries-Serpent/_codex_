@@ -118,7 +118,7 @@ class TestStrategyResolution:
             pytest.skip("resolve_strategy not available")
         except (ValueError, KeyError):
             # Strategy may not be implemented
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_resolve_invalid_strategy(self) -> None:
         """Test resolving invalid strategy name."""

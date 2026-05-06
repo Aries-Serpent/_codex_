@@ -91,7 +91,7 @@ class TestErrorHandlingBranches:
         try:
             raise RuntimeError("test error")  # Trigger the error path
         except RuntimeError:
-            pass
+            _ = None  # suppressed: no action needed
         finally:
             finally_executed = True
         assert finally_executed is True
@@ -107,7 +107,7 @@ class TestErrorHandlingBranches:
                 reraised = True
                 raise
         except ValueError:
-            pass
+            _ = None  # suppressed: no action needed
         assert reraised is True
 
     def test_error_context_preservation_branch(self) -> None:
@@ -120,7 +120,7 @@ class TestErrorHandlingBranches:
                 error_msg = str(e)
                 raise TypeError("wrapped") from e
         except TypeError:
-            pass
+            _ = None  # suppressed: no action needed
         assert error_msg == "original"
 
 

@@ -68,7 +68,7 @@ class TestCheckForMetaTensors:
         except (ImportError, AttributeError, ModuleNotFoundError):
             # torch not installed or the set_default_device attr is absent —
             # no cleanup needed in those cases; intentionally ignored.
-            pass
+            _ = None  # suppressed: no action needed
 
     def teardown_method(self, method: object) -> None:
         """Reset torch default device after each test to prevent cross-test pollution.
@@ -86,7 +86,7 @@ class TestCheckForMetaTensors:
         except (ImportError, AttributeError, ModuleNotFoundError):
             # torch not installed or the set_default_device attr is absent —
             # no cleanup needed in those cases; intentionally ignored.
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_model_without_meta_tensors(self):
         """Test detection on model without meta tensors"""
@@ -153,7 +153,7 @@ class TestSafeModelLoadV2:
                 _torch.set_default_device(None)
         except (ImportError, AttributeError, ModuleNotFoundError):
             # torch not installed or set_default_device absent — no-op intentionally.
-            pass
+            _ = None  # suppressed: no action needed
 
     def teardown_method(self, method: object) -> None:
         """Clear default device after each test to prevent meta-device leakage."""
@@ -163,7 +163,7 @@ class TestSafeModelLoadV2:
                 _torch.set_default_device(None)
         except (ImportError, AttributeError, ModuleNotFoundError):
             # torch not installed or set_default_device absent — no-op intentionally.
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_model_without_meta_tensors(self):
         """Test loading model that doesn't have meta tensors"""
@@ -242,7 +242,7 @@ class TestSafeModelLoadV2:
                 assert device_type in ["cuda", "cpu"]
             except (RuntimeError, AssertionError):
                 # This is acceptable when CUDA is not available
-                pass
+                _ = None  # suppressed: no action needed
         else:
             # If CUDA is available, it should work
             result = safe_model_load_v2(model, device="cuda")

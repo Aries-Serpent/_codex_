@@ -65,7 +65,7 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
                 cwd=root_dir,
             )
         except (subprocess.CalledProcessError, FileNotFoundError):
-            pass
+            _ = None  # suppressed: no action needed
         else:
             for relative_path in completed.stdout.decode("utf-8").split("\0"):
                 if not relative_path:

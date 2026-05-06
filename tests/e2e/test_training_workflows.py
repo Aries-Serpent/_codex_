@@ -62,7 +62,7 @@ class TestTrainingPipelineSetup:
                         # AttributeError: yaml.safe_load missing on incomplete install —
                         # skip gracefully.  ModuleNotFoundError is already subsumed by
                         # the preceding ImportError handler and must not appear here.
-                        pass
+                        _ = None  # suppressed: no action needed
 
         pytest.skip("No training configs found")
 

@@ -139,7 +139,7 @@ class TestNetworkFailures:
                 )
             except Exception as _err:
                 # Should handle connection errors gracefully
-                pass
+                _ = None  # suppressed: no action needed
 
 
 class TestResourcePressure:

@@ -131,7 +131,7 @@ class TestMSPClientEdgeCases:
             assert client is not None
         except (ValueError, AssertionError):
             # Acceptable to reject empty endpoint
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_client_with_invalid_endpoint_format(self):
         """Test handling invalid endpoint format."""
@@ -140,7 +140,7 @@ class TestMSPClientEdgeCases:
             assert client is not None
         except (ValueError, AssertionError):
             # Acceptable to reject invalid URL
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_client_with_none_api_key(self):
         """Test handling None API key."""
@@ -154,7 +154,7 @@ class TestMSPClientEdgeCases:
             assert client is not None
         except (ValueError, AssertionError):
             # Acceptable to reject zero timeout
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_client_with_negative_timeout(self):
         """Test handling negative timeout."""
@@ -163,7 +163,7 @@ class TestMSPClientEdgeCases:
             assert client is not None
         except (ValueError, AssertionError):
             # Acceptable to reject negative timeout
-            pass
+            _ = None  # suppressed: no action needed
 
 
 class TestMSPClientRequestResponse:

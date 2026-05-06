@@ -515,7 +515,7 @@ class TestAdditionalLifecycleScenarios:
         except RuntimeError:
             # If it fails, verify it's due to expected error
             # and system handles it appropriately
-            pass
+            _ = None  # suppressed: no action needed
 
         health = manager.healthz()
         # Health check should indicate system state

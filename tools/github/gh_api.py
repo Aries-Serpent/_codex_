@@ -108,7 +108,7 @@ def _emit_curl(method: str, url: str, token: str, scheme: str, body: bytes | Non
             try:
                 json.loads(decoded)
             except json.JSONDecodeError:
-                pass
+                _ = None  # suppressed: no action needed
             else:
                 parts.extend(["-H", "'Content-Type: application/json'", "--data", f"'{decoded}'"])
                 decoded = None

@@ -63,7 +63,7 @@ def mock_rag_dependencies(monkeypatch):
         import codex.rag.indexer as _indexer
         monkeypatch.setattr(_indexer, "faiss", mock_faiss)
     except ImportError:
-        pass  # codex.rag.indexer not installed; faiss patched via sys.modules only
+        _ = None  # codex.rag.indexer not installed; faiss patched via sys.modules only
 
     # --- Mock sentence_transformers ---
     mock_st_module = MagicMock()
@@ -85,7 +85,7 @@ def mock_rag_dependencies(monkeypatch):
         monkeypatch.setattr(_mu, "safe_load_sentence_transformer",
                             lambda *a, **kw: mock_model_instance)
     except ImportError:
-        pass  # codex.rag._model_utils not installed; sentence_transformers patched via sys.modules only
+        _ = None  # codex.rag._model_utils not installed; sentence_transformers patched via sys.modules only
 
     # Also patch persist_index and load_index to bypass all filesystem side-effects.
     # write_index mock leaves no file → Path.stat() in persist_index raises
@@ -128,7 +128,7 @@ def mock_rag_dependencies(monkeypatch):
         monkeypatch.setattr(_indexer, "persist_index", _mock_persist_index)
         monkeypatch.setattr(_indexer, "load_index", _mock_load_index)
     except ImportError:
-        pass  # codex.rag.indexer not installed; persist/load patched only if module present
+        _ = None  # codex.rag.indexer not installed; persist/load patched only if module present
 
     yield
 

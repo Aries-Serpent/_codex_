@@ -396,7 +396,7 @@ class TestAgentMemory:
                 memory_system.add_memory(entry2)
             except Exception as _err:
                 # Acceptable to reject duplicates
-                pass
+                _ = None  # suppressed: no action needed
 
     # ========== PERFORMANCE TESTS ==========
 

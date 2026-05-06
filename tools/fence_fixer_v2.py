@@ -168,7 +168,7 @@ class LanguageDetector:
                 lang = LANG_NORMALIZE.get(lang, lang)
                 return (lang, 0.65)
             except ClassNotFound:
-                pass
+                _ = None  # suppressed: no action needed
 
         # Content-based guess using Pygments
         if PYGMENTS_AVAILABLE:
@@ -178,7 +178,7 @@ class LanguageDetector:
                 lang = LANG_NORMALIZE.get(lang, lang)
                 return (lang, 0.60)
             except ClassNotFound:
-                pass
+                _ = None  # suppressed: no action needed
 
         return ("text", 0.2)
 

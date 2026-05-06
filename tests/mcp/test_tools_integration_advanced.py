@@ -330,7 +330,7 @@ def test_tool_circuit_breaker_pattern():
         try:
             handler({"fail": True})
         except RuntimeError:
-            pass  # Expected failure to test circuit breaker mechanism
+            _ = None  # Expected failure to test circuit breaker mechanism
 
     # Circuit should be open
     assert circuit["open"]
@@ -349,7 +349,7 @@ def test_tool_fallback_pattern():
             if handler:
                 return handler(params)
         except Exception as _err:
-            pass  # Intentionally swallow exception to test fallback mechanism
+            _ = None  # Intentionally swallow exception to test fallback mechanism
 
         fallback = registry.get_tool(fallback_name)
         return fallback(params) if fallback else None

@@ -301,7 +301,7 @@ class TestProviderSwitching:
                     assert provider is not None
                 except (ValueError, ImportError, Exception):
                     # Expected if provider not available
-                    pass
+                    _ = None  # suppressed: no action needed
         except (ImportError, AttributeError):
             pytest.skip("Function not available")
 

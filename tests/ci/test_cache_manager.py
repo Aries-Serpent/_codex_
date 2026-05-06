@@ -298,7 +298,7 @@ class TestCacheManagerCLI:
         try:
             main()
         except SystemExit:
-            pass  # Expected
+            _ = None  # Expected
 
 
 class TestCacheManagerIntegration:

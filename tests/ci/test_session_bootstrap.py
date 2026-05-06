@@ -183,7 +183,7 @@ class TestGitHubClient:
             try:
                 client._request("/repos/x/y/issues/1")
             except (AttributeError, OSError, RuntimeError):
-                pass  # intentional: test only inspects captured headers; the aborted request is expected to raise
+                _ = None  # intentional: test only inspects captured headers; the aborted request is expected to raise
         auth = captured.get("headers", {}).get("Authorization", "")
         assert "Bearer mytoken" in auth
 
@@ -200,7 +200,7 @@ class TestGitHubClient:
             try:
                 client._request("/repos/x/y/issues/1")
             except (AttributeError, OSError, RuntimeError):
-                pass  # intentional: test only inspects captured headers; the aborted request is expected to raise
+                _ = None  # intentional: test only inspects captured headers; the aborted request is expected to raise
         auth = captured.get("headers", {}).get("Authorization", "")
         assert auth == ""
 

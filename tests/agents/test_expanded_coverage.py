@@ -216,7 +216,7 @@ class TestAgentMemoryExpanded:
             assert AgentMemory is not None
         except (ImportError, AttributeError):
             # May use different class names
-            pass
+            _ = None  # suppressed: no action needed
 
 
 class TestAdvancedPhysicsCalculatorsExpanded:

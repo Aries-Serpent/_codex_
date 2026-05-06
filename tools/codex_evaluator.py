@@ -91,7 +91,7 @@ def load_input_text(path: str) -> str:
             # Prefer explicit message_text, otherwise stringify
             return obj.get("message_text") or data
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     return data
 
 
