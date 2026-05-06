@@ -464,21 +464,30 @@ async def delete_index(
     """Delete an index."""
     try:
         import shutil
-        from pathlib import Path
 
-        safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
-        safe_index_name = _validate_path_segment(index_name, "index_name")
-        index_root = (Path.home() / ".codex" / "rag_indices").resolve()
-        tenant_path = _ensure_subpath(index_root, index_root / safe_tenant_id)
-        index_path = _safe_join_under_base(tenant_path, safe_index_name)
+        # os.path.basename is a CodeQL-recognised path sanitizer; applying it at the
+        # call site breaks taint on both user-supplied segments before they are joined.
+        safe_tenant_id = os.path.basename(_validate_path_segment(tenant_id, "tenant_id"))
+        safe_index_name = os.path.basename(_validate_path_segment(index_name, "index_name"))
+        # os.path.realpath is a CodeQL-recognised path sanitizer; applying it on the
+        # fully-joined string breaks any remaining taint before filesystem operations.
+        index_root = os.path.realpath(
+            os.path.join(str(Path.home()), ".codex", "rag_indices")
+        )
+        index_dir = os.path.realpath(
+            os.path.join(index_root, safe_tenant_id, safe_index_name)
+        )
+        # Containment guard: index_dir must remain inside index_root.
+        if os.path.commonpath([index_root, index_dir]) != index_root:
+            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
-        if not index_path.exists():  # lgtm[py/path-injection]
+        if not os.path.exists(index_dir):
             raise HTTPException(status_code=404, detail=f"Index '{safe_index_name}' not found")
 
         if not force:
             raise HTTPException(status_code=400, detail="Set force=true to confirm deletion")
 
-        shutil.rmtree(index_path)  # lgtm[py/path-injection]
+        shutil.rmtree(index_dir)
 
         return DeleteIndexResponse(
             success=True,
@@ -530,37 +539,38 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
     try:
         import json
 
-        tenant_id = _validate_path_segment(tenant_id, "tenant_id")
-        index_name = _validate_path_segment(index_name, "index_name")
-        index_dir = _RAG_FILES_BASE
-        tenant_path = _ensure_subpath(index_dir, index_dir / tenant_id)
-        index_path = _ensure_subpath(tenant_path, tenant_path / index_name)
-        # _ensure_subpath validates containment but CodeQL does not track sanitisation through
-        # function calls. Explicit os.path.realpath at the assignment point is the recognised
-        # CodeQL taint-break sanitizer — all subsequent operations on trusted_index_path inherit
-        # the sanitised origin and require no further suppressions.
-        # lgtm[py/path-injection]
-        trusted_index_path = Path(os.path.realpath(str(index_path)))
+        # os.path.basename is a CodeQL-recognised path sanitizer; applying it at the
+        # call site breaks taint on both user-supplied segments before they are joined.
+        tenant_id = os.path.basename(_validate_path_segment(tenant_id, "tenant_id"))
+        index_name = os.path.basename(_validate_path_segment(index_name, "index_name"))
+        # os.path.realpath is a CodeQL-recognised path sanitizer; applying it on the
+        # fully-joined string breaks any remaining taint before filesystem operations.
+        trusted_root = os.path.realpath(str(_RAG_FILES_BASE))
+        index_dir = os.path.realpath(
+            os.path.join(trusted_root, tenant_id, index_name)
+        )
+        # Containment guard: index_dir must remain inside trusted_root.
+        if os.path.commonpath([trusted_root, index_dir]) != trusted_root:
+            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
-        # lgtm[py/path-injection]
-        if not trusted_index_path.exists():
+        if not os.path.isdir(index_dir):
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
 
-        metadata_file = _ensure_subpath(
-            trusted_index_path, trusted_index_path / "metadata.json"
-        )
-        if not metadata_file.exists():
+        # Sanitize metadata path at call site.
+        metadata_file = os.path.realpath(os.path.join(index_dir, "metadata.json"))
+        if os.path.commonpath([index_dir, metadata_file]) != index_dir:
+            raise HTTPException(status_code=400, detail="Metadata path escapes index directory")
+        if not os.path.isfile(metadata_file):
             raise HTTPException(status_code=404, detail="Index metadata not found")
 
-        # metadata_file is already validated to be within trusted_index_path via _ensure_subpath.
-        # lgtm[py/path-injection]
-        with metadata_file.open(encoding="utf-8") as f:
+        with open(metadata_file, encoding="utf-8") as f:
             metadata = json.load(f)
 
-        # trusted_index_path is realpath-sanitized; all rglob results are contained within it.
-        # lgtm[py/path-injection]
+        # Use os.walk (string-based) so no Path-object taint propagates to stat calls.
         size_bytes = sum(
-            f.stat().st_size for f in trusted_index_path.rglob("*") if f.is_file()
+            os.path.getsize(os.path.join(dirpath, fname))
+            for dirpath, _, fnames in os.walk(index_dir)
+            for fname in fnames
         )
 
         return StatsResponse(
