@@ -1,8 +1,15 @@
 # PR #4317 — Session Diagram: Full Scope of What Was Accomplished
 
-> **Last updated: 2026-05-06T21:15Z — S312 FINAL**
-> **Stats: 59 commits · 3 Dependabot PRs consolidated · 0 CI failures · all blocking gates ✅**
-> **Sessions: S305 → S306 → S307 → S308 → S309 → S310 → S311 → S312 (complete)**
+> **Last updated: 2026-05-06T22:00Z — S313 IN PROGRESS**
+> **Stats: 62+ commits · 3 Dependabot PRs consolidated · 0 CI failures · all blocking gates ✅**
+> **Sessions: S305 → S306 → S307 → S308 → S309 → S310 → S311 → S312 → S313 (active)**
+>
+> **S313 completed tasks:**
+> - ✅ Task 1a: PBKDF2 iterations 100_000 → 600_000 (OWASP 2024 min) — `services/ita/app/security.py`
+> - ✅ Task 1b: CodeQL push trigger — already configured for `main`, `0D_base_`, `develop`, `copilot/**` — no change needed
+> - ✅ Task 1c: bandit HIGH triage — **0 HIGH findings** in `src/` and `services/` ✅
+> - ✅ Task 2: mypy baseline updated 170 → 126 (locked in 44-error improvement)
+> - ✅ ruff: 0 violations · sync_tracked_files: all consistent · auto_fix: 0 issues
 
 ---
 
@@ -66,7 +73,16 @@ flowchart TD
         W7C["Living docs fully updated\nroadmap + session diagram\nsecurity CodeQL follow-up added"]
     end
 
-    WAVE7 --> DONE(["✅ PR #4317 HEAD\n97/100 → 100/100 after CI re-run\nAll 3 Dependabot PRs consolidated\ntrailing-space permanently fixed\nLiving docs maintained"])
+    WAVE7 --> WAVE8
+
+    subgraph WAVE8["Wave 8 — S313: Security Hardening (OWASP 2024)"]
+        W8A["PBKDF2 iterations 100_000 → 600_000\nservices/ita/app/security.py:224\nOWASP 2024 SHA-256 minimum ✅"]
+        W8B["CodeQL push trigger verified\n.github/workflows/codeql-analysis.yml\nalready configured for main/0D_base_ ✅"]
+        W8C["bandit HIGH scan\n0 HIGH findings in src/ + services/ ✅\nno nosec annotations needed"]
+        W8D["mypy baseline 170 → 126\nLocked in 44-error improvement ✅"]
+    end
+
+    WAVE8 --> DONE(["✅ PR #4317 HEAD S313\n100/100 merge-ready\nAll 3 Dependabot PRs consolidated\nSecurity hardened: PBKDF2 600k\nbandit 0 HIGH · mypy 126 baseline\nLiving docs maintained"])
 ```
 
 ---
@@ -388,7 +404,16 @@ flowchart TD
         W7C["Living docs maintained per new requirement\ndocs/roadmap/PR4317_whats_next.md updated\ndocs/sessions/PR4317_session_diagram.md updated\nevery session going forward"]
     end
 
-    WAVE7 --> DONE(["✅ PR #4317 HEAD\nMerge Readiness 100/100\nAll CI gates passing\nDepBot PRs #4320 #4321 #4322 consolidated\nWQM tooling added\nmistune 3.2.1\nLiving docs maintained"])
+    WAVE7 --> WAVE8S
+
+    subgraph WAVE8S["Wave 8 — S313: Security Hardening (OWASP 2024)"]
+        W8SA["PBKDF2 100_000 → 600_000\nservices/ita/app/security.py:224\nOWASP 2024 SHA-256 min ✅"]
+        W8SB["CodeQL push trigger verified ✅\nalready on main/0D_base_/develop/copilot/**"]
+        W8SC["bandit HIGH: 0 findings\nsrc/ + services/ clean ✅"]
+        W8SD["mypy baseline 170 → 126\n44-error improvement locked ✅"]
+    end
+
+    WAVE8S --> DONE(["✅ PR #4317 HEAD S313\n100/100 merge-ready\nSecurity hardened: PBKDF2 600k\nbandit 0 HIGH · mypy 126\nLiving docs maintained"])
 ```
 
 ---

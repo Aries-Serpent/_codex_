@@ -152,7 +152,7 @@ def _legacy_hash_key(candidate_bytes: bytes) -> str:
     h = hashlib.sha256()  # nosec B324 — migration-only; not used for new hashes
     # Legacy-compatibility path: this must remain byte-for-byte equivalent to historic
     # pre-0.2 stored hashes so successful auth can trigger upgrade to PBKDF2.
-    # New hashes are created via hash_key() (PBKDF2-HMAC-SHA256, 100 000 iterations).
+    # New hashes are created via hash_key() (PBKDF2-HMAC-SHA256, 600 000 iterations).
     h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing]
     return h.hexdigest()
 
@@ -208,10 +208,10 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
 def hash_key(value: str) -> str:
     """Hash an API key for storage and lookup using PBKDF2-HMAC-SHA256 with pepper.
 
-    PBKDF2-HMAC-SHA256 (100 000 iterations) with a server-side pepper provides:
+    PBKDF2-HMAC-SHA256 (600 000 iterations) with a server-side pepper provides:
     * Computationally expensive hashing resistant to offline brute-force attacks
     * Resistance to GPU acceleration (unlike fast hashes)
-    * 100 000 iterations meets NIST SP 800-132 minimum guidance
+    * 600 000 iterations meets OWASP 2024 recommended minimum for SHA-256 PBKDF2
 
     The pepper is loaded from :func:`_load_hash_pepper`.  A deterministic
     32-byte salt is derived from the pepper via SHA-256 so that salt entropy
@@ -221,7 +221,7 @@ def hash_key(value: str) -> str:
     # Derive a full-entropy 32-byte PBKDF2 salt from the pepper via SHA-256.
     # This avoids predictable zero-padding for peppers shorter than 32 bytes.
     salt = hashlib.sha256(b"pbkdf2-salt-v1:" + pepper).digest()
-    dk = hashlib.pbkdf2_hmac("sha256", value.encode("utf-8"), salt, 100_000)
+    dk = hashlib.pbkdf2_hmac("sha256", value.encode("utf-8"), salt, 600_000)
     return dk.hex()
 
 

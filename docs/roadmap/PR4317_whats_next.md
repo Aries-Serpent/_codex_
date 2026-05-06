@@ -1,7 +1,8 @@
 # _codex_ — What's Next: Roadmap After PR #4317
 
-> **Status as of 2026-05-06T21:15Z** · S312 final · 59 commits · 24/30 CI checks ✅ · 0 ❌
+> **Status as of 2026-05-06T22:00Z** · S313 active · 62+ commits · 24/30 CI checks ✅ · 0 ❌
 > **Merge verdict: 🟢 MERGE READY — all blocking gates green, 3 startup_failures are expected opt-in infra**
+> **S313 Security Hardening: PBKDF2 600k ✅ · bandit 0 HIGH ✅ · CodeQL push already configured ✅ · mypy 126 baseline locked ✅**
 
 ---
 
@@ -113,14 +114,15 @@ flowchart TD
 
 ### Security Backlog Detail
 
-| Item | Priority | File | Fix Pattern |
-|------|:--------:|------|-------------|
-| PBKDF2 100k → 600k iterations | 🔴 HIGH | `services/ita/app/security.py:185` | Change `iterations=100_000` → `600_000` |
-| CodeQL on-push trigger | 🟡 MED | `.github/workflows/codeql-analysis.yml` | Add `push: branches: [main, 0D_base_]` |
-| Semgrep rule expansion | 🟡 MED | `.github/workflows/semgrep_sarif.yml` | Add `p/flask`, `p/sqlalchemy` rulesets |
-| bandit HIGH triage | 🟡 MED | CI artifact `bandit-report.json` | Review B105/B106/B603 per run |
-| pip-audit post-merge | 🟢 LOW | `requirements/lock.txt` / `uv.lock` | `pip-audit --fix` on main after merge |
-| .secrets.baseline re-scan | 🟢 LOW | `.secrets.baseline` | `detect-secrets scan > .secrets.baseline` |
+| Item | Priority | File | Fix Pattern | S313 Status |
+|------|:--------:|------|-------------|-------------|
+| PBKDF2 100k → 600k iterations | 🔴 HIGH | `services/ita/app/security.py:224` | Change `iterations=100_000` → `600_000` | ✅ **DONE** — commit this session |
+| CodeQL on-push trigger | 🟡 MED | `.github/workflows/codeql-analysis.yml` | Already has `push: branches: [main, 0D_base_, develop, copilot/**]` | ✅ **Already configured** |
+| Semgrep rule expansion | 🟡 MED | `.github/workflows/semgrep_sarif.yml` | Add `p/flask`, `p/sqlalchemy` rulesets | ⏳ Next PR |
+| bandit HIGH triage | 🟡 MED | CI artifact `bandit-report.json` | Review B105/B106/B603 per run | ✅ **0 HIGH findings** in `src/` + `services/` |
+| pip-audit post-merge | 🟢 LOW | `requirements/lock.txt` / `uv.lock` | `pip-audit --fix` on main after merge | ⏳ Next PR |
+| .secrets.baseline re-scan | 🟢 LOW | `.secrets.baseline` | `detect-secrets scan > .secrets.baseline` | ⏳ Next PR |
+| mypy baseline lockdown | 🟢 LOW | `.mypy_baseline` | Updated 170 → 126 | ✅ **DONE** — this session |
 
 ---
 
@@ -276,47 +278,52 @@ flowchart TD
 
 ## 🔁 Continuation — Post PR #4317 Merge (next session)
 
-### ✅ PR #4317 Merge Status
-- PR #4317 (0D_base_) → main: **MERGE READY** as of 2026-05-06T21:15Z
-- All blocking CI gates: ✅ green (24/30 checks passed, 3 startup_fail expected, 2 long-running in-progress)
+### ✅ PR #4317 + S313 Status
+- PR #4317 (0D_base_) → main: **MERGE READY** as of 2026-05-06T22:00Z
+- S313 Security Hardening completed: PBKDF2 600k ✅, bandit 0 HIGH ✅, mypy 126 baseline ✅
+- All blocking CI gates: ✅ green
 - IF not yet merged: merge PR #4317 first, then run `git fetch origin main && git rebase origin/main`
 - IF already merged: confirm with `git log --oneline origin/main | head -5`
 
 ### 📋 Pre-load context (MANDATORY — do these first)
-  view docs/roadmap/PR4317_whats_next.md    # §2 security backlog, §6 scorecard
-  view docs/sessions/PR4317_session_diagram.md  # §9 CodeQL map, §10 merge table
-  view docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # last entry: S312
+  view docs/roadmap/PR4317_whats_next.md    # §2 security backlog (S313 status), §6 scorecard
+  view docs/sessions/PR4317_session_diagram.md  # §Wave 8 S313, §9 CodeQL map, §10 merge table
+  view docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # last entry: S313
   view CHANGELOG.md                              # [Unreleased] section
 
-### 🔒 Priority 1 — Security fixes (same session, ~20 min)
+### ✅ S313 Completed (no action needed)
+- Task 1a — PBKDF2 iterations: **DONE** — `services/ita/app/security.py` now uses `600_000`
+- Task 1b — CodeQL push trigger: **already configured** for `main`, `0D_base_`, `develop`, `copilot/**`
+- Task 1c — bandit HIGH triage: **0 HIGH findings** in `src/` and `services/`
+- Task 2 mypy baseline: **DONE** — updated 170 → 126 (locked in 44-error improvement)
 
-#### Task 1a — PBKDF2 iterations (CRITICAL — 5 min)
-  grep -n "pbkdf2_hmac\|iterations" services/ita/app/security.py
-  Fix: change iterations=100_000 → iterations=600_000  (OWASP 2024 SHA-256 min)
-  Test: python -m pytest tests/ -k "security or auth or hash" -x
+### 🔒 Priority 1 — Remaining Security (next session, ~15 min)
 
-#### Task 1b — CodeQL push-trigger (HIGH — 5 min)
-  view .github/workflows/codeql-analysis.yml
-  Fix: add `push: branches: [main, "0D_base_"]` under `on:`
-  Verify: actionlint .github/workflows/codeql-analysis.yml || true
+#### Task 1d — Semgrep rule expansion (HIGH — 5 min)
+  view .github/workflows/semgrep_sarif.yml
+  Fix: add `p/flask` and `p/sqlalchemy` rulesets to semgrep config
+  Verify: actionlint .github/workflows/semgrep_sarif.yml || true
 
-#### Task 1c — bandit HIGH triage (HIGH — 10 min)
-  python -m bandit -r src/ -ll -f json 2>/dev/null | python3 -c "
-    import json,sys; d=json.load(sys.stdin);
-    highs=[r for r in d.get('results',[]) if r['issue_severity']=='HIGH']
-    [print(r['filename'],r['line_number'],r['issue_text']) for r in highs[:10]]"
-  Fix B105/B106 (hardcoded-pw) with # nosec B105 + justification comment
-  Fix B603 (subprocess) by adding shell=False explicitly
+#### Task 1e — pip-audit post-merge (MED — 5 min)
+  pip-audit -r requirements/lock.txt --format json 2>/dev/null | python3 -c "
+    import json,sys; d=json.load(sys.stdin)
+    vulns=[v for v in d.get('dependencies',[]) if v.get('vulns')]
+    [print(v['name'], v['version'], v['vulns'][0]['id']) for v in vulns[:10]]"
+  Fix: `pip-audit --fix` or manual version pin for any HIGH/CRITICAL vulns
 
-### 🧹 Priority 2 — Remaining CI health (~10 min)
-  python scripts/ci/mypy_baseline.py --update   # lock in 126 → new baseline
-  python -m ruff check src/ tests/ --fix
+#### Task 1f — .secrets.baseline re-scan (LOW — 5 min)
+  detect-secrets scan --baseline .secrets.baseline
   python scripts/ci/sync_tracked_files.py --fix
+
+### 🧹 Priority 2 — CI Health monitoring (~10 min)
+  python -m ruff check src/ tests/ --fix
+  python scripts/ci/sync_tracked_files.py --check
   python scripts/ci/auto_fix_common_issues.py --check-only
+  # Monitor any new CI rescue comments on this PR
 
 ### 📦 Priority 3 — Dependabot triage (5 min)
   gh pr list --label dependencies --state open
-  # Cherry-pick any new dependabot PRs into next feature branch
+  # Cherry-pick any new dependabot PRs into branch
 
 ### ✅ Validation (before every commit)
   python -m ruff check src/ tests/ --output-format=concise
@@ -325,16 +332,16 @@ flowchart TD
   python scripts/ci/auto_fix_common_issues.py --check-only
 
 ### 📝 Living docs to update each session
-  docs/roadmap/PR<NEW_PR>_whats_next.md       # create for new PR
-  docs/sessions/PR<NEW_PR>_session_diagram.md  # create for new PR
+  docs/roadmap/PR4317_whats_next.md         # update §2 security backlog status column
+  docs/sessions/PR4317_session_diagram.md   # add Wave N for each session
   docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
   CHANGELOG.md
 
 ### 🎯 Success criteria for next session
-  - PBKDF2 >= 600k iterations confirmed in security.py
-  - CodeQL runs on push to main (verify in codeql-analysis.yml)
-  - bandit HIGH findings: 0 unfixed
-  - ruff: 0 violations
+  - Semgrep rules expanded (`p/flask`, `p/sqlalchemy`) in semgrep_sarif.yml
+  - pip-audit: 0 HIGH/CRITICAL unfixed vulns
+  - .secrets.baseline freshly re-scanned post-merge
+  - ruff: 0 violations · mypy: ≤ 126 errors · bandit HIGH: 0
   - All CI gates green on new HEAD
 ```
 

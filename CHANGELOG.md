@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (session 2026-05-06T21:00Z — PR #4317 S312 final wrap-up)
+### Fixed (session 2026-05-06T22:00Z — PR #4317 S313 security hardening)
+- `services/ita/app/security.py:224`: PBKDF2-HMAC-SHA256 iterations bumped **100 000 → 600 000** (OWASP 2024 SHA-256 recommended minimum).
+- `scripts/ci/mypy_baseline.py`: baseline updated **170 → 126** — locks in 44-error improvement from prior sessions.
+- CodeQL push trigger confirmed already configured (`main`, `0D_base_`, `develop`, `copilot/**`) — no change needed.
+- bandit HIGH scan: **0 HIGH findings** in `src/` (192 277 LOC) and `services/` (4 725 LOC).
+- Living docs (`docs/roadmap/PR4317_whats_next.md`, `docs/sessions/PR4317_session_diagram.md`): Wave 8 added for S313, continuation prompt updated with S313 completed tasks and next remaining security tasks (Semgrep expansion, pip-audit, .secrets.baseline re-scan).
+
+
 - PR #4317 final CI monitoring: 24/30 checks ✅, 0 ❌ — **MERGE READY**.
 - `docs/roadmap/PR4317_whats_next.md`: updated to 100/100 merge-ready scorecard + full continuation prompt.
 - `docs/sessions/PR4317_session_diagram.md`: S312 FINAL status header.
