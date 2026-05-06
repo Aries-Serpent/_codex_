@@ -1,35 +1,32 @@
-# Session Context — 2026-05-06T18:40:30Z
+# Session Context — 2026-05-06T18:56:14Z
 **Branch:** `0D_base_`  **PR:** #4317  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4499` (✅)  
-- GraphQL remaining: `4964` (✅)  
+- REST remaining: `4996` (✅)  
+- GraphQL remaining: `4958` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
 ## 📋 PR #4317 — 0 d base 
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `copilot` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-06)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
 
 ## 📝 Recent Commits
+- `03011cda` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
+- `5dcbf610` fix: mistune 3.2.0→3.2.1 in uv.lock, missing comma in test list, empty except→de — copilot-swe-agent[bot] (2026-05-06)
+- `988a9f6c` chore: begin hotfix - plan for mistune alignment + code quality fixes — copilot-swe-agent[bot] (2026-05-06)
 - `a732ed27` fix(security): remove over-strict is_absolute() guard from _ensure_subpath — fix — copilot-swe-agent[bot] (2026-05-06)
 - `ead14114` docs: add PR #4317 roadmap + session diagram; verify Dependabot PRs consolidated — copilot-swe-agent[bot] (2026-05-06)
 - `d84fedaf` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
 - `330fa4ec` chore: verify Dependabot PRs #4320/#4321 already incorporated — mistune 3.2.1 at — copilot-swe-agent[bot] (2026-05-06)
 - `87a19372` fix(ci): RP-004 re-anchor HEAD — CI rescue 4390359667 + priority tasks 439036296 — copilot-swe-agent[bot] (2026-05-06)
-- `25d9af32` fix(ci): re-anchor CI to branch HEAD — clear SHA-drift stale Pattern 22/30 (comm — copilot-swe-agent[bot] (2026-05-06)
-- `2f079c79` deps(deps): bump mistune from 3.2.0 to 3.2.1 — dependabot[bot] (2026-05-06)
-- `56aa456d` fix(ci): S221 missed-trigger recovery — fresh CI run, accountability + CHANGELOG — copilot-swe-agent[bot] (2026-05-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
