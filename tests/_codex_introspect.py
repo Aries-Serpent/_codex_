@@ -132,5 +132,6 @@ def patch_default_db_path(module_obj, tmp_db_path):
                 setattr(module_obj, attr, str(tmp_db_path))
                 patched.append(attr)
             except (AttributeError, OSError, RuntimeError):
+                # Patching is best-effort; skip attributes that reject assignment.
                 pass
     return patched

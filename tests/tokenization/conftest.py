@@ -208,6 +208,7 @@ if _TOKENIZERS_STUB_FLAG or _tokenizers_spec is None:
             try:
                 data = json.loads(Path(path).read_text(encoding="utf-8"))
             except (AttributeError, OSError, RuntimeError):
+                # File may not exist or may not be a valid tokenizer file — use empty vocab.
                 pass
             inst = cls()
             vocab = data.get("vocab", {}) if isinstance(data, dict) else {}

@@ -1360,6 +1360,7 @@ class CommonIssueFixer:
                 # GITHUB_SHA is an ancestor of HEAD — normal agent-push drift, skip.
                 return issues
         except FileNotFoundError:
+            # git not available or GITHUB_SHA env var not set — skip drift check.
             pass
 
         issues.append(

@@ -241,6 +241,7 @@ def _extract_literal_columns_from_source(src: str) -> list[str]:
                     if re.match(r"[A-Za-z_][A-Za-z0-9_]*$", c):
                         cols.add(c)
     except (AttributeError, OSError, RuntimeError):
+        # Source introspection failed — return empty list and let caller use defaults.
         pass
     return sorted(cols)
 
@@ -272,6 +273,7 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
             elif isinstance(node, ast.Dict):
                 _dfs_dict(node, 1, set(), ts_acc)
     except (AttributeError, OSError, RuntimeError):
+        # AST parse/walk failed — return None and let caller use defaults.
         pass
     return ts_acc[0] if ts_acc else None
 
@@ -292,6 +294,7 @@ def _infer_expectations(build_query) -> tuple[list[str], str]:
         if inferred_ts:
             ts = inferred_ts
     except (AttributeError, OSError, RuntimeError):
+        # inspect.getsource unavailable — skip source-based inference.
         pass
     try:
         sig = inspect.signature(build_query)
@@ -304,6 +307,7 @@ def _infer_expectations(build_query) -> tuple[list[str], str]:
         if not expected_cols and ("columns" in params or "select" in params):
             expected_cols = ["event_time", "user_id", "message"]
     except (AttributeError, OSError, RuntimeError):
+        # inspect.signature unavailable — skip param-based inference.
         pass
     if not expected_cols:
         expected_cols = ["event_time", "user_id", "message"]
