@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T22:45Z — PR #4323 Dependabot Wave 10: alerts #244, #245, #246 + PR review fixes)
+- **Dependabot Alert #244**: GitPython newline injection RCE via `core.hooksPath` (GHSA-cwvm-v4w8-q58c) in `requirements/lock.txt` — covered by `gitpython==3.1.50` bump (same bump as alert #239).
+- **Dependabot Alert #246**: GitPython newline injection RCE via `core.hooksPath` (GHSA-cwvm-v4w8-q58c) in `uv.lock` — covered by `gitpython==3.1.50` bump (same bump as alert #240).
+- **Dependabot Alert #245**: `python-multipart` DoS via unbounded multipart headers (GHSA-59g5-xgcq-4qw3) in `uv.lock` — confirmed safe: `uv.lock` uses renamed package `multipart==1.3.1` (successor to python-multipart, >> 0.0.27 fix version).
+- Investigation reports added: `reports/investigation_alert_{244,245,246}.md`.
+- `reports/dependabot_summary.md` expanded to cover all 7 alerts (#239–#246).
+- PR review thread fixes applied: sync_tracked_files.py --fix passed clean; ruff src/ tests/ all clean.
+- `AGENT_ACCOUNTABILITY_REPORT.md` updated with Wave 10 session entry.
+
 ### Fixed (session 2026-05-06T22:30Z — PR #4323 session close: CI 10/10 green)
 - Final CI on merge commit `c99058248e34`: **10 ✅ success, 0 ❌ failures** — merge ready.
 - Code Review + CodeQL parallel validation: ✅ both clean, 0 comments, 0 alerts.
