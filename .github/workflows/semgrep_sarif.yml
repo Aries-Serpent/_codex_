@@ -65,6 +65,8 @@ jobs:
           semgrep scan \
             --config=p/security-audit \
             --config=p/python \
+            --config=p/flask \
+            --config=p/sqlalchemy \
             --sarif \
             --output=semgrep-results.sarif \
             --verbose \
@@ -85,6 +87,8 @@ jobs:
             semgrep scan \
               --config=p/security-audit \
               --config=p/python \
+              --config=p/flask \
+              --config=p/sqlalchemy \
               --text \
               --output=semgrep-results.txt \
               2>&1 || semgrep scan \

@@ -186,7 +186,8 @@
 **Documentation**: Update ADVANCED_FEATURES_PLANSET.md with implementation details
 
 #### 2. **Coverage Improvement to 95%+** (Phase 9 extension)
-**Timeline**: 2026-04-13 to 2026-05-22 (execution window within the broader Phase 2 coverage timeline: 2026-04-01 to 2026-06-30)
+**Timeline**: 2026-04-13 to 2026-05-22
+**Phase Context Timeline**: 2026-04-01 to 2026-06-30
 **Status**: 🟢 Active
 **Effort**: 5-8 sessions (~150K-300K tokens)
 
@@ -437,7 +438,7 @@
 
 **Roadmap Status**: 🟢 Active & Current
 **Last Updated**: 2026-04-28 (S177 — version + SAR gap label consistency; MLOps level 3.95 confirmed)
-**Next Review**: 2026-05-06
+**Next Review**: 2026-06-06
 **Version**: 2.1.0
 
 **Questions?** Check [Dashboard](./system/CODEBASE_DASHBOARD.md) for current status.
