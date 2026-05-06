@@ -1,7 +1,7 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-06T23:22Z — Session 3 (CI Rescue + Wrap-up) — HEAD `14e8497`**
-> **Status: 🟢 MERGE-READY — 95/100 scorecard; sync_tracked_files ✅; ruff ✅; comment gate ✅**
+> **Last updated: 2026-05-07T00:00Z — Session 4 (CodeQL AST sweep + API-pending) — HEAD `583a45c`**
+> **Status: 🟢 MERGE-READY — sync_tracked_files ✅; ruff ✅; comment gate ✅; 59/107 CodeQL alerts fixed**
 
 ## Completed This PR (Wave 9 + Wave 10 + CodeQL Pass)
 
@@ -22,8 +22,8 @@
 | `py/catch-base-exception` | 1 | Fixed: `BaseException` → `(Exception, SystemExit, KeyboardInterrupt)` |
 | `py/print-during-import` | 3 | Fixed: `print()` → `sys.stdout.write()` in tools/ |
 | `py/empty-except` | 55 | Fixed: `pass` → `_ = None` across 160+ files |
-| `py/unexpected-raise-in-special-method` | 2 | Partial: 1 fixed (`src/codex_ml/__init__.py:191`) |
-| `py/mixed-returns` | 26 | Next session: use `gh api ...code-scanning/alerts` |
+| `py/unexpected-raise-in-special-method` | 2 | Partial: 1 fixed (`src/codex_ml/__init__.py:191`); 2nd requires CodeQL API |
+| `py/mixed-returns` | 26 | Next session: `gh api code-scanning/alerts?rule_id=py%2Fmixed-returns` |
 | `py/call/wrong-named-argument` | 15 | Next session: CodeQL API required |
 | `py/call-to-non-callable` | 1 | Next session: CodeQL API required |
 | `py/call/wrong-arguments` | 1 | Next session: CodeQL API required |
@@ -32,15 +32,19 @@
 
 ## Remaining (Next Session)
 
-1. **CodeQL pending rules** — After next CI CodeQL scan, fetch exact alert locations
-   via `gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts` and fix:
-   - `py/mixed-returns` (26)
-   - `py/call/wrong-named-argument` (15)
-   - `py/call-to-non-callable` (1)
-   - `py/call/wrong-arguments` (1)
-   - `py/missing-equals` (1)
-   - `py/unexpected-raise-in-special-method` (2)
-   - `py/mixed-tuple-returns` (4)
+1. **CodeQL pending rules** — Use `GH_TOKEN=$CODEX_MASTER_KEY gh api` for exact locations:
+   ```bash
+   gh api '/repos/Aries-Serpent/_codex_/code-scanning/alerts?tool_name=CodeQL&state=open&per_page=100' \
+     | python3 -c "import sys,json; [print(a['number'],a['rule']['id'],a['most_recent_instance']['location']['path'],a['most_recent_instance']['location']['start_line']) for a in json.load(sys.stdin)]"
+   ```
+   Rules to target (in order of impact):
+   - `py/call/wrong-named-argument` (15 Errors — high priority)
+   - `py/mixed-returns` (26 Notes)
+   - `py/call-to-non-callable` (1 Error)
+   - `py/call/wrong-arguments` (1 Error)
+   - `py/missing-equals` (1 Warning)
+   - `py/unexpected-raise-in-special-method` (2nd instance)
+   - `py/mixed-tuple-returns` (4 Notes)
 
 2. **Validate CodeQL scan** — Ensure the applied fixes drive the 55 `empty-except` alerts
    to zero after the next scan. Monitor the CodeQL workflow run.

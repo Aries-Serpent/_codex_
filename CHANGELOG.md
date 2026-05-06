@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T00:00Z — PR #4323 Session 4: CodeQL AST sweep + living docs)
+- **CodeQL local AST sweep**: Searched all of `src/`, `services/`, `cognitive_app/`, `scripts/`, `tools/` for remaining CodeQL rule patterns via local AST analysis. Findings:
+  - `py/unexpected-raise-in-special-method` (2nd): All `__getattr__` methods and restricted special methods (`__repr__`, `__str__`, `__del__`, `__len__`, `__bool__`, `__iter__`, `__next__`, `__hash__`, `__format__`) scan clean locally — 2nd instance requires CodeQL API for exact location.
+  - `py/missing-equals`: No classes with `__hash__`-without-`__eq__` found in any production dir — requires CodeQL API.
+  - `py/mixed-tuple-returns`: 0 candidates found in `src/` — requires CodeQL API to narrow from 604 `mixed-returns` candidates to the 26 CodeQL flags.
+  - `py/call-to-non-callable`, `py/call/wrong-arguments`, `py/call/wrong-named-argument`: Cannot locate without CodeQL API `rule_id` filter — GitHub MCP rate-limited (reset ~00:00Z).
+- **Living docs updated**: `docs/roadmap/PR4323_whats_next.md` (S4 header, improved API workaround command) and `docs/sessions/PR4323_session_diagram.md` (S4 session flow block, updated CI status table).
+- **sync_tracked_files --check**: ✅ all consistent on HEAD `583a45c`.
+
 ### Fixed (session 2026-05-06T23:22Z — PR #4323 Session 3: CI Rescue + Wrap-up)
 - **CI Rescue RP-004 (Pattern 22)**: `sync_tracked_files --fix` re-run; CODEX_MANIFEST, `.secrets.baseline`, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT all confirmed consistent. `sync_tracked_files --check` ✅ green on HEAD `14e8497`.
 - **Pattern 9 (unsorted imports)**: `tools/answer_codex_questions.py` and `tools/mkdocs_repair.py` confirmed clean — `ruff check --select I` passes on current HEAD.

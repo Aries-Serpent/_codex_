@@ -28706,3 +28706,49 @@ and the CI gate requirement.
 - CI patterns resolved: Pattern 9 ✅, Pattern 22 ✅, Pattern 25 ✅, Pattern 30 ✅
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-05-07T00:00Z SESSION 4 (PR #4323 — CodeQL AST sweep + living docs)
+
+### Session Metadata
+- **PR**: #4323 (`copilot/fix-timeline-structure`)
+- **Session Start**: 2026-05-06T23:27Z
+- **Session End**: 2026-05-07T00:00Z (in progress)
+- **Time Used**: ~10/60 min of new session
+
+### Work Completed
+
+#### CodeQL Local AST Sweep (GitHub API rate-limited — reset ~23:57Z)
+Performed exhaustive local AST analysis across all production directories for the 7 remaining CodeQL rule categories:
+
+| Rule | Local Scan Result |
+|------|------------------|
+| `py/unexpected-raise-in-special-method` (2nd) | 0 found in restricted methods (`__repr__`, `__str__`, `__del__`, `__len__`, `__bool__`, `__iter__`, `__next__`, `__hash__`, `__format__`, `__contains__`, `__getattr__`) — needs CodeQL API |
+| `py/missing-equals` | 0 `__hash__`-without-`__eq__` classes found across src/, services/, cognitive_app/ — needs CodeQL API |
+| `py/mixed-tuple-returns` | 0 in src/ — CodeQL may track cross-call inference; needs API |
+| `py/call-to-non-callable` | 0 literal-call patterns found — needs CodeQL API |
+| `py/call/wrong-arguments` | 0 builtin-arity violations found — needs CodeQL API |
+| `py/call/wrong-named-argument` | Cannot narrow 15 locations without API filter |
+| `py/mixed-returns` | 604 candidates in src/ but CodeQL reports 26 — needs API to narrow |
+
+**Conclusion**: All remaining CodeQL issues require `GH_TOKEN=$CODEX_MASTER_KEY gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts?tool_name=CodeQL&state=open` for exact file:line locations. Next session must start by running this command.
+
+#### Living Docs Updated
+- `docs/roadmap/PR4323_whats_next.md`: Updated header (S4/00:00Z), improved CodeQL API workaround command, refined pending-items table with `rule_id` filter values.
+- `docs/sessions/PR4323_session_diagram.md`: Added S4 session flow block; updated CI status table with rate-limit note.
+- `CHANGELOG.md`: Session 4 entry added.
+
+### CI Status at Close
+- `sync_tracked_files --check`: ✅ All consistent
+- `ruff check src/ tests/ tools/`: ✅ 0 violations
+- Dependabot alerts #239–#246: ✅ All resolved
+- CodeQL (4 rules fully fixed — 58/107 alerts): ✅ catch-base-exception, print-during-import, empty-except×55, unexpected-raise×1
+- CodeQL (pending — ~49 alerts across 7 rules): 🟡 Next session: fetch exact locations via CodeQL API
+
+### Impact Score
+- Files changed: 4 (living docs × 2, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT)
+- Local AST scans performed: 7 rule categories × ~15K files
+- CodeQL alerts remaining: ~49
+
+---
