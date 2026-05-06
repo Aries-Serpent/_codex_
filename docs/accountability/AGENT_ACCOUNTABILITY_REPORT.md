@@ -27637,3 +27637,19 @@ All github-code-quality and github-advanced-security review items from review-42
 ### CI Health
 - `ruff check src/ tests/` → 0 violations ✅
 - syntax checks → OK ✅
+
+## Session Entry — 2026-05-06T00:45Z — PR #4289 github-code-quality final fixes
+
+### Actions Taken
+- **github-code-quality "Unreachable except" (test_training_workflows.py:61)**: Removed `ModuleNotFoundError` from the second `except` clause — it is a subclass of `ImportError` (already caught by the preceding handler), making the `ModuleNotFoundError` branch unreachable. Changed to `except AttributeError:` with explanatory comment.
+- **github-code-quality "Empty except" × 4 (test_rag_utils.py)**: Added explanatory comments to all empty `except (ImportError, AttributeError, ModuleNotFoundError): pass` blocks in `TestCheckForMetaTensors.setup_method`, `TestCheckForMetaTensors.teardown_method`, `TestSafeModelLoadV2.setup_method`, and `TestSafeModelLoadV2.teardown_method`.
+- **Restored accidentally-removed teardown_method**: The `TestCheckForMetaTensors.teardown_method` was inadvertently removed during the first except-block edit; restored with its full docstring and comment.
+- **Pattern 25**: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
+### CI Health
+- `ruff check src/ tests/` → 0 violations ✅
+- `sync_tracked_files.py --check` → all consistent ✅
+- All github-code-quality review threads addressed ✅
+
+### §0 Compliance
+All github-code-quality findings from review-4232301937 and review-4232378430 are now addressed. CodeQL alerts 13385-13391 on rag_api.py were fixed in commits 8be9ac9/3497a6e (regex taint-break via m.group()); PR re-scan will close them.
