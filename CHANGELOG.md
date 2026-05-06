@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T22:30Z — PR #4323 session close: CI 10/10 green)
+- Final CI on merge commit `c99058248e34`: **10 ✅ success, 0 ❌ failures** — merge ready.
+- Code Review + CodeQL parallel validation: ✅ both clean, 0 comments, 0 alerts.
+- Living docs finalized: session-close section appended to both `docs/roadmap/PR4317_whats_next.md` and `docs/sessions/PR4317_session_diagram.md`.
+
 ### Fixed (session 2026-05-06T22:20Z — PR #4323 wrap-up: secrets baseline + CI green)
 - `.secrets.baseline`: re-synced via `sync_tracked_files --fix` (stale CODEX_MANIFEST hash entry corrected).
 - CI on commit `7a989c6`: 7 ✅ success, 0 ❌ failures — merge-ready.

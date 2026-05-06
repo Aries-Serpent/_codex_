@@ -842,3 +842,20 @@ Run:
 
 ### `.secrets.baseline` fix
 - `sync_tracked_files --fix` updated stale CODEX_MANIFEST entry in `.secrets.baseline` → committed in wrap-up.
+
+---
+
+## Wave 9 — Session Close (2026-05-06T22:30Z)
+
+**Final CI on merge commit `c99058248e34` (main → copilot/fix-timeline-structure):**
+
+| Result | Count |
+|--------|------:|
+| ✅ success | 10 |
+| ❌ failure | 0 |
+| ⏭ cancelled (deduplication) | 18 |
+| 🔄 in_progress | 1 (PR follow-up prompt generator — benign) |
+
+**Parallel validation (Code Review + CodeQL):** ✅ both clean — no review comments, no CodeQL alerts.
+
+**Status: 🟢 MERGE READY** — All required gates green. PR #4323 ready for merge to main.

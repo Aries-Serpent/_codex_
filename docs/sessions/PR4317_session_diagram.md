@@ -862,3 +862,26 @@ pie title CI Results on 7a989c6 (PR #4323 HEAD)
 | Blocking failures | ✅ 0 |
 | `.secrets.baseline` sync | ✅ fixed by `sync_tracked_files --fix` |
 | ruff `src/` | ✅ 0 violations |
+
+---
+
+## 10. Session Close — Final CI Tally (2026-05-06T22:30Z)
+
+```mermaid
+pie title Final CI — Merge Commit c99058248e34
+    "success" : 10
+    "cancelled (dedup)" : 18
+    "in_progress (followup-prompt)" : 1
+```
+
+**Verdict: 🟢 MERGE READY**
+
+| Validation | Result |
+|------------|--------|
+| Code Review | ✅ Clean — 0 comments |
+| CodeQL Security Scan | ✅ Clean — 0 alerts |
+| Required workflow gates | ✅ 10/10 green |
+| Blocking failures | ✅ 0 |
+| Dependabot alerts 239–242 | ✅ All resolved |
+| python-multipart DoS (PR #4330) | ✅ Cherry-picked |
+| `.secrets.baseline` sync | ✅ Consistent |
