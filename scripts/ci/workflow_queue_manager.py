@@ -233,8 +233,8 @@ def _resolve_repo(explicit: str = "") -> str:
                     slug = url[len(prefix):].removesuffix(".git")
                     if "/" in slug:
                         return slug
-    except Exception:
-        pass
+    except Exception as exc:
+        log.debug("git remote URL resolution failed; continuing to fallback: %s", exc, exc_info=True)
 
     raise RuntimeError(
         "Cannot determine repository slug.\n"
@@ -278,8 +278,8 @@ def _resolve_branch(explicit: str = "") -> str:
             branch = result.stdout.strip()
             if branch and branch != "HEAD":
                 return branch
-    except Exception:
-        pass
+    except Exception as exc:
+        log.debug("git branch auto-detection failed; falling back to no-filter: %s", exc, exc_info=True)
 
     if explicit.strip().lower() == "auto":
         log.warning(

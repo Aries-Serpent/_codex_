@@ -293,7 +293,7 @@ def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
         f"source '{sh}'",
         "set +e",
         "codex_session_start",
-        'test -f "$CODEX_SESSION_LOG_DIR/$CODEX_SESSION_ID.meta"'
+        'test -f "$CODEX_SESSION_LOG_DIR/$CODEX_SESSION_ID.meta"',
         ' || { echo "permission denied: session file not created" >&2; exit 1; }',
     ])
 
