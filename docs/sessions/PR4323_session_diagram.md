@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T00:20Z**
-> **Sessions: S1→S2→S3→S4→S5 (final sweep + docs) — HEAD cb60e8a**
+> **Last updated: 2026-05-07T00:55Z**
+> **Sessions: S1→S2→S3→S4→S5→S6 — HEAD ac5fb47**
 
 ## Session Flow
 
@@ -39,15 +39,38 @@ S4 (AST sweep + docs): 2026-05-07T00:00Z → 00:10Z
    ├─ Living docs updated (S4 entry)
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
 
-S5 (final sweep + docs): 2026-05-07T00:10Z → in progress
+S5 (final sweep + docs): 2026-05-07T00:10Z → 00:20Z
    ├─ Workflows approved by owner
    ├─ sync_tracked_files --check: ✅ all consistent
    ├─ ruff check src/ tests/ tools/: ✅ 0 violations
    ├─ Living docs refreshed (S5 entry, API command updated)
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
+
+S6 (CodeQL fixes + rate-limit hardening): 2026-05-07T00:20Z → 00:55Z
+   ├─ py/mixed-tuple-returns FIX (src/logging_utils.py):
+   │      init_mlflow() split into _init_mlflow_bool (→object|None)
+   │      and _init_mlflow_experiment (→tuple[object|None,object|None])
+   ├─ py/call-to-non-callable FIX (src/cli.py):
+   │      callable() guard added in _resolve_callable()
+   │      raises TypeError when resolved attr is not callable
+   ├─ Rate-limit root cause identified + hardened:
+   │      MCP sandbox token ≠ CODEX_MASTER_KEY (separate pools)
+   │      github_api_trickle.py --status: new CLI flag
+   │        → checks all tokens, writes .codex/rate_limit_state.json
+   │        → exits 0=ready, 1=all-exhausted
+   │      session_bootstrap.py D-00 gate:
+   │        → rate-limit pre-check at every session start
+   │        → 60s cache re-use to avoid thrashing
+   │        → blocking warning when all tokens exhausted
+   │      .codex/docs/RATE_LIMIT_AWARENESS.md created:
+   │        → full agent reference (pools, protocol, state format)
+   ├─ All 3 memories stored in store_memory
+   ├─ ruff check: ✅ 0 violations
+   ├─ sync_tracked_files: ✅ consistent
+   └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
 ```
 
-## CI Status (2026-05-07T00:20Z — HEAD cb60e8a)
+## CI Status (2026-05-07T00:55Z — HEAD ac5fb47)
 
 | Check | Status |
 |-------|--------|
@@ -60,14 +83,18 @@ S5 (final sweep + docs): 2026-05-07T00:10Z → in progress
 | Dependabot alerts #239–#246 | ✅ All resolved |
 | CodeQL py/empty-except (55) | ✅ Fixed → 0 |
 | CodeQL py/catch-base-exception (1) | ✅ Fixed |
-| CodeQL py/print-during-import (1) | ✅ Fixed (3 tools/ files) |
-| CodeQL py/unexpected-raise (1/2) | ✅ Fixed; 2nd instance blocked by API rate limit |
-| CodeQL remaining 49 alerts (7 rules) | ⏳ API rate-limited — next session |
+| CodeQL py/print-during-import (3) | ✅ Fixed |
+| CodeQL py/unexpected-raise (1/2) | ✅ Fixed; 2nd instance → API required |
+| CodeQL py/mixed-tuple-returns (partial) | ✅ init_mlflow() split (S6) |
+| CodeQL py/call-to-non-callable (1) | ✅ callable() guard (S6) |
+| CodeQL remaining 47 alerts (6 rules) | ⏳ API rate-limited entire session → next |
+| Rate-limit hardening | ✅ status() + D-00 gate + RATE_LIMIT_AWARENESS.md |
 
 ## Statistics
 
-- **Sessions**: 5 (S1: Wave 9 deps → S2: Wave 10+CodeQL → S3: CI Rescue → S4: AST sweep → S5: docs)
-- **Files changed total**: 160+ across all sessions
+- **Sessions**: 6 (S1→S6)
+- **Files changed total**: 165+
 - **Dependabot alerts resolved**: 7 (#239–#246)
-- **CodeQL alerts fixed**: 58 (catch-base-exception×1, print-during-import×3, empty-except×55, unexpected-raise×1)  
-- **CodeQL alerts pending**: 49 across 7 rules — exact locations require API with `CODEX_MASTER_KEY`
+- **CodeQL alerts fixed**: 60 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial, call-to-non-callable×1)
+- **CodeQL alerts pending**: 47 across 6 rules — exact locations require API with `CODEX_MASTER_KEY`
+- **Rate-limit hardening**: 3 files changed + 1 new doc
