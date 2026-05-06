@@ -67,7 +67,7 @@ def test_roundtrip_plain(tmp_path: Path):
     assert isinstance(ids, list) and all(isinstance(i, int) for i in ids)
     # decode() is not guaranteed to be byte-identical for whitespace,
     # but round-trip should preserve semantic tokens.
-    assert back.replace("▁", " ").strip()  # decode produced text
+    assert back.replace("▁", " ").strip() == text.strip()  # decode should round-trip
     assert sp.decode(sp.encode(back, out_type=int))  # second round-trip ok
 
 
