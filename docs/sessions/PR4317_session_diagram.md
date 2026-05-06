@@ -841,3 +841,24 @@ flowchart TD
 | `reports/dependabot_summary.md` | New master summary |
 | `docs/roadmap/PR4317_whats_next.md` | Wave 9 appended |
 | `docs/sessions/PR4317_session_diagram.md` | Wave 9 appended |
+
+---
+
+## 9. Wave 9 — Final CI Monitoring (2026-05-06T22:20Z)
+
+```mermaid
+pie title CI Results on 7a989c6 (PR #4323 HEAD)
+    "success" : 5
+    "startup_failure (opt-in)" : 3
+    "skipped" : 2
+```
+
+**Merge verdict: 🟢 READY**
+
+| Check | Status |
+|-------|--------|
+| Required workflow gates | ✅ 5/5 green |
+| startup_failure runs | ⚠️ 3 — all opt-in, expected |
+| Blocking failures | ✅ 0 |
+| `.secrets.baseline` sync | ✅ fixed by `sync_tracked_files --fix` |
+| ruff `src/` | ✅ 0 violations |

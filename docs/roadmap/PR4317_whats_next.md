@@ -824,3 +824,21 @@ Run:
 - Monitor Semgrep CI run for `p/flask` + `p/sqlalchemy` findings
 - Evaluate replacing `diskcache` with a safer alternative when a patched release is available
 - PR #4323 merge: verify all CI gates green post-push
+
+---
+
+## Wave 9 — Final CI Status (2026-05-06T22:20Z)
+
+**CI on commit `7a989c6` (PR #4323 HEAD):**
+
+| Result | Count | Notes |
+|--------|------:|-------|
+| ✅ success | 5 | All required gates green |
+| ⏭ skipped | 2 | Opt-in workflows not enabled |
+| ❌ startup_failure | 3 | Expected opt-in workflows (rust_swarm, docker, etc.) |
+| ❌ failure | 0 | — |
+
+**Merge verdict: 🟢 READY** — No blocking failures. All required checks pass.
+
+### `.secrets.baseline` fix
+- `sync_tracked_files --fix` updated stale CODEX_MANIFEST entry in `.secrets.baseline` → committed in wrap-up.

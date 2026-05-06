@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T22:20Z — PR #4323 wrap-up: secrets baseline + CI green)
+- `.secrets.baseline`: re-synced via `sync_tracked_files --fix` (stale CODEX_MANIFEST hash entry corrected).
+- CI on commit `7a989c6`: 7 ✅ success, 0 ❌ failures — merge-ready.
+- Living docs finalized: Wave 9 CI status table appended to `docs/roadmap/PR4317_whats_next.md` and `docs/sessions/PR4317_session_diagram.md`.
+
 ### Fixed (session 2026-05-06T22:15Z — PR #4323 S313+1 Dependabot sweep + PR #4330 incorporation)
 - **Dependabot Alert #241**: `mako==1.3.10` → `1.3.12` in `requirements/lock.txt` (fixes GHSA-v92g-xgxw-vvmm / CVE-2026-41205 — path traversal via backslash URI in TemplateLookup on Windows).
 - **Dependabot Alert #239**: `gitpython==3.1.45` → `3.1.50` in `requirements/lock.txt` (fixes GHSA-7545-fcxq-7j24 — reference API path traversal allowing arbitrary file write/delete outside repository).
