@@ -28228,3 +28228,23 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## Session Entry — 2026-05-06T16:58Z (PR #4317 — S221 missed-trigger recovery)
+
+### Session Metadata
+- **Session ID:** S-PR4317-S221
+- **PR:** #4317 · branch `0D_base_`
+- **Triggered by:** S221 missed-trigger recovery comment `4390247155`
+- **Policy:** §0 CODEBASE_AGENCY_POLICY.md — all bot/maintainer comments reviewed before changes
+
+### Work Performed
+1. **Verified CI state** — `sync_tracked_files.py --check` → ✅ all consistent; `ruff check src/ tests/` → ✅ 0 violations.
+2. **Pattern 30 stale warning** was against old SHA (`fdcf2cde`/`57265ee858db`) due to SHA drift (Pattern 17/28); current HEAD (`762e0b1`) is clean.
+3. **This entry** triggers a fresh CI run on current HEAD to clear the stale Pattern 22/30 warning.
+
+### Outcome
+- All tracked files consistent ✅
+- ruff src/ tests/ clean ✅
+- Pattern 25: session entry written ✅
+
+---

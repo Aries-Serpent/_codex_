@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T16:58Z — PR #4317 S221 recovery)
+- CI: S221 missed-trigger recovery — verified `sync_tracked_files` and `ruff` clean; pushed fresh commit to resolve stale Pattern 22/30 warning caused by SHA drift (old CI ran on `fdcf2cde`, current HEAD is `762e0b1`).
+
 ### Fixed (session 2026-05-06T15:49Z — PR #4317)
 - CI: RP-004 tracked-file sync drift — ran `sync_tracked_files.py --fix`; `.secrets.baseline` CODEX_MANIFEST entry resynced (commit `1b889c6`).
 - New: `scripts/ci/workflow_queue_manager.py` — branch-agnostic, rate-limit-aware workflow queue scanner and cancellation tool. Sliding-window tracker (per-minute/per-hour caps), per-branch state isolation, token rotation, `--cancel-excess`/`--cancel-run`/`--cancel-workflow` modes, `--dry-run` support. No hardcoded branch/repo defaults (commit `504c2d4`).

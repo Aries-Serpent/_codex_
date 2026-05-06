@@ -1,24 +1,35 @@
-# Session Context — 2026-05-06T15:43:45Z
+# Session Context — 2026-05-06T16:55:19Z
 **Branch:** `0D_base_`  **PR:** #4317  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4467` (✅)  
-- GraphQL remaining: `4970` (✅)  
+- REST remaining: `4876` (✅)  
+- GraphQL remaining: `4989` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
 ## 📋 PR #4317 — 0 d base 
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
+### ❌ 11 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `generate` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Post Execution Plan` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
 
 ## 📝 Recent Commits
+- `762e0b12` fix(ci): Pattern-25 accountability entry + CHANGELOG for PR #4317 session — copilot-swe-agent[bot] (2026-05-06)
 - `504c2d4c` feat(ci): branch-agnostic rate-limit-aware workflow queue manager with cancellat — copilot-swe-agent[bot] (2026-05-06)
 - `1b889c61` fix(ci): RP-004 sync_tracked_files — resync .secrets.baseline — copilot-swe-agent[bot] (2026-05-06)
 - `f95895ed` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
@@ -26,7 +37,6 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `ce35e03d` chore: Generate follow-up prompt for PR #4317 — github-actions[bot] (2026-05-06)
 - `afc4d105` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-06)
 - `147992d8` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-06)
-- `57265ee8` Merge pull request #4312 from Aries-Serpent/copilot/fix-default-value-comment — Statix (2026-05-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
