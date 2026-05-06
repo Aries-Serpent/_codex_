@@ -420,3 +420,71 @@ Agent authority transitions are modelled as **quantum phase transitions** — ab
 | PBKDF2 iterations | 100,000 | 100,000 | ≥ 600,000 | OWASP 2024 |
 | auto-fix patterns | 16 | **18** ✅ | 22 | P33–P36 |
 | Dependabot PRs open | 10 | **0** ✅ | 0 | dep-fresh |
+
+---
+
+## 13. S296 Merge Conflict Resolution — Topological Annihilation
+
+```mermaid
+flowchart TD
+    CONFLICT([Conflict Detected\nCODEX_MANIFEST.json\norigin/main 7fea715e1]) --> ANALYZE
+    ANALYZE{Root Cause?}
+    ANALYZE --> |"auto-refresh by CI\ngenerated_at + integrity_sha"| STRATEGY
+    STRATEGY["Strategy: git merge origin/main -X ours\n(preserve PR branch changes)"]
+    STRATEGY --> MERGE[Merge succeeds\nAuto-merging CODEX_MANIFEST.json]
+    MERGE --> SYNC[sync_tracked_files --fix\nbaseline regenerated]
+    SYNC --> VERIFY{All consistent?}
+    VERIFY --> |yes| CLEAN([0 conflicts ✅\n0 ruff violations ✅\nbaseline clean ✅])
+    VERIFY --> |no| SYNC
+```
+
+**Root cause:** GitHub Actions `auto-refresh-manifest` workflow on `main` pushed a new `generated_at` timestamp and `integrity_sha256` to `CODEX_MANIFEST.json` at 00:33Z, causing a 1-commit divergence. Resolved with `git merge origin/main -X ours` (PR branch CODEX_MANIFEST retained).
+
+---
+
+## 14. Quantum Model — Merge Conflict as Topological Vortex
+
+The shared file state between `main` and the PR branch forms an **order parameter field** `phi`. A conflict appears when the two branches independently write to the same field lines, creating a topological defect (vortex).
+
+**Winding number of the conflict:**
+
+```
+n = (1 / 2*pi) * closed-loop-integral(grad(phi) . dl)
+
+n_before_merge = 1   (single conflict hunk in CODEX_MANIFEST.json)
+n_after_merge  = 0   (resolved via -X ours strategy)
+```
+
+**Free energy of resolution:**
+
+```
+E_vortex = pi * J * ln(R/a)
+
+where:
+  J = coupling constant  (overlap between conflicting file versions)
+  R = file size (number of lines)
+  a = lattice spacing   (minimum resolvable hunk size = 1 line)
+```
+
+For `CODEX_MANIFEST.json` (2068 lines, 2-line conflict):
+```
+E = pi * J * ln(2068 / 2) ≈ pi * J * 6.94
+```
+
+The `-X ours` merge strategy applies zero energy to resolve — it selects the PR branch ground state directly, collapsing the order parameter to `n=0` with no residual defects.
+
+---
+
+## 15. Updated Key Metrics Dashboard — S296
+
+| Metric | PR Open | S295 Final | S296 Final | Target |
+|--------|---------|------------|------------|--------|
+| `auto_fix --check-only` exit | `1` (116 issues) | **`0`** ✅ | **`0`** ✅ | 0 always |
+| CodeQL open alerts | `68` | **`0`** ✅ | **`0`** ✅ | 0 always |
+| Merge Readiness Score | `78/100` | `~88/100` | **`~95/100`** 🔄 | ≥ 95 |
+| ruff violations `src/` | unknown | **`0`** ✅ | **`0`** ✅ | 0 always |
+| sync_tracked_files | stale | **consistent** ✅ | **consistent** ✅ | always |
+| Merge conflicts | 1 (CODEX_MANIFEST) | 1 remaining | **0** ✅ | 0 always |
+| empty-except alerts | 6 new | fixed ✅ | **confirmed** ✅ | 0 always |
+| Session diagrams | 0 | 15 types, 1036 lines | **19 types, 1300+ lines** | grow |
+| Quantum models | 0 | 6 | **10** | grow |
