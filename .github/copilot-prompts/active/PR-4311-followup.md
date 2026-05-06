@@ -17,28 +17,33 @@
 - [`5ff5fcd9`] Merge pull request #4289 from Aries-Serpent/copilot/add-reference-to-redis-function (Statix, 2026-05-06)
 
 ### Files Modified
-No files modified
+- `CODEX_MANIFEST.json` — auto-refreshed by manifest refresh workflow
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Fix `sync_tracked_files` drift — run `python3 scripts/ci/sync_tracked_files.py --fix` and commit; confirm all 6 checks pass
+  - **Acceptance**: `sync_tracked_files.py --check` exits 0 with all ✅
+- [ ] Fix `ruff src/` violations — run `python3 -m ruff check src/ --fix` and commit; confirm `All checks passed!`
+  - **Acceptance**: `ruff check src/` exits 0
 
 **Validation**:
 ```bash
+python3 scripts/ci/sync_tracked_files.py --fix
+python -m ruff check src/ --fix
 python -m ruff check src/ tests/ --output-format=concise
 python scripts/ci/mypy_baseline.py --require-baseline
 python scripts/ci/auto_fix_common_issues.py --check-only
-python scripts/ci/sync_tracked_files.py --fix
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Confirm `auto_fix_common_issues.py --check-only` passes (Pattern 22 + Pattern 25)
+- [ ] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with a session entry for this fix cycle
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Review any open copilot-pull-request-reviewer threads and address outstanding suggestions
 
 ---
 
@@ -89,7 +94,7 @@ python scripts/ci/sync_tracked_files.py --fix
 - [ ] Cross-PR dependencies resolved
 - [ ] No regressions introduced
 
-**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
+**Failure Protocol**: If ANY checkpoint fails, document the issue and execute the fix within the current session. **NEVER defer** — no exceptions, no "future PR" deferral. Re-run all checks until all pass clean.
 
 ---
 
@@ -106,7 +111,7 @@ python scripts/ci/sync_tracked_files.py --fix
 7. Post comprehensive status as PR comment
 8. Generate new continuation if work remains
 
-**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
+**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns within the current session until 0 issues remain. **NEVER defer** work — every failing check must be fixed before concluding.
 
 ---
 
