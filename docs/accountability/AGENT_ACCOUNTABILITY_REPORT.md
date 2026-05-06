@@ -28192,3 +28192,39 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session Entry — 2026-05-06T15:49Z (PR #4317)
+
+### Session Metadata
+- **Session ID:** S-PR4317-WQM
+- **PR:** #4317 · branch `0D_base_`
+- **Commits:** `1b889c6` (RP-004 sync fix), `504c2d4` (workflow queue manager)
+- **Policy:** §0 CODEBASE_AGENCY_POLICY.md — all bot/maintainer comments reviewed before changes
+
+### Work Performed
+1. **RP-004 fix** — ran `sync_tracked_files.py --fix`; `.secrets.baseline` CODEX_MANIFEST entry resynced (commit `1b889c6`).
+2. **`scripts/ci/workflow_queue_manager.py`** — new 1 270-line branch-agnostic, rate-limit-aware workflow queue manager (commit `504c2d4`).
+   - Sliding-window rate tracker (per-minute + per-hour mutation caps, persisted per-branch JSON state).
+   - Token rotation with pre-call `/rate_limit` check.
+   - Cancellation modes: `--cancel-excess`, `--cancel-run`, `--cancel-workflow`, `--cancel-in-progress`.
+   - `--scan` read-only report; `--dry-run` safe inspection mode.
+   - No hardcoded repo/branch defaults; resolves from env vars or git remote.
+3. **Pattern 25 fix** — this session entry (Pattern 25 Last-Commit Accountability).
+4. **CHANGELOG.md** — added `### Fixed (session 2026-05-06T15:49Z — PR #4317)` entry.
+
+### CI Checks Addressed
+- RP-004 Tracked-file sync drift ✅
+- ruff violations in src/ ✅ (0 violations)
+- Pattern 25 Last-Commit Accountability ✅
+- Comment Review Gate ✅ (all `<comment_new>` items replied to)
+
+### Lessons Learned
+- CI rate-limit pile-ups traced to unbounded queued workflow runs on push events; `workflow_queue_manager.py --cancel-excess` is the recommended pre-push mitigation.
+- Branch-agnostic design (env → git remote fallback, per-branch state files) is required for the tool to work across feature branches, `0D_base_`, and `main` without configuration changes.
+
+### Impact Score
+- Files created/fixed: 2 (`scripts/ci/workflow_queue_manager.py`, `.secrets.baseline`)
+- CI gates unblocked: RP-004, Pattern 25
+- Deferral Language Gate: 0 violations
+
+---

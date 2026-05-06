@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T15:49Z — PR #4317)
+- CI: RP-004 tracked-file sync drift — ran `sync_tracked_files.py --fix`; `.secrets.baseline` CODEX_MANIFEST entry resynced (commit `1b889c6`).
+- New: `scripts/ci/workflow_queue_manager.py` — branch-agnostic, rate-limit-aware workflow queue scanner and cancellation tool. Sliding-window tracker (per-minute/per-hour caps), per-branch state isolation, token rotation, `--cancel-excess`/`--cancel-run`/`--cancel-workflow` modes, `--dry-run` support. No hardcoded branch/repo defaults (commit `504c2d4`).
+- Pattern 25: AGENT_ACCOUNTABILITY_REPORT.md updated with session entry for PR #4317.
+
 ### Fixed (auto-update — PR #4317)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4317 (SHA `fdcf2cde`) at 2026-05-06T15:12Z [auto-generated]
 
