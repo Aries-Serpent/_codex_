@@ -133,32 +133,28 @@ jobs:
               TARGET_REF="${HEAD_REF}"
             fi
 
-            # ── Open-PR conflict guard ────────────────────────────────────────────
-            # Skip push to main/0D_base_ if any open PR targeting that branch
-            # touches the same files this refresh commits (CODEX_MANIFEST.json,
-            # .secrets.baseline, AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md).
-            # This prevents the recurring merge-conflict pattern on long-lived PRs.
-            PR_CONFLICT=false
+            # ── Active-PR guard (inline — avoids composite action checkout overhead) ─
+            # Skip push to main/0D_base_ if ANY open or draft PR exists targeting
+            # that branch.  The old file-overlap approach was insufficient: it missed
+            # PRs that hadn't yet touched manifest files but would conflict once the
+            # auto-refresh pushed a new generated_at + integrity_sha.
+            PR_SKIP=false
             if [ "${TARGET_REF}" = "main" ] || [ "${TARGET_REF}" = "0D_base_" ]; then
-              CHANGED_FILES=$(git diff HEAD~1 --name-only 2>/dev/null || echo "CODEX_MANIFEST.json .secrets.baseline")
-              OPEN_PRS=$(gh api "repos/${{ github.repository }}/pulls?base=${TARGET_REF}&state=open&per_page=100" \
-                --jq '.[].number' 2>/dev/null || echo "")
-              for PR_NUM in ${OPEN_PRS}; do
-                PR_FILES=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUM}/files?per_page=100" \
-                  --jq '.[].filename' 2>/dev/null || echo "")
-                while IFS= read -r f; do
-                  if echo "${PR_FILES}" | grep -qxF "${f}"; then
-                    PR_CONFLICT=true
-                    echo "⚠️  Open PR #${PR_NUM} touches ${f} — deferring push to ${TARGET_REF} to prevent merge conflict."
-                    break 2
-                  fi
-                done <<< "${CHANGED_FILES}"
-              done
+              PR_COUNT=$(gh api \
+                "repos/${{ github.repository }}/pulls?base=${TARGET_REF}&state=open&per_page=1" \
+                --jq 'length' 2>/dev/null || echo "0")
+              if [ "${PR_COUNT}" -gt "0" ]; then
+                PR_SKIP=true
+                echo "⛔ ${PR_COUNT} open/draft PR(s) targeting ${TARGET_REF} — deferring push." \
+                  | tee -a "$GITHUB_STEP_SUMMARY"
+                echo "The manifest will auto-refresh once all active PRs are merged." \
+                  >> "$GITHUB_STEP_SUMMARY"
+              fi
             fi
-            # ── end guard ────────────────────────────────────────────────────────
+            # ── end active-PR guard ───────────────────────────────────────────────
 
-            if [ "${PR_CONFLICT}" = "true" ]; then
-              echo "🚫 Push skipped — open PR conflict detected. The manifest will be refreshed when the conflicting PR merges."
+            if [ "${PR_SKIP}" = "true" ]; then
+              echo "🚫 Push skipped — active PR(s) detected on ${TARGET_REF}."
             else
               git pull --rebase --autostash origin "${TARGET_REF}" 2>/dev/null || true
               git push origin "HEAD:${TARGET_REF}"

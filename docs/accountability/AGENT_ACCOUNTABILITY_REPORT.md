@@ -27706,3 +27706,20 @@ All github-code-quality findings from review-4232301937 and review-4232378430 ar
 - CodeQL alerts 13377–13382 (empty-except): explanatory comments on all bare `pass` handlers ✅
 - CodeQL alerts 13385–13391 (rag_api path-injection): definitively fixed via regex taint-break ✅
 - Merge conflicts: 0 (git merge-tree confirmed) ✅
+
+## Session Entry — 2026-05-06T02:30Z — PR #4289 active-PR guard implementation
+
+### Actions Taken
+- **Root cause identified**: `codex-manifest-refresh.yml` scheduled run at 00:33Z pushed to `main` while PR #4289 was active, creating a 1-commit divergence (`generated_at` + `integrity_sha256` in CODEX_MANIFEST.json). This is the direct cause of the recurring "merge conflicts" reported in comment #4384469843.
+- **Created** `.github/actions/active-pr-guard/action.yml` — reusable composite action that checks for ANY open or draft PR targeting a branch (not just file-overlap) and outputs `skip=true` when found.
+- **Fixed** `codex-manifest-refresh.yml` — replaced the fragile file-overlap guard (lines 136–157) with the simpler "any open PR → skip" check. O(1) API call instead of O(PRs × files).
+- **Fixed** `codebase-health-sweep.yml` — replaced both main and 0D_base_ file-overlap guards with the same simplified check.
+- **Fixed** `embedding-index-rebuild.yml` — added active-PR guard before the push step (no guard existed before).
+- **Fixed** `model-drift-retrain.yml` — added active-PR guard before the push step (no guard existed before).
+- **Fixed** `forward-sync-autogen.yml` — added active-PR guard before the push step (no guard existed before).
+- **Merge conflict resolved and pushed**: `git merge origin/main -X ours` committed and pushed (ebcef131) — GitHub PR merge-conflict indicator cleared.
+
+### CI Health
+- `ruff check src/` → 0 violations ✅
+- All 6 modified YAML files → `yaml.safe_load` valid ✅
+- `sync_tracked_files.py --check` → all consistent ✅

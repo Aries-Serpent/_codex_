@@ -106,8 +106,29 @@ jobs:
           done
           echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
 
-      - name: "💾 Commit and push forwarded files to chain tip"
+      - name: "🛡️ Active-PR guard — skip push when any open/draft PR targets the chain tip"
+        id: pr_guard
         if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed == '1'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          REPO: ${{ github.repository }}
+          TARGET: ${{ steps.resolve-target.outputs.branch }}
+        run: |
+          if [ "$TARGET" = "main" ] || [ "$TARGET" = "0D_base_" ]; then
+            PR_COUNT=$(gh api "repos/${REPO}/pulls?base=${TARGET}&state=open&per_page=1" \
+              --jq 'length' 2>/dev/null || echo "0")
+            if [ "${PR_COUNT}" -gt "0" ]; then
+              echo "pr_skip=true" >> "$GITHUB_OUTPUT"
+              echo "⛔ ${PR_COUNT} open/draft PR(s) targeting \`${TARGET}\` — forward-sync push deferred." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "pr_skip=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "pr_skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "💾 Commit and push forwarded files to chain tip"
+        if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed == '1' && steps.pr_guard.outputs.pr_skip != 'true'
         env:
           TARGET: ${{ steps.resolve-target.outputs.branch }}
         run: |
