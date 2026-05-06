@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T23:15Z — PR #4323 Session 2 continuation: CodeQL unexpected-raise-in-special-method)
+- **CodeQL py/unexpected-raise-in-special-method** (1/2 alerts): `src/codex_ml/__init__.py:191` — `__getattr__()` was raising `ImportError` when an optional dependency is missing; changed to `AttributeError` per Python special-method convention (PEP 562: module `__getattr__` should raise `AttributeError`). The chain `from exc` preserves the import failure context.
+- Living docs updated: `docs/roadmap/PR4323_whats_next.md`, `docs/sessions/PR4323_session_diagram.md` with CI status and pending CodeQL items.
+- `AGENT_ACCOUNTABILITY_REPORT.md` updated with Session 2 continuation entry.
+
 ### Fixed (session 2026-05-06T23:00Z — PR #4323 Session 2: CodeQL Python quality sweep)
 - **CodeQL py/catch-base-exception** (1 alert): `src/codex_ml/codex_structured_logging.py:406` — changed `BaseException` to `(Exception, SystemExit, KeyboardInterrupt)` to satisfy CodeQL while preserving CLI exit-code handling semantics.
 - **CodeQL py/print-during-import** (1–3 alerts): `tools/mkdocs_repair.py`, `tools/answer_codex_questions.py`, `tools/pytest_repair.py` — replaced module-level `print()` calls with `sys.stdout.write()` to eliminate CodeQL `py/print-during-import` findings.

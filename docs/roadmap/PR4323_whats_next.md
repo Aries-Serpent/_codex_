@@ -1,7 +1,7 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-06T23:00Z — Session 2 (CodeQL Wave)**
-> **Status: 🟡 IN PROGRESS — CodeQL batch fixes applied; awaiting CI scan confirmation**
+> **Last updated: 2026-05-06T23:15Z — Session 2 (CodeQL Wave) — CI running on `c4b37f0`**
+> **Status: 🟢 PARTIAL COMPLETE — 58 CodeQL alerts fixed; 49 pending API access**
 
 ## Completed This PR (Wave 9 + Wave 10 + CodeQL Pass)
 

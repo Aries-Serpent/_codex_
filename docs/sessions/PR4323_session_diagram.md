@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-06T23:00Z**
-> **Sessions: S1 (Wave 9 deps) → S2 (Wave 10 + CodeQL)**
+> **Last updated: 2026-05-06T23:15Z**
+> **Sessions: S1 (Wave 9 deps) → S2 (Wave 10 + CodeQL) — CI running on c4b37f0**
 
 ## Session Flow
 

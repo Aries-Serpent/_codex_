@@ -28632,3 +28632,33 @@ and the CI gate requirement.
 - CodeQL alerts pending: ~50 (7 categories, need API for exact locations)
 
 ---
+
+## SESSION SUMMARY — 2026-05-06T23:15Z SESSION 2b (PR #4323 — CodeQL continuation)
+
+### Session Metadata
+- **PR**: #4323 (`copilot/fix-timeline-structure`)
+- **Session Start**: 2026-05-06T23:00Z
+- **Session End**: 2026-05-06T23:15Z
+
+### Work Completed
+
+#### CodeQL Additional Fix
+- **py/unexpected-raise-in-special-method** (1/2): `src/codex_ml/__init__.py:191` — `__getattr__()` raised `ImportError` (non-standard). Fixed to `AttributeError` per PEP 562 convention. Chain `from exc` preserved.
+
+#### Investigation (no fix possible without CodeQL API)
+- Attempted to locate `py/mixed-returns` (26), `py/call/wrong-named-argument` (15), `py/call-to-non-callable` (1), `py/call/wrong-arguments` (1), `py/missing-equals` (1), `py/unexpected-raise-in-special-method` (2nd), `py/mixed-tuple-returns` (4) via local AST analysis. Local search finds 776 candidates for `mixed-returns` vs CodeQL's 26 — cannot narrow without `security_events` API access. Next session: use `GH_TOKEN=$CODEX_MASTER_KEY gh api ...code-scanning/alerts`.
+
+#### CI Monitoring (2026-05-06T23:15Z)
+- Commit `c4b37f00` workflows: Workflow Execution Gate ✅, Cost Check ✅, Auto-Approve ✅. Others in progress (Agent Token Delegation queued, Validation Pipeline, RAG Tests, etc.). No failures detected.
+
+#### Living Docs
+- `docs/roadmap/PR4323_whats_next.md`: updated with Session 2 status table and CodeQL API workaround
+- `docs/sessions/PR4323_session_diagram.md`: updated CI status table
+- `CHANGELOG.md`: Session 2b entry added
+
+### Impact Score
+- Files changed: 1 (`src/codex_ml/__init__.py`)
+- CodeQL alerts addressed this sub-session: 1 (unexpected-raise)
+- CodeQL alerts pending: 49
+
+---
