@@ -1,24 +1,25 @@
-# Session Context — 2026-05-06T19:49:53Z
-**Branch:** `0D_base_`  **PR:** #4317  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-06T20:10:21Z
+**Branch:** `0D_base_`  **PR:** #4322  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4500` (✅)  
-- GraphQL remaining: `4968` (✅)  
+- REST remaining: `4141` (✅)  
+- GraphQL remaining: `4937` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
-## 📋 PR #4317 — 0 d base
-State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
+## 📋 PR #4322 — Bump the uv group across 2 directories with 1 update
+State: `open`  Draft: `False`  Branch: `dependabot/uv/uv-b8ada8e151` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **pip in /requirements for GitPython, mistune - Update #1351940862** — `failure` on `main` (2026-05-06)
+- **E→D Transition Readiness Gate** — `failure` on `dependabot/uv/uv-b8ada8e151` (2026-05-06)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-06)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
+- **pip in /requirements for GitPython, mistune - Update #1351936976** — `failure` on `main` (2026-05-06)
 
 ## 📝 Recent Commits
+- `6c2a160a` fix(ci): strip PR title trailing whitespace in session_context + P25 accountabil — copilot-swe-agent[bot] (2026-05-06)
 - `aa8654b0` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
 - `97302583` fix(ci): P31 stale type-ignore removal + P25 accountability update (S221 rescue  — copilot-swe-agent[bot] (2026-05-06)
 - `dfba71a8` hotfix: mistune uv.lock alignment + code quality fixes (implicit concat, empty e — copilot-swe-agent[bot] (2026-05-06)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `5dcbf610` fix: mistune 3.2.0→3.2.1 in uv.lock, missing comma in test list, empty except→de — copilot-swe-agent[bot] (2026-05-06)
 - `988a9f6c` chore: begin hotfix - plan for mistune alignment + code quality fixes — copilot-swe-agent[bot] (2026-05-06)
 - `a732ed27` fix(security): remove over-strict is_absolute() guard from _ensure_subpath — fix — copilot-swe-agent[bot] (2026-05-06)
-- `ead14114` docs: add PR #4317 roadmap + session diagram; verify Dependabot PRs consolidated — copilot-swe-agent[bot] (2026-05-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
