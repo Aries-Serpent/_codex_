@@ -33,7 +33,7 @@
 ```bash
 python3 scripts/ci/sync_tracked_files.py --fix
 python -m ruff check src/ --fix
-python -m ruff check src/ tests/ --output-format=concise
+python -m ruff check src/ tests/ scripts/ --output-format=concise
 python scripts/ci/mypy_baseline.py --require-baseline
 python scripts/ci/auto_fix_common_issues.py --check-only
 ```
