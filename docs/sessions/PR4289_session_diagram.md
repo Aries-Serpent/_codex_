@@ -1229,3 +1229,102 @@ xychart-beta
     line [68, 50, 35, 20, 10, 6, 0]
     bar [68, 50, 35, 20, 10, 6, 0]
 ```
+
+---
+
+## 21. Wave 9 — Active-PR Guard Implementation (S296)
+
+```mermaid
+flowchart TD
+    ROOT_CAUSE([Root Cause Identified\ncodex-manifest-refresh.yml\nscheduled run @ 00:33Z\npushed to main while PR active])
+
+    ROOT_CAUSE --> IMPACT["Impact\nCODEX_MANIFEST.json generated_at\n+ integrity_sha256 diverge\nGitHub shows merge conflict on PR"]
+
+    IMPACT --> FIX
+
+    subgraph FIX["Fix: active-pr-guard"]
+        F1["Create composite action\n.github/actions/active-pr-guard/action.yml\nper_page=1 existence check O(1)\nskip=true if ANY open/draft PR exists"]
+        F2["codex-manifest-refresh.yml\nreplace file-overlap guard\nwith any-PR check"]
+        F3["codebase-health-sweep.yml\nreplace BOTH main + 0D_base_\nfile-overlap guards"]
+        F4["embedding-index-rebuild.yml\nadd guard before push\n(no guard existed)"]
+        F5["model-drift-retrain.yml\nadd guard before push\n(no guard existed)"]
+        F6["forward-sync-autogen.yml\nadd guard before push\n(no guard existed)"]
+    end
+
+    FIX --> BEFORE
+    FIX --> AFTER
+
+    BEFORE["Before\nFile-overlap O(PRs × files) API calls\nmissed PRs not yet touching these files\n→ conflict still happens"]
+
+    AFTER["After\nSingle O(1) API call\nANY open/draft PR → skip push\n→ conflict impossible"]
+```
+
+---
+
+## 22. Active-PR Guard — Decision Flow
+
+```mermaid
+sequenceDiagram
+    participant Scheduler as ⏱ Scheduler (cron)
+    participant Workflow as 🔄 Auto-Push Workflow
+    participant GH_API as 🐙 GitHub API
+    participant Main as 🌿 main branch
+    participant PR as 📋 Active PR
+
+    Scheduler->>Workflow: trigger (schedule/workflow_run)
+    Workflow->>Workflow: regenerate files (manifest/sweep/index)
+    Workflow->>GH_API: GET /pulls?base=main&state=open&per_page=1
+    GH_API-->>Workflow: count=1 (PR #4289 is open)
+    Workflow->>Workflow: pr_skip=true ⛔
+    Workflow-->>Main: push SKIPPED
+    note over PR,Main: No divergence created ✅
+
+    note over Scheduler,PR: After PR merges:
+    Scheduler->>Workflow: next scheduled trigger
+    Workflow->>GH_API: GET /pulls?base=main&state=open&per_page=1
+    GH_API-->>Workflow: count=0 (no active PRs)
+    Workflow->>Workflow: pr_skip=false ✅
+    Workflow->>Main: git push origin HEAD:main ✅
+```
+
+---
+
+## 23. Quantum Model — Active-PR Guard as Pauli Exclusion Principle
+
+The auto-push workflows and active PRs occupy the same "quantum state" (the shared branch tip). The **active-PR guard** enforces a **Pauli exclusion principle**: no two processes may occupy the same branch-write state simultaneously.
+
+**Fermionic anti-commutation relation:**
+
+```
+{a†_PR, a_AutoPush} = 0
+
+where:
+  a†_PR      = creation operator for active-PR write state
+  a_AutoPush = annihilation operator for auto-push write state
+```
+
+This means if the PR is "occupying" the branch (a†_PR|0⟩ ≠ 0), the auto-push operator produces zero:
+
+```
+a_AutoPush * (a†_PR|branch⟩) = 0   [exclusion enforced]
+```
+
+**Variable map:**
+
+| Physics Symbol | CI Concept | S296 Value |
+|---------------|-----------|------------|
+| `a†_PR` | PR write-state creation | PR #4289 open = occupied |
+| `a_AutoPush` | Auto-push annihilation | Blocked when PR occupies |
+| `{A, B}` | Anti-commutator = 0 | Guard enforces mutual exclusion |
+| `|0⟩` | Vacuum state | No active PRs — push safe |
+| `|branch⟩` | Branch state | main / 0D_base_ tip |
+| Pauli exclusion | Two writes cannot coexist | Only one writer at a time |
+
+**Occupation number operator:**
+
+```
+N_PR = a†_PR * a_PR
+
+if N_PR = 1 (PR open)  → auto-push blocked
+if N_PR = 0 (no PRs)   → auto-push allowed
+```

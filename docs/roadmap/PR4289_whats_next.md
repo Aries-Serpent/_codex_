@@ -488,3 +488,26 @@ The `-X ours` merge strategy applies zero energy to resolve — it selects the P
 | empty-except alerts | 6 new | fixed ✅ | **confirmed** ✅ | 0 always |
 | Session diagrams | 0 | 15 types, 1036 lines | **19 types, 1300+ lines** | grow |
 | Quantum models | 0 | 6 | **10** | grow |
+
+---
+
+## 16. Active-PR Guard — Implementation Complete ✅
+
+**Problem solved:** All scheduled/triggered auto-push workflows now check for active PRs before pushing to `main` or `0D_base_`. This permanently eliminates the recurring merge-conflict pattern where CI auto-commits created divergence while a PR was in progress.
+
+**Workflows updated (6):**
+
+| Workflow | Guard Status Before | Guard Status After |
+|----------|--------------------|--------------------|
+| `codex-manifest-refresh.yml` | ⚠️ File-overlap only (missed non-touching PRs) | ✅ Any open/draft PR → skip |
+| `codebase-health-sweep.yml` (main) | ⚠️ File-overlap only | ✅ Any open/draft PR → skip |
+| `codebase-health-sweep.yml` (0D_base_) | ⚠️ File-overlap only | ✅ Any open/draft PR → skip |
+| `embedding-index-rebuild.yml` | ❌ No guard | ✅ Any open/draft PR → skip |
+| `model-drift-retrain.yml` | ❌ No guard | ✅ Any open/draft PR → skip |
+| `forward-sync-autogen.yml` | ❌ No guard | ✅ Any open/draft PR → skip |
+
+**Composite action:** `.github/actions/active-pr-guard/action.yml`
+- Single O(1) API call: `GET /pulls?base={branch}&state=open&per_page=1`
+- `per_page=1` — pagination-safe (no miss on repos with 100+ PRs)
+- Outputs: `skip`, `pr-count`, `pr-numbers`
+- Posts step summary with PR table when skipping
