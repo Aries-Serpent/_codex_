@@ -62,14 +62,29 @@ runs:
         #   active PR also modifies those files, the auto-push produces a 1-commit
         #   divergence that GitHub displays as "merge conflict" on the PR, requiring
         #   manual resolution and burning agent session time.
+        #
+        # Implementation note: we use per_page=1 because we only need to know
+        # whether ANY PR exists — we do not need to enumerate all of them.
+        # This avoids the pagination problem (per_page=100 misses PR #101+) and
+        # makes the check O(1) regardless of repository size.
         # ─────────────────────────────────────────────────────────────────────────
 
-        PR_JSON=$(gh api "repos/${REPO}/pulls?base=${BASE_BRANCH}&state=open&per_page=100" \
-          --jq '[.[] | {number: .number, draft: .draft, title: .title}]' \
-          2>/dev/null || echo "[]")
+        # First: fast existence check (per_page=1 — we only need "any or none")
+        PR_EXISTS=$(gh api "repos/${REPO}/pulls?base=${BASE_BRANCH}&state=open&per_page=1" \
+          --jq 'length' 2>/dev/null || echo "0")
 
-        PR_COUNT=$(echo "$PR_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d))" 2>/dev/null || echo "0")
-        PR_NUMBERS=$(echo "$PR_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(' '.join(str(p['number']) for p in d))" 2>/dev/null || echo "")
+        if [ "${PR_EXISTS}" -gt "0" ]; then
+          # Second: fetch up to 10 PR numbers/titles for the summary (informational only)
+          PR_JSON=$(gh api "repos/${REPO}/pulls?base=${BASE_BRANCH}&state=open&per_page=10" \
+            --jq '[.[] | {number: .number, draft: .draft, title: .title}]' \
+            2>/dev/null || echo "[]")
+          PR_COUNT=$(echo "$PR_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d))" 2>/dev/null || echo "1")
+          PR_NUMBERS=$(echo "$PR_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(' '.join(str(p['number']) for p in d))" 2>/dev/null || echo "")
+        else
+          PR_COUNT=0
+          PR_NUMBERS=""
+          PR_JSON="[]"
+        fi
 
         echo "pr_count=${PR_COUNT}" >> "$GITHUB_OUTPUT"
         echo "pr_numbers=${PR_NUMBERS}" >> "$GITHUB_OUTPUT"
@@ -78,7 +93,7 @@ runs:
           echo "skip=true" >> "$GITHUB_OUTPUT"
           echo "## ⛔ Active-PR Guard: Push Deferred" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**${PR_COUNT} open/draft PR(s)** targeting \`${BASE_BRANCH}\` detected." >> "$GITHUB_STEP_SUMMARY"
+          echo "**${PR_COUNT}+ open/draft PR(s)** targeting \`${BASE_BRANCH}\` detected." >> "$GITHUB_STEP_SUMMARY"
           echo "Auto-push skipped to prevent merge-conflict divergence." >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| PR | Draft | Title |" >> "$GITHUB_STEP_SUMMARY"
