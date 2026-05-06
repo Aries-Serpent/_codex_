@@ -1,10 +1,10 @@
-# Session Context — 2026-05-06T07:11:55Z
+# Session Context — 2026-05-06T07:34:32Z
 **Branch:** `copilot/fix-default-value-comment`  **PR:** #4312  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4590` (✅)  
-- GraphQL remaining: `4971` (✅)  
+- REST remaining: `4494` (✅)  
+- GraphQL remaining: `4959` (✅)  
 - gh CLI: ✅  
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/fix-default-value-comment` → `0D_base_`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **PR Auto-Fix Check** — `failure` on `copilot/fix-default-value-comment` (2026-05-06)
+- **Auto-Fix Common CI Issues** — `failure` on `copilot/fix-default-value-comment` (2026-05-06)
+- **Validation Pipeline** — `failure` on `copilot/fix-default-value-comment` (2026-05-06)
+- **Pre-Merge Validation** — `failure` on `copilot/fix-default-value-comment` (2026-05-06)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-06)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-06)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-06)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-06)
 
 ## 📝 Recent Commits
+- `25cc99f4` chore: auto-merge 1 automated commit(s) from 0D_base_ [skip ci] — github-actions[bot] (2026-05-06)
+- `75d474fa` fix(ci): RP-007 resync agent_context baseline entry in .secrets.baseline — copilot-swe-agent[bot] (2026-05-06)
 - `823f2df9` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-06)
 - `3be83a62` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
 - `8eeeb231` fix(tests): clarify comments, remove root privilege requirement, fix assertion l — copilot-swe-agent[bot] (2026-05-06)
+- `83e0a42a` chore(divergence-fix): forward auto-gen files from main → 0D_base_ [skip ci] — github-actions[bot] (2026-05-06)
 - `0d8268e5` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-06)
 - `c0d975c1` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-06)
-- `a0679eae` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
-- `6e34b2f5` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-06)
-- `88f01a9e` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
