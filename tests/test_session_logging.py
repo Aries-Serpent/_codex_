@@ -274,11 +274,6 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
 
 def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
     """Test read-only directory handling"""
-    # ADDED: Check if we can change UID (root required)
-    import os
-    if os.geteuid() != 0:
-        pytest.skip("Test requires root privileges to demote to nobody user")
-
     session_id = f"RO-{uuid.uuid4()}"
     sessions_dir = tmp_path / f"codex_ro_{uuid.uuid4()}"  # CHANGED: Use tmp_path
     sessions_dir.mkdir(parents=True, exist_ok=True)
@@ -294,27 +289,26 @@ def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
     if not sh.exists():
         pytest.skip("session_logging.sh not found")
 
-    cmd = f"source '{sh}'; set +e; codex_session_start"
+    cmd = "; ".join([
+        f"source '{sh}'",
+        "set +e",
+        "codex_session_start",
+        'test -f "$CODEX_SESSION_LOG_DIR/$CODEX_SESSION_ID.meta"',
+        ' || { echo "permission denied: session file not created" >&2; exit 1; }',
+    ])
 
     try:
-        import pwd
-        nobody = pwd.getpwnam("nobody")
-
-        def demote():
-            os.setgid(nobody.pw_gid)
-            os.setuid(nobody.pw_uid)
-
         with subprocess.Popen(
             ["bash", "--noprofile", "--norc", "-c", cmd],
             cwd=str(tmp_path),  # CHANGED: Use tmp_path
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            preexec_fn=demote,
         ) as proc:
             _out, _err = proc.communicate()
-        # UPDATED: More flexible error matching
-        assert proc.returncode != 0 or "failed" in (_err or "").lower() or "permission" in (_err or "").lower()
+        err_lower = (_err or "").lower()
+        has_error_message = "failed" in err_lower or "permission" in err_lower
+        assert proc.returncode != 0 and has_error_message
     finally:
         sessions_dir.chmod(0o755)
         shutil.rmtree(sessions_dir, ignore_errors=True)

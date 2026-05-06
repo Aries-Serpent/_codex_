@@ -79,39 +79,30 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
     """
     Resolve *candidate* against the filesystem and ensure it is located under *base*.
 
+    Both absolute and relative candidates are accepted; the caller is responsible
+    for providing a trustworthy *base* (e.g. ``_RAG_FILES_BASE``).
+
     Raises HTTPException(400) if the resolved path escapes the base directory.
     """
-    # Pre-validate untrusted input before any filesystem-aware resolution.
+    # Reject obviously malicious input before any filesystem-aware resolution.
     candidate_str = str(candidate)
     if "\x00" in candidate_str:
         raise HTTPException(status_code=400, detail="Invalid path")
-    if candidate.is_absolute():
-        raise HTTPException(status_code=400, detail="Absolute paths are not allowed")
     if any(part == ".." for part in candidate.parts):
         raise HTTPException(status_code=400, detail="Parent path traversal is not allowed")
 
     try:
-        # Use os.path.realpath (recognised by CodeQL as a path sanitizer) so that the
-        # taint from user-controlled input is broken before any containment check.
-        trusted_root = os.path.realpath(str(_RAG_FILES_BASE))
+        # Use os.path.realpath (recognised by CodeQL as a path sanitizer) so that
+        # the taint from user-controlled input is broken before any containment check.
         base_resolved_str = os.path.realpath(str(base))
         candidate_resolved_str = os.path.realpath(str(candidate))
     except (OSError, ValueError) as err:
         raise HTTPException(status_code=400, detail="Invalid path") from err
 
-    # Ensure both the declared base and candidate remain under the trusted root.
-    try:
-        if os.path.commonpath([trusted_root, base_resolved_str]) != trusted_root:
-            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-        if os.path.commonpath([trusted_root, candidate_resolved_str]) != trusted_root:
-            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-    except ValueError as err:
-        raise HTTPException(status_code=400, detail="Path escapes allowed root directory") from err
-
     base_resolved = Path(base_resolved_str)
     candidate_resolved = Path(candidate_resolved_str)
 
-    # Require that the candidate is the base or a descendant of it.
+    # Require that the candidate is the base itself or a strict descendant of it.
     if candidate_resolved == base_resolved or base_resolved in candidate_resolved.parents:
         return candidate_resolved
 

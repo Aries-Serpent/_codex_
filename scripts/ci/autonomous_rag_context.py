@@ -621,17 +621,17 @@ def _render_context_md(
         "## 🔌 Access Strategy",
         f"- Recommended method chain: `{' → '.join(strategy.methods)}`",
         f"- REST remaining: `{strategy.rest_remaining}` "
-        f"({'✅' if strategy.rest_available else '❌'})  ",
+        f"({'✅' if strategy.rest_available else '❌'})",
         f"- GraphQL remaining: `{strategy.graphql_remaining}` "
-        f"({'✅' if strategy.graphql_available else '❌'})  ",
-        f"- gh CLI: {'✅' if strategy.gh_cli_available else '❌'}  ",
+        f"({'✅' if strategy.graphql_available else '❌'})",
+        f"- gh CLI: {'✅' if strategy.gh_cli_available else '❌'}",
         f"- CodeQL CLI: {'✅' if strategy.codeql_available else '❌'}",
         "",
     ]
 
     if pr_ctx:
         lines += [
-            f"## 📋 PR #{pr_ctx.get('pr_number')} — {pr_ctx.get('title', 'N/A')}",
+            f"## 📋 PR #{pr_ctx.get('pr_number')} — {pr_ctx.get('title', 'N/A').strip()}",
             f"State: `{pr_ctx.get('state', '?')}`  Draft: `{pr_ctx.get('draft', False)}`  "
             f"Branch: `{pr_ctx.get('head_branch', '?')}` → `{pr_ctx.get('base_branch', '?')}`",
             "",

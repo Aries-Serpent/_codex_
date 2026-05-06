@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-05T19:38:01Z",
+  "generated_at": "2026-05-06T15:12:46Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1114,6 +1114,11 @@
       "has_concurrency": true
     },
     {
+      "name": "cleanup-stale-pr-comments",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "code-quality-coverage-suite",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2064,5 +2069,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "346a8318234ef5ac871a9719a9ab8144ac634772800678ccdb1bdfc043ea5588"
+  "integrity_sha256": "1c8243e413f89c3fb8724c7454a08f2195842f2091a09c6f54e64e3907e1bcff"
 }

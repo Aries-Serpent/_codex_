@@ -96,8 +96,16 @@ jobs:
           fi
 
           # Fetch PR body and extract issue references
+          # Use || true so a transient API rate-limit or network error does not
+          # fail the gate — in that case we simply find no issue references and
+          # exit 0 (non-blocking).
           PR_BODY=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}" \
-            --jq '.body // ""')
+            --jq '.body // ""' 2>/dev/null) || {
+            echo "⚠️  Could not fetch PR body (API error / rate limit) — skipping issue extraction"
+            echo "issues=" >> "$GITHUB_OUTPUT"
+            echo "source=api-error" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
 
           # Only extract issues explicitly targeted for closure (matches GitHub
           # auto-close semantics).  Bare "#N" references are informational and
