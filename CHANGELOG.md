@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T00:20Z — PR #4323 Session 5: final sweep + living docs)
+- **Workflows approved**: All pending GitHub Actions workflow runs approved by owner; CI monitoring active.
+- **CodeQL AST sweep (extended)**: `py/missing-equals` — confirmed all 4 `__hash__`-defining classes in `src/` also define `__eq__`; no violation found locally. `py/unexpected-raise-in-special-method` — all restricted special methods (`__repr__`, `__str__`, `__del__`, `__len__`, `__bool__`, `__iter__`, `__next__`, `__hash__`, `__format__`, `__contains__`, `__getattr__`) scan clean in all production directories.
+- **Living docs refreshed**: `docs/roadmap/PR4323_whats_next.md` (S5 header, API command with `jq` filter, detailed priority ordering); `docs/sessions/PR4323_session_diagram.md` (S5 session block, CI status table updated).
+- **Confirmed blockers**: 49 remaining CodeQL alerts (7 rules) require `GH_TOKEN=$CODEX_MASTER_KEY gh api` — rate-limited during this session window.
+
 ### Fixed (session 2026-05-07T00:00Z — PR #4323 Session 4: CodeQL AST sweep + living docs)
 - **CodeQL local AST sweep**: Searched all of `src/`, `services/`, `cognitive_app/`, `scripts/`, `tools/` for remaining CodeQL rule patterns via local AST analysis. Findings:
   - `py/unexpected-raise-in-special-method` (2nd): All `__getattr__` methods and restricted special methods (`__repr__`, `__str__`, `__del__`, `__len__`, `__bool__`, `__iter__`, `__next__`, `__hash__`, `__format__`) scan clean locally — 2nd instance requires CodeQL API for exact location.
