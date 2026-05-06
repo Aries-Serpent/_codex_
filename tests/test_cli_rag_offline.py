@@ -244,7 +244,7 @@ class TestOfflineCapability:
                 )
                 # If we got here, retrieval setup worked
                 assert retriever.faiss_index is not None
-            except Exception:
+            except Exception as _err:
                 # Expected if sentence-transformers not available
                 pass
 

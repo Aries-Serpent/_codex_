@@ -32,10 +32,11 @@ def test_legacy_tokenizer_triggers_warning(monkeypatch):
             # Call path (may raise ImportError if optional deps missing)
             try:
                 legacy_tokenizer()  # type: ignore[call-arg]
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
+                # Optional call may fail in minimal test envs — expected and harmless.
                 pass
         except ImportError:
-            # Accept missing underlying implementation in minimal envs
+            # Accept missing underlying implementation in minimal envs — skip gracefully.
             pass
         # Ensure at least one deprecation warning was captured
         assert any(issubclass(x.category, DeprecationWarning) for x in w)

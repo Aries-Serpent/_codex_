@@ -346,7 +346,7 @@ class TestPublicAPI:
         try:
             result = ingest_sample(size=5)
             assert isinstance(result, list)
-        except Exception:
+        except Exception as _err:
             # May fail if no sample data available
             pytest.skip("Sample data not available")
 
@@ -355,7 +355,7 @@ class TestPublicAPI:
         try:
             result = load_dataset()
             assert isinstance(result, list)
-        except Exception:
+        except Exception as _err:
             # May fail if no dataset available
             pytest.skip("Dataset not available")
 

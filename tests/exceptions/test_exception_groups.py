@@ -197,8 +197,11 @@ class TestCodexMLExceptionHandling:
                 super().__init__(message)
                 self.code = code
 
-        with pytest.raises(CustomError) as exc_info:
+        def _raise_custom() -> None:
             raise CustomError("custom error", 42)
+
+        with pytest.raises(CustomError) as exc_info:
+            _raise_custom()
 
         assert exc_info.value.code == 42
         # Verify error message is in exception string representation

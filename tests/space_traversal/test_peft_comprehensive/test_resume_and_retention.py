@@ -89,8 +89,8 @@ class _DummyStrategy:
         for cb in callbacks:
             try:
                 cb.on_epoch_end(0, {}, {})
-            except Exception:
-                pass
+            except (AttributeError, OSError, RuntimeError):
+                pass  # intentional: dummy strategy ignores callback failures; test validates resume flow
         return _DummyResult()
 
 

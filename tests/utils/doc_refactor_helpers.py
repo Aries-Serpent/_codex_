@@ -49,7 +49,7 @@ def is_intentionally_broken_link(file_path: Path, link: str) -> bool:
 
     try:
         content = file_path.read_text(encoding="utf-8", errors="ignore")
-    except Exception:
+    except Exception as _err:
         return False
 
     link_index = content.find(link)
@@ -150,7 +150,7 @@ def check_for_broken_marker_in_parent(parent_dir: Path, filename: str) -> bool:
             # Look for broken markers mentioning this filename
             if "<!-- BROKEN:" in content and filename in content:
                 return True
-        except Exception:
+        except Exception as _err:
             continue
 
     return False

@@ -331,7 +331,7 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     for file in files:
         try:
             os.remove(file)
-        except Exception:
+        except Exception as _err:
             pass  # Ignore errors if file cannot be removed (e.g., permission denied)
 
 

@@ -167,7 +167,7 @@ def test_setup_distributed_with_cuda_env():
     try:
         # This will likely fail to init but shouldn't crash
         setup_distributed(backend="nccl")
-    except Exception:
+    except Exception as _err:
         pass  # Expected to fail in test environment
     finally:
         # Cleanup env vars

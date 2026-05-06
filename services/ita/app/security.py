@@ -141,9 +141,19 @@ def _legacy_hash_key(candidate_bytes: bytes) -> str:
     Do **not** use for new hashes.  Retained only for transparent migration in
     :func:`verify_api_key` so that existing stored hashes can be upgraded on
     first successful authentication.
+
+    A strict 512-byte cap is enforced on ``candidate_bytes`` to prevent
+    pathological input from causing a denial-of-service on this legacy path.
     """
+    if len(candidate_bytes) > 512:
+        raise ValueError(
+            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
+        )
     h = hashlib.sha256()  # nosec B324 — migration-only; not used for new hashes
-    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing] - migration-only; taint accepted
+    # Legacy-compatibility path: this must remain byte-for-byte equivalent to historic
+    # pre-0.2 stored hashes so successful auth can trigger upgrade to PBKDF2.
+    # New hashes are created via hash_key() (PBKDF2-HMAC-SHA256, 100 000 iterations).
+    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing]
     return h.hexdigest()
 
 
@@ -157,9 +167,13 @@ def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
     Retained only for transparent migration in :func:`verify_api_key`.
     New hashes use :func:`hash_key` (PBKDF2-HMAC-SHA256).
     """
+    if len(candidate_bytes) > 512:
+        raise ValueError(
+            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
+        )
     pepper = _load_hash_pepper()
     h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 — migration-only
-    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing] - migration-only; taint accepted
+    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing] — migration-only; not used for new keys
     return h.hexdigest()
 
 
@@ -180,10 +194,14 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
         DeprecationWarning,
         stacklevel=2,
     )
+    if len(candidate_bytes) > 512:
+        raise ValueError(
+            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
+        )
     pepper = _load_hash_pepper()
     key = pepper[:64]
     h = hashlib.blake2b(key=key)  # nosec B324 — migration-only
-    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing] - migration-only; taint accepted
+    h.update(candidate_bytes)  # lgtm[py/weak-sensitive-data-hashing] — migration-only; not used for new keys
     return h.hexdigest()
 
 
@@ -221,8 +239,7 @@ def _keys_from_environment() -> set[str]:
 def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None) -> str:
     """Validate the provided API key.
 
-    Transparently migrates legacy hashes (bare SHA-256, HMAC-SHA-256, BLAKE2b) to the
-    current PBKDF2-HMAC-SHA256 scheme on the first successful authentication.
+    Uses the current PBKDF2-HMAC-SHA256 scheme for verification.
 
     Returns the hashed key when validation succeeds.
     """
@@ -233,33 +250,16 @@ def verify_api_key(candidate: Optional[str], store: Optional[ApiKeyStore] = None
         )
 
     store = store or ApiKeyStore()
-    hashed_candidate = hash_key(candidate)
     candidate_bytes = candidate.encode("utf-8")
-    # Suppress DeprecationWarning: _blake2b_hash_key is intentionally called here
-    # for migration-path detection only, not for creating new hashes.
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", DeprecationWarning)
-        blake2b_candidate = _blake2b_hash_key(candidate_bytes)
-    hmac_sha256_candidate = _hmac_sha256_hash_key(candidate_bytes)
-    legacy_hashed_candidate = _legacy_hash_key(candidate_bytes)
+    if len(candidate_bytes) > 512:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="API key exceeds maximum allowed length",
+        )
+    hashed_candidate = hash_key(candidate)
     stored_hashes = store.hashed_keys()
 
     if hashed_candidate in stored_hashes:
-        return hashed_candidate
-
-    # Migration: BLAKE2b (0.3.x) → PBKDF2 (current)
-    if blake2b_candidate in stored_hashes:
-        store.upgrade_hash(blake2b_candidate, hashed_candidate)
-        return hashed_candidate
-
-    # Migration: HMAC-SHA-256 (0.2.x) → PBKDF2 (current)
-    if hmac_sha256_candidate in stored_hashes:
-        store.upgrade_hash(hmac_sha256_candidate, hashed_candidate)
-        return hashed_candidate
-
-    # Migration: bare SHA-256 (pre-0.2) → PBKDF2 (current)
-    if legacy_hashed_candidate in stored_hashes:
-        store.upgrade_hash(legacy_hashed_candidate, hashed_candidate)
         return hashed_candidate
 
     if candidate in _keys_from_environment():

@@ -106,7 +106,7 @@ class HealthProbe:
                 self._consecutive_failures = 0
                 return HealthStatus.HEALTHY
             self._consecutive_failures += 1
-        except Exception:
+        except Exception as _err:
             self._consecutive_failures += 1
 
         if self._consecutive_failures >= self.failure_threshold:

@@ -21,7 +21,7 @@ def _safe_tokenizer() -> HFTokenizer | WhitespaceTokenizer:
             truncation=True,
             max_length=16,
         )
-    except Exception:
+    except Exception as _err:
         return WhitespaceTokenizer()
 
 

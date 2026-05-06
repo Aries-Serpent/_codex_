@@ -529,10 +529,9 @@ class TestResourceManagement:
         weak_ref = weakref.ref(obj)
 
         assert weak_ref() is obj
-
-        del obj
-        # After deletion, weak reference should return None
-        # (depending on garbage collection)
+        # obj is still held by the local name above; the weak reference will
+        # return None only once the object is collected, which is
+        # implementation-dependent and not guaranteed within this block.
 
 
 # =============================================================================

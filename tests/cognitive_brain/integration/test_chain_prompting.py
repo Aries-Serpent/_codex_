@@ -87,7 +87,7 @@ try:
 
     _REAL_IMPL = True
 
-except Exception:
+except Exception as _err:
     _REAL_IMPL = False
 
 

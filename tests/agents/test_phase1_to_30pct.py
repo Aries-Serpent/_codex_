@@ -199,7 +199,7 @@ class TestRelativitySchedulerProperties:
                 # Try minimal parameters
                 try:
                     scheduler.add_agent("agent1")
-                except Exception:
+                except Exception as _err:
                     pass  # Method exists, just different signature
 
     def test_lorentz_factor_method(self):

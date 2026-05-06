@@ -378,14 +378,17 @@ class TestDashboardIntegration:
             "color": "green",
         }
 
-        # Color based on stability
         stability = 98.5
-        if stability >= 95:
-            badge_data["color"] = "green"
-        elif stability >= 90:
-            badge_data["color"] = "yellow"
-        else:
-            badge_data["color"] = "red"
+
+        # Color based on stability — use helper to avoid dead literal branches
+        def _badge_color(pct: float) -> str:
+            if pct >= 95:
+                return "green"
+            if pct >= 90:
+                return "yellow"
+            return "red"
+
+        badge_data["color"] = _badge_color(stability)
 
         assert badge_data["color"] == "green"
 

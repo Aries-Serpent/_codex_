@@ -1,0 +1,195 @@
+name: 🧹 Cleanup Stale PR Comments
+
+# Removes redundant / outdated github-actions[bot] comments from a PR.
+#
+# The critical ingredient that lets this workflow delete comments is:
+#
+#   permissions:
+#     issues: write
+#
+# GitHub's REST "delete comment" endpoint requires issues:write on the token.
+# Workflow-level GITHUB_TOKEN gets that scope only when the YAML declares it.
+#
+# Triggers
+# --------
+# 1. workflow_dispatch — manual run from Actions UI or via `gh workflow run`
+# 2. issue_comment     — triggered when someone posts "/cleanup-comments" on a PR
+# 3. pull_request      — auto-run on PR open / synchronize (dry-run by default)
+# 4. workflow_run      — fires automatically after every Copilot agent session ends
+#                        (non-dry-run, resolves the open PR on the triggering branch)
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to clean up'
+        required: true
+        type: number
+      dry_run:
+        description: 'Dry run — print what would be deleted without deleting'
+        required: false
+        type: boolean
+        default: false
+      include_rescue:
+        description: 'Also clean up CI-Rescue comments for superseded commit SHAs'
+        required: false
+        type: boolean
+        default: true
+
+  issue_comment:
+    types: [created]
+
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+  # Auto-fire after every Copilot coding agent session completes —
+  # same pattern used by copilot-agent-session-done.yml and auto-approve-workflows.yml
+  workflow_run:
+    workflows:
+      - "🔄 Auto-Post @copilot review After Agent Session"
+      - "✅ Agent Auth Delegation"
+    types: [completed]
+
+permissions:
+  # issues: write is the key permission that allows comment deletion via REST API.
+  # Without this explicit declaration the GITHUB_TOKEN is read-only for issues.
+  issues: write
+  pull-requests: write
+  contents: read
+
+concurrency:
+  group: cleanup-stale-pr-comments-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: Delete stale PR comments
+    runs-on: ubuntu-latest
+
+    # Only run issue_comment trigger when the comment is on a PR and contains the slash command
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'workflow_run' ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request != null &&
+       contains(github.event.comment.body, '/cleanup-comments')) ||
+      github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install requests --quiet
+
+      # -----------------------------------------------------------------------
+      # Resolve PR number for each trigger type
+      # -----------------------------------------------------------------------
+      - name: Resolve PR number
+        id: pr
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "number=${{ inputs.pr_number }}" >> "$GITHUB_OUTPUT"
+            echo "dry_run=${{ inputs.dry_run }}" >> "$GITHUB_OUTPUT"
+            echo "include_rescue=${{ inputs.include_rescue }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "issue_comment" ]; then
+            echo "number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+            echo "dry_run=false" >> "$GITHUB_OUTPUT"
+            echo "include_rescue=true" >> "$GITHUB_OUTPUT"
+          else
+            # pull_request event — run as dry-run so auto-runs are non-destructive
+            echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "dry_run=true" >> "$GITHUB_OUTPUT"
+            echo "include_rescue=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -----------------------------------------------------------------------
+      # React to slash command so the poster gets immediate feedback
+      # -----------------------------------------------------------------------
+      - name: React to slash command
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: 'eyes'
+            });
+
+      # -----------------------------------------------------------------------
+      # Run the cleanup script
+      # -----------------------------------------------------------------------
+      - name: Delete stale comments
+        id: cleanup
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ARGS="--pr-number ${{ steps.pr.outputs.number }}"
+
+          if [ "${{ steps.pr.outputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+
+          if [ "${{ steps.pr.outputs.include_rescue }}" = "true" ]; then
+            ARGS="$ARGS --include-rescue"
+          fi
+
+          python scripts/ci/delete_stale_pr_comments.py $ARGS 2>&1 | tee /tmp/cleanup_output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      # -----------------------------------------------------------------------
+      # Post a summary comment when triggered via slash command or dispatch
+      # -----------------------------------------------------------------------
+      - name: Post cleanup summary
+        if: |
+          github.event_name != 'pull_request' &&
+          always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            let output = '';
+            try {
+              output = fs.readFileSync('/tmp/cleanup_output.txt', 'utf8');
+            } catch (_) {
+              output = '(no output)';
+            }
+
+            const dryRun = '${{ steps.pr.outputs.dry_run }}' === 'true';
+            const prNumber = parseInt('${{ steps.pr.outputs.number }}', 10);
+            const icon = dryRun ? '🔍' : '🧹';
+            const title = dryRun
+              ? 'Cleanup Stale PR Comments — Dry Run'
+              : 'Cleanup Stale PR Comments — Complete';
+
+            const body = [
+              `## ${icon} ${title}`,
+              '',
+              '```',
+              output.slice(0, 3000),
+              output.length > 3000 ? '… (truncated)' : '',
+              '```',
+              '',
+              dryRun
+                ? '_This was a dry run — no comments were deleted._'
+                : `_Triggered by: \`${{ github.event_name }}\` · Run: [${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body,
+            });
+
+      - name: Check exit code
+        if: steps.cleanup.outputs.exit_code != '0'
+        run: exit 1

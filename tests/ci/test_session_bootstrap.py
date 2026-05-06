@@ -182,8 +182,8 @@ class TestGitHubClient:
         with patch("session_bootstrap.urlopen", side_effect=fake_urlopen):
             try:
                 client._request("/repos/x/y/issues/1")
-            except Exception:
-                pass
+            except (AttributeError, OSError, RuntimeError):
+                pass  # intentional: test only inspects captured headers; the aborted request is expected to raise
         auth = captured.get("headers", {}).get("Authorization", "")
         assert "Bearer mytoken" in auth
 
@@ -199,8 +199,8 @@ class TestGitHubClient:
         with patch("session_bootstrap.urlopen", side_effect=fake_urlopen):
             try:
                 client._request("/repos/x/y/issues/1")
-            except Exception:
-                pass
+            except (AttributeError, OSError, RuntimeError):
+                pass  # intentional: test only inspects captured headers; the aborted request is expected to raise
         auth = captured.get("headers", {}).get("Authorization", "")
         assert auth == ""
 

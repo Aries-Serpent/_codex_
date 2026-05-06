@@ -262,8 +262,11 @@ class TestModerationRejectionAdvanced:
             provider="offline",
         )
 
+        def _do_raise(d: object) -> None:
+            raise ModerationRejection("preflight", d)  # type: ignore[arg-type]
+
         with pytest.raises(ModerationRejection) as exc_info:
-            raise ModerationRejection("preflight", decision)
+            _do_raise(decision)
 
         assert exc_info.value.stage == "preflight"
         assert exc_info.value.decision == decision

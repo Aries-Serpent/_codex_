@@ -16,8 +16,6 @@ from __future__ import annotations
 
 import sys
 
-import pytest
-
 
 class TestCodexPackageVersion:
     """Test version information and metadata."""
@@ -295,27 +293,17 @@ class TestCodexImportSafety:
 
     def test_import_does_not_raise(self) -> None:
         """Test importing codex does not raise exceptions."""
-        # Arrange & Act & Assert
-        try:
-            assert True
-        except Exception as e:
-            pytest.fail(f"Import raised unexpected exception: {e}")
+        # Arrange & Act & Assert — import already happened at module load;
+        # if we reached this line the import succeeded.
+        assert True
 
     def test_version_import_does_not_raise(self) -> None:
         """Test importing __version__ does not raise exceptions."""
-        # Arrange & Act & Assert
-        try:
-            assert True
-        except Exception as e:
-            pytest.fail(f"Version import raised unexpected exception: {e}")
+        assert True
 
     def test_all_import_does_not_raise(self) -> None:
         """Test importing __all__ does not raise exceptions."""
-        # Arrange & Act & Assert
-        try:
-            assert True
-        except Exception as e:
-            pytest.fail(f"__all__ import raised unexpected exception: {e}")
+        assert True
 
 
 class TestCodexPublicAPI:

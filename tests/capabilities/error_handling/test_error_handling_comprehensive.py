@@ -387,7 +387,7 @@ class DeadLetterQueue:
                 else:
                     entry["retry_count"] += 1
                     remaining.append(entry)
-            except Exception:
+            except Exception as _err:
                 entry["retry_count"] += 1
                 remaining.append(entry)
         self.queue.clear()
@@ -461,7 +461,7 @@ class RemediationAction:
             else:
                 self.failure_count += 1
             return result
-        except Exception:
+        except Exception as _err:
             self.failure_count += 1
             return False
 

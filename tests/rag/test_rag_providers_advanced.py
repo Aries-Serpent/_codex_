@@ -313,7 +313,7 @@ class TestProviderSwitching:
             # Try to get preferred provider, should fallback if not available
             try:
                 provider = get_embedding_provider(provider_type='openai')
-            except Exception:
+            except Exception as _err:
                 # Should fallback to TF-IDF
                 provider = get_embedding_provider(provider_type='tfidf')
 

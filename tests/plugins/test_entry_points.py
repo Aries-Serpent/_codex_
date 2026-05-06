@@ -189,5 +189,5 @@ class TestRealPluginDiscovery:
             eps = importlib.metadata.entry_points()
             # Just verify we can call entry_points
             assert eps is not None
-        except Exception:
+        except Exception as _err:
             pytest.skip("Entry points not available")

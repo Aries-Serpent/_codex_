@@ -173,8 +173,12 @@ class TestExceptions:
 
     def test_provider_config_error(self):
         """Test ProviderConfigError."""
-        with pytest.raises(ProviderConfigError, match="Config invalid"):
+
+        def _raise_config_invalid() -> None:
             raise ProviderConfigError("Config invalid")
+
+        with pytest.raises(ProviderConfigError, match="Config invalid"):
+            _raise_config_invalid()
 
         # Check it's a subclass of SecretProviderError
         with pytest.raises(SecretProviderError):

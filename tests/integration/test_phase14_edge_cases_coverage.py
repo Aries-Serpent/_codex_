@@ -38,12 +38,16 @@ class TestNumericEdgeCases:
 
     def test_negative_learning_rate(self):
         """Test handling of negative learning rate."""
+
+        def unused_validate_lr(lr: float) -> None:
+            if lr < 0:
+                raise ValueError("Learning rate must be non-negative")
+
         learning_rate = -0.001
 
         assert learning_rate < 0
         with pytest.raises(ValueError):
-            if learning_rate < 0:
-                raise ValueError("Learning rate must be non-negative")
+            unused_validate_lr(learning_rate)
 
     def test_very_small_learning_rate(self):
         """Test very small learning rate near machine epsilon."""
@@ -367,8 +371,12 @@ class TestErrorHandlingEdgeCases:
 
     def test_system_exit_handling(self):
         """Test SystemExit is caught appropriately."""
-        with pytest.raises(SystemExit) as exc_info:
+
+        def _do_exit() -> None:
             raise SystemExit(1)
+
+        with pytest.raises(SystemExit) as exc_info:
+            _do_exit()
 
         assert exc_info.value.code == 1
 

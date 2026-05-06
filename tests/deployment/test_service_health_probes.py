@@ -30,8 +30,8 @@ class TestServiceHealthConcepts:
                 content = file_path.read_text(errors="ignore")
                 if "health" in content.lower() or "probe" in content.lower():
                     health_mentions += 1
-            except Exception:
-                pass
+            except (AttributeError, OSError, RuntimeError):
+                pass  # intentional: skip unreadable files; count only successfully-read ones
 
         assert health_mentions > 0, "No health check patterns found in codebase"
 
@@ -73,10 +73,8 @@ class TestServiceHealthConcepts:
                 if "readiness" in content.lower() or "liveness" in content.lower():
                     probe_found = True
                     break
-            except Exception:
-                pass
-
-        # Soft assertion - just verify concept exists
+            except (AttributeError, OSError, RuntimeError):
+                pass  # intentional: skip unreadable deployment manifests; continue scanning remaining files
         if not probe_found:
             pytest.skip("No explicit readiness/liveness probes found (may be configured elsewhere)")
 

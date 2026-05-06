@@ -111,12 +111,9 @@ class TestMarkdownQuality:
                 # Skip external links and anchors
                 if link_target.startswith(("http://", "https://", "#", "mailto:")):
                     continue
-                # Relative path resolution
-                if not link_target.startswith("/"):
-                    _resolved = doc.parent / link_target.split("#")[0]  # noqa: F841
-                else:
-                    _resolved = REPO_ROOT / link_target.lstrip("/").split("#")[0]  # noqa: F841
-                # Just log, don't fail (MkDocs has known link issues)
+                # Relative path resolution — just note the resolved path form; MkDocs
+                # handles actual link validation at build time.
+                # (No action needed here; links are checked at the MkDocs build step.)
 
 
 class TestCodeExamplesInDocs:

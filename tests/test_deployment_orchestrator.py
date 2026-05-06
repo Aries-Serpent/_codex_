@@ -676,7 +676,7 @@ class TestDeploymentOrchestrator:
             success = orchestrator.execute()
             # Should fail gracefully
             assert success is False
-        except Exception:
+        except Exception as _err:
             pytest.fail("Exception should be caught and handled")
         finally:
             # Restore original method

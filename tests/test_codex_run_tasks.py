@@ -70,7 +70,7 @@ def _call_run_task_flexibly(*args, **kwargs) -> int:
         except TypeError as e:
             last_exc = e
             continue
-        except Exception:
+        except Exception as _err:
             return 1
     raise AssertionError(f"run_task signature not recognized; last error: {last_exc!r}")
 
@@ -97,7 +97,7 @@ def test_run_task_writes_files(tmp_path: Path, monkeypatch=None):
         }.items():
             try:
                 setattr(mod, attr, val)
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     try:
