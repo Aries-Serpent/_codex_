@@ -472,13 +472,16 @@ async def delete_index(
         # os.path.realpath is a CodeQL-recognised path sanitizer; applying it on the
         # fully-joined string breaks any remaining taint before filesystem operations.
         index_root = os.path.realpath(
-            os.path.join(str(Path.home()), ".codex", "rag_indices")
+            os.path.join(os.path.expanduser("~"), ".codex", "rag_indices")
         )
         index_dir = os.path.realpath(
             os.path.join(index_root, safe_tenant_id, safe_index_name)
         )
         # Containment guard: index_dir must remain inside index_root.
-        if os.path.commonpath([index_root, index_dir]) != index_root:
+        try:
+            if os.path.commonpath([index_root, index_dir]) != index_root:
+                raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+        except ValueError:
             raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
         if not os.path.exists(index_dir):
@@ -550,7 +553,10 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
             os.path.join(trusted_root, tenant_id, index_name)
         )
         # Containment guard: index_dir must remain inside trusted_root.
-        if os.path.commonpath([trusted_root, index_dir]) != trusted_root:
+        try:
+            if os.path.commonpath([trusted_root, index_dir]) != trusted_root:
+                raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+        except ValueError:
             raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
         if not os.path.isdir(index_dir):
@@ -558,7 +564,10 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
 
         # Sanitize metadata path at call site.
         metadata_file = os.path.realpath(os.path.join(index_dir, "metadata.json"))
-        if os.path.commonpath([index_dir, metadata_file]) != index_dir:
+        try:
+            if os.path.commonpath([index_dir, metadata_file]) != index_dir:
+                raise HTTPException(status_code=400, detail="Metadata path escapes index directory")
+        except ValueError:
             raise HTTPException(status_code=400, detail="Metadata path escapes index directory")
         if not os.path.isfile(metadata_file):
             raise HTTPException(status_code=404, detail="Index metadata not found")
