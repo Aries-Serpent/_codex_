@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import sys
 import datetime
 import re
+import sys
 from pathlib import Path
 
 qf = Path(".codex/notes/Codex_Questions.md")
