@@ -786,3 +786,41 @@ Run:
   python -m ruff check src/ tests/ --fix
   python3 scripts/ci/session_wrapup_autofix.py --pr-number 4317 --activate-workflows
 ```
+
+---
+
+## Wave 9 — S313+1 Security Continuation + Dependabot Sweep (PR #4323) — 2026-05-06T22:15Z
+
+### Completed
+
+| Task | Status | Notes |
+|------|--------|-------|
+| ROADMAP.md timeline clarity | ✅ | Split nested phrase → `**Timeline**` + `**Phase Context Timeline**` |
+| ROADMAP.md Next Review date | ✅ | 2026-05-06 → 2026-06-06 |
+| lock.txt CVE comment | ✅ | Removed unverified CVE-2025-69872; generic risk description preserved |
+| Semgrep `p/flask` + `p/sqlalchemy` | ✅ | Added to both SARIF and text scan steps |
+| pip-audit | ✅ | 0 HIGH/CRITICAL findings |
+| `.secrets.baseline` re-scan | ✅ | Consistent; sync_tracked_files clean |
+| Comment Review Gate rescue | ✅ | Replied to blocking comment #4392507496 |
+| **Mako 1.3.10 → 1.3.12** | ✅ | Fixes GHSA-v92g-xgxw-vvmm / CVE-2026-41205 (path traversal via backslash URI on Windows) |
+| **GitPython 3.1.45 → 3.1.50** | ✅ | Fixes GHSA-7545-fcxq-7j24 (reference API path traversal, arb file write/delete) |
+| **uv.lock gitpython 3.1.49 → 3.1.50** | ✅ | Latest patched; closes Dependabot alert #240 |
+| **python-multipart 0.0.26 → 0.0.27** | ✅ | Cherry-picked from PR #4330; closes Dependabot auto-PR |
+| Investigation reports | ✅ | `reports/investigation_alert_{239,240,241,242}.md` |
+| Artifact JSON/CSV | ✅ | `artifacts/dependabot_alerts.{json,csv}` |
+| Living docs (whats_next + session_diagram) | ✅ | Wave 9 appended |
+
+### Remaining Dependabot Alerts
+
+| Alert | Package | Status |
+|-------|---------|--------|
+| #239 | GitPython (lock.txt) | ✅ FIXED → 3.1.50 |
+| #240 | GitPython (uv.lock) | ✅ UPDATED → 3.1.50 |
+| #241 | Mako (lock.txt) | ✅ FIXED → 1.3.12 |
+| #242 | Mako (uv.lock) | ✅ STALE — already at 1.3.12 |
+
+### Open Items for Next Session
+
+- Monitor Semgrep CI run for `p/flask` + `p/sqlalchemy` findings
+- Evaluate replacing `diskcache` with a safer alternative when a patched release is available
+- PR #4323 merge: verify all CI gates green post-push

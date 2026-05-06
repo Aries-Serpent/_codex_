@@ -217,6 +217,32 @@
 **Session:** auto-20260506T2210-run156056 | **Run:** 25463492851 | **Date:** 2026-05-06
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## SESSION SUMMARY — 2026-05-06T22:15Z [S313+1 Wave 9 — Dependabot sweep + PR #4330]
+
+**Session:** S313+1 Wave 9 | **PR:** #4323 | **Date:** 2026-05-06 | **Branch:** copilot/fix-timeline-structure
+
+**Actions this session (Wave 9 — Dependabot sweep + PR #4330 cherry-pick):**
+- **Dependabot Alert #239**: `gitpython==3.1.45` → `3.1.50` in `requirements/lock.txt` (GHSA-7545-fcxq-7j24 fixed ≥3.1.48).
+- **Dependabot Alert #240**: `gitpython 3.1.49` → `3.1.50` in `uv.lock` (latest patched, was already patched at 3.1.49).
+- **Dependabot Alert #241**: `mako==1.3.10` → `1.3.12` in `requirements/lock.txt` (GHSA-v92g-xgxw-vvmm / CVE-2026-41205 fixed ≥1.3.11).
+- **Dependabot Alert #242**: Mako in `uv.lock` already at 1.3.12 — stale alert, no action needed.
+- **PR #4330 cherry-pick**: `python-multipart 0.0.26` → `0.0.27` + `CODEX_MANIFEST.json` refresh + `.github/copilot-prompts/active/PR-4330-followup.md`.
+- Created `reports/investigation_alert_{239,240,241,242}.md` + `reports/dependabot_summary.md` + `artifacts/dependabot_alerts.{json,csv}`.
+- Living docs (`docs/roadmap/PR4317_whats_next.md`, `docs/sessions/PR4317_session_diagram.md`): Wave 9 appended with status table and flowchart.
+- CHANGELOG.md updated with Wave 9 section.
+
+## SESSION SUMMARY — 2026-05-06T22:03Z [S313+1 — PR #4323]
+
+**Session:** S313+1 | **PR:** #4323 | **Date:** 2026-05-06 | **Branch:** copilot/fix-timeline-structure
+
+**Actions this session (S313+1 — post-PR #4317 security continuation):**
+- Applied 4 targeted diffs: ROADMAP.md timeline clarity, stale Next Review date (→ 2026-06-06), lock.txt CVE comment (removed unverified CVE-2025-69872), generate_status_update.py `+Z` suffix (already absent — no-op).
+- Task 1d: Added `p/flask` + `p/sqlalchemy` rulesets to `semgrep_sarif.yml` (both SARIF and text scan steps).
+- Task 1e: pip-audit — 0 HIGH/CRITICAL vulnerabilities confirmed across installed packages and base requirements.
+- Task 1f: `.secrets.baseline` re-scanned with `detect-secrets scan --baseline`; `sync_tracked_files.py --fix` confirmed all tracked files consistent.
+- CI Comment Review Gate failure addressed by replying to blocking rescue comment and committing CHANGELOG + accountability updates.
+- ruff: 0 findings · parallel validation (Code Review + CodeQL): ✅ both clean.
+
 ## SESSION SUMMARY — 2026-05-06T21:51Z [auto-generated]
 
 **Session:** auto-20260506T2151-run155890 | **Run:** 25462997663 | **Date:** 2026-05-06

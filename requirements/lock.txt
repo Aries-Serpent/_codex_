@@ -308,7 +308,7 @@ funcy==2.0
     #   scmrepo
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.45
+gitpython==3.1.50
     # via
     #   mlflow-skinny
     #   scmrepo
@@ -501,7 +501,7 @@ lxml==6.1.0
     # via sacrebleu
 makefun==1.16.0
     # via great-expectations
-mako==1.3.10
+mako==1.3.12
     # via alembic
 markdown==3.10.2
     # via tensorboard
@@ -914,7 +914,7 @@ python-dotenv==1.2.2
     #   uvicorn
 python-json-logger==4.0.0
     # via jupyter-events
-python-multipart==0.0.26
+python-multipart==0.0.27
     # via fastapi
 pytokens==0.4.1
     # via black

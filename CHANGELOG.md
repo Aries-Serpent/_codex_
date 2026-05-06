@@ -7,8 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4323)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4323 (SHA `27d92564`) at 2026-05-06T22:04Z [auto-generated]
+### Fixed (session 2026-05-06T22:15Z — PR #4323 S313+1 Dependabot sweep + PR #4330 incorporation)
+- **Dependabot Alert #241**: `mako==1.3.10` → `1.3.12` in `requirements/lock.txt` (fixes GHSA-v92g-xgxw-vvmm / CVE-2026-41205 — path traversal via backslash URI in TemplateLookup on Windows).
+- **Dependabot Alert #239**: `gitpython==3.1.45` → `3.1.50` in `requirements/lock.txt` (fixes GHSA-7545-fcxq-7j24 — reference API path traversal allowing arbitrary file write/delete outside repository).
+- **Dependabot Alert #240**: `gitpython 3.1.49` → `3.1.50` in `uv.lock` (latest patched; closes stale alert).
+- **Dependabot Alert #242**: Mako in `uv.lock` already at `1.3.12` — alert is stale; no change required.
+- **PR #4330 cherry-pick**: `python-multipart==0.0.26` → `0.0.27` in `requirements/lock.txt`; `CODEX_MANIFEST.json` refreshed; `.github/copilot-prompts/active/PR-4330-followup.md` added.
+- Investigation reports created: `reports/investigation_alert_{239,240,241,242}.md` + `reports/dependabot_summary.md`.
+- Artifact files: `artifacts/dependabot_alerts.{json,csv}`.
+- Living docs (`docs/roadmap/PR4317_whats_next.md`, `docs/sessions/PR4317_session_diagram.md`): Wave 9 appended.
+
+### Fixed (session 2026-05-06T22:03Z — PR #4323 S313+1 security continuation)
+- `docs/ROADMAP.md`: Split nested timeline phrase into two distinct fields (`**Timeline**` + `**Phase Context Timeline**`) for clarity.
+- `docs/ROADMAP.md`: Advanced stale `Next Review` date from 2026-05-06 → 2026-06-06.
+- `requirements/lock.txt`: Replaced unverified `CVE-2025-69872` identifier with generic security risk description; risk treatment and mitigations preserved.
+- `.github/workflows/semgrep_sarif.yml`: Added `p/flask` and `p/sqlalchemy` rulesets to Semgrep SAST scan (Task 1d).
+- pip-audit: **0 HIGH/CRITICAL** vulnerabilities confirmed across installed packages and base requirements (Task 1e).
+- `.secrets.baseline`: Re-scanned with `detect-secrets scan --baseline`; `sync_tracked_files.py --fix` confirmed consistency (Task 1f).
+- Addressed CI Comment Review Gate by replying to blocking rescue comment #4392507496.
 
 ### Fixed (session 2026-05-06T22:00Z — PR #4317 S313 security hardening)
 - `services/ita/app/security.py:224`: PBKDF2-HMAC-SHA256 iterations bumped **100 000 → 600 000** (OWASP 2024 SHA-256 recommended minimum).
