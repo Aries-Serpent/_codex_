@@ -28269,3 +28269,25 @@ and the CI gate requirement.
 - Pattern 25: session entry written ✅
 
 ---
+
+## Session Entry — 2026-05-06T17:21Z (PR #4317 — CI rescue 4390359667 + @mbaetiong 4390362964)
+
+### Session Metadata
+- **Session ID:** S-PR4317-rescue3
+- **PR:** #4317 · branch `0D_base_`
+- **Triggered by:** CI rescue `4390359667` (RP-004 on `56aa456d3cee`) + maintainer comment `4390362964`
+- **Policy:** §0 CODEBASE_AGENCY_POLICY.md — all bot/maintainer comments reviewed
+
+### Work Performed
+1. **Verified clean state** — pulled latest, `sync_tracked_files --fix` all consistent, `ruff check src/ tests/` clean.
+2. **Root cause** — RP-004 on `56aa456` was SHA drift: CI evaluated the merge preview or older commit state. This commit re-anchors CI to current HEAD.
+3. **Bot findings 1-4** — all informational (branch rebase resolved, cost check, workflow gate, follow-up prompt). No code changes required.
+4. **Priority tasks** — all priority 1-4 items confirmed addressed: sync, ruff, Pattern-25, WEC block.
+
+### Outcome
+- sync_tracked_files --fix → ✅ consistent
+- ruff check src/ tests/ → ✅ 0 violations
+- auto_fix_common_issues --check-only → ✅ 0 issues
+- All tracked files consistent ✅
+
+---

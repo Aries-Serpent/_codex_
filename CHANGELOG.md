@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T17:21Z — PR #4317 CI rescue 4390359667 + comment 4390362964)
+- CI: re-anchor to HEAD to clear RP-004 SHA-drift on `56aa456`; all bot findings informational; priority 1-4 tasks confirmed addressed.
+
 ### Fixed (session 2026-05-06T17:09Z — PR #4317 CI rescue 4390263695+4390285036)
 - CI: re-anchor CI to branch HEAD to clear SHA-drift-induced stale Pattern 22/30 warning; locally `sync_tracked_files`, `ruff`, and `auto_fix_common_issues --check-only` all clean.
 
