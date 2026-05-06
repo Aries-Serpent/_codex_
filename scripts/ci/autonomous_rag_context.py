@@ -621,10 +621,10 @@ def _render_context_md(
         "## 🔌 Access Strategy",
         f"- Recommended method chain: `{' → '.join(strategy.methods)}`",
         f"- REST remaining: `{strategy.rest_remaining}` "
-        f"({'✅' if strategy.rest_available else '❌'})  ",
+        f"({'✅' if strategy.rest_available else '❌'})",
         f"- GraphQL remaining: `{strategy.graphql_remaining}` "
-        f"({'✅' if strategy.graphql_available else '❌'})  ",
-        f"- gh CLI: {'✅' if strategy.gh_cli_available else '❌'}  ",
+        f"({'✅' if strategy.graphql_available else '❌'})",
+        f"- gh CLI: {'✅' if strategy.gh_cli_available else '❌'}",
         f"- CodeQL CLI: {'✅' if strategy.codeql_available else '❌'}",
         "",
     ]

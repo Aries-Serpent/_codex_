@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T20:25Z — PR #4317: cherry-pick PR #4322 + update living docs)
+- Dependabot PR #4322 (mistune 3.2.0 → 3.2.1, uv group across 2 directories) incorporated into `0D_base_` branch.
+- Created `.github/copilot-prompts/active/PR-4322-followup.md` tracking incorporation status.
+- `docs/roadmap/PR4317_whats_next.md` and `docs/sessions/PR4317_session_diagram.md` updated to reflect latest session state (57 commits, all CI gates, PR #4322 consolidated).
+- Fast Validation failure root cause: Pattern 30 `ruff` check on stale commit `6c2a160`; current HEAD clean.
+
 ### Fixed (session 2026-05-06T19:56Z — PR #4317 CI rescue 4391476037 + comment 4391239050/4391294267)
 - CI: Fast Validation failing due to pre-commit trailing-whitespace hook modifying `.codex/session_context_latest.md` on every run (PR title "0 d base " had trailing space). Fixed `autonomous_rag_context.py` to `.strip()` the PR title before writing; stripped existing trailing space in `session_context_latest.md`.
 - Pattern 30 ruff lint violation was on old commit `97302583` — current HEAD is clean.

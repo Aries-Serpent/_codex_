@@ -3,9 +3,9 @@
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3788` (✅)  
-- GraphQL remaining: `4915` (✅)  
-- gh CLI: ✅  
+- REST remaining: `3788` (✅)
+- GraphQL remaining: `4915` (✅)
+- gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4322 — Bump the uv group across 2 directories with 1 update

@@ -28373,3 +28373,27 @@ and the CI gate requirement.
 - auto_fix_common_issues --check-only: ✅ 0 issues
 
 ---
+
+## SESSION SUMMARY — 2026-05-06T20:25Z — S312 (PR #4317: PR #4322 cherry-pick + living-docs update)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — CI Rescue 4391701001 (Fast Validation) + PR Status 4391640200/4391710869 ✅
+- [x] **0b.** Failing CI checks reviewed — Fast Validation pattern-30 ruff on stale commit ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** New requirement: cherry-pick PR #4322 into #4317 + maintain living docs ✅
+- [x] **3.** `.github/copilot-prompts/active/PR-4322-followup.md` created ✅
+- [x] **4.** `docs/roadmap/PR4317_whats_next.md` updated ✅
+- [x] **5.** `docs/sessions/PR4317_session_diagram.md` updated ✅
+
+### Work Completed
+1. **PR #4322 cherry-pick**: All changes from Dependabot PR #4322 (mistune 3.2.0→3.2.1 uv group bump) incorporated — `requirements/lock.txt` done at `2f079c7`, `uv.lock` done at `5dcbf61`, CODEX_MANIFEST.json already updated, follow-up prompt file created.
+2. **Fast Validation root cause**: Pattern 30 `ruff (src/ clean)` failure was on stale commit `6c2a160` — current HEAD has 0 ruff violations (`ruff check src/ tests/` → all clear).
+3. **Living docs updated**: `docs/roadmap/PR4317_whats_next.md` and `docs/sessions/PR4317_session_diagram.md` reflect 57 commits, all waves including PR #4322, Fast Validation fix, and latest merge-readiness 100/100.
+4. **Comment replies**: Replied to CI Rescue 4391701001 (blocking) and PR Status 4391710869.
+
+### Validation
+- ruff src/ tests/: ✅ 0 violations
+- sync_tracked_files: ✅ consistent
+- auto_fix_common_issues --check-only: ✅ 0 issues
+
+---
