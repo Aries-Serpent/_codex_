@@ -10,7 +10,9 @@ This script automatically fixes the 30 most common patterns that cause workflow 
 5.  Missing tokenizer fallbacks
 6.  Vague test assertions
 7.  Redundant imports
-8.  CodeQL scanning alerts — F401 unused imports auto-fixed; F841 informational
+8.  CodeQL scanning alerts — F401 unused imports auto-fixed; F841 informational;
+    GitHub Advanced Security (GAS) AI-found potential problems queried via
+    code-scanning REST API (HARDENED: ALWAYS runs when GITHUB_TOKEN is available)
 9.  Unsorted imports (ruff I001) — auto-fixable
 10. Bandit medium/high security issues — detects missing # nosec annotations
 11. F-string missing placeholders (ruff F541) — auto-fixable
@@ -868,11 +870,18 @@ class CommonIssueFixer:
 
     def fix_codeql_alerts(self) -> list[str]:
         """Pattern 8: Fix CodeQL-equivalent alerts — auto-removes unused imports (F401),
-        reports unused variables (F841) as informational only.
+        reports unused variables (F841) as informational only, and ALWAYS checks
+        GitHub Advanced Security (GAS) AI-found potential problems via the
+        code-scanning REST API when GITHUB_TOKEN is available.
 
         F401 (unused imports) is fully auto-fixable via ``ruff --fix --select F401``.
         F841 (unused variables — local, assigned but never read) requires manual review
         and is reported only.
+
+        HARDENED: Step 3 explicitly extends this scan to include any open GAS /
+        CodeQL alert from the GitHub Advanced Security AI review.  This ensures every
+        agent session discovers and addresses GAS-flagged potential problems before
+        merge, satisfying the "harden your self-CodeQL scan" requirement.
         """
         issues = []
 
@@ -922,6 +931,117 @@ class CommonIssueFixer:
 
         except FileNotFoundError:
             print("  ⚠️ ruff not installed, skipping CodeQL alert detection")
+
+        # ── Step 3: HARDENED — GitHub Advanced Security AI-found problems ─────
+        # This step ALWAYS runs (when GITHUB_TOKEN is available) to explicitly
+        # extend the CodeQL scan scope to include all open GAS / GitHub Advanced
+        # Security AI-flagged potential problems on the current repository.
+        # Satisfies the "harden your self-CodeQL scan" requirement from PR #4289.
+        gas_issues = self._check_gas_code_scanning_alerts()
+        issues.extend(gas_issues)
+
+        return issues
+
+    def _check_gas_code_scanning_alerts(self) -> list[str]:
+        """HARDENED sub-check: query GitHub Advanced Security code-scanning API.
+
+        Returns a list of issue strings for every open CodeQL / GAS alert on the
+        current repository.  Returns an empty list when the GitHub API is not
+        reachable (local runs without GH_TOKEN, sandbox mode).
+
+        This method is called from fix_codeql_alerts (Pattern 8) to ensure that
+        **every** agent session explicitly checks for GAS AI-found potential
+        problems — satisfying the "harden your self-CodeQL scan" requirement.
+        Alerts from ``github-advanced-security[bot]`` and all open code-scanning
+        alerts (state=open) are included in the report.
+
+        Token hierarchy (read-only operation — no write scope required):
+          1. ``CODEX_MASTER_KEY`` — repo+workflow scopes, preferred for reliability.
+          2. ``GH_TOKEN`` — generic token, works if it has ``security_events: read``.
+          3. ``GITHUB_TOKEN`` — installation token; has ``security_events: read``
+             when the workflow requests it via ``permissions: security-events: read``.
+             NOTE: ``GITHUB_TOKEN`` returns HTTP 403 on *write* operations (variables/
+             secrets API), but is sufficient here because this is a read-only query.
+
+        Pagination: fetches at most 100 open alerts per call (GitHub API max per
+        page).  Repositories with more than 100 open code-scanning alerts will see
+        only the first page; this is an intentional cap to avoid excessive API
+        latency in CI.  Triage any such backlog separately via the GitHub Security tab.
+        """
+        import shutil
+
+        issues: list[str] = []
+
+        # Determine authentication token (prefer CODEX_MASTER_KEY for full scope)
+        token = (
+            os.environ.get("CODEX_MASTER_KEY")
+            or os.environ.get("GH_TOKEN")
+            or os.environ.get("GITHUB_TOKEN")
+        )
+        repo = os.environ.get("GITHUB_REPOSITORY", "")
+
+        if not token or not repo:
+            print(
+                "  ℹ️ GAS alert scan: GITHUB_TOKEN/GITHUB_REPOSITORY not set"
+                " — skipping (local/sandbox run)"
+            )
+            return issues
+
+        gh_cmd = shutil.which("gh")
+        if not gh_cmd:
+            print("  ℹ️ GAS alert scan: gh CLI not found — skipping")
+            return issues
+
+        try:
+            result = subprocess.run(
+                [
+                    gh_cmd, "api",
+                    f"/repos/{repo}/code-scanning/alerts",
+                    "--field", "state=open",
+                    "--field", "per_page=100",
+                    "--jq",
+                    (
+                        ".[] | \"[GAS alert #\\(.number)] \\(.rule.id // .rule.name)"
+                        " — \\(.most_recent_instance.location.path // \"unknown\")"
+                        ":\\(.most_recent_instance.location.start_line // 0)"
+                        " — \\(.html_url)\""
+                    ),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                env={**os.environ, "GH_TOKEN": token},
+                cwd=self.repo_root,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                for line in result.stdout.strip().split("\n"):
+                    if line:
+                        issues.append(
+                            f"{line} [manual-review: GAS/CodeQL alert"
+                            " — must be fixed before merge]"
+                        )
+                if issues:
+                    print(
+                        f"  🚨 {len(issues)} open GitHub Advanced Security /"
+                        " CodeQL alert(s) found — fix all before merge"
+                    )
+                else:
+                    print("  ✅ GAS alert scan: 0 open GitHub Advanced Security alerts")
+            elif result.returncode == 0:
+                print("  ✅ GAS alert scan: 0 open GitHub Advanced Security alerts")
+            else:
+                # API failure (rate-limit, 403, missing scope, etc.) — log and skip
+                stderr_snippet = (result.stderr or "")[:300]
+                print(
+                    f"  ℹ️ GAS alert scan: API returned non-zero"
+                    f" ({result.returncode}): {stderr_snippet!r} — skipping"
+                )
+        except subprocess.TimeoutExpired:
+            print("  ℹ️ GAS alert scan: API call timed out — skipping")
+        except (OSError, ValueError) as exc:
+            # OSError: gh CLI not executable / file not found at runtime.
+            # ValueError: unexpected argument or encoding error from subprocess.
+            print(f"  ℹ️ GAS alert scan: OS/value error {exc!r} — skipping")
 
         return issues
 

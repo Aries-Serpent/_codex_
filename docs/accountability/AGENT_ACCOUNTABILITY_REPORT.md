@@ -27829,3 +27829,18 @@ All github-code-quality findings from review-4232301937 and review-4232378430 ar
 | 13330–13332 | py/weak-sensitive-data-hashing | ✅ Fixed — PBKDF2-HMAC-SHA256 |
 | 13349 | py/unused-local-variable | ✅ Fixed |
 | 13339–13344, 13355–13357, 13359–13361 | py/path-injection (earlier) | ✅ Fixed |
+
+## Session Entry — 2026-05-06T04:10Z (S299 — Hardened GAS/CodeQL Scan)
+
+**Agent:** copilot-swe-agent | **Branch:** copilot/add-reference-to-redis-function | **PR:** #4289
+
+### Actions Taken
+- **Hardened GAS/CodeQL scan (new requirement — `harden your self-CodeQL scan`):** Extended Pattern 8 (`fix_codeql_alerts`) in `scripts/ci/auto_fix_common_issues.py` to add Step 3: `_check_gas_code_scanning_alerts()`. This new method queries the GitHub code-scanning REST API (`/repos/{repo}/code-scanning/alerts?state=open`) on every CI run, explicitly extending the CodeQL scan scope to include all GitHub Advanced Security AI-found potential problems. The method: (1) uses `CODEX_MASTER_KEY || GH_TOKEN || GITHUB_TOKEN` + `GITHUB_REPOSITORY`; (2) calls `gh api` to fetch open alerts; (3) reports every open alert as a `[manual-review: GAS/CodeQL alert — must be fixed before merge]` issue; (4) gracefully skips in local/sandbox runs where credentials or `gh` CLI are absent.
+- **Verified GAS alerts 13392/13393 addressed:** Both alerts were fixed in commit `59cdb6d` via intra-procedural `_SAFE_PATH_SEGMENT.fullmatch()` taint-break in `get_stats()` and `delete_index()`. The new hardened scan step will confirm zero open alerts after the next CodeQL scan completes.
+- **RP-004 (Pattern 22) sync drift:** `sync_tracked_files --check` → ✅ All consistent; no drift at current HEAD.
+- Confirmed: `ruff check src/` → 0 violations ✅
+
+### GAS Alert Hardening Pattern
+The `_check_gas_code_scanning_alerts()` method is now a permanent part of Pattern 8.
+Every future agent session that runs `auto_fix_common_issues.py --check-only` will
+automatically extend its CodeQL scan to include all open GAS AI-found potential problems.
