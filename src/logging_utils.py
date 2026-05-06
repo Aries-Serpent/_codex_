@@ -216,6 +216,64 @@ def _create_fallback_writer(config: LoggingConfig) -> FallbackMetricsWriter | No
         return None
 
 
+def _init_mlflow_bool(
+    enabled: bool,
+    run_name: str | None,
+    *,
+    tracking_uri: str | None,
+    experiment: str | None,
+) -> object | None:
+    """Internal helper: initialise MLflow from a bool-mode call."""
+    if not enabled:
+        return None
+    resolved_run = run_name or "codex-run"
+    try:
+        module = import_module("mlflow")
+    except ModuleNotFoundError:
+        LOGGER.warning(
+            "%s",
+            optional_dependency_error(
+                "mlflow",
+                purpose="experiment tracking",
+            ),
+        )
+        return None
+    if tracking_uri:
+        module.set_tracking_uri(tracking_uri)
+    if experiment:
+        module.set_experiment(experiment)
+    module.start_run(run_name=resolved_run)
+    return MLflowHandle(module)
+
+
+def _init_mlflow_experiment(
+    experiment_name: str,
+    run_name: str | None,
+    *,
+    tracking_uri: str | None,
+    tags: Mapping[str, str] | None,
+) -> tuple[object | None, object | None]:
+    """Internal helper: initialise MLflow from a legacy experiment-name call."""
+    if mlflow is None:
+        LOGGER.warning(
+            "%s",
+            optional_dependency_error(
+                "mlflow",
+                purpose="experiment tracking",
+            ),
+        )
+        return None, None
+    try:
+        if tracking_uri:
+            mlflow.set_tracking_uri(tracking_uri)
+        mlflow.set_experiment(experiment_name)
+        run = mlflow.start_run(run_name=run_name or experiment_name, tags=dict(tags) if tags else None)
+        return mlflow, run
+    except Exception as exc:  # pragma: no cover - offline guard
+        LOGGER.warning("Failed to initialise MLflow for '%s': %s", experiment_name, exc)
+        return mlflow, None
+
+
 def init_mlflow(
     enabled: bool | str,
     run_name: str | None = None,
@@ -227,47 +285,19 @@ def init_mlflow(
     """Compatibility wrapper to initialise MLflow under the legacy API."""
 
     if isinstance(enabled, bool):
-        if not enabled:
-            return None
-        resolved_run = run_name or "codex-run"
-        try:
-            module = import_module("mlflow")
-        except ModuleNotFoundError:
-            LOGGER.warning(
-                "%s",
-                optional_dependency_error(
-                    "mlflow",
-                    purpose="experiment tracking",
-                ),
-            )
-            return None
-        if tracking_uri:
-            module.set_tracking_uri(tracking_uri)
-        if experiment:
-            module.set_experiment(experiment)
-        module.start_run(run_name=resolved_run)
-        return MLflowHandle(module)
-
-    experiment_name = enabled
-    if mlflow is None:
-        LOGGER.warning(
-            "%s",
-            optional_dependency_error(
-                "mlflow",
-                purpose="experiment tracking",
-            ),
+        return _init_mlflow_bool(
+            enabled,
+            run_name,
+            tracking_uri=tracking_uri,
+            experiment=experiment,
         )
-        return None, None
 
-    try:
-        if tracking_uri:
-            mlflow.set_tracking_uri(tracking_uri)
-        mlflow.set_experiment(experiment_name)
-        run = mlflow.start_run(run_name=experiment_name, tags=dict(tags) if tags else None)
-        return mlflow, run
-    except Exception as exc:  # pragma: no cover - offline guard
-        LOGGER.warning("Failed to initialise MLflow for '%s': %s", experiment_name, exc)
-        return mlflow, None
+    return _init_mlflow_experiment(
+        enabled,
+        run_name,
+        tracking_uri=tracking_uri,
+        tags=tags,
+    )
 
 
 def setup_logging(

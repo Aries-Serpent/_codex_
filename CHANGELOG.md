@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T00:48Z — PR #4323 Session 6: CodeQL fixes + rate-limit hardening)
+- **`py/mixed-tuple-returns` fix** (`src/logging_utils.py`): Refactored `init_mlflow()` into `_init_mlflow_bool()` (returns `object | None`) and `_init_mlflow_experiment()` (always returns `tuple[object|None, object|None]`), eliminating the mixed None/tuple return shapes that triggered this CodeQL rule.
+- **`py/call-to-non-callable` fix** (`src/cli.py`): Added `callable()` guard in `_resolve_callable()` — raises `TypeError` when the resolved attribute is not callable, satisfying the CodeQL pattern.
+- **Rate-limit hardening** (`scripts/ci/github_api_trickle.py`): Added `status()` function + `--status` CLI flag that checks all token pools, writes `.codex/rate_limit_state.json`, and exits 1 when all tokens are exhausted. `--resource rate-limits` now delegates to `status()`. Human-readable table via `print_status()`.
+- **Rate-limit D-00 gate** (`scripts/ci/session_bootstrap.py`): Added rate-limit pre-check at session start — re-uses cached `.codex/rate_limit_state.json` if < 60 s old; otherwise probes all tokens; appends blocking warning to bootstrap report when all tokens exhausted.
+- **Rate-limit documentation** (`.codex/docs/RATE_LIMIT_AWARENESS.md`): New agent reference covering token pools, mandatory pre-call protocol, `.codex/rate_limit_state.json` format, correct `github_api_trickle.py` usage, and quick-reference commands.
+
 ### Fixed (session 2026-05-07T00:20Z — PR #4323 Session 5: final sweep + living docs)
 - **Workflows approved**: All pending GitHub Actions workflow runs approved by owner; CI monitoring active.
 - **CodeQL AST sweep (extended)**: `py/missing-equals` — confirmed all 4 `__hash__`-defining classes in `src/` also define `__eq__`; no violation found locally. `py/unexpected-raise-in-special-method` — all restricted special methods (`__repr__`, `__str__`, `__del__`, `__len__`, `__bool__`, `__iter__`, `__next__`, `__hash__`, `__format__`, `__contains__`, `__getattr__`) scan clean in all production directories.

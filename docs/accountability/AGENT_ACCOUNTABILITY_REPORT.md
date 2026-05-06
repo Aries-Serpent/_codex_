@@ -28806,3 +28806,40 @@ jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|call-to-
 - AST scans: extended sweep confirming 0 local violations for `missing-equals` and `unexpected-raise`
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-05-07T00:48Z SESSION 6 (PR #4323 — CodeQL fixes + rate-limit hardening)
+
+### Session Metadata
+- **PR**: #4323 (`copilot/fix-timeline-structure`)
+- **Session Start**: 2026-05-07T00:20Z
+- **Session End**: 2026-05-07T00:48Z
+- **Time budget**: ~35 min remaining in 60-min window
+
+### Work Completed
+
+#### CodeQL Fixes Applied
+| Rule | File | Fix | Confidence |
+|------|------|-----|-----------|
+| `py/mixed-tuple-returns` | `src/logging_utils.py` | Split `init_mlflow()` into `_init_mlflow_bool` (→`object|None`) + `_init_mlflow_experiment` (→`tuple[object|None,object|None]`) | High |
+| `py/call-to-non-callable` | `src/cli.py` | Added `callable()` guard in `_resolve_callable()` → raises `TypeError` if not callable | High |
+
+#### Rate-Limit Hardening (Root Cause Fix)
+**Root cause identified**: GitHub MCP `list_code_scanning_alerts` uses Copilot sandbox token (separate pool from `CODEX_MASTER_KEY`). Agents were retrying after 403 within same window, consuming quota each time.
+
+| Change | File | Description |
+|--------|------|-------------|
+| `status()` function + `--status` CLI | `scripts/ci/github_api_trickle.py` | Checks all token pools; writes `.codex/rate_limit_state.json`; exits 1 if all exhausted; pretty-prints with reset epoch |
+| D-00 rate-limit gate | `scripts/ci/session_bootstrap.py` | Probes rate limits at session start; re-uses cache if < 60 s old; adds blocking warning when exhausted |
+| New doc | `.codex/docs/RATE_LIMIT_AWARENESS.md` | Complete agent reference: token pools, pre-call protocol, state file format, correct vs. wrong usage examples |
+
+#### Validation
+- `ruff check src/logging_utils.py src/cli.py scripts/ci/github_api_trickle.py scripts/ci/session_bootstrap.py`: ✅ 0 violations
+- `sync_tracked_files --fix`: ✅ consistent
+
+### CI Status
+- API rate limit: still exhausted at time of commit (reset ~23:56Z); will use `trickle.py --status` at next attempt
+- CodeQL API: `list_code_scanning_alerts` rate-limited entire session — 49 alerts pending for next session
+
+---

@@ -674,6 +674,60 @@ def main() -> int:
 
     report = BootstrapReport(timestamp=ts, repo=repo)
 
+    # ── D-00 Rate-limit gate ──────────────────────────────────────────────────
+    # Check rate-limit state BEFORE making any API calls.  Agents must never
+    # call GitHub endpoints when all tokens are exhausted — each failed call
+    # still consumes quota.  The result is written to .codex/rate_limit_state.json
+    # so subsequent agent calls can skip the network probe within the same window.
+    if not args.offline:
+        try:
+            _rl_state_path = Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex")) / "rate_limit_state.json"
+            # Re-use cached state if it is less than 60 s old
+            _use_cached = False
+            if _rl_state_path.exists():
+                try:
+                    _cached = json.loads(_rl_state_path.read_text())
+                    import time as _time
+                    from datetime import datetime as _dt
+                    _checked_at = _dt.fromisoformat(_cached.get("checked_at", "1970-01-01T00:00:00+00:00").replace("Z", "+00:00"))
+                    if (_time.time() - _checked_at.timestamp()) < 60:
+                        _use_cached = True
+                        _rl_state = _cached
+                except Exception:  # noqa: BLE001
+                    _ = None
+            if not _use_cached:
+                _rl_trickle = Path(__file__).parent / "github_api_trickle.py"
+                try:
+                    _proc = subprocess.run(
+                        [sys.executable, str(_rl_trickle), "--status", "--json"],
+                        capture_output=True, text=True, timeout=30,
+                    )
+                    _rl_state = json.loads(_proc.stdout) if _proc.stdout.strip() else {"ok": True}
+                    try:
+                        _STATE_DIR = Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex"))
+                        _STATE_DIR.mkdir(parents=True, exist_ok=True)
+                        (_STATE_DIR / "rate_limit_state.json").write_text(json.dumps(_rl_state, indent=2))
+                    except Exception:  # noqa: BLE001
+                        _ = None
+                except Exception:  # noqa: BLE001
+                    _rl_state = {"ok": True}  # can't probe → assume ok
+            _rl_ok = _rl_state.get("ok", True)  # default True if probe failed
+            if not _rl_ok:
+                _reset_h = _rl_state.get("earliest_reset_human", "unknown")
+                _reset_e = _rl_state.get("earliest_reset_epoch", 0)
+                report.warnings.append(
+                    f"⚠️ RATE LIMIT: ALL GitHub tokens exhausted — "
+                    f"do not call any GitHub API until {_reset_h} "
+                    f"(epoch {_reset_e}).  MCP list_code_scanning_alerts will also fail."
+                )
+                if args.verbose:
+                    print(f"[bootstrap] 🔴 Rate-limited until {_reset_h}")
+            else:
+                if args.verbose:
+                    print("[bootstrap] ✅ Rate-limit check passed — tokens available")
+        except Exception as exc:  # noqa: BLE001 - best-effort; never block bootstrap
+            logger.debug("Rate-limit gate probe failed (non-fatal): %s", exc)
+
     # ── Extract URLs ──────────────────────────────────────────────────────────
     url_refs = extract_urls(context_text) if context_text else []
     if args.verbose:
