@@ -17,7 +17,7 @@ def test_legacy_wrappers_emit_deprecation():
         try:
             ut.train_loop(cfg=None, model=None, optimizer=None, loss_fn=None, train_loader=[])
         except (AttributeError, OSError, RuntimeError):
-            pass
+            pass  # intentional: test only inspects DeprecationWarning emission; call errors are expected
         assert any(isinstance(w.message, DeprecationWarning) for w in rec)
 
     with pytest.warns(DeprecationWarning):

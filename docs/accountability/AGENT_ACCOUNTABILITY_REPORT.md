@@ -27672,3 +27672,22 @@ All github-code-quality findings from review-4232301937 and review-4232378430 ar
 - `ruff check src/ tests/` → 0 violations ✅
 - `sync_tracked_files.py --check` → all consistent ✅
 - `auto_fix_common_issues.py --check-only` → 0 auto-fixable issues (Pattern 30 PDA entry now satisfied) ✅
+
+## Session Entry — 2026-05-06T01:46Z — PR #4289 S295 continuation
+
+### Actions Taken
+- **Merge conflict resolution**: Verified no actual conflict markers in CODEX_MANIFEST.json — only theoretical timestamp divergence from main; our branch version retained.
+- **CodeQL empty-except alerts fixed** (6 locations): Added explanatory comments to all bare `pass` handlers in:
+  - `tests/ci/test_session_bootstrap.py` lines 186, 203 (header-capture tests abort intentionally)
+  - `tests/deployment/test_service_health_probes.py` lines 34, 77 (file-scan skips unreadable files)
+  - `tests/space_traversal/test_peft_comprehensive/test_resume_and_retention.py` line 93 (dummy strategy callback)
+  - `tests/space_traversal/test_peft_comprehensive/test_unified_training_warnings.py` line 20 (DeprecationWarning emission test)
+- **sync_tracked_files.py --fix** → all consistent ✅
+- **Pattern 25**: This entry added; ruff 0 violations; all baselines up-to-date.
+- **Updated docs**: docs/sessions/PR4289_session_diagram.md and docs/roadmap/PR4289_whats_next.md updated to reflect S295 progress.
+
+### CI Health
+- `ruff check src/ tests/` → 0 violations ✅
+- `sync_tracked_files.py --check` → all consistent ✅
+- CodeQL alerts 13377–13382 (empty-except) addressed with explanatory comments ✅
+- CodeQL alerts 13385–13391 (rag_api path-injection) definitively fixed in commits 8be9ac9/3497a6e ✅
