@@ -28248,3 +28248,24 @@ and the CI gate requirement.
 - Pattern 25: session entry written ✅
 
 ---
+
+## Session Entry — 2026-05-06T17:09Z (PR #4317 — CI rescue comments 4390263695 + 4390285036)
+
+### Session Metadata
+- **Session ID:** S-PR4317-rescue2
+- **PR:** #4317 · branch `0D_base_`
+- **Triggered by:** CI rescue comment `4390263695` + PR status dashboard `4390285036`
+- **Policy:** §0 CODEBASE_AGENCY_POLICY.md — all bot/maintainer comments reviewed before changes
+
+### Work Performed
+1. **Verified CI state** — `sync_tracked_files.py --fix` → ✅ all consistent; `ruff check src/ tests/` → ✅ 0 violations; `auto_fix_common_issues.py --check-only` → ✅ 0 issues.
+2. **Root cause confirmed** — `sync_tracked_files: ❌ stale` (Pattern 22/30) is SHA drift (Pattern 17/28): CI ran on `GITHUB_SHA=722b4e26eaae` (GitHub merge preview commit) while branch HEAD is `56aa456`. Local state is fully clean.
+3. **This entry** triggers a fresh push to re-anchor CI to current HEAD and clear the stale Pattern 30 warning.
+
+### Outcome
+- All tracked files consistent ✅
+- ruff src/ tests/ clean ✅
+- auto_fix_common_issues --check-only: 0 issues ✅
+- Pattern 25: session entry written ✅
+
+---

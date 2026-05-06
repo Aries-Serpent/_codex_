@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T17:09Z — PR #4317 CI rescue 4390263695+4390285036)
+- CI: re-anchor CI to branch HEAD to clear SHA-drift-induced stale Pattern 22/30 warning; locally `sync_tracked_files`, `ruff`, and `auto_fix_common_issues --check-only` all clean.
+
 ### Fixed (session 2026-05-06T16:58Z — PR #4317 S221 recovery)
 - CI: S221 missed-trigger recovery — verified `sync_tracked_files` and `ruff` clean; pushed fresh commit to resolve stale Pattern 22/30 warning caused by SHA drift (old CI ran on `fdcf2cde`, current HEAD is `762e0b1`).
 
