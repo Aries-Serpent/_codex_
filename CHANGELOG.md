@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T19:56Z — PR #4317 CI rescue 4391476037 + comment 4391239050/4391294267)
+- CI: Fast Validation failing due to pre-commit trailing-whitespace hook modifying `.codex/session_context_latest.md` on every run (PR title "0 d base " had trailing space). Fixed `autonomous_rag_context.py` to `.strip()` the PR title before writing; stripped existing trailing space in `session_context_latest.md`.
+- Pattern 30 ruff lint violation was on old commit `97302583` — current HEAD is clean.
+- All tracked files consistent, all checks passing.
+
 ### Fixed (session 2026-05-06T17:21Z — PR #4317 CI rescue 4390359667 + comment 4390362964)
 - CI: re-anchor to HEAD to clear RP-004 SHA-drift on `56aa456`; all bot findings informational; priority 1-4 tasks confirmed addressed.
 

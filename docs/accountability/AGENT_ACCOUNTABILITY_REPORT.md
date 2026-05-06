@@ -28335,3 +28335,27 @@ and the CI gate requirement.
 - auto_fix_common_issues --check-only: ✅ 0 issues
 
 ---
+
+## Session Entry — 2026-05-06T19:56Z (PR #4317 — CI rescue `4391476037`)
+
+### Session Metadata
+- **Session ID:** S-PR4317-rescue-fast-validation
+- **PR:** #4317 · branch `0D_base_`
+- **Triggered by:** CI rescue comment `4391476037` (Fast Validation failure on `97302583487f`), comments `4391239050`/`4391294267`
+- **Policy:** §0 CODEBASE_AGENCY_POLICY.md — all issues fixed, no deferrals
+
+### Work Performed
+1. **Root cause analysis** — Fast Validation failing because pre-commit `trailing-whitespace` hook modified `.codex/session_context_latest.md` on every CI run (PR title "0 d base " had trailing space).
+2. **Fix `autonomous_rag_context.py`** — added `.strip()` to PR title at line 634 to prevent trailing whitespace in generated file.
+3. **Fix `session_context_latest.md`** — stripped existing trailing space from PR title header line.
+4. **CHANGELOG.md** — added session entry under `## [Unreleased]`.
+5. **Pattern 30 ruff lint** was on old commit `97302583` (sha-drift); current HEAD is already clean.
+
+### Outcome
+- autonomous_rag_context.py PR title strip: ✅ fixed
+- .codex/session_context_latest.md trailing space: ✅ fixed
+- sync_tracked_files: ✅ consistent
+- ruff src/ tests/: ✅ 0 violations
+- auto_fix_common_issues --check-only: ✅ 0 issues
+
+---
