@@ -59,7 +59,8 @@ class TestTrainingPipelineSetup:
                     except ImportError:
                         pytest.skip("PyYAML not installed")
                     except (AttributeError, ModuleNotFoundError):
-                        # Other import-adjacent errors — move on to next file.
+                        # AttributeError: yaml.safe_load missing on incomplete install;
+                        # ModuleNotFoundError: submodule resolution failure — move on.
                         pass
 
         pytest.skip("No training configs found")

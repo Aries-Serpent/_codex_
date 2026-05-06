@@ -27620,3 +27620,13 @@ All blocking comments addressed. Pattern 25 satisfied in this commit.
 
 ### §0 Compliance
 All github-code-quality and github-advanced-security review items from review-4232301937 and review-4232378430 addressed with structural code fixes (no suppression annotations).
+
+## Session Entry — 2026-05-06T00:35Z — PR #4289 code-review polish
+
+### Actions Taken
+- **Code review feedback**: Reordered guard condition in `_validate_path_segment` to `safe != value or not m` (path-traversal check before regex check — more intuitive). Improved comment in `test_training_workflows.py` to specify which exception maps to which failure scenario.
+- **Pattern 25**: Updated in this commit.
+
+### CI Health
+- `ruff check src/ tests/` → 0 violations ✅
+- syntax checks → OK ✅

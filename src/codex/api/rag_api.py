@@ -64,7 +64,7 @@ def _validate_path_segment(value: str, field_name: str) -> str:
     # break the taint chain: static analysers treat regex-match results as sanitized.
     safe = os.path.basename(value)
     m = _SAFE_PATH_SEGMENT.fullmatch(safe)
-    if not m or safe != value or safe in {".", ".."}:
+    if safe != value or not m or safe in {".", ".."}:
         raise HTTPException(
             status_code=400,
             detail=(
