@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-06T09:40Z — PR #4312 S305)
+- CI: Addressed Pattern 22/30 failures (sync_tracked_files stale on merge commit). Pulled resync commit `13a607ddf` and added Pattern 25 session entry. All tracked files consistent.
+
 ### Fixed (auto-update — PR #4312)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4312 (SHA `5bb6527b`) at 2026-05-06T06:51Z [auto-generated]
 
