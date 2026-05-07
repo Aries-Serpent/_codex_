@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T15:52Z — PR #4323 Session 32: sync drift fix, CI rescue, living docs updated)
+- **RP-004 sync stale on commit `891483792c31`** (comment #4398627386): CI rescue `Detect CI Issues & Post Fix Instructions` failure — `sync_tracked_files` dimension was stale due to prior merged-state commit not including mandatory tracked files. Fixed by running `sync_tracked_files --fix` and updating CHANGELOG + AGENT_ACCOUNTABILITY_REPORT in this commit (Pattern 25).
+- **P-045 gate enforced**: `git fetch origin main` → ✅ · `git diff --diff-filter=U` → ✅ empty (zero merge conflicts) · `ruff` → ✅ · `sync_tracked_files --fix` → ✅ consistent.
+- **Living docs updated**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated to S32 status.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S32 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent · merge conflicts: ✅ 0
+
 ### Fixed (session 2026-05-07T15:27Z — PR #4323 Session 31: merge conflict resolved, WEC codeql-alert-fetcher entry added, living docs updated)
 - **Merge conflict in `.secrets.baseline` (origin/main divergence)**: `origin/main` commit `8661a1a9f` (nightly health sweep) re-introduced conflict in `.secrets.baseline`. Resolved by `git merge origin/main` + `git checkout --ours .secrets.baseline`. `git diff --diff-filter=U` → empty ✅. This was the root cause of `mergeable_state: dirty`.
 - **P-045 enforced**: Zero-conflict gate applied before session close — `git diff --diff-filter=U` verified empty prior to this commit.

@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T15:27Z — Session 31 (merge conflict resolved, WEC codeql-alert-fetcher added)**
-> **Sessions: S1→…→S29→S30→S31 — HEAD merge(1905a540, 8661a1a9f)+**
+> **Last updated: 2026-05-07T15:52Z — Session 32 (sync drift fix, CI rescue, living docs updated)**
+> **Sessions: S1→…→S30→S31→S32 — HEAD `0159eda9`**
 
 ## Session Flow
 
@@ -223,9 +223,18 @@ S31 (merge conflict + WEC codeql-alert-fetcher + living docs): 2026-05-07T15:27Z
    ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S31)
    ├─ Living docs updated to S31
    └─ Pattern 25 satisfied · P-045 gate: git diff --diff-filter=U → empty ✅
+
+S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
+   ├─ sync_tracked_files --fix: ✅ consistent (stale dimension cleared)
+   ├─ ruff check src/ tests/: ✅ 0 violations
+   ├─ git diff --diff-filter=U: ✅ empty (zero merge conflicts — P-045 enforced)
+   ├─ CI rescue: Detect CI Issues & Post Fix Instructions on commit 891483792c31 — RP-004 pattern stale; resolved
+   ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S32, Pattern 25)
+   ├─ Living docs updated to S32
+   └─ Pattern 25 satisfied · all tracked files consistent ✅
 ```
 
-## CI Status (2026-05-07T15:27Z — HEAD merge(S31) · **zero conflicts ✅ · readiness ≥90/100**)
+## CI Status (2026-05-07T15:52Z — HEAD `0159eda9` S32 · **zero conflicts ✅ · readiness ≥90/100**)
 
 | Check | Status | Notes |
 |-------|--------|-------|
@@ -265,12 +274,12 @@ S31 (merge conflict + WEC codeql-alert-fetcher + living docs): 2026-05-07T15:27Z
 
 ## Statistics
 
-- **Sessions**: 30 (S1→S30; S15–S17 intermediate CI iterations)
+- **Sessions**: 32 (S1→S32; S15–S17 intermediate CI iterations)
 - **Files changed total**: 186+
 - **Dependabot alerts resolved**: 7 (#239–#246)
 - **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1)
 - **CodeQL alerts pending**: 46 across 6 rules — requires `CODEX_MASTER_KEY` via GitHub Actions
-- **CI rescue sessions**: 15 (S3, S14, S18–S30) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping, sync drift, merge conflicts
+- **CI rescue sessions**: 16 (S3, S14, S18–S32) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping, sync drift, merge conflicts
 - **RP-006 fixes**: 5 `.codex/` JSON files with missing EOF newlines (S27)
 - **Rate-limit hardening**: 3 files changed + 1 new doc (S6)
 - **New capability**: WEC-integrated CodeQL alert fetcher (S9)

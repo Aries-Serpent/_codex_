@@ -1,7 +1,15 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T15:27Z — Session 31 (merge conflict resolved, WEC codeql-alert-fetcher added) — HEAD `1905a540` + merge origin/main**
+> **Last updated: 2026-05-07T15:52Z — Session 32 (sync drift fix, CI rescue, living docs updated) — HEAD `0159eda9`**
 > **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · WEC complete**
+
+## Session 32 Summary (2026-05-07T15:52Z — S32: sync drift fix + CI rescue + living docs)
+
+- **Sync drift fixed**: `sync_tracked_files --fix` → ✅ consistent; `ruff` → 0 violations; merge conflicts → 0
+- **CI rescue (comment #4398627386)**: `Detect CI Issues & Post Fix Instructions` failure on commit `891483792c31` (merged state) — RP-004 sync stale dimension; fixed by this commit satisfying Pattern 25
+- **Living docs updated**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated to S32 status
+- **CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated**: Pattern 25 satisfied ✅
+- **P-045 gate**: `git diff --diff-filter=U` → empty ✅ · zero merge conflicts confirmed before push
 
 ## Session 31 Summary (2026-05-07T15:27Z — merge conflict + WEC fix)
 
