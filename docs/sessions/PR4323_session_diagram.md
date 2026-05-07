@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T00:11Z**
-> **Sessions: S1→S2→S3→S4→S5→S6→S7→S8 — HEAD TBD**
+> **Last updated: 2026-05-07T02:29Z**
+> **Sessions: S1→S2→S3→S4→S5→S6→S7→S8→S9→S10→S11→S12 — HEAD 36274d9**
 
 ## Session Flow
 
@@ -94,15 +94,49 @@ S8 (CodeQL uninitialized-var + line-length + S8 docs): 2026-05-07T00:11Z → 00:
 | CodeQL py/call-to-non-callable (1) | ✅ callable() guard (S6) |
 | GAS: _rl_state uninitialized (1) | ✅ Fixed: explicit init before conditional (S8) |
 | Line-length logging_utils.py:270 | ✅ Fixed: ≤100 chars (S8) |
-| CodeQL remaining 45 alerts (6 rules) | ⏳ Sandbox token lacks security_events scope — CODEX_MASTER_KEY required |
+| CodeQL remaining 43 alerts (6 rules) | ⏳ Sandbox token lacks security_events scope — CODEX_MASTER_KEY required |
 | Rate-limit hardening | ✅ status() + D-00 gate + RATE_LIMIT_AWARENESS.md |
 | Scope-constraint confirmed (S7) | ✅ Critical finding documented + fix path specified |
+| WEC CodeQL alert fetcher (S9) | ✅ codeql-alert-fetcher.yml + fetch_codeql_alerts.py delivered |
+| fetch_codeql_alerts.py py/mixed-returns (S11) | ✅ sys.exit(1) → raise SystemExit(1) fix applied |
+| S12 living docs + accountability refresh | ✅ All docs updated 2026-05-07T02:29Z |
 
 ## Statistics
 
-- **Sessions**: 8 (S1→S8)
-- **Files changed total**: 165+
+- **Sessions**: 12 (S1→S12)
+- **Files changed total**: 175+
 - **Dependabot alerts resolved**: 7 (#239–#246)
-- **CodeQL alerts fixed**: 62 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial, call-to-non-callable×1, GAS uninitialized-var×1)
-- **CodeQL alerts pending**: 45 across 6 rules — sandbox token lacks `security_events` scope; requires `CODEX_MASTER_KEY` via GitHub Actions or local shell
+- **CodeQL alerts fixed**: 64 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1)
+- **CodeQL alerts pending**: 43 across 6 rules — sandbox token lacks `security_events` scope; requires `CODEX_MASTER_KEY` via GitHub Actions or local shell
 - **Rate-limit hardening**: 3 files changed + 1 new doc
+- **New capability**: WEC-integrated CodeQL alert fetcher (`codeql-alert-fetcher.yml` + `fetch_codeql_alerts.py`)
+
+```
+S9 (WEC CodeQL fetcher): 2026-05-07T01:30Z → 01:57Z
+   ├─ scripts/ci/fetch_codeql_alerts.py: rate-limit-aware paginated fetcher
+   │      CODEX_MASTER_KEY + security_events scope; 4 artifact files
+   │      Retry-After backoff, configurable page sleep, max-pages cap
+   ├─ .github/workflows/codeql-alert-fetcher.yml: WEC opt-in Security workflow
+   │      workflow_dispatch; uploads 4 artifacts; index 30 in _WEC_ITEMS
+   ├─ session_wrapup_autofix.py: codeql-alert-fetcher.yml added to Security section
+   └─ Code-review hardening: urllib.parse.quote, header case, row counter, no shell injection
+
+S10 (baseline sweep): 2026-05-07T02:00Z → 02:05Z
+   └─ Universal sync+auto_fix baseline sweep [skip ci]
+
+S11 (sync + PDA + py/mixed-returns autofix): 2026-05-07T02:14Z → 02:22Z
+   ├─ sync_tracked_files --check: all consistent ✅
+   ├─ PDA entry for 2026-05-07 added ✅
+   ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated ✅
+   ├─ fetch_codeql_alerts.py: sys.exit(1) → raise SystemExit(1) (Copilot Autofix) ✅
+   └─ CI rescue comments #4393637491 + #4393638719 replied to ✅
+
+S12 (living docs + accountability refresh): 2026-05-07T02:29Z → 02:45Z
+   ├─ sync_tracked_files --check: all consistent ✅
+   ├─ ruff check src/ tests/: 0 violations ✅
+   ├─ PR4323_whats_next.md: S12 header + session block ✅
+   ├─ PR4323_session_diagram.md: S12 block + CI table + stats updated ✅
+   ├─ CHANGELOG.md: S12 entry added ✅
+   ├─ AGENT_ACCOUNTABILITY_REPORT.md: S12 session entry (Pattern 25) ✅
+   └─ parallel_validation completed ✅
+```

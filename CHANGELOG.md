@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T02:29Z — PR #4323 Session 12: living docs + CHANGELOG + accountability wrap-up)
+- **Living docs refreshed**: `docs/roadmap/PR4323_whats_next.md` updated with S12 status; `docs/sessions/PR4323_session_diagram.md` updated with S9–S12 session blocks, CI status table, and statistics (12 sessions, 175+ files, 64 CodeQL alerts fixed).
+- **Pattern 25 satisfied**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` includes S12 session entry — clears `agent-auth-delegation.yml` REQ-4.
+- **Pattern 30 confirmed**: PDA entry for 2026-05-07 present in `.codex/aftermath/pda_iterations.jsonl`.
+- **RP-004 confirmed**: `sync_tracked_files --check` exits 0 — all tracked files consistent.
+- **Ruff clean**: `ruff check src/ tests/` exits 0.
+- **CI rescue comments** (`#4393656363`, `#4393679429`, `#4393705673`) addressed.
+- **Parallel validation**: CodeQL and Code Review scans completed.
+
 ### Fixed (session 2026-05-07T02:14Z — PR #4323 Session 11: continuation — sync, PDA, living docs, py/mixed-returns explicit-return autofix)
 - **RP-004 resolved**: `sync_tracked_files --check` confirms all tracked files consistent (CODEX_MANIFEST, .secrets.baseline, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT).
 - **PDA entry added**: 2026-05-07 entry added to `.codex/aftermath/pda_iterations.jsonl` — clears Pattern 30 `PDA-entry-today` dimension.
