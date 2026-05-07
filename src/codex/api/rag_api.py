@@ -476,9 +476,7 @@ async def delete_index(
         index_root = os.path.realpath(
             os.path.join(os.path.expanduser("~"), ".codex", "rag_indices")
         )
-        index_dir = os.path.realpath(
-            os.path.join(index_root, _m_t.group(), _m_i.group())
-        )
+        index_dir = os.path.realpath(os.path.join(index_root, _m_t.group(), _m_i.group()))
         # Containment guard: index_dir must remain inside index_root.
         try:
             if os.path.commonpath([index_root, index_dir]) != index_root:
@@ -560,9 +558,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
         # os.path.realpath is a CodeQL-recognised path sanitizer; construct index_dir
         # exclusively from regex match groups so the taint-break is unambiguous.
         trusted_root = os.path.realpath(str(_RAG_FILES_BASE))
-        index_dir = os.path.realpath(
-            os.path.join(trusted_root, _m_t.group(), _m_i.group())
-        )
+        index_dir = os.path.realpath(os.path.join(trusted_root, _m_t.group(), _m_i.group()))
         # Containment guard: index_dir must remain inside trusted_root.
         try:
             if os.path.commonpath([trusted_root, index_dir]) != trusted_root:
