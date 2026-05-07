@@ -101,7 +101,7 @@ def test_assert_bf16_capability_raises_without_support(monkeypatch):
             return self
 
         def __matmul__(self, _other):  # pragma: no cover - invoked in guard
-            raise RuntimeError("no bf16 support")
+            raise ArithmeticError("no bf16 support")
 
     class _FakeTorch:
         bfloat16 = object()
@@ -118,5 +118,5 @@ def test_assert_bf16_capability_raises_without_support(monkeypatch):
     fake_torch = _FakeTorch()
     monkeypatch.setattr(modeling, "torch", fake_torch)
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ArithmeticError):
         modeling._assert_bf16_capability("bf16", fake_torch.bfloat16, "cpu", True)

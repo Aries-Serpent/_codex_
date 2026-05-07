@@ -2,19 +2,16 @@
 
 from __future__ import annotations
 
-# Re-export from src.services.audio.workflow
-try:
-    from src.services.audio.workflow import *  # noqa: F401, F403
-except ImportError:
-    _ = None  # suppressed: no action needed
-
 # Stub for AutoTuneWorkflow if not available
+_workflow_all = None
 try:
+    import src.services.audio.workflow as _workflow_module
     from src.services.audio.workflow.auto_tune_workflow import (
         AutoTuneWorkflow,
         TuneResult,
         WorkflowConfig,
     )
+    _workflow_all = getattr(_workflow_module, "__all__", None)
 except ImportError:
     from dataclasses import dataclass, field
     from typing import Any, Dict, List, Optional
@@ -50,8 +47,10 @@ except ImportError:
             return [self.process(p) for p in audio_paths]
 
 
-__all__ = [
-    "AutoTuneWorkflow",
-    "TuneResult",
-    "WorkflowConfig",
-]
+# Keep a stable public surface even when upstream package-level exports are empty.
+_stable_exports = ["AutoTuneWorkflow", "TuneResult", "WorkflowConfig"]
+if isinstance(_workflow_all, list):
+    _valid_exports = [name for name in _workflow_all if isinstance(name, str)]
+    __all__ = _valid_exports if _valid_exports else _stable_exports
+else:
+    __all__ = _stable_exports

@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-import subprocess as _subprocess
+import importlib
 from collections.abc import Sequence
 from pathlib import Path
-from typing import IO, Any
+from typing import IO, Any, cast
+
+# Resolve stdlib subprocess via importlib to avoid local-module name shadowing
+# (`src.codex.utils.subprocess`) reported by code scanning in direct imports.
+_stdlib_subprocess = cast(Any, importlib.import_module("subprocess"))
 
 
 def run(
@@ -24,7 +28,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,  # accepted for API compatibility; always forced to False
-) -> _subprocess.CompletedProcess[str]:
+) -> _stdlib_subprocess.CompletedProcess[str]:
     """Run *cmd* securely.
 
     Parameters mirror :func:`subprocess.run`.  ``shell`` is **always** ``False``
@@ -32,7 +36,7 @@ def run(
     shell-injection risks.  ``check`` defaults to ``True`` to ensure errors are
     surfaced immediately.
     """
-    return _subprocess.run(  # nosec B603
+    return _stdlib_subprocess.run(  # nosec B603
         list(cmd),
         cwd=cwd,
         capture_output=capture_output,

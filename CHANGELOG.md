@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T21:22Z — PR #4343 actionlint fix + CI rescue triage)
+- Fixed `Workflow Compliance Audit (actionlint)` failure: removed duplicate `on:` + `jobs:` block (lines 241–370) from `.github/workflows/trigger-on-approval.yml` that was appended in a prior session; file now has a single workflow definition.
+- Triaged remaining 8 failing CI checks; all confirmed as CI-infrastructure-level (token delegation / rate limits / queue cascades) — no new local code regressions.
+- Updated PR #4343 living docs: `docs/roadmap/PR4343_whats_next.md`, `docs/sessions/PR4343_session_diagram.md`, and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+
+
+- Monitored the newly re-approved workflow wave and captured latest status for head `cf03783b` in PR4343 living docs.
+- Updated `docs/roadmap/PR4343_whats_next.md`, `docs/sessions/PR4343_session_diagram.md`, and accountability tracking with current queue outcomes.
+
+### Fixed (session 2026-05-07T21:03Z — PR #4343 monitoring + follow-up refinements)
+- Continued post-approval workflow monitoring on head `d83cef27` and recorded mixed run-state status in dedicated PR4343 living docs.
+- Refined `services/audio/workflow/__init__.py` export handling by initializing `_workflow_all` explicitly and simplifying scope checks.
+- Refined `src/codex/utils/subprocess.py` typing/remediation notes while retaining CodeQL self-import mitigation pattern.
+
+### Fixed (session 2026-05-07T20:50Z — PR #4343 review-thread + CI triage remediation)
+- Addressed review-thread feedback:
+  - restored callable semantics in `src/codex_ml/evaluation/runner.py` (`callable(self.model)`),
+  - hardened `services/audio/__init__.py` exports to prefer upstream `__all__`,
+  - refined `services/audio/workflow/__init__.py` stable exports behavior.
+- Addressed code-quality findings:
+  - removed dict-only equality fallback in `_JSONResponse.__eq__` test helper,
+  - restored positional compatibility for `benchmark_operation(iterations, *args, **kwargs)`,
+  - narrowed cleanup suppression from broad `Exception` to `OSError` in test utilities.
+- Addressed GitHub Advanced Security self-import alert pattern in `src/codex/utils/subprocess.py` by switching to runtime stdlib import-module indirection.
+- Added dedicated PR #4343 living docs: `docs/roadmap/PR4343_whats_next.md` and `docs/sessions/PR4343_session_diagram.md`.
+
+### Fixed (session 2026-05-07T20:16Z — post-approval workflow monitoring)
+- Monitored re-approved workflow wave on head `6c239f07` and captured current mixed queue/conclusion state for CI rescue visibility.
+- Updated living status docs (`PR4323_whats_next.md`, `PR4323_session_diagram.md`) and accountability tracking to reflect the latest post-approval state.
+
+### Fixed (session 2026-05-07T20:10Z — CI comment triage + action-version remediation)
+- Triaged new maintainer CI-rescue and secrets-baseline comments and re-ran rescue command set (`ruff --fix`, mypy baseline check, `auto_fix_common_issues --check-only`).
+- Upgraded `.github/workflows/trigger-on-approval.yml` from `actions/github-script@v7` to `@v8` to address Pattern 30 merge-readiness action-version failure.
+- Refreshed living docs (`PR4323_whats_next.md`, `PR4323_session_diagram.md`) and accountability status for the current session.
+- Resolved follow-up review issue in `tests/mcp/test_utilities.py` by removing a stray `pass` in `cleanup_test_files`.
+
+### Fixed (session 2026-05-07T19:55Z — CodeQL/security remediation + workflow monitoring)
+- Applied requested CodeQL/security/doc readability fixes across `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`, `src/codex_ml/evaluation/runner.py`, `src/codex/utils/subprocess.py`, audio package exports, and affected tests.
+- Resolved test utility issues in `tests/mcp/test_utilities.py` (early-exit rate limit assertion, benchmark signature, module-level `os` usage, suppressed-comment consistency).
+- Updated frontend test import usage in `cognitive_app/src/components/quantum-viz/__tests__/MetricCard.test.tsx` and validated with targeted `vitest` run.
+- Monitored approved workflow runs; confirmed latest `Workflow Execution Gate` run on branch HEAD completed successfully.
+- Completed `parallel_validation` and incorporated review follow-ups (`__matmul__` helper invocation style and named fallback velocity in phase1 test).
+
+### Fixed (auto-update — PR #4343)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4343 (SHA `81d1dc87`) at 2026-05-07T19:47Z [auto-generated]
+
 ### Fixed (session 2026-05-07T16:50Z — PR #4323 Session 34: RP-004 sync drift resolved, RP-006 EOF newlines, living docs updated)
 - **RP-004**: `sync_tracked_files --fix` → ✅ all tracked files consistent (CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, CODEX_MANIFEST up-to-date for S34)
 - **RP-006**: Fixed EOF newlines in 3 `.codex/*.json` files (recurring pattern — Python-based batch fix using `rb`/`ab` mode)

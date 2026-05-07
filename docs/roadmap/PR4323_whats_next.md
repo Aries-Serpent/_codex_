@@ -1,7 +1,28 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T16:50Z — Session 34 (RP-004 sync drift fix, RP-006 EOF newlines, living docs updated)**
+> **Last updated: 2026-05-07T20:16Z — Session 37 (post-approval workflow monitoring)**
 > **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · WEC complete**
+
+## Session 37 Summary (2026-05-07T20:16Z — post-approval workflow monitoring)
+
+- Monitored latest workflow wave on head `6c239f07` after maintainer approvals.
+- Observed mixed transient state (`action_required`, `cancelled`, `startup_failure`, and succeeding gate reruns), with latest `Workflow Execution Gate` + `PR Cost Check` successful in the most recent completed pair.
+- Continued keeping living docs, changelog, and accountability synchronized for this session.
+
+## Session 36 Summary (2026-05-07T20:10Z — CI comment triage + action-version remediation)
+
+- Triaged new maintainer comments and reviewed referenced CI rescue/secrets-baseline/comment-gate runs.
+- Executed rescue validation commands: `ruff --fix`, mypy baseline check, and `auto_fix_common_issues --check-only`.
+- Remediated Pattern 30 finding by upgrading `actions/github-script@v7` → `@v8` in `.github/workflows/trigger-on-approval.yml`.
+- Fixed follow-up code-review finding in `tests/mcp/test_utilities.py` by removing stray no-op `pass` from `cleanup_test_files`.
+- Continued workflow monitoring after approvals; current runs are mostly approval-gated/action_required and dispatch failures, with no new local code-quality regressions.
+
+## Session 35 Summary (2026-05-07T19:55Z — CodeQL/security remediation batch + workflow monitoring)
+
+- Applied targeted fixes from review/CodeQL feedback across docs, Python, and test helpers.
+- Validated targeted Python tests (`pytest`) and targeted frontend test (`MetricCard.test.tsx`) pass.
+- Monitored workflow runs after maintainer approvals; `Workflow Execution Gate` latest attempt is ✅ success.
+- Completed parallel validation and applied follow-up refinements from review comments.
 
 ## Session 34 Summary (2026-05-07T16:50Z — S34: RP-004 + RP-006 fix)
 

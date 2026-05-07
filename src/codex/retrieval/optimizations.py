@@ -343,8 +343,6 @@ def precompute_index_structures(store: Any, sample_size: int = 10000) -> None:
     if hasattr(store, "index") and store.index:
         logger.info(f"Index type: {type(store.index).__name__}")
 
-        # Future: Train IVF/HNSW indices here
-        # if isinstance(store.index, faiss.IndexIVF):
-        #     store.index.train(sample_vectors)
+        # Future enhancement: add optional ANN index training integration (e.g., IVF/HNSW).
 
     logger.info("Index structures ready")

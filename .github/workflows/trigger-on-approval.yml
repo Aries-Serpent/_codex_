@@ -104,7 +104,7 @@ jobs:
 
       # ── 3. Dispatch validate.yml (Validation Pipeline — fast mode) ───────────
       - name: Dispatch Validation Pipeline (validate.yml)
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -127,7 +127,7 @@ jobs:
 
       # ── 4. Dispatch pre-merge-validation.yml ────────────────────────────────
       - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -152,7 +152,7 @@ jobs:
       # Requires CODEX_MASTER_KEY (security_events scope). Produces fresh CodeQL
       # artifact for the agent session to review. Non-fatal if token is unavailable.
       - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -185,7 +185,7 @@ jobs:
       # wake the Copilot cloud agent so it can pick up the approved PR and implement
       # any remaining changes as a maintainer (elevated via CODEX_MASTER_KEY chain).
       - name: Post @copilot continue (resume agent session)
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -237,134 +237,3 @@ jobs:
           echo "    5. @copilot continue posted           (agent session resume)" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "================================================================" | tee -a "$GITHUB_STEP_SUMMARY"
 
-
-on:
-  pull_request_review:
-    types: [submitted]
-
-permissions:
-  contents: read
-  actions: write
-  pull-requests: read
-
-jobs:
-  dispatch-validations:
-    name: Dispatch validation workflows on approval
-    if: ${{ github.event.review.state == 'approved' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-
-    env:
-      # Token chain: CODEX_MASTER_KEY required for actions:write / workflow dispatch.
-      # Falls back to CODEX_BACKUP_KEY then github.token (github.token may 403 on
-      # createWorkflowDispatch if actions:write permission is not inherited).
-      DISPATCH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
-    steps:
-      - name: Validate token availability
-        id: token_check
-        run: |
-          if [ -z "$DISPATCH_TOKEN" ]; then
-            echo "::warning::No dispatch token available — set CODEX_MASTER_KEY or CODEX_BACKUP_KEY secret."
-            echo "token_available=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "token_available=true" >> "$GITHUB_OUTPUT"
-          fi
-          PR_SHA="${{ github.event.pull_request.head.sha }}"
-          PR_NUM="${{ github.event.pull_request.number }}"
-          echo "pr_sha=${PR_SHA}" >> "$GITHUB_OUTPUT"
-          echo "pr_num=${PR_NUM}" >> "$GITHUB_OUTPUT"
-          echo "Approval dispatch target: PR #${PR_NUM} @ ${PR_SHA}"
-
-      - name: Dispatch Validation Pipeline (validate.yml)
-        if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/github-script@v7
-        env:
-          DISPATCH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const ref   = context.payload.pull_request.head.sha;
-            console.log(`Dispatching validate.yml for ref=${ref}`);
-            try {
-              await github.rest.actions.createWorkflowDispatch({
-                owner, repo,
-                workflow_id: 'validate.yml',
-                ref,
-                inputs: { mode: 'fast' },
-              });
-              console.log('✅ validate.yml dispatched');
-            } catch (err) {
-              core.warning(`validate.yml dispatch failed: ${err.message}`);
-            }
-
-      - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
-        if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const ref   = context.payload.pull_request.head.sha;
-            console.log(`Dispatching pre-merge-validation.yml for ref=${ref}`);
-            try {
-              await github.rest.actions.createWorkflowDispatch({
-                owner, repo,
-                workflow_id: 'pre-merge-validation.yml',
-                ref,
-                inputs: {},
-              });
-              console.log('✅ pre-merge-validation.yml dispatched');
-            } catch (err) {
-              core.warning(`pre-merge-validation.yml dispatch failed: ${err.message}`);
-            }
-
-      - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
-        if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/github-script@v7
-        with:
-          # CODEX_MASTER_KEY is required — codeql-alert-fetcher.yml needs
-          # security_events scope which github.token permanently lacks.
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const ref   = context.payload.pull_request.head.sha;
-            console.log(`Dispatching codeql-alert-fetcher.yml for ref=${ref}`);
-            try {
-              await github.rest.actions.createWorkflowDispatch({
-                owner, repo,
-                workflow_id: 'codeql-alert-fetcher.yml',
-                ref,
-                inputs: {
-                  state: 'open',
-                  tool_name: 'CodeQL',
-                  max_pages: '10',
-                  page_sleep_ms: '1000',
-                  top_n: '30',
-                },
-              });
-              console.log('✅ codeql-alert-fetcher.yml dispatched');
-            } catch (err) {
-              // Not fatal — CODEX_MASTER_KEY may not be available in all contexts
-              core.warning(`codeql-alert-fetcher.yml dispatch failed (needs CODEX_MASTER_KEY): ${err.message}`);
-            }
-
-      - name: Summary
-        if: always()
-        run: |
-          echo "================================================================"
-          echo "  Approval Dispatch Summary"
-          echo "================================================================"
-          echo "  PR     : #${{ steps.token_check.outputs.pr_num }}"
-          echo "  HEAD   : ${{ steps.token_check.outputs.pr_sha }}"
-          echo "  Token  : ${{ steps.token_check.outputs.token_available == 'true' && 'available ✅' || 'missing ❌' }}"
-          echo ""
-          echo "  Dispatched workflows:"
-          echo "    - validate.yml (fast mode)"
-          echo "    - pre-merge-validation.yml"
-          echo "    - codeql-alert-fetcher.yml (requires CODEX_MASTER_KEY)"
-          echo "================================================================"

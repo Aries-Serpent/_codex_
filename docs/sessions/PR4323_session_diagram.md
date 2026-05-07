@@ -1,11 +1,37 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T15:52Z — Session 32 (sync drift fix, CI rescue, living docs updated)**
-> **Sessions: S1→…→S30→S31→S32 — HEAD `0159eda9`**
+> **Last updated: 2026-05-07T20:16Z — Session 37 (post-approval workflow monitoring)**
+> **Sessions: S1→…→S34→S35→S36→S37 — HEAD `6c239f07`**
 
 ## Session Flow
 
 ```
+S37 (post-approval monitoring): 2026-05-07T20:14Z → 20:16Z
+   ├─ Maintainer re-approved pending workflows
+   ├─ Latest head 6c239f07 workflow wave monitored via MCP list_workflow_runs
+   ├─ Mixed queue state observed (action_required/cancelled/startup_failure + success reruns)
+   └─ Living docs + accountability/changelog refreshed for current status snapshot
+
+S36 (comment triage + action versions): 2026-05-07T20:05Z → 20:10Z
+   ├─ Reviewed maintainer comments + referenced CI rescue runs/log metadata
+   ├─ Ran rescue command set:
+   │      ruff check src/ tests/ --fix ✅
+   │      mypy baseline require-baseline ✅
+   │      auto_fix_common_issues --check-only ✅
+   ├─ Pattern 30 remediation:
+   │      trigger-on-approval.yml github-script@v7 → @v8 (7 refs)
+   ├─ Follow-up fix: removed stray no-op `pass` in tests/mcp/test_utilities.py cleanup helper
+   └─ Workflow monitoring continued after approvals (approval-gated/action_required state observed)
+
+S35 (CodeQL/security remediation + monitoring): 2026-05-07T19:47Z → 19:55Z
+   ├─ Applied requested fixes across docs/admin + src/ + tests/ + services/audio + admin agent module
+   ├─ Targeted validation:
+   │      pytest (MCP/agents/evaluation/audio/bf16/modeling/hhg serve) ✅
+   │      vitest MetricCard test ✅
+   ├─ Maintainer-approved workflow monitoring:
+   │      Workflow Execution Gate latest attempt ✅ success
+   └─ Parallel validation completed; follow-up review refinements applied
+
 S1 (Wave 9): Timeline/CVE/Semgrep fixes
    ├─ Fix PR description timeline clarity
    ├─ Stale review date fix
@@ -305,4 +331,3 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 | **E** | Operationalize WEC CodeQL fetcher | Alert-diff automation | Future PR |
 
 See `docs/roadmap/PR4323_whats_next.md` for full Phase A–E detail.
-
