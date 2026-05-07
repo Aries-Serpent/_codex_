@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T11:34Z — PR #4323 Session 21: Detect CI Issues / Detect and Fix Common Issues failing on bbb6526137c7)
+- **Pattern 25 (Last-Commit Accountability) fix**: `AGENT_ACCOUNTABILITY_REPORT.md` was not updated in commit `aeb6da1c` (universal baseline sweep after merge). Added S21 session entry to satisfy REQ-4 in `agent-auth-delegation.yml`. Root cause: merge commit `bbb6526137c7` + baseline sweep did not include an accountability update.
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T07:14Z — PR #4323 Session 20: Fast Validation broken cross-references)
 - **Fast Validation failure on run 25480959513** (comment #4394901045): `reports/dependabot_summary.md` lines 45-46 referenced non-existent files `../artifacts/dependabot_alerts.json` and `../artifacts/dependabot_alerts.csv`. Pre-commit cross-reference integrity hook caught these as broken links (2 in 1 file). Removed broken links and replaced with explanatory note.
 - **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S20 entry).
