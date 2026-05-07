@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T15:15Z — PR #4323 Session 30: merge-conflict resolution + zero-conflict wrap-up policy)
+- **Merge conflict in `.secrets.baseline`**: Resolved conflict introduced when `origin/main` (commit `8661a1a9f`) diverged. Conflict was in the `CODEX_MANIFEST.json` hashed_secret entry (HEAD: `be99e230fcd7…` vs main: `c54251d414…`). Kept HEAD value; ran `sync_tracked_files --fix` to confirm consistency.
+- **Zero-conflict wrap-up gate**: Added `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md` — hardened session-close protocol requiring `git diff --name-only --diff-filter=U` returns empty before every `report_progress` push.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S30 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent · merge conflicts: ✅ 0
+
 ### Fixed (session 2026-05-07T15:05Z — PR #4323 Session 29: sync drift fix + living docs + readiness >90%)
 - **RP-004 sync drift on commit `019360695708`** (comment #4398201235): CI rescue detected Pattern 22 (tracked-file sync drift) — prior commit did not include `AGENT_ACCOUNTABILITY_REPORT.md` or `CHANGELOG.md`. Fixed by adding S29 accountability entry and CHANGELOG block.
 - **Readiness score 88→≥90**: Added missing Pattern 25 accountability entries (CHANGELOG + AGENT_ACCOUNTABILITY_REPORT) to push score above 90/100 threshold. `sync_tracked_files` dimension was "❌ stale" because last commit omitted mandatory tracked files.

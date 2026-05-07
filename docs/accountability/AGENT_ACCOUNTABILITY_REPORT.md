@@ -29810,3 +29810,41 @@ by integration" — regardless of rate limit state.
 - `ruff check src/ tests/`: ✅ 0 violations
 - `sync_tracked_files --check`: ✅ consistent
 - `auto_fix_common_issues --check-only`: ✅ 0 issues
+
+---
+
+## Session S30 — 2026-05-07 (merge-conflict resolution + zero-conflict wrap-up policy)
+
+### Context
+- Branch: `copilot/fix-timeline-structure`
+- Merge conflict detected: `origin/main` (commit `8661a1a9f`, `codebase-health-sweep.yml` auto-push) diverged from branch HEAD, leaving a conflict in `.secrets.baseline` (CODEX_MANIFEST hashed_secret entry).
+- New requirement: harden process to ALWAYS verify zero merge conflicts before ending every Copilot Cloud Agent session.
+
+### Objectives
+1. Resolve `.secrets.baseline` merge conflict immediately
+2. Create hardened zero-conflict wrap-up policy and document it
+3. Add P-045 to `permanent_facts.md` so all future sessions inherit the gate
+4. Update CHANGELOG and living docs (Pattern 25)
+
+### Work Completed
+- `.secrets.baseline`: conflict resolved (kept HEAD `be99e230fcd7…`); `sync_tracked_files --fix` confirms ✅ consistent
+- `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md`: new policy doc with 8-step close checklist, conflict-resolution procedure, and enforcement notes
+- `.codex/permanent_facts.md`: P-045 added — "ZERO MERGE CONFLICTS before every session close"
+- `CHANGELOG.md`: S30 entry added under `## [Unreleased]`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: S30 entry added (this entry)
+- Living docs: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated to S30 status
+
+### Standing Requirement (P-045 — all future sessions)
+Before every `report_progress`:
+1. `git fetch origin main`
+2. `git diff --name-only --diff-filter=U` → MUST BE EMPTY
+3. Grep for `<<<<<<< ` conflict markers → MUST BE EMPTY
+4. `sync_tracked_files --fix` → all ✅
+5. Only then: `report_progress`
+
+### Validation
+- `ruff check src/ tests/`: ✅ 0 violations
+- `sync_tracked_files --fix`: ✅ all consistent
+- `git diff --name-only --diff-filter=U`: ✅ empty (zero conflicts)
+- `auto_fix_common_issues --check-only`: ✅ 0 issues
+- Pattern 25 satisfied: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated in this merge commit

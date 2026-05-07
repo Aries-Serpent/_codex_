@@ -1,7 +1,14 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T15:05Z — Session 29 (S29 — sync drift fix + readiness ≥90%) — HEAD 6981a857+**
-> **Status: 🟢 CI GREEN — readiness >90% target · sync ✅ · ruff ✅ · Pattern 25 fixed · all Dependabot resolved · 66 CodeQL fixed · 46 pending (CODEX_MASTER_KEY required)**
+> **Last updated: 2026-05-07T15:15Z — Session 30 (merge-conflict resolution + zero-conflict policy) — HEAD merge+**
+> **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · 46 pending (CODEX_MASTER_KEY required)**
+
+## Session 30 Summary (2026-05-07T15:15Z — merge-conflict resolution)
+
+- Merge conflict detected: `origin/main` (`codebase-health-sweep.yml` auto-push `8661a1a9f`) diverged from branch while PR was active
+- Conflict: `.secrets.baseline` CODEX_MANIFEST hashed_secret entry — resolved (kept HEAD value)
+- **New hardened policy (P-045)**: Zero-conflict gate required at every session close; documented in `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md` + `permanent_facts.md`
+- Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT updated (Pattern 25 ✅)
 
 ## Session 29 Summary (2026-05-07T15:05Z — sync drift fix)
 

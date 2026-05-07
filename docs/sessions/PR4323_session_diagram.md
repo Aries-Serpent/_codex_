@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T15:10Z — Session 29 (sync drift fix + readiness ≥90%)**
-> **Sessions: S1→…→S14→S18→S19→S20→S21→S22→S23→S24→S25→S26→S27→S28→S29 — HEAD 6981a857+**
+> **Last updated: 2026-05-07T15:15Z — Session 30 (merge-conflict resolution + zero-conflict policy)**
+> **Sessions: S1→…→S28→S29→S30 — HEAD merge(0337d326, 8661a1a9f)+**
 
 ## Session Flow
 
@@ -204,16 +204,19 @@ S28 (wrap-up): 2026-05-07T14:50Z
    ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S28)
    └─ Pattern 25 satisfied
 
-S29 (sync drift fix + readiness): 2026-05-07T15:05Z → 15:10Z
-   ├─ Pattern 25 violation: commit 6981a857 omitted CHANGELOG + AGENT_ACCOUNTABILITY_REPORT
-   ├─ CI rescue #4398201235 (RP-004 on commit 019360695708) addressed
-   ├─ Readiness: 88/100 → ≥90/100 (sync_tracked_files dimension fixed)
-   ├─ Living docs: headers + session flow updated to S29
-   ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S29)
-   └─ Pattern 25 satisfied
+S30 (merge-conflict resolution + zero-conflict policy): 2026-05-07T15:15Z
+   ├─ origin/main diverged (codebase-health-sweep.yml auto-push 8661a1a9f)
+   ├─ Conflict: .secrets.baseline CODEX_MANIFEST hashed_secret — resolved (kept HEAD)
+   ├─ sync_tracked_files --fix: ✅ consistent after resolution
+   ├─ P-045 added: zero-conflict gate required before every report_progress
+   ├─ .codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md created (8-step close checklist)
+   ├─ permanent_facts.md P-045 added
+   ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S30)
+   ├─ Living docs updated to S30
+   └─ Pattern 25 satisfied · merge conflicts: ✅ 0
 ```
 
-## CI Status (2026-05-07T15:10Z — HEAD 6981a857+ · S29 · **readiness ≥90/100**)
+## CI Status (2026-05-07T15:15Z — HEAD merge(S30) · **zero conflicts ✅ · readiness ≥90/100**)
 
 | Check | Status | Notes |
 |-------|--------|-------|
@@ -253,15 +256,16 @@ S29 (sync drift fix + readiness): 2026-05-07T15:05Z → 15:10Z
 
 ## Statistics
 
-- **Sessions**: 29 (S1→S29; S15–S17 intermediate CI iterations)
-- **Files changed total**: 185+
+- **Sessions**: 30 (S1→S30; S15–S17 intermediate CI iterations)
+- **Files changed total**: 186+
 - **Dependabot alerts resolved**: 7 (#239–#246)
 - **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1)
 - **CodeQL alerts pending**: 46 across 6 rules — requires `CODEX_MASTER_KEY` via GitHub Actions
-- **CI rescue sessions**: 15 (S3, S14, S18–S29) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping, sync drift
+- **CI rescue sessions**: 15 (S3, S14, S18–S30) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping, sync drift, merge conflicts
 - **RP-006 fixes**: 5 `.codex/` JSON files with missing EOF newlines (S27)
 - **Rate-limit hardening**: 3 files changed + 1 new doc (S6)
 - **New capability**: WEC-integrated CodeQL alert fetcher (S9)
+- **New policy**: P-045 zero-conflict wrap-up gate (S30) — `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md`
 
 ## Next Phases (Roadmap)
 

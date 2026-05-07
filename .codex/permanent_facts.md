@@ -83,3 +83,16 @@ rerun plugin. In those runs, `@pytest.mark.flaky` is effectively a no-op and onl
 has an effect in non-sharded test runs.
 
 - **Pattern:** P-044
+
+- **Pattern:** P-045
+  **Category:** Session Wrap-Up Gate
+  **Summary:** ZERO MERGE CONFLICTS before every session close
+  **Detail:** Before every `report_progress` push, agents MUST run:
+  (1) `git fetch origin main`
+  (2) `git diff --name-only --diff-filter=U` → must return EMPTY
+  (3) grep for `<<<<<<< ` conflict markers → must return EMPTY
+  If conflicts exist, resolve them first (keep HEAD for branch-specific files;
+  run `sync_tracked_files --fix` after resolving `.secrets.baseline`).
+  Policy doc: `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md`
+  Introduced: PR #4323 S30 2026-05-07 — `.secrets.baseline` conflict from
+  `codebase-health-sweep.yml` auto-push to main while PR was active.
