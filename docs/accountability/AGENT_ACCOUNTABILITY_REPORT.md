@@ -28,9 +28,10 @@
 - `pytest -q tests/evaluation/test_evaluation_runner.py tests/services/audio/test_auto_tune_workflow.py tests/hhg_logistics/serve/test_app.py tests/train_loop/test_bf16_matmul_guard.py tests/test_modeling_utils.py` ✅
 - `ruff check` on changed Python files ✅
 - `npm test -- --run src/components/quantum-viz/__tests__/MetricCard.test.tsx` ✅
+- `parallel_validation` run completed (Code Review + CodeQL) ✅
+- Follow-up refinements from review comments validated (`pytest` + `ruff`) ✅
 
 **Open items (same session):**
-- Run final `parallel_validation` after committing all current changes.
 - Complete wrap-up and final CI monitoring window.
 
 

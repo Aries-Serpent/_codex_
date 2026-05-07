@@ -281,7 +281,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
-| 1 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set, `init_tracing()` enables distributed tracing. See setup note below. **SAR-G05.** |
+| 1 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set, `init_tracing()` enables distributed tracing. Setup requirements are detailed in the OTel setup note below. **SAR-G05.** |
 
 ##### OTel setup note
 
