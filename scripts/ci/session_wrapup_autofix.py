@@ -127,6 +127,7 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("auto-fix-pr-check.yml",         "PR Auto-Fix Check",                                          False),
     ("code-quality-coverage-suite.yml", "Code Quality & Coverage Suite",                            False),
     ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",                                 False),
+    ("codeql-alert-fetcher.yml",      "CodeQL Alert Fetcher (artifact for in-session review)",      False),
     # --- Documentation ---
     ("documentation-link-checker.yml", "Documentation link checker",                                False),
     ("pages-pre-merge-validation.yml", "Pages pre-merge validation",                                False),
@@ -533,10 +534,10 @@ def _build_wec_block(
     always_required_items  = _WEC_ITEMS[:5]    # pre-merge → workflow-execution-gate
     always_active_items    = _WEC_ITEMS[5:9]   # copilot-agent-checkin → cost-gate
     opt_in_testing_items   = _WEC_ITEMS[9:22]  # validate → html_visual_regression
-    opt_in_security_items  = _WEC_ITEMS[22:30] # security-scanning-suite → audit-qa-suite
-    opt_in_docs_items      = _WEC_ITEMS[30:32] # documentation-link-checker → pages-pre-merge
-    opt_in_infra_items     = _WEC_ITEMS[32:39] # reference-integrity → qa-walkthrough
-    auto_approve_items     = _WEC_ITEMS[39:]   # auto-approve-workflows
+    opt_in_security_items  = _WEC_ITEMS[22:31] # security-scanning-suite → codeql-alert-fetcher
+    opt_in_docs_items      = _WEC_ITEMS[31:33] # documentation-link-checker → pages-pre-merge
+    opt_in_infra_items     = _WEC_ITEMS[33:40] # reference-integrity → qa-walkthrough
+    auto_approve_items     = _WEC_ITEMS[40:]   # auto-approve-workflows
 
     for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
