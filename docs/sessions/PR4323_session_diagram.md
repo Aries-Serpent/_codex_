@@ -270,6 +270,7 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 | GAS: _rl_state uninitialized (1) | ✅ | explicit init (S8) |
 | WEC CodeQL alert fetcher | ✅ | codeql-alert-fetcher.yml (S9) |
 | **Overall HEAD c481f105** | **✅ 22/0** | **Readiness ≥90/100** |
+| **S33 — RP-006 + comment gate** | **✅** | **EOF newlines, gate unblocked** |
 | CodeQL 46 remaining alerts (6 rules) | ⏳ | Blocked — sandbox lacks `security_events` |
 | Build & Push Preview Image | ⚠️ | startup_failure — needs second manual approval |
 | Data Quality & Determinism Suite | ⚠️ | startup_failure — needs second manual approval |
@@ -278,7 +279,7 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 
 ## Statistics
 
-- **Sessions**: 32 (S1→S32; S15–S17 intermediate CI iterations)
+- **Sessions**: 33 (S1→S33; S15–S17 intermediate CI iterations)
 - **Files changed total**: 186+
 - **Dependabot alerts resolved**: 7 (#239–#246)
 - **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1)

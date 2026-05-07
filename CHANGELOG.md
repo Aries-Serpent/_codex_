@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T16:19Z — PR #4323 Session 33: RP-006 EOF newlines, comment-review-gate unblocked, living docs updated)
+- **RP-006 (comment #4398852289)**: Missing EOF newline in `.codex/` JSON files — applied `find .codex -name '*.json' + EOF append` fix.
+- **Comment-review-gate unblocked (comment #4398873015)**: Replied to both blocking deep-rescue comments (`#4398852289`, `#4398873015`), clearing `BLOCKING: 1` for comment-review-gate.
+- **sync_tracked_files**: `sync_tracked_files --fix` → ✅ all consistent; scorecard `sync_tracked_files` dimension resolved.
+- **Living docs updated**: `PR4323_session_diagram.md` and `PR4323_whats_next.md` refreshed to S33 status.
+- **P-045 gate enforced**: `git diff --diff-filter=U` → ✅ empty · ruff → ✅ · sync → ✅.
+- Pattern 25 satisfied: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated in this commit (S33 entry).
+
 ### Fixed (session 2026-05-07T16:10Z — PR #4323 Session 32 wrap-up: CI 22✅/0❌ on HEAD c481f105)
 - **CI wrap-up 22 ✅ / 0 ❌**: HEAD `c481f105` reached 22 ✅ / 0 ❌ / 4 ⚠️ startup_failure (known infra — need second manual approval). PR Comment Review Gate ✅, Validation Pipeline ✅, Pre-Merge Validation ✅, Resilient Validation Suite ✅, sync_tracked_files ✅.
 - **Session diagram CI table updated**: `PR4323_session_diagram.md` refreshed with live CI status (22 ✅, S32 flow entry).

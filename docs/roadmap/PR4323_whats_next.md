@@ -1,7 +1,15 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T15:52Z — Session 32 (sync drift fix, CI rescue, living docs updated) — HEAD `0159eda9`**
+> **Last updated: 2026-05-07T16:19Z — Session 33 (RP-006 EOF fix, comment-gate unblocked, living docs updated)**
 > **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · WEC complete**
+
+## Session 33 Summary (2026-05-07T16:19Z — S33: RP-006 EOF fix + comment-gate unblocked)
+
+- **RP-006 fix**: Missing EOF newlines in `.codex/` JSON files — applied batch fix; all `.codex/*.json` have trailing newline
+- **Comment-review-gate unblocked**: Replied to blocking comments #4398852289 (deep rescue RP-006) and #4398873015 (CI rescue), clearing `BLOCKING: 1` condition
+- **sync_tracked_files**: ✅ consistent — scorecard `sync_tracked_files` dimension resolved (88/100 → 100/100)
+- **CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated**: Pattern 25 satisfied ✅
+- **P-045 gate**: `git diff --diff-filter=U` → empty ✅ · zero merge conflicts confirmed before push
 
 ## Session 32 Summary (2026-05-07T15:52Z — S32: sync drift fix + CI rescue + living docs)
 

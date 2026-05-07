@@ -29959,3 +29959,32 @@ Before every `report_progress`:
 - `sync_tracked_files --fix`: ✅ all consistent
 - `git diff --name-only --diff-filter=U`: ✅ empty (zero merge conflicts)
 - Pattern 25 satisfied: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated in this commit
+
+## Session S33 — 2026-05-07 (RP-006 fix, comment-gate unblocked, living docs)
+
+### Context
+- HEAD entering S33: `3e46a533` (plan commit)
+- PR: #4323 · Branch: `copilot/fix-timeline-structure`
+- Issues: RP-006 (EOF newlines), comment-review-gate BLOCKING: 1 (#4398852289, #4398873015), sync_tracked_files stale (score 88/100)
+
+### Work Completed
+- **RP-006 fix**: `find .codex -name '*.json'` EOF newline append — all `.codex/` JSON files now have trailing newline
+- **Comment-review-gate**: Replied to comments #4398852289 (RP-006 deep rescue) and #4398873015 (CI rescue blocking), clearing BLOCKING condition
+- **sync_tracked_files --fix**: ✅ all consistent (CODEX_MANIFEST, .secrets.baseline, CHANGELOG, accountability report)
+- **Living docs**: `PR4323_session_diagram.md` + `PR4323_whats_next.md` updated to S33 status
+- **CHANGELOG.md**: S33 entry added under `## [Unreleased]`
+- **AGENT_ACCOUNTABILITY_REPORT.md**: S33 entry added (this entry)
+- Pattern 25 satisfied: both mandatory tracked files updated in this commit
+
+### P-045 Gate Results (mandatory before every session close)
+1. `git fetch origin main` → ✅ fetched
+2. `git diff --name-only --diff-filter=U` → ✅ empty (zero conflicts)
+3. `ruff check src/ tests/` → ✅ 0 violations
+4. `sync_tracked_files --fix` → ✅ all consistent
+5. Ready to `report_progress` ✅
+
+### Validation
+- `ruff check src/ tests/`: ✅ 0 violations
+- `sync_tracked_files --fix`: ✅ all consistent
+- `git diff --name-only --diff-filter=U`: ✅ empty (zero merge conflicts)
+- Pattern 25 satisfied: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated in this commit
