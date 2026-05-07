@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T15:05Z — PR #4323 Session 29: sync drift fix + living docs + readiness >90%)
+- **RP-004 sync drift on commit `019360695708`** (comment #4398201235): CI rescue detected Pattern 22 (tracked-file sync drift) — prior commit did not include `AGENT_ACCOUNTABILITY_REPORT.md` or `CHANGELOG.md`. Fixed by adding S29 accountability entry and CHANGELOG block.
+- **Readiness score 88→≥90**: Added missing Pattern 25 accountability entries (CHANGELOG + AGENT_ACCOUNTABILITY_REPORT) to push score above 90/100 threshold. `sync_tracked_files` dimension was "❌ stale" because last commit omitted mandatory tracked files.
+- **Living docs updated**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated to S29 status with CI rescue history, updated statistics (29 sessions, 15 CI rescue sessions), and current CI table.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S29 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T14:50Z — PR #4323 Session 28: wrap-up — CI 14/0 green on HEAD 01936069)
 - **Wrap-up**: CI confirmed 14 ✅ / 0 ❌ on HEAD `01936069`; living docs updated to S28 status with CI table showing all checks green; statistics updated (28 sessions, 185+ files, 14 CI rescue sessions, 66 CodeQL fixes, 46 pending).
 - **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S28 entry).

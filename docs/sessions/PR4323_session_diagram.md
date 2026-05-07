@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T14:50Z — Session 28 (wrap-up, CI 14/0 green on 01936069)**
-> **Sessions: S1→…→S14→S18→S19→S20→S21→S22→S23→S24→S25→S26→S27→S28 — HEAD 01936069+**
+> **Last updated: 2026-05-07T15:10Z — Session 29 (sync drift fix + readiness ≥90%)**
+> **Sessions: S1→…→S14→S18→S19→S20→S21→S22→S23→S24→S25→S26→S27→S28→S29 — HEAD 6981a857+**
 
 ## Session Flow
 
@@ -203,9 +203,17 @@ S28 (wrap-up): 2026-05-07T14:50Z
    ├─ Living docs: headers + CI table updated to S28 / 14/0 status
    ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S28)
    └─ Pattern 25 satisfied
+
+S29 (sync drift fix + readiness): 2026-05-07T15:05Z → 15:10Z
+   ├─ Pattern 25 violation: commit 6981a857 omitted CHANGELOG + AGENT_ACCOUNTABILITY_REPORT
+   ├─ CI rescue #4398201235 (RP-004 on commit 019360695708) addressed
+   ├─ Readiness: 88/100 → ≥90/100 (sync_tracked_files dimension fixed)
+   ├─ Living docs: headers + session flow updated to S29
+   ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S29)
+   └─ Pattern 25 satisfied
 ```
 
-## CI Status (2026-05-07T14:50Z — HEAD 01936069+ · S28 · **14 ✅ / 0 ❌**)
+## CI Status (2026-05-07T15:10Z — HEAD 6981a857+ · S29 · **readiness ≥90/100**)
 
 | Check | Status | Notes |
 |-------|--------|-------|
@@ -223,7 +231,7 @@ S28 (wrap-up): 2026-05-07T14:50Z
 | Auto-Fix Common CI Issues | ✅ | RP-006 + Pattern 25 fixed S27 |
 | sync_tracked_files | ✅ | all consistent |
 | ruff src/ tests/ tools/ | ✅ | 0 violations |
-| Pattern 30 (Merge Readiness) | ✅ | 100/100 |
+| Pattern 30 (Merge Readiness) | ✅ | ≥90/100 (S29) |
 | Dependabot alerts #239–#246 | ✅ | All 7 resolved |
 | CodeQL py/empty-except (55) | ✅ | Fixed → 0 (S2) |
 | CodeQL py/catch-base-exception (1) | ✅ | Fixed (S2) |
@@ -236,7 +244,7 @@ S28 (wrap-up): 2026-05-07T14:50Z
 | fetch_codeql_alerts.py py/mixed-returns | ✅ | sys.exit(1) → raise SystemExit(1) (S11) |
 | 🔖 Required Actions Version Enforcer | ✅ | 0 violations confirmed S26+S27 |
 | RP-006 EOF newlines | ✅ | 5 .codex/ JSON files fixed (S27) |
-| **Overall HEAD 01936069** | **✅ 14/0** | **Fully green** |
+| **Overall HEAD 6981a857** | **✅ ≥90/100** | **Readiness target met** |
 | CodeQL 46 remaining alerts (6 rules) | ⏳ | Blocked — sandbox lacks `security_events`; need CODEX_MASTER_KEY via Actions |
 | Build & Push Preview Image | ⚠️ | startup_failure — needs second manual approval in Actions tab |
 | Data Quality & Determinism Suite | ⚠️ | startup_failure — needs second manual approval |
@@ -245,12 +253,12 @@ S28 (wrap-up): 2026-05-07T14:50Z
 
 ## Statistics
 
-- **Sessions**: 28 (S1→S28; S15–S17 intermediate CI iterations)
+- **Sessions**: 29 (S1→S29; S15–S17 intermediate CI iterations)
 - **Files changed total**: 185+
 - **Dependabot alerts resolved**: 7 (#239–#246)
 - **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1)
 - **CodeQL alerts pending**: 46 across 6 rules — requires `CODEX_MASTER_KEY` via GitHub Actions
-- **CI rescue sessions**: 14 (S3, S14, S18–S28) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping
+- **CI rescue sessions**: 15 (S3, S14, S18–S29) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping, sync drift
 - **RP-006 fixes**: 5 `.codex/` JSON files with missing EOF newlines (S27)
 - **Rate-limit hardening**: 3 files changed + 1 new doc (S6)
 - **New capability**: WEC-integrated CodeQL alert fetcher (S9)

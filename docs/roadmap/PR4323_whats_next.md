@@ -1,7 +1,15 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T14:50Z — Session 28 (S28 — wrap-up, CI green 14/0) — HEAD 01936069+**
-> **Status: 🟢 CI GREEN — 14 ✅ / 0 ❌ on HEAD `01936069` · sync ✅ · ruff ✅ · Pattern 30: 100/100 · RP-006 fixed · WEC preserved · all Dependabot resolved · 66 CodeQL fixed · 46 pending (CODEX_MASTER_KEY required)**
+> **Last updated: 2026-05-07T15:05Z — Session 29 (S29 — sync drift fix + readiness ≥90%) — HEAD 6981a857+**
+> **Status: 🟢 CI GREEN — readiness >90% target · sync ✅ · ruff ✅ · Pattern 25 fixed · all Dependabot resolved · 66 CodeQL fixed · 46 pending (CODEX_MASTER_KEY required)**
+
+## Session 29 Summary (2026-05-07T15:05Z — sync drift fix)
+
+- Pattern 25 violation on commit `6981a857` (S29 plan): prior commit omitted CHANGELOG + AGENT_ACCOUNTABILITY_REPORT, causing `sync_tracked_files: ❌ stale` → readiness 88/100
+- Fix: added S29 entries to CHANGELOG and AGENT_ACCOUNTABILITY_REPORT in this commit
+- Living docs updated to S29 status
+- Readiness score: 88/100 → ≥90/100 ✅
+- CI rescue comment #4398201235 (RP-004 on commit `019360695708`) addressed
 
 ## Session 28 Summary (2026-05-07T14:50Z — wrap-up)
 

@@ -29783,3 +29783,30 @@ by integration" — regardless of rate limit state.
 - `ruff check src/ tests/`: ✅ 0 violations
 - `sync_tracked_files --check`: ✅ consistent
 - `auto_fix_common_issues --check-only`: ✅ 0 issues (Pattern 30: 100/100)
+
+---
+
+## Session S29 — 2026-05-07 (sync drift fix + readiness ≥90%)
+
+### Context
+- Branch: `copilot/fix-timeline-structure`
+- Commit `6981a857`: S29 plan commit (only updated `.codex/session_context_latest.md`) — did not include CHANGELOG or AGENT_ACCOUNTABILITY_REPORT → Pattern 25 violation + readiness score 88/100
+- New CI rescue comment #4398201235 on commit `019360695708`: RP-004 (tracked-file sync drift)
+
+### Objectives
+1. Fix Pattern 25 violation — add CHANGELOG and AGENT_ACCOUNTABILITY_REPORT to this commit
+2. Update living docs (whats_next + session_diagram) to S29 status
+3. Run sync_tracked_files --fix to confirm consistent
+4. Push score from 88/100 → ≥90/100
+
+### Work Completed
+- `CHANGELOG.md`: S29 entry added under `## [Unreleased]` — covers RP-004 fix, readiness improvement, living docs update
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: S29 entry added (this entry)
+- `docs/roadmap/PR4323_whats_next.md`: header updated to S29, S29 session summary added
+- `docs/sessions/PR4323_session_diagram.md`: S29 flow entry added, statistics updated (29 sessions, 15 CI rescue sessions)
+- Pattern 25 satisfied: both mandatory tracked files updated in this commit
+
+### Validation
+- `ruff check src/ tests/`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+- `auto_fix_common_issues --check-only`: ✅ 0 issues
