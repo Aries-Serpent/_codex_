@@ -363,7 +363,7 @@ def risky_function():
     try:
         dangerous_operation()
     except:
-        pass
+        _ = None  # suppressed: no action needed
 """)
 
     reviewer = CodeChangeReviewer(tmp_path)

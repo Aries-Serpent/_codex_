@@ -109,7 +109,7 @@ class TestListGroup:
         try:
             _list_group('tokenizers', echo=mock_echo, bad_param_exc=MockException)
         except Exception as _err:
-            pass  # Registry might be empty
+            _ = None  # Registry might be empty
 
         # echo_calls may be empty if no plugins registered
 
@@ -146,7 +146,7 @@ class TestDiagnoseGroup:
                 bad_param_exc=MockException
             )
         except Exception as _err:
-            pass  # May fail if registry not fully initialized
+            _ = None  # May fail if registry not fully initialized
 
         # Should have called echo with registered count
 
@@ -169,7 +169,7 @@ class TestDiagnoseGroup:
                 bad_param_exc=MockException
             )
         except Exception as _err:
-            pass  # Entry points may not be available
+            _ = None  # Entry points may not be available
 
 
 class TestExplainGroup:

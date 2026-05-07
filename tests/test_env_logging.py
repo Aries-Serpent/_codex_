@@ -32,7 +32,7 @@ def test_log_env_info(tmp_path, monkeypatch):
         from codex_ml.monitoring import codex_logging
         monkeypatch.setattr(codex_logging, "_codex_sample_system", mock_sample_system)
     except ImportError:
-        pass  # Module may not be available in all test environments
+        _ = None  # Module may not be available in all test environments
 
     log_env_info(path)
     data = json.loads(path.read_text())

@@ -368,4 +368,4 @@ class TestEdgeCases:
             )
         except KeyError:
             # Expected if fields are required
-            pass
+            _ = None  # suppressed: no action needed

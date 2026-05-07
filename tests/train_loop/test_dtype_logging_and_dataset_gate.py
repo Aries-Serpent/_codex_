@@ -32,7 +32,7 @@ def test_logging_mismatch_and_dataset_gate_smoke(monkeypatch, capsys):
 
             shutil.rmtree(tmp)
         except ImportError:
-            pass
+            _ = None  # suppressed: no action needed
 
     result = tl.run_training(
         epochs=1,

@@ -121,7 +121,7 @@ class my_class:
 try:
     risky()
 except Exception:  # noqa: BLE001
-    pass
+    _ = None
 """
         detector = CodeSmellDetector()
         smells = detector.detect_string(code)
@@ -135,7 +135,7 @@ except Exception:  # noqa: BLE001
 try:
     risky()
 except Exception:  # noqa: BLE001
-    pass
+    _ = None
 """
         detector = CodeSmellDetector()
         smells = detector.detect_string(code)

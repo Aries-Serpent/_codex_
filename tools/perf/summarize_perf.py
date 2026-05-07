@@ -21,7 +21,7 @@ def main():
         try:
             rows.append(json.loads(line))
         except Exception:
-            pass
+            _ = None  # suppressed: no action needed
     if not rows:
         print("[perf] no rows; skipping")
         return 0

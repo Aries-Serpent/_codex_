@@ -224,7 +224,7 @@ def _assert_safe_proxy_url(url: str) -> None:
                         detail="Requests to private/reserved IP ranges are not permitted",
                     )
         except ValueError:
-            pass  # Not an IP literal — hostname; DNS-based resolution not done here
+            _ = None  # not an IP literal — hostname; DNS-based resolution not done here
     # Reject any remaining host that still contains a literal '%' (malformed or
     # scope-ID that wasn't stripped cleanly — treat as suspicious).
     if "%" in host:
@@ -1352,7 +1352,7 @@ async def ws_cli(ws: WebSocket):
                     break
         except WebSocketDisconnect:
             # Client disconnected — normal control flow; stop reading silently.
-            pass
+            _ = None  # suppressed: no action needed
         except RuntimeError as exc:
             log.debug("Unexpected RuntimeError in read_pty: %s", exc)
 
@@ -1372,7 +1372,7 @@ async def ws_cli(ws: WebSocket):
                     fcntl.ioctl(master_fd, termios.TIOCSWINSZ, winsize)
         except WebSocketDisconnect:
             # Client disconnected — normal control flow; stop writing silently.
-            pass
+            _ = None  # suppressed: no action needed
         except RuntimeError as exc:
             log.debug("Unexpected RuntimeError in write_pty: %s", exc)
 

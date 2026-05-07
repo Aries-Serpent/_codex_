@@ -27,7 +27,7 @@ try:
     np.random.seed(0)
     print("✓ NumPy determinism enabled (seed=0)", file=sys.stderr)
 except ImportError:
-    pass
+    _ = None  # suppressed: no action needed
 
 # Try to configure PyTorch determinism if available
 try:
@@ -43,7 +43,7 @@ try:
         torch.backends.cudnn.benchmark = False
     print("✓ PyTorch determinism enabled (seed=0)", file=sys.stderr)
 except ImportError:
-    pass
+    _ = None  # suppressed: no action needed
 except Exception as e:
     # Some PyTorch operations may not support deterministic mode
     print(f"⚠ PyTorch determinism partially enabled: {e}", file=sys.stderr)
@@ -57,7 +57,7 @@ try:
     os.environ["TF_DETERMINISTIC_OPS"] = "1"
     print("✓ TensorFlow determinism enabled (seed=0)", file=sys.stderr)
 except ImportError:
-    pass
+    _ = None  # suppressed: no action needed
 except Exception as e:
     print(f"⚠ TensorFlow determinism partially enabled: {e}", file=sys.stderr)
 

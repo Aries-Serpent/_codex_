@@ -230,7 +230,7 @@ def test_audit_runner_trends_integration(tmp_path: Path):
 
     except OSError:
         # Trends may fail if no data, that's ok
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def test_duplication_ratio_fallback():

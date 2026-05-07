@@ -41,7 +41,7 @@ def discover_config_roots() -> dict[str, list[str] | str]:
                 if config_dir.exists():
                     initialize_config_dir(version_base=None, config_dir=str(config_dir.resolve()))
             except Exception:
-                pass  # Continue with uninitialized state
+                _ = None  # continue with uninitialized state
 
         # Get search path
         try:

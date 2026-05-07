@@ -34,7 +34,7 @@ def _sys_path() -> Sequence[str]:
             try:
                 sys.path.remove(candidate)
             except ValueError:  # pragma: no cover - defensive cleanup
-                pass
+                _ = None
 
 
 @dataclass

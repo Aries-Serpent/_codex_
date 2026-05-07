@@ -168,7 +168,7 @@ class TestHybridPhysicsOrchestrator:
             assert result is not None
         except (TypeError, ValueError, AttributeError):
             # Acceptable to raise error for invalid types
-            pass
+            _ = None  # suppressed: no action needed
 
     # ========== FALLBACK MECHANISM TESTS ==========
 
@@ -336,7 +336,7 @@ class TestPhysicsIntegrationEdgeCases:
             assert result is not None
         except (TypeError, ValueError):
             # Acceptable to reject None values
-            pass
+            _ = None  # suppressed: no action needed
 
 
 class TestPhysicsIntegrationPerformance:

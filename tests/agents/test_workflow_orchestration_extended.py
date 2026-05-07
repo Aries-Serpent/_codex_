@@ -228,7 +228,7 @@ class TestWorkflowEdgeCases:
             # Either succeeds or raises ValueError
         except ValueError:
             # Expected for some implementations
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_workflow_very_long_id(self, navigator):
         """Test workflow with very long ID"""

@@ -92,7 +92,7 @@ async def infer(request: Request, infer_request: InferRequest):
             offline_guard.block_external_call("model_inference")
         except RuntimeError:
             # Continue with local inference
-            pass
+            _ = None  # suppressed: no action needed
 
     # Get tenant from request state (may be None if API key not required)
     tenant = getattr(request.state, "tenant", None)

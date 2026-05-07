@@ -188,7 +188,7 @@ def __getattr__(name: str):
             f"{attr_name} is unavailable because importing {module_name!r} failed."
             " Install optional Codex ML dependencies to enable this feature."
         )
-        raise ImportError(message) from exc
+        raise AttributeError(message) from exc
     return getattr(module, attr_name)
 
 

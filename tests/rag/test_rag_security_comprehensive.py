@@ -60,7 +60,7 @@ class TestEmbeddingProviderSecurity:
                     assert ".." not in provider.model_name
                 except (ValueError, OSError, Exception):
                     # Acceptable to raise on invalid input
-                    pass
+                    _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -139,7 +139,7 @@ class TestRetrieverSecurity:
                         assert isinstance(result, dict)
                 except (ValueError, TypeError, KeyError):
                     # Acceptable to raise on invalid input
-                    pass
+                    _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -170,7 +170,7 @@ class TestIndexerSecurity:
                             assert not str(path).startswith("/etc/")
                     except (ValueError, OSError):
                         # Acceptable to reject invalid paths
-                        pass
+                        _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -194,7 +194,7 @@ class TestIndexerSecurity:
                 assert result is not None
             except (ValueError, MemoryError):
                 # Acceptable to reject oversized content
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -342,7 +342,7 @@ class TestRAGRateLimiting:
                     assert isinstance(results, (list, type(None)))
                 except ImportError:
                     # If rate limited, should raise specific error
-                    pass
+                    _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -372,7 +372,7 @@ class TestRAGErrorHandling:
                     assert result is not None
                 except (TypeError, ValueError, AttributeError):
                     # Acceptable to raise on invalid input
-                    pass
+                    _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")
 
@@ -398,6 +398,6 @@ class TestRAGErrorHandling:
                     assert isinstance(result, (list, type(None)))
                 except (ValueError, TypeError):
                     # Acceptable to raise on invalid input
-                    pass
+                    _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Module not available")

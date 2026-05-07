@@ -111,7 +111,7 @@ class TestFloatProperties:
             result = math.log(math.exp(x))
             assert abs(result - x) < 1e-10
         except (ValueError, OverflowError):
-            pass  # Skip for values that overflow
+            _ = None  # Skip for values that overflow
 
     @given(st.floats(min_value=1e-10, max_value=1e10, allow_nan=False, allow_infinity=False))
     def test_log_exp_inverse(self, x: float) -> None:

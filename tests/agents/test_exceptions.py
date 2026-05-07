@@ -206,6 +206,6 @@ class TestExceptionHierarchy:
             try:
                 func()
             except AgentError:
-                pass  # Expected
+                _ = None  # Expected
             else:
                 pytest.fail(f"{func.__name__} should raise AgentError")

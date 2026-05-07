@@ -38,7 +38,7 @@ def disable_torch_profiler(monkeypatch):
         torch.set_default_device("cpu")
 
     except (ImportError, AttributeError):
-        pass  # PyTorch profiler not available or already disabled
+        _ = None  # PyTorch profiler not available or already disabled
 
 
 @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")

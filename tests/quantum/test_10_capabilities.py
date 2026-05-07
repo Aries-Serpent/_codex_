@@ -112,7 +112,7 @@ class TestCapability1RAGToAgentBridge:
             registry.load_with_dependencies("agent")
         except (ImportError, KeyError):
             # Expected - bad dependency
-            pass
+            _ = None  # suppressed: no action needed
 
         # Recovery: Load without bad dependency
         registry2 = QuantumPluginRegistry()

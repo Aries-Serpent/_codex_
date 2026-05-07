@@ -100,7 +100,7 @@ class TestCodexCLIFunctions:
                 assert pipeline is not None
             except Exception as _err:
                 # Expected if tokenizers not installed
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError as e:
             pytest.skip(f"Function import failed: {e}")
 

@@ -73,7 +73,7 @@ class TestLoadEmbedderClass:
                 assert cls is not None
             except (ImportError, ModuleNotFoundError):
                 # Mock embedder module may not exist
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 

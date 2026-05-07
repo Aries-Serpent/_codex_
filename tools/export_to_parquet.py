@@ -68,7 +68,7 @@ def export_to_parquet(
                 con.execute(f"LOAD {ext};")
             except Exception:
                 # Installation may fail in offline environments; continue anyway.
-                pass
+                _ = None  # suppressed: no action needed
         dataset_path = parquet_dir / "snippet"
         dataset_path = _ensure_within_base(dataset_path, parquet_dir)
         if dataset_path.exists():

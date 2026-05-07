@@ -373,7 +373,7 @@ class TestRollbackScenarios:
                 cursor.execute("INSERT INTO users (email) VALUES (?)", ("test@example.com",))  # Duplicate
                 conn.commit()
         except sqlite3.IntegrityError:
-            pass  # Expected
+            _ = None  # Expected
 
         # First insert should be rolled back
         with manager.connection() as conn:

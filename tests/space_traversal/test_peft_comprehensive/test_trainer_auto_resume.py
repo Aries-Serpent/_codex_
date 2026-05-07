@@ -40,7 +40,7 @@ def disable_torch_profiler(monkeypatch):
         if hasattr(profiler_module, "_record_function_exit"):
             monkeypatch.setattr(profiler_module, "_record_function_exit", lambda *args, **kwargs: None)
     except (ImportError, AttributeError):
-        pass  # PyTorch profiler not available or already disabled
+        _ = None  # PyTorch profiler not available or already disabled
 
 
 def _make_loader(torch):

@@ -49,7 +49,7 @@ def test_tenant():
         tenant_registry.delete_tenant(tenant_id)
     except ValueError:
         # Tenant may have been removed during the test
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def test_health_endpoint(client):
@@ -188,7 +188,7 @@ def test_admin_create_tenant(client, test_tenant):
         tenant_registry.delete_tenant(new_tenant_id)
     except (ValueError, KeyError):
         # Tenant may not exist or already deleted - safe to ignore in cleanup
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def test_admin_get_tenant(client, test_tenant):

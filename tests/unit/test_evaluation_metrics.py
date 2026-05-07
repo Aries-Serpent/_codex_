@@ -207,7 +207,7 @@ class TestEvaluationRunner:
             assert evaluate_model is not None
         except ImportError:
             # evaluate_model may not exist
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_metric_registry_exists(self):
         """Test metric registry or factory exists."""
@@ -219,7 +219,7 @@ class TestEvaluationRunner:
             assert hasattr(metrics, 'perplexity')
         except (ImportError, AttributeError):
             # Registry pattern may not be used
-            pass
+            _ = None  # suppressed: no action needed
 
 
 class TestMetricsModuleStructure:

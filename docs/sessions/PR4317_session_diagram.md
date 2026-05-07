@@ -804,3 +804,84 @@ flowchart TD
 | CodeQL alerts | ✅ 0 open | Inherited from PR #4289 |
 | Comment review gate | ✅ all addressed | 5/5 comments addressed |
 | uv.lock mistune alignment | ⚠️ pending | uv.lock=3.2.0 vs lock.txt=3.2.1 |
+
+---
+
+## 9. Wave 9 — S313+1 Security Continuation + Dependabot Sweep (PR #4323)
+
+**Date:** 2026-05-06T22:15Z | **Branch:** copilot/fix-timeline-structure | **PR:** #4323
+
+```mermaid
+flowchart TD
+    A["🚀 S313+1 Start\nPR #4323"] --> B["Semgrep p/flask+p/sqlalchemy added"]
+    A --> C["Comment Review Gate\n1 blocking comment"]
+    C --> C1["✅ Replied to #4392507496\nCHANGELOG + AGENT_ACCOUNTABILITY updated"]
+    B --> D["pip-audit: 0 HIGH/CRITICAL"]
+    D --> E["Dependabot Alerts Triage"]
+    E --> E1["Alert 241: Mako 1.3.10 → 1.3.12\nGHSA-v92g-xgxw-vvmm / CVE-2026-41205\nrequirements/lock.txt ✅ FIXED"]
+    E --> E2["Alert 242: Mako uv.lock\nAlready at 1.3.12 — STALE ✅"]
+    E --> E3["Alert 239: GitPython 3.1.45 → 3.1.50\nGHSA-7545-fcxq-7j24\nrequirements/lock.txt ✅ FIXED"]
+    E --> E4["Alert 240: GitPython uv.lock\n3.1.49 → 3.1.50 ✅ UPDATED"]
+    E1 & E2 & E3 & E4 --> F["Cherry-pick PR #4330\npython-multipart 0.0.26 → 0.0.27 ✅"]
+    F --> G["Investigation Reports\nreports/investigation_alert_{239,240,241,242}.md"]
+    G --> H["Living Docs Updated\nWave 9 appended"]
+    H --> I["🟢 All gates addressed\nReady for CI validation"]
+```
+
+### Wave 9 Files Changed
+
+| File | Change |
+|------|--------|
+| `requirements/lock.txt` | gitpython 3.1.45→3.1.50, mako 1.3.10→1.3.12, python-multipart 0.0.26→0.0.27 |
+| `uv.lock` | gitpython 3.1.49→3.1.50 |
+| `CODEX_MANIFEST.json` | generated_at + integrity_sha256 updated (from PR #4330) |
+| `.github/copilot-prompts/active/PR-4330-followup.md` | Cherry-picked from PR #4330 |
+| `reports/investigation_alert_{239,240,241,242}.md` | New investigation reports |
+| `artifacts/dependabot_alerts.{json,csv}` | New artifact files |
+| `reports/dependabot_summary.md` | New master summary |
+| `docs/roadmap/PR4317_whats_next.md` | Wave 9 appended |
+| `docs/sessions/PR4317_session_diagram.md` | Wave 9 appended |
+
+---
+
+## 9. Wave 9 — Final CI Monitoring (2026-05-06T22:20Z)
+
+```mermaid
+pie title CI Results on 7a989c6 (PR #4323 HEAD)
+    "success" : 5
+    "startup_failure (opt-in)" : 3
+    "skipped" : 2
+```
+
+**Merge verdict: 🟢 READY**
+
+| Check | Status |
+|-------|--------|
+| Required workflow gates | ✅ 5/5 green |
+| startup_failure runs | ⚠️ 3 — all opt-in, expected |
+| Blocking failures | ✅ 0 |
+| `.secrets.baseline` sync | ✅ fixed by `sync_tracked_files --fix` |
+| ruff `src/` | ✅ 0 violations |
+
+---
+
+## 10. Session Close — Final CI Tally (2026-05-06T22:30Z)
+
+```mermaid
+pie title Final CI — Merge Commit c99058248e34
+    "success" : 10
+    "cancelled (dedup)" : 18
+    "in_progress (followup-prompt)" : 1
+```
+
+**Verdict: 🟢 MERGE READY**
+
+| Validation | Result |
+|------------|--------|
+| Code Review | ✅ Clean — 0 comments |
+| CodeQL Security Scan | ✅ Clean — 0 alerts |
+| Required workflow gates | ✅ 10/10 green |
+| Blocking failures | ✅ 0 |
+| Dependabot alerts 239–242 | ✅ All resolved |
+| python-multipart DoS (PR #4330) | ✅ Cherry-picked |
+| `.secrets.baseline` sync | ✅ Consistent |

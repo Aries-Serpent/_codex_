@@ -1294,7 +1294,7 @@ class TestCreateProviderFromEnv:
             assert provider.region == "eu-west-1"
         except ProviderConfigError:
             # Expected if boto3 not installed
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_create_unsupported_from_env(self):
         """Test creating unsupported provider from env."""

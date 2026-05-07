@@ -87,6 +87,6 @@ def test_load_requires_model(tmp_path, monkeypatch):
     try:
         adapter.load()
     except FileNotFoundError:
-        pass
+        _ = None  # suppressed: no action needed
     else:  # pragma: no cover - defensive
         raise AssertionError("Expected FileNotFoundError for missing model")

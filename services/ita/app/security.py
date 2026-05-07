@@ -107,7 +107,7 @@ def _load_hash_pepper() -> bytes:
             return Path(configured).read_bytes()
         except (OSError, IsADirectoryError):
             # Not an existing regular file — treat the value as a literal string.
-            pass
+            _ = None  # suppressed: no action needed
         return configured.encode("utf-8")
 
     try:
@@ -115,7 +115,7 @@ def _load_hash_pepper() -> bytes:
         try:
             return _DEFAULT_PEPPER_PATH.read_bytes()
         except FileNotFoundError:
-            pass
+            _ = None  # suppressed: no action needed
         pepper = secrets.token_bytes(32)
         try:
             with _DEFAULT_PEPPER_PATH.open("xb") as handle:

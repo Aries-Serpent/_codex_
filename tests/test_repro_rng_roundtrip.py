@@ -37,7 +37,7 @@ def test_rng_roundtrip(tmp_path: Path):
 
         _ = np.random.rand(5).tolist()
     except ImportError:
-        pass
+        _ = None  # suppressed: no action needed
 
     # 4) Restore RNG and re-sample; sequences should match
     restored = repro.load_rng(str(out))

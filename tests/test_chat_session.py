@@ -85,7 +85,7 @@ def test_exception_restores_env():
         with cs:
             raise RuntimeError("boom")
     except RuntimeError:
-        pass
+        _ = None  # suppressed: no action needed
     assert os.environ.get("CODEX_SESSION_ID") == "dummy"
 
 

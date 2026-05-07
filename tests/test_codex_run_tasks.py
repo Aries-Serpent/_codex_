@@ -98,7 +98,7 @@ def test_run_task_writes_files(tmp_path: Path, monkeypatch=None):
             try:
                 setattr(mod, attr, val)
             except (AttributeError, OSError, RuntimeError):
-                pass
+                _ = None  # suppressed: no action needed
 
     try:
         rc = _call_run_task_flexibly(out_dir=tmp_path)

@@ -128,7 +128,7 @@ def pytest_configure(config: pytest.Config) -> None:
                 f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)"
             )
     except AttributeError:
-        pass  # PyTorch stub module without __version__
+        _ = None  # PyTorch stub module without __version__
 
     # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
     try:
@@ -1279,7 +1279,7 @@ def set_deterministic_seed():
 
         np.random.seed(seed)
     except ImportError:  # pragma: no cover - numpy not required for all environments
-        pass
+        _ = None
 
     # Guard optional torch usage without adding a hard dependency
     try:
@@ -1294,7 +1294,7 @@ def set_deterministic_seed():
             torch.backends.cudnn.benchmark = False
     except ImportError:
         # Torch not installed or not desired in CI; ignore.
-        pass
+        _ = None  # suppressed: no action needed
 
     yield
     # nothing to cleanup; leave RNG state as-is for test isolation
@@ -1716,7 +1716,7 @@ def mock_sentence_transformer(monkeypatch):
             )
     except ImportError:
         # sentence_transformers not available, nothing to mock
-        pass
+        _ = None  # suppressed: no action needed
 
     return MockSentenceTransformer
 
@@ -1832,7 +1832,7 @@ def session_resource_manager():
         else:
             logger.info("✓ No resource leaks detected at session end")
     except (ImportError, AttributeError, ModuleNotFoundError):  # Best-effort cleanup; psutil may not be available
-        pass
+        _ = None
 
 
 @pytest.fixture(autouse=True)
@@ -1959,9 +1959,9 @@ def force_file_cleanup():
                     try:
                         close_method()
                     except Exception as _err:
-                        pass  # Already closed or not closeable
+                        _ = None  # Already closed or not closeable
         except (ReferenceError, AttributeError):
-            pass  # Object was garbage collected during iteration
+            _ = None  # Object was garbage collected during iteration
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -1990,7 +1990,7 @@ def pytest_runtest_protocol(item, nextitem):
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
     except ImportError:  # psutil optional; skip resource tracking if unavailable
-        pass
+        _ = None
 
     yield
 
@@ -2017,7 +2017,7 @@ def pytest_runtest_protocol(item, nextitem):
                 ResourceWarning,
             )
     except (ImportError, AttributeError, ModuleNotFoundError):  # psutil optional; skip leak check if unavailable
-        pass
+        _ = None
 
 
 # ============================================================================
@@ -2076,7 +2076,7 @@ def disable_torch_profiler(monkeypatch):
                     _torch_c, "_jit_set_profiling_mode", lambda *a, **k: None
                 )
         except (ImportError, AttributeError):
-            pass  # torch._C not available in this environment — skip JIT profiling patch
+            _ = None  # torch._C not available in this environment — skip JIT profiling patch
         try:
             if hasattr(torch, "profiler") and hasattr(
                 torch.profiler, "record_function"
@@ -2087,7 +2087,7 @@ def disable_torch_profiler(monkeypatch):
                     _NoopRecordFunction,
                 )
         except (ImportError, AttributeError):
-            pass  # torch.profiler not available in this environment — skip patch
+            _ = None  # torch.profiler not available in this environment — skip patch
 
 
 @pytest.fixture(autouse=True)
@@ -2104,7 +2104,7 @@ def _end_active_mlflow_runs():
         if mlflow.active_run() is not None:
             mlflow.end_run()
     except ImportError:
-        pass  # MLflow not installed — nothing to clean up
+        _ = None  # MLflow not installed — nothing to clean up
     except Exception as exc:
         logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
@@ -2118,7 +2118,7 @@ def _end_active_mlflow_runs():
         if mlflow.active_run() is not None:
             mlflow.end_run()
     except ImportError:
-        pass  # MLflow not installed — nothing to clean up
+        _ = None  # MLflow not installed — nothing to clean up
     except Exception as exc:
         logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (post-test): unexpected error: %s", exc

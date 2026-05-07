@@ -474,7 +474,7 @@ class TestPhase2_MentalMapping_EdgeCases:
             assert isinstance(mapping.edges, dict)
         except (ValueError, KeyError):
             # Self-loops rejected — acceptable
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_remove_nonexistent_node(self):
         """Test that removing a non-existent node doesn't crash."""

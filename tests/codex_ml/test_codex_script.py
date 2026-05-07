@@ -102,7 +102,7 @@ class TestInitDeterminismFromEnv:
             try:
                 mock_np_seed.assert_called()
             except AssertionError:
-                pass  # NumPy may not be mocked properly
+                _ = None  # NumPy may not be mocked properly
 
     def test_handles_numpy_import_error(self) -> None:
         """Test handles NumPy import error gracefully."""

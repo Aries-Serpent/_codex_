@@ -8,12 +8,15 @@ import subprocess as sp
 import sys
 from pathlib import Path
 
+import pytest
+
 
 def _write_ndjson(path: Path, payloads: list[dict]) -> None:
     text = "\n".join(json.dumps(obj) for obj in payloads) + "\n"
     path.write_text(text, encoding="utf-8")
 
 
+@pytest.mark.slow
 def test_package_cli_summarizes_metrics(tmp_path: Path) -> None:
     metrics = [
         {"key": "loss", "value": 2.0},

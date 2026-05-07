@@ -89,7 +89,7 @@ try:
         if not _pl.Path(_spec.origin).is_relative_to(_stub_dir):
             HAS_REAL_TORCH = True
 except (ImportError, AttributeError, TypeError, ValueError):
-    pass
+    _ = None  # suppressed: no action needed
 
 
 # ---------------------------------------------------------------------------

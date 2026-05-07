@@ -50,7 +50,7 @@ class TestInitExperiment:
                 mock_mlflow.set_experiment.assert_called_once()
             except ImportError:
                 # Expected when mlflow not actually installed
-                pass
+                _ = None  # suppressed: no action needed
 
     @patch.dict(os.environ, {"EXPERIMENT_BACKEND": "remote", "MLFLOW_TRACKING_URI": ""}, clear=False)
     def test_init_experiment_remote_no_uri_raises(self):

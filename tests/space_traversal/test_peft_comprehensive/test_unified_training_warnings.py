@@ -17,7 +17,7 @@ def test_legacy_wrappers_emit_deprecation():
         try:
             ut.train_loop(cfg=None, model=None, optimizer=None, loss_fn=None, train_loader=[])
         except (AttributeError, OSError, RuntimeError):
-            pass  # intentional: test only inspects DeprecationWarning emission; call errors are expected
+            _ = None  # intentional: test only inspects DeprecationWarning emission; call errors are expected
         assert any(isinstance(w.message, DeprecationWarning) for w in rec)
 
     with pytest.warns(DeprecationWarning):
@@ -27,4 +27,4 @@ def test_legacy_wrappers_emit_deprecation():
             )
         except Exception as _err:
             # allow failure due to missing torch in minimal env
-            pass
+            _ = None  # suppressed: no action needed

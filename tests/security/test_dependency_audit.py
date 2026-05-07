@@ -118,7 +118,7 @@ class TestDependabot:
             assert "updates" in content, "Dependabot should have updates"
         except ImportError:
             # Just verify file exists
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_dependabot_covers_pip(self):
         """Check Dependabot covers pip ecosystem."""

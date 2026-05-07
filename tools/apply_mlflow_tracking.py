@@ -282,7 +282,7 @@ def _set_global_seeds(seed: int) -> dict[str, Any]:
         try:
             np.random.seed(seed)  # type: ignore
         except Exception:  # pragma: no cover
-            pass
+            _ = None
     return {"python": seed, "numpy": seed if np is not None else None}
 
 

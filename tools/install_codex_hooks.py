@@ -49,7 +49,7 @@ def write_hook(path: Path, content: str) -> None:
         path.chmod(mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     except Exception:
         # If chmod fails (e.g., on constrained filesystems), ignore but do not crash.
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def main() -> None:

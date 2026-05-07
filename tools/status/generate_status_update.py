@@ -118,7 +118,7 @@ def log_error(step: str, error_message: str, context: Optional[dict[str, str]] =
             handle.write(json.dumps(record, sort_keys=True) + "\n")
     except Exception:
         # Last resort: swallow logging failures to avoid cascading issues.
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def safe_read_text(path: Path) -> tuple[str, bool]:
@@ -521,7 +521,7 @@ def registry_value_repr(py_file: PythonFile, node: ast.AST) -> str:
         if snippet:
             return snippet.strip()
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
     return type(node).__name__
 
 

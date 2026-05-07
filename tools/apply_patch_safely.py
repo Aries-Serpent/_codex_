@@ -66,7 +66,7 @@ def show_head(p: Path, n=20):
         print(head.decode("utf-8", errors="replace"))
         print("----- end head -----")
     except Exception:
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def main():

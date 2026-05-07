@@ -98,7 +98,7 @@ def test_start_run_no_mlflow_accepts_noop_or_raise(monkeypatch):
         with mfu.start_run("exp") as run:
             assert run in (None, False)
     except RuntimeError:
-        pass
+        _ = None  # suppressed: no action needed
 
 
 def test_start_run_disabled_returns_noop():

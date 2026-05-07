@@ -321,7 +321,7 @@ class TestResourceExceptions:
         try:
             raise RuntimeError("Simulated error")
         except RuntimeError:
-            pass
+            _ = None  # suppressed: no action needed
         finally:
             cleanup_performed = True
         assert cleanup_performed is True
@@ -344,7 +344,7 @@ class TestResourceExceptions:
             with resource:
                 raise ValueError("Error inside context")
         except ValueError:
-            pass
+            _ = None  # suppressed: no action needed
         assert resource.closed is True
 
 

@@ -237,7 +237,7 @@ class TestMemoryIntegrationErrors:
             assert result is not None
         except AttributeError:
             # Expected if compressor is required
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_consolidation_failure_recovery(self, quantum_config, coherence_monitor, metric_repository):
         """Test recovery from consolidation failures."""
@@ -255,7 +255,7 @@ class TestMemoryIntegrationErrors:
             assessor.memory_manager.consolidate()
         except (TypeError, AttributeError):
             # Expected error, should not crash entire system
-            pass
+            _ = None  # suppressed: no action needed
 
         # System should still be usable
         assert assessor.memory_manager is not None

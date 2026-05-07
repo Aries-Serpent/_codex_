@@ -74,6 +74,7 @@ def temp_output_dir(tmp_path: Path) -> Path:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestCLIHelpVersion:
     """Tests for CLI help and version commands."""
 
@@ -132,6 +133,7 @@ class TestCLIHelpVersion:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestTrainCommand:
     """Tests for the train command functionality."""
 
@@ -235,7 +237,7 @@ class TestConfigurationLoading:
             # Should return empty config or raise FileNotFoundError
             assert result == {} or result is None
         except (ImportError, FileNotFoundError):
-            pass  # Expected behavior
+            _ = None  # Expected behavior
 
     def test_config_loading_with_empty_file(self, tmp_path: Path) -> None:
         """Test configuration loading with empty file."""
@@ -331,6 +333,7 @@ class TestTyperAppRegistration:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestEnvironmentContext:
     """Tests for environment and context handling."""
 
@@ -366,6 +369,7 @@ class TestEnvironmentContext:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestErrorHandling:
     """Tests for CLI error handling."""
 
@@ -401,6 +405,7 @@ class TestErrorHandling:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestBackendStrategy:
     """Tests for backend strategy selection."""
 
@@ -426,6 +431,7 @@ class TestBackendStrategy:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestTrackingIntegration:
     """Tests for experiment tracking integration."""
 
@@ -463,6 +469,7 @@ class TestTrackingIntegration:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestDataTypeOptions:
     """Tests for data type and precision options."""
 
@@ -487,6 +494,7 @@ class TestDataTypeOptions:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestResumeCheckpoint:
     """Tests for checkpoint resume functionality."""
 
@@ -509,6 +517,7 @@ class TestResumeCheckpoint:
 # =============================================================================
 
 
+@pytest.mark.slow
 class TestCorpusCurriculum:
     """Tests for corpus and curriculum options."""
 

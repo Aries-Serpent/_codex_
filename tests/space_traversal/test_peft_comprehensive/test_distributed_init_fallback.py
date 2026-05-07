@@ -90,7 +90,7 @@ def test_accelerate_init_with_config():
                 assert acc is not None
             except TypeError:
                 # Some configs might not be compatible with installed version
-                pass
+                _ = None  # suppressed: no action needed
 
     except ImportError:
         pytest.skip("accelerate not installed")

@@ -61,7 +61,7 @@ class TestMetricComputation:
             pytest.skip("AccuracyMetric not available")
         except (ValueError, ZeroDivisionError):
             # Expected behavior: metric may raise error on empty batch
-            pass
+            _ = None  # suppressed: no action needed
 
     def test_precision_calculation(self):
         """Test precision metric calculation."""

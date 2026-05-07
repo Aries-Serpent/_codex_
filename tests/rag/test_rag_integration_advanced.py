@@ -45,7 +45,7 @@ class TestComplexWorkflows:
                 try:
                     indexer.add_document(doc_id, content)
                 except (AttributeError, OSError, RuntimeError):  # Expected: document may already exist or indexer may not be fully initialized
-                    pass
+                    _ = None
 
             # Retrieve relevant documents
             query = "Python programming"
@@ -102,7 +102,7 @@ class TestComplexWorkflows:
                         indexer.add_document(doc_id, content)
                         doc_count += 1
                     except (AttributeError, OSError, RuntimeError):  # Expected: concurrent indexing may fail or reach capacity
-                        pass
+                        _ = None
 
             # Should have added documents incrementally
             assert doc_count == sum(batch_sizes)
@@ -131,7 +131,7 @@ class TestComplexWorkflows:
                     indexer.remove_document(doc_id)
                     indexer.add_document(doc_id, updated_content)
                 except (AttributeError, OSError, RuntimeError):  # Expected: document may not exist or update operation may not be supported
-                    pass
+                    _ = None
 
             assert True
         except ImportError:
@@ -158,7 +158,7 @@ class TestStressTests:
                 try:
                     indexer.add_document(doc_id, content)
                 except (AttributeError, OSError, RuntimeError):  # Expected: stress test may exceed limits or cause memory issues
-                    pass
+                    _ = None
 
             duration = time.time() - start_time
 
@@ -187,7 +187,7 @@ class TestStressTests:
                 try:
                     indexer.add_document(doc_id, content)
                 except (AttributeError, OSError, RuntimeError):  # Expected: bulk indexing may fail for individual documents
-                    pass
+                    _ = None
 
             # Test retrieval performance
             queries = [f"topic {i}" for i in range(10)]
@@ -197,7 +197,7 @@ class TestStressTests:
                 try:
                     retriever.retrieve(query, top_k=10)
                 except (AttributeError, OSError, RuntimeError):  # Expected: retrieval may fail if indexing was incomplete
-                    pass
+                    _ = None
             duration = time.time() - start_time
 
             # Should be fast (< 5 seconds for 10 queries)
@@ -456,7 +456,7 @@ class TestPerformanceBenchmarks:
                 try:
                     retriever.retrieve("benchmark query", top_k=top_k)
                 except (AttributeError, OSError, RuntimeError):  # Expected: retrieval may fail during performance benchmarking
-                    pass
+                    _ = None
                 latency = (time.time() - start) * 1000  # ms
                 latencies.append((top_k, latency))
 
@@ -485,7 +485,7 @@ class TestPerformanceBenchmarks:
                     try:
                         indexer.add_document(f"bench_{size}_{i}", content)
                     except (AttributeError, OSError, RuntimeError):  # Expected: benchmarking may hit resource limits
-                        pass
+                        _ = None
                 duration = time.time() - start
 
                 _ = num_docs / duration  # throughput sanity — not asserted (benchmarking)
@@ -593,7 +593,7 @@ class TestResourceManagement:
                 try:
                     indexer.add_document(f"shutdown_doc_{i}", "content")
                 except (AttributeError, OSError, RuntimeError):  # Expected: cleanup may fail if resource already released in test teardown
-                    pass
+                    _ = None
 
             # Initiate shutdown
             if hasattr(indexer, 'shutdown'):

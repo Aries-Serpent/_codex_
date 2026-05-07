@@ -564,7 +564,7 @@ def test_resource_cleanup_on_error(tmp_path):
             res.write("data")
             raise ValueError("Simulated error")
     except ValueError:
-        pass
+        _ = None  # suppressed: no action needed
 
     # Resource should be cleaned up
     assert not hasattr(res, 'is_open') or not res.is_open

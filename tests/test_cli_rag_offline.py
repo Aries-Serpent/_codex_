@@ -246,7 +246,7 @@ class TestOfflineCapability:
                 assert retriever.faiss_index is not None
             except Exception as _err:
                 # Expected if sentence-transformers not available
-                pass
+                _ = None  # suppressed: no action needed
 
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")

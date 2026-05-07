@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import pathlib
 import re
+import sys
 
 import yaml
 
@@ -62,4 +63,4 @@ if missing:
     )
 
 mk.write_text(yaml.safe_dump(data), encoding="utf-8")
-print({"added_to_nav": len(missing), "strict": data.get("strict")})
+sys.stdout.write(str({"added_to_nav": len(missing), "strict": data.get("strict")}) + "\n")

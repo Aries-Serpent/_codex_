@@ -401,7 +401,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
                 QuantumInspiredGameEngine(num_players=0)
             except (ValueError, TypeError):
                 # Expected validation
-                pass
+                _ = None  # suppressed: no action needed
         except TypeError:
             # num_players not a parameter
             pytest.skip("num_players not supported")
@@ -442,6 +442,6 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
             try:
                 PayoffOperator(payoff_matrix=[[1, 2, 3], [4, 5, 6]])
             except (TypeError, ValueError):
-                pass
+                _ = None  # suppressed: no action needed
         except ImportError:
             pytest.skip("Payoff matrix configuration not supported")

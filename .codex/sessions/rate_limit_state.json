@@ -1,0 +1,127 @@
+{
+  "ok": true,
+  "core_ready": true,
+  "security_ready": false,
+  "tokens": [
+    {
+      "slot": 1,
+      "pools": {
+        "core": {
+          "remaining": 4810,
+          "limit": 5000,
+          "reset_epoch": 1778115399,
+          "reset_human": "00:56:39 UTC",
+          "wait_secs": 3558,
+          "ready": true
+        },
+        "search": {
+          "remaining": 30,
+          "limit": 30,
+          "reset_epoch": 1778111900,
+          "reset_human": "23:58:20 UTC",
+          "wait_secs": 59,
+          "ready": true
+        },
+        "graphql": {
+          "remaining": 4685,
+          "limit": 5000,
+          "reset_epoch": 1778112197,
+          "reset_human": "00:03:17 UTC",
+          "wait_secs": 356,
+          "ready": true
+        },
+        "integration_manifest": {
+          "remaining": 5000,
+          "limit": 5000,
+          "reset_epoch": 1778115440,
+          "reset_human": "00:57:20 UTC",
+          "wait_secs": 3599,
+          "ready": true
+        },
+        "source_import": {
+          "remaining": 100,
+          "limit": 100,
+          "reset_epoch": 1778111900,
+          "reset_human": "23:58:20 UTC",
+          "wait_secs": 59,
+          "ready": true
+        },
+        "code_scanning_upload": {
+          "remaining": 4810,
+          "limit": 5000,
+          "reset_epoch": 1778115399,
+          "reset_human": "00:56:39 UTC",
+          "wait_secs": 3558,
+          "ready": true
+        },
+        "code_scanning_autofix": {
+          "remaining": 10,
+          "limit": 10,
+          "reset_epoch": 1778111900,
+          "reset_human": "23:58:20 UTC",
+          "wait_secs": 59,
+          "ready": true
+        },
+        "actions_runner_registration": {
+          "remaining": 10000,
+          "limit": 10000,
+          "reset_epoch": 1778115440,
+          "reset_human": "00:57:20 UTC",
+          "wait_secs": 3599,
+          "ready": true
+        },
+        "scim": {
+          "remaining": 15000,
+          "limit": 15000,
+          "reset_epoch": 1778115440,
+          "reset_human": "00:57:20 UTC",
+          "wait_secs": 3599,
+          "ready": true
+        },
+        "dependency_snapshots": {
+          "remaining": 100,
+          "limit": 100,
+          "reset_epoch": 1778111900,
+          "reset_human": "23:58:20 UTC",
+          "wait_secs": 59,
+          "ready": true
+        },
+        "dependency_sbom": {
+          "remaining": 100,
+          "limit": 100,
+          "reset_epoch": 1778111900,
+          "reset_human": "23:58:20 UTC",
+          "wait_secs": 59,
+          "ready": true
+        },
+        "audit_log": {
+          "remaining": 1750,
+          "limit": 1750,
+          "reset_epoch": 1778115440,
+          "reset_human": "00:57:20 UTC",
+          "wait_secs": 3599,
+          "ready": true
+        },
+        "audit_log_streaming": {
+          "remaining": 15,
+          "limit": 15,
+          "reset_epoch": 1778115440,
+          "reset_human": "00:57:20 UTC",
+          "wait_secs": 3599,
+          "ready": true
+        },
+        "code_search": {
+          "remaining": 10,
+          "limit": 10,
+          "reset_epoch": 1778111900,
+          "reset_human": "23:58:20 UTC",
+          "wait_secs": 59,
+          "ready": true
+        }
+      }
+    }
+  ],
+  "earliest_reset_epoch": 1778115440,
+  "earliest_reset_human": "00:57:20 UTC",
+  "checked_at": "2026-05-06T23:57:20.849113+00:00"
+}

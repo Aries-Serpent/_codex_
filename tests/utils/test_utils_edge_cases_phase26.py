@@ -40,7 +40,7 @@ class TestPathUtilsEdgeCases:
                 link.symlink_to(target)
                 # Should resolve symlinks appropriately
             except OSError:
-                pass  # Symlinks may not be supported
+                _ = None  # Symlinks may not be supported
 
     def test_path_unicode_characters(self):
         """Test path utils with Unicode in paths"""

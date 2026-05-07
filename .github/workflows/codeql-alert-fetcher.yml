@@ -1,0 +1,245 @@
+name: 🔍 CodeQL Alert Fetcher
+
+# WEC opt-in — Security section (index 30)
+#
+# Purpose
+# -------
+# Fetch all open CodeQL alerts from the code-scanning API using CODEX_MASTER_KEY
+# (which holds the security_events scope unavailable to sandbox tokens) and
+# upload the results as a downloadable artifact so the Copilot coding agent can
+# review exact file:line locations and plan targeted fixes within the same session.
+#
+# Why a separate workflow?
+# ------------------------
+# The Copilot sandbox token (GITHUB_TOKEN / AGENT_GITHUB_TOKEN) permanently lacks
+# security_events scope → every direct call returns HTTP 403.  The only path is to
+# run as a first-class GitHub Actions workflow using secrets.CODEX_MASTER_KEY.
+#
+# Rate-limit hardening
+# --------------------
+# - fetch_codeql_alerts.py inserts a configurable per-page sleep (PAGE_SLEEP_MS ms).
+# - The workflow exits 0 (neutral) when the rate-limit is exhausted so it does NOT
+#   block the WEC gate or count as a failing check.
+# - Re-run after the reset window (~1 hr) to get fresh results.
+#
+# Artifacts produced (90-day retention)
+# --------------------------------------
+#   codeql-alerts-{state}-{tool}-{run_id}/
+#     alerts_raw.json      — full API JSON array
+#     alerts_by_rule.md    — grouped by rule ID (ready to paste into session notes)
+#     alerts_fixable.md    — top-N prioritised fix list
+#     alerts_summary.json  — machine-readable counts by rule / severity
+#
+# Activation
+# ----------
+# Check the "🔒 Opt-In: Security & Quality > codeql-alert-fetcher.yml" box in the
+# WEC block of the PR description, then push.  The workflow-execution-gate.yml will
+# arm it.  Alternatively, dispatch manually:
+#
+#   gh workflow run codeql-alert-fetcher.yml \
+#       --ref copilot/fix-timeline-structure \
+#       -f state=open -f max_pages=10 -f page_sleep_ms=1000
+
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: 'Alert state to fetch'
+        required: false
+        type: choice
+        options: [open, dismissed, fixed, auto_dismissed]
+        default: open
+      tool_name:
+        description: 'Code-scanning tool filter'
+        required: false
+        type: string
+        default: CodeQL
+      max_pages:
+        description: 'Max pages (1–100, each page = 100 alerts)'
+        required: false
+        type: string
+        default: '10'
+      page_sleep_ms:
+        description: 'Sleep between pages (milliseconds, min 500)'
+        required: false
+        type: string
+        default: '1000'
+      top_n:
+        description: 'Top N alerts in the fixable priority list'
+        required: false
+        type: string
+        default: '30'
+
+  # Also fires when the WEC gate arms this workflow via repository_dispatch
+  repository_dispatch:
+    types: [codeql-alert-fetcher]
+
+concurrency:
+  group: codeql-alert-fetcher-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  # security-events: read is NOT needed here — CODEX_MASTER_KEY provides it via REST.
+  # We explicitly do NOT request security-events on github.token to avoid confusion.
+
+jobs:
+  fetch-alerts:
+    name: Fetch CodeQL Alerts → Artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # Token chain: CODEX_MASTER_KEY required for security_events scope.
+      # Falls back to CODEX_BACKUP_KEY; github.token will 403 on code-scanning API.
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+
+    steps:
+      - name: Validate token availability
+        id: token_check
+        run: |
+          if [ -z "$CODEX_MASTER_KEY" ]; then
+            echo "::warning::CODEX_MASTER_KEY is not set — code-scanning API requires security_events scope."
+            echo "::warning::Set the secret and re-run, or use a local shell: GH_TOKEN=\$CODEX_MASTER_KEY python scripts/ci/fetch_codeql_alerts.py"
+            echo "token_available=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "token_available=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exit early (neutral) when no token
+        if: steps.token_check.outputs.token_available == 'false'
+        run: |
+          echo "Skipping fetch — no token with security_events scope available."
+          exit 0
+
+      - name: Checkout repository
+        if: steps.token_check.outputs.token_available == 'true'
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+
+      - name: Set up Python
+        if: steps.token_check.outputs.token_available == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Resolve fetch parameters
+        if: steps.token_check.outputs.token_available == 'true'
+        id: params
+        env:
+          INPUT_STATE: ${{ github.event.inputs.state || github.event.client_payload.state || 'open' }}
+          INPUT_TOOL: ${{ github.event.inputs.tool_name || github.event.client_payload.tool_name || 'CodeQL' }}
+          INPUT_MAX_PAGES: ${{ github.event.inputs.max_pages || github.event.client_payload.max_pages || '10' }}
+          INPUT_PAGE_SLEEP_MS: ${{ github.event.inputs.page_sleep_ms || github.event.client_payload.page_sleep_ms || '1000' }}
+          INPUT_TOP_N: ${{ github.event.inputs.top_n || github.event.client_payload.top_n || '30' }}
+        run: |
+          STATE="${INPUT_STATE:-open}"
+          TOOL="${INPUT_TOOL:-CodeQL}"
+
+          # Clamp max_pages 1–100
+          MAX_PAGES="${INPUT_MAX_PAGES:-10}"
+          if [ "$MAX_PAGES" -lt 1 ] 2>/dev/null; then MAX_PAGES=1; fi
+          if [ "$MAX_PAGES" -gt 100 ] 2>/dev/null; then MAX_PAGES=100; fi
+
+          # Clamp page_sleep_ms ≥ 500
+          PAGE_SLEEP_MS="${INPUT_PAGE_SLEEP_MS:-1000}"
+          if [ "$PAGE_SLEEP_MS" -lt 500 ] 2>/dev/null; then PAGE_SLEEP_MS=500; fi
+          PAGE_SLEEP_SECS=$(echo "scale=3; $PAGE_SLEEP_MS / 1000" | bc)
+
+          TOP_N="${INPUT_TOP_N:-30}"
+
+          echo "state=$STATE"          >> "$GITHUB_OUTPUT"
+          echo "tool=$TOOL"            >> "$GITHUB_OUTPUT"
+          echo "max_pages=$MAX_PAGES"  >> "$GITHUB_OUTPUT"
+          echo "page_sleep=$PAGE_SLEEP_SECS" >> "$GITHUB_OUTPUT"
+          echo "top_n=$TOP_N"          >> "$GITHUB_OUTPUT"
+
+          ARTIFACT_NAME="codeql-alerts-${STATE}-${TOOL,,}-${{ github.run_id }}"
+          echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+          echo "out_dir=.codex/artifacts/codeql_alerts" >> "$GITHUB_OUTPUT"
+
+          echo "Parameters resolved:"
+          echo "  state=$STATE  tool=$TOOL  max_pages=$MAX_PAGES"
+          echo "  page_sleep_ms=$PAGE_SLEEP_MS  top_n=$TOP_N"
+          echo "  artifact_name=$ARTIFACT_NAME"
+
+      - name: Create output directory
+        if: steps.token_check.outputs.token_available == 'true'
+        run: mkdir -p "${{ steps.params.outputs.out_dir }}"
+
+      - name: Fetch CodeQL alerts
+        if: steps.token_check.outputs.token_available == 'true'
+        id: fetch
+        run: |
+          python scripts/ci/fetch_codeql_alerts.py \
+            --state "${{ steps.params.outputs.state }}" \
+            --tool "${{ steps.params.outputs.tool }}" \
+            --max-pages "${{ steps.params.outputs.max_pages }}" \
+            --page-sleep "${{ steps.params.outputs.page_sleep }}" \
+            --top-n "${{ steps.params.outputs.top_n }}" \
+            --out-dir "${{ steps.params.outputs.out_dir }}"
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        continue-on-error: true  # rate-limit exhaustion exits 1 — catch below
+
+      - name: Check for rate-limit exhaustion
+        if: steps.token_check.outputs.token_available == 'true' && steps.fetch.outcome == 'failure'
+        run: |
+          echo "::warning::fetch_codeql_alerts.py exited non-zero."
+          echo "::warning::This may be a rate-limit exhaustion (reset in ~1 hr) or a token scope issue."
+          echo "::warning::If partial results exist they are still uploaded as the artifact."
+
+      - name: Write run metadata
+        if: steps.token_check.outputs.token_available == 'true'
+        run: |
+          OUT_DIR="${{ steps.params.outputs.out_dir }}"
+          cat > "${OUT_DIR}/run_metadata.json" <<METAEOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "triggered_by": "${{ github.actor }}",
+            "ref": "${{ github.ref }}",
+            "state": "${{ steps.params.outputs.state }}",
+            "tool": "${{ steps.params.outputs.tool }}",
+            "max_pages": "${{ steps.params.outputs.max_pages }}",
+            "page_sleep_secs": "${{ steps.params.outputs.page_sleep }}",
+            "generated_at": "$(date -u +%Y-%m-%dT%H:%MZ)"
+          }
+          METAEOF
+          echo "Run metadata written."
+
+      - name: Upload alert artifacts
+        if: steps.token_check.outputs.token_available == 'true' && always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{ steps.params.outputs.artifact_name }}
+          path: ${{ steps.params.outputs.out_dir }}/
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Print download instructions
+        if: steps.token_check.outputs.token_available == 'true' && always()
+        run: |
+          echo ""
+          echo "================================================================"
+          echo "  CodeQL Alert Artifact Ready"
+          echo "================================================================"
+          echo "  Artifact : ${{ steps.params.outputs.artifact_name }}"
+          echo "  Run URL  : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo ""
+          echo "  To review in-session (Copilot MCP tools):"
+          echo ""
+          echo "  1. github-mcp-server-actions_list method=list_workflow_run_artifacts"
+          echo "        resource_id=${{ github.run_id }}"
+          echo ""
+          echo "  2. github-mcp-server-actions_get method=download_workflow_run_artifact"
+          echo "        resource_id=<ARTIFACT_ID from step 1>"
+          echo ""
+          echo "  3. Review .codex/artifacts/codeql_alerts/alerts_by_rule.md"
+          echo "     and alerts_fixable.md for prioritised fix list."
+          echo "================================================================"

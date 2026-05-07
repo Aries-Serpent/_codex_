@@ -552,11 +552,118 @@ def wait_for_rate_limit_reset(resource: str = "core") -> None:
 # ──────────────────────────────────────────────────────────────
 # CLI interface
 # ──────────────────────────────────────────────────────────────
+_STATE_PATH = Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex")) / "rate_limit_state.json"
+
+
+def status(*, write_state: bool = True, min_remaining: int = MIN_REMAINING) -> dict:
+    """
+    Check rate-limit status across all available tokens.
+
+    Returns a dict with keys:
+      - ``ok``          bool  — True if at least one token has capacity
+      - ``tokens``      list  — per-token detail dicts
+      - ``core_ready``  bool  — True if core REST pool has capacity on any token
+      - ``security_ready`` bool — True if code_scanning pool has capacity
+      - ``earliest_reset_epoch`` int  — earliest reset epoch across all exhausted tokens
+      - ``earliest_reset_human`` str  — human-readable form of above
+      - ``checked_at``  str   — ISO timestamp of this check
+
+    Exits with code 1 (via return value) when *all* tokens are exhausted and
+    the caller should wait before retrying.  Write ``--status`` to a JSON file
+    at ``.codex/rate_limit_state.json`` so subsequent agent calls can skip the
+    network probe.
+    """
+    now = time.time()
+    token_rows = []
+    any_core_ready = False
+    any_security_ready = False
+    earliest_reset = int(now) + 3600
+
+    for slot, token in enumerate(TOKENS, 1):
+        limits = check_rate_limits(token)
+        _polite_sleep(0.1)
+        row: dict = {"slot": slot, "pools": {}}
+        for name, info in limits.items():
+            if not info.get("limit", 0):
+                continue
+            remaining = info.get("remaining", 0)
+            reset_ep  = info.get("reset", int(now) + 3600)
+            reset_dt  = datetime.fromtimestamp(reset_ep, tz=timezone.utc).strftime("%H:%M:%S UTC")
+            wait_secs = max(0, reset_ep - now)
+            row["pools"][name] = {
+                "remaining": remaining,
+                "limit":     info["limit"],
+                "reset_epoch":  reset_ep,
+                "reset_human":  reset_dt,
+                "wait_secs":    round(wait_secs),
+                "ready":        remaining >= min_remaining,
+            }
+            if remaining >= min_remaining:
+                if name == "core":
+                    any_core_ready = True
+                if name in ("code_scanning", "security_events"):
+                    any_security_ready = True
+            else:
+                earliest_reset = min(earliest_reset, reset_ep)
+        token_rows.append(row)
+
+    earliest_dt = datetime.fromtimestamp(earliest_reset, tz=timezone.utc).strftime("%H:%M:%S UTC")
+    state = {
+        "ok":                    any_core_ready,
+        "core_ready":            any_core_ready,
+        "security_ready":        any_security_ready,
+        "tokens":                token_rows,
+        "earliest_reset_epoch":  earliest_reset,
+        "earliest_reset_human":  earliest_dt,
+        "checked_at":            datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),
+    }
+
+    if write_state:
+        try:
+            _STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+            _STATE_PATH.write_text(json.dumps(state, indent=2))
+        except Exception as exc:  # pragma: no cover - best-effort
+            logger.debug("Could not write rate_limit_state.json: %s", exc)
+
+    return state
+
+
+def print_status(state: dict) -> None:
+    """Pretty-print a status dict returned by :func:`status`."""
+    print(f"\n{'═'*60}")
+    print(f"  GitHub API Rate-Limit Status — {state['checked_at']}")
+    print(f"{'═'*60}")
+    for row in state["tokens"]:
+        print(f"\n  Token[slot-{row['slot']}]:")
+        for name, info in row["pools"].items():
+            icon = "✅" if info["ready"] else "🔴"
+            wait = f"  (wait {info['wait_secs']}s)" if not info["ready"] else ""
+            print(
+                f"    {icon} {name:30s}: {info['remaining']:5d}/{info['limit']}"
+                f" — resets {info['reset_human']}{wait}"
+            )
+    print()
+    if state["ok"]:
+        print("  ✅ At least one token has capacity — API calls may proceed.")
+    else:
+        print(
+            f"  🔴 ALL tokens exhausted — wait until {state['earliest_reset_human']}"
+            f" ({state['earliest_reset_epoch']}) before retrying."
+        )
+        print(
+            "  ℹ  Do NOT call list_code_scanning_alerts (MCP) or any GitHub API"
+            "  until then — each failed attempt still costs quota."
+        )
+    print(f"{'═'*60}\n")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--owner", default=_OWNER)
     parser.add_argument("--repo",  default=_REPO)
     parser.add_argument("--resource", choices=["code-scanning-alerts", "pr-reviews", "rate-limits"])
+    parser.add_argument("--status",  action="store_true",
+                        help="Print rate-limit status table for all tokens; exit 0=ready 1=all-exhausted")
     parser.add_argument("--rest",    metavar="PATH", help="Raw REST GET path")
     parser.add_argument("--graphql", metavar="FILE", help="GraphQL query file")
     parser.add_argument("--pr",      type=int,       help="PR number (for pr-reviews)")
@@ -564,16 +671,19 @@ def main() -> int:
     parser.add_argument("--json",    action="store_true", help="Output raw JSON")
     args = parser.parse_args()
 
+    # ── new: --status ────────────────────────────────────────────
+    if args.status:
+        s = status()
+        print_status(s)
+        if args.json:
+            print(json.dumps(s, indent=2))
+        return 0 if s["ok"] else 1
+
     if args.resource == "rate-limits":
-        for tok_slot, token in enumerate(TOKENS, 1):
-            limits = check_rate_limits(token)
-            _polite_sleep()
-            print(f"\nToken[slot-{tok_slot}]:")
-            for name, info in limits.items():
-                if info.get("limit", 0) > 0:
-                    reset_dt = datetime.fromtimestamp(info["reset"], tz=timezone.utc).strftime("%H:%M:%S UTC")
-                    print(f"  {name:30s}: {info['remaining']:5d}/{info['limit']} — resets {reset_dt}")
-        return 0
+        # Legacy alias — now delegates to --status
+        s = status()
+        print_status(s)
+        return 0 if s["ok"] else 1
 
     if args.rest:
         data, err = rest_get(args.rest)

@@ -89,9 +89,12 @@ def _resolve_callable(target: str) -> Any:
         _ensure_real_torch()
     module = importlib.import_module(module_name)
     try:
-        return getattr(module, attr)
+        resolved = getattr(module, attr)
     except AttributeError as exc:  # pragma: no cover - defensive
         raise AttributeError(f"Module '{module_name}' has no attribute '{attr}'") from exc
+    if not callable(resolved):
+        raise TypeError(f"'{module_name}.{attr}' is not callable")
+    return resolved
 
 
 def _section_to_dict(section: Any) -> dict[str, Any]:

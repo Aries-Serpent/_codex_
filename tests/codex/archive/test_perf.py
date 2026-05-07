@@ -121,7 +121,7 @@ class TestTimer:
             with timer("failing_op") as metrics:
                 raise ValueError("Test error")
         except ValueError:
-            pass
+            _ = None  # suppressed: no action needed
 
         assert metrics is not None
         assert metrics.finished_ns is not None

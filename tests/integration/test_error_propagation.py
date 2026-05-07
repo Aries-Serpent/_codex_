@@ -109,7 +109,7 @@ class TestGracefulDegradation:
         try:
             raise ConnectionError("Service overload")
         except ConnectionError:
-            pass
+            _ = None  # suppressed: no action needed
 
         assert current_level in service_levels
         assert current_level != "full"

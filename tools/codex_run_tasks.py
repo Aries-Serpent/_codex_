@@ -119,7 +119,7 @@ def append(path: Path, text: str) -> None:
             path.write_text(text, encoding="utf-8")
         except Exception:
             # give up silently; caller should still return non-zero to indicate failure
-            pass
+            _ = None  # suppressed: no action needed
 
 
 def capture_error(

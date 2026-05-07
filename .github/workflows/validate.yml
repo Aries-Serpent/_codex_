@@ -11,6 +11,10 @@ name: Validation Pipeline
 on:
   pull_request:
     branches: ["main", "0D_base_"]
+    types: [opened, synchronize, reopened]
+  # Re-run Fast Validation when a PR is approved (catches stale missed runs)
+  pull_request_review:
+    types: [submitted]
   schedule:
     - cron: "0 3 * * *"  # daily at 03:00 UTC
   workflow_dispatch:

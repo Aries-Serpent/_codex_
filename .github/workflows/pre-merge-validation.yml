@@ -6,6 +6,8 @@ on:
   # Also run when PR is approved
   pull_request_review:
     types: [submitted]
+  # Allow manual re-trigger for missed runs (e.g. after approval on new HEAD)
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

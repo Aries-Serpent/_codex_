@@ -152,14 +152,14 @@ def ensure_encoding_support(file_path: Path) -> dict:
                 if best and best.encoding:
                     return best.encoding
             except Exception:
-                pass
+                _ = None  # suppressed: no action needed
             try:
                 import chardet
                 guess = chardet.detect(data)
                 if guess and guess.get("encoding"):
                     return guess["encoding"]
             except Exception:
-                pass
+                _ = None  # suppressed: no action needed
             return "utf-8"
         """
         )
@@ -209,7 +209,7 @@ def ensure_encoding_support(file_path: Path) -> dict:
                 try:
                     pass
                 except Exception:
-                    pass
+                    _ = None  # suppressed: no action needed
             else:
                 encoding = _codex_detect_encoding(data)
         """

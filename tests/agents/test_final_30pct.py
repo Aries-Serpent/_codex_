@@ -82,7 +82,7 @@ class TestWorkflowNavigatorSimple:
                 # If it returns something, that's coverage
             except (KeyError, ValueError):
                 # Expected if workflow doesn't exist
-                pass
+                _ = None  # suppressed: no action needed
 
 
 class TestSelfHealingSimple:

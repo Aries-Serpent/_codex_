@@ -39,7 +39,7 @@ class TestQuantumPlugin:
             plugin.observe()
         except ImportError:
             # Expected: plugin deliberately designed to fail import
-            pass
+            _ = None  # suppressed: no action needed
         assert plugin.get_amplitude() == 0.0
         assert plugin.state == PluginState.DECOHERENT
 
@@ -73,7 +73,7 @@ class TestQuantumPlugin:
             plugin.observe()
         except ImportError:
             # Expected: first observation fails and sets plugin to decoherent state
-            pass
+            _ = None  # suppressed: no action needed
         # Second attempt should also raise
         with pytest.raises(ImportError):
             plugin.observe()

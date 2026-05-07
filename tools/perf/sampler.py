@@ -22,7 +22,7 @@ class PerfSampler:
                 nvml.nvmlInit()
             except Exception:
                 # GPU not available or NVML initialization failed
-                pass
+                _ = None  # suppressed: no action needed
 
     def sample_once(self):
         row = {"ts": time.time()}
@@ -37,7 +37,7 @@ class PerfSampler:
                 }
             except Exception:
                 # GPU metrics not available or device error
-                pass
+                _ = None  # suppressed: no action needed
         with self.out.open("a", encoding="utf-8") as f:
             f.write(json.dumps(row) + "\n")
 

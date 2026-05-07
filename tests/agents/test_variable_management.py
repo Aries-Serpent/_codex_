@@ -368,7 +368,7 @@ class TestBrainClientMechanism(unittest.TestCase):
             try:
                 vm.list_repo_vars("Aries-Serpent", "_codex_")
             except (RuntimeError, OSError, KeyError, ValueError):
-                pass  # brain error may propagate differently without full import
+                _ = None  # brain error may propagate differently without full import
             os.environ.pop("CODEX_MASTER_KEY", None)
 
 

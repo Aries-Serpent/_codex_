@@ -257,7 +257,7 @@ class TestPerformanceComparisons:
                 _ = 1 / 1  # No exception, benchmarking try-except overhead
             except ZeroDivisionError:
                 # Exception not expected, benchmarking happy path
-                pass
+                _ = None  # suppressed: no action needed
         elapsed_no_exception = time.perf_counter() - start
 
         start = time.perf_counter()
@@ -266,7 +266,7 @@ class TestPerformanceComparisons:
                 _ = 1 / 0  # Raises exception
             except ZeroDivisionError:
                 # Expected exception, intentionally caught for benchmarking
-                pass
+                _ = None  # suppressed: no action needed
         elapsed_with_exception = time.perf_counter() - start
 
         # Both should complete reasonably
