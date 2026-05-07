@@ -1,7 +1,17 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T02:29Z — Session 12 (S12 — living docs, CHANGELOG, accountability refresh) — HEAD 36274d9**
-> **Status: 🟢 MERGE-READY — sync ✅; ruff ✅; all Dependabot resolved; 64 CodeQL alerts fixed; 43 pending (requires GitHub Actions workflow with CODEX_MASTER_KEY)**
+> **Last updated: 2026-05-07T02:45Z — Session 13 (S13 — living docs review + next-phases alignment) — HEAD 128b1e0**
+> **Status: 🟡 NEAR-READY — sync ✅; ruff ✅; all Dependabot resolved; 64 CodeQL alerts fixed; 46 pending (CODEX_MASTER_KEY required); 1 CI violation (action_versions)**
+
+## Session 13 Summary (2026-05-07T02:45Z)
+
+- Living docs full review: gap analysis + corrections applied ✅
+- HEAD corrected to `128b1e0` in all headers ✅
+- Pending alert count corrected: 46 (was 43/47 — stale) ✅
+- `py/mixed-returns` count corrected: 25 remaining (was 26 — 1 fixed S11) ✅
+- Required Actions Version Enforcer failure documented ✅
+- Next Phases roadmap section added ✅
+- `session_diagram.md`: S3 gap filled, S9–S12 merged into main flow, CI table updated ✅
 
 ## Session 12 Summary (2026-05-07T02:29Z)
 
@@ -48,9 +58,12 @@
 | `py/call-to-non-callable` | 1 | ✅ Fixed: `callable()` guard in `src/cli.py _resolve_callable()` (S6) |
 | GAS: uninitialized `_rl_state` | 1 | ✅ Fixed: explicit init `_rl_state: dict = {"ok": True}` in `session_bootstrap.py:686` (S8) |
 | `py/call/wrong-named-argument` | 15 | ⏳ Blocked: requires `CODEX_MASTER_KEY` via GitHub Actions (sandbox lacks `security_events`) |
-| `py/mixed-returns` | 26 | ⏳ Partial: `fetch_codeql_alerts.py` `raise SystemExit(1)` fixed via Copilot Autofix (S11); 25 remaining via API |
+| `py/mixed-returns` | 25 | ⏳ Partial: `fetch_codeql_alerts.py` 1 instance fixed via Copilot Autofix (S11); 25 remaining via API |
 | `py/call/wrong-arguments` | 1 | ⏳ Blocked: CodeQL API required |
 | `py/missing-equals` | 1 | ⏳ Blocked: local scan clean (4 `__hash__` classes all have `__eq__`) — API required |
+| `py/mixed-tuple-returns` (remaining) | 3 | ⏳ Blocked: CodeQL API required for exact locations |
+
+**Pending total: 46** (15 wrong-named-arg + 25 mixed-returns + 1 wrong-arg + 1 missing-equals + 3 mixed-tuple + 1 unexpected-raise-2nd)
 
 ### Rate-Limit Hardening — ✅ NEW in Session 6
 | Change | Description |
@@ -106,18 +119,90 @@ GH_TOKEN="$CODEX_MASTER_KEY" gh api \
 jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|wrong-arguments|missing-equals|unexpected-raise|mixed-tuple")) | [.rule.id, .most_recent_instance.location.path, (.most_recent_instance.location.start_line|tostring)] | @tsv' /tmp/alerts.json
 ```
 
+## Blocking CI Check (as of S13)
+
+| Check | Status | Fix |
+|-------|--------|-----|
+| 🔖 Required Actions Version Enforcer | ❌ failure | Run `python scripts/ci/enforce_actions_versions.py --fix` then commit |
+| Pre-Merge Validation | ✅ | — |
+| Comment Review Gate | ✅ | — |
+| Deferral Language Gate | ✅ | — |
+| Agent Token Delegation | ✅ | — |
+| mypy Baseline | ✅ | — |
+| Workflow Compliance Audit (actionlint) | ✅ | — |
+| Secrets Baseline Enforcer | ✅ | — |
+| Reference Integrity | ✅ | — |
+
+> **startup_failure** runs (Build & Push Preview Image, Data Quality Suite, Progressive Validation, Rust/Swarm) require a second manual approval in the Actions tab — these are infrastructure gates, not code failures.
+
 ## Remaining (Next Session)
 
-1. **Fetch alert locations** via `CODEX_MASTER_KEY` — sandbox token lacks `security_events` scope (see "Critical Finding" above)
-2. **Fix 47 remaining alerts** in priority order:
-   - 🔴 `py/call/wrong-named-argument` (15 Errors)
+1. **Fix Required Actions Version Enforcer** (blocking CI):
+   ```bash
+   python scripts/ci/enforce_actions_versions.py --fix
+   # commit + push
+   ```
+2. **Fetch exact alert locations** for remaining 46 alerts via `CODEX_MASTER_KEY`:
+   - Check `codeql-alert-fetcher.yml` in WEC Security section and push
+   - Download `codeql-alerts-*` artifact via MCP `download_workflow_run_artifact`
+3. **Fix 46 remaining alerts** in priority order:
+   - 🔴 `py/call/wrong-named-argument` (15 Errors) — highest priority, breaks callers
    - 🔴 `py/call/wrong-arguments` (1 Error)
    - 🟡 `py/missing-equals` (1 Warning)
-   - 🔵 `py/unexpected-raise-in-special-method` (2nd, 1 Note)
-   - 🔵 `py/mixed-returns` (26 Notes)
-   - 🔵 `py/mixed-tuple-returns` (3 remaining Notes)
-3. **Validate CodeQL scan** — 0 open alerts for all 10 rules
-4. **Merge PR #4323** — All 7 Dependabot alerts resolved
+   - 🔵 `py/unexpected-raise-in-special-method` (1 Note — 2nd instance)
+   - 🔵 `py/mixed-returns` (25 Notes)
+   - 🔵 `py/mixed-tuple-returns` (3 Notes)
+4. **Validate CodeQL scan** — confirm 0 open alerts for all rules
+5. **Merge PR #4323** — all Dependabot alerts resolved; code clean
+
+## Next Phases (Future PRs)
+
+### Phase A — CodeQL Zero-Alert (P1 · next PR after merge)
+**Goal:** Eliminate all 46 remaining open CodeQL alerts.
+
+| Step | Action | ETA |
+|------|--------|-----|
+| A1 | Dispatch `codeql-alert-fetcher.yml`; download artifact | Session start |
+| A2 | Fix `py/call/wrong-named-argument` ×15 using artifact file:line | 1 session |
+| A3 | Fix `py/call/wrong-arguments` ×1 | same session |
+| A4 | Fix `py/mixed-returns` ×25 (split return paths) | 1–2 sessions |
+| A5 | Fix `py/mixed-tuple-returns` ×3 (remaining after S6 partial) | same session |
+| A6 | Fix `py/missing-equals` ×1, `py/unexpected-raise` ×1 | same session |
+| A7 | Dispatch `codeql-analysis.yml` to confirm 0 open alerts | final step |
+
+### Phase B — Action Versions Hygiene (P2 · can fold into any PR)
+**Goal:** Keep Required Actions Version Enforcer green permanently.
+
+| Step | Action |
+|------|--------|
+| B1 | Run `python scripts/ci/enforce_actions_versions.py --fix` |
+| B2 | Add to pre-commit or nox session so it runs automatically |
+| B3 | Review `scripts/ci/enforce_actions_versions.py` for deprecated version pins |
+
+### Phase C — Merge PR #4323 (P2 · after Phase A complete)
+**Prerequisites:** Required Actions Enforcer ✅ · CodeQL zero-alert ✅ · all CI green ✅
+
+**Steps:**
+1. Squash or rebase onto `main` (52 commits → clean merge commit)
+2. Delete `copilot/fix-timeline-structure` branch
+3. Confirm Dependabot alerts #239–#246 closed on GitHub Security tab
+4. Post merge summary in accountability report
+
+### Phase D — Remaining Dependabot Backlog (P3 · ongoing)
+**Goal:** Keep Dependabot alert count at 0.
+
+- Monitor `github.com/Aries-Serpent/_codex_/security/dependabot` weekly
+- Cherry-pick or auto-merge Dependabot PRs for `requirements/lock.txt` + `uv.lock`
+- Target: resolve within 7 days of each alert
+
+### Phase E — WEC CodeQL Fetcher Operationalization (P3 · future)
+**Goal:** Make CodeQL alert review a standard part of every agent session.
+
+- Add `codeql-alert-fetcher.yml` to the "always-run" section of agent session start
+- Build automated diff: compare artifact from current session vs prior run to surface only new/changed alerts
+- Add `alerts_summary.json` total count to merge-readiness scorecard dimensions
+
+
 
 ## Key Files Changed This PR
 

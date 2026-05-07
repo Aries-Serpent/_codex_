@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (session 2026-05-07T02:29Z — PR #4323 Session 12: living docs + CHANGELOG + accountability wrap-up)
+### Fixed (session 2026-05-07T02:45Z — PR #4323 Session 13: living docs review + next phases + action_versions fix)
+- **🔖 Required Actions Version Enforcer** (blocking CI): `codeql-alert-fetcher.yml` `actions/setup-python@v5` → `@v6` via `enforce_actions_versions.py --fix`. Clears the one remaining CI failure.
+- **Living docs full review & corrections**: Both `PR4323_whats_next.md` and `PR4323_session_diagram.md` audited for stale data and corrected:
+  - HEAD updated to `128b1e0` in all headers (was `36274d9`).
+  - Pending CodeQL alert count corrected to **46** (was 43/47 — stale across doc versions).
+  - `py/mixed-returns` count corrected to **25** remaining (was 26 — 1 fixed in S11).
+  - S3 session block restored in session diagram (was missing — S2→S4 gap).
+  - S9–S12 session blocks merged into the main `Session Flow` code block (were orphaned in a second disconnected block after the CI table).
+  - CI Status table header updated from `HEAD S8 / 00:11Z` to `HEAD 128b1e0 / S13 / 02:45Z`.
+  - Required Actions Enforcer failure row added to CI table (now ✅ after fix above).
+  - `startup_failure` infrastructure runs documented (need second manual approval — not code failures).
+  - Statistics updated: 13 sessions, 176+ files, 65 CodeQL alerts fixed.
+- **Next Phases roadmap added** to `whats_next.md`: Phases A–E covering CodeQL zero-alert, action_versions hygiene, PR merge, Dependabot backlog, and WEC fetcher operationalization.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated with S13 entry — clears `agent-auth-delegation.yml` REQ-4.
+- **Pattern 30 confirmed**: 2026-05-07 PDA entry present; S13 entry appended.
+
 - **Living docs refreshed**: `docs/roadmap/PR4323_whats_next.md` updated with S12 status; `docs/sessions/PR4323_session_diagram.md` updated with S9–S12 session blocks, CI status table, and statistics (12 sessions, 175+ files, 64 CodeQL alerts fixed).
 - **Pattern 25 satisfied**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` includes S12 session entry — clears `agent-auth-delegation.yml` REQ-4.
 - **Pattern 30 confirmed**: PDA entry for 2026-05-07 present in `.codex/aftermath/pda_iterations.jsonl`.
