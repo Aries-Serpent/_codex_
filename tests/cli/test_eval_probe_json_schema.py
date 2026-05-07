@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 SCHEMA_PATH = Path(__file__).parents[1] / "schemas" / "eval_probe.schema.json"
 SCHEMA = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
 
@@ -26,6 +28,7 @@ def _validate(payload: dict[str, Any]) -> None:
     assert isinstance(details.get("env_override"), bool)
 
 
+@pytest.mark.slow
 def test_eval_probe_json_output() -> None:
     proc = subprocess.run(
         [

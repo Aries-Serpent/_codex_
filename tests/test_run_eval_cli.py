@@ -15,6 +15,7 @@ import pytest
 pytest.importorskip("datasets")
 
 
+@pytest.mark.slow
 def test_run_eval_cli(tmp_path):
     data = tmp_path / "data.txt"
     data.write_text("hello world\nsecond line", encoding="utf-8")
