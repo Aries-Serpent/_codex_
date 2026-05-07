@@ -1,10 +1,10 @@
-# Session Context — 2026-05-07T12:18:30Z
+# Session Context — 2026-05-07T13:18:15Z
 **Branch:** `copilot/fix-timeline-structure`  **PR:** #4323  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4245` (✅)
-- GraphQL remaining: `4933` (✅)
+- REST remaining: `4754` (✅)
+- GraphQL remaining: `4972` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/fix-timeline-structure` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-07)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
-- **Validation Pipeline** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
 
 ## 📝 Recent Commits
+- `dc967b0f` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
+- `4d1aa4f0` fix(ci): S24 — strengthen Pattern 15/30 guards with explicit import probe and st — copilot-swe-agent[bot] (2026-05-07)
+- `ac3f3e47` fix(ci): S24 — Fast Validation false positives (Pattern 15 mypy, Pattern 30 ruff — copilot-swe-agent[bot] (2026-05-07)
+- `de9002dd` chore: initial plan for S24 Fast Validation fix — copilot-swe-agent[bot] (2026-05-07)
 - `4df7d1dd` fix(ci): S23 — comment-review-gate unblocked, Pattern 25 accountability — copilot-swe-agent[bot] (2026-05-07)
 - `e9aef499` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-07)
 - `3279a1cb` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-07)
 - `378024fd` merge: integrate remote session digest commits [skip ci] — copilot-swe-agent[bot] (2026-05-07)
-- `4dcef639` fix(ci): S22 — RP-004 tracked-file sync drift fix, Pattern 25 accountability — copilot-swe-agent[bot] (2026-05-07)
-- `1c52a9c0` chore: start S22 CI rescue — RP-004 tracked-file sync drift — copilot-swe-agent[bot] (2026-05-07)
-- `224ba361` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-07)
-- `10b34e10` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
