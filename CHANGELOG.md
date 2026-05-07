@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T16:10Z — PR #4323 Session 32 wrap-up: CI 22✅/0❌ on HEAD c481f105)
+- **CI wrap-up 22 ✅ / 0 ❌**: HEAD `c481f105` reached 22 ✅ / 0 ❌ / 4 ⚠️ startup_failure (known infra — need second manual approval). PR Comment Review Gate ✅, Validation Pipeline ✅, Pre-Merge Validation ✅, Resilient Validation Suite ✅, sync_tracked_files ✅.
+- **Session diagram CI table updated**: `PR4323_session_diagram.md` refreshed with live CI status (22 ✅, S32 flow entry).
+- **RP-004 sync stale on commit `891483792c31`** (comment #4398627386): Fixed by `sync_tracked_files --fix` + Pattern 25 update in S32 commit `c481f105`.
+- **P-045 gate enforced (wrap-up)**: `git diff --diff-filter=U` → ✅ empty · ruff ✅ · sync ✅.
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent · merge conflicts: ✅ 0
+
 ### Fixed (session 2026-05-07T15:52Z — PR #4323 Session 32: sync drift fix, CI rescue, living docs updated)
 - **RP-004 sync stale on commit `891483792c31`** (comment #4398627386): CI rescue `Detect CI Issues & Post Fix Instructions` failure — `sync_tracked_files` dimension was stale due to prior merged-state commit not including mandatory tracked files. Fixed by running `sync_tracked_files --fix` and updating CHANGELOG + AGENT_ACCOUNTABILITY_REPORT in this commit (Pattern 25).
 - **P-045 gate enforced**: `git fetch origin main` → ✅ · `git diff --diff-filter=U` → ✅ empty (zero merge conflicts) · `ruff` → ✅ · `sync_tracked_files --fix` → ✅ consistent.
