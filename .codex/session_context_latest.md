@@ -1,10 +1,10 @@
-# Session Context — 2026-05-07T03:11:55Z
+# Session Context — 2026-05-07T03:25:05Z
 **Branch:** `copilot/fix-timeline-structure`  **PR:** #4323  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4853` (✅)
-- GraphQL remaining: `4852` (✅)
+- REST remaining: `4731` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/fix-timeline-structure` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **PR Comment Review Gate** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-07)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
 
 ## 📝 Recent Commits
+- `fb018137` fix(ci): RP-004 pattern-22 sync drift + pattern-25 accountability update (S15) — copilot-swe-agent[bot] (2026-05-07)
+- `e985c2ac` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
+- `db41fa9c` chore: session S15 plan — fix RP-004 sync drift + accountability + ruff — copilot-swe-agent[bot] (2026-05-07)
 - `1a56055a` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
 - `c83b1ca5` fix(ci): S9-S13 accountability gap + S14 living docs + CI rescue reply — copilot-swe-agent[bot] (2026-05-07)
 - `992ec4d3` chore: establish initial plan for session wrap-up and CI fixes — copilot-swe-agent[bot] (2026-05-07)
 - `23aad24a` fix(ci): S13 action_versions fix + living docs full review + next phases roadmap — copilot-swe-agent[bot] (2026-05-07)
 - `128b1e09` fix(ci): S12 living docs + CHANGELOG + accountability wrap-up (Pattern 25/30) — copilot-swe-agent[bot] (2026-05-07)
-- `36274d96` chore: session plan initialized — copilot-swe-agent[bot] (2026-05-07)
-- `a8282b2b` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
-- `7b55d765` fix(codeql): fetch_codeql_alerts.py — sys.exit(1) → raise SystemExit(1) in all v — copilot-swe-agent[bot] (2026-05-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
