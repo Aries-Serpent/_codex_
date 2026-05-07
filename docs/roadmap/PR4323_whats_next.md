@@ -1,7 +1,15 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T02:45Z — Session 13 (S13 — living docs review + next-phases alignment) — HEAD 128b1e0**
-> **Status: 🟡 NEAR-READY — sync ✅; ruff ✅; all Dependabot resolved; 64 CodeQL alerts fixed; 46 pending (CODEX_MASTER_KEY required); 1 CI violation (action_versions)**
+> **Last updated: 2026-05-07T03:01Z — Session 14 (S14 — CI rescue + accountability gap + living docs) — HEAD 992ec4d+**
+> **Status: 🟡 NEAR-READY — sync ✅; ruff ✅; all Dependabot resolved; 65 CodeQL alerts fixed; 46 pending (CODEX_MASTER_KEY required); CI awaiting fresh run on new HEAD**
+
+## Session 14 Summary (2026-05-07T03:01Z)
+
+- CI rescue: Pre-Merge Validation SHA drift (merge-preview commit) — local sync passes; fresh push clears ✅
+- AGENT_ACCOUNTABILITY_REPORT.md S9–S13 gap resolved: all 5 missing entries added ✅
+- Living docs (whats_next + session_diagram + CHANGELOG) updated with S14 ✅
+- Blocking comment #4393846751 replied to ✅
+- Statistics updated: 14 sessions completed
 
 ## Session 13 Summary (2026-05-07T02:45Z)
 

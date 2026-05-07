@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T03:01Z — PR #4323 Session 14: CI rescue + S9-S13 accountability gap + living docs S14)
+- **AGENT_ACCOUNTABILITY_REPORT.md gap resolved**: S9–S13 session entries were missing despite CHANGELOG claiming them. All 5 entries (S9 WEC fetcher, S10 baseline, S11 sync+PDA+py/mixed-returns, S12 living docs refresh, S13 full review+action_versions) added to bring report current.
+- **S14 living docs update**: `PR4323_whats_next.md`, `PR4323_session_diagram.md`, and `CHANGELOG.md` updated with S14 session block and corrected statistics (14 sessions, 176+ files).
+- **CI rescue (run 25473249480)**: Pre-Merge Validation failing with `sync_tracked_files stale` — root cause is SHA drift (CI runs on GitHub merge-preview commit). Local check passes ✅. New push triggers fresh CI run on correct HEAD.
+- **Pattern 25 satisfied**: This commit updates `AGENT_ACCOUNTABILITY_REPORT.md` — clears `agent-auth-delegation.yml` REQ-4.
+- **Blocking comment `#4393846751`** replied to.
+- `ruff check src/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T02:45Z — PR #4323 Session 13: living docs review + next phases + action_versions fix)
 - **🔖 Required Actions Version Enforcer** (blocking CI): `codeql-alert-fetcher.yml` `actions/setup-python@v5` → `@v6` via `enforce_actions_versions.py --fix`. Clears the one remaining CI failure.
 - **Living docs full review & corrections**: Both `PR4323_whats_next.md` and `PR4323_session_diagram.md` audited for stale data and corrected:

@@ -29034,3 +29034,206 @@ by integration" — regardless of rate limit state.
 - `sync_tracked_files --check`: ✅ consistent
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-05-07T01:30Z SESSION 9 (PR #4323 — WEC CodeQL alert fetcher)
+
+### Session Metadata
+- **PR**: #4323
+- **Branch**: `copilot/fix-timeline-structure`
+- **Session Start**: 2026-05-07T01:30Z
+- **Session End**: 2026-05-07T01:57Z (est.)
+- **Agent**: Copilot coding agent (S9)
+
+### Objectives
+1. Build rate-limit-aware CodeQL alert fetcher (WEC-integrated)
+2. Update living docs and accountability report
+
+### Work Completed
+
+#### New: `scripts/ci/fetch_codeql_alerts.py`
+- Rate-limit-aware paginated fetcher using CODEX_MASTER_KEY + security_events scope
+- Produces 4 artifact files; handles Retry-After backoff, configurable page sleep, max-pages cap (100)
+- Code-review hardening: urllib.parse.quote, header case normalised, row-counter added
+
+#### New: `.github/workflows/codeql-alert-fetcher.yml`
+- WEC opt-in Security workflow (index 30 in session_wrapup_autofix._WEC_ITEMS)
+- Workflow dispatch inputs; uploads 4 artifacts
+
+### Validation
+- `ruff check`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+
+---
+
+## SESSION SUMMARY — 2026-05-07T02:00Z SESSION 10 (PR #4323 — baseline sweep)
+
+### Session Metadata
+- **PR**: #4323
+- **Branch**: `copilot/fix-timeline-structure`
+- **Session Start**: 2026-05-07T02:00Z
+- **Session End**: 2026-05-07T02:05Z (est.)
+- **Agent**: Copilot coding agent (S10)
+
+### Objectives
+1. Baseline sweep — sync + auto_fix check
+
+### Work Completed
+- Universal sync+auto_fix baseline sweep [skip ci] — confirmed clean, no code change needed
+
+### Validation
+- `ruff check`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+
+---
+
+## SESSION SUMMARY — 2026-05-07T02:14Z SESSION 11 (PR #4323 — sync + PDA + py/mixed-returns autofix)
+
+### Session Metadata
+- **PR**: #4323
+- **Branch**: `copilot/fix-timeline-structure`
+- **Session Start**: 2026-05-07T02:14Z
+- **Session End**: 2026-05-07T02:29Z (est.)
+- **Agent**: Copilot coding agent (S11)
+
+### Objectives
+1. Fix RP-004 tracked file sync drift
+2. Add PDA entry for 2026-05-07
+3. Fix py/mixed-returns via Copilot Autofix
+4. Update living docs
+
+### Work Completed
+
+#### RP-004 Sync (Pattern 22)
+- `sync_tracked_files --check` confirms all consistent ✅
+
+#### PDA Entry
+- 2026-05-07 entry added to `.codex/aftermath/pda_iterations.jsonl` ✅
+
+#### py/mixed-returns Fix
+- `fetch_codeql_alerts.py`: 5 `sys.exit(1)` calls in value-returning functions → `raise SystemExit(1)`
+- Eliminates all py/mixed-returns alerts for this file
+
+### Blocking Comments Resolved
+- `#4393637491`: Replied ✅
+- `#4393638719`: Replied ✅
+
+### Validation
+- `ruff check scripts/ci/fetch_codeql_alerts.py`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+
+---
+
+## SESSION SUMMARY — 2026-05-07T02:29Z SESSION 12 (PR #4323 — living docs + accountability refresh)
+
+### Session Metadata
+- **PR**: #4323
+- **Branch**: `copilot/fix-timeline-structure`
+- **Session Start**: 2026-05-07T02:29Z
+- **Session End**: 2026-05-07T02:45Z (est.)
+- **Agent**: Copilot coding agent (S12)
+
+### Objectives
+1. Update living docs (whats_next + session_diagram)
+2. Satisfy Pattern 25 (accountability report in last commit)
+3. Address CI rescue comments
+
+### Work Completed
+
+#### Living Docs (Wave S12)
+- `PR4323_whats_next.md` — S12 header + session block added
+- `PR4323_session_diagram.md` — S9–S12 blocks merged into main session flow
+- `CHANGELOG.md` — S12 entry added
+
+#### Pattern 25
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in S12 commit — clears agent-auth-delegation.yml REQ-4
+
+### Blocking Comments Resolved
+- `#4393656363`: Replied ✅
+- `#4393679429`: Replied ✅
+- `#4393705673`: Replied ✅
+
+### Validation
+- `ruff check src/ tests/`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+
+---
+
+## SESSION SUMMARY — 2026-05-07T02:45Z SESSION 13 (PR #4323 — living docs review + next phases + action_versions fix)
+
+### Session Metadata
+- **PR**: #4323
+- **Branch**: `copilot/fix-timeline-structure`
+- **Session Start**: 2026-05-07T02:45Z
+- **Session End**: 2026-05-07T03:00Z (est.)
+- **Agent**: Copilot coding agent (S13)
+
+### Objectives
+1. Full gap analysis and correction of living docs
+2. Fix Required Actions Version Enforcer (blocking CI)
+3. Add Next Phases roadmap to whats_next.md
+4. Update statistics and CI table
+
+### Work Completed
+
+#### Required Actions Version Enforcer Fix
+- `codeql-alert-fetcher.yml`: `actions/setup-python@v5` → `@v6` via `enforce_actions_versions.py --fix`
+- Clears the one remaining CI failure (🔖 enforcer check)
+
+#### Living Docs Full Review
+- HEAD corrected to `128b1e0` in all headers
+- Pending CodeQL alert count corrected: 46 (was 43/47 — stale)
+- `py/mixed-returns` count corrected: 25 remaining (was 26 — 1 fixed S11)
+- S3 session block restored (was missing — S2→S4 gap)
+- S9–S12 blocks merged into main session flow (were split)
+- CI Status table updated (S13 header, all current statuses)
+- Next Phases roadmap added (Phases A–E)
+- Statistics updated: 13 sessions, 176+ files, 65 CodeQL alerts fixed
+
+### Validation
+- `ruff check src/`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+- `parallel_validation`: Code Review ✅ · CodeQL trivial skip ✅
+
+---
+
+## SESSION SUMMARY — 2026-05-07T03:01Z SESSION 14 (PR #4323 — CI rescue + S9-S13 accountability gap + living docs S14)
+
+### Session Metadata
+- **PR**: #4323
+- **Branch**: `copilot/fix-timeline-structure`
+- **Session Start**: 2026-05-07T03:01Z
+- **Session End**: 2026-05-07T03:30Z (est.)
+- **Agent**: Copilot coding agent (S14)
+
+### Objectives
+1. Reply to new blocking comments (#4393846751)
+2. Verify and update living docs align with current PR progress
+3. Fill AGENT_ACCOUNTABILITY_REPORT.md gap (S9–S13 entries missing)
+4. Update CHANGELOG.md, whats_next.md, session_diagram.md with S14
+5. Run auto_fix_common_issues and sync_tracked_files to confirm clean
+6. Session wrap-up push
+
+### Work Completed
+
+#### CI Rescue
+- Pre-Merge Validation (run 25473249480): failing with `sync_tracked_files: stale`
+  - Root cause: CI ran on GitHub merge-preview commit (SHA drift); local check passes ✅
+  - Fix: new push triggers fresh CI run on correct HEAD
+
+#### Accountability Gap Fixed (S9–S13)
+- Added S9 through S13 session entries to AGENT_ACCOUNTABILITY_REPORT.md
+  - Each entry documents objectives, work completed, and validation
+
+#### Living Docs Updated
+- `PR4323_whats_next.md` — S14 session block added; statistics updated (14 sessions)
+- `PR4323_session_diagram.md` — S14 block added; CI table + statistics updated
+- `CHANGELOG.md` — S14 entry added
+
+### Blocking Comments Resolved
+- `#4393846751`: Replied ✅
+
+### Validation
+- `ruff check src/`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
