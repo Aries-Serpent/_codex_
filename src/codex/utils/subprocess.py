@@ -18,7 +18,26 @@ def run(
     *,
     cwd: Path | None = None,
     capture_output: bool = False,
-    text: Literal[True] = True,
+    check: bool = True,
+    timeout: float | None = None,
+    env: dict[str, str] | None = None,
+    input: str | bytes | None = None,
+    stdin: int | IO[Any] | None = None,
+    stdout: int | IO[Any] | None = None,
+    stderr: int | IO[Any] | None = None,
+    encoding: str | None = None,
+    errors: str | None = None,
+    shell: bool = False,
+) -> _stdlib_subprocess.CompletedProcess[str]: ...
+
+
+@overload
+def run(
+    cmd: Sequence[str],
+    *,
+    cwd: Path | None = None,
+    capture_output: bool = False,
+    text: Literal[True],
     check: bool = True,
     timeout: float | None = None,
     env: dict[str, str] | None = None,
@@ -68,7 +87,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,  # accepted for API compatibility; shell=True is rejected
-) -> _stdlib_subprocess.CompletedProcess[str] | _stdlib_subprocess.CompletedProcess[bytes]:
+) -> _stdlib_subprocess.CompletedProcess[Any]:
     """Run *cmd* securely.
 
     Parameters mirror :func:`subprocess.run`. This wrapper forbids shell
