@@ -683,6 +683,7 @@ def main() -> int:
         try:
             _rl_state_path = Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex")) / "rate_limit_state.json"
             # Re-use cached state if it is less than 60 s old
+            _rl_state: dict = {"ok": True}  # default: assume ok if probe is skipped
             _use_cached = False
             if _rl_state_path.exists():
                 try:

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T00:11Z — PR #4323 Session 8: CodeQL uninitialized-var fix + line-length + living docs)
+- **CodeQL `session_bootstrap.py:714`**: Initialized `_rl_state: dict = {"ok": True}` before conditional block — fixes GAS alert "potentially uninitialized local variable".
+- **Line length `src/logging_utils.py:270`**: Split `mlflow.start_run(...)` call across 3 lines (103→≤100 chars) — fixes Auto-Fix PR Check Pattern 12 error.
+- **CI pattern RP-004**: `sync_tracked_files --check` confirmed consistent; accountability report and living docs updated to clear pattern 22 and pattern 25.
+- **Living docs Wave 11**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated with S8 status.
+- **Blocking comments** (`#4393054901`, `#4393056983`, `#4393060343`, `#4393062419`) replied to.
+
 ### Fixed (session 2026-05-07T01:05Z — PR #4323 Session 7: scope-constraint confirmed + living docs)
 - **Critical finding documented**: Copilot sandbox tokens (`GITHUB_TOKEN`, `AGENT_GITHUB_TOKEN`) permanently lack `security_events` scope — `list_code_scanning_alerts` MCP tool always returns 403 regardless of rate limits. Only `CODEX_MASTER_KEY` can access `/code-scanning/alerts`. Documented in `whats_next.md` with exact fix path (GitHub Actions workflow or local shell) and in `.codex/docs/RATE_LIMIT_AWARENESS.md`.
 - **Living docs updated**: `whats_next.md` has "Critical Finding" constraint table + confirmed fix path; `PR4323_session_diagram.md` has S7 session block + updated CI/statistics table.

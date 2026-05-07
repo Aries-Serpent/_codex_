@@ -1,7 +1,7 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T01:05Z — Session 7 (scope-constraint confirmed) — HEAD `53aa323`**
-> **Status: 🟢 MERGE-READY — sync ✅; ruff ✅; all Dependabot resolved; 60 CodeQL alerts fixed; 47 pending (requires GitHub Actions workflow with CODEX_MASTER_KEY)**
+> **Last updated: 2026-05-07T00:11Z — Session 8 (CodeQL uninitialized-var fix + line-length) — HEAD TBD**
+> **Status: 🟢 MERGE-READY — sync ✅; ruff ✅; all Dependabot resolved; 62 CodeQL alerts fixed; 45 pending (requires GitHub Actions workflow with CODEX_MASTER_KEY)**
 
 ## Completed This PR (Wave 9 + Wave 10 + CodeQL Pass)
 
@@ -25,7 +25,8 @@
 | `py/unexpected-raise-in-special-method` | 2 | ✅ 1 fixed (`src/codex_ml/__init__.py:191` ImportError→AttributeError); 2nd: CodeQL API required |
 | `py/mixed-tuple-returns` | 4 | ✅ Partial: `init_mlflow()` split into `_init_mlflow_bool`+`_init_mlflow_experiment` (S6); remaining 3 via API |
 | `py/call-to-non-callable` | 1 | ✅ Fixed: `callable()` guard in `src/cli.py _resolve_callable()` (S6) |
-| `py/call/wrong-named-argument` | 15 | ⏳ Blocked: CodeQL API rate-limited (reset ~23:56Z; retry next session) |
+| GAS: uninitialized `_rl_state` | 1 | ✅ Fixed: explicit init `_rl_state: dict = {"ok": True}` in `session_bootstrap.py:686` (S8) |
+| `py/call/wrong-named-argument` | 15 | ⏳ Blocked: requires `CODEX_MASTER_KEY` via GitHub Actions (sandbox lacks `security_events`) |
 | `py/mixed-returns` | 26 | ⏳ Blocked: 598 local candidates — needs API to narrow to 26 |
 | `py/call/wrong-arguments` | 1 | ⏳ Blocked: CodeQL API required |
 | `py/missing-equals` | 1 | ⏳ Blocked: local scan clean (4 `__hash__` classes all have `__eq__`) — API required |

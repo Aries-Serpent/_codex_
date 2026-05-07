@@ -267,7 +267,10 @@ def _init_mlflow_experiment(
         if tracking_uri:
             mlflow.set_tracking_uri(tracking_uri)
         mlflow.set_experiment(experiment_name)
-        run = mlflow.start_run(run_name=run_name or experiment_name, tags=dict(tags) if tags else None)
+        run = mlflow.start_run(
+            run_name=run_name or experiment_name,
+            tags=dict(tags) if tags else None,
+        )
         return mlflow, run
     except Exception as exc:  # pragma: no cover - offline guard
         LOGGER.warning("Failed to initialise MLflow for '%s': %s", experiment_name, exc)

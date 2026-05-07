@@ -1,32 +1,42 @@
-# Session Context — 2026-05-06T23:18:59Z
+# Session Context — 2026-05-07T00:05:58Z
 **Branch:** `copilot/fix-timeline-structure`  **PR:** #4323  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4610` (✅)
-- GraphQL remaining: `4896` (✅)
+- REST remaining: `4971` (✅)
+- GraphQL remaining: `4894` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4323 — Fix timeline clarity, stale review date, CVE comment, Semgrep expansion, dependency security sweep (Mako, GitPython, python-multipart), and CodeQL Python quality fixes
+## 📋 PR #4323 — Fix timeline clarity, stale review date, CVE comment, Semgrep expansion, dependency security sweep (Mako, GitPython, python-multipart), CodeQL Python quality fixes, and rate-limit hardening
 State: `open`  Draft: `False`  Branch: `copilot/fix-timeline-structure` → `main`
 
+### ❌ 17 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **Auto-Fix Common CI Issues** — `failure` on `copilot/fix-timeline-structure` (2026-05-06)
-- **PR Auto-Fix Check** — `failure` on `copilot/fix-timeline-structure` (2026-05-06)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-06)
+- **PR Comment Review Gate** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-06)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
 
 ## 📝 Recent Commits
+- `672f1097` docs(living): Session 7 — scope-constraint confirmed (sandbox lacks security_eve — copilot-swe-agent[bot] (2026-05-07)
+- `53aa3236` docs(living): Session 6 — whats_next + session_diagram updated with S6 CodeQL fi — copilot-swe-agent[bot] (2026-05-06)
+- `ac5fb47b` fix(codeql+ratelimit): mixed-tuple-returns in logging_utils, call-to-non-callabl — copilot-swe-agent[bot] (2026-05-06)
+- `37c352cb` docs(living): Session 5 — extended AST sweep, missing-equals confirmed clean, CI — copilot-swe-agent[bot] (2026-05-06)
+- `cb60e8a4` docs(living): Session 4 — AST sweep results, API workaround documented, living d — copilot-swe-agent[bot] (2026-05-06)
+- `583a45cb` fix(ci+docs): Session 3 wrap-up — sync_tracked_files ✅, Pattern 9/22/25/30 resol — copilot-swe-agent[bot] (2026-05-06)
 - `14e84972` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-06)
 - `f7d44c72` fix(codeql): py/unexpected-raise-in-special-method — __getattr__ ImportError→Att — copilot-swe-agent[bot] (2026-05-06)
-- `c4b37f00` fix(codeql+security): Wave 10 verification + CodeQL py/empty-except×55, catch-ba — copilot-swe-agent[bot] (2026-05-06)
-- `896f95ea` chore(deps+security): Wave 10 — Dependabot alerts #244,#245,#246 investigation r — copilot-swe-agent[bot] (2026-05-06)
-- `49923e65` chore(session-close): final CI 10/10 green — living docs close, CHANGELOG + acco — copilot-swe-agent[bot] (2026-05-06)
-- `c9905824` Merge branch 'main' into copilot/fix-timeline-structure — Statix (2026-05-06)
-- `583d6dde` chore(wrap-up): fix .secrets.baseline, finalize Wave 9 CI status, CHANGELOG + AG — copilot-swe-agent[bot] (2026-05-06)
-- `7a989c6b` chore(deps+security): Dependabot sweep (Mako→1.3.12, GitPython→3.1.50), cherry-p — copilot-swe-agent[bot] (2026-05-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

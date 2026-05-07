@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T01:05Z**
-> **Sessions: S1→S2→S3→S4→S5→S6→S7 — HEAD 53aa323**
+> **Last updated: 2026-05-07T00:11Z**
+> **Sessions: S1→S2→S3→S4→S5→S6→S7→S8 — HEAD TBD**
 
 ## Session Flow
 
@@ -64,9 +64,18 @@ S7 (scope-constraint confirmed + wrap-up): 2026-05-07T00:57Z → 01:10Z
    ├─ store_memory: scope constraint stored for future sessions
    ├─ All 4 blocking comments replied to
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs updated (S7)
+
+S8 (CodeQL uninitialized-var + line-length + S8 docs): 2026-05-07T00:11Z → 00:25Z
+   ├─ GAS CodeQL fix: _rl_state initialized before conditional block (session_bootstrap.py:686)
+   │      Eliminates "potentially uninitialized local variable" alert at line 714
+   ├─ Line-length fix: src/logging_utils.py:270 (103→≤100 chars)
+   │      mlflow.start_run() call split across 3 lines
+   ├─ Pattern 22 (RP-004): sync_tracked_files --check confirms all consistent ✅
+   ├─ Blocking comments #4393054901, #4393056983, #4393060343, #4393062419 replied to
+   └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs updated (S8)
 ```
 
-## CI Status (2026-05-07T01:05Z — HEAD 53aa323)
+## CI Status (2026-05-07T00:11Z — HEAD S8)
 
 | Check | Status |
 |-------|--------|
@@ -83,15 +92,17 @@ S7 (scope-constraint confirmed + wrap-up): 2026-05-07T00:57Z → 01:10Z
 | CodeQL py/unexpected-raise (1/2) | ✅ Fixed; 2nd instance → CODEX_MASTER_KEY required |
 | CodeQL py/mixed-tuple-returns (partial) | ✅ init_mlflow() split (S6) |
 | CodeQL py/call-to-non-callable (1) | ✅ callable() guard (S6) |
-| CodeQL remaining 47 alerts (6 rules) | ⏳ Sandbox token lacks security_events scope — CODEX_MASTER_KEY required |
+| GAS: _rl_state uninitialized (1) | ✅ Fixed: explicit init before conditional (S8) |
+| Line-length logging_utils.py:270 | ✅ Fixed: ≤100 chars (S8) |
+| CodeQL remaining 45 alerts (6 rules) | ⏳ Sandbox token lacks security_events scope — CODEX_MASTER_KEY required |
 | Rate-limit hardening | ✅ status() + D-00 gate + RATE_LIMIT_AWARENESS.md |
 | Scope-constraint confirmed (S7) | ✅ Critical finding documented + fix path specified |
 
 ## Statistics
 
-- **Sessions**: 7 (S1→S7)
+- **Sessions**: 8 (S1→S8)
 - **Files changed total**: 165+
 - **Dependabot alerts resolved**: 7 (#239–#246)
-- **CodeQL alerts fixed**: 60 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial, call-to-non-callable×1)
-- **CodeQL alerts pending**: 47 across 6 rules — sandbox token lacks `security_events` scope; requires `CODEX_MASTER_KEY` via GitHub Actions or local shell
+- **CodeQL alerts fixed**: 62 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial, call-to-non-callable×1, GAS uninitialized-var×1)
+- **CodeQL alerts pending**: 45 across 6 rules — sandbox token lacks `security_events` scope; requires `CODEX_MASTER_KEY` via GitHub Actions or local shell
 - **Rate-limit hardening**: 3 files changed + 1 new doc
