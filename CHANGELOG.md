@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **RP-004 resolved**: `sync_tracked_files --check` confirms all tracked files consistent (CODEX_MANIFEST, .secrets.baseline, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT).
 - **PDA entry added**: 2026-05-07 entry added to `.codex/aftermath/pda_iterations.jsonl` — clears Pattern 30 `PDA-entry-today` dimension.
 - **Pattern 25 satisfied**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit — clears `agent-auth-delegation.yml` REQ-4.
-- **`fetch_codeql_alerts.py`**: Copilot Autofix applied — `sys.exit(1)` → `raise SystemExit(1)` (py/mixed-returns explicit return consistency).
-- **Ruff clean**: `ruff check src/ tests/ --select E,W,F` exits 0 (only E501 line-length advisory warnings, no errors).
+- **`fetch_codeql_alerts.py` py/mixed-returns**: All 5 `sys.exit(1)` calls in value-returning functions (`_api_get`, `fetch_alerts`) converted to `raise SystemExit(1)` — eliminates all py/mixed-returns alerts for this file (functions that `return` a value no longer also `sys.exit()`).
+- **Ruff clean**: `ruff check scripts/ci/fetch_codeql_alerts.py` exits 0.
 - **Living docs updated**: `PR4323_whats_next.md` updated with Session 11 status and remaining alert inventory.
 - **Blocking comments** (`#4393637491`, `#4393638719`) replied to.
 

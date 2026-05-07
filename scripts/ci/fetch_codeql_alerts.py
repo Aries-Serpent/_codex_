@@ -167,16 +167,16 @@ def _api_get(
                 continue
             body = exc.read().decode("utf-8", errors="replace")
             log.error("HTTP %d fetching %s: %s", status, url, body[:400])
-            sys.exit(1)
+            raise SystemExit(1)
         except OSError as exc:
             log.error("Network error on attempt %d: %s", attempt + 1, exc)
             if attempt < 2:
                 time.sleep(5)
                 continue
-            sys.exit(1)
+            raise SystemExit(1)
 
     log.error("Exhausted retries for %s", url)
-    sys.exit(1)
+    raise SystemExit(1)
 
 
 # ---------------------------------------------------------------------------
@@ -212,7 +212,7 @@ def fetch_alerts(
 
         if not isinstance(data, list):
             log.error("Unexpected API response type: %s", type(data))
-            sys.exit(1)
+            raise SystemExit(1)
 
         all_alerts.extend(data)
         log.info("Page %d: %d alerts (cumulative: %d)", page, len(data), len(all_alerts))
