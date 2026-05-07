@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T23:14Z — PR #4344 blocking comment + bot finding remediation)
+- Addressed new bot-thread findings:
+  - Removed unreachable `try/except` in `tests/hhg_logistics/serve/test_app.py::test_torch_inference_context_without_torch`.
+  - Removed redundant no-op `pass` in `tests/mcp/test_utilities.py::capture_log_output`.
+  - Updated `src/codex/utils/subprocess.py` overload declarations to use explicit `pass` bodies and type-only `subprocess.CompletedProcess` annotations (via `TYPE_CHECKING`) to avoid mypy regression.
+- Fixed linter issue discovered during required validation:
+  - `scripts/ci/auto_fix_common_issues.py`: replaced ambiguous loop variable names triggering Ruff `E741`.
+- Re-ran CI rescue validation sequence:
+  - `python -m ruff check src/ tests/ --fix` ✅
+  - `python scripts/ci/mypy_baseline.py --require-baseline` ✅ (`126 == baseline`)
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+
 ### Fixed (session 2026-05-07T22:55Z — PR #4344 iterative self-healing + review-thread fixes)
 - Investigated `Auto-Fix Common CI Issues` failing run `25525872834` and validated current branch healing state:
   - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅

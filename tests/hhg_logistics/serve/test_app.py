@@ -302,8 +302,5 @@ def test_torch_inference_context_without_torch(monkeypatch: pytest.MonkeyPatch) 
 
     ctx = _TorchInferenceContext()
 
-    try:
-        with ctx:
-            pass
-    except Exception as exc:  # pragma: no cover - defensive failure path
-        pytest.fail(f"_TorchInferenceContext should be usable without torch, but raised: {exc}")
+    with ctx:
+        pass

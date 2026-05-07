@@ -5,11 +5,14 @@ from __future__ import annotations
 import importlib
 from collections.abc import Sequence
 from pathlib import Path
-from typing import IO, Any, Literal, cast, overload
+from typing import IO, TYPE_CHECKING, Any, Literal, cast, overload
 
 # Resolve stdlib subprocess via importlib to avoid local-module name shadowing
 # (`src.codex.utils.subprocess`) reported by code scanning in direct imports.
 _stdlib_subprocess = cast(Any, importlib.import_module("subprocess"))
+
+if TYPE_CHECKING:
+    import subprocess as _subprocess_types
 
 
 @overload
@@ -28,7 +31,8 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,
-) -> _stdlib_subprocess.CompletedProcess[str]: ...
+) -> _subprocess_types.CompletedProcess[str]:
+    pass
 
 
 @overload
@@ -48,7 +52,8 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,
-) -> _stdlib_subprocess.CompletedProcess[str]: ...
+) -> _subprocess_types.CompletedProcess[str]:
+    pass
 
 
 @overload
@@ -68,7 +73,8 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,
-) -> _stdlib_subprocess.CompletedProcess[bytes]: ...
+) -> _subprocess_types.CompletedProcess[bytes]:
+    pass
 
 
 def run(
@@ -87,7 +93,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,  # accepted for API compatibility; shell=True is rejected
-) -> _stdlib_subprocess.CompletedProcess[Any]:
+) -> _subprocess_types.CompletedProcess[Any]:
     """Run *cmd* securely.
 
     Parameters mirror :func:`subprocess.run`. This wrapper forbids shell

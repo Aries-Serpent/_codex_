@@ -1,7 +1,7 @@
 # PR #4344 — What's Next
 
-> **Last updated:** 2026-05-07T22:55Z — Session 45
-> **Status:** 🟡 In progress — review-thread fixes applied, CI healing/monitoring active
+> **Last updated:** 2026-05-07T23:14Z — Session 46
+> **Status:** 🟡 In progress — additional bot findings remediated, CI rescue checks re-validated
 
 ## Current Objectives
 
@@ -19,6 +19,24 @@
   - `src/codex/utils/subprocess.py` — return typing now reflects `text=True/False` via overloads.
   - `tests/mcp/test_utilities.py` — cleanup warning now uses module-scoped logger.
   - `.github/copilot-prompts/active/PR-4344-followup.md` — timestamp normalized to ISO-8601 UTC.
+
+## Session 46 Snapshot
+
+- Reviewed newly posted blocking comments and bot review threads.
+- Investigated additional failing/blocked runs via MCP:
+  - `25526331831` (`Comment review gate`) — failed job log retrieval returned `403`.
+  - `25525385592` (`Fast Validation`) — failed job log retrieval returned `403`.
+- Applied additional code-quality/security-thread remediations:
+  - `tests/hhg_logistics/serve/test_app.py` — removed unreachable defensive `try/except` in torch context test.
+  - `tests/mcp/test_utilities.py` — removed redundant no-op `pass` in `capture_log_output`.
+  - `src/codex/utils/subprocess.py` — converted overload bodies from `...` to `pass` and hardened type-only `CompletedProcess` annotations via `TYPE_CHECKING` import.
+  - `scripts/ci/auto_fix_common_issues.py` — fixed `E741` ambiguous variable naming in exception classifier path.
+- Validation status:
+  - `python3 -m ruff check` ✅
+  - `python3 -m pytest -x` ❌ currently stops at `tests/logging/test_registry_logger.py::test_registry_ndjson_logger_includes_system_metrics`
+  - `python -m ruff check src/ tests/ --fix` ✅
+  - `python scripts/ci/mypy_baseline.py --require-baseline` ✅ (`126 == baseline 126`)
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
 
 ## Repository Living-Docs Inventory (gathered this session)
 
