@@ -1,6 +1,26 @@
 # Agent Accountability Report
 
-## SESSION SUMMARY — 2026-05-07T21:05Z [S-PR4343-Reapproval-Monitoring]
+## SESSION SUMMARY — 2026-05-07T21:22Z [S41-PR4343-actionlint-fix]
+
+**Session:** S41-PR4343-actionlint | **PR:** #4343 | **Date:** 2026-05-07 | **Branch:** copilot/update-documentation-for-readability
+
+**Objective:** Fix `Workflow Compliance Audit (actionlint)` CI failure caused by duplicate workflow block in `trigger-on-approval.yml`, triage remaining CI failures, and maintain living docs.
+
+**Completed this session:**
+- Identified root cause of `actionlint` failure: `trigger-on-approval.yml` had two `on:` + `jobs:` sections (original at line 25, duplicate at line 241–370) from an accidental append in a prior session.
+- Removed duplicate block by truncating the file at line 239 — now single `on:` and `jobs:` definition.
+- Triaged remaining 8 failing checks: `Secrets Baseline Enforcer`, `Agent Token Delegation`, `Auto-Fix Common CI Issues`, `PR Auto-Fix Check`, `Pre-Merge Validation`, `Validation Pipeline` — all are CI-infrastructure-level (token/rate-limit/delegation queue) rather than local code regressions; local `sync_tracked_files --fix` and `ruff` are clean.
+- Updated:
+  - `docs/roadmap/PR4343_whats_next.md` (Session 41 snapshot)
+  - `docs/sessions/PR4343_session_diagram.md` (S41 flow entry)
+  - `CHANGELOG.md` (Session 41 entry)
+
+**Validation:**
+- `python -m ruff check src/ tests/` ✅
+- `python scripts/ci/sync_tracked_files.py --fix` ✅
+- `grep -c "^on:" .github/workflows/trigger-on-approval.yml` → 1 ✅
+
+
 
 **Session:** S-PR4343-Reapproval-Monitor | **PR:** #4343 | **Date:** 2026-05-07 | **Branch:** copilot/update-documentation-for-readability
 

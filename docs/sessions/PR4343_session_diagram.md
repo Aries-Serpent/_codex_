@@ -1,7 +1,7 @@
 # PR #4343 — Session Diagram
 
-> **Last updated: 2026-05-07T21:05Z — Session 40**
-> **HEAD (latest observed in workflow queue): `cf03783b`**
+> **Last updated: 2026-05-07T21:22Z — Session 41**
+> **HEAD (latest pushed): `2977b69`**
 
 ## Session Flow
 
@@ -34,4 +34,11 @@ S40: Re-approval monitoring window
    │    • observed mixed states: pending/in_progress/queued/completed
    │    • observed completed Workflow Execution Gate success in latest wave
    └─ Refreshed PR4343 living docs/changelog/accountability snapshot for current head context
+
+S41: actionlint duplicate-block fix + final CI rescue
+   ├─ Identified root cause of Workflow Compliance Audit failure:
+   │    trigger-on-approval.yml had duplicate on:/jobs: block (lines 241-370)
+   ├─ Removed duplicate section — single on: + single jobs: block remains
+   ├─ Confirmed local state: ruff ✅, sync_tracked_files ✅
+   └─ Updated PR4343 living docs/changelog/accountability for session 41
 ```

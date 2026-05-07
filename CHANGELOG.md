@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (session 2026-05-07T21:05Z — PR #4343 re-approval monitoring)
+### Fixed (session 2026-05-07T21:22Z — PR #4343 actionlint fix + CI rescue triage)
+- Fixed `Workflow Compliance Audit (actionlint)` failure: removed duplicate `on:` + `jobs:` block (lines 241–370) from `.github/workflows/trigger-on-approval.yml` that was appended in a prior session; file now has a single workflow definition.
+- Triaged remaining 8 failing CI checks; all confirmed as CI-infrastructure-level (token delegation / rate limits / queue cascades) — no new local code regressions.
+- Updated PR #4343 living docs: `docs/roadmap/PR4343_whats_next.md`, `docs/sessions/PR4343_session_diagram.md`, and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+
+
 - Monitored the newly re-approved workflow wave and captured latest status for head `cf03783b` in PR4343 living docs.
 - Updated `docs/roadmap/PR4343_whats_next.md`, `docs/sessions/PR4343_session_diagram.md`, and accountability tracking with current queue outcomes.
 
