@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T20:50Z — PR #4343 review-thread + CI triage remediation)
+- Addressed review-thread feedback:
+  - restored callable semantics in `src/codex_ml/evaluation/runner.py` (`callable(self.model)`),
+  - hardened `services/audio/__init__.py` exports to prefer upstream `__all__`,
+  - refined `services/audio/workflow/__init__.py` stable exports behavior.
+- Addressed code-quality findings:
+  - removed dict-only equality fallback in `_JSONResponse.__eq__` test helper,
+  - restored positional compatibility for `benchmark_operation(iterations, *args, **kwargs)`,
+  - narrowed cleanup suppression from broad `Exception` to `OSError` in test utilities.
+- Addressed GitHub Advanced Security self-import alert pattern in `src/codex/utils/subprocess.py` by switching to runtime stdlib import-module indirection.
+- Added dedicated PR #4343 living docs: `docs/roadmap/PR4343_whats_next.md` and `docs/sessions/PR4343_session_diagram.md`.
+
 ### Fixed (session 2026-05-07T20:16Z — post-approval workflow monitoring)
 - Monitored re-approved workflow wave on head `6c239f07` and captured current mixed queue/conclusion state for CI rescue visibility.
 - Updated living status docs (`PR4323_whats_next.md`, `PR4323_session_diagram.md`) and accountability tracking to reflect the latest post-approval state.

@@ -120,8 +120,6 @@ class _JSONResponse(dict):
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, _JSONResponse):
             return dict(self) == dict(other) and self.status_code == other.status_code
-        if isinstance(other, dict):
-            return dict(self) == dict(other)
         return NotImplemented
 
 

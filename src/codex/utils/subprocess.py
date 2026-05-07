@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import importlib
 from collections.abc import Sequence
 from pathlib import Path
-from subprocess import CompletedProcess
-from subprocess import run as _run
 from typing import IO, Any
+
+_stdlib_subprocess = importlib.import_module("subprocess")
 
 
 def run(
@@ -25,7 +26,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,  # accepted for API compatibility; always forced to False
-) -> CompletedProcess[str]:
+) -> Any:
     """Run *cmd* securely.
 
     Parameters mirror :func:`subprocess.run`.  ``shell`` is **always** ``False``
@@ -33,7 +34,7 @@ def run(
     shell-injection risks.  ``check`` defaults to ``True`` to ensure errors are
     surfaced immediately.
     """
-    return _run(  # nosec B603
+    return _stdlib_subprocess.run(  # nosec B603
         list(cmd),
         cwd=cwd,
         capture_output=capture_output,

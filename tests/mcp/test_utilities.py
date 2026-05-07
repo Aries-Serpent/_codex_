@@ -237,9 +237,7 @@ class PerformanceTimer:
         return 0.0
 
 
-def benchmark_operation(
-    operation: Callable, *args, iterations: int = 100, **kwargs
-) -> dict[str, float]:
+def benchmark_operation(operation: Callable, iterations: int = 100, *args, **kwargs) -> dict[str, float]:
     """
     Benchmark an operation over multiple iterations.
 
@@ -331,8 +329,8 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     for file in files:
         try:
             os.remove(file)
-        except Exception as _err:
-            _ = None  # suppressed: no action needed
+        except OSError:
+            _ = None  # suppressed: permission denied or concurrent deletion during cleanup
 
 
 # Logging Utilities for Tests

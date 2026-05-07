@@ -4,11 +4,13 @@ from __future__ import annotations
 
 # Stub for AutoTuneWorkflow if not available
 try:
+    import src.services.audio.workflow as _workflow_module
     from src.services.audio.workflow.auto_tune_workflow import (
         AutoTuneWorkflow,
         TuneResult,
         WorkflowConfig,
     )
+    _workflow_all = getattr(_workflow_module, "__all__", None)
 except ImportError:
     from dataclasses import dataclass, field
     from typing import Any, Dict, List, Optional
@@ -44,8 +46,8 @@ except ImportError:
             return [self.process(p) for p in audio_paths]
 
 
-__all__ = [
-    "AutoTuneWorkflow",
-    "TuneResult",
-    "WorkflowConfig",
-]
+_stable_exports = ["AutoTuneWorkflow", "TuneResult", "WorkflowConfig"]
+if "_workflow_all" in locals() and isinstance(_workflow_all, list):
+    __all__ = [name for name in _workflow_all if isinstance(name, str)] or _stable_exports
+else:
+    __all__ = _stable_exports
