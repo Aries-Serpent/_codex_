@@ -1,10 +1,10 @@
-# Session Context — 2026-05-07T11:28:15Z
+# Session Context — 2026-05-07T11:47:38Z
 **Branch:** `copilot/fix-timeline-structure`  **PR:** #4323  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4702` (✅)
-- GraphQL remaining: `4992` (✅)
+- REST remaining: `4616` (✅)
+- GraphQL remaining: `4968` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/fix-timeline-structure` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Auto-Fix Common CI Issues** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
 - **PR Auto-Fix Check** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
-- **Copilot Issue Triage** — `failure` on `main` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
+- **Validation Pipeline** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
+- **Pre-Merge Validation** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
 
 ## 📝 Recent Commits
+- `224ba361` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-07)
+- `10b34e10` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-07)
+- `71aa5cba` fix(ci): S21 — Pattern 25 Last-Commit Accountability fix for Detect CI Issues /  — copilot-swe-agent[bot] (2026-05-07)
+- `eeee502a` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
+- `92e99bf0` ci: begin S21 investigation of failing checks on bbb6526137c7 — copilot-swe-agent[bot] (2026-05-07)
+- `aeb6da1c` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
 - `bbb65261` Merge branch 'main' into copilot/fix-timeline-structure — Statix (2026-05-07)
 - `12c57fdc` fix(ci): RP-022 broken cross-references in reports/dependabot_summary.md — Fast  — copilot-swe-agent[bot] (2026-05-07)
-- `8dc7eb22` chore: initial plan — fix broken cross-references in dependabot_summary.md — copilot-swe-agent[bot] (2026-05-07)
-- `3f96a836` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-07)
-- `00c7a11e` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
-- `b3fe722a` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-07)
-- `52c21ed1` fix(changelog): remove duplicate S19 entries — keep only one in [Unreleased] — copilot-swe-agent[bot] (2026-05-07)
-- `839a077d` fix(ci): S19 accountability entry — Pre-Merge Validation run 25473787886 (Patter — copilot-swe-agent[bot] (2026-05-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
