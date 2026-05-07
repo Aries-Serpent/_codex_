@@ -1,34 +1,34 @@
-# Session Context — 2026-05-07T21:12:13Z
+# Session Context — 2026-05-07T21:38:44Z
 **Branch:** `copilot/update-documentation-for-readability`  **PR:** #4343  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4613` (✅)
-- GraphQL remaining: `4968` (✅)
+- REST remaining: `4220` (✅)
+- GraphQL remaining: `4937` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4343 — Improve variable-guide readability and remediate CodeQL/security findings with CI rescue follow-ups and review-thread remediations
 State: `open`  Draft: `False`  Branch: `copilot/update-documentation-for-readability` → `main`
 
-### ❌ 18 Failing CI Check(s)
-- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
-- `Post Execution Plan` (cancelled)
-- `Cancel Runs for Unchecked Workflows` (cancelled)
-- `Dispatch Newly-Checked Workflows` (cancelled)
-- `Dispatch Newly-Checked Workflows` (cancelled)
-- `Validate WEC Template Integrity` (cancelled)
-- `Detect WEC Checkbox Changes` (cancelled)
-- `Parse Workflow Checklist` (cancelled)
+### ❌ 7 Failing CI Check(s)
+- `⚡ Approve action_required runs (post-delegation)` (failure)
+- `Activate token delegation` (failure)
+- `Final Pre-Merge Checks` (failure)
+- `Post rescue comment on pre-merge failure` (cancelled)
+- `Post rescue comment` (failure)
+- `⚡ Approve action_required runs (post-delegation)` (failure)
+- `Activate token delegation` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **.github/workflows/trigger-on-approval.yml** — `failure` on `copilot/update-documentation-for-readability` (2026-05-07)
-- **.github/workflows/trigger-on-approval.yml** — `failure` on `copilot/update-documentation-for-readability` (2026-05-07)
-- **.github/workflows/trigger-on-approval.yml** — `failure` on `copilot/update-documentation-for-readability` (2026-05-07)
-- **.github/workflows/trigger-on-approval.yml** — `failure` on `copilot/update-documentation-for-readability` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-07)
+- **Agent Token Delegation** — `failure` on `copilot/update-documentation-for-readability` (2026-05-07)
+- **Pre-Merge Validation** — `failure` on `copilot/update-documentation-for-readability` (2026-05-07)
 
 ## 📝 Recent Commits
+- `bcea2e46` fix(ci): remove duplicate on:/jobs: block from trigger-on-approval.yml (actionli — copilot-swe-agent[bot] (2026-05-07)
 - `2977b690` docs: refresh PR4343 monitoring snapshots and finalize review-thread updates — copilot-swe-agent[bot] (2026-05-07)
 - `cf03783b` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-07)
 - `389169a1` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-07)
@@ -36,7 +36,6 @@ State: `open`  Draft: `False`  Branch: `copilot/update-documentation-for-readabi
 - `10ec44af` fix: address review-thread findings and add PR4343 living status docs — copilot-swe-agent[bot] (2026-05-07)
 - `b577f9d1` docs: update post-approval workflow monitoring status — copilot-swe-agent[bot] (2026-05-07)
 - `6c239f07` fix: remove test utility no-op and update session tracking docs — copilot-swe-agent[bot] (2026-05-07)
-- `23b6ce4d` fix(ci): resolve action-version drift and refresh session tracking docs — copilot-swe-agent[bot] (2026-05-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
