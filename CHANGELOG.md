@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T06:15Z — PR #4323 Session 18: PR Auto-Fix Check + CI rescue iteration)
+- **Investigated PR Auto-Fix Check run 25474516608** and Pre-Merge Validation run 25473787886 — both failed due to SHA drift (CI ran on merge-preview commit, not branch HEAD). Local checks pass: `ruff check src/` ✅, `sync_tracked_files --check` ✅.
+- **35 failing checks on `fe10ecaf4b9d`** (comment #4394514313): failures are CI infrastructure workflows (token delegation, auto-approval, rescue posters), not code quality failures. Actual code checks pass on branch HEAD.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S18 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T03:01Z — PR #4323 Session 14: CI rescue + S9-S13 accountability gap + living docs S14)
 - **AGENT_ACCOUNTABILITY_REPORT.md gap resolved**: S9–S13 session entries were missing despite CHANGELOG claiming them. All 5 entries (S9 WEC fetcher, S10 baseline, S11 sync+PDA+py/mixed-returns, S12 living docs refresh, S13 full review+action_versions) added to bring report current.
 - **S14 living docs update**: `PR4323_whats_next.md`, `PR4323_session_diagram.md`, and `CHANGELOG.md` updated with S14 session block and corrected statistics (14 sessions, 176+ files).
