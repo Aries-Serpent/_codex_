@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T21:05Z — PR #4343 re-approval monitoring)
+- Monitored the newly re-approved workflow wave and captured latest status for head `cf03783b` in PR4343 living docs.
+- Updated `docs/roadmap/PR4343_whats_next.md`, `docs/sessions/PR4343_session_diagram.md`, and accountability tracking with current queue outcomes.
+
+### Fixed (session 2026-05-07T21:03Z — PR #4343 monitoring + follow-up refinements)
+- Continued post-approval workflow monitoring on head `d83cef27` and recorded mixed run-state status in dedicated PR4343 living docs.
+- Refined `services/audio/workflow/__init__.py` export handling by initializing `_workflow_all` explicitly and simplifying scope checks.
+- Refined `src/codex/utils/subprocess.py` typing/remediation notes while retaining CodeQL self-import mitigation pattern.
+
 ### Fixed (session 2026-05-07T20:50Z — PR #4343 review-thread + CI triage remediation)
 - Addressed review-thread feedback:
   - restored callable semantics in `src/codex_ml/evaluation/runner.py` (`callable(self.model)`),

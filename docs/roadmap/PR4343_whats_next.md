@@ -1,13 +1,26 @@
 # PR #4343 — What's Next
 
-> **Last updated: 2026-05-07T20:50Z — Session 38 (review-thread + CI triage follow-up)**
-> **Status: 🟡 In progress — addressing open review threads and CodeQL/code-quality findings**
+> **Last updated: 2026-05-07T21:05Z — Session 40 (re-approval monitoring window)**
+> **Status: 🟡 In progress — monitoring active workflow wave while final review-thread refinements are applied**
 
 ## Current Objectives
 
 - Apply all actionable review-thread changes from `copilot-pull-request-reviewer`, `github-advanced-security`, and `github-code-quality`.
 - Resolve code-fixable CI failures referenced in maintainer comment and CI triage issue #4342.
 - Keep living status docs, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` synchronized each push.
+
+## Session 39 Monitoring Snapshot
+
+- Current head: `d83cef27`.
+- Latest workflow wave contains many in-progress jobs; completed results are mixed (`failure`, `startup_failure`, and `success`).
+- `trigger-on-approval.yml` runs are currently failing in this wave; inspection shows no failed jobs payload returned in one recent run, consistent with orchestration-level/startup failures rather than new local-code regressions.
+- Local validation remains green after follow-up refinements (`ruff` + targeted `pytest`).
+
+## Session 40 Monitoring Snapshot
+
+- Maintainer re-approved pending workflows again; latest observed head in workflow queue is `cf03783b`.
+- Current status mix: `pending`, `in_progress`, `queued`, and `completed`; recent completed results include both `success` and historical orchestration failures/startup failures.
+- Core gates in the newest wave show forward progress (`Workflow Execution Gate` success observed; `Validation Pipeline` / `Agent Token Delegation` still active in current window).
 
 ## CI Triage Snapshot (from issue #4342 + latest run logs)
 

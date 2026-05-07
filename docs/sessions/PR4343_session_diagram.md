@@ -1,7 +1,7 @@
 # PR #4343 — Session Diagram
 
-> **Last updated: 2026-05-07T20:50Z — Session 38**
-> **HEAD: `b577f9d1` (pre-fix snapshot for current session)**
+> **Last updated: 2026-05-07T21:05Z — Session 40**
+> **HEAD (latest observed in workflow queue): `cf03783b`**
 
 ## Session Flow
 
@@ -19,4 +19,19 @@ S38: Review-thread and CI-triage follow-up (current)
    │    • Secrets Baseline Enforcer: historical new-secret detection
    ├─ Applied code changes for review-thread findings (runner/audio/subprocess/tests)
    └─ Created dedicated PR4343 living docs (this file + PR4343_whats_next.md)
+
+S39: Post-approval workflow monitoring + follow-up refinements
+   ├─ Maintainer re-approved pending workflows; monitored latest run wave on head d83cef27
+   ├─ Observed active mixed-state queue (in-progress + startup_failure/failure/success completions)
+   ├─ Applied follow-up refinements from code review:
+   │    • explicit _workflow_all initialization/scope simplification
+   │    • retained subprocess type clarity while keeping CodeQL self-import remediation
+   └─ Re-validated locally (ruff + targeted evaluation/audio tests) ✅
+
+S40: Re-approval monitoring window
+   ├─ Maintainer approved pending workflows again
+   ├─ Monitored latest queue state via MCP list_workflow_runs
+   │    • observed mixed states: pending/in_progress/queued/completed
+   │    • observed completed Workflow Execution Gate success in latest wave
+   └─ Refreshed PR4343 living docs/changelog/accountability snapshot for current head context
 ```
