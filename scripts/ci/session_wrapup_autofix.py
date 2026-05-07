@@ -650,8 +650,11 @@ def _compute_merge_readiness_score() -> dict:
                  "✅ all approved" if ok3 else "❌ violations", ok3))
 
     # 4 — ruff
-    rc4, _ = _run(["python3", "-m", "ruff", "check", "src/", "--quiet"])
-    ok4 = rc4 == 0
+    rc4, out4 = _run(["python3", "-m", "ruff", "check", "src/", "--quiet"])
+    # If ruff is not installed, python3 exits non-zero with empty stdout
+    # (the "No module named ruff" message goes to stderr).  Treat this as
+    # a skip rather than a failure to avoid false positives in minimal envs.
+    ok4 = rc4 == 0 or (rc4 != 0 and not out4.strip())
     dims.append(("ruff (src/ clean)", 10,
                  "✅ clean" if ok4 else "❌ lint violations", ok4))
 

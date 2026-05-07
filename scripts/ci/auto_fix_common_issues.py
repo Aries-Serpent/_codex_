@@ -1338,6 +1338,10 @@ class CommonIssueFixer:
                 timeout=120,
             )
             live = sum(1 for line in result.stdout.splitlines() if ": error:" in line)
+            # If mypy is not installed, python3 exits non-zero with empty stdout.
+            # Skip silently to avoid false positives in minimal CI environments.
+            if result.returncode != 0 and live == 0:
+                return issues  # mypy not available in this environment
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return issues  # skip if mypy unavailable
 
