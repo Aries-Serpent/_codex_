@@ -1,10 +1,10 @@
-# Session Context — 2026-05-07T06:50:09Z
+# Session Context — 2026-05-07T07:08:19Z
 **Branch:** `copilot/fix-timeline-structure`  **PR:** #4323  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4997` (✅)
-- GraphQL remaining: `4972` (✅)
+- REST remaining: `4614` (✅)
+- GraphQL remaining: `4991` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/fix-timeline-structure` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-07)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-07)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-07)
+- **Validation Pipeline** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
+- **Pre-Merge Validation** — `failure` on `copilot/fix-timeline-structure` (2026-05-07)
 
 ## 📝 Recent Commits
+- `00c7a11e` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
+- `52c21ed1` fix(changelog): remove duplicate S19 entries — keep only one in [Unreleased] — copilot-swe-agent[bot] (2026-05-07)
+- `839a077d` fix(ci): S19 accountability entry — Pre-Merge Validation run 25473787886 (Patter — copilot-swe-agent[bot] (2026-05-07)
 - `000100de` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
 - `5e2025d9` Merge remote-tracking branch 'origin/copilot/fix-timeline-structure' into copilo — copilot-swe-agent[bot] (2026-05-07)
 - `ca74610f` fix(ci): S18 accountability entry — PR Auto-Fix Check + CI rescue iteration (Pat — copilot-swe-agent[bot] (2026-05-07)
 - `94651d11` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-07)
 - `643da460` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-07)
-- `fe10ecaf` fix(ci): S17 accountability entry — address comment-review-gate (Pattern 25) — copilot-swe-agent[bot] (2026-05-07)
-- `32139fe0` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-07)
-- `c911e969` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
