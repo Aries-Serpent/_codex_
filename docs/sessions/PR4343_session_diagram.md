@@ -1,7 +1,7 @@
 # PR #4343 — Session Diagram
 
-> **Last updated: 2026-05-07T21:22Z — Session 41**
-> **HEAD (latest pushed): `2977b69`**
+> **Last updated: 2026-05-07T22:36Z — Session 44**
+> **HEAD (latest pushed): `38189ab`**
 
 ## Session Flow
 
@@ -41,4 +41,14 @@ S41: actionlint duplicate-block fix + final CI rescue
    ├─ Removed duplicate section — single on: + single jobs: block remains
    ├─ Confirmed local state: ruff ✅, sync_tracked_files ✅
    └─ Updated PR4343 living docs/changelog/accountability for session 41
+
+S44: Approved-run monitoring continuation (cross-session update)
+   ├─ Maintainer confirmed workflow approvals; monitoring continued on latest branch run wave
+   ├─ Captured latest run state sample:
+   │    • 25525804860 (Automatic Dependency Submission) → queued
+   │    • 25525794503 (Automatic Dependency Submission) → in_progress
+   │    • 25525775758 (Workflow Execution Gate) → completed: success
+   │    • 25525791366 (Workflow Execution Gate) → completed: action_required (no failed jobs payload)
+   ├─ Follow-up get_workflow_run call hit GitHub API rate limit (403; reset pending)
+   └─ Updated PR4343 living docs/changelog/accountability for session 44
 ```
