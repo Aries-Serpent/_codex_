@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Triaged new maintainer CI-rescue and secrets-baseline comments and re-ran rescue command set (`ruff --fix`, mypy baseline check, `auto_fix_common_issues --check-only`).
 - Upgraded `.github/workflows/trigger-on-approval.yml` from `actions/github-script@v7` to `@v8` to address Pattern 30 merge-readiness action-version failure.
 - Refreshed living docs (`PR4323_whats_next.md`, `PR4323_session_diagram.md`) and accountability status for the current session.
+- Resolved follow-up review issue in `tests/mcp/test_utilities.py` by removing a stray `pass` in `cleanup_test_files`.
 
 ### Fixed (session 2026-05-07T19:55Z — CodeQL/security remediation + workflow monitoring)
 - Applied requested CodeQL/security/doc readability fixes across `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`, `src/codex_ml/evaluation/runner.py`, `src/codex/utils/subprocess.py`, audio package exports, and affected tests.

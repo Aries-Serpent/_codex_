@@ -14,12 +14,14 @@
   - `python scripts/ci/mypy_baseline.py --require-baseline` ✅
   - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
 - Fixed actionable Pattern 30 issue by updating `.github/workflows/trigger-on-approval.yml` from `actions/github-script@v7` to `@v8`.
+- Applied follow-up test-utility cleanup fix: removed stray no-op `pass` in `tests/mcp/test_utilities.py::cleanup_test_files`.
 - Updated `CHANGELOG.md`, `docs/roadmap/PR4323_whats_next.md`, and `docs/sessions/PR4323_session_diagram.md` with current session state.
 
 **Validation:**
 - Ruff (src/tests with `--fix`): ✅
 - mypy baseline gate: ✅ (126 == baseline 126)
 - auto-fix diagnostics check-only: ✅ no critical auto-fixable code issues; action-version drift remediated
+- `python -m ruff check tests/mcp/test_utilities.py`: ✅
 
 **Open items (same session):**
 - Continue monitoring post-approval workflow queue until final wrap-up window.

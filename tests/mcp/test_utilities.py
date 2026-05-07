@@ -323,7 +323,6 @@ def assert_raises_mcp_error(
 def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     """Clean up temporary test files."""
     import glob
-    pass  # removed redundant `import os` (top-level import used)
 
     if not os.path.exists(directory):
         return
