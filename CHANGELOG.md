@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T22:55Z — PR #4344 iterative self-healing + review-thread fixes)
+- Investigated `Auto-Fix Common CI Issues` failing run `25525872834` and validated current branch healing state:
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+  - `python scripts/ci/session_wrapup_autofix.py --pr-number 4344` ✅
+- Applied review-thread fixes:
+  - `src/codex/utils/subprocess.py`: added overload-based return typing for `text=True/False`.
+  - `tests/mcp/test_utilities.py`: switched cleanup warning path to module-scoped logger.
+  - `.github/copilot-prompts/active/PR-4344-followup.md`: normalized `Last Updated` to ISO-8601 UTC.
+- Added PR-specific living docs for this PR:
+  - `docs/roadmap/PR4344_whats_next.md`
+  - `docs/sessions/PR4344_session_diagram.md`
+
 ### Fixed (session 2026-05-07T22:36Z — monitoring continuation + living-doc sync)
 - Continued workflow monitoring after maintainer approval and captured latest branch run snapshot (`queued`/`in_progress`/`completed` mix; Workflow Execution Gate success observed in current wave).
 - Updated living docs carried forward from prior cloud-agent session:

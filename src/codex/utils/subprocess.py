@@ -5,11 +5,51 @@ from __future__ import annotations
 import importlib
 from collections.abc import Sequence
 from pathlib import Path
-from typing import IO, Any, cast
+from typing import IO, Any, Literal, cast, overload
 
 # Resolve stdlib subprocess via importlib to avoid local-module name shadowing
 # (`src.codex.utils.subprocess`) reported by code scanning in direct imports.
 _stdlib_subprocess = cast(Any, importlib.import_module("subprocess"))
+
+
+@overload
+def run(
+    cmd: Sequence[str],
+    *,
+    cwd: Path | None = None,
+    capture_output: bool = False,
+    text: Literal[True] = True,
+    check: bool = True,
+    timeout: float | None = None,
+    env: dict[str, str] | None = None,
+    input: str | bytes | None = None,
+    stdin: int | IO[Any] | None = None,
+    stdout: int | IO[Any] | None = None,
+    stderr: int | IO[Any] | None = None,
+    encoding: str | None = None,
+    errors: str | None = None,
+    shell: bool = False,
+) -> _stdlib_subprocess.CompletedProcess[str]: ...
+
+
+@overload
+def run(
+    cmd: Sequence[str],
+    *,
+    cwd: Path | None = None,
+    capture_output: bool = False,
+    text: Literal[False],
+    check: bool = True,
+    timeout: float | None = None,
+    env: dict[str, str] | None = None,
+    input: str | bytes | None = None,
+    stdin: int | IO[Any] | None = None,
+    stdout: int | IO[Any] | None = None,
+    stderr: int | IO[Any] | None = None,
+    encoding: str | None = None,
+    errors: str | None = None,
+    shell: bool = False,
+) -> _stdlib_subprocess.CompletedProcess[bytes]: ...
 
 
 def run(
@@ -28,7 +68,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,  # accepted for API compatibility; shell=True is rejected
-) -> _stdlib_subprocess.CompletedProcess[str]:
+) -> _stdlib_subprocess.CompletedProcess[str] | _stdlib_subprocess.CompletedProcess[bytes]:
     """Run *cmd* securely.
 
     Parameters mirror :func:`subprocess.run`. This wrapper forbids shell

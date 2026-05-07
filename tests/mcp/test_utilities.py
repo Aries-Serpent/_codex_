@@ -6,6 +6,7 @@ Provides common test patterns, mocks, and assertions.
 """
 
 import hashlib
+import logging
 import os
 import random
 from collections.abc import Callable
@@ -15,6 +16,8 @@ from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal
 from mcp.errors import MCPError, ToolNotFound
 from mcp.rate_limit import MCPRateLimiter
 from mcp.registry import MCPToolRegistry
+
+logger = logging.getLogger(__name__)
 
 
 # Test Data Generators
@@ -321,7 +324,6 @@ def assert_raises_mcp_error(
 def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     """Clean up temporary test files."""
     import glob
-    import logging
 
     if not os.path.exists(directory):
         return
@@ -334,7 +336,7 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
             # Benign race: file was already deleted by another process/thread.
             pass
         except OSError as e:
-            logging.warning("Failed to remove test file '%s': %s", file, e)
+            logger.warning("Failed to remove test file '%s': %s", file, e)
 
 
 # Logging Utilities for Tests
