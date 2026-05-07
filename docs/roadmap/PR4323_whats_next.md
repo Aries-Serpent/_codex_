@@ -1,7 +1,14 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T20:00Z — Session 35 (CodeQL/security fixes batch + workflow monitoring)**
+> **Last updated: 2026-05-07T20:10Z — Session 36 (CI comment triage + action-version remediation)**
 > **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · WEC complete**
+
+## Session 36 Summary (2026-05-07T20:10Z — CI comment triage + action-version remediation)
+
+- Triaged new maintainer comments and reviewed referenced CI rescue/secrets-baseline/comment-gate runs.
+- Executed rescue validation commands: `ruff --fix`, mypy baseline check, and `auto_fix_common_issues --check-only`.
+- Remediated Pattern 30 finding by upgrading `actions/github-script@v7` → `@v8` in `.github/workflows/trigger-on-approval.yml`.
+- Continued workflow monitoring after approvals; current runs are mostly approval-gated/action_required and dispatch failures, with no new local code-quality regressions.
 
 ## Session 35 Summary (2026-05-07T19:55Z — CodeQL/security remediation batch + workflow monitoring)
 

@@ -1,11 +1,21 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T20:00Z — Session 35 (CodeQL/security remediation batch + workflow monitoring)**
-> **Sessions: S1→…→S32→S33→S34→S35 — HEAD `e0160328`**
+> **Last updated: 2026-05-07T20:10Z — Session 36 (CI comment triage + action-version remediation)**
+> **Sessions: S1→…→S33→S34→S35→S36 — HEAD `2bc5faed`**
 
 ## Session Flow
 
 ```
+S36 (comment triage + action versions): 2026-05-07T20:05Z → 20:10Z
+   ├─ Reviewed maintainer comments + referenced CI rescue runs/log metadata
+   ├─ Ran rescue command set:
+   │      ruff check src/ tests/ --fix ✅
+   │      mypy baseline require-baseline ✅
+   │      auto_fix_common_issues --check-only ✅
+   ├─ Pattern 30 remediation:
+   │      trigger-on-approval.yml github-script@v7 → @v8 (7 refs)
+   └─ Workflow monitoring continued after approvals (approval-gated/action_required state observed)
+
 S35 (CodeQL/security remediation + monitoring): 2026-05-07T19:47Z → 19:55Z
    ├─ Applied requested fixes across docs/admin + src/ + tests/ + services/audio + admin agent module
    ├─ Targeted validation:
