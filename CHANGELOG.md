@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4343)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4343 (SHA `81d1dc87`) at 2026-05-07T19:47Z [auto-generated]
+
 ### Fixed (session 2026-05-07T16:50Z — PR #4323 Session 34: RP-004 sync drift resolved, RP-006 EOF newlines, living docs updated)
 - **RP-004**: `sync_tracked_files --fix` → ✅ all tracked files consistent (CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, CODEX_MANIFEST up-to-date for S34)
 - **RP-006**: Fixed EOF newlines in 3 `.codex/*.json` files (recurring pattern — Python-based batch fix using `rb`/`ab` mode)
