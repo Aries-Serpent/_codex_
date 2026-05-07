@@ -29705,3 +29705,55 @@ by integration" — regardless of rate limit state.
 ### Validation
 - `ruff check src/ tests/`: ✅ 0 violations
 - `sync_tracked_files --check`: ✅ consistent
+
+---
+
+## Session S27 — 2026-05-07
+
+### Context
+- Branch: `copilot/fix-timeline-structure`
+- Triggered by: Comment #4398038171 (deep-rescue escalation) + user reminder re: CI Triage Report #4338
+- Triage report update: 205 total failures / 23 workflows (generated 2026-05-07T14:31:42Z)
+- Failing on HEAD `c37bee0fd768`: `Pre-Merge Validation` (SHA drift) + `Workflow Execution Gate` (WEC section stripped by prior report_progress)
+
+### Objectives
+1. Source updated CI Failure Triage Report #4338 (205 failures, 23 workflows)
+2. Fix RP-006 — missing EOF newlines in .codex/ JSON files (flagged in deep-rescue comment #4398038171)
+3. Fix Workflow Execution Gate failure — WEC section stripped from PR body
+4. Update living docs (PR4323_whats_next.md + PR4323_session_diagram.md) with S15-S26 history
+5. Satisfy Pattern 25 (Last-Commit Accountability) by updating this report
+
+### Work Completed
+
+#### Triage Report Analysis
+- Updated report (2026-05-07T14:31:42Z): 205 total failures across 23 workflows
+- All Validation Pipeline / Auto-Fix / Pre-Merge failures are on OLD commits (204e3d10 and earlier) — already resolved
+- `Required Actions Version Enforcer`: 5 failures on old commits — `enforce_actions_versions.py --json` confirms 0 violations on current branch
+- Two new failures on HEAD `c37bee0fd768`: Pre-Merge (SHA drift false positive) + Workflow Execution Gate (WEC stripped)
+
+#### RP-006 Fix
+- Fixed 5 .codex/ JSON files missing EOF newlines:
+  - `.codex/rag/session_delta.json`
+  - `.codex/session_access_strategy.json`
+  - `.codex/sessions/rate_limit_state.json`
+  - `.codex/fragile_tests.json`
+  - `.codex/session_access_manifest.json`
+- Command: `find .codex -name '*.json' | xargs -I{} sh -c 'tail -c1 "$1" | grep -q . && echo >> "$1"' _ {}`
+
+#### Living Docs Update
+- `PR4323_whats_next.md`: Header updated to S26; S15-S26 session summaries added; CI status table updated (all ✅ except 46 CodeQL pending + 4 startup_failure infrastructure)
+- `PR4323_session_diagram.md`: Header updated to S26; S15-S26 flow entries added; CI table and statistics updated (26 sessions, 180+ files, 66 CodeQL fixes, 12 CI rescue sessions)
+
+#### Workflow Execution Gate Analysis
+- Root cause: prior `report_progress` call replaced PR body with only checklist — stripped WEC section
+- Current PR body (fetched via API) DOES have the WEC section — it was restored by an automated workflow between 14:33Z and 14:38Z
+- New push with WEC-preserved prDescription will prevent recurrence
+
+#### Pattern 25 Fix
+- This S27 entry ensures AGENT_ACCOUNTABILITY_REPORT.md is updated in this commit
+
+### Validation
+- `ruff check src/ tests/`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+- `auto_fix_common_issues --check-only`: ✅ 0 issues (Pattern 30: 100/100)
+- RP-006: 5 files fixed ✅

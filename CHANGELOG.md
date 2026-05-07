@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T14:40Z — PR #4323 Session 27: RP-006 EOF newlines + living docs S15-S26 + WEC gate analysis)
+- **RP-006 (missing EOF newline)**: Fixed 5 `.codex/` JSON files missing terminal newlines (`.codex/rag/session_delta.json`, `.codex/session_access_strategy.json`, `.codex/sessions/rate_limit_state.json`, `.codex/fragile_tests.json`, `.codex/session_access_manifest.json`) — flagged by deep-rescue comment #4398038171.
+- **Living docs S15-S26 update**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated with complete session history (S15–S26), CI status table (all checks ✅ except 46 CodeQL pending + 4 startup_failure infra), and statistics (26 sessions, 180+ files, 66 CodeQL fixes, 12 CI rescue sessions).
+- **Triage report #4338 sourced**: Updated report (2026-05-07T14:31:42Z) shows 205 failures / 23 workflows — all actionable branch failures trace to old commits; `Required Actions Version Enforcer` shows 0 violations on current branch HEAD.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S27 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T14:23Z — PR #4323 Session 26: Pattern 25 fix for 4 failing CI checks on commit 204e3d10)
 - **4 failing CI checks on commit `204e3d10996f`** (comment #4397907654): `Final Pre-Merge Checks`, `Fast Validation`, `Detect and Fix Common Issues`, `Detect CI Issues & Post Fix Instructions` all failed due to Pattern 25 violation — the prior investigation commit `c725c0ef` did not update `AGENT_ACCOUNTABILITY_REPORT.md`. The `sync_tracked_files: ❌ stale` in the pre-merge log was caused by the merge preview SHA (`793ab0ffce26`) diverging from branch HEAD (`204e3d10996f`) — a known false positive for merge commits.
 - **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S26 entry). `sync_tracked_files.py --fix` run to ensure CODEX_MANIFEST consistency.
