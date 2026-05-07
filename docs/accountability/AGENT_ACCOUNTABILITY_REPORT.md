@@ -29757,3 +29757,29 @@ by integration" — regardless of rate limit state.
 - `sync_tracked_files --check`: ✅ consistent
 - `auto_fix_common_issues --check-only`: ✅ 0 issues (Pattern 30: 100/100)
 - RP-006: 5 files fixed ✅
+
+---
+
+## Session S28 — 2026-05-07 (wrap-up)
+
+### Context
+- Branch: `copilot/fix-timeline-structure`
+- HEAD `01936069`: **14 ✅ / 0 ❌** — fully green CI
+- This is the session wrap-up commit
+
+### Objectives
+1. Monitor CI on HEAD `01936069` — confirmed 14/0 green
+2. Update living docs (PR4323_whats_next.md + PR4323_session_diagram.md) to S28 status
+3. Satisfy Pattern 25 (Last-Commit Accountability)
+
+### Work Completed
+- CI confirmed: HEAD `01936069` → 14 successes, 0 failures
+- `PR4323_whats_next.md`: header updated to S28, S27 summary corrected, CI table updated to 14/0 green, `Blocking CI Check` table updated (all ✅)
+- `PR4323_session_diagram.md`: header updated to S28, S27+S28 flow entries added, CI table updated (all ✅ + 14/0 overall green), statistics updated (28 sessions, 185+ files, 14 CI rescue sessions)
+- CHANGELOG.md: S28 entry added under `## [Unreleased]`
+- Pattern 25 satisfied: this commit updates `AGENT_ACCOUNTABILITY_REPORT.md`
+
+### Validation
+- `ruff check src/ tests/`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+- `auto_fix_common_issues --check-only`: ✅ 0 issues (Pattern 30: 100/100)

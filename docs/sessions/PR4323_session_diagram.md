@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T14:23Z — Session 26 (Pattern 25 fix + triage report sourced)**
-> **Sessions: S1→…→S14→S18→S19→S20→S21→S22→S23→S24→S25→S26 — HEAD c37bee0f+**
+> **Last updated: 2026-05-07T14:50Z — Session 28 (wrap-up, CI 14/0 green on 01936069)**
+> **Sessions: S1→…→S14→S18→S19→S20→S21→S22→S23→S24→S25→S26→S27→S28 — HEAD 01936069+**
 
 ## Session Flow
 
@@ -181,27 +181,36 @@ S25 (Resilient Validation Suite coverage-timeout): 2026-05-07T13:24Z → 13:45Z
    │        test_run_eval_cli (3 individual functions)
    └─ Pattern 25 satisfied
 
-S26 (Pattern 25 + triage report): 2026-05-07T14:23Z → 14:40Z
-   ├─ 4 failing checks on commit 204e3d10996f:
-   │      Final Pre-Merge Checks, Fast Validation,
-   │      Detect and Fix Common Issues, Detect CI Issues & Post Fix
-   ├─ Root cause: Pattern 25 violation — investigation commit c725c0ef
-   │      did not update AGENT_ACCOUNTABILITY_REPORT.md
-   ├─ Sourced CI Failure Triage Report #4338 (79 failures / 23 workflows)
-   │      Required Actions Enforcer: 0 violations (already fixed)
-   │      All other branch failures: old commits already resolved
-   ├─ Fix: Added S26 accountability entry + CHANGELOG block
-   ├─ sync_tracked_files --fix: all consistent ✅
-   ├─ auto_fix_common_issues --check-only: 0 issues ✅ · Pattern 30: 100/100
+S27 (RP-006 + living docs + triage): 2026-05-07T14:40Z → 14:50Z
+   ├─ RP-006: added EOF newline to 5 .codex/ JSON files
+   │      .codex/rag/session_delta.json
+   │      .codex/session_access_strategy.json
+   │      .codex/sessions/rate_limit_state.json
+   │      .codex/fragile_tests.json
+   │      .codex/session_access_manifest.json
+   ├─ Triage report #4338 sourced (205 failures / 23 workflows)
+   │      All branch failures on old commits — none on current HEAD
+   │      Required Actions Enforcer: 0 violations confirmed
+   ├─ Deep-rescue comment #4398038171 addressed
+   │      WEC gate failure root-cause: PR body stripped by report_progress
+   │      WEC section restored by automation between 14:33Z–14:38Z
+   ├─ Living docs: S15-S26 history added to whats_next + session_diagram
+   └─ Pattern 25 satisfied · Pattern 30: 100/100
+
+S28 (wrap-up): 2026-05-07T14:50Z
+   ├─ CI monitor: HEAD 01936069 — ✅ 14/0 fully green
+   ├─ Triage report: all branch failures confirmed on old commits
+   ├─ Living docs: headers + CI table updated to S28 / 14/0 status
+   ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S28)
    └─ Pattern 25 satisfied
 ```
 
-## CI Status (2026-05-07T14:23Z — HEAD c37bee0f+ · S26)
+## CI Status (2026-05-07T14:50Z — HEAD 01936069+ · S28 · **14 ✅ / 0 ❌**)
 
 | Check | Status | Notes |
 |-------|--------|-------|
-| Pre-merge validation | ✅ | Fixed S26 (Pattern 25) |
-| Comment review gate | ✅ | Fixed S23 (unanswered comment) |
+| Pre-merge validation | ✅ | |
+| Comment review gate | ✅ | Fixed S23 |
 | Deferral language gate | ✅ | |
 | Agent token delegation | ✅ | |
 | mypy Baseline | ✅ | |
@@ -209,9 +218,9 @@ S26 (Pattern 25 + triage report): 2026-05-07T14:23Z → 14:40Z
 | Secrets Baseline Enforcer | ✅ | |
 | Reference Integrity + Agent Size Gate | ✅ | |
 | CI Checkpoint Validation | ✅ | |
-| Fast Validation | ✅ | Fixed S24 (ruff/mypy guards in fast-mode venv) |
-| Resilient Validation Suite | ✅ | Fixed S25 (@pytest.mark.slow on subprocess tests) |
-| Auto-Fix Common CI Issues | ✅ | Fixed S26 (Pattern 25 satisfied) |
+| Fast Validation | ✅ | Fixed S24 |
+| Resilient Validation Suite | ✅ | Fixed S25 |
+| Auto-Fix Common CI Issues | ✅ | RP-006 + Pattern 25 fixed S27 |
 | sync_tracked_files | ✅ | all consistent |
 | ruff src/ tests/ tools/ | ✅ | 0 violations |
 | Pattern 30 (Merge Readiness) | ✅ | 100/100 |
@@ -225,7 +234,9 @@ S26 (Pattern 25 + triage report): 2026-05-07T14:23Z → 14:40Z
 | GAS: _rl_state uninitialized (1) | ✅ | explicit init before conditional (S8) |
 | WEC CodeQL alert fetcher | ✅ | codeql-alert-fetcher.yml + fetch_codeql_alerts.py (S9) |
 | fetch_codeql_alerts.py py/mixed-returns | ✅ | sys.exit(1) → raise SystemExit(1) (S11) |
-| 🔖 Required Actions Version Enforcer | ✅ | setup-python@v5→@v6 (S13); 0 violations confirmed S26 |
+| 🔖 Required Actions Version Enforcer | ✅ | 0 violations confirmed S26+S27 |
+| RP-006 EOF newlines | ✅ | 5 .codex/ JSON files fixed (S27) |
+| **Overall HEAD 01936069** | **✅ 14/0** | **Fully green** |
 | CodeQL 46 remaining alerts (6 rules) | ⏳ | Blocked — sandbox lacks `security_events`; need CODEX_MASTER_KEY via Actions |
 | Build & Push Preview Image | ⚠️ | startup_failure — needs second manual approval in Actions tab |
 | Data Quality & Determinism Suite | ⚠️ | startup_failure — needs second manual approval |
@@ -234,14 +245,15 @@ S26 (Pattern 25 + triage report): 2026-05-07T14:23Z → 14:40Z
 
 ## Statistics
 
-- **Sessions**: 26 (S1→S26; S15–S17 intermediate CI iterations)
-- **Files changed total**: 180+
+- **Sessions**: 28 (S1→S28; S15–S17 intermediate CI iterations)
+- **Files changed total**: 185+
 - **Dependabot alerts resolved**: 7 (#239–#246)
-- **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1 S20)
-- **CodeQL alerts pending**: 46 across 6 rules (15 wrong-named-arg + 25 mixed-returns + 1 wrong-arg + 1 missing-equals + 3 mixed-tuple + 1 unexpected-raise-2nd) — requires `CODEX_MASTER_KEY` via GitHub Actions
-- **CI rescue sessions**: 12 (S3, S14, S18–S26) — SHA drift, Pattern 25, venv gaps, subprocess timeouts
+- **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1)
+- **CodeQL alerts pending**: 46 across 6 rules — requires `CODEX_MASTER_KEY` via GitHub Actions
+- **CI rescue sessions**: 14 (S3, S14, S18–S28) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping
+- **RP-006 fixes**: 5 `.codex/` JSON files with missing EOF newlines (S27)
 - **Rate-limit hardening**: 3 files changed + 1 new doc (S6)
-- **New capability**: WEC-integrated CodeQL alert fetcher (`codeql-alert-fetcher.yml` + `fetch_codeql_alerts.py`) (S9)
+- **New capability**: WEC-integrated CodeQL alert fetcher (S9)
 
 ## Next Phases (Roadmap)
 

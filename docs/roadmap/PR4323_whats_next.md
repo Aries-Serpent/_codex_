@@ -1,15 +1,23 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T14:23Z — Session 26 (S26 — Pattern 25 / 4 failing checks fixed) — HEAD c37bee0f+**
-> **Status: 🟢 CI CLEAN — sync ✅; ruff ✅; Pattern 25 ✅; Pattern 30 100/100; all Dependabot resolved; 66 CodeQL alerts fixed; 46 pending (CODEX_MASTER_KEY required); CI running on new HEAD (0 failures so far)**
+> **Last updated: 2026-05-07T14:50Z — Session 28 (S28 — wrap-up, CI green 14/0) — HEAD 01936069+**
+> **Status: 🟢 CI GREEN — 14 ✅ / 0 ❌ on HEAD `01936069` · sync ✅ · ruff ✅ · Pattern 30: 100/100 · RP-006 fixed · WEC preserved · all Dependabot resolved · 66 CodeQL fixed · 46 pending (CODEX_MASTER_KEY required)**
 
-## Session 26 Summary (2026-05-07T14:23Z)
+## Session 28 Summary (2026-05-07T14:50Z — wrap-up)
 
-- CI rescue: 4 failing checks (`Final Pre-Merge Checks`, `Fast Validation`, `Detect and Fix Common Issues`, `Detect CI Issues & Post Fix Instructions`) on commit `204e3d10`
-- Root cause: Pattern 25 violation — prior investigation commit `c725c0ef` did not update `AGENT_ACCOUNTABILITY_REPORT.md`
-- Fix: Added S26 session entry to accountability report; updated CHANGELOG; `sync_tracked_files --fix` run ✅
-- Sourced CI Failure Triage Report #4338 — `Required Actions Version Enforcer` violations already resolved from prior merge
-- Local checks: `ruff check src/ tests/` ✅ · `sync_tracked_files --check` ✅ · `auto_fix_common_issues --check-only` 0 issues ✅ · Pattern 30: 100/100 ✅
+- CI monitor: HEAD `01936069` (S27 commit) — **14 ✅ / 0 ❌** — fully green
+- Triage report #4338 confirms all branch failures are on old commits
+- `Required Actions Version Enforcer`: 0 violations on current HEAD
+- Pre-Merge SHA-drift false positive resolved by new push
+- Wrap-up: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs updated (Pattern 25 ✅)
+
+## Session 27 Summary (2026-05-07T14:40Z)
+
+- RP-006 fix: added missing EOF newlines to 5 `.codex/` JSON files (`session_delta.json`, `session_access_strategy.json`, `rate_limit_state.json`, `fragile_tests.json`, `session_access_manifest.json`)
+- Sourced updated CI Failure Triage Report #4338 (205 failures / 23 workflows — all branch failures on old commits)
+- Addressed deep-rescue comment #4398038171 — WEC gate failure (`wec_enforcer.py` ran on stale PR body; restored by automation)
+- Living docs: `PR4323_whats_next.md` + `PR4323_session_diagram.md` fully updated with S15–S26 history, CI table, statistics (26 sessions, 180+ files, 66 CodeQL fixes, 12 CI rescue sessions)
+- Pattern 25 satisfied ✅; Pattern 30: 100/100 ✅
 
 ## Session 25 Summary (2026-05-07T13:24Z)
 
@@ -184,22 +192,23 @@ GH_TOKEN="$CODEX_MASTER_KEY" gh api \
 jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|wrong-arguments|missing-equals|unexpected-raise|mixed-tuple")) | [.rule.id, .most_recent_instance.location.path, (.most_recent_instance.location.start_line|tostring)] | @tsv' /tmp/alerts.json
 ```
 
-## Blocking CI Check (as of S26)
+## Blocking CI Check (as of S28)
 
-| Check | Status | Fix |
+| Check | Status | Notes |
 |-------|--------|-----|
-| 🔖 Required Actions Version Enforcer | ✅ | `setup-python@v5→@v6` fixed in S13; `enforce_actions_versions.py` shows 0 violations |
-| Pre-Merge Validation | ✅ | — |
-| Comment Review Gate | ✅ | — |
-| Deferral Language Gate | ✅ | — |
-| Agent Token Delegation | ✅ | — |
-| mypy Baseline | ✅ | — |
-| Workflow Compliance Audit (actionlint) | ✅ | — |
-| Secrets Baseline Enforcer | ✅ | — |
-| Reference Integrity | ✅ | — |
-| Fast Validation | ✅ | Fixed S24 (ruff in venv + Pattern 15/30 guards) |
+| 🔖 Required Actions Version Enforcer | ✅ | 0 violations confirmed S26+S27 |
+| Pre-Merge Validation | ✅ | SHA-drift false positive resolves on each new push |
+| Comment Review Gate | ✅ | |
+| Deferral Language Gate | ✅ | |
+| Agent Token Delegation | ✅ | |
+| mypy Baseline | ✅ | |
+| Workflow Compliance Audit (actionlint) | ✅ | |
+| Secrets Baseline Enforcer | ✅ | |
+| Reference Integrity | ✅ | |
+| Fast Validation | ✅ | Fixed S24 (ruff/mypy guards in fast-mode venv) |
 | Resilient Validation Suite | ✅ | Fixed S25 (@pytest.mark.slow on subprocess tests) |
-| Auto-Fix Common CI Issues | ✅ | Fixed S26 (Pattern 25 satisfied) |
+| Auto-Fix Common CI Issues | ✅ | Pattern 25 + RP-006 fixed S27 |
+| **HEAD `01936069` overall** | **✅ 14/0** | **Fully green — no failures** |
 
 > **startup_failure** runs (Build & Push Preview Image, Data Quality Suite, Progressive Validation, Rust/Swarm) require a second manual approval in the Actions tab — these are infrastructure gates, not code failures.
 

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T14:50Z — PR #4323 Session 28: wrap-up — CI 14/0 green on HEAD 01936069)
+- **Wrap-up**: CI confirmed 14 ✅ / 0 ❌ on HEAD `01936069`; living docs updated to S28 status with CI table showing all checks green; statistics updated (28 sessions, 185+ files, 14 CI rescue sessions, 66 CodeQL fixes, 46 pending).
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S28 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T14:40Z — PR #4323 Session 27: RP-006 EOF newlines + living docs S15-S26 + WEC gate analysis)
 - **RP-006 (missing EOF newline)**: Fixed 5 `.codex/` JSON files missing terminal newlines (`.codex/rag/session_delta.json`, `.codex/session_access_strategy.json`, `.codex/sessions/rate_limit_state.json`, `.codex/fragile_tests.json`, `.codex/session_access_manifest.json`) — flagged by deep-rescue comment #4398038171.
 - **Living docs S15-S26 update**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated with complete session history (S15–S26), CI status table (all checks ✅ except 46 CodeQL pending + 4 startup_failure infra), and statistics (26 sessions, 180+ files, 66 CodeQL fixes, 12 CI rescue sessions).
