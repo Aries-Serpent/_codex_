@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T14:23Z — PR #4323 Session 26: Pattern 25 fix for 4 failing CI checks on commit 204e3d10)
+- **4 failing CI checks on commit `204e3d10996f`** (comment #4397907654): `Final Pre-Merge Checks`, `Fast Validation`, `Detect and Fix Common Issues`, `Detect CI Issues & Post Fix Instructions` all failed due to Pattern 25 violation — the prior investigation commit `c725c0ef` did not update `AGENT_ACCOUNTABILITY_REPORT.md`. The `sync_tracked_files: ❌ stale` in the pre-merge log was caused by the merge preview SHA (`793ab0ffce26`) diverging from branch HEAD (`204e3d10996f`) — a known false positive for merge commits.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S26 entry). `sync_tracked_files.py --fix` run to ensure CODEX_MANIFEST consistency.
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T13:24Z — PR #4323 Session 25: Resilient Validation Suite coverage-timeout fix)
 - **Resilient Validation Suite failure on run #25494895799** (comment #4397448145): 20 tests in `validation (quick)` job timed out due to subprocess calls to `python -m codex_ml.cli` exceeding 30s in the full `.venv_ci` ML environment (torch + transformers cold-import overhead). Added `@pytest.mark.slow` to 9 subprocess-based test classes in `tests/cli/test_main_coverage.py`, and to `test_eval_probe_json_output`, `test_package_cli_summarizes_metrics`, and `test_run_eval_cli`. The `slow` marker is defined in `pytest.ini` as "excluded from coverage workflow"; the quick validation run uses `-m "not slow and not integration"`.
 - **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S25 entry).
