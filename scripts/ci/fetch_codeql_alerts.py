@@ -104,7 +104,7 @@ def _resolve_token() -> str:
     log.error(
         "No GitHub token found. Set CODEX_MASTER_KEY (needs security_events scope)."
     )
-    sys.exit(1)
+    raise SystemExit(1)
 
 
 # ---------------------------------------------------------------------------
