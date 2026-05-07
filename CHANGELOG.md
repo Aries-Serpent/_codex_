@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T11:51Z — PR #4323 Session 22: RP-004 tracked-file sync drift on 92e99bf0a78c)
+- **RP-004 (tracked-file sync drift) fix**: Commit `92e99bf0a78c` (ci: begin S21 investigation) did not update `AGENT_ACCOUNTABILITY_REPORT.md`, triggering pattern 22 (RP-004) in CI run 25493322004. Added S22 session entry to accountability report and CHANGELOG. `sync_tracked_files --check` now passes consistently.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S22 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T11:34Z — PR #4323 Session 21: Detect CI Issues / Detect and Fix Common Issues failing on bbb6526137c7)
 - **Pattern 25 (Last-Commit Accountability) fix**: `AGENT_ACCOUNTABILITY_REPORT.md` was not updated in commit `aeb6da1c` (universal baseline sweep after merge). Added S21 session entry to satisfy REQ-4 in `agent-auth-delegation.yml`. Root cause: merge commit `bbb6526137c7` + baseline sweep did not include an accountability update.
 - `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
