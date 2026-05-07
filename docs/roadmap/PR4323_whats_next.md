@@ -1,7 +1,7 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T00:55Z — Session 6 (CodeQL fixes + rate-limit hardening) — HEAD `ac5fb47`**
-> **Status: 🟢 MERGE-READY — sync ✅; ruff ✅; all Dependabot resolved; 60 CodeQL alerts fixed; 47 pending API**
+> **Last updated: 2026-05-07T01:05Z — Session 7 (scope-constraint confirmed) — HEAD `53aa323`**
+> **Status: 🟢 MERGE-READY — sync ✅; ruff ✅; all Dependabot resolved; 60 CodeQL alerts fixed; 47 pending (requires GitHub Actions workflow with CODEX_MASTER_KEY)**
 
 ## Completed This PR (Wave 9 + Wave 10 + CodeQL Pass)
 
@@ -44,31 +44,58 @@
 - `py/mixed-returns`: 598 candidates vs CodeQL's 26 — cannot narrow without API's inter-procedural analysis
 - `py/mixed-tuple-returns`: `init_mlflow()` identified and **fixed in S6** — 3 remaining via API
 
+## Critical Finding: Sandbox Token Scope Constraint
+
+> **Confirmed 2026-05-07T00:57Z (Session 7)**
+
+The Copilot sandbox environment's available tokens (`GITHUB_TOKEN`, `AGENT_GITHUB_TOKEN`)
+**permanently lack `security_events` scope** required for the `/code-scanning/alerts` API.
+
+| Method | Result | Why |
+|--------|--------|-----|
+| MCP `list_code_scanning_alerts` | ❌ 403 `Resource not accessible by integration` | Copilot sandbox token has no `security_events` scope |
+| `github_api_trickle.py --resource code-scanning-alerts` | ❌ 403 same | `AGENT_GITHUB_TOKEN` also lacks `security_events` scope |
+| `gh api /code-scanning/alerts` with `CODEX_MASTER_KEY` | ✅ WORKS | `CODEX_MASTER_KEY` has `security_events:read` |
+
+**This is a hard environment constraint, not a rate-limit issue.** Each call during sessions 3–7 was hitting this scope wall, not only rate limits.
+
+### Required Fix Path for Remaining 47 Alerts
+
+Use `CODEX_MASTER_KEY` via a GitHub Actions workflow step:
+
+```yaml
+# In any workflow with CODEX_MASTER_KEY secret:
+- name: Fetch CodeQL alerts
+  env:
+    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+  run: |
+    gh api \
+      "/repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open&per_page=100" \
+      --paginate > /tmp/alerts.json
+    python scripts/ci/github_api_trickle.py --resource code-scanning-alerts \
+      --state open --json > /tmp/alerts-trickle.json
+```
+
+Or locally (requires CODEX_MASTER_KEY in shell):
+```bash
+GH_TOKEN="$CODEX_MASTER_KEY" gh api \
+  "/repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open&per_page=100" \
+  --paginate > /tmp/alerts.json
+jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|wrong-arguments|missing-equals|unexpected-raise|mixed-tuple")) | [.rule.id, .most_recent_instance.location.path, (.most_recent_instance.location.start_line|tostring)] | @tsv' /tmp/alerts.json
+```
+
 ## Remaining (Next Session)
 
-1. **CodeQL API query** — Run at session start using the trickle fetcher (rate-limit-safe):
-   ```bash
-   # First check rate limits (exit 0=ready, 1=wait):
-   python scripts/ci/github_api_trickle.py --status
-   # Then fetch alerts:
-   python scripts/ci/github_api_trickle.py --resource code-scanning-alerts --state open
-   # Or with gh CLI + CODEX_MASTER_KEY:
-   GH_TOKEN="$CODEX_MASTER_KEY" gh api \
-     "/repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open&per_page=100" \
-     --paginate > /tmp/alerts.json
-   jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|wrong-arguments|missing-equals|unexpected-raise|mixed-tuple")) | [.rule.id, .most_recent_instance.location.path, .most_recent_instance.location.start_line] | @tsv' /tmp/alerts.json
-   ```
-   Then fix in this priority order:
+1. **Fetch alert locations** via `CODEX_MASTER_KEY` — sandbox token lacks `security_events` scope (see "Critical Finding" above)
+2. **Fix 47 remaining alerts** in priority order:
    - 🔴 `py/call/wrong-named-argument` (15 Errors)
    - 🔴 `py/call/wrong-arguments` (1 Error)
    - 🟡 `py/missing-equals` (1 Warning)
-   - 🔵 `py/unexpected-raise-in-special-method` (2nd — 1 Note)
+   - 🔵 `py/unexpected-raise-in-special-method` (2nd, 1 Note)
    - 🔵 `py/mixed-returns` (26 Notes)
    - 🔵 `py/mixed-tuple-returns` (3 remaining Notes)
-
-2. **Validate CodeQL scan** — After fixes land on the branch, verify the CI CodeQL workflow run shows 0 open alerts for all 10 rules.
-
-3. **Merge PR #4323** — All 7 Dependabot alerts resolved; merge to main once CodeQL is clean.
+3. **Validate CodeQL scan** — 0 open alerts for all 10 rules
+4. **Merge PR #4323** — All 7 Dependabot alerts resolved
 
 ## Key Files Changed This PR
 

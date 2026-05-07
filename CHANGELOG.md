@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T01:05Z — PR #4323 Session 7: scope-constraint confirmed + living docs)
+- **Critical finding documented**: Copilot sandbox tokens (`GITHUB_TOKEN`, `AGENT_GITHUB_TOKEN`) permanently lack `security_events` scope — `list_code_scanning_alerts` MCP tool always returns 403 regardless of rate limits. Only `CODEX_MASTER_KEY` can access `/code-scanning/alerts`. Documented in `whats_next.md` with exact fix path (GitHub Actions workflow or local shell) and in `.codex/docs/RATE_LIMIT_AWARENESS.md`.
+- **Living docs updated**: `whats_next.md` has "Critical Finding" constraint table + confirmed fix path; `PR4323_session_diagram.md` has S7 session block + updated CI/statistics table.
+- **`store_memory`**: Scope constraint stored for all future sessions.
+- **Blocking comments**: All 4 new blocking comments (`#4392725862`, `#4392837532`, `#4392846671`, `#4392864410`) replied to.
+
 ### Fixed (session 2026-05-07T00:48Z — PR #4323 Session 6: CodeQL fixes + rate-limit hardening)
 - **`py/mixed-tuple-returns` fix** (`src/logging_utils.py`): Refactored `init_mlflow()` into `_init_mlflow_bool()` (returns `object | None`) and `_init_mlflow_experiment()` (always returns `tuple[object|None, object|None]`), eliminating the mixed None/tuple return shapes that triggered this CodeQL rule.
 - **`py/call-to-non-callable` fix** (`src/cli.py`): Added `callable()` guard in `_resolve_callable()` — raises `TypeError` when the resolved attribute is not callable, satisfying the CodeQL pattern.

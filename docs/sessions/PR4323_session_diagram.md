@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T00:55Z**
-> **Sessions: S1→S2→S3→S4→S5→S6 — HEAD ac5fb47**
+> **Last updated: 2026-05-07T01:05Z**
+> **Sessions: S1→S2→S3→S4→S5→S6→S7 — HEAD 53aa323**
 
 ## Session Flow
 
@@ -48,29 +48,25 @@ S5 (final sweep + docs): 2026-05-07T00:10Z → 00:20Z
 
 S6 (CodeQL fixes + rate-limit hardening): 2026-05-07T00:20Z → 00:55Z
    ├─ py/mixed-tuple-returns FIX (src/logging_utils.py):
-   │      init_mlflow() split into _init_mlflow_bool (→object|None)
-   │      and _init_mlflow_experiment (→tuple[object|None,object|None])
+   │      init_mlflow() split into _init_mlflow_bool + _init_mlflow_experiment
    ├─ py/call-to-non-callable FIX (src/cli.py):
-   │      callable() guard added in _resolve_callable()
-   │      raises TypeError when resolved attr is not callable
-   ├─ Rate-limit root cause identified + hardened:
-   │      MCP sandbox token ≠ CODEX_MASTER_KEY (separate pools)
-   │      github_api_trickle.py --status: new CLI flag
-   │        → checks all tokens, writes .codex/rate_limit_state.json
-   │        → exits 0=ready, 1=all-exhausted
-   │      session_bootstrap.py D-00 gate:
-   │        → rate-limit pre-check at every session start
-   │        → 60s cache re-use to avoid thrashing
-   │        → blocking warning when all tokens exhausted
-   │      .codex/docs/RATE_LIMIT_AWARENESS.md created:
-   │        → full agent reference (pools, protocol, state format)
-   ├─ All 3 memories stored in store_memory
-   ├─ ruff check: ✅ 0 violations
-   ├─ sync_tracked_files: ✅ consistent
+   │      callable() guard in _resolve_callable()
+   ├─ Rate-limit hardening: status() + D-00 gate + RATE_LIMIT_AWARENESS.md
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
+
+S7 (scope-constraint confirmed + wrap-up): 2026-05-07T00:57Z → 01:10Z
+   ├─ 🔴 CRITICAL FINDING: Copilot sandbox tokens permanently lack security_events scope
+   │      list_code_scanning_alerts MCP: ALWAYS 403 regardless of rate limits
+   │      AGENT_GITHUB_TOKEN: also lacks security_events scope
+   │      CODEX_MASTER_KEY: only working path — must use via Actions or local shell
+   ├─ RATE_LIMIT_AWARENESS.md: scope-constraint section added
+   ├─ whats_next.md: "Critical Finding" table + confirmed fix path
+   ├─ store_memory: scope constraint stored for future sessions
+   ├─ All 4 blocking comments replied to
+   └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs updated (S7)
 ```
 
-## CI Status (2026-05-07T00:55Z — HEAD ac5fb47)
+## CI Status (2026-05-07T01:05Z — HEAD 53aa323)
 
 | Check | Status |
 |-------|--------|
@@ -84,17 +80,18 @@ S6 (CodeQL fixes + rate-limit hardening): 2026-05-07T00:20Z → 00:55Z
 | CodeQL py/empty-except (55) | ✅ Fixed → 0 |
 | CodeQL py/catch-base-exception (1) | ✅ Fixed |
 | CodeQL py/print-during-import (3) | ✅ Fixed |
-| CodeQL py/unexpected-raise (1/2) | ✅ Fixed; 2nd instance → API required |
+| CodeQL py/unexpected-raise (1/2) | ✅ Fixed; 2nd instance → CODEX_MASTER_KEY required |
 | CodeQL py/mixed-tuple-returns (partial) | ✅ init_mlflow() split (S6) |
 | CodeQL py/call-to-non-callable (1) | ✅ callable() guard (S6) |
-| CodeQL remaining 47 alerts (6 rules) | ⏳ API rate-limited entire session → next |
+| CodeQL remaining 47 alerts (6 rules) | ⏳ Sandbox token lacks security_events scope — CODEX_MASTER_KEY required |
 | Rate-limit hardening | ✅ status() + D-00 gate + RATE_LIMIT_AWARENESS.md |
+| Scope-constraint confirmed (S7) | ✅ Critical finding documented + fix path specified |
 
 ## Statistics
 
-- **Sessions**: 6 (S1→S6)
+- **Sessions**: 7 (S1→S7)
 - **Files changed total**: 165+
 - **Dependabot alerts resolved**: 7 (#239–#246)
 - **CodeQL alerts fixed**: 60 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial, call-to-non-callable×1)
-- **CodeQL alerts pending**: 47 across 6 rules — exact locations require API with `CODEX_MASTER_KEY`
+- **CodeQL alerts pending**: 47 across 6 rules — sandbox token lacks `security_events` scope; requires `CODEX_MASTER_KEY` via GitHub Actions or local shell
 - **Rate-limit hardening**: 3 files changed + 1 new doc

@@ -28843,3 +28843,42 @@ jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|call-to-
 - CodeQL API: `list_code_scanning_alerts` rate-limited entire session — 49 alerts pending for next session
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-05-07T01:05Z SESSION 7 (PR #4323 — scope-constraint confirmed + wrap-up)
+
+### Session Metadata
+- **PR**: #4323 (`copilot/fix-timeline-structure`)
+- **Session Start**: 2026-05-07T00:57Z
+- **Session End**: 2026-05-07T01:10Z
+
+### Critical Finding
+
+The Copilot sandbox environment's tokens (`GITHUB_TOKEN`, `AGENT_GITHUB_TOKEN`) permanently
+lack `security_events` scope. Every call to `list_code_scanning_alerts` (MCP) or
+`github_api_trickle.py --resource code-scanning-alerts` returns 403 "Resource not accessible
+by integration" — regardless of rate limit state.
+
+| Token | Scope issue | Fix |
+|-------|------------|-----|
+| MCP sandbox token | No `security_events` | ❌ Cannot fix in sandbox |
+| `AGENT_GITHUB_TOKEN` | No `security_events` | ❌ Cannot fix in sandbox |
+| `CODEX_MASTER_KEY` | Has `security_events:read` | ✅ Use via GitHub Actions or local shell |
+
+### Fix Path Documented
+- `docs/roadmap/PR4323_whats_next.md`: "Critical Finding" table + exact `gh api` command with `CODEX_MASTER_KEY`
+- `.codex/docs/RATE_LIMIT_AWARENESS.md`: Updated with scope-constraint section
+- `store_memory`: Stored for all future sessions
+
+### Blocking Comments Resolved
+- `#4392725862`: Replied ✅
+- `#4392837532`: Replied ✅
+- `#4392846671`: Replied ✅
+- `#4392864410`: Replied ✅
+
+### Validation
+- `ruff check`: ✅ 0 violations
+- `sync_tracked_files --check`: ✅ consistent
+
+---
