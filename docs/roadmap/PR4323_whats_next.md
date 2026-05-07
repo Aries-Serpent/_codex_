@@ -1,7 +1,16 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T00:11Z — Session 8 (CodeQL uninitialized-var fix + line-length) — HEAD TBD**
-> **Status: 🟢 MERGE-READY — sync ✅; ruff ✅; all Dependabot resolved; 62 CodeQL alerts fixed; 45 pending (requires GitHub Actions workflow with CODEX_MASTER_KEY)**
+> **Last updated: 2026-05-07T02:14Z — Session 11 (continuation — sync clean, PDA, living docs) — HEAD cede497**
+> **Status: 🟢 MERGE-READY — sync ✅; ruff ✅; all Dependabot resolved; 63 CodeQL alerts fixed; 43 pending (requires GitHub Actions workflow with CODEX_MASTER_KEY)**
+
+## Session 11 Summary (2026-05-07T02:14Z)
+
+- RP-004 sync_tracked_files confirmed clean ✅
+- PDA entry for 2026-05-07 added ✅
+- CHANGELOG and AGENT_ACCOUNTABILITY_REPORT updated ✅
+- Ruff exits 0 ✅
+- `fetch_codeql_alerts.py` Copilot Autofix: `sys.exit(1)` → `raise SystemExit(1)` (py/mixed-returns fix) ✅
+- CI rescue comments #4393637491 and #4393638719 replied to ✅
 
 ## Completed This PR (Wave 9 + Wave 10 + CodeQL Pass)
 
@@ -27,7 +36,7 @@
 | `py/call-to-non-callable` | 1 | ✅ Fixed: `callable()` guard in `src/cli.py _resolve_callable()` (S6) |
 | GAS: uninitialized `_rl_state` | 1 | ✅ Fixed: explicit init `_rl_state: dict = {"ok": True}` in `session_bootstrap.py:686` (S8) |
 | `py/call/wrong-named-argument` | 15 | ⏳ Blocked: requires `CODEX_MASTER_KEY` via GitHub Actions (sandbox lacks `security_events`) |
-| `py/mixed-returns` | 26 | ⏳ Blocked: 598 local candidates — needs API to narrow to 26 |
+| `py/mixed-returns` | 26 | ⏳ Partial: `fetch_codeql_alerts.py` `raise SystemExit(1)` fixed via Copilot Autofix (S11); 25 remaining via API |
 | `py/call/wrong-arguments` | 1 | ⏳ Blocked: CodeQL API required |
 | `py/missing-equals` | 1 | ⏳ Blocked: local scan clean (4 `__hash__` classes all have `__eq__`) — API required |
 

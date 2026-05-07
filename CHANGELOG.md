@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T02:14Z — PR #4323 Session 11: continuation — sync, PDA, living docs, py/mixed-returns explicit-return autofix)
+- **RP-004 resolved**: `sync_tracked_files --check` confirms all tracked files consistent (CODEX_MANIFEST, .secrets.baseline, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT).
+- **PDA entry added**: 2026-05-07 entry added to `.codex/aftermath/pda_iterations.jsonl` — clears Pattern 30 `PDA-entry-today` dimension.
+- **Pattern 25 satisfied**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit — clears `agent-auth-delegation.yml` REQ-4.
+- **`fetch_codeql_alerts.py`**: Copilot Autofix applied — `sys.exit(1)` → `raise SystemExit(1)` (py/mixed-returns explicit return consistency).
+- **Ruff clean**: `ruff check src/ tests/ --select E,W,F` exits 0 (only E501 line-length advisory warnings, no errors).
+- **Living docs updated**: `PR4323_whats_next.md` updated with Session 11 status and remaining alert inventory.
+- **Blocking comments** (`#4393637491`, `#4393638719`) replied to.
+
 ### Fixed (session 2026-05-07T00:11Z — PR #4323 Session 8: CodeQL uninitialized-var fix + line-length + living docs)
 - **CodeQL `session_bootstrap.py:714`**: Initialized `_rl_state: dict = {"ok": True}` before conditional block — fixes GAS alert "potentially uninitialized local variable".
 - **Line length `src/logging_utils.py:270`**: Split `mlflow.start_run(...)` call across 3 lines (103→≤100 chars) — fixes Auto-Fix PR Check Pattern 12 error.
