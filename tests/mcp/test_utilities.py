@@ -321,6 +321,7 @@ def assert_raises_mcp_error(
 def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     """Clean up temporary test files."""
     import glob
+    import logging
 
     if not os.path.exists(directory):
         return
@@ -329,8 +330,11 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     for file in files:
         try:
             os.remove(file)
-        except OSError:
-            _ = None  # suppressed: permission denied or concurrent deletion during cleanup
+        except FileNotFoundError:
+            # Benign race: file was already deleted by another process/thread.
+            pass
+        except OSError as e:
+            logging.warning("Failed to remove test file '%s': %s", file, e)
 
 
 # Logging Utilities for Tests

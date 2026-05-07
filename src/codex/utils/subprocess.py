@@ -27,15 +27,18 @@ def run(
     stderr: int | IO[Any] | None = None,
     encoding: str | None = None,
     errors: str | None = None,
-    shell: bool = False,  # accepted for API compatibility; always forced to False
+    shell: bool = False,  # accepted for API compatibility; shell=True is rejected
 ) -> _stdlib_subprocess.CompletedProcess[str]:
     """Run *cmd* securely.
 
-    Parameters mirror :func:`subprocess.run`.  ``shell`` is **always** ``False``
-    regardless of the value passed — this wrapper exists specifically to prevent
-    shell-injection risks.  ``check`` defaults to ``True`` to ensure errors are
+    Parameters mirror :func:`subprocess.run`. This wrapper forbids shell
+    execution to prevent shell-injection risks; passing ``shell=True`` raises
+    :class:`ValueError`. ``check`` defaults to ``True`` to ensure errors are
     surfaced immediately.
     """
+    if shell:
+        raise ValueError("shell=True is not supported by this secure wrapper")
+
     return _stdlib_subprocess.run(  # nosec B603
         list(cmd),
         cwd=cwd,
