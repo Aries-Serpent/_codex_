@@ -650,11 +650,17 @@ def _compute_merge_readiness_score() -> dict:
                  "✅ all approved" if ok3 else "❌ violations", ok3))
 
     # 4 — ruff
-    rc4, out4 = _run(["python3", "-m", "ruff", "check", "src/", "--quiet"])
-    # If ruff is not installed, python3 exits non-zero with empty stdout
-    # (the "No module named ruff" message goes to stderr).  Treat this as
-    # a skip rather than a failure to avoid false positives in minimal envs.
-    ok4 = rc4 == 0 or (rc4 != 0 and not out4.strip())
+    # First verify ruff is importable in the current Python environment.
+    # When ruff is not installed, python3 -m ruff exits non-zero but produces
+    # no lint output (the "No module named ruff" error goes to stderr).
+    # Using an explicit import probe avoids treating install-failures as
+    # lint violations and prevents false positives in minimal CI environments.
+    rc_ruff_avail, _ = _run(["python3", "-c", "import ruff"])
+    if rc_ruff_avail != 0:
+        ok4 = True  # ruff not installed in this environment, skip dimension
+    else:
+        rc4, _ = _run(["python3", "-m", "ruff", "check", "src/", "--quiet"])
+        ok4 = rc4 == 0
     dims.append(("ruff (src/ clean)", 10,
                  "✅ clean" if ok4 else "❌ lint violations", ok4))
 
