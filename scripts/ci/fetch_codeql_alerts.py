@@ -46,6 +46,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -135,8 +136,8 @@ def _api_get(
                 headers = dict(resp.headers)
                 data = json.loads(raw)
 
-                remaining = int(headers.get("X-Ratelimit-Remaining", "9999"))
-                reset_at = int(headers.get("X-Ratelimit-Reset", "0"))
+                remaining = int(headers.get("X-RateLimit-Remaining", "9999"))
+                reset_at = int(headers.get("X-RateLimit-Reset", "0"))
                 if remaining < min_remaining and reset_at > 0:
                     now = int(datetime.now(timezone.utc).timestamp())
                     sleep_secs = max(0, reset_at - now) + 5
@@ -202,7 +203,7 @@ def fetch_alerts(
             f"{API_BASE}/repos/{REPO_OWNER}/{REPO_NAME}"
             f"/code-scanning/alerts"
             f"?state={state}"
-            f"&tool_name={urllib.request.quote(tool_name)}"
+            f"&tool_name={urllib.parse.quote(tool_name)}"
             f"&per_page={per_page}"
             f"&page={page}"
         )
@@ -287,11 +288,11 @@ def build_by_rule_md(alerts: list[dict[str, Any]]) -> str:
         lines.append(f"## `{rule_id}` ({len(rule_alerts)} alerts) — severity: {sev}")
         lines.append(f"> {desc}")
         lines.append("")
-        lines.append("| # | File:Line | Alert# | State |")
-        lines.append("|---|-----------|--------|-------|")
-        for a in rule_alerts:
+        lines.append("| Row | File:Line | Alert# | State |")
+        lines.append("|-----|-----------|--------|-------|")
+        for row, a in enumerate(rule_alerts, 1):
             lines.append(
-                f"| {a.get('number', '?')} "
+                f"| {row} "
                 f"| `{_location(a)}` "
                 f"| [{a.get('number', '?')}]({a.get('html_url', '#')}) "
                 f"| {a.get('state', '?')} |"
