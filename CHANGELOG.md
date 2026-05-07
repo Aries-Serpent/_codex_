@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T15:27Z — PR #4323 Session 31: merge conflict resolved, WEC codeql-alert-fetcher entry added, living docs updated)
+- **Merge conflict in `.secrets.baseline` (origin/main divergence)**: `origin/main` commit `8661a1a9f` (nightly health sweep) re-introduced conflict in `.secrets.baseline`. Resolved by `git merge origin/main` + `git checkout --ours .secrets.baseline`. `git diff --diff-filter=U` → empty ✅. This was the root cause of `mergeable_state: dirty`.
+- **P-045 enforced**: Zero-conflict gate applied before session close — `git diff --diff-filter=U` verified empty prior to this commit.
+- **Missing WEC entry**: Added `codeql-alert-fetcher.yml` to WEC `🔒 Opt-In: Security & Quality` section in PR body.
+- **Living docs updated**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated to S31 status.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S31 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent · merge conflicts: ✅ 0
+
 ### Fixed (session 2026-05-07T15:15Z — PR #4323 Session 30: merge-conflict resolution + zero-conflict wrap-up policy)
 - **Merge conflict in `.secrets.baseline`**: Resolved conflict introduced when `origin/main` (commit `8661a1a9f`) diverged. Conflict was in the `CODEX_MANIFEST.json` hashed_secret entry (HEAD: `be99e230fcd7…` vs main: `c54251d414…`). Kept HEAD value; ran `sync_tracked_files --fix` to confirm consistency.
 - **Zero-conflict wrap-up gate**: Added `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md` — hardened session-close protocol requiring `git diff --name-only --diff-filter=U` returns empty before every `report_progress` push.

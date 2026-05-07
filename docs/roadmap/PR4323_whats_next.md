@@ -1,7 +1,14 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T15:15Z — Session 30 (merge-conflict resolution + zero-conflict policy) — HEAD merge+**
-> **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · 46 pending (CODEX_MASTER_KEY required)**
+> **Last updated: 2026-05-07T15:27Z — Session 31 (merge conflict resolved, WEC codeql-alert-fetcher added) — HEAD `1905a540` + merge origin/main**
+> **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · WEC complete**
+
+## Session 31 Summary (2026-05-07T15:27Z — merge conflict + WEC fix)
+
+- **Merge conflict resolved**: `origin/main` commit `8661a1a9f` (nightly health sweep) re-introduced `.secrets.baseline` conflict — resolved by `git merge origin/main` + `git checkout --ours`. `git diff --diff-filter=U` → empty ✅
+- **WEC entry added**: `codeql-alert-fetcher.yml` added to WEC `🔒 Opt-In: Security & Quality` section (maintainer noted missing entry)
+- **P-045 enforced**: Zero-conflict gate verified before session close ✅
+- Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT updated (Pattern 25 ✅)
 
 ## Session 30 Summary (2026-05-07T15:15Z — merge-conflict resolution)
 

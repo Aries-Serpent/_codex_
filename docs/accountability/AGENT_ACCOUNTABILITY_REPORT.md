@@ -29848,3 +29848,42 @@ Before every `report_progress`:
 - `git diff --name-only --diff-filter=U`: ✅ empty (zero conflicts)
 - `auto_fix_common_issues --check-only`: ✅ 0 issues
 - Pattern 25 satisfied: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated in this merge commit
+
+---
+
+## Session S31 — 2026-05-07 (merge conflict resolution + WEC codeql-alert-fetcher + living docs)
+
+### Context
+- Branch: `copilot/fix-timeline-structure`
+- PR `mergeable_state: dirty` — `origin/main` commit `8661a1a9f` (nightly codebase-health-sweep) re-introduced conflict in `.secrets.baseline` CODEX_MANIFEST hashed_secret entry.
+- New requirement from maintainer: FORBIDDEN from ending turn without resolving ALL merge conflicts.
+
+### Objectives
+1. Resolve `.secrets.baseline` merge conflict with origin/main — IMMEDIATE
+2. Add missing `codeql-alert-fetcher.yml` entry to WEC template in PR body
+3. Update CHANGELOG and living docs (Pattern 25)
+4. Verify zero conflicts before closing
+
+### Work Completed
+- `.secrets.baseline`: conflict resolved (kept HEAD `be99e230fcd7…` — newer, consistent with current CODEX_MANIFEST); `git checkout --ours .secrets.baseline && git add .secrets.baseline`; confirmed `git diff --diff-filter=U` → empty ✅
+- `CHANGELOG.md`: S31 entry added under `## [Unreleased]`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: S31 entry added (this entry)
+- `docs/roadmap/PR4323_whats_next.md`: updated to S31 status
+- `docs/sessions/PR4323_session_diagram.md`: S31 flow entry added
+- WEC PR body: `codeql-alert-fetcher.yml` entry added to `🔒 Opt-In: Security & Quality` section
+- Pattern 25 satisfied: both mandatory tracked files updated in this commit
+
+### P-045 Gate Results (mandatory before every session close)
+1. `git fetch origin main` → ✅ fetched
+2. `git diff --name-only --diff-filter=U` → ✅ empty (zero conflicts)
+3. Conflict marker scan (tracked files only) → ✅ no actual conflict markers
+4. `ruff check src/ tests/` → ✅ 0 violations
+5. `sync_tracked_files --fix` → ✅ all consistent
+6. Ready to `report_progress` ✅
+
+### Validation
+- `ruff check src/ tests/`: ✅ 0 violations
+- `sync_tracked_files --fix`: ✅ all consistent
+- `git diff --name-only --diff-filter=U`: ✅ empty (zero merge conflicts)
+- `auto_fix_common_issues --check-only`: ✅ 0 issues
+- Pattern 25 satisfied: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated in this commit

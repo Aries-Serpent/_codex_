@@ -1,7 +1,7 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T15:15Z — Session 30 (merge-conflict resolution + zero-conflict policy)**
-> **Sessions: S1→…→S28→S29→S30 — HEAD merge(0337d326, 8661a1a9f)+**
+> **Last updated: 2026-05-07T15:27Z — Session 31 (merge conflict resolved, WEC codeql-alert-fetcher added)**
+> **Sessions: S1→…→S29→S30→S31 — HEAD merge(1905a540, 8661a1a9f)+**
 
 ## Session Flow
 
@@ -214,9 +214,18 @@ S30 (merge-conflict resolution + zero-conflict policy): 2026-05-07T15:15Z
    ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S30)
    ├─ Living docs updated to S30
    └─ Pattern 25 satisfied · merge conflicts: ✅ 0
+
+S31 (merge conflict + WEC codeql-alert-fetcher + living docs): 2026-05-07T15:27Z
+   ├─ origin/main re-diverged: 8661a1a9f still not merged in branch (PR still dirty)
+   ├─ Conflict: .secrets.baseline CODEX_MANIFEST hashed_secret — resolved again (kept HEAD be99e230)
+   ├─ git merge origin/main + git checkout --ours .secrets.baseline + git add
+   ├─ WEC entry: codeql-alert-fetcher.yml added to 🔒 Opt-In: Security & Quality
+   ├─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S31)
+   ├─ Living docs updated to S31
+   └─ Pattern 25 satisfied · P-045 gate: git diff --diff-filter=U → empty ✅
 ```
 
-## CI Status (2026-05-07T15:15Z — HEAD merge(S30) · **zero conflicts ✅ · readiness ≥90/100**)
+## CI Status (2026-05-07T15:27Z — HEAD merge(S31) · **zero conflicts ✅ · readiness ≥90/100**)
 
 | Check | Status | Notes |
 |-------|--------|-------|
