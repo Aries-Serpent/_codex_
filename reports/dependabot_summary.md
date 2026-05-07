@@ -42,5 +42,5 @@ All fixes applied to branch `copilot/fix-timeline-structure` (PR #4323):
 
 ## Artifact Files
 
-- [artifacts/dependabot_alerts.json](../artifacts/dependabot_alerts.json)
-- [artifacts/dependabot_alerts.csv](../artifacts/dependabot_alerts.csv)
+Raw Dependabot alert data was not exported to artifact files during this session.
+All findings are summarized in the table and investigation reports above.

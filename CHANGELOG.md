@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T07:14Z — PR #4323 Session 20: Fast Validation broken cross-references)
+- **Fast Validation failure on run 25480959513** (comment #4394901045): `reports/dependabot_summary.md` lines 45-46 referenced non-existent files `../artifacts/dependabot_alerts.json` and `../artifacts/dependabot_alerts.csv`. Pre-commit cross-reference integrity hook caught these as broken links (2 in 1 file). Removed broken links and replaced with explanatory note.
+- **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S20 entry).
+- `ruff check src/ tests/`: ✅ 0 violations · `sync_tracked_files --check`: ✅ consistent
+
 ### Fixed (session 2026-05-07T06:55Z — PR #4323 Session 19: Pre-Merge Validation run 25473787886 + comment-review-gate)
 - **Investigated Pre-Merge Validation run 25473787886** (comment #4394147520) — root cause is SHA drift (CI ran on merge-preview commit, not branch HEAD). Local checks pass: `ruff check src/` ✅, `sync_tracked_files --check` ✅.
 - **Pattern 25 satisfied**: `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit (S19 entry).
