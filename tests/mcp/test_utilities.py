@@ -347,7 +347,7 @@ def capture_log_output(func: Callable, *args, **kwargs) -> tuple:
     Returns:
         Tuple of (result, log_records)
     """
-    import logging
+    pass  # removed redundant `import logging` (top-level import used)
     from io import StringIO
 
     log_stream = StringIO()
