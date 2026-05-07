@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T16:50Z — PR #4323 Session 34: RP-004 sync drift resolved, RP-006 EOF newlines, living docs updated)
+- **RP-004**: `sync_tracked_files --fix` → ✅ all tracked files consistent (CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, CODEX_MANIFEST up-to-date for S34)
+- **RP-006**: Fixed EOF newlines in 3 `.codex/*.json` files (recurring pattern — Python-based batch fix using `rb`/`ab` mode)
+- **Living docs updated**: `PR4323_whats_next.md` and `PR4323_session_diagram.md` updated to S34 status
+- **Comment review gate unblocked**: replied to comment #4398937927 (RP-004 rescue escalation)
+
 ### Fixed (session 2026-05-07T16:35Z — PR #4323 Session 33 wrap-up: workflow triggers hardened per research)
 - **validate.yml**: Added `pull_request_review: types: [submitted]` + explicit `types: [opened, synchronize, reopened]` to `pull_request` trigger. Ensures Fast Validation re-runs when a PR is approved (catches stale/missed runs per Copilot.md research).
 - **pre-merge-validation.yml**: Added `workflow_dispatch` trigger — allows manual re-trigger for missed runs after approval on new HEAD (per Copilot.md recommendation).

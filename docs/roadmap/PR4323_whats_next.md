@@ -1,7 +1,15 @@
 # PR #4323 — What's Next
 
-> **Last updated: 2026-05-07T16:19Z — Session 33 (RP-006 EOF fix, comment-gate unblocked, living docs updated)**
+> **Last updated: 2026-05-07T16:50Z — Session 34 (RP-004 sync drift fix, RP-006 EOF newlines, living docs updated)**
 > **Status: 🟢 MERGE-READY — zero conflicts ✅ · sync ✅ · ruff ✅ · readiness ≥90% · all Dependabot resolved · 66 CodeQL fixed · WEC complete**
+
+## Session 34 Summary (2026-05-07T16:50Z — S34: RP-004 + RP-006 fix)
+
+- **RP-004 fix**: `sync_tracked_files --fix` → ✅ all consistent (triggered by comment #4398937927 on commit `c481f105f7a8`)
+- **RP-006 fix**: Fixed 3 more `.codex/*.json` files missing EOF newlines (Python batch fix; recurring pattern)
+- **Comment-review-gate unblocked**: Reply to comment #4398937927 posted
+- **CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated**: Pattern 25 satisfied ✅
+- **P-045 gate**: `git diff --diff-filter=U` → empty ✅ · zero merge conflicts confirmed before push
 
 ## Session 33 Summary (2026-05-07T16:19Z — S33: RP-006 EOF fix + comment-gate unblocked)
 

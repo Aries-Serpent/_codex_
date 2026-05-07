@@ -272,6 +272,8 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 | **Overall HEAD c481f105** | **✅ 22/0** | **Readiness ≥90/100** |
 | **S33 — RP-006 + comment gate** | **✅** | **EOF newlines, gate unblocked** |
 | **Overall HEAD 96d8744a** | **✅ 15/0** | **Readiness 100/100 — all critical ✅** |
+| **S34 — RP-004 sync drift + RP-006 EOF** | **✅** | **sync_tracked_files clean, 3 JSON EOF fixed** |
+| **Overall HEAD S34** | **✅** | **sync_tracked_files ✅, ruff ✅, P-045 gate ✅** |
 | CodeQL 46 remaining alerts (6 rules) | ⏳ | Blocked — sandbox lacks `security_events` |
 | Build & Push Preview Image | ⚠️ | startup_failure — needs second manual approval |
 | Data Quality & Determinism Suite | ⚠️ | startup_failure — needs second manual approval |
@@ -280,16 +282,17 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 
 ## Statistics
 
-- **Sessions**: 33 (S1→S33; S15–S17 intermediate CI iterations)
+- **Sessions**: 34 (S1→S34; S15–S17 intermediate CI iterations)
 - **Files changed total**: 186+
 - **Dependabot alerts resolved**: 7 (#239–#246)
 - **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1)
 - **CodeQL alerts pending**: 46 across 6 rules — requires `CODEX_MASTER_KEY` via GitHub Actions
-- **CI rescue sessions**: 16 (S3, S14, S18–S32) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping, sync drift, merge conflicts
-- **RP-006 fixes**: 5 `.codex/` JSON files with missing EOF newlines (S27)
+- **CI rescue sessions**: 17 (S3, S14, S18–S34) — SHA drift, Pattern 25, venv gaps, subprocess timeouts, RP-006, WEC stripping, sync drift, merge conflicts
+- **RP-006 fixes**: 3 more `.codex/` JSON files with missing EOF newlines (S34); total 8 across S27+S33+S34
 - **Rate-limit hardening**: 3 files changed + 1 new doc (S6)
 - **New capability**: WEC-integrated CodeQL alert fetcher (S9)
 - **New policy**: P-045 zero-conflict wrap-up gate (S30) — `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md`
+- **New workflow**: trigger-on-approval.yml (S33, admin-approved) — approval-driven dispatcher for validate.yml, pre-merge-validation.yml, codeql-alert-fetcher.yml
 
 ## Next Phases (Roadmap)
 
