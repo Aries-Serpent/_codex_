@@ -48,6 +48,7 @@ except ImportError:
 
 _stable_exports = ["AutoTuneWorkflow", "TuneResult", "WorkflowConfig"]
 if "_workflow_all" in locals() and isinstance(_workflow_all, list):
-    __all__ = [name for name in _workflow_all if isinstance(name, str)] or _stable_exports
+    _valid_exports = [name for name in _workflow_all if isinstance(name, str)]
+    __all__ = _valid_exports if _valid_exports else _stable_exports
 else:
     __all__ = _stable_exports
