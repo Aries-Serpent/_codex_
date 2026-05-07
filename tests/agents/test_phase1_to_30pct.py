@@ -198,7 +198,7 @@ class TestRelativitySchedulerProperties:
             except TypeError:
                 # Try minimal parameters
                 try:
-                    scheduler.add_agent("agent1")
+                    scheduler.add_agent("agent1", 0.5)
                 except Exception as _err:
                     _ = None  # Method exists, just different signature
 

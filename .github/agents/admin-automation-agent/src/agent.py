@@ -52,7 +52,9 @@ try:
     from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
     from scripts.phase10.comprehensive_validation_suite import Phase10Validator
 except ImportError:
-    print("⚠️  Could not import automation modules. Ensure repository structure is intact.")
+    logging.getLogger(__name__).warning(
+        "⚠️  Could not import automation modules. Ensure repository structure is intact."
+    )
     GitHubSecretsManager = None
     Phase10Validator = None
 

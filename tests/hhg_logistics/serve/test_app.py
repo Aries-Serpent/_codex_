@@ -117,6 +117,13 @@ class _JSONResponse(dict):
         super().__init__(content or {})
         self.status_code = status_code
 
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, _JSONResponse):
+            return dict(self) == dict(other) and self.status_code == other.status_code
+        if isinstance(other, dict):
+            return dict(self) == dict(other)
+        return NotImplemented
+
 
 class _PlainTextResponse(str):
     def __new__(cls, content: str, status_code: int = 200):

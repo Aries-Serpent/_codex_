@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MetricCard } from '@/components/quantum/MetricCard';
 import { Brain } from '@phosphor-icons/react';

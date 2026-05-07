@@ -6,6 +6,7 @@ Provides common test patterns, mocks, and assertions.
 """
 
 import hashlib
+import os
 import random
 from collections.abc import Callable
 from typing import Any, Optional
@@ -114,7 +115,11 @@ def assert_rate_limit_allows(
     limiter: MCPRateLimiter, principal_id: str, tool_name: str, count: int
 ) -> None:
     """Assert that rate limiter allows exactly 'count' requests."""
-    allowed = sum(limiter.allow(principal_id, tool_name) for _ in range(count))
+    allowed = 0
+    for _ in range(count):
+        if not limiter.allow(principal_id, tool_name):
+            break
+        allowed += 1
     assert allowed == count, f"Expected {count} allowed requests, got {allowed}"
 
 
@@ -233,7 +238,7 @@ class PerformanceTimer:
 
 
 def benchmark_operation(
-    operation: Callable, iterations: int = 100, *args, **kwargs
+    operation: Callable, *args, iterations: int = 100, **kwargs
 ) -> dict[str, float]:
     """
     Benchmark an operation over multiple iterations.
@@ -278,8 +283,6 @@ def validate_principal(principal: Principal) -> bool:
 # Offline Mode Utilities
 def is_offline_mode() -> bool:
     """Check if running in offline mode (for deterministic tests)."""
-    import os
-
     return os.environ.get("OFFLINE_MODE", "").lower() in ("true", "1", "yes") or os.environ.get(
         "MCP_OFFLINE", ""
     ).lower() in ("true", "1", "yes")
@@ -287,8 +290,6 @@ def is_offline_mode() -> bool:
 
 def ensure_offline_mode() -> None:
     """Ensure tests run in offline mode."""
-    import os
-
     os.environ["OFFLINE_MODE"] = "true"
     os.environ["MCP_OFFLINE"] = "true"
 
@@ -332,7 +333,7 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
         try:
             os.remove(file)
         except Exception as _err:
-            _ = None  # Ignore errors if file cannot be removed (e.g., permission denied)
+            _ = None  # suppressed: no action needed
 
 
 # Logging Utilities for Tests

@@ -1,11 +1,20 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T15:52Z — Session 32 (sync drift fix, CI rescue, living docs updated)**
-> **Sessions: S1→…→S30→S31→S32 — HEAD `0159eda9`**
+> **Last updated: 2026-05-07T19:55Z — Session 35 (CodeQL/security remediation batch + workflow monitoring)**
+> **Sessions: S1→…→S32→S33→S34→S35 — HEAD `e0160328`**
 
 ## Session Flow
 
 ```
+S35 (CodeQL/security remediation + monitoring): 2026-05-07T19:47Z → 19:55Z
+   ├─ Applied requested fixes across docs/admin + src/ + tests/ + services/audio + admin agent module
+   ├─ Targeted validation:
+   │      pytest (MCP/agents/evaluation/audio/bf16/modeling/hhg serve) ✅
+   │      vitest MetricCard test ✅
+   ├─ Maintainer-approved workflow monitoring:
+   │      Workflow Execution Gate latest attempt ✅ success
+   └─ Living docs + accountability/changelog refresh in progress
+
 S1 (Wave 9): Timeline/CVE/Semgrep fixes
    ├─ Fix PR description timeline clarity
    ├─ Stale review date fix
@@ -305,4 +314,3 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 | **E** | Operationalize WEC CodeQL fetcher | Alert-diff automation | Future PR |
 
 See `docs/roadmap/PR4323_whats_next.md` for full Phase A–E detail.
-
