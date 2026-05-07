@@ -681,6 +681,7 @@ def main() -> int:
     # so subsequent agent calls can skip the network probe within the same window.
     if not args.offline:
         try:
+            _rl_state: dict[str, Any] = {"ok": True}
             _rl_state_path = Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex")) / "rate_limit_state.json"
             # Re-use cached state if it is less than 60 s old
             _rl_state: dict = {"ok": True}  # default: assume ok if probe is skipped
