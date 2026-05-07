@@ -271,6 +271,7 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 | WEC CodeQL alert fetcher | ✅ | codeql-alert-fetcher.yml (S9) |
 | **Overall HEAD c481f105** | **✅ 22/0** | **Readiness ≥90/100** |
 | **S33 — RP-006 + comment gate** | **✅** | **EOF newlines, gate unblocked** |
+| **Overall HEAD 96d8744a** | **✅ 15/0** | **Readiness 100/100 — all critical ✅** |
 | CodeQL 46 remaining alerts (6 rules) | ⏳ | Blocked — sandbox lacks `security_events` |
 | Build & Push Preview Image | ⚠️ | startup_failure — needs second manual approval |
 | Data Quality & Determinism Suite | ⚠️ | startup_failure — needs second manual approval |
