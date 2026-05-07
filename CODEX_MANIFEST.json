@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-06T22:07:16Z",
+  "generated_at": "2026-05-07T18:34:44Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1129,6 +1129,11 @@
       "has_concurrency": true
     },
     {
+      "name": "codeql-alert-fetcher",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "codeql-analysis",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1674,6 +1679,11 @@
       "has_concurrency": true
     },
     {
+      "name": "trigger-on-approval",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "unified-deployment",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -2008,6 +2018,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/RATE_LIMIT_AWARENESS.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/RCA_UNKNOWN_PATTERN_S150.md",
       "type": "enforcement"
     },
@@ -2050,6 +2064,10 @@
     {
       "path": ".codex/docs/WORKFLOW_CHERRY_PICK_TO_MAIN_PLAN.md",
       "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md",
+      "type": "enforcement"
     }
   ],
   "datasets": {
@@ -2069,5 +2087,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6cbf83c8a7a6c327cc2e4fa8cda3d52b681380a457dd7e875d842ebe051a921f"
+  "integrity_sha256": "8380df179436c0ba5d027b42d539881581f04f17b18fa85348865a00da4540ed"
 }
