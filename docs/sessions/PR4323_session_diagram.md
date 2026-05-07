@@ -1,11 +1,17 @@
 # PR #4323 — Session Diagram
 
-> **Last updated: 2026-05-07T20:12Z — Session 36 (CI comment triage + action-version remediation)**
-> **Sessions: S1→…→S33→S34→S35→S36 — HEAD `23b6ce4d`**
+> **Last updated: 2026-05-07T20:16Z — Session 37 (post-approval workflow monitoring)**
+> **Sessions: S1→…→S34→S35→S36→S37 — HEAD `6c239f07`**
 
 ## Session Flow
 
 ```
+S37 (post-approval monitoring): 2026-05-07T20:14Z → 20:16Z
+   ├─ Maintainer re-approved pending workflows
+   ├─ Latest head 6c239f07 workflow wave monitored via MCP list_workflow_runs
+   ├─ Mixed queue state observed (action_required/cancelled/startup_failure + success reruns)
+   └─ Living docs + accountability/changelog refreshed for current status snapshot
+
 S36 (comment triage + action versions): 2026-05-07T20:05Z → 20:10Z
    ├─ Reviewed maintainer comments + referenced CI rescue runs/log metadata
    ├─ Ran rescue command set:

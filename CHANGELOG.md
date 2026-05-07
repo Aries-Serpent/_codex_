@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T20:16Z — post-approval workflow monitoring)
+- Monitored re-approved workflow wave on head `6c239f07` and captured current mixed queue/conclusion state for CI rescue visibility.
+- Updated living status docs (`PR4323_whats_next.md`, `PR4323_session_diagram.md`) and accountability tracking to reflect the latest post-approval state.
+
 ### Fixed (session 2026-05-07T20:10Z — CI comment triage + action-version remediation)
 - Triaged new maintainer CI-rescue and secrets-baseline comments and re-ran rescue command set (`ruff --fix`, mypy baseline check, `auto_fix_common_issues --check-only`).
 - Upgraded `.github/workflows/trigger-on-approval.yml` from `actions/github-script@v7` to `@v8` to address Pattern 30 merge-readiness action-version failure.
