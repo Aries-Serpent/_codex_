@@ -521,7 +521,7 @@ class TestPhase2_OptimizationMethods:
         if hasattr(orchestrator, "optimize_path"):
             try:
                 result = orchestrator.optimize_path(
-                    start={"x": 0.0}, goal={"x": 1.0}, max_iterations=5
+                    {"x": 0.0}, {"x": 1.0}, max_iterations=5
                 )
                 assert result is not None
             except TypeError:
