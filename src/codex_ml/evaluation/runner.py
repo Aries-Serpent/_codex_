@@ -48,7 +48,7 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     torch = None  # type: ignore[assignment]
-    DataLoader = None  # type: ignore[assignment, misc]
+    DataLoader = None
 
 
 @dataclass
@@ -228,7 +228,7 @@ class EvaluationRunner:
                         predictions = self.model(inputs)
                     except TypeError as e:
                         raise ValueError(
-                            f"Model {type(self.model)} is callable but failed: {e}"
+                            f"Model {type(self.model)}.__call__(inputs) raised TypeError: {e}"
                         ) from e
                 else:
                     raise ValueError(

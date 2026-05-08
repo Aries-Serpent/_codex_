@@ -80,24 +80,29 @@ runs:
 
     - name: Install Dependencies
       shell: bash
+      env:
+        RUN_SECURITY_SCAN: ${{ inputs.run_security_scan }}
       run: |
         echo "::group::Installing dependencies"
         pip install --quiet pyyaml click requests jinja2 markdown pygments
         pip install -e . || echo "Project not pip-installable, continuing..."
 
         # Install security tools if needed
-        if [ "${{ inputs.run_security_scan }}" = "true" ]; then
+        if [ "${RUN_SECURITY_SCAN}" = "true" ]; then
           pip install --quiet bandit safety semgrep
         fi
         echo "::endgroup::"
 
     - name: Create Branch for Changes
       shell: bash
+      env:
+        TARGET_PATH_INPUT: ${{ inputs.target_path }}
+        PR_BRANCH_PREFIX: ${{ inputs.pr_branch_prefix }}
       run: |
         # Create unique branch name
         TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-        TARGET_CLEAN=$(echo "${{ inputs.target_path }}" | tr '/' '-' | tr '.' '-')
-        BRANCH_NAME="${{ inputs.pr_branch_prefix }}/${TARGET_CLEAN}-${TIMESTAMP}"
+        TARGET_CLEAN=$(echo "${TARGET_PATH_INPUT}" | tr '/' '-' | tr '.' '-')
+        BRANCH_NAME="${PR_BRANCH_PREFIX}/${TARGET_CLEAN}-${TIMESTAMP}"
 
         echo "Creating branch: $BRANCH_NAME"
         git checkout -b "$BRANCH_NAME"
@@ -107,9 +112,11 @@ runs:
     - name: Analyze Code with TF-IDF
       id: analyze_code
       shell: bash
+      env:
+        TARGET_PATH_INPUT: ${{ inputs.target_path }}
       run: |
         echo "::group::Analyzing code with TF-IDF"
-        TARGET="${{ inputs.target_path }}"
+        TARGET="${TARGET_PATH_INPUT}"
 
         # Check if target exists
         if [ ! -e "$TARGET" ]; then
@@ -133,10 +140,13 @@ runs:
       id: generate_docs
       if: ${{ inputs.mode == 'document' || inputs.mode == 'both' || inputs.mode == 'full' }}
       shell: bash
+      env:
+        TARGET_PATH_INPUT: ${{ inputs.target_path }}
+        DOC_STYLE_INPUT: ${{ inputs.doc_style }}
       run: |
         echo "::group::Generating documentation"
-        TARGET="${{ inputs.target_path }}"
-        DOC_STYLE="${{ inputs.doc_style }}"
+        TARGET="${TARGET_PATH_INPUT}"
+        DOC_STYLE="${DOC_STYLE_INPUT}"
 
         echo "Generating $DOC_STYLE-style documentation for $TARGET..."
 
@@ -622,10 +632,13 @@ EOF
       id: generate_tests
       if: ${{ inputs.mode == 'test' || inputs.mode == 'both' || inputs.mode == 'full' }}
       shell: bash
+      env:
+        TARGET_PATH_INPUT: ${{ inputs.target_path }}
+        COVERAGE_TARGET_INPUT: ${{ inputs.coverage_target }}
       run: |
         echo "::group::Generating tests"
-        TARGET="${{ inputs.target_path }}"
-        COVERAGE_TARGET="${{ inputs.coverage_target }}"
+        TARGET="${TARGET_PATH_INPUT}"
+        COVERAGE_TARGET="${COVERAGE_TARGET_INPUT}"
 
         echo "Generating tests for $TARGET with ${COVERAGE_TARGET}% coverage target..."
 

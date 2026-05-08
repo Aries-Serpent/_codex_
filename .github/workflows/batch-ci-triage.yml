@@ -68,6 +68,7 @@ jobs:
             const maxRuns = Number('${{ inputs.max_runs || 5 }}') || 5;
             const lookbackHours = 25;  // slightly more than 1h schedule to avoid gaps
             const cutoff = new Date(Date.now() - lookbackHours * 60 * 60 * 1000);
+            const failuresFile = 'ci-triage-failures.json';
 
             console.log(`Fetching failed workflow runs since ${cutoff.toISOString()} (last ${lookbackHours}h)`);
 
@@ -92,12 +93,14 @@ jobs:
             console.log(`Found ${workflows.length} workflows`);
 
             const failures = [];
+            let activeWorkflowsScanned = 0;
             let wfIdx = 0;
 
             for (const wf of workflows) {
               // Skip disabled or this very workflow to avoid self-loops
               if (wf.state !== 'active') continue;
               if (wf.name.includes('Batch CI Failure Triage')) continue;
+              activeWorkflowsScanned++;
 
               // Circuit-break every 10 workflows — check rate limit remaining
               wfIdx++;
@@ -173,18 +176,26 @@ jobs:
             }
 
             console.log(`Total recent failures found: ${failures.length}`);
+            require('fs').writeFileSync(failuresFile, JSON.stringify(failures));
             core.setOutput('failure_count', failures.length);
-            core.setOutput('failures_json', JSON.stringify(failures));
+            core.setOutput('failures_path', failuresFile);
+            core.setOutput('active_workflows_scanned', activeWorkflowsScanned);
 
       # ── Step 2: Build the triage report ─────────────────────────────────────
       - name: Build triage report
         id: build-report
         uses: actions/github-script@v9
         env:
-          FAILURES_JSON: ${{ steps.fetch-failures.outputs.failures_json }}
+          FAILURES_PATH: ${{ steps.fetch-failures.outputs.failures_path }}
+          ACTIVE_WORKFLOWS_SCANNED: ${{ steps.fetch-failures.outputs.active_workflows_scanned }}
         with:
           script: |
-            const failures = JSON.parse(process.env.FAILURES_JSON || '[]');
+            const fs = require('fs');
+            const failuresPath = process.env.FAILURES_PATH || 'ci-triage-failures.json';
+            const failures = fs.existsSync(failuresPath)
+              ? JSON.parse(fs.readFileSync(failuresPath, 'utf8') || '[]')
+              : [];
+            const activeWorkflowsScanned = Number(process.env.ACTIVE_WORKFLOWS_SCANNED || 0);
             const now = new Date().toISOString();
             const repoUrl = context.payload.repository.html_url;
             const runUrl = `${repoUrl}/actions/runs/${context.runId}`;
@@ -211,6 +222,7 @@ jobs:
             body += `**Repository:** ${context.repo.owner}/${context.repo.repo}\n`;
             body += `**Total Recent Failures:** ${failures.length}\n`;
             body += `**Affected Workflows:** ${Object.keys(byWorkflow).length}\n\n`;
+            body += `**Active Workflows Scanned:** ${activeWorkflowsScanned} (excluding triage workflow)\n\n`;
 
             // Executive summary table
             body += `## Summary\n\n`;

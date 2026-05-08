@@ -380,23 +380,46 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
     pr = _fetch_pr_data(pr_number, token)
 
     # ── component 1: CI checks (35%) ─────────────────────────────────────────
+    non_blocking_ci_workflows = {
+        # GitHub-managed dynamic dependency submission can fail transiently (HTTP 503)
+        # even when repository code/configuration is healthy. We track it separately
+        # and avoid penalizing merge readiness for a known infra-transient signal.
+        "Automatic Dependency Submission (Python)",
+        "dynamic / submit-pypi (dynamic)",
+    }
+
     if pr:
         checks = _fetch_check_runs(pr.get("head", {}).get("sha", ""), token)
         if checks:
-            required = [c for c in checks if c.get("status") == "completed"]
+            required = [
+                c
+                for c in checks
+                if c.get("status") == "completed"
+                and c.get("name", "") not in non_blocking_ci_workflows
+            ]
             passed   = [c for c in required if c.get("conclusion") in ("success", "neutral", "skipped")]
             ci_score = len(passed) / len(required) if required else 1.0
             ci_detail = f"{len(passed)}/{len(required)} checks passing"
         else:
             # Fall back to sections in the dashboard: any failure → penalise
-            failure_count = sum(1 for v in sections.values() if v.get("status") == "failure")
-            total_count   = len(sections) or 1
+            scoped_sections = {
+                name: info
+                for name, info in sections.items()
+                if name not in non_blocking_ci_workflows
+            }
+            failure_count = sum(1 for v in scoped_sections.values() if v.get("status") == "failure")
+            total_count   = len(scoped_sections) or 1
             ci_score  = 1.0 - (failure_count / total_count)
             ci_detail = f"{total_count - failure_count}/{total_count} workflows OK (from dashboard)"
     else:
         # No PR data — use dashboard sections as proxy
-        failure_count = sum(1 for v in sections.values() if v.get("status") == "failure")
-        total_count   = len(sections) or 1
+        scoped_sections = {
+            name: info
+            for name, info in sections.items()
+            if name not in non_blocking_ci_workflows
+        }
+        failure_count = sum(1 for v in scoped_sections.values() if v.get("status") == "failure")
+        total_count   = len(scoped_sections) or 1
         ci_score  = 1.0 - (failure_count / total_count)
         ci_detail = f"{total_count - failure_count}/{total_count} workflows OK (from dashboard)"
 

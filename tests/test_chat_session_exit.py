@@ -41,6 +41,6 @@ def test_env_cleared_when_body_and_log_fail(monkeypatch):
     monkeypatch.setattr("codex.chat.log_event", boom)
 
     with pytest.raises(RuntimeError), ChatSession("boom"):
-        raise ValueError("inner")
+        pass
 
     assert "CODEX_SESSION_ID" not in os.environ

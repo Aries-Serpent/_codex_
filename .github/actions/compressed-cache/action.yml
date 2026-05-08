@@ -44,26 +44,38 @@ runs:
     - name: Decompress cache
       if: steps.cache-restore.outputs.cache-hit == 'true'
       shell: bash
+      env:
+        CACHE_PATH: ${{ inputs.path }}
       run: |
-        echo "📦 Decompressing cache from ${{ inputs.path }}.tar.zst"
-        zstd -d "${{ inputs.path }}.tar.zst" -o "${{ inputs.path }}.tar" --force
-        mkdir -p "$(dirname "${{ inputs.path }}")"
-        tar -xf "${{ inputs.path }}.tar" -C "$(dirname "${{ inputs.path }}")"
-        rm -f "${{ inputs.path }}.tar" "${{ inputs.path }}.tar.zst"
+        echo "📦 Decompressing cache from ${CACHE_PATH}.tar.zst"
+        zstd -d "${CACHE_PATH}.tar.zst" -o "${CACHE_PATH}.tar" --force
+        mkdir -p "$(dirname "${CACHE_PATH}")"
+        tar -xf "${CACHE_PATH}.tar" -C "$(dirname "${CACHE_PATH}")"
+        rm -f "${CACHE_PATH}.tar" "${CACHE_PATH}.tar.zst"
         echo "✅ Cache decompressed successfully"
 
     - name: Compress and save cache
       if: steps.cache-restore.outputs.cache-hit != 'true' && inputs.restore-only != 'true'
       shell: bash
+      env:
+        CACHE_PATH: ${{ inputs.path }}
+        COMPRESSION_LEVEL: ${{ inputs.compression-level }}
       run: |
-        if [ -e "${{ inputs.path }}" ]; then
-          echo "📦 Compressing ${{ inputs.path }} with zstd level ${{ inputs.compression-level }}"
-          tar -cf "${{ inputs.path }}.tar" -C "$(dirname "${{ inputs.path }}")" "$(basename "${{ inputs.path }}")"
-          zstd -${{ inputs.compression-level }} "${{ inputs.path }}.tar" -o "${{ inputs.path }}.tar.zst" --force
-          rm -f "${{ inputs.path }}.tar"
-          echo "✅ Compressed size: $(du -h "${{ inputs.path }}.tar.zst" | cut -f1)"
+        # zstd supports levels 1..22; constrain input to prevent option injection
+        # through the dynamic -LEVEL flag.
+        if ! [[ "${COMPRESSION_LEVEL}" =~ ^([1-9]|1[0-9]|2[0-2])$ ]]; then
+          echo "❌ Invalid compression level: ${COMPRESSION_LEVEL}"
+          exit 1
+        fi
+
+        if [ -e "${CACHE_PATH}" ]; then
+          echo "📦 Compressing ${CACHE_PATH} with zstd level ${COMPRESSION_LEVEL}"
+          tar -cf "${CACHE_PATH}.tar" -C "$(dirname "${CACHE_PATH}")" "$(basename "${CACHE_PATH}")"
+          zstd -"${COMPRESSION_LEVEL}" "${CACHE_PATH}.tar" -o "${CACHE_PATH}.tar.zst" --force
+          rm -f "${CACHE_PATH}.tar"
+          echo "✅ Compressed size: $(du -h "${CACHE_PATH}.tar.zst" | cut -f1)"
         else
-          echo "⚠️ Path ${{ inputs.path }} does not exist, skipping compression"
+          echo "⚠️ Path ${CACHE_PATH} does not exist, skipping compression"
         fi
 
     - name: Save compressed cache

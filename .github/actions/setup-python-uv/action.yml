@@ -49,11 +49,12 @@ runs:
       shell: bash
       env:
         UV_CACHE_DIR: /tmp/uv-cache
+        DEPENDENCY_PROFILE: ${{ inputs.dependency-profile }}
       run: |
         # First ensure UV is in PATH
         export PATH="$HOME/.cargo/bin:$PATH"
 
-        case "${{ inputs.dependency-profile }}" in
+        case "${DEPENDENCY_PROFILE}" in
           minimal)
             if [ -f requirements-minimal.txt ]; then
               uv pip install --system -r requirements-minimal.txt
@@ -87,7 +88,7 @@ runs:
             fi
             ;;
           *)
-            echo "❌ Unknown profile: ${{ inputs.dependency-profile }}"
+            echo "❌ Unknown profile: ${DEPENDENCY_PROFILE}"
             exit 1
             ;;
         esac

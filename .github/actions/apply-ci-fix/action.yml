@@ -263,34 +263,50 @@ runs:
     - name: Check Result and Set Outputs
       id: check_result
       shell: bash
+      env:
+        FIX_TYPE_INPUT: ${{ inputs.fix_type }}
+        RUST_FIX_APPLIED: ${{ steps.rust_format.outputs.fix_applied || 'false' }}
+        RUST_FIX_DETAILS: ${{ steps.rust_format.outputs.fix_details || 'Unknown' }}
+        RUST_COMMIT_SHA: ${{ steps.rust_format.outputs.commit_sha || '' }}
+        PYTHON_FIX_APPLIED: ${{ steps.python_lint.outputs.fix_applied || 'false' }}
+        PYTHON_FIX_DETAILS: ${{ steps.python_lint.outputs.fix_details || 'Unknown' }}
+        PYTHON_COMMIT_SHA: ${{ steps.python_lint.outputs.commit_sha || '' }}
+        TIMEOUT_FIX_APPLIED: ${{ steps.timeout_fix.outputs.fix_applied || 'false' }}
+        TIMEOUT_FIX_DETAILS: ${{ steps.timeout_fix.outputs.fix_details || 'Unknown' }}
+        TIMEOUT_COMMIT_SHA: ${{ steps.timeout_fix.outputs.commit_sha || '' }}
+        DEP_FIX_APPLIED: ${{ steps.dependency_fix.outputs.fix_applied || 'false' }}
+        DEP_FIX_DETAILS: ${{ steps.dependency_fix.outputs.fix_details || 'Unknown' }}
+        DEP_COMMIT_SHA: ${{ steps.dependency_fix.outputs.commit_sha || '' }}
+        CACHE_FIX_APPLIED: ${{ steps.cache_fix.outputs.fix_applied || 'false' }}
+        CACHE_FIX_DETAILS: ${{ steps.cache_fix.outputs.fix_details || 'Unknown' }}
       run: |
         # Aggregate results from all fix steps
-        FIX_TYPE="${{ inputs.fix_type }}"
+        FIX_TYPE="${FIX_TYPE_INPUT}"
 
         case "$FIX_TYPE" in
           rust_format)
-            echo "fix_applied=${{ steps.rust_format.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
-            echo "fix_details=${{ steps.rust_format.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
-            echo "commit_sha=${{ steps.rust_format.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            echo "fix_applied=${RUST_FIX_APPLIED}" >> $GITHUB_OUTPUT
+            echo "fix_details=${RUST_FIX_DETAILS}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${RUST_COMMIT_SHA}" >> $GITHUB_OUTPUT
             ;;
           python_lint)
-            echo "fix_applied=${{ steps.python_lint.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
-            echo "fix_details=${{ steps.python_lint.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
-            echo "commit_sha=${{ steps.python_lint.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            echo "fix_applied=${PYTHON_FIX_APPLIED}" >> $GITHUB_OUTPUT
+            echo "fix_details=${PYTHON_FIX_DETAILS}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${PYTHON_COMMIT_SHA}" >> $GITHUB_OUTPUT
             ;;
           increase_timeout)
-            echo "fix_applied=${{ steps.timeout_fix.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
-            echo "fix_details=${{ steps.timeout_fix.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
-            echo "commit_sha=${{ steps.timeout_fix.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            echo "fix_applied=${TIMEOUT_FIX_APPLIED}" >> $GITHUB_OUTPUT
+            echo "fix_details=${TIMEOUT_FIX_DETAILS}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${TIMEOUT_COMMIT_SHA}" >> $GITHUB_OUTPUT
             ;;
           add_dependency)
-            echo "fix_applied=${{ steps.dependency_fix.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
-            echo "fix_details=${{ steps.dependency_fix.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
-            echo "commit_sha=${{ steps.dependency_fix.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            echo "fix_applied=${DEP_FIX_APPLIED}" >> $GITHUB_OUTPUT
+            echo "fix_details=${DEP_FIX_DETAILS}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${DEP_COMMIT_SHA}" >> $GITHUB_OUTPUT
             ;;
           clear_cache)
-            echo "fix_applied=${{ steps.cache_fix.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
-            echo "fix_details=${{ steps.cache_fix.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
+            echo "fix_applied=${CACHE_FIX_APPLIED}" >> $GITHUB_OUTPUT
+            echo "fix_details=${CACHE_FIX_DETAILS}" >> $GITHUB_OUTPUT
             echo "commit_sha=" >> $GITHUB_OUTPUT
             ;;
           *)

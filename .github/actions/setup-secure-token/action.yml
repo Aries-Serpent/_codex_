@@ -93,6 +93,9 @@ runs:
 
     - name: Set token environment variable
       shell: bash
+      env:
+        TOKEN_METHOD: ${{ steps.test-token.outputs.method }}
+        TOKEN_CONFIGURED: ${{ steps.test-token.outputs.configured }}
       run: |
-        echo "🔑 Token retrieval configured using method: ${{ steps.test-token.outputs.method }}"
-        echo "Token status: ${{ steps.test-token.outputs.configured }}"
+        echo "🔑 Token retrieval configured using method: ${TOKEN_METHOD}"
+        echo "Token status: ${TOKEN_CONFIGURED}"

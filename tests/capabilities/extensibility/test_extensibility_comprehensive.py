@@ -401,7 +401,7 @@ class TestSelfHealingDiscovery:
         """Successful discovery should register plugin."""
         registry = PluginRegistry()
         discovery = SelfHealingDiscovery(registry)
-        plugin = discovery.discover_plugin("sample", lambda: SamplePlugin())
+        plugin = discovery.discover_plugin("sample", SamplePlugin)
         assert plugin is not None
         assert "sample_plugin" in registry.list_plugins()
 

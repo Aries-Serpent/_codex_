@@ -29,8 +29,8 @@ def test_entry_points_loaded_from_multiple_groups(monkeypatch):
     def fake_entry_points(group: str):
         calls.append(group)
         if group == registry._DatasetRegistry._ENTRY_POINT_GROUPS[1]:
-            return (_DummyEntryPoint(dataset_name, lambda: "ok"),)
-        return ()
+            return [_DummyEntryPoint(dataset_name, lambda: "ok")]
+        return []
 
     reg = registry._DatasetRegistry()
     monkeypatch.setattr(metadata, "entry_points", fake_entry_points)

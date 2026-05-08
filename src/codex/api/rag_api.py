@@ -459,38 +459,22 @@ async def delete_index(
 ) -> DeleteIndexResponse:
     """Delete an index."""
     try:
-        import shutil
+        from codex.rag import IndexOperation, manage_tenant_indices
 
-        # Primary validation: raises HTTPException(400) on any invalid input.
         safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
         safe_index_name = _validate_path_segment(index_name, "index_name")
-        # Intra-procedural taint-break (GitHub Advanced Security / CodeQL hardening):
-        # Re-apply _SAFE_PATH_SEGMENT.fullmatch() directly in this function's scope so
-        # that CodeQL's intra-procedural analysis can observe the regex-match-group ->
-        # path-construction -> filesystem-sink flow without inter-procedural traversal.
-        _m_t = _SAFE_PATH_SEGMENT.fullmatch(safe_tenant_id)
-        _m_i = _SAFE_PATH_SEGMENT.fullmatch(safe_index_name)
-        if not _m_t or not _m_i:
-            raise HTTPException(status_code=400, detail="Invalid path component")
-        # Construct index_dir exclusively from regex match groups.
-        index_root = os.path.realpath(
-            os.path.join(os.path.expanduser("~"), ".codex", "rag_indices")
-        )
-        index_dir = os.path.realpath(os.path.join(index_root, _m_t.group(), _m_i.group()))
-        # Containment guard: index_dir must remain inside index_root.
-        try:
-            if os.path.commonpath([index_root, index_dir]) != index_root:
-                raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-
-        if not os.path.exists(index_dir):
-            raise HTTPException(status_code=404, detail=f"Index '{safe_index_name}' not found")
 
         if not force:
             raise HTTPException(status_code=400, detail="Set force=true to confirm deletion")
 
-        shutil.rmtree(index_dir)
+        result = manage_tenant_indices(
+            tenant_id=safe_tenant_id,
+            operation=IndexOperation.DELETE.value,
+            index_names=[safe_index_name],
+            index_dir=str(_RAG_FILES_BASE),
+        )
+        if not result.success:
+            raise HTTPException(status_code=404, detail=f"Index '{safe_index_name}' not found")
 
         return DeleteIndexResponse(
             success=True,
@@ -540,61 +524,39 @@ async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
 async def get_stats(request: Request, index_name: str, tenant_id: str = "default"):
     """Get statistics for an index."""
     try:
-        import json
+        from codex.rag import IndexOperation, load_index, manage_tenant_indices
 
-        # Primary validation: raises HTTPException(400) on any invalid input.
         safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
         safe_index_name = _validate_path_segment(index_name, "index_name")
-        # Intra-procedural taint-break (GitHub Advanced Security / CodeQL hardening):
-        # Re-apply _SAFE_PATH_SEGMENT.fullmatch() directly in this function's scope so
-        # that CodeQL's intra-procedural analysis can observe the regex-match-group →
-        # path-construction → filesystem-sink flow without requiring inter-procedural
-        # call-graph traversal into _validate_path_segment().
-        # This definitively closes alerts py/path-injection at every sink in this function.
-        _m_t = _SAFE_PATH_SEGMENT.fullmatch(safe_tenant_id)
-        _m_i = _SAFE_PATH_SEGMENT.fullmatch(safe_index_name)
-        if not _m_t or not _m_i:
-            raise HTTPException(status_code=400, detail="Invalid path component")
-        # os.path.realpath is a CodeQL-recognised path sanitizer; construct index_dir
-        # exclusively from regex match groups so the taint-break is unambiguous.
-        trusted_root = os.path.realpath(str(_RAG_FILES_BASE))
-        index_dir = os.path.realpath(os.path.join(trusted_root, _m_t.group(), _m_i.group()))
-        # Containment guard: index_dir must remain inside trusted_root.
-        try:
-            if os.path.commonpath([trusted_root, index_dir]) != trusted_root:
-                raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-
-        if not os.path.isdir(index_dir):
+        listed = manage_tenant_indices(
+            tenant_id=safe_tenant_id,
+            operation=IndexOperation.LIST.value,
+            index_names=[],
+            index_dir=str(_RAG_FILES_BASE),
+        )
+        if not listed.success or not listed.details:
+            raise HTTPException(status_code=500, detail="Failed to list indices")
+        index_summaries = listed.details.get("indices", [])
+        summary = next((idx for idx in index_summaries if idx.get("name") == safe_index_name), None)
+        if summary is None:
             raise HTTPException(status_code=404, detail=f"Index '{safe_index_name}' not found")
 
-        # Sanitize metadata path at call site.
-        metadata_file = os.path.realpath(os.path.join(index_dir, "metadata.json"))
-        try:
-            if os.path.commonpath([index_dir, metadata_file]) != index_dir:
-                raise HTTPException(status_code=400, detail="Metadata path escapes index directory")
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Metadata path escapes index directory")
-        if not os.path.isfile(metadata_file):
-            raise HTTPException(status_code=404, detail="Index metadata not found")
-
-        with open(metadata_file, encoding="utf-8") as f:
-            metadata = json.load(f)
-
-        # Use os.walk (string-based) so no Path-object taint propagates to stat calls.
-        size_bytes = sum(
-            os.path.getsize(os.path.join(dirpath, fname))
-            for dirpath, _, fnames in os.walk(index_dir)
-            for fname in fnames
+        _, chunks, metadata = load_index(
+            index_name=safe_index_name,
+            tenant_id=safe_tenant_id,
+            index_dir=str(_RAG_FILES_BASE),
         )
+
+        num_vectors = int(metadata.get("num_vectors") or summary.get("vectors") or 0)
+        embedding_dim = int(metadata.get("dimension") or summary.get("dimension") or 0)
+        size_bytes = max(num_vectors, 0) * max(embedding_dim, 0) * 4
 
         return StatsResponse(
             index_name=safe_index_name,
             tenant_id=safe_tenant_id,
-            chunks_count=metadata.get("num_chunks", 0),
-            embedding_dim=metadata.get("embedding_dim", 0),
-            created_at=metadata.get("created_at", ""),
+            chunks_count=int(metadata.get("num_chunks", len(chunks))),
+            embedding_dim=embedding_dim,
+            created_at=str(metadata.get("created_at", summary.get("created_at", ""))),
             size_mb=size_bytes / (1024 * 1024),
             metadata=metadata,
         )

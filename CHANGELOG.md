@@ -7,6 +7,125 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (S884) — 2026-05-08
+- Investigated blocking rescue comment `#4409014457` and captured failure context
+  for prior-head run `25573049644` (`Validation Pipeline / Fast Validation` on
+  commit `ad445fa...`).
+- Continued branch-head monitoring on current commit `ad96aed` and refreshed
+  living docs for session wrap-up continuity.
+- Updated accountability artifacts for current session closeout.
+
+### Changed (S883) — 2026-05-08
+- Continued within-session workflow monitoring after maintainer approval note and
+  refreshed living docs with current `e2a59cd` approval-cycle status.
+- Added post-merge handoff guidance to leverage issue `#4365` (234 failed runs)
+  as the starting reliability-pattern corpus for the next codebase-wide hardening PR.
+- Updated session diagram/status docs plus accountability artifacts for S883.
+
+### Changed (S882) — 2026-05-08
+- Continued approved-workflow monitoring on current head `80fdd6d` and refreshed
+  living-doc status snapshots with current run-state counts.
+- Updated cognitive-brain mermaid objective mappings in:
+  - `docs/roadmap/PR4366_whats_next.md`
+  - `docs/sessions/PR4366_session_diagram.md`
+- Added merge-readiness wrap-up section with official score context and tailored
+  post-merge continuation prompt focused on reliability-score uplift.
+
+### Fixed (S881) — 2026-05-08
+- `.secrets.baseline`: restored missing `is_secret` field for the
+  `CODEX_MANIFEST.json` baseline entry to keep baseline schema consistent.
+- `docs/roadmap/PR4366_whats_next.md`: standardized CI status table `Count`
+  values to consistent numeric semantics.
+- Refreshed living docs to include current workflow-monitoring state at
+  `ad445fa` and noted WEC-gate failure context for active follow-up.
+
+### Fixed (S880) — 2026-05-08
+- Continued post-approval monitoring after maintainer confirmed all pending
+  workflows were approved; verified latest branch-head dependency submission runs
+  completed successfully (`25572904017`, `25572897686`).
+- Refreshed living session docs for PR #4366:
+  - `docs/roadmap/PR4366_whats_next.md`
+  - `docs/sessions/PR4366_session_diagram.md`
+- Updated accountability artifacts for latest session wrap-up continuity.
+
+### Fixed (S879) — 2026-05-08
+- CI rescue/self-healing workflows now stop escalating GitHub-managed
+  `Automatic Dependency Submission (Python)` failures as actionable code-fix
+  events (kept monitoring on `Resilient Dependency Submission` only).
+- `scripts/ci/pr_comment_consolidator.py` now treats known transient dependency
+  submission checks (`Automatic Dependency Submission (Python)` /
+  `dynamic / submit-pypi (dynamic)`) as non-blocking for merge-readiness score
+  computation and dashboard implementation-gap messaging.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with S879
+  resolution details for escalation comment `#4408748273`.
+
+### Fixed (S878) — 2026-05-08
+- `.github/workflows/batch-ci-triage.yml`: fixed triage-run failure pattern from
+  run `25567584852` (`Argument list too long`) by replacing large failure-payload
+  transfer through env/output with file-based handoff (`ci-triage-failures.json`).
+- Enhanced triage report output to include `Active Workflows Scanned` metadata for
+  better failure-context interpretation.
+- Sourced latest CodeQL artifact `codeql-alerts-open-codeql-25570039631` from run
+  `25570039631` (sha256 `ee3033e9582528b88897c74f61331977c04db31506a8edaa91d427a744fc09bb`)
+  and re-verified high-severity remediations are present on this branch.
+- Applied quick-win CodeQL reductions for `actions/code-injection/medium` by removing
+  direct expression interpolation in shell `run` blocks across:
+  - `.github/actions/compressed-cache/action.yml`
+  - `.github/actions/apply-ci-fix/action.yml`
+  - `.github/actions/setup-python-uv/action.yml`
+  - `.github/actions/setup-secure-token/action.yml`
+  - `.github/actions/doc-test-scribe-action/action.yml`
+- Follow-up review polish:
+  - `batch-ci-triage.yml`: extracted shared failures-file constant in fetch script and fixed report-script indentation.
+  - `compressed-cache/action.yml`: clarified zstd validation rationale comment for `-LEVEL` option safety.
+- Sourced and aligned updates against CI Failure Triage Report issue #4365
+  (updated 2026-05-08) while refreshing living docs/session mapping.
+- Updated `docs/roadmap/PR4366_whats_next.md`, `docs/sessions/PR4366_session_diagram.md`,
+  and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for S878 closeout.
+
+### Fixed (S877) — 2026-05-08
+- `tests/serving/test_inference_enhanced.py`: addressed follow-up review comments on
+  lines 291–300 / line 296 by replacing try/except import with
+  `pytest.importorskip("src.codex_ml.serving.resilience")` and using a module-derived
+  `circuit_breaker_config` reference, preventing potential uninitialized-local flow.
+- Continued CI rescue monitoring for PR #4366 and refreshed session/living docs status.
+- Re-ran readiness chain (`sync_tracked_files`, mypy baseline, auto-fix scan) to keep
+  merge readiness at `100/100`.
+
+### Fixed (S876) — 2026-05-08
+- Addressed all actionable PR review comments for PR #4366:
+  - `tests/test_data_registry.py`: fixed entry-point test double semantics to return empty
+    sequence for unsupported groups.
+  - `tests/eval/test_evaluate_dataloader_helper.py`: fixed fake torch stubs so `no_grad`
+    and `device` are directly callable.
+  - `tests/serving/test_inference_enhanced.py`: removed hard-coded breaker loop count and
+    derived attempts from `CircuitBreakerConfig().failure_threshold`.
+  - `docs/roadmap/PR4366_whats_next.md`: fixed corrupted status glyph rendering.
+- Implemented CodeQL artifact-driven fixes across the codebase:
+  - `src/codex_ml/evaluation/runner.py`: direct callable invocation path, removed stale ignore.
+  - `src/codex/api/rag_api.py`: hardened `delete_index`/`get_stats` using validated index
+    operations and centralized index APIs.
+  - `tests/agents/test_phase2_deep_coverage_batch4.py`: removed wrong-named argument usage.
+  - `tests/test_chat_session.py`: initialized `ChatSession` in nested-session test.
+  - `tests/unit/test_peft_utils.py`: initialized `bundle` to avoid uninitialized local path.
+- Readiness improvements:
+  - `sync_tracked_files.py --fix` ✅
+  - `mypy_baseline.py --require-baseline` ✅ (`130 == baseline 130`)
+  - `auto_fix_common_issues.py --check-only` ✅ (Pattern 30 merge readiness `100/100`)
+- Workflow monitoring snapshot (post-push `8c00717`, 2026-05-08T16:56Z):
+  - 13 in-progress, 5 completed-success, 8 completed-action_required, 1 pending, 2 startup_failure
+  - Maintainer-approved pending workflows were acknowledged; monitoring continues for newly spawned runs.
+
+### Fixed (S875) — 2026-05-08
+- Fixed import path inconsistency in `tests/serving/test_inference_enhanced.py`: changed
+  `from codex_ml.serving.resilience` to `from src.codex_ml.serving.resilience` to match
+  repository's src-prefixed import convention.
+- Replaced mocked CircuitBreaker test with real integration test that drives failures
+  through actual circuit breaker path and validates 503 response when breaker opens.
+- Removed unused `Mock` import from `unittest.mock`.
+- All 21 tests in `tests/serving/test_inference_enhanced.py` pass.
+- Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md (this entry).
+
 ### Fixed (S873) — 2026-05-08
 - Replied to 4 new CI rescue + approval-dispatch comments (#4404718140, #4404723111,
   #4404734578, #4404772494); all on superseded commits `da2a74be`/`95c55bd` — resolved

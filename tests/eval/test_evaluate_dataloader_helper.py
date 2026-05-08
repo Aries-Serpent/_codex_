@@ -44,8 +44,8 @@ class _FakeNoGrad:
 @pytest.fixture
 def fake_torch(monkeypatch):
     module = types.SimpleNamespace()
-    module.no_grad = staticmethod(lambda: _FakeNoGrad())
-    module.device = staticmethod(lambda spec: spec)
+    module.no_grad = _FakeNoGrad
+    module.device = lambda spec: spec
     monkeypatch.setattr(evaluator, "torch", module)
     monkeypatch.setattr(evaluator, "_HAS_TORCH", True)
     yield module

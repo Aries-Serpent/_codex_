@@ -41,10 +41,11 @@ class TestExceptionsModule:
         """Test AgentError can be raised and caught."""
         from agents.exceptions import AgentError
 
-        with pytest.raises(AgentError) as exc_info:
+        def _raise_agent_error():
             raise AgentError("Test error message")
 
-        assert "Test error message" in str(exc_info.value)
+        with pytest.raises(AgentError, match="Test error message"):
+            _raise_agent_error()
 
     def test_raise_config_error(self):
         """Test AgentConfigError can be raised."""

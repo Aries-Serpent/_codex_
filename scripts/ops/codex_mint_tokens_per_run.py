@@ -67,7 +67,7 @@ except ModuleNotFoundError:  # pragma: no cover - provide a helpful stub for dry
         put=_missing,
         patch=_missing,
         request=_missing,
-        Session=lambda: _StubSession(),
+        Session=_StubSession,
     )
 
 API_VERSION = "2022-11-28"
