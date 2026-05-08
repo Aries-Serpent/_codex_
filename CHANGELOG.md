@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (2026-05-08 — [auto-sync])
 - Auto-sync placeholder added by sync_tracked_files.py
 
+### Added (2026-05-08 — S859-v4 — PR #4346)
+- `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: added **Section 9 — Token Refresh Alignment Guide** (10 sub-sections, 4 Mermaid diagrams). Covers: why alignment matters, master refresh checklist for all three token types (CODEX_MASTER_KEY, CODEX_BACKUP_KEY, GitHub App key), full table of repo variables that must stay in sync after rotation, list of in-repo files to check (.codex/agent_context.json, agent_auth_session.json, .secrets.baseline), scope requirements reference, post-rotation state diagram, simultaneous multi-token rotation order, and impact summary showing which CI workflows break when each token fails.
+- `scripts/ci/post_rotation_verify.sh`: new standalone shell script that runs a 7-step post-rotation alignment check (Variables API access, OAuth scope validation, embedded-token variable scan, agent_context.json/agent_auth_session.json clean-field checks, detect-secrets scan, and CODEX_MASTER_KEY_LAST_VERIFIED timestamp reminder). Exits non-zero on any failure.
+
 
 ## [S859-v3] — 2026-05-08T01:55Z — PR #4346 (final wrap-up)
 

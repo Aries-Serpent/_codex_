@@ -15,6 +15,7 @@
 6. [Identified Gaps & AAIS Improvement Tasks](#6-identified-gaps--aais-improvement-tasks)
 7. [Implementation Roadmap](#7-implementation-roadmap)
 8. [Mermaid Architecture Diagrams](#8-mermaid-architecture-diagrams)
+9. [**Token Refresh Alignment Guide — What to Update When Rotating Tokens**](#9-token-refresh-alignment-guide)
 
 ---
 
@@ -623,4 +624,420 @@ xychart-beta
 
 > **Maintainer:** @mbaetiong
 > **Next review:** 2026-06-08 (monthly cadence)
+> **Auto-update:** This document is updated by `copilot-swe-agent[bot]` at session start when token state changes.
+
+---
+
+## 9. Token Refresh Alignment Guide
+
+> **When to use this section:** Any time you rotate, regenerate, or replace a token —
+> use this as your complete checklist to keep every downstream consumer in sync.
+> Partial updates cause silent 403s that are hard to diagnose.
+
+---
+
+### 9.1 Why Alignment Matters
+
+A single PAT value is referenced in up to **five independent systems** simultaneously:
+
+```mermaid
+flowchart TD
+    PAT["New PAT value\n(e.g. ghp_NEW...)"]
+    S["① GitHub Actions Secret\n(settings/secrets/actions)"]
+    V["② Repo Variables\n(actions/variables — \nsome workflows read token via var)"]
+    LC["③ Local shell / .env\n(.env, ~/.bash_profile, etc.)"]
+    CI["④ Any other repo\nthat imports this secret\n(org-level secret sharing)"]
+    CB["⑤ Cognitive Brain / MCP\n(if token stored in agent_context.json\nor .codex/agent_auth_session.json)"]
+
+    PAT --> S
+    PAT --> V
+    PAT --> LC
+    PAT --> CI
+    PAT --> CB
+
+    style PAT fill:#d62,color:#fff
+    style S fill:#2d9,color:#fff
+    style V fill:#29d,color:#fff
+    style LC fill:#999,color:#fff
+    style CI fill:#92d,color:#fff
+    style CB fill:#d92,color:#fff
+```
+
+Missing **any one** of these means some workflows silently get the old (expired) value and return 403.
+
+---
+
+### 9.2 Master Refresh Checklist
+
+Copy this checklist and tick each box as you complete it.
+
+#### A. Rotating `CODEX_MASTER_KEY`
+
+| Step | Location | Action | Direct Link |
+|------|----------|--------|-------------|
+| A-1 | GitHub PAT settings | Regenerate (or create new) Classic PAT with scopes: `repo`, `workflow`, `admin:repo_hook`, `read:org`, `security_events` (recommended) | [settings/tokens](https://github.com/settings/tokens) |
+| A-2 | Repo Actions Secret | Update `CODEX_MASTER_KEY` secret value | [settings/secrets/actions/CODEX_MASTER_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit) |
+| A-3 | Repo Variables | Check if any variable **stores** a token value (see §9.3) — update any that reference MASTER_KEY | [settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
+| A-4 | `.codex/agent_auth_session.json` | If this file contains a token field, regenerate it via `python scripts/ci/write_agent_auth_session.py` | Local repo |
+| A-5 | `.codex/agent_context.json` | Remove any stale `token` or `gh_token` key; the file should only contain variable *names*, not values | [.codex/agent_context.json](.codex/agent_context.json) |
+| A-6 | Local `.env` / shell profile | Replace old value in `~/.bash_profile`, `~/.zshrc`, `.env`, or any local `.env.local` | Local machine |
+| A-7 | Other repos sharing this PAT | If the org secret `CODEX_MASTER_KEY` is shared across repos, update it at org level too | [org/settings/secrets/actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) |
+| A-8 | Verify with live test | Re-run `admin_setup_verification.yml` → expand **KEY VERIFICATION** step — must pass | [admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
+| A-9 | Update this doc | Change the **Updated** date in §1.1 and §2.1 | This file |
+
+#### B. Rotating `CODEX_BACKUP_KEY`
+
+| Step | Location | Action | Direct Link |
+|------|----------|--------|-------------|
+| B-1 | GitHub PAT settings | Regenerate Classic PAT with scopes: `repo`, `workflow` | [settings/tokens](https://github.com/settings/tokens) |
+| B-2 | Repo Actions Secret | Update `CODEX_BACKUP_KEY` secret value | [settings/secrets/actions/CODEX_BACKUP_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_BACKUP_KEY/edit) |
+| B-3 | Repo Variables | Same check as A-3 | [settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
+| B-4 | Local `.env` / shell | Replace old backup key value if stored locally | Local machine |
+| B-5 | Verify fallback works | Temporarily blank MASTER_KEY in a local `.env`, run `GH_TOKEN=$CODEX_BACKUP_KEY gh api rate_limit` — should succeed | Local shell |
+
+#### C. Rotating the GitHub App (`_GITHUB_APP_PRIVATE_KEY`)
+
+| Step | Location | Action | Direct Link |
+|------|----------|--------|-------------|
+| C-1 | GitHub App settings | Generate a new private key on the App page (Downloads `.pem` file) | [organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
+| C-2 | Repo Actions Secret | Replace `_GITHUB_APP_PRIVATE_KEY` with the new `.pem` contents (full PEM block including `-----BEGIN/END RSA PRIVATE KEY-----`) | [settings/secrets/actions/_GITHUB_APP_PRIVATE_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/_GITHUB_APP_PRIVATE_KEY/edit) |
+| C-3 | `_GITHUB_APP_ID` | Verify this secret still matches the App ID shown on the App page (it doesn't rotate, but confirm) | [settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) |
+| C-4 | `_GITHUB_APP_INSTALLATION_ID` | Verify this still matches the installation (shown under the App → Installations) | App settings page |
+| C-5 | Delete old private key | On the App settings page, delete the old private key entry to prevent dual-signing risks | App settings → Private keys list |
+| C-6 | Test token minting | Run the Python snippet in §3.3 Step 5 to confirm the new key mints a valid installation token | Local shell |
+| C-7 | Trigger `post-accountability-to-discussion.yml` | Manually dispatch this workflow to confirm Discussion posting works as App identity | [actions](https://github.com/Aries-Serpent/_codex_/actions) |
+
+---
+
+### 9.3 Variables That Must Stay in Sync
+
+These **repository variables** (not secrets) contain either derived token metadata or
+token-adjacent values that must be reviewed on every token rotation:
+
+```mermaid
+graph LR
+    subgraph "Repo Variables — review on every token rotation"
+        V1["COPILOT_AGENT_AUTH_ENABLED\nValue: true/false\nAction: confirm still true after rotation"]
+        V2["COGNITIVE_BRAIN_ALLOWED_ACTORS\nValue: comma-separated logins\nAction: no change needed unless\nthe PAT owner login changes"]
+        V3["CODEX_CI_FAILURE_RATE\nValue: float string\nAction: no change — CI-computed\nbut verify it updates after\nnew token takes effect"]
+        V4["AGENT_GITHUB_TOKEN\n⚠️ If this variable stores\na token value directly:\nupdate it immediately"]
+        V5["COPILOT_SESSION_TOKEN\n⚠️ If this variable stores\na session token:\nregenerate via session_bootstrap.py"]
+    end
+
+    style V4 fill:#d62,color:#fff
+    style V5 fill:#d62,color:#fff
+```
+
+**How to list all current variables and spot any that contain token-like values:**
+
+```bash
+# List all repo variables (names + values)
+GH_TOKEN=$CODEX_MASTER_KEY gh api \
+  /repos/Aries-Serpent/_codex_/actions/variables \
+  --paginate \
+  --jq '.variables[] | "\(.name) = \(.value[:60])"'
+```
+
+**Look for any variable whose value starts with `ghp_`, `github_pat_`, `ghs_`, or `gho_`.**
+Those are live token values stored as variables (not secrets) — they MUST be updated
+alongside the secret rotation.
+
+**Known variables to review (full list as of 2026-05-08):**
+
+| Variable Name | Contains Token? | Action on Rotation |
+|--------------|-----------------|-------------------|
+| `COPILOT_AGENT_AUTH_ENABLED` | No — boolean `true`/`false` | ✅ No change needed |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | No — login names | ✅ No change needed |
+| `CODEX_CI_FAILURE_RATE` | No — float string | ✅ No change needed |
+| `CODEX_SESSION_ID` | No — UUID | ✅ No change needed |
+| `AGENT_GITHUB_TOKEN` | ⚠️ **Possibly** — check value | 🔄 Update if contains `ghp_` / `github_pat_` |
+| `COPILOT_SESSION_TOKEN` | ⚠️ **Possibly** — session token | 🔄 Regenerate via `session_bootstrap.py` |
+| `AAIS_LAST_SCORE` | No — numeric | ✅ No change needed |
+| `CODEX_MASTER_KEY_LAST_VERIFIED` | No — timestamp | 🔄 Update after rotation confirmed |
+
+---
+
+### 9.4 Files in the Repo That Must Be Checked
+
+Some files **in the repository itself** cache token-adjacent state and must be
+inspected after a rotation:
+
+| File | What to check | How to fix |
+|------|--------------|-----------|
+| `.codex/agent_context.json` | Remove any `gh_token`, `token`, or `api_key` field containing a live value | `python scripts/ci/repo_var_sync.py --sanitize` or edit manually |
+| `.codex/agent_auth_session.json` | Contains a session token + actor list — regenerate if the actor list changes | `python scripts/ci/write_agent_auth_session.py` |
+| `.codex/rate_limit_state.json` | Contains `earliest_reset_epoch` — stale after rotation but harmless; delete to force fresh check | `rm -f .codex/rate_limit_state.json` |
+| `.secrets.baseline` | `detect-secrets` scans for high-entropy strings — new token may trigger a false positive | `python scripts/ci/sync_tracked_files.py --fix` then `git add .secrets.baseline` |
+
+> **⚠️ Never commit a live token value into any of these files.**
+> If `detect-secrets` flags a new string after rotation, add `# pragma: allowlist secret`
+> to the line and update the baseline.
+
+---
+
+### 9.5 The `CODEX_MASTER_KEY_LAST_VERIFIED` Variable
+
+This variable tracks when the token was last confirmed healthy. Update it immediately after a successful rotation verification:
+
+```bash
+# After confirming the new key works (admin_setup_verification.yml passes):
+GH_TOKEN=$CODEX_MASTER_KEY gh api \
+  --method PATCH \
+  /repos/Aries-Serpent/_codex_/actions/variables/CODEX_MASTER_KEY_LAST_VERIFIED \
+  -f name=CODEX_MASTER_KEY_LAST_VERIFIED \
+  -f value="$(date -u +%Y-%m-%dT%H:%M:%SZ):ok"
+```
+
+If the variable doesn't exist yet, create it:
+
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh api \
+  --method POST \
+  /repos/Aries-Serpent/_codex_/actions/variables \
+  -f name=CODEX_MASTER_KEY_LAST_VERIFIED \
+  -f value="$(date -u +%Y-%m-%dT%H:%M:%SZ):ok"
+```
+
+---
+
+### 9.6 Post-Rotation Verification Script
+
+Run this end-to-end check after completing any token rotation to confirm all consumers are aligned:
+
+```bash
+#!/usr/bin/env bash
+# post_rotation_verify.sh — run after every token rotation
+set -euo pipefail
+
+echo "=== Post-Rotation Alignment Verification ==="
+echo ""
+
+# 1. Confirm new CODEX_MASTER_KEY works against Variables API
+echo "1. Testing CODEX_MASTER_KEY → Variables API..."
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables")
+[ "$STATUS" = "200" ] && echo "   ✅ Variables API: OK" || echo "   ❌ Variables API: HTTP $STATUS"
+
+# 2. Confirm workflow approval capability
+echo "2. Testing CODEX_MASTER_KEY scopes..."
+SCOPES=$(curl -sI \
+  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+  https://api.github.com/user | grep -i "x-oauth-scopes" | tr -d '\r')
+echo "   Scopes: ${SCOPES:-none detected (may be fine-grained PAT)}"
+echo "$SCOPES" | grep -q "workflow" && echo "   ✅ workflow scope: present" || echo "   ⚠️  workflow scope: missing"
+echo "$SCOPES" | grep -q "repo" && echo "   ✅ repo scope: present" || echo "   ❌ repo scope: MISSING"
+
+# 3. Check for stale token values in repo variables
+echo "3. Scanning repo variables for embedded token values..."
+VARS=$(GH_TOKEN=$CODEX_MASTER_KEY gh api \
+  /repos/Aries-Serpent/_codex_/actions/variables \
+  --paginate --jq '.variables[] | "\(.name)=\(.value)"' 2>/dev/null)
+echo "$VARS" | grep -E "=(ghp_|github_pat_|ghs_|gho_)" \
+  && echo "   ❌ Found variable(s) with embedded token values — UPDATE IMMEDIATELY" \
+  || echo "   ✅ No embedded token values in repo variables"
+
+# 4. Check agent_context.json for leaked token fields
+echo "4. Checking .codex/agent_context.json for token fields..."
+python3 -c "
+import json, sys
+try:
+    d = json.load(open('.codex/agent_context.json'))
+    tok_keys = [k for k,v in d.items() if isinstance(v,str) and any(v.startswith(p) for p in ['ghp_','github_pat_','ghs_','gho_'])]
+    if tok_keys:
+        print(f'   ❌ Token-like values found in keys: {tok_keys}')
+        sys.exit(1)
+    else:
+        print('   ✅ No token values in agent_context.json')
+except Exception as e:
+    print(f'   ⚠️  Could not check: {e}')
+"
+
+# 5. Confirm secrets baseline is clean
+echo "5. Running detect-secrets scan..."
+if command -v detect-secrets &>/dev/null; then
+  detect-secrets scan --baseline .secrets.baseline 2>/dev/null \
+    && echo "   ✅ detect-secrets: no new secrets found" \
+    || echo "   ⚠️  detect-secrets found new strings — run: python scripts/ci/sync_tracked_files.py --fix"
+else
+  echo "   ⚠️  detect-secrets not installed — run: pip install detect-secrets"
+fi
+
+echo ""
+echo "=== Verification complete. Fix any ❌ items before proceeding. ==="
+```
+
+Save as `scripts/ci/post_rotation_verify.sh` and run:
+```bash
+chmod +x scripts/ci/post_rotation_verify.sh
+CODEX_MASTER_KEY=<new_token_value> ./scripts/ci/post_rotation_verify.sh
+```
+
+---
+
+### 9.7 Alignment State Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> TokenValid : Initial state
+
+    TokenValid --> RotationTriggered : PAT expires / security event
+    RotationTriggered --> NewPATCreated : GitHub settings/tokens → Regenerate
+
+    NewPATCreated --> SecretUpdated : settings/secrets/actions → Update CODEX_MASTER_KEY
+    SecretUpdated --> VariablesScanned : gh api /actions/variables → grep ghp_
+    VariablesScanned --> StaleVarFound : variable contains old token value
+    VariablesScanned --> AgentFilesChecked : no stale vars
+    StaleVarFound --> StaleVarFixed : PATCH /actions/variables/{name}
+    StaleVarFixed --> AgentFilesChecked
+
+    AgentFilesChecked --> AgentContextClean : No token fields in agent_context.json
+    AgentFilesChecked --> AgentContextFixed : Token field found → remove / sanitize
+    AgentContextFixed --> AgentContextClean
+
+    AgentContextClean --> SecretsBaselineOK : detect-secrets scan clean
+    AgentContextClean --> BaselineUpdated : new high-entropy string found
+    BaselineUpdated --> SecretsBaselineOK : pragma comment + sync_tracked_files --fix
+
+    SecretsBaselineOK --> LastVerifiedUpdated : PATCH CODEX_MASTER_KEY_LAST_VERIFIED
+    LastVerifiedUpdated --> LiveTestPassed : admin_setup_verification.yml → ✅
+
+    LiveTestPassed --> TokenValid : Rotation complete ✅
+    LiveTestPassed --> RotationTriggered : ❌ Test fails → re-rotate
+
+    note right of SecretUpdated
+        Also update CODEX_BACKUP_KEY
+        if rotating both simultaneously
+    end note
+
+    note right of VariablesScanned
+        See §9.3 variable list
+    end note
+```
+
+---
+
+### 9.8 Simultaneous Multi-Token Rotation Order
+
+When rotating **all tokens at once** (e.g., a security incident requiring full credential sweep), follow this order to avoid CI lockout:
+
+```mermaid
+sequenceDiagram
+    participant You as 🧑 Admin
+    participant GH as GitHub Settings
+    participant Secrets as Repo Secrets
+    participant Vars as Repo Variables
+    participant CI as CI Pipeline
+
+    Note over You,CI: ⚠️ DO NOT disable auto-approve-workflows.yml during rotation<br/>It needs the new MASTER_KEY to approve workflows post-rotation
+
+    You->>GH: 1. Regenerate CODEX_BACKUP_KEY (lower risk — not primary)
+    GH-->>You: New BACKUP_KEY value
+    You->>Secrets: 2. Update CODEX_BACKUP_KEY secret
+    Secrets-->>CI: Fallback key now fresh
+
+    You->>GH: 3. Regenerate CODEX_MASTER_KEY
+    GH-->>You: New MASTER_KEY value
+    You->>Secrets: 4. Update CODEX_MASTER_KEY secret immediately
+    Secrets-->>CI: Primary key now fresh
+
+    You->>GH: 5. Rotate GitHub App private key (if needed)
+    GH-->>You: New .pem file
+    You->>Secrets: 6. Update _GITHUB_APP_PRIVATE_KEY secret
+    You->>GH: 7. Delete old App private key from App settings
+
+    You->>Vars: 8. Scan variables for embedded token values (§9.3)
+    You->>CI: 9. Trigger admin_setup_verification.yml — verify all green
+
+    You->>Vars: 10. Update CODEX_MASTER_KEY_LAST_VERIFIED (§9.5)
+
+    Note over You,CI: ✅ Rotation complete — all systems aligned
+```
+
+> **🚨 Critical ordering rule:** Always update `CODEX_BACKUP_KEY` **before** `CODEX_MASTER_KEY`.
+> This ensures the fallback chain is valid at every moment during the transition.
+> If both expire simultaneously, CI will be in a degraded state for the seconds between
+> secret updates — this order minimises that window.
+
+---
+
+### 9.9 Scope Requirements Reference
+
+Use this table when creating or regenerating PATs to ensure you select the right checkboxes:
+
+| Token | Required Scopes | Optional / Recommended | Prohibited |
+|-------|----------------|----------------------|------------|
+| `CODEX_MASTER_KEY` | `repo` (full) · `workflow` | `admin:repo_hook` · `read:org` · `security_events` | `delete_repo` · `admin:org` · `admin:enterprise` |
+| `CODEX_BACKUP_KEY` | `repo` (full) · `workflow` | `read:org` · `security_events` | `delete_repo` · `admin:org` |
+| GitHub App | App-level permissions (not scopes) | `pull_requests:write` · `contents:write` · `issues:write` · `discussions:write` | — |
+
+```mermaid
+graph LR
+    subgraph "CODEX_MASTER_KEY — Required Checkbox Map"
+        R1["☑ repo\n(all sub-checkboxes)"]
+        R2["☑ workflow\n(update Actions workflows)"]
+        R3["☑ security_events\n(recommended — CodeQL)"]
+        R1 --- R2 --- R3
+    end
+    subgraph "CODEX_BACKUP_KEY — Required Checkbox Map"
+        B1["☑ repo\n(all sub-checkboxes)"]
+        B2["☑ workflow"]
+        B1 --- B2
+    end
+    subgraph "❌ Never Select"
+        X1["☐ delete_repo"]
+        X2["☐ admin:org"]
+        X3["☐ admin:enterprise"]
+    end
+
+    style R1 fill:#2d9c2d,color:#fff
+    style R2 fill:#2d9c2d,color:#fff
+    style R3 fill:#a0c020,color:#fff
+    style B1 fill:#2d9c2d,color:#fff
+    style B2 fill:#2d9c2d,color:#fff
+    style X1 fill:#c0392b,color:#fff
+    style X2 fill:#c0392b,color:#fff
+    style X3 fill:#c0392b,color:#fff
+```
+
+---
+
+### 9.10 Token Rotation Impact Summary
+
+This matrix shows which **CI workflows** are directly impacted when each token is unavailable.
+Use it to prioritise which rotation to complete first in an emergency.
+
+| Failing Token | Directly Broken Workflows | Observable Symptom | Time-to-Detect |
+|--------------|--------------------------|-------------------|----------------|
+| `CODEX_MASTER_KEY` | `auto-approve-workflows.yml` · `agent-auth-delegation.yml` · `iterative-self-healing-ci.yml` · `session_wrapup_autofix.py` · `copilot-agent-checkin.yml` · `wec_enforcer.py` (dispatch) · `trigger-on-approval.yml` | All CI workflows stuck in **"Waiting for approval"** indefinitely; WEC gate fails; self-healing loop broken | **Immediate** — first push after expiry |
+| `CODEX_BACKUP_KEY` | Fallback in `agent-auth-delegation.yml` and 114 other workflows if MASTER_KEY is also absent | Silent degradation — only visible if MASTER_KEY also fails | Only when MASTER_KEY also fails |
+| `_GITHUB_APP_PRIVATE_KEY` | `post-accountability-to-discussion.yml` · `copilot-pr-session-injector.yml` | App-identity Discussion posts silently skipped; PRs created as `github-actions[bot]` instead of App | **Delayed** — only noticed on Discussion post |
+| `github.token` | Cannot expire (refreshed per-run by GitHub) | N/A | N/A |
+
+> **Emergency triage order:** CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GitHub App key
+
+---
+
+## Quick Reference Links
+
+| Resource | Link |
+|----------|------|
+| Repository Secrets (view/edit) | [/settings/secrets/actions](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions) |
+| GitHub App settings (org) | [/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
+| Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) |
+| Repo Variables (view/edit) | [/settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
+| Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) |
+| Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) |
+| MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
+| Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
+| Rate Limit Awareness | [.codex/docs/RATE_LIMIT_AWARENESS.md](../../.codex/docs/RATE_LIMIT_AWARENESS.md) |
+| Post-Rotation Verify Script | [scripts/ci/post_rotation_verify.sh](../../scripts/ci/post_rotation_verify.sh) |
+
+---
+
+> **Maintainer:** @mbaetiong
+> **Next review:** 2026-06-08 (monthly cadence)
+> **Last updated:** 2026-05-08 — Section 9 (Token Refresh Alignment Guide) added
 > **Auto-update:** This document is updated by `copilot-swe-agent[bot]` at session start when token state changes.
