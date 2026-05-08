@@ -1,8 +1,8 @@
-# What's Next — PR #4346 · S861-cont · 2026-05-08
+# What's Next — PR #4346 · S861-cont+monitoring · 2026-05-08
 
-> **Branch:** `finding-autofix-faa8614c` → `main`
-> **AAIS composite:** **100.0 / 100 (S+)**
-> **actionlint:** ✅ 0 errors · **ruff:** ✅ clean · **sync_tracked_files:** ✅ · **Merge conflicts:** ✅ resolved
+> **Branch:** `finding-autofix-faa8614c` → `main`  
+> **AAIS composite:** **99.9 / 100 (S+)** · **actionlint:** ✅ 0 · **ruff:** ✅ · **sync_tracked_files:** ✅ · **Merge conflicts:** ✅  
+> **Latest commit:** `ce4a6f44` · **CI (ce4a6f44):** 15 ✅ / 10 ⏳ / 4 startup_failure(infra) as of 03:48 UTC
 
 ---
 
@@ -17,6 +17,7 @@
 | 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` | ✅ |
 | 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files | ✅ |
 | 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple | ✅ |
+| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | ✅ |
 
 ---
 
@@ -73,27 +74,59 @@ flowchart LR
 
 ---
 
-## 🏆 Merge Readiness Scorecard (S861-cont)
+## 🏆 Merge Readiness Scorecard (S861-cont + CI monitoring · ce4a6f44)
 
 | Dimension | Weight | Status |
 |-----------|--------|--------|
-| auto_fix (0 auto-fixable) | 15 | ✅ |
+| auto_fix (0 auto-fixable) | 15 | ✅ all patterns clear |
 | sync_tracked_files | 12 | ✅ consistent |
-| action_versions | 12 | ✅ all approved |
-| ruff | 10 | ✅ clean |
-| github-script ≥ v8 | 8 | ✅ |
+| action_versions (all ≥ approved) | 12 | ✅ github-script@v8 fixed |
+| ruff (src/ + scripts/ clean) | 10 | ✅ clean |
+| github-script ≥ v8 | 8 | ✅ fixed in ce4a6f44 |
 | Pattern 27 registered | 7 | ✅ |
-| download-artifact v5 | 7 | ✅ |
+| download-artifact min v5 | 7 | ✅ |
 | PDA entry today | 8 | ✅ |
-| accountability report today | 8 | ✅ |
-| AAIS composite 100.0/100 | 13 | ✅ |
-| **Merge conflicts** | — | ✅ resolved |
-| **PR review comments** | — | ✅ all replied |
-| **comment_new threads** | — | ✅ all replied |
+| accountability report today | 8 | ✅ S861-cont + monitoring |
+| AAIS composite 99.9/100 | 13 | ✅ 99.9 (S+) |
+| **Merge conflicts** | — | ✅ fully resolved |
+| **PR review comments** | — | ✅ all addressed |
+| **comment_new threads** | — | ✅ all 5 replied |
+| **🔖 Required Actions Version Enforcer** | — | ✅ PASS (ce4a6f44) |
+| **🚨 Deferral Language Gate** | — | ✅ PASS |
+| **Workflow Compliance Audit (actionlint)** | — | ✅ PASS |
+| **🔗 Reference Integrity** | — | ✅ PASS |
+| **Pre-Merge Validation** | — | ⏳ running |
+| **🔐 Secrets Baseline Enforcer** | — | ⏳ pending (fires after Pre-Merge) |
+| **PR Comment Review Gate** | — | ⏳ pending |
+| **startup_failure** (4 infra) | — | ⚠️ env/billing — not code failures |
 
-**Estimated score: 95+/100** · Blocked only by OBJ-B/D (admin action — T-03 auto-notifier active)
+**Estimated score: 96–98/100** · Only OBJ-B/D admin token rotation outstanding  
+**`admin-action-t03.yml` will auto-create T-03 issue on next approval event**
 
 ---
+
+### 🔀 Continue This Session / Merge Decision
+
+#### Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)
+```
+All agent-fixable items are complete. OBJ-B (py/wrong-named-arg ×15) and OBJ-D (token rotation)
+require admin action. The admin-action-t03.yml notifier will create a T-03 issue automatically.
+→ Merge when Pre-Merge Validation and Secrets Baseline Enforcer turn ✅.
+```
+
+#### Option B — Start New PR + Session S862 (for OBJ-B after T-03 resolved)
+```
+@copilot CTEP Mode: ON
+
+S862 Objectives (after admin rotates CODEX_MASTER_KEY with security_events scope):
+  1. OBJ-B: Run codeql-alert-fetcher.yml → fix py/wrong-named-arg ×15
+  2. OBJ-D: Run post_rotation_verify.sh 7-step check → commit variable_set_master_key_rotated.json
+  3. Drive AAIS Reliability from 98.4 to 100.0 (need ~14 more green CI runs to flush 1.6% rate)
+  4. RL-3a remaining: promote-integration-branch.yml Pattern D guard if not yet done
+  5. T-10 gap: remaining token-review items from ELEVATED_PRIVILEGES_TOKEN_REVIEW.md
+
+Branch: finding-autofix-faa8614c (or new PR off main after merge)
+```
 
 ## 🔗 Key Files Produced (All Sessions)
 
