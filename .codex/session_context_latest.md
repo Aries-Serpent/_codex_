@@ -1,32 +1,41 @@
-# Session Context — 2026-05-08T18:06:42Z
+# Session Context — 2026-05-08T18:30:13Z
 **Branch:** `copilot/fix-import-path-inconsistency`  **PR:** #4366  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4736` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4114` (✅)
+- GraphQL remaining: `4954` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4366 — Fix circuit breaker integration tests, CodeQL remediations, and CI triage/workflow hardening with quick-win alert reductions
+## 📋 PR #4366 — Fix circuit breaker integration tests, CodeQL remediations, CI triage/workflow hardening, and dependency-submission transient escalation handling
 State: `open`  Draft: `False`  Branch: `copilot/fix-import-path-inconsistency` → `main`
 
+### ❌ 7 Failing CI Check(s)
+- `⚡ Approve action_required runs (post-delegation)` (failure)
+- `Activate token delegation` (failure)
+- `Post rescue comment on failure` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (failure)
+- `Activate token delegation` (failure)
+- `Post rescue comment on pre-merge failure` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **Agent Token Delegation** — `failure` on `copilot/fix-import-path-inconsistency` (2026-05-08)
 
 ## 📝 Recent Commits
+- `cc7108ce` Handle dependency submission transient CI escalation and readiness scoring — copilot-swe-agent[bot] (2026-05-08)
+- `b89d9916` Plan: investigate dependency submission CI failure — copilot-swe-agent[bot] (2026-05-08)
 - `6b560f02` Fix circuit breaker integration tests, CodeQL remediations, and CI triage/workfl — copilot-swe-agent[bot] (2026-05-08)
 - `eb428111` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
 - `193a6274` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
 - `7635182d` fix: address workflow review polish and preserve S878 accountability — copilot-swe-agent[bot] (2026-05-08)
 - `ab24edc7` fix: harden batch CI triage and apply CodeQL quick-win reductions — copilot-swe-agent[bot] (2026-05-08)
 - `72490ddf` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
-- `cb895921` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
-- `97fb4747` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
