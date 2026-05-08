@@ -275,11 +275,8 @@ class TestCircuitBreakerIntegration:
 
     def test_circuit_breaker_on_predict(self):
         """Test real circuit breaker behavior during prediction failures"""
-        # Skip if circuit breaker not available
-        try:
-            from src.codex_ml.serving.resilience import CircuitBreakerConfig
-        except ImportError:
-            pytest.skip("CircuitBreaker not available")
+        resilience = pytest.importorskip("src.codex_ml.serving.resilience")
+        circuit_breaker_config = resilience.CircuitBreakerConfig
 
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
@@ -293,7 +290,7 @@ class TestCircuitBreakerIntegration:
             "src.codex_ml.serving.inference_server.ModelServer.predict",
             side_effect=Exception("forced model failure"),
         ):
-            failure_threshold = CircuitBreakerConfig().failure_threshold
+            failure_threshold = circuit_breaker_config().failure_threshold
 
             # Drive failures through the real circuit breaker path.
             for _ in range(failure_threshold):

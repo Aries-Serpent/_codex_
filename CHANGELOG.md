@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S877) — 2026-05-08
+- `tests/serving/test_inference_enhanced.py`: addressed follow-up review comments on
+  lines 291–300 / line 296 by replacing try/except import with
+  `pytest.importorskip("src.codex_ml.serving.resilience")` and using a module-derived
+  `circuit_breaker_config` reference, preventing potential uninitialized-local flow.
+- Continued CI rescue monitoring for PR #4366 and refreshed session/living docs status.
+- Re-ran readiness chain (`sync_tracked_files`, mypy baseline, auto-fix scan) to keep
+  merge readiness at `100/100`.
+
 ### Fixed (S876) — 2026-05-08
 - Addressed all actionable PR review comments for PR #4366:
   - `tests/test_data_registry.py`: fixed entry-point test double semantics to return empty
