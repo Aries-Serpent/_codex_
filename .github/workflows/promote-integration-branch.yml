@@ -124,7 +124,7 @@ jobs:
                 return 0
               fi
               attempt=$(( attempt + 1 ))
-              local backoff=$(( 2 ** attempt * 5 ))   # 10s, 20s, 40s
+              local backoff=$(( 2 ** attempt * 5 ))   # attempt 1→10s, attempt 2→20s (3 total attempts: 0,1,2)
               echo "::warning::API call failed (attempt $attempt/$max_attempts) — retrying in ${backoff}s"
               sleep "$backoff"
             done

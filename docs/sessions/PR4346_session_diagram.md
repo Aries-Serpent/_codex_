@@ -318,3 +318,88 @@ flowchart LR
     style D fill:#27ae60,color:#fff
     style E fill:#27ae60,color:#fff
 ```
+
+## 13. S860 — Secrets Baseline Enforcer Fix (False-Positive Resolution)
+
+```mermaid
+flowchart LR
+    A["variable_set_c4b.json\ngit SHA value\n(40-char hex)"] -->|"HexHighEntropyString\ntrigger"| B["🔐 Secrets Baseline Enforcer\nFAIL"]
+    C["variable_set_c6.json\nsha256 hash value\n(64-char hex)"] -->|"HexHighEntropyString\ntrigger"| B
+    B --> D["Programmatic FP injection\npython3 — hashlib.sha1(val)\nis_secret: false"]
+    D --> E[".secrets.baseline updated\n2 new FP entries"]
+    E --> F["detect-secrets-hook\n--baseline .secrets.baseline\nexit: 0 ✅"]
+    F --> G["sync_tracked_files.py --fix\n✅ consistent"]
+
+    style B fill:#e74c3c,color:#fff
+    style F fill:#27ae60,color:#fff
+    style G fill:#27ae60,color:#fff
+```
+
+## 14. S860 — /tmp Audit & Tool Migration
+
+```mermaid
+flowchart TD
+    A["/tmp/ audit\nat session end"] --> B{Useful tools?}
+    B -->|"pr_body.txt\npr_body_updated.txt"| C["Agent-generated\nPR body snapshots\n(ephemeral only)"]
+    B -->|"No scripts\nNo .py/.sh/.md\ntools found"| D["✅ Nothing to migrate\nAll session tools\nalready in codebase"]
+    C --> E["Not migrated\n(runtime artifacts,\nnot reproducible tools)"]
+    D --> F["scripts/ci/build_expiry_issue_body.py\nscripts/ci/github_api_trickle.py (enhanced)\nscripts/ci/wec_enforcer.py (hardened)\nAlready committed ✅"]
+
+    style D fill:#27ae60,color:#fff
+    style F fill:#27ae60,color:#fff
+```
+
+## 15. S860 — Full Session Flow (CTEP Mode: ON)
+
+```mermaid
+gantt
+    title S860 Session Timeline (CTEP Mode: ON) — PR #4346
+    dateFormat HH:mm
+    axisFormat %H:%M
+
+    section Pre-load
+    Mandatory pre-load (AGENTIC_REPO_STATE + policy)   :done, 02:19, 2m
+    CI failure investigation (secrets baseline)         :done, 02:21, 3m
+
+    section OBJ-1 Rate-Limit
+    workflow-execution-gate.yml Pattern A              :done, 02:24, 3m
+    auto-approve-workflows.yml Pattern D               :done, 02:27, 3m
+    promote-integration-branch.yml Pattern C           :done, 02:30, 3m
+    copilot-agent-session-done.yml GraphQL CB          :done, 02:33, 3m
+    cache-pruning + batch-triage + checkin hardened    :done, 02:36, 4m
+
+    section OBJ-2/4 Variables
+    13 intent files (.codex/pending_ops/)              :done, 02:40, 5m
+
+    section OBJ-3 Token Monitor
+    token-expiry-monitor.yml + build_expiry_issue_body :done, 02:45, 5m
+
+    section PR Review Fixes
+    wec_enforcer.py false-positive + counter fix       :done, 02:50, 3m
+    post_rotation_verify.sh token security fix         :done, 02:53, 2m
+    4 aais-cache annotation fixes                      :done, 02:55, 2m
+    cleanup-stale-branches cache: pip removal          :done, 02:57, 1m
+
+    section Docs & Analysis
+    PR template v3.0 (Copilot Cloud Agent Edition)     :done, 02:58, 5m
+    PR4346_holistic_analysis.md (quantum model)        :done, 03:03, 5m
+    Session diagram + whats_next updates               :done, 03:08, 4m
+
+    section Secrets Baseline
+    .secrets.baseline FP fix (c4b + c6)               :done, 03:12, 5m
+    sync_tracked + ruff + actionlint gate              :done, 03:17, 3m
+
+    section Wrap-up
+    CHANGELOG + accountability report                  :done, 03:20, 3m
+    Follow-up prompt + report_progress                 :done, 03:23, 5m
+```
+
+## 16. S860 — AAIS Score Progression
+
+```mermaid
+xychart-beta
+    title "AAIS Score Trajectory — PR #4346"
+    x-axis ["S855 start", "S856 CodeQL fix", "S857 WEC fix", "S858 actionlint", "S859 docs plan", "S860 impl"]
+    y-axis "AAIS Score" 70 --> 100
+    line [78, 83, 86, 91, 92, 100]
+```

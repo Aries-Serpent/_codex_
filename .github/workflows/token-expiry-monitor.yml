@@ -134,7 +134,7 @@ jobs:
           URGENT_DETAILS: ${{ env.URGENT_DETAILS }}
         run: |
           TITLE="🚨 PAT Expiry Alert — Token rotation required"
-          python3 scripts/ci/build_expiry_issue_body.py > /tmp/expiry_issue_body.txt
+          python3 scripts/ci/build_expiry_issue_body.py > "${RUNNER_TEMP}/expiry_issue_body.txt"
 
           EXISTING=$(gh issue list \
             --repo "$REPO" \
@@ -145,19 +145,19 @@ jobs:
 
           if [ -n "$EXISTING" ]; then
             echo "ℹ️  Updating existing issue #${EXISTING}"
-            gh issue comment "$EXISTING" --repo "$REPO" --body-file /tmp/expiry_issue_body.txt
+            gh issue comment "$EXISTING" --repo "$REPO" --body-file ${RUNNER_TEMP}/expiry_issue_body.txt
           else
             echo "🆕 Creating new expiry-warning issue"
             gh issue create \
               --repo "$REPO" \
               --title "$TITLE" \
-              --body-file /tmp/expiry_issue_body.txt \
+              --body-file ${RUNNER_TEMP}/expiry_issue_body.txt \
               --label "security" \
               --assignee mbaetiong || \
             gh issue create \
               --repo "$REPO" \
               --title "$TITLE" \
-              --body-file /tmp/expiry_issue_body.txt \
+              --body-file ${RUNNER_TEMP}/expiry_issue_body.txt \
               --label "security"
           fi
 

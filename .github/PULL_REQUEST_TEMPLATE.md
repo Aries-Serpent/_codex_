@@ -31,7 +31,7 @@
 1. `READ .codex/AGENTIC_REPO_STATE.md` — confirms auth state
 2. `READ .codex/CODEBASE_AGENCY_POLICY.md` — fix ALL issues, never defer
 3. `READ docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — last session state
-4. `READ tail -5 .codex/aftermath/pda_iterations.jsonl` — PDA loop state
+4. Read the last 5 lines of `.codex/aftermath/pda_iterations.jsonl` — PDA loop state
 5. `READ .codex/agent_context.json` — live repo variable snapshot
 6. `LOAD` all stored session memories (store_memory tool)
 

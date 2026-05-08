@@ -23,7 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `auto-approve-workflows.yml`: job-level `GH_TRICKLE_POLITE_SLEEP: "1.0"`; replaced `--paginate` with Pattern D page-by-page guard (checks `remaining < 20` before each page).
 - `promote-integration-branch.yml`: Pattern C `_api_with_retry()` shell function wrapping the PATCH ref-update call (3 attempts, 10/20/40s backoff).
 - `copilot-agent-session-done.yml`: job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`; `rateLimit { remaining resetAt }` inlined into GraphQL query; circuit-break before paginated upsert loop and rescue-comment scan (`remaining < 20` → stop with warning).
-
+- `cache-pruning.yml`: job-level `GH_TRICKLE_POLITE_SLEEP: "0.3"`; JS circuit-breaker before paginate (`remaining < 20` → break with warning).
+- `batch-ci-triage.yml`: job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`; pre-paginate REST rate-limit check (abort if `remaining < 50`); per-10-workflow circuit-breaker in inner loop.
+- `copilot-agent-checkin.yml`: `rateLimit { remaining }` inlined into GraphQL discussion-comment paginate query; circuit-break at `remaining < 20`.
+- `scripts/ci/github_api_trickle.py`: `_write_github_env()` + `_write_github_output()` helpers; `--write-env` CLI flag exports `RATE_LIMITED=true` to `$GITHUB_ENV`/`$GITHUB_OUTPUT` when all tokens exhausted.
+- `scripts/ci/build_expiry_issue_body.py`: extracted from token-expiry-monitor.yml YAML heredoc — now a proper Python module with input validation, malformed-entry logging, and Windows-safe file handling.
+- `.github/PULL_REQUEST_TEMPLATE.md`: rewritten as v3.0 Copilot Cloud Agent Edition — 9 `<!-- AUTO -->` session context fields, 6-step mandatory pre-load checklist, copy-paste P-045 gate block, rate-limit awareness table + JS circuit-breaker snippet, consolidated 11-row CI triage table, `token-expiry-monitor.yml` in WEC.
+- `.secrets.baseline`: updated with `is_secret: false` false-positive entries for `variable_set_c4b.json` (git SHA) and `variable_set_c6.json` (sha256 hash) to pass `🔐 Secrets Baseline Enforcer`.
+- `docs/sessions/PR4346_holistic_analysis.md`: new — quantum-inspired holistic analysis with 5 mathematical models (CI wave function, rate-limit decoherence, PAT decay, session entropy, AAIS purity), 4 Mermaid diagrams, complete delta tables.
 
 - `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: Section 11 — Workflow Configuration Catalog (15 workflows, CLI invocation, execution-order diagram)
 - `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: Section 12 — Rate-Limit Awareness (token pool reference, 9-workflow gap register, 5 reusable improvement patterns, per-workflow specs, new CODEX_RL_* variables, implementation Gantt)

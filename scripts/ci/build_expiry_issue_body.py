@@ -12,17 +12,32 @@ import sys
 def main() -> None:
     details = os.environ.get("URGENT_DETAILS", "")
     rows: list[str] = []
+    skipped = 0
     for item in details.split(";"):
         item = item.strip()
+        if not item:
+            continue
         if "=" not in item:
+            print(f"⚠️  Skipping malformed URGENT_DETAILS entry (no '='): {item!r}", file=__import__("sys").stderr)
+            skipped += 1
             continue
         name, days_str = item.split("=", 1)
+        name = name.strip()
+        days_str = days_str.strip()
+        if not name:
+            print(f"⚠️  Skipping entry with empty token name: {item!r}", file=__import__("sys").stderr)
+            skipped += 1
+            continue
         try:
-            days_int = int(days_str.strip())
+            days_int = int(days_str)
         except ValueError:
+            print(f"⚠️  Skipping entry with non-integer days value: {item!r}", file=__import__("sys").stderr)
+            skipped += 1
             continue
         status = "EXPIRED" if days_int < 0 else f"expires in {days_int}d"
-        rows.append(f"| `{name.strip()}` | {status} |")
+        rows.append(f"| `{name}` | {status} |")
+    if skipped:
+        print(f"⚠️  {skipped} malformed URGENT_DETAILS entry/entries skipped (see stderr)", file=__import__("sys").stderr)
 
     table = "\n".join(rows) if rows else "| (see workflow log) | urgent |"
 

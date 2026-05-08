@@ -302,7 +302,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
   EOF
   ```
 
-- [ ] **C-4** Create `CODEX_AAIS_LAST_SCORE` and `CODEX_AAIS_LAST_SCORED_SHA`
+- [x] **C-4** Create `CODEX_AAIS_LAST_SCORE` and `CODEX_AAIS_LAST_SCORED_SHA`
   ```bash
   cat > .codex/pending_ops/variable_set_c4a.json << 'EOF'
   {"operation":"set","name":"CODEX_AAIS_LAST_SCORE","value":"100.0",
@@ -346,7 +346,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
   EOF
   ```
 
-- [ ] **C-8** Commit all intent files and push — `process-variable-intents.yml` auto-applies
+- [x] **C-8** Commit all intent files and push — `process-variable-intents.yml` auto-applies
 
 ---
 
@@ -443,8 +443,8 @@ jobs:
             --body "One or more PATs are expiring soon. See workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 ```
 
-- [ ] **D-2** Add `token-expiry-monitor.yml` to WEC block in `📄 Opt-In: Documentation` section
-- [ ] **D-3** Run the workflow immediately after creating `CODEX_MASTER_KEY_EXPIRY_DATE` (Phase C-2)
+- [x] **D-2** Add `token-expiry-monitor.yml` to WEC block in `📄 Opt-In: Documentation` section
+- [x] **D-3** Run the workflow immediately after creating `CODEX_MASTER_KEY_EXPIRY_DATE` (Phase C-2)
 
 ---
 
@@ -677,7 +677,7 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 #### Phase RL-4 — Verification
 
-- [ ] Run `python scripts/ci/github_api_trickle.py --status` on the branch
-- [ ] Run `actionlint` on all modified workflows: `actionlint .github/workflows/workflow-execution-gate.yml .github/workflows/auto-approve-workflows.yml ...`
-- [ ] Run `validate.yml` to confirm `sync_tracked_files` clean
+- [x] Run `python scripts/ci/github_api_trickle.py --status` on the branch — ✅ S860
+- [x] Run `actionlint` on all modified workflows — ✅ 0 errors S860
+- [x] Run `validate.yml` to confirm `sync_tracked_files` clean — ✅ S860
 - [ ] Manually trigger `artifact-monitoring.yml` — confirm rate-limit section present in summary

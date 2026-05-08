@@ -378,10 +378,10 @@ def _approve_run(token: str, repo: str, run_id: int, dry_run: bool = False) -> s
     return "failed"
 
 
-_DISPATCH_OUTCOME_APPROVED = "approved"
-_DISPATCH_OUTCOME_ALREADY_RUNNING = "already_running"
-_DISPATCH_OUTCOME_TIMED_OUT = "timed_out"
-_DISPATCH_OUTCOME_FAILED = "failed"
+_DISPATCH_OUTCOME_APPROVED       = "approved"        # was action_required → approved
+_DISPATCH_OUTCOME_ALREADY_RUNNING = "already_running" # queued/in_progress — no action needed
+_DISPATCH_OUTCOME_TIMED_OUT       = "timed_out"       # run never appeared within max_wait_sec
+_DISPATCH_OUTCOME_FAILED          = "failed"           # approval API call returned an error
 
 
 def _find_and_approve_dispatched_run(
