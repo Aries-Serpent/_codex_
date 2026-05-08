@@ -334,7 +334,7 @@ const COMPLEXITY_COLORS = {
 };
 
 export function WorkflowTemplatesLibrary() {
-  const [customTokens, setCustomTokens] = useKV<WorkflowToken[]>('custom-workflow-tokens', []);
+  const [, setCustomTokens] = useKV<WorkflowToken[]>('custom-workflow-tokens', []);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedBundle, setSelectedBundle] = useState<TokenBundle | null>(null);
