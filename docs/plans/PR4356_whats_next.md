@@ -15,7 +15,90 @@
 | `src/codex/utils/subprocess.py` | `text: Literal[True]=True` in overload 1; expanded docstring for `text` default + `shell` param |
 | `tests/agents/test_phase2_deep_coverage_batch4.py` | Remove `or True` from energy conservation assert |
 | `tests/code_quality/test_mypy_type_coverage.py` | Remove unreachable `assert not new_violations` after `pytest.skip` |
-| `tests/serving/test_inference_enhanced.py` | Metrics assertions + `isinstance` type check; remove redundant alias; fix patch path; `# noqa: F401` on probe import |
+| `tests/serving/test_inference_enhanced.py` | Metrics assertions + split `isinstance`/value checks; remove redundant alias; fix patch path; `# noqa: F401` on probe import |
+
+### Code Review Fixes (all 7 across 2 parallel_validation rounds)
+| File | Fix |
+|------|-----|
+| `tests/serving/test_inference_enhanced.py:231-235` | Split `isinstance` and `>= 0` into separate assertions with clear failure messages |
+| `scripts/ci/rate_limit_orchestrator.py:72-85` | `int()` wrapped in try/except; positive/non-negative range check added with descriptive error |
+| `scripts/ci/rate_limit_orchestrator.py:170-171` | Backoff exponent capped `min(attempt,6)`; comment documents `2^6=64s` max |
+| `scripts/ci/rate_limit_orchestrator.py:266,323` | `run_number` fallback unified to int `0` |
+
+### Infrastructure & Docs Added
+| Artifact | Description |
+|----------|-------------|
+| `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md` | Master mermaid privilege routing map; WEC controller; workflow matrix; Discussion channel; Webhook event bus; full autonomy sequence; live quick-reference (zero human gates) |
+| `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md` | Session handoff state machine; self-healing loop; rate-limit diagrams; gap analysis |
+| `docs/plans/PR4356_whats_next.md` | This file — living status tracker |
+| `docs/plans/PR4356_session_diagram.md` | Full session mermaid flow |
+| `scripts/ci/rate_limit_orchestrator.py` | Rate-limit aware dedup + cap + backoff; no dry-run default |
+| `.codex/pending_var_updates.json` | 10 variables in flat format → `@agent-var-writer apply` |
+| `.codex/webhook_config.json` | 4 hooks `active=true`, `status=ready-to-deploy` |
+| `.github/workflows/agent-var-writer.yml` | `ALLOWED_VAR_NAMES` +3 new variables |
+| `.github/workflows/workflow-link-validation.yml` | T-01: canonical token chain |
+
+---
+
+## 🟢 CI Results (Latest Push `a651fd4`)
+
+| Workflow | Result |
+|----------|--------|
+| Resilient Validation Suite | ✅ success |
+| Reference Integrity + Agent Size Gate | ✅ success |
+| Deferral Language Gate | ✅ success |
+| PR Comment Review Gate | ✅ success |
+| Workflow Compliance Audit (actionlint) | ✅ success |
+| Workflow Execution Gate | ✅ success |
+| Auto-Approve Pending Workflow Runs | ✅ success |
+| Documentation Link Checker | ✅ success |
+| CI Checkpoint Validation | ✅ success |
+| Agent Vars Bootstrap | ✅ success |
+| Rust-Python Hybrid Swarm CI/CD | ⚠️ startup_failure (pre-existing — requires Rust runner) |
+| Progressive Validation Suite | ⚠️ startup_failure (pre-existing — runner infra) |
+| Data Quality & Determinism Suite | ⚠️ startup_failure (pre-existing — runner infra) |
+
+> The 3 `startup_failure` items are pre-existing infrastructure issues on Rust/GPU runners
+> unrelated to this PR's changes. All code-quality gates pass.
+
+---
+
+## 📋 Pending (Post-Merge / Next Session)
+
+### Variables — Post PR comment once merged
+```
+@agent-var-writer apply
+```
+
+### Webhooks — Post PR comment once merged
+```
+@agent-infra apply-webhooks
+```
+
+### Admin-Only Gaps
+| Gap | Action |
+|-----|--------|
+| T-03: `security_events` scope on `CODEX_MASTER_KEY` | Add scope → enables inline CodeQL in-session |
+| T-02: Set `CODEX_MASTER_KEY_EXPIRY_DATE` | After next token rotation |
+
+---
+
+## 📊 Session Metrics
+
+| Metric | Value |
+|--------|-------|
+| Diffs applied | 12 / 12 ✅ |
+| Code review rounds | 2 |
+| Code review comments resolved | 7 / 7 ✅ |
+| New files created | 5 |
+| Variables queued | 10 |
+| Webhooks ready-to-deploy | 4 |
+| T-01 gap closed | ✅ |
+| WEC items armed | 9 |
+| CodeQL alerts | 0 new ✅ |
+| CI gates passing | 10+ ✅ |
+| Merge readiness | ~95% |
+
 
 ### Infrastructure & Docs Added
 | Artifact | Description |

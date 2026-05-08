@@ -70,17 +70,21 @@ _DEFAULT_REPO = "Aries-Serpent/_codex_"
 _GH_API_BASE = "https://api.github.com"
 try:
     _DEFAULT_MAX_CONCURRENT = int(os.environ.get("RATE_LIMIT_MAX_CONCURRENT", "8"))
+    if _DEFAULT_MAX_CONCURRENT <= 0:
+        raise ValueError("must be positive")
 except ValueError:
     raise ValueError(
-        f"RATE_LIMIT_MAX_CONCURRENT must be a positive integer; "
+        f"RATE_LIMIT_MAX_CONCURRENT must be a positive integer > 0; "
         f"got: {os.environ.get('RATE_LIMIT_MAX_CONCURRENT')!r}"
     )
 _POLITE_SLEEP = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP", "0.3"))
 try:
     _MIN_REMAINING = int(os.environ.get("GH_TRICKLE_MIN_REMAINING", "20"))
+    if _MIN_REMAINING < 0:
+        raise ValueError("must be non-negative")
 except ValueError:
     raise ValueError(
-        f"GH_TRICKLE_MIN_REMAINING must be an integer; "
+        f"GH_TRICKLE_MIN_REMAINING must be a non-negative integer; "
         f"got: {os.environ.get('GH_TRICKLE_MIN_REMAINING')!r}"
     )
 _MAX_RETRIES = 3
@@ -168,6 +172,7 @@ def _gh_api_with_retry(
             return status, result
 
         if status in (429, 403):
+            # Cap exponent at 6 so max pre-cap wait is 2^6 = 64s; _MAX_BACKOFF clamps further.
             wait = min(_MAX_BACKOFF, (2 ** min(attempt, 6)) + random.uniform(0, 1))
             logger.warning("Rate-limited (HTTP %d) — sleeping %.1fs before retry %d", status, wait, attempt + 1)
             time.sleep(wait)

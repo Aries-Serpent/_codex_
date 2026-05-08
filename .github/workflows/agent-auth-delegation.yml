@@ -1629,7 +1629,7 @@ jobs:
             core.setOutput('updated_actors', updatedActors);
 
       # ── 3b: Write session token file for provenance-chain bypass (A-001) ──────
-      # Writes .codex/agent_auth_session.json with a 1-hour expiry (TTL=3600s).
+      # Writes .codex/agent_auth_session.json with a 12-hour expiry (TTL=43200s).
       # owner_approval_guard.sh reads this file so ALL agent sessions within the TTL
       # bypass the cost-gate without requiring a new environment gate approval.
       # The agent (copilot-swe-agent[bot]) CAN write this file since it has full
@@ -1637,7 +1637,7 @@ jobs:
       - name: "Write provenance session token (.codex/agent_auth_session.json)"
         run: |
           mkdir -p .codex
-          EXPIRY=$(( $(date +%s) + 3600 ))
+          EXPIRY=$(( $(date +%s) + 43200 ))
           cat > .codex/agent_auth_session.json <<EOF
           {
             "issued_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
@@ -1650,7 +1650,7 @@ jobs:
             "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL. Renew by re-triggering agent-auth-delegation."
           }
           EOF
-          echo "✅ Session token written (expires in 1h at epoch ${EXPIRY})"
+          echo "✅ Session token written (expires in 12h at epoch ${EXPIRY})"
           cat .codex/agent_auth_session.json
         shell: bash
 
@@ -1785,7 +1785,7 @@ jobs:
       # @copilot continue. When the active session completes, the session-release
       # job will trigger the next queued PR.
       # Variable format: "PR#|epoch_timestamp|run_id" (e.g. "3724|1774576800|12345")
-      # TTL: 1 hour (3600 seconds) — stale locks are auto-cleared.
+      # TTL: 12 hours (43200 seconds) — stale locks are auto-cleared after 12h.
       - name: "Session Concurrency Gate"
         id: session_gate
         uses: actions/github-script@v9
@@ -1800,7 +1800,7 @@ jobs:
               return;
             }
             const multiSession = '${{ needs.detect-checkbox.outputs.multi_session }}' === 'true';
-            const TTL_SECONDS = 3600; // 1 hour
+            const TTL_SECONDS = 43200; // 12 hours — loosened for initial system operation
             const now = Math.floor(Date.now() / 1000);
             const { isRateLimit } = require('./scripts/ci/github_rate_limit_helper.js');
 

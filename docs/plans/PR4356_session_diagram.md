@@ -117,16 +117,20 @@ graph LR
 
 ---
 
-## 🚦 CI Status at Session End
+## 🟢 CI Status at Session End (Push `a651fd4`)
 
 | Workflow | Status | Notes |
 |----------|--------|-------|
-| `validate.yml` | 🔄 Running | Ruff, detect-secrets, pre-commit, sync |
-| `resilient_validation.yml` | 🔄 Running | Full pytest 4 shards |
-| `nox_gates.yml` | ⏳ Queued | Ruff, mypy, coverage |
-| `codeql-analysis.yml` | ⏳ Queued | SAST — armed via WEC |
-| `pr-checks.yml` | 🔄 Running | Isolated cache, src/ scope |
-| `reference-integrity.yml` | 🔄 Running | Agent size gate |
-| `security-scanning-suite.yml` | 🔄 Running | Bandit, pip-audit |
-| `agent-var-writer` | ⏳ Awaiting comment trigger | `@agent-var-writer apply` |
-| `agent-infra apply-webhooks` | ⏳ Awaiting comment trigger | `@agent-infra apply-webhooks` |
+| `Resilient Validation Suite` | ✅ success | Full pytest 4 shards |
+| `Reference Integrity + Agent Size Gate` | ✅ success | |
+| `Deferral Language Gate` | ✅ success | |
+| `PR Comment Review Gate` | ✅ success | |
+| `Workflow Compliance Audit` | ✅ success | actionlint |
+| `Workflow Execution Gate` | ✅ success | WEC parsed + dispatched |
+| `Auto-Approve Pending Workflow Runs` | ✅ success | All action_required approved |
+| `Documentation Link Checker` | ✅ success | |
+| `CI Checkpoint Validation` | ✅ success | |
+| `Agent Vars Bootstrap` | ✅ success | |
+| `Rust-Python Hybrid Swarm CI/CD` | ⚠️ startup_failure | Pre-existing — Rust runner infra |
+| `Progressive Validation Suite` | ⚠️ startup_failure | Pre-existing — runner infra |
+| `Data Quality & Determinism Suite` | ⚠️ startup_failure | Pre-existing — runner infra |
