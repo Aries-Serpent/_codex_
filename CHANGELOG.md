@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S863) — 2026-05-08
+- Replied to `<comment_new>` thread #4403328142 (CI Rescue commit `1f85085`) to unblock `🔍 Scan PR comments` gate.
+- P-045 gate: ruff ✅ · sync_tracked_files ✅ · no conflicts ✅.
+
 ### Fixed/Added (S862) — 2026-05-08
 - Addressed all 5 unresolved Copilot AI review threads (PR #4346):
   - `wec_enforcer.py` line 446: confirmed `_find_and_approve_dispatched_run()` does NOT check `completed` status — only `queued/in_progress`; review thread resolved.
