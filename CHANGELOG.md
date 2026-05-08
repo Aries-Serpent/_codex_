@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4351)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4351 (SHA `f4fbff92`) at 2026-05-08T06:03Z [auto-generated]
 
+### Fixed (S865) — 2026-05-08
+- `.github/workflows/comment-review-gate.yml`: removed `cache: pip` from `actions/setup-python@v6` in sparse-checkout job to prevent setup failure when dependency files are not checked out.
+- `.github/workflows/workflow-execution-gate.yml`: removed `cache: pip` from all sparse-checkout Python setup steps for the same root cause, including `Validate WEC Template Integrity`.
+- CI rescue failures resolved at root cause (`No file matched [**/requirements.txt or **/pyproject.toml]` from setup-python cache initialization).
+
 ### Fixed (S864) — 2026-05-08
 - Fixed `Fast Validation` CI failure (run 25536229750): three pre-commit hook failures resolved:
   - `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v1.4.0→v1.5.0 format, field reorder, entry reorder); updated `run_validation.sh` to install `detect-secrets==1.5.0` matching `.pre-commit-config.yaml` to prevent version mismatch.
