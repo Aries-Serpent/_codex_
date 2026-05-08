@@ -1,24 +1,25 @@
-# Session Context — 2026-05-08T18:00:02Z
+# Session Context — 2026-05-08T18:06:42Z
 **Branch:** `copilot/fix-import-path-inconsistency`  **PR:** #4366  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4775` (✅)
-- GraphQL remaining: `4921` (✅)
+- REST remaining: `4736` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4366 — Fix circuit breaker integration tests, CodeQL remediations, and CI triage/workflow hardening
+## 📋 PR #4366 — Fix circuit breaker integration tests, CodeQL remediations, and CI triage/workflow hardening with quick-win alert reductions
 State: `open`  Draft: `False`  Branch: `copilot/fix-import-path-inconsistency` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-08)
-- **Automatic Dependency Submission (Python)** — `failure` on `copilot/fix-import-path-inconsistency` (2026-05-08)
-- **Workflow Execution Gate** — `failure` on `copilot/fix-import-path-inconsistency` (2026-05-08)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
 
 ## 📝 Recent Commits
+- `6b560f02` Fix circuit breaker integration tests, CodeQL remediations, and CI triage/workfl — copilot-swe-agent[bot] (2026-05-08)
 - `eb428111` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
 - `193a6274` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
 - `7635182d` fix: address workflow review polish and preserve S878 accountability — copilot-swe-agent[bot] (2026-05-08)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-import-path-inconsistency` �
 - `72490ddf` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
 - `cb895921` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
 - `97fb4747` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
-- `93391d38` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
