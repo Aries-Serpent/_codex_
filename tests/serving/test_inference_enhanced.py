@@ -9,7 +9,7 @@ import pytest
 pytest.importorskip("fastapi")
 pytest.importorskip("starlette")
 
-from src.codex_ml.serving.inference_server import (
+from src.codex_ml.serving.inference_server import ( # pragma: allowlist secret
     AuthManager,
     ModelConfig,
     create_app,
