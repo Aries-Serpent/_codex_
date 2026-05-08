@@ -18,6 +18,7 @@ def run(
     *,
     cwd: Path | None = None,
     capture_output: bool = False,
+    text: Literal[True] = True,
     check: bool = True,
     timeout: float | None = None,
     env: dict[str, str] | None = None,
@@ -93,10 +94,19 @@ def run(
 ) -> _stdlib_subprocess.CompletedProcess[Any]:
     """Run *cmd* securely.
 
-    Parameters mirror :func:`subprocess.run`. This wrapper forbids shell
-    execution to prevent shell-injection risks; passing ``shell`` as ``True``
-    raises :class:`ValueError`. ``check`` defaults to ``True`` to ensure
-    errors are surfaced immediately.
+    Parameters mirror :func:`subprocess.run`.
+
+    Parameters
+    ----------
+    shell:
+        Must be ``False``. This argument is accepted only for API compatibility.
+        Passing ``True`` is rejected and raises :class:`ValueError` to prevent
+        shell-injection risks.
+
+    ``check`` defaults to ``True`` to ensure errors are surfaced immediately.
+    ``text`` defaults to ``True``, so output streams are decoded and returned
+    as ``str`` unless ``text=False`` is explicitly provided (which returns
+    ``bytes`` output).
     """
     if shell:
         raise ValueError("shell execution is not supported by this secure wrapper")  # nosec

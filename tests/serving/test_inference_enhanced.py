@@ -226,7 +226,9 @@ class TestInferenceServerWithAuth:
 
         # Metrics should show circuit breaker state if available
         resp = client.get("/metrics")
-        resp.json()
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "request_count" in data
         # Circuit breaker may or may not be present depending on import
 
     def test_root_endpoint_shows_auth_status(self):
@@ -269,11 +271,11 @@ class TestCircuitBreakerIntegration:
         """Test circuit breaker is called during prediction"""
         # Skip if circuit breaker not available
         try:
-            from codex_ml.serving.resilience import CircuitBreaker as CircuitBreaker
+            from codex_ml.serving.resilience import CircuitBreaker
         except ImportError:
             pytest.skip("CircuitBreaker not available")
 
-        with patch("codex_ml.serving.resilience.CircuitBreaker") as mock_cb_class:
+        with patch("src.codex_ml.serving.inference_server.CircuitBreaker") as mock_cb_class:
             mock_cb = Mock()
             mock_cb_class.return_value = mock_cb
             mock_cb.call.return_value = [{"label": "test", "score": 1.0}]

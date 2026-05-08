@@ -469,7 +469,7 @@ class TestPhase2_ConservationLaws:
             final_q, final_p, final_t = trajectory[-1]
             final_E = evolver.harmonic_hamiltonian(q=final_q, p=final_p, omega=1.0)
             # Allow some numerical error
-            assert abs(initial_E - final_E) < 0.5 or True  # May have some drift
+            assert abs(initial_E - final_E) < 0.5  # May have some drift
 
     def test_probability_conservation(self):
         """Test ∫|ψ|²dx = 1 conservation"""
