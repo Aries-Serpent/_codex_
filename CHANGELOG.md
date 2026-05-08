@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added (S859-v6) — 2026-05-08
+- `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: Section 11 — Workflow Configuration Catalog (15 workflows, CLI invocation, execution-order diagram)
+- `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: Section 12 — Rate-Limit Awareness (token pool reference, 9-workflow gap register, 5 reusable improvement patterns, per-workflow specs, new CODEX_RL_* variables, implementation Gantt)
+- `docs/roadmap/PR4346_whats_next.md`: Variable & Secret Governance Phases A–F checklist with dependency graph and agent kickoff prompt
+- `docs/roadmap/PR4346_whats_next.md`: Rate-Limit Awareness Phases RL-1 through RL-4 implementation checklist
+
+
+### Added (S859-v5) — 2026-05-08
+- `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: Section 10 — Variable & Secret Governance (10.1–10.11)
+  - Complete annotated inventory of all 13 org secrets, 7 repo secrets, 3 env secrets
+  - All 70+ repo variables documented with purpose, safe-to-change flag, and recommended values
+  - All 14 environment variables documented
+  - Decision tree: where to put new values (Mermaid flowchart)
+  - Naming conventions table for variables and secrets
+  - CLI commands for adding new variables, secrets, env secrets, promoting repo→org
+  - Auto-managed variables list (never edit manually)
+  - 8 new suggested variables (expiry tracking, AAIS score, etc.)
+  - Variables-to-remove/improve recommendations
+  - Workflow access patterns for vars/secrets in YAML
+  - Rotation Coverage Matrix: which vars/secrets to update per rotation event
+
 ### Fixed (2026-05-08 — [auto-sync])
 - Auto-sync placeholder added by sync_tracked_files.py
 

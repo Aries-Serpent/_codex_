@@ -1037,7 +1037,1369 @@ Use it to prioritise which rotation to complete first in an emergency.
 
 ---
 
+## 10. Variable & Secret Governance — Complete Inventory and Operational Guide
+
+> **Purpose:** This section documents every current variable and secret in the repository,
+> explains its purpose, ownership tier, and provides guidance on how to improve, add to,
+> or modify the set safely. Use this alongside §9 when planning a token rotation — these
+> are the exact variables and secrets you need to keep aligned.
+
+---
+
+### 10.1 Variable & Secret Taxonomy
+
+```mermaid
+graph TD
+    subgraph "Scope Hierarchy (broadest → narrowest)"
+        ORG["🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update"]
+        REPO_S["🔐 Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"]
+        ENV_S["🌍 Environment Secrets\nScoped to a named Environment\nCan add approval gates\nExample: Aries_Serpent_codex_"]
+        REPO_V["📋 Repository Variables\nNon-secret config values\nVisible in workflow logs\nMaintainer can update"]
+        ENV_V["🌍 Environment Variables\nScoped to named Environment\nMerged with repo variables\nMaintainer can update"]
+    end
+
+    ORG --> REPO_S
+    REPO_S --> ENV_S
+    ORG --> REPO_V
+    REPO_V --> ENV_V
+
+    style ORG fill:#8b1a1a,color:#fff
+    style REPO_S fill:#1a4a8b,color:#fff
+    style ENV_S fill:#1a6b8b,color:#fff
+    style REPO_V fill:#2d6a2d,color:#fff
+    style ENV_V fill:#4a8b4a,color:#fff
+```
+
+**Rule of thumb for choosing scope:**
+- Token / credential → **Secret** (never a Variable)
+- Value needed by multiple repos → **Org Secret** or **Org Variable**
+- Value specific to this repo, non-sensitive → **Repo Variable**
+- Value that changes per deployment environment → **Environment Variable/Secret**
+
+---
+
+### 10.2 Organization Secrets — Full Inventory
+
+These are stored at org level and available to this repo. Only org owners can update them.
+
+| Secret Name | Purpose | Used By | Rotation Frequency | Notes |
+|------------|---------|---------|-------------------|-------|
+| `CODEX_MASTER_KEY` | Primary PAT — variables API, workflow approve/dispatch, CodeQL, self-healing | 100+ workflows | **Mandatory: every 90 days** | Scopes: `repo`, `workflow`; recommend adding `security_events`. See §3 |
+| `CODEX_BACKUP_KEY` | Fallback PAT if MASTER_KEY fails | `agent-auth-delegation.yml` fallback chain | **Mandatory: every 90 days** | Same scopes as MASTER_KEY |
+| `CODEX_ADMIN_KEY` | Admin-only operations (org management, protected branch overrides) | Admin workflows only | **When MASTER_KEY rotates** | Higher privilege — protect carefully |
+| `_GITHUB_APP_ID` | GitHub App numeric ID (not secret per se, but stored here) | App token workflows | Rarely (only if app is recreated) | Not a token — safe to treat as semi-public |
+| `_GITHUB_APP_INSTALLATION_ID` | Installation ID for this repo's App installation | App token workflows | Rarely | Retrieve from App → Installations page |
+| `_GITHUB_APP_PRIVATE_KEY` | RSA private key for App JWT signing | `actions/create-github-app-token@v1` | **Every 365 days or on compromise** | Full PEM block including header/footer |
+| `_GITHUB_APP_CLIENT_SECRET` | OAuth client secret for App (web flow) | App web auth workflows | **Every 365 days or on compromise** | Required only if App uses OAuth device/web flow |
+| `_CODEX_ACTION_RUNNER` | Token for self-hosted or elevated runner registration | Runner registration workflows | **Every 30 days** (runner tokens expire) | GitHub runner tokens have a 1-hour TTL at mint; stored value is the registration token |
+| `CODECOV_TOKEN` | Code coverage upload to Codecov.io | `code-quality-coverage-suite.yml` | **Annually or on compromise** | Codecov → Settings → Repository Token |
+| `HF_TOKEN` | HuggingFace Hub — model downloads, dataset access | RAG/ML workflows | **Annually or on model tier change** | Scopes: `read` for downloads, `write` for uploads |
+| `NPM_TOKEN` | npm package publishing | `npm publish` workflows | **Every 90 days** | Automation token (no 2FA required) — narrow to publish scope |
+| `PYPI_TOKEN` | PyPI package publishing | `pypi-publishing-operations-agent` | **Every 90 days** | Project-scoped token preferred over account-scoped |
+| `RAG_OPENAI_KEY` | OpenAI API key for RAG index embedding | RAG index build/query workflows | **Every 90 days** | Project-level key recommended; set usage limits in OpenAI dashboard |
+
+**How to add a new Org Secret:**
+```bash
+# Requires org owner permissions
+GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_NEW_SECRET \
+  --org Aries-Serpent \
+  --visibility selected \
+  --repos _codex_ \
+  --body "$(cat /path/to/secret/value)"
+```
+
+---
+
+### 10.3 Repository Secrets — Full Inventory
+
+Stored at repo level, visible only to this repository.
+
+| Secret Name | Purpose | Used By | Rotation Notes |
+|------------|---------|---------|---------------|
+| `CODEX_GHP_TOKEN_BASE64` | Base64-encoded copy of a GHP token (legacy encoding pattern) | Legacy scripts that decode at runtime | **Rotate alongside MASTER_KEY** — must stay in sync with source token |
+| `CODEX_GHP_TOKEN_HEX` | Hex-encoded copy of a GHP token (legacy encoding pattern) | Legacy scripts | **Rotate alongside MASTER_KEY** |
+| `CODEX_GHP_TOKEN_SHA256` | SHA-256 hash of a GHP token (integrity check) | Token validation / integrity scripts | **Update whenever source token rotates** — this is the hash, not the token itself |
+| `CODEX_REPO_ID` | GitHub repository numeric ID (`1040037790`) | Workflows that need the repo ID without an API call | Rarely (only if repo is forked/transferred) |
+| `CODEX_WEBHOOK_SECRET` | HMAC secret for validating incoming GitHub webhook payloads | Webhook receiver (`WEBHOOK_RECEIVER_URL`) | **Every 90 days or on compromise** |
+| `OPENAI_API_KEY` | OpenAI API key (repo-level, separate from RAG key) | Direct OpenAI calls in CI scripts | **Every 90 days** — set usage limits in OpenAI dashboard |
+| `_CODEX_BOT_RUNNER` | Bot runner token (repo-scoped runner credentials) | Bot automation jobs | **Every 30 days** |
+
+> **⚠️ Encoded token secrets:** `CODEX_GHP_TOKEN_BASE64` and `CODEX_GHP_TOKEN_HEX` are
+> **derived values** of a primary PAT. When you rotate the primary PAT, you MUST also
+> regenerate these derived secrets:
+> ```bash
+> # Re-encode after rotation
+> echo -n "$NEW_TOKEN" | base64 | gh secret set CODEX_GHP_TOKEN_BASE64 --repo Aries-Serpent/_codex_
+> echo -n "$NEW_TOKEN" | xxd -p | tr -d '\n' | gh secret set CODEX_GHP_TOKEN_HEX --repo Aries-Serpent/_codex_
+> printf '%s' "$NEW_TOKEN" | sha256sum | awk '{print $1}' | gh secret set CODEX_GHP_TOKEN_SHA256 --repo Aries-Serpent/_codex_
+> ```
+
+---
+
+### 10.4 Environment Secrets — Full Inventory
+
+Scoped to the `Aries_Serpent_codex_` named environment (requires environment protection rules).
+
+| Secret Name | Purpose | Rotation Notes |
+|------------|---------|---------------|
+| `CODEX_ENVIRONMENT_RUNNER` | Runner credentials for environment-specific job execution | **Every 30 days** |
+| `CODEX_RUNNER_SHA256` | SHA-256 hash of the runner binary/token for integrity validation | **Update when CODEX_ENVIRONMENT_RUNNER rotates** |
+| `CODEX_RUNNER_TOKEN` | Short-lived GitHub Actions runner registration token for this environment | **Every 30 days** (or sooner — runner tokens expire at use) |
+
+---
+
+### 10.5 Environment Variables — Full Inventory
+
+Scoped to the `Aries_Serpent_codex_` environment; these override repo-level variables with the same name.
+
+| Variable | Current Value | Purpose | When to Change |
+|----------|--------------|---------|----------------|
+| `CARGO_TERM_COLOR` | `always` | Force coloured Cargo output in CI logs | Rarely |
+| `CODEX_BRIDGE_DIR` | `/tmp/codex_secure_bridge` | IPC bridge directory for Cognitive Brain ↔ workflow comms | Only if bridge path changes |
+| `CODEX_BRIDGE_OWNER_ONLY` | `true` | Enforce owner-only permissions on bridge socket | **Keep `true` — security control** |
+| `CODEX_DB_PATH` | `.codex/logs.db` | SQLite session log database path | Only if log layout changes |
+| `CODEX_ENV_GO_VERSION` | `1.21` | Go toolchain version for environment setup | On Go version bump |
+| `CODEX_ENV_NODE_VERSION` | `18` | Node.js version for environment setup | On Node LTS change |
+| `CODEX_ENV_PYTHON_VERSION` | `3.12` | Python version for environment setup | On Python version bump |
+| `CODEX_ENV_RUST_VERSION` | `1.92` | Rust toolchain version | On Rust version bump |
+| `CODEX_ENV_SWIFT_VERSION` | `5.9` | Swift version for environment setup | On Swift version bump |
+| `CODEX_LOG_DB_PATH` | `.codex/logs.db` | Alias for `CODEX_DB_PATH` (kept for backward compat) | Update both when path changes |
+| `CODEX_SQLITE_POOL` | `1` | Enable per-session SQLite connection pooling | Increase if concurrent writes cause lock errors |
+| `RUST_BACKTRACE` | `1` | Full Rust backtraces in CI | Keep `1` for debugging; set `0` to reduce log noise in production |
+| `RUST_TEST_THREADS` | `1` | Single-threaded Rust tests (prevents DB lock contention) | Increase only if Rust tests are confirmed thread-safe |
+
+---
+
+### 10.6 Repository Variables — Full Annotated Inventory
+
+This is the complete set of 70 repo-level variables grouped by functional domain.
+
+#### 10.6.1 Agent Autonomy & Control
+
+| Variable | Value | Purpose | Safe to Change? |
+|----------|-------|---------|----------------|
+| `AGENT_HANDOFF_TIMEOUT_SECONDS` | `120` | Max seconds agent waits for handoff before aborting | ✅ Increase if agent tasks time out at boundaries |
+| `AGENT_KILL_SWITCH` | `0` | Set to `1` to emergency-stop all autonomous agent actions | ✅ **Use `1` immediately if agent behaves unexpectedly** |
+| `AGENT_RUNNER_BUDGET_SECONDS` | `180` | Max wall-clock seconds per agent runner iteration | ✅ Increase for long tasks; decrease to enforce stricter budgets |
+| `AGENT_RUNNER_DRY_RUN` | `0` | Set to `1` to run agents in dry-run mode (no writes) | ✅ Use `1` when testing new agent behaviour safely |
+| `AGENT_RUNNER_ITERATIONS` | `2` | Max self-healing iterations per agent runner invocation | ✅ Increase for complex tasks; keep ≤5 to avoid runaway loops |
+| `AUTONOMOUS_ACTIONS_ENABLED` | `true` | Master gate for all autonomous CI/CD actions | ⚠️ **Set `false` to disable all autonomous actions globally** |
+| `AUTONOMY_BUDGET_SECONDS` | `90` | Budget for autonomy engine wall-clock per action | ✅ Tune with `AGENT_RUNNER_BUDGET_SECONDS` |
+| `AUTONOMY_DRY_RUN` | `0` | Autonomy engine dry-run mode | ✅ Same as `AGENT_RUNNER_DRY_RUN` but for autonomy engine |
+| `AUTONOMY_MAX_ITERATIONS` | `3` | Max iterations for autonomy loop | ✅ Keep ≤5 |
+| `UNCERTAINTY_BUDGET_SECONDS` | `20` | Time budget for uncertainty resolution in agent decisions | ✅ Increase if agents abort early on ambiguous states |
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Token delegation active — Copilot agent can use elevated tokens | ⚠️ Managed by `agent-auth-delegation.yml` — don't set manually |
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | Highest FSM autonomy level allowed (A=advisory, D=autonomous) | ⚠️ Requires E→D gate passage before changing |
+| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | Enable session state restore across Copilot sessions | ✅ Set `false` to force fresh session state |
+| `AUTO_PROMOTE_TIER_ENABLED` | `true` | Allow automatic tier promotion when AAIS gates pass | ✅ Set `false` to require manual tier promotion |
+
+#### 10.6.2 CI Behaviour & Quality Gates
+
+| Variable | Value | Purpose | Safe to Change? |
+|----------|-------|---------|----------------|
+| `CODEX_CI_FAILURE_RATE` | `1.0:ok` | **Auto-managed** — current CI failure rate percentage | ❌ **Never edit manually** — set by `copilot-agent-checkin.yml` |
+| `CODEX_CI_FAILURE_THRESHOLD` | `10.0` | Max tolerated CI failure rate % before AAIS Reliability degrades | ✅ Reduce to enforce stricter green CI requirement |
+| `CODEX_CI_LAST_GREEN_SHA` | *(latest green SHA)* | **Auto-managed** — last commit SHA where all required checks passed | ❌ **Never edit manually** — set by CI |
+| `CODEX_COVERAGE_THRESHOLD` | `80` | Minimum test coverage % required by coverage gate | ✅ Increase gradually; never decrease |
+| `CODEX_LINT_STRICT` | `true` | Enable strict linting (ruff + mypy strict mode) | ✅ Keep `true`; set `false` only for emergency merge |
+| `CODEX_TEST_PARALLELISM` | `auto` | Test parallelism (`auto`, `1`, or integer) | ✅ Set to `1` to debug race conditions |
+| `CODEX_OFFLINE` | `1` | Run all CI tools in offline mode (no network calls) | ⚠️ Set `0` only for workflows that explicitly need network |
+| `CODEX_SANDBOX_TIMEOUT` | `60` | Sandbox job timeout in seconds | ✅ Increase for slow-starting containers |
+| `AUDIT_RETENTION_DAYS` | `90` | Retention window for audit log artefacts | ✅ Must be ≥ compliance requirement (recommend 90+) |
+| `ENABLE_LIVE_TESTS` | `true` | Enable integration tests that call live external services | ⚠️ Set `false` in offline/isolated environments |
+
+#### 10.6.3 Cognitive Brain & Session Management
+
+| Variable | Value | Purpose | Safe to Change? |
+|----------|-------|---------|----------------|
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | *(login list)* | Comma-separated logins allowed to trigger Cognitive Brain | ✅ Add new bot/login; never remove `mbaetiong` |
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Enable Cognitive Brain session context injection | ✅ Set `false` to disable CB for debugging |
+| `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Long-term memory retention window (days) | ✅ Match `AUDIT_RETENTION_DAYS` |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Max token budget for CB context injection | ✅ Match your model's context window |
+| `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Memory tiers to use: `stm`, `ltm`, or `both` | ✅ |
+| `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Min confidence score for pattern recall (0.0–1.0) | ✅ Raise to reduce noise; lower to catch weak patterns |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | *(auto-incremented)* | **Auto-managed** — current session counter | ❌ **Never edit manually** |
+| `COPILOT_ACTIVE_SESSION` | *(auto-set)* | **Auto-managed** — `PR|RUN_ID|APPROVAL_RUN_ID` | ❌ **Never edit manually** |
+| `COPILOT_SESSION_QUEUE` | *(PR numbers)* | **Auto-managed** — queue of pending Copilot session PRs | ❌ **Never edit manually** |
+| `CODEX_SESSION_ID` | `UUID v4` | Template value — actual UUID generated per session | ✅ Seed with specific UUID if replaying a session |
+| `CODEX_SESSION_LOG_DIR` | `.codex/sessions` | NDJSON session log directory | ✅ Change only if log volume requires a different mount |
+
+#### 10.6.4 LLM & ML Configuration
+
+| Variable | Value | Purpose | Safe to Change? |
+|----------|-------|---------|----------------|
+| `CODEX_LLM_MODEL` | `gpt-4o` | Default LLM model for Cognitive Brain and agent tasks | ✅ Update when upgrading model version |
+| `CODEX_LLM_RATE_LIMIT_DELAY` | `1.0` | Seconds to wait between LLM API calls | ✅ Increase to reduce rate-limit 429 errors |
+| `CODEX_FORCE_CPU` | `0` | Force CPU-only execution (disable GPU) | ✅ Set `1` in CPU-only CI environments |
+| `GPU_OPT` | `--gpus all` | Docker GPU option passed to containers | ✅ Set to empty string `""` for CPU-only |
+| `HF_HOME` | `~/.cache/huggingface` | HuggingFace model/dataset cache directory | ✅ Point to a mounted volume for large models |
+| `TORCH_HOME` | `~/.cache/torch` | PyTorch hub cache directory | ✅ Point to a mounted volume |
+| `TRANSFORMERS_OFFLINE` | `1` | Force HuggingFace Transformers to offline mode | ✅ Set `0` when downloading new models |
+| `MLFLOW_EXPERIMENT_NAME` | `saas_knowledge_training` | MLflow experiment name for training runs | ✅ Change per experiment |
+| `WANDB_MODE` | `offline` | W&B logging mode (`online`/`offline`/`disabled`) | ✅ Set `online` when W&B reporting is needed |
+| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Auto-rebuild RAG embedding index on code changes | ✅ Set `false` to skip rebuild (faster CI) |
+
+#### 10.6.5 Infrastructure & Docker
+
+| Variable | Value | Purpose | Safe to Change? |
+|----------|-------|---------|----------------|
+| `DOCKER_BUILDKIT` | `1` | Enable BuildKit for faster Docker builds | ✅ Keep `1` |
+| `COMPOSE_DOCKER_CLI_BUILD` | `1` | Use Docker CLI BuildKit in Compose | ✅ Keep `1` |
+| `CODEX_CLI_API_URL` | `http://localhost:8765` | Base URL for Cognitive Brain CLI API | ✅ Change if port conflicts |
+| `COPILOT_CLI_BASE_URL` | `http://localhost:8765` | Alias for CB CLI URL (Copilot sessions) | ✅ Keep in sync with `CODEX_CLI_API_URL` |
+| `COPILOT_CLI_ENABLED` | `true` | Enable CLI interface for Cognitive Brain | ✅ Set `false` to disable CB CLI |
+| `WEBHOOK_RECEIVER_URL` | `https://${CODESPACE_NAME}-8765...` | Codespace webhook receiver URL | ✅ Dynamically constructed — rarely needs changing |
+| `CODEX_NETWORK_MODE` | `isolated` | Network mode for agent execution (`isolated`/`open`) | ⚠️ Keep `isolated` for security; `open` only for debugging |
+| `CODEX_ISOLATED_PATH` | `/codex/network/isolated` | Mount path for isolated network namespace | ✅ |
+| `CODEX_BRIDGE_DIR` | *(env var)* | See §10.5 environment variables | — |
+
+#### 10.6.6 External Services & Integrations
+
+| Variable | Value | Purpose | Safe to Change? |
+|----------|-------|---------|----------------|
+| `ZENDESK_RATE_LIMIT` | `100` | Zendesk API rate limit (requests/minute) | ✅ Match your Zendesk plan limit |
+| `ZENDESK_SYNC_INTERVAL` | `3600` | Zendesk sync interval in seconds | ✅ |
+| `CODEX_ZENDESK_DOCS_ROOT` | `docs/vendors/zendesk` | Path to Zendesk documentation root | ✅ |
+| `CODEX_D365_POLICIES_PATH` | `configs/deployment/d365/sla_policies.json` | Path to D365 SLA policies | ✅ |
+
+#### 10.6.7 Repository Identity & Versioning
+
+| Variable | Value | Purpose | Safe to Change? |
+|----------|-------|---------|----------------|
+| `CODEX_AGENT_NAME` | `ai_org_repo_admin` | Canonical agent name used in logs and reports | ⚠️ Change requires updating all log parsers |
+| `CODEX_API_VERSION` | `2022-11-28` | GitHub REST API version header | ✅ Update when GitHub releases breaking API changes |
+| `CODEX_ORG_NAME` | `Aries-Serpent` | GitHub organization name | ❌ Changing breaks all hardcoded org references |
+| `CODEX_PYTHON_VERSION` | `3.12` | Python version (alias of `CODEX_ENV_PYTHON_VERSION`) | ✅ Keep in sync with `CODEX_ENV_PYTHON_VERSION` |
+| `CODEX_CACHE_VERSION` | `v2` | Cache key version prefix | ✅ Increment (`v3`, `v4`...) to bust all caches |
+| `GENESIS_TIMESTAMP` | `2025-12-26T16:04:45Z` | Repository Genesis Protocol activation time | ❌ Historical — never change |
+| `CODEX_PR_LIFECYCLE_VERSION` | *(JSON blob)* | PR lifecycle version metadata | ✅ Updated by session wrapup scripts |
+
+---
+
+### 10.7 Adding New Variables and Secrets
+
+#### 10.7.1 Decision Tree — Where to Put a New Value
+
+```mermaid
+flowchart TD
+    A["New value to add"] --> B{"Is it sensitive?\n(token, key, password, credential)"}
+    B -- No --> C{"Is it needed by\nmultiple repos?"}
+    B -- Yes --> D{"Is it needed by\nmultiple repos?"}
+
+    C -- Yes --> OV["Org Variable\ngh variable set NAME VALUE --org Aries-Serpent"]
+    C -- No --> E{"Does it change per\ndeployment environment?"}
+    E -- Yes --> EV["Environment Variable\n(Aries_Serpent_codex_ environment)"]
+    E -- No --> RV["Repo Variable\ngh variable set NAME VALUE --repo Aries-Serpent/_codex_"]
+
+    D -- Yes --> OS["Org Secret\ngh secret set NAME --org Aries-Serpent"]
+    D -- No --> F{"Does it need\nenvironment approval gates?"}
+    F -- Yes --> ES["Environment Secret\n(Aries_Serpent_codex_ environment)"]
+    F -- No --> RS["Repo Secret\ngh secret set NAME --repo Aries-Serpent/_codex_"]
+
+    style A fill:#555,color:#fff
+    style OS fill:#8b1a1a,color:#fff
+    style RS fill:#1a4a8b,color:#fff
+    style ES fill:#1a6b8b,color:#fff
+    style OV fill:#2d6a2d,color:#fff
+    style RV fill:#4a8b4a,color:#fff
+    style EV fill:#5a9b5a,color:#fff
+```
+
+#### 10.7.2 Naming Conventions
+
+Follow these patterns when adding new variables or secrets to maintain consistency:
+
+| Category | Pattern | Examples |
+|----------|---------|---------|
+| Environment version pins | `CODEX_ENV_{LANG}_VERSION` | `CODEX_ENV_PYTHON_VERSION`, `CODEX_ENV_NODE_VERSION` |
+| Feature flags (boolean) | `{FEATURE}_ENABLED` or `{FEATURE}_DRY_RUN` | `COGNITIVE_BRAIN_INJECTION_ENABLED`, `AGENT_RUNNER_DRY_RUN` |
+| Resource budgets | `{SYSTEM}_BUDGET_SECONDS` or `{SYSTEM}_MAX_{UNIT}` | `AUTONOMY_BUDGET_SECONDS`, `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` |
+| Path configs | `CODEX_{COMPONENT}_PATH` or `CODEX_{COMPONENT}_DIR` | `CODEX_SESSION_LOG_DIR`, `CODEX_D365_POLICIES_PATH` |
+| Rate limits | `{SERVICE}_RATE_LIMIT` | `ZENDESK_RATE_LIMIT`, `CODEX_LLM_RATE_LIMIT_DELAY` |
+| Retention windows | `{SYSTEM}_RETENTION_DAYS` | `AUDIT_RETENTION_DAYS`, `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` |
+| Agent tokens (org secrets) | `CODEX_{PURPOSE}_KEY` or `_{SYSTEM}_PRIVATE_KEY` | `CODEX_MASTER_KEY`, `_GITHUB_APP_PRIVATE_KEY` |
+| Service API keys | `{SERVICE}_API_KEY` or `{SERVICE}_TOKEN` | `OPENAI_API_KEY`, `PYPI_TOKEN`, `HF_TOKEN` |
+
+#### 10.7.3 Adding a New Repo Variable
+
+```bash
+# 1. Add the variable
+GH_TOKEN=$CODEX_MASTER_KEY gh variable set MY_NEW_VARIABLE \
+  --repo Aries-Serpent/_codex_ \
+  --body "my_value"
+
+# 2. Verify it was created
+GH_TOKEN=$CODEX_MASTER_KEY gh api \
+  /repos/Aries-Serpent/_codex_/actions/variables/MY_NEW_VARIABLE \
+  --jq '.name + " = " + .value'
+
+# 3. Reference it in a workflow:
+# jobs:
+#   my-job:
+#     env:
+#       MY_VAR: ${{ vars.MY_NEW_VARIABLE }}
+
+# 4. Update agent_context.json if the CB CLI needs to read it:
+# Add to .codex/agent_context.json:
+#   "MY_NEW_VARIABLE": "my_value"
+# Then run:
+python scripts/ci/sync_tracked_files.py --fix
+```
+
+#### 10.7.4 Adding a New Repository Secret
+
+```bash
+# 1. Add the secret (never echo raw value — use file or stdin)
+GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_NEW_SECRET \
+  --repo Aries-Serpent/_codex_ \
+  < /path/to/secret/file
+
+# 2. Verify the secret exists (values are never readable back)
+GH_TOKEN=$CODEX_MASTER_KEY gh api \
+  /repos/Aries-Serpent/_codex_/actions/secrets/MY_NEW_SECRET \
+  --jq '"Secret: " + .name + " (updated: " + .updated_at + ")"'
+
+# 3. Reference it in a workflow:
+# jobs:
+#   my-job:
+#     steps:
+#       - name: Use secret
+#         env:
+#           MY_SECRET: ${{ secrets.MY_NEW_SECRET }}
+#         run: echo "Secret is set"  # never echo the value
+
+# 4. Add to post_rotation_verify.sh scan list if token-like
+# 5. Document in §10.3 above
+```
+
+#### 10.7.5 Promoting a Repo Secret to Org Secret
+
+Org secrets are preferred for values shared across multiple repos. To promote:
+
+```bash
+# 1. Add at org level with selected repo visibility
+GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_ORG_SECRET \
+  --org Aries-Serpent \
+  --visibility selected \
+  --repos _codex_ \
+  < /path/to/secret/file
+
+# 2. Remove the repo-level duplicate (to avoid shadowing confusion)
+GH_TOKEN=$CODEX_MASTER_KEY gh api \
+  --method DELETE \
+  /repos/Aries-Serpent/_codex_/actions/secrets/MY_ORG_SECRET
+
+# 3. Verify the org secret is accessible from this repo:
+# The value will appear as ${{ secrets.MY_ORG_SECRET }} in workflows
+# (org secrets automatically fall through to selected repos)
+```
+
+---
+
+### 10.8 Auto-Managed Variables — Never Edit Manually
+
+These variables are **written by CI workflows** and will be overwritten on the next run.
+Manual edits will be silently reverted.
+
+| Variable | Written by | Frequency | What it tracks |
+|----------|-----------|-----------|---------------|
+| `CODEX_CI_FAILURE_RATE` | `copilot-agent-checkin.yml` | Every push | Current CI failure rate `{rate}:ok` |
+| `CODEX_CI_LAST_GREEN_SHA` | `copilot-agent-checkin.yml` | Every push | Last commit with all required checks green |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `copilot-agent-checkin.yml` | Every session | Monotonically incrementing session counter |
+| `COPILOT_ACTIVE_SESSION` | `agent-auth-delegation.yml` | On approval | `PR|RUN_ID|APPROVAL_RUN_ID` of active session |
+| `COPILOT_SESSION_QUEUE` | `copilot-agent-checkin.yml` | Every push | Queue of pending session PR numbers |
+| `COPILOT_AGENT_AUTH_ENABLED` | `agent-auth-delegation.yml` | On owner approval | `true` when elevated auth is active |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `agent-auth-delegation.yml` | On owner approval | Comma-separated delegated actor logins |
+
+---
+
+### 10.9 Improving the Current Variable Set — Recommendations
+
+Based on the current variable inventory, these improvements would increase security, observability, and maintainability:
+
+#### 10.9.1 Suggested New Variables (not yet present)
+
+| Suggested Variable | Value | Rationale |
+|-------------------|-------|-----------|
+| `CODEX_MASTER_KEY_LAST_VERIFIED` | `2026-05-08T01:00:00Z:ok` | Timestamp of last successful MASTER_KEY health check. Enables the `token-expiry-monitor.yml` (T-02 gap). |
+| `CODEX_MASTER_KEY_EXPIRY_DATE` | `2026-08-06` | ISO date when current MASTER_KEY PAT expires. Enables proactive rotation reminders 14 days before expiry. |
+| `CODEX_BACKUP_KEY_EXPIRY_DATE` | `2026-08-06` | Same for BACKUP_KEY. |
+| `CODEX_AAIS_LAST_SCORE` | `100.0` | Last computed AAIS composite score. Enables score regression detection without running the full scorer. |
+| `CODEX_AAIS_LAST_SCORED_SHA` | *(SHA)* | Commit SHA when AAIS was last scored. Detects score staleness. |
+| `CODEX_WEC_TEMPLATE_VERSION` | `S293` | Version of the WEC template currently in use. Detects template drift. |
+| `CODEX_SECRETS_BASELINE_SHA` | *(sha256)* | SHA-256 of `.secrets.baseline`. Detects out-of-band baseline modifications. |
+| `COPILOT_MAX_CONCURRENT_SESSIONS` | `1` | Enforce single active Copilot session at a time. Prevent session collision. |
+
+#### 10.9.2 Variables That Should Be Reviewed / Potentially Removed
+
+| Variable | Issue | Recommendation |
+|----------|-------|----------------|
+| `CODEX_GHP_TOKEN_BASE64` | Encoded token stored as secret — doubles rotation surface | ✅ Keep only if a workflow *requires* base64 input; otherwise replace callers with direct secret reference |
+| `CODEX_GHP_TOKEN_HEX` | Same issue as BASE64 | ✅ Audit callers; remove if unused |
+| `WEBHOOK_RECEIVER_URL` | Contains `${CODESPACE_NAME}` — only valid in Codespaces | ✅ Move to environment variable scoped to Codespaces environment |
+| `CODEX_FORCE_CPU` | Duplicate of `GPU_OPT=""` | ✅ Consider replacing with a single `USE_GPU=true/false` flag |
+| `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | Very long JSON blob in variable | ✅ Move to a config file in `.codex/config/firewall_allowlist.json` |
+| `COPILOT_BOT_COMMENT_KNOWN_ISSUES` | Large JSON in variable — hard to maintain | ✅ Move to `.codex/config/bot_comment_known_issues.json` |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | Stale — last audited `2026-04-06` | ✅ Re-audit and update or automate via WEC gate |
+
+#### 10.9.3 Security Hardening Recommendations
+
+```mermaid
+graph LR
+    subgraph "Current State"
+        C1["CODEX_BACKUP_KEY stored\nat org level\n(visible to all selected repos)"]
+        C2["Runner tokens stored\nas long-lived secrets"]
+        C3["No expiry tracking\nfor any PAT"]
+    end
+    subgraph "Recommended State"
+        R1["CODEX_BACKUP_KEY → repo-level\n(least-privilege scope)"]
+        R2["Use actions/create-github-app-token\nfor short-lived tokens"]
+        R3["Add CODEX_MASTER_KEY_EXPIRY_DATE\n+ token-expiry-monitor.yml (T-02)"]
+    end
+    C1 -->|"Move"| R1
+    C2 -->|"Replace"| R2
+    C3 -->|"Add"| R3
+
+    style C1 fill:#8b3a3a,color:#fff
+    style C2 fill:#8b3a3a,color:#fff
+    style C3 fill:#8b3a3a,color:#fff
+    style R1 fill:#2d6a2d,color:#fff
+    style R2 fill:#2d6a2d,color:#fff
+    style R3 fill:#2d6a2d,color:#fff
+```
+
+---
+
+### 10.10 Variable Access Patterns in Workflows
+
+Reference guide for how to read variables and secrets in GitHub Actions YAML:
+
+```yaml
+jobs:
+  example:
+    env:
+      # ── Repo Variables (plain text, visible in logs) ─────────────────────
+      PYTHON_VER:      ${{ vars.CODEX_ENV_PYTHON_VERSION }}
+      LLM_MODEL:       ${{ vars.CODEX_LLM_MODEL }}
+      CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
+
+      # ── Repo/Org Secrets (masked in logs) ────────────────────────────────
+      # ALWAYS use the fallback chain for token operations:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+
+      # For CodeQL / security_events scope:
+      SECURITY_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+
+      # For GitHub App short-lived token (preferred for write ops):
+      # Use actions/create-github-app-token@v1 — see §5.3
+
+      # ── Environment Variables (set via env: at job/step level) ───────────
+      # Environment variables from the named environment are automatically
+      # injected when the job targets that environment:
+      # environment: Aries_Serpent_codex_
+
+    steps:
+      - name: Read a variable in a script
+        run: |
+          echo "Python: $PYTHON_VER"  # from env: block above
+          echo "Model: ${{ vars.CODEX_LLM_MODEL }}"  # inline expression
+
+      - name: Use a secret (never echo raw value)
+        env:
+          MY_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # ✅ Pass to tool that reads from env:
+          python my_script.py  # reads MY_KEY from os.environ
+          # ❌ NEVER do: echo $MY_KEY
+
+      - name: Update a variable from within a workflow
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          gh api --method PATCH \
+            /repos/${{ github.repository }}/actions/variables/MY_VAR \
+            -f name=MY_VAR \
+            -f value="new_value"
+```
+
+---
+
+### 10.11 Rotation Coverage Matrix
+
+Cross-reference: for each token rotation scenario, which variables and secrets need updating.
+
+| Rotation Event | Secrets to Update | Variables to Update | Scripts to Re-run |
+|---------------|------------------|--------------------|--------------------|
+| **Rotate CODEX_MASTER_KEY** | `CODEX_MASTER_KEY` (org) · `CODEX_GHP_TOKEN_BASE64` · `CODEX_GHP_TOKEN_HEX` · `CODEX_GHP_TOKEN_SHA256` | `CODEX_MASTER_KEY_LAST_VERIFIED` (new) | `post_rotation_verify.sh` |
+| **Rotate CODEX_BACKUP_KEY** | `CODEX_BACKUP_KEY` (org) | None required | Verify fallback: `post_rotation_verify.sh` |
+| **Rotate GitHub App key** | `_GITHUB_APP_PRIVATE_KEY` (org) | None required | Test App token mint (§3.3 Step 5) |
+| **Rotate OPENAI_API_KEY** | `OPENAI_API_KEY` (repo) | None | Verify LLM calls succeed |
+| **Rotate RAG_OPENAI_KEY** | `RAG_OPENAI_KEY` (org) | None | Re-run RAG index build to confirm |
+| **Rotate HF_TOKEN** | `HF_TOKEN` (org) | None | Trigger `test-rag.yml` |
+| **Rotate PYPI_TOKEN** | `PYPI_TOKEN` (org) | None | Dry-run `pypi-publishing-operations-agent` |
+| **Rotate NPM_TOKEN** | `NPM_TOKEN` (org) | None | Run `npm publish --dry-run` |
+| **Rotate CODEX_WEBHOOK_SECRET** | `CODEX_WEBHOOK_SECRET` (repo) | None | Update webhook receiver + GitHub webhook HMAC setting |
+| **Rotate runner tokens** | `CODEX_RUNNER_TOKEN` · `CODEX_ENVIRONMENT_RUNNER` · `CODEX_RUNNER_SHA256` · `_CODEX_BOT_RUNNER` · `_CODEX_ACTION_RUNNER` | None | Re-register runners |
+| **Rotate CODEX_ADMIN_KEY** | `CODEX_ADMIN_KEY` (org) | None | Verify admin ops succeed |
+| **Rotate CODECOV_TOKEN** | `CODECOV_TOKEN` (org) | None | Trigger coverage upload workflow |
+
+---
+
+## 11. Workflow Configuration Catalog — Variable & Secret Management
+
+> **Purpose:** Every workflow that can be manually triggered to implement the recommendations
+> from §10, perform token rotation, synchronise variables, or audit secrets.
+> Organised by function. Use the "Configure for §10.x" column to see which §10 sub-tasks
+> each workflow directly addresses.
+
+---
+
+### 11.1 Workflow Overview Map
+
+```mermaid
+graph TB
+    subgraph "🔍 Audit & Scan"
+        W1["scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR"]
+        W2["token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nPosts pass/fail to PR"]
+        W3["admin_setup_verification.yml\nVerifies all admin setup items\n§2 vars · §3 secrets · §6 perms"]
+        W4["test-variables-api.yml\nLive CRUD test for vars API\nCREATE → GET → UPDATE → DELETE"]
+    end
+
+    subgraph "🔄 Sync & Bootstrap"
+        W5["copilot-agent-vars-bootstrap.yml\nReads CODEX_*/COPILOT_* vars\nWrites agent_context.json"]
+        W6["repo-var-sync-schedule.yml\nDaily drift detection\nVars → agent_context.json"]
+        W7["vars-guide-sync.yml\nAuto-syncs variables master guide\nDaily + after intent processing"]
+        W8["sync-env-vars.yml\nSyncs env vars to specific files\nManual + push-triggered"]
+    end
+
+    subgraph "✍️ Write & Update"
+        W9["agent-var-writer.yml\nProvenance-chain var writer\nAgent queues → MASTER_KEY applies"]
+        W10["process-variable-intents.yml\nMailbox worker for var write intents\nProcesses .codex/pending_ops/*.json"]
+    end
+
+    subgraph "🔐 Secrets Management"
+        W11["secrets-baseline-enforcer.yml\nKeeps .secrets.baseline in sync\nAuto-adds pragmas, fails on real secrets"]
+        W12["auth-secret-rotation.md\n(workflow stub) Secret rotation\nBackup → rotate → verify"]
+        W13["phase10-automated-secrets-setup.md\n(workflow stub) Secrets injection\nFor Genesis Phase 2"]
+    end
+
+    subgraph "🏥 Health & Validation"
+        W14["pre-merge-validation.yml\nPre-merge sync_tracked_files gate\nBlocks merge on stale tracked files"]
+        W15["validate.yml\ndetect-secrets · ruff\npre-commit · sync-tracked"]
+        W16["codeql-alert-fetcher.yml\nFetches all open CodeQL alerts\nUses MASTER_KEY security_events scope"]
+        W17["security-scanning-suite.yml\nbandit + pip-audit\nFull security audit"]
+    end
+
+    style W1 fill:#4a90d9,color:#fff
+    style W2 fill:#4a90d9,color:#fff
+    style W9 fill:#2d6a2d,color:#fff
+    style W10 fill:#2d6a2d,color:#fff
+    style W11 fill:#8b1a1a,color:#fff
+```
+
+---
+
+### 11.2 Detailed Workflow Catalog
+
+#### 11.2.1 `scan-secrets-variables.yml` — Inventory & Audit
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `workflow_dispatch` (manual) · push to `main`/`develop` · PR |
+| **Inputs** | `include_env_vars` (boolean, default `true`) |
+| **Token needed** | `CODEX_MASTER_KEY` (variables read) |
+| **Permissions** | `contents: read`, `issues: write`, `pull-requests: write` |
+| **Output** | Full inventory of all variables and secrets posted to PR/issue |
+| **§10 addresses** | §10.2, §10.3, §10.4, §10.5, §10.6 — generates live snapshot |
+| **Implementation gap** | Requires script update to add §10.9.1 suggested variables check |
+
+**How to trigger manually:**
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run scan-secrets-variables.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field include_env_vars=true
+```
+
+---
+
+#### 11.2.2 `token-probe.yml` — Token Health Validation
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `workflow_dispatch` only |
+| **Inputs** | `pr_number` (required), `require_both_keys` (default `true`) |
+| **Token needed** | `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` |
+| **Permissions** | `contents: read`, `pull-requests: write` |
+| **Output** | Pass/fail summary comment on the target PR |
+| **§10 addresses** | §10.2 org secrets — validates MASTER_KEY + BACKUP_KEY are functional |
+| **Run after** | Every token rotation (§9.2, §10.11) |
+
+**How to trigger manually:**
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run token-probe.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field pr_number=4346 \
+  --field require_both_keys=true
+```
+
+---
+
+#### 11.2.3 `admin_setup_verification.yml` — Full Admin Setup Check
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `workflow_dispatch` · push to `admin_setup_verification.yml` · `repository_dispatch` |
+| **Inputs** | `pr_number` (optional — posts summary to PR) |
+| **Token needed** | `CODEX_MASTER_KEY` |
+| **Permissions** | `contents: read`, `pull-requests: write` |
+| **Output** | Verifies §2 repo variables, §3 secrets existence, §6 workflow permissions |
+| **§10 addresses** | §10.2–§10.6 — confirms all variables and secrets are present |
+| **Use case** | Run immediately after any rotation or new variable/secret addition |
+
+**How to trigger manually:**
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run admin_setup_verification.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field pr_number=4346
+```
+
+---
+
+#### 11.2.4 `test-variables-api.yml` — Live Variables API CRUD Test
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `workflow_dispatch` only |
+| **Inputs** | `run_org_tests` (boolean, default `false`), `dry_run` (boolean, default `false`) |
+| **Token needed** | `CODEX_MASTER_KEY` (repo scope), `CODEX_BACKUP_KEY` (fallback) |
+| **Permissions** | `contents: read` |
+| **Output** | Live CREATE → GET → UPDATE → DELETE test results |
+| **§10 addresses** | §10.7.3, §10.7.4 — verifies variable API is functional before bulk updates |
+| **Use case** | Run before `process-variable-intents.yml` to confirm token is working |
+
+**How to trigger manually:**
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run test-variables-api.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field run_org_tests=false \
+  --field dry_run=false
+```
+
+---
+
+#### 11.2.5 `copilot-agent-vars-bootstrap.yml` — Agent Context Injection
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | Push to PR branches · `workflow_dispatch` |
+| **Inputs** | None |
+| **Token needed** | `CODEX_MASTER_KEY` (variables read) |
+| **Permissions** | `contents: write` |
+| **Output** | Writes `.codex/agent_context.json` with all CODEX_*/COPILOT_* variable values |
+| **§10 addresses** | §10.8 — keeps auto-managed variable snapshot current |
+| **Use case** | Automatically runs; manually trigger to force refresh after variable changes |
+
+**How to trigger manually:**
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run copilot-agent-vars-bootstrap.yml \
+  --repo Aries-Serpent/_codex_
+```
+
+---
+
+#### 11.2.6 `repo-var-sync-schedule.yml` — Daily Variable Drift Detection
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `schedule: cron: '0 6 * * *'` (daily 06:00 UTC) · `workflow_dispatch` |
+| **Inputs** | None |
+| **Token needed** | `CODEX_MASTER_KEY` (falls back to `GITHUB_TOKEN`) |
+| **Permissions** | `contents: write` |
+| **Output** | Detects drift between live variables and `agent_context.json`; auto-commits if changed |
+| **§10 addresses** | §10.6 (all groups) — daily consistency enforcement |
+| **Configure for §10.9.1** | Add new suggested variables to tracked prefixes list |
+
+**How to trigger manually:**
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run repo-var-sync-schedule.yml \
+  --repo Aries-Serpent/_codex_
+```
+
+---
+
+#### 11.2.7 `vars-guide-sync.yml` — Auto-Sync Variables Master Guide
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `schedule: cron: '0 6 * * *'` · `workflow_dispatch` · after `process-variable-intents.yml` completes |
+| **Inputs** | `layers` (comma-separated: `org-secrets,repo-secrets,repo-vars,env-vars` or `all`), `dry_run` |
+| **Token needed** | `CODEX_MASTER_KEY` |
+| **Permissions** | `contents: write`, `pull-requests: write` |
+| **Output** | Refreshes `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` with live data |
+| **§10 addresses** | §10.2–§10.6 — keeps reference doc current; §10.9.2 — flags stale variables |
+| **Use case** | Run after bulk variable changes to regenerate the reference doc |
+
+**How to trigger manually:**
+```bash
+# Refresh all layers
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run vars-guide-sync.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field layers=all \
+  --field dry_run=false
+
+# Dry-run preview only
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run vars-guide-sync.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field layers=all \
+  --field dry_run=true
+```
+
+---
+
+#### 11.2.8 `sync-env-vars.yml` — Environment Variable Sync
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | Push (specific source file changes) · `workflow_dispatch` |
+| **Inputs** | `environment` (`production`/`staging`/`development`), `dry_run` (default `true`) |
+| **Token needed** | `CODEX_MASTER_KEY` |
+| **Permissions** | `contents: write` |
+| **Output** | Syncs environment-scoped variables for the target environment |
+| **§10 addresses** | §10.5 — updates `Aries_Serpent_codex_` environment variables |
+| **Use case** | After updating language version pins (§10.5 table) |
+
+**How to trigger manually:**
+```bash
+# Sync to production (live)
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run sync-env-vars.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field environment=production \
+  --field dry_run=false
+
+# Preview only
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run sync-env-vars.yml \
+  --repo Aries-Serpent/_codex_ \
+  --field environment=production \
+  --field dry_run=true
+```
+
+---
+
+#### 11.2.9 `agent-var-writer.yml` — Provenance-Chain Autonomous Variable Writer
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | PR comment: `@agent-var-writer apply` |
+| **Inputs** | None (reads `.codex/pending_var_updates.json`) |
+| **Token needed** | `CODEX_MASTER_KEY` or `CODEX_ADMIN_KEY` (variables write) |
+| **Permissions** | `contents: write`, `pull-requests: write` |
+| **Output** | Applies pending variable updates; writes audit log to `.codex/evidence/var_write_audit.jsonl` |
+| **§10 addresses** | §10.7.3 — autonomous variable creation within allowed list |
+| **Security** | Session token expiry enforced; allowlist of variable names checked before write |
+
+**How to use (agent workflow):**
+```bash
+# 1. Write intent file
+cat > .codex/pending_var_updates.json << 'EOF'
+[
+  {"name": "CODEX_MASTER_KEY_EXPIRY_DATE", "value": "2026-08-06"},
+  {"name": "CODEX_AAIS_LAST_SCORE", "value": "100.0"}
+]
+EOF
+
+# 2. Commit and push
+git add .codex/pending_var_updates.json
+git commit -m "chore: queue variable updates for agent-var-writer"
+
+# 3. Post trigger comment on the PR:
+# @agent-var-writer apply
+```
+
+---
+
+#### 11.2.10 `process-variable-intents.yml` — Mailbox Variable Intent Worker
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | Push (when `.codex/pending_ops/variable_set_*.json` files are present) |
+| **Inputs** | None (processes all pending intent files) |
+| **Token needed** | `CODEX_MASTER_KEY` |
+| **Permissions** | `contents: write` |
+| **Output** | Applies queued variable sets/deletes; self-cleans processed intent files |
+| **§10 addresses** | §10.7.3, §10.7.4 — implements the recommended variable additions from §10.9.1 |
+| **Use case** | Preferred mechanism for Copilot agent to queue bulk variable changes |
+
+**Intent file format (`.codex/pending_ops/variable_set_001.json`):**
+```json
+{
+  "operation": "set",
+  "name": "CODEX_MASTER_KEY_EXPIRY_DATE",
+  "value": "2026-08-06",
+  "reason": "Track MASTER_KEY expiry for proactive rotation reminders",
+  "requested_by": "copilot-swe-agent[bot]",
+  "session": "S859"
+}
+```
+
+---
+
+#### 11.2.11 `secrets-baseline-enforcer.yml` — Continuous Secrets Scanning
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | Push to `automated/**`, `copilot/**`, `0D_base_`, `main` · PR · `workflow_dispatch` |
+| **Inputs** | None |
+| **Token needed** | `github.token` |
+| **Permissions** | `contents: write`, `pull-requests: write`, `issues: write` |
+| **Output** | Keeps `.secrets.baseline` in sync; auto-adds `# pragma: allowlist secret`; fails on genuine new secrets |
+| **§10 addresses** | §10.3 `CODEX_WEBHOOK_SECRET`, §10.9.3 security hardening — continuous baseline enforcement |
+
+---
+
+#### 11.2.12 `validate.yml` — Full Validation Pipeline
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `workflow_dispatch` · push paths |
+| **Inputs** | None |
+| **Token needed** | `CODEX_MASTER_KEY` |
+| **Permissions** | `contents: read`, `pull-requests: write` |
+| **Output** | detect-secrets · ruff · pre-commit · sync_tracked_files |
+| **§10 addresses** | §10.9.3 — confirms `.secrets.baseline` is clean after changes |
+
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run validate.yml \
+  --repo Aries-Serpent/_codex_
+```
+
+---
+
+#### 11.2.13 `codeql-alert-fetcher.yml` — CodeQL Security Scan (MASTER_KEY Required)
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | WEC checkbox · `workflow_dispatch` |
+| **Inputs** | None |
+| **Token needed** | `CODEX_MASTER_KEY` (security_events scope — T-03 gap) |
+| **Permissions** | `security-events: read`, `contents: read` |
+| **Output** | 4 artefacts in `.codex/artifacts/codeql_alerts/` |
+| **§10 addresses** | §10.2 MASTER_KEY scope — demonstrates need for `security_events` scope (T-03) |
+
+---
+
+#### 11.2.14 `security-scanning-suite.yml` — Full Security Audit
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | `workflow_dispatch` · schedule |
+| **Inputs** | None |
+| **Token needed** | `CODEX_MASTER_KEY` |
+| **Permissions** | `security-events: write`, `contents: read` |
+| **Output** | bandit SAST results, pip-audit dependency scan, SARIF upload |
+| **§10 addresses** | §10.3 `OPENAI_API_KEY`, `CODEX_WEBHOOK_SECRET` — detects hardcoded secrets |
+
+```bash
+GH_TOKEN=$CODEX_MASTER_KEY gh workflow run security-scanning-suite.yml \
+  --repo Aries-Serpent/_codex_
+```
+
+---
+
+#### 11.2.15 Stub Workflows (Require Completion — See §11.3)
+
+These workflow stubs exist as `.md` documentation files but need their `.yml` counterparts updated:
+
+| Stub File | Intended Function | §10 Coverage | Priority |
+|-----------|------------------|--------------|----------|
+| `auth-secret-rotation.md` | Automated secret rotation (backup → rotate → verify) | §10.2, §10.3, §10.11 | P1 |
+| `auth-token-rotation.md` | Automated JWT/PAT token rotation | §10.2, §10.11 | P1 |
+| `phase10-automated-secrets-setup.md` | Genesis Phase 2 secrets injection | §10.2–§10.4 | P2 |
+| `scan-secrets-variables.md` | Enhanced variable scan with §10.9.1 new variables | §10.6, §10.9.1 | P2 |
+| `sync-env-vars.md` | Environment variable sync documentation | §10.5 | P3 |
+
+---
+
+### 11.3 Recommended Workflow Execution Order for a Full Refresh
+
+```mermaid
+sequenceDiagram
+    participant Admin as 👤 Admin (mbaetiong)
+    participant GH as 🐙 GitHub Actions
+    participant Copilot as 🤖 Copilot Agent
+
+    Note over Admin,Copilot: Phase A — Validate current state
+    Admin->>GH: 1. Run token-probe.yml (pr=4346)
+    GH-->>Admin: MASTER_KEY ✅ BACKUP_KEY ✅
+    Admin->>GH: 2. Run scan-secrets-variables.yml
+    GH-->>Admin: Full inventory snapshot
+    Admin->>GH: 3. Run test-variables-api.yml (dry_run=false)
+    GH-->>Admin: CRUD ✅ — API ready
+
+    Note over Admin,Copilot: Phase B — Rotate tokens
+    Admin->>GH: 4. Rotate CODEX_MASTER_KEY (GitHub UI → Settings → Secrets)
+    Admin->>GH: 5. Rotate CODEX_BACKUP_KEY
+    Admin->>GH: 6. Re-run token-probe.yml (verify new tokens work)
+    GH-->>Admin: New tokens ✅
+    Admin->>GH: 7. Run post_rotation_verify.sh (or scripts/ci/post_rotation_verify.sh)
+
+    Note over Admin,Copilot: Phase C — Implement §10.9.1 new variables
+    Admin->>Copilot: 8. @copilot implement variable governance plan
+    Copilot->>GH: 9. Write intent files → process-variable-intents.yml
+    GH-->>Copilot: Variables created ✅
+    Copilot->>GH: 10. Run vars-guide-sync.yml (layers=all)
+    GH-->>Copilot: Reference doc updated ✅
+
+    Note over Admin,Copilot: Phase D — Verify final state
+    Admin->>GH: 11. Run admin_setup_verification.yml
+    GH-->>Admin: All §2/§3/§6 checks ✅
+    Admin->>GH: 12. Run repo-var-sync-schedule.yml
+    GH-->>Admin: agent_context.json synced ✅
+    Admin->>GH: 13. Run validate.yml
+    GH-->>Admin: secrets baseline ✅ ruff ✅ sync_tracked ✅
+```
+
+---
+
 > **Maintainer:** @mbaetiong
 > **Next review:** 2026-06-08 (monthly cadence)
-> **Last updated:** 2026-05-08 — Section 9 (Token Refresh Alignment Guide) added
+> **Last updated:** 2026-05-08 — Sections 10 and 11 added (Variable & Secret Governance + Workflow Catalog)
+> **Auto-update:** This document is updated by `copilot-swe-agent[bot]` at session start when token state changes.
+
+---
+
+## 12. Rate-Limit Awareness — Workflow Improvement Guide
+
+> **Purpose:** Every GitHub API call made by a workflow consumes quota from a shared
+> per-token hourly pool. When that pool is exhausted, every further call returns HTTP 429
+> or 403 until the reset epoch. This section catalogues which workflows need improvement,
+> what patterns to apply, and how the existing rate-limit infrastructure can be reused.
+
+---
+
+### 12.1 Token Pools & Limits Reference
+
+```mermaid
+graph TB
+    subgraph "Rate Limit Pools — Separate Counters"
+        P1["🔑 CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows"]
+        P2["🔑 CODEX_BACKUP_KEY\npool: core REST\n5,000 req/hr\nFallback only"]
+        P3["🤖 Copilot sandbox token\npool: core REST (shared)\n5,000 req/hr shared\nUsed by: MCP tools"]
+        P4["⚙️ GITHUB_TOKEN\npool: core REST\n1,000 req/hr (Actions)\nUsed by: workflow steps"]
+        P5["🔍 code_scanning pool\nSeparate endpoint pool\nUsed by: /code-scanning/alerts\ncodeql-alert-fetcher.yml"]
+        P6["📊 GraphQL pool\n5,000 pts/hr\nUsed by: github-script steps\ncopilot-agent-session-done.yml"]
+    end
+
+    P1 -->|"exhausted → fallback"| P2
+    P2 -->|"exhausted → fallback"| P4
+    P3 -.->|"independent — never fallback"| P3
+    P5 -.->|"independent pool"| P5
+
+    style P1 fill:#2d6a2d,color:#fff
+    style P2 fill:#4a8b4a,color:#fff
+    style P3 fill:#8b5a1a,color:#fff
+    style P4 fill:#1a4a8b,color:#fff
+    style P5 fill:#8b1a1a,color:#fff
+    style P6 fill:#4a1a8b,color:#fff
+```
+
+**Key facts:**
+- A failed API call (403/429) **still consumes 1 request** from your quota.
+- Never retry before `x-ratelimit-reset` epoch — doing so multiplies consumption.
+- The MCP `list_code_scanning_alerts` tool uses the Copilot sandbox token — a
+  **different pool** from `CODEX_MASTER_KEY`. Both can exhaust independently.
+- Paginated calls (`--paginate`, `per_page=100`) can consume **10–50× more requests**
+  than single-page calls. Each page = 1 request.
+
+---
+
+### 12.2 Existing Rate-Limit Infrastructure
+
+The repository already has a full rate-limit toolkit. **All new improvements should
+reuse these — do not reinvent:**
+
+| Tool / Script | Location | What it does |
+|--------------|----------|-------------|
+| `github_api_trickle.py` | `scripts/ci/github_api_trickle.py` | 5-method trickle-down fetcher: REST → GraphQL → `gh` CLI → artifact → local CodeQL DB. Token rotation, per-page sleep, exponential backoff, `Retry-After` respect. |
+| `github_api_trickle.py --status` | Same | Pre-call check: exit 0=ready, exit 1=ALL tokens exhausted. Writes `.codex/rate_limit_state.json`. |
+| `.codex/rate_limit_state.json` | Auto-written by trickle | Cached rate limit state. Re-use if age < 60 s. Contains `ok`, `earliest_reset_epoch`, `earliest_reset_human`. |
+| `RATE_LIMIT_AWARENESS.md` | `.codex/docs/RATE_LIMIT_AWARENESS.md` | Protocol reference — read before writing any API-calling workflow. |
+| `ratelimit_history_prune.yml` | `.github/workflows/ratelimit_history_prune.yml` | Monthly pruning of rate-limit history logs (90-day retention). |
+| `GH_TRICKLE_POLITE_SLEEP` | Env var | Seconds between trickle calls (default `0.5`). Set per workflow. |
+| `GH_TRICKLE_MIN_REMAINING` | Env var | Switch token when remaining drops below this (default `10`). |
+| `GH_TRICKLE_MAX_WAIT` | Env var | Max seconds to wait for rate-limit recovery (default `120`). |
+| `GH_TRICKLE_RETRIES` | Env var | Max retries per method per token (default `3`). |
+
+---
+
+### 12.3 Workflow Audit — Rate-Limit Gap Register
+
+The following workflows were audited for rate-limit handling completeness.
+Workflows are ranked by **gap score** = (API calls) − (guards present).
+
+#### Priority 1 — High Gap, High Frequency (Fix First)
+
+| Workflow | API Calls | Guards | Gap | Trigger Frequency | Key Risk |
+|----------|----------:|-------:|----:|-------------------|---------|
+| `workflow-execution-gate.yml` | 5 | 0 | **5** | Every push (all PRs) | Paginated PR comment fetch — can hit 429 mid-run, silently truncating WEC parse |
+| `auto-approve-workflows.yml` | 6 | 1 | **5** | Every push + cron `*/5 * * * *` | `--paginate` on open PRs × 5/min schedule = burst risk; only 1 `continue-on-error` guard |
+| `promote-integration-branch.yml` | 5 | 0 | **5** | On merge to `main` | Sequential `gh api PATCH` ref updates with no retry — a 429 mid-sequence leaves branch in partial state |
+| `copilot-agent-session-done.yml` | 3 REST + GraphQL | 0 | **5** | `workflow_run` completion | Multiple paginated GraphQL queries (`per_page:100` × 5 page loops) with zero rate-limit handling |
+
+#### Priority 2 — Medium Gap, Scheduled or Self-Healing
+
+| Workflow | API Calls | Guards | Gap | Trigger Frequency | Key Risk |
+|----------|----------:|-------:|----:|-------------------|---------|
+| `copilot-iterative-self-healing.yml` | 5 | 1 | **4** | `workflow_run` + schedule | Paginated comment scan (100/page × multiple pages) — partial `continue-on-error` but no pre-call check |
+| `codeql.yml` | 4 | 0 | **4** | Schedule (weekly) + push | No guards; competes with `codeql-analysis.yml` for `code_scanning` pool in same window |
+| `codebase-health-sweep.yml` | 3 | 0 | **3** | Schedule (daily) | Paginated `gh api` PR queries with no backoff |
+
+#### Priority 3 — Lower Gap, Event-Driven
+
+| Workflow | API Calls | Guards | Gap | Trigger Frequency | Key Risk |
+|----------|----------:|-------:|----:|-------------------|---------|
+| `iterative-self-healing-ci.yml` | 4 | 3 | **1** | `workflow_run` | Good guards but missing pre-call `github_api_trickle.py --status` check |
+| `codeql-analysis.yml` | 5 | 0 | **5** | Schedule + push | Scheduled alongside `codeql.yml` — double `code_scanning` pool consumption |
+
+#### Currently Well-Handled (Reference Implementations)
+
+| Workflow | API Calls | Guards | Notes |
+|----------|----------:|-------:|-------|
+| `agent-auth-delegation.yml` | 1 | 16 | Best-in-class: full `Retry-After` handling, token chain, `continue-on-error` on every API step |
+| `codeql-alert-fetcher.yml` | — | 4 | Uses `github_api_trickle.py` natively; configurable `page_sleep_ms`; exits 0 on exhaustion |
+| `artifact-monitoring.yml` | 1 | 2 | Explicit `gh api rate_limit` check step + summary |
+| `iterative-self-healing-ci.yml` | 4 | 3 | Best self-healing example; use as template for P1/P2 improvements |
+
+---
+
+### 12.4 Improvement Patterns — Reusable Recipes
+
+Apply these patterns to all P1/P2 gap workflows. Each is self-contained and can be
+copy-pasted as a workflow step.
+
+#### Pattern A — Pre-Call Rate-Limit Check (Single Step)
+
+Add before any step that makes ≥ 2 API calls:
+
+```yaml
+- name: 🔋 Rate-limit pre-check
+  env:
+    CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+    CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+  run: |
+    python scripts/ci/github_api_trickle.py --status || {
+      echo "::warning::All GitHub API tokens exhausted — skipping API steps"
+      echo "RATE_LIMITED=true" >> "$GITHUB_ENV"
+    }
+
+# Then on each API step:
+- name: My API step
+  if: env.RATE_LIMITED != 'true'
+  run: gh api ...
+```
+
+#### Pattern B — Polite Sleep Between Batched Calls
+
+For workflows making 3+ sequential `gh api` calls in a single `run:` block:
+
+```yaml
+- name: Batch API operations (rate-limit aware)
+  env:
+    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    GH_TRICKLE_POLITE_SLEEP: "0.5"   # seconds between calls
+  run: |
+    # After each gh api call, check remaining quota
+    _rl_check() {
+      local remaining
+      remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "999")
+      if [ "$remaining" -lt 50 ]; then
+        local reset
+        reset=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null || echo "0")
+        local now
+        now=$(date +%s)
+        local wait=$(( reset - now + 5 ))
+        if [ "$wait" -gt 0 ] && [ "$wait" -lt 3600 ]; then
+          echo "::warning::Rate limit low ($remaining remaining) — sleeping ${wait}s until reset"
+          sleep "$wait"
+        fi
+      fi
+      sleep "${GH_TRICKLE_POLITE_SLEEP:-0.5}"
+    }
+
+    gh api "repos/${REPO}/..." ; _rl_check
+    gh api "repos/${REPO}/..." ; _rl_check
+    gh api "repos/${REPO}/..." ; _rl_check
+```
+
+#### Pattern C — Retry with Exponential Backoff (for PATCH/POST)
+
+For `gh api --method POST/PATCH` calls where partial failure leaves state inconsistent:
+
+```yaml
+- name: API write with retry
+  env:
+    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+  run: |
+    _api_with_retry() {
+      local attempt=0
+      local max_attempts=3
+      while [ $attempt -lt $max_attempts ]; do
+        if "$@"; then
+          return 0
+        fi
+        attempt=$(( attempt + 1 ))
+        local backoff=$(( 2 ** attempt * 5 ))   # 10s, 20s, 40s
+        echo "::warning::API call failed (attempt $attempt/$max_attempts) — retrying in ${backoff}s"
+        sleep "$backoff"
+      done
+      echo "::error::API call failed after $max_attempts attempts"
+      return 1
+    }
+
+    _api_with_retry gh api --method PATCH \
+      "repos/${REPO}/git/refs/heads/${BRANCH}" \
+      -f sha="${NEW_SHA}"
+```
+
+#### Pattern D — Paginated Fetch with Rate-Limit Guard
+
+For `--paginate` or manual page loops:
+
+```yaml
+- name: Paginated fetch (rate-limit safe)
+  env:
+    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+  run: |
+    page=1
+    all_items="[]"
+    while true; do
+      # Check remaining before each page
+      remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "999")
+      if [ "$remaining" -lt 20 ]; then
+        echo "::warning::Rate limit low ($remaining) — stopping pagination at page $page"
+        break
+      fi
+
+      batch=$(gh api "repos/${REPO}/pulls?per_page=100&page=${page}" 2>/dev/null || break)
+      count=$(echo "$batch" | jq 'length')
+      [ "$count" -eq 0 ] && break
+      all_items=$(echo "$all_items $batch" | jq -s '.[0] + .[1]')
+      page=$(( page + 1 ))
+      sleep 0.5   # polite sleep between pages
+    done
+    echo "$all_items" | jq '.'
+```
+
+#### Pattern E — Respect `Retry-After` Header (for 429 responses)
+
+```yaml
+- name: API call with Retry-After respect
+  env:
+    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+  run: |
+    _call_with_retry_after() {
+      local http_code
+      local response
+      response=$(curl -sS -w "\n%{http_code}" \
+        -H "Authorization: Bearer ${GH_TOKEN}" \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "$1")
+      http_code=$(echo "$response" | tail -1)
+      body=$(echo "$response" | sed '$d')
+      if [ "$http_code" = "429" ] || [ "$http_code" = "403" ]; then
+        retry_after=$(echo "$body" | jq -r '.message // empty' | grep -oP '\d+(?= seconds)' || echo "60")
+        echo "::warning::Rate limited (HTTP $http_code) — waiting ${retry_after}s"
+        sleep "$retry_after"
+        return 1
+      fi
+      echo "$body"
+    }
+```
+
+---
+
+### 12.5 Per-Workflow Improvement Specifications
+
+#### 12.5.1 `workflow-execution-gate.yml` — Priority 1
+
+**Current gap:** 5 API calls, 0 rate-limit guards. Runs on every push across all PRs.
+Paginated PR comment fetch at lines ~465 and ~641 can silently hit 429 mid-page, causing
+the WEC parser to receive truncated data and skip WEC-checked workflows.
+
+**Required improvements:**
+1. Add **Pattern A** pre-call check before the `detect-wec-changes` job's API steps
+2. Add `continue-on-error: true` on the comment-fetch loop steps (already fragile)
+3. Replace inline `gh api --paginate` with call to `github_api_trickle.py` for comment fetching
+4. Add `GH_TRICKLE_POLITE_SLEEP: "0.3"` env at job level
+
+```yaml
+# Add to dispatch-checked job, before first API call:
+env:
+  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+  GH_TRICKLE_POLITE_SLEEP: "0.3"
+  GH_TRICKLE_MIN_REMAINING: "50"   # higher threshold — this workflow runs on every push
+```
+
+---
+
+#### 12.5.2 `auto-approve-workflows.yml` — Priority 1
+
+**Current gap:** 6 API calls, 1 guard. Runs every 5 minutes via cron. The `--paginate`
+on open PRs (line 186) + 5 API calls per PR × potentially many PRs = burst risk.
+
+**Required improvements:**
+1. Add **Pattern D** (paginated fetch guard) to the `--paginate` loop
+2. Add pre-call rate check: skip job entirely if `remaining < 100`
+3. Add `GH_TRICKLE_POLITE_SLEEP: "1.0"` (1 s between calls) — scheduled workflow,
+   not time-critical
+4. Add a circuit-breaker variable: if rate-limited, write `COPILOT_AUTO_APPROVE_PAUSED=true`
+   to env and skip the job, re-enabling on next run
+
+```yaml
+# Add to job-level env:
+env:
+  GH_TRICKLE_POLITE_SLEEP: "1.0"
+  GH_TRICKLE_MIN_REMAINING: "100"   # generous — runs every 5 min
+```
+
+---
+
+#### 12.5.3 `promote-integration-branch.yml` — Priority 1
+
+**Current gap:** 5 sequential `gh api PATCH` ref update calls with no retry. A 429 on
+call #3 leaves refs in a split state (some updated, some not) with no recovery path.
+
+**Required improvements:**
+1. Wrap each `gh api PATCH` in **Pattern C** (retry with exponential backoff)
+2. Add pre-call check before the ref update sequence
+3. Add a rollback step: if any PATCH fails after retries, revert previously-updated refs
+
+---
+
+#### 12.5.4 `copilot-agent-session-done.yml` — Priority 1
+
+**Current gap:** Multiple paginated GraphQL queries (`per_page:50–100`, looping up to
+5 pages per query) across 4 separate `github-script` steps. Zero rate-limit handling.
+
+**Required improvements:**
+1. Add rate-limit pre-check at job level using `github_api_trickle.py --status`
+2. For each `github-script` step with pagination: add `await github.rest.rateLimit.get()`
+   check before the page loop
+3. Add `octokit` retry plugin (already available via `github-script`):
+   ```javascript
+   // In github-script:
+   const { throttling } = require('@octokit/plugin-throttling');
+   // OR use built-in retry via context.octokit.rest with retry plugin
+   ```
+4. Set `GH_TRICKLE_POLITE_SLEEP: "0.5"` between GraphQL calls
+
+**GraphQL rate check pattern for `github-script`:**
+```javascript
+// Add before page loops in github-script steps:
+const rateLimit = await github.rest.rateLimit.get();
+const remaining = rateLimit.data.resources.graphql.remaining;
+if (remaining < 100) {
+  const resetAt = new Date(rateLimit.data.resources.graphql.reset * 1000);
+  core.warning(`GraphQL rate limit low: ${remaining} remaining, resets at ${resetAt.toISOString()}`);
+  // Skip pagination if critically low:
+  if (remaining < 20) {
+    core.warning('Skipping pagination — rate limit critically low');
+    break;
+  }
+}
+```
+
+---
+
+#### 12.5.5 `copilot-iterative-self-healing.yml` — Priority 2
+
+**Current gap:** 5 API calls, 1 `continue-on-error` guard. Paginated comment scan
+(100/page × multiple pages) can exhaust quota during high-activity periods.
+
+**Required improvements:**
+1. Add **Pattern A** pre-call check at job start
+2. Replace manual `page=1` while loop with `github_api_trickle.py` call:
+   ```bash
+   python scripts/ci/github_api_trickle.py \
+     --rest "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
+     > /tmp/comments.json
+   ```
+3. Add polite sleep between page iterations
+4. Add circuit breaker: if pre-call check fails, skip the healing loop and post a
+   "⏳ Rate limited — healing deferred until quota resets" summary comment
+
+---
+
+#### 12.5.6 `codebase-health-sweep.yml` — Priority 2
+
+**Current gap:** 3 paginated `gh api` calls, 0 guards. Runs on a schedule that may
+overlap with other scheduled workflows.
+
+**Required improvements:**
+1. Add **Pattern A** pre-call check
+2. Add `continue-on-error: true` on all API steps (health sweep is advisory)
+3. Stagger the cron schedule away from `codeql.yml` and `auto-approve-workflows.yml`
+   to avoid competing for the same token pool in the same minute
+
+---
+
+#### 12.5.7 `codeql.yml` + `codeql-analysis.yml` — Priority 2 (Deduplication)
+
+**Current gap:** Both workflows run on similar schedules and both consume the
+`code_scanning` pool. Zero guards in either.
+
+**Required improvements:**
+1. Add `continue-on-error: true` on all API steps in both workflows
+2. Stagger schedules: `codeql.yml` on Monday, `codeql-analysis.yml` on Thursday
+3. Add a pre-check step that reads `CODEX_CI_FAILURE_RATE` — skip if `> 5.0` (don't
+   run CodeQL when CI is already unhealthy)
+4. Consider consolidating into one workflow that decides which scanner to use
+
+---
+
+### 12.6 Rate-Limit Monitoring — New Variable Recommendations
+
+Add these variables to complement the §10.9.1 suggestions:
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `CODEX_RL_POLITE_SLEEP_DEFAULT` | `0.5` | Default polite sleep (seconds) injected via `GH_TRICKLE_POLITE_SLEEP` |
+| `CODEX_RL_MIN_REMAINING_DEFAULT` | `50` | Default minimum remaining before token switch |
+| `CODEX_RL_MAX_WAIT_DEFAULT` | `120` | Default max recovery wait (seconds) |
+| `CODEX_RL_CIRCUIT_BREAKER_ENABLED` | `true` | Master switch for circuit-breaker pattern |
+| `CODEX_RL_LAST_EXHAUSTION_TIME` | *(auto-set)* | ISO timestamp of last rate-limit exhaustion; auto-set by `github_api_trickle.py` |
+| `CODEX_RL_EXHAUSTION_COUNT_7D` | `0` | Count of exhaustion events in last 7 days; tracked by trickle script |
+
+---
+
+### 12.7 Implementation Order Diagram
+
+```mermaid
+gantt
+    title Rate-Limit Awareness Improvements — Recommended Timeline
+    dateFormat YYYY-MM-DD
+    axisFormat %b %d
+
+    section Priority 1 — High Impact
+    workflow-execution-gate.yml Pattern A + D   :p1a, 2026-05-09, 1d
+    auto-approve-workflows.yml Pattern D + CB   :p1b, 2026-05-09, 1d
+    promote-integration-branch.yml Pattern C    :p1c, 2026-05-10, 1d
+    copilot-agent-session-done.yml GraphQL guard :p1d, 2026-05-10, 2d
+
+    section Priority 2 — Scheduled Workflows
+    copilot-iterative-self-healing.yml Pattern A :p2a, 2026-05-12, 1d
+    codebase-health-sweep.yml Pattern A          :p2b, 2026-05-12, 1d
+    codeql.yml / codeql-analysis.yml dedup       :p2c, 2026-05-13, 1d
+
+    section Priority 3 — Monitoring
+    Add CODEX_RL_* variables                     :p3a, 2026-05-14, 1d
+    ratelimit_history_prune.yml enhancements     :p3b, 2026-05-14, 1d
+    Rate-limit dashboard in artifact-monitoring  :p3c, 2026-05-15, 1d
+```
+
+---
+
+> **Maintainer:** @mbaetiong
+> **Next review:** 2026-06-08 (monthly cadence)
+> **Last updated:** 2026-05-08 — Section 12 (Rate-Limit Awareness Workflow Improvements) added
 > **Auto-update:** This document is updated by `copilot-swe-agent[bot]` at session start when token state changes.

@@ -199,3 +199,485 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
 | `.github/workflows/workflow-execution-gate.yml` | dispatch-checked job: timeout 10→15 min, annotated |
 | `.github/workflows/documentation-link-checker.yml` | 4-fix optimization |
 | `.github/workflows/trigger-on-approval.yml` | env-var routing for untrusted `head.ref` |
+
+---
+
+## 🔐 Variable & Secret Governance — Copilot Cloud Agent Implementation Plan
+
+> **Trigger:** Token refresh and variable governance initiative (§10 + §11 of ELEVATED_PRIVILEGES_TOKEN_REVIEW.md)
+> **Owner:** @mbaetiong
+> **Agent:** `copilot-swe-agent[bot]` / Copilot cloud agent
+> **Reference:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §10.9, §10.11, §11
+
+### 📋 Implementation Checklist
+
+#### Phase A — Pre-Flight Validation (Admin runs manually before agent engagement)
+
+- [ ] **A-1** Run `token-probe.yml` on PR #4346 — confirm MASTER_KEY + BACKUP_KEY are functional
+  ```bash
+  GH_TOKEN=$CODEX_MASTER_KEY gh workflow run token-probe.yml \
+    --repo Aries-Serpent/_codex_ \
+    --field pr_number=4346 \
+    --field require_both_keys=true
+  ```
+- [ ] **A-2** Run `scan-secrets-variables.yml` — capture current inventory baseline
+  ```bash
+  GH_TOKEN=$CODEX_MASTER_KEY gh workflow run scan-secrets-variables.yml \
+    --repo Aries-Serpent/_codex_ --field include_env_vars=true
+  ```
+- [ ] **A-3** Run `test-variables-api.yml` — verify CRUD access works end-to-end
+  ```bash
+  GH_TOKEN=$CODEX_MASTER_KEY gh workflow run test-variables-api.yml \
+    --repo Aries-Serpent/_codex_ --field dry_run=false
+  ```
+
+---
+
+#### Phase B — Token Rotation (Admin action — GitHub UI required)
+
+- [ ] **B-1** Rotate `CODEX_MASTER_KEY` at [Settings → Secrets → CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
+  - Required scopes: `repo`, `workflow`, `security_events` (add `security_events` — closes T-03 gap)
+  - Set expiry: **90 days** from rotation date
+- [ ] **B-2** Rotate `CODEX_BACKUP_KEY` — same scopes, same expiry window
+- [ ] **B-3** Update `CODEX_GHP_TOKEN_BASE64` / `CODEX_GHP_TOKEN_HEX` / `CODEX_GHP_TOKEN_SHA256`
+  ```bash
+  # Run after setting NEW_TOKEN from rotation
+  echo -n "$NEW_TOKEN" | base64 | gh secret set CODEX_GHP_TOKEN_BASE64 \
+    --repo Aries-Serpent/_codex_
+  echo -n "$NEW_TOKEN" | xxd -p | tr -d '\n' | gh secret set CODEX_GHP_TOKEN_HEX \
+    --repo Aries-Serpent/_codex_
+  printf '%s' "$NEW_TOKEN" | sha256sum | awk '{print $1}' | \
+    gh secret set CODEX_GHP_TOKEN_SHA256 --repo Aries-Serpent/_codex_
+  ```
+- [ ] **B-4** Run `token-probe.yml` again — confirm new tokens are operational
+- [ ] **B-5** Run `scripts/ci/post_rotation_verify.sh` — 7-step post-rotation check
+
+---
+
+#### Phase C — Add §10.9.1 Suggested New Variables (Copilot agent implements)
+
+Each sub-task below is an **agent-executable unit**. The agent writes intent files,
+`process-variable-intents.yml` applies them automatically on the next push.
+
+- [ ] **C-1** Create `CODEX_MASTER_KEY_LAST_VERIFIED` — token health timestamp
+  ```bash
+  # Agent writes intent file:
+  cat > .codex/pending_ops/variable_set_c1.json << 'EOF'
+  {
+    "operation": "set",
+    "name": "CODEX_MASTER_KEY_LAST_VERIFIED",
+    "value": "2026-05-08T01:00:00Z:ok",
+    "reason": "Track last successful MASTER_KEY health check for T-02 token-expiry-monitor",
+    "requested_by": "copilot-swe-agent[bot]",
+    "session": "S859"
+  }
+  EOF
+  ```
+
+- [ ] **C-2** Create `CODEX_MASTER_KEY_EXPIRY_DATE` — proactive rotation reminder
+  ```bash
+  cat > .codex/pending_ops/variable_set_c2.json << 'EOF'
+  {
+    "operation": "set",
+    "name": "CODEX_MASTER_KEY_EXPIRY_DATE",
+    "value": "2026-08-06",
+    "reason": "ISO expiry date — enables 14-day pre-expiry rotation reminder via T-02",
+    "requested_by": "copilot-swe-agent[bot]",
+    "session": "S859"
+  }
+  EOF
+  ```
+
+- [ ] **C-3** Create `CODEX_BACKUP_KEY_EXPIRY_DATE`
+  ```bash
+  cat > .codex/pending_ops/variable_set_c3.json << 'EOF'
+  {
+    "operation": "set",
+    "name": "CODEX_BACKUP_KEY_EXPIRY_DATE",
+    "value": "2026-08-06",
+    "reason": "Backup key expiry tracking — paired with CODEX_MASTER_KEY_EXPIRY_DATE",
+    "requested_by": "copilot-swe-agent[bot]",
+    "session": "S859"
+  }
+  EOF
+  ```
+
+- [ ] **C-4** Create `CODEX_AAIS_LAST_SCORE` and `CODEX_AAIS_LAST_SCORED_SHA`
+  ```bash
+  cat > .codex/pending_ops/variable_set_c4a.json << 'EOF'
+  {"operation":"set","name":"CODEX_AAIS_LAST_SCORE","value":"100.0",
+   "reason":"Cache last AAIS composite score for regression detection without full scorer run",
+   "requested_by":"copilot-swe-agent[bot]","session":"S859"}
+  EOF
+  # Agent fills SHA from current HEAD:
+  # "value": "$(git rev-parse HEAD)"
+  cat > .codex/pending_ops/variable_set_c4b.json << 'EOF'
+  {"operation":"set","name":"CODEX_AAIS_LAST_SCORED_SHA","value":"FILL_FROM_HEAD",
+   "reason":"Track which commit AAIS score was computed on",
+   "requested_by":"copilot-swe-agent[bot]","session":"S859"}
+  EOF
+  ```
+
+- [ ] **C-5** Create `CODEX_WEC_TEMPLATE_VERSION`
+  ```bash
+  cat > .codex/pending_ops/variable_set_c5.json << 'EOF'
+  {"operation":"set","name":"CODEX_WEC_TEMPLATE_VERSION","value":"S293",
+   "reason":"Track WEC template version to detect template drift automatically",
+   "requested_by":"copilot-swe-agent[bot]","session":"S859"}
+  EOF
+  ```
+
+- [ ] **C-6** Create `CODEX_SECRETS_BASELINE_SHA`
+  ```bash
+  # Agent computes sha256 of .secrets.baseline at commit time:
+  cat > .codex/pending_ops/variable_set_c6.json << 'EOF'
+  {"operation":"set","name":"CODEX_SECRETS_BASELINE_SHA","value":"FILL_SHA256_OF_SECRETS_BASELINE",
+   "reason":"Detect out-of-band .secrets.baseline modifications between sessions",
+   "requested_by":"copilot-swe-agent[bot]","session":"S859"}
+  EOF
+  ```
+
+- [ ] **C-7** Create `COPILOT_MAX_CONCURRENT_SESSIONS`
+  ```bash
+  cat > .codex/pending_ops/variable_set_c7.json << 'EOF'
+  {"operation":"set","name":"COPILOT_MAX_CONCURRENT_SESSIONS","value":"1",
+   "reason":"Enforce single active Copilot session — prevent session collision",
+   "requested_by":"copilot-swe-agent[bot]","session":"S859"}
+  EOF
+  ```
+
+- [ ] **C-8** Commit all intent files and push — `process-variable-intents.yml` auto-applies
+
+---
+
+#### Phase D — Implement T-02: `token-expiry-monitor.yml`
+
+> **This is the next P1 task** identified in §10.9.1. The workflow monitors
+> `CODEX_MASTER_KEY_EXPIRY_DATE` and `CODEX_BACKUP_KEY_EXPIRY_DATE` and posts
+> a warning issue 14 days before expiry.
+
+- [ ] **D-1** Agent creates `.github/workflows/token-expiry-monitor.yml`:
+
+```yaml
+# token-expiry-monitor.yml — T-02 gap closure
+# Checks CODEX_MASTER_KEY_EXPIRY_DATE and CODEX_BACKUP_KEY_EXPIRY_DATE daily.
+# Posts a GitHub issue 14 days before expiry.
+name: Token Expiry Monitor
+# aais-cache: none
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # Daily at 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: token-expiry-monitor
+  cancel-in-progress: true
+
+jobs:
+  check-expiry:
+    name: Check Token Expiry Dates
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check CODEX_MASTER_KEY_EXPIRY_DATE
+        env:
+          MASTER_EXPIRY: ${{ vars.CODEX_MASTER_KEY_EXPIRY_DATE }}
+          BACKUP_EXPIRY: ${{ vars.CODEX_BACKUP_KEY_EXPIRY_DATE }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          python3 - << 'PYEOF'
+          import os, sys, datetime
+
+          def days_until(date_str):
+              if not date_str:
+                  return None
+              try:
+                  exp = datetime.date.fromisoformat(date_str)
+                  return (exp - datetime.date.today()).days
+              except ValueError:
+                  return None
+
+          WARN_DAYS = 14
+          issues = []
+
+          for name, val in [
+              ("CODEX_MASTER_KEY", os.environ.get("MASTER_EXPIRY")),
+              ("CODEX_BACKUP_KEY", os.environ.get("BACKUP_EXPIRY")),
+          ]:
+              days = days_until(val)
+              if days is None:
+                  print(f"⚠️  {name}: expiry date not set — add {name}_EXPIRY_DATE variable")
+                  issues.append(f"{name} has no expiry date tracked")
+              elif days <= 0:
+                  print(f"🚨 {name}: EXPIRED on {val}")
+                  issues.append(f"{name} EXPIRED on {val} — rotate immediately")
+              elif days <= WARN_DAYS:
+                  print(f"⚠️  {name}: expires in {days} days ({val})")
+                  issues.append(f"{name} expires in {days} days ({val})")
+              else:
+                  print(f"✅ {name}: valid for {days} more days ({val})")
+
+          if issues:
+              body = "## 🚨 Token Expiry Warning\n\n" + "\n".join(f"- {i}" for i in issues)
+              body += "\n\n**Action:** Rotate via [Settings → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/actions)\n"
+              body += "**Reference:** [Token Refresh Alignment Guide](../docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md#9-token-refresh-alignment-guide)\n"
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+                  f.write(body)
+              sys.exit(1)
+          PYEOF
+
+      - name: Open expiry issue if needed
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        run: |
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "🚨 Token Expiry Warning — rotation required" \
+            --label "security,token-rotation" \
+            --body "One or more PATs are expiring soon. See workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+```
+
+- [ ] **D-2** Add `token-expiry-monitor.yml` to WEC block in `📄 Opt-In: Documentation` section
+- [ ] **D-3** Run the workflow immediately after creating `CODEX_MASTER_KEY_EXPIRY_DATE` (Phase C-2)
+
+---
+
+#### Phase E — Implement §10.9.2 Clean-up Recommendations
+
+- [ ] **E-1** Audit callers of `CODEX_GHP_TOKEN_BASE64` / `CODEX_GHP_TOKEN_HEX`:
+  ```bash
+  # Agent runs:
+  grep -r "CODEX_GHP_TOKEN_BASE64\|CODEX_GHP_TOKEN_HEX" \
+    /home/runner/work/_codex_/_codex_/.github/workflows/ --include="*.yml" -l
+  ```
+  If no callers found → delete both secrets (close rotation surface).
+
+- [ ] **E-2** Move `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` to file:
+  ```bash
+  # Extract current value, write to config file
+  GH_TOKEN=$CODEX_MASTER_KEY gh api \
+    /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS \
+    --jq '.value' > .codex/config/firewall_allowlist.txt
+  # Update workflows that read this variable to read from file instead
+  ```
+
+- [ ] **E-3** Move `COPILOT_BOT_COMMENT_KNOWN_ISSUES` to config file:
+  ```bash
+  GH_TOKEN=$CODEX_MASTER_KEY gh api \
+    /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_BOT_COMMENT_KNOWN_ISSUES \
+    --jq '.value' | python3 -m json.tool \
+    > .codex/config/bot_comment_known_issues.json
+  ```
+
+- [ ] **E-4** Update `COPILOT_WEC_TEMPLATE_DRIFT` — re-audit items after S859 WEC changes
+
+---
+
+#### Phase F — Post-Implementation Verification
+
+- [ ] **F-1** Run `admin_setup_verification.yml` — verify all §2/§3 items present
+- [ ] **F-2** Run `vars-guide-sync.yml --layers=all` — refresh reference doc with new variables
+- [ ] **F-3** Run `repo-var-sync-schedule.yml` — sync `agent_context.json`
+- [ ] **F-4** Run `validate.yml` — confirm secrets baseline, ruff, sync_tracked all pass
+- [ ] **F-5** Run `copilot-agent-vars-bootstrap.yml` — force-refresh agent context
+- [ ] **F-6** Run `scan-secrets-variables.yml` — generate final post-implementation inventory
+- [ ] **F-7** Update `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §10.6 to reflect any
+  variable removals from Phase E, and update §11 as new workflows are created
+
+---
+
+### 📊 Implementation Dependency Graph
+
+```mermaid
+flowchart TD
+    A1["A-1 token-probe.yml\n✅ current tokens valid?"] --> B1
+    A2["A-2 scan-secrets-variables.yml\n📸 inventory snapshot"] --> B1
+    A3["A-3 test-variables-api.yml\n🔧 CRUD works?"] --> B1
+
+    B1{"Tokens valid?\nAPI accessible?"} -- yes --> C
+    B1 -- no --> B2["B-1/B-2 Rotate tokens\nGitHub UI"]
+    B2 --> B4["B-4 token-probe.yml\nverify new tokens"]
+    B4 --> C
+
+    subgraph C["Phase C — New Variables"]
+        C1["C-1 MASTER_KEY_LAST_VERIFIED"]
+        C2["C-2 MASTER_KEY_EXPIRY_DATE"]
+        C3["C-3 BACKUP_KEY_EXPIRY_DATE"]
+        C4["C-4 AAIS_LAST_SCORE + SHA"]
+        C5["C-5 WEC_TEMPLATE_VERSION"]
+        C6["C-6 SECRETS_BASELINE_SHA"]
+        C7["C-7 MAX_CONCURRENT_SESSIONS"]
+        C8["C-8 Push → process-variable-intents.yml"]
+        C1 & C2 & C3 & C4 & C5 & C6 & C7 --> C8
+    end
+
+    C2 & C3 --> D1["D-1 Create token-expiry-monitor.yml\n⏰ daily expiry check"]
+    C8 --> D1
+
+    D1 --> E["Phase E — Clean-up\nAudit encoded secrets\nMove large vars to files"]
+
+    E --> F1["F-1 admin_setup_verification.yml"]
+    F1 --> F2["F-2 vars-guide-sync.yml"]
+    F2 --> F3["F-3 repo-var-sync-schedule.yml"]
+    F3 --> F4["F-4 validate.yml"]
+    F4 --> F5["F-5 scan-secrets-variables.yml\nfinal inventory"]
+    F5 --> DONE["✅ Variable & Secret\nGovernance Complete"]
+
+    style DONE fill:#27ae60,color:#fff
+    style B2 fill:#e74c3c,color:#fff
+    style B4 fill:#4a90d9,color:#fff
+```
+
+---
+
+### 🎯 Agent Prompt — Phase C+D Kickoff
+
+When ready to implement Phases C and D, use this prompt:
+
+```
+@copilot CTEP Mode: ON
+
+## Task: Variable & Secret Governance Implementation — Phases C + D
+
+**Reference:** docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md §10.9.1 and §11.2.10
+**Plan:** docs/roadmap/PR4346_whats_next.md — "Variable & Secret Governance" section
+
+### Phase C: Add 7 new repository variables via process-variable-intents.yml
+
+For each variable C-1 through C-7 in the Phase C checklist:
+1. Write the intent file to `.codex/pending_ops/variable_set_cN.json`
+2. Use the exact JSON schema shown in the checklist
+3. For C-4b: replace "FILL_FROM_HEAD" with `$(git rev-parse HEAD)`
+4. For C-6: replace "FILL_SHA256" with `$(sha256sum .secrets.baseline | awk '{print $1}')`
+
+### Phase D: Create token-expiry-monitor.yml
+
+1. Create `.github/workflows/token-expiry-monitor.yml` using the template in the checklist
+2. Verify it passes actionlint
+3. Run: `python -m ruff check src/ tests/ --fix`
+4. Run: `python scripts/ci/sync_tracked_files.py --fix`
+5. Run: `python scripts/ci/auto_fix_common_issues.py --check-only`
+6. Commit all changes
+
+### Verification:
+- All intent files present in `.codex/pending_ops/`
+- `token-expiry-monitor.yml` passes actionlint
+- `sync_tracked_files` clean
+- CHANGELOG updated with `### Added (SN)` entry
+
+CTEP Compliance: Completed = 10, Skipped = 0
+```
+
+---
+
+### ��️ Section Status
+
+| Phase | Status | Assigned To | ETA |
+|-------|--------|-------------|-----|
+| A — Pre-flight | ⏳ Pending admin action | @mbaetiong | Before token rotation |
+| B — Token rotation | ⏳ Pending admin action | @mbaetiong | At refresh time |
+| C — New variables | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After B completes |
+| D — token-expiry-monitor | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After C-2/C-3 |
+| E — Clean-up | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After D |
+| F — Verification | 🤖 Agent-executable | `copilot-swe-agent[bot]` | After E |
+
+---
+
+## ⚡ Rate-Limit Awareness — Workflow Improvement Plan
+
+> **Reference:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §12
+> **Audit script:** `python3 scripts/ci/github_api_trickle.py --status`
+> **Protocol:** `.codex/docs/RATE_LIMIT_AWARENESS.md`
+
+### 📊 Audit Summary — Workflows Requiring Improvement
+
+| Priority | Workflow | API Calls | Guards | Gap | Primary Fix |
+|----------|----------|----------:|-------:|----:|-------------|
+| **P1** | `workflow-execution-gate.yml` | 5 | 0 | 5 | Pattern A + D (pre-check + paginated guard) |
+| **P1** | `auto-approve-workflows.yml` | 6 | 1 | 5 | Pattern D + circuit breaker |
+| **P1** | `promote-integration-branch.yml` | 5 | 0 | 5 | Pattern C (retry with backoff on PATCH) |
+| **P1** | `copilot-agent-session-done.yml` | 3+GraphQL | 0 | 5 | GraphQL `rateLimit` check + Octokit throttling |
+| **P2** | `copilot-iterative-self-healing.yml` | 5 | 1 | 4 | Pattern A + trickle.py replacement |
+| **P2** | `codebase-health-sweep.yml` | 3 | 0 | 3 | Pattern A + `continue-on-error` |
+| **P2** | `codeql.yml` + `codeql-analysis.yml` | 4+5 | 0 | 9 | Schedule stagger + dedup |
+| **P3** | `iterative-self-healing-ci.yml` | 4 | 3 | 1 | Add `github_api_trickle.py --status` pre-check |
+
+### 🔧 Implementation Checklist
+
+#### Phase RL-1 — P1 Workflows (highest blast radius)
+
+- [ ] **RL-1a** `workflow-execution-gate.yml` — add Pattern A + D
+  - Insert pre-call check step before `detect-wec-changes` job API steps
+  - Add `GH_TRICKLE_POLITE_SLEEP: "0.3"` and `GH_TRICKLE_MIN_REMAINING: "50"` to job env
+  - Replace paginated comment loops with `github_api_trickle.py` call
+  - Add `continue-on-error: true` on all paginated fetch steps
+
+- [ ] **RL-1b** `auto-approve-workflows.yml` — add Pattern D + circuit breaker
+  - Add pre-call check: skip job if `remaining < 100`
+  - Wrap `--paginate` loop with page-by-page remaining check
+  - Add `GH_TRICKLE_POLITE_SLEEP: "1.0"` (scheduled workflow — not time critical)
+  - Set `CODEX_RL_CIRCUIT_BREAKER_ENABLED` check before approving runs
+
+- [ ] **RL-1c** `promote-integration-branch.yml` — add Pattern C (retry + rollback)
+  - Wrap each `gh api PATCH` ref update in `_api_with_retry()` shell function
+  - Track which refs were updated; on failure, revert already-updated refs
+  - Add pre-call check before the entire ref-update sequence
+
+- [ ] **RL-1d** `copilot-agent-session-done.yml` — add GraphQL rate check
+  - Add `rateLimit { remaining resetAt }` inline to each GraphQL query
+  - Add circuit-break logic before page loops: exit loop if `remaining < 20`
+  - Replace bare `gh api --paginate` with trickle-aware equivalent
+  - Set job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`
+
+#### Phase RL-2 — P2 Workflows (scheduled, self-healing)
+
+- [ ] **RL-2a** `copilot-iterative-self-healing.yml`
+  - Add Pattern A pre-check step at job start
+  - Replace inline comment-page loop with:
+    ```bash
+    python scripts/ci/github_api_trickle.py \
+      --rest "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
+      > /tmp/comments.json
+    ```
+  - Add deferred-healing comment when rate-limited
+
+- [ ] **RL-2b** `codebase-health-sweep.yml`
+  - Add Pattern A pre-check
+  - Mark all API steps `continue-on-error: true` (advisory workflow)
+  - Stagger cron away from `auto-approve-workflows.yml` (currently same minute)
+
+- [ ] **RL-2c** `codeql.yml` + `codeql-analysis.yml` — schedule stagger
+  - `codeql.yml`: change schedule to `0 2 * * 1` (Monday 02:00 UTC)
+  - `codeql-analysis.yml`: change schedule to `0 2 * * 4` (Thursday 02:00 UTC)
+  - Add `continue-on-error: true` on all API steps in both
+  - Add pre-check: skip if `CODEX_CI_FAILURE_RATE > 5.0`
+
+#### Phase RL-3 — Add Rate-Limit Monitoring Variables
+
+- [ ] **RL-3a** Add 6 new `CODEX_RL_*` variables via `process-variable-intents.yml`:
+
+  | Variable | Value |
+  |----------|-------|
+  | `CODEX_RL_POLITE_SLEEP_DEFAULT` | `0.5` |
+  | `CODEX_RL_MIN_REMAINING_DEFAULT` | `50` |
+  | `CODEX_RL_MAX_WAIT_DEFAULT` | `120` |
+  | `CODEX_RL_CIRCUIT_BREAKER_ENABLED` | `true` |
+  | `CODEX_RL_LAST_EXHAUSTION_TIME` | `never` |
+  | `CODEX_RL_EXHAUSTION_COUNT_7D` | `0` |
+
+- [ ] **RL-3b** Update `artifact-monitoring.yml` to include rate-limit dashboard:
+  - Add a summary table showing all token pool states
+  - Persist to `.codex/artifacts/rate_limit_history/`
+
+#### Phase RL-4 — Verification
+
+- [ ] Run `python scripts/ci/github_api_trickle.py --status` on the branch
+- [ ] Run `actionlint` on all modified workflows: `actionlint .github/workflows/workflow-execution-gate.yml .github/workflows/auto-approve-workflows.yml ...`
+- [ ] Run `validate.yml` to confirm `sync_tracked_files` clean
+- [ ] Manually trigger `artifact-monitoring.yml` — confirm rate-limit section present in summary
