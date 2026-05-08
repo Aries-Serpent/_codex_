@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "operation": "set",
+  "scope": "repo",
+  "owner": "Aries-Serpent",
+  "repo": "_codex_",
+  "name": "COPILOT_MAX_CONCURRENT_SESSIONS",
+  "value": "1",
+  "reason": "Enforce single-session concurrency limit for Copilot coding agent",
+  "requested_by": "copilot-swe-agent[bot]",
+  "session": "S860",
+  "queued_at": "2026-05-08T02:00:00Z",
+  "queued_by": "variable_intent_writer",
+  "note": "Processed by .github/workflows/process-variable-intents.yml on next push using CODEX_MASTER_KEY."
+}

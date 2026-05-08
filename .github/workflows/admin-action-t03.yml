@@ -1,0 +1,111 @@
+name: Admin Action — T-03 security_events Scope Gate
+# aais-cache: none  # No pip install — Python snippets use stdlib only (json, sys); no pip cache needed
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PURPOSE
+#   Enforces T-03 gap closure: CODEX_MASTER_KEY must have `security_events`
+#   scope to reach the CodeQL API (codeql-alert-fetcher.yml, OBJ-B).
+#
+# TRIGGER — fires when "PR workflows are approved":
+#   1. After auto-approve-workflows.yml completes (every approved-run sweep)
+#   2. After trigger-on-approval.yml completes (PR review submission)
+#   3. workflow_dispatch — on-demand re-probe
+#
+# USES reusable engine: admin-action-notifier.yml
+#   Pattern documented in: .codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md
+#
+# ADMIN FIX STEPS (full detail in issue body below):
+#   1. Settings → Secrets → CODEX_MASTER_KEY → add scope: security_events
+#   2. Set expiry: 90 days from today
+#   3. Re-run token-probe.yml to confirm
+#   4. This workflow auto-closes the T-03 issue on next run
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  workflow_run:
+    workflows:
+      - "⚡ Auto-Approve Pending Workflow Runs"
+      - "Trigger validations on approval"
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      force_create_issue:
+        description: 'Force issue creation even if probe passes (for testing)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: admin-action-t03
+  cancel-in-progress: true
+
+jobs:
+  check-t03:
+    name: Check T-03 — security_events scope
+    uses: ./.github/workflows/admin-action-notifier.yml
+    secrets: inherit  # pragma: allowlist secret
+    with:
+      gap_id: "T-03"
+      probe_url: "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts?per_page=1"
+      expected_ok_status: "200"
+      issue_title: "[T-03] CODEX_MASTER_KEY missing security_events scope — CodeQL API blocked"
+      issue_label: "admin-action-required"
+      assignee: "mbaetiong"
+      issue_body_md: |
+        ## ⚠️ Admin Action Required — T-03
+
+        ### What is blocked
+
+        | Blocked Item | Impact |
+        |-------------|--------|
+        | `codeql-alert-fetcher.yml` | Cannot retrieve CodeQL alerts for in-session review |
+        | OBJ-B `py/wrong-named-arg` ×15 | Agent cannot see alert file:line locations to fix them |
+        | `scripts/ci/fetch_codeql_alerts.py` | Returns 403 for all CodeQL API calls |
+
+        ### Root Cause
+
+        `CODEX_MASTER_KEY` does **not** have the `security_events` OAuth scope.
+        GitHub returns HTTP 403 `Resource not accessible by integration` for all
+        `/code-scanning/alerts` requests.
+
+        ### ✅ Fix — Click-by-Click (5 steps)
+
+        1. **Open the token** that backs `CODEX_MASTER_KEY`:
+           → [github.com/settings/tokens](https://github.com/settings/tokens)
+           Find the PAT used for `CODEX_MASTER_KEY` and click **Edit**.
+
+        2. **Add scope: `security_events`**
+           Keep existing scopes: `repo`, `workflow`
+           Set expiry: **90 days** from today
+           Click **"Update token"** — copy the new value.
+
+        3. **Update the secret** in org settings:
+           → [Organization Settings → Secrets → CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
+           Paste the new token value and save.
+
+        4. **Verify** by running [`token-probe.yml`](https://github.com/Aries-Serpent/_codex_/actions/workflows/token-probe.yml):
+           ```bash
+           gh workflow run token-probe.yml --repo Aries-Serpent/_codex_ --field pr_number=4346
+           ```
+
+        5. **Run post-rotation check:**
+           ```bash
+           GH_TOKEN=<new_token> bash scripts/ci/post_rotation_verify.sh
+           ```
+
+        ### After Rotation
+
+        `admin-action-t03.yml` will automatically:
+        - Detect HTTP 200 from the CodeQL API
+        - **Close this issue** with a success comment
+        - Allow `codeql-alert-fetcher.yml` and OBJ-B fixes to proceed
+
+        ### References
+        - Full token review: `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §T-03
+        - Pattern guide: `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md`
+        - PR context: [PR #4346](https://github.com/Aries-Serpent/_codex_/pull/4346)

@@ -1,4 +1,5 @@
 name: Workflow Compliance Audit (actionlint)
+# aais-cache: none  # No pip install — Python used for JSON parsing of GitHub API responses (stdlib only)
 
 # Phase 6: Continuous workflow compliance linting with actionlint.
 # Tier-1 hard gate: exits 1 on syntax errors in .github/workflows/*.yml

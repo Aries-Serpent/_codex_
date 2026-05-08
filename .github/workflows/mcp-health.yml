@@ -1,4 +1,5 @@
 name: MCP Health & Metrics Gate
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # IMP-015: MCP metrics CI gate — validates MCP metric thresholds on every PR
 # that touches MCP server code, and on a nightly schedule.

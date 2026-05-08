@@ -1,0 +1,10 @@
+{
+  "operation": "set",
+  "name": "CODEX_MASTER_KEY_LAST_VERIFIED",
+  "value": "PENDING_ROTATION_T03",
+  "reason": "Placeholder updated after T-03 CODEX_MASTER_KEY rotation to add security_events scope. Run post_rotation_verify.sh then update this value to ISO timestamp:ok",
+  "requested_by": "copilot-swe-agent[bot]",
+  "session": "S861-cont",
+  "admin_action": "T-03",
+  "blocked_until": "CODEX_MASTER_KEY rotated with security_events scope"
+}

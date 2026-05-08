@@ -104,8 +104,10 @@ python scripts/tools/variable_intent_writer.py set COPILOT_RUNNER_PROFILE "ubunt
 
 ## 🕐 Last Verified
 
-Updated: 2026-04-30T22:13Z
-By: copilot-swe-agent[bot] — S183d
+Updated: 2026-05-08T01:00Z
+By: copilot-swe-agent[bot] — S859 (PR #4346)
 Repo variable snapshot: `.codex/agent_context.json` (COPILOT_AGENT_AUTH_ENABLED=true confirmed)
-New variables queued: COPILOT_RUNNER_PROFILE, CODEX_CACHE_VERSION, CODEX_MAX_HEALER_RUNS_PER_HOUR,
-  CODEX_SWEEP_SKIP_MAIN, CODEX_HEALER_SKIP_SKIPCI, COPILOT_AGENT_STATE
+CI failure rate: `1.6:ok` (healthy)
+Active workflows: 153 | Active agents: 162
+Current phase: Phase 5 — Full autonomous self-healing loop ACTIVE
+Last green SHA (main): `963cc05949d360bc0d937a0a5b14a84f1535768e`

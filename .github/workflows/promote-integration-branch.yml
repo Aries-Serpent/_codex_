@@ -68,6 +68,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       - name: Install package (for mcp_poster CLI)
@@ -111,8 +112,26 @@ jobs:
         id: create_branch
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
           SHA: ${{ steps.resolve_sha.outputs.sha }}
         run: |
+          # Pattern C: retry with exponential backoff for PATCH ref updates
+          _api_with_retry() {
+            local attempt=0
+            local max_attempts=3
+            while [ $attempt -lt $max_attempts ]; do
+              if "$@"; then
+                return 0
+              fi
+              attempt=$(( attempt + 1 ))
+              local backoff=$(( 2 ** attempt * 5 ))   # attempt 1→10s, attempt 2→20s (3 total attempts: 0,1,2)
+              echo "::warning::API call failed (attempt $attempt/$max_attempts) — retrying in ${backoff}s"
+              sleep "$backoff"
+            done
+            echo "::error::API call failed after $max_attempts attempts"
+            return 1
+          }
+
           # Try to create the branch; if it already exists, update it via PATCH
           python -m codex.github.mcp_poster create-branch \
             --repo "${{ github.repository }}" \
@@ -120,16 +139,16 @@ jobs:
             --sha "${SHA}" 2>&1 || {
             EXIT=$?
             echo "create-branch returned $EXIT — branch may already exist"
-            # Fall back to force-update via gh api PATCH
+            # Fall back to force-update via gh api PATCH (with retry)
             if [ "$EXIT" -ne 0 ]; then
-              if gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
+              if _api_with_retry gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
                 --method PATCH \
                 -H "Accept: application/vnd.github+json" \
                 -f sha="${SHA}" \
                 -f force=true; then
                 echo "✅ Force-updated 0D_base_ → ${SHA}"
               else
-                echo "❌ Failed to create or update 0D_base_" >&2
+                echo "❌ Failed to create or update 0D_base_ after retries" >&2
                 exit 1
               fi
             fi

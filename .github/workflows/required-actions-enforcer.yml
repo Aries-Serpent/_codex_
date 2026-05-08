@@ -59,6 +59,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       # ── Check-only on PRs and push ────────────────────────────────────────

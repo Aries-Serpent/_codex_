@@ -123,6 +123,7 @@ dev = [
   "nbstripout>=0.6",
   "tomli>=2.0; python_version < '3.11'",
   "yamllint>=1.35.1,<2.0.0",
+  "detect-secrets>=1.5.0",
 ]
 dist = ["torch>=2.6.0,<3.0.0; platform_system != 'Windows'"]  # Security: match main dependencies
 github = [

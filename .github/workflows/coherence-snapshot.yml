@@ -39,6 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       - name: Install minimal dependencies

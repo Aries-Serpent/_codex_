@@ -1,4 +1,5 @@
 name: "📦 Dependabot Auto-Absorb"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Automatically cherry-picks single-file Dependabot bump PRs into the
 # currently active Copilot coding-agent branch, eliminating the need for

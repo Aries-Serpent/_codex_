@@ -1,4 +1,5 @@
 name: "🔀 Branch Divergence Monitor — 0D_base_ ↔ main"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Autonomous detection and self-correction of branch divergence between
 # the staging integration branch (0D_base_) and the default branch (main).

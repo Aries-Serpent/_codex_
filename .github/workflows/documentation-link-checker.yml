@@ -85,68 +85,127 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # Required for git diff on push/PR events
 
-      - name: Compute documentation checksum
-        id: checksum
+      # Fix 1 + Fix 3: Diff-based file selection for push/PR; full scan for schedule.
+      # .github/workflows/*.md is excluded from all scan modes — these are operational
+      # docs with many internal/placeholder links outside the stated scope.
+      - name: Compute files to check
+        id: filelist
         run: |
-          echo "🔍 Computing checksum of documentation files..."
+          EVENT="${{ github.event_name }}"
 
-          # NOTE: This is Phase 1 aggregate caching (all-or-nothing approach).
-          # For granular per-folder/per-file caching (Phase 2-3), see:
-          # .codex/WORKFLOW_CACHING_IMPLEMENTATION_PLAN.md
+          # Shared exclusion filter applied to every scan mode
+          _find_all_md() {
+            find . -name "*.md" \
+              -not -path "./node_modules/*" \
+              -not -path "./.git/*" \
+              -not -path "./temp/*" \
+              -not -path "./archive/*" \
+              -not -path "./cognitive_app/node_modules/*" \
+              -not -path "./.github/workflows/*" \
+              | sort
+          }
 
-          # Find all markdown files to check
-          MD_FILES=$(find . -name "*.md" \
-            -not -path "./node_modules/*" \
-            -not -path "./.git/*" \
-            -not -path "./temp/*" \
-            -not -path "./archive/*" \
-            -not -path "./cognitive_app/node_modules/*" \
-            | sort)
-
-          # Create sorted list of file paths + content hashes
-          CHECKSUM_INPUT=""
-          for file in $MD_FILES; do
-            if [ -f "$file" ]; then
-              FILE_HASH=$(sha1sum "$file" | cut -d' ' -f1)
-              CHECKSUM_INPUT="${CHECKSUM_INPUT}${file}:${FILE_HASH}\n"
+          if [ "$EVENT" = "schedule" ]; then
+            echo "📅 Scheduled run — full scan (excluding .github/workflows/)"
+            FILES=$(_find_all_md)
+          else
+            # Diff-based: only files changed vs the merge base
+            BASE_SHA="${{ github.event.before || github.event.pull_request.base.sha }}"
+            if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+              BASE_SHA="HEAD~1"
             fi
-          done
+            # Build the changed list; fall back to full scan if diff fails (e.g. shallow)
+            DIFF_FILES=$(git diff --name-only "$BASE_SHA" HEAD -- '*.md' 2>/dev/null \
+              | grep -v '^\.github/workflows/' \
+              | grep -v '^node_modules/' \
+              | grep -v '^temp/' \
+              | grep -v '^archive/' \
+              | xargs -I{} sh -c '[ -f "{}" ] && echo "{}"' 2>/dev/null || true)
 
-          # Compute aggregate checksum
-          AGGREGATE_CHECKSUM=$(echo -e "$CHECKSUM_INPUT" | sha1sum | cut -d' ' -f1)
-          echo "aggregate_checksum=$AGGREGATE_CHECKSUM" >> $GITHUB_OUTPUT
-          echo "✅ Aggregate checksum: $AGGREGATE_CHECKSUM"
+            if [ -z "$DIFF_FILES" ] && [ "$BASE_SHA" != "HEAD~1" ]; then
+              echo "⚠️  Diff empty or failed — falling back to full scan"
+              FILES=$(_find_all_md)
+            else
+              FILES="$DIFF_FILES"
+            fi
+            echo "📝 Diff-based: $(echo "$FILES" | grep -c . || echo 0) file(s) to check"
+          fi
 
-          # Store file list for later use
-          echo "$MD_FILES" > /tmp/md_files.txt
+          echo "$FILES" > /tmp/md_files.txt
+          FILE_COUNT=$(grep -c . /tmp/md_files.txt 2>/dev/null || echo 0)
+          echo "file_count=$FILE_COUNT" >> "$GITHUB_OUTPUT"
+          echo "📊 Candidate file count: $FILE_COUNT"
 
-      - name: Check cache for previous successful run
-        id: cache
+      # Fix 2: Per-file checksum cache — replaces aggregate all-or-nothing approach.
+      # Key includes branch name to avoid false hits from other branches.
+      - name: Restore per-file checksum cache
+        id: per_file_cache
         uses: actions/cache@v5
         with:
-          path: .link-check-success
-          key: link-check-${{ steps.checksum.outputs.aggregate_checksum }}
+          path: .link-check-per-file.json
+          key: link-check-per-file-${{ github.ref_name }}
           restore-keys: |
-            link-check-
+            link-check-per-file-
 
-      - name: Determine if link check is needed
+      # Fix 2 (continued): Compare current hashes against the cached map.
+      # Only files with changed/new content are written to /tmp/md_changed.txt.
+      - name: Compute changed files vs per-file cache
+        id: changed_files
+        run: |
+          python3 - <<'PYEOF'
+          import json, hashlib, os
+
+          CACHE_FILE = ".link-check-per-file.json"
+          MD_FILES_LIST = "/tmp/md_files.txt"
+
+          # Load previous per-file results
+          prev = {}
+          if os.path.exists(CACHE_FILE):
+              try:
+                  with open(CACHE_FILE) as f:
+                      prev = json.load(f)
+              except Exception:
+                  prev = {}
+
+          # Read candidate files
+          with open(MD_FILES_LIST) as f:
+              files = [ln.strip() for ln in f if ln.strip()]
+
+          to_check = []
+          for fp in files:
+              if not os.path.isfile(fp):
+                  continue
+              with open(fp, "rb") as _fh:
+                  _sha = hashlib.sha1()
+                  while chunk := _fh.read(65536):
+                      _sha.update(chunk)
+                  h = _sha.hexdigest()
+              if prev.get(fp) != h:
+                  to_check.append(fp)
+
+          with open("/tmp/md_changed.txt", "w") as f:
+              f.write("\n".join(to_check))
+
+          print(f"Candidate files: {len(files)}, Changed/new: {len(to_check)}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write(f"changed_count={len(to_check)}\n")
+          PYEOF
+
+      # Fix 4: Skip the check entirely when no files differ from cache.
+      # This guards both push/PR runs and the weekly scheduled scan.
+      - name: Check if link check is needed
         id: skip_check
         run: |
-          if [ -f .link-check-success ]; then
-            CACHED_CHECKSUM=$(cat .link-check-success)
-            CURRENT_CHECKSUM="${{ steps.checksum.outputs.aggregate_checksum }}"
-
-            if [ "$CACHED_CHECKSUM" = "$CURRENT_CHECKSUM" ]; then
-              echo "✅ Documentation unchanged since last successful check"
-              echo "skip=true" >> $GITHUB_OUTPUT
-            else
-              echo "📝 Documentation has changed, running link check"
-              echo "skip=false" >> $GITHUB_OUTPUT
-            fi
+          CHANGED="${{ steps.changed_files.outputs.changed_count }}"
+          if [ "${CHANGED:-0}" = "0" ]; then
+            echo "✅ All candidate files are cache-fresh — skipping link check"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
           else
-            echo "📝 No cache found, running link check"
-            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "📝 ${CHANGED} file(s) changed — running link check"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Set up Node.js
@@ -170,21 +229,17 @@ jobs:
           echo "✅ Using existing .markdown-link-check.json configuration"
           cat .markdown-link-check.json
 
+      # Fix 1 (continued): Use the diff-computed /tmp/md_changed.txt instead of
+      # re-running find across the entire repo.
       - name: Check links in documentation
         if: steps.skip_check.outputs.skip != 'true'
         run: |
-          echo "🔍 Checking links in documentation files..."
-
-          # Find all markdown files
-          find . -name "*.md" \
-            -not -path "./node_modules/*" \
-            -not -path "./.git/*" \
-            -not -path "./temp/*" \
-            -not -path "./archive/*" \
-            -print0 | while IFS= read -r -d '' file; do
+          echo "🔍 Checking $(wc -l < /tmp/md_changed.txt) file(s)..."
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
             echo "Checking: $file"
             markdown-link-check "$file" --config .markdown-link-check.json || true
-          done
+          done < /tmp/md_changed.txt
 
       - name: Check critical documentation files
         if: steps.skip_check.outputs.skip != 'true'
@@ -221,25 +276,57 @@ jobs:
             echo "✅ All critical documentation links valid"
           fi
 
-      - name: Mark successful check
+      # Fix 2 (continued): Persist updated per-file hash map so the next run
+      # can skip unchanged files. Only runs on success to avoid caching bad state.
+      - name: Update per-file checksum cache
         if: steps.skip_check.outputs.skip != 'true' && success()
         run: |
-          echo "${{ steps.checksum.outputs.aggregate_checksum }}" > .link-check-success
-          echo "✅ Saved checksum for future cache hits"
+          python3 - <<'PYEOF'
+          import json, hashlib, os
+
+          CACHE_FILE = ".link-check-per-file.json"
+          MD_CHANGED = "/tmp/md_changed.txt"
+
+          # Load existing cache (preserve entries for files not checked this run)
+          cache = {}
+          if os.path.exists(CACHE_FILE):
+              try:
+                  with open(CACHE_FILE) as f:
+                      cache = json.load(f)
+              except Exception:
+                  cache = {}
+
+          # Update entries for every file just checked
+          with open(MD_CHANGED) as f:
+              for fp in [ln.strip() for ln in f if ln.strip()]:
+                  if os.path.isfile(fp):
+                      with open(fp, "rb") as _fh:
+                          _sha = hashlib.sha1()
+                          while chunk := _fh.read(65536):
+                              _sha.update(chunk)
+                          cache[fp] = _sha.hexdigest()
+
+          with open(CACHE_FILE, "w") as f:
+              json.dump(cache, f, indent=2)
+
+          print(f"✅ Per-file cache updated: {len(cache)} total entries")
+          PYEOF
 
       - name: Generate link check report
         if: always()
         run: |
           echo "📋 Generating link check report..."
           SKIPPED="${{ steps.skip_check.outputs.skip }}"
+          CHANGED="${{ steps.changed_files.outputs.changed_count }}"
           cat > link-check-report.json << EOFREPORT
           {
             "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
             "workflow": "documentation-link-checker",
             "branch": "${{ github.ref_name }}",
+            "event": "${{ github.event_name }}",
             "status": "completed",
             "skipped": "$SKIPPED",
-            "checksum": "${{ steps.checksum.outputs.aggregate_checksum }}"
+            "files_checked": "${CHANGED:-0}"
           }
           EOFREPORT
 

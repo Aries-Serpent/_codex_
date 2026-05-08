@@ -84,6 +84,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       # ── Mint the best available token for discussions:write ────────────────

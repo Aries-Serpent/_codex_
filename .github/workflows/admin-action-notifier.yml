@@ -1,0 +1,253 @@
+name: Admin Action Notifier (Reusable)
+# aais-cache: none  # No pip install — Python snippets use stdlib only (json, sys); no pip cache needed
+
+# ─────────────────────────────────────────────────────────────────────────────
+# REUSABLE WORKFLOW — admin-action-notifier.yml
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# PURPOSE
+#   Generic engine for any "admin action required" gap in this repository.
+#   Called by gap-specific caller workflows (e.g. admin-action-t03.yml).
+#
+# PATTERN
+#   1. Probe a GitHub API endpoint with CODEX_MASTER_KEY
+#   2. If probe fails (expected_failure_status):
+#        → Create/update a GitHub issue with full fix instructions
+#        → Annotate CI step summary with [ACTION REQUIRED]
+#   3. If probe succeeds:
+#        → Auto-close any existing open issue for this gap
+#        → Annotate CI step summary with [RESOLVED]
+#
+# HOW TO ADD A NEW ADMIN-ACTION GAP
+#   1. Create .github/workflows/admin-action-<gap-id>.yml
+#   2. Set on: workflow_run (the workflows that "approve" or trigger your gap check)
+#   3. Call this workflow via `uses: ./.github/workflows/admin-action-notifier.yml`
+#   4. Pass inputs: gap_id, probe_url, issue_title, issue_body_md, fix_steps_md
+#   See: .codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md for full guide + template
+#
+# INPUTS
+#   gap_id             string  Short identifier e.g. "T-03", "T-02", "SEC-01"
+#   probe_url          string  Full GitHub API URL to GET-probe (e.g. /repos/.../code-scanning/alerts?per_page=1)
+#   expected_ok_status string  HTTP status that means "all good" (default "200")
+#   issue_title        string  GitHub issue title (must be unique per gap)
+#   issue_body_md      string  Markdown body for the issue (problem + fix steps)
+#   issue_label        string  Label to attach (default "admin-action-required")
+#   assignee           string  GitHub login to assign issue to (default "mbaetiong")
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  workflow_call:
+    inputs:
+      gap_id:
+        description: 'Short gap identifier (e.g. T-03, SEC-01)'
+        required: true
+        type: string
+      probe_url:
+        description: 'Full GitHub API URL to probe (GET). Uses CODEX_MASTER_KEY.'
+        required: true
+        type: string
+      expected_ok_status:
+        description: 'HTTP status code that means the gap is CLOSED (default: 200)'
+        required: false
+        type: string
+        default: '200'
+      issue_title:
+        description: 'GitHub issue title (must uniquely identify this gap)'
+        required: true
+        type: string
+      issue_body_md:
+        description: 'Full Markdown body for the GitHub issue (problem description + fix steps)'
+        required: true
+        type: string
+      issue_label:
+        description: 'Label to attach to the issue'
+        required: false
+        type: string
+        default: 'admin-action-required'
+      assignee:
+        description: 'GitHub login to assign the issue to'
+        required: false
+        type: string
+        default: 'mbaetiong'
+    outputs:
+      scope_ok:
+        description: 'true if probe returned expected status, false if gap still open, unknown if inconclusive'
+        value: ${{ jobs.probe-and-notify.outputs.scope_ok }}
+      issue_number:
+        description: 'GitHub issue number created/updated (empty if none)'
+        value: ${{ jobs.probe-and-notify.outputs.issue_number }}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe-and-notify:
+    name: Probe ${{ inputs.gap_id }} — ${{ inputs.issue_title }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    outputs:
+      scope_ok:    ${{ steps.probe.outputs.scope_ok }}
+      issue_number: ${{ steps.notify.outputs.issue_number }}
+
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      REPO: ${{ github.repository }}
+
+    steps:
+      # ── 1. Probe the API endpoint ─────────────────────────────────────────
+      - name: Probe ${{ inputs.gap_id }} endpoint
+        id: probe
+        env:
+          PROBE_URL:    ${{ inputs.probe_url }}
+          EXPECTED_OK:  ${{ inputs.expected_ok_status }}
+        run: |
+          HTTP_STATUS=$(curl -s -o "${RUNNER_TEMP}/admin_probe_response.json" -w "%{http_code}" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "${PROBE_URL}")
+
+          echo "HTTP_STATUS=${HTTP_STATUS}" >> "$GITHUB_ENV"
+          echo "http_status=${HTTP_STATUS}"  >> "$GITHUB_OUTPUT"
+
+          RESPONSE_FILE="${RUNNER_TEMP}/admin_probe_response.json"
+          RESPONSE_MSG=$(python3 -c \
+            "import json,sys,os; d=json.load(open(os.environ['RESPONSE_FILE'])); print(d.get('message','(no message)'))" \
+            2>/dev/null || echo "(no message)")
+          echo "RESPONSE_MSG=${RESPONSE_MSG}" >> "$GITHUB_ENV"
+
+          if [ "${HTTP_STATUS}" = "${EXPECTED_OK}" ]; then
+            echo "scope_ok=true"    >> "$GITHUB_OUTPUT"
+            echo "✅ ${{ inputs.gap_id }} CLOSED — HTTP ${HTTP_STATUS} (expected ${EXPECTED_OK})"
+          elif [ "${HTTP_STATUS}" = "403" ] || [ "${HTTP_STATUS}" = "401" ]; then
+            echo "scope_ok=false"   >> "$GITHUB_OUTPUT"
+            echo "⚠️  ${{ inputs.gap_id }} OPEN — HTTP ${HTTP_STATUS}: ${RESPONSE_MSG}"
+          else
+            echo "scope_ok=unknown" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  ${{ inputs.gap_id }} INCONCLUSIVE — HTTP ${HTTP_STATUS}: ${RESPONSE_MSG}"
+          fi
+
+      # ── 2a. Create/update issue when gap is OPEN ─────────────────────────
+      - name: Create or update issue for ${{ inputs.gap_id }}
+        id: notify
+        if: steps.probe.outputs.scope_ok == 'false'
+        uses: actions/github-script@v8
+        env:
+          GAP_ID:       ${{ inputs.gap_id }}
+          ISSUE_TITLE:  ${{ inputs.issue_title }}
+          ISSUE_BODY:   ${{ inputs.issue_body_md }}
+          ISSUE_LABEL:  ${{ inputs.issue_label }}
+          ASSIGNEE:     ${{ inputs.assignee }}
+          HTTP_STATUS:  ${{ env.HTTP_STATUS }}
+          RESPONSE_MSG: ${{ env.RESPONSE_MSG }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const { owner, repo } = context.repo;
+            const title  = process.env.ISSUE_TITLE;
+            const label  = process.env.ISSUE_LABEL;
+            const body   = [
+              process.env.ISSUE_BODY,
+              '',
+              '---',
+              `_Auto-managed by \`admin-action-notifier.yml\` · Gap: \`${process.env.GAP_ID}\` · Probe: HTTP \`${process.env.HTTP_STATUS}\` — ${process.env.RESPONSE_MSG}_`,
+              `_Last checked: ${new Date().toISOString()}_`,
+            ].join('\n');
+
+            // Ensure label exists
+            try {
+              await github.rest.issues.createLabel({
+                owner, repo,
+                name: label,
+                color: 'e11d48',
+                description: 'Requires manual admin action to unblock CI automation',
+              });
+            } catch (_) { /* label already exists — ignore */ }
+
+            // Find existing open issue for this gap
+            let existing = null;
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: label, per_page: 50,
+            });
+            existing = open.data.find(i => i.title === title);
+
+            let issueNum;
+            if (existing) {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, body });
+              issueNum = existing.number;
+              core.info(`↩️  Updated existing issue #${issueNum} for ${process.env.GAP_ID}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner, repo, title, body,
+                labels:    [label],
+                assignees: [process.env.ASSIGNEE],
+              });
+              issueNum = created.data.number;
+              core.info(`✅ Created issue #${issueNum}: ${created.data.html_url}`);
+              core.notice(`Admin action required (${process.env.GAP_ID}) — see issue #${issueNum}`);
+            }
+            core.setOutput('issue_number', String(issueNum));
+
+      # ── 2b. Auto-close issue when gap is RESOLVED ─────────────────────────
+      - name: Auto-close issue for ${{ inputs.gap_id }} (gap resolved)
+        if: steps.probe.outputs.scope_ok == 'true'
+        uses: actions/github-script@v8
+        env:
+          ISSUE_TITLE: ${{ inputs.issue_title }}
+          ISSUE_LABEL: ${{ inputs.issue_label }}
+          GAP_ID:      ${{ inputs.gap_id }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const { owner, repo } = context.repo;
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: process.env.ISSUE_LABEL, per_page: 50,
+            });
+            const existing = open.data.find(i => i.title === process.env.ISSUE_TITLE);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: existing.number,
+                body: [
+                  `## ✅ ${process.env.GAP_ID} Gap Closed`,
+                  '',
+                  `Probe returned expected HTTP status — the admin action has been completed.`,
+                  '',
+                  `_Auto-resolved by \`admin-action-notifier.yml\` at ${new Date().toISOString()}_`,
+                ].join('\n'),
+              });
+              await github.rest.issues.update({
+                owner, repo, issue_number: existing.number,
+                state: 'closed', state_reason: 'completed',
+              });
+              core.info(`✅ Auto-closed issue #${existing.number} for ${process.env.GAP_ID}`);
+            } else {
+              core.info(`ℹ️  No open ${process.env.GAP_ID} issue found — nothing to close`);
+            }
+
+      # ── 3. Step Summary ───────────────────────────────────────────────────
+      - name: Step summary
+        if: always()
+        env:
+          GAP_ID:      ${{ inputs.gap_id }}
+          SCOPE_OK:    ${{ steps.probe.outputs.scope_ok }}
+          ISSUE_NUM:   ${{ steps.notify.outputs.issue_number }}
+        run: |
+          {
+            echo "## 🔐 Admin Action Gate — \`${GAP_ID}\`"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Gap ID | \`${GAP_ID}\` |"
+            echo "| Probe HTTP status | \`${HTTP_STATUS}\` |"
+            echo "| Gap status | \`${SCOPE_OK}\` |"
+            [ -n "${ISSUE_NUM}" ] && echo "| Issue | #${ISSUE_NUM} |"
+            echo ""
+            case "${SCOPE_OK}" in
+              true)    echo "### ✅ Gap CLOSED — admin action completed" ;;
+              false)   echo "### ⚠️ Gap OPEN — admin action required (issue created/updated)" ;;
+              unknown) echo "### ℹ️ Inconclusive probe — check workflow logs" ;;
+            esac
+          } >> "$GITHUB_STEP_SUMMARY"

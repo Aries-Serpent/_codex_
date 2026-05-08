@@ -38,6 +38,7 @@
 #   - agent-var-writer.yml             — writes Direction B changes back to API
 
 name: "Repo Var Sync (Scheduled)"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 on:
   schedule:

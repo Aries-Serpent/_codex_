@@ -1,4 +1,5 @@
 name: "📚 Documentation Freshness Check"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Warns when docs in key directories have date headers older than 90 days.
 # Non-blocking (warning only) — never fails a PR over stale informational docs.

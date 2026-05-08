@@ -48,6 +48,9 @@ jobs:
       newly_checked: ${{ steps.detect.outputs.newly_checked }}
       newly_unchecked: ${{ steps.detect.outputs.newly_unchecked }}
       has_changes: ${{ steps.detect.outputs.has_changes }}
+    env:
+      GH_TRICKLE_POLITE_SLEEP: "0.3"
+      GH_TRICKLE_MIN_REMAINING: "50"
     steps:
       - uses: actions/checkout@v5
         with:
@@ -55,9 +58,19 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
+      - name: 🔋 Rate-limit pre-check
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          python scripts/ci/github_api_trickle.py --status || {
+            echo "::warning::All GitHub API tokens exhausted — API steps will be skipped"
+            echo "RATE_LIMITED=true" >> "$GITHUB_ENV"
+          }
       - name: Detect WEC changes
         id: detect
+        if: env.RATE_LIMITED != 'true'
         env:
           BODY_BEFORE: ${{ github.event.changes.body.from }}
           BODY_AFTER: ${{ github.event.pull_request.body }}
@@ -90,6 +103,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
       - name: Cancel in-progress runs for unchecked workflows
         env:
@@ -160,11 +174,14 @@ jobs:
           done
 
   dispatch-checked:
-    name: "Dispatch Newly-Checked Workflows"
+    name: "Dispatch & Auto-Approve Newly-Checked Workflows"
     needs: detect-wec-changes
     if: needs.detect-wec-changes.outputs.has_changes == 'true' && needs.detect-wec-changes.outputs.newly_checked != '[]'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Increased to 15 min: wec_enforcer now polls up to 45 s per workflow to
+    # detect action_required state after dispatch and immediately approve it,
+    # so large NEWLY_CHECKED batches need the extra headroom.
+    timeout-minutes: 15
     permissions:
       actions: write
       pull-requests: write
@@ -175,8 +192,16 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
-      - name: Dispatch newly-checked workflows
+      - name: Dispatch & auto-approve newly-checked workflows
+        # wec_enforcer --dispatch-checked now:
+        #   1. Dispatches the workflow via POST /dispatches
+        #   2. Polls for the new run in action_required state (up to 45 s)
+        #   3. Calls POST /runs/{id}/approve immediately so the run starts
+        #      without waiting for the 5-min auto-approve-workflows schedule.
+        # CODEX_MASTER_KEY is required: github.token lacks actions:write scope
+        # needed for both workflow dispatch and run approval.
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -184,7 +209,7 @@ jobs:
           NEWLY_CHECKED: ${{ needs.detect-wec-changes.outputs.newly_checked }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          echo "Dispatching newly-checked workflows..."
+          echo "Dispatching and auto-approving newly-checked workflows..."
           python scripts/ci/wec_enforcer.py \
             --dispatch-checked \
             --pr "${PR_NUMBER}" \
@@ -234,6 +259,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
       - name: Validate WEC template integrity
         env:
@@ -509,6 +535,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       - name: Install PyYAML

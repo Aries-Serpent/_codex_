@@ -147,6 +147,37 @@ def _polite_sleep(extra: float = 0.0) -> None:
     time.sleep(POLITE_SLEEP + extra)
 
 
+def _write_github_env(name: str, value: str) -> None:
+    """Write a variable to $GITHUB_ENV (GitHub Actions environment file).
+
+    Safe no-op when running outside GitHub Actions (GITHUB_ENV not set).
+    Uses the GitHub Actions append-line protocol to avoid overwriting the file.
+    """
+    env_file = os.environ.get("GITHUB_ENV", "")
+    if not env_file:
+        return
+    try:
+        with open(env_file, "a") as f:
+            f.write(f"{name}={value}\n")
+    except OSError as exc:
+        logger.debug("Could not write to GITHUB_ENV: %s", exc)
+
+
+def _write_github_output(name: str, value: str) -> None:
+    """Write a step output to $GITHUB_OUTPUT (GitHub Actions output file).
+
+    Safe no-op when running outside GitHub Actions (GITHUB_OUTPUT not set).
+    """
+    out_file = os.environ.get("GITHUB_OUTPUT", "")
+    if not out_file:
+        return
+    try:
+        with open(out_file, "a") as f:
+            f.write(f"{name}={value}\n")
+    except OSError as exc:
+        logger.debug("Could not write to GITHUB_OUTPUT: %s", exc)
+
+
 def _wait_for_reset(reset_epoch: int, resource: str = "core") -> None:
     """Sleep until the rate-limit reset epoch (capped at MAX_WAIT)."""
     wait = max(0, reset_epoch - time.time()) + 2
@@ -664,6 +695,9 @@ def main() -> int:
     parser.add_argument("--resource", choices=["code-scanning-alerts", "pr-reviews", "rate-limits"])
     parser.add_argument("--status",  action="store_true",
                         help="Print rate-limit status table for all tokens; exit 0=ready 1=all-exhausted")
+    parser.add_argument("--write-env", action="store_true",
+                        help="When --status exits 1 (all exhausted), write RATE_LIMITED=true to $GITHUB_ENV "
+                             "and $GITHUB_OUTPUT so downstream steps can skip API calls")
     parser.add_argument("--rest",    metavar="PATH", help="Raw REST GET path")
     parser.add_argument("--graphql", metavar="FILE", help="GraphQL query file")
     parser.add_argument("--pr",      type=int,       help="PR number (for pr-reviews)")
@@ -677,7 +711,12 @@ def main() -> int:
         print_status(s)
         if args.json:
             print(json.dumps(s, indent=2))
-        return 0 if s["ok"] else 1
+        is_ready = s["ok"]
+        if not is_ready and args.write_env:
+            _write_github_env("RATE_LIMITED", "true")
+            _write_github_output("rate_limited", "true")
+            logger.warning("All tokens exhausted — wrote RATE_LIMITED=true to GITHUB_ENV/GITHUB_OUTPUT")
+        return 0 if is_ready else 1
 
     if args.resource == "rate-limits":
         # Legacy alias — now delegates to --status

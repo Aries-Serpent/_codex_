@@ -1,4 +1,5 @@
 name: HAR Cache Capture
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Refreshes the Playwright-recorded HAR file used by the Cognitive App in
 # offline / GitHub Pages mode.

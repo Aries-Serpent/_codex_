@@ -29,6 +29,8 @@ jobs:
     name: Prune stale GitHub Actions caches
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      GH_TRICKLE_POLITE_SLEEP: "0.3"   # weekly scheduled — moderate sleep between pages
 
     steps:
       - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
@@ -51,8 +53,18 @@ jobs:
             let kept       = 0;
             const toDelete = [];
 
-            // Collect all caches (paginate)
+            // Collect all caches (paginate with rate-limit guard)
             while (true) {
+              // Circuit-break if REST rate limit is low
+              try {
+                const rl = await github.rest.rateLimit.get();
+                const remaining = rl.data?.resources?.core?.remaining ?? 999;
+                if (remaining < 20) {
+                  core.warning(`Rate limit low (${remaining} remaining) — stopping cache pagination at page ${page}`);
+                  break;
+                }
+              } catch (_) { /* non-fatal — proceed */ }
+
               const resp = await github.rest.actions.getActionsCacheList({
                 owner, repo, per_page: 100, page
               });

@@ -72,6 +72,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       - name: Run cross-reference check
@@ -139,6 +140,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       - name: Run agent file size check

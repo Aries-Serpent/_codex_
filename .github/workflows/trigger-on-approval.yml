@@ -54,11 +54,16 @@ jobs:
       # ── 0. Resolve context ──────────────────────────────────────────────────
       - name: Resolve PR context
         id: ctx
+        # Pass potentially-untrusted values through env vars to prevent script injection.
+        # See: https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          REVIEWER_LOGIN: ${{ github.event.review.user.login }}
         run: |
           PR_SHA="${{ github.event.pull_request.head.sha }}"
           PR_NUM="${{ github.event.pull_request.number }}"
-          PR_REF="${{ github.event.pull_request.head.ref }}"
-          REVIEWER="${{ github.event.review.user.login }}"
+          PR_REF="$PR_HEAD_REF"
+          REVIEWER="$REVIEWER_LOGIN"
           echo "pr_sha=${PR_SHA}"   >> "$GITHUB_OUTPUT"
           echo "pr_num=${PR_NUM}"   >> "$GITHUB_OUTPUT"
           echo "pr_ref=${PR_REF}"   >> "$GITHUB_OUTPUT"
@@ -82,6 +87,7 @@ jobs:
       - name: Set up Python (for approve_pending_runs.py)
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: '3.12'
 
       # ── 2. Auto-approve all action_required runs for PR HEAD ─────────────────
@@ -236,4 +242,3 @@ jobs:
           echo "    4. codeql-alert-fetcher.yml dispatched (security_events scope)" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "    5. @copilot continue posted           (agent session resume)" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "================================================================" | tee -a "$GITHUB_STEP_SUMMARY"
-

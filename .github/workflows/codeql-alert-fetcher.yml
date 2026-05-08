@@ -126,6 +126,7 @@ jobs:
         if: steps.token_check.outputs.token_available == 'true'
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: '3.12'
 
       - name: Resolve fetch parameters

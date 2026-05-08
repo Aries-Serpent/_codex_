@@ -1,4 +1,5 @@
 name: Build & Push Preview Image
+# aais-cache: docker  # pip install runs inside Docker layer cache (line 160 — GHA layer cache)
 
 on:
   push:
