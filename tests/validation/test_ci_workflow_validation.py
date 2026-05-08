@@ -179,9 +179,9 @@ class TestWorkflowJobValidation:
                 try:
                     content = workflow.read_text()
                     if "jobs:" in content:
-                        # Jobs should have steps
-                        assert "steps:" in content, (
-                            f"{workflow} jobs should have steps"
+                        # Jobs should either define local steps or call a reusable workflow.
+                        assert "steps:" in content or "uses:" in content, (
+                            f"{workflow} jobs should have steps or reusable workflow uses"
                         )
                 except OSError:
                     continue

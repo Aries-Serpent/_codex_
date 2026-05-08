@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S889) — 2026-05-08
+- Continued iterative self-healing after the stale `Validation Pipeline` run
+  `25581748100` review confirmed the old failure was already-fixed `docs/plans`
+  link drift on commit `9ded124`.
+- Fixed `codex_ml.training.run_functional_training()` compatibility and offline
+  fallback behavior by:
+  - propagating monkeypatched compatibility hooks from
+    `codex_ml.training.__init__` into `legacy_api`
+  - treating torch stub modules without real runtime primitives as unavailable
+    in the manual fallback path and returning the existing metrics-only result
+- Hardened additional optional-dependency tests surfaced by repeated
+  `python3 -m pytest -x` runs:
+  - skip DuckDB factory tests when `duckdb` is not installed
+  - skip tokenizer roundtrip when the local `transformers` stub cannot load a model
+  - skip Prometheus metrics tests when `prometheus_client` is unavailable
+  - accept reusable-workflow jobs with `uses:` in workflow validation tests
+- Restored `codex_cli.app` as a package export so patch targets like
+  `patch(\"codex_cli.app.echo\")` resolve correctly in CLI compatibility tests.
+
 ### Fixed (S888) — 2026-05-08
 - Self-healed the `Validation Pipeline` failure referenced by run `25578637573`
   for PR #4368:

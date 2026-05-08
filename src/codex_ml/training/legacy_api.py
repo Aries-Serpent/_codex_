@@ -60,6 +60,26 @@ from codex_ml.utils.train_helpers import maybe_autocast
 
 logger = logging.getLogger(__name__)
 
+
+def _fallback_metrics_result(
+    cfg: "TrainingRunConfig", train_texts: list[str]
+) -> dict[str, Any]:
+    """Return minimal offline metrics when training deps are unavailable."""
+
+    tokens = sum(len(text.split()) for text in train_texts)
+    metrics = [
+        {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
+        for epoch in range(max(cfg.max_epochs, 1))
+    ]
+    return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
+
+
+def _torch_manual_training_available(torch_module: Any) -> bool:
+    """Return True when the torch fallback path has the minimum runtime surface."""
+
+    required_attrs = ("tensor", "empty", "long", "device", "nn", "optim")
+    return all(getattr(torch_module, name, None) is not None for name in required_attrs)
+
 try:  # pragma: no cover - optional dependency in tests
     from omegaconf import DictConfig, OmegaConf
 except Exception as exc:  # pragma: no cover - OmegaConf optional
@@ -947,13 +967,9 @@ def run_functional_training(
             from torch.utils.data import DataLoader
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-
-            tokens = sum(len(text.split()) for text in train_texts)
-            metrics = [
-                {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
-                for epoch in range(max(cfg.max_epochs, 1))
-            ]
-            return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
+            return _fallback_metrics_result(cfg, train_texts)
+        if not _torch_manual_training_available(torch):
+            return _fallback_metrics_result(cfg, train_texts)
 
         # Continue with manual encoding (torch available but not transformers)
         def _encode_texts(
@@ -1054,7 +1070,7 @@ def run_functional_training(
         model = _TinyLanguageModel(len(vocab)).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
 
-        metrics: list[dict[str, Any]] = []  # type: ignore[no-redef]
+        metrics: list[dict[str, Any]] = []
         grad_accum = max(int(cfg.gradient_accumulation), 1)
         eval_every = max(int(cfg.eval_every_epochs), 1)
 
