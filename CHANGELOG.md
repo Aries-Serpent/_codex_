@@ -10,6 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4368)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4368 (SHA `3a06b9bd`) at 2026-05-08T20:16Z [auto-generated]
 
+### Fixed (S885) — 2026-05-08
+- Used issue `#4367` (CI Failure Triage Report, updated 2026-05-08), CodeQL
+  artifact `codeql-alerts-open-codeql-25576722379` from run `25576722379`, and
+  `docs/plans/COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md` as the
+  authoritative review inputs for this session's reliability hardening.
+- `src/codex_ml/data/loader.py` now imports `safe_pickle_load` from the package
+  path `codex_ml.utils.safe_pickle`; added `src/codex_ml/utils/safe_pickle.py`
+  as a package-local shim that re-exports the existing restricted unpickler and
+  safe pickle helpers so the hardened import path is valid.
+- `src/codex_ml/evaluation/runner.py` now uses an explicit gradient context
+  variable, falls back to `_nullcontext()` when a torch stub lacks `no_grad`,
+  and calls a verified `__call__` method instead of invoking `self.model(...)`
+  directly in the callable-model branch.
+- `src/security/secrets.py` now instantiates `SecretRotationPolicy()` once per
+  `remember()` call before trimming secret history.
+- Applied the requested test cleanups in
+  `tests/agents/test_zero_coverage_boost.py` and `tests/unit/test_peft_utils.py`,
+  and added a focused callable-model regression test in
+  `tests/evaluation/test_evaluation_runner.py`.
+
 ### Changed (S884) — 2026-05-08
 - Investigated blocking rescue comment `#4409014457` and captured failure context
   for prior-head run `25573049644` (`Validation Pipeline / Fast Validation` on

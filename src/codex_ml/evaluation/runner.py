@@ -197,7 +197,10 @@ class EvaluationRunner:
             metric.reset()
 
         # Evaluation loop
-        with torch.no_grad() if torch else _nullcontext():
+        grad_context = (
+            torch.no_grad() if torch is not None and hasattr(torch, "no_grad") else _nullcontext()
+        )
+        with grad_context:
             for batch_idx, batch in enumerate(dataloader):
                 if self.config.max_samples and total_samples >= self.config.max_samples:
                     break
@@ -223,17 +226,18 @@ class EvaluationRunner:
                     predictions = self.model.predict(inputs)
                 elif hasattr(self.model, "forward"):
                     predictions = self.model.forward(inputs)
-                elif callable(self.model):
+                else:
+                    model_call = getattr(self.model, "__call__", None)
+                    if not callable(model_call):
+                        raise ValueError(
+                            f"Model {type(self.model)} has no predict/forward method and is not callable"  # noqa: E501
+                        )
                     try:
-                        predictions = self.model(inputs)
+                        predictions = model_call(inputs)
                     except TypeError as e:
                         raise ValueError(
                             f"Model {type(self.model)}.__call__(inputs) raised TypeError: {e}"
                         ) from e
-                else:
-                    raise ValueError(
-                        f"Model {type(self.model)} has no predict/forward method and is not callable"  # noqa: E501
-                    )
 
                 # Accumulate for metrics
                 batch_size = len(inputs) if hasattr(inputs, "__len__") else 1
