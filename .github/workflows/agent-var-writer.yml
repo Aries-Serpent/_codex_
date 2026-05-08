@@ -139,6 +139,12 @@ jobs:
               // Session number and access audit
               'CODEX_ACCESS_PROBE_LAST_RUN',
               'COPILOT_AGENT_SESSION_NUMBER',
+              // Rate-limit orchestration tuning (rate_limit_orchestrator.py)
+              'RATE_LIMIT_MAX_CONCURRENT',
+              // Session handoff system (COPILOT_SESSION_HANDOFF_DESIGN.md)
+              'CODEX_SESSION_HANDOFF_ENABLED',
+              // Codespace webhook domain variant (preview.app.github.dev vs app.github.dev)
+              'WEBHOOK_DOMAIN_VARIANT',
             ];
 
             const pendingFile = '.codex/pending_var_updates.json';
