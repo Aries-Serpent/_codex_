@@ -21,6 +21,30 @@
 
 ---
 
+## 🆕 Phase 9: Autonomous Agent Operations (S867/S868) — ACTIVE
+
+**Unified Documents:**
+- `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md` — 5-surface privilege routing
+- `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md` — session handoff + self-healing
+- `docs/plans/DOCS_CONSOLIDATION_MAP.md` — 81-doc catalogue + archive plan
+
+**Status:** 🟢 In Progress
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| 12 problem-statement diffs | ✅ Complete | S867 |
+| T-01 token chain fix | ✅ Complete | S867 |
+| rate_limit_orchestrator.py | ✅ Complete | S867 |
+| Session TTL 12h | ✅ Complete | S867 |
+| Secrets baseline clean | ✅ Complete | S867 R3 |
+| Living docs updated | ✅ Complete | S868 |
+| 10 variables queued | ⏳ Pending | `@agent-var-writer apply` |
+| 4 webhooks ready | ⏳ Pending | `@agent-infra apply-webhooks` |
+| Docs archive (28 stale) | 📋 Planned | Next session |
+| T-03 security_events | 📋 Admin action | @mbaetiong |
+
+---
+
 ## 📊 Detailed Status
 
 ### 🟡 Priority 0: Cognitive Brain Implementation - ACTIVE

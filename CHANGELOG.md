@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added / Fixed (S868) — 2026-05-08
+- **CI Investigation**: Analysed `Agent Token Delegation` failure (#6232) — root cause was transient `action_required` gate on first run attempt; subsequent runs resolved to `action_required` awaiting maintainer approval (not a code defect). Analysed `Automatic Dependency Submission` (#25542482123) — GitHub-managed workflow transient HTTP 503; `dependency-submission.yml` already has `continue-on-error: true` since S154; no fix needed.
+- **Docs sweep**: Catalogued all 81 `docs/plans/` files; created `DOCS_CONSOLIDATION_MAP.md` identifying 28 PHASE0/1/2 completion-report archive candidates, 6 merge candidates, 18 active living docs. Archive will execute next session.
+- **PLAN_STATUS_DASHBOARD.md**: Added Phase 9 (Autonomous Agent Operations) tracking table with S867/S868 completions and pending items.
+- **COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md**: Added Phase 9 section with full deliverable register and Unimplemented Plans Registry for cross-session continuity.
+- **PR4356_whats_next.md**: Updated with S868 CI verdicts, CodeQL/security status, full session metrics (12 diffs, 7 review comments, 3 CI investigations, 5 new docs, 10 variables queued, 4 webhooks ready).
+- **PR4356_session_diagram.md**: Fully rewritten with S867+S868 combined flow; added Security/CodeQL status mermaid; WEC self-healing loop diagram; full session handoff state machine; complete CI matrix table.
+- **P-045 gate**: ruff ✅ · no merge conflicts ✅ · sync_tracked_files ✅.
+
 ### Fixed (S867 — round 3: failing checks) — 2026-05-08
 - **Secrets Baseline Enforcer**: Classified 3 unclassified (`is_secret=None`) entries as `is_secret=False` in `.secrets.baseline` — `agent_context.json` git SHA, `CODEX_MANIFEST.json` integrity SHA256, and `test_inference_enhanced.py` test fixture string.
 - **Agent Token Delegation TTL extended to 12h**: `agent-auth-delegation.yml` session token TTL raised from 3600s (1h) → 43200s (12h); session-lock TTL raised from 3600s → 43200s; `owner_approval_guard.sh` comment updated; local `agent_auth_session.json` re-issued with 12h expiry (valid until 2026-05-08T19:40Z).
