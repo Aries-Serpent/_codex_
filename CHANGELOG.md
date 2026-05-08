@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S878) — 2026-05-08
+- `.github/workflows/batch-ci-triage.yml`: fixed triage-run failure pattern from
+  run `25567584852` (`Argument list too long`) by replacing large failure-payload
+  transfer through env/output with file-based handoff (`ci-triage-failures.json`).
+- Enhanced triage report output to include `Active Workflows Scanned` metadata for
+  better failure-context interpretation.
+- Sourced latest CodeQL artifact `codeql-alerts-open-codeql-25570039631` from run
+  `25570039631` (sha256 `ee3033e9582528b88897c74f61331977c04db31506a8edaa91d427a744fc09bb`)
+  and re-verified high-severity remediations are present on this branch.
+- Applied quick-win CodeQL reductions for `actions/code-injection/medium` by removing
+  direct expression interpolation in shell `run` blocks across:
+  - `.github/actions/compressed-cache/action.yml`
+  - `.github/actions/apply-ci-fix/action.yml`
+  - `.github/actions/setup-python-uv/action.yml`
+  - `.github/actions/setup-secure-token/action.yml`
+  - `.github/actions/doc-test-scribe-action/action.yml`
+- Sourced and aligned updates against CI Failure Triage Report issue #4365
+  (updated 2026-05-08) while refreshing living docs/session mapping.
+- Updated `docs/roadmap/PR4366_whats_next.md`, `docs/sessions/PR4366_session_diagram.md`,
+  and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for S878 closeout.
+
 ### Fixed (S877) — 2026-05-08
 - `tests/serving/test_inference_enhanced.py`: addressed follow-up review comments on
   lines 291–300 / line 296 by replacing try/except import with

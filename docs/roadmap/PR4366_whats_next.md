@@ -2,9 +2,9 @@
 
 **PR:** #4366 - Fix circuit breaker test import path and replace mock with real integration test  
 **Branch:** `copilot/fix-import-path-inconsistency`  
-**Status:** 🟡 ACTIVE (S877 follow-up remediation + CI monitoring)  
-**Latest Session:** S877 (2026-05-08T17:09Z - ongoing)  
-**Latest Commit:** Pending S877 wrap-up commit
+**Status:** 🟡 ACTIVE (S878 CI triage + workflow hardening)  
+**Latest Session:** S878 (2026-05-08T17:34Z - ongoing)  
+**Latest Commit:** Pending S878 wrap-up commit
 
 ---
 
@@ -75,6 +75,15 @@
 - [x] Re-run targeted test and readiness gates
 - [x] Prepare comment responses for new PR rescue/approval-dispatch items
 
+### ✅ Phase 10: CI Triage Alignment + Workflow Hardening (COMPLETE)
+- [x] Source CI Failure Triage Report issue #4365 (updated 2026-05-08)
+- [x] Source latest CodeQL artifact `codeql-alerts-open-codeql-25570039631` (sha256 verified)
+- [x] Review `batch-ci-triage.yml` processing scope and run outcomes
+- [x] Fix triage workflow failure pattern (`Argument list too long`) by moving failure payload transfer from env/output to on-disk JSON handoff
+- [x] Extend triage report with scanned-workflow count metadata
+- [x] Execute quick-win CodeQL reduction pass (actions/code-injection clusters) across composite action files
+- [x] Refresh living docs + session map + accountability artifacts with S878 context
+
 ---
 
 ## 📊 Current Status
@@ -84,16 +93,17 @@
 - **Target:** Maintain 100/100 through final CI run
 - **Critical Gates:** ✅ All passing (Deferral Language, Reference Integrity, Branch Rebase, Comment Review)
 
-### CI Status Table (Latest: 2026-05-08T17:09Z)
+### CI Status Table (Latest: 2026-05-08T17:34Z)
 
 | Category | Status | Count | Notes |
 |----------|--------|-------|-------|
 | ✅ Local Readiness Gates | Pass | 4 | Ruff, sync_tracked, mypy baseline, auto-fix patterns |
 | 📦 CodeQL Artifact Triage | Complete | 1 | Artifact `6882773618` processed and fixes applied |
 | 🧵 Review Thread Actions | Complete | 6/6 | All actionable comments remediated in code/docs |
-| 🔄 Workflow Monitoring | Active | 9 | In-progress runs observed on branch during S877 check |
+| 🔄 Workflow Monitoring | Active | 2 | Latest branch SHA `72490dd...` shows completed-success runs |
 | ☑️ Workflow Approvals | Acknowledged | 8 | Completed as `action_required` on latest snapshot; maintainer approval acknowledged |
-| ⚠️ External CI Failures | Historical | 218 | From issue #4365 triage rollup (cross-workflow/global view) |
+| ⚠️ External CI Failures | Historical | 108 | From issue #4365 triage rollup (latest generated report) |
+| 🛡️ CodeQL Quick-Win Scope | Reduced | 46 | Artifact-mapped alerts in 5 changed action files (primarily `actions/code-injection/medium`) |
 | 🎯 Merge Readiness | Pass | 100/100 | Pattern 30 dimension check green |
 
 **Key Successful Workflows:**
@@ -220,12 +230,12 @@ graph TD
 
 ## 🎯 Next Steps
 
-### Immediate (Current Session - Final 5 min)
-- ✅ Monitor CI workflows to completion
-- ✅ Update all living docs with latest status
-- ✅ Enhance mermaid diagrams with detailed visualizations
+### Immediate (Current Session - final 5 min reserved)
+- ✅ Source #4365 triage report and align remediation
+- ✅ Harden `batch-ci-triage.yml` against env-size overflow failures
+- ✅ Update all living docs with latest status and mappings
 - ✅ Final CHANGELOG and AGENT_ACCOUNTABILITY_REPORT updates
-- ⏳ Session wrap-up and final commit
+- ⏳ Session wrap-up and final commit/reply
 
 ### Post-Merge
 - Review test coverage impact
@@ -247,14 +257,12 @@ The circuit breaker test now validates **real behavior** instead of mocked respo
 All imports in `tests/serving/test_inference_enhanced.py` now use the `src.` prefix consistently, matching the repository's import convention.
 
 ### Session Metrics
-- **Duration:** ~25 minutes (of 60 available)
-- **Efficiency:** 42% time utilization with 100% objective completion
-- **Commits:** 3 (b7ed7b4, 8a02dc9, 56ba5a4)
-- **Files Modified:** 5
-- **Quality:** All validation gates passing
+- **Duration:** ~55 minutes budget in-session
+- **Current focus:** complete all remaining CI/workflow/doc improvements
+- **Wrap-up reserve:** 5 minutes preserved for final checks and closeout
 
 ---
 
-**Last Updated:** 2026-05-08T16:48Z (S876)  
+**Last Updated:** 2026-05-08T17:34Z (S878)  
 **Next Review:** Final commit + CI green confirmation  
-**Session Status:** ✅ Remediation complete — wrap-up in progress
+**Session Status:** ✅ S878 triage alignment complete — wrap-up in progress
