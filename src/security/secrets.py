@@ -81,7 +81,7 @@ class SecretRotationState:
     """Book-keeping information for a managed secret."""
 
     identifier: str
-    last_rotated: float = field(default_factory=lambda: time.time())
+    last_rotated: float = field(default_factory=time.time)
     history: list[str] = field(default_factory=list)
 
     def remember(self, secret: str) -> None:
