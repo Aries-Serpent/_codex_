@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4368)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4368 (SHA `3a06b9bd`) at 2026-05-08T20:16Z [auto-generated]
+
 ### Changed (S884) — 2026-05-08
 - Investigated blocking rescue comment `#4409014457` and captured failure context
   for prior-head run `25573049644` (`Validation Pipeline / Fast Validation` on
