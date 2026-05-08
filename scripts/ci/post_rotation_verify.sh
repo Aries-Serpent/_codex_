@@ -61,7 +61,7 @@ else
     if [ -z "$SCOPES_HEADER" ]; then
         warn "Could not read x-oauth-scopes header — may be fine-grained PAT (scopes work differently)"
     else
-        SCOPE_VALUE=$(echo "$SCOPES_HEADER" | sed 's/x-oauth-scopes://Ii' | xargs)
+        SCOPE_VALUE=$(echo "$SCOPES_HEADER" | sed 's/x-oauth-scopes://I' | xargs)
         echo "   Scopes: $SCOPE_VALUE"
         echo "$SCOPE_VALUE" | grep -qi "repo"     && ok "repo scope: present"     || fail "repo scope: MISSING"
         echo "$SCOPE_VALUE" | grep -qi "workflow"  && ok "workflow scope: present"  || fail "workflow scope: MISSING"
