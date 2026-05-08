@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S864) — 2026-05-08
+- Fixed `Fast Validation` CI failure (run 25536229750): three pre-commit hook failures resolved:
+  - `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v1.4.0→v1.5.0 format, field reorder, entry reorder); updated `run_validation.sh` to install `detect-secrets==1.5.0` matching `.pre-commit-config.yaml` to prevent version mismatch.
+  - `check-shell-true`: removed `shell=True` string literal from `src/codex/utils/subprocess.py` error message and comment to eliminate false-positive grep match.
+  - `validate-internal-links`: fixed broken relative link `.codex/agent_context.json` → `../../.codex/agent_context.json` in `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`.
+- Replied to `<comment_new>` thread #4403330132 to unblock `🔍 Scan PR comments` gate.
+- P-045 gate: ruff ✅ · sync_tracked_files ✅ · no conflicts ✅.
+
 ### Fixed (S863) — 2026-05-08
 - Replied to `<comment_new>` thread #4403328142 (CI Rescue commit `1f85085`) to unblock `🔍 Scan PR comments` gate.
 - P-045 gate: ruff ✅ · sync_tracked_files ✅ · no conflicts ✅.

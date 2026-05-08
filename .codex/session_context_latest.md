@@ -1,10 +1,10 @@
-# Session Context — 2026-05-08T04:26:40Z
+# Session Context — 2026-05-08T04:38:57Z
 **Branch:** `finding-autofix-faa8614c`  **PR:** #4346  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4716` (✅)
-- GraphQL remaining: `4964` (✅)
+- REST remaining: `4645` (✅)
+- GraphQL remaining: `4952` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `finding-autofix-faa8614c` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-08)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
-- **PR Comment Review Gate** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-08)
 
 ## 📝 Recent Commits
+- `0ec7ba50` fix(ci): S863 — reply to comment #4403328142 to unblock Scan PR comments gate — copilot-swe-agent[bot] (2026-05-08)
 - `1f850851` docs: S862 session wrap-up — living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT — copilot-swe-agent[bot] (2026-05-08)
 - `c8f05589` chore: S862 session start — plan checklist — copilot-swe-agent[bot] (2026-05-08)
 - `d4671d5f` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `finding-autofix-faa8614c` → `main`
 - `b722e899` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
 - `3f19c649` docs: PR4346 whats_next final audit scorecard + S862 follow-up prompt — copilot-swe-agent[bot] (2026-05-08)
 - `ce4a6f44` fix(ci): actions@v8, secrets baseline pragma, mypy baseline 130 — CI monitoring  — copilot-swe-agent[bot] (2026-05-08)
-- `cbae040f` fix(ci): S861-cont RL-2c/3b, admin-action notifier pattern, security fixes, revi — copilot-swe-agent[bot] (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

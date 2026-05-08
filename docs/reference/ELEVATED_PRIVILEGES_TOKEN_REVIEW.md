@@ -679,7 +679,7 @@ Copy this checklist and tick each box as you complete it.
 | A-2 | Repo Actions Secret | Update `CODEX_MASTER_KEY` secret value | [settings/secrets/actions/CODEX_MASTER_KEY/edit](https://github.com/Aries-Serpent/_codex_/settings/secrets/actions/CODEX_MASTER_KEY/edit) |
 | A-3 | Repo Variables | Check if any variable **stores** a token value (see §9.3) — update any that reference MASTER_KEY | [settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
 | A-4 | `.codex/agent_auth_session.json` | If this file contains a token field, regenerate it via `python scripts/ci/write_agent_auth_session.py` | Local repo |
-| A-5 | `.codex/agent_context.json` | Remove any stale `token` or `gh_token` key; the file should only contain variable *names*, not values | [.codex/agent_context.json](.codex/agent_context.json) |
+| A-5 | `.codex/agent_context.json` | Remove any stale `token` or `gh_token` key; the file should only contain variable *names*, not values | [.codex/agent_context.json](../../.codex/agent_context.json) |
 | A-6 | Local `.env` / shell profile | Replace old value in `~/.bash_profile`, `~/.zshrc`, `.env`, or any local `.env.local` | Local machine |
 | A-7 | Other repos sharing this PAT | If the org secret `CODEX_MASTER_KEY` is shared across repos, update it at org level too | [org/settings/secrets/actions](https://github.com/organizations/Aries-Serpent/settings/secrets/actions) |
 | A-8 | Verify with live test | Re-run `admin_setup_verification.yml` → expand **KEY VERIFICATION** step — must pass | [admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
