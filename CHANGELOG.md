@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S875) — 2026-05-08
+- Fixed import path inconsistency in `tests/serving/test_inference_enhanced.py`: changed
+  `from codex_ml.serving.resilience` to `from src.codex_ml.serving.resilience` to match
+  repository's src-prefixed import convention.
+- Replaced mocked CircuitBreaker test with real integration test that drives failures
+  through actual circuit breaker path and validates 503 response when breaker opens.
+- Removed unused `Mock` import from `unittest.mock`.
+- All 21 tests in `tests/serving/test_inference_enhanced.py` pass.
+- Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md (this entry).
+
 ### Fixed (S873) — 2026-05-08
 - Replied to 4 new CI rescue + approval-dispatch comments (#4404718140, #4404723111,
   #4404734578, #4404772494); all on superseded commits `da2a74be`/`95c55bd` — resolved
