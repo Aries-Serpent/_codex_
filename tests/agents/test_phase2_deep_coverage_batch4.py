@@ -529,7 +529,7 @@ class TestPhase2_OptimizationMethods:
                 # Fall back to positional arguments if keyword-only fails
                 try:
                     result = orchestrator.optimize_path(
-                        {"x": 0.0}, {"x": 1.0}, max_iterations=5
+                        {"x": 0.0}, {"x": 1.0}, 5
                     )
                     assert result is not None
                 except TypeError:
