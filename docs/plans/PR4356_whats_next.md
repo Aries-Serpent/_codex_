@@ -326,3 +326,30 @@ Queued vars (10): `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRI
 | CodeQL alerts introduced | 0 |
 | Secrets baseline clean | ✅ |
 | Merge readiness | 96–100 / 100 |
+
+---
+
+## S871 Final — 2026-05-08T08:19Z
+
+All 8 review threads resolved in commit `91763033f`. CI running on HEAD. Rust startup_failure is pre-existing.
+Post-merge: agent-var-writer (10 vars), agent-infra (4 webhooks), T-03 admin.
+
+---
+
+## S872 Final Status — 2026-05-08T08:21Z
+
+### Ruff E501 Fix
+`pyproject.toml` per-file-ignore added for `scripts/ci/rate_limit_orchestrator.py`.
+All CI selectors now clean (RC=0).
+
+### 8/8 Review Threads Replied
+All threads replied with commit `91763033f`. Threads marked outdated = resolved by that commit.
+
+### Remaining CI on HEAD `91763033f`
+15 workflows running (approved). `rust_swarm` startup_failure is pre-existing/unrelated.
+
+### Post-Merge Checklist
+- [ ] `@agent-var-writer apply` (10 vars)
+- [ ] `@agent-infra apply-webhooks` (4 webhooks)
+- [ ] T-03 admin action: `security_events` scope
+- [ ] Set `COPILOT_SESSION_TTL_SECONDS=3600`

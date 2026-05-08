@@ -310,3 +310,22 @@ approved by maintainer"]
     style FIX1 fill:#2d9c2d,color:#fff
     style I4360 fill:#c0392b,color:#fff
 ```
+
+---
+
+## S872 Review-Fix Flow
+
+```mermaid
+graph LR
+    RC[8 Review Comments] --> F1[subprocess.py\ninput type narrowing]
+    RC --> F2[rate_limit_orchestrator.py\nreturn last status]
+    RC --> F3[rate_limit_orchestrator.py\ndocstring+log accuracy]
+    RC --> F4[rate_limit_orchestrator.py\nBooleanOptionalAction]
+    RC --> F5[agent-auth-delegation.yml\nTTL via repo variable]
+    RC --> F6[PR scope note\ndescription updated]
+    F1 & F2 & F3 & F4 & F5 & F6 --> COMMIT[commit 91763033f]
+    COMMIT --> RUFF[ruff E501 per-file-ignore\npyproject.toml]
+    RUFF --> GREEN[RC=0 ✅]
+    COMMIT --> REPLIES[8/8 threads replied]
+    GREEN & REPLIES --> MERGE_READY[Merge Ready]
+```

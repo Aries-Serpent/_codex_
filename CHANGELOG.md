@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S872) — 2026-05-08
+- `pyproject.toml`: add `E501` per-file-ignore for `scripts/ci/rate_limit_orchestrator.py`
+  (long log/argparse strings are expected in CLI tools).
+- All 8 inline review comments fixed and replied (commit `91763033f`).
+- Merge conflict `.secrets.baseline` resolved (true merge commit with main).
+
+### Fixed (S871 final wrap-up) — 2026-05-08
+- **8 inline review comments resolved** (commit `91763033f`):
+  - `subprocess.py`: input type narrowed per overload (str|None text=True, bytes|None text=False).
+  - `rate_limit_orchestrator.py`: _gh_api_with_retry returns last (status,result) on exhaustion.
+  - `rate_limit_orchestrator.py`: docstring/log corrected — Exit2/Sleeping claims removed.
+  - `rate_limit_orchestrator.py`: --keep-latest uses BooleanOptionalAction.
+  - `agent-auth-delegation.yml`: TTL reads COPILOT_SESSION_TTL_SECONDS repo var (default 43200).
+- **Merge conflict resolved**: .secrets.baseline vs main nightly sweep.
+- **All 8 review threads replied** with commit hash.
+
 ### Fixed (S870) — 2026-05-08
 - **Secrets Baseline Enforcer fix**: `.codex/webhook_config.json` lines 7 & 85 classified
   as `is_secret=false` in `.secrets.baseline`. Both entries are "Secret Keyword" false

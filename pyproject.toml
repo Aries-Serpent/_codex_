@@ -472,6 +472,8 @@ ignore = []
 # stub packages ship deliberate re-definitions for compatibility — F811 expected.
 "torch/**/*.py"               = ["F811"]
 "tests/stub_packages/**/*.py" = ["E402", "F811"]
+# CLI orchestration script — long log/argparse strings are acceptable
+"scripts/ci/rate_limit_orchestrator.py" = ["E501"]
 
 [tool.isort]
 profile = "black"
