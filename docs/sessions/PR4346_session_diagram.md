@@ -1,48 +1,145 @@
-# Session Diagram — PR #4346 · S859 · 2026-05-08
+# Session Diagram — PR #4346 · S861-cont · 2026-05-08
 
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
-> **Duration:** ~60 min
-> **Commits:** 8 meaningful commits (excl. [skip ci] housekeeping)
+> **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern)
+> **Current AAIS:** 100.0/100 ✅ · **actionlint:** 0 · **ruff:** ✅
 
 ---
 
-## 1. Full Session Flow
+## 1. Full Session Flow (S861-cont)
 
 ```mermaid
 flowchart TD
-    START(["🟢 Session Start\nS859 · 2026-05-08T00:20Z"]) --> CI_AUDIT
+    START(["🟢 S861-cont · 2026-05-08T03:20Z"]) --> MERGE
 
-    CI_AUDIT["🔍 CI Audit\nRead actionlint logs\nrun 25531077598\nRun 25529473383"] --> FIX1
+    MERGE["✅ Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main\n(2 parents: branch + main)"] --> SEC
 
-    FIX1["✅ Fix 1\nCodeQL 13404\npy/call-to-non-callable\nrunner.py callable()"] --> FIX2
+    SEC["✅ Security Fix\npost_rotation_verify.sh\nremoved partial token value from log\n(variable name only — closes PR review)"] --> CACHE
 
-    FIX2["✅ Fix 2\nyamllint\ntrailing blank\ntrigger-on-approval.yml"] --> FIX3
+    CACHE["✅ Comment Accuracy Fixes\ntoken-probe.yml\npr-size-analyzer.yml\n# aais-cache: none rationale corrected"] --> RL2C
 
-    FIX3["✅ Fix 3\nCherry-pick PR #4347\nUnused imports\nApp.tsx + WorkflowTemplatesLibrary.tsx"] --> OPT1
+    RL2C["✅ RL-2c — CodeQL Schedule Stagger\ncodeql.yml → Monday 03:00 UTC\ncodeql-analysis.yml → Thursday 03:00 UTC\neliminate concurrent GHAS upload"] --> RL3B
 
-    OPT1["✅ Optimization\ndocumentation-link-checker.yml\n• Fix 1: diff-based selection\n• Fix 2: per-file JSON cache\n• Fix 3: exclude .github/workflows/\n• Fix 4: schedule guard"] --> AAIS
+    RL3B["✅ RL-3b — artifact-monitoring.yml\nGH_TRICKLE env block added\nRate-limit pre-check step\nif: RATE_LIMIT_OK != false guards\non all heavy steps"] --> ADMIN
 
-    AAIS["✅ AAIS 97.34 → 99.9\n• cache:pip 26 workflows\n• Security 5-gate scorer\n• self-healing.yml created\n• Reliability 98.4"] --> SEC
+    ADMIN["✅ Admin Action Notifier Pattern\n(reproducible for all future gaps)\n• admin-action-notifier.yml (reusable engine)\n• admin-action-t03.yml (T-03 caller)\n• admin_action_probe.py (CLI script)\n• ADMIN_ACTION_WORKFLOW_PATTERN.md\n• variable_set_master_key_rotated.json"] --> DOCS
 
-    SEC["✅ Security Hardening\n• self-healing.yml restructured\n  – remove workflow_run (double-fire)\n  – remove uses: (no workflow_call)\n  – permissions: {} + job actions:write\n• trigger-on-approval.yml\n  – head.ref → env var\n  – CodeQL script injection fixed"] --> WEC
+    DOCS["✅ Living Docs Updated\n• PR4346_whats_next.md — S861-cont\n• PR4346_session_diagram.md — this\n• CHANGELOG — full S861-cont entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
 
-    WEC["✅ WEC Dispatch + Auto-Approve\n• wec_enforcer.py\n  _find_and_approve_dispatched_run()\n  _approve_run()\n• workflow-execution-gate.yml\n  timeout 10→15 min"] --> DOCS
+    GATE["🔒 P-045 Gate\nruff ✅ · actionlint ✅\nsync_tracked_files ✅\nno conflicts · replies sent"] --> END
 
-    DOCS["✅ Living Docs v3\n• PR4346_whats_next.md\n• PR4346_session_diagram.md\n• CHANGELOG S859\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
-
-    GATE["🔒 P-045 Gate\nruff ✅\nactionlint ✅\nsync_tracked_files ✅\nno merge conflicts"] --> END
-
-    END(["🏁 Session Close\nAAIS 99.9 · actionlint 0 · ruff ✅"])
+    END(["🏁 Session Close\nAAIS 100.0 · OBJ-A/C/E/F ✅\nOBJ-B/D ⛔ admin-action-t03.yml will notify"])
 
     style START fill:#27ae60,color:#fff
     style END fill:#27ae60,color:#fff
+    style MERGE fill:#e74c3c,color:#fff
     style SEC fill:#e74c3c,color:#fff
-    style WEC fill:#4a90d9,color:#fff
-    style AAIS fill:#9b59b6,color:#fff
+    style ADMIN fill:#9b59b6,color:#fff
+    style RL2C fill:#4a90d9,color:#fff
+    style RL3B fill:#4a90d9,color:#fff
 ```
 
 ---
+
+## 2. Admin Action Notifier — Architecture
+
+```mermaid
+flowchart TD
+    APPROVE["🔓 PR workflows approved\nauto-approve-workflows.yml completes\nOR trigger-on-approval.yml completes"] --> T03
+
+    T03["admin-action-t03.yml\n(caller — gap-specific)\non: workflow_run completed"] --> ENGINE
+
+    ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call inputs:\n• gap_id: T-03\n• probe_url: /code-scanning/alerts\n• issue_title\n• issue_body_md\n• assignee: mbaetiong"] --> PROBE
+
+    PROBE["Probe step\nGET /code-scanning/alerts?per_page=1\nCODEX_MASTER_KEY"] --> CHECK
+
+    CHECK{HTTP status?}
+    CHECK -- "200 ✅" --> CLOSE
+    CHECK -- "403 ⚠️" --> ISSUE
+    CHECK -- "other ℹ️" --> SKIP
+
+    ISSUE["Create / update GitHub issue\n[T-03] CODEX_MASTER_KEY missing\nsecurity_events scope\nassign @mbaetiong\nlabel: admin-action-required"] --> WAIT
+
+    WAIT["⏳ Admin rotates key\nadds security_events scope\n90-day expiry"] --> NEXT_RUN
+
+    NEXT_RUN["Next workflow approval\nre-probes endpoint"] --> CHECK
+
+    CLOSE["Auto-close T-03 issue\nPost resolved comment\nOBJ-B now unblocked"]
+    SKIP["ℹ️ Inconclusive\nno issue action"]
+
+    style APPROVE fill:#4a90d9,color:#fff
+    style CLOSE fill:#27ae60,color:#fff
+    style ISSUE fill:#e74c3c,color:#fff
+    style ENGINE fill:#9b59b6,color:#fff
+```
+
+---
+
+## 3. Adding a New Admin-Action Gap (Pattern Reproducibility)
+
+```mermaid
+flowchart LR
+    DOC["📖 .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
+
+    STEP1["1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"] --> STEP2
+
+    STEP2["2. Create caller workflow\nadmin-action-<gap-id>.yml\non: workflow_run of approve-workflows\nuses: admin-action-notifier.yml\nsecrets: inherit"] --> STEP3
+
+    STEP3["3. Register in gap table\nGap Registry in ADMIN_ACTION_\nWORKFLOW_PATTERN.md"] --> STEP4
+
+    STEP4["4. Optionally use CLI\npython3 scripts/ci/\nadmin_action_probe.py\n--gap-id <ID>\n--probe-url <URL>\n--probe-only"] --> STEP5
+
+    STEP5["5. Test\ngh workflow run\nadmin-action-<gap-id>.yml"]
+
+    style DOC fill:#f39c12,color:#fff
+    style STEP2 fill:#4a90d9,color:#fff
+```
+
+---
+
+## 4. Previous Sessions Summary
+
+```mermaid
+flowchart LR
+    S859(["S859\nAAIS 97.34→99.9\nCodeQL callable fix\ndoc-link 4 fixes\nToken Review doc"]) --> S860
+    S860(["S860\nPR review fixes\nwec_enforcer.py\npost_rotation_verify.sh\nRL-2 Phase 1\ntoken-expiry-monitor.yml"]) --> S861
+    S861(["S861\nRL-2 Phase 2\ncodebase-health-sweep.yml\ncopilot-iterative-self-healing.yml\nComment gate replies"]) --> S861C
+    S861C(["S861-cont\nMerge conflict ✅\nRL-2c codeql stagger ✅\nRL-3b artifact-monitoring ✅\nAdmin action pattern ✅\nSecurity fix ✅"])
+
+    style S859 fill:#9b59b6,color:#fff
+    style S860 fill:#4a90d9,color:#fff
+    style S861 fill:#27ae60,color:#fff
+    style S861C fill:#27ae60,color:#fff
+```
+
+---
+
+## 5. Rate-Limit Hardening — Complete Map (RL-2 + RL-3)
+
+```mermaid
+flowchart TB
+    subgraph "RL-2a — copilot-iterative-self-healing.yml ✅"
+        direction LR
+        RL2A["Pattern A pre-check\nGH_TRICKLE_POLITE_SLEEP: 0.5\nsparse checkout for trickle.py\nbefore bulk PR-list API call"]
+    end
+    subgraph "RL-2b — codebase-health-sweep.yml ✅"
+        direction LR
+        RL2B["Pattern D page-guard\nremaining<20 break\nboth Active-PR guard calls\n(main + 0D_base_)"]
+    end
+    subgraph "RL-2c — codeql.yml + codeql-analysis.yml ✅"
+        direction LR
+        RL2C["Schedule stagger\nMonday 03:00 UTC\nThursday 03:00 UTC\nnot concurrent GHAS upload"]
+    end
+    subgraph "RL-3b — artifact-monitoring.yml ✅"
+        direction LR
+        RL3B["Pre-check step\nGH_TRICKLE env block\nif: RATE_LIMIT_OK != false\nguards on all heavy steps"]
+    end
+
+    RL2A & RL2B & RL2C & RL3B --> DONE["✅ All RL-2 + RL-3b workflows hardened"]
+
+    style DONE fill:#27ae60,color:#fff
+```
 
 ## 2. WEC Checkbox → Artifact Pipeline (Full Map)
 

@@ -1,31 +1,115 @@
-# What's Next — PR #4346 · S859 · 2026-05-08
+# What's Next — PR #4346 · S861-cont · 2026-05-08
 
 > **Branch:** `finding-autofix-faa8614c` → `main`
-> **AAIS composite:** **99.9 / 100 (S+)**
-> **actionlint:** ✅ 0 errors across all workflows
-> **ruff:** ✅ clean
-> **sync_tracked_files:** ✅ consistent
+> **AAIS composite:** **100.0 / 100 (S+)**
+> **actionlint:** ✅ 0 errors · **ruff:** ✅ clean · **sync_tracked_files:** ✅ · **Merge conflicts:** ✅ resolved
 
 ---
 
-## ✅ S859 Full Delivery Summary
+## ✅ S861-cont Delivery Summary
 
 | # | Deliverable | Files Touched | Status |
 |---|-------------|---------------|--------|
-| 1 | CodeQL 13404 `py/call-to-non-callable` — `callable(self.model)` | `src/codex_ml/evaluation/runner.py` | ✅ |
-| 2 | yamllint Fast Validation — trailing blank `trigger-on-approval.yml` | `trigger-on-approval.yml` | ✅ |
-| 3 | Cherry-pick PR #4347 — unused imports TSX files | `App.tsx`, `WorkflowTemplatesLibrary.tsx` | ✅ |
-| 4 | `documentation-link-checker.yml` 4-fix optimization (~95% scan reduction) | `documentation-link-checker.yml` | ✅ |
-| 5 | AAIS 97.34 → **99.9** (CI/CD 100%, Security 100%, Reliability 98.4%) | `aais_v4_scorer.py`, 48 workflows | ✅ |
-| 6 | `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` — click-by-click audit | new file | ✅ |
-| 7 | `self-healing.yml` restructure — fix actionlint reusable-workflow error | `self-healing.yml` | ✅ |
-| 8 | `trigger-on-approval.yml` — fix script injection (untrusted `head.ref` → env) | `trigger-on-approval.yml` | ✅ |
-| 9 | `self-healing.yml` — explicit `permissions: {}` + job-level `actions: write` | `self-healing.yml` | ✅ |
-| 10 | WEC dispatch → auto-approve: `_find_and_approve_dispatched_run()` in `wec_enforcer.py` | `wec_enforcer.py` | ✅ |
-| 11 | `workflow-execution-gate.yml` — timeout 10→15 min, annotated dispatch step | `workflow-execution-gate.yml` | ✅ |
-| 12 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT refreshed | multiple | ✅ |
+| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | ✅ |
+| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | ✅ |
+| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | ✅ |
+| 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` | ✅ |
+| 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` | ✅ |
+| 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files | ✅ |
+| 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple | ✅ |
 
 ---
+
+## ✅ Admin Action Notifier — New Pattern (S861-cont)
+
+```mermaid
+flowchart LR
+    TRIGGER["workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted"] --> CALLER
+    CALLER["admin-action-t03.yml\n(gap caller)"] --> ENGINE
+    ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call"] --> PROBE
+    PROBE{API probe result}
+    PROBE -- "200 ✅" --> CLOSE["Auto-close issue"]
+    PROBE -- "403 ⚠️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
+    style ENGINE fill:#9b59b6,color:#fff
+    style CLOSE fill:#27ae60,color:#fff
+    style OPEN fill:#e74c3c,color:#fff
+```
+
+**New files:**
+| File | Purpose |
+|------|---------|
+| `.github/workflows/admin-action-notifier.yml` | Reusable `workflow_call` engine — probe → issue → auto-close |
+| `.github/workflows/admin-action-t03.yml` | T-03 caller; fires on PR workflow approval events |
+| `scripts/ci/admin_action_probe.py` | CLI probe script; `--probe-only`, `--close-if-ok`, `--dry-run` |
+| `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` | Pattern guide + gap registry + step-by-step how-to |
+| `.codex/pending_ops/variable_set_master_key_rotated.json` | Intent placeholder for post-T-03 rotation update |
+
+---
+
+## ✅ RL-2 + RL-3 Rate-Limit Hardening — Complete
+
+| Phase | Workflow | Pattern | Status |
+|-------|----------|---------|--------|
+| RL-2a | `copilot-iterative-self-healing.yml` | Pattern A pre-check + `GH_TRICKLE_POLITE_SLEEP: 0.5` | ✅ S861 |
+| RL-2b | `codebase-health-sweep.yml` | Pattern D `remaining<20` page-guard | ✅ S861 |
+| RL-2c | `codeql.yml` + `codeql-analysis.yml` | Schedule stagger Mon/Thu 03:00 UTC | ✅ S861-cont |
+| RL-3b | `artifact-monitoring.yml` | Pre-check step + all-step guards | ✅ S861-cont |
+| RL-2 (previous) | `workflow-execution-gate.yml`, `auto-approve-workflows.yml`, `promote-integration-branch.yml`, `copilot-agent-session-done.yml` | Patterns A/C/D/GraphQL | ✅ S860 |
+
+---
+
+## ⏳ Remaining (Admin Action Required — cannot be done by agent)
+
+| Item | Blocker | Auto-notifier |
+|------|---------|---------------|
+| **OBJ-B** `py/wrong-named-arg` ×15 | `security_events` scope on `CODEX_MASTER_KEY` | `admin-action-t03.yml` creates issue |
+| **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check |
+
+### Admin Steps to Unblock (T-03)
+1. [Settings → Secrets → CODEX_MASTER_KEY → Edit PAT](https://github.com/settings/tokens) → add `security_events` scope, 90-day expiry
+2. Update secret value in [org settings](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
+3. Run `token-probe.yml` to verify → `admin-action-t03.yml` auto-closes the T-03 issue
+4. Agent can then run `codeql-alert-fetcher.yml` and fix all 15 `py/wrong-named-arg` locations
+
+---
+
+## 🏆 Merge Readiness Scorecard (S861-cont)
+
+| Dimension | Weight | Status |
+|-----------|--------|--------|
+| auto_fix (0 auto-fixable) | 15 | ✅ |
+| sync_tracked_files | 12 | ✅ consistent |
+| action_versions | 12 | ✅ all approved |
+| ruff | 10 | ✅ clean |
+| github-script ≥ v8 | 8 | ✅ |
+| Pattern 27 registered | 7 | ✅ |
+| download-artifact v5 | 7 | ✅ |
+| PDA entry today | 8 | ✅ |
+| accountability report today | 8 | ✅ |
+| AAIS composite 100.0/100 | 13 | ✅ |
+| **Merge conflicts** | — | ✅ resolved |
+| **PR review comments** | — | ✅ all replied |
+| **comment_new threads** | — | ✅ all replied |
+
+**Estimated score: 95+/100** · Blocked only by OBJ-B/D (admin action — T-03 auto-notifier active)
+
+---
+
+## 🔗 Key Files Produced (All Sessions)
+
+| File | Purpose | Session |
+|------|---------|---------|
+| `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | Token inventory, click-by-click playbook | S859 |
+| `.github/workflows/token-expiry-monitor.yml` | Daily PAT expiry monitor (T-02) | S860 |
+| `scripts/ci/wec_enforcer.py` | WEC dispatch + distinct outcome tracking | S860 |
+| `scripts/ci/post_rotation_verify.sh` | 7-step post-rotation check (no token values in logs) | S860 |
+| `scripts/ci/github_api_trickle.py` | Rate-limit trickle helper (all RL patterns) | S860 |
+| `.github/workflows/admin-action-notifier.yml` | Reusable admin-action gap engine | S861-cont |
+| `.github/workflows/admin-action-t03.yml` | T-03 auto-notifier (fires on approval) | S861-cont |
+| `scripts/ci/admin_action_probe.py` | CLI gap probe script | S861-cont |
+| `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` | Pattern guide for new gaps | S861-cont |
+| `docs/roadmap/PR4346_whats_next.md` | This file — living roadmap | S859–S861-cont |
+| `docs/sessions/PR4346_session_diagram.md` | 5-diagram session map | S859–S861-cont |
 
 ## 🔄 WEC → Dispatch → Auto-Approve Flow (New)
 

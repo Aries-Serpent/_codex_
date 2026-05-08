@@ -30,6 +30,12 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+env:
+  # RL-3b: Rate-limit dashboard guard
+  GH_TRICKLE_POLITE_SLEEP: "0.5"
+  GH_TRICKLE_MIN_REMAINING: "50"
+
 jobs:
   monitor-workflows:
     name: Monitor Workflows & Create Issues
@@ -40,22 +46,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: RL-3b — Rate-limit pre-check
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "0")
+          echo "GitHub API rate-limit remaining: $REMAINING"
+          if [ "$REMAINING" -lt "${GH_TRICKLE_MIN_REMAINING}" ]; then
+            echo "⚠️  Rate limit low ($REMAINING remaining < ${GH_TRICKLE_MIN_REMAINING} threshold) — skipping artifact monitoring to protect CI"
+            echo "RATE_LIMIT_OK=false" >> "$GITHUB_ENV"
+          else
+            echo "RATE_LIMIT_OK=true" >> "$GITHUB_ENV"
+          fi
+
       - name: CacheManager health check
+        if: env.RATE_LIMIT_OK != 'false'
         continue-on-error: true
         run: |
           python scripts/ci/generate_cache_keys.py --health --workflow artifact-monitoring 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python 3.12 with tiered cache
+        if: env.RATE_LIMIT_OK != 'false'
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
           cache-tier: common
 
       - name: Install dependencies
+        if: env.RATE_LIMIT_OK != 'false'
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[github]"
 
       - name: Download previous state
+        if: env.RATE_LIMIT_OK != 'false'
         id: download_state
         uses: actions/download-artifact@v5
         with:
@@ -64,6 +87,7 @@ jobs:
         continue-on-error: true
 
       - name: Run monitoring check
+        if: env.RATE_LIMIT_OK != 'false'
         id: monitor
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

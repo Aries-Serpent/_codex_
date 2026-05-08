@@ -1,5 +1,5 @@
 name: Token Probe — CODEX_MASTER_KEY & CODEX_BACKUP_KEY Validation
-# aais-cache: none  # No pip install — Python snippets use stdlib only (json, sys); no pip deps
+# aais-cache: none  # No pip install — Python snippets use stdlib only (json, sys); no pip cache needed
 
 # Standalone on-demand token validator.
 # Tests BOTH CODEX_MASTER_KEY and CODEX_BACKUP_KEY with real read + write API probes
