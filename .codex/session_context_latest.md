@@ -1,35 +1,36 @@
-# Session Context — 2026-05-08T02:14:16Z
+# Session Context — 2026-05-08T02:55:49Z
 **Branch:** `finding-autofix-faa8614c`  **PR:** #4346  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4663` (✅)
-- GraphQL remaining: `4960` (✅)
+- REST remaining: `4889` (✅)
+- GraphQL remaining: `4984` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4346 — Fix for Non-callable called
 State: `open`  Draft: `False`  Branch: `finding-autofix-faa8614c` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `Post rescue comment` (failure)
+### ❌ 2 Failing CI Check(s)
+- `Post gate failure notice` (cancelled)
+- `🔐 Enforce Secrets Baseline` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
-- **PR Comment Review Gate** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-08)
 - **🔐 Secrets Baseline Enforcer** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
-- **Validation Pipeline** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
-- **PR Auto-Fix Check** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-08)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
 
 ## 📝 Recent Commits
+- `92c4a499` fix(ci): S860-FINAL — secrets baseline FP fix, living docs complete, follow-up p — copilot-swe-agent[bot] (2026-05-08)
+- `32800268` fix(ci): S860 rate-limit hardening, PR review fixes, token-expiry-monitor, PR te — copilot-swe-agent[bot] (2026-05-08)
+- `55aa4d80` chore: initial plan — CTEP Mode ON (OBJ-1 through OBJ-4 + PR review fixes) — copilot-swe-agent[bot] (2026-05-08)
 - `28d1becd` docs: expand ELEVATED_PRIVILEGES_TOKEN_REVIEW §10-12 + whats_next variable/secre — copilot-swe-agent[bot] (2026-05-08)
 - `99046288` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
 - `db603adf` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
 - `16ca8411` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
 - `79c9709d` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
-- `b095c7c6` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
-- `9356afa0` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
-- `2a02c82d` fix(ci): correct sed case-insensitive flag in post_rotation_verify.sh — copilot-swe-agent[bot] (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
