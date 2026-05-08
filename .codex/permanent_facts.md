@@ -96,3 +96,11 @@ has an effect in non-sharded test runs.
   Policy doc: `.codex/docs/ZERO_CONFLICT_WRAP_UP_POLICY.md`
   Introduced: PR #4323 S30 2026-05-07 — `.secrets.baseline` conflict from
   `codebase-health-sweep.yml` auto-push to main while PR was active.
+
+## S872 — 2026-05-08T08:23Z
+
+- `subprocess.py` overloads: `text=True` → `input: str | None`; `text=False` → `input: bytes | None` (PR #4356 commit 91763033f)
+- `rate_limit_orchestrator.py` `_gh_api_with_retry` returns `(last_status, last_result)` on retry exhaustion, not `(0, {})` (PR #4356 91763033f)
+- `pyproject.toml` per-file-ignore `E501` for `scripts/ci/rate_limit_orchestrator.py` (PR #4356 59417f4d)
+- `COPILOT_SESSION_TTL_SECONDS` repo variable controls agent-auth-delegation TTL (default 43200 s; set 3600 to tighten post-stabilisation)
+- All 8 review threads on PR #4356 replied and resolved (commits 91763033f + 59417f4d)
