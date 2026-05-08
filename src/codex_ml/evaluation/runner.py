@@ -223,14 +223,17 @@ class EvaluationRunner:
                     predictions = self.model.predict(inputs)
                 elif hasattr(self.model, "forward"):
                     predictions = self.model.forward(inputs)
-                else:
-                    model_call = getattr(self.model, "__call__", None)
-                    if callable(model_call):
-                        predictions = model_call(inputs)
-                    else:
+                elif callable(self.model):
+                    try:
+                        predictions = self.model(inputs)
+                    except TypeError as e:
                         raise ValueError(
-                            f"Model {type(self.model)} has no predict/forward/__call__ method"
-                        )
+                            f"Model {type(self.model)} is callable but failed: {e}"
+                        ) from e
+                else:
+                    raise ValueError(
+                        f"Model {type(self.model)} has no predict/forward method and is not callable"
+                    )
 
                 # Accumulate for metrics
                 batch_size = len(inputs) if hasattr(inputs, "__len__") else 1

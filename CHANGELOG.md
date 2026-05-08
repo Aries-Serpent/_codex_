@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S866) — 2026-05-08
+- **CodeQL Alert Resolution**: Fixed all 13 "Wrong number of arguments in a call" alerts in `tests/serving/test_inference_enhanced.py` by updating stub `create_app()` signature to match the real implementation (added `config: Optional[ModelConfig] = None` parameter).
+- **Code Quality**: Improved `src/codex_ml/evaluation/runner.py` model invocation logic — replaced `getattr(self.model, "__call__", ...)` pattern with `callable(self.model)` check and direct invocation to avoid Python special method resolution issues.
+- **Test Robustness**: Enhanced `tests/agents/test_phase2_deep_coverage_batch4.py::test_path_integral_optimization` to try keyword arguments first, then fall back to positional arguments, preventing silent test skips due to signature mismatches.
+- Addressed all 16 PR review comments from Copilot PR reviewer and GitHub Advanced Security CodeQL alerts.
+
 ### Fixed (auto-update — PR #4351)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4351 (SHA `f4fbff92`) at 2026-05-08T06:03Z [auto-generated]
 

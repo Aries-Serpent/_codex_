@@ -1,32 +1,32 @@
-# Session Context — 2026-05-08T06:29:54Z
+# Session Context — 2026-05-08T06:41:05Z
 **Branch:** `finding-autofix-faa8614c`  **PR:** #4351  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3354` (✅)
-- GraphQL remaining: `4925` (✅)
+- REST remaining: `2808` (✅)
+- GraphQL remaining: `4895` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4351 — Fix for Non-callable called
-State: `open`  Draft: `True`  Branch: `finding-autofix-faa8614c` → `main`
+State: `open`  Draft: `False`  Branch: `finding-autofix-faa8614c` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-08)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
 
 ## 📝 Recent Commits
+- `6b4ccb6c` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
+- `d1973062` Merge branch 'main' into finding-autofix-faa8614c — Statix (2026-05-08)
+- `afc50bff` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-08)
+- `ac67c4a5` Fix CI gate failures from pip cache in sparse-checkout workflows — copilot-swe-agent[bot] (2026-05-08)
+- `a40fd247` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-08)
+- `b335ae05` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-08)
 - `bb43f1fa` Fix for Wrong name for an argument in a call — Statix (2026-05-08)
 - `9f351d3d` Fix for Wrong name for an argument in a call — Statix (2026-05-08)
-- `98c0cfa0` Fix for Wrong name for an argument in a call — Statix (2026-05-08)
-- `0ea90929` Fix for Wrong name for an argument in a call — Statix (2026-05-08)
-- `44a20a71` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
-- `f14fa69b` Fix for Wrong name for an argument in a call — Statix (2026-05-08)
-- `6b570278` fix(ci): remove pip cache from sparse-checkout Python setup steps — copilot-swe-agent[bot] (2026-05-08)
-- `366496dc` Fix for Wrong name for an argument in a call — Statix (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
