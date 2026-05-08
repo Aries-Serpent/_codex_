@@ -232,7 +232,7 @@ class EvaluationRunner:
                         ) from e
                 else:
                     raise ValueError(
-                        f"Model {type(self.model)} has no predict/forward method and is not callable"
+                        f"Model {type(self.model)} has no predict/forward method and is not callable"  # noqa: E501
                     )
 
                 # Accumulate for metrics
