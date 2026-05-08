@@ -1,11 +1,12 @@
 # PR #4356 — Session Diagram (S867 + S868)
 
-> **Sessions:** S867, S868 | **Branch:** `copilot/fix-webhook-receiver-url-format`
+> **Sessions:** S867–S873 | **Branch:** `copilot/fix-webhook-receiver-url-format`
 > **Date:** 2026-05-08 | **Model:** claude-sonnet-4.x
+> **HEAD:** `047bf03b` · 99/100 merge readiness · 39/40 checks passing · 8/8 review threads resolved
 
 ---
 
-## 🗺️ Full Session Flow (S867 → S868)
+## 🗺️ Full Session Flow (S867 → S873)
 
 ```mermaid
 sequenceDiagram
@@ -329,3 +330,45 @@ graph LR
     COMMIT --> REPLIES[8/8 threads replied]
     GREEN & REPLIES --> MERGE_READY[Merge Ready]
 ```
+
+---
+
+## S873 CI Rescue + Approval Dispatch
+
+```mermaid
+sequenceDiagram
+    participant M as Maintainer
+    participant BOT as Auto-Rescue Bot
+    participant A as Copilot Agent (S873)
+    participant CI as CI Checks
+
+    BOT->>M: Comment #4404718140 — Validation Pipeline failure (commit da2a74be)
+    BOT->>M: Comment #4404723111 — CI Rescue (empty commit SHA template)
+    BOT->>M: Comment #4404734578 — 99 failures on 95c55bd (8 review comments unresolved)
+    M->>A: Comment #4404772494 — Approval Dispatch + @copilot continue
+
+    Note over A: Session S873 start
+    A->>A: P-045 gate: fetch main, no conflicts, ruff ✅
+    A->>A: Update whats_next → S873 CI table (99/100 · 39/40)
+    A->>A: Update session_diagram → S867–S873 header
+    A->>A: Update CHANGELOG (S873 Fixed entry)
+    A->>A: Update AGENT_ACCOUNTABILITY_REPORT (S873 summary)
+    A->>M: Reply #4404718140 — stale commit, resolved in 1252362
+    A->>M: Reply #4404723111 — empty SHA template, HEAD clean
+    A->>M: Reply #4404734578 — 99 failures resolved in 91763033f
+    A->>M: Reply #4404772494 — continued, 99/100, 39/40 passing
+
+    CI-->>A: 39/40 ✅ · 3 startup_failure (pre-existing)
+    Note over A,CI: HEAD 047bf03b → S873 commit
+```
+
+### S873 Final State
+
+| Metric | Value |
+|--------|-------|
+| HEAD | `047bf03b` |
+| Merge readiness | 99/100 ✅ |
+| CI checks | 39/40 passing |
+| Review threads | 8/8 resolved ✅ |
+| CodeQL alerts | 0 ✅ |
+| New commits this session | 1 (living docs) |

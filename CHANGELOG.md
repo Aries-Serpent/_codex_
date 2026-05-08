@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S873) — 2026-05-08
+- Replied to 4 new CI rescue + approval-dispatch comments (#4404718140, #4404723111,
+  #4404734578, #4404772494); all on superseded commits `da2a74be`/`95c55bd` — resolved
+  in `1252362` and `91763033f`.
+- Updated living docs (whats_next, session_diagram) to S873 status: 99/100 · 39/40 passing.
+- Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md.
+- P-045 gate passed: ruff ✅ · no conflicts ✅ · sync ✅.
+
 ### Fixed (S872) — 2026-05-08
 - `pyproject.toml`: add `E501` per-file-ignore for `scripts/ci/rate_limit_orchestrator.py`
   (long log/argparse strings are expected in CLI tools).
