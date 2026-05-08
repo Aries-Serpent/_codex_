@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4356)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4356 (SHA `4005db7e`) at 2026-05-08T07:12Z [auto-generated]
+
 ### Fixed (S866) — 2026-05-08
 - **CodeQL Alert Resolution**: Fixed all 13 "Wrong number of arguments in a call" alerts in `tests/serving/test_inference_enhanced.py` by updating stub `create_app()` signature to match the real implementation (added `config: Optional[ModelConfig] = None` parameter).
 - **Code Quality**: Improved `src/codex_ml/evaluation/runner.py` model invocation logic — replaced `getattr(self.model, "__call__", ...)` pattern with `callable(self.model)` check and direct invocation to avoid Python special method resolution issues.
