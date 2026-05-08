@@ -53,6 +53,11 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - ✅ Updated `tests/agents/test_phase2_physics_orchestrator.py` so it validates
   the current `DecisionState` defaults instead of a removed `options`
   attribute.
+- ✅ Applied final review polish:
+  - documented the scope of the fallback status-update validator
+  - made missing torch checkpoint attributes report the specific attribute name
+  - annotated why `dict(row)` is required for `sqlite3.Row` materialization in
+    `tests/test_session_logging.py`
 - ✅ Restored the transient `.codex/session_context_latest.md` worktree drift so
   the closing change set stays scoped to the actual fixes.
 

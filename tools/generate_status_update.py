@@ -40,7 +40,12 @@ def run_command(cmd: list[str], cwd: Path | None = None) -> tuple[int, str, str]
 def _fallback_validate_required(
     schema: dict[str, Any], data: Any, path: str = ""
 ) -> list[str]:
-    """Best-effort required-field validation when jsonschema is unavailable."""
+    """Best-effort required-field validation when ``jsonschema`` is unavailable.
+
+    This fallback only checks object structure and recursively required fields;
+    it does not attempt full JSON Schema validation such as type unions, enums,
+    patterns, or numeric bounds.
+    """
     errors: list[str] = []
     if schema.get("type") == "object":
         if not isinstance(data, dict):

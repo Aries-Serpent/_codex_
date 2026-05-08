@@ -37,7 +37,7 @@ def _require_torch_attr(name: str) -> Any:
         raise RuntimeError("PyTorch required to use checkpoints")
     attr = getattr(torch, name, None)
     if attr is None:
-        raise RuntimeError("PyTorch required to use checkpoints")
+        raise RuntimeError(f"PyTorch is missing required attribute: {name}")
     return attr
 
 

@@ -44,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `tests/agents/test_phase2_physics_orchestrator.py` now validates the
     current `DecisionState` defaults instead of expecting a removed `options`
     attribute
+  - final review polish: documented the fallback status-update validator,
+    clarified missing torch attribute errors in checkpointing, and annotated the
+    sqlite row materialization helper in `tests/test_session_logging.py`
 
 ### Fixed (S887) — 2026-05-08
 - Hardened `src/codex_ml/utils/safe_pickle.py` review-thread follow-ups for PR
