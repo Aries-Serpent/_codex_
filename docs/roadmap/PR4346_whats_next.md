@@ -637,20 +637,14 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 #### Phase RL-2 — P2 Workflows (scheduled, self-healing)
 
-- [ ] **RL-2a** `copilot-iterative-self-healing.yml`
-  - Add Pattern A pre-check step at job start
-  - Replace inline comment-page loop with:
-    ```bash
-    python scripts/ci/github_api_trickle.py \
-      --rest "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
-      > /tmp/comments.json
-    ```
-  - Add deferred-healing comment when rate-limited
+- [x] **RL-2a** `copilot-iterative-self-healing.yml` ✅ S861
+  - Added Pattern A pre-check step (sparse checkout + `github_api_trickle.py --status`) at job start
+  - Added job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`
+  - Rate-limited path sets `RATE_LIMITED=true` in `$GITHUB_ENV`, triage step skips with `if: env.RATE_LIMITED != 'true'`
 
-- [ ] **RL-2b** `codebase-health-sweep.yml`
-  - Add Pattern A pre-check
-  - Mark all API steps `continue-on-error: true` (advisory workflow)
-  - Stagger cron away from `auto-approve-workflows.yml` (currently same minute)
+- [x] **RL-2b** `codebase-health-sweep.yml` ✅ S861
+  - Added Pattern D remaining<20 guard before both Active-PR guard API calls (main + 0D_base_)
+  - Graceful skip (pr_skip=false) when rate-limited — sweep push proceeds safely
 
 - [ ] **RL-2c** `codeql.yml` + `codeql-analysis.yml` — schedule stagger
   - `codeql.yml`: change schedule to `0 2 * * 1` (Monday 02:00 UTC)

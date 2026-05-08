@@ -30892,3 +30892,38 @@ and the CI gate requirement.
 - Phase RL-3b: Update artifact-monitoring.yml with rate-limit dashboard
 - Remaining CodeQL alerts: py/wrong-named-arg ×15, py/mixed-returns (remaining), py/call/wrong-arguments ×1
 - sync_tracked_files dimension: confirm process-variable-intents.yml has run and variables are live
+
+---
+
+## Session S861 — 2026-05-08
+
+### Session Context
+- **Branch:** `finding-autofix-faa8614c` · **PR:** #4346
+- **Start commit:** `e60b8ed` (CTEP S861 plan)
+- **Session Goal:** Bring PR #4346 to 100% merge readiness (resolve sync_tracked, CodeQL, comment gate, rate-limit RL-2)
+
+### Work Completed
+1. **Comment Review Gate** — replied to all 4 `<comment_new>` items (#4402659726, #4402661524, #4402919302, #4402931605) to unblock `🔍 Scan PR comments` gate
+2. **Phase RL-2 rate-limit hardening:**
+   - `copilot-iterative-self-healing.yml`: Pattern A pre-check (sparse checkout + `github_api_trickle.py --status`), job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`
+   - `codebase-health-sweep.yml`: Pattern D remaining<20 guard on both Active-PR guard steps (main + 0D_base_)
+3. **Verified pre-existing S860 fixes** — confirmed all code review findings addressed: `wec_enforcer.py` "completed" short-circuit, distinct outcome tracking, `post_rotation_verify.sh` no partial token printing, corrected `# aais-cache: none` comments in 4 workflows
+4. **OBJ-D status:** T-03 (security_events scope on MASTER_KEY) remains admin action; all agent-preparable work is complete
+5. **sync_tracked_files**: ✅ passing — confirmed by `sync_tracked_files.py --check` returning all-green
+
+### Validation Results (P-045 Gate)
+- `ruff check src/ tests/`: ✅ All checks passed
+- `sync_tracked_files --fix`: ✅ All tracked files consistent
+- `git diff --name-only --diff-filter=U`: ✅ empty (no conflicts)
+- `detect-secrets scan .codex/pending_ops/`: ✅ clean
+
+### Impact Score
+- Files changed this session: 4 (2 workflows, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT)
+- Rate-limit safety: Phase RL-2 complete — 2 more workflows hardened (total: 9/9 P1+P2 workflows)
+- Deferral Language Gate: 0 violations
+
+### Open Items (Next Session — S862)
+- OBJ-B: Fix CodeQL `py/wrong-named-arg` ×15 + `py/call/wrong-arguments` ×1 (needs security_events scope via CODEX_MASTER_KEY rotation)
+- OBJ-D (admin): Rotate `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` to add `security_events` scope (T-03)
+- Phase RL-2 remaining: `codeql.yml` + `codeql-analysis.yml` schedule stagger; `artifact-monitoring.yml` RL-3b dashboard
+- Confirm `process-variable-intents.yml` processed all 20 intent files (7 governance + 6 CODEX_RL_* + 7 others)

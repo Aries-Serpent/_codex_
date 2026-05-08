@@ -403,3 +403,28 @@ xychart-beta
     y-axis "AAIS Score" 70 --> 100
     line [78, 83, 86, 91, 92, 100]
 ```
+
+## 17. S861 — Comment Gate + Phase RL-2
+
+```mermaid
+gantt
+    title S861 — 2026-05-08 (PR #4346 merge-readiness)
+    dateFormat HH:mm
+    axisFormat %H:%M
+
+    section OBJ-C Comment Gate
+    Reply to 4 comment_new threads             :done, 03:00, 5m
+
+    section OBJ-E Phase RL-2
+    copilot-iterative-self-healing Pattern A   :done, 03:05, 5m
+    codebase-health-sweep Pattern D            :done, 03:10, 5m
+
+    section Docs
+    CHANGELOG S861 entry                       :done, 03:15, 2m
+    whats_next RL-2a/2b checked               :done, 03:17, 2m
+    Accountability report S861                 :done, 03:19, 3m
+    Session diagram #17 added                  :done, 03:22, 2m
+
+    section P-045 Gate
+    ruff clean / sync_tracked / no conflicts   :done, 03:24, 3m
+```

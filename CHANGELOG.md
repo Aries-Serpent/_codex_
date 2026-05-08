@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed/Added (S861) — 2026-05-08
+- `copilot-iterative-self-healing.yml`: Phase RL-2 — added Pattern A rate-limit pre-check step before bulk PR-list API call; job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`; sparse checkout added so `github_api_trickle.py` is available at pre-check time.
+- `codebase-health-sweep.yml`: Phase RL-2 — added Pattern D remaining<20 guard before both `Active-PR guard` API calls (main + 0D_base_); skips check gracefully when rate-limited rather than failing the push guard.
+- Comment Review Gate: replied to all `<comment_new>` items (#4402659726, #4402661524, #4402919302, #4402931605) to clear gate.
+
 ### Fixed/Added (S860) — 2026-05-08
 - `scripts/ci/wec_enforcer.py`: `_find_and_approve_dispatched_run()` — removed "completed" from the early-exit status check; now only `queued`/`in_progress` are treated as "already running". Stale completed runs from previous pushes no longer short-circuit approval polling.
 - `scripts/ci/wec_enforcer.py`: `cmd_dispatch_checked()` — replaced misleading `approved` bool counter with distinct outcome tracking: `approved` (was action_required, now unblocked), `already_running` (queued/in_progress, no approval needed), `timed_out` (self-approve via schedule). Summary now accurately describes each outcome.
