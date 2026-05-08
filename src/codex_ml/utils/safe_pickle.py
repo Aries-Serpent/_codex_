@@ -58,7 +58,8 @@ class RestrictedUnpickler(pickle.Unpickler):
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
         # Private `torch.storage` helpers remain necessary to reconstruct trusted
-        # tensor cache payloads.
+        # tensor cache payloads; `_TypedStorage` is still emitted by tensor
+        # pickles on supported torch versions.
         "torch.storage": {"_TypedStorage", "TypedStorage"},
         "codex_ml": {"ModelCheckpoint", "TrainingState"},
     }
@@ -152,6 +153,8 @@ def _get_secret_key() -> bytes:
     except FileExistsError:
         logger.debug("Using existing pickle secret key at %s", key_file)
         return key_file.read_bytes()
+    except OSError as exc:
+        raise OSError(f"Unable to create pickle secret key at {key_file}: {exc}") from exc
     logger.info("Generating new pickle secret key at %s", key_file)
     with os.fdopen(fd, "wb") as handle:
         handle.write(new_key)
@@ -177,7 +180,10 @@ def _split_signed_pickle(data: bytes) -> tuple[bytes, bytes]:
         version = data[len(SIGNED_PICKLE_MAGIC)]
         algo = data[len(SIGNED_PICKLE_MAGIC) + 1]
         if version != SIGNED_PICKLE_VERSION:
-            raise ValueError(f"Unsupported signed pickle version: {version}")
+            raise ValueError(
+                f"Unsupported signed pickle version: {version} "
+                f"(expected {SIGNED_PICKLE_VERSION})"
+            )
         if algo != SIGNED_PICKLE_ALGO_SHA256:
             raise ValueError(f"Unsupported signed pickle algorithm id: {algo}")
 

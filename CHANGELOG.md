@@ -41,6 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - removed the redundant pre-`exists()` check so `_get_secret_key()` always
     attempts atomic creation first, and documented the legacy signed-payload
     fallback behavior in `_split_signed_pickle()`
+  - clarified why `torch.storage._TypedStorage` remains allowlisted, wrapped
+    unexpected `os.open()` failures with clearer key-path context, and added an
+    invalid-header regression test for signed pickle version parsing
 
 ### Changed (S886) — 2026-05-08
 - Refreshed `.github/copilot-prompts/active/PR-4368-followup.md` so the active

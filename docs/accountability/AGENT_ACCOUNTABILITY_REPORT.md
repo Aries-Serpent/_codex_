@@ -35,6 +35,9 @@
   - removed the redundant pre-`exists()` check so `_get_secret_key()` now
     always attempts atomic creation first and clarified the legacy signed-file
     fallback in `_split_signed_pickle()`
+  - clarified why `_TypedStorage` remains allowlisted, added clearer context on
+    unexpected key-creation failures, and added an invalid signed-header
+    regression test
 
 ### Validation Snapshot
 - `python -m ruff check src/codex_ml/utils/safe_pickle.py tests/test_codex_ml_safe_pickle.py` ✅
