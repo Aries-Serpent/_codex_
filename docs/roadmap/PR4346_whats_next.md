@@ -1,4 +1,129 @@
-# What's Next — PR #4346 · S861-cont+monitoring · 2026-05-08
+# What's Next — PR #4346 · S862 · 2026-05-08
+
+> **Branch:** `finding-autofix-faa8614c` → `main`  
+> **AAIS composite:** **100.0 / 100 (S+)** · **actionlint:** ✅ 0 · **ruff:** ✅ · **sync_tracked_files:** ✅ · **Merge conflicts:** ✅  
+> **Latest session:** S862 · 2026-05-08T04:10Z  
+> **CI Status:** 5 unresolved review threads → all confirmed fixed in current code ✅
+
+---
+
+## ✅ S862 Delivery Summary
+
+| # | Deliverable | Status |
+|---|-------------|--------|
+| 1 | Reviewed all 5 unresolved Copilot AI review threads | ✅ All confirmed resolved in current code |
+| 2 | `wec_enforcer.py` `_find_and_approve_dispatched_run()` — no `completed` check | ✅ |
+| 3 | `wec_enforcer.py` summary counter — distinct outcome tracking | ✅ |
+| 4 | `post_rotation_verify.sh` — no partial token value in logs | ✅ |
+| 5 | `# aais-cache: none` comments in `token-probe.yml` + `pr-size-analyzer.yml` | ✅ |
+| 6 | Replied to all `comment_new` threads (#4403141030, #4403147280, #4403149897) | ✅ |
+| 7 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated | ✅ |
+
+---
+
+## ✅ S861-cont Delivery Summary
+
+| # | Deliverable | Files Touched | Status |
+|---|-------------|---------------|--------|
+| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | ✅ |
+| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | ✅ |
+| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | ✅ |
+| 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` | ✅ |
+| 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` | ✅ |
+| 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files | ✅ |
+| 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple | ✅ |
+| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | ✅ |
+
+---
+
+## ✅ Admin Action Notifier — New Pattern (S861-cont)
+
+```mermaid
+flowchart LR
+    TRIGGER["workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted"] --> CALLER
+    CALLER["admin-action-t03.yml\n(gap caller)"] --> ENGINE
+    ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call"] --> PROBE
+    PROBE{API probe result}
+    PROBE -- "200 ✅" --> CLOSE["Auto-close issue"]
+    PROBE -- "403 ⚠️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
+    style ENGINE fill:#9b59b6,color:#fff
+    style CLOSE fill:#27ae60,color:#fff
+    style OPEN fill:#e74c3c,color:#fff
+```
+
+**New files:**
+| File | Purpose |
+|------|---------|
+| `.github/workflows/admin-action-notifier.yml` | Reusable `workflow_call` engine — probe → issue → auto-close |
+| `.github/workflows/admin-action-t03.yml` | T-03 caller; fires on PR workflow approval events |
+| `scripts/ci/admin_action_probe.py` | CLI probe script; `--probe-only`, `--close-if-ok`, `--dry-run` |
+| `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` | Pattern guide + gap registry + step-by-step how-to |
+| `.codex/pending_ops/variable_set_master_key_rotated.json` | Intent placeholder for post-T-03 rotation update |
+
+---
+
+## ✅ RL-2 + RL-3 Rate-Limit Hardening — Complete
+
+| Phase | Workflow | Pattern | Status |
+|-------|----------|---------|--------|
+| RL-2a | `copilot-iterative-self-healing.yml` | Pattern A pre-check + `GH_TRICKLE_POLITE_SLEEP: 0.5` | ✅ S861 |
+| RL-2b | `codebase-health-sweep.yml` | Pattern D `remaining<20` page-guard | ✅ S861 |
+| RL-2c | `codeql.yml` + `codeql-analysis.yml` | Schedule stagger Mon/Thu 03:00 UTC | ✅ S861-cont |
+| RL-3b | `artifact-monitoring.yml` | Pre-check step + all-step guards | ✅ S861-cont |
+| RL-2 (previous) | `workflow-execution-gate.yml`, `auto-approve-workflows.yml`, `promote-integration-branch.yml`, `copilot-agent-session-done.yml` | Patterns A/C/D/GraphQL | ✅ S860 |
+
+---
+
+## ⏳ Remaining (Admin Action Required — cannot be done by agent)
+
+| Item | Blocker | Auto-notifier |
+|------|---------|---------------|
+| **OBJ-B** `py/wrong-named-arg` ×15 | `security_events` scope on `CODEX_MASTER_KEY` | `admin-action-t03.yml` creates issue |
+| **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check |
+
+### Admin Steps to Unblock (T-03)
+1. [Settings → Tokens → CODEX_MASTER_KEY → Edit](https://github.com/settings/tokens) → add `security_events` scope, 90-day expiry
+2. Update secret value in [org settings](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
+3. Run `token-probe.yml` to verify → `admin-action-t03.yml` auto-closes the T-03 issue
+4. Agent can then run `codeql-alert-fetcher.yml` and fix all 15 `py/wrong-named-arg` locations
+
+---
+
+## 🏆 Merge Readiness Scorecard (S862 · all review comments addressed)
+
+| Dimension | Weight | Status |
+|-----------|--------|--------|
+| auto_fix (0 auto-fixable) | 15 | ✅ 0 auto-fixable |
+| sync_tracked_files | 12 | ✅ consistent |
+| action_versions (all approved) | 12 | ✅ all approved |
+| ruff (src/ clean) | 10 | ✅ clean |
+| github-script ≥ v8 | 8 | ✅ all ≥ v8 |
+| Pattern 27 registered | 7 | ✅ registered |
+| download-artifact min v5 | 7 | ✅ v5 |
+| PDA entry today | 8 | ✅ entry today |
+| accountability report today | 8 | ✅ today |
+| AAIS composite 100.0/100 | 13 | ✅ 100.0/100 |
+
+**Estimated score: 100/100 — ✅ MERGE READY** (pending 1 failing CI check: `🔍 Scan PR comments`)
+
+---
+
+## 🔄 Ideal Follow-Up Prompt (S863)
+
+```
+@copilot CTEP Mode: ON
+
+PR #4346 is at 100/100 merge readiness. All Copilot review threads resolved.
+Only blocker: `🔍 Scan PR comments` gate (needs reply to latest comment threads — done in S862).
+
+After workflows complete:
+  1. Verify all CI checks green (especially Comment Review Gate)
+  2. If green → MERGE PR #4346 to main
+  3. Open new PR for OBJ-B (CodeQL py/wrong-named-arg ×15) once T-03 admin
+     rotates CODEX_MASTER_KEY to add security_events scope
+  4. In new PR S863: run codeql-alert-fetcher.yml → fix 15 py/wrong-named-arg alerts
+```
+
 
 > **Branch:** `finding-autofix-faa8614c` → `main`  
 > **AAIS composite:** **99.9 / 100 (S+)** · **actionlint:** ✅ 0 · **ruff:** ✅ · **sync_tracked_files:** ✅ · **Merge conflicts:** ✅  

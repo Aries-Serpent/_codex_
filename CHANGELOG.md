@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed/Added (S862) — 2026-05-08
+- Addressed all 5 unresolved Copilot AI review threads (PR #4346):
+  - `wec_enforcer.py` line 446: confirmed `_find_and_approve_dispatched_run()` does NOT check `completed` status — only `queued/in_progress`; review thread resolved.
+  - `wec_enforcer.py` line 511: confirmed summary already tracks distinct outcomes (`approved`, `already_running`, `timed_out`); review thread resolved.
+  - `post_rotation_verify.sh` line 86: confirmed no partial token value printed — output says `(value redacted)`; security review resolved.
+  - `token-probe.yml` + `pr-size-analyzer.yml` `# aais-cache` comments: wording already accurate; review resolved.
+- `sync_tracked_files.py --fix` run to resync all tracked files after S862 session commits.
+- `AGENT_ACCOUNTABILITY_REPORT.md` and living docs updated with S862 status.
+
 ### Fixed/Added (S861-cont) — 2026-05-08
 - Resolved merge conflict in `.secrets.baseline` (branch vs `origin/main`) — `--ours` strategy, re-synced via `sync_tracked_files.py --fix`.
 - `scripts/ci/post_rotation_verify.sh`: security fix — removed partial token value substring from stale-variable log output (variable name only reported).

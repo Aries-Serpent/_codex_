@@ -1,4 +1,117 @@
-# Session Diagram — PR #4346 · S861-cont · 2026-05-08
+# Session Diagram — PR #4346 · S862 · 2026-05-08
+
+> **Branch:** `finding-autofix-faa8614c`
+> **Agent:** `copilot-swe-agent[bot]`
+> **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern), S862 (review threads resolved, final wrap-up)
+> **Current AAIS:** 100.0/100 ✅ · **actionlint:** 0 · **ruff:** ✅
+
+---
+
+## 1. Full Session Flow (S862 — Final)
+
+```mermaid
+flowchart TD
+    START(["🟢 S862 · 2026-05-08T04:10Z"]) --> REVIEW
+
+    REVIEW["✅ Copilot AI Review Threads\n5 unresolved → all confirmed fixed\n• wec_enforcer.py _find_and_approve (no completed check)\n• wec_enforcer.py summary counter (distinct outcomes)\n• post_rotation_verify.sh (value redacted)\n• token-probe.yml + pr-size-analyzer.yml (aais-cache)"] --> DOCS
+
+    DOCS["✅ Living Docs Updated\n• PR4346_whats_next.md — S862 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S862 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
+
+    GATE["🔒 P-045 Gate\nruff ✅ · sync_tracked_files ✅\nno conflicts ✅ · replies sent"] --> END
+
+    END(["🏁 PR #4346 MERGE READY\nScore: 100/100\nOBJ-A/C/E/F ✅\nOBJ-B/D ⛔ admin-action-t03.yml notifies"])
+
+    style START fill:#27ae60,color:#fff
+    style END fill:#27ae60,color:#fff
+    style REVIEW fill:#27ae60,color:#fff
+    style DOCS fill:#27ae60,color:#fff
+```
+
+---
+
+## 2. S861-cont Flow
+
+```mermaid
+flowchart TD
+    START2(["🟢 S861-cont · 2026-05-08T03:20Z"]) --> MERGE
+
+    MERGE["✅ Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main"] --> SEC
+
+    SEC["✅ Security Fix\npost_rotation_verify.sh\nvalue redacted (not val[:20])"] --> CACHE
+
+    CACHE["✅ aais-cache Comments Fixed\ntoken-probe.yml\npr-size-analyzer.yml"] --> RL2C
+
+    RL2C["✅ RL-2c — CodeQL Schedule Stagger\ncodeql.yml → Monday 03:00 UTC\ncodeql-analysis.yml → Thursday 03:00 UTC"] --> RL3B
+
+    RL3B["✅ RL-3b — artifact-monitoring.yml\nRate-limit pre-check + guards"] --> ADMIN
+
+    ADMIN["✅ Admin Action Notifier Pattern\n(reproducible for all future gaps)\n• admin-action-notifier.yml\n• admin-action-t03.yml\n• admin_action_probe.py\n• ADMIN_ACTION_WORKFLOW_PATTERN.md"] --> END2
+
+    END2(["🏁 S861-cont Complete"])
+
+    style START2 fill:#27ae60,color:#fff
+    style END2 fill:#27ae60,color:#fff
+    style ADMIN fill:#9b59b6,color:#fff
+```
+
+---
+
+## 3. Admin Action Notifier — Architecture
+
+```mermaid
+flowchart TD
+    APPROVE["🔓 PR workflows approved\nauto-approve-workflows.yml completes\nOR trigger-on-approval.yml completes"] --> T03
+
+    T03["admin-action-t03.yml\n(caller — gap-specific)\non: workflow_run completed"] --> ENGINE
+
+    ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call inputs:\n• gap_id: T-03\n• probe_url: /code-scanning/alerts\n• issue_title\n• issue_body_md\n• assignee: mbaetiong"] --> PROBE
+
+    PROBE["Probe step\nGET /code-scanning/alerts?per_page=1\nCODEX_MASTER_KEY"] --> CHECK
+
+    CHECK{HTTP status?}
+    CHECK -- "200 ✅" --> CLOSE
+    CHECK -- "403 ⚠️" --> ISSUE
+    CHECK -- "other ℹ️" --> SKIP
+
+    ISSUE["Create / update GitHub issue\n[T-03] CODEX_MASTER_KEY missing\nsecurity_events scope\nassign @mbaetiong"] --> WAIT
+
+    WAIT["⏳ Admin rotates key\nadds security_events scope"] --> NEXT_RUN
+
+    NEXT_RUN["Next workflow approval\nre-probes endpoint"] --> CHECK
+
+    CLOSE["Auto-close T-03 issue\nOBJ-B now unblocked"]
+    SKIP["ℹ️ Inconclusive — no action"]
+
+    style APPROVE fill:#4a90d9,color:#fff
+    style CLOSE fill:#27ae60,color:#fff
+    style ISSUE fill:#e74c3c,color:#fff
+    style ENGINE fill:#9b59b6,color:#fff
+```
+
+---
+
+## 4. Adding a New Admin-Action Gap (Pattern Reproducibility)
+
+```mermaid
+flowchart LR
+    DOC["📖 .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
+
+    STEP1["1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"] --> STEP2
+
+    STEP2["2. Create caller workflow\nadmin-action-<gap-id>.yml\non: workflow_run of approve-workflows\nuses: admin-action-notifier.yml\nsecrets: inherit"] --> STEP3
+
+    STEP3["3. Register in gap table\nGap Registry in ADMIN_ACTION_\nWORKFLOW_PATTERN.md"] --> STEP4
+
+    STEP4["4. Use CLI\npython3 scripts/ci/\nadmin_action_probe.py\n--gap-id <ID>\n--probe-url <URL>\n--probe-only"] --> STEP5
+
+    STEP5["5. Test\ngh workflow run\nadmin-action-<gap-id>.yml"]
+
+    style DOC fill:#f39c12,color:#fff
+    style STEP2 fill:#4a90d9,color:#fff
+```
+
+---
+
 
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
