@@ -76,7 +76,7 @@ class TestInferenceServerWithAuth:
     def test_create_app_no_auth(self):
         """Test creating app without authentication"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -92,7 +92,7 @@ class TestInferenceServerWithAuth:
         monkeypatch.setenv("CODEX_API_KEYS", "valid-key-1,valid-key-2")
 
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -117,7 +117,7 @@ class TestInferenceServerWithAuth:
     def test_health_endpoint_circuit_breaker(self):
         """Test health endpoint includes circuit breaker status"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -133,7 +133,7 @@ class TestInferenceServerWithAuth:
     def test_ready_endpoint(self):
         """Test readiness endpoint"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -149,7 +149,7 @@ class TestInferenceServerWithAuth:
     def test_live_endpoint(self):
         """Test liveness endpoint"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -164,7 +164,7 @@ class TestInferenceServerWithAuth:
     def test_batch_infer_endpoint(self):
         """Test batch inference endpoint"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -178,7 +178,7 @@ class TestInferenceServerWithAuth:
     def test_metrics_endpoint(self):
         """Test metrics endpoint"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -197,7 +197,7 @@ class TestInferenceServerWithAuth:
     def test_rate_limiting(self):
         """Test rate limiting works"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -214,7 +214,7 @@ class TestInferenceServerWithAuth:
     def test_circuit_breaker_integration(self):
         """Test circuit breaker integration"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -232,7 +232,7 @@ class TestInferenceServerWithAuth:
     def test_root_endpoint_shows_auth_status(self):
         """Test root endpoint shows auth status"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -250,7 +250,7 @@ class TestInferenceServerWithAuth:
         monkeypatch.setenv("CODEX_API_KEYS", "test-key")
 
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -280,7 +280,7 @@ class TestCircuitBreakerIntegration:
             mock_cb.get_state.return_value = {"state": "closed", "failure_count": 0}
 
             config = ModelConfig(model_name="test-model", model_type="stub")
-            app = create_app(config=config)
+            app = create_app(config)
 
             from fastapi.testclient import TestClient
 
@@ -293,7 +293,7 @@ class TestCircuitBreakerIntegration:
     def test_circuit_breaker_503_on_open(self):
         """Test circuit breaker returns 503 when open"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
