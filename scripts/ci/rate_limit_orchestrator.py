@@ -163,30 +163,32 @@ def _gh_api_with_retry(
         logger.error("No GitHub tokens available — set GH_TOKEN or CODEX_MASTER_KEY")
         sys.exit(1)
 
+    last_status, last_result = 0, {}
     for attempt in range(_MAX_RETRIES):
         token = tokens[attempt % len(tokens)]
-        status, result = _gh_api(method, path, token, body)
+        last_status, last_result = _gh_api(method, path, token, body)
 
-        if status in (200, 201, 202, 204):
+        if last_status in (200, 201, 202, 204):
             time.sleep(_POLITE_SLEEP)
-            return status, result
+            return last_status, last_result
 
-        if status in (429, 403):
+        if last_status in (429, 403):
             # Cap exponent at 6 so max pre-cap wait is 2^6 = 64s; _MAX_BACKOFF clamps further.
             wait = min(_MAX_BACKOFF, (2 ** min(attempt, 6)) + random.uniform(0, 1))
-            logger.warning("Rate-limited (HTTP %d) — sleeping %.1fs before retry %d", status, wait, attempt + 1)
+            logger.warning("Rate-limited (HTTP %d) — sleeping %.1fs before retry %d", last_status, wait, attempt + 1)
             time.sleep(wait)
             continue
 
-        if status == 422:
+        if last_status == 422:
             # Unprocessable — probably already cancelled; treat as success
-            return status, result
+            return last_status, last_result
 
         # Other errors — log and retry
-        logger.warning("HTTP %d on %s %s (attempt %d): %s", status, method, path, attempt + 1, result)
+        logger.warning("HTTP %d on %s %s (attempt %d): %s", last_status, method, path, attempt + 1, last_result)
         time.sleep(_POLITE_SLEEP)
 
-    return 0, {}
+    logger.error("All %d retries exhausted for %s %s (last HTTP %d)", _MAX_RETRIES, method, path, last_status)
+    return last_status, last_result
 
 
 # ---------------------------------------------------------------------------
@@ -194,8 +196,17 @@ def _gh_api_with_retry(
 # ---------------------------------------------------------------------------
 
 def check_rate_limit_status(tokens: list[str]) -> dict[str, Any]:
-    """Return rate-limit status for all tokens. Exit 2 if all are critical."""
-    report: dict[str, Any] = {"tokens": [], "overall_status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
+    """Return rate-limit status for all tokens.
+
+    Sets ``overall_status`` to ``"critical"`` when all tokens are exhausted.
+    The caller is responsible for deciding whether to abort or sleep; this
+    function does not exit or sleep on its own.
+    """
+    report: dict[str, Any] = {
+        "tokens": [],
+        "overall_status": "ok",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
 
     any_ok = False
     for i, token in enumerate(tokens):
@@ -224,7 +235,11 @@ def check_rate_limit_status(tokens: list[str]) -> dict[str, Any]:
 
     if not any_ok:
         report["overall_status"] = "critical"
-        logger.error("❌ ALL tokens are rate-limited (remaining < %d). Sleeping until reset.", _MIN_REMAINING)
+        logger.error(
+            "❌ ALL tokens are rate-limited (remaining < %d). "
+            "Caller should sleep until reset or abort the operation.",
+            _MIN_REMAINING,
+        )
 
     return report
 
@@ -421,7 +436,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--branch", default="", help="Branch name to scope operations")
     p.add_argument("--repo", default=os.environ.get("REPO", _DEFAULT_REPO), help="owner/repo")
     p.add_argument("--max-concurrent", type=int, default=_DEFAULT_MAX_CONCURRENT, help="Max concurrent runs (--cap)")
-    p.add_argument("--keep-latest", action="store_true", default=True, help="Keep newest run when deduplicating")
+    p.add_argument("--keep-latest", action=argparse.BooleanOptionalAction, default=True, help="Keep newest run when deduplicating (use --no-keep-latest to cancel all)")
     p.add_argument("--dry-run", action="store_true", help="Show what would be cancelled without doing it")
     p.add_argument("--json-output", metavar="FILE", default="", help="Write JSON result to FILE")
     return p.parse_args(argv)

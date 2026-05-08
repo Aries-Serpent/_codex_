@@ -1800,7 +1800,10 @@ jobs:
               return;
             }
             const multiSession = '${{ needs.detect-checkbox.outputs.multi_session }}' === 'true';
-            const TTL_SECONDS = 43200; // 12 hours — loosened for initial system operation
+            // TTL is configurable via the COPILOT_SESSION_TTL_SECONDS repo variable.
+            // Default: 43200 (12 h) for initial system operation; tighten to 3600 (1 h)
+            // once concurrency is stable by setting the repo variable.
+            const TTL_SECONDS = parseInt('${{ vars.COPILOT_SESSION_TTL_SECONDS }}', 10) || 43200;
             const now = Math.floor(Date.now() / 1000);
             const { isRateLimit } = require('./scripts/ci/github_rate_limit_helper.js');
 
