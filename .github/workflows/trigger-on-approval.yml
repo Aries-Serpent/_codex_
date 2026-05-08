@@ -236,4 +236,3 @@ jobs:
           echo "    4. codeql-alert-fetcher.yml dispatched (security_events scope)" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "    5. @copilot continue posted           (agent session resume)" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "================================================================" | tee -a "$GITHUB_STEP_SUMMARY"
-

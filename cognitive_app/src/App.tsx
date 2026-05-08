@@ -9,7 +9,7 @@ import { QuantumDecisionEngine } from '@/components/quantum/QuantumDecisionEngin
 import { MemoryManagementDashboard } from '@/components/quantum/MemoryManagementDashboard';
 import { AgentOrchestrationPanel } from '@/components/quantum/AgentOrchestrationPanel';
 import { MetricsDashboard } from '@/components/quantum/MetricsDashboard';
-import { CliTerminal, ApiClient } from '@/components/cli';
+import { ApiClient } from '@/components/cli';
 import { XtermTerminal } from '@/components/cli/XtermTerminal';
 
 function App() {
