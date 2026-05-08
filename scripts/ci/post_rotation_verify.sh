@@ -82,7 +82,7 @@ data = json.load(sys.stdin)
 for v in data.get('variables', []):
     val = v.get('value','')
     if any(val.startswith(p) for p in ['ghp_','github_pat_','ghs_','gho_','v1.']):
-        print(f\"STALE_TOKEN_VAR: {v['name']} = {val[:20]}...\")
+        print(f\"STALE_TOKEN_VAR: {v['name']}  ← token-like value detected\")
 " 2>/dev/null || true)
     if [ -z "$VARS" ]; then
         ok "No embedded token values in repo variables"

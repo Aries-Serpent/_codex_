@@ -7,7 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added (S859-v6) — 2026-05-08
+### Fixed/Added (S860) — 2026-05-08
+- `scripts/ci/wec_enforcer.py`: `_find_and_approve_dispatched_run()` — removed "completed" from the early-exit status check; now only `queued`/`in_progress` are treated as "already running". Stale completed runs from previous pushes no longer short-circuit approval polling.
+- `scripts/ci/wec_enforcer.py`: `cmd_dispatch_checked()` — replaced misleading `approved` bool counter with distinct outcome tracking: `approved` (was action_required, now unblocked), `already_running` (queued/in_progress, no approval needed), `timed_out` (self-approve via schedule). Summary now accurately describes each outcome.
+- `scripts/ci/post_rotation_verify.sh`: removed `val[:20]` partial-token printing from stale-token-variable scan — variable name is now reported without any value substring (security fix, closes PR review finding).
+- `.github/workflows/cleanup-stale-branches.yml`: removed contradictory `cache: pip` on a stdlib-only Python step (now consistent with the `# No pip cache` comment).
+- `.github/workflows/token-probe.yml`, `auto-approve-workflows.yml`, `actionlint-audit.yml`, `pr-size-analyzer.yml`: corrected misleading `# aais-cache: none` rationale from "Python referenced in template/doc strings only" to accurate "No pip install — Python uses stdlib only / inline data processing only".
+
+### Added (S860) — 2026-05-08
+- `.github/workflows/token-expiry-monitor.yml`: new daily PAT expiry monitor (closes T-02 gap). Runs at 09:00 UTC, warns at 14 days, creates GitHub issue at 7 days / on expiry. Reads `CODEX_MASTER_KEY_EXPIRY_DATE` and `CODEX_BACKUP_KEY_EXPIRY_DATE` repo variables.
+- `.codex/pending_ops/variable_set_c1–c7.json`: 7 governance variable intent files — `CODEX_MASTER_KEY_LAST_VERIFIED`, `CODEX_MASTER_KEY_EXPIRY_DATE`, `CODEX_BACKUP_KEY_EXPIRY_DATE`, `CODEX_AAIS_LAST_SCORE`, `CODEX_AAIS_LAST_SCORED_SHA`, `CODEX_WEC_TEMPLATE_VERSION`, `CODEX_SECRETS_BASELINE_SHA`.
+- `.codex/pending_ops/variable_set_c7.json`: `COPILOT_MAX_CONCURRENT_SESSIONS=1`.
+- `.codex/pending_ops/variable_set_rl_*.json`: 6 `CODEX_RL_*` rate-limit monitoring variables — `POLITE_SLEEP_DEFAULT`, `MIN_REMAINING_DEFAULT`, `MAX_WAIT_DEFAULT`, `CIRCUIT_BREAKER_ENABLED`, `LAST_EXHAUSTION_TIME`, `EXHAUSTION_COUNT_7D`.
+- `workflow-execution-gate.yml`: Pattern A pre-call rate-limit check before `detect-wec-changes` API steps; job-level `GH_TRICKLE_POLITE_SLEEP: "0.3"` and `GH_TRICKLE_MIN_REMAINING: "50"`.
+- `auto-approve-workflows.yml`: job-level `GH_TRICKLE_POLITE_SLEEP: "1.0"`; replaced `--paginate` with Pattern D page-by-page guard (checks `remaining < 20` before each page).
+- `promote-integration-branch.yml`: Pattern C `_api_with_retry()` shell function wrapping the PATCH ref-update call (3 attempts, 10/20/40s backoff).
+- `copilot-agent-session-done.yml`: job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`; `rateLimit { remaining resetAt }` inlined into GraphQL query; circuit-break before paginated upsert loop and rescue-comment scan (`remaining < 20` → stop with warning).
+
+
 - `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: Section 11 — Workflow Configuration Catalog (15 workflows, CLI invocation, execution-order diagram)
 - `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: Section 12 — Rate-Limit Awareness (token pool reference, 9-workflow gap register, 5 reusable improvement patterns, per-workflow specs, new CODEX_RL_* variables, implementation Gantt)
 - `docs/roadmap/PR4346_whats_next.md`: Variable & Secret Governance Phases A–F checklist with dependency graph and agent kickoff prompt

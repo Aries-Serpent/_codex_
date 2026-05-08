@@ -201,6 +201,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: preflight-autofix
+    env:
+      GH_TRICKLE_POLITE_SLEEP: "0.5"   # GraphQL + paginated REST — use polite sleep between calls
     # PRE-APPROVED: The WEC checkbox `- [x] copilot-agent-session-done.yml` in the PR body
     # constitutes maintainer pre-approval.  This job MUST run even when preflight-autofix
     # fails — `always()` ensures the posting is never blocked by an upstream job outcome.
@@ -279,10 +281,15 @@ jobs:
             // ── STEP 1: Fetch the last 20 PR comments to check for unaddressed rescue ──
             // Uses GraphQL because REST listComments returns pages in ascending order
             // (per_page:5 gives OLDEST 5, not newest).
+            // Includes rateLimit check to circuit-break if remaining < 20.
             let allNodes = [];
             try {
               const result = await github.graphql(
                 `query($owner: String!, $repo: String!, $pr: Int!) {
+                  rateLimit {
+                    remaining
+                    resetAt
+                  }
                   repository(owner: $owner, name: $repo) {
                     pullRequest(number: $pr) {
                       comments(last: 20) {
@@ -299,6 +306,13 @@ jobs:
                 }`,
                 { owner, repo, pr }
               );
+              // Circuit-break if rate limit is low
+              const rlRemaining = result?.rateLimit?.remaining ?? 999;
+              const rlResetAt = result?.rateLimit?.resetAt ?? 'unknown';
+              if (rlRemaining < 20) {
+                core.warning(`GraphQL rate limit low (${rlRemaining} remaining, resets ${rlResetAt}) — skipping comment analysis`);
+                return;
+              }
               allNodes = result?.repository?.pullRequest?.comments?.nodes || [];
             } catch (e) {
               console.log(`Could not fetch PR comments (non-blocking): ${e.message}`);
@@ -767,10 +781,21 @@ jobs:
             // existing thread and create another @copilot request for the same issue.
             // PR-scoped upsert keeps all same-session bot findings in one appended
             // thread even when follow-up [skip ci] commits change the branch head SHA.
+            // Rate-limit guard: check remaining before each page; break if < 20.
             let existingCommentId = null;
             let existingCommentBody = '';
             try {
               for (let page = 1; ; page += 1) {
+                // Rate-limit guard before each page
+                try {
+                  const rl = await github.rest.rateLimit.get();
+                  const remaining = rl.data?.resources?.core?.remaining ?? 999;
+                  if (remaining < 20) {
+                    core.warning(`REST rate limit low (${remaining} remaining) — stopping upsert scan at page ${page}`);
+                    break;
+                  }
+                } catch (_) { /* non-fatal — proceed */ }
+
                 const { data: comments } = await github.rest.issues.listComments({
                   owner, repo, issue_number: prNumber, per_page: 100, page,
                 });
@@ -908,9 +933,20 @@ jobs:
             ].join('\n');
 
             // ── 3. Find existing rescue comment for this SHA ─────────────────
+            // Rate-limit guard: check remaining before each page.
             const rescueMarker = `<!-- ci-rescue-sha:${prNumber}:${headShort} -->`;
             let page = 1, existingComment = null;
             while (!existingComment) {
+              // Rate-limit guard before each page
+              try {
+                const rl = await github.rest.rateLimit.get();
+                const rlRemaining = rl.data?.resources?.core?.remaining ?? 999;
+                if (rlRemaining < 20) {
+                  core.warning(`REST rate limit low (${rlRemaining} remaining) — stopping rescue scan at page ${page}`);
+                  break;
+                }
+              } catch (_) { /* non-fatal — proceed */ }
+
               const { data: batch } = await github.rest.issues.listComments({
                 owner, repo, issue_number: prNumber, per_page: 100, page,
               });

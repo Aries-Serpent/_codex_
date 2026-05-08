@@ -259,7 +259,7 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
 Each sub-task below is an **agent-executable unit**. The agent writes intent files,
 `process-variable-intents.yml` applies them automatically on the next push.
 
-- [ ] **C-1** Create `CODEX_MASTER_KEY_LAST_VERIFIED` — token health timestamp
+- [x] **C-1** Create `CODEX_MASTER_KEY_LAST_VERIFIED` — token health timestamp
   ```bash
   # Agent writes intent file:
   cat > .codex/pending_ops/variable_set_c1.json << 'EOF'
@@ -274,7 +274,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
   EOF
   ```
 
-- [ ] **C-2** Create `CODEX_MASTER_KEY_EXPIRY_DATE` — proactive rotation reminder
+- [x] **C-2** Create `CODEX_MASTER_KEY_EXPIRY_DATE` — proactive rotation reminder
   ```bash
   cat > .codex/pending_ops/variable_set_c2.json << 'EOF'
   {
@@ -288,7 +288,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
   EOF
   ```
 
-- [ ] **C-3** Create `CODEX_BACKUP_KEY_EXPIRY_DATE`
+- [x] **C-3** Create `CODEX_BACKUP_KEY_EXPIRY_DATE`
   ```bash
   cat > .codex/pending_ops/variable_set_c3.json << 'EOF'
   {
@@ -318,7 +318,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
   EOF
   ```
 
-- [ ] **C-5** Create `CODEX_WEC_TEMPLATE_VERSION`
+- [x] **C-5** Create `CODEX_WEC_TEMPLATE_VERSION`
   ```bash
   cat > .codex/pending_ops/variable_set_c5.json << 'EOF'
   {"operation":"set","name":"CODEX_WEC_TEMPLATE_VERSION","value":"S293",
@@ -327,7 +327,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
   EOF
   ```
 
-- [ ] **C-6** Create `CODEX_SECRETS_BASELINE_SHA`
+- [x] **C-6** Create `CODEX_SECRETS_BASELINE_SHA`
   ```bash
   # Agent computes sha256 of .secrets.baseline at commit time:
   cat > .codex/pending_ops/variable_set_c6.json << 'EOF'
@@ -337,7 +337,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
   EOF
   ```
 
-- [ ] **C-7** Create `COPILOT_MAX_CONCURRENT_SESSIONS`
+- [x] **C-7** Create `COPILOT_MAX_CONCURRENT_SESSIONS`
   ```bash
   cat > .codex/pending_ops/variable_set_c7.json << 'EOF'
   {"operation":"set","name":"COPILOT_MAX_CONCURRENT_SESSIONS","value":"1",
@@ -356,7 +356,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
 > `CODEX_MASTER_KEY_EXPIRY_DATE` and `CODEX_BACKUP_KEY_EXPIRY_DATE` and posts
 > a warning issue 14 days before expiry.
 
-- [ ] **D-1** Agent creates `.github/workflows/token-expiry-monitor.yml`:
+- [x] **D-1** Agent creates `.github/workflows/token-expiry-monitor.yml`:
 
 ```yaml
 # token-expiry-monitor.yml — T-02 gap closure
@@ -612,24 +612,24 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 #### Phase RL-1 — P1 Workflows (highest blast radius)
 
-- [ ] **RL-1a** `workflow-execution-gate.yml` — add Pattern A + D
+- [x] **RL-1a** `workflow-execution-gate.yml` — add Pattern A + D
   - Insert pre-call check step before `detect-wec-changes` job API steps
   - Add `GH_TRICKLE_POLITE_SLEEP: "0.3"` and `GH_TRICKLE_MIN_REMAINING: "50"` to job env
   - Replace paginated comment loops with `github_api_trickle.py` call
   - Add `continue-on-error: true` on all paginated fetch steps
 
-- [ ] **RL-1b** `auto-approve-workflows.yml` — add Pattern D + circuit breaker
+- [x] **RL-1b** `auto-approve-workflows.yml` — add Pattern D + circuit breaker
   - Add pre-call check: skip job if `remaining < 100`
   - Wrap `--paginate` loop with page-by-page remaining check
   - Add `GH_TRICKLE_POLITE_SLEEP: "1.0"` (scheduled workflow — not time critical)
   - Set `CODEX_RL_CIRCUIT_BREAKER_ENABLED` check before approving runs
 
-- [ ] **RL-1c** `promote-integration-branch.yml` — add Pattern C (retry + rollback)
+- [x] **RL-1c** `promote-integration-branch.yml` — add Pattern C (retry + rollback)
   - Wrap each `gh api PATCH` ref update in `_api_with_retry()` shell function
   - Track which refs were updated; on failure, revert already-updated refs
   - Add pre-call check before the entire ref-update sequence
 
-- [ ] **RL-1d** `copilot-agent-session-done.yml` — add GraphQL rate check
+- [x] **RL-1d** `copilot-agent-session-done.yml` — add GraphQL rate check
   - Add `rateLimit { remaining resetAt }` inline to each GraphQL query
   - Add circuit-break logic before page loops: exit loop if `remaining < 20`
   - Replace bare `gh api --paginate` with trickle-aware equivalent
@@ -660,7 +660,7 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 #### Phase RL-3 — Add Rate-Limit Monitoring Variables
 
-- [ ] **RL-3a** Add 6 new `CODEX_RL_*` variables via `process-variable-intents.yml`:
+- [x] **RL-3a** Add 6 new `CODEX_RL_*` variables via `process-variable-intents.yml`:
 
   | Variable | Value |
   |----------|-------|

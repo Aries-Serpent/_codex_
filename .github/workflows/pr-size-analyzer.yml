@@ -1,5 +1,5 @@
 name: PR Size Analyzer
-# aais-cache: none  # Python referenced in template/doc strings only — no pip install
+# aais-cache: none  # No pip install — Python script uses stdlib only (no pip deps needed)
 
 on:
   pull_request:

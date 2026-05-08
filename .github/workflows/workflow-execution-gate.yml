@@ -48,6 +48,9 @@ jobs:
       newly_checked: ${{ steps.detect.outputs.newly_checked }}
       newly_unchecked: ${{ steps.detect.outputs.newly_unchecked }}
       has_changes: ${{ steps.detect.outputs.has_changes }}
+    env:
+      GH_TRICKLE_POLITE_SLEEP: "0.3"
+      GH_TRICKLE_MIN_REMAINING: "50"
     steps:
       - uses: actions/checkout@v5
         with:
@@ -57,8 +60,17 @@ jobs:
         with:
           cache: pip
           python-version: "3.12"
+      - name: 🔋 Rate-limit pre-check
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          python scripts/ci/github_api_trickle.py --status || {
+            echo "::warning::All GitHub API tokens exhausted — API steps will be skipped"
+            echo "RATE_LIMITED=true" >> "$GITHUB_ENV"
+          }
       - name: Detect WEC changes
         id: detect
+        if: env.RATE_LIMITED != 'true'
         env:
           BODY_BEFORE: ${{ github.event.changes.body.from }}
           BODY_AFTER: ${{ github.event.pull_request.body }}

@@ -39,6 +39,8 @@ jobs:
     name: Batch Triage CI Failures
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      GH_TRICKLE_POLITE_SLEEP: "0.5"   # many API calls per workflow — moderate sleep
 
     steps:
       - name: Checkout Repository
@@ -69,19 +71,46 @@ jobs:
 
             console.log(`Fetching failed workflow runs since ${cutoff.toISOString()} (last ${lookbackHours}h)`);
 
-            // Get all workflows
-            const workflows = await github.paginate(
-              github.rest.actions.listRepoWorkflows,
-              { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
-            );
+            // Get all workflows with rate-limit guard on paginate
+            let workflows = [];
+            try {
+              // Check rate limit before paginating
+              const rlPre = await github.rest.rateLimit.get();
+              const preRemaining = rlPre.data?.resources?.core?.remaining ?? 999;
+              if (preRemaining < 50) {
+                core.warning(`Rate limit low before workflow list (${preRemaining} remaining) — aborting triage`);
+                return;
+              }
+              workflows = await github.paginate(
+                github.rest.actions.listRepoWorkflows,
+                { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
+              );
+            } catch (e) {
+              core.warning(`Could not fetch workflow list: ${e.message}`);
+              return;
+            }
             console.log(`Found ${workflows.length} workflows`);
 
             const failures = [];
+            let wfIdx = 0;
 
             for (const wf of workflows) {
               // Skip disabled or this very workflow to avoid self-loops
               if (wf.state !== 'active') continue;
               if (wf.name.includes('Batch CI Failure Triage')) continue;
+
+              // Circuit-break every 10 workflows — check rate limit remaining
+              wfIdx++;
+              if (wfIdx % 10 === 0) {
+                try {
+                  const rl = await github.rest.rateLimit.get();
+                  const remaining = rl.data?.resources?.core?.remaining ?? 999;
+                  if (remaining < 30) {
+                    core.warning(`Rate limit low (${remaining} remaining) after ${wfIdx} workflows — stopping triage early`);
+                    break;
+                  }
+                } catch (_) { /* non-fatal */ }
+              }
 
               let runs;
               try {

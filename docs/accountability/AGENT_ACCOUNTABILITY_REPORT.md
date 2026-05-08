@@ -4,6 +4,13 @@
 
 
 
+
+
+## SESSION SUMMARY — 2026-05-08T02:31Z [auto-generated]
+
+**Session:** auto-20260508T0231-run3404 | **Run:** 25532783186 | **Date:** 2026-05-08
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-05-08T02:06Z [auto-generated]
 
 **Session:** auto-20260508T0206-run173597 | **Run:** 25532150163 | **Date:** 2026-05-08
@@ -30737,3 +30744,70 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+---
+
+## Session S860 — 2026-05-08
+
+**Branch:** `finding-autofix-faa8614c` | **PR:** #4346 | **Agent:** `copilot-swe-agent[bot]`
+
+### Objectives (CTEP Mode: ON)
+- OBJ-1: Implement §12 Rate-Limit Fixes — P1 Workflows
+- OBJ-2: Implement Phase C — 7 New Repository Variables (intent files)
+- OBJ-3: Implement Phase D — `token-expiry-monitor.yml`
+- OBJ-4: Implement Phase RL-3 — 6 CODEX_RL_* Variables (intent files)
+- PR review: Fix all 8 code-review thread findings
+
+### Checklist
+- [x] **0a.** Mandatory pre-load completed (AGENTIC_REPO_STATE, CODEBASE_AGENCY_POLICY, whats_next, token review)
+- [x] **0b.** CI failures investigated — comment-review-gate and tracked-file sync issues resolved
+- [x] **1.** PR review: `wec_enforcer.py` — removed "completed" from approval short-circuit; distinct outcome tracking ✅
+- [x] **2.** PR review: `post_rotation_verify.sh` — removed partial token value printing (security fix) ✅
+- [x] **3.** PR review: `cleanup-stale-branches.yml` — removed contradictory `cache: pip` ✅
+- [x] **4.** PR review: 4 AAIS annotation comments corrected (token-probe, auto-approve, actionlint-audit, pr-size-analyzer) ✅
+- [x] **5.** OBJ-1a: `workflow-execution-gate.yml` — Pattern A pre-check + GH_TRICKLE env vars ✅
+- [x] **6.** OBJ-1b: `auto-approve-workflows.yml` — Pattern D paginated guard + polite sleep ✅
+- [x] **7.** OBJ-1c: `promote-integration-branch.yml` — Pattern C `_api_with_retry()` on PATCH ✅
+- [x] **8.** OBJ-1d: `copilot-agent-session-done.yml` — GraphQL rateLimit inline + page-loop circuit-breaker ✅
+- [x] **9.** OBJ-2: 7+1 governance variable intent files written to `.codex/pending_ops/` ✅
+- [x] **10.** OBJ-3: `token-expiry-monitor.yml` created — daily PAT expiry monitor (T-02 gap closure) ✅
+- [x] **11.** OBJ-4: 6 `CODEX_RL_*` intent files written ✅
+- [x] **12.** actionlint: 0 errors on all 9 modified workflows ✅
+- [x] **13.** ruff: clean ✅
+- [x] **14.** sync_tracked_files: consistent ✅
+- [x] **15.** CHANGELOG.md updated ✅
+- [x] **16.** `docs/roadmap/PR4346_whats_next.md` checkboxes updated ✅
+
+### Work Completed
+1. **PR review fix** — `wec_enforcer.py`: `_find_and_approve_dispatched_run()` no longer returns True on stale completed runs; added `_DISPATCH_OUTCOME_*` constants and distinct summary counters.
+2. **Security fix** — `post_rotation_verify.sh`: variable name printed without any value substring.
+3. **Comment fix** — `cleanup-stale-branches.yml`: removed `cache: pip` (contradicted `# No pip cache`).
+4. **AAIS annotation fix** — 4 workflows: corrected "template/doc strings only" to accurate description.
+5. **OBJ-1 rate-limit** — All 4 P1 workflows hardened: Pattern A (pre-check), Pattern C (retry), Pattern D (page-guard), GraphQL circuit-breaker.
+6. **OBJ-2+4** — 13 intent files written to `.codex/pending_ops/` (7 governance + 6 CODEX_RL_*).
+7. **OBJ-3** — `token-expiry-monitor.yml`: daily cron + workflow_dispatch, warns at 14d, creates issue at ≤7d/expiry, actionlint clean.
+
+### Validation Results
+- `actionlint` on 9 modified workflows: ✅ 0 errors
+- `ruff check src/ tests/`: ✅ All checks passed
+- `sync_tracked_files --fix`: ✅ All tracked files consistent
+- `git diff --name-only --diff-filter=U`: ✅ empty (no conflicts)
+
+### Impact Score
+- Files changed: ~15 (9 workflows + 2 Python/shell scripts + 13 intent files + docs)
+- Security: partial-token value printing eliminated from `post_rotation_verify.sh`
+- Rate-limit safety: 4 P1 workflows now have circuit-breakers (Pattern A/C/D/GraphQL)
+- New workflow: `token-expiry-monitor.yml` closes T-02 gap
+- New variables queued: 13 (via process-variable-intents.yml mailbox)
+- Deferral Language Gate: 0 violations
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `pre-merge-validation.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `comment-review-gate.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `deferral-language-gate.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `agent-auth-delegation.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `workflow-execution-gate.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `cost-gate.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `auto-approve-workflows` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `codeql-alert-fetcher.yml` — detected 2026-05-08T02:32:21Z @ 55aa4d80 — sticky [x] maintained by all future agent sessions

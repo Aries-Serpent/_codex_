@@ -250,3 +250,71 @@ flowchart LR
     R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9 & R10 & R11 & R12 & R13 --> S
     style S fill:#27ae60,color:#fff,font-size:18px
 ```
+
+---
+
+## 10. S860 — Rate-Limit Hardening Architecture
+
+```mermaid
+flowchart TD
+    subgraph "P1 Workflows — Before (❌ 0 guards)"
+        A1["workflow-execution-gate.yml\n5 API calls, 0 guards"]
+        A2["auto-approve-workflows.yml\n6 API calls, 1 guard"]
+        A3["promote-integration-branch.yml\n5 PATCH calls, 0 guards"]
+        A4["copilot-agent-session-done.yml\n3 REST + GraphQL, 0 guards"]
+    end
+
+    subgraph "P1 Workflows — After (✅ Pattern A/C/D/GraphQL)"
+        B1["workflow-execution-gate.yml\nPattern A pre-check\nGH_TRICKLE_POLITE_SLEEP: 0.3\ndetect step gated on RATE_LIMITED"]
+        B2["auto-approve-workflows.yml\nPattern D page-guard\nGH_TRICKLE_POLITE_SLEEP: 1.0\nremaining<20 → break loop"]
+        B3["promote-integration-branch.yml\nPattern C _api_with_retry()\n3 attempts, 10/20/40s backoff\non PATCH ref update"]
+        B4["copilot-agent-session-done.yml\nGraphQL rateLimit inline\nGH_TRICKLE_POLITE_SLEEP: 0.5\nremaining<20 → circuit-break pages"]
+    end
+
+    A1 -->|hardened| B1
+    A2 -->|hardened| B2
+    A3 -->|hardened| B3
+    A4 -->|hardened| B4
+
+    style A1 fill:#e74c3c,color:#fff
+    style A2 fill:#e74c3c,color:#fff
+    style A3 fill:#e74c3c,color:#fff
+    style A4 fill:#e74c3c,color:#fff
+    style B1 fill:#27ae60,color:#fff
+    style B2 fill:#27ae60,color:#fff
+    style B3 fill:#27ae60,color:#fff
+    style B4 fill:#27ae60,color:#fff
+```
+
+## 11. S860 — Token Expiry Monitor (T-02 Gap Closure)
+
+```mermaid
+flowchart TD
+    A["⏰ token-expiry-monitor.yml\ncron 0 9 * * * (09:00 UTC daily)\nor workflow_dispatch"] --> B["Read vars:\nCODEX_MASTER_KEY_EXPIRY_DATE\nCODEX_BACKUP_KEY_EXPIRY_DATE"]
+    B --> C{days_left?}
+    C -- "> 14 days" --> D["✅ Print healthy\nno action"]
+    C -- "≤ 14 days" --> E["⚠️ Warn in\njob summary"]
+    C -- "≤ 7 days\nor expired" --> F["🚨 Warn +\ncreate/update\nGitHub Issue"]
+    F --> G["Issue assigned to @mbaetiong\nLabel: security\n7-step rotation guide linked"]
+    G --> H["❌ Fail job\n(not dry-run)"]
+    E --> I["✅ Job passes\n(early warning only)"]
+
+    style A fill:#4a90d9,color:#fff
+    style F fill:#e74c3c,color:#fff
+    style H fill:#e74c3c,color:#fff
+    style D fill:#27ae60,color:#fff
+```
+
+## 12. S860 — Variable Intent Files Pipeline
+
+```mermaid
+flowchart LR
+    A["13 intent files\n.codex/pending_ops/"] --> B["process-variable-intents.yml\nautomatically on next push"]
+    B --> C["GitHub Variables API\nCODEX_MASTER_KEY auth"]
+    C --> D["7 governance vars\n+ COPILOT_MAX_CONCURRENT_SESSIONS"]
+    C --> E["6 CODEX_RL_* vars\nrate-limit monitoring"]
+
+    style A fill:#4a90d9,color:#fff
+    style D fill:#27ae60,color:#fff
+    style E fill:#27ae60,color:#fff
+```

@@ -378,6 +378,12 @@ def _approve_run(token: str, repo: str, run_id: int, dry_run: bool = False) -> s
     return "failed"
 
 
+_DISPATCH_OUTCOME_APPROVED = "approved"
+_DISPATCH_OUTCOME_ALREADY_RUNNING = "already_running"
+_DISPATCH_OUTCOME_TIMED_OUT = "timed_out"
+_DISPATCH_OUTCOME_FAILED = "failed"
+
+
 def _find_and_approve_dispatched_run(
     token: str,
     repo: str,
@@ -386,17 +392,20 @@ def _find_and_approve_dispatched_run(
     *,
     max_wait_sec: int = 45,
     poll_interval: int = 5,
-) -> bool:
+) -> str:
     """Poll for a newly-dispatched run in action_required state and approve it.
 
-    Returns True if the run was found and approved (or was already running),
-    False if it timed out or approval failed.
+    Returns one of:
+      - ``_DISPATCH_OUTCOME_APPROVED``        — run found in action_required and approved
+      - ``_DISPATCH_OUTCOME_ALREADY_RUNNING`` — run found in queued/in_progress (no approval needed)
+      - ``_DISPATCH_OUTCOME_TIMED_OUT``       — run did not appear within max_wait_sec
+      - ``_DISPATCH_OUTCOME_FAILED``          — approval API call returned an error
 
     The strategy:
       1. Look for runs of ``workflow`` on ``branch`` in ``action_required`` state.
       2. If found, approve immediately.
-      3. If not found within ``max_wait_sec``, the run is either already running
-         (no approval needed) or was not created — either way a non-blocking outcome.
+      3. If in queued/in_progress state, the run is already unblocked — no approval needed.
+      4. If not found within ``max_wait_sec``, falls back to the 5-min schedule sweep.
     """
     wf_encoded = urllib.parse.quote(workflow)
     branch_encoded = urllib.parse.quote(branch)
@@ -417,8 +426,12 @@ def _find_and_approve_dispatched_run(
                 run_id = runs[0]["id"]
                 print(f"  🔓 Found action_required run #{run_id} for {workflow} — approving…")
                 result = _approve_run(token, repo, run_id)
-                return result in ("approved", "dry-run")
+                if result in ("approved", "dry-run"):
+                    return _DISPATCH_OUTCOME_APPROVED
+                return _DISPATCH_OUTCOME_FAILED
         # Not in action_required yet — maybe it's already running or queued
+        # Only treat queued/in_progress as "already unblocked" — completed runs
+        # may be stale runs from previous pushes and must NOT short-circuit the poll.
         path2 = (
             f"/repos/{repo}/actions/workflows/{wf_encoded}/runs"
             f"?branch={branch_encoded}&per_page=5"
@@ -427,19 +440,19 @@ def _find_and_approve_dispatched_run(
         if status2 == 200 and isinstance(data2, dict):
             latest_runs = data2.get("workflow_runs", [])
             for r in latest_runs:
-                if r.get("status") in ("queued", "in_progress", "completed"):
+                if r.get("status") in ("queued", "in_progress"):
                     print(
                         f"  ℹ️  {workflow} run #{r['id']} is already {r['status']} "
                         "(no approval needed)"
                     )
-                    return True
+                    return _DISPATCH_OUTCOME_ALREADY_RUNNING
 
         remaining = int(deadline - time.monotonic())
         print(f"  ⏳ Waiting for {workflow} run to appear ({remaining}s left)…")
         time.sleep(poll_interval)
 
     print(f"  ⚠️  Timed out waiting for {workflow} run to appear — it may self-approve via schedule.")
-    return False
+    return _DISPATCH_OUTCOME_TIMED_OUT
 
 
 def cmd_dispatch_checked(pr_number: int, head_sha: str, repo: str) -> int:
@@ -462,6 +475,8 @@ def cmd_dispatch_checked(pr_number: int, head_sha: str, repo: str) -> int:
 
     dispatched = 0
     approved = 0
+    already_running = 0
+    timed_out = 0
     skipped = 0
     for wf in workflows:
         if wf in _WEC_ALWAYS_REQUIRED:
@@ -477,14 +492,21 @@ def cmd_dispatch_checked(pr_number: int, head_sha: str, repo: str) -> int:
             dispatched += 1
             # --- Post-dispatch approval: approve if run lands in action_required ---
             print(f"  ⏳ Checking if {wf} needs approval after dispatch…")
-            if _find_and_approve_dispatched_run(token, repo, wf, branch):
+            outcome = _find_and_approve_dispatched_run(token, repo, wf, branch)
+            if outcome == _DISPATCH_OUTCOME_APPROVED:
                 approved += 1
+            elif outcome == _DISPATCH_OUTCOME_ALREADY_RUNNING:
+                already_running += 1
+            elif outcome == _DISPATCH_OUTCOME_TIMED_OUT:
+                timed_out += 1
         else:
             print(f"⚠️  Failed to dispatch {wf}: HTTP {status_code} — {resp}")
 
     print(
         f"\nSummary: {dispatched} workflow(s) dispatched, "
-        f"{approved} auto-approved after dispatch, "
+        f"{approved} approved (was action_required), "
+        f"{already_running} already running (no approval needed), "
+        f"{timed_out} timed-out (will self-approve via schedule), "
         f"{skipped} always-required skipped."
     )
     return 0
