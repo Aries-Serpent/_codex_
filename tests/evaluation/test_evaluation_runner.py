@@ -367,7 +367,11 @@ class TestEvaluationRunner:
         """Test evaluation with a model that is only callable."""
         with tempfile.TemporaryDirectory() as tmpdir:
             class CallableModel:
+                def __init__(self):
+                    self.calls = 0
+
                 def __call__(self, inputs):
+                    self.calls += 1
                     return inputs
 
             dataset = [
@@ -377,12 +381,14 @@ class TestEvaluationRunner:
             metrics = []
             config = EvaluationConfig(batch_size=3, output_dir=tmpdir)
 
-            runner = EvaluationRunner(CallableModel(), dataset, metrics, config=config)
+            model = CallableModel()
+            runner = EvaluationRunner(model, dataset, metrics, config=config)
             runner._get_dataloader = lambda: dataset
             results = runner.run()
 
             assert "metrics" in results
             assert results["num_samples"] == 6
+            assert model.calls == 2
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",

@@ -227,11 +227,11 @@ class EvaluationRunner:
                 elif hasattr(self.model, "forward"):
                     predictions = self.model.forward(inputs)
                 else:
-                    model_call = getattr(self.model, "__call__", None)
-                    if not callable(model_call):
+                    if not callable(self.model):
                         raise ValueError(
                             f"Model {type(self.model)} has no predict/forward method and is not callable"  # noqa: E501
                         )
+                    model_call = self.model.__call__
                     try:
                         predictions = model_call(inputs)
                     except TypeError as e:

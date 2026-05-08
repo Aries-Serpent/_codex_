@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 class RestrictedUnpickler(pickle.Unpickler):
     """Restricted unpickler that only allows whitelisted classes."""
 
+    # This allowlist is intentionally conservative for cache/model metadata use.
+    # Broader numpy object graphs should be explicitly reviewed before expansion.
     SAFE_MODULES: dict[str, set[str]] = {
         "builtins": {
             "int",
@@ -97,7 +99,11 @@ def safe_pickle_load(
         logger.debug("Loading pickle with RestrictedUnpickler: %s", path)
         return RestrictedUnpickler(io.BytesIO(data)).load()
 
-    logger.warning("Loading pickle WITHOUT restriction (potential security risk): %s", path)
+    logger.warning(
+        "Loading pickle WITHOUT restriction (potential security risk): %s. "
+        "Use use_restricted_unpickler=True unless the file is fully trusted.",
+        path,
+    )
     return pickle.loads(data)  # nosec B301 - explicitly allowed by caller
 
 
