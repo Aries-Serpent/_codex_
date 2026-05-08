@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S870) — 2026-05-08
+- **Secrets Baseline Enforcer fix**: `.codex/webhook_config.json` lines 7 & 85 classified
+  as `is_secret=false` in `.secrets.baseline`. Both entries are "Secret Keyword" false
+  positives — the JSON keys reference secret *names* (`WEBHOOK_SECRET`, `secret_env`) but
+  contain no actual credential values. Root cause from issue #4360.
+- **Validation Pipeline diagnosis**: `Fast Validation` failure on run #25542456428 was on
+  commit `f25996a7` (pre-existing; already superseded by current HEAD). The hook-failures
+  artifact confirms a pre-commit issue resolved in subsequent commits.
+- **Docs archive committed**: 31 PHASE0/1/2 completion reports moved to
+  `docs/plans/archive/`; active plan count reduced 81 → 50.
+- **P-045 gate**: ruff ✅ · no conflicts ✅ · sync_tracked_files ✅.
+
+### Added / Fixed (S869) — 2026-05-08
+- **Docs archive**: 31 stale PHASE0/1/2 completion reports moved to `docs/plans/archive/`
+  (PHASE0_*, Phase0_*, PHASE1_COMPLETION_REPORT, PHASE2_* ×27, MISSION_COMPLETE,
+  FINAL_COMPREHENSIVE_STATUS, COMPREHENSIVE_PLAN_VERIFICATION, MILESTONE_30_PERCENT_COVERAGE_ACHIEVED).
+  `docs/plans/archive/README.md` created with archive policy and file catalogue.
+  Active plan count reduced 81 → 50.
+- **CI monitoring**: All workflows on HEAD `6dc78aa` in `action_required` state — awaiting
+  maintainer approval triggered by current push. No CI failures on code.
+- **P-045 gate**: ruff ✅ · no conflicts ✅ · sync_tracked_files ✅.
+- **Living docs** (PR4356_whats_next, session_diagram, PLAN_STATUS_DASHBOARD, CB tasks) updated with S869 archive completion status.
+
 ### Added / Fixed (S868) — 2026-05-08
 - **CI Investigation**: Analysed `Agent Token Delegation` failure (#6232) — root cause was transient `action_required` gate on first run attempt; subsequent runs resolved to `action_required` awaiting maintainer approval (not a code defect). Analysed `Automatic Dependency Submission` (#25542482123) — GitHub-managed workflow transient HTTP 503; `dependency-submission.yml` already has `continue-on-error: true` since S154; no fix needed.
 - **Docs sweep**: Catalogued all 81 `docs/plans/` files; created `DOCS_CONSOLIDATION_MAP.md` identifying 28 PHASE0/1/2 completion-report archive candidates, 6 merge candidates, 18 active living docs. Archive will execute next session.

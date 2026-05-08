@@ -278,3 +278,51 @@ Queued vars (10): `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRI
 | WEC items armed | 9 |
 | CodeQL alerts new | 0 |
 | Merge readiness | 96 / 100 |
+
+---
+
+## ✅ Completed This Session (S870 — Issue #4360 Triage)
+
+### Issue #4360 CI Failure Patterns Resolved
+
+| Pattern (from #4360) | Root Cause | Resolution |
+|----------------------|-----------|------------|
+| 🔐 Secrets Baseline Enforcer (5 failures) | `.codex/webhook_config.json` lines 7 & 85 — "Secret Keyword" FP (JSON key names `secret_env`, `WEBHOOK_SECRET`, not actual credentials) | ✅ Classified `is_secret=false` in `.secrets.baseline` |
+| Validation Pipeline Fast Validation | `hook_failures.json` artifact confirms pre-commit failure on OLD commit `f25996a7`; current HEAD is clean | ℹ️ Not a current-HEAD problem |
+| Automatic Dependency Submission (5 failures) | GitHub-managed workflow HTTP 503 infra failure | ℹ️ `dependency-submission.yml` already resilient |
+| Agent Token Delegation cancelled/action_required | Normal gating on new push — not a code failure | ℹ️ Approved by maintainer |
+| `finding-autofix-faa8614c` branch failures | Separate bot-managed branch; unrelated | ℹ️ Different branch |
+
+### Docs Archive
+- 31 stale PHASE0/1/2 completion reports moved to `docs/plans/archive/`
+- `docs/plans/archive/README.md` created
+- Active plan count: **81 → 50**
+
+### Updated Files
+| File | Change |
+|------|--------|
+| `.secrets.baseline` | `webhook_config.json` lines 7 & 85 → `is_secret=false` |
+| `docs/plans/archive/` (31 files) | Phase 0/1/2 historical reports archived |
+| `docs/plans/archive/README.md` | New — archive policy and file catalogue |
+| `CHANGELOG.md` | S870 section |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S870 session summary |
+| `docs/plans/PR4356_whats_next.md` | This section |
+
+---
+
+## 📊 Final Session Metrics (S867 → S870)
+
+| Metric | Value |
+|--------|-------|
+| Problem-statement diffs applied | 12 / 12 |
+| Code review comments resolved | 7 / 7 |
+| Issue #4360 patterns triaged | 6 — 1 fixed, 5 pre-existing/infra |
+| New docs created | 6 |
+| Docs archived | 31 PHASE0/1/2 reports |
+| Active plan files | 50 (was 81) |
+| Variables queued | 10 |
+| Webhooks ready-to-deploy | 4 |
+| Token gaps closed | T-01 ✅ |
+| CodeQL alerts introduced | 0 |
+| Secrets baseline clean | ✅ |
+| Merge readiness | 96–100 / 100 |

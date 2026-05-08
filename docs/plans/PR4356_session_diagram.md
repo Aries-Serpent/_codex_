@@ -273,3 +273,40 @@ stateDiagram-v2
 
 > **34/38 checks passing** → Merge readiness 96/100
 > The 4 non-passing items are infrastructure limitations, not code defects.
+
+---
+
+## 🏁 S870 Final Status — Issue #4360 Triage
+
+```mermaid
+graph TD
+    I4360["📋 Issue #4360
+97 failures · 24 workflows"]
+
+    I4360 --> P1["🔐 Secrets Baseline Enforcer
+webhook_config.json lines 7+85
+'Secret Keyword' false positive"]
+    I4360 --> P2["Validation Pipeline
+Fast Validation hook failure
+on OLD commit f25996a7"]
+    I4360 --> P3["Automatic Dependency Submission
+GitHub HTTP 503 infra"]
+    I4360 --> P4["finding-autofix-faa8614c
+Separate bot branch"]
+    I4360 --> P5["Agent Token Delegation
+action_required gate"]
+
+    P1 --> FIX1["✅ Fixed
+is_secret=false in .secrets.baseline"]
+    P2 --> INFO1["ℹ️ Not current HEAD
+already resolved in S864+"]
+    P3 --> INFO2["ℹ️ Resilient workflow
+already in place since S154"]
+    P4 --> INFO3["ℹ️ Different branch
+not PR #4356"]
+    P5 --> INFO4["ℹ️ Normal gating
+approved by maintainer"]
+
+    style FIX1 fill:#2d9c2d,color:#fff
+    style I4360 fill:#c0392b,color:#fff
+```

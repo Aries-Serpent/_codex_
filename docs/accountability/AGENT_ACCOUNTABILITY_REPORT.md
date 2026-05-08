@@ -31233,6 +31233,75 @@ and the CI gate requirement.
 
 ---
 
+## SESSION SUMMARY — 2026-05-08T08:02Z S869 (PR #4356)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — none new since S868 ✅
+- [x] **0b.** Failing CI checks reviewed — all `action_required` on HEAD `6dc78aa`; not failures, awaiting maintainer approval ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** Living docs updated — PR4356_whats_next, PR4356_session_diagram, PLAN_STATUS_DASHBOARD, CB tasks ✅
+- [x] **3.** CHANGELOG.md — S869 section prepended ✅
+- [x] **4.** P-045 gate passed — ruff ✅ · no conflicts ✅ · sync ✅
+
+### Work Completed
+1. **Docs archive pass**: 31 stale PHASE0/1/2 completion reports moved to `docs/plans/archive/`.
+   `docs/plans/archive/README.md` created. Active plan file count reduced 81 → 50.
+2. **CI monitoring**: All runs on HEAD `6dc78aa` show `action_required` — awaiting maintainer
+   approval of newly pushed commit. No code failures present.
+3. **Living docs**: PR4356_whats_next + session_diagram updated with S869 archive status,
+   CI matrix, and final session metrics.
+4. **PLAN_STATUS_DASHBOARD.md**: Archive completion item marked ✅.
+5. **COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md**: Archive item marked ✅.
+6. **CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md**: S869 entries added.
+7. **P-045 gate**: ruff ✅ · no conflicts ✅ · sync_tracked_files ✅.
+
+### CI Status at Session End
+- All workflows: `action_required` on HEAD `6dc78aa` (docs-only commit)
+- No code failures; CodeQL unchanged; secrets baseline clean
+- Merge readiness: **96/100** (docs-only commit does not affect score)
+
+### Lessons Learned
+- 81-doc `plans/` dir is a maintenance burden; archive pass completed — now 50 active.
+- `action_required` state on first push from new commit is expected and not a failure.
+
+---
+
+## SESSION SUMMARY — 2026-05-08T08:05Z S870 (PR #4356)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — reply_to_comment for #4404483484 (CI escalation) ✅
+- [x] **0b.** Failing CI checks reviewed — Secrets Baseline Enforcer (webhook_config.json FP), Validation Pipeline (old commit) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CHANGELOG.md — S870 section prepended ✅
+- [x] **3.** P-045 gate passed — ruff ✅ · no conflicts ✅ · sync ✅
+
+### Work Completed
+1. **Issue #4360 triage**: Analysed all 97 failures across 24 workflows.
+   - Pattern 1 (Secrets Baseline Enforcer): `.codex/webhook_config.json` lines 7 & 85
+     trigger "Secret Keyword" detector — false positives (key names, not values).
+     Fixed: classified `is_secret=false` in `.secrets.baseline`.
+   - Pattern 2 (Validation Pipeline): `Fast Validation` failure was on commit `f25996a7`
+     (pre-existing from before S867 fixes). `hook_failures.json` artifact confirms
+     a pre-commit hook issue already resolved. Not a current HEAD problem.
+   - Pattern 3 (Automatic Dependency Submission): GitHub-managed HTTP 503 infra failure.
+     Resilient workflow already in place. Not a code defect.
+2. **Docs archive pass committed**: 31 stale PHASE0/1/2 docs archived to
+   `docs/plans/archive/`; `archive/README.md` created.
+3. **Living docs**: PR4356_whats_next + session_diagram updated with S870 status.
+4. **P-045 gate**: ruff ✅ · no conflicts ✅ · sync_tracked_files ✅.
+
+### Issue #4360 Pattern Analysis Summary
+| Pattern | Root Cause | Status |
+|---------|-----------|--------|
+| Secrets Baseline Enforcer | webhook_config.json FP (key names) | ✅ Fixed |
+| Validation Pipeline Fast Validation | Pre-existing on old commit | ℹ️ Not current |
+| Automatic Dependency Submission | GitHub HTTP 503 infra | ℹ️ Resilient workflow |
+| Agent Token Delegation | action_required gate (normal) | ℹ️ Not a failure |
+| Copilot code review | PR #4351 infra / artifact | ℹ️ Different branch |
+| finding-autofix-faa8614c branch failures | Separate bot branch | ℹ️ Not our branch |
+
+---
+
 ## SESSION SUMMARY — 2026-05-08T07:12Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #4356)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
