@@ -280,7 +280,7 @@ class TestCircuitBreakerIntegration:
             mock_cb.get_state.return_value = {"state": "closed", "failure_count": 0}
 
             config = ModelConfig(model_name="test-model", model_type="stub")
-            app = create_app(config=config)
+            app = create_app(config)
 
             from fastapi.testclient import TestClient
 
@@ -293,7 +293,7 @@ class TestCircuitBreakerIntegration:
     def test_circuit_breaker_503_on_open(self):
         """Test circuit breaker returns 503 when open"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
