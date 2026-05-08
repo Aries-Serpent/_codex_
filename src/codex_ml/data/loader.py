@@ -56,7 +56,7 @@ class CacheManifest:
     num_records: int = 0
     shard_index: int = 0
     shard_total: int = 1
-    created_at: float = field(default_factory=lambda: time.time())
+    created_at: float = field(default_factory=time.time)
     params: dict[str, Any] = field(default_factory=dict)
     splits: dict[str, dict[str, Any]] = field(default_factory=dict)
 
