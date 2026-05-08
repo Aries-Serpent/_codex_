@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S879) — 2026-05-08
+- CI rescue/self-healing workflows now stop escalating GitHub-managed
+  `Automatic Dependency Submission (Python)` failures as actionable code-fix
+  events (kept monitoring on `Resilient Dependency Submission` only).
+- `scripts/ci/pr_comment_consolidator.py` now treats known transient dependency
+  submission checks (`Automatic Dependency Submission (Python)` /
+  `dynamic / submit-pypi (dynamic)`) as non-blocking for merge-readiness score
+  computation and dashboard implementation-gap messaging.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with S879
+  resolution details for escalation comment `#4408748273`.
+
 ### Fixed (S878) — 2026-05-08
 - `.github/workflows/batch-ci-triage.yml`: fixed triage-run failure pattern from
   run `25567584852` (`Argument list too long`) by replacing large failure-payload

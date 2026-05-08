@@ -28,8 +28,7 @@ on:
       - "Nightly CodeQL Alert Triage"
       - "Deferral Language Gate"
       - "CI Pattern Pipeline"
-      # Dependency submission / supply-chain (GitHub-managed + custom)
-      - "Automatic Dependency Submission (Python)"
+      # Dependency submission / supply-chain
       - "Resilient Dependency Submission"
       # Validation suites
       - "Resilient Validation Suite"

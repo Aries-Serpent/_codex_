@@ -34,7 +34,8 @@ on:
       # Extended coverage — sharded quick tests + slow validation
       - "Resilient Validation Suite"
       # Dependency graph / security supply-chain
-      - "Automatic Dependency Submission (Python)"
+      # NOTE: GitHub-managed "Automatic Dependency Submission (Python)" is
+      # transient-infra-prone and handled outside rescue escalation.
       - "Resilient Dependency Submission"
     types: [completed]
   # Manual trigger (for testing or ad-hoc rescue of a specific run)
