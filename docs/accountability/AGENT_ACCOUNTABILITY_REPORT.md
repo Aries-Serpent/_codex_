@@ -24,6 +24,9 @@
 - `ruff` on changed files: ✅
 - targeted pytest set: ✅ (`7 passed, 1 skipped`)
 - readiness gates (sync/mypy/auto-fix): ✅
+- workflow monitoring (post-push snapshot): ✅ active monitoring
+  - latest SHA `8c007170...`: 13 in-progress, 5 success, 8 action_required, 1 pending, 2 startup_failure
+  - maintainer approval state acknowledged; new runs continue after latest push
 
 ---
 

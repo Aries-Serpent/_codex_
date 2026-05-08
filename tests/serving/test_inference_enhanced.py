@@ -277,10 +277,7 @@ class TestCircuitBreakerIntegration:
         """Test real circuit breaker behavior during prediction failures"""
         # Skip if circuit breaker not available
         try:
-            from src.codex_ml.serving.resilience import (  # noqa: F401
-                CircuitBreaker,
-                CircuitBreakerConfig,
-            )
+            from src.codex_ml.serving.resilience import CircuitBreakerConfig
         except ImportError:
             pytest.skip("CircuitBreaker not available")
 

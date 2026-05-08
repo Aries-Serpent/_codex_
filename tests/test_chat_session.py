@@ -90,15 +90,15 @@ def test_exception_restores_env():
 
 
 def test_nested_sessions_restore_previous(tmp_path, monkeypatch):
-    ChatSession = _load_chatsession()
-    if ChatSession is None:
+    chat_session_class = _load_chatsession()
+    if chat_session_class is None:
         pytest.xfail("ChatSession not found/importable; implement ChatSession or update mapping")
 
     monkeypatch.setenv("CODEX_SESSION_ID", "outer")
     db = tmp_path / "chat.db"
 
-    with ChatSession(session_id="outer", db_path=str(db)):
-        with ChatSession(session_id="inner", db_path=str(db)):
+    with chat_session_class(session_id="outer", db_path=str(db)):
+        with chat_session_class(session_id="inner", db_path=str(db)):
             assert os.environ.get("CODEX_SESSION_ID") == "inner"
         assert os.environ.get("CODEX_SESSION_ID") == "outer"
 

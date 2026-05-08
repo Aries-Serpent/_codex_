@@ -78,13 +78,15 @@
 - **Target:** Maintain 100/100 through final CI run
 - **Critical Gates:** ✅ All passing (Deferral Language, Reference Integrity, Branch Rebase, Comment Review)
 
-### CI Status Table (Latest: 2026-05-08T16:48Z)
+### CI Status Table (Latest: 2026-05-08T16:56Z)
 
 | Category | Status | Count | Notes |
 |----------|--------|-------|-------|
 | ✅ Local Readiness Gates | Pass | 4 | Ruff, sync_tracked, mypy baseline, auto-fix patterns |
 | 📦 CodeQL Artifact Triage | Complete | 1 | Artifact `6882773618` processed and fixes applied |
 | 🧵 Review Thread Actions | Complete | 6/6 | All actionable comments remediated in code/docs |
+| 🔄 Workflow Monitoring | Active | 13 | In-progress runs on latest SHA after push |
+| ☑️ Workflow Approvals | Acknowledged | 8 | Completed as `action_required` on latest snapshot; maintainer approval acknowledged |
 | ⚠️ External CI Failures | Historical | 218 | From issue #4365 triage rollup (cross-workflow/global view) |
 | 🎯 Merge Readiness | Pass | 100/100 | Pattern 30 dimension check green |
 

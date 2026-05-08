@@ -27,6 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `sync_tracked_files.py --fix` ✅
   - `mypy_baseline.py --require-baseline` ✅ (`130 == baseline 130`)
   - `auto_fix_common_issues.py --check-only` ✅ (Pattern 30 merge readiness `100/100`)
+- Workflow monitoring snapshot (post-push `8c00717`, 2026-05-08T16:56Z):
+  - 13 in-progress, 5 completed-success, 8 completed-action_required, 1 pending, 2 startup_failure
+  - Maintainer-approved pending workflows were acknowledged; monitoring continues for newly spawned runs.
 
 ### Fixed (S875) — 2026-05-08
 - Fixed import path inconsistency in `tests/serving/test_inference_enhanced.py`: changed

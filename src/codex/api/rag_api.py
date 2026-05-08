@@ -547,8 +547,8 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
             index_dir=str(_RAG_FILES_BASE),
         )
 
-        num_vectors = int(metadata.get("num_vectors", summary.get("vectors", 0) or 0))
-        embedding_dim = int(metadata.get("dimension", summary.get("dimension", 0) or 0))
+        num_vectors = int(metadata.get("num_vectors") or summary.get("vectors") or 0)
+        embedding_dim = int(metadata.get("dimension") or summary.get("dimension") or 0)
         size_bytes = max(num_vectors, 0) * max(embedding_dim, 0) * 4
 
         return StatsResponse(

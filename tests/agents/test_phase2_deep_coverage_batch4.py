@@ -520,7 +520,7 @@ class TestPhase2_OptimizationMethods:
         orchestrator = PhysicsInspiredOrchestrator()
         if hasattr(orchestrator, "optimize_path"):
             try:
-                result = orchestrator.optimize_path({"x": 0.0}, {"x": 1.0}, 5)
+                result = orchestrator.optimize_path({"x": 0.0}, {"x": 1.0})
                 assert result is not None
             except TypeError:
                 # Different signature - skip

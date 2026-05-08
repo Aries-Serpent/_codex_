@@ -239,6 +239,8 @@ flowchart LR
 4. ✅ Sourced issue #4365 CI triage report for current failure-pattern mapping
 5. ✅ Passed readiness gates (sync tracked, mypy baseline, auto-fix patterns)
 6. ✅ Reached local readiness `100/100`
+7. ✅ Monitored workflow state after maintainer approvals:
+   - latest SHA `8c007170...`: 13 in-progress, 5 success, 8 action_required, 1 pending, 2 startup_failure
 
 ---
 
