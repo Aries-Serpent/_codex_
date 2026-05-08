@@ -5,6 +5,7 @@ Tests reproducibility, determinism, checkpointing, validation, and safeguards.
 Following High Maturity Achievement Plan patterns (target: 15-20 tests).
 """
 
+import pytest
 
 
 class TestFunctionalTrainingDetector:
@@ -175,13 +176,11 @@ class TestSafeguardsValidation:
 
     def test_error_handling_structure(self):
         """Test error handling structure."""
-        try:
-            # Validation: negative epochs should raise error
+        # Validation: negative epochs should raise error
+        with pytest.raises(ValueError, match="positive"):
             epochs = -1
             if epochs < 0:
                 raise ValueError("Epochs must be positive")
-        except ValueError as e:
-            assert "positive" in str(e).lower()
 
 
 class TestMonitoringTelemetry:
