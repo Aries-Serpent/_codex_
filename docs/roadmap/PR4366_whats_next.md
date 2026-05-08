@@ -2,9 +2,9 @@
 
 **PR:** #4366 - Fix circuit breaker test import path and replace mock with real integration test  
 **Branch:** `copilot/fix-import-path-inconsistency`  
-**Status:** 🟡 ACTIVE (S882 approved-run monitoring + cognitive-brain mapping refresh)  
-**Latest Session:** S882 (2026-05-08T19:00Z)  
-**Latest Commit:** `80fdd6d` (S881 follow-up doc fixes + WEC section restore)
+**Status:** 🟡 ACTIVE (S883 approval-cycle monitoring + post-merge planning)  
+**Latest Session:** S883 (2026-05-08T19:10Z)  
+**Latest Commit:** `e2a59cd` (S882 living-doc and objective-mapping refresh)
 
 ---
 
@@ -24,6 +24,11 @@
 - [x] Updated living docs with current run-status snapshot
 - [x] Updated mermaid mappings to align cognitive-brain objectives with current codebase status
 - [x] Prepared merge-readiness + post-merge continuation prompt focused on reliability score uplift
+
+### ✅ Phase 13: Approval-Cycle Monitoring + #4365 Reliability Handoff (COMPLETE)
+- [x] Monitored latest head `e2a59cd` run state after maintainer approval note
+- [x] Captured approval-cycle snapshot (30 completed `action_required`, 2 in-progress, 6 queued)
+- [x] Added next-PR handoff objective leveraging issue `#4365` (234 failed-run pattern inventory)
 
 ### ✅ Phase 1: Problem Analysis & Diagnosis (COMPLETE)
 - [x] Reproduce failing circuit-breaker test in `tests/serving/test_inference_enhanced.py`
@@ -108,14 +113,14 @@
 - **Target:** Maintain 100/100 through final CI run
 - **Critical Gates:** ✅ All passing (Deferral Language, Reference Integrity, Branch Rebase, Comment Review)
 
-### CI Status Table (Latest: 2026-05-08T19:00Z)
+### CI Status Table (Latest: 2026-05-08T19:10Z)
 
 | Category | Status | Count | Notes |
 |----------|--------|-------|-------|
 | ✅ Local Readiness Gates | Pass | 4 | Ruff, sync_tracked, mypy baseline, auto-fix patterns |
 | 📦 CodeQL Artifact Triage | Complete | 1 | Artifact `6882773618` processed and fixes applied |
 | 🧵 Review Thread Actions | Complete | 6/6 | All actionable comments remediated in code/docs |
-| 🔄 Workflow Monitoring | Active | 45 | Total monitored workflows for `80fdd6d`: 26 in-progress + 4 queued + 15 completed (8 success, 1 skipped, 4 startup_failure, 2 cancelled) |
+| 🔄 Workflow Monitoring | Active | 38 | Head `e2a59cd` — approval-cycle snapshot: 30 completed (`action_required`), 2 in-progress, 6 queued |
 | ☑️ Workflow Approvals | Acknowledged | 1 | Maintainer confirmed pending approvals were completed for this PR |
 | ⚠️ External CI Failures | Historical | 108 | From issue #4365 triage rollup (latest generated report) |
 | 🛡️ CodeQL Quick-Win Scope | Reduced | 46 | Artifact-mapped alerts in 5 changed action files (primarily `actions/code-injection/medium`) |
@@ -158,6 +163,21 @@ Priority:
 2) convert recurring action_required/cancelled patterns into stable green paths
 3) raise and sustain codebase reliability score with measurable CI trend improvements.
 Deliver updated living docs + accountability + reliability delta after each iteration.
+```
+
+## 📌 Post-Merge New-PR Handoff (Issue #4365 Leverage)
+
+- **Signal source:** issue `#4365` (bot-reported, 234 failed workflow run(s))
+- **Directive for next PR after this merge:** use #4365 failure-pattern clusters as the
+  baseline triage corpus for codebase-wide reliability hardening and unfinished plan completion.
+
+**Tailored new-PR kickoff prompt:**
+```text
+@copilot start a new PR focused on codebase-wide reliability hardening.
+Use issue #4365 (234 failed workflow runs) as the authoritative pattern backlog.
+Prioritize recurring startup_failure/cancelled/action_required cascades, then map each fix
+to remaining unfinished cognitive-brain plan sets. Require measurable reliability-score uplift
+and per-iteration accountability/living-doc updates.
 ```
 
 **Key Successful Workflows:**
