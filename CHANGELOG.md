@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `tests/test_codex_ml_safe_pickle.py`
   - passed `str(key_file)` to `os.open()` in `_get_secret_key()` for clearer
     path intent and type-checker friendliness
+  - added a debug log when `_get_secret_key()` reuses an existing key file and
+    promoted the signed-pickle header bytes into the `SIGNED_PICKLE_HEADER`
+    module constant
 
 ### Changed (S886) — 2026-05-08
 - Refreshed `.github/copilot-prompts/active/PR-4368-followup.md` so the active

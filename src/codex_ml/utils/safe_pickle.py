@@ -19,6 +19,9 @@ SIGNED_PICKLE_VERSION = 1
 SIGNED_PICKLE_ALGO_SHA256 = 1
 SIGNED_PICKLE_HEADER_LEN = len(SIGNED_PICKLE_MAGIC) + 2
 SIGNED_PICKLE_SIGNATURE_LEN = 32
+SIGNED_PICKLE_HEADER = SIGNED_PICKLE_MAGIC + bytes(
+    [SIGNED_PICKLE_VERSION, SIGNED_PICKLE_ALGO_SHA256]
+)
 
 
 class RestrictedUnpickler(pickle.Unpickler):
@@ -150,6 +153,7 @@ def _get_secret_key() -> bytes:
     try:
         fd = os.open(str(key_file), flags, 0o600)
     except FileExistsError:
+        logger.debug("Reusing existing pickle secret key at %s", key_file)
         return key_file.read_bytes()
     with os.fdopen(fd, "wb") as handle:
         handle.write(new_key)
@@ -159,10 +163,7 @@ def _get_secret_key() -> bytes:
 def _build_signed_pickle(pickled_data: bytes, secret_key: bytes) -> bytes:
     """Build a versioned signed pickle payload."""
     signature = hmac.new(secret_key, pickled_data, hashlib.sha256).digest()
-    header = SIGNED_PICKLE_MAGIC + bytes(
-        [SIGNED_PICKLE_VERSION, SIGNED_PICKLE_ALGO_SHA256]
-    )
-    return header + signature + pickled_data
+    return SIGNED_PICKLE_HEADER + signature + pickled_data
 
 
 def _split_signed_pickle(data: bytes) -> tuple[bytes, bytes]:
