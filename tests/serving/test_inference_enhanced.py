@@ -76,7 +76,7 @@ class TestInferenceServerWithAuth:
     def test_create_app_no_auth(self):
         """Test creating app without authentication"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -92,7 +92,7 @@ class TestInferenceServerWithAuth:
         monkeypatch.setenv("CODEX_API_KEYS", "valid-key-1,valid-key-2")
 
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
