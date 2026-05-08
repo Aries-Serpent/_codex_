@@ -1,32 +1,32 @@
-# Session Context — 2026-05-08T01:16:49Z
-**Branch:** `finding-autofix-faa8614c`  **PR:** #4347  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-08T01:32:58Z
+**Branch:** `finding-autofix-faa8614c`  **PR:** #4346  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4726` (✅)
-- GraphQL remaining: `4940` (✅)
+- REST remaining: `4571` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4347 — Fix for Unused variable, import, function or class
-State: `open`  Draft: `False`  Branch: `finding-autofix-292b6b60` → `finding-autofix-faa8614c`
+## 📋 PR #4346 — Fix for Non-callable called
+State: `open`  Draft: `True`  Branch: `finding-autofix-faa8614c` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
-- **PR Comment Review Gate** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
-- **Workflow Execution Gate** — `failure` on `finding-autofix-faa8614c` (2026-05-08)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
 
 ## 📝 Recent Commits
+- `881f6a04` fix(ci): actionlint+CodeQL — self-healing restructure, env-var injection fix, WE — copilot-swe-agent[bot] (2026-05-08)
+- `8fc93828` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
 - `f09b9ed9` Potential fix for pull request finding 'CodeQL / Workflow does not contain permi — Statix (2026-05-08)
 - `988164d2` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
 - `0205a9dd` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
 - `57c30c99` docs(s859): final living docs v2 — CI snapshot, CHANGELOG+accountability final,  — copilot-swe-agent[bot] (2026-05-08)
 - `36683569` feat(aais): 97.34→99.9 — CI/CD 100%, Security 100%, Reliability 98.4%; token rev — copilot-swe-agent[bot] (2026-05-08)
 - `a149a40e` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
-- `6197ab1c` fix(ci): yamllint trailing blank line; cherry-pick PR#4347 code fixes; optimize  — copilot-swe-agent[bot] (2026-05-08)
-- `62a52794` Merge branch 'main' into finding-autofix-faa8614c — Statix (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
