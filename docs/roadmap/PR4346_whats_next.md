@@ -1,13 +1,32 @@
-# What's Next — PR #4346 · S862 · 2026-05-08
+# What's Next — PR #4346 · S864 · 2026-05-08
 
 > **Branch:** `finding-autofix-faa8614c` → `main`  
 > **AAIS composite:** **100.0 / 100 (S+)** · **actionlint:** ✅ 0 · **ruff:** ✅ · **sync_tracked_files:** ✅ · **Merge conflicts:** ✅  
-> **Latest session:** S862 · 2026-05-08T04:10Z  
-> **CI Status:** 5 unresolved review threads → all confirmed fixed in current code ✅
+> **Latest session:** S864 · 2026-05-08T04:45Z  
+> **CI Status:** Fast Validation failures resolved ✅ — 3 pre-commit hooks fixed
 
 ---
 
-## ✅ S862 Delivery Summary
+## ✅ S864 Delivery Summary
+
+| # | Deliverable | Status |
+|---|-------------|--------|
+| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v1.4.0→v1.5.0); `run_validation.sh` now uses `detect-secrets==1.5.0` | ✅ |
+| 2 | `check-shell-true` false positive: removed `shell=True` literal from `subprocess.py` error message | ✅ |
+| 3 | `validate-internal-links` broken link: fixed `.codex/agent_context.json` → `../../.codex/agent_context.json` in `ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | ✅ |
+| 4 | Replied to `comment_new` #4403330132 (Fast Validation failure) | ✅ |
+| 5 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated | ✅ |
+
+---
+
+## ✅ S863 Delivery Summary
+
+| # | Deliverable | Status |
+|---|-------------|--------|
+| 1 | Replied to `comment_new` #4403328142 to unblock `🔍 Scan PR comments` gate | ✅ |
+| 2 | P-045 gate: ruff ✅ · sync_tracked_files ✅ · no conflicts ✅ | ✅ |
+
+---
 
 | # | Deliverable | Status |
 |---|-------------|--------|

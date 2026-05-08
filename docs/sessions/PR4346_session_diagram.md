@@ -1,13 +1,38 @@
-# Session Diagram — PR #4346 · S862 · 2026-05-08
+# Session Diagram — PR #4346 · S864 · 2026-05-08
 
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
-> **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern), S862 (review threads resolved, final wrap-up)
+> **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern), S862 (review threads resolved, final wrap-up), S863 (Scan PR comments gate), S864 (Fast Validation 3 hook fixes)
 > **Current AAIS:** 100.0/100 ✅ · **actionlint:** 0 · **ruff:** ✅
 
 ---
 
-## 1. Full Session Flow (S862 — Final)
+## 1. Full Session Flow (S864 — Current)
+
+```mermaid
+flowchart TD
+    START(["🟢 S864 · 2026-05-08T04:45Z"]) --> DIAG
+
+    DIAG["🔍 Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"] --> FIX
+
+    FIX["✅ Fixes Applied\n① .secrets.baseline v1.5.0 committed\n   run_validation.sh → detect-secrets==1.5.0\n② subprocess.py: removed shell=True string\n③ ELEVATED_PRIVILEGES… link fixed: ../../.codex/"] --> DOCS
+
+    DOCS["✅ Living Docs Updated\n• PR4346_whats_next.md — S864 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S864 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
+
+    GATE["🔒 P-045 Gate\nruff ✅ · sync_tracked_files ✅\nno conflicts ✅ · reply #4403330132"] --> END
+
+    END(["🏁 PR #4346 MERGE READY\nScore: 100/100\nOBJ-A/C/E/F ✅\nOBJ-B/D ⛔ admin-action-t03.yml notifies"])
+
+    style START fill:#27ae60,color:#fff
+    style END fill:#27ae60,color:#fff
+    style DIAG fill:#e67e22,color:#fff
+    style FIX fill:#27ae60,color:#fff
+    style DOCS fill:#27ae60,color:#fff
+```
+
+---
+
+## 2. S862 Flow
 
 ```mermaid
 flowchart TD
@@ -19,7 +44,7 @@ flowchart TD
 
     GATE["🔒 P-045 Gate\nruff ✅ · sync_tracked_files ✅\nno conflicts ✅ · replies sent"] --> END
 
-    END(["🏁 PR #4346 MERGE READY\nScore: 100/100\nOBJ-A/C/E/F ✅\nOBJ-B/D ⛔ admin-action-t03.yml notifies"])
+    END(["🏁 S862 Complete — 100/100"])
 
     style START fill:#27ae60,color:#fff
     style END fill:#27ae60,color:#fff
@@ -29,7 +54,7 @@ flowchart TD
 
 ---
 
-## 2. S861-cont Flow
+## 3. S861-cont Flow
 
 ```mermaid
 flowchart TD
