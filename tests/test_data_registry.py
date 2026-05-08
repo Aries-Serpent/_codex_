@@ -51,7 +51,7 @@ def test_dataset_registry_entry_points(monkeypatch) -> None:
     def fake_entry_points(*, group: str):
         if group in registry._ENTRY_POINT_GROUPS:  # type: ignore[attr-defined]
             return (_DummyEntryPoint("entry_loader", loader),)
-        return (_DummyEntryPoint("__unused__", loader),)
+        return ()
 
     monkeypatch.setattr(metadata, "entry_points", fake_entry_points)
 

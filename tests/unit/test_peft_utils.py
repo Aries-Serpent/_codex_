@@ -25,10 +25,12 @@ def test_freeze_counts():
         )
     except ImportError:
         pytest.skip("transformers/peft not installed")
+    bundle = None
     try:
         bundle = load_hf_llm("sshleifer/tiny-gpt2")
     except Exception as _err:
         pytest.skip("model weights not available offline")
+    assert bundle is not None
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)
     assert trainable > 0

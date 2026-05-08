@@ -2,9 +2,9 @@
 
 **PR:** #4366 - Fix circuit breaker test import path and replace mock with real integration test  
 **Branch:** `copilot/fix-import-path-inconsistency`  
-**Status:** �� OPEN  
-**Latest Session:** S875 (2026-05-08T15:38Z - 15:57Z)  
-**Latest Commit:** `56ba5a4` (2026-05-08T15:50Z)
+**Status:** 🟡 ACTIVE (S876 remediation complete; wrap-up pending)  
+**Latest Session:** S876 (2026-05-08T16:42Z - ongoing)  
+**Latest Commit:** Pending final wrap-up commit
 
 ---
 
@@ -62,24 +62,31 @@
 - [ ] Final commit with all updates
 - [ ] Session close
 
+### ✅ Phase 8: Review + CodeQL Remediation (COMPLETE)
+- [x] Applied all actionable PR review-thread fixes (`pullrequestreview-4253577357`)
+- [x] Downloaded CodeQL artifact `codeql-alerts-open-codeql-25564384555`
+- [x] Implemented high-severity CodeQL fixes in source + tests
+- [x] Re-ran readiness gates (`sync_tracked_files`, `mypy_baseline`, `auto_fix_common_issues`)
+- [x] Merge readiness improved to `100/100` (Pattern 30)
+
 ---
 
 ## 📊 Current Status
 
 ### Merge Readiness
-- **Score:** Pending final CI completion
-- **Target:** 100/100 for merge approval
+- **Score:** 100/100 (Pattern 30 local readiness gate)
+- **Target:** Maintain 100/100 through final CI run
 - **Critical Gates:** ✅ All passing (Deferral Language, Reference Integrity, Branch Rebase, Comment Review)
 
-### CI Status Table (Latest: 2026-05-08T15:57Z)
+### CI Status Table (Latest: 2026-05-08T16:48Z)
 
 | Category | Status | Count | Notes |
 |----------|--------|-------|-------|
-| ✅ Completed Successfully | Pass | 9+ | All critical gates passing |
-| ⏳ In Progress | Running | 10+ | CodeQL, mypy, QA Walkthrough, etc. |
-| 🔄 Pending | Queued | 30+ | Awaiting runner availability |
-| ℹ️ Startup Failures | Pre-existing | 3 | Data Quality, Rust Swarm, Progressive (100% historical failure) |
-| ⏭️ Skipped | N/A | 2 | Dependabot, Pre-Merge Validation |
+| ✅ Local Readiness Gates | Pass | 4 | Ruff, sync_tracked, mypy baseline, auto-fix patterns |
+| 📦 CodeQL Artifact Triage | Complete | 1 | Artifact `6882773618` processed and fixes applied |
+| 🧵 Review Thread Actions | Complete | 6/6 | All actionable comments remediated in code/docs |
+| ⚠️ External CI Failures | Historical | 218 | From issue #4365 triage rollup (cross-workflow/global view) |
+| 🎯 Merge Readiness | Pass | 100/100 | Pattern 30 dimension check green |
 
 **Key Successful Workflows:**
 - ✅ Deferral Language Gate
@@ -139,13 +146,15 @@ graph LR
 
 ---
 
-## ✅ Completed Work (S875)
+## ✅ Completed Work (S875 + S876)
 
 ### Code Changes
 - ✅ Fixed import path inconsistency: `codex_ml.serving.resilience` → `src.codex_ml.serving.resilience`
 - ✅ Replaced mocked CircuitBreaker test with real integration test
 - ✅ Removed unused `Mock` import from `unittest.mock`
 - ✅ All 21 tests in `tests/serving/test_inference_enhanced.py` passing
+- ✅ Applied review-thread test fixes (`test_data_registry`, eval helper, threshold derivation)
+- ✅ Applied CodeQL fixes in `rag_api`, `evaluation/runner`, and targeted tests
 
 ### Documentation
 - ✅ Updated `CHANGELOG.md` with S875 entry
@@ -159,6 +168,7 @@ graph LR
 - ✅ P-045 gate checks pass (no conflicts, sync_tracked_files ✅)
 - ✅ Pattern 25 (Last-Commit Accountability) satisfied
 - ✅ All tests passing locally
+- ✅ Merge readiness dimension check now `100/100`
 
 ### CI/CD
 - ✅ Replied to CI escalation comment #4407595143
@@ -166,6 +176,37 @@ graph LR
 - ✅ Monitored 40+ workflows
 - ✅ All critical gates passing (9+ workflows completed successfully)
 - ✅ No blocking failures detected
+- ✅ Sourced CI Failure Triage Report issue #4365 for current failure-pattern context
+
+---
+
+## 🗺️ Updated Remediation Mapping (S876)
+
+```mermaid
+graph TD
+    A[PR Review Thread] --> B[test_data_registry fix]
+    A --> C[evaluate_dataloader fake_torch fix]
+    A --> D[circuit breaker threshold derivation]
+    A --> E[docs glyph fix]
+    A --> F[runner callable-path hardening]
+
+    G[CodeQL Artifact 6882773618] --> H[rag_api path-injection remediation]
+    G --> I[test wrong-named-arg remediation]
+    G --> J[test uninitialized-local fixes]
+    G --> F
+
+    B --> K[Targeted pytest]
+    C --> K
+    D --> K
+    H --> L[ruff + mypy baseline]
+    I --> L
+    J --> L
+    F --> L
+
+    K --> M[Readiness 100/100]
+    L --> M
+    M --> N[Final wrap-up]
+```
 
 ---
 
@@ -206,6 +247,6 @@ All imports in `tests/serving/test_inference_enhanced.py` now use the `src.` pre
 
 ---
 
-**Last Updated:** 2026-05-08T15:57Z (S875 - Final Update)  
-**Next Review:** After CI completion  
-**Session Status:** ✅ All objectives complete - Final wrap-up in progress
+**Last Updated:** 2026-05-08T16:48Z (S876)  
+**Next Review:** Final commit + CI green confirmation  
+**Session Status:** ✅ Remediation complete — wrap-up in progress

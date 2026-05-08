@@ -277,7 +277,10 @@ class TestCircuitBreakerIntegration:
         """Test real circuit breaker behavior during prediction failures"""
         # Skip if circuit breaker not available
         try:
-            from src.codex_ml.serving.resilience import CircuitBreaker  # noqa: F401
+            from src.codex_ml.serving.resilience import (  # noqa: F401
+                CircuitBreaker,
+                CircuitBreakerConfig,
+            )
         except ImportError:
             pytest.skip("CircuitBreaker not available")
 
@@ -293,8 +296,10 @@ class TestCircuitBreakerIntegration:
             "src.codex_ml.serving.inference_server.ModelServer.predict",
             side_effect=Exception("forced model failure"),
         ):
+            failure_threshold = CircuitBreakerConfig().failure_threshold
+
             # Drive failures through the real circuit breaker path.
-            for _ in range(5):
+            for _ in range(failure_threshold):
                 client.post("/predict", json={"inputs": ["test"]})
 
             # Once open, requests should be rejected by circuit breaker.

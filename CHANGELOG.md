@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S876) — 2026-05-08
+- Addressed all actionable PR review comments for PR #4366:
+  - `tests/test_data_registry.py`: fixed entry-point test double semantics to return empty
+    sequence for unsupported groups.
+  - `tests/eval/test_evaluate_dataloader_helper.py`: fixed fake torch stubs so `no_grad`
+    and `device` are directly callable.
+  - `tests/serving/test_inference_enhanced.py`: removed hard-coded breaker loop count and
+    derived attempts from `CircuitBreakerConfig().failure_threshold`.
+  - `docs/roadmap/PR4366_whats_next.md`: fixed corrupted status glyph rendering.
+- Implemented CodeQL artifact-driven fixes across the codebase:
+  - `src/codex_ml/evaluation/runner.py`: direct callable invocation path, removed stale ignore.
+  - `src/codex/api/rag_api.py`: hardened `delete_index`/`get_stats` using validated index
+    operations and centralized index APIs.
+  - `tests/agents/test_phase2_deep_coverage_batch4.py`: removed wrong-named argument usage.
+  - `tests/test_chat_session.py`: initialized `ChatSession` in nested-session test.
+  - `tests/unit/test_peft_utils.py`: initialized `bundle` to avoid uninitialized local path.
+- Readiness improvements:
+  - `sync_tracked_files.py --fix` ✅
+  - `mypy_baseline.py --require-baseline` ✅ (`130 == baseline 130`)
+  - `auto_fix_common_issues.py --check-only` ✅ (Pattern 30 merge readiness `100/100`)
+
 ### Fixed (S875) — 2026-05-08
 - Fixed import path inconsistency in `tests/serving/test_inference_enhanced.py`: changed
   `from codex_ml.serving.resilience` to `from src.codex_ml.serving.resilience` to match
