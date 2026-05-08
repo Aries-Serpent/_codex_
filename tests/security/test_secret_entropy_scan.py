@@ -35,6 +35,7 @@ def test_entropy_scan():
     env = os.environ.copy()
     env["SECRET_ENTROPY_THRESHOLD"] = "3.0"
 
+    result = None
     try:
         result = subprocess.run(
             [sys.executable, str(script_path)],
@@ -46,6 +47,9 @@ def test_entropy_scan():
         )
     except subprocess.TimeoutExpired:
         pytest.skip("Script timed out")
+
+    if result is None:
+        pytest.skip("Script did not produce a result")
 
     if result.returncode != 0:
         stderr = result.stderr.strip()
