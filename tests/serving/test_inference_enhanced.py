@@ -2,7 +2,7 @@
 Tests for Enhanced Inference Server with Authentication and Circuit Breaker
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -274,29 +274,32 @@ class TestCircuitBreakerIntegration:
     """Test circuit breaker integration in inference server"""
 
     def test_circuit_breaker_on_predict(self):
-        """Test circuit breaker is called during prediction"""
+        """Test real circuit breaker behavior during prediction failures"""
         # Skip if circuit breaker not available
         try:
-            from codex_ml.serving.resilience import CircuitBreaker  # noqa: F401
+            from src.codex_ml.serving.resilience import CircuitBreaker  # noqa: F401
         except ImportError:
             pytest.skip("CircuitBreaker not available")
 
-        with patch("src.codex_ml.serving.inference_server.CircuitBreaker") as mock_cb_class:
-            mock_cb = Mock()
-            mock_cb_class.return_value = mock_cb
-            mock_cb.call.return_value = [{"label": "test", "score": 1.0}]
-            mock_cb.get_state.return_value = {"state": "closed", "failure_count": 0}
+        config = ModelConfig(model_name="test-model", model_type="stub")
+        app = create_app(config)
 
-            config = ModelConfig(model_name="test-model", model_type="stub")
-            app = create_app(config)
+        from fastapi.testclient import TestClient
 
-            from fastapi.testclient import TestClient
+        client = TestClient(app, raise_server_exceptions=False)
 
-            client = TestClient(app)
+        # Force model inference failures while keeping the real CircuitBreaker in place.
+        with patch(
+            "src.codex_ml.serving.inference_server.ModelServer.predict",
+            side_effect=Exception("forced model failure"),
+        ):
+            # Drive failures through the real circuit breaker path.
+            for _ in range(5):
+                client.post("/predict", json={"inputs": ["test"]})
 
-            # Make prediction
+            # Once open, requests should be rejected by circuit breaker.
             resp = client.post("/predict", json={"inputs": ["test"]})
-            assert resp.status_code == 200
+            assert resp.status_code == 503
 
     def test_circuit_breaker_503_on_open(self):
         """Test circuit breaker returns 503 when open"""

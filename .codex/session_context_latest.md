@@ -1,42 +1,32 @@
-# Session Context — 2026-05-08T08:28:19Z
-**Branch:** `copilot/fix-webhook-receiver-url-format`  **PR:** #4356  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-08T15:18:24Z
+**Branch:** `copilot/fix-import-path-inconsistency`  **PR:** #4366  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4308` (✅)
-- GraphQL remaining: `4940` (✅)
+- REST remaining: `3342` (✅)
+- GraphQL remaining: `4953` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4356 — fix: clarify Codespaces webhook domain variants, harden subprocess/test logic, rate-limit orchestration, autonomous privilege architecture, and session handoff system
-State: `open`  Draft: `False`  Branch: `copilot/fix-webhook-receiver-url-format` → `main`
-
-### ❌ 16 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Post Execution Plan` (cancelled)
-- `Cancel Runs for Unchecked Workflows` (cancelled)
-- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
-- `Dispatch & Auto-Approve Newly-Checked Workflows` (cancelled)
-- `💰 PR Cost Check` (cancelled)
-- `Validate WEC Template Integrity` (cancelled)
+## 📋 PR #4366 — [WIP] Fix import path inconsistency in test inference enhanced file
+State: `open`  Draft: `True`  Branch: `copilot/fix-import-path-inconsistency` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-08)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
-- **🚨 Deferral Language Gate** — `failure` on `copilot/fix-webhook-receiver-url-format` (2026-05-08)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-08)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-08)
 
 ## 📝 Recent Commits
-- `047bf03b` docs(S872): record CI verdict — 3 startup_failures are pre-existing infra, 7 pas — copilot-swe-agent[bot] (2026-05-08)
-- `59417f4d` fix(ruff): E501 per-file-ignore for rate_limit_orchestrator.py; update living do — copilot-swe-agent[bot] (2026-05-08)
-- `91763033` fix(review): address all 8 code-review comments — subprocess overload input type — copilot-swe-agent[bot] (2026-05-08)
-- `1252362f` fix(ci): classify webhook_config.json secrets-baseline FPs, archive 31 stale pha — copilot-swe-agent[bot] (2026-05-08)
-- `2d484b27` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-05-08)
-- `86f49cee` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-08)
-- `d8dd43b1` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-08)
-- `6dc78aad` docs(S868): full sweep — session diagram, whats_next, CHANGELOG, accountability, — copilot-swe-agent[bot] (2026-05-08)
+- `a2fddb0a` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
+- `3312d4ed` chore: Generate follow-up prompt for PR #4366 — github-actions[bot] (2026-05-08)
+- `5f92776c` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
+- `0d5d8d12` Fix for Unreachable code — Statix (2026-05-08)
+- `18aa85c3` Fix for Unreachable code — Statix (2026-05-08)
+- `c5b61de9` Fix for Unreachable code — Statix (2026-05-08)
+- `d9599925` Fix for Unreachable code — Statix (2026-05-08)
+- `a1aacd34` Fix for Unreachable code — Statix (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
