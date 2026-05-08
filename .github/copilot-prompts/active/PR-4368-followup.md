@@ -1,44 +1,63 @@
 # 🎯 PR Follow-Up Tasks - #4368
 
-**PR**: #4368 - PR #4368  
+**PR**: #4368  
 **Branch**: `copilot/update-safe-pickle-import`  
 **Author**: @Copilot  
 **Date**: 2026-05-08  
-**Commit**: `329a085a378d3dead2cfc676f4186c28a57ef734`  
-**Status**: 🔄 ACTIVE
+**Commit**: `284089988fc9686341f1bf031f13f4e792e845bf`  
+**Status**: 🔄 ACTIVE — readiness metadata refresh in progress
 
 ---
 
 ## 📋 PREVIOUS SESSION SUMMARY
 
 ### Completed Work
-- [`329a085a`] Initial plan (copilot-swe-agent[bot], 2026-05-08)
-- [`6e5065a9`] Merge pull request #4366 from Aries-Serpent/copilot/fix-import-path-inconsistency (Statix, 2026-05-08)
-- [`7044b8a3`] Update S884 living docs and accountability for blocking CI rescue follow-up (copilot-swe-agent[bot], 2026-05-08)
+- [`5c44238e`] Landed the requested safe-pickle / evaluation runner / secret rotation hardening
+- [`1dc49985`] Replaced the temporary safe-pickle shim with a package-local secure implementation
+- [`fd7bc2dcb`] Applied follow-up review refinements to the callable fallback and regression test
+- Cross-branch review against `copilot/fix-import-path-inconsistency` confirmed there are **no missing
+  source or test diffs to port** into this PR; reverse diffs are limited to `.codex/` session metadata
 
 ### Files Modified
-No files modified
+- `src/codex_ml/data/loader.py`
+- `src/codex_ml/evaluation/runner.py`
+- `src/codex_ml/utils/safe_pickle.py`
+- `src/security/secrets.py`
+- `tests/agents/test_zero_coverage_boost.py`
+- `tests/evaluation/test_evaluation_runner.py`
+- `tests/unit/test_peft_utils.py`
+- `CHANGELOG.md`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Refresh PR #4368 merge-readiness metadata so the stale `sync_tracked_files` failure is cleared
+- [ ] Run `session_wrapup_autofix.py --pr-number 4368 --activate-workflows --update-pr-description --fix-manifest`
+- [ ] Re-run `sync_tracked_files.py --fix` and `auto_fix_common_issues.py --check-only`
 
 **Validation**:
 ```bash
-python -m ruff check src/ tests/ --output-format=concise
+python scripts/ci/session_wrapup_autofix.py --pr-number 4368 --activate-workflows --update-pr-description --fix-manifest
 python scripts/ci/mypy_baseline.py --require-baseline
 python scripts/ci/auto_fix_common_issues.py --check-only
 python scripts/ci/sync_tracked_files.py --fix
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Confirm current branch workflow state after the refresh, especially repeated cancelled / superseded gate runs
+- [ ] Re-check PR #4368 branch diff against `copilot/fix-import-path-inconsistency` to confirm no additional code paths need porting
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Monitor the branch until required workflows settle on the latest SHA
+- [ ] If new code-fixable failures surface, address them in-branch rather than deferring
+
+### Priority 4: Session Closeout 🔵 REQUIRED
+- [ ] Ensure the final commit updates both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- [ ] Preserve the full live WEC block in the PR body on the final `report_progress`
+- [ ] Reply to the actionable maintainer comment with the commit hash after the refresh lands
 
 ---
 
@@ -47,6 +66,7 @@ python scripts/ci/sync_tracked_files.py --fix
 - [ ] All Priority 1 tasks completed and validated
 - [ ] All Priority 2 tasks completed or documented
 - [ ] Priority 3 tasks reviewed and prioritized
+- [ ] Priority 4 closeout tasks completed
 - [ ] All validation checks passed
 - [ ] Documentation updated
 - [ ] Self-review completed (5 passes, 0 concerns)

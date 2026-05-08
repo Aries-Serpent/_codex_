@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (S886) — 2026-05-08
+- Refreshed `.github/copilot-prompts/active/PR-4368-followup.md` so the active
+  continuation prompt now reflects the current branch head, concrete Priority
+  1–4 tasks, and the verified closeout requirements for PR #4368.
+- Reviewed branch diffs against `origin/copilot/fix-import-path-inconsistency`
+  and confirmed there are no missing source/test changes to port into this PR;
+  reverse diffs are limited to `.codex/` session metadata files.
+- Re-ran session wrap-up readiness checks for PR #4368:
+  - `python scripts/ci/sync_tracked_files.py --fix`
+  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+- Refreshed `.secrets.baseline` via tracked-file sync so manifest/baseline state
+  matches the current repository metadata again.
+
 ### Fixed (auto-update — PR #4368)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4368 (SHA `3a06b9bd`) at 2026-05-08T20:16Z [auto-generated]
 
