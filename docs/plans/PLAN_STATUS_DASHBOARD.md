@@ -1,6 +1,6 @@
 # Plan Status Dashboard - Central Tracking
 
-**Last Updated:** 2026-01-03 04:30 UTC  
+**Last Updated:** 2026-05-08T08:34Z (S873)
 **Purpose:** Central tracking for all active plans and their status
 
 ---
@@ -21,27 +21,34 @@
 
 ---
 
-## 🆕 Phase 9: Autonomous Agent Operations (S867/S868) — ACTIVE
+## 🆕 Phase 9: Autonomous Agent Operations (S867–S873) — 95% COMPLETE
 
 **Unified Documents:**
 - `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md` — 5-surface privilege routing
 - `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md` — session handoff + self-healing
 - `docs/plans/DOCS_CONSOLIDATION_MAP.md` — 81-doc catalogue + archive plan
+- `docs/CODEBASE_MERMAID_MAPS.md` — sections 13-16 added (S873)
 
-**Status:** 🟢 In Progress
+**Status:** 🟢 95% Complete · **Merge Readiness: 99/100** · HEAD `047bf03b`
 
-| Component | Status | Notes |
-|-----------|--------|-------|
+| Component | Status | Session |
+|-----------|--------|---------|
 | 12 problem-statement diffs | ✅ Complete | S867 |
 | T-01 token chain fix | ✅ Complete | S867 |
 | rate_limit_orchestrator.py | ✅ Complete | S867 |
-| Session TTL 12h | ✅ Complete | S867 |
-| Secrets baseline clean | ✅ Complete | S867 R3 |
-| Living docs updated | ✅ Complete | S868 |
-| 10 variables queued | ⏳ Pending | `@agent-var-writer apply` |
-| 4 webhooks ready | ⏳ Pending | `@agent-infra apply-webhooks` |
-| Docs archive (28 stale) | 📋 Planned | Next session |
-| T-03 security_events | 📋 Admin action | @mbaetiong |
+| Session TTL → repo var | ✅ Complete | S867/S872 |
+| Secrets baseline clean | ✅ Complete | S867/S870 |
+| 31 docs archived → `docs/plans/archive/` | ✅ Complete | S870 |
+| 8/8 review comments resolved | ✅ Complete | S871/S872 |
+| Living docs updated (whats_next, diagram) | ✅ Complete | S868–S873 |
+| CODEBASE_MERMAID_MAPS sections 13-16 | ✅ Complete | S873 |
+| PLAN_STATUS_DASHBOARD updated | ✅ Complete | S873 |
+| COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS | ✅ Complete | S873 |
+| cognitive_brain/INDEX.md updated | ✅ Complete | S873 |
+| 10 variables queued | ⏳ Post-merge | `@agent-var-writer apply` |
+| 4 webhooks ready | ⏳ Post-merge | `@agent-infra apply-webhooks` |
+| T-03 security_events scope | 📋 Admin action | @mbaetiong |
+| TTL tighten to 3600 | 📋 Once CI stable | Set `COPILOT_SESSION_TTL_SECONDS=3600` |
 
 ---
 

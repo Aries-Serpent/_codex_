@@ -1,6 +1,7 @@
 # Documentation Consolidation Map
 
-> **Created:** 2026-05-08 S868 | **Purpose:** Catalogue all `docs/plans/` files (81 total),
+> **Created:** 2026-05-08 S868 | **Updated:** 2026-05-08 S873
+> **Purpose:** Catalogue all `docs/plans/` files (81 total at creation → 50 active after S870 archive sweep).
 > identify stale/duplicate/merge candidates, and protect active living docs.
 > **Policy:** Stale docs move to `docs/plans/archive/` — never deleted, always findable.
 
@@ -8,13 +9,13 @@
 
 ## 📊 Summary
 
-| Category | Count | Action |
-|----------|-------|--------|
-| Active living docs | 18 | Keep — update regularly |
-| PR what's-next docs | 8 | Keep — one per active/recent PR |
-| Archive candidates (PHASE0/1/2 completion reports) | 28 | Move → `docs/plans/archive/` |
-| Merge candidates (near-duplicate CI/ops docs) | 6 | Merge → single canonical doc |
-| Retain as-is (design docs, guides, runbooks) | 21 | Keep — still relevant |
+| Category | Count | Action | Status |
+|----------|-------|--------|--------|
+| Active living docs | 18 | Keep — update regularly | ✅ Current |
+| PR what's-next docs | 8 | Keep — one per active/recent PR | ✅ Current |
+| Archive candidates (PHASE0/1/2 completion reports) | 28 originally · **31 moved** | `docs/plans/archive/` | ✅ **Done S870** (3 more identified at execution) |
+| Merge candidates (near-duplicate CI/ops docs) | 5 | Merge → single canonical doc | ⏳ Next session |
+| Retain as-is (design docs, guides, runbooks) | 19 | Keep — still relevant | ✅ Current |
 
 ---
 

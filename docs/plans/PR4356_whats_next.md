@@ -106,7 +106,6 @@
 | CodeQL alerts | 0 new ✅ |
 | Merge readiness | 99/100 ✅ |
 | CI gates passing | 39/40 ✅ |
-| Merge readiness | ~95% |
 
 
 ### Infrastructure & Docs Added

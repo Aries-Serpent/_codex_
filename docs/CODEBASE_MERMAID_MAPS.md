@@ -1,9 +1,10 @@
 # 🗺️ Codebase-Wide Mermaid Architecture Maps
 
-> **Version:** 1.1.0 (S228 + PR #3876)  
-> **Updated:** 2026-04-05  
+> **Version:** 1.2.0 (S873 + PR #4356)  
+> **Updated:** 2026-05-08  
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`  
-> **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight
+> **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight  
+> **Previous:** v1.1.0 S228 + PR #3876 · 2026-04-05
 
 ---
 
@@ -21,6 +22,10 @@
 10. [P19 Shadow Import Module Map](#10-p19-shadow-import-module-map)
 11. [Security + Token Delegation](#11-security--token-delegation)
 12. [Source Layout](#12-source-layout)
+13. [Autonomous Privilege Architecture ⭐ NEW](#13-autonomous-privilege-architecture)
+14. [Rate-Limit Orchestration Flow ⭐ NEW](#14-rate-limit-orchestration-flow)
+15. [Session Handoff State Machine ⭐ NEW](#15-session-handoff-state-machine)
+16. [Phase 9 — Cognitive Brain Autonomous Ops ⭐ NEW](#16-phase-9--cognitive-brain-autonomous-ops)
 
 ---
 
@@ -127,14 +132,26 @@ flowchart LR
 
 ## 4. Cognitive Brain Architecture
 
+> **Updated S873 (2026-05-08)** — Phase 9 Autonomous Ops, rate-limit orchestration, session handoff, and memory-sync agent added.
+
 ```mermaid
 graph TD
     subgraph "Cognitive Brain Core (.codex/)"
-        SM[SQLiteMemory\nSTM → LTM]
+        SM[SQLiteMemory\nSTM → LTM\n80% capacity trigger]
         TM[TopologyManager\nsemantic nav]
         OT[ObjectivesTracker\nphase goals]
         PL[PatternLibrary\nfix patterns]
         QEC[QEC Decision Engine\nk₁=0.332]
+        MS[memory-sync-agent\nSTM→LTM at 80%\nstale LTM prune]
+    end
+
+    subgraph "Phase 9 — Autonomous Ops Layer (PR #4356)"
+        RLO[rate_limit_orchestrator.py\ntoken-bucket · dedup · cap]
+        APR[AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n5 surfaces · zero human gates]
+        SHD[COPILOT_SESSION_HANDOFF_DESIGN.md\nstate machine · self-healing loop]
+        TTL[COPILOT_SESSION_TTL_SECONDS\nrepo var · default 43200s]
+        VAR[pending_var_updates.json\n10 vars queued → @agent-var-writer]
+        WHK[webhook_config.json\n4 hooks active=true]
     end
 
     subgraph "Input Signals"
@@ -152,12 +169,26 @@ graph TD
     end
 
     CI_SIG & PR_SIG & WF_SIG & MEM --> SM
-    SM -->|compress STM→LTM| SM
+    SM -->|compress STM→LTM at 80%| MS
+    MS --> SM
     SM --> TM & OT & PL
     PL --> QEC
     QEC --> HEAL_OUT & OODA
     OT --> PDA_OUT
     TM --> STATUS
+
+    RLO -->|rate-limit context| QEC
+    TTL -->|session lock TTL| QEC
+    APR & SHD -->|autonomy design| OT
+    VAR & WHK -->|pending deployments| OT
+
+    style RLO fill:#e8f5e9,color:#000
+    style APR fill:#e8f5e9,color:#000
+    style SHD fill:#e8f5e9,color:#000
+    style TTL fill:#e8f5e9,color:#000
+    style VAR fill:#fff3e0,color:#000
+    style WHK fill:#fff3e0,color:#000
+    style MS fill:#e3f2fd,color:#000
 ```
 
 ---
@@ -370,12 +401,24 @@ graph TD
 
 ## 11. Security + Token Delegation
 
+> **Updated S873 (2026-05-08)** — T-01 fix: `workflow-link-validation.yml` now uses canonical token chain. TTL read from `COPILOT_SESSION_TTL_SECONDS` repo variable (PR #4356).
+
 ```mermaid
 flowchart TD
     subgraph "Token Sources"
         MK[CODEX_MASTER_KEY\nfull repo access]
         BK[CODEX_BACKUP_KEY\nrotation backup]
         GT[GITHUB_TOKEN\nworkflow scope]
+    end
+
+    subgraph "Token Chain (T-01 Fixed — PR #4356)"
+        CHAIN["GH_TOKEN = CODEX_MASTER_KEY\n|| CODEX_BACKUP_KEY\n|| github.token\nAll checkout + write ops"]
+        T01_NOTE["⚠️ Before T-01 fix: workflow-link-validation.yml\nused bare github.token — now uses chain"]
+    end
+
+    subgraph "Session TTL Control (PR #4356)"
+        TTL_VAR[COPILOT_SESSION_TTL_SECONDS\nrepo variable · default 43200]
+        TTL_NOTE["Set to 3600 once CI stable\nNo workflow edit required"]
     end
 
     subgraph "Agent Auth Delegation"
@@ -397,14 +440,17 @@ flowchart TD
         REPORT[AGENT_ACCOUNTABILITY_REPORT.md]
     end
 
-    subgraph "Variables & Secrets Knowledge Layer (PR #3876)"
+    subgraph "Variables & Secrets Knowledge Layer"
         VARS_REF[docs/reference/\nGITHUB_VARIABLES_SECRETS_REFERENCE.md\n7 upstream sources · all scopes]
         CB_REF[.codex/docs/\nGITHUB_API_AND_MCP_REFERENCE.md\nCognitive Brain knowledge entry]
-        VAR_TEST[scripts/ci/test_variables_api.py\nlive token validation + variable CRUD\ndispatch via test-variables-api.yml]
+        VAR_TEST[scripts/ci/test_variables_api.py\nlive token validation + variable CRUD]
+        VAR_WRITER[agent-var-writer.yml\nallowlist: 13 variables\n@agent-var-writer apply]
     end
 
-    MK & BK --> AAD
-    GT --> AAD
+    MK & BK --> CHAIN
+    GT --> CHAIN
+    CHAIN --> AAD
+    TTL_VAR --> AAD
     AAD --> AUTH_CHECK
     AUTH_CHECK -->|yes| ALLOWED
     ALLOWED --> MB & GA & CS & GH
@@ -412,10 +458,16 @@ flowchart TD
     MK -->|CODEX_MASTER_KEY required| VAR_TEST
     VAR_TEST -->|reads scopes allowlist| VARS_REF
     VARS_REF --> CB_REF
+    MK -->|write ops| VAR_WRITER
 
+    style CHAIN fill:#e8f5e9,color:#000
+    style T01_NOTE fill:#fff3e0,color:#000
+    style TTL_VAR fill:#e1f5fe,color:#000
+    style TTL_NOTE fill:#e1f5fe,color:#000
     style VARS_REF fill:#e1f5fe,color:#000
     style CB_REF fill:#e1f5fe,color:#000
     style VAR_TEST fill:#e8f5e9,color:#000
+    style VAR_WRITER fill:#e8f5e9,color:#000
 ```
 
 ---
@@ -460,4 +512,182 @@ graph TD
 
 *All diagrams render on GitHub markdown. Use [Mermaid Live Editor](https://mermaid.live) for offline preview.*
 
-*Updated: S228 + PR #3876 · 2026-04-05 — Section 11 expanded with Variables & Secrets Knowledge Layer; Section 12 updated with test_variables_api.py*
+*Previously: S228 + PR #3876 · 2026-04-05 — Section 11 expanded; Section 12 updated with test_variables_api.py*
+
+---
+
+## 13. Autonomous Privilege Architecture
+
+> **Added S867 (PR #4356)** — Full reference: `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`
+
+```mermaid
+graph TD
+    subgraph "5 Autonomy Surfaces"
+        WEC[WEC Checklist\nworkflow-execution-gate.yml\nArms workflows per checkbox]
+        AAD2[Agent Auth Delegation\nagent-auth-delegation.yml\nPre-authorises token write ops]
+        DISCUSS[GitHub Discussions\nAsync command channel\n@agent-* triggers]
+        WHK2[Webhook Event Bus\nwebhook_config.json\n4 hooks active=true]
+        VARS2[Variable Control Plane\nagent-var-writer.yml\n13-var allowlist]
+    end
+
+    subgraph "Zero Human Gate Loop"
+        PUSH2[git push] --> GATE[WEC Gate\nparse checklist]
+        GATE -->|armed| AUTO_APPROVE[auto-approve-workflows.yml\nApproves action_required]
+        AUTO_APPROVE --> DELEGATE[agent-auth-delegation.yml\nIssue session token\nTTL=COPILOT_SESSION_TTL_SECONDS]
+        DELEGATE --> AGENT_OPS[Copilot Agent\nfull write ops]
+        AGENT_OPS -->|report_progress| PUSH2
+    end
+
+    subgraph "Privilege Routing"
+        CODEX_MK[CODEX_MASTER_KEY\nrepo+workflow+actions:write]
+        BACKUP_KEY[CODEX_BACKUP_KEY\nrotation fallback]
+        COPILOT_AUTH[COPILOT_AGENT_AUTH_ENABLED=true\nPERMANENT - no expiry]
+    end
+
+    CODEX_MK -->|write ops| AGENT_OPS
+    BACKUP_KEY -->|fallback| AGENT_OPS
+    COPILOT_AUTH -->|pre-authorises| DELEGATE
+    WEC & AAD2 & DISCUSS & WHK2 & VARS2 -->|compose| AGENT_OPS
+
+    style WEC fill:#e8f5e9,color:#000
+    style COPILOT_AUTH fill:#e8f5e9,color:#000
+    style AGENT_OPS fill:#e3f2fd,color:#000
+    style CODEX_MK fill:#fff3e0,color:#000
+```
+
+---
+
+## 14. Rate-Limit Orchestration Flow
+
+> **Added S867 (PR #4356)** — Script: `scripts/ci/rate_limit_orchestrator.py`
+
+```mermaid
+flowchart TD
+    subgraph "CLI Entry Points"
+        CLI_CAP[cancel-superseded\ncancel all but latest run per workflow]
+        CLI_CHECK[check-rate-limit\nall tokens report]
+        CLI_TRICKLE[trickle-dispatch\nqueued workflows with backoff]
+    end
+
+    subgraph "_gh_api_with_retry()"
+        REQ[HTTP request to GitHub API]
+        STATUS{HTTP status}
+        RETRY[Retry backoff\n2^attempt capped at 64s\nattempt up to 6]
+        LAST[return last_status last_result\non exhaustion - PR 4356 fix]
+    end
+
+    subgraph "check_rate_limit_status()"
+        TOKEN_LOOP[for each token GET /rate_limit]
+        CRITICAL{remaining under 10?}
+        CRIT_STATUS[overall_status = critical\nCaller decides abort or sleep]
+        OK_STATUS[overall_status = ok]
+    end
+
+    subgraph "cancel_superseded_runs()"
+        LIST[GET /repos/../actions/runs page-by-page]
+        KEEP{--keep-latest or --no-keep-latest\nBooleanOptionalAction - PR 4356 fix}
+        CANCEL[POST /runs/ID/cancel]
+    end
+
+    CLI_CAP --> cancel_superseded_runs
+    CLI_CHECK --> check_rate_limit_status
+    CLI_TRICKLE --> REQ
+    REQ --> STATUS
+    STATUS -->|429 or 5xx| RETRY
+    STATUS -->|success| RETURN[return status result]
+    RETRY -->|exhausted| LAST
+    TOKEN_LOOP --> CRITICAL
+    CRITICAL -->|yes| CRIT_STATUS
+    CRITICAL -->|no| OK_STATUS
+    LIST --> KEEP
+    KEEP --> CANCEL
+
+    style LAST fill:#fff3e0,color:#000
+    style CRIT_STATUS fill:#fff3e0,color:#000
+```
+
+---
+
+## 15. Session Handoff State Machine
+
+> **Added S867 (PR #4356)** — Full doc: `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md`
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle
+
+    Idle --> Acquiring: maintainer push or copilot continue
+    Acquiring --> Active: agent-auth-delegation issues token TTL=COPILOT_SESSION_TTL_SECONDS
+
+    Active --> Wrapping: session objectives complete or TTL approaching
+    Wrapping --> Committed: report_progress push P-045 gate passed
+
+    Committed --> Idle: copilot-agent-session-done.yml fires
+
+    Active --> SelfHealing: CI failure detected
+    SelfHealing --> Active: fix applied iterative-self-healing-ci.yml
+
+    Active --> Escalating: all auto-fix patterns exhausted
+    Escalating --> Active: maintainer approves re-dispatches
+
+    Committed --> [*]: PR merged
+```
+
+---
+
+## 16. Phase 9 — Cognitive Brain Autonomous Ops
+
+> **Added S867–S873 (PR #4356)**
+
+```mermaid
+graph LR
+    subgraph "Phase 9 Completed"
+        P9A[12 problem-statement diffs S867]
+        P9B[T-01 token chain fix S867]
+        P9C[rate_limit_orchestrator.py S867]
+        P9D[Session TTL repo var S867]
+        P9E[Secrets baseline clean S867 to S870]
+        P9F[31 docs archived S870]
+        P9G[8 of 8 review comments S871 to S872]
+        P9H[Living docs updated S868 to S873]
+        P9I[CODEBASE_MERMAID_MAPS updated S873]
+    end
+
+    subgraph "Phase 9 Pending"
+        P9J[10 vars deploy post-merge @agent-var-writer]
+        P9K[4 webhooks deploy post-merge @agent-infra]
+        P9L[T-03 security_events admin @mbaetiong]
+        P9M[TTL tighten to 3600 once CI stable]
+    end
+
+    subgraph "Phase 10 Next"
+        P10A[Phase 8.3 Adaptive Learning 80 to 100 percent]
+        P10B[Phase 8.4 Transfer Learning planned]
+        P10C[Archive 5 merge-candidate CI docs]
+        P10D[Webhook event bus triggers]
+    end
+
+    P9A & P9B & P9C & P9D & P9E --> P9J
+    P9F & P9G & P9H & P9I --> P9K
+    P9J & P9K & P9L & P9M --> P10A & P10B & P10C & P10D
+
+    style P9A fill:#e8f5e9,color:#000
+    style P9B fill:#e8f5e9,color:#000
+    style P9C fill:#e8f5e9,color:#000
+    style P9D fill:#e8f5e9,color:#000
+    style P9E fill:#e8f5e9,color:#000
+    style P9F fill:#e8f5e9,color:#000
+    style P9G fill:#e8f5e9,color:#000
+    style P9H fill:#e8f5e9,color:#000
+    style P9I fill:#e8f5e9,color:#000
+    style P9J fill:#fff3e0,color:#000
+    style P9K fill:#fff3e0,color:#000
+    style P9L fill:#fce4ec,color:#000
+    style P9M fill:#e1f5fe,color:#000
+```
+
+---
+
+*All diagrams render on GitHub markdown. Use [Mermaid Live Editor](https://mermaid.live) for offline preview.*
+
+*Updated: S873 + PR #4356 · 2026-05-08 — Sections 4 and 11 refreshed; Sections 13-16 added. See CHANGELOG.md for full details.*

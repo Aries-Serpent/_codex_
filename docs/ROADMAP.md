@@ -437,9 +437,9 @@
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Last Updated**: 2026-04-28 (S177 — version + SAR gap label consistency; MLOps level 3.95 confirmed)
+**Last Updated**: 2026-05-08 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
 **Next Review**: 2026-06-06
-**Version**: 2.1.0
+**Version**: 2.1.1
 
 **Questions?** Check [Dashboard](./system/CODEBASE_DASHBOARD.md) for current status.
 
