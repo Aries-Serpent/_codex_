@@ -224,6 +224,13 @@ class TestSubprocessSecurity:
         assert args == ['git', 'status', '--short']
         assert isinstance(args, list)
 
+    def test_secure_wrapper_rejects_shell_true(self):
+        """Secure subprocess wrapper should reject shell=True explicitly."""
+        from codex.utils import subprocess as secure_subprocess
+
+        with pytest.raises(ValueError, match="shell=True is not supported"):
+            secure_subprocess.run(["echo", "hello"], shell=True)
+
 
 class TestErrorHandling:
     """Test error handling patterns."""

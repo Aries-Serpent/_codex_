@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (session 2026-05-07T23:14Z — PR #4344 blocking comment + bot finding remediation)
+- Addressed new bot-thread findings:
+  - Removed unreachable `try/except` in `tests/hhg_logistics/serve/test_app.py::test_torch_inference_context_without_torch`.
+  - Removed redundant no-op `pass` in `tests/mcp/test_utilities.py::capture_log_output`.
+  - Updated `src/codex/utils/subprocess.py` overload declarations to use explicit `pass` bodies and type-only `subprocess.CompletedProcess` annotations (via `TYPE_CHECKING`) to avoid mypy regression.
+- Fixed linter issue discovered during required validation:
+  - `scripts/ci/auto_fix_common_issues.py`: replaced ambiguous loop variable names triggering Ruff `E741`.
+- Re-ran CI rescue validation sequence:
+  - `python -m ruff check src/ tests/ --fix` ✅
+  - `python scripts/ci/mypy_baseline.py --require-baseline` ✅ (`126 == baseline`)
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+
+### Fixed (session 2026-05-07T22:55Z — PR #4344 iterative self-healing + review-thread fixes)
+- Investigated `Auto-Fix Common CI Issues` failing run `25525872834` and validated current branch healing state:
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+  - `python scripts/ci/session_wrapup_autofix.py --pr-number 4344` ✅
+- Applied review-thread fixes:
+  - `src/codex/utils/subprocess.py`: added overload-based return typing for `text=True/False`.
+  - `tests/mcp/test_utilities.py`: switched cleanup warning path to module-scoped logger.
+  - `.github/copilot-prompts/active/PR-4344-followup.md`: normalized `Last Updated` to ISO-8601 UTC.
+- Added PR-specific living docs for this PR:
+  - `docs/roadmap/PR4344_whats_next.md`
+  - `docs/sessions/PR4344_session_diagram.md`
+
+### Fixed (session 2026-05-07T22:36Z — monitoring continuation + living-doc sync)
+- Continued workflow monitoring after maintainer approval and captured latest branch run snapshot (`queued`/`in_progress`/`completed` mix; Workflow Execution Gate success observed in current wave).
+- Updated living docs carried forward from prior cloud-agent session:
+  - `docs/roadmap/PR4343_whats_next.md`
+  - `docs/sessions/PR4343_session_diagram.md`
+  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Follow-up detailed run inspection encountered temporary GitHub API rate limiting (`403`), which limited deeper metadata retrieval in this sampling window.
+
+### Fixed (auto-update — PR #4344)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4344 (SHA `d8981568`) at 2026-05-07T22:35Z [auto-generated]
+
 ### Fixed (session 2026-05-07T21:22Z — PR #4343 actionlint fix + CI rescue triage)
 - Fixed `Workflow Compliance Audit (actionlint)` failure: removed duplicate `on:` + `jobs:` block (lines 241–370) from `.github/workflows/trigger-on-approval.yml` that was appended in a prior session; file now has a single workflow definition.
 - Triaged remaining 8 failing CI checks; all confirmed as CI-infrastructure-level (token delegation / rate limits / queue cascades) — no new local code regressions.

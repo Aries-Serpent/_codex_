@@ -707,8 +707,11 @@ class CommonIssueFixer:
 
         def _classify(try_body, except_body):
             tt = ' '.join(try_body).lower()
-            only_pass = all(l in ('pass', '') for l in [l.strip() for l in except_body])
-            if any(re.search(r'error_occurred|error_type|error_count|was_raised', l) for l in except_body):
+            only_pass = all(line.strip() in ('pass', '') for line in except_body)
+            if any(
+                re.search(r'error_occurred|error_type|error_count|was_raised', line)
+                for line in except_body
+            ):
                 return 'branch_cov'
             if only_pass:
                 if 'import' in tt or 'importlib' in tt:

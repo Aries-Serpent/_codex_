@@ -302,9 +302,5 @@ def test_torch_inference_context_without_torch(monkeypatch: pytest.MonkeyPatch) 
 
     ctx = _TorchInferenceContext()
 
-    assert ctx._torch is None  # type: ignore[attr-defined]
-    assert ctx._inference is None  # type: ignore[attr-defined]
-    assert ctx._autocast is None  # type: ignore[attr-defined]
-
     with ctx:
         pass

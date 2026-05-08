@@ -1,7 +1,7 @@
 # PR #4343 — What's Next
 
-> **Last updated: 2026-05-07T21:22Z — Session 41 (actionlint fix + final CI rescue)**
-> **Status: 🟡 In progress — actionlint duplicate-block fix applied; secrets/validation failures under investigation**
+> **Last updated: 2026-05-07T22:36Z — Session 44 (approved-run monitoring continuation)**
+> **Status: 🟡 In progress — workflow approvals processed; queue still active with API-rate-limit constraints on deeper run inspection**
 
 ## Current Objectives
 
@@ -29,6 +29,16 @@
 - `Secrets Baseline Enforcer` and `Validation Pipeline` failures are CI-infrastructure-level (API rate limits, token delegation queue) — local `sync_tracked_files --fix` and `ruff` are clean.
 - Failing `Pre-Merge Validation` is a downstream cascading cancel from the Validation Pipeline queue; no local code regression.
 - 8 failing / 75 successful checks observed in latest wave; core test gates are green.
+
+## Session 44 Monitoring Snapshot (approved-run continuation)
+
+- Maintainer confirmed all workflows approved; monitoring continued on branch `copilot/fix-deprecated-imports`.
+- Latest observed run sample:
+  - `25525804860` Automatic Dependency Submission (Python) — `queued`
+  - `25525794503` Automatic Dependency Submission (Python) — `in_progress`
+  - `25525775758` Workflow Execution Gate — `completed: success`
+  - `25525791366` Workflow Execution Gate — `completed: action_required` (no failed jobs payload)
+- Follow-up run detail fetch hit GitHub API core rate limit (`403`, reset pending), which limited deeper per-run metadata collection in this sampling window.
 
 ## CI Triage Snapshot (from issue #4342 + latest run logs)
 
