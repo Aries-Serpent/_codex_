@@ -1,10 +1,10 @@
-# Session Context — 2026-05-08T03:14:01Z
+# Session Context — 2026-05-08T04:05:18Z
 **Branch:** `finding-autofix-faa8614c`  **PR:** #4346  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4314` (✅)
-- GraphQL remaining: `4963` (✅)
+- REST remaining: `4943` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -14,19 +14,19 @@ State: `open`  Draft: `False`  Branch: `finding-autofix-faa8614c` → `main`
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-08)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-08)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-08)
 
 ## 📝 Recent Commits
-- `6bd25276` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
-- `7c6a427e` fix(ci): S861 — RL-2 rate-limit hardening + comment gate fix — copilot-swe-agent[bot] (2026-05-08)
-- `e7985f64` Merge branch 'main' into finding-autofix-faa8614c — Statix (2026-05-08)
-- `9c7d24b2` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-08)
-- `57f97d01` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
-- `e60b8ed2` chore: CTEP S861 — initial plan for 100% merge readiness — copilot-swe-agent[bot] (2026-05-08)
-- `92c4a499` fix(ci): S860-FINAL — secrets baseline FP fix, living docs complete, follow-up p — copilot-swe-agent[bot] (2026-05-08)
-- `32800268` fix(ci): S860 rate-limit hardening, PR review fixes, token-expiry-monitor, PR te — copilot-swe-agent[bot] (2026-05-08)
+- `cb8a84d3` fix(ci): secrets baseline FP sweep — pda_iterations hex SHAs, variable_set line  — copilot-swe-agent[bot] (2026-05-08)
+- `b722e899` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
+- `3f19c649` docs: PR4346 whats_next final audit scorecard + S862 follow-up prompt — copilot-swe-agent[bot] (2026-05-08)
+- `ce4a6f44` fix(ci): actions@v8, secrets baseline pragma, mypy baseline 130 — CI monitoring  — copilot-swe-agent[bot] (2026-05-08)
+- `cbae040f` fix(ci): S861-cont RL-2c/3b, admin-action notifier pattern, security fixes, revi — copilot-swe-agent[bot] (2026-05-08)
+- `cc5513be` Merge remote-tracking branch 'origin/main' into finding-autofix-faa8614c — copilot-swe-agent[bot] (2026-05-08)
+- `8d228508` chore: initial plan for S861 CI rescue — copilot-swe-agent[bot] (2026-05-08)
+- `b04495f0` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
