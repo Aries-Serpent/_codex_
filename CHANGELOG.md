@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     module constant
   - covered the non-race existing-key reuse branch with a focused regression
     test and aligned the debug message across both existing-key code paths
+  - removed the redundant pre-`exists()` check so `_get_secret_key()` always
+    attempts atomic creation first, and documented the legacy signed-payload
+    fallback behavior in `_split_signed_pickle()`
 
 ### Changed (S886) — 2026-05-08
 - Refreshed `.github/copilot-prompts/active/PR-4368-followup.md` so the active

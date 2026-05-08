@@ -32,6 +32,9 @@
     extracted `SIGNED_PICKLE_HEADER` for clearer header construction
   - added explicit regression coverage for the normal existing-key reuse path
     and aligned the debug message across both existing-key branches
+  - removed the redundant pre-`exists()` check so `_get_secret_key()` now
+    always attempts atomic creation first and clarified the legacy signed-file
+    fallback in `_split_signed_pickle()`
 
 ### Validation Snapshot
 - `python -m ruff check src/codex_ml/utils/safe_pickle.py tests/test_codex_ml_safe_pickle.py` ✅

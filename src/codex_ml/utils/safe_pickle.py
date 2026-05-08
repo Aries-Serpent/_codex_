@@ -144,19 +144,15 @@ def _get_secret_key() -> bytes:
         return key_env.encode()
 
     key_file = Path.home() / ".codex" / "pickle.key"
-    if key_file.exists():
-        logger.debug("Using existing pickle secret key at %s", key_file)
-        return key_file.read_bytes()
-
-    logger.info("Generating new pickle secret key at %s", key_file)
-    new_key = secrets.token_bytes(32)
     key_file.parent.mkdir(parents=True, exist_ok=True)
+    new_key = secrets.token_bytes(32)
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
     try:
         fd = os.open(str(key_file), flags, 0o600)
     except FileExistsError:
         logger.debug("Using existing pickle secret key at %s", key_file)
         return key_file.read_bytes()
+    logger.info("Generating new pickle secret key at %s", key_file)
     with os.fdopen(fd, "wb") as handle:
         handle.write(new_key)
     return new_key
@@ -169,7 +165,11 @@ def _build_signed_pickle(pickled_data: bytes, secret_key: bytes) -> bytes:
 
 
 def _split_signed_pickle(data: bytes) -> tuple[bytes, bytes]:
-    """Extract payload and signature from signed pickle bytes."""
+    """Return ``(pickled_data, signature)`` from versioned or legacy signed bytes.
+
+    Files without the ``SPKL`` header are treated as legacy payloads that append
+    the HMAC digest to the end of the pickled byte stream.
+    """
     if data.startswith(SIGNED_PICKLE_MAGIC):
         if len(data) < SIGNED_PICKLE_HEADER_LEN + SIGNED_PICKLE_SIGNATURE_LEN:
             raise ValueError("Signed pickle too small to contain header and HMAC signature")
