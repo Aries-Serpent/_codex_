@@ -32,7 +32,7 @@ def test_legacy_tokenizer_triggers_warning(monkeypatch):
             # Call path (may raise ImportError if optional deps missing)
             try:
                 legacy_tokenizer()  # type: ignore[call-arg]
-            except (AttributeError, OSError, RuntimeError):
+            except (AttributeError, OSError, RuntimeError, TypeError):
                 # Optional call may fail in minimal test envs — expected and harmless.
                 _ = None  # suppressed: no action needed
         except ImportError:

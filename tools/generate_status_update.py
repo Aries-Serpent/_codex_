@@ -37,6 +37,26 @@ def run_command(cmd: list[str], cwd: Path | None = None) -> tuple[int, str, str]
         return 1, "", str(e)
 
 
+def _fallback_validate_required(
+    schema: dict[str, Any], data: Any, path: str = ""
+) -> list[str]:
+    """Best-effort required-field validation when jsonschema is unavailable."""
+    errors: list[str] = []
+    if schema.get("type") == "object":
+        if not isinstance(data, dict):
+            label = path or "report"
+            return [f"{label} must be an object"]
+        for field in schema.get("required", []):
+            if field not in data:
+                label = f"{path}.{field}" if path else field
+                errors.append(f"Missing required field: {label}")
+        for field, subschema in schema.get("properties", {}).items():
+            if field in data and isinstance(subschema, dict):
+                child_path = f"{path}.{field}" if path else field
+                errors.extend(_fallback_validate_required(subschema, data[field], child_path))
+    return errors
+
+
 def get_git_context() -> dict[str, Any]:
     """Get current git context."""
     branch_cmd = ["git", "rev-parse", "--abbrev-ref", "HEAD"]
@@ -760,19 +780,20 @@ def generate_status_update() -> dict[str, Any]:
 
 def validate_report(report: dict[str, Any]) -> tuple[bool, list[str]]:
     """Validate report against schema."""
+    if not SCHEMA_PATH.exists():
+        return False, ["Schema file not found"]
+
+    with open(SCHEMA_PATH) as f:
+        schema = json.load(f)
+
     try:
         import jsonschema
-
-        if not SCHEMA_PATH.exists():
-            return False, ["Schema file not found"]
-
-        with open(SCHEMA_PATH) as f:
-            schema = json.load(f)
 
         jsonschema.validate(report, schema)
         return True, []
     except ImportError:
-        return True, ["jsonschema not installed - skipping validation"]
+        errors = _fallback_validate_required(schema, report)
+        return len(errors) == 0, errors or ["jsonschema not installed - used fallback validation"]
     except Exception as e:
         return False, [str(e)]
 

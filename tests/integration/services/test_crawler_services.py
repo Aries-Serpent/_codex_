@@ -27,8 +27,8 @@ def test_zendesk_sync_error_handling():
         subdomain="test",
     )
 
-    with pytest.raises(Exception):
-        service.sync_articles()  # Should fail with invalid token
+    result = service.sync_articles()
+    assert result.failed > 0
 
 
 @pytest.mark.integration
