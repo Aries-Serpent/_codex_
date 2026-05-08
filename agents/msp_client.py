@@ -273,9 +273,7 @@ class MSPClient:
 if __name__ == "__main__":
     # Create client
     demo_api_key = os.getenv("MSP_API_KEY") or "your-api-key-here"
-    client = MSPClient(api_key=demo_api_key)
-
-    try:
+    with MSPClient(api_key=demo_api_key) as client:
         # Check health
         health = client.health_check()
         print(f"Gateway health: {health}")
@@ -287,9 +285,6 @@ if __name__ == "__main__":
             max_tokens=100,
         )
         print(f"Inference result: {result}")
-
-    finally:
-        client.close()
 
 
 # Enhanced MSPClient with additional methods
