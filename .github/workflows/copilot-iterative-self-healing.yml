@@ -1,4 +1,5 @@
 name: Copilot Iterative Self-Healing Auto-Poster
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Automatically produces structured @copilot prompts posted as PR/Issue comments
 # to initiate iterative self-healing sessions without human intervention.

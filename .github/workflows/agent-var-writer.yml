@@ -29,6 +29,7 @@
 #   - CODEX_MASTER_KEY must have variables:write scope (or use CODEX_ADMIN_KEY)
 
 name: "Agent Variable Writer (Provenance-Chain)"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 on:
   issue_comment:

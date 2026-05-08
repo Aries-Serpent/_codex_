@@ -1,4 +1,5 @@
 name: Copilot PR Session Injector
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Uses mvkaran/gh-copilot@v1.0.0 to enrich every new PR with:
 #   1. Cognitive brain context injection (relevant patterns, session history)

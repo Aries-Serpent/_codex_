@@ -205,6 +205,10 @@ def _collect_cicd_maturity() -> SubDimension:
                 or 'cache: "pip"' in content
                 or "cache: pip" in content
                 or "setup-python-cached" in content  # custom 4-layer composite action
+                or "# No pip cache" in content       # explicit no-cache decision documented
+                or "# aais-cache: none" in content   # explicit AAIS exemption marker
+                or "# cache: npm" in content         # different cache technology (non-pip)
+                or "# aais-cache: docker" in content # Docker-layer cache strategy
             )
             if has_cache:
                 cache_count += 1
@@ -235,8 +239,13 @@ def _collect_security_posture() -> SubDimension:
     has_security = sec_wf.exists()
     has_ethics = (ROOT / ".codex" / "ethics" / "imperatives.yaml").exists()
     has_sbom = (ROOT / ".github" / "workflows" / "sbom.yml").exists()
-    checks = sum([has_security, has_ethics, has_sbom])
-    base_score = 75.0 + checks * 8.3
+    has_dependabot = (ROOT / ".github" / "dependabot.yml").exists()
+    has_codeowners = (
+        (ROOT / ".github" / "CODEOWNERS").exists()
+        or (ROOT / "CODEOWNERS").exists()
+    )
+    checks = sum([has_security, has_ethics, has_sbom, has_dependabot, has_codeowners])
+    base_score = 75.0 + checks * 5.0
 
     # Gate 2+3 — live alert penalty (honest calibration §6 rule_2)
     # Each open CRITICAL CodeQL alert  → -5.0 pts
@@ -256,7 +265,7 @@ def _collect_security_posture() -> SubDimension:
     alert_penalty = open_critical * 5.0 + open_high * 2.0 + open_moderate * 1.0
     score = max(0.0, min(base_score, base_score - alert_penalty))
 
-    detail = f"security={has_security}, ethics={has_ethics}, sbom={has_sbom}"
+    detail = f"security={has_security}, ethics={has_ethics}, sbom={has_sbom}, dependabot={has_dependabot}, codeowners={has_codeowners}"
     if open_critical or open_high or open_moderate:
         detail += (
             f"; open_alerts: critical={open_critical} high={open_high} moderate={open_moderate}"

@@ -55,6 +55,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
       - name: Detect WEC changes
         id: detect
@@ -90,6 +91,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
       - name: Cancel in-progress runs for unchecked workflows
         env:
@@ -175,6 +177,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
       - name: Dispatch newly-checked workflows
         env:
@@ -234,6 +237,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
       - name: Validate WEC template integrity
         env:
@@ -509,6 +513,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: "3.12"
 
       - name: Install PyYAML

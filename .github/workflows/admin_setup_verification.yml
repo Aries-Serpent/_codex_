@@ -45,6 +45,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
       # ── KEY VERIFICATION ─────────────────────────────────────────────────────
       # Tests CODEX_MASTER_KEY and CODEX_BACKUP_KEY independently.
       # Each key is tested with a real GitHub API write call (dry-run label fetch

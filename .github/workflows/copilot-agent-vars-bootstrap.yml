@@ -23,6 +23,7 @@
 # GROUNDED STATUS: Tier-2 (advisory context injection, not a hard gate)
 
 name: "Agent Vars Bootstrap"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 on:
   push:

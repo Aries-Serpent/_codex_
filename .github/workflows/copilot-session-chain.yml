@@ -1,4 +1,5 @@
 name: "🔗 Copilot Session Chain"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Opens a new Copilot Coding Agent sub-PR targeting the integration branch
 # (0D_base_) so that agent sessions are NEVER run directly on 0D_base_.

@@ -178,7 +178,11 @@ jobs:
           for fp in files:
               if not os.path.isfile(fp):
                   continue
-              h = hashlib.sha1(open(fp, "rb").read()).hexdigest()
+              with open(fp, "rb") as _fh:
+                  _sha = hashlib.sha1()
+                  while chunk := _fh.read(65536):
+                      _sha.update(chunk)
+                  h = _sha.hexdigest()
               if prev.get(fp) != h:
                   to_check.append(fp)
 
@@ -296,7 +300,11 @@ jobs:
           with open(MD_CHANGED) as f:
               for fp in [ln.strip() for ln in f if ln.strip()]:
                   if os.path.isfile(fp):
-                      cache[fp] = hashlib.sha1(open(fp, "rb").read()).hexdigest()
+                      with open(fp, "rb") as _fh:
+                          _sha = hashlib.sha1()
+                          while chunk := _fh.read(65536):
+                              _sha.update(chunk)
+                          cache[fp] = _sha.hexdigest()
 
           with open(CACHE_FILE, "w") as f:
               json.dump(cache, f, indent=2)

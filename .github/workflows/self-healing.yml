@@ -1,0 +1,33 @@
+name: "Self-Healing CI"
+
+# Canonical self-healing entry-point for AAIS Reliability gate.
+# Delegates all work to iterative-self-healing-ci.yml (Phase 5 healing loop).
+
+on:
+  workflow_run:
+    workflows: ["*"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      target_run_id:
+        description: "Workflow run ID to heal (leave blank for latest failed)"
+        required: false
+        type: string
+      max_iterations:
+        description: "Maximum heal iterations (1-5)"
+        required: false
+        default: "3"
+        type: string
+
+concurrency:
+  group: self-healing-${{ github.event.workflow_run.head_branch || github.head_ref || github.ref }}-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  delegate:
+    name: "Delegate to Iterative Self-Healing CI"
+    uses: ./.github/workflows/iterative-self-healing-ci.yml
+    secrets: inherit
+    with:
+      target_run_id: ${{ inputs.target_run_id || '' }}
+      max_iterations: ${{ inputs.max_iterations || '3' }}

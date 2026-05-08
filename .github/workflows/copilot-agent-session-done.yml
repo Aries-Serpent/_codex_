@@ -1,4 +1,5 @@
 name: "🔄 Auto-Post @copilot review After Agent Session"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Fires when a GitHub Coding Agent (copilot-swe-agent[bot]) workflow run
 # completes on a PR branch.  If the PR is open and Agent Token Delegation

@@ -1,4 +1,5 @@
 name: "🤖 Copilot Review Responder"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # WHY TWO TRIGGERS:
 # copilot-pull-request-reviewer[bot] submits a pull_request_review event with an

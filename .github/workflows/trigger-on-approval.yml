@@ -82,6 +82,7 @@ jobs:
       - name: Set up Python (for approve_pending_runs.py)
         uses: actions/setup-python@v6
         with:
+          cache: pip
           python-version: '3.12'
 
       # ── 2. Auto-approve all action_required runs for PR HEAD ─────────────────

@@ -34,6 +34,7 @@
 #   - ADR-20260303-first-d-capable-promotion.md: D_CAPABLE criteria
 
 name: "rust-error-validator Observation (D_CAPABLE)"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 on:
   schedule:

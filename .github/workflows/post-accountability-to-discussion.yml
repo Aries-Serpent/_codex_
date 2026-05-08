@@ -53,6 +53,12 @@ jobs:
         with:
           fetch-depth: 5
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
       - name: Extract latest session entry
         id: extract
         shell: python3 {0}

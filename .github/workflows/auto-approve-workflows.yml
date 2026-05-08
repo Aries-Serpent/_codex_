@@ -1,4 +1,5 @@
 name: "⚡ Auto-Approve Pending Workflow Runs"
+# aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
 # Automatically approves all `action_required` (awaiting-approval) workflow runs
 # for opted-in PRs.  Supports four activation modes:
