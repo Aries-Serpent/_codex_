@@ -68,6 +68,7 @@ jobs:
             const maxRuns = Number('${{ inputs.max_runs || 5 }}') || 5;
             const lookbackHours = 25;  // slightly more than 1h schedule to avoid gaps
             const cutoff = new Date(Date.now() - lookbackHours * 60 * 60 * 1000);
+            const failuresFile = 'ci-triage-failures.json';
 
             console.log(`Fetching failed workflow runs since ${cutoff.toISOString()} (last ${lookbackHours}h)`);
 
@@ -175,9 +176,9 @@ jobs:
             }
 
             console.log(`Total recent failures found: ${failures.length}`);
-            require('fs').writeFileSync('ci-triage-failures.json', JSON.stringify(failures));
+            require('fs').writeFileSync(failuresFile, JSON.stringify(failures));
             core.setOutput('failure_count', failures.length);
-            core.setOutput('failures_path', 'ci-triage-failures.json');
+            core.setOutput('failures_path', failuresFile);
             core.setOutput('active_workflows_scanned', activeWorkflowsScanned);
 
       # ── Step 2: Build the triage report ─────────────────────────────────────
@@ -218,12 +219,12 @@ jobs:
 
             let body = `# 🔴 CI Failure Triage Report\n\n`;
             body += `**Generated:** ${now}\n`;
-              body += `**Repository:** ${context.repo.owner}/${context.repo.repo}\n`;
-              body += `**Total Recent Failures:** ${failures.length}\n`;
-              body += `**Affected Workflows:** ${Object.keys(byWorkflow).length}\n\n`;
-              body += `**Active Workflows Scanned:** ${activeWorkflowsScanned} (excluding triage workflow)\n\n`;
+            body += `**Repository:** ${context.repo.owner}/${context.repo.repo}\n`;
+            body += `**Total Recent Failures:** ${failures.length}\n`;
+            body += `**Affected Workflows:** ${Object.keys(byWorkflow).length}\n\n`;
+            body += `**Active Workflows Scanned:** ${activeWorkflowsScanned} (excluding triage workflow)\n\n`;
 
-              // Executive summary table
+            // Executive summary table
             body += `## Summary\n\n`;
             body += `| Workflow | Failures | Most Recent Run | Branch | PR |\n`;
             body += `|----------|----------|----------------|--------|----|\n`;

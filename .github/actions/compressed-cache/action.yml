@@ -61,6 +61,8 @@ runs:
         CACHE_PATH: ${{ inputs.path }}
         COMPRESSION_LEVEL: ${{ inputs.compression-level }}
       run: |
+        # zstd supports levels 1..22; constrain input to prevent option injection
+        # through the dynamic -LEVEL flag.
         if ! [[ "${COMPRESSION_LEVEL}" =~ ^([1-9]|1[0-9]|2[0-2])$ ]]; then
           echo "❌ Invalid compression level: ${COMPRESSION_LEVEL}"
           exit 1

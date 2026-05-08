@@ -21,6 +21,8 @@
   5 workflow action files
 - ✅ Reviewed workflows processed by `.github/workflows/batch-ci-triage.yml`
 - ✅ Fixed triage workflow failure mode from run `25567584852` (`Argument list too long`)
+- ✅ Applied follow-up review polish (shared failures-file constant, indentation fix,
+  and clarified zstd `-LEVEL` safety comment)
 - ✅ Updated living docs (`PR4366_whats_next.md`, `PR4366_session_diagram.md`) with S878 status/diagram updates
 - ✅ Updated `CHANGELOG.md` and this accountability report
 - ✅ Preserved 5-minute end-of-session wrap-up window for final verification/reply

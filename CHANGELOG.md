@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `.github/actions/setup-python-uv/action.yml`
   - `.github/actions/setup-secure-token/action.yml`
   - `.github/actions/doc-test-scribe-action/action.yml`
+- Follow-up review polish:
+  - `batch-ci-triage.yml`: extracted shared failures-file constant in fetch script and fixed report-script indentation.
+  - `compressed-cache/action.yml`: clarified zstd validation rationale comment for `-LEVEL` option safety.
 - Sourced and aligned updates against CI Failure Triage Report issue #4365
   (updated 2026-05-08) while refreshing living docs/session mapping.
 - Updated `docs/roadmap/PR4366_whats_next.md`, `docs/sessions/PR4366_session_diagram.md`,
