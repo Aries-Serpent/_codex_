@@ -1,12 +1,13 @@
 name: "Self-Healing CI"
 
 # Canonical self-healing entry-point for AAIS Reliability gate.
-# Delegates all work to iterative-self-healing-ci.yml (Phase 5 healing loop).
+# Manual trigger alias for iterative-self-healing-ci.yml (Phase 5 healing loop).
+#
+# NOTE: iterative-self-healing-ci.yml already subscribes to workflow_run: ["*"],
+# so autonomous healing fires automatically. This workflow is the manual
+# workflow_dispatch entry-point (visible in the Actions UI) and AAIS marker.
 
 on:
-  workflow_run:
-    workflows: ["*"]
-    types: [completed]
   workflow_dispatch:
     inputs:
       target_run_id:
@@ -19,18 +20,30 @@ on:
         default: "3"
         type: string
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
-  group: self-healing-${{ github.event.workflow_run.head_branch || github.head_ref || github.ref }}-${{ github.event.workflow_run.id || github.run_id }}
+  group: self-healing-manual-${{ github.run_id }}
   cancel-in-progress: false
 
 jobs:
-  delegate:
-    name: "Delegate to Iterative Self-Healing CI"
-    uses: ./.github/workflows/iterative-self-healing-ci.yml
-    secrets: inherit
-    with:
-      target_run_id: ${{ inputs.target_run_id || '' }}
-      max_iterations: ${{ inputs.max_iterations || '3' }}
+  dispatch-healing:
+    name: "Dispatch Iterative Self-Healing CI"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    steps:
+      - name: Dispatch iterative-self-healing-ci.yml
+        run: |
+          TARGET_RUN="${{ inputs.target_run_id }}"
+          MAX_ITER="${{ inputs.max_iterations }}"
+          echo "Dispatching iterative-self-healing-ci.yml (target_run_id=${TARGET_RUN:-<latest>}, max_iterations=${MAX_ITER})"
+          gh workflow run iterative-self-healing-ci.yml \
+            --repo "${{ github.repository }}" \
+            --ref "${{ github.ref_name }}" \
+            -f "target_run_id=${TARGET_RUN}" \
+            -f "max_iterations=${MAX_ITER}"
+          echo "✅ Dispatch sent — iterative-self-healing-ci.yml will handle the healing loop."

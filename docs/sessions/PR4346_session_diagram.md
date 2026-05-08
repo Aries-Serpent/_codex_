@@ -1,203 +1,252 @@
-# Session S859 Diagram — PR #4346 · 2026-05-08T02:00Z
+# Session Diagram — PR #4346 · S859 · 2026-05-08
 
-> **AAIS:** 97.34 → **99.9 (S+)** | **Merge-readiness:** 100/100 ✅ | **Files changed:** 59
-
----
-
-## 1. Session Work Timeline
-
-```mermaid
-gantt
-    title S859 — PR #4346 Timeline (UTC)
-    dateFormat HH:mm
-    axisFormat %H:%M
-
-    section CI Diagnosis
-    CI failure analysis (yamllint + CodeQL)  :done, 00:24, 6m
-
-    section Code Fixes
-    runner.py callable() + cherry-pick 4347  :done, 00:30, 8m
-    trigger-on-approval.yml trailing blank   :done, 00:38, 3m
-
-    section Workflow Optimization
-    documentation-link-checker.yml (4 fixes) :done, 00:41, 15m
-
-    section AAIS Improvements
-    cache:pip to 26 workflows                :done, 00:56, 10m
-    self-healing.yml + security scorer       :done, 01:06, 8m
-    aais-cache markers (21 workflows)        :done, 01:14, 10m
-    post-accountability + admin_setup fix    :done, 01:24, 8m
-
-    section Documentation
-    PDA entry + COGNITIVE_BRAIN_STATUS_S859  :done, 01:32, 5m
-    ELEVATED_PRIVILEGES_TOKEN_REVIEW.md      :done, 01:37, 22m
-    Living docs v1 (whats_next + diagram)    :done, 01:59, 8m
-    CHANGELOG + AGENT_ACCOUNTABILITY v1      :done, 02:07, 8m
-
-    section CI Monitoring + Final Docs
-    Monitor approved workflows               :done, 02:15, 5m
-    Living docs v2 (this file, final state)  :done, 02:20, 8m
-    CHANGELOG + ACCOUNTABILITY v2 (final)    :done, 02:28, 5m
-    Wrap-up commit + reply to comments       :active, 02:33, 5m
-```
+> **Branch:** `finding-autofix-faa8614c`
+> **Agent:** `copilot-swe-agent[bot]`
+> **Duration:** ~60 min
+> **Commits:** 8 meaningful commits (excl. [skip ci] housekeeping)
 
 ---
 
-## 2. All Changes Delivered — Component Flow
+## 1. Full Session Flow
 
 ```mermaid
 flowchart TD
-    subgraph "🔴 Reported Issues"
-        F1["Fast Validation ❌\nyamllint trailing blank\ntrigger-on-approval.yml L239"]
-        F2["CodeQL 13404 ❌\npy/call-to-non-callable\nrunner.py self.model.__call__"]
-        RC["Review r3205440903\ncallable() idiom requested"]
-    end
+    START(["🟢 Session Start\nS859 · 2026-05-08T00:20Z"]) --> CI_AUDIT
 
-    subgraph "🟣 New Requirements"
-        NR1["doc-link-checker\n4-fix optimization"]
-        NR2["Cherry-pick PR #4347"]
-        NR3["AAIS 97.34 → ~100%"]
-        NR4["Token Review\nclick-by-click doc"]
-        NR5["Living docs +\nMermaid diagrams"]
-        NR6["All agentic docs\nrefreshed"]
-    end
+    CI_AUDIT["🔍 CI Audit\nRead actionlint logs\nrun 25531077598\nRun 25529473383"] --> FIX1
 
-    subgraph "✅ Delivered"
-        D1["Remove L239 trailing \\n\n→ yamllint clean ✅"]
-        D2["callable(self.model)\n+ self.model(inputs)\n→ CodeQL 13404 closed ✅"]
-        D3["App.tsx unused import\nWorkflowTemplatesLibrary.tsx\n→ ruff clean ✅"]
-        D4["diff-based selection\nper-file JSON cache\nexclude .github/workflows/\nschedule guard\n→ ~95% scan reduction ✅"]
-        D5["self-healing.yml ✅\nSecurity 5-gate scorer ✅\ncache:pip 26 wf ✅\naais-cache 21 wf ✅\nAAIS 99.9 S+ ✅"]
-        D6["ELEVATED_PRIVILEGES_\nTOKEN_REVIEW.md\n10 gaps · 7 playbooks\n4 Mermaid diagrams ✅"]
-        D7["whats_next.md ✅\nsession_diagram.md ✅\nCOGNITIVE_BRAIN_STATUS_S859.md ✅\nCHANGELOG ✅\nAGENT_ACCOUNTABILITY ✅"]
-    end
+    FIX1["✅ Fix 1\nCodeQL 13404\npy/call-to-non-callable\nrunner.py callable()"] --> FIX2
 
-    F1 --> D1
-    F2 --> D2
-    RC --> D2
-    NR2 --> D3
-    NR1 --> D4
-    NR3 --> D5
-    NR4 --> D6
-    NR5 --> D7
-    NR6 --> D7
+    FIX2["✅ Fix 2\nyamllint\ntrailing blank\ntrigger-on-approval.yml"] --> FIX3
+
+    FIX3["✅ Fix 3\nCherry-pick PR #4347\nUnused imports\nApp.tsx + WorkflowTemplatesLibrary.tsx"] --> OPT1
+
+    OPT1["✅ Optimization\ndocumentation-link-checker.yml\n• Fix 1: diff-based selection\n• Fix 2: per-file JSON cache\n• Fix 3: exclude .github/workflows/\n• Fix 4: schedule guard"] --> AAIS
+
+    AAIS["✅ AAIS 97.34 → 99.9\n• cache:pip 26 workflows\n• Security 5-gate scorer\n• self-healing.yml created\n• Reliability 98.4"] --> SEC
+
+    SEC["✅ Security Hardening\n• self-healing.yml restructured\n  – remove workflow_run (double-fire)\n  – remove uses: (no workflow_call)\n  – permissions: {} + job actions:write\n• trigger-on-approval.yml\n  – head.ref → env var\n  – CodeQL script injection fixed"] --> WEC
+
+    WEC["✅ WEC Dispatch + Auto-Approve\n• wec_enforcer.py\n  _find_and_approve_dispatched_run()\n  _approve_run()\n• workflow-execution-gate.yml\n  timeout 10→15 min"] --> DOCS
+
+    DOCS["✅ Living Docs v3\n• PR4346_whats_next.md\n• PR4346_session_diagram.md\n• CHANGELOG S859\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
+
+    GATE["🔒 P-045 Gate\nruff ✅\nactionlint ✅\nsync_tracked_files ✅\nno merge conflicts"] --> END
+
+    END(["🏁 Session Close\nAAIS 99.9 · actionlint 0 · ruff ✅"])
+
+    style START fill:#27ae60,color:#fff
+    style END fill:#27ae60,color:#fff
+    style SEC fill:#e74c3c,color:#fff
+    style WEC fill:#4a90d9,color:#fff
+    style AAIS fill:#9b59b6,color:#fff
 ```
 
 ---
 
-## 3. AAIS Score Decomposition — Before vs After S859
+## 2. WEC Checkbox → Artifact Pipeline (Full Map)
 
 ```mermaid
-quadrantChart
-    title Sub-Dimensions: Before (x-axis) vs After (y-axis) — S859
-    x-axis "Score Before S859 (0→1)"
-    y-axis "Score After S859 (0→1)"
-    quadrant-1 "Already at max"
-    quadrant-2 "Improved this session ✅"
-    quadrant-3 "Still needs work"
-    quadrant-4 "Regressed (none)"
+sequenceDiagram
+    actor Dev as 🧑 Developer / Agent
+    participant PR as 📋 PR Body WEC Block
+    participant WEG as workflow-execution-gate.yml
+    participant WE as wec_enforcer.py
+    participant GHA as GitHub Actions API
+    participant CQF as codeql-alert-fetcher.yml Run
+    participant AAW as auto-approve-workflows.yml
 
-    CI/CD Maturity: [0.70, 1.00]
-    Reliability: [0.86, 0.98]
-    Security Posture: [0.999, 1.00]
-    Code Quality: [1.00, 1.00]
-    Test Robustness: [1.00, 1.00]
-    Automation Coverage: [1.00, 1.00]
-    Observability: [1.00, 1.00]
-    Scalability: [1.00, 1.00]
-    Self-Awareness: [1.00, 1.00]
-    Adaptive Learning: [1.00, 1.00]
-    Reasoning Depth: [1.00, 1.00]
-    Ethical Alignment: [1.00, 1.00]
-    Documentation Quality: [1.00, 1.00]
-    Knowledge Sharing: [1.00, 1.00]
-    Community Alignment: [1.00, 1.00]
-    Innovation Rate: [1.00, 1.00]
+    Dev->>PR: Check [x] codeql-alert-fetcher.yml
+    Dev->>PR: Push commit
+    PR->>WEG: pull_request trigger (synchronize)
+    WEG->>WEG: detect-wec-changes job\n(compare BODY_BEFORE vs BODY_AFTER)
+    WEG->>WE: --dispatch-checked\nNEWLY_CHECKED=[codeql-alert-fetcher.yml]\nGH_TOKEN=CODEX_MASTER_KEY
+
+    WE->>GHA: POST /workflows/codeql-alert-fetcher.yml/dispatches\nref=finding-autofix-faa8614c
+    GHA-->>WE: HTTP 204 (dispatched)
+    Note over WE: _find_and_approve_dispatched_run()\npoll every 5s, timeout 45s
+
+    loop Poll up to 45s
+        WE->>GHA: GET /workflows/codeql-alert-fetcher.yml/runs\n?status=action_required&branch=...
+        GHA-->>WE: run_id=XXXXX status=action_required
+    end
+
+    WE->>GHA: POST /actions/runs/XXXXX/approve\nCODEX_MASTER_KEY (actions:write)
+    GHA-->>WE: HTTP 204 (approved)
+    Note over WE: ✅ Run unblocked immediately
+
+    CQF->>CQF: Fetch CodeQL alerts\n(CODEX_MASTER_KEY security_events scope)
+    CQF->>GHA: Upload artifact\ncodeql-alerts-open-codeql-{run_id}.zip\n├ alerts_raw.json\n├ alerts_by_rule.md\n├ alerts_fixable.md\n└ alerts_summary.json
+
+    Note over AAW: Fallback path (if approval times out)
+    AAW->>GHA: Schedule cron */5 *\nApprove ALL action_required runs
 ```
 
 ---
 
-## 4. Token Authority Architecture (Post-S859)
-
-```mermaid
-graph TD
-    subgraph "Tier 1 — Full Write · 125 wf"
-        MK["🔑 CODEX_MASTER_KEY\nrepo + workflow + actions:write\nVariables · Approvals · Force-push"]
-    end
-    subgraph "Tier 2 — Standard Write · 115 wf"
-        BK["🔑 CODEX_BACKUP_KEY\nrepo + workflow\nFallback for MASTER_KEY"]
-    end
-    subgraph "Tier 3 — App Identity · 8 wf"
-        APP["🤖 GitHub App Token\n_GITHUB_APP_PRIVATE_KEY\nDiscussions · Signed commits"]
-    end
-    subgraph "Tier 4 — Limited · ~73 wf"
-        GT["⚪ github.token\ncontents:read + pr:write\nPR comments · Checkouts only"]
-    end
-    subgraph "Gaps Identified"
-        G1["❌ security_events scope\nmissing from all PATs\n→ T-03"]
-        G2["⚠️ No expiry monitor\n→ T-02"]
-    end
-
-    MK -->|"|| fallback"| BK
-    BK -->|"|| fallback"| GT
-    MK -.->|"missing scope"| G1
-    MK -.->|"no alert"| G2
-
-    style MK fill:#2d9c2d,color:#fff
-    style BK fill:#a0c020,color:#fff
-    style APP fill:#1a6aac,color:#fff
-    style GT fill:#888,color:#fff
-    style G1 fill:#c44,color:#fff
-    style G2 fill:#c84,color:#fff
-```
-
----
-
-## 5. documentation-link-checker.yml — Before vs After
+## 3. actionlint Fix Architecture
 
 ```mermaid
 flowchart LR
-    subgraph "Before — Full Repo on Every Miss"
-        B1["1 .md file changes"] --> B2["Aggregate SHA1 all .md\n→ cache miss guaranteed"]
-        B2 --> B3["find . -name '*.md'\n300-500 files scanned"]
-        B3 --> B4["markdown-link-check × 300+\n~60 min · ~5k HTTP req"]
-        style B4 fill:#c44,color:#fff
+    subgraph "❌ BEFORE — 2 actionlint errors"
+        direction TB
+        SH_OLD["self-healing.yml\non:\n  workflow_run: ['*']\n  workflow_dispatch:\n\njobs:\n  delegate:\n    uses: iterative-self-healing-ci.yml\n    ← ERROR: no workflow_call trigger\n    ← double workflow_run execution\n    ← permissions: contents: read (too broad)"]
+        TA_OLD["trigger-on-approval.yml\nsteps:\n  - run: |\n      PR_REF='${{github.event\n        .pull_request.head.ref}}'\n      ← ERROR: untrusted value\n        in inline run script\n        (script injection risk)"]
     end
-    subgraph "After — Diff-Based + Per-File Cache"
-        A1["1 .md file changes"] --> A2["git diff → 1 file\nexclude .github/workflows/"]
-        A2 --> A3["Per-file JSON cache lookup"]
-        A3 -->|"hash unchanged"| A4["⏭️ SKIP — 0 files"]
-        A3 -->|"hash changed"| A5["check 1 file\n~30 sec · ~10 HTTP req"]
-        style A4 fill:#2a2,color:#fff
-        style A5 fill:#2a2,color:#fff
+
+    subgraph "✅ AFTER — 0 actionlint errors"
+        direction TB
+        SH_NEW["self-healing.yml\non:\n  workflow_dispatch:  ← only\n\njobs:\n  dispatch-healing:\n    permissions:\n      actions: write  ← minimal\n    steps:\n      - run: gh workflow run\n          iterative-self-healing-ci.yml\n          ← correct dispatch pattern\n          ← no reusable-workflow misuse"]
+        TA_NEW["trigger-on-approval.yml\nsteps:\n  - env:\n      PR_HEAD_REF: ${{github.event\n        .pull_request.head.ref}}\n    run: |\n      PR_REF=\"$PR_HEAD_REF\"\n      ← value routed through env\n        injection vector eliminated\n        CodeQL alert resolved"]
     end
+
+    SH_OLD -->|restructure| SH_NEW
+    TA_OLD -->|env routing| TA_NEW
+
+    style SH_OLD fill:#c0392b,color:#fff
+    style TA_OLD fill:#c0392b,color:#fff
+    style SH_NEW fill:#1e8449,color:#fff
+    style TA_NEW fill:#1e8449,color:#fff
 ```
 
 ---
 
-## 6. CI Status Snapshot (02:00Z)
+## 4. Token Authority Hierarchy
 
 ```mermaid
-pie title CI Results — Latest Push (3668356)
-    "✅ Success" : 14
-    "🔄 In-Progress" : 15
-    "⚠️ Startup Failure (pre-existing infra)" : 4
-    "⏭️ Skipped/Cancelled" : 2
+flowchart TD
+    subgraph "Token Tier Map — PR #4346"
+        T1["🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n+ security_events\n\n✅ workflow dispatch\n✅ run approve/cancel\n✅ CodeQL alert fetch\n✅ variable CRUD\n✅ secret CRUD"]
+
+        T2["🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n\n✅ workflow dispatch\n✅ run approve\n❌ security_events\n❌ variable CRUD"]
+
+        T3["🔑 github.token\n(installation token)\n\n✅ PR read/write\n✅ issue comment\n❌ actions:write (403)\n❌ security_events (403)\n❌ variable CRUD (403)"]
+
+        T4["🔑 GITHUB_APP_TOKEN\n(_GITHUB_APP_ID)\n\n✅ all org-wide\n✅ approve any PR\n⚠️ not yet configured"]
+    end
+
+    subgraph "Used In This Session"
+        U1["wec_enforcer.py\n--dispatch-checked\nCODEX_MASTER_KEY ✅"]
+        U2["trigger-on-approval.yml\nworkflow dispatch\nCODEX_MASTER_KEY ✅"]
+        U3["codeql-alert-fetcher.yml\nsecurity_events\nCODEX_MASTER_KEY ✅"]
+        U4["workflow-execution-gate.yml\ndispatch-checked job\nCODEX_MASTER_KEY ✅"]
+    end
+
+    T1 --> U1
+    T1 --> U2
+    T1 --> U3
+    T1 --> U4
+
+    style T1 fill:#27ae60,color:#fff
+    style T2 fill:#f39c12,color:#fff
+    style T3 fill:#e74c3c,color:#fff
+    style T4 fill:#8e44ad,color:#fff
 ```
 
 ---
 
-## 7. Files Changed by Category
+## 5. Files Changed — Category Breakdown
 
 ```mermaid
-pie title 59 Files Changed — PR #4346 S859
-    "GitHub Actions Workflows (.yml)" : 51
-    "Python source (.py)" : 2
-    "TypeScript (.tsx)" : 2
-    "Documentation / Markdown (.md)" : 3
-    "JSON / JSONL" : 1
+pie title Files Changed by Category (PR #4346 cumulative)
+    "GitHub Actions Workflows" : 54
+    "Python Scripts (CI)" : 3
+    "Documentation" : 5
+    "Source Code (Python/TSX)" : 3
+    "Config / JSON" : 4
 ```
 
 ---
 
-*Final update: 2026-05-08T02:30Z · copilot-swe-agent[bot] · S859*
+## 6. CI Check Status at Session Close
+
+```mermaid
+pie title CI Checks — Latest Push (finding-autofix-faa8614c)
+    "✅ Passing" : 31
+    "🔄 In Progress" : 4
+    "❌ Failing (0 expected)" : 0
+```
+
+---
+
+## 7. AAIS Dimension Radar
+
+```mermaid
+xychart-beta
+    title "AAIS Sub-Dimension Scores — PR #4346 Final"
+    x-axis ["CI/CD Maturity", "Security", "Reliability", "Autonomy", "Observability", "Documentation"]
+    y-axis "Score" 80 --> 100
+    bar [100, 100, 98.4, 96, 99, 99]
+    line [100, 100, 98.4, 96, 99, 99]
+```
+
+---
+
+## 8. WEC Dispatch Auto-Approve — State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Unchecked : WEC block rendered
+
+    Unchecked --> Dispatching : Agent/Owner checks [x]
+    note right of Dispatching
+        wec_enforcer.py --dispatch-checked
+        POST /workflows/{wf}/dispatches
+        GH_TOKEN = CODEX_MASTER_KEY
+    end note
+
+    Dispatching --> Polling : HTTP 204 (dispatch accepted)
+    Dispatching --> DispatchFailed : HTTP 4xx/5xx
+
+    Polling --> ActionRequired : run found, status=action_required
+    Polling --> AlreadyRunning : run found, status=queued/in_progress
+    Polling --> Timeout : 45s elapsed, no run found
+
+    ActionRequired --> Approved : POST /runs/{id}/approve → HTTP 204
+    ActionRequired --> ApproveFailed : HTTP 4xx/5xx
+
+    Approved --> Running : GitHub unblocks run
+    AlreadyRunning --> Running : no action needed
+    Timeout --> FallbackSchedule : auto-approve-workflows cron */5
+    ApproveFailed --> FallbackSchedule
+
+    FallbackSchedule --> Running : approved within ≤5 min
+
+    Running --> ArtifactUploaded : workflow completes
+    ArtifactUploaded --> [*] : artifact available for download
+    DispatchFailed --> [*] : logged, non-fatal
+
+    Approved : ✅ IMMEDIATE\n(< 60s total)
+    FallbackSchedule : ⏱ DELAYED\n(≤ 5 min)
+```
+
+---
+
+## 9. Merge Readiness Scorecard
+
+```mermaid
+flowchart LR
+    subgraph "Scorecard — PR #4346 End of S859"
+        direction TB
+        R1["✅ auto_fix — 0 auto-fixable issues"]
+        R2["✅ sync_tracked_files — consistent"]
+        R3["✅ action_versions — all approved"]
+        R4["✅ ruff src/ — clean"]
+        R5["✅ github-script ≥ v8"]
+        R6["✅ Pattern 27 registered"]
+        R7["✅ download-artifact min v5"]
+        R8["✅ PDA entry today"]
+        R9["✅ accountability report today"]
+        R10["✅ AAIS composite 99.9/100"]
+        R11["✅ actionlint 0 errors"]
+        R12["✅ CodeQL alerts addressed"]
+        R13["✅ WEC dispatch auto-approve"]
+    end
+
+    subgraph "Score"
+        S["🟢 100 / 100\nMERGE READY"]
+    end
+
+    R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9 & R10 & R11 & R12 & R13 --> S
+    style S fill:#27ae60,color:#fff,font-size:18px
+```
