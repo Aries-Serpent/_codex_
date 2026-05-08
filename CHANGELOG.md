@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (S882) — 2026-05-08
+- Continued approved-workflow monitoring on current head `80fdd6d` and refreshed
+  living-doc status snapshots with current run-state counts.
+- Updated cognitive-brain mermaid objective mappings in:
+  - `docs/roadmap/PR4366_whats_next.md`
+  - `docs/sessions/PR4366_session_diagram.md`
+- Added merge-readiness wrap-up section with official score context and tailored
+  post-merge continuation prompt focused on reliability-score uplift.
+
 ### Fixed (S881) — 2026-05-08
 - `.secrets.baseline`: restored missing `is_secret` field for the
   `CODEX_MANIFEST.json` baseline entry to keep baseline schema consistent.

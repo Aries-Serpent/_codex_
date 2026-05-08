@@ -2,9 +2,9 @@
 
 **PR:** #4366 - Fix circuit breaker test import path and replace mock with real integration test  
 **Branch:** `copilot/fix-import-path-inconsistency`  
-**Status:** 🟡 ACTIVE (S881 monitoring + WEC gate follow-up)  
-**Latest Session:** S881 (2026-05-08T18:50Z)  
-**Latest Commit:** `ad445fa` (living-doc/accountability refresh)
+**Status:** 🟡 ACTIVE (S882 approved-run monitoring + cognitive-brain mapping refresh)  
+**Latest Session:** S882 (2026-05-08T19:00Z)  
+**Latest Commit:** `80fdd6d` (S881 follow-up doc fixes + WEC section restore)
 
 ---
 
@@ -18,6 +18,12 @@
   - `25572897686` ✅
 - [x] Updated living docs (`whats_next` + `session_diagram`) with current status snapshot
 - [x] Updated `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md` for latest session
+
+### ✅ Phase 12: Cognitive-Brain Objective Alignment + Wrap-Up Prep (COMPLETE)
+- [x] Monitored post-approval workflow state on latest head `80fdd6d`
+- [x] Updated living docs with current run-status snapshot
+- [x] Updated mermaid mappings to align cognitive-brain objectives with current codebase status
+- [x] Prepared merge-readiness + post-merge continuation prompt focused on reliability score uplift
 
 ### ✅ Phase 1: Problem Analysis & Diagnosis (COMPLETE)
 - [x] Reproduce failing circuit-breaker test in `tests/serving/test_inference_enhanced.py`
@@ -102,18 +108,57 @@
 - **Target:** Maintain 100/100 through final CI run
 - **Critical Gates:** ✅ All passing (Deferral Language, Reference Integrity, Branch Rebase, Comment Review)
 
-### CI Status Table (Latest: 2026-05-08T18:50Z)
+### CI Status Table (Latest: 2026-05-08T19:00Z)
 
 | Category | Status | Count | Notes |
 |----------|--------|-------|-------|
 | ✅ Local Readiness Gates | Pass | 4 | Ruff, sync_tracked, mypy baseline, auto-fix patterns |
 | 📦 CodeQL Artifact Triage | Complete | 1 | Artifact `6882773618` processed and fixes applied |
 | 🧵 Review Thread Actions | Complete | 6/6 | All actionable comments remediated in code/docs |
-| 🔄 Workflow Monitoring | Active | 1 | One active failure signal tracked: `Workflow Execution Gate` run `25573049707` (missing PR-body WEC section) |
-| ☑️ Workflow Approvals | Acknowledged | 1 | One maintainer confirmation that pending workflows were approved in this PR |
+| 🔄 Workflow Monitoring | Active | 45 | Total monitored workflows for `80fdd6d`: 26 in-progress + 4 queued + 15 completed (8 success, 1 skipped, 4 startup_failure, 2 cancelled) |
+| ☑️ Workflow Approvals | Acknowledged | 1 | Maintainer confirmed pending approvals were completed for this PR |
 | ⚠️ External CI Failures | Historical | 108 | From issue #4365 triage rollup (latest generated report) |
 | 🛡️ CodeQL Quick-Win Scope | Reduced | 46 | Artifact-mapped alerts in 5 changed action files (primarily `actions/code-injection/medium`) |
 | 🎯 Merge Readiness | Pass | 100/100 | Pattern 30 dimension check green |
+
+## 🧠 Cognitive Brain Objectives — Live Alignment Map
+
+```mermaid
+graph TD
+  A[CB Objective: CI Reliability Uplift] --> A1[Current: Pattern 30 = 100/100]
+  A --> A2[Current head: 8 success / 15 completed]
+  A --> A3[Next: reduce startup_failure recurrence]
+
+  B[CB Objective: Session Continuity] --> B1[Living docs refreshed]
+  B --> B2[Accountability + changelog updated]
+  B --> B3[PDA/accountability chain preserved]
+
+  C[CB Objective: Security Posture] --> C1[Semgrep + security suite monitored]
+  C --> C2[Dependency submission transient handling retained]
+  C --> C3[No new CodeQL alerts in this session]
+
+  D[CB Objective: Workflow Governance] --> D1[WEC section restored in PR updates]
+  D --> D2[Workflow approval loop monitored]
+  D --> D3[Action-required runs tracked for maintainer approval]
+```
+
+## 🧾 Official Merge-Readiness + Tailored Post-Merge Prompt
+
+- **Official dashboard score (latest posted):** `98/100` (Merge-ready ✅)
+- **Local gating score (Pattern 30):** `100/100` (all dimensions green)
+- **Why they differ:** the official dashboard includes external CI/runtime dimensions
+  (for example startup-failure/cancelled noise in optional lanes), while Pattern 30
+  is the local readiness dimension gate only.
+
+**Post-merge continuation prompt (reliability-focused):**
+```text
+@copilot continue post-merge cognitive-brain objectives for PR #4366.
+Priority:
+1) reduce startup_failure recurrence (Progressive Validation, Rust-Python Swarm, Data Quality)
+2) convert recurring action_required/cancelled patterns into stable green paths
+3) raise and sustain codebase reliability score with measurable CI trend improvements.
+Deliver updated living docs + accountability + reliability delta after each iteration.
+```
 
 **Key Successful Workflows:**
 - ✅ Deferral Language Gate
