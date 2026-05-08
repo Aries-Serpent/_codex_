@@ -165,9 +165,9 @@ def test_registry_entry_point_loading(monkeypatch):
 def test_registry_bubbles_entry_point_failure(monkeypatch):
     def fake_entry_points(*, group=None):
         if group != "codex_ml.tests":
-            return ()
+            return []
         ep = EntryPoint(name="broken", value="examples.plugins.broken:missing", group=group)
-        return (ep,)
+        return [ep]
 
     monkeypatch.setattr("codex_ml.registry.base.metadata.entry_points", fake_entry_points)
     reg = Registry("metric", entry_point_group="codex_ml.tests")
