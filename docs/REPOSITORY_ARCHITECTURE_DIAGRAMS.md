@@ -875,3 +875,51 @@ This architecture documentation now reflects:
 
 **Last Updated**: 2026-01-19T06:45:00Z
 **Status**: Phase 20 Complete, Phase 21 Ready
+
+---
+
+## 📊 Diagram 10: Phase 9 — Autonomous Ops Architecture (S873 · PR #4356)
+
+> Cross-reference: `docs/CODEBASE_MERMAID_MAPS.md` §13-16 for full diagrams
+
+```mermaid
+graph TD
+    subgraph "Phase 9 Deliverables (PR #4356)"
+        D1[AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n5 autonomy surfaces]
+        D2[COPILOT_SESSION_HANDOFF_DESIGN.md\nstate machine + self-healing loop]
+        D3[rate_limit_orchestrator.py\ntoken-bucket dedup backoff]
+        D4[Session TTL via repo variable\nCOPILOT_SESSION_TTL_SECONDS]
+        D5[31 docs archived\ndocs/plans/archive/]
+        D6[CODEBASE_MERMAID_MAPS v1.2.0\nsections 13-16 added]
+    end
+
+    subgraph "Zero-Gate Autonomous Loop"
+        PUSH[git push] --> WEC_GATE[WEC Gate]
+        WEC_GATE --> AUTO_APPROVE[auto-approve-workflows]
+        AUTO_APPROVE --> AUTH_DELEGATION[agent-auth-delegation\nTTL = COPILOT_SESSION_TTL_SECONDS]
+        AUTH_DELEGATION --> AGENT[Copilot Agent\nfull write ops]
+        AGENT --> PUSH
+    end
+
+    subgraph "Post-Merge Actions"
+        PM1[10 variables via @agent-var-writer apply]
+        PM2[4 webhooks via @agent-infra apply-webhooks]
+        PM3[T-03 security_events - admin @mbaetiong]
+    end
+
+    D1 & D2 & D3 & D4 --> AUTH_DELEGATION
+    AGENT -->|post-merge| PM1 & PM2 & PM3
+
+    style D1 fill:#e8f5e9,color:#000
+    style D2 fill:#e8f5e9,color:#000
+    style D3 fill:#e8f5e9,color:#000
+    style D4 fill:#e8f5e9,color:#000
+    style D5 fill:#e8f5e9,color:#000
+    style D6 fill:#e8f5e9,color:#000
+    style PM1 fill:#fff3e0,color:#000
+    style PM2 fill:#fff3e0,color:#000
+    style PM3 fill:#fce4ec,color:#000
+```
+
+**Last Updated**: 2026-05-08T08:34Z (S873 — Diagram 10 added: Phase 9 Autonomous Ops; cross-ref CODEBASE_MERMAID_MAPS v1.2.0)
+**Status**: Phase 20 Complete · Phase 21 Ready · Phase 9 Autonomous Ops 95% Complete

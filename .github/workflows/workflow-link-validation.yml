@@ -145,7 +145,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
 
       - name: Post or update rescue comment

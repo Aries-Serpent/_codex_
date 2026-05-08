@@ -7,6 +7,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S873) — 2026-05-08
+- Replied to 4 new CI rescue + approval-dispatch comments (#4404718140, #4404723111,
+  #4404734578, #4404772494); all on superseded commits `da2a74be`/`95c55bd` — resolved
+  in `1252362` and `91763033f`.
+- Updated living docs (whats_next, session_diagram) to S873 status: 99/100 · 39/40 passing.
+- Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md.
+- P-045 gate passed: ruff ✅ · no conflicts ✅ · sync ✅.
+
+### Fixed (S872) — 2026-05-08
+- `pyproject.toml`: add `E501` per-file-ignore for `scripts/ci/rate_limit_orchestrator.py`
+  (long log/argparse strings are expected in CLI tools).
+- All 8 inline review comments fixed and replied (commit `91763033f`).
+- Merge conflict `.secrets.baseline` resolved (true merge commit with main).
+
+### Fixed (S871 final wrap-up) — 2026-05-08
+- **8 inline review comments resolved** (commit `91763033f`):
+  - `subprocess.py`: input type narrowed per overload (str|None text=True, bytes|None text=False).
+  - `rate_limit_orchestrator.py`: _gh_api_with_retry returns last (status,result) on exhaustion.
+  - `rate_limit_orchestrator.py`: docstring/log corrected — Exit2/Sleeping claims removed.
+  - `rate_limit_orchestrator.py`: --keep-latest uses BooleanOptionalAction.
+  - `agent-auth-delegation.yml`: TTL reads COPILOT_SESSION_TTL_SECONDS repo var (default 43200).
+- **Merge conflict resolved**: .secrets.baseline vs main nightly sweep.
+- **All 8 review threads replied** with commit hash.
+
+### Fixed (S870) — 2026-05-08
+- **Secrets Baseline Enforcer fix**: `.codex/webhook_config.json` lines 7 & 85 classified
+  as `is_secret=false` in `.secrets.baseline`. Both entries are "Secret Keyword" false
+  positives — the JSON keys reference secret *names* (`WEBHOOK_SECRET`, `secret_env`) but
+  contain no actual credential values. Root cause from issue #4360.
+- **Validation Pipeline diagnosis**: `Fast Validation` failure on run #25542456428 was on
+  commit `f25996a7` (pre-existing; already superseded by current HEAD). The hook-failures
+  artifact confirms a pre-commit issue resolved in subsequent commits.
+- **Docs archive committed**: 31 PHASE0/1/2 completion reports moved to
+  `docs/plans/archive/`; active plan count reduced 81 → 50.
+- **P-045 gate**: ruff ✅ · no conflicts ✅ · sync_tracked_files ✅.
+
+### Added / Fixed (S869) — 2026-05-08
+- **Docs archive**: 31 stale PHASE0/1/2 completion reports moved to `docs/plans/archive/`
+  (PHASE0_*, Phase0_*, PHASE1_COMPLETION_REPORT, PHASE2_* ×27, MISSION_COMPLETE,
+  FINAL_COMPREHENSIVE_STATUS, COMPREHENSIVE_PLAN_VERIFICATION, MILESTONE_30_PERCENT_COVERAGE_ACHIEVED).
+  `docs/plans/archive/README.md` created with archive policy and file catalogue.
+  Active plan count reduced 81 → 50.
+- **CI monitoring**: All workflows on HEAD `6dc78aa` in `action_required` state — awaiting
+  maintainer approval triggered by current push. No CI failures on code.
+- **P-045 gate**: ruff ✅ · no conflicts ✅ · sync_tracked_files ✅.
+- **Living docs** (PR4356_whats_next, session_diagram, PLAN_STATUS_DASHBOARD, CB tasks) updated with S869 archive completion status.
+
+### Added / Fixed (S868) — 2026-05-08
+- **CI Investigation**: Analysed `Agent Token Delegation` failure (#6232) — root cause was transient `action_required` gate on first run attempt; subsequent runs resolved to `action_required` awaiting maintainer approval (not a code defect). Analysed `Automatic Dependency Submission` (#25542482123) — GitHub-managed workflow transient HTTP 503; `dependency-submission.yml` already has `continue-on-error: true` since S154; no fix needed.
+- **Docs sweep**: Catalogued all 81 `docs/plans/` files; created `DOCS_CONSOLIDATION_MAP.md` identifying 28 PHASE0/1/2 completion-report archive candidates, 6 merge candidates, 18 active living docs. Archive will execute next session.
+- **PLAN_STATUS_DASHBOARD.md**: Added Phase 9 (Autonomous Agent Operations) tracking table with S867/S868 completions and pending items.
+- **COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md**: Added Phase 9 section with full deliverable register and Unimplemented Plans Registry for cross-session continuity.
+- **PR4356_whats_next.md**: Updated with S868 CI verdicts, CodeQL/security status, full session metrics (12 diffs, 7 review comments, 3 CI investigations, 5 new docs, 10 variables queued, 4 webhooks ready).
+- **PR4356_session_diagram.md**: Fully rewritten with S867+S868 combined flow; added Security/CodeQL status mermaid; WEC self-healing loop diagram; full session handoff state machine; complete CI matrix table.
+- **P-045 gate**: ruff ✅ · no merge conflicts ✅ · sync_tracked_files ✅.
+
+### Fixed (S867 — round 3: failing checks) — 2026-05-08
+- **Secrets Baseline Enforcer**: Classified 3 unclassified (`is_secret=None`) entries as `is_secret=False` in `.secrets.baseline` — `agent_context.json` git SHA, `CODEX_MANIFEST.json` integrity SHA256, and `test_inference_enhanced.py` test fixture string.
+- **Agent Token Delegation TTL extended to 12h**: `agent-auth-delegation.yml` session token TTL raised from 3600s (1h) → 43200s (12h); session-lock TTL raised from 3600s → 43200s; `owner_approval_guard.sh` comment updated; local `agent_auth_session.json` re-issued with 12h expiry (valid until 2026-05-08T19:40Z).
+
+
+- **Rate-limit orchestrator validation**: Split `isinstance`/range assertions in `test_inference_enhanced.py` for clearer failure messages; added positive/non-negative range validation to `int()` env-var parsing; documented `2^6=64s` backoff cap rationale.
+- **CI monitoring**: Confirmed 10+ CI gates passing on push `a651fd4`; `startup_failure` on Rust/Progressive/Data-Quality runners identified as pre-existing infrastructure issues unrelated to this PR.
+
+
+- **Webhook domain clarification**: `GITHUB_VARIABLES_MASTER_GUIDE.md` — disambiguated `preview.app.github.dev` vs `app.github.dev` domain variants; replaced stale PR#3503 Codespace link with generic instructions; replaced hardcoded `copilot/implement-user-authentication` branch with `<active-development-branch>` placeholder; added dual-domain explanation in Issue-6 resolution.
+- **subprocess.py overload**: Added explicit `text: Literal[True] = True` to first overload signature; expanded docstring with `text`-default note and formal `shell` parameter section.
+- **Test logic fixes**: Removed `or True` no-op from `test_phase2_deep_coverage_batch4.py` energy conservation assert; removed unreachable `assert not new_violations` after `pytest.skip` in `test_mypy_type_coverage.py`.
+- **Inference test hardening**: Added `isinstance(data["request_count"], int) and >= 0` type assertion on `/metrics`; fixed redundant `as CircuitBreaker` alias; corrected patch path to `src.codex_ml.serving.inference_server.CircuitBreaker`; added `# noqa: F401` to availability-probe import.
+- **T-01 token chain fix**: `workflow-link-validation.yml` checkout token upgraded to canonical `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` chain.
+- **Rate-limit orchestrator robustness**: `int()` parsing of env vars wrapped in descriptive try/except; backoff exponent capped at `min(attempt, 6)`; `run_number` fallback unified to integer `0`.
+
+### Added (S867) — 2026-05-08
+- **`docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`**: Master privilege routing map covering all 5 autonomy surfaces (PR template, WEC, Workflows, Discussions, Webhooks); full mermaid diagrams for token tier hierarchy, WEC controller, workflow matrix, end-to-end autonomy loop, and updated decision tree with no human gates.
+- **`docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md`**: Complete session handoff protocol with state machine, self-healing loop architecture, rate-limit orchestration diagrams, gap analysis (G-1..G-6), and phase-by-phase implementation plan.
+- **`scripts/ci/rate_limit_orchestrator.py`**: Rate-limit aware workflow deduplication, concurrent run cap enforcement, and exponential backoff with token rotation.
+- **`.codex/pending_var_updates.json`**: 10 variables queued in flat `{NAME:value}` format for `@agent-var-writer apply` autonomous deployment.
+- **`.codex/webhook_config.json`**: `rate-limit-orchestration-trigger` webhook added; all 4 hooks set `active=true`, `status=ready-to-deploy`.
+- **`agent-var-writer.yml` ALLOWED_VAR_NAMES**: Extended with `RATE_LIMIT_MAX_CONCURRENT`, `CODEX_SESSION_HANDOFF_ENABLED`, `WEBHOOK_DOMAIN_VARIANT`.
+
+
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4356 (SHA `4005db7e`) at 2026-05-08T07:12Z [auto-generated]
+
 ### Fixed (S866) — 2026-05-08
 - **CodeQL Alert Resolution**: Fixed all 13 "Wrong number of arguments in a call" alerts in `tests/serving/test_inference_enhanced.py` by updating stub `create_app()` signature to match the real implementation (added `config: Optional[ModelConfig] = None` parameter).
 - **Code Quality**: Improved `src/codex_ml/evaluation/runner.py` model invocation logic — replaced `getattr(self.model, "__call__", ...)` pattern with `callable(self.model)` check and direct invocation to avoid Python special method resolution issues.

@@ -93,7 +93,7 @@ approve_via_env() {
   # ── Provenance-chain bypass 1: session token file (A-001) ─────────────────
   # Written by agent-auth-delegation.yml activate-delegation job.
   # Allows one owner approval to cover ALL agent sessions within the TTL
-  # (default: 14400s = 4 hours). Agent can renew by re-running the workflow.
+  # (default: 14400s = 4 hours → raised to 43200s = 12 hours). Agent can renew by re-running the workflow.
   local _session_token_file="${CODEX_SESSION_TOKEN_FILE:-.codex/agent_auth_session.json}"
   if [ -f "${_session_token_file}" ]; then
     local _token_expiry

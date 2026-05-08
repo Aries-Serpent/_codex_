@@ -1,8 +1,9 @@
 # Cognitive Brain Documentation Index
 
-**Last Updated:** 2026-02-18
-**Total Files:** 29 (organized from root)
+**Last Updated:** 2026-05-08T08:34Z (S873)
+**Total Files:** 29+ (organized from root)
 **Structure:** 4 directories (status, prompts, architecture, root)
+**Phase 9 (PR #4356):** Autonomous Ops — 95% complete · S867–S873
 
 ---
 
@@ -37,6 +38,9 @@ Current cognitive brain status and historical versions.
 **Location:** `docs/cognitive_brain/status/`
 
 ### Latest
+- **[Phase 9 — Autonomous Ops 95% Complete](../plans/PLAN_STATUS_DASHBOARD.md#phase-9)** — S867–S873 PR #4356 ⭐ CURRENT
+- **[Phase 9 Deliverables](../plans/COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md#phase-9)** — 15 completed, 4 pending post-merge
+- **[CODEBASE_MERMAID_MAPS v1.2.0](../CODEBASE_MERMAID_MAPS.md)** — Sections 13-16 added (Autonomous Privilege, Rate-Limit, Session Handoff, Phase 9 Ops)
 - [Phase 4 Enhancement PoCs](phase4_DESIGN.md) - **Bayesian, Fuzzy Logic, Active Learning** ✅
 - [Phase 3 Production Hardening](status/COGNITIVE_BRAIN_STATUS_PHASE3_COMPLETE.md) - **Quantum Compliance Phase 3 Complete** ✅
 - [Phase 2 Completion Report](phase2_coherence_k1_plan.md) - **Quantum Compliance Phase 2 Complete** ✅

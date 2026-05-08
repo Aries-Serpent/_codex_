@@ -271,7 +271,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
 | 1 | `CODEX_ACTIVE_CODESPACE` | ✅ **Auto-set by Codespace** | `<auto-set-on-start>` | Name of the currently active Codespace. Created automatically on first Codespace start; updated on every subsequent start/resume via `post-start.sh`. Changes whenever a new Codespace is created — never hardcode this value. |
-| 2 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://<codespace-name>-8765.preview.app.github.dev/webhook/github` | Public URL for webhook delivery. Derived from `CODEX_ACTIVE_CODESPACE`; updated automatically alongside it. |
+| 2 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://<codespace-name>-8765.<codespaces-domain>/webhook/github` | Public URL for webhook delivery. Derived from `CODEX_ACTIVE_CODESPACE`; updated automatically alongside it. **Domain suffix may vary by Codespaces environment** (for example, `preview.app.github.dev` or `app.github.dev`); use the auto-set value rather than hardcoding. |
 
 
 > Both variables above are written atomically by step 4b in `.devcontainer/scripts/post-start.sh` on every Codespace start and resume.  
@@ -382,8 +382,8 @@ All scripts fall back to safe coded defaults when variables are unset.
 |---|---|
 | **Codespace name** | `<auto-set-on-start>` |
 | **Resume existing** | Open [GitHub Codespaces](https://github.com/codespaces) and select the active Codespace |
-| **New from PR** | [https://github.com/codespaces/new/Aries-Serpent/_codex_/pull/3503](https://github.com/codespaces/new/Aries-Serpent/_codex_/pull/3503) |
-| **Branch** | `copilot/implement-user-authentication` |
+| **New from PR** | Open [GitHub Codespaces](https://github.com/codespaces), choose **New with options**, then select the target PR/branch for this workstream |
+| **Branch** | `<active-development-branch>` (e.g., current PR branch) |
 | **Repo variable** | `CODEX_ACTIVE_CODESPACE` — auto-updated on every start/resume |
 
 > The Codespace name changes when a new Codespace is created. `CODEX_ACTIVE_CODESPACE` is always kept in sync by `post-start.sh` automatically.
@@ -494,7 +494,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | | Detail |
 |---|---|
 | ~~**Problem**~~ | ~~2 webhooks configured but `active=false` because `WEBHOOK_RECEIVER_URL` not set.~~ |
-| **Resolution** | `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by `.devcontainer/scripts/post-start.sh`. The URL format is `https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github`. The `POST /webhook/github` endpoint is now implemented in `cognitive_app/src/server/cli_api_server.py` with HMAC-SHA256 verification. For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace. |
+| **Resolution** | `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by `.devcontainer/scripts/post-start.sh`. Canonical format: `https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github`; some environments may surface `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` (Codespaces forwarding variant). The `POST /webhook/github` endpoint is now implemented in `cognitive_app/src/server/cli_api_server.py` with HMAC-SHA256 verification. For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace. |
 
 ### ✅ Issue 7 — Codespace secrets confirmation — **RESOLVED 2026-03-07**
 
