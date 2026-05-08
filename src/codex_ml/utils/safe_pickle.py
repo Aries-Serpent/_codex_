@@ -57,7 +57,8 @@ class RestrictedUnpickler(pickle.Unpickler):
         # NumPy pickles for ndarray/scalar values rely on these reconstruction helpers.
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
-        # TypedStorage is required to reconstruct trusted tensor cache payloads.
+        # Private `torch.storage` helpers remain necessary to reconstruct trusted
+        # tensor cache payloads.
         "torch.storage": {"_TypedStorage", "TypedStorage"},
         "codex_ml": {"ModelCheckpoint", "TrainingState"},
     }
@@ -144,6 +145,7 @@ def _get_secret_key() -> bytes:
 
     key_file = Path.home() / ".codex" / "pickle.key"
     if key_file.exists():
+        logger.debug("Using existing pickle secret key at %s", key_file)
         return key_file.read_bytes()
 
     logger.info("Generating new pickle secret key at %s", key_file)
@@ -153,7 +155,7 @@ def _get_secret_key() -> bytes:
     try:
         fd = os.open(str(key_file), flags, 0o600)
     except FileExistsError:
-        logger.debug("Reusing existing pickle secret key at %s", key_file)
+        logger.debug("Using existing pickle secret key at %s", key_file)
         return key_file.read_bytes()
     with os.fdopen(fd, "wb") as handle:
         handle.write(new_key)

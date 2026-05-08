@@ -30,6 +30,8 @@
   - passed `str(key_file)` to `os.open()` in `_get_secret_key()`
   - added a debug log when `_get_secret_key()` reuses an existing key file and
     extracted `SIGNED_PICKLE_HEADER` for clearer header construction
+  - added explicit regression coverage for the normal existing-key reuse path
+    and aligned the debug message across both existing-key branches
 
 ### Validation Snapshot
 - `python -m ruff check src/codex_ml/utils/safe_pickle.py tests/test_codex_ml_safe_pickle.py` ✅

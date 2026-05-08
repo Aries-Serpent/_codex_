@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import logging
 import os
 import pickle
 from pathlib import Path
@@ -59,3 +60,19 @@ def test_get_secret_key_creates_private_file(
 
     assert key_path.read_bytes() == key
     assert os.stat(key_path).st_mode & 0o777 == 0o600
+
+
+def test_get_secret_key_reuses_existing_file(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.delenv("PICKLE_SECRET_KEY", raising=False)
+
+    first_key = safe_pickle_module._get_secret_key()
+    caplog.set_level(logging.DEBUG)
+    second_key = safe_pickle_module._get_secret_key()
+
+    assert second_key == first_key
+    assert "Using existing pickle secret key" in caplog.text

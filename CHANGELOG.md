@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - added a debug log when `_get_secret_key()` reuses an existing key file and
     promoted the signed-pickle header bytes into the `SIGNED_PICKLE_HEADER`
     module constant
+  - covered the non-race existing-key reuse branch with a focused regression
+    test and aligned the debug message across both existing-key code paths
 
 ### Changed (S886) — 2026-05-08
 - Refreshed `.github/copilot-prompts/active/PR-4368-followup.md` so the active
