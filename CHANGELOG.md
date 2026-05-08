@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S887) — 2026-05-08
+- Hardened `src/codex_ml/utils/safe_pickle.py` review-thread follow-ups for PR
+  #4368:
+  - versioned signed pickle payloads now use a prefixed `SPKL` header with
+    explicit version / algorithm ids while preserving legacy trailing-HMAC read
+    compatibility
+  - HMAC verification logging now uses plain ASCII at `debug` level
+  - private allowlist entries were narrowed by dropping
+    `torch.storage._LegacyStorage` and documenting the remaining reconstruction
+    helpers
+  - `_get_secret_key()` now creates `~/.codex/pickle.key` atomically with mode
+    `0600` from first write
+- Added focused regression coverage in `tests/test_codex_ml_safe_pickle.py` for
+  versioned signed payloads, legacy signed payload compatibility, and secret-key
+  file permissions.
+- Reviewed issue `#4367` (CI Failure Triage Report) during closeout:
+  `Agent Token Delegation` on run `25579553040` is rate-limit infrastructure
+  only, while the latest `Validation Pipeline` failure on this PR was caused by
+  repository-wide markdown link errors outside this patch surface.
+- Restored the missing `is_secret: false` field on the `CODEX_MANIFEST.json`
+  false-positive entry in `.secrets.baseline`.
+
 ### Changed (S886) — 2026-05-08
 - Refreshed `.github/copilot-prompts/active/PR-4368-followup.md` so the active
   continuation prompt now reflects the current branch head, concrete Priority

@@ -14,6 +14,12 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+SIGNED_PICKLE_MAGIC = b"SPKL"
+SIGNED_PICKLE_VERSION = 1
+SIGNED_PICKLE_ALGO_SHA256 = 1
+SIGNED_PICKLE_HEADER_LEN = len(SIGNED_PICKLE_MAGIC) + 2
+SIGNED_PICKLE_SIGNATURE_LEN = 32
+
 
 class RestrictedUnpickler(pickle.Unpickler):
     """Restricted unpickler that only allows whitelisted classes."""
@@ -45,9 +51,11 @@ class RestrictedUnpickler(pickle.Unpickler):
             "MutableSequence",
         },
         "numpy": {"ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        # NumPy pickles for ndarray/scalar values rely on these reconstruction helpers.
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
-        "torch.storage": {"_TypedStorage", "TypedStorage", "_LegacyStorage"},
+        # TypedStorage is required to reconstruct trusted tensor cache payloads.
+        "torch.storage": {"_TypedStorage", "TypedStorage"},
         "codex_ml": {"ModelCheckpoint", "TrainingState"},
     }
 
@@ -80,11 +88,7 @@ def safe_pickle_load(
 
     if verify_signature:
         key = secret_key or _get_secret_key()
-        if len(data) < 32:
-            raise ValueError("File too small to contain HMAC signature")
-
-        pickled_data = data[:-32]
-        signature = data[-32:]
+        pickled_data, signature = _split_signed_pickle(data)
         expected_sig = hmac.new(key, pickled_data, hashlib.sha256).digest()
         if not hmac.compare_digest(signature, expected_sig):
             raise ValueError(
@@ -93,7 +97,7 @@ def safe_pickle_load(
             )
 
         data = pickled_data
-        logger.info("✅ HMAC signature verified for %s", path)
+        logger.debug("Verified HMAC signature for %s", path)
 
     if use_restricted_unpickler:
         logger.debug("Loading pickle with RestrictedUnpickler: %s", path)
@@ -120,8 +124,7 @@ def safe_pickle_dump(
     pickled_data = pickle.dumps(obj)
     if add_signature:
         key = secret_key or _get_secret_key()
-        signature = hmac.new(key, pickled_data, hashlib.sha256).digest()
-        data = pickled_data + signature
+        data = _build_signed_pickle(pickled_data, key)
         logger.info("Added HMAC signature to %s", path)
     else:
         data = pickled_data
@@ -143,9 +146,46 @@ def _get_secret_key() -> bytes:
     logger.info("Generating new pickle secret key at %s", key_file)
     new_key = secrets.token_bytes(32)
     key_file.parent.mkdir(parents=True, exist_ok=True)
-    key_file.write_bytes(new_key)
-    key_file.chmod(0o600)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    try:
+        fd = os.open(key_file, flags, 0o600)
+    except FileExistsError:
+        return key_file.read_bytes()
+    with os.fdopen(fd, "wb") as handle:
+        handle.write(new_key)
     return new_key
+
+
+def _build_signed_pickle(pickled_data: bytes, secret_key: bytes) -> bytes:
+    """Build a versioned signed pickle payload."""
+    signature = hmac.new(secret_key, pickled_data, hashlib.sha256).digest()
+    header = SIGNED_PICKLE_MAGIC + bytes(
+        [SIGNED_PICKLE_VERSION, SIGNED_PICKLE_ALGO_SHA256]
+    )
+    return header + signature + pickled_data
+
+
+def _split_signed_pickle(data: bytes) -> tuple[bytes, bytes]:
+    """Extract payload and signature from signed pickle bytes."""
+    if data.startswith(SIGNED_PICKLE_MAGIC):
+        if len(data) < SIGNED_PICKLE_HEADER_LEN + SIGNED_PICKLE_SIGNATURE_LEN:
+            raise ValueError("Signed pickle too small to contain header and HMAC signature")
+
+        version = data[len(SIGNED_PICKLE_MAGIC)]
+        algo = data[len(SIGNED_PICKLE_MAGIC) + 1]
+        if version != SIGNED_PICKLE_VERSION:
+            raise ValueError(f"Unsupported signed pickle version: {version}")
+        if algo != SIGNED_PICKLE_ALGO_SHA256:
+            raise ValueError(f"Unsupported signed pickle algorithm id: {algo}")
+
+        signature_start = SIGNED_PICKLE_HEADER_LEN
+        signature_end = signature_start + SIGNED_PICKLE_SIGNATURE_LEN
+        return data[signature_end:], data[signature_start:signature_end]
+
+    if len(data) < SIGNED_PICKLE_SIGNATURE_LEN:
+        raise ValueError("File too small to contain a signed pickle payload")
+
+    return data[:-SIGNED_PICKLE_SIGNATURE_LEN], data[-SIGNED_PICKLE_SIGNATURE_LEN:]
 
 
 __all__ = ["RestrictedUnpickler", "safe_pickle_dump", "safe_pickle_load"]
