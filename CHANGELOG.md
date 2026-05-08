@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S881) — 2026-05-08
+- `.secrets.baseline`: restored missing `is_secret` field for the
+  `CODEX_MANIFEST.json` baseline entry to keep baseline schema consistent.
+- `docs/roadmap/PR4366_whats_next.md`: standardized CI status table `Count`
+  values to consistent numeric semantics.
+- Refreshed living docs to include current workflow-monitoring state at
+  `ad445fa` and noted WEC-gate failure context for active follow-up.
+
 ### Fixed (S880) — 2026-05-08
 - Continued post-approval monitoring after maintainer confirmed all pending
   workflows were approved; verified latest branch-head dependency submission runs
