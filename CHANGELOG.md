@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4346)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4346 (SHA `3fbfc9be`) at 2026-05-08T00:23Z [auto-generated]
+
 ### Fixed (session 2026-05-07T23:14Z — PR #4344 blocking comment + bot finding remediation)
 - Addressed new bot-thread findings:
   - Removed unreachable `try/except` in `tests/hhg_logistics/serve/test_app.py::test_torch_inference_context_without_torch`.
