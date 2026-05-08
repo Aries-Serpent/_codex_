@@ -148,7 +148,7 @@ def _get_secret_key() -> bytes:
     key_file.parent.mkdir(parents=True, exist_ok=True)
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
     try:
-        fd = os.open(key_file, flags, 0o600)
+        fd = os.open(str(key_file), flags, 0o600)
     except FileExistsError:
         return key_file.read_bytes()
     with os.fdopen(fd, "wb") as handle:

@@ -25,6 +25,9 @@
     markdown links, not on this PR's `safe_pickle` or evaluation changes
 - ✅ Restored the missing `is_secret: false` schema field on the
   `CODEX_MANIFEST.json` false-positive entry in `.secrets.baseline`.
+- ✅ Incorporated the final code-review polish on top of the session commit:
+  - annotated `monkeypatch` as `pytest.MonkeyPatch` in the new regression test
+  - passed `str(key_file)` to `os.open()` in `_get_secret_key()`
 
 ### Validation Snapshot
 - `python -m ruff check src/codex_ml/utils/safe_pickle.py tests/test_codex_ml_safe_pickle.py` ✅

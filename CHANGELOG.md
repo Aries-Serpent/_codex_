@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   repository-wide markdown link errors outside this patch surface.
 - Restored the missing `is_secret: false` field on the `CODEX_MANIFEST.json`
   false-positive entry in `.secrets.baseline`.
+- Follow-up review polish:
+  - annotated the new `monkeypatch` fixture in
+    `tests/test_codex_ml_safe_pickle.py`
+  - passed `str(key_file)` to `os.open()` in `_get_secret_key()` for clearer
+    path intent and type-checker friendliness
 
 ### Changed (S886) — 2026-05-08
 - Refreshed `.github/copilot-prompts/active/PR-4368-followup.md` so the active

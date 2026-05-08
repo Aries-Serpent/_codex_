@@ -6,6 +6,8 @@ import os
 import pickle
 from pathlib import Path
 
+import pytest
+
 from codex_ml.utils import safe_pickle as safe_pickle_module
 
 
@@ -46,7 +48,9 @@ def test_safe_pickle_load_supports_legacy_signature_format(tmp_path: Path) -> No
     assert loaded == payload
 
 
-def test_get_secret_key_creates_private_file(tmp_path: Path, monkeypatch) -> None:
+def test_get_secret_key_creates_private_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     monkeypatch.setenv("HOME", str(tmp_path))
     monkeypatch.delenv("PICKLE_SECRET_KEY", raising=False)
 
