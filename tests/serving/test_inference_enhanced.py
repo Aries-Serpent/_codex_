@@ -117,7 +117,7 @@ class TestInferenceServerWithAuth:
     def test_health_endpoint_circuit_breaker(self):
         """Test health endpoint includes circuit breaker status"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -133,7 +133,7 @@ class TestInferenceServerWithAuth:
     def test_ready_endpoint(self):
         """Test readiness endpoint"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
@@ -149,7 +149,7 @@ class TestInferenceServerWithAuth:
     def test_live_endpoint(self):
         """Test liveness endpoint"""
         config = ModelConfig(model_name="test-model", model_type="stub")
-        app = create_app(config=config)
+        app = create_app(config)
 
         from fastapi.testclient import TestClient
 
