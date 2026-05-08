@@ -520,9 +520,9 @@ class TestPhase2_OptimizationMethods:
         orchestrator = PhysicsInspiredOrchestrator()
         if hasattr(orchestrator, "optimize_path"):
             try:
-                # Try keyword arguments first (preferred signature)
+                # Use positional endpoints to avoid unsupported keyword names
                 result = orchestrator.optimize_path(
-                    start={"x": 0.0}, goal={"x": 1.0}, max_iterations=5
+                    {"x": 0.0}, {"x": 1.0}, max_iterations=5
                 )
                 assert result is not None
             except TypeError:
