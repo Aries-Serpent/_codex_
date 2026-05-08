@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-08T00:23:42Z",
+  "generated_at": "2026-05-08T06:37:06Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -964,6 +964,16 @@
       "has_concurrency": true
     },
     {
+      "name": "admin-action-notifier",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
+      "name": "admin-action-t03",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "admin_setup_verification",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1125,7 +1135,7 @@
     },
     {
       "name": "codebase-health-sweep",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1624,6 +1634,11 @@
       "has_concurrency": true
     },
     {
+      "name": "self-healing",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "semgrep_sarif",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1671,6 +1686,11 @@
     {
       "name": "test-variables-api",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "token-expiry-monitor",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1727,6 +1747,10 @@
   "policies": [
     {
       "path": ".codex/docs/ACCOUNTABILITY_REPORT_S77.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md",
       "type": "enforcement"
     },
     {
@@ -2087,5 +2111,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "3a14f22f3536c3d55c2759bdce6c3d85d5173656b7e95b8b217eeebd2b91f751"
+  "integrity_sha256": "a6e01da6b6e7ece3b768d18623e8965cdc65b58ce3cde6aa72102d5871fbb6b3"
 }
