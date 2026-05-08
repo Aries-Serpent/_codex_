@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #4356)
+### Fixed (S867) — 2026-05-08
+- **Webhook domain clarification**: `GITHUB_VARIABLES_MASTER_GUIDE.md` — disambiguated `preview.app.github.dev` vs `app.github.dev` domain variants; replaced stale PR#3503 Codespace link with generic instructions; replaced hardcoded `copilot/implement-user-authentication` branch with `<active-development-branch>` placeholder; added dual-domain explanation in Issue-6 resolution.
+- **subprocess.py overload**: Added explicit `text: Literal[True] = True` to first overload signature; expanded docstring with `text`-default note and formal `shell` parameter section.
+- **Test logic fixes**: Removed `or True` no-op from `test_phase2_deep_coverage_batch4.py` energy conservation assert; removed unreachable `assert not new_violations` after `pytest.skip` in `test_mypy_type_coverage.py`.
+- **Inference test hardening**: Added `isinstance(data["request_count"], int) and >= 0` type assertion on `/metrics`; fixed redundant `as CircuitBreaker` alias; corrected patch path to `src.codex_ml.serving.inference_server.CircuitBreaker`; added `# noqa: F401` to availability-probe import.
+- **T-01 token chain fix**: `workflow-link-validation.yml` checkout token upgraded to canonical `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` chain.
+- **Rate-limit orchestrator robustness**: `int()` parsing of env vars wrapped in descriptive try/except; backoff exponent capped at `min(attempt, 6)`; `run_number` fallback unified to integer `0`.
+
+### Added (S867) — 2026-05-08
+- **`docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`**: Master privilege routing map covering all 5 autonomy surfaces (PR template, WEC, Workflows, Discussions, Webhooks); full mermaid diagrams for token tier hierarchy, WEC controller, workflow matrix, end-to-end autonomy loop, and updated decision tree with no human gates.
+- **`docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md`**: Complete session handoff protocol with state machine, self-healing loop architecture, rate-limit orchestration diagrams, gap analysis (G-1..G-6), and phase-by-phase implementation plan.
+- **`scripts/ci/rate_limit_orchestrator.py`**: Rate-limit aware workflow deduplication, concurrent run cap enforcement, and exponential backoff with token rotation.
+- **`.codex/pending_var_updates.json`**: 10 variables queued in flat `{NAME:value}` format for `@agent-var-writer apply` autonomous deployment.
+- **`.codex/webhook_config.json`**: `rate-limit-orchestration-trigger` webhook added; all 4 hooks set `active=true`, `status=ready-to-deploy`.
+- **`agent-var-writer.yml` ALLOWED_VAR_NAMES**: Extended with `RATE_LIMIT_MAX_CONCURRENT`, `CODEX_SESSION_HANDOFF_ENABLED`, `WEBHOOK_DOMAIN_VARIANT`.
+
+
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4356 (SHA `4005db7e`) at 2026-05-08T07:12Z [auto-generated]
 
 ### Fixed (S866) — 2026-05-08

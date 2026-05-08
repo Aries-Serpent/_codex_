@@ -68,9 +68,21 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 _DEFAULT_REPO = "Aries-Serpent/_codex_"
 _GH_API_BASE = "https://api.github.com"
-_DEFAULT_MAX_CONCURRENT = int(os.environ.get("RATE_LIMIT_MAX_CONCURRENT", "8"))
+try:
+    _DEFAULT_MAX_CONCURRENT = int(os.environ.get("RATE_LIMIT_MAX_CONCURRENT", "8"))
+except ValueError:
+    raise ValueError(
+        f"RATE_LIMIT_MAX_CONCURRENT must be a positive integer; "
+        f"got: {os.environ.get('RATE_LIMIT_MAX_CONCURRENT')!r}"
+    )
 _POLITE_SLEEP = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP", "0.3"))
-_MIN_REMAINING = int(os.environ.get("GH_TRICKLE_MIN_REMAINING", "20"))
+try:
+    _MIN_REMAINING = int(os.environ.get("GH_TRICKLE_MIN_REMAINING", "20"))
+except ValueError:
+    raise ValueError(
+        f"GH_TRICKLE_MIN_REMAINING must be an integer; "
+        f"got: {os.environ.get('GH_TRICKLE_MIN_REMAINING')!r}"
+    )
 _MAX_RETRIES = 3
 _MAX_BACKOFF = 60  # seconds
 
@@ -156,7 +168,7 @@ def _gh_api_with_retry(
             return status, result
 
         if status in (429, 403):
-            wait = min(_MAX_BACKOFF, (2 ** attempt) + random.uniform(0, 1))
+            wait = min(_MAX_BACKOFF, (2 ** min(attempt, 6)) + random.uniform(0, 1))
             logger.warning("Rate-limited (HTTP %d) — sleeping %.1fs before retry %d", status, wait, attempt + 1)
             time.sleep(wait)
             continue
@@ -250,7 +262,7 @@ def deduplicate_workflow(
     cancelled = 0
     for run in to_cancel:
         run_id = run["id"]
-        run_number = run.get("run_number", "?")
+        run_number = run.get("run_number", 0)
         if dry_run:
             logger.info("[DRY-RUN] Would cancel run #%s (id=%s) of %s", run_number, run_id, workflow_file)
             cancelled += 1
@@ -307,7 +319,7 @@ def enforce_concurrent_cap(
     for run in excess:
         run_id = run["id"]
         wf_name = run.get("name", "unknown")
-        run_number = run.get("run_number", "?")
+        run_number = run.get("run_number", 0)
         if dry_run:
             logger.info("[DRY-RUN] Would cancel run #%s '%s' (id=%s)", run_number, wf_name, run_id)
             cancelled += 1

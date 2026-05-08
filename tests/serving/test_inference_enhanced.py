@@ -229,6 +229,7 @@ class TestInferenceServerWithAuth:
         assert resp.status_code == 200
         data = resp.json()
         assert "request_count" in data
+        assert isinstance(data["request_count"], int) and data["request_count"] >= 0
         # Circuit breaker may or may not be present depending on import
 
     def test_root_endpoint_shows_auth_status(self):
