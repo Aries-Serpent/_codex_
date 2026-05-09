@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S899) — 2026-05-09
+- **Merge conflict resolved**: `CODEX_MANIFEST.json` conflict between branch and main resolved
+  by taking the newer main-generated version (auto-generated file, P-045 policy).
+
 ### Added (S898) — 2026-05-09
 - **Cognitive Brain: PerceptionLayer expanded sensors** (`scripts/cognitive/cognitive_brain_core.py`):
   added `memory_available_mb`, `disk_free_gb`, `net_bytes_sent`, `net_bytes_recv` (via psutil
