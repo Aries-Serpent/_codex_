@@ -8,7 +8,9 @@ S898 enhancements:
 - ActionExecutor: GitHub workflow-dispatch targets
 """
 import json
+import os
 import sqlite3
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -53,7 +55,7 @@ class CognitiveBrain:
         print(f"\n🧠 Starting Cognitive Brain Cycle #{self.cycle_count}")
         print("=" * 60)
 
-        results = {
+        results: dict[str, Any] = {
             "cycle_number": self.cycle_count,
             "started_at": cycle_start.isoformat(),
             "stages": {}
@@ -164,8 +166,12 @@ class PerceptionLayer:
         "cpu_percent",
         "memory_available_mb",
         "disk_free_gb",
+        "disk_usage_percent",
         "net_bytes_sent",
         "net_bytes_recv",
+        "load_avg_1m",
+        "process_count",
+        "python_version",
         "ci_failure_count",
     )
 
@@ -193,12 +199,25 @@ class PerceptionLayer:
             lambda: psutil.disk_usage("/").free / (1024 ** 3) if psutil else None,
             default=None,
         )
+        disk_usage_percent = with_fallback(
+            lambda: psutil.disk_usage("/").percent if psutil else None,
+            default=None,
+        )
         net_counters = with_fallback(
             lambda: psutil.net_io_counters() if psutil else None,
             default=None,
         )
         net_bytes_sent = net_counters.bytes_sent if net_counters is not None else None
         net_bytes_recv = net_counters.bytes_recv if net_counters is not None else None
+        load_avg_1m = with_fallback(
+            lambda: os.getloadavg()[0] if hasattr(os, "getloadavg") else None,
+            default=None,
+        )
+        process_count = with_fallback(
+            lambda: len(psutil.pids()) if psutil and hasattr(psutil, "pids") else None,
+            default=None,
+        )
+        python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 
         # CI failure sensor — reads rescue_context.json if present
         ci_failure_count = self._read_ci_failure_count()
@@ -208,8 +227,12 @@ class PerceptionLayer:
                 ("cpu_percent", system_load),
                 ("memory_available_mb", memory_available_mb),
                 ("disk_free_gb", disk_free_gb),
+                ("disk_usage_percent", disk_usage_percent),
                 ("net_bytes_sent", net_bytes_sent),
                 ("net_bytes_recv", net_bytes_recv),
+                ("load_avg_1m", load_avg_1m),
+                ("process_count", process_count),
+                ("python_version", python_version),
                 ("ci_failure_count", ci_failure_count),
             ] if val is not None
         ]
@@ -221,8 +244,12 @@ class PerceptionLayer:
             "system_load": system_load,
             "memory_available_mb": memory_available_mb,
             "disk_free_gb": disk_free_gb,
+            "disk_usage_percent": disk_usage_percent,
             "net_bytes_sent": net_bytes_sent,
             "net_bytes_recv": net_bytes_recv,
+            "load_avg_1m": load_avg_1m,
+            "process_count": process_count,
+            "python_version": python_version,
             "ci_failure_count": ci_failure_count,
             "sensors_active": sensors_active,
             "timestamp": datetime.now().isoformat(),
@@ -273,6 +300,9 @@ class MemoryLayer:
         self.workspace = workspace
         self.workspace.mkdir(parents=True, exist_ok=True)
         self.db_path = self.workspace / "ltm.db"
+        self.max_entries = 5000
+        self.compaction_delete_threshold = 500
+        self._deleted_since_compaction = 0
         self._init_db()
 
     def _init_db(self) -> None:
@@ -299,6 +329,7 @@ class MemoryLayer:
                     (cycle, ts, snapshot),
                 )
                 conn.commit()
+            self.evict_oldest()
             return True
         except Exception:  # noqa: BLE001
             return False
@@ -345,6 +376,55 @@ class MemoryLayer:
         except Exception:  # noqa: BLE001
             return 0
 
+    def evict_oldest(self, keep_last: int | None = None) -> int:
+        """Evict oldest entries to enforce retention policy.
+
+        Returns number of deleted rows.
+        """
+        keep = keep_last if keep_last is not None else self.max_entries
+        if keep <= 0:
+            return 0
+        try:
+            with sqlite3.connect(str(self.db_path)) as conn:
+                to_delete = conn.execute(
+                    f"SELECT COUNT(*) - ? FROM {self._TABLE}",
+                    (keep,),
+                ).fetchone()[0]
+                if to_delete <= 0:
+                    return 0
+                conn.execute(
+                    f"DELETE FROM {self._TABLE} WHERE id IN ("
+                    f"SELECT id FROM {self._TABLE} ORDER BY id ASC LIMIT ?"
+                    f")",
+                    (to_delete,),
+                )
+                conn.commit()
+            self._deleted_since_compaction += to_delete
+            if self._deleted_since_compaction >= self.compaction_delete_threshold:
+                self.compact()
+            return to_delete
+        except Exception:  # noqa: BLE001
+            return 0
+
+    def compact(self) -> bool:
+        """Run SQLite VACUUM compaction and reset compaction counter."""
+        try:
+            with sqlite3.connect(str(self.db_path)) as conn:
+                conn.execute("VACUUM")
+            self._deleted_since_compaction = 0
+            return True
+        except Exception:  # noqa: BLE001
+            return False
+
+    def ltm_stats(self) -> dict[str, int]:
+        """Return retention/compaction state for observability."""
+        return {
+            "entries": self.ltm_size(),
+            "max_entries": self.max_entries,
+            "deleted_since_compaction": self._deleted_since_compaction,
+            "compaction_delete_threshold": self.compaction_delete_threshold,
+        }
+
 
 class DecisionEngine:
     """Decision engine - intelligent decision-making and optimization."""
@@ -388,6 +468,9 @@ class ActionExecutor:
         "workflow_dispatch",  # GitHub Actions workflow_dispatch event
         "post_comment",      # GitHub PR comment via REST API
         "approve_run",       # GitHub Actions run approval via REST API
+        "rerun_failed_jobs",  # GitHub Actions re-run failed jobs
+        "cancel_run",        # GitHub Actions cancel run
+        "set_repo_variable",  # Repository variable mutation
     )
 
     def __init__(self, workspace: Path):
@@ -460,6 +543,18 @@ class ActionExecutor:
             # Real implementation: POST /repos/{owner}/{repo}/actions/runs/{id}/approve
             # Stub: always succeeds in test/offline mode.
             return True
+
+        if target == "rerun_failed_jobs":
+            payload = task.get("payload") or {}
+            return bool(payload.get("run_id"))
+
+        if target == "cancel_run":
+            payload = task.get("payload") or {}
+            return bool(payload.get("run_id"))
+
+        if target == "set_repo_variable":
+            payload = task.get("payload") or {}
+            return bool(payload.get("name")) and "value" in payload
 
         # Default: internal in-process dispatch
         return True

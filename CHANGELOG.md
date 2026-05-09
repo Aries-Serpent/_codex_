@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S900-continue) — 2026-05-09
+- **Evaluate CLI non-Hydra fallback hardened** (`src/codex_ml/cli/evaluate.py`):
+  when Hydra is unavailable, the CLI now accepts Hydra-style dotlist overrides
+  (`dataset.path=...`, `tokenizer.cfg.path=...`, `metrics=[accuracy]`, etc.)
+  instead of requiring only `--checkpoint-dir`. This restores compatibility for
+  non-Hydra evaluation smoke/integration flows.
+- **Cognitive Brain expansion (regression-safe)** (`scripts/cognitive/cognitive_brain_core.py`):
+  - PerceptionLayer sensors expanded with `disk_usage_percent`, `load_avg_1m`,
+    `process_count`, and `python_version`.
+  - MemoryLayer now enforces LTM retention with oldest-entry eviction, tracks
+    compaction thresholds, and exposes `compact()` + `ltm_stats()`.
+  - ActionExecutor dispatch targets expanded with `rerun_failed_jobs`,
+    `cancel_run`, and `set_repo_variable` (payload validation included).
+- **Regression coverage refreshed** (`tests/cognitive_brain/test_cb_fallbacks.py`):
+  added tests for new sensors, retention/eviction stats, and new dispatch
+  targets while preserving existing CB fallback coverage.
+- **Priority re-check suite passed**:
+  safe pickle/signed payload, token verification isolation, tokenizer streaming/
+  parity guards, codex_cli smoke paths, JSON-only plugin listing, OmegaConf/
+  dotlist fallback behavior, non-Hydra evaluate handling, and CB fallback
+  helpers all validated via targeted pytest runs.
+
 ### Fixed (S899-final) — 2026-05-09
 - **CodeQL / Unused global variable** (`tests/tokenization/test_tokenizer_parity.py`):
   Removed the dead `_has_real_transformers` variable (was computed in the `try` block and the

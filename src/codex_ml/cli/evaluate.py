@@ -27,6 +27,7 @@ from codex_ml.eval.metrics import (
 from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
+from codex_ml.utils.yaml_support import safe_load
 
 try:
     from codex_ml.safety import SafetyConfig, sanitize_prompt
@@ -45,10 +46,14 @@ if _HAS_HYDRA:  # pragma: no cover - optional dependency
         logger.warning(f"ImportError: {e}", exc_info=True)
         from config_legacy.utils import to_absolute_path as _hydra_to_absolute_path
 
-    from omegaconf import DictConfig, OmegaConf
+    from omegaconf import OmegaConf
+
+    def _cfg_to_container(cfg: Any) -> Any:
+        return OmegaConf.to_container(cfg, resolve=True)
 else:  # pragma: no cover - optional dependency
-    DictConfig = Any  # type: ignore[assignment]
-    OmegaConf = None  # type: ignore[assignment]
+
+    def _cfg_to_container(cfg: Any) -> Any:
+        return cfg
 
 torch, _HAS_TORCH = optional_import("torch")
 
@@ -152,6 +157,27 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
     if total:
         LOGGER.info("Sanitised %d prompt field(s) in evaluation configuration", total)
     return total
+
+
+def _apply_dotlist_overrides(mapping: dict[str, Any], overrides: Sequence[str]) -> dict[str, Any]:
+    """Apply Hydra-style dotlist overrides into a plain mapping."""
+    for item in overrides:
+        if "=" not in item:
+            continue
+        key, value = item.split("=", 1)
+        parsed = safe_load(value)
+        target: dict[str, Any] = mapping
+        parts = [part for part in key.split(".") if part]
+        if not parts:
+            continue
+        for part in parts[:-1]:
+            next_val = target.get(part)
+            if not isinstance(next_val, dict):
+                next_val = {}
+            target[part] = next_val
+            target = next_val
+        target[parts[-1]] = parsed
+    return mapping
 
 
 def _to_path(value: Optional[str | Path]) -> Optional[Path]:
@@ -351,12 +377,12 @@ def _run_dataset_evaluation(
 if _HAS_HYDRA:
 
     @hydra.main(version_base=None, config_path="../configs/evaluation", config_name="default")
-    def main(cfg: DictConfig) -> None:
+    def main(cfg: Any) -> None:
         logger = init_json_logging()
         arg_list = sys.argv[1:]
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
-            cfg_map = OmegaConf.to_container(cfg, resolve=True)
+            cfg_map = _cfg_to_container(cfg)
             if isinstance(cfg_map, dict):
                 _sanitize_eval_config(cfg_map)
             checkpoint_dir = (
@@ -405,31 +431,60 @@ if _HAS_HYDRA:
 
 else:
 
-    def main(argv: Optional[Sequence[str]] = None) -> int:
-        logger = init_json_logging()
+    def _run_non_hydra_main(arg_list: list[str]) -> dict[str, Any]:
+        """Run non-Hydra evaluate flow with dotlist fallback support."""
+        if any("=" in arg and not arg.startswith("--") for arg in arg_list):
+            cfg_map = _apply_dotlist_overrides({}, arg_list)
+            _sanitize_eval_config(cfg_map)
+            checkpoint_dir = (cfg_map.get("checkpoint") or {}).get("dir")
+            if "checkpoint_dir" in cfg_map and not checkpoint_dir:
+                checkpoint_dir = cfg_map.get("checkpoint_dir")
+            model_name = cfg_map.get("model_name")
+            device = cfg_map.get("device")
+            dataset_cfg = cfg_map.get("dataset", {})
+            dataset_path = dataset_cfg.get("path") if isinstance(dataset_cfg, dict) else None
+            output_dir = cfg_map.get("output_dir", "outputs")
+            metric_names = cfg_map.get("metrics", ["accuracy"])
+            limit = cfg_map.get("limit")
+            tokenizer_cfg = cfg_map.get("tokenizer", {})
+
+            if dataset_path:
+                return _run_dataset_evaluation(
+                    dataset_path=str(dataset_path),
+                    output_dir=str(output_dir),
+                    metric_names=list(metric_names) if isinstance(metric_names, list) else ["accuracy"],
+                    limit=limit,
+                    tokenizer_cfg=tokenizer_cfg if isinstance(tokenizer_cfg, dict) else {},
+                )
+            return evaluate(
+                checkpoint_dir=checkpoint_dir, model_name=model_name, device=device
+            )
+
         parser = ArgparseJSONParser(description="Evaluate latest checkpoint (skeleton).")
         parser.add_argument("--checkpoint-dir", required=True)
         parser.add_argument("--model-name", default=None)
         parser.add_argument("--device", default=None)
+        args = parser.parse_args(arg_list)
+        return evaluate(
+            checkpoint_dir=args.checkpoint_dir,
+            model_name=args.model_name,
+            device=args.device,
+        )
+
+    def main(argv: Optional[Sequence[str]] = None) -> int:
+        logger = init_json_logging()
         arg_list = list(argv) if argv is not None else sys.argv[1:]
 
         with capture_exceptions(logger):
-            args = parser.parse_args(arg_list)
-            log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
-            result = evaluate(
-                checkpoint_dir=args.checkpoint_dir,
-                model_name=args.model_name,
-                device=args.device,
-            )
+            log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
+            result = _run_non_hydra_main(arg_list)
             print(json.dumps(result, indent=2))
             status = result.get("status", "error") if isinstance(result, dict) else "error"
             log_event(
                 logger,
                 "cli.finish",
-                prog=parser.prog,
+                prog=sys.argv[0],
                 status=status,
-                checkpoint_dir=args.checkpoint_dir,
-                model_name=args.model_name,
             )
             return 0
 
