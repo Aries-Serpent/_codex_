@@ -6,9 +6,14 @@
  * via <MermaidDiagram>.
  * GitHub-flavoured links of the form `[file:path]` are converted to
  * in-app navigation callbacks.
+ *
+ * Content originates from the repository's own Markdown files (trusted
+ * source). The sanitizer strips all event handlers, javascript: URLs,
+ * <script>, <iframe>, and <object> elements before rendering.
  */
 
 import React, { useMemo } from 'react';
+import { marked } from 'marked';
 import { MermaidDiagram } from './MermaidDiagram';
 
 interface DocumentationContentProps {
@@ -17,12 +22,40 @@ interface DocumentationContentProps {
   className?: string;
 }
 
-// Simple HTML sanitizer — strips <script> and event attributes
+// HTML sanitizer — removes dangerous tags and attributes.
+// Strips <script>, <iframe>, <object>, <embed>, event handlers, and
+// javascript:/data: URL schemes before the HTML reaches the DOM.
 function sanitize(html: string): string {
   return html
+    // Remove script, iframe, object, embed blocks entirely
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/\s+on\w+="[^"]*"/gi, '')
-    .replace(/\s+on\w+='[^']*'/gi, '');
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^>]*>/gi, '')
+    // Remove inline event handlers (on*)
+    .replace(/\s+on\w+\s*=\s*"[^"]*"/gi, '')
+    .replace(/\s+on\w+\s*=\s*'[^']*'/gi, '')
+    .replace(/\s+on\w+\s*=\s*[^\s>]*/gi, '')
+    // Strip javascript: and data: URL schemes from href/src attributes
+    .replace(/(href|src)\s*=\s*["']\s*javascript:[^"']*/gi, '$1="#"')
+    .replace(/(href|src)\s*=\s*["']\s*data:[^"']*/gi, '$1="#"');
+}
+
+// Escape a string for safe insertion into HTML attribute values
+function escapeAttr(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// Escape a string for safe display as HTML text content
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 // Split markdown into text segments and mermaid blocks
@@ -53,17 +86,19 @@ function splitSegments(markdown: string): Segment[] {
   return segments;
 }
 
-// Convert [file:some/path.md] → clickable spans
+// Convert [file:some/path.md] → clickable spans with safe attribute values
 function processFileLinks(
   html: string,
   onNavigate?: (id: string) => void,
 ): string {
   if (!onNavigate) return html;
-  // We embed a data-docid attribute and handle in the click handler below
   return html.replace(
     /\[file:([^\]]+)\]/g,
-    (_, path: string) =>
-      `<span class="doc-file-link cursor-pointer text-accent underline underline-offset-2" data-docid="${path}">${path}</span>`,
+    (_, rawPath: string) => {
+      const safePath = escapeAttr(rawPath);
+      const displayPath = escapeHtml(rawPath);
+      return `<span class="doc-file-link cursor-pointer text-accent underline underline-offset-2" data-docid="${safePath}">${displayPath}</span>`;
+    },
   );
 }
 
@@ -75,18 +110,11 @@ export const DocumentationContent: React.FC<DocumentationContentProps> = ({
   const segments = useMemo(() => splitSegments(markdown), [markdown]);
 
   const renderMarkdown = (md: string): string => {
-    // Inline marked asynchronously — fall back to preformatted if unavailable
     try {
-      // Dynamic require at call-site avoids top-level await
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { marked } = require('marked') as typeof import('marked');
       const raw = marked.parse(md, { async: false }) as string;
       return sanitize(processFileLinks(raw, onNavigate));
     } catch {
-      return `<pre class="font-mono text-sm whitespace-pre-wrap">${md
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')}</pre>`;
+      return `<pre class="font-mono text-sm whitespace-pre-wrap">${escapeHtml(md)}</pre>`;
     }
   };
 

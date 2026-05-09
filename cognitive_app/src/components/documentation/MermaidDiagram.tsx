@@ -26,7 +26,7 @@ async function getMermaid() {
     mod.default.initialize({
       startOnLoad: false,
       theme: 'dark',
-      securityLevel: 'loose',
+      securityLevel: 'strict',
       fontFamily: 'inherit',
     });
   }

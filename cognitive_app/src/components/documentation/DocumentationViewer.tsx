@@ -43,7 +43,9 @@ async function fetchDocContent(path: string): Promise<string> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.text();
   } catch {
-    return `_Content for \`${path}\` is not available in offline/demo mode._\n\nConnect to GitHub to load live documentation.`;
+    // Sanitize path before embedding in Markdown to prevent injection
+    const safePath = path.replace(/[`*_[\]()]/g, '\\$&');
+    return `_Content for \`${safePath}\` is not available in offline/demo mode._\n\nConnect to GitHub to load live documentation.`;
   }
 }
 

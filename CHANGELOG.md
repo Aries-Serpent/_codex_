@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `mermaid ^11.4.1` and `marked ^15.0.12` to `cognitive_app/package.json`.
 - Wired **Docs** tab into `cognitive_app/src/App.tsx` (9-tab layout, `BookOpen` icon, `?doc=` URL state sync).
 
+### Fixed (S903-security) — 2026-05-09
+- `MermaidDiagram.tsx`: changed `securityLevel` from `'loose'` to `'strict'` to prevent script injection.
+- `DocumentationContent.tsx`: replaced `require('marked')` with top-level `import`; strengthened HTML sanitizer (strips `<iframe>`, `<object>`, `<embed>`, `javascript:`/`data:` URL schemes); added `escapeAttr`/`escapeHtml` helpers; escaped `[file:]` path in attribute values.
+- `documentation-search.ts`: added djb2 fallback for `sha256()` when `crypto.subtle` is unavailable (non-secure contexts).
+- `DocumentationViewer.tsx`: escape Markdown special characters in offline fallback path string.
+
 ### Fixed (auto-update — PR #4376)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4376 (SHA `2ab6246f`) at 2026-05-09T10:53Z [auto-generated]
 

@@ -19,15 +19,25 @@ export interface SearchResult {
 }
 
 // ---------------------------------------------------------------------------
-// SHA-256 utility (Web Crypto — available in all modern browsers + Vite env)
+// SHA-256 utility (Web Crypto — available in secure contexts + Vite env)
+// Falls back to a fast djb2 hash string when crypto.subtle is unavailable.
 // ---------------------------------------------------------------------------
 
 async function sha256(text: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  try {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  } catch {
+    // Fallback: djb2 hash (non-cryptographic but sufficient for cache keying)
+    let h = 5381;
+    for (let i = 0; i < text.length; i++) {
+      h = ((h << 5) + h) ^ text.charCodeAt(i);
+    }
+    return `djb2-${(h >>> 0).toString(16)}`;
+  }
 }
 
 // ---------------------------------------------------------------------------

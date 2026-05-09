@@ -1,21 +1,16 @@
 # Agent Accountability Report
 
-## SESSION WRAP-UP — 2026-05-09T11:12Z [S903-doc-viewer]
+## SESSION WRAP-UP — 2026-05-09T11:20Z [S903-security-fixes]
 
-**Session:** S903-doc-viewer | **Branch:** `copilot/ensure-docs-accountability-report`
+**Session:** S903-security-fixes | **Branch:** `copilot/ensure-docs-accountability-report`
 **Agent:** copilot-swe-agent[bot]
 
 ### Completed
-- **P1 scaffolded** — `cognitive_app/src/components/documentation/` module with 6 files:
-  - `documentation-data.ts` — 10-entry `DOC_CATALOG`, category helpers
-  - `documentation-search.ts` — inverted index + SHA-256-keyed query cache (TTL 5 min)
-  - `MermaidDiagram.tsx` — dark-theme renderer, error fallback, copy-code button
-  - `DocumentationContent.tsx` — `marked` → HTML, Mermaid block extraction, `[file:]` nav
-  - `DocumentationViewer.tsx` — sidebar (search + category filter) + content pane, URL `?doc=` sync
-  - `index.ts` — barrel export
-- **Dependencies added** — `mermaid ^11.4.1`, `marked ^15.0.12` to `cognitive_app/package.json`
-- **Docs tab wired** — `App.tsx` extended to 9 tabs (`BookOpen` icon, `?doc=` URL state)
-- **Blocking PR comments addressed** — replied to #4412352760 and #4412366321
+- Addressed all 6 code-review security findings from `parallel_validation`:
+  - `MermaidDiagram.tsx`: `securityLevel: 'strict'` (was `'loose'`)
+  - `DocumentationContent.tsx`: top-level `import { marked }` (removed `require()`); strengthened `sanitize()` to strip `<iframe>`, `<object>`, `<embed>`, `javascript:` and `data:` URL schemes; added `escapeAttr`/`escapeHtml` helpers; escaped `[file:]` paths
+  - `documentation-search.ts`: djb2 fallback when `crypto.subtle` unavailable
+  - `DocumentationViewer.tsx`: Markdown-escape path in offline fallback string
 
 ### Pattern 25
 ✅ CHANGELOG.md updated in this commit
