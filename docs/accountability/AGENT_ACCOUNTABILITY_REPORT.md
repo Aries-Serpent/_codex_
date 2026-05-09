@@ -32976,3 +32976,22 @@ Address CI rescue comment (#4412485175) on commit `c82cbaec0210`: fix Pattern 25
 - Deferral Language Gate: 0 violations
 
 ---
+
+## Session S912 — 2026-05-09 (PR #4376 — Pattern 25 restore after automated sweep)
+
+### Objective
+Fix Pattern 25 violation caused by automated [skip ci] commits (`ba6f350d` "chore(auth): write provenance session token", `02856da6` "chore(d00): update session context digest") that pushed to the branch without updating CHANGELOG.md.
+
+### Work Completed
+1. **Merged remote automated commits** — merged `ba6f350d` and `02856da6` into local branch.
+2. **Resolved conflict** in `.codex/session_context_latest.md` using `git checkout --ours`.
+3. **Verified tests**: `ruff check src/ tests/` — 0 violations; `pytest tests/cognitive_brain/test_cb_fallbacks.py` — 42/42 passed.
+4. **Updated CHANGELOG.md** with `### Fixed (S912-pattern25-restore)` entry.
+5. **Pattern 25 satisfied**: both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
+### Impact Score
+- Files updated: `CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md`
+- CI gates unblocked: Pattern 25 (REQ-4)
+- Deferral Language Gate: 0 violations
+
+---
