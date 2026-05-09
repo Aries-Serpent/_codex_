@@ -11,8 +11,6 @@ import subprocess
 import sys
 
 _ALLOWED_STDERR_FRAGMENTS = (
-    "WARNING",
-    "Exception occurred",
     "psutil import failed; falling back to minimal sampler",
     "env_file not supported when pydantic_settings unavailable",
 )
