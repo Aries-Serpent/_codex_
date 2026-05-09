@@ -9,6 +9,76 @@
 **Session:** auto-20260509T0532-run193752 | **Run:** 25592912135 | **Date:** 2026-05-09
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## SESSION SUMMARY — 2026-05-09T06:00Z [S897-cont CB]
+
+**Session:** S897-cont-CB | **PR:** #4368 | **Branch:** `copilot/update-safe-pickle-import`
+**Agent:** copilot-swe-agent[bot] | **Date:** 2026-05-09
+
+### Objectives
+- Implement Cognitive Brain Phase 5 (Continuous Evolution) objectives:
+  shared fallback helpers + rate-limit-aware orchestration
+- Harden commit process: CHANGELOG + accountability in EVERY commit, no exceptions
+- Update all living docs (whats_next, session_diagram, follow-up prompt)
+
+### Work Completed
+- Created `scripts/cognitive/cb_fallbacks.py`:
+  - `import_optional(module, attr)` — safe soft-dependency importer (returns None on ImportError)
+  - `with_fallback(func, default, exc_types)` — exception-swallowing wrapper for optional features
+  - `rate_limited_call(func, *args, resource, min_remaining, max_retries, **kwargs)` — wraps
+    any GitHub API call with quota-check + exponential-backoff retry using `github_api_trickle`
+- Updated `scripts/cognitive/cognitive_brain_core.py`:
+  - `PerceptionLayer.perceive()`: uses `import_optional("psutil")` + `with_fallback` for
+    system-load — degrades to `None` in stripped environments
+  - `ActionExecutor.execute()`: routes task dispatches through `rate_limited_call`; added
+    `_dispatch_task` stub for future GH API wiring
+- Added `tests/cognitive_brain/test_cb_fallbacks.py`: 19 tests, all passing ✅
+- Updated PR4368_whats_next.md (Phase 7 CB added, Phase 6 complete)
+- Updated PR4368_session_diagram.md (CB node added to mermaid flow)
+- Updated PR-4368-followup.md (CB objectives marked done, post-merge prompt current)
+
+### Process Hardening Applied
+- **RULE**: Every pushed commit MUST include CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md.
+  No exceptions for docs-only, minor, or clarification commits.
+- This rule is now documented in PR-4368-followup.md and whats_next.md Phase 8.
+
+### Compliance
+- Pattern 25: CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md both updated in this commit ✅
+- ruff: all new files clean ✅ | mypy: 130 = baseline (no new errors) ✅
+- 19/19 new CB tests pass ✅
+
+---
+
+## SESSION SUMMARY — 2026-05-09T05:45Z [S897-cont]
+
+**Session:** S897-cont | **PR:** #4368 | **Branch:** `copilot/update-safe-pickle-import`
+**Agent:** copilot-swe-agent[bot] | **Date:** 2026-05-09
+
+### Objectives
+- Fix Pattern 25 re-trigger from docs-only commit `0ab359ba` (AGENT_ACCOUNTABILITY_REPORT not in last commit)
+- Address PR body showing 88/100 (sync_tracked_files ❌ stale) — root cause was Pattern 25
+- Update follow-up prompt (PR-4368-followup.md) to reflect S897 progress and post-merge next-PR plan
+- Monitor approved workflow runs for commit `0ab359ba`
+
+### Work Completed
+- Confirmed Pattern 25 root cause: docs-only commit `0ab359ba` skipped accountability update,
+  causing `sync_tracked_files` dimension to show ❌ stale (score 88/100 → NOT READY).
+- Updated CHANGELOG.md with S897-cont entry.
+- Updated PR-4368-followup.md: marked S897 tasks complete, added post-merge next-PR continuation block.
+- Updated docs/roadmap/PR4368_whats_next.md Phase 6 status to COMPLETE.
+- This commit satisfies Pattern 25 (both CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated) ✅.
+
+### Workflow Monitor (commit `0ab359ba`)
+- All workflows in `action_required` state — awaiting maintainer approval round on new commit.
+- Required workflows confirmed green on prior commit `c5567a05`:
+  mypy Baseline ✅ · Resilient Validation Suite ✅ · Deferral Language Gate ✅ ·
+  Branch Rebase Gate ✅ · Issue Resolution Gate ✅ · PR Comment Review Gate ✅.
+
+### Compliance
+- Pattern 25: CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md both updated in this commit ✅
+- P-045: ruff ✅ | sync_tracked_files ✅ | conflict markers ✅ (none)
+
+---
+
 ## SESSION SUMMARY — 2026-05-09T05:30Z [S897]
 
 **Session:** S897 | **PR:** #4368 | **Branch:** `copilot/update-safe-pickle-import`

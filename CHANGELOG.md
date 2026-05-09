@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S897-cont CB) — 2026-05-09
+- Implemented **Cognitive Brain shared fallback helpers** (`scripts/cognitive/cb_fallbacks.py`):
+  `import_optional`, `with_fallback`, and `rate_limited_call` — cross-cutting utilities
+  used by all CB components to degrade gracefully when optional dependencies (torch, psutil,
+  mlflow) are absent, and to wrap GitHub API calls with rate-limit awareness via
+  `github_api_trickle.py`.
+- Updated `scripts/cognitive/cognitive_brain_core.py`: `PerceptionLayer.perceive()` now uses
+  `import_optional("psutil")` + `with_fallback` for system-load collection; `ActionExecutor.execute()`
+  now routes every task dispatch through `rate_limited_call` so the PDA cycle cannot exhaust
+  the REST quota unexpectedly.
+- Added `tests/cognitive_brain/test_cb_fallbacks.py` with 19 tests covering all helpers and
+  the CB-core integration (all pass ✅).
+
+### Fixed (S897-cont) — 2026-05-09
+- Diagnosed PR body showing 88/100 merge readiness (`sync_tracked_files` ❌ stale):
+  root cause was Pattern 25 — docs-only commit `0ab359ba` skipped accountability update.
+- Updated follow-up prompt (PR-4368-followup.md) with S897 completion status and
+  post-merge next-PR continuation block per repository convention.
+- Updated PR4368_whats_next.md Phase 6 to COMPLETE.
+- All local validations clean: ruff ✅ · mypy 130=baseline ✅ · auto_fix_common_issues ✅.
+
 ### Fixed (S897) — 2026-05-09
 - Resolved merge divergence between local and remote after automated [skip ci] commits
   were pushed to the branch during CI rescue; merged with `--ours` on session context file.

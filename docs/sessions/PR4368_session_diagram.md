@@ -42,13 +42,21 @@ graph TD
     W & X --> Y[Update CHANGELOG + Accountability<br/>Pattern 25 ✅]
     Y --> Z[Create living docs<br/>whats_next + session_diagram]
     Z --> AA[Final Push<br/>Pattern 25 ✅ · Merge-Ready]
+    AA --> AB[S897-cont: CB Objectives]
+    AB --> AC[cb_fallbacks.py<br/>import_optional + with_fallback<br/>rate_limited_call]
+    AB --> AD[cognitive_brain_core.py<br/>PerceptionLayer: psutil fallback<br/>ActionExecutor: rate_limited_call]
+    AC & AD --> AE[19/19 CB tests pass ✅]
+    AE --> AF[Process Hardened<br/>Pattern 25 in EVERY commit]
 
     style A fill:#90EE90
-    style AA fill:#FFD700
+    style AF fill:#FFD700
     style U fill:#98FB98
     style N fill:#87CEEB
     style Y fill:#87CEEB
     style W fill:#FFA07A
+    style AC fill:#90EE90
+    style AD fill:#90EE90
+    style AE fill:#90EE90
 ```
 
 ---

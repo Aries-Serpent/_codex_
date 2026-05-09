@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from scripts.cognitive.cb_fallbacks import import_optional, rate_limited_call, with_fallback
+
 
 class CognitiveBrain:
     """
@@ -137,12 +139,20 @@ class PerceptionLayer:
         """Collect and analyze environmental data."""
         print("Collecting data from multiple sources...")
 
-        # Placeholder: In production, call actual data collectors
+        # Use import_optional so perception degrades gracefully when heavy
+        # deps (psutil, torch) are absent in stripped-down environments.
+        psutil = import_optional("psutil")
+        system_load = with_fallback(
+            lambda: psutil.cpu_percent(interval=0.1) if psutil else None,
+            default=None,
+        )
+
         return {
             "sources_collected": ["git", "pr", "ci_cd"],
             "patterns_count": 4,
             "anomalies_count": 2,
-            "timestamp": datetime.now().isoformat()
+            "system_load": system_load,
+            "timestamp": datetime.now().isoformat(),
         }
 
 
@@ -177,16 +187,40 @@ class ActionExecutor:
         self.workspace.mkdir(parents=True, exist_ok=True)
 
     def execute(self, decisions: dict[str, Any]) -> dict[str, Any]:
-        """Execute decisions by dispatching to agents."""
+        """Execute decisions by dispatching to agents.
+
+        GitHub API calls (e.g. workflow dispatches) are wrapped with
+        ``rate_limited_call`` so the orchestrator never exhausts the REST
+        quota unexpectedly.
+        """
         print("Executing actions across agent ecosystem...")
 
-        # Placeholder: In production, dispatch to actual agents
+        tasks = decisions.get("tasks", [])
+        completed, failures = 0, []
+        for task in tasks:
+            try:
+                # rate_limited_call degrades gracefully when github_api_trickle
+                # is unavailable (offline / no token) — falls through to execute.
+                result = rate_limited_call(self._dispatch_task, task)
+                if result:
+                    completed += 1
+                else:
+                    failures.append(task)
+            except Exception as exc:  # noqa: BLE001
+                failures.append({"task": task, "error": str(exc)})
+
+        success_rate = completed / len(tasks) if tasks else 1.0
         return {
-            "tasks_completed": len(decisions.get("tasks", [])),
-            "success_rate": 0.95,
-            "failures": [],
-            "timestamp": datetime.now().isoformat()
+            "tasks_completed": completed,
+            "success_rate": success_rate,
+            "failures": failures,
+            "timestamp": datetime.now().isoformat(),
         }
+
+    @staticmethod
+    def _dispatch_task(task: dict[str, Any]) -> bool:
+        """Dispatch a single task to its assigned agent (stub; real impl calls GH API)."""
+        return bool(task.get("agent")) and bool(task.get("task"))
 
 
 class AfterMathEvaluator:
