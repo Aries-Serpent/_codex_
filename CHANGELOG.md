@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S891) — 2026-05-09
+- Refreshed `.secrets.baseline` to classify the high-entropy SHA/pattern-id values
+  in `.codex/aftermath/pda_iterations.jsonl` as tracked false positives, preserving
+  the repository’s expected `is_secret: false` schema so the Secrets Baseline
+  Enforcer can distinguish session-history metadata from real credentials.
+- Re-ran `sync_tracked_files.py --fix` after the baseline update so tracked-file
+  integrity stays aligned on the current branch head.
+- Re-reviewed issue `#4367` (`#issue-4408867426`) during this continuation and
+  confirmed the same two recurring patterns still matter for autonomous agency:
+  distributed optional-dependency fallback handling and rate-limit-aware GitHub
+  operations under shared CI / agent API budget.
+
 ### Fixed (S890) — 2026-05-08
 - Continued PR #4368 iterative self-healing on the current branch head by fixing
   additional compatibility regressions surfaced by repeated `pytest -x` runs:
