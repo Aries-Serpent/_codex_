@@ -1,29 +1,29 @@
-# Session Context — 2026-05-09T09:28:41Z
+# Session Context — 2026-05-09T09:49:40Z
 **Branch:** `copilot/ensure-docs-accountability-report`  **PR:** none  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4989` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4788` (✅)
+- GraphQL remaining: `4988` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-09)
 - **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
 - **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 
 ## 📝 Recent Commits
+- `c4d737d2` fix: finalize remaining review polish for evaluate helper docs and memory SQL co — copilot-swe-agent[bot] (2026-05-09)
+- `1012a370` fix: finalize review-feedback cleanup for evaluate and cognitive brain core — copilot-swe-agent[bot] (2026-05-09)
+- `d6577c62` fix: incorporate review hardening for evaluate fallback and memory eviction — copilot-swe-agent[bot] (2026-05-09)
+- `c503808f` fix: apply validation hardening for dotlist detection and LTM eviction SQL — copilot-swe-agent[bot] (2026-05-09)
+- `7faa9d69` plan: continue hardening from validation feedback — copilot-swe-agent[bot] (2026-05-09)
 - `48599d1d` fix: harden non-hydra evaluate fallback and expand cognitive brain policies — copilot-swe-agent[bot] (2026-05-09)
 - `b8633b89` Merge pull request #4368 from Aries-Serpent/copilot/update-safe-pickle-import — Statix (2026-05-09)
 - `9cae6555` chore(S899-final-wrap): follow-up prompt + final accountability wrap-up; Pattern — copilot-swe-agent[bot] (2026-05-09)
-- `5f3cfbe0` fix(S899-final): remove unused _has_real_transformers + fix dual-import via sys. — copilot-swe-agent[bot] (2026-05-09)
-- `6ec1c426` chore(plan): S899-final — fix tokenizer_parity CodeQL, update living docs, Patte — copilot-swe-agent[bot] (2026-05-09)
-- `6cc011bd` chore(S899-wrap): initial session plan — final living docs + Pattern 25 wrap-up — copilot-swe-agent[bot] (2026-05-09)
-- `d866ef42` fix(S899-P11): add [skip ci] to 4 bot-commit workflows; Mermaid living docs; cas — copilot-swe-agent[bot] (2026-05-09)
-- `9dd3a305` fix(S899-cont): add skip guards to tokenizer tests (streaming/ingest/parity); Pa — copilot-swe-agent[bot] (2026-05-09)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
