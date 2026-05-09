@@ -8,14 +8,14 @@ Provides production-grade caching for RAG pipeline:
 - Cache invalidation strategies
 """
 
+from __future__ import annotations
+
+from typing import Any
+
 from .distributed_cache import (
     CacheBackend,
     DistributedCache,
     DistributedCacheConfig,
-)
-from .embedding_cache import (
-    EmbeddingCache,
-    EmbeddingCacheConfig,
 )
 from .query_cache import (
     CacheEntry,
@@ -23,6 +23,14 @@ from .query_cache import (
     QueryCache,
     QueryCacheConfig,
 )
+
+try:
+    from .embedding_cache import (
+        EmbeddingCache,
+        EmbeddingCacheConfig,
+    )
+except Exception:  # pragma: no cover - optional numpy dependency
+    pass
 
 __all__ = [
     # Query cache
@@ -38,3 +46,17 @@ __all__ = [
     "DistributedCacheConfig",
     "CacheBackend",
 ]
+
+
+def __getattr__(name: str) -> Any:
+    if name in {"EmbeddingCache", "EmbeddingCacheConfig"}:
+        from .embedding_cache import EmbeddingCache, EmbeddingCacheConfig
+
+        globals().update(
+            {
+                "EmbeddingCache": EmbeddingCache,
+                "EmbeddingCacheConfig": EmbeddingCacheConfig,
+            }
+        )
+        return globals()[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

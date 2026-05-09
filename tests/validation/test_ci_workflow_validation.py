@@ -164,9 +164,9 @@ class TestWorkflowJobValidation:
                 try:
                     content = workflow.read_text()
                     if "jobs:" in content:
-                        # Jobs should have runs-on
-                        assert "runs-on" in content, (
-                            f"{workflow} jobs should have runs-on"
+                        # Jobs should either run on a local runner or call a reusable workflow.
+                        assert "runs-on" in content or "uses:" in content, (
+                            f"{workflow} jobs should have runs-on or reusable workflow uses"
                         )
                 except OSError:
                     continue

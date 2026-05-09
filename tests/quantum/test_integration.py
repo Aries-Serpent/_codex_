@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import pytest
 
+from tests.utils.quantum_helpers import quantum_plugin_fixture
+
 from src.quantum import (
     PluginState,
     QuantumPlugin,

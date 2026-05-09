@@ -4,6 +4,7 @@ Test Training Configs Validate
 Test module for training configs validate.
 """
 
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -21,6 +22,8 @@ pytestmark = pytest.mark.skipif(not TOOL.exists(), reason="validation tool missi
 def test_example_configs_validate():
     if not SCHEMA.exists() or not CFG_ROOT.exists():
         pytest.skip("config schema or config root missing")
+    if importlib.util.find_spec("jsonschema") is None:
+        pytest.skip("jsonschema is required for config validation")
     code = subprocess.call(
         [sys.executable, str(TOOL), "--root", str(CFG_ROOT), "--schema", str(SCHEMA)]
     )
