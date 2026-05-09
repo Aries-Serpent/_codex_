@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S903-doc-viewer) — 2026-05-09
+- Scaffolded `cognitive_app/src/components/documentation/` module: `DocumentationViewer.tsx`, `DocumentationContent.tsx`, `MermaidDiagram.tsx`, `documentation-data.ts`, `documentation-search.ts`, `index.ts`.
+- Added `mermaid ^11.4.1` and `marked ^15.0.12` to `cognitive_app/package.json`.
+- Wired **Docs** tab into `cognitive_app/src/App.tsx` (9-tab layout, `BookOpen` icon, `?doc=` URL state sync).
+
 ### Fixed (auto-update — PR #4376)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4376 (SHA `2ab6246f`) at 2026-05-09T10:53Z [auto-generated]
 

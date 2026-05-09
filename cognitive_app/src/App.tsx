@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Code, Brain, Atom, Database, Lightning, ChartLine, Play } from '@phosphor-icons/react';
+import { Code, Brain, Atom, Database, Lightning, ChartLine, Play, BookOpen } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeGenerator } from '@/components/code/CodeGenerator';
@@ -11,6 +11,7 @@ import { AgentOrchestrationPanel } from '@/components/quantum/AgentOrchestration
 import { MetricsDashboard } from '@/components/quantum/MetricsDashboard';
 import { ApiClient } from '@/components/cli';
 import { XtermTerminal } from '@/components/cli/XtermTerminal';
+import { DocumentationViewer } from '@/components/documentation';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -51,7 +52,7 @@ function App() {
 
       <main className="container mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-8 max-w-4xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-9 max-w-5xl mx-auto mb-8">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <ChartLine weight="duotone" className="w-4 h-4" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -83,6 +84,10 @@ function App() {
             <TabsTrigger value="cli" className="flex items-center gap-2">
               <span>💻</span>
               <span className="hidden sm:inline">CLI</span>
+            </TabsTrigger>
+            <TabsTrigger value="docs" className="flex items-center gap-2">
+              <BookOpen weight="duotone" className="w-4 h-4" />
+              <span className="hidden sm:inline">Docs</span>
             </TabsTrigger>
           </TabsList>
 
@@ -138,6 +143,10 @@ function App() {
               <XtermTerminal />
               <ApiClient />
             </div>
+          </TabsContent>
+
+          <TabsContent value="docs">
+            <DocumentationViewer />
           </TabsContent>
         </Tabs>
       </main>
