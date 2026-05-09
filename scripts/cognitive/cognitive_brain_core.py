@@ -397,8 +397,11 @@ class MemoryLayer:
         Returns number of deleted rows.
         """
         keep = keep_last if keep_last is not None else self.max_entries
-        if keep_last is not None and keep <= 0:
-            raise ValueError("keep_last must be a positive integer or None")
+        if keep <= 0:
+            raise ValueError(
+                "Retention value must be positive "
+                f"(keep_last={keep_last}, max_entries={self.max_entries})"
+            )
         try:
             with sqlite3.connect(str(self.db_path)) as conn:
                 count = conn.execute(

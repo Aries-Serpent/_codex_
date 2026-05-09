@@ -124,7 +124,7 @@ class TestRateLimitedCall:
                 rate_limited_call(lambda: None, min_remaining=10, max_retries=1)
 
     def test_propagates_func_exception(self):
-        def raise_error():
+        def _raise_injected_test_error():
             raise ValueError("injected test error")
 
         with patch(
@@ -132,7 +132,7 @@ class TestRateLimitedCall:
             return_value={"resources": {"core": {"remaining": 500, "reset": 0}}},
         ):
             with pytest.raises(ValueError, match="injected test error"):
-                rate_limited_call(raise_error)
+                rate_limited_call(_raise_injected_test_error)
 
     def test_custom_resource_bucket(self):
         mock_func = MagicMock(return_value="search_result")
@@ -305,10 +305,21 @@ class TestMemoryLayerLTM:
         from scripts.cognitive.cognitive_brain_core import MemoryLayer
 
         mem = MemoryLayer(tmp_path / "memory")
-        with pytest.raises(ValueError, match="keep_last must be a positive integer or None"):
+        with pytest.raises(ValueError, match="Retention value must be positive"):
             mem.evict_oldest(keep_last=0)
-        with pytest.raises(ValueError, match="keep_last must be a positive integer or None"):
+        with pytest.raises(ValueError, match="Retention value must be positive"):
             mem.evict_oldest(keep_last=-1)
+
+    def test_evict_oldest_raises_for_non_positive_configured_retention(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+
+        mem = MemoryLayer(tmp_path / "memory")
+        mem.max_entries = 0
+        with pytest.raises(ValueError, match="Retention value must be positive"):
+            mem.evict_oldest()
+        mem.max_entries = -1
+        with pytest.raises(ValueError, match="Retention value must be positive"):
+            mem.evict_oldest()
 
     def test_ltm_stats_shape(self, tmp_path):
         from scripts.cognitive.cognitive_brain_core import MemoryLayer

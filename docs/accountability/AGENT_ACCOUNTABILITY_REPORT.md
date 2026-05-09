@@ -13,6 +13,10 @@
 - Added focused tests:
   - Replaced obscure generator-throw lambda with a named raising helper in `test_propagates_func_exception`.
   - Added `test_evict_oldest_raises_for_non_positive_keep_last`.
+  - Added configured-retention negative-case assertion for `evict_oldest()` (`max_entries=-1`).
+- Follow-up polish from validation feedback:
+  - Retention `ValueError` now includes both `keep_last` and `max_entries` context values.
+  - Re-ran focused checks: `ruff` ✅ and targeted pytest suites ✅.
 - Validation run summary:
   - `ruff check` on changed files ✅
   - `pytest tests/cognitive_brain/test_cb_fallbacks.py tests/unit/test_evaluate_cli_flags.py tests/unit/test_evaluate_cli_metrics_log.py` ✅ (46 passed)
