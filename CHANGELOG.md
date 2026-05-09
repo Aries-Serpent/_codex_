@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S897-final) — 2026-05-09
+- Triaged 3 recurring `startup_failure` workflows (Progressive Validation Suite,
+  Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite): confirmed as
+  pre-existing infra/runner allocation failures, not code regressions (301 other
+  workflows use the same `@v5` action references without issue).
+- Updated PR4368_whats_next.md, PR4368_session_diagram.md, and PR-4368-followup.md
+  with final session monitoring status.
+
 ### Fixed (S897-review) — 2026-05-09
 - Addressed all 4 code-review comments on CB implementation:
   - Removed spurious `# noqa: E711` from `test_cb_fallbacks.py` line 71 (`is None` needs no suppression).

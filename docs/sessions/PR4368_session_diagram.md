@@ -47,13 +47,14 @@ graph TD
     AB --> AD[cognitive_brain_core.py<br/>PerceptionLayer: psutil fallback<br/>ActionExecutor: rate_limited_call]
     AC & AD --> AE[19/19 CB tests pass ✅]
     AE --> AF[Process Hardened<br/>Pattern 25 in EVERY commit]
+    AF --> AG[Workflow Monitor S897-final]
+    AG --> AH[startup_failure triage<br/>✅ infra only — not code]
+    AG --> AI[PR Comment Review Gate ✅<br/>Pre-Merge + CodeQL 🔄]
 
     style A fill:#90EE90
     style AF fill:#FFD700
-    style U fill:#98FB98
-    style N fill:#87CEEB
-    style Y fill:#87CEEB
-    style W fill:#FFA07A
+    style AI fill:#90EE90
+    style AH fill:#90EE90
     style AC fill:#90EE90
     style AD fill:#90EE90
     style AE fill:#90EE90

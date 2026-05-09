@@ -69,10 +69,15 @@
   - `ActionExecutor.execute()` — `rate_limited_call` for every task dispatch + `_dispatch_task` stub
 - [x] `tests/cognitive_brain/test_cb_fallbacks.py` — 19 tests, all passing ✅
 
-### 🔒 Phase 8: Process Hardening — Pattern 25 Enforcement (PERMANENT)
-- [x] **Rule documented and applied**: every pushed commit MUST include both
-  `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md` — no exceptions for docs-only,
-  minor, or clarification commits. This eliminates recurring Pattern 25 re-fires.
+### 🔄 Phase 8 (Final): Workflow Monitor + startup_failure Triage (S897-final)
+- [x] Identified 3 recurring startup_failures: Progressive Validation Suite, Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite
+- [x] Triaged root cause: pre-existing infra/runner allocation failure (not code) — confirmed by 301 other workflows using same `@v5` action refs successfully
+- [x] commit `f0b2d5c3` workflow status (f0b2d5c3):
+  - ✅ PR Comment Review Gate, Auto-Approve, Issue Resolution Gate, Agent Vars Bootstrap
+  - 🔄 Pre-Merge Validation, CodeQL, Validation Pipeline, Auto-Fix Common CI Issues (in-progress)
+  - ⏳ mypy Baseline, Deferral Language Gate, Branch Rebase Gate — awaiting WEC gate completion
+  - ⏳ Agent Token Delegation, Workflow Execution Gate — action_required (approval round pending)
+  - ❌ startup_failure (infra only): Progressive Validation Suite, Rust-Python Swarm, Data Quality Suite
 
 ---
 

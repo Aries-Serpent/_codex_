@@ -148,8 +148,9 @@ All phases complete. PR #4368 is merge-ready:
 | Merge conflict + CodeQL + broken test restore (S896) | ✅ DONE |
 | Pattern 25 refresh + living docs (S897) | ✅ DONE |
 | PR body readiness verification + follow-up prompt (S897-cont) | ✅ DONE |
-| **CB shared fallback helpers + rate-limit orchestration (S897-cont CB)** | ✅ **DONE** |
-| **Process hardening — Pattern 25 in every commit** | ✅ **DONE** |
+| CB shared fallback helpers + rate-limit orchestration (S897-cont CB) | ✅ DONE |
+| Code-review feedback addressed + process hardening (S897-review) | ✅ DONE |
+| **Workflow monitoring + startup_failure triage (S897-final)** | 🔄 **IN PROGRESS** |
 
 ---
 
