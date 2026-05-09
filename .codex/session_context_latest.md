@@ -1,21 +1,22 @@
-# Session Context — 2026-05-09T10:12:50Z
+# Session Context — 2026-05-09T10:28:57Z
 **Branch:** `copilot/ensure-docs-accountability-report`  **PR:** none  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4940` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4729` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-09)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 
 ## 📝 Recent Commits
+- `186db5d9` docs(cognitive_app): Documentation Viewer architecture plan + CI/CD workflow lay — copilot-swe-agent[bot] (2026-05-09)
 - `b4e5830a` feat(cognitive_app): Documentation Viewer — architecture plan & data loading str — copilot-swe-agent[bot] (2026-05-09)
 - `c686e2ec` Harden non-Hydra evaluate fallback and Cognitive Brain LTM eviction behavior — copilot-swe-agent[bot] (2026-05-09)
 - `c4d737d2` fix: finalize remaining review polish for evaluate helper docs and memory SQL co — copilot-swe-agent[bot] (2026-05-09)
@@ -23,7 +24,6 @@
 - `d6577c62` fix: incorporate review hardening for evaluate fallback and memory eviction — copilot-swe-agent[bot] (2026-05-09)
 - `c503808f` fix: apply validation hardening for dotlist detection and LTM eviction SQL — copilot-swe-agent[bot] (2026-05-09)
 - `7faa9d69` plan: continue hardening from validation feedback — copilot-swe-agent[bot] (2026-05-09)
-- `48599d1d` fix: harden non-hydra evaluate fallback and expand cognitive brain policies — copilot-swe-agent[bot] (2026-05-09)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
