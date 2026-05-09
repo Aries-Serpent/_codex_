@@ -1,32 +1,32 @@
-# Session Context — 2026-05-09T03:40:57Z
+# Session Context — 2026-05-09T04:52:08Z
 **Branch:** `copilot/update-safe-pickle-import`  **PR:** #4368  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4281` (✅)
+- REST remaining: `4970` (✅)
 - GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4368 — Harden safe pickle imports and signed payload handling, self-heal CI and compatibility failures, extend evaluation/tokenizer/OmegaConf and CLI fallback behavior, refresh PR readiness/accountability tracking, and add Cognitive Brain post-merge follow-up...
+## 📋 PR #4368 — Harden safe pickle imports and signed payload handling, self-heal CI and compatibility failures, extend evaluation/tokenizer/OmegaConf and CLI fallback behavior, refresh PR readiness/accountability tracking, triage stale CI rescue failures, and add Cog...
 State: `open`  Draft: `False`  Branch: `copilot/update-safe-pickle-import` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-09)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
+- **Validation Pipeline** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 
 ## 📝 Recent Commits
+- `e8eadb3d` docs: refresh accountability after stale ci triage — copilot-swe-agent[bot] (2026-05-09)
+- `f2b40d41` chore: update session plan — copilot-swe-agent[bot] (2026-05-09)
 - `5de51c22` fix: tighten json mode detection in list plugins — copilot-swe-agent[bot] (2026-05-09)
 - `bf1aef90` fix: address review feedback on cli import flow — copilot-swe-agent[bot] (2026-05-09)
 - `c5015ba5` fix: continue pytest frontier self-healing — copilot-swe-agent[bot] (2026-05-09)
 - `b7c249b1` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-09)
 - `974fcaa2` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-09)
 - `6e25f975` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-09)
-- `9d3ecb25` chore: update session plan — copilot-swe-agent[bot] (2026-05-09)
-- `95b9727a` fix(ci): refresh accountability for auto-fix gate — copilot-swe-agent[bot] (2026-05-09)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
