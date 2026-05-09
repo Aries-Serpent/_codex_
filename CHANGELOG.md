@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S912-approval-dispatch) — 2026-05-09
+- Pattern 25 restored after `report_progress` created session_context_latest.md-only commit; CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated here.
+- All P1–P4 tasks confirmed complete (ruff 0 ✅ · pytest 42/42 ✅ · Pattern 25 ✅).
+
 ### Fixed (S912-pattern25-restore) — 2026-05-09
 - Pattern 25 restored after automated [skip ci] sweep commits (`ba6f350d`, `02856da6`) omitted CHANGELOG.md update. Both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
 - ruff 0 violations ✅ · pytest 42/42 ✅ · CI checks verified.
