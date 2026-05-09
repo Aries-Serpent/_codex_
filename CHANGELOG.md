@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S916-pr-dashboard-sync) — 2026-05-09
+- Resolved PR Auto-Fix dashboard `sync_tracked_files: ❌ stale` by running `python scripts/ci/sync_tracked_files.py --fix` and updating tracked-file hashes.
+- Restored last-commit accountability hygiene for this branch cycle by updating both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+
 ### Fixed (auto-update — PR #4379)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4379 (SHA `6e68a57f`) at 2026-05-09T21:13Z [auto-generated]
 
