@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S895) — 2026-05-09
+- Re-triaged the stale PR Auto-Fix rescue failure reported for commit
+  `9d3ecb25dc03` and confirmed the only code-fixable issue there was the already
+  resolved Pattern 25 accountability miss; the current head carries no newly
+  reproduced code defect from that report.
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog
+  after the session-plan bookkeeping push so the latest branch head again satisfies
+  the last-commit accountability gate.
+
 ### Fixed (S894) — 2026-05-09
 - Continued the PR #4368 `pytest -x` frontier and fixed additional current-head
   compatibility regressions:
