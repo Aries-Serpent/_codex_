@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S896) — 2026-05-09
+- Resolved `.secrets.baseline` merge conflict (took ours/branch version per P-045)
+  and finalised merge commit from main, preserving all branch-side entries.
+- Restored `tests/agents/test_phase2_deep_coverage_batch11.py` and
+  `tests/agents/test_phase2_deep_coverage_batch8.py` after automated "Fix for
+  Unreachable code" commits introduced syntax errors (unclosed list literal and
+  unexpected-indent respectively).
+- Fixed `NameError` in `EvaluationRunner.run()` forward-pass dispatch: the
+  `elif hasattr(model, "forward")` branch referenced `model_call` defined only
+  in a sibling `if` branch; corrected to call `self.model.forward(inputs)` directly.
+- Resolved CodeQL alert in `tests/evaluation/test_metrics.py` — initialised
+  `torch = None` before the try/import block so the variable is always bound.
+- Suppressed F401 ruff warning in `tests/unit/test_sanity.py` with `# noqa: F401`.
+- All targeted regressions re-validated; `ruff`, `mypy_baseline` (130), and
+  `auto_fix_common_issues --check-only` all pass clean.
+
 ### Fixed (S895) — 2026-05-09
 - Re-triaged the stale PR Auto-Fix rescue failure reported for commit
   `9d3ecb25dc03` and confirmed the only code-fixable issue there was the already
