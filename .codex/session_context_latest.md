@@ -1,10 +1,10 @@
-# Session Context — 2026-05-09T11:58:39Z
+# Session Context — 2026-05-09T12:10:46Z
 **Branch:** `copilot/ensure-docs-accountability-report`  **PR:** #4376  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4994` (✅)
-- GraphQL remaining: `4956` (✅)
+- REST remaining: `4845` (✅)
+- GraphQL remaining: `4996` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `True`  Branch: `copilot/ensure-docs-accountability-report` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-09)
+- **Pre-Flight CI Validation** — `failure` on `copilot/ensure-docs-accountability-report` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 
 ## 📝 Recent Commits
+- `c82cbaec` chore: no-op progress update — confirming S905 CodeQL fixes are in HEAD — copilot-swe-agent[bot] (2026-05-09)
 - `4ee1ccdc` fix(security): Replace regex HTML sanitizer with DOMParser; fix backslash escapi — copilot-swe-agent[bot] (2026-05-09)
 - `aa94808b` chore: establish plan — fixing CodeQL security alerts in documentation component — copilot-swe-agent[bot] (2026-05-09)
 - `852708ca` fix(ci): address CI rescue comment + Pattern 25 update [S904] — copilot-swe-agent[bot] (2026-05-09)
@@ -26,7 +27,6 @@ State: `open`  Draft: `True`  Branch: `copilot/ensure-docs-accountability-report
 - `eed10fac` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-09)
 - `8b5b4a36` fix(cognitive_app): address security review findings — sanitizer, mermaid strict — copilot-swe-agent[bot] (2026-05-09)
 - `331e6c64` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-09)
-- `42498217` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-09)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
