@@ -106,19 +106,26 @@ def trainer(tmp_path: Path) -> Trainer:
     def metric_fn(outputs: FakeTensor, targets: FakeTensor) -> float:
         return abs(outputs.value - targets.value)
 
-    checkpoint_dir = tmp_path / "ckpts"
     logging_cfg = TrainerLoggingConfig(enable_tensorboard=False, enable_mlflow=False)
+    trainer_kwargs = {
+        "val_loader": val_batches,
+        "loss_fn": loss_fn,
+        "metric_fn": metric_fn,
+        "gradient_accumulation_steps": 2,
+        "logging_config": logging_cfg,
+    }
+    if trainer_module._HAS_REAL_TORCH:
+        trainer_kwargs.update(
+            {
+                "checkpoint_dir": tmp_path / "ckpts",
+                "keep_best_k": 1,
+            }
+        )
     return Trainer(
         model,
         optimizer,
         train_batches,
-        val_loader=val_batches,
-        loss_fn=loss_fn,
-        metric_fn=metric_fn,
-        gradient_accumulation_steps=2,
-        checkpoint_dir=checkpoint_dir,
-        keep_best_k=1,
-        logging_config=logging_cfg,
+        **trainer_kwargs,
     )
 
 
@@ -142,4 +149,17 @@ def test_metric_mode_validation(tmp_path: Path) -> None:
             metric_mode="invalid",
             loss_fn=lambda outputs, targets: FakeTensor(0.0),
             checkpoint_dir=tmp_path / "ckpts",
+        )
+
+
+def test_checkpoint_config_requires_real_torch_in_stub_mode(tmp_path: Path) -> None:
+    if trainer_module._HAS_REAL_TORCH:
+        pytest.skip("Stub-mode guard is only applicable when real torch is unavailable")
+    with pytest.raises(RuntimeError, match="Checkpointing requires a real torch installation"):
+        Trainer(
+            FakeModel(),
+            FakeOptimizer(),
+            [(FakeTensor(0.0), FakeTensor(0.0))],
+            checkpoint_dir=tmp_path / "ckpts",
+            loss_fn=lambda outputs, targets: FakeTensor(0.0),
         )

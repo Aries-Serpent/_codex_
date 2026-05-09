@@ -83,11 +83,11 @@ def decode_and_validate(
         schema_obj = json.loads(schema.read_text(encoding="utf-8"))
         try:
             import jsonschema
-        except (ImportError, ModuleNotFoundError):
+        except (ImportError, ModuleNotFoundError) as exc:
             raise RuntimeError(
                 "schema_path was provided but jsonschema is not installed; "
                 "install jsonschema to enforce schema validation"
-            )
+            ) from exc
         else:
             jsonschema.validate(instance=decoded, schema=schema_obj)
 
