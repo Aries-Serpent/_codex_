@@ -50,7 +50,12 @@ if _HAS_HYDRA:  # pragma: no cover - optional dependency
 
 
 def _cfg_to_container(cfg: Any) -> Any:
-    """Return a resolved plain container when Hydra is available, else passthrough."""
+    """Normalize config object for downstream mapping-based access.
+
+    When Hydra is available, converts an OmegaConf ``DictConfig`` into a standard
+    Python container (dict/list/scalars) with interpolations resolved.
+    Otherwise, returns the input object unchanged.
+    """
     if _HAS_HYDRA:
         return OmegaConf.to_container(cfg, resolve=True)
     return cfg
@@ -443,6 +448,9 @@ else:
         """Detect Hydra-style dotlist args like ``key=value`` or ``a.b=value``.
 
         Flags that start with ``--`` are excluded from dotlist detection.
+
+        Returns:
+            ``True`` when any dotlist-style override is present, else ``False``.
         """
         return any("=" in arg and not arg.startswith("--") for arg in arg_list)
 

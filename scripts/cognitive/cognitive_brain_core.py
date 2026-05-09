@@ -296,8 +296,8 @@ class MemoryLayer:
         )
     """
     _DELETE_OLDEST_SQL = (
-        "DELETE FROM ltm_perceptions WHERE id IN ("
-        "SELECT id FROM ltm_perceptions ORDER BY id ASC LIMIT ?"
+        "DELETE FROM " + _TABLE + " WHERE id IN ("
+        "SELECT id FROM " + _TABLE + " ORDER BY id ASC LIMIT ?"
         ")"
     )
 

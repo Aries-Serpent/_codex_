@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S900-continue-5) — 2026-05-09
+- Finalized follow-up review polish:
+  - `_DELETE_OLDEST_SQL` now references `MemoryLayer._TABLE` symbolically (no hardcoded table literal).
+  - Clarified evaluate helper docstrings (`_cfg_to_container`, `_has_dotlist_args`) with explicit behavior/return semantics.
+- Re-ran focused ruff/mypy/pytest validation for updated modules.
+
 ### Fixed (S900-continue-4) — 2026-05-09
 - Applied final review cleanup:
   - Added explicit helper docstrings in evaluate fallback flow (`_cfg_to_container`,
