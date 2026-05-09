@@ -149,6 +149,14 @@ def test_checkpoint_config_requires_real_torch_in_stub_mode(
             checkpoint_dir=tmp_path / "ckpts",
             loss_fn=lambda outputs, targets: FakeTensor(0.0),
         )
+    with pytest.raises(RuntimeError, match="Checkpointing requires a real torch installation"):
+        Trainer(
+            FakeModel(),
+            FakeOptimizer(),
+            [(FakeTensor(0.0), FakeTensor(0.0))],
+            checkpoint_config={"directory": str(tmp_path / "ckpts")},
+            loss_fn=lambda outputs, targets: FakeTensor(0.0),
+        )
 
 
 def test_checkpoint_config_allowed_with_real_torch(
@@ -166,3 +174,26 @@ def test_checkpoint_config_allowed_with_real_torch(
     )
     assert trainer.config.checkpoint is not None
     assert trainer.config.checkpoint.directory == str(ckpt_dir)
+
+
+def test_real_torch_checkpoint_persistence(tmp_path: Path) -> None:
+    if not trainer_module._HAS_REAL_TORCH:
+        pytest.skip("Checkpoint persistence test requires real torch runtime")
+    train_batches = [
+        (FakeTensor(0.0), FakeTensor(0.0)),
+        (FakeTensor(1.0), FakeTensor(1.0)),
+    ]
+    val_batches = [(FakeTensor(0.0), FakeTensor(0.0))]
+    ckpt_dir = tmp_path / "ckpts"
+    trainer = Trainer(
+        FakeModel(),
+        FakeOptimizer(),
+        train_batches,
+        val_loader=val_batches,
+        checkpoint_dir=ckpt_dir,
+        keep_best_k=1,
+        loss_fn=lambda outputs, targets: FakeTensor(abs(outputs.value - targets.value)),
+    )
+    trainer.train(epochs=1)
+    checkpoint_files = list(ckpt_dir.glob("*.pt"))
+    assert checkpoint_files
