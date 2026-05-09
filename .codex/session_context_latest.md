@@ -1,32 +1,32 @@
-# Session Context — 2026-05-09T04:52:08Z
+# Session Context — 2026-05-09T05:16:04Z
 **Branch:** `copilot/update-safe-pickle-import`  **PR:** #4368  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4970` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4156` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4368 — Harden safe pickle imports and signed payload handling, self-heal CI and compatibility failures, extend evaluation/tokenizer/OmegaConf and CLI fallback behavior, refresh PR readiness/accountability tracking, triage stale CI rescue failures, and add Cog...
+## 📋 PR #4368 — Harden safe pickle imports and signed payload handling, fix EvaluationRunner NameError and CodeQL uninitialized variable, resolve merge conflict, self-heal CI and compatibility failures, extend evaluation/tokenizer/OmegaConf and CLI fallback behavior, ...
 State: `open`  Draft: `False`  Branch: `copilot/update-safe-pickle-import` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-09)
 - **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
-- **Validation Pipeline** — `failure` on `main` (2026-05-09)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-09)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
+- **PR Auto-Fix Check** — `failure` on `copilot/update-safe-pickle-import` (2026-05-09)
 
 ## 📝 Recent Commits
-- `e8eadb3d` docs: refresh accountability after stale ci triage — copilot-swe-agent[bot] (2026-05-09)
-- `f2b40d41` chore: update session plan — copilot-swe-agent[bot] (2026-05-09)
-- `5de51c22` fix: tighten json mode detection in list plugins — copilot-swe-agent[bot] (2026-05-09)
-- `bf1aef90` fix: address review feedback on cli import flow — copilot-swe-agent[bot] (2026-05-09)
-- `c5015ba5` fix: continue pytest frontier self-healing — copilot-swe-agent[bot] (2026-05-09)
-- `b7c249b1` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-09)
-- `974fcaa2` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-09)
-- `6e25f975` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-09)
+- `4f10df02` fix(review): clarify CodeQL-init comment in test_metrics.py — copilot-swe-agent[bot] (2026-05-09)
+- `23128887` fix(S896): fix runner NameError, CodeQL torch uninit, restore broken tests, Patt — copilot-swe-agent[bot] (2026-05-09)
+- `407a1292` fix: resolve .secrets.baseline merge conflict and restore broken test files — copilot-swe-agent[bot] (2026-05-09)
+- `e09e2191` chore: session start - plan merge conflict resolution and CI tasks — copilot-swe-agent[bot] (2026-05-09)
+- `e0456f67` Fix for Unreachable code — Statix (2026-05-09)
+- `9c533e43` Fix for Unreachable code — Statix (2026-05-09)
+- `7e157159` Fix for Unreachable code — Statix (2026-05-09)
+- `c57ca678` Fix for Unreachable code — Statix (2026-05-09)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
