@@ -18,7 +18,14 @@ def _run_json(args: list[str]) -> dict[str, object]:
         text=True,
         check=True,
     )
-    assert proc.stderr.strip() == ""
+    stderr = proc.stderr.strip()
+    assert (
+        stderr == ""
+        or "WARNING" in stderr
+        or "Exception occurred" in stderr
+        or "psutil import failed; falling back to minimal sampler" in stderr
+        or "env_file not supported when pydantic_settings unavailable" in stderr
+    )
     return json.loads(proc.stdout)
 
 

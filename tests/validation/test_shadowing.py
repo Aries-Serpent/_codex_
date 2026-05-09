@@ -4,6 +4,8 @@ Test Shadowing
 Test module for shadowing.
 """
 
+import sys
+
 import pytest
 
 
@@ -16,6 +18,7 @@ def test_hydra_resolves_to_site_packages():
     that would shadow the installed package.
     """
     try:
+        sys.modules.pop("hydra", None)
         import hydra
     except ImportError:
         pytest.skip("hydra-core not installed; skipping shadowing test.")
@@ -40,6 +43,7 @@ def test_yaml_resolves_to_site_packages():
     from site-packages, not a local directory.
     """
     try:
+        sys.modules.pop("yaml", None)
         import yaml
     except ImportError:
         pytest.skip("PyYAML not installed; skipping yaml shadowing test.")

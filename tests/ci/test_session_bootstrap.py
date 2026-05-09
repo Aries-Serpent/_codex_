@@ -16,6 +16,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from unittest.mock import patch
+from urllib.error import URLError
 
 import pytest
 
@@ -177,7 +178,7 @@ class TestGitHubClient:
 
         def fake_urlopen(req, timeout=None):
             captured["headers"] = dict(req.headers)
-            raise Exception("abort — not testing HTTP")
+            raise URLError("abort — not testing HTTP")
 
         with patch("session_bootstrap.urlopen", side_effect=fake_urlopen):
             try:
@@ -194,7 +195,7 @@ class TestGitHubClient:
 
         def fake_urlopen(req, timeout=None):
             captured["headers"] = dict(req.headers)
-            raise Exception("abort")
+            raise URLError("abort")
 
         with patch("session_bootstrap.urlopen", side_effect=fake_urlopen):
             try:

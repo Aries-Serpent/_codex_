@@ -29,13 +29,9 @@ from typing import Any  # noqa: E402
 
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
-from tokenizers import Tokenizer  # noqa: E402
-from tokenizers.models import WordLevel  # noqa: E402
-from tokenizers.pre_tokenizers import Whitespace  # noqa: E402
 
 import torch  # noqa: E402
 from codex_ml.security import DenylistEnforcer, DenylistViolation  # noqa: E402
-from tokenization.loader import load_tokenizer  # noqa: E402
 from transformers import (  # noqa: E402
     AutoModelForCausalLM,
     GPT2Config,
@@ -95,6 +91,10 @@ def _denylist_cached() -> DenylistEnforcer:
 
 
 def _fallback_tokenizer() -> PreTrainedTokenizerFast:
+    from tokenizers import Tokenizer
+    from tokenizers.models import WordLevel
+    from tokenizers.pre_tokenizers import Whitespace
+
     tokenizer_obj = Tokenizer(WordLevel({PAD_TOKEN: 0, UNK_TOKEN: 1, "hello": 2, "world": 3}))
     tokenizer_obj.pre_tokenizer = Whitespace()
     tokenizer = PreTrainedTokenizerFast(
@@ -107,6 +107,8 @@ def _fallback_tokenizer() -> PreTrainedTokenizerFast:
 
 @lru_cache
 def _tokenizer_cached() -> PreTrainedTokenizerBase:
+    from tokenization.loader import load_tokenizer
+
     config: dict[str, Any] = {}
     if _DEFAULT_MODEL_NAME:
         config["model_name_or_path"] = _DEFAULT_MODEL_NAME

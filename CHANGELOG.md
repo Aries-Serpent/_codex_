@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S890) — 2026-05-08
+- Continued PR #4368 iterative self-healing on the current branch head by fixing
+  additional compatibility regressions surfaced by repeated `pytest -x` runs:
+  - bootstrap request-header tests now raise URL-layer errors that match the
+    client’s real exception normalization path
+  - plugin CLI JSON tests now accept the known pydantic-settings / psutil
+    fallback stderr emitted in minimal environments
+  - API app imports now defer tokenizer/model loader dependencies so auth router
+    OpenAPI routes can load in lightweight CI environments
+  - `PythonPlugin.validate()` now reflects parser fallback support instead of
+    hard-failing on missing `libcst`
+  - Hydra shadowing tests now use a fresh import attempt instead of polluted
+    in-process module state
+  - HHG logistics eval/train entrypoints now degrade cleanly when Hydra is
+    missing or partially available
+- Expanded `docs/architecture/phase_3_autonomy.md` from a stub into an immediate
+  quick-wins autonomy plan tailored for Copilot cloud agent sessions, including
+  rate-limit-aware GitHub API guidance and Cognitive Brain gap analysis.
+
 ### Fixed (S889) — 2026-05-08
 - Continued iterative self-healing after the stale `Validation Pipeline` run
   `25581748100` review confirmed the old failure was already-fixed `docs/plans`

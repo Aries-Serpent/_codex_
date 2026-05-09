@@ -27,12 +27,31 @@ try:
     import hydra
 
     to_absolute_path = hydra.utils.to_absolute_path
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    import config_legacy as hydra
+    try:
+        import config_legacy as hydra
 
-    to_absolute_path = hydra.utils.to_absolute_path
+        to_absolute_path = hydra.utils.to_absolute_path
+    except (ImportError, ModuleNotFoundError, AttributeError):
+        class _HydraFallback:
+            class utils:
+                @staticmethod
+                def to_absolute_path(path: str) -> str:
+                    return str(Path(path).resolve())
+
+            @staticmethod
+            def main(*_args, **_kwargs):
+                def _decorator(func):
+                    return func
+
+                return _decorator
+
+        hydra = _HydraFallback()
+
+        def to_absolute_path(path: str) -> str:
+            return str(Path(path).resolve())
 
 from common.hooks import (  # noqa: E402
     CheckpointHook,
