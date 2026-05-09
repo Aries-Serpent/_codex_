@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S908-pattern25) — 2026-05-09
+- Pattern 25 (Last-Commit Accountability): updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to satisfy REQ-4 after plan commit omitted them; replied to CI rescue comment #4412928537 and continuation request #4412937121.
+- Confirmed all local checks green: `ruff check src/ tests/` ✅ · `mypy` 128 errors (↓2 vs baseline 130) ✅ · `auto_fix_common_issues --check-only` ✅.
+
 ### Fixed (S907-pre-flight) — 2026-05-09
 - `tests/cognitive_brain/test_cb_fallbacks.py:131`: replaced overly-broad `pytest.raises` match pattern `'boom'` with specific message `'injected test error'` — resolves `pre-flight-validation` check failure (Test Assertion Patterns gate).
 
