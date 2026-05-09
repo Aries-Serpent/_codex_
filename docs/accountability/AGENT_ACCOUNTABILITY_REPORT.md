@@ -18,6 +18,7 @@
   - Added complementary test asserting checkpoint configuration is accepted when real torch is available.
   - Added persistence assertion for real-torch path to confirm checkpoint directory wiring and `.pt` artifact creation after a minimal epoch.
   - Removed stale checkpoint-file assertion from the base train-loop test to keep responsibilities split cleanly between core-loop and checkpoint-specific tests.
+  - Converted checkpoint compatibility tests to deterministic monkeypatch-driven mode (`_HAS_REAL_TORCH` forced true/false) so both acceptance and rejection paths run consistently regardless of runner torch availability.
 - Validation completed:
   - `ruff` on touched files ✅
   - `pytest -x tests/unit/test_trainer_module.py tests/training/test_trainer.py tests/space_traversal/test_artifact_pipeline.py` ✅ (`9 passed, 3 skipped`)

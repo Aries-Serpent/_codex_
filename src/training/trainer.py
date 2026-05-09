@@ -312,7 +312,8 @@ class Trainer:
         if not _HAS_REAL_TORCH and cfg.checkpoint is not None:
             raise RuntimeError(
                 "Checkpointing requires a real torch installation. "
-                "Disable checkpoint_dir/checkpoint_config when using CODEX_ALLOW_TORCH_STUB=1."
+                "Either install PyTorch or disable checkpoint_dir/checkpoint_config "
+                "(checkpoint configuration is incompatible with CODEX_ALLOW_TORCH_STUB=1)."
             )
 
         if cfg.gradient_accumulation_steps < 1:

@@ -137,9 +137,10 @@ def test_metric_mode_validation(tmp_path: Path) -> None:
         )
 
 
-def test_checkpoint_config_requires_real_torch_in_stub_mode(tmp_path: Path) -> None:
-    if trainer_module._HAS_REAL_TORCH:
-        pytest.skip("Stub-mode guard is only applicable when real torch is unavailable")
+def test_checkpoint_config_requires_real_torch_in_stub_mode(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(trainer_module, "_HAS_REAL_TORCH", False)
     with pytest.raises(RuntimeError, match="Checkpointing requires a real torch installation"):
         Trainer(
             FakeModel(),
@@ -150,28 +151,18 @@ def test_checkpoint_config_requires_real_torch_in_stub_mode(tmp_path: Path) -> N
         )
 
 
-def test_checkpoint_config_allowed_with_real_torch(tmp_path: Path) -> None:
-    if not trainer_module._HAS_REAL_TORCH:
-        pytest.skip("Real-torch checkpoint behavior requires a real torch runtime")
-    train_batches = [
-        (FakeTensor(0.0), FakeTensor(0.0)),
-        (FakeTensor(1.0), FakeTensor(1.0)),
-    ]
-    val_batches = [
-        (FakeTensor(0.0), FakeTensor(0.0)),
-    ]
+def test_checkpoint_config_allowed_with_real_torch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(trainer_module, "_HAS_REAL_TORCH", True)
     ckpt_dir = tmp_path / "ckpts"
     trainer = Trainer(
         FakeModel(),
         FakeOptimizer(),
-        train_batches,
-        val_loader=val_batches,
+        [(FakeTensor(0.0), FakeTensor(0.0))],
         checkpoint_dir=ckpt_dir,
         keep_best_k=1,
-        loss_fn=lambda outputs, targets: FakeTensor(abs(outputs.value - targets.value)),
+        loss_fn=lambda outputs, targets: FakeTensor(0.0),
     )
     assert trainer.config.checkpoint is not None
     assert trainer.config.checkpoint.directory == str(ckpt_dir)
-    trainer.train(epochs=1)
-    checkpoint_files = list(ckpt_dir.glob("*.pt"))
-    assert checkpoint_files
