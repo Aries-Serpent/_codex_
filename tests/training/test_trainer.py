@@ -34,7 +34,7 @@ def test_trainer_requires_torch():
     dummy_optimizer = MagicMock()
     dummy_loader = MagicMock()
 
-    if getattr(trainer, "torch", None) is None:
+    if not getattr(trainer, "_HAS_REAL_TORCH", True):
         with pytest.raises(RuntimeError):
             trainer.Trainer(dummy_model, dummy_optimizer, dummy_loader)
     else:

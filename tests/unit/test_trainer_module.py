@@ -10,7 +10,13 @@ from pathlib import Path
 
 import pytest
 
+from src.training import trainer as trainer_module
 from src.training.trainer import Trainer, TrainerLoggingConfig
+
+
+@pytest.fixture(autouse=True)
+def enable_explicit_torch_stub(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("CODEX_ALLOW_TORCH_STUB", "1")
 
 
 class FakeTensor:
@@ -121,7 +127,10 @@ def test_trainer_runs_epochs(trainer: Trainer, tmp_path: Path) -> None:
     assert history["train_loss"]
     assert "val_metric" in history
     checkpoint_files = list((tmp_path / "ckpts").glob("*.pt"))
-    assert len(checkpoint_files) == 1
+    if trainer_module._HAS_REAL_TORCH:
+        assert len(checkpoint_files) == 1
+    else:
+        assert checkpoint_files == []
 
 
 def test_metric_mode_validation(tmp_path: Path) -> None:

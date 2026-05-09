@@ -55,6 +55,7 @@ def test_decode_and_extract(tmp_path: Path):
 
 
 def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:
+    pytest.importorskip("jsonschema")
     output = tmp_path / "decoded.json"
     extract = tmp_path / "gaps.json"
     result = decode_validate_and_extract.decode_and_validate(
@@ -70,6 +71,16 @@ def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:
     assert written["metadata"]["source"] == "unit-test"
     extracted = json.loads(extract.read_text())
     assert extracted["count"] == 2
+
+
+def test_decode_and_validate_requires_jsonschema_when_schema_given() -> None:
+    with pytest.raises(RuntimeError, match="schema_path was provided but jsonschema is not installed"):
+        with pytest.MonkeyPatch.context() as m:
+            m.setitem(sys.modules, "jsonschema", None)
+            decode_validate_and_extract.decode_and_validate(
+                input_path=FIXTURE,
+                schema_path=SCHEMA,
+            )
 
 
 def test_validate_snapshot_schema_accepts_fixture() -> None:

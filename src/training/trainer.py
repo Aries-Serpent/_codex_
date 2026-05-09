@@ -6,6 +6,7 @@ import contextlib
 import inspect
 import json
 import logging
+import os
 import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
@@ -16,11 +17,14 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch guard for import-time failures
     import torch
 
+    _HAS_REAL_TORCH = True
     nn = torch.nn
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
+    _HAS_REAL_TORCH = False
+
     class _NoOpScaler:
         def __init__(self, *, enabled: bool = False) -> None:
             self.enabled = enabled
@@ -50,7 +54,10 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
 
         @staticmethod
         def save(payload: Any, path: Path | str) -> None:
-            Path(path).write_text(json.dumps(payload), encoding="utf-8")
+            raise RuntimeError(
+                "torch.save is unavailable in torch stub mode; "
+                "install real torch or disable checkpointing"
+            )
 
         @staticmethod
         def no_grad() -> _NoOpNoGrad:
@@ -63,7 +70,7 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
     def autocast(*, enabled: bool = False):
         return contextlib.nullcontext()
 
-    DataLoader = Any  # type: ignore[assignment, misc]
+    DataLoader = Any
 
 if hasattr(torch, "Tensor"):  # pragma: no cover - typing bridge
     TensorType = torch.Tensor
@@ -230,6 +237,11 @@ class Trainer:
         metric_mode: str | None = None,
         maximize_metric: bool | None = None,
     ) -> None:
+        if not _HAS_REAL_TORCH and os.getenv("CODEX_ALLOW_TORCH_STUB", "0") != "1":
+            raise RuntimeError(
+                "Trainer requires a real torch installation. "
+                "Set CODEX_ALLOW_TORCH_STUB=1 only for explicit stub-mode tests."
+            )
         if config is not None and trainer_config is not None:
             raise TypeError("Pass only one of 'config' or 'trainer_config'")
 

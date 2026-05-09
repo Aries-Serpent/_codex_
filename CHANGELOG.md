@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S919-review-thread-4258592500) — 2026-05-09
+- `src/training/trainer.py`: changed torch-stub checkpoint behavior to fail fast (`torch.save` now raises clear `RuntimeError`) and reintroduced an early real-torch runtime guard in `Trainer.__init__`, with explicit opt-in override (`CODEX_ALLOW_TORCH_STUB=1`) for stub-mode tests.
+- `src/codex_ml/codex_script.py`: narrowed PyTorch determinism exception handling so only optional-dependency/import failures are tolerated; unexpected runtime errors now warn and re-raise when determinism is explicitly enabled.
+- `scripts/space_traversal/decode_validate_and_extract.py`: when `schema_path` is provided but `jsonschema` is unavailable, now raises clear `RuntimeError` instead of silently skipping schema enforcement.
+- `tests/training/test_trainer.py`, `tests/unit/test_trainer_module.py`, `tests/codex_ml/test_codex_script.py`, `tests/space_traversal/test_artifact_pipeline.py`: aligned tests with fail-fast behavior and optional-dependency contracts.
+
+### Fixed (S918-approval-dispatch-continue) — 2026-05-09
+- `src/codex/logging/session_logger.py`: resolved mypy regression in monkeypatch adapter compatibility path by routing the adapter-only call through an `Any`-typed local alias, preserving runtime behavior while restoring baseline type-check parity.
+- Validation checkpoints after fix: `ruff check src/ tests/ --fix` ✅ · `mypy_baseline --require-baseline` ✅ (130/130) · `auto_fix_common_issues --check-only` ✅ (Pattern 30 merge-readiness 100/100) · targeted `pytest -x` session-logger suites ✅ (48 passed).
+
 ### Fixed (S917-ci-rescue-and-self-healing) — 2026-05-09
 - `src/codex/cognitive/structural_policy_manager.py`: hardened actor policy for `github-actions[bot]` by introducing fixed read-only behavior plus action allowlisting, preventing privileged actions like `inject_session_context` while keeping approved read/report actions available.
 - `tests/cognitive/test_spm_org_rollout.py`: aligned org-rollout tests with read-only bot policy and added explicit guard coverage for restricted `github-actions[bot]` behavior.

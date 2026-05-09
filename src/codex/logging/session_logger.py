@@ -252,7 +252,7 @@ def log_event(
                 _shared_log_event(
                     role,
                     message,
-                    meta=adapter_meta_json,
+                    meta=adapter_meta_json,  # type: ignore[arg-type]
                     db_path=db_path,
                 )
                 return

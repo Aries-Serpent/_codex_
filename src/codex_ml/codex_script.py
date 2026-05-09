@@ -71,8 +71,13 @@ def _init_determinism_from_env() -> dict[str, Any]:
             if cudnn is not None:
                 cudnn.deterministic = True
                 cudnn.benchmark = False
-    except Exception as e:
+    except (ImportError, ModuleNotFoundError, OSError) as e:
         logger.debug("PyTorch determinism setup skipped: %s", e, exc_info=True)
+    except Exception as e:
+        logger.warning(
+            "PyTorch determinism setup failed with unexpected error: %s", e, exc_info=True
+        )
+        raise
 
     # Apply TensorFlow settings if available
     try:
