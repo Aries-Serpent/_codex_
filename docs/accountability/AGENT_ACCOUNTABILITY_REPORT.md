@@ -16,6 +16,9 @@
   - Added configured-retention negative-case assertion for `evict_oldest()` (`max_entries=-1`).
 - Follow-up polish from validation feedback:
   - Retention `ValueError` now includes both `keep_last` and `max_entries` context values.
+  - Hydra fallback warning in `evaluate.py` now uses an actionable message without redundant exception text duplication.
+  - Fallback test helper renamed to concise `raise_value_error`.
+  - Hydra fallback warning now explicitly references `config_legacy.utils.to_absolute_path`.
   - Re-ran focused checks: `ruff` ✅ and targeted pytest suites ✅.
 - Validation run summary:
   - `ruff check` on changed files ✅

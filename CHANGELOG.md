@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `src/codex_ml/cli/evaluate.py`: normalized import order, removed duplicate module logger (`LOGGER`), and removed redundant debug logging for Hydra `ImportError` in favor of a single warning with traceback.
 - `scripts/docs/build_doc_search_index.py` and `scripts/docs/migrate_doc_schema.py`: widened CLI arg typing from `list[str] | None` to `Sequence[str] | None` for `argparse` consistency.
 - `tests/cognitive_brain/test_cb_fallbacks.py`: replaced obscure generator-throw lambda with a named raising helper and added coverage for non-positive `keep_last`/configured retention rejection.
+- Follow-up review polish: simplified local helper naming in fallback tests and clarified fallback/retention diagnostic log/error text for operator readability.
+- Follow-up review polish: clarified Hydra fallback warning wording to reference `config_legacy.utils.to_absolute_path` explicitly.
 
 ### Fixed (S914-approval-dispatch) — 2026-05-09
 - Pattern 25 restored after automated [skip ci] sweep commits (`bc80987d`, `9f8f041d`) omitted CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updates. Continued per Approval Dispatch at `decfcda4`.

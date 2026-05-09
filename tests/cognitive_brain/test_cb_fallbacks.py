@@ -124,7 +124,7 @@ class TestRateLimitedCall:
                 rate_limited_call(lambda: None, min_remaining=10, max_retries=1)
 
     def test_propagates_func_exception(self):
-        def _raise_injected_test_error():
+        def raise_value_error():
             raise ValueError("injected test error")
 
         with patch(
@@ -132,7 +132,7 @@ class TestRateLimitedCall:
             return_value={"resources": {"core": {"remaining": 500, "reset": 0}}},
         ):
             with pytest.raises(ValueError, match="injected test error"):
-                rate_limited_call(_raise_injected_test_error)
+                rate_limited_call(raise_value_error)
 
     def test_custom_resource_bucket(self):
         mock_func = MagicMock(return_value="search_result")
