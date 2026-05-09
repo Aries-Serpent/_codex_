@@ -137,24 +137,31 @@ def test_metric_mode_validation(tmp_path: Path) -> None:
         )
 
 
+@pytest.mark.parametrize(
+    "checkpoint_kwargs",
+    [
+        {"checkpoint_dir": "ckpts"},
+        {"checkpoint_config": {"directory": "ckpts"}},
+    ],
+)
 def test_checkpoint_config_rejected_in_stub_mode(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, checkpoint_kwargs: dict[str, object]
 ) -> None:
     monkeypatch.setattr(trainer_module, "_HAS_REAL_TORCH", False)
+    resolved_kwargs: dict[str, object] = {}
+    for key, value in checkpoint_kwargs.items():
+        if key == "checkpoint_dir" and isinstance(value, str):
+            resolved_kwargs[key] = tmp_path / value
+        elif key == "checkpoint_config" and isinstance(value, dict):
+            resolved_kwargs[key] = {"directory": str(tmp_path / str(value["directory"]))}
+        else:
+            resolved_kwargs[key] = value
     with pytest.raises(RuntimeError, match="Checkpointing requires a real torch installation"):
         Trainer(
             FakeModel(),
             FakeOptimizer(),
             [(FakeTensor(0.0), FakeTensor(0.0))],
-            checkpoint_dir=tmp_path / "ckpts",
-            loss_fn=lambda outputs, targets: FakeTensor(0.0),
-        )
-    with pytest.raises(RuntimeError, match="Checkpointing requires a real torch installation"):
-        Trainer(
-            FakeModel(),
-            FakeOptimizer(),
-            [(FakeTensor(0.0), FakeTensor(0.0))],
-            checkpoint_config={"directory": str(tmp_path / "ckpts")},
+            **resolved_kwargs,
             loss_fn=lambda outputs, targets: FakeTensor(0.0),
         )
 
@@ -162,6 +169,7 @@ def test_checkpoint_config_rejected_in_stub_mode(
 def test_checkpoint_config_accepted_with_real_torch(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    runtime_has_real_torch = trainer_module._HAS_REAL_TORCH
     monkeypatch.setattr(trainer_module, "_HAS_REAL_TORCH", True)
     ckpt_dir = tmp_path / "ckpts"
     trainer = Trainer(
@@ -174,6 +182,9 @@ def test_checkpoint_config_accepted_with_real_torch(
     )
     assert trainer.config.checkpoint is not None
     assert trainer.config.checkpoint.directory == str(ckpt_dir)
+    if not runtime_has_real_torch:
+        # Stub runtime: this test only validates initialization acceptance semantics.
+        return
 
 
 def test_real_torch_checkpoint_persistence(tmp_path: Path) -> None:

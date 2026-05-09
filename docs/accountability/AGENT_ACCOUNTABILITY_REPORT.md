@@ -21,6 +21,7 @@
   - Converted checkpoint compatibility tests to deterministic monkeypatch-driven mode (`_HAS_REAL_TORCH` forced true/false) so both acceptance and rejection paths run consistently regardless of runner torch availability.
   - Added stub-mode rejection coverage for both checkpoint configuration surfaces (`checkpoint_dir` and `checkpoint_config`) and retained a real-runtime persistence assertion guarded behind real torch availability.
   - Harmonized checkpoint test names to explicit `rejected`/`accepted` semantics for easier scanability in CI test reports.
+  - Reduced duplication in stub-rejection tests via parametrized checkpoint-entry coverage and added explicit runtime guard handling in acceptance validation.
 - Validation completed:
   - `ruff` on touched files ✅
   - `pytest -x tests/unit/test_trainer_module.py tests/training/test_trainer.py tests/space_traversal/test_artifact_pipeline.py` ✅ (`9 passed, 3 skipped`)

@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tests/unit/test_trainer_module.py`: made checkpoint-compatibility tests deterministic by monkeypatching `_HAS_REAL_TORCH` instead of relying on environment-dependent skip branches.
 - `tests/unit/test_trainer_module.py`: expanded stub-mode coverage to assert checkpoint rejection for both `checkpoint_dir` and `checkpoint_config` entry points; added explicit real-torch persistence check gated to real runtime availability.
 - `tests/unit/test_trainer_module.py`: standardized checkpoint test naming (`rejected`/`accepted`) for clearer intent and symmetry across stub/real runtime paths.
+- `tests/unit/test_trainer_module.py`: refactored stub rejection checks with parametrized checkpoint entry points and added explicit runtime guard behavior in the acceptance test to avoid accidental real-runtime assumptions when running on stub environments.
 
 ### Fixed (S919-review-thread-4258592500) — 2026-05-09
 - `src/training/trainer.py`: changed torch-stub checkpoint behavior to fail fast (`torch.save` now raises clear `RuntimeError`) and reintroduced an early real-torch runtime guard in `Trainer.__init__`, with explicit opt-in override (`CODEX_ALLOW_TORCH_STUB=1`) for stub-mode tests.
