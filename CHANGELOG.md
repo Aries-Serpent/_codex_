@@ -7,6 +7,139 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S914-approval-dispatch) — 2026-05-09
+- Pattern 25 restored after automated [skip ci] sweep commits (`bc80987d`, `9f8f041d`) omitted CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updates. Continued per Approval Dispatch at `decfcda4`.
+
+### Fixed (S913-approval-dispatch) — 2026-05-09
+- Pattern 25 restored after automated [skip ci] sweep commits omitted CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updates. Continued per Approval Dispatch at `a8233246`.
+
+### Fixed (S912-approval-dispatch) — 2026-05-09
+- Pattern 25 restored after `report_progress` created session_context_latest.md-only commit; CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated here.
+- All P1–P4 tasks confirmed complete (ruff 0 ✅ · pytest 42/42 ✅ · Pattern 25 ✅).
+
+### Fixed (S912-pattern25-restore) — 2026-05-09
+- Pattern 25 restored after automated [skip ci] sweep commits (`ba6f350d`, `02856da6`) omitted CHANGELOG.md update. Both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- ruff 0 violations ✅ · pytest 42/42 ✅ · CI checks verified.
+
+### Fixed (S911-approval-dispatch) — 2026-05-09
+- Continued per Approval Dispatch at `90813a1c` — verified all CI checks green on latest commit.
+- Pattern 25 restored: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated after automated [skip ci] sweep commit omitted CHANGELOG.md update.
+
+### Fixed (S911-verification) — 2026-05-09
+- Verified all S910 code quality fixes in place: ruff 0 violations, mypy 128 ≤ 130, pytest 42/42 green.
+- Pattern 25 satisfied: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
+### Fixed (S910-code-review) — 2026-05-09
+- `evaluate.py:_apply_dotlist_overrides`: catch `MissingPyYAMLError` and `YAMLErrorType` when PyYAML is unavailable — non-Hydra dotlist overrides now fall back to treating the value as a raw string instead of raising.
+- `cognitive_brain_core.py:evict_oldest`: documented `keep≤0` semantics ("eviction disabled; preserve all rows") explicitly in docstring — clarifies that `keep_last=0` cannot be used for full purge.
+- `DocumentationViewer.tsx`: add `AbortController` cancellation to async `fetchDocContent` effect — prevents stale responses from overwriting content when `activeDocId` changes rapidly.
+- `DocumentationViewer.tsx`: gate live GitHub raw fetch behind `VITE_DOCS_FETCH_LIVE=true` env var — component now operates in offline/demo mode by default; opt-in required for live network calls.
+- `MermaidDiagram.tsx`: generate stable `containerId` via `useRef` (populated once on mount) — prevents unnecessary diagram re-renders triggered by unrelated state changes (e.g. copy-to-clipboard).
+- `test_cb_fallbacks.py`: add `test_cancel_run_requires_run_id` — validates `cancel_run` dispatch target returns `True` with `run_id` and `False` without.
+- Pattern 25 satisfied: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
+### Added (S909-doc-validation) — 2026-05-09
+- KaTeX math rendering in `DocumentationContent.tsx`: inline `$...$` and display `$$...$$` math expressions now rendered via KaTeX before marked parsing; graceful error fallback per expression.
+- `DocVariableContext.tsx`: React context + `DocVariableProvider` + `useDocVariables()` hook + `applyVariables()` utility for `{{var}}` template interpolation in documentation content; integrated into `DocumentationContent.tsx`.
+- `index.ts` barrel: exports `DocVariableProvider`, `DocVariableContext`, `useDocVariables`, `applyVariables`, `DocVariableProviderProps`.
+- 27 new vitest tests: `DocVariableContext.test.tsx` (11 tests) + `documentation-catalog.test.ts` (16 tests) — all green.
+- `scripts/docs/build_doc_search_index.py`: builds `cognitive_app/public/doc-search-index.json` from `documentation-data.ts` (10 entries, 80 terms in dry-run).
+- `scripts/docs/har_doc_augment.py`: augments/creates HAR fixtures with local Markdown content for offline Playwright testing.
+- `scripts/docs/test_doc_search.py`: 7-test smoke suite for the search index; all pass.
+- `scripts/docs/migrate_doc_schema.py`: SQLite schema migration (v0→v3) for documentation metadata caching.
+- `@testing-library/dom` + `katex` + `@types/katex` added to `cognitive_app/package.json`.
+- npm build: clean ✅ · vitest (docs tests): 27/27 ✅ · ruff: clean ✅ · mypy: 128 errors (↓2 vs baseline 130) ✅
+
+### Fixed (S908-pattern25) — 2026-05-09
+- Pattern 25 (Last-Commit Accountability): updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to satisfy REQ-4 after plan commit omitted them; resolved CI rescue comments #4412928537 and #4412937121.
+
+### Fixed (S907-pre-flight) — 2026-05-09
+- `tests/cognitive_brain/test_cb_fallbacks.py:131`: replaced overly-broad `pytest.raises` match pattern `'boom'` with specific message `'injected test error'` — resolves `pre-flight-validation` check failure (Test Assertion Patterns gate).
+
+### Fixed (S906-ci-rescue) — 2026-05-09
+- Pattern 25 (Last-Commit Accountability): updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to satisfy REQ-4; resolved `sync_tracked_files` stale dimension that was blocking merge-readiness from 99→100.
+- Replied to CI rescue comment (comment #4412485175) on commit `c82cbaec0210`.
+
+### Fixed (S905-codeql-security) — 2026-05-09
+- `DocumentationContent.tsx`: replaced regex-based `sanitize()` with a `DOMParser`-based sanitizer — fixes CodeQL alerts 13439–13444 (incomplete multi-character sanitization / bad HTML filtering regexp). DOMParser handles all malformed-markup edge cases (trailing whitespace in end tags, event handlers without leading whitespace, mixed-case tag names) that regex approaches miss.
+- `DocumentationViewer.tsx`: escape backslashes before other Markdown special characters in offline fallback path embedding — fixes CodeQL alert 13445 (incomplete string escaping).
+
+### Added (S903-doc-viewer) — 2026-05-09
+- Scaffolded `cognitive_app/src/components/documentation/` module: `DocumentationViewer.tsx`, `DocumentationContent.tsx`, `MermaidDiagram.tsx`, `documentation-data.ts`, `documentation-search.ts`, `index.ts`.
+- Added `mermaid ^11.4.1` and `marked ^15.0.12` to `cognitive_app/package.json`.
+- Wired **Docs** tab into `cognitive_app/src/App.tsx` (9-tab layout, `BookOpen` icon, `?doc=` URL state sync).
+
+### Fixed (S903-security) — 2026-05-09
+- `MermaidDiagram.tsx`: changed `securityLevel` from `'loose'` to `'strict'` to prevent script injection.
+- `DocumentationContent.tsx`: replaced `require('marked')` with top-level `import`; strengthened HTML sanitizer (strips `<iframe>`, `<object>`, `<embed>`, `javascript:`/`data:` URL schemes); added `escapeAttr`/`escapeHtml` helpers; escaped `[file:]` path in attribute values.
+- `documentation-search.ts`: added djb2 fallback for `sha256()` when `crypto.subtle` is unavailable (non-secure contexts).
+- `DocumentationViewer.tsx`: escape Markdown special characters in offline fallback path string.
+
+### Fixed (S904-ci-rescue) — 2026-05-09
+- Addressed CI rescue comment (#4412386062): CI failures were on stale commit `ad1a8cf82fe2`; subsequent commits already resolved all issues.
+- Updated `AGENT_ACCOUNTABILITY_REPORT.md` with session S904 entry for Pattern 25 compliance.
+
+### Fixed (auto-update — PR #4376)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4376 (SHA `2ab6246f`) at 2026-05-09T10:53Z [auto-generated]
+
+### Fixed (S902-sync-fix) — 2026-05-09
+- Repaired `sync_tracked_files` stale CODEX_MANIFEST entry for `.secrets.baseline` (hash 004c0b→c30b07).
+
+
+- Fixed Pattern 12 line-length violation in `src/codex_ml/cli/evaluate.py:478`.
+- Opened implementation PR for Documentation Viewer + CI/CD workflow layer plan.
+
+
+- Finalized follow-up review polish:
+  - `_DELETE_OLDEST_SQL` now references `MemoryLayer._TABLE` symbolically (no hardcoded table literal).
+  - Clarified evaluate helper docstrings (`_cfg_to_container`, `_has_dotlist_args`) with explicit behavior/return semantics.
+- Re-ran focused ruff/mypy/pytest validation for updated modules.
+
+### Fixed (S900-continue-4) — 2026-05-09
+- Applied final review cleanup:
+  - Added explicit helper docstrings in evaluate fallback flow (`_cfg_to_container`,
+    `_has_dotlist_args`).
+  - Switched Perception `python_version` sensor to `platform.python_version()`.
+  - Replaced dynamic table interpolation in eviction SQL with static statement text.
+- Re-validated with focused checks: ruff, mypy, and targeted evaluate/CB tests.
+
+### Fixed (S900-continue-3) — 2026-05-09
+- Addressed additional validation feedback hardening:
+  - Expanded `_apply_dotlist_overrides` docstring with behavior/edge-case details.
+  - Simplified `_cfg_to_container` typing flow while keeping Hydra/non-Hydra fallback behavior stable.
+  - Refined MemoryLayer eviction internals to compute deletion count in Python and use
+    a static delete SQL constant (no runtime table formatting).
+- Re-validated with focused checks: ruff, mypy, and evaluate/CB fallback tests.
+
+### Fixed (S900-continue-2) — 2026-05-09
+- Refined non-Hydra evaluate CLI fallback by extracting explicit dotlist detection helper
+  (`_has_dotlist_args`) to keep argument-mode branching clear and maintainable.
+- Hardened Cognitive Brain LTM eviction SQL:
+  - uses `MAX(0, COUNT(*) - ?)` to avoid negative deletion counts,
+  - centralizes oldest-row deletion SQL in `_DELETE_OLDEST_SQL` for readability.
+
+### Fixed (S900-continue) — 2026-05-09
+- **Evaluate CLI non-Hydra fallback hardened** (`src/codex_ml/cli/evaluate.py`):
+  when Hydra is unavailable, the CLI now accepts Hydra-style dotlist overrides
+  (`dataset.path=...`, `tokenizer.cfg.path=...`, `metrics=[accuracy]`, etc.)
+  instead of requiring only `--checkpoint-dir`. This restores compatibility for
+  non-Hydra evaluation smoke/integration flows.
+- **Cognitive Brain expansion (regression-safe)** (`scripts/cognitive/cognitive_brain_core.py`):
+  - PerceptionLayer sensors expanded with `disk_usage_percent`, `load_avg_1m`,
+    `process_count`, and `python_version`.
+  - MemoryLayer now enforces LTM retention with oldest-entry eviction, tracks
+    compaction thresholds, and exposes `compact()` + `ltm_stats()`.
+  - ActionExecutor dispatch targets expanded with `rerun_failed_jobs`,
+    `cancel_run`, and `set_repo_variable` (payload validation included).
+- **Regression coverage refreshed** (`tests/cognitive_brain/test_cb_fallbacks.py`):
+  added tests for new sensors, retention/eviction stats, and new dispatch
+  targets while preserving existing CB fallback coverage.
+- **Priority re-check suite passed**:
+  safe pickle/signed payload, token verification isolation, tokenizer streaming/
+  parity guards, codex_cli smoke paths, JSON-only plugin listing, OmegaConf/
+  dotlist fallback behavior, non-Hydra evaluate handling, and CB fallback
+  helpers all validated via targeted pytest runs.
+
 ### Fixed (S899-final) — 2026-05-09
 - **CodeQL / Unused global variable** (`tests/tokenization/test_tokenizer_parity.py`):
   Removed the dead `_has_real_transformers` variable (was computed in the `try` block and the

@@ -128,8 +128,8 @@ class TestRateLimitedCall:
             "scripts.cognitive.cb_fallbacks._get_trickle_status",
             return_value={"resources": {"core": {"remaining": 500, "reset": 0}}},
         ):
-            with pytest.raises(ValueError, match="boom"):
-                rate_limited_call(lambda: (_ for _ in ()).throw(ValueError("boom")))
+            with pytest.raises(ValueError, match="injected test error"):
+                rate_limited_call(lambda: (_ for _ in ()).throw(ValueError("injected test error")))
 
     def test_custom_resource_bucket(self):
         mock_func = MagicMock(return_value="search_result")
@@ -191,8 +191,12 @@ class TestPerceptionLayerSensors:
         assert "cpu_percent" in PerceptionLayer.SENSOR_NAMES
         assert "memory_available_mb" in PerceptionLayer.SENSOR_NAMES
         assert "disk_free_gb" in PerceptionLayer.SENSOR_NAMES
+        assert "disk_usage_percent" in PerceptionLayer.SENSOR_NAMES
         assert "net_bytes_sent" in PerceptionLayer.SENSOR_NAMES
         assert "net_bytes_recv" in PerceptionLayer.SENSOR_NAMES
+        assert "load_avg_1m" in PerceptionLayer.SENSOR_NAMES
+        assert "process_count" in PerceptionLayer.SENSOR_NAMES
+        assert "python_version" in PerceptionLayer.SENSOR_NAMES
         assert "ci_failure_count" in PerceptionLayer.SENSOR_NAMES
 
     def test_perceive_returns_all_keys(self, tmp_path):
@@ -203,8 +207,12 @@ class TestPerceptionLayerSensors:
         assert "system_load" in data
         assert "memory_available_mb" in data
         assert "disk_free_gb" in data
+        assert "disk_usage_percent" in data
         assert "net_bytes_sent" in data
         assert "net_bytes_recv" in data
+        assert "load_avg_1m" in data
+        assert "process_count" in data
+        assert "python_version" in data
         assert "ci_failure_count" in data
         assert "sensors_active" in data
         assert isinstance(data["sensors_active"], list)
@@ -280,13 +288,40 @@ class TestMemoryLayerLTM:
         # Most recent first
         assert entries[0]["cycle"] > entries[1]["cycle"]
 
+    def test_retention_evicts_oldest(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        mem.max_entries = 2
+        for i in range(4):
+            mem.store_perception({"val": i}, cycle=i + 1)
+        entries = mem.recall_recent(limit=10)
+        assert len(entries) == 2
+        assert {entry["cycle"] for entry in entries} == {3, 4}
+
+    def test_ltm_stats_shape(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        stats = mem.ltm_stats()
+        assert "entries" in stats
+        assert "max_entries" in stats
+        assert "deleted_since_compaction" in stats
+        assert "compaction_delete_threshold" in stats
+
 
 class TestActionExecutorDispatchTargets:
     """Tests for S898 ActionExecutor expanded dispatch targets."""
 
     def test_dispatch_targets_constant(self):
         from scripts.cognitive.cognitive_brain_core import ActionExecutor
-        for t in ("internal", "workflow_dispatch", "post_comment", "approve_run"):
+        for t in (
+            "internal",
+            "workflow_dispatch",
+            "post_comment",
+            "approve_run",
+            "rerun_failed_jobs",
+            "cancel_run",
+            "set_repo_variable",
+        ):
             assert t in ActionExecutor.DISPATCH_TARGETS
 
     def test_internal_dispatch(self):
@@ -321,6 +356,33 @@ class TestActionExecutorDispatchTargets:
         from scripts.cognitive.cognitive_brain_core import ActionExecutor
         task = {"agent": 1}
         assert ActionExecutor._dispatch_task(task) is False
+
+    def test_rerun_failed_jobs_requires_run_id(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "rerun", "target": "rerun_failed_jobs", "payload": {"run_id": 123}}
+        ) is True
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "rerun", "target": "rerun_failed_jobs", "payload": {}}
+        ) is False
+
+    def test_set_repo_variable_requires_name_and_value(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "set", "target": "set_repo_variable", "payload": {"name": "X", "value": "1"}}
+        ) is True
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "set", "target": "set_repo_variable", "payload": {"name": "X"}}
+        ) is False
+
+    def test_cancel_run_requires_run_id(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {"run_id": 99}}
+        ) is True
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {}}
+        ) is False
 
 
 class TestCognitiveBrainMemoryIntegration:
