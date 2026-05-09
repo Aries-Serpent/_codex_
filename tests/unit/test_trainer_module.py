@@ -137,7 +137,7 @@ def test_metric_mode_validation(tmp_path: Path) -> None:
         )
 
 
-def test_checkpoint_config_requires_real_torch_in_stub_mode(
+def test_checkpoint_config_rejected_in_stub_mode(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(trainer_module, "_HAS_REAL_TORCH", False)
@@ -159,7 +159,7 @@ def test_checkpoint_config_requires_real_torch_in_stub_mode(
         )
 
 
-def test_checkpoint_config_allowed_with_real_torch(
+def test_checkpoint_config_accepted_with_real_torch(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(trainer_module, "_HAS_REAL_TORCH", True)
