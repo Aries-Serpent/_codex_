@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S900-continue-2) — 2026-05-09
+- Refined non-Hydra evaluate CLI fallback by extracting explicit dotlist detection helper
+  (`_has_dotlist_args`) to keep argument-mode branching clear and maintainable.
+- Hardened Cognitive Brain LTM eviction SQL:
+  - uses `MAX(0, COUNT(*) - ?)` to avoid negative deletion counts,
+  - centralizes oldest-row deletion SQL in `_DELETE_OLDEST_SQL` for readability.
+
 ### Fixed (S900-continue) — 2026-05-09
 - **Evaluate CLI non-Hydra fallback hardened** (`src/codex_ml/cli/evaluate.py`):
   when Hydra is unavailable, the CLI now accepts Hydra-style dotlist overrides

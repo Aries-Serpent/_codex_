@@ -295,6 +295,11 @@ class MemoryLayer:
             snapshot  TEXT    NOT NULL
         )
     """
+    _DELETE_OLDEST_SQL = (
+        "DELETE FROM {table} WHERE id IN ("
+        "SELECT id FROM {table} ORDER BY id ASC LIMIT ?"
+        ")"
+    )
 
     def __init__(self, workspace: Path):
         self.workspace = workspace
@@ -387,15 +392,13 @@ class MemoryLayer:
         try:
             with sqlite3.connect(str(self.db_path)) as conn:
                 to_delete = conn.execute(
-                    f"SELECT COUNT(*) - ? FROM {self._TABLE}",
+                    f"SELECT MAX(0, COUNT(*) - ?) FROM {self._TABLE}",
                     (keep,),
                 ).fetchone()[0]
                 if to_delete <= 0:
                     return 0
                 conn.execute(
-                    f"DELETE FROM {self._TABLE} WHERE id IN ("
-                    f"SELECT id FROM {self._TABLE} ORDER BY id ASC LIMIT ?"
-                    f")",
+                    self._DELETE_OLDEST_SQL.format(table=self._TABLE),
                     (to_delete,),
                 )
                 conn.commit()

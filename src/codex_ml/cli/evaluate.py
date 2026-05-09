@@ -430,10 +430,13 @@ if _HAS_HYDRA:
             )
 
 else:
+    def _has_dotlist_args(arg_list: Sequence[str]) -> bool:
+        """Return True when CLI args include Hydra-style dotlist overrides."""
+        return any("=" in arg and not arg.startswith("--") for arg in arg_list)
 
     def _run_non_hydra_main(arg_list: list[str]) -> dict[str, Any]:
         """Run non-Hydra evaluate flow with dotlist fallback support."""
-        if any("=" in arg and not arg.startswith("--") for arg in arg_list):
+        if _has_dotlist_args(arg_list):
             cfg_map = _apply_dotlist_overrides({}, arg_list)
             _sanitize_eval_config(cfg_map)
             checkpoint_dir = (cfg_map.get("checkpoint") or {}).get("dir")

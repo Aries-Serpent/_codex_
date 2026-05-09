@@ -1,5 +1,31 @@
 # Agent Accountability Report
 
+## SESSION WRAP-UP — 2026-05-09T09:36Z [S900-continue-2]
+
+**Session:** S900-continue-2 | **Branch:** `copilot/ensure-docs-accountability-report`
+**Agent:** copilot-swe-agent[bot]
+
+### Continued Work
+- Addressed actionable code-review hardening feedback from prior validation run:
+  - `src/codex_ml/cli/evaluate.py`: extracted `_has_dotlist_args()` and used it in
+    non-Hydra argument-mode selection for clearer control flow.
+  - `scripts/cognitive/cognitive_brain_core.py`: changed eviction count query to
+    `SELECT MAX(0, COUNT(*) - ?)` and moved deletion SQL into `_DELETE_OLDEST_SQL`
+    constant for readability/maintainability.
+
+### Validation Evidence
+- `ruff check src/codex_ml/cli/evaluate.py scripts/cognitive/cognitive_brain_core.py` ✅
+- `mypy src/codex_ml/cli/evaluate.py scripts/cognitive/cognitive_brain_core.py` ✅
+- `pytest -q tests/test_evaluate_cli.py tests/cognitive_brain/test_cb_fallbacks.py` ✅
+
+### Workflow Snapshot
+- Branch workflow runs currently show multiple `completed/action_required` entries
+  (approval-gated), and no code-failure conclusion surfaced in this pass.
+
+### Pattern 25
+✅ CHANGELOG.md updated in this commit (`### Fixed (S900-continue-2)`)
+✅ AGENT_ACCOUNTABILITY_REPORT.md updated in this commit (this section)
+
 ## SESSION WRAP-UP — 2026-05-09T09:20Z [S900-continue]
 
 **Session:** S900-continue | **Branch:** `copilot/ensure-docs-accountability-report`
