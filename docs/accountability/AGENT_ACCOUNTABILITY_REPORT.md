@@ -29,6 +29,11 @@
 - Created `docs/roadmap/PR4368_session_diagram.md` — full component architecture, session
   timeline table (12 sessions S889→S899), repaired compatibility surface, CI snapshot
 - Updated `docs/roadmap/PR4368_whats_next.md` — Phase 10 added, Merge Readiness table refreshed
+- Fixed tokenizer test skip guards (S899-cont):
+  - `test_train_tokenizer_streaming.py`: 3 tests now skip when `train_tokenizer is None`
+  - `test_streaming_ingest.py`: module-level `pytestmark` skips all 5 tests when unavailable
+  - `test_tokenizer_parity.py`: `_real_transformers_available()` detects `stub` in `__version__`
+- Full frontier: 729 passed / 0 failures / 56 skipped / 5 xfailed ✅
 - Monitored CI on HEAD `899347bc`: 30 action_required (standard post-push approval round,
   auto-approve-workflows will fire after @mbaetiong's next delegation approval), 0 failures
 - WEC section restored in PR body (was stripped by earlier report_progress without WEC block;

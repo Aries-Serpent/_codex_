@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S899-cont) — 2026-05-09
+- **Tokenizer test skip guards** (`tests/tokenization/`):
+  - `test_train_tokenizer_streaming.py` — added `if train_tokenizer is None: pytest.skip(...)` to
+    all 3 tests; they skip cleanly when `tokenizers` is not installed (was `AttributeError: None has
+    no attribute 'spm'`).
+  - `test_streaming_ingest.py` — added `pytestmark = pytest.mark.skipif(module is None, ...)` at
+    module level; all 5 tests skip when `train_tokenizer` is unavailable.
+  - `test_tokenizer_parity.py` — replaced `AutoTokenizer is None` skip condition with
+    `_real_transformers_available()` helper that detects conftest stubs via `__version__` containing
+    `stub`; test skips correctly in stub-only environments.
+- Full frontier: **729 passed, 0 failures**, 56 skipped, 5 xfailed (correct) — ruff ✅
+
 ### Fixed (S899) — 2026-05-09
 - **Merge conflict resolved**: `CODEX_MANIFEST.json` conflict between branch and main resolved
   by taking the newer main-generated version (auto-generated file, P-045 policy).

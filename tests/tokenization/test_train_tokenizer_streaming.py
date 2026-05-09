@@ -16,6 +16,8 @@ from src.tokenization import train_tokenizer
 
 
 def test_iter_text_uses_chunk_size(monkeypatch):
+    if train_tokenizer is None:
+        pytest.skip("tokenizers not available — train_tokenizer module not loaded")
     calls: list[int | None] = []
 
     def fake_ingest(path, *, encoding, chunk_size):  # pragma: no cover - stub
@@ -34,6 +36,8 @@ def test_iter_text_uses_chunk_size(monkeypatch):
 
 
 def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
+    if train_tokenizer is None:
+        pytest.skip("tokenizers not available — train_tokenizer module not loaded")
     pytest.importorskip("tokenizers")
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("alpha\nbeta\n", encoding="utf-8")
@@ -93,6 +97,8 @@ def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
 
 
 def test_sentencepiece_streaming_seed_fallback_recreates_iterator(monkeypatch, tmp_path):
+    if train_tokenizer is None:
+        pytest.skip("tokenizers not available — train_tokenizer module not loaded")
     pytest.importorskip("tokenizers")
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("alpha\nbeta\n", encoding="utf-8")
