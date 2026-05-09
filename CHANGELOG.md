@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4379)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4379 (SHA `6e68a57f`) at 2026-05-09T21:13Z [auto-generated]
 
+### Fixed (S915-targeted-review-diffs) — 2026-05-09
+- `scripts/cognitive/cognitive_brain_core.py`: added diagnostic logging for CI failure-count parse errors and LTM DB initialization failures; tightened `MemoryLayer.evict_oldest()` semantics so explicit non-positive `keep_last` now raises `ValueError`.
+- `src/codex_ml/cli/evaluate.py`: normalized import order, removed duplicate module logger (`LOGGER`), and removed redundant debug logging for Hydra `ImportError` in favor of a single warning with traceback.
+- `scripts/docs/build_doc_search_index.py` and `scripts/docs/migrate_doc_schema.py`: widened CLI arg typing from `list[str] | None` to `Sequence[str] | None` for `argparse` consistency.
+- `tests/cognitive_brain/test_cb_fallbacks.py`: replaced obscure generator-throw lambda with a named raising helper and added coverage for non-positive `keep_last` rejection.
+
 ### Fixed (S914-approval-dispatch) — 2026-05-09
 - Pattern 25 restored after automated [skip ci] sweep commits (`bc80987d`, `9f8f041d`) omitted CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updates. Continued per Approval Dispatch at `decfcda4`.
 

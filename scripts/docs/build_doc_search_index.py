@@ -25,6 +25,7 @@ import argparse
 import json
 import re
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -131,7 +132,7 @@ def _build_index(catalog: list[dict]) -> dict:
 # CLI
 # ---------------------------------------------------------------------------
 
-def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__.strip().splitlines()[0])
     p.add_argument("--output", type=Path, default=DEFAULT_OUTPUT,
                    help="Output JSON path (default: %(default)s)")
@@ -142,7 +143,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
 
     if not args.source.exists():

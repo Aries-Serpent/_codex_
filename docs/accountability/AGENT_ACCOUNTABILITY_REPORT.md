@@ -1,3 +1,30 @@
+## SESSION WRAP-UP — 2026-05-09T21:30Z [S915-targeted-review-diffs]
+
+**Session:** S915-targeted-review-diffs | **Branch:** `copilot/add-logging-for-exception-handler`
+**Agent:** copilot-swe-agent[bot]
+
+### Completed
+- Applied all requested reviewer diffs across 5 files with minimal scope:
+  - Added logger + diagnostic messages in `scripts/cognitive/cognitive_brain_core.py` for CI failure-count parsing and LTM DB init degraded mode.
+  - Changed `MemoryLayer.evict_oldest()` explicit `keep_last<=0` behavior to raise `ValueError` (with updated docstring).
+  - Replaced `list[str] | None` CLI argv types with `Sequence[str] | None` in docs tooling scripts.
+  - Cleaned `src/codex_ml/cli/evaluate.py` import ordering and unified logger usage to a single `logger` instance.
+  - Removed redundant debug+warning duplication for Hydra `ImportError`.
+- Added focused tests:
+  - Replaced obscure generator-throw lambda with a named raising helper in `test_propagates_func_exception`.
+  - Added `test_evict_oldest_raises_for_non_positive_keep_last`.
+- Validation run summary:
+  - `ruff check` on changed files ✅
+  - `pytest tests/cognitive_brain/test_cb_fallbacks.py tests/unit/test_evaluate_cli_flags.py tests/unit/test_evaluate_cli_metrics_log.py` ✅ (46 passed)
+  - Baseline `nox -s tests` ❌ pre-existing collection failures (143 errors, unrelated to these edits; e.g. missing `stream_paths` in `codex_ml.data._core_loaders` across many suites)
+
+### Impact Score
+- Requested review comments addressed: 9/9 ✅
+- Files updated: 7 (`5` code/test + `CHANGELOG.md` + accountability report)
+- Pattern 25 compliance: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+
+---
+
 ## SESSION WRAP-UP — 2026-05-09T20:24Z [S914-approval-dispatch]
 
 **Session:** S914-approval-dispatch | **Branch:** `copilot/ensure-docs-accountability-report`

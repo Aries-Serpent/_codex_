@@ -124,12 +124,15 @@ class TestRateLimitedCall:
                 rate_limited_call(lambda: None, min_remaining=10, max_retries=1)
 
     def test_propagates_func_exception(self):
+        def raise_error():
+            raise ValueError("injected test error")
+
         with patch(
             "scripts.cognitive.cb_fallbacks._get_trickle_status",
             return_value={"resources": {"core": {"remaining": 500, "reset": 0}}},
         ):
             with pytest.raises(ValueError, match="injected test error"):
-                rate_limited_call(lambda: (_ for _ in ()).throw(ValueError("injected test error")))
+                rate_limited_call(raise_error)
 
     def test_custom_resource_bucket(self):
         mock_func = MagicMock(return_value="search_result")
@@ -297,6 +300,15 @@ class TestMemoryLayerLTM:
         entries = mem.recall_recent(limit=10)
         assert len(entries) == 2
         assert {entry["cycle"] for entry in entries} == {3, 4}
+
+    def test_evict_oldest_raises_for_non_positive_keep_last(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+
+        mem = MemoryLayer(tmp_path / "memory")
+        with pytest.raises(ValueError, match="keep_last must be a positive integer or None"):
+            mem.evict_oldest(keep_last=0)
+        with pytest.raises(ValueError, match="keep_last must be a positive integer or None"):
+            mem.evict_oldest(keep_last=-1)
 
     def test_ltm_stats_shape(self, tmp_path):
         from scripts.cognitive.cognitive_brain_core import MemoryLayer
