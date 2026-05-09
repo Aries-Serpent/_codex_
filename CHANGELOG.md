@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (S899) — 2026-05-09
 - **Merge conflict resolved**: `CODEX_MANIFEST.json` conflict between branch and main resolved
   by taking the newer main-generated version (auto-generated file, P-045 policy).
+- **Test fix**: `test_verify_scopes_without_token` in `tests/test_token_verification.py` now
+  patches `os.getenv` so the test is isolated from environment tokens (CI token was leaking
+  through, causing `status == 'valid'` instead of `'error'`).
 
 ### Added (S898) — 2026-05-09
 - **Cognitive Brain: PerceptionLayer expanded sensors** (`scripts/cognitive/cognitive_brain_core.py`):

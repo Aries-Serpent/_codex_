@@ -22,6 +22,9 @@
 - Resolved conflict by taking main version of `CODEX_MANIFEST.json` (auto-generated file,
   newer timestamp 2026-05-09T06:44:03, P-045 policy)
 - Committed 2-parent merge commit (true merge — MERGE_HEAD preserved)
+- Fixed `tests/test_token_verification.py::test_verify_scopes_without_token`: added
+  `@patch.dict(os.environ, {}, clear=True)` and `@patch("...os.getenv", return_value=None)`
+  so the test is isolated from environment tokens — 23/23 tests now pass
 - ruff ✅ · mypy 130=baseline ✅ · auto_fix_common_issues clean ✅
 - Pattern 25 ✅ (CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated)
 
