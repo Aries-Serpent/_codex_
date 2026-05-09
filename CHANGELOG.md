@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S898) — 2026-05-09
+- **Cognitive Brain: PerceptionLayer expanded sensors** (`scripts/cognitive/cognitive_brain_core.py`):
+  added `memory_available_mb`, `disk_free_gb`, `net_bytes_sent`, `net_bytes_recv` (via psutil
+  fallback), and `ci_failure_count` (reads `.codex/rescue_context.json` if present).
+  `SENSOR_NAMES` constant exposed for test introspection. `sensors_active` key lists
+  sensors that returned non-None values.
+- **Cognitive Brain: MemoryLayer SQLite LTM persistence** (`scripts/cognitive/cognitive_brain_core.py`):
+  new `MemoryLayer` class with `store_perception()`, `recall_recent()`, `recall_by_cycle()`,
+  and `ltm_size()`. Uses SQLite (`ltm.db`) in the workspace; degrades gracefully when SQLite
+  is unavailable. Wired into the 5-stage PDA cycle (Perception → Memory → Decision → Action → AfterMath).
+- **Cognitive Brain: ActionExecutor dispatch targets** (`scripts/cognitive/cognitive_brain_core.py`):
+  added `DISPATCH_TARGETS` constant and stub implementations for `workflow_dispatch`,
+  `post_comment`, and `approve_run` remote targets. `_dispatch_task` now accepts
+  optional `"target"` and `"payload"` keys in the task dict.
+- **18 new CB tests** (`tests/cognitive_brain/test_cb_fallbacks.py`): cover all S898 additions —
+  sensor names, psutil-less degradation, CI failure count reader, LTM store/recall/size,
+  multi-cycle ordering, dispatch targets, and full PDA-cycle LTM integration.
+  Total: 37 tests passing (was 19).
+
+### Fixed (S898) — 2026-05-09
+- Replied to all blocking PR comments (`4411570183`, `4411617136`, `4411637512`, `4411645117`)
+  to unblock PR Comment Review Gate.
+- Triaged CI rescue on `33f9fe54`: sole actual failure was PR Comment Review Gate
+  (1 blocking unaddressed comment — resolved this session).
+- Delegation/auto-approve races on `c5ec310cda25` confirmed transient; resolved by `33f9fe54` push.
+
 ### Fixed (S897-final) — 2026-05-09
 - Triaged 3 recurring `startup_failure` workflows (Progressive Validation Suite,
   Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite): confirmed as

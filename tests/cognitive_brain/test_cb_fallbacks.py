@@ -177,3 +177,160 @@ class TestCognitiveBrainCoreIntegration:
         assert result["tasks_completed"] == 2
         assert result["success_rate"] == 1.0
         assert result["failures"] == []
+
+
+# ---------------------------------------------------------------------------
+# S898: PerceptionLayer expanded sensors, MemoryLayer LTM, ActionExecutor targets
+# ---------------------------------------------------------------------------
+
+class TestPerceptionLayerSensors:
+    """Tests for S898 expanded PerceptionLayer sensor set."""
+
+    def test_sensor_names_constant(self):
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        assert "cpu_percent" in PerceptionLayer.SENSOR_NAMES
+        assert "memory_available_mb" in PerceptionLayer.SENSOR_NAMES
+        assert "disk_free_gb" in PerceptionLayer.SENSOR_NAMES
+        assert "net_bytes_sent" in PerceptionLayer.SENSOR_NAMES
+        assert "net_bytes_recv" in PerceptionLayer.SENSOR_NAMES
+        assert "ci_failure_count" in PerceptionLayer.SENSOR_NAMES
+
+    def test_perceive_returns_all_keys(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        layer = PerceptionLayer(tmp_path / "perceptions")
+        data = layer.perceive()
+        assert "sources_collected" in data
+        assert "system_load" in data
+        assert "memory_available_mb" in data
+        assert "disk_free_gb" in data
+        assert "net_bytes_sent" in data
+        assert "net_bytes_recv" in data
+        assert "ci_failure_count" in data
+        assert "sensors_active" in data
+        assert isinstance(data["sensors_active"], list)
+
+    def test_perceive_fallback_when_no_psutil(self, tmp_path, monkeypatch):
+        """Perception must not crash when psutil is unavailable."""
+        from scripts.cognitive import cognitive_brain_core
+        monkeypatch.setattr(
+            cognitive_brain_core, "import_optional", lambda _: None
+        )
+        layer = cognitive_brain_core.PerceptionLayer(tmp_path / "perceptions")
+        data = layer.perceive()
+        assert data["system_load"] is None
+        assert data["memory_available_mb"] is None
+        assert data["disk_free_gb"] is None
+
+    def test_ci_failure_count_reads_rescue_context(self, tmp_path, monkeypatch):
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        rescue = tmp_path / ".codex" / "rescue_context.json"
+        rescue.parent.mkdir(parents=True, exist_ok=True)
+        rescue.write_text('{"failures": ["a", "b", "c"]}')
+        monkeypatch.chdir(tmp_path)
+        count = PerceptionLayer._read_ci_failure_count()
+        assert count == 3
+
+    def test_ci_failure_count_none_when_no_file(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        assert PerceptionLayer._read_ci_failure_count() is None
+
+
+class TestMemoryLayerLTM:
+    """Tests for S898 MemoryLayer SQLite LTM persistence."""
+
+    def test_store_and_recall_recent(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        snapshot = {"system_load": 12.3, "timestamp": "2026-05-09T00:00:00"}
+        assert mem.store_perception(snapshot, cycle=1)
+        entries = mem.recall_recent(limit=5)
+        assert len(entries) == 1
+        assert entries[0]["cycle"] == 1
+        assert entries[0]["system_load"] == 12.3
+
+    def test_ltm_size(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        assert mem.ltm_size() == 0
+        mem.store_perception({"ts": "a"}, cycle=1)
+        mem.store_perception({"ts": "b"}, cycle=2)
+        assert mem.ltm_size() == 2
+
+    def test_recall_by_cycle(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        mem.store_perception({"val": 42}, cycle=7)
+        result = mem.recall_by_cycle(7)
+        assert result is not None
+        assert result["val"] == 42
+
+    def test_recall_by_cycle_missing(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        assert mem.recall_by_cycle(999) is None
+
+    def test_multiple_cycles_ordered_desc(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        for i in range(5):
+            mem.store_perception({"val": i}, cycle=i + 1)
+        entries = mem.recall_recent(limit=3)
+        assert len(entries) == 3
+        # Most recent first
+        assert entries[0]["cycle"] > entries[1]["cycle"]
+
+
+class TestActionExecutorDispatchTargets:
+    """Tests for S898 ActionExecutor expanded dispatch targets."""
+
+    def test_dispatch_targets_constant(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        for t in ("internal", "workflow_dispatch", "post_comment", "approve_run"):
+            assert t in ActionExecutor.DISPATCH_TARGETS
+
+    def test_internal_dispatch(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "test", "target": "internal"}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_workflow_dispatch_target(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "validate", "target": "workflow_dispatch",
+                "payload": {"workflow_id": "validate.yml", "ref": "main"}}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_post_comment_target(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "report", "target": "post_comment",
+                "payload": {"body": "All tests passed"}}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_approve_run_target(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "approve", "target": "approve_run",
+                "payload": {"run_id": 12345}}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_missing_agent_returns_false(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"task": "test"}
+        assert ActionExecutor._dispatch_task(task) is False
+
+    def test_missing_task_returns_false(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1}
+        assert ActionExecutor._dispatch_task(task) is False
+
+
+class TestCognitiveBrainMemoryIntegration:
+    """Integration test: full PDA cycle persists to LTM."""
+
+    def test_pda_cycle_persists_to_ltm(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import CognitiveBrain
+        brain = CognitiveBrain(workspace_dir=str(tmp_path / "cognitive"))
+        result = brain.run_pda_cycle()
+        assert result["overall_status"] == "success"
+        assert "memory" in result["stages"]
+        # LTM should have exactly 1 entry after 1 cycle
+        assert brain.memory.ltm_size() >= 1

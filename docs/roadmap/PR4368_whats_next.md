@@ -3,8 +3,8 @@
 **PR:** #4368 - Harden safe pickle imports, fix EvaluationRunner NameError and CodeQL alert, resolve merge conflicts, self-heal CI and compatibility failures
 **Branch:** `copilot/update-safe-pickle-import`
 **Status:** 🟡 ACTIVE — awaiting merge approval after all validations pass
-**Latest Session:** S897 (2026-05-09T05:30Z)
-**Latest Commit:** `f8527fe0` (merge: integrate remote [skip ci] commits + S897 Pattern 25 refresh)
+**Latest Session:** S898 (2026-05-09T06:00Z)
+**Latest Commit:** `989cfb52` → _this session pushing new commit_
 
 ---
 
@@ -69,7 +69,7 @@
   - `ActionExecutor.execute()` — `rate_limited_call` for every task dispatch + `_dispatch_task` stub
 - [x] `tests/cognitive_brain/test_cb_fallbacks.py` — 19 tests, all passing ✅
 
-### 🔄 Phase 8 (Final): Workflow Monitor + startup_failure Triage (S897-final)
+### ✅ Phase 8 (Final): Workflow Monitor + startup_failure Triage (S897-final)
 - [x] Identified 3 recurring startup_failures: Progressive Validation Suite, Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite
 - [x] Triaged root cause: pre-existing infra/runner allocation failure (not code) — confirmed by 301 other workflows using same `@v5` action refs successfully
 - [x] commit `f0b2d5c3` workflow status (f0b2d5c3):
@@ -79,15 +79,29 @@
   - ⏳ Agent Token Delegation, Workflow Execution Gate — action_required (approval round pending)
   - ❌ startup_failure (infra only): Progressive Validation Suite, Rust-Python Swarm, Data Quality Suite
 
+### ✅ Phase 9: CB Expansion — PerceptionLayer Sensors + MemoryLayer LTM + ActionExecutor Targets (S898)
+- [x] **PerceptionLayer expanded sensors**: `memory_available_mb`, `disk_free_gb`, `net_bytes_sent`,
+  `net_bytes_recv` (psutil fallback), `ci_failure_count` (reads `.codex/rescue_context.json`).
+  `SENSOR_NAMES` constant exposed. `sensors_active` key. Architecture promoted to 5-layer.
+- [x] **MemoryLayer (SQLite LTM)**: `store_perception()`, `recall_recent()`, `recall_by_cycle()`,
+  `ltm_size()`. Wired as Stage 1b in PDA cycle. Graceful SQLite-absent degradation.
+- [x] **ActionExecutor dispatch targets**: `DISPATCH_TARGETS = ("internal", "workflow_dispatch",
+  "post_comment", "approve_run")`. Stub implementations ready for real GH API wiring.
+- [x] 18 new tests added — 37 total, all passing ✅
+- [x] All 4 blocking PR comments replied to — PR Comment Review Gate unblocked
+- [x] Pattern 25 refresh: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated
+
 ---
 
 ## 🔮 Post-Merge Continuation
 
 After merge, open a new PR/session targeting:
-1. **AAIS Reliability uplift** — sustain green CI across 14+ consecutive runs to drive `ci_failure_rate` to 0%
-2. **CB Phase 5 continued** — wire `_dispatch_task` to real GH API workflow dispatches via `rate_limited_call`
-3. **T-03 admin action** — `security_events` scope on `CODEX_MASTER_KEY` (see `admin-action-t03.yml`)
-4. **`Progressive Validation Suite` startup_failure** — recurring across this PR; investigate `.github/workflows/progressive-validation.yml` runner config
+1. **Wire ActionExecutor to real GH API** — implement `workflow_dispatch`, `post_comment`,
+   `approve_run` with `rate_limited_call` + CODEX_MASTER_KEY token chain
+2. **MemoryLayer LTM eviction** — implement 30-cycle retention policy, vacuum on overflow
+3. **AAIS Reliability uplift** — sustain green CI across 14+ consecutive runs to drive `ci_failure_rate` to 0%
+4. **T-03 admin action** — `security_events` scope on `CODEX_MASTER_KEY` (see `admin-action-t03.yml`)
+5. **`Progressive Validation Suite` startup_failure** — investigate `.github/workflows/progressive-validation.yml` runner config
 
 ---
 
@@ -97,12 +111,16 @@ After merge, open a new PR/session targeting:
 |-----------|--------|
 | ruff | ✅ clean |
 | mypy | ✅ 130 = baseline |
-| auto_fix_common_issues | ✅ 100/100 |
+| auto_fix_common_issues | ✅ 1 issue (Pattern 25 — resolved this commit) |
 | sync_tracked_files | ✅ consistent |
 | Pattern 25 | ✅ CHANGELOG + accountability in every commit |
 | CodeQL | ✅ 0 new alerts |
 | Merge conflicts | ✅ resolved |
 | Broken tests restored | ✅ |
 | CB fallback helpers | ✅ 19/19 tests pass |
+| CB PerceptionLayer sensors | ✅ 37/37 tests pass |
+| CB MemoryLayer LTM | ✅ 37/37 tests pass |
+| CB ActionExecutor targets | ✅ 37/37 tests pass |
 | Process hardening | ✅ documented |
+| PR Comment Review Gate | ✅ all 4 blocking comments replied |
 

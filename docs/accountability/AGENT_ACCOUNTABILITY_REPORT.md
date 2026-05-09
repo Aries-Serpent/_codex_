@@ -32385,3 +32385,34 @@ and the CI gate requirement.
 - Pattern 25: CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md both updated in this commit ✅
 - P-045: ruff ✅ | conflict markers ✅ (none) | sync_tracked_files ✅
 
+
+## Session S898 — 2026-05-09 (PR #4368 S898: CB expansion, CI rescue, Pattern 25)
+
+### Objectives
+1. Triage CI failures on commit `33f9fe54` (8 listed, 1 real: PR Comment Review Gate)
+2. Reply to all 4 blocking new comments to unblock comment gate
+3. Expand Cognitive Brain: PerceptionLayer sensors, MemoryLayer LTM, ActionExecutor targets
+4. Update living docs (PR4368_whats_next.md, session_diagram) and follow-up prompt
+5. Pattern 25 compliance: update CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md every commit
+
+### Actions Taken
+- Replied to comments 4411570183, 4411617136, 4411637512, 4411645117 (all blocking)
+- Confirmed CI rescue on `33f9fe54`: only failure was PR Comment Review Gate (1 blocking comment).
+  The 8-count in rescue notification included delegation/auto-approve races that were transient.
+- Confirmed CI rescue on `c5ec310cda25`: all failures were delegation chain races + token
+  delegation timing — resolved by the `33f9fe54` push.
+- **CB PerceptionLayer expanded**: added 5 new sensors — `memory_available_mb`,
+  `disk_free_gb`, `net_bytes_sent`, `net_bytes_recv`, `ci_failure_count`. Added `SENSOR_NAMES`
+  constant. `sensors_active` key tracks which sensors returned non-None. Full psutil fallback.
+- **CB MemoryLayer (LTM) added**: SQLite-backed `MemoryLayer` class with `store_perception()`,
+  `recall_recent()`, `recall_by_cycle()`, `ltm_size()`. Wired as Stage 1b in the PDA cycle.
+  Graceful degradation when SQLite unavailable.
+- **CB ActionExecutor expanded**: added `DISPATCH_TARGETS` constant and stub implementations for
+  `workflow_dispatch`, `post_comment`, `approve_run` remote targets.
+- **18 new tests added**: all passing (37 total in `test_cb_fallbacks.py`, was 19).
+- Updated PR4368_whats_next.md with S898 progress.
+- Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25 ✅).
+
+### Compliance
+- Pattern 25: CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md both updated in this commit ✅
+- P-045: ruff ✅ | sync_tracked_files ✅ | all 37 CB tests ✅
