@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S893) — 2026-05-09
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog
+  in the latest commit so PR #4368 satisfies the last-commit accountability gate
+  enforced by `agent-auth-delegation.yml` / PR Auto-Fix Check Pattern 25.
+
 ### Fixed (S891) — 2026-05-09
 - Refreshed `.secrets.baseline` to classify the high-entropy SHA/pattern-id values
   in `.codex/aftermath/pda_iterations.jsonl` as tracked false positives, preserving
