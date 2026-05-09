@@ -49,8 +49,8 @@
 
 ### 🟡 Phase 6: S897 CI Rescue + Living Docs (IN PROGRESS)
 - [x] Investigated `Detect CI Issues & Post Fix Instructions` failure on `4f10df026238`
-  - Root cause: Pattern 25 (commit `4f10df026238` skipped CHANGELOG/accountability update)
-  - SHA drift + sandbox detection = informational-only false positives
+  - Root cause: Pattern 25 — commit `4f10df026238` skipped CHANGELOG/accountability update
+  - SHA drift (GITHUB_SHA ≠ git HEAD) + sandbox detection = informational-only false positives from GitHub's merge-preview synthetic commit
 - [x] Merged 5 remote [skip ci] auto-commits with conflict resolution
 - [x] Confirmed all local validations clean (ruff ✅ · mypy 130 ✅ · auto_fix clean ✅)
 - [x] Updated CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25 ✅)
