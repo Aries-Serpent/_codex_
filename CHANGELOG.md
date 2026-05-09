@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S905-codeql-security) — 2026-05-09
+- `DocumentationContent.tsx`: replaced regex-based `sanitize()` with a `DOMParser`-based sanitizer — fixes CodeQL alerts 13439–13444 (incomplete multi-character sanitization / bad HTML filtering regexp). DOMParser handles all malformed-markup edge cases (trailing whitespace in end tags, event handlers without leading whitespace, mixed-case tag names) that regex approaches miss.
+- `DocumentationViewer.tsx`: escape backslashes before other Markdown special characters in offline fallback path embedding — fixes CodeQL alert 13445 (incomplete string escaping).
+
 ### Added (S903-doc-viewer) — 2026-05-09
 - Scaffolded `cognitive_app/src/components/documentation/` module: `DocumentationViewer.tsx`, `DocumentationContent.tsx`, `MermaidDiagram.tsx`, `documentation-data.ts`, `documentation-search.ts`, `index.ts`.
 - Added `mermaid ^11.4.1` and `marked ^15.0.12` to `cognitive_app/package.json`.

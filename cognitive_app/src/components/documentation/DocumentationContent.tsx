@@ -22,23 +22,81 @@ interface DocumentationContentProps {
   className?: string;
 }
 
-// HTML sanitizer — removes dangerous tags and attributes.
-// Strips <script>, <iframe>, <object>, <embed>, event handlers, and
-// javascript:/data: URL schemes before the HTML reaches the DOM.
+// HTML sanitizer — removes dangerous tags and attributes using DOMParser.
+//
+// Using DOMParser (browser-native) instead of regex is more robust: it
+// handles all malformed markup edge-cases that regex approaches miss
+// (e.g. `<script >`, event handlers without leading whitespace, mixed-case
+// tag names, CDATA sections, etc.).
+//
+// Dangerous element types are removed from the parsed DOM tree entirely.
+// On every remaining element, event-handler attributes (on*) are stripped
+// and URL attributes are checked against an allowlist of safe schemes.
+//
+// A conservative HTML-entity-encoding fallback is provided for non-browser contexts.
 function sanitize(html: string): string {
-  return html
-    // Remove script, iframe, object, embed blocks entirely
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
-    .replace(/<embed\b[^>]*>/gi, '')
-    // Remove inline event handlers (on*)
-    .replace(/\s+on\w+\s*=\s*"[^"]*"/gi, '')
-    .replace(/\s+on\w+\s*=\s*'[^']*'/gi, '')
-    .replace(/\s+on\w+\s*=\s*[^\s>]*/gi, '')
-    // Strip javascript: and data: URL schemes from href/src attributes
-    .replace(/(href|src)\s*=\s*["']\s*javascript:[^"']*/gi, '$1="#"')
-    .replace(/(href|src)\s*=\s*["']\s*data:[^"']*/gi, '$1="#"');
+  if (typeof document === 'undefined') {
+    // Non-browser (SSR/test) fallback: encode every character that has HTML
+    // special meaning so nothing in the string can be interpreted as markup.
+    return html
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Remove dangerous element types entirely
+  const DANGEROUS_TAGS = [
+    'script', 'iframe', 'object', 'embed', 'link', 'meta',
+    'base', 'form', 'input', 'button', 'select', 'textarea',
+    'style', 'frame', 'frameset', 'applet', 'svg', 'math',
+  ];
+  DANGEROUS_TAGS.forEach((tag) => {
+    doc.querySelectorAll(tag).forEach((el) => el.remove());
+  });
+
+  // Attributes that carry URLs and therefore need scheme validation
+  const URL_ATTRS = new Set([
+    'href', 'src', 'action', 'xlink:href', 'formaction',
+    'data', 'poster', 'background', 'cite', 'longdesc',
+  ]);
+
+  // Allowlist: only these URL schemes are considered safe.
+  // This is safer than a denylist because it automatically blocks new
+  // dangerous schemes (vbscript:, blob:, file:, etc.) without explicit listing.
+  const SAFE_URL_RE = /^\s*(https?:|mailto:|#|\/)/i;
+
+  // On every remaining element, strip dangerous attributes
+  doc.querySelectorAll('*').forEach((el) => {
+    const toRemove: string[] = [];
+    for (const attr of Array.from(el.attributes)) {
+      const name = attr.name.toLowerCase();
+      const value = attr.value;
+
+      // Remove all event-handler attributes (onclick, onmouseover, etc.)
+      if (name.startsWith('on')) {
+        toRemove.push(attr.name);
+        continue;
+      }
+
+      // Remove srcdoc (embeds arbitrary HTML)
+      if (name === 'srcdoc') {
+        toRemove.push(attr.name);
+        continue;
+      }
+
+      // For URL attributes: only allow safe schemes (allowlist approach)
+      if (URL_ATTRS.has(name) && value.trim() !== '' && !SAFE_URL_RE.test(value)) {
+        toRemove.push(attr.name);
+        continue;
+      }
+    }
+    toRemove.forEach((n) => el.removeAttribute(n));
+  });
+
+  return doc.body.innerHTML;
 }
 
 // Escape a string for safe insertion into HTML attribute values

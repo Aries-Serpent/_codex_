@@ -43,8 +43,10 @@ async function fetchDocContent(path: string): Promise<string> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.text();
   } catch {
-    // Sanitize path before embedding in Markdown to prevent injection
-    const safePath = path.replace(/[`*_[\]()]/g, '\\$&');
+    // Escape backslashes first, then other Markdown special characters,
+    // so that existing backslashes in the path cannot be used to escape
+    // the surrounding backtick code-span delimiter.
+    const safePath = path.replace(/\\/g, '\\\\').replace(/[`*_[\]()]/g, '\\$&');
     return `_Content for \`${safePath}\` is not available in offline/demo mode._\n\nConnect to GitHub to load live documentation.`;
   }
 }
