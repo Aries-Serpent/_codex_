@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     environments by silencing expected pydantic-settings / psutil fallback noise
   - `codex.__all__` and `codex_cli.app` exports were restored so the package-level
     compatibility tests keep passing on the latest head
+- Addressed final self-review feedback by moving JSON-mode warning/log suppression
+  inside `codex_ml.cli.list_plugins.main()` and documenting the lazy
+  `codex_cli.__getattr__()` export path.
 
 ### Fixed (S893) — 2026-05-09
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog

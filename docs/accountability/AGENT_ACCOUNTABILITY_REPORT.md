@@ -44,6 +44,9 @@
 - The latest frontier run advanced substantially beyond the originally requested
   surfaces; the remaining output in the repaired areas was limited to non-blocking
   environment warnings rather than new failing assertions.
+- Follow-up self-review tightened the `codex_ml.cli.list_plugins` import flow to
+  remove module-level `sys.argv` parsing, and added a docstring to
+  `codex_cli.__getattr__()` before the final push.
 
 ## SESSION SUMMARY — 2026-05-09T03:13Z [auto-generated]
 

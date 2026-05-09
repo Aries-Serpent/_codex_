@@ -22,6 +22,7 @@ __version__ = "0.0.0"
 
 
 def __getattr__(name: str):
+    """Lazily expose ``codex_cli.app`` for compatibility with legacy imports."""
     if name == "app":
         from . import app as app_module
 

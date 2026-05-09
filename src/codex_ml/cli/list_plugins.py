@@ -15,34 +15,6 @@ logger = logging.getLogger(__name__)
 from collections.abc import Iterable, Sequence
 from typing import Any, Optional
 
-_JSON_STDOUT_ONLY = False
-try:
-    _format_index = sys.argv.index("--format")
-except ValueError:
-    pass
-else:
-    _JSON_STDOUT_ONLY = (
-        _format_index + 1 < len(sys.argv) and sys.argv[_format_index + 1] == "json"
-    )
-
-if _JSON_STDOUT_ONLY:
-    logging.disable(logging.CRITICAL)
-    warnings.filterwarnings(
-        "ignore",
-        message="env_file not supported when pydantic_settings unavailable",
-        category=UserWarning,
-    )
-
-from codex_ml.codex_structured_logging import (
-    ArgparseJSONParser,
-    capture_exceptions,
-    init_json_logging,
-    log_event,
-    run_cmd,
-)
-
-_ = run_cmd  # imported for side-effect documentation (structured logging helpers)
-
 _JSON_EPILOG = (
     "JSON schema:\n"
     "{\n"
@@ -166,7 +138,9 @@ def _print_programmatic(snapshot: dict[str, Any]) -> None:
             print(f"    - {item}")
 
 
-def _build_parser() -> ArgparseJSONParser:
+def _build_parser():
+    from codex_ml.codex_structured_logging import ArgparseJSONParser
+
     return ArgparseJSONParser(
         description="List Codex ML plugin registries",
         epilog=_JSON_EPILOG,
@@ -174,129 +148,141 @@ def _build_parser() -> ArgparseJSONParser:
     )
 
 
-@capture_exceptions
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    logger = init_json_logging()
-    parser = _build_parser()
-    parser.add_argument(
-        "--section",
-        choices=["models", "tokenizers", "datasets", "programmatic", "all"],
-        default="all",
-        help="Limit output to a specific registry",
-    )
-    parser.add_argument(
-        "--format",
-        choices=["text", "json"],
-        default="text",
-        help="Output format",
-    )
-    parser.add_argument(
-        "--names-only",
-        action="store_true",
-        help="Emit only plugin names (text format)",
-    )
-    parser.add_argument(
-        "--no-discover",
-        action="store_true",
-        help="Skip entry-point discovery for programmatic registry",
-    )
-
     arg_list = list(argv) if argv is not None else sys.argv[1:]
-    args = parser.parse_args(arg_list)
-
-    emit_logs = args.format != "json"
-
-    # Suppress logging to stderr when in JSON mode to keep output clean
-    if not emit_logs:
-        root_logger = logging.getLogger()
-        root_logger.setLevel(logging.CRITICAL + 1)  # Disable all logging
-
-    if emit_logs:
-        log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
-
-    include_models = args.format == "json" or args.section in {"models", "all"}
-    include_tokenizers = args.format == "json" or args.section in {"tokenizers", "all"}
-    include_datasets = args.format == "json" or args.section in {"datasets", "all"}
-    include_programmatic = args.format == "json" or args.section in {
-        "programmatic",
-        "all",
-    }
-
-    with contextlib.ExitStack() as stack:
-        if not emit_logs:
-            stack.enter_context(contextlib.redirect_stderr(io.StringIO()))
-            stack.enter_context(warnings.catch_warnings())
-            warnings.simplefilter("ignore")
-
-        models = _list_models_safe() if include_models else []
-        tokenizers = _list_tokenizers_safe() if include_tokenizers else []
-        datasets = _list_datasets_safe() if include_datasets else []
-        programmatic = (
-            _programmatic_registry_snapshot(discover=not args.no_discover)
-            if include_programmatic
-            else {"names": [], "discovered": []}
+    if "--format" in arg_list and "json" in arg_list:
+        logging.disable(logging.CRITICAL)
+        warnings.filterwarnings(
+            "ignore",
+            message="env_file not supported when pydantic_settings unavailable",
+            category=UserWarning,
         )
 
-    summary = {
-        "section": args.section,
-        "format": args.format,
-        "names_only": bool(args.names_only),
-        "discover": not args.no_discover,
-        "models": len(models) if include_models else None,
-        "tokenizers": len(tokenizers) if include_tokenizers else None,
-        "datasets": len(datasets) if include_datasets else None,
-        "programmatic": len(programmatic.get("names", [])) if include_programmatic else None,
-    }
+    from codex_ml.codex_structured_logging import capture_exceptions, init_json_logging, log_event
 
-    if args.format == "json":
-        payload = {
-            "programmatic": programmatic,
-            "legacy": {
-                "models": models,
-                "tokenizers": tokenizers,
-                "datasets": datasets,
-            },
-            "options": {
-                "discover": not args.no_discover,
-                "names_only": bool(args.names_only),
-                "section": args.section,
-                "format": "json",
-            },
+    @capture_exceptions
+    def _run(parsed_args: Sequence[str]) -> int:
+        logger = init_json_logging()
+        parser = _build_parser()
+        parser.add_argument(
+            "--section",
+            choices=["models", "tokenizers", "datasets", "programmatic", "all"],
+            default="all",
+            help="Limit output to a specific registry",
+        )
+        parser.add_argument(
+            "--format",
+            choices=["text", "json"],
+            default="text",
+            help="Output format",
+        )
+        parser.add_argument(
+            "--names-only",
+            action="store_true",
+            help="Emit only plugin names (text format)",
+        )
+        parser.add_argument(
+            "--no-discover",
+            action="store_true",
+            help="Skip entry-point discovery for programmatic registry",
+        )
+
+        args = parser.parse_args(list(parsed_args))
+        emit_logs = args.format != "json"
+        if not emit_logs:
+            root_logger = logging.getLogger()
+            root_logger.setLevel(logging.CRITICAL + 1)
+
+        if emit_logs:
+            log_event(logger, "cli.start", prog=parser.prog, args=list(parsed_args))
+
+        include_models = args.format == "json" or args.section in {"models", "all"}
+        include_tokenizers = args.format == "json" or args.section in {"tokenizers", "all"}
+        include_datasets = args.format == "json" or args.section in {"datasets", "all"}
+        include_programmatic = args.format == "json" or args.section in {
+            "programmatic",
+            "all",
         }
-        print(json.dumps(payload, indent=2))
+
+        with contextlib.ExitStack() as stack:
+            if not emit_logs:
+                stack.enter_context(contextlib.redirect_stderr(io.StringIO()))
+                stack.enter_context(warnings.catch_warnings())
+                warnings.simplefilter("ignore")
+
+            models = _list_models_safe() if include_models else []
+            tokenizers = _list_tokenizers_safe() if include_tokenizers else []
+            datasets = _list_datasets_safe() if include_datasets else []
+            programmatic = (
+                _programmatic_registry_snapshot(discover=not args.no_discover)
+                if include_programmatic
+                else {"names": [], "discovered": []}
+            )
+
+        summary = {
+            "section": args.section,
+            "format": args.format,
+            "names_only": bool(args.names_only),
+            "discover": not args.no_discover,
+            "models": len(models) if include_models else None,
+            "tokenizers": len(tokenizers) if include_tokenizers else None,
+            "datasets": len(datasets) if include_datasets else None,
+            "programmatic": (
+                len(programmatic.get("names", [])) if include_programmatic else None
+            ),
+        }
+
+        if args.format == "json":
+            payload = {
+                "programmatic": programmatic,
+                "legacy": {
+                    "models": models,
+                    "tokenizers": tokenizers,
+                    "datasets": datasets,
+                },
+                "options": {
+                    "discover": not args.no_discover,
+                    "names_only": bool(args.names_only),
+                    "section": args.section,
+                    "format": "json",
+                },
+            }
+            print(json.dumps(payload, indent=2))
+            if emit_logs:
+                log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
+            return 0
+
+        if args.names_only:
+            sections: list[Iterable[str]] = []
+            if include_programmatic:
+                sections.append(programmatic.get("names", []))
+            if include_models:
+                sections.append(models)
+            if include_tokenizers:
+                sections.append(tokenizers)
+            if include_datasets:
+                sections.append(datasets)
+            names = _unique(sections)
+            for name in names:
+                print(name)
+            if emit_logs:
+                log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
+            return 0
+
+        if include_programmatic and args.section in {"programmatic", "all"}:
+            _print_programmatic(programmatic)
+        if include_models and args.section in {"models", "all"}:
+            _print_lines("Models", models)
+        if include_tokenizers and args.section in {"tokenizers", "all"}:
+            _print_lines("Tokenizers", tokenizers)
+        if include_datasets and args.section in {"datasets", "all"}:
+            _print_lines("Datasets", datasets)
+
         if emit_logs:
             log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
         return 0
 
-    if args.names_only:
-        sections: list[Iterable[str]] = []
-        if include_programmatic:
-            sections.append(programmatic.get("names", []))
-        if include_models:
-            sections.append(models)
-        if include_tokenizers:
-            sections.append(tokenizers)
-        if include_datasets:
-            sections.append(datasets)
-        names = _unique(sections)
-        for name in names:
-            print(name)
-        if emit_logs:
-            log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
-        return 0
-
-    if include_programmatic and args.section in {"programmatic", "all"}:
-        _print_programmatic(programmatic)
-    if include_models and args.section in {"models", "all"}:
-        _print_lines("Models", models)
-    if include_tokenizers and args.section in {"tokenizers", "all"}:
-        _print_lines("Tokenizers", tokenizers)
-    if include_datasets and args.section in {"datasets", "all"}:
-        _print_lines("Datasets", datasets)
-
-    if emit_logs:
-        log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
-    return 0
+    return _run(arg_list)
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
