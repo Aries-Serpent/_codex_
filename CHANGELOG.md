@@ -10,7 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4376)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4376 (SHA `2ab6246f`) at 2026-05-09T10:53Z [auto-generated]
 
-### Fixed (S901-groundwork) — 2026-05-09
+### Fixed (S902-sync-fix) — 2026-05-09
+- Repaired `sync_tracked_files` stale CODEX_MANIFEST entry for `.secrets.baseline` (hash 004c0b→c30b07).
+
+
 - Fixed Pattern 12 line-length violation in `src/codex_ml/cli/evaluate.py:478`.
 - Opened implementation PR for Documentation Viewer + CI/CD workflow layer plan.
 
