@@ -4,17 +4,22 @@
  * Uses the `marked` library for Markdown → HTML conversion.
  * Mermaid fenced code blocks (```mermaid) are extracted and rendered
  * via <MermaidDiagram>.
+ * Math expressions ($$...$$  block, $...$ inline) are rendered via KaTeX.
  * GitHub-flavoured links of the form `[file:path]` are converted to
  * in-app navigation callbacks.
+ * Template variables ({{var}}) are substituted via DocVariableContext.
  *
  * Content originates from the repository's own Markdown files (trusted
  * source). The sanitizer strips all event handlers, javascript: URLs,
  * <script>, <iframe>, and <object> elements before rendering.
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext } from 'react';
 import { marked } from 'marked';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 import { MermaidDiagram } from './MermaidDiagram';
+import { DocVariableContext, applyVariables } from './DocVariableContext';
 
 interface DocumentationContentProps {
   markdown: string;
@@ -116,6 +121,54 @@ function escapeHtml(s: string): string {
     .replace(/>/g, '&gt;');
 }
 
+// ---------------------------------------------------------------------------
+// KaTeX math rendering
+// ---------------------------------------------------------------------------
+
+/**
+ * Render a KaTeX math expression to HTML.
+ * Returns an error span on parse failure (never throws).
+ */
+function renderMath(expr: string, displayMode: boolean): string {
+  try {
+    return katex.renderToString(expr, {
+      displayMode,
+      throwOnError: false,
+      strict: 'warn',
+      trust: false,
+    });
+  } catch {
+    const safe = escapeHtml(expr);
+    return `<span class="katex-error text-destructive font-mono text-xs">${safe}</span>`;
+  }
+}
+
+/**
+ * Pre-process Markdown text, replacing math delimiters with KaTeX HTML.
+ *
+ * Handles (in order):
+ *   1. Display math: $$...$$
+ *   2. Inline math:  $...$
+ *
+ * The replacement runs BEFORE marked.parse() so that marked doesn't
+ * try to parse the math expressions as Markdown.
+ */
+function processMath(md: string): string {
+  // Display math: $$...$$  (non-greedy, allow newlines)
+  let result = md.replace(/\$\$([\s\S]+?)\$\$/g, (_, expr: string) => {
+    return renderMath(expr.trim(), true);
+  });
+  // Inline math: $...$  (no newlines allowed inside)
+  result = result.replace(/\$([^\n$]+?)\$/g, (_, expr: string) => {
+    return renderMath(expr.trim(), false);
+  });
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Segment splitting (Mermaid blocks + markdown/math)
+// ---------------------------------------------------------------------------
+
 // Split markdown into text segments and mermaid blocks
 interface Segment {
   type: 'markdown' | 'mermaid';
@@ -165,11 +218,19 @@ export const DocumentationContent: React.FC<DocumentationContentProps> = ({
   onNavigate,
   className = '',
 }) => {
-  const segments = useMemo(() => splitSegments(markdown), [markdown]);
+  const variables = useContext(DocVariableContext);
+
+  // Apply {{var}} template substitution using the shared utility, then split into segments
+  const segments = useMemo(() => {
+    const processed = variables.size > 0 ? applyVariables(markdown, variables) : markdown;
+    return splitSegments(processed);
+  }, [markdown, variables]);
 
   const renderMarkdown = (md: string): string => {
     try {
-      const raw = marked.parse(md, { async: false }) as string;
+      // Process math BEFORE markdown parsing to preserve LaTeX syntax
+      const mathProcessed = processMath(md);
+      const raw = marked.parse(mathProcessed, { async: false }) as string;
       return sanitize(processFileLinks(raw, onNavigate));
     } catch {
       return `<pre class="font-mono text-sm whitespace-pre-wrap">${escapeHtml(md)}</pre>`;

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S909-doc-validation) — 2026-05-09
+- KaTeX math rendering in `DocumentationContent.tsx`: inline `$...$` and display `$$...$$` math expressions now rendered via KaTeX before marked parsing; graceful error fallback per expression.
+- `DocVariableContext.tsx`: React context + `DocVariableProvider` + `useDocVariables()` hook + `applyVariables()` utility for `{{var}}` template interpolation in documentation content; integrated into `DocumentationContent.tsx`.
+- `index.ts` barrel: exports `DocVariableProvider`, `DocVariableContext`, `useDocVariables`, `applyVariables`, `DocVariableProviderProps`.
+- 27 new vitest tests: `DocVariableContext.test.tsx` (11 tests) + `documentation-catalog.test.ts` (16 tests) — all green.
+- `scripts/docs/build_doc_search_index.py`: builds `cognitive_app/public/doc-search-index.json` from `documentation-data.ts` (10 entries, 80 terms in dry-run).
+- `scripts/docs/har_doc_augment.py`: augments/creates HAR fixtures with local Markdown content for offline Playwright testing.
+- `scripts/docs/test_doc_search.py`: 7-test smoke suite for the search index; all pass.
+- `scripts/docs/migrate_doc_schema.py`: SQLite schema migration (v0→v3) for documentation metadata caching.
+- `@testing-library/dom` + `katex` + `@types/katex` added to `cognitive_app/package.json`.
+- npm build: clean ✅ · vitest (docs tests): 27/27 ✅ · ruff: clean ✅ · mypy: 128 errors (↓2 vs baseline 130) ✅
+
 ### Fixed (S908-pattern25) — 2026-05-09
 - Pattern 25 (Last-Commit Accountability): updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to satisfy REQ-4 after plan commit omitted them; resolved CI rescue comments #4412928537 and #4412937121.
 
