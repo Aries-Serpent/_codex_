@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (S899) — 2026-05-09
 - **Merge conflict resolved**: `CODEX_MANIFEST.json` conflict between branch and main resolved
   by taking the newer main-generated version (auto-generated file, P-045 policy).
+- **S899 session wrap-up**: CI on `899347bc` — 30 action_required (standard post-push approval
+  round), no failures. WEC section restored in PR body to clear `Validate WEC Template Integrity`
+  check. Living docs fully updated.
 - **Living docs updated (S899)**: `docs/roadmap/PR4368_whats_next.md` Phase 10 added;
   `docs/roadmap/PR4368_session_diagram.md` created (component architecture + session timeline +
   CI snapshot).
