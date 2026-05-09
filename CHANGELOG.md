@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S914-approval-dispatch) — 2026-05-09
+- Pattern 25 restored after automated [skip ci] sweep commits (`bc80987d`, `9f8f041d`) omitted CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updates. Continued per Approval Dispatch at `decfcda4`.
+
 ### Fixed (S913-approval-dispatch) — 2026-05-09
 - Pattern 25 restored after automated [skip ci] sweep commits omitted CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updates. Continued per Approval Dispatch at `a8233246`.
 
