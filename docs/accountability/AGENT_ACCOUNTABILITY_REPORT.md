@@ -17,6 +17,7 @@
   - Added test asserting checkpoint configuration fails fast in stub mode.
   - Added complementary test asserting checkpoint configuration is accepted when real torch is available.
   - Added persistence assertion for real-torch path to confirm checkpoint directory wiring and `.pt` artifact creation after a minimal epoch.
+  - Removed stale checkpoint-file assertion from the base train-loop test to keep responsibilities split cleanly between core-loop and checkpoint-specific tests.
 - Validation completed:
   - `ruff` on touched files ✅
   - `pytest -x tests/unit/test_trainer_module.py tests/training/test_trainer.py tests/space_traversal/test_artifact_pipeline.py` ✅ (`9 passed, 3 skipped`)

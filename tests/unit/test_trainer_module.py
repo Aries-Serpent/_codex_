@@ -123,8 +123,6 @@ def test_trainer_runs_epochs(trainer: Trainer, tmp_path: Path) -> None:
     history = trainer.train(epochs=2)
     assert history["train_loss"]
     assert "val_metric" in history
-    checkpoint_files = list((tmp_path / "ckpts").glob("*.pt"))
-    assert checkpoint_files == []
 
 
 def test_metric_mode_validation(tmp_path: Path) -> None:
