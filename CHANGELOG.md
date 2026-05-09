@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S894) — 2026-05-09
+- Continued the PR #4368 `pytest -x` frontier and fixed additional current-head
+  compatibility regressions:
+  - `src.tokenization.api._LegacyTokenizerProxy.__getattr__()` now raises
+    `ImportError` when the canonical adapter is unavailable, matching the
+    deprecated proxy’s call-path behavior
+  - `tests/utils/test_codex_utils_offline.py` now stubs `psutil` safely when the
+    dependency is absent, preserving offline metrics coverage in minimal envs
+  - `tests/test_train_tokenizer.py` now provides the missing lightweight
+    `tokenizers.decoders.ByteLevel` stub required by `src.tokenization.train_tokenizer`
+  - `codex_ml.cli.list_plugins --format json` now stays quiet on stderr in minimal
+    environments by silencing expected pydantic-settings / psutil fallback noise
+  - `codex.__all__` and `codex_cli.app` exports were restored so the package-level
+    compatibility tests keep passing on the latest head
+
 ### Fixed (S893) — 2026-05-09
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog
   in the latest commit so PR #4368 satisfies the last-commit accountability gate

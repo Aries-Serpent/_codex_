@@ -5,6 +5,49 @@
 ## SESSION SUMMARY — 2026-05-09T03:21Z [auto-generated]
 
 **Session:** auto-20260509T0321-run192639 | **Run:** 25590204433 | **Date:** 2026-05-09
+## SESSION SUMMARY — 2026-05-09T03:02Z [S894]
+
+**Session:** S894 | **PR:** #4368 | **Branch:** `copilot/update-safe-pickle-import`
+**Agent:** copilot-swe-agent[bot]
+
+### Objectives Completed
+- ✅ Re-ran the `python3 -m pytest -x` frontier on the newest branch head and fixed
+  four newly surfaced code-fixable failures:
+  - restored `src.tokenization.api._LegacyTokenizerProxy.__getattr__()` to raise
+    `ImportError` when the canonical adapter is unavailable, matching the proxy’s
+    existing call-path contract and compatibility tests
+  - hardened `tests/utils/test_codex_utils_offline.py` so the psutil-backed system
+    metrics test works whether `psutil` is installed or absent
+  - completed the lightweight `tokenizers` stub in `tests/test_train_tokenizer.py`
+    with a `decoders.ByteLevel` shim so tokenizer-training imports succeed in
+    minimal environments
+  - suppressed import-time stderr noise for `codex_ml.cli.list_plugins --format json`
+    and restored the expected lazy `codex.app` / `codex_cli.app` package exports
+- ✅ Re-checked the previously reported Copilot review findings in
+  `src/codex_ml/utils/safe_pickle.py` and confirmed the current head still includes
+  the intended atomic key creation, versioned signed-payload header parsing, tighter
+  allowlist comments, and non-noisy signature verification logging.
+
+### Validation Snapshot
+- `python3 -m ruff check` ✅ on all changed source and test files
+- `python scripts/ci/mypy_baseline.py --require-baseline` ✅
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅ except expected
+  Pattern 25 before refreshing this accountability report in the final commit
+- `python scripts/ci/sync_tracked_files.py --fix` ✅
+- `python3 -m pytest tests/tokenization/test_api_comprehensive.py::test_proxy_getattr_with_none_canonical -x` ✅
+- `python3 -m pytest tests/utils/test_codex_utils_offline.py::test_sample_system_metrics_with_psutil -x` ✅
+- `python3 -m pytest tests/test_train_tokenizer.py::test_train_tokenizer_no_corpus_raises -x` ✅
+- `python3 -m pytest tests/plugins/test_list_plugins_cli_json_stdout_only.py tests/plugins/test_list_plugins_cli_json.py tests/plugins/test_list_plugins_cli_stdout_stderr.py -x` ✅
+- `python3 -m pytest tests/src/test_codex_init_phase9_2.py::TestCodexPackageExports::test_all_count tests/src/test_codex_init_phase9_2.py::TestCodexPackageExports::test_module_names_in_all -x` ✅
+
+### Notes
+- The latest frontier run advanced substantially beyond the originally requested
+  surfaces; the remaining output in the repaired areas was limited to non-blocking
+  environment warnings rather than new failing assertions.
+
+## SESSION SUMMARY — 2026-05-09T03:13Z [auto-generated]
+
+**Session:** auto-20260509T0313-run3441 | **Run:** 25589800986 | **Date:** 2026-05-09
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-05-09T02:46Z [S893]

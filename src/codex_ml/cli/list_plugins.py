@@ -2,15 +2,36 @@
 
 from __future__ import annotations
 
+import argparse
+import contextlib
+import io
+import json
 import logging
+import sys
+import warnings
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import json
-import sys
 from collections.abc import Iterable, Sequence
 from typing import Any, Optional
+
+_JSON_STDOUT_ONLY = False
+try:
+    _format_index = sys.argv.index("--format")
+except ValueError:
+    pass
+else:
+    _JSON_STDOUT_ONLY = (
+        _format_index + 1 < len(sys.argv) and sys.argv[_format_index + 1] == "json"
+    )
+
+if _JSON_STDOUT_ONLY:
+    logging.disable(logging.CRITICAL)
+    warnings.filterwarnings(
+        "ignore",
+        message="env_file not supported when pydantic_settings unavailable",
+        category=UserWarning,
+    )
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -201,14 +222,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "all",
     }
 
-    models = _list_models_safe() if include_models else []
-    tokenizers = _list_tokenizers_safe() if include_tokenizers else []
-    datasets = _list_datasets_safe() if include_datasets else []
-    programmatic = (
-        _programmatic_registry_snapshot(discover=not args.no_discover)
-        if include_programmatic
-        else {"names": [], "discovered": []}
-    )
+    with contextlib.ExitStack() as stack:
+        if not emit_logs:
+            stack.enter_context(contextlib.redirect_stderr(io.StringIO()))
+            stack.enter_context(warnings.catch_warnings())
+            warnings.simplefilter("ignore")
+
+        models = _list_models_safe() if include_models else []
+        tokenizers = _list_tokenizers_safe() if include_tokenizers else []
+        datasets = _list_datasets_safe() if include_datasets else []
+        programmatic = (
+            _programmatic_registry_snapshot(discover=not args.no_discover)
+            if include_programmatic
+            else {"names": [], "discovered": []}
+        )
 
     summary = {
         "section": args.section,
