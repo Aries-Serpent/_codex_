@@ -103,7 +103,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "fix(ci): auto-fix common CI issues
+            git commit -m "fix(ci): auto-fix common CI issues [skip ci]
 
           Applied automatic fixes for:
           - Unused imports (ruff F401)

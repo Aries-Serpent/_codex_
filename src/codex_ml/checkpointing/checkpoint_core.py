@@ -31,12 +31,21 @@ def _ensure_dir(p: str) -> None:
     os.makedirs(p, exist_ok=True)
 
 
+def _require_torch_attr(name: str) -> Any:
+    """Return a required torch callable or raise a consistent RuntimeError."""
+    if torch is None:
+        raise RuntimeError("PyTorch required to use checkpoints")
+    attr = getattr(torch, name, None)
+    if attr is None:
+        raise RuntimeError(f"PyTorch is missing required attribute: {name}")
+    return attr
+
+
 def save_checkpoint(
     out_dir: str, *, state: dict[str, Any], meta: dict[str, Any], keep_last_k: int = 5
 ) -> str:
     _ensure_dir(out_dir)
-    if torch is None:
-        raise RuntimeError("PyTorch required to save checkpoints")
+    torch_save = _require_torch_attr("save")
     weights = os.path.join(out_dir, "weights.pt")
     metadata = os.path.join(out_dir, "metadata.json")
 
@@ -49,10 +58,10 @@ def save_checkpoint(
 
     # Use new zipfile serialization to avoid pickling issues with torch.Storage
     try:
-        torch.save(payload, weights, _use_new_zipfile_serialization=True)
+        torch_save(payload, weights, _use_new_zipfile_serialization=True)
     except (TypeError, AttributeError):
         # Fallback for older PyTorch versions that don't support this parameter
-        torch.save(payload, weights)
+        torch_save(payload, weights)
 
     # Include schema version in metadata for validation
     with open(metadata, "w", encoding="utf-8") as f:
@@ -87,26 +96,27 @@ def load_checkpoint(
     Security note: Checkpoint files should only be loaded from trusted sources.
     torch.load can execute arbitrary code during deserialization.
     """
-    if torch is None:
-        raise RuntimeError("PyTorch required to load checkpoints")
+    torch_load = _require_torch_attr("load")
     if os.path.isdir(path):
         weights = os.path.join(path, "weights.pt")
         metadata = os.path.join(path, "metadata.json")
     else:
         weights = path
         metadata = os.path.join(os.path.dirname(path), "metadata.json")
+    if not os.path.exists(weights):
+        raise FileNotFoundError(f"Checkpoint weights not found: {weights}")
     kwargs: dict[str, Any] = {}
     if map_location is not None:
         kwargs["map_location"] = map_location
     if _torch_supports_weights_only():
         kwargs["weights_only"] = False
     try:
-        payload = torch.load(weights, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
+        payload = torch_load(weights, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
     except TypeError as exc:
         logger.debug(f"TypeError: {exc}")
         if "weights_only" in kwargs and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
-            payload = torch.load(weights, **kwargs)  # nosec B614 - Retrying without weights_only parameter
+            payload = torch_load(weights, **kwargs)  # nosec B614 - Retrying without weights_only parameter
         else:
             raise
     meta: dict[str, Any] = {}

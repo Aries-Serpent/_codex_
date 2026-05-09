@@ -178,9 +178,7 @@ class TestSafeguardsValidation:
         """Test error handling structure."""
         # Validation: negative epochs should raise error
         with pytest.raises(ValueError, match="positive"):
-            epochs = -1
-            if epochs < 0:
-                raise ValueError("Epochs must be positive")
+            raise ValueError("Epochs must be positive")
 
 
 class TestMonitoringTelemetry:

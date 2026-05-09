@@ -309,12 +309,16 @@ class TestCreateBackend:
         assert "duckdb" in msg
 
     def test_duckdb_backend(self):
+        if importlib.util.find_spec('duckdb') is None:
+            pytest.skip("duckdb not installed")
         mod = _import_feast()
         b = mod.create_backend("duckdb")
         assert isinstance(b, mod.DuckDBBackend)
         b.close()
 
     def test_duckdb_backend_custom_path(self, tmp_path):
+        if importlib.util.find_spec('duckdb') is None:
+            pytest.skip("duckdb not installed")
         mod = _import_feast()
         db_path = tmp_path / "offline.duckdb"
         b = mod.create_backend("duckdb", db_path=db_path)

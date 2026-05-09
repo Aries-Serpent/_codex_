@@ -59,7 +59,8 @@ def _discover_rows(db_path, session_id):
         q = f"SELECT * FROM {t} WHERE {c_session}=?"
         cur.execute(q, (session_id,))
         for r in cur.fetchall():
-            rows.append({k: r[k] for k in r})
+            # sqlite3.Row iterates values, not column names, so use dict(row).
+            rows.append(dict(r))
     con.close()
     return rows
 

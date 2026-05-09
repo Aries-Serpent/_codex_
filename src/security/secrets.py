@@ -86,8 +86,9 @@ class SecretRotationState:
 
     def remember(self, secret: str) -> None:
         self.history.append(secret)
-        if len(self.history) > SecretRotationPolicy().history_size:
-            self.history = self.history[-SecretRotationPolicy().history_size :]
+        policy = SecretRotationPolicy()
+        if len(self.history) > policy.history_size:
+            self.history = self.history[-policy.history_size :]
 
 
 def rotate_secret(

@@ -2,7 +2,6 @@
 Reference Python plugin implementation.
 """
 
-import importlib.util
 from pathlib import Path
 
 from codex.ast import parse_python
@@ -52,4 +51,7 @@ class PythonPlugin(ASTPlugin):
 
     def validate(self) -> bool:
         """Validate plugin is ready."""
-        return importlib.util.find_spec("libcst") is not None
+        try:
+            return parse_python("def _validate():\n    return True\n", "validate.py") is not None
+        except Exception:
+            return False

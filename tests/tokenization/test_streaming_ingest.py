@@ -10,6 +10,10 @@ import pytest
 
 from src.tokenization import train_tokenizer as module
 
+pytestmark = pytest.mark.skipif(
+    module is None, reason="tokenizers not available — train_tokenizer module not loaded"
+)
+
 
 def test_iter_text_uses_configured_chunk_size(monkeypatch):
     calls: list[tuple[str, str, int | None]] = []

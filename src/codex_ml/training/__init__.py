@@ -6,6 +6,7 @@ import warnings
 from collections.abc import Mapping, Sequence
 from typing import Any
 
+from . import legacy_api as _legacy_api_module
 from .device_strategy import DeviceConfig, DeviceMapper
 from .dp_config import DifferentialPrivacyConfig, make_private_model
 from .legacy_api import (
@@ -15,7 +16,10 @@ from .legacy_api import (
     TrainingRunConfig,
     _evaluate_model,
     build_dataloader,
+    export_environment,
     get_hf_revision,
+    sanitize_prompt,
+    set_reproducible,
 )
 from .legacy_api import (
     run_functional_training as _legacy_run_functional_training,
@@ -67,6 +71,9 @@ __all__ = [
     "run_functional_training",
     "run_functional_training",
     "run_unified_training",
+    "sanitize_prompt",
+    "set_reproducible",
+    "export_environment",
     "set_seed",
 ]
 
@@ -88,4 +95,7 @@ def run_functional_training(
         DeprecationWarning,
         stacklevel=2,
     )
+    _legacy_api_module.sanitize_prompt = sanitize_prompt
+    _legacy_api_module.set_reproducible = set_reproducible
+    _legacy_api_module.export_environment = export_environment
     return _legacy_run_functional_training(*args, **kwargs)

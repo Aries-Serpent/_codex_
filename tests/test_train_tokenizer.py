@@ -17,11 +17,20 @@ def _stub_tokenizers(monkeypatch):
     """Provide a lightweight tokenizers stub so imports succeed without deps."""
 
     if "tokenizers" in sys.modules:
+        stub = sys.modules["tokenizers"]
+        if not hasattr(stub, "decoders"):
+            monkeypatch.setattr(
+                stub,
+                "decoders",
+                SimpleNamespace(ByteLevel=lambda: None),
+                raising=False,
+            )
         return
 
     stub = SimpleNamespace(
         SentencePieceUnigramTokenizer=lambda *args, **kwargs: None,
         Tokenizer=lambda *args, **kwargs: None,
+        decoders=SimpleNamespace(ByteLevel=lambda: None),
         models=SimpleNamespace(BPE=lambda *args, **kwargs: None),
         normalizers=SimpleNamespace(NFKC=lambda: None),
         pre_tokenizers=SimpleNamespace(ByteLevel=lambda: None),

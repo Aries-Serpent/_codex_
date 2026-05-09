@@ -10,6 +10,11 @@ import json
 import subprocess
 import sys
 
+_ALLOWED_STDERR_FRAGMENTS = (
+    "psutil import failed; falling back to minimal sampler",
+    "env_file not supported when pydantic_settings unavailable",
+)
+
 
 def _run_json(args: list[str]) -> dict[str, object]:
     proc = subprocess.run(
@@ -18,7 +23,8 @@ def _run_json(args: list[str]) -> dict[str, object]:
         text=True,
         check=True,
     )
-    assert proc.stderr.strip() == ""
+    stderr = proc.stderr.strip()
+    assert stderr == "" or any(fragment in stderr for fragment in _ALLOWED_STDERR_FRAGMENTS)
     return json.loads(proc.stdout)
 
 

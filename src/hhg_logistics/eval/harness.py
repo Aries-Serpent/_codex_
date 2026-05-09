@@ -99,5 +99,9 @@ def main(cfg: DictConfig):
     return payload
 
 
+if not hasattr(main, "__wrapped__"):
+    main.__wrapped__ = main
+
+
 if __name__ == "__main__":
     main()

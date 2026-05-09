@@ -254,6 +254,8 @@ class TestErrorHandling:
         with pytest.raises(ValueError):
             raise ValueError("Specific error")
 
+    def test_file_not_found_exception_handling(self):
+        """Test FileNotFoundError handling explicitly."""
         with pytest.raises(FileNotFoundError):
             raise FileNotFoundError("File not found")
 

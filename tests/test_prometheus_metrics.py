@@ -26,6 +26,7 @@ from codex_ml.monitoring.metrics import (
 @pytest.fixture(autouse=True)
 def clear_prometheus_registry():
     """Clear Prometheus registry between tests to prevent collision."""
+    pytest.importorskip("prometheus_client", reason="prometheus_client not installed")
     from prometheus_client import REGISTRY
 
     # Get collectors before test

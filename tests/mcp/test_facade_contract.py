@@ -56,9 +56,9 @@ def fake_adapter_loader(monkeypatch):
         clear_buckets()
     except ImportError:
         _ = None  # suppressed: no action needed
-    monkeypatch.setattr("src.mcp.server.adapter_loader.load_adapter", lambda: (fake, "fake.adapter"))
+    monkeypatch.setattr("mcp.server.adapter_loader.load_adapter", lambda: (fake, "fake.adapter"))
     try:
-        from src.mcp.server import jsonrpc_adapter
+        from mcp.server import jsonrpc_adapter
 
         monkeypatch.setattr(jsonrpc_adapter, "_ADAPTER_LOADER", lambda: (fake, "fake.adapter"))
         jsonrpc_adapter.clear_adapter_cache()
@@ -71,8 +71,8 @@ def _load_app():
     module = importlib.import_module("src.mcp.server.facade_fastapi")
     app = importlib.reload(module).APP
     try:
-        import src.mcp.server.adapter_loader as adapter_loader
-        from src.mcp.server import jsonrpc_adapter
+        import mcp.server.adapter_loader as adapter_loader
+        from mcp.server import jsonrpc_adapter
 
         jsonrpc_adapter.clear_adapter_cache()
         jsonrpc_adapter._ADAPTER_LOADER = adapter_loader.load_adapter
@@ -81,7 +81,7 @@ def _load_app():
     return app
 
 
-def test_calltool_invokes_adapter_query_top_k():
+def test_calltool_invokes_adapter_query_top_k(fake_adapter_loader):
     app = _load_app()
     client = TestClient(app)
     payload = {
@@ -99,8 +99,7 @@ def test_calltool_invokes_adapter_query_top_k():
     assert resp.status_code == 200
     body = resp.json()
     assert "result" in body
-    adapter_loader = importlib.import_module("src.mcp.server.adapter_loader")
-    fake, _ = adapter_loader.load_adapter()
+    fake = fake_adapter_loader
     assert len(fake.query_calls) >= 1
     first = fake.query_calls[0]
     assert first["namespace"] == "tenant-1"

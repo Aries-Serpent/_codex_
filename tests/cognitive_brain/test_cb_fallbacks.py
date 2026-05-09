@@ -1,0 +1,336 @@
+"""Tests for scripts/cognitive/cb_fallbacks.py — shared CB fallback helpers."""
+from __future__ import annotations
+
+import time
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from scripts.cognitive.cb_fallbacks import (
+    import_optional,
+    rate_limited_call,
+    with_fallback,
+)
+
+# ---------------------------------------------------------------------------
+# import_optional
+# ---------------------------------------------------------------------------
+
+class TestImportOptional:
+    def test_returns_module_when_available(self):
+        mod = import_optional("json")
+        assert mod is not None
+        assert hasattr(mod, "dumps")
+
+    def test_returns_none_for_missing_module(self):
+        result = import_optional("_nonexistent_module_xyz_")
+        assert result is None
+
+    def test_returns_attr_from_module(self):
+        dumps = import_optional("json", attr="dumps")
+        import json
+        assert dumps is json.dumps
+
+    def test_returns_none_for_missing_attr(self):
+        result = import_optional("json", attr="_does_not_exist_")
+        assert result is None
+
+    def test_missing_module_with_attr_returns_none(self):
+        result = import_optional("_nonexistent_xyz_", attr="something")
+        assert result is None
+
+
+# ---------------------------------------------------------------------------
+# with_fallback
+# ---------------------------------------------------------------------------
+
+class TestWithFallback:
+    def test_returns_func_result_on_success(self):
+        assert with_fallback(lambda: 42, default=0) == 42
+
+    def test_returns_default_on_exception(self):
+        assert with_fallback(lambda: 1 / 0, default=-1) == -1
+
+    def test_returns_default_on_specified_exc(self):
+        result = with_fallback(
+            lambda: int("bad"),
+            default="fallback",
+            exc_types=(ValueError,),
+        )
+        assert result == "fallback"
+
+    def test_propagates_unspecified_exc(self):
+        with pytest.raises(TypeError):
+            with_fallback(
+                lambda: None + 1,  # type: ignore[operator]
+                default="x",
+                exc_types=(ValueError,),
+            )
+
+    def test_none_default(self):
+        assert with_fallback(lambda: [][0], default=None) is None
+
+    def test_false_default(self):
+        assert with_fallback(lambda: 1 / 0, default=False) is False
+
+
+# ---------------------------------------------------------------------------
+# rate_limited_call
+# ---------------------------------------------------------------------------
+
+class TestRateLimitedCall:
+    def test_calls_func_when_quota_ok(self):
+        mock_func = MagicMock(return_value="result")
+        with patch(
+            "scripts.cognitive.cb_fallbacks._get_trickle_status",
+            return_value={"resources": {"core": {"remaining": 100, "reset": int(time.time()) + 3600}}},
+        ):
+            result = rate_limited_call(mock_func, "arg1", kwarg="kw")
+        mock_func.assert_called_once_with("arg1", kwarg="kw")
+        assert result == "result"
+
+    def test_calls_func_when_trickle_unavailable(self):
+        """Degrades gracefully: no trickle module → proceeds immediately."""
+        mock_func = MagicMock(return_value=99)
+        with patch(
+            "scripts.cognitive.cb_fallbacks._get_trickle_status",
+            return_value={},
+        ):
+            result = rate_limited_call(mock_func)
+        assert result == 99
+
+    def test_waits_and_retries_when_quota_low(self):
+        mock_func = MagicMock(return_value="ok")
+        reset_ts = int(time.time()) + 1  # reset in 1 second
+        statuses = [
+            {"resources": {"core": {"remaining": 0, "reset": reset_ts}}},
+            {"resources": {"core": {"remaining": 100, "reset": reset_ts}}},
+        ]
+        with patch(
+            "scripts.cognitive.cb_fallbacks._get_trickle_status",
+            side_effect=statuses,
+        ), patch("scripts.cognitive.cb_fallbacks.time.sleep") as mock_sleep:
+            result = rate_limited_call(mock_func, min_remaining=10, max_retries=2)
+        assert result == "ok"
+        mock_sleep.assert_called()
+
+    def test_raises_after_max_retries_exhausted(self):
+        exhausted_status = {"resources": {"core": {"remaining": 0, "reset": int(time.time()) + 5}}}
+        with patch(
+            "scripts.cognitive.cb_fallbacks._get_trickle_status",
+            return_value=exhausted_status,
+        ), patch("scripts.cognitive.cb_fallbacks.time.sleep"):
+            with pytest.raises(RuntimeError, match="rate limit exhausted"):
+                rate_limited_call(lambda: None, min_remaining=10, max_retries=1)
+
+    def test_propagates_func_exception(self):
+        with patch(
+            "scripts.cognitive.cb_fallbacks._get_trickle_status",
+            return_value={"resources": {"core": {"remaining": 500, "reset": 0}}},
+        ):
+            with pytest.raises(ValueError, match="boom"):
+                rate_limited_call(lambda: (_ for _ in ()).throw(ValueError("boom")))
+
+    def test_custom_resource_bucket(self):
+        mock_func = MagicMock(return_value="search_result")
+        with patch(
+            "scripts.cognitive.cb_fallbacks._get_trickle_status",
+            return_value={"resources": {"search": {"remaining": 25, "reset": 0}}},
+        ):
+            result = rate_limited_call(mock_func, resource="search", min_remaining=5)
+        assert result == "search_result"
+
+
+# ---------------------------------------------------------------------------
+# Integration: cognitive_brain_core uses cb_fallbacks
+# ---------------------------------------------------------------------------
+
+class TestCognitiveBrainCoreIntegration:
+    def test_perception_tolerates_missing_psutil(self):
+        import tempfile
+
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        with tempfile.TemporaryDirectory() as tmp:
+            layer = PerceptionLayer(workspace=__import__("pathlib").Path(tmp))
+            with patch("scripts.cognitive.cb_fallbacks.import_optional", return_value=None):
+                data = layer.perceive()
+        assert "sources_collected" in data
+        assert data["system_load"] is None
+
+    def test_action_executor_uses_rate_limited_call(self):
+        import tempfile
+
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        with tempfile.TemporaryDirectory() as tmp:
+            executor = ActionExecutor(workspace=__import__("pathlib").Path(tmp))
+            decisions = {
+                "tasks": [
+                    {"agent": 1, "task": "pattern_analysis"},
+                    {"agent": 2, "task": "performance_monitoring"},
+                ],
+            }
+            with patch(
+                "scripts.cognitive.cb_fallbacks._get_trickle_status",
+                return_value={"resources": {"core": {"remaining": 500, "reset": 0}}},
+            ):
+                result = executor.execute(decisions)
+        assert result["tasks_completed"] == 2
+        assert result["success_rate"] == 1.0
+        assert result["failures"] == []
+
+
+# ---------------------------------------------------------------------------
+# S898: PerceptionLayer expanded sensors, MemoryLayer LTM, ActionExecutor targets
+# ---------------------------------------------------------------------------
+
+class TestPerceptionLayerSensors:
+    """Tests for S898 expanded PerceptionLayer sensor set."""
+
+    def test_sensor_names_constant(self):
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        assert "cpu_percent" in PerceptionLayer.SENSOR_NAMES
+        assert "memory_available_mb" in PerceptionLayer.SENSOR_NAMES
+        assert "disk_free_gb" in PerceptionLayer.SENSOR_NAMES
+        assert "net_bytes_sent" in PerceptionLayer.SENSOR_NAMES
+        assert "net_bytes_recv" in PerceptionLayer.SENSOR_NAMES
+        assert "ci_failure_count" in PerceptionLayer.SENSOR_NAMES
+
+    def test_perceive_returns_all_keys(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        layer = PerceptionLayer(tmp_path / "perceptions")
+        data = layer.perceive()
+        assert "sources_collected" in data
+        assert "system_load" in data
+        assert "memory_available_mb" in data
+        assert "disk_free_gb" in data
+        assert "net_bytes_sent" in data
+        assert "net_bytes_recv" in data
+        assert "ci_failure_count" in data
+        assert "sensors_active" in data
+        assert isinstance(data["sensors_active"], list)
+
+    def test_perceive_fallback_when_no_psutil(self, tmp_path, monkeypatch):
+        """Perception must not crash when psutil is unavailable."""
+        from scripts.cognitive import cognitive_brain_core
+        monkeypatch.setattr(
+            cognitive_brain_core, "import_optional", lambda _: None
+        )
+        layer = cognitive_brain_core.PerceptionLayer(tmp_path / "perceptions")
+        data = layer.perceive()
+        assert data["system_load"] is None
+        assert data["memory_available_mb"] is None
+        assert data["disk_free_gb"] is None
+
+    def test_ci_failure_count_reads_rescue_context(self, tmp_path, monkeypatch):
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        rescue = tmp_path / ".codex" / "rescue_context.json"
+        rescue.parent.mkdir(parents=True, exist_ok=True)
+        rescue.write_text('{"failures": ["a", "b", "c"]}')
+        monkeypatch.chdir(tmp_path)
+        count = PerceptionLayer._read_ci_failure_count()
+        assert count == 3
+
+    def test_ci_failure_count_none_when_no_file(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        from scripts.cognitive.cognitive_brain_core import PerceptionLayer
+        assert PerceptionLayer._read_ci_failure_count() is None
+
+
+class TestMemoryLayerLTM:
+    """Tests for S898 MemoryLayer SQLite LTM persistence."""
+
+    def test_store_and_recall_recent(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        snapshot = {"system_load": 12.3, "timestamp": "2026-05-09T00:00:00"}
+        assert mem.store_perception(snapshot, cycle=1)
+        entries = mem.recall_recent(limit=5)
+        assert len(entries) == 1
+        assert entries[0]["cycle"] == 1
+        assert entries[0]["system_load"] == 12.3
+
+    def test_ltm_size(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        assert mem.ltm_size() == 0
+        mem.store_perception({"ts": "a"}, cycle=1)
+        mem.store_perception({"ts": "b"}, cycle=2)
+        assert mem.ltm_size() == 2
+
+    def test_recall_by_cycle(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        mem.store_perception({"val": 42}, cycle=7)
+        result = mem.recall_by_cycle(7)
+        assert result is not None
+        assert result["val"] == 42
+
+    def test_recall_by_cycle_missing(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        assert mem.recall_by_cycle(999) is None
+
+    def test_multiple_cycles_ordered_desc(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import MemoryLayer
+        mem = MemoryLayer(tmp_path / "memory")
+        for i in range(5):
+            mem.store_perception({"val": i}, cycle=i + 1)
+        entries = mem.recall_recent(limit=3)
+        assert len(entries) == 3
+        # Most recent first
+        assert entries[0]["cycle"] > entries[1]["cycle"]
+
+
+class TestActionExecutorDispatchTargets:
+    """Tests for S898 ActionExecutor expanded dispatch targets."""
+
+    def test_dispatch_targets_constant(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        for t in ("internal", "workflow_dispatch", "post_comment", "approve_run"):
+            assert t in ActionExecutor.DISPATCH_TARGETS
+
+    def test_internal_dispatch(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "test", "target": "internal"}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_workflow_dispatch_target(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "validate", "target": "workflow_dispatch",
+                "payload": {"workflow_id": "validate.yml", "ref": "main"}}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_post_comment_target(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "report", "target": "post_comment",
+                "payload": {"body": "All tests passed"}}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_approve_run_target(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1, "task": "approve", "target": "approve_run",
+                "payload": {"run_id": 12345}}
+        assert ActionExecutor._dispatch_task(task) is True
+
+    def test_missing_agent_returns_false(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"task": "test"}
+        assert ActionExecutor._dispatch_task(task) is False
+
+    def test_missing_task_returns_false(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        task = {"agent": 1}
+        assert ActionExecutor._dispatch_task(task) is False
+
+
+class TestCognitiveBrainMemoryIntegration:
+    """Integration test: full PDA cycle persists to LTM."""
+
+    def test_pda_cycle_persists_to_ltm(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import CognitiveBrain
+        brain = CognitiveBrain(workspace_dir=str(tmp_path / "cognitive"))
+        result = brain.run_pda_cycle()
+        assert result["overall_status"] == "success"
+        assert "memory" in result["stages"]
+        # LTM should have exactly 1 entry after 1 cycle
+        assert brain.memory.ltm_size() >= 1

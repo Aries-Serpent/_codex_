@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from scripts.security.verify_token_scope import (
+from scripts.security.verify_token_scope import (  # pragma: allowlist secret
     TokenScopeVerifier,
     verify_github_token,
 )
@@ -129,9 +129,12 @@ class TestTokenScopeVerifier:
         assert results["status"] == "invalid"
         assert results["http_status"] == 401
 
-    def test_verify_scopes_without_token(self):
+    @patch.dict(os.environ, {}, clear=True)
+    @patch("scripts.security.verify_token_scope.os.getenv", return_value=None)
+    def test_verify_scopes_without_token(self, _mock_getenv):
         """Test verification fails gracefully without token."""
         verifier = TokenScopeVerifier(token=None)
+        assert verifier.token is None, "Token should be None when no token or env var is available"
         results = verifier.verify_scopes()
 
         assert results["status"] == "error"

@@ -273,6 +273,7 @@ class TestLoggingIntegration:
     def test_log_propagation(self):
         """Test logs propagate correctly across modules."""
         import logging
+        import logging.handlers
 
         # Create test logger
         logger = logging.getLogger("test.integration")

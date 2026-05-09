@@ -38,11 +38,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
         Ignores unsupported keys like 'env_file' when pydantic_settings is unavailable.
         """
         if config.pop("env_file", None) is not None:
-            warnings.warn(
-                "env_file not supported when pydantic_settings unavailable",
-                UserWarning,
-                stacklevel=2,
-            )
+            logger.debug("Ignoring env_file because pydantic_settings is unavailable")
         # Filter out any keys that ConfigDict doesn't support to avoid TypeErrors
         try:
             return ConfigDict(**config)

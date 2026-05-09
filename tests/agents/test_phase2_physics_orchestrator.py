@@ -237,7 +237,9 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
                 constraints=[],
             )
             assert state is not None
-            assert len(state.options) == 3
+            assert state.context["label"] == "test_context"
+            assert state.constraints == []
+            assert state.available_resources == 1.0
         except (TypeError, ValueError):
             pytest.skip("DecisionState signature different")
 

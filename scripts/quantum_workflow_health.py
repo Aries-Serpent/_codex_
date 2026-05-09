@@ -121,7 +121,7 @@ class QuantumWorkflowHealthAnalyzer:
     def fetch_workflows(self, commit_sha: str) -> list[dict]:
         """Fetch all workflows for a commit"""
         url = f'{self.base_url}/actions/runs'
-        params = {'per_page': 100}
+        params = {'per_page': 100, 'head_sha': commit_sha}
 
         response = requests.get(url, headers=self.headers, params=params)
         response.raise_for_status()

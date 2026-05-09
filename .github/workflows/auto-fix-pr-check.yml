@@ -204,7 +204,7 @@ jobs:
 
             # Commit and push
             git add -A
-            git commit -m "fix(ci): resolve auto-fixable issues"
+            git commit -m "fix(ci): resolve auto-fixable issues [skip ci]"
             git push
             \`\`\`
 

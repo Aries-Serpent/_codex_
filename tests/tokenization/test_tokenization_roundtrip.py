@@ -15,7 +15,10 @@ except ImportError:
 @pytest.mark.skipif(AutoTokenizer is None, reason="transformers not installed")
 @pytest.mark.parametrize("model", ["gpt2"])
 def test_encode_decode_roundtrip(model):
-    tok = AutoTokenizer.from_pretrained(model)  # nosec B615 - Test code with known model ID
+    try:
+        tok = AutoTokenizer.from_pretrained(model)  # nosec B615 - Test code with known model ID
+    except ImportError as exc:
+        pytest.skip(str(exc))
     text = "The quick brown fox jumps over 13 lazy dogs."
     ids = tok.encode(text, add_special_tokens=False)
     out = tok.decode(ids, skip_special_tokens=True)
