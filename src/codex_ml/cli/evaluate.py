@@ -48,12 +48,11 @@ if _HAS_HYDRA:  # pragma: no cover - optional dependency
 
     from omegaconf import OmegaConf
 
-    def _cfg_to_container(cfg: Any) -> Any:
-        return OmegaConf.to_container(cfg, resolve=True)
-else:  # pragma: no cover - optional dependency
 
-    def _cfg_to_container(cfg: Any) -> Any:
-        return cfg
+def _cfg_to_container(cfg: Any) -> Any:
+    if _HAS_HYDRA:
+        return OmegaConf.to_container(cfg, resolve=True)
+    return cfg
 
 torch, _HAS_TORCH = optional_import("torch")
 
@@ -160,7 +159,16 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
 
 
 def _apply_dotlist_overrides(mapping: dict[str, Any], overrides: Sequence[str]) -> dict[str, Any]:
-    """Apply Hydra-style dotlist overrides into a plain mapping."""
+    """Apply Hydra-style ``key.subkey=value`` overrides to a plain mapping.
+
+    Behavior:
+    - Ignores override items that do not contain ``=``.
+    - Splits keys by ``.`` and creates missing intermediate dictionaries.
+    - Replaces non-dict intermediate values with new dictionaries so nested
+      assignment can proceed deterministically.
+    - Parses values with YAML-safe semantics (lists, numbers, booleans).
+    - Ignores empty/invalid key paths after splitting.
+    """
     for item in overrides:
         if "=" not in item:
             continue

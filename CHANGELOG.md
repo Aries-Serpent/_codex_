@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S900-continue-3) — 2026-05-09
+- Addressed additional validation feedback hardening:
+  - Expanded `_apply_dotlist_overrides` docstring with behavior/edge-case details.
+  - Simplified `_cfg_to_container` typing flow while keeping Hydra/non-Hydra fallback behavior stable.
+  - Refined MemoryLayer eviction internals to compute deletion count in Python and use
+    a static delete SQL constant (no runtime table formatting).
+- Re-validated with focused checks: ruff, mypy, and evaluate/CB fallback tests.
+
 ### Fixed (S900-continue-2) — 2026-05-09
 - Refined non-Hydra evaluate CLI fallback by extracting explicit dotlist detection helper
   (`_has_dotlist_args`) to keep argument-mode branching clear and maintainable.

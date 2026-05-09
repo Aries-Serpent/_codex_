@@ -296,8 +296,8 @@ class MemoryLayer:
         )
     """
     _DELETE_OLDEST_SQL = (
-        "DELETE FROM {table} WHERE id IN ("
-        "SELECT id FROM {table} ORDER BY id ASC LIMIT ?"
+        f"DELETE FROM {_TABLE} WHERE id IN ("
+        f"SELECT id FROM {_TABLE} ORDER BY id ASC LIMIT ?"
         ")"
     )
 
@@ -391,14 +391,14 @@ class MemoryLayer:
             return 0
         try:
             with sqlite3.connect(str(self.db_path)) as conn:
-                to_delete = conn.execute(
-                    f"SELECT MAX(0, COUNT(*) - ?) FROM {self._TABLE}",
-                    (keep,),
+                count = conn.execute(
+                    f"SELECT COUNT(*) FROM {self._TABLE}",
                 ).fetchone()[0]
+                to_delete = max(0, count - keep)
                 if to_delete <= 0:
                     return 0
                 conn.execute(
-                    self._DELETE_OLDEST_SQL.format(table=self._TABLE),
+                    self._DELETE_OLDEST_SQL,
                     (to_delete,),
                 )
                 conn.commit()
