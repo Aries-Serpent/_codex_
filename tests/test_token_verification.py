@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from scripts.security.verify_token_scope import (
+from scripts.security.verify_token_scope import ( # pragma: allowlist secret
     TokenScopeVerifier,
     verify_github_token,
 )
