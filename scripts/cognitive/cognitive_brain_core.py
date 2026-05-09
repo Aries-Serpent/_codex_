@@ -9,8 +9,8 @@ S898 enhancements:
 """
 import json
 import os
+import platform
 import sqlite3
-import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -217,7 +217,7 @@ class PerceptionLayer:
             lambda: len(psutil.pids()) if psutil and hasattr(psutil, "pids") else None,
             default=None,
         )
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+        python_version = platform.python_version()
 
         # CI failure sensor — reads rescue_context.json if present
         ci_failure_count = self._read_ci_failure_count()
@@ -296,8 +296,8 @@ class MemoryLayer:
         )
     """
     _DELETE_OLDEST_SQL = (
-        f"DELETE FROM {_TABLE} WHERE id IN ("
-        f"SELECT id FROM {_TABLE} ORDER BY id ASC LIMIT ?"
+        "DELETE FROM ltm_perceptions WHERE id IN ("
+        "SELECT id FROM ltm_perceptions ORDER BY id ASC LIMIT ?"
         ")"
     )
 

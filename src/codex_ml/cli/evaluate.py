@@ -50,6 +50,7 @@ if _HAS_HYDRA:  # pragma: no cover - optional dependency
 
 
 def _cfg_to_container(cfg: Any) -> Any:
+    """Return a resolved plain container when Hydra is available, else passthrough."""
     if _HAS_HYDRA:
         return OmegaConf.to_container(cfg, resolve=True)
     return cfg
@@ -439,7 +440,10 @@ if _HAS_HYDRA:
 
 else:
     def _has_dotlist_args(arg_list: Sequence[str]) -> bool:
-        """Return True when CLI args include Hydra-style dotlist overrides."""
+        """Detect Hydra-style dotlist args like ``key=value`` or ``a.b=value``.
+
+        Flags that start with ``--`` are excluded from dotlist detection.
+        """
         return any("=" in arg and not arg.startswith("--") for arg in arg_list)
 
     def _run_non_hydra_main(arg_list: list[str]) -> dict[str, Any]:

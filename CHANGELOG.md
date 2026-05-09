@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S900-continue-4) — 2026-05-09
+- Applied final review cleanup:
+  - Added explicit helper docstrings in evaluate fallback flow (`_cfg_to_container`,
+    `_has_dotlist_args`).
+  - Switched Perception `python_version` sensor to `platform.python_version()`.
+  - Replaced dynamic table interpolation in eviction SQL with static statement text.
+- Re-validated with focused checks: ruff, mypy, and targeted evaluate/CB tests.
+
 ### Fixed (S900-continue-3) — 2026-05-09
 - Addressed additional validation feedback hardening:
   - Expanded `_apply_dotlist_overrides` docstring with behavior/edge-case details.
