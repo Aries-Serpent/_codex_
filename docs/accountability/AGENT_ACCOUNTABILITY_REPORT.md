@@ -16,6 +16,7 @@
   - Stub-mode trainer fixture now avoids implicit checkpoint configuration and always uses stub-safe defaults.
   - Added test asserting checkpoint configuration fails fast in stub mode.
   - Added complementary test asserting checkpoint configuration is accepted when real torch is available.
+  - Added persistence assertion for real-torch path to confirm checkpoint directory wiring and `.pt` artifact creation after a minimal epoch.
 - Validation completed:
   - `ruff` on touched files ✅
   - `pytest -x tests/unit/test_trainer_module.py tests/training/test_trainer.py tests/space_traversal/test_artifact_pipeline.py` ✅ (`9 passed, 3 skipped`)
