@@ -475,7 +475,9 @@ else:
                 return _run_dataset_evaluation(
                     dataset_path=str(dataset_path),
                     output_dir=str(output_dir),
-                    metric_names=list(metric_names) if isinstance(metric_names, list) else ["accuracy"],
+                    metric_names=(
+                        list(metric_names) if isinstance(metric_names, list) else ["accuracy"]
+                    ),
                     limit=limit,
                     tokenizer_cfg=tokenizer_cfg if isinstance(tokenizer_cfg, dict) else {},
                 )

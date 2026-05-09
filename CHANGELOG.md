@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S900-continue-5) — 2026-05-09
+### Fixed (S901-groundwork) — 2026-05-09
+- Fixed Pattern 12 line-length violation in `src/codex_ml/cli/evaluate.py:478`.
+- Opened implementation PR for Documentation Viewer + CI/CD workflow layer plan.
+
+
 - Finalized follow-up review polish:
   - `_DELETE_OLDEST_SQL` now references `MemoryLayer._TABLE` symbolically (no hardcoded table literal).
   - Clarified evaluate helper docstrings (`_cfg_to_container`, `_has_dotlist_args`) with explicit behavior/return semantics.
