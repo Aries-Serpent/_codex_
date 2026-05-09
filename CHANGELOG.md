@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (S899) — 2026-05-09
 - **Merge conflict resolved**: `CODEX_MANIFEST.json` conflict between branch and main resolved
   by taking the newer main-generated version (auto-generated file, P-045 policy).
+- **Living docs updated (S899)**: `docs/roadmap/PR4368_whats_next.md` Phase 10 added;
+  `docs/roadmap/PR4368_session_diagram.md` created (component architecture + session timeline +
+  CI snapshot).
 - **Test fix**: `test_verify_scopes_without_token` in `tests/test_token_verification.py` now
   patches `os.getenv` so the test is isolated from environment tokens (CI token was leaking
   through, causing `status == 'valid'` instead of `'error'`).

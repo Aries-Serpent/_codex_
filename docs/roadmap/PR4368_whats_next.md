@@ -3,8 +3,8 @@
 **PR:** #4368 - Harden safe pickle imports, fix EvaluationRunner NameError and CodeQL alert, resolve merge conflicts, self-heal CI and compatibility failures
 **Branch:** `copilot/update-safe-pickle-import`
 **Status:** 🟡 ACTIVE — awaiting merge approval after all validations pass
-**Latest Session:** S898 (2026-05-09T06:00Z)
-**Latest Commit:** `989cfb52` → _this session pushing new commit_
+**Latest Session:** S899 (2026-05-09T06:52Z)
+**Latest Commit:** `c9517ad7`
 
 ---
 
@@ -91,6 +91,16 @@
 - [x] All 4 blocking PR comments replied to — PR Comment Review Gate unblocked
 - [x] Pattern 25 refresh: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated
 
+### ✅ Phase 10: Merge Conflict + Test Isolation Fix (S899)
+- [x] Resolved `CODEX_MANIFEST.json` conflict (3 new main commits) — took main version (auto-gen, P-045)
+  — committed as true 2-parent merge commit (`04c718f3`)
+- [x] Fixed `test_verify_scopes_without_token` env-token leakage: added `@patch.dict(os.environ, {}, clear=True)`
+  + `@patch("scripts.security.verify_token_scope.os.getenv", return_value=None)` + `assert verifier.token is None`
+- [x] 23/23 token verification tests passing ✅
+- [x] Updated living docs (whats_next + session_diagram) for S899
+- [x] ruff ✅ · mypy 130 ✅ · auto_fix clean ✅ · Pattern 25 ✅
+- [x] CI on `c9517ad7`: 21 workflows in-progress (all approved by @mbaetiong); 3 known infra startup_failures
+
 ---
 
 ## 🔮 Post-Merge Continuation
@@ -111,16 +121,18 @@ After merge, open a new PR/session targeting:
 |-----------|--------|
 | ruff | ✅ clean |
 | mypy | ✅ 130 = baseline |
-| auto_fix_common_issues | ✅ 1 issue (Pattern 25 — resolved this commit) |
+| auto_fix_common_issues | ✅ clean |
 | sync_tracked_files | ✅ consistent |
 | Pattern 25 | ✅ CHANGELOG + accountability in every commit |
 | CodeQL | ✅ 0 new alerts |
-| Merge conflicts | ✅ resolved |
+| Merge conflicts | ✅ resolved (S899: CODEX_MANIFEST.json) |
 | Broken tests restored | ✅ |
+| Token verification tests | ✅ 23/23 pass (env-isolation fix S899) |
 | CB fallback helpers | ✅ 19/19 tests pass |
 | CB PerceptionLayer sensors | ✅ 37/37 tests pass |
 | CB MemoryLayer LTM | ✅ 37/37 tests pass |
 | CB ActionExecutor targets | ✅ 37/37 tests pass |
 | Process hardening | ✅ documented |
-| PR Comment Review Gate | ✅ all 4 blocking comments replied |
+| PR Comment Review Gate | ✅ all blocking comments replied |
+| CI (c9517ad7) | 🔄 21 in-progress (approved) · 3 infra startup_failure (pre-existing) |
 
