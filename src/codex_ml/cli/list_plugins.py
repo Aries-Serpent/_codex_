@@ -24,6 +24,17 @@ _JSON_EPILOG = (
 )
 
 
+def _json_mode_requested(args: Sequence[str]) -> bool:
+    """Return ``True`` when ``args`` explicitly request ``--format json``."""
+
+    for index, arg in enumerate(args):
+        if arg == "--format" and index + 1 < len(args) and args[index + 1] == "json":
+            return True
+        if arg == "--format=json":
+            return True
+    return False
+
+
 def _list_models_safe() -> list[str]:
     try:
         from codex_ml.registry import list_models
@@ -150,7 +161,7 @@ def _build_parser():
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     arg_list = list(argv) if argv is not None else sys.argv[1:]
-    if "--format" in arg_list and "json" in arg_list:
+    if _json_mode_requested(arg_list):
         logging.disable(logging.CRITICAL)
         warnings.filterwarnings(
             "ignore",

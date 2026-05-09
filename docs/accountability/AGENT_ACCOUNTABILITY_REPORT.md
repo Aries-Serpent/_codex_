@@ -47,6 +47,8 @@
 - Follow-up self-review tightened the `codex_ml.cli.list_plugins` import flow to
   remove module-level `sys.argv` parsing, and added a docstring to
   `codex_cli.__getattr__()` before the final push.
+- Final validation also tightened JSON-mode detection to require an explicit
+  `--format json` / `--format=json` request before enabling CLI stderr suppression.
 
 ## SESSION SUMMARY — 2026-05-09T03:13Z [auto-generated]
 

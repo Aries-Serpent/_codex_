@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addressed final self-review feedback by moving JSON-mode warning/log suppression
   inside `codex_ml.cli.list_plugins.main()` and documenting the lazy
   `codex_cli.__getattr__()` export path.
+- Tightened JSON-mode detection in `codex_ml.cli.list_plugins` so suppression only
+  activates for the explicit `--format json` / `--format=json` flag forms.
 
 ### Fixed (S893) — 2026-05-09
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and this changelog
