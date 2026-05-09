@@ -1,32 +1,29 @@
-# Session Context — 2026-05-09T07:33:53Z
-**Branch:** `copilot/update-safe-pickle-import`  **PR:** #4368  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-09T09:28:41Z
+**Branch:** `copilot/ensure-docs-accountability-report`  **PR:** none  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3971` (✅)
-- GraphQL remaining: `4944` (✅)
+- REST remaining: `4989` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4368 — Harden safe pickle imports and signed payload handling, fix EvaluationRunner NameError and CodeQL uninitialized variable, resolve merge conflicts, self-heal CI and compatibility failures, extend evaluation/tokenizer/OmegaConf and CLI fallback behavior,...
-State: `open`  Draft: `False`  Branch: `copilot/update-safe-pickle-import` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-09)
-- **Validation Pipeline** — `failure` on `copilot/update-safe-pickle-import` (2026-05-09)
-- **Agent Token Delegation** — `failure` on `copilot/update-safe-pickle-import` (2026-05-09)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-09)
 
 ## 📝 Recent Commits
+- `48599d1d` fix: harden non-hydra evaluate fallback and expand cognitive brain policies — copilot-swe-agent[bot] (2026-05-09)
+- `b8633b89` Merge pull request #4368 from Aries-Serpent/copilot/update-safe-pickle-import — Statix (2026-05-09)
+- `9cae6555` chore(S899-final-wrap): follow-up prompt + final accountability wrap-up; Pattern — copilot-swe-agent[bot] (2026-05-09)
+- `5f3cfbe0` fix(S899-final): remove unused _has_real_transformers + fix dual-import via sys. — copilot-swe-agent[bot] (2026-05-09)
+- `6ec1c426` chore(plan): S899-final — fix tokenizer_parity CodeQL, update living docs, Patte — copilot-swe-agent[bot] (2026-05-09)
+- `6cc011bd` chore(S899-wrap): initial session plan — final living docs + Pattern 25 wrap-up — copilot-swe-agent[bot] (2026-05-09)
 - `d866ef42` fix(S899-P11): add [skip ci] to 4 bot-commit workflows; Mermaid living docs; cas — copilot-swe-agent[bot] (2026-05-09)
 - `9dd3a305` fix(S899-cont): add skip guards to tokenizer tests (streaming/ingest/parity); Pa — copilot-swe-agent[bot] (2026-05-09)
-- `0c685bb7` chore(S899): session wrap-up — CI status, WEC fix, Pattern 25 final — copilot-swe-agent[bot] (2026-05-09)
-- `0220d89f` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-09)
-- `0fe38bc5` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-09)
-- `899347bc` docs(S899): update living docs — PR4368_whats_next Phase 10 + PR4368_session_dia — copilot-swe-agent[bot] (2026-05-09)
-- `5b331ada` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-09)
-- `9298a8bb` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-09)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
