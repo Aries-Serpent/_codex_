@@ -662,7 +662,7 @@ jobs:
             fi
           done
           git add ".codex/healing_attempts/" 2>/dev/null || true
-          git commit -m "self-heal(iter-${MATRIX_ITERATION}): auto-fix ${PATTERN} [skip ci-if-no-change]
+          git commit -m "self-heal(iter-${MATRIX_ITERATION}): auto-fix ${PATTERN} [skip ci]
 
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
           Iteration: ${MATRIX_ITERATION} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${TRIAGE_RUN_ID}

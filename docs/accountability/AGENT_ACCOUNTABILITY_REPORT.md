@@ -29,6 +29,32 @@
 - Created `docs/roadmap/PR4368_session_diagram.md` — full component architecture, session
   timeline table (12 sessions S889→S899), repaired compatibility surface, CI snapshot
 - Updated `docs/roadmap/PR4368_whats_next.md` — Phase 10 added, Merge Readiness table refreshed
+### S899-cont-Phase11 — 2026-05-09 — Workflow Cascade Analysis & Fix
+
+**Objective:** Identify and fix root cause of 22 pending `action_required` workflows.
+
+**Root cause analysis:**
+- 22 = 8 (from push cascade) + 14 (from PR review approval — expected)
+- 8 cascade: `pr-followup-generator.yml` committed without `[skip ci]` → each push fired
+  `pull_request: synchronize` + `pull_request: edited` = 2 event sets × 4 gating workflows = 8
+- `iterative-self-healing-ci.yml` used `[skip ci-if-no-change]` (non-standard, ignored by GitHub)
+
+**Fixes applied (4 workflow files):**
+- `pr-followup-generator.yml` — added `[skip ci]` to bot commit message ✅
+- `iterative-self-healing-ci.yml` — `[skip ci-if-no-change]` → `[skip ci]` ✅
+- `auto-fix-pr-check.yml` — added `[skip ci]` to bot commit message ✅
+- `auto-fix-common-issues.yml` — added `[skip ci]` to bot commit message ✅
+
+**Expected result after fix:** ≤4 `action_required` per push (down from 8).
+
+**Living docs updated with full Mermaid diagrams:**
+- `PR4368_whats_next.md`: Gantt, pie, flowchart, merge-readiness table
+- `PR4368_session_diagram.md`: timeline, component architecture, CI health, sequence diagram
+- `PR4368_workflow_conflict_analysis.md`: new doc — all 9 push-capable workflows catalogued
+
+**Pattern 25:** ✅ CHANGELOG + accountability updated in this commit.
+
+
 - Fixed tokenizer test skip guards (S899-cont):
   - `test_train_tokenizer_streaming.py`: 3 tests now skip when `train_tokenizer is None`
   - `test_streaming_ingest.py`: module-level `pytestmark` skips all 5 tests when unavailable

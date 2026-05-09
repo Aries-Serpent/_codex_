@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S899-cont-Phase11) — 2026-05-09
+- **Workflow cascade root-cause fix** — 4 workflow files patched to add `[skip ci]` to bot commit messages,
+  eliminating the "8 pending workflows" cascade that appeared after every `report_progress` push:
+  - `pr-followup-generator.yml` — commit `"chore: Generate follow-up prompt"` lacked `[skip ci]`
+    (fired `pull_request: synchronize` on every push → new set of 4 gating workflows)
+  - `iterative-self-healing-ci.yml` — `[skip ci-if-no-change]` is **not** a recognised GitHub tag;
+    corrected to `[skip ci]`
+  - `auto-fix-pr-check.yml` — commit `"fix(ci): resolve auto-fixable issues"` lacked `[skip ci]`
+  - `auto-fix-common-issues.yml` — commit `"fix(ci): auto-fix common CI issues"` lacked `[skip ci]`
+- **New doc:** `docs/roadmap/PR4368_workflow_conflict_analysis.md` — full catalog of all 9
+  push-capable workflows, 4 risk patterns (RCP-01 – RCP-04), session best-practices.
+- **Living docs refreshed with Mermaid diagrams** (`PR4368_whats_next.md`, `PR4368_session_diagram.md`):
+  - Gantt chart: session timeline S889 → S899-cont
+  - Component architecture graph: all PR deliverables
+  - CI health pie chart
+  - Test frontier bar chart
+  - Sequence diagram: workflow cascade root cause + post-fix expected behaviour
+  - Decision flowchart: next-session priorities
+
 ### Fixed (S899-cont) — 2026-05-09
 - **Tokenizer test skip guards** (`tests/tokenization/`):
   - `test_train_tokenizer_streaming.py` — added `if train_tokenizer is None: pytest.skip(...)` to
