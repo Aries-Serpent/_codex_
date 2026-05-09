@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S897) — 2026-05-09
+- Resolved merge divergence between local and remote after automated [skip ci] commits
+  were pushed to the branch during CI rescue; merged with `--ours` on session context file.
+- Investigated and confirmed the `Detect CI Issues & Post Fix Instructions` failure on
+  commit `4f10df026238` was due to Pattern 25 (CHANGELOG/accountability not updated in
+  that commit); all other patterns were informational SHA-drift false positives.
+- All local validations confirmed clean: ruff ✅ · mypy 130=baseline ✅ ·
+  auto_fix_common_issues (no issues) ✅ · sync_tracked_files (all consistent) ✅.
+
 ### Fixed (S896) — 2026-05-09
 - Resolved `.secrets.baseline` merge conflict (took ours/branch version per P-045)
   and finalised merge commit from main, preserving all branch-side entries.
