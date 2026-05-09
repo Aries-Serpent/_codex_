@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `documentation-search.ts`: added djb2 fallback for `sha256()` when `crypto.subtle` is unavailable (non-secure contexts).
 - `DocumentationViewer.tsx`: escape Markdown special characters in offline fallback path string.
 
+### Fixed (S904-ci-rescue) — 2026-05-09
+- Addressed CI rescue comment (#4412386062): CI failures were on stale commit `ad1a8cf82fe2`; subsequent commits already resolved all issues.
+- Updated `AGENT_ACCOUNTABILITY_REPORT.md` with session S904 entry for Pattern 25 compliance.
+
 ### Fixed (auto-update — PR #4376)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4376 (SHA `2ab6246f`) at 2026-05-09T10:53Z [auto-generated]
 
