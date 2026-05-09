@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S907-pre-flight) — 2026-05-09
+- `tests/cognitive_brain/test_cb_fallbacks.py:131`: replaced overly-broad `pytest.raises` match pattern `'boom'` with specific message `'injected test error'` — resolves `pre-flight-validation` check failure (Test Assertion Patterns gate).
+
 ### Fixed (S906-ci-rescue) — 2026-05-09
 - Pattern 25 (Last-Commit Accountability): updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to satisfy REQ-4; resolved `sync_tracked_files` stale dimension that was blocking merge-readiness from 99→100.
 - Replied to CI rescue comment (comment #4412485175) on commit `c82cbaec0210`.

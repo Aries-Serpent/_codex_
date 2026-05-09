@@ -128,8 +128,8 @@ class TestRateLimitedCall:
             "scripts.cognitive.cb_fallbacks._get_trickle_status",
             return_value={"resources": {"core": {"remaining": 500, "reset": 0}}},
         ):
-            with pytest.raises(ValueError, match="boom"):
-                rate_limited_call(lambda: (_ for _ in ()).throw(ValueError("boom")))
+            with pytest.raises(ValueError, match="injected test error"):
+                rate_limited_call(lambda: (_ for _ in ()).throw(ValueError("injected test error")))
 
     def test_custom_resource_bucket(self):
         mock_func = MagicMock(return_value="search_result")
