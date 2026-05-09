@@ -257,11 +257,6 @@ class Trainer:
             )
 
         cfg = resolved_config or TrainerConfig()
-        if not _HAS_REAL_TORCH and cfg.checkpoint is not None:
-            raise RuntimeError(
-                "Checkpointing requires a real torch installation. "
-                "Disable checkpoint_dir/checkpoint_config when using CODEX_ALLOW_TORCH_STUB=1."
-            )
 
         if gradient_accumulation_steps is not None:
             cfg.gradient_accumulation_steps = int(gradient_accumulation_steps)

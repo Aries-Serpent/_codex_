@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (S920-review-thread-followup) — 2026-05-09
 - `src/training/trainer.py`: tightened fail-fast behavior for torchless stub mode by rejecting checkpoint configuration during `Trainer` initialization when real torch is unavailable, preventing delayed checkpoint persistence failures.
+- `src/training/trainer.py`: removed duplicate checkpoint-compatibility validation branch and consolidated enforcement at the finalized checkpoint-configuration stage.
 - `src/training/trainer.py`: retained explicit stub `torch.save` runtime failure semantics and kept real-torch guard behavior for normal runtime paths.
 - `scripts/space_traversal/decode_validate_and_extract.py`: chained missing-`jsonschema` RuntimeError to the import exception (`raise ... from exc`) for clearer root-cause tracing when `schema_path` is supplied.
-- `tests/unit/test_trainer_module.py`: aligned stub-mode trainer fixture with strict checkpoint guard and added regression coverage ensuring checkpoint config fails fast without real torch.
+- `tests/unit/test_trainer_module.py`: aligned stub-mode trainer fixture with strict checkpoint guard and added regression coverage for both checkpoint rejection in stub mode and acceptance when real torch is available.
 
 ### Fixed (S919-review-thread-4258592500) — 2026-05-09
 - `src/training/trainer.py`: changed torch-stub checkpoint behavior to fail fast (`torch.save` now raises clear `RuntimeError`) and reintroduced an early real-torch runtime guard in `Trainer.__init__`, with explicit opt-in override (`CODEX_ALLOW_TORCH_STUB=1`) for stub-mode tests.

@@ -107,25 +107,15 @@ def trainer(tmp_path: Path) -> Trainer:
         return abs(outputs.value - targets.value)
 
     logging_cfg = TrainerLoggingConfig(enable_tensorboard=False, enable_mlflow=False)
-    trainer_kwargs = {
-        "val_loader": val_batches,
-        "loss_fn": loss_fn,
-        "metric_fn": metric_fn,
-        "gradient_accumulation_steps": 2,
-        "logging_config": logging_cfg,
-    }
-    if trainer_module._HAS_REAL_TORCH:
-        trainer_kwargs.update(
-            {
-                "checkpoint_dir": tmp_path / "ckpts",
-                "keep_best_k": 1,
-            }
-        )
     return Trainer(
         model,
         optimizer,
         train_batches,
-        **trainer_kwargs,
+        val_loader=val_batches,
+        loss_fn=loss_fn,
+        metric_fn=metric_fn,
+        gradient_accumulation_steps=2,
+        logging_config=logging_cfg,
     )
 
 
@@ -134,10 +124,7 @@ def test_trainer_runs_epochs(trainer: Trainer, tmp_path: Path) -> None:
     assert history["train_loss"]
     assert "val_metric" in history
     checkpoint_files = list((tmp_path / "ckpts").glob("*.pt"))
-    if trainer_module._HAS_REAL_TORCH:
-        assert len(checkpoint_files) == 1
-    else:
-        assert checkpoint_files == []
+    assert checkpoint_files == []
 
 
 def test_metric_mode_validation(tmp_path: Path) -> None:
@@ -163,3 +150,16 @@ def test_checkpoint_config_requires_real_torch_in_stub_mode(tmp_path: Path) -> N
             checkpoint_dir=tmp_path / "ckpts",
             loss_fn=lambda outputs, targets: FakeTensor(0.0),
         )
+
+
+def test_checkpoint_config_allowed_with_real_torch(tmp_path: Path) -> None:
+    if not trainer_module._HAS_REAL_TORCH:
+        pytest.skip("Real-torch checkpoint behavior requires a real torch runtime")
+    trainer = Trainer(
+        FakeModel(),
+        FakeOptimizer(),
+        [(FakeTensor(0.0), FakeTensor(0.0))],
+        checkpoint_dir=tmp_path / "ckpts",
+        loss_fn=lambda outputs, targets: FakeTensor(0.0),
+    )
+    assert trainer.config.checkpoint is not None

@@ -9,11 +9,13 @@
   - `scripts/space_traversal/decode_validate_and_extract.py` (lines 84–91 review area)
 - Applied targeted hardening updates:
   - Added strict initialization guard so checkpoint configuration is rejected immediately in torch-stub mode (even when `CODEX_ALLOW_TORCH_STUB=1` is set), avoiding deferred checkpoint save warnings.
+  - Consolidated checkpoint compatibility validation to a single post-configuration enforcement point (removed duplicate early branch).
   - Preserved explicit fail-fast `torch.save` stub runtime behavior.
   - Switched schema-missing error raising to `raise ... from exc` for clearer dependency-root-cause traces.
 - Updated focused unit coverage:
-  - Stub-mode trainer fixture now omits checkpoint options unless real torch is present.
+  - Stub-mode trainer fixture now avoids implicit checkpoint configuration and always uses stub-safe defaults.
   - Added test asserting checkpoint configuration fails fast in stub mode.
+  - Added complementary test asserting checkpoint configuration is accepted when real torch is available.
 - Validation completed:
   - `ruff` on touched files ✅
   - `pytest -x tests/unit/test_trainer_module.py tests/training/test_trainer.py tests/space_traversal/test_artifact_pipeline.py` ✅ (`9 passed, 3 skipped`)
