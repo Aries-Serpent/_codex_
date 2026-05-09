@@ -71,6 +71,24 @@ ACTION_TIER_MAP: dict[str, PermissionTier] = {
     "inject_session_context": PermissionTier.ORG_OWNER,
 }
 
+# Certain automation actors must never inject session context even if elevated.
+_INJECT_CONTEXT_DENY_ACTORS: frozenset[str] = frozenset({"github-actions[bot]"})
+_FIXED_READ_ONLY_ACTORS: frozenset[str] = frozenset(
+    {
+        "github-actions[bot]",
+        "dependabot[bot]",
+    }
+)
+_ACTOR_ACTION_ALLOWLIST: dict[str, frozenset[str]] = {
+    "github-actions[bot]": frozenset(
+        {
+            "get_session_context",
+            "get_continuation_prompt",
+            "report_completion",
+        }
+    )
+}
+
 # ---------------------------------------------------------------------------
 # Permission cache entry
 # ---------------------------------------------------------------------------
@@ -157,6 +175,8 @@ class StructuralPolicyManager:
         for actor in self._parse_allowed_actors(raw):
             # Never downgrade existing SYSTEM_OWNER entries
             existing = self._actors.get(actor, PermissionTier.DENIED)
+            if actor in _FIXED_READ_ONLY_ACTORS:
+                continue
             if existing != PermissionTier.SYSTEM_OWNER:
                 self._actors[actor] = PermissionTier.ORG_OWNER
                 self._evict_cache(actor)
@@ -207,6 +227,29 @@ class StructuralPolicyManager:
 
         if actor_tier == PermissionTier.DENIED:
             self._audit(actor, action, resource, actor_tier, allowed=False, reason="actor_denied")
+            return False
+
+        allowed_actions = _ACTOR_ACTION_ALLOWLIST.get(actor)
+        if allowed_actions is not None and action not in allowed_actions:
+            self._audit(
+                actor,
+                action,
+                resource,
+                actor_tier,
+                allowed=False,
+                reason="actor_action_restricted",
+            )
+            return False
+
+        if action == "inject_session_context" and actor in _INJECT_CONTEXT_DENY_ACTORS:
+            self._audit(
+                actor,
+                action,
+                resource,
+                actor_tier,
+                allowed=False,
+                reason="actor_restricted_for_injection",
+            )
             return False
 
         allowed = actor_tier <= required_tier  # lower int = higher privilege

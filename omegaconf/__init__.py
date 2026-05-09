@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import re
 import sys
 from collections.abc import Iterable, Mapping
 from pathlib import Path
@@ -131,6 +132,42 @@ else:
                 result[key] = _to_dictconfig(value)
         return result
 
+    _INTERPOLATION_PATTERN = re.compile(r"\$\{([^}]+)\}")
+
+    def _select_from_mapping(root: Mapping[str, Any], path: str) -> Any:
+        current: Any = root
+        for segment in path.split("."):
+            if not isinstance(current, Mapping) or segment not in current:
+                return None
+            current = current[segment]
+        return current
+
+    def _resolve_interpolations(value: Any, root: Mapping[str, Any]) -> Any:
+        if isinstance(value, Mapping):
+            return {k: _resolve_interpolations(v, root) for k, v in value.items()}
+        if isinstance(value, list):
+            return [_resolve_interpolations(v, root) for v in value]
+        if not isinstance(value, str):
+            return value
+
+        resolved = value
+        for _ in range(10):
+            replaced = False
+
+            def _replace(match: re.Match[str]) -> str:
+                nonlocal replaced
+                ref_value = _select_from_mapping(root, match.group(1))
+                if ref_value is None:
+                    return match.group(0)
+                replaced = True
+                return str(ref_value)
+
+            next_value = _INTERPOLATION_PATTERN.sub(_replace, resolved)
+            if not replaced or next_value == resolved:
+                break
+            resolved = next_value
+        return resolved
+
     class ListConfig(list):
         """Simple list-backed stand-in for OmegaConf's ListConfig."""
 
@@ -141,10 +178,17 @@ else:
         @staticmethod
         def to_container(cfg: Any, *, resolve: bool = False) -> Any:  # noqa: D401 - compatibility
             if isinstance(cfg, DictConfig):
-                return {k: OmegaConf.to_container(v, resolve=resolve) for k, v in cfg.items()}
-            if isinstance(cfg, list):
-                return [OmegaConf.to_container(v, resolve=resolve) for v in cfg]
-            return cfg
+                container = {k: OmegaConf.to_container(v, resolve=False) for k, v in cfg.items()}
+            elif isinstance(cfg, list):
+                container = [OmegaConf.to_container(v, resolve=False) for v in cfg]
+            else:
+                container = cfg
+
+            if resolve and isinstance(container, Mapping):
+                return _resolve_interpolations(container, container)
+            if resolve and isinstance(container, list):
+                return _resolve_interpolations(container, {})
+            return container
 
         @staticmethod
         def to_object(cfg: Any) -> Any:

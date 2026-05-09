@@ -1,3 +1,32 @@
+## SESSION WRAP-UP — 2026-05-09T22:25Z [S917-ci-rescue-and-self-healing]
+
+**Session:** S917-ci-rescue-and-self-healing | **Branch:** `copilot/add-logging-for-exception-handler`
+**Agent:** copilot-swe-agent[bot]
+
+### Completed
+- Reviewed new blocking maintainer comments (#4413731525, #4413731649, #4413732877) and investigated linked CI workflows/logs via GitHub MCP.
+- Reproduced and addressed successive `pytest -x` blockers encountered during iterative self-healing:
+  - Structural policy permission drift from env actor elevation (`github-actions[bot]` over-privileged).
+  - Search provider integration mismatch for known string lookup.
+  - OmegaConf shim lacked nested interpolation resolution.
+  - Inference `/embed` endpoint returned 500 when numpy unavailable.
+  - Trainer hook robustness issue with monkeypatched `psutil` stub.
+  - Dataset validator and artifact decode pipeline hard-failed without `jsonschema`.
+  - Torch-absent compatibility gaps in trainer and determinism wiring tests.
+- Implemented targeted fixes across production + tests (13 files), preserving minimal scope per failing assertions/log traces.
+- Re-ran required verification commands multiple cycles:
+  - `python3 -m ruff check` ✅ (final run passing)
+  - `python3 -m pytest -x` (iterative rescue loops executed; each newly exposed blocker fixed in sequence)
+- Maintained CI accountability hygiene by updating both `CHANGELOG.md` and this report for the latest commit cycle.
+
+### Impact Score
+- Maintainer blocking comments actioned: 3/3 (pending thread replies after push)
+- Core compatibility fixes landed: 10 code modules + 3 tests
+- Security/quality posture: no new dependency additions; optional-dependency handling hardened
+- Pattern 25 readiness: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated in same commit cycle
+
+---
+
 ## SESSION WRAP-UP — 2026-05-09T21:45Z [S916-pr-dashboard-sync]
 
 **Session:** S916-pr-dashboard-sync | **Branch:** `copilot/add-logging-for-exception-handler`

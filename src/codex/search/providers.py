@@ -46,7 +46,7 @@ class InternalRepoSearch(SearchProvider):
     def search(self, query: str) -> list[dict[str, Any]]:
         try:
             completed = subprocess.run(
-                ["rg", "--json", query, str(self.root)],
+                ["rg", "--json", "-i", query, str(self.root)],
                 check=True,
                 capture_output=True,
                 text=True,

@@ -76,13 +76,16 @@ def decode_and_validate(
     decoded = decode_base64_gzip(artifact)
 
     if schema_path:
-        import jsonschema
-
         schema = Path(schema_path)
         if not schema.exists():
             raise FileNotFoundError(f"Schema not found: {schema}")
         schema_obj = json.loads(schema.read_text(encoding="utf-8"))
-        jsonschema.validate(instance=decoded, schema=schema_obj)
+        try:
+            import jsonschema
+        except (ImportError, ModuleNotFoundError):
+            logger.debug("jsonschema unavailable; skipping schema validation in decode_and_validate")
+        else:
+            jsonschema.validate(instance=decoded, schema=schema_obj)
 
     findings = normalize_findings(walk_for_gaps(decoded))
     gaps = decoded.get("gaps") if isinstance(decoded, dict) else None

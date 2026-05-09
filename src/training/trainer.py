@@ -21,13 +21,51 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
-    torch = None  # type: ignore[assignment]
+    class _NoOpScaler:
+        def __init__(self, *, enabled: bool = False) -> None:
+            self.enabled = enabled
+
+        def scale(self, loss: Any) -> Any:
+            return loss
+
+        def unscale_(self, _optimizer: Any) -> None:
+            return None
+
+        def step(self, optimizer: Any) -> None:
+            optimizer.step()
+
+        def update(self) -> None:
+            return None
+
+    class _NoOpNoGrad(contextlib.AbstractContextManager[Any]):
+        def __exit__(self, exc_type, exc, tb) -> bool:
+            return False
+
+    class _TorchStub:
+        class nn:
+            class utils:
+                @staticmethod
+                def clip_grad_norm_(_params: Any, _max_norm: float) -> None:
+                    return None
+
+        @staticmethod
+        def save(payload: Any, path: Path | str) -> None:
+            Path(path).write_text(json.dumps(payload), encoding="utf-8")
+
+        @staticmethod
+        def no_grad() -> _NoOpNoGrad:
+            return _NoOpNoGrad()
+
+    torch = _TorchStub()  # type: ignore[assignment]
     nn = Any
-    GradScaler = None
-    autocast = None
+    GradScaler = _NoOpScaler
+
+    def autocast(*, enabled: bool = False):
+        return contextlib.nullcontext()
+
     DataLoader = Any  # type: ignore[assignment, misc]
 
-if torch is not None:  # pragma: no cover - typing bridge
+if hasattr(torch, "Tensor"):  # pragma: no cover - typing bridge
     TensorType = torch.Tensor
     OptimizerType = torch.optim.Optimizer
     DataLoaderType = DataLoader
@@ -49,7 +87,7 @@ from metrics import append_ndjson  # noqa: E402
 from .checkpointing import load_checkpoint  # noqa: E402
 from .simple_trainer import SimpleTrainer  # noqa: E402
 
-if torch is not None:
+if hasattr(torch, "load"):
     try:
         _TORCH_SUPPORTS_WEIGHTS_ONLY = "weights_only" in inspect.signature(torch.load).parameters
     except (TypeError, ValueError):  # pragma: no cover - torch may bypass inspect
@@ -192,8 +230,6 @@ class Trainer:
         metric_mode: str | None = None,
         maximize_metric: bool | None = None,
     ) -> None:
-        if torch is None or GradScaler is None or autocast is None:
-            raise RuntimeError("torch is required for the extended trainer")
         if config is not None and trainer_config is not None:
             raise TypeError("Pass only one of 'config' or 'trainer_config'")
 

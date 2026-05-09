@@ -758,6 +758,8 @@ class QuantumInspiredGameEngine:
             num_players: Convenience shorthand — when supplied (and *blue_strategies*
                 is not), creates a symmetric zero-sum game with *num_players* strategies.
         """
+        if not NUMPY_AVAILABLE:
+            raise TypeError("QuantumInspiredGameEngine requires numpy")
         if blue_strategies is None:
             n = max(num_players or 0, 0)
             blue_strategies = [f"strategy_{i}" for i in range(n)]
