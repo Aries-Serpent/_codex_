@@ -224,8 +224,13 @@ Phase 3 quick wins are successful when:
 
 ## Related Documentation
 
-- [docs/cognitive_brain_integration_master_plan.md](../cognitive_brain_integration_master_plan.md)
-- [.codex/plans/autonomous_implementation_master_plan.md](../../.codex/plans/autonomous_implementation_master_plan.md)
-- [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md)
-- [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)
-- [.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md](../../.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md)
+- [docs/cognitive_brain_integration_master_plan.md](../cognitive_brain_integration_master_plan.md) —
+  broader Cognitive Brain integration architecture and phase-level coordination.
+- [.codex/plans/autonomous_implementation_master_plan.md](../../.codex/plans/autonomous_implementation_master_plan.md) —
+  longer-horizon autonomous execution framework and agent integration map.
+- [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) —
+  operational GitHub API guidance for Copilot-driven workflow and PR actions.
+- [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md) —
+  variables/secrets capability matrix needed for cloud-agent environment planning.
+- [.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md](../../.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md) —
+  quick-access GitHub API and MCP wiring summary for in-session autonomy work.

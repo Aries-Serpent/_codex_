@@ -51,4 +51,4 @@ class PythonPlugin(ASTPlugin):
 
     def validate(self) -> bool:
         """Validate plugin is ready."""
-        return self.parse("def _validate():\n    return True\n", "validate.py") is not None
+        return callable(parse_python)

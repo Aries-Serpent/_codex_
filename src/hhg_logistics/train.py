@@ -23,6 +23,11 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+
+def _resolve_absolute_path(path: str) -> str:
+    return str(Path(path).resolve())
+
+
 try:
     import hydra
 
@@ -39,7 +44,7 @@ except (ImportError, AttributeError) as e:
             class utils:
                 @staticmethod
                 def to_absolute_path(path: str) -> str:
-                    return str(Path(path).resolve())
+                    return _resolve_absolute_path(path)
 
             @staticmethod
             def main(*_args, **_kwargs):
@@ -49,9 +54,7 @@ except (ImportError, AttributeError) as e:
                 return _decorator
 
         hydra = _HydraFallback()
-
-        def to_absolute_path(path: str) -> str:
-            return str(Path(path).resolve())
+        to_absolute_path = hydra.utils.to_absolute_path
 
 from common.hooks import (  # noqa: E402
     CheckpointHook,
