@@ -68,7 +68,7 @@ class TestWithFallback:
             )
 
     def test_none_default(self):
-        assert with_fallback(lambda: [][0], default=None) is None  # noqa: E711
+        assert with_fallback(lambda: [][0], default=None) is None
 
     def test_false_default(self):
         assert with_fallback(lambda: 1 / 0, default=False) is False

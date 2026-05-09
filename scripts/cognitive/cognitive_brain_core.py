@@ -206,7 +206,7 @@ class ActionExecutor:
                     completed += 1
                 else:
                     failures.append(task)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:  # noqa: BLE001  # broad catch intentional: individual task failures must not abort the full execution loop
                 failures.append({"task": task, "error": str(exc)})
 
         success_rate = completed / len(tasks) if tasks else 1.0
@@ -219,7 +219,16 @@ class ActionExecutor:
 
     @staticmethod
     def _dispatch_task(task: dict[str, Any]) -> bool:
-        """Dispatch a single task to its assigned agent (stub; real impl calls GH API)."""
+        """Dispatch a single task to its assigned agent.
+
+        Expected task dict keys:
+          - ``"agent"`` (int | str): target agent ID (truthy required)
+          - ``"task"``  (str):       task name / action slug (truthy required)
+
+        Returns ``True`` when both keys are present and truthy; ``False``
+        otherwise.  In the real implementation this method will call the
+        GitHub Actions workflow-dispatch API via ``rate_limited_call``.
+        """
         return bool(task.get("agent")) and bool(task.get("task"))
 
 

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S897-review) — 2026-05-09
+- Addressed all 4 code-review comments on CB implementation:
+  - Removed spurious `# noqa: E711` from `test_cb_fallbacks.py` line 71 (`is None` needs no suppression).
+  - Expanded `with_fallback` docstring to explicitly state that `exc_types=(Exception,)` default
+    is intentionally broad for maximum graceful degradation.
+  - Added inline `# broad catch intentional` comment to `ActionExecutor.execute()` broad except.
+  - Expanded `_dispatch_task` docstring with expected task-dict key contract and future GH API note.
+- All 19 CB tests still passing ✅ · ruff clean ✅.
+
 ### Fixed (S897-cont CB) — 2026-05-09
 - Implemented **Cognitive Brain shared fallback helpers** (`scripts/cognitive/cb_fallbacks.py`):
   `import_optional`, `with_fallback`, and `rate_limited_call` — cross-cutting utilities

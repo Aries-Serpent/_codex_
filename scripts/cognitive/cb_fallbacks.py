@@ -78,7 +78,10 @@ def with_fallback(
     Args:
         func: Zero-argument callable to attempt.
         default: Value to return on failure.
-        exc_types: Exception types to catch (default: all ``Exception``).
+        exc_types: Exception types to catch.  Defaults to ``(Exception,)`` —
+            intentionally broad so that *any* standard exception causes graceful
+            degradation rather than a cycle abort.  Pass a narrower tuple when
+            the caller needs to propagate specific errors.
         log_level: Logging level for the caught exception message.
 
     Returns:
