@@ -30,23 +30,37 @@ import {
 import { searchDocs, SearchResult } from './documentation-search';
 
 // ---------------------------------------------------------------------------
-// Content fetching (GitHub raw — gracefully degrades to placeholder)
+// Content fetching (GitHub raw — opt-in via VITE_DOCS_FETCH_LIVE=true)
 // ---------------------------------------------------------------------------
 
 const REPO = 'Aries-Serpent/_codex_';
 const BRANCH = '0D_base_';
 
-async function fetchDocContent(path: string): Promise<string> {
+/**
+ * Enable live GitHub fetch only when explicitly opted in.
+ * By default the component operates in offline/demo mode so that no
+ * unintended network requests are made in CI or restricted environments.
+ * Set `VITE_DOCS_FETCH_LIVE=true` in your `.env` to load live content.
+ */
+const ENABLE_LIVE_FETCH =
+  typeof import.meta !== 'undefined' &&
+  (import.meta as { env?: Record<string, string> }).env?.VITE_DOCS_FETCH_LIVE === 'true';
+
+async function fetchDocContent(path: string, signal?: AbortSignal): Promise<string> {
+  // Escape backslashes first so they can't escape surrounding backtick delimiters.
+  const safePath = path.replace(/\\/g, '\\\\').replace(/[`*_[\]()]/g, '\\$&');
+
+  if (!ENABLE_LIVE_FETCH) {
+    return `_Content for \`${safePath}\` is not available in offline/demo mode._\n\nSet \`VITE_DOCS_FETCH_LIVE=true\` in your environment to load live documentation.`;
+  }
+
   try {
     const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { signal });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.text();
-  } catch {
-    // Escape backslashes first, then other Markdown special characters,
-    // so that existing backslashes in the path cannot be used to escape
-    // the surrounding backtick code-span delimiter.
-    const safePath = path.replace(/\\/g, '\\\\').replace(/[`*_[\]()]/g, '\\$&');
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') throw err;
     return `_Content for \`${safePath}\` is not available in offline/demo mode._\n\nConnect to GitHub to load live documentation.`;
   }
 }
@@ -106,8 +120,15 @@ export const DocumentationViewer: React.FC = () => {
     setLoading(true);
     setContent('');
 
-    fetchDocContent(entry.path).then((text) => {
+    const controller = new AbortController();
+
+    fetchDocContent(entry.path, controller.signal).then((text) => {
       setContent(text);
+      setLoading(false);
+    }).catch((err: unknown) => {
+      if (err instanceof Error && err.name === 'AbortError') return;
+      // Network error or non-2xx with no graceful fallback — show a short notice
+      setContent('_Failed to load documentation content. Please try again._');
       setLoading(false);
     });
 
@@ -115,6 +136,10 @@ export const DocumentationViewer: React.FC = () => {
     const url = new URL(window.location.href);
     url.searchParams.set('doc', activeDocId);
     window.history.replaceState(null, '', url.toString());
+
+    return () => {
+      controller.abort();
+    };
   }, [activeDocId]);
 
   // Debounced search

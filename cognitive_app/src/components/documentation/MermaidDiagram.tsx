@@ -38,8 +38,14 @@ export const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
   id,
   className = '',
 }) => {
-  const containerId =
-    id ?? `mermaid-${Math.random().toString(36).substring(2, 10)}`;
+  // Generate a stable container ID once on mount.  Re-generating on every
+  // render would cause the useEffect to re-run for unrelated state changes
+  // (e.g. the copy-to-clipboard flag), thrashing Mermaid unnecessarily.
+  const stableIdRef = useRef<string>('');
+  if (!stableIdRef.current) {
+    stableIdRef.current = `mermaid-${Math.random().toString(36).substring(2, 10)}`;
+  }
+  const containerId = id ?? stableIdRef.current;
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);

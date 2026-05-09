@@ -384,10 +384,17 @@ class MemoryLayer:
     def evict_oldest(self, keep_last: int | None = None) -> int:
         """Evict oldest entries to enforce retention policy.
 
+        ``keep_last`` (or ``max_entries`` when ``keep_last`` is ``None``)
+        controls how many rows to retain.  A value of 0 or negative is treated
+        as "no eviction limit" — all existing rows are preserved.  This means
+        ``keep_last=0`` **cannot** be used to delete all rows; call
+        ``conn.execute("DELETE FROM ...")`` directly if a full purge is needed.
+
         Returns number of deleted rows.
         """
         keep = keep_last if keep_last is not None else self.max_entries
         if keep <= 0:
+            # 0 / negative ⟹ eviction disabled; preserve all rows.
             return 0
         try:
             with sqlite3.connect(str(self.db_path)) as conn:

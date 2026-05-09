@@ -27,7 +27,7 @@ from codex_ml.eval.metrics import (
 from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
-from codex_ml.utils.yaml_support import safe_load
+from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLErrorType, safe_load
 
 try:
     from codex_ml.safety import SafetyConfig, sanitize_prompt
@@ -179,7 +179,14 @@ def _apply_dotlist_overrides(mapping: dict[str, Any], overrides: Sequence[str]) 
         if "=" not in item:
             continue
         key, value = item.split("=", 1)
-        parsed = safe_load(value)
+        try:
+            parsed: Any = safe_load(value)
+        except MissingPyYAMLError:
+            # PyYAML not installed — treat as raw string to keep non-Hydra fallback dependency-light
+            parsed = value
+        except YAMLErrorType:
+            # Invalid YAML syntax in override value — treat as raw string
+            parsed = value
         target: dict[str, Any] = mapping
         parts = [part for part in key.split(".") if part]
         if not parts:

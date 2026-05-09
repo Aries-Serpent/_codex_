@@ -375,6 +375,15 @@ class TestActionExecutorDispatchTargets:
             {"agent": 1, "task": "set", "target": "set_repo_variable", "payload": {"name": "X"}}
         ) is False
 
+    def test_cancel_run_requires_run_id(self):
+        from scripts.cognitive.cognitive_brain_core import ActionExecutor
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {"run_id": 99}}
+        ) is True
+        assert ActionExecutor._dispatch_task(
+            {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {}}
+        ) is False
+
 
 class TestCognitiveBrainMemoryIntegration:
     """Integration test: full PDA cycle persists to LTM."""

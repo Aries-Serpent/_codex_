@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S910-code-review) — 2026-05-09
+- `evaluate.py:_apply_dotlist_overrides`: catch `MissingPyYAMLError` and `YAMLErrorType` when PyYAML is unavailable — non-Hydra dotlist overrides now fall back to treating the value as a raw string instead of raising.
+- `cognitive_brain_core.py:evict_oldest`: documented `keep≤0` semantics ("eviction disabled; preserve all rows") explicitly in docstring — clarifies that `keep_last=0` cannot be used for full purge.
+- `DocumentationViewer.tsx`: add `AbortController` cancellation to async `fetchDocContent` effect — prevents stale responses from overwriting content when `activeDocId` changes rapidly.
+- `DocumentationViewer.tsx`: gate live GitHub raw fetch behind `VITE_DOCS_FETCH_LIVE=true` env var — component now operates in offline/demo mode by default; opt-in required for live network calls.
+- `MermaidDiagram.tsx`: generate stable `containerId` via `useRef` (populated once on mount) — prevents unnecessary diagram re-renders triggered by unrelated state changes (e.g. copy-to-clipboard).
+- `test_cb_fallbacks.py`: add `test_cancel_run_requires_run_id` — validates `cancel_run` dispatch target returns `True` with `run_id` and `False` without.
+- Pattern 25 satisfied: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
 ### Added (S909-doc-validation) — 2026-05-09
 - KaTeX math rendering in `DocumentationContent.tsx`: inline `$...$` and display `$$...$$` math expressions now rendered via KaTeX before marked parsing; graceful error fallback per expression.
 - `DocVariableContext.tsx`: React context + `DocVariableProvider` + `useDocVariables()` hook + `applyVariables()` utility for `{{var}}` template interpolation in documentation content; integrated into `DocumentationContent.tsx`.
