@@ -33014,3 +33014,22 @@ Fix Pattern 25 violation caused by automated [skip ci] commits (`ba6f350d` "chor
 - Deferral Language Gate: 0 violations
 
 ---
+
+---
+
+## Session S913 — 2026-05-09 (PR #4376 — Pattern 25 restore after automated sweep)
+
+### Objective
+Continue per Approval Dispatch at `a8233246`. Restore Pattern 25 compliance after automated [skip ci] commits again omitted CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updates.
+
+### Work Completed
+1. **Merged remote automated commits** — merged 4 `[skip ci]` commits from github-actions[bot] into local branch.
+2. **Restored Pattern 25 compliance** — both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+3. **Local validation**: `ruff check src/ tests/` ✅, `sync_tracked_files --check` ✅.
+
+### Impact Score
+- Files updated: `CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md`
+- CI gates unblocked: Pattern 25 (REQ-4)
+- Deferral Language Gate: 0 violations
+
+---
