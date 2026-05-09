@@ -4,7 +4,7 @@
 **Branch:** `copilot/update-safe-pickle-import`
 **Status:** 🟢 READY — all code-fixable failures cleared · cascade fix verified (0 pending) · awaiting CI green + merge approval
 **Latest Session:** S899-final (2026-05-09)
-**Latest Commit:** `6cc011bd`
+**Latest Commit:** `6ec1c426`
 
 ---
 
@@ -12,7 +12,7 @@
 
 ```mermaid
 pie title Merge Readiness Gates (S899-final)
-    "Passing" : 16
+    "Passing" : 17
     "In-progress CI" : 1
     "Pre-existing infra failures" : 1
 ```
@@ -24,7 +24,7 @@ pie title Merge Readiness Gates (S899-final)
 | auto_fix_common_issues | ✅ | No issues found |
 | sync_tracked_files | ✅ | Consistent |
 | Pattern 25 | ✅ | CHANGELOG + accountability in every commit |
-| CodeQL | ✅ | 0 new alerts |
+| CodeQL alerts | ✅ | 3 new alerts fixed (unused `_has_real_transformers` ×2 + dual import) |
 | Merge conflicts | ✅ | Resolved S899 (CODEX_MANIFEST.json + .secrets.baseline) |
 | Broken tests restored | ✅ | batch8 + batch11 |
 | Token verification tests | ✅ | 23/23 pass (env-isolation S899) |
@@ -114,9 +114,13 @@ pie title Merge Readiness Gates (S899-final)
 - [x] Created `docs/roadmap/PR4368_workflow_conflict_analysis.md` — full catalog of 9 push-capable workflows
 - [x] Expected: ≤4 `action_required` per push (down from 8)
 
----
+### ✅ Phase 12: CodeQL / Code-Quality Alert Resolution (COMPLETE — S899-final)
+- [x] Removed unused `_has_real_transformers` global variable (lines 13 & 18) — CodeQL alert closed
+- [x] Fixed dual-import style in `_real_transformers_available()`: replaced `import transformers` inside function with `sys.modules` lookup — CodeQL alert closed
+- [x] Added `import sys` at module top; `_real_transformers_available()` now uses `AutoTokenizer.__module__` → `sys.modules` to retrieve `__version__` without a second bare import
+- [x] ruff ✅ · test skips cleanly ✅ · 6 of 6 triggered review threads addressed
 
-## 🗺️ Decision Flowchart — Next Session Priorities
+--- — Next Session Priorities
 
 ```mermaid
 flowchart TD

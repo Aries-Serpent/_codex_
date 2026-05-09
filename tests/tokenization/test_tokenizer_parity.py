@@ -4,30 +4,32 @@ Test Tokenizer Parity
 Test module for tokenizer parity.
 """
 
+import sys
+
 import pytest
 
 try:
     from transformers import AutoTokenizer  # type: ignore
-
-    # Confirm it's a real installation (not just a stub) by checking for from_pretrained
-    _has_real_transformers = callable(getattr(AutoTokenizer, "from_pretrained", None)) and not getattr(
-        getattr(AutoTokenizer, "from_pretrained", None), "_is_stub", False
-    )
 except ImportError:
     AutoTokenizer = None  # type: ignore
-    _has_real_transformers = False
 
 
 def _real_transformers_available() -> bool:
-    """Return True only when a real transformers installation (not a conftest stub) is present."""
-    try:
-        import transformers  # type: ignore
+    """Return True only when a real transformers installation (not a conftest stub) is present.
 
-        version = getattr(transformers, "__version__", "")
-        # Conftest stubs use '999.0.0+stub' to signal a fake install
-        return bool(version) and "stub" not in str(version) and version != "0.0"
-    except Exception:
+    Uses ``sys.modules`` to look up the already-imported module so that
+    ``transformers`` is only ever imported with ``from transformers import ...``
+    (avoiding the 'imported with both import and import from' lint/CodeQL warning).
+    """
+    if AutoTokenizer is None:
         return False
+    # Derive the top-level package name from the class's own __module__
+    mod_name = getattr(AutoTokenizer, "__module__", "") or ""
+    root = mod_name.split(".")[0] or "transformers"
+    mod = sys.modules.get(root) or sys.modules.get("transformers")
+    version = getattr(mod, "__version__", "")
+    # Conftest stubs use '999.0.0+stub' or '0.0' to signal a fake install
+    return bool(version) and "stub" not in str(version) and version != "0.0"
 
 
 @pytest.mark.skipif(not _real_transformers_available(), reason="real transformers not installed")

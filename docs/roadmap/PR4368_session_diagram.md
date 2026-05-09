@@ -2,7 +2,7 @@
 
 **PR:** #4368 — Harden safe pickle imports, fix EvaluationRunner NameError and CodeQL alert, resolve merge conflicts, self-heal CI and compatibility failures, extend CB
 **Branch:** `copilot/update-safe-pickle-import`
-**Last Updated:** 2026-05-09 (S899-cont)
+**Last Updated:** 2026-05-09 (S899-final)
 
 ---
 
@@ -34,6 +34,7 @@ gantt
     S899  CODEX_MANIFEST merge        :done, s899, 2026-05-09, 1d
     S899c Tokenizer skip guards       :done, s899c, after s899, 1d
     S899c2 Workflow cascade fix       :done, s899c2, after s899c, 1d
+    S899f  CodeQL alert resolution    :done, s899f,  after s899c2, 1d
 ```
 
 ---
@@ -108,10 +109,10 @@ graph TD
 ## CI Health Snapshot (Mermaid)
 
 ```mermaid
-pie title CI Results — HEAD 9dd3a305
-    "success" : 16
-    "in_progress" : 18
-    "action_required" : 8
+pie title CI Results — HEAD 6ec1c426 (S899-final)
+    "success" : 18
+    "in_progress" : 8
+    "action_required" : 0
     "startup_failure (infra)" : 4
     "cancelled/skipped" : 3
 ```
@@ -122,10 +123,10 @@ pie title CI Results — HEAD 9dd3a305
 
 ```mermaid
 xychart-beta
-    title "Test Counts — PR #4368 Frontier (9dd3a305)"
+    title "Test Counts — PR #4368 Frontier (S899-final)"
     x-axis ["passed", "skipped", "xfailed", "xpassed", "failed"]
     y-axis "count" 0 --> 800
-    bar [729, 56, 5, 2, 0]
+    bar [729, 57, 5, 2, 0]
 ```
 
 ---
@@ -182,3 +183,4 @@ sequenceDiagram
 | S898 | `e8057dfe`→`88a5f8d9` | CB PerceptionLayer (9 sensors) + MemoryLayer LTM + ActionExecutor | 37 | ✅ |
 | S899 | `04c718f3`→`c9517ad7` | Merge conflict (CODEX_MANIFEST) + test env-isolation (23 tests) | 23 | ✅ |
 | S899-cont | `9dd3a305` | Tokenizer skip guards (9 tests) + workflow cascade fix (4 workflows) | **729** | ✅ |
+| S899-final | `6ec1c426` | CodeQL fixes: remove `_has_real_transformers` + fix dual-import via `sys.modules` | **729** | ✅ |

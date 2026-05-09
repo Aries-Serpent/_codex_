@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S899-final) — 2026-05-09
+- **CodeQL / Unused global variable** (`tests/tokenization/test_tokenizer_parity.py`):
+  Removed the dead `_has_real_transformers` variable (was computed in the `try` block and the
+  `except ImportError` block but never referenced anywhere). Two CodeQL alerts
+  (`py/unused-global-variable` at lines 13 and 18) are now closed.
+- **CodeQL / Module imported with `import` and `import from`**
+  (`tests/tokenization/test_tokenizer_parity.py` line 24):
+  Removed the bare `import transformers` inside `_real_transformers_available()`. The function
+  now uses `AutoTokenizer.__module__` + `sys.modules` to retrieve `__version__` without a second
+  bare import, eliminating the dual-import CodeQL alert. `import sys` added at module level.
+- **All 6 triggered review threads addressed** (3 code-quality + 3 mirrored CodeQL alerts on
+  the same 3 locations).
+
 ### Fixed (S899-cont-Phase11) — 2026-05-09
 - **Workflow cascade root-cause fix** — 4 workflow files patched to add `[skip ci]` to bot commit messages,
   eliminating the "8 pending workflows" cascade that appeared after every `report_progress` push:
