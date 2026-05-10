@@ -1,10 +1,10 @@
-# Session Context — 2026-05-10T01:59:40Z
+# Session Context — 2026-05-10T02:13:45Z
 **Branch:** `copilot/add-logging-for-exception-handler`  **PR:** #4379  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4410` (✅)
-- GraphQL remaining: `4991` (✅)
+- REST remaining: `4397` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `copilot/add-logging-for-exception-handler` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Addressing comment on PR #4379** — `failure` on `copilot/add-logging-for-exception-handler` (2026-05-10)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-10)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-10)
 - **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-10)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-10)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-10)
 
 ## 📝 Recent Commits
+- `b090d44c` Changes before error encountered — copilot-swe-agent[bot] (2026-05-10)
 - `f1f89d93` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-10)
 - `1a1b938a` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-10)
 - `0ae1d4a9` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-10)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/add-logging-for-exception-handle
 - `61302bb1` Potential fix for pull request finding 'CodeQL / Potentially uninitialized local — Statix (2026-05-10)
 - `39959b4f` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-10)
 - `76019981` Changes before error encountered — copilot-swe-agent[bot] (2026-05-10)
-- `6209c29a` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
