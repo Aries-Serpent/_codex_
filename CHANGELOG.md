@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S921-pr-autofix-self-healing) — 2026-05-10
+- `src/codex_cli/__init__.py`: fixed lazy `app` export to avoid recursive import failures by loading the submodule via `import_module(".app", __name__)`.
+- `tools/codex_cli.py`: added compatibility `__getattr__` bridge so when this script is imported as top-level `codex_cli` (after test path mutation), `codex_cli.app` is still resolvable for patch targets and smoke tests.
+- `omegaconf/__init__.py`: extended shim interpolation resolver to support `${oc.env:VAR}` (and `${oc.env:VAR,default}`) environment substitutions.
+- `src/codex/ast/smells.py`: broadened `SMELL-S002` detection to flag `except Exception:` as a broad-catch smell in addition to bare/pass-only handlers.
+- `src/codex_ml/logging/registry.py`: made NDJSON system-metrics enablement rely on runtime `psutil` availability (including monkeypatched test doubles) instead of import-time `_HAS_PSUTIL`.
+
 ### Fixed (S920-review-thread-followup) — 2026-05-09
 - `src/training/trainer.py`: tightened fail-fast behavior for torchless stub mode by rejecting checkpoint configuration during `Trainer` initialization when real torch is unavailable, preventing delayed checkpoint persistence failures.
 - `src/training/trainer.py`: removed duplicate checkpoint-compatibility validation branch and consolidated enforcement at the finalized checkpoint-configuration stage.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import os
 import re
 import sys
 from collections.abc import Iterable, Mapping
@@ -156,7 +157,13 @@ else:
 
             def _replace(match: re.Match[str]) -> str:
                 nonlocal replaced
-                ref_value = _select_from_mapping(root, match.group(1))
+                ref_expr = match.group(1)
+                if ref_expr.startswith("oc.env:"):
+                    env_spec = ref_expr.removeprefix("oc.env:")
+                    env_name, _, default_value = env_spec.partition(",")
+                    ref_value = os.getenv(env_name, default_value if default_value else None)
+                else:
+                    ref_value = _select_from_mapping(root, ref_expr)
                 if ref_value is None:
                     return match.group(0)
                 replaced = True

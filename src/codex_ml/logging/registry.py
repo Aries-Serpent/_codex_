@@ -53,7 +53,7 @@ class _NDJSONMetricsLogger:
             backup_count=backup_count,
             max_age_s=max_age_s,
         )
-        self._include_sys_metrics = include_sys_metrics and _HAS_PSUTIL and psutil is not None
+        self._include_sys_metrics = bool(include_sys_metrics and psutil is not None)
 
     def _system_metrics(self) -> dict[str, float]:  # pragma: no cover - env dependent
         if not self._include_sys_metrics:

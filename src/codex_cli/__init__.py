@@ -17,6 +17,8 @@ Author: Codex Team
 
 from __future__ import annotations
 
+from importlib import import_module
+
 __all__ = ["__version__", "app"]
 __version__ = "0.0.0"
 
@@ -24,7 +26,7 @@ __version__ = "0.0.0"
 def __getattr__(name: str):
     """Lazily expose ``codex_cli.app`` for compatibility with legacy imports."""
     if name == "app":
-        from . import app as app_module
+        app_module = import_module(".app", __name__)
 
         globals()["app"] = app_module
         return app_module

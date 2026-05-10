@@ -1,3 +1,30 @@
+## SESSION WRAP-UP — 2026-05-10T00:10Z [S921-pr-autofix-self-healing]
+
+**Session:** S921-pr-autofix-self-healing | **Branch:** `copilot/add-logging-for-exception-handler`
+**Agent:** copilot-swe-agent[bot]
+
+### Completed
+- Actioned new maintainer self-healing request for `PR Auto-Fix Check` run `25614386778` using GitHub MCP job inspection.
+- Identified workflow failure mode from logs/jobs:
+  - Job `Detect CI Issues & Post Fix Instructions` failed at step **“Fail if auto-fixable issues found”** on historical SHA `3e9d9303`.
+- Executed required local verification commands (`python3 -m ruff check`, iterative `python3 -m pytest -x`) and resolved newly surfaced blockers:
+  - `src/codex_cli/__init__.py`: fixed recursive lazy-import path for `codex_cli.app`.
+  - `tools/codex_cli.py`: added lazy `codex_cli.app` compatibility bridge for tests that import tools CLI as top-level `codex_cli`.
+  - `omegaconf/__init__.py`: added `${oc.env:...}` interpolation support in shim resolver.
+  - `src/codex/ast/smells.py`: now flags broad `except Exception:` under `SMELL-S002`.
+  - `src/codex_ml/logging/registry.py`: runtime-aware `psutil` gating now supports monkeypatched metric stubs in tests.
+- Verification highlights:
+  - `ruff` on touched files ✅
+  - Targeted regression tests for each surfaced failure path ✅
+  - Repository `pytest -x` reruns progressed substantially after fixes; final long run was terminated by runner (exit 137) after passing hundreds of tests, with no recurrence of the fixed failures.
+
+### Impact Score
+- Maintainer-requested PR Auto-Fix triage addressed with concrete root-cause extraction
+- 5 production modules hardened for compatibility/test-stability regressions discovered by iterative `pytest -x`
+- Scope remained surgical and directly tied to CI self-healing validation signals
+
+---
+
 ## SESSION WRAP-UP — 2026-05-09T23:28Z [S920-review-thread-followup]
 
 **Session:** S920-review-thread-followup | **Branch:** `copilot/add-logging-for-exception-handler`
@@ -7655,6 +7682,13 @@ Changed from broken identical try/except to clean relative imports:
 
 
 
+
+
+## SESSION SUMMARY — 2026-05-10T00:28Z [auto-generated]
+
+**Session:** auto-20260510T0028-run3476 | **Run:** 25614926189 | **Date:** 2026-05-10
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-05-09T22:52Z [auto-generated]
 
 **Session:** auto-20260509T2252-run201779 | **Run:** 25613716108 | **Date:** 2026-05-09
