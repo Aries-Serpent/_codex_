@@ -25,16 +25,20 @@ def test_trainer_module_imports():
 def test_trainer_requires_torch():
     import importlib
 
+    trainer = None
     try:
         trainer = importlib.import_module("training.trainer")
     except ModuleNotFoundError:
+        pytest.skip("training.trainer not importable")
+
+    if trainer is None:
         pytest.skip("training.trainer not importable")
 
     dummy_model = MagicMock()
     dummy_optimizer = MagicMock()
     dummy_loader = MagicMock()
 
-    if getattr(trainer, "torch", None) is None:
+    if not getattr(trainer, "_HAS_REAL_TORCH", True):
         with pytest.raises(RuntimeError):
             trainer.Trainer(dummy_model, dummy_optimizer, dummy_loader)
     else:

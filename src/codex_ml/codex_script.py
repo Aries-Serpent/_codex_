@@ -58,15 +58,26 @@ def _init_determinism_from_env() -> dict[str, Any]:
     try:
         import torch
 
-        torch.manual_seed(seed)
-        torch.set_num_threads(num_threads)
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(seed)
-            torch.backends.cudnn.deterministic = True
-            torch.backends.cudnn.benchmark = False
-    except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        if hasattr(torch, "manual_seed"):
+            torch.manual_seed(seed)
+        if hasattr(torch, "set_num_threads"):
+            torch.set_num_threads(num_threads)
+        cuda = getattr(torch, "cuda", None)
+        backends = getattr(torch, "backends", None)
+        if cuda is not None and hasattr(cuda, "is_available") and cuda.is_available():
+            if hasattr(cuda, "manual_seed_all"):
+                cuda.manual_seed_all(seed)
+            cudnn = getattr(backends, "cudnn", None) if backends is not None else None
+            if cudnn is not None:
+                cudnn.deterministic = True
+                cudnn.benchmark = False
+    except (ImportError, ModuleNotFoundError, OSError) as e:
+        logger.debug("PyTorch determinism setup skipped: %s", e, exc_info=True)
+    except Exception as e:
+        logger.warning(
+            "PyTorch determinism setup failed with unexpected error: %s", e, exc_info=True
+        )
+        raise
 
     # Apply TensorFlow settings if available
     try:

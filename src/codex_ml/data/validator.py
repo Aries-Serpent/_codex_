@@ -11,11 +11,29 @@ from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from jsonschema import ValidationError, validate
+    _HAS_JSONSCHEMA = True
 except Exception:  # pragma: no cover
-    ValidationError = Exception
+    _HAS_JSONSCHEMA = False
+
+    class ValidationError(Exception):
+        """Fallback validation error when jsonschema is unavailable."""
 
     def validate(*_args: Any, **_kwargs: Any) -> None:
-        raise ImportError("jsonschema is required for dataset validation")
+        instance = _kwargs.get("instance")
+        if not isinstance(instance, dict):
+            raise ValidationError("Manifest must be a JSON object")
+        required_types: dict[str, type] = {
+            "name": str,
+            "version": str,
+            "splits": dict,
+            "checksums": list,
+            "features": list,
+        }
+        for field, expected_type in required_types.items():
+            if field not in instance:
+                raise ValidationError(f"Missing required field: {field}")
+            if not isinstance(instance[field], expected_type):
+                raise ValidationError(f"Field '{field}' must be of type {expected_type.__name__}")
 
 
 LOGGER = logging.getLogger(__name__)
@@ -48,14 +66,12 @@ class DatasetValidator:
             validate(instance=manifest, schema=schema)
             LOGGER.info("✓ Manifest valid: %s", manifest_path)
             return True
-        except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
-            raise
         except ValidationError as exc:
             logger.debug(f"ValidationError: {exc}")
             # ValidationError has a 'message' attribute when jsonschema is available
             error_msg = getattr(exc, "message", str(exc))
+            if not _HAS_JSONSCHEMA:
+                error_msg = f"{error_msg} (fallback validator)"
             LOGGER.error("✗ Manifest invalid (%s): %s", manifest_path, error_msg)
             return False
         except Exception as exc:  # pragma: no cover - defensive

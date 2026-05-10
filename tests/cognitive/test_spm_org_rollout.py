@@ -67,9 +67,23 @@ def test_env_actor_cannot_promote_pattern(monkeypatch, tmp_path):
 
 def test_env_actor_can_report_completion(monkeypatch, tmp_path):
     """ORG_OWNER-tier actor can report_completion."""
+    monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "alice")
+    spm = StructuralPolicyManager(audit_log=tmp_path / "audit.jsonl")
+    assert spm.evaluate_permission("alice", "report_completion") is True
+
+
+def test_env_actor_github_actions_cannot_inject_session_context(monkeypatch, tmp_path):
+    """github-actions[bot] is restricted from inject_session_context."""
     monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "github-actions[bot]")
     spm = StructuralPolicyManager(audit_log=tmp_path / "audit.jsonl")
-    assert spm.evaluate_permission("github-actions[bot]", "report_completion") is True
+    assert spm.evaluate_permission("github-actions[bot]", "inject_session_context") is False
+
+
+def test_env_actor_github_actions_stays_read_only(monkeypatch):
+    """github-actions[bot] remains READ_ONLY_AGENT even when listed in env."""
+    monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "github-actions[bot]")
+    spm = StructuralPolicyManager()
+    assert spm.get_tier("github-actions[bot]") == PermissionTier.READ_ONLY_AGENT
 
 
 def test_env_actor_can_inject_session_context(monkeypatch, tmp_path):

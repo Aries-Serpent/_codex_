@@ -60,6 +60,7 @@ def decode_and_validate(
       Decoded artifact data (usually a dict)
     Raises:
       FileNotFoundError, jsonschema.ValidationError if schema invalid
+      RuntimeError when schema_path is provided but jsonschema is unavailable
       TypeError if input args are malformed
     """
     import json
@@ -76,13 +77,19 @@ def decode_and_validate(
     decoded = decode_base64_gzip(artifact)
 
     if schema_path:
-        import jsonschema
-
         schema = Path(schema_path)
         if not schema.exists():
             raise FileNotFoundError(f"Schema not found: {schema}")
         schema_obj = json.loads(schema.read_text(encoding="utf-8"))
-        jsonschema.validate(instance=decoded, schema=schema_obj)
+        try:
+            import jsonschema
+        except (ImportError, ModuleNotFoundError) as exc:
+            raise RuntimeError(
+                "schema_path was provided but jsonschema is not installed; "
+                "install jsonschema to enforce schema validation"
+            ) from exc
+        else:
+            jsonschema.validate(instance=decoded, schema=schema_obj)
 
     findings = normalize_findings(walk_for_gaps(decoded))
     gaps = decoded.get("gaps") if isinstance(decoded, dict) else None

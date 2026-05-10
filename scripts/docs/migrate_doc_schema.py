@@ -27,6 +27,7 @@ import argparse
 import json
 import sqlite3
 import sys
+from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -176,7 +177,7 @@ def upsert_doc(conn: sqlite3.Connection, doc: dict) -> None:
 # CLI
 # ---------------------------------------------------------------------------
 
-def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__.strip().splitlines()[0])
     p.add_argument("--db", type=Path, default=DEFAULT_DB,
                    help="SQLite database path (default: %(default)s)")

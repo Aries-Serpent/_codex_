@@ -281,21 +281,36 @@ class ModelServer:
     def embed(self, texts: list[str]):
         if self.model is None:
             raise RuntimeError("Model not loaded")
-        import numpy as np
+        try:
+            import numpy as np
 
-        if not texts:
-            return np.zeros((0, self._embedding_dim), dtype=np.float32)
+            if not texts:
+                return np.zeros((0, self._embedding_dim), dtype=np.float32)
 
-        embeddings = []
-        for text in texts:
-            seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
-            rng = np.random.default_rng(seed)
-            vec = rng.random(self._embedding_dim, dtype=np.float32)
-            norm = np.linalg.norm(vec)
-            if norm > 0:
-                vec = vec / norm
-            embeddings.append(vec)
-        return np.vstack(embeddings)
+            embeddings = []
+            for text in texts:
+                seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
+                rng = np.random.default_rng(seed)
+                vec = rng.random(self._embedding_dim, dtype=np.float32)
+                norm = np.linalg.norm(vec)
+                if norm > 0:
+                    vec = vec / norm
+                embeddings.append(vec)
+            return np.vstack(embeddings)
+        except ImportError:
+            import math
+            import random
+
+            embeddings: list[list[float]] = []
+            for text in texts:
+                seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
+                rng = random.Random(seed)
+                vec = [rng.random() for _ in range(self._embedding_dim)]
+                norm = math.sqrt(sum(v * v for v in vec))
+                if norm > 0:
+                    vec = [v / norm for v in vec]
+                embeddings.append(vec)
+            return embeddings
 
     def health_check(self) -> dict[str, Any]:
         loaded = self.model is not None

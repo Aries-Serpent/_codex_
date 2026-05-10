@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 import sys
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Optional
+
+logger = logging.getLogger(__name__)
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -35,15 +35,16 @@ except Exception:  # pragma: no cover - optional dependency
     SafetyConfig = None
     sanitize_prompt = None
 
-LOGGER = logging.getLogger(__name__)
-
 hydra, _HAS_HYDRA = optional_import("hydra")
 if _HAS_HYDRA:  # pragma: no cover - optional dependency
     try:
         from hydra.utils import to_absolute_path as _hydra_to_absolute_path
-    except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+    except ImportError:
+        logger.warning(
+            "Failed to import hydra.utils.to_absolute_path; "
+            "falling back to config_legacy.utils.to_absolute_path",
+            exc_info=True,
+        )
         from config_legacy.utils import to_absolute_path as _hydra_to_absolute_path
 
     from omegaconf import OmegaConf
@@ -145,7 +146,7 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
     if not isinstance(sanitize_flag, bool):
         sanitize_flag = True
     if not sanitize_flag:
-        LOGGER.debug("Prompt sanitisation disabled for evaluation config")
+        logger.debug("Prompt sanitisation disabled for evaluation config")
         return 0
 
     total = 0
@@ -160,7 +161,7 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
         ("prompts", "inputs", "texts"),
     )
     if total:
-        LOGGER.info("Sanitised %d prompt field(s) in evaluation configuration", total)
+        logger.info("Sanitised %d prompt field(s) in evaluation configuration", total)
     return total
 
 

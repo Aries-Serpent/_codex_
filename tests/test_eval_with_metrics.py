@@ -17,11 +17,17 @@ try:  # pragma: no cover - torch optional in CI
 except ImportError:  # pragma: no cover - skip when torch unavailable
     torch = None  # type: ignore[assignment]
 
-pytestmark = pytest.mark.skipif(torch is None, reason="requires PyTorch")
+HAS_REAL_TORCH = (
+    torch is not None
+    and hasattr(torch, "tensor")
+    and hasattr(torch, "long")
+    and hasattr(getattr(torch, "nn", object), "Module")
+)
+pytestmark = pytest.mark.skipif(not HAS_REAL_TORCH, reason="requires PyTorch")
 
 
 def test_evaluate_averages_batch_metrics() -> None:
-    if torch is None:
+    if not HAS_REAL_TORCH:
         pytest.skip("requires PyTorch")
 
     class DummyModel(torch.nn.Module):

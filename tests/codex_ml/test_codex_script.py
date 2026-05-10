@@ -120,6 +120,18 @@ class TestInitDeterminismFromEnv:
                 result = codex_script._init_determinism_from_env()
                 assert result["determinism_enabled"] is True
 
+    def test_raises_unexpected_torch_determinism_errors(self) -> None:
+        """Unexpected runtime failures in torch determinism path should not be swallowed."""
+        fake_torch = MagicMock()
+        fake_torch.manual_seed.side_effect = RuntimeError("manual_seed failed")
+        fake_torch.cuda = MagicMock()
+        fake_torch.cuda.is_available.return_value = False
+        fake_torch.backends = MagicMock()
+        with patch.dict(os.environ, {"CODEX_DETERMINISM": "1"}, clear=True):
+            with patch.dict("sys.modules", {"torch": fake_torch}):
+                with pytest.raises(RuntimeError, match="manual_seed failed"):
+                    codex_script._init_determinism_from_env()
+
     def test_handles_tensorflow_import_error(self) -> None:
         """Test handles TensorFlow import error gracefully."""
         with patch.dict(os.environ, {"CODEX_DETERMINISM": "1"}, clear=True):

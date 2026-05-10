@@ -8,6 +8,7 @@ S898 enhancements:
 - ActionExecutor: GitHub workflow-dispatch targets
 """
 import json
+import logging
 import os
 import platform
 import sqlite3
@@ -16,6 +17,8 @@ from pathlib import Path
 from typing import Any
 
 from scripts.cognitive.cb_fallbacks import import_optional, rate_limited_call, with_fallback
+
+logger = logging.getLogger(__name__)
 
 
 class CognitiveBrain:
@@ -264,8 +267,8 @@ class PerceptionLayer:
                 data = json.loads(rescue_path.read_text())
                 failures = data.get("failures", data.get("failing_checks", []))
                 return len(failures)
-        except Exception:  # noqa: BLE001
-            pass
+        except Exception as e:  # noqa: BLE001
+            logger.debug("Failed to read CI failure count: %s", e)
         return None
 
 
@@ -316,8 +319,10 @@ class MemoryLayer:
             with sqlite3.connect(str(self.db_path)) as conn:
                 conn.execute(self._DDL)
                 conn.commit()
-        except Exception:  # noqa: BLE001
-            pass  # Degraded mode: LTM unavailable
+        except Exception as e:  # noqa: BLE001
+            logger.warning(
+                "LTM database initialization failed, running in degraded mode: %s", e
+            )
 
     def store_perception(self, perception_data: dict[str, Any], cycle: int) -> bool:
         """
@@ -385,17 +390,18 @@ class MemoryLayer:
         """Evict oldest entries to enforce retention policy.
 
         ``keep_last`` (or ``max_entries`` when ``keep_last`` is ``None``)
-        controls how many rows to retain.  A value of 0 or negative is treated
-        as "no eviction limit" — all existing rows are preserved.  This means
-        ``keep_last=0`` **cannot** be used to delete all rows; call
-        ``conn.execute("DELETE FROM ...")`` directly if a full purge is needed.
+        controls how many rows to retain. ``None`` means "use configured
+        retention". Passing ``0`` or a negative value is invalid and raises
+        ``ValueError`` to avoid ambiguous behavior.
 
         Returns number of deleted rows.
         """
         keep = keep_last if keep_last is not None else self.max_entries
         if keep <= 0:
-            # 0 / negative ⟹ eviction disabled; preserve all rows.
-            return 0
+            raise ValueError(
+                "Retention value must be positive, "
+                f"got {keep} (keep_last={keep_last}, max_entries={self.max_entries})"
+            )
         try:
             with sqlite3.connect(str(self.db_path)) as conn:
                 count = conn.execute(

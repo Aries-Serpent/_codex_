@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import importlib.util
 import json
 import os
 import pathlib
@@ -25,6 +26,26 @@ LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 SKIP_PRECOMMIT = os.getenv("CODEX_CLI_SKIP_PRECOMMIT") == "1"
 SKIP_TESTS = os.getenv("CODEX_CLI_SKIP_TESTS") == "1"
+
+# Compatibility bridge: some test suites mutate sys.path and import this module as
+# top-level ``codex_cli``. Expose ``codex_cli.app`` lazily in that scenario.
+_APP_MODULE_PATH = ROOT / "src" / "codex_cli" / "app.py"
+
+
+def __getattr__(name: str):
+    if name != "app":
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    module_name = f"{__name__}.app"
+    module = sys.modules.get(module_name)
+    if module is None:
+        spec = importlib.util.spec_from_file_location(module_name, _APP_MODULE_PATH)
+        if spec is None or spec.loader is None:
+            raise AttributeError(f"Unable to load {module_name!r} from {_APP_MODULE_PATH}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+    globals()["app"] = module
+    return module
 
 
 def log(event: str, status: str, detail: str = "") -> None:

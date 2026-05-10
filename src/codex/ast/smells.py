@@ -516,6 +516,19 @@ class CodeSmellDetector:
                             suggestion="Specify the exception type: except Exception:",
                         )
                     )
+                elif isinstance(node.type, ast.Name) and node.type.id == "Exception":
+                    smells.append(
+                        CodeSmell(
+                            rule_id="SMELL-S002",
+                            message="Broad 'except Exception:' may hide unexpected failures",
+                            severity=SmellSeverity.WARNING,
+                            category=SmellCategory.STRUCTURE,
+                            file_path=file_path,
+                            line_start=node.lineno,
+                            line_end=getattr(node, "end_lineno", node.lineno),
+                            suggestion="Prefer specific exception types whenever possible",
+                        )
+                    )
 
                 # Check for pass-only handler
                 if len(node.body) == 1 and isinstance(node.body[0], ast.Pass):

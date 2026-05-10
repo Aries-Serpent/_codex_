@@ -1989,7 +1989,7 @@ def pytest_runtest_protocol(item, nextitem):
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
-    except ImportError:  # psutil optional; skip resource tracking if unavailable
+    except (ImportError, AttributeError, ModuleNotFoundError):  # psutil optional; skip resource tracking if unavailable
         _ = None
 
     yield

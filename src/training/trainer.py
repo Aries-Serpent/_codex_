@@ -6,6 +6,7 @@ import contextlib
 import inspect
 import json
 import logging
+import os
 import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
@@ -16,18 +17,62 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch guard for import-time failures
     import torch
 
+    _HAS_REAL_TORCH = True
     nn = torch.nn
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
-    torch = None  # type: ignore[assignment]
-    nn = Any
-    GradScaler = None
-    autocast = None
-    DataLoader = Any  # type: ignore[assignment, misc]
+    _HAS_REAL_TORCH = False
 
-if torch is not None:  # pragma: no cover - typing bridge
+    class _NoOpScaler:
+        def __init__(self, *, enabled: bool = False) -> None:
+            self.enabled = enabled
+
+        def scale(self, loss: Any) -> Any:
+            return loss
+
+        def unscale_(self, _optimizer: Any) -> None:
+            return None
+
+        def step(self, optimizer: Any) -> None:
+            optimizer.step()
+
+        def update(self) -> None:
+            return None
+
+    class _NoOpNoGrad(contextlib.AbstractContextManager[Any]):
+        def __exit__(self, exc_type, exc, tb) -> bool:
+            return False
+
+    class _TorchStub:
+        class nn:
+            class utils:
+                @staticmethod
+                def clip_grad_norm_(_params: Any, _max_norm: float) -> None:
+                    return None
+
+        @staticmethod
+        def save(payload: Any, path: Path | str) -> None:
+            raise RuntimeError(
+                "torch.save is unavailable in torch stub mode; "
+                "install real torch or disable checkpointing"
+            )
+
+        @staticmethod
+        def no_grad() -> _NoOpNoGrad:
+            return _NoOpNoGrad()
+
+    torch = _TorchStub()  # type: ignore[assignment]
+    nn = Any
+    GradScaler = _NoOpScaler
+
+    def autocast(*, enabled: bool = False):
+        return contextlib.nullcontext()
+
+    DataLoader = Any
+
+if hasattr(torch, "Tensor"):  # pragma: no cover - typing bridge
     TensorType = torch.Tensor
     OptimizerType = torch.optim.Optimizer
     DataLoaderType = DataLoader
@@ -49,7 +94,7 @@ from metrics import append_ndjson  # noqa: E402
 from .checkpointing import load_checkpoint  # noqa: E402
 from .simple_trainer import SimpleTrainer  # noqa: E402
 
-if torch is not None:
+if hasattr(torch, "load"):
     try:
         _TORCH_SUPPORTS_WEIGHTS_ONLY = "weights_only" in inspect.signature(torch.load).parameters
     except (TypeError, ValueError):  # pragma: no cover - torch may bypass inspect
@@ -192,8 +237,11 @@ class Trainer:
         metric_mode: str | None = None,
         maximize_metric: bool | None = None,
     ) -> None:
-        if torch is None or GradScaler is None or autocast is None:
-            raise RuntimeError("torch is required for the extended trainer")
+        if not _HAS_REAL_TORCH and os.getenv("CODEX_ALLOW_TORCH_STUB", "0") != "1":
+            raise RuntimeError(
+                "Trainer requires a real torch installation. "
+                "Set CODEX_ALLOW_TORCH_STUB=1 only for explicit stub-mode tests."
+            )
         if config is not None and trainer_config is not None:
             raise TypeError("Pass only one of 'config' or 'trainer_config'")
 
@@ -259,6 +307,13 @@ class Trainer:
                 keep_best_k=keep_best_k,
                 mode=normalized_mode,
                 maximize_metric=maximize_metric,
+            )
+
+        if not _HAS_REAL_TORCH and cfg.checkpoint is not None:
+            raise RuntimeError(
+                "Checkpointing requires a real torch installation. "
+                "Either install PyTorch or disable checkpoint_dir/checkpoint_config "
+                "(checkpoint configuration is incompatible with CODEX_ALLOW_TORCH_STUB=1)."
             )
 
         if cfg.gradient_accumulation_steps < 1:
