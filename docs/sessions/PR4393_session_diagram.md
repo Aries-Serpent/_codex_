@@ -38,6 +38,10 @@ graph TD
     - Dependency-submission run `25649801454` failure was followed by successful rerun state on `25650141042` (`submit-dependency-snapshot` success).
 - S936 active-session hardening:
     - Auto-approve now escalates during active Copilot session events (`requested` / `in_progress`) and can monitor a full 60-minute window to verify no workflow failures.
+- Post-approval live status on `ed6fb33`:
+    - 12 in-progress runs, 8 pending, 7 queued; 3 startup-failure runs (infra/startup class) observed in heavy optional suites.
+- Continuation readiness:
+    - `.codex/FOLLOWUP_PROMPT_CODEQL_REMAINING_25648728868.md` refreshed for next-session final CodeQL/security verification.
 
 ---
 

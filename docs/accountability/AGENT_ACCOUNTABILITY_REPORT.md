@@ -31,6 +31,17 @@
 - Added active-session monitor path (default 60-minute window) to repeatedly
   approve pending runs for current PR head and verify no completed workflow
   failures occur during the active Copilot session window.
+- Completed post-approval monitoring pass after maintainer approval event:
+  - latest head `ed6fb33` moved into active execution state
+  - queue status snapshot: 12 in_progress, 8 pending, 7 queued
+  - 3 startup_failure outcomes in heavy optional suites (infra/startup class).
+- Refreshed follow-up continuation prompt for next-session CodeQL closure:
+  `.codex/FOLLOWUP_PROMPT_CODEQL_REMAINING_25648728868.md`
+  with token prerequisites, branch-scoped verification steps, and explicit note
+  that merge-to-main is not required to generate the fetcher report.
+- Verified final hygiene check:
+  - no important repository files were left in `/tmp`
+  - no important work files are hidden by `.gitignore` in this patchset.
 
 ### Validation
 - Pre-merge local validation pending on this patchset:

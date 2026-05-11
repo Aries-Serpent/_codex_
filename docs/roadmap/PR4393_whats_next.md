@@ -63,6 +63,11 @@
   - Uses REST rerun fallback for same-repo PRs (no GH CLI token ambiguity).
   - Hardened for active Copilot sessions: workflow_run trigger now includes `requested`/`in_progress`, with aggressive multi-pass approval when agent is active.
   - Added active-session monitor mode (default 60-minute window) to repeatedly auto-approve new pending runs and verify no completed workflow failures on the current PR head.
+- 🔄 Post-approval monitoring snapshot (head `ed6fb33`):
+  - 12 `in_progress`
+  - 8 `pending`
+  - 7 `queued`
+  - 3 `startup_failure` (Data Quality, Progressive Validation, Rust-Python; infra/startup class)
 
 ---
 
@@ -73,6 +78,9 @@
 3. Confirm no carryover from the original 249-alert artifact set (`total == 0` target).
 4. If any residual alerts remain, patch only residual files and re-run fetcher.
 5. Merge when required pre-merge checks are green.
+
+> Note: A merge to `main` is **not required** to generate the CodeQL verification report.
+> The fetcher verification should run on the PR head branch first.
 
 ---
 

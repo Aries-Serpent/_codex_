@@ -51,6 +51,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - made pass behavior tunable via repo variables:
     `CODEX_AUTO_APPROVE_MAX_PASSES`, `CODEX_AUTO_APPROVE_PASS_DELAY_MS`,
     `CODEX_AUTO_APPROVE_MONITOR_MINUTES`, `CODEX_AUTO_APPROVE_MONITOR_INTERVAL_SEC`
+- Post-approval monitoring refresh on head `ed6fb33`:
+  - active queue transitioned to in-progress/pending/queued state
+  - heavy optional suites surfaced `startup_failure` infra-class outcomes (non-code path)
+- Refreshed `.codex/FOLLOWUP_PROMPT_CODEQL_REMAINING_25648728868.md` for next
+  session with S935/S936 context, explicit token requirements, and branch note
+  clarifying that merge-to-main is not required for fetcher verification.
 
 ### Fixed (S931-priority-followup-and-ci-triage) — 2026-05-11
 - Verified priority follow-up status after S930 remediation:
