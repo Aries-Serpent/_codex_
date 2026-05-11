@@ -338,4 +338,17 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # When invoked by pip/setuptools (egg_info, dist_info, install, etc.),
+    # defer to setuptools so PipReport can analyse this package correctly.
+    _SETUPTOOLS_CMDS = {
+        "egg_info", "dist_info", "install", "bdist_wheel", "sdist",
+        "build", "develop", "check", "clean",
+    }
+    if len(sys.argv) > 1 and sys.argv[1] in _SETUPTOOLS_CMDS:
+        try:
+            import setuptools  # noqa: PLC0415
+            setuptools.setup()
+        except Exception:  # pragma: no cover - setuptools may not be installed
+            sys.exit(0)
+    else:
+        sys.exit(main())

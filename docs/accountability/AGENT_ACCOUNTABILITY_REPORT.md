@@ -4478,6 +4478,22 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 **Session:** auto-20260430T0318-run86956 | **Run:** 25145279779 | **Date:** 2026-04-30
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## Session S940 — 2026-05-11
+
+### Objective
+Fix `submit-pypi` CI failure caused by `cli/setup.py` not being pip-installable.
+
+### Work Completed
+- Diagnosed: `Automatic Dependency Submission (Python)` (`dynamic/dependency-graph/auto-submission`) was failing at `submit-dependency-snapshot` step with two errors:
+  1. `PipReport: Failed to generate pip installation report for cli/setup.py` — `cli/setup.py` is a custom CLI script, not a Python package
+  2. Transient HTTP 503 from GitHub's dependency graph API
+- Fixed (1): Added `cli/setup.cfg` with minimal package metadata (`codex-cli-setup 0.0.1`) and added setuptools command dispatch to `cli/setup.py.__main__` block so `pip install egg_info/dist_info` commands succeed
+- The HTTP 503 is pre-existing transient infrastructure failure; our `dependency-submission.yml` already handles this with `continue-on-error: true`
+
+### Patterns Observed
+- RP-001: Pattern 25 - CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
+
+
 ## Session S939 — 2026-05-11
 
 ### Objective

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S940)
+- `cli/setup.py`: Added setuptools command dispatch + `cli/setup.cfg` so PipReport can analyse the package — fixes the `Automatic Dependency Submission (Python)` workflow's `submit-pypi` job failure caused by pip failing to install the `cli/` pseudo-package
+
+
 ### Fixed (S939)
 - CodeQL: Fixed `py/repeated-import` (12 files) — removed local duplicate imports
 - CodeQL: Fixed `py/unused-import` (12 alerts) — added `# noqa: F401` where intentional
