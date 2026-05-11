@@ -15,10 +15,18 @@ Completed in S930:
   - removing the `actions` language leg from `codeql.yml` advanced matrix
     to stop non-actionable workflow-style findings from resurfacing.
 
+Completed in S932:
+- Added PR-time rebase-churn guard in `agent-auth-delegation.yml` so housekeeping
+  commits (`chore(auth)` / `chore(d00)`) are skipped on `pull_request` events.
+- Added sweep-push guard in `iterative-self-healing-ci.yml` so universal baseline
+  sweep does not auto-push to active PR branches or protected branches with open PRs.
+
 Execution requirements:
-1) Re-run CodeQL and fetch latest open alerts:
-   - Trigger `codeql-alert-fetcher.yml`, download artifact, and use `alerts_raw.json`.
-2) Confirm `total == 0` for the previously reported 249-alert set.
-3) If any residual alerts remain, patch only residuals and re-run fetcher.
-4) Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT with final post-run count.
+1) Use the already-green CodeQL verification point:
+   - `codeql-analysis.yml` run `25649802257` (success on `d0d1aea`)
+   - `codeql.yml` run `25649802298` (success on `d0d1aea`)
+2) Trigger `codeql-alert-fetcher.yml` on the latest branch head and download `alerts_raw.json`.
+3) Confirm no carryover from the original 249-alert set.
+4) If any residual alerts remain, patch only residuals and re-run fetcher.
+5) Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT with final post-run count.
 ```

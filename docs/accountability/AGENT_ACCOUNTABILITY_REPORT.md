@@ -1,3 +1,69 @@
+## SESSION SUMMARY — 2026-05-11T04:30Z [S932-rebase-churn-guard]
+
+**Session:** S932-rebase-churn-guard | **Branch:** `copilot/fix-ci-failure-triage-report`
+**Agent:** copilot-swe-agent[bot] | **PR:** #4393
+
+### Completed
+- Addressed maintainer escalation on repeated rebasing caused by automation commits.
+- Implemented process hardening in `.github/workflows/agent-auth-delegation.yml`:
+  - `Commit session token to branch` now exits early on `pull_request` events.
+  - `D-00 Session Bootstrap` commit/push path now exits early on `pull_request` events.
+- This blocks repeated PR-branch housekeeping commits (`chore(auth)` / `chore(d00)`)
+  that previously forced frequent rebases during active development.
+- Extended protection in `.github/workflows/iterative-self-healing-ci.yml`:
+  - skip universal baseline-sweep push to `copilot/*` active PR branches,
+  - skip sweep push to protected branches (`main`, `0D_base_`) while open PRs exist.
+- This directly addresses maintainer-reported merge conflicts caused by background
+  sweep commits landing during active PR development.
+- Updated living docs + changelog to document the new anti-churn behavior.
+
+### Validation
+- `pre-commit run --files .github/workflows/agent-auth-delegation.yml ...` ✅
+- CI monitoring via GitHub MCP confirmed prior startup-failure items were infra/startup
+  state (zero jobs), with no new code-level failure logs in those runs.
+
+### Impact Score
+- Reduces branch divergence pressure during active PR sessions.
+- Improves agent iteration stability by minimizing non-functional auto-commit churn.
+
+---
+
+## SESSION SUMMARY — 2026-05-11T04:17Z [S931-priority-followup-and-ci-triage]
+
+**Session:** S931-priority-followup-and-ci-triage | **Branch:** `copilot/fix-ci-failure-triage-report`
+**Agent:** copilot-swe-agent[bot] | **PR:** #4393
+
+### Completed
+- Processed maintainer follow-up request to continue priority 1/2/3 tasks and address
+  listed bot findings.
+- Verified CodeQL remediation run health on the remediation commit:
+  - `codeql-analysis.yml` run `25649802257` (success)
+  - `codeql.yml` run `25649802298` (success)
+- Investigated bot-reported startup-failure runs:
+  - `data-quality-suite` run `25649802340`
+  - `progressive-validation` run `25649802349`
+  - `rust_swarm_ci` run `25649802378`
+  and confirmed zero jobs were created (startup/queue-level state, not failing tests/code).
+- Updated living docs and follow-up prompt:
+  - `docs/roadmap/PR4393_whats_next.md`
+  - `docs/sessions/PR4393_session_diagram.md`
+  - `.codex/FOLLOWUP_PROMPT_CODEQL_REMAINING_25648728868.md`
+
+### Validation
+- CI investigation via GitHub MCP:
+  - `list_workflow_runs`
+  - `get_workflow_run`
+  - `list_workflow_jobs`
+  - `get_job_logs` (failed-only)
+- Local checks:
+  - `pre-commit` on touched documentation files ✅
+
+### Impact Score
+- Priority 1/2 follow-up status is now explicitly documented with run IDs and conclusions.
+- Remaining work narrowed to final fetcher artifact verification on latest branch head.
+
+---
+
 ## SESSION SUMMARY — 2026-05-11T03:44Z [S930-codeql-249-remediation]
 
 **Session:** S930-codeql-249-remediation | **Branch:** `copilot/fix-ci-failure-triage-report`

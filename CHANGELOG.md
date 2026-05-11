@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S932-rebase-churn-guard) — 2026-05-11
+- `agent-auth-delegation.yml` now skips branch-writing housekeeping commits on
+  `pull_request` events for:
+  - `.codex/agent_auth_session.json` provenance token commit step, and
+  - D-00 session context digest commit step.
+- This prevents repeated `chore(auth)` / `chore(d00)` auto-commits from creating
+  branch divergence during active PR development sessions, reducing forced rebases.
+- `iterative-self-healing-ci.yml` now defers universal baseline-sweep pushes when:
+  - the target branch is an active Copilot PR branch (`copilot/*`), or
+  - the target protected branch (`main` / `0D_base_`) has any open PRs.
+- This reduces sweep-induced merge conflicts and avoids main-branch metadata churn
+  while PRs are still in flight.
+
+### Fixed (S931-priority-followup-and-ci-triage) — 2026-05-11
+- Verified priority follow-up status after S930 remediation:
+  - `codeql-analysis.yml` run `25649802257` succeeded on remediation SHA `d0d1aea`.
+  - `codeql.yml` run `25649802298` succeeded on remediation SHA `d0d1aea`.
+- Triaged reported startup failures in optional high-cost suites
+  (`data-quality-suite`, `progressive-validation`, `rust_swarm_ci`) and confirmed
+  they created zero jobs (startup/queue-level workflow state, not code-level test failures).
+- Updated PR #4393 living docs and continuation prompt for final fetcher-artifact
+  verification on latest branch head.
+
 ### Fixed (auto-update — PR #4393)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4393 (SHA `74ed682d`) at 2026-05-11T03:39Z [auto-generated]
 

@@ -1660,6 +1660,14 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number || '' }}
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
+          # S932 rebasing guard:
+          # During active PR iteration, avoid writing housekeeping commits to the PR branch.
+          # This prevents churn/rebase loops caused by repeated auth-token refresh commits.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ℹ️ Skipping session-token commit on pull_request to avoid branch churn."
+            exit 0
+          fi
+
           # Resolve TARGET_BRANCH — fall back to API lookup when event context lacks head.ref
           if [ -z "${TARGET_BRANCH}" ] && [ -n "${PR_NUMBER}" ]; then
             TARGET_BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName -q .headRefName 2>/dev/null || true)
@@ -1741,6 +1749,14 @@ jobs:
               --skip-triage \
               --json-out .codex/session_context_latest.json \
               2>&1 | tail -20 | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+          # S932 rebasing guard:
+          # Skip digest commit on pull_request to prevent repeated housekeeping commits
+          # that force local rebases during active PR coding sessions.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ℹ️ Skipping context-digest commit on pull_request to avoid branch churn." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
 
           # Commit the context digest if it was written/modified
           if git diff --quiet .codex/session_context_latest.md .codex/session_context_latest.json 2>/dev/null; then
