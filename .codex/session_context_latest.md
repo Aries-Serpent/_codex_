@@ -1,17 +1,28 @@
-# Session Context — 2026-05-11T13:21:36Z
-**Branch:** `dependabot/github_actions/docker/build-push-action-7.1.0`  **PR:** #4398  **Access:** `graphql, codeql_local`
+# Session Context — 2026-05-11T13:31:11Z
+**Branch:** `dependabot/github_actions/docker/build-push-action-7.1.0`  **PR:** #4409  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `graphql → codeql_local`
-- REST remaining: `0` (❌)
-- GraphQL remaining: `4815` (✅)
-- gh CLI: ❌
+- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
+- REST remaining: `4749` (✅)
+- GraphQL remaining: `4788` (✅)
+- gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4398 — ci(deps): bump docker/build-push-action from 6.19.2 to 7.1.0
-State: `OPEN`  Draft: `False`  Branch: `dependabot/github_actions/docker/build-push-action-7.1.0` → `main`
+## 📋 PR #4409 — deps(deps): bump patsy from 1.0.1 to 1.0.2
+State: `open`  Draft: `False`  Branch: `dependabot/pip/patsy-1.0.2` → `main`
+
+## 🚨 Recent CI Failures (last 5 runs)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-11)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
 
 ## 📝 Recent Commits
+- `ff5ee6f0` fix(ci): resolve sync_tracked_files stale — Pattern 30 fix, update accountabilit — copilot-swe-agent[bot] (2026-05-11)
+- `7babfad7` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-11)
+- `ec5a0a8a` chore: initial plan for sync_tracked_files fix — copilot-swe-agent[bot] (2026-05-11)
+- `0c34c994` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-11)
 - `eb500dc9` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-11)
 - `03e8c982` chore: Generate follow-up prompt for PR #4398 [skip ci] — github-actions[bot] (2026-05-11)
 - `273b8d79` ci(deps): bump docker/build-push-action from 6.19.2 to 7.1.0 — dependabot[bot] (2026-05-11)
