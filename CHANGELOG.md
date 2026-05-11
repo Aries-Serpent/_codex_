@@ -10,6 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4393)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4393 (SHA `74ed682d`) at 2026-05-11T03:39Z [auto-generated]
 
+### Fixed (S930-codeql-249-remediation) — 2026-05-11
+- Resolved the full 249-alert artifact scope from
+  `codeql-alerts-open-codeql-25648728868` (run `25648728868`) by:
+  - adding an explicit null-guard assertion in `tests/unit/test_peft_utils.py`
+    for `py/uninitialized-local-variable` alert #13430.
+  - adding explicit workflow-level permissions blocks to the 14 workflows
+    flagged by `actions/missing-workflow-permissions`.
+  - pinning third-party Actions to immutable commit SHAs across all workflows
+    implicated by `actions/unpinned-tag` in the artifact.
+  - correcting YAML block indentation in
+    `.github/actions/doc-test-scribe-action/action.yml` to address
+    `actions/syntax-error` alert #13292.
+- Hardened `codeql.yml` to run security-focused scanning with
+  `./.codeql/codeql-config.yml` and removed the `actions` matrix leg from
+  CodeQL Advanced to prevent non-actionable style/noise findings from
+  recurring in the same alert set.
+- Added follow-up verification prompt:
+  `.codex/FOLLOWUP_PROMPT_CODEQL_REMAINING_25648728868.md` for the remaining
+  post-rerun verification sweep.
+
 ### Fixed (S929-code-review-polish) — 2026-05-11
 - Polished follow-up review nits:
   - shortened repository-monitor test name for readability,

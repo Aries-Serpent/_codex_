@@ -15,6 +15,8 @@ on:
   workflow_dispatch:
 
 
+permissions: write-all
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -53,7 +55,7 @@ jobs:
           pytest tests/auth/ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

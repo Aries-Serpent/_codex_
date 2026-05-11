@@ -25,6 +25,8 @@ env:
   RUST_TEST_THREADS: "1"
 
 
+permissions: write-all
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -63,7 +65,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
         with:
           toolchain: stable
           components: rustfmt, clippy
@@ -115,7 +117,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
 
       - name: Run benchmarks
         timeout-minutes: 12
@@ -183,7 +185,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
 
       - name: Install tarpaulin
         run: cargo install cargo-tarpaulin
@@ -209,7 +211,7 @@ jobs:
           fi
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -248,7 +250,7 @@ jobs:
           cache-tier: common
 
       - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
 
       - name: Install maturin and dependencies
         run: |
@@ -437,10 +439,10 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
 
       - name: Run cargo audit
-        uses: rustsec/audit-check@v2
+        uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
         continue-on-error: true   # Emit advisory warnings without blocking CI; review RUSTSEC advisories separately
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -462,7 +464,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
 
       - name: Build Rust docs
         run: |
@@ -495,7 +497,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
 
       - name: Install maturin
         run: pip install maturin

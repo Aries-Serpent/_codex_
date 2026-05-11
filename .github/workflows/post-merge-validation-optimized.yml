@@ -9,6 +9,8 @@ on:
 # Target runtime: ≤ 10 minutes
 
 
+permissions: write-all
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

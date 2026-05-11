@@ -32,6 +32,7 @@ def test_freeze_counts():
             pytest.skip("load_hf_llm returned no bundle")
     except Exception as _err:
         pytest.skip("model weights not available offline")
+    assert bundle is not None
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)
     assert trainable > 0

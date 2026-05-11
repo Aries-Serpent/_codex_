@@ -6,6 +6,8 @@ on:
     - cron: "0 5 1 * *" # Monthly at 05:00 UTC
 
 
+permissions: write-all
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
