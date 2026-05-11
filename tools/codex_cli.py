@@ -121,7 +121,7 @@ def cmd_train_all(fallback: bool, print_summary: bool, data_file: str | None = N
             demos = data.get("demos", default_demos)
             pairwise_prefs = data.get("pairwise_prefs", default_pairwise_prefs)
         except Exception as exc:  # pragma: no cover - defensive
-            log("train-all", "fail", f"invalid data file: {exc}")
+            log("train-all", "fail", f"Failed to load data file {data_file}: {exc}. Expected JSON with keys: corpus, demos, pairwise_prefs.")
             return 1
 
     try:
