@@ -1,32 +1,32 @@
-# Session Context — 2026-05-11T18:48:47Z
+# Session Context — 2026-05-11T19:05:51Z
 **Branch:** `copilot/sync-docs-and-confirm-latest-state`  **PR:** #4416  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4450` (✅)
-- GraphQL remaining: `4969` (✅)
+- REST remaining: `4371` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4416 — fix: resolve 23 CodeQL alerts — add job-level permissions and fix action YAML syntax
+## 📋 PR #4416 — fix: resolve 28 CodeQL alerts — add job-level permissions, fix action YAML syntax, and harden workflow security
 State: `open`  Draft: `False`  Branch: `copilot/sync-docs-and-confirm-latest-state` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-11)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-11)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
-- **Validation Pipeline** — `failure` on `copilot/sync-docs-and-confirm-latest-state` (2026-05-11)
-- **Auto-Fix Common CI Issues** — `failure` on `copilot/sync-docs-and-confirm-latest-state` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
 
 ## 📝 Recent Commits
+- `9ae3f33a` fix(review): address 5 reviewer findings — workflow permissions, html lang, comm — copilot-swe-agent[bot] (2026-05-11)
+- `fc0c7a8b` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-11)
+- `1d0eec03` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-11)
 - `154e8419` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-11)
 - `107fddbe` docs(s952): final living docs — PR4416 whats_next + session_diagram + CHANGELOG  — copilot-swe-agent[bot] (2026-05-11)
 - `dee61ae0` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-11)
 - `d6965d4f` chore: Generate follow-up prompt for PR #4416 [skip ci] — github-actions[bot] (2026-05-11)
-- `bc355852` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci] — copilot-swe-agent[bot] (2026-05-11)
-- `29df6bda` fix(codeql): pin 33 unpinned action tags to SHA, update mypy baseline 130→124, s — copilot-swe-agent[bot] (2026-05-11)
-- `deb6e963` Merge remote-tracking branch 'origin/copilot/sync-docs-and-confirm-latest-state' — copilot-swe-agent[bot] (2026-05-11)
-- `f6bd7d5e` fix: resolve 23 CodeQL alerts — add job-level permissions and fix action YAML sy — copilot-swe-agent[bot] (2026-05-11)
+- `bc355852` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-11)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
