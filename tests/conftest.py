@@ -18,14 +18,9 @@ from pathlib import Path
 
 import pytest
 
-# Note: These imports are required for conftest to load properly.
-# If numpy or torch are not available, many fixtures will be no-ops,
-# but conftest itself must load for pytest-xdist workers to function.
-try:
-    import numpy  # noqa: F401
-except ImportError:
-    numpy = None
-
+# Note: Torch is imported defensively so conftest still loads in minimal
+# environments where many fixtures become no-ops, while pytest collection and
+# xdist worker startup still succeed.
 try:
     import torch
 except ImportError:

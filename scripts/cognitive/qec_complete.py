@@ -338,7 +338,7 @@ if __name__ == "__main__":
     engine = QECQuantumDecisionEngine(k1=0.35, enable_qec=True)
 
     # Make 100 test decisions
-    for _i in range(100):
+    for _ in range(100):
         options = ["fix import", "skip test", "refactor"]
         context = {"similar_fixes": ["fix import", "fix import"]}
         engine.make_decision(options, context)

@@ -342,9 +342,11 @@ def test_input_sanitization_json_injection():
     # Should handle escaped unicode
     try:
         parsed = json.loads(dangerous_input)
-        assert isinstance(parsed, dict)
+        safe_value = _safe_json_value(parsed)
+        assert isinstance(safe_value, dict)
+        assert safe_value == parsed
         # Re-serialize should be safe
-        serialized = json.dumps(parsed)
+        serialized = json.dumps(safe_value)
         assert '"inject"' in serialized
     except json.JSONDecodeError:
         pytest.fail("Valid JSON should parse correctly")

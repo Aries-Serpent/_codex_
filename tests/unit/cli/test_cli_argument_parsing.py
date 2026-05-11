@@ -45,19 +45,7 @@ def test_cli_override_passthrough(monkeypatch, tmp_path):
 
 def test_cli_trainer_lifecycle(monkeypatch):
     """Test CLI creates and closes trainer properly."""
-    # Mock trainer to verify lifecycle
-    class _MockTrainer:
-        def __init__(self, *args, **kwargs):
-            self.trained = False
-            self.closed = False
-
-        def train(self):
-            self.trained = True
-
-        def close(self):
-            self.closed = True
-
-    # Test would monkeypatch trainer creation and verify
+    pytest.skip("Requires full CLI integration to verify trainer lifecycle wiring")
 
 
 def test_cli_non_mapping_config_rejection(monkeypatch):

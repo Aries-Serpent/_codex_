@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S944)
+- Addressed the remaining 10 unresolved review comments: removed unused `_MemoryInterface`, `_torch_available`, top-level optional `numpy` import, and other dead helpers/locals; converted the placeholder trainer lifecycle test to an explicit `pytest.skip(...)`; used `_safe_json_value` in the JSON-injection test; and updated the short-circuit coverage test to actually exercise short-circuit semantics.
+- Verified there are no active conflict markers in non-archive files; PR still reports `mergeable_state=dirty`, so branch/base conflict resolution against `main` is the next step.
+- Targeted pytest invocation is currently blocked during collection by `tests/cli/conftest.py` because optional dependencies `omegaconf` and `hydra` are not installed in this environment.
+
 ### Fixed (S943)
 - Cherry-picked PR #4411 & #4412 (Dependabot): bumped `urllib3` from `2.6.3` to `2.7.0` in `pyproject.toml`, `requirements.txt`, `requirements-minimal.txt`, `requirements/lock.txt`, and `uv.lock`
 - Cherry-picked PR #4413 (Dependabot uv group): bumped `transformers` from `5.7.0` to `5.8.0` in `uv.lock`; added `detect-secrets==1.5.0` package block to `uv.lock`; updated `datasets`, `filelock`, `hypothesis`, `mypy`, `radon`, `tree-sitter`, and `transformers` specifiers in `uv.lock` requires-dist

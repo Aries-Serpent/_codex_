@@ -117,12 +117,10 @@ except ImportError:
 
 # Also try to import Planner/MemoryInterface at module level for auto-init
 try:
-    from cognitive_brain.base import MemoryInterface as _MemoryInterface  # noqa: E402,F401
     from cognitive_brain.base import Planner as _Planner  # noqa: E402
     _BRAIN_BASE_AVAILABLE = True
 except ImportError:
     _Planner = None  # type: ignore[assignment,misc]
-    _MemoryInterface = None  # type: ignore[assignment,misc]
     _BRAIN_BASE_AVAILABLE = False
 
 # ── Logging ───────────────────────────────────────────────────────────────────

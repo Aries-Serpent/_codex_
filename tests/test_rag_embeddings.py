@@ -42,7 +42,6 @@ pytestmark = pytest.mark.skipif(
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
-_torch_available = importlib.util.find_spec("torch") is not None  # noqa: F841
 try:
     import torch as _torch
     _cuda_available = _torch.cuda.is_available()
