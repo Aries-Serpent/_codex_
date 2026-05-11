@@ -1,5 +1,5 @@
-# Session Context — 2026-05-11T13:59:42Z
-**Branch:** `dependabot/github_actions/docker/setup-buildx-action-4.0.0`  **PR:** #4409  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-11T14:05:50Z
+**Branch:** `dependabot/github_actions/docker/setup-buildx-action-4.0.0`  **PR:** #4399  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
@@ -8,8 +8,8 @@
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4409 — deps(deps): bump patsy from 1.0.1 to 1.0.2
-State: `open`  Draft: `False`  Branch: `dependabot/pip/patsy-1.0.2` → `main`
+## 📋 PR #4399 — ci(deps): bump docker/setup-buildx-action from 3.12.0 to 4.0.0
+State: `open`  Draft: `False`  Branch: `dependabot/github_actions/docker/setup-buildx-action-4.0.0` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
