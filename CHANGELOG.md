@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S954)
+- Simplified `.pre-commit-scripts/check-shell-true.sh` filtering logic by consolidating multiple exclusion pipes into one equivalent `grep -E -v` expression, preserving the existing `# nosec`, error-message, and comment-line false-positive exclusions while improving maintainability.
+
 ### Fixed (S953)
 - Fixed `check-shell-true` pre-commit hook false positive: updated `.pre-commit-scripts/check-shell-true.sh` to exclude lines with `# nosec` comments and error messages containing `shell=True` (was flagging security wrapper validation code in `src/codex/utils/subprocess.py:112` that explicitly prevents `shell=True` usage).
 

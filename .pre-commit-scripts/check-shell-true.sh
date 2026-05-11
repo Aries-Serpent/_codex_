@@ -14,7 +14,7 @@ files=$(find . \( \
     -o -path "./.venv_validation" \
     -o -path "./.venv_agent" \
     -o -path "./tools" \
-  \) -prune -o -name "*.py" -print | xargs grep -n "shell=True" 2>/dev/null | grep -v "# nosec" | grep -v 'raise.*Error.*".*shell=True' | grep -v "^[[:space:]]*#" || true)
+  \) -prune -o -name "*.py" -print | xargs grep -n "shell=True" 2>/dev/null | grep -E -v '(# nosec|raise.*Error.*".*shell=True|^[[:space:]]*#)' || true)
 
 if [ -n "$files" ]; then
   echo "$files"
