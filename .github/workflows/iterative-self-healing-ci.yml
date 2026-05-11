@@ -842,9 +842,13 @@ jobs:
           # S933 guard: if protected branch has any open PRs, defer sweep pushes entirely.
           # Goal: keep main/0D_base_ stable while PRs are in flight to avoid cross-PR conflicts.
           if [[ "${_is_protected}" == "true" ]]; then
-            _has_open_pr=$(gh api "repos/${REPO}/pulls?base=${HEAD_BRANCH}&state=open&per_page=1" \
+            _open_pr_probe_count=$(gh api "repos/${REPO}/pulls?base=${HEAD_BRANCH}&state=open&per_page=1" \
               --jq 'length' 2>/dev/null || echo "0")
-            if [[ "${_has_open_pr}" -gt "0" ]]; then
+            _open_pr_exists=false
+            if [[ "${_open_pr_probe_count}" -gt "0" ]]; then
+              _open_pr_exists=true
+            fi
+            if [[ "${_open_pr_exists}" == "true" ]]; then
               echo "::warning::At least one open PR targets '${HEAD_BRANCH}' — skipping sweep push."
               echo "### ⏭️ Sweep Push Deferred — protected branch active-PR guard" >> "$GITHUB_STEP_SUMMARY"
               echo "An open PR targets \`${HEAD_BRANCH}\`. Sweep commit deferred to avoid merge conflicts." >> "$GITHUB_STEP_SUMMARY"

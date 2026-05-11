@@ -22,6 +22,15 @@
 - Attempted to dispatch `codeql-alert-fetcher.yml` for fresh artifact verification,
   but session token hit temporary GitHub API rate-limit window (HTTP 403);
   queued as immediate follow-up when reset clears.
+- Added S936 hardening for auto-approval behavior when many runs are pending and
+  when a Copilot coding/cloud agent session is currently active:
+  - trigger expansion (`pull_request_review`, `workflow_run` requested/in_progress),
+  - schedule cadence increase to 2-minute sweep,
+  - multi-pass high-volume approval with active-agent acceleration,
+  - configurable pass delay/max-pass controls.
+- Added active-session monitor path (default 60-minute window) to repeatedly
+  approve pending runs for current PR head and verify no completed workflow
+  failures occur during the active Copilot session window.
 
 ### Validation
 - Pre-merge local validation pending on this patchset:

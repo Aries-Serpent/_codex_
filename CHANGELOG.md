@@ -39,6 +39,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Triaged CI escalation for `Automatic Dependency Submission (Python)` failed run
   `25649801454`; confirmed subsequent branch run `25650141042` succeeded including
   `submit-dependency-snapshot` step.
+- Hardened `auto-approve-workflows.yml` so pending approvals are cleared more
+  reliably under heavy PR load and active Copilot sessions:
+  - added `pull_request_review` trigger
+  - expanded `workflow_run` trigger types to `requested`, `in_progress`, `completed`
+  - increased schedule cadence `*/5` → `*/2`
+  - added high-volume/active-agent multi-pass approval loop
+  - switched same-repo fallback to REST rerun endpoint
+  - added active-session 60-minute monitoring loop to continuously auto-approve
+    new pending runs and fail fast if completed workflow failures are detected
+  - made pass behavior tunable via repo variables:
+    `CODEX_AUTO_APPROVE_MAX_PASSES`, `CODEX_AUTO_APPROVE_PASS_DELAY_MS`,
+    `CODEX_AUTO_APPROVE_MONITOR_MINUTES`, `CODEX_AUTO_APPROVE_MONITOR_INTERVAL_SEC`
 
 ### Fixed (S931-priority-followup-and-ci-triage) — 2026-05-11
 - Verified priority follow-up status after S930 remediation:

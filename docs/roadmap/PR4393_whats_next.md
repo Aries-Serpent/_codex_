@@ -55,8 +55,14 @@
   - Failed run `25649801454` (`submit-dependency-snapshot`) reviewed.
   - Newer run `25650141042` on the same branch completed `success`, including `submit-dependency-snapshot`.
   - Classified as transient workflow/platform failure, not persistent repo-code regression.
-- ⚠️ CodeQL fetcher rerun currently pending due temporary GitHub API rate-limit
+- ⚠️ CodeQL fetcher rerun currently pending due to temporary GitHub API rate-limit
   window on this session token; re-dispatch required once reset clears.
+- ✅ Auto-approval process hardening for high pending-run volume:
+  - `auto-approve-workflows.yml` now also triggers on `pull_request_review` submits.
+  - Adds high-volume multi-pass approval sweep (default threshold: `10` runs, configurable via `CODEX_AUTO_APPROVE_HIGH_VOLUME_THRESHOLD`).
+  - Uses REST rerun fallback for same-repo PRs (no GH CLI token ambiguity).
+  - Hardened for active Copilot sessions: workflow_run trigger now includes `requested`/`in_progress`, with aggressive multi-pass approval when agent is active.
+  - Added active-session monitor mode (default 60-minute window) to repeatedly auto-approve new pending runs and verify no completed workflow failures on the current PR head.
 
 ---
 

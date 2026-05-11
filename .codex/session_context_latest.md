@@ -37,9 +37,9 @@ State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-triage-report` →
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [] `RP-QUERY-FILTER-TEST`: ?
-- [] `?`: ?
-- [2026-05-11] `PDA-SUCCESS-S922-PR4389-DOC-CLI-FIXES`: ?
+- [] `RP-QUERY-FILTER-TEST`: historical placeholder entry
+- [] `UNSPECIFIED`: historical placeholder entry
+- [2026-05-11] `PDA-SUCCESS-S922-PR4389-DOC-CLI-FIXES`: success
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

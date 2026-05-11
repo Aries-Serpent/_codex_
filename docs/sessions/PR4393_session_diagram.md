@@ -15,7 +15,8 @@ graph TD
   K[S933 Sweep-Push Guard<br/>Skip universal sweep pushes for active PRs] --> L
   L[S934 Monitoring Pass<br/>Head 5e6a479 workflow snapshot captured] --> M
   M[S935 Reviewer-Thread Fixes<br/>permissions + guard naming + followup prompt accuracy] --> N
-  N[Next: fetcher artifact rerun on latest head and residual confirmation]
+  N[S936 Auto-Approve Hardening<br/>high-volume + active-copilot triggers] --> O
+  O[Next: fetcher artifact rerun on latest head and residual confirmation]
 ```
 
 ## Session Notes
@@ -35,6 +36,8 @@ graph TD
 - S935 verification snapshot:
     - Reviewer thread `4260812198` requested updates were applied.
     - Dependency-submission run `25649801454` failure was followed by successful rerun state on `25650141042` (`submit-dependency-snapshot` success).
+- S936 active-session hardening:
+    - Auto-approve now escalates during active Copilot session events (`requested` / `in_progress`) and can monitor a full 60-minute window to verify no workflow failures.
 
 ---
 
