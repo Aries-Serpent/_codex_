@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S923-rate-limit-system) — 2026-05-11
+- `scripts/ci/rate_limit_cooldown.py` — Cooldown timer + PR pre-warning + repo variable sync.
+  Sub-commands: `start` (block if cooldown active), `end`, `hit429` (set timer, post PR comment),
+  `warn` (pre-warning before limit hit), `check`, `sync-vars`. Writes four repo variables:
+  `COPILOT_COOLDOWN_UNTIL_UTC`, `COPILOT_RATE_LIMIT_HIT_COUNT`, `COPILOT_LAST_SESSION_START_UTC`,
+  `COPILOT_SESSION_COOLDOWN_MINUTES` — cross-session source of truth for any workflow/agent.
+- `scripts/ci/rate_limit_status.py` — CLI dashboard: GitHub REST API limits (bar chart + %)
+  + checkpoint status + event history + workflow scan. Modes: `--json`, `--watch`, `--assert-ok`,
+  `--scan-runs N`.
+- `scripts/ci/session_budget_guard.py` — Pre-flight cost estimator: classifies each planned task
+  (heavy/medium/small TPU), warns at 50 TPU, blocks at 100 TPU, suggests task-splitting, checks
+  checkpoint safety. Exit codes: 0=safe, 1=high-risk, 2=blocked.
+- `scripts/ci/rate_limit_handler.py` — save_checkpoint now auto-invokes `rate_limit_cooldown.py
+  hit429` so every recorded 429 also sets the cooldown timer and posts the PR comment.
+- `scripts/ci/push_conflict_resolver.py` — Auto-rebase when automated CI commits (chore(d00),
+  chore(auth), chore(manifest)) diverge the branch mid-session. Resolves CODEX_MANIFEST.json
+  (THEIRS) and .secrets.baseline (OURS / P-045 policy).
+- `auto_fix_common_issues.py` Pattern 33 (`Rate Limit Checkpoint`) — surfaces unresolved
+  `.codex/rate_limit_checkpoint.json` at CI scan time; informational, never blocks CI.
+- `github_var_writer.py` ALLOWED_VAR_NAMES: added four `COPILOT_COOLDOWN_*` variables.
+- `tests/ci/test_rate_limit_handler.py` — 28 tests covering `rate_limit_handler` + `push_conflict_resolver`.
+- `docs/ops/RATE_LIMIT_RECOVERY.md` — Operational runbook: symptoms, cascade root-cause,
+  step-by-step recovery, prevention strategies.
+- `docs/roadmap/PR4389_whats_next.md` + `docs/sessions/PR4389_session_diagram.md` — living docs.
+
 ### Fixed (S923-codeql-merge-conflict) — 2026-05-11
 - `CODEX_MANIFEST.json`: resolved merge conflict with `main` — took main's newer `generated_at` and `integrity_sha256`.
 - `tests/training/test_trainer.py`: fixed CodeQL `py/uninitialized-local-variable` (#13447) — initialize `trainer = None` before try-except block.

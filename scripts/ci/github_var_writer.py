@@ -67,6 +67,11 @@ ALLOWED_VAR_NAMES: set[str] = {
     "PHASE_11_STATUS",
     "WEBHOOK_RECEIVER_URL",
     "GITHUB_APP_ID",
+    # Rate-limit cooldown variables (written by rate_limit_cooldown.py)
+    "COPILOT_COOLDOWN_UNTIL_UTC",
+    "COPILOT_RATE_LIMIT_HIT_COUNT",
+    "COPILOT_LAST_SESSION_START_UTC",
+    "COPILOT_SESSION_COOLDOWN_MINUTES",
 }
 
 

@@ -235,6 +235,10 @@ class CommonIssueFixer:
             # non-blocking so Fast Validation only fails on issues that require immediate PR action.
             "Stale Type Ignore",        # Pattern 31 - optional hygiene cleanup
             "Bare Type Ignore Assign",  # Pattern 32 - optional hygiene cleanup
+            # Pattern 33: Rate-limit checkpoint detection is informational only — it surfaces
+            # an unresolved .codex/rate_limit_checkpoint.json from a prior interrupted session
+            # so the agent loads it at session start. Never blocks CI.
+            "Rate Limit Checkpoint",    # Pattern 33 - rate-limit recovery awareness
         }
         self.manual_review_patterns = {
             "Unused Variables",         # Pattern 2  - context-dependent
@@ -328,6 +332,7 @@ class CommonIssueFixer:
             (30, "Merge Readiness Dims",     self.fix_merge_readiness_dims),
             (31, "Stale Type Ignore",        self.fix_stale_type_ignore),
             (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
+            (33, "Rate Limit Checkpoint",    self.check_rate_limit_checkpoint),
         ]
         patterns = all_patterns
         skip_env = os.getenv("CODEX_SKIP_PATTERN_NUMS", "")
@@ -3244,8 +3249,7 @@ class CommonIssueFixer:
         return issues
 
     # ------------------------------------------------------------------
-    # Pattern 32 — Bare # type: ignore on optional-fallback assignments
-    #               (RP-MYPY-OPT-IMPORT)
+    # Pattern 32 — Bare # type: ignore on optional-fallback assignments    #               (RP-MYPY-OPT-IMPORT)
     # ------------------------------------------------------------------
     def fix_bare_type_ignore_assign(self) -> list[str]:
         """Pattern 32: Normalize bare optional-import fallback ignores to
@@ -3324,6 +3328,71 @@ class CommonIssueFixer:
                 f"   [dry-run] would normalize {len(issues)} line(s) to "
                 "[assignment]"
             )
+
+        return issues
+
+    # Pattern 33 — Rate-limit checkpoint detection
+    def check_rate_limit_checkpoint(self) -> list[str]:
+        """Pattern 33: Detect an unresolved rate-limit checkpoint from a prior session.
+
+        When the Copilot Cloud Agent hits the weekly API rate limit mid-session
+        (HTTP 429 / ``user_weekly_rate_limited``), it (or a CI wrapper) writes
+        ``.codex/rate_limit_checkpoint.json`` with the list of completed,
+        in-progress, and pending tasks at the moment of interruption.
+
+        This pattern surfaces that file — informational only, never blocks CI —
+        so the next session knows to:
+          1. Read the checkpoint to understand what was done vs. not done.
+          2. Run ``scripts/ci/push_conflict_resolver.py`` to handle concurrent
+             bot commits that may have diverged the branch.
+          3. Mark the checkpoint resolved:
+             ``python3 scripts/ci/rate_limit_handler.py --resolve``
+
+        Auto-fix: No (read the checkpoint and act on it manually).
+        """
+        import json as _json  # noqa: PLC0415
+
+        checkpoint_path = self.repo_root / ".codex" / "rate_limit_checkpoint.json"
+        issues: list[str] = []
+
+        if not checkpoint_path.exists():
+            print("✅ Pattern 33 (Rate Limit Checkpoint): no unresolved checkpoint")
+            return issues
+
+        try:
+            cp = _json.loads(checkpoint_path.read_text())
+        except Exception as exc:
+            issues.append(f".codex/rate_limit_checkpoint.json: unreadable ({exc})")
+            print(f"   ⚠  Pattern 33 (Rate Limit Checkpoint): {issues[0]}")
+            return issues
+
+        if cp.get("resolution") == "resolved":
+            print("✅ Pattern 33 (Rate Limit Checkpoint): checkpoint already resolved")
+            return issues
+
+        session = cp.get("session", "unknown")
+        pr = cp.get("pr_number", "?")
+        retry_after = cp.get("rate_limit", {}).get("retry_after_utc", "unknown")
+        pending = cp.get("tasks", {}).get("pending", [])
+        in_prog = cp.get("tasks", {}).get("in_progress", [])
+
+        msg = (
+            f"Unresolved rate-limit checkpoint from session {session} "
+            f"(PR #{pr}). Retry after: {retry_after}. "
+            f"In-progress: {in_prog}. Pending: {pending}."
+        )
+        issues.append(msg)
+
+        print(f"   ⚠  Pattern 33 (Rate Limit Checkpoint): {msg}")
+        print(
+            "      → Load checkpoint:  python3 scripts/ci/rate_limit_handler.py --check"
+        )
+        print(
+            "      → Resolve conflict: python3 scripts/ci/push_conflict_resolver.py"
+        )
+        print(
+            "      → Mark resolved:    python3 scripts/ci/rate_limit_handler.py --resolve"
+        )
 
         return issues
 

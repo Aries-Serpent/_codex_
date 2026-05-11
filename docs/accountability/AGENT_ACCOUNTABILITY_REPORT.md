@@ -1,4 +1,31 @@
-## SESSION SUMMARY — 2026-05-11T00:15Z [S922-pr4389-self-healing]
+## SESSION SUMMARY — 2026-05-11T01:14Z [S923-rate-limit-system]
+
+**Session:** S923-rate-limit-system | **Branch:** `copilot/add-full-path-to-init-tracing-docs`
+**Agent:** copilot-swe-agent[bot] | **PR:** #4389
+
+### Completed
+- Built complete rate-limit resilience system in response to 10 failed agent sessions (PR #4389
+  runs 3476–3489: 8 × weekly-429 cascade + 2 × push-conflict):
+  - `rate_limit_cooldown.py` — Cooldown timer with PR pre-warning + repo variable sync
+    (`COPILOT_COOLDOWN_UNTIL_UTC`, `COPILOT_RATE_LIMIT_HIT_COUNT`, etc.)
+  - `rate_limit_status.py` — CLI dashboard for all rate-limit dimensions
+  - `session_budget_guard.py` — Pre-flight cost estimator with task-split suggestions
+  - `rate_limit_handler.py` — Wired `save_checkpoint → hit429` for automatic cooldown on 429
+  - `push_conflict_resolver.py` — Auto-rebase bot-commit conflicts
+  - Pattern 33 in `auto_fix_common_issues.py` — surfaces unresolved checkpoint at CI scan
+  - 28 unit tests, operational runbook, living docs (whats_next + session_diagram)
+- CodeQL fixes: 6 Python error-level + 4 workflow code-injection alerts resolved
+- Merge conflict resolved (CODEX_MANIFEST.json)
+- `github_var_writer.py` ALLOWED_VAR_NAMES extended with 4 cooldown variables
+
+### Impact Score
+- Directly addresses the recurring cascade failure pattern from 10 wasted agent sessions
+- Cross-session cooldown timer via repo variables prevents blind rapid retries
+- PR pre-warning comment gives next session full context before hitting rate limit
+
+---
+
+
 
 S922 self-healing: Fixed Validation Pipeline failure — updated docs/ROADMAP.md date, added PDA entry for 2026-05-11, addressed Pattern 30 PDA-entry-today and accountability report today dimensions.
 
