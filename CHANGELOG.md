@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4390)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4390 (SHA `38c6703f`) at 2026-05-11T01:11Z [auto-generated]
+
 ### Fixed (S921-pr-autofix-self-healing) — 2026-05-10
 - `src/codex_cli/__init__.py`: fixed lazy `app` export to avoid recursive import failures by loading the submodule via `import_module(".app", __name__)`.
 - `tools/codex_cli.py`: added compatibility `__getattr__` bridge so when this script is imported as top-level `codex_cli` (after test path mutation), `codex_cli.app` is still resolvable for patch targets and smoke tests.
