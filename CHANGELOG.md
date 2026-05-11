@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S946)
+- Removed a duplicated `# pragma: allowlist secret` comment in `tests/branch_coverage/test_branch_coverage_config.py` surfaced by post-merge code review.
+
 ### Fixed (S945)
 - Merged `origin/main` into PR branch to clear GitHub’s dirty merge state and resolved the only content conflict in `CODEX_MANIFEST.json` by taking the `origin/main` manifest metadata tuple (`generated_at`, `integrity_sha256`).
 - Verified the merge introduced no active conflict markers in repository files outside archived session artifacts.
