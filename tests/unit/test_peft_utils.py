@@ -29,8 +29,8 @@ def test_freeze_counts():
         bundle = load_hf_llm("sshleifer/tiny-gpt2")
         if bundle is None:
             pytest.skip("load_hf_llm returned no bundle")
-    except (OSError, RuntimeError, ValueError) as _err:
-        pytest.skip(f"model weights not available offline: {_err}")
+    except (OSError, RuntimeError, ValueError) as err:
+        pytest.skip(f"model weights not available offline: {err}")
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)
     assert trainable > 0
