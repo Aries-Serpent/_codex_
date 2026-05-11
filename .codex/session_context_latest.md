@@ -1,32 +1,32 @@
-# Session Context — 2026-05-11T19:05:51Z
-**Branch:** `copilot/sync-docs-and-confirm-latest-state`  **PR:** #4416  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-11T22:18:43Z
+**Branch:** `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-40d86643b0`  **PR:** #4420  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4371` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4169` (✅)
+- GraphQL remaining: `4964` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4416 — fix: resolve 28 CodeQL alerts — add job-level permissions, fix action YAML syntax, and harden workflow security
-State: `open`  Draft: `False`  Branch: `copilot/sync-docs-and-confirm-latest-state` → `main`
+## 📋 PR #4420 — Bump mermaid from 11.14.0 to 11.15.0 in /cognitive_app in the npm_and_yarn group across 1 directory
+State: `open`  Draft: `False`  Branch: `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-40d86643b0` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-11)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-11)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-11)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-11)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-11)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
 
 ## 📝 Recent Commits
+- `2b8ee9ec` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-11)
+- `9adbac5e` chore: Generate follow-up prompt for PR #4420 [skip ci] — github-actions[bot] (2026-05-11)
+- `93cde5ff` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-11)
+- `be6029dc` Bump mermaid — dependabot[bot] (2026-05-11)
+- `2db7cc01` Merge pull request #4416 from Aries-Serpent/copilot/sync-docs-and-confirm-latest — Statix (2026-05-11)
+- `e07b5829` Merge branch 'main' into copilot/sync-docs-and-confirm-latest-state — Statix (2026-05-11)
+- `9c86f20b` fix: resolve 28 CodeQL alerts — add job-level permissions, fix action YAML synta — copilot-swe-agent[bot] (2026-05-11)
 - `9ae3f33a` fix(review): address 5 reviewer findings — workflow permissions, html lang, comm — copilot-swe-agent[bot] (2026-05-11)
-- `fc0c7a8b` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-11)
-- `1d0eec03` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-11)
-- `154e8419` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-11)
-- `107fddbe` docs(s952): final living docs — PR4416 whats_next + session_diagram + CHANGELOG  — copilot-swe-agent[bot] (2026-05-11)
-- `dee61ae0` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-11)
-- `d6965d4f` chore: Generate follow-up prompt for PR #4416 [skip ci] — github-actions[bot] (2026-05-11)
-- `bc355852` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-11)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

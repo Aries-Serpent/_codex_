@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S953)
+- Fixed `check-shell-true` pre-commit hook false positive: updated `.pre-commit-scripts/check-shell-true.sh` to exclude lines with `# nosec` comments and error messages containing `shell=True` (was flagging security wrapper validation code in `src/codex/utils/subprocess.py:112` that explicitly prevents `shell=True` usage).
+
 ### Fixed (auto-update — PR #4420)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4420 (SHA `605fdf74`) at 2026-05-11T22:06Z [auto-generated]
 
