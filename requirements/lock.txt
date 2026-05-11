@@ -648,7 +648,7 @@ nvidia-cusparse-cu12==12.5.10.65
     # via
     #   nvidia-cusolver-cu12
     #   torch
-nvidia-cusparselt-cu12==0.7.1
+nvidia-cusparselt-cu12==0.8.1
     # via torch
 nvidia-ml-py==13.580.82
     # via pynvml
