@@ -30,9 +30,7 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-import logging
 
-logger = logging.getLogger(__name__)  # noqa: F841
 #
 # Provides versioned schema migrations for the audit trend database.
 # Requires Python 3.7+ for annotations support.

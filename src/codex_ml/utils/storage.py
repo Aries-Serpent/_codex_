@@ -17,9 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
 
-logger = logging.getLogger(__name__)  # noqa: F841
 
 
 from collections.abc import Iterable, Iterator  # noqa: E402

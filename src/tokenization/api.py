@@ -9,10 +9,8 @@ New code should import from:
 
 from __future__ import annotations
 
-import logging
 import warnings as _warnings
 
-logger = logging.getLogger(__name__)  # noqa: F841
 
 _warnings.warn(
     "src.tokenization.api is legacy; use codex_ml.tokenization.* modules.",
