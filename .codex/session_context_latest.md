@@ -1,5 +1,5 @@
-# Session Context — 2026-05-11T13:41:53Z
-**Branch:** `dependabot/pip/jsonschema-4.26.0`  **PR:** #4409  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-11T13:47:45Z
+**Branch:** `dependabot/pip/jsonschema-4.26.0`  **PR:** #4407  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
@@ -8,8 +8,8 @@
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4409 — deps(deps): bump patsy from 1.0.1 to 1.0.2
-State: `open`  Draft: `False`  Branch: `dependabot/pip/patsy-1.0.2` → `main`
+## 📋 PR #4407 — deps(deps): bump jsonschema from 4.25.1 to 4.26.0
+State: `open`  Draft: `False`  Branch: `dependabot/pip/jsonschema-4.26.0` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
