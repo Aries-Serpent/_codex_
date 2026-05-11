@@ -281,7 +281,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
-| 1 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set, `init_tracing()` enables distributed tracing. Setup requirements are detailed in the OTel setup note below. **SAR-G05.** |
+| 1 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set, `src/codex/observability/tracing.py::init_tracing()` enables distributed tracing. Setup requirements are detailed in the OTel setup note below. **SAR-G05.** |
 
 ##### OTel setup note
 
@@ -299,7 +299,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 ##### REDIS_URL implementation notes
 
-- Backend selection logic is implemented in `src/codex_ml/features/feast_compat.py` via `create_backend`.
+- Backend selection logic is implemented in `src/codex_ml/features/feast_compat.py` via `create_backend()`.
 - When `REDIS_URL` is set, the Redis backend path is selected for online-store usage.
 - When unset, the system falls back to default local backends (`SQLiteBackend` / `InMemoryBackend`).
 

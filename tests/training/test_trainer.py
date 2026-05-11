@@ -15,11 +15,13 @@ if str(SRC_PATH) not in sys.path:
 
 
 def test_trainer_module_imports():
+    trainer_mod = None
     try:
-        import training.trainer as trainer
+        import training.trainer as trainer_mod
     except ImportError:
         pytest.skip("training.trainer not importable")
-    assert hasattr(trainer, "Trainer")
+    assert trainer_mod is not None
+    assert hasattr(trainer_mod, "Trainer")
 
 
 def test_trainer_requires_torch():

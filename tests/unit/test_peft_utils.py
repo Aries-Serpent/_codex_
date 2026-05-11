@@ -25,6 +25,7 @@ def test_freeze_counts():
         )
     except ImportError:
         pytest.skip("transformers/peft not installed")
+    bundle = None
     try:
         bundle = load_hf_llm("sshleifer/tiny-gpt2")
         if bundle is None:

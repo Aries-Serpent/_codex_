@@ -72,6 +72,28 @@ OFFLOAD_PATTERNS = {
     "coverage": ["coverage_", "*.coverage", "htmlcov/"],
 }
 
+LOCK_FILE_NAMES = {
+    "uv.lock",
+    "poetry.lock",
+    "Pipfile.lock",
+    "Cargo.lock",
+}
+
+
+def _exclude_from_large_file_check(rel_path: Path) -> bool:
+    """Exclude essential lock/docs files from large-file offload heuristics.
+
+    Lock files (e.g. `uv.lock`) are required for deterministic dependency
+    resolution, and documentation under `docs/` is intentionally maintained in-repo.
+    These should never be suggested as offload candidates purely due to file size.
+    """
+    rel_str = str(rel_path)
+    return (
+        rel_path.name in LOCK_FILE_NAMES
+        or rel_path.suffix == ".lock"
+        or rel_str.startswith("docs/")
+    )
+
 
 def get_file_age_days(file_path: Path) -> int:
     """Get file age in days based on modification time."""
@@ -154,6 +176,7 @@ def scan_repository(repo_root: Path) -> dict[str, Any]:
 
         for filename in files:
             file_path = root_path / filename
+            rel_path = file_path.relative_to(repo_root)
 
             # Skip if file doesn't exist or can't be accessed
             if not file_path.exists():
@@ -171,7 +194,10 @@ def scan_repository(repo_root: Path) -> dict[str, Any]:
             if category == "reports" and age_days > CRITERIA["deprecated_reports_age_days"]:
                 reasons.append(f"deprecated_report_age_{age_days}d")
 
-            if size_mb > CRITERIA["large_file_size_mb"]:
+            if (
+                size_mb > CRITERIA["large_file_size_mb"]
+                and not _exclude_from_large_file_check(rel_path)
+            ):
                 reasons.append(f"large_file_{size_mb:.2f}mb")
 
             if age_days > CRITERIA["unused_file_age_days"] and category:
@@ -179,9 +205,8 @@ def scan_repository(repo_root: Path) -> dict[str, Any]:
 
             # Add candidate if it meets any criteria
             if reasons:
-                rel_path = str(file_path.relative_to(repo_root))
                 candidate = {
-                    "path": rel_path,
+                    "path": str(rel_path),
                     "category": category or "unknown",
                     "age_days": age_days,
                     "size_mb": round(size_mb, 2),
@@ -254,7 +279,7 @@ def log_to_action_log(
 
     try:
         with open(action_log_path, "a") as f:
-            f.write(json.dumps(action_entry) + "\n")
+            f.write(json.dumps(action_entry, separators=(",", ":")) + "\n")
         print(f"✅ Logged to {action_log_path}")
     except Exception as e:
         print(f"⚠️ Failed to log to action log: {e}", file=sys.stderr)
