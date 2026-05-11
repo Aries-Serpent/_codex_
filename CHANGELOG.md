@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S952-review)
+- Addressed 5 `copilot-pull-request-reviewer` findings on PR #4416:
+  - **`pre-flight-validation.yml`**: added `pull-requests: write` and `issues: write` to
+    `pre-flight-validation` job (was `contents: read` only; job posts PR comments via
+    `actions/github-script`).
+  - **`resilient_validation.yml`**: added `pull-requests: write` to `validation` job
+    (was `contents: read` only; job posts coverage comments via `pytest-coverage-comment`
+    and rescue comments via `gh pr comment`).
+  - **`documentation-link-checker.yml`**: added `pull-requests: read` to `wec-gate` job
+    (was `contents: read` only; job reads PR metadata via `gh pr view`).
+  - **`.github/actions/doc-test-scribe-action/action.yml`**: restored `lang='en'`
+    accessibility attribute on the generated `<html>` tag (regressed by S952 syntax-error fix);
+    uses single-quoted attribute value to avoid CodeQL YAML-parser mis-parse without
+    dropping language metadata.
+  - **`scripts/ci/autonomous_rag_context.py`**: increased commit message truncation limit
+    from 80 → 120 characters to prevent tags like `[skip ci]` from being cut mid-token
+    in `.codex/session_context_latest.md`.
+- Fixed `sync_tracked_files` stale `.secrets.baseline` CODEX_MANIFEST entry (Pattern 30).
+
 ### Fixed (S952)
 - Resolved 58 open CodeQL security alerts (artifact `codeql-alerts-open-codeql-25688174911`):
   - **22 `actions/missing-workflow-permissions`**: added `permissions: contents: read` to 22 jobs
