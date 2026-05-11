@@ -304,8 +304,8 @@ def post_pr_comment(pr_number: int, checkpoint: dict) -> bool:
         "### ⚠️  Push Conflict Risk",
         "",
         "Automated CI commits (`chore(d00)`, `chore(auth)`, `chore(manifest)`) "
-        "may have been pushed **during** the rate-limited session. Before the next "
-        "agent session commits anything, run:",
+        + "may have been pushed **during** the rate-limited session. Before the next "
+        + "agent session commits anything, run:",
         "",
         "```bash",
         "python3 scripts/ci/push_conflict_resolver.py",

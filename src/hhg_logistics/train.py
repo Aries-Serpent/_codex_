@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, cast
 
 logger = logging.getLogger(__name__)
 
@@ -354,4 +354,5 @@ def main(cfg: DictConfig):
 
 
 if __name__ == "__main__":
-    main()  # type: ignore[call-arg]  # Hydra @main decorator injects DictConfig at runtime
+    hydra_entrypoint = cast(Callable[[], dict[str, Any]], main)
+    hydra_entrypoint()

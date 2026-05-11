@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S925-github-code-quality-review) — 2026-05-11
+- Addressed 8 unresolved `github-code-quality` review findings on PR #4389:
+  - `scripts/ci/rate_limit_handler.py`: replaced implicit string literal concatenation
+    with explicit concatenation in checkpoint comment assembly.
+  - `scripts/ci/rate_limit_status.py`: removed empty `except` blocks, added malformed
+    entry counting/stderr warnings in log history parsing, and added watch-mode parse warning.
+  - `scripts/ci/rate_limit_status.py`: removed unused display globals (`_ICON`, `_WARN`).
+  - `src/codex_ml/evaluation/runner.py`: replaced direct `self.model(inputs)` call with
+    guarded `__call__` retrieval (`call_fn`) to avoid non-callable call path.
+  - `src/hhg_logistics/train.py`: adjusted `__main__` entry invocation to typed Hydra
+    entrypoint wrapper call.
+
 ### Fixed (S924-auto-fix-cleanup) — 2026-05-11
 - Removed unused imports from `tests/ci/test_rate_limit_handler.py` (Pattern 1)
 - Sorted imports in `tests/ci/test_rate_limit_handler.py` (Pattern 9)

@@ -165,6 +165,7 @@ def get_rate_limit_log_history(tail: int = 20) -> list[dict]:
     if not RATE_LIMIT_LOG.exists():
         return []
     entries = []
+    malformed_count = 0
     try:
         lines = RATE_LIMIT_LOG.read_text().splitlines()
         for line in lines[-tail:]:
@@ -173,9 +174,16 @@ def get_rate_limit_log_history(tail: int = 20) -> list[dict]:
                 try:
                     entries.append(json.loads(line))
                 except Exception:
-                    pass
-    except Exception:
-        pass
+                    # Keep tolerant behavior while tracking malformed NDJSON rows.
+                    malformed_count += 1
+    except Exception as exc:
+        print(f"⚠️ Could not read rate-limit log history: {exc}", file=sys.stderr)
+    if malformed_count:
+        print(
+            f"⚠️ Skipped {malformed_count} malformed rate-limit log entr"
+            f"{'y' if malformed_count == 1 else 'ies'}.",
+            file=sys.stderr,
+        )
     return entries
 
 
@@ -234,9 +242,6 @@ def append_rate_limit_event(event: dict) -> None:
 
 
 # ── Display ────────────────────────────────────────────────────────────────────
-
-_ICON = {True: "🔴", False: "✅"}
-_WARN = {True: "⚠️ ", False: "   "}
 
 
 def _bar(pct: int, width: int = 20) -> str:
@@ -341,7 +346,7 @@ def watch(interval: int, assert_ok: bool) -> None:
                         if datetime.now(timezone.utc) >= reset_dt:
                             print("🟢 Rate-limit reset window has passed! Safe to retry.")
                     except ValueError:
-                        pass
+                        print("⚠️ Could not parse checkpoint retry_after_utc; skipping reset-time check.")
 
             time.sleep(interval)
     except KeyboardInterrupt:
