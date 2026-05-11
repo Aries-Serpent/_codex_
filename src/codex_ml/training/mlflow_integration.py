@@ -19,6 +19,7 @@ try:
 
     MLFLOW_AVAILABLE = True
 except ImportError as e:
+    mlflow = None
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     MLFLOW_AVAILABLE = False

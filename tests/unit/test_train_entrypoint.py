@@ -42,5 +42,6 @@ def test_train_guard_noop(tmp_path):
             "pipeline": {"features": {"output_path": str(tmp_path / "features.csv")}},
         }
     )
-    result = train_module.main.__wrapped__(cfg)  # type: ignore[attr-defined]
+    entrypoint = getattr(train_module.main, "__wrapped__", train_module.main)
+    result = entrypoint(cfg)
     assert result == {}

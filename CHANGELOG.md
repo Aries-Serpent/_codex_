@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S938-pr4400-premerge-self-healing) — 2026-05-11
+- Resolved `Pre-Merge Validation` run `25670322274` failure on PR #4400 by
+  refreshing stale tracked-file hashes (`.secrets.baseline`) via
+  `python scripts/ci/sync_tracked_files.py --fix`.
+- Improved monitoring fallback observability by logging psutil import failures at
+  warning level (with structured `dependency=psutil` metadata), matching
+  `tests/test_monitoring.py::test_structured_warning_on_psutil_import_failure`.
+- Hardened `tests/test_run_eval_cli.py` subprocess isolation by running from the
+  temp test directory and constraining `PYTHONPATH` to `src/`, preventing the
+  repository `datasets/` data directory from shadowing the optional `datasets`
+  dependency import in subprocess runs.
+- Added graceful skip handling in `tests/test_run_eval_cli.py` when the
+  subprocess reports missing optional evaluation dependencies
+  (`torch/datasets/transformers`) so `pytest -x` no longer hard-fails in
+  minimal environments.
+- Restored secure subprocess wrapper error-message compatibility by raising
+  `ValueError("shell=True is not supported by this secure wrapper")`, matching
+  the regex expectation in `tests/security/test_security_utilities.py`.
+- Restored `mlflow_integration` test compatibility by defining a module-level
+  `mlflow = None` fallback when `mlflow` import fails, so patching-based tests
+  can still target `codex_ml.training.mlflow_integration.mlflow`.
+- Hardened `tests/unit/test_train_entrypoint.py` to support both hydra-decorated
+  and undecorated `main` entrypoints by falling back to `main` when
+  `__wrapped__` is absent.
+- Updated `tests/test_hydra_cli.py` help assertion to accept the current
+  Hydra-managed fallback help banner, avoiding false failures when Typer output
+  is not active.
+
 ### Fixed (auto-update — PR #4400)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4400 (SHA `fdfa91bc`) at 2026-05-11T12:35Z [auto-generated]
 
