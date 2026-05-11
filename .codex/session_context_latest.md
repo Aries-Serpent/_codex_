@@ -1,10 +1,10 @@
-# Session Context — 2026-05-11T01:19:28Z
+# Session Context — 2026-05-11T01:36:01Z
 **Branch:** `copilot/add-full-path-to-init-tracing-docs`  **PR:** #4390  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4722` (✅)
-- GraphQL remaining: `4963` (✅)
+- REST remaining: `4691` (✅)
+- GraphQL remaining: `4958` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -13,12 +13,13 @@ State: `open`  Draft: `False`  Branch: `automated/repository-health-15` → `mai
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-11)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
 
 ## 📝 Recent Commits
+- `2a7f4a27` fix(ci): auto-fix unused/unsorted imports in test_rate_limit_handler.py (S924) — copilot-swe-agent[bot] (2026-05-11)
 - `0c58c401` feat(rate-limit): cooldown timer, PR pre-warning, budget guard, status CLI + rep — copilot-swe-agent[bot] (2026-05-11)
 - `9c81e692` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-11)
 - `73f180b4` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-11)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `automated/repository-health-15` → `mai
 - `3b28c7fc` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-11)
 - `7112ed09` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-11)
 - `1cb56a95` fix(codeql): address code-review shadowed-variable and redundant-guard issues — copilot-swe-agent[bot] (2026-05-11)
-- `43c86951` fix(security): resolve merge conflict, fix 6 CodeQL error alerts, patch 4 code-i — copilot-swe-agent[bot] (2026-05-11)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
