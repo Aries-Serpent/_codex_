@@ -60,7 +60,7 @@ dependencies = [
   "certifi>=2024.7.4",  # Security: Fixes CVE-2024-39689 (root cert trust issue)
   "filelock>=3.29.0",  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
   "idna>=3.7",  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
-  "urllib3>=2.6.3",  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
+  "urllib3>=2.7.0",  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
   "requests>=2.32.4",  # Security: Fixes CVE-2024-35195, CVE-2024-47081 (TLS bypass, credential leak)
   "defusedxml>=0.7.1",  # Security: XXE prevention for XML parsing (cli.py defuse_stdlib, solution_xml.py)
 ]

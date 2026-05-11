@@ -733,6 +733,7 @@ configs = [
 ]
 dev = [
     { name = "black", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "detect-secrets", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "dvc", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "hypothesis", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "isort", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -886,11 +887,12 @@ requires-dist = [
     { name = "click", marker = "extra == 'cli'", specifier = ">=8.1" },
     { name = "cryptography", marker = "extra == 'all'", specifier = ">=42.0.0,<47.0.0" },
     { name = "cryptography", marker = "extra == 'auth'", specifier = ">=42.0.0,<47.0.0" },
-    { name = "datasets", specifier = ">=2.19,<5" },
-    { name = "datasets", marker = "extra == 'all'", specifier = ">=2.19,<5" },
-    { name = "datasets", marker = "extra == 'ml'", specifier = ">=2.19,<5" },
-    { name = "datasets", marker = "extra == 'test'", specifier = ">=2.19,<5" },
+    { name = "datasets", specifier = ">=4.8.5,<5" },
+    { name = "datasets", marker = "extra == 'all'", specifier = ">=4.8.5,<5" },
+    { name = "datasets", marker = "extra == 'ml'", specifier = ">=4.8.5,<5" },
+    { name = "datasets", marker = "extra == 'test'", specifier = ">=4.8.5,<5" },
     { name = "defusedxml", specifier = ">=0.7.1" },
+    { name = "detect-secrets", marker = "extra == 'dev'", specifier = ">=1.5.0" },
     { name = "duckdb", specifier = ">=1.5.2" },
     { name = "duckdb", marker = "extra == 'all'", specifier = ">=1.5.2" },
     { name = "duckdb", marker = "extra == 'logging'", specifier = ">=1.5.2" },
@@ -899,7 +901,7 @@ requires-dist = [
     { name = "faiss-cpu", marker = "extra == 'all'", specifier = ">=1.13.2,<2.0.0" },
     { name = "faiss-cpu", marker = "extra == 'rag'", specifier = ">=1.13.2,<2.0.0" },
     { name = "fastapi", specifier = ">=0.135.3,<1" },
-    { name = "filelock", specifier = ">=3.20.3" },
+    { name = "filelock", specifier = ">=3.29.0" },
     { name = "great-expectations", marker = "extra == 'ge'", specifier = ">=0.18.7,<2" },
     { name = "httpx", specifier = ">=0.26,<1" },
     { name = "hydra-core", specifier = "==1.3.2" },
@@ -908,10 +910,10 @@ requires-dist = [
     { name = "hydra-core", extras = ["hydra-plugins"], marker = "extra == 'hydra'", specifier = ">=1.3" },
     { name = "hydra-core", extras = ["hydra-plugins"], marker = "extra == 'test'", specifier = ">=1.3" },
     { name = "hydra-core", extras = ["hydra-plugins"], marker = "extra == 'test-core'", specifier = ">=1.3" },
-    { name = "hypothesis", marker = "extra == 'all'", specifier = ">=6.98.0,<7.0.0" },
-    { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.98.0,<7.0.0" },
-    { name = "hypothesis", marker = "extra == 'test'", specifier = ">=6.98.0,<7.0.0" },
-    { name = "hypothesis", marker = "extra == 'test-core'", specifier = ">=6.100" },
+    { name = "hypothesis", marker = "extra == 'all'", specifier = ">=6.152.4,<7.0.0" },
+    { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.152.4,<7.0.0" },
+    { name = "hypothesis", marker = "extra == 'test'", specifier = ">=6.152.4,<7.0.0" },
+    { name = "hypothesis", marker = "extra == 'test-core'", specifier = ">=6.152.4" },
     { name = "idna", specifier = ">=3.7" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10' and extra == 'all'" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10' and extra == 'plugins'" },
@@ -930,8 +932,8 @@ requires-dist = [
     { name = "mlflow", marker = "extra == 'perf'", specifier = ">=2.22.4,<4" },
     { name = "mlflow", marker = "extra == 'tracking'", specifier = ">=2.22.4,<4" },
     { name = "mlflow", marker = "extra == 'train'", specifier = ">=2.22.4,<4" },
-    { name = "mypy", marker = "extra == 'all'", specifier = ">=1.8.0,<2.0.0" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8.0,<2.0.0" },
+    { name = "mypy", marker = "extra == 'all'", specifier = ">=1.20.2,<2.0.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.20.2,<2.0.0" },
     { name = "nbstripout", marker = "extra == 'dev'", specifier = ">=0.6" },
     { name = "nltk", marker = "extra == 'metrics'", specifier = ">=3.8" },
     { name = "nox", marker = "extra == 'all'", specifier = ">=2026.4.10" },
@@ -1009,7 +1011,7 @@ requires-dist = [
     { name = "pyyaml", marker = "extra == 'hydra'", specifier = ">=6.0" },
     { name = "pyyaml", marker = "extra == 'test'", specifier = ">=6.0" },
     { name = "pyyaml", marker = "extra == 'test-core'", specifier = ">=6.0" },
-    { name = "radon", specifier = ">=6.0.0" },
+    { name = "radon", specifier = ">=6.0.1" },
     { name = "ray", extras = ["serve"], specifier = ">=2.9,<3" },
     { name = "requests", specifier = ">=2.32.4" },
     { name = "requests", marker = "extra == 'ops'", specifier = ">=2.32.4" },
@@ -1045,17 +1047,17 @@ requires-dist = [
     { name = "torch", marker = "sys_platform != 'win32' and extra == 'train'", specifier = ">=2.6.0,<3.0.0" },
     { name = "torch", marker = "extra == 'all'", specifier = ">=2.6.0,<3.0.0" },
     { name = "torch", marker = "extra == 'ml'", specifier = ">=2.6.0,<3.0.0" },
-    { name = "transformers", specifier = ">=5.6.2,<6" },
-    { name = "transformers", marker = "extra == 'all'", specifier = ">=5.6.2,<6" },
-    { name = "transformers", marker = "extra == 'ml'", specifier = ">=5.6.2,<6" },
-    { name = "transformers", marker = "extra == 'test'", specifier = ">=5.6.2,<6" },
-    { name = "transformers", marker = "extra == 'train'", specifier = ">=5.6.2,<6" },
-    { name = "tree-sitter", marker = "extra == 'ast'", specifier = ">=0.20.0" },
+    { name = "transformers", specifier = ">=5.8.0,<6" },
+    { name = "transformers", marker = "extra == 'all'", specifier = ">=5.8.0,<6" },
+    { name = "transformers", marker = "extra == 'ml'", specifier = ">=5.8.0,<6" },
+    { name = "transformers", marker = "extra == 'test'", specifier = ">=5.8.0,<6" },
+    { name = "transformers", marker = "extra == 'train'", specifier = ">=5.8.0,<6" },
+    { name = "tree-sitter", marker = "extra == 'ast'", specifier = ">=0.25.2" },
     { name = "tree-sitter-python", marker = "extra == 'ast'", specifier = ">=0.20.0" },
     { name = "tree-sitter-yaml", marker = "extra == 'ast'", specifier = ">=0.7.0" },
     { name = "typer", specifier = ">=0.12" },
     { name = "typer", marker = "extra == 'cli'", specifier = ">=0.9" },
-    { name = "urllib3", specifier = ">=2.6.3" },
+    { name = "urllib3", specifier = ">=2.7.0" },
     { name = "wandb", marker = "extra == 'all'", specifier = ">=0.16" },
     { name = "wandb", marker = "extra == 'tracking'", specifier = ">=0.16" },
     { name = "xxhash", marker = "extra == 'sharding'", specifier = ">=3.0.0" },
@@ -1416,6 +1418,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5a/d3/8ae2869247df154b64c1884d7346d412fed0c49df84db635aab2d1c40e62/deprecation-2.1.0.tar.gz", hash = "sha256:72b3bde64e5d778694b0cf68178aed03d15e15477116add3fb773e581f9518ff", size = 173788, upload-time = "2020-04-20T14:23:38.738Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/02/c3/253a89ee03fc9b9682f1541728eb66db7db22148cd94f89ab22528cd1e1b/deprecation-2.1.0-py2.py3-none-any.whl", hash = "sha256:a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a", size = 11178, upload-time = "2020-04-20T14:23:36.581Z" },
+]
+
+[[package]]
+name = "detect-secrets"
+version = "1.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyyaml", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "requests", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/69/67/382a863fff94eae5a0cf05542179169a1c49a4c8784a9480621e2066ca7d/detect_secrets-1.5.0.tar.gz", hash = "sha256:6bb46dcc553c10df51475641bb30fd69d25645cc12339e46c824c1e0c388898a", size = 97351, upload-time = "2024-05-06T17:46:19.721Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/5e/4f5fe4b89fde1dc3ed0eb51bd4ce4c0bca406246673d370ea2ad0c58d747/detect_secrets-1.5.0-py3-none-any.whl", hash = "sha256:e24e7b9b5a35048c313e983f76c4bd09dad89f045ff059e354f9943bf45aa060", size = 120341, upload-time = "2024-05-06T17:46:16.628Z" },
 ]
 
 [[package]]
@@ -1997,9 +2012,9 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gitdb", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/gitpython/gitpython-3.1.50.tar.gz", hash = "sha256:80da2d12504d52e1f998772dc5baf6e553f8d2fcfe1fcc226c9d9a2ee3372dcc", size = 219798 }
+sdist = { url = "https://files.pythonhosted.org/packages/33/f6/354ae6491228b5eb40e10d89c4d13c651fe1cf7556e35ebdded50cff57ce/gitpython-3.1.50.tar.gz", hash = "sha256:80da2d12504d52e1f998772dc5baf6e553f8d2fcfe1fcc226c9d9a2ee3372dcc", size = 219798, upload-time = "2026-05-06T04:01:26.571Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/20/7a/1c6e3562dfd8950adbb11ffbc65d21e7c89d01a6e4f137fa981056de25c5/gitpython-3.1.50-py3-none-any.whl", hash = "sha256:d352abe2908d07355014abdd21ddf798c2a961469239afec4962e9da884858f9", size = 212507 },
+    { url = "https://files.pythonhosted.org/packages/20/7a/1c6e3562dfd8950adbb11ffbc65d21e7c89d01a6e4f137fa981056de25c5/gitpython-3.1.50-py3-none-any.whl", hash = "sha256:d352abe2908d07355014abdd21ddf798c2a961469239afec4962e9da884858f9", size = 212507, upload-time = "2026-05-06T04:01:23.799Z" },
 ]
 
 [[package]]
@@ -3031,9 +3046,9 @@ wheels = [
 name = "mistune"
 version = "3.2.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ca/84/620cc3f7e3adf6f5067e10f4dbae71295d8f9e16d5d3f9ef97c40f2f592c/mistune-3.2.1.tar.gz", hash = "sha256:7c8e5501d38bac1582e067e46c8343f17d57ea1aaa735823f3aba1fd59c88a28", size = 98003, upload-time = "2026-05-03T14:33:22.312418Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/84/620cc3f7e3adf6f5067e10f4dbae71295d8f9e16d5d3f9ef97c40f2f592c/mistune-3.2.1.tar.gz", hash = "sha256:7c8e5501d38bac1582e067e46c8343f17d57ea1aaa735823f3aba1fd59c88a28", size = 98003, upload-time = "2026-05-03T14:33:22.312Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/7f/a946aa4f8752b37102b41e64dca18a1976ac705c3a0d1dfe74d820a02552/mistune-3.2.1-py3-none-any.whl", hash = "sha256:78cdb0ba5e938053ccf63651b352508d2efa9411dc8810bfb05f2dc5140c0048", size = 53749, upload-time = "2026-05-03T14:33:20.551418Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/7f/a946aa4f8752b37102b41e64dca18a1976ac705c3a0d1dfe74d820a02552/mistune-3.2.1-py3-none-any.whl", hash = "sha256:78cdb0ba5e938053ccf63651b352508d2efa9411dc8810bfb05f2dc5140c0048", size = 53749, upload-time = "2026-05-03T14:33:20.551Z" },
 ]
 
 [[package]]
@@ -5718,7 +5733,7 @@ wheels = [
 
 [[package]]
 name = "transformers"
-version = "5.7.0"
+version = "5.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "huggingface-hub", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
@@ -5731,9 +5746,9 @@ dependencies = [
     { name = "tqdm", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "typer", marker = "(python_full_version < '3.13' and sys_platform == 'linux') or (python_full_version >= '3.13' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4') or (sys_platform != 'linux' and extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4d/fe/7e84d20ac7d4d5d14bac2eab5976088d86342959fc2c0da54b4c2fc99856/transformers-5.7.0.tar.gz", hash = "sha256:a9d35cf39804e3456c1f9bc1a79ad5ffa878640a61f51f66f71c97f4b4e2ce10", size = 8401287, upload-time = "2026-04-28T18:30:09.75Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/36/390075693b76d4fb4a2bea360fb6080347763bd1f1147c49ed0ed938778c/transformers-5.8.0.tar.gz", hash = "sha256:6cc9a1f0291d16b1c1b735bad775e78ebefff7722701d4e28f98aaaa2bd6fb91", size = 8528141, upload-time = "2026-05-05T16:50:04.778Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/60/60/86a9fe3037bec221094e2acb680219ad88b77006edba42fc0407a577ca93/transformers-5.7.0-py3-none-any.whl", hash = "sha256:869660cd8fc92badc041f5551bf755a42f4b9558c93341bf3fa3eeed7065079c", size = 10474236, upload-time = "2026-04-28T18:30:05.655Z" },
+    { url = "https://files.pythonhosted.org/packages/97/7b/5621d08b34ac35deb9fa14b58d27d124d21ef125ee1c64bc724ca47dfb63/transformers-5.8.0-py3-none-any.whl", hash = "sha256:e9d2cae6d195a7e1e05164c5ebf26142a7044e4dc4267274f4809204f92827e4", size = 10630279, upload-time = "2026-05-05T16:50:01.026Z" },
 ]
 
 [[package]]
@@ -5916,11 +5931,11 @@ wheels = [
 
 [[package]]
 name = "urllib3"
-version = "2.6.3"
+version = "2.7.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c7/24/5f1b3bdffd70275f6661c76461e25f024d5a38a46f04aaca912426a2b1d3/urllib3-2.6.3.tar.gz", hash = "sha256:1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed", size = 435556, upload-time = "2026-01-07T16:24:43.925Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/0c/06f8b233b8fd13b9e5ee11424ef85419ba0d8ba0b3138bf360be2ff56953/urllib3-2.7.0.tar.gz", hash = "sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c", size = 433602, upload-time = "2026-05-07T16:13:18.596Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl", hash = "sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4", size = 131584, upload-time = "2026-01-07T16:24:42.685Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/3e/5db95bcf282c52709639744ca2a8b149baccf648e39c8cc87553df9eae0c/urllib3-2.7.0-py3-none-any.whl", hash = "sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897", size = 131087, upload-time = "2026-05-07T16:13:17.151Z" },
 ]
 
 [[package]]
