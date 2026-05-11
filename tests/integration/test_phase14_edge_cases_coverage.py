@@ -40,9 +40,8 @@ class TestNumericEdgeCases:
         """Test handling of negative learning rate."""
         learning_rate = -0.001
 
-        assert learning_rate < 0
         with pytest.raises(ValueError):
-            if learning_rate < 0:  # always true, but explicit guard avoids static analysis false-positive
+            if learning_rate < 0:
                 raise ValueError("Learning rate must be non-negative")
 
     def test_very_small_learning_rate(self):
