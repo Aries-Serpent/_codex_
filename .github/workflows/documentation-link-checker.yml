@@ -30,6 +30,8 @@ jobs:
   wec-gate:
     name: "WEC gate — check documentation-link-checker.yml checkbox"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 3
     outputs:
       skip: ${{ steps.gate.outputs.skip }}
@@ -80,6 +82,8 @@ jobs:
   check-links:
     name: "Check documentation links"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: wec-gate
     # Skip when WEC unchecked on PRs; always run on push/schedule

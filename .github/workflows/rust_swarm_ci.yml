@@ -49,6 +49,8 @@ jobs:
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: cost-gate
 
@@ -110,6 +112,8 @@ jobs:
   rust_benchmarks:
     name: Rust Benchmarks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: rust_tests
 
@@ -169,6 +173,8 @@ jobs:
   code_coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: rust_tests
 
@@ -228,6 +234,8 @@ jobs:
   python_integration:
     name: Python Integration Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: rust_tests
 
@@ -433,6 +441,8 @@ jobs:
   security_audit:
     name: Security Audit
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
 
     steps:
@@ -458,6 +468,8 @@ jobs:
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
 
     steps:
@@ -479,6 +491,8 @@ jobs:
   release:
     name: Build Release
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: [rust_tests, python_integration, code_coverage]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

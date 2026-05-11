@@ -26,6 +26,8 @@ concurrency:
 jobs:
   pre-flight-validation:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 5
 
     steps:

@@ -23,6 +23,8 @@ concurrency:
 jobs:
   test-rag:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     strategy:
       matrix:

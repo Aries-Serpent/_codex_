@@ -24,6 +24,8 @@ jobs:
   test-authentication:
     name: Test Authentication Module
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     strategy:
       matrix:
@@ -87,6 +89,8 @@ jobs:
   integration-test:
     name: Integration Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: test-authentication
 
