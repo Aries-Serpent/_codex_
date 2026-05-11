@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 try:
-    import numpy as np  # type: ignore
+    import numpy as np  # type: ignore  # noqa: F401
 except ImportError:  # pragma: no cover - optional
     np = None  # type: ignore[assignment]
 

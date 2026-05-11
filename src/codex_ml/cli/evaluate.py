@@ -64,7 +64,7 @@ def _cfg_to_container(cfg: Any) -> Any:
 torch, _HAS_TORCH = optional_import("torch")
 
 try:  # optional dependency
-    import mlflow
+    import mlflow  # noqa: F401
 
     _HAS_MLFLOW = True
 except Exception:  # pragma: no cover - optional

@@ -15,7 +15,7 @@ import pytest
 def is_cuda_available() -> bool:
     """Local CUDA detection to avoid conftest import path conflicts."""
     try:
-        import torch
+        import torch  # noqa: PLC0415
         return torch.cuda.is_available()
     except (ImportError, AttributeError):
         return False
@@ -30,7 +30,7 @@ skip_if_no_cuda = pytest.mark.skipif(
 try:
     from sentence_transformers import SentenceTransformer
 
-    import torch
+    import torch  # noqa: PLC0415
     from codex.rag.utils import (
         ProvenanceMetadata,
         check_for_meta_tensors,

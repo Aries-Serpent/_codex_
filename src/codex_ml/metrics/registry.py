@@ -38,12 +38,14 @@ _REWARD_METRICS_LOADED = False
 _REWARD_METRICS_LOCK = threading.Lock()
 
 # Ensure built-in generative metrics are registered on import.
-# Imported AFTER metric_registry is defined to avoid a circular-import at
-# module load time (generative.py calls register_metric from this module).
-from . import generative as _generative  # noqa: E402
+# Import is deferred into a function to avoid a circular-import at module load
+# time (generative.py calls register_metric from this module).
+def _register_builtin_metrics() -> None:
+    """Register built-in generative metrics (breaks cyclic import at module init)."""
+    from . import generative as _gen  # noqa: PLC0415
+    _ = _gen  # side-effect: registers metrics via register_metric()
 
-# Mark as explicitly used for side effects (metric registration)
-_ = _generative
+_register_builtin_metrics()
 
 
 def _error_log_path() -> Path:

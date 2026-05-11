@@ -77,8 +77,9 @@ class _LegacyTokenizerProxy:
             stacklevel=2,
         )
         if _CanonicalLegacyTokenizer is None:
-            raise ImportError(
-                "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
+            raise AttributeError(
+                f"'{name}' is unavailable: HFTokenizerAdapter not installed "
+                "(install codex-ml tokenization extras)"
             )
         return getattr(_CanonicalLegacyTokenizer, name)
 

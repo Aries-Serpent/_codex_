@@ -32,10 +32,7 @@ except Exception:
     logger.debug("Suppressed exception in handler", exc_info=True)
 if "CheckpointManager" not in globals():
     import io
-    import json
-    import os
     import random
-    from pathlib import Path
     from typing import Any, Optional
 
     try:  # Prefer canonical helpers when available.

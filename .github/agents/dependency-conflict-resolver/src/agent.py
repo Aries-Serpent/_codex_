@@ -470,7 +470,7 @@ class DependencyConflictResolver:
                 if version_range == 1:
                     return "high"
                 return "medium"
-        except (ValueError, AttributeError):
+        except (ValueError, AttributeError):  # invalid version format, default to low
             pass
 
         return "low"

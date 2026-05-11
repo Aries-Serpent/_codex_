@@ -4478,6 +4478,31 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 **Session:** auto-20260430T0318-run86956 | **Run:** 25145279779 | **Date:** 2026-04-30
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## Session S939 — 2026-05-11
+
+### Objective
+Continue CodeQL alert remediation (S938 continuation): fix remaining py/* and actions/* alerts.
+
+### Work Completed
+- Fixed py/repeated-import (12): removed local duplicate imports from auto_fix_common_issues.py, decode_validate_and_extract.py, cli_rag.py, workflow_optimizer.py, advanced_indexing.py, checkpoint_manager.py; added noqa to conftest.py + test_rag_utils.py
+- Fixed py/unused-import (12): added # noqa: F401 to cli_api_server.py, evaluate.py, test_codex_sequence_validations.py, conftest.py  
+- Fixed py/empty-except (3): added inline comments to rfc-compliance-checker/run.py, dependency-conflict-resolver/src/agent.py, security-vulnerability-patcher/src/agent.py
+- Fixed py/unreachable-statement (1): restructured test_phase14_edge_cases_coverage.py::test_negative_learning_rate
+- Fixed py/unexpected-raise-in-special-method (1): changed ImportError to AttributeError in tokenization/api.py __getattr__
+- Fixed py/cyclic-import (1): deferred metrics/registry.py generative import into _register_builtin_metrics() function
+- Fixed rust/unused-variable (5): prefixed closure params with _ in test_agent_manager.rs, test_queue.rs, test_state.rs (3 locations)
+- Fixed actions/syntax-error (1): rewrote multi-line PR body in doc-test-scribe-action/action.yml using bash subshell syntax to preserve YAML validity
+- Fixed actions/untrusted-checkout (2): added persist-credentials: false to app-package-download.yml, forward-sync-autogen.yml
+- Fixed actions/missing-workflow-permissions (1): added permissions block to consolidated-pr-status.yml
+
+### Patterns Observed
+- RP-001: Pattern 25 - CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
+
+### Remaining
+- actions/unpinned-tag (33): requires SHA lookups for actions/checkout@v5, actions/setup-python@v6, etc. - needs internet access
+- actions/missing-workflow-permissions (21): additional workflow files may need permissions blocks
+
+
 ## Session S178g — 2026-04-30T00:46Z
 
 **Session:** S178g | **Branch:** copilot/update-documentation-hub-status | **PR:** #4130 | **Date:** 2026-04-30

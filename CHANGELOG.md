@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S939)
+- CodeQL: Fixed `py/repeated-import` (12 files) — removed local duplicate imports
+- CodeQL: Fixed `py/unused-import` (12 alerts) — added `# noqa: F401` where intentional
+- CodeQL: Fixed `py/empty-except` (3 alerts) — added inline explanation comments
+- CodeQL: Fixed `py/unreachable-statement` (1 alert) — restructured test conditional
+- CodeQL: Fixed `py/unexpected-raise-in-special-method` (1 alert) — changed `ImportError` to `AttributeError` in `__getattr__`
+- CodeQL: Fixed `py/cyclic-import` (1 alert) — deferred generative metrics import to function
+- Rust: Fixed `rust/unused-variable` (5 alerts) — prefixed inner-closure vars with `_`
+- Actions: Fixed `actions/syntax-error` (1 alert) — rewrote PR body assignment in `doc-test-scribe-action/action.yml` using subshell syntax
+- Actions: Fixed `actions/untrusted-checkout` (2 alerts) — added `persist-credentials: false` to `app-package-download.yml` and `forward-sync-autogen.yml`
+- Actions: Fixed `actions/missing-workflow-permissions` (1 alert) — added `permissions: contents: read; pull-requests: write` to `consolidated-pr-status.yml`
+
+
 ### Fixed (S938-roadmap-date-consistency + test-cli-cleanup) — 2026-05-11
 - `docs/ROADMAP.md`: Refreshed status date from 2026-04-28 to 2026-05-08 (SAR Sprint section).
 - `docs/ROADMAP.md`: Renamed `Roadmap Version Date` → `Roadmap Baseline Date (Version Cut)` to

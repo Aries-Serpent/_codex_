@@ -183,13 +183,6 @@ class HNSWIndex:
         if self._index is None:
             self._create_index()
 
-        try:
-            import numpy as np
-        except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
-            raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
-
         if vectors.shape[1] != self.dimension:
             raise ValueError(
                 f"Vector dimension {vectors.shape[1]} doesn't match index dimension {self.dimension}"  # noqa: E501
@@ -218,13 +211,6 @@ class HNSWIndex:
         """
         if self._index is None:
             raise RuntimeError("Index is empty. Add vectors before searching.")
-
-        try:
-            import numpy as np
-        except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
-            raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
 
         if query.ndim == 1:
             query = query.reshape(1, -1)

@@ -1,32 +1,35 @@
-# Session Context — 2026-05-11T06:16:36Z
+# Session Context — 2026-05-11T07:11:43Z
 **Branch:** `copilot/update-status-date-in-roadmap`  **PR:** #4395  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4910` (✅)
-- GraphQL remaining: `4970` (✅)
+- REST remaining: `4332` (✅)
+- GraphQL remaining: `4988` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4395 — [WIP] Update status date in ROADMAP.md to reflect last updated date
+## 📋 PR #4395 — Fix ROADMAP date/version inconsistencies, test quality alerts, CLI arg semantics, and bulk CodeQL alert remediation
 State: `open`  Draft: `True`  Branch: `copilot/update-status-date-in-roadmap` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `submit-pypi` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-11)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-11)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-11)
 
 ## 📝 Recent Commits
-- `4996d80c` Initial plan — copilot-swe-agent[bot] (2026-05-11)
-- `a483453c` Merge pull request #4393 from Aries-Serpent/copilot/fix-ci-failure-triage-report — Statix (2026-05-11)
-- `fe64c2d3` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-11)
-- `46b4e461` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-11)
-- `b47f9ba7` docs(pr4393): update post-approval workflow monitoring status for head 235cdcc — copilot-swe-agent[bot] (2026-05-11)
-- `235cdcc7` fix(ci): stabilize delegation helper failures and restore actionlint-compliant a — copilot-swe-agent[bot] (2026-05-11)
-- `3abd8b35` docs(pr4393): refresh follow-up plan and post-approval monitoring status — copilot-swe-agent[bot] (2026-05-11)
-- `ed6fb33f` fix(ci): harden auto-approve for active copilot sessions and high pending workfl — copilot-swe-agent[bot] (2026-05-11)
+- `32672f3a` fix: repair github_client.py syntax corruption from sub-agent mixed-returns fix — copilot-swe-agent[bot] (2026-05-11)
+- `0d9dfae1` fix: resolve CodeQL alerts across categories 1-3 (mixed-returns, ineffectual-sta — copilot-swe-agent[bot] (2026-05-11)
+- `c44732f9` fix: rename _err to err in test_peft_utils (variable is used in skip message) — copilot-swe-agent[bot] (2026-05-11)
+- `0b062ac2` fix: resolve CodeQL py/unused-local-variable and py/unused-global-variable alert — copilot-swe-agent[bot] (2026-05-11)
+- `567fc4da` chore: initial diff fixes applied (ROADMAP, test_peft_utils, codex_cli) — copilot-swe-agent[bot] (2026-05-11)
+- `39f3413a` chore: Generate follow-up prompt for PR #4395 [skip ci] — github-actions[bot] (2026-05-11)
+- `9173eab3` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-11)
+- `8dcac09a` chore: initial plan — roadmap dates, test refactor, CLI fixes, CodeQL verificati — copilot-swe-agent[bot] (2026-05-11)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

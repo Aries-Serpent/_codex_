@@ -52,11 +52,11 @@ fn test_concurrent_agent_registration() {
     let agents_per_thread = 10;
 
     let handles: Vec<_> = (0..num_threads)
-        .map(|thread_id| {
+        .map(|_thread_id| {
             let state_clone = Arc::clone(&state);
             thread::spawn(move || {
                 for i in 0..agents_per_thread {
-                    let agent_id = format!("agent_{}_{}", thread_id, i);
+                    let agent_id = format!("agent_{}_{}", _thread_id, i);
                     state_clone.register_agent(agent_id).unwrap();
                 }
             })
@@ -77,10 +77,10 @@ fn test_high_volume_registration() {
     let num_agents = 1000;
 
     let handles: Vec<_> = (0..num_agents)
-        .map(|i| {
+        .map(|_i| {
             let state_clone = Arc::clone(&state);
             thread::spawn(move || {
-                let agent_id = format!("agent_{}", i);
+                let agent_id = format!("agent_{}", _i);
                 state_clone.register_agent(agent_id).unwrap();
             })
         })
@@ -103,10 +103,10 @@ fn test_concurrent_status_updates() {
     }
 
     let handles: Vec<_> = (0..100)
-        .map(|i| {
+        .map(|_i| {
             let state_clone = Arc::clone(&state);
             thread::spawn(move || {
-                let agent_id = format!("agent_{}", i);
+                let agent_id = format!("agent_{}", _i);
                 state_clone.set_agent_status(
                     agent_id.clone(),
                     "working".to_string(),
