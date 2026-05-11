@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 import random  # noqa: E402
 from collections.abc import Iterable  # noqa: E402
 

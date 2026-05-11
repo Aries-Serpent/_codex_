@@ -9,7 +9,6 @@ from __future__ import annotations
 import warnings as _warnings
 from pathlib import Path
 
-
 _warnings.warn(
     "src.tokenization.sentencepiece_adapter is legacy; use "
     "codex_ml.tokenization.sentencepiece_adapter instead.",

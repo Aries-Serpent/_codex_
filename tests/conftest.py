@@ -1278,8 +1278,8 @@ def set_deterministic_seed():
 
     # Guard optional torch usage without adding a hard dependency
     try:
-        import torch  # noqa: PLC0415
-
+        if torch is None:
+            raise ImportError
         torch.manual_seed(seed)
         # If using CUDA in CI, prefer CPU determinism by default.
         if torch.cuda.is_available():
@@ -1413,7 +1413,8 @@ def mock_transformer_model():
     """Provide a shared MockTransformerModel for testing."""
     from unittest.mock import Mock
 
-    import torch  # noqa: PLC0415
+    if torch is None:
+        pytest.skip("torch unavailable")
 
     class MockTransformerModel(torch.nn.Module):
         """Mock transformer model for testing."""
@@ -1587,8 +1588,8 @@ def ensure_cpu_device():
     explicitly to SentenceTransformer constructors instead.
     """
     try:
-        import torch  # noqa: PLC0415
-
+        if torch is None:
+            raise ImportError
         # Check if this is a stub/placeholder torch module
         if not hasattr(torch, "Tensor") or not callable(
             getattr(torch, "manual_seed", None)

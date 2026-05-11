@@ -12,7 +12,7 @@ Tests cover:
 """
 
 # Patch ADVANCED_PHYSICS to False to avoid numpy initialization issues
-import sys
+import sys as _sys_orch
 from unittest.mock import Mock, patch
 
 from agents.developer_orchestrator import (
@@ -20,7 +20,7 @@ from agents.developer_orchestrator import (
     DevelopmentPhase,
     PhysicsGuidedDeveloperOrchestrator,
 )
-import sys as _sys_orch
+
 _sys_orch.modules["agents.developer_orchestrator"].ADVANCED_PHYSICS = False
 
 # ============================================================================

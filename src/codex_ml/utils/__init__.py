@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 from . import (
     checkpoint_core,
     checkpointing,

@@ -12,11 +12,13 @@ from omegaconf import OmegaConf
 
 
 def test_train_guard_noop(tmp_path):
+    train_module = None
     try:
         import hhg_logistics.train as train_module
     except ImportError:
         pytest.skip("imports failed due to optional deps")
 
+    assert train_module is not None
     cfg = OmegaConf.create(
         {
             "train": {

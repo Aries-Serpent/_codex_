@@ -11,13 +11,17 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+try:
+    import torch
+except ImportError:  # pragma: no cover - optional
+    torch = None
+
 
 def is_cuda_available() -> bool:
     """Local CUDA detection to avoid conftest import path conflicts."""
     try:
-        import torch  # noqa: PLC0415
-        return torch.cuda.is_available()
-    except (ImportError, AttributeError):
+        return torch is not None and torch.cuda.is_available()
+    except AttributeError:
         return False
 
 
@@ -30,7 +34,8 @@ skip_if_no_cuda = pytest.mark.skipif(
 try:
     from sentence_transformers import SentenceTransformer
 
-    import torch  # noqa: PLC0415
+    if torch is None:
+        raise ImportError("torch unavailable")
     from codex.rag.utils import (
         ProvenanceMetadata,
         check_for_meta_tensors,

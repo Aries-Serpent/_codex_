@@ -25,7 +25,7 @@ try:
     Accelerator = _accelerate_mod.Accelerator
     _ACCELERATOR_AVAILABLE = True
 except ImportError:
-    Accelerator = None  # type: ignore[assignment,misc]
+    Accelerator = None
     _ACCELERATOR_AVAILABLE = False
 
 

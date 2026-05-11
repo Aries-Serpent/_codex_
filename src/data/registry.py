@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 import importlib  # noqa: E402
 from collections.abc import Callable  # noqa: E402
 from typing import Any  # noqa: E402
@@ -32,8 +29,8 @@ try:  # pragma: no cover - torch is optional
     random_split = torch.utils.data.random_split
 except Exception:  # pragma: no cover - fallback stubs when torch is absent
     torch = None  # type: ignore[assignment]
-    DataLoader = None  # type: ignore[assignment,misc]
-    TensorDataset = None  # type: ignore[assignment,misc]
+    DataLoader = None
+    TensorDataset = None
     random_split = None
 
 _REGISTRY: dict[str, Callable[..., Any]] = {}
@@ -114,8 +111,8 @@ def _synthetic_classification_dataset(
         data_module = getattr(torch_utils, "data", None)
         if data_module is None:
             raise DatasetRegistryError("torch.utils.data not available")
-        DataLoader = getattr(data_module, "DataLoader", None)  # type: ignore[assignment,misc]
-        TensorDataset = getattr(data_module, "TensorDataset", None)  # type: ignore[assignment,misc]
+        DataLoader = getattr(data_module, "DataLoader", None)
+        TensorDataset = getattr(data_module, "TensorDataset", None)
         random_split = getattr(data_module, "random_split", None)
     if DataLoader is None or TensorDataset is None:
         raise DatasetRegistryError("torch.utils.data components unavailable")

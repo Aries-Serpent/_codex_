@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S949)
+- Cleared the remaining repo-wide hygiene blockers surfaced by local validation: normalized secret allowlist annotations in `tests/test_rag_embeddings.py`, removed stale `# type: ignore` comments and related mypy noise in `src/`, fixed the last repo-wide import-order issue in `scripts/space_traversal/migrations/migrate_trends.py`, and brought the branch back to a passing `mypy_baseline.py --require-baseline` result.
+
+### Fixed (S948)
+- Added PR #4395 living docs: `docs/plans/PR4395_whats_next.md` and `docs/sessions/PR4395_session_diagram.md`, capturing the latest review-remediation status, workflow classifications, and next-step decision flow for continued monitoring.
+
+### Fixed (S947)
+- Addressed the current unresolved `github-code-quality` / `github-advanced-security` review findings on PR #4395 by replacing the ad-hoc optional `mlflow` import in `src/codex_ml/cli/evaluate.py`, deferring built-in metric registration in `src/codex_ml/metrics/registry.py`, tightening several test helpers (`tests/conftest.py`, `tests/test_rag_utils.py`, `tests/test_rag_embeddings.py`, `tests/unit/test_train_entrypoint.py`, `tests/integration/test_py312_e2e.py`, `tests/test_codex_sequence_validations.py`), and ensuring the short-circuit coverage test no longer looks like dead code.
+- Applied import-order cleanup in the newly flagged source modules under `src/codex/` and `src/codex_ml/` so the latest code-quality/security annotations on those changed files are cleared without changing behavior.
+
 ### Fixed (S946)
 - Removed a duplicated `# pragma: allowlist secret` comment in `tests/branch_coverage/test_branch_coverage_config.py` surfaced by post-merge code review.
 

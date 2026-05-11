@@ -225,7 +225,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         if "sentencepiece_model_pb2" not in sys.modules:
             # pragma: no cover - optional dependency handling
             try:
-                _sp_model_pb2 = spm.sentencepiece_model_pb2  # type: ignore[attr-defined]
+                _sp_model_pb2 = spm.sentencepiece_model_pb2
             except Exception:  # pragma: no cover - dependency still missing
                 logger.warning("Exception occurred", exc_info=True)
             else:

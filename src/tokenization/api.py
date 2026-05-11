@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import warnings as _warnings
 
-
 _warnings.warn(
     "src.tokenization.api is legacy; use codex_ml.tokenization.* modules.",
     DeprecationWarning,

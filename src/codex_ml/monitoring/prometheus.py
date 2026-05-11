@@ -18,8 +18,6 @@ Author: Codex Team
 # BEGIN: CODEX_PROMETHEUS
 from __future__ import annotations
 
-
-
 import json  # noqa: E402
 import sys  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402

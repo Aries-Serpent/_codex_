@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 from datetime import UTC, datetime  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 

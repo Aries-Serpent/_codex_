@@ -17,10 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
 # BEGIN: CODEX_IFACE_RL
-
-
 import json  # noqa: E402
 from abc import ABC, abstractmethod  # noqa: E402
 from collections.abc import Mapping, MutableMapping, Sequence  # noqa: E402

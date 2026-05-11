@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cover - exercised in import-only test environm
         def savez_compressed(*_args, **_kwargs):
             raise ImportError("numpy is required for codex.rag.embeddings cache writing")
 
-    np = _NumpyFallback()  # type: ignore[assignment]
+    np = _NumpyFallback()
 
 logger = logging.getLogger(__name__)
 

@@ -17,8 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
 import json  # noqa: E402
 import os  # noqa: E402
 import uuid  # noqa: E402

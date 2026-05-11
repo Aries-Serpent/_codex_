@@ -7,7 +7,6 @@ from contextlib import contextmanager
 from typing import Any, Optional
 
 
-
 @contextmanager
 def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator[None]:
     """Enter a torch autocast context when available and enabled.

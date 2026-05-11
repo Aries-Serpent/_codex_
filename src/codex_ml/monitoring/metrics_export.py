@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 try:  # Optional dependency for Prometheus integration
     from prometheus_client import REGISTRY, CollectorRegistry, generate_latest
 

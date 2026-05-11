@@ -396,7 +396,8 @@ class TestPhase2_EdgeCases_Conditionals:
         def _raises_error():
             raise ValueError("Should not be called")
 
-        result = False and _raises_error()
+        lhs = bool([])
+        result = lhs and _raises_error()
         assert result is False
 
     def test_ternary_operator(self):

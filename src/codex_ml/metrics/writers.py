@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 import csv  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402

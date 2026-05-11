@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cover - exercised in readiness smoke tests
     class _NumpyFallback:
         ndarray = object
 
-    np = _NumpyFallback()  # type: ignore[assignment]
+    np = _NumpyFallback()
 
 logger = logging.getLogger(__name__)
 

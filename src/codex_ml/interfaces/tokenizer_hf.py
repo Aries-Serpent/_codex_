@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 import warnings  # noqa: E402
 from typing import Any  # noqa: E402
 

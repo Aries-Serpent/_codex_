@@ -17,9 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-
-
-
 import hashlib  # noqa: E402
 import json  # noqa: E402
 from collections.abc import Iterable, Iterator, Sequence  # noqa: E402
