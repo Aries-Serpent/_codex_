@@ -379,6 +379,7 @@ class TestSanitizerEdgeCases:
 
         assert result["flags"]["pii"]
         assert result["flags"]["secrets"]
+        assert "sk-live-abc123def456" not in result["text"]
 
     def test_very_long_input(self):
         """Test handling of very long input."""
