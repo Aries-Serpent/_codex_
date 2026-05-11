@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S938-dependabot-buildx-ci-heal) — 2026-05-11
+- Investigated and confirmed resolution of Pattern 30 (`sync_tracked_files`)
+  stale failure in PR Auto-Fix Check run `25670300379` on PR #4399.
+- Universal baseline sweep commit `657d9b8` restored CODEX_MANIFEST /
+  CHANGELOG / accountability consistency after dependabot's `docker/setup-buildx-action`
+  bump from `3.12.0` to `4.0.0`.
+
 ### Fixed (auto-update — PR #4399)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4399 (SHA `91330f42`) at 2026-05-11T12:33Z [auto-generated]
 
