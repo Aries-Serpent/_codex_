@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-04-27T01:03:33.459964+00:00",
+    "scan_time": "2026-05-11T01:11:10.741760+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -17,16 +17,16 @@
     "by_category": {
       "unknown": 2
     },
-    "total_size_mb": 4.45
+    "total_size_mb": 3.14
   },
   "candidates": [
     {
-      "path": ".secrets.baseline",
+      "path": "uv.lock",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 3.12,
+      "size_mb": 1.08,
       "reasons": [
-        "large_file_3.12mb"
+        "large_file_1.08mb"
       ],
       "recommendation": "review_manually"
     },
@@ -34,9 +34,9 @@
       "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 1.33,
+      "size_mb": 2.06,
       "reasons": [
-        "large_file_1.33mb"
+        "large_file_2.06mb"
       ],
       "recommendation": "review_manually"
     }
