@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S938-dependabot-sync-tracked) — 2026-05-11
+- Ran `sync_tracked_files.py --fix` on branch `dependabot/pip/pydantic-settings-2.14.1`
+  to resolve stale `.secrets.baseline` entries (CODEX_MANIFEST and agent_context
+  hash lines updated) — unblocking Pre-Merge Validation (Pattern 30 → 100/100).
+
 ### Fixed (auto-update — PR #4401)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4401 (SHA `5e84bfbf`) at 2026-05-11T12:42Z [auto-generated]
 
