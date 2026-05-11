@@ -11,7 +11,7 @@ import random as _random
 import warnings as _warnings
 from typing import Any
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 
 _warnings.warn(
     "src.utils.checkpointing is legacy; use codex_ml.utils.checkpointing for new code.",

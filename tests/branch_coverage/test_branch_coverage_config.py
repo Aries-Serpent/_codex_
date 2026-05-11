@@ -287,8 +287,8 @@ class TestConfigCachingBranches:
     def test_config_cache_disabled_branch(self) -> None:
         """Test cache disabled branch."""
         cache_enabled = False
-        file_modified = False
-        action = "invalidate" if cache_enabled and file_modified else "use_cache"
+        _file_modified = False
+        action = "invalidate" if cache_enabled and _file_modified else "use_cache"
         assert action == "use_cache"
 
 
@@ -478,8 +478,8 @@ class TestConfigSchemaBranches:
     def test_schema_strict_mode_disabled_branch(self) -> None:
         """Test schema strict mode disabled branch."""
         strict = False
-        unknown_fields = ["extra_field"]
-        action = "reject" if strict and len(unknown_fields) > 0 else "accept"
+        _unknown_fields = ["extra_field"]
+        action = "reject" if strict and len(_unknown_fields) > 0 else "accept"
         assert action == "accept"
 
     def test_schema_no_unknown_fields_branch(self) -> None:

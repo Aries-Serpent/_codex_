@@ -57,7 +57,7 @@ def fix_datetime_file(filepath: Path) -> bool:
                     # timezone is accessed via datetime.timezone or _dt.timezone
                     # No additional import needed
                     if 'import datetime' in content:
-                        has_timezone = True
+                        _has_timezone = True
 
         if content != original:
             filepath.write_text(content)

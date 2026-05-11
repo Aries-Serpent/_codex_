@@ -56,7 +56,7 @@ except Exception as exc:  # pragma: no cover - psutil missing
     psutil = None
 
 # Alias for test compatibility
-_PSUTIL = psutil
+_PSUTIL = psutil  # noqa: F841
 
 
 try:  # pragma: no cover - optional dependency

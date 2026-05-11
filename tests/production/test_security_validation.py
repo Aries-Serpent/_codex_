@@ -333,7 +333,7 @@ def test_input_sanitization_json_injection():
     """Test prevention of JSON injection attacks."""
     import json
 
-    def safe_json_value(value):
+    def _safe_json_value(value):
         # Serialize and deserialize to ensure proper escaping
         return json.loads(json.dumps(value))
 

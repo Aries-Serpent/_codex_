@@ -10,7 +10,7 @@ import logging
 import warnings as _warnings
 from pathlib import Path
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 
 _warnings.warn(
     "src.tokenization.sentencepiece_adapter is legacy; use "

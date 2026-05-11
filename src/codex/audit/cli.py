@@ -48,7 +48,7 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
     # Walk up to find the repo root (marker: pyproject.toml or .git)
     for parent in repo_root.parents:
         if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
-            repo_root = parent
+            _repo_root = parent
             break
     else:
         repo_root = Path(__file__).resolve().parents[4]

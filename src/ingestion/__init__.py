@@ -60,7 +60,7 @@ try:
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     _deterministic_shuffle = None  # type: ignore[assignment]
-    _utils_read_text_file = None  # type: ignore[assignment]
+    _utils_read_text_file = None  # type: ignore[assignment]  # noqa: F841
 
 __all__ = [
     "Ingestor",

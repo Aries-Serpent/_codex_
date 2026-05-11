@@ -331,4 +331,4 @@ class _InitModule:  # pragma: no cover - nn.init stub
         return tensor
 
 
-init = _InitModule()
+init = _InitModule()  # noqa: F841

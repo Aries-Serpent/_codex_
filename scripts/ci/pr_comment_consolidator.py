@@ -69,7 +69,7 @@ except Exception:
 
 # ── sentinel embedded in every dashboard comment ─────────────────────────────
 _MARKER = "<!-- PR_STATUS_DASHBOARD_v1 -->"
-_SEPARATOR = "\n---\n"
+_SEPARATOR = "\n---\n"  # noqa: F841
 
 # Status icons
 _ICONS = {

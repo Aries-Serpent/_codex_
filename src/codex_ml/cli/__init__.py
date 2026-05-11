@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 
 
 import argparse
@@ -367,7 +367,7 @@ if __name__ == "__main__":  # pragma: no cover
 try:
     from .codex_cli import app as infer  # type: ignore[attr-defined]
 except Exception:  # pragma: no cover - optional CLI wiring
-    infer = cli
+    infer = cli  # noqa: F841
 
 
 main = package_main

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 import os  # noqa: E402
 from collections.abc import Mapping  # noqa: E402
 from typing import Any  # noqa: E402

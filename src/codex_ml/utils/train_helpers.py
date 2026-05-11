@@ -7,7 +7,7 @@ from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 
 
 @contextmanager

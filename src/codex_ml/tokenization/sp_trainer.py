@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 
 import shutil  # noqa: E402
 from collections.abc import Iterable, Sequence  # noqa: E402

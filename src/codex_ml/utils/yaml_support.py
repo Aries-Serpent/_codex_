@@ -21,7 +21,7 @@ import logging
 from types import ModuleType
 from typing import IO, Any, Optional
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 
 _PY_YAML_INSTALL_HINT = 'pip install "PyYAML>=6.0"'
 

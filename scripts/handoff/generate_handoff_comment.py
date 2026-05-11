@@ -96,7 +96,7 @@ def generate_copilot_to_codex_comment(
         for item in validation_items:
             validation_str += f"- [ ] {item}\n"
     else:
-        validation_str = "- [ ] Review deliverables"
+        _validation_str = "- [ ] Review deliverables"
 
     # Build variables dict
     variables = {

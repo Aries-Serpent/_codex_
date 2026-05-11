@@ -15,7 +15,7 @@ from typing import Any
 
 from codex_ml.utils.optional import optional_dependency_error
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # noqa: F841
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
 except Exception:  # pragma: no cover - fall back to a stub

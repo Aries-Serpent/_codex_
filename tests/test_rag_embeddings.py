@@ -42,7 +42,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
-_torch_available = importlib.util.find_spec("torch") is not None
+_torch_available = importlib.util.find_spec("torch") is not None  # noqa: F841
 try:
     import torch as _torch
     _cuda_available = _torch.cuda.is_available()
@@ -223,7 +223,7 @@ class TestOpenAIEmbeddingProvider:
             assert provider.client is not None
 
             # Trigger destructor via deletion
-            provider = None  # Release reference for GC
+            _provider = None  # Release reference for GC
 
 
 class TestCachedEmbeddingProvider:

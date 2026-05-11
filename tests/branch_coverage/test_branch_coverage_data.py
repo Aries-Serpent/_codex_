@@ -261,8 +261,8 @@ class TestDataCacheBranches:
     def test_cache_miss_no_cache_branch(self) -> None:
         """Test cache miss (no cache exists) branch."""
         cache_exists = False
-        cache_valid = True
-        source = "cache" if cache_exists and cache_valid else "disk"
+        _cache_valid = True
+        source = "cache" if cache_exists and _cache_valid else "disk"
         assert source == "disk"
 
     def test_cache_miss_invalid_branch(self) -> None:

@@ -46,7 +46,7 @@ def test_cli_override_passthrough(monkeypatch, tmp_path):
 def test_cli_trainer_lifecycle(monkeypatch):
     """Test CLI creates and closes trainer properly."""
     # Mock trainer to verify lifecycle
-    class MockTrainer:
+    class _MockTrainer:
         def __init__(self, *args, **kwargs):
             self.trained = False
             self.closed = False

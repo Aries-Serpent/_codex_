@@ -9,7 +9,7 @@ from typing import Optional
 from urllib.parse import urlparse
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_LITERAL_LOCAL_URI = "file:./artifacts/mlruns"
+DEFAULT_LITERAL_LOCAL_URI = "file:./artifacts/mlruns"  # noqa: F841
 
 __all__ = [
     "GuardDecision",

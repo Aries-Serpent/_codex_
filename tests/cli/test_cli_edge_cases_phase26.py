@@ -348,7 +348,7 @@ class TestCLIEdgeCases:
             process = subprocess.Popen(['long_running_cmd'])
 
             # Simulate signal during subprocess
-            def cleanup_subprocess(signum, frame):
+            def _cleanup_subprocess(signum, frame):
                 if process.poll() is None:
                     process.terminate()
 

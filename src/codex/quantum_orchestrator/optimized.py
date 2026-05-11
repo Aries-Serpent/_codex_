@@ -210,7 +210,7 @@ class VectorizedEvolution:
         momentum_mag = np.linalg.norm(momentum_dir, axis=1)  # (N,)
 
         # Avoid division by zero
-        momentum_mag = np.where(momentum_mag > 1e-10, momentum_mag, 1.0)
+        _momentum_mag = np.where(momentum_mag > 1e-10, momentum_mag, 1.0)
 
         # Helicity (simplified as spin-z for now)
         return spin_z * np.sign(momentum_dir[:, 2])  # Use z-component sign
