@@ -9,7 +9,7 @@ Test Coverage Target: 20+ tests for ~80% coverage of sanitizers module.
 Created: 2026-01-18 (Phase 14.2)
 """
 
-from __future__ import annotations
+from __future__ import annotations # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 import re
 
