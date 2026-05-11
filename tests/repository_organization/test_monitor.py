@@ -6,6 +6,7 @@ and action log integration.
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 import tempfile
 from pathlib import Path
@@ -157,10 +158,17 @@ class TestMonitorOffloadCandidates:
 
     def test_scan_repository_excludes_lock_and_docs_from_large_file_candidates(self):
         """Large-file rule should exclude lock files and docs paths."""
-        import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-
-        from monitor_offload_candidates import scan_repository
+        module_path = (
+            Path(__file__).parent.parent.parent
+            / "scripts"
+            / "repository_organization"
+            / "monitor_offload_candidates.py"
+        )
+        spec = importlib.util.spec_from_file_location("monitor_offload_candidates", module_path)
+        assert spec and spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        scan_repository = module.scan_repository
 
         with tempfile.TemporaryDirectory() as tmpdir:
             repo_root = Path(tmpdir)

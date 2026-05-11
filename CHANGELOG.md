@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S928-validation-review-followup) — 2026-05-11
+- `scripts/repository_organization/monitor_offload_candidates.py`: expanded exclusion-rule
+  docstring to document rationale for lock/docs exclusions.
+- `tests/repository_organization/test_monitor.py`: switched new lock/docs exclusion test to
+  `importlib`-based module loading (no dynamic `sys.path` mutation).
+
 ### Fixed (S927-pr4390-review-thread-4260232504) — 2026-05-11
 - `scripts/repository_organization/monitor_offload_candidates.py`:
   - excluded lock files (`*.lock`, including `uv.lock`) from large-file offload heuristic,
