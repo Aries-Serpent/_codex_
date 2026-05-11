@@ -35,9 +35,12 @@ def test_run_eval_cli(tmp_path):
     src_path = str(repo_root / "src")
     subprocess_env = {k: v for k, v in os.environ.items()
                       if k not in ("HF_REVISION", "CODEX_HF_REVISION", "HF_MODEL_REVISION")}
-    subprocess_env["PYTHONPATH"] = src_path
+    existing_pythonpath = subprocess_env.get("PYTHONPATH", "")
+    subprocess_env["PYTHONPATH"] = (
+        f"{src_path}:{existing_pythonpath}" if existing_pythonpath else src_path
+    )
     result = subprocess.run(
-        cmd, capture_output=True, text=True, cwd=tmp_path, env=subprocess_env
+        cmd, capture_output=True, text=True, cwd=repo_root, env=subprocess_env
     )
     # Exit 2 = HFModelUnavailableError (cache miss + network unreachable) — skip
     if result.returncode == 2:

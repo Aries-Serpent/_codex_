@@ -14,10 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved monitoring fallback observability by logging psutil import failures at
   warning level (with structured `dependency=psutil` metadata), matching
   `tests/test_monitoring.py::test_structured_warning_on_psutil_import_failure`.
-- Hardened `tests/test_run_eval_cli.py` subprocess isolation by running from the
-  temp test directory and constraining `PYTHONPATH` to `src/`, preventing the
-  repository `datasets/` data directory from shadowing the optional `datasets`
-  dependency import in subprocess runs.
 - Added graceful skip handling in `tests/test_run_eval_cli.py` when the
   subprocess reports missing optional evaluation dependencies
   (`torch/datasets/transformers`) so `pytest -x` no longer hard-fails in

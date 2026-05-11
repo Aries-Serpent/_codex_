@@ -15,9 +15,6 @@
 - Fixed the surfaced failing test by promoting psutil import-miss logging in
   `src/codex_ml/monitoring/system_metrics.py` from debug to warning so structured
   warning assertions remain valid.
-- Fixed the next `pytest -x` failure in `tests/test_run_eval_cli.py` by isolating
-  subprocess execution (`cwd=tmp_path`, `PYTHONPATH=src`) so local `datasets/`
-  data directories cannot shadow the optional `datasets` package import.
 - Added skip guard in `tests/test_run_eval_cli.py` for subprocess-side
   `EvaluationDependencyError` so missing optional eval dependencies do not block
   `pytest -x` in lean CI/local environments.
