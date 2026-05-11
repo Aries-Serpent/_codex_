@@ -34137,3 +34137,24 @@ and the CI gate requirement.
 - Remaining open review-thread count should drop by 10 once GitHub re-evaluates the updated lines.
 - Test cleanup is behavior-preserving except for the short-circuit test, which now validates the intended branch semantics directly.
 - No active in-file merge markers remain; only branch-vs-main merge reconciliation remains.
+
+---
+
+## SESSION SUMMARY — 2026-05-11T16:10Z S945 (merge origin/main and resolve dirty merge state)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] PR #4395 still reported `mergeable_state=dirty` after line-level review fixes ✅
+- [x] Repository unshallowed before merge/fetch operations ✅
+- [x] `origin/main` fetched explicitly ✅
+- [x] Merge conflict resolved and merge state preserved to commit immediately ✅
+
+### Work Completed
+1. **Merged `origin/main` into the PR branch** to clear the outstanding branch-vs-base conflict condition reported by GitHub.
+2. **Resolved the only merge conflict** in `CODEX_MANIFEST.json` by taking the `origin/main` values for:
+   - `generated_at`
+   - `integrity_sha256`
+3. **Post-merge hygiene** — re-checked for active conflict markers outside archived files; none remain.
+
+### Impact
+- PR branch should no longer contain unresolved merge-conflict files.
+- All previously listed unresolved review comments have now been addressed in code, and branch/base reconciliation is complete pending GitHub recomputation.

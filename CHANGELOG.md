@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S945)
+- Merged `origin/main` into PR branch to clear GitHub’s dirty merge state and resolved the only content conflict in `CODEX_MANIFEST.json` by taking the `origin/main` manifest metadata tuple (`generated_at`, `integrity_sha256`).
+- Verified the merge introduced no active conflict markers in repository files outside archived session artifacts.
+
 ### Fixed (S944)
 - Addressed the remaining 10 unresolved review comments: removed unused `_MemoryInterface`, `_torch_available`, top-level optional `numpy` import, and other dead helpers/locals; converted the placeholder trainer lifecycle test to an explicit `pytest.skip(...)`; used `_safe_json_value` in the JSON-injection test; and updated the short-circuit coverage test to actually exercise short-circuit semantics.
 - Verified there are no active conflict markers in non-archive files; PR still reports `mergeable_state=dirty`, so branch/base conflict resolution against `main` is the next step.

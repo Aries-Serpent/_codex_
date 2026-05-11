@@ -834,7 +834,7 @@ pyasn1==0.6.3
     #   rsa
 pyasn1-modules==0.4.2
     # via google-auth
-pybind11==3.0.2
+pybind11==3.0.4
     # via lm-eval
 pycparser==3.0
     # via cffi
