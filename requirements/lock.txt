@@ -748,7 +748,7 @@ pathspec==1.0.3
     #   scmrepo
 pathvalidate==3.3.1
     # via pytablewriter
-patsy==1.0.1
+patsy==1.0.2
     # via statsmodels
 peft==0.19.1
     # via
