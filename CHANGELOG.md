@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1046-pr4405-self-healing-followup) — 2026-05-11
+- `codex.retrieval` now exports retrieval helpers lazily and no longer fails
+  import-time smoke tests just because optional NumPy-backed vector-store
+  modules are unavailable.
+- `BlueRedTeamSimulator` now initializes safely in NumPy-less environments and
+  defers simulation-only errors until simulation APIs are actually used.
+- Restored the secure subprocess wrapper's tested `shell=True is not supported`
+  error message contract.
+- `codex.rag.embeddings` now imports cleanly in lightweight environments
+  without NumPy until array-backed embedding operations are requested.
+
 ### Fixed (auto-update — PR #4405)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4405 (SHA `9ea7f08e`) at 2026-05-11T12:45Z [auto-generated]
 
