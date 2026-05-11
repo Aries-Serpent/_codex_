@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S929-code-review-polish) — 2026-05-11
+- Polished follow-up review nits:
+  - shortened repository-monitor test name for readability,
+  - simplified malformed-log pluralization in `rate_limit_status.py`,
+  - normalized wording to `e.g.` in monitor exclusion docstring.
+
 ### Fixed (S928-validation-review-followup) — 2026-05-11
 - `scripts/repository_organization/monitor_offload_candidates.py`: expanded exclusion-rule
   docstring to document rationale for lock/docs exclusions.

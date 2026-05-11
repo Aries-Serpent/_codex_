@@ -179,9 +179,9 @@ def get_rate_limit_log_history(tail: int = 20) -> list[dict]:
     except Exception as exc:
         print(f"⚠️ Could not read rate-limit log history: {exc}", file=sys.stderr)
     if malformed_count:
+        entries_word = "entry" if malformed_count == 1 else "entries"
         print(
-            f"⚠️ Skipped {malformed_count} malformed rate-limit log "
-            f"{'entry' if malformed_count == 1 else 'entries'}.",
+            f"⚠️ Skipped {malformed_count} malformed rate-limit log {entries_word}.",
             file=sys.stderr,
         )
     return entries

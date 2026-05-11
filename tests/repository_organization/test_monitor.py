@@ -156,7 +156,7 @@ class TestMonitorOffloadCandidates:
         recommendation = _get_recommendation(category, age, size)
         assert recommendation == expected, f"Recommendation mismatch for {category}/{age}d/{size}MB"
 
-    def test_scan_repository_excludes_lock_and_docs_from_large_file_candidates(self):
+    def test_scan_excludes_lock_and_docs_files(self):
         """Large-file rule should exclude lock files and docs paths."""
         module_path = (
             Path(__file__).parent.parent.parent

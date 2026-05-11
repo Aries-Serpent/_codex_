@@ -83,7 +83,7 @@ LOCK_FILE_NAMES = {
 def _exclude_from_large_file_check(rel_path: Path) -> bool:
     """Exclude essential lock/docs files from large-file offload heuristics.
 
-    Lock files (for example `uv.lock`) are required for deterministic dependency
+    Lock files (e.g. `uv.lock`) are required for deterministic dependency
     resolution, and documentation under `docs/` is intentionally maintained in-repo.
     These should never be suggested as offload candidates purely due to file size.
     """
