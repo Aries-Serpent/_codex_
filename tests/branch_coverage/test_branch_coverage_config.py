@@ -287,8 +287,7 @@ class TestConfigCachingBranches:
     def test_config_cache_disabled_branch(self) -> None:
         """Test cache disabled branch."""
         cache_enabled = False
-        _file_modified = False
-        action = "invalidate" if cache_enabled and _file_modified else "use_cache"
+        action = "invalidate" if cache_enabled and False else "use_cache"
         assert action == "use_cache"
 
 

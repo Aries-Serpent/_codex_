@@ -45,7 +45,7 @@ try:  # pragma: no cover - optional dependency
     else:  # pragma: no cover - controlled via feature flag
         psutil = None
 except Exception as exc:  # pragma: no cover - psutil missing
-    logger.debug(
+    logger.warning(
         "psutil import failed; falling back to minimal sampler",
         extra={
             "event": "system_metrics.dependency_missing",
@@ -54,9 +54,6 @@ except Exception as exc:  # pragma: no cover - psutil missing
         },
     )
     psutil = None
-
-# Alias for test compatibility
-_PSUTIL = psutil  # noqa: F841
 
 
 try:  # pragma: no cover - optional dependency

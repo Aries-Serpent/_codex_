@@ -45,6 +45,8 @@ def test_run_eval_cli(tmp_path):
     # Exit 2 = HFModelUnavailableError (cache miss + network unreachable) — skip
     if result.returncode == 2:
         pytest.skip(f"Model unavailable (cache miss + network unreachable): {result.stderr.strip()}")
+    if "Evaluation requires optional packages:" in result.stderr:
+        pytest.skip(f"Optional eval dependencies unavailable: {result.stderr.strip()}")
     if result.returncode != 0:
         raise AssertionError(
             f"run_eval subprocess failed (exit {result.returncode}):\n"

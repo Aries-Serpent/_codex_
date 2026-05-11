@@ -341,7 +341,7 @@ if __name__ == "__main__":
     for _i in range(100):
         options = ["fix import", "skip test", "refactor"]
         context = {"similar_fixes": ["fix import", "fix import"]}
-        _decision = engine.make_decision(options, context)
+        engine.make_decision(options, context)
 
     # Display metrics
     metrics = engine.get_metrics()

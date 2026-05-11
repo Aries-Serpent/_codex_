@@ -328,7 +328,7 @@ class ServiceIntegrationTester:
             if payload:
                 payload_str = json.dumps(payload)
                 scrubbed = self.scrub_pii(payload_str, mode="token")
-                _payload = json.loads(scrubbed)
+                payload = json.loads(scrubbed)
 
             # Mock response simulation
             # In real implementation, would be: response = requests.request(endpoint.method.value, full_url, ...)

@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S941)
+- Removed 34 unused `logger = logging.getLogger(__name__)` module-level assignments across `src/`, `scripts/`, and `tests/` (CodeQL `py/unused-global-variable`)
+- Fixed logic bug in `src/codex/audit/cli.py`: `_repo_root` never updated `repo_root`; repo root is now initialized before pip-audit check and updated inside the walk loop
+- Fixed `scripts/remediation/fix_datetime_deprecation.py`: `_has_timezone = True` → `has_timezone = True` (dead assignment, flag never propagated)
+- Fixed `scripts/handoff/generate_handoff_comment.py`: `_validation_str` → `validation_str` (fallback default was silently dropped)
+- Fixed `scripts/cognitive/healing_loop.py`: removed unused `_code, _output` tuple unpacking from `run_cmd()` call
+- Fixed `src/codex/quantum_orchestrator/optimized.py`: removed dead `momentum_mag`/`_momentum_mag` computation (unreferenced in return)
+- Fixed `tests/branch_coverage/test_branch_coverage_config.py`: removed unused `_file_modified` local variable
+- Fixed `tests/branch_coverage/test_branch_coverage_data.py`: removed unused `_cache_valid` local variable
+- Fixed `tests/integration/test_phase14_edge_cases_coverage.py`: removed unreachable `if learning_rate < 0` guard (constant condition)
+- Fixed `tests/test_rag_embeddings.py`: `_provider = None` → `del provider` so destructor is actually triggered
+- Fixed `src/codex_ml/tokenization/compat.py`: removed erroneous `# noqa: F841` from `_warned = True` (variable IS read)
+- Fixed `src/codex_ml/tracking/mlflow_guard.py`: removed erroneous `# noqa: F841` from `DEFAULT_LITERAL_LOCAL_URI` (exported and used)
+- Fixed `src/codex_ml/monitoring/system_metrics.py`: removed unused `_PSUTIL = psutil` alias
+- Fixed `src/codex/retrieval/stores/__init__.py`: removed unused `_FAISS_AVAILABLE` assignments
+- Fixed `scripts/ci/pr_comment_consolidator.py`: removed unused `_SEPARATOR` module-level constant
+- Fixed `scripts/security/playwright_scraper.py`: renamed `_ALERT_ROW_SELECTOR` → `ALERT_ROW_SELECTOR` (exported)
+- Fixed `torch/nn/__init__.py`: replaced `init = _InitModule()` with direct `_InitModule()` call (side-effect only)
+- Fixed `scripts/cognitive/qec_complete.py`: removed unused `_decision` assignment in loop body
+- Fixed `.github/agents/service-integration-tester/src/agent.py`: PII-scrubbed payload now assigned back to `payload` variable
+- Cherry-picked 12 open Dependabot PRs into this branch:
+  - #4409: patsy 1.0.1 → 1.0.2
+  - #4408: wheel >=0.43 → >=0.47.0
+  - #4407: jsonschema >=4.0/>=4.18 → >=4.26.0 (pyproject.toml, requirements*.txt)
+  - #4405: google-auth 2.49.1 → 2.52.0
+  - #4404: mkdocs-material >=9.5 → >=9.7.6; fixed year-hardcoded snapshot_id assertion
+  - #4403: librosa >=0.9.0 → >=0.11.0 (audio_cleaner_v1)
+  - #4402: nvidia-cusparselt-cu12 0.7.1 → 0.8.1
+  - #4401: pydantic-settings >=2.2 → >=2.14.1 (pyproject.toml, requirements/base.txt, lock.txt)
+  - #4400: mypy >=1.20.2,<2.0.0 → >=2.0.0,<3.0.0; applied omegaconf type-ignore cleanup, psutil debug→warning, mlflow=None guard, test robustness fixes
+  - #4399: docker/setup-buildx-action SHA bump (v3.12.0 → v4.0.0)
+  - #4398: docker/build-push-action SHA bump (v6.19.2 → v7.1.0)
+  - #4397: docker/login-action SHA bump (v3.7.0 → v4.1.0)
+
+
 ### Fixed (S940)
 - `cli/setup.py`: Added setuptools command dispatch + `cli/setup.cfg` so PipReport can analyse the package — fixes the `Automatic Dependency Submission (Python)` workflow's `submit-pypi` job failure caused by pip failing to install the `cli/` pseudo-package
 

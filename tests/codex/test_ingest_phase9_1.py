@@ -285,7 +285,7 @@ class TestIngestSingleFile:
         artifacts_dir = tmp_path / "artifacts"
         snapshot = ingest(source_file, artifacts_dir=artifacts_dir)
 
-        assert snapshot.snapshot_id.startswith("2025")
+        assert snapshot.snapshot_id.startswith(snapshot.created_at.strftime("%Y%m%d"))
         assert snapshot.source_path == str(source_file)
         assert snapshot.content_hash
         assert snapshot.snapshot_dir.exists()

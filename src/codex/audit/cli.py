@@ -44,14 +44,12 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
         result["summary"]["pip_audit"] = {"vulnerable_packages": len(vulns)}
     else:
         # Fallback: scan requirements*.txt for packages
-        repo_root = Path(__file__).resolve()
-    # Walk up to find the repo root (marker: pyproject.toml or .git)
-    for parent in repo_root.parents:
-        if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
-            _repo_root = parent
-            break
-    else:
+        # Walk up from __file__ to find the repo root (marker: pyproject.toml or .git)
         repo_root = Path(__file__).resolve().parents[4]
+        for parent in Path(__file__).resolve().parents:
+            if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
+                repo_root = parent
+                break
         req_files = list(repo_root.glob("requirements*.txt"))
         packages = []
         for rf in req_files:

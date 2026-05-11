@@ -122,7 +122,7 @@ try:
     _BRAIN_BASE_AVAILABLE = True
 except ImportError:
     _Planner = None  # type: ignore[assignment,misc]
-    _MemoryInterface = None  # type: ignore[assignment,misc]  # noqa: F841
+    _MemoryInterface = None  # type: ignore[assignment,misc]
     _BRAIN_BASE_AVAILABLE = False
 
 # ── Logging ───────────────────────────────────────────────────────────────────

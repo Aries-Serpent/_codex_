@@ -4478,6 +4478,30 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 **Session:** auto-20260430T0318-run86956 | **Run:** 25145279779 | **Date:** 2026-04-30
 
 Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
+## Session S941 — 2026-05-11
+
+**Objective:** Address all open code quality review comments, unanswered PR comments, and cherry-pick all 12 open Dependabot PRs into the active branch.
+
+**Work completed:**
+- Removed 34 unused module-level logger assignments across src/scripts/tests (CodeQL `py/unused-global-variable`)
+- Fixed 16 unresolved github-code-quality + copilot reviewer comments:
+  - `src/codex/audit/cli.py`: fixed logic bug — `_repo_root` never updated `repo_root`; repo root walk now inside else block
+  - `scripts/remediation/fix_datetime_deprecation.py`: `_has_timezone` → `has_timezone`
+  - `scripts/handoff/generate_handoff_comment.py`: `_validation_str` → `validation_str`
+  - `scripts/cognitive/healing_loop.py`: removed unused `_code, _output` tuple unpacking
+  - `src/codex/quantum_orchestrator/optimized.py`: removed dead `momentum_mag`/`_momentum_mag`
+  - `tests/branch_coverage/test_branch_coverage_config.py`: removed `_file_modified` unused local
+  - `tests/branch_coverage/test_branch_coverage_data.py`: removed `_cache_valid` unused local
+  - `tests/integration/test_phase14_edge_cases_coverage.py`: removed unreachable if-guard
+  - `tests/test_rag_embeddings.py`: `_provider = None` → `del provider`
+  - Plus 8 more noqa/unused-variable fixes across monitoring, tokenization, retrieval, cli files
+- Cherry-picked all 12 open Dependabot PRs (#4397–#4409) into this branch
+
+**Patterns resolved:** py/unused-global-variable, py/unused-local-variable, py/unreachable-statement, logic bug in repo root discovery
+
+**Dependabot PRs migrated:** #4397, #4398, #4399, #4400, #4401, #4402, #4403, #4404, #4405, #4407, #4408, #4409
+
+
 ## Session S940 — 2026-05-11
 
 ### Objective

@@ -14,7 +14,7 @@ detect-secrets
 pre-commit==4.5.1
 nox==2026.4.10
 yamllint
-jsonschema>=4.21
+jsonschema>=4.26.0
 shellcheck-py
 pip-audit
 cyclonedx-bom>=4.0.0

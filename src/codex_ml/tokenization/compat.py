@@ -31,7 +31,7 @@ def load_tokenizer(*args: Any, **kwargs: Any) -> Any:
             DeprecationWarning,
             stacklevel=2,
         )
-        _warned = True  # noqa: F841
+        _warned = True
     return _get_api().load_tokenizer(*args, **kwargs)
 
 
