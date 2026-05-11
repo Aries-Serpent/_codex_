@@ -5,16 +5,13 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import MagicMock
 
 # Ensure scripts/ci is on the path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts" / "ci"))
 
-import rate_limit_handler as rlh
 import push_conflict_resolver as pcr
-
+import rate_limit_handler as rlh
 
 # ── rate_limit_handler tests ────────────────────────────────────────────────────
 

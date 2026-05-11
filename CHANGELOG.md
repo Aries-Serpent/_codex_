@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S924-auto-fix-cleanup) — 2026-05-11
+- Removed unused imports from `tests/ci/test_rate_limit_handler.py` (Pattern 1)
+- Sorted imports in `tests/ci/test_rate_limit_handler.py` (Pattern 9)
+
 ### Added (S923-rate-limit-system) — 2026-05-11
 - `scripts/ci/rate_limit_cooldown.py` — Cooldown timer + PR pre-warning + repo variable sync.
   Sub-commands: `start` (block if cooldown active), `end`, `hit429` (set timer, post PR comment),
