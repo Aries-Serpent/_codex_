@@ -1,21 +1,32 @@
-# Session Context — 2026-05-11T13:15:32Z
-**Branch:** `dependabot/pip/pydantic-settings-2.14.1`  **PR:** #4409  **Access:** `graphql, codeql_local`
+# Session Context — 2026-05-11T13:31:02Z
+**Branch:** `dependabot/pip/pydantic-settings-2.14.1`  **PR:** #4409  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `graphql → codeql_local`
-- REST remaining: `0` (❌)
-- GraphQL remaining: `4819` (✅)
-- gh CLI: ❌
+- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
+- REST remaining: `4752` (✅)
+- GraphQL remaining: `4790` (✅)
+- gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4409 — deps(deps): bump patsy from 1.0.1 to 1.0.2
-State: `OPEN`  Draft: `False`  Branch: `dependabot/pip/patsy-1.0.2` → `main`
+State: `open`  Draft: `False`  Branch: `dependabot/pip/patsy-1.0.2` → `main`
+
+## 🚨 Recent CI Failures (last 5 runs)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-11)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-11)
+- **Automatic Dependency Submission (Python)** — `failure` on `dependabot/pip/librosa-gte-0.11.0` (2026-05-11)
 
 ## 📝 Recent Commits
+- `a9641fe5` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-11)
+- `1860093d` fix(ci): sync stale .secrets.baseline to unblock Pre-Merge Validation (Pattern 3 — copilot-swe-agent[bot] (2026-05-11)
+- `3c24195a` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-11)
 - `8cd1891c` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-11)
 - `45a54763` chore: Generate follow-up prompt for PR #4401 [skip ci] — github-actions[bot] (2026-05-11)
 - `20d1969e` deps(deps): bump pydantic-settings from 2.13.1 to 2.14.1 — dependabot[bot] (2026-05-11)
 - `c47e4499` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-11)
+- `9af12949` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-11)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
