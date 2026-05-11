@@ -87,8 +87,8 @@ class TestRagPackage:
     def test_rag_package_structure(self):
         """Test that rag package has expected structure."""
         try:
-            import src.rag
-            assert hasattr(src.rag, '__path__')
+            from src import rag as _rag_mod
+            assert hasattr(_rag_mod, '__path__')
         except ImportError:
             pytest.skip("Module not available")
 

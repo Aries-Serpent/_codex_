@@ -32,6 +32,7 @@ def sample_dataframe():
         })
     except ImportError:
         pytest.skip("pandas not available")
+        return None
 
 
 class TestValidationResult:

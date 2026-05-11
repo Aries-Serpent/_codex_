@@ -141,6 +141,7 @@ class TestRemediationAction:
             return RemediationAction
         except ImportError:
             pytest.skip("RemediationAction not available")
+            return None
 
     def test_create_remediation_action(self, RemediationAction):
         """Test creating a remediation action."""
@@ -165,6 +166,7 @@ class TestSelfHealingEngine:
             return SelfHealingEngine
         except ImportError:
             pytest.skip("SelfHealingEngine not available")
+            return None
 
     def test_create_engine(self, SelfHealingEngine):
         """Test creating a self-healing engine."""
@@ -203,6 +205,7 @@ class TestDiagnosticResult:
             return DiagnosticResult
         except ImportError:
             pytest.skip("DiagnosticResult not available")
+            return None
 
     def test_create_diagnostic_result(self, DiagnosticResult):
         """Test creating a diagnostic result."""

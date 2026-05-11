@@ -56,7 +56,7 @@ class Module:  # pragma: no cover - convenience stub
         return self.train(False)
 
     def forward(self, *args: Any, **kwargs: Any) -> Any:  # noqa: ANN401
-        ...
+        pass
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:  # noqa: ANN401
         return self.forward(*args, **kwargs)
@@ -95,19 +95,19 @@ class Module:  # pragma: no cover - convenience stub
         return self
 
     def zero_grad(self, set_to_none: bool = True) -> None:
-        ...
+        pass
 
     def state_dict(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
         return {}
 
     def load_state_dict(self, state_dict: Any, strict: bool = True) -> Any:
-        ...
+        pass
 
     def register_buffer(self, name: str, tensor: Any, persistent: bool = True) -> None:
-        ...
+        pass
 
     def register_parameter(self, name: str, param: Any) -> None:
-        ...
+        pass
 
     def apply(self, fn: Any) -> "Module":
         return self

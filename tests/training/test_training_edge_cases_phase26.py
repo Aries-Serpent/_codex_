@@ -456,7 +456,7 @@ class TestTrainingEdgeCases:
             cuda_tensor = torch.randn(10, 10, device='cuda')
             # Should detect device mismatch
             with pytest.raises(RuntimeError):
-                cpu_tensor + cuda_tensor
+                _ = cpu_tensor + cuda_tensor
 
     def test_training_callback_exception(self):
         """Test training when callback raises exception"""

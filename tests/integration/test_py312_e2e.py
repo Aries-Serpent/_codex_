@@ -52,8 +52,8 @@ class TestPython312Integration:
     def test_codex_ml_imports(self):
         """Test that codex_ml modules can be imported."""
         try:
-            # Try importing core modules
-            import codex_ml
+            # Try importing core modules (availability check only)
+            import codex_ml  # noqa: F401
 
             # These may fail if dependencies aren't installed, so catch gracefully
             optional_imports = []

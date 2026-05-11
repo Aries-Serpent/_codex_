@@ -421,6 +421,7 @@ def main(run_id, log_file, output, config):
     click.echo(f"\nRoot Cause: {report.root_cause['description']}")
     click.echo(f"Confidence: {report.confidence}%")
     click.echo(f"Estimated Fix Time: {report.estimated_fix_time}")
+    return 0
 
 
 if __name__ == '__main__':

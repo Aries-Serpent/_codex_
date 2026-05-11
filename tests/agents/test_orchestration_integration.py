@@ -15,16 +15,13 @@ Tests cover:
 import sys
 from unittest.mock import Mock, patch
 
-if "agents.developer_orchestrator" not in sys.modules:
-    import agents.developer_orchestrator as dev_orch_module
-
-    dev_orch_module.ADVANCED_PHYSICS = False
-
 from agents.developer_orchestrator import (
     AppType,
     DevelopmentPhase,
     PhysicsGuidedDeveloperOrchestrator,
 )
+import sys as _sys_orch
+_sys_orch.modules["agents.developer_orchestrator"].ADVANCED_PHYSICS = False
 
 # ============================================================================
 # ORCHESTRATOR COORDINATION TESTS

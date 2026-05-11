@@ -484,10 +484,9 @@ class TestResolveAcctDiffBase:
         # name avoids a github-code-quality false-positive that would
         # otherwise flag this call against the project wrapper's signature.
         import os
-        from subprocess import run as _stdlib_run
         merged = os.environ.copy()
         merged.update(env or {})
-        return _stdlib_run(  # nosec B603 - args are constants under our control
+        return subprocess.run(  # nosec B603 - args are constants under our control
             ["git", *args], cwd=cwd, capture_output=True, text=True,
             check=True, env=merged,
         ).stdout

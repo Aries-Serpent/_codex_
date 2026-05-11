@@ -18,7 +18,7 @@ class Dataset(abc.ABC, Generic[_T_co]):  # pragma: no cover - convenience stub
         return 0
 
     @abc.abstractmethod
-    def __getitem__(self, index: int) -> Any: ...
+    def __getitem__(self, index: int) -> Any: pass
 
 
 class DataLoader(Iterable[Any], Sized):  # pragma: no cover - convenience stub

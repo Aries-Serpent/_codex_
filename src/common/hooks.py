@@ -120,10 +120,8 @@ class CheckpointHook(BaseHook):
         if model is None or not hasattr(model, "state_dict"):
             return
         try:
-            from torch import save as torch_save
-
             ckpt_path = self.out_dir / f"ckpt_step{step}.pt"
-            torch_save(model.state_dict(), ckpt_path)
+            torch.save(model.state_dict(), ckpt_path)  # type: ignore[union-attr]
             state["checkpoint_dir"] = str(self.out_dir)
         except Exception as exc:  # pragma: no cover - optional
             logger.warning("Checkpoint save failed: %s", exc)

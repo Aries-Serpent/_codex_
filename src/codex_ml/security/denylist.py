@@ -19,9 +19,6 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable, Mapping
-from dataclasses import dataclass
-from pathlib import Path
-from re import Pattern
 from typing import Any
 
 import yaml
@@ -34,7 +31,7 @@ class DenylistViolation(RuntimeError):
 @dataclass
 class DenylistRules:
     sensitive_terms: list[str]
-    redaction_patterns: list[tuple[Pattern[str], str]]
+    redaction_patterns: list[tuple[re.Pattern[str], str]]
     blocked_actions: list[str]
     blocked_prompt_patterns: list[str]
 
@@ -66,7 +63,7 @@ def load_denylist(path: str | Path) -> DenylistRules:
         for pattern in (blocked_patterns_raw if isinstance(blocked_patterns_raw, list) else [])
     ]
 
-    compiled_patterns: list[tuple[Pattern[str], str]] = []
+    compiled_patterns: list[tuple[re.Pattern[str], str]] = []
     redaction_raw = payload.get("redaction_patterns", [])
     if isinstance(redaction_raw, list):
         for item in redaction_raw:

@@ -179,7 +179,7 @@ sensitive_terms:
         assert len(rules.redaction_patterns) > 0
         # Verify patterns are compiled
         for pattern, replacement in rules.redaction_patterns:
-            assert isinstance(pattern, Pattern)
+            assert isinstance(pattern, re.Pattern)
             assert isinstance(replacement, str)
 
 

@@ -6,7 +6,6 @@ allowing for customization and extension without modifying core code.
 """
 
 import re
-from re import Pattern
 
 # Entropy threshold for high-entropy string detection
 ENTROPY_THRESHOLD = 4.5
@@ -86,7 +85,7 @@ class SecretPatterns:
     ]
 
     @classmethod
-    def get_compiled_patterns(cls) -> dict[str, Pattern]:
+    def get_compiled_patterns(cls) -> dict[str, re.Pattern]:
         """Get compiled regex patterns for secret detection."""
         return {
             name: re.compile(pattern)
@@ -94,7 +93,7 @@ class SecretPatterns:
         }
 
     @classmethod
-    def get_compiled_placeholder_patterns(cls) -> list[Pattern]:
+    def get_compiled_placeholder_patterns(cls) -> list[re.Pattern]:
         """Get compiled regex patterns for placeholder detection."""
         return [re.compile(pattern) for pattern in cls.PLACEHOLDER_PATTERNS]
 

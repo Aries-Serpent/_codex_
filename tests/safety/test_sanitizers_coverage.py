@@ -12,7 +12,6 @@ Created: 2026-01-18 (Phase 14.2)
 from __future__ import annotations
 
 import re
-from re import Pattern
 
 import pytest
 
@@ -92,19 +91,19 @@ class TestDefaultPatterns:
         """Test that default secret patterns are defined."""
         assert len(DEFAULT_SECRET_PATTERNS) > 0
         for pattern in DEFAULT_SECRET_PATTERNS:
-            assert isinstance(pattern, Pattern)
+            assert isinstance(pattern, re.Pattern)
 
     def test_pii_patterns_exist(self):
         """Test that default PII patterns are defined."""
         assert len(DEFAULT_PII_PATTERNS) > 0
         for pattern in DEFAULT_PII_PATTERNS:
-            assert isinstance(pattern, Pattern)
+            assert isinstance(pattern, re.Pattern)
 
     def test_jailbreak_patterns_exist(self):
         """Test that default jailbreak patterns are defined."""
         assert len(DEFAULT_JAILBREAK_PATTERNS) > 0
         for pattern in DEFAULT_JAILBREAK_PATTERNS:
-            assert isinstance(pattern, Pattern)
+            assert isinstance(pattern, re.Pattern)
 
     def test_github_token_pattern(self):
         """Test GitHub token pattern detection."""

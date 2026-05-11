@@ -146,7 +146,7 @@ class GitHubAPIClient:
                     logger.error(f"Unexpected error posting review: {e}")
                     raise
 
-    async def _post_with_urllib(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
+        return {}  # unreachable if max_retries > 0: loop always returns or raises(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Fallback: Post request using urllib (synchronous)."""
         request = urllib.request.Request(
             url,
@@ -176,7 +176,7 @@ class GitHubAPIClient:
                 logger.error(f"Unexpected error posting review: {e}")
                 raise
 
-    async def add_comment(
+        return {}  # unreachable if max_retries > 0: loop always returns or raises(
         self,
         repo: str,
         pr_number: int,

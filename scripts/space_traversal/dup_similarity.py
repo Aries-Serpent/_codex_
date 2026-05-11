@@ -99,8 +99,8 @@ def _deterministic_sample_pairs(n: int, max_pairs: int) -> list[tuple]:
     # This is faster than SHA256 and sufficient for sampling
     selected = []
     for pair in all_pairs:
-        # Combine pair indices into a hashable key
-        f"{pair[0]}:{pair[1]}"
+        # Combine pair indices into a hashable key (unused; arithmetic below is used)
+        _ = f"{pair[0]}:{pair[1]}"
         # Use Python's built-in hash with modulo for selection
         # Note: Python's hash is not deterministic across processes/versions,
         # so we use a simple arithmetic approach instead
