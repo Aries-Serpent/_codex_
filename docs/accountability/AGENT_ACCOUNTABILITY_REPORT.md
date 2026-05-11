@@ -1,3 +1,29 @@
+## SESSION SUMMARY — 2026-05-11T04:45Z [S934-ci-monitoring-refresh]
+
+**Session:** S934-ci-monitoring-refresh | **Branch:** `copilot/fix-ci-failure-triage-report`
+**Agent:** copilot-swe-agent[bot] | **PR:** #4393
+
+### Completed
+- Continued monitoring after maintainer-approved pending workflows.
+- Captured latest run-state snapshot on head `5e6a479`:
+  - 12 success
+  - 9 in_progress
+  - 4 action_required
+  - 4 cancelled
+  - 1 skipped
+- Updated living docs (`PR4393_whats_next.md`, `PR4393_session_diagram.md`) with
+  current workflow state and reordered next steps.
+
+### Validation
+- CI state inspection via GitHub MCP `list_workflow_runs` + local run-state parsing ✅
+- `sync_tracked_files.py --fix` + doc-only pre-commit validation ✅
+
+### Impact Score
+- Keeps PR handoff docs synchronized with live CI state during approved-run windows.
+- Preserves wrap-up readiness while minimizing context loss for next session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-11T04:30Z [S932-rebase-churn-guard]
 
 **Session:** S932-rebase-churn-guard | **Branch:** `copilot/fix-ci-failure-triage-report`
@@ -16,6 +42,12 @@
 - This directly addresses maintainer-reported merge conflicts caused by background
   sweep commits landing during active PR development.
 - Updated living docs + changelog to document the new anti-churn behavior.
+- Reviewed prior PR living docs (`PR4389`, `PR4368`) and ported reusable
+  documentation patterns into PR #4393:
+  - merge-readiness gate table,
+  - session history ledger,
+  - failure-mode breakdown,
+  - next-session decision-flow diagram.
 
 ### Validation
 - `pre-commit run --files .github/workflows/agent-auth-delegation.yml ...` ✅

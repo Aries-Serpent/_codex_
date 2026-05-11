@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - the target protected branch (`main` / `0D_base_`) has any open PRs.
 - This reduces sweep-induced merge conflicts and avoids main-branch metadata churn
   while PRs are still in flight.
+- Integrated handoff concepts from prior PR living docs into PR #4393 docs:
+  merge-readiness matrix, session history table, failure-mode breakdown, and
+  next-session decision flow for deterministic continuation.
+
+### Fixed (S934-ci-monitoring-refresh) — 2026-05-11
+- Refreshed PR #4393 living docs with latest workflow monitoring state after
+  maintainer approvals (head `5e6a479`), including in-progress/action-required
+  counts and updated next-step ordering.
 
 ### Fixed (S931-priority-followup-and-ci-triage) — 2026-05-11
 - Verified priority follow-up status after S930 remediation:

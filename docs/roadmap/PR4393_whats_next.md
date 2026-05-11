@@ -2,7 +2,20 @@
 
 **PR:** [#4393](https://github.com/Aries-Serpent/_codex_/pull/4393)  
 **Branch:** `copilot/fix-ci-failure-triage-report`  
-**Status:** 🟡 In progress — CodeQL workflows green on remediation SHA; final artifact re-check pending
+**Status:** 🟡 In progress — rebase-churn guards merged; active workflow monitoring in progress
+
+---
+
+## 📊 Merge Readiness
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| CodeQL remediation implementation | ✅ | Full 249-artifact remediation changes merged in PR branch (`e06433d`, `d0d1aea`) |
+| CodeQL verification runs | ✅ | `codeql-analysis.yml` `25649802257` + `codeql.yml` `25649802298` succeeded |
+| Rebase-churn guard (`agent-auth-delegation`) | ✅ | PR-time `chore(auth)`/`chore(d00)` branch writes now skipped |
+| Sweep-push conflict guard (`iterative-self-healing-ci`) | ✅ | Push deferred for `copilot/*` and protected branches with open PRs |
+| Optional high-cost startup failures | ⚠️ | zero-job `startup_failure` states (infra/startup-level, non-code) |
+| Fresh fetcher artifact check on latest SHA | 🔄 | pending final verification step |
 
 ---
 
@@ -28,15 +41,22 @@
 - ✅ Implemented sweep-push conflict mitigation in `iterative-self-healing-ci.yml`:
   universal baseline-sweep now defers pushes for active `copilot/*` branches and
   for protected branches (`main`, `0D_base_`) whenever open PRs exist.
+- 🔄 Current workflow snapshot on head `5e6a479`:
+  - 12 completed `success`
+  - 9 currently `in_progress`
+  - 4 `action_required` (approval-gated runs)
+  - 4 `cancelled` (superseded duplicates)
+  - 1 `skipped`
 
 ---
 
 ## Immediate Next Steps
 
-1. Trigger `codeql-alert-fetcher.yml` on latest branch head and download a fresh artifact.
-2. Confirm no carryover from the original 249-alert artifact set.
-3. If any residual alerts remain, patch only residual files and re-run fetcher.
-4. Merge when required pre-merge checks are green.
+1. Continue monitoring in-progress checks on `5e6a479` until stable completion.
+2. Trigger `codeql-alert-fetcher.yml` on latest branch head and download a fresh artifact.
+3. Confirm no carryover from the original 249-alert artifact set.
+4. If any residual alerts remain, patch only residual files and re-run fetcher.
+5. Merge when required pre-merge checks are green.
 
 ---
 
@@ -46,3 +66,23 @@
 - [ ] `alerts_summary.json` verified from a fresh fetcher artifact on latest head SHA
 - [x] CHANGELOG and accountability report updated for S930/S931 status
 - [ ] PR comments replied with commit hash + status
+
+---
+
+## 📋 Session History (key handoff concept)
+
+| Session | Focus | Result |
+|---------|-------|--------|
+| S930 | 249-alert CodeQL/security remediation implementation | ✅ completed |
+| S931 | Priority follow-up + CI triage | ✅ completed |
+| S932 | PR-time housekeeping commit guard | ✅ completed |
+| S933 | Sweep-push guard to reduce merge conflicts | ✅ completed |
+
+---
+
+## ⚠️ Known Non-Blocking Issues
+
+| Issue | Severity | Action |
+|-------|----------|--------|
+| Optional high-cost suites with `startup_failure` + zero jobs | ⚠️ infra | monitor; non-code failure mode |
+| Fetcher artifact rerun not yet captured on latest SHA | 🟡 follow-up | trigger `codeql-alert-fetcher.yml` and verify summary |

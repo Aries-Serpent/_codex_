@@ -13,7 +13,8 @@ graph TD
   I[S931 Verification<br/>CodeQL + CodeQL Advanced success on d0d1aea] --> J
   J[S932 Rebase-Churn Guard<br/>Skip PR-time auth/d00 housekeeping commits] --> K
   K[S933 Sweep-Push Guard<br/>Skip universal sweep pushes for active PRs] --> L
-  L[Next: fetcher artifact rerun on latest head and residual confirmation]
+  L[S934 Monitoring Pass<br/>Head 5e6a479 workflow snapshot captured] --> M
+  M[Next: fetcher artifact rerun on latest head and residual confirmation]
 ```
 
 ## Session Notes
@@ -28,3 +29,33 @@ graph TD
     - `agent-auth-delegation.yml` now skips PR-time housekeeping commits that previously caused repeated branch divergence/rebases.
 - S933 process hardening:
     - `iterative-self-healing-ci.yml` now defers sweep pushes on active `copilot/*` branches and on protected branches while open PRs exist.
+- S934 monitoring snapshot (head `5e6a479`):
+    - 12 success, 9 in_progress, 4 action_required, 4 cancelled, 1 skipped.
+
+---
+
+## Failure Mode Breakdown (adopted from prior PR handoff pattern)
+
+| Signal | Observed Run(s) | Classification | Mitigation |
+|--------|------------------|----------------|------------|
+| `startup_failure` with zero jobs | `25649802340`, `25649802349`, `25649802378` | Infra/startup-level (not code regression) | Monitor only; do not treat as code-fixable failure |
+| Repeated branch divergence from housekeeping commits | recurring `chore(auth)` + `chore(d00)` commits | Process conflict / merge-churn | S932 guard in `agent-auth-delegation.yml` |
+| Sweep-driven merge conflicts during active PRs | `fix(ci): universal baseline sweep` branch pushes | Process conflict / merge-churn | S933 guard in `iterative-self-healing-ci.yml` |
+
+---
+
+## Next-Session Decision Flow
+
+```mermaid
+flowchart TD
+    A[Start next session] --> B{Fresh codeql-alert-fetcher artifact on latest SHA?}
+    B -->|No| C[Trigger fetcher and download alerts_summary.json]
+    B -->|Yes| D{Any residual alerts?}
+    C --> D
+    D -->|Yes| E[Patch residual files only + validate]
+    D -->|No| F[Confirm required CI checks green]
+    E --> F
+    F -->|Green| G[Ready for merge]
+    F -->|Not green| H[Triage failures: code-fixable vs infra-only]
+    H --> E
+```
