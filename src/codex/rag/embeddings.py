@@ -10,7 +10,25 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Optional, Protocol
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:  # pragma: no cover - exercised in import-only test environments
+    class _NumpyFallback:
+        ndarray = object
+
+        @staticmethod
+        def array(*_args, **_kwargs):
+            raise ImportError("numpy is required for codex.rag.embeddings operations")
+
+        @staticmethod
+        def load(*_args, **_kwargs):
+            raise ImportError("numpy is required for codex.rag.embeddings cache loading")
+
+        @staticmethod
+        def savez_compressed(*_args, **_kwargs):
+            raise ImportError("numpy is required for codex.rag.embeddings cache writing")
+
+    np = _NumpyFallback()  # type: ignore[assignment]
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +43,11 @@ class EmbeddingProvider(Protocol):
 
     def encode(self, texts: list[str], **kwargs) -> np.ndarray:
         """Encode texts to embeddings."""
-        pass
+        ...
 
     def get_dimension(self) -> int:
         """Get embedding dimension."""
-        pass
+        ...
 
 
 class LocalSentenceTransformerProvider:

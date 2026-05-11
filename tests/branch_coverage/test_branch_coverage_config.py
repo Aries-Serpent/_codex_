@@ -477,8 +477,8 @@ class TestConfigSchemaBranches:
     def test_schema_strict_mode_disabled_branch(self) -> None:
         """Test schema strict mode disabled branch."""
         strict = False
-        _unknown_fields = ["extra_field"]
-        action = "reject" if strict and len(_unknown_fields) > 0 else "accept"
+        unknown_fields = ["extra_field"]
+        action = "reject" if strict and len(unknown_fields) > 0 else "accept"
         assert action == "accept"
 
     def test_schema_no_unknown_fields_branch(self) -> None:

@@ -1087,13 +1087,21 @@ class BlueRedTeamSimulator:
             blue_strategies = []
         if red_strategies is None:
             red_strategies = []
+        self.mode = mode
+        self.noise_level = noise_level
+        self.risk_aversion = risk_aversion
+        self.entanglement = entanglement
+        self.history: list[dict[str, Any]] = []
+
+        if not NUMPY_AVAILABLE:
+            self.classical_engine = None
+            self.quantum_engine = None
+            return
+
         if payoff_blue is None:
             payoff_blue = np.zeros((len(blue_strategies), max(len(red_strategies), 1)))
         if payoff_red is None:
             payoff_red = np.zeros((len(blue_strategies), max(len(red_strategies), 1)))
-        self.mode = mode
-        self.noise_level = noise_level
-        self.risk_aversion = risk_aversion
 
         self.classical_engine = ClassicalGameEngine(
             blue_strategies, red_strategies, payoff_blue, payoff_red
@@ -1102,9 +1110,6 @@ class BlueRedTeamSimulator:
         self.quantum_engine = QuantumInspiredGameEngine(
             blue_strategies, red_strategies, payoff_blue, payoff_red, entanglement=entanglement
         )
-
-        self.entanglement = entanglement
-        self.history: list[dict[str, Any]] = []
 
     def evaluate_hypothesis(
         self,
@@ -1127,6 +1132,9 @@ class BlueRedTeamSimulator:
         Returns:
             Evaluation results with metrics and recommendations
         """
+        if not NUMPY_AVAILABLE:
+            raise TypeError("BlueRedTeamSimulator requires numpy for hypothesis evaluation")
+
         results = {
             "hypothesis": hypothesis,
             "mode": self.mode,
@@ -1209,6 +1217,9 @@ class BlueRedTeamSimulator:
 
         Useful for hypothesis testing across different configurations.
         """
+        if not NUMPY_AVAILABLE:
+            raise TypeError("BlueRedTeamSimulator requires numpy for strategy comparison")
+
         comparisons = []
 
         for i, blue_weights in enumerate(blue_options):
@@ -1246,6 +1257,9 @@ class BlueRedTeamSimulator:
 
         Both teams update their strategies based on outcomes.
         """
+        if not NUMPY_AVAILABLE:
+            raise TypeError("BlueRedTeamSimulator requires numpy for simulation")
+
         round_results = []
         theta_blue, theta_red = 0.0, 0.0
 

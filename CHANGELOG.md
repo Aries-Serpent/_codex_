@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S942)
+- Applied new #4405 Dependabot source hardening: numpy fallback imports in `src/codex/rag/embeddings.py` and `src/codex/retrieval/embed.py`; guarded `PGVectorStore`/`WeaviateStore` imports in `src/codex/retrieval/stores/__init__.py`; lazy import pattern in `src/codex/retrieval/__init__.py`; NUMPY_AVAILABLE guards + rearranged `__init__` in `agents/quantum_game_theory.py`
+- Fixed `tests/branch_coverage/test_branch_coverage_config.py:480`: `_unknown_fields` → `unknown_fields` (variable was used but prefixed with underscore, misleading static analysis)
+- Confirmed PR #4409 (patsy 1.0.1→1.0.2) already applied: `requirements/lock.txt` contains `patsy==1.0.2`
+
 ### Fixed (S941)
 - Removed 34 unused `logger = logging.getLogger(__name__)` module-level assignments across `src/`, `scripts/`, and `tests/` (CodeQL `py/unused-global-variable`)
 - Fixed logic bug in `src/codex/audit/cli.py`: `_repo_root` never updated `repo_root`; repo root is now initialized before pip-audit check and updated inside the walk loop
