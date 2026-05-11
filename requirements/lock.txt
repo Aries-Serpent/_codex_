@@ -315,7 +315,7 @@ gitpython==3.1.50
     #   wandb
 google-api-core==2.28.1
     # via opencensus
-google-auth==2.49.1
+google-auth==2.52.0
     # via
     #   databricks-sdk
     #   google-api-core
