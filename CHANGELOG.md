@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (PR #4407 — jsonschema bump) — 2026-05-11
+- Bumped `jsonschema` dependency from 4.25.1 to 4.26.0.
+- Applied iterative self-healing: synced tracked files (`.secrets.baseline`,
+  `CODEX_MANIFEST.json`, accountability report) after dependabot commit.
+
 ### Fixed (auto-update — PR #4407)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4407 (SHA `32b53d57`) at 2026-05-11T12:53Z [auto-generated]
 
