@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #4402)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4402 (SHA `0f38a3ca`) at 2026-05-11T12:42Z [auto-generated]
+- S924: Confirmed file synchronization tracking (sync_tracked_files) resolved for PR #4402 nvidia-cusparselt-cu12 bump; all merge-readiness checks passing (100/100).
 
 ### Fixed (S932-rebase-churn-guard) — 2026-05-11
 - `agent-auth-delegation.yml` now skips branch-writing housekeeping commits on
