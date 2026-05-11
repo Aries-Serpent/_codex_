@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4404)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4404 (SHA `a5efbda5`) at 2026-05-11T12:41Z [auto-generated]
 
+### Fixed (S938-pr4404-followup) — 2026-05-11
+- Stabilized `tests/codex/test_ingest_phase9_1.py` by deriving the expected
+  snapshot ID date prefix from `snapshot.created_at` instead of a hard-coded
+  `2025` year, preventing annual rollover failures in `python3 -m pytest -x`.
+
 ### Fixed (S932-rebase-churn-guard) — 2026-05-11
 - `agent-auth-delegation.yml` now skips branch-writing housekeeping commits on
   `pull_request` events for:
