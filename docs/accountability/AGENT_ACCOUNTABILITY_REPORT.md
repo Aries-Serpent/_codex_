@@ -34083,3 +34083,27 @@ and the CI gate requirement.
 - 6 source files hardened for numpy-absent environments
 - 1 test file variable naming corrected
 - All py_compile checks pass
+
+---
+
+## SESSION SUMMARY — 2026-05-11T15:36Z S943 (Cherry-pick PRs #4411/#4412/#4413 + address 4 unanswered review comments)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — 4 unanswered review threads identified ✅
+- [x] **0b.** Failing CI checks reviewed ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** `CHANGELOG.md` — updated ✅
+- [x] **3.** Dependency PRs #4411, #4412, #4413 reviewed and changes applied ✅
+- [x] **4.** All 4 unanswered review comment threads addressed ✅
+
+### Work Completed
+1. **Cherry-picked PRs #4411 & #4412** — `urllib3` bumped from `2.6.3` → `2.7.0` in `pyproject.toml`, `requirements.txt`, `requirements-minimal.txt`, `requirements/lock.txt`, and `uv.lock` (package block + requires-dist specifier)
+2. **Cherry-picked PR #4413** — `transformers` bumped `5.7.0` → `5.8.0` in `uv.lock`; `detect-secrets==1.5.0` package block added; `datasets`, `filelock`, `hypothesis`, `mypy`, `radon`, `tree-sitter`, `transformers` specifiers updated in `uv.lock` requires-dist and dev deps
+3. **Addressed `tests/branch_coverage/test_branch_coverage_config.py:480`** — added `assert len(unknown_fields) > 0` assertion to make `unknown_fields` explicitly evaluated (resolves code quality "dead code due to short-circuit" flag)
+4. **Confirmed already-fixed items**: `src/codex/audit/cli.py:46-48` (repo_root walk fixed in S941), `src/codex/quantum_orchestrator/optimized.py:208-212` (momentum_mag removed in S941), `tests/test_rag_embeddings.py:221-227` (`del provider` already present)
+
+### Impact
+- 4 dependency files updated (urllib3 security bump)
+- 1 lock file (uv.lock) updated with 3 PR worth of changes
+- 1 test file assertion added to resolve open review thread
+- 4 reviewer comment threads addressed

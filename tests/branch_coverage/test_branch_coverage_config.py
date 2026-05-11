@@ -478,8 +478,10 @@ class TestConfigSchemaBranches:
         """Test schema strict mode disabled branch."""
         strict = False
         unknown_fields = ["extra_field"]
+        # With strict=False, unknown fields are accepted regardless of their count
         action = "reject" if strict and len(unknown_fields) > 0 else "accept"
         assert action == "accept"
+        assert len(unknown_fields) > 0  # Confirm fields existed but were not rejected
 
     def test_schema_no_unknown_fields_branch(self) -> None:
         """Test schema with no unknown fields branch."""

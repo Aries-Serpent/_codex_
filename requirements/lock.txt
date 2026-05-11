@@ -1240,7 +1240,7 @@ ujson==5.12.0
     #   fastapi
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.6.3
+urllib3==2.7.0
     # via
     #   docker
     #   dulwich

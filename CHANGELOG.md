@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S943)
+- Cherry-picked PR #4411 & #4412 (Dependabot): bumped `urllib3` from `2.6.3` to `2.7.0` in `pyproject.toml`, `requirements.txt`, `requirements-minimal.txt`, `requirements/lock.txt`, and `uv.lock`
+- Cherry-picked PR #4413 (Dependabot uv group): bumped `transformers` from `5.7.0` to `5.8.0` in `uv.lock`; added `detect-secrets==1.5.0` package block to `uv.lock`; updated `datasets`, `filelock`, `hypothesis`, `mypy`, `radon`, `tree-sitter`, and `transformers` specifiers in `uv.lock` requires-dist
+- Addressed unanswered review comment `tests/branch_coverage/test_branch_coverage_config.py:480`: added `assert len(unknown_fields) > 0` so the variable is explicitly evaluated, resolving the dead-code short-circuit concern
+- Confirmed `src/codex/audit/cli.py:46-48` review comment resolved: `repo_root` is correctly initialized before the walk loop and `repo_root = parent` (not `_repo_root`) updates it
+- Confirmed `src/codex/quantum_orchestrator/optimized.py:208-212` review comment resolved: dead `momentum_mag` computation removed in S941
+- Confirmed `tests/test_rag_embeddings.py:221-227` review comment resolved: `del provider` already present
+
 ### Fixed (S942)
 - Applied new #4405 Dependabot source hardening: numpy fallback imports in `src/codex/rag/embeddings.py` and `src/codex/retrieval/embed.py`; guarded `PGVectorStore`/`WeaviateStore` imports in `src/codex/retrieval/stores/__init__.py`; lazy import pattern in `src/codex/retrieval/__init__.py`; NUMPY_AVAILABLE guards + rearranged `__init__` in `agents/quantum_game_theory.py`
 - Fixed `tests/branch_coverage/test_branch_coverage_config.py:480`: `_unknown_fields` → `unknown_fields` (variable was used but prefixed with underscore, misleading static analysis)
