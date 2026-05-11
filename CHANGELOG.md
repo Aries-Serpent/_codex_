@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR #4397 — sync_tracked_files self-heal) — 2026-05-11
+- Ran `sync_tracked_files.py --fix` and `auto_fix_common_issues.py` to resolve
+  `sync_tracked_files: stale` and CI pattern pipeline strict gate failures in
+  Pre-Merge Validation (run 25670288882) for `docker/login-action` 3.7.0→4.1.0 bump.
+- Pattern 25 (Last-Commit Accountability) auto-fixed: AGENT_ACCOUNTABILITY_REPORT.md
+  appended with current session entry.
+
 ### Fixed (auto-update — PR #4397)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4397 (SHA `3e2c41fa`) at 2026-05-11T12:32Z [auto-generated]
 

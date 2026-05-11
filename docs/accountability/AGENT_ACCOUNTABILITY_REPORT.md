@@ -8100,6 +8100,30 @@ Changed from broken identical try/except to clean relative imports:
 
 
 
+
+
+
+
+## SESSION SUMMARY — 2026-05-11T13:25Z
+
+**Session:** S-PR4397-sync-fix | **Date:** 2026-05-11
+
+### Task
+Iterative self-healing for `dependabot/github_actions/docker/login-action-4.1.0` (PR #4397).
+Pre-Merge Validation run 25670288882 failed with `sync_tracked_files: stale` and
+CI pattern pipeline strict gate.
+
+### Actions Taken
+- Reviewed failing workflow logs (job 75353441725, step "Fail if critical checks failed").
+- Root cause: `sync_tracked_files` dimension stale + Pattern 25 (Last-Commit Accountability) not satisfied.
+- Ran `python scripts/ci/sync_tracked_files.py --fix` — all tracked files consistent.
+- Ran `python scripts/ci/auto_fix_common_issues.py` — Pattern 25 fixed, 0 issues remaining.
+- Ran `python scripts/ci/ci_pattern_pipeline.py --strict` — 0 issues, pipeline clean.
+- Ran `python3 -m ruff check src/ tests/` — all checks passed.
+- Updated `CHANGELOG.md` with functional fix entry.
+
+### Outcome
+All pre-merge validation dimensions now passing locally. CI should pass on next push.
 ## SESSION SUMMARY — 2026-05-11T13:19Z [auto-generated]
 
 **Session:** auto-20260511T1319-run211745 | **Run:** 25671434540 | **Date:** 2026-05-11
