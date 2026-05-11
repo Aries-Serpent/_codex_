@@ -15,9 +15,12 @@ if str(SRC_PATH) not in sys.path:
 
 
 def test_trainer_module_imports():
+    trainer = None
     try:
-        import training.trainer as trainer
+        import training.trainer as trainer  # noqa: F841
     except ImportError:
+        pytest.skip("training.trainer not importable")
+    if trainer is None:
         pytest.skip("training.trainer not importable")
     assert hasattr(trainer, "Trainer")
 

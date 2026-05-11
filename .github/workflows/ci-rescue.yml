@@ -88,13 +88,20 @@ jobs:
     steps:
       # ── Visibility: log delegation status and trigger context ─────────────
       - name: Log rescue trigger context
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          GH_WF_RUN_NAME: ${{ github.event.workflow_run.name }}
+          GH_WF_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          GH_HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
+          GH_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'not set (rescue runs unconditionally)' }}
         run: |
           echo "=== CI Rescue Trigger ==="
-          echo "Event:          ${{ github.event_name }}"
-          echo "Workflow run:   ${{ github.event.workflow_run.name }} (${{ github.event.workflow_run.conclusion }})"
-          echo "Head SHA:       ${{ github.event.workflow_run.head_sha || github.sha }}"
-          echo "Head branch:    ${{ github.event.workflow_run.head_branch || github.ref_name }}"
-          echo "Token delegation (COPILOT_AGENT_AUTH_ENABLED): ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'not set (rescue runs unconditionally)' }}"
+          echo "Event:          ${GH_EVENT_NAME}"
+          echo "Workflow run:   ${GH_WF_RUN_NAME} (${GH_WF_RUN_CONCLUSION})"
+          echo "Head SHA:       ${GH_HEAD_SHA}"
+          echo "Head branch:    ${GH_HEAD_BRANCH}"
+          echo "Token delegation (COPILOT_AGENT_AUTH_ENABLED): ${GH_AUTH_ENABLED}"
 
       # ── Set up Python (uses the runner's built-in Python; no checkout) ───
       - name: Set up Python
@@ -201,6 +208,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
+          GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
+          GH_REPOSITORY: ${{ github.repository }}
         run: |
           RUN_ID="${{ github.event.workflow_run.id || inputs.run_id }}"
           COMMIT_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
@@ -337,10 +346,10 @@ jobs:
           PYEOF
             echo "rescue_exit=$?" >> "$GITHUB_OUTPUT"
           else
-            BRANCH="${{ github.event.workflow_run.head_branch || github.ref_name }}"
+            BRANCH="${GH_HEAD_BRANCH}"
             python3 /tmp/ci_rescue.py \
               --run-id        "${RUN_ID}" \
-              --repo          "${{ github.repository }}" \
+              --repo          "${GH_REPOSITORY}" \
               --workflow-name "${WORKFLOW_NAME}" \
               --branch        "${BRANCH}" \
               ${PR_FLAG} \
@@ -359,7 +368,7 @@ jobs:
               echo "🔍 COPILOT_AGENT_AUTH_ENABLED=true — running deep historical analysis for '${WORKFLOW_NAME}' on '${BRANCH}'…"
               python3 /tmp/ci_rescue.py \
                 --run-id         "${RUN_ID}" \
-                --repo           "${{ github.repository }}" \
+                --repo           "${GH_REPOSITORY}" \
                 --workflow-name  "${WORKFLOW_NAME}" \
                 --branch         "${BRANCH}" \
                 ${PR_FLAG} \

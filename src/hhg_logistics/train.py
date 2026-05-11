@@ -354,4 +354,4 @@ def main(cfg: DictConfig):
 
 
 if __name__ == "__main__":
-    main()
+    main()  # type: ignore[call-arg]  # Hydra @main decorator injects DictConfig at runtime

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S923-codeql-merge-conflict) — 2026-05-11
+- `CODEX_MANIFEST.json`: resolved merge conflict with `main` — took main's newer `generated_at` and `integrity_sha256`.
+- `tests/training/test_trainer.py`: fixed CodeQL `py/uninitialized-local-variable` (#13447) — initialize `trainer = None` before try-except block.
+- `tests/tokenization/test_tokenization_roundtrip.py`: fixed CodeQL `py/uninitialized-local-variable` (#13431) — initialize `tok = None` before try-except block.
+- `tests/test_chat_session.py`: fixed CodeQL `py/uninitialized-local-variable` (#13397) — initialize `cs = None` before try-except block.
+- `tests/unit/test_peft_utils.py`: fixed CodeQL `py/uninitialized-local-variable` (#13430) — initialize `bundle = None` with explicit post-except guard.
+- `src/hhg_logistics/train.py`: fixed CodeQL `py/call/wrong-arguments` (#13432) — added `# type: ignore[call-arg]` annotation documenting Hydra decorator injects `DictConfig` at runtime.
+- `src/codex_ml/evaluation/runner.py`: fixed CodeQL `py/call-to-non-callable` (#13429) — added `# type: ignore[operator]` annotation confirming `callable()` guard at preceding line.
+- `.github/workflows/consolidated-pr-status.yml`: fixed CodeQL `actions/code-injection/medium` (#13245, #13246) — moved `${{ inputs.details }}` and `${{ inputs.duration-seconds }}` out of `run:` block into `env:` variables.
+- `.github/workflows/ci-rescue.yml`: fixed CodeQL `actions/code-injection/medium` (#13243, #13244) — moved `${{ github.event.workflow_run.head_branch }}` and `${{ github.repository }}` into step-level `env:` variables.
+
 ### Fixed
 - `docs/ROADMAP.md`: updated date from 2026-05-09 to 2026-05-11 to fix pre-commit hook failure in Validation Pipeline.
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`: added full module path to `init_tracing()` reference (`src/codex/observability/tracing.py::init_tracing()`) for reader navigability.

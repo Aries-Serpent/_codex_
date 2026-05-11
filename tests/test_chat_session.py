@@ -77,11 +77,14 @@ def test_exception_restores_env():
     if ChatSession is None:
         pytest.xfail("ChatSession not found/importable; implement ChatSession or update mapping")
     os.environ["CODEX_SESSION_ID"] = "dummy"
+    cs = None
     try:
         try:
             cs = ChatSession()
         except TypeError:
             pytest.xfail("ChatSession requires args; provide a zero-arg default or factory")
+        if cs is None:
+            pytest.xfail("ChatSession could not be instantiated")
         with cs:
             raise RuntimeError("boom")
     except RuntimeError:

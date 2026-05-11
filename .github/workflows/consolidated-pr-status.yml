@@ -103,9 +103,12 @@ jobs:
       - name: Build details with duration
         id: build-details
         shell: bash
+        env:
+          INPUT_DETAILS: ${{ inputs.details }}
+          INPUT_DURATION_SECONDS: ${{ inputs.duration-seconds }}
         run: |
-          DETAILS="${{ inputs.details }}"
-          DURATION_INPUT="${{ inputs.duration-seconds }}"
+          DETAILS="${INPUT_DETAILS}"
+          DURATION_INPUT="${INPUT_DURATION_SECONDS}"
           if (( ${DURATION_INPUT:-0} > 0 )) 2>/dev/null; then
             DURATION_MIN=$(( DURATION_INPUT / 60 ))
             DURATION_SEC=$(( DURATION_INPUT % 60 ))
