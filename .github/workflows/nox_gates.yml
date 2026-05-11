@@ -16,6 +16,8 @@ concurrency:
 jobs:
   gates:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5

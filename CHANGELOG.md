@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S952-review)
+- Addressed 5 `copilot-pull-request-reviewer` findings on PR #4416:
+  - **`pre-flight-validation.yml`**: added `pull-requests: write` and `issues: write` to
+    `pre-flight-validation` job (was `contents: read` only; job posts PR comments via
+    `actions/github-script`).
+  - **`resilient_validation.yml`**: added `pull-requests: write` to `validation` job
+    (was `contents: read` only; job posts coverage comments via `pytest-coverage-comment`
+    and rescue comments via `gh pr comment`).
+  - **`documentation-link-checker.yml`**: added `pull-requests: read` to `wec-gate` job
+    (was `contents: read` only; job reads PR metadata via `gh pr view`).
+  - **`.github/actions/doc-test-scribe-action/action.yml`**: restored `lang='en'`
+    accessibility attribute on the generated `<html>` tag (regressed by S952 syntax-error fix);
+    uses single-quoted attribute value to avoid CodeQL YAML-parser mis-parse without
+    dropping language metadata.
+  - **`scripts/ci/autonomous_rag_context.py`**: increased commit message truncation limit
+    from 80 → 120 characters to prevent tags like `[skip ci]` from being cut mid-token
+    in `.codex/session_context_latest.md`.
+- Fixed `sync_tracked_files` stale `.secrets.baseline` CODEX_MANIFEST entry (Pattern 30).
+
+### Fixed (S952)
+- Resolved 58 open CodeQL security alerts (artifact `codeql-alerts-open-codeql-25688174911`):
+  - **22 `actions/missing-workflow-permissions`**: added `permissions: contents: read` to 22 jobs
+    across `dependency-scan.yml`, `html_visual_regression.yml`, `publish_dashboard_release.yml`,
+    `ratelimit_history_prune.yml`, `status_gate.yml`, `template_lint.yml`, `nox_gates.yml`,
+    `post-merge-validation-optimized.yml`, `pre-flight-validation.yml`, `auth-tests.yml` (2 jobs),
+    `test-rag.yml`, `documentation-link-checker.yml` (2 jobs), `resilient_validation.yml`,
+    and `rust_swarm_ci.yml` (7 jobs).
+  - **33 `actions/unpinned-tag`**: pinned `actions/checkout@v5`, `actions/cache@v5`,
+    `actions/upload-artifact@v5`, `actions/download-artifact@v5`, `actions/github-script@v9`,
+    `actions/setup-python@v6` to immutable commit SHAs across `rust_swarm_ci.yml`,
+    `scheduled-dependency-audit.yml`, and `build-preview-image.yml`
+    (remaining 20 alerts were stale — code was already SHA-pinned on main).
+  - **1 `actions/syntax-error`**: fixed YAML syntax error at line 201 of
+    `.github/actions/doc-test-scribe-action/action.yml`.
+  - **2 `actions/untrusted-checkout/medium`**: already resolved on main (stale alerts).
+- Updated `mypy_baseline.py` to 124 errors (was 130; improvement of 6 locked in via `--update`).
+- Fixed import-order (`ruff I001`) in `tests/safety/test_sanitizers_coverage.py`.
+- Created new PR living docs `docs/plans/PR4416_whats_next.md` and
+  `docs/sessions/PR4416_session_diagram.md`; archived PR4395 equivalents to merged state.
+- CI snapshot on head `29df6bd`: ✅ Resilient Validation Suite, ✅ Workflow Compliance Audit
+  (actionlint), ✅ Required Actions Version Enforcer, ✅ Deferral Language Gate,
+  ✅ Reference Integrity Gate; opt-in suites (CodeQL, Validation Pipeline, Security Scanning)
+  still running at session end — no code-fixable failures expected (changes are workflow YAML + docs only).
+
 ### Fixed (S951)
 - Refreshed the PR #4395 living docs and accountability trail after the latest GitHub refresh confirmed the previously lingering 2 inline bot findings are now cleared on `679a1d3`, and that the remaining non-success workflow results on that head are approval-state `action_required` runs rather than newly surfaced code-failure conclusions.
 

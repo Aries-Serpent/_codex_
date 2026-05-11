@@ -452,7 +452,7 @@ def _local_git_log(n: int = 10) -> list[dict]:
         for line in r.stdout.strip().splitlines():
             parts = line.split("|", 3)
             if len(parts) == 4:
-                result.append({"sha": parts[0][:8], "message": parts[1][:80],
+                result.append({"sha": parts[0][:8], "message": parts[1][:120],
                                "author": parts[2], "date": parts[3][:19]})
         return result
     except Exception:

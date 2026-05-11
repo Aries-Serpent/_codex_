@@ -77,6 +77,9 @@ jobs:
 
   validation:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     needs: wec-gate
     # Skip when WEC unchecked or PR is in DRAFT mode
     if: needs.wec-gate.outputs.skip != 'true'
