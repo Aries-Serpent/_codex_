@@ -1,4 +1,22 @@
-## SESSION WRAP-UP — 2026-05-10T00:10Z [S921-pr-autofix-self-healing]
+## SESSION WRAP-UP — 2026-05-11T00:02Z [S922-doc-and-cli-fixes]
+
+**Session:** S922-doc-and-cli-fixes | **Branch:** `copilot/add-full-path-to-init-tracing-docs`
+**Agent:** copilot-swe-agent[bot]
+
+### Completed
+- Applied three diffs from problem statement:
+  1. `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`: `init_tracing()` → `src/codex/observability/tracing.py::init_tracing()` for full navigability.
+  2. `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`: `create_backend` → `` `create_backend()` `` for consistent code formatting.
+  3. `tools/codex_cli.py`: `cmd_train_all` accepts optional `data_file` param; `--data-file` CLI arg added; defaults preserved when arg omitted.
+- Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25).
+
+### Impact Score
+- Documentation clarity improved (two function references now properly qualified/formatted)
+- Training CLI now supports external data files, removing hard-coded corpus dependency
+
+---
+
+
 
 **Session:** S921-pr-autofix-self-healing | **Branch:** `copilot/add-logging-for-exception-handler`
 **Agent:** copilot-swe-agent[bot]

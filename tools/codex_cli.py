@@ -94,21 +94,35 @@ def cmd_audit() -> int:
     return rc
 
 
-def cmd_train_all(fallback: bool, print_summary: bool) -> int:
+def cmd_train_all(fallback: bool, print_summary: bool, data_file: str | None = None) -> int:
     if fallback:
         os.environ["CODEX_FALLBACK"] = "1"
     else:
         os.environ["CODEX_FALLBACK"] = "0"
 
-    corpus = ["def add(a,b): return a+b", "SELECT * FROM t;"]
-    demos = [
+    default_corpus = ["def add(a,b): return a+b", "SELECT * FROM t;"]
+    default_demos = [
         {"prompt": "Write a CLI", "completion": "argparse ..."},
         {"prompt": "Gzip a folder", "completion": "tar -czf ..."},
     ]
-    pairwise_prefs = [
+    default_pairwise_prefs = [
         ("sum", "def add(a,b): return a+b", "def add(a,b): return a-b", 1),
         ("sql", "SELECT * FROM users;", "DROP TABLE users;", 1),
     ]
+
+    corpus = default_corpus
+    demos = default_demos
+    pairwise_prefs = default_pairwise_prefs
+    if data_file:
+        try:
+            with open(data_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            corpus = data.get("corpus", default_corpus)
+            demos = data.get("demos", default_demos)
+            pairwise_prefs = data.get("pairwise_prefs", default_pairwise_prefs)
+        except Exception as exc:  # pragma: no cover - defensive
+            log("train-all", "fail", f"invalid data file: {exc}")
+            return 1
 
     try:
         summary = run_codex_pipeline(
@@ -163,6 +177,12 @@ def main() -> None:
         help="Print JSON summary for dashboards/CI.",
     )
     p_train.add_argument(
+        "--data-file",
+        dest="data_file",
+        default=None,
+        help="Optional path to JSON file containing corpus, demos, and pairwise_prefs.",
+    )
+    p_train.add_argument(
         "--no-print-summary",
         dest="print_summary",
         action="store_false",
@@ -176,7 +196,7 @@ def main() -> None:
     if args.cmd == "audit":
         sys.exit(cmd_audit())
     if args.cmd == "train-all":
-        sys.exit(cmd_train_all(args.fallback, args.print_summary))
+        sys.exit(cmd_train_all(args.fallback, args.print_summary, args.data_file))
 
 
 if __name__ == "__main__":
