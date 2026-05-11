@@ -79,6 +79,12 @@
   - run `25651931743`
   - artifact `codeql-alerts-open-codeql-25651931743`
   - sha256 `c213c9edac3b483000b9871599fbef94d077a389130edf4a2ebc5b2095b9b548`
+- 🔄 Post-approval monitoring snapshot (head `235cdcc`):
+  - 15 completed `success`
+  - 7 currently `in_progress`
+  - 4 completed `action_required`
+  - 3 completed `startup_failure` (heavy optional suites; infra/startup class)
+  - 1 completed `skipped`
 
 ---
 

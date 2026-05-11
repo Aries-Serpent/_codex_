@@ -26,6 +26,9 @@
   one helper-path failure, and infra-class startup failures in heavy optional suites.
 - Integrated maintainer-provided latest fetcher artifact metadata for next-session
   CodeQL closure (`codeql-alerts-open-codeql-25651931743`, provided SHA256).
+- Post-maintainer-approval monitoring refresh on latest head `235cdcc`:
+  - 15 completed success, 7 in_progress, 4 action_required,
+    3 startup_failure (infra/startup class), 1 skipped.
 
 ### Validation
 - Local checks passed (ruff, mypy baseline, auto-fix scan, pre-commit targeted files).

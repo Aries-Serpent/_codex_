@@ -67,6 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refreshed follow-up CodeQL verification prompt to target maintainer-provided
   latest fetcher artifact `codeql-alerts-open-codeql-25651931743` while keeping
   original 249-alert artifact as parity baseline.
+- After maintainer approval of pending workflows, monitored latest head `235cdcc`
+  and captured updated status in living docs (15 success / 7 in-progress /
+  4 action_required / 3 startup_failure / 1 skipped).
 
 ### Fixed (S931-priority-followup-and-ci-triage) — 2026-05-11
 - Verified priority follow-up status after S930 remediation:

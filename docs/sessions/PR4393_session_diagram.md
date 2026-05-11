@@ -47,6 +47,8 @@ graph TD
     - 12 action-required runs observed; in-progress checks monitored for new failures.
     - Applied schedule-compliance fix (`auto-approve-workflows.yml` cron restored to `*/5`).
     - Applied non-blocking fallback for delegation helper approval/variable-upsert steps to reduce false-red helper failures.
+- S937 post-approval monitoring (head `235cdcc`):
+    - 15 success, 7 in-progress, 4 action-required, 3 startup-failure (infra-class), 1 skipped.
 
 ---
 
