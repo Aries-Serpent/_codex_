@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S938-librosa-dep-baseline-sync) — 2026-05-11
+- Fixed stale `.secrets.baseline` checksums for `CODEX_MANIFEST.json` and
+  `agent_context.json` entries, resolving `sync_tracked_files` ❌ stale failure
+  in Pre-Merge Validation (run 25670339328) on the `dependabot/pip/librosa-gte-0.11.0`
+  branch.
+
 ### Fixed (auto-update — PR #4403)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4403 (SHA `e207aa70`) at 2026-05-11T12:43Z [auto-generated]
 
