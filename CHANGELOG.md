@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4395)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4395 (SHA `ebd76767`) at 2026-05-11T06:23Z [auto-generated]
+
 ### Fixed (S932-rebase-churn-guard) — 2026-05-11
 - `agent-auth-delegation.yml` now skips branch-writing housekeeping commits on
   `pull_request` events for:
