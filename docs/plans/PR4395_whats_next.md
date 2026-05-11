@@ -1,9 +1,14 @@
-# PR #4395 — What's Next
+# PR #4395 — What's Next (archived — PR merged 2026-05-11T17:57Z)
 
-> **PR:** [#4395 — Fix ROADMAP date/version inconsistencies, test quality alerts, CLI arg semantics, complete CodeQL alert remediation, submit-pypi CI fix, Dependabot dependency migrations, and copilot reviewer fixes (S938–S942)](https://github.com/Aries-Serpent/_codex_/pull/4395)
-> **Session:** S944→S951 | **Date:** 2026-05-11 | **Branch:** `copilot/update-status-date-in-roadmap`
-> **Status:** ✅ review-thread cleanup landed · latest pushed head monitored · remaining non-success runs are approval-state only
-> **Current pushed head:** `679a1d3` · **Latest unresolved review scan:** 0 open threads after GitHub refresh
+> **PR:** [#4395](https://github.com/Aries-Serpent/_codex_/pull/4395) — **MERGED** 2026-05-11T17:57Z by @mbaetiong
+> **Session:** S944→S951 (final) | **Branch:** `copilot/update-status-date-in-roadmap` (closed)
+> **Status:** ✅ MERGED — all review threads resolved, 0 open bot findings on final push `679a1d3`
+>
+> **Continuation:** S952 on `copilot/sync-docs-and-confirm-latest-state` — PR #4416
+> - Resolving 58 CodeQL alerts (artifact `codeql-alerts-open-codeql-25688174911`)
+> - 22 `missing-workflow-permissions` fixed, 1 `syntax-error` fixed (S952 commit `f6bd7d5`)
+> - 33 `unpinned-tag` pinned to SHA across `rust_swarm_ci.yml`, `scheduled-dependency-audit.yml`, `build-preview-image.yml` (S952 latest)
+> - `mypy_baseline.py` updated to 124 (was 130; ↓6 improvement locked)
 
 ---
 

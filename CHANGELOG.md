@@ -9,15 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (S952)
 - Resolved 58 open CodeQL security alerts (artifact `codeql-alerts-open-codeql-25688174911`):
-  pinned 33 unpinned action tags to immutable commit SHAs across 10 workflow files,
-  added `permissions: contents: read` blocks to 22 missing-permissions jobs across 9 workflow files,
-  hardened 2 untrusted-checkout patterns with `persist-credentials: false`,
-  and fixed 1 syntax error in `.github/actions/doc-test-scribe-action/action.yml`.
+  - **22 `actions/missing-workflow-permissions`**: added `permissions: contents: read` to 22 jobs
+    across `dependency-scan.yml`, `html_visual_regression.yml`, `publish_dashboard_release.yml`,
+    `ratelimit_history_prune.yml`, `status_gate.yml`, `template_lint.yml`, `nox_gates.yml`,
+    `post-merge-validation-optimized.yml`, `pre-flight-validation.yml`, `auth-tests.yml` (2 jobs),
+    `test-rag.yml`, `documentation-link-checker.yml` (2 jobs), `resilient_validation.yml`,
+    and `rust_swarm_ci.yml` (7 jobs).
+  - **33 `actions/unpinned-tag`**: pinned `actions/checkout@v5`, `actions/cache@v5`,
+    `actions/upload-artifact@v5`, `actions/download-artifact@v5`, `actions/github-script@v9`,
+    `actions/setup-python@v6` to immutable commit SHAs across `rust_swarm_ci.yml`,
+    `scheduled-dependency-audit.yml`, and `build-preview-image.yml`
+    (remaining 20 alerts were stale — code was already SHA-pinned on main).
+  - **1 `actions/syntax-error`**: fixed YAML syntax error at line 201 of
+    `.github/actions/doc-test-scribe-action/action.yml`.
+  - **2 `actions/untrusted-checkout/medium`**: already resolved on main (stale alerts).
+- Updated `mypy_baseline.py` to 124 errors (was 130; improvement of 6 locked in via `--update`).
 - Fixed import-order (`ruff I001`) in `tests/safety/test_sanitizers_coverage.py`.
-- Synchronized living docs (CHANGELOG, AGENT_ACCOUNTABILITY_REPORT) with PR #4395 merged
-  state and new S952 session context on branch `copilot/sync-docs-and-confirm-latest-state`.
-- Confirmed `ruff`, `mypy_baseline.py --require-baseline` (124 errors ↓6 vs baseline 130)
-  remain green on current head.
+- Synchronized living docs: `docs/plans/PR4395_whats_next.md` and
+  `docs/sessions/PR4395_session_diagram.md` updated with PR #4395 merged state + S952 continuation.
 
 ### Fixed (S951)
 - Refreshed the PR #4395 living docs and accountability trail after the latest GitHub refresh confirmed the previously lingering 2 inline bot findings are now cleared on `679a1d3`, and that the remaining non-success workflow results on that head are approval-state `action_required` runs rather than newly surfaced code-failure conclusions.

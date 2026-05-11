@@ -61,7 +61,7 @@ jobs:
     timeout-minutes: 5
     needs: cost-gate
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: Hadolint — Dockerfile linter
         uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf
@@ -84,7 +84,7 @@ jobs:
           - preview-dev
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       # QEMU is required for cross-platform emulation (linux/arm64 on amd64 runners).
       # Only needed when building multi-platform images (main / workflow_dispatch push).
@@ -223,7 +223,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

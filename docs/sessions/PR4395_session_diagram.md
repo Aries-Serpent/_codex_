@@ -1,4 +1,6 @@
-# PR #4395 — Session Diagram
+# PR #4395 — Session Diagram (archived — PR merged 2026-05-11T17:57Z)
+
+> **Status: MERGED** by @mbaetiong · Continuation work on `copilot/sync-docs-and-confirm-latest-state` (PR #4416)
 
 ```mermaid
 graph TD
@@ -13,7 +15,8 @@ graph TD
   I[S950<br/>Latest re-scan on pushed head shows 2 remaining bot findings] --> J
   J[Patch final 2 test-only findings<br/>negative-learning-rate helper + del provider] --> K
   K[S951<br/>GitHub refresh shows 0 unresolved review threads<br/>latest runs classify as approval-state] --> L
-  L[Next: monitor remaining action_required runs until they settle]
+  L[PR #4395 MERGED 2026-05-11T17:57Z] --> M
+  M[S952 on copilot/sync-docs-and-confirm-latest-state PR#4416<br/>58 CodeQL alerts resolved<br/>mypy baseline updated 130→124]
 ```
 
 ## Session Notes
