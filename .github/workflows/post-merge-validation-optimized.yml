@@ -9,7 +9,7 @@ on:
 # Target runtime: ≤ 10 minutes
 
 
-permissions: write-all
+permissions: read-all
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

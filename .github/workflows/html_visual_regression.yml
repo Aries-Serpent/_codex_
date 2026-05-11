@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 
-permissions: write-all
+permissions: read-all
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
