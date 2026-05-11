@@ -4,11 +4,8 @@ This module provides a typed, async-friendly wrapper around the GitHub REST API
 for workflow operations including triggering, monitoring, and artifact retrieval.
 """
 
-import logging
 
 from .client import GitHubClient
-
-logger = logging.getLogger(__name__)
 from .exceptions import (
     AuthenticationError,
     GitHubAPIError,

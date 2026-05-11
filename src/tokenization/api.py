@@ -9,10 +9,7 @@ New code should import from:
 
 from __future__ import annotations
 
-import logging
 import warnings as _warnings
-
-logger = logging.getLogger(__name__)
 
 _warnings.warn(
     "src.tokenization.api is legacy; use codex_ml.tokenization.* modules.",
@@ -77,8 +74,9 @@ class _LegacyTokenizerProxy:
             stacklevel=2,
         )
         if _CanonicalLegacyTokenizer is None:
-            raise ImportError(
-                "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
+            raise AttributeError(
+                f"'{name}' is unavailable: HFTokenizerAdapter not installed "
+                "(install codex-ml tokenization extras)"
             )
         return getattr(_CanonicalLegacyTokenizer, name)
 

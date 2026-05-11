@@ -786,8 +786,6 @@ def benchmark(
 
         # Export results
         if output:
-            import json
-
             output_path = Path(output)
             output_path.parent.mkdir(parents=True, exist_ok=True)
 

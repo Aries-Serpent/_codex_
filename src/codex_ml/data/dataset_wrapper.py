@@ -17,11 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 import random  # noqa: E402
 from collections.abc import Iterable  # noqa: E402
 

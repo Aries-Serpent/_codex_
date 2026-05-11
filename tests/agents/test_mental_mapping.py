@@ -91,6 +91,7 @@ class TestReasoningChain:
             return ReasoningChain
         except ImportError:
             pytest.skip("ReasoningChain not available")
+            return None
 
     def test_create_reasoning_chain(self, ReasoningChain):
         """Test creating a reasoning chain."""
@@ -130,6 +131,7 @@ class TestMentalMapNode:
             return MentalMapNode
         except ImportError:
             pytest.skip("MentalMapNode not available")
+            return None
 
     @pytest.fixture
     def NodeType(self):
@@ -179,6 +181,7 @@ class TestMentalMap:
             return MentalMappingModel
         except ImportError:
             pytest.skip("MentalMappingModel not available")
+            return None
 
     @pytest.fixture
     def NodeType(self):
@@ -249,6 +252,7 @@ class TestSelfAppraisal:
             return SelfAppraisal
         except ImportError:
             pytest.skip("SelfAppraisal not available")
+            return None
 
     def test_create_self_appraisal(self, SelfAppraisal):
         """Test creating a self-appraisal."""
@@ -272,6 +276,7 @@ class TestDecisionPath:
             return DecisionPath
         except ImportError:
             pytest.skip("DecisionPath not available")
+            return None
 
     def test_create_decision_path(self, DecisionPath):
         """Test creating a decision path."""

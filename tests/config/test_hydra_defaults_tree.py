@@ -27,10 +27,12 @@ def test_defaults_files_exist():
 def test_hydra_compose_smoke():
     pytest.importorskip("omegaconf")
     try:
-        import hydra as hydra_module
+        import sys as _sys_hydra
+
         from hydra import compose, initialize_config_dir
 
         from omegaconf import OmegaConf
+        hydra_module = _sys_hydra.modules["hydra"]
     except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency guard
         pytest.skip(str(exc))
 

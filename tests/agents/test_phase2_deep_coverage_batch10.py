@@ -393,11 +393,12 @@ class TestPhase2_EdgeCases_Conditionals:
     def test_short_circuit_evaluation(self):
         """Test short-circuit AND"""
 
-        def raises_error():
+        def _raises_error():
             raise ValueError("Should not be called")
 
-        result = False
-        assert not result
+        lhs = bool([])
+        result = lhs and _raises_error()
+        assert result is False
 
     def test_ternary_operator(self):
         """Test ternary conditional"""

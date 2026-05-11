@@ -9,7 +9,7 @@ Phase: 4.1 - Branch Coverage Analysis
 Target: 100% branch coverage for config modules
 """
 
-import os
+import os  # pragma: allowlist secret # pragma: allowlist secret
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -287,8 +287,7 @@ class TestConfigCachingBranches:
     def test_config_cache_disabled_branch(self) -> None:
         """Test cache disabled branch."""
         cache_enabled = False
-        file_modified = False
-        action = "invalidate" if cache_enabled and file_modified else "use_cache"
+        action = "invalidate" if cache_enabled and False else "use_cache"
         assert action == "use_cache"
 
 
@@ -479,8 +478,10 @@ class TestConfigSchemaBranches:
         """Test schema strict mode disabled branch."""
         strict = False
         unknown_fields = ["extra_field"]
+        # With strict=False, unknown fields are accepted regardless of their count
         action = "reject" if strict and len(unknown_fields) > 0 else "accept"
         assert action == "accept"
+        assert len(unknown_fields) > 0  # Confirm fields existed but were not rejected
 
     def test_schema_no_unknown_fields_branch(self) -> None:
         """Test schema with no unknown fields branch."""

@@ -50,7 +50,7 @@ _ALERT_SELECTORS = [
     "table.js-navigation-container tr.js-navigation-item",  # table layout
 ]
 # Retained for any callers that still reference the constant directly.
-_ALERT_ROW_SELECTOR = ", ".join(_ALERT_SELECTORS)
+ALERT_ROW_SELECTOR = ", ".join(_ALERT_SELECTORS)
 _SEVERITY_SELECTOR = "[data-testid='alert-severity'], .severity-badge, .Label--severity"
 _TITLE_SELECTOR = "a[data-hovercard-type='code-scanning-alert'], a.js-navigation-open"
 _NEXT_BTN_SELECTOR = "a[rel='next'], .next_page:not(.disabled)"

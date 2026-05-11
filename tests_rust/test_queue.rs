@@ -97,12 +97,12 @@ fn test_concurrent_submission() {
     let tasks_per_thread = 100;
 
     let handles: Vec<_> = (0..num_threads)
-        .map(|thread_id| {
+        .map(|_thread_id| {
             let queue_clone = Arc::clone(&queue);
             thread::spawn(move || {
                 for i in 0..tasks_per_thread {
                     let task = codex_engine::Task::new(
-                        format!("task_{}_{}", thread_id, i),
+                        format!("task_{}_{}", _thread_id, i),
                         "test".to_string(),
                         "{}".to_string()
                     );

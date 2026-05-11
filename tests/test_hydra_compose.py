@@ -29,6 +29,7 @@ def _import_hydra_compose() -> tuple[object, object]:
                 return hydra_core.compose, hydra_core.initialize  # type: ignore[attr-defined]
 
     pytest.skip("hydra-core not available; local package shadows import")
+    return None, None  # type: ignore[return-value]  # unreachable
 
 
 def test_composes_and_overrides() -> None:

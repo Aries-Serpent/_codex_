@@ -18,14 +18,9 @@ from pathlib import Path
 
 import pytest
 
-# Note: These imports are required for conftest to load properly.
-# If numpy or torch are not available, many fixtures will be no-ops,
-# but conftest itself must load for pytest-xdist workers to function.
-try:
-    import numpy
-except ImportError:
-    numpy = None
-
+# Note: Torch is imported defensively so conftest still loads in minimal
+# environments where many fixtures become no-ops, while pytest collection and
+# xdist worker startup still succeed.
 try:
     import torch
 except ImportError:
@@ -1283,8 +1278,8 @@ def set_deterministic_seed():
 
     # Guard optional torch usage without adding a hard dependency
     try:
-        import torch
-
+        if torch is None:
+            raise ImportError
         torch.manual_seed(seed)
         # If using CUDA in CI, prefer CPU determinism by default.
         if torch.cuda.is_available():
@@ -1418,7 +1413,8 @@ def mock_transformer_model():
     """Provide a shared MockTransformerModel for testing."""
     from unittest.mock import Mock
 
-    import torch
+    if torch is None:
+        pytest.skip("torch unavailable")
 
     class MockTransformerModel(torch.nn.Module):
         """Mock transformer model for testing."""
@@ -1592,8 +1588,8 @@ def ensure_cpu_device():
     explicitly to SentenceTransformer constructors instead.
     """
     try:
-        import torch
-
+        if torch is None:
+            raise ImportError
         # Check if this is a stub/placeholder torch module
         if not hasattr(torch, "Tensor") or not callable(
             getattr(torch, "manual_seed", None)

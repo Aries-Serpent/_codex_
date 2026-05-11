@@ -17,11 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 import json  # noqa: E402
 from collections.abc import Callable, Iterator  # noqa: E402
 from pathlib import Path  # noqa: E402

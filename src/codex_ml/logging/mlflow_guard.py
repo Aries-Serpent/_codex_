@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
 import os  # noqa: E402
 from collections.abc import Mapping  # noqa: E402
 from typing import Any  # noqa: E402

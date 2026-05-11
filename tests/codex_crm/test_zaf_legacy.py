@@ -165,33 +165,30 @@ class TestNormaliseEntryPath:
 
     def test_normalise_basic_path(self):
         """Test normalising a basic path."""
-        from zipfile import ZipInfo
 
         from codex_crm.zaf_legacy.reader import _normalise_entry_path
 
-        entry = ZipInfo("src/app.js")
+        entry = zipfile.ZipInfo("src/app.js")
         result = _normalise_entry_path(entry)
 
         assert result == Path("src/app.js")
 
     def test_normalise_empty_path(self):
         """Test normalising empty path returns None."""
-        from zipfile import ZipInfo
 
         from codex_crm.zaf_legacy.reader import _normalise_entry_path
 
-        entry = ZipInfo("")
+        entry = zipfile.ZipInfo("")
         result = _normalise_entry_path(entry)
 
         assert result is None
 
     def test_normalise_dot_path(self):
         """Test normalising dot-only path returns None."""
-        from zipfile import ZipInfo
 
         from codex_crm.zaf_legacy.reader import _normalise_entry_path
 
-        entry = ZipInfo("./")
+        entry = zipfile.ZipInfo("./")
         result = _normalise_entry_path(entry)
 
         assert result is None

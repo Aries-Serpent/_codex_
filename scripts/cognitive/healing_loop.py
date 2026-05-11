@@ -97,7 +97,7 @@ def check_fragile_tests(verbose: bool = False) -> dict:
     if not scanner.exists():
         return {"check": "fragile_tests", "status": "skip", "issues": 0, "details": "scanner not found"}
 
-    code, output = run_cmd(["python", str(scanner)])
+    run_cmd(["python", str(scanner)])
     # Parse result
     json_file = REPO_ROOT / ".codex" / "fragile_tests.json"
     count = 0

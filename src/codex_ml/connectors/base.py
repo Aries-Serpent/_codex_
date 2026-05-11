@@ -22,10 +22,6 @@ Both classes are intentionally dependency free to keep offline CI viable.
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import asyncio  # noqa: E402
 import os  # noqa: E402
 from abc import ABC, abstractmethod  # noqa: E402

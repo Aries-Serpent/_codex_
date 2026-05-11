@@ -63,8 +63,6 @@ def decode_and_validate(
       RuntimeError when schema_path is provided but jsonschema is unavailable
       TypeError if input args are malformed
     """
-    import json
-    from pathlib import Path
 
     selected_path = input_path if input_path is not None else artifact_path
     if selected_path is None:

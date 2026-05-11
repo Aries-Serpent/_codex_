@@ -12,11 +12,13 @@ from omegaconf import OmegaConf
 
 
 def test_train_guard_noop(tmp_path):
+    train_module = None
     try:
         import hhg_logistics.train as train_module
     except ImportError:
         pytest.skip("imports failed due to optional deps")
 
+    assert train_module is not None
     cfg = OmegaConf.create(
         {
             "train": {
@@ -42,5 +44,7 @@ def test_train_guard_noop(tmp_path):
             "pipeline": {"features": {"output_path": str(tmp_path / "features.csv")}},
         }
     )
-    result = train_module.main.__wrapped__(cfg)  # type: ignore[attr-defined]
+    # Handle both decorated and non-decorated main functions across mypy versions
+    entrypoint = getattr(train_module.main, "__wrapped__", train_module.main)
+    result = entrypoint(cfg)
     assert result == {}

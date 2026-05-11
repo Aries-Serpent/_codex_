@@ -145,7 +145,7 @@ class TestAsyncEdgeCases:
         task.cancel()
 
         with pytest.raises(asyncio.CancelledError):
-            await task
+            _ = await task
 
     @pytest.mark.asyncio
     async def test_async_timeout(self):

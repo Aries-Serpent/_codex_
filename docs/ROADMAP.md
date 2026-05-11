@@ -2,7 +2,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Roadmap Version Date**: 2026-04-28 | **Version**: 2.1.0 | **Owner**: DevOps + Agent Team
+**Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + Agent Team
 
 ---
 
@@ -263,7 +263,7 @@
 
 #### 0. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS
 **Timeline**: 2026-03-15 to 2026-05-31  
-**Status**: 🟡 In progress (as of 2026-04-28 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31  
+**Status**: 🟡 In progress (as of 2026-05-08 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31  
 **Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
 
 | Gap | Owner | Playbook | ETA |
@@ -437,7 +437,7 @@
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Last Updated**: 2026-05-08 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
+**Last Content Update**: 2026-05-11 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
 **Next Review**: 2026-06-06
 **Version**: 2.1.1
 

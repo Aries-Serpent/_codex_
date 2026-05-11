@@ -9,10 +9,6 @@ workflows.
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import shutil  # noqa: E402
 from collections.abc import Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402

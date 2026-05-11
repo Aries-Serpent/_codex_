@@ -502,7 +502,6 @@ class CommonIssueFixer:
             )
 
             if result.returncode != 0 and result.stdout:
-                import json
                 try:
                     ruff_output = json.loads(result.stdout)
                     for item in ruff_output:
@@ -540,7 +539,6 @@ class CommonIssueFixer:
             )
 
             if result.returncode != 0 and result.stdout:
-                import json
                 try:
                     ruff_output = json.loads(result.stdout)
                     for item in ruff_output:

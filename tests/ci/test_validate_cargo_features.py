@@ -107,7 +107,7 @@ class TestValidateCargoFeatures:
         assert len(errors) == 0
 
         # Additional verification: json module should be accessible
-        import validate_cargo_features as vcf
+        vcf = sys.modules["validate_cargo_features"]
 
         assert hasattr(vcf, "json"), "json module should be imported in validate_cargo_features"
         assert vcf.json is json, "json module should be the standard library json"
@@ -376,13 +376,13 @@ class TestJsonModuleIntegration:
 
     def test_json_module_imported(self) -> None:
         """Verify json module is properly imported in the script."""
-        import validate_cargo_features as vcf
+        vcf = sys.modules["validate_cargo_features"]
 
         assert hasattr(vcf, "json"), "json should be imported at module level"
 
     def test_json_dumps_callable(self) -> None:
         """Verify json.dumps is callable from the module."""
-        import validate_cargo_features as vcf
+        vcf = sys.modules["validate_cargo_features"]
 
         test_data = {"key": ["value1", "value2"]}
         result = vcf.json.dumps(test_data)

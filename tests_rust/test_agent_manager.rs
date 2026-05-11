@@ -70,10 +70,10 @@ fn test_concurrent_agent_spawning() {
     let manager = Arc::new(codex_engine::AgentManager::new(50).unwrap());
 
     let handles: Vec<_> = (0..20)
-        .map(|i| {
+        .map(|_i| {
             let mgr = Arc::clone(&manager);
             thread::spawn(move || {
-                mgr.spawn_agent(format!("agent_{}", i), "{}".to_string()).ok();
+                mgr.spawn_agent(format!("agent_{}", _i), "{}".to_string()).ok();
             })
         })
         .collect();

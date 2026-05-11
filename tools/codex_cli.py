@@ -150,30 +150,24 @@ def cmd_train_all(fallback: bool, print_summary: bool, data_file: str | None = N
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser("codex-cli")
+    parser = argparse.ArgumentParser(prog="codex-cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("lint")
     sub.add_parser("test")
     sub.add_parser("audit")
     p_train = sub.add_parser("train-all")
     p_train.add_argument(
-        "--fallback",
-        dest="fallback",
-        action="store_true",
-        default=True,
-        help="Enable fallback logic via CODEX_FALLBACK (default: enabled).",
-    )
-    p_train.add_argument(
         "--no-fallback",
         dest="fallback",
         action="store_false",
+        default=True,
         help="Disable fallback logic via CODEX_FALLBACK.",
     )
     p_train.add_argument(
         "--print-summary",
         dest="print_summary",
         action="store_true",
-        default=True,
+        default=False,
         help="Print JSON summary for dashboards/CI.",
     )
     p_train.add_argument(

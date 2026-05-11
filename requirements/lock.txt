@@ -315,7 +315,7 @@ gitpython==3.1.50
     #   wandb
 google-api-core==2.28.1
     # via opencensus
-google-auth==2.49.1
+google-auth==2.52.0
     # via
     #   databricks-sdk
     #   google-api-core
@@ -435,7 +435,7 @@ jsonpointer==3.0.0
     # via
     #   jsonpatch
     #   jsonschema
-jsonschema==4.25.1
+jsonschema==4.26.0
     # via
     #   codex-ml (pyproject.toml)
     #   altair
@@ -558,7 +558,7 @@ multiprocess==0.70.19
     # via
     #   datasets
     #   evaluate
-mypy==1.20.2
+mypy==2.0.0
     # via codex-ml (pyproject.toml)
 mypy-extensions==1.1.0
     # via
@@ -648,7 +648,7 @@ nvidia-cusparse-cu12==12.5.10.65
     # via
     #   nvidia-cusolver-cu12
     #   torch
-nvidia-cusparselt-cu12==0.7.1
+nvidia-cusparselt-cu12==0.8.1
     # via torch
 nvidia-ml-py==13.580.82
     # via pynvml
@@ -748,7 +748,7 @@ pathspec==1.0.3
     #   scmrepo
 pathvalidate==3.3.1
     # via pytablewriter
-patsy==1.0.1
+patsy==1.0.2
     # via statsmodels
 peft==0.19.1
     # via
@@ -852,7 +852,7 @@ pydantic==2.12.3
     #   wandb
 pydantic-core==2.41.4
     # via pydantic
-pydantic-settings==2.13.1
+pydantic-settings==2.14.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1240,7 +1240,7 @@ ujson==5.12.0
     #   fastapi
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.6.3
+urllib3==2.7.0
     # via
     #   docker
     #   dulwich

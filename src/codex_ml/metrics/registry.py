@@ -15,6 +15,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import importlib  # noqa: E402
 import json  # noqa: E402
 import math  # noqa: E402
 import os  # noqa: E402
@@ -36,15 +37,6 @@ _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
 _REWARD_METRICS_LOADED = False
 _REWARD_METRICS_LOCK = threading.Lock()
-
-# Ensure built-in generative metrics are registered on import.
-# Imported AFTER metric_registry is defined to avoid a circular-import at
-# module load time (generative.py calls register_metric from this module).
-from . import generative as _generative  # noqa: E402
-
-# Mark as explicitly used for side effects (metric registration)
-_ = _generative
-
 
 def _error_log_path() -> Path:
     base_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", "_codex_reports"))
@@ -325,6 +317,14 @@ def register_metric(
     """Backward-compatible wrapper around :func:`register`."""
 
     return register(name, fn, override=override)
+
+
+def _register_builtin_metrics() -> None:
+    """Register built-in generative metrics after register_metric is defined."""
+    importlib.import_module("codex_ml.metrics.generative")
+
+
+_register_builtin_metrics()
 
 
 def get(name: str) -> Callable[..., object]:

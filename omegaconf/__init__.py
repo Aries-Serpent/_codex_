@@ -60,7 +60,7 @@ if _real_module is not None:
     __path__ = list(getattr(_real_module, "__path__", []))
     sys.modules[__name__] = _real_module
 else:
-    from yaml import safe_dump, safe_load  # type: ignore
+    from yaml import safe_dump, safe_load
 
     __all__ = ["DictConfig", "ListConfig", "OmegaConf", "MISSING"]
 

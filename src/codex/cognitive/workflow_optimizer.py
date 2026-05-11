@@ -303,12 +303,6 @@ class WorkflowAnalyzer:
     def _parse_workflow_file(self, path: Path) -> WorkflowInfo | None:
         """Parse a workflow file."""
         try:
-            import yaml
-        except ImportError:
-            # Fallback to basic parsing without yaml
-            return self._parse_workflow_basic(path)
-
-        try:
             with open(path) as f:
                 data = yaml.safe_load(f)
 

@@ -17,11 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 import warnings  # noqa: E402
 from typing import Any  # noqa: E402
 

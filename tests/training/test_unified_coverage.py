@@ -73,6 +73,7 @@ def sample_training_config():
         )
     except (ImportError, TypeError) as e:
         pytest.skip(f"UnifiedTrainingConfig not available: {e}")
+        return None
 
 
 # =============================================================================

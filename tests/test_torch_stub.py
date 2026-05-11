@@ -76,7 +76,7 @@ def _reload_torch_stub() -> types.ModuleType:
 class _noop:
     """No-op context manager when attribute patching is not needed."""
     def __enter__(self) -> "_noop": return self
-    def __exit__(self, *_: Any) -> None: ...
+    def __exit__(self, *_: Any) -> None: pass
 
 
 HAS_REAL_TORCH = False

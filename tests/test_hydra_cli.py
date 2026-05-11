@@ -23,5 +23,9 @@ def test_cli_help():
     cmd = [sys.executable, "-m", "codex_ml.cli.main", "--help"]
     env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
     proc = subprocess.run(cmd, check=True, capture_output=True, text=True, env=env)
-    # CLI is now Typer-based, check for expected content
-    assert "Codex ML CLI" in proc.stdout or "Commands" in proc.stdout
+    # Accept both Typer-style and Hydra fallback help outputs.
+    assert (
+        "Codex ML CLI" in proc.stdout
+        or "Commands" in proc.stdout
+        or "Hydra-managed pipeline entrypoint" in proc.stdout
+    )

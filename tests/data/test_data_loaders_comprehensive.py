@@ -351,10 +351,6 @@ class TestConnectorUri:
         mock_get_connector.return_value = mock_connector
         mock_run_coro.return_value = ["file1.txt", "file2.txt"]
 
-        # Mock read_file to return content
-        def mock_read(path):
-            return b"file content"
-
         mock_run_coro.side_effect = [
             ["file1.txt", "file2.txt"],  # list_files
             b"content1",  # read_file for file1

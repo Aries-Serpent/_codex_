@@ -62,14 +62,7 @@ def _cfg_to_container(cfg: Any) -> Any:
     return cfg
 
 torch, _HAS_TORCH = optional_import("torch")
-
-try:  # optional dependency
-    import mlflow
-
-    _HAS_MLFLOW = True
-except Exception:  # pragma: no cover - optional
-    mlflow = None
-    _HAS_MLFLOW = False
+_, _HAS_MLFLOW = optional_import("mlflow")
 
 
 METRIC_FUNCS = {

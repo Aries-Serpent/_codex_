@@ -7,8 +7,6 @@ import importlib
 import importlib.util
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 import os  # noqa: E402
 from collections.abc import Iterable, Mapping, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402

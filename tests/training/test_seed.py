@@ -24,6 +24,7 @@ class TestEnsureGlobalSeed:
             return ensure_global_seed
         except ImportError:
             pytest.skip("src.training.seed not available")
+            return None
 
     def test_returns_default_seed_when_none_provided(self, ensure_global_seed):
         """Test that default seed (42) is returned when None is passed."""

@@ -17,11 +17,6 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import warnings  # noqa: E402

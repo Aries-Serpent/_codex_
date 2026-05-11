@@ -30,11 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Database migration system for trend storage.
 #
 # Provides versioned schema migrations for the audit trend database.
 # Requires Python 3.7+ for annotations support.
@@ -49,7 +44,6 @@ logger = logging.getLogger(__name__)
 #     from scripts.space_traversal.migrations import run_migrations
 #     applied = run_migrations(Path("audit_artifacts/trends.db"))
 #     print(f"Applied migrations: {applied}")
-
 import sqlite3
 from collections.abc import Callable
 from pathlib import Path

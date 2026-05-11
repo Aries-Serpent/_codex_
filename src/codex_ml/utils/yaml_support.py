@@ -17,21 +17,19 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
 from types import ModuleType
 from typing import IO, Any, Optional
-
-logger = logging.getLogger(__name__)
 
 _PY_YAML_INSTALL_HINT = 'pip install "PyYAML>=6.0"'
 
 _yaml_module: Optional[ModuleType]
 try:  # pragma: no cover - import guard
-    import yaml as _yaml_module
+    import yaml as _yaml
 except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
     _yaml_module = None
     _YAML_IMPORT_ERROR = exc
 else:  # pragma: no cover - exercised when PyYAML installed
+    _yaml_module = _yaml
     _YAML_IMPORT_ERROR = None  # type: ignore[assignment]
 
 

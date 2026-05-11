@@ -193,7 +193,7 @@ class RFCComplianceChecker:
                     issue = self._check_urllib_usage(node, file_path, content)
                     if issue:
                         issues.append(issue)
-        except SyntaxError:
+        except SyntaxError:  # ignore files with syntax errors
             pass
 
         return issues

@@ -42,7 +42,6 @@ pytestmark = pytest.mark.skipif(
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
-_torch_available = importlib.util.find_spec("torch") is not None
 try:
     import torch as _torch
     _cuda_available = _torch.cuda.is_available()
@@ -140,7 +139,7 @@ class TestOpenAIEmbeddingProvider:
 
     def test_initialization_with_api_key(self):
         """Test initialization with API key"""
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider(api_key="test-key")
 
             assert provider is not None
@@ -148,7 +147,7 @@ class TestOpenAIEmbeddingProvider:
 
     def test_initialization_from_env(self):
         """Test initialization from environment variable"""
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider()
 
             assert provider.client is not None
@@ -162,7 +161,7 @@ class TestOpenAIEmbeddingProvider:
 
     def test_get_dimension(self):
         """Test getting embedding dimensions for different models"""
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider_small = OpenAIEmbeddingProvider(
                 model_name="text-embedding-3-small"
             )
@@ -191,7 +190,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client.embeddings.create.return_value = mock_response
         mock_openai.return_value = mock_client
 
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider()
             embeddings = provider.encode(["text1", "text2"])
 
@@ -208,7 +207,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client.embeddings.create.return_value = mock_response
         mock_openai.return_value = mock_client
 
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider()
             texts = [f"text{i}" for i in range(5)]
             _ = provider.encode(texts, batch_size=2)
@@ -218,12 +217,15 @@ class TestOpenAIEmbeddingProvider:
 
     def test_destructor_clears_key(self):
         """Test that destructor clears API key"""
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+        import gc
+
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider()
             assert provider.client is not None
 
-            # Trigger destructor via deletion
-            provider = None  # Release reference for GC
+            # Trigger destructor via cleanup
+            del provider
+            gc.collect()
 
 
 class TestCachedEmbeddingProvider:
@@ -433,7 +435,7 @@ class TestCreateEmbeddingProvider:
 
         assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2"
 
-    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
+    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})  # pragma: allowlist secret
     def test_create_openai_provider(self):
         """Test creating OpenAI provider"""
         provider = create_embedding_provider(
@@ -449,7 +451,7 @@ class TestCreateEmbeddingProvider:
             with pytest.raises(ValueError, match="API key required"):
                 create_embedding_provider(provider_type="openai")
 
-    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
+    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})  # pragma: allowlist secret
     def test_create_openai_with_cache(self):
         """Test creating OpenAI provider with cache"""
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -109,7 +109,7 @@ def run(
     ``bytes`` output).
     """
     if shell:
-        raise ValueError("shell execution is not supported by this secure wrapper")  # nosec
+        raise ValueError("shell=True is not supported by this secure wrapper")  # nosec
 
     return _stdlib_subprocess.run(  # nosec B603
         list(cmd),

@@ -112,9 +112,9 @@ class TestAPIStability:
     def test_module_has_docstring(self):
         """Test that module has docstring."""
         try:
-            import src.codex_plans
-            assert src.codex_plans.__doc__ is not None
-            assert len(src.codex_plans.__doc__.strip()) > 0
+            from src import codex_plans as _codex_plans_mod
+            assert _codex_plans_mod.__doc__ is not None
+            assert len(_codex_plans_mod.__doc__.strip()) > 0
         except ImportError:
             pytest.skip("Module not available")
 

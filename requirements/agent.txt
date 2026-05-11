@@ -20,7 +20,7 @@
 # ── Core packaging ────────────────────────────────────────────────────────────
 pip>=24.0
 setuptools>=69.0
-wheel>=0.43
+wheel>=0.47.0
 
 # ── Project install (no heavy extras) ────────────────────────────────────────
 # Installed separately with: pip install -e ".[dev]" --no-deps
@@ -31,7 +31,7 @@ wheel>=0.43
 ruff>=0.4.0
 black>=24.0
 isort>=5.13
-mypy>=1.20.2
+mypy>=2.0.0,<3.0.0
 
 # ── Testing ───────────────────────────────────────────────────────────────────
 pytest>=8.4
@@ -50,7 +50,7 @@ pip-audit>=2.7
 
 # ── Docs (MkDocs + Material) ──────────────────────────────────────────────────
 mkdocs>=1.6
-mkdocs-material>=9.5
+mkdocs-material>=9.7.6
 pymdown-extensions>=10.8
 mkdocs-mermaid2-plugin>=1.1
 
