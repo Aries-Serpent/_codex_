@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S950)
+- Addressed the two remaining `github-code-quality` review findings on PR #4395 by replacing the constant-branch negative-learning-rate raise with a tiny helper call in `tests/integration/test_phase14_edge_cases_coverage.py` and replacing the unused `provider = None` reassignment with `del provider` in `tests/test_rag_embeddings.py`.
+- Refreshed the PR #4395 living docs to reflect the latest pushed-head re-scan, workflow classifications, and remaining follow-up path.
+
 ### Fixed (S949)
 - Cleared the remaining repo-wide hygiene blockers surfaced by local validation: normalized secret allowlist annotations in `tests/test_rag_embeddings.py`, removed stale `# type: ignore` comments and related mypy noise in `src/`, fixed the last repo-wide import-order issue in `scripts/space_traversal/migrations/migrate_trends.py`, and brought the branch back to a passing `mypy_baseline.py --require-baseline` result.
 

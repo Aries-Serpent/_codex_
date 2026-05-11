@@ -10,19 +10,22 @@ graph TD
   F[Apply broad import-order cleanup<br/>on newly flagged src/codex + src/codex_ml files] --> G
   G[Validation<br/>focused pytest + touched-file ruff + full ruff clean] --> H
   H[Update living docs + changelog + accountability] --> I
-  I[Next: push branch, re-scan unresolved comments, monitor workflow gates]
+  I[S950<br/>Latest re-scan on pushed head shows 2 remaining bot findings] --> J
+  J[Patch final 2 test-only findings<br/>negative-learning-rate helper + del provider] --> K
+  K[Next: push branch, re-scan unresolved comments, monitor workflow gates]
 ```
 
 ## Session Notes
 
-- Current remote head before next push: `649298f6`.
+- Current pushed head before this local patch: `b01aa0d`.
 - Maintainer-directed priority remained:
   - clear all unanswered comments,
   - clear merge-conflict state,
   - address current code-quality/security findings,
   - keep living docs current.
 - GitHub MCP confirmed the currently visible `startup_failure` runs have **zero jobs**, which classifies them as startup/infra-state rather than code-test regressions.
-- Focused mypy on touched files is clean; the branch-wide mypy baseline still reports `+4` beyond baseline and should be re-checked after the next push.
+- Focused mypy on touched files is clean; branch-wide `mypy_baseline.py --require-baseline` also passed after the S949 hygiene sweep.
+- Latest re-scan on `b01aa0d` showed only 2 unresolved review findings, both in tests and both addressed in the current local patch.
 
 ---
 
@@ -32,8 +35,8 @@ graph TD
 |--------|----------------|--------|
 | `startup_failure` with zero jobs | Infra/startup-state | Monitor only; do not treat as direct code failure |
 | Unresolved inline review comments on changed lines | Code-fixable | Patch file, validate locally, push for re-scan |
-| `action_required` workflow outcomes | Approval/delegation state | Monitor after next push / approval cycle |
-| Branch-wide mypy `+4` over baseline | Needs follow-up triage | Re-check after push to confirm whether it is still attributable to current branch state |
+| `action_required` / queued workflow outcomes | Approval/delegation / queue state | Monitor after next push / approval cycle |
+| Residual test-only inline review findings | Code-fixable | Apply smallest local fix, validate, push for re-scan |
 
 ---
 
@@ -46,8 +49,8 @@ flowchart TD
     B -->|No| D{Any code-fixable workflow failures remain?}
     C --> D
     D -->|Yes| E[Triage latest runs via GitHub MCP and fix code-level failures]
-    D -->|No| F{Mypy baseline +4 still present?}
+    D -->|No| F{Living docs + accountability current?}
     E --> F
-    F -->|Yes| G[Identify branch-wide offenders and patch minimally]
-    F -->|No| H[Ready for final wrap-up]
+    F -->|No| G[Refresh whats_next, session_diagram, changelog, accountability]
+    F -->|Yes| H[Ready for final wrap-up]
 ```

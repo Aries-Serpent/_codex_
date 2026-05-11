@@ -224,7 +224,7 @@ class TestOpenAIEmbeddingProvider:
             assert provider.client is not None
 
             # Trigger destructor via cleanup
-            provider = None
+            del provider
             gc.collect()
 
 

@@ -26,6 +26,11 @@ import pytest
 class TestNumericEdgeCases:
     """Tests for numeric boundary conditions."""
 
+    @staticmethod
+    def _validate_learning_rate(value: float) -> None:
+        if value < 0:
+            raise ValueError("Learning rate must be non-negative")
+
     def test_zero_batch_size(self):
         """Test handling of zero batch size."""
         batch_size = 0
@@ -40,9 +45,8 @@ class TestNumericEdgeCases:
         """Test handling of negative learning rate."""
         learning_rate = -0.001
 
-        with pytest.raises(ValueError):
-            if learning_rate < 0:
-                raise ValueError("Learning rate must be non-negative")
+        with pytest.raises(ValueError, match="Learning rate must be non-negative"):
+            self._validate_learning_rate(learning_rate)
 
     def test_very_small_learning_rate(self):
         """Test very small learning rate near machine epsilon."""
