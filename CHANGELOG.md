@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- `docs/ROADMAP.md`: updated date from 2026-05-09 to 2026-05-11 to fix pre-commit hook failure in Validation Pipeline.
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`: added full module path to `init_tracing()` reference (`src/codex/observability/tracing.py::init_tracing()`) for reader navigability.
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`: formatted `create_backend` as `create_backend()` with backticks to match code-reference convention.
 - `tools/codex_cli.py`: `cmd_train_all` now accepts optional `data_file` parameter; hard-coded training data can be overridden via `--data-file <path>` pointing to a JSON file with `corpus`, `demos`, and `pairwise_prefs` keys.
