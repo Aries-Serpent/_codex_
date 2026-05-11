@@ -1,6 +1,6 @@
 name: Copilot Issue Triage
 
-# Uses mvkaran/gh-copilot@v1 to automatically triage every new issue.
+# Uses mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba to automatically triage every new issue.
 # Classifies type/severity, suggests labels, posts a structured summary,
 # and applies labels via GitHub Actions.
 #
@@ -39,7 +39,7 @@ jobs:
 
       - name: Analyze issue with GitHub Copilot
         id: triage
-        uses: mvkaran/gh-copilot@v1
+        uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba
         with:
           copilot-token: ${{ secrets.CODEX_MASTER_KEY }}
           github-mcp-token: ${{ secrets.CODEX_MASTER_KEY }}
@@ -148,7 +148,7 @@ jobs:
             if (patternNote) bodyLines.push(patternNote);
             if (needsInfo)   bodyLines.push(needsInfo);
             bodyLines.push('');
-            bodyLines.push('<sub>🤖 Auto-triaged by [GitHub Copilot Action](https://github.com/marketplace/actions/github-copilot-action) (mvkaran/gh-copilot@v1) — S108 cognitive brain integration</sub>');
+            bodyLines.push('<sub>🤖 Auto-triaged by [GitHub Copilot Action](https://github.com/marketplace/actions/github-copilot-action) (mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba) — S108 cognitive brain integration</sub>');
             bodyLines.push('');
             bodyLines.push('---');
             bodyLines.push(`_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`);

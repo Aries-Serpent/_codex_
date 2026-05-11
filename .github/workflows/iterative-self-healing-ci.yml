@@ -829,6 +829,33 @@ jobs:
             exit 0
           fi
 
+          # S933 guard: never auto-push sweep commits to active PR head branches.
+          # These housekeeping pushes frequently create branch divergence and merge conflicts
+          # during active coding sessions.
+          if [[ "${HEAD_BRANCH}" =~ ^copilot/ ]]; then
+            echo "::warning::Skipping sweep push to active PR branch '${HEAD_BRANCH}' to prevent rebase/merge-conflict churn."
+            echo "### ⏭️ Sweep Push Skipped — active PR branch guard" >> "$GITHUB_STEP_SUMMARY"
+            echo "Branch \`${HEAD_BRANCH}\` is a Copilot PR branch; sweep commit deferred." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # S933 guard: if protected branch has any open PRs, defer sweep pushes entirely.
+          # Goal: keep main/0D_base_ stable while PRs are in flight to avoid cross-PR conflicts.
+          if [[ "${_is_protected}" == "true" ]]; then
+            _open_pr_probe_count=$(gh api "repos/${REPO}/pulls?base=${HEAD_BRANCH}&state=open&per_page=1" \
+              --jq 'length' 2>/dev/null || echo "0")
+            _open_pr_exists=false
+            if [[ "${_open_pr_probe_count}" -gt "0" ]]; then
+              _open_pr_exists=true
+            fi
+            if [[ "${_open_pr_exists}" == "true" ]]; then
+              echo "::warning::At least one open PR targets '${HEAD_BRANCH}' — skipping sweep push."
+              echo "### ⏭️ Sweep Push Deferred — protected branch active-PR guard" >> "$GITHUB_STEP_SUMMARY"
+              echo "An open PR targets \`${HEAD_BRANCH}\`. Sweep commit deferred to avoid merge conflicts." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+
           # Automatic open-PR conflict guard — applies when pushing to main or 0D_base_.
           # If any open PR targeting this branch touches the same files the sweep changes,
           # defer the push to prevent merge conflicts in long-lived PRs.

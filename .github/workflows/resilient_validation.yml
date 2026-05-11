@@ -12,6 +12,11 @@ on:
       - 'scripts/**'
 
 
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -164,7 +169,7 @@ jobs:
       # HFIX-001 Step 5: Surface CI coverage numbers as PR comments (quick group only)
       - name: Post coverage to PR
         if: matrix.test-group == 'quick' && github.event_name == 'pull_request'
-        uses: MishaKav/pytest-coverage-comment@main
+        uses: MishaKav/pytest-coverage-comment@a01708271d42c5703d489b13eb503ba47c01e82a
         with:
           pytest-coverage-path: coverage.xml
           title: "📊 Coverage Report (quick tests)"

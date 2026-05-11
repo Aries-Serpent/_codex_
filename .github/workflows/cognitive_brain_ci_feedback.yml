@@ -122,13 +122,13 @@ jobs:
               print(f"ℹ️ No pattern match for workflow: '{workflow}'")
           EOF
 
-      # ── mvkaran/gh-copilot@v1.0.0 — Intelligent failure analysis ─────────────
+      # ── mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba — Intelligent failure analysis ─────────────
       # On ANY CI failure: ask Copilot to classify it, suggest a fix, and propose
       # a new pattern ID. Outputs structured JSON for downstream steps.
-      - name: Copilot failure analysis (mvkaran/gh-copilot@v1.0.0)
+      - name: Copilot failure analysis (mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba)
         id: copilot_analysis
         if: github.event.workflow_run.conclusion == 'failure'
-        uses: mvkaran/gh-copilot@v1.0.0
+        uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba
         with:
           copilot-token: ${{ secrets.CODEX_MASTER_KEY }}
           github-mcp-token: ${{ secrets.CODEX_MASTER_KEY }}
@@ -202,7 +202,7 @@ jobs:
               "root_cause": root_cause,
               "fix_suggestion": fix,
               "analysis": analysis,
-              "source": "mvkaran/gh-copilot@v1.0.0",
+              "source": "mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba",
           }, indent=2))
           print(f"✅ Stored Copilot analysis → {candidate_file}")
           print(f"   Pattern: {pattern_id} | Cause: {root_cause}")

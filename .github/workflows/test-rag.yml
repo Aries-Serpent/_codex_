@@ -15,6 +15,8 @@ name: RAG Module Tests
       - 'pyproject.toml'
 
 
+permissions: read-all
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -133,7 +135,7 @@ jobs:
             --cov-report=term-missing
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

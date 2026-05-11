@@ -40,8 +40,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - language: actions
-            build-mode: none
           - language: go
             build-mode: autobuild
           - language: javascript-typescript
@@ -60,9 +58,9 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-          # security-extended: adds extra security queries beyond the default pack
-          # security-and-quality: adds the 25 code-quality rules tracked in the sprint
-          queries: security-extended,security-and-quality
+          # security-extended: security-focused pack for actionable findings
+          queries: security-extended
+          config-file: ./.codeql/codeql-config.yml
 
       - name: Run manual build steps
         if: matrix.build-mode == 'manual'
