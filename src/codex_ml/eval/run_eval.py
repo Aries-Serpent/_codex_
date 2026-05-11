@@ -79,7 +79,7 @@ def main(argv: Iterable[str] | None = None) -> None:
     ap.add_argument("--data", required=True, help="Path to dataset (txt, ndjson, csv)")
     ap.add_argument("--metrics-log", dest="metrics_log", help="Optional metrics log to summarise")
     ap.add_argument("--safety", action="store_true", help="Enable prompt sanitisation")
-    args = ap.parse_args(argv)  # type: ignore[arg-type]
+    args = ap.parse_args(argv)
 
     texts = _load_texts(args.data)
     if args.safety:
