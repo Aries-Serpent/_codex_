@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S933-wheel-dep-ci-healing) — 2026-05-11
+- CI self-healing for PR #4408 (wheel ≥0.47.0 dependency update): resolved
+  `sync_tracked_files: stale` and CI pattern pipeline (strict) failure by running
+  `sync_tracked_files.py --fix` + `auto_fix_common_issues.py`; Pattern 25
+  accountability entry appended.
+
 ### Fixed (auto-update — PR #4408)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4408 (SHA `0b744be0`) at 2026-05-11T12:55Z [auto-generated]
 
