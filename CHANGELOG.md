@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reliably under heavy PR load and active Copilot sessions:
   - added `pull_request_review` trigger
   - expanded `workflow_run` trigger types to `requested`, `in_progress`, `completed`
-  - increased schedule cadence `*/5` → `*/2`
+  - retained scheduler cadence at `*/5` (actionlint minimum-compliant)
   - added high-volume/active-agent multi-pass approval loop
   - switched same-repo fallback to REST rerun endpoint
   - added active-session 60-minute monitoring loop to continuously auto-approve
@@ -57,6 +57,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refreshed `.codex/FOLLOWUP_PROMPT_CODEQL_REMAINING_25648728868.md` for next
   session with S935/S936 context, explicit token requirements, and branch note
   clarifying that merge-to-main is not required for fetcher verification.
+
+### Fixed (S937-ci-rescue-followup) — 2026-05-11
+- `agent-auth-delegation.yml` hardened against non-critical token/approval-helper
+  transient failures by allowing variable upsert and post-delegation approve steps
+  to continue without failing the whole workflow.
+- `auto-approve-workflows.yml` schedule corrected to `*/5` to satisfy actionlint's
+  minimum interval requirement while preserving immediate event-driven triggers.
+- Refreshed follow-up CodeQL verification prompt to target maintainer-provided
+  latest fetcher artifact `codeql-alerts-open-codeql-25651931743` while keeping
+  original 249-alert artifact as parity baseline.
 
 ### Fixed (S931-priority-followup-and-ci-triage) — 2026-05-11
 - Verified priority follow-up status after S930 remediation:

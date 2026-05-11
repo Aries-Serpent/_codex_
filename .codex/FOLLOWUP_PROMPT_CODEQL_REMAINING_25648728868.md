@@ -3,8 +3,13 @@
 Use this prompt in the next Copilot session to continue from S936:
 
 ```text
-@copilot continue and verify all CodeQL alerts from artifact
-`codeql-alerts-open-codeql-25648728868` (sha256:9ab2851104147588b9abb2f47eaf550e0a7286a84945600417b947724c34cd33).
+@copilot continue and verify all CodeQL alerts from the latest fetcher artifact:
+`codeql-alerts-open-codeql-25651931743`
+(sha256:c213c9edac3b483000b9871599fbef94d077a389130edf4a2ebc5b2095b9b548).
+
+Historical baseline artifact for parity confirmation:
+`codeql-alerts-open-codeql-25648728868`
+(sha256:9ab2851104147588b9abb2f47eaf550e0a7286a84945600417b947724c34cd33).
 
 Completed in S930:
 - Resolved all 50 alerts listed in alerts_fixable.md directly in code/workflows.

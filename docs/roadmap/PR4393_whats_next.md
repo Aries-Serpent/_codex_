@@ -2,7 +2,7 @@
 
 **PR:** [#4393](https://github.com/Aries-Serpent/_codex_/pull/4393)  
 **Branch:** `copilot/fix-ci-failure-triage-report`  
-**Status:** 🟡 In progress — reviewer thread fixes applied; dependency-submission failure triaged as transient; fetcher recheck pending API reset
+**Status:** 🟡 In progress — CI rescue follow-up applied; actionlint cadence fix prepared; latest fetcher artifact verification pending API access
 
 ---
 
@@ -68,6 +68,17 @@
   - 8 `pending`
   - 7 `queued`
   - 3 `startup_failure` (Data Quality, Progressive Validation, Rust-Python; infra/startup class)
+- 🔄 Latest monitoring snapshot (head `3abd8b35`):
+  - 12 completed `action_required`
+  - 1 `in_progress`
+  - 1 completed `failure` (`Agent Token Delegation` helper path)
+  - 3 `startup_failure` (infra/startup class)
+- ✅ actionlint rescue adjustment applied:
+  - restored `auto-approve-workflows.yml` schedule to `*/5` (minimum-compliant interval).
+- 📦 Updated CodeQL fetcher reference provided by maintainer:
+  - run `25651931743`
+  - artifact `codeql-alerts-open-codeql-25651931743`
+  - sha256 `c213c9edac3b483000b9871599fbef94d077a389130edf4a2ebc5b2095b9b548`
 
 ---
 

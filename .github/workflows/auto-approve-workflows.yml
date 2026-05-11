@@ -59,7 +59,7 @@ on:
   # Schedule triggers run from the DEFAULT BRANCH and are NEVER action_required —
   # this is the primary autonomous approval mechanism.
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '*/5 * * * *'
 
   # Manual trigger with full control.
   workflow_dispatch:

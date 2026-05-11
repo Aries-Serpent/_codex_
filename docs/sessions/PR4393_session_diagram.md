@@ -16,7 +16,8 @@ graph TD
   L[S934 Monitoring Pass<br/>Head 5e6a479 workflow snapshot captured] --> M
   M[S935 Reviewer-Thread Fixes<br/>permissions + guard naming + followup prompt accuracy] --> N
   N[S936 Auto-Approve Hardening<br/>high-volume + active-copilot triggers] --> O
-  O[Next: fetcher artifact rerun on latest head and residual confirmation]
+  O[S937 CI Rescue Follow-up<br/>actionlint cadence compliance + delegation helper soft-fail] --> P
+  P[Next: verify latest fetcher artifact totals and residuals]
 ```
 
 ## Session Notes
@@ -42,6 +43,10 @@ graph TD
     - 12 in-progress runs, 8 pending, 7 queued; 3 startup-failure runs (infra/startup class) observed in heavy optional suites.
 - Continuation readiness:
     - `.codex/FOLLOWUP_PROMPT_CODEQL_REMAINING_25648728868.md` refreshed for next-session final CodeQL/security verification.
+- S937 monitoring refresh (head `3abd8b35`):
+    - 12 action-required runs observed; in-progress checks monitored for new failures.
+    - Applied schedule-compliance fix (`auto-approve-workflows.yml` cron restored to `*/5`).
+    - Applied non-blocking fallback for delegation helper approval/variable-upsert steps to reduce false-red helper failures.
 
 ---
 

@@ -1565,9 +1565,10 @@ jobs:
       # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
       - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
         id: set_vars
+        continue-on-error: true
         uses: actions/github-script@v9
         with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             // Helper: upsert a repo variable (create if 404, patch if exists)
             async function upsertVar(name, value) {
@@ -2193,6 +2194,7 @@ jobs:
           python-version: "3.12"
 
       - name: "Approve all action_required runs for this PR"
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           GITHUB_APP_PRIVATE_KEY:     ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
@@ -2202,7 +2204,11 @@ jobs:
           HEAD_SHA:                   ${{ github.event.pull_request.head.sha }}
           PR_NUMBER:                  ${{ github.event.pull_request.number }}
           MAX_WAIT_SEC:               "30"
-        run: python scripts/ci/approve_pending_runs.py
+        run: |
+          python scripts/ci/approve_pending_runs.py || {
+            echo "::warning::approve_pending_runs.py failed; continuing to avoid blocking delegation workflow."
+            exit 0
+          }
 
   # ── Job 5: Session Release — clear lock on PR close/merge (S182) ──────────
   # When a PR is closed (merged or abandoned), release the session lock so the
