@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4419)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4419 (SHA `6c071add`) at 2026-05-11T21:42Z [auto-generated]
+
 ### Fixed (S952-review)
 - Addressed 5 `copilot-pull-request-reviewer` findings on PR #4416:
   - **`pre-flight-validation.yml`**: added `pull-requests: write` and `issues: write` to
