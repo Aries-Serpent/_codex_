@@ -42,6 +42,7 @@ def test_train_guard_noop(tmp_path):
             "pipeline": {"features": {"output_path": str(tmp_path / "features.csv")}},
         }
     )
+    # Handle both decorated and non-decorated main functions across mypy versions
     entrypoint = getattr(train_module.main, "__wrapped__", train_module.main)
     result = entrypoint(cfg)
     assert result == {}
