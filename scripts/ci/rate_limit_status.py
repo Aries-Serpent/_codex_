@@ -180,8 +180,8 @@ def get_rate_limit_log_history(tail: int = 20) -> list[dict]:
         print(f"⚠️ Could not read rate-limit log history: {exc}", file=sys.stderr)
     if malformed_count:
         print(
-            f"⚠️ Skipped {malformed_count} malformed rate-limit log entr"
-            f"{'y' if malformed_count == 1 else 'ies'}.",
+            f"⚠️ Skipped {malformed_count} malformed rate-limit log "
+            f"{'entry' if malformed_count == 1 else 'entries'}.",
             file=sys.stderr,
         )
     return entries
@@ -345,8 +345,11 @@ def watch(interval: int, assert_ok: bool) -> None:
                         )
                         if datetime.now(timezone.utc) >= reset_dt:
                             print("🟢 Rate-limit reset window has passed! Safe to retry.")
-                    except ValueError:
-                        print("⚠️ Could not parse checkpoint retry_after_utc; skipping reset-time check.")
+                    except ValueError as exc:
+                        print(
+                            "⚠️ Could not parse checkpoint retry_after_utc "
+                            f"({retry!r}): {exc}; skipping reset-time check."
+                        )
 
             time.sleep(interval)
     except KeyboardInterrupt:

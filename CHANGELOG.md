@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S927-pr4390-review-thread-4260232504) — 2026-05-11
+- `scripts/repository_organization/monitor_offload_candidates.py`:
+  - excluded lock files (`*.lock`, including `uv.lock`) from large-file offload heuristic,
+  - excluded `docs/` paths from large-file offload heuristic to reduce documentation noise,
+  - switched `.codex/action_log.ndjson` write to compact JSON separators.
+- `tests/repository_organization/test_monitor.py`: added coverage ensuring lock/doc files
+  are not surfaced as large-file offload candidates.
+- Regenerated `.codex/repository_health/offload_candidates.json` and appended a new compact
+  repository-health scan entry in `.codex/action_log.ndjson`.
+
+### Fixed (S926-validation-followup) — 2026-05-11
+- `scripts/ci/rate_limit_status.py`: refined malformed-log pluralization message and
+  added retry timestamp value + parse exception detail in watch-mode warning.
+
 ### Fixed (S925-github-code-quality-review) — 2026-05-11
 - Addressed 8 unresolved `github-code-quality` review findings on PR #4389:
   - `scripts/ci/rate_limit_handler.py`: replaced implicit string literal concatenation

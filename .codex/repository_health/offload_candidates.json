@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-04-27T01:03:33.459964+00:00",
+    "scan_time": "2026-05-11T01:57:59.586690+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -10,33 +10,383 @@
     }
   },
   "summary": {
-    "total_candidates": 2,
+    "total_candidates": 37,
     "by_reason": {
-      "large": 2
+      "large": 37
     },
     "by_category": {
-      "unknown": 2
+      "unknown": 37
     },
-    "total_size_mb": 4.45
+    "total_size_mb": 140.19
   },
   "candidates": [
     {
-      "path": ".secrets.baseline",
+      "path": "target/release/deps/liblibc-05c5d6881866e17d.rlib",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 3.12,
+      "size_mb": 3.74,
       "reasons": [
-        "large_file_3.12mb"
+        "large_file_3.74mb"
       ],
       "recommendation": "review_manually"
     },
     {
-      "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "path": "target/release/deps/libtracing_attributes-a7ced8f4a835d75d.so",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 1.33,
+      "size_mb": 2.56,
       "reasons": [
-        "large_file_1.33mb"
+        "large_file_2.56mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libhashbrown-271c8c8e2fb09904.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.32,
+      "reasons": [
+        "large_file_1.32mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libserde_core-c10432189caf57d7.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 5.06,
+      "reasons": [
+        "large_file_5.06mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libtokio-40e576c0b22df66a.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 11.43,
+      "reasons": [
+        "large_file_11.43mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/librayon-b7124661cdaffd8a.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 4.31,
+      "reasons": [
+        "large_file_4.31mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libpyo3-e110fcb86e75800c.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 6.94,
+      "reasons": [
+        "large_file_6.94mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libfutures_util-064497f5bf6d2bfc.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 6.17,
+      "reasons": [
+        "large_file_6.17mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libmemchr-0acd7698ab2a09d9.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.31,
+      "reasons": [
+        "large_file_1.31mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/liblibc-05c5d6881866e17d.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.73,
+      "reasons": [
+        "large_file_3.73mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libpyo3_build_config-4100ca2545e83196.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.52,
+      "reasons": [
+        "large_file_1.52mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libpyo3_macros_backend-5fced26c65fab255.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.55,
+      "reasons": [
+        "large_file_1.55mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libnum_traits-ae7ea60ff47caa4d.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.85,
+      "reasons": [
+        "large_file_1.85mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libbytes-315a23f7c01ddeb6.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.01,
+      "reasons": [
+        "large_file_1.01mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/librayon-b7124661cdaffd8a.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 4.23,
+      "reasons": [
+        "large_file_4.23mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libtokio_macros-4bc94608dc493224.so",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.15,
+      "reasons": [
+        "large_file_2.15mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libproc_macro2-615796ddd46b5f6e.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.08,
+      "reasons": [
+        "large_file_1.08mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libnum_traits-ae7ea60ff47caa4d.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.88,
+      "reasons": [
+        "large_file_1.88mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libpyo3_macros_backend-5fced26c65fab255.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 7.55,
+      "reasons": [
+        "large_file_7.55mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libfutures_util-064497f5bf6d2bfc.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 6.25,
+      "reasons": [
+        "large_file_6.25mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libbytes-315a23f7c01ddeb6.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.16,
+      "reasons": [
+        "large_file_1.16mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/liblibc-33b4689fe0f18190.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.8,
+      "reasons": [
+        "large_file_3.80mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libmemchr-0acd7698ab2a09d9.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.45,
+      "reasons": [
+        "large_file_1.45mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libserde_core-c10432189caf57d7.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 5.2,
+      "reasons": [
+        "large_file_5.20mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libserde_derive-416dfd4af0e373dc.so",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.09,
+      "reasons": [
+        "large_file_3.09mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libsyn-d7608f8c3ab2e88d.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 10.69,
+      "reasons": [
+        "large_file_10.69mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libcc-db044635ae15da8e.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.05,
+      "reasons": [
+        "large_file_3.05mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libpyo3-e110fcb86e75800c.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 5.55,
+      "reasons": [
+        "large_file_5.55mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libtracing_subscriber-adf8a0b316139e3c.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.59,
+      "reasons": [
+        "large_file_2.59mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libpyo3_macros-a99b2b7ac51be872.so",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 4.38,
+      "reasons": [
+        "large_file_4.38mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/liblibc-33b4689fe0f18190.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.82,
+      "reasons": [
+        "large_file_3.82mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libhashbrown-271c8c8e2fb09904.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.31,
+      "reasons": [
+        "large_file_1.31mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libfutures_macro-34636ef3053d8acc.so",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.96,
+      "reasons": [
+        "large_file_1.96mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libtracing_subscriber-adf8a0b316139e3c.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.93,
+      "reasons": [
+        "large_file_1.93mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libtokio-40e576c0b22df66a.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 8.9,
+      "reasons": [
+        "large_file_8.90mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "target/release/deps/libsyn-d7608f8c3ab2e88d.rmeta",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.99,
+      "reasons": [
+        "large_file_3.99mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "target/release/deps/libzstd_sys-0daf7ce4a5d55387.rlib",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.7,
+      "reasons": [
+        "large_file_1.70mb"
       ],
       "recommendation": "review_manually"
     }

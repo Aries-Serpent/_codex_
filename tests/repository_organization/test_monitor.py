@@ -155,6 +155,24 @@ class TestMonitorOffloadCandidates:
         recommendation = _get_recommendation(category, age, size)
         assert recommendation == expected, f"Recommendation mismatch for {category}/{age}d/{size}MB"
 
+    def test_scan_repository_excludes_lock_and_docs_from_large_file_candidates(self):
+        """Large-file rule should exclude lock files and docs paths."""
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        from monitor_offload_candidates import scan_repository
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo_root = Path(tmpdir)
+            (repo_root / "docs").mkdir(parents=True, exist_ok=True)
+            (repo_root / "docs" / "manual.md").write_text("x" * 2 * 1024 * 1024)
+            (repo_root / "uv.lock").write_text("x" * 2 * 1024 * 1024)
+
+            results = scan_repository(repo_root)
+            candidate_paths = {c["path"] for c in results["candidates"]}
+            assert "docs/manual.md" not in candidate_paths
+            assert "uv.lock" not in candidate_paths
+
 
 @pytest.mark.skipif(
     True, reason="Integration test - requires full repository setup"
