@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-05-11T03:39:42Z",
+  "generated_at": "2026-05-11T07:12:48Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1035,7 +1035,7 @@
     },
     {
       "name": "auto-approve-workflows",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2111,5 +2111,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "71b1f1ae3646149bb075e31c1033d9264a8253676468c83aaf585b2a0c780c9e"
+  "integrity_sha256": "7d5b5ded81eae82b2275114e0a6d0213625204b831d2dc608bb8b7258741eb35"
 }
