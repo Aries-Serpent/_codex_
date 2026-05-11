@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S952)
+- Resolved 58 open CodeQL security alerts (artifact `codeql-alerts-open-codeql-25688174911`):
+  pinned 33 unpinned action tags to immutable commit SHAs across 10 workflow files,
+  added `permissions: contents: read` blocks to 22 missing-permissions jobs across 9 workflow files,
+  hardened 2 untrusted-checkout patterns with `persist-credentials: false`,
+  and fixed 1 syntax error in `.github/actions/doc-test-scribe-action/action.yml`.
+- Fixed import-order (`ruff I001`) in `tests/safety/test_sanitizers_coverage.py`.
+- Synchronized living docs (CHANGELOG, AGENT_ACCOUNTABILITY_REPORT) with PR #4395 merged
+  state and new S952 session context on branch `copilot/sync-docs-and-confirm-latest-state`.
+- Confirmed `ruff`, `mypy_baseline.py --require-baseline` (124 errors ↓6 vs baseline 130)
+  remain green on current head.
+
 ### Fixed (S951)
 - Refreshed the PR #4395 living docs and accountability trail after the latest GitHub refresh confirmed the previously lingering 2 inline bot findings are now cleared on `679a1d3`, and that the remaining non-success workflow results on that head are approval-state `action_required` runs rather than newly surfaced code-failure conclusions.
 

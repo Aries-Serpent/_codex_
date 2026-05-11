@@ -1,4 +1,37 @@
-## SESSION SUMMARY — 2026-05-11T06:23Z [S938-roadmap-date-consistency]
+## SESSION SUMMARY — 2026-05-11T18:05Z [S952-codeql-alerts-resolution]
+
+**Session:** S952-codeql-alerts-resolution | **Branch:** `copilot/sync-docs-and-confirm-latest-state`
+**Agent:** copilot-swe-agent[bot] | **PR:** (new — PR #4395 merged 2026-05-11T17:57Z)
+
+### Completed
+- Resolved all 58 open CodeQL security alerts from artifact `codeql-alerts-open-codeql-25688174911`
+  (run 25688174911, ref `refs/heads/main`):
+  - **33 `actions/unpinned-tag`**: pinned action tags to immutable SHA references across
+    `validate.yml`, `auth-tests.yml`, `test-rag.yml`, `rust_swarm_ci.yml`,
+    `scheduled-dependency-audit.yml`, `resilient_validation.yml`, `repository-health-monitoring.yml`,
+    `pypi-publish.yml`, `copilot-setup-steps.yml`, `copilot-pr-session-injector.yml`,
+    `copilot-issue-triage.yml`, `cognitive_brain_ci_feedback.yml`, `build-preview-image.yml`.
+  - **22 `actions/missing-workflow-permissions`**: added `permissions: contents: read` to all
+    jobs missing explicit token scoping across 9 workflow files.
+  - **2 `actions/untrusted-checkout/medium`**: hardened PR checkouts in `forward-sync-autogen.yml`
+    and `app-package-download.yml` with `persist-credentials: false`.
+  - **1 `actions/syntax-error`**: fixed YAML syntax error at line 201 of
+    `.github/actions/doc-test-scribe-action/action.yml`.
+- Applied `ruff --fix` for `I001` import-order issue in `tests/safety/test_sanitizers_coverage.py`.
+- Updated mypy baseline: 124 errors (↓6 from baseline 130); eligible for `--update`.
+- Synchronized CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md per Pattern 25.
+
+### Validation
+- `ruff check src/ tests/`: ✅ clean (0 errors after I001 fix)
+- `mypy_baseline.py --require-baseline`: ✅ PASS (124 ≤ 130 baseline)
+- `auto_fix_common_issues.py --check-only`: ✅ no auto-fixable issues
+
+### Impact Score
+- Clears all 58 open CodeQL/security alerts from the main branch scanner.
+- Establishes least-privilege token scoping across 9 workflows.
+- Removes supply-chain risk from 33 unpinned third-party action tags.
+
+
 
 **Session:** S938-roadmap-date-consistency | **Branch:** `copilot/update-status-date-in-roadmap`
 **Agent:** copilot-swe-agent[bot] | **PR:** #4396
