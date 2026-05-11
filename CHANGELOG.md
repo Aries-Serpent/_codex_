@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S938-roadmap-date-consistency + test-cli-cleanup) — 2026-05-11
+- `docs/ROADMAP.md`: Refreshed status date from 2026-04-28 to 2026-05-08 (SAR Sprint section).
+- `docs/ROADMAP.md`: Renamed `Roadmap Version Date` → `Roadmap Baseline Date (Version Cut)` to
+  distinguish version-cut date from rolling last-updated date.
+- `docs/ROADMAP.md`: Renamed `Last Updated` → `Last Content Update` and advanced timestamp
+  to 2026-05-11 to match current session.
+- `docs/ROADMAP.md`: Synchronized version at bottom (2.1.1) with version at top header (now 2.1.1).
+- `tests/unit/test_peft_utils.py`: Removed no-op `test_imports_exist`; moved guard into
+  `@pytest.mark.skipif` decorator on `test_freeze_counts`.
+- `tests/unit/test_peft_utils.py`: Narrowed broad `except Exception` to `(OSError, RuntimeError, ValueError)`
+  with f-string message for actionable skip reasons.
+- `tests/unit/test_peft_utils.py`: Removed redundant `assert bundle is not None` (dead code after None guard).
+- `tools/codex_cli.py`: Used `prog=` keyword argument for `ArgumentParser` (follows documented API).
+- `tools/codex_cli.py`: Removed redundant `--fallback` argument (True by default already); `default=True`
+  moved onto `--no-fallback` for clarity.
+- `tools/codex_cli.py`: Changed `--print-summary` default from `True` → `False` to remove
+  confusing `store_true` + `default=True` combination.
+
 ### Fixed (auto-update — PR #4395)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4395 (SHA `ebd76767`) at 2026-05-11T06:23Z [auto-generated]
 

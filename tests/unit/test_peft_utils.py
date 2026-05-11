@@ -11,11 +11,10 @@ import importlib.util
 import pytest
 
 
-def test_imports_exist():
-    if importlib.util.find_spec('peft') is None or importlib.util.find_spec('transformers') is None:
-        pytest.skip("transformers/peft not installed in this environment")
-
-
+@pytest.mark.skipif(
+    importlib.util.find_spec('peft') is None or importlib.util.find_spec('transformers') is None,
+    reason="transformers/peft not installed in this environment",
+)
 def test_freeze_counts():
     try:
         from hhg_logistics.model.peft_utils import (
@@ -30,9 +29,8 @@ def test_freeze_counts():
         bundle = load_hf_llm("sshleifer/tiny-gpt2")
         if bundle is None:
             pytest.skip("load_hf_llm returned no bundle")
-    except Exception as _err:
-        pytest.skip("model weights not available offline")
-    assert bundle is not None
+    except (OSError, RuntimeError, ValueError) as _err:
+        pytest.skip(f"model weights not available offline: {_err}")
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)
     assert trainable > 0
