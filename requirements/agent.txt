@@ -20,7 +20,7 @@
 # ── Core packaging ────────────────────────────────────────────────────────────
 pip>=24.0
 setuptools>=69.0
-wheel>=0.43
+wheel>=0.47.0
 
 # ── Project install (no heavy extras) ────────────────────────────────────────
 # Installed separately with: pip install -e ".[dev]" --no-deps
