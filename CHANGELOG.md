@@ -28,6 +28,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   maintainer approvals (head `5e6a479`), including in-progress/action-required
   counts and updated next-step ordering.
 
+### Fixed (S935-review-thread-and-ci-escalation-followup) — 2026-05-11
+- Applied requested review-thread fixes from `pullrequestreview-4260812198`:
+  - `resilient_validation.yml` now grants minimal workflow-level write scopes
+    needed for PR coverage comment/check publication.
+  - `iterative-self-healing-ci.yml` active-PR guard now uses boolean naming/message
+    (`_has_open_pr`) instead of count-like wording for `per_page=1` semantics.
+  - `.github/copilot-prompts/active/PR-4393-followup.md` "Files Modified" now
+    matches actual modified-file history.
+- Triaged CI escalation for `Automatic Dependency Submission (Python)` failed run
+  `25649801454`; confirmed subsequent branch run `25650141042` succeeded including
+  `submit-dependency-snapshot` step.
+
 ### Fixed (S931-priority-followup-and-ci-triage) — 2026-05-11
 - Verified priority follow-up status after S930 remediation:
   - `codeql-analysis.yml` run `25649802257` succeeded on remediation SHA `d0d1aea`.

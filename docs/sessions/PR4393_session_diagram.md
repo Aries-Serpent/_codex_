@@ -14,7 +14,8 @@ graph TD
   J[S932 Rebase-Churn Guard<br/>Skip PR-time auth/d00 housekeeping commits] --> K
   K[S933 Sweep-Push Guard<br/>Skip universal sweep pushes for active PRs] --> L
   L[S934 Monitoring Pass<br/>Head 5e6a479 workflow snapshot captured] --> M
-  M[Next: fetcher artifact rerun on latest head and residual confirmation]
+  M[S935 Reviewer-Thread Fixes<br/>permissions + guard naming + followup prompt accuracy] --> N
+  N[Next: fetcher artifact rerun on latest head and residual confirmation]
 ```
 
 ## Session Notes
@@ -31,6 +32,9 @@ graph TD
     - `iterative-self-healing-ci.yml` now defers sweep pushes on active `copilot/*` branches and on protected branches while open PRs exist.
 - S934 monitoring snapshot (head `5e6a479`):
     - 12 success, 9 in_progress, 4 action_required, 4 cancelled, 1 skipped.
+- S935 verification snapshot:
+    - Reviewer thread `4260812198` requested updates were applied.
+    - Dependency-submission run `25649801454` failure was followed by successful rerun state on `25650141042` (`submit-dependency-snapshot` success).
 
 ---
 

@@ -2,7 +2,7 @@
 
 **PR:** [#4393](https://github.com/Aries-Serpent/_codex_/pull/4393)  
 **Branch:** `copilot/fix-ci-failure-triage-report`  
-**Status:** 🟡 In progress — rebase-churn guards merged; active workflow monitoring in progress
+**Status:** 🟡 In progress — reviewer thread fixes applied; dependency-submission failure triaged as transient; fetcher recheck pending API reset
 
 ---
 
@@ -47,14 +47,24 @@
   - 4 `action_required` (approval-gated runs)
   - 4 `cancelled` (superseded duplicates)
   - 1 `skipped`
+- ✅ Reviewer thread updates applied (4260812198):
+  - `resilient_validation.yml` permissions set to minimal required scopes for PR coverage comment write.
+  - `iterative-self-healing-ci.yml` boolean guard naming/messages corrected (`_has_open_pr`).
+  - `.github/copilot-prompts/active/PR-4393-followup.md` "Files Modified" section corrected.
+- ✅ Dependency-submission escalation triage:
+  - Failed run `25649801454` (`submit-dependency-snapshot`) reviewed.
+  - Newer run `25650141042` on the same branch completed `success`, including `submit-dependency-snapshot`.
+  - Classified as transient workflow/platform failure, not persistent repo-code regression.
+- ⚠️ CodeQL fetcher rerun currently pending due temporary GitHub API rate-limit
+  window on this session token; re-dispatch required once reset clears.
 
 ---
 
 ## Immediate Next Steps
 
-1. Continue monitoring in-progress checks on `5e6a479` until stable completion.
+1. Continue monitoring in-progress checks on latest PR head until stable completion.
 2. Trigger `codeql-alert-fetcher.yml` on latest branch head and download a fresh artifact.
-3. Confirm no carryover from the original 249-alert artifact set.
+3. Confirm no carryover from the original 249-alert artifact set (`total == 0` target).
 4. If any residual alerts remain, patch only residual files and re-run fetcher.
 5. Merge when required pre-merge checks are green.
 

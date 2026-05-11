@@ -17,7 +17,10 @@
 - [`a2fcb1ef`] chore(auth): write provenance session token [skip ci] (github-actions[bot], 2026-05-11)
 
 ### Files Modified
-No files modified
+- `CODEX_MANIFEST.json`
+- `.codex/session_context_latest.md`
+- `.codex/session_context_latest.json`
+- `.codex/agent_auth_session.json`
 
 ---
 
