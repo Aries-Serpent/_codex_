@@ -1,5 +1,5 @@
-# Session Context — 2026-05-11T13:15:34Z
-**Branch:** `dependabot/github_actions/docker/build-push-action-7.1.0`  **PR:** #4409  **Access:** `graphql, codeql_local`
+# Session Context — 2026-05-11T13:21:36Z
+**Branch:** `dependabot/github_actions/docker/build-push-action-7.1.0`  **PR:** #4398  **Access:** `graphql, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `graphql → codeql_local`
@@ -8,8 +8,8 @@
 - gh CLI: ❌
 - CodeQL CLI: ✅
 
-## 📋 PR #4409 — deps(deps): bump patsy from 1.0.1 to 1.0.2
-State: `OPEN`  Draft: `False`  Branch: `dependabot/pip/patsy-1.0.2` → `main`
+## 📋 PR #4398 — ci(deps): bump docker/build-push-action from 6.19.2 to 7.1.0
+State: `OPEN`  Draft: `False`  Branch: `dependabot/github_actions/docker/build-push-action-7.1.0` → `main`
 
 ## 📝 Recent Commits
 - `eb500dc9` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-11)
