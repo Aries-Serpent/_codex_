@@ -34256,3 +34256,27 @@ and the CI gate requirement.
 ### Impact
 - Leaves the PR with only the final re-scan/push cycle needed to confirm those 2 inline findings clear in GitHub.
 - Keeps the living docs and accountability trail synchronized with the current branch state per maintainer direction.
+
+---
+
+## SESSION SUMMARY — 2026-05-11T17:10Z S951 (refresh PR #4395 status after GitHub re-scan)
+
+### Work Completed
+1. Re-scanned PR #4395 review threads on the latest pushed head `679a1d3`.
+2. Confirmed the previously lingering 2 inline `github-code-quality` findings are now cleared after GitHub refresh; unresolved review-thread count is now 0.
+3. Re-classified the current non-success workflow outcomes on `679a1d3`:
+   - remaining visible non-success runs are `action_required`
+   - sampled runs in this class currently have zero jobs
+   - this class is approval/delegation-state, not a newly surfaced code-test failure
+4. Refreshed `docs/plans/PR4395_whats_next.md`, `docs/sessions/PR4395_session_diagram.md`, and `CHANGELOG.md` so the handoff state matches the latest GitHub snapshot.
+
+### Validation
+- GitHub MCP review-thread re-scan: `0` unresolved threads on `679a1d3`.
+- GitHub MCP workflow-run scan: latest branch snapshot shows `29` completed `action_required` runs and `1` in-progress Copilot run on `679a1d3`.
+- Additional workflow-job inspection:
+  - prior failing `Comment Review Gate` run on `b01aa0d` contained a real failed gate job
+  - current sampled `action_required` runs on `679a1d3` show zero-job approval-state behavior
+
+### Impact
+- Confirms Priority 1 review-thread cleanup is now complete on the latest pushed head.
+- Narrows the remaining merge-readiness work to workflow settlement/approval monitoring rather than further source-code remediation.

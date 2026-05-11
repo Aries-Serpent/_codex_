@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S951)
+- Refreshed the PR #4395 living docs and accountability trail after the latest GitHub refresh confirmed the previously lingering 2 inline bot findings are now cleared on `679a1d3`, and that the remaining non-success workflow results on that head are approval-state `action_required` runs rather than newly surfaced code-failure conclusions.
+
 ### Fixed (S950)
 - Addressed the two remaining `github-code-quality` review findings on PR #4395 by replacing the constant-branch negative-learning-rate raise with a tiny helper call in `tests/integration/test_phase14_edge_cases_coverage.py` and replacing the unused `provider = None` reassignment with `del provider` in `tests/test_rag_embeddings.py`.
 - Refreshed the PR #4395 living docs to reflect the latest pushed-head re-scan, workflow classifications, and remaining follow-up path.
