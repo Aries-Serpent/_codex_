@@ -5,11 +5,16 @@ from __future__ import annotations
 import importlib
 from collections.abc import Sequence
 from pathlib import Path
-from typing import IO, Any, Literal, cast, overload
+from typing import IO, TYPE_CHECKING, Any, Literal, overload
 
-# Resolve stdlib subprocess via importlib to avoid local-module name shadowing
-# (`src.codex.utils.subprocess`) reported by code scanning in direct imports.
-_stdlib_subprocess = cast(Any, importlib.import_module("subprocess"))
+if TYPE_CHECKING:
+    # At type-check time, import the real stdlib subprocess so that mypy can
+    # resolve `_stdlib_subprocess.CompletedProcess` correctly.
+    import subprocess as _stdlib_subprocess
+else:
+    # At runtime, resolve via importlib to avoid local-module name shadowing
+    # (`src.codex.utils.subprocess`) reported by code scanning in direct imports.
+    _stdlib_subprocess = importlib.import_module("subprocess")  # type: ignore[assignment]
 
 
 @overload
@@ -19,27 +24,6 @@ def run(
     cwd: Path | None = None,
     capture_output: bool = False,
     text: Literal[True] = True,
-    check: bool = True,
-    timeout: float | None = None,
-    env: dict[str, str] | None = None,
-    input: str | None = None,
-    stdin: int | IO[Any] | None = None,
-    stdout: int | IO[Any] | None = None,
-    stderr: int | IO[Any] | None = None,
-    encoding: str | None = None,
-    errors: str | None = None,
-    shell: bool = False,
-) -> _stdlib_subprocess.CompletedProcess[str]:
-    pass
-
-
-@overload
-def run(
-    cmd: Sequence[str],
-    *,
-    cwd: Path | None = None,
-    capture_output: bool = False,
-    text: Literal[True],
     check: bool = True,
     timeout: float | None = None,
     env: dict[str, str] | None = None,

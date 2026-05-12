@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S970 — mypy regression fix + type annotation improvements)
+- **mypy baseline reduced 135 → 122**: Fixed 13 type annotation issues across 4 files:
+  - `src/codex/utils/subprocess.py`: Used `TYPE_CHECKING` guard to properly expose `_stdlib_subprocess` type to mypy (resolves 5 `name-defined` + 1 `overload-cannot-match` errors); removed duplicate overload
+  - `src/codex/logging/query_logs.py`: Added `# type: ignore[assignment, misc]` to optional `rich` fallback assignments
+  - `src/codex/skills/registry.py`: Added `# type: ignore[assignment, misc]` to optional `packaging` fallback assignment
+  - `src/codex/utils/config_loader.py`: Added `misc` suppressor to existing `# type: ignore[assignment]` comments for optional `omegaconf` fallbacks
+  - Updated `.mypy_baseline` from 125 → 122 to lock in the improvement
+
 ### Fixed (S969b — secrets baseline false positive)
 - **Secrets Baseline Enforcer CI fix**: Added `# pragma: allowlist secret` to `secrets-baseline-enforcer.yml:169` — the `run: |` block's "Secret Keyword" detection (false positive from inline "secrets" references in shell echo commands) was causing `🔐 Enforce Secrets Baseline` and `Validation Pipeline / Fast Validation` CI checks to fail after S969 pinned that file's actions to commit SHAs.
 
