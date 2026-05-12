@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S962)
+- **`.codex/evidence/archive_ops.jsonl`**: Removed duplicate `bin/codex-cli` ARCHIVE/RESTORE pair (tombstone `81373fe7`) at `13:41:02Z` — exact same path+sha256 archived 5 seconds after first pair (tombstone `db0bf4ac` at `13:40:57Z`). File reduced from 81 → 79 lines; deduplication now uses `(action, path, sha256, ts-window=60s)` key.
+- **`.github/copilot-prompts/active/PR-4425-followup.md`**: Rewritten as living context document v3.0.0 with completed work table (commit SHAs), accurate `[x]` completion status, Priority 1/2/3 sections reflecting current blocking items, and agent-continuity instructions for next session to pick up correctly.
+- **Living-files hardening**: Explicit agent continuity instructions added to followup.md; every session must update this file and run `verify_living_files.py` before final commit.
+
 ### Fixed (S961)
 - **PR-4425-followup.md**: Populated Priority 1 and Priority 2 task lists (was "No tasks specified"), mirroring the PR's stated CodeQL remediation objectives and validation expectations.
 - **CODEX_MANIFEST.json**: Updated `generated_at` to current timestamp (`2026-05-12T17:29:30Z`) — was regressing to an earlier value (`2026-05-12T12:13:50Z`) on each session refresh cycle.

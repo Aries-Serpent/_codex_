@@ -1,4 +1,25 @@
-## SESSION SUMMARY — 2026-05-12T17:29Z [S961-reviewer-feedback]
+## SESSION SUMMARY — 2026-05-12T18:30Z [S962-review-items-and-living-files]
+
+**Session:** S962-review-items-and-living-files | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
+
+### Completed
+- **`.codex/evidence/archive_ops.jsonl` lines 80-81**: Removed duplicate `bin/codex-cli` ARCHIVE/RESTORE pair (tombstone `81373fe7`, timestamp `13:41:02Z`) — same path+sha256 as lines 76+78 with tombstone `db0bf4ac` at `13:40:57Z`. File: 81→79 lines. Dedup key: `(action, path, sha256, ts-window=60s)`.
+- **`.github/copilot-prompts/active/PR-4425-followup.md`**: Rewritten as living context document v3.0.0 — completed work table with commit SHAs, all done tasks marked `[x]`, current Priority 1/2/3 reflecting blocking items (detect-secrets, sync_tracked_files, CodeQL remediation), and explicit agent-continuity instructions.
+- **`agent-auth-delegation.yml` lines 2021-2031**: Confirmed `id: post_copilot_comment` at line 2023 and observability step `Warn if @copilot continue post failed` at lines 2095-2104 — both present and correct from S961 commits.
+- **sync_tracked_files**: Ran `--fix` → all tracked files consistent including `.secrets.baseline` (CODEX_MANIFEST entry updated to current line/hash).
+- **Living-files hardening**: Agent continuity instructions added to followup.md requiring explicit living-files verification before every final commit.
+
+### Validation
+- `python -m ruff check src/ --output-format=concise` → 0 violations ✅
+- `python scripts/ci/sync_tracked_files.py --fix` → all consistent ✅
+
+### Pattern 25 Compliance
+- `CHANGELOG.md` updated ✅
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+
+---
+
+
 
 **Session:** S961-reviewer-feedback | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
 
