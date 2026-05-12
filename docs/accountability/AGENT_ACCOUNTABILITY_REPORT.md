@@ -1,3 +1,17 @@
+## SESSION SUMMARY — 2026-05-12T22:25Z [S971-subprocess-self-import-fix]
+
+**Session:** S971-subprocess-self-import-fix | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- **`src/codex/utils/subprocess.py` self-import fix**: Replaced `import subprocess as _stdlib_subprocess` inside `TYPE_CHECKING` block with `from subprocess import CompletedProcess`; moved `_stdlib_subprocess = importlib.import_module("subprocess")` unconditionally outside the guard; updated all three return-type annotations from `_stdlib_subprocess.CompletedProcess[...]` to `CompletedProcess[...]` — resolves `github-code-quality` bot "Module imports itself" alert
+
+### Validation
+- ✅ `python -m ruff check src/codex/utils/subprocess.py` → clean
+- ✅ `python -c "import src.codex.utils.subprocess"` → import OK
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T22:15Z [S970b-secrets-false-positive-fix]
 
 **Session:** S970b-secrets-false-positive-fix | **Branch:** `0D_base_` | **PR:** #4427

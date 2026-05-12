@@ -8,13 +8,14 @@ from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, overload
 
 if TYPE_CHECKING:
-    # At type-check time, import the real stdlib subprocess so that mypy can
-    # resolve `_stdlib_subprocess.CompletedProcess` correctly.
-    import subprocess as _stdlib_subprocess
-else:
-    # At runtime, resolve via importlib to avoid local-module name shadowing
-    # (`src.codex.utils.subprocess`) reported by code scanning in direct imports.
-    _stdlib_subprocess: Any = importlib.import_module("subprocess")
+    # Import CompletedProcess directly to avoid the self-import pattern:
+    # the local module is also named 'subprocess', so `import subprocess`
+    # would create a circular reference that CodeQL flags.
+    from subprocess import CompletedProcess
+
+# Runtime: resolve stdlib subprocess via importlib to avoid local-module name
+# shadowing (`src.codex.utils.subprocess`) in direct imports.
+_stdlib_subprocess: Any = importlib.import_module("subprocess")
 
 
 @overload
@@ -34,7 +35,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,
-) -> _stdlib_subprocess.CompletedProcess[str]:
+) -> CompletedProcess[str]:
     pass
 
 
@@ -55,7 +56,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,
-) -> _stdlib_subprocess.CompletedProcess[bytes]:
+) -> CompletedProcess[bytes]:
     pass
 
 
@@ -75,7 +76,7 @@ def run(
     encoding: str | None = None,
     errors: str | None = None,
     shell: bool = False,  # accepted for API compatibility; rejected at runtime
-) -> _stdlib_subprocess.CompletedProcess[Any]:
+) -> CompletedProcess[Any]:
     """Run *cmd* securely.
 
     Parameters mirror :func:`subprocess.run`.

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S971 — subprocess.py self-import CodeQL alert)
+- **`src/codex/utils/subprocess.py`**: Eliminated self-import pattern flagged by `github-code-quality` bot (CodeQL): replaced `import subprocess as _stdlib_subprocess` in `TYPE_CHECKING` block with `from subprocess import CompletedProcess`; moved runtime `importlib.import_module("subprocess")` outside the `if TYPE_CHECKING` guard; updated all return-type annotations from `_stdlib_subprocess.CompletedProcess[...]` to `CompletedProcess[...]`
+
 ### Fixed (S970b — secrets baseline false positive + code review feedback)
 - **CODEQL_REMEDIATION_MASTER_PLAN.md:347**: Added `# pragma: allowlist secret` to the example `API_KEY = "sk-..."` line (false positive "Secret Keyword" detection) — fixes `🔐 Enforce Secrets Baseline` CI failure on PR event
 - **`scripts/process_workflow_runs.py`**: Moved `from tempfile import gettempdir` import from module-level to within `_find_default_input_file()` (only usage site) — addresses reviewer concern about import placement
