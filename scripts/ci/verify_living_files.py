@@ -1,40 +1,65 @@
 #!/usr/bin/env python3
 """verify_living_files.py — living-file staleness enforcement.
 
-Checks that the 5 required living files for PR #4425 are present and
+Checks that the 5 required living files for a PR are present and
 non-empty.  In ``--strict`` mode (used in CI and before every final
 commit) exits with status 1 if any file is stale or missing.
 
 Living files:
   1. CHANGELOG.md
   2. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
-  3. docs/plans/PR4425_whats_next.md
-  4. docs/sessions/PR4425_session_diagram.md
-  5. .github/copilot-prompts/active/PR-4425-followup.md
+  3. docs/plans/PR{N}_whats_next.md
+  4. docs/sessions/PR{N}_session_diagram.md
+  5. .github/copilot-prompts/active/PR-{N}-followup.md
 """
 
 import argparse
+import json
+import os
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-LIVING_FILES = [
-    "CHANGELOG.md",
-    "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
-    "docs/plans/PR4425_whats_next.md",
-    "docs/sessions/PR4425_session_diagram.md",
-    ".github/copilot-prompts/active/PR-4425-followup.md",
-]
+DEFAULT_PR_NUMBER = 4425
 
 # Minimum byte size to consider a file non-stale (not just a header stub)
 MIN_SIZE_BYTES = 200
 
 
-def check_living_files() -> bool:
+def _resolve_pr_number(cli_pr_number: int | None) -> int:
+    if cli_pr_number:
+        return cli_pr_number
+    env_pr = os.environ.get("PR_NUMBER")
+    if env_pr and env_pr.isdigit():
+        return int(env_pr)
+    event_path = os.environ.get("GITHUB_EVENT_PATH")
+    if event_path and Path(event_path).exists():
+        try:
+            with open(event_path, encoding="utf-8") as f:
+                payload = json.load(f)
+            pr_num = payload.get("pull_request", {}).get("number")
+            if isinstance(pr_num, int):
+                return pr_num
+        except (OSError, json.JSONDecodeError):
+            pass
+    return DEFAULT_PR_NUMBER
+
+
+def _living_files(pr_number: int) -> list[str]:
+    return [
+        "CHANGELOG.md",
+        "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        f"docs/plans/PR{pr_number}_whats_next.md",
+        f"docs/sessions/PR{pr_number}_session_diagram.md",
+        f".github/copilot-prompts/active/PR-{pr_number}-followup.md",
+    ]
+
+
+def check_living_files(pr_number: int) -> bool:
     """Return True if all living files are present and non-stale."""
     all_ok = True
-    for rel_path in LIVING_FILES:
+    for rel_path in _living_files(pr_number):
         path = REPO_ROOT / rel_path
         if not path.exists():
             print(f"❌ MISSING:  {rel_path}")
@@ -51,7 +76,12 @@ def check_living_files() -> bool:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Verify that all living files for PR #4425 are present and non-stale."
+        description="Verify that all required living files for a PR are present and non-stale."
+    )
+    parser.add_argument(
+        "--pr-number",
+        type=int,
+        help=f"PR number to validate (default: auto-detect, fallback {DEFAULT_PR_NUMBER}).",
     )
     parser.add_argument(
         "--strict",
@@ -60,11 +90,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    pr_number = _resolve_pr_number(args.pr_number)
     print("=" * 60)
-    print("🔍 verify_living_files — PR #4425 living-file check")
+    print(f"🔍 verify_living_files — PR #{pr_number} living-file check")
     print("=" * 60)
 
-    ok = check_living_files()
+    ok = check_living_files(pr_number)
 
     print("=" * 60)
     if ok:

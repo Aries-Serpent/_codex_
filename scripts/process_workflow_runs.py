@@ -6,9 +6,11 @@ This script processes the workflow runs data already retrieved via MCP tools
 and filters it to our 81 target commits.
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
+from tempfile import gettempdir
 from typing import Any
 
 # Target commits
@@ -132,10 +134,40 @@ def generate_markdown_table(by_commit: dict[str, list[Any]]) -> str:
 
     return "\n".join(lines)
 
+def _find_default_input_file() -> str | None:
+    """Find latest MCP workflow-runs output file in temp directory."""
+    tmp_dir = Path(gettempdir())
+    candidates = sorted(
+        tmp_dir.glob("*copilot-tool-output*.txt"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    for candidate in candidates:
+        try:
+            with open(candidate, encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict) and "workflow_runs" in data:
+                return str(candidate)
+        except (OSError, json.JSONDecodeError):
+            continue
+    return None
+
+
 def main():
     """Main entry point."""
-    # Check if input file exists
-    input_file = "/tmp/1771141320736-copilot-tool-output-ladw2q.txt"  # nosec B108 — specific CI artifact path
+    parser = argparse.ArgumentParser(description="Process MCP workflow-runs output")
+    parser.add_argument(
+        "--input-file",
+        help="Path to saved github-mcp-server-actions_list output JSON file",
+    )
+    args = parser.parse_args()
+
+    input_file = args.input_file or _find_default_input_file()
+    if not input_file:
+        print("❌ No MCP output file found.")
+        print("Run: github-mcp-server-actions_list to generate it first")
+        return 1
+
     if not Path(input_file).exists():
         print(f"❌ Input file not found: {input_file}")
         print("Run: github-mcp-server-actions_list to generate it first")

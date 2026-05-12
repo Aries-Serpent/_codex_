@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S966)
+- Addressed unresolved PR #4427 review feedback across 11 comments:
+  - `scripts/ci/github_api_trickle.py`: switched CodeQL analyze output args from `--output=...` to `--output ...`.
+  - `scripts/ci/scan_all.py`: added `_run_fix_command()` to preserve shell semantics for hardcoded fix commands while keeping non-shell execution for simple commands.
+  - `scripts/ci/verify_living_files.py`: parameterized PR number detection (`--pr-number`, `PR_NUMBER`, `GITHUB_EVENT_PATH`) and generated PR-scoped living-file paths dynamically.
+  - `.github/copilot-prompts/active/PR-4425-followup.md`: removed duplicated template block; retained single authoritative section and updated metadata timestamp.
+  - `scripts/cognitive/orchestrate.py`: replaced `atexit` lambda with best-effort cleanup function that suppresses `OSError` during shutdown.
+  - `scripts/process_workflow_runs.py`: removed brittle hardcoded temp artifact path; added `--input-file` and temp-file auto-discovery fallback.
+  - `scripts/generate_pr_followup.py`: added automatic fallback seeding from the latest previous `PR-*-followup.md` when opening a new PR number and current follow-up is placeholder/missing.
+  - `CODEX_MANIFEST.json`: regenerated manifest timestamp and integrity hash to restore monotonic `generated_at`.
+- Ran required checks: `verify_living_files.py --strict`, `sync_tracked_files.py --fix`, `ruff` on touched scripts, and py_compile on modified Python files.
+
 ### Fixed (S965)
 - **`CHANGELOG.md` + `AGENT_ACCOUNTABILITY_REPORT.md`**: Pattern 25 compliance — ensured both files are updated in every session commit (Pattern 25 was violated in `50bf777` which only changed session context; remediated in `9cc5f8f`).
 - **Living docs refreshed**: `docs/plans/PR4425_whats_next.md` and `docs/sessions/PR4425_session_diagram.md` updated with S965 current CI snapshot and next-session priorities.

@@ -1,3 +1,27 @@
+## SESSION SUMMARY — 2026-05-12T20:05Z [S966-pr4427-review-thread-remediation]
+
+**Session:** S966-pr4427-review-thread-remediation | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- Resolved all currently listed unresolved review feedback items in PR #4427:
+  - **`CODEX_MANIFEST.json`**: regenerated via `scripts/ci/generate_manifest.py` to move `generated_at` forward and refresh `integrity_sha256`.
+  - **`scripts/ci/scan_all.py`**: added `_run_fix_command()` so hardcoded fix commands that require shell operators keep working; non-shell commands still use argv execution.
+  - **`scripts/ci/github_api_trickle.py`**: switched CodeQL CLI args to split form `--output`, `<path>`.
+  - **`scripts/ci/verify_living_files.py`**: generalized to dynamic PR-number paths with `--pr-number` + env/event auto-detection.
+  - **`scripts/cognitive/orchestrate.py`**: replaced `atexit` lambda with guarded cleanup function (`try/except OSError`).
+  - **`scripts/process_workflow_runs.py`**: replaced hardcoded `/tmp/...` file with `--input-file` option and automatic temp artifact discovery.
+  - **`.github/copilot-prompts/active/PR-4425-followup.md`**: removed duplicated template block so only one authoritative continuation section remains.
+  - **`scripts/generate_pr_followup.py`**: added PR-transition fallback seeding from latest prior `PR-*-followup.md` when current PR file has no real content.
+
+### Validation
+- `python scripts/ci/verify_living_files.py --strict` → ✅ pass
+- `python scripts/ci/sync_tracked_files.py --fix` → ✅ pass (updated `.secrets.baseline` manifest pointer)
+- `python -m ruff check scripts/... --fix` on all modified scripts → ✅ pass
+- `python -m py_compile <modified scripts>` → ✅ pass
+- `python scripts/ci/mypy_baseline.py --require-baseline` → ❌ still `135 > 125` (known branch-wide baseline gap, unchanged by these script/docs fixes)
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T19:35Z [S965-final-wrap-up]
 
 **Session:** S965-final-wrap-up | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425

@@ -490,7 +490,7 @@ def fetch_code_scanning_alerts(
         result = subprocess.run(
             [CODEQL_CLI, "database", "analyze", CODEQL_DB,
              CODEQL_QLPACKS,
-             "--format=sarifv2.1.0", f"--output={_sarif_out}",
+             "--format=sarifv2.1.0", "--output", _sarif_out,
              "--no-print-diagnostics-summary"],
             capture_output=True, text=True, timeout=600, shell=False,
         )

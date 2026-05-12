@@ -350,6 +350,17 @@ def to_json(results: list[CheckResult]) -> str:
     )
 
 
+def _run_fix_command(cmd: str) -> None:
+    """Run fix commands while preserving shell syntax where required."""
+    shell_tokens = ("&&", "||", "|", ">", "<", ";", "*", "?", "$(", "`")
+    if any(token in cmd for token in shell_tokens):
+        subprocess.run(  # nosec B602 -- cmd comes from internal hardcoded fix_cmd strings
+            cmd, cwd=REPO_ROOT, check=False, shell=True,
+        )
+        return
+    subprocess.run(shlex.split(cmd), cwd=REPO_ROOT, check=False)
+
+
 # ── Main ───────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -401,9 +412,7 @@ def main() -> int:
             print(f"\n{BOLD}🔧 Auto-fixing {len(fixable)} check(s)…{RESET}")
             for r in fixable:
                 print(f"  Running: {r.fix_cmd}")
-                subprocess.run(  # nosec B603 — fix_cmd is a hardcoded literal from CheckResult; shlex.split for safety
-                    shlex.split(r.fix_cmd), cwd=REPO_ROOT, check=False,
-                )
+                _run_fix_command(r.fix_cmd)
         else:
             print(f"{GREEN}Nothing to auto-fix.{RESET}")
 

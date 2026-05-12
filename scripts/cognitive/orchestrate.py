@@ -134,7 +134,13 @@ def _build_orchestrator(
         _fd, _tmp_path = tempfile.mkstemp(suffix=".json")
         os.close(_fd)
         state_path = Path(_tmp_path)
-        atexit.register(lambda p=_tmp_path: os.path.exists(p) and os.remove(p))
+        def _cleanup_temp_file(path: str = _tmp_path) -> None:
+            try:
+                if os.path.exists(path):
+                    os.remove(path)
+            except OSError:
+                return
+        atexit.register(_cleanup_temp_file)
     return PlansetOrchestrator(
         planset_dir=planset_dir,
         engine=QuantumPlansetEngine(),
