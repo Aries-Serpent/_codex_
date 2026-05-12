@@ -27,6 +27,7 @@ import argparse
 import json
 import logging
 import os
+import shlex
 import subprocess
 import sys
 import textwrap
@@ -400,8 +401,8 @@ def main() -> int:
             print(f"\n{BOLD}🔧 Auto-fixing {len(fixable)} check(s)…{RESET}")
             for r in fixable:
                 print(f"  Running: {r.fix_cmd}")
-                subprocess.run(  # nosec B603 — fix_cmd is a hardcoded literal from CheckResult
-                    r.fix_cmd.split(), cwd=REPO_ROOT, check=False,  # noqa: S603
+                subprocess.run(  # nosec B603 — fix_cmd is a hardcoded literal from CheckResult; shlex.split for safety
+                    shlex.split(r.fix_cmd), cwd=REPO_ROOT, check=False,
                 )
         else:
             print(f"{GREEN}Nothing to auto-fix.{RESET}")

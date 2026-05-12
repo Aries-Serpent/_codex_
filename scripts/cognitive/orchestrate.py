@@ -127,11 +127,14 @@ def _build_orchestrator(
     planset_dir = _REPO_ROOT / ".codex" / "plans"
     state_path = planset_dir / ".orchestrator_state.json"
     if dry_run:
-        # Use a temp state path so nothing is persisted
+        # Use a temp state path so nothing is persisted to the real planset dir.
+        # Register cleanup so the file is removed when the process exits.
+        import atexit
         import tempfile
         _fd, _tmp_path = tempfile.mkstemp(suffix=".json")
         os.close(_fd)
         state_path = Path(_tmp_path)
+        atexit.register(lambda p=_tmp_path: os.path.exists(p) and os.remove(p))
     return PlansetOrchestrator(
         planset_dir=planset_dir,
         engine=QuantumPlansetEngine(),
