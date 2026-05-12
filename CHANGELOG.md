@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S964)
+- **`scripts/process_workflow_runs.py`**: Added `# pragma: allowlist secret` to lines 44–56 containing git commit SHAs flagged as "Hex High Entropy String" false positives by `detect-secrets`. These are PR #3248 target-commit identifiers — no real secrets were present.
+
 ### Fixed (S963)
 - **`PR-4425-followup.md`**: Updated Priority 1/2/3 task sections with concrete, actionable tasks mirroring PR objectives (CodeQL remediation, Pattern 25, sync_tracked_files, Bandit sweep) — replacing recurring "No tasks specified" placeholders that caused continuation agents to do nothing.
 - **Merge conflict resolution**: Merged `origin/copilot/update-coverage-improvement-timeline` (remote merge-of-main) into local branch, resolving conflicts in `.codex/agent_auth_session.json` and `.codex/session_context_latest.md`.

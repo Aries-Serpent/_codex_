@@ -1,3 +1,23 @@
+## SESSION SUMMARY — 2026-05-12T19:00Z [S964-secrets-baseline-fix]
+
+**Session:** S964-secrets-baseline-fix | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
+
+### Completed
+- **`scripts/process_workflow_runs.py` secrets false-positive**: Added `# pragma: allowlist secret` to lines 44–56. These are git commit SHA constants (PR #3248 target-commit list) that `detect-secrets` was flagging as "Hex High Entropy String". No real secrets — purely CI/audit data identifiers.
+- **Living docs updated**: `docs/plans/PR4425_whats_next.md` and `docs/sessions/PR4425_session_diagram.md` refreshed with S964 CI snapshot, current status, and next-session priorities.
+- **Follow-up prompt updated**: `.github/copilot-prompts/active/PR-4425-followup.md` reflects current priorities for next session continuation.
+
+### Validation
+- `python -m ruff check src/ tests/ --fix` → 0 violations ✅
+- `python scripts/ci/sync_tracked_files.py --fix` → all consistent ✅
+- `deferral-language-gate` → passing (0 failed jobs in run 25755219121) ✅
+
+### Pattern 25 Compliance
+- `CHANGELOG.md` updated with S964 entry ✅
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T18:45Z [S963-followup-tasks-codeql-remediation]
 
 **Session:** S963-followup-tasks-codeql-remediation | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
