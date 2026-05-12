@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S955)
+- Restored structured warning behavior for psutil import fallbacks in `src/codex_ml/monitoring/system_metrics.py` by emitting the `system_metrics.dependency_missing` payload at warning level again, which fixes `tests/test_monitoring.py::test_structured_warning_on_psutil_import_failure`.
+- Re-ran the requested CI rescue validations (`python3 -m ruff check`, `python3 -m pytest -x`) and continued iterative self-healing updates for this PR session.
+
 ### Fixed (auto-update — PR #4425)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4425 (SHA `a9f18302`) at 2026-05-12T12:13Z [auto-generated]
 

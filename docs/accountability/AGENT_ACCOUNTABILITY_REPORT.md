@@ -1,3 +1,24 @@
+## SESSION SUMMARY — 2026-05-12T13:35Z [S955-pr4425-ci-self-heal]
+
+**Session:** S955-pr4425-ci-self-heal | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
+
+### Completed
+- Continued iterative self-healing for Validation Pipeline context on PR #4425 and re-checked run `25733327253`.
+- Fixed the discovered failing local verification test by restoring warning-level structured logging for psutil import fallback in `src/codex_ml/monitoring/system_metrics.py`.
+- Added a current-day PDA entry to refresh merge-readiness pattern tracking for this session.
+
+### Validation
+- `python3 -m ruff check` ✅
+- `python3 -m ruff check src/ tests/ --fix` ✅
+- `python3 -m pytest -x` ❌ (`tests/test_monitoring.py::test_structured_warning_on_psutil_import_failure` before the fix)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ❌ (Pattern 22/30 pre-fix state in this session)
+
+### Next
+- Run `python3 -m pytest -x` again after the system-metrics warning-level fix to confirm pass.
+- Run `python scripts/ci/sync_tracked_files.py --fix` and re-check `auto_fix_common_issues.py --check-only`.
+
+---
+
 ## SESSION SUMMARY — 2026-05-11T23:35Z [S954-pr4419-followup]
 
 **Session:** S954-pr4419-followup | **Branch:** `copilot/update-cve-reference-in-comment`
