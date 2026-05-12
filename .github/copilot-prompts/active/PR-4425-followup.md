@@ -39,14 +39,15 @@
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Continue CodeQL alert remediation (127 → 100 → 75 → 50 → 25 → 0) — fetch open alerts via GitHub MCP `list_code_scanning_alerts` and apply fixes
-- [ ] Run `python scripts/ci/sync_tracked_files.py --fix` then `detect-secrets scan --baseline .secrets.baseline` to confirm secrets gate is green after pragma fix
-- [ ] Confirm Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in every commit
+- [ ] Continue CodeQL alert remediation (127 → 100 → 75 → 50 → 25 → 0) — fetch open alerts via GitHub MCP `list_code_scanning_alerts` and apply fixes in batch (API was rate-limited in S965; retry with fresh token)
+- [ ] Run `python scripts/ci/verify_living_files.py --strict` before every final commit (script now exists at `scripts/ci/verify_living_files.py`)
+- [ ] Confirm Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in EVERY commit — including session plan / context commits
 - [ ] Run `python -m ruff check src/ tests/ --fix` (must show 0 violations before push)
 - [ ] Continue Bandit/CodeQL sweep toward 0 open alerts
 
-**Validation**:
+**Validation** (run all before push):
 ```bash
+python scripts/ci/verify_living_files.py --strict
 python -m ruff check src/ tests/ --output-format=concise
 python scripts/ci/mypy_baseline.py --require-baseline
 python scripts/ci/auto_fix_common_issues.py --check-only

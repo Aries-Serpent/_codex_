@@ -1,3 +1,29 @@
+## SESSION SUMMARY — 2026-05-12T19:35Z [S965-final-wrap-up]
+
+**Session:** S965-final-wrap-up | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
+
+### Completed (S965 wrap-up)
+- **`PR-4425-followup.md`**: Updated with S965 final outcomes and next-session P1/P2/P3 priorities. Added `verify_living_files.py --strict` to validation block.
+- **CHANGELOG.md**: Updated S965 entry to reflect code review fix (unused `strict` param removal).
+- **Pattern 25 final**: Both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated in this final S965 commit ✅.
+
+### Validation (final)
+- `python scripts/ci/verify_living_files.py --strict` → ✅ all 5 living files present and non-stale
+- `python -m ruff check src/ tests/ --fix` → 0 violations ✅
+- `python scripts/ci/sync_tracked_files.py --fix` → all consistent ✅
+- `python scripts/ci/check_deferral_language.py --git-log` → 0 violations ✅
+
+### Pattern 25 Compliance
+- `CHANGELOG.md` updated with S965 wrap-up entry ✅
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+
+### For Next Session (S966)
+- **Priority 1**: CodeQL staged closure 127→100 (API was rate-limited in S965; retry with fresh token)
+- **Priority 2**: Expand living-files hardening (`generate_pr_followup.py` preservation)
+- **Priority 3**: mypy 135→125 gap (type annotation regressions)
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T19:20Z [S965-pattern25-living-docs]
 
 **Session:** S965-pattern25-living-docs | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425

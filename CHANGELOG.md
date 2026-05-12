@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S965)
-- **`CHANGELOG.md` + `AGENT_ACCOUNTABILITY_REPORT.md`**: Pattern 25 compliance — ensured both files are updated in every session commit (Pattern 25 was violated in `50bf777` which only changed session context; remediated in this commit).
+- **`CHANGELOG.md` + `AGENT_ACCOUNTABILITY_REPORT.md`**: Pattern 25 compliance — ensured both files are updated in every session commit (Pattern 25 was violated in `50bf777` which only changed session context; remediated in `9cc5f8f`).
 - **Living docs refreshed**: `docs/plans/PR4425_whats_next.md` and `docs/sessions/PR4425_session_diagram.md` updated with S965 current CI snapshot and next-session priorities.
-- **`scripts/ci/verify_living_files.py`**: Created living-file staleness enforcement script — exits 1 in `--strict` mode if any of the 5 living files (`CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md`, `PR4425_whats_next.md`, `PR4425_session_diagram.md`, `PR-4425-followup.md`) is stale.
-- **`PR-4425-followup.md`**: Updated with S965 session outcomes and next-session priorities for CodeQL remediation continuation.
+- **`scripts/ci/verify_living_files.py`**: Created living-file staleness enforcement script — exits 1 in `--strict` mode if any of the 5 living files (`CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md`, `PR4425_whats_next.md`, `PR4425_session_diagram.md`, `PR-4425-followup.md`) is stale. Unused `strict` parameter removed from `check_living_files()` per code review.
+- **`PR-4425-followup.md`**: Updated with S965 session outcomes (all resolved) and next-session priorities: CodeQL staged closure (127→100→0), mypy 135→125 gap, living-files hardening expansion.
+- **Replied to blocking CI rescue comments**: 4433737856, 4433760318, 4433790503.
 
 ### Fixed (S964)
 - **`scripts/process_workflow_runs.py`**: Added `# pragma: allowlist secret` to lines 44–56 containing git commit SHAs flagged as "Hex High Entropy String" false positives by `detect-secrets`. These are PR #3248 target-commit identifiers — no real secrets were present.
