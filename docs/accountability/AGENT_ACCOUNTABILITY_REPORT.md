@@ -6,7 +6,7 @@
 - **PR-4425-followup.md**: Populated Priority 1 (CodeQL remediation continuation, Pattern 25 compliance) and Priority 2 (validation checks, monotonic manifest timestamps, archive dedup) task lists — previously contained "No tasks specified" which caused continuation agents to do nothing.
 - **CODEX_MANIFEST.json**: Updated `generated_at` to `2026-05-12T17:29:30Z`; was regressed to `2026-05-12T12:13:50Z` on each session refresh cycle, breaking monotonicity expectations.
 - **`.codex/evidence/archive_ops.jsonl`**: Removed 8 duplicate entries (89 → 81); deduplication key is `(action, path, tombstone)` tuple, preventing audit reconstruction ambiguity.
-- **`agent-auth-delegation.yml`**: Added `Warn if @copilot continue post failed` step with `failure()` condition; emits `::warning` annotation + job summary entry when the `Post @copilot continue` step silently fails under `continue-on-error: true`.
+- **`agent-auth-delegation.yml`**: Added `Warn if @copilot continue post failed` step with `steps.post_copilot_comment.outcome == 'failure'` condition (not `failure()` which is incompatible with `continue-on-error`); emits `::warning` annotation + job summary entry when the `Post @copilot continue` step silently fails.
 
 ### Validation
 - `python3 -m ruff check src/ scripts/ --fix` → 0 violations ✅

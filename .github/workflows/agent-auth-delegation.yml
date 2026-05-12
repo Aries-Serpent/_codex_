@@ -2020,6 +2020,7 @@ jobs:
 
       # ── 3e: Post @copilot continue on the PR ─────────────────────────────────
       - name: "Post @copilot continue"
+        id: post_copilot_comment
         if: steps.session_gate.outputs.acquired == 'true'
         continue-on-error: true
         uses: actions/github-script@v9
@@ -2093,7 +2094,7 @@ jobs:
 
       # ── 3e-obs: Emit warning annotation when 3e fails (fail-open visibility) ──
       - name: "Warn if @copilot continue post failed"
-        if: steps.session_gate.outputs.acquired == 'true' && failure()
+        if: steps.session_gate.outputs.acquired == 'true' && steps.post_copilot_comment.outcome == 'failure'
         run: |
           echo "::warning title=Post @copilot continue skipped::The 'Post @copilot continue' step failed (continue-on-error=true). Delegation succeeded but no PR comment was posted. Check the previous step's logs for details."
           echo "### ⚠️ Post \`@copilot continue\` step failed" >> "$GITHUB_STEP_SUMMARY"

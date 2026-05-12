@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **PR-4425-followup.md**: Populated Priority 1 and Priority 2 task lists (was "No tasks specified"), mirroring the PR's stated CodeQL remediation objectives and validation expectations.
 - **CODEX_MANIFEST.json**: Updated `generated_at` to current timestamp (`2026-05-12T17:29:30Z`) — was regressing to an earlier value (`2026-05-12T12:13:50Z`) on each session refresh cycle.
 - **`.codex/evidence/archive_ops.jsonl`**: Deduplicated 8 duplicate entries (89 → 81 lines); each `(action, path, tombstone)` tuple now appears at most once, preventing ambiguous reconstruction for audit consumers.
-- **`agent-auth-delegation.yml`**: Added explicit observability step `Warn if @copilot continue post failed` that emits a `::warning` annotation and a job summary entry when the `Post @copilot continue` step fails under `continue-on-error: true`, preserving fail-open behaviour while surfacing the failure to maintainers.
+- **`agent-auth-delegation.yml`**: Added explicit observability step `Warn if @copilot continue post failed` that emits a `::warning` annotation and a job summary entry when the `Post @copilot continue` step fails under `continue-on-error: true`, preserving fail-open behaviour while surfacing the failure to maintainers. Step uses `id: post_copilot_comment` and condition `steps.post_copilot_comment.outcome == 'failure'` (not `failure()` which is incompatible with `continue-on-error`).
 
 ### Security (S960)
 - **CodeQL/Bandit security remediation batch** — eliminated all remaining HIGH and MEDIUM bandit issues across `scripts/` and `agents/`:
