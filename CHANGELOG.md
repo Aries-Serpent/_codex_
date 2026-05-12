@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S959)
+- Continued approval-dispatch monitoring on latest PR #4425 head (`6a29baff`) and refreshed living docs with current CI classification (action-required approval-state wave + dynamic in-progress run tracking).
+- Confirmed Pattern 25 remains green locally (`auto_fix_common_issues --check-only`) while keeping accountability + changelog updates coupled in the same commit.
+
 ### Fixed (S958)
 - Re-validated PR #4425 local rescue gates: `ruff` checks passed, tracked-file sync passed, and `auto_fix_common_issues --check-only` is green (Pattern 25 stays compliant on latest local state).
 - Refreshed PR #4425 living docs (`PR4425_whats_next`, `PR4425_session_diagram`) with current-head CI classification (in-progress checks vs startup/infra-class signals) and continued explicit CodeQL staged-closure tracking from the verified 127-alert baseline artifact.
