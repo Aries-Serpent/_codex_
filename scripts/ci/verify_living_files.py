@@ -28,7 +28,11 @@ MIN_SIZE_BYTES = 200
 
 
 def _resolve_pr_number(cli_pr_number: int | None) -> int:
-    if cli_pr_number:
+    if cli_pr_number is not None:
+        if cli_pr_number <= 0:
+            raise SystemExit(
+                f"error: --pr-number must be a positive integer, got {cli_pr_number}"
+            )
         return cli_pr_number
     env_pr = os.environ.get("PR_NUMBER")
     if env_pr and env_pr.isdigit():

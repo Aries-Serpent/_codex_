@@ -10,7 +10,6 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from tempfile import gettempdir
 from typing import Any
 
 # Target commits
@@ -136,6 +135,7 @@ def generate_markdown_table(by_commit: dict[str, list[Any]]) -> str:
 
 def _find_default_input_file() -> str | None:
     """Find latest MCP workflow-runs output file in temp directory."""
+    from tempfile import gettempdir  # local import — only used here
     tmp_dir = Path(gettempdir())
     candidates = sorted(
         tmp_dir.glob("*copilot-tool-output*.txt"),

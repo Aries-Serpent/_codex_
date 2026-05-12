@@ -344,7 +344,7 @@ if not os.path.abspath(file_path).startswith(os.path.abspath(base_dir)):
 **Fix**:
 ```python
 # Before
-API_KEY = "sk-1234567890abcdef"
+API_KEY = "sk-1234567890abcdef"  # pragma: allowlist secret
 
 # After
 API_KEY = os.environ.get("API_KEY")
