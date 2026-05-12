@@ -11,20 +11,37 @@
 
 ## 📋 PREVIOUS SESSION SUMMARY
 
-### Completed Work
-- [`4cf58f03`] fix(s962): address 3 remaining review items — deduplicate archive_ops.jsonl lines 80-81, rewrite PR-4425-followup.md as living context doc, confirm workflow observability (copilot-swe-agent[bot], 2026-05-12)
-- [`b4888b89`] docs: initial plan — fix archive_ops duplicates, update followup.md, verify workflow observability, continue CodeQL remediation (copilot-swe-agent[bot], 2026-05-12)
-- [`efcccb8e`] chore(d00): update session context digest [skip ci] (github-actions[bot], 2026-05-12)
+### Completed Work (S960–S963)
+- [`2deb01d`] ✅ Security: Bandit 63→0 HIGH/MEDIUM (B605 command-injection, B306 insecure-temp, B314 XML, B113 resource-exhaustion, B108 /tmp, B310×55 urlopen, B608×8 SQL)
+- [`98fda5a`] ✅ fix(s961): populate followup tasks, fix manifest timestamp, deduplicate archive log, add workflow observability
+- [`a142c75`] ✅ fix(s961): use `steps.post_copilot_comment.outcome` for continue-on-error observability
+- [`4cf58f0`] ✅ fix(s962): deduplicate archive_ops.jsonl (81→79 lines), rewrite followup.md as living doc, confirm workflow observability
+- [`355555a`] 📝 docs: initial session plan for S963
+- All 4 copilot-pull-request-reviewer threads: **RESOLVED** ✅ (confirmed in GitHub as `<comment_thread_resolved>`)
 
-### Files Modified
-No files modified
+### Review Thread Status
+- ✅ `.codex/evidence/archive_ops.jsonl` lines 80-81 — RESOLVED (duplicate pair removed)
+- ✅ `.github/copilot-prompts/active/PR-4425-followup.md` lines 24-33 — RESOLVED (tasks populated)
+- ✅ `.github/workflows/agent-auth-delegation.yml` lines 2021-2031 — RESOLVED (observability step added)
+- ✅ `CODEX_MANIFEST.json:3` — RESOLVED (timestamp monotonicity fixed)
+
+### Local Validation
+- `ruff check src/ tests/ --fix` → 0 violations ✅
+- `sync_tracked_files --fix` → all consistent ✅
+- `.secrets.baseline` → consistent ✅
+- mypy: 135 errors (known branch state, baseline=125)
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Continue CodeQL alert remediation (127 → 100 → 75 → 50 → 25 → 0) — fetch open alerts via GitHub MCP `list_code_scanning_alerts` and apply fixes
+- [ ] Update `.secrets.baseline` if flagged by detect-secrets (`python scripts/ci/sync_tracked_files.py --fix`)
+- [ ] Confirm Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in every commit
+- [ ] Run `python -m ruff check src/ tests/ --fix` (must show 0 violations before push)
+- [ ] Continue Bandit/CodeQL sweep toward 0 open alerts — apply `# nosec` or code fixes for remaining items
+- [ ] Update this file priorities after each completed task — mark `[x]` for done items
 
 **Validation**:
 ```bash
@@ -35,10 +52,15 @@ python scripts/ci/sync_tracked_files.py --fix
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Verify all 4 review threads are resolved in GitHub (all now shown as `<comment_thread_resolved>`)
+- [ ] Confirm `agent-auth-delegation.yml` observability step present (lines 2096-2104: `Warn if @copilot continue post failed`)
+- [ ] Expand living-files hardening to cover new PR-number transitions automatically (update `scripts/generate_pr_followup.py` to preserve real content across regenerations)
+- [ ] Run `python scripts/ci/mypy_baseline.py --require-baseline` — known 135 vs 125 baseline, document as known branch state
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Reduce mypy error count from 135 → 125 (return to baseline) by fixing type annotation regressions introduced in this branch
+- [ ] Add `verify_living_files.py` script — referenced in PR description / followup instructions but file is missing at `scripts/ci/verify_living_files.py`
+- [ ] After CodeQL remediation complete: update PR description with final count and close related issues
 
 ---
 
