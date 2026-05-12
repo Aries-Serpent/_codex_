@@ -1,32 +1,37 @@
-# Session Context — 2026-05-12T18:17:03Z
+# Session Context — 2026-05-12T18:36:51Z
 **Branch:** `copilot/update-coverage-improvement-timeline`  **PR:** #4425  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4591` (✅)
-- GraphQL remaining: `4972` (✅)
+- REST remaining: `4775` (✅)
+- GraphQL remaining: `4985` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4425 — Refresh ROADMAP timelines/metadata, harden PEFT unit test skip behavior, simplify codex_cli flags, continue explicit CodeQL/security remediation from codeql-alerts-open-codeql-25733097599, harden serving performance tests for missing psutil, fail-open ...
+## 📋 PR #4425 — Refresh ROADMAP timelines/metadata, harden PEFT unit test skip behavior, simplify codex_cli flags, continue explicit CodeQL/security remediation, harden serving performance tests for missing psutil, fail-open agent-auth-delegation, deduplicate archive_...
 State: `open`  Draft: `False`  Branch: `copilot/update-coverage-improvement-timeline` → `main`
 
+### ❌ 3 Failing CI Check(s)
+- `Post gate failure notice` (cancelled)
+- `🚦 Comment review gate` (cancelled)
+- `🔍 Scan PR comments` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-12)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-12)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
 
 ## 📝 Recent Commits
+- `10522661` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
+- `fb5c2780` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
+- `8b02a8b6` chore: Generate follow-up prompt for PR #4425 [skip ci] — github-actions[bot] (2026-05-12)
+- `4cf58f03` fix(s962): address 3 remaining review items — deduplicate archive_ops.jsonl line — copilot-swe-agent[bot] (2026-05-12)
+- `b4888b89` docs: initial plan — fix archive_ops duplicates, update followup.md, verify work — copilot-swe-agent[bot] (2026-05-12)
 - `efcccb8e` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
 - `421d1666` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
 - `a142c759` fix(s961): use steps.post_copilot_comment.outcome instead of failure() for conti — copilot-swe-agent[bot] (2026-05-12)
-- `98fda5a6` fix(s961): address copilot PR reviewer comments — populate followup tasks, fix m — copilot-swe-agent[bot] (2026-05-12)
-- `ff9c36f1` security: address code review feedback on S960 fixes — copilot-swe-agent[bot] (2026-05-12)
-- `2deb01d9` security: fix HIGH/MEDIUM bandit/CodeQL issues (S960) — copilot-swe-agent[bot] (2026-05-12)
-- `50a96d3f` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
-- `e545c727` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
