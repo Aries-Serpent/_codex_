@@ -24,7 +24,12 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Continue CodeQL/bandit remediation from codeql-alerts-open-codeql-25733097599 (target: 127→0)
+- [ ] Fix B605 HIGH CWE-78 remaining `os.system()` / `shell=True` command injection patterns in scripts/
+- [ ] Fix B113 MEDIUM CWE-400 bare `requests.get()` / `requests.post()` calls missing `timeout=` in agents/ and scripts/
+- [ ] Fix B108 MEDIUM CWE-377 remaining hardcoded `/tmp` path literals
+- [ ] Ensure Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in every commit
+- [ ] Run `python -m ruff check src/ tests/ --fix` before each push
 
 **Validation**:
 ```bash
@@ -32,13 +37,19 @@ python -m ruff check src/ tests/ --output-format=concise
 python scripts/ci/mypy_baseline.py --require-baseline
 python scripts/ci/auto_fix_common_issues.py --check-only
 python scripts/ci/sync_tracked_files.py --fix
+python -m bandit -r scripts/ agents/ -ll -q 2>&1 | head -60
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Validate `ruff check` returns 0 violations after all fixes
+- [ ] Confirm no new B605/B113/B108 bandit HIGH/MEDIUM findings
+- [ ] Verify CODEX_MANIFEST.json `generated_at` is monotonically increasing after each push
+- [ ] Verify `.codex/evidence/archive_ops.jsonl` writer is idempotent (no duplicate tombstones)
+- [ ] Address copilot-pull-request-reviewer code review comments on this PR
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Extend timeout parameter defaults across remaining HTTP client calls in src/
+- [ ] Add `defusedxml` as explicit dependency for XML parsing hardening
 
 ---
 

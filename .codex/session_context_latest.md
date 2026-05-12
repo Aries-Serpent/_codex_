@@ -1,32 +1,35 @@
-# Session Context — 2026-05-12T16:43:06Z
+# Session Context — 2026-05-12T17:25:09Z
 **Branch:** `copilot/update-coverage-improvement-timeline`  **PR:** #4425  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4609` (✅)
-- GraphQL remaining: `4971` (✅)
+- REST remaining: `4988` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4425 — Refresh ROADMAP timelines/metadata, harden PEFT unit test skip behavior, simplify codex_cli flags, continue explicit CodeQL/security remediation from codeql-alerts-open-codeql-25733097599, harden serving performance tests for missing psutil, fail-open ...
 State: `open`  Draft: `False`  Branch: `copilot/update-coverage-improvement-timeline` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `submit-pypi` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **Automatic Dependency Submission (Python)** — `failure` on `copilot/update-coverage-improvement-timeline` (2026-05-12)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-12)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-12)
 
 ## 📝 Recent Commits
+- `ff9c36f1` security: address code review feedback on S960 fixes — copilot-swe-agent[bot] (2026-05-12)
+- `2deb01d9` security: fix HIGH/MEDIUM bandit/CodeQL issues (S960) — copilot-swe-agent[bot] (2026-05-12)
+- `50a96d3f` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
+- `e545c727` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
 - `5c84fb67` Refresh ROADMAP timelines/metadata, harden PEFT unit test skip behavior, simplif — copilot-swe-agent[bot] (2026-05-12)
 - `033e194a` docs(pr4425): monitor approved workflow wave and refresh status docs/governance — copilot-swe-agent[bot] (2026-05-12)
 - `f8fc4d66` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
 - `c08c0978` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
-- `6a29baff` docs(pr4425): continue approval-dispatch follow-up with CI classification and go — copilot-swe-agent[bot] (2026-05-12)
-- `71ec9b83` docs(pr4425): refresh living docs and governance notes for approved-workflow mon — copilot-swe-agent[bot] (2026-05-12)
-- `98ebee7f` fix(ci): clear Pattern 25 and update PR4425 living docs with artifact-driven Cod — copilot-swe-agent[bot] (2026-05-12)
-- `1a95683d` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
