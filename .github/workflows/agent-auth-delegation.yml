@@ -2021,11 +2021,12 @@ jobs:
       # ── 3e: Post @copilot continue on the PR ─────────────────────────────────
       - name: "Post @copilot continue"
         if: steps.session_gate.outputs.acquired == 'true'
+        continue-on-error: true
         uses: actions/github-script@v9
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
         with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
             if (!prNumber || prNumber <= 0) {

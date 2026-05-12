@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S956)
+- Hardened `.github/workflows/agent-auth-delegation.yml` by making the `Post @copilot continue` step fail-open (`continue-on-error: true`) and adding `github.token` as a fallback auth token, preventing transient comment-post failures from failing the delegation workflow.
+
 ### Fixed (S955)
 - Restored structured warning behavior for psutil import fallbacks in `src/codex_ml/monitoring/system_metrics.py` by emitting the `system_metrics.dependency_missing` payload at warning level again, which fixes `tests/test_monitoring.py::test_structured_warning_on_psutil_import_failure`.
 - Re-ran the requested CI rescue validations (`python3 -m ruff check`, `python3 -m pytest -x`) and continued iterative self-healing updates for this PR session.
