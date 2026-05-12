@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S972 — Pattern 25 compliance + comment review gate)
+- **Pattern 25 enforcement**: Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to satisfy Pattern 25 (every commit must include both files); previous commit `07bdd42` only updated `session_context_latest.md`
+- **Comment review gate**: Replied to blocking CI rescue comments on PR #4427 (commits `392af4e` and `4a898f3`) to clear the comment review gate after the S971 subprocess self-import fix
+
 ### Fixed (S971 — subprocess.py self-import CodeQL alert)
 - **`src/codex/utils/subprocess.py`**: Eliminated self-import pattern flagged by `github-code-quality` bot (CodeQL): replaced `import subprocess as _stdlib_subprocess` in `TYPE_CHECKING` block with `from subprocess import CompletedProcess`; moved runtime `importlib.import_module("subprocess")` outside the `if TYPE_CHECKING` guard; updated all return-type annotations from `_stdlib_subprocess.CompletedProcess[...]` to `CompletedProcess[...]`
 
