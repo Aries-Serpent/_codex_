@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S966 — final wrap-up)
+- **Living docs updated**: `docs/plans/PR4425_whats_next.md` and `docs/sessions/PR4425_session_diagram.md` refreshed with S966 session outcomes, current CI snapshot (100/100 merge readiness), and next-session priorities (mypy 135→125, CodeQL 127→0, parallel_validation review comments).
+- **Session transition**: Work moved from PR #4425 (sub-PR) to PR #4427 (promotion PR `0D_base_` → `main`) — living docs now reflect PR #4427 context.
+
 ### Fixed (S966)
 - Addressed unresolved PR #4427 review feedback across 11 comments:
   - `scripts/ci/github_api_trickle.py`: switched CodeQL analyze output args from `--output=...` to `--output ...`.

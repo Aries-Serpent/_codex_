@@ -1,3 +1,23 @@
+## SESSION SUMMARY — 2026-05-12T20:25Z [S966-final-wrap-up]
+
+**Session:** S966-final-wrap-up | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- **Living docs updated**: `docs/plans/PR4425_whats_next.md` and `docs/sessions/PR4425_session_diagram.md` refreshed with S966 final session outcomes, current CI snapshot (100/100 merge readiness via Pattern 30), and next-session priorities.
+- **Session transition documented**: Work moved from PR #4425 (sub-PR `copilot/update-coverage-improvement-timeline`) to PR #4427 (promotion PR `0D_base_` → `main`) — living docs now reflect PR #4427 context and S966 head commit `e874bbe`.
+- **Next-session priorities clarified**: P1 = mypy 135→125 regression fix, CodeQL 127→0 staged closure, parallel_validation review comments; P2 = Pattern 25/30 maintenance, Bandit sweep continuation.
+
+### Validation (final)
+- `python scripts/ci/verify_living_files.py --strict` → ✅ pass (all 5 living files present + non-stale)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` → ✅ 100/100 merge readiness (Pattern 30)
+- Living docs byte sizes: PR4425_whats_next.md (4.1 KB), PR4425_session_diagram.md (2.7 KB)
+
+### Pattern 25 Compliance
+- `CHANGELOG.md` updated with S966 final wrap-up entry ✅
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T20:05Z [S966-pr4427-review-thread-remediation]
 
 **Session:** S966-pr4427-review-thread-remediation | **Branch:** `0D_base_` | **PR:** #4427
