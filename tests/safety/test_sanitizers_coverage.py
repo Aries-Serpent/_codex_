@@ -9,8 +9,8 @@ Test Coverage Target: 20+ tests for ~80% coverage of sanitizers module.
 Created: 2026-01-18 (Phase 14.2)
 """
 
-from __future__ import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-    annotations,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from __future__ import (  # pragma: allowlist secret
+    annotations,  # pragma: allowlist secret
 )
 
 import re
@@ -374,11 +374,12 @@ class TestSanitizerEdgeCases:
     def test_nested_patterns(self):
         """Test overlapping/nested patterns."""
         # Text with both secret and PII patterns
-        text = "Email: admin@company.com contains api_key: SECRET123"
+        text = "Email: admin@company.com contains api_key: sk-live-abc123def456"
         result = sanitize_prompt(text)
 
         assert result["flags"]["pii"]
         assert result["flags"]["secrets"]
+        assert "sk-live-abc123def456" not in result["text"]
 
     def test_very_long_input(self):
         """Test handling of very long input."""
