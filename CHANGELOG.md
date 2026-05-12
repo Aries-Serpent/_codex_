@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S957)
-- Verified and checksum-matched CodeQL artifact `codeql-alerts-open-codeql-25733097599` (`sha256:87ec8de22896fccfbbad08e65fcb4210e8caf6d90407ec84ec6eabae5ec66c05`) and continued explicit artifact-driven remediation tracking for the staged closure path (`127 → 100 → 75 → 50 → 25 → 0`).
+- Verified and checksum-matched CodeQL artifact `codeql-alerts-open-codeql-25733097599` against the expected checksum documented in the PR requirement/description (`sha256:87ec8de22896fccfbbad08e65fcb4210e8caf6d90407ec84ec6eabae5ec66c05`).
+- Continued explicit artifact-driven remediation tracking from the **127-alert baseline checkpoint** in the staged closure path (`127 → 100 → 75 → 50 → 25 → 0`).
 - Closed the current CI rescue blocker from PR Status Dashboard Pattern 25 by updating both accountability and changelog in the latest commit context.
 
 ### Fixed (S956)

@@ -1,3 +1,26 @@
+## SESSION SUMMARY — 2026-05-12T16:10Z [S957-pr4425-wrapup-doc-refresh]
+
+**Session:** S957-pr4425-wrapup-doc-refresh | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
+
+### Completed
+- Applied final living-doc refresh requested in-session:
+  - updated `docs/plans/PR4425_whats_next.md`
+  - updated `docs/sessions/PR4425_session_diagram.md`
+- Clarified changelog wording for checksum provenance and staged CodeQL baseline context.
+- Kept Pattern 25 governance compliance by including accountability + changelog updates in the same commit.
+
+### Validation
+- `python3 -m ruff check` ✅ (previous run in this session)
+- `python -m ruff check src/ tests/ --fix` ✅ (previous run in this session)
+- `python scripts/ci/sync_tracked_files.py --fix` ✅ (previous run in this session)
+- `python scripts/ci/auto_fix_common_issues.py --check-only` indicated Pattern 25 pre-commit state until latest governance commit is pushed
+
+### Next
+- Monitor post-push CI after maintainer workflow approvals and confirm Pattern 25 clears on latest commit.
+- Continue explicit CodeQL closure checkpoints from verified 127-alert artifact baseline.
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T15:58Z [S957-pr4425-codeql-artifact-verification]
 
 **Session:** S957-pr4425-codeql-artifact-verification | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
