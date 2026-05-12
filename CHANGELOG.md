@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S969b — secrets baseline false positive)
+- **Secrets Baseline Enforcer CI fix**: Added `# pragma: allowlist secret` to `secrets-baseline-enforcer.yml:169` — the `run: |` block's "Secret Keyword" detection (false positive from inline "secrets" references in shell echo commands) was causing `🔐 Enforce Secrets Baseline` and `Validation Pipeline / Fast Validation` CI checks to fail after S969 pinned that file's actions to commit SHAs.
+
 ### Fixed (S969 — CodeQL unpinned actions)
 - **GitHub Actions Security**: Pinned all unpinned GitHub Actions to commit SHAs across 149 workflow files
   - Pinned `github/codeql-action@v4` → SHA `5e316336eb4f107009e477d4bfbfff13d7250fae` (9 instances)

@@ -1,32 +1,35 @@
-# Session Context — 2026-05-12T21:01:22Z
+# Session Context — 2026-05-12T21:34:56Z
 **Branch:** `0D_base_`  **PR:** #4427  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4711` (✅)
-- GraphQL remaining: `4982` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4945` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4427 — Continue CodeQL alert remediation (127 → 100 → 75 → 50 → 25 → 0)
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `Post rescue comment` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **Validation Pipeline** — `failure` on `0D_base_` (2026-05-12)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `0D_base_` (2026-05-12)
 
 ## 📝 Recent Commits
+- `7ea6afd5` fix(s969): pin all GitHub Actions to commit SHAs (149 workflows, ~33 alerts) — copilot-swe-agent[bot] (2026-05-12)
+- `fd31750e` fix(s968): resolve 9 critical CodeQL alerts (undefined exports + uninitialized v — copilot-swe-agent[bot] (2026-05-12)
+- `d7d89aee` fix(s968): resolve 9 critical CodeQL alerts (undefined exports + uninitialized v — copilot-swe-agent[bot] (2026-05-12)
 - `a3a62204` fix(s967): Pattern 25 compliance — update CHANGELOG + AAAR for CodeQL fix a97fa2 — copilot-swe-agent[bot] (2026-05-12)
 - `80adb697` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-12)
 - `a97fa2c3` Potential fix for pull request finding 'CodeQL / Empty except' — Statix (2026-05-12)
 - `bfbe0e84` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
 - `272a46a7` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
-- `963cf916` docs: update living docs and governance files for S966 final wrap-up — copilot-swe-agent[bot] (2026-05-12)
-- `fa17398b` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
-- `d52a6b1f` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

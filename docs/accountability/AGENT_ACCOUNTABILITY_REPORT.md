@@ -1,3 +1,21 @@
+## SESSION SUMMARY — 2026-05-12T21:45Z [S969b-secrets-baseline-fix]
+
+**Session:** S969b-secrets-baseline-fix | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- **CI Fix**: Added `# pragma: allowlist secret` to `secrets-baseline-enforcer.yml:169`
+  - Resolved 4 failing CI checks: `🔐 Enforce Secrets Baseline` (push+PR) and `Validation Pipeline / Fast Validation`
+  - Root cause: S969 SHA-pinned `secrets-baseline-enforcer.yml`, causing it to be re-scanned by `detect-secrets-hook` which flagged the `run: |` block at line 169 as "Secret Keyword" (false positive from inline "secrets" references in echo commands)
+  - Fix: Added pragma to suppress false positive on `run: |` line
+
+### Validation
+- ✅ `detect-secrets-hook --baseline .secrets.baseline secrets-baseline-enforcer.yml` → exit 0
+- ✅ `python -m ruff check src/ tests/` — all checks passed
+- ✅ `python scripts/ci/sync_tracked_files.py --fix` — all consistent
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T21:22Z [S969-codeql-unpinned-actions]
 
 **Session:** S969-codeql-unpinned-actions | **Branch:** `0D_base_` | **PR:** #4427
