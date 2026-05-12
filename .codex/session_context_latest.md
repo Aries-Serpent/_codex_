@@ -1,32 +1,40 @@
-# Session Context — 2026-05-12T12:07:06Z
+# Session Context — 2026-05-12T14:55:39Z
 **Branch:** `copilot/update-coverage-improvement-timeline`  **PR:** #4425  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4992` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4948` (✅)
+- GraphQL remaining: `4984` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4425 — [WIP] Update coverage improvement timeline to reflect current reality
+## 📋 PR #4425 — Refresh ROADMAP timelines/metadata, harden PEFT unit test skip behavior, simplify codex_cli flags, remediate all open CodeQL alerts (127 → 0), and fix psutil structured-warning regression in system metrics
 State: `open`  Draft: `True`  Branch: `copilot/update-coverage-improvement-timeline` → `main`
 
+### ❌ 6 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
+- `generate` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Graph Update: uv in /., /.github, /.github/agents, /.github/agents/ci-testing-agent, /.github/agents/ml-threat-detector, /.github/agents/project-architect-researcher, /.github/agents/pyo3-integration-tester, /.github/agents/rust-error-validator, /.github/agents/security-scan-agent, /.github/agents/utf8-safety-linter, /.github/ai-evolution, /.github/copilot-cascade, /.github/copilot-evolution, /.github/copilot-knowledge-hunger, /.github/copilot-security, /agents/codex_client, /audio_cleaner_v1, /cli, /cod...** — `failure` on `main` (2026-05-12)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **Agent Token Delegation** — `failure` on `copilot/update-coverage-improvement-timeline` (2026-05-12)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-12)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
 
 ## 📝 Recent Commits
+- `83298b62` Merge branch 'main' into copilot/update-coverage-improvement-timeline — Statix (2026-05-12)
+- `a0fe22a4` Refresh ROADMAP timelines/metadata, harden PEFT unit test skip behavior, simplif — copilot-swe-agent[bot] (2026-05-12)
+- `576e485a` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-12)
+- `2447f071` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-12)
+- `4aec7326` Refresh ROADMAP timelines/metadata, harden PEFT unit test skip behavior, simplif — copilot-swe-agent[bot] (2026-05-12)
+- `701751e5` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-12)
+- `7c49e184` chore: Generate follow-up prompt for PR #4425 [skip ci] — github-actions[bot] (2026-05-12)
 - `a8caca28` Initial plan — copilot-swe-agent[bot] (2026-05-12)
-- `39468d3c` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-12)
-- `6c7d4c36` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-12)
-- `b6f1a9d7` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-12)
-- `1a2320f7` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-12)
-- `894effb9` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-12)
-- `36f710c5` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-12)
-- `2e1d75b8` Merge pull request #4419 from Aries-Serpent/copilot/update-cve-reference-in-comm — Statix (2026-05-12)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -37,9 +45,9 @@ State: `open`  Draft: `True`  Branch: `copilot/update-coverage-improvement-timel
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [] `RP-QUERY-FILTER-TEST`: ?
 - [] `?`: ?
 - [2026-05-11] `PDA-SUCCESS-S922-PR4389-DOC-CLI-FIXES`: ?
+- [2026-05-12] `PDA-SUCCESS-S955-PR4425-CI-SELF-HEAL`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
