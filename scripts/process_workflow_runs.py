@@ -135,7 +135,7 @@ def generate_markdown_table(by_commit: dict[str, list[Any]]) -> str:
 def main():
     """Main entry point."""
     # Check if input file exists
-    input_file = "/tmp/1771141320736-copilot-tool-output-ladw2q.txt"
+    input_file = "/tmp/1771141320736-copilot-tool-output-ladw2q.txt"  # nosec B108 — specific CI artifact path
     if not Path(input_file).exists():
         print(f"❌ Input file not found: {input_file}")
         print("Run: github-mcp-server-actions_list to generate it first")

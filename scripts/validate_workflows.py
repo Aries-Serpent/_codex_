@@ -209,7 +209,8 @@ class CacheMonitor:
             response = requests.get(
                 f'{self.base_url}/actions/caches',
                 headers=self.headers,
-                params={'per_page': 100}
+                params={'per_page': 100},
+                timeout=30,
             )
             response.raise_for_status()
 
@@ -270,7 +271,8 @@ class CacheMonitor:
             response = requests.get(
                 f'{self.base_url}/actions/runs',
                 headers=self.headers,
-                params={'created': f'>={since}', 'per_page': 100}
+                params={'created': f'>={since}', 'per_page': 100},
+                timeout=30,
             )
             response.raise_for_status()
 

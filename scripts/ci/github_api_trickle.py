@@ -64,6 +64,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -405,7 +406,7 @@ CODEQL_CLI = os.environ.get(
     "CODEQL_CLI_PATH",
     shutil.which("codeql") or "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql",
 )
-CODEQL_DB  = os.environ.get("CODEQL_DB_PATH", "/tmp/codex-db-py")
+CODEQL_DB  = os.environ.get("CODEQL_DB_PATH", os.path.join(tempfile.gettempdir(), "codex-db-py"))
 CODEQL_QLPACKS = os.environ.get(
     "CODEQL_QLPACKS_PATH",
     "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/qlpacks/codeql/python-queries/1.7.11",
@@ -485,15 +486,16 @@ def fetch_code_scanning_alerts(
 
     logger.info("=== Method 4: CodeQL DB analyze ===")
     if build_codeql_db():
+        _sarif_out = os.path.join(tempfile.gettempdir(), "codeql-results.sarif")
         result = subprocess.run(
             [CODEQL_CLI, "database", "analyze", CODEQL_DB,
              CODEQL_QLPACKS,
-             "--format=sarifv2.1.0", "--output=/tmp/codeql-results.sarif",
+             "--format=sarifv2.1.0", f"--output={_sarif_out}",
              "--no-print-diagnostics-summary"],
             capture_output=True, text=True, timeout=600, shell=False,
         )
-        if result.returncode == 0 and Path("/tmp/codeql-results.sarif").exists():
-            alerts = _parse_sarif("/tmp/codeql-results.sarif")
+        if result.returncode == 0 and Path(_sarif_out).exists():
+            alerts = _parse_sarif(_sarif_out)
             logger.info("Local CodeQL: %d findings", len(alerts))
             return alerts
         logger.warning("CodeQL analyze failed: %s", result.stderr[:200])

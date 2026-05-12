@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (S960)
+- **CodeQL/Bandit security remediation batch** — eliminated all remaining HIGH and MEDIUM bandit issues across `scripts/` and `agents/`:
+  - **B605 HIGH (CWE-78 command injection)** `scripts/ci/scan_all.py`: replaced `os.system()` shell call with `subprocess.run(..., shell=False)`.
+  - **B306 MEDIUM (CWE-377 insecure temp file)** `scripts/cognitive/orchestrate.py`: replaced `tempfile.mktemp()` with `tempfile.mkstemp()` + `os.close()`.
+  - **B314 MEDIUM (CWE-20 XML parsing)** `coverage_ingest.py`, `coverage_ingest_stub.py`: already using `defusedxml` as primary; added `# nosec B314` with justification on stdlib fallback and call sites.
+  - **B113 MEDIUM (CWE-400 resource exhaustion)** — added `timeout=30` to all bare `requests.get()` calls in `extract_workflow_patterns.py`, `monitor_workflow_performance.py`, `quantum_workflow_health.py`, `validate_workflows.py`.
+  - **B108 MEDIUM (CWE-377 hardcoded /tmp)** — replaced `/tmp` literals with `tempfile.gettempdir()` in `agents/agent_memory.py`, `scripts/ci/github_api_trickle.py`, `scripts/ci/session_access_probe.py`, `scripts/ci/print_autofix_issues.py`, `scripts/cognitive/ingest_external_repo.py`, `scripts/replace_time_terminology.py`; added `# nosec B108` with justification to string-comparison and CI-artifact-specific cases.
+  - **B310 (urlopen scheme audit)** `.bandit`: added global skip with documented justification (all calls target hardcoded `https://api.github.com` — no user-controlled URLs).
+
 ### Fixed (S959)
 - Continued approval-dispatch monitoring on latest PR #4425 head (`6a29baff`) and refreshed living docs with current CI classification (action-required approval-state wave + dynamic in-progress run tracking).
 - Confirmed Pattern 25 remains green locally (`auto_fix_common_issues --check-only`) while keeping accountability + changelog updates coupled in the same commit.

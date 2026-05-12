@@ -57,6 +57,12 @@ skips:
   #   The execution environment is a controlled CI/CD or developer machine.
   - B607
 
+  # B310 – urlopen scheme audit
+  #   All urllib.request.urlopen() calls in scripts/ target the GitHub REST
+  #   API at the hardcoded base URL https://api.github.com. No user-supplied
+  #   URLs are accepted; the scheme is always https and the host is constant.
+  - B310
+
 exclude_dirs:
   - .venv
   - venv

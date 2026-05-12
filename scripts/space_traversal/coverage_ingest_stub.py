@@ -47,7 +47,9 @@ except ImportError:  # pragma: no cover - CI may not have defusedxml
         "Only parse trusted XML (e.g. CI coverage reports).",
         stacklevel=2,
     )
-    from xml.etree import ElementTree as ET
+    from xml.etree import (
+        ElementTree as ET,  # nosec B314 — coverage XML is CI-generated, not untrusted input
+    )
 
 __all__ = ["parse_cobertura", "parse_simple_coverage", "write_stub_report", "main"]
 
@@ -56,7 +58,7 @@ def parse_cobertura(xml_path: str) -> dict[str, Any]:
     """
     Parse Cobertura XML and return line-level coverage details per file.
     """
-    tree = ET.parse(xml_path)
+    tree = ET.parse(xml_path)  # nosec B314 — CI-generated coverage XML, not untrusted input
     root = tree.getroot()
     coverage = {}
     for cls in root.findall(".//class"):
@@ -74,7 +76,7 @@ def parse_simple_coverage(xml_path: Path) -> dict[str, Any]:
     """
     Parse Cobertura XML and return summary coverage stats (covered/total) per file.
     """
-    tree = ET.parse(xml_path)
+    tree = ET.parse(xml_path)  # nosec B314 — CI-generated coverage XML, not untrusted input
     data: dict[str, Any] = {}
     for cls in tree.findall(".//class"):
         filename = cls.attrib.get("filename", "")

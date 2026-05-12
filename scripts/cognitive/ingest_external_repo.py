@@ -33,9 +33,11 @@ Last Updated: 2026-01-16
 import argparse
 import json
 import logging
+import os
 import re
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -370,7 +372,7 @@ class ExternalRepoIngestor:
 def main():
     parser = argparse.ArgumentParser(description="Ingest external repository into cognitive brain")
     parser.add_argument("--repo-url", required=True, help="Repository URL to ingest")
-    parser.add_argument("--clone-dir", default="/tmp", help="Directory for cloning repositories")
+    parser.add_argument("--clone-dir", default=tempfile.gettempdir(), help="Directory for cloning repositories")
     parser.add_argument("--output", default="cognitive/ingestion", help="Output directory for analysis")
 
     args = parser.parse_args()

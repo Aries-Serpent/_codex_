@@ -123,7 +123,7 @@ class QuantumWorkflowHealthAnalyzer:
         url = f'{self.base_url}/actions/runs'
         params = {'per_page': 100, 'head_sha': commit_sha}
 
-        response = requests.get(url, headers=self.headers, params=params)
+        response = requests.get(url, headers=self.headers, params=params, timeout=30)
         response.raise_for_status()
 
         all_runs = response.json()['workflow_runs']

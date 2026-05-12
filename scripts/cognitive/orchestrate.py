@@ -49,6 +49,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Optional
@@ -128,7 +129,9 @@ def _build_orchestrator(
     if dry_run:
         # Use a temp state path so nothing is persisted
         import tempfile
-        state_path = Path(tempfile.mktemp(suffix=".json"))
+        _fd, _tmp_path = tempfile.mkstemp(suffix=".json")
+        os.close(_fd)
+        state_path = Path(_tmp_path)
     return PlansetOrchestrator(
         planset_dir=planset_dir,
         engine=QuantumPlansetEngine(),

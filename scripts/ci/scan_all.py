@@ -400,7 +400,9 @@ def main() -> int:
             print(f"\n{BOLD}🔧 Auto-fixing {len(fixable)} check(s)…{RESET}")
             for r in fixable:
                 print(f"  Running: {r.fix_cmd}")
-                os.system(f"cd {REPO_ROOT} && {r.fix_cmd}")  # noqa: S605
+                subprocess.run(  # nosec B603 — fix_cmd is a hardcoded literal from CheckResult
+                    r.fix_cmd.split(), cwd=REPO_ROOT, check=False,  # noqa: S603
+                )
         else:
             print(f"{GREEN}Nothing to auto-fix.{RESET}")
 

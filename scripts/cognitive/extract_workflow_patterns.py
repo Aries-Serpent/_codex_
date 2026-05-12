@@ -202,7 +202,7 @@ class WorkflowPatternExtractor:
         while True:
             params["page"] = page
             try:
-                response = requests.get(url, headers=self.headers, params=params)
+                response = requests.get(url, headers=self.headers, params=params, timeout=30)
                 response.raise_for_status()
             except requests.exceptions.RequestException as e:
                 print(f"⚠️  API request failed: {e}", file=sys.stderr)
