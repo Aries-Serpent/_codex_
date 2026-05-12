@@ -31,7 +31,7 @@ LIVING_FILES = [
 MIN_SIZE_BYTES = 200
 
 
-def check_living_files(strict: bool = False) -> bool:
+def check_living_files() -> bool:
     """Return True if all living files are present and non-stale."""
     all_ok = True
     for rel_path in LIVING_FILES:
@@ -64,7 +64,7 @@ def main() -> int:
     print("🔍 verify_living_files — PR #4425 living-file check")
     print("=" * 60)
 
-    ok = check_living_files(strict=args.strict)
+    ok = check_living_files()
 
     print("=" * 60)
     if ok:

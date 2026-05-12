@@ -15,7 +15,7 @@ graph TD
 
 - **Pattern 25 violation**: `50bf777` (session plan commit) only updated `.codex/session_context_latest.md` without updating CHANGELOG.md or AGENT_ACCOUNTABILITY_REPORT.md — fixed in this S965 commit.
 - **`verify_living_files.py`**: Created at `scripts/ci/verify_living_files.py` — checks 5 living files; `--strict` mode exits 1. Referenced in PR description but was missing from the repo.
-- **Deferral language**: `check_deferral_language.py --git-log` shows 0 violations locally. The `🚨 Deferral Language Policy Check` failure on `ea6710cb` was likely from the plan commit message ("establish plan") — resolved by the current push.
+- **Deferral language**: `check_deferral_language.py --git-log` shows 0 violations locally. The `🚨 Deferral Language Policy Check` failure on `ea6710cb` was associated with the plan-only commit; subsequent fix commits with substantive messages are expected to clear the check.
 - **CodeQL API**: Rate-limited (403, reset in ~28 min) — CodeQL remediation deferred to next session with full API access.
 - **mypy baseline**: 135 vs 125 gap remains tracked as Priority 2 for next session.
 
