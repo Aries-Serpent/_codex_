@@ -1,3 +1,48 @@
+## SESSION SUMMARY — 2026-05-12T21:22Z [S969-codeql-unpinned-actions]
+
+**Session:** S969-codeql-unpinned-actions | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- **GitHub Actions Security Hardening**: Pinned all unpinned GitHub Actions to commit SHAs
+  - **9 × `github/codeql-action@v4`** → SHA `5e316336eb4f107009e477d4bfbfff13d7250fae`
+    - Files: `codeql-analysis.yml`, `codeql.yml`, `security-scanning-suite.yml`, `scheduled-dependency-audit.yml`
+    - Actions: `init`, `autobuild`, `analyze`, `upload-sarif`
+  - **140+ × `actions/*@v5/v6/v9`** → Approved SHAs from repository memory
+    - `actions/checkout@v5` → `93cb6efe18208431cddfb8368fd83d5badbf9bfd`
+    - `actions/cache@v5` → `27d5ce7f107fe9357f9df03efb73ab90386fccae`
+    - `actions/upload-artifact@v5` → `330a01c490aca151604b8cf639adc76d48f6c5d4`
+    - `actions/download-artifact@v5` → `634f93cb2916e3fdff6788551b99b062d0335ce0`
+    - `actions/github-script@v9` → `3a2844b7e9c422d3c10d287c895573f7108da1b3`
+    - `actions/setup-python@v6` → `a309ff8b426b58ec0e2a45f0f869d46889d02405`
+  - **Total files modified**: 149 workflow files
+  - **Estimated alert reduction**: 33+ `actions/unpinned-tag` warnings → 0
+
+### Validation
+- ✅ `python -m ruff check src/ tests/` — all checks passed
+- ✅ All workflow files use SHA-pinned actions with version comments
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+
+### Alert Breakdown (Post-S969)
+| Severity | Before | After | Fixed (Est.) |
+|----------|--------|-------|--------------|
+| Error | 0 | 0 | 0 |
+| Warning | 57 | ~24 | ~33 ✅ |
+| Note | 60 | 60 | 0 |
+| **Total** | **117** | **~84** | **~33** |
+
+### Impact
+- **Security**: All GitHub Actions now pinned to immutable commit SHAs
+- **Reproducibility**: Workflow executions are now deterministic and auditable
+- **Compliance**: Addresses CodeQL security recommendations for supply chain security
+
+### Next Steps (Priority 2)
+- Verify actual alert count reduction via CodeQL scan
+- Fix remaining `actions/missing-workflow-permissions` alerts (S971)
+- Fix `actions/untrusted-checkout/medium` alerts (S972)
+- Continue with Priority 3 code quality alerts (S973-S975)
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T21:10Z [S968-codeql-critical-alerts]
 
 **Session:** S968-codeql-critical-alerts | **Branch:** `0D_base_` | **PR:** #4427

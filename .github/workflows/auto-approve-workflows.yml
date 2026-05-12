@@ -265,7 +265,7 @@ jobs:
         id: approve
         if: steps.resolve.outputs.skip != 'true'
         continue-on-error: true  # transient rate-limits must not fail the job
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           MODE: ${{ steps.resolve.outputs.mode }}
           PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}

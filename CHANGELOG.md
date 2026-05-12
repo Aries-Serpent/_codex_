@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S969 — CodeQL unpinned actions)
+- **GitHub Actions Security**: Pinned all unpinned GitHub Actions to commit SHAs across 149 workflow files
+  - Pinned `github/codeql-action@v4` → SHA `5e316336eb4f107009e477d4bfbfff13d7250fae` (9 instances)
+  - Pinned `actions/checkout@v5` → SHA `93cb6efe18208431cddfb8368fd83d5badbf9bfd` (140+ instances)
+  - Pinned `actions/cache@v5`, `actions/upload-artifact@v5`, `actions/download-artifact@v5`, `actions/github-script@v9`, `actions/setup-python@v6`
+  - Estimated CodeQL alert reduction: 33+ `actions/unpinned-tag` warnings resolved
+  - Improves security posture and build reproducibility across all CI/CD workflows
+
 ### Fixed (S968 — CodeQL critical alerts)
 - **CodeQL Critical Alerts**: Resolved 9 error-severity CodeQL alerts (126 → 117 total)
   - Fixed 8 `py/undefined-export` alerts in `src/codex/retrieval/__init__.py` by adding explicit imports

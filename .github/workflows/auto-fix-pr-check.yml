@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload diagnostic report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: diagnostic-report-${{ github.event.pull_request.number }}
           path: .codex/diagnostic-report.json
@@ -87,7 +87,7 @@ jobs:
       - name: Generate Copilot Agent comment
         id: gen_comment
         if: steps.diagnostic.outcome == 'failure' && steps.read_report.outputs.report_exists == 'true'
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           AUTO_FIXABLE: ${{ steps.read_report.outputs.auto_fixable }}
           TOTAL_ISSUES: ${{ steps.read_report.outputs.total_issues }}
@@ -274,7 +274,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

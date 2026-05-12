@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 1
 
@@ -62,7 +62,7 @@ jobs:
       # ── Step 1: Gather LIVE failed workflow runs from GitHub API ─────────────
       - name: Fetch recent failed workflow runs
         id: fetch-failures
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             const maxRuns = Number('${{ inputs.max_runs || 5 }}') || 5;
@@ -184,7 +184,7 @@ jobs:
       # ── Step 2: Build the triage report ─────────────────────────────────────
       - name: Build triage report
         id: build-report
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           FAILURES_PATH: ${{ steps.fetch-failures.outputs.failures_path }}
           ACTIVE_WORKFLOWS_SCANNED: ${{ steps.fetch-failures.outputs.active_workflows_scanned }}
@@ -297,7 +297,7 @@ jobs:
       # ── Step 3: Upsert the triage issue (create or update, never duplicate) ──
       - name: Upsert triage issue
         id: upsert-issue
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
           HAS_FAILURES: ${{ steps.build-report.outputs.has_failures }}
@@ -356,14 +356,14 @@ jobs:
         if: always()
         env:
           REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             require('fs').writeFileSync('ci-triage-report.md', process.env.REPORT_BODY || '*(no report)*');
 
       - name: Upload triage report artifact
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: ci-triage-report-${{ github.run_id }}
           path: ci-triage-report.md

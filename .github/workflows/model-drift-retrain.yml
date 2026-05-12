@@ -55,7 +55,7 @@ jobs:
       samples_count: ${{ steps.drift.outputs.samples_count }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: Setup Python (cached)
         uses: ./.github/actions/setup-python-cached
@@ -150,7 +150,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target
@@ -264,7 +264,7 @@ jobs:
 
       - name: Open tracking issue
         if: steps.retrain.outputs.new_version != ''
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

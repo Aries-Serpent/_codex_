@@ -52,11 +52,11 @@ jobs:
       GH_TRICKLE_POLITE_SLEEP: "0.3"
       GH_TRICKLE_MIN_REMAINING: "50"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           sparse-checkout: scripts/ci/
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
       - name: 🔋 Rate-limit pre-check
@@ -96,11 +96,11 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           sparse-checkout: scripts/ci/
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
       - name: Cancel in-progress runs for unchecked workflows
@@ -184,11 +184,11 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           sparse-checkout: scripts/ci/
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
       - name: Dispatch & auto-approve newly-checked workflows
@@ -250,11 +250,11 @@ jobs:
     timeout-minutes: 5
     if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           sparse-checkout: scripts/ci/
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
       - name: Validate WEC template integrity
@@ -521,7 +521,7 @@ jobs:
 
     steps:
       - name: Checkout fast-forward script
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           sparse-checkout: |
             scripts/ci/fast_forward_safe_files.py
@@ -529,7 +529,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
 
@@ -573,7 +573,7 @@ jobs:
 
       - name: Upload fast-forward result artifact
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: wec-fast-forward-pr${{ needs.parse-checklist.outputs.pr_number }}-${{ github.run_id }}
           path: /tmp/ff_result.json

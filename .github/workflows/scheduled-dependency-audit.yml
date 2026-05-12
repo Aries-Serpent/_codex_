@@ -163,7 +163,7 @@ jobs:
 
       - name: Upload Grype SARIF to GitHub Security
         if: always()
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
         with:
           sarif_file: grype-${{ matrix.variant }}.sarif
           category: grype-${{ matrix.variant }}
