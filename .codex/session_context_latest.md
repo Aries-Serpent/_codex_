@@ -1,27 +1,25 @@
-# Session Context — 2026-05-12T21:34:56Z
+# Session Context — 2026-05-12T21:51:47Z
 **Branch:** `0D_base_`  **PR:** #4427  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4945` (✅)
+- REST remaining: `4890` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4427 — Continue CodeQL alert remediation (127 → 100 → 75 → 50 → 25 → 0)
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `Post rescue comment` (failure)
-
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-12)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
-- **Validation Pipeline** — `failure` on `0D_base_` (2026-05-12)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `0D_base_` (2026-05-12)
 
 ## 📝 Recent Commits
+- `392af4e4` fix(ci): add pragma to secrets-baseline-enforcer.yml:169 — suppress false-positi — copilot-swe-agent[bot] (2026-05-12)
 - `7ea6afd5` fix(s969): pin all GitHub Actions to commit SHAs (149 workflows, ~33 alerts) — copilot-swe-agent[bot] (2026-05-12)
 - `fd31750e` fix(s968): resolve 9 critical CodeQL alerts (undefined exports + uninitialized v — copilot-swe-agent[bot] (2026-05-12)
 - `d7d89aee` fix(s968): resolve 9 critical CodeQL alerts (undefined exports + uninitialized v — copilot-swe-agent[bot] (2026-05-12)
@@ -29,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `80adb697` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-12)
 - `a97fa2c3` Potential fix for pull request finding 'CodeQL / Empty except' — Statix (2026-05-12)
 - `bfbe0e84` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
-- `272a46a7` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
