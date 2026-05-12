@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S957)
+- Verified and checksum-matched CodeQL artifact `codeql-alerts-open-codeql-25733097599` (`sha256:87ec8de22896fccfbbad08e65fcb4210e8caf6d90407ec84ec6eabae5ec66c05`) and continued explicit artifact-driven remediation tracking for the staged closure path (`127 → 100 → 75 → 50 → 25 → 0`).
+- Closed the current CI rescue blocker from PR Status Dashboard Pattern 25 by updating both accountability and changelog in the latest commit context.
+
 ### Fixed (S956)
 - Hardened `.github/workflows/agent-auth-delegation.yml` by making the `Post @copilot continue` step fail-open (`continue-on-error: true`) and adding `github.token` as a fallback auth token, preventing transient comment-post failures from failing the delegation workflow.
 
