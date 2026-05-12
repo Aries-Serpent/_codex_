@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 else:
     # At runtime, resolve via importlib to avoid local-module name shadowing
     # (`src.codex.utils.subprocess`) reported by code scanning in direct imports.
-    _stdlib_subprocess = importlib.import_module("subprocess")  # type: ignore[assignment]
+    _stdlib_subprocess: Any = importlib.import_module("subprocess")
 
 
 @overload

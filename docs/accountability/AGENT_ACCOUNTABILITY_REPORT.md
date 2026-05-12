@@ -4,11 +4,13 @@
 
 ### Completed
 - **Secrets Baseline Enforcer CI fix**: Added `# pragma: allowlist secret` to `.codex/plans/CODEQL_REMEDIATION_MASTER_PLAN.md:347` (example `API_KEY = "sk-..."` triggers false-positive "Secret Keyword" detection)
-- **Code review feedback**: Moved `gettempdir` import inside `_find_default_input_file()` in `scripts/process_workflow_runs.py`
-- **Code review feedback**: Added positive-integer validation for `--pr-number` in `scripts/ci/verify_living_files.py`
+- **Code review feedback (gettempdir)**: Moved `gettempdir` import inside `_find_default_input_file()` in `scripts/process_workflow_runs.py`
+- **Code review feedback (verify_living_files.py)**: Added positive-integer validation for `--pr-number`; fixed edge case `if cli_pr_number:` → `if cli_pr_number is not None:`
+- **Code review feedback (subprocess.py)**: Added explicit `: Any` annotation to runtime `_stdlib_subprocess` import, making type loss explicit
 
 ### Validation
 - ✅ `python -m ruff check src/ tests/ scripts/` → All checks passed
+- ✅ `python -m mypy src/codex/utils/subprocess.py` → Success
 - ✅ `python scripts/ci/verify_living_files.py --strict` → All 5 living files present and non-stale
 - ✅ `python scripts/ci/sync_tracked_files.py --fix` → All consistent
 - ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated

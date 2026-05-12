@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (S970b — secrets baseline false positive + code review feedback)
 - **CODEQL_REMEDIATION_MASTER_PLAN.md:347**: Added `# pragma: allowlist secret` to the example `API_KEY = "sk-..."` line (false positive "Secret Keyword" detection) — fixes `🔐 Enforce Secrets Baseline` CI failure on PR event
 - **`scripts/process_workflow_runs.py`**: Moved `from tempfile import gettempdir` import from module-level to within `_find_default_input_file()` (only usage site) — addresses reviewer concern about import placement
-- **`scripts/ci/verify_living_files.py`**: Added positive-integer validation for `--pr-number` CLI argument (raises `SystemExit` for zero or negative values); changed `if cli_pr_number:` to `if cli_pr_number is not None:` to correctly handle PR number 0 edge case
+- **`scripts/ci/verify_living_files.py`**: Added positive-integer validation for `--pr-number` CLI argument (raises `SystemExit` with POSIX error message for zero or negative values); changed `if cli_pr_number:` to `if cli_pr_number is not None:` to correctly handle PR number 0 edge case
+- **`src/codex/utils/subprocess.py`**: Added explicit `: Any` type annotation to runtime `_stdlib_subprocess` assignment, making intentional type loss explicit
 
 ### Fixed (S970 — mypy regression fix + type annotation improvements)
 - **mypy baseline reduced 135 → 122**: Fixed 13 type annotation issues across 4 files:
