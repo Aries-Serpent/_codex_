@@ -1,3 +1,25 @@
+## SESSION SUMMARY — 2026-05-12T19:20Z [S965-pattern25-living-docs]
+
+**Session:** S965-pattern25-living-docs | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425
+
+### Completed
+- **Pattern 25 fix**: Commit `50bf777` only updated `.codex/session_context_latest.md` — Pattern 25 violated. Fixed in this commit by adding S965 entries to both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md.
+- **`scripts/ci/verify_living_files.py`**: Created enforcement script that checks staleness of the 5 required living files; `--strict` mode exits 1 on any stale file.
+- **Living docs updated**: `docs/plans/PR4425_whats_next.md` and `docs/sessions/PR4425_session_diagram.md` refreshed with S965 CI snapshot and next-session priorities.
+- **`PR-4425-followup.md`**: Updated with S965 outcomes and P1/P2/P3 for next session.
+- **Replied to blocking CI rescue comments** (4433737856, 4433760318, 4433790503).
+
+### Validation
+- `python -m ruff check src/ tests/ --fix` → 0 violations ✅
+- `python scripts/ci/sync_tracked_files.py --fix` → all consistent ✅
+- `python scripts/ci/check_deferral_language.py --git-log` → no deferral language detected ✅
+
+### Pattern 25 Compliance
+- `CHANGELOG.md` updated with S965 entry ✅
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+
+---
+
 ## SESSION SUMMARY — 2026-05-12T19:00Z [S964-secrets-baseline-fix]
 
 **Session:** S964-secrets-baseline-fix | **Branch:** `copilot/update-coverage-improvement-timeline` | **PR:** #4425

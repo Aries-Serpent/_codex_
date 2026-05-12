@@ -4,20 +4,21 @@
 **Branch**: `copilot/update-coverage-improvement-timeline`  
 **Author**: @Copilot  
 **Date**: 2026-05-12  
-**Commit**: `ea6710c` (S964 plan) → final TBD  
-**Status**: 🔄 ACTIVE — S964 in progress
+**Commit**: S965 in progress → final TBD  
+**Status**: 🔄 ACTIVE — S965 in progress
 
 ---
 
 ## 📋 PREVIOUS SESSION SUMMARY
 
-### Completed Work (S960–S964)
+### Completed Work (S960–S965)
 - [`2deb01d`] ✅ Security: Bandit 63→0 HIGH/MEDIUM (B605 command-injection, B306 insecure-temp, B314 XML, B113 resource-exhaustion, B108 /tmp, B310×55 urlopen, B608×8 SQL)
 - [`98fda5a`] ✅ fix(s961): populate followup tasks, fix manifest timestamp, deduplicate archive log, add workflow observability
 - [`a142c75`] ✅ fix(s961): use `steps.post_copilot_comment.outcome` for continue-on-error observability
 - [`4cf58f0`] ✅ fix(s962): deduplicate archive_ops.jsonl (81→79 lines), rewrite followup.md as living doc, confirm workflow observability
 - [`400fc3f`] ✅ fix(s963): populate PR-4425-followup.md with real tasks, resolve merge conflicts, update Pattern 25
-- [S964] ✅ fix(s964): `# pragma: allowlist secret` on commit-SHA constants in `process_workflow_runs.py` (lines 44–56)
+- [`a3c6c2b`] ✅ fix(s964): `# pragma: allowlist secret` on commit-SHA constants in `process_workflow_runs.py` (lines 44–56)
+- [S965] ✅ fix(s965): Pattern 25 fix; created `scripts/ci/verify_living_files.py`; updated living docs + CHANGELOG + AAAR
 - All 4 copilot-pull-request-reviewer threads: **RESOLVED** ✅
 
 ### Review Thread Status
@@ -26,10 +27,11 @@
 - ✅ `.github/workflows/agent-auth-delegation.yml` lines 2021-2031 — RESOLVED (observability step added)
 - ✅ `CODEX_MANIFEST.json:3` — RESOLVED (timestamp monotonicity fixed)
 
-### Local Validation (S964)
+### Local Validation (S965)
 - `ruff check src/ tests/ --fix` → 0 violations ✅
 - `sync_tracked_files --fix` → all consistent ✅
-- `detect-secrets` / `.secrets.baseline` → false-positive pragma fix applied ✅
+- `verify_living_files.py --strict` → all living files present and non-stale ✅
+- `check_deferral_language.py --git-log` → 0 violations ✅
 - mypy: 135 errors (known branch state, baseline=125)
 
 ---
