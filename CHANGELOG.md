@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S968 — CodeQL critical alerts)
+- **CodeQL Critical Alerts**: Resolved 9 error-severity CodeQL alerts (126 → 117 total)
+  - Fixed 8 `py/undefined-export` alerts in `src/codex/retrieval/__init__.py` by adding explicit imports
+  - Fixed 1 `py/uninitialized-local-variable` alert in `tests/unit/test_peft_utils.py` with defensive assertion
+  - CodeQL error count: 9 → 0 (100% of critical alerts resolved)
+  - Alerts: #13539-#13546 (undefined exports), #13430 (uninitialized variable)
+
 ### Fixed (S967 — CodeQL remediation)
 - **CodeQL alert fix**: `scripts/ci/verify_living_files.py` — added explanatory comment to empty except block (CodeQL alert "Empty except" resolved).
 
