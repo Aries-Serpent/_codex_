@@ -41,8 +41,11 @@ def _resolve_pr_number(cli_pr_number: int | None) -> int:
             pr_num = payload.get("pull_request", {}).get("number")
             if isinstance(pr_num, int):
                 return pr_num
-        except (OSError, json.JSONDecodeError):
-            pass
+        except (OSError, json.JSONDecodeError) as exc:
+            print(
+                f"⚠️  Could not read PR number from GITHUB_EVENT_PATH '{event_path}': {exc}",
+                file=sys.stderr,
+            )
     return DEFAULT_PR_NUMBER
 
 
