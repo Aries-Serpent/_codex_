@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S958)
+- Re-validated PR #4425 local rescue gates: `ruff` checks passed, tracked-file sync passed, and `auto_fix_common_issues --check-only` is green (Pattern 25 stays compliant on latest local state).
+- Refreshed PR #4425 living docs (`PR4425_whats_next`, `PR4425_session_diagram`) with current-head CI classification (in-progress checks vs startup/infra-class signals) and continued explicit CodeQL staged-closure tracking from the verified 127-alert baseline artifact.
+
 ### Fixed (S957)
 - Verified and checksum-matched CodeQL artifact `codeql-alerts-open-codeql-25733097599` against the expected checksum documented in the PR requirement/description (`sha256:87ec8de22896fccfbbad08e65fcb4210e8caf6d90407ec84ec6eabae5ec66c05`).
 - Continued explicit artifact-driven remediation tracking from the **127-alert baseline checkpoint** in the staged closure path (`127 → 100 → 75 → 50 → 25 → 0`).
