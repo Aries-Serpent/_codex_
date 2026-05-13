@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S994-artifact-refresh — PR #4448 — 2026-05-13T16:30Z)
+- **Security artifact refresh** — ingested new security-scanning-suite artifacts from run 25809211083:
+  - `dependency-scan-results` sha256:ae221879 · `sbom-reports` sha256:1d922863
+  - pip-audit confirms same 2 CVEs (diskcache CVE-2025-69872, sqlitedict CVE-2024-35515) — no fix versions available in either run; accepted risk documented.
+  - SBOM CycloneDX: 326 components, 0 vulnerabilities listed.
+  - `bandit --configfile .bandit` = 0 ✅ · `ruff src/ tests/` = 0 ✅
+- **Living docs updated** — `docs/roadmap/PR4448_whats_next.md` and `docs/roadmap/PR4448_session_diagram.mmd` created with full session summary and next-session promptsets.
+- **Security planset revised** — `.codex/plans/security-remediation-planset.md` updated with new artifact sha256s, Batch 3 commit (`08cc1b9`) recorded, and Batch 5/6 monitoring protocols confirmed.
+
 ### Fixed (S994-security-batch3 — PR #4448 — 2026-05-13T16:09Z)
 - **Security hardening Batch 3** — B311 per-site nosec annotations (25 sites, 20 files):
   - Added `# nosec B311 — non-cryptographic ML sampling/shuffling` to every `random.*` call in ML data-loading, splitting, evaluation, pipeline, serving, and training modules.

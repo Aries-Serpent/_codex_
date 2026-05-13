@@ -36069,3 +36069,33 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## Session S994-artifact-refresh · PR #4448 · 2026-05-13T16:30Z
+
+### Objective
+Ingest new security-scanning-suite artifacts (run 25809211083), update living docs, revise comprehensive security planset, and maintain Pattern 25 compliance.
+
+### Actions Taken
+1. **Artifact ingestion** — downloaded and parsed `dependency-scan-results` (sha256:ae221879) and `sbom-reports` (sha256:1d922863) from run 25809211083.
+2. **pip-audit analysis** — confirmed 2 CVEs remain (diskcache CVE-2025-69872, sqlitedict CVE-2024-35515); no fix versions in either run; accepted risk documented in `pyproject.toml`.
+3. **SBOM parse** — CycloneDX 1.6, 326 components, 0 vulnerabilities.
+4. **Security planset revised** — `.codex/plans/security-remediation-planset.md` updated with new artifact sha256s, artifact-refresh tracking row, Batch 3 commit (`08cc1b9`) recorded, CVE section updated with dual-run confirmation.
+5. **Living docs created** — `docs/roadmap/PR4448_whats_next.md` (full session summary + next-session Priority 1-4 promptsets) and `docs/roadmap/PR4448_session_diagram.mmd` (Mermaid session flow).
+6. **Validation** — `ruff src/ tests/` = 0 ✅ · `bandit --configfile .bandit` = 0 ✅ · Pattern 25 maintained (both CHANGELOG + ACCOUNTABILITY updated).
+
+### Security State at Session End
+| Tool | Result |
+|------|--------|
+| bandit --configfile .bandit | 0 issues ✅ |
+| bandit raw | ~328 (all suppressed) |
+| pip-audit actionable | 0 (2 accepted — no fix version) |
+| SBOM | 0 vulnerabilities |
+| ruff src/ | 0 ✅ |
+| detect-secrets | 0 ✅ |
+
+### Pattern Compliance
+- Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
+- Pattern 12 ✅ — upstream sweep `afc4e95` resolved E501 in `envelope.py`
+- Pattern 30 ✅ — PDA entry exists for 2026-05-13

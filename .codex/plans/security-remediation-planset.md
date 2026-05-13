@@ -1,17 +1,18 @@
 # Security Remediation Planset — Codebase-Wide
-**Source artifacts:** `dependency-scan-results` (sha256:df04fb29) · `sbom-reports` (sha256:97d5e5d6)  
-**Run:** [25797170771](https://github.com/Aries-Serpent/_codex_/actions/runs/25797170771) · Security Scanning Suite  
+**Latest artifacts:** `dependency-scan-results` (sha256:ae221879) · `sbom-reports` (sha256:1d922863)  
+**Latest run:** [25809211083](https://github.com/Aries-Serpent/_codex_/actions/runs/25809211083) · Security Scanning Suite · 2026-05-13  
+**Previous artifacts:** `dependency-scan-results` (sha256:df04fb29) · `sbom-reports` (sha256:97d5e5d6) · run [25797170771](https://github.com/Aries-Serpent/_codex_/actions/runs/25797170771)  
 **Objective:** Iterate to **0 outstanding concerns** across all security surfaces.  
 **Policy:** Work exclusively from CI artifacts (dep-scan, SBOM, bandit, CodeQL SARIF). Never call the live CodeQL/security API.
 
 ---
 
-## 📊 Current State (post Batch 3 — 2026-05-13)
+## 📊 Current State (post Batch 3 + artifact refresh — 2026-05-13)
 
 | Surface | Tool | Issues Before | Issues After | Status |
 |---------|------|:---:|:---:|:---:|
-| Dependency CVEs | pip-audit | 3 | 0 actionable | ✅ See §CVE |
-| SBOM vulnerabilities | CycloneDX | 0 | 0 | ✅ |
+| Dependency CVEs | pip-audit (run 25809211083) | 2 | 0 actionable | ✅ See §CVE |
+| SBOM vulnerabilities | CycloneDX (326 components) | 0 | 0 | ✅ |
 | Secrets | detect-secrets | 0 | 0 | ✅ |
 | Code-level (with config) | bandit --configfile .bandit | 0 | 0 | ✅ |
 | Code-level (raw bandit) | bandit | 375 | 328 | ⬇️ -47 |
@@ -35,12 +36,12 @@
 - **Status:** RESOLVED — `requirements-dev.txt`, `requirements-test.txt`, `requirements.txt`, `requirements-minimal.txt`, and `pyproject.toml` all pin `pytest>=9.0.3`. The pip-audit artifact scanned an environment with stale installation; requirements are correct.
 
 ### ⚠️ CVE-2025-69872 — diskcache ≤5.6.3 (CVSS: pickle RCE via cache dir write)
-- **Fix version:** None available
+- **Fix version:** None available _(confirmed in both run 25797170771 and run 25809211083)_
 - **Status:** DOCUMENTED — `pyproject.toml` lines 541-544 acknowledge this as an indirect transitive dependency (via `dvc-data → dvc`, dev extra only). No direct usage exists in `src/` or `scripts/`. Risk is limited to environments where an attacker has write access to the DVC cache directory.
 - **Mitigation:** diskcache is only reachable through DVC dev tooling, not the production codepath. Accept risk; re-evaluate when a fix version is released.
 
 ### ⚠️ CVE-2024-35515 — sqlitedict ≤2.1.0 (CVSS: pickle RCE via deserialization)
-- **Fix version:** None available
+- **Fix version:** None available _(confirmed in both run 25797170771 and run 25809211083)_
 - **Status:** DOCUMENTED — `pyproject.toml` lines 548-551 acknowledge this as an indirect transitive dependency not called from application code. No direct usage in `src/` or `scripts/`.
 - **Mitigation:** Accept risk; remove from lock.txt if dvc drops sqlitedict as a transitive dep.
 
@@ -218,8 +219,9 @@ security scan to produce updated artifacts and confirm 0 remaining actionable it
 | CVE triage | 3 CVEs | ✅ all addressed (1 fixed in req, 2 accepted) | 7c92f4c |
 | Batch 1 | 20 raw bandit | ✅ Fixed + nosec (2026-05-13) | 7c92f4c |
 | Batch 2 | 2 B403 | ✅ Done (2026-05-13) | 7c92f4c |
-| Batch 3 | 25 B311 | ✅ Done — per-site nosec (2026-05-13) | TBD |
+| Batch 3 | 25 B311 | ✅ Done — per-site nosec (2026-05-13) | 08cc1b9 |
 | Batch 4 | 1 exclude_dirs | ✅ Done (2026-05-13) | 7c92f4c |
+| Artifact refresh | re-ingest latest | ✅ run 25809211083 ingested (2026-05-13) — same CVE status confirmed | afc4e95 |
 | Batch 5 | 2 CVEs (no fix) | 🔲 Monitor — re-check on dep bump | — |
 | Batch 6 | Full rescan | 🔲 After merge to main | — |
 
