@@ -690,8 +690,10 @@ def generate_context(out_dir: Path, top_n: int = 30) -> None:
         "3. **Dependabot**: Open `dependabot/alerts_critical.json` for packages to upgrade.",
         "4. **Secrets**: Open `secrets/alerts_active.json` — revoke all active secrets immediately.",
         "5. **Autofix**: Check GitHub Security tab for AI-generated fix suggestions from Copilot.",
-        "6. **Rule reference**: For per-rule fix patterns, consult the GitHub Security tab "
-            "and the CodeQL documentation at https://codeql.github.com/codeql-query-help/python/.",
+        (
+            "6. **Rule reference**: For per-rule fix patterns, consult the GitHub Security tab "
+            + "and the CodeQL documentation at https://codeql.github.com/codeql-query-help/python/."
+        ),
     ]
 
     dest = out_dir / "AGENT_SECURITY_CONTEXT.md"

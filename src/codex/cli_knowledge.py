@@ -70,7 +70,7 @@ app = typer.Typer(help="Codex Knowledge (ingest → normalize → chunk → buil
 
 # _NODE_RE: matches a Mermaid node declaration, e.g. 'A["label"]' or 'MyNode[text]'
 _NODE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*\[")
-# _EDGE_RE: matches directed edge syntax, e.g. 'A-->B', 'A-.->B', 'A==>B', 'A-.-oB'
+# _EDGE_RE: matches directed edge syntax, e.g. 'A-->B', 'A-.->B', 'A==>B' (requires '>' arrowhead)
 _EDGE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*[-.=o]*>\s*([A-Za-z][A-Za-z0-9_]*)")
 _QUANTUM_VARIABLES = ("N", "E", "V", "T")
 _QUANTUM_SYMBOL_RE = re.compile(r"\b([NEVT])\b")
@@ -85,7 +85,7 @@ def _normalize_edge_syntax(line: str) -> str:
     an arrowhead (e.g. ``A.-B``) are **not** matched by ``_EDGE_RE`` and are
     left unchanged.  Example transformations::
 
-        A-.->B   →  A-->B   (dotted open arrow  — matched)
+        A-.->B   →  A--->B  (dotted open arrow  — matched, triple hyphen result)
         A.->B    →  A->B    (short dotted arrow  — matched)
     """
     return line.replace("-.", "--").replace(".->", "->")
