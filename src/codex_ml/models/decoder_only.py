@@ -195,7 +195,7 @@ class DecoderOnlyLM(nn.Module):
         use_cache: bool = True,
         labels: Optional[torch.Tensor] = None,
     ) -> dict:
-        bsz, seq = input_ids.shape
+        _bsz, seq = input_ids.shape
         device = input_ids.device
         pos = torch.arange(seq, device=device)
         x = self.tok_emb(input_ids)

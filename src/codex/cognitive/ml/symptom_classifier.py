@@ -24,15 +24,15 @@ class BaseClassifier(Protocol):
 
     def fit(self, X: Any, y: Any) -> Any:
         """Fit the classifier."""
-        pass
+        ...
 
     def predict(self, X: Any) -> Any:
         """Predict labels."""
-        pass
+        ...
 
     def predict_proba(self, X: Any) -> Any:
         """Predict probabilities."""
-        pass
+        ...
 
 
 @dataclass

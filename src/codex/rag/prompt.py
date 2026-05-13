@@ -354,6 +354,7 @@ def build_prompt(
     logger.debug(f"Built prompt with length: {len(prompt)}")
     return prompt
 
+
 __all__ = [
     "CTX_ITEM_PREFIX",
     "CONTEXT_END",

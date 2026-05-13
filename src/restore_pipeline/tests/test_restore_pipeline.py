@@ -142,7 +142,7 @@ def test_metrics_show_improvement(clean_image: np.ndarray, noisy_image: np.ndarr
 def test_pipeline_returns_uint8(noisy_image: np.ndarray) -> None:
     from restore_pipeline import process
 
-    restored, metrics = process(noisy_image)
+    restored, _metrics = process(noisy_image)
     assert restored.dtype == np.uint8
     assert restored.shape == noisy_image.shape
 

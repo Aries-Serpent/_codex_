@@ -744,7 +744,7 @@ def main() -> int:
                 "URL fetching skipped — set a token for full context."
             )
             # Still register URLs so they appear in the digest
-            for url, kind, url_repo, ids in url_refs:
+            for url, kind, _url_repo, _ids in url_refs:  # url_repo/ids only used in token branch below
                 report.fetched.append(FetchedItem(
                     url=url, kind=kind,
                     title=url.split("/")[-1],
@@ -752,7 +752,7 @@ def main() -> int:
                 ))
         else:
             client = GitHubClient(token=token, verbose=args.verbose)
-            for url, kind, _url_repo, _ids in url_refs:
+            for url, kind, url_repo, ids in url_refs:
                 if args.verbose:
                     print(f"[bootstrap] Fetching {kind}: {url}")
                 try:

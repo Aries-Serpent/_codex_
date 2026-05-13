@@ -38,6 +38,7 @@ _PLUGIN_CONFLICT_LOGGED: set[str] = set()
 _REWARD_METRICS_LOADED = False
 _REWARD_METRICS_LOCK = threading.Lock()
 
+
 def _error_log_path() -> Path:
     base_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", "_codex_reports"))
     date_str = datetime.now(timezone.utc).date().isoformat()

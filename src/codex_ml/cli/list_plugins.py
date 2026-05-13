@@ -238,9 +238,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             "models": len(models) if include_models else None,
             "tokenizers": len(tokenizers) if include_tokenizers else None,
             "datasets": len(datasets) if include_datasets else None,
-            "programmatic": (
-                len(programmatic.get("names", [])) if include_programmatic else None
-            ),
+            "programmatic": (len(programmatic.get("names", [])) if include_programmatic else None),
         }
 
         if args.format == "json":

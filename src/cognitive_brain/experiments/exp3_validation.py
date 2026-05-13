@@ -143,7 +143,9 @@ def run_uncertainty_approach(
     # Optimize schedule
     current_time = 2000.0
     test_ids = [test.test_id for test in test_suite]
-    selected_ids, priorities = optimizer.optimize_test_schedule(test_ids, time_budget, current_time)
+    selected_ids, _priorities = optimizer.optimize_test_schedule(
+        test_ids, time_budget, current_time
+    )
 
     # Count failures detected
     selected_tests = {test.test_id: test for test in test_suite if test.test_id in selected_ids}

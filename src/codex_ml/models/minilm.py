@@ -84,7 +84,7 @@ class MiniLM(nn.Module):
         Returns:
             Logits tensor of shape (batch, seq_len, vocab_size).
         """
-        bsz, seq_len = input_ids.shape
+        _bsz, seq_len = input_ids.shape
         device = input_ids.device
         pos = torch.arange(seq_len, device=device).unsqueeze(0)
         x = self.tok_emb(input_ids) + self.pos_emb(pos)

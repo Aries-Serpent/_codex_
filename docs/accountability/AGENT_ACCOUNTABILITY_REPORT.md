@@ -1,3 +1,29 @@
+## SESSION SUMMARY — 2026-05-13T09:33Z [S993-cont-codeql-quickwins]
+
+**Session:** S993-cont-codeql-quickwins | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442
+
+### Completed
+- ✅ Investigated CI failure (run 25789857655 / 25789467800): Pattern 22 failure was a stale `.secrets.baseline` CODEX_MANIFEST entry from the post-merge state — fixed by `sync_tracked_files --fix` in commit `6b904fa`.
+- ✅ Fixed `scripts/ci/session_bootstrap.py` B007 regression: `url_repo`/`ids` → `_url_repo`/`_ids` in no-token loop branch (body doesn't use them); token branch keeps named form (body DOES use them).
+- ✅ Fixed `src/codex/cognitive/ml/symptom_classifier.py` PIE790: replaced `pass` → `...` in 3 Protocol method bodies.
+- ✅ Fixed 15 RUF059 (unused unpacked vars) across 13 src/ files: all renamed to `_var` convention.
+- ✅ Fixed 2 RUF034 (useless if-else) in `src/codex_ml/cli/ndjson_summary.py` and `src/training/engine_hf_trainer.py`.
+- ✅ All CodeQL quick-win patterns now clean: `python3 -m ruff check src/ --select RUF059,RUF034,PIE790,B007` → All checks passed.
+- ✅ Pattern 25: this commit updates CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md (+ code review fixes: evaluation/loop.py Protocol pass→..., hhg_logistics/train.py blank, session_bootstrap.py comment)
+- ✅ Pattern 30: PDA entry added for S993-cont. (2026-05-13).
+
+### Validation
+- ✅ `python3 -m ruff check src/ --select RUF059,RUF034,PIE790,B007` — All checks passed
+- ✅ `python3 -m ruff check scripts/ --select B007` — All checks passed
+- ✅ `python3 scripts/ci/sync_tracked_files.py --fix` — consistent
+- ✅ `python3 scripts/ci/auto_fix_common_issues.py --check-only` — All 33 patterns clean
+
+### Pattern Status
+- **Pattern 25** ✅ (CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit)
+- **Pattern 30** ✅ (PDA entry: S993-cont-CODEQL-QUICKWINS dated 2026-05-13)
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T09:03Z [S993-pr4442-bootstrap-living-docs]
 
 **Session:** S993-pr4442-bootstrap-living-docs | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442
@@ -9,7 +35,7 @@
 - ✅ Created `docs/sessions/PR4442_session_diagram.md` — session diagram for PR #4442.
 - ✅ `sync_tracked_files --fix`: refreshed stale CODEX_MANIFEST entry in `.secrets.baseline` (was stale after PR #4434 merge).
 - ✅ Fixed `src/codex_ml/safety/sandbox.py` — added explicit `subprocess.TimeoutExpired` handler to call `proc.kill()` before flushing remaining output and re-raising, ensuring subprocess is always terminated on timeout (code review finding from CodeQL autofix `16914e6`).
-- ✅ Pattern 25: this commit updates CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md.
+- ✅ Pattern 25: this commit updates CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md (+ code review fixes: evaluation/loop.py Protocol pass→..., hhg_logistics/train.py blank, session_bootstrap.py comment)
 - ✅ Pattern 30: PDA entry added for S993 (2026-05-13).
 
 ### Validation

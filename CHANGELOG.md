@@ -7,12 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S993 cont. — CodeQL quick-wins: RUF059, RUF034, PIE790, B007 — 15 files)
+- **`scripts/ci/session_bootstrap.py`**: Renamed unused loop variable `url_repo`/`ids` → `_url_repo`/`_ids` in no-token branch (B007); kept named in the token branch where they ARE used (F821 regression prevented).
+- **`src/codex/cognitive/ml/symptom_classifier.py`**: Replaced `pass` → `...` in Protocol method bodies (PIE790 — unused pass after docstring).
+- **`src/codex/github/mcp_poster.py`**: Renamed `category_id` → `_category_id` in search-loop where only `url` and `kind` are consumed (RUF059).
+- **`src/codex/quantum_orchestrator/qft/second_quantization.py`**: Renamed `state3, amp3` → `_state3, _amp3` and `amplitude` → `_amplitude` for unused unpacked results (RUF059).
+- **`src/codex/rag/benchmarks/runner.py`**: Renamed `current` → `_current` from `tracemalloc.get_traced_memory()` (RUF059).
+- **`src/codex_ml/data/dataset_wrapper.py`**: Renamed `test_frac` → `_test_frac` in split tuple (RUF059).
+- **`src/codex_ml/metrics/_optional_bleu_rouge.py`**: Renamed `sm` → `_sm` in bleu/rouge import tuple (RUF059).
+- **`src/codex_ml/models/decoder_only.py`**: Renamed `bsz` → `_bsz` (unused batch dimension) (RUF059).
+- **`src/codex_ml/models/minilm.py`**: Renamed `bsz` → `_bsz` (unused batch dimension) (RUF059).
+- **`src/codex_ml/serving/optimizations.py`**: Renamed `ids` → `_ids` in batch zip unpack (RUF059).
+- **`src/codex_ml/training/continuous_learning.py`**: Renamed `model` → `_model` (only `metrics` used after training) (RUF059).
+- **`src/codex_ml/utils/checkpoint_core.py`**: Renamed `actual` → `_actual` in `load_best` unpack (RUF059).
+- **`src/codex_ml/cli/ndjson_summary.py`**: Removed useless `inp if inp.is_dir() else inp` expression (RUF034).
+- **`src/training/engine_hf_trainer.py`**: Simplified `getattr(args, "warmup_steps", 0) if hasattr(...) else getattr(args, "warmup_steps", 0)` — both branches identical (RUF034).
+- **`src/cognitive_brain/experiments/exp3_validation.py`**: Renamed `priorities` → `_priorities` (unused in `optimize_test_schedule` return) (RUF059).
+- **`src/cognitive_brain/quantum/ab_testing.py`**: Renamed `t_stat` → `_t_stat` (only `p_value` used) (RUF059).
+- **`src/ingestion/__init__.py`**: Renamed `used` → `_used` in `_call_repo_read_text` return (RUF059).
+- **`src/restore_pipeline/tests/test_restore_pipeline.py`**: Renamed `metrics` → `_metrics` (unused) (RUF059).
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit (code review fixes: eval/loop.py Protocol pass→..., hhg_logistics/train.py blank line, session_bootstrap.py comment).
+- **Pattern 30**: PDA entry added for S993-cont. (2026-05-13).
+
 ### Added (S993 — PR #4442 bootstrap; living docs; sync fix)
 - **`docs/plans/PR4442_whats_next.md`**: Created new PR living doc for the post-PR#4434 continuation, listing completed carry-forward work and remaining priorities.
 - **`docs/sessions/PR4442_session_diagram.md`**: Created new session diagram tracking PR #4442 sessions.
 - **`sync_tracked_files --fix`**: Refreshed `.secrets.baseline` CODEX_MANIFEST entry (was stale after merge); all tracked files now consistent.
 - **`src/codex_ml/safety/sandbox.py`**: Added explicit `TimeoutExpired` exception handling — `proc.kill()` is now called before flushing remaining output and re-raising, ensuring the subprocess is always terminated on timeout (code review fix).
-- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit (code review fixes: eval/loop.py Protocol pass→..., hhg_logistics/train.py blank line, session_bootstrap.py comment).
 - **Pattern 30**: PDA entry added for S993 (2026-05-13).
 
 ### Fixed (auto-update — PR #4442)
@@ -31,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Living-file verification**: `verify_living_files.py --pr-number 4434 --strict` passes — all 5 living files present and non-stale.
 - **Tracked-file hygiene**: `sync_tracked_files.py --fix` confirms CODEX_MANIFEST integrity, `.secrets.baseline`, CHANGELOG, and AGENT_ACCOUNTABILITY_REPORT all consistent.
 - **MFA tests**: `tests/auth/test_mfa_provider.py` and `tests/auth/test_authenticator.py` — all 57 tests pass ✅.
-- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit (code review fixes: eval/loop.py Protocol pass→..., hhg_logistics/train.py blank line, session_bootstrap.py comment).
 
 ### Fixed (S990 continued — 24 more B007; template_lint.yml WEC; Pattern 25)
 - **24 B007 loop-variable quick-wins** (final batch — `scripts/` now clean): `ci/session_bootstrap.py` ×4, `convert_print_to_logger.py` ×2, `phase2d_disambiguator.py`, `phase2d_targeted_fixes.py` ×3, `phase3_categorization.py`, `phase3_stage1_processor.py`, `phase3_stage2_medium_priority.py`, `phase3_stage4_archive.py`, `root_org/update_links_atomic.py`, `security/validate_security.py` ×2, `security_audit.py` ×2, `space_traversal/detectors/mcp_error_handling.py`, `space_traversal/detectors/mcp_observability.py`, `space_traversal/detectors/mcp_versioning_compat.py`, `space_traversal/trend_aggregator.py`, `validate_auth_security.py`.
