@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S980 — Pattern 25 fix: follow-up prompt commit was [skip ci] only)
+- **Pattern 25 compliance**: Automated `[skip ci]` commit `bb751c8` (chore: Generate follow-up prompt) only updated `.github/copilot-prompts/active/PR-4434-followup.md` without CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md — Pattern 25 violation. This commit restores compliance.
+- **sync_tracked_files**: All tracked files consistent ✅ (CODEX_MANIFEST sha256 consistent, .secrets.baseline entries correct, CHANGELOG [Unreleased] present)
+
 ### Fixed (S979 — Post-merge CodeQL sweep: os.popen → datetime, PR #4434)
 - **CodeQL verification on main**: Confirmed CodeQL Advanced workflow (run 25774686922) ran successfully on main after PR #4427 merged — 4 language analyses passing ✅ (python, go, javascript-typescript, rust) plus 2 post-run jobs skipped cleanly
 - **`scripts/fix_broken_doc_links.py`**: Replaced deprecated `os.popen('date -u +%Y-%m-%dT%H:%M:%SZ')` call with `datetime.datetime.now(datetime.timezone.utc).strftime(...)` — removes CodeQL `py/shell-command-injection-from-environment` alert; adds `import datetime` to module imports
