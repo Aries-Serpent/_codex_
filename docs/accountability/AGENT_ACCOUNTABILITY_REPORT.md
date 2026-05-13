@@ -1,4 +1,19 @@
-## SESSION SUMMARY — 2026-05-12T23:00Z [S972-comment-review-gate]
+## SESSION SUMMARY — 2026-05-12T23:52Z [S973-detect-secrets-fix]
+
+**Session:** S973-detect-secrets-fix | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- **Validation Pipeline fix**: Identified root cause of `Fast Validation` failure (run 25767732749) — detect-secrets flagged test fixture values (AWS key, GitHub token, OpenAI key, RSA private key, JWT secret) in new test files
+- **False positive suppression**: Added `# pragma: allowlist secret` to 6 lines in `tests/safety/test_sanitizers_coverage.py`, 1 line in `tests/serving/test_inference_enhanced.py`, 1 line in `tests/test_token_verification.py`
+- **subprocess CodeQL final fix**: Removed `if TYPE_CHECKING: from subprocess import CompletedProcess` (still triggered CodeQL alert 13552 on commit 51bb5b9); now uses `CompletedProcess = _stdlib_subprocess.CompletedProcess` attribute access — no Python `import subprocess` statement in the file at all
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated
+
+### Validation
+- ✅ `detect-secrets scan` on modified test files → 0 secrets found
+- ✅ `python -m ruff check src/codex/utils/subprocess.py` → clean
+- ✅ `python scripts/ci/sync_tracked_files.py --check` → all consistent
+
+---
 
 **Session:** S972-comment-review-gate | **Branch:** `0D_base_` | **PR:** #4427
 

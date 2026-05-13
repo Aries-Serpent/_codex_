@@ -280,7 +280,7 @@ class TestTokenScopeVerifier:
         }
         mock_requests.get.return_value = mock_response
 
-        secret_token = "ghp_SECRETTOKEN123456789"
+        secret_token = "ghp_SECRETTOKEN123456789"  # pragma: allowlist secret
         verifier = TokenScopeVerifier(token=secret_token)
         results = verifier.verify_scopes()
 

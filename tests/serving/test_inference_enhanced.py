@@ -37,7 +37,7 @@ class TestAuthManager:
         """Test initialization with JWT secret"""
         auth = AuthManager(jwt_secret="my-secret")
         assert auth.auth_enabled is True
-        assert auth.jwt_secret == "my-secret"
+        assert auth.jwt_secret == "my-secret"  # pragma: allowlist secret
 
     def test_verify_api_key_disabled(self):
         """Test API key verification when auth is disabled"""

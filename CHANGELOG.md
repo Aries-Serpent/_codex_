@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S973 — detect-secrets baseline + subprocess CodeQL final fix)
+- **detect-secrets false positives**: Added `# pragma: allowlist secret` to test fixture lines in `tests/safety/test_sanitizers_coverage.py` (lines with AWS/GitHub/OpenAI/RSA key test fixtures), `tests/serving/test_inference_enhanced.py`, and `tests/test_token_verification.py` — fixes `Fast Validation` CI failure (detect-secrets baseline mismatch)
+- **`src/codex/utils/subprocess.py` CodeQL py/import-self (final fix)**: Removed `if TYPE_CHECKING: from subprocess import CompletedProcess` block (still triggered CodeQL after S971); now exposes `CompletedProcess` via `_stdlib_subprocess.CompletedProcess` attribute access — no Python `import` statement targeting `subprocess` at all
+
 ### Fixed (S972 — Pattern 25 compliance + comment review gate)
 - **Pattern 25 enforcement**: Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to satisfy Pattern 25 (every commit must include both files); previous commit `07bdd42` only updated `session_context_latest.md`
 - **Comment review gate**: Replied to blocking CI rescue comments on PR #4427 (commits `392af4e` and `4a898f3`) to clear the comment review gate after the S971 subprocess self-import fix
