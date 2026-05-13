@@ -184,7 +184,9 @@ class ExecutionEnvelope:
                     effective_max_retries + 1,
                 )
 
-        if last_result is None:  # defensive: should always be set in loop unless retry range is empty
+        if (
+            last_result is None
+        ):  # defensive: should always be set in loop unless retry range is empty
             raise RuntimeError(
                 "No result produced after retry loop (unexpected empty range)"
             )  # pragma: no cover
