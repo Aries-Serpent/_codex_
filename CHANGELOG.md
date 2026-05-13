@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S993 cont.4 — secrets baseline enforcement + F821 regression)
+- **`scripts/phase10/automated_secrets_manager.py`**: Added `# pragma: allowlist secret` to 4 lines flagged as false-positive "Secret Keyword" by `detect-secrets` (variable assignments using constant names `CODEX_MASTER_KEY`/`secret_name`, not real credentials). Also fixed F821 regression introduced by the `aab69b8` RUF059 sweep: `stdout, stderr → _stdout, _stderr` but line 271 still referenced `stderr`; corrected to `_stderr`.
+- **`scripts/tools/variable_audit_cli.py`**: Added `# pragma: allowlist secret` to 3 lines flagged as false-positive (storage-layer constant names `LAYER_ORG_SECRETS`, `LAYER_REPO_SECRETS`, `LAYER_ENV_SECRETS` — these are variable names, not credentials).
+- **`.secrets.baseline`**: Updated via `sync_tracked_files.py --fix` to incorporate the new `pragma: allowlist secret` annotations.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont4 (2026-05-13).
+
 ### Fixed (S993 cont.3 — code-quality bot: suppress "Statement has no effect" + "Unused local variable")
 - **`src/codex_ml/evaluation/loop.py`**: Reverted `...` → `pass` in Protocol method bodies without docstrings (Criterion.__call__, Logger.log, Logger.close). GitHub code-quality bot flags `...` as "Statement has no effect" because Ellipsis is an expression; `pass` is a statement and is not flagged.
 - **`src/codex/cognitive/ml/symptom_classifier.py`**: Removed `...` from Protocol method bodies that already have docstrings (fit, predict, predict_proba). Docstring alone is sufficient as the method body in Python.

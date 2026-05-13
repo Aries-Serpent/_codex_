@@ -63,9 +63,9 @@ _REPO  = "_codex_"
 _ENV   = "Aries_Serpent_codex_"
 
 # Storage-layer identifiers used in the registry
-LAYER_ORG_SECRETS   = "org-secrets"
-LAYER_REPO_SECRETS  = "repo-secrets"
-LAYER_ENV_SECRETS   = "env-secrets"
+LAYER_ORG_SECRETS   = "org-secrets"   # pragma: allowlist secret
+LAYER_REPO_SECRETS  = "repo-secrets"  # pragma: allowlist secret
+LAYER_ENV_SECRETS   = "env-secrets"   # pragma: allowlist secret
 LAYER_REPO_VARS     = "repo-vars"
 LAYER_ENV_VARS      = "env-vars"
 LAYER_CODESPACE     = "codespace"
