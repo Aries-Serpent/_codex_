@@ -124,7 +124,12 @@ def run_in_sandbox(
             preexec_fn=preexec,
             text=False,
         ) as proc:
-            stdout, stderr = proc.communicate(input=stdin, timeout=timeout + 1)
+            try:
+                stdout, stderr = proc.communicate(input=stdin, timeout=timeout + 1)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                stdout, stderr = proc.communicate()
+                raise
             cp = subprocess.CompletedProcess(argv, proc.returncode, stdout, stderr)
 
         def _sanitize(data: bytes) -> bytes:

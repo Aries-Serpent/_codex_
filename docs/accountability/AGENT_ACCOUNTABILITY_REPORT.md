@@ -8,12 +8,15 @@
 - ✅ Created `docs/plans/PR4442_whats_next.md` — new PR living doc with carry-forward context and remaining priorities.
 - ✅ Created `docs/sessions/PR4442_session_diagram.md` — session diagram for PR #4442.
 - ✅ `sync_tracked_files --fix`: refreshed stale CODEX_MANIFEST entry in `.secrets.baseline` (was stale after PR #4434 merge).
+- ✅ Fixed `src/codex_ml/safety/sandbox.py` — added explicit `subprocess.TimeoutExpired` handler to call `proc.kill()` before flushing remaining output and re-raising, ensuring subprocess is always terminated on timeout (code review finding from CodeQL autofix `16914e6`).
 - ✅ Pattern 25: this commit updates CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md.
 - ✅ Pattern 30: PDA entry added for S993 (2026-05-13).
 
 ### Validation
 - ✅ `python3 scripts/ci/sync_tracked_files.py --fix` — all tracked files consistent
 - ✅ `python3 scripts/ci/auto_fix_common_issues.py --check-only` — all 33 patterns clean
+- ✅ `ruff check src/codex_ml/safety/sandbox.py` — clean
+- ✅ `parallel_validation` — code review addressed; CodeQL trivial skip
 
 ### Pattern Status
 - **Pattern 25** ✅ (CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit)
