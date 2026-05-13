@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S221 S994 — PR #4448 — 2026-05-13T15:25Z)
+- Addressed Missed-Trigger Recovery (S221 guard) by verifying clean state: `ruff` ✅ · `auto_fix_common_issues` ✅ · `sync_tracked_files` ✅ · merge readiness 100/100.
+
 ### Fixed (auto-update — PR #4448)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4448 (SHA `5b72d759`) at 2026-05-13T12:59Z [auto-generated]
 
