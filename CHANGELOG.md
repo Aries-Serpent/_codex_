@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4447)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4447 (SHA `d22873cc`) at 2026-05-13T12:26Z [auto-generated]
+
 ### Security (S993-cont9 — dependency-scan-results.zip + sbom-reports.zip processing)
 - **CVE-2025-71176 (pytest `/tmp` symlink, GHSA-6w46-j5rx-g56g)**: Raised pytest lower bound from `>=8.x` to `>=9.0.3` in `requirements.txt`, `requirements-dev.txt`, `requirements-minimal.txt`, and all three `pyproject.toml` optional-dependency extras (`dev`, `test`, `security`). The fix version 9.0.3 eliminates the local privilege-escalation path via `/tmp/pytest-of-{user}` symlink attack on UNIX.
 - **CVE-2024-35515 (sqlitedict insecure deserialization, GHSA-g4r7-86gm-pgqc)**: No upstream fix available. Added `CVE-2024-35515` to `[tool.pip-audit].ignore-vulns` in `pyproject.toml` with full documentation comment explaining indirect-only usage and controlled-storage mitigations. Tracked as Dependabot alert #90.
