@@ -1,3 +1,22 @@
+## SESSION SUMMARY — 2026-05-13T09:08Z [S979-mermaid-logic-map]
+
+**Session:** S979-mermaid-logic-map | **Branch:** `copilot/create-evidence-backed-mermaid-map`
+
+### Completed
+- **`docs/system/mermaid_logic_map.md`** created — canonical source of truth for the runtime logic map. Contains 24-row evidence table (every node maps to a real file + verified symbol), three explicit runtime ambiguities (A1/A2/A3), data-handoffs table, embedded Mermaid diagram, and maintenance notes.
+- **`docs/diagrams/runtime_logic_map.mmd`** created — standalone Mermaid source; mirrors embedded diagram for `mkdocs build --verbose` and diff-friendly maintenance.
+- **`mkdocs.yml`** updated — added `Runtime Logic Map: system/mermaid_logic_map.md` under Architecture nav section.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md both updated.
+
+### Validation
+- ✅ All 24 evidence-table nodes traced to real source files before diagram authoring
+- ✅ Three ambiguities documented explicitly with dashed edges (no guessing)
+- ✅ MkDocs Mermaid support confirmed: `pymdownx.superfences` + `mermaid2` v10.4.0 in `mkdocs.yml`
+- ✅ Docs validation pipeline identified: `pages-pre-merge-validation.yml`, `pages-mkdocs.yml`, `docs-health.yml`
+- ✅ Pattern 25 satisfied: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md both updated
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T02:21Z [S978-pattern25-ci-rescue-d104e11]
 
 **Session:** S978-pattern25-ci-rescue-d104e11 | **Branch:** `0D_base_` | **PR:** #4427

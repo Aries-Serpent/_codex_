@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S979-mermaid-logic-map — runtime logic map documentation)
+- **`docs/system/mermaid_logic_map.md`**: New canonical source-of-truth document for the repository runtime logic map. Contains a verified evidence table (24 nodes → source files), three explicitly documented runtime ambiguities (A1: `codex_ml.cli` conditional import, A2: Rust `python` feature flag, A3: QFT extension optional import), a data-handoffs table, and the embedded Mermaid flowchart.
+- **`docs/diagrams/runtime_logic_map.mmd`**: Standalone Mermaid source for `mkdocs build --verbose` rendering; mirrors the embedded diagram in `mermaid_logic_map.md`.
+- **`mkdocs.yml`**: Added `Runtime Logic Map` entry under the Architecture nav section so the new doc renders on GitHub Pages.
+
 ### Fixed (S978 — Pattern 25 compliance + CI Rescue on d104e11 resolved)
 - **Pattern 25 compliance (x2)**: Fixed two successive Pattern 25 violations (plan commits `379207f` and `452cb70` each only had `session_context_latest.md`); both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md now included in compliance commit
 - **CI Rescue on `d104e11` triage**: Two failing checks (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) were infrastructure jobs with 23 in-progress; ruff ✅ clean, sync_tracked_files ✅ consistent
