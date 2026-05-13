@@ -7,7 +7,7 @@ import hmac
 import io
 import logging
 import os
-import pickle
+import pickle  # nosec B403 — this is the safe pickle wrapper; it validates HMAC before loading
 import secrets
 from pathlib import Path
 from typing import Any

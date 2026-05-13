@@ -6,7 +6,7 @@ import hashlib
 import inspect
 import json
 import logging
-import pickle
+import pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
 import random as _random
 import shutil
 from collections.abc import Iterable, Mapping

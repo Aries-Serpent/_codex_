@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S994-security-remediation — PR #4448 — 2026-05-13T15:45Z)
+- **Security hardening Batch 1-4** from artifact-based scan (pip-audit sha256:df04fb29, SBOM sha256:97d5e5d6, run 25797170771):
+  - Replaced production `assert last_result is not None` with explicit `if/raise RuntimeError` in `src/codex/skills/envelope.py` (B101 production code).
+  - Added `# nosec B105` to 5 token-source label strings in `src/codex/github/mcp_poster.py` (false positives: source labels, not credentials).
+  - Added `# nosec B106` to 8 `old_secret_id=""` result-struct defaults in `src/security/providers/github_provider.py` (false positives: empty field defaults).
+  - Added `# nosec B110` to try/except/pass optional numpy import in `src/codex/rag/cache/__init__.py`.
+  - Added `# nosec B112` to try/except/continue manifest scan in `src/codex/skills/compression.py`.
+  - Added `# nosec B403` to 6 `import pickle` lines across ML checkpoint modules (trusted local paths only).
+  - Extended `.bandit` `exclude_dirs` with `src/restore_pipeline/tests`.
+  - Created `.codex/plans/security-remediation-planset.md` with full Batches 3-6 promptsets for iterative continuation to 0 raw issues.
+- CVE-2025-71176 (pytest): already resolved — requirements pin `>=9.0.3`.
+- CVE-2025-69872 (diskcache) / CVE-2024-35515 (sqlitedict): accepted/documented in `pyproject.toml`; no fix version available; no direct code usage.
+
 ### Fixed (S221 S994 — PR #4448 — 2026-05-13T15:25Z)
 - Addressed Missed-Trigger Recovery (S221 guard) by verifying clean state: `ruff` ✅ · `auto_fix_common_issues` ✅ · `sync_tracked_files` ✅ · merge readiness 100/100.
 

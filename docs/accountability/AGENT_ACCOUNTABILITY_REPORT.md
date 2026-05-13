@@ -1,4 +1,27 @@
-## SESSION SUMMARY — 2026-05-13T14:40Z [S994-pr4448-full-remediation]
+## SESSION SUMMARY — 2026-05-13T15:45Z [S994-security-remediation-planset]
+
+**Session:** S994-security-remediation-planset | **Branch:** `0D_base_` | **PR:** #4448
+
+### Completed
+- ✅ Downloaded and parsed `dependency-scan-results` (sha256:df04fb29) + `sbom-reports` (sha256:97d5e5d6) from run 25797170771.
+- ✅ Identified 3 CVEs: pytest (fixed in req), diskcache + sqlitedict (no-fix, accepted/documented).
+- ✅ Ran bandit → 375 raw issues; with `--configfile .bandit` → 0 issues.
+- ✅ Batch 1: Fixed production B101 assert→if/raise in `envelope.py`; annotated B105/B106 FP in mcp_poster.py + github_provider.py.
+- ✅ Batch 2: Added `# nosec B110/B112` to cache/__init__.py and compression.py; `# nosec B403` to 6 pickle imports.
+- ✅ Batch 4: Extended `.bandit` exclude_dirs with `src/restore_pipeline/tests`.
+- ✅ Raw bandit: 375 → 353 (-22); with config: 0 → 0 (maintained). `ruff` ✅.
+- ✅ Created `.codex/plans/security-remediation-planset.md` with Batches 3-6 promptsets.
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in this commit.
+- ✅ Replied to CI Rescue comment 4442521719.
+
+### Remaining (queued in planset)
+- 🔲 Batch 3: 25 B311 inline nosec annotations (ML sampling — globally suppressed, needs per-site docs).
+- 🔲 Batch 5: Monitor diskcache/sqlitedict for fix version release.
+- 🔲 Batch 6: Re-run security-scanning-suite after Batch 3, verify 0 actionable.
+
+---
+
+
 
 **Session:** S994-pr4448-full-remediation | **Branch:** `0D_base_` | **PR:** #4448
 

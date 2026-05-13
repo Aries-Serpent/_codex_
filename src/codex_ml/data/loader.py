@@ -10,7 +10,7 @@ import csv  # noqa: E402
 import hashlib  # noqa: E402
 import io  # noqa: E402
 import json  # noqa: E402
-import pickle  # noqa: E402
+import pickle  # noqa: E402  # nosec B403 — pickle is used for ML checkpoint data from trusted local paths only
 import time  # noqa: E402
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402

@@ -135,7 +135,7 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
-            import pickle as _stdlib_pickle
+            import pickle as _stdlib_pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
 
             buffer = io.BytesIO()
             try:

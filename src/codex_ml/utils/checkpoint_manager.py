@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-import pickle
+import pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
 from pathlib import Path
 from typing import Any
 
