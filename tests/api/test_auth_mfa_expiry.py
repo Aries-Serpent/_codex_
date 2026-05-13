@@ -9,7 +9,7 @@ Covers:
 - Access token expiry → must re-authenticate (API)
 """
 
-from __future__ import annotations # pragma: allowlist secret
+from __future__ import annotations  # pragma: allowlist secret
 
 import time
 from unittest.mock import patch
