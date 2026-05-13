@@ -52,7 +52,7 @@ class TestLoginLogoutFlows:
         manager = TokenManager(secret_key="test-secret-key")
 
         # Login
-        session_token, session_id = manager.generate_session_token("user123")
+        session_token, _session_id = manager.generate_session_token("user123")
 
         # Validate token works
         manager.validate_token(session_token)
@@ -86,8 +86,8 @@ class TestLoginLogoutFlows:
         user_id = "user123"
 
         # Create multiple sessions
-        session1_token, session1_id = manager.generate_session_token(user_id, ip_address="192.168.1.1")
-        session2_token, session2_id = manager.generate_session_token(user_id, ip_address="192.168.1.2")
+        session1_token, _session1_id = manager.generate_session_token(user_id, ip_address="192.168.1.1")
+        session2_token, _session2_id = manager.generate_session_token(user_id, ip_address="192.168.1.2")
 
         # Both sessions valid
         manager.validate_token(session1_token)
@@ -102,7 +102,7 @@ class TestLoginLogoutFlows:
         manager = TokenManager(secret_key="test-secret-key")
 
         # Login with MFA
-        session_token, session_id = manager.generate_session_token(
+        _session_token, session_id = manager.generate_session_token(
             user_id="user123",
             mfa_verified=True
         )
@@ -196,7 +196,7 @@ class TestSessionManagement:
         """Test session creation stores all metadata."""
         manager = TokenManager(secret_key="test-secret-key")
 
-        token, session_id = manager.generate_session_token(
+        _token, session_id = manager.generate_session_token(
             user_id="user123",
             ip_address="10.0.0.1",
             user_agent="Chrome/90.0",
@@ -228,7 +228,7 @@ class TestSessionManagement:
     def test_inactive_session_timeout(self):
         """Test session timeout based on inactivity."""
         manager = TokenManager(secret_key="test-secret-key")
-        token, session_id = manager.generate_session_token("user123")
+        _token, session_id = manager.generate_session_token("user123")
 
         session = manager.get_session(session_id)
 
@@ -243,8 +243,8 @@ class TestSessionManagement:
         manager = TokenManager(secret_key="test-secret-key")
 
         # Create active and expired sessions
-        active_token, active_id = manager.generate_session_token("user1")
-        expired_token, expired_id = manager.generate_session_token("user2")
+        _active_token, active_id = manager.generate_session_token("user1")
+        _expired_token, expired_id = manager.generate_session_token("user2")
 
         # Mark one as expired
         expired_session = manager.get_session(expired_id)

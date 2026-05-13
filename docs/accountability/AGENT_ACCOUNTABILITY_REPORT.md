@@ -36336,3 +36336,37 @@ Ingest new security-scanning-suite artifacts (run 25809211083), update living do
 ### Pattern Compliance
 - Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
 - Pattern 30 ✅ — PDA entry exists for 2026-05-13
+
+---
+
+## Session S1003 — 2026-05-13T21:30Z — Security & Quality Alert Remediation Sprint
+
+**PR:** #4450 · **Branch:** `0D_base_` · **Goal:** Reduce CodeQL open alerts below 25 (path to 0)
+
+### Objective
+PR title: *"Merge 0D_base_ to main once Security and Quality Alerts are less than 25 total with Prompt to continue to 0"*. Starting from the May-12 inventory of 127 open alerts, this session executed a targeted bulk-remediation sprint.
+
+### Alerts Fixed This Session (estimated -66 from ~127 inventory)
+
+| Category | Rule | Count Fixed | Method |
+|----------|------|:-----------:|--------|
+| Python Quality | `py/unused-local-variable` (RUF059) | ~41 | `ruff --unsafe-fixes` + 4 manual edits in tests/ |
+| Python Quality | `py/import-and-import-from` | 1 | Consolidated duplicate `logging_utils` import path |
+| Python Quality | `py/ineffectual-statement` | 2 | Added `...` to Protocol method bodies in `embeddings.py` |
+| Python Quality | `py/uninitialized-local-variable` | 1 | Reordered `try/except` import before inner function in `test_peft_utils.py` |
+| GH Actions | `actions/missing-workflow-permissions` | 21 | Added `permissions:` block to 21 workflows lacking one |
+| GH Actions | `actions/unpinned-tag` | 24 | Pinned all known unpinned actions to full commit SHAs |
+
+**Estimated remaining:** ~38 open alerts (primarily `actions/unpinned-tag` for `actions/github-script@v9` + residual Python alerts introduced after May-12 inventory)
+
+### Local Validation
+- `ruff check src/ tests/` → 0 errors ✅
+- `python3 -m bandit -r src/ --configfile .bandit` → 0 issues ✅
+- `python3 scripts/ci/sync_tracked_files.py --check` → all green ✅
+- `python3 scripts/ci/mypy_baseline.py --require-baseline` → 120 errors (↓2 vs baseline 122) ✅
+- YAML validity on all 21 patched workflows ✅
+- Targeted pytest on affected test files ✅
+
+### Pattern Compliance
+- Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
+- Pattern 30 ✅ — merge-readiness dimensions all green locally

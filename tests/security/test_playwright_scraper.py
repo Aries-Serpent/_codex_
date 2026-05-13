@@ -809,7 +809,7 @@ class TestScrape:
         import playwright_scraper as ps
         scraper = self._make_scraper(monkeypatch)
 
-        mock_sp, mock_pw, mock_browser, mock_page = self._mock_sync_playwright()
+        mock_sp, _mock_pw, _mock_browser, _mock_page = self._mock_sync_playwright()
         expected = [{"title": "T", "url": "U", "severity": "high", "alert_number": 1}]
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
@@ -824,7 +824,7 @@ class TestScrape:
         import playwright_scraper as ps
         scraper = self._make_scraper(monkeypatch)
 
-        mock_sp, mock_pw, mock_browser, mock_page = self._mock_sync_playwright()
+        mock_sp, _mock_pw, mock_browser, _mock_page = self._mock_sync_playwright()
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
         with patch.object(scraper, "_authenticate", return_value=False), \
@@ -838,7 +838,7 @@ class TestScrape:
         import playwright_scraper as ps
         scraper = self._make_scraper(monkeypatch)
 
-        mock_sp, mock_pw, mock_browser, mock_page = self._mock_sync_playwright()
+        mock_sp, _mock_pw, mock_browser, _mock_page = self._mock_sync_playwright()
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
         with patch.object(scraper, "_authenticate", return_value=True), \
@@ -852,7 +852,7 @@ class TestScrape:
         import playwright_scraper as ps
         scraper = self._make_scraper(monkeypatch)
 
-        mock_sp, mock_pw, mock_browser, mock_page = self._mock_sync_playwright()
+        mock_sp, _mock_pw, _mock_browser, _mock_page = self._mock_sync_playwright()
 
         page1 = [{"title": "A", "url": "U1", "severity": "high", "alert_number": 1}]
         page2 = [{"title": "B", "url": "U2", "severity": "low", "alert_number": 2}]
@@ -872,7 +872,7 @@ class TestScrape:
         scraper = ps.PlaywrightScraper(
             "https://github.com/owner/repo", github_token="tok", headless=False
         )
-        mock_sp, mock_pw, mock_browser, mock_page = self._mock_sync_playwright()
+        mock_sp, mock_pw, _mock_browser, _mock_page = self._mock_sync_playwright()
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
         with patch.object(scraper, "_authenticate", return_value=False), \

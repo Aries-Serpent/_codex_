@@ -175,7 +175,7 @@ class TestLoadCheckpoint:
                 )
 
                 # Load
-                state, meta = load_checkpoint(tmpdir)
+                state, _meta = load_checkpoint(tmpdir)
 
                 assert "state" in state or "param" in state
             except (RuntimeError, FileNotFoundError):

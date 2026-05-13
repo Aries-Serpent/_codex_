@@ -133,7 +133,7 @@ class TestHTTPTransport:
             status_line = header_lines[0]
 
             # Parse status
-            _, status_code, status_text = status_line.split(" ", 2)
+            _, status_code, _status_text = status_line.split(" ", 2)
 
             # Parse headers
             headers = {}
@@ -147,7 +147,7 @@ class TestHTTPTransport:
             return int(status_code), headers, body
 
         response = b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"result\":\"ok\"}"
-        status, headers, body = parse_http_response(response)
+        status, headers, _body = parse_http_response(response)
 
         assert status == 200
         assert headers["content-type"] == "application/json"

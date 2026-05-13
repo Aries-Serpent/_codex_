@@ -188,7 +188,7 @@ class TestOutputComparison:
         """Test fuzzy comparison ignores whitespace."""
         from codex.verify.comparator import ComparisonMode, _compare_outputs
 
-        match, diff = _compare_outputs("  hello  ", "hello", ComparisonMode.FUZZY)
+        match, _diff = _compare_outputs("  hello  ", "hello", ComparisonMode.FUZZY)
 
         assert match is True
 

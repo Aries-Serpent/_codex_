@@ -54,7 +54,7 @@ def mfa_client(mfa_auth_components):
 @pytest.fixture()
 def registered_mfa_user(mfa_client, mfa_auth_components):
     """Register 'alice' and return (client, mfa_provider, user)."""
-    store, tokens, mfa, auth = mfa_auth_components
+    store, _tokens, mfa, _auth = mfa_auth_components
     # Register via API
     resp = mfa_client.post(
         "/auth/register",
@@ -142,7 +142,7 @@ class TestMFARoundTrip:
 
     def test_login_without_mfa_enrolled_succeeds(self, registered_mfa_user):
         """When MFA is NOT enrolled, login succeeds with mfa_verified=False."""
-        client, mfa, user = registered_mfa_user
+        client, _mfa, _user = registered_mfa_user
 
         # Don't enroll MFA — just login normally
         resp = client.post(
@@ -272,7 +272,7 @@ class TestTokenExpiry:
     def test_session_token_expiry(self):
         """An expired session token should fail validation."""
         tokens = TokenManager(secret_key="test-session-expiry")
-        session_token, session_id = tokens.generate_session_token(
+        session_token, _session_id = tokens.generate_session_token(
             user_id="test-user", ip_address="127.0.0.1"
         )
 

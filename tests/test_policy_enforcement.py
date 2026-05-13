@@ -51,7 +51,7 @@ def test_redact_sensitive_content_email(policy_enforcer):
 def test_redact_sensitive_content_phone(policy_enforcer):
     """Test phone number redaction"""
     text = "Call me at 555-123-4567"
-    redacted, redactions = policy_enforcer.redact_sensitive_content(text)
+    redacted, _redactions = policy_enforcer.redact_sensitive_content(text)
 
     assert "[PHONE]" in redacted
     assert "555-123-4567" not in redacted
@@ -60,7 +60,7 @@ def test_redact_sensitive_content_phone(policy_enforcer):
 def test_redact_sensitive_content_ssn(policy_enforcer):
     """Test SSN redaction"""
     text = "My SSN is 123-45-6789"
-    redacted, redactions = policy_enforcer.redact_sensitive_content(text)
+    redacted, _redactions = policy_enforcer.redact_sensitive_content(text)
 
     assert "[SSN]" in redacted
     assert "123-45-6789" not in redacted
@@ -69,7 +69,7 @@ def test_redact_sensitive_content_ssn(policy_enforcer):
 def test_redact_sensitive_terms(policy_enforcer):
     """Test sensitive term redaction"""
     text = "Here is my password: secret123"
-    redacted, redactions = policy_enforcer.redact_sensitive_content(text)
+    redacted, _redactions = policy_enforcer.redact_sensitive_content(text)
 
     assert "[REDACTED]" in redacted.lower() or "password" not in redacted.lower()
 

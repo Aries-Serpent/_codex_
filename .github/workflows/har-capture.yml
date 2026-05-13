@@ -43,6 +43,9 @@ env:
   PYTHON_VERSION: '3.12'
   NODE_VERSION: '22'
 
+permissions:
+  contents: read
+
 concurrency:
   group: har-capture
   cancel-in-progress: true
@@ -79,7 +82,7 @@ jobs:
 
       # ── Node.js + npm cache ──────────────────────────────────────────────
       - name: Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm

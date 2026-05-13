@@ -215,13 +215,13 @@ class TestContentDiffer:
         differ = ContentDiffer(min_change_ratio=0.01)
 
         # No change
-        should_sync, change_type, ratio = differ.should_resync(
+        should_sync, _change_type, _ratio = differ.should_resync(
             "Same content", "Same content"
         )
         assert should_sync is False
 
         # Significant change
-        should_sync, change_type, ratio = differ.should_resync(
+        should_sync, _change_type, _ratio = differ.should_resync(
             "Old content", "Completely different"
         )
         assert should_sync is True

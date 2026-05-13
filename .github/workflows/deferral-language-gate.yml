@@ -23,6 +23,11 @@ on:
     # is identical.
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
 concurrency:
   group: deferral-gate-${{ github.head_ref }}
   cancel-in-progress: true

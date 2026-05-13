@@ -228,7 +228,7 @@ class TestScriptExecution:
         script = tmp_path / "test.py"
         script.write_text("print('hello world')")
 
-        stdout, stderr, code = _run_script(script)
+        stdout, _stderr, code = _run_script(script)
 
         assert stdout.strip() == "hello world"
         assert code == 0
@@ -238,7 +238,7 @@ class TestScriptExecution:
         script = tmp_path / "error.py"
         script.write_text("import sys\nsys.stderr.write('error')\nsys.exit(1)")
 
-        stdout, stderr, code = _run_script(script)
+        _stdout, stderr, code = _run_script(script)
 
         assert "error" in stderr
         assert code == 1
@@ -247,7 +247,7 @@ class TestScriptExecution:
         """Test running nonexistent script."""
         script = tmp_path / "does_not_exist.py"
 
-        stdout, stderr, code = _run_script(script)
+        _stdout, stderr, code = _run_script(script)
 
         assert "not found" in stderr.lower()
         assert code == -1
@@ -260,7 +260,7 @@ class TestScriptExecution:
         input_file = tmp_path / "input.txt"
         input_file.write_text("test input")
 
-        stdout, stderr, code = _run_script(script, input_file=input_file)
+        stdout, _stderr, _code = _run_script(script, input_file=input_file)
 
         assert "test input" in stdout
 
@@ -269,7 +269,7 @@ class TestScriptExecution:
         script = tmp_path / "infinite.py"
         script.write_text("import time\nwhile True:\n    time.sleep(1)")
 
-        stdout, stderr, code = _run_script(script, timeout=2)
+        _stdout, stderr, code = _run_script(script, timeout=2)
 
         assert "Timeout" in stderr
         assert code == -1
@@ -279,7 +279,7 @@ class TestScriptExecution:
         script = tmp_path / "env.py"
         script.write_text("import os\nprint(os.environ.get('TEST_VAR', 'not set'))")
 
-        stdout, stderr, code = _run_script(
+        stdout, _stderr, _code = _run_script(
             script, env_overrides={"TEST_VAR": "test_value"}
         )
 
@@ -315,7 +315,7 @@ class TestOutputComparison:
         baseline = "  line1  \n  line2  "
         patched = "line1\nline2"
 
-        match, diff = _compare_outputs(baseline, patched, ComparisonMode.FUZZY)
+        match, _diff = _compare_outputs(baseline, patched, ComparisonMode.FUZZY)
 
         assert match is True
 
@@ -324,7 +324,7 @@ class TestOutputComparison:
         baseline = "line1\nline2\nline3"
         patched = "line3\nline1\nline2"
 
-        match, diff = _compare_outputs(baseline, patched, ComparisonMode.FUZZY)
+        match, _diff = _compare_outputs(baseline, patched, ComparisonMode.FUZZY)
 
         assert match is True
 
@@ -333,7 +333,7 @@ class TestOutputComparison:
         baseline = "Log: 2025-12-17 10:30:45 - event"
         patched = "Log: 2025-12-17 11:45:23 - event"
 
-        match, diff = _compare_outputs(baseline, patched, ComparisonMode.SEMANTIC)
+        match, _diff = _compare_outputs(baseline, patched, ComparisonMode.SEMANTIC)
 
         assert match is True
 

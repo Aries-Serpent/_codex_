@@ -70,7 +70,7 @@ def _setup_dummy_mlflow(monkeypatch):
 
 
 def test_model_registry_registers_and_lists_models(monkeypatch):
-    dummy_mlflow, events = _setup_dummy_mlflow(monkeypatch)
+    _dummy_mlflow, events = _setup_dummy_mlflow(monkeypatch)
     registry = mlflow_registry.ModelRegistry(tracking_uri="file:///tmp/mlruns")
 
     model_version = registry.register_model(

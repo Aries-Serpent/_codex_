@@ -168,7 +168,7 @@ def test_checkpoint_map_location(tmp_path):
     save_checkpoint(str(ckpt_dir), state=state, meta=meta)
 
     # Load with explicit map_location
-    loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir), map_location="cpu")
+    loaded_state, _loaded_meta = load_checkpoint(str(ckpt_dir), map_location="cpu")
 
     assert loaded_state["epoch"] == 1
     assert loaded_state["tensor"].device.type == "cpu"

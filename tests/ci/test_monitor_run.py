@@ -312,7 +312,7 @@ class TestSessionTiming:
         """Elapsed 2m 7s produces 'Xm Ys NNNNNNNNNns' format."""
         # 2 min 7 sec = 127 seconds
         start_ns = time.time_ns() - 127_123_456_789
-        el_s, el_ns, human = _compute_elapsed(start_ns)
+        el_s, _el_ns, human = _compute_elapsed(start_ns)
         assert el_s >= 127
         assert "m" in human
         assert "s" in human
@@ -326,7 +326,7 @@ class TestSessionTiming:
         """Elapsed > 1h produces 'Xh Ym Zs NNNNNNNNNns' format."""
         # 1h 5m 3s = 3903 seconds
         start_ns = time.time_ns() - 3_903_000_000_000
-        el_s, el_ns, human = _compute_elapsed(start_ns)
+        el_s, _el_ns, human = _compute_elapsed(start_ns)
         assert el_s >= 3903
         assert human.startswith("1h") or int(human.split("h")[0]) >= 1
 
@@ -334,7 +334,7 @@ class TestSessionTiming:
         """ns remainder is always zero-padded to exactly 9 digits."""
         # Start exactly 1s + 1ns ago → ns_rem should be 000000001
         start_ns = time.time_ns() - 1_000_000_001
-        _, el_ns, human = _compute_elapsed(start_ns)
+        _, _el_ns, human = _compute_elapsed(start_ns)
         ns_part = human.split()[-1].rstrip("ns")
         assert len(ns_part) == 9, f"Expected 9-digit ns, got: {ns_part!r}"
 

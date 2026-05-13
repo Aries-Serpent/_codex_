@@ -360,7 +360,7 @@ class TestPerformanceUnderLoad:
             assert index_path.exists()
 
             # Verify index
-            faiss_index, chunks, metadata = load_index(
+            faiss_index, _chunks, metadata = load_index(
                 index_name="large_corpus",
                 tenant_id="test",
                 index_dir=str(index_dir),

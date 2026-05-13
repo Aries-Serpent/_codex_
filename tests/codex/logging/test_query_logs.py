@@ -227,7 +227,7 @@ class TestBuildQuery:
 
     def test_build_query_desc_order(self, build_query, base_mapcol):
         """Test query with descending order."""
-        sql, params = build_query(
+        sql, _params = build_query(
             table="session_events",
             mapcol=base_mapcol,
             session_id=None,
@@ -242,7 +242,7 @@ class TestBuildQuery:
 
     def test_build_query_invalid_order_defaults_to_asc(self, build_query, base_mapcol):
         """Test that invalid order defaults to ASC."""
-        sql, params = build_query(
+        sql, _params = build_query(
             table="session_events",
             mapcol=base_mapcol,
             session_id=None,

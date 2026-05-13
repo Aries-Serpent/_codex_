@@ -89,7 +89,7 @@ def measure_memory(func: Callable) -> float:
 
     func()
 
-    current, peak = tracemalloc.get_traced_memory()
+    _current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
 
     return peak / (1024 * 1024)  # Convert to MB

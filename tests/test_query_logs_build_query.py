@@ -400,7 +400,7 @@ def build_query():
 
 
 def test_build_query_selects_columns_and_orders():
-    build_query, mod, rel = _load_build_query()
+    build_query, _mod, _rel = _load_build_query()
     exp_cols, ts = _infer_expectations(build_query)
 
     try:

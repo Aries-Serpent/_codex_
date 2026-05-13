@@ -185,14 +185,14 @@ class TestDepthKnobs:
     def test_default_depth_used(self):
         os.environ["AUDIT_DEPTH_DEFAULT"] = "3"
         clear_warnings()
-        depth, warning_issued = get_depth()
+        depth, _warning_issued = get_depth()
         assert depth == 3
         warnings = get_warnings()
         assert any("depth_default_used" in w for w in warnings)
 
     def test_no_depth_set_uses_hardcoded_default(self):
         clear_warnings()
-        depth, warning_issued = get_depth()
+        depth, _warning_issued = get_depth()
         assert depth == 3  # Hardcoded default
         warnings = get_warnings()
         assert any("depth_default_used" in w for w in warnings)
@@ -321,7 +321,7 @@ class TestWarningAccumulation:
 
         get_pii_mode()  # Call to trigger PII mode warning
         get_allowlist_profile()  # Call to trigger allowlist profile warning
-        depth, _ = get_depth()  # Triggers warnings
+        _depth, _ = get_depth()  # Triggers warnings
 
         warnings = get_warnings()
         assert len(warnings) >= 2  # At least PII_MODE and ALLOWLIST_PROFILE

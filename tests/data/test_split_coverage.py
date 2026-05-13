@@ -171,7 +171,7 @@ class TestStratifiedSplitting:
                 {"id": i, "label": i % 2}
                 for i in range(100)
             ]
-            train, val, test = split_dataset(
+            train, _val, _test = split_dataset(
                 dataset,
                 stratify_by="label",
             )

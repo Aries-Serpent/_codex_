@@ -42,12 +42,12 @@ class TestEmailScrubbing:
 
     def test_email_with_subdomain(self):
         text = "admin@mail.server.example.com"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_email"] is True
 
     def test_no_email_false_positive(self):
         text = "This is not an email: test@localhost"
-        result, flags = scrub(text)
+        result, _flags = scrub(text)
         # localhost doesn't match the pattern (needs 2+ char TLD)
         assert "test@localhost" in result
 
@@ -69,12 +69,12 @@ class TestPhoneScrubbing:
 
     def test_parenthesis_format(self):
         text = "(555) 123-4567"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_phone"] is True
 
     def test_phone_semantic_mode(self):
         text = "Call me at 555-123-4567"
-        result, flags = scrub(text, mode=RedactionMode.SEMANTIC_PRESERVATION)
+        result, _flags = scrub(text, mode=RedactionMode.SEMANTIC_PRESERVATION)
         assert "+1-555-000-0000" in result
 
 
@@ -90,12 +90,12 @@ class TestIPAddressScrubbing:
 
     def test_ipv4_semantic_mode(self):
         text = "IP: 10.0.0.50"
-        result, flags = scrub(text, mode=RedactionMode.SEMANTIC_PRESERVATION)
+        result, _flags = scrub(text, mode=RedactionMode.SEMANTIC_PRESERVATION)
         assert "10.0.0.1" in result
 
     def test_invalid_ipv4_no_match(self):
         text = "Not an IP: 999.999.999.999"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         # 999 is > 255, so shouldn't match
         assert flags["pii_ipv4"] is False
 
@@ -123,12 +123,12 @@ class TestSSNScrubbing:
 
     def test_ssn_with_dots(self):
         text = "SSN: 123.45.6789"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_ssn"] is True
 
     def test_ssn_without_separators(self):
         text = "SSN: 123456789"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_ssn"] is True
 
     def test_disable_ssn_detection(self):
@@ -151,19 +151,19 @@ class TestCreditCardScrubbing:
     def test_valid_mastercard(self):
         # Valid Mastercard test number
         text = "Pay with 5500000000000004"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_credit_card"] is True
 
     def test_invalid_luhn_not_matched(self):
         # Invalid Luhn checksum - should not be redacted
         text = "Number: 4111111111111112"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         # Invalid Luhn should not be flagged
         assert flags["pii_credit_card"] is False
 
     def test_disable_credit_card_detection(self):
         text = "Card: 4111111111111111"
-        result, flags = scrub(text, enable_credit_card=False)
+        _result, flags = scrub(text, enable_credit_card=False)
         assert flags["pii_credit_card"] is False
 
 
@@ -178,7 +178,7 @@ class TestAWSKeyScrubbing:
 
     def test_disable_aws_key_detection(self):
         text = "Key: AKIAIOSFODNN7EXAMPLE"
-        result, flags = scrub(text, enable_aws_key=False)
+        _result, flags = scrub(text, enable_aws_key=False)
         assert flags["pii_aws_key"] is False
 
 
@@ -203,12 +203,12 @@ class TestRedactionModes:
 
     def test_token_replacement_mode(self):
         text = "Email: test@example.com"
-        result, flags = scrub(text, mode=RedactionMode.TOKEN_REPLACEMENT)
+        result, _flags = scrub(text, mode=RedactionMode.TOKEN_REPLACEMENT)
         assert "[EMAIL_REDACTED]" in result
 
     def test_semantic_preservation_mode(self):
         text = "Email: test@example.com"
-        result, flags = scrub(text, mode=RedactionMode.SEMANTIC_PRESERVATION)
+        result, _flags = scrub(text, mode=RedactionMode.SEMANTIC_PRESERVATION)
         assert "user@domain.com" in result
 
 
@@ -217,7 +217,7 @@ class TestMultiplePIITypes:
 
     def test_email_and_phone(self):
         text = "Contact john@example.com or 555-123-4567"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_email"] is True
         assert flags["pii_phone"] is True
         assert flags["total_redactions"] == 2
@@ -231,7 +231,7 @@ class TestMultiplePIITypes:
         Card: 4111111111111111
         AWS: AKIAIOSFODNN7EXAMPLE
         """
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_email"] is True
         assert flags["pii_phone"] is True
         assert flags["pii_ipv4"] is True
@@ -246,7 +246,7 @@ class TestRedactionDetails:
 
     def test_redaction_details_populated(self):
         text = "Email test@example.com and 555-123-4567"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert len(flags["redaction_details"]) >= 2
         types = [d["type"] for d in flags["redaction_details"]]
         assert "email" in types
@@ -285,12 +285,12 @@ class TestEdgeCases:
 
     def test_unicode_text(self):
         text = "Email: тест@example.com"
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         # Should still detect the email
         assert flags["pii_email"] is True
 
     def test_very_long_text(self):
         text = "test@example.com " * 1000
-        result, flags = scrub(text)
+        _result, flags = scrub(text)
         assert flags["pii_email"] is True
         assert flags["total_redactions"] == 1000

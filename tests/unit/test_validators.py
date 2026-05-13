@@ -118,7 +118,7 @@ class TestChecksumValidation:
 
         try:
             wrong_sha = "0" * 64
-            valid, sha = validate_with_checksum(temp_path, wrong_sha)
+            valid, _sha = validate_with_checksum(temp_path, wrong_sha)
             assert valid is False
         finally:
             Path(temp_path).unlink()

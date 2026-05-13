@@ -16,7 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`src/training/accelerate_init_guard.py`** — combined the guarded retry import path with the later CodeQL fix so failed `accelerate` imports clear cached availability and successful repairs return the updated global state.
 - Removed accidental root-level syntax-error files `a.py` and `b.py` from the branch.
 
-### Fixed (S1000-codeql-unused-global — PR #4450 — 2026-05-13T20:35Z)
+### Fixed (S1003-security-quality-sprint — PR #4450 — 2026-05-13T21:30Z)
+- **CodeQL `py/unused-local-variable` (41 → 0)** — Applied `RUF059` unsafe-fix sweep across all test files (198 auto-fixed), then manually fixed the 4 remaining cases (`tests/context_management/test_context_management.py:264`, `tests/services/crawler/test_knowledge_crawler_enhancements.py:218`, `tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py:20`).
+- **CodeQL `py/import-and-import-from`** — `tests/test_logging_utils.py:13` consolidated `from logging_utils import …` → `from src.logging_utils import …` to match the `import src.logging_utils as logging_utils_mod` path already present.
+- **CodeQL `py/ineffectual-statement`** — `src/codex/rag/embeddings.py:46,49` — Added `...` bodies to `EmbeddingProvider` Protocol methods so the docstring-only methods are not flagged as dead statements.
+- **CodeQL `py/uninitialized-local-variable`** — `tests/unit/test_peft_utils.py:29` — Moved `try/except ImportError` import block above `load_bundle_or_skip()` inner function so `load_hf_llm` is guaranteed in scope when the helper is defined.
+- **CodeQL `actions/missing-workflow-permissions` (22 → 0)** — Added explicit `permissions:` block to all 21 workflows that lacked one, scoped to the minimum required (`contents: read`, `security-events: write`, `pull-requests: write`, etc. per workflow).
+- **CodeQL `actions/unpinned-tag` (24 fixed)** — Pinned all 24 remaining unpinned GitHub Actions step references (`actions/checkout`, `actions/github-script`, `actions/setup-node`, `actions/labeler`, `actions/cache/*`, `actions/upload-pages-artifact`, `actions/deploy-pages`, `actions/create-github-app-token`) to full commit SHAs with version comments.
+- **`labeler.yml` YAML syntax** — Fixed malformed step (`uses:` at wrong indent level, missing `-` list item marker).
+
+
 - **`src/training/accelerate_init_guard.py`** — Fixed CodeQL `py/unused-global-variable` alerts (13579, 13578): `is_accelerate_available()` now returns `_ACCELERATE_SPEC_AVAILABLE` / `_ACCELERATOR_AVAILABLE` directly after writing them so the assigned global value is consumed in the same execution path.
 - **`src/codex/cli_knowledge.py:76`** — Wrapped `_EDGE_RE = re.compile(...)` onto two lines to fix Pattern 12 line-length violation (105 → ≤100 chars).
 

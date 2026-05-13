@@ -22,7 +22,7 @@ from codex_ml.utils.checkpoint_core import (
 
 def test_roundtrip_and_integrity(tmp_path: Path):
     state = {"weights": [1, 2, 3], "epoch": 1}
-    ckpt_path, meta = save_checkpoint(
+    ckpt_path, _meta = save_checkpoint(
         tmp_path, state, metric_value=0.321, metric_key="val_loss", mode="min", top_k=3,
         include_rng=False,
     )
@@ -65,7 +65,7 @@ def test_best_k_retention(tmp_path: Path):
     existing = sorted([p for p in tmp_path.glob("*.pt") if p.exists() and p.name != "state.pt"])
     assert len(existing) == 3
     # Load best and ensure it's the smallest metric (here, the lowest retained metric is 1.0 - 0.4 = 0.6)
-    state, meta, best_path = load_best(tmp_path)
+    _state, meta, best_path = load_best(tmp_path)
     assert meta.metric_value is not None
     # The best should be the last saved (lowest metric): approximately 0.6
     assert pytest.approx(meta.metric_value, rel=0, abs=1e-9) == 0.6

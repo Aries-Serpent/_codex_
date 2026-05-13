@@ -1,119 +1,68 @@
-# PR #4448 — What's Next
+# PR #4450 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S998 · 2026-05-13  
-**Merge-readiness:** PR #4450 in progress
+**Session:** S1003 · 2026-05-13T21:30Z  
+**Objective:** Reduce CodeQL Security + Quality alerts < 25 (path to 0)  
+**Merge-readiness:** 96/100 (pre-S1003 push) — re-score pending CI
 
 ---
 
-## ✅ Completed This Session (S998)
+## ✅ Completed This Session (S1003)
 
-| # | Task | Commit |
+| # | Task | Status |
 |---|------|--------|
-| 1 | Cherry-pick `src/codex/__init__.py` — add `"github"` to `_SUBMODULES` | current |
-| 2 | Cherry-pick `src/codex_ml/monitoring/system_metrics.py` — warning→debug | current |
-| 3 | Cherry-pick `src/training/accelerate_init_guard.py` — harden `is_accelerate_available()` | current |
-| 4 | Cherry-pick `tests/branch_coverage/test_branch_coverage_cli.py` — patch.object fix | current |
-| 5 | Fix `_EDGE_RE` regex in `cli_knowledge.py` for labelled source nodes | current |
-| 6 | Fix sqlite pool test isolation (`_close_all()` at test start) | current |
-| 7 | Addressed CI run 25819004497 root-cause failures | current |
+| 1 | `py/unused-local-variable` (41) — RUF059 sweep + 4 manual fixes in tests/ | ✅ Done |
+| 2 | `py/import-and-import-from` (1) — consolidated `logging_utils` import | ✅ Done |
+| 3 | `py/ineffectual-statement` (2) — added `...` to Protocol methods in `embeddings.py` | ✅ Done |
+| 4 | `py/uninitialized-local-variable` (1) — reordered import before inner function in `test_peft_utils.py` | ✅ Done |
+| 5 | `actions/missing-workflow-permissions` (21 workflows) — added `permissions:` blocks | ✅ Done |
+| 6 | `actions/unpinned-tag` (24 refs) — pinned to full commit SHAs | ✅ Done |
+| 7 | `labeler.yml` YAML syntax fix (malformed step entry) | ✅ Done |
+| 8 | CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated | ✅ Done |
+| 9 | Replied to all `<comment_new>` PR comments | ✅ Done |
 
-## ✅ Completed Previous Sessions
+## 📊 Alert Count Trajectory
 
-| # | Task | Commit |
-|---|------|--------|
-| 1 | Restored `sandbox.py` + 2 test files from `origin/main` (broken refactors) | 3a8f8cb |
-| 2 | MLflow stub compatibility — feature-detect `set_tracking_uri` / `set_experiment` | 0e216aa |
-| 3 | `jsonschema>=4.26.0` added to `requirements-dev.txt` | 0e216aa |
-| 4 | Facets test format evolution — accept dict or list | 0e216aa |
-| 5 | Tokenization API consistency — `ImportError` in `__getattr__` | 0e216aa |
-| 6 | Batch 1-4 bandit remediation from artifact scan (375 → 353 raw, 0 with config) | 7c92f4c |
-| 7 | Batch 3: 25 B311 per-site `# nosec` annotations across 20 ML files | 08cc1b9 |
-| 8 | Pattern 12 line-length fix `envelope.py:187` (upstream sweep `afc4e95`) | afc4e95 |
-| 9 | Ingested new security artifacts (run 25809211083) — CVE status unchanged | — |
-| 10 | Revised comprehensive security planset with Batches 5/6 + artifact refresh | — |
-| 11 | Fixed RUF059 regression in `trend_aggregator.py` + test timeout in `pattern_recorder.py` | 172f46e |
+| Date | Inventory | Session | Δ |
+|------|-----------|---------|---|
+| 2026-05-12 | 127 | Initial inventory | — |
+| 2026-05-13 (S995-S1002) | ~120 | CodeQL unused-global fixes, RUF059 in src/ | -7 |
+| 2026-05-13 (S1003) | ~54 | Bulk Python quality + GitHub Actions permissions/pinning | -66 |
+| **Target** | **< 25** | Remaining: actions/unpinned-tag residuals + Python alerts post-inventory | — |
+
+## �� Next Session Priorities (path to 0)
+
+### Priority 1 — Verify CI Green & Get Updated Alert Count
+```
+@copilot CTEP Mode: ON
+1. Wait for CodeQL workflow to complete on latest push
+2. Run: python scripts/ci/check_codeql_alerts.py --count
+3. Confirm alert count < 25
+```
+
+### Priority 2 — Remaining `actions/unpinned-tag` (est. ~9 left)
+- `consolidated-pr-status.yml`: `actions/github-script@v9` — needs SHA lookup
+- Scan all `.github/workflows/` for any remaining unpinned `@vN` tags
+```bash
+grep -rn "uses:.*@v[0-9]" .github/workflows/ | grep -v "#.*[a-f0-9]\{40\}"
+```
+
+### Priority 3 — Remaining Python CodeQL
+- `py/unused-global-variable` (~4 in mlflow_guard.py, stores/__init__.py) — verify if still open post-S1003
+- `py/undefined-export` (~8 in retrieval/__init__.py) — verify if still open (may already be fixed)
+- `py/unused-import` (~8 in cognitive_brain tests) — check if stale
+
+### Priority 4 — `actions/untrusted-checkout/medium` (2 alerts)
+- `forward-sync-autogen.yml` + `app-package-download.yml` — redesign to avoid checking out untrusted code
+
+### Priority 5 — `actions/syntax-error` (1 alert)
+- `.github/actions/doc-test-scribe-action/action.yml:201` — fix syntax
+
+### Success Criteria
+- [ ] CodeQL open alerts < 25 (confirmed by CI scan)
+- [ ] All Python quality alerts resolved
+- [ ] All GitHub Actions permissions alerts resolved
+- [ ] Merge PR #4450 into main
 
 ---
-
-## 🔲 Next Session Priorities
-
-### Priority 1 — Verify CI Green
-```
-@copilot CTEP Mode: ON
-Check run on PR #4450 after latest push.
-All shard failures from run 25819004497 should be resolved.
-```
-
-### Priority 2 — Batch 5: CVE Monitoring
-```
-@copilot CTEP Mode: ON
-
-Monitor diskcache / sqlitedict for fix version:
-  pip-audit --json | python3 -c "
-  import json,sys
-  d=json.load(sys.stdin)
-  vulns=[v for v in d.get('dependencies',[])
-         if v['name'] in ('diskcache','sqlitedict')
-         and any(f for f in v.get('vulns',[]) if f.get('fix_versions'))]
-  print('FIX AVAILABLE' if vulns else 'NO FIX YET', vulns)
-  "
-If a fix version appears → bump dep in pyproject.toml + remove CVE comments.
-```
-
-### Priority 3 — Batch 6: Post-merge rescan
-```
-@copilot CTEP Mode: ON
-
-After PR #4450 merges to main:
-1. Dispatch security-scanning-suite.yml on main
-2. Download dependency-scan-results + sbom-reports artifacts
-3. Verify pip-audit: 0 actionable CVEs
-4. Verify bandit --configfile .bandit: 0 issues
-5. Verify raw bandit = ~328 (B101=226, B603=48, B404=36, B607=18)
-6. Update .codex/plans/security-remediation-planset.md §Current State with confirmed post-merge numbers
-7. Commit with Pattern 25.
-```
-
-### Priority 3 — CodeQL SAST
-```
-@copilot CTEP Mode: ON
-
-1. Dispatch codeql-analysis.yml on 0D_base_
-2. Download the SARIF artifact (codeql-alert-fetcher.yml)
-3. List all open alerts by severity
-4. For each HIGH/CRITICAL: apply the minimal code fix
-5. Verify ruff + bandit --configfile .bandit still clean
-6. Commit with Pattern 25.
-```
-
-### Priority 4 — Ongoing Pattern 25/30 hygiene
-- Every commit must include both `CHANGELOG.md` **and** `AGENT_ACCOUNTABILITY_REPORT.md`
-- New UTC day → add PDA entry to `.codex/aftermath/pda_iterations.jsonl`
-
----
-
-## 📊 Security Surface Summary (2026-05-13)
-
-| Surface | Status |
-|---------|--------|
-| pip-audit (CVEs) | ✅ 0 actionable — 2 accepted (no fix version) |
-| SBOM (326 components) | ✅ 0 vulnerabilities |
-| bandit --configfile .bandit | ✅ 0 issues |
-| bandit raw | ⬇️ 328 (all suppressed by .bandit config) |
-| detect-secrets | ✅ 0 |
-| CodeQL Python/JS | ✅ pass |
-| ruff src/ | ✅ 0 |
-
----
-
-## 🗂️ Key Artifacts
-
-| Artifact | SHA256 | Run |
-|----------|--------|-----|
-| dependency-scan-results | ae221879 | 25809211083 |
-| sbom-reports | 1d922863 | 25809211083 |
-| dependency-scan-results (prev) | df04fb29 | 25797170771 |
-| sbom-reports (prev) | 97d5e5d6 | 25797170771 |
-
-Full planset: `.codex/plans/security-remediation-planset.md`
+_Living doc — last updated S1003 · 2026-05-13T21:35Z_

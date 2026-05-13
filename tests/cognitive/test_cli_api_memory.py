@@ -137,7 +137,7 @@ class TestMemoryConsolidateEndpoint:
         return {"Authorization": f"Bearer {key}"}
 
     def test_consolidate_requires_auth(self, client):
-        tc, master_key, _srv = client
+        tc, _master_key, _srv = client
         resp = tc.post("/api/memory/consolidate")
         assert resp.status_code == 401
 

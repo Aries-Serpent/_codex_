@@ -157,7 +157,7 @@ Completed migration tasks.
 ### Deprecated
 - `conf/` directory will be removed in favor of `configs/` (Phase 2 (Q2 2026))
 """
-        sanitized, replacements = sanitize_planning_dates(text)
+        sanitized, _replacements = sanitize_planning_dates(text)
 
         # Version date should be preserved
         assert "2026-01-03" in sanitized
@@ -195,7 +195,7 @@ class TestEdgeCases:
     def test_case_insensitivity(self):
         """Patterns should match regardless of case."""
         text = "deadline: q1 2026"
-        sanitized, replacements = sanitize_planning_dates(text)
+        sanitized, _replacements = sanitize_planning_dates(text)
         assert "q1 2026" not in sanitized
         assert "current cycle" in sanitized.lower()
 

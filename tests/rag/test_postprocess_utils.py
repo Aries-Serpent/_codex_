@@ -230,7 +230,7 @@ class TestPostprocessOutputFunction:
             }
         ]
 
-        processed, evidence = postprocess_output(
+        processed, _evidence = postprocess_output(
             output,
             retrieved_docs=retrieved_docs
         )
@@ -245,7 +245,7 @@ class TestPostprocessOutputFunction:
             {"pattern": r"\w+@\w+\.\w+", "replacement": "[EMAIL]"}
         ]
 
-        processed, evidence = postprocess_output(
+        processed, _evidence = postprocess_output(
             output,
             redaction_rules=redaction_rules
         )
@@ -286,7 +286,7 @@ class TestPostprocessOutputFunction:
             }
         ]
 
-        processed, evidence = postprocess_output(
+        processed, _evidence = postprocess_output(
             output,
             retrieved_docs=retrieved_docs,
             include_citations=False

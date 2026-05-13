@@ -94,7 +94,7 @@ def test_parse_issue_url():
 
 
 def test_parse_pr_url():
-    owner, repo, kind, num = vir.parse_url(
+    _owner, _repo, kind, num = vir.parse_url(
         "https://github.com/Aries-Serpent/_codex_/pull/3954"
     )
     assert kind == "pr"
@@ -102,7 +102,7 @@ def test_parse_pr_url():
 
 
 def test_parse_run_url():
-    owner, repo, kind, num = vir.parse_url(
+    _owner, _repo, kind, num = vir.parse_url(
         "https://github.com/Aries-Serpent/_codex_/actions/runs/99999"
     )
     assert kind == "run"

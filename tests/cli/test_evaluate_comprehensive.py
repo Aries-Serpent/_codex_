@@ -145,7 +145,7 @@ class TestSanitizePromptList:
         if hasattr(evaluate, "_sanitize_prompt_list"):
             mock_sanitize.return_value = {"text": "sanitized"}
             items = [{"prompt": "test1"}, {"input": "test2"}]
-            result, changed = evaluate._sanitize_prompt_list(items)
+            result, _changed = evaluate._sanitize_prompt_list(items)
             assert isinstance(result, list)
 
     def test_sanitize_prompt_list_without_safety_module(self):

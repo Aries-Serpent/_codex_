@@ -40,7 +40,7 @@ class TestDistributedMinimal:
         """Test _env_opted_in returns False when flag is 0."""
         from codex_ml.distributed.minimal import _env_opted_in
 
-        opted_in, flag_name = _env_opted_in("CODEX_DDP_ENABLE")
+        opted_in, _flag_name = _env_opted_in("CODEX_DDP_ENABLE")
 
         assert opted_in is False
 

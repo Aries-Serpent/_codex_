@@ -182,7 +182,7 @@ class TestLoadJsonl:
 
     def test_load_jsonl_metadata(self, sample_jsonl_file: Path):
         """Verify metadata includes checksum and count."""
-        data, metadata = load_jsonl(sample_jsonl_file)
+        _data, metadata = load_jsonl(sample_jsonl_file)
 
         assert "checksum" in metadata
         assert "num_records" in metadata
@@ -217,7 +217,7 @@ class TestLoadJsonl:
         with bom_file.open("w", encoding="utf-8-sig") as f:
             f.write('{"text": "with BOM"}\n')
 
-        data, metadata = load_jsonl(bom_file)
+        data, _metadata = load_jsonl(bom_file)
 
         assert len(data) == 1
         assert data[0]["text"] == "with BOM"
@@ -230,7 +230,7 @@ class TestLoadJsonl:
             f.write('{"text": "مرحبا"}\n')
             f.write('{"text": "こんにちは"}\n')
 
-        records, meta = load_jsonl(unicode_file)
+        records, _meta = load_jsonl(unicode_file)
 
         assert len(records) == 3
         assert records[0]["text"] == "你好世界"
@@ -241,7 +241,7 @@ class TestLoadJsonl:
         with nested_file.open("w") as f:
             f.write('{"outer": {"inner": {"deep": "value"}}}\n')
 
-        data, metadata = load_jsonl(nested_file)
+        data, _metadata = load_jsonl(nested_file)
 
         assert data[0]["outer"]["inner"]["deep"] == "value"
 
@@ -265,7 +265,7 @@ class TestLoadCsv:
 
     def test_load_csv_metadata(self, sample_csv_file: Path):
         """Verify CSV metadata."""
-        records, meta = load_csv(sample_csv_file)
+        _records, meta = load_csv(sample_csv_file)
 
         assert "checksum" in meta
         assert "num_records" in meta
@@ -280,7 +280,7 @@ class TestLoadCsv:
             writer.writerow(["Question with, comma", "Answer with, comma"])
             writer.writerow(['"Quoted question"', '"Quoted answer"'])
 
-        records, meta = load_csv(quoted_file)
+        records, _meta = load_csv(quoted_file)
 
         assert "comma" in records[0]["prompt"]
         assert "Quoted" in records[1]["prompt"]
@@ -309,7 +309,7 @@ class TestLoadCsv:
             writer.writerow(["日本語"])
             writer.writerow(["Ελληνικά"])
 
-        records, meta = load_csv(unicode_file)
+        records, _meta = load_csv(unicode_file)
 
         assert records[0]["text"] == "日本語"
         assert records[1]["text"] == "Ελληνικά"
@@ -405,7 +405,7 @@ class TestEdgeCases:
         no_newline.write_text('{"key": "value"}')
 
         # UPDATED: Unpack tuple return (records, metadata)
-        data, metadata = load_jsonl(no_newline)
+        data, _metadata = load_jsonl(no_newline)
         assert len(data) == 1
 
     def test_csv_single_row(self, temp_data_dir: Path):
@@ -417,7 +417,7 @@ class TestEdgeCases:
             writer.writerow(["val1", "val2"])
 
         # UPDATED: Unpack tuple return (records, metadata)
-        data, metadata = load_csv(single_row)
+        data, _metadata = load_csv(single_row)
         assert len(data) == 1
 
     def test_jsonl_whitespace_only_lines(self, temp_data_dir: Path):
@@ -430,7 +430,7 @@ class TestEdgeCases:
             f.write('{"valid": "line2"}\n')
 
         # UPDATED: Unpack tuple return (records, metadata)
-        data, metadata = load_jsonl(whitespace_file)
+        data, _metadata = load_jsonl(whitespace_file)
         # Whitespace lines should be skipped
         assert len(data) == 2
 

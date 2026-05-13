@@ -257,7 +257,7 @@ class TestZendeskKnowledgeSyncService:
             mock_context
         ]
 
-        content, headers = service._fetch("https://example.zendesk.com/hc/article-1")
+        content, _headers = service._fetch("https://example.zendesk.com/hc/article-1")
 
         assert content == b"<html>content</html>"
         assert mock_urlopen.call_count == 2

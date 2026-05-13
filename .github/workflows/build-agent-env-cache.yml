@@ -45,6 +45,9 @@ env:
   PYTHON_VERSION: '3.12'
   CACHE_VERSION: ${{ inputs.cache-version || vars.CODEX_CACHE_VERSION || 'v2' }}
 
+permissions:
+  contents: read
+
 concurrency:
   group: build-agent-env-cache
   cancel-in-progress: true
@@ -61,7 +64,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v5
 
       # ── Optional: delete stale cache before rebuild ──────────────────────
       - name: Delete stale agent venv cache (force-rebuild)

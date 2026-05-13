@@ -90,7 +90,7 @@ class TestSanitizePromptList:
     def test_sanitize_prompt_list_with_strings(self):
         """Test _sanitize_prompt_list with string list."""
         from codex_ml.cli.evaluate import _sanitize_prompt_list
-        result, changed = _sanitize_prompt_list(['prompt1', 'prompt2'])
+        result, _changed = _sanitize_prompt_list(['prompt1', 'prompt2'])
         assert isinstance(result, list)
         assert len(result) == 2
 
@@ -108,7 +108,7 @@ class TestSanitizePromptList:
             {'prompt': 'test prompt', 'expected': 'output'},
             {'input': 'test input', 'label': 'label'}
         ]
-        result, changed = _sanitize_prompt_list(items)
+        result, _changed = _sanitize_prompt_list(items)
         assert isinstance(result, list)
         assert len(result) == 2
 
@@ -116,7 +116,7 @@ class TestSanitizePromptList:
         """Test _sanitize_prompt_list with mixed types."""
         from codex_ml.cli.evaluate import _sanitize_prompt_list
         items = ['string_prompt', {'prompt': 'dict_prompt'}, 123]
-        result, changed = _sanitize_prompt_list(items)
+        result, _changed = _sanitize_prompt_list(items)
         assert isinstance(result, list)
         assert len(result) == 3
 

@@ -211,7 +211,7 @@ class TestSessionIsolation:
 
     def test_logout_one_session_other_remains_valid(self, client, auth_components):
         """Two sessions for the same user; logout one — other stays valid."""
-        _, tokens, _ = auth_components
+        _, _tokens, _ = auth_components
 
         # Register
         client.post(
@@ -254,7 +254,7 @@ class TestSessionIsolation:
 
     def test_revoke_all_user_tokens(self, auth_components):
         """revoke_all_user_tokens invalidates every session for a user."""
-        store, tokens, auth = auth_components
+        _store, tokens, auth = auth_components
 
         auth.register("charlie", "charlie@test.com", "Str0ngPass!")
         result1 = auth.login("charlie", "Str0ngPass!")

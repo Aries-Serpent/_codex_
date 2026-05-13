@@ -134,7 +134,7 @@ class TestSanitizePromptSequence:
     def test_sanitize_prompt_sequence_basic(self):
         """Test _sanitize_prompt_sequence with basic strings."""
         from codex_ml.cli.train import _sanitize_prompt_sequence
-        result, changed = _sanitize_prompt_sequence(['hello', 'world'])
+        result, _changed = _sanitize_prompt_sequence(['hello', 'world'])
         assert isinstance(result, list)
         assert len(result) == 2
 
@@ -148,7 +148,7 @@ class TestSanitizePromptSequence:
     def test_sanitize_prompt_sequence_mixed_types(self):
         """Test _sanitize_prompt_sequence with mixed types."""
         from codex_ml.cli.train import _sanitize_prompt_sequence
-        result, changed = _sanitize_prompt_sequence(['text', 123, {'key': 'value'}])
+        result, _changed = _sanitize_prompt_sequence(['text', 123, {'key': 'value'}])
         assert isinstance(result, list)
         assert len(result) == 3
 

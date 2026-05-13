@@ -2193,7 +2193,7 @@ jobs:
 
       - name: "Generate Cognitive Brain App token"
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@67e27b853b3f84df40a7c524b2fb7ead7067f825  # v3
         continue-on-error: true
         with:
           app-id: ${{ secrets._GITHUB_APP_ID }}

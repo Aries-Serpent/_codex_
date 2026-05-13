@@ -309,7 +309,7 @@ class TestRateLimitCheckMutationKilling:
 
     def test_over_limit_is_limited(self):
         """Over limit should be limited."""
-        is_limited, remaining, reset = rate_limit_check(15, 60, 10)
+        is_limited, remaining, _reset = rate_limit_check(15, 60, 10)
         assert is_limited is True
         assert remaining == 0
 
@@ -356,7 +356,7 @@ class TestMutationKillers:
 
     def test_config_dimension_valid_type_no_error(self):
         """Valid integer dimension should not produce type error."""
-        errors, warnings = validate_config({"model_name": "test", "dimension": 256})
+        errors, _warnings = validate_config({"model_name": "test", "dimension": 256})
         # Should not have dimension type error
         assert not any("integer" in e for e in errors)
         # But should be a valid dimension

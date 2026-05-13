@@ -371,7 +371,7 @@ def test_conservation_enforcer_no_repair_needed(simple_state):
     # Normalize first
     simple_state.tasks["task_1"].spinor.normalize()
 
-    repaired, was_repaired = enforcer.enforce_probability_conservation(
+    _repaired, was_repaired = enforcer.enforce_probability_conservation(
         simple_state, tolerance=1e-10
     )
 
@@ -454,7 +454,7 @@ def test_full_symmetry_workflow(multi_task_state):
     trans.apply_translation(multi_task_state, displacement)
 
     # 4. Enforce conservation
-    repaired, was_repaired = enforcer.enforce_probability_conservation(multi_task_state)
+    repaired, _was_repaired = enforcer.enforce_probability_conservation(multi_task_state)
 
     # 5. Final verification
     final_check = checker.check_all(repaired)
