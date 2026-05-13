@@ -182,7 +182,7 @@ def load_dependencies_from_pyproject() -> list[str]:
 
     # Get optional dependencies
     if "project" in data and "optional-dependencies" in data["project"]:
-        for group, deps in data["project"]["optional-dependencies"].items():
+        for _, deps in data["project"]["optional-dependencies"].items():
             dependencies.extend(deps)
 
     return dependencies

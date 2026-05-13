@@ -33,6 +33,15 @@
 
 ---
 
+
+## ✅ Completed (S990)
+
+| Area | Status |
+|------|--------|
+| `scripts/ci/_gh_api.py` syntax fix (duplicate body removed) | ✅ passes `py_compile` and ruff |
+| `fetch_security_snapshot.py` F401 fix (unused `import time`) | ✅ clean |
+| 21 B007 quick-wins (unused loop-control vars `→ _`) across 13 files | ✅ B007 count 45→24 |
+
 ## 🔲 Remaining / Next Session
 
 | Priority | Area | Notes |

@@ -66,7 +66,7 @@ class ComplexFileDisambiguator:
         # Strategy 3: Check subdirectories (commonly referenced child)
         # For docs/ linking to specific subsystem docs
         potential_targets = []
-        for dir_key, target_path in file_index.items():
+        for _, target_path in file_index.items():
             target_dir = target_path.parent
             # Check if target is logically related (same branch of tree)
             if self._is_related_path(source_dir, target_dir):

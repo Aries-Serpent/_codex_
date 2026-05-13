@@ -221,7 +221,7 @@ def extract_session_metrics(
     patterns = pattern_store.get("patterns", {})
     learning_log = pattern_store.get("learning_log", [])
 
-    for pattern_id, pattern_data in patterns.items():
+    for pattern_id, _ in patterns.items():
         patterns_used.add(pattern_id)
 
     for log_entry in learning_log:

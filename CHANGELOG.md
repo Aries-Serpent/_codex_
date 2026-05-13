@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S990 — _gh_api.py syntax; 21 B007 unused loop-variable quick-wins)
+- **`scripts/ci/_gh_api.py`**: Removed duplicate bare-text module body (lines 468–509) that caused `invalid-syntax` ruff/parse errors; file now has exactly one copy of all constants and functions and passes `py_compile`.
+- **`scripts/ci/fetch_security_snapshot.py`**: Removed unused `import time` (F401).
+- **21 B007 loop-variable quick-wins** across 13 files (`adoption/track_metrics.py`, `agents/quantum_agent_orchestrator.py`, `ai_search.py` ×7, `catalog_workflows.py`, `check_py312_deps.py`, `ci/workflow_orchestrator.py`, `cognitive/agent_checkin.py`, `cognitive/metrics_collector.py`, `cognitive/qec_complete.py` ×2, `generate_ai_index.py` ×2, `monitor_workflow_performance.py`, `phase10/automated_secrets_manager.py`, `phase2d_disambiguator.py`): unused loop-control variables renamed to `_` / `_<name>`, clearing ruff B007 and equivalent CodeQL `py/unused-loop-variable` alerts.
+
 ### Added (S987–S989 — CodeQL quick-wins, security pipeline, caching + WEC wiring)
 - **20 CodeQL quick-win fixes** across 14 files: 6 `py/ineffectual-statement` (removed `...` after docstrings in Protocol/ABC methods), 4 `py/unused-global-variable` re-exports (`__all__` additions), 10 `py/unused-import` / `py/unused-global-variable` removals and wire-ups.
 - **`scripts/ci/_gh_api.py`** — shared rate-limit-aware HTTP helper with TTL disk cache (`api_get_cached`, `paginate_cached`), exponential retry on 429/403, and per-page sleep floor.

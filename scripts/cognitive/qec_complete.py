@@ -57,8 +57,8 @@ class QECEncoder:
     def encode_logical_qubit(self, state: QuantumState) -> list[QuantumState]:
         """Encode logical qubit into 9 physical qubits."""
         physical_qubits = []
-        for triplet in range(3):
-            for i in range(3):
+        for _triplet in range(3):
+            for _ in range(3):
                 physical_qubits.append(QuantumState(
                     alpha=state.alpha / np.sqrt(2),
                     beta=state.beta / np.sqrt(2)
