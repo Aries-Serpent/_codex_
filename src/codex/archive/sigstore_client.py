@@ -50,6 +50,8 @@ except ImportError:
 # Public alias for external inspection (e.g., tests and diagnostics)
 HAS_SIGSTORE = _HAS_SIGSTORE
 
+__all__ = ["HAS_SIGSTORE", "SignstoreClient"]
+
 
 class SignstoreClient:
     """Client for Sigstore keyless signing operations.

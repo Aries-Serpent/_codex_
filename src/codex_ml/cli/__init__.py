@@ -367,5 +367,5 @@ except Exception:  # pragma: no cover - optional CLI wiring
 
 main = package_main
 
-__all__ = ["cli", "main", "main_cli"]
+__all__ = ["cli", "infer", "main", "main_cli"]
 from . import utils

@@ -345,7 +345,6 @@ class BaseWriter(ABC):
     @abstractmethod
     def log(self, row: dict) -> None:  # pragma: no cover - interface
         """Persist a single metrics row."""
-        ...
 
     def close(self) -> None:  # pragma: no cover - interface
         pass

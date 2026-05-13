@@ -43,11 +43,9 @@ class EmbeddingProvider(Protocol):
 
     def encode(self, texts: list[str], **kwargs) -> np.ndarray:
         """Encode texts to embeddings."""
-        ...
 
     def get_dimension(self) -> int:
         """Get embedding dimension."""
-        ...
 
 
 class LocalSentenceTransformerProvider:

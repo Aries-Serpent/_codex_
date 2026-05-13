@@ -62,18 +62,10 @@ sys.path.insert(0, str(REPO_ROOT))
 
 try:
     from agents.self_healing import (
-        DetectedIssue,
-        IssueSeverity,
-        IssueType,
-        RemediationAction,
         SelfHealingEngine,
     )
 except ImportError:
     logger.warning("Could not import self-healing modules - limited functionality")
-    IssueType = None
-    IssueSeverity = None
-    DetectedIssue = None
-    RemediationAction = None
     SelfHealingEngine = None
 
 

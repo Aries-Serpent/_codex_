@@ -296,3 +296,22 @@ def create_heartbeat(source: str, uptime_seconds: float) -> HeartbeatMessage:
         uptime_seconds=uptime_seconds,
         last_activity=datetime.now(timezone.utc).isoformat(),
     )
+
+__all__ = [
+    "BaseMessage",
+    "BridgeMessage",
+    "ContextUpdate",
+    "ErrorMessage",
+    "HeartbeatMessage",
+    "MessageType",
+    "QueryMessage",
+    "ResponseMessage",
+    "SourceType",
+    "StatusMessage",
+    "create_context_update",
+    "create_error",
+    "create_heartbeat",
+    "create_query",
+    "create_response",
+    "create_status",
+]
