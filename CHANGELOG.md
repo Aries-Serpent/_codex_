@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1000-codeql-unused-global — PR #4450 — 2026-05-13T20:35Z)
+- **`src/training/accelerate_init_guard.py`** — Fixed CodeQL `py/unused-global-variable` alerts (13579, 13578): `is_accelerate_available()` now returns `_ACCELERATE_SPEC_AVAILABLE` / `_ACCELERATOR_AVAILABLE` directly after writing them so the assigned global value is consumed in the same execution path.
+- **`src/codex/cli_knowledge.py:76`** — Wrapped `_EDGE_RE = re.compile(...)` onto two lines to fix Pattern 12 line-length violation (105 → ≤100 chars).
+
 ### Fixed (S999-pattern25-wrap-up — PR #4450 — 2026-05-13T20:23Z)
 - **Pattern 25 remediation** — `AGENT_ACCOUNTABILITY_REPORT.md` was missing from commit `90acc23`; included in this commit alongside CHANGELOG to satisfy Last-Commit Accountability gate.
 - **S221 guard recovery** (comment 4444805963): confirmed `.codex/CODEBASE_AGENCY_POLICY.md` loaded and all failing checks addressed; PR status now 97/100 ✅.

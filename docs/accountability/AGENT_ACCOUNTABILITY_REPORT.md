@@ -1,3 +1,19 @@
+## SESSION SUMMARY — 2026-05-13T20:35Z [S1000-codeql-unused-global-fix]
+
+**Session:** S1000 | **Branch:** `0D_base_` | **PR:** #4450 | **Comments:** 4444906724, 4444921492
+
+### Completed
+- ✅ **Fixed CodeQL `py/unused-global-variable` alerts** in `src/training/accelerate_init_guard.py`: lines 88 and 94 now return `_ACCELERATE_SPEC_AVAILABLE` / `_ACCELERATOR_AVAILABLE` directly so the written global value is consumed in the same execution path, eliminating CodeQL alerts 13579 and 13578.
+- ✅ **Fixed Pattern 12 line-length** in `src/codex/cli_knowledge.py:76`: split `_EDGE_RE = re.compile(...)` onto two lines (105→≤100 chars).
+- ✅ `ruff check src/ tests/` → 0 issues ✅. Targeted tests pass.
+
+### Remaining
+- 🔲 Verify CI green on next push (Resilient Validation Suite).
+- 🔲 Batch 5: Monitor diskcache/sqlitedict for fix version release.
+- 🔲 Batch 6: Post-merge rescan after 0D_base_ → main merge.
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T20:23Z [S999-pattern25-wrap-up]
 
 **Session:** S999 | **Branch:** `0D_base_` | **PR:** #4450 | **Comments:** 4444805963, 4444826779, 4444842262
