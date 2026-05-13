@@ -31,7 +31,7 @@ def write_splits(
     _validate_ratios(ratios)
 
     materialised = list(items)
-    rng = random.Random(int(seed))
+    rng = random.Random(int(seed))  # nosec B311 — non-cryptographic ML sampling/shuffling
     rng.shuffle(materialised)
 
     total = len(materialised)

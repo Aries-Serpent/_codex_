@@ -85,7 +85,7 @@ def _split_records(
     if total <= 0:
         raise ValueError("Split ratios must be positive")
     normalised = [r / total for r in ratios]
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
     indices = list(range(len(records)))
     rng.shuffle(indices)
     n = len(records)

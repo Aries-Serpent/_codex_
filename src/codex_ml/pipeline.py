@@ -567,7 +567,7 @@ def run_codex_pipeline(
     rlhf_summary = _run_rlhf_stage(pairwise_items, reward_model, rl_agent, rlhf_cfg)
     validation = _compute_validation(pre_summary, sft_summary, rlhf_summary, val_t)
 
-    rng = random.Random(seed) if seed is not None else None
+    rng = random.Random(seed) if seed is not None else None  # nosec B311 — non-cryptographic ML sampling/shuffling
     synthetic = _augment_prompts(synth_prompts or [], rng) if synth_prompts else []
 
     summary: dict[str, Any] = {

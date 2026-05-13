@@ -29,7 +29,7 @@ try:
         EmbeddingCache,
         EmbeddingCacheConfig,
     )
-except Exception:  # pragma: no cover - optional numpy dependency
+except Exception:  # nosec B110 — optional numpy dependency, intentional no-op  # pragma: no cover
     pass
 
 __all__ = [

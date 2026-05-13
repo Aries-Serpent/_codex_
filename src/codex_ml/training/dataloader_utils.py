@@ -36,7 +36,7 @@ __all__ = ["make_generator", "seed_worker"]
 def seed_worker(worker_id: int) -> None:  # pragma: no cover - thin wrapper
     """Seed DataLoader workers for deterministic behaviour."""
 
-    base_seed = random.getrandbits(32)
+    base_seed = random.getrandbits(32)  # nosec B311 — non-cryptographic ML sampling/shuffling
     random.seed(base_seed)
     if np is not None:
         np.random.seed(base_seed)

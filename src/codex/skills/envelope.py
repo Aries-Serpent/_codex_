@@ -184,7 +184,12 @@ class ExecutionEnvelope:
                     effective_max_retries + 1,
                 )
 
-        assert last_result is not None  # always set in loop
+        if (
+            last_result is None
+        ):  # defensive: should always be set in loop unless retry range is empty
+            raise RuntimeError(
+                "No result produced after retry loop (unexpected empty range)"
+            )  # pragma: no cover
         result = last_result
 
         # Update registry budget

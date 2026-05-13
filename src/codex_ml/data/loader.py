@@ -10,7 +10,7 @@ import csv  # noqa: E402
 import hashlib  # noqa: E402
 import io  # noqa: E402
 import json  # noqa: E402
-import pickle  # noqa: E402
+import pickle  # noqa: E402  # nosec B403 — pickle used for ML checkpoint data from trusted local paths only
 import time  # noqa: E402
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
@@ -217,7 +217,7 @@ def seeded_shuffle(items: Sequence[T], seed: int) -> list[T]:
     from random import Random
 
     result = list(items)
-    Random(seed).shuffle(result)
+    Random(seed).shuffle(result)  # nosec B311 — non-cryptographic ML sampling/shuffling
     return result
 
 

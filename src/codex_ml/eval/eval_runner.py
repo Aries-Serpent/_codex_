@@ -69,7 +69,7 @@ def _bootstrap(
         return None if val is None else float(val), None, None
     if n <= 0 or len(preds) == 0:
         return float(val), None, None
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
     vals: list[float] = []
     for _ in range(n):
         idx = [rng.randrange(len(preds)) for _ in preds]

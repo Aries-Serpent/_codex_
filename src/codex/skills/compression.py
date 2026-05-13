@@ -91,7 +91,7 @@ def _find_skill_dir(skill_id: str) -> Path | None:
             data = yaml.safe_load(manifest.read_text(encoding="utf-8")) or {}
             if data.get("id") == skill_id:
                 return candidate
-        except Exception:
+        except Exception:  # nosec B112 — intentional: skip unreadable manifest candidates
             continue
     candidates = [d for d in base.iterdir() if d.is_dir() and d.name == slug]
     return candidates[0] if candidates else None

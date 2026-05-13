@@ -778,6 +778,33 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
+def _safe_summary_value(key: str, value: Any) -> str:
+    key_l = key.lower()
+    sensitive_markers = (
+        "secret",
+        "token",
+        "password",
+        "credential",
+        "content",
+        "match",
+        "value",
+    )
+
+    if any(marker in key_l for marker in sensitive_markers):
+        return "[REDACTED]"
+
+    if isinstance(value, (int, float, bool)) or value is None:
+        return str(value)
+
+    if isinstance(value, str):
+        if len(value) > 120:
+            return "[REDACTED]"
+        return value
+
+    # Avoid dumping potentially sensitive nested objects to logs.
+    return f"[{type(value).__name__}]"
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
 
@@ -853,7 +880,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {stage}:")
         for k, v in summary.items():
             if k not in ("results", "generated_at"):
-                print(f"    {k:<30} {v}")
+                print(f"    {k:<30} {_safe_summary_value(k, v)}")
     print(f"  Output dir : {out_dir.resolve()}")
     print(f"{'='*62}\n")
 

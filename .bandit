@@ -72,6 +72,7 @@ exclude_dirs:
   - .hypothesis
   - node_modules
   - src/codex_ml/ast/tests
+  - src/restore_pipeline/tests
 
 # Security Pattern Documentation
 # ================================

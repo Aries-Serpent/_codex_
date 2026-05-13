@@ -18,7 +18,7 @@ import inspect
 import io
 import json
 import logging
-import pickle
+import pickle  # nosec B403 — pickle used for ML checkpoint state from trusted local paths only
 import platform
 import random
 import shutil

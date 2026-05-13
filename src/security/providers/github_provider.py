@@ -360,7 +360,7 @@ class GitHubTokenProvider(TokenProvider):
         if not installation_id:
             return RotationResult(
                 success=False,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                 error_message=(
                     "Cannot create token: no installation_id configured. "
                     "Fine-grained PATs and classic PATs must be created "
@@ -374,14 +374,14 @@ class GitHubTokenProvider(TokenProvider):
         if not self.token:
             return RotationResult(
                 success=False,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                 error_message="Cannot create token: no bearer token configured.",
             )
 
         if not HAS_REQUESTS:
             return RotationResult(
                 success=False,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                 error_message="Cannot create token: requests library is not installed.",
             )
 
@@ -391,7 +391,7 @@ class GitHubTokenProvider(TokenProvider):
         if invalid:
             return RotationResult(
                 success=False,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                 error_message=(
                     f"Invalid installation permission names: {invalid}. "
                     "Use GitHub App installation permission names "
@@ -420,14 +420,14 @@ class GitHubTokenProvider(TokenProvider):
                     logger.error("GitHub API returned 201 but response contains no token value.")
                     return RotationResult(
                         success=False,
-                        old_secret_id="",
+                        old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                         error_message="GitHub API returned 201 but no token in response body.",
                     )
                 token_id = str(data.get("id", name))
                 logger.info("GitHub installation access token created successfully.")
                 return RotationResult(
                     success=True,
-                    old_secret_id="",
+                    old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                     new_secret_id=token_id,
                     new_secret_value=new_token,
                     metadata={
@@ -443,14 +443,14 @@ class GitHubTokenProvider(TokenProvider):
             )
             return RotationResult(
                 success=False,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                 error_message=f"GitHub API returned {resp.status_code}: {resp.text[:200]}",
             )
         except Exception as e:
             logger.error("Failed to create GitHub installation token: %s", e)
             return RotationResult(
                 success=False,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                 error_message=f"Token creation request failed: {e}",
             )
 

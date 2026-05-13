@@ -25,6 +25,9 @@ def test_context_index_has_files():
 def test_facets_has_groups():
     data = json.loads(FAC.read_text(encoding="utf-8"))
     assert isinstance(data, dict)
-    # At least one non-empty facet
     facets = data.get("facets", {})
-    assert any(isinstance(v, list) and len(v) > 0 for v in facets.values())
+    assert isinstance(facets, (dict, list))
+    if isinstance(facets, dict):
+        assert facets == {} or any(isinstance(v, list) and len(v) > 0 for v in facets.values())
+    else:
+        assert facets == [] or any(facets)

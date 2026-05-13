@@ -105,15 +105,15 @@ class GitHubMCPPoster:
         )
         # Track which key is active for health-check reporting (GAP-033).
         if token:
-            self._token_source = "explicit"
+            self._token_source = "explicit"  # nosec B105 — label string, not a credential
         elif os.environ.get("CODEX_MASTER_KEY"):
-            self._token_source = "CODEX_MASTER_KEY"
+            self._token_source = "CODEX_MASTER_KEY"  # nosec B105 — env-var name label
         elif os.environ.get("CODEX_BACKUP_KEY"):
-            self._token_source = "CODEX_BACKUP_KEY"
+            self._token_source = "CODEX_BACKUP_KEY"  # nosec B105 — env-var name label
         elif os.environ.get("GITHUB_TOKEN"):
-            self._token_source = "GITHUB_TOKEN"
+            self._token_source = "GITHUB_TOKEN"  # nosec B105 — env-var name label
         else:
-            self._token_source = "none"
+            self._token_source = "none"  # nosec B105 — sentinel label, not a credential
 
         if not self._token:
             logger.warning(

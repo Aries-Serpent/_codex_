@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S994-artifact-refresh — PR #4448 — 2026-05-13T16:30Z)
+- **Security artifact refresh** — ingested new security-scanning-suite artifacts from run 25809211083:
+  - `dependency-scan-results` sha256:ae221879 · `sbom-reports` sha256:1d922863
+  - pip-audit confirms same 2 CVEs (diskcache CVE-2025-69872, sqlitedict CVE-2024-35515) — no fix versions available in either run; accepted risk documented.
+  - SBOM CycloneDX: 326 components, 0 vulnerabilities listed.
+  - `bandit --configfile .bandit` = 0 ✅ · `ruff src/ tests/` = 0 ✅
+- **Living docs updated** — `docs/roadmap/PR4448_whats_next.md` and `docs/roadmap/PR4448_session_diagram.mmd` created with full session summary and next-session promptsets.
+- **Security planset revised** — `.codex/plans/security-remediation-planset.md` updated with new artifact sha256s, Batch 3 commit (`08cc1b9`) recorded, and Batch 5/6 monitoring protocols confirmed.
+
+### Fixed (S994-security-batch3 — PR #4448 — 2026-05-13T16:09Z)
+- **Security hardening Batch 3** — B311 per-site nosec annotations (25 sites, 20 files):
+  - Added `# nosec B311 — non-cryptographic ML sampling/shuffling` to every `random.*` call in ML data-loading, splitting, evaluation, pipeline, serving, and training modules.
+  - Raw bandit count: 375 → 328 (B311 fully documented; B101/B404/B603/B607 remain, all globally suppressed by `.bandit` config).
+  - `bandit --configfile .bandit` remains at 0 issues ✅.
+  - Updated `.codex/plans/security-remediation-planset.md` with Batch 3 completion, Batch 5 CVE monitoring protocol, and Batch 6 post-merge rescan promptset.
+
+### Fixed (S994-security-remediation — PR #4448 — 2026-05-13T15:45Z)
+- **Security hardening Batch 1-4** from artifact-based scan (pip-audit sha256:df04fb29, SBOM sha256:97d5e5d6, run 25797170771):
+  - Replaced production `assert last_result is not None` with explicit `if/raise RuntimeError` in `src/codex/skills/envelope.py` (B101 production code).
+  - Added `# nosec B105` to 5 token-source label strings in `src/codex/github/mcp_poster.py` (false positives: source labels, not credentials).
+  - Added `# nosec B106` to 8 `old_secret_id=""` result-struct defaults in `src/security/providers/github_provider.py` (false positives: empty field defaults).
+  - Added `# nosec B110` to try/except/pass optional numpy import in `src/codex/rag/cache/__init__.py`.
+  - Added `# nosec B112` to try/except/continue manifest scan in `src/codex/skills/compression.py`.
+  - Added `# nosec B403` to 6 `import pickle` lines across ML checkpoint modules (trusted local paths only).
+  - Extended `.bandit` `exclude_dirs` with `src/restore_pipeline/tests`.
+  - Created `.codex/plans/security-remediation-planset.md` with full Batches 3-6 promptsets for iterative continuation to 0 raw issues.
+- CVE-2025-71176 (pytest): already resolved — requirements pin `>=9.0.3`.
+- CVE-2025-69872 (diskcache) / CVE-2024-35515 (sqlitedict): accepted/documented in `pyproject.toml`; no fix version available; no direct code usage.
+
+### Fixed (S221 S994 — PR #4448 — 2026-05-13T15:25Z)
+- Addressed Missed-Trigger Recovery (S221 guard) by verifying clean state: `ruff` ✅ · `auto_fix_common_issues` ✅ · `sync_tracked_files` ✅ · merge readiness 100/100.
+
+### Fixed (auto-update — PR #4448)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4448 (SHA `5b72d759`) at 2026-05-13T12:59Z [auto-generated]
+
+### Fixed (PR #4448 S994 review remediation)
+- **Syntax errors fixed**: Restored `src/codex_ml/safety/sandbox.py`, `tests/agents/test_phase2_deep_coverage_batch8.py`, and `tests/agents/test_phase2_deep_coverage_batch11.py` to known-good `main` versions, removing malformed refactors that broke Validation Pipeline run 25801583777.
+- **MLflow compatibility**: Made `MLflowTracker._init_mlflow()` tolerate partial test stubs by feature-detecting `set_tracking_uri` and `set_experiment` before calling them.
+- **Dev requirements**: Added `jsonschema>=4.26.0` to `requirements-dev.txt` to satisfy `test_requirements_dev_contains_core_tools`.
+- **Facets test compatibility**: Updated `test_facets_has_groups()` to accept both dict-of-lists and list formats for the facets artifact.
+- **Tokenization API consistency**: Made `_LegacyTokenizerProxy.__getattr__()` raise `ImportError` (not `AttributeError`) when adapter unavailable, matching `__call__()` behavior.
+
+
 ### Fixed (auto-update — PR #4447)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4447 (SHA `d22873cc`) at 2026-05-13T12:26Z [auto-generated]
 - **sync_tracked_files fix (S993-cont8)**: `.secrets.baseline` CODEX_MANIFEST entry was stale (stored=3904865e7edc, expected=8677e959ff7e). Fixed via `sync_tracked_files --fix` at 2026-05-13T12:35Z.

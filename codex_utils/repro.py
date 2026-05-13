@@ -122,6 +122,8 @@ def restore_rng(state: RNGState) -> None:
                         arr = np.array(seq[1], dtype="uint32")
                         seq[1] = arr
                     except Exception:
+                        # Best-effort conversion only; keep original sequence element
+                        # so np.random.set_state can attempt restoration.
                         pass
                 np_state = tuple(seq)
             np.random.set_state(np_state)

@@ -103,6 +103,7 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
         try:
             handles["wandb"].log(dict(metrics, step=step))
         except Exception:
+            # Best-effort telemetry: ignore W&B logging failures to avoid interrupting deploy pipeline execution.
             pass
     if handles.get("mlf"):
         try:

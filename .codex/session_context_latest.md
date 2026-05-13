@@ -1,32 +1,38 @@
-# Session Context — 2026-05-13T12:41:32Z
-**Branch:** `0D_base_`  **PR:** #4447  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-13T16:41:41Z
+**Branch:** `0D_base_`  **PR:** #4448  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4655` (✅)
-- GraphQL remaining: `4967` (✅)
+- REST remaining: `4817` (✅)
+- GraphQL remaining: `4991` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4447 — `0D_base_` to `main` merge readiness score {pr_score} + follow-up prompt (for {current_pr} or {new_pr})
+## 📋 PR #4448 — Fix for Wrong name for an argument in a call
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
+### ❌ 4 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Create Improvement PR` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
-- `109c5ba5` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `9c46456b` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `9ad5ad86` fix(ci): sync_tracked_files — refresh stale .secrets.baseline CODEX_MANIFEST ent — copilot-swe-agent[bot] (2026-05-13)
-- `86d18476` chore: Generate follow-up prompt for PR #4447 [skip ci] — github-actions[bot] (2026-05-13)
-- `2b63c5d2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-13)
-- `781e2cd4` Merge pull request #4442 from Aries-Serpent/copilot/continue-cognitive-brain-obj — Statix (2026-05-13)
-- `0fd7ba88` fix(security): process dep-scan + SBOM reports; tighten pytest to >=9.0.3; docum — copilot-swe-agent[bot] (2026-05-13)
-- `8f007417` Add files via upload — Statix (2026-05-13)
+- `b9d6fc79` docs(security): ingest run 25809211083 artifacts, revise planset, update living  — copilot-swe-agent[bot] (2026-05-13)
+- `afc4e95f` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
+- `08cc1b94` fix(security): Batch 3 — B311 nosec annotations at all 25 sites + planset Batch  — copilot-swe-agent[bot] (2026-05-13)
+- `b2c60b4b` fix(security): apply code review suggestions — clarify guard comment + nosec pla — copilot-swe-agent[bot] (2026-05-13)
+- `7c92f4c7` fix(security): Batch 1-4 bandit remediation from artifact scan — 375→353 raw, 0  — copilot-swe-agent[bot] (2026-05-13)
+- `6a621054` chore: initial plan for dependency/SBOM remediation planset [skip ci] — copilot-swe-agent[bot] (2026-05-13)
+- `09ef18a2` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
+- `d2111650` fix(ci): address Pattern 25 — update AGENT_ACCOUNTABILITY_REPORT + CHANGELOG for — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -37,9 +43,9 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-05-13] `PDA-SUCCESS-S993-CONT5-CHERRY-PICK-4445`: ?
-- [2026-05-13] `PDA-SUCCESS-S993-CONT7-RUNTIME-LOGIC-ROADMAP`: ?
-- [2026-05-13] `PDA-SUCCESS-S993-CONT8-SYNC-TRACKED-FILES`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT9-CI-RESCUE-ISSUE-4444`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT9-REVIEW-COMMENTS`: ?
+- [2026-05-13] `PDA-SUCCESS-PR4448-FULL-REMEDIATION`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

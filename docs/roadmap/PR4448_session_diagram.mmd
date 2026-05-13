@@ -1,0 +1,44 @@
+```mermaid
+flowchart TD
+    A["🏁 Session S994 Start\nPR #4448 · 0D_base_"] --> B["📋 Load CODEBASE_AGENCY_POLICY\nReview all open comments"]
+
+    B --> C["🔴 3 Broken files\n(sandbox.py + 2 test files)\nmalformed syntax from fdd6f28"]
+    C --> C1["✅ Restored from origin/main\n3a8f8cb"]
+
+    B --> D["🔴 Test suite failures\n(MLflow stub, jsonschema,\nfacets format, tokenization)"]
+    D --> D1["✅ Fixed all 4 suite issues\n0e216aa"]
+
+    B --> E["🔴 Bandit 375 raw issues\nfrom artifact scan\nrun 25797170771"]
+    E --> E1["✅ Batch 1-4: 375→353\n7c92f4c"]
+    E1 --> E2["✅ Batch 3: 353→328\n25 B311 nosec\n08cc1b9"]
+
+    E2 --> F["🔄 New artifacts ingested\nrun 25809211083\nsha256:ae221879 / 1d922863"]
+    F --> F1["✅ pip-audit: 2 CVEs\ndiskcache + sqlitedict\nno fix version — accepted"]
+    F --> F2["✅ SBOM: 326 components\n0 vulnerabilities"]
+
+    C1 & D1 & E2 --> G["🤖 Upstream sweep\nafc4e95\nPattern 12 E501 fixed"]
+
+    G --> H["📝 Planset revised\nBatch 5/6 promptsets\nArtifact refresh documented"]
+
+    H --> I["📝 Living docs updated\nPR4448_whats_next.md\nPR4448_session_diagram.mmd"]
+
+    I --> J["📝 Pattern 25 commit\nCHANGELOG + ACCOUNTABILITY\nfinal session commit"]
+
+    J --> K["🏁 Session S994 End\nMerge-readiness: 100/100 ✅\nbandit config=0 · ruff=0"]
+
+    style A fill:#2d6a4f,color:#fff
+    style K fill:#2d6a4f,color:#fff
+    style C fill:#d62828,color:#fff
+    style D fill:#d62828,color:#fff
+    style E fill:#d62828,color:#fff
+    style C1 fill:#1b4332,color:#fff
+    style D1 fill:#1b4332,color:#fff
+    style E1 fill:#1b4332,color:#fff
+    style E2 fill:#1b4332,color:#fff
+    style F1 fill:#457b9d,color:#fff
+    style F2 fill:#457b9d,color:#fff
+    style G fill:#4a4e69,color:#fff
+    style H fill:#4a4e69,color:#fff
+    style I fill:#4a4e69,color:#fff
+    style J fill:#4a4e69,color:#fff
+```
