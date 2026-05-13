@@ -19,7 +19,7 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - **🔐 Secrets Baseline Enforcer** — `failure` on `0D_base_` (2026-05-13)
 
 ## 📝 Recent Commits
-- `d104e11d` docs: S977 — clarify CI status in session_context_latest.md (HEAD is action_requ — copilot-swe-agent[bot] (2026-05-13)
+- `d104e11d` docs: S977 — clarify CI status in session_context_latest.md (HEAD is action_required not failure) — copilot-swe-agent[bot] (2026-05-13)
 - `1c428651` fix(ci): S977 — Pattern 25 compliance + CI Rescue 8f3b62d triage — copilot-swe-agent[bot] (2026-05-13)
 - `8532b647` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
 - `2c5a85c1` chore: establish S977 plan — fix CI failures on 8f3b62d — copilot-swe-agent[bot] (2026-05-13)
