@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1002-post-merge-validation — PR #4451 — 2026-05-13T20:45Z)
+- **`tests/test_sqlite_pool.py`** — relaxed the pooled-connection count assertion from `== 6` to `2 <= len(_CONN_POOL) <= 6` because short-lived worker threads can legitimately reuse thread identifiers on some platforms. The test still verifies pooling is active and that all 100 concurrent writes succeed.
+
 ### Fixed (S1001-merge-conflict-remediation — PR #4451 — 2026-05-13T20:45Z)
 - Merged the latest `0D_base_` into `copilot/security-quality-remediation-sprint` to clear file-level conflicts before merge.
 - **`src/training/accelerate_init_guard.py`** — combined the guarded retry import path with the later CodeQL fix so failed `accelerate` imports clear cached availability and successful repairs return the updated global state.
