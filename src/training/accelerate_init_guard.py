@@ -86,13 +86,13 @@ def is_accelerate_available() -> bool:
         # find_spec succeeded but the actual import failed; mark spec as unavailable
         # so subsequent calls do not attempt the import again.
         _ACCELERATE_SPEC_AVAILABLE = False
-        return _ACCELERATE_SPEC_AVAILABLE  # False
+        return _ACCELERATE_SPEC_AVAILABLE
     accelerator_cls = getattr(_accelerate_mod, "Accelerator", None)
     if accelerator_cls is None:
         return False
     Accelerator = accelerator_cls
     _ACCELERATOR_AVAILABLE = True
-    return _ACCELERATOR_AVAILABLE  # True
+    return _ACCELERATOR_AVAILABLE
 
 
 def is_gpu_available() -> bool:
