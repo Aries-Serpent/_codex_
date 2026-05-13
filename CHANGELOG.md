@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S986 — ujson Dependabot advisory resolved in uv.lock)
+- **UltraJSON memory-leak advisory**: Verified the repository still had `ujson 5.12.0` only in `uv.lock` (while `requirements/lock.txt` was already on `5.12.1`), leaving Dependabot alert #256 open for the UV lockfile.
+- **`uv.lock`**: Surgically updated the `ujson` package block from `5.12.0` to `5.12.1`, the patched release for the `ujson.dump()` write-failure memory leak.
+- **Verification**: Confirmed `ujson 5.12.1` is clean via the advisory DB and that the current CodeQL/Dependabot source-of-truth report still shows the lockfile issue as the remaining remediation target.
+
 ### Fixed (S985 — updated CodeQL report consumed; top remaining error addressed)
 - **Updated fetched report applied**: Consumed the refreshed CodeQL artifact report (`run 25778513533`, 119 open alerts on `main`) as the current source of truth; confirmed the MFA weak-crypto finding is no longer present in the open-alert summary.
 - **Top fixable error targeted**: Restructured `tests/unit/test_peft_utils.py` so the PEFT bundle is loaded through a helper that either returns an initialized bundle or exits via `pytest.skip(...)`, addressing the top remaining `py/uninitialized-local-variable` finding from the fetched report.

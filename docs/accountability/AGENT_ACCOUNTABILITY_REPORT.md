@@ -1,3 +1,20 @@
+## SESSION SUMMARY — 2026-05-13T04:50Z [S986-ujson-uv-lock-pr4434]
+
+**Session:** S986-ujson-uv-lock-pr4434 | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
+
+### Completed
+- **Advisory verification**: Confirmed the UltraJSON memory-leak advisory was not fully resolved because `/home/runner/work/_codex_/_codex_/uv.lock` still pinned `ujson 5.12.0` even though `requirements/lock.txt` already had `ujson==5.12.1`.
+- **Dependency remediation**: Updated only the `ujson` package block in `uv.lock` to `5.12.1`, keeping the lockfile diff surgical and avoiding unrelated resolver churn.
+- **Advisory validation**: Verified `ujson 5.12.1` has no known vulnerabilities in the advisory database.
+
+### Validation
+- ✅ `python -m pip install uv`
+- ✅ `uv lock --upgrade-package ujson==5.12.1` (used only to source the regenerated `ujson` block)
+- ✅ `python scripts/ci/sync_tracked_files.py --fix`
+- ✅ `python scripts/ci/auto_fix_common_issues.py --check-only`
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T04:45Z [S985-codeql-report-followup-pr4434]
 
 **Session:** S985-codeql-report-followup-pr4434 | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
