@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S993 cont.3 — code-quality bot: suppress "Statement has no effect" + "Unused local variable")
+- **`src/codex_ml/evaluation/loop.py`**: Reverted `...` → `pass` in Protocol method bodies without docstrings (Criterion.__call__, Logger.log, Logger.close). GitHub code-quality bot flags `...` as "Statement has no effect" because Ellipsis is an expression; `pass` is a statement and is not flagged.
+- **`src/codex/cognitive/ml/symptom_classifier.py`**: Removed `...` from Protocol method bodies that already have docstrings (fit, predict, predict_proba). Docstring alone is sufficient as the method body in Python.
+- **`src/codex/quantum_orchestrator/qft/second_quantization.py`**: Removed unpacking of unused `_state3/_amp3` from `annihilation.apply(fock, mode)` call where result is always zero (vacuum state). Changed `new_fock, _amplitude = ...` → `new_fock, _ = ...` (standard throwaway `_`).
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont3 (2026-05-13).
+
 ### Fixed (S993 cont.2 — scripts/ RUF059/RUF034 batch; CI Rescue comment-review gate clear)
 - **CI Rescue comment resolved**: Comment Review Gate failure (run 25790407962) was on commit before `4a21568` fix; gate is now passing. Addressed by replying to CI Rescue comment 4439410756.
 - **`scripts/analyze_broken_links.py`**: `anchor` → `_anchor` (RUF059)

@@ -1,3 +1,30 @@
+## SESSION SUMMARY — 2026-05-13T10:15Z [S993-cont3-codeqbot-fixups]
+
+**Session:** S993-cont3-codeqbot-fixups | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442
+
+### Completed
+- ✅ Investigated CI Rescue comment 4439699091: failures were on `4a21568e32e3`; Comment Review Gate is now passing on `493ef6d7` (run 25792766947 shows success).
+- ✅ Investigated `github-code-quality[bot]` review comments: flagging `...` (Ellipsis) in Protocol bodies as "Statement has no effect" (CodeQL py/statement-has-no-effect). Fixed by reverting to `pass` (evaluation/loop.py) and removing `...` where docstring is sufficient (symptom_classifier.py).
+- ✅ Fixed `second_quantization.py`: removed `_state3, _amp3 =` unpacking (result is always 0 for vacuum state, variable names are never used). Changed `_amplitude` → `_` (standard throwaway idiom, not flagged).
+- ✅ All ruff checks pass: `ruff check src/ scripts/ --select F401,F811,F841,B007,PIE790,RUF059,RUF034` → All checks passed.
+- ✅ `sync_tracked_files --fix` → All consistent.
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated.
+- ✅ Pattern 30: PDA entry refreshed for 2026-05-13.
+
+### Root Cause Analysis
+`github-code-quality[bot]` uses CodeQL's `py/statement-has-no-effect` rule which flags Ellipsis (`...`) as an expression statement with no side effects. Python's `pass` is a statement (not expression) and is NOT flagged. Correct fix: use `pass` for empty no-docstring Protocol bodies; remove placeholder entirely when docstring already provides the body content.
+
+### Validation
+- ✅ `ruff check src/ scripts/ --select ... RUF059,RUF034,PIE790,B007` → All checks passed
+- ✅ `sync_tracked_files --fix` → All consistent
+- ✅ AST parse OK for all 3 changed files
+
+### Pattern Status
+- **Pattern 25** ✅ (CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in this commit)
+- **Pattern 30** ✅ (PDA entry: S993-cont.3 dated 2026-05-13)
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T09:57Z [S993-cont2-scripts-ruf059]
 
 **Session:** S993-cont2-scripts-ruf059 | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442

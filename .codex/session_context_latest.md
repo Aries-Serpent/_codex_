@@ -1,10 +1,10 @@
-# Session Context — 2026-05-13T09:53:39Z
+# Session Context — 2026-05-13T10:09:52Z
 **Branch:** `copilot/continue-cognitive-brain-objectives`  **PR:** #4442  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4748` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4358` (✅)
+- GraphQL remaining: `4989` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -13,20 +13,20 @@ State: `open`  Draft: `True`  Branch: `copilot/continue-cognitive-brain-objectiv
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **.github/workflows/codeql-alert-fetcher.yml** — `failure` on `copilot/continue-cognitive-brain-objectives` (2026-05-13)
-- **.github/workflows/codeql-alert-fetcher.yml** — `failure` on `copilot/continue-cognitive-brain-objectives` (2026-05-13)
-- **.github/workflows/codeql-alert-fetcher.yml** — `failure` on `copilot/continue-cognitive-brain-objectives` (2026-05-13)
-- **.github/workflows/codeql-alert-fetcher.yml** — `failure` on `copilot/continue-cognitive-brain-objectives` (2026-05-13)
-- **.github/workflows/codeql-alert-fetcher.yml** — `failure` on `copilot/continue-cognitive-brain-objectives` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `493ef6d7` Merge remote-tracking branch 'origin/copilot/continue-cognitive-brain-objectives — copilot-swe-agent[bot] (2026-05-13)
+- `aab69b89` fix: scripts/ RUF059/RUF034 batch — 24 unused unpacked vars + 1 useless if-else; — copilot-swe-agent[bot] (2026-05-13)
+- `5c68d255` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
+- `160864ec` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 - `4a21568e` fix: CodeQL quick-wins RUF059/RUF034/PIE790/B007 across 15 files; Pattern 25/30  — copilot-swe-agent[bot] (2026-05-13)
 - `6ed6054c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
 - `cb0c45fd` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 - `f109a639` fix(sandbox): kill subprocess on TimeoutExpired; Pattern 25 — S993 — copilot-swe-agent[bot] (2026-05-13)
-- `e57c5eaa` chore: Generate follow-up prompt for PR #4442 [skip ci] — github-actions[bot] (2026-05-13)
-- `6b904fac` feat(pr4442): bootstrap living docs, sync fix, Pattern 25/30 — S993 — copilot-swe-agent[bot] (2026-05-13)
-- `d0432bce` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `2a7f95cf` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -37,9 +37,9 @@ State: `open`  Draft: `True`  Branch: `copilot/continue-cognitive-brain-objectiv
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-05-13] `PDA-SUCCESS-S992-PR4434-CHERRYPICK-CORRECTIONS`: ?
 - [2026-05-13] `PDA-SUCCESS-S993-PR4442-BOOTSTRAP`: ?
 - [2026-05-13] `PDA-SUCCESS-S993-CONT-CODEQL-QUICKWINS`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT2-SCRIPTS-RUF059`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

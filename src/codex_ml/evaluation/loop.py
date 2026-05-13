@@ -52,16 +52,16 @@ except ImportError:  # pragma: no cover
 @runtime_checkable
 class Criterion(Protocol):
     def __call__(self, outputs, targets) -> torch.Tensor:
-        ...
+        """Compute loss given model outputs and ground-truth targets."""
 
 
 @runtime_checkable
 class Logger(Protocol):
     def log(self, record: dict[str, Any]) -> None:
-        ...
+        """Log a single evaluation record."""
 
     def close(self) -> None:
-        ...
+        """Flush and close the logger."""
 
 
 @dataclass

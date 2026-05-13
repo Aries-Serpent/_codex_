@@ -235,7 +235,7 @@ class CommutatorAlgebra:
         result1 = amp1 * amp2 if state2 else 0  # Should be 1
 
         # â†â|0⟩
-        _state3, _amp3 = annihilation.apply(fock, mode)  # â|0⟩ = 0
+        annihilation.apply(fock, mode)  # â|0⟩ = 0 (result unused — annihilation of vacuum is 0)
         result2 = 0  # annihilation gives zero
 
         # {â, â†} = ââ† + â†â = 1 + 0 = 1
@@ -408,7 +408,7 @@ class TaskSpawner:
                 mode = task_id.split("_spawn")[0] if "_spawn" in task_id else task_id
 
                 # Apply annihilation operator
-                new_fock, _amplitude = self.annihilation_op.apply(self.fock_state, mode)
+                new_fock, _ = self.annihilation_op.apply(self.fock_state, mode)
 
                 if new_fock is not None:
                     # Remove task
