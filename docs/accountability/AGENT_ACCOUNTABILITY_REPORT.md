@@ -1,3 +1,27 @@
+## SESSION SUMMARY — 2026-05-13T14:40Z [S994-pr4448-full-remediation]
+
+**Session:** S994-pr4448-full-remediation | **Branch:** `0D_base_` | **PR:** #4448
+
+### Completed
+- ✅ Addressed maintainer comment 4441679960: continued with all priority tasks and code quality/security concerns from bot-reported findings.
+- ✅ Restored `src/codex_ml/safety/sandbox.py`, `tests/agents/test_phase2_deep_coverage_batch8.py`, and `tests/agents/test_phase2_deep_coverage_batch11.py` from `origin/main` to remove malformed syntax introduced in earlier commits.
+- ✅ Fixed `MLflowTracker._init_mlflow()` to feature-detect `set_tracking_uri`/`set_experiment` APIs, preventing test-stub incompatibility failures.
+- ✅ Added `jsonschema>=4.26.0` to `requirements-dev.txt` (already in `requirements.txt`) to satisfy dev-requirements test.
+- ✅ Updated `test_facets_has_groups()` to accept both dict and list formats for facets artifact (current repo uses empty list placeholder).
+- ✅ Fixed `_LegacyTokenizerProxy.__getattr__()` to raise `ImportError` consistently with `__call__()` when adapter unavailable.
+- ✅ `ruff check` → All checks passed.
+- ✅ `sync_tracked_files --check` → All tracked files consistent.
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in this commit.
+- ✅ Pattern 30: PDA entry maintained (2026-05-13).
+
+### Lessons Learned
+- When `git checkout origin/main -- <files>` is used to restore known-good versions, the changes must be committed immediately or they will be lost.
+- Full `pytest -x` runs surface real suite-wide issues (MLflow stub compatibility, dev-requirements gaps, facets format evolution, API consistency) that targeted tests miss.
+- Feature-detection (`getattr(mlflow, "set_tracking_uri", None)`) is more resilient than hard-calling APIs when test stubs may be incomplete.
+
+---
+
+
 ## SESSION SUMMARY — 2026-05-13T12:30Z [S993-cont9-security-scan-processing]
 
 **Session:** S993-cont9-security-scan-processing | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442

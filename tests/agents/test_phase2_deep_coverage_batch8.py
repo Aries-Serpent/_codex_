@@ -392,18 +392,19 @@ class TestPhase2_ErrorHandling:
 
         assert circuit_open
 
-    @pytest.mark.parametrize(
-        "primary_available,fallback_available,expected_result",
-            (False, True, "fallback"),
-        if fallback_available:
-        if fallback_available:
+    def test_fallback_strategy(self):
+        """Test fallback strategy"""
+        primary_available = False
+        fallback_available = True
+
+        if primary_available:
             result = "primary"
         elif fallback_available:
             result = "fallback"
         else:
             result = "error"
 
-        assert result == expected_result
+        assert result == "fallback"
 
     def test_timeout_handling(self):
         """Test timeout handling"""

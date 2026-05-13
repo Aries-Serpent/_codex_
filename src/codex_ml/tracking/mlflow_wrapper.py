@@ -50,8 +50,14 @@ class MLflowTracker:
             import mlflow
 
             self._mlflow = mlflow
-            mlflow.set_tracking_uri(self.tracking_uri)
-            mlflow.set_experiment(self.experiment_name)
+            set_tracking_uri = getattr(mlflow, "set_tracking_uri", None)
+            if callable(set_tracking_uri):
+                set_tracking_uri(self.tracking_uri)
+
+            set_experiment = getattr(mlflow, "set_experiment", None)
+            if callable(set_experiment):
+                set_experiment(self.experiment_name)
+
             logger.info(f"MLflow initialized: {self.tracking_uri}")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")

@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #4448)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4448 (SHA `5b72d759`) at 2026-05-13T12:59Z [auto-generated]
 
+### Fixed (PR #4448 S994 review remediation)
+- **Syntax errors fixed**: Restored `src/codex_ml/safety/sandbox.py`, `tests/agents/test_phase2_deep_coverage_batch8.py`, and `tests/agents/test_phase2_deep_coverage_batch11.py` to known-good `main` versions, removing malformed refactors that broke Validation Pipeline run 25801583777.
+- **MLflow compatibility**: Made `MLflowTracker._init_mlflow()` tolerate partial test stubs by feature-detecting `set_tracking_uri` and `set_experiment` before calling them.
+- **Dev requirements**: Added `jsonschema>=4.26.0` to `requirements-dev.txt` to satisfy `test_requirements_dev_contains_core_tools`.
+- **Facets test compatibility**: Updated `test_facets_has_groups()` to accept both dict-of-lists and list formats for the facets artifact.
+- **Tokenization API consistency**: Made `_LegacyTokenizerProxy.__getattr__()` raise `ImportError` (not `AttributeError`) when adapter unavailable, matching `__call__()` behavior.
+
+
 ### Fixed (auto-update — PR #4447)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4447 (SHA `d22873cc`) at 2026-05-13T12:26Z [auto-generated]
 - **sync_tracked_files fix (S993-cont8)**: `.secrets.baseline` CODEX_MANIFEST entry was stale (stored=3904865e7edc, expected=8677e959ff7e). Fixed via `sync_tracked_files --fix` at 2026-05-13T12:35Z.
