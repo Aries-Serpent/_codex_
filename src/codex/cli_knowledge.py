@@ -71,6 +71,13 @@ app = typer.Typer(help="Codex Knowledge (ingest → normalize → chunk → buil
 _NODE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*\[")
 _EDGE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*[-.=o]*>\s*([A-Za-z][A-Za-z0-9_]*)")
 _QUANTUM_VARIABLES = ("N", "E", "V", "T")
+_QUANTUM_SYMBOL_RE = re.compile(r"\b([NEVT])\b")
+
+
+def _normalize_edge_syntax(line: str) -> str:
+    """Normalize dotted Mermaid edge forms to a consistent parseable pattern."""
+
+    return line.replace("-.", "--").replace(".->", "->")
 
 
 def _extract_mermaid_graph(mermaid_text: str) -> tuple[list[str], list[tuple[str, str]]]:
@@ -85,7 +92,7 @@ def _extract_mermaid_graph(mermaid_text: str) -> tuple[list[str], list[tuple[str
         node_match = _NODE_RE.match(line)
         if node_match:
             node_ids.add(node_match.group(1))
-        edge_match = _EDGE_RE.match(line.replace("-.", "--").replace(".->", "->"))
+        edge_match = _EDGE_RE.match(_normalize_edge_syntax(line))
         if edge_match:
             src, dst = edge_match.groups()
             node_ids.add(src)
@@ -199,7 +206,7 @@ def sync_mermaid_map_cmd(
     variables = {
         "N": len(nodes),
         "E": len(edges),
-        "V": sum(1 for symbol in _QUANTUM_VARIABLES if re.search(rf"\b{symbol}\b", mapping_doc_text)),
+        "V": len(set(_QUANTUM_SYMBOL_RE.findall(mapping_doc_text)).intersection(_QUANTUM_VARIABLES)),
     }
     records = _build_mermaid_search_records(
         mermaid_path=mermaid,
@@ -244,7 +251,8 @@ def sync_mermaid_map_cmd(
 
     out_dir.mkdir(parents=True, exist_ok=True)
     blob_json = out_dir / "mermaid_sync_datablob.json"
-    blob_json.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    payload_bytes = json.dumps(payload, indent=2).encode("utf-8")
+    blob_json.write_bytes(payload_bytes)
 
     records_path = out_dir / "mermaid_sync_search.ndjsonl"
     with records_path.open("w", encoding="utf-8") as fh:
@@ -256,7 +264,7 @@ def sync_mermaid_map_cmd(
     if compress:
         suffix = ".zst" if codec == "zstd" else ".zlib"
         comp_file = out_dir / f"mermaid_sync_datablob.json{suffix}"
-        comp_file.write_bytes(zstd_compress(blob_json.read_bytes(), level=compression_level))
+        comp_file.write_bytes(zstd_compress(payload_bytes, level=compression_level))
         compressed_path = comp_file.as_posix()
 
     typer.echo(

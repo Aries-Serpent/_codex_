@@ -13,6 +13,7 @@
   - Added configurable `--compression-level` (1–9, default 6) to avoid hardcoded max-compression cost
   - Reworked variable-count logic to explicit quantum symbols (`N`, `E`, `V`, `T`) for deterministic mapping semantics
   - Updated `src/codex/knowledge/build.py::infer_intent()` to use canonical `INTENTS` with keyword map for maintainability
+  - Added `_normalize_edge_syntax()` helper + compiled symbol regex and switched compression input to in-memory payload bytes
 - **Tests**: Added `test_sync_mermaid_map_generates_searchable_datablobs` in `tests/codex/test_cli_knowledge.py`.
 - **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated.
 

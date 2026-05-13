@@ -31,6 +31,12 @@ from codex.knowledge.schema import validate_kb
 
 DOMAINS = ("zendesk", "d365", "relocation", "sla", "ops")
 INTENTS = ("admin", "consultant", "runtime", "devops")
+_INTENT_KEYWORDS = {
+    "admin": ("admin", "runbook"),
+    "consultant": ("consultant",),
+    "runtime": ("runtime",),
+    "devops": ("devops",),
+}
 
 
 def infer_domain(path: str) -> str:
@@ -43,14 +49,8 @@ def infer_domain(path: str) -> str:
 
 def infer_intent(path: str) -> str:
     p = path.lower()
-    keyword_map = {
-        "admin": ("admin", "runbook"),
-        "consultant": ("consultant",),
-        "runtime": ("runtime",),
-        "devops": ("devops",),
-    }
     for intent in INTENTS:
-        if any(keyword in p for keyword in keyword_map.get(intent, (intent,))):
+        if any(keyword in p for keyword in _INTENT_KEYWORDS.get(intent, (intent,))):
             return intent
     return "admin"
 

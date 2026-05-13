@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Compressed datablob output**: `sync-mermaid-map` now writes `mermaid_sync_datablob.json` plus an optional compressed blob (`.zst` or `.zlib` based on available codec), alongside `mermaid_sync_search.ndjsonl` for downstream retrieval/search pipelines.
 - **Validation-feedback hardening**: Added `--compression-level` CLI option (range 1–9, default 6) and tightened variable mapping to explicit quantum symbols (`N`, `E`, `V`, `T`) instead of generic uppercase-letter counting.
 - **`src/codex/knowledge/build.py` maintainability fix**: `infer_intent()` now uses the canonical `INTENTS` tuple with keyword mapping, so intent additions remain centralized.
+- **Parser/perf refinements**: Added Mermaid edge-syntax normalization helper, switched variable detection to compiled symbol regex, and switched datablob compression to in-memory payload bytes to avoid redundant file re-read.
 - **Tests**: Extended `tests/codex/test_cli_knowledge.py` with a dedicated `sync-mermaid-map` behavior test that validates artifact creation and quantum variable/equation payload fields.
 
 ### Added (S979-mermaid-logic-map — runtime logic map documentation)
