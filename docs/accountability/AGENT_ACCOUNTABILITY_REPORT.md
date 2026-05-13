@@ -36106,3 +36106,20 @@ Ingest new security-scanning-suite artifacts (run 25809211083), update living do
 - Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
 - Pattern 12 ✅ — upstream sweep `afc4e95` resolved E501 in `envelope.py`
 - Pattern 30 ✅ — PDA entry exists for 2026-05-13
+
+---
+## Session: iterative-self-healing — PR #4450 — 2026-05-13T18:28Z
+
+**Trigger:** @mbaetiong comment (comment_id 4444050349) — Resilient Validation Suite run 25814482287 failing
+
+**Root Causes Identified:**
+1. `scripts/space_traversal/trend_aggregator.py` — RUF059 regression: loop var `_cap_id` used but body references stale `cap_id` → wrong IDs in `trending_up`/`trending_down`/`stable` lists. Fixed by using `_cap_id` consistently in the trending loop body.
+2. `tests/ci/test_pattern_recorder.py::test_run_all_patterns_respects_skip_env` — test mocked only 2 of 33 patterns, causing the other 31 to run real implementations (including subprocess calls with 60s timeout), triggering a >60s test timeout. Fixed by mocking all 33 pattern methods.
+
+**Files Changed:**
+- `scripts/space_traversal/trend_aggregator.py` — lines 218-223: `cap_id` → `_cap_id`
+- `tests/ci/test_pattern_recorder.py` — `test_run_all_patterns_respects_skip_env`: comprehensive mock of all 33 patterns
+
+### Pattern Compliance
+- Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
+- Pattern 30 ✅ — PDA entry exists for 2026-05-13

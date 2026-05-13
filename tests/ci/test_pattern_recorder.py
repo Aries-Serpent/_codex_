@@ -429,8 +429,45 @@ def _compute_merge_readiness_score():
 
             return _inner
 
-        fixer.fix_unused_imports = _mark(1)  # type: ignore[method-assign]
-        fixer.fix_merge_readiness_dims = _mark(30)  # type: ignore[method-assign]
+        # Mock ALL pattern methods so real implementations are not invoked
+        # (some patterns use subprocess or network calls that would make this slow).
+        _all_pattern_methods = [
+            (1,  "fix_unused_imports"),
+            (2,  "fix_unused_variables"),
+            (3,  "fix_yaml_indentation"),
+            (4,  "fix_coverage_thresholds"),
+            (5,  "fix_tokenizer_fallbacks"),
+            (6,  "fix_test_assertions"),
+            (7,  "fix_redundant_imports"),
+            (8,  "fix_codeql_alerts"),
+            (9,  "fix_unsorted_imports"),
+            (10, "fix_bandit_security"),
+            (11, "fix_fstring_placeholders"),
+            (12, "fix_line_length"),
+            (13, "fix_w_series_warnings"),
+            (14, "fix_link_checker_config"),
+            (15, "fix_mypy_baseline_freshness"),
+            (16, "fix_stub_duplicate_defs"),
+            (17, "check_ci_sha_drift"),
+            (18, "fix_duplicate_kwargs"),
+            (19, "check_src_absolute_imports"),
+            (20, "check_yaml_multiline_strings"),
+            (21, "check_nodejs20_actions"),
+            (22, "check_tracked_file_sync"),
+            (23, "check_secrets_baseline_plugins"),
+            (24, "check_codecov_token_missing"),
+            (25, "fix_last_commit_accountability"),
+            (26, "check_autopost_rebase_race"),
+            (27, "fix_secrets_baseline_false_positives"),
+            (28, "check_copilot_sandbox_env"),
+            (29, "fix_pr_comment_triage"),
+            (30, "fix_merge_readiness_dims"),
+            (31, "fix_stale_type_ignore"),
+            (32, "fix_bare_type_ignore_assign"),
+            (33, "check_rate_limit_checkpoint"),
+        ]
+        for n, method_name in _all_pattern_methods:
+            setattr(fixer, method_name, _mark(n))  # type: ignore[method-assign]
         monkeypatch.setenv("CODEX_SKIP_PATTERN_NUMS", "30")
 
         fixer.run_all_patterns()

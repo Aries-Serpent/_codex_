@@ -216,11 +216,11 @@ def aggregate_trends(
             delta = last_score - first_score
 
             if abs(delta) < 0.01:
-                stable.append(cap_id)
+                stable.append(_cap_id)
             elif delta > 0:
-                trending_up.append((cap_id, delta))
+                trending_up.append((_cap_id, delta))
             else:
-                trending_down.append((cap_id, delta))
+                trending_down.append((_cap_id, delta))
 
     # Sort trending lists
     trending_up.sort(key=lambda x: x[1], reverse=True)
