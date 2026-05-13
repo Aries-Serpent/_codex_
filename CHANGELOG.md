@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S978 — Pattern 25 compliance + CI Rescue on d104e11 resolved)
-- **Pattern 25 compliance**: Resolved Pattern 25 violation from plan commit `379207f` (only had `session_context_latest.md`); added S978 entry to both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md
-- **CI Rescue on `d104e11` triage**: Two failing checks (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) on commit `d104e11` — infrastructure jobs on an older commit with 23 in-progress; ruff ✅ clean, sync_tracked_files ✅ consistent
+- **Pattern 25 compliance (x2)**: Fixed two successive Pattern 25 violations (plan commits `379207f` and `452cb70` each only had `session_context_latest.md`); both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md now included in compliance commit
+- **CI Rescue on `d104e11` triage**: Two failing checks (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) were infrastructure jobs with 23 in-progress; ruff ✅ clean, sync_tracked_files ✅ consistent
+- **session_context_latest.md**: Fixed truncated commit message (`action_requ` → `action_required`)
 
 ### Fixed (S977 — Pattern 25 compliance + CI Rescue on 8f3b62d resolved)
 - **Pattern 25 compliance**: Resolved Pattern 25 violation from plan commit `2c5a85c` (only had `session_context_latest.md`); added S977 entry to both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md

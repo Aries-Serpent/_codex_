@@ -3,8 +3,9 @@
 **Session:** S978-pattern25-ci-rescue-d104e11 | **Branch:** `0D_base_` | **PR:** #4427
 
 ### Completed
-- **Pattern 25 fix**: Plan commit `379207f` only updated `session_context_latest.md` — violated Pattern 25. This commit adds CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md to satisfy the gate.
-- **CI Rescue triage on `d104e11`**: Two reported failures (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) on commit `d104e11` with 23 checks in-progress; ruff is clean, sync_tracked_files is consistent. Infrastructure jobs on older commits are not real code failures.
+- **Pattern 25 fix (x2)**: Fixed two successive Pattern 25 violations — plan commits `379207f` and `452cb70` each only modified `session_context_latest.md`. Final compliance commit includes both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md.
+- **CI Rescue triage on `d104e11`**: Two reported failures (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) with 23 checks in-progress — infrastructure jobs on older commits, not real code failures. ruff clean, sync_tracked_files consistent.
+- **session_context_latest.md**: Fixed truncated commit message (`action_requ` → `action_required`)
 
 ### Validation
 - ✅ `python -m ruff check src/ tests/` → clean
