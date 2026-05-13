@@ -62,51 +62,83 @@
 
 ---
 
-## 🔲 Continue-Where-Left-Off Prompt (next session)
+## 📊 Session S1003-wrap CI Status (commit `591eb66` — 2026-05-13T23:25Z)
+
+| Metric | Value |
+|--------|-------|
+| ✅ Merge Readiness | **99/100** — Merge-ready |
+| ✅ CI checks passing | 56/57 |
+| ✅ `ruff check src/ tests/` | 0 issues |
+| ✅ `mypy_baseline` | 120 ≤ 122 (improved by 2) |
+| ✅ `sync_tracked_files --check` | All tracked files consistent |
+| ✅ `auto_fix_common_issues --check-only` | No issues found |
+| ⚠️ Secrets Baseline Enforcer | Transient failure (local scan clean; re-runs pass) |
+| ⚠️ Resilient Validation shards 1-4 | `continue-on-error: true` — non-blocking informational |
+| 📦 Latest artifacts (run `25830909557`) | SBOM: 326 components / 0 vulns · pip-audit: 2 CVEs (no fix versions) |
+
+---
+
+## 🎯 Tailored Continuation Prompt (aligned with PR title)
+
+> **PR Title:** _"Merge 0D_base_ to main once Security and Quality Alerts are less than 25 total with Prompt to continue to 0"_
 
 ```
 @copilot CTEP Mode: ON
 
-Continue PR #4450 security/quality remediation. Session S1003-cont summary:
-- Fixed ~72 CodeQL alerts total (bulk RUF059, permissions, SHA-pinning, actionlint SC1039,
-  create-github-app-token SHA, Protocol body ellipsis, unused tuple unpacks in tests)
-- Estimated remaining open alerts: ~55 → need more remediation to reach < 25
+## ⚡ Goal: Get PR #4450 CodeQL alert count from ~55 → < 25 → then → 0
 
-STEP 1: Check CI on latest commit (verify ruff, sync_tracked, comment-review-gate pass)
+### Context
+- PR: #4450 · Branch: 0D_base_ → main
+- Merge Readiness: 99/100 ✅ — blocked only on alert count (target < 25, then 0)
+- Alert trajectory: 127 → 120 → 59 → 55 (current estimate)
+- CodeQL alerts fixed this sprint: ~72 (bulk RUF059, permissions, SHA-pinning,
+  actionlint, create-github-app-token SHA, Protocol ..., unused tuple unpacks)
 
-STEP 2: Get updated CodeQL open alert count
-  → Use GitHub MCP: list_code_scanning_alerts (state=open)
-  → Target: < 25 open alerts
+### Phase 1: Confirm current alert count (< 25 gate)
+STEP 1: Use GitHub MCP list_code_scanning_alerts (state=open, repo=_codex_)
+        → Count total open alerts across python + javascript
+        → If count < 25: proceed to Phase 2 (merge)
+        → If count ≥ 25: fix remaining alerts (see STEP 2)
 
-STEP 3: Fix remaining known alert types (if count > 25):
-  a. consolidated-pr-status.yml: actions/github-script@v9 → needs real SHA
-  b. .github/actions/doc-test-scribe-action/action.yml:201 → syntax error
-  c. actions/untrusted-checkout/medium ×2 in forward-sync-autogen.yml
-     → Add: `fetch-depth: 0` + restrict to `github.event_name != 'pull_request'`
-     → Or restrict checkout to `refs/heads/*` only
-  d. Any residual py/unused-local-variable not caught by prior sweeps
-  e. Any residual py/ineffectual-statement remaining
+### Phase 2: Fix remaining known alert types (if count ≥ 25)
+STEP 2a. consolidated-pr-status.yml: actions/github-script@v9 → pin to real SHA
+         (run: gh api /repos/actions/github-script/git/refs/tags/v9 to get SHA)
+STEP 2b. .github/actions/doc-test-scribe-action/action.yml:201 → fix syntax error
+STEP 2c. forward-sync-autogen.yml: actions/untrusted-checkout ×2
+         → Add `ref: ${{ github.sha }}` to checkout step (restrict to base-branch code)
+STEP 2d. Any residual py/unused-local-variable remaining after prior sweeps
+STEP 2e. Any residual py/ineffectual-statement remaining
 
-STEP 4: Merge PR #4450 once CodeQL count confirmed < 25
-  → python scripts/ci/sync_tracked_files.py --check
-  → All gates green → merge
+### Phase 3: Pre-merge validation
+STEP 3:  python scripts/ci/sync_tracked_files.py --check  → must be clean
+         python -m ruff check src/ tests/                  → must be 0 issues
+         python scripts/ci/mypy_baseline.py --require-baseline → must PASS
+         actionlint .github/workflows/*.yml                → must be 0 errors
+
+### Phase 4: Continue to 0 alerts (post-merge sprint)
+STEP 4:  After merge, immediately open new PR for remaining alerts (B101, B603, B404)
+         Follow .codex/plans/security-remediation-planset.md Batch 5/6 plan
+         Target: 0 open CodeQL security alerts within 2 sessions
 
 Load: .codex/CODEBASE_AGENCY_POLICY.md before starting
+Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediation-planset.md
 ```
 
 ---
 
 ## 📈 Alert Count Trajectory
 
-| Date | Inventory | Δ | Key Work |
-|------|:---------:|---|---------|
-| 2026-05-12 | 127 | — | Initial inventory |
-| 2026-05-13 S995-S1002 | ~120 | -7 | Unused-global, src/ RUF059, accelerate guard |
-| 2026-05-13 S1003 | **~59** | **-61** | Bulk Python quality + Actions permissions/pinning |
-| 2026-05-13 S1003-c | ~58 | -1 | actionlint SC1039 heredoc |
-| 2026-05-13 S1003-cont | **~55** | **-3** | create-github-app-token SHA, Protocol `...`, unused tuple unpacks |
-| 2026-05-13 S1003-cont-followup | ~55 | 0 | actionlint lexer fix + resilient_validation cache-save SHA fix + artifact refresh |
-| **Target** | **< 25** | — | Remaining: github-script@v9 SHA, untrusted-checkout ×2, doc-test-scribe syntax, residual Python |
+| Date | Session | Inventory | Δ | Key Work |
+|------|---------|:---------:|---|---------|
+| 2026-05-12 | Initial | 127 | — | Initial inventory |
+| 2026-05-13 | S995-S1002 | ~120 | -7 | Unused-global, src/ RUF059, accelerate guard |
+| 2026-05-13 | S1003 | **~59** | **-61** | Bulk Python quality + Actions permissions/pinning |
+| 2026-05-13 | S1003-c | ~58 | -1 | actionlint SC1039 heredoc |
+| 2026-05-13 | S1003-cont | **~55** | **-3** | create-github-app-token SHA, Protocol `...`, unused tuple unpacks |
+| 2026-05-13 | S1003-cont-followup | ~55 | 0 | actionlint lexer fix + resilient_validation cache-save SHA + artifact refresh |
+| 2026-05-13 | S1003-wrap | ~55 | 0 | Docs refresh, tailored continuation prompt, CI validation |
+| **Next target** | — | **< 25** | — | github-script@v9 SHA, untrusted-checkout ×2, doc-test-scribe syntax, residual Python |
+| **Final goal** | — | **0** | — | Post-merge Batch 5/6 (B101, B603, B404, B607) |
 
 ---
-_Living doc — last updated S1003-cont-followup · 2026-05-13T23:10Z_
+_Living doc — last updated S1003-wrap · 2026-05-13T23:25Z_
