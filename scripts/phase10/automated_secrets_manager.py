@@ -262,7 +262,7 @@ class GitHubSecretsManager:
                 text=True
             )
 
-            stdout, stderr = process.communicate(input=secret_value)
+            _, stderr = process.communicate(input=secret_value)
 
             if process.returncode == 0:
                 # Security: Don't log secret names - CodeQL alert #3330
@@ -391,11 +391,11 @@ class GitHubSecretsManager:
         results = {}
 
         # 1. CODEX_MASTER_KEY
-        secret_name = "CODEX_MASTER_KEY"
+        secret_name = "CODEX_MASTER_KEY"  # pragma: allowlist secret
         if not force and self.verify_secret_exists(secret_name):
             # Security: Don't log secret names - CodeQL alert #3335
             logger.info("ℹ️  Secret already exists (use --force to regenerate)")
-            results[secret_name] = "skipped"
+            results[secret_name] = "skipped"  # pragma: allowlist secret
         else:
             # Security: Don't log secret names - CodeQL alert #3336
             logger.info("🔑 Generating secret...")
@@ -421,12 +421,12 @@ class GitHubSecretsManager:
             if self.verify_secret_exists(secret_name):
                 # Security: Don't log secret names - CodeQL alert #3337
                 logger.info("✅ Secret already configured")
-                results[secret_name] = "exists"
+                results[secret_name] = "exists"  # pragma: allowlist secret
             else:
                 # Security: Don't log secret names - CodeQL alert #3338
                 logger.warning("⚠️  Secret requires manual configuration")
                 logger.warning("    See: HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md")
-                results[secret_name] = "manual_required"
+                results[secret_name] = "manual_required"  # pragma: allowlist secret
 
         # Summary
         logger.info("")

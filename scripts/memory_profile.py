@@ -56,7 +56,7 @@ def profile_baseline_memory() -> int:
         print("⚠️  psutil not installed, using tracemalloc")
         import tracemalloc
         tracemalloc.start()
-        current, peak = tracemalloc.get_traced_memory()
+        current, _peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
         return current
 

@@ -27,7 +27,7 @@ def check_link(link_url: str, source_file: Path, docs_root: Path) -> tuple[bool,
 
     # Handle anchors
     if '#' in link_url:
-        link_path, anchor = link_url.split('#', 1)
+        link_path, _anchor = link_url.split('#', 1)
         if not link_path:  # Same-file anchor
             return True, "anchor"
         link_url = link_path

@@ -228,7 +228,7 @@ class SecurityValidator:
 
         # Test 1: Session isolation
         token1, session1 = self.tokens.generate_session_token("user1", True)
-        token2, session2 = self.tokens.generate_session_token("user2", False)
+        _token2, session2 = self.tokens.generate_session_token("user2", False)
 
         self.test(
             "Session ID Uniqueness",

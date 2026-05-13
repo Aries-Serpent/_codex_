@@ -666,7 +666,7 @@ def _compute_merge_readiness_score() -> dict:
                  "✅ clean" if ok4 else "❌ lint violations", ok4))
 
     # 5 — github-script ≥ v8
-    rc5, out5 = _run(["grep", "-r", "github-script@v[1-7]", ".github/workflows/"])
+    _rc5, out5 = _run(["grep", "-r", "github-script@v[1-7]", ".github/workflows/"])
     ok5 = not out5.strip()
     dims.append(("github-script ≥ v8", 8,
                  "✅ all ≥ v8" if ok5 else "❌ old refs", ok5))
@@ -700,7 +700,7 @@ def _compute_merge_readiness_score() -> dict:
 
     # 10 — AAIS composite ≥ 80
     aais_score = 0.0
-    rc10, out10 = _run(["python3", "scripts/ci/aais_v4_scorer.py", "--json"],
+    _rc10, out10 = _run(["python3", "scripts/ci/aais_v4_scorer.py", "--json"],
                        timeout=60)
     try:
         aais_score = _json.loads(out10)["composite"]

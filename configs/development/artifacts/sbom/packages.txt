@@ -1,360 +1,333 @@
-absl-py==2.3.1  # requirements/lock.txt
-accelerate==0.34.2  # requirements/lock.txt
-aiohappyeyeballs==2.6.1  # requirements/lock.txt
-aiohttp==3.12.15  # requirements/lock.txt
-aiohttp-cors==0.8.1  # requirements/lock.txt
-aiohttp-retry==2.9.1  # requirements/lock.txt
-aiosignal==1.4.0  # requirements/lock.txt
-alembic==1.16.5  # requirements/lock.txt
-altair==4.2.2  # requirements/lock.txt, uv.lock
-amqp==5.3.1  # requirements/lock.txt
-annotated-types==0.7.0  # requirements/lock.txt
-antlr4-python3-runtime==4.9.3  # requirements/lock.txt
-anyio==4.10.0  # requirements/lock.txt
-appdirs==1.4.4  # requirements/lock.txt
-appnope==0.1.4  # uv.lock
-argon2-cffi==25.1.0  # requirements/lock.txt, uv.lock
-argon2-cffi-bindings==25.1.0  # requirements/lock.txt, uv.lock
-arrow==1.4.0  # requirements/lock.txt, uv.lock
-asttokens==3.0.0  # requirements/lock.txt, uv.lock
-async-lru==2.0.5  # requirements/lock.txt, uv.lock
-asyncssh==2.21.1  # requirements/lock.txt
-atpublic==6.0.2  # requirements/lock.txt
-attrs==25.3.0  # requirements/lock.txt
-babel==2.17.0  # requirements/lock.txt, uv.lock
-beautifulsoup4==4.14.2  # requirements/lock.txt, uv.lock
-billiard==4.2.2  # requirements/lock.txt
-black==25.9.0  # requirements/lock.txt
-bleach==6.2.0  # requirements/lock.txt, uv.lock
-blinker==1.9.0  # requirements/lock.txt
-cachetools==5.5.2  # requirements/lock.txt
-celery==5.5.3  # requirements/lock.txt
-certifi==2025.8.3  # requirements/lock.txt
-cffi==2.0.0  # requirements/lock.txt
-cfgv==3.4.0  # requirements/lock.txt
-chardet==5.2.0  # requirements/lock.txt
-charset-normalizer==3.4.3  # requirements/lock.txt
-click==8.2.1  # requirements/lock.txt
-click-didyoumean==0.3.1  # requirements/lock.txt
-click-plugins==1.1.1.2  # requirements/lock.txt
-click-repl==0.3.0  # requirements/lock.txt
-cloudpickle==3.1.1  # requirements/lock.txt
-colorama==0.4.6  # requirements/lock.txt
-colorful==0.5.7  # requirements/lock.txt
-comm==0.2.3  # requirements/lock.txt, uv.lock
-configobj==5.0.9  # requirements/lock.txt
-contourpy==1.3.3  # requirements/lock.txt
-coverage==7.10.6  # requirements/lock.txt
-cryptography==45.0.7  # requirements/lock.txt
-cycler==0.12.1  # requirements/lock.txt
-databricks-sdk==0.65.0  # requirements/lock.txt
-dataproperty==1.1.0  # requirements/lock.txt
-datasets==2.21.0  # requirements/lock.txt
-debugpy==1.8.17  # requirements/lock.txt, uv.lock
-decorator==5.2.1  # requirements/lock.txt, uv.lock
-defusedxml==0.7.1  # requirements/lock.txt, uv.lock
-deprecation==2.1.0  # requirements/lock.txt
-dictdiffer==0.9.0  # requirements/lock.txt
-dill==0.3.8  # requirements/lock.txt
-diskcache==5.6.3  # requirements/lock.txt
-distlib==0.4.0  # requirements/lock.txt
-distro==1.9.0  # requirements/lock.txt
-dnspython==2.7.0  # requirements/lock.txt
-docker==7.1.0  # requirements/lock.txt
-dpath==2.2.0  # requirements/lock.txt
-duckdb==1.3.2  # requirements/lock.txt
-dulwich==0.24.6  # requirements/lock.txt
-dvc==3.0.0  # requirements/lock.txt
-dvc-data==1.11.0  # requirements/lock.txt
-dvc-http==2.32.0  # requirements/lock.txt
-dvc-objects==0.25.0  # requirements/lock.txt
-dvc-render==0.7.0  # requirements/lock.txt
-dvc-studio-client==0.22.0  # requirements/lock.txt
-dvc-task==0.40.2  # requirements/lock.txt
-dynaconf==3.2.13  # requirements/lock.txt (CVE-2026-33154 fix: <=3.2.12 vulnerable)
-email-validator==2.3.0  # requirements/lock.txt
-entrypoints==0.4  # requirements/lock.txt, uv.lock
-evaluate==0.4.6  # requirements/lock.txt
-evidently==0.7.15  # requirements/lock.txt
-executing==2.2.1  # requirements/lock.txt, uv.lock
-faker==37.11.0  # requirements/lock.txt
-fastapi==0.111.0  # requirements/lock.txt
-fastapi-cli==0.0.8  # requirements/lock.txt
-fastjsonschema==2.21.2  # requirements/lock.txt
-filelock==3.20.1  # requirements/lock.txt
-flask==3.1.2  # requirements/lock.txt
-flatten-dict==0.4.2  # requirements/lock.txt
-flufl-lock==8.2.0  # requirements/lock.txt
-fonttools==4.59.2  # requirements/lock.txt
-fqdn==1.5.1  # requirements/lock.txt, uv.lock
-frozenlist==1.7.0  # requirements/lock.txt
-fsspec==2024.6.1  # requirements/lock.txt
-funcy==2.0  # requirements/lock.txt
-gitdb==4.0.12  # requirements/lock.txt
-gitpython==3.1.45  # requirements/lock.txt
-google-api-core==2.26.0  # requirements/lock.txt
-google-auth==2.40.3  # requirements/lock.txt
-googleapis-common-protos==1.70.0  # requirements/lock.txt
-grandalf==0.8  # requirements/lock.txt
-graphene==3.4.3  # requirements/lock.txt
-graphql-core==3.2.6  # requirements/lock.txt
-graphql-relay==3.2.0  # requirements/lock.txt
-great-expectations==0.18.7  # requirements/lock.txt, uv.lock
-greenlet==3.2.4  # requirements/lock.txt
-grpcio==1.75.1  # requirements/lock.txt
-gunicorn==23.0.0  # requirements/lock.txt
-h11==0.16.0  # requirements/lock.txt
-hf-xet==1.1.8  # requirements/lock.txt
-httpcore==1.0.9  # requirements/lock.txt
-httptools==0.6.4  # requirements/lock.txt
-httpx==0.28.1  # requirements/lock.txt
-huggingface-hub==0.34.4  # requirements/lock.txt
-hydra-core==1.3.2  # requirements/lock.txt
-hypothesis==6.142.1  # requirements/lock.txt
-identify==2.6.14  # requirements/lock.txt
-idna==3.10  # requirements/lock.txt
-importlib-metadata==8.7.0  # requirements/lock.txt
-iniconfig==2.1.0  # requirements/lock.txt
-ipykernel==7.0.1  # requirements/lock.txt, uv.lock
-ipython==9.6.0  # requirements/lock.txt, uv.lock
-ipython-pygments-lexers==1.1.1  # requirements/lock.txt, uv.lock
-ipywidgets==8.1.7  # requirements/lock.txt, uv.lock
-isoduration==20.11.0  # requirements/lock.txt, uv.lock
-isort==7.0.0  # requirements/lock.txt
-iterative-telemetry==0.0.10  # requirements/lock.txt
-itsdangerous==2.2.0  # requirements/lock.txt
-jedi==0.19.2  # requirements/lock.txt, uv.lock
-jinja2==3.1.6  # requirements/lock.txt
-joblib==1.5.2  # requirements/lock.txt
-json5==0.12.1  # requirements/lock.txt, uv.lock
-jsonlines==4.0.0  # requirements/lock.txt
-jsonpatch==1.33  # requirements/lock.txt, uv.lock
-jsonpointer==3.0.0  # requirements/lock.txt, uv.lock
-jsonschema==4.25.1  # requirements/lock.txt
-jsonschema-specifications==2025.9.1  # requirements/lock.txt
-jupyter-client==8.6.3  # requirements/lock.txt, uv.lock
-jupyter-core==5.9.1  # requirements/lock.txt
-jupyter-events==0.12.0  # requirements/lock.txt, uv.lock
-jupyter-lsp==2.3.0  # requirements/lock.txt, uv.lock
-jupyter-server==2.17.0  # requirements/lock.txt, uv.lock
-jupyter-server-terminals==0.5.3  # requirements/lock.txt, uv.lock
-jupyterlab==4.4.9  # requirements/lock.txt, uv.lock
-jupyterlab-pygments==0.3.0  # requirements/lock.txt, uv.lock
-jupyterlab-server==2.27.3  # requirements/lock.txt, uv.lock
-jupyterlab-widgets==3.0.15  # requirements/lock.txt, uv.lock
-kiwisolver==1.4.9  # requirements/lock.txt
-kombu==5.5.4  # requirements/lock.txt
-lark==1.3.0  # requirements/lock.txt, uv.lock
-litestar==2.18.0  # requirements/lock.txt
-litestar-htmx==0.5.0  # requirements/lock.txt
-lm-eval==0.4.9.1  # requirements/lock.txt
-lxml==6.1.0  # requirements/lock.txt
-makefun==1.16.0  # requirements/lock.txt, uv.lock
-mako==1.3.10  # requirements/lock.txt
-markdown==3.9  # requirements/lock.txt
-markdown-it-py==4.0.0  # requirements/lock.txt
-markupsafe==3.0.2  # requirements/lock.txt
-marshmallow==3.26.1  # requirements/lock.txt, uv.lock
-matplotlib==3.10.6  # requirements/lock.txt
-matplotlib-inline==0.1.7  # requirements/lock.txt, uv.lock
-mbstrdecoder==1.1.4  # requirements/lock.txt
-mdurl==0.1.2  # requirements/lock.txt
-mistune==3.1.4  # requirements/lock.txt, uv.lock
-mlflow==3.3.2  # requirements/lock.txt
-mlflow-skinny==3.3.2  # requirements/lock.txt
-mlflow-tracing==3.3.2  # requirements/lock.txt
-more-itertools==10.8.0  # requirements/lock.txt
-mpmath==1.3.0  # requirements/lock.txt
-msgpack==1.1.2  # requirements/lock.txt
-msgspec==0.19.0  # requirements/lock.txt
-multidict==6.6.4  # requirements/lock.txt
-multipart==1.3.0  # requirements/lock.txt
-multiprocess==0.70.16  # requirements/lock.txt
-mypy==1.17.1  # requirements/lock.txt
-mypy-extensions==1.1.0  # requirements/lock.txt
-nanotime==0.5.2  # requirements/lock.txt
-nbclient==0.10.2  # requirements/lock.txt, uv.lock
-nbconvert==7.16.6  # requirements/lock.txt, uv.lock
-nbformat==5.10.4  # requirements/lock.txt
-nbstripout==0.8.1  # requirements/lock.txt
-nest-asyncio==1.6.0  # requirements/lock.txt, uv.lock
-networkx==3.5  # requirements/lock.txt
-nltk==3.9.2  # requirements/lock.txt
-nodeenv==1.9.1  # requirements/lock.txt
-notebook==7.4.7  # requirements/lock.txt, uv.lock
-notebook-shim==0.2.4  # requirements/lock.txt, uv.lock
-numexpr==2.14.1  # requirements/lock.txt
-numpy==2.3.2  # requirements/lock.txt
-nvidia-cublas-cu12==12.8.4.1  # requirements/lock.txt
-nvidia-cuda-cupti-cu12==12.8.90  # requirements/lock.txt
-nvidia-cuda-nvrtc-cu12==12.8.93  # requirements/lock.txt
-nvidia-cuda-runtime-cu12==12.8.90  # requirements/lock.txt
-nvidia-cudnn-cu12==9.10.2.21  # requirements/lock.txt
-nvidia-cufft-cu12==11.3.3.83  # requirements/lock.txt
-nvidia-cufile-cu12==1.13.1.3  # requirements/lock.txt
-nvidia-curand-cu12==10.3.9.90  # requirements/lock.txt
-nvidia-cusolver-cu12==11.7.3.90  # requirements/lock.txt
-nvidia-cusparse-cu12==12.5.8.93  # requirements/lock.txt
-nvidia-cusparselt-cu12==0.7.1  # requirements/lock.txt
-nvidia-ml-py==13.580.82  # requirements/lock.txt
-nvidia-nccl-cu12==2.27.3  # requirements/lock.txt
-nvidia-nvjitlink-cu12==12.8.93  # requirements/lock.txt
-nvidia-nvtx-cu12==12.8.90  # requirements/lock.txt
-omegaconf==2.3.0  # requirements/lock.txt
-opencensus==0.11.4  # requirements/lock.txt
-opencensus-context==0.1.3  # requirements/lock.txt
-opentelemetry-api==1.37.0  # requirements/lock.txt
-opentelemetry-exporter-prometheus==0.58b0  # requirements/lock.txt
-opentelemetry-proto==1.38.0  # requirements/lock.txt
-opentelemetry-sdk==1.37.0  # requirements/lock.txt
-opentelemetry-semantic-conventions==0.58b0  # requirements/lock.txt
-orjson==3.11.3  # requirements/lock.txt
-overrides==24.2  # uv.lock
-packaging==25.0  # requirements/lock.txt
-pandas==2.3.2  # requirements/lock.txt
-pandocfilters==1.5.1  # requirements/lock.txt, uv.lock
-parso==0.8.5  # requirements/lock.txt, uv.lock
-pathspec==0.12.1  # requirements/lock.txt
-pathvalidate==3.3.1  # requirements/lock.txt
-patsy==1.0.1  # requirements/lock.txt
-peft==0.17.1  # requirements/lock.txt
-pexpect==4.9.0  # requirements/lock.txt, uv.lock
-pillow==11.3.0  # requirements/lock.txt
-platformdirs==3.11.0  # requirements/lock.txt
-plotly==5.24.1  # requirements/lock.txt
-pluggy==1.6.0  # requirements/lock.txt
-polyfactory==2.22.3  # requirements/lock.txt
-portalocker==3.2.0  # requirements/lock.txt
-pre-commit==4.0.1  # requirements/lock.txt
-prometheus-client==0.23.1  # requirements/lock.txt, uv.lock
-prompt-toolkit==3.0.52  # requirements/lock.txt
-propcache==0.3.2  # requirements/lock.txt
-proto-plus==1.26.1  # requirements/lock.txt
-protobuf==6.32.1  # requirements/lock.txt
-psutil==7.0.0  # requirements/lock.txt
-ptyprocess==0.7.0  # requirements/lock.txt, uv.lock
-pure-eval==19.0.1  # requirements/lock.txt, uv.lock
-py-spy==0.4.1  # requirements/lock.txt
-pyarrow==21.0.0  # requirements/lock.txt
-pyasn1==0.6.3  # requirements/lock.txt
-pyasn1-modules==0.4.2  # requirements/lock.txt
-pybind11==3.0.1  # requirements/lock.txt
-pycparser==2.23  # requirements/lock.txt
-pydantic==2.12.3  # requirements/lock.txt
-pydantic-core==2.41.4  # requirements/lock.txt
-pydantic-settings==2.11.0  # requirements/lock.txt
-pydot==4.0.1  # requirements/lock.txt
-pygit2==1.18.2  # requirements/lock.txt
-pygments==2.19.2  # requirements/lock.txt
-pygtrie==2.5.0  # requirements/lock.txt
-pyjwt==2.10.1  # requirements/lock.txt
-pynvml==13.0.1  # requirements/lock.txt
-pyparsing==3.2.4  # requirements/lock.txt
-pytablewriter==1.2.1  # requirements/lock.txt
-pytest==8.4.1  # requirements/lock.txt
-pytest-cov==7.0.0  # requirements/lock.txt
-pytest-mock==3.15.1  # requirements/lock.txt, uv.lock
-pytest-randomly==4.0.1  # requirements/lock.txt
-python-dateutil==2.9.0.post0  # requirements/lock.txt
-python-dotenv==1.2.2  # requirements/lock.txt
-python-json-logger==4.0.0  # requirements/lock.txt, uv.lock
-python-multipart==0.0.20  # requirements/lock.txt
-pytokens==0.2.0  # requirements/lock.txt
-pytz==2025.2  # requirements/lock.txt
-pywinpty==3.0.2  # uv.lock
-pyyaml==6.0.2  # requirements/lock.txt
-pyzmq==27.1.0  # requirements/lock.txt, uv.lock
-ray==2.55.0  # requirements/lock.txt
-referencing==0.37.0  # requirements/lock.txt
-regex==2025.7.34  # requirements/lock.txt
-requests==2.32.5  # requirements/lock.txt
-rfc3339-validator==0.1.4  # requirements/lock.txt, uv.lock
-rfc3986-validator==0.1.1  # requirements/lock.txt, uv.lock
-rfc3987-syntax==1.1.0  # requirements/lock.txt, uv.lock
-rich==14.1.0  # requirements/lock.txt
-rich-click==1.9.3  # requirements/lock.txt
-rich-toolkit==0.15.0  # requirements/lock.txt
-rouge-score==0.1.2  # requirements/lock.txt
-rpds-py==0.27.1  # requirements/lock.txt
-rsa==4.9.1  # requirements/lock.txt
-ruamel-yaml==0.17.17  # requirements/lock.txt
-ruff==0.12.7  # requirements/lock.txt
-sacrebleu==2.5.1  # requirements/lock.txt
-safetensors==0.6.2  # requirements/lock.txt
-scikit-learn==1.7.2  # requirements/lock.txt
-scipy==1.16.2  # requirements/lock.txt
-scmrepo==1.4.1  # requirements/lock.txt
-send2trash==1.8.3  # requirements/lock.txt, uv.lock
-sentencepiece==0.2.1  # requirements/lock.txt
-sentry-sdk==2.42.0  # requirements/lock.txt
-setuptools==80.9.0  # requirements/lock.txt
-shellingham==1.5.4  # requirements/lock.txt
-shortuuid==1.0.13  # requirements/lock.txt
-shtab==1.7.2  # requirements/lock.txt
-six==1.17.0  # requirements/lock.txt
-smart-open==7.3.1  # requirements/lock.txt
-smmap==5.0.2  # requirements/lock.txt
-sniffio==1.3.1  # requirements/lock.txt
-sortedcontainers==2.4.0  # requirements/lock.txt
-soupsieve==2.8  # requirements/lock.txt, uv.lock
-sqlalchemy==2.0.43  # requirements/lock.txt
-sqlitedict==2.1.0  # requirements/lock.txt
-sqlparse==0.5.3  # requirements/lock.txt
-sqltrie==0.11.2  # requirements/lock.txt
-stack-data==0.6.3  # requirements/lock.txt, uv.lock
-starlette==0.37.2  # requirements/lock.txt
-statsmodels==0.14.5  # requirements/lock.txt
-sympy==1.14.0  # requirements/lock.txt
-tabledata==1.3.4  # requirements/lock.txt
-tabulate==0.9.0  # requirements/lock.txt
-tcolorpy==0.1.7  # requirements/lock.txt
-tenacity==9.1.2  # requirements/lock.txt
-tensorboard==2.20.0  # requirements/lock.txt
-tensorboard-data-server==0.7.2  # requirements/lock.txt
-terminado==0.18.1  # requirements/lock.txt, uv.lock
-threadpoolctl==3.6.0  # requirements/lock.txt
-tinycss2==1.4.0  # requirements/lock.txt, uv.lock
-tokenizers==0.21.4  # requirements/lock.txt
-tomlkit==0.13.3  # requirements/lock.txt
-toolz==1.1.0  # requirements/lock.txt, uv.lock
-torch==2.11.0  # requirements/lock.txt
-tornado==6.5.2  # requirements/lock.txt, uv.lock
-tqdm==4.67.1  # requirements/lock.txt
-tqdm-multiprocess==0.0.11  # requirements/lock.txt
-traitlets==5.14.3  # requirements/lock.txt
-transformers==4.55.4  # requirements/lock.txt
-triton==3.4.0  # requirements/lock.txt
-typepy==1.3.4  # requirements/lock.txt
-typer==0.16.1  # requirements/lock.txt
-types-python-dateutil==2.9.0.20251008  # uv.lock
-typing-extensions==4.14.1  # requirements/lock.txt
-typing-inspect==0.9.0  # requirements/lock.txt
-typing-inspection==0.4.2  # requirements/lock.txt
-tzdata==2025.2  # requirements/lock.txt
-tzlocal==5.3.1  # requirements/lock.txt, uv.lock
-ujson==5.11.0  # requirements/lock.txt
-uri-template==1.3.0  # requirements/lock.txt, uv.lock
-urllib3==2.5.0  # requirements/lock.txt
-uuid6==2025.0.1  # requirements/lock.txt
-uvicorn==0.30.1  # requirements/lock.txt
-uvloop==0.21.0  # requirements/lock.txt
-vine==5.1.0  # requirements/lock.txt
-virtualenv==20.34.0  # requirements/lock.txt
-voluptuous==0.15.2  # requirements/lock.txt
-wandb==0.22.2  # requirements/lock.txt
-watchdog==6.0.0  # requirements/lock.txt
-watchfiles==1.1.0  # requirements/lock.txt
-wcwidth==0.2.14  # requirements/lock.txt
-webcolors==24.11.1  # requirements/lock.txt, uv.lock
-webencodings==0.5.1  # requirements/lock.txt, uv.lock
-websocket-client==1.9.0  # requirements/lock.txt, uv.lock
-websockets==15.0.1  # requirements/lock.txt
-werkzeug==3.1.3  # requirements/lock.txt
-widgetsnbextension==4.0.14  # requirements/lock.txt, uv.lock
-word2number==1.1  # requirements/lock.txt
-wrapt==1.17.3  # requirements/lock.txt
-xxhash==3.5.0  # requirements/lock.txt
-yarl==1.20.1  # requirements/lock.txt
-zc-lockfile==4.0  # requirements/lock.txt
-zipp==3.23.0  # requirements/lock.txt
-zstandard==0.24.0  # requirements/lock.txt
+# SBOM Package List — CycloneDX 1.6 (generated 2026-05-13)
+# Source: reports/sbom-reports.zip
+# Serial: urn:uuid:6bac7b67-13b1-4090-a4c7-dc31d4fdcdeb
+
+absl-py==2.4.0  # pkg:pypi/absl-py@2.4.0
+accelerate==1.13.0  # pkg:pypi/accelerate@1.13.0
+aiohappyeyeballs==2.6.1  # pkg:pypi/aiohappyeyeballs@2.6.1
+aiohttp==3.13.5  # pkg:pypi/aiohttp@3.13.5
+aiohttp-cors==0.8.1  # pkg:pypi/aiohttp-cors@0.8.1
+aiohttp-retry==2.9.1  # pkg:pypi/aiohttp-retry@2.9.1
+aiosignal==1.4.0  # pkg:pypi/aiosignal@1.4.0
+alembic==1.18.4  # pkg:pypi/alembic@1.18.4
+amqp==5.3.1  # pkg:pypi/amqp@5.3.1
+annotated-doc==0.0.4  # pkg:pypi/annotated-doc@0.0.4
+annotated-types==0.7.0  # pkg:pypi/annotated-types@0.7.0
+antlr4-python3-runtime==4.9.3  # pkg:pypi/antlr4-python3-runtime@4.9.3
+anyio==4.13.0  # pkg:pypi/anyio@4.13.0
+appdirs==1.4.4  # pkg:pypi/appdirs@1.4.4
+argcomplete==3.6.3  # pkg:pypi/argcomplete@3.6.3
+arrow==1.4.0  # pkg:pypi/arrow@1.4.0
+ast_serialize==0.3.0  # pkg:pypi/ast-serialize@0.3.0
+asyncssh==2.23.0  # pkg:pypi/asyncssh@2.23.0
+atpublic==7.0.0  # pkg:pypi/atpublic@7.0.0
+attrs==26.1.0  # pkg:pypi/attrs@26.1.0
+billiard==4.2.4  # pkg:pypi/billiard@4.2.4
+black==26.3.1  # pkg:pypi/black@26.3.1
+blinker==1.9.0  # pkg:pypi/blinker@1.9.0
+boolean.py==5.0  # pkg:pypi/boolean.py@5.0
+cachetools==7.1.1  # pkg:pypi/cachetools@7.1.1
+celery==5.6.3  # pkg:pypi/celery@5.6.3
+certifi==2026.4.22  # pkg:pypi/certifi@2026.4.22
+cffi==2.0.0  # pkg:pypi/cffi@2.0.0
+cfgv==3.5.0  # pkg:pypi/cfgv@3.5.0
+chardet==5.2.0  # pkg:pypi/chardet@5.2.0
+charset-normalizer==3.4.7  # pkg:pypi/charset-normalizer@3.4.7
+click==8.3.3  # pkg:pypi/click@8.3.3
+click-didyoumean==0.3.1  # pkg:pypi/click-didyoumean@0.3.1
+click-plugins==1.1.1.2  # pkg:pypi/click-plugins@1.1.1.2
+click-repl==0.3.0  # pkg:pypi/click-repl@0.3.0
+cloudpickle==3.1.2  # pkg:pypi/cloudpickle@3.1.2
+codex-ml==0.9.0  # 
+colorama==0.4.6  # pkg:pypi/colorama@0.4.6
+colorful==0.5.8  # pkg:pypi/colorful@0.5.8
+colorlog==6.10.1  # pkg:pypi/colorlog@6.10.1
+configobj==5.0.9  # pkg:pypi/configobj@5.0.9
+contourpy==1.3.3  # pkg:pypi/contourpy@1.3.3
+coverage==7.14.0  # pkg:pypi/coverage@7.14.0
+cryptography==46.0.7  # pkg:pypi/cryptography@46.0.7
+cuda-bindings==13.2.0  # pkg:pypi/cuda-bindings@13.2.0
+cuda-pathfinder==1.5.4  # pkg:pypi/cuda-pathfinder@1.5.4
+cuda-toolkit==13.0.2  # pkg:pypi/cuda-toolkit@13.0.2
+cycler==0.12.1  # pkg:pypi/cycler@0.12.1
+cyclonedx-bom==7.3.0  # pkg:pypi/cyclonedx-bom@7.3.0
+cyclonedx-python-lib==11.7.0  # pkg:pypi/cyclonedx-python-lib@11.7.0
+databricks-sdk==0.108.0  # pkg:pypi/databricks-sdk@0.108.0
+DataProperty==1.1.1  # pkg:pypi/dataproperty@1.1.1
+datasets==4.8.5  # pkg:pypi/datasets@4.8.5
+defusedxml==0.7.1  # pkg:pypi/defusedxml@0.7.1
+dependency-groups==1.3.1  # pkg:pypi/dependency-groups@1.3.1
+Deprecated==1.3.1  # pkg:pypi/deprecated@1.3.1
+deprecation==2.1.0  # pkg:pypi/deprecation@2.1.0
+detect-secrets==1.5.0  # pkg:pypi/detect-secrets@1.5.0
+dictdiffer==0.9.0  # pkg:pypi/dictdiffer@0.9.0
+dill==0.4.1  # pkg:pypi/dill@0.4.1
+diskcache==5.6.3  # pkg:pypi/diskcache@5.6.3
+distlib==0.4.0  # pkg:pypi/distlib@0.4.0
+distro==1.9.0  # pkg:pypi/distro@1.9.0
+docker==7.1.0  # pkg:pypi/docker@7.1.0
+dpath==2.2.0  # pkg:pypi/dpath@2.2.0
+duckdb==1.5.2  # pkg:pypi/duckdb@1.5.2
+dulwich==1.2.1  # pkg:pypi/dulwich@1.2.1
+dvc==3.67.0  # pkg:pypi/dvc@3.67.0
+dvc-data==3.18.3  # pkg:pypi/dvc-data@3.18.3
+dvc-http==2.32.0  # pkg:pypi/dvc-http@2.32.0
+dvc-objects==5.2.0  # pkg:pypi/dvc-objects@5.2.0
+dvc-render==1.0.2  # pkg:pypi/dvc-render@1.0.2
+dvc-studio-client==0.22.0  # pkg:pypi/dvc-studio-client@0.22.0
+dvc-task==0.40.2  # pkg:pypi/dvc-task@0.40.2
+dynaconf==3.2.13  # pkg:pypi/dynaconf@3.2.13
+entrypoints==0.4  # pkg:pypi/entrypoints@0.4
+evaluate==0.4.6  # pkg:pypi/evaluate@0.4.6
+evidently==0.7.21  # pkg:pypi/evidently@0.7.21
+execnet==2.1.2  # pkg:pypi/execnet@2.1.2
+Faker==40.15.0  # pkg:pypi/faker@40.15.0
+fastapi==0.136.1  # pkg:pypi/fastapi@0.136.1
+fastjsonschema==2.21.2  # pkg:pypi/fastjsonschema@2.21.2
+filelock==3.29.0  # pkg:pypi/filelock@3.29.0
+Flask==3.1.3  # pkg:pypi/flask@3.1.3
+flask-cors==6.0.2  # pkg:pypi/flask-cors@6.0.2
+flatten-dict==0.5.0  # pkg:pypi/flatten-dict@0.5.0
+flufl.lock==9.1.0  # pkg:pypi/flufl.lock@9.1.0
+fonttools==4.62.1  # pkg:pypi/fonttools@4.62.1
+fqdn==1.5.1  # pkg:pypi/fqdn@1.5.1
+frozenlist==1.8.0  # pkg:pypi/frozenlist@1.8.0
+fsspec==2026.2.0  # pkg:pypi/fsspec@2026.2.0
+funcy==2.0  # pkg:pypi/funcy@2.0
+gitdb==4.0.12  # pkg:pypi/gitdb@4.0.12
+GitPython==3.1.50  # pkg:pypi/gitpython@3.1.50
+google-api-core==2.30.3  # pkg:pypi/google-api-core@2.30.3
+google-auth==2.52.0  # pkg:pypi/google-auth@2.52.0
+googleapis-common-protos==1.75.0  # pkg:pypi/googleapis-common-protos@1.75.0
+grandalf==0.8  # pkg:pypi/grandalf@0.8
+graphene==3.4.3  # pkg:pypi/graphene@3.4.3
+graphql-core==3.2.8  # pkg:pypi/graphql-core@3.2.8
+graphql-relay==3.2.0  # pkg:pypi/graphql-relay@3.2.0
+greenlet==3.5.0  # pkg:pypi/greenlet@3.5.0
+grpcio==1.80.0  # pkg:pypi/grpcio@1.80.0
+gto==1.9.0  # pkg:pypi/gto@1.9.0
+gunicorn==25.3.0  # pkg:pypi/gunicorn@25.3.0
+h11==0.16.0  # pkg:pypi/h11@0.16.0
+hf-xet==1.5.0  # pkg:pypi/hf-xet@1.5.0
+httpcore==1.0.9  # pkg:pypi/httpcore@1.0.9
+httptools==0.7.1  # pkg:pypi/httptools@0.7.1
+httpx==0.28.1  # pkg:pypi/httpx@0.28.1
+huey==2.6.0  # pkg:pypi/huey@2.6.0
+huggingface_hub==1.14.0  # pkg:pypi/huggingface-hub@1.14.0
+humanize==4.15.0  # pkg:pypi/humanize@4.15.0
+hydra-core==1.3.2  # pkg:pypi/hydra-core@1.3.2
+hypothesis==6.152.7  # pkg:pypi/hypothesis@6.152.7
+identify==2.6.19  # pkg:pypi/identify@2.6.19
+idna==3.15  # pkg:pypi/idna@3.15
+importlib_metadata==8.7.1  # pkg:pypi/importlib-metadata@8.7.1
+iniconfig==2.3.0  # pkg:pypi/iniconfig@2.3.0
+isoduration==20.11.0  # pkg:pypi/isoduration@20.11.0
+isort==8.0.1  # pkg:pypi/isort@8.0.1
+iterative-telemetry==0.0.10  # pkg:pypi/iterative-telemetry@0.0.10
+itsdangerous==2.2.0  # pkg:pypi/itsdangerous@2.2.0
+Jinja2==3.1.6  # pkg:pypi/jinja2@3.1.6
+joblib==1.5.3  # pkg:pypi/joblib@1.5.3
+jsonpointer==3.1.1  # pkg:pypi/jsonpointer@3.1.1
+jsonschema==4.26.0  # pkg:pypi/jsonschema@4.26.0
+jsonschema-specifications==2025.9.1  # pkg:pypi/jsonschema-specifications@2025.9.1
+jupyter_core==5.9.1  # pkg:pypi/jupyter-core@5.9.1
+kiwisolver==1.5.0  # pkg:pypi/kiwisolver@1.5.0
+kombu==5.6.2  # pkg:pypi/kombu@5.6.2
+lark==1.3.1  # pkg:pypi/lark@1.3.1
+libcst==1.8.6  # pkg:pypi/libcst@1.8.6
+librt==0.11.0  # pkg:pypi/librt@0.11.0
+license-expression==30.4.4  # pkg:pypi/license-expression@30.4.4
+limits==5.8.0  # pkg:pypi/limits@5.8.0
+litestar==2.21.1  # pkg:pypi/litestar@2.21.1
+litestar-htmx==0.5.0  # pkg:pypi/litestar-htmx@0.5.0
+lm_eval==0.4.12  # pkg:pypi/lm-eval@0.4.12
+lxml==6.1.0  # pkg:pypi/lxml@6.1.0
+Mako==1.3.12  # pkg:pypi/mako@1.3.12
+mando==0.7.1  # pkg:pypi/mando@0.7.1
+markdown-it-py==4.2.0  # pkg:pypi/markdown-it-py@4.2.0
+MarkupSafe==3.0.3  # pkg:pypi/markupsafe@3.0.3
+marshmallow==4.3.0  # pkg:pypi/marshmallow@4.3.0
+matplotlib==3.10.9  # pkg:pypi/matplotlib@3.10.9
+mbstrdecoder==1.1.5  # pkg:pypi/mbstrdecoder@1.1.5
+mdurl==0.1.2  # pkg:pypi/mdurl@0.1.2
+mlflow==3.12.0  # pkg:pypi/mlflow@3.12.0
+mlflow-skinny==3.12.0  # pkg:pypi/mlflow-skinny@3.12.0
+mlflow-tracing==3.12.0  # pkg:pypi/mlflow-tracing@3.12.0
+more-itertools==11.0.2  # pkg:pypi/more-itertools@11.0.2
+mpmath==1.3.0  # pkg:pypi/mpmath@1.3.0
+msgpack==1.1.2  # pkg:pypi/msgpack@1.1.2
+msgspec==0.21.1  # pkg:pypi/msgspec@0.21.1
+multidict==6.7.1  # pkg:pypi/multidict@6.7.1
+multipart==1.3.1  # pkg:pypi/multipart@1.3.1
+multiprocess==0.70.19  # pkg:pypi/multiprocess@0.70.19
+mypy==2.1.0  # pkg:pypi/mypy@2.1.0
+mypy_extensions==1.1.0  # pkg:pypi/mypy-extensions@1.1.0
+nbformat==5.10.4  # pkg:pypi/nbformat@5.10.4
+nbstripout==0.9.1  # pkg:pypi/nbstripout@0.9.1
+networkx==3.6.1  # pkg:pypi/networkx@3.6.1
+nltk==3.9.4  # pkg:pypi/nltk@3.9.4
+nodeenv==1.10.0  # pkg:pypi/nodeenv@1.10.0
+nox==2026.4.10  # pkg:pypi/nox@2026.4.10
+numpy==2.4.4  # pkg:pypi/numpy@2.4.4
+nvidia-cublas==13.1.0.3  # pkg:pypi/nvidia-cublas@13.1.0.3
+nvidia-cuda-cupti==13.0.85  # pkg:pypi/nvidia-cuda-cupti@13.0.85
+nvidia-cuda-nvrtc==13.0.88  # pkg:pypi/nvidia-cuda-nvrtc@13.0.88
+nvidia-cuda-runtime==13.0.96  # pkg:pypi/nvidia-cuda-runtime@13.0.96
+nvidia-cudnn-cu13==9.19.0.56  # pkg:pypi/nvidia-cudnn-cu13@9.19.0.56
+nvidia-cufft==12.0.0.61  # pkg:pypi/nvidia-cufft@12.0.0.61
+nvidia-cufile==1.15.1.6  # pkg:pypi/nvidia-cufile@1.15.1.6
+nvidia-curand==10.4.0.35  # pkg:pypi/nvidia-curand@10.4.0.35
+nvidia-cusolver==12.0.4.66  # pkg:pypi/nvidia-cusolver@12.0.4.66
+nvidia-cusparse==12.6.3.3  # pkg:pypi/nvidia-cusparse@12.6.3.3
+nvidia-cusparselt-cu13==0.8.0  # pkg:pypi/nvidia-cusparselt-cu13@0.8.0
+nvidia-nccl-cu13==2.28.9  # pkg:pypi/nvidia-nccl-cu13@2.28.9
+nvidia-nvjitlink==13.0.88  # pkg:pypi/nvidia-nvjitlink@13.0.88
+nvidia-nvshmem-cu13==3.4.5  # pkg:pypi/nvidia-nvshmem-cu13@3.4.5
+nvidia-nvtx==13.0.85  # pkg:pypi/nvidia-nvtx@13.0.85
+omegaconf==2.3.0  # pkg:pypi/omegaconf@2.3.0
+opencensus==0.11.4  # pkg:pypi/opencensus@0.11.4
+opencensus-context==0.1.3  # pkg:pypi/opencensus-context@0.1.3
+opentelemetry-api==1.41.1  # pkg:pypi/opentelemetry-api@1.41.1
+opentelemetry-exporter-prometheus==0.62b1  # pkg:pypi/opentelemetry-exporter-prometheus@0.62b1
+opentelemetry-proto==1.41.1  # pkg:pypi/opentelemetry-proto@1.41.1
+opentelemetry-sdk==1.41.1  # pkg:pypi/opentelemetry-sdk@1.41.1
+opentelemetry-semantic-conventions==0.62b1  # pkg:pypi/opentelemetry-semantic-conventions@0.62b1
+orjson==3.11.9  # pkg:pypi/orjson@3.11.9
+packageurl-python==0.17.6  # pkg:pypi/packageurl-python@0.17.6
+packaging==26.2  # pkg:pypi/packaging@26.2
+pandas==2.3.3  # pkg:pypi/pandas@2.3.3
+parso==0.8.7  # pkg:pypi/parso@0.8.7
+pathspec==1.1.1  # pkg:pypi/pathspec@1.1.1
+pathvalidate==3.3.1  # pkg:pypi/pathvalidate@3.3.1
+patsy==1.0.2  # pkg:pypi/patsy@1.0.2
+peft==0.19.1  # pkg:pypi/peft@0.19.1
+pillow==12.2.0  # pkg:pypi/pillow@12.2.0
+pip==26.1.1  # pkg:pypi/pip@26.1.1
+pip-requirements-parser==32.0.1  # pkg:pypi/pip-requirements-parser@32.0.1
+platformdirs==4.9.6  # pkg:pypi/platformdirs@4.9.6
+plotly==5.24.1  # pkg:pypi/plotly@5.24.1
+pluggy==1.6.0  # pkg:pypi/pluggy@1.6.0
+polyfactory==3.3.0  # pkg:pypi/polyfactory@3.3.0
+portalocker==3.2.0  # pkg:pypi/portalocker@3.2.0
+pre_commit==4.6.0  # pkg:pypi/pre-commit@4.6.0
+prettytable==3.17.0  # pkg:pypi/prettytable@3.17.0
+prometheus_client==0.25.0  # pkg:pypi/prometheus-client@0.25.0
+prompt_toolkit==3.0.52  # pkg:pypi/prompt-toolkit@3.0.52
+propcache==0.5.2  # pkg:pypi/propcache@0.5.2
+proto-plus==1.28.0  # pkg:pypi/proto-plus@1.28.0
+protobuf==6.33.6  # pkg:pypi/protobuf@6.33.6
+psutil==7.2.2  # pkg:pypi/psutil@7.2.2
+py-serializable==2.1.0  # pkg:pypi/py-serializable@2.1.0
+py-spy==0.4.2  # pkg:pypi/py-spy@0.4.2
+pyarrow==23.0.1  # pkg:pypi/pyarrow@23.0.1
+pyasn1==0.6.3  # pkg:pypi/pyasn1@0.6.3
+pyasn1_modules==0.4.2  # pkg:pypi/pyasn1-modules@0.4.2
+pycparser==3.0  # pkg:pypi/pycparser@3.0
+pydantic==2.13.4  # pkg:pypi/pydantic@2.13.4
+pydantic-settings==2.14.1  # pkg:pypi/pydantic-settings@2.14.1
+pydantic_core==2.46.4  # pkg:pypi/pydantic-core@2.46.4
+pydot==4.0.1  # pkg:pypi/pydot@4.0.1
+pygit2==1.19.2  # pkg:pypi/pygit2@1.19.2
+PyGithub==2.9.1  # pkg:pypi/pygithub@2.9.1
+Pygments==2.20.0  # pkg:pypi/pygments@2.20.0
+pygtrie==2.5.0  # pkg:pypi/pygtrie@2.5.0
+PyJWT==2.12.1  # pkg:pypi/pyjwt@2.12.1
+PyNaCl==1.6.2  # pkg:pypi/pynacl@1.6.2
+pyparsing==3.3.2  # pkg:pypi/pyparsing@3.3.2
+pytablewriter==1.2.1  # pkg:pypi/pytablewriter@1.2.1
+pytest==8.4.2  # pkg:pypi/pytest@8.4.2
+pytest-asyncio==1.3.0  # pkg:pypi/pytest-asyncio@1.3.0
+pytest-cov==5.0.0  # pkg:pypi/pytest-cov@5.0.0
+pytest-mock==3.15.1  # pkg:pypi/pytest-mock@3.15.1
+pytest-randomly==4.1.0  # pkg:pypi/pytest-randomly@4.1.0
+pytest-rerunfailures==16.2  # pkg:pypi/pytest-rerunfailures@16.2
+pytest-split==0.11.0  # pkg:pypi/pytest-split@0.11.0
+pytest-timeout==2.4.0  # pkg:pypi/pytest-timeout@2.4.0
+pytest-xdist==3.8.0  # pkg:pypi/pytest-xdist@3.8.0
+python-dateutil==2.9.0.post0  # pkg:pypi/python-dateutil@2.9.0.post0
+python-discovery==1.3.1  # pkg:pypi/python-discovery@1.3.1
+python-dotenv==1.2.2  # pkg:pypi/python-dotenv@1.2.2
+pytokens==0.4.1  # pkg:pypi/pytokens@0.4.1
+pytz==2026.2  # pkg:pypi/pytz@2026.2
+PyYAML==6.0.3  # pkg:pypi/pyyaml@6.0.3
+radon==6.0.1  # pkg:pypi/radon@6.0.1
+ray==2.55.1  # pkg:pypi/ray@2.55.1
+referencing==0.37.0  # pkg:pypi/referencing@0.37.0
+regex==2026.5.9  # pkg:pypi/regex@2026.5.9
+requests==2.34.0  # pkg:pypi/requests@2.34.0
+rfc3339-validator==0.1.4  # pkg:pypi/rfc3339-validator@0.1.4
+rfc3986-validator==0.1.1  # pkg:pypi/rfc3986-validator@0.1.1
+rfc3987-syntax==1.1.0  # pkg:pypi/rfc3987-syntax@1.1.0
+rich==15.0.0  # pkg:pypi/rich@15.0.0
+rich-click==1.9.7  # pkg:pypi/rich-click@1.9.7
+rouge_score==0.1.2  # pkg:pypi/rouge-score@0.1.2
+rpds-py==0.30.0  # pkg:pypi/rpds-py@0.30.0
+ruamel.yaml==0.19.1  # pkg:pypi/ruamel.yaml@0.19.1
+ruff==0.15.12  # pkg:pypi/ruff@0.15.12
+sacrebleu==2.6.0  # pkg:pypi/sacrebleu@2.6.0
+safetensors==0.7.0  # pkg:pypi/safetensors@0.7.0
+scikit-learn==1.8.0  # pkg:pypi/scikit-learn@1.8.0
+scipy==1.17.1  # pkg:pypi/scipy@1.17.1
+scmrepo==3.6.2  # pkg:pypi/scmrepo@3.6.2
+semver==3.0.4  # pkg:pypi/semver@3.0.4
+sentencepiece==0.2.1  # pkg:pypi/sentencepiece@0.2.1
+setuptools==81.0.0  # pkg:pypi/setuptools@81.0.0
+shellingham==1.5.4  # pkg:pypi/shellingham@1.5.4
+shortuuid==1.0.13  # pkg:pypi/shortuuid@1.0.13
+shtab==1.8.0  # pkg:pypi/shtab@1.8.0
+six==1.17.0  # pkg:pypi/six@1.17.0
+skops==0.14.0  # pkg:pypi/skops@0.14.0
+slowapi==0.1.9  # pkg:pypi/slowapi@0.1.9
+smart_open==7.6.1  # pkg:pypi/smart-open@7.6.1
+smmap==5.0.3  # pkg:pypi/smmap@5.0.3
+sniffio==1.3.1  # pkg:pypi/sniffio@1.3.1
+sortedcontainers==2.4.0  # pkg:pypi/sortedcontainers@2.4.0
+SQLAlchemy==2.0.49  # pkg:pypi/sqlalchemy@2.0.49
+sqlitedict==2.1.0  # pkg:pypi/sqlitedict@2.1.0
+sqlparse==0.5.5  # pkg:pypi/sqlparse@0.5.5
+sqltrie==0.11.2  # pkg:pypi/sqltrie@0.11.2
+starlette==0.50.0  # pkg:pypi/starlette@0.50.0
+statsmodels==0.14.6  # pkg:pypi/statsmodels@0.14.6
+sympy==1.14.0  # pkg:pypi/sympy@1.14.0
+tabledata==1.3.5  # pkg:pypi/tabledata@1.3.5
+tabulate==0.10.0  # pkg:pypi/tabulate@0.10.0
+tcolorpy==0.1.7  # pkg:pypi/tcolorpy@0.1.7
+tenacity==9.1.4  # pkg:pypi/tenacity@9.1.4
+threadpoolctl==3.6.0  # pkg:pypi/threadpoolctl@3.6.0
+tokenizers==0.22.2  # pkg:pypi/tokenizers@0.22.2
+tomlkit==0.15.0  # pkg:pypi/tomlkit@0.15.0
+torch==2.11.0  # pkg:pypi/torch@2.11.0
+tqdm==4.67.3  # pkg:pypi/tqdm@4.67.3
+traitlets==5.15.0  # pkg:pypi/traitlets@5.15.0
+transformers==5.8.1  # pkg:pypi/transformers@5.8.1
+triton==3.6.0  # pkg:pypi/triton@3.6.0
+typepy==1.3.5  # pkg:pypi/typepy@1.3.5
+typer==0.25.1  # pkg:pypi/typer@0.25.1
+typing-inspect==0.9.0  # pkg:pypi/typing-inspect@0.9.0
+typing-inspection==0.4.2  # pkg:pypi/typing-inspection@0.4.2
+typing_extensions==4.15.0  # pkg:pypi/typing-extensions@4.15.0
+tzdata==2026.2  # pkg:pypi/tzdata@2026.2
+tzlocal==5.3.1  # pkg:pypi/tzlocal@5.3.1
+ujson==5.12.1  # pkg:pypi/ujson@5.12.1
+uri-template==1.3.0  # pkg:pypi/uri-template@1.3.0
+urllib3==2.7.0  # pkg:pypi/urllib3@2.7.0
+uuid6==2025.0.1  # pkg:pypi/uuid6@2025.0.1
+uvicorn==0.46.0  # pkg:pypi/uvicorn@0.46.0
+uvloop==0.22.1  # pkg:pypi/uvloop@0.22.1
+vine==5.1.0  # pkg:pypi/vine@5.1.0
+virtualenv==21.3.2  # pkg:pypi/virtualenv@21.3.2
+voluptuous==0.16.0  # pkg:pypi/voluptuous@0.16.0
+watchdog==6.0.0  # pkg:pypi/watchdog@6.0.0
+watchfiles==1.1.1  # pkg:pypi/watchfiles@1.1.1
+wcwidth==0.7.0  # pkg:pypi/wcwidth@0.7.0
+webcolors==25.10.0  # pkg:pypi/webcolors@25.10.0
+websockets==16.0  # pkg:pypi/websockets@16.0
+Werkzeug==3.1.8  # pkg:pypi/werkzeug@3.1.8
+wheel==0.47.0  # pkg:pypi/wheel@0.47.0
+word2number==1.1  # pkg:pypi/word2number@1.1
+wrapt==2.1.2  # pkg:pypi/wrapt@2.1.2
+xxhash==3.7.0  # pkg:pypi/xxhash@3.7.0
+yamllint==1.38.0  # pkg:pypi/yamllint@1.38.0
+yarl==1.23.0  # pkg:pypi/yarl@1.23.0
+zc.lockfile==4.0  # pkg:pypi/zc.lockfile@4.0
+zipp==3.23.1  # pkg:pypi/zipp@3.23.1

@@ -260,7 +260,7 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
     # Try repository helper
     if _io_text_read_text is not None:
         try:
-            txt, used = _call_repo_read_text(p, encoding=encoding, errors=errors)
+            txt, _used = _call_repo_read_text(p, encoding=encoding, errors=errors)
             return txt
         except Exception:
             logger.warning("Exception occurred", exc_info=True)

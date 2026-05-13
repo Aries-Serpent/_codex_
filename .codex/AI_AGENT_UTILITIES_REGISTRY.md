@@ -1002,3 +1002,45 @@ def test_example(temp_index_dir, sample_rag_corpus):
 - [ ] Mock embedding models for faster tests
 - [ ] Shared corpus caching
 - [ ] Parametrized fixtures for different sizes
+
+---
+
+## Mermaid Runtime Logic Map + CLI Sync Command
+
+**Created:** 2026-05-13 (Session S993, PR #4445 cherry-pick)
+**Agent:** GitHub Copilot
+**Status:** ✅ Implemented & Tested
+
+### Description
+Evidence-backed Mermaid runtime-logic diagram for all `_codex_` entry points, paired with a Typer CLI command (`codex knowledge sync-mermaid-map`) that parses `.mmd` files, chunks content into searchable NDJSON datablobs, applies quantum variable mapping (`ψ = α·N + β·E + γ·V + δ·T`), and emits compressed blobs.
+
+### Locations
+```
+docs/diagrams/runtime_logic_map.mmd        # Canonical Mermaid source
+docs/system/mermaid_logic_map.md           # Evidence table + ambiguity notes
+src/codex/cli_knowledge.py                 # sync-mermaid-map command
+src/codex/knowledge/build.py               # infer_intent() with INTENTS registry
+tests/codex/test_cli_knowledge.py          # Smoke tests
+```
+
+### Usage
+```bash
+codex knowledge sync-mermaid-map \
+  --mermaid docs/diagrams/runtime_logic_map.mmd \
+  --mapping-doc docs/system/mermaid_logic_map.md \
+  --out-dir artifacts/knowledge/mermaid_sync \
+  --alpha 1.0 --beta 0.75 --gamma 0.5 --delta 0.05 \
+  --compress --compression-level 6
+```
+
+### Features
+- Extracts Mermaid nodes/edges with edge-syntax normalization
+- Chunks combined content into token-estimated NDJSON records
+- Quantum coherence score via `ψ = α·N + β·E + γ·V + δ·T`
+- Optional zstd compression with configurable level (1–9)
+- Deterministic JSON output for automation chains
+
+### Success Metrics
+- node_count / edge_count extracted accurately
+- Coherence score computed and returned in JSON payload
+- Searchable NDJSON datablob emitted for retrieval pipelines

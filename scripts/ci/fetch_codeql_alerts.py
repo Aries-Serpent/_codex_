@@ -139,7 +139,7 @@ def fetch_alerts(
             f"&page={page}"
         )
         log.info("Fetching page %d: %s", page, url)
-        data, headers = _api_get(url, token, min_remaining, page_sleep)
+        data, _headers = _api_get(url, token, min_remaining, page_sleep)
 
         if not isinstance(data, list):
             log.error("Unexpected API response type: %s", type(data))

@@ -297,6 +297,7 @@ def create_heartbeat(source: str, uptime_seconds: float) -> HeartbeatMessage:
         last_activity=datetime.now(timezone.utc).isoformat(),
     )
 
+
 __all__ = [
     "BaseMessage",
     "BridgeMessage",

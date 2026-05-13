@@ -952,7 +952,7 @@ def main():
         validate_anchors=args.validate_anchors
     )
 
-    errors, warnings, fixed = validator.validate_all()
+    errors, _warnings, _fixed = validator.validate_all()
 
     # Exit with error code if there are errors
     sys.exit(1 if errors > 0 else 0)

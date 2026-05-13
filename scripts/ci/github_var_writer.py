@@ -148,9 +148,9 @@ def upsert_var(name: str, value: str, dry_run: bool = False, force: bool = False
         return True
 
     # Try PATCH (update) first, fall back to POST (create)
-    status, resp = _request("PATCH", f"{BASE_URL}/{name}", {"value": value})
+    status, _resp = _request("PATCH", f"{BASE_URL}/{name}", {"value": value})
     if status == 404:
-        status, resp = _request("POST", BASE_URL, {"name": name, "value": value})
+        status, _resp = _request("POST", BASE_URL, {"name": name, "value": value})
 
     ok = status in (201, 204)
     icon = "✅" if ok else "❌"

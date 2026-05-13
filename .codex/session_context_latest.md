@@ -1,45 +1,45 @@
-# Session Context — 2026-05-13T07:52:26Z
-**Branch:** `copilot/verify-codeql-alerts-and-sweep`  **PR:** #4434  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-13T12:41:32Z
+**Branch:** `0D_base_`  **PR:** #4447  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4971` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4655` (✅)
+- GraphQL remaining: `4967` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4434 — fix(codeql): continue post-merge sweep — MFA hardening, PEFT test fix, ujson remediation, B007/F401/F541 quick-wins
-State: `open`  Draft: `False`  Branch: `copilot/verify-codeql-alerts-and-sweep` → `main`
+## 📋 PR #4447 — `0D_base_` to `main` merge readiness score {pr_score} + follow-up prompt (for {current_pr} or {new_pr})
+State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
-- `d701e99d` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `fbe87cb9` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `18614e35` Merge remote-tracking branch 'origin/copilot/verify-codeql-alerts-and-sweep' int — copilot-swe-agent[bot] (2026-05-13)
-- `eccf968d` fix(ci): S991 — 84 F541 f-string placeholders in fetch_security_snapshot.py; Pat — copilot-swe-agent[bot] (2026-05-13)
-- `18d2e2b6` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `c8fe15e6` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `a0d59c18` Merge remote-tracking branch 'origin/copilot/verify-codeql-alerts-and-sweep' int — copilot-swe-agent[bot] (2026-05-13)
-- `90321a9f` fix(codeql): S990 cont — 24 B007 quick-wins; template_lint WEC; Pattern 25 — copilot-swe-agent[bot] (2026-05-13)
+- `109c5ba5` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
+- `9c46456b` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
+- `9ad5ad86` fix(ci): sync_tracked_files — refresh stale .secrets.baseline CODEX_MANIFEST ent — copilot-swe-agent[bot] (2026-05-13)
+- `86d18476` chore: Generate follow-up prompt for PR #4447 [skip ci] — github-actions[bot] (2026-05-13)
+- `2b63c5d2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-13)
+- `781e2cd4` Merge pull request #4442 from Aries-Serpent/copilot/continue-cognitive-brain-obj — Statix (2026-05-13)
+- `0fd7ba88` fix(security): process dep-scan + SBOM reports; tighten pytest to >=9.0.3; docum — copilot-swe-agent[bot] (2026-05-13)
+- `8f007417` Add files via upload — Statix (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
 - `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1072`
-- `CODEX_CI_FAILURE_RATE` = `4.0:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `894effb92476e3d5623bf7dd5e9f36c1ecb9c9f6`
+- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1133`
+- `CODEX_CI_FAILURE_RATE` = `0.3:ok`
+- `CODEX_CI_LAST_GREEN_SHA` = `efad0842ee869de9cad7c226aa7ff5a91930b899`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-05-13] `PDA-SUCCESS-S986-PR4434-UJSON-UV-LOCK`: ?
-- [2026-05-13] `PDA-SUCCESS-S987-S989-PR4434-CODEQL-QUICKWINS-PIPELINE`: ?
-- [2026-05-13] `PDA-SUCCESS-S990-PR4434-SYNTAX-FIX-B007`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT5-CHERRY-PICK-4445`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT7-RUNTIME-LOGIC-ROADMAP`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT8-SYNC-TRACKED-FILES`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

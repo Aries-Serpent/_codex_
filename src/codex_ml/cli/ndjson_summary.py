@@ -349,7 +349,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
     inp = Path(args.input).expanduser().resolve()
     pattern = getattr(args, "pattern", "metrics.ndjson*")
     try:
-        rows = _load_rows(inp if inp.is_dir() else inp, pattern=pattern if inp.is_dir() else None)
+        rows = _load_rows(inp, pattern=pattern if inp.is_dir() else None)
     except FileNotFoundError as exc:
         logger.debug(f"FileNotFoundError: {exc}")
         raise SystemExit(str(exc)) from exc

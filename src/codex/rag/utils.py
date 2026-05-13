@@ -404,6 +404,7 @@ class ProvenanceMetadata:
             metadata=data.get("metadata"),
         )
 
+
 __all__ = [
     "ProvenanceMetadata",
     "check_for_meta_tensors",

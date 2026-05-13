@@ -13,6 +13,7 @@ from typing import Any, Optional, Protocol
 try:
     import numpy as np
 except ImportError:  # pragma: no cover - exercised in import-only test environments
+
     class _NumpyFallback:
         ndarray = object
 
