@@ -114,16 +114,18 @@ def run_in_sandbox(
     argv = [exe, *[str(arg) for arg in argv[1:]]]
 
     try:
-        cp = subprocess.run(  # nosec B603 - inputs validated; shell=False; absolute executable enforced
+        with subprocess.Popen(  # nosec B603 - inputs validated; shell=False; absolute executable enforced
             argv,
-            input=stdin,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             cwd=str(work),
             env=env,
             preexec_fn=preexec,
-            timeout=timeout + 1,
             text=False,
-            capture_output=True,
-        )
+        ) as proc:
+            stdout, stderr = proc.communicate(input=stdin, timeout=timeout + 1)
+            cp = subprocess.CompletedProcess(argv, proc.returncode, stdout, stderr)
 
         def _sanitize(data: bytes) -> bytes:
             s = data.decode("utf-8", errors="ignore")
