@@ -10,6 +10,7 @@ from typing import Any, Optional
 try:
     import numpy as np
 except ImportError:  # pragma: no cover - exercised in readiness smoke tests
+
     class _NumpyFallback:
         ndarray = object
 

@@ -87,7 +87,7 @@ class BenchmarkRunner:
                 last_error = str(e)
 
             end_time = time.perf_counter()
-            current, peak = tracemalloc.get_traced_memory()
+            _current, peak = tracemalloc.get_traced_memory()
             tracemalloc.stop()
 
             duration_ms = (end_time - start_time) * 1000

@@ -61,6 +61,7 @@ def _cfg_to_container(cfg: Any) -> Any:
         return OmegaConf.to_container(cfg, resolve=True)
     return cfg
 
+
 torch, _HAS_TORCH = optional_import("torch")
 _, _HAS_MLFLOW = optional_import("mlflow")
 
@@ -445,6 +446,7 @@ if _HAS_HYDRA:
             )
 
 else:
+
     def _has_dotlist_args(arg_list: Sequence[str]) -> bool:
         """Detect Hydra-style dotlist args like ``key=value`` or ``a.b=value``.
 
@@ -482,9 +484,7 @@ else:
                     limit=limit,
                     tokenizer_cfg=tokenizer_cfg if isinstance(tokenizer_cfg, dict) else {},
                 )
-            return evaluate(
-                checkpoint_dir=checkpoint_dir, model_name=model_name, device=device
-            )
+            return evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
 
         parser = ArgparseJSONParser(description="Evaluate latest checkpoint (skeleton).")
         parser.add_argument("--checkpoint-dir", required=True)

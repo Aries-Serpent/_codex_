@@ -49,7 +49,7 @@ def validate_move(source: Path, target: Path, dry_run: bool = False) -> tuple[bo
         return False, "ERROR", 0
 
     # Run reference validation
-    references, stats = scan_repository(str(source), Path.cwd(), dry_run)
+    _references, stats = scan_repository(str(source), Path.cwd(), dry_run)
     ref_count = stats['total_references']
     risk = assess_risk(ref_count)
 

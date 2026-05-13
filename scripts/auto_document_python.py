@@ -161,7 +161,7 @@ def process_directory(directory: Path) -> dict:
         stats['processed'] += 1
 
         try:
-            has_doc, missing = analyze_module(py_file)
+            has_doc, _missing = analyze_module(py_file)
             if not has_doc:
                 if add_module_docstring(py_file):
                     stats['documented'] += 1

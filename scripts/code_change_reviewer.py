@@ -220,7 +220,7 @@ class CodeChangeReviewer:
         print("=== Cycle 2: Convergence Check ===")
         self.protocol.start_cycle()
 
-        converged, reason = self.protocol.check_convergence()
+        _converged, reason = self.protocol.check_convergence()
         print(f"Convergence status: {reason}\n")
 
         self.protocol.complete_cycle(["Performed convergence check"])

@@ -695,7 +695,7 @@ class DeploymentOrchestrator:
         try:
             # Task 1: Verify main branch state
             self.logger.info("Task 4.1: Verifying main branch state")
-            exit_code, stdout, stderr = self.run_command(["git", "rev-parse", "HEAD"], check=False)
+            exit_code, stdout, _stderr = self.run_command(["git", "rev-parse", "HEAD"], check=False)
 
             if exit_code == 0:
                 current_sha = stdout.strip()
@@ -823,7 +823,7 @@ class DeploymentOrchestrator:
 
     def _check_gh_auth(self) -> bool:
         """Check if GitHub CLI is authenticated."""
-        exit_code, stdout, stderr = self.run_command(["gh", "auth", "status"], check=False)
+        exit_code, _stdout, _stderr = self.run_command(["gh", "auth", "status"], check=False)
         return exit_code == 0
 
     def _determine_overall_status(self) -> PhaseStatus:

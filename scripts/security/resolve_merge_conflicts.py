@@ -78,7 +78,7 @@ def get_conflicted_files() -> list[str]:
     Returns:
         List of file paths with conflicts
     """
-    returncode, stdout, stderr = run_command(
+    returncode, stdout, _stderr = run_command(
         ["git", "diff", "--name-only", "--diff-filter=U"],
         check=False
     )
@@ -97,7 +97,7 @@ def get_all_pr_files() -> list[str]:
         List of file paths changed in PR
     """
     # Get the base commit (parent of our first commit)
-    returncode, stdout, stderr = run_command(
+    returncode, stdout, _stderr = run_command(
         ["git", "log", "--oneline", "--reverse", "--format=%H"],
         check=False
     )
@@ -115,14 +115,14 @@ def get_all_pr_files() -> list[str]:
     first_commit = commits[-3] if len(commits) >= 3 else commits[0]
 
     # Get parent of first commit (the base)
-    returncode, stdout, stderr = run_command(
+    returncode, stdout, _stderr = run_command(
         ["git", "rev-parse", f"{first_commit}^"],
         check=False
     )
 
     if returncode != 0:
         # Try alternative: use the merge base
-        returncode, stdout, stderr = run_command(
+        returncode, stdout, _stderr = run_command(
             ["git", "merge-base", "HEAD", "HEAD~3"],
             check=False
         )
@@ -134,7 +134,7 @@ def get_all_pr_files() -> list[str]:
     base_commit = stdout.strip()
 
     # Get all files changed from base to HEAD
-    returncode, stdout, stderr = run_command(
+    returncode, stdout, _stderr = run_command(
         ["git", "diff", "--name-only", f"{base_commit}..HEAD"],
         check=False
     )
@@ -157,7 +157,7 @@ def resolve_conflict_accept_ours(filepath: str) -> bool:
         True if resolved successfully, False otherwise
     """
     # Use git checkout --ours to accept our version
-    returncode, stdout, stderr = run_command(
+    returncode, _stdout, stderr = run_command(
         ["git", "checkout", "--ours", filepath],
         check=False
     )
@@ -167,7 +167,7 @@ def resolve_conflict_accept_ours(filepath: str) -> bool:
         return False
 
     # Stage the resolved file
-    returncode, stdout, stderr = run_command(
+    returncode, _stdout, _stderr = run_command(
         ["git", "add", filepath],
         check=False
     )

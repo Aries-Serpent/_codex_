@@ -65,7 +65,7 @@ def train_val_test_split(
     if n_items == 0:
         raise ValueError("dataset must contain at least one example")
 
-    train_frac, val_frac, test_frac = _validate_splits(splits)
+    train_frac, val_frac, _test_frac = _validate_splits(splits)
     indices = list(range(n_items))
     rng = random.Random(int(seed))  # nosec B311 - deterministic dataset partitioning
     rng.shuffle(indices)

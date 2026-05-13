@@ -1,45 +1,55 @@
-# Session Context — 2026-05-13T07:52:26Z
-**Branch:** `copilot/verify-codeql-alerts-and-sweep`  **PR:** #4434  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-13T11:46:02Z
+**Branch:** `copilot/continue-cognitive-brain-objectives`  **PR:** #4442  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4971` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4479` (✅)
+- GraphQL remaining: `4951` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4434 — fix(codeql): continue post-merge sweep — MFA hardening, PEFT test fix, ujson remediation, B007/F401/F541 quick-wins
-State: `open`  Draft: `False`  Branch: `copilot/verify-codeql-alerts-and-sweep` → `main`
+## 📋 PR #4442 — Fix for Wrong name for an argument in a call
+State: `open`  Draft: `False`  Branch: `copilot/continue-cognitive-brain-objectives` → `0D_base_`
+
+### ❌ 20 Failing CI Check(s)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `generate` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
-- `d701e99d` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `fbe87cb9` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `18614e35` Merge remote-tracking branch 'origin/copilot/verify-codeql-alerts-and-sweep' int — copilot-swe-agent[bot] (2026-05-13)
-- `eccf968d` fix(ci): S991 — 84 F541 f-string placeholders in fetch_security_snapshot.py; Pat — copilot-swe-agent[bot] (2026-05-13)
-- `18d2e2b6` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `c8fe15e6` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `a0d59c18` Merge remote-tracking branch 'origin/copilot/verify-codeql-alerts-and-sweep' int — copilot-swe-agent[bot] (2026-05-13)
-- `90321a9f` fix(codeql): S990 cont — 24 B007 quick-wins; template_lint WEC; Pattern 25 — copilot-swe-agent[bot] (2026-05-13)
+- `2a43e9c3` fix(ci): remove unused headers params from RateLimitAwareHTTP; Pattern 25 S993-c — copilot-swe-agent[bot] (2026-05-13)
+- `03d99659` feat(ci): add RateLimitAwareHTTP class to _gh_api.py; Pattern 25/30 S993-cont7 — copilot-swe-agent[bot] (2026-05-13)
+- `969918ee` chore: merge remote tracking files [skip ci] — copilot-swe-agent[bot] (2026-05-13)
+- `9c54e586` chore: plan Runtime Logic Automation Roadmap implementation — copilot-swe-agent[bot] (2026-05-13)
+- `9c1c6783` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
+- `1d6d8e4c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
+- `3c44c24a` chore: Generate follow-up prompt for PR #4442 [skip ci] — github-actions[bot] (2026-05-13)
+- `27cbcf1c` Merge remote-tracking branch 'origin/copilot/continue-cognitive-brain-objectives — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
 - `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1072`
-- `CODEX_CI_FAILURE_RATE` = `4.0:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `894effb92476e3d5623bf7dd5e9f36c1ecb9c9f6`
+- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1133`
+- `CODEX_CI_FAILURE_RATE` = `0.3:ok`
+- `CODEX_CI_LAST_GREEN_SHA` = `efad0842ee869de9cad7c226aa7ff5a91930b899`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-05-13] `PDA-SUCCESS-S986-PR4434-UJSON-UV-LOCK`: ?
-- [2026-05-13] `PDA-SUCCESS-S987-S989-PR4434-CODEQL-QUICKWINS-PIPELINE`: ?
-- [2026-05-13] `PDA-SUCCESS-S990-PR4434-SYNTAX-FIX-B007`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT4-SECRETS-BASELINE`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT5-CHERRY-PICK-4445`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT7-RUNTIME-LOGIC-ROADMAP`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

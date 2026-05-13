@@ -106,7 +106,7 @@ def patch_registry(reg: dict[str, object]) -> dict[str, object]:
     Returns:
         The patched registry (same object, modified in place)
     """
-    sb, sm, rs = _import_bleu_rouge()
+    sb, _sm, rs = _import_bleu_rouge()
     if not (sb and rs):
         # Dependencies not available, don't add metrics
         return reg

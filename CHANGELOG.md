@@ -7,6 +7,127 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (S993-cont9 — dependency-scan-results.zip + sbom-reports.zip processing)
+- **CVE-2025-71176 (pytest `/tmp` symlink, GHSA-6w46-j5rx-g56g)**: Raised pytest lower bound from `>=8.x` to `>=9.0.3` in `requirements.txt`, `requirements-dev.txt`, `requirements-minimal.txt`, and all three `pyproject.toml` optional-dependency extras (`dev`, `test`, `security`). The fix version 9.0.3 eliminates the local privilege-escalation path via `/tmp/pytest-of-{user}` symlink attack on UNIX.
+- **CVE-2024-35515 (sqlitedict insecure deserialization, GHSA-g4r7-86gm-pgqc)**: No upstream fix available. Added `CVE-2024-35515` to `[tool.pip-audit].ignore-vulns` in `pyproject.toml` with full documentation comment explaining indirect-only usage and controlled-storage mitigations. Tracked as Dependabot alert #90.
+- **CVE-2025-69872 (diskcache pickle RCE, GHSA-w8v5-vhqr-4h9v)**: Pre-existing ignore entry verified current and accurate; comment updated to reflect no new fix version.
+- **SBOM update**: `configs/development/artifacts/sbom/packages.txt` regenerated from `reports/sbom-reports.zip` (CycloneDX 1.6, 329 components). License triage complete — copyleft exposure limited to `grandalf` (GPL-2.0-only, dev-only) and `yamllint` (GPL-3.0-or-later, CI-only); both acceptable. 15 NVIDIA proprietary packages present for optional GPU training extras only.
+- **`reports/security_audit.md`**: Full scan findings documented including CVE details, SBOM license triage table, and NVIDIA package assessment.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry maintained (2026-05-13).
+
+### Fixed (S993-cont8 — PR review thread remediation: 25 threads, 8 files)
+- **`src/codex_ml/safety/sandbox.py`**: Replaced `with subprocess.Popen()` context manager with explicit `proc = subprocess.Popen()` + inner try/except to eliminate the potential hang where `Popen.__exit__` calls `proc.wait()` before the process is killed on `TimeoutExpired`. After kill, `proc.communicate()` is called without binding (output discarded — process was killed on timeout). Fixes threads 1, 2, 3.
+- **`src/codex/retrieval/stores/__init__.py`**: Renamed `_FAISS_AVAILABLE` → `FAISS_AVAILABLE` (public) and added to `__all__` so callers can detect FAISS availability without importing `FAISSStore`. Fixes threads 19, 20.
+- **`src/codex/github/mcp_poster.py`**: Removed the `_resolve_discussion_ids()` call from inside the pagination `while True` loop in `find_or_create_pr_discussion()` — the returned IDs were never used during the search phase, causing an extra GraphQL request per page. The call is still present in the creation path. Fixes thread 21.
+- **`src/codex/cli_knowledge.py`**: Updated `_normalize_edge_syntax()` docstring to accurately state that only directed edges (with `>` arrowhead) are matched by `_EDGE_RE`; undirected dotted lines (e.g. `A.-B`) are not captured. Fixes thread 22.
+- **`docs/diagrams/runtime_logic_map.mmd`**: Updated header to declare the `.mmd` file the **authoritative source** for the diagram. Fixes thread 23.
+- **`docs/system/mermaid_logic_map.md`**: Updated header to describe this file as the **narrative companion** to the `.mmd` (not the source of truth), resolving the conflicting ownership claims. Fixes thread 23.
+- **`scripts/ci/fetch_security_snapshot.py`**: Replaced stale reference to deleted `docs/reference/SECURITY_API_REFERENCE.md` in generated `AGENT_SECURITY_CONTEXT.md` with a live link to the CodeQL documentation. Fixes thread 24.
+- **`scripts/phase10/automated_secrets_manager.py`**: Changed `_stdout, _stderr = process.communicate(...)` → `_, stderr = ...` and updated error log to use `stderr`; `_stdout` was genuinely unused. Fixes threads 12, 13.
+- **`scripts/phase10/execute_secrets_injection_now.py`**: Same pattern as above. Fixes threads 14, 15.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont8 (2026-05-13).
+
+### Added (S993 cont.7 — Runtime Logic Automation Roadmap: RateLimitAwareHTTP class)
+- **`scripts/ci/_gh_api.py`**: Added `RateLimitAwareHTTP` class — object-oriented façade over the existing procedural helpers (`api_get_cached`, `api_post`, `paginate_cached`). Implements `get(url)`, `post(url, payload=None)`, `list_paginated(url, ...)`, and `handle_rate_limit(reset_time, endpoint)` methods with lazy token resolution, TTL caching, exponential back-off, and structured rate-limit logging. Removed unused `headers` parameters (API clarity). This is the mandatory shared HTTP client for all autonomous agent operations per roadmap Priority 0.1.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont7 (2026-05-13).
+
+### Fixed (S993 cont.6 — Pattern 12 E501 line-length in cli_knowledge.py)
+- **`src/codex/cli_knowledge.py` line 217**: Wrapped long expression for `_QUANTUM_SYMBOL_RE` intersection to stay within 100-char limit (E501 Pattern 12 auto-fix).
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont6 (2026-05-13).
+
+### Added/Fixed (S993 cont.5 — cherry-pick PR#4445 + codebase improvements)
+- **`docs/diagrams/runtime_logic_map.mmd`**: Added evidence-backed Mermaid runtime logic diagram covering all `_codex_` entry points (6 entry points, training bootstrap, ingestion pipeline, quantum orchestrator, Rust/PyO3 bindings).
+- **`docs/system/mermaid_logic_map.md`**: Added canonical source-of-truth doc with evidence table mapping every diagram node to a verified source file, plus explicit ambiguity notes (A1 conditional CLI import, A2 Rust feature gate, A3 optional QFT).
+- **`src/codex/cli_knowledge.py`**: Added `codex knowledge sync-mermaid-map` command — parses `.mmd` files, chunks content into searchable NDJSON datablobs, computes quantum coherence score (`ψ = α·N + β·E + γ·V + δ·T`), emits compressed output.
+- **`src/codex/knowledge/build.py`**: Refactored `infer_intent()` to use canonical `INTENTS` tuple + module-level `_INTENT_KEYWORDS` map (eliminates repeated string literals, enables extension without touching logic).
+- **`src/codex/retrieval/stores/__init__.py`**: Added `_FAISS_AVAILABLE` boolean flag for callers to detect FAISS availability without importing `FAISSStore`.
+- **`mkdocs.yml`**: Added `Runtime Logic Map` page to Architecture nav section.
+- **`scripts/phase10/comprehensive_validation_suite.py`, `execute_secrets_injection_now.py`, `scripts/security/copy_ideal_versions.py`**: Fixed 3 F821 regressions (`stderr` → `_stderr`) introduced by the aab69b8 RUF059 sweep.
+- **`.codex/AI_AGENT_UTILITIES_REGISTRY.md`**: Registered the new Mermaid sync CLI utility.
+- **Removed stale session docs**: `docs/plans/PR4434_whats_next.md`, `docs/plans/PR4442_whats_next.md`, `docs/sessions/PR4434_session_diagram.md`, `docs/sessions/PR4442_session_diagram.md`, `docs/reference/CODEQL_FETCHER_WORKFLOW_GUIDE.md`, `docs/reference/SECURITY_API_REFERENCE.md`, `.github/copilot-prompts/active/PR-4434-followup.md`, `.github/copilot-prompts/active/PR-4442-followup.md`.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont5 (2026-05-13).
+
+### Fixed (S993 cont.4 — secrets baseline enforcement + F821 regression)
+- **`scripts/phase10/automated_secrets_manager.py`**: Added `# pragma: allowlist secret` to 4 lines flagged as false-positive "Secret Keyword" by `detect-secrets` (variable assignments using constant names `CODEX_MASTER_KEY`/`secret_name`, not real credentials). Also fixed F821 regression introduced by the `aab69b8` RUF059 sweep: `stdout, stderr → _stdout, _stderr` but line 271 still referenced `stderr`; corrected to `_stderr`.
+- **`scripts/tools/variable_audit_cli.py`**: Added `# pragma: allowlist secret` to 3 lines flagged as false-positive (storage-layer constant names `LAYER_ORG_SECRETS`, `LAYER_REPO_SECRETS`, `LAYER_ENV_SECRETS` — these are variable names, not credentials).
+- **`.secrets.baseline`**: Updated via `sync_tracked_files.py --fix` to incorporate the new `pragma: allowlist secret` annotations.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont4 (2026-05-13).
+
+### Fixed (S993 cont.3 — code-quality bot: suppress "Statement has no effect" + "Unused local variable")
+- **`src/codex_ml/evaluation/loop.py`**: Reverted `...` → `pass` in Protocol method bodies without docstrings (Criterion.__call__, Logger.log, Logger.close). GitHub code-quality bot flags `...` as "Statement has no effect" because Ellipsis is an expression; `pass` is a statement and is not flagged.
+- **`src/codex/cognitive/ml/symptom_classifier.py`**: Removed `...` from Protocol method bodies that already have docstrings (fit, predict, predict_proba). Docstring alone is sufficient as the method body in Python.
+- **`src/codex/quantum_orchestrator/qft/second_quantization.py`**: Removed unpacking of unused `_state3/_amp3` from `annihilation.apply(fock, mode)` call where result is always zero (vacuum state). Changed `new_fock, _amplitude = ...` → `new_fock, _ = ...` (standard throwaway `_`).
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont3 (2026-05-13).
+
+### Fixed (S993 cont.2 — scripts/ RUF059/RUF034 batch; CI Rescue comment-review gate clear)
+- **CI Rescue comment resolved**: Comment Review Gate failure (run 25790407962) was on commit before `4a21568` fix; gate is now passing. Addressed by replying to CI Rescue comment 4439410756.
+- **`scripts/analyze_broken_links.py`**: `anchor` → `_anchor` (RUF059)
+- **`scripts/analyze_stubs.py`**: Simplified useless if-else `"P1" if ... else "P1"` → `"P1"` (RUF034)
+- **`scripts/auto_document_python.py`**: `missing` → `_missing` (RUF059)
+- **`scripts/ci/branch_rebase_check.py`**: `rc2` → `_rc2` (RUF059)
+- **`scripts/ci/fetch_codeql_alerts.py`**: `headers` → `_headers` (RUF059)
+- **`scripts/ci/github_var_writer.py`**: `resp` → `_resp` in PATCH/POST (RUF059)
+- **`scripts/ci/session_wrapup_autofix.py`**: `rc5` → `_rc5`, `rc10` → `_rc10` (RUF059)
+- **`scripts/ci/workflow_queue_manager.py`**: `status_code` → `_status_code` (RUF059)
+- **`scripts/code_change_reviewer.py`**: `converged` → `_converged` (RUF059)
+- **`scripts/deployment_orchestrator.py`**: `stderr` → `_stderr`, `stdout/_stderr` → `_stdout/_stderr` (RUF059)
+- **`scripts/fix_markdown_tables.py`**: `fixes` → `_fixes` in check and fix branches (RUF059)
+- **`scripts/memory_profile.py`**: `peak` → `_peak` (RUF059); corrected my earlier error (`current` IS used in return)
+- **`scripts/phase10/automated_secrets_manager.py`**: `stdout/stderr` → `_stdout/_stderr` (RUF059)
+- **`scripts/phase10/comprehensive_validation_suite.py`**: `stdout/stderr` → `_stdout/_stderr` in 3 `run_command` calls (RUF059)
+- **`scripts/phase10/execute_secrets_injection_now.py`**: `stdout/stderr` → `_stdout/_stderr` (RUF059)
+- **`scripts/root_org/organize_root_incremental.py`**: `references` → `_references` (RUF059)
+- **`scripts/security/copy_ideal_versions.py`**: `stderr/stdout` → `_stderr/_stdout` (RUF059)
+- **`scripts/security/resolve_merge_conflicts.py`**: `stderr` → `_stderr` in 4 run_command calls (RUF059)
+- **`scripts/space_traversal/trend_dashboard.py`**: `trend_text/class/symbol` → `_trend_text/_trend_class/_trend_symbol` (RUF059)
+- **`scripts/tools/variable_audit_cli.py`**: `status` → `_status` in 4 `_gh_request` calls (RUF059)
+- **`scripts/validate_auth_security.py`**: `token2` → `_token2` (RUF059)
+- **`scripts/validate_code_fences.py`**: `total_issues` → `_total_issues` in check branch (RUF059)
+- **`scripts/validate_docs_links.py`**: `warnings/fixed` → `_warnings/_fixed` (RUF059)
+- **`scripts/validate_table_spacing.py`**: `total_issues` → `_total_issues` in check branch (RUF059)
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont.2 (2026-05-13).
+
+### Fixed (S993 cont. — CodeQL quick-wins: RUF059, RUF034, PIE790, B007 — 15 files)
+- **`scripts/ci/session_bootstrap.py`**: Renamed unused loop variable `url_repo`/`ids` → `_url_repo`/`_ids` in no-token branch (B007); kept named in the token branch where they ARE used (F821 regression prevented).
+- **`src/codex/cognitive/ml/symptom_classifier.py`**: Replaced `pass` → `...` in Protocol method bodies (PIE790 — unused pass after docstring).
+- **`src/codex/github/mcp_poster.py`**: Renamed `category_id` → `_category_id` in search-loop where only `url` and `kind` are consumed (RUF059).
+- **`src/codex/quantum_orchestrator/qft/second_quantization.py`**: Renamed `state3, amp3` → `_state3, _amp3` and `amplitude` → `_amplitude` for unused unpacked results (RUF059).
+- **`src/codex/rag/benchmarks/runner.py`**: Renamed `current` → `_current` from `tracemalloc.get_traced_memory()` (RUF059).
+- **`src/codex_ml/data/dataset_wrapper.py`**: Renamed `test_frac` → `_test_frac` in split tuple (RUF059).
+- **`src/codex_ml/metrics/_optional_bleu_rouge.py`**: Renamed `sm` → `_sm` in bleu/rouge import tuple (RUF059).
+- **`src/codex_ml/models/decoder_only.py`**: Renamed `bsz` → `_bsz` (unused batch dimension) (RUF059).
+- **`src/codex_ml/models/minilm.py`**: Renamed `bsz` → `_bsz` (unused batch dimension) (RUF059).
+- **`src/codex_ml/serving/optimizations.py`**: Renamed `ids` → `_ids` in batch zip unpack (RUF059).
+- **`src/codex_ml/training/continuous_learning.py`**: Renamed `model` → `_model` (only `metrics` used after training) (RUF059).
+- **`src/codex_ml/utils/checkpoint_core.py`**: Renamed `actual` → `_actual` in `load_best` unpack (RUF059).
+- **`src/codex_ml/cli/ndjson_summary.py`**: Removed useless `inp if inp.is_dir() else inp` expression (RUF034).
+- **`src/training/engine_hf_trainer.py`**: Simplified `getattr(args, "warmup_steps", 0) if hasattr(...) else getattr(args, "warmup_steps", 0)` — both branches identical (RUF034).
+- **`src/cognitive_brain/experiments/exp3_validation.py`**: Renamed `priorities` → `_priorities` (unused in `optimize_test_schedule` return) (RUF059).
+- **`src/cognitive_brain/quantum/ab_testing.py`**: Renamed `t_stat` → `_t_stat` (only `p_value` used) (RUF059).
+- **`src/ingestion/__init__.py`**: Renamed `used` → `_used` in `_call_repo_read_text` return (RUF059).
+- **`src/restore_pipeline/tests/test_restore_pipeline.py`**: Renamed `metrics` → `_metrics` (unused) (RUF059).
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit (code review fixes: eval/loop.py Protocol pass→..., hhg_logistics/train.py blank line, session_bootstrap.py comment).
+- **Pattern 30**: PDA entry added for S993-cont. (2026-05-13).
+
+### Added (S993 — PR #4442 bootstrap; living docs; sync fix)
+- **`docs/plans/PR4442_whats_next.md`**: Created new PR living doc for the post-PR#4434 continuation, listing completed carry-forward work and remaining priorities.
+- **`docs/sessions/PR4442_session_diagram.md`**: Created new session diagram tracking PR #4442 sessions.
+- **`sync_tracked_files --fix`**: Refreshed `.secrets.baseline` CODEX_MANIFEST entry (was stale after merge); all tracked files now consistent.
+- **`src/codex_ml/safety/sandbox.py`**: Added explicit `TimeoutExpired` exception handling — `proc.kill()` is now called before flushing remaining output and re-raising, ensuring the subprocess is always terminated on timeout (code review fix).
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit (code review fixes: eval/loop.py Protocol pass→..., hhg_logistics/train.py blank line, session_bootstrap.py comment).
+- **Pattern 30**: PDA entry added for S993 (2026-05-13).
+
+### Fixed (auto-update — PR #4442)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4442 (SHA `9ce9350b`) at 2026-05-13T09:05Z [auto-generated]
+
 ### Fixed (S992 — codeql-alert-fetcher hardening; session_bootstrap regression; Pattern 25)
 - **`/.github/workflows/codeql-alert-fetcher.yml`**: Applied the missing corrections from `copilot/verify-codeql-alerts-and-sweep-1` and hardened the workflow further by enabling strict shell mode in multi-line bash steps, normalizing `repository_dispatch` booleans via the params step, clamping `top_n` to sane bounds, and making metadata reflect the resolved include flags.
 - **Safer artifact writes**: Replaced fragile `curl ... || echo ... > file` fallback patterns for analyses and community-profile fetches with temp-file + JSON-validation helpers before moving outputs into place.
@@ -20,7 +141,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Living-file verification**: `verify_living_files.py --pr-number 4434 --strict` passes — all 5 living files present and non-stale.
 - **Tracked-file hygiene**: `sync_tracked_files.py --fix` confirms CODEX_MANIFEST integrity, `.secrets.baseline`, CHANGELOG, and AGENT_ACCOUNTABILITY_REPORT all consistent.
 - **MFA tests**: `tests/auth/test_mfa_provider.py` and `tests/auth/test_authenticator.py` — all 57 tests pass ✅.
-- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit (code review fixes: eval/loop.py Protocol pass→..., hhg_logistics/train.py blank line, session_bootstrap.py comment).
 
 ### Fixed (S990 continued — 24 more B007; template_lint.yml WEC; Pattern 25)
 - **24 B007 loop-variable quick-wins** (final batch — `scripts/` now clean): `ci/session_bootstrap.py` ×4, `convert_print_to_logger.py` ×2, `phase2d_disambiguator.py`, `phase2d_targeted_fixes.py` ×3, `phase3_categorization.py`, `phase3_stage1_processor.py`, `phase3_stage2_medium_priority.py`, `phase3_stage4_archive.py`, `root_org/update_links_atomic.py`, `security/validate_security.py` ×2, `security_audit.py` ×2, `space_traversal/detectors/mcp_error_handling.py`, `space_traversal/detectors/mcp_observability.py`, `space_traversal/detectors/mcp_versioning_compat.py`, `space_traversal/trend_aggregator.py`, `validate_auth_security.py`.

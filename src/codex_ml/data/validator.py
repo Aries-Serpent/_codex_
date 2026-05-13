@@ -11,6 +11,7 @@ from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from jsonschema import ValidationError, validate
+
     _HAS_JSONSCHEMA = True
 except Exception:  # pragma: no cover
     _HAS_JSONSCHEMA = False

@@ -181,8 +181,7 @@ def _split_signed_pickle(data: bytes) -> tuple[bytes, bytes]:
         algo = data[len(SIGNED_PICKLE_MAGIC) + 1]
         if version != SIGNED_PICKLE_VERSION:
             raise ValueError(
-                f"Unsupported signed pickle version: {version} "
-                f"(expected {SIGNED_PICKLE_VERSION})"
+                f"Unsupported signed pickle version: {version} (expected {SIGNED_PICKLE_VERSION})"
             )
         if algo != SIGNED_PICKLE_ALGO_SHA256:
             raise ValueError(f"Unsupported signed pickle algorithm id: {algo}")

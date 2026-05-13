@@ -820,7 +820,7 @@ def load_checkpoint(
     """
     p = Path(path)
     if p.is_dir():
-        state, meta, actual = load_best(p)
+        state, meta, _actual = load_best(p)
         if restore_rng and meta.rng:
             _rng_restore(meta.rng)
         return state, meta

@@ -211,7 +211,7 @@ class ContinuousLearningPipeline:
         logger.info(f"Starting retraining for {self.model_name}")
 
         # Train model
-        model, metrics = train_fn(train_data)
+        _model, metrics = train_fn(train_data)
 
         # Generate version
         version_num = len(self.registry.versions) + 1

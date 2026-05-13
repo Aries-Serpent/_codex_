@@ -137,7 +137,7 @@ def check_local() -> tuple[str, int, int]:
     if rc != 0:
         # No upstream configured — try origin/<branch>
         upstream = f"origin/{branch}"
-        rc2, _ = _run(["git", "fetch", "origin", branch, "--depth=50"])
+        _rc2, _ = _run(["git", "fetch", "origin", branch, "--depth=50"])
 
     rc, counts = _run(["git", "rev-list", "--left-right", "--count", f"{upstream}...HEAD"])
     if rc != 0:

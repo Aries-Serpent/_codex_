@@ -61,9 +61,7 @@ from codex_ml.utils.train_helpers import maybe_autocast
 logger = logging.getLogger(__name__)
 
 
-def _fallback_metrics_result(
-    cfg: "TrainingRunConfig", train_texts: list[str]
-) -> dict[str, Any]:
+def _fallback_metrics_result(cfg: "TrainingRunConfig", train_texts: list[str]) -> dict[str, Any]:
     """Return minimal offline metrics when training deps are unavailable."""
 
     tokens = sum(len(text.split()) for text in train_texts)
@@ -79,6 +77,7 @@ def _torch_manual_training_available(torch_module: Any) -> bool:
 
     required_attrs = ("tensor", "empty", "long", "device", "nn", "optim")
     return all(getattr(torch_module, name, None) is not None for name in required_attrs)
+
 
 try:  # pragma: no cover - optional dependency in tests
     from omegaconf import DictConfig, OmegaConf

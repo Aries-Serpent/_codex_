@@ -629,7 +629,6 @@ class GitHubMCPPoster:
         # (search newest-first; discussions are ordered by UPDATED_AT DESC)
         page_cursor: str | None = None
         while True:
-            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
             list_query = """
             query ListDiscussions(
               $owner: String!, $repo: String!, $first: Int!, $after: String

@@ -345,7 +345,7 @@ class ABTestFramework:
         treatment_std = self._calculate_std(treatment_values, treatment_mean)
 
         # Perform t-test
-        t_stat, p_value = self._two_sample_ttest(
+        _t_stat, p_value = self._two_sample_ttest(
             control_values,
             treatment_values,
             control_mean,
