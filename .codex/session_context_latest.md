@@ -1,32 +1,38 @@
-# Session Context — 2026-05-13T16:05:19Z
+# Session Context — 2026-05-13T16:41:41Z
 **Branch:** `0D_base_`  **PR:** #4448  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4618` (✅)
-- GraphQL remaining: `4992` (✅)
+- REST remaining: `4817` (✅)
+- GraphQL remaining: `4991` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4448 — Fix for Wrong name for an argument in a call
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
+### ❌ 4 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Create Improvement PR` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `b9d6fc79` docs(security): ingest run 25809211083 artifacts, revise planset, update living  — copilot-swe-agent[bot] (2026-05-13)
+- `afc4e95f` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
+- `08cc1b94` fix(security): Batch 3 — B311 nosec annotations at all 25 sites + planset Batch  — copilot-swe-agent[bot] (2026-05-13)
 - `b2c60b4b` fix(security): apply code review suggestions — clarify guard comment + nosec pla — copilot-swe-agent[bot] (2026-05-13)
 - `7c92f4c7` fix(security): Batch 1-4 bandit remediation from artifact scan — 375→353 raw, 0  — copilot-swe-agent[bot] (2026-05-13)
 - `6a621054` chore: initial plan for dependency/SBOM remediation planset [skip ci] — copilot-swe-agent[bot] (2026-05-13)
 - `09ef18a2` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
 - `d2111650` fix(ci): address Pattern 25 — update AGENT_ACCOUNTABILITY_REPORT + CHANGELOG for — copilot-swe-agent[bot] (2026-05-13)
-- `c0df429d` Fix for Empty except — Statix (2026-05-13)
-- `101b8aad` Fix for Empty except — Statix (2026-05-13)
-- `3a8f8cb4` Fix broken refactors: restore sandbox.py + test parametrize, patch suite-wide co — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
