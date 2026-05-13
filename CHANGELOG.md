@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S979 — Post-merge CodeQL sweep: os.popen → datetime, PR #4432)
+- **CodeQL verification on main**: Confirmed CodeQL Advanced workflow (run 25774686922) ran successfully on main after PR #4427 merged — all 6 jobs ✅ (python, go, javascript-typescript, rust analyses all passing)
+- **`scripts/fix_broken_doc_links.py`**: Replaced deprecated `os.popen('date -u +%Y-%m-%dT%H:%M:%SZ')` call with `datetime.datetime.now(datetime.timezone.utc).strftime(...)` — removes CodeQL `py/shell-command-injection-from-environment` alert; adds `import datetime` to module imports
+
 ### Fixed (S978 — Pattern 25 compliance + CI Rescue on d104e11 resolved)
 - **Pattern 25 compliance (x2)**: Fixed two successive Pattern 25 violations (plan commits `379207f` and `452cb70` each only had `session_context_latest.md`); both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md now included in compliance commit
 - **CI Rescue on `d104e11` triage**: Two failing checks (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) were infrastructure jobs with 23 in-progress; ruff ✅ clean, sync_tracked_files ✅ consistent
