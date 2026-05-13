@@ -79,11 +79,14 @@ _QUANTUM_SYMBOL_RE = re.compile(r"\b([NEVT])\b")
 def _normalize_edge_syntax(line: str) -> str:
     """Normalize dotted Mermaid edge forms to solid arrows for consistent parsing.
 
-    Converts dotted edge syntax to dashed equivalents so _EDGE_RE can match them
-    uniformly.  Example transformations::
+    Converts dotted-arrow edge syntax so ``_EDGE_RE`` (which requires a ``>``
+    arrowhead) can match them uniformly.  Only directed edges (those ending
+    with ``>``) are normalised and extracted; undirected dotted lines without
+    an arrowhead (e.g. ``A.-B``) are **not** matched by ``_EDGE_RE`` and are
+    left unchanged.  Example transformations::
 
-        A-.->B   →  A-->B   (dotted open arrow)
-        A.-B     →  A--B    (dotted line, no arrowhead)
+        A-.->B   →  A-->B   (dotted open arrow  — matched)
+        A.->B    →  A->B    (short dotted arrow  — matched)
     """
     return line.replace("-.", "--").replace(".->", "->")
 

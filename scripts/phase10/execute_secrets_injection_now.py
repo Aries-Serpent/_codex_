@@ -82,12 +82,12 @@ def inject_secret_via_cli(name, value):
             env=os.environ.copy()
         )
 
-        _stdout, _stderr = process.communicate(input=value)
+        _, stderr = process.communicate(input=value)
 
         if process.returncode == 0:
             print(f"✅ {name} injected successfully via gh CLI")
             return True
-        print(f"❌ {name} failed: {_stderr}")
+        print(f"❌ {name} failed: {stderr}")
         return False
     except Exception as e:
         print(f"❌ {name} error: {e}")

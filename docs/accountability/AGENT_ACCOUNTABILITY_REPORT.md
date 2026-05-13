@@ -1,4 +1,56 @@
-## SESSION SUMMARY — 2026-05-13T11:35Z [S993-cont7-runtime-logic-roadmap]
+## SESSION SUMMARY — 2026-05-13T12:30Z [S993-cont9-security-scan-processing]
+
+**Session:** S993-cont9-security-scan-processing | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442
+
+### Completed
+- ✅ Extracted and fully analysed `reports/dependency-scan-results.zip` (pip-audit, 328 packages) and `reports/sbom-reports.zip` (CycloneDX 1.6, 329 components).
+- ✅ **CVE-2025-71176 (pytest 8.4.2, GHSA-6w46-j5rx-g56g)** — Fix version 9.0.3. Raised lower bound to `>=9.0.3` in:
+  - `requirements.txt` (was `>=8.0.0`)
+  - `requirements-dev.txt` (was `>=8.2.0`)
+  - `requirements-minimal.txt` (was `>=8.2.0`)
+  - `pyproject.toml` extras `dev`, `test`, `security` (all were `>=8.2.0`)
+- ✅ **CVE-2024-35515 (sqlitedict 2.1.0, GHSA-g4r7-86gm-pgqc)** — No fix available. Added to `[tool.pip-audit].ignore-vulns` with full documentation of indirect-only usage and controlled-storage mitigation.
+- ✅ **CVE-2025-69872 (diskcache 5.6.3)** — Pre-existing ignore entry verified correct.
+- ✅ **SBOM license triage** — `grandalf` (GPL-2.0-only), `yamllint` (GPL-3.0-or-later): dev/CI only, not shipped. LGPL packages (`PyGithub`, `chardet`): acceptable as libraries. 15 NVIDIA proprietary packages: GPU-optional extras only.
+- ✅ `configs/development/artifacts/sbom/packages.txt` regenerated from CycloneDX 1.6 SBOM (329 components, serial `urn:uuid:6bac7b67-13b1-4090-a4c7-dc31d4fdcdeb`).
+- ✅ `reports/security_audit.md` updated with full 2026-05-13 scan findings.
+- ✅ `ruff check pyproject.toml requirements*.txt` — All checks passed.
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in this commit.
+- ✅ Pattern 30: PDA entry maintained (2026-05-13).
+
+### Lessons Learned
+- `requirements-test.txt` and `pyproject.toml [dependency-groups.ci]` already pinned pytest to >=9.0.3; the gap was in `requirements.txt`, `requirements-dev.txt`, `requirements-minimal.txt`, and the three optional-dependency extras in `pyproject.toml`.
+- SBOM CycloneDX 1.6 does not embed pip-audit vulnerability data — cross-reference both sources for complete picture.
+- NVIDIA proprietary packages appear in SBOM even for CPU-only scans because they are lock-file resolvable; document them as GPU-optional to prevent false-positive license audit failures.
+
+---
+
+
+
+**Session:** S993-cont8-pr-review-remediation | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442
+
+### Completed
+- ✅ Remediated all 25 PR review threads (8 files changed):
+  - `sandbox.py`: removed `with Popen()` context manager → explicit `proc = Popen()` + try/except; eliminates potential `__exit__` hang on `TimeoutExpired` (high-priority thread 1); also fixed threads 2-3 (unused `stdout`/`stderr` bindings after `raise`).
+  - `stores/__init__.py`: `_FAISS_AVAILABLE` → `FAISS_AVAILABLE` (public, in `__all__`) — fixes threads 19-20.
+  - `mcp_poster.py`: removed spurious `_resolve_discussion_ids()` call from pagination loop — fixes thread 21 (extra GraphQL per page).
+  - `cli_knowledge.py`: docstring now accurately states only directed (`>`) edges are matched — fixes thread 22.
+  - `runtime_logic_map.mmd` + `mermaid_logic_map.md`: single authoritative source is `.mmd`; `.md` is narrative companion — fixes thread 23.
+  - `fetch_security_snapshot.py`: replaced removed doc reference with live CodeQL docs URL — fixes thread 24.
+  - `automated_secrets_manager.py`, `execute_secrets_injection_now.py`: `_stdout, _stderr` → `_, stderr` (used in error message) — fixes threads 12-15.
+- ✅ `ruff check src/ scripts/` → All checks passed.
+- ✅ `sync_tracked_files.py --fix` → All tracked files consistent.
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in this commit.
+- ✅ Pattern 30: PDA entry maintained (2026-05-13).
+
+### Lessons Learned
+- Review threads 4-11 (evaluation/loop.py `...`, symptom_classifier.py `...`, second_quantization.py `_state3/_amp3`, trend_dashboard.py `_trend_text/_trend_class`) were already fixed in prior sessions; verify current file state before re-applying.
+- `Popen.__exit__` calls `proc.wait()` unconditionally; using explicit proc management (not context manager) avoids the theoretical hang path.
+- `_FAISS_AVAILABLE` with leading underscore is flagged by CodeQL as "unused global" even if intended for callers; removing the underscore and adding to `__all__` is the proper fix.
+
+---
+
+
 
 **Session:** S993-cont7-runtime-logic-roadmap | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442
 

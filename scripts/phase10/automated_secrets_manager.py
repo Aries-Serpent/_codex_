@@ -262,13 +262,13 @@ class GitHubSecretsManager:
                 text=True
             )
 
-            _stdout, _stderr = process.communicate(input=secret_value)
+            _, stderr = process.communicate(input=secret_value)
 
             if process.returncode == 0:
                 # Security: Don't log secret names - CodeQL alert #3330
                 logger.info("✅ Secret set successfully via gh CLI")
                 return True
-            logger.error(f"❌ Failed to set secret via gh CLI: {_stderr}")
+            logger.error(f"❌ Failed to set secret via gh CLI: {stderr}")
             return False
 
         except FileNotFoundError:

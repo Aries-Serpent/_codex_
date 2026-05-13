@@ -1,17 +1,19 @@
-# Mermaid Runtime Logic Map — Source of Truth
+# Mermaid Runtime Logic Map — Narrative Companion
 
-> **Status:** ✅ Active — this file is the canonical source of truth for
-> `docs/diagrams/runtime_logic_map.mmd`
+> **Status:** ✅ Active
 >
 > **Last updated:** 2026-05-13
+>
+> This document is the **narrative companion** to the standalone Mermaid diagram
+> at [`docs/diagrams/runtime_logic_map.mmd`](../diagrams/runtime_logic_map.mmd),
+> which is the **single authoritative source** for the diagram syntax.
 >
 > Every node in the diagram below is backed by a real source file listed in the
 > [Evidence Table](#evidence-table).  Runtime ambiguities are called out
 > explicitly and marked **(A1)**, **(A2)**, **(A3)**.
 >
-> The standalone Mermaid source lives in
-> [`docs/diagrams/runtime_logic_map.mmd`](../diagrams/runtime_logic_map.mmd) so
-> it can be diffed and maintained independently of this narrative document.
+> To update the diagram, edit `docs/diagrams/runtime_logic_map.mmd` directly.
+> Then refresh this document's evidence table to match.
 
 ---
 

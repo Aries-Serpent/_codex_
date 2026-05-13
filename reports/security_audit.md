@@ -103,3 +103,76 @@ not vulnerable.
 
 **No code logic changes required** — the fix is purely a version bump already
 present in the lock file.
+
+---
+
+## Dependency Scan — 2026-05-13 (pip-audit + CycloneDX SBOM)
+
+**Source files:** `reports/dependency-scan-results.zip` (pip-audit JSON) · `reports/sbom-reports.zip` (CycloneDX 1.6)
+**Packages scanned:** 328 (pip-audit) · 329 (SBOM)
+**Scan date:** 2026-05-13
+
+### Vulnerability Summary
+
+| CVE | Package | Version | Severity | Fix | Action |
+|-----|---------|---------|----------|-----|--------|
+| CVE-2025-71176 | pytest | 8.4.2 | Medium | 9.0.3 | ✅ Bounds tightened to `>=9.0.3` in all requirements files |
+| CVE-2025-69872 | diskcache | 5.6.3 | High | None available | ✅ Already ignored — indirect dev dep, tracked Dependabot #89 |
+| CVE-2024-35515 | sqlitedict | 2.1.0 | High | None available | ✅ Added to `[tool.pip-audit]` ignore — indirect dep, controlled storage |
+
+### CVE Details
+
+#### CVE-2025-71176 — pytest `/tmp` symlink privilege escalation (GHSA-6w46-j5rx-g56g)
+- **Affected:** pytest ≤9.0.2 on UNIX — relies on `/tmp/pytest-of-{user}` directory naming, allowing local users to symlink-attack the tmp dir and gain privileges or cause denial of service.
+- **Fix:** pytest 9.0.3
+- **Changes made:** `requirements.txt`, `requirements-dev.txt`, `requirements-minimal.txt` lower bounds raised from `>=8.x` to `>=9.0.3`; `pyproject.toml` `[project.optional-dependencies]` entries for `dev`, `test`, and `security` extras updated to `>=9.0.3`.
+- **Note:** `requirements-test.txt` already pinned `pytest==9.0.3` ✅; `pyproject.toml` `[dependency-groups.ci]` already had `pytest>=9.0.3` ✅.
+
+#### CVE-2025-69872 — diskcache pickle RCE (GHSA-w8v5-vhqr-4h9v)
+- **Affected:** diskcache ≤5.6.3 — uses Python `pickle` for serialization by default, allowing RCE if an attacker has write access to the cache directory.
+- **Fix:** None available as of 2026-05-13.
+- **Exposure:** Indirect dependency (`dvc → dvc-data → diskcache`); dev-only extra; not used in application code. Cache directory not writable by untrusted users.
+- **Action:** Maintained in `[tool.pip-audit].ignore-vulns`; tracked in Dependabot alert #89.
+
+#### CVE-2024-35515 — sqlitedict insecure deserialization (GHSA-g4r7-86gm-pgqc)
+- **Affected:** sqlitedict ≤2.1.0 — uses `pickle` for deserialization, allowing RCE if an attacker can write to the database file.
+- **Fix:** None available as of 2026-05-13.
+- **Exposure:** Indirect lock-file dependency only (`requirements/lock.txt`); not imported directly in application code; database files stored in controlled locations inaccessible to untrusted users.
+- **Action:** Added to `[tool.pip-audit].ignore-vulns` with documentation comment; tracked as Dependabot alert #90.
+
+### SBOM — License Triage
+
+**Format:** CycloneDX 1.6 · **Serial:** `urn:uuid:6bac7b67-13b1-4090-a4c7-dc31d4fdcdeb`
+
+#### Copyleft / Restrictive Licenses
+
+| Package | Version | License | Usage | Risk |
+|---------|---------|---------|-------|------|
+| grandalf | 0.8 | GPL-2.0-only | Indirect (dvc dev dep) | Low — not shipped in production |
+| yamllint | 1.38.0 | GPL-3.0-or-later | CI lint tool only | Low — not linked into application |
+| PyGithub | 2.9.1 | LGPL | Runtime lib | Low — LGPL permits use as library |
+| chardet | 5.2.0 | LGPLv2+ | Runtime lib | Low — LGPL permits use as library |
+
+**Assessment:** No GPL-licensed packages are shipped in production builds. `grandalf` and `yamllint` are developer/CI tools only. LGPL packages (`PyGithub`, `chardet`) are used as libraries per the LGPL exception and require no source disclosure.
+
+#### NVIDIA Proprietary Packages
+
+15 NVIDIA CUDA packages (`nvidia-cublas`, `nvidia-cuda-runtime`, `nvidia-cudnn-cu13`, etc.) carry NVIDIA proprietary licenses. These are optional runtime dependencies for GPU-accelerated training only and are never installed in CPU-only or production web-serving environments.
+
+#### License Distribution (top 10)
+
+| License | Count |
+|---------|-------|
+| MIT | 128 |
+| Apache-2.0 | 44 |
+| BSD-3-Clause | 35 |
+| BSD-2-Clause | 4 |
+| Python-2.0 | 4 |
+| PSF-2.0 | 3 |
+| MPL-2.0 | 3 |
+| ISC | 2 |
+| GPL-2.0-only | 1 |
+| GPL-3.0-or-later | 1 |
+
+**Overall license posture: ✅ Acceptable** — permissive licenses dominate; copyleft exposure limited to dev/CI tools.
+

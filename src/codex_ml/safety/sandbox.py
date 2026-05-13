@@ -114,7 +114,10 @@ def run_in_sandbox(
     argv = [exe, *[str(arg) for arg in argv[1:]]]
 
     try:
-        with subprocess.Popen(  # nosec B603 - inputs validated; shell=False; absolute executable enforced
+        # Use explicit proc management (not `with Popen`) to avoid the
+        # __exit__ calling proc.wait() on a potentially live process when
+        # TimeoutExpired is raised before we have a chance to kill it.
+        proc = subprocess.Popen(  # nosec B603 - inputs validated; shell=False; absolute executable enforced
             argv,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -123,14 +126,14 @@ def run_in_sandbox(
             env=env,
             preexec_fn=preexec,
             text=False,
-        ) as proc:
-            try:
-                stdout, stderr = proc.communicate(input=stdin, timeout=timeout + 1)
-            except subprocess.TimeoutExpired:
-                proc.kill()
-                stdout, stderr = proc.communicate()
-                raise
-            cp = subprocess.CompletedProcess(argv, proc.returncode, stdout, stderr)
+        )
+        try:
+            stdout, stderr = proc.communicate(input=stdin, timeout=timeout + 1)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.communicate()  # drain pipes; output discarded (process killed on timeout)
+            raise
+        cp = subprocess.CompletedProcess(argv, proc.returncode, stdout, stderr)
 
         def _sanitize(data: bytes) -> bytes:
             s = data.decode("utf-8", errors="ignore")

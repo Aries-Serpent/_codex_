@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (S993-cont9 — dependency-scan-results.zip + sbom-reports.zip processing)
+- **CVE-2025-71176 (pytest `/tmp` symlink, GHSA-6w46-j5rx-g56g)**: Raised pytest lower bound from `>=8.x` to `>=9.0.3` in `requirements.txt`, `requirements-dev.txt`, `requirements-minimal.txt`, and all three `pyproject.toml` optional-dependency extras (`dev`, `test`, `security`). The fix version 9.0.3 eliminates the local privilege-escalation path via `/tmp/pytest-of-{user}` symlink attack on UNIX.
+- **CVE-2024-35515 (sqlitedict insecure deserialization, GHSA-g4r7-86gm-pgqc)**: No upstream fix available. Added `CVE-2024-35515` to `[tool.pip-audit].ignore-vulns` in `pyproject.toml` with full documentation comment explaining indirect-only usage and controlled-storage mitigations. Tracked as Dependabot alert #90.
+- **CVE-2025-69872 (diskcache pickle RCE, GHSA-w8v5-vhqr-4h9v)**: Pre-existing ignore entry verified current and accurate; comment updated to reflect no new fix version.
+- **SBOM update**: `configs/development/artifacts/sbom/packages.txt` regenerated from `reports/sbom-reports.zip` (CycloneDX 1.6, 329 components). License triage complete — copyleft exposure limited to `grandalf` (GPL-2.0-only, dev-only) and `yamllint` (GPL-3.0-or-later, CI-only); both acceptable. 15 NVIDIA proprietary packages present for optional GPU training extras only.
+- **`reports/security_audit.md`**: Full scan findings documented including CVE details, SBOM license triage table, and NVIDIA package assessment.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry maintained (2026-05-13).
+
+### Fixed (S993-cont8 — PR review thread remediation: 25 threads, 8 files)
+- **`src/codex_ml/safety/sandbox.py`**: Replaced `with subprocess.Popen()` context manager with explicit `proc = subprocess.Popen()` + inner try/except to eliminate the potential hang where `Popen.__exit__` calls `proc.wait()` before the process is killed on `TimeoutExpired`. After kill, `proc.communicate()` is called without binding (output discarded — process was killed on timeout). Fixes threads 1, 2, 3.
+- **`src/codex/retrieval/stores/__init__.py`**: Renamed `_FAISS_AVAILABLE` → `FAISS_AVAILABLE` (public) and added to `__all__` so callers can detect FAISS availability without importing `FAISSStore`. Fixes threads 19, 20.
+- **`src/codex/github/mcp_poster.py`**: Removed the `_resolve_discussion_ids()` call from inside the pagination `while True` loop in `find_or_create_pr_discussion()` — the returned IDs were never used during the search phase, causing an extra GraphQL request per page. The call is still present in the creation path. Fixes thread 21.
+- **`src/codex/cli_knowledge.py`**: Updated `_normalize_edge_syntax()` docstring to accurately state that only directed edges (with `>` arrowhead) are matched by `_EDGE_RE`; undirected dotted lines (e.g. `A.-B`) are not captured. Fixes thread 22.
+- **`docs/diagrams/runtime_logic_map.mmd`**: Updated header to declare the `.mmd` file the **authoritative source** for the diagram. Fixes thread 23.
+- **`docs/system/mermaid_logic_map.md`**: Updated header to describe this file as the **narrative companion** to the `.mmd` (not the source of truth), resolving the conflicting ownership claims. Fixes thread 23.
+- **`scripts/ci/fetch_security_snapshot.py`**: Replaced stale reference to deleted `docs/reference/SECURITY_API_REFERENCE.md` in generated `AGENT_SECURITY_CONTEXT.md` with a live link to the CodeQL documentation. Fixes thread 24.
+- **`scripts/phase10/automated_secrets_manager.py`**: Changed `_stdout, _stderr = process.communicate(...)` → `_, stderr = ...` and updated error log to use `stderr`; `_stdout` was genuinely unused. Fixes threads 12, 13.
+- **`scripts/phase10/execute_secrets_injection_now.py`**: Same pattern as above. Fixes threads 14, 15.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont8 (2026-05-13).
+
 ### Added (S993 cont.7 — Runtime Logic Automation Roadmap: RateLimitAwareHTTP class)
 - **`scripts/ci/_gh_api.py`**: Added `RateLimitAwareHTTP` class — object-oriented façade over the existing procedural helpers (`api_get_cached`, `api_post`, `paginate_cached`). Implements `get(url)`, `post(url, payload=None)`, `list_paginated(url, ...)`, and `handle_rate_limit(reset_time, endpoint)` methods with lazy token resolution, TTL caching, exponential back-off, and structured rate-limit logging. Removed unused `headers` parameters (API clarity). This is the mandatory shared HTTP client for all autonomous agent operations per roadmap Priority 0.1.
 - **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
