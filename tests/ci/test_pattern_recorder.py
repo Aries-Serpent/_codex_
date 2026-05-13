@@ -420,60 +420,33 @@ def _compute_merge_readiness_score():
     def test_run_all_patterns_respects_skip_env(self, monkeypatch):
         mod = _load_auto_fix()
         fixer = mod.CommonIssueFixer(Path("."))
-        called: list[int] = []
+        called: set[str] = set()
 
-        def _mark(num: int):
+        def _make_mock(name: str):
             def _inner():
-                called.append(num)
+                called.add(name)
                 return []
 
             return _inner
 
-        # Mock ALL pattern methods so real implementations are not invoked
-        # (some patterns use subprocess or network calls that would make this slow).
-        _all_pattern_methods = [
-            (1,  "fix_unused_imports"),
-            (2,  "fix_unused_variables"),
-            (3,  "fix_yaml_indentation"),
-            (4,  "fix_coverage_thresholds"),
-            (5,  "fix_tokenizer_fallbacks"),
-            (6,  "fix_test_assertions"),
-            (7,  "fix_redundant_imports"),
-            (8,  "fix_codeql_alerts"),
-            (9,  "fix_unsorted_imports"),
-            (10, "fix_bandit_security"),
-            (11, "fix_fstring_placeholders"),
-            (12, "fix_line_length"),
-            (13, "fix_w_series_warnings"),
-            (14, "fix_link_checker_config"),
-            (15, "fix_mypy_baseline_freshness"),
-            (16, "fix_stub_duplicate_defs"),
-            (17, "check_ci_sha_drift"),
-            (18, "fix_duplicate_kwargs"),
-            (19, "check_src_absolute_imports"),
-            (20, "check_yaml_multiline_strings"),
-            (21, "check_nodejs20_actions"),
-            (22, "check_tracked_file_sync"),
-            (23, "check_secrets_baseline_plugins"),
-            (24, "check_codecov_token_missing"),
-            (25, "fix_last_commit_accountability"),
-            (26, "check_autopost_rebase_race"),
-            (27, "fix_secrets_baseline_false_positives"),
-            (28, "check_copilot_sandbox_env"),
-            (29, "fix_pr_comment_triage"),
-            (30, "fix_merge_readiness_dims"),
-            (31, "fix_stale_type_ignore"),
-            (32, "fix_bare_type_ignore_assign"),
-            (33, "check_rate_limit_checkpoint"),
+        # Dynamically mock all fix_*/check_* methods on the fixer so that real
+        # implementations (some of which use subprocess or network calls) are not
+        # invoked during this unit test.  This also adapts automatically when new
+        # patterns are added or removed without requiring a manual list update.
+        pattern_methods = [
+            attr
+            for attr in dir(fixer)
+            if (attr.startswith("fix_") or attr.startswith("check_"))
+            and callable(getattr(type(fixer), attr, None))
         ]
-        for n, method_name in _all_pattern_methods:
-            setattr(fixer, method_name, _mark(n))  # type: ignore[method-assign]
+        for method_name in pattern_methods:
+            setattr(fixer, method_name, _make_mock(method_name))  # type: ignore[method-assign]
         monkeypatch.setenv("CODEX_SKIP_PATTERN_NUMS", "30")
 
         fixer.run_all_patterns()
 
-        assert 1 in called
-        assert 30 not in called
+        assert "fix_unused_imports" in called, "Pattern 1 (fix_unused_imports) should have been called"
+        assert "fix_merge_readiness_dims" not in called, "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
 
     def test_pattern_30_skips_auto_fix_self_reference_dimension(self, tmp_path):
         """S178: Pattern 30 must NOT report the ``auto_fix`` self-reference
