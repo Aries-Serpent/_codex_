@@ -44,14 +44,30 @@ import json
 import logging
 import os
 import sys
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+# Import the shared rate-limit-aware HTTP helpers.  _gh_api.py lives in the
+# same directory; we add that directory to sys.path so the import works whether
+# the script is invoked directly or via subprocess from the workflow.
+import importlib.util as _ilu
+import pathlib as _pl
+
+_here = _pl.Path(__file__).parent
+if str(_here) not in sys.path:
+    sys.path.insert(0, str(_here))
+
+from _gh_api import (  # noqa: E402  (after sys.path manipulation)
+    DEFAULT_MIN_REMAINING,
+    DEFAULT_PAGE_SLEEP,
+    DEFAULT_PER_PAGE,
+    api_get as _api_get_impl,
+    paginate as _paginate,
+    resolve_token,
+)
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -69,12 +85,9 @@ log = logging.getLogger("fetch_codeql_alerts")
 # Constants
 # ---------------------------------------------------------------------------
 
-DEFAULT_PAGE_SLEEP: float = 1.0   # seconds between paginated requests
 DEFAULT_MAX_PAGES: int = 10       # hard cap — each page is up to 100 alerts
-DEFAULT_MIN_REMAINING: int = 20   # pause when REST remaining drops this low
 DEFAULT_STATE: str = "open"
 DEFAULT_TOOL: str = "CodeQL"
-DEFAULT_PER_PAGE: int = 100       # GitHub max
 
 REPO_OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "Aries-Serpent")
 REPO_NAME_FULL = os.environ.get("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
@@ -82,11 +95,20 @@ _repo_parts = REPO_NAME_FULL.split("/", 1)
 REPO_NAME = _repo_parts[1] if len(_repo_parts) == 2 else "_codex_"
 
 API_BASE = "https://api.github.com"
-UA = "fetch-codeql-alerts/1.0"
+
 
 # ---------------------------------------------------------------------------
-# Token resolution
+# Thin wrappers that keep the existing public call-sites unchanged
 # ---------------------------------------------------------------------------
+
+def _api_get(
+    url: str,
+    token: str,
+    min_remaining: int,
+    page_sleep: float,
+) -> tuple[Any, dict[str, str]]:
+    """Delegate to the shared rate-limit-aware helper in _gh_api.py."""
+    return _api_get_impl(url, token, page_sleep=page_sleep, min_remaining=min_remaining)
 
 
 def _resolve_token() -> str:
