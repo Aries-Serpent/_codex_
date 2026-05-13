@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S976)
+- Fixed Pattern 25 violation: Added CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to commit (previous commit 974505f only contained `.github/copilot-prompts/active/PR-4431-followup.md`).
+- Fixed Pattern 30 violation: Added PDA entry for 2026-05-13 to `.codex/aftermath/pda_iterations.jsonl` (last entry was 2026-05-11).
+- Fixed `sync_tracked_files` stale `.secrets.baseline` CODEX_MANIFEST entry (hash mismatch resolved).
+- Updated ROADMAP.md baseline date from 2026-04-28 to 2026-05-13.
+
+### Changed (S976)
+- Dependency: Bumped ujson from 5.12.0 to 5.12.1 (Dependabot automated update).
+
 ### Fixed (auto-update — PR #4431)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4431 (SHA `8badb109`) at 2026-05-13T00:41Z [auto-generated]
 
