@@ -91,12 +91,12 @@ jobs:
       workflow_name: ${{ steps.triage.outputs.workflow_name }}
     steps:
       - name: Sparse checkout (scripts only)
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           sparse-checkout: scripts/ci/
           sparse-checkout-cone-mode: false
       - name: Setup Python (stdlib — no pip install)
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
       - name: 🔋 Rate-limit pre-check (Pattern A)
@@ -190,7 +190,7 @@ jobs:
     if: needs.should-escalate.outputs.escalate == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           sparse-checkout: |
             .codex

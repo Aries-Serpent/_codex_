@@ -117,14 +117,14 @@ jobs:
 
       - name: Checkout repository
         if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
 
       - name: Set up Python
         if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           cache: pip
           python-version: '3.12'
@@ -216,7 +216,7 @@ jobs:
 
       - name: Upload alert artifacts
         if: steps.token_check.outputs.token_available == 'true' && always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: ${{ steps.params.outputs.artifact_name }}
           path: ${{ steps.params.outputs.out_dir }}/

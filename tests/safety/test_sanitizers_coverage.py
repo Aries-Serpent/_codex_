@@ -109,19 +109,19 @@ class TestDefaultPatterns:
 
     def test_github_token_pattern(self):
         """Test GitHub token pattern detection."""
-        github_token = "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef12"
+        github_token = "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef12"  # pragma: allowlist secret
         result = sanitize_prompt(github_token)
         assert result["flags"]["secrets"]
 
     def test_aws_key_pattern(self):
         """Test AWS access key pattern detection."""
-        aws_key = "AKIAIOSFODNN7EXAMPLE"
+        aws_key = "AKIAIOSFODNN7EXAMPLE"  # pragma: allowlist secret
         result = sanitize_prompt(aws_key)
         assert result["flags"]["secrets"]
 
     def test_openai_key_pattern(self):
         """Test OpenAI API key pattern detection."""
-        openai_key = "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL"
+        openai_key = "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL"  # pragma: allowlist secret
         result = sanitize_prompt(openai_key)
         assert result["flags"]["secrets"]
 
@@ -277,7 +277,7 @@ class TestSanitizeOutput:
 
     def test_redact_secrets_in_output(self):
         """Test redaction of secrets in output."""
-        text = "Here is your key: AKIAIOSFODNN7EXAMPLE"
+        text = "Here is your key: AKIAIOSFODNN7EXAMPLE"  # pragma: allowlist secret
         result = sanitize_output(text)
 
         assert "«REDACTED:SECRET»" in result["text"]
@@ -323,7 +323,7 @@ class TestSanitizeOutput:
         """Test that redaction happens before truncation."""
         config = SafetyConfig(max_output_chars=50)
         # Secret at the beginning should be redacted
-        text = "AKIAIOSFODNN7EXAMPLE " + "x" * 100
+        text = "AKIAIOSFODNN7EXAMPLE " + "x" * 100  # pragma: allowlist secret
         result = sanitize_output(text, cfg=config)
 
         # Secret should be redacted even if truncated
@@ -340,7 +340,7 @@ class TestSanitizerEdgeCases:
 
     def test_private_key_detection(self):
         """Test detection of private keys."""
-        text = "-----BEGIN RSA PRIVATE KEY-----\nMIIE...\n-----END RSA PRIVATE KEY-----"
+        text = "-----BEGIN RSA PRIVATE KEY-----\nMIIE...\n-----END RSA PRIVATE KEY-----"  # pragma: allowlist secret
         result = sanitize_prompt(text)
         assert result["flags"]["secrets"]
 

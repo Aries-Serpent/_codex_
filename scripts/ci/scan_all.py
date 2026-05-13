@@ -27,6 +27,7 @@ import argparse
 import json
 import logging
 import os
+import shlex
 import subprocess
 import sys
 import textwrap
@@ -349,6 +350,19 @@ def to_json(results: list[CheckResult]) -> str:
     )
 
 
+def _run_fix_command(cmd: str, trusted_commands: set[str]) -> None:
+    """Run fix commands while preserving shell syntax where required."""
+    if cmd not in trusted_commands:
+        raise ValueError(f"Refusing to run untrusted fix command: {cmd}")
+    shell_tokens = ("&&", "||", "|", ">", "<", ";", "*", "?", "$(", "`")
+    if any(token in cmd for token in shell_tokens):
+        subprocess.run(  # nosec B602 -- cmd comes from internal hardcoded fix_cmd strings
+            cmd, cwd=REPO_ROOT, check=False, shell=True,
+        )
+        return
+    subprocess.run(shlex.split(cmd), cwd=REPO_ROOT, check=False)
+
+
 # ── Main ───────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -392,6 +406,7 @@ def main() -> int:
     print_summary(results)
     if not args.summary:
         print_details(results)
+    trusted_fix_commands = {r.fix_cmd for r in results if r.fix_cmd}
 
     # Auto-fix pass
     if args.fix:
@@ -400,7 +415,7 @@ def main() -> int:
             print(f"\n{BOLD}🔧 Auto-fixing {len(fixable)} check(s)…{RESET}")
             for r in fixable:
                 print(f"  Running: {r.fix_cmd}")
-                os.system(f"cd {REPO_ROOT} && {r.fix_cmd}")  # noqa: S605
+                _run_fix_command(r.fix_cmd, trusted_fix_commands)
         else:
             print(f"{GREEN}Nothing to auto-fix.{RESET}")
 

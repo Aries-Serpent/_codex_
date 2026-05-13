@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: "📥 Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: "🗂️ Pre-create pip cache dir"
         run: mkdir -p ~/.cache/pip
@@ -47,7 +47,7 @@ jobs:
         # Pre-creating the directory prevents that transient post-step failure.
 
       - name: "🐍 Set up Python"
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.12"
           # No pip cache: scikit-learn is only installed when DEFERRAL_SCANNER_ML=1
@@ -196,7 +196,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

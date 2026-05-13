@@ -91,7 +91,7 @@ jobs:
     if: needs.wec-gate.outputs.skip != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 0  # Required for git diff on push/PR events
 
@@ -150,7 +150,7 @@ jobs:
       # Key includes branch name to avoid false hits from other branches.
       - name: Restore per-file checksum cache
         id: per_file_cache
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: .link-check-per-file.json
           key: link-check-per-file-${{ github.ref_name }}
@@ -339,7 +339,7 @@ jobs:
 
       - name: Upload link check report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: link-check-report
           path: link-check-report.json
@@ -366,7 +366,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

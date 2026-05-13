@@ -19,8 +19,10 @@ PRESERVES:
 """
 
 import json
+import os
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -213,7 +215,7 @@ def main():
 
     replacer = TimeTerminologyReplacer()
     replacer.process_files(file_list)
-    replacer.generate_report('/tmp/time_terminology_replacement_report.txt')
+    replacer.generate_report(os.path.join(tempfile.gettempdir(), 'time_terminology_replacement_report.txt'))
 
     print("\n✅ Processing complete!")
     print(f"   Files changed: {replacer.files_processed}")

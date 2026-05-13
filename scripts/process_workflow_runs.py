@@ -6,6 +6,7 @@ This script processes the workflow runs data already retrieved via MCP tools
 and filters it to our 81 target commits.
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -41,19 +42,19 @@ TARGET_COMMITS = [
     "7f0379dfac8e4ccdfc386fb898b9ed1192aca83a", "28106e64c63a38aa70b39df39d8edf1bcdeafb35",
     "38c64fa215fd81714acf881aa9d0a6f1269445ef", "07713e4bfceb88294e1c7b674c0c47f69ca4fb8e",
     "c067b49b388e4eb6f72edf5e035907c237c68338", "9a83b8c6c2ca64d95bed272ed9793e5dae4bdd4b",
-    "f58b5c1d93f9abf4bf8df033a346a68a817414a5", "f2ef77258695f77985cdf2071d7b3f4b1f22ee29",
-    "c3c07d1c032d02ef42250cf960d187164fe79bf2", "d088994633604a2bb8ba972d4d0ff7bf28a34fc7",
-    "b3dbe1081be9c95f9e31446f4c0c20dea394500d", "f45e5cca3cd62dc799eaa12ad01adc326962e736",
-    "9db17bd601cbf4b4ddd536f432f961c543f1b6a5", "0442dabdfe87d4f60739d7f9208ea6cb6a408961",
-    "1aae5439725fc713196003e306e314382852dcd6", "923a49a1abffd38b34a2de7d46c30129d847e78b",
-    "87919506d93c5be061a7f5ea3591ef1dc587cf79", "7abdafa3fb1e510a3175f823c2cd93e2a556c9be",
-    "01f06a53595becdc99aa556b411420d5aa8a9913", "066151aed9c435463afa995ee80451bec0541428",
-    "44439905ea036b825ae3fc810049acb52547d87a", "0a2f6d4c98e4ad9264560b0f61564785451a91fa",
-    "eec20cdd4b09d4d8254b8d48888180ba0566da4c", "2d1cdd2994374fa512cfac2afa2036b4f6fea8fb",
-    "bb5f48f3b605a75b35a4a56de8555d9815f78fa2", "5312bbc45ddd4e7a42940c0fa4fdb61782ffaef7",
-    "23a340db9b72e8f104df8623cc8e89ef26383d57", "480e70d70394016586e70db7491d95ad052e665c",
-    "ebed65dd3904d1f54d9f11e60a0a2474252177f0", "b3b90e185628a7831173d817396edc6e311c1574",
-    "aa3210e3074eae3ea98f4aa9d9e2e127d0a82d5a",
+    "f58b5c1d93f9abf4bf8df033a346a68a817414a5", "f2ef77258695f77985cdf2071d7b3f4b1f22ee29",  # pragma: allowlist secret
+    "c3c07d1c032d02ef42250cf960d187164fe79bf2", "d088994633604a2bb8ba972d4d0ff7bf28a34fc7",  # pragma: allowlist secret
+    "b3dbe1081be9c95f9e31446f4c0c20dea394500d", "f45e5cca3cd62dc799eaa12ad01adc326962e736",  # pragma: allowlist secret
+    "9db17bd601cbf4b4ddd536f432f961c543f1b6a5", "0442dabdfe87d4f60739d7f9208ea6cb6a408961",  # pragma: allowlist secret
+    "1aae5439725fc713196003e306e314382852dcd6", "923a49a1abffd38b34a2de7d46c30129d847e78b",  # pragma: allowlist secret
+    "87919506d93c5be061a7f5ea3591ef1dc587cf79", "7abdafa3fb1e510a3175f823c2cd93e2a556c9be",  # pragma: allowlist secret
+    "01f06a53595becdc99aa556b411420d5aa8a9913", "066151aed9c435463afa995ee80451bec0541428",  # pragma: allowlist secret
+    "44439905ea036b825ae3fc810049acb52547d87a", "0a2f6d4c98e4ad9264560b0f61564785451a91fa",  # pragma: allowlist secret
+    "eec20cdd4b09d4d8254b8d48888180ba0566da4c", "2d1cdd2994374fa512cfac2afa2036b4f6fea8fb",  # pragma: allowlist secret
+    "bb5f48f3b605a75b35a4a56de8555d9815f78fa2", "5312bbc45ddd4e7a42940c0fa4fdb61782ffaef7",  # pragma: allowlist secret
+    "23a340db9b72e8f104df8623cc8e89ef26383d57", "480e70d70394016586e70db7491d95ad052e665c",  # pragma: allowlist secret
+    "ebed65dd3904d1f54d9f11e60a0a2474252177f0", "b3b90e185628a7831173d817396edc6e311c1574",  # pragma: allowlist secret
+    "aa3210e3074eae3ea98f4aa9d9e2e127d0a82d5a",  # pragma: allowlist secret
 ]
 
 OWNER = "Aries-Serpent"
@@ -132,10 +133,41 @@ def generate_markdown_table(by_commit: dict[str, list[Any]]) -> str:
 
     return "\n".join(lines)
 
+def _find_default_input_file() -> str | None:
+    """Find latest MCP workflow-runs output file in temp directory."""
+    from tempfile import gettempdir  # local import — only used here
+    tmp_dir = Path(gettempdir())
+    candidates = sorted(
+        tmp_dir.glob("*copilot-tool-output*.txt"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    for candidate in candidates:
+        try:
+            with open(candidate, encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict) and "workflow_runs" in data:
+                return str(candidate)
+        except (OSError, json.JSONDecodeError):
+            continue
+    return None
+
+
 def main():
     """Main entry point."""
-    # Check if input file exists
-    input_file = "/tmp/1771141320736-copilot-tool-output-ladw2q.txt"
+    parser = argparse.ArgumentParser(description="Process MCP workflow-runs output")
+    parser.add_argument(
+        "--input-file",
+        help="Path to saved github-mcp-server-actions_list output JSON file",
+    )
+    args = parser.parse_args()
+
+    input_file = args.input_file or _find_default_input_file()
+    if not input_file:
+        print("❌ No MCP output file found.")
+        print("Run: github-mcp-server-actions_list to generate it first")
+        return 1
+
     if not Path(input_file).exists():
         print(f"❌ Input file not found: {input_file}")
         print("Run: github-mcp-server-actions_list to generate it first")

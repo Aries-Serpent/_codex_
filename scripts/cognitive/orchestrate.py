@@ -49,6 +49,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Optional
@@ -126,9 +127,20 @@ def _build_orchestrator(
     planset_dir = _REPO_ROOT / ".codex" / "plans"
     state_path = planset_dir / ".orchestrator_state.json"
     if dry_run:
-        # Use a temp state path so nothing is persisted
+        # Use a temp state path so nothing is persisted to the real planset dir.
+        # Register cleanup so the file is removed when the process exits.
+        import atexit
         import tempfile
-        state_path = Path(tempfile.mktemp(suffix=".json"))
+        _fd, _tmp_path = tempfile.mkstemp(suffix=".json")
+        os.close(_fd)
+        state_path = Path(_tmp_path)
+        def _cleanup_temp_file(path: str = _tmp_path) -> None:
+            try:
+                if os.path.exists(path):
+                    os.remove(path)
+            except OSError:
+                return
+        atexit.register(_cleanup_temp_file)
     return PlansetOrchestrator(
         planset_dir=planset_dir,
         engine=QuantumPlansetEngine(),

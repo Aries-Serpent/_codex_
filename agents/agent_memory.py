@@ -20,6 +20,7 @@ import json
 import logging
 import os
 import sqlite3
+import tempfile
 import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -277,7 +278,7 @@ class AgentMemory:
         allowed_roots = [
             Path.cwd().resolve(),
             Path.home().resolve(),
-            Path("/tmp").resolve(),
+            Path(tempfile.gettempdir()).resolve(),
         ]
 
         is_allowed = any(
@@ -1288,7 +1289,7 @@ if __name__ == "__main__":
     # Create memory system
     memory_system = AgentMemorySystem(
         agent_id="demo_agent",
-        db_path=Path("/tmp/demo_agent_memory.db"),
+        db_path=Path(tempfile.gettempdir()) / "demo_agent_memory.db",
     )
 
     # Start a task

@@ -116,7 +116,7 @@ class WorkflowMonitor:
 
         while True:
             params['page'] = page
-            response = requests.get(url, headers=self.headers, params=params)
+            response = requests.get(url, headers=self.headers, params=params, timeout=30)
 
             if response.status_code != 200:
                 print(f"❌ API Error: {response.status_code} - {response.text}")

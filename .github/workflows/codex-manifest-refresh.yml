@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Checkout PR branch (or main on schedule)
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           # On schedule runs, HEAD ref is not available — fall back to main.
           ref: ${{ github.head_ref || 'main' }}
@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/resolve-push-target
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -192,7 +192,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

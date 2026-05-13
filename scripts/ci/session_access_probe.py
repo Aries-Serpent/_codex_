@@ -53,6 +53,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -75,7 +76,7 @@ CODEQL_CLI_PATH = os.environ.get(
     "CODEQL_CLI_PATH",
     "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql",
 )
-CODEQL_DB_PATH = os.environ.get("CODEQL_DB_PATH", "/tmp/codex-db-py")
+CODEQL_DB_PATH = os.environ.get("CODEQL_DB_PATH", os.path.join(tempfile.gettempdir(), "codex-db-py"))
 
 # Tuning — all overridable via env (applied by session_access_probe.py at startup).
 POLITE_SLEEP    = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP",  "0.4"))

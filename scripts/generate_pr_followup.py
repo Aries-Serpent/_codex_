@@ -261,6 +261,18 @@ class PromptGenerator:
 
         return preserved
 
+    def _find_previous_followup(self, pr_number: str, output_dir: Path) -> Path | None:
+        """Return the newest PR follow-up file excluding the current PR number."""
+        files: list[tuple[int, Path]] = []
+        for path in output_dir.glob("PR-*-followup.md"):
+            match = re.fullmatch(r"PR-(\d+)-followup\.md", path.name)
+            if match:
+                files.append((int(match.group(1)), path))
+        for num, path in sorted(files, reverse=True):
+            if str(num) != str(pr_number):
+                return path
+        return None
+
     def format_task_list(self, tasks: list[str] | None) -> str:
         if not tasks:
             return '- [ ] No tasks specified'
@@ -307,6 +319,16 @@ class PromptGenerator:
         resolved_dir = output_dir or Path('.github/copilot-prompts/active')
         existing_path = resolved_dir / f'PR-{pr_number}-followup.md'
         preserved = self._extract_existing_tasks(existing_path)
+        if not preserved:
+            previous_path = self._find_previous_followup(pr_number, resolved_dir)
+            if previous_path:
+                preserved = self._extract_existing_tasks(previous_path)
+                if preserved:
+                    logger.info(
+                        "Seeded PR-%s follow-up from previous prompt %s "
+                        "(sections: %s)",
+                        pr_number, previous_path.name, ', '.join(preserved)
+                    )
 
         immediate = preserved.get('immediate') or self.format_task_list(immediate_tasks)
         validation = preserved.get('validation') or self.format_task_list(validation_tasks)

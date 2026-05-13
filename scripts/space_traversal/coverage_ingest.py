@@ -43,7 +43,9 @@ except ImportError:  # pragma: no cover - CI may not have defusedxml
         "Only parse trusted XML (e.g. CI coverage reports).",
         stacklevel=2,
     )
-    from xml.etree import ElementTree as ET
+    from xml.etree import (
+        ElementTree as ET,  # nosec B314 — coverage XML is CI-generated, not untrusted input
+    )
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -82,7 +84,7 @@ def parse_coverage_xml_to_map(
         return {}
 
     try:
-        tree = ET.parse(xml_path)
+        tree = ET.parse(xml_path)  # nosec B314 — CI-generated coverage XML, not untrusted input
     except ET.ParseError as e:
         print(f"Failed parsing coverage xml: {e}", file=sys.stderr)
         return {}

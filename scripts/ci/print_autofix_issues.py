@@ -6,9 +6,11 @@ embedding a Python heredoc (which breaks YAML block-scalar parsing).
 
 import argparse
 import json
+import os
 import sys
+import tempfile
 
-DEFAULT_REPORT_PATH = "/tmp/autofix_report.json"
+DEFAULT_REPORT_PATH = os.path.join(tempfile.gettempdir(), "autofix_report.json")
 
 
 def main() -> None:
