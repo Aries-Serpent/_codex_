@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #4447)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4447 (SHA `d22873cc`) at 2026-05-13T12:26Z [auto-generated]
+- **sync_tracked_files fix (S993-cont8)**: `.secrets.baseline` CODEX_MANIFEST entry was stale (stored=3904865e7edc, expected=8677e959ff7e). Fixed via `sync_tracked_files --fix` at 2026-05-13T12:35Z.
 
 ### Security (S993-cont9 — dependency-scan-results.zip + sbom-reports.zip processing)
 - **CVE-2025-71176 (pytest `/tmp` symlink, GHSA-6w46-j5rx-g56g)**: Raised pytest lower bound from `>=8.x` to `>=9.0.3` in `requirements.txt`, `requirements-dev.txt`, `requirements-minimal.txt`, and all three `pyproject.toml` optional-dependency extras (`dev`, `test`, `security`). The fix version 9.0.3 eliminates the local privilege-escalation path via `/tmp/pytest-of-{user}` symlink attack on UNIX.

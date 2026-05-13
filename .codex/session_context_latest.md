@@ -1,42 +1,32 @@
-# Session Context — 2026-05-13T11:46:02Z
-**Branch:** `copilot/continue-cognitive-brain-objectives`  **PR:** #4442  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-13T12:28:48Z
+**Branch:** `0D_base_`  **PR:** #4447  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4479` (✅)
-- GraphQL remaining: `4951` (✅)
+- REST remaining: `4813` (✅)
+- GraphQL remaining: `4977` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4442 — Fix for Wrong name for an argument in a call
-State: `open`  Draft: `False`  Branch: `copilot/continue-cognitive-brain-objectives` → `0D_base_`
-
-### ❌ 20 Failing CI Check(s)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Activate token delegation` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `generate` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `🧠 Cognitive Pre-flight Check` (cancelled)
+## 📋 PR #4447 — 0 d base
+State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `2b63c5d2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-13)
+- `781e2cd4` Merge pull request #4442 from Aries-Serpent/copilot/continue-cognitive-brain-obj — Statix (2026-05-13)
+- `0fd7ba88` fix(security): process dep-scan + SBOM reports; tighten pytest to >=9.0.3; docum — copilot-swe-agent[bot] (2026-05-13)
+- `8f007417` Add files via upload — Statix (2026-05-13)
+- `240384b8` chore: establish work plan for roadmap implementation and code quality fixes — copilot-swe-agent[bot] (2026-05-13)
 - `2a43e9c3` fix(ci): remove unused headers params from RateLimitAwareHTTP; Pattern 25 S993-c — copilot-swe-agent[bot] (2026-05-13)
 - `03d99659` feat(ci): add RateLimitAwareHTTP class to _gh_api.py; Pattern 25/30 S993-cont7 — copilot-swe-agent[bot] (2026-05-13)
 - `969918ee` chore: merge remote tracking files [skip ci] — copilot-swe-agent[bot] (2026-05-13)
-- `9c54e586` chore: plan Runtime Logic Automation Roadmap implementation — copilot-swe-agent[bot] (2026-05-13)
-- `9c1c6783` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `1d6d8e4c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `3c44c24a` chore: Generate follow-up prompt for PR #4442 [skip ci] — github-actions[bot] (2026-05-13)
-- `27cbcf1c` Merge remote-tracking branch 'origin/copilot/continue-cognitive-brain-objectives — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

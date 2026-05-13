@@ -35838,3 +35838,23 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-05-13T12:35Z S993-cont8 (sync_tracked_files fix — PR #4447)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — mbaetiong comment #4440959377 addressed ✅
+- [x] **0b.** Failing CI checks: `sync_tracked_files` dimension ❌ stale → fixed ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit ✅
+- [x] **3.** Pattern 30: PDA entry added for 2026-05-13 ✅
+
+### Work Completed
+1. **sync_tracked_files fix**: `.secrets.baseline` CODEX_MANIFEST entry was stale (stored=3904865e7edc, expected=8677e959ff7e). Fixed via `python3 scripts/ci/sync_tracked_files.py --fix`.
+2. **Pattern 25/30 maintained**: Both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated. PDA entry added.
+
+### Impact Score
+- Files fixed: 1 (`.secrets.baseline`)
+- CI dimension unblocked: `sync_tracked_files`
+- Deferral Language Gate: 0 violations
+
+---
