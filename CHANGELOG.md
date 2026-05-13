@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1003-cont-followup — PR #4450 — 2026-05-13T23:05Z)
+- **`codeql-alert-fetcher.yml` actionlint failure** — moved `# pragma: allowlist secret` out of the multi-line `if:` expression (line 375) into its own YAML comment line. This fixes actionlint parse error `unexpected character '#' while lexing expression`.
+- **Validation + artifact refresh check** — verified actionlint passes on all workflows and validated latest security artifacts from run `25830909557` (`sbom-reports`: 326 components/0 vulns; `dependency-scan-results`: 2 known CVEs with no fix versions).
+
 ### Fixed (S1003-cont — PR #4450 — 2026-05-13T22:13Z)
 - **`create-github-app-token@v3` SHA pinning** — pinned to correct commit SHA `1b10c78c7865c340bc4f6099eb2f838309f1e8c3` in 4 workflow files (`agent-auth-delegation.yml`, `auto-approve-workflows.yml`, `process-variable-intents.yml`, `self-approve-pending-runs.yml`). Resolves `actions/unpinned-tag` CodeQL alerts for this action.
 - **`CodeQL py/ineffectual-statement` ×2** — removed redundant `...` from `EmbeddingProvider` Protocol method bodies in `src/codex/rag/embeddings.py` (lines 47, 51); docstring alone is a valid body and the `...` after a docstring is an ineffectual statement.

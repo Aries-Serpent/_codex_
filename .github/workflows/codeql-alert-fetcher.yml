@@ -372,9 +372,10 @@ jobs:
 
       # ── Secret scanning alerts ──────────────────────────────────────────────
       - name: Fetch secret-scanning alerts
+        # pragma: allowlist secret
         if: >
           steps.token_check.outputs.token_available == 'true' &&
-          steps.params.outputs.include_secrets == 'true' # pragma: allowlist secret
+          steps.params.outputs.include_secrets == 'true'
         continue-on-error: true
         run: |
           python3 - <<'PYEOF'
