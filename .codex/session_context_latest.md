@@ -1,27 +1,25 @@
-# Session Context — 2026-05-13T20:07:14Z
+# Session Context — 2026-05-13T20:39:36Z
 **Branch:** `copilot/security-quality-remediation-sprint`  **PR:** #4451  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4723` (✅)
-- GraphQL remaining: `4992` (✅)
+- REST remaining: `4061` (✅)
+- GraphQL remaining: `4962` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4451 — fix: security+quality batch 1 remediations and living-doc updates
 State: `open`  Draft: `False`  Branch: `copilot/security-quality-remediation-sprint` → `0D_base_`
 
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
-
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `e18b95bd` fix: resolve review findings and continue pytest burn-down — copilot-swe-agent[bot] (2026-05-13)
 - `c70f06ed` docs: add late-window S997 status checkpoint updates — copilot-swe-agent[bot] (2026-05-13)
 - `68cc14e0` fix: resolve remaining review findings and continue burn-down — copilot-swe-agent[bot] (2026-05-13)
 - `ec304248` fix: S996 batch2 — Path.exists patch fix, living doc updates, Pattern 25 — copilot-swe-agent[bot] (2026-05-13)
@@ -29,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/security-quality-remediation-spr
 - `58960d6e` Fix for Non-standard exception raised in special method — Statix (2026-05-13)
 - `80ab0054` fix: security+quality batch 1 remediations and living-doc updates — copilot-swe-agent[bot] (2026-05-13)
 - `6f2ba22d` Merge pull request #4448 from Aries-Serpent/0D_base_ — Statix (2026-05-13)
-- `dac1606b` `0D_base_` to `main` merge readiness score 96/100 + follow-up prompt (continue t — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
