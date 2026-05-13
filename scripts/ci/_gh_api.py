@@ -539,14 +539,12 @@ class RateLimitAwareHTTP:
     # Public interface
     # ------------------------------------------------------------------
 
-    def get(self, url: str, *, headers: dict[str, str] | None = None) -> Any:
+    def get(self, url: str) -> Any:
         """GET *url* with TTL caching and back-off.
 
         Returns the parsed JSON body.  If the server is rate-limited and a
         cached response exists, the cached data is returned without raising.
-
-        *headers* is reserved for future per-request header overrides;
-        the standard GitHub auth headers are always injected automatically.
+        The standard GitHub auth headers are always injected automatically.
         """
         token = self._get_token()
         data, _ = api_get_cached(
@@ -564,13 +562,10 @@ class RateLimitAwareHTTP:
         url: str,
         *,
         payload: dict[str, Any] | None = None,
-        headers: dict[str, str] | None = None,
     ) -> Any:
         """POST *url* with optional JSON *payload* and back-off.
 
         Returns the parsed JSON body.  POST responses are never cached.
-
-        *headers* is reserved for future per-request header overrides.
         """
         token = self._get_token()
         data, _ = api_post(
@@ -585,7 +580,6 @@ class RateLimitAwareHTTP:
         self,
         url: str,
         *,
-        headers: dict[str, str] | None = None,
         per_page: int = DEFAULT_PER_PAGE,
         max_pages: int = 10,
     ) -> list[dict[str, Any]]:
@@ -593,8 +587,6 @@ class RateLimitAwareHTTP:
 
         Each page URL is cached independently (per-page deduplication): only
         pages whose cache entry has expired are re-downloaded.
-
-        *headers* is reserved for future per-request header overrides.
         """
         token = self._get_token()
         return paginate_cached(
