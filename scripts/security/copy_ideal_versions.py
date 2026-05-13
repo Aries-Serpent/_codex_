@@ -93,7 +93,7 @@ def copy_file_from_head(filepath: str) -> bool:
     )
 
     if returncode != 0:
-        print(f"Failed to checkout {filepath}: {stderr}", file=sys.stderr)
+        print(f"Failed to checkout {filepath}: {_stderr}", file=sys.stderr)
         return False
 
     return True

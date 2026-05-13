@@ -1,3 +1,20 @@
+## SESSION SUMMARY — 2026-05-13T10:43Z [S993-cont5-cherry-pick-4445]
+
+**Session:** S993-cont5-cherry-pick-4445 | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442
+
+### Completed
+- Cherry-picked PR#4445 (`copilot/create-evidence-backed-mermaid-map`) meaningful content: Mermaid runtime-logic diagram, `sync-mermaid-map` CLI command, `infer_intent()` refactor, new tests, `mkdocs.yml` nav entry
+- Fixed 3 F821 regressions (`stderr` → `_stderr`) in scripts/ from the prior RUF059 sweep
+- Added `_FAISS_AVAILABLE` flag to `src/codex/retrieval/stores/__init__.py`
+- Registered `sync-mermaid-map` utility in `.codex/AI_AGENT_UTILITIES_REGISTRY.md`
+- Removed 8 stale session planning docs
+- Fixed `_trend_symbol` unused variable in `scripts/space_traversal/trend_dashboard.py`
+- ruff src/ scripts/ — all checks passed
+- Pattern 25: CHANGELOG.md + this file in same commit
+- Pattern 30: PDA entry maintained (2026-05-13)
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T10:31Z [S993-cont4-secrets-baseline]
 
 **Session:** S993-cont4-secrets-baseline | **Branch:** `copilot/continue-cognitive-brain-objectives` | **PR:** #4442

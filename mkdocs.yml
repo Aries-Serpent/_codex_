@@ -59,6 +59,7 @@ nav:
 - Architecture:
   - Overview: architecture.md
   - Codex Pipeline: architecture/codex_pipeline.md
+  - Runtime Logic Map: system/mermaid_logic_map.md
 - Training:
   - Symbolic Training: training/symbolic_training.md
   - Distributed Troubleshooting: training/distributed_troubleshooting.md

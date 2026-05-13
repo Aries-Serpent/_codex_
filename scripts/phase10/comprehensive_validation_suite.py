@@ -416,7 +416,7 @@ class Phase10Validator:
                 "security_scan",
                 "warn",
                 "Potential secrets detected (review manually)",
-                {"stderr": stderr[:500]}
+                {"stderr": _stderr[:500]}
             )
 
     def test_dependencies_secure(self):

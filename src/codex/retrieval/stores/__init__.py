@@ -3,8 +3,10 @@
 try:
     from .faiss_store import FAISSStore
 
+    _FAISS_AVAILABLE = True
 except ImportError:  # pragma: no cover - faiss-cpu not installed in minimal envs
     FAISSStore = None  # type: ignore[assignment,misc]
+    _FAISS_AVAILABLE = False
 
 try:
     from .pgvector_store import PGVectorStore

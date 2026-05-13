@@ -31,6 +31,15 @@ from codex.knowledge.schema import validate_kb
 
 DOMAINS = ("zendesk", "d365", "relocation", "sla", "ops")
 INTENTS = ("admin", "consultant", "runtime", "devops")
+# Keyword map: intent → tuple of path substrings that trigger it.
+# 'admin' also matches 'runbook' paths (ops runbooks belong to admin intent).
+# All other intents match only their own name; fallback is 'admin'.
+_INTENT_KEYWORDS = {
+    "admin": ("admin", "runbook"),
+    "consultant": ("consultant",),
+    "runtime": ("runtime",),
+    "devops": ("devops",),
+}
 
 
 def infer_domain(path: str) -> str:
@@ -44,9 +53,9 @@ def infer_domain(path: str) -> str:
 def infer_intent(path: str) -> str:
     p = path.lower()
     for intent in INTENTS:
-        if intent in p:
+        if any(keyword in p for keyword in _INTENT_KEYWORDS.get(intent, (intent,))):
             return intent
-    return INTENTS[0]
+    return "admin"
 
 
 def iter_sources(root: Path):

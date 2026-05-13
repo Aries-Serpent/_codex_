@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added/Fixed (S993 cont.5 — cherry-pick PR#4445 + codebase improvements)
+- **`docs/diagrams/runtime_logic_map.mmd`**: Added evidence-backed Mermaid runtime logic diagram covering all `_codex_` entry points (6 entry points, training bootstrap, ingestion pipeline, quantum orchestrator, Rust/PyO3 bindings).
+- **`docs/system/mermaid_logic_map.md`**: Added canonical source-of-truth doc with evidence table mapping every diagram node to a verified source file, plus explicit ambiguity notes (A1 conditional CLI import, A2 Rust feature gate, A3 optional QFT).
+- **`src/codex/cli_knowledge.py`**: Added `codex knowledge sync-mermaid-map` command — parses `.mmd` files, chunks content into searchable NDJSON datablobs, computes quantum coherence score (`ψ = α·N + β·E + γ·V + δ·T`), emits compressed output.
+- **`src/codex/knowledge/build.py`**: Refactored `infer_intent()` to use canonical `INTENTS` tuple + module-level `_INTENT_KEYWORDS` map (eliminates repeated string literals, enables extension without touching logic).
+- **`src/codex/retrieval/stores/__init__.py`**: Added `_FAISS_AVAILABLE` boolean flag for callers to detect FAISS availability without importing `FAISSStore`.
+- **`mkdocs.yml`**: Added `Runtime Logic Map` page to Architecture nav section.
+- **`scripts/phase10/comprehensive_validation_suite.py`, `execute_secrets_injection_now.py`, `scripts/security/copy_ideal_versions.py`**: Fixed 3 F821 regressions (`stderr` → `_stderr`) introduced by the aab69b8 RUF059 sweep.
+- **`.codex/AI_AGENT_UTILITIES_REGISTRY.md`**: Registered the new Mermaid sync CLI utility.
+- **Removed stale session docs**: `docs/plans/PR4434_whats_next.md`, `docs/plans/PR4442_whats_next.md`, `docs/sessions/PR4434_session_diagram.md`, `docs/sessions/PR4442_session_diagram.md`, `docs/reference/CODEQL_FETCHER_WORKFLOW_GUIDE.md`, `docs/reference/SECURITY_API_REFERENCE.md`, `.github/copilot-prompts/active/PR-4434-followup.md`, `.github/copilot-prompts/active/PR-4442-followup.md`.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont5 (2026-05-13).
+
 ### Fixed (S993 cont.4 — secrets baseline enforcement + F821 regression)
 - **`scripts/phase10/automated_secrets_manager.py`**: Added `# pragma: allowlist secret` to 4 lines flagged as false-positive "Secret Keyword" by `detect-secrets` (variable assignments using constant names `CODEX_MASTER_KEY`/`secret_name`, not real credentials). Also fixed F821 regression introduced by the `aab69b8` RUF059 sweep: `stdout, stderr → _stdout, _stderr` but line 271 still referenced `stderr`; corrected to `_stderr`.
 - **`scripts/tools/variable_audit_cli.py`**: Added `# pragma: allowlist secret` to 3 lines flagged as false-positive (storage-layer constant names `LAYER_ORG_SECRETS`, `LAYER_REPO_SECRETS`, `LAYER_ENV_SECRETS` — these are variable names, not credentials).
