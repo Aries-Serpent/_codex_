@@ -214,7 +214,9 @@ def sync_mermaid_map_cmd(
     variables = {
         "N": len(nodes),
         "E": len(edges),
-        "V": len(set(_QUANTUM_SYMBOL_RE.findall(mapping_doc_text)).intersection(_QUANTUM_VARIABLES)),
+        "V": len(
+            set(_QUANTUM_SYMBOL_RE.findall(mapping_doc_text)).intersection(_QUANTUM_VARIABLES)
+        ),
     }
     records = _build_mermaid_search_records(
         mermaid_path=mermaid,

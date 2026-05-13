@@ -1,32 +1,36 @@
-# Session Context — 2026-05-13T10:37:10Z
+# Session Context — 2026-05-13T10:59:51Z
 **Branch:** `copilot/continue-cognitive-brain-objectives`  **PR:** #4445  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4702` (✅)
-- GraphQL remaining: `4953` (✅)
+- REST remaining: `4179` (✅)
+- GraphQL remaining: `4994` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4445 — feat(cli): add `codex knowledge sync-mermaid-map` for Mermaid sync, tokenized datablobs, and quantum variable mapping
 State: `open`  Draft: `True`  Branch: `copilot/create-evidence-backed-mermaid-map` → `main`
 
+### ❌ 2 Failing CI Check(s)
+- `copilot` (cancelled)
+- `copilot` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **.github/workflows/codeql-alert-fetcher.yml** — `failure` on `copilot/continue-cognitive-brain-objectives` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **PR Auto-Fix Check** — `failure` on `copilot/continue-cognitive-brain-objectives` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `496cc586` feat: cherry-pick PR#4445 Mermaid runtime map + sync-mermaid-map CLI; fix F821 r — copilot-swe-agent[bot] (2026-05-13)
+- `a599b398` fix: remove unused _trend_symbol call — fixes github-code-quality[bot] RUF059 al — copilot-swe-agent[bot] (2026-05-13)
 - `c90d2eaf` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
 - `a4bfbbb9` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 - `c2cf6601` fix: secrets baseline false positives + F821 regression from RUF059 sweep; Patte — copilot-swe-agent[bot] (2026-05-13)
 - `3d1ea355` Merge remote-tracking branch 'origin/copilot/continue-cognitive-brain-objectives — copilot-swe-agent[bot] (2026-05-13)
 - `db511e04` fix: code-quality bot review comments — Protocol docstrings, remove unused var u — copilot-swe-agent[bot] (2026-05-13)
 - `5a5c92b3` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `00ad9b3d` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `493ef6d7` Merge remote-tracking branch 'origin/copilot/continue-cognitive-brain-objectives — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -37,9 +41,9 @@ State: `open`  Draft: `True`  Branch: `copilot/create-evidence-backed-mermaid-ma
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-05-13] `PDA-SUCCESS-S993-CONT2-SCRIPTS-RUF059`: ?
 - [2026-05-13] `PDA-SUCCESS-S993-CONT3-CODEQBOT-FIXUPS`: ?
 - [2026-05-13] `PDA-SUCCESS-S993-CONT4-SECRETS-BASELINE`: ?
+- [2026-05-13] `PDA-SUCCESS-S993-CONT5-CHERRY-PICK-4445`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

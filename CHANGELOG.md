@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S993 cont.6 — Pattern 12 E501 line-length in cli_knowledge.py)
+- **`src/codex/cli_knowledge.py` line 217**: Wrapped long expression for `_QUANTUM_SYMBOL_RE` intersection to stay within 100-char limit (E501 Pattern 12 auto-fix).
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont6 (2026-05-13).
+
 ### Added/Fixed (S993 cont.5 — cherry-pick PR#4445 + codebase improvements)
 - **`docs/diagrams/runtime_logic_map.mmd`**: Added evidence-backed Mermaid runtime logic diagram covering all `_codex_` entry points (6 entry points, training bootstrap, ingestion pipeline, quantum orchestrator, Rust/PyO3 bindings).
 - **`docs/system/mermaid_logic_map.md`**: Added canonical source-of-truth doc with evidence table mapping every diagram node to a verified source file, plus explicit ambiguity notes (A1 conditional CLI import, A2 Rust feature gate, A3 optional QFT).
