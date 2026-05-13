@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S993 cont.2 — scripts/ RUF059/RUF034 batch; CI Rescue comment-review gate clear)
+- **CI Rescue comment resolved**: Comment Review Gate failure (run 25790407962) was on commit before `4a21568` fix; gate is now passing. Addressed by replying to CI Rescue comment 4439410756.
+- **`scripts/analyze_broken_links.py`**: `anchor` → `_anchor` (RUF059)
+- **`scripts/analyze_stubs.py`**: Simplified useless if-else `"P1" if ... else "P1"` → `"P1"` (RUF034)
+- **`scripts/auto_document_python.py`**: `missing` → `_missing` (RUF059)
+- **`scripts/ci/branch_rebase_check.py`**: `rc2` → `_rc2` (RUF059)
+- **`scripts/ci/fetch_codeql_alerts.py`**: `headers` → `_headers` (RUF059)
+- **`scripts/ci/github_var_writer.py`**: `resp` → `_resp` in PATCH/POST (RUF059)
+- **`scripts/ci/session_wrapup_autofix.py`**: `rc5` → `_rc5`, `rc10` → `_rc10` (RUF059)
+- **`scripts/ci/workflow_queue_manager.py`**: `status_code` → `_status_code` (RUF059)
+- **`scripts/code_change_reviewer.py`**: `converged` → `_converged` (RUF059)
+- **`scripts/deployment_orchestrator.py`**: `stderr` → `_stderr`, `stdout/_stderr` → `_stdout/_stderr` (RUF059)
+- **`scripts/fix_markdown_tables.py`**: `fixes` → `_fixes` in check and fix branches (RUF059)
+- **`scripts/memory_profile.py`**: `peak` → `_peak` (RUF059); corrected my earlier error (`current` IS used in return)
+- **`scripts/phase10/automated_secrets_manager.py`**: `stdout/stderr` → `_stdout/_stderr` (RUF059)
+- **`scripts/phase10/comprehensive_validation_suite.py`**: `stdout/stderr` → `_stdout/_stderr` in 3 `run_command` calls (RUF059)
+- **`scripts/phase10/execute_secrets_injection_now.py`**: `stdout/stderr` → `_stdout/_stderr` (RUF059)
+- **`scripts/root_org/organize_root_incremental.py`**: `references` → `_references` (RUF059)
+- **`scripts/security/copy_ideal_versions.py`**: `stderr/stdout` → `_stderr/_stdout` (RUF059)
+- **`scripts/security/resolve_merge_conflicts.py`**: `stderr` → `_stderr` in 4 run_command calls (RUF059)
+- **`scripts/space_traversal/trend_dashboard.py`**: `trend_text/class/symbol` → `_trend_text/_trend_class/_trend_symbol` (RUF059)
+- **`scripts/tools/variable_audit_cli.py`**: `status` → `_status` in 4 `_gh_request` calls (RUF059)
+- **`scripts/validate_auth_security.py`**: `token2` → `_token2` (RUF059)
+- **`scripts/validate_code_fences.py`**: `total_issues` → `_total_issues` in check branch (RUF059)
+- **`scripts/validate_docs_links.py`**: `warnings/fixed` → `_warnings/_fixed` (RUF059)
+- **`scripts/validate_table_spacing.py`**: `total_issues` → `_total_issues` in check branch (RUF059)
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont.2 (2026-05-13).
+
 ### Fixed (S993 cont. — CodeQL quick-wins: RUF059, RUF034, PIE790, B007 — 15 files)
 - **`scripts/ci/session_bootstrap.py`**: Renamed unused loop variable `url_repo`/`ids` → `_url_repo`/`_ids` in no-token branch (B007); kept named in the token branch where they ARE used (F821 regression prevented).
 - **`src/codex/cognitive/ml/symptom_classifier.py`**: Replaced `pass` → `...` in Protocol method bodies (PIE790 — unused pass after docstring).

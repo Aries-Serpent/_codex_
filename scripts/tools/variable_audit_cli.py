@@ -263,7 +263,7 @@ def _fetch_repo_vars(vm: VariableManager) -> dict[str, Any]:
 def _fetch_repo_secrets(token: str) -> dict[str, Any]:
     """Return {name: {}} for repo secrets (names only — values never exposed)."""
     try:
-        status, body = _gh_request(
+        _status, body = _gh_request(
             "GET",
             f"/repos/{_OWNER}/{_REPO}/actions/secrets",
             token=token,
@@ -277,7 +277,7 @@ def _fetch_repo_secrets(token: str) -> dict[str, Any]:
 def _fetch_org_secrets(token: str) -> dict[str, Any]:
     """Return {name: {}} for org secrets the repo can access."""
     try:
-        status, body = _gh_request(
+        _status, body = _gh_request(
             "GET",
             f"/orgs/{_OWNER}/actions/secrets",
             token=token,
@@ -291,7 +291,7 @@ def _fetch_org_secrets(token: str) -> dict[str, Any]:
 def _fetch_env_secrets(token: str) -> dict[str, Any]:
     """Return {name: {}} for environment secrets."""
     try:
-        status, body = _gh_request(
+        _status, body = _gh_request(
             "GET",
             f"/repos/{_OWNER}/{_REPO}/environments/{_ENV}/secrets",
             token=token,
@@ -305,7 +305,7 @@ def _fetch_env_secrets(token: str) -> dict[str, Any]:
 def _fetch_env_vars(token: str) -> dict[str, Any]:
     """Return {name: entry} for environment variables."""
     try:
-        status, body = _gh_request(
+        _status, body = _gh_request(
             "GET",
             f"/repos/{_OWNER}/{_REPO}/environments/{_ENV}/variables",
             token=token,

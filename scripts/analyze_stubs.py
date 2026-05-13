@@ -65,7 +65,7 @@ def scan_for_stubs(source_dirs):
                         priority = (
                             "P0"
                             if "p0" in line_lower or "critical" in line_lower
-                            else "P1" if "p1" in line_lower or "high" in line_lower else "P1"
+                            else "P1"
                         )
                         message = line.split("#", 1)[1].strip()
                         stubs.append((py_file, i, "FIXME", message, priority))

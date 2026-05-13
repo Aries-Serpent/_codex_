@@ -386,7 +386,7 @@ class Phase10Validator:
         print("\n🔒 Running security scan...")
 
         # Check if detect-secrets is available
-        returncode, stdout, stderr = self.run_command(["which", "detect-secrets"])
+        returncode, _stdout, _stderr = self.run_command(["which", "detect-secrets"])
 
         if returncode != 0:
             self.log_test(
@@ -397,7 +397,7 @@ class Phase10Validator:
             return
 
         # Run detect-secrets scan
-        returncode, stdout, stderr = self.run_command([
+        returncode, _stdout, _stderr = self.run_command([
             "detect-secrets", "scan",
             "--baseline", ".secrets.baseline",
             "--exclude-files", ".*node_modules/.*",
@@ -424,10 +424,10 @@ class Phase10Validator:
         print("\n🔍 Checking dependencies...")
 
         # Check Python dependencies with pip-audit if available
-        returncode, stdout, stderr = self.run_command(["which", "pip-audit"])
+        returncode, _stdout, _stderr = self.run_command(["which", "pip-audit"])
 
         if returncode == 0:
-            returncode, stdout, stderr = self.run_command(["pip-audit", "--desc"])
+            returncode, stdout, _stderr = self.run_command(["pip-audit", "--desc"])
 
             if returncode == 0:
                 self.log_test(

@@ -262,7 +262,7 @@ class GitHubSecretsManager:
                 text=True
             )
 
-            stdout, stderr = process.communicate(input=secret_value)
+            _stdout, _stderr = process.communicate(input=secret_value)
 
             if process.returncode == 0:
                 # Security: Don't log secret names - CodeQL alert #3330

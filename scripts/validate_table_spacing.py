@@ -218,11 +218,11 @@ Examples:
         return 1
 
     if args.check and not args.fix:
-        files_with_issues, total_issues, _ = scan_directory(docs_dir, fix=False)
+        files_with_issues, _total_issues, _ = scan_directory(docs_dir, fix=False)
         return 0 if files_with_issues == 0 else 1
 
     if args.fix:
-        files_with_issues, total_issues, files_fixed = scan_directory(
+        files_with_issues, _total_issues, files_fixed = scan_directory(
             docs_dir, fix=True, dry_run=args.dry_run
         )
 

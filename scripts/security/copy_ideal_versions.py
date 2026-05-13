@@ -62,7 +62,7 @@ def get_changed_files_in_pr() -> list[str]:
     base_commit = "bb92fab"
 
     # Get all files changed from base to HEAD
-    returncode, stdout, stderr = run_command(
+    returncode, stdout, _stderr = run_command(
         ["git", "diff", "--name-only", f"{base_commit}..HEAD"],
         check=False
     )
@@ -87,7 +87,7 @@ def copy_file_from_head(filepath: str) -> bool:
         True if successful, False otherwise
     """
     # Use git checkout HEAD to get our version
-    returncode, stdout, stderr = run_command(
+    returncode, _stdout, _stderr = run_command(
         ["git", "checkout", "HEAD", "--", filepath],
         check=False
     )

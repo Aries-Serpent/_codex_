@@ -261,9 +261,9 @@ def main():
     )
 
     if args.file:
-        issues, fixes = fixer.fix_file(args.file)
+        issues, _fixes = fixer.fix_file(args.file)
     else:
-        issues, fixes = fixer.fix_all()
+        issues, _fixes = fixer.fix_all()
 
     # Exit with error code if there are unfixed issues
     sys.exit(1 if (issues > 0 and args.check_only) else 0)

@@ -877,7 +877,7 @@ def cancel_run_by_id(
         log.error("No token available")
         return False
 
-    status_code, run_data = _gh_get(f"/repos/{repo}/actions/runs/{run_id}", token)
+    _status_code, run_data = _gh_get(f"/repos/{repo}/actions/runs/{run_id}", token)
     run_name = run_data.get("name", f"run-{run_id}") if isinstance(run_data, dict) else f"run-{run_id}"
 
     return cancel_run(
