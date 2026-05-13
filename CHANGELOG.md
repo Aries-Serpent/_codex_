@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S974 — Fast Validation date sync + PDA entry)
+- **`docs/ROADMAP.md` date update**: Updated date from `2026-05-12` to `2026-05-13` (pre-commit sync hook requires current date — hook auto-updates this, causing hook failure if not committed proactively)
+- **PDA entry for 2026-05-13**: Added PDA iteration entry for today — resolves Pattern 30 `PDA entry today` dimension failure
+
 ### Fixed (S973 — detect-secrets baseline + subprocess CodeQL final fix)
 - **detect-secrets false positives**: Added `# pragma: allowlist secret` to test fixture lines in `tests/safety/test_sanitizers_coverage.py` (lines with AWS/GitHub/OpenAI/RSA key test fixtures), `tests/serving/test_inference_enhanced.py`, and `tests/test_token_verification.py` — fixes `Fast Validation` CI failure (detect-secrets baseline mismatch)
 - **`src/codex/utils/subprocess.py` CodeQL py/import-self (final fix)**: Removed `if TYPE_CHECKING: from subprocess import CompletedProcess` block (still triggered CodeQL after S971); now exposes `CompletedProcess` via `_stdlib_subprocess.CompletedProcess` attribute access — no Python `import` statement targeting `subprocess` at all
