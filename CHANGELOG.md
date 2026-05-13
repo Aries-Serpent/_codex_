@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4450)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4450 (SHA `deb50092`) at 2026-05-13T17:11Z [auto-generated]
+
 ### Fixed (S994-artifact-refresh — PR #4448 — 2026-05-13T16:30Z)
 - **Security artifact refresh** — ingested new security-scanning-suite artifacts from run 25809211083:
   - `dependency-scan-results` sha256:ae221879 · `sbom-reports` sha256:1d922863
