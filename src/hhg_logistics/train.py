@@ -40,6 +40,7 @@ except (ImportError, AttributeError) as e:
 
         to_absolute_path = hydra.utils.to_absolute_path
     except (ImportError, ModuleNotFoundError, AttributeError):
+
         class _HydraFallback:
             class utils:
                 @staticmethod
