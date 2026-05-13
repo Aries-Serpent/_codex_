@@ -157,7 +157,7 @@ def train_val_test_split(
 
     n = len(dataset)
     indices = list(range(n))
-    rng = random.Random(int(seed))
+    rng = random.Random(int(seed))  # nosec B311 — non-cryptographic ML sampling/shuffling
     rng.shuffle(indices)
 
     n_test = int(n * test_frac)

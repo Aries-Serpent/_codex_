@@ -91,7 +91,7 @@ def split_dataset(
                     return list(data["train"]), list(data["val"])
 
     # Deterministic shuffle and split
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
     items_shuffled = list(items)
     rng.shuffle(items_shuffled)
     split_idx = int(len(items_shuffled) * float(train_ratio))

@@ -250,14 +250,14 @@ class ThermodynamicOrchestrator:
         for _ in range(iterations):
             # Generate neighbor by swapping two tasks
             new_order = current_order.copy()
-            i, j = random.sample(range(len(new_order)), 2)
+            i, j = random.sample(range(len(new_order)), 2)  # nosec B311 — non-cryptographic ML sampling/shuffling
             new_order[i], new_order[j] = new_order[j], new_order[i]
 
             new_energy = self._calculate_total_free_energy(new_order)
             delta_energy = new_energy - current_energy
 
             # Accept if better, or probabilistically if worse
-            if delta_energy < 0 or random.random() < math.exp(-delta_energy / temperature):
+            if delta_energy < 0 or random.random() < math.exp(-delta_energy / temperature):  # nosec B311 — non-cryptographic ML sampling/shuffling
                 current_order = new_order
                 current_energy = new_energy
 

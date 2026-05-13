@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 def train(epochs: int, batch_size: int, log_path: Path) -> None:
-    rng = random.Random(42)
+    rng = random.Random(42)  # nosec B311 — non-cryptographic ML sampling/shuffling
     log_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Simulate training

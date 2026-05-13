@@ -306,7 +306,7 @@ def split_indices(
     if val_size + test_size > total:
         raise ValueError("Validation and test splits exceed dataset size")
 
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
     indices = list(range(total))
     rng.shuffle(indices)
 
@@ -597,7 +597,7 @@ def stream_paths(
 
     ordered_paths = expanded_paths
     if seed is not None:
-        rng = random.Random(seed)
+        rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
         rng.shuffle(ordered_paths)
 
     for path in ordered_paths:

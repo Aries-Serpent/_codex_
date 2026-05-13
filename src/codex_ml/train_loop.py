@@ -906,7 +906,7 @@ def _telemetry_should_sample(record: dict[str, Any]) -> bool:
             return False
         import random as _random
 
-        return _random.random() < rate
+        return _random.random() < rate  # nosec B311 — non-cryptographic ML sampling/shuffling
     except Exception:
         return True
 

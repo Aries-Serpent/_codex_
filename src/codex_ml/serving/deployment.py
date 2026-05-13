@@ -97,7 +97,7 @@ class TrafficSplitter:
             return "blue"
 
         # Weighted routing
-        rand = random.random() * 100
+        rand = random.random() * 100  # nosec B311 — non-cryptographic ML sampling/shuffling
         if rand < self.blue_weight:
             self.blue_requests += 1
             return "blue"

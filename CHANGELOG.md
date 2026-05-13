@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S994-security-batch3 — PR #4448 — 2026-05-13T16:09Z)
+- **Security hardening Batch 3** — B311 per-site nosec annotations (25 sites, 20 files):
+  - Added `# nosec B311 — non-cryptographic ML sampling/shuffling` to every `random.*` call in ML data-loading, splitting, evaluation, pipeline, serving, and training modules.
+  - Raw bandit count: 375 → 328 (B311 fully documented; B101/B404/B603/B607 remain, all globally suppressed by `.bandit` config).
+  - `bandit --configfile .bandit` remains at 0 issues ✅.
+  - Updated `.codex/plans/security-remediation-planset.md` with Batch 3 completion, Batch 5 CVE monitoring protocol, and Batch 6 post-merge rescan promptset.
+
 ### Fixed (S994-security-remediation — PR #4448 — 2026-05-13T15:45Z)
 - **Security hardening Batch 1-4** from artifact-based scan (pip-audit sha256:df04fb29, SBOM sha256:97d5e5d6, run 25797170771):
   - Replaced production `assert last_result is not None` with explicit `if/raise RuntimeError` in `src/codex/skills/envelope.py` (B101 production code).

@@ -304,7 +304,7 @@ class ModelServer:
             embeddings: list[list[float]] = []
             for text in texts:
                 seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
-                rng = random.Random(seed)
+                rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
                 vec = [rng.random() for _ in range(self._embedding_dim)]
                 norm = math.sqrt(sum(v * v for v in vec))
                 if norm > 0:

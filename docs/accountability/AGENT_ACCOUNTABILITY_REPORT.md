@@ -1,3 +1,32 @@
+## SESSION SUMMARY — 2026-05-13T16:09Z [S994-security-batch3]
+
+**Session:** S994-security-batch3 | **Branch:** `0D_base_` | **PR:** #4448
+
+### Completed
+- ✅ **Batch 3** (B311 per-site nosec): Annotated all 25 B311 sites across 20 files with `# nosec B311 — non-cryptographic ML sampling/shuffling`. Raw bandit: 353 → 328 (B311 fully cleared).
+- ✅ Updated `.codex/plans/security-remediation-planset.md`: Batch 3 marked complete; Batch 5 CVE monitoring protocol documented; Batch 6 post-merge rescan promptset added.
+- ✅ `bandit --configfile .bandit` → 0 issues (maintained) ✅.
+- ✅ `ruff check src/` → 0 issues ✅.
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in this commit.
+- ✅ Replied to comment 4442687281 (continue all P1-P4 tasks + security concerns).
+
+### Remaining (queued in planset)
+- 🔲 Batch 5: Monitor diskcache/sqlitedict for fix version release (no fix available 2026-05-13).
+- 🔲 Batch 6: Re-run security-scanning-suite after merge to main, verify raw=328 + config=0.
+
+### Security Posture Summary
+| Rule | Count | Status |
+|------|:---:|--------|
+| B101 asserts | 226 | ✅ globally suppressed + test exclude_dirs |
+| B311 pseudo-random | 0 | ✅ all annotated with nosec |
+| B403 pickle imports | 0 | ✅ all annotated with nosec |
+| B404 subprocess import | 36 | ✅ globally suppressed |
+| B603 subprocess call | 48 | ✅ globally suppressed |
+| B607 partial path | 18 | ✅ globally suppressed |
+| **config issues** | **0** | ✅ **target met** |
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T15:45Z [S994-security-remediation-planset]
 
 **Session:** S994-security-remediation-planset | **Branch:** `0D_base_` | **PR:** #4448

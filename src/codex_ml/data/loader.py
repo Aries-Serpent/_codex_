@@ -217,7 +217,7 @@ def seeded_shuffle(items: Sequence[T], seed: int) -> list[T]:
     from random import Random
 
     result = list(items)
-    Random(seed).shuffle(result)
+    Random(seed).shuffle(result)  # nosec B311 — non-cryptographic ML sampling/shuffling
     return result
 
 

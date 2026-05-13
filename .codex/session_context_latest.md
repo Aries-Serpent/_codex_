@@ -1,10 +1,10 @@
-# Session Context — 2026-05-13T15:30:30Z
+# Session Context — 2026-05-13T16:05:19Z
 **Branch:** `0D_base_`  **PR:** #4448  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4618` (✅)
+- GraphQL remaining: `4992` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -14,19 +14,19 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **PR Comment Review Gate** — `failure` on `0D_base_` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `b2c60b4b` fix(security): apply code review suggestions — clarify guard comment + nosec pla — copilot-swe-agent[bot] (2026-05-13)
+- `7c92f4c7` fix(security): Batch 1-4 bandit remediation from artifact scan — 375→353 raw, 0  — copilot-swe-agent[bot] (2026-05-13)
+- `6a621054` chore: initial plan for dependency/SBOM remediation planset [skip ci] — copilot-swe-agent[bot] (2026-05-13)
 - `09ef18a2` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
 - `d2111650` fix(ci): address Pattern 25 — update AGENT_ACCOUNTABILITY_REPORT + CHANGELOG for — copilot-swe-agent[bot] (2026-05-13)
 - `c0df429d` Fix for Empty except — Statix (2026-05-13)
 - `101b8aad` Fix for Empty except — Statix (2026-05-13)
 - `3a8f8cb4` Fix broken refactors: restore sandbox.py + test parametrize, patch suite-wide co — copilot-swe-agent[bot] (2026-05-13)
-- `0e216aab` fix(pr4448): restore syntax-valid files + MLflow/dev-req/facets/tokenization fix — copilot-swe-agent[bot] (2026-05-13)
-- `0a94d7e8` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
-- `8ecf49d7` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

@@ -254,7 +254,7 @@ def _limit_records(records: list[dict[str, Any]], cfg: _DataConfig) -> list[dict
         return []
     items = list(records)
     if cfg.shuffle:
-        rng = random.Random(cfg.seed)
+        rng = random.Random(cfg.seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
         rng.shuffle(items)
     if cfg.sample_mode:
         limit = max(0, cfg.sample_size)

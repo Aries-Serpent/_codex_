@@ -173,7 +173,7 @@ def split_dataset(
     if total <= 0:
         raise ValueError("Split ratios must be positive")
     normalised = [r / total for r in ratios]
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
     indices = list(range(len(records)))
     rng.shuffle(indices)
     n = len(records)
@@ -284,7 +284,7 @@ def load_line_dataset(
 
     lines = dataset_path.read_text(encoding="utf-8").splitlines()
     if shuffle:
-        rng = random.Random(seed)
+        rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
         rng.shuffle(lines)
 
     should_write_manifest = write_manifest

@@ -39,7 +39,7 @@ def deterministic_split_ids(
     if not 0.0 < split_cfg.fraction_train < 1.0:
         raise ValueError("fraction_train must be in (0, 1)")
     ids_list = list(ids)
-    rng = random.Random(split_cfg.seed)
+    rng = random.Random(split_cfg.seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
     rng.shuffle(ids_list)
     n_train = int(round(len(ids_list) * split_cfg.fraction_train))
     train_ids = ids_list[:n_train]
