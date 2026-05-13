@@ -1,8 +1,8 @@
 # PR #4434 — What's Next
 
 > **PR:** [#4434](https://github.com/Aries-Serpent/_codex_/pull/4434)  
-> **Session:** S987-S989 | **Date:** 2026-05-13 | **Branch:** `copilot/verify-codeql-alerts-and-sweep`  
-> **Current head:** `HEAD` (S989 — workflow guide + Pattern 25/30 wrap)
+> **Session:** S992 | **Date:** 2026-05-13 | **Branch:** `copilot/verify-codeql-alerts-and-sweep`  
+> **Current head:** `HEAD` (S992 — source-branch corrections + workflow hardening wrap)
 
 ---
 
@@ -34,6 +34,20 @@
 ---
 
 
+
+## ✅ Completed (S992)
+
+| Area | Status |
+|------|--------|
+| `codeql-alert-fetcher.yml` corrections from `verify-codeql-alerts-and-sweep-1` | ✅ applied to this PR branch |
+| Dispatch boolean normalization (`include_dependabot` / `include_secrets`) | ✅ centralized in params step |
+| Safer analyses/community-profile fallback writes | ✅ temp-file + JSON validation |
+| Collector health reporting | ✅ `collector_status.json` + Actions step summary |
+| `session_bootstrap.py` F821 regression | ✅ `url_repo` / `ids` binding restored |
+| Pattern 27 false-positive handling | ✅ `.secrets.baseline` refreshed |
+
+---
+
 ## ✅ Completed (S990)
 
 | Area | Status |
@@ -46,11 +60,11 @@
 
 | Priority | Area | Notes |
 |----------|------|-------|
-| P1 | Run `codeql-alert-fetcher.yml` full pipeline | Verify WEC checkbox fires and artifact uploads correctly |
-| P1 | Review Copilot Autofix suggestions in Security tab | Check which alerts got AI fixes after first autofix run |
+| P1 | Run `codeql-alert-fetcher.yml` snapshot workflow | Verify the hardened artifact bundle uploads and `collector_status.json` reflects all collectors |
+| P1 | Review the uploaded security snapshot artifact | Start with `AGENT_SECURITY_CONTEXT.md`, then inspect `codeql/alerts_fixable.md` and `collector_status.json` |
 | P2 | Next batch of CodeQL alerts from `alerts_fixable.md` | Continue systematic reduction |
 | P2 | Dependabot alerts — remaining high/critical | Check `dependabot/alerts_critical.json` in latest snapshot |
-| P3 | Create `fetch_security_snapshot.py` — `--types autofix` | Script already scaffolded; validate with real token |
+| P3 | Evaluate next hardening pass for pagination/ref-awareness | Link-header pagination and ref-aware queries remain future enhancements |
 | P3 | Add `template_lint.yml` to `session_wrapup_autofix.py` | Minor discrepancy between template and `_WEC_ITEMS` |
 
 ---
