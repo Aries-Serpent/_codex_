@@ -1,59 +1,115 @@
-# PR #4434 — S990 Continuation Prompt
+# 🎯 PR Follow-Up Tasks - #4434
 
-> **Generated:** 2026-05-13T05:50Z | **Session:** S987-S989 | **Branch:** `copilot/verify-codeql-alerts-and-sweep`
+**PR**: #4434 - PR #4434  
+**Branch**: `copilot/verify-codeql-alerts-and-sweep`  
+**Author**: @Copilot  
+**Date**: 2026-05-13  
+**Commit**: `de0c6e73e2cc813576fe57a11ececa8c4d0d0fee`  
+**Status**: 🔄 ACTIVE
 
-## Context
+---
 
-Sessions S987-S989 completed:
-- ✅ 20 CodeQL quick-win fixes (6 `py/ineffectual-statement` + 14 unused-global/import)
-- ✅ `scripts/ci/_gh_api.py` — shared rate-limit + TTL disk cache layer
-- ✅ `scripts/ci/fetch_security_snapshot.py` — unified security data fetcher
-- ✅ `codeql-alert-fetcher.yml` — multi-stage pipeline (collect/autofix/prompt) with `actions/cache`
-- ✅ `wec_enforcer.py` — `_WORKFLOW_DEFAULT_INPUTS` for explicit pipeline dispatch
-- ✅ PR template WEC checkbox + self-healing trigger registered
-- ✅ `docs/reference/SECURITY_API_REFERENCE.md` + `CODEQL_FETCHER_WORKFLOW_GUIDE.md` (7 Mermaid diagrams)
-- ✅ Pattern 25/30 satisfied, living docs updated
+## 📋 PREVIOUS SESSION SUMMARY
 
-## Priority Tasks for S990
+### Completed Work
+- [`de0c6e73`] fix(review): remove unused imports in fetch_codeql_alerts.py; initialize loaded_bundle in test_peft_utils.py (copilot-swe-agent[bot], 2026-05-13)
+- [`d34507c8`] chore(d00): update session context digest [skip ci] (github-actions[bot], 2026-05-13)
+- [`624a80fd`] chore(auth): write provenance session token [skip ci] (github-actions[bot], 2026-05-13)
 
-### P1 — Validate the pipeline end-to-end
-1. Trigger `codeql-alert-fetcher.yml` via UI or check `- [x] codeql-alert-fetcher.yml` in the PR WEC section.
-2. Verify artifact uploads and contains `AGENT_SECURITY_CONTEXT.md`.
-3. Verify `@copilot` prompt was posted to PR #4434.
-4. Check Security tab for Copilot Autofix suggestions; review and commit any AI-generated fixes.
+### Files Modified
+No files modified
 
-### P2 — Continue CodeQL alert reduction (next 20)
-Using `codeql/alerts_fixable.md` from the latest artifact:
-1. Fix next batch of `py/unused-import` and `py/unused-global-variable` alerts.
-2. Fix any remaining `py/ineffectual-statement`.
-3. Target `py/clear-text-logging-sensitive-data` or `py/path-injection` if present.
+---
 
-### P3 — Dependabot remaining alerts
-1. Open `dependabot/alerts_critical.json` from the latest snapshot.
-2. Update `requirements/*.txt` or `pyproject.toml` for each critical/high package.
-3. Verify patched versions with `gh-advisory-database` tool before pinning.
+## 🎯 NEXT PHASE OBJECTIVES
 
-### P4 — `fetch_security_snapshot.py` validation
+### Priority 1: Immediate Tasks 🔴 CRITICAL
+- [ ] No tasks specified
+
+**Validation**:
 ```bash
-GH_TOKEN=$CODEX_MASTER_KEY python scripts/ci/fetch_security_snapshot.py \
-  --types autofix --out-dir /tmp/test_snap --autofix-max 3 \
-  --autofix-severities critical,error
+python -m ruff check src/ tests/ --output-format=concise
+python scripts/ci/mypy_baseline.py --require-baseline
+python scripts/ci/auto_fix_common_issues.py --check-only
+python scripts/ci/sync_tracked_files.py --fix
 ```
 
-### P5 — WEC `_WEC_ITEMS` discrepancy
-Add `template_lint.yml` to `session_wrapup_autofix.py` after `audit-qa-suite.yml` (before `codeql-alert-fetcher.yml`) to match the PR template.
+### Priority 2: Follow-Up Validation 🟡 HIGH
+- [ ] No tasks specified
 
-## Session Start Checklist
-```
-[ ] git log --oneline -5                                    # verify Pattern 25
-[ ] tail -1 .codex/aftermath/pda_iterations.jsonl           # check PDA date (Pattern 30)
-[ ] python scripts/ci/sync_tracked_files.py --check
-[ ] python scripts/ci/auto_fix_common_issues.py --check-only
-[ ] python scripts/ci/verify_living_files.py --pr-number 4434 --strict
-```
+### Priority 3: Future Enhancements 🟢 MEDIUM
+- [ ] No tasks specified
 
-## Key New Files
-- `scripts/ci/_gh_api.py` — HTTP helper; `CODEX_API_CACHE_DISABLED=1` to bypass cache
-- `scripts/ci/fetch_security_snapshot.py` — `--types dependabot,secrets,policy,analyses,autofix,context,all`
-- `docs/reference/CODEQL_FETCHER_WORKFLOW_GUIDE.md` — full pipeline docs with Mermaid diagrams
-- `docs/reference/SECURITY_API_REFERENCE.md` — GitHub Security API catalog
+---
+
+## ✅ EXECUTION CHECKLIST
+
+- [ ] All Priority 1 tasks completed and validated
+- [ ] All Priority 2 tasks completed or documented
+- [ ] Priority 3 tasks reviewed and prioritized
+- [ ] All validation checks passed
+- [ ] Documentation updated
+- [ ] Self-review completed (5 passes, 0 concerns)
+
+---
+
+## 🔍 MANDATORY SELF-REVIEW PROTOCOL
+
+**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
+
+### Pass 1: Code Quality & Correctness
+- [ ] All syntax errors resolved
+- [ ] No linting warnings introduced
+- [ ] Type hints correct
+- [ ] Error handling comprehensive
+- [ ] Edge cases covered
+
+### Pass 2: Testing & Validation
+- [ ] All tests passing locally
+- [ ] New tests added for new functionality
+- [ ] Test coverage maintained or improved
+- [ ] CI/CD checks passing
+
+### Pass 3: Documentation & Communication
+- [ ] Code comments added for complex logic
+- [ ] Docstrings updated
+- [ ] README reflects changes
+- [ ] CHANGELOG updated
+- [ ] Commit messages descriptive
+
+### Pass 4: Security & Safety
+- [ ] No hardcoded secrets or credentials
+- [ ] Input validation added
+- [ ] Dependencies reviewed (no vulnerabilities)
+- [ ] Security implications documented
+
+### Pass 5: Integration & Dependencies
+- [ ] No breaking changes (or properly documented)
+- [ ] Backward compatibility maintained
+- [ ] Cross-PR dependencies resolved
+- [ ] No regressions introduced
+
+**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
+
+---
+
+## 🤖 COPILOT AGENT INSTRUCTIONS
+
+**When you see `@copilot continue` in PR #4434:**
+
+1. Load this prompt from `.github/copilot-prompts/active/PR-4434-followup.md`
+2. Execute Priority 1 tasks in order, validating each
+3. Then execute Priority 2 tasks
+4. Review Priority 3 tasks
+5. Update this file after each task (add ✅ for completed)
+6. Perform mandatory 5-pass self-review
+7. Post comprehensive status as PR comment
+8. Generate new continuation if work remains
+
+**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
+
+---
+
+**Generated**: 2026-05-13  
+**Template Version**: 2.0.0  
+**Last Updated**: 2026-05-13 05:51:44
