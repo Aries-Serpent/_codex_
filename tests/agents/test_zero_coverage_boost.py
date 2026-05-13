@@ -101,9 +101,10 @@ class TestExceptionsModule:
         """Test AgentImportError provides helpful message."""
         from agents.exceptions import AgentImportError
 
-        with pytest.raises(AgentImportError) as exc_info:
+        def _raise_import_error():
             raise AgentImportError("torch", "torch", "ml")
 
+        exc_info = pytest.raises(AgentImportError, _raise_import_error)
         error_msg = str(exc_info.value)
         assert "torch" in error_msg
         assert "pip install" in error_msg
