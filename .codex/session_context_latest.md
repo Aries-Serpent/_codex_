@@ -1,24 +1,28 @@
-# Session Context — 2026-05-13T01:31:20Z
+# Session Context — 2026-05-13T01:50:59Z
 **Branch:** `0D_base_`  **PR:** #4427  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3075` (✅)
-- GraphQL remaining: `4968` (✅)
+- REST remaining: `4811` (✅)
+- GraphQL remaining: `4953` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4427 — Continue CodeQL alert remediation (127 → 100 → 75 → 50 → 25 → 0)
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `Post rescue comment` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `0D_base_` (2026-05-13)
+- **PR Auto-Fix Check** — `failure` on `0D_base_` (2026-05-13)
 
 ## 📝 Recent Commits
+- `8f3b62d8` ci: S976 — address CI Rescue on 98f52a2 (action_required not failure) — copilot-swe-agent[bot] (2026-05-13)
 - `0a1e17af` fix(deps): cherry-pick ujson 5.12.0→5.12.1 security fix from PRs #4430/#4431 — copilot-swe-agent[bot] (2026-05-13)
 - `75072111` chore: establish S976 plan — cherry-pick ujson bump from PRs 4430/4431 — copilot-swe-agent[bot] (2026-05-13)
 - `98f52a2c` fix(ci): S975 — Pattern 25 compliance + CI stabilization confirmation — copilot-swe-agent[bot] (2026-05-13)
@@ -26,7 +30,6 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `135022c9` Continue CodeQL alert remediation (127 → 100 → 75 → 50 → 25 → 0) — copilot-swe-agent[bot] (2026-05-13)
 - `e53db477` fix(ci): S974 — update ROADMAP.md date to 2026-05-13 + add PDA entry (Pattern 30 — copilot-swe-agent[bot] (2026-05-13)
 - `e7279bd5` chore: establish S974 plan — fix Fast Validation failures — copilot-swe-agent[bot] (2026-05-13)
-- `62852fe2` fix(ci): suppress detect-secrets false positives + final subprocess CodeQL fix — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
