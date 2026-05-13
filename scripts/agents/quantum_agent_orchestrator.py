@@ -260,7 +260,7 @@ class QuantumAgentOrchestrator:
         current_cost = calculate_cost(current_order)
         temperature = 1.0
 
-        for iteration in range(100):
+        for _ in range(100):
             # Generate neighbor by swapping two adjacent agents
             if len(current_order) < 2:
                 break

@@ -275,7 +275,7 @@ class RepositoryIndexer:
         """Build hierarchical structure of the repository."""
         structure = {}
 
-        for file_path, file_index in self.content_index.items():
+        for _, file_index in self.content_index.items():
             parts = Path(file_index.relative_path).parts
             current = structure
 
@@ -296,7 +296,7 @@ class RepositoryIndexer:
 
     def build_semantic_index(self):
         """Build keyword-based semantic index."""
-        for file_path, file_index in self.content_index.items():
+        for _, file_index in self.content_index.items():
             # Index by keywords
             for keyword in file_index.keywords:
                 if keyword not in self.semantic_index:

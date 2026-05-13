@@ -87,7 +87,7 @@ def fix_deleted_file_reference(file_path: Path, link_url: str, action: str) -> b
         new_lines = []
         skip_next = False
 
-        for i, line in enumerate(lines):
+        for _i, line in enumerate(lines):
             if skip_next:
                 skip_next = False
                 continue

@@ -155,7 +155,7 @@ class AdoptionTracker:
                             # Count files efficiently using os.walk (more performant than rglob)
                             try:
                                 file_count = 0
-                                for root, dirs, files in os.walk(artifacts_dir):
+                                for _, dirs, files in os.walk(artifacts_dir):
                                     file_count += len(files)
                                     if file_count >= MAX_ARTIFACTS_PER_RUN:
                                         file_count = MAX_ARTIFACTS_PER_RUN

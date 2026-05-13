@@ -4,10 +4,12 @@ name: 🔍 CodeQL Alert Fetcher
 #
 # Purpose
 # -------
-# Fetch all open CodeQL alerts from the code-scanning API using CODEX_MASTER_KEY
-# (which holds the security_events scope unavailable to sandbox tokens) and
-# upload the results as a downloadable artifact so the Copilot coding agent can
-# review exact file:line locations and plan targeted fixes within the same session.
+# Fetch ALL open security alerts (CodeQL, Dependabot, secret scanning) plus
+# community health, security policy, and CodeQL analysis provenance using
+# CODEX_MASTER_KEY (which holds the security_events scope unavailable to sandbox
+# tokens).  Uploads a rich, agent-ready artifact so the Copilot coding agent
+# can plan and execute codebase-wide security + quality remediations within the
+# same session, without any additional API calls.
 #
 # Why a separate workflow?
 # ------------------------
@@ -24,11 +26,29 @@ name: 🔍 CodeQL Alert Fetcher
 #
 # Artifacts produced (90-day retention)
 # --------------------------------------
-#   codeql-alerts-{state}-{tool}-{run_id}/
-#     alerts_raw.json      — full API JSON array
-#     alerts_by_rule.md    — grouped by rule ID (ready to paste into session notes)
-#     alerts_fixable.md    — top-N prioritised fix list
-#     alerts_summary.json  — machine-readable counts by rule / severity
+#   security-snapshot-{run_id}/
+#     # CodeQL / code-scanning
+#     codeql/alerts_raw.json          — full CodeQL alert JSON array
+#     codeql/alerts_by_rule.md        — grouped by rule ID (paste into session notes)
+#     codeql/alerts_fixable.md        — top-N prioritised fix list
+#     codeql/alerts_summary.json      — machine-readable counts by rule / severity
+#     # Dependabot
+#     dependabot/alerts_open.json     — open Dependabot vulnerability alerts
+#     dependabot/alerts_critical.json — critical + high only
+#     dependabot/summary.json         — counts by severity / ecosystem
+#     # Secret scanning
+#     secrets/alerts_open.json        — open secret scanning alerts
+#     secrets/alerts_active.json      — validity=active confirmed secrets
+#     secrets/summary.json            — counts by type / validity
+#     # Security policy & community health
+#     policy/community_profile.json   — community health endpoint
+#     policy/security_policy.json     — resolved policy file (path + content)
+#     # Analysis provenance
+#     analyses/recent.json            — last 100 code-scanning analysis runs
+#     analyses/default_setup.json     — CodeQL default-setup status
+#     # Consolidated agent context
+#     AGENT_SECURITY_CONTEXT.md       — single-file summary for Copilot agent
+#     run_metadata.json               — run parameters + timestamps
 #
 # Activation
 # ----------
@@ -37,7 +57,7 @@ name: 🔍 CodeQL Alert Fetcher
 # arm it.  Alternatively, dispatch manually:
 #
 #   gh workflow run codeql-alert-fetcher.yml \
-#       --ref copilot/fix-timeline-structure \
+#       --ref main \
 #       -f state=open -f max_pages=10 -f page_sleep_ms=1000
 
 on:
@@ -69,6 +89,16 @@ on:
         required: false
         type: string
         default: '30'
+      include_dependabot:
+        description: 'Also fetch Dependabot alerts'
+        required: false
+        type: boolean
+        default: true
+      include_secrets:
+        description: 'Also fetch secret-scanning alerts'
+        required: false
+        type: boolean
+        default: true
 
   # Also fires when the WEC gate arms this workflow via repository_dispatch
   repository_dispatch:
@@ -85,9 +115,9 @@ permissions:
 
 jobs:
   fetch-alerts:
-    name: Fetch CodeQL Alerts → Artifact
+    name: Fetch Security Snapshot → Artifact
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     env:
       # Token chain: CODEX_MASTER_KEY required for security_events scope.
@@ -100,7 +130,9 @@ jobs:
     steps:
       - name: Validate token availability
         id: token_check
+        shell: bash
         run: |
+          set -euo pipefail
           if [ -z "$CODEX_MASTER_KEY" ]; then
             echo "::warning::CODEX_MASTER_KEY is not set — code-scanning API requires security_events scope."
             echo "::warning::Set the secret and re-run, or use a local shell: GH_TOKEN=\$CODEX_MASTER_KEY python scripts/ci/fetch_codeql_alerts.py"
@@ -111,7 +143,9 @@ jobs:
 
       - name: Exit early (neutral) when no token
         if: steps.token_check.outputs.token_available == 'false'
+        shell: bash
         run: |
+          set -euo pipefail
           echo "Skipping fetch — no token with security_events scope available."
           exit 0
 
@@ -132,15 +166,32 @@ jobs:
       - name: Resolve fetch parameters
         if: steps.token_check.outputs.token_available == 'true'
         id: params
+        shell: bash
         env:
           INPUT_STATE: ${{ github.event.inputs.state || github.event.client_payload.state || 'open' }}
           INPUT_TOOL: ${{ github.event.inputs.tool_name || github.event.client_payload.tool_name || 'CodeQL' }}
           INPUT_MAX_PAGES: ${{ github.event.inputs.max_pages || github.event.client_payload.max_pages || '10' }}
           INPUT_PAGE_SLEEP_MS: ${{ github.event.inputs.page_sleep_ms || github.event.client_payload.page_sleep_ms || '1000' }}
           INPUT_TOP_N: ${{ github.event.inputs.top_n || github.event.client_payload.top_n || '30' }}
+          INPUT_INCLUDE_DEPENDABOT: ${{ github.event.inputs.include_dependabot || github.event.client_payload.include_dependabot || 'true' }}
+          INPUT_INCLUDE_SECRETS: ${{ github.event.inputs.include_secrets || github.event.client_payload.include_secrets || 'true' }}
         run: |
+          set -euo pipefail
           STATE="${INPUT_STATE:-open}"
           TOOL="${INPUT_TOOL:-CodeQL}"
+
+          normalize_bool() {
+            local raw="${1:-true}"
+            raw="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
+            case "$raw" in
+              true|1|yes|y|on) printf 'true\n' ;;
+              false|0|no|n|off) printf 'false\n' ;;
+              # Preserve the workflow's default-inclusive behavior when dispatch
+              # payloads contain unexpected values, rather than silently dropping
+              # entire collectors because of malformed booleans.
+              *) printf 'true\n' ;;
+            esac
+          }
 
           # Clamp max_pages 1–100
           MAX_PAGES="${INPUT_MAX_PAGES:-10}"
@@ -153,29 +204,54 @@ jobs:
           PAGE_SLEEP_SECS=$(echo "scale=3; $PAGE_SLEEP_MS / 1000" | bc)
 
           TOP_N="${INPUT_TOP_N:-30}"
+          # Cap the prioritized fix list to 500 items so artifact generation stays
+          # bounded and agent-side consumption remains practical.
+          if [ "$TOP_N" -lt 1 ] 2>/dev/null; then TOP_N=1; fi
+          if [ "$TOP_N" -gt 500 ] 2>/dev/null; then TOP_N=500; fi
+
+          INCLUDE_DEPENDABOT="$(normalize_bool "${INPUT_INCLUDE_DEPENDABOT:-true}")"
+          INCLUDE_SECRETS="$(normalize_bool "${INPUT_INCLUDE_SECRETS:-true}")"
 
           echo "state=$STATE"          >> "$GITHUB_OUTPUT"
           echo "tool=$TOOL"            >> "$GITHUB_OUTPUT"
           echo "max_pages=$MAX_PAGES"  >> "$GITHUB_OUTPUT"
           echo "page_sleep=$PAGE_SLEEP_SECS" >> "$GITHUB_OUTPUT"
           echo "top_n=$TOP_N"          >> "$GITHUB_OUTPUT"
+          echo "include_dependabot=$INCLUDE_DEPENDABOT" >> "$GITHUB_OUTPUT"
+          echo "include_secrets=$INCLUDE_SECRETS" >> "$GITHUB_OUTPUT"
 
-          ARTIFACT_NAME="codeql-alerts-${STATE}-${TOOL,,}-${{ github.run_id }}"
+          ARTIFACT_NAME="security-snapshot-${{ github.run_id }}"
           echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
-          echo "out_dir=.codex/artifacts/codeql_alerts" >> "$GITHUB_OUTPUT"
+          echo "out_dir=.codex/artifacts/security_snapshot" >> "$GITHUB_OUTPUT"
+          echo "codeql_dir=.codex/artifacts/security_snapshot/codeql" >> "$GITHUB_OUTPUT"
+          echo "dep_dir=.codex/artifacts/security_snapshot/dependabot" >> "$GITHUB_OUTPUT"
+          echo "sec_dir=.codex/artifacts/security_snapshot/secrets" >> "$GITHUB_OUTPUT"
+          echo "policy_dir=.codex/artifacts/security_snapshot/policy" >> "$GITHUB_OUTPUT"
+          echo "analyses_dir=.codex/artifacts/security_snapshot/analyses" >> "$GITHUB_OUTPUT"
+          echo "status_file=.codex/artifacts/security_snapshot/collector_status.json" >> "$GITHUB_OUTPUT"
 
           echo "Parameters resolved:"
           echo "  state=$STATE  tool=$TOOL  max_pages=$MAX_PAGES"
           echo "  page_sleep_ms=$PAGE_SLEEP_MS  top_n=$TOP_N"
+          echo "  include_dependabot=$INCLUDE_DEPENDABOT  include_secrets=$INCLUDE_SECRETS"
           echo "  artifact_name=$ARTIFACT_NAME"
 
-      - name: Create output directory
+      - name: Create output directories
         if: steps.token_check.outputs.token_available == 'true'
-        run: mkdir -p "${{ steps.params.outputs.out_dir }}"
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p \
+            "${{ steps.params.outputs.codeql_dir }}" \
+            "${{ steps.params.outputs.dep_dir }}" \
+            "${{ steps.params.outputs.sec_dir }}" \
+            "${{ steps.params.outputs.policy_dir }}" \
+            "${{ steps.params.outputs.analyses_dir }}"
 
+      # ── CodeQL / code-scanning ──────────────────────────────────────────────
       - name: Fetch CodeQL alerts
         if: steps.token_check.outputs.token_available == 'true'
-        id: fetch
+        id: fetch_codeql
         run: |
           python scripts/ci/fetch_codeql_alerts.py \
             --state "${{ steps.params.outputs.state }}" \
@@ -183,38 +259,481 @@ jobs:
             --max-pages "${{ steps.params.outputs.max_pages }}" \
             --page-sleep "${{ steps.params.outputs.page_sleep }}" \
             --top-n "${{ steps.params.outputs.top_n }}" \
-            --out-dir "${{ steps.params.outputs.out_dir }}"
+            --out-dir "${{ steps.params.outputs.codeql_dir }}"
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        continue-on-error: true  # rate-limit exhaustion exits 1 — catch below
+        continue-on-error: true
 
-      - name: Check for rate-limit exhaustion
-        if: steps.token_check.outputs.token_available == 'true' && steps.fetch.outcome == 'failure'
+      - name: Check for rate-limit exhaustion (CodeQL)
+        if: steps.token_check.outputs.token_available == 'true' && steps.fetch_codeql.outcome == 'failure'
+        shell: bash
         run: |
-          echo "::warning::fetch_codeql_alerts.py exited non-zero."
-          echo "::warning::This may be a rate-limit exhaustion (reset in ~1 hr) or a token scope issue."
-          echo "::warning::If partial results exist they are still uploaded as the artifact."
+          set -euo pipefail
+          echo "::warning::fetch_codeql_alerts.py exited non-zero — possible rate-limit exhaustion."
+          echo "::warning::Partial results (if any) are still uploaded."
 
+      # ── CodeQL analysis provenance ──────────────────────────────────────────
+      - name: Fetch code-scanning analyses metadata
+        if: steps.token_check.outputs.token_available == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://api.github.com/repos/${{ github.repository }}"
+          HEADERS=('-H' "Authorization: Bearer $CODEX_MASTER_KEY"
+                   '-H' "Accept: application/vnd.github+json"
+                   '-H' "X-GitHub-Api-Version: 2022-11-28")
+          ANALYSES_DIR="${{ steps.params.outputs.analyses_dir }}"
+
+          fetch_json_or_default() {
+            local endpoint="$1"
+            local outfile="$2"
+            local fallback="$3"
+            local tmp
+            tmp="$(mktemp)"
+            if curl -sS "${HEADERS[@]}" "${endpoint}" -o "${tmp}"; then
+              python3 - "${tmp}" <<'PY'
+              import json, pathlib, sys
+              json.loads(pathlib.Path(sys.argv[1]).read_text())
+              PY
+              mv "${tmp}" "${outfile}"
+            else
+              printf '%s\n' "${fallback}" > "${outfile}"
+              rm -f "${tmp}"
+            fi
+          }
+
+          # Recent analyses (last 100)
+          fetch_json_or_default \
+            "${BASE}/code-scanning/analyses?per_page=100&page=1" \
+            "${ANALYSES_DIR}/recent.json" \
+            '[]'
+
+          # Default CodeQL setup status
+          fetch_json_or_default \
+            "${BASE}/code-scanning/default-setup" \
+            "${ANALYSES_DIR}/default_setup.json" \
+            '{}'
+
+          echo "Analysis metadata written."
+
+      # ── Dependabot alerts ───────────────────────────────────────────────────
+      - name: Fetch Dependabot alerts
+        if: >
+          steps.token_check.outputs.token_available == 'true' &&
+          steps.params.outputs.include_dependabot == 'true'
+        continue-on-error: true
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, sys, time, urllib.request
+          from collections import Counter
+
+          token = os.environ["CODEX_MASTER_KEY"]
+          repo  = os.environ["GITHUB_REPOSITORY"]
+          out   = os.environ["DEP_DIR"]
+          base  = f"https://api.github.com/repos/{repo}/dependabot/alerts"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+          alerts, page = [], 1
+          # Limit to 10 pages (1000 alerts) to keep snapshot runtime bounded until
+          # Link-header pagination is centralized in a shared collector helper.
+          while page <= 10:
+              url = f"{base}?state=open&per_page=100&page={page}"
+              req = urllib.request.Request(url, headers=headers)
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      batch = json.loads(r.read())
+              except Exception as e:
+                  print(f"Warning: page {page} failed: {e}", file=sys.stderr)
+                  break
+              if not batch:
+                  break
+              alerts.extend(batch)
+              page += 1
+              time.sleep(0.8)
+          # Write all open
+          with open(f"{out}/alerts_open.json", "w") as f:
+              json.dump(alerts, f, indent=2)
+          # Write critical+high
+          urgent = [a for a in alerts if a.get("security_vulnerability", {}).get("severity") in ("critical", "high")]
+          with open(f"{out}/alerts_critical.json", "w") as f:
+              json.dump(urgent, f, indent=2)
+          # Build summary
+          sev_counts = Counter(a.get("security_vulnerability", {}).get("severity", "unknown") for a in alerts)
+          eco_counts = Counter(a.get("dependency", {}).get("package", {}).get("ecosystem", "unknown") for a in alerts)
+          summary = {"total": len(alerts), "by_severity": dict(sev_counts), "by_ecosystem": dict(eco_counts)}
+          with open(f"{out}/summary.json", "w") as f:
+              json.dump(summary, f, indent=2)
+          print(f"Dependabot: {len(alerts)} open alerts ({len(urgent)} critical/high)")
+          PYEOF
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          DEP_DIR: ${{ steps.params.outputs.dep_dir }}
+
+      # ── Secret scanning alerts ──────────────────────────────────────────────
+      - name: Fetch secret-scanning alerts
+        if: >
+          steps.token_check.outputs.token_available == 'true' &&
+          steps.params.outputs.include_secrets == 'true' # pragma: allowlist secret
+        continue-on-error: true
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, sys, time, urllib.request
+          from collections import Counter
+
+          token = os.environ["CODEX_MASTER_KEY"]
+          repo  = os.environ["GITHUB_REPOSITORY"]
+          out   = os.environ["SEC_DIR"]
+          base  = f"https://api.github.com/repos/{repo}/secret-scanning/alerts"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+          alerts, page = [], 1
+          # Limit to 10 pages (1000 alerts) to keep snapshot runtime bounded until
+          # Link-header pagination is centralized in a shared collector helper.
+          while page <= 10:
+              url = f"{base}?state=open&per_page=100&page={page}"
+              req = urllib.request.Request(url, headers=headers)
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      batch = json.loads(r.read())
+              except Exception as e:
+                  print(f"Warning: page {page} failed: {e}", file=sys.stderr)
+                  break
+              if not batch:
+                  break
+              alerts.extend(batch)
+              page += 1
+              time.sleep(0.8)
+          # Write all open
+          with open(f"{out}/alerts_open.json", "w") as f:
+              json.dump(alerts, f, indent=2)
+          # Write active/confirmed only
+          active = [a for a in alerts if a.get("validity") == "active"]
+          with open(f"{out}/alerts_active.json", "w") as f:
+              json.dump(active, f, indent=2)
+          # Build summary
+          type_counts = Counter(a.get("secret_type", "unknown") for a in alerts)
+          validity_counts = Counter(a.get("validity", "unknown") for a in alerts)
+          summary = {
+              "total": len(alerts),
+              "active_confirmed": len(active),
+              "by_type": dict(type_counts.most_common(20)),
+              "by_validity": dict(validity_counts),
+          }
+          with open(f"{out}/summary.json", "w") as f:
+              json.dump(summary, f, indent=2)
+          print(f"Secrets: {len(alerts)} open alerts ({len(active)} active/confirmed)")
+          PYEOF
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          SEC_DIR: ${{ steps.params.outputs.sec_dir }}
+
+      # ── Security policy & community health ─────────────────────────────────
+      - name: Fetch security policy & community health
+        if: steps.token_check.outputs.token_available == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://api.github.com/repos/${{ github.repository }}"
+          HEADERS=('-H' "Authorization: Bearer $CODEX_MASTER_KEY"
+                   '-H' "Accept: application/vnd.github+json"
+                   '-H' "X-GitHub-Api-Version: 2022-11-28")
+          POLICY_DIR="${{ steps.params.outputs.policy_dir }}"
+          COMMUNITY_FILE="${POLICY_DIR}/community_profile.json"
+          POLICY_FILE="${POLICY_DIR}/security_policy.json"
+
+          fetch_json_or_default() {
+            local endpoint="$1"
+            local outfile="$2"
+            local fallback="$3"
+            local tmp
+            tmp="$(mktemp)"
+            if curl -sS "${HEADERS[@]}" "${endpoint}" -o "${tmp}"; then
+              python3 - "${tmp}" <<'PY'
+              import json, pathlib, sys
+              json.loads(pathlib.Path(sys.argv[1]).read_text())
+              PY
+              mv "${tmp}" "${outfile}"
+            else
+              printf '%s\n' "${fallback}" > "${outfile}"
+              rm -f "${tmp}"
+            fi
+          }
+
+          # Community profile (includes health percentage and file presence)
+          fetch_json_or_default \
+            "${BASE}/community/profile" \
+            "${COMMUNITY_FILE}" \
+            '{"error": "community profile unavailable"}'
+
+          # Resolve actual security policy file (try common paths)
+          POLICY_FOUND="false"
+          for POLICY_PATH in ".github/SECURITY.md" "SECURITY.md" "docs/SECURITY.md"; do
+            RESULT=$(curl -sf "${HEADERS[@]}" "${BASE}/contents/${POLICY_PATH}" 2>/dev/null)
+            if [ -n "$RESULT" ] && echo "$RESULT" | python3 -c "import json,sys; d=json.load(sys.stdin); exit(0 if d.get('type')=='file' else 1)" 2>/dev/null; then
+              echo "$RESULT" | python3 -c "
+          import json, sys, base64
+          d = json.load(sys.stdin)
+          MAX_POLICY_BYTES = 5000
+          content_b64 = d.get('content', '').replace('\n', '')
+          try:
+              content = base64.b64decode(content_b64).decode('utf-8', errors='replace')
+          except Exception:
+              content = ''
+          out = {'path': d.get('path'), 'sha': d.get('sha'), 'size': d.get('size'), 'content': content.encode('utf-8')[:MAX_POLICY_BYTES].decode('utf-8', errors='ignore'), 'content_truncated_bytes': MAX_POLICY_BYTES}
+          print(json.dumps(out, indent=2))
+          " > "${POLICY_FILE}"
+              POLICY_FOUND="true"
+              echo "Security policy found at: ${POLICY_PATH}"
+              break
+            fi
+          done
+
+          if [ "$POLICY_FOUND" = "false" ]; then
+            echo '{"error": "no security policy file found at standard paths"}' \
+              > "${POLICY_FILE}"
+            echo "::warning::No SECURITY.md found at .github/SECURITY.md, SECURITY.md, or docs/SECURITY.md"
+          fi
+
+      # ── Consolidated agent context ──────────────────────────────────────────
+      - name: Generate AGENT_SECURITY_CONTEXT.md
+        if: steps.token_check.outputs.token_available == 'true'
+        run: |
+          python3 - <<'PYEOF'
+          import json, os
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          out_dir = Path(os.environ["OUT_DIR"])
+          repo = os.environ["GITHUB_REPOSITORY"]
+          run_id = os.environ["GITHUB_RUN_ID"]
+          run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
+          now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+
+          def load_json(path, default=None):
+              try:
+                  return json.loads(Path(path).read_text())
+              except Exception:
+                  return default or {}
+
+          codeql_summary   = load_json(out_dir / "codeql/alerts_summary.json", {})
+          dep_summary      = load_json(out_dir / "dependabot/summary.json", {})
+          sec_summary      = load_json(out_dir / "secrets/summary.json", {})
+          community        = load_json(out_dir / "policy/community_profile.json", {})
+          policy_file      = load_json(out_dir / "policy/security_policy.json", {})
+          analyses         = load_json(out_dir / "analyses/recent.json", [])
+          default_setup    = load_json(out_dir / "analyses/default_setup.json", {})
+
+          codeql_total  = codeql_summary.get("total", "unknown")
+          dep_total     = dep_summary.get("total", "unknown")
+          sec_total     = sec_summary.get("total", "unknown")
+          sec_active    = sec_summary.get("active_confirmed", 0)
+          health_pct    = community.get("health_percentage", "unknown")
+          policy_path   = policy_file.get("path", "not found")
+          policy_err    = policy_file.get("error")
+          last_analysis = analyses[0].get("created_at", "unknown") if analyses else "no analyses found"
+          codeql_state  = default_setup.get("state", "unknown")
+
+          dep_by_sev  = dep_summary.get("by_severity", {})
+          dep_critical = dep_by_sev.get("critical", 0)
+          dep_high     = dep_by_sev.get("high", 0)
+
+          codeql_by_rule = codeql_summary.get("by_rule", {})
+          codeql_by_sev  = codeql_summary.get("by_severity", {})
+
+          lines = [
+              f"# Security Snapshot — `{repo}`",
+              f"",
+              f"> **Generated:** {now}  ",
+              f"> **Run:** [{run_id}]({run_url})  ",
+              f"> **Audience:** Copilot Cloud / Coding Agents",
+              f"",
+              f"---",
+              f"",
+              f"## Priority Action Items",
+              f"",
+          ]
+
+          # Priority alerts
+          if isinstance(dep_critical, int) and dep_critical > 0:
+              lines.append(f"- **CRITICAL** — {dep_critical} critical Dependabot vulnerability alert(s) — fix immediately")
+          if isinstance(dep_high, int) and dep_high > 0:
+              lines.append(f"- **HIGH** — {dep_high} high Dependabot vulnerability alert(s)")
+          if isinstance(sec_active, int) and sec_active > 0:
+              lines.append(f"- **CRITICAL** — {sec_active} active/confirmed secret(s) detected — revoke immediately")
+          codeql_critical = codeql_by_sev.get("critical", codeql_by_sev.get("error", 0))
+          if isinstance(codeql_critical, int) and codeql_critical > 0:
+              lines.append(f"- **HIGH** — {codeql_critical} critical/error CodeQL finding(s)")
+          if policy_err:
+              lines.append(f"- **INFO** — Security policy file not found; create `.github/SECURITY.md`")
+
+          if not any("CRITICAL" in l or "HIGH" in l for l in lines):
+              lines.append("- ✅ No critical/high priority items detected in this snapshot")
+
+          lines += [
+              f"",
+              f"---",
+              f"",
+              f"## Security Overview",
+              f"",
+              f"| Area | Open Alerts | Notes |",
+              f"|------|-------------|-------|",
+              f"| Dependabot (vulnerabilities) | {dep_total} | {dep_critical} critical, {dep_high} high |",
+              f"| CodeQL (code scanning) | {codeql_total} | See rule breakdown below |",
+              f"| Secret scanning | {sec_total} | {sec_active} active/confirmed |",
+              f"| Community health | {health_pct}% | Policy: {policy_path if not policy_err else 'NOT FOUND'} |",
+              f"",
+              f"---",
+              f"",
+              f"## CodeQL Analysis Provenance",
+              f"",
+              f"| Field | Value |",
+              f"|-------|-------|",
+              f"| Default setup state | `{codeql_state}` |",
+              f"| Last analysis run | {last_analysis} |",
+              f"| Total recent analyses | {len(analyses)} |",
+              f"",
+              f"---",
+              f"",
+              f"## Artifact File Index",
+              f"",
+              f"| File | Contents |",
+              f"|------|---------|",
+              f"| `codeql/alerts_raw.json` | Full CodeQL alert JSON array |",
+              f"| `codeql/alerts_by_rule.md` | Alerts grouped by CodeQL rule ID |",
+              f"| `codeql/alerts_fixable.md` | Top-N prioritised fix list |",
+              f"| `codeql/alerts_summary.json` | Machine-readable counts |",
+              f"| `dependabot/alerts_open.json` | All open Dependabot alerts |",
+              f"| `dependabot/alerts_critical.json` | Critical + high only |",
+              f"| `dependabot/summary.json` | Counts by severity / ecosystem |",
+              f"| `secrets/alerts_open.json` | All open secret alerts |",
+              f"| `secrets/alerts_active.json` | Confirmed active secrets |",
+              f"| `secrets/summary.json` | Counts by type / validity |",
+              f"| `policy/community_profile.json` | Community health data |",
+              f"| `policy/security_policy.json` | Security policy file content |",
+              f"| `analyses/recent.json` | Last 100 code-scanning analyses |",
+              f"| `analyses/default_setup.json` | CodeQL default-setup status |",
+              f"| `AGENT_SECURITY_CONTEXT.md` | This file |",
+              f"",
+              f"---",
+              f"",
+              f"## How to Use This Artifact",
+              f"",
+              f"1. **Start here**: Read `AGENT_SECURITY_CONTEXT.md` (this file) for the full picture.",
+              f"2. **CodeQL fixes**: Open `codeql/alerts_fixable.md` for top prioritised fixes with file:line locations.",
+              f"3. **Dependabot**: Open `dependabot/alerts_critical.json` to see critical/high packages to upgrade.",
+              f"4. **Secrets**: Open `secrets/alerts_active.json` — each active secret must be revoked immediately.",
+          ]
+
+          (out_dir / "AGENT_SECURITY_CONTEXT.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          print("AGENT_SECURITY_CONTEXT.md written.")
+          PYEOF
+        env:
+          OUT_DIR: ${{ steps.params.outputs.out_dir }}
+
+      # ── Run metadata ────────────────────────────────────────────────────────
       - name: Write run metadata
         if: steps.token_check.outputs.token_available == 'true'
         run: |
           OUT_DIR="${{ steps.params.outputs.out_dir }}"
-          cat > "${OUT_DIR}/run_metadata.json" <<METAEOF
-          {
-            "run_id": "${{ github.run_id }}",
-            "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "triggered_by": "${{ github.actor }}",
-            "ref": "${{ github.ref }}",
-            "state": "${{ steps.params.outputs.state }}",
-            "tool": "${{ steps.params.outputs.tool }}",
-            "max_pages": "${{ steps.params.outputs.max_pages }}",
-            "page_sleep_secs": "${{ steps.params.outputs.page_sleep }}",
-            "generated_at": "$(date -u +%Y-%m-%dT%H:%MZ)"
+          python3 - <<PYEOF
+          import json, os
+          from datetime import datetime, timezone
+          meta = {
+              "run_id": "${{ github.run_id }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "triggered_by": "${{ github.actor }}",
+              "ref": "${{ github.ref }}",
+              "state": "${{ steps.params.outputs.state }}",
+              "tool": "${{ steps.params.outputs.tool }}",
+              "max_pages": "${{ steps.params.outputs.max_pages }}",
+              "page_sleep_secs": "${{ steps.params.outputs.page_sleep }}",
+              "top_n": "${{ steps.params.outputs.top_n }}",
+              "includes_dependabot": "${{ steps.params.outputs.include_dependabot }}" == "true",
+              "includes_secrets": "${{ steps.params.outputs.include_secrets }}" == "true",
+              "includes_policy": True,
+              "includes_analyses": True,
+              "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
           }
-          METAEOF
-          echo "Run metadata written."
+          out = os.path.join("$OUT_DIR", "run_metadata.json")
+          with open(out, "w") as f:
+              json.dump(meta, f, indent=2)
+          print("Run metadata written.")
+          PYEOF
 
-      - name: Upload alert artifacts
+      - name: Write collector status
+        if: steps.token_check.outputs.token_available == 'true'
+        run: |
+          OUT_DIR="${{ steps.params.outputs.out_dir }}"
+          python3 - <<PYEOF
+          import json
+          from pathlib import Path
+
+          out_dir = Path("${OUT_DIR}")
+          expected = {
+              "codeql": out_dir / "codeql/alerts_summary.json",
+              "dependabot": out_dir / "dependabot/summary.json",
+              "secrets": out_dir / "secrets/summary.json",  # pragma: allowlist secret
+              "community_profile": out_dir / "policy/community_profile.json",
+              "security_policy": out_dir / "policy/security_policy.json",
+              "analyses_recent": out_dir / "analyses/recent.json",
+              "analyses_default_setup": out_dir / "analyses/default_setup.json",
+              "agent_context": out_dir / "AGENT_SECURITY_CONTEXT.md",
+              "run_metadata": out_dir / "run_metadata.json",
+          }
+          status = {
+              name: {"exists": path.exists(), "size": path.stat().st_size if path.exists() else 0}
+              for name, path in expected.items()
+          }
+          (out_dir / "collector_status.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
+          print("collector_status.json written.")
+          PYEOF
+
+      - name: Write step summary
+        if: steps.token_check.outputs.token_available == 'true' && always()
+        run: |
+          OUT_DIR="${{ steps.params.outputs.out_dir }}"
+          python3 - <<PYEOF >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+
+          out_dir = Path("${OUT_DIR}")
+
+          def load(path, default):
+              try:
+                  return json.loads(Path(path).read_text())
+              except Exception:
+                  return default
+
+          codeql = load(out_dir / "codeql/alerts_summary.json", {})
+          dep = load(out_dir / "dependabot/summary.json", {})
+          sec = load(out_dir / "secrets/summary.json", {})
+          status = load(out_dir / "collector_status.json", {})
+
+          print("# Security Snapshot Summary")
+          print("")
+          print("| Collector | Result |")
+          print("|---|---|")
+          for name, details in status.items():
+              result = "✅" if details.get("exists") else "⚠️ missing"
+              print(f"| {name} | {result} |")
+          print("")
+          print("| Area | Count |")
+          print("|---|---:|")
+          print(f"| CodeQL alerts | {codeql.get('total', 'unknown')} |")
+          print(f"| Dependabot alerts | {dep.get('total', 'unknown')} |")
+          print(f"| Secret scanning alerts | {sec.get('total', 'unknown')} |")
+          PYEOF
+
+      # ── Upload artifact ─────────────────────────────────────────────────────
+      - name: Upload security snapshot artifact
         if: steps.token_check.outputs.token_available == 'true' && always()
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
@@ -225,22 +744,26 @@ jobs:
 
       - name: Print download instructions
         if: steps.token_check.outputs.token_available == 'true' && always()
+        shell: bash
         run: |
+          set -euo pipefail
           echo ""
           echo "================================================================"
-          echo "  CodeQL Alert Artifact Ready"
+          echo "  Security Snapshot Artifact Ready"
           echo "================================================================"
           echo "  Artifact : ${{ steps.params.outputs.artifact_name }}"
           echo "  Run URL  : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           echo ""
           echo "  To review in-session (Copilot MCP tools):"
           echo ""
-          echo "  1. github-mcp-server-actions_list method=list_workflow_run_artifacts"
-          echo "        resource_id=${{ github.run_id }}"
+          echo "  1. github-mcp-server-actions_list"
+          echo "       method=list_workflow_run_artifacts"
+          echo "       resource_id=${{ github.run_id }}"
           echo ""
-          echo "  2. github-mcp-server-actions_get method=download_workflow_run_artifact"
-          echo "        resource_id=<ARTIFACT_ID from step 1>"
+          echo "  2. github-mcp-server-actions_get"
+          echo "       method=download_workflow_run_artifact"
+          echo "       resource_id=<ARTIFACT_ID from step 1>"
           echo ""
-          echo "  3. Review .codex/artifacts/codeql_alerts/alerts_by_rule.md"
-          echo "     and alerts_fixable.md for prioritised fix list."
+          echo "  3. Start with AGENT_SECURITY_CONTEXT.md for the full picture."
+          echo "     Then open codeql/alerts_fixable.md for actionable fix list."
           echo "================================================================"

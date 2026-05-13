@@ -163,7 +163,10 @@ class Authenticator:
                 raise MFARequiredError()
             mfa_secret = self._mfa.get_secret(user.user_id)
             if mfa_secret is None or not self._mfa.verify_totp(
-                mfa_secret.secret, totp_code, user.user_id
+                mfa_secret.secret,
+                totp_code,
+                user.user_id,
+                algorithm=mfa_secret.algorithm,
             ):
                 raise MFAVerificationError()
             mfa_verified = True

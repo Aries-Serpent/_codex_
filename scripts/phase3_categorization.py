@@ -94,7 +94,7 @@ def generate_phase3_plan(analysis: dict) -> dict:
 
     # Count by priority
     priority_counts = defaultdict(lambda: {'files': 0, 'links': 0})
-    for file_path, info in analysis['file_priorities'].items():
+    for _file_path, info in analysis['file_priorities'].items():
         priority = info['priority']
         priority_counts[priority]['files'] += 1
         priority_counts[priority]['links'] += info['broken_count']

@@ -138,7 +138,7 @@ def _load_recent_session_memories() -> list[str]:
     # Extract last 3 SESSION SUMMARY headers
     lines = text.splitlines()
     session_lines: list[str] = []
-    for i, line in enumerate(lines):
+    for _, line in enumerate(lines):
         if line.startswith("## SESSION SUMMARY"):
             session_lines.append(line)
     return session_lines[-3:] if len(session_lines) >= 3 else session_lines

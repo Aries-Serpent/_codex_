@@ -562,7 +562,7 @@ def main():
         print(f"\n📋 Secrets in {args.owner}/{args.repo}:")
         print("=" * 60)
         # Security: Don't log secret names - CodeQL alert #3339
-        for i, secret in enumerate(secrets, 1):
+        for i, _ in enumerate(secrets, 1):
             print(f"  {i}. [Secret configured]")
         print(f"\nTotal: {len(secrets)} secrets")
         return 0

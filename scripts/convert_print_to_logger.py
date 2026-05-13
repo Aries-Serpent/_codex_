@@ -150,7 +150,7 @@ def convert_print_to_logger(
         changes_made = False
 
         # Sort by line number descending to maintain line numbers
-        for line_num, context, level in sorted(print_calls, reverse=True, key=lambda x: x[0]):
+        for line_num, _context, level in sorted(print_calls, reverse=True, key=lambda x: x[0]):
             if 1 <= line_num <= len(lines):
                 original_line = lines[line_num - 1]
 
@@ -295,7 +295,7 @@ def process_directory(directory: Path, fix: bool = False, dry_run: bool = True) 
             stats["total_prints"] += len(print_calls)
 
             logger.info(f"\n{py_file}: Found {len(print_calls)} print() call(s)")
-            for line, context, level in print_calls:
+            for line, _context, level in print_calls:
                 logger.info(f"  Line {line} → logger.{level}()")
 
             if not has_logging:

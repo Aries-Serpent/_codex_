@@ -22,6 +22,17 @@ from dataclasses import dataclass, field
 from typing import Optional
 from urllib.parse import quote
 
+SUPPORTED_TOTP_ALGORITHMS = frozenset({"SHA1", "SHA256", "SHA512"})
+
+
+def _normalize_totp_algorithm(algorithm: str) -> str:
+    """Return a normalized RFC 6238 algorithm name."""
+    normalized = algorithm.upper()
+    if normalized not in SUPPORTED_TOTP_ALGORITHMS:
+        supported = ", ".join(sorted(SUPPORTED_TOTP_ALGORITHMS))
+        raise ValueError(f"Unsupported TOTP algorithm '{algorithm}'. Expected one of: {supported}")
+    return normalized
+
 
 @dataclass
 class MFASecret:
@@ -30,10 +41,14 @@ class MFASecret:
     secret: str
     user_id: str
     issuer: str = "Codex"
-    algorithm: str = "SHA1"
+    algorithm: str = "SHA256"
     digits: int = 6
     period: int = 30
     created_at: float = field(default_factory=time.time)
+
+    def __post_init__(self) -> None:
+        """Normalize the stored TOTP hash algorithm."""
+        self.algorithm = _normalize_totp_algorithm(self.algorithm)
 
     def get_provisioning_uri(self, account_name: str) -> str:
         """
@@ -106,13 +121,19 @@ class MFAProvider:
         self._attempts: dict[str, list[MFAAttempt]] = {}
         self._locked_users: dict[str, float] = {}
 
-    def generate_totp_secret(self, user_id: str, issuer: str = "Codex") -> MFASecret:
+    def generate_totp_secret(
+        self,
+        user_id: str,
+        issuer: str = "Codex",
+        algorithm: str = "SHA256",
+    ) -> MFASecret:
         """
         Generate a new TOTP secret for a user.
 
         Args:
             user_id: User identifier
             issuer: Service name for the authenticator app
+            algorithm: RFC 6238 hash algorithm for new codes
 
         Returns:
             MFASecret with the generated secret
@@ -126,6 +147,7 @@ class MFAProvider:
             secret=secret,
             user_id=user_id,
             issuer=issuer,
+            algorithm=algorithm,
         )
 
         # Store secret (use database in production)
@@ -133,7 +155,13 @@ class MFAProvider:
 
         return mfa_secret
 
-    def _get_hotp_token(self, secret: str, counter: int, digits: int = 6) -> str:
+    def _get_hotp_token(
+        self,
+        secret: str,
+        counter: int,
+        digits: int = 6,
+        algorithm: str = "SHA256",
+    ) -> str:
         """
         Generate HOTP token.
 
@@ -141,18 +169,26 @@ class MFAProvider:
             secret: Base32-encoded secret
             counter: Counter value
             digits: Number of digits in token
+            algorithm: RFC 6238 hash algorithm
 
         Returns:
             HOTP token as string
         """
         # Decode base32 secret
         key = self._base32_decode(secret)
+        normalized_algorithm = _normalize_totp_algorithm(algorithm)
 
         # Convert counter to 8-byte big-endian
         counter_bytes = struct.pack(">Q", counter)
 
-        # HMAC-SHA1
-        hmac_hash = hmac.new(key, counter_bytes, hashlib.sha1).digest()
+        try:
+            digestmod = getattr(hashlib, normalized_algorithm.lower())
+        except AttributeError as exc:  # pragma: no cover - defensive guard
+            raise ValueError(
+                f"Validated TOTP algorithm '{normalized_algorithm}' lacks corresponding "
+                "hashlib implementation"
+            ) from exc
+        hmac_hash = hmac.new(key, counter_bytes, digestmod).digest()
 
         # Dynamic truncation
         offset = hmac_hash[-1] & 0x0F
@@ -180,6 +216,7 @@ class MFAProvider:
         timestamp: Optional[float] = None,
         period: int = 30,
         digits: int = 6,
+        algorithm: str = "SHA256",
     ) -> str:
         """
         Generate TOTP token.
@@ -189,6 +226,7 @@ class MFAProvider:
             timestamp: Unix timestamp (uses current time if not provided)
             period: Time period in seconds
             digits: Number of digits in token
+            algorithm: RFC 6238 hash algorithm
 
         Returns:
             TOTP token as string
@@ -200,7 +238,7 @@ class MFAProvider:
         counter = int(timestamp // period)
 
         # Generate HOTP with counter
-        return self._get_hotp_token(secret, counter, digits)
+        return self._get_hotp_token(secret, counter, digits, algorithm)
 
     def verify_totp(
         self,
@@ -210,6 +248,7 @@ class MFAProvider:
         window: int = 1,
         period: int = 30,
         digits: int = 6,
+        algorithm: str = "SHA256",
     ) -> bool:
         """
         Verify TOTP code with time window.
@@ -221,6 +260,7 @@ class MFAProvider:
             window: Number of time periods to check before/after current
             period: Time period in seconds
             digits: Number of digits in token
+            algorithm: RFC 6238 hash algorithm
 
         Returns:
             True if code is valid, False otherwise
@@ -234,7 +274,7 @@ class MFAProvider:
         # Check current period and adjacent periods
         for offset in range(-window, window + 1):
             check_time = current_time + (offset * period)
-            expected_code = self.generate_totp(secret, check_time, period, digits)
+            expected_code = self.generate_totp(secret, check_time, period, digits, algorithm)
 
             if secrets.compare_digest(code, expected_code):
                 self._record_attempt(user_id, True)

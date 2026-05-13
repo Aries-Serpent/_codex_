@@ -159,7 +159,7 @@ class WorkflowOrchestrator:
         patterns = self.analyze_patterns()
 
         # Start with category-based workflows
-        for category, config in self.WORKFLOW_CATEGORIES.items():
+        for _, config in self.WORKFLOW_CATEGORIES.items():
             for workflow in config["workflows"]:
                 should_run = self.should_run_workflow(workflow, config["trigger"])
 

@@ -403,3 +403,12 @@ class ProvenanceMetadata:
             char_range=tuple(data["char_range"]) if data.get("char_range") else None,
             metadata=data.get("metadata"),
         )
+
+__all__ = [
+    "ProvenanceMetadata",
+    "check_for_meta_tensors",
+    "has_meta_tensors",
+    "safe_model_load",
+    "safe_model_load_v2",
+    "safe_model_to_device",
+]

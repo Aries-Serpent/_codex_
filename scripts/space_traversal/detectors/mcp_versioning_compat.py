@@ -124,7 +124,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
 
         # Pattern detection with validation
         file_has_evidence = False
-        for pattern, pattern_type in patterns_to_detect.items():
+        for pattern, _pattern_type in patterns_to_detect.items():
             if pattern in text:
                 found.append(pattern)
                 file_has_evidence = True

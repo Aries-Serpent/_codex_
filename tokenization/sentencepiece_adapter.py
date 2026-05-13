@@ -13,3 +13,5 @@ try:
     from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter  # noqa: F401
 except Exception:  # pragma: no cover
     raise
+
+__all__ = ["SentencePieceAdapter"]

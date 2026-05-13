@@ -193,7 +193,7 @@ class WorkflowMonitor:
                 metrics[workflow_name]['durations'].append(duration)
 
         # Calculate statistics
-        for workflow_name, data in metrics.items():
+        for _, data in metrics.items():
             if data['total_runs'] > 0:
                 data['success_rate'] = (data['successful_runs'] / data['total_runs']) * 100
 

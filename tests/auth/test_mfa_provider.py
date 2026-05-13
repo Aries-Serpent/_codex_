@@ -21,17 +21,35 @@ class TestMFASecret:
     def test_secret_creation(self):
         """Test MFA secret creation."""
         secret = MFASecret(
-            secret="JBSWY3DPEHPK3PXP",
+            secret="JBSWY3DPEHPK3PXP",  # pragma: allowlist secret
             user_id="user123",
             issuer="Codex",
         )
 
-        assert secret.secret == "JBSWY3DPEHPK3PXP"
+        assert secret.secret == "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
         assert secret.user_id == "user123"
         assert secret.issuer == "Codex"
-        assert secret.algorithm == "SHA1"
+        assert secret.algorithm == "SHA256"
         assert secret.digits == 6
         assert secret.period == 30
+
+    def test_secret_creation_sha1_compatibility(self):
+        """Test existing SHA1 secrets still normalize and work."""
+        provider = MFAProvider()
+        secret = MFASecret(
+            secret="JBSWY3DPEHPK3PXP",
+            user_id="user123",
+            issuer="Codex",
+            algorithm="SHA1",
+        )
+        provider._secret_store[secret.user_id] = secret
+
+        code = provider.generate_totp(secret.secret, algorithm=secret.algorithm)
+
+        assert secret.algorithm == "SHA1"
+        assert provider.verify_totp(
+            secret.secret, code, secret.user_id, algorithm=secret.algorithm
+        ) is True
 
     def test_provisioning_uri(self):
         """Test provisioning URI generation."""
@@ -46,7 +64,21 @@ class TestMFASecret:
         assert uri.startswith("otpauth://totp/")
         assert "secret=JBSWY3DPEHPK3PXP" in uri
         assert "issuer=Codex" in uri
+        assert "algorithm=SHA256" in uri
         assert "test%40example.com" in uri
+
+    def test_provisioning_uri_sha1_compatibility(self):
+        """Test SHA1 secrets still emit the correct provisioning metadata."""
+        secret = MFASecret(
+            secret="JBSWY3DPEHPK3PXP",  # pragma: allowlist secret
+            user_id="user123",
+            issuer="Codex",
+            algorithm="SHA1",
+        )
+
+        uri = secret.get_provisioning_uri("test@example.com")
+
+        assert "algorithm=SHA1" in uri
 
 
 class TestBackupCode:
@@ -96,6 +128,22 @@ class TestMFAProvider:
 
         assert secret1.secret != secret2.secret
 
+    def test_generate_totp_secret_normalizes_algorithm(self):
+        """Test algorithm normalization for newly generated secrets."""
+        provider = MFAProvider()
+
+        secret = provider.generate_totp_secret("user123", algorithm="sha512")
+
+        assert secret.algorithm == "SHA512"
+
+    def test_generate_totp_secret_normalizes_mixed_case_algorithm(self):
+        """Test mixed-case algorithm normalization."""
+        provider = MFAProvider()
+
+        secret = provider.generate_totp_secret("user123", algorithm="sHa512")
+
+        assert secret.algorithm == "SHA512"
+
     def test_generate_totp(self):
         """Test TOTP generation."""
         provider = MFAProvider()
@@ -116,6 +164,17 @@ class TestMFAProvider:
 
         totp1 = provider.generate_totp(secret, timestamp)
         totp2 = provider.generate_totp(secret, timestamp)
+
+        assert totp1 == totp2
+
+    def test_generate_totp_sha1_compatibility(self):
+        """Test explicit SHA1 compatibility for RFC 6238 clients."""
+        provider = MFAProvider()
+        secret = "JBSWY3DPEHPK3PXP"
+        timestamp = 1000000000.0
+
+        totp1 = provider.generate_totp(secret, timestamp, algorithm="SHA1")
+        totp2 = provider.generate_totp(secret, timestamp, algorithm="sha1")
 
         assert totp1 == totp2
 
@@ -158,6 +217,34 @@ class TestMFAProvider:
         result = provider.verify_totp(secret, code, user_id, window=1)
 
         assert result is True
+
+    def test_verify_totp_sha1_compatibility(self):
+        """Test SHA1 verification remains available for existing secrets."""
+        provider = MFAProvider()
+        secret = "JBSWY3DPEHPK3PXP"
+        user_id = "user123"
+        code = provider.generate_totp(secret, algorithm="SHA1")
+
+        assert provider.verify_totp(secret, code, user_id, algorithm="SHA1") is True
+
+    def test_generate_totp_invalid_algorithm(self):
+        """Test invalid TOTP algorithms are rejected."""
+        provider = MFAProvider()
+
+        with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
+            provider.generate_totp("JBSWY3DPEHPK3PXP", algorithm="MD5")
+
+    def test_secret_creation_invalid_algorithm(self):
+        """Test invalid secret algorithms are rejected during construction."""
+        with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
+            MFASecret(secret="JBSWY3DPEHPK3PXP", user_id="user123", algorithm="MD5")
+
+    def test_verify_totp_invalid_algorithm(self):
+        """Test invalid verify_totp algorithms are rejected."""
+        provider = MFAProvider()
+
+        with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
+            provider.verify_totp("JBSWY3DPEHPK3PXP", "000000", "user123", algorithm="MD5")
 
     def test_rate_limiting(self):
         """Test rate limiting on failed attempts."""

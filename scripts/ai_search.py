@@ -114,7 +114,7 @@ class AIRepositorySearch:
         """Search for entities (classes, functions, etc.)."""
         results = []
 
-        for hash, entity in self.entity_index.items():
+        for _, entity in self.entity_index.items():
             if entity['name'] == entity_name:
                 if entity_type and entity['type'] != entity_type:
                     continue
@@ -133,7 +133,7 @@ class AIRepositorySearch:
         # Partial match on name
         if not results:
             entity_name_lower = entity_name.lower()
-            for hash, entity in self.entity_index.items():
+            for _, entity in self.entity_index.items():
                 if entity_name_lower in entity['name'].lower():
                     if entity_type and entity['type'] != entity_type:
                         continue
@@ -156,7 +156,7 @@ class AIRepositorySearch:
         results = []
         pattern_lower = pattern.lower()
 
-        for file_path, file_data in self.content_index.items():
+        for _, file_data in self.content_index.items():
             relative_path = file_data['relative_path']
             if pattern_lower in relative_path.lower():
                 score = 1.0 if pattern in relative_path else 0.8
@@ -177,7 +177,7 @@ class AIRepositorySearch:
         """Search for files by semantic tag."""
         results = []
 
-        for file_path, file_data in self.content_index.items():
+        for _, file_data in self.content_index.items():
             if tag in file_data.get('semantic_tags', []):
                 results.append(SearchResult(
                     path=file_data['relative_path'],
@@ -197,7 +197,7 @@ class AIRepositorySearch:
 
         # Find reference file data
         reference_data = None
-        for file_path, file_data in self.content_index.items():
+        for _, file_data in self.content_index.items():
             if file_data['relative_path'] == reference_path:
                 reference_data = file_data
                 break
@@ -210,7 +210,7 @@ class AIRepositorySearch:
         reference_tags = set(reference_data.get('semantic_tags', []))
 
         similarities = []
-        for file_path, file_data in self.content_index.items():
+        for _, file_data in self.content_index.items():
             if file_data['relative_path'] == reference_path:
                 continue
 
@@ -247,7 +247,7 @@ class AIRepositorySearch:
 
     def get_file_details(self, relative_path: str) -> Optional[dict[str, Any]]:
         """Get detailed information about a specific file."""
-        for file_path, file_data in self.content_index.items():
+        for _, file_data in self.content_index.items():
             if file_data['relative_path'] == relative_path:
                 return file_data
         return None

@@ -73,7 +73,7 @@ class TargetedLinkFixer:
         if link_url.startswith('docs/') and not (self.repo_root / link_url).exists():
             # Try to find correct path
             filename = Path(link_url).name
-            for relocation_key, correct_path in self.relocations.items():
+            for _relocation_key, correct_path in self.relocations.items():
                 if correct_path.endswith(filename):
                     anchor = '#' + link_url.split('#', 1)[1] if '#' in link_url else ''
                     new_url = self._calculate_relative_path(source_file, correct_path) + anchor
@@ -84,7 +84,7 @@ class TargetedLinkFixer:
             # Try to fix
             try:
                 filename = Path(link_url).name
-                for relocation_key, correct_path in self.relocations.items():
+                for _relocation_key, correct_path in self.relocations.items():
                     if correct_path.endswith(filename):
                         anchor = '#' + link_url.split('#', 1)[1] if '#' in link_url else ''
                         new_url = self._calculate_relative_path(source_file, correct_path) + anchor
@@ -97,7 +97,7 @@ class TargetedLinkFixer:
             link_clean = link_url.replace('../', '').split('#')[0]
             if not (self.repo_root / link_clean).exists():
                 filename = Path(link_clean).name
-                for relocation_key, correct_path in self.relocations.items():
+                for _relocation_key, correct_path in self.relocations.items():
                     if correct_path.endswith(filename):
                         anchor = '#' + link_url.split('#', 1)[1] if '#' in link_url else ''
                         new_url = self._calculate_relative_path(source_file, correct_path) + anchor

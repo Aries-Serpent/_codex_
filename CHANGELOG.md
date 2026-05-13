@@ -7,6 +7,85 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S992 — codeql-alert-fetcher hardening; session_bootstrap regression; Pattern 25)
+- **`/.github/workflows/codeql-alert-fetcher.yml`**: Applied the missing corrections from `copilot/verify-codeql-alerts-and-sweep-1` and hardened the workflow further by enabling strict shell mode in multi-line bash steps, normalizing `repository_dispatch` booleans via the params step, clamping `top_n` to sane bounds, and making metadata reflect the resolved include flags.
+- **Safer artifact writes**: Replaced fragile `curl ... || echo ... > file` fallback patterns for analyses and community-profile fetches with temp-file + JSON-validation helpers before moving outputs into place.
+- **Artifact health reporting**: Added `collector_status.json` and a GitHub Actions step summary so downstream agents and humans can see which collectors produced valid outputs.
+- **Security policy fetch cleanup**: Removed the unused `ENCODED_PATH` variable and switched policy-content truncation to a byte-safe bounded form with explicit metadata.
+- **`scripts/ci/session_bootstrap.py`**: Fixed the `F821` regression caused by a loop-variable rename — `url_repo` / `ids` are again bound where the fetch helpers actually use them.
+- **Traceability / false positives**: Refreshed `.secrets.baseline` for the new workflow false-positive entry and updated accountability tracking for this commit.
+
+### Fixed (S991 — 84 F541 f-string placeholders; living-file hygiene; MFA tests green)
+- **`scripts/ci/fetch_security_snapshot.py`**: Fixed 84 `F541` (f-string without any placeholders) — bare `f""`, `f"---"`, and other static f-strings converted to plain strings via `ruff --select F541 --fix`. Pattern 11 violations fully cleared.
+- **Living-file verification**: `verify_living_files.py --pr-number 4434 --strict` passes — all 5 living files present and non-stale.
+- **Tracked-file hygiene**: `sync_tracked_files.py --fix` confirms CODEX_MANIFEST integrity, `.secrets.baseline`, CHANGELOG, and AGENT_ACCOUNTABILITY_REPORT all consistent.
+- **MFA tests**: `tests/auth/test_mfa_provider.py` and `tests/auth/test_authenticator.py` — all 57 tests pass ✅.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
+### Fixed (S990 continued — 24 more B007; template_lint.yml WEC; Pattern 25)
+- **24 B007 loop-variable quick-wins** (final batch — `scripts/` now clean): `ci/session_bootstrap.py` ×4, `convert_print_to_logger.py` ×2, `phase2d_disambiguator.py`, `phase2d_targeted_fixes.py` ×3, `phase3_categorization.py`, `phase3_stage1_processor.py`, `phase3_stage2_medium_priority.py`, `phase3_stage4_archive.py`, `root_org/update_links_atomic.py`, `security/validate_security.py` ×2, `security_audit.py` ×2, `space_traversal/detectors/mcp_error_handling.py`, `space_traversal/detectors/mcp_observability.py`, `space_traversal/detectors/mcp_versioning_compat.py`, `space_traversal/trend_aggregator.py`, `validate_auth_security.py`.
+- **`scripts/ci/session_wrapup_autofix.py` `_WEC_ITEMS`**: Added `template_lint.yml` after `audit-qa-suite.yml` to match the PR template WEC section order.
+- **Pattern 25**: Updated `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in this commit (S990 wrap-up).
+
+### Fixed (S990 — _gh_api.py syntax; 21 B007 unused loop-variable quick-wins)
+- **`scripts/ci/_gh_api.py`**: Removed duplicate bare-text module body (lines 468–509) that caused `invalid-syntax` ruff/parse errors; file now has exactly one copy of all constants and functions and passes `py_compile`.
+- **`scripts/ci/fetch_security_snapshot.py`**: Removed unused `import time` (F401).
+- **21 B007 loop-variable quick-wins** across 13 files (`adoption/track_metrics.py`, `agents/quantum_agent_orchestrator.py`, `ai_search.py` ×7, `catalog_workflows.py`, `check_py312_deps.py`, `ci/workflow_orchestrator.py`, `cognitive/agent_checkin.py`, `cognitive/metrics_collector.py`, `cognitive/qec_complete.py` ×2, `generate_ai_index.py` ×2, `monitor_workflow_performance.py`, `phase10/automated_secrets_manager.py`, `phase2d_disambiguator.py`): unused loop-control variables renamed to `_` / `_<name>`, clearing ruff B007 and equivalent CodeQL `py/unused-loop-variable` alerts.
+
+### Added (S987–S989 — CodeQL quick-wins, security pipeline, caching + WEC wiring)
+- **20 CodeQL quick-win fixes** across 14 files: 6 `py/ineffectual-statement` (removed `...` after docstrings in Protocol/ABC methods), 4 `py/unused-global-variable` re-exports (`__all__` additions), 10 `py/unused-import` / `py/unused-global-variable` removals and wire-ups.
+- **`scripts/ci/_gh_api.py`** — shared rate-limit-aware HTTP helper with TTL disk cache (`api_get_cached`, `paginate_cached`), exponential retry on 429/403, and per-page sleep floor.
+- **`scripts/ci/fetch_security_snapshot.py`** — unified fetcher for Dependabot, Secrets, Policy, Analyses, Copilot Autofix, and Context generation; replaces all inline Python blobs in the workflow.
+- **`docs/reference/SECURITY_API_REFERENCE.md`** — full GitHub Security API call catalog (Dependabot, Code Scanning, Secrets, Policy, Advisories) formatted for Copilot agent consumption.
+- **`docs/reference/CODEQL_FETCHER_WORKFLOW_GUIDE.md`** — full workflow guide with 7 Mermaid diagrams covering pipeline stages, stage-gate logic, trigger map, caching architecture, rate-limit sequence, Copilot Autofix flow, and WEC wiring.
+
+### Changed (S987–S989)
+- **`codeql-alert-fetcher.yml`** — replaced 5 inline Python/shell blobs with `fetch_security_snapshot.py` calls; added `actions/cache` for snapshot dir (keyed by SHA) and autofix-state; added full `autofix` and `prompt` pipeline stages with sentinel-comment upsert on PR or issue fallback.
+- **`wec_enforcer.py`** — added `_WORKFLOW_DEFAULT_INPUTS` map in `cmd_dispatch_checked`; `codeql-alert-fetcher.yml` now dispatched with `{"inputs": {"pipeline": "collect,autofix,prompt"}}` so the correct stage fires when the WEC checkbox is ticked.
+- **`copilot-iterative-self-healing.yml`** — added `"🔍 CodeQL Alert Fetcher"` to `workflow_run.workflows` triggers.
+- **`.github/pull_request_template.md`** — added `codeql-alert-fetcher.yml` checkbox to `🔒 Opt-In: Security & Quality` WEC section.
+- **`fetch_codeql_alerts.py`** — removed duplicate `_resolve_token` / `_api_get` helpers (now delegated to `_gh_api.py`); removed unused imports.
+
+### Fixed (S986 — ujson Dependabot advisory resolved in uv.lock)
+- **UltraJSON memory-leak advisory**: Verified the repository still had `ujson 5.12.0` only in `uv.lock` (while `requirements/lock.txt` was already on `5.12.1`), leaving Dependabot alert #256 open for the UV lockfile.
+- **`uv.lock`**: Surgically updated the `ujson` package block from `5.12.0` to `5.12.1`, the patched release for the `ujson.dump()` write-failure memory leak.
+- **Verification**: Confirmed `ujson 5.12.1` is clean via the advisory DB and that the current CodeQL/Dependabot source-of-truth report still shows the lockfile issue as the remaining remediation target.
+
+### Fixed (S985 — updated CodeQL report consumed; top remaining error addressed)
+- **Updated fetched report applied**: Consumed the refreshed CodeQL artifact report (`run 25778513533`, 119 open alerts on `main`) as the current source of truth; confirmed the MFA weak-crypto finding is no longer present in the open-alert summary.
+- **Top fixable error targeted**: Restructured `tests/unit/test_peft_utils.py` so the PEFT bundle is loaded through a helper that either returns an initialized bundle or exits via `pytest.skip(...)`, addressing the top remaining `py/uninitialized-local-variable` finding from the fetched report.
+
+### Fixed (S984 — MFA review nits and secret-allowlist consistency)
+- **Secret allowlist consistency**: Added matching `# pragma: allowlist secret` coverage for the SHA1 provisioning-URI test secret so test-secret handling is consistent within `tests/auth/test_mfa_provider.py`.
+- **Digest-guard wording**: Clarified the defensive error message in `src/codex/auth/mfa_provider.py` to indicate the RFC 6238 algorithm was validated but the runtime `hashlib` implementation is unexpectedly missing.
+- **Mixed-case normalization coverage**: Added a test proving mixed-case algorithm names (for example `sHa512`) normalize to `SHA512`.
+
+### Fixed (S983 — MFA review-fix coverage and defensive guard)
+- **MFA backward-compatibility coverage**: Added targeted tests proving existing SHA1-enrolled secrets still normalize correctly, generate valid provisioning URIs, and successfully verify TOTP codes after the SHA256-default hardening.
+- **Invalid algorithm coverage**: Added explicit test coverage for invalid algorithm rejection during `MFASecret` construction and `verify_totp(...)`, not just `generate_totp(...)`.
+- **Defensive hash selection guard**: `src/codex/auth/mfa_provider.py` now raises a clear `ValueError` if a validated TOTP algorithm unexpectedly lacks a corresponding `hashlib` implementation.
+
+### Fixed (S982 — MFA TOTP hardening + PR4434 living files)
+- **`src/codex/auth/mfa_provider.py`**: Reworked TOTP hash selection to use validated RFC 6238 algorithm names (`SHA1` / `SHA256` / `SHA512`) via normalized lookup instead of direct `hashlib.sha1`; new MFA secrets now default to `SHA256` while explicit SHA1 compatibility remains available for existing enrollments.
+- **`src/codex/auth/authenticator.py`**: MFA login verification now passes the stored secret algorithm into `verify_totp(...)`, so per-secret algorithm selection is honored end-to-end.
+- **MFA tests**: Expanded `tests/auth/test_mfa_provider.py` coverage for default `SHA256`, SHA1 compatibility, invalid algorithm rejection, and provisioning URI algorithm metadata.
+- **Living-file compliance (PR #4434)**: Added missing `docs/plans/PR4434_whats_next.md` and `docs/sessions/PR4434_session_diagram.md`; `python scripts/ci/verify_living_files.py --pr-number 4434 --strict` now passes.
+- **Traceability cleanup**: Corrected lingering `S979-PR4432` summary text in `.codex/aftermath/pda_iterations.jsonl`; refreshed PR #4434 follow-up priorities for the next CodeQL sweep step.
+
+### Fixed (S981 — Code review fixes: PDA PR number, session context truncation, followup files)
+- **PDA entry PR number**: Fixed `.codex/aftermath/pda_iterations.jsonl` S979 entry — was `pr_number: 4432`, corrected to `pr_number: 4434`; also fixed `session` and `pattern_id` fields from `pr4432`/`PR4432` to `pr4434`/`PR4434`
+- **Session context truncation**: Fixed truncated commit message in `.codex/session_context_latest.md` — `fix(codeql): replace os.popen with datetime...` was cut off; restored full message
+- **Follow-up prompt files modified list**: Fixed `PR-4434-followup.md` "Files Modified: No files modified" contradiction — now correctly lists the 4 files changed in S979
+- **Branch divergence**: Merged 1-commit gap from `main` (cognitive brain patterns update `2696aa53`)
+
+### Fixed (S980 — Pattern 25 fix: follow-up prompt commit was [skip ci] only)
+- **Pattern 25 compliance**: Automated `[skip ci]` commit `bb751c8` (chore: Generate follow-up prompt) only updated `.github/copilot-prompts/active/PR-4434-followup.md` without CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md — Pattern 25 violation. This commit restores compliance.
+- **sync_tracked_files**: All tracked files consistent ✅ (CODEX_MANIFEST sha256 consistent, .secrets.baseline entries correct, CHANGELOG [Unreleased] present)
+
+### Fixed (S979 — Post-merge CodeQL sweep: os.popen → datetime, PR #4434)
+- **CodeQL verification on main**: Confirmed CodeQL Advanced workflow (run 25774686922) ran successfully on main after PR #4427 merged — 4 language analyses passing ✅ (python, go, javascript-typescript, rust) plus 2 post-run jobs skipped cleanly
+- **`scripts/fix_broken_doc_links.py`**: Replaced deprecated `os.popen('date -u +%Y-%m-%dT%H:%M:%SZ')` call with `datetime.datetime.now(datetime.timezone.utc).strftime(...)` — removes CodeQL `py/shell-command-injection-from-environment` alert; adds `import datetime` to module imports
+
 ### Fixed (S978 — Pattern 25 compliance + CI Rescue on d104e11 resolved)
 - **Pattern 25 compliance (x2)**: Fixed two successive Pattern 25 violations (plan commits `379207f` and `452cb70` each only had `session_context_latest.md`); both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md now included in compliance commit
 - **CI Rescue on `d104e11` triage**: Two failing checks (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) were infrastructure jobs with 23 in-progress; ruff ✅ clean, sync_tracked_files ✅ consistent

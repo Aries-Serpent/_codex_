@@ -43,13 +43,10 @@ def infer_domain(path: str) -> str:
 
 def infer_intent(path: str) -> str:
     p = path.lower()
-    if "admin" in p or "runbook" in p:
-        return "admin"
-    if "consultant" in p:
-        return "consultant"
-    if "runtime" in p:
-        return "runtime"
-    return "admin"
+    for intent in INTENTS:
+        if intent in p:
+            return intent
+    return INTENTS[0]
 
 
 def iter_sources(root: Path):

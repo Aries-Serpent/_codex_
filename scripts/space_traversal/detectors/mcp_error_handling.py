@@ -108,7 +108,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
 
         # Pattern detection
         file_has_evidence = False
-        for pattern, pattern_type in patterns.items():
+        for pattern, _pattern_type in patterns.items():
             if pattern in text:
                 found.append(pattern)
                 file_has_evidence = True

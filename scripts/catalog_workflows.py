@@ -223,7 +223,7 @@ def identify_consolidation_candidates(inventory: dict) -> dict:
 
     # Mark consolidation candidates
     for workflow in inventory["workflows"]:
-        for category, plan in consolidation_plan.items():
+        for _, plan in consolidation_plan.items():
             if workflow["filename"] in plan.get("remove", []):
                 workflow["consolidation_candidate"] = True
                 workflow["consolidation_plan"] = plan["reason"]

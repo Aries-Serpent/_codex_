@@ -5,7 +5,7 @@ Fix broken documentation links.
 This script identifies and fixes broken internal links in documentation files.
 """
 
-import os
+import datetime
 import re
 from pathlib import Path
 
@@ -128,7 +128,7 @@ def generate_report(broken_links: dict[str, list[BrokenLink]]) -> str:
     report_lines = [
         "# Broken Documentation Links Report",
         "",
-        f"**Generated**: {os.popen('date -u +%Y-%m-%dT%H:%M:%SZ').read().strip()}",
+        f"**Generated**: {datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}",
         "",
         f"**Total Files with Broken Links**: {len(broken_links)}",
         f"**Total Broken Links**: {sum(len(links) for links in broken_links.values())}",

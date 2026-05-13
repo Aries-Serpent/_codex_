@@ -44,14 +44,28 @@ import json
 import logging
 import os
 import sys
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+# Import the shared rate-limit-aware HTTP helpers.  _gh_api.py lives in the
+# same directory; we add that directory to sys.path so the import works whether
+# the script is invoked directly or via subprocess from the workflow.
+_here = Path(__file__).parent
+if str(_here) not in sys.path:
+    sys.path.insert(0, str(_here))
+
+from _gh_api import (  # noqa: E402  (after sys.path manipulation)
+    DEFAULT_MIN_REMAINING,
+    DEFAULT_PAGE_SLEEP,
+    DEFAULT_PER_PAGE,
+    resolve_token,
+)
+from _gh_api import (
+    api_get as _api_get_impl,
+)
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -69,12 +83,9 @@ log = logging.getLogger("fetch_codeql_alerts")
 # Constants
 # ---------------------------------------------------------------------------
 
-DEFAULT_PAGE_SLEEP: float = 1.0   # seconds between paginated requests
 DEFAULT_MAX_PAGES: int = 10       # hard cap — each page is up to 100 alerts
-DEFAULT_MIN_REMAINING: int = 20   # pause when REST remaining drops this low
 DEFAULT_STATE: str = "open"
 DEFAULT_TOOL: str = "CodeQL"
-DEFAULT_PER_PAGE: int = 100       # GitHub max
 
 REPO_OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "Aries-Serpent")
 REPO_NAME_FULL = os.environ.get("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
@@ -82,35 +93,11 @@ _repo_parts = REPO_NAME_FULL.split("/", 1)
 REPO_NAME = _repo_parts[1] if len(_repo_parts) == 2 else "_codex_"
 
 API_BASE = "https://api.github.com"
-UA = "fetch-codeql-alerts/1.0"
-
-# ---------------------------------------------------------------------------
-# Token resolution
-# ---------------------------------------------------------------------------
-
-
-def _resolve_token() -> str:
-    """Return the first non-empty token from the standard chain."""
-    for envvar in (
-        "CODEX_MASTER_KEY",
-        "CODEX_BACKUP_KEY",
-        "GH_TOKEN",
-        "GITHUB_TOKEN",
-    ):
-        tok = os.environ.get(envvar, "").strip()
-        if tok:
-            log.info("Using token from %s", envvar)
-            return tok
-    log.error(
-        "No GitHub token found. Set CODEX_MASTER_KEY (needs security_events scope)."
-    )
-    raise SystemExit(1)
 
 
 # ---------------------------------------------------------------------------
-# HTTP helper
+# Thin wrappers that keep the existing public call-sites unchanged
 # ---------------------------------------------------------------------------
-
 
 def _api_get(
     url: str,
@@ -118,65 +105,9 @@ def _api_get(
     min_remaining: int,
     page_sleep: float,
 ) -> tuple[Any, dict[str, str]]:
-    """Perform a single GET to *url* and return (parsed_json, response_headers).
+    """Delegate to the shared rate-limit-aware helper in _gh_api.py."""
+    return _api_get_impl(url, token, page_sleep=page_sleep, min_remaining=min_remaining)
 
-    Sleeps automatically when rate-limit is low or a 429/403 is received.
-    Raises SystemExit on unrecoverable errors.
-    """
-    req = urllib.request.Request(url)
-    req.add_header("Authorization", f"Bearer {token}")
-    req.add_header("Accept", "application/vnd.github+json")
-    req.add_header("X-GitHub-Api-Version", "2022-11-28")
-    req.add_header("User-Agent", UA)
-
-    for attempt in range(3):
-        try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw = resp.read().decode("utf-8")
-                headers = dict(resp.headers)
-                data = json.loads(raw)
-
-                remaining = int(headers.get("X-RateLimit-Remaining", "9999"))
-                reset_at = int(headers.get("X-RateLimit-Reset", "0"))
-                if remaining < min_remaining and reset_at > 0:
-                    now = int(datetime.now(timezone.utc).timestamp())
-                    sleep_secs = max(0, reset_at - now) + 5
-                    log.warning(
-                        "Rate-limit low (%d remaining). Sleeping %ds until reset.",
-                        remaining,
-                        sleep_secs,
-                    )
-                    time.sleep(sleep_secs)
-
-                if page_sleep > 0:
-                    time.sleep(page_sleep)
-
-                return data, headers
-
-        except urllib.error.HTTPError as exc:
-            status = exc.code
-            if status in (429, 403):
-                retry_after = int(exc.headers.get("Retry-After", "60"))
-                log.warning(
-                    "HTTP %d on attempt %d — sleeping %ds (Retry-After).",
-                    status,
-                    attempt + 1,
-                    retry_after,
-                )
-                time.sleep(retry_after)
-                continue
-            body = exc.read().decode("utf-8", errors="replace")
-            log.error("HTTP %d fetching %s: %s", status, url, body[:400])
-            raise SystemExit(1)
-        except OSError as exc:
-            log.error("Network error on attempt %d: %s", attempt + 1, exc)
-            if attempt < 2:
-                time.sleep(5)
-                continue
-            raise SystemExit(1)
-
-    log.error("Exhausted retries for %s", url)
-    raise SystemExit(1)
 
 
 # ---------------------------------------------------------------------------
@@ -407,7 +338,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.max_pages > 100:
         args.max_pages = 100
 
-    token = _resolve_token()
+    token = resolve_token()
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 

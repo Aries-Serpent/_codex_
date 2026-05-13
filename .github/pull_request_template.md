@@ -152,6 +152,7 @@
 - [ ] auto-fix-pr-check.yml — PR auto-fix check
 - [ ] code-quality-coverage-suite.yml — Code quality & coverage suite
 - [ ] audit-qa-suite.yml — Audit & QA Suite (Unified)
+- [ ] codeql-alert-fetcher.yml — CodeQL Alert Fetcher (artifact for in-session review)
 - [ ] template_lint.yml — Template / HTML Include Lint
 
 ### 📄 Opt-In: Documentation
