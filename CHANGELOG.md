@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S995-security-quality-batch1 — 2026-05-13T17:40Z)
+- Added `"github"` to `src/codex/__init__.py` lazy submodule registry to restore dotted monkeypatch path resolution for MCP poster variable-update tests.
+- Changed optional dependency import logging in `src/codex_ml/monitoring/system_metrics.py` from warning→debug so JSON CLI mode does not leak non-fatal stderr noise.
+- Hardened `src/training/accelerate_init_guard.py:is_accelerate_available()` against malformed stub modules (`ValueError`/`ImportError` from `find_spec`).
+- Fixed capability trend classification in `scripts/space_traversal/trend_aggregator.py` by using `_cap_id` consistently when recording stable/up/down buckets.
+- Updated living docs and remediation planset for the active Security+Quality sprint continuation (`docs/roadmap/PR4448_whats_next.md`, `docs/roadmap/PR4448_session_diagram.mmd`, `.codex/plans/security-remediation-planset.md`).
+
 ### Fixed (S994-artifact-refresh — PR #4448 — 2026-05-13T16:30Z)
 - **Security artifact refresh** — ingested new security-scanning-suite artifacts from run 25809211083:
   - `dependency-scan-results` sha256:ae221879 · `sbom-reports` sha256:1d922863

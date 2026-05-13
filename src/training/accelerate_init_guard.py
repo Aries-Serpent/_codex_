@@ -71,7 +71,10 @@ def is_accelerate_available() -> bool:
     # Accelerator is None when accelerate is not installed; non-None when it is.
     if _ACCELERATOR_AVAILABLE and Accelerator is not None:
         return True
-    spec = importlib.util.find_spec("accelerate")
+    try:
+        spec = importlib.util.find_spec("accelerate")
+    except (ValueError, ImportError):
+        return False
     return spec is not None
 
 

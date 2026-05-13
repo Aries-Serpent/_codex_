@@ -25,6 +25,7 @@ _SUBMODULES = {
     "analyze",
     "archive",
     "cli",
+    "github",
     "ingest",
     "intent",
     "transform",

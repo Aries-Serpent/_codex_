@@ -1,3 +1,32 @@
+## SESSION SUMMARY — 2026-05-13T17:40Z [S995-security-quality-batch1]
+
+**Session:** S995-security-quality-batch1 | **Branch:** `0D_base_` | **PR:** #4448 (continuation)
+
+### Completed
+- ✅ Kept work on `0D_base_` and executed a smallest-safe remediation batch focused on current first-failure blockers.
+- ✅ Fixed MCP poster test path issue by exporting lazy `codex.github` in `src/codex/__init__.py`.
+- ✅ Fixed JSON CLI stderr contract by downgrading optional dependency import warnings to debug in `src/codex_ml/monitoring/system_metrics.py`.
+- ✅ Fixed `accelerate` availability probe crash (`accelerate.__spec__ is not set`) in `src/training/accelerate_init_guard.py`.
+- ✅ Fixed trend aggregation bucket labeling bug in `scripts/space_traversal/trend_aggregator.py`.
+- ✅ Updated living docs: `docs/roadmap/PR4448_whats_next.md` + `docs/roadmap/PR4448_session_diagram.mmd`.
+- ✅ Updated security planset with S995 111-item triage ledger allocation and completed batch details.
+- ✅ Pattern 25 maintained: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated together.
+
+### Validation (time-boxed)
+- ✅ `ruff check .`
+- ✅ `bandit -r src/ --configfile .bandit`
+- ✅ `pytest -x tests/security`
+- ✅ Targeted regressions for remediated failures passed.
+- ⚠️ Full `pytest -x` remains in-progress for full-suite first-failure burn-down.
+- ⚠️ CodeQL workflow rerun deferred to immediate continuation window due active GitHub API rate-limit block.
+
+### Immediate Follow-up
+1. Resume full-suite `pytest -x` and continue first-failure remediation loop.
+2. Re-attempt CodeQL workflow dispatch/artifact retrieval once API window resets.
+3. Expand 111-item ledger from category counts to concrete finding rows and owners.
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T16:09Z [S994-security-batch3]
 
 **Session:** S994-security-batch3 | **Branch:** `0D_base_` | **PR:** #4448
@@ -36099,3 +36128,29 @@ Ingest new security-scanning-suite artifacts (run 25809211083), update living do
 - Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
 - Pattern 12 ✅ — upstream sweep `afc4e95` resolved E501 in `envelope.py`
 - Pattern 30 ✅ — PDA entry exists for 2026-05-13
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-05-13T17:32:23Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-05-13T17:32:23Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions

@@ -7,6 +7,40 @@
 
 ---
 
+## 🚧 Sprint Update — Security+Quality Remediation (S995, 2026-05-13)
+
+**Task target:** backlog of **111** outstanding CodeQL/security/quality findings (user-provided objective).  
+**Current session status:** first safe remediation batch executed; backlog triage structure added; continuation required for full 111-item closure.
+
+### Triage Buckets (working ledger)
+
+| Priority | Definition | Backlog allocation |
+|---|---|---:|
+| P1 | HIGH/CRITICAL actionable | 37 |
+| P2 | MEDIUM actionable | 42 |
+| P3 | low-risk refactor/noise | 32 |
+| **Total** |  | **111** |
+
+### First remediation batch completed (smallest safe diffs)
+
+| Area | File | Fix | Outcome |
+|---|---|---|---|
+| Quality/runtime | `src/codex/__init__.py` | add `"github"` to lazy `_SUBMODULES` | fixed `tests/github/test_mcp_poster_session_number.py::test_set_injection_enabled_true` |
+| CLI output hygiene | `src/codex_ml/monitoring/system_metrics.py` | downgrade optional dependency import logs from warning→debug | fixed `tests/plugins/test_list_plugins_cli_json_stdout_only.py` stderr contract |
+| Quality logic bug | `src/training/accelerate_init_guard.py` | guard `find_spec("accelerate")` against `ValueError`/`ImportError` | fixed `tests/distributed/test_distributed_enhanced.py::TestAccelerateAvailability::test_is_accelerate_available` |
+| Trend correctness | `scripts/space_traversal/trend_aggregator.py` | use loop key `_cap_id` instead of stale outer `cap_id` | fixed `tests/space_traversal/test_trend_aggregator.py::test_trending_detection` |
+
+### Validation snapshot
+
+- ✅ `ruff check .`
+- ✅ `bandit -r src/ --configfile .bandit`
+- ✅ `pytest -x tests/security`
+- ✅ targeted regression tests for all remediated failures
+- ⚠️ `pytest -x` re-run still required to drive remaining first-failure items to completion
+- ⚠️ CodeQL workflow dispatch blocked this session by GitHub API rate-limit window; retry next continuation window
+
+---
+
 ## 📊 Current State (post Batch 3 + artifact refresh — 2026-05-13)
 
 | Surface | Tool | Issues Before | Issues After | Status |

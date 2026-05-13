@@ -6,6 +6,34 @@
 
 ---
 
+## 🔄 S995 Incremental Update (time-boxed continuation)
+
+### Completed now
+
+1. Added `codex.github` lazy module export in `src/codex/__init__.py` (fixed failing MCP poster session-number test path resolution).
+2. Reduced optional dependency import noise in `src/codex_ml/monitoring/system_metrics.py` (JSON CLI stdout/stderr contract restored).
+3. Hardened accelerate availability guard in `src/training/accelerate_init_guard.py` (`find_spec` now handles malformed module stubs safely).
+4. Fixed trend classification key bug in `scripts/space_traversal/trend_aggregator.py` (`_cap_id` used consistently in summary buckets).
+
+### Validation (minimal, completed)
+
+- ✅ `ruff check .`
+- ✅ `bandit -r src/ --configfile .bandit`
+- ✅ `pytest -x tests/security`
+- ✅ Targeted regressions for the remediated failures:
+  - `tests/github/test_mcp_poster_session_number.py::test_set_injection_enabled_true`
+  - `tests/plugins/test_list_plugins_cli_json_stdout_only.py`
+  - `tests/distributed/test_distributed_enhanced.py::TestAccelerateAvailability::test_is_accelerate_available`
+  - `tests/space_traversal/test_trend_aggregator.py::test_trending_detection`
+
+### Remaining for next continuation window
+
+1. Continue full-suite `pytest -x` first-failure burn-down until green.
+2. Re-attempt CodeQL workflow dispatch and artifact retrieval after API rate-limit reset.
+3. Expand the 111-item backlog ledger from allocation buckets to concrete item rows (P1/P2/P3).
+
+---
+
 ## ✅ Completed This Session
 
 | # | Task | Commit |
