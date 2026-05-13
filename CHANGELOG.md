@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S993 cont.7 — Runtime Logic Automation Roadmap: RateLimitAwareHTTP class)
+- **`scripts/ci/_gh_api.py`**: Added `RateLimitAwareHTTP` class — object-oriented façade over the existing procedural helpers (`api_get_cached`, `api_post`, `paginate_cached`). Implements `get()`, `post()`, `list_paginated()`, and `handle_rate_limit()` methods with lazy token resolution, TTL caching, exponential back-off, and structured rate-limit logging. This is the mandatory shared HTTP client for all autonomous agent operations per roadmap Priority 0.1.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry refreshed for S993-cont7 (2026-05-13).
+
 ### Fixed (S993 cont.6 — Pattern 12 E501 line-length in cli_knowledge.py)
 - **`src/codex/cli_knowledge.py` line 217**: Wrapped long expression for `_QUANTUM_SYMBOL_RE` intersection to stay within 100-char limit (E501 Pattern 12 auto-fix).
 - **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.

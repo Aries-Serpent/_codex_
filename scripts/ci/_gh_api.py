@@ -464,3 +464,163 @@ def paginate_cached(
 
     return all_items
 
+
+# ---------------------------------------------------------------------------
+# RateLimitAwareHTTP — object-oriented façade (roadmap Priority 0.1)
+# ---------------------------------------------------------------------------
+
+
+class RateLimitAwareHTTP:
+    """Rate-limit aware HTTP client for autonomous agent operations.
+
+    This class provides an object-oriented interface over the module-level
+    ``api_get`` / ``api_post`` / ``paginate_cached`` helpers, adding:
+
+    * TTL-based disk caching (default 1 hour)
+    * Exponential back-off on 429 / 503 responses
+    * Token rotation: ``CODEX_MASTER_KEY`` → ``CODEX_BACKUP_KEY`` → ``GH_TOKEN``
+      → ``GITHUB_TOKEN``
+    * Request coalescing within the cache TTL window
+    * Structured logging of every rate-limit encounter
+    * Graceful degradation — returns cached data rather than raising when the
+      API is rate-limited and cached data is available
+
+    Usage::
+
+        from _gh_api import RateLimitAwareHTTP
+
+        http = RateLimitAwareHTTP(cache_dir=".codex/http_cache", ttl_seconds=3600)
+
+        # GET with caching and back-off
+        data = http.get("https://api.github.com/repos/owner/repo/issues")
+
+        # POST with back-off (not cached)
+        result = http.post(
+            "https://api.github.com/repos/owner/repo/issues/1/comments",
+            payload={"body": "hello"},
+        )
+
+        # Paginated GET with per-page caching
+        all_items = http.list_paginated(
+            "https://api.github.com/repos/owner/repo/issues?state=open",
+            per_page=100,
+        )
+    """
+
+    def __init__(
+        self,
+        *,
+        cache_dir: str | Path | None = ".codex/http_cache",
+        ttl_seconds: int = DEFAULT_CACHE_TTL,
+        min_remaining: int = DEFAULT_MIN_REMAINING,
+        page_sleep: float = DEFAULT_PAGE_SLEEP,
+        max_retries: int = MAX_RETRIES,
+        token: str | None = None,
+    ) -> None:
+        self._cache_dir: Path | None = Path(cache_dir) if cache_dir else None
+        self._ttl = ttl_seconds
+        self._min_remaining = min_remaining
+        self._page_sleep = page_sleep
+        self._max_retries = max_retries
+        # Allow callers to inject a token directly; otherwise resolve lazily.
+        self._token: str | None = token
+
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+
+    def _get_token(self) -> str:
+        """Return the resolved token, resolving lazily on first call."""
+        if self._token is None:
+            self._token = resolve_token()
+        return self._token
+
+    # ------------------------------------------------------------------
+    # Public interface
+    # ------------------------------------------------------------------
+
+    def get(self, url: str, *, headers: dict[str, str] | None = None) -> Any:
+        """GET *url* with TTL caching and back-off.
+
+        Returns the parsed JSON body.  If the server is rate-limited and a
+        cached response exists, the cached data is returned without raising.
+
+        *headers* is reserved for future per-request header overrides;
+        the standard GitHub auth headers are always injected automatically.
+        """
+        token = self._get_token()
+        data, _ = api_get_cached(
+            url,
+            token,
+            cache_dir=self._cache_dir,
+            ttl_seconds=self._ttl,
+            page_sleep=self._page_sleep,
+            min_remaining=self._min_remaining,
+        )
+        return data
+
+    def post(
+        self,
+        url: str,
+        *,
+        payload: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> Any:
+        """POST *url* with optional JSON *payload* and back-off.
+
+        Returns the parsed JSON body.  POST responses are never cached.
+
+        *headers* is reserved for future per-request header overrides.
+        """
+        token = self._get_token()
+        data, _ = api_post(
+            url,
+            token,
+            payload,
+            min_remaining=self._min_remaining,
+        )
+        return data
+
+    def list_paginated(
+        self,
+        url: str,
+        *,
+        headers: dict[str, str] | None = None,
+        per_page: int = DEFAULT_PER_PAGE,
+        max_pages: int = 10,
+    ) -> list[dict[str, Any]]:
+        """Paginate GET *url* and return all items as a flat list.
+
+        Each page URL is cached independently (per-page deduplication): only
+        pages whose cache entry has expired are re-downloaded.
+
+        *headers* is reserved for future per-request header overrides.
+        """
+        token = self._get_token()
+        return paginate_cached(
+            url,
+            token,
+            cache_dir=self._cache_dir,
+            ttl_seconds=self._ttl,
+            max_pages=max_pages,
+            page_sleep=self._page_sleep,
+            min_remaining=self._min_remaining,
+            per_page=per_page,
+        )
+
+    def handle_rate_limit(self, reset_time: int, endpoint: str) -> None:
+        """Log a rate-limit event and sleep until *reset_time* (Unix epoch).
+
+        This method is exposed publicly so callers that receive a rate-limit
+        signal outside of a normal ``get``/``post`` call (e.g. a GraphQL
+        response) can use the same structured logging and sleep logic.
+        """
+        now = int(datetime.now(timezone.utc).timestamp())
+        sleep_secs = max(1, reset_time - now) + 5  # +5 s safety buffer
+        log.warning(
+            "Rate-limit detected on %s. Sleeping %ds until reset at %s.",
+            endpoint,
+            sleep_secs,
+            datetime.fromtimestamp(reset_time, tz=timezone.utc).isoformat(),
+        )
+        time.sleep(sleep_secs)
