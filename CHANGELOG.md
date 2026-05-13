@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S993 — PR #4442 bootstrap; living docs; sync fix)
+- **`docs/plans/PR4442_whats_next.md`**: Created new PR living doc for the post-PR#4434 continuation, listing completed carry-forward work and remaining priorities.
+- **`docs/sessions/PR4442_session_diagram.md`**: Created new session diagram tracking PR #4442 sessions.
+- **`sync_tracked_files --fix`**: Refreshed `.secrets.baseline` CODEX_MANIFEST entry (was stale after merge); all tracked files now consistent.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+- **Pattern 30**: PDA entry added for S993 (2026-05-13).
+
 ### Fixed (auto-update — PR #4442)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4442 (SHA `9ce9350b`) at 2026-05-13T09:05Z [auto-generated]
 
