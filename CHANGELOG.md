@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S978 — Pattern 25 compliance + CI Rescue on d104e11 resolved)
+- **Pattern 25 compliance**: Resolved Pattern 25 violation from plan commit `379207f` (only had `session_context_latest.md`); added S978 entry to both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md
+- **CI Rescue on `d104e11` triage**: Two failing checks (`Detect CI Issues & Post Fix Instructions`, `🔐 Enforce Secrets Baseline`) on commit `d104e11` — infrastructure jobs on an older commit with 23 in-progress; ruff ✅ clean, sync_tracked_files ✅ consistent
+
 ### Fixed (S977 — Pattern 25 compliance + CI Rescue on 8f3b62d resolved)
 - **Pattern 25 compliance**: Resolved Pattern 25 violation from plan commit `2c5a85c` (only had `session_context_latest.md`); added S977 entry to both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md
 - **CI Rescue on `8f3b62d` triage**: Three failing checks (`Post rescue comment`, `🔐 Enforce Secrets Baseline`, `Detect CI Issues & Post Fix Instructions`) were infrastructure jobs on an older commit; current HEAD workflow runs are `action_required` (pending auto-approve), not `failure`. Auto-baseline sweep `b17ac63` already addressed the secrets-baseline dimension.
