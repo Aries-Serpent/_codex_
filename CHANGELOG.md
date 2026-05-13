@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S981 — Code review fixes: PDA PR number, session context truncation, followup files)
+- **PDA entry PR number**: Fixed `.codex/aftermath/pda_iterations.jsonl` S979 entry — was `pr_number: 4432`, corrected to `pr_number: 4434`; also fixed `session` and `pattern_id` fields from `pr4432`/`PR4432` to `pr4434`/`PR4434`
+- **Session context truncation**: Fixed truncated commit message in `.codex/session_context_latest.md` — `fix(codeql): replace os.popen with datetime...` was cut off; restored full message
+- **Follow-up prompt files modified list**: Fixed `PR-4434-followup.md` "Files Modified: No files modified" contradiction — now correctly lists the 4 files changed in S979
+- **Branch divergence**: Merged 1-commit gap from `main` (cognitive brain patterns update `2696aa53`)
+
 ### Fixed (S980 — Pattern 25 fix: follow-up prompt commit was [skip ci] only)
 - **Pattern 25 compliance**: Automated `[skip ci]` commit `bb751c8` (chore: Generate follow-up prompt) only updated `.github/copilot-prompts/active/PR-4434-followup.md` without CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md — Pattern 25 violation. This commit restores compliance.
 - **sync_tracked_files**: All tracked files consistent ✅ (CODEX_MANIFEST sha256 consistent, .secrets.baseline entries correct, CHANGELOG [Unreleased] present)

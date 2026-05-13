@@ -17,7 +17,10 @@
 - [`d9896a64`] fix(codeql): replace os.popen with datetime in fix_broken_doc_links.py; Pattern 25 + PDA entry (copilot-swe-agent[bot], 2026-05-13)
 
 ### Files Modified
-No files modified
+- `scripts/fix_broken_doc_links.py` — replaced `os.popen('date -u ...')` with `datetime.datetime.now(datetime.timezone.utc).strftime(...)` to fix CodeQL `py/shell-command-injection-from-environment` alert; removed unused `import os`; added `import datetime`
+- `CHANGELOG.md` — added S979/S980 session entries under `## [Unreleased]` (Pattern 25)
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — added S979/S980 session summaries (Pattern 25)
+- `.codex/aftermath/pda_iterations.jsonl` — added S979 PDA entry for 2026-05-13 (Pattern 30)
 
 ---
 
