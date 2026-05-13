@@ -97,7 +97,7 @@ class TestMentalMappingCoreFlows:
 
     def test_think_through_problem_hypothesis_generation(self, mental_map):
         """Test hypothesis generation during problem thinking."""
-        _problem_node, _reasoning_steps = mental_map.think_through_problem(
+        _, _ = mental_map.think_through_problem(
             problem="Database query timeout", context={"symptoms": "slow response"}
         )
 

@@ -503,7 +503,7 @@ def test_assert_vocab_size(tmp_path, monkeypatch):
     # Stubbed path
     model = tmp_path / "toy.model"
     model.write_text("model", encoding="utf-8")
-    _calls, _sp_stub = _stub_sp(monkeypatch, model, vocab_size=7)
+    _, _ = _stub_sp(monkeypatch, model, vocab_size=7)
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     SentencePieceAdapter = mod.SentencePieceAdapter
 

@@ -1,8 +1,19 @@
 # PR #4450 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S1003 · 2026-05-13T22:00Z  
+**Session:** S1003-cont · 2026-05-13T22:13Z  
 **Objective:** Reduce CodeQL Security + Quality alerts < 25 (path to 0)
+
+---
+
+## 📊 Session S1003-cont CI Results (commit `ad5b904` → new push)
+
+| Metric | Value |
+|--------|-------|
+| ✅ Passing | All workflows pending re-run after latest push |
+| 🔧 Fixed this sub-session | SHA-pin `create-github-app-token@v3` (4 workflows) |
+| 🔧 Fixed this sub-session | Protocol body `...` → docstring only in `embeddings.py` (CodeQL py/ineffectual-statement ×2) |
+| 🔧 Fixed this sub-session | Unused tuple unpacks → `_, _` in test_mental_mapping_core_flows.py + test_sentencepiece_adapter.py |
 
 ---
 
@@ -29,9 +40,13 @@
 | 6 | `actions/unpinned-tag` ×24 — pinned to full commit SHAs (23 valid) | `0d78bc5` |
 | 7 | `labeler.yml` YAML syntax fix | `0d78bc5` |
 | 8 | Hotfix: reverted bad SHA for `create-github-app-token@v3` (4 files) | `78bbaae` |
-| 9 | actionlint SC1039: replaced heredocs in `codeql-alert-fetcher.yml` | latest |
+| 9 | actionlint SC1039: replaced heredocs in `codeql-alert-fetcher.yml` | `4cf0a76` |
+| 10 | SHA-pin `create-github-app-token@v3` → `1b10c78c` (4 workflows, correct SHA) | `this` |
+| 11 | `py/ineffectual-statement` ×2 — removed `...` from Protocol bodies in `embeddings.py` (lines 47, 51) | `this` |
+| 12 | `py/unused-local-variable` — `_calls, _sp_stub` → `_, _` in `test_sentencepiece_adapter.py:506` | `this` |
+| 13 | `py/unused-local-variable` — `_problem_node, _reasoning_steps` → `_, _` in `test_mental_mapping_core_flows.py:100` | `this` |
 
-**Est. alerts fixed: ~68** (from ~127 → ~59 → expected <25 after CodeQL rescan)
+**Est. alerts fixed: ~72** (from ~127 → ~55 estimated open; target < 25)
 
 ---
 
@@ -40,31 +55,28 @@
 ```
 @copilot CTEP Mode: ON
 
-Continue PR #4450 security/quality remediation. Session S1003 summary:
-- Fixed ~68 CodeQL alerts (bulk RUF059, permissions, SHA-pinning, actionlint heredoc)
-- CI: 21+ ✅, 0 ❌ on commit 78bbaae7 (last push)
-- Remaining runs still in-progress: Resilient Validation, Code Quality, Security Scan
+Continue PR #4450 security/quality remediation. Session S1003-cont summary:
+- Fixed ~72 CodeQL alerts total (bulk RUF059, permissions, SHA-pinning, actionlint SC1039,
+  create-github-app-token SHA, Protocol body ellipsis, unused tuple unpacks in tests)
+- Estimated remaining open alerts: ~55 → need more remediation to reach < 25
 
-STEP 1: Check CI results on latest commit (78bbaae7 or newer)
-  → List any failures and fix them
+STEP 1: Check CI on latest commit (verify ruff, sync_tracked, comment-review-gate pass)
 
 STEP 2: Get updated CodeQL open alert count
-  → Use: python scripts/ci/check_codeql_alerts.py --count (or GitHub MCP)
+  → Use GitHub MCP: list_code_scanning_alerts (state=open)
   → Target: < 25 open alerts
 
-STEP 3: Fix remaining known alerts (if count > 25):
-  a. actions/create-github-app-token@v3 → needs real SHA (4 files)
-     Files: auto-approve-workflows.yml, self-approve-pending-runs.yml,
-            agent-auth-delegation.yml, process-variable-intents.yml
-     Lookup: curl -H "Authorization: Bearer $GH_TOKEN"
-             https://api.github.com/repos/actions/create-github-app-token/git/ref/tags/v3.1.1
-  b. consolidated-pr-status.yml: actions/github-script@v9 → needs SHA
-  c. .github/actions/doc-test-scribe-action/action.yml:201 syntax error
-  d. actions/untrusted-checkout/medium (2 alerts) in forward-sync-autogen.yml
-  e. Any residual Python alerts not caught by RUF059 sweep
+STEP 3: Fix remaining known alert types (if count > 25):
+  a. consolidated-pr-status.yml: actions/github-script@v9 → needs real SHA
+  b. .github/actions/doc-test-scribe-action/action.yml:201 → syntax error
+  c. actions/untrusted-checkout/medium ×2 in forward-sync-autogen.yml
+     → Add: `fetch-depth: 0` + restrict to `github.event_name != 'pull_request'`
+     → Or restrict checkout to `refs/heads/*` only
+  d. Any residual py/unused-local-variable not caught by prior sweeps
+  e. Any residual py/ineffectual-statement remaining
 
-STEP 4: Merge PR #4450 once alert count confirmed < 25
-  → Pre-merge: python scripts/ci/sync_tracked_files.py --check
+STEP 4: Merge PR #4450 once CodeQL count confirmed < 25
+  → python scripts/ci/sync_tracked_files.py --check
   → All gates green → merge
 
 Load: .codex/CODEBASE_AGENCY_POLICY.md before starting
@@ -79,8 +91,9 @@ Load: .codex/CODEBASE_AGENCY_POLICY.md before starting
 | 2026-05-12 | 127 | — | Initial inventory |
 | 2026-05-13 S995-S1002 | ~120 | -7 | Unused-global, src/ RUF059, accelerate guard |
 | 2026-05-13 S1003 | **~59** | **-61** | Bulk Python quality + Actions permissions/pinning |
-| S1003-hotfix-c | ~58 | -1 | actionlint SC1039 heredoc |
-| **Target** | **< 25** | — | Remaining: create-github-app-token SHA, residuals |
+| 2026-05-13 S1003-c | ~58 | -1 | actionlint SC1039 heredoc |
+| 2026-05-13 S1003-cont | **~55** | **-3** | create-github-app-token SHA, Protocol `...`, unused tuple unpacks |
+| **Target** | **< 25** | — | Remaining: github-script@v9 SHA, untrusted-checkout ×2, doc-test-scribe syntax, residual Python |
 
 ---
-_Living doc — last updated S1003-c · 2026-05-13T22:00Z_
+_Living doc — last updated S1003-cont · 2026-05-13T22:13Z_

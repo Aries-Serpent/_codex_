@@ -115,7 +115,7 @@ jobs:
       # action_required restrictions that affect PATs from bot pushes.
       - name: "Generate Cognitive Brain App token"
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
         continue-on-error: true   # gracefully falls through to PAT
         with:
           app-id: ${{ secrets._GITHUB_APP_ID }}

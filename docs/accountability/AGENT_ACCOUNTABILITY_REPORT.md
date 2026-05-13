@@ -1,4 +1,31 @@
-## SESSION SUMMARY — 2026-05-13T21:12Z [S1003-comment-feedback-fixes]
+## SESSION SUMMARY — 2026-05-13T22:13Z [S1003-cont]
+
+**Session:** S1003-cont | **Branch:** `0D_base_` | **PR:** #4450
+
+### Completed
+- ✅ SHA-pinned `actions/create-github-app-token@v3` → `1b10c78c7865c340bc4f6099eb2f838309f1e8c3` in 4 workflows (`agent-auth-delegation.yml`, `auto-approve-workflows.yml`, `process-variable-intents.yml`, `self-approve-pending-runs.yml`). Fixes `actions/unpinned-tag` CodeQL alerts.
+- ✅ Fixed `py/ineffectual-statement` ×2 in `src/codex/rag/embeddings.py:47,51` — removed trailing `...` from Protocol method bodies (docstring alone is the valid body, `...` after docstring is effectless and CodeQL-flagged).
+- ✅ Fixed `py/unused-local-variable` in `tests/agents/test_mental_mapping_core_flows.py:100` — `_problem_node, _reasoning_steps` → `_, _`.
+- ✅ Fixed `py/unused-local-variable` in `tests/test_sentencepiece_adapter.py:506` — `_calls, _sp_stub` → `_, _`.
+- ✅ Fixed `actions/untrusted-checkout` in `labeler.yml` rescue-comment job — added `ref: ${{ github.sha }}` to `actions/checkout` step in `pull_request_target` workflow context.
+- ✅ Updated living docs: `docs/roadmap/PR4448_whats_next.md` — added S1003-cont row, updated continue-where-left-off prompt.
+- ✅ `ruff check src/ tests/` → 0 issues; `sync_tracked_files --check` → all consistent.
+
+### Validation
+- ✅ `ruff check src/codex/rag/embeddings.py tests/agents/test_mental_mapping_core_flows.py tests/test_sentencepiece_adapter.py` — 0 issues
+- ✅ `python -c "from codex.rag.embeddings import EmbeddingProvider"` — import OK (Protocol still valid)
+- ✅ `python scripts/ci/sync_tracked_files.py --check` — all tracked files consistent
+
+### Alert Count Trajectory
+- Before S1003: ~127 open alerts
+- After S1003 bulk sweep: ~59
+- After S1003-c (actionlint): ~58
+- After S1003-cont: **~53** (est. — awaiting CodeQL rescan)
+- Target: **< 25**
+
+---
+
+
 
 **Session:** S1003-comment-feedback-fixes | **Branch:** `0D_base_` | **PR:** #4450
 

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1003-cont — PR #4450 — 2026-05-13T22:13Z)
+- **`create-github-app-token@v3` SHA pinning** — pinned to correct commit SHA `1b10c78c7865c340bc4f6099eb2f838309f1e8c3` in 4 workflow files (`agent-auth-delegation.yml`, `auto-approve-workflows.yml`, `process-variable-intents.yml`, `self-approve-pending-runs.yml`). Resolves `actions/unpinned-tag` CodeQL alerts for this action.
+- **`CodeQL py/ineffectual-statement` ×2** — removed redundant `...` from `EmbeddingProvider` Protocol method bodies in `src/codex/rag/embeddings.py` (lines 47, 51); docstring alone is a valid body and the `...` after a docstring is an ineffectual statement.
+- **`CodeQL py/unused-local-variable`** — `tests/agents/test_mental_mapping_core_flows.py:100` — replaced `_problem_node, _reasoning_steps` with `_, _` since both tuple elements are unused in `test_think_through_problem_hypothesis_generation`.
+- **`CodeQL py/unused-local-variable`** — `tests/test_sentencepiece_adapter.py:506` — replaced `_calls, _sp_stub` with `_, _` since both tuple elements from `_stub_sp()` are unused in `test_assert_vocab_size`.
+- **`actions/untrusted-checkout` (labeler.yml)** — added `ref: ${{ github.sha }}` to the `actions/checkout` step in the `rescue-comment` job of `labeler.yml`, which runs on `pull_request_target`. This ensures the base-branch code is checked out rather than untrusted PR-head code.
+
 ### Fixed (S1002-post-merge-validation — PR #4451 — 2026-05-13T20:45Z)
 - **`tests/test_sqlite_pool.py`** — relaxed the pooled-connection count assertion from `== 6` to `2 <= len(_CONN_POOL) <= 6` because short-lived worker threads can legitimately reuse thread identifiers on some platforms. The test still verifies pooling is active and that all 100 concurrent writes succeed.
 - **`tests/test_sqlite_pool.py`** — replaced the new pool-size bounds magic numbers with named local constants to keep the post-merge stabilization assertion self-documenting.
