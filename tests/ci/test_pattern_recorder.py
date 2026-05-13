@@ -420,23 +420,33 @@ def _compute_merge_readiness_score():
     def test_run_all_patterns_respects_skip_env(self, monkeypatch):
         mod = _load_auto_fix()
         fixer = mod.CommonIssueFixer(Path("."))
-        called: list[int] = []
+        called: set[str] = set()
 
-        def _mark(num: int):
+        def _make_mock(name: str):
             def _inner():
-                called.append(num)
+                called.add(name)
                 return []
 
             return _inner
 
-        fixer.fix_unused_imports = _mark(1)  # type: ignore[method-assign]
-        fixer.fix_merge_readiness_dims = _mark(30)  # type: ignore[method-assign]
+        # Dynamically mock all fix_*/check_* methods on the fixer so that real
+        # implementations (some of which use subprocess or network calls) are not
+        # invoked during this unit test.  This also adapts automatically when new
+        # patterns are added or removed without requiring a manual list update.
+        pattern_methods = [
+            attr
+            for attr in dir(fixer)
+            if (attr.startswith("fix_") or attr.startswith("check_"))
+            and callable(getattr(type(fixer), attr, None))
+        ]
+        for method_name in pattern_methods:
+            setattr(fixer, method_name, _make_mock(method_name))  # type: ignore[method-assign]
         monkeypatch.setenv("CODEX_SKIP_PATTERN_NUMS", "30")
 
         fixer.run_all_patterns()
 
-        assert 1 in called
-        assert 30 not in called
+        assert "fix_unused_imports" in called, "Pattern 1 (fix_unused_imports) should have been called"
+        assert "fix_merge_readiness_dims" not in called, "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
 
     def test_pattern_30_skips_auto_fix_self_reference_dimension(self, tmp_path):
         """S178: Pattern 30 must NOT report the ``auto_fix`` self-reference

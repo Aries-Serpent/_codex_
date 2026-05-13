@@ -7,32 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S997-comment-remediation+burn-down — 2026-05-13T19:09Z)
-- Addressed all 5 unresolved review findings on PR #4451:
-  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: fixed grammar (`due to an active ...`) and removed duplicated WEC block.
-  - `src/codex_ml/monitoring/system_metrics.py`: added `exc_info=True` to optional dependency debug logs (`psutil`, `pynvml`).
-  - `src/training/accelerate_init_guard.py`: added cached spec probe and guarded retry import so `is_accelerate_available()` cannot return `True` while `Accelerator` is unavailable.
-- Continued full-suite burn-down:
-  - Fixed first failing test `tests/tokenization/test_api_comprehensive.py::test_proxy_getattr_with_none_canonical` by restoring `ImportError` from `_LegacyTokenizerProxy.__getattr__()` when the canonical adapter is unavailable.
-  - Re-ran `pytest -x` and progressed beyond prior stop point.
-- Ingested latest security artifacts from run `25820306851`:
-  - `sbom-reports` sha256:`ae98976bc715497ea686787b53253db0a95299c39e705010d6dbbb769e7dfc11`
-  - `dependency-scan-results` sha256:`d40438700007dcff521d2e6e12a986a52ad5aba75dd0deb178a5f02c91d62b9b`
-- Added late-window status refresh to living docs (`PR4448_whats_next.md`, `PR4448_session_diagram.mmd`) with commit `68cc14e` checkpoint and branch gate status snapshot.
+### Fixed (S1001-merge-conflict-remediation — PR #4451 — 2026-05-13T20:45Z)
+- Merged the latest `0D_base_` into `copilot/security-quality-remediation-sprint` to clear file-level conflicts before merge.
+- **`src/training/accelerate_init_guard.py`** — combined the guarded retry import path with the later CodeQL fix so failed `accelerate` imports clear cached availability and successful repairs return the updated global state.
+- Removed accidental root-level syntax-error files `a.py` and `b.py` from the branch.
 
-### Fixed (S996-security-quality-batch2 — 2026-05-13T18:30Z)
-- Cherry-picked S995 batch-1 code fixes onto `0D_base_` (commit `d787c17`).
-- Fixed `tests/branch_coverage/test_branch_coverage_cli.py` — replaced `patch("pathlib.Path.exists")` with `patch.object(Path, "exists")` for both branch tests; the string-target form no longer intercepts instance method calls in Python 3.12.
-- Confirmed Batch 2 (B403 nosec in `checkpointing.py` + `safe_pickle.py`) and Batch 4 (`.bandit` exclude_dirs `src/restore_pipeline/tests`) are already complete — no code changes needed.
-- Updated living docs: `docs/roadmap/PR4448_whats_next.md` + `docs/roadmap/PR4448_session_diagram.mmd` (S996 node added).
-- Pattern 25: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated together.
+### Fixed (S1000-codeql-unused-global — PR #4450 — 2026-05-13T20:35Z)
+- **`src/training/accelerate_init_guard.py`** — Fixed CodeQL `py/unused-global-variable` alerts (13579, 13578): `is_accelerate_available()` now returns `_ACCELERATE_SPEC_AVAILABLE` / `_ACCELERATOR_AVAILABLE` directly after writing them so the assigned global value is consumed in the same execution path.
+- **`src/codex/cli_knowledge.py:76`** — Wrapped `_EDGE_RE = re.compile(...)` onto two lines to fix Pattern 12 line-length violation (105 → ≤100 chars).
 
+### Fixed (S999-pattern25-wrap-up — PR #4450 — 2026-05-13T20:23Z)
+- **Pattern 25 remediation** — `AGENT_ACCOUNTABILITY_REPORT.md` was missing from commit `90acc23`; included in this commit alongside CHANGELOG to satisfy Last-Commit Accountability gate.
+- **S221 guard recovery** (comment 4444805963): confirmed `.codex/CODEBASE_AGENCY_POLICY.md` loaded and all failing checks addressed; PR status now 97/100 ✅.
 
-- Added `"github"` to `src/codex/__init__.py` lazy submodule registry to restore dotted monkeypatch path resolution for MCP poster variable-update tests.
-- Changed optional dependency import logging in `src/codex_ml/monitoring/system_metrics.py` from warning→debug so JSON CLI mode does not leak non-fatal stderr noise.
-- Hardened `src/training/accelerate_init_guard.py:is_accelerate_available()` against malformed stub modules (`ValueError`/`ImportError` from `find_spec`).
-- Fixed capability trend classification in `scripts/space_traversal/trend_aggregator.py` by using `_cap_id` consistently when recording stable/up/down buckets.
-- Updated living docs and remediation planset for the active Security+Quality sprint continuation (`docs/roadmap/PR4448_whats_next.md`, `docs/roadmap/PR4448_session_diagram.mmd`, `.codex/plans/security-remediation-planset.md`).
+### Fixed (S998-cherry-pick-PR4451+CI-burns — PR #4450 — 2026-05-13T20:00Z)
+- **`src/codex/__init__.py`** — Added `"github"` to `_SUBMODULES` lazy registry, restoring dotted-path resolution for `codex.github` (MCP poster session-number tests).
+- **`src/codex_ml/monitoring/system_metrics.py`** — Downgraded optional-dependency import log from `warning` → `debug` for `psutil` and `pynvml`; added `exc_info=True` so stack traces appear only at DEBUG level, not in JSON CLI output.
+- **`src/training/accelerate_init_guard.py`** — Hardened `is_accelerate_available()` with a cached spec probe, `ValueError`/`ImportError` guard on `find_spec`, and a guarded retry import; function cannot return `True` while `Accelerator` is unavailable.
+- **`src/codex/cli_knowledge.py`** — Fixed `_EDGE_RE` regex to skip optional node labels (e.g. `A["Start"] --> B`) between source ID and arrow; `test_sync_mermaid_map_generates_searchable_datablobs` edge_count `1→2` fix.
+- **`tests/test_sqlite_pool.py`** / **`tests/test_sqlite_pool_close.py`** — Added `_close_all()` at test start to clear pool state left by earlier tests in the same process shard, eliminating `len(_CONN_POOL) != 6` flakiness in CI.
+- **`tests/branch_coverage/test_branch_coverage_cli.py`** — Replaced `patch("pathlib.Path.exists")` with `patch.object(Path, "exists")` for Python 3.12 compatibility (string-target form no longer intercepts instance-method calls).
+
+### Fixed (iterative-self-healing — PR #4450 — 2026-05-13T18:28Z)
+- **`scripts/space_traversal/trend_aggregator.py`** — Fixed RUF059 regression: loop variable was renamed to `_cap_id` but body still referenced `cap_id` (stale value from prior loop), causing `trending_up`/`trending_down`/`stable` lists to contain incorrect capability IDs. `test_trending_detection` now passes.
+- **`tests/ci/test_pattern_recorder.py`** — Fixed `test_run_all_patterns_respects_skip_env` timeout (>60 s) by mocking all 33 pattern methods instead of only 2, preventing real subprocess/network calls during skip-env verification.
+
+### Fixed (auto-update — PR #4450)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4450 (SHA `deb50092`) at 2026-05-13T17:11Z [auto-generated]
 
 ### Fixed (S994-artifact-refresh — PR #4448 — 2026-05-13T16:30Z)
 - **Security artifact refresh** — ingested new security-scanning-suite artifacts from run 25809211083:

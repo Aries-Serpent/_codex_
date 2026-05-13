@@ -10,6 +10,8 @@ def test_sqlite_pool_close(tmp_path, monkeypatch):
 
     db = tmp_path / "pool.db"
     monkeypatch.setenv("CODEX_SQLITE_POOL", "1")
+    # Clear any pool state left by earlier tests in the same process
+    sqlite_patch._close_all()
     sqlite_patch.auto_enable_from_env()
 
     conn = sqlite3.connect(str(db))

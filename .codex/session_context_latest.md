@@ -1,10 +1,10 @@
-# Session Context — 2026-05-13T20:39:36Z
-**Branch:** `copilot/security-quality-remediation-sprint`  **PR:** #4451  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-13T20:29:36Z
+**Branch:** `0D_base_`  **PR:** #4451  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4061` (✅)
-- GraphQL remaining: `4962` (✅)
+- REST remaining: `4391` (✅)
+- GraphQL remaining: `4967` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/security-quality-remediation-sprint` → `0D_base_`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **PR Comment Review Gate** — `failure` on `0D_base_` (2026-05-13)
+- **Pre-Merge Validation** — `failure` on `0D_base_` (2026-05-13)
 
 ## 📝 Recent Commits
-- `e18b95bd` fix: resolve review findings and continue pytest burn-down — copilot-swe-agent[bot] (2026-05-13)
-- `c70f06ed` docs: add late-window S997 status checkpoint updates — copilot-swe-agent[bot] (2026-05-13)
-- `68cc14e0` fix: resolve remaining review findings and continue burn-down — copilot-swe-agent[bot] (2026-05-13)
-- `ec304248` fix: S996 batch2 — Path.exists patch fix, living doc updates, Pattern 25 — copilot-swe-agent[bot] (2026-05-13)
-- `613e8c8f` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-13)
-- `58960d6e` Fix for Non-standard exception raised in special method — Statix (2026-05-13)
-- `80ab0054` fix: security+quality batch 1 remediations and living-doc updates — copilot-swe-agent[bot] (2026-05-13)
-- `6f2ba22d` Merge pull request #4448 from Aries-Serpent/0D_base_ — Statix (2026-05-13)
+- `9ad5a181` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
+- `6c85a2e7` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
+- `1e95e158` fix(ci): Pattern 25 — add AGENT_ACCOUNTABILITY_REPORT + CHANGELOG to last commit — copilot-swe-agent[bot] (2026-05-13)
+- `90acc235` fix: address code-review findings — accelerate retry guard + edge regex comment — copilot-swe-agent[bot] (2026-05-13)
+- `08c8fe98` fix(ci): cherry-pick PR#4451 fixes + CI burn-down S998 — Pattern 25 — copilot-swe-agent[bot] (2026-05-13)
+- `be9ec3a0` chore: initial plan for iterative self-healing — copilot-swe-agent[bot] (2026-05-13)
+- `60129c9e` refactor(test): use dynamic introspection to mock all pattern methods in skip-en — copilot-swe-agent[bot] (2026-05-13)
+- `172f46e8` fix(ci): fix RUF059 regression in trend_aggregator + test timeout in pattern_rec — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
