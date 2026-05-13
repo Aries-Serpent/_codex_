@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4442)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4442 (SHA `9ce9350b`) at 2026-05-13T09:05Z [auto-generated]
+
 ### Fixed (S992 — codeql-alert-fetcher hardening; session_bootstrap regression; Pattern 25)
 - **`/.github/workflows/codeql-alert-fetcher.yml`**: Applied the missing corrections from `copilot/verify-codeql-alerts-and-sweep-1` and hardened the workflow further by enabling strict shell mode in multi-line bash steps, normalizing `repository_dispatch` booleans via the params step, clamping `top_n` to sane bounds, and making metadata reflect the resolved include flags.
 - **Safer artifact writes**: Replaced fragile `curl ... || echo ... > file` fallback patterns for analyses and community-profile fetches with temp-file + JSON-validation helpers before moving outputs into place.
