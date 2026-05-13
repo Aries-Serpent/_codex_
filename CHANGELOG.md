@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S985 — updated CodeQL report consumed; top remaining error addressed)
+- **Updated fetched report applied**: Consumed the refreshed CodeQL artifact report (`run 25778513533`, 119 open alerts on `main`) as the current source of truth; confirmed the MFA weak-crypto finding is no longer present in the open-alert summary.
+- **Top fixable error targeted**: Restructured `tests/unit/test_peft_utils.py` so the PEFT bundle is loaded through a helper that either returns an initialized bundle or exits via `pytest.skip(...)`, addressing the top remaining `py/uninitialized-local-variable` finding from the fetched report.
+
+### Fixed (S984 — MFA review nits and secret-allowlist consistency)
+- **Secret allowlist consistency**: Added matching `# pragma: allowlist secret` coverage for the SHA1 provisioning-URI test secret so test-secret handling is consistent within `tests/auth/test_mfa_provider.py`.
+- **Digest-guard wording**: Clarified the defensive error message in `src/codex/auth/mfa_provider.py` to indicate the RFC 6238 algorithm was validated but the runtime `hashlib` implementation is unexpectedly missing.
+- **Mixed-case normalization coverage**: Added a test proving mixed-case algorithm names (for example `sHa512`) normalize to `SHA512`.
+
 ### Fixed (S983 — MFA review-fix coverage and defensive guard)
 - **MFA backward-compatibility coverage**: Added targeted tests proving existing SHA1-enrolled secrets still normalize correctly, generate valid provisioning URIs, and successfully verify TOTP codes after the SHA256-default hardening.
 - **Invalid algorithm coverage**: Added explicit test coverage for invalid algorithm rejection during `MFASecret` construction and `verify_totp(...)`, not just `generate_totp(...)`.

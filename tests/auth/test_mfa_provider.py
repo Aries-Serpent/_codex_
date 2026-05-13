@@ -70,7 +70,7 @@ class TestMFASecret:
     def test_provisioning_uri_sha1_compatibility(self):
         """Test SHA1 secrets still emit the correct provisioning metadata."""
         secret = MFASecret(
-            secret="JBSWY3DPEHPK3PXP",
+            secret="JBSWY3DPEHPK3PXP",  # pragma: allowlist secret
             user_id="user123",
             issuer="Codex",
             algorithm="SHA1",
@@ -133,6 +133,14 @@ class TestMFAProvider:
         provider = MFAProvider()
 
         secret = provider.generate_totp_secret("user123", algorithm="sha512")
+
+        assert secret.algorithm == "SHA512"
+
+    def test_generate_totp_secret_normalizes_mixed_case_algorithm(self):
+        """Test mixed-case algorithm normalization."""
+        provider = MFAProvider()
+
+        secret = provider.generate_totp_secret("user123", algorithm="sHa512")
 
         assert secret.algorithm == "SHA512"
 

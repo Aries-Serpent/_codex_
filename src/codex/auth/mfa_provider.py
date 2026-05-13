@@ -185,7 +185,8 @@ class MFAProvider:
             digestmod = getattr(hashlib, normalized_algorithm.lower())
         except AttributeError as exc:  # pragma: no cover - defensive guard
             raise ValueError(
-                f"hashlib does not support TOTP algorithm '{normalized_algorithm}'"
+                f"Validated TOTP algorithm '{normalized_algorithm}' lacks corresponding "
+                "hashlib implementation"
             ) from exc
         hmac_hash = hmac.new(key, counter_bytes, digestmod).digest()
 

@@ -1,3 +1,33 @@
+## SESSION SUMMARY — 2026-05-13T04:45Z [S985-codeql-report-followup-pr4434]
+
+**Session:** S985-codeql-report-followup-pr4434 | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
+
+### Completed
+- **Updated CodeQL report consumed**: Used the refreshed artifact report from run `25778513533` as the new source of truth. It shows 119 open alerts on `main` and no remaining MFA weak-crypto alert.
+- **Top fixable alert targeted**: Reworked `tests/unit/test_peft_utils.py` so bundle loading happens inside a helper that either returns an initialized bundle or exits via `pytest.skip(...)`, eliminating the obvious uninitialized-variable path flagged in the report.
+
+### Validation
+- ✅ `python -m pytest tests/auth/test_mfa_provider.py tests/unit/test_peft_utils.py`
+- ✅ `python -m ruff check src/codex/auth/mfa_provider.py tests/auth/test_mfa_provider.py tests/unit/test_peft_utils.py`
+
+---
+
+## SESSION SUMMARY — 2026-05-13T04:40Z [S984-mfa-review-nits-pr4434]
+
+**Session:** S984-mfa-review-nits-pr4434 | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
+
+### Completed
+- **Secret allowlist consistency**: Added a matching pragma allowlist comment for the SHA1 provisioning-URI test secret in `tests/auth/test_mfa_provider.py`.
+- **Defensive error wording**: Clarified the `ValueError` message in `src/codex/auth/mfa_provider.py` to describe a missing `hashlib` implementation rather than an unsupported TOTP algorithm.
+- **Mixed-case normalization test**: Added coverage proving mixed-case algorithm names normalize correctly (`sHa512` → `SHA512`).
+
+### Validation
+- ✅ `python -m pytest tests/auth/test_mfa_provider.py`
+- ✅ `python -m ruff check src/codex/auth/mfa_provider.py tests/auth/test_mfa_provider.py`
+- ✅ `python scripts/ci/auto_fix_common_issues.py --check-only`
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T04:34Z [S983-mfa-review-fixes-pr4434]
 
 **Session:** S983-mfa-review-fixes-pr4434 | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
