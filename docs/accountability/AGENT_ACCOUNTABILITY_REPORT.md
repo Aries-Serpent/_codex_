@@ -9,6 +9,7 @@
   - retained the later CodeQL remediation from `0D_base_` by returning the updated cached globals after assignment
 - ✅ Removed accidental root-level syntax-error files `a.py` and `b.py`.
 - ✅ Stabilized `tests/test_sqlite_pool.py` after post-merge validation exposed scheduler-dependent thread-ID reuse; the test now checks the valid pooled-connection range instead of an exact `6`.
+- ✅ Follow-up polish: replaced the pool-size range magic numbers with named local constants after review feedback.
 
 ### Validation
 - ✅ `git merge-tree $(git merge-base HEAD origin/0D_base_) HEAD origin/0D_base_` — no conflicts after merge

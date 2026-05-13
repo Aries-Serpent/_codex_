@@ -40,11 +40,13 @@ def test_sqlite_pool_allows_concurrent_writes(tmp_path, monkeypatch):
         for t in threads:
             t.join()
 
+        min_expected_pool_size = 2
+        max_expected_pool_size = 6
         # The pool keeps one connection per thread key, but short-lived worker
         # threads can finish quickly enough for thread identifiers to be reused
         # on some platforms. Validate pooling happened without assuming all five
         # worker thread IDs stay distinct for the full test duration.
-        assert 2 <= len(sqlite_patch._CONN_POOL) <= 6
+        assert min_expected_pool_size <= len(sqlite_patch._CONN_POOL) <= max_expected_pool_size
 
         total = sqlite3.connect(str(db)).execute("SELECT COUNT(*) FROM t").fetchone()[0]
         assert total == 100
