@@ -1,4 +1,27 @@
-## SESSION SUMMARY — 2026-05-13T17:40Z [S995-security-quality-batch1]
+## SESSION SUMMARY — 2026-05-13T18:30Z [S996-security-quality-batch2]
+
+**Session:** S996-security-quality-batch2 | **Branch:** `0D_base_` | **PR:** continuation sprint
+
+### Completed
+- ✅ Cherry-picked S995 batch-1 fixes onto `0D_base_` (commit `d787c17`).
+- ✅ Fixed `test_cli_config_exists_branch` — `patch("pathlib.Path.exists")` does not intercept instance calls in Python 3.12; replaced with `patch.object(Path, "exists", return_value=True/False)`. Both branch tests now pass.
+- ✅ Confirmed Batch 2 (B403 nosec) and Batch 4 (`.bandit` exclude_dirs) are already complete — no further action needed.
+- ✅ Reviewed 409 remaining ruff quick-win errors (RUF059/B007/PIE790 in tests/ and .codex/) — all require `--unsafe-fixes`; deferred to avoid accidental name-reference breakage per memory warning.
+- ✅ Living docs updated: `docs/roadmap/PR4448_whats_next.md`, `docs/roadmap/PR4448_session_diagram.mmd`.
+- ✅ Pattern 25: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT in this commit.
+
+### Validation
+- ✅ `ruff check .` (changed files)
+- ✅ `pytest tests/branch_coverage/test_branch_coverage_cli.py` — all 47 tests pass
+
+### Remaining for next window
+1. Resume full-suite `pytest -x` burn-down (stopped while running; next first-failure after branch_coverage not yet known).
+2. Dispatch `codeql-analysis.yml` + `codeql-alert-fetcher.yml` on `0D_base_` and ingest SARIF.
+3. Expand 111-item backlog ledger from bucket counts to concrete finding rows.
+
+---
+
+
 
 **Session:** S995-security-quality-batch1 | **Branch:** `0D_base_` | **PR:** #4448 (continuation)
 

@@ -55,14 +55,14 @@ class TestCliMainBranches:
 
     def test_cli_config_exists_branch(self) -> None:
         """Test branch when config file exists."""
-        with patch("pathlib.Path.exists", return_value=True):
+        with patch.object(Path, "exists", return_value=True):
             config_path = Path("config.yaml")
             result = "loaded" if config_path.exists() else "default"
             assert result == "loaded"
 
     def test_cli_config_missing_branch(self) -> None:
         """Test branch when config file is missing."""
-        with patch("pathlib.Path.exists", return_value=False):
+        with patch.object(Path, "exists", return_value=False):
             config_path = Path("nonexistent.yaml")
             result = "loaded" if config_path.exists() else "default"
             assert result == "default"

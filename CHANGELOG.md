@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S995-security-quality-batch1 — 2026-05-13T17:40Z)
+### Fixed (S996-security-quality-batch2 — 2026-05-13T18:30Z)
+- Cherry-picked S995 batch-1 code fixes onto `0D_base_` (commit `d787c17`).
+- Fixed `tests/branch_coverage/test_branch_coverage_cli.py` — replaced `patch("pathlib.Path.exists")` with `patch.object(Path, "exists")` for both branch tests; the string-target form no longer intercepts instance method calls in Python 3.12.
+- Confirmed Batch 2 (B403 nosec in `checkpointing.py` + `safe_pickle.py`) and Batch 4 (`.bandit` exclude_dirs `src/restore_pipeline/tests`) are already complete — no code changes needed.
+- Updated living docs: `docs/roadmap/PR4448_whats_next.md` + `docs/roadmap/PR4448_session_diagram.mmd` (S996 node added).
+- Pattern 25: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated together.
+
+
 - Added `"github"` to `src/codex/__init__.py` lazy submodule registry to restore dotted monkeypatch path resolution for MCP poster variable-update tests.
 - Changed optional dependency import logging in `src/codex_ml/monitoring/system_metrics.py` from warning→debug so JSON CLI mode does not leak non-fatal stderr noise.
 - Hardened `src/training/accelerate_init_guard.py:is_accelerate_available()` against malformed stub modules (`ValueError`/`ImportError` from `find_spec`).

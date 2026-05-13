@@ -26,11 +26,18 @@
   - `tests/distributed/test_distributed_enhanced.py::TestAccelerateAvailability::test_is_accelerate_available`
   - `tests/space_traversal/test_trend_aggregator.py::test_trending_detection`
 
+### S996 additions (this session)
+
+5. Cherry-picked S995 batch-1 code fixes onto `0D_base_` (commit `d787c17`).
+6. Fixed `tests/branch_coverage/test_branch_coverage_cli.py::TestCliMainBranches::test_cli_config_exists_branch` — `patch("pathlib.Path.exists")` no longer intercepts instance method calls in Python 3.12; replaced with `patch.object(Path, "exists")` for both `exists` and `missing` branch tests.
+7. Confirmed Batch 2 (B403 nosec annotations in `checkpointing.py` + `safe_pickle.py`) and Batch 4 (`.bandit` exclude_dirs for `src/restore_pipeline/tests`) are **already complete** — no further action required.
+8. Confirmed CodeQL API access blocked (403) in this environment; CodeQL status tracked via workflow run artifacts only.
+
 ### Remaining for next continuation window
 
-1. Continue full-suite `pytest -x` first-failure burn-down until green.
-2. Re-attempt CodeQL workflow dispatch and artifact retrieval after API rate-limit reset.
-3. Expand the 111-item backlog ledger from allocation buckets to concrete item rows (P1/P2/P3).
+1. Continue full-suite `pytest -x` first-failure burn-down (currently at `tests/branch_coverage/` — fixed; next failure TBD).
+2. Re-attempt CodeQL workflow dispatch/artifact retrieval — run `codeql-alert-fetcher.yml` and download SARIF.
+3. Expand 111-item backlog ledger from bucket counts to concrete finding rows (P1/P2/P3).
 
 ---
 

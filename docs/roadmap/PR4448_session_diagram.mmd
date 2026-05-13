@@ -26,9 +26,10 @@ flowchart TD
 
     J --> K["🏁 Session S994 End\nMerge-readiness: 100/100 ✅\nbandit config=0 · ruff=0"]
     K --> L["⏱️ S995 time-boxed continuation\n4 small safe fixes landed\nfull pytest -x + CodeQL rerun pending"]
+    L --> M["🔄 S996 continuation\nCherry-picked to 0D_base_\nFixed Path.exists patch (Py3.12)\nBatch 2+4 confirmed complete"]
 
-    style A fill:#2d6a4f,color:#fff
-    style K fill:#2d6a4f,color:#fff
+    style L fill:#6d597a,color:#fff
+    style M fill:#6d597a,color:#fff
     style C fill:#d62828,color:#fff
     style D fill:#d62828,color:#fff
     style E fill:#d62828,color:#fff
@@ -42,5 +43,6 @@ flowchart TD
     style H fill:#4a4e69,color:#fff
     style I fill:#4a4e69,color:#fff
     style J fill:#4a4e69,color:#fff
-    style L fill:#6d597a,color:#fff
+    style A fill:#2d6a4f,color:#fff
+    style K fill:#2d6a4f,color:#fff
 ```
