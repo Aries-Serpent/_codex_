@@ -181,7 +181,12 @@ class MFAProvider:
         # Convert counter to 8-byte big-endian
         counter_bytes = struct.pack(">Q", counter)
 
-        digestmod = getattr(hashlib, normalized_algorithm.lower())
+        try:
+            digestmod = getattr(hashlib, normalized_algorithm.lower())
+        except AttributeError as exc:  # pragma: no cover - defensive guard
+            raise ValueError(
+                f"hashlib does not support TOTP algorithm '{normalized_algorithm}'"
+            ) from exc
         hmac_hash = hmac.new(key, counter_bytes, digestmod).digest()
 
         # Dynamic truncation

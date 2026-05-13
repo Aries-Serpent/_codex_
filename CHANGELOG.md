@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S983 — MFA review-fix coverage and defensive guard)
+- **MFA backward-compatibility coverage**: Added targeted tests proving existing SHA1-enrolled secrets still normalize correctly, generate valid provisioning URIs, and successfully verify TOTP codes after the SHA256-default hardening.
+- **Invalid algorithm coverage**: Added explicit test coverage for invalid algorithm rejection during `MFASecret` construction and `verify_totp(...)`, not just `generate_totp(...)`.
+- **Defensive hash selection guard**: `src/codex/auth/mfa_provider.py` now raises a clear `ValueError` if a validated TOTP algorithm unexpectedly lacks a corresponding `hashlib` implementation.
+
 ### Fixed (S982 — MFA TOTP hardening + PR4434 living files)
 - **`src/codex/auth/mfa_provider.py`**: Reworked TOTP hash selection to use validated RFC 6238 algorithm names (`SHA1` / `SHA256` / `SHA512`) via normalized lookup instead of direct `hashlib.sha1`; new MFA secrets now default to `SHA256` while explicit SHA1 compatibility remains available for existing enrollments.
 - **`src/codex/auth/authenticator.py`**: MFA login verification now passes the stored secret algorithm into `verify_totp(...)`, so per-secret algorithm selection is honored end-to-end.

@@ -33,6 +33,24 @@ class TestMFASecret:
         assert secret.digits == 6
         assert secret.period == 30
 
+    def test_secret_creation_sha1_compatibility(self):
+        """Test existing SHA1 secrets still normalize and work."""
+        provider = MFAProvider()
+        secret = MFASecret(
+            secret="JBSWY3DPEHPK3PXP",
+            user_id="user123",
+            issuer="Codex",
+            algorithm="SHA1",
+        )
+        provider._secret_store[secret.user_id] = secret
+
+        code = provider.generate_totp(secret.secret, algorithm=secret.algorithm)
+
+        assert secret.algorithm == "SHA1"
+        assert provider.verify_totp(
+            secret.secret, code, secret.user_id, algorithm=secret.algorithm
+        ) is True
+
     def test_provisioning_uri(self):
         """Test provisioning URI generation."""
         secret = MFASecret(
@@ -48,6 +66,19 @@ class TestMFASecret:
         assert "issuer=Codex" in uri
         assert "algorithm=SHA256" in uri
         assert "test%40example.com" in uri
+
+    def test_provisioning_uri_sha1_compatibility(self):
+        """Test SHA1 secrets still emit the correct provisioning metadata."""
+        secret = MFASecret(
+            secret="JBSWY3DPEHPK3PXP",
+            user_id="user123",
+            issuer="Codex",
+            algorithm="SHA1",
+        )
+
+        uri = secret.get_provisioning_uri("test@example.com")
+
+        assert "algorithm=SHA1" in uri
 
 
 class TestBackupCode:
@@ -194,6 +225,18 @@ class TestMFAProvider:
 
         with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
             provider.generate_totp("JBSWY3DPEHPK3PXP", algorithm="MD5")
+
+    def test_secret_creation_invalid_algorithm(self):
+        """Test invalid secret algorithms are rejected during construction."""
+        with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
+            MFASecret(secret="JBSWY3DPEHPK3PXP", user_id="user123", algorithm="MD5")
+
+    def test_verify_totp_invalid_algorithm(self):
+        """Test invalid verify_totp algorithms are rejected."""
+        provider = MFAProvider()
+
+        with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
+            provider.verify_totp("JBSWY3DPEHPK3PXP", "000000", "user123", algorithm="MD5")
 
     def test_rate_limiting(self):
         """Test rate limiting on failed attempts."""
