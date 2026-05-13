@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S980 — Mermaid sync CLI datablob orchestration)
+- **`codex knowledge sync-mermaid-map`** (`src/codex/cli_knowledge.py`): Added a new CLI command that orchestrates Mermaid map synchronization into a searchable data package. The command parses Mermaid nodes/edges, tokenizes combined Mermaid + mapping-doc content into NDJSON records, computes a quantum-inspired coherence formula (`ψ = α·N + β·E + γ·V + δ·T`) with explicit variable mapping, and emits JSON outputs.
+- **Compressed datablob output**: `sync-mermaid-map` now writes `mermaid_sync_datablob.json` plus an optional compressed blob (`.zst` or `.zlib` based on available codec), alongside `mermaid_sync_search.ndjsonl` for downstream retrieval/search pipelines.
+- **Tests**: Extended `tests/codex/test_cli_knowledge.py` with a dedicated `sync-mermaid-map` behavior test that validates artifact creation and quantum variable/equation payload fields.
+
 ### Added (S979-mermaid-logic-map — runtime logic map documentation)
 - **`docs/system/mermaid_logic_map.md`**: New canonical source-of-truth document for the repository runtime logic map. Contains a verified evidence table (24 nodes → source files), three explicitly documented runtime ambiguities (A1: `codex_ml.cli` conditional import, A2: Rust `python` feature flag, A3: QFT extension optional import), a data-handoffs table, and the embedded Mermaid flowchart.
 - **`docs/diagrams/runtime_logic_map.mmd`**: Standalone Mermaid source for `mkdocs build --verbose` rendering; mirrors the embedded diagram in `mermaid_logic_map.md`.

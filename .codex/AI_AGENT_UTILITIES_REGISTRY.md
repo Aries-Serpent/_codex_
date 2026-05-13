@@ -1002,3 +1002,50 @@ def test_example(temp_index_dir, sample_rag_corpus):
 - [ ] Mock embedding models for faster tests
 - [ ] Shared corpus caching
 - [ ] Parametrized fixtures for different sizes
+
+---
+
+## Mermaid Sync Datablob CLI
+
+**Created:** 2026-05-13 (Session S980)
+**Agent:** GitHub Copilot
+**Status:** ✅ Implemented & Tested
+
+### Description
+Knowledge CLI command that orchestrates Mermaid map synchronization into compressed datablobs and tokenized searchable records for Copilot/cloud-agent retrieval workflows. Includes a quantum-inspired equation payload with explicit variable mapping.
+
+### Location
+```
+src/codex/cli_knowledge.py
+```
+
+### Usage
+```bash
+codex knowledge sync-mermaid-map \
+  --mermaid docs/diagrams/runtime_logic_map.mmd \
+  --mapping-doc docs/system/mermaid_logic_map.md \
+  --out-dir artifacts/knowledge/mermaid_sync \
+  --compress
+```
+
+### Features
+- Extracts Mermaid nodes and edges from `.mmd` graphs
+- Chunks Mermaid + mapping document content into searchable NDJSON records
+- Computes `ψ = α·N + β·E + γ·V + δ·T` coherence score with variable map
+- Writes `mermaid_sync_datablob.json` and compressed blob (`.zst`/`.zlib`)
+- Emits machine-readable JSON summary for automation chains
+
+### Success Metrics
+- Output artifacts: 2–3 files per run (JSON, NDJSON, optional compressed blob)
+- Searchability: token-estimated chunks with source metadata
+- Determinism: sorted-key NDJSON serialization
+
+### Dependencies
+- typer
+- codex.knowledge.chunk
+- codex.archive.util
+
+### Future Enhancements
+- [ ] Add reverse lookup command over generated NDJSON records
+- [ ] Add optional archive DB persistence with retention policy metadata
+- [ ] Add strict Mermaid schema validation for unsupported edge syntaxes

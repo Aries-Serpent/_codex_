@@ -18,11 +18,14 @@ Author: Codex Team
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import typer
 
+from codex.archive.util import compression_codec, json_dumps_sorted, sha256_file, zstd_compress
 from codex.knowledge.build import archive_and_manifest, build_kb
+from codex.knowledge.chunk import approx_tokens, chunk_by_headings
 from codex.release.api import pack_release, verify_bundle
 
 DEFAULT_ROOT = Path("docs")
@@ -30,6 +33,9 @@ DEFAULT_KB_OUT = Path("artifacts/kb.ndjsonl")
 DEFAULT_MANIFEST = Path("artifacts/knowledge.release.manifest.json")
 DEFAULT_STAGING = Path("work/knowledge_staging")
 DEFAULT_BUNDLE = Path("dist/codex-knowledge.tar.gz")
+DEFAULT_MERMAID = Path("docs/diagrams/runtime_logic_map.mmd")
+DEFAULT_MAPPING_DOC = Path("docs/system/mermaid_logic_map.md")
+DEFAULT_SYNC_OUT = Path("artifacts/knowledge/mermaid_sync")
 
 ROOT_OPTION = typer.Option(DEFAULT_ROOT, "--root")
 OUT_OPTION = typer.Option(DEFAULT_KB_OUT, "--out")
@@ -43,8 +49,82 @@ ACTOR_OPTION = typer.Option("codex", "--by")
 MANIFEST_ARGUMENT = typer.Argument(DEFAULT_MANIFEST, exists=True)
 STAGING_OPTION = typer.Option(DEFAULT_STAGING, "--staging")
 BUNDLE_OPTION = typer.Option(DEFAULT_BUNDLE, "--out")
+MERMAID_OPTION = typer.Option(DEFAULT_MERMAID, "--mermaid", exists=True, dir_okay=False)
+MAPPING_DOC_OPTION = typer.Option(
+    DEFAULT_MAPPING_DOC,
+    "--mapping-doc",
+    exists=True,
+    dir_okay=False,
+)
+SYNC_OUT_OPTION = typer.Option(DEFAULT_SYNC_OUT, "--out-dir")
+QUANTUM_ALPHA_OPTION = typer.Option(1.0, "--alpha")
+QUANTUM_BETA_OPTION = typer.Option(0.75, "--beta")
+QUANTUM_GAMMA_OPTION = typer.Option(0.5, "--gamma")
+QUANTUM_DELTA_OPTION = typer.Option(0.05, "--delta")
+ACTOR_SYNC_OPTION = typer.Option("copilot", "--by")
+COMPRESS_OPTION = typer.Option(True, "--compress/--no-compress")
 
 app = typer.Typer(help="Codex Knowledge (ingest → normalize → chunk → build)")
+
+
+_NODE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*\[")
+_EDGE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*[-.=o]*>\s*([A-Za-z][A-Za-z0-9_]*)")
+
+
+def _extract_mermaid_graph(mermaid_text: str) -> tuple[list[str], list[tuple[str, str]]]:
+    """Return node IDs and directed edges from a Mermaid flowchart string."""
+
+    node_ids: set[str] = set()
+    edges: list[tuple[str, str]] = []
+    for raw_line in mermaid_text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("%%"):
+            continue
+        node_match = _NODE_RE.match(line)
+        if node_match:
+            node_ids.add(node_match.group(1))
+        edge_match = _EDGE_RE.match(line.replace("-.", "--").replace(".->", "->"))
+        if edge_match:
+            src, dst = edge_match.groups()
+            node_ids.add(src)
+            node_ids.add(dst)
+            edges.append((src, dst))
+    return sorted(node_ids), edges
+
+
+def _build_mermaid_search_records(
+    *,
+    mermaid_path: Path,
+    mapping_doc_path: Path,
+    mermaid_text: str,
+    mapping_doc_text: str,
+) -> list[dict[str, object]]:
+    """Build searchable records from Mermaid and mapping documents."""
+
+    combined = (
+        f"# Mermaid Source ({mermaid_path.as_posix()})\n\n{mermaid_text}\n\n"
+        f"# Mapping Doc ({mapping_doc_path.as_posix()})\n\n{mapping_doc_text}"
+    )
+    chunks = chunk_by_headings(combined, target_tokens=512, overlap_tokens=48)
+    records: list[dict[str, object]] = []
+    for chunk in chunks:
+        text = str(chunk.get("text", ""))
+        records.append(
+            {
+                "id": str(chunk.get("chunk_id", "")),
+                "text": text,
+                "meta": {
+                    "source_path": mermaid_path.as_posix(),
+                    "domain": "ops",
+                    "intent": "runtime",
+                    "lang": "en",
+                    "title": str(chunk.get("title", "")),
+                    "chunk_idx": int(chunk.get("chunk_idx", 0)),
+                    "token_estimate": approx_tokens(text),
+                },
+            }
+        )
+    return records
 
 
 @app.command("build-kb")
@@ -90,6 +170,106 @@ def pack_release_cmd(
                 "bundle": bundle.as_posix(),
                 "sha256_manifest": locked["checks"]["sha256_manifest"],
                 "verified": v["ok"],
+            },
+            indent=2,
+        )
+    )
+
+
+@app.command("sync-mermaid-map")
+def sync_mermaid_map_cmd(
+    mermaid: Path = MERMAID_OPTION,
+    mapping_doc: Path = MAPPING_DOC_OPTION,
+    out_dir: Path = SYNC_OUT_OPTION,
+    alpha: float = QUANTUM_ALPHA_OPTION,
+    beta: float = QUANTUM_BETA_OPTION,
+    gamma: float = QUANTUM_GAMMA_OPTION,
+    delta: float = QUANTUM_DELTA_OPTION,
+    by: str = ACTOR_SYNC_OPTION,
+    compress: bool = COMPRESS_OPTION,
+) -> None:
+    """Synchronize Mermaid runtime maps into tokenized searchable datablobs."""
+
+    mermaid_text = mermaid.read_text(encoding="utf-8")
+    mapping_doc_text = mapping_doc.read_text(encoding="utf-8")
+    nodes, edges = _extract_mermaid_graph(mermaid_text)
+    variables = {
+        "N": len(nodes),
+        "E": len(edges),
+        "V": len(set(re.findall(r"\b[A-Z]\b", mapping_doc_text))),
+    }
+    records = _build_mermaid_search_records(
+        mermaid_path=mermaid,
+        mapping_doc_path=mapping_doc,
+        mermaid_text=mermaid_text,
+        mapping_doc_text=mapping_doc_text,
+    )
+    token_total = 0
+    for rec in records:
+        meta = rec.get("meta")
+        if isinstance(meta, dict):
+            token_total += int(meta.get("token_estimate", 0))
+    variables["T"] = token_total
+    coherence_score = (
+        alpha * variables["N"]
+        + beta * variables["E"]
+        + gamma * variables["V"]
+        + delta * variables["T"]
+    )
+    equation = "ψ = α·N + β·E + γ·V + δ·T"
+
+    payload = {
+        "source": {
+            "mermaid": mermaid.as_posix(),
+            "mapping_doc": mapping_doc.as_posix(),
+        },
+        "graph": {
+            "nodes": nodes,
+            "edges": [{"src": src, "dst": dst} for src, dst in edges],
+        },
+        "quantum_mapping": {
+            "equation": equation,
+            "coefficients": {"alpha": alpha, "beta": beta, "gamma": gamma, "delta": delta},
+            "variables": variables,
+            "coherence_score": round(coherence_score, 4),
+        },
+        "search_index": {
+            "records": len(records),
+        },
+        "actor": by,
+    }
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    blob_json = out_dir / "mermaid_sync_datablob.json"
+    blob_json.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+    records_path = out_dir / "mermaid_sync_search.ndjsonl"
+    with records_path.open("w", encoding="utf-8") as fh:
+        for rec in records:
+            fh.write(json_dumps_sorted(rec) + "\n")
+
+    compressed_path: str | None = None
+    codec = compression_codec()
+    if compress:
+        suffix = ".zst" if codec == "zstd" else ".zlib"
+        comp_file = out_dir / f"mermaid_sync_datablob.json{suffix}"
+        comp_file.write_bytes(zstd_compress(blob_json.read_bytes(), level=9))
+        compressed_path = comp_file.as_posix()
+
+    typer.echo(
+        json.dumps(
+            {
+                "ok": True,
+                "blob": blob_json.as_posix(),
+                "blob_sha256": sha256_file(blob_json),
+                "search_records": records_path.as_posix(),
+                "compressed_blob": compressed_path,
+                "compression_codec": codec if compress else None,
+                "quantum_coherence_score": payload["quantum_mapping"]["coherence_score"],
+                "node_count": variables["N"],
+                "edge_count": variables["E"],
+                "variable_count": variables["V"],
+                "token_count": variables["T"],
             },
             indent=2,
         )

@@ -1,3 +1,25 @@
+## SESSION SUMMARY — 2026-05-13T09:42Z [S980-mermaid-sync-cli]
+
+**Session:** S980-mermaid-sync-cli | **Branch:** `copilot/create-evidence-backed-mermaid-map`
+
+### Completed
+- **New CLI command**: Added `sync-mermaid-map` to `src/codex/cli_knowledge.py` for Copilot-agent-friendly orchestration of Mermaid mapping synchronization.
+- **Searchable datablob pipeline**:
+  - Parses Mermaid graph structure (node + edge extraction)
+  - Builds tokenized searchable NDJSON chunks from Mermaid + mapping-doc content
+  - Emits a quantum-inspired formula payload with variable mapping (`N`, `E`, `V`, `T`) and computed coherence score
+  - Writes compressed datablob output (`zstd`/`zlib` fallback) for archival retrieval workflows
+- **Tests**: Added `test_sync_mermaid_map_generates_searchable_datablobs` in `tests/codex/test_cli_knowledge.py`.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated.
+
+### Validation
+- ✅ `python -m ruff check src/codex/cli_knowledge.py tests/codex/test_cli_knowledge.py`
+- ✅ `python -m py_compile src/codex/cli_knowledge.py tests/codex/test_cli_knowledge.py`
+- ✅ `python -m pytest tests/knowledge/test_build_kb.py -q`
+- ⚠️ Baseline `nox -s tests` fails pre-existing during collection (`codex_ml.data._core_loaders.stream_paths` missing; 143 collection errors)
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T09:08Z [S979-mermaid-logic-map]
 
 **Session:** S979-mermaid-logic-map | **Branch:** `copilot/create-evidence-backed-mermaid-map`
