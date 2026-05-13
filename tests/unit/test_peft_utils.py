@@ -17,6 +17,7 @@ import pytest
 )
 def test_freeze_counts():
     def load_bundle_or_skip():
+        loaded_bundle = None  # initialize before try so CodeQL can confirm it's always set
         try:
             loaded_bundle = load_hf_llm("sshleifer/tiny-gpt2")
         except (OSError, RuntimeError, ValueError) as err:

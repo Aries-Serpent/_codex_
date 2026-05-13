@@ -35,6 +35,8 @@ on:
       - "Validation Pipeline"
       - "Auto-Fix Common CI Issues"
       - "PR Auto-Fix Check"
+      # Security snapshot — triggers healing loop after each fetcher run
+      - "🔍 CodeQL Alert Fetcher"
     types: [completed]
   schedule:
     - cron: "0 2 * * *"   # nightly 02:00 UTC health sweep

@@ -1,8 +1,60 @@
 # PR #4434 — What's Next
 
 > **PR:** [#4434](https://github.com/Aries-Serpent/_codex_/pull/4434)  
-> **Session:** S982 | **Date:** 2026-05-13 | **Branch:** `copilot/verify-codeql-alerts-and-sweep`  
-> **Current head:** `HEAD` (S982 in progress)
+> **Session:** S987-S989 | **Date:** 2026-05-13 | **Branch:** `copilot/verify-codeql-alerts-and-sweep`  
+> **Current head:** `HEAD` (S989 — workflow guide + Pattern 25/30 wrap)
+
+---
+
+## ✅ Completed (S987–S989)
+
+| Area | Status |
+|------|--------|
+| 20 CodeQL quick-win fixes | ✅ 6 ineffectual-stmt + 14 unused-global/import |
+| `scripts/ci/_gh_api.py` — rate-limit cache layer | ✅ TTL disk cache + retry/backoff |
+| `scripts/ci/fetch_security_snapshot.py` — unified fetcher | ✅ all types + autofix + context |
+| `fetch_codeql_alerts.py` dedup cleanup | ✅ delegates to `_gh_api.py` |
+| `codeql-alert-fetcher.yml` — multi-stage pipeline | ✅ dropdown, cache, autofix, prompt |
+| `wec_enforcer.py` — explicit pipeline input on dispatch | ✅ `_WORKFLOW_DEFAULT_INPUTS` |
+| PR template WEC checkbox | ✅ `codeql-alert-fetcher.yml` added |
+| `copilot-iterative-self-healing.yml` trigger | ✅ fetcher registered |
+| `docs/reference/SECURITY_API_REFERENCE.md` | ✅ agent-readable API catalog |
+| `docs/reference/CODEQL_FETCHER_WORKFLOW_GUIDE.md` | ✅ 7 Mermaid diagrams |
+
+## ✅ Completed (S982–S986)
+
+| Area | Status |
+|------|--------|
+| PR4434 living docs created | ✅ verify_living_files --strict passes |
+| MFA SHA1→SHA256 hardening | ✅ new secrets default to HMAC-SHA256 |
+| CodeQL top alert (peft_utils uninitialized var) | ✅ fixed |
+| ujson Dependabot advisory #256 | ✅ uv.lock upgraded to 5.12.1 |
+| Pattern 25/30 maintained | ✅ all sessions |
+
+---
+
+## 🔲 Remaining / Next Session
+
+| Priority | Area | Notes |
+|----------|------|-------|
+| P1 | Run `codeql-alert-fetcher.yml` full pipeline | Verify WEC checkbox fires and artifact uploads correctly |
+| P1 | Review Copilot Autofix suggestions in Security tab | Check which alerts got AI fixes after first autofix run |
+| P2 | Next batch of CodeQL alerts from `alerts_fixable.md` | Continue systematic reduction |
+| P2 | Dependabot alerts — remaining high/critical | Check `dependabot/alerts_critical.json` in latest snapshot |
+| P3 | Create `fetch_security_snapshot.py` — `--types autofix` | Script already scaffolded; validate with real token |
+| P3 | Add `template_lint.yml` to `session_wrapup_autofix.py` | Minor discrepancy between template and `_WEC_ITEMS` |
+
+---
+
+## CodeQL Alert Baseline (as of S985)
+
+| Metric | Count |
+|--------|-------|
+| Total open on `main` | 119 |
+| Fixed this PR branch | 20+ |
+| Remaining fixable (estimate) | ~90 |
+
+
 
 ---
 

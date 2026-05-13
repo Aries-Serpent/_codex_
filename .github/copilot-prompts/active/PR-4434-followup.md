@@ -1,121 +1,59 @@
-# 🎯 PR Follow-Up Tasks - #4434
+# PR #4434 — S990 Continuation Prompt
 
-**PR**: #4434 - PR #4434  
-**Branch**: `copilot/verify-codeql-alerts-and-sweep`  
-**Author**: @mbaetiong  
-**Date**: 2026-05-13  
-**Commit**: `56e753cf3c6a7956c460fdb3d4f870aabecf4f35`  
-**Status**: 🔄 ACTIVE
+> **Generated:** 2026-05-13T05:50Z | **Session:** S987-S989 | **Branch:** `copilot/verify-codeql-alerts-and-sweep`
 
----
+## Context
 
-## 📋 PREVIOUS SESSION SUMMARY
+Sessions S987-S989 completed:
+- ✅ 20 CodeQL quick-win fixes (6 `py/ineffectual-statement` + 14 unused-global/import)
+- ✅ `scripts/ci/_gh_api.py` — shared rate-limit + TTL disk cache layer
+- ✅ `scripts/ci/fetch_security_snapshot.py` — unified security data fetcher
+- ✅ `codeql-alert-fetcher.yml` — multi-stage pipeline (collect/autofix/prompt) with `actions/cache`
+- ✅ `wec_enforcer.py` — `_WORKFLOW_DEFAULT_INPUTS` for explicit pipeline dispatch
+- ✅ PR template WEC checkbox + self-healing trigger registered
+- ✅ `docs/reference/SECURITY_API_REFERENCE.md` + `CODEQL_FETCHER_WORKFLOW_GUIDE.md` (7 Mermaid diagrams)
+- ✅ Pattern 25/30 satisfied, living docs updated
 
-### Completed Work
-- [`56e753cf`] fix(codeql): update PR number to #4434 in CHANGELOG and accountability report (copilot-swe-agent[bot], 2026-05-13)
-- [`bcca39a9`] fix(codeql): address code review feedback - fix CHANGELOG job count accuracy (copilot-swe-agent[bot], 2026-05-13)
-- [`d9896a64`] fix(codeql): replace os.popen with datetime in fix_broken_doc_links.py; Pattern 25 + PDA entry (copilot-swe-agent[bot], 2026-05-13)
+## Priority Tasks for S990
 
-### Files Modified
-- `scripts/fix_broken_doc_links.py` — replaced `os.popen('date -u ...')` with `datetime.datetime.now(datetime.timezone.utc).strftime(...)` to fix CodeQL `py/shell-command-injection-from-environment` alert; removed unused `import os`; added `import datetime`
-- `CHANGELOG.md` — added S979/S980 session entries under `## [Unreleased]` (Pattern 25)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — added S979/S980 session summaries (Pattern 25)
-- `.codex/aftermath/pda_iterations.jsonl` — added S979 PDA entry for 2026-05-13 (Pattern 30)
+### P1 — Validate the pipeline end-to-end
+1. Trigger `codeql-alert-fetcher.yml` via UI or check `- [x] codeql-alert-fetcher.yml` in the PR WEC section.
+2. Verify artifact uploads and contains `AGENT_SECURITY_CONTEXT.md`.
+3. Verify `@copilot` prompt was posted to PR #4434.
+4. Check Security tab for Copilot Autofix suggestions; review and commit any AI-generated fixes.
 
----
+### P2 — Continue CodeQL alert reduction (next 20)
+Using `codeql/alerts_fixable.md` from the latest artifact:
+1. Fix next batch of `py/unused-import` and `py/unused-global-variable` alerts.
+2. Fix any remaining `py/ineffectual-statement`.
+3. Target `py/clear-text-logging-sensitive-data` or `py/path-injection` if present.
 
-## 🎯 NEXT PHASE OBJECTIVES
+### P3 — Dependabot remaining alerts
+1. Open `dependabot/alerts_critical.json` from the latest snapshot.
+2. Update `requirements/*.txt` or `pyproject.toml` for each critical/high package.
+3. Verify patched versions with `gh-advisory-database` tool before pinning.
 
-### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Confirm PR CodeQL scan no longer reports the MFA weak-crypto finding after S982 lands
-- [ ] Continue remaining `py/undefined-export` / `py/weak-cryptographic-algorithm` sweep items
-- [ ] Re-run `python scripts/ci/verify_living_files.py --pr-number 4434 --strict` before final merge
-
-**Validation**:
+### P4 — `fetch_security_snapshot.py` validation
 ```bash
-python -m ruff check src/ tests/ --output-format=concise
-python scripts/ci/mypy_baseline.py --require-baseline
-python scripts/ci/auto_fix_common_issues.py --check-only
-python scripts/ci/sync_tracked_files.py --fix
+GH_TOKEN=$CODEX_MASTER_KEY python scripts/ci/fetch_security_snapshot.py \
+  --types autofix --out-dir /tmp/test_snap --autofix-max 3 \
+  --autofix-severities critical,error
 ```
 
-### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] Verify `tests/auth/test_mfa_provider.py`, `tests/auth/test_authenticator.py`, and `tests/api/test_auth_mfa_expiry.py` stay green on CI
-- [ ] Keep Pattern 25/30 green after any future automated `[skip ci]` commits
+### P5 — WEC `_WEC_ITEMS` discrepancy
+Add `template_lint.yml` to `session_wrapup_autofix.py` after `audit-qa-suite.yml` (before `codeql-alert-fetcher.yml`) to match the PR template.
 
-### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] Evaluate whether older enrolled MFA secrets need a migration path or explicit SHA1 compatibility documentation
+## Session Start Checklist
+```
+[ ] git log --oneline -5                                    # verify Pattern 25
+[ ] tail -1 .codex/aftermath/pda_iterations.jsonl           # check PDA date (Pattern 30)
+[ ] python scripts/ci/sync_tracked_files.py --check
+[ ] python scripts/ci/auto_fix_common_issues.py --check-only
+[ ] python scripts/ci/verify_living_files.py --pr-number 4434 --strict
+```
 
----
-
-## ✅ EXECUTION CHECKLIST
-
-- [ ] All Priority 1 tasks completed and validated
-- [ ] All Priority 2 tasks completed or documented
-- [ ] Priority 3 tasks reviewed and prioritized
-- [ ] All validation checks passed
-- [ ] Documentation updated
-- [ ] Self-review completed (5 passes, 0 concerns)
-
----
-
-## 🔍 MANDATORY SELF-REVIEW PROTOCOL
-
-**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
-
-### Pass 1: Code Quality & Correctness
-- [ ] All syntax errors resolved
-- [ ] No linting warnings introduced
-- [ ] Type hints correct
-- [ ] Error handling comprehensive
-- [ ] Edge cases covered
-
-### Pass 2: Testing & Validation
-- [ ] All tests passing locally
-- [ ] New tests added for new functionality
-- [ ] Test coverage maintained or improved
-- [ ] CI/CD checks passing
-
-### Pass 3: Documentation & Communication
-- [ ] Code comments added for complex logic
-- [ ] Docstrings updated
-- [ ] README reflects changes
-- [ ] CHANGELOG updated
-- [ ] Commit messages descriptive
-
-### Pass 4: Security & Safety
-- [ ] No hardcoded secrets or credentials
-- [ ] Input validation added
-- [ ] Dependencies reviewed (no vulnerabilities)
-- [ ] Security implications documented
-
-### Pass 5: Integration & Dependencies
-- [ ] No breaking changes (or properly documented)
-- [ ] Backward compatibility maintained
-- [ ] Cross-PR dependencies resolved
-- [ ] No regressions introduced
-
-**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
-
----
-
-## 🤖 COPILOT AGENT INSTRUCTIONS
-
-**When you see `@copilot continue` in PR #4434:**
-
-1. Load this prompt from `.github/copilot-prompts/active/PR-4434-followup.md`
-2. Execute Priority 1 tasks in order, validating each
-3. Then execute Priority 2 tasks
-4. Review Priority 3 tasks
-5. Update this file after each task (add ✅ for completed)
-6. Perform mandatory 5-pass self-review
-7. Post comprehensive status as PR comment
-8. Generate new continuation if work remains
-
-**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
-
----
-
-**Generated**: 2026-05-13  
-**Template Version**: 2.0.0  
-**Last Updated**: 2026-05-13 03:17:46
+## Key New Files
+- `scripts/ci/_gh_api.py` — HTTP helper; `CODEX_API_CACHE_DISABLED=1` to bypass cache
+- `scripts/ci/fetch_security_snapshot.py` — `--types dependabot,secrets,policy,analyses,autofix,context,all`
+- `docs/reference/CODEQL_FETCHER_WORKFLOW_GUIDE.md` — full pipeline docs with Mermaid diagrams
+- `docs/reference/SECURITY_API_REFERENCE.md` — GitHub Security API catalog

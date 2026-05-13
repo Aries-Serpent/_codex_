@@ -473,6 +473,17 @@ def cmd_dispatch_checked(pr_number: int, head_sha: str, repo: str) -> int:
         print(f"❌ Could not parse NEWLY_CHECKED JSON: {newly_checked_raw!r}", file=sys.stderr)
         return 1
 
+    # Per-workflow default inputs forwarded on WEC-triggered dispatch.
+    # Keeps dispatch behaviour explicit and consistent with the UI defaults.
+    # Add entries here for any opt-in workflow that has meaningful inputs.
+    _WORKFLOW_DEFAULT_INPUTS: dict[str, dict[str, str]] = {
+        "codeql-alert-fetcher.yml": {
+            "pipeline": "collect,autofix,prompt",
+            # state/max_pages/page_sleep_ms/top_n/include_dependabot/include_secrets
+            # all use their built-in defaults — only override if changing behaviour.
+        },
+    }
+
     dispatched = 0
     approved = 0
     already_running = 0
@@ -486,7 +497,16 @@ def cmd_dispatch_checked(pr_number: int, head_sha: str, repo: str) -> int:
         path = (
             f"/repos/{repo}/actions/workflows/{urllib.parse.quote(wf)}/dispatches"
         )
-        status_code, resp = _gh_api("POST", path, token, {"ref": branch})
+        # Build dispatch payload: always include ref; add explicit inputs when
+        # the workflow has non-trivial choice/string inputs so the correct
+        # pipeline stage fires rather than relying on GitHub's default logic.
+        dispatch_payload: dict[str, object] = {"ref": branch}
+        wf_inputs = _WORKFLOW_DEFAULT_INPUTS.get(wf)
+        if wf_inputs:
+            dispatch_payload["inputs"] = wf_inputs
+            print(f"  📋 Forwarding inputs for {wf}: {wf_inputs}")
+
+        status_code, resp = _gh_api("POST", path, token, dispatch_payload)
         if status_code in (200, 201, 204):
             print(f"🚀 Dispatched {wf} on branch {branch!r}")
             dispatched += 1

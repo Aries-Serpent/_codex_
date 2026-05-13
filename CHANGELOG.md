@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S987–S989 — CodeQL quick-wins, security pipeline, caching + WEC wiring)
+- **20 CodeQL quick-win fixes** across 14 files: 6 `py/ineffectual-statement` (removed `...` after docstrings in Protocol/ABC methods), 4 `py/unused-global-variable` re-exports (`__all__` additions), 10 `py/unused-import` / `py/unused-global-variable` removals and wire-ups.
+- **`scripts/ci/_gh_api.py`** — shared rate-limit-aware HTTP helper with TTL disk cache (`api_get_cached`, `paginate_cached`), exponential retry on 429/403, and per-page sleep floor.
+- **`scripts/ci/fetch_security_snapshot.py`** — unified fetcher for Dependabot, Secrets, Policy, Analyses, Copilot Autofix, and Context generation; replaces all inline Python blobs in the workflow.
+- **`docs/reference/SECURITY_API_REFERENCE.md`** — full GitHub Security API call catalog (Dependabot, Code Scanning, Secrets, Policy, Advisories) formatted for Copilot agent consumption.
+- **`docs/reference/CODEQL_FETCHER_WORKFLOW_GUIDE.md`** — full workflow guide with 7 Mermaid diagrams covering pipeline stages, stage-gate logic, trigger map, caching architecture, rate-limit sequence, Copilot Autofix flow, and WEC wiring.
+
+### Changed (S987–S989)
+- **`codeql-alert-fetcher.yml`** — replaced 5 inline Python/shell blobs with `fetch_security_snapshot.py` calls; added `actions/cache` for snapshot dir (keyed by SHA) and autofix-state; added full `autofix` and `prompt` pipeline stages with sentinel-comment upsert on PR or issue fallback.
+- **`wec_enforcer.py`** — added `_WORKFLOW_DEFAULT_INPUTS` map in `cmd_dispatch_checked`; `codeql-alert-fetcher.yml` now dispatched with `{"inputs": {"pipeline": "collect,autofix,prompt"}}` so the correct stage fires when the WEC checkbox is ticked.
+- **`copilot-iterative-self-healing.yml`** — added `"🔍 CodeQL Alert Fetcher"` to `workflow_run.workflows` triggers.
+- **`.github/pull_request_template.md`** — added `codeql-alert-fetcher.yml` checkbox to `🔒 Opt-In: Security & Quality` WEC section.
+- **`fetch_codeql_alerts.py`** — removed duplicate `_resolve_token` / `_api_get` helpers (now delegated to `_gh_api.py`); removed unused imports.
+
 ### Fixed (S986 — ujson Dependabot advisory resolved in uv.lock)
 - **UltraJSON memory-leak advisory**: Verified the repository still had `ujson 5.12.0` only in `uv.lock` (while `requirements/lock.txt` was already on `5.12.1`), leaving Dependabot alert #256 open for the UV lockfile.
 - **`uv.lock`**: Surgically updated the `ujson` package block from `5.12.0` to `5.12.1`, the patched release for the `ujson.dump()` write-failure memory leak.
