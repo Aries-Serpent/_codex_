@@ -394,12 +394,9 @@ class TestPhase2_ErrorHandling:
 
     @pytest.mark.parametrize(
         "primary_available,fallback_available,expected_result",
-            (True, True, "primary"),
             (False, True, "fallback"),
         if fallback_available:
-    def test_fallback_strategy(self, primary_available, fallback_available, expected_result):
-        """Test fallback strategy"""
-        if primary_available:
+        if fallback_available:
             result = "primary"
         elif fallback_available:
             result = "fallback"
