@@ -1,3 +1,21 @@
+## SESSION SUMMARY — 2026-05-13T21:12Z [S1003-comment-feedback-fixes]
+
+**Session:** S1003-comment-feedback-fixes | **Branch:** `0D_base_` | **PR:** #4450
+
+### Completed
+- ✅ Fixed CodeQL `py/unused-global-variable` alert 13580 in `src/training/accelerate_init_guard.py` line 92: changed `return False` → `return _ACCELERATOR_AVAILABLE` so the assigned global is consumed in the same execution path.
+- ✅ Wrapped `test_sqlite_pool_close` body in `try/finally` (`disable_pooling()` + `_close_all()` always run), preventing patched `sqlite3.connect` and pooled connections from leaking into later tests on assertion failure.
+- ✅ Replaced the vague auto-generated CHANGELOG entry with a concrete description of all CI-healing work shipped in this PR (matches reviewer feedback on lines 39–40).
+- ✅ `sync_tracked_files --check` → all green; `ruff check src/ tests/` → 0 issues; `mypy` → 120 (↓2 vs baseline 122).
+
+### Validation
+- ✅ `ruff check src/training/accelerate_init_guard.py tests/test_sqlite_pool_close.py` — 0 issues
+- ✅ `pytest -q tests/test_sqlite_pool_close.py` — 2 passed, 0 failed
+- ✅ `python scripts/ci/sync_tracked_files.py --check` — all tracked files consistent
+- ✅ `python scripts/ci/mypy_baseline.py --require-baseline` — PASS (120 ≤ 122 baseline)
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T20:45Z [S1002-post-merge-validation]
 
 **Session:** S1002-post-merge-validation | **Branch:** `copilot/security-quality-remediation-sprint` | **PR:** #4451

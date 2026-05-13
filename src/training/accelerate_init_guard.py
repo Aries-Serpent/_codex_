@@ -90,7 +90,7 @@ def is_accelerate_available() -> bool:
     accelerator_cls = getattr(_accelerate_mod, "Accelerator", None)
     if accelerator_cls is None:
         _ACCELERATOR_AVAILABLE = False
-        return False
+        return _ACCELERATOR_AVAILABLE
     Accelerator = accelerator_cls
     _ACCELERATOR_AVAILABLE = True
     return _ACCELERATOR_AVAILABLE

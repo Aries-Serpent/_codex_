@@ -36,8 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`scripts/space_traversal/trend_aggregator.py`** — Fixed RUF059 regression: loop variable was renamed to `_cap_id` but body still referenced `cap_id` (stale value from prior loop), causing `trending_up`/`trending_down`/`stable` lists to contain incorrect capability IDs. `test_trending_detection` now passes.
 - **`tests/ci/test_pattern_recorder.py`** — Fixed `test_run_all_patterns_respects_skip_env` timeout (>60 s) by mocking all 33 pattern methods instead of only 2, preventing real subprocess/network calls during skip-env verification.
 
-### Fixed (auto-update — PR #4450)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4450 (SHA `deb50092`) at 2026-05-13T17:11Z [auto-generated]
+### Fixed (S995-ci-healing-sprint — PR #4450 — 2026-05-13)
+- Iterative self-healing of `0D_base_` branch: fixed RUF059 regression in `scripts/space_traversal/trend_aggregator.py`, test-timeout in `tests/ci/test_pattern_recorder.py`, and multiple CodeQL / code-quality alerts in `src/training/accelerate_init_guard.py`.
+- `sync_tracked_files` dimension restored to green by fixing CODEX_MANIFEST integrity and `.secrets.baseline` drift.
+- `tests/test_sqlite_pool_close.py` — wrapped test body in `try/finally` so `disable_pooling()` and `_close_all()` always run even on assertion failure, preventing pool-state leaks into subsequent tests.
 
 ### Fixed (S994-artifact-refresh — PR #4448 — 2026-05-13T16:30Z)
 - **Security artifact refresh** — ingested new security-scanning-suite artifacts from run 25809211083:
