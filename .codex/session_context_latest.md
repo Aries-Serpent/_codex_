@@ -1,41 +1,32 @@
-# Session Context — 2026-05-13T18:22:36Z
+# Session Context — 2026-05-13T19:54:42Z
 **Branch:** `0D_base_`  **PR:** #4451  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4205` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4895` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
 ## 📋 PR #4451 — fix: security+quality batch 1 remediations and living-doc updates
 State: `open`  Draft: `False`  Branch: `copilot/security-quality-remediation-sprint` → `0D_base_`
 
-### ❌ 7 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Auto-approve pending runs after CodeQL (WEC pre-approval)` (cancelled)
-- `Post rescue comment on CodeQL failure` (cancelled)
-- `Analyze (python)` (cancelled)
-- `Semgrep SAST` (cancelled)
-- `CodeQL Analysis (python)` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
 - **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **Graph Update: uv in /., /.github, /.github/agents, /.github/agents/ci-testing-agent, /.github/agents/ml-threat-detector, /.github/agents/project-architect-researcher, /.github/agents/pyo3-integration-tester, /.github/agents/rust-error-validator, /.github/agents/security-scan-agent, /.github/agents/utf8-safety-linter, /.github/ai-evolution, /.github/copilot-cascade, /.github/copilot-evolution, /.github/copilot-knowledge-hunger, /.github/copilot-security, /agents/codex_client, /audio_cleaner_v1, /cli, /cod...** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `60129c9e` refactor(test): use dynamic introspection to mock all pattern methods in skip-en — copilot-swe-agent[bot] (2026-05-13)
+- `172f46e8` fix(ci): fix RUF059 regression in trend_aggregator + test timeout in pattern_rec — copilot-swe-agent[bot] (2026-05-13)
 - `943f0ae5` chore: Generate follow-up prompt for PR #4450 [skip ci] — github-actions[bot] (2026-05-13)
 - `e80c2d77` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
 - `bd6ce12d` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 - `b989b90e` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-13)
 - `eb26dd84` Merge branch 'main' into 0D_base_ — Statix (2026-05-13)
 - `218d564d` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
-- `4dded5ae` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `523527e3` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
