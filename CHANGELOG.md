@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S975 — CI stabilization + all review threads resolved)
+- **CI stabilization**: Verified all CI checks on `e53db47` passed (success); all 17 PR review threads are resolved; `Fast Validation` and `🔐 Enforce Secrets Baseline` confirmed passing on latest HEAD
+- **Pattern 25 compliance**: Updated CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md for S975 session
+
 ### Fixed (S974 — Fast Validation date sync + PDA entry)
 - **`docs/ROADMAP.md` date update**: Updated date from `2026-05-12` to `2026-05-13` (pre-commit sync hook requires current date — hook auto-updates this, causing hook failure if not committed proactively)
 - **PDA entry for 2026-05-13**: Added PDA iteration entry for today — resolves Pattern 30 `PDA entry today` dimension failure
