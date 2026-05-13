@@ -10,17 +10,20 @@
 - Fixed **sync_tracked_files**: Updated stale `.secrets.baseline` CODEX_MANIFEST entry (hash mismatch).
 - Updated ROADMAP.md baseline date from 2026-04-28 to 2026-05-13.
 - Dependency bump: ujson 5.12.0 → 5.12.1 (Dependabot automated PR).
+- **Cherry-pick preparation for PR #4427**: Created comprehensive cherry-pick instructions (`.codex/cherrypick-instructions-pr4431-to-pr4427.md`), generated git patch files, and created `cherrypick-ujson-to-4427` branch with resolved conflicts ready for fast-forward merge into `0D_base_`.
 
 ### Validation
 - `python3 scripts/ci/sync_tracked_files.py --check`: ✅ all tracked files consistent
 - `python3 scripts/ci/auto_fix_common_issues.py --check-only`: ✅ 0 auto-fixable issues
 - `python3 scripts/ci/session_wrapup_autofix.py --pr-number 4431 --check`: ✅ (after fixes)
+- Cherry-pick validation on `cherrypick-ujson-to-4427` branch: ✅ all checks passing
 
 ### Impact Score
 - Clears all 3 failing merge-readiness dimensions (sync_tracked_files, PDA entry today, accountability report today).
 - Brings merge-readiness score from 72/100 to 100/100.
 - Maintains Pattern 25 and Pattern 30 compliance for future sessions.
 - Security: ujson 5.12.1 includes bug fixes and performance improvements.
+- **Cherry-pick ready**: PR #4427 can now receive ujson bump via fast-forward merge or patch application.
 
 ---
 

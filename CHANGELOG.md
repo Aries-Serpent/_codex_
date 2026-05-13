@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S976 — cherry-pick preparation)
+- **Cherry-pick instructions**: Created `.codex/cherrypick-instructions-pr4431-to-pr4427.md` with complete instructions for cherry-picking ujson dependency bump from PR #4431 to PR #4427 (`0D_base_` branch).
+- **Cherry-pick patches**: Generated git patch files for easy application to PR #4427:
+  - `0001-deps-deps-bump-ujson-from-5.12.0-to-5.12.1.patch` (Dependabot commit)
+  - `0002-fix-ci-S976-PR-4431-Pattern-25-30-compliance-sync_tr.patch` (S976 compliance)
+- **Cherry-pick branch**: Created `cherrypick-ujson-to-4427` branch with resolved conflicts, ready for fast-forward merge into `0D_base_`.
+
 ### Fixed (S976)
 - Fixed Pattern 25 violation: Added CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md to commit (previous commit 974505f only contained `.github/copilot-prompts/active/PR-4431-followup.md`).
 - Fixed Pattern 30 violation: Added PDA entry for 2026-05-13 to `.codex/aftermath/pda_iterations.jsonl` (last entry was 2026-05-11).
