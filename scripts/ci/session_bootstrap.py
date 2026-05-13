@@ -744,7 +744,7 @@ def main() -> int:
                 "URL fetching skipped — set a token for full context."
             )
             # Still register URLs so they appear in the digest
-            for url, kind, _url_repo, _ids in url_refs:
+            for url, kind, url_repo, ids in url_refs:
                 report.fetched.append(FetchedItem(
                     url=url, kind=kind,
                     title=url.split("/")[-1],

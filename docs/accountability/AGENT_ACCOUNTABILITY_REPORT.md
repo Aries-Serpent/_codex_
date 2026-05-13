@@ -1,3 +1,28 @@
+## SESSION SUMMARY — 2026-05-13T08:26Z [S992-pr4434-cherrypick-corrections-workflow-hardening]
+
+**Session:** S992-pr4434-cherrypick-corrections-workflow-hardening | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
+
+### Completed
+- ✅ Reviewed the missing delta from `origin/copilot/verify-codeql-alerts-and-sweep-1` and applied the `codeql-alert-fetcher.yml` corrections to this PR branch.
+- ✅ Hardened `codeql-alert-fetcher.yml`: strict bash mode in multi-line shell steps, normalized `repository_dispatch` boolean inputs, clamped `top_n`, replaced fragile curl fallback writes with temp-file JSON validation, added `collector_status.json`, and published a GitHub step summary.
+- ✅ Removed dead workflow code (`ENCODED_PATH`) and made security-policy content truncation byte-safe with explicit truncation metadata.
+- ✅ Fixed the `scripts/ci/session_bootstrap.py` `F821` regression introduced by loop-variable renaming (`url_repo` / `ids` are now correctly bound in the fetch loop).
+- ✅ Pattern 27 resolved: `.secrets.baseline` refreshed for the new workflow false-positive.
+- ✅ Pattern 25 restored: this commit updates `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md` together.
+
+### Validation
+- ✅ `python -m ruff check scripts/ci/session_bootstrap.py`
+- ✅ `python3 -c "import yaml, pathlib; yaml.safe_load(pathlib.Path('.github/workflows/codeql-alert-fetcher.yml').read_text()); print('YAML OK')"`
+- ✅ `python3 scripts/ci/sync_tracked_files.py --fix`
+- ✅ `python3 scripts/ci/auto_fix_common_issues.py`
+
+### Pattern Status
+- **Pattern 25** ✅ (CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit)
+- **Pattern 27** ✅ (`.secrets.baseline` refreshed for the workflow false-positive)
+- **Pattern 30** ✅ (today already recorded; this session appends an explicit PDA entry below)
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T06:29Z [S991-pr4434-f541-living-files-mfa-tests]
 
 **Session:** S991-pr4434-f541-living-files-mfa-tests | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
@@ -9167,6 +9192,13 @@ Changed from broken identical try/except to clean relative imports:
 
 
 
+
+
+## SESSION SUMMARY — 2026-05-13T08:37Z [auto-generated]
+
+**Session:** auto-20260513T0837-run3611 | **Run:** 25787197332 | **Date:** 2026-05-13
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-05-13T03:10Z [auto-generated]
 
 **Session:** auto-20260513T0310-run3598 | **Run:** 25775234005 | **Date:** 2026-05-13

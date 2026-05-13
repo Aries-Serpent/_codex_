@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S992 — codeql-alert-fetcher hardening; session_bootstrap regression; Pattern 25)
+- **`/.github/workflows/codeql-alert-fetcher.yml`**: Applied the missing corrections from `copilot/verify-codeql-alerts-and-sweep-1` and hardened the workflow further by enabling strict shell mode in multi-line bash steps, normalizing `repository_dispatch` booleans via the params step, clamping `top_n` to sane bounds, and making metadata reflect the resolved include flags.
+- **Safer artifact writes**: Replaced fragile `curl ... || echo ... > file` fallback patterns for analyses and community-profile fetches with temp-file + JSON-validation helpers before moving outputs into place.
+- **Artifact health reporting**: Added `collector_status.json` and a GitHub Actions step summary so downstream agents and humans can see which collectors produced valid outputs.
+- **Security policy fetch cleanup**: Removed the unused `ENCODED_PATH` variable and switched policy-content truncation to a byte-safe bounded form with explicit metadata.
+- **`scripts/ci/session_bootstrap.py`**: Fixed the `F821` regression caused by a loop-variable rename — `url_repo` / `ids` are again bound where the fetch helpers actually use them.
+- **Traceability / false positives**: Refreshed `.secrets.baseline` for the new workflow false-positive entry and updated accountability tracking for this commit.
+
 ### Fixed (S991 — 84 F541 f-string placeholders; living-file hygiene; MFA tests green)
 - **`scripts/ci/fetch_security_snapshot.py`**: Fixed 84 `F541` (f-string without any placeholders) — bare `f""`, `f"---"`, and other static f-strings converted to plain strings via `ruff --select F541 --fix`. Pattern 11 violations fully cleared.
 - **Living-file verification**: `verify_living_files.py --pr-number 4434 --strict` passes — all 5 living files present and non-stale.
