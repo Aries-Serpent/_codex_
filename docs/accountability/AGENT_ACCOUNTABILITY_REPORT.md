@@ -1,3 +1,33 @@
+## SESSION SUMMARY — 2026-05-13T19:09Z [S997-comment-remediation-burndown]
+
+**Session:** S997-comment-remediation-burndown | **Branch:** `copilot/security-quality-remediation-sprint` | **PR:** #4451
+
+### Completed
+- ✅ Addressed all 5 unresolved review findings:
+  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: fixed grammar and removed duplicated WEC checklist block.
+  - `src/codex_ml/monitoring/system_metrics.py`: added `exc_info=True` to both optional dependency debug logs.
+  - `src/training/accelerate_init_guard.py`: added cached `find_spec` probe + guarded retry import, avoiding false positive availability when `Accelerator` is unavailable.
+- ✅ Continued full-suite `pytest -x` burn-down:
+  - Found and fixed next first-failure: `tests/tokenization/test_api_comprehensive.py::test_proxy_getattr_with_none_canonical`.
+  - Restored `_LegacyTokenizerProxy.__getattr__()` unavailable-adapter behavior to raise `ImportError` (matching test + call-path expectations).
+- ✅ Ingested latest security artifact metadata from run `25820306851`:
+  - `sbom-reports` sha256:`ae98976bc715497ea686787b53253db0a95299c39e705010d6dbbb769e7dfc11`
+  - `dependency-scan-results` sha256:`d40438700007dcff521d2e6e12a986a52ad5aba75dd0deb178a5f02c91d62b9b`
+
+### Validation
+- ✅ `ruff check src/tokenization/api.py src/codex_ml/monitoring/system_metrics.py src/training/accelerate_init_guard.py`
+- ✅ `pytest -q tests/tokenization/test_api_comprehensive.py -k "proxy_getattr_with_none_canonical or proxy_call_with_none_canonical"`
+- ✅ `pytest -q tests/distributed/test_distributed_enhanced.py -k "accelerate_available or gpu_available"`
+- ✅ `pytest -x --tb=short` resumed and progressed to >19% after fixing the identified first-failure
+- ✅ `git diff --name-only --diff-filter=U` (no merge conflicts)
+
+### Immediate Follow-up
+1. Continue full-suite `pytest -x` from latest checkpoint to next first failure.
+2. Re-attempt CodeQL SARIF retrieval workflow path requested in PR comments.
+3. Expand the 111-item backlog ledger to concrete rows (P1/P2/P3), then revalidate and finalize.
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T18:30Z [S996-security-quality-batch2]
 
 **Session:** S996-security-quality-batch2 | **Branch:** `0D_base_` | **PR:** continuation sprint
@@ -41,7 +71,7 @@
 - ✅ `pytest -x tests/security`
 - ✅ Targeted regressions for remediated failures passed.
 - ⚠️ Full `pytest -x` remains in-progress for full-suite first-failure burn-down.
-- ⚠️ CodeQL workflow rerun deferred to immediate continuation window due active GitHub API rate-limit block.
+- ⚠️ CodeQL workflow rerun deferred to immediate continuation window due to an active GitHub API rate-limit block.
 
 ### Immediate Follow-up
 1. Resume full-suite `pytest -x` and continue first-failure remediation loop.
@@ -36152,18 +36182,6 @@ Ingest new security-scanning-suite artifacts (run 25809211083), update living do
 - Pattern 12 ✅ — upstream sweep `afc4e95` resolved E501 in `envelope.py`
 - Pattern 30 ✅ — PDA entry exists for 2026-05-13
 
-<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
-- **WEC human grant** `resilient_validation.yml` — detected 2026-05-13T17:32:23Z @ ## PR
-
-## 🔄 Workflow Execution Checklist
-
-### 🧪 Opt-In: Testing & Validation
-- [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
-- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
-
-### ⚡ Auto-Approve
-- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
 
 <!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
 - **WEC human grant** `resilient_validation.yml` — detected 2026-05-13T17:32:23Z @ ## PR

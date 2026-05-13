@@ -1,7 +1,7 @@
 # PR #4448 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S994 · 2026-05-13  
+**Session:** S997 · 2026-05-13  
 **Merge-readiness:** 100/100 ✅
 
 ---
@@ -33,9 +33,23 @@
 7. Confirmed Batch 2 (B403 nosec annotations in `checkpointing.py` + `safe_pickle.py`) and Batch 4 (`.bandit` exclude_dirs for `src/restore_pipeline/tests`) are **already complete** — no further action required.
 8. Confirmed CodeQL API access blocked (403) in this environment; CodeQL status tracked via workflow run artifacts only.
 
+### S997 additions (current continuation)
+
+9. Addressed all 5 unresolved review findings for PR #4451:
+   - `AGENT_ACCOUNTABILITY_REPORT.md` grammar fix (`due to an active ...`).
+   - Removed duplicated WEC block in `AGENT_ACCOUNTABILITY_REPORT.md`.
+   - Added `exc_info=True` to both optional dependency debug logs in `system_metrics.py`.
+   - Hardened `is_accelerate_available()` with cached `find_spec` probe and guarded retry import to avoid false `True` when `Accelerator` is unavailable.
+10. Resumed full-suite burn-down:
+   - Fixed first failure at `tests/tokenization/test_api_comprehensive.py::test_proxy_getattr_with_none_canonical` by restoring `ImportError` behavior in `_LegacyTokenizerProxy.__getattr__()` when canonical adapter is unavailable.
+   - Re-ran `pytest -x`; suite progressed past prior stop-point (now >19% before manual stop for time-boxed continuation).
+11. Ingested fresh security artifacts from run `25820306851`:
+   - `dependency-scan-results` sha256:`d40438700007dcff521d2e6e12a986a52ad5aba75dd0deb178a5f02c91d62b9b`
+   - `sbom-reports` sha256:`ae98976bc715497ea686787b53253db0a95299c39e705010d6dbbb769e7dfc11`
+
 ### Remaining for next continuation window
 
-1. Continue full-suite `pytest -x` first-failure burn-down (currently at `tests/branch_coverage/` — fixed; next failure TBD).
+1. Continue full-suite `pytest -x` first-failure burn-down from the latest resumed checkpoint.
 2. Re-attempt CodeQL workflow dispatch/artifact retrieval — run `codeql-alert-fetcher.yml` and download SARIF.
 3. Expand 111-item backlog ledger from bucket counts to concrete finding rows (P1/P2/P3).
 
@@ -126,6 +140,8 @@ After PR #4448 merges to main:
 
 | Artifact | SHA256 | Run |
 |----------|--------|-----|
+| dependency-scan-results | d4043870 | 25820306851 |
+| sbom-reports | ae98976b | 25820306851 |
 | dependency-scan-results | ae221879 | 25809211083 |
 | sbom-reports | 1d922863 | 25809211083 |
 | dependency-scan-results (prev) | df04fb29 | 25797170771 |

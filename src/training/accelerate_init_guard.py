@@ -27,6 +27,7 @@ try:
 except ImportError:
     Accelerator = None
     _ACCELERATOR_AVAILABLE = False
+_ACCELERATE_SPEC_AVAILABLE: Optional[bool] = None
 
 
 @dataclass
@@ -69,13 +70,26 @@ def is_accelerate_available() -> bool:
     """
     # _ACCELERATOR_AVAILABLE is set at module load from the Accelerator import attempt.
     # Accelerator is None when accelerate is not installed; non-None when it is.
+    global _ACCELERATOR_AVAILABLE, Accelerator, _ACCELERATE_SPEC_AVAILABLE
     if _ACCELERATOR_AVAILABLE and Accelerator is not None:
         return True
-    try:
-        spec = importlib.util.find_spec("accelerate")
-    except (ValueError, ImportError):
+    if _ACCELERATE_SPEC_AVAILABLE is None:
+        try:
+            _ACCELERATE_SPEC_AVAILABLE = importlib.util.find_spec("accelerate") is not None
+        except (ValueError, ImportError):
+            _ACCELERATE_SPEC_AVAILABLE = False
+    if not _ACCELERATE_SPEC_AVAILABLE:
         return False
-    return spec is not None
+    try:
+        import accelerate as _accelerate_mod
+    except ImportError:
+        return False
+    accelerator_cls = getattr(_accelerate_mod, "Accelerator", None)
+    if accelerator_cls is None:
+        return False
+    Accelerator = accelerator_cls
+    _ACCELERATOR_AVAILABLE = True
+    return True
 
 
 def is_gpu_available() -> bool:

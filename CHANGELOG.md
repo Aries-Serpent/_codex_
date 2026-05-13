@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S997-comment-remediation+burn-down — 2026-05-13T19:09Z)
+- Addressed all 5 unresolved review findings on PR #4451:
+  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: fixed grammar (`due to an active ...`) and removed duplicated WEC block.
+  - `src/codex_ml/monitoring/system_metrics.py`: added `exc_info=True` to optional dependency debug logs (`psutil`, `pynvml`).
+  - `src/training/accelerate_init_guard.py`: added cached spec probe and guarded retry import so `is_accelerate_available()` cannot return `True` while `Accelerator` is unavailable.
+- Continued full-suite burn-down:
+  - Fixed first failing test `tests/tokenization/test_api_comprehensive.py::test_proxy_getattr_with_none_canonical` by restoring `ImportError` from `_LegacyTokenizerProxy.__getattr__()` when the canonical adapter is unavailable.
+  - Re-ran `pytest -x` and progressed beyond prior stop point.
+- Ingested latest security artifacts from run `25820306851`:
+  - `sbom-reports` sha256:`ae98976bc715497ea686787b53253db0a95299c39e705010d6dbbb769e7dfc11`
+  - `dependency-scan-results` sha256:`d40438700007dcff521d2e6e12a986a52ad5aba75dd0deb178a5f02c91d62b9b`
+
 ### Fixed (S996-security-quality-batch2 — 2026-05-13T18:30Z)
 - Cherry-picked S995 batch-1 code fixes onto `0D_base_` (commit `d787c17`).
 - Fixed `tests/branch_coverage/test_branch_coverage_cli.py` — replaced `patch("pathlib.Path.exists")` with `patch.object(Path, "exists")` for both branch tests; the string-target form no longer intercepts instance method calls in Python 3.12.

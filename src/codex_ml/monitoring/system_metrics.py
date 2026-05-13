@@ -47,6 +47,7 @@ try:  # pragma: no cover - optional dependency
 except Exception as exc:  # pragma: no cover - psutil missing
     logger.debug(
         "psutil import failed; falling back to minimal sampler",
+        exc_info=True,
         extra={
             "event": "system_metrics.dependency_missing",
             "dependency": "psutil",
@@ -64,6 +65,7 @@ try:  # pragma: no cover - optional dependency
 except Exception as exc:  # pragma: no cover - pynvml missing
     logger.debug(
         "pynvml import failed; GPU metrics disabled",
+        exc_info=True,
         extra={
             "event": "system_metrics.dependency_missing",
             "dependency": "pynvml",
