@@ -1,10 +1,10 @@
-# Session Context — 2026-05-13T14:29:57Z
+# Session Context — 2026-05-13T14:45:48Z
 **Branch:** `0D_base_`  **PR:** #4448  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4832` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 - **Graph Update: uv in /., /.github, /.github/agents, /.github/agents/ci-testing-agent, /.github/agents/ml-threat-detector, /.github/agents/project-architect-researcher, /.github/agents/pyo3-integration-tester, /.github/agents/rust-error-validator, /.github/agents/security-scan-agent, /.github/agents/utf8-safety-linter, /.github/ai-evolution, /.github/copilot-cascade, /.github/copilot-evolution, /.github/copilot-knowledge-hunger, /.github/copilot-security, /agents/codex_client, /audio_cleaner_v1, /cli, /cod...** — `failure` on `main` (2026-05-13)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `0e216aab` fix(pr4448): restore syntax-valid files + MLflow/dev-req/facets/tokenization fix — copilot-swe-agent[bot] (2026-05-13)
 - `0a94d7e8` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
 - `8ecf49d7` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
 - `20243541` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `1f51a0c8` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
 - `14fe9575` Fix for Returning tuples with varying lengths — Statix (2026-05-13)
 - `d2093bbf` chore: Generate follow-up prompt for PR #4448 [skip ci] — github-actions[bot] (2026-05-13)
-- `6bb314df` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -37,9 +37,9 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-05-13] `PDA-SUCCESS-S993-CONT8-SYNC-TRACKED-FILES`: ?
 - [2026-05-13] `PDA-SUCCESS-S993-CONT9-CI-RESCUE-ISSUE-4444`: ?
 - [2026-05-13] `PDA-SUCCESS-S993-CONT9-REVIEW-COMMENTS`: ?
+- [2026-05-13] `PDA-SUCCESS-PR4448-FULL-REMEDIATION`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
