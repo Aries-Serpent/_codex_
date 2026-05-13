@@ -29,11 +29,13 @@ flowchart TD
     L --> M["🔄 S996 continuation\nCherry-picked to 0D_base_\nFixed Path.exists patch (Py3.12)\nBatch 2+4 confirmed complete"]
     M --> N["🔄 S997 continuation\nResolved 5 unresolved review comments\nFixed tokenization first-failure (__getattr__ ImportError)\nResumed pytest -x burn-down (>19%)"]
     N --> O["🧾 Artifact refresh ingested\nrun 25820306851\nsbom: ae98976b...\ndep-scan: d4043870..."]
+    O --> P["⏱️ Late-window checkpoint\nS997 commit 68cc14e pushed\nTargeted validation green\nBranch gates re-running"]
 
     style L fill:#6d597a,color:#fff
     style M fill:#6d597a,color:#fff
     style N fill:#6d597a,color:#fff
     style O fill:#457b9d,color:#fff
+    style P fill:#4a4e69,color:#fff
     style C fill:#d62828,color:#fff
     style D fill:#d62828,color:#fff
     style E fill:#d62828,color:#fff

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ingested latest security artifacts from run `25820306851`:
   - `sbom-reports` sha256:`ae98976bc715497ea686787b53253db0a95299c39e705010d6dbbb769e7dfc11`
   - `dependency-scan-results` sha256:`d40438700007dcff521d2e6e12a986a52ad5aba75dd0deb178a5f02c91d62b9b`
+- Added late-window status refresh to living docs (`PR4448_whats_next.md`, `PR4448_session_diagram.mmd`) with commit `68cc14e` checkpoint and branch gate status snapshot.
 
 ### Fixed (S996-security-quality-batch2 — 2026-05-13T18:30Z)
 - Cherry-picked S995 batch-1 code fixes onto `0D_base_` (commit `d787c17`).

@@ -20,6 +20,7 @@
 - ✅ `pytest -q tests/distributed/test_distributed_enhanced.py -k "accelerate_available or gpu_available"`
 - ✅ `pytest -x --tb=short` resumed and progressed to >19% after fixing the identified first-failure
 - ✅ `git diff --name-only --diff-filter=U` (no merge conflicts)
+- ✅ Late-window checkpoint: remediation commit `68cc14e` pushed; branch checks re-running
 
 ### Immediate Follow-up
 1. Continue full-suite `pytest -x` from latest checkpoint to next first failure.

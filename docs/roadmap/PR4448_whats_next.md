@@ -46,6 +46,10 @@
 11. Ingested fresh security artifacts from run `25820306851`:
    - `dependency-scan-results` sha256:`d40438700007dcff521d2e6e12a986a52ad5aba75dd0deb178a5f02c91d62b9b`
    - `sbom-reports` sha256:`ae98976bc715497ea686787b53253db0a95299c39e705010d6dbbb769e7dfc11`
+12. Late-window checkpoint:
+   - S997 remediation commit pushed: `68cc14e`.
+   - Local validation is green for all touched code paths.
+   - Branch checks are re-running with multiple `action_required` gates pending workflow policy handling.
 
 ### Remaining for next continuation window
 
