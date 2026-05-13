@@ -32,6 +32,10 @@ on:
         required: false
         default: ""
 
+permissions:
+  contents: read
+  checks: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

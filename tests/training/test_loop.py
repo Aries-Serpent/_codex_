@@ -255,7 +255,7 @@ class TestBatchProcessing:
         assert len(batches) == expected_batches
 
         # Check last batch
-        last_start, last_end = batches[-1]
+        _last_start, last_end = batches[-1]
         assert last_end == dataset_size
 
     def test_gradient_accumulation(self):

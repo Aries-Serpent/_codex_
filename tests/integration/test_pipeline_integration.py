@@ -66,7 +66,7 @@ class TestRAGIndexingQueryPipeline:
 
     def test_document_ingestion(self, pipeline_workspace, sample_documents):
         """Test document ingestion into pipeline."""
-        docs_dir, documents = sample_documents
+        docs_dir, _documents = sample_documents
         doc_files = list(docs_dir.glob("*.json"))
 
         assert len(doc_files) == 5
@@ -80,7 +80,7 @@ class TestRAGIndexingQueryPipeline:
 
     def test_index_creation(self, pipeline_workspace, sample_documents):
         """Test index creation from documents."""
-        docs_dir, documents = sample_documents
+        docs_dir, _documents = sample_documents
         index_dir = pipeline_workspace / "index"
 
         # Simulate index building
@@ -105,7 +105,7 @@ class TestRAGIndexingQueryPipeline:
 
     def test_embedding_generation(self, pipeline_workspace, sample_documents):
         """Test embedding generation for documents."""
-        docs_dir, documents = sample_documents
+        _docs_dir, documents = sample_documents
 
         embeddings = {}
         for doc in documents:
@@ -136,7 +136,7 @@ class TestRAGIndexingQueryPipeline:
 
     def test_similarity_search(self, pipeline_workspace, sample_documents):
         """Test similarity search in index."""
-        docs_dir, documents = sample_documents
+        _docs_dir, documents = sample_documents
 
         # Create mock index
         index = []
@@ -185,7 +185,7 @@ class TestRAGIndexingQueryPipeline:
 
     def test_metadata_filtering(self, pipeline_workspace, sample_documents):
         """Test metadata-based filtering."""
-        docs_dir, documents = sample_documents
+        _docs_dir, documents = sample_documents
 
         # Filter by category
         ml_docs = [d for d in documents if d["metadata"].get("category") == "ml"]
@@ -199,7 +199,7 @@ class TestRAGIndexingQueryPipeline:
     @pytest.mark.slow
     def test_end_to_end_rag_pipeline(self, pipeline_workspace, sample_documents):
         """Test complete RAG pipeline: ingest → index → query → result."""
-        docs_dir, documents = sample_documents
+        docs_dir, _documents = sample_documents
 
         # Step 1: Ingest documents
         doc_count = len(list(docs_dir.glob("*.json")))

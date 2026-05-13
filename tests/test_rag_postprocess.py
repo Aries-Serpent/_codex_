@@ -214,7 +214,7 @@ def test_postprocess_output_with_redaction():
     output = "Email: user@example.com"
     rules = [{"pattern": r"\S+@\S+\.\S+", "replacement": "[EMAIL]"}]
 
-    processed, evidence = postprocess_output(
+    processed, _evidence = postprocess_output(
         output=output,
         redaction_rules=rules,
         include_citations=False
@@ -229,7 +229,7 @@ def test_postprocess_output_no_citations():
     output = "Response text"
     docs = [{"content": "Context", "score": 0.9, "metadata": {"source_id": "doc1"}}]
 
-    processed, evidence = postprocess_output(
+    processed, _evidence = postprocess_output(
         output=output,
         retrieved_docs=docs,
         include_citations=False
@@ -310,7 +310,7 @@ def test_postprocess_output_multiple_redaction_rules():
         {"pattern": r"\d{3}-\d{2}-\d{4}", "replacement": "[SSN]"}
     ]
 
-    processed, evidence = postprocess_output(
+    processed, _evidence = postprocess_output(
         output=output,
         redaction_rules=rules,
         include_citations=False
@@ -328,7 +328,7 @@ def test_postprocess_output_preserves_content():
     """Test that post-processing preserves non-redacted content"""
     output = "The quick brown fox jumps over the lazy dog."
 
-    processed, evidence = postprocess_output(
+    processed, _evidence = postprocess_output(
         output=output,
         include_citations=False
     )

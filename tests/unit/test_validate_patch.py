@@ -76,7 +76,7 @@ class TestValidatePatch:
 
     def test_insufficient_context_warns(self, script_path):
         """Patch with <3 context lines should warn but pass."""
-        exit_code, output = self.run_validator(script_path, INSUFFICIENT_CONTEXT_PATCH)
+        _exit_code, output = self.run_validator(script_path, INSUFFICIENT_CONTEXT_PATCH)
         # May warn but should eventually pass (git apply might accept it)
         assert "WARN" in output or "warning" in output.lower()
 
@@ -102,7 +102,7 @@ class TestValidatePatch:
 
     def test_git_apply_check_integration(self, script_path):
         """Validator should use git apply --check for final validation."""
-        exit_code, output = self.run_validator(script_path, VALID_PATCH_CONTENT)
+        _exit_code, output = self.run_validator(script_path, VALID_PATCH_CONTENT)
         # Look for evidence of git apply check
         assert "git apply" in output or "validated" in output.lower()
 

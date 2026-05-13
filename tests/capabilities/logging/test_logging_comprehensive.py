@@ -312,21 +312,21 @@ class TestPIIScrubbing:
     def test_scrub_email(self):
         """Scrub email addresses."""
         text = "Contact: john.doe@example.com for help"
-        scrubbed, found = scrub_pii(text)
+        scrubbed, _found = scrub_pii(text)
         assert "[EMAIL]" in scrubbed
         assert "john.doe@example.com" not in scrubbed
 
     def test_scrub_phone(self):
         """Scrub phone numbers."""
         text = "Call 123-456-7890 for support"
-        scrubbed, found = scrub_pii(text)
+        scrubbed, _found = scrub_pii(text)
         assert "[PHONE]" in scrubbed
         assert "123-456-7890" not in scrubbed
 
     def test_scrub_ip(self):
         """Scrub IP addresses."""
         text = "Client IP: 192.168.1.100"
-        scrubbed, found = scrub_pii(text)
+        scrubbed, _found = scrub_pii(text)
         assert "[IP]" in scrubbed
         assert "192.168.1.100" not in scrubbed
 

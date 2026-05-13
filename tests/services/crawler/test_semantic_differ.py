@@ -656,7 +656,7 @@ class TestSemanticDiffer:
             "compute_semantic_similarity",
             return_value=0.99
         ):
-            should_resync, diff_result = differ_with_embeddings.should_resync(
+            should_resync, _diff_result = differ_with_embeddings.should_resync(
                 "old", "new"
             )
 
@@ -670,7 +670,7 @@ class TestSemanticDiffer:
             "compute_semantic_similarity",
             return_value=0.70
         ):
-            should_resync, diff_result = differ_with_embeddings.should_resync(
+            should_resync, _diff_result = differ_with_embeddings.should_resync(
                 "old", "new"
             )
 

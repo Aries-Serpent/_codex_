@@ -43,7 +43,7 @@ def test_json_companion_written(tmp_path):
             "found_patterns": [],
         }
     ]
-    md, js = runner.render_template(
+    _md, js = runner.render_template(
         cfg,
         {
             "timestamp": "x",

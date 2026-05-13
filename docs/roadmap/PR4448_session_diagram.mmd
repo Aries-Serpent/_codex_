@@ -24,21 +24,157 @@ flowchart TD
 
     I --> J["📝 Pattern 25 commit\nCHANGELOG + ACCOUNTABILITY\nfinal session commit"]
 
-    J --> K["🏁 Session S994 End\nMerge-readiness: 100/100 ✅\nbandit config=0 · ruff=0"]
+    J --> K["🏁 S994 End\nbandit config=0 · ruff=0"]
+
+    K --> L["🔴 PR #4450 CI failures\nrun 25819004497\n6 failed jobs / 4 shards"]
+
+    L --> M1["✅ S998: Cherry-pick PR #4451\ncodex.__init__ github submodule\nsystem_metrics warning→debug\naccelerate_init_guard hardened\npatch.object fix"]
+
+    L --> M2["✅ S998: Fix _EDGE_RE regex\ncli_knowledge.py labelled nodes\nedge_count 1→2 resolved"]
+
+    L --> M3["✅ S998: sqlite pool isolation\n_close_all() at test start\nfixes shard flakiness"]
+
+    M1 & M2 & M3 --> N["📝 Pattern 25 commit\nCHANGELOG + ACCOUNTABILITY\nliving docs refreshed"]
+
+    N --> O["🏁 Session S998 End\nruff=0 · 54 tests pass\nPR #4450 CI push"]
 
     style A fill:#2d6a4f,color:#fff
-    style K fill:#2d6a4f,color:#fff
+    style K fill:#4a4e69,color:#fff
+    style O fill:#2d6a4f,color:#fff
     style C fill:#d62828,color:#fff
     style D fill:#d62828,color:#fff
     style E fill:#d62828,color:#fff
+    style L fill:#d62828,color:#fff
     style C1 fill:#1b4332,color:#fff
     style D1 fill:#1b4332,color:#fff
     style E1 fill:#1b4332,color:#fff
     style E2 fill:#1b4332,color:#fff
+    style M1 fill:#1b4332,color:#fff
+    style M2 fill:#1b4332,color:#fff
+    style M3 fill:#1b4332,color:#fff
     style F1 fill:#457b9d,color:#fff
     style F2 fill:#457b9d,color:#fff
     style G fill:#4a4e69,color:#fff
     style H fill:#4a4e69,color:#fff
     style I fill:#4a4e69,color:#fff
     style J fill:#4a4e69,color:#fff
+    style N fill:#4a4e69,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1003_A["🏁 Session S1003 Start\n2026-05-13T21:26Z\nPR #4450 · 0D_base_"] --> S1003_B["📋 Load CODEBASE_AGENCY_POLICY\nPR title: alerts < 25 → 0\nInventory: ~127 open (May-12)"]
+
+    S1003_B --> S1003_C["🔴 py/unused-local-variable\n41 alerts in tests/\nall post-RUF059 src/ sweep"]
+    S1003_C --> S1003_C1["✅ ruff --unsafe-fixes tests/\n198 auto-fixed + 4 manual\n= 202 RUF059 resolved"]
+
+    S1003_B --> S1003_D["🔴 py/import-and-import-from\ntest_logging_utils.py:13\nduplicate logging_utils path"]
+    S1003_D --> S1003_D1["✅ Consolidated to src.logging_utils\nimport path unified"]
+
+    S1003_B --> S1003_E["🔴 py/ineffectual-statement\nembeddings.py:46,49\nProtocol docstring-only bodies"]
+    S1003_E --> S1003_E1["✅ Added ... to Protocol\nmethod bodies"]
+
+    S1003_B --> S1003_F["🔴 py/uninitialized-local-variable\ntest_peft_utils.py:29\nimport after inner function"]
+    S1003_F --> S1003_F1["✅ Moved import block\nbefore load_bundle_or_skip()"]
+
+    S1003_B --> S1003_G["🔴 actions/missing-workflow-permissions\n21 workflows without top-level\npermissions: block"]
+    S1003_G --> S1003_G1["✅ Added permissions: block\nto all 21 workflows\nleast-privilege scoped"]
+
+    S1003_B --> S1003_H["🔴 actions/unpinned-tag\n24 unpinned @vN references\nacross 15 workflows"]
+    S1003_H --> S1003_H1["✅ Pinned 24 actions to SHA\ncheckout/setup-node/labeler\ngithub-script/cache/pages..."]
+
+    S1003_C1 & S1003_D1 & S1003_E1 & S1003_F1 & S1003_G1 & S1003_H1 --> S1003_I["📝 Pattern 25\nCHANGELOG + ACCOUNTABILITY\nLiving docs refreshed"]
+
+    S1003_I --> S1003_J["🏁 Session S1003 End\nruff=0 · YAML valid · sync OK\n~66 alerts fixed\nEst. remaining: ~38→target <25"]
+
+    style S1003_A fill:#2d6a4f,color:#fff
+    style S1003_J fill:#2d6a4f,color:#fff
+    style S1003_B fill:#4a4e69,color:#fff
+    style S1003_I fill:#4a4e69,color:#fff
+    style S1003_C fill:#d62828,color:#fff
+    style S1003_D fill:#d62828,color:#fff
+    style S1003_E fill:#d62828,color:#fff
+    style S1003_F fill:#d62828,color:#fff
+    style S1003_G fill:#d62828,color:#fff
+    style S1003_H fill:#d62828,color:#fff
+    style S1003_C1 fill:#1b4332,color:#fff
+    style S1003_D1 fill:#1b4332,color:#fff
+    style S1003_E1 fill:#1b4332,color:#fff
+    style S1003_F1 fill:#1b4332,color:#fff
+    style S1003_G1 fill:#1b4332,color:#fff
+    style S1003_H1 fill:#1b4332,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1003c_A["🔄 S1003-hotfix-c\n2026-05-13T22:00Z"] --> S1003c_B["❌ actionlint SC1039\ncodeql-alert-fetcher.yml\n2 indented PY heredocs"]
+    S1003c_B --> S1003c_C["✅ Replaced <<'PY' heredocs\nwith python3 -c inline\nYAML + actionlint both OK"]
+    S1003c_C --> S1003c_D["📊 CI Status @ 78bbaae7\n21+ ✅ · 0 ❌ · 7 running\nCodeQL scan in-progress"]
+    S1003c_D --> S1003c_E["📝 Wrap-up\nCHANGELOG + ACCOUNTABILITY\nLiving docs + follow-up prompt"]
+
+    style S1003c_A fill:#4a4e69,color:#fff
+    style S1003c_B fill:#d62828,color:#fff
+    style S1003c_C fill:#1b4332,color:#fff
+    style S1003c_D fill:#457b9d,color:#fff
+    style S1003c_E fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1003f_A["🔄 S1003-cont-followup\n2026-05-13T23:10Z"] --> S1003f_B["❌ actionlint failure\ncodeql-alert-fetcher.yml if: expression\ninline # comment caused lexer error"]
+    S1003f_B --> S1003f_C["✅ moved pragma comment to separate line\nactionlint run passes"]
+    S1003f_C --> S1003f_D["❌ resilient_validation shards 1-4 failed\nUnable to resolve actions/cache/save SHA"]
+    S1003f_D --> S1003f_E["✅ fixed cache/save pin\n→ 5a3ec84eff668545956fd18022155c47e93e2684"]
+    S1003f_E --> S1003f_F["📦 Artifact refresh ingested\nrun 25830909557\nSBOM 326/0 · pip-audit 2 CVEs"]
+    S1003f_F --> S1003f_G["🏁 Followup checkpoint\nCHANGELOG + ACCOUNTABILITY + living docs updated"]
+
+    style S1003f_A fill:#4a4e69,color:#fff
+    style S1003f_B fill:#d62828,color:#fff
+    style S1003f_C fill:#1b4332,color:#fff
+    style S1003f_D fill:#d62828,color:#fff
+    style S1003f_E fill:#1b4332,color:#fff
+    style S1003f_F fill:#457b9d,color:#fff
+    style S1003f_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1003w_A["🔄 S1003-wrap\n2026-05-13T23:25Z\nPR #4450 · commit 591eb66"] --> S1003w_B["📊 CI Status\n99/100 Merge-Ready\n56/57 checks passing"]
+    S1003w_B --> S1003w_C["⚠️ Secrets Baseline Enforcer\ntransient failure\nlocal scan clean ✅"]
+    S1003w_B --> S1003w_D["⚠️ Shards 1-4\ncontinue-on-error:true\nnon-blocking ✅"]
+    S1003w_C & S1003w_D --> S1003w_E["✅ Local validation\nruff=0 · mypy 120≤122\nsync_tracked clean"]
+    S1003w_E --> S1003w_F["📝 Living docs updated\nwhats_next.md\nsession_diagram.mmd"]
+    S1003w_F --> S1003w_G["📝 CHANGELOG + ACCOUNTABILITY\nS1003-wrap entry\n2026-05-13T23:25Z"]
+    S1003w_G --> S1003w_H["🎯 Tailored continuation prompt\n< 25 alerts → merge\nthen → 0 alerts post-merge"]
+    S1003w_H --> S1003w_I["🏁 Session S1003-wrap End\nNext: confirm alert count\nfix residuals → merge"]
+
+    style S1003w_A fill:#4a4e69,color:#fff
+    style S1003w_B fill:#457b9d,color:#fff
+    style S1003w_C fill:#f4a261,color:#000
+    style S1003w_D fill:#f4a261,color:#000
+    style S1003w_E fill:#1b4332,color:#fff
+    style S1003w_F fill:#1b4332,color:#fff
+    style S1003w_G fill:#1b4332,color:#fff
+    style S1003w_H fill:#2d6a4f,color:#fff
+    style S1003w_I fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1003x_A["🔍 S1003-final\n2026-05-13T23:44Z\nPR #4450 · commit 674432d"] --> S1003x_B["📋 Full PR-Wide Audit\n5/5 code-review threads resolved\nAll comment_new replied"]
+    S1003x_B --> S1003x_C["📊 CI on 18ac31d\n22 ✅ success · 0 ❌ failure\n3 ⚠️ pre-existing startup_failure\n4 ⏳ in-progress"]
+    S1003x_B --> S1003x_D["✅ Local Validation\nruff=0 · mypy 120≤122\nsync_tracked clean\nactionlint ✅ (via CI)"]
+    S1003x_C & S1003x_D --> S1003x_E["🔎 Residuals Identified\nexamples/mcp-cache-warm.yml:142\ngithub-script@v9 unpinned (1 alert)"]
+    S1003x_E --> S1003x_F["🎯 Merge Readiness\n99/100 ✅ (CI dimensions)\n⚠️ Alert gate: ~55 open\nTarget: < 25 to merge"]
+    S1003x_F --> S1003x_G["📝 Docs + CHANGELOG + ACCOUNTABILITY\nS1003-final entry\nTailored continuation prompt updated"]
+    S1003x_G --> S1003x_H["🏁 S1003-final End\nNext: pin github-script@v9\nverify count < 25 → MERGE"]
+
+    style S1003x_A fill:#4a4e69,color:#fff
+    style S1003x_B fill:#457b9d,color:#fff
+    style S1003x_C fill:#457b9d,color:#fff
+    style S1003x_D fill:#1b4332,color:#fff
+    style S1003x_E fill:#f4a261,color:#000
+    style S1003x_F fill:#457b9d,color:#fff
+    style S1003x_G fill:#1b4332,color:#fff
+    style S1003x_H fill:#2d6a4f,color:#fff
 ```

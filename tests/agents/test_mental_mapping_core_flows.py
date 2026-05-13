@@ -97,7 +97,7 @@ class TestMentalMappingCoreFlows:
 
     def test_think_through_problem_hypothesis_generation(self, mental_map):
         """Test hypothesis generation during problem thinking."""
-        problem_node, reasoning_steps = mental_map.think_through_problem(
+        _, _ = mental_map.think_through_problem(
             problem="Database query timeout", context={"symptoms": "slow response"}
         )
 
@@ -109,7 +109,7 @@ class TestMentalMappingCoreFlows:
 
     def test_think_through_problem_evidence_gathering(self, mental_map):
         """Test evidence gathering during thinking."""
-        problem_node, reasoning_steps = mental_map.think_through_problem(
+        _problem_node, reasoning_steps = mental_map.think_through_problem(
             problem="System instability issue", context={"logs_available": True}
         )
 
@@ -469,7 +469,7 @@ class TestMentalMappingCoreFlows:
 
     def test_think_through_empty_problem(self, mental_map):
         """Test thinking through empty problem."""
-        problem_node, reasoning_steps = mental_map.think_through_problem(problem="")
+        problem_node, _reasoning_steps = mental_map.think_through_problem(problem="")
 
         # Should handle gracefully
         assert problem_node is not None

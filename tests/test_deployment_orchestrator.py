@@ -158,7 +158,7 @@ class TestDeploymentOrchestrator:
         mock_result.stderr = ""
         mock_run.return_value = mock_result
 
-        exit_code, stdout, stderr = orchestrator.run_command(["echo", "test"])
+        exit_code, stdout, _stderr = orchestrator.run_command(["echo", "test"])
 
         assert exit_code == 0
         assert stdout == "output"

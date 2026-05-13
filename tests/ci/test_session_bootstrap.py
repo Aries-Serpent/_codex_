@@ -49,7 +49,7 @@ class TestExtractUrls:
         text = "See https://github.com/Aries-Serpent/_codex_/pull/3615 for details"
         urls = extract_urls(text)
         assert len(urls) == 1
-        url, kind, repo, ref = urls[0]
+        _url, kind, repo, ref = urls[0]
         assert kind == "pr"
         assert repo == "Aries-Serpent/_codex_"
         assert ref == "3615"
@@ -58,7 +58,7 @@ class TestExtractUrls:
         text = "Related to https://github.com/Aries-Serpent/_codex_/issues/100"
         urls = extract_urls(text)
         assert len(urls) == 1
-        url, kind, repo, ref = urls[0]
+        _url, kind, repo, ref = urls[0]
         assert kind == "issue"
         assert repo == "Aries-Serpent/_codex_"
         assert ref == "100"
@@ -67,7 +67,7 @@ class TestExtractUrls:
         text = "Run: https://github.com/Aries-Serpent/_codex_/actions/runs/23215268849"
         urls = extract_urls(text)
         assert len(urls) == 1
-        url, kind, repo, ref = urls[0]
+        _url, kind, _repo, ref = urls[0]
         assert kind == "run"
         assert ref == "23215268849"
 

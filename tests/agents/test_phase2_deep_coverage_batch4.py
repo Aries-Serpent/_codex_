@@ -359,7 +359,7 @@ class TestPhase2_QuantumOperatorAlgebra:
         """Test operator eigendecomposition"""
         # Hermitian operator
         H = np.array([[1, 0], [0, -1]])  # Pauli Z
-        eigenvalues, eigenvectors = np.linalg.eig(H)
+        eigenvalues, _eigenvectors = np.linalg.eig(H)
         assert len(eigenvalues) == 2
         # Eigenvalues should be ±1
         assert set(np.round(eigenvalues).astype(int)) == {-1, 1}
@@ -466,7 +466,7 @@ class TestPhase2_ConservationLaws:
         if trajectory:
             # Energy should be approximately conserved
             initial_E = evolver.harmonic_hamiltonian(q=1.0, p=0.0, omega=1.0)
-            final_q, final_p, final_t = trajectory[-1]
+            final_q, final_p, _final_t = trajectory[-1]
             final_E = evolver.harmonic_hamiltonian(q=final_q, p=final_p, omega=1.0)
             # Allow some numerical error
             assert abs(initial_E - final_E) < 0.5  # May have some drift

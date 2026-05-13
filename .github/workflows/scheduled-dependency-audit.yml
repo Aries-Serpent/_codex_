@@ -21,6 +21,10 @@ env:
   ALLOW_MULTIARCH: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.enable_multiarch == 'true') && 'true' || 'false' }}
 
 
+permissions:
+  contents: read
+  security-events: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

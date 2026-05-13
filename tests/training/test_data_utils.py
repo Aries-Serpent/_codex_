@@ -172,11 +172,11 @@ class TestSplitDataset:
 
             # First call with 20 items
             items1 = list(range(20))
-            train1, val1 = split_dataset(items1, train_ratio=0.8, seed=42, cache_path=cache_path)
+            train1, _val1 = split_dataset(items1, train_ratio=0.8, seed=42, cache_path=cache_path)
 
             # Second call with different length - cache should be invalidated
             items2 = list(range(30))
-            train2, val2 = split_dataset(items2, train_ratio=0.8, seed=42, cache_path=cache_path)
+            train2, _val2 = split_dataset(items2, train_ratio=0.8, seed=42, cache_path=cache_path)
 
             assert len(train1) == 16
             assert len(train2) == 24  # New split, not from cache

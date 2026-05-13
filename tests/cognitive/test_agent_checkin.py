@@ -334,19 +334,19 @@ class TestResponseDetection:
     def test_detects_q1_by_label(self):
         """'Q1' in maintainer comment should mark Q1 as answered."""
         comments = [self._make_comment("mbaetiong", "Q1: I prefer option (b)")]
-        answered, unanswered = _run_detection(comments)
+        answered, _unanswered = _run_detection(comments)
         assert any("Q1" in a for a in answered)
 
     def test_detects_q1_by_keyword(self):
         """detect-secrets keyword should also mark Q1 as answered."""
         comments = [self._make_comment("mbaetiong", "Let's use detect-secrets exclusion patterns")]
-        answered, unanswered = _run_detection(comments)
+        answered, _unanswered = _run_detection(comments)
         assert any("Q1" in a for a in answered)
 
     def test_detects_q2_by_keyword(self):
         """'rag' keyword in maintainer response marks Q2 as answered."""
         comments = [self._make_comment("mbaetiong", "We should add a rag coverage delta gate")]
-        answered, unanswered = _run_detection(comments)
+        answered, _unanswered = _run_detection(comments)
         assert any("Q2" in a for a in answered)
 
     def test_bot_comments_not_counted(self):
@@ -359,7 +359,7 @@ class TestResponseDetection:
     def test_copilot_bot_comments_not_counted(self):
         """copilot-swe-agent[bot] comments should NOT count as responses."""
         comments = [self._make_comment("copilot-swe-agent[bot]", "Q1 Q2 Q3 detect-secrets rag")]
-        answered, unanswered = _run_detection(comments)
+        answered, _unanswered = _run_detection(comments)
         assert len(answered) == 0
 
     def test_all_unanswered_when_no_comments(self):

@@ -1,115 +1,43 @@
-# 🎯 PR Follow-Up Tasks - #4448
+# 🎯 PR #4448 Follow-up — Security+Quality Remediation Sprint (S995 continuation)
 
-**PR**: #4448 - PR #4448  
-**Branch**: `0D_base_`  
-**Author**: @mbaetiong  
-**Date**: 2026-05-13  
-**Commit**: `6bb314df08364084ef9b319cef4c4573674d7f18`  
-**Status**: 🔄 ACTIVE
+**Branch:** `0D_base_`  
+**Status:** 🔄 ACTIVE — time-box continuation required
+**Last updated:** 2026-05-13T17:40Z
 
----
+## ✅ Completed in this window
 
-## 📋 PREVIOUS SESSION SUMMARY
+- Fixed `codex.github` lazy-module export regression (`src/codex/__init__.py`).
+- Fixed JSON CLI stderr-noise contract by lowering optional dependency import logs to debug (`src/codex_ml/monitoring/system_metrics.py`).
+- Fixed accelerate availability probe crash on malformed stubs (`src/training/accelerate_init_guard.py`).
+- Fixed trend aggregation bucket key bug (`scripts/space_traversal/trend_aggregator.py`).
+- Updated living docs + planset + accountability/changelog.
 
-### Completed Work
-- [`6bb314df`] fix(ci): universal baseline sweep — sync+auto_fix [skip ci] (github-actions[bot], 2026-05-13)
-- [`fdd6f282`] Fix for Unreachable code (Statix, 2026-05-13)
-- [`4ae582f4`] Fix for Unreachable code (Statix, 2026-05-13)
+## 🔴 Immediate next actions (start here)
 
-### Files Modified
-No files modified
+1. Resume full-suite stop-on-first-failure loop:
+   ```bash
+   pytest -x
+   ```
+   Fix the next failure, rerun until green or until next time-box boundary.
 
----
+2. Re-run required validations after each fix batch:
+   ```bash
+   ruff check .
+   bandit -r src/ --configfile .bandit
+   pytest -x tests/security
+   ```
 
-## 🎯 NEXT PHASE OBJECTIVES
+3. Re-attempt CodeQL workflow dispatch once API window resets:
+   - dispatch `codeql-analysis.yml` on `0D_base_`
+   - collect resulting artifact/log evidence
+   - update `.codex/plans/security-remediation-planset.md` with results
 
-### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+4. Continue backlog concretization to 111 items:
+   - keep P1/P2/P3 totals at 37/42/32
+   - replace placeholders with concrete finding IDs + file paths + owner + status
 
-**Validation**:
-```bash
-python -m ruff check src/ tests/ --output-format=concise
-python scripts/ci/mypy_baseline.py --require-baseline
-python scripts/ci/auto_fix_common_issues.py --check-only
-python scripts/ci/sync_tracked_files.py --fix
-```
+## 📌 Guardrails for continuation
 
-### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
-
-### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
-
----
-
-## ✅ EXECUTION CHECKLIST
-
-- [ ] All Priority 1 tasks completed and validated
-- [ ] All Priority 2 tasks completed or documented
-- [ ] Priority 3 tasks reviewed and prioritized
-- [ ] All validation checks passed
-- [ ] Documentation updated
-- [ ] Self-review completed (5 passes, 0 concerns)
-
----
-
-## 🔍 MANDATORY SELF-REVIEW PROTOCOL
-
-**CRITICAL**: Perform 5 comprehensive self-review passes BEFORE concluding.
-
-### Pass 1: Code Quality & Correctness
-- [ ] All syntax errors resolved
-- [ ] No linting warnings introduced
-- [ ] Type hints correct
-- [ ] Error handling comprehensive
-- [ ] Edge cases covered
-
-### Pass 2: Testing & Validation
-- [ ] All tests passing locally
-- [ ] New tests added for new functionality
-- [ ] Test coverage maintained or improved
-- [ ] CI/CD checks passing
-
-### Pass 3: Documentation & Communication
-- [ ] Code comments added for complex logic
-- [ ] Docstrings updated
-- [ ] README reflects changes
-- [ ] CHANGELOG updated
-- [ ] Commit messages descriptive
-
-### Pass 4: Security & Safety
-- [ ] No hardcoded secrets or credentials
-- [ ] Input validation added
-- [ ] Dependencies reviewed (no vulnerabilities)
-- [ ] Security implications documented
-
-### Pass 5: Integration & Dependencies
-- [ ] No breaking changes (or properly documented)
-- [ ] Backward compatibility maintained
-- [ ] Cross-PR dependencies resolved
-- [ ] No regressions introduced
-
-**Failure Protocol**: If ANY checkpoint fails, document issue, create resolution plan, execute within current session, re-run until all checks clear. **NEVER defer** without explicit reasoning.
-
----
-
-## 🤖 COPILOT AGENT INSTRUCTIONS
-
-**When you see `@copilot continue` in PR #4448:**
-
-1. Load this prompt from `.github/copilot-prompts/active/PR-4448-followup.md`
-2. Execute Priority 1 tasks in order, validating each
-3. Then execute Priority 2 tasks
-4. Review Priority 3 tasks
-5. Update this file after each task (add ✅ for completed)
-6. Perform mandatory 5-pass self-review
-7. Post comprehensive status as PR comment
-8. Generate new continuation if work remains
-
-**Self-Review Mandate**: Perform 5 comprehensive passes. Address ALL concerns until 0 issues remain. NEVER defer work without explicit reasoning and resolution plan.
-
----
-
-**Generated**: 2026-05-13  
-**Template Version**: 2.0.0  
-**Last Updated**: 2026-05-13 13:12:59
+- Keep all edits on branch `0D_base_`.
+- Maintain Pattern 25 on every commit (`CHANGELOG.md` + `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` together).
+- Prefer smallest safe diff per first-failure item.

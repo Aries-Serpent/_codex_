@@ -9,7 +9,7 @@ import time
 import pytest
 
 from codex.auth.token_manager import (
-    SessionInfo,
+    SessionInfo,  # pragma: allowlist secret
     TokenClaims,
     TokenManager,
     TokenType,
@@ -313,7 +313,7 @@ class TestTokenManager:
     def test_get_session(self):
         """Test getting session information."""
         manager = TokenManager()
-        token, session_id = manager.generate_session_token("user123", mfa_verified=True)
+        _token, session_id = manager.generate_session_token("user123", mfa_verified=True)
 
         session = manager.get_session(session_id)
 
@@ -350,7 +350,7 @@ class TestTokenManager:
         manager = TokenManager()
 
         # Create active session
-        token1, session1 = manager.generate_session_token("user123")
+        _token1, session1 = manager.generate_session_token("user123")
 
         # Create expired session
         now = time.time()

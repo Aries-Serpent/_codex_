@@ -163,7 +163,7 @@ class TestEndToEndRAGPipeline:
         ]
 
         # Post-process
-        processed, evidence = postprocess_output(
+        processed, _evidence = postprocess_output(
             output=llm_output,
             retrieved_docs=retrieved_docs,
             include_citations=True

@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 import src.logging_utils as logging_utils_mod
-from logging_utils import (
+from src.logging_utils import (
     LoggingConfig,
     init_tensorboard,
     log_metrics,

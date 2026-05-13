@@ -67,7 +67,7 @@ class TestQueueOperations:
 
             def pop(self):
                 if self.heap:
-                    priority, _, item = heapq.heappop(self.heap)
+                    _priority, _, item = heapq.heappop(self.heap)
                     return item
                 return None
 

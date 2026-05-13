@@ -253,7 +253,7 @@ class TestEncodeLabels:
 
     def test_encode_bool_labels(self) -> None:
         """Test encoding boolean labels."""
-        ints, mapping = _encode_labels([True, False, True], "test_metric")
+        ints, _mapping = _encode_labels([True, False, True], "test_metric")
         assert ints == [1, 0, 1]
 
     def test_encode_string_labels(self) -> None:
@@ -280,7 +280,7 @@ class TestEncodeLabels:
 
     def test_encode_numeric_strings(self) -> None:
         """Test encoding numeric strings."""
-        ints, mapping = _encode_labels(["1", "2", "3"], "test_metric")
+        ints, _mapping = _encode_labels(["1", "2", "3"], "test_metric")
         assert ints == [1, 2, 3]
 
 

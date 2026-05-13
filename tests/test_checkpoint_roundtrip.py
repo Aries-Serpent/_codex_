@@ -41,7 +41,7 @@ def test_checkpoint_roundtrip_restores_states(tmp_path, use_scheduler):
             torch.rand(4),
         )
 
-    expected_py, expected_np, expected_torch = sample_sequences()
+    expected_py, expected_np, _expected_torch = sample_sequences()
 
     # Restore initial state before saving.
     random.setstate(py_state)

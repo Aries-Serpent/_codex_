@@ -116,7 +116,7 @@ class TestForceVector:
             priority=2.0,
         )
 
-        x, y = vector.get_components()
+        x, _y = vector.get_components()
 
         assert abs(x - 2.0) < 0.01
 

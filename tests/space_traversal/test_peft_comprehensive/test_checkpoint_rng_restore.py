@@ -17,7 +17,7 @@ def test_rng_restore_python_random(tmp_path: Path):
     random.seed(1337)
 
     # Save a checkpoint which snapshots RNG
-    _ck, meta = save_checkpoint(tmp_path, {"dummy": 1}, metric_value=0.0)
+    _ck, _meta = save_checkpoint(tmp_path, {"dummy": 1}, metric_value=0.0)
 
     # Generate the "expected" next value from the saved RNG state
     expected_next = random.random()

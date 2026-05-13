@@ -41,7 +41,7 @@ class TestSemanticClusterer:
 
         # Add similar statements
         id1, _ = clusterer.add_statement("The quick brown fox jumps")
-        id2, _ = clusterer.add_statement("The quick brown fox leaps")
+        _id2, _ = clusterer.add_statement("The quick brown fox leaps")
 
         # They should be in same cluster due to high similarity
         cluster = clusterer.get_cluster(id1)
@@ -175,7 +175,7 @@ class TestSlidingWindowManager:
 
         window = SlidingWindowManager()
 
-        success, warning = window.add("Test content", priority=1)
+        success, _warning = window.add("Test content", priority=1)
         assert success is True
         assert window.entry_count == 1
 
@@ -250,7 +250,7 @@ class TestHierarchicalMemory:
 
         memory = HierarchicalMemory()
 
-        success, msg = memory.store("Test content", layer=MemoryLayer.WORKING)
+        success, _msg = memory.store("Test content", layer=MemoryLayer.WORKING)
         assert success is True
 
     def test_store_all_layers(self):

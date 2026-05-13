@@ -63,7 +63,7 @@ class TestParseDependencySpec:
 
     def test_conditional_dependency(self):
         """Test parsing conditional dependency with environment marker."""
-        name, constraint, is_conditional = parse_dependency_spec(
+        name, _constraint, is_conditional = parse_dependency_spec(
             "importlib-metadata; python_version < '3.10'"
         )
         assert name == "importlib-metadata"

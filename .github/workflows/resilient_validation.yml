@@ -292,7 +292,7 @@ jobs:
 
       - name: Save test durations cache
         if: always()
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684  # v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}

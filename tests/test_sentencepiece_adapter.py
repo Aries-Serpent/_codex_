@@ -256,7 +256,7 @@ def test_train_or_load_trains_and_loads(tmp_path, monkeypatch):
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("hello", encoding="utf-8")
 
-    calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=8)
+    calls, _sp_stub = _stub_sp(monkeypatch, model, vocab_size=8)
 
     # Import adapter module/class after installing stub ensures adapter uses the stub.
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
@@ -285,7 +285,7 @@ def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("hello", encoding="utf-8")
 
-    calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=7)
+    calls, _sp_stub = _stub_sp(monkeypatch, model, vocab_size=7)
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     SentencePieceAdapter = mod.SentencePieceAdapter
 
@@ -503,7 +503,7 @@ def test_assert_vocab_size(tmp_path, monkeypatch):
     # Stubbed path
     model = tmp_path / "toy.model"
     model.write_text("model", encoding="utf-8")
-    calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=7)
+    _, _ = _stub_sp(monkeypatch, model, vocab_size=7)
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     SentencePieceAdapter = mod.SentencePieceAdapter
 

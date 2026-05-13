@@ -9,7 +9,7 @@ from unittest.mock import patch
 # The script lives in scripts/ci/ — add to path before importing
 sys.path.insert(0, str(Path(__file__).parents[1] / "scripts" / "ci"))
 
-from fast_forward_safe_files import (
+from fast_forward_safe_files import (  # pragma: allowlist secret
     _matches_any,
     classify_files,
 )
@@ -59,7 +59,7 @@ class TestClassifyFiles:
 
     def test_deny_overrides_allow(self):
         files = [".github/workflows/deploy-prod.yml"]
-        allowed, excluded, denied = classify_files(files, self._config)
+        allowed, _excluded, denied = classify_files(files, self._config)
         assert allowed == []
         assert denied == [".github/workflows/deploy-prod.yml"]
 
@@ -73,14 +73,14 @@ class TestClassifyFiles:
     def test_force_files_bypasses_allowlist(self):
         # Explicitly requested files skip the allowlist check
         files = ["src/codex/models.py"]  # not in allowlist
-        allowed, excluded, denied = classify_files(files, self._config, force_files=files)
+        allowed, excluded, _denied = classify_files(files, self._config, force_files=files)
         assert allowed == ["src/codex/models.py"]
         assert excluded == []
 
     def test_force_files_still_denied(self):
         # Even force_files cannot bypass the denylist
         files = [".github/workflows/release-v2.yml"]
-        allowed, excluded, denied = classify_files(files, self._config, force_files=files)
+        allowed, _excluded, denied = classify_files(files, self._config, force_files=files)
         assert allowed == []
         assert denied == [".github/workflows/release-v2.yml"]
 
@@ -102,7 +102,7 @@ class TestClassifyFiles:
     def test_empty_config(self):
         # With an empty allowlist, everything is excluded
         files = [".github/workflows/ci.yml"]
-        allowed, excluded, denied = classify_files(files, {})
+        allowed, excluded, _denied = classify_files(files, {})
         assert allowed == []
         assert excluded == files
 

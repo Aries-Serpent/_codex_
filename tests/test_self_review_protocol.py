@@ -225,7 +225,7 @@ def test_check_convergence_success():
     protocol.complete_cycle(["Fixed issues"])
 
     # Should converge
-    converged, reason = protocol.check_convergence()
+    converged, _reason = protocol.check_convergence()
     assert converged
 
 
@@ -443,5 +443,5 @@ def test_multiple_cycles_convergence():
     assert protocol.calculate_convergence() == 1.0
 
     # Should converge now
-    converged, reason = protocol.check_convergence()
+    converged, _reason = protocol.check_convergence()
     assert converged

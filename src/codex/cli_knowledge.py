@@ -71,7 +71,11 @@ app = typer.Typer(help="Codex Knowledge (ingest → normalize → chunk → buil
 # _NODE_RE: matches a Mermaid node declaration, e.g. 'A["label"]' or 'MyNode[text]'
 _NODE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*\[")
 # _EDGE_RE: matches directed edge syntax, e.g. 'A-->B', 'A-.->B', 'A==>B' (requires '>' arrowhead)
-_EDGE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*[-.=o]*>\s*([A-Za-z][A-Za-z0-9_]*)")
+# An optional node label '[...]' between source ID and the arrow is skipped.
+# Limitation: escaped brackets inside labels (e.g. A["text \] bracket"]) are not supported.
+_EDGE_RE = re.compile(
+    r"^\s*([A-Za-z][A-Za-z0-9_]*)(?:\[[^\]]*\])?\s*[-.=o]*>\s*([A-Za-z][A-Za-z0-9_]*)"
+)
 _QUANTUM_VARIABLES = ("N", "E", "V", "T")
 _QUANTUM_SYMBOL_RE = re.compile(r"\b([NEVT])\b")
 

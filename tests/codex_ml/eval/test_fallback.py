@@ -105,7 +105,7 @@ class TestEncodeTokens:
         """Test extending vocabulary with new tokens."""
         vocab = {"hello": 0}
         sequences = ["hello world"]
-        encoded, result_vocab = _encode_tokens(sequences, vocab)
+        _encoded, result_vocab = _encode_tokens(sequences, vocab)
 
         assert len(result_vocab) == 2
         assert result_vocab["hello"] == 0
@@ -122,7 +122,7 @@ class TestEncodeTokens:
     def test_single_token_sequences(self) -> None:
         """Test sequences with single tokens."""
         sequences = ["a", "b", "c"]
-        encoded, vocab = _encode_tokens(sequences)
+        encoded, _vocab = _encode_tokens(sequences)
 
         assert len(encoded) == 3
         assert all(len(seq) == 1 for seq in encoded)

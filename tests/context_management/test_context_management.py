@@ -261,10 +261,10 @@ class TestSemanticDeduplicator:
 
         dedup.add_statement("First statement")
 
-        is_dup, original = dedup.is_duplicate("First statement")
+        is_dup, _original = dedup.is_duplicate("First statement")
         assert is_dup is True
 
-        is_dup, original = dedup.is_duplicate("Different statement")
+        is_dup, _original = dedup.is_duplicate("Different statement")
         assert is_dup is False
 
 
@@ -522,7 +522,7 @@ class TestPriorityPruner:
             "Some regular content",
         ]
 
-        results, tokens_saved = pruner.prune_batch(texts, target_tokens=50)
+        results, _tokens_saved = pruner.prune_batch(texts, target_tokens=50)
 
         assert len(results) == len(texts)
 

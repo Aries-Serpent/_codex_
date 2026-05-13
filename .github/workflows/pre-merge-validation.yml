@@ -9,6 +9,11 @@ on:
   # Allow manual re-trigger for missed runs (e.g. after approval on new HEAD)
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

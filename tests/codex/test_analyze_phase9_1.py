@@ -134,7 +134,7 @@ def func():
     """
     return True
 '''
-        loc, sloc = _count_lines(code)
+        _loc, sloc = _count_lines(code)
 
         assert sloc == 2  # def and return only
 
@@ -152,7 +152,7 @@ def func():
     '''Single quote docstring'''
     pass
 """
-        loc, sloc = _count_lines(code)
+        _loc, sloc = _count_lines(code)
 
         assert sloc == 2  # def and pass
 

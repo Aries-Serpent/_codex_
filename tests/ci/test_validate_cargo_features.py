@@ -172,7 +172,7 @@ class TestValidateCargoFeatures:
             python = []
             extension-module = ["pyo3/extension-module"]
             """))
-        is_valid, errors = validate_cargo_features(cargo_file)
+        _is_valid, errors = validate_cargo_features(cargo_file)
         # Should have warning about python not depending on extension-module
         assert any("WARNING" in err for err in errors)
 
@@ -209,7 +209,7 @@ class TestRegexFallback:
             extension-module = ["pyo3/extension-module"]
             default = ["python"]
             """))
-        is_valid, errors = validate_cargo_features(cargo_file)
+        is_valid, _errors = validate_cargo_features(cargo_file)
         assert is_valid is True
 
     def test_regex_fallback_with_missing_feature(self, tmp_path: Path) -> None:
@@ -335,7 +335,7 @@ class TestEdgeCases:
             [features
             python = ["extension-module"]
             """))
-        is_valid, errors = validate_cargo_features(cargo_file)
+        is_valid, _errors = validate_cargo_features(cargo_file)
         assert is_valid is False
 
     def test_unicode_in_cargo_toml(self, tmp_path: Path) -> None:
@@ -350,7 +350,7 @@ class TestEdgeCases:
             python = ["extension-module"]
             extension-module = ["pyo3/extension-module"]
             """))
-        is_valid, errors = validate_cargo_features(cargo_file)
+        is_valid, _errors = validate_cargo_features(cargo_file)
         assert is_valid is True
 
     def test_multiple_feature_dependencies(self, tmp_path: Path) -> None:
@@ -367,7 +367,7 @@ class TestEdgeCases:
             pandas = []
             default = ["python"]
             """))
-        is_valid, errors = validate_cargo_features(cargo_file)
+        is_valid, _errors = validate_cargo_features(cargo_file)
         assert is_valid is True
 
 
@@ -404,7 +404,7 @@ class TestJsonModuleIntegration:
             extension-module = ["pyo3/extension-module"]
             default = ["python"]
             """))
-        is_valid, errors = validate_cargo_features(cargo_file)
+        is_valid, _errors = validate_cargo_features(cargo_file)
         assert is_valid is True
         # If we got here without NameError, the json import is working
 

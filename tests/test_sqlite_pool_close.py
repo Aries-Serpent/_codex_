@@ -10,19 +10,25 @@ def test_sqlite_pool_close(tmp_path, monkeypatch):
 
     db = tmp_path / "pool.db"
     monkeypatch.setenv("CODEX_SQLITE_POOL", "1")
+    # Clear any pool state left by earlier tests in the same process
+    sqlite_patch._close_all()
     sqlite_patch.auto_enable_from_env()
 
-    conn = sqlite3.connect(str(db))
-    conn.execute("CREATE TABLE t(x INTEGER)")
-    conn.close()
+    try:
+        conn = sqlite3.connect(str(db))
+        conn.execute("CREATE TABLE t(x INTEGER)")
+        conn.close()
 
-    assert not sqlite_patch._CONN_POOL, (  # nosec B101
-        "Connection should be removed from pool on close",
-    )
+        assert not sqlite_patch._CONN_POOL, (  # nosec B101
+            "Connection should be removed from pool on close",
+        )
 
-    conn2 = sqlite3.connect(str(db))
-    assert conn2 is not conn, "New connection should be a fresh instance"  # nosec B101
-    sqlite_patch.disable_pooling()
+        conn2 = sqlite3.connect(str(db))
+        assert conn2 is not conn, "New connection should be a fresh instance"  # nosec B101
+        conn2.close()
+    finally:
+        sqlite_patch.disable_pooling()
+        sqlite_patch._close_all()
 
 
 def test_proxy_close_handles_varied_pool_types():

@@ -123,14 +123,14 @@ class TestSessionTokenGeneration:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        token, session_id = tm.generate_session_token("user123")
+        _token, session_id = tm.generate_session_token("user123")
         assert session_id in tm._sessions
 
     def test_generate_session_token_with_mfa(self) -> None:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        token, session_id = tm.generate_session_token(
+        _token, session_id = tm.generate_session_token(
             "user123", mfa_verified=True
         )
         session = tm.get_session(session_id)
@@ -140,7 +140,7 @@ class TestSessionTokenGeneration:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        token, session_id = tm.generate_session_token(
+        _token, session_id = tm.generate_session_token(
             "user123", ip_address="192.168.1.100"
         )
         session = tm.get_session(session_id)
@@ -150,7 +150,7 @@ class TestSessionTokenGeneration:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        token, session_id = tm.generate_session_token(
+        _token, session_id = tm.generate_session_token(
             "user123", user_agent="Mozilla/5.0"
         )
         session = tm.get_session(session_id)
@@ -304,7 +304,7 @@ class TestSessionManagement:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        token, session_id = tm.generate_session_token("user123")
+        _token, session_id = tm.generate_session_token("user123")
 
         session = tm.get_session(session_id)
         assert session is not None
@@ -334,7 +334,7 @@ class TestSessionManagement:
         tm = TokenManager(secret_key="test-secret")
 
         # Create a session and make it expired
-        token, session_id = tm.generate_session_token("user123")
+        _token, session_id = tm.generate_session_token("user123")
         session = tm.get_session(session_id)
         session.last_activity = time.time() - 3600  # 1 hour ago
 

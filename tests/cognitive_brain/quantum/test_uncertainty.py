@@ -215,7 +215,7 @@ def test_optimize_test_schedule_unlimited_budget(optimizer):
             )
         )
 
-    selected, priorities = optimizer.optimize_test_schedule(tests, 1000.0, 2000.0)
+    selected, _priorities = optimizer.optimize_test_schedule(tests, 1000.0, 2000.0)
 
     # All tests should be selected with large budget
     assert len(selected) == 3
@@ -237,7 +237,7 @@ def test_optimize_test_schedule_zero_budget(optimizer):
             )
         )
 
-    selected, priorities = optimizer.optimize_test_schedule(tests, 0.0, 2000.0)
+    selected, _priorities = optimizer.optimize_test_schedule(tests, 0.0, 2000.0)
 
     # No tests should be selected with zero budget
     assert len(selected) == 0
@@ -247,7 +247,7 @@ def test_optimize_test_schedule_unknown_tests(optimizer):
     """Test schedule optimization with unknown tests."""
     tests = ["test_unknown_1", "test_unknown_2", "test_unknown_3"]
 
-    selected, priorities = optimizer.optimize_test_schedule(tests, 25.0, 2000.0)
+    selected, _priorities = optimizer.optimize_test_schedule(tests, 25.0, 2000.0)
 
     # Should handle unknown tests (default 10s each)
     assert len(selected) <= 2  # 25s budget, 10s per test
@@ -407,7 +407,7 @@ def test_integration_with_monitor():
 
         # Optimize schedule
         tests = ["test_monitored"]
-        selected, priorities = optimizer.optimize_test_schedule(tests, 10.0, 2000.0)
+        selected, _priorities = optimizer.optimize_test_schedule(tests, 10.0, 2000.0)
 
         assert len(selected) == 1
     finally:
