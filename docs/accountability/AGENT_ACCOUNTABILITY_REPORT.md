@@ -36370,3 +36370,13 @@ PR title: *"Merge 0D_base_ to main once Security and Quality Alerts are less tha
 ### Pattern Compliance
 - Pattern 25 ✅ — CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md in same commit
 - Pattern 30 ✅ — merge-readiness dimensions all green locally
+
+### Hotfix S1003-b — 2026-05-13T21:50Z — Revert Bad SHA for create-github-app-token
+
+**Root cause:** SHA `67e27b853b3f84df40a7c524b2fb7ead7067f825` mapped to `actions/create-github-app-token@v3` in the pinning sweep was invalid (not resolvable by GitHub), causing `startup_failure` in the auto-approve-workflows run.
+
+**Fix:** Reverted 4 workflow files back to `@v3` tag (unpinned). The correct v3 SHA requires an out-of-band lookup that is unavailable in the sandbox.
+
+**Files:** `auto-approve-workflows.yml`, `self-approve-pending-runs.yml`, `agent-auth-delegation.yml`, `process-variable-intents.yml`
+
+**Validation:** ruff ✅ · YAML valid ✅ · sync_tracked_files ✅

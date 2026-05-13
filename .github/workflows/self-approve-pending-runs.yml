@@ -104,7 +104,7 @@ jobs:
       # ── Token resolution: CB App (preferred) → PAT fallbacks ─────────────
       - name: "Generate Cognitive Brain App token"
         id: app-token
-        uses: actions/create-github-app-token@67e27b853b3f84df40a7c524b2fb7ead7067f825  # v3
+        uses: actions/create-github-app-token@v3
         continue-on-error: true   # gracefully falls through to PAT
         with:
           app-id: ${{ secrets._GITHUB_APP_ID }}
