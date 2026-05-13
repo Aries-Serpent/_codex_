@@ -104,7 +104,6 @@ def extract_trends(runs: list[dict]) -> dict:
 def generate_capability_row(cap_id: str, scores: list[float]) -> str:
     """Generate HTML table row for capability"""
     current_score = scores[-1]
-    _trend_text, _trend_class, _trend_symbol = calculate_trend(scores)
 
     # Calculate change from first to last
     if len(scores) >= 2:
