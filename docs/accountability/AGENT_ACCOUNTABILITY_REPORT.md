@@ -1,3 +1,23 @@
+## SESSION SUMMARY — 2026-05-13T04:19Z [S982-mfa-hardening-living-files-pr4434]
+
+**Session:** S982-mfa-hardening-living-files-pr4434 | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434
+
+### Completed
+- **MFA weak-crypto hardening**: `src/codex/auth/mfa_provider.py` now validates RFC 6238 algorithm names and defaults new secrets to `SHA256`; direct `hashlib.sha1` usage removed from HOTP/TOTP generation while explicit SHA1 compatibility remains available.
+- **Authenticator propagation**: `src/codex/auth/authenticator.py` now passes the enrolled secret’s algorithm into `verify_totp(...)`, preserving per-secret compatibility during login.
+- **MFA test coverage**: Added coverage for normalized algorithm handling, SHA1 compatibility, invalid algorithm rejection, and provisioning URI algorithm metadata in `tests/auth/test_mfa_provider.py`.
+- **PR #4434 living files**: Added missing `docs/plans/PR4434_whats_next.md` and `docs/sessions/PR4434_session_diagram.md`; `verify_living_files.py --strict` now passes for PR #4434.
+- **Traceability cleanup**: Fixed lingering `S979-PR4432` summary text in `.codex/aftermath/pda_iterations.jsonl` and refreshed `PR-4434-followup.md` next-phase tasks.
+
+### Validation
+- ✅ `python -m pytest tests/auth/test_mfa_provider.py tests/auth/test_authenticator.py tests/api/test_auth_mfa_expiry.py`
+- ✅ `python -m ruff check src/codex/auth/mfa_provider.py src/codex/auth/authenticator.py tests/auth/test_mfa_provider.py`
+- ✅ `python scripts/ci/verify_living_files.py --pr-number 4434 --strict`
+- ✅ `python scripts/ci/sync_tracked_files.py --fix`
+- ✅ `python scripts/ci/mypy_baseline.py --require-baseline`
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T03:35Z [S981-code-review-fixes-pr4434]
 
 **Session:** S981-code-review-fixes-pr4434 | **Branch:** `copilot/verify-codeql-alerts-and-sweep` | **PR:** #4434

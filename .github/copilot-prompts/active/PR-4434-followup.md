@@ -27,7 +27,9 @@
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Confirm PR CodeQL scan no longer reports the MFA weak-crypto finding after S982 lands
+- [ ] Continue remaining `py/undefined-export` / `py/weak-cryptographic-algorithm` sweep items
+- [ ] Re-run `python scripts/ci/verify_living_files.py --pr-number 4434 --strict` before final merge
 
 **Validation**:
 ```bash
@@ -38,10 +40,11 @@ python scripts/ci/sync_tracked_files.py --fix
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Verify `tests/auth/test_mfa_provider.py`, `tests/auth/test_authenticator.py`, and `tests/api/test_auth_mfa_expiry.py` stay green on CI
+- [ ] Keep Pattern 25/30 green after any future automated `[skip ci]` commits
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Evaluate whether older enrolled MFA secrets need a migration path or explicit SHA1 compatibility documentation
 
 ---
 

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S982 — MFA TOTP hardening + PR4434 living files)
+- **`src/codex/auth/mfa_provider.py`**: Reworked TOTP hash selection to use validated RFC 6238 algorithm names (`SHA1` / `SHA256` / `SHA512`) via normalized lookup instead of direct `hashlib.sha1`; new MFA secrets now default to `SHA256` while explicit SHA1 compatibility remains available for existing enrollments.
+- **`src/codex/auth/authenticator.py`**: MFA login verification now passes the stored secret algorithm into `verify_totp(...)`, so per-secret algorithm selection is honored end-to-end.
+- **MFA tests**: Expanded `tests/auth/test_mfa_provider.py` coverage for default `SHA256`, SHA1 compatibility, invalid algorithm rejection, and provisioning URI algorithm metadata.
+- **Living-file compliance (PR #4434)**: Added missing `docs/plans/PR4434_whats_next.md` and `docs/sessions/PR4434_session_diagram.md`; `python scripts/ci/verify_living_files.py --pr-number 4434 --strict` now passes.
+- **Traceability cleanup**: Corrected lingering `S979-PR4432` summary text in `.codex/aftermath/pda_iterations.jsonl`; refreshed PR #4434 follow-up priorities for the next CodeQL sweep step.
+
 ### Fixed (S981 — Code review fixes: PDA PR number, session context truncation, followup files)
 - **PDA entry PR number**: Fixed `.codex/aftermath/pda_iterations.jsonl` S979 entry — was `pr_number: 4432`, corrected to `pr_number: 4434`; also fixed `session` and `pattern_id` fields from `pr4432`/`PR4432` to `pr4434`/`PR4434`
 - **Session context truncation**: Fixed truncated commit message in `.codex/session_context_latest.md` — `fix(codeql): replace os.popen with datetime...` was cut off; restored full message
