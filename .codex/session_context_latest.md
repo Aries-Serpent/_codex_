@@ -1,10 +1,10 @@
-# Session Context — 2026-05-13T06:08:28Z
+# Session Context — 2026-05-13T06:23:12Z
 **Branch:** `copilot/verify-codeql-alerts-and-sweep`  **PR:** #4434  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4098` (✅)
-- GraphQL remaining: `4969` (✅)
+- REST remaining: `4995` (✅)
+- GraphQL remaining: `4947` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -13,20 +13,20 @@ State: `open`  Draft: `False`  Branch: `copilot/verify-codeql-alerts-and-sweep` 
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `a0d59c18` Merge remote-tracking branch 'origin/copilot/verify-codeql-alerts-and-sweep' int — copilot-swe-agent[bot] (2026-05-13)
+- `90321a9f` fix(codeql): S990 cont — 24 B007 quick-wins; template_lint WEC; Pattern 25 — copilot-swe-agent[bot] (2026-05-13)
+- `d9dcbcc5` chore: S990 plan — Pattern 25 fix + B007 sweep + template_lint WEC — copilot-swe-agent[bot] (2026-05-13)
+- `2d922a5a` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
+- `18b7ebed` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 - `7dba625e` Merge remote-tracking branch 'origin/copilot/verify-codeql-alerts-and-sweep' int — copilot-swe-agent[bot] (2026-05-13)
 - `c785ff71` fix(codeql): S990 — _gh_api.py duplicate body removed; 21 B007 quick-wins; F401  — copilot-swe-agent[bot] (2026-05-13)
 - `c17e7d13` chore: Generate follow-up prompt for PR #4434 [skip ci] — github-actions[bot] (2026-05-13)
-- `3745b5e2` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `46568012` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `de0c6e73` fix(review): remove unused imports in fetch_codeql_alerts.py; initialize loaded_ — copilot-swe-agent[bot] (2026-05-13)
-- `d34507c8` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `624a80fd` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

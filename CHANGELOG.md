@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S991 — 84 F541 f-string placeholders; living-file hygiene; MFA tests green)
+- **`scripts/ci/fetch_security_snapshot.py`**: Fixed 84 `F541` (f-string without any placeholders) — bare `f""`, `f"---"`, and other static f-strings converted to plain strings via `ruff --select F541 --fix`. Pattern 11 violations fully cleared.
+- **Living-file verification**: `verify_living_files.py --pr-number 4434 --strict` passes — all 5 living files present and non-stale.
+- **Tracked-file hygiene**: `sync_tracked_files.py --fix` confirms CODEX_MANIFEST integrity, `.secrets.baseline`, CHANGELOG, and AGENT_ACCOUNTABILITY_REPORT all consistent.
+- **MFA tests**: `tests/auth/test_mfa_provider.py` and `tests/auth/test_authenticator.py` — all 57 tests pass ✅.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
 ### Fixed (S990 continued — 24 more B007; template_lint.yml WEC; Pattern 25)
 - **24 B007 loop-variable quick-wins** (final batch — `scripts/` now clean): `ci/session_bootstrap.py` ×4, `convert_print_to_logger.py` ×2, `phase2d_disambiguator.py`, `phase2d_targeted_fixes.py` ×3, `phase3_categorization.py`, `phase3_stage1_processor.py`, `phase3_stage2_medium_priority.py`, `phase3_stage4_archive.py`, `root_org/update_links_atomic.py`, `security/validate_security.py` ×2, `security_audit.py` ×2, `space_traversal/detectors/mcp_error_handling.py`, `space_traversal/detectors/mcp_observability.py`, `space_traversal/detectors/mcp_versioning_compat.py`, `space_traversal/trend_aggregator.py`, `validate_auth_security.py`.
 - **`scripts/ci/session_wrapup_autofix.py` `_WEC_ITEMS`**: Added `template_lint.yml` after `audit-qa-suite.yml` to match the PR template WEC section order.

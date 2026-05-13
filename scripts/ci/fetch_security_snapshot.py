@@ -549,15 +549,15 @@ def generate_context(out_dir: Path, top_n: int = 30) -> None:
 
     lines = [
         f"# Security Snapshot — `{repo_full}`",
-        f"",
+        "",
         f"> **Generated:** {now}  ",
         f"> **Run:** [{run_id}]({run_url})  ",
-        f"> **Audience:** Copilot Cloud / Coding Agents",
-        f"",
-        f"---",
-        f"",
-        f"## 🚨 Priority Action Items",
-        f"",
+        "> **Audience:** Copilot Cloud / Coding Agents",
+        "",
+        "---",
+        "",
+        "## 🚨 Priority Action Items",
+        "",
     ]
 
     has_critical = False
@@ -575,40 +575,40 @@ def generate_context(out_dir: Path, top_n: int = 30) -> None:
         lines.append(f"- ⚠️ **HIGH** — {codeql_crit} critical/error CodeQL finding(s) to remediate")
         has_critical = True
     if policy_err:
-        lines.append(f"- 📋 **INFO** — No security policy file found; create `.github/SECURITY.md`")
+        lines.append("- 📋 **INFO** — No security policy file found; create `.github/SECURITY.md`")
     if not has_critical:
         lines.append("- ✅ No critical/high priority items detected in this snapshot")
 
     if autofix_res:
         requested = [r for r in autofix_res if r.get("autofix_status") not in ("unsupported", "not_found")]
         lines += [
-            f"",
-            f"### 🤖 Copilot Autofix Status",
-            f"",
+            "",
+            "### 🤖 Copilot Autofix Status",
+            "",
             f"Autofix was requested for **{len(requested)}/{len(autofix_res)}** eligible alerts this run.",
             f"Unsupported/not-found: {len(autofix_res) - len(requested)}.",
-            f"Check the GitHub Security tab for generated fix suggestions.",
+            "Check the GitHub Security tab for generated fix suggestions.",
         ]
 
     lines += [
-        f"",
-        f"---",
-        f"",
-        f"## Security Overview Counts",
-        f"",
-        f"| Area | Open Alerts | Notes |",
-        f"|------|-------------|-------|",
+        "",
+        "---",
+        "",
+        "## Security Overview Counts",
+        "",
+        "| Area | Open Alerts | Notes |",
+        "|------|-------------|-------|",
         f"| Dependabot (vulnerabilities) | {dep_total} | {dep_critical} critical, {dep_high} high |",
         f"| CodeQL (code scanning) | {codeql_total} | See rule breakdown below |",
         f"| Secret scanning | {sec_total} | {sec_active} active/confirmed |",
         f"| Community health | {health_pct}% | Policy: {policy_path or ('NOT FOUND' if policy_err else '?')} |",
-        f"",
-        f"---",
-        f"",
-        f"## CodeQL Alerts by Rule",
-        f"",
-        f"| Rule ID | Count | Recommended Fix |",
-        f"|---------|-------|-----------------|",
+        "",
+        "---",
+        "",
+        "## CodeQL Alerts by Rule",
+        "",
+        "| Rule ID | Count | Recommended Fix |",
+        "|---------|-------|-----------------|",
     ]
 
     for rule_id, count in sorted(codeql_by_rule.items(), key=lambda kv: -kv[1]):
@@ -616,81 +616,81 @@ def generate_context(out_dir: Path, top_n: int = 30) -> None:
         lines.append(f"| `{rule_id}` | {count} | {hint} |")
 
     lines += [
-        f"",
-        f"## CodeQL Alerts by Severity",
-        f"",
-        f"| Severity | Count |",
-        f"|----------|-------|",
+        "",
+        "## CodeQL Alerts by Severity",
+        "",
+        "| Severity | Count |",
+        "|----------|-------|",
     ]
     for sev, cnt in sorted(codeql_by_sev.items(), key=lambda kv: -kv[1]):
         lines.append(f"| {sev} | {cnt} |")
 
     lines += [
-        f"",
-        f"## Dependabot by Severity & Ecosystem",
-        f"",
-        f"| Severity | Count |",
-        f"|----------|-------|",
+        "",
+        "## Dependabot by Severity & Ecosystem",
+        "",
+        "| Severity | Count |",
+        "|----------|-------|",
     ]
     for sev, cnt in sorted(dep_by_sev.items(), key=lambda kv: -kv[1]):
         lines.append(f"| {sev} | {cnt} |")
 
-    lines += [f"", f"| Ecosystem | Count |", f"|-----------|-------|"]
+    lines += ["", "| Ecosystem | Count |", "|-----------|-------|"]
     for eco, cnt in sorted(dep_summary.get("by_ecosystem", {}).items(), key=lambda kv: -kv[1]):
         lines.append(f"| {eco} | {cnt} |")
 
     sec_by_type = sec_summary.get("by_type", {})
     if sec_by_type:
-        lines += [f"", f"## Secret Scanning by Type", f"", f"| Secret Type | Count |", f"|-------------|-------|"]
+        lines += ["", "## Secret Scanning by Type", "", "| Secret Type | Count |", "|-------------|-------|"]
         for stype, cnt in list(sec_by_type.items())[:15]:
             lines.append(f"| `{stype}` | {cnt} |")
 
     lines += [
-        f"",
-        f"---",
-        f"",
-        f"## CodeQL Analysis Provenance",
-        f"",
-        f"| Field | Value |",
-        f"|-------|-------|",
+        "",
+        "---",
+        "",
+        "## CodeQL Analysis Provenance",
+        "",
+        "| Field | Value |",
+        "|-------|-------|",
         f"| Default setup state | `{setup_state}` |",
         f"| Last analysis run | {last_analysis} |",
         f"| Total recent analyses | {len(analyses) if isinstance(analyses, list) else '?'} |",
-        f"",
-        f"---",
-        f"",
-        f"## Artifact File Index",
-        f"",
-        f"| File | Contents |",
-        f"|------|---------|",
-        f"| `codeql/alerts_raw.json` | Full CodeQL alert JSON array |",
-        f"| `codeql/alerts_by_rule.md` | Alerts grouped by rule ID |",
+        "",
+        "---",
+        "",
+        "## Artifact File Index",
+        "",
+        "| File | Contents |",
+        "|------|---------|",
+        "| `codeql/alerts_raw.json` | Full CodeQL alert JSON array |",
+        "| `codeql/alerts_by_rule.md` | Alerts grouped by rule ID |",
         f"| `codeql/alerts_fixable.md` | Top-{top_n} prioritised fix list |",
-        f"| `codeql/alerts_summary.json` | Machine-readable counts |",
-        f"| `dependabot/alerts_open.json` | All open Dependabot alerts |",
-        f"| `dependabot/alerts_critical.json` | Critical + high only |",
-        f"| `dependabot/summary.json` | Counts by severity / ecosystem |",
-        f"| `secrets/alerts_open.json` | All open secret alerts |",
-        f"| `secrets/alerts_active.json` | Confirmed active secrets |",
-        f"| `secrets/summary.json` | Counts by type / validity |",
-        f"| `policy/community_profile.json` | Community health data |",
-        f"| `policy/security_policy.json` | Security policy file content |",
-        f"| `analyses/recent.json` | Last 100 code-scanning analyses |",
-        f"| `analyses/default_setup.json` | CodeQL default-setup status |",
-        f"| `autofix/results.json` | Copilot Autofix request results |",
-        f"| `autofix/state.json` | Persisted set of already-requested IDs |",
-        f"| `AGENT_SECURITY_CONTEXT.md` | This file |",
-        f"",
-        f"---",
-        f"",
-        f"## How to Use This Artifact (Copilot Agent)",
-        f"",
-        f"1. **Start here**: Read this file (`AGENT_SECURITY_CONTEXT.md`) for the full picture.",
+        "| `codeql/alerts_summary.json` | Machine-readable counts |",
+        "| `dependabot/alerts_open.json` | All open Dependabot alerts |",
+        "| `dependabot/alerts_critical.json` | Critical + high only |",
+        "| `dependabot/summary.json` | Counts by severity / ecosystem |",
+        "| `secrets/alerts_open.json` | All open secret alerts |",
+        "| `secrets/alerts_active.json` | Confirmed active secrets |",
+        "| `secrets/summary.json` | Counts by type / validity |",
+        "| `policy/community_profile.json` | Community health data |",
+        "| `policy/security_policy.json` | Security policy file content |",
+        "| `analyses/recent.json` | Last 100 code-scanning analyses |",
+        "| `analyses/default_setup.json` | CodeQL default-setup status |",
+        "| `autofix/results.json` | Copilot Autofix request results |",
+        "| `autofix/state.json` | Persisted set of already-requested IDs |",
+        "| `AGENT_SECURITY_CONTEXT.md` | This file |",
+        "",
+        "---",
+        "",
+        "## How to Use This Artifact (Copilot Agent)",
+        "",
+        "1. **Start here**: Read this file (`AGENT_SECURITY_CONTEXT.md`) for the full picture.",
         f"2. **CodeQL fixes**: Open `codeql/alerts_fixable.md` for the top-{top_n} prioritised fixes.",
-        f"3. **Dependabot**: Open `dependabot/alerts_critical.json` for packages to upgrade.",
-        f"4. **Secrets**: Open `secrets/alerts_active.json` — revoke all active secrets immediately.",
-        f"5. **Autofix**: Check GitHub Security tab for AI-generated fix suggestions from Copilot.",
-        f"6. **Rule reference**: See `docs/reference/SECURITY_API_REFERENCE.md` for per-rule fix patterns.",
+        "3. **Dependabot**: Open `dependabot/alerts_critical.json` for packages to upgrade.",
+        "4. **Secrets**: Open `secrets/alerts_active.json` — revoke all active secrets immediately.",
+        "5. **Autofix**: Check GitHub Security tab for AI-generated fix suggestions from Copilot.",
+        "6. **Rule reference**: See `docs/reference/SECURITY_API_REFERENCE.md` for per-rule fix patterns.",
     ]
 
     dest = out_dir / "AGENT_SECURITY_CONTEXT.md"
