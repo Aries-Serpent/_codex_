@@ -5,6 +5,7 @@
 ### Completed
 - ✅ Investigated CI rescue comment for commit `a907483` and pulled failing actionlint job logs (run `25829886372`).
 - ✅ Fixed workflow parse failure in `.github/workflows/codeql-alert-fetcher.yml` by moving inline `# pragma: allowlist secret` out of a YAML `if:` expression.
+- ✅ Triaged failing resilient-validation shards (run `25831467184`) and fixed invalid `actions/cache/save` pin in `.github/workflows/resilient_validation.yml` (`1bd1e32...a7c6158d` → `5a3ec84...`), which caused setup-time resolution failures.
 - ✅ Validated latest requested artifacts from run `25830909557`:
   - `sbom-reports` (`6983316152`): 326 components, 0 vulnerabilities
   - `dependency-scan-results` (`6983306318`): 2 CVEs (`diskcache`, `sqlitedict`)

@@ -118,3 +118,21 @@ flowchart TD
     style S1003c_D fill:#457b9d,color:#fff
     style S1003c_E fill:#2d6a4f,color:#fff
 ```
+
+```mermaid
+flowchart TD
+    S1003f_A["🔄 S1003-cont-followup\n2026-05-13T23:10Z"] --> S1003f_B["❌ actionlint failure\ncodeql-alert-fetcher.yml if: expression\ninline # comment caused lexer error"]
+    S1003f_B --> S1003f_C["✅ moved pragma comment to separate line\nactionlint run passes"]
+    S1003f_C --> S1003f_D["❌ resilient_validation shards 1-4 failed\nUnable to resolve actions/cache/save SHA"]
+    S1003f_D --> S1003f_E["✅ fixed cache/save pin\n→ 5a3ec84eff668545956fd18022155c47e93e2684"]
+    S1003f_E --> S1003f_F["📦 Artifact refresh ingested\nrun 25830909557\nSBOM 326/0 · pip-audit 2 CVEs"]
+    S1003f_F --> S1003f_G["🏁 Followup checkpoint\nCHANGELOG + ACCOUNTABILITY + living docs updated"]
+
+    style S1003f_A fill:#4a4e69,color:#fff
+    style S1003f_B fill:#d62828,color:#fff
+    style S1003f_C fill:#1b4332,color:#fff
+    style S1003f_D fill:#d62828,color:#fff
+    style S1003f_E fill:#1b4332,color:#fff
+    style S1003f_F fill:#457b9d,color:#fff
+    style S1003f_G fill:#2d6a4f,color:#fff
+```

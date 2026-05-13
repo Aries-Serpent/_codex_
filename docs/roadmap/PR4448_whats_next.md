@@ -1,8 +1,20 @@
 # PR #4450 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S1003-cont · 2026-05-13T22:13Z  
+**Session:** S1003-cont-followup · 2026-05-13T23:10Z  
 **Objective:** Reduce CodeQL Security + Quality alerts < 25 (path to 0)
+
+---
+
+## 📊 Session S1003-cont-followup CI Results (commit `c2feb64`)
+
+| Metric | Value |
+|--------|-------|
+| ✅ actionlint — Workflow Compliance | Passed (run `25831467223`) |
+| ✅ Secrets Baseline Enforcer | Passed after rerun (run `25831467219`) |
+| 🔧 Fixed this sub-session | `codeql-alert-fetcher.yml`: moved inline `# pragma` out of `if:` expression to fix actionlint lexer error |
+| 🔧 Fixed this sub-session | `resilient_validation.yml`: corrected `actions/cache/save` SHA to valid pinned commit (`5a3ec84...`) |
+| 📦 Latest artifacts ingested | run `25830909557` → SBOM: 326 components / 0 vulns, pip-audit: 2 CVEs (`diskcache`, `sqlitedict`) |
 
 ---
 
@@ -93,7 +105,8 @@ Load: .codex/CODEBASE_AGENCY_POLICY.md before starting
 | 2026-05-13 S1003 | **~59** | **-61** | Bulk Python quality + Actions permissions/pinning |
 | 2026-05-13 S1003-c | ~58 | -1 | actionlint SC1039 heredoc |
 | 2026-05-13 S1003-cont | **~55** | **-3** | create-github-app-token SHA, Protocol `...`, unused tuple unpacks |
+| 2026-05-13 S1003-cont-followup | ~55 | 0 | actionlint lexer fix + resilient_validation cache-save SHA fix + artifact refresh |
 | **Target** | **< 25** | — | Remaining: github-script@v9 SHA, untrusted-checkout ×2, doc-test-scribe syntax, residual Python |
 
 ---
-_Living doc — last updated S1003-cont · 2026-05-13T22:13Z_
+_Living doc — last updated S1003-cont-followup · 2026-05-13T23:10Z_

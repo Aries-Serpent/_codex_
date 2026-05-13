@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (S1003-cont-followup — PR #4450 — 2026-05-13T23:05Z)
 - **`codeql-alert-fetcher.yml` actionlint failure** — moved `# pragma: allowlist secret` out of the multi-line `if:` expression (line 375) into its own YAML comment line. This fixes actionlint parse error `unexpected character '#' while lexing expression`.
+- **`resilient_validation.yml` cache-save pin** — replaced invalid `actions/cache/save@1bd1e32...a7c6158d` with valid pinned SHA `5a3ec84eff668545956fd18022155c47e93e2684` (`# v5`), fixing shard setup failures (`Unable to resolve action actions/cache/save@...`).
 - **Validation + artifact refresh check** — verified actionlint passes on all workflows and validated latest security artifacts from run `25830909557` (`sbom-reports`: 326 components/0 vulns; `dependency-scan-results`: 2 known CVEs with no fix versions).
 
 ### Fixed (S1003-cont — PR #4450 — 2026-05-13T22:13Z)
