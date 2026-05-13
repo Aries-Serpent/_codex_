@@ -1,12 +1,24 @@
 # PR #4448 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S994 · 2026-05-13  
-**Merge-readiness:** 100/100 ✅
+**Session:** S998 · 2026-05-13  
+**Merge-readiness:** PR #4450 in progress
 
 ---
 
-## ✅ Completed This Session
+## ✅ Completed This Session (S998)
+
+| # | Task | Commit |
+|---|------|--------|
+| 1 | Cherry-pick `src/codex/__init__.py` — add `"github"` to `_SUBMODULES` | current |
+| 2 | Cherry-pick `src/codex_ml/monitoring/system_metrics.py` — warning→debug | current |
+| 3 | Cherry-pick `src/training/accelerate_init_guard.py` — harden `is_accelerate_available()` | current |
+| 4 | Cherry-pick `tests/branch_coverage/test_branch_coverage_cli.py` — patch.object fix | current |
+| 5 | Fix `_EDGE_RE` regex in `cli_knowledge.py` for labelled source nodes | current |
+| 6 | Fix sqlite pool test isolation (`_close_all()` at test start) | current |
+| 7 | Addressed CI run 25819004497 root-cause failures | current |
+
+## ✅ Completed Previous Sessions
 
 | # | Task | Commit |
 |---|------|--------|
@@ -20,12 +32,20 @@
 | 8 | Pattern 12 line-length fix `envelope.py:187` (upstream sweep `afc4e95`) | afc4e95 |
 | 9 | Ingested new security artifacts (run 25809211083) — CVE status unchanged | — |
 | 10 | Revised comprehensive security planset with Batches 5/6 + artifact refresh | — |
+| 11 | Fixed RUF059 regression in `trend_aggregator.py` + test timeout in `pattern_recorder.py` | 172f46e |
 
 ---
 
 ## 🔲 Next Session Priorities
 
-### Priority 1 — Batch 5: CVE Monitoring
+### Priority 1 — Verify CI Green
+```
+@copilot CTEP Mode: ON
+Check run on PR #4450 after latest push.
+All shard failures from run 25819004497 should be resolved.
+```
+
+### Priority 2 — Batch 5: CVE Monitoring
 ```
 @copilot CTEP Mode: ON
 
@@ -41,11 +61,11 @@ Monitor diskcache / sqlitedict for fix version:
 If a fix version appears → bump dep in pyproject.toml + remove CVE comments.
 ```
 
-### Priority 2 — Batch 6: Post-merge rescan
+### Priority 3 — Batch 6: Post-merge rescan
 ```
 @copilot CTEP Mode: ON
 
-After PR #4448 merges to main:
+After PR #4450 merges to main:
 1. Dispatch security-scanning-suite.yml on main
 2. Download dependency-scan-results + sbom-reports artifacts
 3. Verify pip-audit: 0 actionable CVEs

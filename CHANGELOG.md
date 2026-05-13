@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S998-cherry-pick-PR4451+CI-burns — PR #4450 — 2026-05-13T20:00Z)
+- **`src/codex/__init__.py`** — Added `"github"` to `_SUBMODULES` lazy registry, restoring dotted-path resolution for `codex.github` (MCP poster session-number tests).
+- **`src/codex_ml/monitoring/system_metrics.py`** — Downgraded optional-dependency import log from `warning` → `debug` for `psutil` and `pynvml`; added `exc_info=True` so stack traces appear only at DEBUG level, not in JSON CLI output.
+- **`src/training/accelerate_init_guard.py`** — Hardened `is_accelerate_available()` with a cached spec probe, `ValueError`/`ImportError` guard on `find_spec`, and a guarded retry import; function cannot return `True` while `Accelerator` is unavailable.
+- **`src/codex/cli_knowledge.py`** — Fixed `_EDGE_RE` regex to skip optional node labels (e.g. `A["Start"] --> B`) between source ID and arrow; `test_sync_mermaid_map_generates_searchable_datablobs` edge_count `1→2` fix.
+- **`tests/test_sqlite_pool.py`** / **`tests/test_sqlite_pool_close.py`** — Added `_close_all()` at test start to clear pool state left by earlier tests in the same process shard, eliminating `len(_CONN_POOL) != 6` flakiness in CI.
+- **`tests/branch_coverage/test_branch_coverage_cli.py`** — Replaced `patch("pathlib.Path.exists")` with `patch.object(Path, "exists")` for Python 3.12 compatibility (string-target form no longer intercepts instance-method calls).
+
 ### Fixed (iterative-self-healing — PR #4450 — 2026-05-13T18:28Z)
 - **`scripts/space_traversal/trend_aggregator.py`** — Fixed RUF059 regression: loop variable was renamed to `_cap_id` but body still referenced `cap_id` (stale value from prior loop), causing `trending_up`/`trending_down`/`stable` lists to contain incorrect capability IDs. `test_trending_detection` now passes.
 - **`tests/ci/test_pattern_recorder.py`** — Fixed `test_run_all_patterns_respects_skip_env` timeout (>60 s) by mocking all 33 pattern methods instead of only 2, preventing real subprocess/network calls during skip-env verification.

@@ -1,3 +1,36 @@
+## SESSION SUMMARY — 2026-05-13T20:00Z [S998-cherry-pick-PR4451+CI-burns]
+
+**Session:** S998 | **Branch:** `0D_base_` | **PR:** #4450 | **Comment:** 4444722325
+
+### Completed
+- ✅ **Reviewed failing Resilient Validation Suite run 25819004497** (6 failed jobs, 4 shards) via GitHub MCP tools.
+- ✅ **Cherry-picked all code-ready fixes from PR #4451** (`copilot/security-quality-remediation-sprint`):
+  - `src/codex/__init__.py` — added `"github"` to `_SUBMODULES` lazy registry.
+  - `src/codex_ml/monitoring/system_metrics.py` — `warning→debug` + `exc_info=True` for `psutil`/`pynvml` optional deps.
+  - `src/training/accelerate_init_guard.py` — hardened `is_accelerate_available()` against malformed stub modules.
+  - `tests/branch_coverage/test_branch_coverage_cli.py` — `patch()→patch.object()` for Python 3.12 compatibility.
+- ✅ **Fixed `_EDGE_RE` regex** in `src/codex/cli_knowledge.py`: now matches source nodes with inline labels (`A["Start"] --> B`); fixes `edge_count 1→2` in `test_sync_mermaid_map_generates_searchable_datablobs`.
+- ✅ **Fixed sqlite pool test isolation** in `tests/test_sqlite_pool.py` and `tests/test_sqlite_pool_close.py`: added `_close_all()` at test start to prevent stale pool entries from earlier shard tests causing `len(_CONN_POOL) != 6` flakiness.
+- ✅ `ruff check` on all changed files → 0 issues ✅.
+- ✅ All targeted tests pass locally (54 passed, 1 skipped).
+- ✅ Pattern 25: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in this commit.
+
+### Fixes Applied (run 25819004497 root-cause analysis)
+| Test | Root Cause | Fix |
+|------|-----------|-----|
+| `test_sync_mermaid_map_generates_searchable_datablobs` | `_EDGE_RE` didn't match `A["label"] --> B` syntax | Regex updated with optional `(?:\[[^\]]*\])?` group |
+| `test_sqlite_pool_allows_concurrent_writes` | Stale pool entries from other shard tests | `_close_all()` at test start |
+| `test_sqlite_pool_close` | Same stale pool isolation issue | `_close_all()` at test start |
+| `test_cli_config_exists/missing_branch` | `patch("pathlib.Path.exists")` broken on Python 3.12 | `patch.object(Path, "exists")` |
+| Various `codex.logging` / `codex.chat` CI attr errors | Test ordering / shard isolation (pass locally) | Underlying hardening via `codex.__init__` + accelerate guard |
+
+### Remaining (queued for next session)
+- 🔲 Batch 5: Monitor diskcache/sqlitedict for fix version release.
+- 🔲 Batch 6: Re-run security-scanning-suite after merge to main.
+- 🔲 Verify CI green on next run with these fixes.
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T16:09Z [S994-security-batch3]
 
 **Session:** S994-security-batch3 | **Branch:** `0D_base_` | **PR:** #4448

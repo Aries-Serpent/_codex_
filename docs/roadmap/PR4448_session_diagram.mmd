@@ -24,21 +24,39 @@ flowchart TD
 
     I --> J["📝 Pattern 25 commit\nCHANGELOG + ACCOUNTABILITY\nfinal session commit"]
 
-    J --> K["🏁 Session S994 End\nMerge-readiness: 100/100 ✅\nbandit config=0 · ruff=0"]
+    J --> K["🏁 S994 End\nbandit config=0 · ruff=0"]
+
+    K --> L["🔴 PR #4450 CI failures\nrun 25819004497\n6 failed jobs / 4 shards"]
+
+    L --> M1["✅ S998: Cherry-pick PR #4451\ncodex.__init__ github submodule\nsystem_metrics warning→debug\naccelerate_init_guard hardened\npatch.object fix"]
+
+    L --> M2["✅ S998: Fix _EDGE_RE regex\ncli_knowledge.py labelled nodes\nedge_count 1→2 resolved"]
+
+    L --> M3["✅ S998: sqlite pool isolation\n_close_all() at test start\nfixes shard flakiness"]
+
+    M1 & M2 & M3 --> N["📝 Pattern 25 commit\nCHANGELOG + ACCOUNTABILITY\nliving docs refreshed"]
+
+    N --> O["🏁 Session S998 End\nruff=0 · 54 tests pass\nPR #4450 CI push"]
 
     style A fill:#2d6a4f,color:#fff
-    style K fill:#2d6a4f,color:#fff
+    style K fill:#4a4e69,color:#fff
+    style O fill:#2d6a4f,color:#fff
     style C fill:#d62828,color:#fff
     style D fill:#d62828,color:#fff
     style E fill:#d62828,color:#fff
+    style L fill:#d62828,color:#fff
     style C1 fill:#1b4332,color:#fff
     style D1 fill:#1b4332,color:#fff
     style E1 fill:#1b4332,color:#fff
     style E2 fill:#1b4332,color:#fff
+    style M1 fill:#1b4332,color:#fff
+    style M2 fill:#1b4332,color:#fff
+    style M3 fill:#1b4332,color:#fff
     style F1 fill:#457b9d,color:#fff
     style F2 fill:#457b9d,color:#fff
     style G fill:#4a4e69,color:#fff
     style H fill:#4a4e69,color:#fff
     style I fill:#4a4e69,color:#fff
     style J fill:#4a4e69,color:#fff
+    style N fill:#4a4e69,color:#fff
 ```
