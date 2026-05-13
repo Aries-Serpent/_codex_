@@ -1,10 +1,10 @@
-# Session Context — 2026-05-13T22:07:32Z
+# Session Context — 2026-05-13T22:37:07Z
 **Branch:** `0D_base_`  **PR:** #4450  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4287` (✅)
-- GraphQL remaining: `4992` (✅)
+- REST remaining: `3936` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `0D_base_` (2026-05-13)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `0D_base_` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `a9074837` fix(codeql): SHA-pin create-github-app-token, remove Protocol ellipsis, fix unus — copilot-swe-agent[bot] (2026-05-13)
+- `ad5b904d` chore: begin S1003 continuation — CTEP mode ON — copilot-swe-agent[bot] (2026-05-13)
 - `6c754698` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
 - `30b5aad0` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
 - `4cf0a769` fix(ci): actionlint SC1039 heredoc + ruff fixes + wrap-up docs — copilot-swe-agent[bot] (2026-05-13)
 - `5f1afdfe` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-05-13)
 - `78bbaae7` fix(ci): revert bad create-github-app-token SHA + update living docs — copilot-swe-agent[bot] (2026-05-13)
 - `36217ab3` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-13)
-- `0d78bc56` fix(codeql): bulk alert remediation — RUF059 tests, permissions, SHA-pinning, Pr — copilot-swe-agent[bot] (2026-05-13)
-- `8ffc4dbf` chore: initial plan for CI rescue and comment resolution — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
