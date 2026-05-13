@@ -1,10 +1,10 @@
-# Session Context — 2026-05-12T23:48:35Z
+# Session Context — 2026-05-13T00:05:08Z
 **Branch:** `0D_base_`  **PR:** #4427  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4997` (✅)
-- GraphQL remaining: `4981` (✅)
+- REST remaining: `4822` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `0D_base_` (2026-05-13)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `0D_base_` (2026-05-13)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-12)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-12)
 - **PR Comment Review Gate** — `failure` on `main` (2026-05-12)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-12)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-12)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-12)
 
 ## 📝 Recent Commits
+- `62852fe2` fix(ci): suppress detect-secrets false positives + final subprocess CodeQL fix — copilot-swe-agent[bot] (2026-05-13)
+- `fdc600da` chore: establish S973 plan — fix detect-secrets baseline + subprocess CodeQL — copilot-swe-agent[bot] (2026-05-12)
 - `48547b1d` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
 - `f69ea582` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
 - `51bb5b99` fix(ci): Pattern 25 compliance — update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT  — copilot-swe-agent[bot] (2026-05-12)
 - `07bdd422` chore: establish S972 plan — address comment review gate blocking items — copilot-swe-agent[bot] (2026-05-12)
 - `6dc412c3` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
 - `d9a51a4b` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-12)
-- `767de2b5` fix(codeql): resolve subprocess self-import alert in src/codex/utils/subprocess. — copilot-swe-agent[bot] (2026-05-12)
-- `d90043b1` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-12)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
