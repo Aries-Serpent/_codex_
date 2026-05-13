@@ -9,7 +9,7 @@ import time
 import pytest
 
 from codex.auth.token_manager import (
-    SessionInfo,
+    SessionInfo, # pragma: allowlist secret
     TokenClaims,
     TokenManager,
     TokenType,
