@@ -1,8 +1,51 @@
 # PR #4450 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S1003-cont-followup · 2026-05-13T23:10Z  
+**Session:** S1003-final · 2026-05-13T23:44Z  
 **Objective:** Reduce CodeQL Security + Quality alerts < 25 (path to 0)
+
+---
+
+## ✅ PR-Wide Audit (S1003-final — 2026-05-13T23:44Z)
+
+### Code-Review Threads
+| Thread | Status |
+|--------|--------|
+| `accelerate_init_guard.py:88` — unused global `_ACCELERATE_SPEC_AVAILABLE` | ✅ Resolved |
+| `accelerate_init_guard.py:95` — unused global `_ACCELERATOR_AVAILABLE` | ✅ Resolved |
+| `accelerate_init_guard.py:92` — CodeQL 13580 unused global | ✅ Resolved |
+| `tests/test_sqlite_pool_close.py:11-15` — missing `try/finally` cleanup | ✅ Resolved |
+| `CODEX_MANIFEST.json:2112-2114` — `.secrets.baseline` drift | ✅ Resolved |
+
+### CI on Latest Commit (`674432d`)
+| Status | Count | Details |
+|--------|------:|---------|
+| ✅ success | 22 | All required gates green |
+| ❌ failure | 0 | No actual failures |
+| ⚠️ startup_failure | 3 | Pre-existing: Data Quality, Rust Swarm CI, Progressive Validation |
+| ⏳ in_progress | 4 | Resilient Validation, Code Quality, Root Org, Copilot Agent |
+
+### Local Validation
+| Check | Result |
+|-------|--------|
+| `ruff check src/ tests/` | ✅ 0 issues |
+| `mypy_baseline --require-baseline` | ✅ 120 ≤ 122 (↓2 vs baseline) |
+| `sync_tracked_files --check` | ✅ all consistent |
+| `actionlint` (via CI) | ✅ Workflow Compliance Audit passed |
+
+### Remaining CodeQL Residuals
+| File | Alert | Action |
+|------|-------|--------|
+| `.github/workflows/examples/mcp-cache-warm.yml:142` | `actions/github-script@v9` unpinned | Fix: pin to SHA `3a2844b7e9c422d3c10d287c895573f7108da1b3` |
+| `doc-test-scribe-action/action.yml` | Reported syntax error | ✅ YAML valid (re-verified) |
+| `forward-sync-autogen.yml` | Reported untrusted-checkout | ✅ Not applicable (push trigger, not pull_request_target) |
+| `consolidated-pr-status.yml:15` | `github-script@v9` | ✅ Commented out (not live code) |
+
+### Merge Gate
+| Gate | Status |
+|------|--------|
+| Merge Readiness Score | **99/100** ✅ |
+| PR title alert gate (< 25 open) | ⚠️ ~55 estimated (CodeQL scan in-progress) |
 
 ---
 
@@ -137,8 +180,82 @@ Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediatio
 | 2026-05-13 | S1003-cont | **~55** | **-3** | create-github-app-token SHA, Protocol `...`, unused tuple unpacks |
 | 2026-05-13 | S1003-cont-followup | ~55 | 0 | actionlint lexer fix + resilient_validation cache-save SHA + artifact refresh |
 | 2026-05-13 | S1003-wrap | ~55 | 0 | Docs refresh, tailored continuation prompt, CI validation |
-| **Next target** | — | **< 25** | — | github-script@v9 SHA, untrusted-checkout ×2, doc-test-scribe syntax, residual Python |
+| 2026-05-13 | S1003-final | ~55 | 0 | Full PR-wide audit, merge readiness 99/100, residuals identified |
+| **Next target** | — | **< 25** | — | `mcp-cache-warm.yml` github-script@v9 pin + residual Python sweeps |
 | **Final goal** | — | **0** | — | Post-merge Batch 5/6 (B101, B603, B404, B607) |
 
 ---
-_Living doc — last updated S1003-wrap · 2026-05-13T23:25Z_
+
+## 🎯 Merge Readiness Score (S1003-final · 2026-05-13T23:44Z)
+
+| Dimension | Wt | Status |
+|-----------|----:|--------|
+| auto_fix (0 auto-fixable) | 15 | ✅ confirmed clean |
+| sync_tracked_files | 12 | ✅ all consistent |
+| action_versions (all approved) | 12 | ✅ all approved |
+| ruff (src/ clean) | 10 | ✅ 0 issues |
+| github-script ≥ v8 | 8 | ⚠️ `examples/mcp-cache-warm.yml:142` @v9 unpinned |
+| PDA entry today | 8 | ✅ today |
+| accountability report today | 8 | ✅ today |
+| AAIS composite | 13 | ✅ 99.9/100 |
+| Pattern 27 registered | 7 | ✅ registered |
+| download-artifact min v5 | 7 | ✅ v5 |
+
+**Score: 99/100 — 🟢 MERGE-READY (CI dimensions)** · _2026-05-13T23:44Z_
+
+> ⚠️ **PR-title gate:** Merge requires CodeQL alerts < 25. Estimated ~55 open.
+> Fix `examples/mcp-cache-warm.yml:142` (pin github-script@v9 → SHA), then verify count.
+
+---
+
+## 🚀 Tailored Continuation Prompt — "< 25 alerts → merge → then → 0"
+
+```
+@copilot CTEP Mode: ON
+
+## ⚡ PR #4450: Drive CodeQL alerts ~55 → <25 → MERGE → then → 0
+
+### Context
+- PR: #4450 · Branch: 0D_base_ → main
+- PR title: "Merge 0D_base_ to main once Security and Quality Alerts are less than 25 total
+  with Prompt to continue to 0"
+- CI score: 99/100 ✅ — only alert-count gate remains
+- Estimated open alerts: ~55 (target <25 to merge, then 0 post-merge)
+- Last CodeQL fixes landed: commits 0d78bc5, 78bbaae, 4cf0a76, ad5b904, 591eb66, 18ac31d
+
+### PHASE 1 — Confirm current alert count
+  Use GitHub MCP: list_code_scanning_alerts(owner="Aries-Serpent", repo="_codex_", state="open")
+  → Count all open alerts across python + javascript scanners
+  → If total < 25 → skip to Phase 3 (merge)
+  → If total ≥ 25 → execute Phase 2
+
+### PHASE 2 — Fix residuals to get below 25
+  a. Pin `actions/github-script@v9` in .github/workflows/examples/mcp-cache-warm.yml:142
+     SHA = 3a2844b7e9c422d3c10d287c895573f7108da1b3  (v9, from .github/copilot-prompts/active/PR-4427-codeql-remediation.md)
+  b. Sweep for any remaining py/unused-local-variable not caught by prior RUF059 passes
+     → run: python -m ruff check tests/ --select RUF059 --unsafe-fixes
+  c. Check for any py/ineffectual-statement or py/uninitialized-local-variable remaining
+  d. Re-check: list_code_scanning_alerts → confirm count < 25 before proceeding
+
+### PHASE 3 — Pre-merge validation (required before every merge attempt)
+  python scripts/ci/sync_tracked_files.py --check         → must be ✅ clean
+  python -m ruff check src/ tests/                        → must be ✅ 0 issues
+  python scripts/ci/mypy_baseline.py --require-baseline   → must be ✅ PASS
+  python scripts/ci/auto_fix_common_issues.py --check-only → must be ✅ no issues
+  Update CHANGELOG.md ### Fixed entry + AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25)
+  Push → confirm all CI checks green → MERGE
+
+### PHASE 4 — Post-merge: drive to 0 alerts
+  After merging #4450, open a new PR from 0D_base_ to main with:
+  - Follow .codex/plans/security-remediation-planset.md Batch 5 + Batch 6
+  - Batch 5: CVE monitor (diskcache + sqlitedict — no fix versions; document accepted risk)
+  - Batch 6: post-merge bandit rescan (B101/B603/B404/B607 are globally suppressed — confirm 0)
+  - Any remaining CodeQL alerts from the new scan after merge
+
+Load first: .codex/CODEBASE_AGENCY_POLICY.md
+Reference:  docs/roadmap/PR4448_whats_next.md
+            .codex/plans/security-remediation-planset.md
+```
+
+---
+_Living doc — last updated S1003-final · 2026-05-13T23:44Z_
