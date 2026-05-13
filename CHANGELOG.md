@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S979 — Post-merge CodeQL sweep: os.popen → datetime, PR #4432)
-- **CodeQL verification on main**: Confirmed CodeQL Advanced workflow (run 25774686922) ran successfully on main after PR #4427 merged — all 6 jobs ✅ (python, go, javascript-typescript, rust analyses all passing)
+- **CodeQL verification on main**: Confirmed CodeQL Advanced workflow (run 25774686922) ran successfully on main after PR #4427 merged — 4 language analyses passing ✅ (python, go, javascript-typescript, rust) plus 2 post-run jobs skipped cleanly
 - **`scripts/fix_broken_doc_links.py`**: Replaced deprecated `os.popen('date -u +%Y-%m-%dT%H:%M:%SZ')` call with `datetime.datetime.now(datetime.timezone.utc).strftime(...)` — removes CodeQL `py/shell-command-injection-from-environment` alert; adds `import datetime` to module imports
 
 ### Fixed (S978 — Pattern 25 compliance + CI Rescue on d104e11 resolved)
