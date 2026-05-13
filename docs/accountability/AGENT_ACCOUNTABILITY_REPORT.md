@@ -1,3 +1,21 @@
+## SESSION SUMMARY — 2026-05-13T20:23Z [S999-pattern25-wrap-up]
+
+**Session:** S999 | **Branch:** `0D_base_` | **PR:** #4450 | **Comments:** 4444805963, 4444826779, 4444842262
+
+### Completed
+- ✅ **Addressed S221 missed-trigger recovery** (comment 4444805963): loaded `.codex/CODEBASE_AGENCY_POLICY.md` and confirmed all failing checks addressed.
+- ✅ **Resolved Pattern 25 violation** (comment 4444826779): `AGENT_ACCOUNTABILITY_REPORT.md` was not updated in last commit `90acc23`; corrected by including both tracking files in this commit.
+- ✅ **Code-review responses committed** for `accelerate_init_guard.py` retry-guard and `_EDGE_RE` limitation comment (commit `90acc23`).
+- ✅ **PR Status: 97/100** merge-readiness (comment 4444842262) — only 2 manual-review informational warnings remain (Pattern 17 CI SHA drift, Pattern 28 sandbox guard).
+- ✅ `ruff check src/ tests/` → 0 issues ✅. All targeted tests pass locally.
+
+### Remaining
+- 🔲 Verify CI green on next push (Resilient Validation Suite all 4 shards).
+- 🔲 Batch 5: Monitor diskcache/sqlitedict for fix version release.
+- 🔲 Batch 6: Post-merge rescan after 0D_base_ → main merge.
+
+---
+
 ## SESSION SUMMARY — 2026-05-13T20:00Z [S998-cherry-pick-PR4451+CI-burns]
 
 **Session:** S998 | **Branch:** `0D_base_` | **PR:** #4450 | **Comment:** 4444722325

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S999-pattern25-wrap-up — PR #4450 — 2026-05-13T20:23Z)
+- **Pattern 25 remediation** — `AGENT_ACCOUNTABILITY_REPORT.md` was missing from commit `90acc23`; included in this commit alongside CHANGELOG to satisfy Last-Commit Accountability gate.
+- **S221 guard recovery** (comment 4444805963): confirmed `.codex/CODEBASE_AGENCY_POLICY.md` loaded and all failing checks addressed; PR status now 97/100 ✅.
+
 ### Fixed (S998-cherry-pick-PR4451+CI-burns — PR #4450 — 2026-05-13T20:00Z)
 - **`src/codex/__init__.py`** — Added `"github"` to `_SUBMODULES` lazy registry, restoring dotted-path resolution for `codex.github` (MCP poster session-number tests).
 - **`src/codex_ml/monitoring/system_metrics.py`** — Downgraded optional-dependency import log from `warning` → `debug` for `psutil` and `pynvml`; added `exc_info=True` so stack traces appear only at DEBUG level, not in JSON CLI output.
