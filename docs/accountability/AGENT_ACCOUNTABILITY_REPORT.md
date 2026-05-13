@@ -1,4 +1,19 @@
-## SESSION SUMMARY — 2026-05-13T01:30Z [S976-cherry-pick-ujson]
+## SESSION SUMMARY — 2026-05-13T02:00Z [S977-pattern25-ci-rescue-triage]
+
+**Session:** S977-pattern25-ci-rescue-triage | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- **Pattern 25 fix**: Plan commit `2c5a85c` only updated `session_context_latest.md` — violated Pattern 25. This commit adds CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md to satisfy the gate.
+- **CI Rescue triage on `8f3b62d`**: The three reported failures (`Post rescue comment`, `🔐 Enforce Secrets Baseline`, `Detect CI Issues & Post Fix Instructions`) were CI infrastructure jobs on an older commit; workflow runs on latest HEAD (`2c5a85c`) are `action_required` (pending auto-approve), not `failure`. Auto-baseline sweep `b17ac63` already addressed any secrets-baseline drift.
+
+### Validation
+- ✅ `python -m ruff check src/ tests/` → clean
+- ✅ `python scripts/ci/sync_tracked_files.py --fix` → all consistent
+- ✅ All runs on current HEAD are `action_required` (auto-approve pending), not `failure`
+
+---
+
+
 
 **Session:** S976-cherry-pick-ujson | **Branch:** `0D_base_` | **PR:** #4427
 

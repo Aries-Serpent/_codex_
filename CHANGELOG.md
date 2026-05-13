@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S977 — Pattern 25 compliance + CI Rescue on 8f3b62d resolved)
+- **Pattern 25 compliance**: Resolved Pattern 25 violation from plan commit `2c5a85c` (only had `session_context_latest.md`); added S977 entry to both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md
+- **CI Rescue on `8f3b62d` triage**: Three failing checks (`Post rescue comment`, `🔐 Enforce Secrets Baseline`, `Detect CI Issues & Post Fix Instructions`) were infrastructure jobs on an older commit; current HEAD workflow runs are `action_required` (pending auto-approve), not `failure`. Auto-baseline sweep `b17ac63` already addressed the secrets-baseline dimension.
+
 ### Fixed (S976 — cherry-pick ujson security bump from PRs #4430/#4431)
 - **`ujson` security fix (CVE/memory-leak)**: Bumped `ujson` from `5.12.0` → `5.12.1` in `requirements/lock.txt` — fixes UltraJSON memory leak in `ujson.dump()` on write failure (affects all `<= 5.12.0`). Changes absorbed from Dependabot PRs #4430 and #4431; both PRs can now be closed.
 
