@@ -184,7 +184,7 @@ def main():
     total = len(checks)
     passed = sum(1 for result, _ in checks.values() if result)
 
-    for name, (result, message) in checks.items():
+    for _name, (_result, message) in checks.items():
         print(f"{message}")
 
     print()

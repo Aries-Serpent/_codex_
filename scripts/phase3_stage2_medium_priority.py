@@ -147,7 +147,7 @@ def main():
     print("🔧 Processing medium-priority files (top 30)...")
     print()
 
-    for file_rel_path, info in medium_priority_files[:30]:
+    for file_rel_path, _info in medium_priority_files[:30]:
         file_path = REPO_ROOT / file_rel_path
         if not file_path.exists():
             continue

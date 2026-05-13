@@ -136,7 +136,7 @@ class ComplexFileDisambiguator:
             # Match by primary directory
             if 'docs' in source_parts:
                 # Find INDEX in same docs subdirectory
-                for key, path in file_index.items():
+                for _key, path in file_index.items():
                     if 'docs' in path.parts and len(path.parts) == len(source_parts):
                         if path.parts[:len(source_parts)-1] == source_parts[:len(source_parts)-1]:
                             return path

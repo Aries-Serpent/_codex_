@@ -127,6 +127,7 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("auto-fix-pr-check.yml",         "PR Auto-Fix Check",                                          False),
     ("code-quality-coverage-suite.yml", "Code Quality & Coverage Suite",                            False),
     ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",                                 False),
+    ("template_lint.yml",             "PR Template Lint",                                            False),
     ("codeql-alert-fetcher.yml",      "CodeQL Alert Fetcher (artifact for in-session review)",      False),
     # --- Documentation ---
     ("documentation-link-checker.yml", "Documentation link checker",                                False),

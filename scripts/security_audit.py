@@ -163,7 +163,7 @@ def main():
     total_vulns = 0
     fixed_vulns = 0
 
-    for package, (passed, installed, min_ver, files) in results.items():
+    for package, (passed, installed, _min_ver, _files) in results.items():
         vulns = vulnerabilities_fixed.get(package, [])
         total_vulns += len(vulns)
         if passed:

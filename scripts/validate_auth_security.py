@@ -108,7 +108,7 @@ class SecurityValidator:
         self.test("Normal Verification", result, "Valid code rejected")
 
         # Test 2: Failed attempts trigger lockout
-        for i in range(self.mfa.MAX_ATTEMPTS):
+        for _i in range(self.mfa.MAX_ATTEMPTS):
             self.mfa.verify_totp(secret.secret, "000000", user_id)
 
         locked = self.mfa._is_locked_out(user_id)

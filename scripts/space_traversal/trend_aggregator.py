@@ -198,7 +198,7 @@ def aggregate_trends(
 
     # Calculate summary stats
     all_scores = []
-    for cap_id, trend_data in capability_trends.items():
+    for _cap_id, trend_data in capability_trends.items():
         scores = [d["score"] for d in trend_data]
         all_scores.extend(scores)
 
@@ -209,7 +209,7 @@ def aggregate_trends(
     trending_down = []
     stable = []
 
-    for cap_id, trend_data in capability_trends.items():
+    for _cap_id, trend_data in capability_trends.items():
         if len(trend_data) >= 2:
             first_score = trend_data[0]["score"]
             last_score = trend_data[-1]["score"]

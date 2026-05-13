@@ -111,7 +111,7 @@ def main():
     print("🔧 Bulk cleaning low-priority/archive files...")
     print()
 
-    for file_rel_path, info in low_priority_files:
+    for file_rel_path, _info in low_priority_files:
         file_path = REPO_ROOT / file_rel_path
         if not file_path.exists():
             continue

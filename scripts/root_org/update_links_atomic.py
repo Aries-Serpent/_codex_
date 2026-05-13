@@ -80,7 +80,7 @@ class UpdateTransaction:
 
         print(f"{'[DRY RUN] ' if self.dry_run else ''}Updating {len(self.files_to_update)} files...")
 
-        for file_path, old_content, new_content in self.files_to_update:
+        for file_path, _old_content, new_content in self.files_to_update:
             if self.dry_run:
                 print(f"  Would update: {file_path}")
             else:
