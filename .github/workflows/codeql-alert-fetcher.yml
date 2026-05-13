@@ -292,10 +292,7 @@ jobs:
             local tmp
             tmp="$(mktemp)"
             if curl -sS "${HEADERS[@]}" "${endpoint}" -o "${tmp}"; then
-              python3 - "${tmp}" <<'PY'
-              import json, pathlib, sys
-              json.loads(pathlib.Path(sys.argv[1]).read_text())
-              PY
+              python3 -c "import json,pathlib,sys; json.loads(pathlib.Path(sys.argv[1]).read_text())" "${tmp}"
               mv "${tmp}" "${outfile}"
             else
               printf '%s\n' "${fallback}" > "${outfile}"
@@ -456,10 +453,7 @@ jobs:
             local tmp
             tmp="$(mktemp)"
             if curl -sS "${HEADERS[@]}" "${endpoint}" -o "${tmp}"; then
-              python3 - "${tmp}" <<'PY'
-              import json, pathlib, sys
-              json.loads(pathlib.Path(sys.argv[1]).read_text())
-              PY
+              python3 -c "import json,pathlib,sys; json.loads(pathlib.Path(sys.argv[1]).read_text())" "${tmp}"
               mv "${tmp}" "${outfile}"
             else
               printf '%s\n' "${fallback}" > "${outfile}"

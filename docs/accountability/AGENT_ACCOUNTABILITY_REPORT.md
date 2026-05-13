@@ -36380,3 +36380,11 @@ PR title: *"Merge 0D_base_ to main once Security and Quality Alerts are less tha
 **Files:** `auto-approve-workflows.yml`, `self-approve-pending-runs.yml`, `agent-auth-delegation.yml`, `process-variable-intents.yml`
 
 **Validation:** ruff ✅ · YAML valid ✅ · sync_tracked_files ✅
+
+### Hotfix S1003-c — 2026-05-13T22:00Z — actionlint SC1039 Fix (codeql-alert-fetcher.yml)
+
+**Root cause:** Two `<<'PY'` heredocs in `codeql-alert-fetcher.yml` (lines 295, 459) had their `PY` closing delimiter indented (SC1039). YAML block scalar context prevents moving the delimiter to column 0. actionlint/shellcheck reported `startup_failure` for the Workflow Compliance Audit job.
+
+**Fix:** Replaced both heredocs with inline `python3 -c "..."` calls that validate JSON without requiring a heredoc.
+
+**Validation:** YAML valid ✅ · ruff ✅ · sync_tracked_files ✅

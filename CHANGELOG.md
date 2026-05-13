@@ -16,7 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`src/training/accelerate_init_guard.py`** — combined the guarded retry import path with the later CodeQL fix so failed `accelerate` imports clear cached availability and successful repairs return the updated global state.
 - Removed accidental root-level syntax-error files `a.py` and `b.py` from the branch.
 
-### Fixed (S1003-hotfix-sha — PR #4450 — 2026-05-13T21:50Z)
+### Fixed (S1003-actionlint — PR #4450 — 2026-05-13T22:00Z)
+- **`codeql-alert-fetcher.yml`** — Replaced two indented `<<'PY'` heredocs (SC1039: indented end token incompatible with bash heredoc) with inline `python3 -c "..."` calls. Heredoc end markers must be at column-0, but YAML block scalar context prevents this. Inline `-c` approach avoids the heredoc conflict entirely.
+
+
 - **`actions/create-github-app-token` SHA rollback** — reverted wrong SHA `67e27b85...` (which caused `startup_failure` in auto-approve-workflows run) back to `@v3` tag in 4 workflow files (`auto-approve-workflows.yml`, `self-approve-pending-runs.yml`, `agent-auth-delegation.yml`, `process-variable-intents.yml`). The SHA was fabricated in the pinning sweep; the correct v3 SHA requires out-of-band lookup.
 
 

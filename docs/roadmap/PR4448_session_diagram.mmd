@@ -104,3 +104,17 @@ flowchart TD
     style S1003_G1 fill:#1b4332,color:#fff
     style S1003_H1 fill:#1b4332,color:#fff
 ```
+
+```mermaid
+flowchart TD
+    S1003c_A["🔄 S1003-hotfix-c\n2026-05-13T22:00Z"] --> S1003c_B["❌ actionlint SC1039\ncodeql-alert-fetcher.yml\n2 indented PY heredocs"]
+    S1003c_B --> S1003c_C["✅ Replaced <<'PY' heredocs\nwith python3 -c inline\nYAML + actionlint both OK"]
+    S1003c_C --> S1003c_D["📊 CI Status @ 78bbaae7\n21+ ✅ · 0 ❌ · 7 running\nCodeQL scan in-progress"]
+    S1003c_D --> S1003c_E["📝 Wrap-up\nCHANGELOG + ACCOUNTABILITY\nLiving docs + follow-up prompt"]
+
+    style S1003c_A fill:#4a4e69,color:#fff
+    style S1003c_B fill:#d62828,color:#fff
+    style S1003c_C fill:#1b4332,color:#fff
+    style S1003c_D fill:#457b9d,color:#fff
+    style S1003c_E fill:#2d6a4f,color:#fff
+```
