@@ -1,4 +1,20 @@
-## SESSION SUMMARY — 2026-05-13T00:39Z [S975-ci-stabilization]
+## SESSION SUMMARY — 2026-05-13T01:30Z [S976-cherry-pick-ujson]
+
+**Session:** S976-cherry-pick-ujson | **Branch:** `0D_base_` | **PR:** #4427
+
+### Completed
+- **Cherry-picked ujson bump from PRs #4430 and #4431**: Both are Dependabot PRs bumping `ujson` 5.12.0 → 5.12.1 in `requirements/lock.txt`. The only substantive new change was the version pin — all other differences were pre-existing code (our PR already had tempfile-hardening and workflow changes that the older Dependabot base did not).
+- **Security fix**: `ujson <= 5.12.0` has a memory leak in `ujson.dump()` on write failure; 5.12.1 patches it.
+- **PRs #4430 and #4431 closure**: Both PRs' core change is now in this PR. They can be closed once this PR is merged.
+- **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated for this session.
+
+### Validation
+- ✅ `python -m ruff check src/ tests/` → clean
+- ✅ `requirements/lock.txt` now pins `ujson==5.12.1`
+
+---
+
+
 
 **Session:** S975-ci-stabilization | **Branch:** `0D_base_` | **PR:** #4427
 

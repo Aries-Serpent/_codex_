@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S976 — cherry-pick ujson security bump from PRs #4430/#4431)
+- **`ujson` security fix (CVE/memory-leak)**: Bumped `ujson` from `5.12.0` → `5.12.1` in `requirements/lock.txt` — fixes UltraJSON memory leak in `ujson.dump()` on write failure (affects all `<= 5.12.0`). Changes absorbed from Dependabot PRs #4430 and #4431; both PRs can now be closed.
+
 ### Fixed (S975 — CI stabilization + all review threads resolved)
 - **CI stabilization**: Verified all CI checks on `e53db47` passed (success); all 17 PR review threads are resolved; `Fast Validation` and `🔐 Enforce Secrets Baseline` confirmed passing on latest HEAD
 - **Pattern 25 compliance**: Updated CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md for S975 session
