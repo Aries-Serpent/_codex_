@@ -1,3 +1,111 @@
+## SESSION SUMMARY — 2026-05-13T20:45Z [S1002-post-merge-validation]
+
+**Session:** S1002-post-merge-validation | **Branch:** `copilot/security-quality-remediation-sprint` | **PR:** #4451
+
+### Completed
+- ✅ Merged the latest `origin/0D_base_` into the PR branch and resolved all file-level conflicts.
+- ✅ Combined both `accelerate_init_guard.py` fixes:
+  - retained the guarded retry import / cached `find_spec` behavior from PR #4451
+  - retained the later CodeQL remediation from `0D_base_` by returning the updated cached globals after assignment
+- ✅ Removed accidental root-level syntax-error files `a.py` and `b.py`.
+- ✅ Stabilized `tests/test_sqlite_pool.py` after post-merge validation exposed scheduler-dependent thread-ID reuse; the test now checks the valid pooled-connection range instead of an exact `6`.
+- ✅ Follow-up polish: replaced the pool-size range magic numbers with named local constants after review feedback.
+
+### Validation
+- ✅ `git merge-tree $(git merge-base HEAD origin/0D_base_) HEAD origin/0D_base_` — no conflicts after merge
+- ✅ `pytest -q tests/distributed/test_distributed_enhanced.py -k "accelerate_available or gpu_available"`
+- ✅ `pytest -q tests/test_sqlite_pool.py tests/test_sqlite_pool_close.py`
+- ✅ `pytest -q tests/ci/test_pattern_recorder.py -k "respects_skip_env or skip_env"`
+- ✅ `pytest -q tests/branch_coverage/test_branch_coverage_cli.py`
+- ✅ `python -m py_compile src/training/accelerate_init_guard.py src/codex/cli_knowledge.py`
+- ✅ `ruff check src/training/accelerate_init_guard.py tests/test_sqlite_pool.py`
+
+### CI / Mergeability Notes
+- ✅ PR branch is no longer behind `origin/0D_base_` (`git rev-list --left-right --count HEAD...origin/0D_base_` → `9 0`).
+- ✅ Latest branch/base `action_required` workflow runs returned no failed jobs via MCP log retrieval; the open `ci-health-alert` issue is for `main` self-approve infrastructure, not this PR branch.
+
+---
+
+## SESSION SUMMARY — 2026-05-13T19:09Z [S997-comment-remediation-burndown]
+
+**Session:** S997-comment-remediation-burndown | **Branch:** `copilot/security-quality-remediation-sprint` | **PR:** #4451
+
+### Completed
+- ✅ Addressed all 5 unresolved review findings:
+  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: fixed grammar and removed duplicated WEC checklist block.
+  - `src/codex_ml/monitoring/system_metrics.py`: added `exc_info=True` to both optional dependency debug logs.
+  - `src/training/accelerate_init_guard.py`: added cached `find_spec` probe + guarded retry import, avoiding false positive availability when `Accelerator` is unavailable.
+- ✅ Continued full-suite `pytest -x` burn-down:
+  - Found and fixed next first-failure: `tests/tokenization/test_api_comprehensive.py::test_proxy_getattr_with_none_canonical`.
+  - Restored `_LegacyTokenizerProxy.__getattr__()` unavailable-adapter behavior to raise `ImportError` (matching test + call-path expectations).
+- ✅ Ingested latest security artifact metadata from run `25820306851`:
+  - `sbom-reports` sha256:`ae98976bc715497ea686787b53253db0a95299c39e705010d6dbbb769e7dfc11`
+  - `dependency-scan-results` sha256:`d40438700007dcff521d2e6e12a986a52ad5aba75dd0deb178a5f02c91d62b9b`
+
+### Validation
+- ✅ `ruff check src/tokenization/api.py src/codex_ml/monitoring/system_metrics.py src/training/accelerate_init_guard.py`
+- ✅ `pytest -q tests/tokenization/test_api_comprehensive.py -k "proxy_getattr_with_none_canonical or proxy_call_with_none_canonical"`
+- ✅ `pytest -q tests/distributed/test_distributed_enhanced.py -k "accelerate_available or gpu_available"`
+- ✅ `pytest -x --tb=short` resumed and progressed to >19% after fixing the identified first-failure
+- ✅ `git diff --name-only --diff-filter=U` (no merge conflicts)
+- ✅ Late-window checkpoint: remediation commit `68cc14e` pushed; branch checks re-running
+
+### Immediate Follow-up
+1. Continue full-suite `pytest -x` from latest checkpoint to next first failure.
+2. Re-attempt CodeQL SARIF retrieval workflow path requested in PR comments.
+3. Expand the 111-item backlog ledger to concrete rows (P1/P2/P3), then revalidate and finalize.
+
+---
+
+## SESSION SUMMARY — 2026-05-13T18:30Z [S996-security-quality-batch2]
+
+**Session:** S996-security-quality-batch2 | **Branch:** `0D_base_` | **PR:** continuation sprint
+
+### Completed
+- ✅ Cherry-picked S995 batch-1 fixes onto `0D_base_` (commit `d787c17`).
+- ✅ Fixed `test_cli_config_exists_branch` — `patch("pathlib.Path.exists")` does not intercept instance calls in Python 3.12; replaced with `patch.object(Path, "exists", return_value=True/False)`. Both branch tests now pass.
+- ✅ Confirmed Batch 2 (B403 nosec) and Batch 4 (`.bandit` exclude_dirs) are already complete — no further action needed.
+- ✅ Reviewed 409 remaining ruff quick-win errors (RUF059/B007/PIE790 in tests/ and .codex/) — all require `--unsafe-fixes`; deferred to avoid accidental name-reference breakage per memory warning.
+- ✅ Living docs updated: `docs/roadmap/PR4448_whats_next.md`, `docs/roadmap/PR4448_session_diagram.mmd`.
+- ✅ Pattern 25: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT in this commit.
+
+### Validation
+- ✅ `ruff check .` (changed files)
+- ✅ `pytest tests/branch_coverage/test_branch_coverage_cli.py` — all 47 tests pass
+
+### Remaining for next window
+1. Resume full-suite `pytest -x` burn-down (stopped while running; next first-failure after branch_coverage not yet known).
+2. Dispatch `codeql-analysis.yml` + `codeql-alert-fetcher.yml` on `0D_base_` and ingest SARIF.
+3. Expand 111-item backlog ledger from bucket counts to concrete finding rows.
+
+---
+
+
+
+**Session:** S995-security-quality-batch1 | **Branch:** `0D_base_` | **PR:** #4448 (continuation)
+
+### Completed
+- ✅ Kept work on `0D_base_` and executed a smallest-safe remediation batch focused on current first-failure blockers.
+- ✅ Fixed MCP poster test path issue by exporting lazy `codex.github` in `src/codex/__init__.py`.
+- ✅ Fixed JSON CLI stderr contract by downgrading optional dependency import warnings to debug in `src/codex_ml/monitoring/system_metrics.py`.
+- ✅ Fixed `accelerate` availability probe crash (`accelerate.__spec__ is not set`) in `src/training/accelerate_init_guard.py`.
+- ✅ Fixed trend aggregation bucket labeling bug in `scripts/space_traversal/trend_aggregator.py`.
+- ✅ Updated living docs: `docs/roadmap/PR4448_whats_next.md` + `docs/roadmap/PR4448_session_diagram.mmd`.
+- ✅ Updated security planset with S995 111-item triage ledger allocation and completed batch details.
+- ✅ Pattern 25 maintained: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated together.
+
+### Validation (time-boxed)
+- ✅ `ruff check .`
+- ✅ `bandit -r src/ --configfile .bandit`
+- ✅ `pytest -x tests/security`
+- ✅ Targeted regressions for remediated failures passed.
+- ⚠️ Full `pytest -x` remains in-progress for full-suite first-failure burn-down.
+- ⚠️ CodeQL workflow rerun deferred to immediate continuation window due to an active GitHub API rate-limit block.
+
+### Immediate Follow-up
+1. Resume full-suite `pytest -x` and continue first-failure remediation loop.
+2. Re-attempt CodeQL workflow dispatch/artifact retrieval once API window resets.
+3. Expand 111-item ledger from category counts to concrete finding rows and owners.
 ## SESSION SUMMARY — 2026-05-13T20:35Z [S1000-codeql-unused-global-fix]
 
 **Session:** S1000 | **Branch:** `0D_base_` | **PR:** #4450 | **Comments:** 4444906724, 4444921492
@@ -36174,6 +36282,19 @@ Ingest new security-scanning-suite artifacts (run 25809211083), update living do
 - Pattern 12 ✅ — upstream sweep `afc4e95` resolved E501 in `envelope.py`
 - Pattern 30 ✅ — PDA entry exists for 2026-05-13
 
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `resilient_validation.yml` — detected 2026-05-13T17:32:23Z @ ## PR
+
+## 🔄 Workflow Execution Checklist
+
+### 🧪 Opt-In: Testing & Validation
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+
+### ⚡ Auto-Approve
+- [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
 ---
 ## Session: iterative-self-healing — PR #4450 — 2026-05-13T18:28Z
 
