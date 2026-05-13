@@ -43,12 +43,15 @@ def infer_domain(path: str) -> str:
 
 def infer_intent(path: str) -> str:
     p = path.lower()
-    if "admin" in p or "runbook" in p:
-        return "admin"
-    if "consultant" in p:
-        return "consultant"
-    if "runtime" in p:
-        return "runtime"
+    keyword_map = {
+        "admin": ("admin", "runbook"),
+        "consultant": ("consultant",),
+        "runtime": ("runtime",),
+        "devops": ("devops",),
+    }
+    for intent in INTENTS:
+        if any(keyword in p for keyword in keyword_map.get(intent, (intent,))):
+            return intent
     return "admin"
 
 

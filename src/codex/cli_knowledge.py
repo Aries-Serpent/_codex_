@@ -61,6 +61,7 @@ QUANTUM_ALPHA_OPTION = typer.Option(1.0, "--alpha")
 QUANTUM_BETA_OPTION = typer.Option(0.75, "--beta")
 QUANTUM_GAMMA_OPTION = typer.Option(0.5, "--gamma")
 QUANTUM_DELTA_OPTION = typer.Option(0.05, "--delta")
+COMPRESSION_LEVEL_OPTION = typer.Option(6, "--compression-level", min=1, max=9)
 ACTOR_SYNC_OPTION = typer.Option("copilot", "--by")
 COMPRESS_OPTION = typer.Option(True, "--compress/--no-compress")
 
@@ -69,6 +70,7 @@ app = typer.Typer(help="Codex Knowledge (ingest → normalize → chunk → buil
 
 _NODE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*\[")
 _EDGE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*[-.=o]*>\s*([A-Za-z][A-Za-z0-9_]*)")
+_QUANTUM_VARIABLES = ("N", "E", "V", "T")
 
 
 def _extract_mermaid_graph(mermaid_text: str) -> tuple[list[str], list[tuple[str, str]]]:
@@ -185,6 +187,7 @@ def sync_mermaid_map_cmd(
     beta: float = QUANTUM_BETA_OPTION,
     gamma: float = QUANTUM_GAMMA_OPTION,
     delta: float = QUANTUM_DELTA_OPTION,
+    compression_level: int = COMPRESSION_LEVEL_OPTION,
     by: str = ACTOR_SYNC_OPTION,
     compress: bool = COMPRESS_OPTION,
 ) -> None:
@@ -196,7 +199,7 @@ def sync_mermaid_map_cmd(
     variables = {
         "N": len(nodes),
         "E": len(edges),
-        "V": len(set(re.findall(r"\b[A-Z]\b", mapping_doc_text))),
+        "V": sum(1 for symbol in _QUANTUM_VARIABLES if re.search(rf"\b{symbol}\b", mapping_doc_text)),
     }
     records = _build_mermaid_search_records(
         mermaid_path=mermaid,
@@ -253,7 +256,7 @@ def sync_mermaid_map_cmd(
     if compress:
         suffix = ".zst" if codec == "zstd" else ".zlib"
         comp_file = out_dir / f"mermaid_sync_datablob.json{suffix}"
-        comp_file.write_bytes(zstd_compress(blob_json.read_bytes(), level=9))
+        comp_file.write_bytes(zstd_compress(blob_json.read_bytes(), level=compression_level))
         compressed_path = comp_file.as_posix()
 
     typer.echo(
@@ -265,6 +268,7 @@ def sync_mermaid_map_cmd(
                 "search_records": records_path.as_posix(),
                 "compressed_blob": compressed_path,
                 "compression_codec": codec if compress else None,
+                "compression_level": compression_level if compress else None,
                 "quantum_coherence_score": payload["quantum_mapping"]["coherence_score"],
                 "node_count": variables["N"],
                 "edge_count": variables["E"],

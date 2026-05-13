@@ -9,6 +9,10 @@
   - Builds tokenized searchable NDJSON chunks from Mermaid + mapping-doc content
   - Emits a quantum-inspired formula payload with variable mapping (`N`, `E`, `V`, `T`) and computed coherence score
   - Writes compressed datablob output (`zstd`/`zlib` fallback) for archival retrieval workflows
+- **Review-feedback hardening**:
+  - Added configurable `--compression-level` (1–9, default 6) to avoid hardcoded max-compression cost
+  - Reworked variable-count logic to explicit quantum symbols (`N`, `E`, `V`, `T`) for deterministic mapping semantics
+  - Updated `src/codex/knowledge/build.py::infer_intent()` to use canonical `INTENTS` with keyword map for maintainability
 - **Tests**: Added `test_sync_mermaid_map_generates_searchable_datablobs` in `tests/codex/test_cli_knowledge.py`.
 - **Pattern 25**: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated.
 

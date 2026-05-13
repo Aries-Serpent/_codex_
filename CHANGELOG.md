@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (S980 — Mermaid sync CLI datablob orchestration)
 - **`codex knowledge sync-mermaid-map`** (`src/codex/cli_knowledge.py`): Added a new CLI command that orchestrates Mermaid map synchronization into a searchable data package. The command parses Mermaid nodes/edges, tokenizes combined Mermaid + mapping-doc content into NDJSON records, computes a quantum-inspired coherence formula (`ψ = α·N + β·E + γ·V + δ·T`) with explicit variable mapping, and emits JSON outputs.
 - **Compressed datablob output**: `sync-mermaid-map` now writes `mermaid_sync_datablob.json` plus an optional compressed blob (`.zst` or `.zlib` based on available codec), alongside `mermaid_sync_search.ndjsonl` for downstream retrieval/search pipelines.
+- **Validation-feedback hardening**: Added `--compression-level` CLI option (range 1–9, default 6) and tightened variable mapping to explicit quantum symbols (`N`, `E`, `V`, `T`) instead of generic uppercase-letter counting.
+- **`src/codex/knowledge/build.py` maintainability fix**: `infer_intent()` now uses the canonical `INTENTS` tuple with keyword mapping, so intent additions remain centralized.
 - **Tests**: Extended `tests/codex/test_cli_knowledge.py` with a dedicated `sync-mermaid-map` behavior test that validates artifact creation and quantum variable/equation payload fields.
 
 ### Added (S979-mermaid-logic-map — runtime logic map documentation)
