@@ -1,32 +1,32 @@
-# Session Context — 2026-05-13T03:29:48Z
+# Session Context — 2026-05-13T05:02:24Z
 **Branch:** `copilot/verify-codeql-alerts-and-sweep`  **PR:** #4434  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4064` (✅)
-- GraphQL remaining: `4971` (✅)
+- REST remaining: `4070` (✅)
+- GraphQL remaining: `4941` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4434 — fix(codeql): post-merge sweep — verify CodeQL on main, fix os.popen shell injection in fix_broken_doc_links.py
+## 📋 PR #4434 — fix(codeql): continue post-merge sweep — MFA hardening, PEFT test fix, and ujson uv.lock remediation
 State: `open`  Draft: `False`  Branch: `copilot/verify-codeql-alerts-and-sweep` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-13)
-- **Agent Token Delegation** — `failure` on `copilot/verify-codeql-alerts-and-sweep` (2026-05-13)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-13)
 
 ## 📝 Recent Commits
+- `415e983e` fix(deps): bump uv lock to ujson 5.12.1 for Dependabot advisory #256 — copilot-swe-agent[bot] (2026-05-13)
+- `20355842` fix(codeql): consume updated alert report and fix top remaining PEFT test findin — copilot-swe-agent[bot] (2026-05-13)
+- `7727a328` test(auth): add MFA SHA1 compatibility coverage and defensive digest guard — copilot-swe-agent[bot] (2026-05-13)
+- `a0c78a5b` fix(codeql): harden MFA TOTP algorithm handling and add PR4434 living docs — copilot-swe-agent[bot] (2026-05-13)
+- `57db155b` fix(review): update session_context PDA pattern_id to PR4434 (from stale PR4432) — copilot-swe-agent[bot] (2026-05-13)
+- `5dbe8536` fix(review): address code review findings — fix PDA PR#, session context, follow — copilot-swe-agent[bot] (2026-05-13)
+- `0cc8bc21` Merge remote-tracking branch 'origin/main' into copilot/verify-codeql-alerts-and — copilot-swe-agent[bot] (2026-05-13)
 - `b9dac722` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-13)
-- `6eb3cd05` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-13)
-- `44c8494b` fix(ci): Pattern 25 compliance after follow-up prompt [skip ci] commit; sync_tra — copilot-swe-agent[bot] (2026-05-13)
-- `bb751c85` chore: Generate follow-up prompt for PR #4434 [skip ci] — github-actions[bot] (2026-05-13)
-- `56e753cf` fix(codeql): update PR number to #4434 in CHANGELOG and accountability report — copilot-swe-agent[bot] (2026-05-13)
-- `bcca39a9` fix(codeql): address code review feedback - fix CHANGELOG job count accuracy — copilot-swe-agent[bot] (2026-05-13)
-- `d9896a64` fix(codeql): replace os.popen with datetime in fix_broken_doc_links.py; Pattern 25 + PDA entry — copilot-swe-agent[bot] (2026-05-13)
-- `9dc0c415` chore: init post-merge CodeQL sweep PR session — copilot-swe-agent[bot] (2026-05-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -37,9 +37,9 @@ State: `open`  Draft: `False`  Branch: `copilot/verify-codeql-alerts-and-sweep` 
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-05-12] `PDA-SUCCESS-S955-PR4425-CI-SELF-HEAL`: ?
-- [2026-05-13] `PDA-SUCCESS-S974-PR4427-CI-SELF-HEAL`: ?
-- [2026-05-13] `PDA-SUCCESS-S979-PR4434-POST-MERGE-CODEQL-SWEEP`: ?
+- [2026-05-13] `PDA-SUCCESS-S984-PR4434-MFA-REVIEW-NITS`: ?
+- [2026-05-13] `PDA-SUCCESS-S985-PR4434-CODEQL-REPORT-FOLLOWUP`: ?
+- [2026-05-13] `PDA-SUCCESS-S986-PR4434-UJSON-UV-LOCK`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
