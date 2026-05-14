@@ -45,7 +45,7 @@ try:  # pragma: no cover - optional dependency
     else:  # pragma: no cover - controlled via feature flag
         psutil = None
 except Exception as exc:  # pragma: no cover - psutil missing
-    logger.warning(
+    logger.debug(
         "psutil import failed; falling back to minimal sampler",
         exc_info=True,
         extra={
@@ -63,7 +63,7 @@ try:  # pragma: no cover - optional dependency
     else:  # pragma: no cover - GPU polling disabled via feature flag
         pynvml = None
 except Exception as exc:  # pragma: no cover - pynvml missing
-    logger.warning(
+    logger.debug(
         "pynvml import failed; GPU metrics disabled",
         exc_info=True,
         extra={
@@ -347,6 +347,7 @@ def sample_system_metrics() -> dict[str, Any]:
     ``CODEX_MONITORING_DISABLE_GPU=1`` or :func:`configure_system_metrics`.
     """
 
+    _ensure_psutil_sampler("sample_system_metrics")
     ts = _now()
     if _CONFIG.use_psutil and HAS_PSUTIL and "psutil" in globals() and psutil is not None:
         payload = _sample_cpu_psutil(ts)
@@ -653,7 +654,7 @@ def _ensure_psutil_sampler(
         return False
 
     extra: dict[str, Any] = {
-        "event": "system_metrics.psutil_missing",
+        "event": "system_metrics.dependency_missing",
         "dependency": "psutil",
         "sampler": "minimal",
         "component": context,

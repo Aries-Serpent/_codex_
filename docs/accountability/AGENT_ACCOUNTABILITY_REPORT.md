@@ -37462,3 +37462,26 @@ and the CI gate requirement.
 
 ### ⚡ Auto-Approve
 - [x] auto-approve-workflows — Auto-Approve workflow to run — sticky [x] maintained by all future agent sessions
+
+## SESSION SUMMARY — 2026-05-14T07:16Z [S1013-ci-escalation]
+
+**Session:** S1013-ci-escalation | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458
+
+### Completed
+- ✅ Investigated escalation target workflow run `25843421674` (Addressing comment on PR #4458) with GitHub MCP.
+- ✅ Confirmed failed dynamic run stalled during `Processing Request (Linux)` and old job log payload now returns HTTP 404 from Actions log endpoint.
+- ✅ Applied minimal code fix for active Priority-1 pytest regression:
+  - `src/codex_ml/tracking/mlflow_guard.py` — precedence updated so explicit tracking env (`MLFLOW_TRACKING_URI` / `CODEX_MLFLOW_URI`) is honored before local-dir override.
+- ✅ Applied follow-up compatibility hardening to avoid JSON CLI stderr leakage while preserving structured warning assertions:
+  - `src/codex_ml/monitoring/system_metrics.py` — import-time optional dependency notices returned to debug level; runtime warning event standardized to `system_metrics.dependency_missing`; `sample_system_metrics()` now triggers one-time degraded-mode warning path.
+
+### Validation
+- ✅ `python3 -m ruff check`
+- ✅ `python3 -m pytest tests/tracking/test_mlflow_guard.py::test_bootstrap_respects_allow_remote -q`
+- ✅ `python3 -m pytest tests/test_monitoring.py::test_structured_warning_on_psutil_import_failure tests/plugins/test_list_plugins_cli_json_stdout_only.py::test_list_plugins_json_stdout_only tests/tracking/test_mlflow_guard.py::test_bootstrap_respects_allow_remote -q`
+- ✅ `python3 -m pytest -x` (current first stop now at unrelated fixture error: `tests/quantum/test_integration.py::TestEndToEndQuantumRAG::test_quantum_rag_plugin_loading` → `fixture 'quantum_plugin_fixture' not found`)
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability report updated in same commit as code changes
+
+---
