@@ -1,0 +1,114 @@
+%% CI Self-Healing Flow — Aries-Serpent/_codex_
+%% Last updated: 2026-05-14 (S1003-ctep — Pattern 30 / REQ-PDA hardening)
+%% Shows the complete auto-fix pipeline from push → pre-merge-validation → merge
+
+flowchart TD
+
+    %% ── Entry: every push to 0D_base_ ───────────────────────────────────────
+    PUSH["🔀 git push\n0D_base_"]
+
+    %% ── Parallel CI triggers ─────────────────────────────────────────────────
+    PUSH --> AAD["agent-auth-delegation.yml\n(always required)"]
+    PUSH --> PMV["pre-merge-validation.yml\n(always required)"]
+    PUSH --> WEG["workflow-execution-gate.yml\n(always required)"]
+
+    %% ── Agent auth delegation: session wrapup sweep ──────────────────────────
+    subgraph AAD_FLOW ["agent-auth-delegation.yml — session wrapup auto-fix"]
+        AAD_SWA["session_wrapup_autofix.py\nauto_fix_all_missing()"]
+
+        subgraph REQS ["Compliance Steps (in order)"]
+            REQ4["REQ-4\naccountability_today\nfix_accountability_report()"]
+            REQ5["REQ-5\nchangelog_today\nfix_changelog()"]
+            REQ6["REQ-6\nsecrets.baseline sync\nfix_manifest_baseline()"]
+            REQPDA["REQ-PDA 🆕\npda_entry_today\nfix_pda_entry_today()"]
+            REQDESC["PR-DESC\nscorecard + WEC\nupdate_pr_description()\nfix_pr_body_checkboxes()"]
+        end
+
+        AAD_SWA --> REQ4
+        AAD_SWA --> REQ5
+        AAD_SWA --> REQ6
+        AAD_SWA --> REQPDA
+        AAD_SWA --> REQDESC
+    end
+
+    AAD --> AAD_SWA
+
+    %% ── Pre-merge validation: pattern pipeline ───────────────────────────────
+    subgraph PMV_FLOW ["pre-merge-validation.yml — pattern check gate"]
+        PMV_AFC["auto_fix_common_issues.py\n--check-only\n(Patterns 1–32)"]
+
+        subgraph PATTERNS ["Key Patterns"]
+            P25["Pattern 25\naccountability_today\n→ acct_fix (auto)"]
+            P27["Pattern 27\nsecrets FP scan\n→ fp_fix (auto)"]
+            P30["Pattern 30\nMerge Readiness Dims"]
+
+            subgraph P30_DIMS ["Pattern 30 dimensions"]
+                D_RUFF["ruff src/ → ruff_fix"]
+                D_SYNC["sync_tracked → sync_fix"]
+                D_ACCT["accountability_today → acct_fix"]
+                D_PDA["pda_today 🆕\n→ pda_auto\nfix_pda_entry_today()"]
+                D_P27["pattern_27 → fp_fix"]
+                D_MAN["action_versions\ngithub-script\ndownload\nAIS → manual"]
+            end
+
+            P30 --> D_RUFF
+            P30 --> D_SYNC
+            P30 --> D_ACCT
+            P30 --> D_PDA
+            P30 --> D_P27
+            P30 --> D_MAN
+        end
+
+        PMV_AFC --> P25
+        PMV_AFC --> P27
+        PMV_AFC --> P30
+    end
+
+    PMV --> PMV_AFC
+
+    %% ── PDA file ─────────────────────────────────────────────────────────────
+    PDA_FILE[(".codex/aftermath/\npda_iterations.jsonl\n(NDJSON, one entry/session)")]
+
+    REQPDA -->|"idempotent append\nif no entry today"| PDA_FILE
+    D_PDA -->|"same function\nvia dynamic import"| PDA_FILE
+
+    %% ── Merge-readiness scorecard ────────────────────────────────────────────
+    subgraph SCORECARD ["_compute_merge_readiness_score() — 10 dims, 100 pts"]
+        SC_AUTO["auto_fix (15pt)"]
+        SC_SYNC["sync_tracked (12pt)"]
+        SC_VERS["action_versions (12pt)"]
+        SC_RUFF["ruff src/ (10pt)"]
+        SC_GHS["github-script ≥v8 (8pt)"]
+        SC_PDA["PDA today (8pt) 🆕 auto"]
+        SC_ACC["accountability today (8pt)"]
+        SC_AAIS["AAIS composite (13pt)"]
+        SC_P27["Pattern 27 (7pt)"]
+        SC_DL["download-artifact v5 (7pt)"]
+    end
+
+    PMV_AFC --> SCORECARD
+
+    %% ── Gate outcome ─────────────────────────────────────────────────────────
+    SCORECARD --> GATE{"Score ≥ 98%?"}
+    GATE -->|"✅ MERGE-READY"| MERGE["🟢 PR mergeable\n(pending alert count < 25)"]
+    GATE -->|"❌ < 98%"| FAIL["🔴 pre-merge-validation\nFail step triggered"]
+    FAIL -->|"triggers"| AAD_SWA
+
+    %% ── CodeQL alert gate ────────────────────────────────────────────────────
+    MERGE --> CQ_GATE{"Open CodeQL\nalerts < 25?"}
+    CQ_GATE -->|"✅"| DO_MERGE["🎉 MERGE\n0D_base_ → main"]
+    CQ_GATE -->|"❌ ≥ 25"| CQ_FIX["Fix residual alerts\n(ruff sweep, unpinned-tag\npy/unused-local etc.)"]
+    CQ_FIX --> CQ_GATE
+
+    %% ── Styling ──────────────────────────────────────────────────────────────
+    style PUSH fill:#4a4e69,color:#fff
+    style AAD fill:#457b9d,color:#fff
+    style PMV fill:#457b9d,color:#fff
+    style WEG fill:#457b9d,color:#fff
+    style REQPDA fill:#2d6a4f,color:#fff
+    style D_PDA fill:#2d6a4f,color:#fff
+    style SC_PDA fill:#2d6a4f,color:#fff
+    style MERGE fill:#1b4332,color:#fff
+    style DO_MERGE fill:#1b4332,color:#fff
+    style FAIL fill:#e63946,color:#fff
+    style CQ_FIX fill:#f4a261,color:#000

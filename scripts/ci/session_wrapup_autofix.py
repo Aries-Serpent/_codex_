@@ -1318,7 +1318,11 @@ def fix_pda_entry_today(
         return True
 
     with pda_file.open("a", encoding="utf-8") as fh:
-        fh.write("\n" + _json.dumps(entry))
+        # Ensure a newline separator before the new entry only when the file
+        # is non-empty and does not already end with a newline.
+        existing = pda_file.read_text(encoding="utf-8") if pda_file.stat().st_size > 0 else ""
+        separator = "\n" if existing and not existing.endswith("\n") else ""
+        fh.write(separator + _json.dumps(entry) + "\n")
 
     print(f"✅ Appended auto PDA entry for {today} to {pda_file}")
     return True
