@@ -1,5 +1,23 @@
 ```mermaid
 flowchart TD
+    S1018_A["🔄 S1018-set2-first-stop-fix\n2026-05-14T14:07Z\nhead db84d03"] --> S1018_B["🧪 Full-suite first-stop captured\npytest -x stopped at\nmlflow_offline URI format assertion"]
+    S1018_B --> S1018_C["✅ Minimal fix applied\nnormalize local file URI\nbefore mlflow.set_tracking_uri"]
+    S1018_C --> S1018_D["✅ Targeted regression passes\ntest_mlflow_offline_session_with_mlflow"]
+    S1018_D --> S1018_E["✅ Required gates rerun\nruff + mypy baseline\nauto-fix check-only"]
+    S1018_E --> S1018_F["📝 Set 4 status sync\nwhats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY"]
+    S1018_F --> S1018_G["🎯 Remaining scope\nSet 5 workflow re-check\ncomment replies + continuation prompt"]
+
+    style S1018_A fill:#4a4e69,color:#fff
+    style S1018_B fill:#457b9d,color:#fff
+    style S1018_C fill:#1b4332,color:#fff
+    style S1018_D fill:#1b4332,color:#fff
+    style S1018_E fill:#1b4332,color:#fff
+    style S1018_F fill:#1b4332,color:#fff
+    style S1018_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
     A["🏁 Session S994 Start\nPR #4448 · 0D_base_"] --> B["📋 Load CODEBASE_AGENCY_POLICY\nReview all open comments"]
 
     B --> C["🔴 3 Broken files\n(sandbox.py + 2 test files)\nmalformed syntax from fdd6f28"]

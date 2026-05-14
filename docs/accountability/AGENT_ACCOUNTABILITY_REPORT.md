@@ -1,3 +1,32 @@
+## SESSION SUMMARY — 2026-05-14T14:07Z [S1018-set2-first-stop-fix]
+
+**Session:** S1018-set2-first-stop-fix | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458
+
+### Completed
+- ✅ Continued manageable-set execution and completed Set 2 with one deterministic first-stop fix.
+- ✅ `python3 -m pytest -x` captured first failure at:
+  - `tests/utils/test_codex_utils_offline.py::test_mlflow_offline_session_with_mlflow`
+  - expected `file://` tracking URI prefix, observed malformed `file:/` / `file:./...`.
+- ✅ Applied minimal fix in `codex_utils/mlflow_offline.py`:
+  - normalized file-backed tracking URIs before `mlflow.set_tracking_uri(...)` using absolute `Path(...).as_uri()` when URI starts with `file:` but not `file://`.
+- ✅ Completed Set 3 gates after fix:
+  - `ruff` clean
+  - `mypy_baseline` pass (121 ≤ 122)
+  - `auto_fix_common_issues --check-only` only remaining actionable item was Pattern 25 docs freshness, addressed in this set.
+
+### Validation
+- ✅ `python3 -m pytest -x` (single first-stop captured)
+- ✅ `python3 -m pytest tests/utils/test_codex_utils_offline.py::test_mlflow_offline_session_with_mlflow -q`
+- ✅ `python -m ruff check src/ tests/ --fix`
+- ✅ `python scripts/ci/mypy_baseline.py --require-baseline`
+- ✅ `python scripts/ci/auto_fix_common_issues.py --check-only`
+
+### Pattern Compliance
+- Pattern 25 ⏳ — satisfied by this commit set update
+- Pattern 30 ✅ — tracked-file integrity remained clean in gate checks
+
+---
+
 ## SESSION SUMMARY — 2026-05-14T13:42Z [S1017-manageable-sets-ci-rescue]
 
 **Session:** S1017-manageable-sets-ci-rescue | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458

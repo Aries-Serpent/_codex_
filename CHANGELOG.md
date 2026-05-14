@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1018-set2-first-stop-fix — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T14:07Z)
+- Completed the pending deterministic Set 2 stabilization loop:
+  - `python3 -m pytest -x` first-stop reproduced at `tests/utils/test_codex_utils_offline.py::test_mlflow_offline_session_with_mlflow`.
+  - corrected malformed local file tracking URI handling in `codex_utils/mlflow_offline.py` so MLflow offline sessions normalize `file:` URIs to canonical `file://` form before `set_tracking_uri`.
+- Targeted verification passed for the fixed first-stop test.
+- Post-fix required gates rerun:
+  - `ruff` ✅
+  - `mypy_baseline` ✅ (121 ≤ 122)
+  - `auto_fix_common_issues --check-only` reduced to Pattern 25 commit-freshness, resolved by this docs/status commit set.
+
 ### Fixed (S1017-manageable-sets-ci-rescue — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T13:42Z)
 - Executed CI rescue in manageable sets:
   - regenerated `CODEX_MANIFEST.json` to remove merge-conflict corruption and restore valid JSON/integrity.

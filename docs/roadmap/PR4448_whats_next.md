@@ -1,5 +1,30 @@
 # PR #4448 — What's Next
 
+## 🔄 Manageable-Set Update (S1018 — 2026-05-14T14:07Z)
+
+| Set | Scope | Status |
+|-----|-------|--------|
+| Set 1 | CI unblockers (secrets baseline + manifest/sync drift) | ✅ Complete |
+| Set 2 | Single first-stop stabilization loop (`pytest -x`) | ✅ Complete (`db84d03`) |
+| Set 3 | Required gates (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) | ✅ Complete (Pattern 25 docs freshness only) |
+| Set 4 | Status docs + changelog + accountability sync | ✅ Complete (this update set) |
+| Set 5 | Final validation + workflow re-check + comment responses | ⏳ In progress |
+
+### Set 2 First-Stop Resolution
+- First-stop captured:
+  - `tests/utils/test_codex_utils_offline.py::test_mlflow_offline_session_with_mlflow`
+- Minimal fix applied in `codex_utils/mlflow_offline.py`:
+  - normalize malformed `file:` local tracking URIs to canonical absolute `file://` form before `mlflow.set_tracking_uri(...)`.
+- Targeted regression test passed on fix commit `db84d03`.
+
+### Next Immediate Actions
+1. Re-check latest workflow runs via MCP for current head and verify no actionable failures.
+2. Run final `parallel_validation` pass if significant changes exist after this docs sync.
+3. Reply once to each actionable new `comment_new` with fixing commit hash(es).
+4. Publish a continuation prompt covering only remaining unresolved objectives.
+
+---
+
 ## 🔄 Manageable-Set Execution Update (S1017 — 2026-05-14T13:42Z)
 
 | Set | Scope | Status |
