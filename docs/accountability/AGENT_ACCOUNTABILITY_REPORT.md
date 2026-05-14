@@ -13,6 +13,7 @@
   - restored the stable `leaf_2` branch path in `tests/agents/test_phase2_deep_coverage_batch11.py`
   - made `_LegacyTokenizerProxy.__getattr__()` in `src/tokenization/api.py` raise `ImportError` directly when the canonical adapter is unavailable
 - ✅ Updated living docs again so the latest approved-workflow state and final validation delta are recorded before wrap-up.
+- ✅ Applied final review-polish on the two simplified branch-logic tests by renaming them to make their intentionally scoped behavior explicit.
 
 ### Validation
 - ✅ `python -m ruff check src/tokenization/api.py tests/agents/test_phase2_deep_coverage_batch11.py tests/agents/test_phase2_deep_coverage_batch8.py src/codex/archive/logging_config.py tests/archive/test_logging_config.py tests/quantum/conftest.py`

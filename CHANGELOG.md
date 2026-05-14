@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - restored the intended stable `leaf_2` path in `tests/agents/test_phase2_deep_coverage_batch11.py`
   - corrected `src/tokenization/api.py` so `_LegacyTokenizerProxy.__getattr__()` raises `ImportError` directly when the canonical adapter is unavailable
 - Updated the PR #4465 living docs again to capture the latest approved-workflow state and final validation results.
+- Clarified the two simplified branch-logic tests in the agent coverage batches by renaming them to match their intentionally local logic scope.
 
 ### Fixed (S1024-pr4465-pr-wide-review-and-monitoring — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:14Z)
 - Monitored the post-approval workflow fanout on head `3875224`; required gates are trending green while several optional/auxiliary workflows remain in progress.

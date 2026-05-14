@@ -570,10 +570,10 @@ class TestPhase2_ErrorHandlingIntegration:
             (False, False, "error"),
         ],
     )
-    def test_graceful_degradation(
+    def test_graceful_degradation_logic(
         self, primary_service_available, fallback_service_available, expected_result
     ):
-        """Test graceful degradation on errors"""
+        """Test simplified graceful-degradation decision logic."""
 
         if primary_service_available:
             result = "primary"

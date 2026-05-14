@@ -400,8 +400,10 @@ class TestPhase2_ErrorHandling:
             (False, False, "error"),
         ],
     )
-    def test_fallback_strategy(self, primary_available, fallback_available, expected_result):
-        """Test fallback strategy"""
+    def test_fallback_strategy_logic(
+        self, primary_available, fallback_available, expected_result
+    ):
+        """Test simplified fallback decision logic."""
         if primary_available:
             result = "primary"
         elif fallback_available:
