@@ -4,6 +4,7 @@
 
 ### Completed
 - ✅ **Maintainer-approved workflow monitor pass** — reviewed latest runs for commit `2e40004`; active runs in progress, non-success states currently startup-level (`startup_failure` / `skipped`) with no failed jobs emitted.
+- ✅ **Issue #4444 pattern leverage applied** — mapped current session triage to recurring failure signatures from https://github.com/Aries-Serpent/_codex_/issues/4444#issue-4436846700 (Pre-Merge critical-check gate, Agent Token Delegation CHANGELOG gate, actionlint gate).
 - ✅ **Fetcher artifact retrieval** — downloaded CodeQL fetcher artifact `codeql-alerts-open-codeql-25778513533` (artifact id `6961696607`, run `25778513533`) for in-session review without live CodeQL API recount.
 - ✅ **Residual `actions/unpinned-tag` fixes** — pinned remaining tag-based actions in two workflow examples:
   - `.github/workflows/examples/copilot-with-mcp.yml`

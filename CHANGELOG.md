@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **SAR methodology command hardening** — replaced `/tmp` output path in `docs/ops/SAR_METHODOLOGY.md` with `.codex/scans/bandit-post-merge.json` to align with repository temp-file policy.
 - **Prompt hygiene fixes** — corrected `.github/copilot-prompts/active/PR-4456-followup.md` (`PR` label redundancy and stale “No files modified” section).
 - **CI monitor snapshot after maintainer approvals** — latest PR runs observed with active in-progress checks; non-success states were startup-level (`startup_failure` / `skipped`) with no failed jobs emitted via MCP job logs.
+- **Issue #4444 failure-pattern alignment** — leveraged recurring triage signatures from issue `#4444` (`Pre-Merge Validation` critical-check gate, `Agent Token Delegation` CHANGELOG gate, `actionlint` compliance gate) while monitoring this session’s CI state.
 
 ### Fixed (S1004-ctep — PR #4455 — 2026-05-14T01:54Z)
 - **ROADMAP.md: "2025-Cycle 4" → "2025-Q4"** — corrected non-standard timeline notation to standard quarter format.
