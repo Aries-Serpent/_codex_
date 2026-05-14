@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1008-ctep — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T03:30Z)
+- **Coverage gap-fill tests — `tests/cognitive/test_monitoring_coverage_gaps.py`** (20 tests):
+  - Exception-path tests for `MonitoringSensor`: corrupt JSON state, exception propagation from `_load_state`, `get_system_health`, `get_active_failures`, `should_propose_action`.
+  - CLI `main()` tests for `MonitoringSensor`: `--health`, `--failures`, `--export`, no-flags default summary.
+  - CLI `main()` tests for `ActionProposer`: no-failures path, `--propose`, `--execute`, default summary.
+  - CLI `main()` and exception tests for `SelfHealingValidator`: `--history`, `--stats`, no-flags, `_save_to_history` OSError, `_load_history` corrupt-JSON.
+  - Result: sensor **96.33%**, actions **94.74%**, combined **95.59%** — all ≥80% ✅
+- **Phase 8 scope defined** in `.codex/plans/cognitive_brain_phase_implementation.md`:
+  - 8a: Alert Threshold Configuration (YAML-driven hot-config)
+  - 8b: Multi-Channel Notifications (GitHub Issues, PR comments, Slack webhook)
+  - 8c: Observability Dashboard (time-series metrics export)
+  - 8d: Resilience & Recovery (retry, circuit-breaker, graceful degradation)
+  - 8e: End-to-end integration tests with CI snapshot
+
 ### Fixed (auto-update — PR #4456)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4456 (SHA `64bffe00`) at 2026-05-14T03:04Z [auto-generated]
 

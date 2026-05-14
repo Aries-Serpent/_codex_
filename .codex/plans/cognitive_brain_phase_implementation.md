@@ -371,5 +371,61 @@ Extended Cognitive Brain with artifact monitoring system integration, enabling a
 
 ---
 
-**Last Updated**: 2026-05-14T03:00Z
+**Last Updated**: 2026-05-14T03:30Z
 **Status**: ✅ ALL PHASES COMPLETE (Phase 7 — Testing & Validation Operational)
+
+---
+
+## Phase 8: Production Hardening & Observability (Planned)
+
+### Overview
+Harden the Cognitive Brain monitoring system for production use with enhanced observability,
+alerting, and resilience. Enable real-time dashboards, configurable alert thresholds, and
+multi-channel notification delivery.
+
+### Scope
+
+#### 8a — Alert Threshold Configuration
+- ✅ Currently: hard-coded thresholds (`severity ≥ 0.8`, `consecutive ≥ 3`, `confidence ≥ 0.8`)
+- 🎯 Target: YAML-driven threshold config at `.codex/config/monitoring.yaml`
+  - Per-workflow overrides for severity, consecutive, confidence thresholds
+  - Reload without restart (hot-config via file watcher)
+  - Tests: `tests/cognitive/test_threshold_config.py`
+
+#### 8b — Multi-Channel Notifications
+- 🎯 Deliver Cognitive Brain action proposals + outcomes via:
+  - GitHub Issues (auto-open on critical health drop)
+  - PR comments (on active PRs for affected workflows)
+  - Slack webhook (optional, token-gated)
+- Files: `scripts/cognitive/notifications/notification_dispatcher.py`
+- Tests: `tests/cognitive/test_notification_dispatcher.py`
+
+#### 8c — Observability Dashboard
+- 🎯 Export real-time monitoring metrics to structured JSON at `.codex/monitoring/metrics/`
+  - Time-series health scores (per workflow, sliding window)
+  - Confidence trend charts (per action type)
+  - Self-healing success rate over last 30 / 90 / 365 cycles
+- Integration: existing `monitoring_dashboard.py` expanded with CB sensor feed
+
+#### 8d — Resilience & Recovery
+- 🎯 Retry logic for failed action executions (exponential back-off, max 3 retries)
+- 🎯 Circuit-breaker pattern: disable auto-action for a workflow after 3 consecutive execution failures
+- 🎯 Graceful degradation: if sensor state file is corrupt → rebuild from CI API
+- Tests: `tests/cognitive/test_resilience.py`
+
+#### 8e — Integration Tests (end-to-end with CI)
+- 🎯 Smoke test: run full pipeline against a real `.codex/monitoring/state/monitor_state.json`
+  snapshot from a CI artifact
+- 🎯 Contract test: verify sensor export schema matches CB action proposer input schema
+
+### Success Criteria
+- [ ] All threshold values configurable via `.codex/config/monitoring.yaml`
+- [ ] At least 2 notification channels working (GitHub Issues + one more)
+- [ ] Metrics exported correctly for 30-cycle window
+- [ ] Retry / circuit-breaker unit-tested
+- [ ] ≥80% coverage on all new Phase 8 source files
+- [ ] ruff + mypy baseline maintained
+
+### Status
+⏳ PLANNED — Scope defined in session S1008-ctep (2026-05-14)
+

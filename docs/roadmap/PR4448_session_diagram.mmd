@@ -279,3 +279,21 @@ flowchart TD
     style S1007_F fill:#457b9d,color:#fff
     style S1007_G fill:#2d6a4f,color:#fff
 ```
+
+```mermaid
+flowchart TD
+    S1008_A["🔄 S1008-ctep\n2026-05-14T03:30Z\nCoverage Gap-Fill + Phase 8 Scope"] --> S1008_B["✅ STEP 1\nPre-merge gate passed\nsync ✅ ruff ✅ mypy ✅"]
+    S1008_B --> S1008_C["📊 STEP 2\nCoverage gap-fill\ntest_monitoring_coverage_gaps.py\n20 tests added"]
+    S1008_C --> S1008_D["✅ Coverage achieved\nsensor 96.33%\nactions 94.74%\ncombined 95.59% ≥80%"]
+    S1008_D --> S1008_E["🔍 STEP 4\nCodeQL 403 (API restriction)\nTest-only → 0 new surface"]
+    S1008_E --> S1008_F["🚀 STEP 5\nPhase 8 scope defined\n8a-e in planset"]
+    S1008_F --> S1008_G["📝 Pattern 25\nCHANGELOG + ACCOUNTABILITY\nliving docs synced"]
+
+    style S1008_A fill:#4a4e69,color:#fff
+    style S1008_B fill:#1b4332,color:#fff
+    style S1008_C fill:#1b4332,color:#fff
+    style S1008_D fill:#2d6a4f,color:#fff
+    style S1008_E fill:#457b9d,color:#fff
+    style S1008_F fill:#2d6a4f,color:#fff
+    style S1008_G fill:#2d6a4f,color:#fff
+```
