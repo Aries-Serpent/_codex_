@@ -8,7 +8,7 @@
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4456 — [WIP] [WIP] Fix timeline notation and clarify phase context in roadmap
+## 📋 PR #4456 — [WIP] Fix timeline notation and clarify phase context in roadmap
 State: `open`  Draft: `True`  Branch: `copilot/sub-pr-4455` → `copilot/update-roadmap-timeline-notation`
 
 ## 🚨 Recent CI Failures (last 5 runs)

@@ -816,7 +816,8 @@ flowchart TD
 - Post-merge sprint rescan command:
 
 ```bash
-bandit -r src/ --configfile .bandit -f json -o /tmp/bandit-post-merge.json
+mkdir -p .codex/scans
+bandit -r src/ --configfile .bandit -f json -o .codex/scans/bandit-post-merge.json
 ```
 
 - Result: `0` findings with `.bandit` configuration.

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1005-ctep — PR #4455 — 2026-05-14T02:30Z)
+- **CodeQL fetcher artifact retrieved (no live API recount)** — downloaded `codeql-alerts-open-codeql-25778513533` (artifact id `6961696607`) from fetcher run `25778513533` for in-session alert review.
+- **Workflow example pinning sweep** — fixed remaining `actions/unpinned-tag` in:
+  - `.github/workflows/examples/copilot-with-mcp.yml` (`checkout`, `setup-python`, `upload-artifact`)
+  - `.github/workflows/examples/mcp-cache-warm.yml` (`checkout`, `setup-python`, `cache` in both jobs)
+- **Batch 5/6 tracking closed for this sprint** — updated `.codex/plans/security-remediation-planset.md` Master Tracking:
+  - Batch 5 accepted-risk rationale confirmed for `diskcache` + `sqlitedict` CVEs (no fix versions)
+  - Batch 6 post-merge bandit rescan confirmed (`--configfile .bandit` = 0; raw = 328)
+- **SAR methodology command hardening** — replaced `/tmp` output path in `docs/ops/SAR_METHODOLOGY.md` with `.codex/scans/bandit-post-merge.json` to align with repository temp-file policy.
+- **Prompt hygiene fixes** — corrected `.github/copilot-prompts/active/PR-4456-followup.md` (`PR` label redundancy and stale “No files modified” section).
+- **CI monitor snapshot after maintainer approvals** — latest PR runs observed with active in-progress checks; non-success states were startup-level (`startup_failure` / `skipped`) with no failed jobs emitted via MCP job logs.
+
 ### Fixed (S1004-ctep — PR #4455 — 2026-05-14T01:54Z)
 - **ROADMAP.md: "2025-Cycle 4" → "2025-Q4"** — corrected non-standard timeline notation to standard quarter format.
 - **ROADMAP.md: Coverage task timeline label** — renamed "Timeline" to "Execution Timeline (within Phase 9 context)" to disambiguate from the broader "Phase Context Timeline".
