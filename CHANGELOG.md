@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1010-ci-heal — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T04:10Z)
+- CI self-healing follow-up for PR #4458:
+  - triaged `PR Auto-Fix Check` run `25840603030` via MCP job logs
+  - confirmed auto-fixable trigger was Pattern 25 (`Last-Commit Accountability`) on prior head
+  - updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` on current head to satisfy accountability gate expectations
+
 ### Added (S1009-ctep — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T03:49Z)
 - **Phase 8a implemented: YAML-driven threshold configuration with hot reload**
   - Added `cognitive_brain.thresholds` block to `.codex/config/monitoring.yaml`:
