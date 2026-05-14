@@ -249,7 +249,7 @@ class TestEncryptedStorage:
         from codex.security.storage import SecureStorage
 
         storage = SecureStorage()
-        secret = "my_api_key_12345"
+        secret = "my_api_key_12345"  # pragma: allowlist secret
         filepath = os.path.join(temp_dir, "secret.enc")
 
         # Store encrypted
@@ -332,7 +332,7 @@ class TestIntegrationScenarios:
 
         try:
             # Simulate logging with security
-            api_key = "sk_live_abc123xyz789"
+            api_key = "sk_live_abc123xyz789"  # pragma: allowlist secret
             user_input = "normal\nmalicious_injection"
 
             logger.info(f"API Key: {mask_token(api_key)}")
