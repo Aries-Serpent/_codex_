@@ -95,6 +95,8 @@ class ActionProposer:
             self.confidence_threshold = defaults["confidence_threshold"]
             self._workflow_overrides = {}
             if attempted_mtime is not None:
+                # Record the failed-attempt mtime so we do not repeatedly reload
+                # and re-warn until the file changes again.
                 self._config_mtime = attempted_mtime
 
     def _maybe_reload_config(self):

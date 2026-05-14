@@ -125,13 +125,17 @@ class CodexErrorHandler:
                 args=(),
                 exc_info=None,
             )
-            wrote_via_handler = False
-            for handler in self.logger.handlers:
-                if isinstance(handler, logging.handlers.RotatingFileHandler):
-                    handler.handle(record)
-                    wrote_via_handler = True
-                    break
-            if not wrote_via_handler:
+            rotating_handler = next(
+                (
+                    handler
+                    for handler in self.logger.handlers
+                    if isinstance(handler, logging.handlers.RotatingFileHandler)
+                ),
+                None,
+            )
+            if rotating_handler is not None:
+                rotating_handler.handle(record)
+            else:
                 with self.error_log.open("a", encoding="utf-8") as fp:
                     fp.write(message + "\n")
 

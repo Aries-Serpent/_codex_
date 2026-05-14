@@ -137,15 +137,20 @@ class TestSensorMain:
 
 
 class TestActionProposerExceptionPath:
+    class _ComparisonErrorTrigger:
+        """Helper object that raises during equality checks inside execute_action()."""
+
+        def __init__(self, message: str) -> None:
+            self._message = message
+
+        def __eq__(self, other: object) -> bool:
+            raise RuntimeError(self._message)
+
     def test_execute_action_runtime_error_returns_failed(self):
         proposer = ActionProposer()
 
-        class _RaisingEq:
-            def __eq__(self, other: object) -> bool:
-                raise RuntimeError("API failure")
-
         action = {
-            "action_type": _RaisingEq(),
+            "action_type": self._ComparisonErrorTrigger("API failure"),
             "workflow": "wf_test",
             "confidence": 0.9,
             "requires_approval": False,
@@ -158,12 +163,13 @@ class TestActionProposerExceptionPath:
     def test_execute_action_exception_via_bad_type(self):
         """Trigger exception path inside the live execute branch and assert failed result."""
         proposer = ActionProposer()
-        class _RaisingEq:
-            def __eq__(self, other: object) -> bool:
-                raise RuntimeError("isinstance broken")
 
         result = proposer.execute_action(
-            {"action_type": _RaisingEq(), "workflow": "wf", "confidence": 0.9},
+            {
+                "action_type": self._ComparisonErrorTrigger("isinstance broken"),
+                "workflow": "wf",
+                "confidence": 0.9,
+            },
             dry_run=False,
         )
         assert result["status"] == "failed"
