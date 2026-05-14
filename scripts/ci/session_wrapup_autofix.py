@@ -1317,11 +1317,15 @@ def fix_pda_entry_today(
         print(f"[dry-run] Would append PDA entry for {today} to {pda_file}")
         return True
 
+    # Re-use the content already read above for the idempotency check when the
+    # file exists; otherwise treat it as empty.  This avoids a second disk read.
+    existing_content = (
+        pda_file.read_text(encoding="utf-8")
+        if pda_file.exists() and pda_file.stat().st_size > 0
+        else ""
+    )
+    separator = "\n" if existing_content and not existing_content.endswith("\n") else ""
     with pda_file.open("a", encoding="utf-8") as fh:
-        # Ensure a newline separator before the new entry only when the file
-        # is non-empty and does not already end with a newline.
-        existing = pda_file.read_text(encoding="utf-8") if pda_file.stat().st_size > 0 else ""
-        separator = "\n" if existing and not existing.endswith("\n") else ""
         fh.write(separator + _json.dumps(entry) + "\n")
 
     print(f"✅ Appended auto PDA entry for {today} to {pda_file}")

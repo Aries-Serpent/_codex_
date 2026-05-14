@@ -9,7 +9,7 @@ Covers:
 - Multi-session revoke-all (revoke all user sessions on password change)
 - Concurrent session isolation (logout one session, other remains valid)
 - Token rotation preserves user identity
-""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+""" # pragma: allowlist secret
 
 from __future__ import annotations
 

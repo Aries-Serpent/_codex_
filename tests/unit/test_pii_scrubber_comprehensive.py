@@ -9,7 +9,7 @@ Tests all PII detection patterns including:
 - Credit card numbers (with Luhn validation)
 - AWS access keys
 - GPL license detection
-""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+""" # pragma: allowlist secret
 
 from codex.knowledge.pii import (
     RedactionMode,
