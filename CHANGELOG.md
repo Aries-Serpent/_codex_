@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1023-pr4465-review-followup — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:06Z)
+- Addressed the remaining PR #4465 review-thread feedback with minimal follow-up edits.
+- Updated `tests/quantum/conftest.py` to load `tests.utils.quantum_helpers` through `pytest_plugins`, keeping `quantum_plugin_fixture` discoverable without a misleading `__all__` re-export.
+- Added regression intent documentation around `logger.disabled = False` in `src/codex/archive/logging_config.py`.
+- Strengthened `tests/archive/test_logging_config.py` to assert the logger is explicitly re-enabled after repeated `setup_logging()` calls.
+- Converted `docs/roadmap/PR4465_session_diagram.mmd` to raw Mermaid syntax by removing Markdown fences.
+
 ### Fixed (S1022-pr4465-monitoring-and-wrapup — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T18:39Z)
 - Continued PR #4465 post-push monitoring after maintainer approval of pending workflows.
 - Confirmed the previously failing `Validation Pipeline` run `25876200004` was tied to older head `c72fdf8`; the logged auto-fixable doc-metrics drift is already resolved by commit `cee5638`.
