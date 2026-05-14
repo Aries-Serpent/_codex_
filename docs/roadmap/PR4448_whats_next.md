@@ -1,5 +1,45 @@
 # PR #4448 — What's Next
 
+**Branch:** `copilot/cognitive-brain-phase-7-tasks`  
+**Session:** S1009-ctep · 2026-05-14T03:49Z  
+**Objective:** Phase 8a implementation (YAML thresholds + hot reload) + status sync
+
+---
+
+## ✅ CTEP Task Status (S1009-ctep — 2026-05-14T03:49Z)
+
+| Task | Status |
+|------|--------|
+| STEP 1: Pre-change gate — `sync_tracked_files`, `ruff`, `mypy_baseline`, cognitive tests | ✅ All pass |
+| STEP 2: Implement Phase 8a threshold config in actions/sensor modules | ✅ Done |
+| STEP 3: Add `tests/cognitive/test_threshold_config.py` | ✅ Done |
+| STEP 4: Run impacted validation (`ruff` + `pytest`) | ✅ Pass |
+| STEP 5: Living docs + CHANGELOG + ACCOUNTABILITY update | ✅ Done |
+| STEP 6: Session wrap-up autofix | ⏳ Pending |
+
+### Phase 8a Deliverables Completed
+- ✅ `.codex/config/monitoring.yaml` now contains `cognitive_brain.thresholds` defaults:
+  - `severity_threshold: 0.8`
+  - `consecutive_threshold: 3`
+  - `confidence_threshold: 0.8`
+  - `per_workflow_overrides: {}`
+- ✅ `scripts/cognitive/actions/monitoring_actions.py`:
+  - Loads thresholds from YAML
+  - Applies per-workflow overrides
+  - Hot-reloads config on mtime change (no restart)
+- ✅ `scripts/cognitive/sensors/monitoring_sensor.py`:
+  - Loads thresholds from YAML
+  - Applies per-workflow overrides in `should_propose_action()`
+  - Hot-reloads config on mtime change (no restart)
+- ✅ `tests/cognitive/test_threshold_config.py`:
+  - Defaults fallback
+  - Global threshold load
+  - Per-workflow override behavior
+  - Hot-reload behavior
+  - Sensor decision impact
+
+---
+
 **Branch:** `0D_base_` → `main`  
 **Session:** S1008-ctep · 2026-05-14T03:30Z  
 **Objective:** Coverage gap-fill (≥80% Phase 6 files) + Phase 8 scope + living-doc sync

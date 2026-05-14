@@ -297,3 +297,17 @@ flowchart TD
     style S1008_F fill:#2d6a4f,color:#fff
     style S1008_G fill:#2d6a4f,color:#fff
 ```
+
+```mermaid
+flowchart TD
+    S1009_A["🔄 S1009-ctep\n2026-05-14T03:49Z\nPhase 8a Implementation"] --> S1009_B["✅ Pre-change gates\nsync + ruff + mypy + cognitive tests"]
+    S1009_B --> S1009_C["⚙️ Phase 8a core\nYAML thresholds + per-workflow overrides\nhot reload (mtime)"]
+    S1009_C --> S1009_D["🧪 New tests\ntest_threshold_config.py\ndefault/global/override/hot-reload"]
+    S1009_D --> S1009_E["📝 Pattern 25\nCHANGELOG + ACCOUNTABILITY\nLiving docs synced"]
+
+    style S1009_A fill:#4a4e69,color:#fff
+    style S1009_B fill:#1b4332,color:#fff
+    style S1009_C fill:#1b4332,color:#fff
+    style S1009_D fill:#1b4332,color:#fff
+    style S1009_E fill:#2d6a4f,color:#fff
+```

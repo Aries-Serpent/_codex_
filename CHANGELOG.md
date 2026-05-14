@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1009-ctep — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T03:49Z)
+- **Phase 8a implemented: YAML-driven threshold configuration with hot reload**
+  - Added `cognitive_brain.thresholds` block to `.codex/config/monitoring.yaml`:
+    - `severity_threshold`, `consecutive_threshold`, `confidence_threshold`
+    - `per_workflow_overrides`
+  - Updated `scripts/cognitive/actions/monitoring_actions.py`:
+    - load/reload threshold config from YAML
+    - per-workflow threshold overrides
+    - configurable confidence gate in `execute_action()`
+    - configurable severity/consecutive gates in `propose_actions()`
+  - Updated `scripts/cognitive/sensors/monitoring_sensor.py`:
+    - load/reload threshold config from YAML
+    - per-workflow threshold overrides in `should_propose_action()`
+- **New tests**: `tests/cognitive/test_threshold_config.py`
+  - default fallback behavior
+  - global thresholds
+  - per-workflow overrides
+  - hot-reload without restart
+  - sensor decision-path behavior
+
 ### Fixed (auto-update — PR #4458)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4458 (SHA `0a6fbc39`) at 2026-05-14T03:52Z [auto-generated]
 
