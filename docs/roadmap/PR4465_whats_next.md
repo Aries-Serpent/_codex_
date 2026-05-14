@@ -26,7 +26,7 @@
 ### Current Local Validation Snapshot
 - `python3 -m ruff check` ✅
 - `python scripts/ci/sync_tracked_files.py --check` ✅
-- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅ except expected Pattern 25 freshness before this docs/accountability update
+- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅ (Pattern 25 last-commit accountability freshness was the only expected pre-commit remainder before this docs/accountability update)
 - resumed `python3 -m pytest -x` advanced past ~6% without repeating the earlier deterministic blockers before being stopped for wrap-up/monitoring time
 
 ### Next Immediate Actions

@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - in progress: coverage, semgrep, CodeQL, documentation validation, workflow link validation, code quality analysis
   - startup_failure (optional heavy suites): Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite, Progressive Validation Suite
 - Restored `.codex/session_context_latest.md` to the previous committed state so the next commit removes the accidental progress-only drift from branch history.
-- Resolved the newly reported `CODEX_MANIFEST.json` merge conflict against `origin/main` by syncing the generated manifest file to the current `main` version; the conflict was timestamp/hash-only drift with no payload change.
+- Resolved the newly reported `CODEX_MANIFEST.json` merge conflict against `origin/main` by updating the generated manifest file to match the current `origin/main` version; the conflict was timestamp/hash-only drift with no payload change.
 
 ### Fixed (S1021-pr4465-ci-rescue — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T17:55Z)
 - Triaged PR #4465 CI failures via GitHub MCP:
