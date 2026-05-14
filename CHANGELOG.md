@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1030-pr4469-post-approval-monitoring — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:20Z)
+- Monitored the approved workflow fanout on merge commit `2e77a78` and recorded the current required-check snapshot in new PR #4469 living docs.
+- Added `docs/roadmap/PR4469_whats_next.md` and `docs/roadmap/PR4469_session_diagram.mmd` to capture the merge-resolution path, current workflow state, and final wrap-up plan.
+- Strengthened the line-550 connection-pool test follow-up with an immediate `available` count assertion.
+
 ### Fixed (S1029-pr4469-merge-conflict-resolution — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:13Z)
 - Merged `copilot/fix-deprecation-warning-datetime` into PR #4469 and resolved the stacked-branch conflicts in session/context metadata, accountability docs, and `tests/agents/test_phase2_deep_coverage_batch11.py`.
 - Addressed the two unresolved review findings on `tests/agents/test_phase2_deep_coverage_batch11.py:550` by replacing the no-op connection access with an acquired value plus assertion.

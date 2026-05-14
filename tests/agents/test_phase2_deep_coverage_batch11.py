@@ -550,6 +550,7 @@ class TestPhase2_PerformanceIntegration:
             acquired_connection = pool["connections"][0]
             assert acquired_connection.startswith("conn_")
             pool["available"] -= 1
+            assert pool["available"] == 4
 
         # Release
         pool["available"] += 1
