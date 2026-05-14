@@ -115,6 +115,7 @@ def setup_logging(
     logger = logging.getLogger(logger_name)
     level = getattr(logging, config.level.upper(), logging.INFO)
     logger.setLevel(level)
+    logger.disabled = False
     handler = logging.StreamHandler(stream or sys.stderr)
     handler.setFormatter(StructuredFormatter(fmt=config.format, component=logger_name))
     logger.handlers.clear()

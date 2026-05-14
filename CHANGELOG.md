@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1021-pr4465-ci-rescue — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T17:55Z)
+- Triaged PR #4465 CI failures via GitHub MCP:
+  - `PR Auto-Fix Check` run `25875267053`
+  - `PR Comment Review Gate` run `25875592060`
+- Reproduced required validation locally:
+  - `python3 -m ruff check` ✅
+  - `python3 -m pytest -x` exposed stale doc-metrics references in repository documentation.
+- Ran `python scripts/tools/doc_metrics_sync.py --fix` to refresh stale test-count references in:
+  - `README.md`
+  - `docs/ops/SAR_METHODOLOGY.md`
+  - `docs/evolution/COGNITIVE_CODEBASE_MAP.md`
+  - `docs/evolution/INDEX.md`
+  - `docs/deployment/DEPLOYMENT_RUNBOOK.md`
+- Fixed archive logging test-state leakage in `src/codex/archive/logging_config.py` by re-enabling the named logger during `setup_logging()`, and added a regression test in `tests/archive/test_logging_config.py`.
+- Restored quantum integration fixture discovery by adding `tests/quantum/conftest.py` to expose the existing shared `quantum_plugin_fixture` from `tests.utils.quantum_helpers`.
+- Removed stray files accidentally introduced during a prior progress update (`test_a.py`, `test_b.py`, `test_c.md`) to restore the PR to intended scope.
+
 ### Fixed (auto-update — PR #4465)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4465 (SHA `fe9aeef1`) at 2026-05-14T17:30Z [auto-generated]
 

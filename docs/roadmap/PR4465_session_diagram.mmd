@@ -1,0 +1,35 @@
+```mermaid
+flowchart TD
+    A["🧭 PR #4465 rescue start\nBranch: copilot/remove-duplicate-pragma-comment"] --> B["📡 MCP triage\nPR Auto-Fix Check 25875267053\nComment Review Gate 25875592060"]
+    B --> C["🧪 Local validation\nruff ✅\npytest -x first-stop loop"]
+    C --> D["🔴 First stop #1\nstale doc metrics\nTestProductionRules::test_current_repo_has_zero_stale_metrics"]
+    D --> E["✅ Fix #1\nscripts/tools/doc_metrics_sync.py --fix\n5 docs refreshed"]
+    E --> F["🔁 Targeted regression pass\ndoc-metrics test ✅"]
+    F --> G["🔴 First stop #2\narchive logging buffer empty\ntest_log_restore_emits_structured_fields"]
+    G --> H["✅ Fix #2\nsetup_logging re-enables logger\nregression test added"]
+    H --> I["🔁 Targeted regression pass\narchive logging tests ✅"]
+    I --> J["🔴 First stop #3\nmissing quantum_plugin_fixture\nquantum integration collection error"]
+    J --> K["✅ Fix #3\nadd tests/quantum/conftest.py\nexpose shared fixture"]
+    K --> L["🔁 Targeted regression pass\nquantum integration tests ✅"]
+    L --> M["📝 Living docs + CHANGELOG +\nACCOUNTABILITY refreshed"]
+    M --> N["⏳ Continue / conclude validation loop\nbased on remaining session time"]
+    N --> O["⏱️ Wrap-up decision\nlatest pytest -x rerun >7%\nno repeat of fixed blockers"]
+    O --> P["🎯 Final wrap-up target\nclean transient artifacts\nrun final gates\nreply to comments"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#457b9d,color:#fff
+    style D fill:#d62828,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#d62828,color:#fff
+    style H fill:#1b4332,color:#fff
+    style I fill:#1b4332,color:#fff
+    style J fill:#d62828,color:#fff
+    style K fill:#1b4332,color:#fff
+    style L fill:#1b4332,color:#fff
+    style M fill:#1b4332,color:#fff
+    style N fill:#f4a261,color:#000
+    style O fill:#457b9d,color:#fff
+    style P fill:#2d6a4f,color:#fff
+```

@@ -1,3 +1,43 @@
+## SESSION SUMMARY — 2026-05-14T17:55Z [S1021-pr4465-ci-rescue]
+
+**Session:** S1021-pr4465-ci-rescue | **Branch:** `copilot/remove-duplicate-pragma-comment` | **PR:** #4465
+
+### Completed
+- ✅ Triaged current CI rescue requests and failing checks via GitHub MCP:
+  - `PR Auto-Fix Check` run `25875267053`
+  - `PR Comment Review Gate` run `25875592060`
+- ✅ Reproduced local validation status on branch head:
+  - `python3 -m ruff check` passed
+  - `python3 -m pytest -x` failed at `tests/tools/test_doc_metrics_sync.py::TestProductionRules::test_current_repo_has_zero_stale_metrics`
+- ✅ Fixed the surfaced repository issue using the existing doc sync utility:
+  - `python scripts/tools/doc_metrics_sync.py --fix`
+  - refreshed stale `21500+` test-count references in `README.md`, `docs/ops/SAR_METHODOLOGY.md`, `docs/evolution/COGNITIVE_CODEBASE_MAP.md`, `docs/evolution/INDEX.md`, and `docs/deployment/DEPLOYMENT_RUNBOOK.md`
+- ✅ Fixed the next full-suite first-stop failure in archive logging:
+  - reset `logger.disabled = False` in `src/codex/archive/logging_config.py` during `setup_logging()`
+  - added `test_setup_logging_reenables_existing_logger` in `tests/archive/test_logging_config.py` to prevent future logger-state leakage regressions
+- ✅ Fixed the next full-suite first-stop failure in quantum integration:
+  - added `tests/quantum/conftest.py` to expose the existing `quantum_plugin_fixture`
+  - `python3 -m pytest tests/quantum/test_integration.py -q` now passes
+- ✅ Removed stray files accidentally committed by an earlier progress update (`test_a.py`, `test_b.py`, `test_c.md`) so the PR remains limited to intended repo fixes.
+
+### Validation
+- ✅ `python scripts/ci/auto_fix_common_issues.py --check-only` (only Pattern 25 freshness remained before this docs/accountability update)
+- ✅ `python scripts/ci/sync_tracked_files.py --check`
+- ✅ `python3 -m ruff check`
+- ✅ `python3 -m pytest -x` first-stop reproduction captured the stale doc-metrics failure deterministically
+- ✅ `python3 -m pytest tests/archive/test_logging_config.py -q`
+- ✅ `python3 -m ruff check src/codex/archive/logging_config.py tests/archive/test_logging_config.py`
+- ✅ `python3 -m pytest tests/quantum/test_integration.py -q`
+- ✅ `python3 -m ruff check tests/quantum/conftest.py`
+- ✅ Follow-up full `python3 -m pytest -x` rerun advanced past ~7% of the suite with no repeat of the doc-metrics, archive-logging, or quantum-fixture blockers before being stopped for wrap-up time budgeting
+- ⏳ Remaining after this update: clean transient validation artifacts, run required CI helper checks on the final change set, commit, validate, and reply to blocking comments
+
+### Pattern Compliance
+- Pattern 25 ⏳ — satisfied by this accountability/changelog update in the next commit
+- Pattern 30 ✅ — tracked-file sync clean locally before applying the doc refresh
+
+---
+
 ## SESSION SUMMARY — 2026-05-14T14:34Z [S1020-post-approval-monitoring]
 
 **Session:** S1020-post-approval-monitoring | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458
