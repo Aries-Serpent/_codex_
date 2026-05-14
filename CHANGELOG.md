@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1004-ctep — PR #4455 — 2026-05-14T01:54Z)
+- **ROADMAP.md: "2025-Cycle 4" → "2025-Q4"** — corrected non-standard timeline notation to standard quarter format.
+- **ROADMAP.md: Coverage task timeline label** — renamed "Timeline" to "Execution Timeline (within Phase 9 context)" to disambiguate from the broader "Phase Context Timeline".
+- **ROADMAP.md: SAR Sprint stale dates** — replaced specific date range "2026-03-15 to 2026-05-31" with live-doc reference: "Current cycle (live schedule maintained in `docs/ops/SAR_METHODOLOGY.md`)".
+- **ROADMAP.md: "W-142 S116" expanded** — expanded opaque internal notation to "Workstream 142, Session 116" for readability without a legend.
+- **ROADMAP.md: timestamp synced** — "Last Content Update" bumped from 2026-05-11 to 2026-05-14 to match blocker-section timestamp.
+- **`session_wrapup_autofix.py` double file-read** — `fix_pda_entry_today()` now properly reuses `existing_content` from the idempotency check (previously the comment claimed reuse but the code re-read the file; fixed by initialising `existing_content = ""` before the `if pda_file.exists()` block).
+- **Duplicate `# pragma: allowlist secret`** — removed redundant second pragma from `tests/api/test_auth_token_lifecycle.py` and `tests/unit/test_pii_scrubber_comprehensive.py`.
+- **`tests/unit/test_validators.py`: new `test_invalid_python_syntax`** — validates that `validate_file_structure` returns `valid_syntax=False` for a file with an unclosed parenthesis.
+- **`tests/unit/test_validators.py`: `test_nonexistent_file` strengthened** — now asserts `has_shebang`, `balanced_braces`, and `valid_syntax` are all `False` for a missing file (not just that a dict is returned).
+- **`tests/unit/test_validators.py`: `test_checksum_mismatch` hash assertion** — verifies the returned `_sha` matches `hashlib.sha256(b"test content\n").hexdigest()` even when the provided SHA is wrong.
+- **`src/codex/utils/validators.py`: missing-file now returns all-False** — `validate_file_structure` previously returned all-`True` defaults when a file was not found; corrected to return `{key: False for key in issues}` so callers can distinguish "unreadable/missing" from "checked and passed".
+- **Artifacts ingested (run 25836734078)** — dep-scan (3.68 KB, sha256:fc26198e): 325 packages, 2 CVEs (`diskcache==5.6.3` CVE-2025-69872, `sqlitedict==2.1.0` CVE-2024-35515 — no fix versions, accepted risk). SBOM: 76.4 KB (sha256:5167e5c2).
+
 ### Fixed (S1003-ctep2 — PR #4454 — 2026-05-14T00:50Z)
+
 - **WEC correctly updated** — 14 additional workflow items checked matching actively-running workflows; 30 workflows triggered on `bc9d402` after approval.
 - **Double file-read eliminated** — `fix_pda_entry_today()` in `session_wrapup_autofix.py` now reuses `existing_content` already read during idempotency check instead of doing a second `pda_file.read_text()`.
 - **Duplicate `# pragma: allowlist secret`** — deduplicated from 3× to 1× in `tests/unit/test_pii_scrubber_comprehensive.py` and `tests/api/test_auth_token_lifecycle.py`.

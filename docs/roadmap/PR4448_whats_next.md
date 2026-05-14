@@ -1,12 +1,43 @@
 # PR #4450 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S1003-ctep · 2026-05-14T00:20Z  
-**Objective:** Reduce CodeQL Security + Quality alerts < 25 (path to 0)
+**Session:** S1004-ctep · 2026-05-14T01:54Z  
+**Objective:** Apply problem-statement diffs + post-merge Batch 5/6 sprint
 
 ---
 
-## ✅ CTEP Task Status (S1003-ctep2 — 2026-05-14T00:50Z)
+## ✅ CTEP Task Status (S1004-ctep — 2026-05-14T01:54Z)
+
+| Task | Status |
+|------|--------|
+| PR #4454 confirmed merged | ✅ Merged 2026-05-14T01:32Z |
+| Ingest artifacts (run 25836734078) | ✅ pip-audit 325 pkgs · 2 CVEs (diskcache, sqlitedict — no fix) |
+| Apply ROADMAP.md fixes (×5) | ✅ Done — Cycle→Q4, timeline, stale date, W-142, timestamp |
+| Fix double file-read in session_wrapup_autofix.py | ✅ Done — existing_content reused properly |
+| Deduplicate pragma comments (×2 test files) | ✅ Done |
+| Add test_invalid_python_syntax | ✅ Done |
+| Strengthen test_nonexistent_file assertions | ✅ Done |
+| Add SHA256 hash assertion to test_checksum_mismatch | ✅ Done |
+| Fix validators.py missing-file returns all-False | ✅ Done (root-cause fix) |
+| All 13 test_validators.py tests pass | ✅ 13/13 pass |
+| ruff check (changed files) | ✅ 0 issues |
+| session_wrapup_autofix.py --pr-number 4454 | ✅ ACCOUNTABILITY updated |
+| Update living docs (whats_next + session_diagram) | ✅ Done |
+| CHANGELOG update | ⏳ Pending this commit |
+
+### Artifacts (run 25836734078)
+| Artifact | Digest | Status |
+|----------|--------|--------|
+| dependency-scan-results | sha256:fc26198e… | ✅ Ingested — 325 pkgs, 2 CVEs |
+| sbom-reports | sha256:5167e5c2… | ⚠️ Download expired — size confirmed 76.4 KB |
+
+### CVE Status (Batch 5)
+| Package | Version | CVE | Fix Version | Action |
+|---------|---------|-----|-------------|--------|
+| diskcache | 5.6.3 | CVE-2025-69872 | None available | Accepted risk (documented) |
+| sqlitedict | 2.1.0 | CVE-2024-35515 | None available | Accepted risk (documented) |
+
+
 
 | Task | Status |
 |------|--------|

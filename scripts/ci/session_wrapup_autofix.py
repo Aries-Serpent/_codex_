@@ -1286,9 +1286,12 @@ def fix_pda_entry_today(
     timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     sha = sha or _short_sha()
 
+    existing_content = ""
+
     # Idempotency: already have an entry for today?
     if pda_file.exists():
-        recent_lines = pda_file.read_text(encoding="utf-8").splitlines()[-30:]
+        existing_content = pda_file.read_text(encoding="utf-8")
+        recent_lines = existing_content.splitlines()[-30:]
         if any(today in ln for ln in recent_lines):
             print(f"✅ PDA entry for {today} already present — no change needed")
             return False
@@ -1319,11 +1322,6 @@ def fix_pda_entry_today(
 
     # Re-use the content already read above for the idempotency check when the
     # file exists; otherwise treat it as empty.  This avoids a second disk read.
-    existing_content = (
-        pda_file.read_text(encoding="utf-8")
-        if pda_file.exists() and pda_file.stat().st_size > 0
-        else ""
-    )
     separator = "\n" if existing_content and not existing_content.endswith("\n") else ""
     with pda_file.open("a", encoding="utf-8") as fh:
         fh.write(separator + _json.dumps(entry) + "\n")
