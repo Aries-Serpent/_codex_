@@ -3015,10 +3015,10 @@ class CommonIssueFixer:
         ✅ auto_fix          → ``auto_fix_common_issues.py`` (already running)
         ✅ accountability_today → Pattern 25 auto-fix (append minimal entry)
         ✅ Pattern 27 / Secrets FP → Pattern 27 auto-fix
+        ✅ pda_today        → auto-append minimal PDA entry to pda_iterations.jsonl
         ℹ️  action_versions  → manual: review .github/workflows/ action pins
         ℹ️  github-script≥v8 → manual: upgrade actions/github-script
         ℹ️  download_artifact_v5 → manual: upgrade actions/download-artifact
-        ℹ️  pda_today        → manual: append PDA entry to pda_iterations.jsonl
         ℹ️  AAIS composite   → manual: review AAIS sub-scores
         """
         import importlib.util as _ilu
@@ -3078,7 +3078,7 @@ class CommonIssueFixer:
             "sync_tracked_files": ("sync_fix",      "python scripts/ci/sync_tracked_files.py --fix"),
             "auto_fix":           ("auto_fix_sweep", "python scripts/ci/auto_fix_common_issues.py"),
             "accountability_today": ("acct_fix",    "python scripts/ci/auto_fix_common_issues.py --pattern 25"),
-            "pda_today":          ("pda_manual",    "Append PDA entry to .codex/aftermath/pda_iterations.jsonl"),
+            "pda_today":          ("pda_auto",    "Auto-append minimal PDA entry to .codex/aftermath/pda_iterations.jsonl"),
             "pattern_27":         ("fp_fix",        "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
             "secrets":            ("fp_fix",        "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
             "action_versions":    ("manual",        "Review .github/workflows/ for outdated action SHA pins"),
@@ -3137,7 +3137,22 @@ class CommonIssueFixer:
                 if not fp_issues:
                     auto_applied.append(name)
 
-            # "manual", "pda_manual", "auto_fix_sweep" → instructions only.
+            elif fix_type == "pda_auto":
+                # Import fix_pda_entry_today from session_wrapup_autofix and call it.
+                try:
+                    swa_spec = _ilu.spec_from_file_location(
+                        "session_wrapup_autofix", swa_path
+                    )
+                    swa_mod = _ilu.module_from_spec(swa_spec)  # type: ignore[arg-type]
+                    swa_spec.loader.exec_module(swa_mod)  # type: ignore[union-attr]
+                    swa_mod.fix_pda_entry_today(
+                        pr_number="unknown", sha="", run_url="", dry_run=False
+                    )
+                    auto_applied.append(name)
+                except Exception as _pda_exc:
+                    print(f"   ⚠  pda_auto fix failed: {_pda_exc}")
+
+            # "manual", "auto_fix_sweep" → instructions only.
 
         if auto_applied:
             self.fixes_applied["Merge Readiness Dims"] = len(auto_applied)

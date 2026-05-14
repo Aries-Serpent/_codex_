@@ -1,8 +1,126 @@
+%% System Architecture — Aries-Serpent/_codex_
+%% Last updated: 2026-05-14 (S1003-ctep)
+%% Covers: ML training, tokenization, RAG, CI self-healing, logging, cognitive brain
+%% Evidence: src/ tree, scripts/ci/, .github/workflows/, tests/ (1500+ tests, 90% cov)
+
 graph TD
-    A[Tokenizer Registry] --> C[Trainer]
-    B[Model Registry] --> C
-    D[Data Loader Registry] --> C
-    C --> E[Experiment Context]
-    E --> F[NDJSON Logs]
-    C --> G[Metrics Registry]
-    G --> H[Evaluation]
+
+    %% ── ML Core ──────────────────────────────────────────────────────────────
+    subgraph ML ["🤖 ML Core  •  src/codex_ml/"]
+        TOK_REG["Tokenizer Registry\nsrc/codex_ml/tokenization/"]
+        MOD_REG["Model Registry\nsrc/codex_ml/models/\n(decoder_only, minilm, reasoning)"]
+        DAT_REG["Data Registry\nsrc/codex_ml/data/"]
+        TRAINER["Unified Trainer\nunified_training.py\ntrain_loop.py"]
+        EVAL["Evaluator\neval/evaluator.py\n(perplexity, token_accuracy)"]
+        CKPT["Checkpoints\nruns/ • artifacts/"]
+        TOK_REG --> TRAINER
+        MOD_REG --> TRAINER
+        DAT_REG --> TRAINER
+        TRAINER --> CKPT
+        TRAINER --> EVAL
+    end
+
+    %% ── Tokenization API ─────────────────────────────────────────────────────
+    subgraph TOKAPI ["🔤 Tokenization  •  src/tokenization/"]
+        TOK_CENT["CentralizedTokenizerRegistry\n(canonical access)"]
+        HF_ADAPT["HF Adapter\n(optional, raises ImportError when absent)"]
+        LEG_PROXY["_LegacyTokenizerProxy\n(__getattr__ → ImportError)"]
+        TOK_CENT --> HF_ADAPT
+        TOK_CENT --> LEG_PROXY
+    end
+
+    %% ── RAG ──────────────────────────────────────────────────────────────────
+    subgraph RAG ["📚 RAG  •  src/codex/rag/"]
+        EMB["EmbeddingProvider\n(Protocol — embeddings.py)"]
+        IDX["Indexer\n(FAISS-backed — indexer.py)"]
+        RET["Retriever\nretriever.py"]
+        RAG_CACHE["RAG Cache\ncache/"]
+        EMB --> IDX
+        IDX --> RET
+        RET --> RAG_CACHE
+    end
+
+    %% ── Cognitive Brain ──────────────────────────────────────────────────────
+    subgraph BRAIN ["🧠 Cognitive Brain  •  scripts/cognitive/"]
+        CB_CORE["cognitive_brain_core.py\n(OODAOrchestrator, memory)"]
+        CB_SESSION["agent_checkin.py\nsession context injection"]
+        CB_FALLBACK["cb_fallbacks.py\n(no-op stubs when offline)"]
+        SQLITE_MEM["SQLiteMemory\nSTM → LTM promotion\n(80% capacity gate)"]
+        CB_CORE --> SQLITE_MEM
+        CB_SESSION --> CB_CORE
+        CB_CORE --> CB_FALLBACK
+    end
+
+    %% ── Logging ──────────────────────────────────────────────────────────────
+    subgraph LOG ["📋 Logging  •  src/codex/logging/"]
+        SESS_LOG["session_logger.py\n(NDJSON per session)"]
+        DB_MGR["db_manager.py\n(SQLite — CODEX_DB_PATH)"]
+        VIEWER["viewer.py + query_logs.py\n(search / replay)"]
+        SESS_LOG --> DB_MGR
+        DB_MGR --> VIEWER
+    end
+
+    %% ── CI Self-Healing ──────────────────────────────────────────────────────
+    subgraph CI_HEAL ["🔧 CI Self-Healing  •  scripts/ci/"]
+        AFC["auto_fix_common_issues.py\nPatterns 1–32\n(ruff, coverage, secrets, PDA)"]
+        SWA["session_wrapup_autofix.py\nauto_fix_all_missing()\nREQ-4,5,6,PDA,WEC"]
+        PDA_FN["fix_pda_entry_today()\n(REQ-PDA — auto-appends\ndaily PDA entry)"]
+        STF["sync_tracked_files.py\n(.secrets.baseline ↔ manifest)"]
+        AAIS["aais_v4_scorer.py\n(CI/CD maturity, 0–100)"]
+        MYP["mypy_baseline.py\n(type regression gate)"]
+        SWA --> PDA_FN
+        SWA --> STF
+        AFC --> PDA_FN
+        AFC --> STF
+        AFC --> AAIS
+        AFC --> MYP
+    end
+
+    %% ── PDA Store ────────────────────────────────────────────────────────────
+    PDA_FILE[(".codex/aftermath/\npda_iterations.jsonl\n(session ledger)")]
+    PDA_FN --> PDA_FILE
+
+    %% ── GitHub Actions workflows ─────────────────────────────────────────────
+    subgraph WFLOWS ["⚙️  GitHub Actions  •  .github/workflows/"]
+        AAD["agent-auth-delegation.yml\n(cognitive preflight, REQ-4/5/6/PDA)"]
+        PMV["pre-merge-validation.yml\n(pattern pipeline gate)"]
+        WEG["workflow-execution-gate.yml\n(WEC parser + arm)"]
+        CODEQL["codeql-analysis.yml\n(SAST)"]
+        SEC_SUITE["security-scanning-suite.yml\n(bandit, pip-audit, SBOM)"]
+    end
+
+    AAD --> SWA
+    PMV --> AFC
+    WEG --> SWA
+
+    %% ── CLI entry points ─────────────────────────────────────────────────────
+    subgraph ENTRY ["🖥️  Entry Points"]
+        E_CODEX["codex CLI\nsrc/codex_ml/cli/codex_cli.py"]
+        E_INGEST["python -m codex.cli\n(ingestion pipeline)"]
+        E_QO["python -m codex.quantum_orchestrator.cli"]
+        E_SRC["python src/cli.py\n(training bootstrap)"]
+    end
+
+    E_CODEX --> TRAINER
+    E_CODEX --> TOKAPI
+    E_INGEST --> RAG
+    E_INGEST --> LOG
+    E_QO --> CB_CORE
+
+    %% ── Cross-cutting ────────────────────────────────────────────────────────
+    TRAINER --> LOG
+    CB_CORE --> RAG
+    CB_CORE --> LOG
+    AFC --> CODEQL
+
+    %% ── Styling ──────────────────────────────────────────────────────────────
+    style ML fill:#1a1a2e,color:#e0e0e0
+    style TOKAPI fill:#16213e,color:#e0e0e0
+    style RAG fill:#0f3460,color:#e0e0e0
+    style BRAIN fill:#533483,color:#fff
+    style LOG fill:#2d6a4f,color:#fff
+    style CI_HEAL fill:#1b4332,color:#fff
+    style WFLOWS fill:#457b9d,color:#fff
+    style ENTRY fill:#4a4e69,color:#fff
+    style PDA_FN fill:#2d6a4f,color:#fff
+    style PDA_FILE fill:#52b788,color:#000

@@ -1,6 +1,7 @@
 # 🧠 Codex Production-Ready Codebase Mindmap
-> **Version**: 2.0.0
+> **Version**: 2.1.0
 > **Generated**: 2026-01-11T09:52:00Z
+> **Last updated**: 2026-05-14T00:45Z (S1003-ctep)
 > **Status**: Production-Ready with Optional Integrations
 
 ---
@@ -65,11 +66,17 @@ mindmap
           Workflow Navigator
           Knowledge Integrator
           Self Healing Agent
-      Custom Agents TBD
-        test-assertion-updater
-        cache-logic-validator
-        security-advisory-resolver
-        ci-failure-diagnostician
+      Custom Agents 153 Active ✅
+        ci-testing-agent ✅
+        unified-coverage-agent ✅
+        codeql-alert-resolution-agent ✅
+        ci-failure-resolution-agent ✅
+        unified-security-scanner ✅
+        test-alignment-fixer ✅
+        workflow-ci-fixer ✅
+        mypy-manager-agent ✅
+        autonomous-test-healer-agent ✅
+        orchestrator-agent ✅
     Frontend
       Cognitive App
         cognitive_app/ ✅

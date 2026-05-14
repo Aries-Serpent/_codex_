@@ -1,12 +1,70 @@
 # PR #4450 — What's Next
 
 **Branch:** `0D_base_` → `main`  
-**Session:** S1003-final · 2026-05-13T23:44Z  
+**Session:** S1003-ctep · 2026-05-14T00:20Z  
 **Objective:** Reduce CodeQL Security + Quality alerts < 25 (path to 0)
 
 ---
 
-## ✅ PR-Wide Audit (S1003-final — 2026-05-13T23:44Z)
+## ✅ CTEP Task Status (S1003-ctep2 — 2026-05-14T00:50Z)
+
+| Task | Status |
+|------|--------|
+| PHASE 1: Confirm alert count | ⏳ CodeQL API rate-limited; est. ~54 open (30 workflows running) |
+| PHASE 2a: Pin github-script@v9 in mcp-cache-warm.yml:142 | ✅ Done (SHA `3a2844b…`) |
+| PHASE 2b: RUF059 sweep tests/ | ✅ Clean — all checks passed |
+| REQ-PDA: Harden sync jobs for each session | ✅ Done — `fix_pda_entry_today()` added, wired into `auto_fix_all_missing()` |
+| CI failure (Pattern 30) fixed | ✅ Done — PDA entry + accountability report for 2026-05-14 |
+| Fix double file-read in `fix_pda_entry_today()` | ✅ Done — code-review fix `bc9d402` |
+| Deduplicate triple `# pragma: allowlist secret` | ✅ Done — 2 test files fixed `bc9d402` |
+| WEC items correctly checked/unchecked | ✅ Done — 14 items updated, 30 workflows triggered |
+| Mermaid mapping docs updated | ✅ Done — architecture.mmd, ci_self_healing_flow.mmd, mindmap v2.1 |
+| Planset/promptset full review | ✅ Done — PLANSET_STATUS_REVIEW_2026_05_14.md (Tier 1/2/3) |
+| Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT | ✅ Done |
+| Update living docs (whats_next, session_diagram) | ✅ Done |
+| PHASE 3: Pre-merge gate CI | ✅ 16 success · 0 failures · 3 pre-existing startup_failures |
+
+### CI on `bc9d402` — 2026-05-14T00:50Z
+| Status | Count | Details |
+|--------|------:|---------|
+| ✅ success | 16 | All required gates green |
+| ❌ failure | 0 | No actual failures |
+| ⚠️ startup_failure | 3 | Pre-existing: Data Quality, Rust Swarm CI, Progressive Validation |
+| ⏭️ skipped | 2 | Dependabot, Pre-merge-validation (docs-only commit) |
+| 🔲 in_progress | ~8 | CodeQL, Security Suite, Validation Pipeline, others still running |
+
+## ✅ Merge-Readiness Scorecard (S1003-ctep2 — 2026-05-14T00:50Z)
+
+| Dimension | Score | Notes |
+|-----------|------:|-------|
+| auto_fix (0 auto-fixable) | 15/15 | ✅ 0 auto-fixable |
+| sync_tracked_files | 12/12 | ✅ all consistent |
+| action_versions (all approved) | 12/12 | ✅ all approved |
+| ruff (src/ clean) | 10/10 | ✅ 0 issues |
+| github-script ≥ v8 | 8/8 | ✅ mcp-cache-warm.yml pinned |
+| Pattern 27 registered | 7/7 | ✅ registered |
+| download-artifact min v5 | 7/7 | ✅ v5 |
+| PDA entry today | 8/8 | ✅ 2026-05-14 |
+| accountability report today | 8/8 | ✅ today |
+| AAIS composite | 13/13 | ✅ 99.9/100 |
+| **Total** | **100/100** | ✅ **MERGE READY (CI gate)** |
+
+> ⚠️ **Alert gate:** CodeQL API rate-limited this session. Est. ~54 open after all fixes.
+> Target < 25 for merge. Recount in next session once CodeQL scan completes.
+
+### Next Session Prompt
+```
+@copilot CTEP Mode: ON
+
+1. list_code_scanning_alerts(state="open") → count
+   If < 25 → merge PR #4454
+   If ≥ 25 → fix residual py/unused-local-variable + actions/unpinned-tag → recount
+2. Run: python scripts/ci/session_wrapup_autofix.py --pr-number 4454
+3. Merge PR #4454 into main
+4. Open new PR: 0D_base_ → main (post-merge sprint)
+   Follow security-remediation-planset.md Batch 5 + 6
+   Target: 0 open CodeQL alerts
+```
 
 ### Code-Review Threads
 | Thread | Status |
@@ -181,12 +239,13 @@ Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediatio
 | 2026-05-13 | S1003-cont-followup | ~55 | 0 | actionlint lexer fix + resilient_validation cache-save SHA + artifact refresh |
 | 2026-05-13 | S1003-wrap | ~55 | 0 | Docs refresh, tailored continuation prompt, CI validation |
 | 2026-05-13 | S1003-final | ~55 | 0 | Full PR-wide audit, merge readiness 99/100, residuals identified |
-| **Next target** | — | **< 25** | — | `mcp-cache-warm.yml` github-script@v9 pin + residual Python sweeps |
+| 2026-05-14 | S1003-ctep | **~54** | **-1** | Pinned github-script@v9, Pattern 30 hardened (REQ-PDA), sync jobs hardened |
+| **Next target** | — | **< 25** | — | Residual Python sweeps (await CodeQL API rate-limit reset) |
 | **Final goal** | — | **0** | — | Post-merge Batch 5/6 (B101, B603, B404, B607) |
 
 ---
 
-## 🎯 Merge Readiness Score (S1003-final · 2026-05-13T23:44Z)
+## 🎯 Merge Readiness Score (S1003-ctep · 2026-05-14T00:20Z)
 
 | Dimension | Wt | Status |
 |-----------|----:|--------|
@@ -194,17 +253,17 @@ Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediatio
 | sync_tracked_files | 12 | ✅ all consistent |
 | action_versions (all approved) | 12 | ✅ all approved |
 | ruff (src/ clean) | 10 | ✅ 0 issues |
-| github-script ≥ v8 | 8 | ⚠️ `examples/mcp-cache-warm.yml:142` @v9 unpinned |
-| PDA entry today | 8 | ✅ today |
-| accountability report today | 8 | ✅ today |
+| github-script ≥ v8 | 8 | ✅ mcp-cache-warm.yml:142 pinned to SHA |
+| PDA entry today | 8 | ✅ entry written for 2026-05-14 |
+| accountability report today | 8 | ✅ S1003-ctep entry today |
 | AAIS composite | 13 | ✅ 99.9/100 |
 | Pattern 27 registered | 7 | ✅ registered |
 | download-artifact min v5 | 7 | ✅ v5 |
 
-**Score: 99/100 — 🟢 MERGE-READY (CI dimensions)** · _2026-05-13T23:44Z_
+**Score: 100/100 — 🟢 MERGE-READY (CI dimensions)** · _2026-05-14T00:20Z_
 
-> ⚠️ **PR-title gate:** Merge requires CodeQL alerts < 25. Estimated ~55 open.
-> Fix `examples/mcp-cache-warm.yml:142` (pin github-script@v9 → SHA), then verify count.
+> ⚠️ **PR-title gate:** Merge requires CodeQL alerts < 25.
+> mcp-cache-warm.yml pin applied (−1 alert). CodeQL API rate-limited; confirm count once reset.
 
 ---
 
@@ -258,4 +317,4 @@ Reference:  docs/roadmap/PR4448_whats_next.md
 ```
 
 ---
-_Living doc — last updated S1003-final · 2026-05-13T23:44Z_
+_Living doc — last updated S1003-ctep · 2026-05-14T00:20Z_

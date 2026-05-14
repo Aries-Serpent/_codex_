@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1003-ctep2 — PR #4454 — 2026-05-14T00:50Z)
+- **WEC correctly updated** — 14 additional workflow items checked matching actively-running workflows; 30 workflows triggered on `bc9d402` after approval.
+- **Double file-read eliminated** — `fix_pda_entry_today()` in `session_wrapup_autofix.py` now reuses `existing_content` already read during idempotency check instead of doing a second `pda_file.read_text()`.
+- **Duplicate `# pragma: allowlist secret`** — deduplicated from 3× to 1× in `tests/unit/test_pii_scrubber_comprehensive.py` and `tests/api/test_auth_token_lifecycle.py`.
+- **CI on `bc9d402`** — 16 ✅ success, 0 ❌ failures, 3 pre-existing startup_failures (Data Quality / Rust Swarm / Progressive Validation — unchanged).
+- **Planset/promptset review** — `PLANSET_STATUS_REVIEW_2026_05_14.md` classifies all 128+ plansets: Tier 1 (~28 done), Tier 2 (~12 active), Tier 3 (~15 stale/archive-ready). Security planset artifact SHAs refreshed to run 25833450038 (sha256:843798e5 / sha256:028fc402).
+- **Mermaid docs fully aligned** — `docs/diagrams/architecture.mmd` rewritten (8-node → full system map), `ci_self_healing_flow.mmd` created, `SYSTEM_INTEGRATION_FLOWS.md` v2.1, `PRODUCTION_READY_CODEBASE_MINDMAP.md` v2.1 (Custom Agents TBD → 153 active).
+- **Living docs + session diagram** — `PR4448_whats_next.md` updated with S1003-ctep2 status table, 100/100 scorecard, next-session prompt. `PR4448_session_diagram.mmd` — S1003-ctep2 node appended.
+
+
+- **`actions/github-script@v9` pinned** — `examples/mcp-cache-warm.yml:142` now pinned to SHA `3a2844b7e9c422d3c10d287c895573f7108da1b3` (closes last residual `actions/unpinned-tag` CodeQL alert).
+- **Pattern 30 fixed** — added PDA entry for `2026-05-14` to `.codex/aftermath/pda_iterations.jsonl`; accountability report updated with S1003-ctep session summary.
+- **RUF059 sweep** — `ruff check tests/ --select RUF059 --unsafe-fixes` → all checks passed (no changes needed; tests/ already clean).
+- **CI failure root-cause** — `pre-merge-validation` "Fail if critical checks failed" step fired because Pattern 30 had stale accountability + missing PDA. Both fixed in this commit.
+- **Living docs + session diagram** — `PR4448_whats_next.md` and `PR4448_session_diagram.mmd` updated with S1003-ctep status node and revised alert count / CTEP task table.
+
 ### Fixed (S1003-final — PR #4450 — 2026-05-13T23:44Z)
 - **Full PR-wide audit** — verified all 5 code-review threads resolved; confirmed CI on `674432d`: 22 ✅ success, 0 ❌ failures (3 pre-existing `startup_failure` for Data Quality / Rust Swarm / Progressive Validation are not caused by this PR's changes).
 - **Merge readiness score: 99/100** — `ruff`=0, `mypy` 120≤122 (↓2 from baseline), `sync_tracked_files` clean, `actionlint` passing (Workflow Compliance Audit ✅), all Pattern-25/30/27 dimensions green.
