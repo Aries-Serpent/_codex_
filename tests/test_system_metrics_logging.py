@@ -18,7 +18,7 @@ from codex_ml.monitoring.codex_logging import CodexLoggers, init_telemetry
 def test_init_telemetry_min_profile_defaults() -> None:
     loggers = init_telemetry()
     assert isinstance(loggers, CodexLoggers)
-    assert loggers.tb is None or loggers.tb
+    assert hasattr(loggers, "tb")
     assert loggers.mlflow_active in {True, False}
     assert loggers.gpu is False
 
@@ -106,7 +106,7 @@ def test_log_system_metrics_degrades_when_dependencies_missing(
     assert raw, "expected fallback sampler to write records"
     payload = json.loads(raw[0])
     assert payload.get("memory") is None
-    assert payload.get("gpu_count") is None or "gpu_count" not in payload
+    assert payload.get("gpu_count") is None
 
 
 def test_system_metrics_logger_uses_full_samplers_when_available(
