@@ -1,10 +1,10 @@
-# Session Context — 2026-05-14T15:32:19Z
+# Session Context — 2026-05-14T15:41:27Z
 **Branch:** `copilot/update-python-version-documentation`  **PR:** #4460  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3921` (✅)
-- GraphQL remaining: `4984` (✅)
+- REST remaining: `3855` (✅)
+- GraphQL remaining: `4979` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `True`  Branch: `copilot/update-python-version-documentation` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 - **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Validation Pipeline** — `failure` on `copilot/update-python-version-documentation` (2026-05-14)
-- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-14)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
+- `d56c5b12` fix: update accountability report to satisfy Pattern 25 CI gate — copilot-swe-agent[bot] (2026-05-14)
+- `ac5dd921` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
 - `4887e807` chore: Generate follow-up prompt for PR #4460 [skip ci] — github-actions[bot] (2026-05-14)
 - `c2c52050` docs: clarify version pinning strategy and roadmap date projections — copilot-swe-agent[bot] (2026-05-14)
 - `e40c1250` docs: clarify version pinning strategy and roadmap date projections — copilot-swe-agent[bot] (2026-05-14)
 - `f0c4c1e1` Initial plan — copilot-swe-agent[bot] (2026-05-14)
 - `721c290f` Merge pull request #4458 from Aries-Serpent/copilot/cognitive-brain-phase-7-task — Statix (2026-05-14)
 - `ef010ffa` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
-- `8b4b2882` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
-- `72de75e1` docs(status): refresh living docs and accountability after approved workflow fan — copilot-swe-agent[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
