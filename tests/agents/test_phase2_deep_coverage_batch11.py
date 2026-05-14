@@ -546,15 +546,14 @@ class TestPhase2_PerformanceIntegration:
         pool = {"connections": [f"conn_{i}" for i in range(5)], "available": 5}
 
         # Acquire
-        if pool["available"] > 0:
-            initial_available = pool["available"]
-            initial_connection_count = len(pool["connections"])
-            assert initial_available > 0
-            acquired_connection = pool["connections"].pop(0)
-            assert acquired_connection.startswith("conn_")
-            pool["available"] -= 1
-            assert pool["available"] == initial_available - 1
-            assert len(pool["connections"]) == initial_connection_count - 1
+        initial_available = pool["available"]
+        initial_connection_count = len(pool["connections"])
+        assert initial_available > 0
+        acquired_connection = pool["connections"].pop(0)
+        assert acquired_connection.startswith("conn_")
+        pool["available"] -= 1
+        assert pool["available"] == initial_available - 1
+        assert len(pool["connections"]) == initial_connection_count - 1
 
         # Release
         pool["connections"].append(acquired_connection)

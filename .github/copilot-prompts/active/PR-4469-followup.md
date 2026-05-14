@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4469
 
-**PR**: #4469 - PR #4469  
+**PR**: #4469  
 **Branch**: `copilot/fix-deprecated-utcfromtimestamp`  
 **Author**: @Copilot  
 **Date**: 2026-05-14  
