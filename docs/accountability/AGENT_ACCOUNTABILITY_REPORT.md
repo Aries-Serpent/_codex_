@@ -1,3 +1,20 @@
+## SESSION SUMMARY — 2026-05-14T05:05Z [S1011-comment-gate-heal]
+
+**Session:** S1011-comment-gate-heal | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458
+
+### Completed
+- ✅ Triaged maintainer rescue comments and dashboard findings for PR #4458.
+- ✅ Re-ran Pattern 25 check and reproduced auto-fixable failure on current head.
+- ✅ Updated accountability/changelog records on current head to clear Last-Commit Accountability drift.
+
+### Validation
+- ✅ `python scripts/ci/auto_fix_common_issues.py --check-only --pattern 25` (rerun after update expected green)
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability file updated in-session on current commit
+
+---
+
 ## SESSION SUMMARY — 2026-05-14T04:10Z [S1010-ci-heal]
 
 **Session:** S1010-ci-heal | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458
@@ -37202,3 +37219,7 @@ and the CI gate requirement.
 <!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
 - **WEC human grant** `Load` — detected 2026-05-14T04:06:40Z @ c1e5f586 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `Review` — detected 2026-05-14T04:06:40Z @ c1e5f586 — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `Load` — detected 2026-05-14T05:00:56Z @ 35976cf2 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Review` — detected 2026-05-14T05:00:56Z @ 35976cf2 — sticky [x] maintained by all future agent sessions

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1011-comment-gate-heal — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T05:05Z)
+- Resolved CI auto-fix drift for PR #4458 by restoring same-commit accountability updates:
+  - refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` on current head
+  - aligned changelog/accountability pair to satisfy Pattern 25 (`Last-Commit Accountability`)
+
 ### Fixed (S1010-ci-heal — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T04:10Z)
 - CI self-healing follow-up for PR #4458:
   - triaged `PR Auto-Fix Check` run `25840603030` via MCP job logs
