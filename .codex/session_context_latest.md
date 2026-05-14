@@ -20,6 +20,10 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-deprecated-utcfromtimestamp`
 - `⏳ Auto-approved — agent is pre-authorized` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-14)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
