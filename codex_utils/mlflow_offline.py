@@ -4,6 +4,7 @@ import importlib
 import os
 from collections.abc import Generator
 from contextlib import contextmanager, nullcontext
+from pathlib import Path
 from typing import Any, Optional
 
 try:
@@ -82,6 +83,11 @@ def mlflow_offline_session(
     prev_local_dir = os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
     resolved_dir = os.path.abspath(artifacts_dir)
     local_uri = bootstrap_mlflow_env(resolved_dir, force=True)
+    normalized_local_uri = (
+        Path(resolved_dir).as_uri()
+        if local_uri.startswith("file:") and not local_uri.startswith("file://")
+        else local_uri
+    )
 
     mlflow = _safe_import_mlflow()
     run_cm: Any
@@ -93,7 +99,7 @@ def mlflow_offline_session(
             yielded = None
         else:
             try:
-                mlflow.set_tracking_uri(local_uri)
+                mlflow.set_tracking_uri(normalized_local_uri)
                 if experiment:
                     mlflow.set_experiment(experiment)
             except Exception as exc:  # pragma: no cover - defensive guard
