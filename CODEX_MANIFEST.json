@@ -1,6 +1,10 @@
 {
   "schema_version": "1.0",
+<<<<<<< copilot/cognitive-brain-phase-7-tasks
   "generated_at": "2026-05-14T03:52:34Z",
+=======
+  "generated_at": "2026-05-14T12:38:25Z",
+>>>>>>> main
   "agents": [
     {
       "name": "github-app-manager",
@@ -2111,5 +2115,9 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
+<<<<<<< copilot/cognitive-brain-phase-7-tasks
   "integrity_sha256": "d491573eccc888cc0c36a7fd29ad25fae989d7761719448edb0e2d9f11616de1"
+=======
+  "integrity_sha256": "e1004e997fe82b75f846f9a7651709f0f307e83f8e5b44e747604c0b796f8009"
+>>>>>>> main
 }
