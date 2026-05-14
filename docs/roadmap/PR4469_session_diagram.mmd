@@ -1,0 +1,23 @@
+flowchart TD
+    A["🧭 PR #4469 follow-up start\nBranch: copilot/fix-deprecated-utcfromtimestamp\nBase: copilot/fix-deprecation-warning-datetime"] --> B["📡 MCP triage\nbase-branch + head-branch workflow runs\nreview-thread lookup for line 550"]
+    B --> C["🔀 Divergence confirmed\nPR mergeable = CONFLICTING\nstacked branch behind base"]
+    C --> D["⬇️ Merge prep\nunshallow repo\nfetch origin/copilot/fix-deprecation-warning-datetime"]
+    D --> E["🧪 Dry-run conflict scan\nmerge-tree shows docs + test conflict set"]
+    E --> F["🔧 Resolve merge conflicts\nsession_context + CHANGELOG + accountability\nbatch11 line-550 review fix"]
+    F --> G["✅ Finalize true merge commit\n2e77a78"]
+    G --> H["📡 Post-push monitoring\nBranch Rebase Gate ✅\nrequired suites mostly in progress"]
+    H --> I["🧪 Local validation rerun\npytest + sync_tracked_files + auto_fix_common_issues ✅"]
+    I --> J["📝 Living docs refresh\nPR4469_whats_next + PR4469_session_diagram\nCHANGELOG + accountability updated"]
+    J --> K["🎯 Wrap-up window\nreply to maintainer\nmonitor remaining approved workflows"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#d62828,color:#fff
+    style D fill:#457b9d,color:#fff
+    style E fill:#457b9d,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#1b4332,color:#fff
+    style H fill:#457b9d,color:#fff
+    style I fill:#1b4332,color:#fff
+    style J fill:#2d6a4f,color:#fff
+    style K fill:#f4a261,color:#000
