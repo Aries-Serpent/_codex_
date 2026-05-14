@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1019-merge-conflict-resolution — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T14:34Z)
+- Resolved merge-conflict state versus `main` by merging `origin/main` and reconciling `.secrets.baseline` conflict while preserving current branch `CODEX_MANIFEST` hash linkage.
+- Re-ran tracked-file repair to keep manifest/secrets pointers consistent:
+  - `python scripts/ci/sync_tracked_files.py --fix`
+- Re-ran required post-conflict gates:
+  - `ruff` ✅
+  - `mypy_baseline` ✅ (121 ≤ 122)
+  - `auto_fix_common_issues --check-only` ✅ except Pattern 25 freshness addressed in this docs/status commit.
+- Verified previously-reported copilot review findings are already represented in code paths/tests for execute_action exception handling and threshold-config mtime failure debounce.
+
 ### Fixed (S1018-set2-first-stop-fix — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T14:07Z)
 - Completed the pending deterministic Set 2 stabilization loop:
   - `python3 -m pytest -x` first-stop reproduced at `tests/utils/test_codex_utils_offline.py::test_mlflow_offline_session_with_mlflow`.
