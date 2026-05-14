@@ -1,36 +1,32 @@
-# Session Context — 2026-05-14T19:00:20Z
-**Branch:** `copilot/remove-duplicate-pragma-comment`  **PR:** #4465  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T20:42:35Z
+**Branch:** `copilot/fix-deprecation-warning-datetime`  **PR:** #4469  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4711` (✅)
-- GraphQL remaining: `4977` (✅)
+- REST remaining: `4328` (✅)
+- GraphQL remaining: `4930` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4465 — fix(ci): heal validation blockers and resolve CODEX_MANIFEST merge drift
-State: `open`  Draft: `False`  Branch: `copilot/remove-duplicate-pragma-comment` → `main`
-
-### ❌ 2 Failing CI Check(s)
-- `Cleanup artifacts` (failure)
-- `Prepare` (failure)
+## 📋 PR #4469 — Fix datetime deprecation, unused var, hasattr mismatch, duplicate pragma, and improve quantum conftest docstring
+State: `open`  Draft: `True`  Branch: `copilot/fix-deprecated-utcfromtimestamp` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Copilot code review** — `failure` on `refs/pull/4465/head` (2026-05-14)
 
 ## 📝 Recent Commits
-- `15b71f1e` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-14)
-- `6d4a5138` docs: refresh accountability after monitoring polish — copilot-swe-agent[bot] (2026-05-14)
-- `b443d5fa` docs: clarify PR4465 monitoring notes — copilot-swe-agent[bot] (2026-05-14)
-- `67fc2a05` fix(ci): resolve CODEX_MANIFEST merge drift — copilot-swe-agent[bot] (2026-05-14)
-- `83c829e4` docs: refresh PR4465 monitoring status — copilot-swe-agent[bot] (2026-05-14)
-- `d4091d03` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-14)
-- `e145e591` chore: update CI rescue plan — copilot-swe-agent[bot] (2026-05-14)
-- `cee56389` fix(ci): heal validation first-stop failures — copilot-swe-agent[bot] (2026-05-14)
+- `174f1493` Fix datetime deprecation, B018 useless expression, hasattr/method mismatch + ren — copilot-swe-agent[bot] (2026-05-14)
+- `147d9ed7` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
+- `043e3ad9` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
+- `2555920c` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
+- `ba81c628` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
+- `2330285c` Fix B018 no-op expression and rename test_create_workflow to test_get_workflow — copilot-swe-agent[bot] (2026-05-14)
+- `785a0a8b` chore: Generate follow-up prompt for PR #4468 [skip ci] — github-actions[bot] (2026-05-14)
+- `a2a26ed2` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

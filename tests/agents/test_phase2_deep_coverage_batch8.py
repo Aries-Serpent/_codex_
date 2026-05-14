@@ -32,12 +32,12 @@ class TestPhase2_DeveloperOrchestrator:
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         assert orchestrator is not None
 
-    def test_create_workflow(self):
-        """Test creating a workflow"""
+    def test_get_workflow(self):
+        """Test retrieving a workflow"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        if hasattr(orchestrator, "create_workflow"):
+        if hasattr(orchestrator, "get_workflow"):
             workflow = orchestrator.get_workflow(name="test_workflow")
             assert workflow is not None
 
