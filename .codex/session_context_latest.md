@@ -1,32 +1,42 @@
-# Session Context — 2026-05-14T20:42:35Z
-**Branch:** `copilot/fix-deprecation-warning-datetime`  **PR:** #4469  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T22:28:00Z
+**Branch:** `0D_base_`  **PR:** #4470  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4328` (✅)
-- GraphQL remaining: `4930` (✅)
+- Recommended method chain: `rest → graphql → gh_cli`
+- REST remaining: `4676` (✅)
+- GraphQL remaining: `4971` (✅)
 - gh CLI: ✅
-- CodeQL CLI: ✅
+- CodeQL CLI: ❌
 
-## 📋 PR #4469 — Fix datetime deprecation, unused var, hasattr mismatch, duplicate pragma, and improve quantum conftest docstring
-State: `open`  Draft: `True`  Branch: `copilot/fix-deprecated-utcfromtimestamp` → `main`
+## 📋 PR #4470 — 0 d base
+State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
+
+### ❌ 12 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-14)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
-- `174f1493` Fix datetime deprecation, B018 useless expression, hasattr/method mismatch + ren — copilot-swe-agent[bot] (2026-05-14)
-- `147d9ed7` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
-- `043e3ad9` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
-- `2555920c` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
-- `ba81c628` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
-- `2330285c` Fix B018 no-op expression and rename test_create_workflow to test_get_workflow — copilot-swe-agent[bot] (2026-05-14)
-- `785a0a8b` chore: Generate follow-up prompt for PR #4468 [skip ci] — github-actions[bot] (2026-05-14)
-- `a2a26ed2` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-14)
+- `fdcb9bd5` fix: address PR #4470 review feedback and sync tracked files — copilot-swe-agent[bot] (2026-05-14)
+- `2b7e066f` Merge remote-tracking branch 'origin/main' into 0D_base_ — copilot-swe-agent[bot] (2026-05-14)
+- `3c884f36` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
+- `e21847db` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
+- `caa5345b` chore: Generate follow-up prompt for PR #4470 [skip ci] — github-actions[bot] (2026-05-14)
+- `38a49674` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-14)
+- `96a7406e` Merge pull request #4469 from Aries-Serpent/copilot/fix-deprecated-utcfromtimest — Statix (2026-05-14)
+- `87866724` test: align connection pool state with review feedback — copilot-swe-agent[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

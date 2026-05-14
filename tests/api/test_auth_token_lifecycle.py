@@ -9,7 +9,7 @@ Covers:
 - Multi-session revoke-all (revoke all user sessions on password change)
 - Concurrent session isolation (logout one session, other remains valid)
 - Token rotation preserves user identity
-""" # pragma: allowlist secret # pragma: allowlist secret
+""" # pragma: allowlist secret
 
 from __future__ import annotations
 
@@ -56,12 +56,12 @@ def logged_in_user(client):
         json={
             "username": "alice",
             "email": "alice@token-test.com",
-            "password": "Str0ngPass!",
+            "password": "Str0ngPass!",  # pragma: allowlist secret
         },
     )
     resp = client.post(
         "/auth/login",
-        json={"username_or_email": "alice", "password": "Str0ngPass!"},
+        json={"username_or_email": "alice", "password": "Str0ngPass!"},  # pragma: allowlist secret
     )
     assert resp.status_code == 200
     return client, resp.json()
@@ -219,18 +219,18 @@ class TestSessionIsolation:
             json={
                 "username": "bob",
                 "email": "bob@iso-test.com",
-                "password": "Str0ngPass!",
+                "password": "Str0ngPass!",  # pragma: allowlist secret
             },
         )
 
         # Login twice → two sessions
         login1 = client.post(
             "/auth/login",
-            json={"username_or_email": "bob", "password": "Str0ngPass!"},
+            json={"username_or_email": "bob", "password": "Str0ngPass!"},  # pragma: allowlist secret
         )
         login2 = client.post(
             "/auth/login",
-            json={"username_or_email": "bob", "password": "Str0ngPass!"},
+            json={"username_or_email": "bob", "password": "Str0ngPass!"},  # pragma: allowlist secret
         )
         assert login1.status_code == 200
         assert login2.status_code == 200
@@ -256,9 +256,9 @@ class TestSessionIsolation:
         """revoke_all_user_tokens invalidates every session for a user."""
         _store, tokens, auth = auth_components
 
-        auth.register("charlie", "charlie@test.com", "Str0ngPass!")
-        result1 = auth.login("charlie", "Str0ngPass!")
-        result2 = auth.login("charlie", "Str0ngPass!")
+        auth.register("charlie", "charlie@test.com", "Str0ngPass!")  # pragma: allowlist secret
+        result1 = auth.login("charlie", "Str0ngPass!")  # pragma: allowlist secret
+        result2 = auth.login("charlie", "Str0ngPass!")  # pragma: allowlist secret
 
         # Both session tokens should be valid
         tokens.validate_token(result1.session_token)

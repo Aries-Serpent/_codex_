@@ -7,10 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4470)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4470 (SHA `071e62e1`) at 2026-05-14T21:41Z [auto-generated]
+
+### Fixed (S1032-pr4469-final-review-polish — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:30Z)
+- Tightened `tests/agents/test_phase2_deep_coverage_batch11.py::test_connection_pooling` so acquisition removes a connection from the pool list and release restores it, keeping the counter and list state aligned.
+- Corrected the merged `PR-4468-followup.md` template so its modified-files and phase-objective sections match the underlying completed work.
+- Refreshed the PR #4469 living docs with the latest approved-workflow monitoring snapshot and preserved the final wrap-up plan.
+
+### Fixed (S1031-pr4469-final-doc-polish — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:27Z)
+- Polished the new PR #4469 living-doc status table so in-progress work uses `🔄` rather than a contradictory completed checkmark.
+- Removed duplicate header text from the merged `PR-4468-followup.md` prompt file.
+- Refreshed accountability metadata so the final wrap-up commit keeps Pattern 25 green.
+
+### Fixed (S1030-pr4469-post-approval-monitoring — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:20Z)
+- Monitored the approved workflow fanout on merge commit `2e77a78` and recorded the current required-check snapshot in new PR #4469 living docs.
+- Added `docs/roadmap/PR4469_whats_next.md` and `docs/roadmap/PR4469_session_diagram.mmd` to capture the merge-resolution path, current workflow state, and final wrap-up plan.
+- Strengthened the line-550 connection-pool test follow-up with an immediate `available` count assertion.
+
+### Fixed (S1029-pr4469-merge-conflict-resolution — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:13Z)
+- Merged `copilot/fix-deprecation-warning-datetime` into PR #4469 and resolved the stacked-branch conflicts in session/context metadata, accountability docs, and `tests/agents/test_phase2_deep_coverage_batch11.py`.
+- Addressed the two unresolved review findings on `tests/agents/test_phase2_deep_coverage_batch11.py:550` by replacing the no-op connection access with an acquired value plus assertion.
+- Re-ran the targeted lint/test/helper validation set on the resolved merge tree before finalizing the merge commit.
+
+### Fixed (S1028-pr4469-bot-feedback-triage — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T20:48Z)
+- Re-triaged the new compiled bot-feedback comment for PR #4469 on head `255a906` and confirmed the reported code quality/security checks are already green on the current branch snapshot.
+- Verified that the remaining newer workflow runs are approval-gated `action_required` fanout runs from the workflow-execution path, not new code-fixable regressions in the touched files.
+- Re-ran the required helper validations (`ruff --fix`, `mypy_baseline --require-baseline`, `auto_fix_common_issues --check-only`, `sync_tracked_files --check`) plus the PR's touched-area pytest selection before the next push.
+
 ### Fixed (S1027-pr4468-final-review-gate — `copilot/fix-deprecation-warning-datetime` — 2026-05-14T20:50Z)
 - Addressed all reviewer comments on PR #4468: B018 useless-expression fix (commit `2330285`), test rename (`test_create_workflow` → `test_get_workflow`), ISO_FORMAT output confirmed unchanged, session_context_latest.md intentionally tracked.
 - Replied to blocking CI Rescue comment; CHANGELOG/accountability gate failure on `f613ef3` had already been resolved in `2555920`.
 - Confirmed all 7 bot-reported findings reviewed and resolved; pre-merge validation shows all checks passed.
+
+### Fixed (S1027-pr4469-datetime-deprecation-followups — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T20:14Z)
+- Replaced deprecated `datetime.utcfromtimestamp(...)` usage in `src/codex/archive/logging_config.py` with timezone-aware `datetime.fromtimestamp(..., tz=UTC)`.
+- Cleaned up three review-polish issues in tests by removing an unused temporary assignment, aligning the `hasattr(...)` guard with the method that is actually called, and deduplicating the token lifecycle module pragma.
+- Expanded `tests/quantum/conftest.py` with a clearer module docstring describing how `tests.utils.quantum_helpers` is shared across the quantum test suite.
+- Restored the PR scope by resetting `.codex/session_context_latest.md` to `origin/main` after an earlier progress-only commit accidentally captured session context drift.
 
 ### Fixed (S1026-pr4465-late-monitoring-refresh — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:33Z)
 - Refreshed the PR #4465 living docs and accountability trail against the latest monitored head `57f2268`.
