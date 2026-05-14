@@ -1,32 +1,42 @@
-# Session Context — 2026-05-14T02:03:15Z
-**Branch:** `copilot/sub-pr-4455`  **PR:** #4456  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T02:27:15Z
+**Branch:** `copilot/update-roadmap-timeline-notation`  **PR:** #4455  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4763` (✅)
-- GraphQL remaining: `4969` (✅)
+- REST remaining: `4055` (✅)
+- GraphQL remaining: `4975` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4456 — [WIP] Fix timeline notation and clarify phase context in roadmap
-State: `open`  Draft: `True`  Branch: `copilot/sub-pr-4455` → `copilot/update-roadmap-timeline-notation`
+## 📋 PR #4455 — Fix ROADMAP timeline notation, eliminate double file-read, dedup pragmas, strengthen validator tests
+State: `open`  Draft: `False`  Branch: `copilot/update-roadmap-timeline-notation` → `main`
+
+### ❌ 14 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Dispatch & Auto-Approve Newly-Checked Workflows` (cancelled)
+- `Post gate failure notice` (cancelled)
+- `🚦 Comment review gate` (cancelled)
+- `generate` (cancelled)
+- `Post rescue comment on failure` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Execution Gate** — `failure` on `copilot/update-roadmap-timeline-notation` (2026-05-14)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Workflow Execution Gate** — `failure` on `copilot/update-roadmap-timeline-notation` (2026-05-14)
-- **Validation Pipeline** — `failure` on `copilot/update-roadmap-timeline-notation` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **Iterative Self-Healing CI** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
-- `cd14a781` Initial plan — copilot-swe-agent[bot] (2026-05-14)
-- `0186e7ca` chore: Generate follow-up prompt for PR #4455 [skip ci] — github-actions[bot] (2026-05-14)
-- `2d5d9f77` Apply 11 diffs: ROADMAP fixes, wrapup double-read, pragma dedup, validator tests — copilot-swe-agent[bot] (2026-05-14)
-- `1ff5b6e3` Initial plan: apply 11 fixes from problem statement + CTEP session wrap-up — copilot-swe-agent[bot] (2026-05-14)
-- `587b69dc` Initial plan — copilot-swe-agent[bot] (2026-05-14)
-- `47e0cbb5` Merge pull request #4454 from Aries-Serpent/0D_base_ — Statix (2026-05-14)
-- `f8b931bb` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
-- `55895a74` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
+- `34416be3` Merge pull request #4456 from Aries-Serpent/copilot/sub-pr-4455 — Statix (2026-05-14)
+- `30beab1f` Apply issue 4444 failure-pattern triage to living docs and session tracking — copilot-swe-agent[bot] (2026-05-14)
+- `924ff6e5` Update living docs and session tracking with post-approval sprint status — copilot-swe-agent[bot] (2026-05-14)
+- `2e40004d` Address post-merge sprint steps and fetch CodeQL artifact snapshot — copilot-swe-agent[bot] (2026-05-14)
+- `37766b70` chore: Generate follow-up prompt for PR #4456 [skip ci] — github-actions[bot] (2026-05-14)
+- `675cf81d` Merge branch 'copilot/update-roadmap-timeline-notation' into copilot/sub-pr-4455 — Statix (2026-05-14)
+- `9560a37e` Plan post-merge sprint comment remediation — copilot-swe-agent[bot] (2026-05-14)
+- `717f2327` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

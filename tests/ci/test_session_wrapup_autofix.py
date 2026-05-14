@@ -411,6 +411,7 @@ class TestAutoFixAllMissing:
             patch.object(swa, "_last_commit_changed", return_value=True),
             patch.object(swa, "_changelog_has_unreleased", return_value=True),
             patch.object(swa, "fix_manifest_baseline", return_value=False),
+            patch.object(swa, "fix_pda_entry_today", return_value=False),
             patch.object(swa, "update_pr_description", return_value=False),
             patch.object(swa, "fix_pr_body_checkboxes", return_value=False),
             patch.object(swa, "select_merge_required_workflows", return_value=False),
@@ -418,7 +419,7 @@ class TestAutoFixAllMissing:
             results = swa.auto_fix_all_missing(pr_number="42")
         assert set(results.keys()) == {
             "accountability", "changelog", "manifest_baseline",
-            "pr_description", "pr_body_wec", "wec_workflow_activation",
+            "pda_today", "pr_description", "pr_body_wec", "wec_workflow_activation",
         }
 
     def test_calls_fixes_when_needed(self):
@@ -428,6 +429,7 @@ class TestAutoFixAllMissing:
             patch.object(swa, "fix_accountability_report", return_value=True) as mock_acct,
             patch.object(swa, "fix_changelog", return_value=True) as mock_cl,
             patch.object(swa, "fix_manifest_baseline", return_value=True) as mock_mfst,
+            patch.object(swa, "fix_pda_entry_today", return_value=True) as mock_pda,
             patch.object(swa, "update_pr_description", return_value=True) as mock_desc,
             patch.object(swa, "fix_pr_body_checkboxes", return_value=True) as mock_wec,
             patch.object(swa, "select_merge_required_workflows", return_value=True) as mock_act,
@@ -436,6 +438,7 @@ class TestAutoFixAllMissing:
         mock_acct.assert_called_once()
         mock_cl.assert_called_once()
         mock_mfst.assert_called_once()
+        mock_pda.assert_called_once()
         mock_desc.assert_called_once()
         mock_wec.assert_called_once()
         mock_act.assert_called_once()
@@ -446,6 +449,7 @@ class TestAutoFixAllMissing:
             patch.object(swa, "_last_commit_changed", return_value=True),
             patch.object(swa, "_changelog_has_unreleased", return_value=True),
             patch.object(swa, "fix_manifest_baseline", return_value=False),
+            patch.object(swa, "fix_pda_entry_today", return_value=False),
             patch.object(swa, "update_pr_description") as mock_desc,
             patch.object(swa, "fix_pr_body_checkboxes") as mock_wec,
             patch.object(swa, "select_merge_required_workflows") as mock_act,
@@ -462,6 +466,7 @@ class TestAutoFixAllMissing:
             patch.object(swa, "fix_accountability_report", return_value=True) as mock_acct,
             patch.object(swa, "fix_changelog", return_value=True),
             patch.object(swa, "fix_manifest_baseline", return_value=False),
+            patch.object(swa, "fix_pda_entry_today", return_value=False),
             patch.object(swa, "update_pr_description", return_value=False),
             patch.object(swa, "fix_pr_body_checkboxes", return_value=False),
             patch.object(swa, "select_merge_required_workflows", return_value=False),
