@@ -71,7 +71,7 @@
 
 ### ✅ Phase 1-5: Foundation (COMPLETE)
 
-**Timeline**: 2025-Cycle 4 to 2025-12-29
+**Timeline**: 2025-Q4 to 2025-12-29
 **Status**: ✅ Complete
 
 **Delivered**:
@@ -186,7 +186,7 @@
 **Documentation**: Update ADVANCED_FEATURES_PLANSET.md with implementation details
 
 #### 2. **Coverage Improvement to 95%+** (Phase 9 extension)
-**Timeline**: 2026-04-13 to 2026-05-22
+**Execution Timeline (within Phase 9 context)**: 2026-04-13 to 2026-05-22
 **Phase Context Timeline**: 2026-04-01 to 2026-06-30
 **Status**: 🟢 Active
 **Effort**: 5-8 sessions (~150K-300K tokens)
@@ -262,7 +262,7 @@
 ### High Priority
 
 #### 0. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS
-**Timeline**: 2026-03-15 to 2026-05-31  
+**Timeline**: Current cycle (live schedule maintained in `docs/ops/SAR_METHODOLOGY.md`)  
 **Status**: 🟡 In progress (as of 2026-05-08 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31  
 **Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
 
@@ -387,7 +387,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-05-14 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
+> ✅ Updated 2026-05-14 (Workstream 142, Session 116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
@@ -437,7 +437,7 @@
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Last Content Update**: 2026-05-11 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
+**Last Content Update**: 2026-05-14 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
 **Next Review**: 2026-06-06
 **Version**: 2.1.1
 

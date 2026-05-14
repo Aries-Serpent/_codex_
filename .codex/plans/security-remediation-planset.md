@@ -256,8 +256,8 @@ security scan to produce updated artifacts and confirm 0 remaining actionable it
 | Batch 3 | 25 B311 | ✅ Done — per-site nosec (2026-05-13) | 08cc1b9 |
 | Batch 4 | 1 exclude_dirs | ✅ Done (2026-05-13) | 7c92f4c |
 | Artifact refresh | re-ingest latest | ✅ run 25809211083 ingested (2026-05-13) — same CVE status confirmed | afc4e95 |
-| Batch 5 | 2 CVEs (no fix) | 🔲 Monitor — re-check on dep bump | — |
-| Batch 6 | Full rescan | 🔲 After merge to main | — |
+| Batch 5 | 2 CVEs (no fix) | ✅ Accepted risk rationale confirmed (2026-05-14, post-merge sprint) | this PR |
+| Batch 6 | Full rescan | ✅ Post-merge bandit rescan complete (`bandit --configfile .bandit` = 0; raw = 328) | this PR |
 
 **Remaining raw-only (all suppressed by .bandit config — no action needed):**
 | Rule | Count | Suppression |

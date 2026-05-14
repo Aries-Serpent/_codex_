@@ -806,6 +806,30 @@ flowchart TD
 
 ---
 
+### 13.1 Post-merge CVE acceptance and bandit baseline (2026-05-14)
+
+- `diskcache` (`CVE-2025-69872`) and `sqlitedict` (`CVE-2024-35515`) remain accepted-risk
+  transitive dependencies because no fix versions are currently available.
+- Accepted-risk rationale is tracked in:
+  - `pyproject.toml` (dev dependency notes)
+  - `.codex/plans/security-remediation-planset.md` §Batch 5 and Master Tracking
+- Post-merge sprint rescan command:
+
+```bash
+mkdir -p .codex/scans
+bandit -r src/ --configfile .bandit -f json -o .codex/scans/bandit-post-merge.json
+```
+
+- Result: `0` findings with `.bandit` configuration.
+- Raw verification (`bandit -r src/ -f json`) remains `328` findings, all from globally
+  suppressed families:
+  - `B101=226`
+  - `B603=48`
+  - `B404=36`
+  - `B607=18`
+
+---
+
 ## 14. References & Standards
 
 | Standard | Relevance to SAR |

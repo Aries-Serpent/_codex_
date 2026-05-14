@@ -8,6 +8,7 @@ Tests cover:
   - Code quality checks (syntax, linting)
 """
 
+import hashlib
 import tempfile
 from pathlib import Path
 
@@ -61,6 +62,18 @@ class TestFileStructureValidation:
         finally:
             Path(temp_path).unlink()
 
+    def test_invalid_python_syntax(self):
+        """Test invalid Python syntax is detected."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+            f.write("def broken_func(\n    print('oops')\n")  # Unclosed parenthesis
+            temp_path = f.name
+
+        try:
+            result = validate_file_structure(temp_path)
+            assert result["valid_syntax"] is False
+        finally:
+            Path(temp_path).unlink()
+
     def test_trailing_whitespace_detection(self):
         """Test detection of trailing whitespace."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
@@ -76,8 +89,14 @@ class TestFileStructureValidation:
     def test_nonexistent_file(self):
         """Test graceful handling of missing file."""
         result = validate_file_structure("/nonexistent/file.py")
-        # Should return a dict with all checks (won't be validated)
+        # Should return a dict with all checks marked as failed for missing file
         assert isinstance(result, dict)
+        assert "has_shebang" in result
+        assert "balanced_braces" in result
+        assert "valid_syntax" in result
+        assert result["has_shebang"] is False
+        assert result["balanced_braces"] is False
+        assert result["valid_syntax"] is False
 
 
 class TestChecksumValidation:
@@ -120,6 +139,8 @@ class TestChecksumValidation:
             wrong_sha = "0" * 64
             valid, _sha = validate_with_checksum(temp_path, wrong_sha)
             assert valid is False
+            expected_sha = hashlib.sha256(b"test content\n").hexdigest()
+            assert _sha == expected_sha
         finally:
             Path(temp_path).unlink()
 
