@@ -1,5 +1,23 @@
 ```mermaid
 flowchart TD
+    S1020_A["🧭 S1020 Monitoring Cycle\n2026-05-14T14:34Z\nhead a2f9801"] --> S1020_B["🔀 Merge conflict resolved\norigin/main merged\n.secrets.baseline reconciled"]
+    S1020_B --> S1020_C["✅ Post-conflict gates rerun\nruff + mypy baseline\nauto_fix_common_issues"]
+    S1020_C --> S1020_D["✅ Pattern 25/30 green\naccountability + changelog refreshed"]
+    S1020_D --> S1020_E["📡 Maintainer approved pending workflows\nbroad fanout now in progress"]
+    S1020_E --> S1020_F["✅ Completed successes include\nE→D Transition + gate workflows"]
+    S1020_E --> S1020_G["⏳ Continue MCP monitoring\nuntil no completed failures remain"]
+
+    style S1020_A fill:#4a4e69,color:#fff
+    style S1020_B fill:#1b4332,color:#fff
+    style S1020_C fill:#1b4332,color:#fff
+    style S1020_D fill:#1b4332,color:#fff
+    style S1020_E fill:#457b9d,color:#fff
+    style S1020_F fill:#2d6a4f,color:#fff
+    style S1020_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
     S1018_A["🔄 S1018-set2-first-stop-fix\n2026-05-14T14:07Z\nhead db84d03"] --> S1018_B["🧪 Full-suite first-stop captured\npytest -x stopped at\nmlflow_offline URI format assertion"]
     S1018_B --> S1018_C["✅ Minimal fix applied\nnormalize local file URI\nbefore mlflow.set_tracking_uri"]
     S1018_C --> S1018_D["✅ Targeted regression passes\ntest_mlflow_offline_session_with_mlflow"]
