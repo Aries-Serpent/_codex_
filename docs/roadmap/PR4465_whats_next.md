@@ -1,5 +1,49 @@
 # PR #4465 — What's Next
 
+## 🔄 Post-Approval Monitoring + PR-Wide Review Update (S1024 — 2026-05-14T19:14Z)
+
+| Objective | Status |
+|-----------|--------|
+| Monitor newly approved workflows on the latest review-followup head | ✅ Snapshot captured |
+| Perform PR-wide automated review before concluding | ✅ Complete |
+| Address any newly surfaced PR-wide issues | ✅ Complete |
+| Refresh living docs + CHANGELOG + accountability with current status | ✅ In progress in this update set |
+| Reserve final ~5 minutes for wrap-up / final validation / replies | ✅ Planned |
+
+### Current Head / Workflow Snapshot
+- Branch: `copilot/remove-duplicate-pragma-comment`
+- Current committed head: `3875224`
+- Approved-workflow snapshot on `3875224` via MCP:
+  - **success:** Workflow Execution Gate, PR Cost Check, Resilient Validation Suite, Documentation Link Checker, Branch Rebase Gate
+  - **in progress:** Agent Token Delegation, QA Walkthrough Agent, Secrets Baseline Enforcer, Duplicate Detection on PR, Audit & QA Suite (Unified), GitHub Guru Agent, Scan and Report GitHub Secrets and Variables, CodeQL Advanced, Pre-Flight CI Validation, Generate PR Follow-Up Prompt
+  - **startup_failure (optional heavy suites):** Data Quality & Determinism Suite, Rust-Python Hybrid Swarm CI/CD, Progressive Validation Suite
+  - **cancelled/skipped:** prior duplicate prompt/cost runs cancelled; Dependabot Auto-Absorb skipped
+
+### Current Local Validation Snapshot
+- `python -m ruff check tests/agents/test_phase2_deep_coverage_batch8.py tests/agents/test_phase2_deep_coverage_batch11.py src/codex/archive/logging_config.py tests/archive/test_logging_config.py tests/quantum/conftest.py` ✅
+- `python3 -m pytest tests/agents/test_phase2_deep_coverage_batch8.py tests/agents/test_phase2_deep_coverage_batch11.py tests/archive/test_logging_config.py tests/quantum/test_integration.py -q` ✅
+- Earlier required gates on this session also passed before the PR-wide review surfaced new issues:
+  - `python scripts/ci/sync_tracked_files.py --check` ✅
+  - `python scripts/ci/mypy_baseline.py --require-baseline` ✅
+
+### PR-Wide Review Delta
+1. `parallel_validation` PR-wide review found two malformed parametrized tests already present in the branch diff:
+   - `tests/agents/test_phase2_deep_coverage_batch11.py`
+   - `tests/agents/test_phase2_deep_coverage_batch8.py`
+2. Fixed both tests locally:
+   - restored the intended `if/elif/else` fallback selection logic
+   - repaired the broken `@pytest.mark.parametrize(...)` block
+   - restored the timeout test docstring displaced by the malformed edit
+3. Revalidated the repaired tests immediately with focused `ruff` + `pytest`
+
+### Next Immediate Actions
+1. Commit this living-doc/accountability refresh together with the repaired agent tests.
+2. Re-run `parallel_validation` on the final commit so the PR-wide review reflects the corrected branch state.
+3. Reply to the actionable maintainer comment with the final fixing commit hash.
+4. Spend the remaining wrap-up window monitoring the latest required workflows for any new red state.
+
+---
+
 ## 🔄 Monitoring + Wrap-Up Update (S1022 — 2026-05-14T18:39Z)
 
 | Objective | Status |

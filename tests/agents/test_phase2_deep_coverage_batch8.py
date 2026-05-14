@@ -402,14 +402,17 @@ class TestPhase2_ErrorHandling:
     )
     def test_fallback_strategy(self, primary_available, fallback_available, expected_result):
         """Test fallback strategy"""
+        if primary_available:
+            result = "primary"
+        elif fallback_available:
             result = "fallback"
         else:
             result = "error"
 
-        assert result == "fallback"
+        assert result == expected_result
 
     def test_timeout_handling(self):
-        assert result == expected_result
+        """Test timeout handling"""
         timeout = 10.0
         elapsed = 15.0
         timed_out = elapsed > timeout

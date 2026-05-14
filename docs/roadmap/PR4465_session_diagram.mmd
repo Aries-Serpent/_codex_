@@ -18,6 +18,10 @@ flowchart TD
     Q --> R["🧪 Resumed pytest -x\nadvanced >6%\nno repeat of prior blockers"]
     R --> S["📝 Refresh whats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY\nbefore final corrective commit"]
     S --> T["🔀 Merge-conflict check\nCODEX_MANIFEST.json drift only\nsync to origin/main"]
+    T --> U["🔍 PR-wide automated review\nparallel_validation found 2 malformed\nparametrized tests in agent coverage batches"]
+    U --> V["✅ Fix review findings\nrepair batch8/batch11 parametrized tests\nrestore timeout-docstring + expected assertions"]
+    V --> W["📡 Post-approval monitoring on 3875224\nrequired gates mostly green\n10 workflows still in progress"]
+    W --> X["📝 Final living docs + changelog +\naccountability refresh before wrap-up\nleave ~5 minutes for monitoring/replies"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -39,3 +43,7 @@ flowchart TD
     style R fill:#457b9d,color:#fff
     style S fill:#2d6a4f,color:#fff
     style T fill:#1b4332,color:#fff
+    style U fill:#457b9d,color:#fff
+    style V fill:#1b4332,color:#fff
+    style W fill:#457b9d,color:#fff
+    style X fill:#2d6a4f,color:#fff

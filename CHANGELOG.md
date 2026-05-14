@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1024-pr4465-pr-wide-review-and-monitoring — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:14Z)
+- Monitored the post-approval workflow fanout on head `3875224`; required gates are trending green while several optional/auxiliary workflows remain in progress.
+- Completed a full PR-wide automated review before conclusion and fixed two malformed parametrized tests already present in the branch diff:
+  - `tests/agents/test_phase2_deep_coverage_batch8.py`
+  - `tests/agents/test_phase2_deep_coverage_batch11.py`
+- Refreshed the PR #4465 living docs (`PR4465_whats_next.md`, `PR4465_session_diagram.mmd`) to reflect the current workflow snapshot, PR-wide review results, and wrap-up plan.
+
 ### Fixed (S1023-pr4465-review-followup — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:06Z)
 - Addressed the remaining PR #4465 review-thread feedback with minimal follow-up edits.
 - Updated `tests/quantum/conftest.py` to load `tests.utils.quantum_helpers` through `pytest_plugins`, keeping `quantum_plugin_fixture` discoverable without a misleading `__all__` re-export.
