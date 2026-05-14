@@ -85,7 +85,7 @@ class StructuredFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         message = record.getMessage()
-        timestamp = datetime.utcfromtimestamp(record.created).strftime(ISO_FORMAT)
+        timestamp = datetime.fromtimestamp(record.created, tz=UTC).strftime(ISO_FORMAT)
         extra_fields = {k: getattr(record, k) for k in record.__dict__ if k not in _STANDARD_FIELDS}
         flattened_extra = dict(extra_fields)
         extra_payload = flattened_extra.pop("extra_fields", None)

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1027-pr4469-datetime-deprecation-followups — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T20:14Z)
+- Replaced deprecated `datetime.utcfromtimestamp(...)` usage in `src/codex/archive/logging_config.py` with timezone-aware `datetime.fromtimestamp(..., tz=UTC)`.
+- Cleaned up three review-polish issues in tests by removing an unused temporary assignment, aligning the `hasattr(...)` guard with the method that is actually called, and deduplicating the token lifecycle module pragma.
+- Expanded `tests/quantum/conftest.py` with a clearer module docstring describing how `tests.utils.quantum_helpers` is shared across the quantum test suite.
+- Restored the PR scope by resetting `.codex/session_context_latest.md` to `origin/main` after an earlier progress-only commit accidentally captured session context drift.
+
 ### Fixed (S1026-pr4465-late-monitoring-refresh — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:33Z)
 - Refreshed the PR #4465 living docs and accountability trail against the latest monitored head `57f2268`.
 - Captured that the newest push triggered a fresh approval-gated workflow fanout with no new code-fixable failure signature yet visible in the current MCP snapshot.
