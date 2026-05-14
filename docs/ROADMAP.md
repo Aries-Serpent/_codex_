@@ -437,7 +437,8 @@
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Projected Content Update**: 2026-05-14 (planned: S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
+**Last Content Update**: 2026-05-14 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
+**Next Projected Update**: 2026-06-06 (planned: Phase 9 completion milestone)
 **Next Review**: 2026-06-06
 **Version**: 2.1.1
 

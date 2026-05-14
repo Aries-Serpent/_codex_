@@ -1,32 +1,36 @@
-# Session Context — 2026-05-14T15:41:27Z
+# Session Context — 2026-05-14T16:06:37Z
 **Branch:** `copilot/update-python-version-documentation`  **PR:** #4460  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `3855` (✅)
-- GraphQL remaining: `4979` (✅)
+- REST remaining: `4759` (✅)
+- GraphQL remaining: `4967` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4460 — docs: clarify version pinning strategy and roadmap date projections
-State: `open`  Draft: `True`  Branch: `copilot/update-python-version-documentation` → `main`
+## 📋 PR #4460 — docs: clarify version pinning strategy and roadmap date projections; fix invalid workflow action SHA
+State: `open`  Draft: `False`  Branch: `copilot/update-python-version-documentation` → `main`
+
+### ❌ 2 Failing CI Check(s)
+- `Cleanup artifacts` (failure)
+- `Prepare` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **PR Comment Review Gate** — `failure` on `main` (2026-05-14)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **Copilot code review** — `failure` on `refs/pull/4460/head` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
+- `a98b67cc` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
+- `d73bf938` fix(ci): replace invalid upload-pages-artifact SHA with approved @v3 tag — copilot-swe-agent[bot] (2026-05-14)
+- `4391fa26` fix(ci): fix invalid SHA for actions/upload-pages-artifact and update accountabi — copilot-swe-agent[bot] (2026-05-14)
 - `d56c5b12` fix: update accountability report to satisfy Pattern 25 CI gate — copilot-swe-agent[bot] (2026-05-14)
 - `ac5dd921` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
 - `4887e807` chore: Generate follow-up prompt for PR #4460 [skip ci] — github-actions[bot] (2026-05-14)
 - `c2c52050` docs: clarify version pinning strategy and roadmap date projections — copilot-swe-agent[bot] (2026-05-14)
 - `e40c1250` docs: clarify version pinning strategy and roadmap date projections — copilot-swe-agent[bot] (2026-05-14)
-- `f0c4c1e1` Initial plan — copilot-swe-agent[bot] (2026-05-14)
-- `721c290f` Merge pull request #4458 from Aries-Serpent/copilot/cognitive-brain-phase-7-task — Statix (2026-05-14)
-- `ef010ffa` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

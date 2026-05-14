@@ -37759,3 +37759,7 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session Entry — 2026-05-14 (commit: pin-sha-fix)
+- Fixed: actions/upload-pages-artifact SHA pinned to verified commit SHA 56afc609e74202658d3ffba0e8f6dda462b719fa (v3) per review feedback (was mutable @v3 tag)
+- Fixed: docs/ROADMAP.md footer — restored 'Last Content Update' field, added separate 'Next Projected Update' field per review feedback
