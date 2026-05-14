@@ -22,6 +22,10 @@ flowchart TD
     U --> V["✅ Fix review findings\nrepair batch8/batch11 parametrized tests\nrestore timeout-docstring + expected assertions"]
     V --> W["📡 Post-approval monitoring on 3875224\nrequired gates mostly green\n10 workflows still in progress"]
     W --> X["📝 Final living docs + changelog +\naccountability refresh before wrap-up\nleave ~5 minutes for monitoring/replies"]
+    X --> Y["🔍 Final validation rerun\nfound decision-tree path drift +\nlegacy tokenizer __getattr__ contract mismatch"]
+    Y --> Z["✅ Final local fixes\nrestore stable leaf_2 branch\nraise ImportError directly in tokenization proxy"]
+    Z --> AA["📡 Approved workflow re-monitor on a351c03\n10 successes, 11 in progress, 1 pending\noptional heavy suites still startup_failure"]
+    AA --> AB["📝 Final wrap-up docs refresh +\nlast validation / reply window\nreserve final minutes for monitoring"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -47,3 +51,7 @@ flowchart TD
     style V fill:#1b4332,color:#fff
     style W fill:#457b9d,color:#fff
     style X fill:#2d6a4f,color:#fff
+    style Y fill:#457b9d,color:#fff
+    style Z fill:#1b4332,color:#fff
+    style AA fill:#457b9d,color:#fff
+    style AB fill:#2d6a4f,color:#fff

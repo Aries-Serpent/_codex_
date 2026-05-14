@@ -1,5 +1,44 @@
 # PR #4465 — What's Next
 
+## 🔄 Approved-Workflow Monitoring + Final Validation Delta (S1025 — 2026-05-14T19:19Z)
+
+| Objective | Status |
+|-----------|--------|
+| Monitor newly approved workflows on current head | ✅ Snapshot refreshed |
+| Apply fixes from the latest PR-wide validation pass | ✅ Complete locally |
+| Refresh living docs + CHANGELOG + accountability with the newest state | ✅ In progress in this update set |
+| Leave final ~5 minutes for wrap-up / reply / revalidation | ✅ Active |
+
+### Current Head / Workflow Snapshot
+- Branch: `copilot/remove-duplicate-pragma-comment`
+- Current committed head: `a351c03`
+- Approved-workflow snapshot on `a351c03` via MCP:
+  - **success:** PR Comment Review Gate, Issue Resolution Gate, Deferral Language Gate, Cleanup Stale PR Comments, Agent Vars Bootstrap, Documentation Link Checker, Resilient Validation Suite, Branch Rebase Gate, Reference Integrity + Agent Size Gate, PR Cost Check
+  - **in progress:** Audit & QA Suite (Unified), Duplicate Detection on PR, GitHub Guru Agent, CodeQL Advanced, QA Walkthrough Agent, Workflow Documentation Link Validation, Pre-Flight CI Validation, Pre-Merge Validation, PR Auto-Fix Check, Security Scanning Suite, Scan and Report GitHub Secrets and Variables
+  - **pending:** Root Organization Validation
+  - **startup_failure (optional heavy suites):** Rust-Python Hybrid Swarm CI/CD, Progressive Validation Suite, Data Quality & Determinism Suite
+  - **action_required (auxiliary follow-up runs):** Generate PR Follow-Up Prompt, Agent Token Delegation, Workflow Execution Gate, PR Cost Check
+
+### Final Validation Delta
+1. A follow-up `parallel_validation` pass surfaced two more actionable items:
+   - `tests/agents/test_phase2_deep_coverage_batch11.py` had a deterministic nested-condition expression that could never exercise the asserted path
+   - `src/tokenization/api.py` still raised the wrong exception type from `_LegacyTokenizerProxy.__getattr__()` when the adapter was unavailable
+2. Fixed both locally:
+   - restored `condition_b = False` in the decision-tree traversal test so the asserted `leaf_2` branch is intentional and stable
+   - made `_LegacyTokenizerProxy.__getattr__()` raise `ImportError` directly, matching the legacy contract and existing tokenization tests
+3. Revalidated immediately:
+   - `python -m ruff check ...` ✅
+   - focused `pytest` including `tests/tokenization/test_api_comprehensive.py::test_proxy_getattr_with_none_canonical` ✅
+   - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+
+### Next Immediate Actions
+1. Commit the final validation delta together with these doc/accountability updates.
+2. Re-run `parallel_validation` one more time on the final commit.
+3. Reply to the actionable maintainer comment with the final fixing commit hash.
+4. Use the remaining wrap-up time to monitor the new workflow fanout after the final push.
+
+---
+
 ## 🔄 Post-Approval Monitoring + PR-Wide Review Update (S1024 — 2026-05-14T19:14Z)
 
 | Objective | Status |
