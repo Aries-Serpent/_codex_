@@ -1,32 +1,32 @@
-# Session Context — 2026-05-14T05:24:52Z
+# Session Context — 2026-05-14T07:12:30Z
 **Branch:** `copilot/cognitive-brain-phase-7-tasks`  **PR:** #4458  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4328` (✅)
-- GraphQL remaining: `4953` (✅)
+- REST remaining: `4679` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4458 — feat(cognitive): Phase 8a threshold config + review-thread/comment-gate self-healing follow-up
+## 📋 PR #4458 — feat(cognitive): Phase 8a threshold config + review-thread/comment-gate self-healing + CI stabilization follow-up
 State: `open`  Draft: `True`  Branch: `copilot/cognitive-brain-phase-7-tasks` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
+- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-14)
+- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
+- `1ee9e460` fix(ci): stabilize monitoring/sqlite error-path regressions from pytest -x — copilot-swe-agent[bot] (2026-05-14)
+- `339d1b10` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-14)
+- `e976b92d` chore: start P1-P4 continuation plan — copilot-swe-agent[bot] (2026-05-14)
 - `36d8b032` test(cognitive): address review follow-up on exception-path assertions — copilot-swe-agent[bot] (2026-05-14)
 - `11488cf3` test(cognitive): clarify intentional except paths in coverage-gap tests — copilot-swe-agent[bot] (2026-05-14)
 - `3d0836a8` chore: start review-thread remediation plan — copilot-swe-agent[bot] (2026-05-14)
+- `6bd0ef92` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-05-14)
 - `fde0db53` docs: sync accountability and changelog for comment-gate healing — copilot-swe-agent[bot] (2026-05-14)
-- `35976cf2` chore: start comment-gate and CI rescue remediation plan — copilot-swe-agent[bot] (2026-05-14)
-- `10008a23` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-14)
-- `c77ea4e2` feat(cognitive): Phase 8a threshold config + hot reload with CI self-healing fol — copilot-swe-agent[bot] (2026-05-14)
-- `7a4652fa` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
