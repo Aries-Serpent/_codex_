@@ -1,36 +1,32 @@
-# Session Context — 2026-05-14T19:00:20Z
-**Branch:** `copilot/remove-duplicate-pragma-comment`  **PR:** #4465  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T20:07:58Z
+**Branch:** `copilot/fix-deprecated-utcfromtimestamp`  **PR:** #4469  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4711` (✅)
-- GraphQL remaining: `4977` (✅)
+- REST remaining: `4974` (✅)
+- GraphQL remaining: `4979` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4465 — fix(ci): heal validation blockers and resolve CODEX_MANIFEST merge drift
-State: `open`  Draft: `False`  Branch: `copilot/remove-duplicate-pragma-comment` → `main`
-
-### ❌ 2 Failing CI Check(s)
-- `Cleanup artifacts` (failure)
-- `Prepare` (failure)
+## 📋 PR #4469 — [WIP] Fix deprecated usage of datetime.utcfromtimestamp in logging config
+State: `open`  Draft: `True`  Branch: `copilot/fix-deprecated-utcfromtimestamp` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Copilot code review** — `failure` on `refs/pull/4465/head` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
-- `15b71f1e` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-14)
-- `6d4a5138` docs: refresh accountability after monitoring polish — copilot-swe-agent[bot] (2026-05-14)
-- `b443d5fa` docs: clarify PR4465 monitoring notes — copilot-swe-agent[bot] (2026-05-14)
-- `67fc2a05` fix(ci): resolve CODEX_MANIFEST merge drift — copilot-swe-agent[bot] (2026-05-14)
-- `83c829e4` docs: refresh PR4465 monitoring status — copilot-swe-agent[bot] (2026-05-14)
-- `d4091d03` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-14)
-- `e145e591` chore: update CI rescue plan — copilot-swe-agent[bot] (2026-05-14)
-- `cee56389` fix(ci): heal validation first-stop failures — copilot-swe-agent[bot] (2026-05-14)
+- `105ad6f4` Initial plan — copilot-swe-agent[bot] (2026-05-14)
+- `e2f67128` Merge pull request #4465 from Aries-Serpent/copilot/remove-duplicate-pragma-comm — Statix (2026-05-14)
+- `217d9195` docs: refresh PR4465 monitoring status and review anchors — copilot-swe-agent[bot] (2026-05-14)
+- `57f22689` docs: clarify final PR4465 logic-test scope — copilot-swe-agent[bot] (2026-05-14)
+- `40ad33cf` fix: finalize PR4465 validation delta and monitoring docs — copilot-swe-agent[bot] (2026-05-14)
+- `a351c032` fix: complete PR4465 review-wide cleanup and wrap-up docs — copilot-swe-agent[bot] (2026-05-14)
+- `3875224f` fix: address PR4465 review follow-ups — copilot-swe-agent[bot] (2026-05-14)
+- `44ab6a73` Fix for Non-standard exception raised in special method — Statix (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
