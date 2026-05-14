@@ -548,6 +548,7 @@ class TestPhase2_PerformanceIntegration:
         # Acquire
         if pool["available"] > 0:
             initial_available = pool["available"]
+            assert initial_available > 0
             acquired_connection = pool["connections"][0]
             assert acquired_connection.startswith("conn_")
             pool["available"] -= 1
