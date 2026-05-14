@@ -1,7 +1,7 @@
 # Security Remediation Planset — Codebase-Wide
-**Latest artifacts:** `dependency-scan-results` (sha256:ae221879) · `sbom-reports` (sha256:1d922863)  
-**Latest run:** [25809211083](https://github.com/Aries-Serpent/_codex_/actions/runs/25809211083) · Security Scanning Suite · 2026-05-13  
-**Previous artifacts:** `dependency-scan-results` (sha256:df04fb29) · `sbom-reports` (sha256:97d5e5d6) · run [25797170771](https://github.com/Aries-Serpent/_codex_/actions/runs/25797170771)  
+**Latest artifacts:** `dependency-scan-results` (sha256:843798e5) · `sbom-reports` (sha256:028fc402)  
+**Latest run:** [25833450038](https://github.com/Aries-Serpent/_codex_/actions/runs/25833450038) · Security Scanning Suite · 2026-05-14  
+**Previous artifacts:** `dependency-scan-results` (sha256:ae221879) · `sbom-reports` (sha256:1d922863) · run [25809211083](https://github.com/Aries-Serpent/_codex_/actions/runs/25809211083)  
 **Objective:** Iterate to **0 outstanding concerns** across all security surfaces.  
 **Policy:** Work exclusively from CI artifacts (dep-scan, SBOM, bandit, CodeQL SARIF). Never call the live CodeQL/security API.
 
