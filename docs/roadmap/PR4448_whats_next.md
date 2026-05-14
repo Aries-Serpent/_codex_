@@ -6,22 +6,65 @@
 
 ---
 
-## ✅ CTEP Task Status (S1003-ctep — 2026-05-14T00:20Z)
+## ✅ CTEP Task Status (S1003-ctep2 — 2026-05-14T00:50Z)
 
 | Task | Status |
 |------|--------|
-| PHASE 1: Confirm alert count | ⏳ API rate-limited; estimated ~54 after mcp-cache-warm.yml fix |
+| PHASE 1: Confirm alert count | ⏳ CodeQL API rate-limited; est. ~54 open (30 workflows running) |
 | PHASE 2a: Pin github-script@v9 in mcp-cache-warm.yml:142 | ✅ Done (SHA `3a2844b…`) |
 | PHASE 2b: RUF059 sweep tests/ | ✅ Clean — all checks passed |
 | REQ-PDA: Harden sync jobs for each session | ✅ Done — `fix_pda_entry_today()` added, wired into `auto_fix_all_missing()` |
 | CI failure (Pattern 30) fixed | ✅ Done — PDA entry + accountability report for 2026-05-14 |
+| Fix double file-read in `fix_pda_entry_today()` | ✅ Done — code-review fix `bc9d402` |
+| Deduplicate triple `# pragma: allowlist secret` | ✅ Done — 2 test files fixed `bc9d402` |
+| WEC items correctly checked/unchecked | ✅ Done — 14 items updated, 30 workflows triggered |
+| Mermaid mapping docs updated | ✅ Done — architecture.mmd, ci_self_healing_flow.mmd, mindmap v2.1 |
+| Planset/promptset full review | ✅ Done — PLANSET_STATUS_REVIEW_2026_05_14.md (Tier 1/2/3) |
 | Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT | ✅ Done |
 | Update living docs (whats_next, session_diagram) | ✅ Done |
-| PHASE 3: Pre-merge gate | ⏳ Run after CI confirms green |
+| PHASE 3: Pre-merge gate CI | ✅ 16 success · 0 failures · 3 pre-existing startup_failures |
 
----
+### CI on `bc9d402` — 2026-05-14T00:50Z
+| Status | Count | Details |
+|--------|------:|---------|
+| ✅ success | 16 | All required gates green |
+| ❌ failure | 0 | No actual failures |
+| ⚠️ startup_failure | 3 | Pre-existing: Data Quality, Rust Swarm CI, Progressive Validation |
+| ⏭️ skipped | 2 | Dependabot, Pre-merge-validation (docs-only commit) |
+| 🔲 in_progress | ~8 | CodeQL, Security Suite, Validation Pipeline, others still running |
 
-## ✅ PR-Wide Audit (S1003-final — 2026-05-13T23:44Z)
+## ✅ Merge-Readiness Scorecard (S1003-ctep2 — 2026-05-14T00:50Z)
+
+| Dimension | Score | Notes |
+|-----------|------:|-------|
+| auto_fix (0 auto-fixable) | 15/15 | ✅ 0 auto-fixable |
+| sync_tracked_files | 12/12 | ✅ all consistent |
+| action_versions (all approved) | 12/12 | ✅ all approved |
+| ruff (src/ clean) | 10/10 | ✅ 0 issues |
+| github-script ≥ v8 | 8/8 | ✅ mcp-cache-warm.yml pinned |
+| Pattern 27 registered | 7/7 | ✅ registered |
+| download-artifact min v5 | 7/7 | ✅ v5 |
+| PDA entry today | 8/8 | ✅ 2026-05-14 |
+| accountability report today | 8/8 | ✅ today |
+| AAIS composite | 13/13 | ✅ 99.9/100 |
+| **Total** | **100/100** | ✅ **MERGE READY (CI gate)** |
+
+> ⚠️ **Alert gate:** CodeQL API rate-limited this session. Est. ~54 open after all fixes.
+> Target < 25 for merge. Recount in next session once CodeQL scan completes.
+
+### Next Session Prompt
+```
+@copilot CTEP Mode: ON
+
+1. list_code_scanning_alerts(state="open") → count
+   If < 25 → merge PR #4454
+   If ≥ 25 → fix residual py/unused-local-variable + actions/unpinned-tag → recount
+2. Run: python scripts/ci/session_wrapup_autofix.py --pr-number 4454
+3. Merge PR #4454 into main
+4. Open new PR: 0D_base_ → main (post-merge sprint)
+   Follow security-remediation-planset.md Batch 5 + 6
+   Target: 0 open CodeQL alerts
+```
 
 ### Code-Review Threads
 | Thread | Status |

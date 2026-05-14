@@ -181,7 +181,24 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    S1003y_A["🔄 S1003-ctep\n2026-05-14T00:20Z\nPR #4450 · CTEP Mode"] --> S1003y_B["🔍 CI Failure\nPattern 30 failing\nPDA + accountability stale"]
+    S1003z_A["🔄 S1003-ctep2\n2026-05-14T00:50Z\nPR #4454 · bc9d402"] --> S1003z_B["🔧 Code-review fixes\ndouble file-read removed\npragma deduped (2 files)"]
+    S1003z_B --> S1003z_C["✅ WEC correctly updated\n14 items checked/unchecked\n30 workflows triggered"]
+    S1003z_C --> S1003z_D["📊 CI on bc9d402\n16 ✅ success · 0 ❌\n3 pre-existing startup_failures"]
+    S1003z_D --> S1003z_E["📋 Planset review complete\nTier 1: ~28 done\nTier 2: ~12 active\nTier 3: ~15 stale/archive"]
+    S1003z_D --> S1003z_F["🗺️ Mermaid docs updated\narchitecture.mmd full rewrite\nci_self_healing_flow.mmd new\nmindmap v2.1 · 153 agents"]
+    S1003z_E & S1003z_F --> S1003z_G["📝 CHANGELOG + ACCOUNTABILITY\nS1003-ctep2 entry\n2026-05-14T00:50Z"]
+    S1003z_G --> S1003z_H["🏁 S1003-ctep2 End\nNext: recount alerts (<25?) → MERGE\nartifacts: sha256:843798e5"]
+
+    style S1003z_A fill:#4a4e69,color:#fff
+    style S1003z_B fill:#1b4332,color:#fff
+    style S1003z_C fill:#1b4332,color:#fff
+    style S1003z_D fill:#2d6a4f,color:#fff
+    style S1003z_E fill:#457b9d,color:#fff
+    style S1003z_F fill:#457b9d,color:#fff
+    style S1003z_G fill:#1b4332,color:#fff
+    style S1003z_H fill:#2d6a4f,color:#fff
+```
+\n2026-05-14T00:20Z\nPR #4450 · CTEP Mode"] --> S1003y_B["🔍 CI Failure\nPattern 30 failing\nPDA + accountability stale"]
     S1003y_B --> S1003y_C["✅ PDA entry written\n2026-05-14\npda_iterations.jsonl"]
     S1003y_B --> S1003y_D["✅ github-script@v9 pinned\nmcp-cache-warm.yml:142\nSHA 3a2844b…"]
     S1003y_C & S1003y_D --> S1003y_E["🔧 Pattern 30 hardened\nfix_pda_entry_today() added\nauto_fix_all_missing() wired"]
