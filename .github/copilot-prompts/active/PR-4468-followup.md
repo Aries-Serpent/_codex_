@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #4468
 
-**PR**: #4468 - PR #4468  
+**PR**: #4468  
 **Branch**: `copilot/fix-deprecation-warning-datetime`  
 **Author**: @mbaetiong  
 **Date**: 2026-05-14  

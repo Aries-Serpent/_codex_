@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1031-pr4469-final-doc-polish — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:27Z)
+- Polished the new PR #4469 living-doc status table so in-progress work uses `🔄` rather than a contradictory completed checkmark.
+- Removed duplicate header text from the merged `PR-4468-followup.md` prompt file.
+- Refreshed accountability metadata so the final wrap-up commit keeps Pattern 25 green.
+
 ### Fixed (S1030-pr4469-post-approval-monitoring — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:20Z)
 - Monitored the approved workflow fanout on merge commit `2e77a78` and recorded the current required-check snapshot in new PR #4469 living docs.
 - Added `docs/roadmap/PR4469_whats_next.md` and `docs/roadmap/PR4469_session_diagram.mmd` to capture the merge-resolution path, current workflow state, and final wrap-up plan.
