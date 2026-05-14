@@ -1,35 +1,32 @@
-# Session Context — 2026-05-14T04:55:53Z
+# Session Context — 2026-05-14T05:07:11Z
 **Branch:** `copilot/cognitive-brain-phase-7-tasks`  **PR:** #4458  **Access:** `rest, graphql, gh_cli, codeql_local`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4980` (✅)
-- GraphQL remaining: `4987` (✅)
+- REST remaining: `4701` (✅)
+- GraphQL remaining: `4963` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ✅
 
-## 📋 PR #4458 — feat(cognitive): Phase 8a threshold config + hot reload with CI self-healing follow-up
+## 📋 PR #4458 — feat(cognitive): Phase 8a threshold config + hot reload with comment-gate self-healing follow-up
 State: `open`  Draft: `True`  Branch: `copilot/cognitive-brain-phase-7-tasks` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
+- `fde0db53` docs: sync accountability and changelog for comment-gate healing — copilot-swe-agent[bot] (2026-05-14)
+- `35976cf2` chore: start comment-gate and CI rescue remediation plan — copilot-swe-agent[bot] (2026-05-14)
+- `10008a23` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-05-14)
 - `c77ea4e2` feat(cognitive): Phase 8a threshold config + hot reload with CI self-healing fol — copilot-swe-agent[bot] (2026-05-14)
 - `7a4652fa` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
 - `aba4ff71` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
 - `c1e5f586` chore: start CI failure triage for maintainer comment — copilot-swe-agent[bot] (2026-05-14)
 - `072f6bdb` Merge branch 'main' into copilot/cognitive-brain-phase-7-tasks — Statix (2026-05-14)
-- `4fbf6e53` fix(cognitive): normalize Any type hints in Phase 8a monitoring modules — copilot-swe-agent[bot] (2026-05-14)
-- `a775c7f6` chore: Generate follow-up prompt for PR #4458 [skip ci] — github-actions[bot] (2026-05-14)
-- `b1b946ae` docs(cognitive): sync S1009 Phase 8a status in living docs and accountability — copilot-swe-agent[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
