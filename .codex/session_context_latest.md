@@ -1,36 +1,32 @@
-# Session Context — 2026-05-14T16:06:37Z
-**Branch:** `copilot/update-python-version-documentation`  **PR:** #4460  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T16:26:36Z
+**Branch:** `copilot/fix-duplicate-pragma-comment`  **PR:** #4463  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4759` (✅)
-- GraphQL remaining: `4967` (✅)
+- Recommended method chain: `rest → graphql → gh_cli`
+- REST remaining: `4195` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
-- CodeQL CLI: ✅
+- CodeQL CLI: ❌
 
-## 📋 PR #4460 — docs: clarify version pinning strategy and roadmap date projections; fix invalid workflow action SHA
-State: `open`  Draft: `False`  Branch: `copilot/update-python-version-documentation` → `main`
-
-### ❌ 2 Failing CI Check(s)
-- `Cleanup artifacts` (failure)
-- `Prepare` (failure)
+## 📋 PR #4463 — [WIP] Fix redundant pragma comment in test_auth_token_lifecycle
+State: `open`  Draft: `True`  Branch: `copilot/fix-duplicate-pragma-comment` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Copilot code review** — `failure` on `refs/pull/4460/head` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-14)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
+- `fb4e0c6b` Initial plan — copilot-swe-agent[bot] (2026-05-14)
+- `5a27707e` Merge pull request #4460 from Aries-Serpent/copilot/update-python-version-docume — Statix (2026-05-14)
+- `522fd239` fix(ci): pin upload-pages-artifact to verified SHA; restore Last Content Update  — copilot-swe-agent[bot] (2026-05-14)
 - `a98b67cc` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
 - `d73bf938` fix(ci): replace invalid upload-pages-artifact SHA with approved @v3 tag — copilot-swe-agent[bot] (2026-05-14)
 - `4391fa26` fix(ci): fix invalid SHA for actions/upload-pages-artifact and update accountabi — copilot-swe-agent[bot] (2026-05-14)
 - `d56c5b12` fix: update accountability report to satisfy Pattern 25 CI gate — copilot-swe-agent[bot] (2026-05-14)
 - `ac5dd921` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
-- `4887e807` chore: Generate follow-up prompt for PR #4460 [skip ci] — github-actions[bot] (2026-05-14)
-- `c2c52050` docs: clarify version pinning strategy and roadmap date projections — copilot-swe-agent[bot] (2026-05-14)
-- `e40c1250` docs: clarify version pinning strategy and roadmap date projections — copilot-swe-agent[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
