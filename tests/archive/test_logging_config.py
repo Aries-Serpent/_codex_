@@ -37,6 +37,21 @@ def test_setup_logging_text_format() -> None:
     assert "status=OK" in output
 
 
+def test_setup_logging_reenables_existing_logger() -> None:
+    initial_buffer = io.StringIO()
+    cfg = LoggingConfig(level="info", format="json")
+    logger = logging_config.setup_logging(cfg, stream=initial_buffer)
+    logger.disabled = True
+
+    buffer = io.StringIO()
+    logger = logging_config.setup_logging(cfg, stream=buffer)
+    logger.info("hello", extra={"tombstone": "abc"})
+
+    payload = json.loads(buffer.getvalue())
+    assert logger.disabled is False, "setup_logging() should re-enable the named logger"
+    assert payload["message"] == "hello"
+
+
 def test_log_restore_appends_evidence(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

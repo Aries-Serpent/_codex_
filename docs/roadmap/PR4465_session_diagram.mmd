@@ -1,0 +1,61 @@
+flowchart TD
+    A["🧭 PR #4465 rescue start\nBranch: copilot/remove-duplicate-pragma-comment"] --> B["📡 MCP triage\nPR Auto-Fix Check 25875267053\nComment Review Gate 25875592060"]
+    B --> C["🧪 Local validation\nruff ✅\npytest -x first-stop loop"]
+    C --> D["🔴 First stop #1\nstale doc metrics\nTestProductionRules::test_current_repo_has_zero_stale_metrics"]
+    D --> E["✅ Fix #1\nscripts/tools/doc_metrics_sync.py --fix\n5 docs refreshed"]
+    E --> F["🔁 Targeted regression pass\ndoc-metrics test ✅"]
+    F --> G["🔴 First stop #2\narchive logging buffer empty\ntest_log_restore_emits_structured_fields"]
+    G --> H["✅ Fix #2\nsetup_logging re-enables logger\nregression test added"]
+    H --> I["🔁 Targeted regression pass\narchive logging tests ✅"]
+    I --> J["🔴 First stop #3\nmissing quantum_plugin_fixture\nquantum integration collection error"]
+    J --> K["✅ Fix #3\nadd tests/quantum/conftest.py\nexpose shared fixture"]
+    K --> L["🔁 Targeted regression pass\nquantum integration tests ✅"]
+    L --> M["📝 Living docs + CHANGELOG +\nACCOUNTABILITY refreshed"]
+    M --> N["⏳ Continue / conclude validation loop\nbased on remaining session time"]
+    N --> O["⏱️ Wrap-up decision\nlatest pytest -x rerun >7%\nno repeat of fixed blockers"]
+    O --> P["🎯 Final wrap-up target\nclean transient artifacts\nrun final gates\nreply to comments"]
+    P --> Q["📡 S1022 monitoring cycle\nmaintainer approved pending workflows\nsuccesses + in-progress captured"]
+    Q --> R["🧪 Resumed pytest -x\nadvanced >6%\nno repeat of prior blockers"]
+    R --> S["📝 Refresh whats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY\nbefore final corrective commit"]
+    S --> T["🔀 Merge-conflict check\nCODEX_MANIFEST.json drift only\nsync to origin/main"]
+    T --> U["🔍 PR-wide automated review\nparallel_validation found 2 malformed\nparametrized tests in agent coverage batches"]
+    U --> V["✅ Fix review findings\nrepair batch8/batch11 parametrized tests\nrestore timeout-docstring + expected assertions"]
+    V --> W["📡 Post-approval monitoring on 3875224\nrequired gates mostly green\n10 workflows still in progress"]
+    W --> X["📝 Final living docs + changelog +\naccountability refresh before wrap-up\nleave ~5 minutes for monitoring/replies"]
+    X --> Y["🔍 Final validation rerun\nfound decision-tree path drift +\nlegacy tokenizer __getattr__ contract mismatch"]
+    Y --> Z["✅ Final local fixes\nrestore stable leaf_2 branch\nraise ImportError directly in tokenization proxy"]
+    Z --> AA["📡 Approved workflow re-monitor on a351c03\n10 successes, 11 in progress, 1 pending\noptional heavy suites still startup_failure"]
+    AA --> AB["📝 Final wrap-up docs refresh +\nlast validation / reply window\nreserve final minutes for monitoring"]
+    AB --> AC["📡 Latest head 57f2268 snapshot\nfresh approval-gated fanout triggered\nno new code-failure signature yet"]
+    AC --> AD["📝 Refresh whats_next + accountability +\nCHANGELOG with 19:33 UTC status\nclarify already-fixed review lines"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#457b9d,color:#fff
+    style D fill:#d62828,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#d62828,color:#fff
+    style H fill:#1b4332,color:#fff
+    style I fill:#1b4332,color:#fff
+    style J fill:#d62828,color:#fff
+    style K fill:#1b4332,color:#fff
+    style L fill:#1b4332,color:#fff
+    style M fill:#1b4332,color:#fff
+    style N fill:#f4a261,color:#000
+    style O fill:#457b9d,color:#fff
+    style P fill:#2d6a4f,color:#fff
+    style Q fill:#457b9d,color:#fff
+    style R fill:#457b9d,color:#fff
+    style S fill:#2d6a4f,color:#fff
+    style T fill:#1b4332,color:#fff
+    style U fill:#457b9d,color:#fff
+    style V fill:#1b4332,color:#fff
+    style W fill:#457b9d,color:#fff
+    style X fill:#2d6a4f,color:#fff
+    style Y fill:#457b9d,color:#fff
+    style Z fill:#1b4332,color:#fff
+    style AA fill:#457b9d,color:#fff
+    style AB fill:#2d6a4f,color:#fff
+    style AC fill:#457b9d,color:#fff
+    style AD fill:#2d6a4f,color:#fff

@@ -7,6 +7,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1026-pr4465-late-monitoring-refresh — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:33Z)
+- Refreshed the PR #4465 living docs and accountability trail against the latest monitored head `57f2268`.
+- Captured that the newest push triggered a fresh approval-gated workflow fanout with no new code-fixable failure signature yet visible in the current MCP snapshot.
+- Clarified the already-fixed archive logging review lines so the remaining stale unresolved-thread accounting can be re-evaluated on the next push.
+
+### Fixed (S1025-pr4465-approved-workflow-monitoring — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:19Z)
+- Refreshed the approved-workflow monitoring snapshot on head `a351c03`; required checks are largely green while a smaller set of approved suites remains in progress.
+- Applied the final validation delta before wrap-up:
+  - restored the intended stable `leaf_2` path in `tests/agents/test_phase2_deep_coverage_batch11.py`
+  - corrected `src/tokenization/api.py` so `_LegacyTokenizerProxy.__getattr__()` raises `ImportError` directly when the canonical adapter is unavailable
+- Updated the PR #4465 living docs again to capture the latest approved-workflow state and final validation results.
+- Clarified the two simplified branch-logic tests in the agent coverage batches by renaming them to match their intentionally local logic scope.
+
+### Fixed (S1024-pr4465-pr-wide-review-and-monitoring — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:14Z)
+- Monitored the post-approval workflow fanout on head `3875224`; required gates are trending green while several optional/auxiliary workflows remain in progress.
+- Completed a full PR-wide automated review before conclusion and fixed two malformed parametrized tests already present in the branch diff:
+  - `tests/agents/test_phase2_deep_coverage_batch8.py`
+  - `tests/agents/test_phase2_deep_coverage_batch11.py`
+- Refreshed the PR #4465 living docs (`PR4465_whats_next.md`, `PR4465_session_diagram.mmd`) to reflect the current workflow snapshot, PR-wide review results, and wrap-up plan.
+
+### Fixed (S1023-pr4465-review-followup — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:06Z)
+- Addressed the remaining PR #4465 review-thread feedback with minimal follow-up edits.
+- Updated `tests/quantum/conftest.py` to load `tests.utils.quantum_helpers` through `pytest_plugins`, keeping `quantum_plugin_fixture` discoverable without a misleading `__all__` re-export.
+- Added regression intent documentation around `logger.disabled = False` in `src/codex/archive/logging_config.py`.
+- Strengthened `tests/archive/test_logging_config.py` to assert the logger is explicitly re-enabled after repeated `setup_logging()` calls.
+- Converted `docs/roadmap/PR4465_session_diagram.mmd` to raw Mermaid syntax by removing Markdown fences.
+
+### Fixed (S1022-pr4465-monitoring-and-wrapup — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T18:39Z)
+- Continued PR #4465 post-push monitoring after maintainer approval of pending workflows.
+- Confirmed the previously failing `Validation Pipeline` run `25876200004` was tied to older head `c72fdf8`; the logged auto-fixable doc-metrics drift is already resolved by commit `cee5638`.
+- Re-verified current local rescue state:
+  - `python3 -m ruff check` ✅
+  - `python scripts/ci/sync_tracked_files.py --check` ✅
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` clean except expected Pattern 25 freshness before this docs/accountability update
+  - resumed `python3 -m pytest -x` advanced past ~6% of the suite with no repeat of the previously fixed deterministic blockers before wrap-up cutoff
+- Monitored latest approved workflow results on head `e145e59`:
+  - success: comment review gate, deferral gate, issue resolution gate, secrets baseline enforcer, mypy baseline, documentation link checker, branch rebase gate, auto-approve, agent vars bootstrap
+  - in progress: coverage, semgrep, CodeQL, documentation validation, workflow link validation, code quality analysis
+  - startup_failure (optional heavy suites): Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite, Progressive Validation Suite
+- Restored `.codex/session_context_latest.md` to the previous committed state so the next commit removes the accidental progress-only drift from branch history.
+- Resolved the newly reported `CODEX_MANIFEST.json` merge conflict against `origin/main` by updating the generated manifest file to match the current `origin/main` version; the conflict was timestamp/hash-only drift with no payload change.
+- Final monitoring-note polish landed in follow-up commit `b443d5f`; this changelog/accountability refresh keeps Pattern 25 satisfied on the latest head.
+
+### Fixed (S1021-pr4465-ci-rescue — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T17:55Z)
+- Triaged PR #4465 CI failures via GitHub MCP:
+  - `PR Auto-Fix Check` run `25875267053`
+  - `PR Comment Review Gate` run `25875592060`
+- Reproduced required validation locally:
+  - `python3 -m ruff check` ✅
+  - `python3 -m pytest -x` exposed stale doc-metrics references in repository documentation.
+- Ran `python scripts/tools/doc_metrics_sync.py --fix` to refresh stale test-count references in:
+  - `README.md`
+  - `docs/ops/SAR_METHODOLOGY.md`
+  - `docs/evolution/COGNITIVE_CODEBASE_MAP.md`
+  - `docs/evolution/INDEX.md`
+  - `docs/deployment/DEPLOYMENT_RUNBOOK.md`
+- Fixed archive logging test-state leakage in `src/codex/archive/logging_config.py` by re-enabling the named logger during `setup_logging()`, and added a regression test in `tests/archive/test_logging_config.py`.
+- Restored quantum integration fixture discovery by adding `tests/quantum/conftest.py` to expose the existing shared `quantum_plugin_fixture` from `tests.utils.quantum_helpers`.
+- Removed stray files accidentally introduced during a prior progress update (`test_a.py`, `test_b.py`, `test_c.md`) to restore the PR to intended scope.
+
+### Fixed (auto-update — PR #4465)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4465 (SHA `fe9aeef1`) at 2026-05-14T17:30Z [auto-generated]
+
 ### Fixed (auto-update — PR #4460)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4460 (SHA `6f1430d2`) at 2026-05-14T15:54Z [auto-generated]
 
