@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4460)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4460 (SHA `6f1430d2`) at 2026-05-14T15:54Z [auto-generated]
+
 ### Fixed (S1020-post-approval-monitoring — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T14:34Z)
 - Continued post-approval workflow monitoring on head `a2f9801` and confirmed required gate outcomes are trending green while optional matrix workflows execute.
 - Confirmed merge-conflict cleanup remains stable:
