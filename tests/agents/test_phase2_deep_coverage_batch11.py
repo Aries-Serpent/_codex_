@@ -562,10 +562,18 @@ class TestPhase2_ErrorHandlingIntegration:
     Tunnel into error-integration-dimension
     """
 
-    def test_graceful_degradation(self):
+    @pytest.mark.parametrize(
+        "primary_service_available,fallback_service_available,expected_result",
+        [
+            (True, True, "primary"),
+            (False, True, "fallback"),
+            (False, False, "error"),
+        ],
+    )
+    def test_graceful_degradation(
+        self, primary_service_available, fallback_service_available, expected_result
+    ):
         """Test graceful degradation on errors"""
-        primary_service_available = False
-        fallback_service_available = True
 
         if primary_service_available:
             result = "primary"
@@ -574,7 +582,7 @@ class TestPhase2_ErrorHandlingIntegration:
         else:
             result = "error"
 
-        assert result == "fallback"
+        assert result == expected_result
 
     def test_error_recovery_chain(self):
         """Test error recovery through multiple strategies"""
