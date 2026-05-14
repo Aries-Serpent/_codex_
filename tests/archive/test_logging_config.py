@@ -48,7 +48,7 @@ def test_setup_logging_reenables_existing_logger() -> None:
     logger.info("hello", extra={"tombstone": "abc"})
 
     payload = json.loads(buffer.getvalue())
-    assert logger.disabled is False
+    assert logger.disabled is False, "setup_logging() should re-enable the named logger"
     assert payload["message"] == "hello"
 
 

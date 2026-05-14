@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1026-pr4465-late-monitoring-refresh — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:33Z)
+- Refreshed the PR #4465 living docs and accountability trail against the latest monitored head `57f2268`.
+- Captured that the newest push triggered a fresh approval-gated workflow fanout with no new code-fixable failure signature yet visible in the current MCP snapshot.
+- Clarified the already-fixed archive logging review lines so the remaining stale unresolved-thread accounting can be re-evaluated on the next push.
+
 ### Fixed (S1025-pr4465-approved-workflow-monitoring — `copilot/remove-duplicate-pragma-comment` — 2026-05-14T19:19Z)
 - Refreshed the approved-workflow monitoring snapshot on head `a351c03`; required checks are largely green while a smaller set of approved suites remains in progress.
 - Applied the final validation delta before wrap-up:
