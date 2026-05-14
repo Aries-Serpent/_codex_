@@ -103,7 +103,7 @@ class TestSensorMain:
                         _sensor_mod.main()
                     except SystemExit:
                         # CLI main() is expected to exit in some branches during coverage tests.
-                        return captured.getvalue()
+                        pass
                 return captured.getvalue()
 
     def test_main_health_flag(self, tmp_path):
@@ -177,9 +177,9 @@ class TestActionProposerExceptionPath:
                     dry_run=False,
                 )
                 assert result["status"] in ("executed", "failed")
-            except RuntimeError:
-                # Intentionally tolerate patched isinstance failure to exercise exception handling path.
-                pass
+            except RuntimeError as err:
+                # If error bubbles out, assert it is the expected patched failure mode.
+                assert "isinstance broken" in str(err)
 
 
 # ---------------------------------------------------------------------------

@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S1012-review-thread-heal — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T05:18Z)
-- Resolved 9 unresolved `github-code-quality` review threads on `tests/cognitive/test_monitoring_coverage_gaps.py` by replacing unexplained empty `except` handlers with explicit intent comments / no-op return in CLI coverage test paths.
+- Resolved 9 unresolved `github-code-quality` review threads on `tests/cognitive/test_monitoring_coverage_gaps.py` by replacing unexplained empty `except` handlers with explicit intent comments / no-op handling in CLI coverage test paths.
+- Follow-up polish in the same test file removed an unreachable return and replaced a silent `RuntimeError` swallow with assertion-backed error validation.
 
 ### Fixed (S1011-comment-gate-heal — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T05:05Z)
 - Resolved CI auto-fix drift for PR #4458 by restoring same-commit accountability updates:
