@@ -32,6 +32,9 @@
 - ✅ `python scripts/ci/auto_fix_common_issues.py --check-only` (Pattern 25 freshness only, addressed by this update set)
 - ✅ `python3 -m pytest -x` (continued progression past ~6% with no repeat of prior first-stop blockers before intentional stop)
 - ✅ `git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main` showed `CODEX_MANIFEST.json` drift only
+- ✅ Post-polish recheck on head `b443d5f` confirmed:
+  - `sync_tracked_files --check` clean
+  - `auto_fix_common_issues --check-only` returned only the expected Pattern 25 freshness reminder before this final accountability refresh
 
 ### Pattern Compliance
 - Pattern 25 ⏳ — satisfied by this accountability/changelog update in the next commit
