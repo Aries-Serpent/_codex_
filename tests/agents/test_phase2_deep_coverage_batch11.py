@@ -547,7 +547,7 @@ class TestPhase2_PerformanceIntegration:
 
         # Acquire
         if pool["available"] > 0:
-            pool["connections"][0]  # Simulate acquiring a connection
+            _ = pool["connections"][0]  # Simulate acquiring a connection
             pool["available"] -= 1
 
         # Release
