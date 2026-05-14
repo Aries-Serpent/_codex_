@@ -3,6 +3,7 @@
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
 **Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + Agent Team
+> **Note**: Dates in this roadmap (including 2026 entries) are planning projections/targets and may not reflect externally verified historical events.
 
 ---
 
@@ -186,8 +187,7 @@
 **Documentation**: Update ADVANCED_FEATURES_PLANSET.md with implementation details
 
 #### 2. **Coverage Improvement to 95%+** (Phase 9 extension)
-**Execution Timeline (within Phase 9 context)**: 2026-04-13 to 2026-05-22
-**Phase Context Timeline**: 2026-04-01 to 2026-06-30
+**Timeline**: 2026-04-13 to 2026-05-22 (execution window within Phase 9: 2026-04-01 to 2026-06-30)
 **Status**: 🟢 Active
 **Effort**: 5-8 sessions (~150K-300K tokens)
 
@@ -261,7 +261,7 @@
 
 ### High Priority
 
-#### 0. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS
+#### 1. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS
 **Timeline**: Current cycle (live schedule maintained in `docs/ops/SAR_METHODOLOGY.md`)  
 **Status**: 🟡 In progress (as of 2026-05-08 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31  
 **Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
@@ -438,6 +438,7 @@
 
 **Roadmap Status**: 🟢 Active & Current
 **Last Content Update**: 2026-05-14 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
+**Next Projected Update**: 2026-06-06 (planned: Phase 9 completion milestone)
 **Next Review**: 2026-06-06
 **Version**: 2.1.1
 
