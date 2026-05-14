@@ -238,6 +238,24 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+    S1015_A["🔄 S1015-stabilization-monitoring-loop\n2026-05-14T11:54Z\ncontinue from a47388e"] --> S1015_B["🧪 Full-suite rerun\npython3 -m pytest -x"]
+    S1015_B --> S1015_C["⚠️ Run advanced to ~8%\nthen sandbox termination\nexit 137 before new first-stop"]
+    S1015_A --> S1015_D["📡 MCP workflow monitoring\nhead a47388e\n30 completed runs"]
+    S1015_D --> S1015_E["✅ Outcomes snapshot\n9 success · 4 action_required · 17 cancelled"]
+    S1015_C & S1015_E --> S1015_F["📝 Living docs + CHANGELOG + ACCOUNTABILITY updated"]
+    S1015_F --> S1015_G["🎯 Next loop\nrerun pytest -x\nfix next deterministic first-stop\nrerun ruff/mypy/auto-fix gates"]
+
+    style S1015_A fill:#4a4e69,color:#fff
+    style S1015_B fill:#457b9d,color:#fff
+    style S1015_C fill:#f4a261,color:#000
+    style S1015_D fill:#457b9d,color:#fff
+    style S1015_E fill:#1b4332,color:#fff
+    style S1015_F fill:#1b4332,color:#fff
+    style S1015_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
     S1004_A["🔄 S1004-ctep\n2026-05-14T01:54Z\nBranch: copilot/update-roadmap-timeline-notation"] --> S1004_B["📋 Apply 11 diffs\nfrom problem statement\n(ROADMAP + scripts + tests)"]
     S1004_B --> S1004_C["✅ docs/ROADMAP.md\n5 fixes: Cycle→Q4, timeline clarity,\nstale dates, W-142→Workstream 142,\ntimestamp sync 05-11→05-14"]
     S1004_B --> S1004_D["✅ scripts/ci/session_wrapup_autofix.py\nRemoved double file-read\nexisting_content now reused properly"]
