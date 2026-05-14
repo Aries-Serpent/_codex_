@@ -18,6 +18,7 @@ flowchart TD
     P --> Q["📡 S1022 monitoring cycle\nmaintainer approved pending workflows\nsuccesses + in-progress captured"]
     Q --> R["🧪 Resumed pytest -x\nadvanced >6%\nno repeat of prior blockers"]
     R --> S["📝 Refresh whats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY\nbefore final corrective commit"]
+    S --> T["🔀 Merge-conflict check\nCODEX_MANIFEST.json drift only\nsync to origin/main"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -38,4 +39,5 @@ flowchart TD
     style Q fill:#457b9d,color:#fff
     style R fill:#457b9d,color:#fff
     style S fill:#2d6a4f,color:#fff
+    style T fill:#1b4332,color:#fff
 ```

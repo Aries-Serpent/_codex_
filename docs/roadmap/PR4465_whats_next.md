@@ -34,8 +34,9 @@
 2. Verify post-commit local diagnostics:
    - `python scripts/ci/auto_fix_common_issues.py --check-only`
    - `python scripts/ci/mypy_baseline.py --require-baseline`
-3. Reply to the new actionable maintainer comments with the addressing commit hash.
-4. Continue MCP monitoring only if one of the currently running required checks turns red.
+3. Resolve the reported `CODEX_MANIFEST.json` merge conflict by syncing the generated manifest to `origin/main`.
+4. Reply to the new actionable maintainer comments with the addressing commit hash.
+5. Continue MCP monitoring only if one of the currently running required checks turns red.
 
 ---
 

@@ -21,12 +21,17 @@
   - in progress: coverage, semgrep, CodeQL, documentation validation, workflow link validation, code quality analysis
   - optional heavy suites currently `startup_failure`: Rust-Python Hybrid Swarm CI/CD, Data Quality & Determinism Suite, Progressive Validation Suite
 - ✅ Restored `.codex/session_context_latest.md` back to the prior committed contents so the next commit can remove the accidental progress-only drift from branch history.
+- ✅ Verified and resolved the newly reported `CODEX_MANIFEST.json` merge conflict versus `origin/main`:
+  - conflict scope was limited to generated `generated_at` / `integrity_sha256`
+  - no semantic manifest payload differences existed between branch and `main`
+  - resolution strategy: sync manifest to `origin/main` version
 
 ### Validation
 - ✅ `python3 -m ruff check`
 - ✅ `python scripts/ci/sync_tracked_files.py --check`
 - ✅ `python scripts/ci/auto_fix_common_issues.py --check-only` (Pattern 25 freshness only, addressed by this update set)
 - ✅ `python3 -m pytest -x` (continued progression past ~6% with no repeat of prior first-stop blockers before intentional stop)
+- ✅ `git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main` showed `CODEX_MANIFEST.json` drift only
 
 ### Pattern Compliance
 - Pattern 25 ⏳ — satisfied by this accountability/changelog update in the next commit
