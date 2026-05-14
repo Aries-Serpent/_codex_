@@ -98,7 +98,7 @@ block-beta
     CICD["100 Workflows\nComposite Actions\nCache Hierarchy\nTest Gates"]
   end
   block:L1["📦 LAYER 1 — SOURCE CODE"]
-    SRC["Python Modules\nTest Suite 21000+\nDocs 3193 files\nSecurity Baseline"]
+    SRC["Python Modules\nTest Suite 21500+\nDocs 3193 files\nSecurity Baseline"]
   end
   L5 --> L4
   L4 --> L3
