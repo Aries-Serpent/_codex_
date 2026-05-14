@@ -115,9 +115,25 @@ class CodexErrorHandler:
         if self.logger.isEnabledFor(logging.ERROR):
             self.logger.error(message)
         else:
-            # Ensure fatal diagnostics are still persisted when logging is globally disabled.
-            with self.error_log.open("a", encoding="utf-8") as fp:
-                fp.write(message + "\n")
+            # Ensure diagnostics are still persisted through the configured rotating handler.
+            record = self.logger.makeRecord(
+                self.logger.name,
+                logging.ERROR,
+                __file__,
+                0,
+                message,
+                args=(),
+                exc_info=None,
+            )
+            wrote_via_handler = False
+            for handler in self.logger.handlers:
+                if isinstance(handler, logging.handlers.RotatingFileHandler):
+                    handler.handle(record)
+                    wrote_via_handler = True
+                    break
+            if not wrote_via_handler:
+                with self.error_log.open("a", encoding="utf-8") as fp:
+                    fp.write(message + "\n")
 
         # Flush the handler to ensure log is written
         for handler in self.logger.handlers:

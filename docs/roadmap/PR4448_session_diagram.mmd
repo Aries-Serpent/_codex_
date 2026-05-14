@@ -220,6 +220,24 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+    S1014_A["🔄 S1014-ci-rescue-review-thread-followup\n2026-05-14T11:09Z\nPR #4458 · commit d9b2928 context"] --> S1014_B["📉 CI rescue triage via MCP\nAuto-Fix Common CI Issues + PR Auto-Fix Check"]
+    S1014_B --> S1014_C["🧵 Review thread 4289416168\n5 actionable findings loaded"]
+    S1014_C --> S1014_D["✅ Fixes applied\nPDA JSONL repair\nmtime debounce (sensor/actions)\nexecute_action exception-path tests\nrotation-safe error fallback"]
+    S1014_D --> S1014_E["✅ Gate commands\nsync_tracked_files --fix\nruff --fix\nmypy_baseline\nauto_fix_common_issues --check-only"]
+    S1014_E --> S1014_F["📝 Docs synced\nwhats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY updated"]
+    S1014_F --> S1014_G["⏳ Full-suite stabilization\npytest -x re-run loop continues"]
+
+    style S1014_A fill:#4a4e69,color:#fff
+    style S1014_B fill:#457b9d,color:#fff
+    style S1014_C fill:#457b9d,color:#fff
+    style S1014_D fill:#1b4332,color:#fff
+    style S1014_E fill:#1b4332,color:#fff
+    style S1014_F fill:#1b4332,color:#fff
+    style S1014_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
     S1004_A["🔄 S1004-ctep\n2026-05-14T01:54Z\nBranch: copilot/update-roadmap-timeline-notation"] --> S1004_B["📋 Apply 11 diffs\nfrom problem statement\n(ROADMAP + scripts + tests)"]
     S1004_B --> S1004_C["✅ docs/ROADMAP.md\n5 fixes: Cycle→Q4, timeline clarity,\nstale dates, W-142→Workstream 142,\ntimestamp sync 05-11→05-14"]
     S1004_B --> S1004_D["✅ scripts/ci/session_wrapup_autofix.py\nRemoved double file-read\nexisting_content now reused properly"]

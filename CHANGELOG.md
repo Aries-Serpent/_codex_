@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1014-ci-rescue-review-thread-followup — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T11:09Z)
+- Resolved CI rescue auto-fix blockers reported on commit `d9b2928` by addressing Pattern 30 tracked-sync drift and refreshing session accountability/changelog state.
+- Applied copilot-review-thread fixes for PR #4458:
+  - repaired malformed `.codex/aftermath/pda_iterations.jsonl` tail and removed placeholder `S293*` test entries.
+  - updated cognitive threshold config loaders (`scripts/cognitive/sensors/monitoring_sensor.py`, `scripts/cognitive/actions/monitoring_actions.py`) to record attempted config mtime on load failure and avoid repeated reload/warn loops.
+  - strengthened `tests/cognitive/test_monitoring_coverage_gaps.py` exception-path tests to exercise the real `ActionProposer.execute_action()` try/except branch and assert `status == "failed"`.
+  - updated `src/codex/logging/error_handler.py` fallback persistence path to emit through the configured rotating file handler when ERROR logging is disabled.
+- Stabilized follow-up full-suite stops from `pytest -x`:
+  - `tests/serving/test_inference_performance.py` now uses `pytest.importorskip("psutil")` for resource-utilization tests when optional dependency is unavailable.
+  - `tests/test_system_metrics_logging.py` now accepts `system_metrics.dependency_missing` (with `dependency=="psutil"`) as the current psutil fallback warning event.
+
 ### Fixed (S1012-review-thread-heal — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T05:18Z)
 - Resolved 9 unresolved `github-code-quality` review threads on `tests/cognitive/test_monitoring_coverage_gaps.py` by replacing unexplained empty `except` handlers with explicit intent comments / no-op handling in CLI coverage test paths.
 - Follow-up polish in the same test file removed an unreachable return and replaced a silent `RuntimeError` swallow with assertion-backed error validation.

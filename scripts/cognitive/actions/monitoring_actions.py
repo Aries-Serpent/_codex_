@@ -49,6 +49,7 @@ class ActionProposer:
 
     def _load_threshold_config(self, force: bool = False):
         defaults = self._default_thresholds()
+        attempted_mtime: float | None = None
 
         if yaml is None:
             self._thresholds = defaults
@@ -64,8 +65,12 @@ class ActionProposer:
             return
 
         try:
-            mtime = self.config_file.stat().st_mtime
-            if not force and self._config_mtime is not None and mtime == self._config_mtime:
+            attempted_mtime = self.config_file.stat().st_mtime
+            if (
+                not force
+                and self._config_mtime is not None
+                and attempted_mtime == self._config_mtime
+            ):
                 return
 
             payload = yaml.safe_load(self.config_file.read_text()) or {}
@@ -83,12 +88,14 @@ class ActionProposer:
 
             overrides = thresholds.get("per_workflow_overrides", {})
             self._workflow_overrides = overrides if isinstance(overrides, dict) else {}
-            self._config_mtime = mtime
+            self._config_mtime = attempted_mtime
         except Exception as e:
             logger.warning(f"Failed loading threshold config {self.config_file}: {e}")
             self._thresholds = defaults
             self.confidence_threshold = defaults["confidence_threshold"]
             self._workflow_overrides = {}
+            if attempted_mtime is not None:
+                self._config_mtime = attempted_mtime
 
     def _maybe_reload_config(self):
         if not self.config_file.exists():

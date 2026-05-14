@@ -139,47 +139,35 @@ class TestSensorMain:
 class TestActionProposerExceptionPath:
     def test_execute_action_runtime_error_returns_failed(self):
         proposer = ActionProposer()
+
+        class _RaisingEq:
+            def __eq__(self, other: object) -> bool:
+                raise RuntimeError("API failure")
+
         action = {
-            "action_type": "rerun_workflow",
+            "action_type": _RaisingEq(),
             "workflow": "wf_test",
             "confidence": 0.9,
             "requires_approval": False,
         }
-        # Patch the executed branch to raise
-        original_execute = proposer.execute_action
 
-        def _raising_execute(action, dry_run=True):
-            # Force into live-execute path then raise
-            if not dry_run and action.get("confidence", 0) >= proposer.confidence_threshold:
-                raise RuntimeError("API failure")
-            return original_execute(action, dry_run=dry_run)
-
-        with patch.object(proposer, "execute_action", side_effect=_raising_execute):
-            try:
-                result = proposer.execute_action(action, dry_run=False)
-                # If no exception, ensure it executed
-                assert result["status"] in ("executed", "failed")
-            except RuntimeError:
-                pass  # exception path exercised
+        result = proposer.execute_action(action, dry_run=False)
+        assert result["status"] == "failed"
+        assert "API failure" in result["error"]
 
     def test_execute_action_exception_via_bad_type(self):
-        """Trigger exception path inside try block by passing bad action type that raises."""
+        """Trigger exception path inside the live execute branch and assert failed result."""
         proposer = ActionProposer()
-        # Patch the internal block to raise when we reach the live-execute section
-        with patch(
-            "builtins.isinstance",
-            side_effect=RuntimeError("isinstance broken"),
-        ):
-            # The try/except in execute_action should catch this
-            try:
-                result = proposer.execute_action(
-                    {"action_type": "rerun_workflow", "workflow": "wf", "confidence": 0.9},
-                    dry_run=False,
-                )
-                assert result["status"] in ("executed", "failed")
-            except RuntimeError as err:
-                # If error bubbles out, assert it is the expected patched failure mode.
-                assert "isinstance broken" in str(err)
+        class _RaisingEq:
+            def __eq__(self, other: object) -> bool:
+                raise RuntimeError("isinstance broken")
+
+        result = proposer.execute_action(
+            {"action_type": _RaisingEq(), "workflow": "wf", "confidence": 0.9},
+            dry_run=False,
+        )
+        assert result["status"] == "failed"
+        assert "isinstance broken" in result["error"]
 
 
 # ---------------------------------------------------------------------------
