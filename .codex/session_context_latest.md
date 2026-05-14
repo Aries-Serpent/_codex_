@@ -1,27 +1,33 @@
-# Session Context — 2026-05-14T13:24:33Z
-**Branch:** `copilot/cognitive-brain-phase-7-tasks`  **PR:** #4458  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T13:36:57Z
+**Branch:** `copilot/cognitive-brain-phase-7-tasks`  **PR:** #4458  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4774` (✅)
-- GraphQL remaining: `4989` (✅)
+- Recommended method chain: `rest → graphql → gh_cli`
+- REST remaining: `4365` (✅)
+- GraphQL remaining: `4969` (✅)
 - gh CLI: ✅
-- CodeQL CLI: ✅
+- CodeQL CLI: ❌
 
-## 📋 PR #4458 — feat(cognitive): Phase 8a threshold config + CI rescue/review-thread hardening + stabilization/workflow-monitoring follow-up
+## 📋 PR #4458 — fix(cognitive): Phase 8a stabilization follow-up + quantum fixture registration + CI rescue (secrets/sync-manifest)
 State: `open`  Draft: `False`  Branch: `copilot/cognitive-brain-phase-7-tasks` → `main`
 
-### ❌ 1 Failing CI Check(s)
+### ❌ 6 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `Post rescue comment on failure` (cancelled)
 - `🔧 Self-Heal: Refresh CODEX_MANIFEST.json (C2 recovery)` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/cognitive-brain-phase-7-tasks` (2026-05-14)
+- **E→D Transition Readiness Gate** — `failure` on `copilot/cognitive-brain-phase-7-tasks` (2026-05-14)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/cognitive-brain-phase-7-tasks` (2026-05-14)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
+- `ec2d8084` fix(cognitive): Phase 8a stabilization follow-up + quantum fixture registration  — copilot-swe-agent[bot] (2026-05-14)
 - `69a98cc5` Merge branch 'main' into copilot/cognitive-brain-phase-7-tasks — Statix (2026-05-14)
 - `0f2a1880` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-14)
 - `97ce2e46` docs(ci): refresh approved-workflow monitoring status and session tracking — copilot-swe-agent[bot] (2026-05-14)
@@ -29,7 +35,6 @@ State: `open`  Draft: `False`  Branch: `copilot/cognitive-brain-phase-7-tasks` �
 - `a47388ea` fix(ci): complete rescue follow-up and review-thread remediation bundle — copilot-swe-agent[bot] (2026-05-14)
 - `f53c51ba` fix(ci): resolve rescue auto-fix blockers and apply review-thread hardening — copilot-swe-agent[bot] (2026-05-14)
 - `0c48b22c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
-- `c751a338` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
