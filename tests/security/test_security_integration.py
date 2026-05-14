@@ -9,7 +9,7 @@ import pytest
 
 
 class TestSecurityMasking:
-    """Test sensitive data masking functions."""
+    """Test sensitive data masking functions.""" # pragma: allowlist secret # pragma: allowlist secret
 
     def test_mask_token_standard(self):
         """Test standard token masking."""
