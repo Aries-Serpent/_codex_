@@ -45,7 +45,7 @@ try:  # pragma: no cover - optional dependency
     else:  # pragma: no cover - controlled via feature flag
         psutil = None
 except Exception as exc:  # pragma: no cover - psutil missing
-    logger.debug(
+    logger.warning(
         "psutil import failed; falling back to minimal sampler",
         exc_info=True,
         extra={
@@ -63,7 +63,7 @@ try:  # pragma: no cover - optional dependency
     else:  # pragma: no cover - GPU polling disabled via feature flag
         pynvml = None
 except Exception as exc:  # pragma: no cover - pynvml missing
-    logger.debug(
+    logger.warning(
         "pynvml import failed; GPU metrics disabled",
         exc_info=True,
         extra={

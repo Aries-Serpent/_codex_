@@ -107,11 +107,17 @@ class CodexErrorHandler:
             "context": context or {},
         }
 
-        self.logger.error(
+        message = (
             f"{error_details['type']}: {error_details['message']}\n"
             f"Context: {error_details['context']}\n"
             f"Traceback:\n{error_details['traceback']}"
         )
+        if self.logger.isEnabledFor(logging.ERROR):
+            self.logger.error(message)
+        else:
+            # Ensure fatal diagnostics are still persisted when logging is globally disabled.
+            with self.error_log.open("a", encoding="utf-8") as fp:
+                fp.write(message + "\n")
 
         # Flush the handler to ensure log is written
         for handler in self.logger.handlers:
