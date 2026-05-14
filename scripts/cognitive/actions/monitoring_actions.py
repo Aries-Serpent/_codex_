@@ -12,7 +12,7 @@ Version: 1.0.0
 import json
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 try:
     import yaml
@@ -41,7 +41,7 @@ class ActionProposer:
             "confidence_threshold": 0.8,
         }
 
-    def _safe_float(self, value: any, fallback: float) -> float:
+    def _safe_float(self, value: Any, fallback: float) -> float:
         try:
             return float(value)
         except (TypeError, ValueError):
@@ -119,7 +119,7 @@ class ActionProposer:
                 )
         return thresholds
 
-    def propose_actions(self, failures: list[dict[str, any]]) -> list[dict[str, any]]:
+    def propose_actions(self, failures: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Propose actions for workflow failures.
 
@@ -178,7 +178,7 @@ class ActionProposer:
 
         return actions
 
-    def execute_action(self, action: dict[str, any], dry_run: bool = True) -> dict[str, any]:
+    def execute_action(self, action: dict[str, Any], dry_run: bool = True) -> dict[str, Any]:
         """
         Execute proposed action (with safety checks).
 

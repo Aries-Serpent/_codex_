@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 try:
     import yaml
@@ -43,7 +43,7 @@ class MonitoringSensor:
             "confidence_threshold": 0.8,
         }
 
-    def _safe_float(self, value: any, fallback: float) -> float:
+    def _safe_float(self, value: Any, fallback: float) -> float:
         try:
             return float(value)
         except (TypeError, ValueError):
@@ -114,7 +114,7 @@ class MonitoringSensor:
                 )
         return thresholds
 
-    def get_system_health(self) -> dict[str, any]:
+    def get_system_health(self) -> dict[str, Any]:
         """Get overall monitoring system health status."""
         try:
             state = self._load_state()
@@ -135,7 +135,7 @@ class MonitoringSensor:
             logger.error(f"Error getting system health: {e}")
             return {"status": "unknown", "error": str(e)}
 
-    def get_active_failures(self) -> list[dict[str, any]]:
+    def get_active_failures(self) -> list[dict[str, Any]]:
         """Get list of currently active workflow failures."""
         try:
             state = self._load_state()
@@ -186,7 +186,7 @@ class MonitoringSensor:
             logger.error(f"Error in action decision: {e}")
             return False, f"Error: {e}", 0.0
 
-    def export_state_for_cognitive_brain(self) -> dict[str, any]:
+    def export_state_for_cognitive_brain(self) -> dict[str, Any]:
         """Export complete monitoring state for Cognitive Brain."""
         return {
             "sensor_type": "artifact_monitoring",
@@ -196,7 +196,7 @@ class MonitoringSensor:
             "action_recommendation": self.should_propose_action()
         }
 
-    def _load_state(self) -> dict[str, any]:
+    def _load_state(self) -> dict[str, Any]:
         """Load monitoring state from JSON file."""
         try:
             if self.state_file.exists():
@@ -207,7 +207,7 @@ class MonitoringSensor:
             logger.error(f"Error loading state: {e}")
             return {}
 
-    def _calculate_severity(self, workflow_data: dict[str, any]) -> float:
+    def _calculate_severity(self, workflow_data: dict[str, Any]) -> float:
         """Calculate failure severity (0.0-1.0)."""
         consecutive = workflow_data.get("consecutive_failures", 0)
         failure_rate = workflow_data.get("failure_rate", 0)
