@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4470)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4470 (SHA `071e62e1`) at 2026-05-14T21:41Z [auto-generated]
+
 ### Fixed (S1032-pr4469-final-review-polish — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:30Z)
 - Tightened `tests/agents/test_phase2_deep_coverage_batch11.py::test_connection_pooling` so acquisition removes a connection from the pool list and release restores it, keeping the counter and list state aligned.
 - Corrected the merged `PR-4468-followup.md` template so its modified-files and phase-objective sections match the underlying completed work.
