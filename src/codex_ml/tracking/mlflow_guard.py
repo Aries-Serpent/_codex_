@@ -148,7 +148,10 @@ def _apply_guard(
             if Path(local_override).anchor:
                 preferred_local = _as_file_uri(local_override)
 
-    candidate = explicit_request or preferred_local or tracking_env or codex_env
+    # Explicit runtime URIs should win over local-dir defaults so callers that
+    # intentionally set MLFLOW_TRACKING_URI (for example via tests/CLI flags)
+    # are not silently overridden by a stale CODEX_MLFLOW_LOCAL_DIR value.
+    candidate = explicit_request or tracking_env or codex_env or preferred_local
     recorded_request = candidate or ""
     normalised, fallback_reason = _normalise_candidate(candidate, allow_remote=allow_remote)
 

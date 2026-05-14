@@ -1,5 +1,41 @@
 ```mermaid
 flowchart TD
+    S1020_A["🧭 S1020 Monitoring Cycle\n2026-05-14T14:34Z\nhead a2f9801"] --> S1020_B["🔀 Merge conflict resolved\norigin/main merged\n.secrets.baseline reconciled"]
+    S1020_B --> S1020_C["✅ Post-conflict gates rerun\nruff + mypy baseline\nauto_fix_common_issues"]
+    S1020_C --> S1020_D["✅ Pattern 25/30 green\naccountability + changelog refreshed"]
+    S1020_D --> S1020_E["📡 Maintainer approved pending workflows\nbroad fanout now in progress"]
+    S1020_E --> S1020_F["✅ Completed successes include\nE→D Transition + gate workflows"]
+    S1020_E --> S1020_G["⏳ Continue MCP monitoring\nuntil no completed failures remain"]
+
+    style S1020_A fill:#4a4e69,color:#fff
+    style S1020_B fill:#1b4332,color:#fff
+    style S1020_C fill:#1b4332,color:#fff
+    style S1020_D fill:#1b4332,color:#fff
+    style S1020_E fill:#457b9d,color:#fff
+    style S1020_F fill:#2d6a4f,color:#fff
+    style S1020_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1018_A["🔄 S1018-set2-first-stop-fix\n2026-05-14T14:07Z\nhead db84d03"] --> S1018_B["🧪 Full-suite first-stop captured\npytest -x stopped at\nmlflow_offline URI format assertion"]
+    S1018_B --> S1018_C["✅ Minimal fix applied\nnormalize local file URI\nbefore mlflow.set_tracking_uri"]
+    S1018_C --> S1018_D["✅ Targeted regression passes\ntest_mlflow_offline_session_with_mlflow"]
+    S1018_D --> S1018_E["✅ Required gates rerun\nruff + mypy baseline\nauto-fix check-only"]
+    S1018_E --> S1018_F["📝 Set 4 status sync\nwhats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY"]
+    S1018_F --> S1018_G["🎯 Remaining scope\nSet 5 workflow re-check\ncomment replies + continuation prompt"]
+
+    style S1018_A fill:#4a4e69,color:#fff
+    style S1018_B fill:#457b9d,color:#fff
+    style S1018_C fill:#1b4332,color:#fff
+    style S1018_D fill:#1b4332,color:#fff
+    style S1018_E fill:#1b4332,color:#fff
+    style S1018_F fill:#1b4332,color:#fff
+    style S1018_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
     A["🏁 Session S994 Start\nPR #4448 · 0D_base_"] --> B["📋 Load CODEBASE_AGENCY_POLICY\nReview all open comments"]
 
     B --> C["🔴 3 Broken files\n(sandbox.py + 2 test files)\nmalformed syntax from fdd6f28"]
@@ -220,6 +256,58 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+    S1014_A["🔄 S1014-ci-rescue-review-thread-followup\n2026-05-14T11:09Z\nPR #4458 · commit d9b2928 context"] --> S1014_B["📉 CI rescue triage via MCP\nAuto-Fix Common CI Issues + PR Auto-Fix Check"]
+    S1014_B --> S1014_C["🧵 Review thread 4289416168\n5 actionable findings loaded"]
+    S1014_C --> S1014_D["✅ Fixes applied\nPDA JSONL repair\nmtime debounce (sensor/actions)\nexecute_action exception-path tests\nrotation-safe error fallback"]
+    S1014_D --> S1014_E["✅ Gate commands\nsync_tracked_files --fix\nruff --fix\nmypy_baseline\nauto_fix_common_issues --check-only"]
+    S1014_E --> S1014_F["📝 Docs synced\nwhats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY updated"]
+    S1014_F --> S1014_G["⏳ Full-suite stabilization\npytest -x re-run loop continues"]
+
+    style S1014_A fill:#4a4e69,color:#fff
+    style S1014_B fill:#457b9d,color:#fff
+    style S1014_C fill:#457b9d,color:#fff
+    style S1014_D fill:#1b4332,color:#fff
+    style S1014_E fill:#1b4332,color:#fff
+    style S1014_F fill:#1b4332,color:#fff
+    style S1014_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1015_A["🔄 S1015-stabilization-monitoring-loop\n2026-05-14T11:54Z\ncontinue from a47388e"] --> S1015_B["🧪 Full-suite rerun\npython3 -m pytest -x"]
+    S1015_B --> S1015_C["⚠️ Run advanced to ~8%\nthen sandbox termination\nexit 137 before new first-stop"]
+    S1015_A --> S1015_D["📡 MCP workflow monitoring\nhead a47388e\n30 completed runs"]
+    S1015_D --> S1015_E["✅ Outcomes snapshot\n9 success · 4 action_required · 17 cancelled"]
+    S1015_C & S1015_E --> S1015_F["📝 Living docs + CHANGELOG + ACCOUNTABILITY updated"]
+    S1015_F --> S1015_G["🎯 Next loop\nrerun pytest -x\nfix next deterministic first-stop\nrerun ruff/mypy/auto-fix gates"]
+
+    style S1015_A fill:#4a4e69,color:#fff
+    style S1015_B fill:#457b9d,color:#fff
+    style S1015_C fill:#f4a261,color:#000
+    style S1015_D fill:#457b9d,color:#fff
+    style S1015_E fill:#1b4332,color:#fff
+    style S1015_F fill:#1b4332,color:#fff
+    style S1015_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1016_A["🔄 S1016-workflow-monitoring-refresh\n2026-05-14T11:54Z\nhead e2d8d96"] --> S1016_B["📡 MCP run snapshot\n30 completed runs"]
+    S1016_B --> S1016_C["✅ Outcomes\n20 success · 4 action_required\n2 cancelled · 3 startup_failure · 1 skipped"]
+    S1016_C --> S1016_D["🧪 Gate verification\nauto_fix_common_issues --check-only\nPattern 25/30 green"]
+    S1016_D --> S1016_E["📝 Living docs + CHANGELOG + ACCOUNTABILITY refreshed"]
+    S1016_E --> S1016_F["🎯 Next step\ncontinue pytest -x loop\nfix next deterministic first-stop"]
+
+    style S1016_A fill:#4a4e69,color:#fff
+    style S1016_B fill:#457b9d,color:#fff
+    style S1016_C fill:#1b4332,color:#fff
+    style S1016_D fill:#1b4332,color:#fff
+    style S1016_E fill:#1b4332,color:#fff
+    style S1016_F fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
     S1004_A["🔄 S1004-ctep\n2026-05-14T01:54Z\nBranch: copilot/update-roadmap-timeline-notation"] --> S1004_B["📋 Apply 11 diffs\nfrom problem statement\n(ROADMAP + scripts + tests)"]
     S1004_B --> S1004_C["✅ docs/ROADMAP.md\n5 fixes: Cycle→Q4, timeline clarity,\nstale dates, W-142→Workstream 142,\ntimestamp sync 05-11→05-14"]
     S1004_B --> S1004_D["✅ scripts/ci/session_wrapup_autofix.py\nRemoved double file-read\nexisting_content now reused properly"]
@@ -260,4 +348,69 @@ flowchart TD
     style S1005_E fill:#1b4332,color:#fff
     style S1005_F fill:#457b9d,color:#fff
     style S1005_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1007_A["🔄 S1007-ctep\n2026-05-14T03:00Z\nCognitive Brain Phase 7"] --> S1007_B["✅ STEP 1\nPre-merge gate\nsync_tracked ✅ ruff ✅ mypy ✅"]
+    S1007_B --> S1007_C["🛡️ STEP 2\nSecurity Batch 6 verified\nbandit config=0, raw=328\nrun 25833450038 confirmed"]
+    S1007_C --> S1007_D["🧪 STEP 3a–d\n97 tests written + passing\nMonitoringSensor · ActionProposer\nSelfHealingValidator · Integration"]
+    S1007_D --> S1007_E["✅ Phase 7 COMPLETE\ncognitive_brain_phase_implementation.md\nAll 8 phases ✅"]
+    S1007_E --> S1007_F["🔍 STEP 4\nCodeQL 403 (API restriction)\nTest-only changes → 0 new surface"]
+    S1007_F --> S1007_G["📝 Pattern 25\nCHANGELOG + ACCOUNTABILITY\nliving docs synced"]
+
+    style S1007_A fill:#4a4e69,color:#fff
+    style S1007_B fill:#1b4332,color:#fff
+    style S1007_C fill:#1b4332,color:#fff
+    style S1007_D fill:#1b4332,color:#fff
+    style S1007_E fill:#2d6a4f,color:#fff
+    style S1007_F fill:#457b9d,color:#fff
+    style S1007_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1008_A["🔄 S1008-ctep\n2026-05-14T03:30Z\nCoverage Gap-Fill + Phase 8 Scope"] --> S1008_B["✅ STEP 1\nPre-merge gate passed\nsync ✅ ruff ✅ mypy ✅"]
+    S1008_B --> S1008_C["📊 STEP 2\nCoverage gap-fill\ntest_monitoring_coverage_gaps.py\n20 tests added"]
+    S1008_C --> S1008_D["✅ Coverage achieved\nsensor 96.33%\nactions 94.74%\ncombined 95.59% ≥80%"]
+    S1008_D --> S1008_E["🔍 STEP 4\nCodeQL 403 (API restriction)\nTest-only → 0 new surface"]
+    S1008_E --> S1008_F["🚀 STEP 5\nPhase 8 scope defined\n8a-e in planset"]
+    S1008_F --> S1008_G["📝 Pattern 25\nCHANGELOG + ACCOUNTABILITY\nliving docs synced"]
+
+    style S1008_A fill:#4a4e69,color:#fff
+    style S1008_B fill:#1b4332,color:#fff
+    style S1008_C fill:#1b4332,color:#fff
+    style S1008_D fill:#2d6a4f,color:#fff
+    style S1008_E fill:#457b9d,color:#fff
+    style S1008_F fill:#2d6a4f,color:#fff
+    style S1008_G fill:#2d6a4f,color:#fff
+```
+
+```mermaid
+flowchart TD
+    S1009_A["🔄 S1009-ctep\n2026-05-14T03:49Z\nPhase 8a Implementation"] --> S1009_B["✅ Pre-change gates\nsync + ruff + mypy + cognitive tests"]
+    S1009_B --> S1009_C["⚙️ Phase 8a core\nYAML thresholds + per-workflow overrides\nhot reload (mtime)"]
+    S1009_C --> S1009_D["🧪 New tests\ntest_threshold_config.py\ndefault/global/override/hot-reload"]
+    S1009_D --> S1009_E["📝 Pattern 25\nCHANGELOG + ACCOUNTABILITY\nLiving docs synced"]
+
+    style S1009_A fill:#4a4e69,color:#fff
+    style S1009_B fill:#1b4332,color:#fff
+    style S1009_C fill:#1b4332,color:#fff
+    style S1009_D fill:#1b4332,color:#fff
+    style S1009_E fill:#2d6a4f,color:#fff
+```
+```mermaid
+flowchart TD
+    S1017_A["🔄 S1017-manageable-sets-ci-rescue\n2026-05-14T13:42Z\nhead 83e59ee"] --> S1017_B["✅ Set 1 complete\nmanifest corruption fixed\nbaseline sync repaired\ntest-literal pragmas added"]
+    S1017_B --> S1017_C["✅ Set 3 gates\nruff clean\nmypy baseline pass\nauto-fix reduced to Pattern 25 docs"]
+    S1017_A --> S1017_D["📡 MCP monitoring\n6 in-progress runs\naction_required gate fanout observed"]
+    S1017_C --> S1017_E["📝 Set 4 docs refresh\nwhats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY"]
+    S1017_E --> S1017_F["🎯 Next: Set 5\nfinal validation + comment replies\nreserve 5-min wrap-up"]
+
+    style S1017_A fill:#4a4e69,color:#fff
+    style S1017_B fill:#1b4332,color:#fff
+    style S1017_C fill:#1b4332,color:#fff
+    style S1017_D fill:#457b9d,color:#fff
+    style S1017_E fill:#1b4332,color:#fff
+    style S1017_F fill:#2d6a4f,color:#fff
 ```

@@ -254,7 +254,7 @@ class TestResourceUtilization:
         """Measure memory footprint of inference server."""
         import os
 
-        import psutil
+        psutil = pytest.importorskip("psutil")
 
         process = psutil.Process(os.getpid())
         baseline_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -278,7 +278,7 @@ class TestResourceUtilization:
         """Measure CPU utilization during inference."""
         import os
 
-        import psutil
+        psutil = pytest.importorskip("psutil")
 
         process = psutil.Process(os.getpid())
 

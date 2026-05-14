@@ -90,7 +90,9 @@ def test_log_system_metrics_degrades_when_dependencies_missing(
     psutil_warn = [
         rec
         for rec in caplog.records
-        if getattr(rec, "event", None) == "system_metrics.psutil_missing"
+        if getattr(rec, "event", None)
+        in {"system_metrics.dependency_missing", "system_metrics.psutil_missing"}
+        and getattr(rec, "dependency", None) == "psutil"
     ]
     assert psutil_warn, "expected psutil fallback warning"
     nvml_warn = [

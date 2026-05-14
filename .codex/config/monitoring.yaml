@@ -114,6 +114,13 @@ cognitive_brain:
   confidence_threshold: 0.8
   auto_fix_enabled: false  # Requires human approval
 
+  # Phase 8a threshold configuration (hot-reloaded by sensor/actions modules)
+  thresholds:
+    severity_threshold: 0.8
+    consecutive_threshold: 3
+    confidence_threshold: 0.8
+    per_workflow_overrides: {}
+
 # Logging and reporting
 logging:
   level: "INFO"

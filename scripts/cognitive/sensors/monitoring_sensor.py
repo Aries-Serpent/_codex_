@@ -14,7 +14,12 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
+
+try:
+    import yaml
+except Exception:  # pragma: no cover
+    yaml = None
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,10 +28,102 @@ logger = logging.getLogger(__name__)
 class MonitoringSensor:
     """Cognitive Brain sensor for artifact monitoring system."""
 
-    def __init__(self, state_file: Optional[Path] = None):
+    def __init__(self, state_file: Optional[Path] = None, config_file: Optional[Path] = None):
         self.state_file = state_file or Path(".codex/monitoring/state/monitor_state.json")
+        self.config_file = config_file or Path(".codex/config/monitoring.yaml")
+        self._thresholds = self._default_thresholds()
+        self._workflow_overrides: dict[str, dict[str, float]] = {}
+        self._config_mtime: Optional[float] = None
+        self._load_threshold_config(force=True)
 
-    def get_system_health(self) -> dict[str, any]:
+    def _default_thresholds(self) -> dict[str, float]:
+        return {
+            "severity_threshold": 0.8,
+            "consecutive_threshold": 3.0,
+            "confidence_threshold": 0.8,
+        }
+
+    def _safe_float(self, value: Any, fallback: float) -> float:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return fallback
+
+    def _load_threshold_config(self, force: bool = False):
+        defaults = self._default_thresholds()
+        attempted_mtime: float | None = None
+
+        if yaml is None:
+            self._thresholds = defaults
+            self._workflow_overrides = {}
+            return
+
+        if not self.config_file.exists():
+            self._thresholds = defaults
+            self._workflow_overrides = {}
+            self._config_mtime = None
+            return
+
+        try:
+            attempted_mtime = self.config_file.stat().st_mtime
+            if (
+                not force
+                and self._config_mtime is not None
+                and attempted_mtime == self._config_mtime
+            ):
+                return
+
+            payload = yaml.safe_load(self.config_file.read_text()) or {}
+            cb = payload.get("cognitive_brain", {}) if isinstance(payload, dict) else {}
+            thresholds = cb.get("thresholds", {}) if isinstance(cb, dict) else {}
+
+            self._thresholds = {
+                "severity_threshold": self._safe_float(thresholds.get("severity_threshold"), defaults["severity_threshold"]),
+                "consecutive_threshold": self._safe_float(thresholds.get("consecutive_threshold"), defaults["consecutive_threshold"]),
+                "confidence_threshold": self._safe_float(thresholds.get("confidence_threshold"), defaults["confidence_threshold"]),
+            }
+            overrides = thresholds.get("per_workflow_overrides", {})
+            self._workflow_overrides = overrides if isinstance(overrides, dict) else {}
+            self._config_mtime = attempted_mtime
+        except Exception as e:
+            logger.warning(f"Failed loading threshold config {self.config_file}: {e}")
+            self._thresholds = defaults
+            self._workflow_overrides = {}
+            if attempted_mtime is not None:
+                # Record the failed-attempt mtime so we do not repeatedly reload
+                # and re-warn until the file changes again.
+                self._config_mtime = attempted_mtime
+
+    def _maybe_reload_config(self):
+        if not self.config_file.exists():
+            if self._config_mtime is not None:
+                self._load_threshold_config(force=True)
+            return
+
+        try:
+            current = self.config_file.stat().st_mtime
+            if self._config_mtime is None or current != self._config_mtime:
+                self._load_threshold_config(force=True)
+        except Exception as e:
+            logger.warning(f"Failed checking threshold config mtime: {e}")
+
+    def _thresholds_for_workflow(self, workflow: str | None) -> dict[str, float]:
+        thresholds = dict(self._thresholds)
+        if workflow and workflow in self._workflow_overrides:
+            override = self._workflow_overrides.get(workflow, {})
+            if isinstance(override, dict):
+                thresholds["severity_threshold"] = self._safe_float(
+                    override.get("severity_threshold"), thresholds["severity_threshold"]
+                )
+                thresholds["consecutive_threshold"] = self._safe_float(
+                    override.get("consecutive_threshold"), thresholds["consecutive_threshold"]
+                )
+                thresholds["confidence_threshold"] = self._safe_float(
+                    override.get("confidence_threshold"), thresholds["confidence_threshold"]
+                )
+        return thresholds
+
+    def get_system_health(self) -> dict[str, Any]:
         """Get overall monitoring system health status."""
         try:
             state = self._load_state()
@@ -47,7 +144,7 @@ class MonitoringSensor:
             logger.error(f"Error getting system health: {e}")
             return {"status": "unknown", "error": str(e)}
 
-    def get_active_failures(self) -> list[dict[str, any]]:
+    def get_active_failures(self) -> list[dict[str, Any]]:
         """Get list of currently active workflow failures."""
         try:
             state = self._load_state()
@@ -74,11 +171,18 @@ class MonitoringSensor:
     def should_propose_action(self) -> tuple[bool, str, float]:
         """Determine if Cognitive Brain should propose an autonomous action."""
         try:
+            self._maybe_reload_config()
             health = self.get_system_health()
             failures = self.get_active_failures()
 
             health_score = health.get("health_score", 100)
-            critical_failures = len([f for f in failures if f["severity"] >= 0.8])
+            critical_failures = 0
+            for failure in failures:
+                thresholds = self._thresholds_for_workflow(failure.get("workflow"))
+                severity_threshold = thresholds["severity_threshold"]
+                consecutive_threshold = int(thresholds["consecutive_threshold"])
+                if failure.get("severity", 0) >= severity_threshold and failure.get("consecutive_failures", 0) >= consecutive_threshold:
+                    critical_failures += 1
 
             if health_score < 50 and critical_failures >= 3:
                 return True, "Critical system health with multiple severe failures", 0.9
@@ -91,7 +195,7 @@ class MonitoringSensor:
             logger.error(f"Error in action decision: {e}")
             return False, f"Error: {e}", 0.0
 
-    def export_state_for_cognitive_brain(self) -> dict[str, any]:
+    def export_state_for_cognitive_brain(self) -> dict[str, Any]:
         """Export complete monitoring state for Cognitive Brain."""
         return {
             "sensor_type": "artifact_monitoring",
@@ -101,7 +205,7 @@ class MonitoringSensor:
             "action_recommendation": self.should_propose_action()
         }
 
-    def _load_state(self) -> dict[str, any]:
+    def _load_state(self) -> dict[str, Any]:
         """Load monitoring state from JSON file."""
         try:
             if self.state_file.exists():
@@ -112,7 +216,7 @@ class MonitoringSensor:
             logger.error(f"Error loading state: {e}")
             return {}
 
-    def _calculate_severity(self, workflow_data: dict[str, any]) -> float:
+    def _calculate_severity(self, workflow_data: dict[str, Any]) -> float:
         """Calculate failure severity (0.0-1.0)."""
         consecutive = workflow_data.get("consecutive_failures", 0)
         failure_rate = workflow_data.get("failure_rate", 0)

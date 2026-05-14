@@ -9,7 +9,7 @@ import pytest
 
 
 class TestSecurityMasking:
-    """Test sensitive data masking functions."""
+    """Test sensitive data masking functions.""" # pragma: allowlist secret # pragma: allowlist secret
 
     def test_mask_token_standard(self):
         """Test standard token masking."""
@@ -249,7 +249,7 @@ class TestEncryptedStorage:
         from codex.security.storage import SecureStorage
 
         storage = SecureStorage()
-        secret = "my_api_key_12345"
+        secret = "my_api_key_12345"  # pragma: allowlist secret
         filepath = os.path.join(temp_dir, "secret.enc")
 
         # Store encrypted
@@ -319,6 +319,10 @@ class TestIntegrationScenarios:
 
         from codex.security import mask_token, sanitize_log
 
+        # Keep this test isolated even if prior tests globally disabled logging.
+        previous_disable_level = logging.root.manager.disable
+        logging.disable(logging.NOTSET)
+
         # Set up test logger
         log_stream = StringIO()
         handler = logging.StreamHandler(log_stream)
@@ -326,21 +330,26 @@ class TestIntegrationScenarios:
         logger.addHandler(handler)
         logger.setLevel(logging.INFO)
 
-        # Simulate logging with security
-        api_key = "sk_live_abc123xyz789"
-        user_input = "normal\nmalicious_injection"
+        try:
+            # Simulate logging with security
+            api_key = "sk_live_abc123xyz789"  # pragma: allowlist secret
+            user_input = "normal\nmalicious_injection"
 
-        logger.info(f"API Key: {mask_token(api_key)}")
-        logger.info(f"User data: {sanitize_log(user_input)}")
+            logger.info(f"API Key: {mask_token(api_key)}")
+            logger.info(f"User data: {sanitize_log(user_input)}")
 
-        # Verify log output
-        log_output = log_stream.getvalue()
+            # Verify log output
+            log_output = log_stream.getvalue()
 
-        assert "sk_live" not in log_output  # Key is masked
-        assert "z789" in log_output  # Last 4 chars visible (default)
-        # Check that the malicious newline was removed from user input
-        user_data_line = log_output.split("User data:")[1].strip()
-        assert "normalmalicious_injection" in user_data_line  # Newline removed, words merged
+            assert "sk_live" not in log_output  # Key is masked
+            assert "z789" in log_output  # Last 4 chars visible (default)
+            # Check that the malicious newline was removed from user input
+            user_data_line = log_output.split("User data:")[1].strip()
+            assert "normalmalicious_injection" in user_data_line  # Newline removed, words merged
+        finally:
+            logger.removeHandler(handler)
+            handler.close()
+            logging.disable(previous_disable_level)
 
     def test_token_comparison_workflow(self):
         """Test secure token comparison workflow."""

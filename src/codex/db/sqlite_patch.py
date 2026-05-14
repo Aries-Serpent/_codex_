@@ -140,6 +140,10 @@ def pooled_connect(database, *args, **kwargs):
 
     k = _key(str(database))
     with _POOL_LOCK:
+        if not isinstance(_CONN_POOL, dict):
+            conn = _ORIG_CONNECT(database, *args, **kwargs)
+            _apply_pragmas(conn)
+            return PooledConnectionProxy(conn, k)
         # Reuse existing connection for this key, or create and cache one
         conn = _CONN_POOL.get(k)
         if conn is None:
@@ -167,10 +171,21 @@ def _close_all():
     """Best-effort cleanup of pooled connections on interpreter shutdown."""
 
     with _POOL_LOCK:
-        for _, conn in list(_CONN_POOL.items()):
+        if isinstance(_CONN_POOL, dict):
+            conns = list(_CONN_POOL.values())
+        elif isinstance(_CONN_POOL, set):
+            conns = list(_CONN_POOL)
+        elif isinstance(_CONN_POOL, list):
+            conns = list(_CONN_POOL)
+        else:
+            conns = []
+
+        for conn in conns:
             try:
                 conn.close()
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
-        _CONN_POOL.clear()
+
+        if hasattr(_CONN_POOL, "clear"):
+            _CONN_POOL.clear()
