@@ -1,3 +1,34 @@
+## SESSION SUMMARY — 2026-05-14T13:42Z [S1017-manageable-sets-ci-rescue]
+
+**Session:** S1017-manageable-sets-ci-rescue | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458
+
+### Completed
+- ✅ Executed remediation in manageable sets per maintainer direction.
+- ✅ Set 1 (CI unblockers) completed:
+  - fixed invalid `CODEX_MANIFEST.json` merge-conflict corruption by regenerating manifest.
+  - repaired manifest/baseline drift via `python scripts/ci/sync_tracked_files.py --fix --manifest-only`.
+  - added allowlist pragmas for test-only secret literals in `tests/security/test_security_integration.py`.
+- ✅ Set 3 (required gates) partially completed:
+  - `python -m ruff check src/ tests/ --fix` passed.
+  - `python scripts/ci/mypy_baseline.py --require-baseline` passed (121 ≤ 122 baseline).
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` isolated only Pattern 25 update requirement.
+- ✅ Monitored approved workflows via MCP on current head `83e59ee`:
+  - in-progress runs observed: 6
+  - high-frequency completed action-required gate fanout observed (workflow-execution-gate / token-delegation / cost-check / follow-up prompt).
+
+### Validation
+- ✅ `python scripts/ci/sync_tracked_files.py --check --manifest-only`
+- ✅ `detect-secrets-hook --baseline .secrets.baseline tests/security/test_security_integration.py CODEX_MANIFEST.json`
+- ✅ `python -m ruff check src/ tests/ --fix`
+- ✅ `python scripts/ci/mypy_baseline.py --require-baseline`
+- ✅ `python scripts/ci/auto_fix_common_issues.py --check-only` (Pattern 25 pending docs update)
+
+### Pattern Compliance
+- Pattern 30 ✅ — manifest/baseline sync restored
+- Pattern 25 ⏳ — addressed in this docs-update set
+
+---
+
 ## SESSION SUMMARY — 2026-05-14T11:54Z [S1016-workflow-monitoring-refresh]
 
 **Session:** S1016-workflow-monitoring-refresh | **Branch:** `copilot/cognitive-brain-phase-7-tasks` | **PR:** #4458

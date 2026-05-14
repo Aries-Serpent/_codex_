@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1017-manageable-sets-ci-rescue — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T13:42Z)
+- Executed CI rescue in manageable sets:
+  - regenerated `CODEX_MANIFEST.json` to remove merge-conflict corruption and restore valid JSON/integrity.
+  - repaired tracked-file drift via `sync_tracked_files --fix --manifest-only` and updated `.secrets.baseline` manifest pointer.
+  - added `# pragma: allowlist secret` on test-only literals in `tests/security/test_security_integration.py` to prevent false-positive secret blocking.
+- Required gates status in this cycle:
+  - `ruff check src/ tests/ --fix` ✅
+  - `mypy_baseline --require-baseline` ✅ (121 ≤ 122 baseline)
+  - `auto_fix_common_issues --check-only` reduced to Pattern 25 docs freshness, handled in this update set.
+- Workflow monitoring snapshot (MCP) on head `83e59ee`: 6 in-progress runs; recurring action-required gate fanout observed for workflow-execution/token-delegation/cost/follow-up workflows.
+
 ### Fixed (S1016-workflow-monitoring-refresh — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T11:54Z)
 - Monitored post-approval workflow outcomes on head `e2d8d96` via MCP:
   - 30 completed runs observed
