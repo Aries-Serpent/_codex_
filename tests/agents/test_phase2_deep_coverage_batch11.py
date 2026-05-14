@@ -548,16 +548,20 @@ class TestPhase2_PerformanceIntegration:
         # Acquire
         if pool["available"] > 0:
             initial_available = pool["available"]
+            initial_connection_count = len(pool["connections"])
             assert initial_available > 0
-            acquired_connection = pool["connections"][0]
+            acquired_connection = pool["connections"].pop(0)
             assert acquired_connection.startswith("conn_")
             pool["available"] -= 1
             assert pool["available"] == initial_available - 1
+            assert len(pool["connections"]) == initial_connection_count - 1
 
         # Release
+        pool["connections"].append(acquired_connection)
         pool["available"] += 1
 
-        assert pool["available"] == 5
+        assert pool["available"] == initial_available
+        assert len(pool["connections"]) == initial_connection_count
 
 
 class TestPhase2_ErrorHandlingIntegration:

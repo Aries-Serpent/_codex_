@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1032-pr4469-final-review-polish — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:30Z)
+- Tightened `tests/agents/test_phase2_deep_coverage_batch11.py::test_connection_pooling` so acquisition removes a connection from the pool list and release restores it, keeping the counter and list state aligned.
+- Corrected the merged `PR-4468-followup.md` template so its modified-files and phase-objective sections match the underlying completed work.
+- Refreshed the PR #4469 living docs with the latest approved-workflow monitoring snapshot and preserved the final wrap-up plan.
+
 ### Fixed (S1031-pr4469-final-doc-polish — `copilot/fix-deprecated-utcfromtimestamp` — 2026-05-14T21:27Z)
 - Polished the new PR #4469 living-doc status table so in-progress work uses `🔄` rather than a contradictory completed checkmark.
 - Removed duplicate header text from the merged `PR-4468-followup.md` prompt file.
