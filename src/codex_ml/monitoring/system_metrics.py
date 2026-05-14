@@ -347,6 +347,8 @@ def sample_system_metrics() -> dict[str, Any]:
     ``CODEX_MONITORING_DISABLE_GPU=1`` or :func:`configure_system_metrics`.
     """
 
+    # Ensure psutil availability flags (_CONFIG.use_psutil + degraded state) and
+    # dependency-missing metadata are updated before choosing psutil vs fallback sampling.
     _ensure_psutil_sampler("sample_system_metrics")
     ts = _now()
     if _CONFIG.use_psutil and HAS_PSUTIL and "psutil" in globals() and psutil is not None:
@@ -655,6 +657,9 @@ def _ensure_psutil_sampler(
 
     extra: dict[str, Any] = {
         "event": "system_metrics.dependency_missing",
+        # Compatibility field for dashboards that still match the historical
+        # event token while primary event routing uses `dependency_missing`.
+        "legacy_event": "system_metrics.psutil_missing",
         "dependency": "psutil",
         "sampler": "minimal",
         "component": context,
