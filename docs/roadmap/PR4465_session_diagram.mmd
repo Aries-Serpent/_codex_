@@ -15,6 +15,9 @@ flowchart TD
     M --> N["⏳ Continue / conclude validation loop\nbased on remaining session time"]
     N --> O["⏱️ Wrap-up decision\nlatest pytest -x rerun >7%\nno repeat of fixed blockers"]
     O --> P["🎯 Final wrap-up target\nclean transient artifacts\nrun final gates\nreply to comments"]
+    P --> Q["📡 S1022 monitoring cycle\nmaintainer approved pending workflows\nsuccesses + in-progress captured"]
+    Q --> R["🧪 Resumed pytest -x\nadvanced >6%\nno repeat of prior blockers"]
+    R --> S["📝 Refresh whats_next + session_diagram\nCHANGELOG + ACCOUNTABILITY\nbefore final corrective commit"]
 
     style A fill:#4a4e69,color:#fff
     style B fill:#457b9d,color:#fff
@@ -32,4 +35,7 @@ flowchart TD
     style N fill:#f4a261,color:#000
     style O fill:#457b9d,color:#fff
     style P fill:#2d6a4f,color:#fff
+    style Q fill:#457b9d,color:#fff
+    style R fill:#457b9d,color:#fff
+    style S fill:#2d6a4f,color:#fff
 ```
