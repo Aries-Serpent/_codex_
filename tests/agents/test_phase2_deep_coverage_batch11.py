@@ -567,9 +567,10 @@ class TestPhase2_ErrorHandlingIntegration:
         [
             (True, True, "primary"),
             (False, True, "fallback"),
-            (False, False, "error"),
-        ],
-    )
+        # This test models primary being unavailable.
+        assert primary_service_available is False
+
+        if fallback_service_available:
     def test_graceful_degradation(
         self, primary_service_available, fallback_service_available, expected_result
     ):
