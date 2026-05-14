@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #4458)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4458 (SHA `0a6fbc39`) at 2026-05-14T03:52Z [auto-generated]
+
 ### Added (S1008-ctep — `copilot/cognitive-brain-phase-7-tasks` — 2026-05-14T03:30Z)
 - **Coverage gap-fill tests — `tests/cognitive/test_monitoring_coverage_gaps.py`** (20 tests):
   - Exception-path tests for `MonitoringSensor`: corrupt JSON state, exception propagation from `_load_state`, `get_system_health`, `get_active_failures`, `should_propose_action`.
