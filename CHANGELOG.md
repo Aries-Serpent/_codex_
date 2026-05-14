@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S1005-ctep — PR #4455 — 2026-05-14T02:30Z)
+### Fixed (S1006-ctep — PR #4455 — 2026-05-14T02:30Z)
+- **CI failure: `TestAutoFixAllMissing` key alignment** — `auto_fix_all_missing()` returns a `pda_today` key (added when `fix_pda_entry_today()` was integrated), but the four `TestAutoFixAllMissing` tests were not updated. Fixed: added `patch.object(swa, "fix_pda_entry_today", ...)` to all four tests; added `"pda_today"` to the expected-keys assertion in `test_returns_dict_with_all_keys`; added `mock_pda.assert_called_once()` to `test_calls_fixes_when_needed`. All 62 tests now pass.
+- **Follow-up prompt generated** — wrote post-merge cognitive brain Phase 7 + security Batch 6 rescan continuation prompt to `docs/roadmap/PR4448_whats_next.md`.
+
+
 - **CodeQL fetcher artifact retrieved (no live API recount)** — downloaded `codeql-alerts-open-codeql-25778513533` (artifact id `6961696607`) from fetcher run `25778513533` for in-session alert review.
 - **Workflow example pinning sweep** — fixed remaining `actions/unpinned-tag` in:
   - `.github/workflows/examples/copilot-with-mcp.yml` (`checkout`, `setup-python`, `upload-artifact`)
