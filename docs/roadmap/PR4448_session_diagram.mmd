@@ -178,3 +178,25 @@ flowchart TD
     style S1003x_G fill:#1b4332,color:#fff
     style S1003x_H fill:#2d6a4f,color:#fff
 ```
+
+```mermaid
+flowchart TD
+    S1003y_A["🔄 S1003-ctep\n2026-05-14T00:20Z\nPR #4450 · CTEP Mode"] --> S1003y_B["🔍 CI Failure\nPattern 30 failing\nPDA + accountability stale"]
+    S1003y_B --> S1003y_C["✅ PDA entry written\n2026-05-14\npda_iterations.jsonl"]
+    S1003y_B --> S1003y_D["✅ github-script@v9 pinned\nmcp-cache-warm.yml:142\nSHA 3a2844b…"]
+    S1003y_C & S1003y_D --> S1003y_E["🔧 Pattern 30 hardened\nfix_pda_entry_today() added\nauto_fix_all_missing() wired"]
+    S1003y_E --> S1003y_F["✅ All sync jobs hardened\nREQ-PDA step added\npda_manual → pda_auto"]
+    S1003y_F --> S1003y_G["📝 Living docs updated\nwhats_next.md\nsession_diagram.mmd"]
+    S1003y_G --> S1003y_H["📝 CHANGELOG + ACCOUNTABILITY\nS1003-ctep entry\n2026-05-14T00:20Z"]
+    S1003y_H --> S1003y_I["🏁 S1003-ctep End\n~54 alerts (est.)\nNext: confirm < 25 → MERGE"]
+
+    style S1003y_A fill:#4a4e69,color:#fff
+    style S1003y_B fill:#e63946,color:#fff
+    style S1003y_C fill:#1b4332,color:#fff
+    style S1003y_D fill:#1b4332,color:#fff
+    style S1003y_E fill:#2d6a4f,color:#fff
+    style S1003y_F fill:#2d6a4f,color:#fff
+    style S1003y_G fill:#1b4332,color:#fff
+    style S1003y_H fill:#1b4332,color:#fff
+    style S1003y_I fill:#457b9d,color:#fff
+```
