@@ -1,32 +1,32 @@
-# Session Context — 2026-05-14T14:01:59Z
-**Branch:** `copilot/cognitive-brain-phase-7-tasks`  **PR:** #4458  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T14:30:48Z
+**Branch:** `copilot/cognitive-brain-phase-7-tasks`  **PR:** #4458  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4850` (✅)
-- GraphQL remaining: `4933` (✅)
+- Recommended method chain: `rest → graphql → gh_cli`
+- REST remaining: `4715` (✅)
+- GraphQL remaining: `4994` (✅)
 - gh CLI: ✅
-- CodeQL CLI: ✅
+- CodeQL CLI: ❌
 
-## 📋 PR #4458 — fix(cognitive): Phase 8a stabilization follow-up + CI rescue (manifest/secrets) + living-docs status sync
+## 📋 PR #4458 — fix(cognitive): Phase 8a stabilization follow-up + CI rescue (manifest/secrets) + mlflow offline URI fix + living-docs sync
 State: `open`  Draft: `False`  Branch: `copilot/cognitive-brain-phase-7-tasks` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-14)
+- **CI Rescue — Auto-Fix & @copilot RCA** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
+- **PR Comment Review Gate** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
+- `fa49dc60` docs(status): record set2 first-stop fix and refresh session status docs — copilot-swe-agent[bot] (2026-05-14)
+- `db84d032` fix(utils): normalize offline MLflow URI for file-backed sessions — copilot-swe-agent[bot] (2026-05-14)
+- `18416b78` chore: continue manageable-set execution plan — copilot-swe-agent[bot] (2026-05-14)
 - `5a5fc69f` docs(status): update living docs and accountability for manageable-set execution — copilot-swe-agent[bot] (2026-05-14)
 - `83e59ee0` fix(ci): repair manifest integrity and allowlist test secret literals — copilot-swe-agent[bot] (2026-05-14)
 - `de687419` chore: start manageable-set CI remediation plan — copilot-swe-agent[bot] (2026-05-14)
 - `ec2d8084` fix(cognitive): Phase 8a stabilization follow-up + quantum fixture registration  — copilot-swe-agent[bot] (2026-05-14)
 - `69a98cc5` Merge branch 'main' into copilot/cognitive-brain-phase-7-tasks — Statix (2026-05-14)
-- `0f2a1880` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-14)
-- `97ce2e46` docs(ci): refresh approved-workflow monitoring status and session tracking — copilot-swe-agent[bot] (2026-05-14)
-- `e2d8d960` docs(ci): update stabilization status and living docs after monitoring loop — copilot-swe-agent[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
