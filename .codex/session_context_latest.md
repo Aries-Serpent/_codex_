@@ -1,36 +1,40 @@
-# Session Context — 2026-05-14T19:00:20Z
-**Branch:** `copilot/remove-duplicate-pragma-comment`  **PR:** #4465  **Access:** `rest, graphql, gh_cli, codeql_local`
+# Session Context — 2026-05-14T21:07:08Z
+**Branch:** `copilot/fix-deprecated-utcfromtimestamp`  **PR:** #4469  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli → codeql_local`
-- REST remaining: `4711` (✅)
-- GraphQL remaining: `4977` (✅)
+- Recommended method chain: `rest → graphql → gh_cli`
+- REST remaining: `4756` (✅)
+- GraphQL remaining: `4976` (✅)
 - gh CLI: ✅
-- CodeQL CLI: ✅
+- CodeQL CLI: ❌
 
-## 📋 PR #4465 — fix(ci): heal validation blockers and resolve CODEX_MANIFEST merge drift
-State: `open`  Draft: `False`  Branch: `copilot/remove-duplicate-pragma-comment` → `main`
+## 📋 PR #4469 — Fix datetime deprecation, test cleanup, quantum conftest docs, and refresh accountability after CI bot triage
+State: `open`  Draft: `False`  Branch: `copilot/fix-deprecated-utcfromtimestamp` → `copilot/fix-deprecation-warning-datetime`
 
-### ❌ 2 Failing CI Check(s)
-- `Cleanup artifacts` (failure)
-- `Prepare` (failure)
+### ❌ 6 Failing CI Check(s)
+- `Post rescue comment on failure` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (failure)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-14)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
 - **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Copilot code review** — `failure` on `refs/pull/4465/head` (2026-05-14)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-14)
 
 ## 📝 Recent Commits
-- `15b71f1e` chore: auto-merge 1 automated commit(s) from main [skip ci] — github-actions[bot] (2026-05-14)
-- `6d4a5138` docs: refresh accountability after monitoring polish — copilot-swe-agent[bot] (2026-05-14)
-- `b443d5fa` docs: clarify PR4465 monitoring notes — copilot-swe-agent[bot] (2026-05-14)
-- `67fc2a05` fix(ci): resolve CODEX_MANIFEST merge drift — copilot-swe-agent[bot] (2026-05-14)
-- `83c829e4` docs: refresh PR4465 monitoring status — copilot-swe-agent[bot] (2026-05-14)
-- `d4091d03` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-14)
-- `e145e591` chore: update CI rescue plan — copilot-swe-agent[bot] (2026-05-14)
-- `cee56389` fix(ci): heal validation first-stop failures — copilot-swe-agent[bot] (2026-05-14)
+- `c6e7d675` fix(docs): refresh PR #4469 accountability after bot triage — copilot-swe-agent[bot] (2026-05-14)
+- `255a906b` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
+- `02ef9a65` fix: update datetime handling and review followups — copilot-swe-agent[bot] (2026-05-14)
+- `0a73f524` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-05-14)
+- `8ac31d8b` chore: Generate follow-up prompt for PR #4469 [skip ci] — github-actions[bot] (2026-05-14)
+- `b3ff3f51` chore: initialize minimal fix plan — copilot-swe-agent[bot] (2026-05-14)
+- `105ad6f4` Initial plan — copilot-swe-agent[bot] (2026-05-14)
+- `e2f67128` Merge pull request #4465 from Aries-Serpent/copilot/remove-duplicate-pragma-comm — Statix (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
