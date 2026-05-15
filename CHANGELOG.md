@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1033-workflow-portfolio-analysis — `copilot/analyze-workflows-data-again` — 2026-05-15T18:44Z)
+- Added `docs/reporting/workflow_portfolio_7d_table.csv` with all discovered workflows and 7-day utilization fields, including inactive/disabled coverage.
+- Added `docs/reporting/workflow_portfolio_7d_table.md` to provide a repository-native tabular view across requested columns (activity, non-utilization, dependencies, access, and rate-limit posture).
+- Added `docs/reporting/workflow_portfolio_7d_analysis.md` with executive summary sections: what works, what does not, what is missing, what needs improvement, and forward-looking codebase perspective.
+
 ### Fixed (auto-update — PR #4470)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4470 (SHA `071e62e1`) at 2026-05-14T21:41Z [auto-generated]
 
