@@ -1,42 +1,32 @@
-# Session Context — 2026-05-14T22:28:00Z
-**Branch:** `0D_base_`  **PR:** #4470  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-15T03:58:39Z
+**Branch:** `copilot/summarize-codebase`  **PR:** #4473  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4676` (✅)
-- GraphQL remaining: `4971` (✅)
+- REST remaining: `4708` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #4470 — 0 d base
-State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
-
-### ❌ 12 Failing CI Check(s)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `🧠 Cognitive Pre-flight Check` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+## 📋 PR #4473 — [WIP] Add codebase summary documentation
+State: `open`  Draft: `True`  Branch: `copilot/summarize-codebase` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-14)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-05-14)
-- **⚡ Self-Approve Pending Workflow Runs** — `failure` on `main` (2026-05-14)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-15)
+- **Copilot Issue Triage** — `failure` on `main` (2026-05-15)
+- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-15)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-15)
 
 ## 📝 Recent Commits
+- `840464c9` Initial plan — copilot-swe-agent[bot] (2026-05-15)
+- `29cc723d` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-05-15)
+- `2cfb1ef8` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-15)
+- `0abaa4e2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
+- `06aa3686` Merge pull request #4470 from Aries-Serpent/0D_base_ — Statix (2026-05-14)
+- `36b8037b` Changes before error encountered — copilot-swe-agent[bot] (2026-05-14)
 - `fdcb9bd5` fix: address PR #4470 review feedback and sync tracked files — copilot-swe-agent[bot] (2026-05-14)
 - `2b7e066f` Merge remote-tracking branch 'origin/main' into 0D_base_ — copilot-swe-agent[bot] (2026-05-14)
-- `3c884f36` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-05-14)
-- `e21847db` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-05-14)
-- `caa5345b` chore: Generate follow-up prompt for PR #4470 [skip ci] — github-actions[bot] (2026-05-14)
-- `38a49674` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-14)
-- `96a7406e` Merge pull request #4469 from Aries-Serpent/copilot/fix-deprecated-utcfromtimest — Statix (2026-05-14)
-- `87866724` test: align connection pool state with review feedback — copilot-swe-agent[bot] (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
