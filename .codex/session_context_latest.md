@@ -1,29 +1,29 @@
-# Session Context — 2026-05-16T21:23:31Z
-**Branch:** `copilot/analyze-workflows-data-again`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-05-15T16:22:33Z
+**Branch:** `copilot/analyze-workflows-data`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4845` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4998` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-15)
 
 ## 📝 Recent Commits
-- `0364ebdb` docs: include workflow console in GitHub Pages navigation — copilot-swe-agent[bot] (2026-05-16)
-- `81554e61` chore: plan include workflow console in pages docs — copilot-swe-agent[bot] (2026-05-16)
-- `2384542c` feat: add copilot_workflow_report_console.html — live workflow control panel — copilot-swe-agent[bot] (2026-05-16)
-- `fc742769` chore: begin copilot_workflow_report_console HTML build — copilot-swe-agent[bot] (2026-05-16)
-- `99507bab` docs: refresh workflow portfolio remediation findings — copilot-swe-agent[bot] (2026-05-16)
-- `e29a27a0` chore: start workflow portfolio remediation review — copilot-swe-agent[bot] (2026-05-16)
-- `550d91c3` Harden WEC workflow-state gating and align iterative workflow remediation prompt — copilot-swe-agent[bot] (2026-05-16)
-- `c2005b60` feat: harden WEC integrity checks and align PR4470 iterative follow-up prompt — copilot-swe-agent[bot] (2026-05-16)
+- `a3352cdf` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
+- `c3da4627` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-15)
+- `1a9fb0cc` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
+- `ddf428d3` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-15)
+- `29cc723d` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-05-15)
+- `2cfb1ef8` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-15)
+- `0abaa4e2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
+- `06aa3686` Merge pull request #4470 from Aries-Serpent/0D_base_ — Statix (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -34,9 +34,9 @@
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
+- [] `RP-QUERY-FILTER-TEST`: ?
 - [] `RP-SUCCESS-RATE-TEST`: ?
 - [] `RP-SUCCESS-RATE-TEST`: ?
-- [] `?`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
