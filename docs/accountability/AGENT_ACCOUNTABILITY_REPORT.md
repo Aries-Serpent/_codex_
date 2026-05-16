@@ -1,3 +1,39 @@
+## SESSION SUMMARY — 2026-05-16T15:26Z [S1038-workflow-portfolio-remediation]
+
+**Session:** S1038-workflow-portfolio-remediation | **Branch:** `copilot/analyze-workflows-data-again` | **PR:** #4470
+
+### Completed
+- ✅ Re-validated the workflow portfolio against the live GitHub Actions inventory and historical
+  run counts for a conservative disable review.
+- ✅ Identified three **orphan active workflows** that no longer exist on `main` and are therefore
+  valid disable-now/archive targets:
+  - `documentation-quality-check.yml` (`232765053`)
+  - `cache-validation.yml` (`232765010`)
+  - `cache-health-monitor.yml` (`232765030`)
+- ✅ Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with:
+  - validated disable/keep/archive buckets,
+  - WEC workflow mermaid mapping + tokenized variable usage,
+  - smoke-test posture guidance and expected edge cases,
+  - Copilot session timing / rate-limit operating envelope,
+  - overlap groups for similar workflow logic.
+- ✅ Expanded `docs/reporting/copilot_agent_session_standard_operation.md` with a concrete
+  60-minute session budget and last-5-minute wrap-up rule.
+- ✅ Refreshed the workflow portfolio tabular artifacts so the CSV/MD surface now includes
+  recommendation and smoke-posture fields for all workflows.
+
+### Validation
+- ⚠️ Direct workflow-disable REST calls for the three orphan workflows returned
+  `HTTP 403 Resource not accessible by integration` when only `github.token` was available.
+  This confirms the disable action requires `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.
+- ⚠️ Baseline `nox -s tests` remains failing during collection with existing repository issues.
+- ✅ Documentation/reporting files were refreshed consistently for this session.
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability/changelog updated in this session.
+- Pattern 30 ✅ — workflow reporting, WEC mapping, and operational guidance were updated together.
+
+---
+
 ## SESSION SUMMARY — 2026-05-16T06:22Z [S1037-wec-hardening-and-workflow-state-audit]
 
 **Session:** S1037-wec-hardening-and-workflow-state-audit | **Branch:** `copilot/analyze-workflows-data-again` | **PR:** #4470

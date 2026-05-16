@@ -1,6 +1,6 @@
 # Workflow Portfolio Analysis (7-Day Window)
 
-Generated at: 2026-05-16T04:13:40.786806+00:00  
+Generated at: 2026-05-16T15:26:16.938000+00:00  
 Repository: `Aries-Serpent/_codex_`
 
 ## Dataset Artifacts
@@ -12,12 +12,33 @@ Repository: `Aries-Serpent/_codex_`
 ## Executive Snapshot
 
 - Total workflows discovered: **180**
+- Workflows currently active in GitHub Actions: **153**
+- Workflows currently non-active in GitHub Actions: **27**
 - Workflows active in last 7 days: **82**
+- Active workflows not utilized in the last 7 days: **73**
 - Workflows not utilized in 7 days (including disabled): **100**
 - Workflows with rate-limit controls/signals: **155**
 - Workflows with variable mappings detected: **144**
 - Branch-update conflict risk counts: **high=10**, **medium=38**
 - Aggregate run conclusions (7 days): success=361, failure=50, action_required=78
+
+## Portfolio Action Snapshot
+
+- The refreshed portfolio table now carries three Copilot-facing decision columns:
+  `recommended_portfolio_action`, `copilot_smoke_posture`, and `portfolio_note`.
+- **Do not treat 7-day inactivity by itself as a disable signal.** Historical run counts matter:
+  several 7-day-idle workflows still have deep lifetime usage (`actionlint-audit.yml` 908 runs,
+  `agent-registry-validation.yml` 992, `api-documentation.yml` 139, `admin_setup_verification.yml` 70).
+- **Validated immediate disable/archive targets:** three active orphan workflows that no longer exist
+  on `main`, so keeping them active only clutters Actions:
+  - `documentation-quality-check.yml` (workflow id `232765053`)
+  - `cache-validation.yml` (workflow id `232765010`)
+  - `cache-health-monitor.yml` (workflow id `232765030`)
+- **Disable attempt result:** direct REST `PUT /actions/workflows/{id}/disable` calls returned
+  `HTTP 403 Resource not accessible by integration` when authenticated only with `github.token`.
+  The operation requires `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.
+- **Archive-review bucket:** workflows that are low-usage but still intentional/manual utilities
+  (for example `app-package-download.yml`) should be reviewed for product value before disablement.
 
 ## Mermaid Mapping — Workflow + Variable + Conflict Logic
 
@@ -81,6 +102,30 @@ CODEX_HEALER_SKIP_SKIPCI]
 | `TVAR_CODEX_COVERAGE_THRESHOLD` | 2 |
 | `TVAR_COPILOT_AGENT_STATE` | 2 |
 
+## WEC Workflow Mapping — Groups + Token Contracts
+
+```mermaid
+flowchart TD
+  S[Copilot session start] --> SETUP["copilot-setup-steps.yml<br/>TVAR_CODEX_CACHE_VERSION<br/>TVAR_CODEX_CI_LAST_GREEN_SHA<br/>TVAR_CODEX_SWEEP_SKIP_MAIN"]
+  SETUP --> WEC["workflow-execution-gate.yml<br/>TSEC_CODEX_MASTER_KEY<br/>TSEC_CODEX_BACKUP_KEY<br/>TSEC_GITHUB_TOKEN"]
+  WEC --> ALWAYS["Always-required WEC<br/>pre-merge-validation.yml<br/>comment-review-gate.yml<br/>deferral-language-gate.yml<br/>agent-auth-delegation.yml<br/>workflow-execution-gate.yml<br/>copilot-agent-checkin.yml<br/>cost-gate.yml"]
+  WEC --> ACTIVE["Always-active but never auto-checked<br/>copilot-agent-session-done.yml<br/>copilot-iterative-self-healing.yml"]
+  WEC --> VALIDATE["Validation & testing opt-ins<br/>validate.yml<br/>resilient_validation.yml<br/>nox_gates.yml<br/>mypy-baseline.yml<br/>coverage-with-timeout.yml<br/>progressive-validation.yml<br/>pre-flight-validation.yml<br/>ci-checkpoint-validation.yml<br/>data-quality-suite.yml<br/>auth-tests.yml<br/>pr-checks.yml<br/>html_visual_regression.yml"]
+  WEC --> SECURITY["Security & quality opt-ins<br/>security-scanning-suite.yml<br/>codeql-analysis.yml<br/>actionlint-audit.yml<br/>semgrep_sarif.yml<br/>auto-fix-common-issues.yml<br/>auto-fix-pr-check.yml<br/>code-quality-coverage-suite.yml<br/>audit-qa-suite.yml<br/>template_lint.yml<br/>codeql-alert-fetcher.yml"]
+  WEC --> DOCS["Documentation opt-ins<br/>documentation-link-checker.yml<br/>pages-pre-merge-validation.yml"]
+  WEC --> INFRA["Infrastructure & deploy opt-ins<br/>reference-integrity.yml<br/>dependency-submission.yml<br/>docker-build-push.yml<br/>rust_swarm_ci.yml<br/>root-org-validation.yml<br/>agent-registry-validation.yml<br/>qa-walkthrough.yml"]
+  WEC --> APPROVE["Autonomy grant<br/>auto-approve-workflows"]
+```
+
+| WEC group | Workflow set | Primary tokenized variables | How Copilot uses it |
+|---|---|---|---|
+| Always-required gates | `pre-merge-validation.yml`, `comment-review-gate.yml`, `deferral-language-gate.yml`, `agent-auth-delegation.yml`, `workflow-execution-gate.yml`, `copilot-agent-checkin.yml`, `cost-gate.yml` | `TSEC_CODEX_MASTER_KEY`, `TSEC_CODEX_BACKUP_KEY`, `TSEC_GITHUB_TOKEN`, `TVAR_COPILOT_AGENT_AUTH_ENABLED`, `TVAR_COGNITIVE_BRAIN_SESSION_NUMBER` | Keeps the PR executable, preserves WEC state, and maintains delegated autonomy. |
+| Validation/testing opt-ins | `validate.yml`, `resilient_validation.yml`, `nox_gates.yml`, `mypy-baseline.yml`, `coverage-with-timeout.yml`, `progressive-validation.yml`, `pre-flight-validation.yml`, `ci-checkpoint-validation.yml`, `data-quality-suite.yml`, `auth-tests.yml`, `pr-checks.yml`, `html_visual_regression.yml` | `TVAR_CODEX_CACHE_VERSION`, `TENV_PYTHON_VERSION`, `TVAR_CODEX_COVERAGE_THRESHOLD` | Used when the current task needs deeper correctness evidence than the always-required gates provide. |
+| Security/quality opt-ins | `security-scanning-suite.yml`, `codeql-analysis.yml`, `actionlint-audit.yml`, `semgrep_sarif.yml`, `auto-fix-common-issues.yml`, `auto-fix-pr-check.yml`, `code-quality-coverage-suite.yml`, `audit-qa-suite.yml`, `template_lint.yml`, `codeql-alert-fetcher.yml` | `TSEC_CODEX_MASTER_KEY`, `TSEC_CODEX_BACKUP_KEY`, `TSEC_GITHUB_TOKEN`, `TVAR_CODEX_CACHE_VERSION`, `TVAR_CODEX_CI_FAILURE_RATE` | Used to tighten review quality, surface security findings, and auto-fix common regressions. |
+| Documentation opt-ins | `documentation-link-checker.yml`, `pages-pre-merge-validation.yml` | `TSEC_GITHUB_TOKEN`, `TVAR_CODEX_CACHE_VERSION` | Used when the change touches docs/Pages and the session needs docs-specific validation. |
+| Infrastructure/deploy opt-ins | `reference-integrity.yml`, `dependency-submission.yml`, `docker-build-push.yml`, `rust_swarm_ci.yml`, `root-org-validation.yml`, `agent-registry-validation.yml`, `qa-walkthrough.yml` | `TSEC_CODEX_MASTER_KEY`, `TSEC_CODEX_BACKUP_KEY`, `TVAR_CODEX_CACHE_VERSION`, `TVAR_CODEX_SWEEP_SKIP_MAIN` | Used for structure, packaging, deployment, and agent-registry correctness. |
+| Autonomy grant | `auto-approve-workflows` | `TVAR_COPILOT_AGENT_AUTH_ENABLED`, `TSEC_CODEX_MASTER_KEY`, `TSEC_CODEX_BACKUP_KEY` | Clears `action_required` fanout runs without waiting for a human maintainer. |
+
 ## Quantum-Inspired Equations Depicting Workflow Logic (Tokenized)
 
 \[
@@ -127,6 +172,40 @@ flowchart LR
   S7 --> S8[Session handoff]
 ```
 
+## Copilot Session Operating Envelope
+
+- **Session budget:** treat each Copilot coding/cloud-agent session as a hard **60-minute** window.
+- **Suggested time slices:**
+  - **0–10 min:** environment setup, repo preload, drift/rate-limit probe, WEC review.
+  - **10–50 min:** scoped implementation + targeted validation.
+  - **50–55 min:** final checks, artifact refresh, accountability/changelog updates.
+  - **55–60 min:** `report_progress`, handoff prompt, next-session continuation notes.
+- **Do not start broad workflow fanout after minute 50.** Long matrix or `workflow_run` chains will
+  often outlive the active session and produce stale handoff context.
+- **Rate-limit posture:** prefer read-only MCP queries first, throttle repeated GitHub REST calls,
+  and keep `auto-approve-workflows` / `workflow-execution-gate` fanout bounded to the workflows
+  actually needed for the current task.
+
+## Smoke-Test Posture and Expected Edge Cases
+
+- This portfolio uses **observed smoke posture** rather than re-dispatching every workflow. The
+  `copilot_smoke_posture` column records whether the latest 7-day evidence is:
+  - `observed-green`
+  - `observed-failures`
+  - `approval-gated-or-mixed`
+  - `unobserved-7d`
+  - `disabled`
+- Full live smoke-dispatch of all workflows was intentionally **not** performed: it would create
+  unnecessary queue pressure, mutate live PR state, and requires `actions:write` for approval-gated
+  runs.
+- Expected edge cases:
+  1. **Approval-gated fanout:** WEC-selected workflows can stall in `action_required` unless
+     `auto-approve-workflows` is active.
+  2. **Branch drift:** `workflow_run` listeners and write-capable workflows can act on stale SHAs.
+  3. **Token scope mismatch:** `github.token` can read inventory but cannot enable/disable workflows.
+  4. **Historical orphan records:** some workflows remain active in Actions even when the backing
+     workflow file is gone from `main`.
+
 ## Requested Findings Summary
 
 ### What works
@@ -140,12 +219,15 @@ flowchart LR
 - Workflow sprawl and mixed orchestration modes increase debugging overhead.
 - Some high-value active workflows are under-utilized in the recent 7-day window.
 - Branch-update conflict exposure remains in write-capable, event-driven workflows.
+- 7-day inactivity alone is a weak pruning heuristic; historical run counts are required.
+- Workflow disablement is blocked in this session without an `actions:write` token.
 
 ### What is missing
 
 - Canonical owner/criticality metadata contract per workflow.
 - Unified variable token registry and enforcement policy.
 - Automated conflict-risk scoring artifact in CI outputs.
+- A write-scoped token in this runtime for workflow state changes (`disable` / `enable`).
 
 ### What needs to be improved
 
@@ -154,6 +236,48 @@ flowchart LR
 3. Harden write-capable automation against main-branch drift.
 4. Consolidate overlapping pipelines to reduce fanout complexity.
 5. Publish conflict-risk and quick-win rankings as default Copilot session context.
+6. Disable orphan active workflows that no longer exist on `main`.
+7. Distinguish **disable-now**, **archive-review**, and **keep-enabled** buckets in the portfolio table.
+
+## Validated Disable / Keep / Archive Decisions
+
+### Disable-now (validated)
+
+These workflows are still active in GitHub Actions but the workflow files do not exist on `main`,
+so disabling them will not interrupt a current repository process:
+
+| Workflow id | Workflow path in Actions | Why safe to disable now |
+|---:|---|---|
+| `232765053` | `.github/workflows/documentation-quality-check.yml` | Backing file absent on `main`; only 1 lifetime run; historical orphan. |
+| `232765010` | `.github/workflows/cache-validation.yml` | Backing file absent on `main`; historical orphan. |
+| `232765030` | `.github/workflows/cache-health-monitor.yml` | Backing file absent on `main`; historical orphan. |
+
+### Keep-enabled after lifetime review
+
+| Workflow | Why it stays enabled despite 7-day inactivity |
+|---|---|
+| `actionlint-audit.yml` | 908 lifetime runs; still a valid workflow compliance gate. |
+| `agent-registry-validation.yml` | 992 lifetime runs; still part of agent/repo integrity checks. |
+| `api-documentation.yml` | 139 lifetime runs; still supports documentation publishing. |
+| `admin_setup_verification.yml` | 70 lifetime runs; still used for setup/auth verification. |
+| `app-package-download.yml` | Only 2 lifetime runs, but it is a standalone end-user packaging utility with maintained docs. |
+
+### Archive-review bucket
+
+- Manual niche workflows with very low lifetime usage but still-documented product value should
+  move to an explicit archive review, not an automatic disable. `app-package-download.yml` is the
+  clearest current example.
+
+## Similar Logic / Overlap Groups
+
+| Group | Representative workflows | Consolidation note |
+|---|---|---|
+| WEC and PR gates | `pre-merge-validation.yml`, `comment-review-gate.yml`, `deferral-language-gate.yml`, `agent-auth-delegation.yml`, `workflow-execution-gate.yml`, `auto-approve-workflows.yml` | Keep distinct, but document as one operating cluster for Copilot sessions. |
+| Auto-fix and rescue | `auto-fix-common-issues.yml`, `auto-fix-pr-check.yml`, `ci-rescue.yml`, `self-healing.yml`, `iterative-self-healing-ci.yml` | Highest overlap area; prune duplicate auto-fix surfaces before adding more rescue paths. |
+| Validation suites | `validate.yml`, `resilient_validation.yml`, `nox_gates.yml`, `mypy-baseline.yml`, `progressive-validation.yml`, `pre-flight-validation.yml`, `ci-checkpoint-validation.yml`, `pr-checks.yml` | Large fanout with overlapping confidence goals; best place for future reduction. |
+| Security and code scanning | `codeql-analysis.yml`, `codeql-alert-fetcher.yml`, `semgrep_sarif.yml`, `security-scanning-suite.yml`, `actionlint-audit.yml` | Keep as layered controls, but unify reporting and activation language. |
+| Docs and Pages | `documentation-link-checker.yml`, `pages-pre-merge-validation.yml`, `pages-scheduled-validation.yml`, `pages-mkdocs.yml`, `workflow-link-validation.yml` | Several docs workflows share similar signal paths and can likely be simplified. |
+| Agent and cognitive orchestration | `agent-orchestration-unified.yml`, `copilot-session-chain.yml`, `copilot-pr-session-injector.yml`, `copilot-setup-steps.yml`, `chatops_copilot_trigger.yml` | Highest coordination risk when branch drift or rate limits appear mid-session. |
 
 ## 🚨 Branch-Update Conflict Dashboard
 

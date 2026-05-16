@@ -98,6 +98,23 @@ Use tokenized variable aliases in living docs and session handoffs to keep refer
 | `TENV_PYTHON_VERSION` | `CODEX_ENV_PYTHON_VERSION` | Environment Python version |
 | `TENV_NODE_VERSION` | `CODEX_ENV_NODE_VERSION` | Environment Node version |
 
+## Session Timebox + Rate-Limit Envelope
+
+| Budget slice | Target minutes | Session expectation |
+|---|---:|---|
+| Pre-load + environment setup | 0–10 | Read startup packet, inspect drift, confirm WEC state, check rate-limit posture. |
+| Active implementation | 10–45 | Make the scoped change and run targeted validations only. |
+| Evidence refresh | 45–55 | Refresh workflow docs, accountability, changelog, and any required artifacts. |
+| Wrap-up / handoff | 55–60 | Final `report_progress`, continuation prompt, and explicit next-session notes. |
+
+- **Hard rule:** do not start broad workflow fanout after minute 50 of a session.
+- **Reserve the final 5 minutes** for wrap-up progress, WEC preservation, and the next-session
+  handoff prompt.
+- Prefer read-only MCP inventory calls first; only use direct GitHub REST/CLI writes when the
+  action is necessary and the session has the correct token scope.
+- Approval-gated runs count against rate-limit and session time; only arm workflows that are
+  actually needed for the active task.
+
 ## 🚨 Branch-Update Conflict — Session Quick Reference
 
 > Full per-workflow mitigation cards: [`workflow_portfolio_7d_analysis.md → Branch-Update Conflict Dashboard`](workflow_portfolio_7d_analysis.md#-branch-update-conflict-dashboard)

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1038-workflow-portfolio-remediation — `copilot/analyze-workflows-data-again` — 2026-05-16T15:26Z)
+- Refreshed the workflow portfolio reporting artifacts with Copilot-facing recommendation buckets:
+  `recommended_portfolio_action`, `copilot_smoke_posture`, and `portfolio_note`.
+- Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with:
+  - validated disable-now orphan workflows still active in Actions,
+  - lifetime-history keep-enabled decisions for 7-day-idle workflows,
+  - overlap groups for similar workflow logic,
+  - a WEC workflow mermaid map plus tokenized variable contract notes,
+  - a 60-minute Copilot session operating envelope and smoke-test posture guidance.
+- Expanded `docs/reporting/copilot_agent_session_standard_operation.md` with explicit session
+  timeboxing and rate-limit guidance for Copilot agents.
+- Recorded live workflow-disable API attempts for orphan workflows returning
+  `HTTP 403 Resource not accessible by integration` under `github.token`, confirming that
+  workflow state changes still require `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.
+
 ### Added (S1037-wec-hardening-and-workflow-state-audit — `copilot/analyze-workflows-data-again` — 2026-05-16T06:22Z)
 - Hardened `scripts/ci/wec_enforcer.py` to validate GitHub Actions workflow state integrity:
   - checked WEC workflows must be `active`,
