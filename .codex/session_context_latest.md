@@ -1,29 +1,29 @@
-# Session Context — 2026-05-15T16:41:10Z
+# Session Context — 2026-05-16T04:53:18Z
 **Branch:** `copilot/analyze-workflows-data-again`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4685` (✅)
+- REST remaining: `4996` (✅)
 - GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Running Copilot cloud agent** — `failure` on `copilot/analyze-workflows-data` (2026-05-15)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-15)
+- **Validation Pipeline** — `failure` on `main` (2026-05-16)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
+- **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-16)
+- **Copilot Issue Triage** — `failure` on `main` (2026-05-16)
+- **Deploy Pages (MkDocs)** — `failure` on `main` (2026-05-16)
 
 ## 📝 Recent Commits
+- `ca9b91c8` Add copilot session standard operation documentation and finalize expanded analy — copilot-swe-agent[bot] (2026-05-16)
+- `8925002a` Progress workflow expansion and add copilot session operation docs — copilot-swe-agent[bot] (2026-05-16)
+- `3c449435` Add 7-day workflow portfolio table and analysis artifacts — copilot-swe-agent[bot] (2026-05-15)
+- `aaea71f2` Add workflow portfolio analysis framework for 7-day utilization, dependencies, a — copilot-swe-agent[bot] (2026-05-15)
 - `a3352cdf` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
 - `c3da4627` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-05-15)
 - `1a9fb0cc` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
 - `ddf428d3` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-05-15)
-- `29cc723d` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-05-15)
-- `2cfb1ef8` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-05-15)
-- `0abaa4e2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-05-15)
-- `06aa3686` Merge pull request #4470 from Aries-Serpent/0D_base_ — Statix (2026-05-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -34,9 +34,9 @@
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [] `RP-QUERY-FILTER-TEST`: ?
 - [] `RP-SUCCESS-RATE-TEST`: ?
 - [] `RP-SUCCESS-RATE-TEST`: ?
+- [] `?`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
