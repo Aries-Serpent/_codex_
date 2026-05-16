@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1037-wec-hardening-and-workflow-state-audit — `copilot/analyze-workflows-data-again` — 2026-05-16T06:22Z)
+- Hardened `scripts/ci/wec_enforcer.py` to validate GitHub Actions workflow state integrity:
+  - checked WEC workflows must be `active`,
+  - merge-required workflows must be `active`,
+  - validation now emits explicit non-active workflow/state findings.
+- Hardened `.github/workflows/workflow-execution-gate.yml` token usage for WEC parsing/summarization steps to use:
+  - `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`
+- Updated `.github/copilot-prompts/active/PR-4470-followup.md` with a tailored iterative execution prompt aligned to WEC approval flow and live non-active WEC workflow inventory.
+- Recorded live enable-attempt outcome: GitHub API workflow-enable calls returned `HTTP 403 Resource not accessible by integration` under default installation token, confirming `actions:write` token requirement for workflow state enablement.
+
 ### Added (S1036-codeless-architecture-finalization — `copilot/analyze-workflows-data-again` — 2026-05-16T06:00Z)
 - Finalized cognitive-brain planning objects with explicit **AI-friendly codeless system/process depictions** and updated mermaid mappings across:
   - `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`

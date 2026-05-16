@@ -44,6 +44,7 @@ try:
     _spec.loader.exec_module(_swa)  # type: ignore[union-attr]
     _WEC_ITEMS: list[tuple[str, str, bool]] = _swa._WEC_ITEMS
     _WEC_ALWAYS_REQUIRED: frozenset[str] = _swa._WEC_ALWAYS_REQUIRED
+    _WEC_MERGE_REQUIRED: frozenset[str] = _swa._MERGE_REQUIRED_WORKFLOWS
 except Exception:
     # Fallback — minimal hard-coded list so the script stays self-contained.
     _WEC_ITEMS = [
@@ -60,6 +61,7 @@ except Exception:
     _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(  # type: ignore[no-redef]
         fname for fname, _, req in _WEC_ITEMS if req
     )
+    _WEC_MERGE_REQUIRED: frozenset[str] = frozenset(_WEC_ALWAYS_REQUIRED)  # type: ignore[no-redef]
 
 # ---------------------------------------------------------------------------
 # GitHub API helper
@@ -153,6 +155,41 @@ def _fetch_pr_body(token: str, repo: str, pr_number: int) -> str:
     return data.get("body") or ""
 
 
+def _list_workflow_states(token: str, repo: str) -> dict[str, str]:
+    """
+    Return mapping: workflow filename (e.g. validate.yml) -> state.
+
+    State examples: active, disabled_manually, disabled_inactivity.
+    """
+    states: dict[str, str] = {}
+    page = 1
+    while True:
+        status, data = _gh_api(
+            "GET",
+            f"/repos/{repo}/actions/workflows?per_page=100&page={page}",
+            token,
+        )
+        if status != 200 or not isinstance(data, dict):
+            break
+        workflows = data.get("workflows", [])
+        if not isinstance(workflows, list) or not workflows:
+            break
+        for wf in workflows:
+            if not isinstance(wf, dict):
+                continue
+            wf_path = str(wf.get("path", "")).strip()
+            wf_state = str(wf.get("state", "")).strip()
+            if not wf_path:
+                continue
+            wf_file = os.path.basename(wf_path)
+            if wf_file:
+                states[wf_file] = wf_state
+        if len(workflows) < 100:
+            break
+        page += 1
+    return states
+
+
 # ---------------------------------------------------------------------------
 # Mode: --validate-body
 # ---------------------------------------------------------------------------
@@ -210,6 +247,39 @@ def cmd_validate_body(pr_number: int) -> int:
         for e in errors:
             print(e)
         return 1
+
+    # Validate selected and merge-required workflows are active in Actions.
+    workflow_states = _list_workflow_states(token, repo)
+    if workflow_states:
+        checked_workflows = sorted(
+            fname for fname, checked in checkboxes.items()
+            if checked and fname.endswith(".yml")
+        )
+        checked_non_active = [
+            (wf, workflow_states.get(wf, "missing"))
+            for wf in checked_workflows
+            if workflow_states.get(wf) not in ("active",)
+        ]
+
+        merge_required_non_active = [
+            (wf, workflow_states.get(wf, "missing"))
+            for wf in sorted(_WEC_MERGE_REQUIRED)
+            if wf.endswith(".yml") and workflow_states.get(wf) not in ("active",)
+        ]
+
+        if checked_non_active or merge_required_non_active:
+            print("\nWEC validation FAILED: workflow state integrity")
+            if checked_non_active:
+                print("  ❌ Checked in WEC but non-active in Actions:")
+                for wf, state in checked_non_active:
+                    print(f"     - {wf}: {state}")
+            if merge_required_non_active:
+                print("  ❌ Merge-required WEC workflows non-active in Actions:")
+                for wf, state in merge_required_non_active:
+                    print(f"     - {wf}: {state}")
+            return 1
+    else:
+        print("⚠️  Workflow state audit unavailable — skipping active/non-active integrity check.")
 
     print("\n✅ WEC validation passed — all always-required items are checked.")
     return 0

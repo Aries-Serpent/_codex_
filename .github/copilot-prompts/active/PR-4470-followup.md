@@ -33,21 +33,49 @@
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Align WEC execution with iterative plan path:
+  1. Parse PR WEC block
+  2. Validate always-required checks
+  3. Validate workflow active/non-active state integrity
+  4. Dispatch newly checked workflows
+  5. Approve pending `action_required` runs
+  6. Post execution-plan summary comment
+- [ ] Identify and track merge-required WEC workflows that are currently non-active in Actions.
+- [ ] Verify WEC is hardened for Copilot selection-by-checkbox on PR approval flow.
+- [ ] Prepare a general tailored operator prompt for repeatable Copilot WEC sessions.
+
+**Current non-active WEC workflows requiring enablement in Actions (live audit):**
+- [ ] `nox_gates.yml` (`disabled_manually`)
+- [ ] `pr-checks.yml` (`disabled_manually`)
+- [ ] `docker-build-push.yml` (`disabled_manually`)
+- [ ] `html_visual_regression.yml` (`disabled_manually`)
+- [ ] `template_lint.yml` (`disabled_manually`)
+- [ ] `codeql-alert-fetcher.yml` (`disabled_manually`)
+- [ ] `copilot-iterative-self-healing.yml` (`disabled_manually`)
+
+**Enable command (requires token with `actions:write`, e.g. `CODEX_MASTER_KEY`):**
+```bash
+GH_TOKEN="$CODEX_MASTER_KEY" gh api --method PUT repos/Aries-Serpent/_codex_/actions/workflows/<workflow_id>/enable
+```
+
+**General tailored prompt (WEC iterative execution):**
+> "Run WEC execution in strict iterative order: parse current PR checklist, validate always-required checks, validate selected + merge-required workflow active states, stop on non-active workflow findings with explicit list, dispatch newly checked workflows only, approve pending action_required runs, and post/update one gate summary comment with run/skip and remediation actions."
 
 **Validation**:
 ```bash
-python -m ruff check src/ tests/ --output-format=concise
-python scripts/ci/mypy_baseline.py --require-baseline
-python scripts/ci/auto_fix_common_issues.py --check-only
-python scripts/ci/sync_tracked_files.py --fix
+python -m ruff check scripts/ci/wec_enforcer.py
+python -m ruff check .github/workflows/workflow-execution-gate.yml
+python scripts/ci/wec_enforcer.py --validate-body --pr 4470
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Confirm WEC summary comment stays single-anchor (upsert behavior).
+- [ ] Confirm token chain uses `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` for checklist parsing and summary posting.
+- [ ] Re-audit non-active workflow set after any manual workflow enablement action.
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Add automated daily report artifact for `merge-required but non-active` workflows.
+- [ ] Add optional WEC mermaid map in PR summary comments for rapid operator understanding.
 
 ---
 

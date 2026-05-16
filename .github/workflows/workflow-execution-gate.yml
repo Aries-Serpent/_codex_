@@ -301,7 +301,7 @@ jobs:
       - name: Parse workflow checklist from PR body
         id: parse
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           RESOLVED_PR: ${{ steps.resolve-pr.outputs.pr_number }}
           GH_REPO: ${{ github.repository }}
         run: |
@@ -342,7 +342,7 @@ jobs:
       - name: Parse fast-forward section from PR body
         id: parse-ff
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           RESOLVED_PR: ${{ steps.resolve-pr.outputs.pr_number }}
           GH_REPO: ${{ github.repository }}
         run: |
@@ -390,7 +390,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
       - name: Build and post execution plan comment
         env:
