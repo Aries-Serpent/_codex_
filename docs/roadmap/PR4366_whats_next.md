@@ -218,22 +218,22 @@ pie title CI Workflow Status Distribution
 ```mermaid
 graph LR
     A[PR #4366] --> B{Critical<br/>Gates}
-    
+
     B --> C[✅ Deferral Language]
     B --> D[✅ Reference Integrity]
     B --> E[✅ Branch Rebase]
     B --> F[✅ Comment Review]
     B --> G[✅ Workflow Execution]
-    
+
     C --> H{All<br/>Pass?}
     D --> H
     E --> H
     F --> H
     G --> H
-    
+
     H -->|Yes| I[✅ Ready for Merge]
     H -->|No| J[🔴 Blocked]
-    
+
     style C fill:#90EE90
     style D fill:#90EE90
     style E fill:#90EE90

@@ -163,4 +163,3 @@ After the 4 fixes applied in S899-cont:
 | `auto-fix-pr-check` commit | Triggers full CI suite | `[skip ci]` — no cascade |
 | `auto-fix-common-issues` commit | Triggers full CI suite | `[skip ci]` — no cascade |
 | Follow-up prompt commit | Triggers full CI suite | `[skip ci]` — no cascade |
-

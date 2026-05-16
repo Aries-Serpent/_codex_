@@ -17,12 +17,12 @@ graph TD
     S863 --> S864[S864: Fast Validation Fix]
     S864 --> S865[S865: CI Rescue - Sparse Checkout]
     S865 --> S866[S866: PR Review Comments]
-    
+
     S866 --> RateLimit{Rate-Limit<br/>Orchestration?}
     RateLimit -->|Yes| S867[S867: Workflow Orchestration]
     RateLimit -->|No| Merge[Ready for Merge]
     S867 --> Merge
-    
+
     style S861 fill:#e1f5ff
     style S862 fill:#e1f5ff
     style S863 fill:#e1f5ff
