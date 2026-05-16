@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added (S1034-workflow-portfolio-expansion — `copilot/analyze-workflows-data-again` — 2026-05-16T04:16Z)
+### Added (S1035-lean-workflow-os — `copilot/analyze-workflows-data-again` — 2026-05-16T05:16Z)
+- Created `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md` — canonical active Cognitive Brain control-plane planset (Plans A–F: consolidation, tokenized contracts, conflict governance, safe pruning, living-doc automation, startup hardening).
+- Updated all three cognitive brain plan files (`cognitive_brain_phase_implementation.md`, `cognitive_brain_long_term_planset.md`, `cognitive_brain_short_term_planset.md`) with lifecycle status markers, cross-links to canonical planset, and new plan/phase sections (Phase 6, Plan 4, Plan 5).
+- Expanded `docs/reporting/copilot_agent_session_standard_operation.md` with: TENV token rows, branch-update conflict quick-reference table (HIGH-risk workflows with required mitigations), health-score entry checklist, Plans C/D upgraded with auto-logging system, environment enhancement opportunities table.
+- **Priority enhancement** — Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with a full `🚨 Branch-Update Conflict Dashboard`: Active Session Conflict Protocol, Mermaid decision diagram, per-workflow mitigation cards for all 6 HIGH-risk workflows (step-by-step actions + required YAML concurrency/timeout blocks), MEDIUM-risk summary table, and mitigation variable quick reference. Conflict dashboard is now the first lookup before any write operation.
+- Extended `scripts/aftermath/update_cognitive_brain.py` with `--mode living-doc-sync`: `living_doc_sync()` reads latest `session_end` event from `.codex/session_logs.db`, builds idempotent delta sections for accountability report, CHANGELOG, and PDA JSONL feed with duplicate-update prevention.
+
+
 - Expanded `docs/reporting/workflow_portfolio_7d_table.csv` with tokenized variable mappings (`TVAR_*`, `TSEC_*`, `TENV_*`) and branch-update conflict-risk columns for active Copilot branch sessions.
 - Expanded `docs/reporting/workflow_portfolio_7d_table.md` to include variable mapping and branch-update conflict columns for reviewer visibility.
 - Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with Mermaid workflow/conflict maps, quantum-inspired workflow equations, conflict workflow inventory for main-branch drift, and a Copilot-first ranked top-20 quick-win workflow enhancement list.

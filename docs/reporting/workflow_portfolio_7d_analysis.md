@@ -131,30 +131,231 @@ Where:
 4. Consolidate overlapping pipelines to reduce fanout complexity.
 5. Publish conflict-risk and quick-win rankings as default Copilot session context.
 
-## Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions
+## 🚨 Branch-Update Conflict Dashboard
+
+> **Priority section — read before editing any file during an active session.**
+> When `main` receives commits while your branch session is active, the workflows below
+> can race, produce stale-head writes, or cascade into each other via `workflow_run`.
+> **Total conflict-risk workflows: HIGH=10, MEDIUM=38.**
+>
+> Cross-reference: [.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md → Plan C](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
+
+### Active Session Conflict Protocol
+
+```
+Detect drift (git log main..HEAD --oneline | wc -l):
+  0 commits → LOW   → proceed normally
+  1–3       → MEDIUM → add drift note to handoff; set CODEX_SWEEP_SKIP_MAIN=true if writing
+  4+        → HIGH   → rebase first; run steps below before ANY write operation
+  force-push→ CRITICAL → abort session; fetch main; restart from baseline
+```
+
+```mermaid
+flowchart TD
+  START([Active Copilot Session]) --> DETECT{Detect branch drift\ngit log main..HEAD}
+  DETECT -->|0 commits| LOW[LOW: Proceed normally]
+  DETECT -->|1-3 commits| MEDIUM[MEDIUM: Note drift in handoff]
+  DETECT -->|4+ commits| HIGH[HIGH: Rebase before any write]
+  DETECT -->|force-push detected| CRIT[CRITICAL: Abort + Restart]
+
+  MEDIUM --> MITM[Set CODEX_SWEEP_SKIP_MAIN=true\nfor all write-capable workflows]
+  HIGH --> MITH[1 Rebase branch on main\n2 Re-run setup probe\n3 Set all three mitigation vars]
+  CRIT --> MITC[Fetch latest main\nRe-run session bootstrap\nRe-validate required checks]
+
+  MITM --> WRITE[Safe to edit files]
+  MITH --> WRITE
+  LOW --> WRITE
+  WRITE --> DONE([Continue session])
+```
+
+### Mitigation Variables — Quick Reference
+
+| Variable | Purpose | Set when |
+|---|---|---|
+| `CODEX_SWEEP_SKIP_MAIN` | Stops write-capable sweeps from touching main during drift | Drift ≥ MEDIUM |
+| `CODEX_MAX_HEALER_RUNS_PER_HOUR` | Caps self-healer firing rate to prevent cascades | Any active session with high run volume |
+| `CODEX_HEALER_SKIP_SKIPCI` | Prevents healer from ignoring `[skip ci]` tags | Drift ≥ MEDIUM to avoid feedback loops |
+
+### HIGH-Risk Workflows — Mandatory Mitigation
+
+> These workflows **write to the repo or dispatch other workflows** and will race with branch
+> drift if not guarded. Apply all three mitigation variables before running these during an
+> active session.
+
+---
+
+#### 🔴 `iterative-self-healing-ci.yml` — Iterative Self-Healing CI
+- **Runs (7d):** 413 &nbsp;|&nbsp; **Risk:** HIGH
+- **Why it conflicts:** Write-capable + event-driven; fires on every push and can race with
+  main-branch updates during active sessions, producing concurrent writes to the same files.
+- **Mitigation steps:**
+  1. Set repo variable `CODEX_SWEEP_SKIP_MAIN=true` before running or triggering this workflow.
+  2. Set `CODEX_MAX_HEALER_RUNS_PER_HOUR` to `3` or lower to cap cascade rate.
+  3. Set `CODEX_HEALER_SKIP_SKIPCI=true` to prevent skip-ci bypass during drift.
+  4. Rebase your branch on latest `main` before committing any healer-initiated changes.
+  5. After rebase, re-run the session access probe to confirm drift is cleared.
+- **Required workflow controls:**
+  ```yaml
+  concurrency:
+    group: "${{ github.workflow }}-${{ github.head_ref }}"
+    cancel-in-progress: true
+  timeout-minutes: 30
+  ```
+
+---
+
+#### 🔴 `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)
+- **Runs (7d):** 10 &nbsp;|&nbsp; **Risk:** HIGH
+- **Why it conflicts:** Dispatches review + write operations; if `main` moved since checkout,
+  the "evolution" diff will target a stale base and can produce incorrect PR edits.
+- **Mitigation steps:**
+  1. Confirm `main` HEAD SHA matches your branch's merge-base before triggering.
+  2. Set `CODEX_SWEEP_SKIP_MAIN=true`.
+  3. Do not trigger manually during HIGH drift; wait for rebase to complete.
+  4. After rebase, confirm no open review comments from a prior run target stale lines.
+- **Required workflow controls:**
+  ```yaml
+  concurrency:
+    group: "${{ github.workflow }}-${{ github.head_ref }}"
+    cancel-in-progress: true
+  timeout-minutes: 45
+  ```
+
+---
+
+#### 🔴 `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session
+- **Runs (7d):** 10 &nbsp;|&nbsp; **Risk:** HIGH
+- **Why it conflicts:** Fires on `workflow_run` completion; if the triggering run targeted a
+  stale SHA, the auto-post will reference an outdated diff and can confuse subsequent sessions.
+- **Mitigation steps:**
+  1. Verify the triggering workflow ran against your current branch HEAD (not a prior SHA).
+  2. Set `CODEX_SWEEP_SKIP_MAIN=true` when drift is detected.
+  3. If auto-post fires against a stale SHA, manually close the generated comment and re-trigger
+     after rebase.
+- **Required workflow controls:**
+  ```yaml
+  concurrency:
+    group: "${{ github.workflow }}-${{ github.head_ref }}"
+    cancel-in-progress: false  # allow completion but gate new runs
+  timeout-minutes: 15
+  ```
+
+---
+
+#### 🔴 `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)
+- **Runs (7d):** 5 &nbsp;|&nbsp; **Risk:** HIGH
+- **Why it conflicts:** Writes directly to GitHub Repo Variables using `CODEX_MASTER_KEY`;
+  concurrent writes during drift can overwrite a value set by a prior healer run.
+- **Mitigation steps:**
+  1. Never trigger in parallel with `iterative-self-healing-ci.yml` on the same branch.
+  2. Confirm `CODEX_CI_LAST_GREEN_SHA` matches the last known-good commit before writing.
+  3. Set `CODEX_SWEEP_SKIP_MAIN=true` to prevent the variable writer from broadcasting to `main`.
+  4. After any variable write, re-read the value via the GitHub API to confirm it was not
+     overwritten by a concurrent run.
+- **Required workflow controls:**
+  ```yaml
+  concurrency:
+    group: "var-writer-${{ github.repository }}"
+    cancel-in-progress: false  # variable writes must not be interrupted mid-write
+  timeout-minutes: 10
+  ```
+
+---
+
+#### 🔴 `copilot-session-chain.yml` — Copilot Session Chain
+- **Runs (7d):** 0 (active, not triggered recently) &nbsp;|&nbsp; **Risk:** HIGH
+- **Why it conflicts:** Chains multiple session workflows in sequence; if `main` moves between
+  chain steps, later steps will operate on a branch that is already behind, producing
+  incorrect artifacts or triggering redundant self-healing cycles.
+- **Mitigation steps:**
+  1. Only trigger when branch drift is LOW (0 commits behind `main`).
+  2. Add a `git fetch origin main && git merge-base --is-ancestor main HEAD` pre-check to the
+     first job; fail fast if the check fails.
+  3. Set all three mitigation variables before any chain run when drift is MEDIUM or higher.
+- **Required workflow controls:**
+  ```yaml
+  concurrency:
+    group: "${{ github.workflow }}-${{ github.head_ref }}"
+    cancel-in-progress: true
+  timeout-minutes: 60
+  ```
+
+---
+
+#### 🔴 `agent-orchestration-unified.yml` — Agent Orchestration (Unified)
+- **Runs (7d):** 0 (active) &nbsp;|&nbsp; **Risk:** HIGH (elevated from medium by write scope)
+- **Why it conflicts:** Orchestrates multiple write-capable sub-agents; stale-branch execution
+  will propagate stale context to all sub-agents simultaneously.
+- **Mitigation steps:**
+  1. Inject `branch_drift_severity` from startup probe into the orchestration context before
+     dispatching sub-agents.
+  2. Add a drift gate: if `drift_severity != LOW`, sub-agents that write should be skipped.
+  3. Set `CODEX_SWEEP_SKIP_MAIN=true` and `CODEX_MAX_HEALER_RUNS_PER_HOUR=2`.
+- **Required workflow controls:**
+  ```yaml
+  concurrency:
+    group: "${{ github.workflow }}-${{ github.head_ref }}"
+    cancel-in-progress: true
+  timeout-minutes: 60
+  ```
+
+---
+
+### MEDIUM-Risk Workflows — Standard Mitigation
+
+Apply `CODEX_SWEEP_SKIP_MAIN=true` and branch-scoped concurrency when drift is MEDIUM or higher.
+No immediate abort required, but monitor for `workflow_run` ordering anomalies.
+
+| Workflow file | Workflow name | Runs 7d | Conflict reason | Action |
+|---|---|---:|---|---|
+| `ci-rescue.yml` | CI Rescue — Auto-Fix & @copilot RCA | 55 | `workflow_run` chain ordering; stale-head auto-fix applies to wrong base | Set `CODEX_SWEEP_SKIP_MAIN=true`; verify triggering run SHA matches branch HEAD |
+| `copilot-iterative-self-healing.yml` | Copilot Iterative Self-Healing Auto-Poster | 55 | Fires on `workflow_run`; stale-head post targets wrong diff | Confirm triggering run HEAD before allowing auto-post |
+| `cleanup-stale-pr-comments.yml` | Cleanup Stale PR Comments | 12 | Writes PR comment deletions; can conflict if PR metadata changed mid-drift | Run only after rebase when drift ≥ MEDIUM |
+| `codebase-health-sweep.yml` | Codebase Health Sweep | 7 | Write-capable sweep; stale-head run touches wrong file versions | Set `CODEX_SWEEP_SKIP_MAIN=true`; re-run post-rebase |
+| `audit-qa-suite.yml` | Audit & QA Suite (Unified) | 6 | Writes audit artifacts; stale base produces mismatched diff | Confirm base SHA before triggering |
+| `pr-followup-generator.yml` | Generate PR Follow-Up Prompt | 6 | Writes follow-up prompt file; stale PR state produces wrong next-action list | Rebase + re-trigger |
+| `agent_infrastructure_manager.yml` | Agent Infrastructure Manager | 5 | Infrastructure writes conflict with concurrent healer changes | Serialize with `iterative-self-healing-ci.yml` via concurrency group |
+| `agent-auth-delegation.yml` | Agent Token Delegation | 5 | Token delegation writes can race with healer variable writes | Set concurrency group shared with `agent-var-writer.yml` |
+| `copilot-agent-vars-bootstrap.yml` | Agent Vars Bootstrap | 5 | Variable bootstrap conflicts with mid-session variable mutations | Only run at session start before any writes |
+| `chatops_copilot_trigger.yml` | Chat-Ops @copilot Webhook Trigger | 5 | Dispatches other workflows; stale trigger context propagates | Validate branch HEAD SHA in webhook payload |
+| `session-watchdog.yml` | Session Watchdog | 5 | Timebox enforcement may cancel work mid-rebase | Set generous timeout when rebase is in progress |
+| `workflow-execution-gate.yml` | Workflow Execution Gate | 5 | Gate parses PR body; stale PR body from drift produces wrong gate state | Re-push after rebase to refresh PR body parse |
+| `secrets-baseline-enforcer.yml` | Secrets Baseline Enforcer | 5 | Writes baseline file; concurrent writes corrupt the baseline | Serialize via `secrets-baseline-enforcer` concurrency group |
+| `copilot-agent-checkin.yml` | Agent Check-In | 5 | Check-in fires on push; stale-head check-in logs wrong context | Acceptable; log only — no write action needed |
+| `copilot-review-responder.yml` | Copilot Review Responder | 5 | Responds to review events; stale PR state produces mismatched response | Re-trigger after rebase if response targets stale diff |
+| `codex-manifest-refresh.yml` | CODEX Manifest Auto-Refresh | 4 | Writes manifest; stale-head manifest references removed files | Run post-rebase; add `main` merge-base check |
+
+---
+
+### Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions
+
+> Legacy flat table retained for grep/tooling compatibility. The expanded cards above
+> are the authoritative reference for step-by-step mitigation.
 
 | Workflow file | Workflow name | Risk | Runs 7d | Conflict reason | Suggested mitigation variables |
 |---|---|---|---:|---|---|
-| `.github/workflows/iterative-self-healing-ci.yml` | Iterative Self-Healing CI | high | 413 | write-capable + event-driven workflow; may race with branch/main drift during active sessions | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/ci-rescue.yml` | CI Rescue — Auto-Fix & @copilot RCA | medium | 55 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/copilot-iterative-self-healing.yml` | Copilot Iterative Self-Healing Auto-Poster | medium | 55 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/cleanup-stale-pr-comments.yml` | 🧹 Cleanup Stale PR Comments | medium | 12 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/copilot-evolution-suite.yml` | Copilot Evolution & Review (Unified) | high | 10 | write-capable + event-driven workflow; may race with branch/main drift during active sessions | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/copilot-agent-session-done.yml` | 🔄 Auto-Post @copilot review After Agent Session | high | 10 | write-capable + event-driven workflow; may race with branch/main drift during active sessions | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/codebase-health-sweep.yml` | 🧹 Codebase Health Sweep | medium | 7 | write-capable and event-triggered; potential merge or stale-head conflict during main updates | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/audit-qa-suite.yml` | Audit & QA Suite (Unified) | medium | 6 | write-capable and event-triggered; potential merge or stale-head conflict during main updates | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/pr-followup-generator.yml` | Generate PR Follow-Up Prompt | medium | 6 | write-capable and event-triggered; potential merge or stale-head conflict during main updates | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/agent_infrastructure_manager.yml` | Agent Infrastructure Manager | medium | 5 | write-capable and event-triggered; potential merge or stale-head conflict during main updates | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/agent-auth-delegation.yml` | Agent Token Delegation | medium | 5 | write-capable and event-triggered; potential merge or stale-head conflict during main updates | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/agent-var-writer.yml` | Agent Variable Writer (Provenance-Chain) | high | 5 | write-capable + event-driven workflow; may race with branch/main drift during active sessions | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/copilot-agent-vars-bootstrap.yml` | Agent Vars Bootstrap | medium | 5 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/chatops_copilot_trigger.yml` | Chat-Ops — @copilot Webhook Trigger | medium | 5 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/session-watchdog.yml` | Session Watchdog — Timebox & Continuity Enforcement | medium | 5 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/workflow-execution-gate.yml` | Workflow Execution Gate | medium | 5 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/secrets-baseline-enforcer.yml` | 🔐 Secrets Baseline Enforcer | medium | 5 | write-capable and event-triggered; potential merge or stale-head conflict during main updates | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/copilot-agent-checkin.yml` | 🤖 Agent Check-In — Q&A Bridge (Discussion #3756) | medium | 5 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/copilot-review-responder.yml` | 🤖 Copilot Review Responder | medium | 5 | orchestration-sensitive chain; can conflict via workflow_run ordering when branch becomes behind | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
-| `.github/workflows/codex-manifest-refresh.yml` | CODEX Manifest Auto-Refresh | medium | 4 | write-capable and event-triggered; potential merge or stale-head conflict during main updates | CODEX_SWEEP_SKIP_MAIN,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_HEALER_SKIP_SKIPCI |
+| `.github/workflows/iterative-self-healing-ci.yml` | Iterative Self-Healing CI | **HIGH** | 413 | write-capable + event-driven; races with branch/main drift | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/copilot-evolution-suite.yml` | Copilot Evolution & Review (Unified) | **HIGH** | 10 | write-capable + event-driven; stale base diff | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/copilot-agent-session-done.yml` | Auto-Post @copilot review After Agent Session | **HIGH** | 10 | workflow_run stale-SHA auto-post | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/agent-var-writer.yml` | Agent Variable Writer (Provenance-Chain) | **HIGH** | 5 | concurrent variable writes with healer | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/copilot-session-chain.yml` | Copilot Session Chain | **HIGH** | 0 | chained workflows amplify stale-head errors | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/agent-orchestration-unified.yml` | Agent Orchestration (Unified) | **HIGH** | 0 | stale context propagated to all sub-agents | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/ci-rescue.yml` | CI Rescue — Auto-Fix & @copilot RCA | medium | 55 | workflow_run ordering; stale-head auto-fix | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/copilot-iterative-self-healing.yml` | Copilot Iterative Self-Healing Auto-Poster | medium | 55 | workflow_run stale-head post | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/cleanup-stale-pr-comments.yml` | Cleanup Stale PR Comments | medium | 12 | comment writes on stale PR state | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/codebase-health-sweep.yml` | Codebase Health Sweep | medium | 7 | write-capable; stale-head sweep | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/audit-qa-suite.yml` | Audit & QA Suite (Unified) | medium | 6 | stale base audit artifacts | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/pr-followup-generator.yml` | Generate PR Follow-Up Prompt | medium | 6 | stale PR next-action file | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/agent_infrastructure_manager.yml` | Agent Infrastructure Manager | medium | 5 | concurrent infrastructure writes | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/agent-auth-delegation.yml` | Agent Token Delegation | medium | 5 | token delegation races with variable writes | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/copilot-agent-vars-bootstrap.yml` | Agent Vars Bootstrap | medium | 5 | mid-session variable mutation conflicts | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/chatops_copilot_trigger.yml` | Chat-Ops @copilot Webhook Trigger | medium | 5 | stale trigger context propagated | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/session-watchdog.yml` | Session Watchdog | medium | 5 | cancels work mid-rebase | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/workflow-execution-gate.yml` | Workflow Execution Gate | medium | 5 | stale PR body parse | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/secrets-baseline-enforcer.yml` | Secrets Baseline Enforcer | medium | 5 | concurrent baseline file writes | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/copilot-agent-checkin.yml` | Agent Check-In | medium | 5 | stale-head check-in log | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/copilot-review-responder.yml` | Copilot Review Responder | medium | 5 | stale diff review response | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
+| `.github/workflows/codex-manifest-refresh.yml` | CODEX Manifest Auto-Refresh | medium | 4 | stale-head manifest | `CODEX_SWEEP_SKIP_MAIN`, `CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_HEALER_SKIP_SKIPCI` |
 
 ## Top 20 Quick-Win Workflows to Update (Copilot Session First)
 
