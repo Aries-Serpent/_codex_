@@ -11,6 +11,7 @@
   - quantum-physics-inspired equations for workflow utility/priority,
   - explicit workflow conflict table for active-branch sessions when `main` updates,
   - ranked top-20 quick-win workflows prioritized for Copilot cloud/coding agent session impact.
+- ✅ Added `docs/reporting/copilot_agent_session_standard_operation.md` to define the standard Copilot session lifecycle, required living docs, tokenized session variable contract, and a planset to simplify/streamline session entries.
 
 ### Validation
 - ⚠️ Baseline repository checks still fail from pre-existing issues:

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Expanded `docs/reporting/workflow_portfolio_7d_table.csv` with tokenized variable mappings (`TVAR_*`, `TSEC_*`, `TENV_*`) and branch-update conflict-risk columns for active Copilot branch sessions.
 - Expanded `docs/reporting/workflow_portfolio_7d_table.md` to include variable mapping and branch-update conflict columns for reviewer visibility.
 - Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with Mermaid workflow/conflict maps, quantum-inspired workflow equations, conflict workflow inventory for main-branch drift, and a Copilot-first ranked top-20 quick-win workflow enhancement list.
+- Added `docs/reporting/copilot_agent_session_standard_operation.md` to document standard Copilot session operations, expected living docs, and a planset to streamline session entries and handoffs.
 
 ### Added (S1033-workflow-portfolio-analysis — `copilot/analyze-workflows-data-again` — 2026-05-15T18:44Z)
 - Added `docs/reporting/workflow_portfolio_7d_table.csv` with all discovered workflows and 7-day utilization fields, including inactive/disabled coverage.

@@ -7,6 +7,7 @@ Repository: `Aries-Serpent/_codex_`
 
 - `docs/reporting/workflow_portfolio_7d_table.csv`
 - `docs/reporting/workflow_portfolio_7d_table.md`
+- `docs/reporting/copilot_agent_session_standard_operation.md` (standard Copilot session lifecycle, required living docs, and streamlining planset)
 
 ## Executive Snapshot
 
