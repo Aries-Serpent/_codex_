@@ -14,6 +14,28 @@
 
 This planset defines the implementation strategy for 4 short-term cognitive brain improvements to be executed over the next 5 Copilot coding agent sessions.
 
+## 🗺️ Codeless Process Map (Short-Term Execution)
+
+```mermaid
+flowchart TD
+  S[Session Start] --> C[Context Load + Token Contract Check]
+  C --> R{Branch Drift Severity}
+  R -->|LOW| W[Implement Planned Tasks]
+  R -->|MED/HIGH| M[Apply Mitigation Vars + Rebase Gate]
+  M --> W
+  W --> T[Targeted Validation]
+  T --> L[Living Docs + Accountability + Changelog]
+  L --> N[Next Session Continuation]
+```
+
+### Tokenized Utility Equation (Short-Term)
+
+\[
+U_{short} = \eta_1 \cdot \mathbb{I}(TVAR\_COPILOT\_AGENT\_AUTH\_ENABLED=1)
++ \eta_2 \cdot \mathbb{I}(TVAR\_CODEX\_SWEEP\_SKIP\_MAIN=1 \mid drift>0)
+- \eta_3 \cdot TVAR\_CODEX\_CI\_FAILURE\_RATE
+\]
+
 ### Success Criteria
 - [x] All 4 initiatives implemented and tested (133 tests total)
 - [x] Integration with existing cognitive brain infrastructure
@@ -438,4 +460,3 @@ todo:
 | 5.2 — Token Contract + Conflict | ⏳ NEXT | 17–18 |
 | 5.3 — Living-Doc Auto-Population | ⏳ PLANNED | 19 |
 | 5.4 — Startup Health Score | ⏳ PLANNED | 20 |
-

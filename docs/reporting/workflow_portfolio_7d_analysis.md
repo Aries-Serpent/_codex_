@@ -81,18 +81,24 @@ CODEX_HEALER_SKIP_SKIPCI]
 | `TVAR_CODEX_COVERAGE_THRESHOLD` | 2 |
 | `TVAR_COPILOT_AGENT_STATE` | 2 |
 
-## Quantum-Inspired Equations Depicting Workflow Logic
+## Quantum-Inspired Equations Depicting Workflow Logic (Tokenized)
 
 \[
-\left|\Psi_{workflow}\right\rangle = \sum_{i=1}^{N} \alpha_i \left|w_i\right\rangle
+\left|\Psi_{workflow}\right\rangle =
+\sum_{i=1}^{N} \alpha_i \left|w_i\right\rangle
++ \beta_1 \cdot TVAR\_COPILOT\_AGENT\_AUTH\_ENABLED
++ \beta_2 \cdot TVAR\_COGNITIVE\_BRAIN\_SESSION\_NUMBER
 \]
 
 \[
 U_i = \lambda_1 A_i + \lambda_2 D_i + \lambda_3 V_i - \lambda_4 R_i
++ \lambda_5 \cdot \mathbb{I}(TVAR\_CODEX\_SWEEP\_SKIP\_MAIN=1)
 \]
 
 \[
 Q_i = \mu_1(1-A_i) + \mu_2R_i + \mu_3C_i + \mu_4B_i
++ \mu_5 \cdot TVAR\_CODEX\_CI\_FAILURE\_RATE
++ \mu_6 \cdot \mathbb{I}(TVAR\_CODEX\_HEALER\_SKIP\_SKIPCI=0)
 \]
 
 Where:
@@ -102,6 +108,24 @@ Where:
 - \(R_i\): missing guardrail risk
 - \(C_i\): Copilot cloud/coding-session relevance
 - \(B_i\): branch-update conflict exposure
+- `TVAR_CODEX_SWEEP_SKIP_MAIN`: branch-drift safety gate
+- `TVAR_CODEX_CI_FAILURE_RATE`: live instability pressure signal
+- `TVAR_CODEX_HEALER_SKIP_SKIPCI`: skip-ci bypass risk control
+
+## Copilot Session Intended Process (Codeless, Workflow-Centric)
+
+```mermaid
+flowchart LR
+  S0[Copilot session starts] --> S1[Read startup packet + conflict dashboard]
+  S1 --> S2{drift severity}
+  S2 -->|LOW| S3[Run planned workflow path]
+  S2 -->|MED/HIGH| S4[Set TVAR_CODEX_SWEEP_SKIP_MAIN + healer bounds]
+  S4 --> S5[Rebase gate]
+  S5 --> S3
+  S3 --> S6[Validation + checks]
+  S6 --> S7[Living-doc updates]
+  S7 --> S8[Session handoff]
+```
 
 ## Requested Findings Summary
 

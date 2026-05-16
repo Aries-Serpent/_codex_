@@ -29,6 +29,44 @@ flowchart TD
   MUST_FIX --> C
 ```
 
+## 🧭 AI-Friendly Codeless Depiction of Intended Copilot Design
+
+```mermaid
+flowchart TD
+  A[Load session packet] --> B[Assess drift + health]
+  B --> C{Risk posture}
+  C -->|LOW| D[Execute scoped task plan]
+  C -->|MEDIUM/HIGH| E[Apply conflict mitigations + rebase gate]
+  E --> D
+  D --> F[Validate]
+  F --> G[Auto-populate living docs]
+  G --> H[Handoff with tokenized state]
+```
+
+### Quantum-Inspired Session Dynamics (Tokenized Variables)
+
+\[
+\Psi_{copilot} =
+\theta_1 \cdot TVAR\_COPILOT\_AGENT\_AUTH\_ENABLED
++ \theta_2 \cdot TVAR\_COGNITIVE\_BRAIN\_SESSION\_NUMBER
++ \theta_3 \cdot TENV\_PYTHON\_VERSION
+\]
+
+\[
+R_{branch} =
+\phi_1 \cdot \mathbb{I}(drift\_severity \in \{MEDIUM,HIGH,CRITICAL\})
++ \phi_2 \cdot \mathbb{I}(TVAR\_CODEX\_SWEEP\_SKIP\_MAIN=0)
++ \phi_3 \cdot TVAR\_CODEX\_CI\_FAILURE\_RATE
+\]
+
+\[
+U_{session} = \omega_1 \cdot SESSION\_BOOTSTRAP\_HEALTH - \omega_2 \cdot R_{branch}
+\]
+
+Interpretation:
+- Increase `SESSION_BOOTSTRAP_HEALTH`, reduce `R_branch`.
+- Set drift mitigations before write-capable workflows to preserve safe utility.
+
 ## Expected Living Docs (Required)
 
 | Artifact | Path Pattern | Purpose | Update Cadence |

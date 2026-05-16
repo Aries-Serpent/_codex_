@@ -14,6 +14,30 @@
 
 This planset defines the strategic roadmap for 4 long-term cognitive brain improvements that transform the repository into a fully autonomous, self-improving AI development environment.
 
+## 🗺️ Codeless Long-Term Cognitive Evolution Map
+
+```mermaid
+flowchart LR
+  P1[Plan 1: Agent Integration] --> P2[Plan 2: ML Pattern Recognition]
+  P2 --> P3[Plan 3: Autonomous Objective Adjustment]
+  P3 --> P4[Plan 4: Lean Workflow OS]
+  P4 --> O[Steady-State Cognitive Operations]
+
+  O --> F[Feedback from Session Logs]
+  F --> P2
+  F --> P3
+```
+
+### Quantum-Inspired Long-Horizon Equation (Tokenized)
+
+\[
+U_{long} =
+\rho_1 \cdot \mathbb{I}(TVAR\_COGNITIVE\_BRAIN\_SESSION\_NUM \uparrow)
++ \rho_2 \cdot pattern\_accuracy
++ \rho_3 \cdot context\_retention
+- \rho_4 \cdot conflict\_exposure
+\]
+
 ### Vision Statement
 "Create a self-evolving cognitive infrastructure that learns from each session, anticipates issues, and autonomously maintains codebase objectives."
 
@@ -906,4 +930,3 @@ acceptance_criteria:
 | 4.3 — Living-Doc Automation | ⏳ PLANNED | 19–20 |
 | 4.4 — Safe Pruning Lifecycle | ⏳ PLANNED | 20–21 |
 | 4.5 — Startup Hardening | ⏳ PLANNED | 21 |
-

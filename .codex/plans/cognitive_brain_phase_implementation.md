@@ -16,6 +16,30 @@ This document outlines the complete end-to-end implementation of the Cognitive B
 
 ---
 
+## 🗺️ Codeless Cognitive Brain Phase Flow
+
+```mermaid
+flowchart LR
+  Z0[Phase 0 Foundation] --> Z1[Phase 1 Core Architecture]
+  Z1 --> Z2[Phase 2 Meta-Learning]
+  Z2 --> Z3[Phase 3 Advanced Reasoning]
+  Z3 --> Z4[Phase 4 Full Autonomy]
+  Z4 --> Z5[Phase 5 Continuous Evolution]
+  Z5 --> Z6[Phase 6 Lean Workflow OS]
+  Z6 --> SS[Stable Session Operating System]
+```
+
+### Tokenized Phase Control Equation
+
+\[
+P_{readiness} =
+\sigma_1 \cdot \mathbb{I}(TVAR\_COPILOT\_AGENT\_AUTH\_ENABLED=1)
++ \sigma_2 \cdot health\_score
+- \sigma_3 \cdot \mathbb{I}(drift\_severity \in \{HIGH,CRITICAL\})
+\]
+
+---
+
 ## Table of Contents
 
 **Note:** Phase timeline references (Weeks X-Y) preserved as historical completion markers per `.codex/CODEBASE_AGENCY_POLICY.md` Section 4 exception for completed work.
@@ -490,4 +514,3 @@ Moving toward a **lean, high-signal workflow operating system** for Copilot sess
 
 ### Status
 🔄 ACTIVE — Phase 6A complete, 6B–6E in progress per [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md)
-

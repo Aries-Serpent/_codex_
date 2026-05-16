@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1036-codeless-architecture-finalization — `copilot/analyze-workflows-data-again` — 2026-05-16T06:00Z)
+- Finalized cognitive-brain planning objects with explicit **AI-friendly codeless system/process depictions** and updated mermaid mappings across:
+  - `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`
+  - `.codex/plans/cognitive_brain_short_term_planset.md`
+  - `.codex/plans/cognitive_brain_long_term_planset.md`
+  - `.codex/plans/cognitive_brain_phase_implementation.md`
+- Added quantum-physics-inspired equations using tokenized variables (`TVAR_*`, `TENV_*`) for session/process utility, conflict energy, and readiness modeling in canonical plans and reporting artifacts.
+- Expanded `docs/reporting/copilot_agent_session_standard_operation.md` with an AI-friendly codeless intended Copilot design flow and tokenized-variable session dynamics equations.
+- Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with tokenized quantum equations and a codeless workflow-centric Copilot session process mapping while preserving Branch-update conflict workflow prioritization and mitigation guidance.
+
 ### Added (S1035-lean-workflow-os — `copilot/analyze-workflows-data-again` — 2026-05-16T05:16Z)
 - Created `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md` — canonical active Cognitive Brain control-plane planset (Plans A–F: consolidation, tokenized contracts, conflict governance, safe pruning, living-doc automation, startup hardening).
 - Updated all three cognitive brain plan files (`cognitive_brain_phase_implementation.md`, `cognitive_brain_long_term_planset.md`, `cognitive_brain_short_term_planset.md`) with lifecycle status markers, cross-links to canonical planset, and new plan/phase sections (Phase 6, Plan 4, Plan 5).

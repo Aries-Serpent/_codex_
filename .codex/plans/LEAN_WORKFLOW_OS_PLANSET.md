@@ -33,6 +33,55 @@
 
 ---
 
+## 🗺️ AI-Friendly Codeless System Depiction
+
+This section provides a codeless representation of the intended Copilot agent operating model
+inside the Cognitive Brain control plane.
+
+```mermaid
+flowchart LR
+  U[User Task / PR Context] --> P1[Session Pre-load]
+  P1 --> P2[Access Probe + Drift Severity]
+  P2 --> P3[RAG Context + Startup Health Score]
+  P3 --> D{Health >= 80?}
+  D -->|No| F1[Must-Fix Queue]
+  F1 --> P3
+  D -->|Yes| E1[Execute Scoped Work]
+  E1 --> V1[Validation Gates]
+  V1 --> L1[Living-Doc Sync]
+  L1 --> A1[AfterMath + PDA Update]
+  A1 --> H1[Session Handoff]
+```
+
+### Quantum-Inspired Session Control Equations (Tokenized Variables)
+
+\[
+\Psi_{session} = \alpha \cdot TVAR\_COPILOT\_AGENT\_AUTH\_ENABLED
++ \beta \cdot TVAR\_COGNITIVE\_BRAIN\_SESSION\_NUM
++ \gamma \cdot (1 - \mathbb{I}_{drift>0})
+\]
+
+\[
+E_{conflict} =
+\kappa_1 \cdot TVAR\_CODEX\_CI\_FAILURE\_RATE
++ \kappa_2 \cdot \mathbb{I}(TVAR\_CODEX\_SWEEP\_SKIP\_MAIN = 0)
++ \kappa_3 \cdot \mathbb{I}(drift\_severity \in \{HIGH,CRITICAL\})
+\]
+
+\[
+U_{session} =
+\lambda_1 \cdot health\_score
+- \lambda_2 \cdot E_{conflict}
++ \lambda_3 \cdot \mathbb{I}(living\_doc\_freshness = fresh)
+\]
+
+Interpretation:
+- Lower \(E_{conflict}\) means safer branch-update behavior.
+- Higher \(U_{session}\) means higher-signal, lower-noise Copilot execution.
+- `TVAR_CODEX_SWEEP_SKIP_MAIN=1` and bounded healer rate reduce conflict energy.
+
+---
+
 ## Plan A — Cognitive Brain Control-Plane Consolidation {#plan-a}
 
 ### Objective
