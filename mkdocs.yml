@@ -93,6 +93,9 @@ nav:
   - Deprecation Plan: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md
   - Optimization Summary: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md
   - Cache Architecture: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md
+- Reporting:
+  - Reporting Index: reporting/INDEX.md
+  - Copilot Workflow Report Console: reporting/copilot_workflow_report_console.html
 - CI Rescue & Health:
   - CI Rescue Pipeline: ci/CI_RESCUE_PIPELINE.md
   - CI/CD Index: ci/INDEX.md

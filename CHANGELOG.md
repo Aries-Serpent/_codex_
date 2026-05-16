@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1039-pages-workflow-console-linking — `copilot/analyze-workflows-data-again` — 2026-05-16T20:53Z)
+- Included the live workflow console in GitHub Pages navigation by adding:
+  - `Reporting Index: reporting/INDEX.md`
+  - `Copilot Workflow Report Console: reporting/copilot_workflow_report_console.html`
+  to `mkdocs.yml`.
+- Updated `docs/reporting/INDEX.md` to include a direct link to
+  `copilot_workflow_report_console.html` for maintainers and Copilot agents.
+
 ### Added (S1038-workflow-portfolio-remediation — `copilot/analyze-workflows-data-again` — 2026-05-16T15:26Z)
 - Refreshed the workflow portfolio reporting artifacts with Copilot-facing recommendation buckets:
   `recommended_portfolio_action`, `copilot_smoke_posture`, and `portfolio_note`.
