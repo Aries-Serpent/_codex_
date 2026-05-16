@@ -1,11 +1,12 @@
 # Cognitive Brain Improvement Planset - Short-term (Next 5 Sessions)
 
-> **Generated:** 2026-02-05T09:30:00Z  
-> **Planset ID:** CB-ST-2026-02-05  
-> **Status:** ✅ COMPLETE  
-> **Timeline:** 5 Copilot sessions  
+> **Generated:** 2026-02-05T09:30:00Z
+> **Planset ID:** CB-ST-2026-02-05
+> **Status:** ✅ COMPLETE (Plans 1–4) — Plan 5 ACTIVE (lean-OS immediate actions)
+> **Timeline:** 5 Copilot sessions
 > **Owner:** GitHub Copilot Coding Agent
-> **Completed:** 2026-02-05T12:17:00Z
+> **Completed (Plans 1–4):** 2026-02-05T12:17:00Z
+> **Lifecycle:** COMPLETE → extends via [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md) (Plan 5)
 
 ---
 
@@ -320,5 +321,121 @@ Session 5: Agent handoff automation
 
 ---
 
-**Last Updated:** 2026-02-05T09:30:00Z  
-**Next Review:** After Session 1 completion
+**Last Updated:** 2026-05-16T05:16Z (Lean Workflow OS — Plan 5 added)
+**Next Review:** After Plan 5 Phase 5.2 completion
+
+---
+
+## 📋 Plan 5: Lean Workflow OS — Immediate Actions (2026-05-16) 🔄 ACTIVE
+
+> **Cross-reference:** [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md) (Plans A–F)
+> This plan captures the immediate next actions for the Lean Workflow OS within the current
+> short-session cadence (1–2 sessions per sub-phase).
+
+### Objective
+Execute Phase 6A–6B of the Lean Workflow OS within the next 2 Copilot sessions:
+complete control-plane consolidation and begin tokenized contract + conflict governance.
+
+### Session: 16 of extended cadence
+
+---
+
+#### Phase 5.1: Control-Plane Files Created (Session 16) ✅ COMPLETE
+
+```yaml
+completed:
+  - .codex/plans/LEAN_WORKFLOW_OS_PLANSET.md  # canonical active planset ✅
+  - .codex/plans/cognitive_brain_phase_implementation.md Phase 6 ✅
+  - .codex/plans/cognitive_brain_long_term_planset.md Plan 4 ✅
+  - .codex/plans/cognitive_brain_short_term_planset.md Plan 5 (this) ✅
+  - docs/reporting/copilot_agent_session_standard_operation.md enhanced ✅
+  - scripts/aftermath/update_cognitive_brain.py enhanced ✅
+  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md updated ✅
+  - CHANGELOG.md updated ✅
+```
+
+---
+
+#### Phase 5.2: Token Contract + Conflict Governance (Session 17–18)
+
+```yaml
+todo:
+  - Create scripts/ci/check_token_contract.py
+    description: >
+      Scans session-critical docs for missing TVAR_*/TSEC_*/TENV_* blocks.
+      Emits GitHub Actions warning annotations (not errors).
+      CLI: python scripts/ci/check_token_contract.py --docs <glob>
+    acceptance: Passes against all session-critical docs with 0 warnings.
+
+  - Add branch_drift_severity to scripts/ci/session_access_probe.py
+    description: >
+      Compute severity (LOW/MEDIUM/HIGH/CRITICAL) from git log main..HEAD count.
+      Export to GITHUB_ENV and write to .codex/session_access_strategy.json.
+    acceptance: drift_severity present in startup packet every session.
+
+  - Update copilot-setup-steps.yml
+    description: >
+      Add check_token_contract.py step after Session Context Pre-load.
+      Add drift_severity annotation to Merge Conflict Pre-Check step output.
+    acceptance: Both steps run without blocking agent startup.
+```
+
+---
+
+#### Phase 5.3: Living-Doc Auto-Population (Session 19)
+
+```yaml
+todo:
+  - Extend src/codex/logging/session_logger.py
+    description: >
+      Add meta parameter to log_event/log_message. Validate required meta
+      fields against SESSION_EVENT_SCHEMA defined in LEAN_WORKFLOW_OS_PLANSET.md.
+      Backward-compatible: meta=None is accepted everywhere.
+    acceptance: Existing tests pass; new schema validation tests pass.
+
+  - Extend scripts/aftermath/update_cognitive_brain.py living_doc_sync()
+    description: >
+      Query session_events for latest session_end events.
+      Build structured delta blocks per auto-population target table.
+      Write with idempotency (MD5 hash comparison) and ordering guarantees.
+    acceptance: Running twice produces identical output (idempotent).
+
+  - Create scripts/aftermath/living_doc_sync.py
+    description: >
+      Standalone CLI wrapper: python scripts/aftermath/living_doc_sync.py [--dry-run]
+      --check-freshness-only flag emits warnings only, no writes.
+    acceptance: Zero-exit on fresh docs; non-zero on stale docs (>24h).
+```
+
+---
+
+#### Phase 5.4: Startup Health Score (Session 20)
+
+```yaml
+todo:
+  - Enhance scripts/ci/autonomous_rag_context.py
+    description: >
+      Compute bootstrap health score using formula in Plan F.
+      Export SESSION_BOOTSTRAP_HEALTH to GITHUB_ENV.
+      Add must-fix list and startup health table to session_context_latest.md.
+    acceptance: Every session startup packet includes all mandatory fields.
+
+  - Create .codex/plans/PRUNING_CANDIDATE_REGISTRY.md
+    description: >
+      Identify initial candidates from workflow_portfolio_7d_table.csv
+      (not_utilized_in_7d AND disabled columns).
+      Register with: workflow_name, stage=CANDIDATE, candidate_date, owner.
+    acceptance: Registry exists with ≥1 verified candidate entry.
+```
+
+---
+
+### Plan 5 Status
+
+| Phase | Status | Session |
+|-------|--------|---------|
+| 5.1 — Control-Plane Files | ✅ COMPLETE | 16 |
+| 5.2 — Token Contract + Conflict | ⏳ NEXT | 17–18 |
+| 5.3 — Living-Doc Auto-Population | ⏳ PLANNED | 19 |
+| 5.4 — Startup Health Score | ⏳ PLANNED | 20 |
+

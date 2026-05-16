@@ -1,21 +1,32 @@
 # Copilot Agent Session — Standard Operating Model
 
+> **Cross-reference (Canonical Planset):** [.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
+> **Lifecycle:** ACTIVE OPERATIONAL
+
 ## Purpose
 
-Define the standard operation of a Copilot coding/cloud agent session, the required living docs, and a planset to simplify session entry and continuity.
+Define the standard operation of a Copilot coding/cloud agent session, the required living docs,
+and a planset to simplify session entry and continuity. This document is the primary human-facing
+reference; the machine-readable canonical planset lives at
+`.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`.
 
 ## Session Lifecycle (Standard Operation)
 
 ```mermaid
 flowchart TD
   A[Session Start] --> B[Pre-load Context]
-  B --> C[Baseline Checks]
+  B --> B2[Session Access Probe + Drift Severity]
+  B2 --> B3[RAG Context Build + Bootstrap Health Score]
+  B3 --> C[Baseline Checks]
   C --> D[Task Planning + Checklist]
   D --> E[Implementation Iterations]
   E --> F[Validation + Security Review]
-  F --> G[Living Docs Refresh]
+  F --> G[Living Docs Refresh - Auto-Populate]
   G --> H[Progress Commit/Push]
   H --> I[Session Handoff / Next Prompt]
+
+  B3 -- health < 80 --> MUST_FIX[Must-Fix Before Editing List]
+  MUST_FIX --> C
 ```
 
 ## Expected Living Docs (Required)

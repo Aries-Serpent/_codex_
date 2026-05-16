@@ -1,7 +1,8 @@
 # Cognitive Brain Phase Implementation Plan
 > Generated: 2026-01-04 | Author: mbaetiong
-> Status: HISTORICAL RECORD - All Phases Complete ✅
+> Status: OPERATIONAL — Phases 0–5 complete; Phase 6 ACTIVE (see below)
 > Note: Original timeline references (Pre-commit 1-64, etc.) and legacy "CURRENT" labels have been updated to reflect historical completion status
+> **Lifecycle:** OPERATIONAL — extends via [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md) (Phase 6)
 
 ## 🧠 Executive Summary
 
@@ -428,4 +429,65 @@ multi-channel notification delivery.
 
 ### Status
 ⏳ PLANNED — Scope defined in session S1008-ctep (2026-05-14)
+
+---
+
+## Phase 6: Lean Workflow Operating System (2026-05-16) 🔄 ACTIVE
+
+> **Cross-reference:** Full planset at [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md)
+> This phase operationalizes the Lean Workflow OS vision by extending the Cognitive Brain with
+> five capability pillars: control-plane consolidation, tokenized contracts, conflict governance,
+> safe pruning, and living-doc automation.
+
+### Vision
+Moving toward a **lean, high-signal workflow operating system** for Copilot sessions:
+- Standardized tokenized variable contracts (`TVAR_*`, `TSEC_*`, `TENV_*`)
+- Explicit conflict-risk controls for branch drift
+- Continuous pruning/consolidation of stale or overlapping automation paths
+- Full startup context and intent delivered to every agent session
+
+### Sub-Phases
+
+#### Phase 6A — Control-Plane Consolidation
+- [ ] One canonical active planset established (`LEAN_WORKFLOW_OS_PLANSET.md`)
+- [ ] All cognitive plan files have lifecycle status markers
+- [ ] Cross-links wired: SOP doc ↔ workflow analysis ↔ canonical planset
+
+#### Phase 6B — Tokenized Variable Contracts + Conflict Governance
+- [ ] `check_token_contract.py` created and wired into `copilot-setup-steps.yml`
+- [ ] Conflict risk governance section added to `workflow_portfolio_7d_analysis.md`
+- [ ] `branch_drift_severity` added to `session_access_strategy.json`
+
+#### Phase 6C — Living-Doc Automation & Session Logging
+- [ ] `session_logger.py` extended with `meta` dict + schema validation
+- [ ] `update_cognitive_brain.py` extended with `living_doc_sync()` function
+- [ ] `living_doc_sync.py` standalone CLI created
+- [ ] Freshness check step wired into `copilot-setup-steps.yml`
+
+#### Phase 6D — Safe Pruning Lifecycle
+- [ ] `simulate_trigger_paths.py` created
+- [ ] `prune_validation_checklist.py` created
+- [ ] `PRUNING_CANDIDATE_REGISTRY.md` created with initial candidates
+
+#### Phase 6E — Startup Context Hardening
+- [ ] Bootstrap health score computation added to `autonomous_rag_context.py`
+- [ ] `SESSION_BOOTSTRAP_HEALTH` exported to `GITHUB_ENV`
+- [ ] "Must-Fix Before Editing" list generation operational
+
+### Deliverables
+| Deliverable | Path | Status |
+|-------------|------|--------|
+| Canonical planset | `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md` | ✅ Created |
+| Phase 6 section (this) | `.codex/plans/cognitive_brain_phase_implementation.md` | ✅ Created |
+| Long-term Plan 4 | `.codex/plans/cognitive_brain_long_term_planset.md` | ✅ Created |
+| Short-term Plan 5 | `.codex/plans/cognitive_brain_short_term_planset.md` | ✅ Created |
+| Session SOP enhanced | `docs/reporting/copilot_agent_session_standard_operation.md` | ✅ Updated |
+| Aftermath updater enhanced | `scripts/aftermath/update_cognitive_brain.py` | ✅ Updated |
+| Token contract checker | `scripts/ci/check_token_contract.py` | ⏳ Phase 6B |
+| Trigger path simulator | `scripts/ci/simulate_trigger_paths.py` | ⏳ Phase 6D |
+| Prune validation CLI | `scripts/ci/prune_validation_checklist.py` | ⏳ Phase 6D |
+| Living doc sync CLI | `scripts/aftermath/living_doc_sync.py` | ⏳ Phase 6C |
+
+### Status
+🔄 ACTIVE — Phase 6A complete, 6B–6E in progress per [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md)
 
