@@ -31,9 +31,13 @@ Last Updated: 2026-01-16
 
 
 import argparse
+import hashlib
+import json
+import sqlite3
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 import yaml
 
@@ -235,15 +239,14 @@ def main():
 # structured delta blocks to each living-doc target.
 # ---------------------------------------------------------------------------
 
-import hashlib
-import json
-import sqlite3
-from typing import Optional
-
 
 def _db_query_latest_session_end(db_path: Path) -> Optional[dict]:
     """Return meta dict from the most recent session_end event, or None."""
     if not db_path.exists():
+        print(
+            f"living-doc-sync: database not found at {db_path}; no session events to sync.",
+            file=sys.stderr,
+        )
         return None
     try:
         con = sqlite3.connect(str(db_path))
