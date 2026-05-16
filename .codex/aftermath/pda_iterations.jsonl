@@ -132,3 +132,4 @@
 {"type": "failure", "session": "S293-pytest", "pr": 0, "branch": "", "pattern_id": "RP-QUERY-FILTER-TEST", "workflow": "", "workflow_run": "", "error_text": "", "root_cause": "", "fix_template": "", "ts": "2026-05-14T11-26Z"}
 {"type": "failure", "session": "S293", "pr": 0, "branch": "", "pattern_id": "RP-SUCCESS-RATE-TEST", "workflow": "", "workflow_run": "", "error_text": "", "root_cause": "", "fix_template": "", "ts": "2026-05-14T11-26Z"}
 {"type": "fix", "session": "S293", "pr": 0, "pattern_id": "RP-SUCCESS-RATE-TEST", "fix_applied": "", "verification_cmd": "", "verification_passed": true, "ts": "2026-05-14T11-26Z"}
+{"type": "session", "session": "S1034-workflow-portfolio-expansion", "pr": 4470, "branch": "copilot/analyze-workflows-data-again", "summary": "Expanded workflow portfolio docs with variable token mapping, mermaid conflict maps, branch-update conflict inventory, and top-20 Copilot-first quick wins.", "ts": "2026-05-16T04-16Z"}
