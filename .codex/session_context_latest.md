@@ -1,10 +1,10 @@
-# Session Context — 2026-05-16T17:18:03Z
+# Session Context — 2026-05-16T20:48:13Z
 **Branch:** `copilot/analyze-workflows-data-again`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4996` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4843` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,14 +16,14 @@
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-16)
 
 ## 📝 Recent Commits
+- `2384542c` feat: add copilot_workflow_report_console.html — live workflow control panel — copilot-swe-agent[bot] (2026-05-16)
+- `fc742769` chore: begin copilot_workflow_report_console HTML build — copilot-swe-agent[bot] (2026-05-16)
 - `99507bab` docs: refresh workflow portfolio remediation findings — copilot-swe-agent[bot] (2026-05-16)
 - `e29a27a0` chore: start workflow portfolio remediation review — copilot-swe-agent[bot] (2026-05-16)
 - `550d91c3` Harden WEC workflow-state gating and align iterative workflow remediation prompt — copilot-swe-agent[bot] (2026-05-16)
 - `c2005b60` feat: harden WEC integrity checks and align PR4470 iterative follow-up prompt — copilot-swe-agent[bot] (2026-05-16)
 - `f75e6452` chore: plan WEC hardening and workflow-state audit for PR 4470 — copilot-swe-agent[bot] (2026-05-16)
 - `cdf94dbc` docs: finalize cognitive brain plans with codeless architecture maps and tokeniz — copilot-swe-agent[bot] (2026-05-16)
-- `facaf0f1` chore: finalize cognitive brain plans with AI-friendly codeless diagrams and con — copilot-swe-agent[bot] (2026-05-16)
-- `162a5005` fix: move hashlib/json/sqlite3 imports to top-level; add DB-missing warning in l — copilot-swe-agent[bot] (2026-05-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
