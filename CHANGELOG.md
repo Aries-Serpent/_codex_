@@ -7,6 +7,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1040-branch-consolidation-pages-reliability — `copilot/analyze-workflows-data-again` — 2026-05-17T00:16Z)
+- Cherry-picked the missing commit from `copilot/analyze-workflows-data` so the working branch contains all source-branch changes before closure.
+- Fixed GitHub Pages deployment resolution by replacing invalid `actions/deploy-pages` SHA in `.github/workflows/pages-mkdocs.yml` with `actions/deploy-pages@v4`.
+- Hardened `.github/workflows/pages-health-guard.yml` telemetry logging by creating `.codex/telemetry` before appending `pages_health_log.jsonl`.
+
+### Added (S1039-pages-workflow-console-linking — `copilot/analyze-workflows-data-again` — 2026-05-16T20:53Z)
+- Included the live workflow console in GitHub Pages navigation by adding:
+  - `Reporting Index: reporting/INDEX.md`
+  - `Copilot Workflow Report Console: reporting/copilot_workflow_report_console.html`
+  to `mkdocs.yml`.
+- Updated `docs/reporting/INDEX.md` to include a direct link to
+  `copilot_workflow_report_console.html` for maintainers and Copilot agents.
+
+### Added (S1038-workflow-portfolio-remediation — `copilot/analyze-workflows-data-again` — 2026-05-16T15:26Z)
+- Refreshed the workflow portfolio reporting artifacts with Copilot-facing recommendation buckets:
+  `recommended_portfolio_action`, `copilot_smoke_posture`, and `portfolio_note`.
+- Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with:
+  - validated disable-now orphan workflows still active in Actions,
+  - lifetime-history keep-enabled decisions for 7-day-idle workflows,
+  - overlap groups for similar workflow logic,
+  - a WEC workflow mermaid map plus tokenized variable contract notes,
+  - a 60-minute Copilot session operating envelope and smoke-test posture guidance.
+- Expanded `docs/reporting/copilot_agent_session_standard_operation.md` with explicit session
+  timeboxing and rate-limit guidance for Copilot agents.
+- Recorded live workflow-disable API attempts for orphan workflows returning
+  `HTTP 403 Resource not accessible by integration` under `github.token`, confirming that
+  workflow state changes still require `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.
+
+### Added (S1037-wec-hardening-and-workflow-state-audit — `copilot/analyze-workflows-data-again` — 2026-05-16T06:22Z)
+- Hardened `scripts/ci/wec_enforcer.py` to validate GitHub Actions workflow state integrity:
+  - checked WEC workflows must be `active`,
+  - merge-required workflows must be `active`,
+  - validation now emits explicit non-active workflow/state findings.
+- Hardened `.github/workflows/workflow-execution-gate.yml` token usage for WEC parsing/summarization steps to use:
+  - `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`
+- Updated `.github/copilot-prompts/active/PR-4470-followup.md` with a tailored iterative execution prompt aligned to WEC approval flow and live non-active WEC workflow inventory.
+- Recorded live enable-attempt outcome: GitHub API workflow-enable calls returned `HTTP 403 Resource not accessible by integration` under default installation token, confirming `actions:write` token requirement for workflow state enablement.
+
+### Added (S1036-codeless-architecture-finalization — `copilot/analyze-workflows-data-again` — 2026-05-16T06:00Z)
+- Finalized cognitive-brain planning objects with explicit **AI-friendly codeless system/process depictions** and updated mermaid mappings across:
+  - `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`
+  - `.codex/plans/cognitive_brain_short_term_planset.md`
+  - `.codex/plans/cognitive_brain_long_term_planset.md`
+  - `.codex/plans/cognitive_brain_phase_implementation.md`
+- Added quantum-physics-inspired equations using tokenized variables (`TVAR_*`, `TENV_*`) for session/process utility, conflict energy, and readiness modeling in canonical plans and reporting artifacts.
+- Expanded `docs/reporting/copilot_agent_session_standard_operation.md` with an AI-friendly codeless intended Copilot design flow and tokenized-variable session dynamics equations.
+- Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with tokenized quantum equations and a codeless workflow-centric Copilot session process mapping while preserving Branch-update conflict workflow prioritization and mitigation guidance.
+
+### Added (S1035-lean-workflow-os — `copilot/analyze-workflows-data-again` — 2026-05-16T05:16Z)
+- Created `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md` — canonical active Cognitive Brain control-plane planset (Plans A–F: consolidation, tokenized contracts, conflict governance, safe pruning, living-doc automation, startup hardening).
+- Updated all three cognitive brain plan files (`cognitive_brain_phase_implementation.md`, `cognitive_brain_long_term_planset.md`, `cognitive_brain_short_term_planset.md`) with lifecycle status markers, cross-links to canonical planset, and new plan/phase sections (Phase 6, Plan 4, Plan 5).
+- Expanded `docs/reporting/copilot_agent_session_standard_operation.md` with: TENV token rows, branch-update conflict quick-reference table (HIGH-risk workflows with required mitigations), health-score entry checklist, Plans C/D upgraded with auto-logging system, environment enhancement opportunities table.
+- **Priority enhancement** — Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with a full `🚨 Branch-Update Conflict Dashboard`: Active Session Conflict Protocol, Mermaid decision diagram, per-workflow mitigation cards for all 6 HIGH-risk workflows (step-by-step actions + required YAML concurrency/timeout blocks), MEDIUM-risk summary table, and mitigation variable quick reference. Conflict dashboard is now the first lookup before any write operation.
+- Extended `scripts/aftermath/update_cognitive_brain.py` with `--mode living-doc-sync`: `living_doc_sync()` reads latest `session_end` event from `.codex/session_logs.db`, builds idempotent delta sections for accountability report, CHANGELOG, and PDA JSONL feed with duplicate-update prevention.
+
+
+- Expanded `docs/reporting/workflow_portfolio_7d_table.csv` with tokenized variable mappings (`TVAR_*`, `TSEC_*`, `TENV_*`) and branch-update conflict-risk columns for active Copilot branch sessions.
+- Expanded `docs/reporting/workflow_portfolio_7d_table.md` to include variable mapping and branch-update conflict columns for reviewer visibility.
+- Expanded `docs/reporting/workflow_portfolio_7d_analysis.md` with Mermaid workflow/conflict maps, quantum-inspired workflow equations, conflict workflow inventory for main-branch drift, and a Copilot-first ranked top-20 quick-win workflow enhancement list.
+- Added `docs/reporting/copilot_agent_session_standard_operation.md` to document standard Copilot session operations, expected living docs, and a planset to streamline session entries and handoffs.
+
+### Added (S1033-workflow-portfolio-analysis — `copilot/analyze-workflows-data-again` — 2026-05-15T18:44Z)
+- Added `docs/reporting/workflow_portfolio_7d_table.csv` with all discovered workflows and 7-day utilization fields, including inactive/disabled coverage.
+- Added `docs/reporting/workflow_portfolio_7d_table.md` to provide a repository-native tabular view across requested columns (activity, non-utilization, dependencies, access, and rate-limit posture).
+- Added `docs/reporting/workflow_portfolio_7d_analysis.md` with executive summary sections: what works, what does not, what is missing, what needs improvement, and forward-looking codebase perspective.
+
 ### Fixed (auto-update — PR #4470)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4470 (SHA `071e62e1`) at 2026-05-14T21:41Z [auto-generated]
 

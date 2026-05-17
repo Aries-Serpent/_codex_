@@ -175,4 +175,3 @@ present in the lock file.
 | GPL-3.0-or-later | 1 |
 
 **Overall license posture: ✅ Acceptable** — permissive licenses dominate; copyleft exposure limited to dev/CI tools.
-

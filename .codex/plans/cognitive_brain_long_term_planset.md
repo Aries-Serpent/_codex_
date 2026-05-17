@@ -1,17 +1,42 @@
 # Cognitive Brain Improvement Planset - Long-term (Next 15 Sessions)
 
-> **Generated:** 2026-02-05T09:30:00Z  
-> **Planset ID:** CB-LT-2026-02-05  
-> **Status:** 🔄 IN PROGRESS (Plan 1 Complete, Plan 2 Phase 2.3 Complete)  
-> **Timeline:** 15 Copilot sessions (~3 phases)  
-> **Owner:** GitHub Copilot Coding Agent  
+> **Generated:** 2026-02-05T09:30:00Z
+> **Planset ID:** CB-LT-2026-02-05
+> **Status:** 🔄 IN PROGRESS (Plan 1 Complete, Plan 2 Phase 2.3 Complete, Plan 4 ACTIVE)
+> **Timeline:** 15 Copilot sessions (~3 phases)
+> **Owner:** GitHub Copilot Coding Agent
 > **Prerequisites:** Short-term planset (CB-ST-2026-02-05) ✅ COMPLETE
+> **Lifecycle:** IN PROGRESS — extends via [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md) (Plan 4)
 
 ---
 
 ## 🎯 Planset Overview
 
 This planset defines the strategic roadmap for 4 long-term cognitive brain improvements that transform the repository into a fully autonomous, self-improving AI development environment.
+
+## 🗺️ Codeless Long-Term Cognitive Evolution Map
+
+```mermaid
+flowchart LR
+  P1[Plan 1: Agent Integration] --> P2[Plan 2: ML Pattern Recognition]
+  P2 --> P3[Plan 3: Autonomous Objective Adjustment]
+  P3 --> P4[Plan 4: Lean Workflow OS]
+  P4 --> O[Steady-State Cognitive Operations]
+
+  O --> F[Feedback from Session Logs]
+  F --> P2
+  F --> P3
+```
+
+### Quantum-Inspired Long-Horizon Equation (Tokenized)
+
+\[
+U_{long} =
+\rho_1 \cdot \mathbb{I}(TVAR\_COGNITIVE\_BRAIN\_SESSION\_NUM \uparrow)
++ \rho_2 \cdot pattern\_accuracy
++ \rho_3 \cdot context\_retention
+- \rho_4 \cdot conflict\_exposure
+\]
 
 ### Vision Statement
 "Create a self-evolving cognitive infrastructure that learns from each session, anticipates issues, and autonomously maintains codebase objectives."
@@ -748,5 +773,160 @@ infrastructure:
 
 ---
 
-**Last Updated:** 2026-02-05T09:30:00Z  
-**Next Review:** After Session 5 completion
+**Last Updated:** 2026-05-16T05:16Z (Phase 6 Lean Workflow OS integration)
+**Next Review:** After Phase 6A completion
+
+---
+
+## 📋 Plan 4: Lean Workflow OS & Living-Doc Automation (2026-05-16) 🔄 ACTIVE
+
+> **Cross-reference:** Full planset at [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md)
+> This plan extends and supersedes overlapping automation-hygiene objectives from Plans 1–3.
+
+### Objective
+Deploy a **lean, high-signal workflow operating system** for all Copilot sessions by combining
+five capability pillars (control-plane consolidation, tokenized contracts, conflict governance,
+safe pruning, and living-doc automation) into a single, continuously operating pipeline.
+
+### Sessions: 16–21 (extends original 15-session plan)
+
+**Priority:** P0 — Foundational (unblocks full agent effectiveness)
+**Dependencies:** Plans 1–3 ✅ COMPLETE, Phase 8a monitoring thresholds ✅ ACTIVE
+
+---
+
+### Phase 4.1: Control-Plane Consolidation (Session 16) ✅ COMPLETE
+
+```yaml
+deliverables:
+  - .codex/plans/LEAN_WORKFLOW_OS_PLANSET.md  # canonical active planset ✅
+  - cognitive_brain_phase_implementation.md Phase 6 section  # ✅
+  - cognitive_brain_long_term_planset.md Plan 4 section  # ✅
+  - cognitive_brain_short_term_planset.md Plan 5 section  # ✅
+  - docs/reporting/copilot_agent_session_standard_operation.md enhanced  # ✅
+
+actions:
+  - Lifecycle status markers added to all cognitive plan files ✅
+  - Cross-links wired between SOP / workflow analysis / canonical planset ✅
+  - All overlapping legacy plan objects marked HISTORICAL or COMPLETE ✅
+```
+
+---
+
+### Phase 4.2: Tokenized Contracts + Conflict Governance (Sessions 17–18)
+
+```yaml
+deliverables:
+  - scripts/ci/check_token_contract.py          # token contract validator
+  - scripts/ci/session_access_probe.py enhanced # add branch_drift_severity
+  - .codex/session_access_strategy.json schema  # add drift_severity field
+  - workflow_portfolio_7d_analysis.md updated    # conflict index + severity model
+
+acceptance_criteria:
+  - check_token_contract.py passes all session-critical docs with 0 warnings
+  - branch_drift_severity emitted in startup packet every session
+  - conflict-prone workflow index maintained and current
+```
+
+---
+
+### Phase 4.3: Living-Doc Automation (Sessions 19–20)
+
+```yaml
+deliverables:
+  - src/codex/logging/session_logger.py enhanced   # meta dict + schema validation
+  - scripts/aftermath/update_cognitive_brain.py enhanced  # living_doc_sync()
+  - scripts/aftermath/living_doc_sync.py            # standalone CLI
+  - copilot-setup-steps.yml updated                 # freshness check step
+
+schema_targets:
+  session_start:
+    - session_id, branch, pr_number, context_load_status
+    - drift_severity, policy_version, repo_variables_snapshot_sha
+  session_end:
+    - completed_tasks, pending_tasks, pattern_compliance
+    - living_docs_updated
+  validation_gate:
+    - gate_name, status, tool, summary
+  conflict_posture:
+    - drift_severity, main_commits_ahead, mitigation_applied
+
+auto_population_targets:
+  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (session block)
+  - CHANGELOG.md ([Unreleased] entry)
+  - docs/roadmap/PR<id>_whats_next.md (status table)
+  - .codex/aftermath/pda_iterations.jsonl (PDA loop feed)
+
+acceptance_criteria:
+  - session_end events deterministically produce accountability + changelog updates
+  - No living doc section written twice for same session (idempotency)
+  - Freshness check passes: no living doc >24h stale relative to latest session_end
+```
+
+---
+
+### Phase 4.4: Safe Pruning Lifecycle (Sessions 20–21)
+
+```yaml
+deliverables:
+  - scripts/ci/simulate_trigger_paths.py      # workflow dependency mapper
+  - scripts/ci/prune_validation_checklist.py  # pre/change/post gate reporter
+  - .codex/plans/PRUNING_CANDIDATE_REGISTRY.md  # candidate tracker
+
+pruning_stages:
+  CANDIDATE:
+    - Not-utilized in 7d AND disabled workflows from workflow_portfolio_7d_table.csv
+    - Owner assigned, dependency map generated
+  QUARANTINE:
+    - Disabled for ≥3 sessions, no regression observed
+    - Trigger-path simulation passed
+    - Required-check impact analysis: zero blocking checks affected
+  CONSOLIDATED/ARCHIVED:
+    - Functional parity report filed
+    - Rollback readiness confirmed (re-enable + pass in <5 min)
+    - Observation window ≥3 sessions complete
+
+acceptance_criteria:
+  - No workflow archived without all three validation gates
+  - Candidate registry maintained and current
+  - Post-prune observation window completed without regression
+```
+
+---
+
+### Phase 4.5: Startup Context Hardening (Session 21)
+
+```yaml
+deliverables:
+  - scripts/ci/autonomous_rag_context.py enhanced  # bootstrap health score
+  - copilot-setup-steps.yml updated                 # SESSION_BOOTSTRAP_HEALTH export
+
+health_score_formula:
+  base: 100
+  deductions:
+    - drift CRITICAL: -30
+    - drift HIGH: -15
+    - any required check failing: -10
+    - ci_failure_rate > threshold: -10
+    - any living doc stale >24h: -10
+    - token contract missing: -5
+    - repo variables snapshot >1h old: -5
+
+acceptance_criteria:
+  - Every Copilot session emits SESSION_BOOTSTRAP_HEALTH to GITHUB_ENV
+  - Score ≥ 80 → GREEN (proceed); 50-79 → YELLOW (fix listed items); <50 → RED
+  - "Must-Fix Before Editing" list generated when score < 80
+  - Startup packet includes all mandatory fields with confidence markers
+```
+
+---
+
+### Plan 4 Status: 🔄 ACTIVE (Phase 4.1 Complete)
+
+| Phase | Status | Session |
+|-------|--------|---------|
+| 4.1 — Control-Plane Consolidation | ✅ COMPLETE | 16 |
+| 4.2 — Tokenized Contracts + Conflict | ⏳ NEXT | 17–18 |
+| 4.3 — Living-Doc Automation | ⏳ PLANNED | 19–20 |
+| 4.4 — Safe Pruning Lifecycle | ⏳ PLANNED | 20–21 |
+| 4.5 — Startup Hardening | ⏳ PLANNED | 21 |

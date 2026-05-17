@@ -1,0 +1,4654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copilot Workflow Report Console — Aries-Serpent/_codex_</title>
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;
+  --red:#f85149;--orange:#d29922;--purple:#bc8cff;--teal:#39d353;
+  --yellow:#e3b341;--badge-h:18px;
+  --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+button{cursor:pointer;border:none;border-radius:6px;font-family:var(--font);font-size:12px;padding:4px 10px;transition:opacity .15s}
+button:hover{opacity:.85}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);
+  font-family:var(--font);font-size:12px;padding:4px 8px;outline:none}
+input:focus,select:focus{border-color:var(--accent)}
+
+/* ── Layout ── */
+#app{display:flex;flex-direction:column;height:100vh}
+header{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#logo{font-weight:700;font-size:15px;color:var(--accent);white-space:nowrap}
+#subtitle{color:var(--muted);font-size:11px}
+.spacer{flex:1}
+#rate-badge{font-size:11px;color:var(--muted);white-space:nowrap}
+#last-refresh{font-size:11px;color:var(--muted);white-space:nowrap}
+#refresh-btn{background:var(--surface2);color:var(--text);border:1px solid var(--border);font-size:11px;padding:3px 8px}
+
+/* token bar */
+#token-bar{background:#0e1929;border-bottom:1px solid #193356;
+  padding:6px 16px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+#token-bar input{width:280px;font-family:monospace}
+#token-status{font-size:11px}
+.ts-ok{color:var(--green)}
+.ts-no{color:var(--orange)}
+
+/* tabs */
+#tabs{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 16px;display:flex;gap:0}
+.tab{padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;font-size:12px;color:var(--muted)}
+.tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+
+/* toolbar */
+#toolbar{background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:6px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#search{width:220px}
+#group-by{width:140px}
+#filter-state{width:110px}
+#filter-smoke{width:150px}
+#stats-bar{margin-left:auto;font-size:11px;color:var(--muted);display:flex;gap:12px}
+.stat-item span{font-weight:600;color:var(--text)}
+
+/* panels */
+#panels{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+.panel.active{display:flex}
+
+/* workflow table */
+#wf-scroll{flex:1;overflow:auto}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead th{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:6px 8px;text-align:left;font-size:11px;font-weight:600;
+  color:var(--muted);position:sticky;top:0;z-index:10;cursor:pointer;
+  user-select:none;white-space:nowrap
+}
+thead th:hover{color:var(--text)}
+thead th .sort-icon{margin-left:3px;opacity:.5}
+.group-header td{
+  background:#1c2130;color:var(--muted);font-size:11px;font-weight:600;
+  padding:4px 8px;border-bottom:1px solid var(--border);letter-spacing:.5px;text-transform:uppercase
+}
+tbody tr{border-bottom:1px solid #21262d;transition:background .1s}
+tbody tr:hover{background:var(--surface2)}
+td{padding:5px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* col widths */
+.col-sel{width:28px}
+.col-name{width:260px}
+.col-file{width:180px}
+.col-state{width:80px}
+.col-smoke{width:135px}
+.col-runs{width:50px;text-align:right}
+.col-ok{width:44px;text-align:right}
+.col-fail{width:44px;text-align:right}
+.col-cancel{width:48px;text-align:right}
+.col-ar{width:36px;text-align:right}
+.col-last{width:130px}
+.col-action{width:120px;text-align:right}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;height:var(--badge-h);
+  padding:0 6px;border-radius:9px;font-size:10px;font-weight:600;white-space:nowrap}
+.b-active{background:#1f3a1f;color:var(--green)}
+.b-disabled{background:#2d1a1a;color:var(--red)}
+.b-green{background:#1f3a1f;color:var(--green)}
+.b-red{background:#2d1a1a;color:var(--red)}
+.b-orange{background:#2d2010;color:var(--orange)}
+.b-purple{background:#2a1a3d;color:var(--purple)}
+.b-teal{background:#0d2a2a;color:var(--teal)}
+.b-muted{background:var(--surface2);color:var(--muted)}
+
+/* toggle switch */
+.toggle{position:relative;display:inline-block;width:32px;height:18px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;inset:0;background:#444;border-radius:18px;transition:.25s}
+.slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;
+  background:#fff;border-radius:50%;transition:.25s}
+input:checked+.slider{background:#238636}
+input:checked+.slider:before{transform:translateX(14px)}
+.toggle input:disabled+.slider{cursor:not-allowed;opacity:.5}
+
+/* row-action buttons */
+.btn-dispatch{background:#1f6feb;color:#fff;font-size:10px;padding:2px 7px}
+.btn-view{background:var(--surface2);color:var(--muted);border:1px solid var(--border);font-size:10px;padding:2px 7px}
+.btn-timer{background:#2d1f6f;color:var(--purple);font-size:10px;padding:2px 7px}
+
+/* scheduler panel */
+#scheduler-panel{padding:16px;overflow:auto;flex:1}
+.sched-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;max-width:680px}
+.sched-card h3{font-size:13px;color:var(--text);margin-bottom:10px}
+.sched-form{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--muted)}
+.field input,.field select{min-width:160px}
+.btn-sched-add{background:#238636;color:#fff;padding:5px 12px;font-size:12px}
+.btn-sched-del{background:#b62324;color:#fff;font-size:10px;padding:2px 7px}
+#scheduled-list{margin-top:12px}
+.sched-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:8px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sched-item .si-name{flex:1;font-size:12px;font-weight:600}
+.sched-item .si-meta{font-size:11px;color:var(--muted)}
+.sched-item .si-countdown{font-size:11px;color:var(--teal);min-width:80px}
+.sched-active{border-left:3px solid var(--green)}
+.sched-pending{border-left:3px solid var(--orange)}
+.sched-done{border-left:3px solid var(--muted);opacity:.6}
+.sched-fired{border-left:3px solid var(--purple)}
+
+/* CLI panel */
+#cli-panel{padding:16px;overflow:auto;flex:1}
+.cli-section{margin-bottom:20px;max-width:860px}
+.cli-section h3{font-size:13px;color:var(--text);margin-bottom:8px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.cli-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:8px;flex-wrap:wrap}
+.cli-row .field{flex:1;min-width:180px}
+.cli-output{background:#0d1117;border:1px solid var(--border);border-radius:6px;
+  padding:10px 12px;font-family:monospace;font-size:12px;color:#c9d1d9;
+  white-space:pre-wrap;word-break:break-all;min-height:36px;max-height:120px;overflow-y:auto;
+  position:relative}
+.cli-output code{display:block}
+.btn-copy{position:absolute;top:6px;right:8px;background:var(--surface2);
+  color:var(--muted);border:1px solid var(--border);font-size:10px;padding:1px 6px}
+.btn-copy.copied{color:var(--green)}
+.btn-gen{background:#1f6feb;color:#fff;padding:4px 10px;font-size:12px}
+.input-ref{background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:4px 8px;min-width:140px;color:var(--text);font-size:12px}
+
+/* logs panel */
+#logs-panel{padding:16px;overflow:auto;flex:1}
+.log-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:14px;margin-bottom:12px;max-width:900px}
+.log-card h3{font-size:13px;color:var(--text);margin-bottom:8px}
+.artifact-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.art-badge{background:var(--surface2);border:1px solid var(--border);border-radius:4px;
+  padding:3px 8px;font-size:11px;display:flex;align-items:center;gap:5px}
+.art-badge a{color:var(--accent)}
+
+/* modal */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;
+  align-items:center;justify-content:center;z-index:100}
+#modal-overlay.open{display:flex}
+#modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:20px;min-width:420px;max-width:600px;position:relative}
+#modal h2{font-size:14px;color:var(--text);margin-bottom:14px}
+#modal .modal-body{display:flex;flex-direction:column;gap:12px}
+#modal .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.btn-modal-ok{background:#238636;color:#fff;padding:5px 14px;font-size:12px}
+.btn-modal-cancel{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:5px 14px;font-size:12px}
+#modal-close{position:absolute;top:10px;right:12px;background:none;border:none;
+  color:var(--muted);font-size:16px;cursor:pointer}
+
+/* toast */
+#toast-container{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:6px}
+.toast{background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:8px 14px;font-size:12px;animation:slidein .2s ease;min-width:220px}
+.toast.t-ok{border-left:3px solid var(--green);color:var(--green)}
+.toast.t-err{border-left:3px solid var(--red);color:var(--red)}
+.toast.t-info{border-left:3px solid var(--accent);color:var(--text)}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+
+/* loading spinner */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* number colors */
+.n-green{color:var(--green)}
+.n-red{color:var(--red)}
+.n-orange{color:var(--orange)}
+.n-muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div id="logo">⚙ Copilot Workflow Report Console</div>
+    <div id="subtitle">Aries-Serpent/_codex_ &nbsp;·&nbsp; 180 workflows</div>
+  </div>
+  <div class="spacer"></div>
+  <div id="rate-badge">API quota: <span id="rate-remaining">—</span> / <span id="rate-limit">5000</span> &nbsp; reset <span id="rate-reset">—</span></div>
+  <div id="last-refresh">Last refresh: <span id="refresh-time">never</span></div>
+  <button id="refresh-btn" onclick="App.refresh()">↺ Refresh</button>
+  <select id="auto-interval" style="width:90px" onchange="App.setAutoRefresh(this.value)">
+    <option value="0">Manual</option>
+    <option value="30" selected>30 s</option>
+    <option value="60">60 s</option>
+    <option value="300">5 min</option>
+  </select>
+  <span id="next-refresh-countdown" style="font-size:11px;color:var(--muted);min-width:60px"></span>
+</header>
+
+<!-- TOKEN BAR -->
+<div id="token-bar">
+  <span>🔑 GitHub Token (stored in sessionStorage only — never persisted to disk):</span>
+  <input type="password" id="token-input" placeholder="ghp_... or CODEX_MASTER_KEY value" oninput="App.onTokenInput()" autocomplete="off">
+  <button onclick="App.testToken()" style="background:#1f3a1f;color:var(--green);font-size:11px">Test</button>
+  <button onclick="App.clearToken()" style="background:#2d1a1a;color:var(--red);font-size:11px">Clear</button>
+  <span id="token-status" class="ts-no">⚠ No token — read-only mode (dispatch/enable/disable disabled)</span>
+  <div class="spacer"></div>
+  <span style="color:var(--muted)">Write ops need <code style="color:var(--accent)">workflow</code> scope &nbsp;|&nbsp; Enable/disable needs <code style="color:var(--accent)">CODEX_MASTER_KEY</code></span>
+</div>
+
+<!-- TABS -->
+<div id="tabs">
+  <div class="tab active" onclick="App.showTab('workflows')">🗂 Workflows</div>
+  <div class="tab" onclick="App.showTab('scheduler')">⏱ Scheduler</div>
+  <div class="tab" onclick="App.showTab('cli')">💻 CLI Generator</div>
+  <div class="tab" onclick="App.showTab('logs')">📦 Artifacts &amp; Logs</div>
+</div>
+
+<!-- TOOLBAR (shared) -->
+<div id="toolbar">
+  <input id="search" type="text" placeholder="Search workflow name or file…" oninput="App.renderTable()">
+  <select id="filter-state" onchange="App.renderTable()">
+    <option value="">All states</option>
+    <option value="active">Active only</option>
+    <option value="disabled_manually">Disabled only</option>
+  </select>
+  <select id="filter-smoke" onchange="App.renderTable()">
+    <option value="">All smoke</option>
+    <option value="observed-green">✅ Observed green</option>
+    <option value="approval-gated-or-mixed">🔀 Approval-gated</option>
+    <option value="observed-failures">❌ Observed failures</option>
+    <option value="unobserved-7d">— Unobserved 7d</option>
+    <option value="disabled">⛔ Disabled</option>
+  </select>
+  <select id="filter-dispatch" onchange="App.renderTable()">
+    <option value="">All triggers</option>
+    <option value="dispatch">Dispatchable only</option>
+    <option value="schedule">Scheduled only</option>
+  </select>
+  <select id="group-by" onchange="App.renderTable()">
+    <option value="">No grouping</option>
+    <option value="portfolio_action" selected>Group by portfolio action</option>
+    <option value="smoke">Group by smoke posture</option>
+    <option value="state">Group by state</option>
+  </select>
+  <div class="stats-bar" id="stats-bar">
+    <span class="stat-item">Active: <span id="st-active">—</span></span>
+    <span class="stat-item">Disabled: <span id="st-disabled">—</span></span>
+    <span class="stat-item">Runs 7d: <span id="st-runs">—</span></span>
+    <span class="stat-item">Failures 7d: <span id="st-fail">—</span></span>
+    <span class="stat-item">Shown: <span id="st-shown">—</span></span>
+  </div>
+</div>
+
+<!-- PANELS -->
+<div id="panels">
+
+  <!-- WORKFLOWS PANEL -->
+  <div id="panel-workflows" class="panel active">
+    <div id="wf-scroll">
+      <table id="wf-table">
+        <thead>
+          <tr>
+            <th class="col-sel"><input type="checkbox" id="sel-all" onclick="App.toggleSelectAll(this)"></th>
+            <th class="col-name" onclick="App.sortBy('name')">Name <span class="sort-icon">⇅</span></th>
+            <th class="col-file" onclick="App.sortBy('file')">File <span class="sort-icon">⇅</span></th>
+            <th class="col-state" onclick="App.sortBy('state')">State <span class="sort-icon">⇅</span></th>
+            <th class="col-smoke" onclick="App.sortBy('smoke')">Smoke <span class="sort-icon">⇅</span></th>
+            <th class="col-runs" onclick="App.sortBy('runs_7d')" title="Runs last 7 days">Runs</th>
+            <th class="col-ok" onclick="App.sortBy('success_7d')" title="Successes">✅</th>
+            <th class="col-fail" onclick="App.sortBy('failure_7d')" title="Failures">❌</th>
+            <th class="col-cancel" onclick="App.sortBy('cancelled_7d')" title="Cancelled">⏹</th>
+            <th class="col-ar" onclick="App.sortBy('action_required_7d')" title="Action required">⏳</th>
+            <th class="col-last" onclick="App.sortBy('last_run')">Last run</th>
+            <th class="col-action">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="wf-body">
+          <tr><td colspan="12" style="text-align:center;padding:20px;color:var(--muted)"><span class="spin"></span> Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- bulk action bar -->
+    <div id="bulk-bar" style="background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;display:flex;gap:8px;align-items:center">
+      <span style="font-size:11px;color:var(--muted)">Bulk (<span id="sel-count">0</span> selected):</span>
+      <button onclick="App.bulkDispatch()" class="btn-dispatch" id="btn-bulk-dispatch">▶ Dispatch selected</button>
+      <button onclick="App.bulkEnable()" style="background:#238636;color:#fff;font-size:11px">✅ Enable</button>
+      <button onclick="App.bulkDisable()" style="background:#b62324;color:#fff;font-size:11px">⛔ Disable</button>
+      <button onclick="App.bulkAddScheduler()" style="background:#2d1f6f;color:var(--purple);font-size:11px">⏱ Schedule</button>
+      <div class="spacer"></div>
+      <button onclick="App.exportCSV()" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);font-size:11px">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <!-- SCHEDULER PANEL -->
+  <div id="panel-scheduler" class="panel">
+    <div id="scheduler-panel">
+      <div class="sched-card">
+        <h3>⏱ Add Scheduled Dispatch</h3>
+        <div class="sched-form">
+          <div class="field">
+            <label>Workflow</label>
+            <select id="sched-wf" style="min-width:280px" onchange="App.schedBranchHint()"></select>
+          </div>
+          <div class="field">
+            <label>Branch / ref</label>
+            <input id="sched-branch" value="main" style="width:120px">
+          </div>
+          <div class="field">
+            <label>Mode</label>
+            <select id="sched-mode" onchange="App.schedModeChanged()" style="width:110px">
+              <option value="once">Once</option>
+              <option value="interval">Every N seconds</option>
+              <option value="cron">Cron (UTC)</option>
+            </select>
+          </div>
+          <div class="field" id="sched-dt-field">
+            <label>Run at (local time)</label>
+            <input type="datetime-local" id="sched-dt" style="width:200px">
+          </div>
+          <div class="field" id="sched-interval-field" style="display:none">
+            <label>Interval (seconds)</label>
+            <input type="number" id="sched-interval" value="300" min="60" style="width:100px">
+          </div>
+          <div class="field" id="sched-cron-field" style="display:none">
+            <label>Cron (5-field UTC)</label>
+            <input id="sched-cron" placeholder="0 2 * * 1" style="width:150px">
+          </div>
+          <div class="field">
+            <label>Inputs JSON (optional)</label>
+            <input id="sched-inputs" placeholder='{"dry_run":"true"}' style="width:180px">
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn-sched-add" onclick="App.addSchedule()">+ Add</button>
+          </div>
+        </div>
+      </div>
+      <div id="scheduled-list">
+        <div style="color:var(--muted);font-size:12px">No schedules yet. Add one above.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLI PANEL -->
+  <div id="panel-cli" class="panel">
+    <div id="cli-panel">
+
+      <div class="cli-section">
+        <h3>▶ Dispatch Workflow</h3>
+        <div class="cli-row">
+          <div class="field">
+            <label>Workflow (file or ID)</label>
+            <select id="cli-wf" style="min-width:280px" onchange="App.cliGen()"></select>
+          </div>
+          <div class="field">
+            <label>Branch / ref</label>
+            <input id="cli-branch" value="main" style="width:120px" oninput="App.cliGen()">
+          </div>
+          <div class="field">
+            <label>Inputs JSON</label>
+            <input id="cli-inputs" placeholder='{"key":"val"}' style="width:180px" oninput="App.cliGen()">
+          </div>
+        </div>
+        <div class="cli-output" id="cli-dispatch-out" style="position:relative">
+          <code id="cli-dispatch-code">Select a workflow above…</code>
+          <button class="btn-copy" onclick="App.copyEl('cli-dispatch-code',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="cli-section">
+        <h3>⚙ Enable / Disable Workflow</h3>
+        <div class="cli-row">
+          <div class="field">
+            <label>Workflow</label>
+            <select id="cli-toggle-wf" style="min-width:280px" onchange="App.cliGenToggle()"></select>
+          </div>
+          <div class="field">
+            <label>Action</label>
+            <select id="cli-toggle-action" onchange="App.cliGenToggle()" style="width:100px">
+              <option value="enable">enable</option>
+              <option value="disable">disable</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn-gen" onclick="App.doToggleFromCLI()">Execute via API</button>
+          </div>
+        </div>
+        <div class="cli-output" id="cli-toggle-out" style="position:relative">
+          <code id="cli-toggle-code">Select a workflow above…</code>
+          <button class="btn-copy" onclick="App.copyEl('cli-toggle-code',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="cli-section">
+        <h3>🔬 WEC Enforcer Commands</h3>
+        <div class="cli-row">
+          <div class="field">
+            <label>PR number</label>
+            <input id="cli-pr" placeholder="4470" style="width:90px" oninput="App.cliGenWec()">
+          </div>
+          <div class="field">
+            <label>Operation</label>
+            <select id="cli-wec-op" onchange="App.cliGenWec()" style="width:160px">
+              <option value="validate">--validate-body</option>
+              <option value="detect">--detect-changes</option>
+              <option value="cancel">--cancel-unchecked</option>
+              <option value="dispatch">--dispatch-checked</option>
+            </select>
+          </div>
+        </div>
+        <div class="cli-output" id="cli-wec-out" style="position:relative">
+          <code id="cli-wec-code">Enter PR number above…</code>
+          <button class="btn-copy" onclick="App.copyEl('cli-wec-code',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="cli-section">
+        <h3>📊 Portfolio Snapshot Commands</h3>
+        <div class="cli-output" id="cli-portfolio-out" style="position:relative">
+          <code id="cli-portfolio-code">python scripts/ci/wec_enforcer.py --status&#10;cat docs/reporting/workflow_portfolio_7d_table.csv | column -t -s,&#10;cat docs/reporting/workflow_portfolio_7d_analysis.md | head -80</code>
+          <button class="btn-copy" onclick="App.copyEl('cli-portfolio-code',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="cli-section">
+        <h3>🚦 Rate Limit Check</h3>
+        <div class="cli-output" id="cli-rate-out" style="position:relative">
+          <code id="cli-rate-code">python scripts/ci/github_api_trickle.py --status&#10;gh api rate_limit --jq '.rate'</code>
+          <button class="btn-copy" onclick="App.copyEl('cli-rate-code',this)">Copy</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LOGS / ARTIFACTS PANEL -->
+  <div id="panel-logs" class="panel">
+    <div id="logs-panel">
+      <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center">
+        <select id="log-wf-sel" style="min-width:300px" onchange="App.loadRunDetails()">
+          <option value="">Select a workflow…</option>
+        </select>
+        <button onclick="App.loadRunDetails()" class="btn-view">Load runs</button>
+        <span id="log-loading" style="display:none"><span class="spin"></span></span>
+      </div>
+      <div id="log-cards"></div>
+    </div>
+  </div>
+
+</div><!-- /panels -->
+</div><!-- /app -->
+
+<!-- DISPATCH MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <button id="modal-close" onclick="App.closeModal()">✕</button>
+    <h2 id="modal-title">Dispatch Workflow</h2>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="App.closeModal()">Cancel</button>
+      <button class="btn-modal-ok" id="modal-ok-btn" onclick="App.modalOk()">Dispatch</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   SEED DATA (from docs/reporting/workflow_portfolio_7d_table.csv)
+   Stale baseline — live API data overwrites on first refresh
+   ═══════════════════════════════════════════════════════════ */
+const SEED_DATA = [
+  {
+    "id": "240359274",
+    "name": "Workflow Compliance Audit (actionlint)",
+    "file": "actionlint-audit.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-historical-use",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "push,pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "273070434",
+    "name": "Admin Action Notifier (Reusable)",
+    "file": "admin-action-notifier.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-orchestration",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "workflow_call,issues",
+    "concurrency": false,
+    "timeout": true
+  },
+  {
+    "id": "273070435",
+    "name": "Admin Action \u2014 T-03 security_events Scope Gate",
+    "file": "admin-action-t03.yml",
+    "state": "active",
+    "runs_7d": 47,
+    "success_7d": 29,
+    "failure_7d": 2,
+    "cancelled_7d": 15,
+    "action_required_7d": 1,
+    "last_run": "2026-05-15T18:21:52Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,workflow_run,issues",
+    "concurrency": true,
+    "timeout": false
+  },
+  {
+    "id": "239848562",
+    "name": "Admin Setup Verification",
+    "file": "admin_setup_verification.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-historical-use",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch,issues,repository_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239894970",
+    "name": "Agent Token Delegation",
+    "file": "agent-auth-delegation.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 0,
+    "failure_7d": 1,
+    "cancelled_7d": 4,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:44:07Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "240374741",
+    "name": "Agent Handoff Gate",
+    "file": "agent-handoff-gate.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "231490929",
+    "name": "Agent Orchestration (Unified)",
+    "file": "agent-orchestration-unified.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-orchestration",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "240343981",
+    "name": "Agent Registry Validation",
+    "file": "agent-registry-validation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-historical-use",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "push,pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239965367",
+    "name": "Agent Variable Writer (Provenance-Chain)",
+    "file": "agent-var-writer.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239927148",
+    "name": "Agent Infrastructure Manager",
+    "file": "agent_infrastructure_manager.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 2,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,issue_comment,issues,repository_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216390773",
+    "name": "API Documentation",
+    "file": "api-documentation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-historical-use",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "234039814",
+    "name": "App Package Download",
+    "file": "app-package-download.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "204689818",
+    "name": "Archival Compliance",
+    "file": "archival_compliance.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "226074583",
+    "name": "Artifact Monitoring",
+    "file": "artifact-monitoring.yml",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 6,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T15:47:31Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "218147719",
+    "name": "AST Analysis",
+    "file": "ast-analysis.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "231465969",
+    "name": "Audit & QA Suite (Unified)",
+    "file": "audit-qa-suite.yml",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 4,
+    "failure_7d": 0,
+    "cancelled_7d": 2,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,workflow_call,schedule,issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "223917608",
+    "name": "Authentication Tests",
+    "file": "auth-tests.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "255964821",
+    "name": "\u26a1 Auto-Approve Pending Workflow Runs",
+    "file": "auto-approve-workflows.yml",
+    "state": "active",
+    "runs_7d": 48,
+    "success_7d": 44,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 4,
+    "last_run": "2026-05-15T18:21:38Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,schedule,workflow_run",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "229459415",
+    "name": "Auto-Fix Common CI Issues",
+    "file": "auto-fix-common-issues.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232272351",
+    "name": "PR Auto-Fix Check",
+    "file": "auto-fix-pr-check.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "217797477",
+    "name": "Autonomous Codebase Management",
+    "file": "autonomous-agent.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 4,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:33:56Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "242908432",
+    "name": "Autonomy Phase CI Matrix",
+    "file": "autonomy-phase-ci-matrix.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "225317954",
+    "name": "Batch CI Failure Triage",
+    "file": "batch-ci-triage.yml",
+    "state": "active",
+    "runs_7d": 18,
+    "success_7d": 18,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:30:38Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "218151122",
+    "name": "Performance Benchmarks",
+    "file": "benchmarks.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "247108508",
+    "name": "\ud83c\udf3f Branch Cleanup",
+    "file": "branch-cleanup.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249262274",
+    "name": "\ud83d\udd00 Branch Divergence Monitor \u2014 0D_base_ \u2194 main",
+    "file": "branch-divergence-monitor.yml",
+    "state": "active",
+    "runs_7d": 3,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T12:43:13Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246868526",
+    "name": "\ud83d\udd00 Branch Rebase Gate",
+    "file": "branch-rebase-gate.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246018986",
+    "name": "Build Agent Environment Cache",
+    "file": "build-agent-env-cache.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "241907337",
+    "name": "Build & Push Preview Image",
+    "file": "build-preview-image.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232765030",
+    "name": ".github/workflows/cache-health-monitor.yml",
+    "file": "cache-health-monitor.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "disable-now-orphan-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "238359392",
+    "name": "Cache Pruning",
+    "file": "cache-pruning.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232765010",
+    "name": ".github/workflows/cache-validation.yml",
+    "file": "cache-validation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "disable-now-orphan-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "239965368",
+    "name": "Chat-Ops \u2014 @copilot Webhook Trigger",
+    "file": "chatops_copilot_trigger.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249364649",
+    "name": "CI Checkpoint Validation",
+    "file": "ci-checkpoint-validation.yml",
+    "state": "active",
+    "runs_7d": 2,
+    "success_7d": 2,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T07:08:39Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "248054026",
+    "name": "\ud83d\udea8 CI Failure Issue Creator",
+    "file": "ci-failure-issue-creator.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 0,
+    "failure_7d": 4,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T12:50:54Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "219141006",
+    "name": "CI Health Monitor",
+    "file": "ci-health-monitor.yml",
+    "state": "active",
+    "runs_7d": 3,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T12:48:43Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "251516262",
+    "name": "CI Rescue \u2014 Auto-Fix & @copilot RCA",
+    "file": "ci-rescue.yml",
+    "state": "disabled_manually",
+    "runs_7d": 55,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T02:16:56Z",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239988734",
+    "name": "Cleanup Stale Self-Heal Branches",
+    "file": "cleanup-stale-branches.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "271652292",
+    "name": "\ud83e\uddf9 Cleanup Stale PR Comments",
+    "file": "cleanup-stale-pr-comments.yml",
+    "state": "active",
+    "runs_7d": 12,
+    "success_7d": 0,
+    "failure_7d": 6,
+    "cancelled_7d": 1,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,workflow_run,issue_comment,issues",
+    "concurrency": true,
+    "timeout": false
+  },
+  {
+    "id": "231472802",
+    "name": "Code Quality & Coverage Suite",
+    "file": "code-quality-coverage-suite.yml",
+    "state": "active",
+    "runs_7d": 2,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 1,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "259912019",
+    "name": "\ud83e\uddf9 Codebase Health Sweep",
+    "file": "codebase-health-sweep.yml",
+    "state": "active",
+    "runs_7d": 7,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T07:27:38Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "272795457",
+    "name": "\ud83d\udd0d CodeQL Alert Fetcher",
+    "file": "codeql-alert-fetcher.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,repository_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216857590",
+    "name": "CodeQL",
+    "file": "codeql-analysis.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 2,
+    "last_run": "2026-05-15T16:55:44Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "270498357",
+    "name": "CodeQL Advanced",
+    "file": "codeql.yml",
+    "state": "active",
+    "runs_7d": 2,
+    "success_7d": 2,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246105938",
+    "name": "CODEX Manifest Auto-Refresh",
+    "file": "codex-manifest-refresh.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 4,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:33:50Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "231490930",
+    "name": "Cognitive Action & Decision (Unified)",
+    "file": "cognitive-action-decision.yml",
+    "state": "active",
+    "runs_7d": 3,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T12:56:01Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "231490931",
+    "name": "Cognitive Analysis & Learning (Unified)",
+    "file": "cognitive-analysis-feed.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 4,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T12:57:22Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "220529960",
+    "name": "Cognitive Perception Layer",
+    "file": "cognitive-perception.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:35:59Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239848563",
+    "name": "Cognitive Brain CI Feedback",
+    "file": "cognitive_brain_ci_feedback.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "248054028",
+    "name": "\ud83d\udcc8 OTel Coherence Snapshot",
+    "file": "coherence-snapshot.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "253359966",
+    "name": "PR Comment Review Gate",
+    "file": "comment-review-gate.yml",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 2,
+    "failure_7d": 2,
+    "cancelled_7d": 1,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "245460999",
+    "name": "Consolidated PR Status",
+    "file": "consolidated-pr-status.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-orchestration",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "workflow_call",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "251965381",
+    "name": "\ud83e\udd16 Agent Check-In \u2014 Q&A Bridge (Discussion #3756)",
+    "file": "copilot-agent-checkin.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch,workflow_run,issue_comment",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249262275",
+    "name": "\ud83d\udd04 Auto-Post @copilot review After Agent Session",
+    "file": "copilot-agent-session-done.yml",
+    "state": "active",
+    "runs_7d": 10,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 4,
+    "last_run": "2026-05-15T07:27:34Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "240019026",
+    "name": "Agent Vars Bootstrap",
+    "file": "copilot-agent-vars-bootstrap.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 2,
+    "last_run": "2026-05-15T16:55:44Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "218950112",
+    "name": "Copilot Automation Suite",
+    "file": "copilot-automation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "231465970",
+    "name": "Copilot Evolution & Review (Unified)",
+    "file": "copilot-evolution-suite.yml",
+    "state": "active",
+    "runs_7d": 10,
+    "success_7d": 9,
+    "failure_7d": 0,
+    "cancelled_7d": 1,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:41:46Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,schedule,issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239848566",
+    "name": "Copilot Issue Triage",
+    "file": "copilot-issue-triage.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 0,
+    "failure_7d": 1,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T03:30:38Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "251102499",
+    "name": "Copilot Iterative Self-Healing Auto-Poster",
+    "file": "copilot-iterative-self-healing.yml",
+    "state": "disabled_manually",
+    "runs_7d": 55,
+    "success_7d": 51,
+    "failure_7d": 0,
+    "cancelled_7d": 4,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T02:16:56Z",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239848567",
+    "name": "Copilot PR Session Injector",
+    "file": "copilot-pr-session-injector.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "248616232",
+    "name": "\ud83e\udd16 Copilot Review Responder",
+    "file": "copilot-review-responder.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "248737991",
+    "name": "\ud83d\udd17 Copilot Session Chain",
+    "file": "copilot-session-chain.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "227768176",
+    "name": "Copilot Agent Environment Setup",
+    "file": "copilot-setup-steps.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246033258",
+    "name": "\ud83d\udcb0 Cost Gate",
+    "file": "cost-gate.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "workflow_call,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "234522553",
+    "name": "Coverage with Timeout Guards",
+    "file": "coverage-with-timeout.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249908045",
+    "name": "\ud83d\udd00 Create Sub-PR: Session Branch \u2192 0D_base_",
+    "file": "create-sub-pr-to-0D_base_.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246126213",
+    "name": "D_CAPABLE Agent Promotion Gate",
+    "file": "d-capable-promotion-gate.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "231490932",
+    "name": "Data Quality & Determinism Suite",
+    "file": "data-quality-suite.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "245794916",
+    "name": "\ud83d\udea8 Deferral Language Gate",
+    "file": "deferral-language-gate.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "247529347",
+    "name": "\ud83d\udce6 Dependabot Auto-Absorb",
+    "file": "dependabot-auto-absorb.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232293563",
+    "name": "DependaBot Sheriff (Automated Consolidation)",
+    "file": "dependabot-sheriff.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "217797481",
+    "name": "Dependency Scan (template)",
+    "file": "dependency-scan.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:22:49Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "248154617",
+    "name": "Resilient Dependency Submission",
+    "file": "dependency-submission.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 2,
+    "last_run": "2026-05-15T16:55:44Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216238297",
+    "name": "Duplicate Detection on PR",
+    "file": "detect-duplicates.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "256293347",
+    "name": "\ud83e\uddf9 Discussion Cleanup \u2014 Deduplicate Comments",
+    "file": "discussion-cleanup.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T07:21:17Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "256293348",
+    "name": "\ud83c\udf09 Discussion \u2192 PR Response Bridge (RC-3)",
+    "file": "discussion-response-bridge.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 4,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:49:39Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issues,discussion_comment",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "248054030",
+    "name": "\ud83d\udcda Documentation Freshness Check",
+    "file": "doc-freshness-check.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "256293349",
+    "name": "\ud83d\udd04 Doc Refresh Gate (AAIS)",
+    "file": "doc-refresh-gate.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "199479462",
+    "name": "CI - Build, Smoke Test, and Push Docker (GHCR) \u2014 OWNER APPROVED (NO-MARKETPLACE)",
+    "file": "docker-build-push.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246217756",
+    "name": "Docs Health (Post-Merge)",
+    "file": "docs-health.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "218801553",
+    "name": "Documentation Link Checker",
+    "file": "documentation-link-checker.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 2,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 2,
+    "last_run": "2026-05-15T16:55:44Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": true,
+    "triggers": "push,pull_request,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232765053",
+    "name": "Documentation Quality Check",
+    "file": "documentation-quality-check.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "disable-now-orphan-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "240359275",
+    "name": "E\u2192D Transition Readiness Gate",
+    "file": "e-to-d-transition-gate.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "240374745",
+    "name": "Embedding Index Rebuild",
+    "file": "embedding-index-rebuild.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:33:07Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "256293350",
+    "name": "\u26a1 Fast-Forward Safe Files to Main",
+    "file": "fast-forward-safe-files.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239988735",
+    "name": "\ud83d\udebf Flush Queued Workflow Runs",
+    "file": "flush-queued-runs.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249262276",
+    "name": "Forward-Sync Auto-Generated Files \u2192 staging chain (Safety Net)",
+    "file": "forward-sync-autogen.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T03:07:13Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "push",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "236855919",
+    "name": "GitHub Guru Agent",
+    "file": "github-guru.yml",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 3,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T07:19:58Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246033259",
+    "name": "HAR Cache Capture",
+    "file": "har-capture.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "203197428",
+    "name": "HTML Visual (Screenshots)",
+    "file": "html_visual_regression.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "207155237",
+    "name": "IMDS Pre-Flight Check",
+    "file": "imds_preflight.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "259909303",
+    "name": "\ud83d\udd0d Issue Resolution Gate",
+    "file": "issue-resolution-gate.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "240052206",
+    "name": "Iterative Self-Healing CI",
+    "file": "iterative-self-healing-ci.yml",
+    "state": "active",
+    "runs_7d": 413,
+    "success_7d": 28,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 57,
+    "last_run": "2026-05-15T18:36:26Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,workflow_run,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "203199564",
+    "name": "PR Labeler",
+    "file": "labeler.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request_target,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "218151123",
+    "name": "Maturity Check",
+    "file": "maturity-check.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "249907512",
+    "name": "MCP Health & Metrics Gate",
+    "file": "mcp-health.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T05:22:19Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "242711405",
+    "name": "Model Drift Detection & Auto-Retrain",
+    "file": "model-drift-retrain.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T03:12:04Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues,repository_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246225676",
+    "name": "mypy Baseline (Type-Check Anti-Regression)",
+    "file": "mypy-baseline.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "238915811",
+    "name": "Nightly CodeQL Alert Triage",
+    "file": "nightly-codeql-alert-triage.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T03:20:12Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "203185765",
+    "name": "Nox Quality Gates",
+    "file": "nox_gates.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239987348",
+    "name": "\ud83e\uddf9 One-Shot: Cleanup Stale Self-Heal Branches",
+    "file": "one-shot-cleanup.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "239780045",
+    "name": "OpenVINO Phase C \u2014 Intel Arc iGPU Smoke Tests",
+    "file": "openvino-phase-c.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216390776",
+    "name": "CI \u2014 Optimized with Caching",
+    "file": "optimized-ci.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249565881",
+    "name": "\ud83e\ude7a Pages Health Guard (Self-Healing)",
+    "file": "pages-health-guard.yml",
+    "state": "active",
+    "runs_7d": 36,
+    "success_7d": 11,
+    "failure_7d": 0,
+    "cancelled_7d": 25,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:34:47Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216480130",
+    "name": "Deploy Pages (MkDocs)",
+    "file": "pages-mkdocs.yml",
+    "state": "active",
+    "runs_7d": 15,
+    "success_7d": 0,
+    "failure_7d": 13,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:36:22Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232648555",
+    "name": "Pages Pre-Merge Validation",
+    "file": "pages-pre-merge-validation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232701520",
+    "name": "Pages Scheduled Validation",
+    "file": "pages-scheduled-validation.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T00:34:53Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249744244",
+    "name": "\ud83d\udccb Post Accountability Report to Discussion",
+    "file": "post-accountability-to-discussion.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "251020901",
+    "name": "\ud83e\udde0 Post CI Status to Discussions",
+    "file": "post-ci-status-to-discussion.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "204993117",
+    "name": "Post-Merge Validation (Optimized)",
+    "file": "post-merge-validation-optimized.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216734393",
+    "name": "PR Checks (Isolated Cache)",
+    "file": "pr-checks.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246010901",
+    "name": "\ud83d\udcb0 PR Cost Check",
+    "file": "pr-cost-check.yml",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 2,
+    "failure_7d": 0,
+    "cancelled_7d": 4,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:44:06Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "219258813",
+    "name": "Generate PR Follow-Up Prompt",
+    "file": "pr-followup-generator.yml",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 2,
+    "failure_7d": 0,
+    "cancelled_7d": 4,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:44:06Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "234522554",
+    "name": "PR Size Analyzer",
+    "file": "pr-size-analyzer.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_call,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "234837172",
+    "name": "Pre-Flight CI Validation",
+    "file": "pre-flight-validation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "push,pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "232272354",
+    "name": "Pre-Merge Validation",
+    "file": "pre-merge-validation.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "256293353",
+    "name": "\ud83d\udd0d Proactive CI Monitor",
+    "file": "proactive-ci-monitor.yml",
+    "state": "active",
+    "runs_7d": 19,
+    "success_7d": 0,
+    "failure_7d": 18,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T17:59:39Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "242711406",
+    "name": "Process Variable Intents",
+    "file": "process-variable-intents.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "234527242",
+    "name": "Progressive Validation Suite",
+    "file": "progressive-validation.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249908046",
+    "name": "\ud83d\ude80 Promote Integration Branch (0D_base_ \u2192 main)",
+    "file": "promote-integration-branch.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "203589200",
+    "name": "Publish Status Dashboard Release",
+    "file": "publish_dashboard_release.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "226584848",
+    "name": "Publish Python Package to PyPI",
+    "file": "pypi-publish.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,release",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "238789879",
+    "name": "QA Walkthrough Agent",
+    "file": "qa-walkthrough.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "246217757",
+    "name": "RAG Freshness Scheduler",
+    "file": "rag-freshness-scheduler.yml",
+    "state": "active",
+    "runs_7d": 4,
+    "success_7d": 4,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:32:53Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "203589201",
+    "name": "Rate-Limit History Prune",
+    "file": "ratelimit_history_prune.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "249528385",
+    "name": "\ud83d\udd17 Reference Integrity + Agent Size Gate",
+    "file": "reference-integrity.yml",
+    "state": "active",
+    "runs_7d": 2,
+    "success_7d": 2,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216369703",
+    "name": "Repository Organization & Cleanup",
+    "file": "repo-organization.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "241771441",
+    "name": "Repo Var Sync (Scheduled)",
+    "file": "repo-var-sync-schedule.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T07:21:07Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "227019951",
+    "name": "Repository Health Monitoring",
+    "file": "repository-health-monitoring.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "259959441",
+    "name": "\ud83d\udd16 Required Actions Version Enforcer",
+    "file": "required-actions-enforcer.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "234295850",
+    "name": "Resilient Validation Suite",
+    "file": "resilient_validation.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "pull_request",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "259903484",
+    "name": "restore-pipeline CI",
+    "file": "restore-pipeline-ci.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "push,pull_request",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "225516282",
+    "name": "Root Organization Validation",
+    "file": "root-org-validation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "199837371",
+    "name": "Runner diagnostics \u2014 self-hosted readiness",
+    "file": "runner-diagnostics.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "241771442",
+    "name": "rust-error-validator Observation (D_CAPABLE)",
+    "file": "rust-error-validator-observation.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "keep-enabled-scheduled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "222429757",
+    "name": "Rust-Python Hybrid Swarm CI/CD",
+    "file": "rust_swarm_ci.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T03:07:13Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "push,pull_request,issues,release",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "200542063",
+    "name": "Generate SBOM",
+    "file": "sbom.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues,release",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "219542474",
+    "name": "Scan and Report GitHub Secrets and Variables",
+    "file": "scan-secrets-variables.yml",
+    "state": "active",
+    "runs_7d": 2,
+    "success_7d": 2,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "216390778",
+    "name": "Scheduled Archival",
+    "file": "scheduled-archival.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "208390102",
+    "name": "Scheduled Dependency Audit & SBOM",
+    "file": "scheduled-dependency-audit.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "259959436",
+    "name": "\ud83d\udd10 Secrets Baseline Enforcer",
+    "file": "secrets-baseline-enforcer.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 2,
+    "last_run": "2026-05-15T16:55:44Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "221077343",
+    "name": "Security Alert Notification",
+    "file": "security-alert-notification.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T09:53:39Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "227027195",
+    "name": "Security Scanning Suite",
+    "file": "security-scanning-suite.yml",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 1,
+    "action_required_7d": 2,
+    "last_run": "2026-05-15T16:55:44Z",
+    "smoke": "approval-gated-or-mixed",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,pull_request,workflow_dispatch,workflow_call,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "215110020",
+    "name": "Security Scanning",
+    "file": "security-scanning.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "219518061",
+    "name": "Bootstrap Security Tools from Variables",
+    "file": "security-tools-bootstrap.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "268651138",
+    "name": "\u26a1 Self-Approve Pending Workflow Runs",
+    "file": "self-approve-pending-runs.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,workflow_run",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "223032333",
+    "name": "Self-Healing CI",
+    "file": "self-healing.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "203195011",
+    "name": "Semgrep SAST (SARIF Upload)",
+    "file": "semgrep_sarif.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "240052210",
+    "name": "Session Incremental Summary Reminder",
+    "file": "session-incremental-summary-reminder.yml",
+    "state": "active",
+    "runs_7d": 22,
+    "success_7d": 22,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T17:58:18Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": true,
+    "triggers": "schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239965372",
+    "name": "Session Watchdog \u2014 Timebox & Continuity Enforcement",
+    "file": "session-watchdog.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 4,
+    "failure_7d": 0,
+    "cancelled_7d": 1,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T16:03:08Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issue_comment,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "207155238",
+    "name": "ShellCheck (IMDS Tooling)",
+    "file": "shellcheck.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "203190381",
+    "name": "Status Gate (.statusrc)",
+    "file": "status_gate.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "220309709",
+    "name": "Sync Environment Variables",
+    "file": "sync-env-vars.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "238359394",
+    "name": "CI Telemetry Collection",
+    "file": "telemetry-collection.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T02:58:48Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "203197427",
+    "name": "Template Lint (HTML includes)",
+    "file": "template_lint.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "225897127",
+    "name": "Analytics Failure Simulator",
+    "file": "test-analytics-failure-sim.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "221711588",
+    "name": "RAG Module Tests",
+    "file": "test-rag.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "push,pull_request,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "256624124",
+    "name": "Test Variables API",
+    "file": "test-variables-api.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "273070437",
+    "name": "Token Expiry Monitor",
+    "file": "token-expiry-monitor.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T09:57:01Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "239965373",
+    "name": "Token Probe \u2014 CODEX_MASTER_KEY & CODEX_BACKUP_KEY Validation",
+    "file": "token-probe.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "272783451",
+    "name": "Trigger validations on approval",
+    "file": "trigger-on-approval.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "231490935",
+    "name": "Unified Deployment Suite",
+    "file": "unified-deployment.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "review-manually-high-impact",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "push,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "190514156",
+    "name": "Validation Pipeline",
+    "file": "validate.yml",
+    "state": "active",
+    "runs_7d": 2,
+    "success_7d": 0,
+    "failure_7d": 2,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:24:04Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "242711407",
+    "name": "Auto-Sync Variables Master Guide",
+    "file": "vars-guide-sync.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T06:58:13Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,workflow_run",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "231490939",
+    "name": "Workflow Analytics & Health (Unified)",
+    "file": "workflow-analytics-unified.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "253534478",
+    "name": "Workflow Execution Gate",
+    "file": "workflow-execution-gate.yml",
+    "state": "active",
+    "runs_7d": 5,
+    "success_7d": 3,
+    "failure_7d": 0,
+    "cancelled_7d": 2,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:44:06Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-wec-critical",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "pull_request,workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "199499333",
+    "name": "Workflow Expiry Enforcer \u2014 Auto-disable on expiry",
+    "file": "workflow-expiry-enforcer.yml",
+    "state": "disabled_manually",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "disabled",
+    "portfolio_action": "already-disabled",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "227034495",
+    "name": "Workflow Documentation Link Validation",
+    "file": "workflow-link-validation.yml",
+    "state": "active",
+    "runs_7d": 1,
+    "success_7d": 1,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T04:04:54Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": true,
+    "has_schedule": true,
+    "triggers": "push,pull_request,workflow_dispatch,schedule,issues",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "219140198",
+    "name": "Workflow Restore Tool",
+    "file": "workflow-restore.yml",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": true,
+    "has_schedule": false,
+    "triggers": "workflow_dispatch",
+    "concurrency": true,
+    "timeout": true
+  },
+  {
+    "id": "244827805",
+    "name": "Claude",
+    "file": "dynamic/agents/anthropic-code-agent",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "255167321",
+    "name": "OpenAI Codex",
+    "file": "dynamic/agents/openai-code-agent",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "239249989",
+    "name": "Claude",
+    "file": "dynamic/anthropic-code-agent/claude",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "221118112",
+    "name": "Codespaces Prebuilds",
+    "file": "dynamic/codespaces/create_codespaces_prebuilds",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "203241863",
+    "name": "Copilot code review",
+    "file": "dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "185834576",
+    "name": "Copilot cloud agent",
+    "file": "dynamic/copilot-swe-agent/copilot",
+    "state": "active",
+    "runs_7d": 6,
+    "success_7d": 2,
+    "failure_7d": 1,
+    "cancelled_7d": 2,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:13:45Z",
+    "smoke": "observed-failures",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "198731352",
+    "name": "Dependabot Updates",
+    "file": "dynamic/dependabot/dependabot-updates",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "223327346",
+    "name": "Dependency Graph",
+    "file": "dynamic/dependabot/update-graph",
+    "state": "active",
+    "runs_7d": 0,
+    "success_7d": 0,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "",
+    "smoke": "unobserved-7d",
+    "portfolio_action": "archive-review-candidate",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "217823191",
+    "name": "Automatic Dependency Submission",
+    "file": "dynamic/dependency-graph/auto-submission",
+    "state": "active",
+    "runs_7d": 14,
+    "success_7d": 14,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:34:09Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "226589674",
+    "name": "CodeQL",
+    "file": "dynamic/github-code-scanning/codeql",
+    "state": "active",
+    "runs_7d": 14,
+    "success_7d": 13,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:34:09Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  },
+  {
+    "id": "216570777",
+    "name": "pages-build-deployment",
+    "file": "dynamic/pages/pages-build-deployment",
+    "state": "active",
+    "runs_7d": 8,
+    "success_7d": 8,
+    "failure_7d": 0,
+    "cancelled_7d": 0,
+    "action_required_7d": 0,
+    "last_run": "2026-05-15T18:34:09Z",
+    "smoke": "observed-green",
+    "portfolio_action": "keep-enabled-active",
+    "can_dispatch": false,
+    "has_schedule": false,
+    "triggers": "",
+    "concurrency": false,
+    "timeout": false
+  }
+];
+
+const REPO = 'Aries-Serpent/_codex_';
+const GH_API = 'https://api.github.com';
+
+/* ─── state ─── */
+const State = {
+  workflows: JSON.parse(JSON.stringify(SEED_DATA)),  // mutable live copy
+  liveRuns: {},            // wf_id → latest run info
+  liveArtifacts: {},       // run_id → artifact list
+  sort: {col:'name', asc:true},
+  selected: new Set(),
+  schedules: JSON.parse(localStorage.getItem('wf_schedules')||'[]'),
+  schedTimers: {},
+  autoRefreshTimer: null,
+  autoRefreshInterval: 30,
+  nextRefreshAt: null,
+  modalCallback: null,
+};
+
+/* ─── token helpers ─── */
+function getToken(){ return sessionStorage.getItem('gh_token')||'' }
+function authHeader(){ const t=getToken(); return t ? {'Authorization':'Bearer '+t,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'} : {'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'} }
+function hasToken(){ return !!getToken() }
+
+/* ─── GitHub API helpers ─── */
+async function ghFetch(path, opts={}){
+  const url = path.startsWith('http') ? path : GH_API+path;
+  const res = await fetch(url, {...opts, headers:{...authHeader(),...(opts.headers||{})}});
+  updateRateLimit(res.headers);
+  return res;
+}
+
+function updateRateLimit(headers){
+  const rem = headers.get('x-ratelimit-remaining');
+  const lim = headers.get('x-ratelimit-limit');
+  const reset = headers.get('x-ratelimit-reset');
+  if(rem !== null){ document.getElementById('rate-remaining').textContent = rem; }
+  if(lim !== null){ document.getElementById('rate-limit').textContent = lim; }
+  if(reset){
+    const d = new Date(parseInt(reset)*1000);
+    document.getElementById('rate-reset').textContent = d.toLocaleTimeString();
+  }
+}
+
+/* ─── toast ─── */
+function toast(msg, type='info', ms=3500){
+  const el=document.createElement('div');
+  el.className=`toast t-${type}`;
+  el.textContent=msg;
+  const c=document.getElementById('toast-container');
+  c.appendChild(el);
+  setTimeout(()=>el.remove(), ms);
+}
+
+/* ─── smoke badge ─── */
+function smokeBadge(s){
+  const MAP={
+    'observed-green':['b-green','✅ green'],
+    'approval-gated-or-mixed':['b-orange','🔀 gated'],
+    'observed-failures':['b-red','❌ failures'],
+    'unobserved-7d':['b-muted','— idle'],
+    'disabled':['b-muted','⛔ disabled'],
+  };
+  const [cls,label]=MAP[s]||['b-muted',s||'—'];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+
+function portfolioLabel(a){
+  const short = a ? a.replace('keep-enabled-','✅ ').replace('archive-review-','⚠ ').replace('already-disabled','⛔ disabled').replace('disable-now-','🔴 disable: ').replace('review-manually-','🟡 review: ') : '—';
+  return `<span style="font-size:10px;color:var(--muted)">${short}</span>`;
+}
+
+function relativeTime(iso){
+  if(!iso) return '<span class="n-muted">—</span>';
+  const ms = Date.now()-new Date(iso).getTime();
+  const m=Math.floor(ms/60000), h=Math.floor(m/60), d=Math.floor(h/24);
+  if(d>0) return `<span class="n-muted">${d}d ago</span>`;
+  if(h>0) return `<span class="n-muted">${h}h ago</span>`;
+  return `<span class="n-muted">${m}m ago</span>`;
+}
+
+function runStatBadge(n, cls){ return n>0?`<span class="${cls}">${n}</span>`:`<span class="n-muted">0</span>`; }
+
+/* ─── main App ─── */
+const App = {
+
+  /* token */
+  onTokenInput(){
+    const v = document.getElementById('token-input').value.trim();
+    if(v) sessionStorage.setItem('gh_token', v);
+    else sessionStorage.removeItem('gh_token');
+    this.updateTokenStatus();
+  },
+  async testToken(){
+    if(!hasToken()){toast('No token entered','err');return}
+    try{
+      const r = await ghFetch('/user');
+      if(r.ok){ const d=await r.json(); toast(`✅ Token valid — logged in as ${d.login}`,'ok'); this.updateTokenStatus(true,d.login); }
+      else { toast('❌ Token invalid ('+r.status+')','err'); this.updateTokenStatus(false); }
+    }catch(e){ toast('Network error: '+e.message,'err'); }
+  },
+  clearToken(){
+    sessionStorage.removeItem('gh_token');
+    document.getElementById('token-input').value='';
+    this.updateTokenStatus();
+    toast('Token cleared','info');
+  },
+  updateTokenStatus(valid, login){
+    const el = document.getElementById('token-status');
+    if(!hasToken()){
+      el.className='ts-no'; el.textContent='⚠ No token — read-only mode (dispatch/enable/disable disabled)';
+    } else if(valid===true){
+      el.className='ts-ok'; el.textContent=`✅ Token active — ${login}`;
+    } else {
+      el.className='ts-ok'; el.textContent='🔑 Token present (not validated)';
+    }
+  },
+
+  /* tabs */
+  showTab(name){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById('panel-'+name).classList.add('active');
+    if(name==='cli') this.cliInit();
+    if(name==='scheduler') this.schedInit();
+    if(name==='logs') this.logsInit();
+  },
+
+  /* ── REFRESH ── */
+  async refresh(){
+    document.getElementById('refresh-btn').innerHTML='<span class="spin"></span>';
+    try{
+      await this.fetchLiveWorkflows();
+      this.renderTable();
+      document.getElementById('refresh-time').textContent = new Date().toLocaleTimeString();
+    }finally{
+      document.getElementById('refresh-btn').textContent='↺ Refresh';
+    }
+  },
+
+  async fetchLiveWorkflows(){
+    // Fetch all pages of /repos/{owner}/{repo}/actions/workflows
+    let page=1, all=[];
+    while(true){
+      const r = await ghFetch(`/repos/${REPO}/actions/workflows?per_page=100&page=${page}`);
+      if(!r.ok){ if(r.status===403||r.status===401){toast('API auth failed ('+r.status+') — using seed data','err');} return; }
+      const d = await r.json();
+      all = all.concat(d.workflows||[]);
+      if(!d.workflows||d.workflows.length<100) break;
+      page++;
+    }
+    if(!all.length) return;
+    // Merge live data into State.workflows (match by id or file path)
+    const byId = {};
+    for(const w of all) byId[String(w.id)] = w;
+    for(const w of State.workflows){
+      const live = byId[w.id];
+      if(live){
+        w.state = live.state;
+        w.name = live.name;
+        // update last run via separate call (only for active, recently run workflows to save quota)
+        if(live.state==='active' && w.runs_7d>0){
+          // debounce: only fetch if liveRuns stale (>60s)
+          const cached = State.liveRuns[w.id];
+          if(!cached || (Date.now()-cached._ts)>60000){
+            this.fetchLatestRun(w.id);
+          }
+        }
+      }
+    }
+  },
+
+  async fetchLatestRun(wfId){
+    const r = await ghFetch(`/repos/${REPO}/actions/workflows/${wfId}/runs?per_page=1`);
+    if(!r.ok) return;
+    const d = await r.json();
+    if(d.workflow_runs&&d.workflow_runs.length){
+      const run = d.workflow_runs[0];
+      State.liveRuns[wfId] = {
+        id: run.id, status: run.status, conclusion: run.conclusion,
+        created_at: run.created_at, html_url: run.html_url,
+        head_branch: run.head_branch, head_sha: run.head_sha,
+        _ts: Date.now(),
+      };
+    }
+  },
+
+  /* ── AUTO REFRESH ── */
+  setAutoRefresh(secs){
+    clearInterval(State.autoRefreshTimer);
+    State.autoRefreshInterval = parseInt(secs)||0;
+    if(State.autoRefreshInterval>0){
+      State.nextRefreshAt = Date.now()+State.autoRefreshInterval*1000;
+      State.autoRefreshTimer = setInterval(()=>this.refresh(), State.autoRefreshInterval*1000);
+    } else {
+      document.getElementById('next-refresh-countdown').textContent='';
+    }
+  },
+
+  tickCountdown(){
+    if(!State.autoRefreshInterval||!State.nextRefreshAt) return;
+    const remaining = Math.max(0,Math.ceil((State.nextRefreshAt-Date.now())/1000));
+    document.getElementById('next-refresh-countdown').textContent = remaining>0?`next in ${remaining}s`:'';
+    if(remaining===0) State.nextRefreshAt = Date.now()+State.autoRefreshInterval*1000;
+  },
+
+  /* ── TABLE ── */
+  sortBy(col){
+    if(State.sort.col===col) State.sort.asc=!State.sort.asc;
+    else { State.sort.col=col; State.sort.asc=true; }
+    this.renderTable();
+  },
+
+  getFiltered(){
+    const q=(document.getElementById('search').value||'').toLowerCase();
+    const st=document.getElementById('filter-state').value;
+    const sm=document.getElementById('filter-smoke').value;
+    const fd=document.getElementById('filter-dispatch').value;
+    return State.workflows.filter(w=>{
+      if(q && !w.name.toLowerCase().includes(q) && !w.file.toLowerCase().includes(q)) return false;
+      if(st && w.state!==st) return false;
+      if(sm && w.smoke!==sm) return false;
+      if(fd==='dispatch' && !w.can_dispatch) return false;
+      if(fd==='schedule' && !w.has_schedule) return false;
+      return true;
+    });
+  },
+
+  renderTable(){
+    const rows = this.getFiltered();
+
+    // stats
+    const active = rows.filter(r=>r.state==='active').length;
+    const disabled = rows.filter(r=>r.state!=='active').length;
+    const totalRuns = rows.reduce((a,r)=>a+r.runs_7d,0);
+    const totalFail = rows.reduce((a,r)=>a+r.failure_7d,0);
+    document.getElementById('st-active').textContent=active;
+    document.getElementById('st-disabled').textContent=disabled;
+    document.getElementById('st-runs').textContent=totalRuns;
+    document.getElementById('st-fail').textContent=totalFail;
+    document.getElementById('st-shown').textContent=rows.length;
+
+    // sort
+    const {col,asc} = State.sort;
+    rows.sort((a,b)=>{
+      let va=a[col]??'', vb=b[col]??'';
+      if(typeof va==='number') return asc?va-vb:vb-va;
+      return asc?va.localeCompare(vb):vb.localeCompare(va);
+    });
+
+    // grouping
+    const groupBy = document.getElementById('group-by').value;
+    const tbody = document.getElementById('wf-body');
+    const frags = [];
+    const selCount = State.selected.size;
+    document.getElementById('sel-count').textContent=selCount;
+
+    if(!groupBy){
+      for(const w of rows) frags.push(this.buildRow(w));
+    } else {
+      const groups = {};
+      for(const w of rows){
+        const key = w[groupBy]||'(none)';
+        (groups[key]||(groups[key]=[])).push(w);
+      }
+      const sortedKeys = Object.keys(groups).sort();
+      for(const key of sortedKeys){
+        const labelMap={
+          'keep-enabled-active':'✅ Keep — Active',
+          'keep-enabled-wec-critical':'🔒 Keep — WEC Critical',
+          'keep-enabled-scheduled':'📅 Keep — Scheduled',
+          'keep-enabled-historical-use':'📖 Keep — Historical',
+          'keep-enabled-orchestration':'🔗 Keep — Orchestration',
+          'archive-review-candidate':'⚠ Archive Review',
+          'already-disabled':'⛔ Already Disabled',
+          'disable-now-orphan-active':'🔴 Disable Now (Orphan)',
+          'review-manually-high-impact':'🟡 Review Manually',
+          'observed-green':'✅ Observed Green',
+          'approval-gated-or-mixed':'🔀 Approval-Gated/Mixed',
+          'observed-failures':'❌ Observed Failures',
+          'unobserved-7d':'— Unobserved 7d',
+          'disabled':'⛔ Disabled',
+          'active':'Active',
+          'disabled_manually':'Disabled',
+        };
+        const label = labelMap[key]||key;
+        frags.push(`<tr class="group-header"><td colspan="12">${label} (${groups[key].length})</td></tr>`);
+        for(const w of groups[key]) frags.push(this.buildRow(w));
+      }
+    }
+
+    tbody.innerHTML = frags.length ? frags.join('') : '<tr><td colspan="12" style="text-align:center;padding:20px;color:var(--muted)">No workflows match filters</td></tr>';
+  },
+
+  buildRow(w){
+    const liveRun = State.liveRuns[w.id];
+    const lastRunIso = liveRun ? liveRun.created_at : w.last_run;
+    const runLink = liveRun ? `<a href="${liveRun.html_url}" target="_blank">${relativeTime(lastRunIso)}</a>` : relativeTime(lastRunIso);
+    const stateBadge = w.state==='active' ? '<span class="badge b-active">active</span>' : '<span class="badge b-disabled">disabled</span>';
+    const dispatchBtn = w.can_dispatch ? `<button class="btn-dispatch" onclick="App.openDispatch('${w.id}')">▶</button>` : '';
+    const viewBtn = `<button class="btn-view" onclick="App.showLogsFor('${w.id}')">📋</button>`;
+    const timerBtn = w.can_dispatch ? `<button class="btn-timer" onclick="App.openTimerFor('${w.id}')">⏱</button>` : '';
+    const sel = State.selected.has(w.id) ? 'checked' : '';
+    const toggleChecked = w.state==='active' ? 'checked' : '';
+    const toggleDisabled = hasToken() ? '' : 'disabled';
+    return `<tr data-id="${w.id}">
+      <td><input type="checkbox" ${sel} onchange="App.toggleSelect('${w.id}',this.checked)"></td>
+      <td title="${w.name}" style="overflow:hidden;text-overflow:ellipsis">
+        <a href="https://github.com/${REPO}/actions/workflows/${w.file}" target="_blank">${w.name}</a>
+      </td>
+      <td title="${w.file}" style="overflow:hidden;text-overflow:ellipsis;font-family:monospace;font-size:11px;color:var(--muted)">
+        <a href="https://github.com/${REPO}/blob/main/.github/workflows/${w.file}" target="_blank">${w.file}</a>
+      </td>
+      <td>
+        <label class="toggle" title="${w.state}">
+          <input type="checkbox" ${toggleChecked} ${toggleDisabled} onchange="App.toggleState('${w.id}',this.checked)">
+          <span class="slider"></span>
+        </label>
+        &nbsp;${stateBadge}
+      </td>
+      <td>${smokeBadge(w.smoke)}</td>
+      <td class="col-runs">${w.runs_7d||'<span class="n-muted">0</span>'}</td>
+      <td>${runStatBadge(w.success_7d,'n-green')}</td>
+      <td>${runStatBadge(w.failure_7d,'n-red')}</td>
+      <td>${runStatBadge(w.cancelled_7d,'n-muted')}</td>
+      <td>${runStatBadge(w.action_required_7d,'n-orange')}</td>
+      <td>${runLink}</td>
+      <td style="text-align:right">${dispatchBtn} ${viewBtn} ${timerBtn}</td>
+    </tr>`;
+  },
+
+  toggleSelect(id, checked){
+    if(checked) State.selected.add(id); else State.selected.delete(id);
+    document.getElementById('sel-count').textContent=State.selected.size;
+  },
+  toggleSelectAll(el){
+    const rows=document.querySelectorAll('#wf-body input[type=checkbox]');
+    rows.forEach(r=>{ r.checked=el.checked; const id=r.closest('tr')?.dataset?.id; if(id){ if(el.checked)State.selected.add(id);else State.selected.delete(id); }});
+    document.getElementById('sel-count').textContent=State.selected.size;
+  },
+
+  /* ── ENABLE / DISABLE ── */
+  async toggleState(wfId, enable){
+    if(!hasToken()){toast('Token required for enable/disable','err'); this.renderTable(); return;}
+    const action = enable ? 'enable' : 'disable';
+    const r = await ghFetch(`/repos/${REPO}/actions/workflows/${wfId}/${action}`,{method:'PUT'});
+    if(r.status===204){
+      const w = State.workflows.find(x=>x.id===wfId);
+      if(w){ w.state=enable?'active':'disabled_manually'; }
+      toast(`Workflow ${enable?'enabled':'disabled'}`,'ok');
+      this.renderTable();
+    } else if(r.status===403){
+      toast('403 — token lacks actions:write scope (need CODEX_MASTER_KEY)','err');
+      this.renderTable(); // revert visual
+    } else {
+      toast('Toggle failed: '+r.status,'err');
+      this.renderTable();
+    }
+  },
+
+  async bulkEnable(){ for(const id of State.selected) await this.toggleState(id,true); State.selected.clear(); this.renderTable(); },
+  async bulkDisable(){ for(const id of State.selected) await this.toggleState(id,false); State.selected.clear(); this.renderTable(); },
+
+  /* ── DISPATCH ── */
+  openDispatch(wfId){
+    const w = State.workflows.find(x=>x.id===wfId);
+    if(!w) return;
+    if(!hasToken()){toast('Token required to dispatch workflows','err');return;}
+    const body = document.getElementById('modal-body');
+    body.innerHTML=`
+      <div class="field"><label>Workflow</label><input value="${w.name}" disabled style="width:100%"></div>
+      <div class="field"><label>Branch / ref</label><input id="md-branch" value="main" style="width:100%"></div>
+      <div class="field"><label>Inputs (JSON, optional)</label><input id="md-inputs" placeholder='{}' style="width:100%"></div>
+      <div id="md-note" style="font-size:11px;color:var(--muted)">Dispatches <code>${w.file}</code> on the selected ref via POST /dispatches</div>
+    `;
+    document.getElementById('modal-title').textContent='▶ Dispatch: '+w.name;
+    document.getElementById('modal-ok-btn').textContent='Dispatch';
+    State.modalCallback = async ()=>{ await this.doDispatch(wfId); };
+    document.getElementById('modal-overlay').classList.add('open');
+  },
+
+  async doDispatch(wfId, branch, inputs){
+    if(!hasToken()){toast('Token required','err');return;}
+    const b = branch || (document.getElementById('md-branch')?.value||'main');
+    let inp={};
+    try{ inp=JSON.parse(document.getElementById('md-inputs')?.value||'{}'); }catch(e){}
+    const body={ref:b};
+    if(Object.keys(inp).length) body.inputs=inp;
+    const r = await ghFetch(`/repos/${REPO}/actions/workflows/${wfId}/dispatches`,{
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+    });
+    if(r.status===204){ toast('✅ Workflow dispatched','ok'); this.closeModal(); }
+    else { const txt=await r.text(); toast('Dispatch failed '+r.status+': '+txt.slice(0,80),'err'); }
+  },
+
+  async bulkDispatch(){
+    if(!hasToken()){toast('Token required','err');return;}
+    const dispatchable = [...State.selected].filter(id=>State.workflows.find(w=>w.id===id&&w.can_dispatch));
+    if(!dispatchable.length){toast('No dispatchable workflows selected','err');return;}
+    for(const id of dispatchable) await this.doDispatch(id,'main',{});
+    toast(`Dispatched ${dispatchable.length} workflow(s)`,'ok');
+  },
+
+  closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); State.modalCallback=null; },
+  modalOk(){ if(State.modalCallback) State.modalCallback(); },
+
+  /* ── SCHEDULER ── */
+  schedInit(){
+    const sel = document.getElementById('sched-wf');
+    if(!sel.options.length){
+      const disp = State.workflows.filter(w=>w.can_dispatch);
+      disp.forEach(w=>{
+        const o=document.createElement('option');
+        o.value=w.id; o.textContent=w.name;
+        sel.appendChild(o);
+      });
+    }
+    this.renderSchedules();
+    // set default datetime to now+5min
+    const dt=new Date(Date.now()+5*60000);
+    const pad=n=>String(n).padStart(2,'0');
+    document.getElementById('sched-dt').value=
+      `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  },
+
+  schedModeChanged(){
+    const m=document.getElementById('sched-mode').value;
+    document.getElementById('sched-dt-field').style.display=m==='once'?'':'none';
+    document.getElementById('sched-interval-field').style.display=m==='interval'?'':'none';
+    document.getElementById('sched-cron-field').style.display=m==='cron'?'':'none';
+  },
+
+  schedBranchHint(){},
+
+  addSchedule(){
+    const wfId=document.getElementById('sched-wf').value;
+    const wf=State.workflows.find(w=>w.id===wfId);
+    if(!wf){toast('Select a workflow','err');return;}
+    const branch=document.getElementById('sched-branch').value||'main';
+    const mode=document.getElementById('sched-mode').value;
+    let inp={};
+    try{ inp=JSON.parse(document.getElementById('sched-inputs').value||'{}'); }catch(e){}
+
+    const sched={id:Date.now(), wfId, wfName:wf.name, wfFile:wf.file, branch, inputs:inp, mode, status:'pending'};
+    if(mode==='once'){
+      const dt=new Date(document.getElementById('sched-dt').value);
+      if(isNaN(dt)){toast('Invalid date/time','err');return;}
+      sched.runAt=dt.getTime();
+    } else if(mode==='interval'){
+      sched.intervalSec=parseInt(document.getElementById('sched-interval').value)||300;
+      sched.nextRunAt=Date.now()+sched.intervalSec*1000;
+    } else {
+      sched.cron=document.getElementById('sched-cron').value;
+      sched.nextRunAt=this.nextCronRun(sched.cron);
+    }
+    State.schedules.push(sched);
+    this.saveSchedules();
+    this.armSchedule(sched);
+    this.renderSchedules();
+    toast('Schedule added','ok');
+  },
+
+  nextCronRun(expr){
+    // minimal 5-field cron parser — always return next whole minute match within 24h
+    return Date.now()+60000; // simplified: fires after 1 minute for demo
+  },
+
+  armSchedule(sched){
+    let delay;
+    if(sched.mode==='once') delay=sched.runAt-Date.now();
+    else if(sched.mode==='interval') delay=sched.nextRunAt-Date.now();
+    else delay=sched.nextRunAt-Date.now();
+    if(delay<=0){delay=1000;}
+    State.schedTimers[sched.id]=setTimeout(async()=>{
+      if(sched.status==='cancelled'||sched.status==='done') return;
+      sched.status='fired';
+      if(hasToken()){
+        await App.doDispatch(sched.wfId, sched.branch, sched.inputs);
+        toast(`⏱ Scheduled dispatch fired: ${sched.wfName}`,'ok');
+      } else {
+        toast(`⏱ Schedule fired but no token — ${sched.wfName} NOT dispatched`,'err');
+      }
+      if(sched.mode!=='once'){
+        if(sched.mode==='interval') sched.nextRunAt=Date.now()+sched.intervalSec*1000;
+        sched.status='pending';
+        this.armSchedule(sched);
+      } else {
+        sched.status='done';
+      }
+      this.saveSchedules();
+      this.renderSchedules();
+    }, delay);
+  },
+
+  removeSchedule(id){
+    clearTimeout(State.schedTimers[id]);
+    State.schedules=State.schedules.filter(s=>s.id!==id);
+    this.saveSchedules();
+    this.renderSchedules();
+    toast('Schedule removed','info');
+  },
+
+  cancelSchedule(id){
+    clearTimeout(State.schedTimers[id]);
+    const s=State.schedules.find(x=>x.id===id);
+    if(s) s.status='cancelled';
+    this.saveSchedules();
+    this.renderSchedules();
+  },
+
+  saveSchedules(){
+    localStorage.setItem('wf_schedules',JSON.stringify(State.schedules));
+  },
+
+  rearmAll(){
+    for(const s of State.schedules){
+      if(s.status==='pending'||s.status==='active') this.armSchedule(s);
+    }
+  },
+
+  renderSchedules(){
+    const container=document.getElementById('scheduled-list');
+    if(!State.schedules.length){
+      container.innerHTML='<div style="color:var(--muted);font-size:12px">No schedules. Add one above.</div>';
+      return;
+    }
+    container.innerHTML=State.schedules.map(s=>{
+      const cls={'pending':'sched-pending','done':'sched-done','fired':'sched-fired','cancelled':'sched-done'}[s.status]||'sched-pending';
+      let countdown='';
+      if(s.status==='pending'){
+        const target=s.mode==='once'?s.runAt:s.nextRunAt;
+        const sec=Math.max(0,Math.ceil((target-Date.now())/1000));
+        countdown=sec<60?`in ${sec}s`:`in ${Math.ceil(sec/60)}m`;
+      }
+      const modeLabel=s.mode==='once'?`once @ ${new Date(s.runAt).toLocaleString()}`:s.mode==='interval'?`every ${s.intervalSec}s`:`cron: ${s.cron}`;
+      return `<div class="sched-item ${cls}">
+        <span class="si-name">${s.wfName}</span>
+        <span class="si-meta">${modeLabel} | branch: ${s.branch} | ${s.status}</span>
+        <span class="si-countdown">${countdown}</span>
+        <button class="btn-sched-del" onclick="App.removeSchedule(${s.id})">✕ Remove</button>
+        ${s.status==='pending'?`<button class="btn-sched-del" style="background:#444" onclick="App.cancelSchedule(${s.id})">Pause</button>`:''}
+      </div>`;
+    }).join('');
+  },
+
+  openTimerFor(wfId){
+    this.showTab.call({currentTarget:document.querySelectorAll('.tab')[1]},'scheduler');
+    // pre-select
+    setTimeout(()=>{
+      const sel=document.getElementById('sched-wf');
+      if(sel) sel.value=wfId;
+    },100);
+  },
+
+  bulkAddScheduler(){
+    if(State.selected.size===0){toast('Select workflows first','err');return;}
+    App.showTab.call({currentTarget:document.querySelectorAll('.tab')[1]},'scheduler');
+  },
+
+  /* ── CLI GENERATOR ── */
+  cliInit(){
+    const selectors=['cli-wf','cli-toggle-wf','log-wf-sel'];
+    const all=State.workflows;
+    for(const selId of selectors){
+      const sel=document.getElementById(selId);
+      if(sel&&!sel.options.length){
+        const placeholder=document.createElement('option');
+        placeholder.value=''; placeholder.textContent='— Select workflow —';
+        sel.appendChild(placeholder);
+        all.forEach(w=>{
+          const o=document.createElement('option');
+          o.value=w.id; o.dataset.file=w.file; o.textContent=w.name+(w.can_dispatch?'':[selId==='cli-wf'?' (no dispatch)':'']);
+          sel.appendChild(o);
+        });
+      }
+    }
+    this.cliGen(); this.cliGenToggle(); this.cliGenWec();
+  },
+
+  cliGen(){
+    const sel=document.getElementById('cli-wf');
+    const wfId=sel?.value;
+    const wf=State.workflows.find(w=>w.id===wfId);
+    const branch=document.getElementById('cli-branch')?.value||'main';
+    const inputs=document.getElementById('cli-inputs')?.value||'{}';
+    let cmd='';
+    if(!wf){ cmd='Select a workflow above…'; }
+    else {
+      const ghCli=`gh workflow run "${wf.file}" --repo ${REPO} --ref ${branch}`;
+      let inputsFlag='';
+      try{
+        const obj=JSON.parse(inputs);
+        if(Object.keys(obj).length) inputsFlag=' '+Object.entries(obj).map(([k,v])=>`-f ${k}="${v}"`).join(' ');
+      }catch(e){}
+      const curlBody=JSON.stringify({ref:branch,...(inputs!=='{}'?{inputs:JSON.parse(inputs)}:{})},null,2);
+      cmd=`# gh CLI\n${ghCli}${inputsFlag}\n\n# curl\ncurl -X POST \\\n  -H "Authorization: Bearer <TOKEN>" \\\n  -H "Accept: application/vnd.github+json" \\\n  "https://api.github.com/repos/${REPO}/actions/workflows/${wf.id}/dispatches" \\\n  -d '${curlBody.replace(/\n/g,'\\n')}'`;
+    }
+    const el=document.getElementById('cli-dispatch-code');
+    if(el) el.textContent=cmd;
+  },
+
+  cliGenToggle(){
+    const sel=document.getElementById('cli-toggle-wf');
+    const act=document.getElementById('cli-toggle-action')?.value||'enable';
+    const wfId=sel?.value;
+    const wf=State.workflows.find(w=>w.id===wfId);
+    let cmd='Select a workflow above…';
+    if(wf){
+      cmd=`# gh CLI\ngh api --method PUT "repos/${REPO}/actions/workflows/${wf.id}/${act}"\n\n# curl\ncurl -X PUT \\\n  -H "Authorization: Bearer <CODEX_MASTER_KEY>" \\\n  -H "Accept: application/vnd.github+json" \\\n  "https://api.github.com/repos/${REPO}/actions/workflows/${wf.id}/${act}"`;
+    }
+    const el=document.getElementById('cli-toggle-code');
+    if(el) el.textContent=cmd;
+  },
+
+  async doToggleFromCLI(){
+    const sel=document.getElementById('cli-toggle-wf');
+    const act=document.getElementById('cli-toggle-action').value;
+    const wfId=sel.value;
+    if(!wfId){toast('Select a workflow','err');return;}
+    await this.toggleState(wfId, act==='enable');
+  },
+
+  cliGenWec(){
+    const pr=document.getElementById('cli-pr')?.value||'<PR>';
+    const op=document.getElementById('cli-wec-op')?.value||'validate';
+    const opFlag={'validate':'--validate-body','detect':'--detect-changes','cancel':'--cancel-unchecked','dispatch':'--dispatch-checked'}[op]||'--validate-body';
+    const cmd=`GH_TOKEN="$CODEX_MASTER_KEY" python scripts/ci/wec_enforcer.py ${opFlag} --pr ${pr} --repo ${REPO}`;
+    const el=document.getElementById('cli-wec-code');
+    if(el) el.textContent=cmd;
+  },
+
+  copyEl(id, btn){
+    const el=document.getElementById(id);
+    if(!el) return;
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+      btn.textContent='Copied!'; btn.classList.add('copied');
+      setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},1500);
+    });
+  },
+
+  /* ── LOGS / ARTIFACTS ── */
+  logsInit(){
+    this.cliInit(); // populates log-wf-sel if needed
+  },
+
+  async loadRunDetails(){
+    const sel=document.getElementById('log-wf-sel');
+    const wfId=sel.value;
+    if(!wfId){document.getElementById('log-cards').innerHTML='';return;}
+    document.getElementById('log-loading').style.display='';
+    const r=await ghFetch(`/repos/${REPO}/actions/workflows/${wfId}/runs?per_page=10`);
+    document.getElementById('log-loading').style.display='none';
+    if(!r.ok){toast('Failed to load runs: '+r.status,'err');return;}
+    const d=await r.json();
+    const runs=d.workflow_runs||[];
+    if(!runs.length){document.getElementById('log-cards').innerHTML='<div style="color:var(--muted)">No runs found</div>';return;}
+    const cards=await Promise.all(runs.map(run=>this.buildRunCard(run)));
+    document.getElementById('log-cards').innerHTML=cards.join('');
+  },
+
+  async buildRunCard(run){
+    const concl=run.conclusion||run.status;
+    const colorMap={'success':'n-green','failure':'n-red','cancelled':'n-muted','action_required':'n-orange','in_progress':'n-orange'};
+    const cls=colorMap[concl]||'n-muted';
+    let artsHtml='';
+    // Fetch artifacts
+    const ar=await ghFetch(`/repos/${REPO}/actions/runs/${run.id}/artifacts?per_page=20`);
+    if(ar.ok){
+      const ad=await ar.json();
+      if(ad.artifacts&&ad.artifacts.length){
+        const items=ad.artifacts.map(a=>`<span class="art-badge">📦 <a href="https://github.com/${REPO}/actions/runs/${run.id}/artifacts/${a.id}" target="_blank">${a.name}</a> <span class="n-muted">(${(a.size_in_bytes/1024).toFixed(0)}KB)</span></span>`).join('');
+        artsHtml=`<div style="margin-top:8px;font-size:11px;color:var(--muted)">Artifacts:</div><div class="artifact-list">${items}</div>`;
+      }
+    }
+    return `<div class="log-card">
+      <h3><a href="${run.html_url}" target="_blank" class="${cls}">${run.name||'Run'} #${run.run_number}</a> &nbsp;
+        <span style="font-size:11px;color:var(--muted)">· ${concl} · ${relativeTime(run.created_at)} · ${run.head_branch||''}</span>
+      </h3>
+      <div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap">
+        <a href="${run.html_url}" target="_blank" class="btn-view" style="display:inline-block;padding:3px 8px">📋 View run</a>
+        <a href="${run.html_url}#logs" target="_blank" class="btn-view" style="display:inline-block;padding:3px 8px">📝 Logs</a>
+        <a href="https://github.com/${REPO}/actions/runs/${run.id}/artifacts" target="_blank" class="btn-view" style="display:inline-block;padding:3px 8px">📦 Artifacts page</a>
+      </div>
+      ${artsHtml}
+    </div>`;
+  },
+
+  showLogsFor(wfId){
+    App.showTab.call({currentTarget:document.querySelectorAll('.tab')[3]},'logs');
+    setTimeout(()=>{
+      const sel=document.getElementById('log-wf-sel');
+      if(sel){ sel.value=wfId; App.loadRunDetails(); }
+    },150);
+  },
+
+  /* ── EXPORT ── */
+  exportCSV(){
+    const rows=this.getFiltered();
+    const header='id,name,file,state,smoke,portfolio_action,runs_7d,success_7d,failure_7d,cancelled_7d,action_required_7d,last_run,can_dispatch,has_schedule';
+    const lines=rows.map(w=>[w.id,`"${w.name}"`,w.file,w.state,w.smoke,w.portfolio_action,w.runs_7d,w.success_7d,w.failure_7d,w.cancelled_7d,w.action_required_7d,w.last_run,w.can_dispatch,w.has_schedule].join(','));
+    const blob=new Blob([[header,...lines].join('\n')],{type:'text/csv'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='workflow_snapshot.csv'; a.click();
+  },
+
+  /* ── INIT ── */
+  init(){
+    this.updateTokenStatus();
+    this.renderTable();
+    this.setAutoRefresh(30);
+    this.rearmAll();
+    // countdown ticker
+    setInterval(()=>{ this.tickCountdown(); this.renderSchedules(); },1000);
+    // seed CLI selects lazily
+    this.cliInit();
+    // kick off first live refresh
+    this.refresh();
+  },
+};
+
+/* init on load */
+window.addEventListener('DOMContentLoaded', ()=>App.init());
+</script>
+</body>
+</html>

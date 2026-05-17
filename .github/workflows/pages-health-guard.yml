@@ -225,6 +225,7 @@ jobs:
         if: always()
         run: |
           # Log to AAIS telemetry for incident tracking
+          mkdir -p .codex/telemetry
           echo "{\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"event\":\"pages_health_check\",\"trigger\":\"${{ github.event_name }}\",\"http_code\":\"${{ steps.http_check.outputs.final_http_code || steps.scheduled_check.outputs.scheduled_http_code || 'n/a' }}\",\"healthy\":\"${{ steps.http_check.outputs.site_healthy || 'n/a' }}\",\"rebuild_triggered\":\"${{ steps.trigger_rebuild.outputs.rebuild_triggered || 'false' }}\"}" \
             >> .codex/telemetry/pages_health_log.jsonl 2>/dev/null || true
           echo "✅ Telemetry logged"

@@ -25,6 +25,7 @@ on:
       - 'mkdocs.yml'
       - 'src/codex/api/**'
       - 'src/codex/**/*.py'
+      - '.github/workflows/pages-mkdocs.yml'
   workflow_dispatch:
     inputs:
       reason:
@@ -214,7 +215,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5d0b8849c8de2b4ab71a4e15d2de7  # v5
+        uses: actions/deploy-pages@v4
 
       - name: Verify deployed site (health check)
         id: health_check

@@ -124,7 +124,7 @@ curl -s -H "Authorization: Bearer $CODEX_MASTER_KEY" \
 curl -sI -H "Authorization: Bearer $CODEX_MASTER_KEY" \
      https://api.github.com/user \
   | grep -i "x-oauth-scopes"
-# Expected output: X-OAuth-Scopes: repo, workflow, ... 
+# Expected output: X-OAuth-Scopes: repo, workflow, ...
 ```
 
 Or use GitHub CLI directly:
@@ -456,7 +456,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
   /repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE \
   --jq '.value'
 
-# It will decrease naturally as CI stays green. 
+# It will decrease naturally as CI stays green.
 # To force a reset (human admin action required):
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
   --method PATCH \

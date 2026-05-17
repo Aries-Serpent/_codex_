@@ -7,6 +7,7 @@
 
 - [INDEX](INDEX.md)
 - [REPORTING](REPORTING.md)
+- [Copilot Workflow Report Console](copilot_workflow_report_console.html)
 
 ---
 
