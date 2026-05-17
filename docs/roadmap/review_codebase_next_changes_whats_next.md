@@ -57,7 +57,22 @@
 - Added `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0` to `requirements-dev.txt`.
 - Extended `.github/workflows/promote-integration-branch.yml` with `target_branch`, `pr_base_branch`, `create_or_update_pr` inputs — enables UI-driven SHA→branch promotion for files in `copilot/review-codebase-and-next-changes` (or any source branch) to `main`.
 
-## Session Status (Current — S1044)
+## Evidence Summary (S1045-2026-05-17)
+
+| Metric | S1044 baseline | S1045 runtime scan |
+|---|---|---|
+| Runtime command | pending | `nox -s tests -- -n auto --dist=loadfile` |
+| Runtime progress reached | partial start | **98% observed** before stop |
+| Failure markers (partial log scan) | N/A | `F=47`, `E=5`, `xfailed=40`, `xpassed=13` |
+| Infra/runtime instability markers | N/A | `node down: Not properly terminated` = 1 |
+| Collection blocker status | cleared in S1044 | remains cleared (runtime-only issues observed) |
+
+**S1045 notes:**
+- Full runtime scan executed with xdist and produced stable progress through 98% with reproducible failure/error markers in `/tmp/codex_s1045/nox_tests_full_xdist.log`.
+- The dominant non-skip runtime signals are now assertion failures (`F`) plus a smaller error/setup bucket (`E`) and one worker termination event.
+- Session was closed under time guard after collecting sufficient runtime evidence for targeted follow-up.
+
+## Session Status (Current — S1045)
 
 | Item | Status |
 |---|---|
@@ -70,19 +85,21 @@
 | **S1043 — Loader import-contract stabilization** | ✅ Complete |
 | **S1044 — Baseline dep normalization** | ✅ Complete (`requirements-dev.txt` +5 deps, 0 collection errors) |
 | **S1044 — SHA→branch promotion workflow** | ✅ Complete (`promote-integration-branch.yml` generalized) |
-| Full `nox -s tests` runtime failure triage | 🔄 Pending (Session D) |
+| Full `nox -s tests` runtime failure triage | 🔄 In progress (S1045 reached 98%) |
+| Runtime failure marker inventory (`F/E/node-down`) | ✅ Captured |
+| `promote-integration-branch.yml` Actions-tab dispatch validation (`target_branch=main`) | 🔄 Pending verification |
 
-## Next Objectives (Session D)
+## Next Objectives (Session D continuation)
 
-1. Run full `nox -s tests` (not collect-only) with the new env and capture the complete runtime failure inventory.
-2. Characterize residual failures — expected categories: optional-heavy-dep tests (torch, mlflow, ray) vs. genuine logic failures.
-3. Triage and address top runtime failure buckets that do not require heavy optional deps.
-4. Validate the `promote-integration-branch.yml` workflow dispatch UX from the Actions tab with a test run.
-5. Update reporting / accountability with the measured runtime delta.
+1. Complete one full runtime pass to terminal pytest summary and extract exact failing test module counts.
+2. Group failures into buckets: assertion/runtime vs setup/import/worker termination.
+3. Triage the highest-frequency non-heavy-dependency bucket and land minimal corrective fix(es).
+4. Validate `promote-integration-branch.yml` workflow_dispatch from Actions with `target_branch=main` and current branch head SHA.
+5. Refresh reporting/accountability artifacts with post-fix runtime deltas.
 
 ## Follow-Up Continuation Prompt
 
-> Continue from `docs/roadmap/review_codebase_next_changes_whats_next.md` and `docs/reporting/next_expected_codebase_change_48h.md` (Session D).
-> The baseline nox dependency surface is now normalized — `pydantic`, `click`, `fastapi`, `httpx`, `cryptography` are installed in `requirements-dev.txt` and collection returns 0 ModuleNotFoundError instances.
-> Run the full `nox -s tests` suite, capture the complete runtime failure breakdown, triage top non-heavy-dep failures, and update accountability/reporting artifacts.
-> Also validate the `promote-integration-branch.yml` workflow_dispatch UI with `target_branch=main` and a source SHA from `copilot/review-codebase-and-next-changes`.
+> Continue from `docs/roadmap/review_codebase_next_changes_whats_next.md` and `docs/reporting/next_expected_codebase_change_48h.md` (Session D continuation).
+> Collection is clean (S1044), and S1045 runtime evidence captured `F=47`, `E=5`, `node down=1` with test progress reaching 98% under xdist (`/tmp/codex_s1045/nox_tests_full_xdist.log`).
+> Finish one full runtime pass to final pytest summary, group failures by module/error type, fix top non-heavy-dependency runtime bucket, then update CHANGELOG/accountability/docs.
+> Validate `promote-integration-branch.yml` dispatch via Actions (`target_branch=main`, `source_sha=<tip of copilot/review-codebase-and-next-changes>`), and record run id + result in accountability.
