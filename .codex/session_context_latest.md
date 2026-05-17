@@ -1,29 +1,29 @@
-# Session Context — 2026-05-17T09:08:39Z
+# Session Context — 2026-05-17T10:23:20Z
 **Branch:** `copilot/review-codebase-and-next-changes`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4823` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-17)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-17)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-05-17)
 - **Graph Update: uv in /., /.github, /.github/agents, /.github/agents/ci-testing-agent, /.github/agents/ml-threat-detector, /.github/agents/project-architect-researcher, /.github/agents/pyo3-integration-tester, /.github/agents/rust-error-validator, /.github/agents/security-scan-agent, /.github/agents/utf8-safety-linter, /.github/ai-evolution, /.github/copilot-cascade, /.github/copilot-evolution, /.github/copilot-knowledge-hunger, /.github/copilot-security, /agents/codex_client, /audio_cleaner_v1, /cli, /cod...** — `failure` on `main` (2026-05-17)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `main` (2026-05-17)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-05-17)
 
 ## 📝 Recent Commits
+- `e2525089` Normalize baseline nox dependency surface and add SHA→branch promotion controls — copilot-swe-agent[bot] (2026-05-17)
+- `5273f9cf` chore: plan session c dependency normalization and sha-promotion workflow update — copilot-swe-agent[bot] (2026-05-17)
 - `d3af89e7` chore: drop generated errors artifact from session changes — copilot-swe-agent[bot] (2026-05-17)
 - `94969898` fix(tests): reduce nox collection failures by repairing loader import contract — copilot-swe-agent[bot] (2026-05-17)
 - `61088f06` chore: plan full nox tests stabilization follow-up — copilot-swe-agent[bot] (2026-05-17)
 - `107cbe16` fix(tests): remove deprecated pytest_plugins from quantum conftest; update repor — copilot-swe-agent[bot] (2026-05-17)
 - `8dd3ca83` chore: baseline evidence — plan stream_paths/quantum-conftest remediation — copilot-swe-agent[bot] (2026-05-17)
 - `9183f0cd` docs: update living docs and session wrap-up continuity artifacts — copilot-swe-agent[bot] (2026-05-17)
-- `89520680` docs(reporting): add next-session groundwork package — copilot-swe-agent[bot] (2026-05-17)
-- `1b19325d` docs(reporting): refine equations and prep next-session groundwork — copilot-swe-agent[bot] (2026-05-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -35,8 +35,8 @@
 
 ## 🔁 PDA Loop — Last 5 Iterations
 - [] `RP-SUCCESS-RATE-TEST`: ?
-- [] `RP-SUCCESS-RATE-TEST`: ?
-- [] `?`: ?
+- [] `RP-PYTEST-SKILL-TEST`: ?
+- [] `RP-PYTEST-SKILL-TEST`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```

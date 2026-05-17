@@ -1,3 +1,43 @@
+## SESSION SUMMARY — 2026-05-17T10:27Z [S1044-baseline-dep-normalization]
+
+**Session:** S1044-baseline-dep-normalization | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** (open)
+
+### Completed
+- ✅ Added 5 missing baseline test dependencies to `requirements-dev.txt`: `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0`.
+- ✅ Ran targeted `nox -s tests -- --collect-only` after dep normalization: **0 `ModuleNotFoundError` instances** — nox session marked successful in 2 minutes.
+- ✅ Extended `.github/workflows/promote-integration-branch.yml` for UI-triggered SHA→branch promotion:
+  - `target_branch` input (default `0D_base_`), `pr_base_branch` input (default `main`), `create_or_update_pr` boolean input.
+  - Backwards-compatible: existing `0D_base_` → `main` promotion behavior preserved as defaults.
+  - YAML syntax validated via `python yaml.safe_load(...)`.
+- ✅ Updated living docs: `next_expected_codebase_change_48h.md`, `review_codebase_next_changes_whats_next.md`, `review_codebase_next_changes_session_diagram.mmd`.
+- ✅ Updated CHANGELOG and AGENT_ACCOUNTABILITY_REPORT (this entry).
+
+### Measured Deltas
+| Metric | Before S1044 | After S1044 |
+|---|---|---|
+| `nox -s tests` collection ModuleNotFoundErrors | 56 | **0** |
+| `pydantic` missing | 26 | **0** |
+| `click` missing | 23 | **0** |
+| `fastapi.testclient` missing | 2 | **0** |
+| `httpx` missing | 1 | **0** |
+| `cryptography` missing | 1 | **0** |
+| Promote-integration-branch: target branch | hard-coded `0D_base_` | **configurable** via `target_branch` input |
+| Full `nox -s tests` runtime phase | not reached | partial (full run in progress at session end) |
+
+### Validation
+- ✅ `nox -s tests -- --collect-only -q -m 'not requires_torch'` → session successful, 0 `ModuleNotFoundError`
+- ✅ `python -c "import yaml; yaml.safe_load(open('.github/workflows/promote-integration-branch.yml'))"` → `yaml ok`
+- ✅ No `ModuleNotFoundError` in collect-only log
+
+### Remaining Open Items
+- Full `nox -s tests` runtime failure characterization (Session D).
+- Validate `promote-integration-branch.yml` workflow_dispatch from Actions UI with `target_branch=main`.
+
+### Pattern Compliance
+- Pattern 25 ✅ — accountability + changelog updated in this session.
+
+---
+
 ## SESSION SUMMARY — 2026-05-17T08:42Z [S1043-loader-import-contract-stabilization]
 
 **Session:** S1043-loader-import-contract-stabilization | **Branch:** `copilot/review-codebase-and-next-changes` | **PR:** (pending)

@@ -39,13 +39,50 @@
 - `cryptography`: 1
 - pydantic symbol imports (`ConfigDict`, `ValidationError`): 3
 
-## Next Objectives (Session C)
+## Evidence Summary (S1044-2026-05-17)
 
-1. Normalize the baseline nox dependency contract for `pydantic`, `click`, `fastapi.testclient`, `httpx`, and `cryptography`.
-2. Re-run `nox -s tests` until collection reaches zero and runtime failures become visible.
-3. Update accountability + reporting with the next measured CI run outcomes.
-4. Validate WEC/workflow governance state remains stable.
+| Metric | Before S1044 | After S1044 |
+|---|---|---|
+| Collection errors | 56 (dep bucket) | **0** (collect-only succeeded, nox session successful) |
+| Dominant collection failure | `pydantic`/`click`/`fastapi`/`httpx`/`crypto` missing | None — all 5 resolved via `requirements-dev.txt` |
+| `pydantic` missing | 26 errors | **0** |
+| `click` missing | 23 errors | **0** |
+| `fastapi.testclient` missing | 2 errors | **0** |
+| `httpx` missing | 1 error | **0** |
+| `cryptography` missing | 1 error | **0** |
+| Workflow promotion | `0D_base_` hard-coded | **configurable** via `target_branch`/`pr_base_branch` inputs |
+| Full runtime phase | not reached | partial (full run still in progress at session end) |
+
+**S1044 changes:**
+- Added `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0` to `requirements-dev.txt`.
+- Extended `.github/workflows/promote-integration-branch.yml` with `target_branch`, `pr_base_branch`, `create_or_update_pr` inputs — enables UI-driven SHA→branch promotion for files in `copilot/review-codebase-and-next-changes` (or any source branch) to `main`.
+
+## Session Status (Current — S1044)
+
+| Item | Status |
+|---|---|
+| Core report (`next_expected_codebase_change_48h.md`) | ✅ Complete |
+| Mermaid + expected results + equations + token descriptions | ✅ Complete |
+| Iterative promptset + groundwork package | ✅ Complete |
+| Living docs sync (`whats_next`, `session_diagram`) | ✅ Complete |
+| CHANGELOG + accountability updates | ✅ Complete |
+| **S1042 — Quantum conftest remediation** | ✅ Complete |
+| **S1043 — Loader import-contract stabilization** | ✅ Complete |
+| **S1044 — Baseline dep normalization** | ✅ Complete (`requirements-dev.txt` +5 deps, 0 collection errors) |
+| **S1044 — SHA→branch promotion workflow** | ✅ Complete (`promote-integration-branch.yml` generalized) |
+| Full `nox -s tests` runtime failure triage | 🔄 Pending (Session D) |
+
+## Next Objectives (Session D)
+
+1. Run full `nox -s tests` (not collect-only) with the new env and capture the complete runtime failure inventory.
+2. Characterize residual failures — expected categories: optional-heavy-dep tests (torch, mlflow, ray) vs. genuine logic failures.
+3. Triage and address top runtime failure buckets that do not require heavy optional deps.
+4. Validate the `promote-integration-branch.yml` workflow dispatch UX from the Actions tab with a test run.
+5. Update reporting / accountability with the measured runtime delta.
 
 ## Follow-Up Continuation Prompt
 
-> Continue from `/home/runner/work/_codex_/_codex_/docs/reporting/next_expected_codebase_change_48h.md` and this living doc. Normalize the baseline nox dependency contract (`pydantic`, `click`, `fastapi.testclient`, `httpx`, `cryptography`), then re-run `nox -s tests`, capture the next collection/runtime delta, and update reporting/accountability artifacts.
+> Continue from `docs/roadmap/review_codebase_next_changes_whats_next.md` and `docs/reporting/next_expected_codebase_change_48h.md` (Session D).
+> The baseline nox dependency surface is now normalized — `pydantic`, `click`, `fastapi`, `httpx`, `cryptography` are installed in `requirements-dev.txt` and collection returns 0 ModuleNotFoundError instances.
+> Run the full `nox -s tests` suite, capture the complete runtime failure breakdown, triage top non-heavy-dep failures, and update accountability/reporting artifacts.
+> Also validate the `promote-integration-branch.yml` workflow_dispatch UI with `target_branch=main` and a source SHA from `copilot/review-codebase-and-next-changes`.

@@ -109,12 +109,14 @@ Coefficient interpretation (normalized scoring model):
      - `tests/test_loaders.py tests/data/test_loaders.py tests/safety/test_safety_filter_integration.py` → **16 passed**
      - `tests/quantum/test_quantum_testing.py` → **14 passed**
 
-3. **Session C — Workflow/WEC Follow-Through**
-   - Reassess merge-required workflow set after baseline dependency-gating cleanup.
-   - Validate active-state and token-chain assumptions.
-   - Refresh handoff prompt and next priority matrix.
+3. **Session C — Baseline Dep Normalization + SHA-Branch Workflow** ✅ COMPLETE (S1044-2026-05-17)
+   - Added missing baseline test deps to `requirements-dev.txt`: `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0`.
+   - Targeted `collect-only` nox run: **0 ModuleNotFoundError** instances (nox session marked successful).
+   - Full `nox -s tests` runtime run: started, runtime failures visible (partial at session end — see Session D).
+   - Extended `.github/workflows/promote-integration-branch.yml` with `target_branch` (default `0D_base_`), `pr_base_branch` (default `main`), `create_or_update_pr` boolean inputs, enabling UI-triggered SHA→branch promotion for files from `copilot/review-codebase-and-next-changes` or any source SHA to any branch.
+   - YAML validated clean via `python -c "import yaml; yaml.safe_load(open(...))"`.
 
-4. **Session D — Pages + Reporting Reliability Confirmation**
+4. **Session D — Full Runtime Failure Triage** 🔄 PENDING
    - Verify Pages deploy/health telemetry remains stable with latest changes.
    - Confirm reporting docs/nav reflect current operational status.
    - Publish final continuation prompt for the next 48-hour cycle.

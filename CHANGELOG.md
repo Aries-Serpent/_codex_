@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S1043-loader-import-contract-stabilization — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:42Z)
+### Fixed (S1044-baseline-dep-normalization — `copilot/review-codebase-and-next-changes` — 2026-05-17T10:27Z)
+- Added 5 missing baseline test dependencies to `requirements-dev.txt`:
+  - `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0`
+- Post-normalization `nox -s tests --collect-only`: **0 `ModuleNotFoundError` instances** — nox session marked successful.
+  - Previous S1043 measured collection error bucket eliminated: `pydantic` (26), `click` (23), `fastapi.testclient` (2), `httpx` (1), `cryptography` (1) → **all resolved**.
+- Extended `.github/workflows/promote-integration-branch.yml` to support UI-triggered SHA→branch promotion:
+  - Added `target_branch` input (default `0D_base_`) — branch to update from source SHA.
+  - Added `pr_base_branch` input (default `main`) — base for optional PR creation.
+  - Added `create_or_update_pr` boolean input (default `true`).
+  - Existing 0D_base_→main behavior preserved as defaults; generic SHA→branch dispatch now supported.
+  - YAML syntax validated clean.
+
+
 - Ran baseline `nox -s tests` after the quantum conftest fix and confirmed the suite still stopped during collection, but the dominant failure class moved from the quantum conftest hard-stop to `codex_ml.data._core_loaders.stream_paths`.
 - Fixed the loader/import contract so the baseline nox environment no longer fails on `_core_loaders.stream_paths`:
   - removed eager `from . import dataloader, loaders` imports from `src/codex_ml/data/__init__.py`
