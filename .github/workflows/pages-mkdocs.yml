@@ -20,11 +20,13 @@ on:
   push:
     branches:
       - main
+      - copilot/analyze-workflows-data-again
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
       - 'src/codex/api/**'
       - 'src/codex/**/*.py'
+      - '.github/workflows/pages-mkdocs.yml'
   workflow_dispatch:
     inputs:
       reason:
