@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S1040-branch-consolidation-pages-reliability — `copilot/analyze-workflows-data-again` — 2026-05-17T00:16Z)
+- Cherry-picked the missing commit from `copilot/analyze-workflows-data` so the working branch contains all source-branch changes before closure.
+- Fixed GitHub Pages deployment resolution by replacing invalid `actions/deploy-pages` SHA in `.github/workflows/pages-mkdocs.yml` with `actions/deploy-pages@v4`.
+- Hardened `.github/workflows/pages-health-guard.yml` telemetry logging by creating `.codex/telemetry` before appending `pages_health_log.jsonl`.
+
 ### Added (S1039-pages-workflow-console-linking — `copilot/analyze-workflows-data-again` — 2026-05-16T20:53Z)
 - Included the live workflow console in GitHub Pages navigation by adding:
   - `Reporting Index: reporting/INDEX.md`
