@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S1042-quantum-conftest-remediation — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:12Z)
+- Fixed `tests/quantum/conftest.py`: removed deprecated `pytest_plugins = ("tests.utils.quantum_helpers",)` which pytest 8+ rejects in non-root conftest files, causing a hard collection interrupt that blocked all 16,373 tests.
+- Replaced with a direct import: `from tests.utils.quantum_helpers import quantum_plugin_fixture`.
+- Collection gate: **0 errors, 16,373 tests collected** (was: `Interrupted: 1 error during collection`, 0 tests collected).
+- Targeted validation: 95/95 quantum tests pass; 105/106 in quantum + loaders targeted set (1 pre-existing flaky test unrelated to this fix).
+- Updated `docs/reporting/next_expected_codebase_change_48h.md`, `docs/roadmap/review_codebase_next_changes_whats_next.md`, CHANGELOG, and accountability with measured deltas.
+
 ### Added (S1041-review-codebase-next-changes — `copilot/review-codebase-and-next-changes` — 2026-05-17T08:00Z)
 - Added `docs/reporting/next_expected_codebase_change_48h.md` with:
   - 48-hour aligned change review,

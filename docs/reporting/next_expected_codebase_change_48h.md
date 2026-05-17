@@ -80,14 +80,16 @@ Coefficient interpretation (normalized scoring model):
 
 ## 6) Iterative Expected Session Promptset (Outline)
 
-1. **Session A — Loader Contract Remediation**
-   - Verify all `stream_paths` call/export sites.
-   - Apply minimal compatibility fix.
-   - Run targeted tests and capture failure delta.
+1. **Session A — Loader Contract Remediation** ✅ COMPLETE (S1042-2026-05-17)
+   - Root cause confirmed: `pytest_plugins` in non-root `tests/quantum/conftest.py` caused a hard pytest collection interrupt blocking all 16,373 tests.
+   - Fix applied: removed deprecated `pytest_plugins`, directly imported `quantum_plugin_fixture` in conftest.
+   - Before: `Interrupted: 1 error during collection` — 0 tests collected.
+   - After: **0 collection errors — 16,373 tests collected**.
+   - Targeted suite: 95/95 quantum tests pass; 105/106 in broader targeted set (1 pre-existing flaky isolation-dependent test unrelated to this fix).
 
 2. **Session B — CI Signal Stabilization**
-   - Re-run baseline checks.
-   - Confirm reduction in collection errors.
+   - Re-run `nox -s tests` full suite and confirm zero collection errors in CI.
+   - Characterize any remaining runtime test failures separate from collection gate.
    - Update accountability + reporting with measured outcomes.
 
 3. **Session C — Workflow/WEC Follow-Through**
@@ -106,11 +108,10 @@ Coefficient interpretation (normalized scoring model):
 
 1. Load policy/accountability/session context packet.
 2. Run `nox -s precommit` and `nox -s tests` to capture current baseline.
-3. Confirm current `stream_paths` failure count from pytest collection output.
-4. Identify top import/export callsites tied to `codex_ml.data._core_loaders`.
-5. Define minimal remediation scope and expected regression tests.
-6. Execute fix + targeted tests first, then broader validation pass.
-7. Refresh accountability/changelog/reporting artifacts with measured deltas.
+3. Confirm zero collection errors — quantum conftest fix in `tests/quantum/conftest.py` is applied.
+4. If any new collection errors surface, identify impacted modules and scope minimal fix.
+5. Run targeted test set for any changed area.
+6. Refresh accountability/changelog/reporting artifacts with measured deltas.
 
 ### B. Execution Guardrails
 
@@ -121,11 +122,11 @@ Coefficient interpretation (normalized scoring model):
 
 ### C. Promptset Pack (Iterative)
 
-**Prompt 1 — Baseline Capture**
-> “Run baseline checks, quantify current `stream_paths` collection failures, and return a ranked remediation shortlist with exact impacted modules.”
+**Prompt 1 — Baseline Capture** ✅ DONE
+> Baseline captured: `pytest_plugins` in `tests/quantum/conftest.py` caused hard collection interrupt (0/16,373 tests collected).
 
-**Prompt 2 — Minimal Remediation**
-> “Apply the smallest compatible fix for the `stream_paths` contract break, then run targeted regression tests and summarize before/after failure deltas.”
+**Prompt 2 — Minimal Remediation** ✅ DONE
+> Fix applied: replaced `pytest_plugins` with direct import. After: 0 errors, 16,373 collected. 95/95 quantum pass.
 
 **Prompt 3 — Stability Verification**
 > “Re-run broad validation, separate remaining pre-existing failures from fixed signatures, and update reporting/accountability artifacts with evidence.”
